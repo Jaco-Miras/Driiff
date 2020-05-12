@@ -384,6 +384,8 @@ export const getAPIUrl = (data = {}) => {
                 url += REACT_APP_apiBaseUrl;
             }
             return url;
+        default:
+            return
     }
 };
 
@@ -405,6 +407,8 @@ export const getBaseUrl = (data = {}) => {
             url += REACT_APP_localDNSName;
 
             return url;
+        default:
+            return
     }
 };
 
