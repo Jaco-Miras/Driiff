@@ -56,7 +56,7 @@ export const getSlugName = (fromLocalStorage = true) => {
         default:
             return hostnameArr[0];
     }
-    
+
 
     return false;
 };
@@ -385,7 +385,7 @@ export const getAPIUrl = (data = {}) => {
             }
             return url;
         default:
-            return
+            return;
     }
 };
 
@@ -408,7 +408,7 @@ export const getBaseUrl = (data = {}) => {
 
             return url;
         default:
-            return
+            return;
     }
 };
 

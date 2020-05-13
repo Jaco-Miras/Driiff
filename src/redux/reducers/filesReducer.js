@@ -1,11 +1,13 @@
-
 const INITIAL_STATE = {
-    files: []
+    _global: {
+        user: {},
+    },
+    files: {},
 };
 
 export default (state = INITIAL_STATE, action) => {
     switch (action.type) {
-        
+
         default:
             return state;
     }

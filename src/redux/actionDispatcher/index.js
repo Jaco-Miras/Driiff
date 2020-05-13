@@ -78,7 +78,7 @@ export default function DispatchActionToReducer(
                         error,
                     });
                     if (callback) callback(error);
-                } 
+                }
             });
     };
 }

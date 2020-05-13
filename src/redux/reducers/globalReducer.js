@@ -1,13 +1,15 @@
-
 const INITIAL_STATE = {
-    recipients: [],
+    _global: {
+        user: {},
+    },
+    recipients: {},
     isBrowserActive: true,
-    modals: []
+    modals: {},
 };
 
 export default (state = INITIAL_STATE, action) => {
     switch (action.type) {
-        
+
         default:
             return state;
     }
