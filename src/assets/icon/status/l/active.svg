@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="48px" height="48px" viewBox="0 0 48 48" version="1.1" xmlns="http://www.w3.org/2000/svg"
+>
+    <!-- Generator: Sketch 54.1 (76490) - https://sketchapp.com -->
+    <title>_icon/status/l/active</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <linearGradient x1="0%" y1="0%" x2="100%" y2="100%" id="linearGradient-1">
+            <stop stop-color="#972C86" offset="0%"></stop>
+            <stop stop-color="#794997" offset="40%"></stop>
+            <stop stop-color="#007180" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="_icon/status/l/active" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" strokeLinecap="round"
+       stroke-linejoin="round">
+        <polyline id="Page-1" stroke="url(#linearGradient-1)" stroke-width="3"
+                  points="39.4478319 9.58649789 20.0795817 40 9 23.9324895"></polyline>
+    </g>
+</svg>

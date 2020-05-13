@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="64px" height="64px" viewBox="0 0 64 64" version="1.1" xmlns="http://www.w3.org/2000/svg"
+>
+    <!-- Generator: Sketch 54.1 (76490) - https://sketchapp.com -->
+    <title>_icon/pauze/xl/gradient</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <linearGradient x1="46.5373961%" y1="0%" x2="53.4626039%" y2="100%" id="linearGradient-1">
+            <stop stop-color="#972C86" offset="0%"></stop>
+            <stop stop-color="#794997" offset="40%"></stop>
+            <stop stop-color="#007180" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="45.8102493%" y1="0%" x2="54.1897507%" y2="100%" id="linearGradient-2">
+            <stop stop-color="#972C86" offset="0%"></stop>
+            <stop stop-color="#794997" offset="40%"></stop>
+            <stop stop-color="#007180" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="_icon/pauze/xl/gradient" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"
+       strokeLinecap="round" stroke-linejoin="round">
+        <g id="Group" transform="translate(16.000000, 13.000000)" stroke-width="3">
+            <polyline id="Rectangle-Copy" stroke="url(#linearGradient-1)"
+                      points="32 30 32 38 22 38 22 0 32 0 32 22"></polyline>
+            <polyline id="Rectangle-Copy-2" stroke="url(#linearGradient-2)"
+                      points="11 30 11 38 0 38 0 0 11 0 11 22"></polyline>
+        </g>
+    </g>
+</svg>

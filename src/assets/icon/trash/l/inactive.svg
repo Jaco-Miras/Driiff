@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="48px" height="48px" viewBox="0 0 48 48" version="1.1" xmlns="http://www.w3.org/2000/svg"
+>
+    <!-- Generator: Sketch 54.1 (76490) - https://sketchapp.com -->
+    <title>_icon/trash/l/inactive</title>
+    <desc>Created with Sketch.</desc>
+    <g id="_icon/trash/l/inactive" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" strokeLinecap="round"
+       stroke-linejoin="round">
+        <path d="M28,11 C28,10.3083099 27.8244346,9.65762524 27.515435,9.09007735 C26.8375432,7.84497513 25.5174489,7 24,7 C22.5016829,7 21.1957753,7.82380279 20.5105106,9.04317482 C20.1854118,9.62166142 20,10.2891781 20,11"
+              id="Path" stroke="#767676" stroke-width="3"></path>
+        <path d="M12,11.5 L36,11.5" id="Line" stroke="#767676" stroke-width="3"></path>
+        <path d="M36,17 L34.3056515,37.3321819 C34.1328875,39.4053504 32.399823,41 30.3194685,41 L17.6805315,41 C15.600177,41 13.8671125,39.4053504 13.6943485,37.3321819 L12,17 L12,17"
+              id="Path" stroke="#767676" stroke-width="3"></path>
+    </g>
+</svg>

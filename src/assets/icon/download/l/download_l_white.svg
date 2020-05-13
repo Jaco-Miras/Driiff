@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="48px" height="48px" viewBox="0 0 48 48" version="1.1" xmlns="http://www.w3.org/2000/svg"
+>
+    <!-- Generator: Sketch 54.1 (76490) - https://sketchapp.com -->
+    <title>_icon/download/l/white</title>
+    <desc>Created with Sketch.</desc>
+    <g id="_icon/download/l/white" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" strokeLinecap="round"
+       stroke-linejoin="round">
+        <polyline id="Path-2-Copy-2" stroke="#FFFFFF" stroke-width="3"
+                  points="33 25 42 25 24 42 6 25 15 25 15 14 33 14 33 19"></polyline>
+        <path d="M15,7 L33,7" id="Path" stroke="#FFFFFF" stroke-width="3"></path>
+    </g>
+</svg>

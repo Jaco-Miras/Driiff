@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="48px" height="48px" viewBox="0 0 48 48" version="1.1" xmlns="http://www.w3.org/2000/svg"
+>
+    <!-- Generator: Sketch 62 (91390) - https://sketch.com -->
+    <title>_icon/archive/l/white</title>
+    <desc>Created with Sketch.</desc>
+    <g id="_icon/archive/l/white" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <rect id="Rectangle-19" fill="#FFFFFF" x="16" y="22" width="16" height="5" rx="2.5"></rect>
+        <path d="M39,22 L39,37.4285714 C39,38.8487322 37.8807119,40 36.5,40 L11.5,40 C10.1192881,40 9,38.8487322 9,37.4285714 L9,22"
+              id="Path" stroke="#FFFFFF" stroke-width="3" strokeLinecap="round" stroke-linejoin="round"></path>
+        <rect id="Rectangle-Copy" stroke="#FFFFFF" stroke-width="3" strokeLinecap="round" stroke-linejoin="round" x="7"
+              y="9" width="34" height="8" rx="2.4"></rect>
+    </g>
+</svg>

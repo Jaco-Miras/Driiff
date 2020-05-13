@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="32px" height="32px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg"
+>
+    <!-- Generator: Sketch 54.1 (76490) - https://sketchapp.com -->
+    <title>_icon/double_arrow/m/white copy</title>
+    <desc>Created with Sketch.</desc>
+    <g id="_icon/double_arrow/m/white-copy" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"
+       strokeLinecap="round" stroke-linejoin="round">
+        <polyline id="Path-2-Copy" stroke="#FFFFFF" stroke-width="2"
+                  points="14 17 14 28 30 16.0025569 14 4 14 11"></polyline>
+        <path d="M4,16 L4,28 L14.0591675,20.4572319 M14.0396265,11.5313243 L4,4 L4,10" id="Path-2-Copy-2"
+              stroke="#FFFFFF" stroke-width="2"></path>
+    </g>
+</svg>

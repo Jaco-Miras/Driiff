@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg"
+>
+    <!-- Generator: Sketch 54.1 (76490) - https://sketchapp.com -->
+    <title>_icon/arrow/r/double/secundary</title>
+    <desc>Created with Sketch.</desc>
+    <g id="_icon/arrow/r/double/secundary" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"
+       strokeLinecap="round" stroke-linejoin="round">
+        <polyline id="Path-2-Copy" stroke="#972C86" stroke-width="2"
+                  transform="translate(12.000000, 15.000000) rotate(90.000000) translate(-12.000000, -15.000000) "
+                  points="6 15 6 24 18 15.0019177 6 6 6 10"></polyline>
+        <path d="M12,-4.5 L12,13.5" id="Line" stroke="#972C86" stroke-width="2"
+              transform="translate(12.000000, 4.500000) rotate(90.000000) translate(-12.000000, -4.500000) "></path>
+    </g>
+</svg>

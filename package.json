@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@convertkit/slate-lists": "^0.2.11",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
@@ -16,6 +17,7 @@
     "react-redux": "^7.2.0",
     "react-redux-toastr": "^7.6.4",
     "react-router-dom": "^5.2.0",
+    "react-router-scroll-top": "^0.2.1",
     "react-scripts": "3.4.1",
     "react-spring": "^8.0.27",
     "redux": "^4.0.5",
@@ -23,6 +25,8 @@
     "redux-logger": "^3.0.6",
     "redux-react-session": "^2.6.1",
     "redux-thunk": "^2.3.0",
+    "slate-editor": "^5.1.1",
+    "styled-components": "^5.1.0",
     "toasted-notes": "^3.2.0"
   },
   "scripts": {

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg"
+>
+    <!-- Generator: Sketch 54.1 (76490) - https://sketchapp.com -->
+    <title>_icon/hide/r/white</title>
+    <desc>Created with Sketch.</desc>
+    <g id="_icon/hide/r/white" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" strokeLinecap="round"
+       stroke-linejoin="round">
+        <path d="M22,11 C19.01,15 15.6766667,17 12,17 C8.32333333,17 4.99,15 2,11" id="Shape" stroke="#FFFFFF"
+              stroke-width="2" fill-rule="nonzero"></path>
+        <path d="M12,18 L12,21" id="Line" stroke="#FFFFFF" stroke-width="2"></path>
+        <path d="M7,17 L7,20" id="Line-Copy" stroke="#FFFFFF" stroke-width="2"
+              transform="translate(7.000000, 18.500000) rotate(22.500000) translate(-7.000000, -18.500000) "></path>
+        <path d="M2.79185427,14.2302259 L2.79185427,17.2302259" id="Line-Copy-2" stroke="#FFFFFF" stroke-width="2"
+              transform="translate(2.791854, 15.730226) rotate(45.000000) translate(-2.791854, -15.730226) "></path>
+        <path d="M17,17 L17,20" id="Line-Copy" stroke="#FFFFFF" stroke-width="2"
+              transform="translate(17.000000, 18.500000) scale(-1, 1) rotate(22.500000) translate(-17.000000, -18.500000) "></path>
+        <path d="M21.2081457,14.2302259 L21.2081457,17.2302259" id="Line-Copy-2" stroke="#FFFFFF" stroke-width="2"
+              transform="translate(21.208146, 15.730226) scale(-1, 1) rotate(45.000000) translate(-21.208146, -15.730226) "></path>
+    </g>
+</svg>

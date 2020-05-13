@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="32px" height="32px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg"
+>
+    <!-- Generator: Sketch 54.1 (76490) - https://sketchapp.com -->
+    <title>_icon/private/m/white</title>
+    <desc>Created with Sketch.</desc>
+    <g id="_icon/private/m/white" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <path d="M25,25 L25,27.3918129 C25,28.2799901 24.267375,29 23.3636364,29 L8.63636364,29 C7.73262495,29 7,28.2799901 7,27.3918129 L7,16.1345029 C7,15.2463257 7.73262495,14.5263158 8.63636364,14.5263158 L23.3636364,14.5263158 C24.267375,14.5263158 25,15.2463257 25,16.1345029 L25,20"
+              id="Rectangle" stroke="#FFFFFF" stroke-width="3" strokeLinecap="round" stroke-linejoin="round"></path>
+        <path d="M10.8571429,13.2105263 L10.8571429,8.93421053 C10.8571429,6.2091213 13.1596784,4 16,4 C18.8403216,4 21.1428571,6.2091213 21.1428571,8.93421053 L21.1428571,13.2105263"
+              id="Rectangle" stroke="#FFFFFF" stroke-width="3" strokeLinecap="round" stroke-linejoin="round"></path>
+        <ellipse id="Oval" fill="#FFFFFF" cx="16" cy="21.1052632" rx="1.92857143" ry="1.97368421"></ellipse>
+    </g>
+</svg>

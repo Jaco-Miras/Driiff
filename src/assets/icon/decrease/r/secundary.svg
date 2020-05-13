@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg"
+>
+    <!-- Generator: Sketch 54.1 (76490) - https://sketchapp.com -->
+    <title>_icon/decrease/r/secundary</title>
+    <desc>Created with Sketch.</desc>
+    <g id="_icon/decrease/r/secundary" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"
+       strokeLinecap="round" stroke-linejoin="round">
+        <rect id="Rectangle" stroke="#972C86" stroke-width="2" x="4" y="14" width="12" height="7"></rect>
+        <polyline id="Path" stroke="#972C86" stroke-width="2"
+                  transform="translate(7.750000, 6.500000) scale(1, -1) translate(-7.750000, -6.500000) "
+                  points="10.5 9 5 9 5 4"></polyline>
+        <polyline id="Path" stroke="#972C86" stroke-width="2"
+                  transform="translate(17.250000, 6.500000) scale(1, -1) translate(-17.250000, -6.500000) "
+                  points="20 4 20 9 14.5 9"></polyline>
+        <path d="M20,13 L20,18" id="Path" stroke="#972C86" stroke-width="2"
+              transform="translate(20.000000, 15.500000) scale(1, -1) translate(-20.000000, -15.500000) "></path>
+    </g>
+</svg>

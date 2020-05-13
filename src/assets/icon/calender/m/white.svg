@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="32px" height="32px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg"
+>
+    <!-- Generator: Sketch 54.1 (76490) - https://sketchapp.com -->
+    <title>_icon/calender/m/white</title>
+    <desc>Created with Sketch.</desc>
+    <g id="_icon/calender/m/white" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <path d="M12,4 L12,9" id="Path" stroke="#FFFFFF" stroke-width="3" strokeLinecap="round"
+              stroke-linejoin="round"></path>
+        <path d="M22,4 L22,9" id="Path-Copy" stroke="#FFFFFF" stroke-width="3" strokeLinecap="round"
+              stroke-linejoin="round"></path>
+        <path d="M13,7 C13.8181241,7 15.2670173,7 17.3466797,7 M22.5,7 C23.6048539,7 22.3458478,7 24.5555556,7 C25.9055849,7 27,8.11928813 27,9.5 L27,24.5 C27,25.8807119 25.9055849,27 24.5555556,27 L7.44444444,27 C6.09441506,27 5,25.8807119 5,24.5 L5,9.5 C5,8.11928813 6.09441506,7 7.44444444,7"
+              id="Rectangle-18" stroke="#FFFFFF" stroke-width="3" strokeLinecap="round" stroke-linejoin="round"></path>
+        <rect id="Rectangle-19" fill="#FFFFFF" x="10.1111111" y="12.9444444" width="6.38888889" height="5.11111111"
+              rx="2.55555556"></rect>
+    </g>
+</svg>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg"
+>
+    <!-- Generator: Sketch 54.1 (76490) - https://sketchapp.com -->
+    <title>_icon/close/s/inactive</title>
+    <desc>Created with Sketch.</desc>
+    <g id="_icon/close/s/inactive" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" strokeLinecap="round"
+       stroke-linejoin="round">
+        <path d="M8,15 L8,1" id="Stroke-1" stroke="#767676" stroke-width="2"
+              transform="translate(8.000000, 8.000000) rotate(-45.000000) translate(-8.000000, -8.000000) "></path>
+        <path d="M1,8 L15,8" id="Stroke-3" stroke="#767676" stroke-width="2"
+              transform="translate(8.000000, 8.000000) rotate(-45.000000) translate(-8.000000, -8.000000) "></path>
+    </g>
+</svg>

@@ -3,6 +3,7 @@ const INITIAL_STATE = {
         user: {},
     },
     recipients: {},
+    isLoading: 0,
     isBrowserActive: true,
     modals: {},
 };

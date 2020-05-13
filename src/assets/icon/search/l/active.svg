@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="48px" height="48px" viewBox="0 0 48 48" version="1.1" xmlns="http://www.w3.org/2000/svg"
+>
+    <!-- Generator: Sketch 54.1 (76490) - https://sketchapp.com -->
+    <title>_icon/search/l/active</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <linearGradient x1="4.64552149%" y1="0%" x2="95.3544785%" y2="100%" id="linearGradient-1">
+            <stop stop-color="#972C86" offset="0%"></stop>
+            <stop stop-color="#794997" offset="40%"></stop>
+            <stop stop-color="#007180" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="_icon/search/l/active" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" strokeLinecap="round"
+       stroke-linejoin="round">
+        <path d="M27.271,34.4907114 L38.141,45.3607114 C39.375,46.5947114 41.682,47.1357114 43.28,45.3727114 C44.893,43.5937114 44.156,41.5477114 43.055,40.4467114 L32.185,29.5767114 C31.564,28.9567114 31.467,27.9847114 31.952,27.2537114 C33.751,24.5347114 34.704,21.3697114 34.704,18.1017114 C34.704,8.94771143 27.256,1.49971143 18.102,1.49971143 C8.947,1.49971143 1.5,8.94771143 1.5,18.1017114 C1.5,27.2567114 8.947,34.7027114 18.102,34.7027114 C20.545,34.7027114 22.121,34.0827114 22.121,34.0827114"
+              id="Page-1" stroke="url(#linearGradient-1)" stroke-width="3"></path>
+    </g>
+</svg>

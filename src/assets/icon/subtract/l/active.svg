@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="48px" height="48px" viewBox="0 0 48 48" version="1.1" xmlns="http://www.w3.org/2000/svg"
+>
+    <!-- Generator: Sketch 54.1 (76490) - https://sketchapp.com -->
+    <title>_icon/subtract/l/active</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <linearGradient x1="0%" y1="35.3907962%" x2="100%" y2="64.6092038%" id="linearGradient-1">
+            <stop stop-color="#972C86" offset="0%"></stop>
+            <stop stop-color="#794997" offset="40%"></stop>
+            <stop stop-color="#007180" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="_icon/subtract/l/active" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <path d="M7,25.5 L41,25.5 C41.8284271,25.5 42.5,24.8284271 42.5,24 C42.5,23.1715729 41.8284271,22.5 41,22.5 L7,22.5 C6.17157288,22.5 5.5,23.1715729 5.5,24 C5.5,24.8284271 6.17157288,25.5 7,25.5 Z"
+              id="Combined-Shape" fill="url(#linearGradient-1)" fill-rule="nonzero"></path>
+    </g>
+</svg>

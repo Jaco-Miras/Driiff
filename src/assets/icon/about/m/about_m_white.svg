@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="32px" height="32px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg"
+>
+    <!-- Generator: Sketch 54.1 (76490) - https://sketchapp.com -->
+    <title>_icon/about/m/white</title>
+    <desc>Created with Sketch.</desc>
+    <g id="_icon/about/m/white" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <polyline id="Stroke-3" stroke="#FFFFFF" stroke-width="3" strokeLinecap="round" stroke-linejoin="round"
+                  points="13.875 14 16.875 14 16.875 22.25"></polyline>
+        <path d="M20.25,22.25 L13.5,22.25" id="Stroke-5" stroke="#FFFFFF" stroke-width="3" strokeLinecap="round"
+              stroke-linejoin="round"></path>
+        <path d="M18.25,8.75 C18.25,9.8548 17.3548,10.75 16.25,10.75 C15.146,10.75 14.25,9.8548 14.25,8.75 C14.25,7.6452 15.146,6.75 16.25,6.75 C17.3548,6.75 18.25,7.6452 18.25,8.75"
+              id="Fill-7" fill="#FFFFFF"></path>
+        <path d="M23.7174401,26.319867 C19.5367935,29.4286251 13.6878268,29.7409076 9.11331035,26.6757565 C3.30513737,22.7834788 1.75216499,14.9201494 5.64444269,9.11197643 C9.53672039,3.30521013 17.4000498,1.75223774 23.2082227,5.64451544 C28.4874848,9.18231032 30.2514589,16.0032914 27.6026844,21.5779558"
+              id="Stroke-1" stroke="#FFFFFF" stroke-width="3" strokeLinecap="round" stroke-linejoin="round"></path>
+    </g>
+</svg>

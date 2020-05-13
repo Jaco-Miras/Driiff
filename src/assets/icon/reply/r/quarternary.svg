@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg"
+>
+    <!-- Generator: Sketch 54.1 (76490) - https://sketchapp.com -->
+    <title>_icon/reply/r/quarternary</title>
+    <desc>Created with Sketch.</desc>
+    <g id="_icon/reply/r/quarternary" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"
+       strokeLinecap="round" stroke-linejoin="round">
+        <g id="Group"
+           transform="translate(12.500000, 9.000000) rotate(-90.000000) translate(-12.500000, -9.000000) translate(6.000000, 0.000000)"
+           stroke="#007180" stroke-width="2">
+            <polygon id="Path"
+                     transform="translate(6.363961, 6.363961) rotate(-45.000000) translate(-6.363961, -6.363961) "
+                     points="10.863961 10.863961 1.86396103 1.86396103 10.863961 1.86396103"></polygon>
+            <path d="M2,7 L2,13.9664295 C2,16.1946764 3.80635101,18.0010274 6.0345979,18.0010274 C6.19012136,18.0010274 6.34551472,17.9920349 6.5,17.9740948 L6.5,17.9740948"
+                  id="Line"
+                  transform="translate(4.250000, 12.500000) scale(-1, 1) translate(-4.250000, -12.500000) "></path>
+        </g>
+    </g>
+</svg>

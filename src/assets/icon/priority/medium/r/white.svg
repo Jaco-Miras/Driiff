@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg"
+>
+    <!-- Generator: Sketch 59 (86127) - https://sketch.com -->
+    <title>_icon/priority/medium/r/white</title>
+    <desc>Created with Sketch.</desc>
+    <g id="_icon/priority/medium/r/white" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"
+       strokeLinecap="round" stroke-linejoin="round">
+        <polyline id="Triangle" stroke="#FFFFFF" stroke-width="2"
+                  points="19.8079658 16.2735419 22 20 2 20 12 3 12 3 17.4091938 12.1956294"></polyline>
+        <path d="M14.5,14.25 C13.6666667,15.25 12.8333333,15.25 12,14.25 C11.1666667,13.25 10.3333333,13.25 9.5,14.25"
+              id="Path" stroke="#FFFFFF" stroke-width="2"></path>
+    </g>
+</svg>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="48px" height="48px" viewBox="0 0 48 48" version="1.1" xmlns="http://www.w3.org/2000/svg"
+>
+    <!-- Generator: Sketch 54.1 (76490) - https://sketchapp.com -->
+    <title>_icon/decrease/l/inactive</title>
+    <desc>Created with Sketch.</desc>
+    <g id="_icon/decrease/l/inactive" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"
+       strokeLinecap="round" stroke-linejoin="round">
+        <polyline id="Path" stroke="#767676" stroke-width="3" points="11 20 11 10 20 10"></polyline>
+        <polyline id="Path" stroke="#767676" stroke-width="3"
+                  transform="translate(32.500000, 15.000000) scale(-1, 1) translate(-32.500000, -15.000000) "
+                  points="28 20 28 10 37 10"></polyline>
+        <polygon id="Path-Copy" stroke="#767676" stroke-width="3"
+                 transform="translate(19.500000, 34.000000) scale(1, -1) translate(-19.500000, -34.000000) "
+                 points="8 40 8 28 31 28 31 40"></polygon>
+        <path d="M37,36 L37,26" id="Path" stroke="#767676" stroke-width="3"
+              transform="translate(37.000000, 31.000000) scale(-1, -1) translate(-37.000000, -31.000000) "></path>
+    </g>
+</svg>

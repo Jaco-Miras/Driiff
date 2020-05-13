@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="32px" height="32px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg"
+>
+    <!-- Generator: Sketch 54.1 (76490) - https://sketchapp.com -->
+    <title>_icon/move/m/white</title>
+    <desc>Created with Sketch.</desc>
+    <g id="_icon/move/m/white" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" strokeLinecap="round"
+       stroke-linejoin="round">
+        <polygon id="Path" stroke="#FFFFFF" stroke-width="3"
+                 transform="translate(16.363961, 11.363961) rotate(-45.000000) translate(-16.363961, -11.363961) "
+                 points="20.863961 15.863961 11.863961 6.86396103 20.863961 6.86396103"></polygon>
+        <path d="M11.75,11.8571429 L11.75,21.9403844 C11.75,24.1086427 13.5077207,25.8663634 15.675979,25.8663634 C15.8680939,25.8663634 16.0599497,25.8522619 16.25,25.8241726 L16.25,25.8241726"
+              id="Line" stroke="#FFFFFF" stroke-width="3"
+              transform="translate(14.000000, 18.857143) scale(-1, 1) translate(-14.000000, -18.857143) "></path>
+    </g>
+</svg>

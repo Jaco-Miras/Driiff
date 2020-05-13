@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="32px" height="32px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg"
+>
+    <!-- Generator: Sketch 54.1 (76490) - https://sketchapp.com -->
+    <title>_icon/close/m/secundary</title>
+    <desc>Created with Sketch.</desc>
+    <g id="_icon/close/m/secundary" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"
+       strokeLinecap="round" stroke-linejoin="round">
+        <path d="M16,27.6666667 L16,4.33333333" id="Stroke-1" stroke="#972C86" stroke-width="2"
+              transform="translate(16.000000, 16.000000) rotate(-45.000000) translate(-16.000000, -16.000000) "></path>
+        <path d="M4.33333333,16 L27.6666667,16" id="Stroke-3" stroke="#972C86" stroke-width="2"
+              transform="translate(16.000000, 16.000000) rotate(-45.000000) translate(-16.000000, -16.000000) "></path>
+    </g>
+</svg>

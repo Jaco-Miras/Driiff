@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg"
+>
+    <!-- Generator: Sketch 54.1 (76490) - https://sketchapp.com -->
+    <title>_icon/dashboard/r/inactive</title>
+    <desc>Created with Sketch.</desc>
+    <g id="_icon/dashboard/r/inactive" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"
+       strokeLinecap="round" stroke-linejoin="round">
+        <path d="M21.9219,16.2531 C21.9739,15.8421 21.9999,15.4241 21.9999,15.0001 C21.9999,9.4771 17.5229,5.0001 11.9999,5.0001 C6.4769,5.0001 1.9999,9.4771 1.9999,15.0001 C1.9999,16.7141 2.4329,18.3261 3.1929,19.7361 L20.8079,19.7361"
+              id="Stroke-1" stroke="#767676" stroke-width="2"></path>
+        <path d="M12.9116919,15.2584446 C11.9326919,16.0794446 10.4726919,15.9524446 9.65169194,14.9734446 C8.82969194,13.9934446 8.95769194,12.5334446 9.93669194,11.7124446 C10.9156919,10.8914446 15.2636919,10.2654446 15.2636919,10.2654446 C15.2636919,10.2654446 13.8906919,14.4374446 12.9116919,15.2584446 Z"
+              id="Stroke-3" stroke="#767676" stroke-width="2"
+              transform="translate(12.186824, 13.032606) rotate(-51.000000) translate(-12.186824, -13.032606) "></path>
+    </g>
+</svg>

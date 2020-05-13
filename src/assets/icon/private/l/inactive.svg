@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="48px" height="48px" viewBox="0 0 48 48" version="1.1" xmlns="http://www.w3.org/2000/svg"
+>
+    <!-- Generator: Sketch 54.1 (76490) - https://sketchapp.com -->
+    <title>_icon/private/l/inactive</title>
+    <desc>Created with Sketch.</desc>
+    <g id="_icon/private/l/inactive" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <path d="M37.5,38 L37.5,40.5555556 C37.5,41.9055849 36.4010626,43 35.0454545,43 L12.9545455,43 C11.5989374,43 10.5,41.9055849 10.5,40.5555556 L10.5,23.4444444 C10.5,22.0944151 11.5989374,21 12.9545455,21 L35.0454545,21 C36.4010626,21 37.5,22.0944151 37.5,23.4444444 L37.5,31"
+              id="Rectangle" stroke="#757575" stroke-width="3" strokeLinecap="round"></path>
+        <path d="M15.5,20 L15.5,13.5 C15.5,9.35786438 19.3055796,6 24,6 C28.6944204,6 32.5,9.35786438 32.5,13.5 L32.5,20"
+              id="Rectangle" stroke="#757575" stroke-width="3" strokeLinecap="round"></path>
+        <circle id="Oval" fill="#767676" cx="24" cy="30.5" r="2.5"></circle>
+    </g>
+</svg>

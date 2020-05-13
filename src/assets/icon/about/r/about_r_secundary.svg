@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg"
+>
+    <!-- Generator: Sketch 54.1 (76490) - https://sketchapp.com -->
+    <title>_icon/about/r/secundary</title>
+    <desc>Created with Sketch.</desc>
+    <g id="_icon/about/r/secundary" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <polyline id="Stroke-3" stroke="#972C86" stroke-width="2" strokeLinecap="round" stroke-linejoin="round"
+                  points="10.25 10.5 12.25 10.5 12.25 17"></polyline>
+        <path d="M14.5,17 L10,17" id="Stroke-5" stroke="#972C86" stroke-width="2" strokeLinecap="round"
+              stroke-linejoin="round"></path>
+        <path d="M13.5,7 C13.5,7.8286 12.8286,8.5 12,8.5 C11.172,8.5 10.5,7.8286 10.5,7 C10.5,6.1714 11.172,5.5 12,5.5 C12.8286,5.5 13.5,6.1714 13.5,7"
+              id="Fill-7" fill="#972C86"></path>
+        <path d="M17.9691726,20.0250277 C14.6670004,22.4805832 10.0470704,22.7272499 6.43379187,20.3061388 C1.84608363,17.2316943 0.61943556,11.0205832 3.6938334,6.43280543 C6.76823125,1.84613877 12.9792482,0.6194721 17.5669565,3.69391654 C21.7368933,6.48836099 23.1302055,11.8761388 21.038015,16.2794721"
+              id="Stroke-1" stroke="#972C86" stroke-width="2" strokeLinecap="round" stroke-linejoin="round"></path>
+    </g>
+</svg>

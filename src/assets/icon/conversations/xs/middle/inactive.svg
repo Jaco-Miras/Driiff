@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="12px" height="12px" viewBox="0 0 12 12" version="1.1" xmlns="http://www.w3.org/2000/svg"
+>
+    <!-- Generator: Sketch 54.1 (76490) - https://sketchapp.com -->
+    <title>_icon/conversations/xs/middle/inactive</title>
+    <desc>Created with Sketch.</desc>
+    <g id="_icon/conversations/xs/middle/inactive" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <path d="M8.25029616,7.99927106 L6.99314101,10.5133523 C6.84438033,10.7711172 6.67999999,10.8999996 6.5,10.8999996 C6.32000001,10.8999996 6.16145494,10.7827866 6.0243648,10.5483607 L4.74970384,7.99927106 L3,7.99927106 C1.8954305,7.99927106 1,7.10392215 1,5.9994533 L1,1.99981777 C1,0.895348911 1.8954305,0 3,0 L10,0 C11.1045695,-2.22024373e-16 12,0.895348911 12,1.99981777 L12,5.9994533 C12,7.10392215 11.1045695,7.99927106 10,7.99927106 L8.25029616,7.99927106 Z"
+              id="Combined-Shape" fill="#999999" fill-rule="nonzero"></path>
+    </g>
+</svg>

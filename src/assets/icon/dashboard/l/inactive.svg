@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="48px" height="48px" viewBox="0 0 48 48" version="1.1" xmlns="http://www.w3.org/2000/svg"
+>
+    <!-- Generator: Sketch 54.1 (76490) - https://sketchapp.com -->
+    <title>_icon/dashboard/l/inactive</title>
+    <desc>Created with Sketch.</desc>
+    <g id="_icon/dashboard/l/inactive" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"
+       strokeLinecap="round" stroke-linejoin="round">
+        <path d="M43.0384615,36.172 C43.3328205,34.8273846 43.4866667,33.4325128 43.4866667,32.0007179 C43.4866667,21.2366154 34.7625641,12.5135385 24.0005128,12.5135385 C13.2374359,12.5135385 4.51230769,21.2366154 4.51230769,32.0007179 C4.51230769,35.3402051 5.35641026,38.4827692 6.8374359,41.2314872 L41.1625641,41.2314872"
+              id="Stroke-1" stroke="#767676" stroke-width="3"></path>
+        <path d="M25.7999931,33.0576339 C23.8923008,34.6596851 21.0471726,34.4094287 19.446147,32.5017364 C17.8451213,30.5940441 18.0933265,27.7489159 20.0020444,26.1489159 C21.9107624,24.5468646 30.3835829,23.3284031 30.3835829,23.3284031 C30.3835829,23.3284031 27.7076854,31.4566082 25.7999931,33.0576339 Z"
+              id="Stroke-3" stroke="#767676" stroke-width="3"
+              transform="translate(24.387144, 28.720782) rotate(-51.000000) translate(-24.387144, -28.720782) "></path>
+    </g>
+</svg>

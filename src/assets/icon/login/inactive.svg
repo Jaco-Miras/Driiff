@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg"
+>
+    <!-- Generator: Sketch 52.5 (67469) - http://www.bohemiancoding.com/sketch -->
+    <title>_icon/read/r/inactive</title>
+    <desc>Created with Sketch.</desc>
+    <g id="_icon/read/r/inactive" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" strokeLinecap="round"
+       stroke-linejoin="round">
+        <path d="M12,15 C10.3455,15 9,13.6545 9,12 C9,10.347 10.3455,9 12,9 C13.6545,9 15,10.347 15,12 C15,13.6545 13.6545,15 12,15 Z"
+              id="Shape" stroke="#767676" stroke-width="2" fill-rule="nonzero"></path>
+        <path d="M12,18 C8.32333333,18 4.99,16 2,12 C4.99,8 8.32333333,6 12,6 C15.6766667,6 19.01,8 22,12 C19.01,16 15.6766667,18 12,18 Z"
+              id="Shape" stroke="#767676" stroke-width="2" fill-rule="nonzero"></path>
+    </g>
+</svg>

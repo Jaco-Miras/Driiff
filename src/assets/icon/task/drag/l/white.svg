@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
+    <g fill="none" fill-rule="evenodd" strokeLinecap="round" stroke-linejoin="round">
+        <polygon stroke="#FFFFFF" stroke-width="3" points="28.564 44.614 19.564 35.614 28.564 35.614"
+                 transform="scale(1 -1) rotate(-45 -72.78 0)"/>
+        <path stroke="#FFFFFF" stroke-width="3" d="M24 8L24 13M9 18.5L39 18.5M24 35L24 40M9 29.5L39 29.5M9 24L39 24"/>
+        <polygon stroke="#FFFFFF" stroke-width="3" points="28.564 12.364 19.564 3.364 28.564 3.364"
+                 transform="rotate(-45 24.064 7.864)"/>
+    </g>
+</svg>

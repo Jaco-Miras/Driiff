@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="48px" height="48px" viewBox="0 0 48 48" version="1.1" xmlns="http://www.w3.org/2000/svg"
+>
+    <!-- Generator: Sketch 54.1 (76490) - https://sketchapp.com -->
+    <title>_icon/template/l/white</title>
+    <desc>Created with Sketch.</desc>
+    <g id="_icon/template/l/white" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" strokeLinecap="round"
+       stroke-linejoin="round">
+        <path d="M34,8 L37.5,8 C38.3284271,8 39,8.67157288 39,9.5 L39,40.5 C39,41.3284271 38.3284271,42 37.5,42 L10.5,42 C9.67157288,42 9,41.3284271 9,40.5 L9,9.5 C9,8.67157288 9.67157288,8 10.5,8 L14,8"
+              id="Rectangle" stroke="#FFFFFF" stroke-width="3"></path>
+        <path d="M16,17.5 L32,17.5" id="Line" stroke="#FFFFFF" stroke-width="3"></path>
+        <path d="M16,23.5 L32,23.5" id="Line" stroke="#FFFFFF" stroke-width="3"></path>
+        <path d="M16,29.5 L26,29.5" id="Line" stroke="#FFFFFF" stroke-width="3"></path>
+        <rect id="Rectangle-2" stroke="#FFFFFF" stroke-width="3" x="18.5" y="5" width="11" height="4.5" rx="1.5"></rect>
+    </g>
+</svg>

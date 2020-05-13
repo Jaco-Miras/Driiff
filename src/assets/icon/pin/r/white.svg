@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg"
+>
+    <!-- Generator: Sketch 54.1 (76490) - https://sketchapp.com -->
+    <title>_icon/pin/r/white</title>
+    <desc>Created with Sketch.</desc>
+    <g id="_icon/pin/r/white" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" strokeLinecap="round"
+       stroke-linejoin="round">
+        <path d="M15.7692308,8.70635677 C18.2871227,9.7169252 20,11.7084386 20,14 L4,14 C4,11.7084386 5.71287732,9.7169252 8.23076923,8.70635677 L8.23076923,2 L15.7692308,2 L15.7692308,8.70635677 Z"
+              id="Combined-Shape" stroke="#FFFFFF" stroke-width="2"></path>
+        <path d="M10.5,17.4019238 L13.5,22.5980762" id="Line-2" stroke="#FFFFFF" stroke-width="2"
+              transform="translate(12.000000, 20.000000) rotate(30.000000) translate(-12.000000, -20.000000) "></path>
+    </g>
+</svg>

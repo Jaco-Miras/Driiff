@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg"
+>
+    <!-- Generator: Sketch 54.1 (76490) - https://sketchapp.com -->
+    <title>_icon/increase/r/white</title>
+    <desc>Created with Sketch.</desc>
+    <g id="_icon/increase/r/white" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" strokeLinecap="round"
+       stroke-linejoin="round">
+        <polyline id="Path-Copy" stroke="#FFFFFF" stroke-width="2"
+                  transform="translate(12.500000, 11.000000) scale(1, -1) translate(-12.500000, -11.000000) "
+                  points="20 4 20 11.7777778 20 18 5 18 5 12.6153846"></polyline>
+        <polyline id="Path" stroke="#FFFFFF" stroke-width="2"
+                  transform="translate(14.000000, 14.750000) scale(-1, 1) translate(-14.000000, -14.750000) "
+                  points="12 15.5 12 14 16 14"></polyline>
+        <polyline id="Path-Copy-2" stroke="#FFFFFF" stroke-width="2"
+                  transform="translate(14.000000, 20.250000) scale(-1, -1) translate(-14.000000, -20.250000) "
+                  points="12 21 12 19.5 16 19.5"></polyline>
+        <polyline id="Path" stroke="#FFFFFF" stroke-width="2" points="4 15.5 4 14 8 14"></polyline>
+        <polyline id="Path-Copy-3" stroke="#FFFFFF" stroke-width="2"
+                  transform="translate(6.000000, 20.250000) scale(1, -1) translate(-6.000000, -20.250000) "
+                  points="4 21 4 19.5 8 19.5"></polyline>
+    </g>
+</svg>
