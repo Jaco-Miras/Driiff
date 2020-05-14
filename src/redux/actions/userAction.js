@@ -1,5 +1,5 @@
 import dispatchActionToReducer from "../actionDispatcher";
-import {googleLogin as googleLoginService, login as loginService} from "../services";
+import {googleLogin as googleLoginService, login as loginService, logout as logoutService} from "../services";
 
 export const userLogin = (payload, callback) => {
     return dispatchActionToReducer(
@@ -7,6 +7,16 @@ export const userLogin = (payload, callback) => {
         "LOGIN_START",
         "LOGIN_SUCCESS",
         "LOGIN_FAILURE",
+        callback,
+    );
+};
+
+export const userLogout = (payload, callback) => {
+    return dispatchActionToReducer(
+        logoutService(payload),
+        "LOGOUT_START",
+        "LOGOUT_SUCCESS",
+        "LOGOUT_FAILURE",
         callback,
     );
 };

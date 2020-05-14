@@ -2,6 +2,7 @@ import React, {useEffect, useState} from "react";
 import {Redirect, Route, Switch, useLocation, withRouter} from "react-router-dom";
 import styled from "styled-components";
 import {Icon} from "../components/common";
+import useUserLogout from "../components/hooks/useUserLogout";
 import {LoginPanel, RegisterPanel, ResetPasswordPanel} from "../components/panels";
 import AuthenticateUserPanel from "../components/panels/AuthenticateUserPanel";
 
@@ -9,6 +10,8 @@ const Wrapper = styled.div`
 `;
 
 const GuestLayout = (props) => {
+
+    useUserLogout(props);
 
     const location = useLocation();
     const [title, setTitle] = useState("Sign in");
@@ -39,17 +42,9 @@ const GuestLayout = (props) => {
             <h5>{title}</h5>
 
             <Switch>
-                <Route path={"/authenticate/:token/:returnUrl?"} component={AuthenticateUserPanel} exact={true}/>
                 <Route path={"/login"} component={LoginPanel}/>
                 <Route path={"/reset-password"} component={ResetPasswordPanel}/>
                 <Route path={"/register"} component={RegisterPanel}/>
-                <Redirect
-                    from="*"
-                    to={{
-                        pathname: "/login",
-                        state: {from: location},
-                    }}
-                />
             </Switch>
         </Wrapper>
     );

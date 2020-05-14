@@ -14,5 +14,6 @@ export {
 
 export {
     login,
+    logout,
     googleLogin,
 } from "./user";

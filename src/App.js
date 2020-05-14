@@ -7,16 +7,17 @@ import {AppRoute} from "./layout/routes";
 
 function App() {
 
-    const authenticated = useSelector(state => state.session.authenticated);
+    const session = useSelector(state => state.session);
 
     return (
         <div className="App">
             {
+                session.checked === true &&
                 <>
                     <PreLoader/>
                     <Switch>
                         <ScrollToTop>
-                            <AppRoute path="*" authenticated={authenticated}/>
+                            <AppRoute path="*" authenticated={session.authenticated}/>
                         </ScrollToTop>
                     </Switch>
                 </>
