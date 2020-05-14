@@ -25,6 +25,16 @@ export function login(payload) {
 }
 
 /**
+ * @param {Object} payload
+ */
+export function logout(payload = {}) {
+    return apiCall({
+        method: "POST",
+        url: `/logout`,
+    });
+}
+
+/**
  * This function will call on the API to process the data whether it will be for two-step-authentication or not
  *
  *

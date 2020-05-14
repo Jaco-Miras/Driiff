@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import { SlateEditor, SlateToolbar, SlateContent } from "slate-editor";
+import {SlateContent, SlateEditor} from "slate-editor";
 import styled from "styled-components";
 
 const Wrapper = styled.div`
@@ -12,10 +12,10 @@ const ChatFooterPanel = (props) => {
 
     const {className = ""} = props;
 
-    const {reply, setReply} = useState('Test');
+    const {reply, setReply} = useState("Test");
 
     const handleSubmit = (e) => {
-
+        setReply('Test')
     };
 
     return (
@@ -36,7 +36,7 @@ const ChatFooterPanel = (props) => {
                     test
                     <ReplyInput
                         className="form-control" placeholder="Write your message">
-                        <SlateContent value={reply} />
+                        <SlateContent value={reply}/>
                     </ReplyInput>
                 </div>
                 <div className="chat-footer-buttons d-flex">

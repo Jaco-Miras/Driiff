@@ -9,7 +9,7 @@ const RegisterPanel = () => {
 
     const ref = {
         first_name: useRef(),
-    }
+    };
 
     const [form, setForm] = useState({
         first_name: "",

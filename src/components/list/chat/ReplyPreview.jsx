@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import styled from 'styled-components';
-import { useSelector } from 'react-redux';
+import React, {useEffect, useState} from "react";
 import {renderToString} from "react-dom/server";
-import SvgImage from "../../common/SvgImage";
+import {useSelector} from "react-redux";
+import styled from "styled-components";
 import quillHelper from "../../../helpers/quillHelper";
 import {_t} from "../../../helpers/stringFormatter";
+import SvgImage from "../../common/SvgImage";
 
 const PreviewTextContainer = styled.div`
-`
+`;
 const LastReplyContent = styled.span`
     color: #676767;
     font-size: 1rem;
@@ -82,11 +82,11 @@ const LastReplyBody = styled.div`
 `;
 
 const ReplyPreview = props => {
-    const {channel} = props
-    const settings  = useSelector(state => state.settings.userSettings)
-    const user  = useSelector(state => state.session.user)
-    const channelDrafts  = useSelector(state => state.chat.channelDrafts)
-    const [previewText, setPreviewText] = useState("")
+    const {channel} = props;
+    const settings = useSelector(state => state.settings.userSettings);
+    const user = useSelector(state => state.session.user);
+    const channelDrafts = useSelector(state => state.chat.channelDrafts);
+    const [previewText, setPreviewText] = useState("");
 
     useEffect(() => {
         let showPreviewIcon = false;
@@ -168,7 +168,7 @@ const ReplyPreview = props => {
                 }}
             />
         </PreviewTextContainer>
-    )
-}
+    );
+};
 
-export default ReplyPreview
+export default ReplyPreview;

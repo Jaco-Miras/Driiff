@@ -1,15 +1,27 @@
 import React from "react";
+import {useSelector} from "react-redux";
 import styled from "styled-components";
 
 const Wrapper = styled.div`
+    ${props => {
+    switch (props.navMode) {
+        case 1:
+            return `display: none !important;`;
+        default:
+            return ``;
+    }
+}}
+
 `;
 
 const Blank = (props) => {
 
     const {className = ""} = props;
 
+    const navMode = useSelector(state => state.settings.navMode);
+
     return (
-        <Wrapper className={`navigation-menu-body ${className}`}>
+        <Wrapper className={`navigation-menu-body ${className}`} navMode={navMode}>
             <div className="" styles="overflow: hidden; outline: currentcolor none medium;"
                  tabIndex="3">
 

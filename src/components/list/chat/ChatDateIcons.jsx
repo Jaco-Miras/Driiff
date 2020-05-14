@@ -1,14 +1,14 @@
-import React from 'react';
-import styled from 'styled-components';
-import SvgImage from "../../common/SvgImage";
+import React from "react";
+import styled from "styled-components";
 import {localizeChatChannelDate} from "../../../helpers/momentFormatJS";
 import BadgeIcon from "../../common/BadgeIcon";
+import SvgImage from "../../common/SvgImage";
 
 const DateIconsContainer = styled.div`
   margin-right: 5px;
   text-align: right;
   color: #676767;
-  display: ${props => props.optionsVisible ? 'none' : 'inline-flex'};
+  display: ${props => props.optionsVisible ? "none" : "inline-flex"};
   flex-flow: column;
   max-width: 65px;
   p {
@@ -17,7 +17,7 @@ const DateIconsContainer = styled.div`
     font-size: 0.7em;
     color: #676767;
   }
-`
+`;
 const MuteIcon = styled(SvgImage)`
     filter: brightness(0) saturate(100%) invert(43%) sepia(19%) saturate(0%) hue-rotate(214deg) brightness(87%) contrast(86%);      
     position: relative;
@@ -38,19 +38,19 @@ const ChatDateIcons = props => {
             return (<span className={`badge-container unread`} value={""}><BadgeIcon/></span>);
         } else {
             if (channel.total_unread > 0) {
-                return (<span className={`badge-container`}><BadgeIcon value={channel.total_unread}/></span>)
+                return (<span className={`badge-container`}><BadgeIcon value={channel.total_unread}/></span>);
             } else {
-                return null
+                return null;
             }
         }
-    }
+    };
     return (
         <DateIconsContainer className="chat-timestamp" optionsVisible={optionsVisible}>
             <p>
-            {channel.last_reply
-                ? localizeChatChannelDate(channel.last_reply.created_at.timestamp)
-                : null
-            }
+                {channel.last_reply
+                    ? localizeChatChannelDate(channel.last_reply.created_at.timestamp)
+                    : null
+                }
             </p>
             <div>
                 {
@@ -64,7 +64,7 @@ const ChatDateIcons = props => {
                 {handleNotificationBadges()}
             </div>
         </DateIconsContainer>
-    )
-}
+    );
+};
 
-export default ChatDateIcons
+export default ChatDateIcons;

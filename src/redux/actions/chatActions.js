@@ -1,12 +1,14 @@
 import dispatchActionToReducer, {SimpleDispatchActionToReducer} from "../actionDispatcher";
 import {
+    getChannel as getChannelService,
     getChannels as getChannelsService,
-    updateChannel as updateChannelService,
+    getLastVisitedChannel as getLastVisitedChannelService,
     markReadChannel as markReadChannelService,
     markUnreadChannel as markUnreadChannelService,
     getChannel as getChannelService,
     getLastVisitedChannel as getLastVisitedChannelService,
     getChatMessages as getChatMessagesService,
+    updateChannel as updateChannelService,
 } from "../services";
 
 

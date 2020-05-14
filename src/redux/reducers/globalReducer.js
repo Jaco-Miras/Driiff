@@ -4,7 +4,7 @@ const INITIAL_STATE = {
     isLoading: 0,
     isBrowserActive: true,
     modals: {},
-    slugs: []
+    slugs: [],
 };
 
 export default (state = INITIAL_STATE, action) => {

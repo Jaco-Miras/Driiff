@@ -1,20 +1,34 @@
 import React from "react";
+import {useSelector} from "react-redux";
 import styled from "styled-components";
 import {DashboardNavigationTabPanel} from "../index";
+import DashboardNavigationMenuBodyPanel from "./DashboardNavigationMenuBodyPanel";
 
 const Wrapper = styled.div`
-    display: none;
-    /*width: auto;*/    
+    ${props => {
+    switch (props.navMode) {
+        case 0:
+            return `display: none`;
+        case 1:
+            return `width: auto;`;
+        default:
+            return ``;
+    }
+}}  
 `;
 
 const DashboardNavigationPanel = (props) => {
 
     const {className = ""} = props;
 
-    return (
-        <Wrapper className={`navigation ${className}`}>
+    const navMode = useSelector(state => state.settings.navMode);
 
-            <DashboardNavigationTabPanel />
+    return (
+        <Wrapper className={`navigation ${className}`} navMode={navMode}>
+
+            <DashboardNavigationTabPanel/>
+
+            <DashboardNavigationMenuBodyPanel/>
 
             <div id="ascrail2002" className="nicescroll-rails nicescroll-rails-vr"
                  styles="width: 8px; z-index: 4; cursor: default; position: absolute; top: 0px; left: 112px; height: 378.3px; display: none; opacity: 0;">

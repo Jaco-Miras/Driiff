@@ -10,13 +10,12 @@ export {
 } from "./chat"
 
 export {
-    getUserSettings
-} from "./settings"
+    getUserSettings,
+} from "./settings";
 
 export {
     login,
-    getOnlineUsers,
-    getUser,
+    logout,
     googleLogin,
 } from "./user";
 

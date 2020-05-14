@@ -1,8 +1,8 @@
-import React from 'react';
-import styled from 'styled-components';
-import useLoadChannels from '../../hooks/useLoadChannels';
-import ChannelList from './ChannelList';
-import useSortChannels from "../../hooks/useSortChannels"
+import React from "react";
+import styled from "styled-components";
+import useLoadChannels from "../../hooks/useLoadChannels";
+import useSortChannels from "../../hooks/useSortChannels";
+import ChannelList from "./ChannelList";
 
 const ChannelsSidebarContainer = styled.div`
     height: 100%;
@@ -24,10 +24,10 @@ const ChatHeader = styled.h4`
 `;
 
 const ChannelsSidebar = props => {
-    const { className, search } = props;
+    const {className, search} = props;
 
-    useLoadChannels()
-    const [sortedChannels] = useSortChannels(search)
+    useLoadChannels();
+    const [sortedChannels] = useSortChannels(search);
 
     return (
         <ChannelsSidebarContainer className={`chat-lists ${className}`}>
@@ -76,7 +76,7 @@ const ChannelsSidebar = props => {
                 }
             </Channels>
         </ChannelsSidebarContainer>
-    )
-}
+    );
+};
 
-export default ChannelsSidebar
+export default ChannelsSidebar;

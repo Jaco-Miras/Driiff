@@ -13,6 +13,7 @@
     "hex-to-css-filter": "^2.0.4",
     "highlight-words-core": "^1.2.2",
     "laravel-echo": "^1.7.0",
+    "env-cmd": "^10.1.0",
     "lodash": "^4.17.15",
     "logrocket": "^1.0.7",
     "md5": "^2.2.1",

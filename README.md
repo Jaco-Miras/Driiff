@@ -1,6 +1,34 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+<p align="center"><img src="https://dev.drevv.com/static/media/driff-logo.cf17324f.svg" width="200"></p>
+
+
+# Driff Frontend Bordash
+
+How to run local?
+
+Install node modules via yarn
+
+Development command:
+```js
+yarn start-dev
+```
+
+Login dev:
+
+```
+Username:
+rt@make24.nl
+
+Password:
+password1
+```
+
+## Test environment
+
+The test environment is located at [dev.drevv.com](https://dev.drevv.com/)
 
 ## Available Scripts
+
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 In the project directory, you can run:
 

@@ -1,28 +1,52 @@
 import React from "react";
-import {Route, Switch} from "react-router-dom";
+import {Redirect, Route, Switch} from "react-router-dom";
+import AuthenticateUserPanel from "../components/panels/AuthenticateUserPanel";
 import DashboardLayout from "./DashboardLayout";
 import GuestLayout from "./GuestLayout";
 
-export const AppRoute = ({authenticated, children, ...rest}) => {
+export const AppRoute = ({authenticated, children, ...props}) => {
 
     return (
         authenticated ?
-            <Switch>
-                <Route
-                    {...rest}
-                    component={DashboardLayout}
-                    path="*">
-                    {children}
-                </Route>
-            </Switch>
+            <>
+                <Switch>
+                    <Route
+                        {...props}
+                        component={GuestLayout}
+                        path="/logout">
+                        {children}
+                    </Route>
+                    <Route
+                        {...props}
+                        component={DashboardLayout}
+                        path={["/dashboard"]}>
+                        {children}
+                    </Route>
+                    <Redirect
+                        from="*"
+                        to={{
+                            pathname: "/dashboard",
+                            state: {from: props.location},
+                        }}
+                    />
+                </Switch>
+            </>
             :
             <Switch>
+                <Route path={"/authenticate/:token/:returnUrl?"} component={AuthenticateUserPanel} exact={true}/>
                 <Route
-                    {...rest}
+                    {...props}
                     component={GuestLayout}
-                    path="*">
+                    path={["/register", "/reset-password", "/login"]}>
                     {children}
                 </Route>
+                <Redirect
+                    from="*"
+                    to={{
+                        pathname: "/login",
+                        state: {from: props.location},
+                    }}
+                />
             </Switch>
     );
 };

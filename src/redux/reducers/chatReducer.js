@@ -9,7 +9,7 @@ const INITIAL_STATE = {
     channels: {},
     selectedChannel: null,
     startNewChannels: {},
-    channelDrafts: []
+    channelDrafts: [],
 };
 
 export default function (state = INITIAL_STATE, action) {
@@ -25,16 +25,16 @@ export default function (state = INITIAL_STATE, action) {
                     hasMore: true,
                     skip: 0,
                     replies: [],
-                    selected: false
-                }
-            })
+                    selected: false,
+                };
+            });
             return {
                 ...state,
                 channels: {
-                    ...state.channels, 
-                    ...convertArrayToObject(results, "id")
-                }
-            }
+                    ...state.channels,
+                    ...convertArrayToObject(results, "id"),
+                },
+            };
         }
         case "UPDATE_CHANNEL_REDUCER": {
             return {

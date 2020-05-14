@@ -25,7 +25,8 @@ const ResetPasswordPanel = () => {
     return (
         <Wrapper>
             <div className="form-group">
-                <input onChange={handleInputChange} name="email" type="email" className="form-control" placeholder="Email" required="" autoFocus/>
+                <input onChange={handleInputChange} name="email" type="email" className="form-control"
+                       placeholder="Email" required="" autoFocus/>
             </div>
             <button className="btn btn-primary btn-block" onClick={handleSubmit}>Submit</button>
             <hr/>

@@ -53,11 +53,11 @@ const ChannelListContainer = styled.li`
         position: absolute;
         right: 30px;
     }
-`
+`;
 const ChannelTitlePreview = styled.div`
     flex: 1;
     max-width: calc(100% - 105px);
-`
+`;
 
 const ChannelList = props => {
     const {channel} = props;
@@ -95,10 +95,10 @@ const ChannelList = props => {
                 <ChannelTitle channel={channel}/>
                 <ReplyPreview channel={channel}/>
             </ChannelTitlePreview>
-            <ChatDateIcons className={'chat-date-icons'} channel={channel} optionsVisible={optionsVisible}/>
+            <ChatDateIcons className={"chat-date-icons"} channel={channel} optionsVisible={optionsVisible}/>
             <ChannelOptions channel={channel} onShowOptions={onShowOptions}/>
         </ChannelListContainer>
-    )
-}
+    );
+};
 
 export default withRouter(ChannelList)

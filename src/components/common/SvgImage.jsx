@@ -1,6 +1,7 @@
 import PropTypes from "prop-types";
 import React, {forwardRef} from "react";
 import styled from "styled-components";
+
 const iconArchive = require("../../assets/icon/archive/l/active.svg");
 const iconArrow = require("../../assets/icon/arrow/back/r/white@2x.png");
 const iconArrowDown = require("../../assets/icon/arrow/down/r/arrow_down_r_secundary.svg");

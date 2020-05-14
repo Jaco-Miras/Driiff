@@ -3,18 +3,15 @@ import ReactDOM from "react-dom";
 import {Provider} from "react-redux";
 import {BrowserRouter} from "react-router-dom";
 import App from "./App";
-import "./index.css";
 import store from "./redux/store/configStore";
 import * as serviceWorker from "./serviceWorker";
 
 const wrapApp = reduxStore => (
-    // <AppLayout>
     <Provider store={reduxStore}>
         <BrowserRouter>
             <App/>
         </BrowserRouter>
     </Provider>
-    // </AppLayout>
 );
 
 ReactDOM.render(wrapApp(store), document.getElementById("root"));

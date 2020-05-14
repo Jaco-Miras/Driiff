@@ -6,8 +6,8 @@ const iconDriffLogo = require("../../assets/icon/driff-logo.svg");
 const Wrapper = styled.i`
     ${props => props.rotate && `transform: rotate(${props.rotate}deg);`};    
     display: inline-block;
-    width: ${props => props.width ? props.width : '18px' };
-    height: ${props => props.height ? props.height : '18px'};    
+    width: ${props => props.width ? props.width : "18px"};
+    height: ${props => props.height ? props.height : "18px"};    
     -webkit-mask-image: url(${props => props.src});
     mask-image: url(${props => props.src});
     mask-size: contain;
