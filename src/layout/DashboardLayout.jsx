@@ -4,7 +4,6 @@ import styled from "styled-components";
 import {DashboardFooterPanel, DashboardHeaderPanel, DashboardNavigationPanel} from "../components/panels";
 import ChatContentPanel from "../components/panels/chat/ChatContentPanel";
 import ChatSidebarPanel from "../components/panels/chat/ChatSidebarPanel";
-import {useDispatch} from 'react-redux';
 import {getAllRecipients} from '../redux/actions/globalActions';
 import Socket from '../components/socket/socket'
 import {getUserSettings} from "../redux/actions/settingsActions";
