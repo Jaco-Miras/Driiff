@@ -28,7 +28,7 @@ const ChatSidebarPanel = (props) => {
     return (
         <Wrapper className={`chat-sidebar ${className}`}>
             <div className="chat-sidebar-header">
-                <div className="d-flex">
+                {/* <div className="d-flex">
                     <div className="pr-3">
                         <div className="avatar avatar-sm">
                             <img src="https://via.placeholder.com/128X128" className="rounded-circle"
@@ -60,7 +60,7 @@ const ChatSidebarPanel = (props) => {
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> */}
                 <SearchForm onChange={onSearchChange} onClick={handleSearch}/>
                 <ul className="nav nav-tabs" id="pills-tab" role="tablist">
                     <li className="nav-item">

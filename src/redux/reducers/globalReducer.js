@@ -1,11 +1,10 @@
 const INITIAL_STATE = {
-    _global: {
-        user: {},
-    },
+    user: {},
     recipients: {},
     isLoading: 0,
     isBrowserActive: true,
     modals: {},
+    slugs: []
 };
 
 export default (state = INITIAL_STATE, action) => {
