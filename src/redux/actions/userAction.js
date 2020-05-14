@@ -1,16 +1,22 @@
 import dispatchActionToReducer from "../actionDispatcher";
-import {apiNoTokenCall} from "../services";
+import {googleLogin as googleLoginService, login as loginService} from "../services";
 
-export const userLogin = (data, callback) => {
+export const userLogin = (payload, callback) => {
     return dispatchActionToReducer(
-        apiNoTokenCall({
-            method: "POST",
-            url: `/login`,
-            data: data,
-        }),
+        loginService(payload),
         "LOGIN_START",
         "LOGIN_SUCCESS",
         "LOGIN_FAILURE",
+        callback,
+    );
+};
+
+export const userGoogleLogin = (payload, callback) => {
+    return dispatchActionToReducer(
+        googleLoginService(payload),
+        "GOOGLE_LOGIN_START",
+        "GOOGLE_LOGIN_SUCCESS",
+        "GOOGLE_LOGIN_FAILURE",
         callback,
     );
 };

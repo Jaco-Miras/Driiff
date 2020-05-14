@@ -1,5 +1,5 @@
-import {apiCall} from "../index";
-import {objToUrlParams} from "../../../helpers/commonFunctions";
+import {apiCall} from "./index";
+import {objToUrlParams} from "../../helpers/commonFunctions";
 
 export function getChannels(payload) {
     payload = {

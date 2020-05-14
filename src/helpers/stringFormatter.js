@@ -5,7 +5,7 @@ import {apiNoTokenCall} from "../redux/services";
 import {$_GET, getHttpStatus} from "./commonFunctions";
 import {getBaseUrl, getSlugName, getSupportedUserLanguage} from "./slugHelper";
 
-const EmailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+const EmailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 export const wordWrap = (value, length) => {
     if (!value) return "";
     if (value.length > length) return `${value.substring(0, length)}...`;

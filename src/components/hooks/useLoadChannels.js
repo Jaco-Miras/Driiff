@@ -1,70 +1,72 @@
-import {useEffect, useState} from 'react';
-import {useDispatch} from 'react-redux';
-import {getChannels} from '../../redux/actions/chatActions'
+import {useEffect, useState} from "react";
+import {useDispatch} from "react-redux";
+import {getChannels} from "../../redux/actions/chatActions";
 
 const useLoadChannels = () => {
 
-    const dispatch = useDispatch()
+    const dispatch = useDispatch();
     //const settings  = useSelector(state => state.user.settings)
-    const [activeChannelsLoaded, setActiveChannelsLoaded] = useState(false)
-    const [hiddenChannelsLoaded, setHiddenChannelsLoaded] = useState(false)
-    const [archivedChannelsLoaded, setArchivedChannelsLoaded] = useState(false)
+    const [activeChannelsLoaded, setActiveChannelsLoaded] = useState(false);
+    const [hiddenChannelsLoaded, setHiddenChannelsLoaded] = useState(false);
+    const [archivedChannelsLoaded, setArchivedChannelsLoaded] = useState(false);
 
     useEffect(() => {
-        let activeChannelSkip = 0
-        let hiddenChannelSkip = 0
-        let archiveChannelSkip = 0
+        let activeChannelSkip = 0;
+        let hiddenChannelSkip = 0;
+        let archiveChannelSkip = 0;
 
         const fetchChannels = (hasMore = false, limit = 5, filter = null) => {
             let payload = {
-                skip: filter === 'hidden' ? hiddenChannelSkip : filter === 'archived' ? archiveChannelSkip : activeChannelSkip,
+                skip: filter === "hidden" ? hiddenChannelSkip : filter === "archived" ? archiveChannelSkip : activeChannelSkip,
                 limit: limit,
-                order_by: 'channel_name',
-                sort_by: 'asc'
+                order_by: "channel_name",
+                sort_by: "asc",
                 // order_by: settings.CHAT_SETTINGS.order_channel.order_by,
                 // sort_by: settings.CHAT_SETTINGS.order_channel.sort_by.toLowerCase(),
-            }
+            };
             if (filter) {
                 payload = {
                     ...payload,
-                    filter: filter
-                }
+                    filter: filter,
+                };
             }
             dispatch(
-                getChannels(payload, (err,res) => {
-                    if (err) return
+                getChannels(payload, (err, res) => {
+                    if (err) return;
                     if (res.data.results.length === 20 && filter === null) {
-                        activeChannelSkip += 20
-                        fetchChannels(true, 20)
-                    } else if (res.data.results.length === limit && filter === 'hidden') {
-                        hiddenChannelSkip += limit
-                        fetchChannels(true, limit, 'hidden')
-                    } else if (res.data.results.length === limit && filter === 'archived') {
-                        archiveChannelSkip += limit
-                        fetchChannels(true, limit, 'archived')
+                        activeChannelSkip += 20;
+                        fetchChannels(true, 20);
+                    } else if (res.data.results.length === limit && filter === "hidden") {
+                        hiddenChannelSkip += limit;
+                        fetchChannels(true, limit, "hidden");
+                    } else if (res.data.results.length === limit && filter === "archived") {
+                        archiveChannelSkip += limit;
+                        fetchChannels(true, limit, "archived");
                     } else {
-                        if (filter === 'hidden') {
-                            setHiddenChannelsLoaded(true)
-                        } else if (filter === 'archived') {
-                            setArchivedChannelsLoaded(true)
+                        if (filter === "hidden") {
+                            setHiddenChannelsLoaded(true);
+                        } else if (filter === "archived") {
+                            setArchivedChannelsLoaded(true);
                         } else {
-                            setActiveChannelsLoaded(true)
+                            setActiveChannelsLoaded(true);
                         }
                     }
-                })
-            )
-        }
-        
-        fetchChannels(true, 20)
-        fetchChannels(true, 5, "hidden")
-        fetchChannels(true, 5, "archived")
-    }, [])
+                }),
+            );
+        };
+
+        fetchChannels(true, 20);
+        fetchChannels(true, 5, "hidden");
+        fetchChannels(true, 5, "archived");
+
+        //eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     useEffect(() => {
         if (archivedChannelsLoaded && hiddenChannelsLoaded && activeChannelsLoaded) {
-            console.log('channels loaded')
+            console.log("channels loaded");
         }
-    }, [activeChannelsLoaded, hiddenChannelsLoaded, archivedChannelsLoaded])
-}
+    }, [activeChannelsLoaded, hiddenChannelsLoaded, archivedChannelsLoaded]);
+};
 
-export default useLoadChannels
+export default useLoadChannels;
