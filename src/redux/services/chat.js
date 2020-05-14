@@ -1,5 +1,5 @@
-import {apiCall} from "../index";
-import {objToUrlParams} from "../../../helpers/commonFunctions";
+import {apiCall} from "./index";
+import {objToUrlParams} from "../../helpers/commonFunctions";
 
 export function getChannels(payload) {
     payload = {
@@ -26,6 +26,24 @@ export function updateChannel(payload) {
     return apiCall({
         method: "PUT",
         url: url,
+        data: payload,
+        is_shared: payload.is_shared ? true : false,
+    });
+}
+
+export function markReadChannel(payload) {
+    return apiCall({
+        method: "PUT",
+        url: `/v2/read-notification-counter/all-chat?channel_id=${payload.channel_id}`,
+        data: payload,
+        is_shared: payload.is_shared ? true : false,
+    });
+}
+
+export function markUnreadChannel(payload) {
+    return apiCall({
+        method: "PUT",
+        url: `/v2/unread-notification-counter/all-chat?channel_id=${payload.channel_id}`,
         data: payload,
         is_shared: payload.is_shared ? true : false,
     });

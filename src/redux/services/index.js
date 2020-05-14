@@ -1,5 +1,7 @@
 export {apiCall, apiNoTokenCall} from "./service";
 export {
     getChannels,
-    updateChannel
-} from "./chat/chat"
+    updateChannel,
+    markReadChannel,
+    markUnreadChannel,
+} from "./chat"

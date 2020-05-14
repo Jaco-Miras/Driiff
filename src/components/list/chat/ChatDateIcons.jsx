@@ -8,7 +8,7 @@ const DateIconsContainer = styled.div`
   margin-right: 5px;
   text-align: right;
   color: #676767;
-  display: inline-flex;
+  display: ${props => props.optionsVisible ? 'none' : 'inline-flex'};
   flex-flow: column;
   max-width: 65px;
   p {
@@ -31,7 +31,7 @@ const PinIcon = styled(SvgImage)`
 `;
 
 const ChatDateIcons = props => {
-    const {channel} = props;
+    const {channel, optionsVisible} = props;
     const handleNotificationBadges = () => {
         if (channel.is_read === 0) {
             return (<span className={`badge-container unread`} value={""}><BadgeIcon/></span>);
@@ -44,7 +44,7 @@ const ChatDateIcons = props => {
         }
     }
     return (
-        <DateIconsContainer className="chat-timestamp">
+        <DateIconsContainer className="chat-timestamp" optionsVisible={optionsVisible}>
             <p>
             {channel.last_reply
                 ? localizeChatChannelDate(channel.last_reply.created_at.timestamp)

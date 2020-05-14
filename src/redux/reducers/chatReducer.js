@@ -64,6 +64,23 @@ export default function (state = INITIAL_STATE, action) {
             //     selectedChannel: state.selectedChannel.id === action.data.id ? action.data : state.selectedChannel,
             // };
         }
+        case "SET_SELECTED_CHANNEL": {
+            let channel = action.data;
+
+            if (channel.last_reply)
+                channel.last_reply.body = channel.last_reply.body.replace(" in ", " in #");
+
+            channel.original_title = channel.title;
+
+            if (channel.original_title === "PERSONAL_BOT") {
+                channel.type = "PERSONAL_BOT";
+            }
+
+            return {
+                ...state,
+                selectedChannel: action.data,
+            };
+        }
         default:
             return state;
     }

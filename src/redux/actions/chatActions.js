@@ -2,6 +2,8 @@ import dispatchActionToReducer, {SimpleDispatchActionToReducer} from "../actionD
 import {
     getChannels as getChannelsService,
     updateChannel as updateChannelService,
+    markReadChannel as markReadChannelService,
+    markUnreadChannel as markUnreadChannelService,
 } from "../services";
 
 
@@ -37,6 +39,34 @@ export function updateChannelReducer(payload, callback) {
     return SimpleDispatchActionToReducer(
         "UPDATE_CHANNEL_REDUCER",
         payload,
+        callback,
+    );
+}
+
+export function markReadChannel(payload, callback) {
+    return dispatchActionToReducer(
+        markReadChannelService(payload),
+        "MARK_READ_CHANNEL_START",
+        "MARK_READ_CHANNEL_SUCCESS",
+        "MARK_READ_CHANNEL_FAIL",
+        callback,
+    );
+}
+
+export function updateUnreadChatReplies(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "UPDATE_UNREAD_CHAT_REPLIES",
+        payload,
+        callback,
+    );
+}
+
+export function markUnreadChannel(payload, callback) {
+    return dispatchActionToReducer(
+        markUnreadChannelService(payload),
+        "MARK_AS_UNREAD_CHANNEL_START",
+        "MARK_AS_UNREAD_CHANNEL_SUCCESS",
+        "MARK_AS_UNREAD_CHANNEL_FAIL",
         callback,
     );
 }

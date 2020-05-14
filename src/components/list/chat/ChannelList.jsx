@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import ChannelIcon from './ChannelIcon';
 import ChannelTitle from './ChannelTitle'
@@ -58,16 +58,20 @@ const ChannelTitlePreview = styled.div`
 
 const ChannelList = props => {
     const {channel} = props;
+    const [optionsVisible, setOptionsVisible] = useState(false)
+    const onShowOptions = () => {
+      setOptionsVisible(!optionsVisible)
+    }
     
     return (
-        <ChannelListContainer>
+        <ChannelListContainer optionsVisible={optionsVisible}>
             <ChannelIcon channel={channel}/>
             <ChannelTitlePreview>
                 <ChannelTitle channel={channel}/>
                 <ReplyPreview channel={channel}/>
             </ChannelTitlePreview>
-            <ChatDateIcons channel={channel}/>
-            <ChannelOptions channel={channel}/>
+            <ChatDateIcons className={'chat-date-icons'} channel={channel} optionsVisible={optionsVisible}/>
+            <ChannelOptions channel={channel} onShowOptions={onShowOptions}/>
         </ChannelListContainer>
     )
 }

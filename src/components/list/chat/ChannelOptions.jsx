@@ -9,8 +9,14 @@ import moreIcon from "../../../assets/img/more-menu-icons/secundary.svg";
 import pinIcon from "../../../assets/img/svgs/chat/pin_white.svg";
 import useOutsideClick from "../../hooks/useOutsideClick";
 import {useTooltipOrientation, useTooltipPosition} from "../../hooks/useTooltipOrientation";
-import {updateChannel} from '../../../redux/actions/chatActions';
-// import {updateChannel} from '../../../redux/actions/revampActions'
+import {
+    updateChannel, 
+    updateChannelReducer, 
+    setSelectedChannel, 
+    markReadChannel,
+    updateUnreadChatReplies,
+    markUnreadChannel
+} from '../../../redux/actions/chatActions';
 
 const MoreButtonContainer = styled.div`
   border-radius: 50%;
@@ -204,144 +210,60 @@ const MoreTooltip = styled.div`
             right: 75px;
             left: auto;
         }
+    }
+    > div {
+        display: inline-flex;
+        align-items: center;
+        font-weight: 200;
+        font-size: 15px;
+        padding: 10px 0;
+        width: 100%;
+        border-bottom: 1px solid #c3c3c3;
+        cursor: pointer;
+        
+        :before {
+            content: "";
+            background-color: #4d4d4d;
+            mask-repeat: no-repeat;
+            mask-size: 100%;
+            mask-position: center;
+            width: 24px;
+            height: 24px;
+            display: inline-block;
+            margin-right: 20px;
+        }
+        :hover:before {
+            background-color: #972c86;
+        }
+        :hover {
+            color: #972c86;
+        }
     }    
 `;
 const PinBtn = styled.div`
-  display: inline-flex;
-  align-items: center;
-  font-weight: 200;
-  font-size: 15px;
-  padding: 10px 0;
-  width: 100%;
-  border-bottom: 1px solid #c3c3c3;
-  cursor: pointer;
-  cursor: hand;
-  
   :before {
-    content: "";
     mask-image: url(${pinIcon});
-    background-color: #4d4d4d;
-    mask-repeat: no-repeat;
-    mask-size: 100%;
-    mask-position: center;
-    width: 24px;
-    height: 24px;
-    display: inline-block;
-    margin-right: 20px;
-  }
-  :hover:before {
-    background-color: #972c86;
-  }
-  :hover {
-    color: #972c86;
   }
 `;
 const CloseBtn = styled.div`
-  display: inline-flex;
-  align-items: center;
-  font-weight: 200;
-  font-size: 15px;
-  padding: 10px 0;
-  width: 100%;  
-  :before {
-    content: "";
-    mask-image: url(${archiveIcon});
-    background-color: #4d4d4d;
-    mask-repeat: no-repeat;
-    mask-size: 100%;
-    mask-position: center;
-    width: 24px;
-    height: 24px;
-    display: inline-block;
-    margin-right: 20px;
-  }
-  :hover:before {
-    background-color: #972c86;
-  }
-  :hover {
-    color: #972c86;
-  }
+    :before {
+        mask-image: url(${archiveIcon});
+    }
 `;
 const HideBtn = styled.div`
-  display: inline-flex;
-  align-items: center;
-  font-weight: 200;
-  font-size: 15px;
-  padding: 10px 0;
-  width: 100%;  
-  border-bottom: 1px solid #c3c3c3;
-  :before {
-    content: "";
-    mask-image: url(${crossIcon});
-    background-color: #4d4d4d;
-    mask-repeat: no-repeat;
-    mask-size: 100%;
-    mask-position: center;
-    width: 24px;
-    height: 24px;
-    display: inline-block;
-    margin-right: 20px;
-  }
-  :hover:before {
-    background-color: #972c86;
-  }
-  :hover {
-    color: #972c86;
-  }
+    :before {
+        mask-image: url(${crossIcon});
+    }
 `;
 const MarkAsUnreadBtn = styled.div`
-  display: inline-flex;
-  align-items: center;
-  font-weight: 200;
-  font-size: 15px;
-  padding: 10px 0;
-  width: 100%;
-  border-bottom: 1px solid #c3c3c3;
-  :before {
-    content: "";
-    mask-image: url(${eyeCloseIcon});
-    background-color: #4d4d4d;
-    mask-repeat: no-repeat;
-    mask-size: 100%;
-    mask-position: center;
-    width: 24px;
-    height: 24px;
-    display: inline-block;
-    margin-right: 20px;
-  }
-  :hover:before {
-    background-color: #972c86;
-  }
-  :hover {
-    color: #972c86;
-  }
+    :before {
+        mask-image: url(${eyeCloseIcon});
+    }
 `;
 const MuteBtn = styled.div`
-  display: inline-flex;
-  align-items: center;
-  font-weight: 200;
-  font-size: 15px;
-  padding: 10px 0;
-  width: 100%;
-  border-bottom: 1px solid #c3c3c3;
-  :before {
-    content: "";
-    mask-image: url(${muteIcon});
-    background-color: #4d4d4d;
-    mask-repeat: no-repeat;
-    mask-size: 100%;
-    mask-position: center;
-    width: 24px;
-    height: 24px;
-    display: inline-block;
-    margin-right: 20px;
-  }
-  :hover:before {
-    background-color: #972c86;
-  }
-  :hover {
-    color: #972c86;
-  }
+    :before {
+        mask-image: url(${muteIcon});
+    }
 `;
 
 const ChannelOptions = props => {
@@ -357,6 +279,7 @@ const ChannelOptions = props => {
     const [toolTipPosition] = useTooltipPosition(moreRef, tooltipRef, scrollEl, showMoreOptions);
     const [sharedChannel, setSharedChannel] = useState(false);
     const sharedSlugs = useSelector(state => state.global.slugs);
+    const selectedChannel = useSelector(state => state.chat.selectedChannel)
 
     useEffect(() => {
         if (channel.is_shared) {
@@ -405,13 +328,12 @@ const ChannelOptions = props => {
         }
         dispatch(updateChannel(payload, (err, res) => {
             if (err) return;
-            // let updatedChannel = {
-            //     ...channel,
-            //     is_pinned: !channel.is_pinned,
-            // };
-            //updateChannel(updatedChannel);
-        })
-        )
+            let updatedChannel = {
+                ...channel,
+                is_pinned: !channel.is_pinned,
+            };
+            dispatch(updateChannelReducer(updatedChannel));
+        }))
     };
 
     const handleMuteChat = () => {
@@ -430,14 +352,14 @@ const ChannelOptions = props => {
                 slug: sharedSlugs.filter(s => s.slug_name === channel.slug_owner)[0].slug_name,
             };
         }
-        props.updateChatChannelV2Action(payload, (err, res) => {
+        dispatch(updateChannel(payload, (err, res) => {
             if (err) return;
             let updatedChannel = {
                 ...channel,
                 is_muted: !channel.is_muted,
             };
-            props.updateChannelAction(updatedChannel);
-        });
+            dispatch(updateChannelReducer(updatedChannel));
+        }))
     };
     const handleHideChat = () => {
         let payload = {
@@ -457,9 +379,9 @@ const ChannelOptions = props => {
             };
         }
         if (channel.total_unread > 0) {
-            props.markReadChatChannelAction({channel_id: channel.id});
+            dispatch(markReadChannel({channel_id: channel.id}));
         }
-        props.updateChatChannelV2Action(payload, (err, res) => {
+        dispatch(updateChannel(payload, (err, res) => {
             if (err) return;
             let updatedChannel = {
                 ...channel,
@@ -467,26 +389,20 @@ const ChannelOptions = props => {
                 is_hidden: channel.is_hidden === 0 ? 1 : 0,
                 total_unread: 0,
             };
-            props.updateChannelAction(updatedChannel);
-            if (props.selectedChannel.id === channel.id) {
-                props.setSelectedChannelAction(props.firstChannel);
+            dispatch(updateChannelReducer(updatedChannel));
+            if (selectedChannel.id === channel.id) {
+                dispatch(setSelectedChannel(props.firstChannel));
             }
-        });
+        }));
     };
 
     const handleCloseArchiveChat = () => {
         props.handleShowArchiveConfirmation(channel);
-        // if (isInviter) {
-        //     props.handleShowArchiveConfirmation(channel)
-        // } else {
-        //     handleHideChat()
-        // }
     };
 
     const handleMarkAsUnreadSelected = e => {
         e.stopPropagation();
-        setShowMoreOptions(!showMoreOptions);
-        props.handleShowOptions();
+        handleShowMoreOptions();
         let payload = {
             channel_id: channel.id,
         };
@@ -498,9 +414,9 @@ const ChannelOptions = props => {
                 slug: sharedSlugs.filter(s => s.slug_name === channel.slug_owner)[0].slug_name,
             };
         }
-        console.log(channel)
+        
         if (channel.total_unread === 0 && channel.is_read === 1) {
-            props.markAsUnreadChatAction(payload, (err, res) => {
+            dispatch(markUnreadChannel(payload, (err, res) => {
                 if (err) return;
                 let updatedChannel = {
                     ...channel,
@@ -511,10 +427,10 @@ const ChannelOptions = props => {
                     minus_count: channel.total_unread,
                 };
                 //props.updateChannelAction(updatedChannel);
-                props.updateUnreadChatRepliesAction(updatedChannel);
-            });
+                dispatch(updateUnreadChatReplies(updatedChannel));
+            }));
         } else {
-            props.markReadChatChannelAction(payload, (err, res) => {
+            dispatch(markReadChannel(payload, (err, res) => {
                 if (err) return;
                 let updatedChannel = {
                     ...channel,
@@ -525,18 +441,16 @@ const ChannelOptions = props => {
                     minus_count: channel.total_unread,
                 };
                 //props.updateChannelAction(updatedChannel);
-                props.updateUnreadChatRepliesAction(updatedChannel);
-            });
+                dispatch(updateUnreadChatReplies(updatedChannel));
+            }));
         }
     };
     const handleShowMoreOptions = () => {
         setShowMoreOptions(!showMoreOptions);
+        props.onShowOptions();
     };
     useOutsideClick(tooltipRef, handleShowMoreOptions, showMoreOptions);
 
-    if (showMoreOptions) {
-        //console.log(channel.is_hidden, channel);
-    }
 
     return <MoreButtonContainer
         className={`more-button-component ${showMoreOptions ? "active" : ""}`}
@@ -544,19 +458,9 @@ const ChannelOptions = props => {
         selected={props.selected}
         show={showMoreOptions}
         ref={moreRef}
-        /*onMouseEnter={e => {
-         e.stopPropagation();
-         setShowMoreOptions(true)
-         }}
-         onMouseLeave={e => {
-         e.stopPropagation();
-         setShowMoreOptions(false)
-         }}*/
         onClick={e => {
             e.stopPropagation();
-            // handleSetDetailOpen(!showMoreOptions);
-            setShowMoreOptions(!showMoreOptions);
-            props.handleShowOptions();
+            handleShowMoreOptions()
         }}
         data-event="touchstart focus mouseover"
         data-event-off="mouseout"
@@ -569,18 +473,18 @@ const ChannelOptions = props => {
                 className={`more-options-tooltip ${tooltipAdjustment ? "adjust" : ""} orientation-${orientation}`}
                 position={toolTipPosition}
                 orientation={orientation}>
-                <PinBtn onClick={e => handlePinButton()}>
+                <PinBtn onClick={handlePinButton}>
                     {channel.is_pinned ? `Unpin` : `Pin`}
                 </PinBtn>
                 <MarkAsUnreadBtn onClick={e => handleMarkAsUnreadSelected(e)}>
                     {(channel.mark_unread || (!channel.mark_unread && channel.total_unread > 0)) ? `Mark as Read` : `Mark as Unread`}
                 </MarkAsUnreadBtn>
-                <MuteBtn onClick={e => handleMuteChat()}>
+                <MuteBtn onClick={handleMuteChat}>
                     {channel.is_muted ? `Unmute` : `Mute`}
                 </MuteBtn>
                 {
                     channel.is_hidden === 0 && channel.type !== "PERSONAL_BOT" &&
-                    <HideBtn onClick={e => handleHideChat(e)}>
+                    <HideBtn onClick={handleHideChat}>
                         Hide
                     </HideBtn>
                 }

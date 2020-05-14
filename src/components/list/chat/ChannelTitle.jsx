@@ -11,7 +11,7 @@ const ChannelTitleContainer = styled.div`
 
 const ChannelTitle = props => {
     return (
-        <ChannelTitleContainer>
+        <ChannelTitleContainer className={`channel-title`}>
             {props.channel.title}
         </ChannelTitleContainer>
     )
