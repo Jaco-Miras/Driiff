@@ -1,9 +1,8 @@
 import dispatchActionToReducer from "../actionDispatcher";
-import {apiNoTokenCall} from "../services";
 import {
     getOnlineUsers as getOnlineUsersService,
     getUser as getUserService,
-    googleLogin as googleLoginService, 
+    googleLogin as googleLoginService,
     login as loginService,
     logout as logoutService,
 } from "../services";
@@ -37,6 +36,7 @@ export const userGoogleLogin = (payload, callback) => {
         callback,
     );
 };
+
 export function getOnlineUsers(payload, callback) {
     return dispatchActionToReducer(
         getOnlineUsersService(payload),

@@ -32,7 +32,7 @@ const RegisterPanel = () => {
     useEffect(() => {
         ref.first_name.current.focus();
 
-        //eslint-disable-next-line
+        //eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (

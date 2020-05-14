@@ -1,7 +1,7 @@
 // import {uniqBy} from "lodash";
+import {convertArrayToObject} from "../../helpers/arrayHelper";
 // import {getCurrentTimestamp} from "../../helpers/dateFormatter";
 import {localizeDate} from "../../helpers/momentFormatJS";
-import {convertArrayToObject} from '../../helpers/arrayHelper';
 
 /** Initial State  */
 const INITIAL_STATE = {
@@ -17,8 +17,8 @@ export default function (state = INITIAL_STATE, action) {
     switch (action.type) {
         case "GET_CHANNELS_SUCCESS": {
             let results = action.data.results.filter(r => {
-                if (state.selectedChannel && state.selectedChannel.id === r.id) return false
-                else return true
+                if (state.selectedChannel && state.selectedChannel.id === r.id) return false;
+                else return true;
             }).map(r => {
                 return {
                     ...r,
@@ -41,7 +41,7 @@ export default function (state = INITIAL_STATE, action) {
                 ...state,
                 channels: {
                     ...state.channels,
-                    [action.data.id]: action.data
+                    [action.data.id]: action.data,
                 },
                 selectedChannel: state.selectedChannel && state.selectedChannel.id === action.data.id ? action.data : state.selectedChannel,
             };
@@ -58,24 +58,24 @@ export default function (state = INITIAL_STATE, action) {
                 channel.type = "PERSONAL_BOT";
             }
 
-            let updatedChannels = { ...state.channels }
+            let updatedChannels = {...state.channels};
             if (state.selectedChannel) {
-                updatedChannels[state.selectedChannel.id].selected = false
-                updatedChannels[action.data.id].selected = true
+                updatedChannels[state.selectedChannel.id].selected = false;
+                updatedChannels[action.data.id].selected = true;
             }
-            
+
             return {
                 ...state,
                 selectedChannel: action.data,
-                channels: updatedChannels
+                channels: updatedChannels,
             };
         }
         case "UPDATE_MEMBER_TIMESTAMP": {
-            let channel = state.channels[action.data.channel_id]
-            if (typeof channel !== 'undefined') {
+            let channel = state.channels[action.data.channel_id];
+            if (typeof channel !== "undefined") {
                 return {
                     ...state,
-                    selectedChannel: state.selectedChannel && state.selectedChannel.id === action.data.channel_id 
+                    selectedChannel: state.selectedChannel && state.selectedChannel.id === action.data.channel_id
                         ? {
                             ...state.selectedChannel,
                             is_read: 1,
@@ -89,7 +89,7 @@ export default function (state = INITIAL_STATE, action) {
                                     };
                                 } else return m;
                             }),
-                            }
+                        }
                         : state.selectedChannel,
                     channels: {
                         ...state.channels,
@@ -106,21 +106,21 @@ export default function (state = INITIAL_STATE, action) {
                                     };
                                 } else return m;
                             }),
-                        }
-                    }
-                }
+                        },
+                    },
+                };
             } else {
-                return state
+                return state;
             }
         }
         case "ADD_TO_CHANNELS": {
-            
+
             return {
                 ...state,
                 channels: {
                     ...state.channels,
-                    [action.data.id]: action.data
-                }
+                    [action.data.id]: action.data,
+                },
             };
         }
         case "GET_CHAT_MESSAGES_SUCCESS": {

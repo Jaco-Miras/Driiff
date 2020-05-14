@@ -8,6 +8,7 @@ export function getConnectedSlugs(payload) {
         data: payload,
     });
 }
+
 export function getAllRecipients(payload) {
     return apiCall({
         method: "GET",

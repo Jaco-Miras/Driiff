@@ -7,7 +7,7 @@ export {
     getChannel,
     getLastVisitedChannel,
     getChatMessages,
-} from "./chat"
+} from "./chat";
 
 export {
     getUserSettings,
@@ -24,4 +24,4 @@ export {
 export {
     getConnectedSlugs,
     getAllRecipients,
-} from "./global"
+} from "./global";

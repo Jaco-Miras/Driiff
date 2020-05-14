@@ -6,6 +6,7 @@ import {withRouter} from "react-router-dom";
 import {bindActionCreators} from "redux";
 import styled from "styled-components";
 import {localizeChatTimestamp, localizeDate} from "../../../helpers/momentFormatJS";
+import {getChatMessages, setSelectedChannel} from "../../../redux/actions/chatActions";
 // import {
 //     addChatBox,
 //     addChatChannelMembersV2,
@@ -34,7 +35,6 @@ import {localizeChatTimestamp, localizeDate} from "../../../helpers/momentFormat
 // } from "../../../redux/actions/revampActions";
 import Avatar from "../../common/Avatar";
 import Loader from "../../common/Loader";
-import ChatReactions from "./Reactions/ChatReactions";
 import NoReply from "../../common/NoReply";
 import ChatBubble from "./ChatBubble";
 import ChatMessageOptions from "./ChatMessageOptions";
@@ -42,12 +42,9 @@ import ChatNewMessagesLine from "./ChatNewMessageLine";
 import ChatReactionButton from "./ChatReactionButton";
 import ChatUnfurl from "./ChatUnfurl";
 import ChatUnreadLine from "./ChatUnreadLine";
+import ChatReactions from "./Reactions/ChatReactions";
 import SeenIndicator from "./SeenIndicator";
 import SystemMessage from "./SystemMessage";
-import {
-    getChatMessages,
-    setSelectedChannel
-} from '../../../redux/actions/chatActions'
 
 const ChatReplyContainer = styled.div`
   background: transparent;  
@@ -433,13 +430,13 @@ class ChatMessages extends React.PureComponent {
     }
 
     componentDidMount() {
-        console.log('mount channel')
+        console.log("mount channel");
         const {selectedChannel, sharedSlugs} = this.props;
         document.addEventListener("keydown", this.handleEditOnArrowUp, false);
         if (this.props.selectedChannel.skip === 0) this.loadReplies();
         this.setState({activeChannelId: this.props.selectedChannel.id});
         if (this.props.selectedChannel.is_read === 1) {
-             if (selectedChannel.is_shared && sharedSlugs.length) {
+            if (selectedChannel.is_shared && sharedSlugs.length) {
                 let slug = sharedSlugs.filter(s => s.slug_name === selectedChannel.slug_owner);
                 if (slug.length) {
                     this.props.markReadChatChannelAction({
@@ -451,18 +448,18 @@ class ChatMessages extends React.PureComponent {
                     });
                 }
             } else {
-                this.props.markReadChatChannelAction({channel_id: selectedChannel.id});
+                //this.props.markReadChatChannelAction({channel_id: selectedChannel.id});
             }
             let updatedChannel = {
                 ...selectedChannel,
                 total_unread: 0,
             };
-            this.props.updateChannelAction(updatedChannel);
+            //this.props.updateChannelAction(updatedChannel);
         }
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        const { selectedChannel } = this.props;
+        const {selectedChannel} = this.props;
         // console.log(prevProps, this.props)
         if (selectedChannel.replies.length && !this.state.fetchingReplies) {
             this.attachedImgEventListener();
@@ -723,7 +720,7 @@ class ChatMessages extends React.PureComponent {
         }
 
         return <ChatReplyContainer
-            
+
             ref={this.props.innerRef}
             id={`component-chat-thread`}
             className={`component-chat-thread messages ${this.props.className}`}
@@ -853,7 +850,7 @@ class ChatMessages extends React.PureComponent {
                                                     // } else if (!isAuthor && !reply.is_read) {
                                                     //     //animation = true;
                                                     // }
-                                                    
+
                                                     return <ChatList
                                                         key={reply.id}
                                                         //ref={this.getLoadRef(reply.id)}
@@ -925,7 +922,7 @@ class ChatMessages extends React.PureComponent {
                                                                 <ChatBubbleQuoteDiv
                                                                     //className={`chat-bubble-quote-div ${animation ? isAuthor ? "animated fadeInRightBig" : "animated fadeInLeftBig" : ""}`}
                                                                     className={`chat-bubble-quote-div`}
-                                                                    >
+                                                                >
                                                                     <ChatBubble
                                                                         isAuthor={isAuthor}
                                                                         reply={reply}
@@ -1032,7 +1029,7 @@ class ChatMessages extends React.PureComponent {
                                                                 <ChatBubbleQuoteDiv
                                                                     //className={`chat-bubble-quote-div ${animation ? isAuthor ? "animated fadeInRightBig" : "animated fadeInLeftBig" : ""}`}
                                                                     className={`chat-bubble-quote-div`}
-                                                                    >
+                                                                >
                                                                     <SystemMessageContainer isAuthor={false}>
                                                                         <SystemMessage
                                                                             selectedChannel={this.props.selectedChannel}
@@ -1105,14 +1102,14 @@ function mapStateToProps(state) {
         sharedSlugs: slugs,
         onlineUsers,
         isBrowserActive,
-        selectedChannel
+        selectedChannel,
     };
 }
 
 function mapDispatchToProps(dispatch) {
     return {
         getChatMessages: bindActionCreators(getChatMessages, dispatch),
-        setSelectedChannel: bindActionCreators(setSelectedChannel, dispatch)
+        setSelectedChannel: bindActionCreators(setSelectedChannel, dispatch),
         // addSelectedChannelChatMessageReducer: bindActionCreators(addSelectedChannelChatMessage, dispatch),
         // updateChatMessageAction: bindActionCreators(updateChatMessageV2, dispatch),
         // setDetailModalOpenAction: bindActionCreators(setDetailModalOpen, dispatch),

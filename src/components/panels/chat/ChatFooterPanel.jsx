@@ -15,7 +15,7 @@ const ChatFooterPanel = (props) => {
     const {reply, setReply} = useState("Test");
 
     const handleSubmit = (e) => {
-        setReply('Test')
+        setReply("Test");
     };
 
     return (

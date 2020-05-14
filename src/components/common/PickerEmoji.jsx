@@ -1,5 +1,5 @@
 import {Picker} from "emoji-mart";
-import 'emoji-mart/css/emoji-mart.css'
+import "emoji-mart/css/emoji-mart.css";
 import React, {useEffect} from "react";
 import styled from "styled-components";
 

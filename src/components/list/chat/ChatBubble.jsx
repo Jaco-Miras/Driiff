@@ -1,11 +1,11 @@
-import { hexToCSSFilter } from "hex-to-css-filter";
+import {hexToCSSFilter} from "hex-to-css-filter";
 // import {findAll} from "highlight-words-core";
 import React, {forwardRef, useEffect, useRef, useState} from "react";
 import {renderToString} from "react-dom/server";
 import GifPlayer from "react-gif-player";
 import "react-gif-player/src/GifPlayer.scss";
 import {useInView} from "react-intersection-observer";
-import {connect} from "react-redux";
+import {connect, useSelector} from "react-redux";
 import {withRouter} from "react-router-dom";
 import Skeleton from "react-skeleton-loader";
 import {bindActionCreators} from "redux";
@@ -17,10 +17,9 @@ import {_t, getEmojiRegexPattern, stripGif} from "../../../helpers/stringFormatt
 import {setSelectedChannel} from "../../../redux/actions/chatActions";
 // import {addFilesToView} from "../../../redux/actions/revampActions";
 import ImageTextLink from "../../common/ImageTextLink";
-import MessageFiles from "./Files/MessageFiles";
 import SvgImage from "../../common/SvgImage";
+import MessageFiles from "./Files/MessageFiles";
 import Unfurl from "./Unfurl/Unfurl";
-import {useSelector} from 'react-redux';
 
 const ChatBubbleContainer = styled.div`
     position: relative;
@@ -455,8 +454,8 @@ const ChatBubble = forwardRef((props, ref) => {
     const [loadRef, loadInView] = useInView({
         threshold: 1,
     });
-    const recipients = useSelector(state => state.global.recipients)
-    const user = useSelector(state => state.session.user)
+    const recipients = useSelector(state => state.global.recipients);
+    const user = useSelector(state => state.session.user);
     const refComponent = useRef();
 
 
@@ -864,13 +863,13 @@ const ChatBubble = forwardRef((props, ref) => {
                             // reply.call_data ?
                             //     <CallMessage data={reply.call_data}/>
                             //     :
-                                <ReplyContent
-                                    hasFiles={reply.files.filter(f => f.type === "image").length > 0}
-                                    theme={props.settings.CHAT_SETTINGS.chat_message_theme}
-                                    isAuthor={isAuthor}
-                                    className={`reply-content ${isEmoticonOnly ? "emoticon-body" : ""} ${reply.is_deleted ? "is-deleted" : ""}`}
-                                    dangerouslySetInnerHTML={showGifPlayer ? {__html: stripGif(replyBody)} : {__html: replyBody}}
-                                />
+                            <ReplyContent
+                                hasFiles={reply.files.filter(f => f.type === "image").length > 0}
+                                theme={props.settings.CHAT_SETTINGS.chat_message_theme}
+                                isAuthor={isAuthor}
+                                className={`reply-content ${isEmoticonOnly ? "emoticon-body" : ""} ${reply.is_deleted ? "is-deleted" : ""}`}
+                                dangerouslySetInnerHTML={showGifPlayer ? {__html: stripGif(replyBody)} : {__html: replyBody}}
+                            />
                         }
 
                         {

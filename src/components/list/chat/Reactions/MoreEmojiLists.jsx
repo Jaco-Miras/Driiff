@@ -1,8 +1,8 @@
 import {Emoji} from "emoji-mart";
 import React, {useRef} from "react";
 import styled from "styled-components";
-import useOutsideClick from "../../../hooks/useOutsideClick";
 import UserListPopUp from "../../../common/UserListPopUp";
+import useOutsideClick from "../../../hooks/useOutsideClick";
 
 const MoreEmojiListsContainer = styled.div`
     ul {

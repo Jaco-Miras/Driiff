@@ -26,11 +26,11 @@ const DashboardHeaderPanel = (props) => {
     const handleToggleNavigation = (e) => {
         e.preventDefault();
 
-        const mode = navMode-1;
+        const mode = navMode - 1;
         dispatch(
-            setNavMode({mode: mode < 0 ? 2: mode})
-        )
-    }
+            setNavMode({mode: mode < 0 ? 2 : mode}),
+        );
+    };
 
     return (
         <Wrapper className={`header ${className}`} navMode={navMode}>

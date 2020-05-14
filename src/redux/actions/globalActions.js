@@ -1,8 +1,5 @@
 import dispatchActionToReducer, {SimpleDispatchActionToReducer} from "../actionDispatcher";
-import {
-    getConnectedSlugs as getConnectedSlugsService,
-    getAllRecipients as getAllRecipientsService,
-} from "../services";
+import {getAllRecipients as getAllRecipientsService, getConnectedSlugs as getConnectedSlugsService} from "../services";
 
 export function setBrowserTabStatus(payload, callback) {
     return SimpleDispatchActionToReducer(
@@ -11,6 +8,7 @@ export function setBrowserTabStatus(payload, callback) {
         callback,
     );
 }
+
 export function getConnectedSlugs(payload, callback) {
     return dispatchActionToReducer(
         getConnectedSlugsService(payload),
@@ -20,6 +18,7 @@ export function getConnectedSlugs(payload, callback) {
         callback,
     );
 }
+
 export function getAllRecipients(payload, callback) {
     return dispatchActionToReducer(
         getAllRecipientsService(payload),

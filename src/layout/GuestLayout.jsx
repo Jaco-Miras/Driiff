@@ -17,6 +17,8 @@ const GuestLayout = (props) => {
 
     useEffect(() => {
         document.querySelector("body").classList.add("form-membership");
+
+        //eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {

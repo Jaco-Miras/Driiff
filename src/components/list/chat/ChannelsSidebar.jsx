@@ -71,7 +71,7 @@ const ChannelsSidebar = props => {
                                 {search !== "" && chatHeader !== "" && <ChatHeader>{chatHeader}</ChatHeader>}
                                 <ChannelList channel={channel}/>
                             </React.Fragment>
-                        )
+                        );
                     })
                 }
             </Channels>

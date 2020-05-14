@@ -4,8 +4,8 @@ import styled from "styled-components";
 import {DashboardFooterPanel, DashboardHeaderPanel, DashboardNavigationPanel} from "../components/panels";
 import ChatContentPanel from "../components/panels/chat/ChatContentPanel";
 import ChatSidebarPanel from "../components/panels/chat/ChatSidebarPanel";
-import {getAllRecipients} from '../redux/actions/globalActions';
-import Socket from '../components/socket/socket'
+import Socket from "../components/socket/socket";
+import {getAllRecipients} from "../redux/actions/globalActions";
 import {getUserSettings} from "../redux/actions/settingsActions";
 
 const MainContent = styled.div`
@@ -29,9 +29,11 @@ const DashboardLayout = () => {
     const navMode = useSelector(state => state.settings.navMode);
 
     useEffect(() => {
-        dispatch(getUserSettings())
-        dispatch(getAllRecipients())
-    },[])
+        dispatch(getUserSettings());
+        dispatch(getAllRecipients());
+
+        //eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     return (
         <>

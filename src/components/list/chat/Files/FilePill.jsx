@@ -1,7 +1,7 @@
 import React, {forwardRef, useRef} from "react";
 import styled from "styled-components";
-import {getAPIUrl} from "../../../../helpers/slugHelper";
 import docIcon from "../../../../assets/img/svgs/documents-icons/documents_secundary.svg";
+import {getAPIUrl} from "../../../../helpers/slugHelper";
 
 const ImgLoader = styled.div`
     position: relative;    

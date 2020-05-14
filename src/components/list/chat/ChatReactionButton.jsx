@@ -1,7 +1,7 @@
 import React, {useRef, useState} from "react";
 import styled from "styled-components";
-import PickerEmoji from "../../common/PickerEmoji";
 import EmojiButton from "../../common/EmojiButton";
+import PickerEmoji from "../../common/PickerEmoji";
 import {useTooltipHorizontalOrientation, useTooltipOrientation} from "../../hooks/useTooltipOrientation";
 
 const ChatReactionButtonContainer = styled.div`

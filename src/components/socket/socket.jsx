@@ -1,11 +1,11 @@
 import Echo from "laravel-echo";
 import React, {PureComponent} from "react";
-import styled from 'styled-components'
 import {isSafari} from "react-device-detect";
 import {connect} from "react-redux";
 import {withRouter} from "react-router-dom";
 import {bindActionCreators} from "redux";
 import {sessionService} from "redux-react-session";
+import styled from "styled-components";
 //import toaster from "toasted-notes";
 // import chatSound from "../../../assets/sound/light.mp3";
 import {$_GET, isIPAddress} from "../../helpers/commonFunctions";
@@ -14,9 +14,9 @@ import {pushBrowserNotification} from "../../helpers/pushHelper";
 import {updateFaviconState} from "../../helpers/slugHelper";
 import {stripHtml} from "../../helpers/stringFormatter";
 import {urlify} from "../../helpers/urlContentHelper";
-import { setBrowserTabStatus, getConnectedSlugs } from '../../redux/actions/globalActions';
-import { getOnlineUsers, getUser } from '../../redux/actions/userAction';
-import { updateMemberTimestamp } from '../../redux/actions/chatActions';
+import {updateMemberTimestamp} from "../../redux/actions/chatActions";
+import {getConnectedSlugs, setBrowserTabStatus} from "../../redux/actions/globalActions";
+import {getOnlineUsers, getUser} from "../../redux/actions/userAction";
 // import {
 //     addChatBox,
 //     addChatMembers,
@@ -109,7 +109,8 @@ import { updateMemberTimestamp } from '../../redux/actions/chatActions';
 
 const PreloadEmojiImage = styled.img`
     display: none;
-`
+`;
+
 class Socket extends PureComponent {
     constructor() {
         super();
@@ -364,7 +365,7 @@ class Socket extends PureComponent {
                     is_author: e.recipient.type_id === this.props.user.id,
                     mode: "post-follow",
                 });
-             })
+            })
             .listen(".post-unfollow", e => {
                 console.log(e, "unfollow");
                 let isAuthor = false;
@@ -516,9 +517,9 @@ class Socket extends PureComponent {
                     this.props.updateTopicMembersAction(payload);
                 }
             })
-            .listen('.unread-channel', e => {
-                console.log(e, 'unread channel')
-                this.props.incomingUnreadChannel(e)
+            .listen(".unread-channel", e => {
+                console.log(e, "unread channel");
+                this.props.incomingUnreadChannel(e);
             })
             .listen(".update-channel-name", e => {
                 console.log(e, "updated channel name");
@@ -1061,7 +1062,7 @@ class Socket extends PureComponent {
                 // if (e.result.filter(r => r.entity_type === 'CHAT_MESSAGE').length) {
                 //     chat_count = e.result.filter(r => r.entity_type === 'CHAT_MESSAGE')[0].count
                 // }
-                
+
                 //disabled temporarily
                 //this.props.incomingReadChannelReducer({channel_id: e.entity_id, updated_chat_count: count});
             })
@@ -1305,22 +1306,22 @@ class Socket extends PureComponent {
 
     render() {
         return <PreloadEmojiImage
-        src={"https://unpkg.com/emoji-datasource-apple@5.0.1/img/apple/sheets-256/64.png"}/>
+            src={"https://unpkg.com/emoji-datasource-apple@5.0.1/img/apple/sheets-256/64.png"}/>;
     }
 }
 
 function mapStateToProps({
-    session: {user},
-    settings: { userSettings },
-    chat: { channels, selectedChannel},
-    posts: { posts }
- }) {
+                             session: {user},
+                             settings: {userSettings},
+                             chat: {channels, selectedChannel},
+                             posts: {posts},
+                         }) {
     return {
         user,
         settings: userSettings,
         channels,
         selectedChannel,
-        posts
+        posts,
     };
 }
 
