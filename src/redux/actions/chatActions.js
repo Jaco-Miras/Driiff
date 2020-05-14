@@ -4,6 +4,8 @@ import {
     updateChannel as updateChannelService,
     markReadChannel as markReadChannelService,
     markUnreadChannel as markUnreadChannelService,
+    getChannel as getChannelService,
+    getLastVisitedChannel as getLastVisitedChannelService,
 } from "../services";
 
 
@@ -67,6 +69,26 @@ export function markUnreadChannel(payload, callback) {
         "MARK_AS_UNREAD_CHANNEL_START",
         "MARK_AS_UNREAD_CHANNEL_SUCCESS",
         "MARK_AS_UNREAD_CHANNEL_FAIL",
+        callback,
+    );
+}
+
+export function getChannel(payload, callback) {
+    return dispatchActionToReducer(
+        getChannelService(payload),
+        "GET_CHAT_CHANNEL_START",
+        "GET_CHAT_CHANNEL_SUCCESS",
+        "GET_CHAT_CHANNEL_FAIL",
+        callback,
+    );
+}
+
+export function getLastVisitedChannel(payload, callback) {
+    return dispatchActionToReducer(
+        getLastVisitedChannelService(payload),
+        "GET_LAST_VISITED_CHANNEL_START",
+        "GET_LAST_VISITED_CHANNEL_SUCCESS",
+        "GET_LAST_VISITED_CHANNEL_FAILURE",
         callback,
     );
 }

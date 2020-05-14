@@ -83,7 +83,7 @@ const LastReplyBody = styled.div`
 
 const ReplyPreview = props => {
     const {channel} = props
-    //const settings  = useSelector(state => state.user.settings)
+    const settings  = useSelector(state => state.settings.userSettings)
     const user  = useSelector(state => state.session.user)
     const channelDrafts  = useSelector(state => state.chat.channelDrafts)
     const [previewText, setPreviewText] = useState("")
@@ -92,8 +92,7 @@ const ReplyPreview = props => {
         let showPreviewIcon = false;
         let previewText = "";
         let lastReplyBody = "";
-        //if (channel.last_reply && settings.CHAT_SETTINGS.preview_message) {
-        if (channel.last_reply) {
+        if (channel.last_reply && settings.CHAT_SETTINGS.preview_message) {
             if (channel.last_reply.is_deleted) {
                 lastReplyBody = _t(
                     channel.last_reply.body,
@@ -158,7 +157,7 @@ const ReplyPreview = props => {
         }
 
         setPreviewText(previewText);
-    }, [channel.last_reply, channel.replies, channel.id, user.id, channelDrafts]);
+    }, [channel.last_reply, channel.replies, channel.id, user.id, channelDrafts, settings.CHAT_SETTINGS.preview_message]);
     return (
         <PreviewTextContainer>
             <LastReplyBody

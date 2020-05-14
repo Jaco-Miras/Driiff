@@ -3,6 +3,9 @@ import styled from "styled-components";
 import ChatContactsList from "../../list/chat/ChatContactsList";
 //import ChatRecentList from "../../list/chat/ChatRecentList";
 import ChannelsSidebar from '../../list/chat/ChannelsSidebar';
+import useLoadLastVisitedChannel from '../../hooks/useLoadLastVisitedChannel';
+import {withRouter} from "react-router-dom";
+import {useSelector} from 'react-redux';
 
 const Wrapper = styled.div`
     overflow: hidden; outline: currentcolor none medium;
@@ -10,7 +13,9 @@ const Wrapper = styled.div`
 
 const ChatSidebarContentPanel = (props) => {
 
-    const {pill = 'pills-home'} = props;
+    const {pill = 'pills-home', search} = props;
+    const isLoaded  = useSelector(state => state.settings.isLoaded)
+    useLoadLastVisitedChannel(props)
 
     return (
         <Wrapper className={`chat-sidebar-content ${props.className}`} tabIndex="1">
@@ -19,7 +24,7 @@ const ChatSidebarContentPanel = (props) => {
                 <div className={`tab-pane fade ${pill === 'pills-home' && 'show active'}`} id="pills-home" role="tabpanel"
                      aria-labelledby="pills-home-tab">
                     <p className="small mb-0">Recent chats</p>
-                    <ChannelsSidebar/>
+                    { isLoaded && <ChannelsSidebar search={search}/>}
                     {/* <div className="chat-lists">
                         <div className="list-group list-group-flush">
                             <ChatRecentList/>
@@ -42,4 +47,4 @@ const ChatSidebarContentPanel = (props) => {
     );
 };
 
-export default React.memo(ChatSidebarContentPanel);
+export default withRouter(React.memo(ChatSidebarContentPanel));

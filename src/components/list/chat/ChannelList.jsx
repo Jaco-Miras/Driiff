@@ -48,7 +48,6 @@ const ChannelListContainer = styled.li`
         opacity: 0;
         position: absolute;
         right: 1rem;
-        display: block;
     }
 `
 const ChannelTitlePreview = styled.div`

@@ -1,16 +1,17 @@
 import {useEffect, useState} from 'react';
 import {useDispatch} from 'react-redux';
 import {getChannels} from '../../redux/actions/chatActions'
+import {useSelector} from 'react-redux'
 
 const useLoadChannels = () => {
 
     const dispatch = useDispatch()
-    //const settings  = useSelector(state => state.user.settings)
+    const settings  = useSelector(state => state.settings.userSettings)
     const [activeChannelsLoaded, setActiveChannelsLoaded] = useState(false)
     const [hiddenChannelsLoaded, setHiddenChannelsLoaded] = useState(false)
     const [archivedChannelsLoaded, setArchivedChannelsLoaded] = useState(false)
 
-    useEffect(() => {
+    const loadChannels = () => {
         let activeChannelSkip = 0
         let hiddenChannelSkip = 0
         let archiveChannelSkip = 0
@@ -19,10 +20,8 @@ const useLoadChannels = () => {
             let payload = {
                 skip: filter === 'hidden' ? hiddenChannelSkip : filter === 'archived' ? archiveChannelSkip : activeChannelSkip,
                 limit: limit,
-                order_by: 'channel_name',
-                sort_by: 'asc'
-                // order_by: settings.CHAT_SETTINGS.order_channel.order_by,
-                // sort_by: settings.CHAT_SETTINGS.order_channel.sort_by.toLowerCase(),
+                order_by: settings.CHAT_SETTINGS.order_channel.order_by,
+                sort_by: settings.CHAT_SETTINGS.order_channel.sort_by.toLowerCase(),
             }
             if (filter) {
                 payload = {
@@ -58,6 +57,10 @@ const useLoadChannels = () => {
         fetchChannels(true, 20)
         fetchChannels(true, 5, "hidden")
         fetchChannels(true, 5, "archived")
+    }
+    
+    useEffect(() => {
+        loadChannels()
     }, [])
 
     useEffect(() => {

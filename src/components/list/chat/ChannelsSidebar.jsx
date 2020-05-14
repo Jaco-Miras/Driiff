@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
-import { useSelector } from 'react-redux';
 import useLoadChannels from '../../hooks/useLoadChannels';
-import ChannelList from './ChannelList'
+import ChannelList from './ChannelList';
+import useSortChannels from "../../hooks/useSortChannels"
 
 const ChannelsSidebarContainer = styled.div`
     height: 100%;
@@ -17,17 +17,17 @@ const Channels = styled.ul`
 `
 
 const ChannelsSidebar = props => {
-    const { className } = props;
-    const channels  = useSelector(state => state.chat.channels)
+    const { className, search } = props;
 
     useLoadChannels()
+    const [sortedChannels] = useSortChannels(search)
 
     return (
         <ChannelsSidebarContainer className={`chat-lists ${className}`}>
             <Channels className={`list-group list-group-flush`}>
                 {
-                    Object.values(channels).map(channel => {
-                        return <ChannelList channel={channel}/>
+                    sortedChannels.map(channel => {
+                        return <ChannelList key={channel.id} channel={channel}/>
                     })
                 }
             </Channels>

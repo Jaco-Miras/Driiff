@@ -2,6 +2,7 @@ import React, {useState} from "react";
 import styled from "styled-components";
 import SearchForm from "../../forms/SearchForm";
 import ChatSideBarContentPanel from "./ChatSideBarContentPanel";
+import {useSelector} from 'react-redux'
 
 const Wrapper = styled.div`
 `;
@@ -10,6 +11,7 @@ const ChatSidebarPanel = (props) => {
 
     const {className = ""} = props;
 
+    const settings  = useSelector(state => state.settings.userSettings)
     const [search, setSearch] = useState("");
     const [tabPill, setTabPill] = useState("pills-home");
 
@@ -76,7 +78,7 @@ const ChatSidebarPanel = (props) => {
                 </ul>
             </div>
 
-            <ChatSideBarContentPanel pill={tabPill}/>
+            <ChatSideBarContentPanel pill={tabPill} isLoaded={settings.isLoaded} search={search}/>
         </Wrapper>
     );
 };

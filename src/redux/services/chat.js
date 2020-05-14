@@ -48,3 +48,19 @@ export function markUnreadChannel(payload) {
         is_shared: payload.is_shared ? true : false,
     });
 }
+
+export function getChannel(payload) {
+    let url = `/v2/post-channels/${payload.channel_id}`;
+    return apiCall({
+        method: "GET",
+        url: url,
+    });
+}
+
+export function getLastVisitedChannel(payload) {
+    let url = `/v2/last-visit-channel`;
+    return apiCall({
+        method: "GET",
+        url,
+    });
+}

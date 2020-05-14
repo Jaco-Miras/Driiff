@@ -1,9 +1,18 @@
-import React from "react";
+import React, {useEffect} from "react";
 import {DashboardFooterPanel, DashboardHeaderPanel, DashboardNavigationPanel} from "../components/panels";
 import ChatContentPanel from "../components/panels/chat/ChatContentPanel";
 import ChatSidebarPanel from "../components/panels/chat/ChatSidebarPanel";
+import {useDispatch} from 'react-redux';
+import {getUserSettings} from '../redux/actions/settingsActions';
 
 const DashboardLayout = () => {
+
+    const dispatch = useDispatch()
+
+    useEffect(() => {
+        dispatch(getUserSettings())
+    },[])
+
     return (
         <>
             <DashboardHeaderPanel/>

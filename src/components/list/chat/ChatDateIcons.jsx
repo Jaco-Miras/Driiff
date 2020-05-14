@@ -12,6 +12,7 @@ const DateIconsContainer = styled.div`
   flex-flow: column;
   max-width: 65px;
   p {
+    margin: 0;
     white-space: nowrap;
     font-size: 0.7em;
     color: #676767;
