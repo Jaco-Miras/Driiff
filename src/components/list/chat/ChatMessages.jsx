@@ -451,13 +451,13 @@ class ChatMessages extends React.PureComponent {
                     });
                 }
             } else {
-                this.props.markReadChatChannelAction({channel_id: selectedChannel.id});
+                //this.props.markReadChatChannelAction({channel_id: selectedChannel.id});
             }
             let updatedChannel = {
                 ...selectedChannel,
                 total_unread: 0,
             };
-            this.props.updateChannelAction(updatedChannel);
+            //this.props.updateChannelAction(updatedChannel);
         }
     }
 
