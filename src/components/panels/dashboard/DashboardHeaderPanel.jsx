@@ -1,21 +1,44 @@
 import React from "react";
+import {useDispatch, useSelector} from "react-redux";
 import styled from "styled-components";
+import {setNavMode} from "../../../redux/actions/settingsActions";
 
 const Wrapper = styled.div`
-    margin-left: ${props => props.mode === 0 ? "300px" : 0};
+    ${props => {
+    switch (props.navMode) {
+        case 0:
+            return `margin-left: 0;`;
+        case 1:
+            return `margin-left: 75px;`;
+        default:
+            return ``;
+    }
+}}
 `;
 
 const DashboardHeaderPanel = (props) => {
 
     const {className = ""} = props;
 
+    const dispatch = useDispatch();
+    const navMode = useSelector(state => state.settings.navMode);
+
+    const handleToggleNavigation = (e) => {
+        e.preventDefault();
+
+        const mode = navMode-1;
+        dispatch(
+            setNavMode({mode: mode < 0 ? 2: mode})
+        )
+    }
+
     return (
-        <Wrapper className={`header ${className}`} mode={1}>
+        <Wrapper className={`header ${className}`} navMode={navMode}>
             <div>
                 <ul className="navbar-nav">
 
                     <li className="nav-item navigation-toggler">
-                        <a href="/" className="nav-link" title="Hide navigation">
+                        <a href="/" onClick={handleToggleNavigation} className="nav-link" title="Hide navigation">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                  fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round"
                                  strokeLinejoin="round" className="feather feather-arrow-left">

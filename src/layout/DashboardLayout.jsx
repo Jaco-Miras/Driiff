@@ -1,13 +1,30 @@
 import React, {useEffect} from "react";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
+import styled from "styled-components";
 import {DashboardFooterPanel, DashboardHeaderPanel, DashboardNavigationPanel} from "../components/panels";
 import ChatContentPanel from "../components/panels/chat/ChatContentPanel";
 import ChatSidebarPanel from "../components/panels/chat/ChatSidebarPanel";
 import {getUserSettings} from "../redux/actions/settingsActions";
 
+const MainContent = styled.div`
+    padding-top: 1rem;
+    ${props => {
+    switch (props.navMode) {
+        case 0:
+            return `margin-left: 0;`;
+        case 1:
+            return `margin-left: 75px;`;
+        default:
+            return `margin-left: 300px`;
+    }
+}}
+`;
+
 const DashboardLayout = () => {
 
     const dispatch = useDispatch();
+
+    const navMode = useSelector(state => state.settings.navMode);
 
     useEffect(() => {
         dispatch(getUserSettings());
@@ -21,7 +38,7 @@ const DashboardLayout = () => {
 
             <DashboardNavigationPanel/>
 
-            <div className="main-content">
+            <MainContent className="main-content" navMode={navMode}>
                 <div className="container-fluid h-100">
                     <div className="row no-gutters chat-block">
                         <ChatSidebarPanel className={`col-lg-4 border-right`}/>
@@ -29,7 +46,7 @@ const DashboardLayout = () => {
                     </div>
                 </div>
                 <DashboardFooterPanel/>
-            </div>
+            </MainContent>
         </>
     );
 };
