@@ -3,11 +3,12 @@ import {Redirect, Route, Switch, useLocation, withRouter} from "react-router-dom
 import styled from "styled-components";
 import {Icon} from "../components/common";
 import {LoginPanel, RegisterPanel, ResetPasswordPanel} from "../components/panels";
+import AuthenticateUserPanel from "../components/panels/AuthenticateUserPanel";
 
 const Wrapper = styled.div`
 `;
 
-const GuestLayout = () => {
+const GuestLayout = (props) => {
 
     const location = useLocation();
     const [title, setTitle] = useState("Sign in");
@@ -32,12 +33,13 @@ const GuestLayout = () => {
     return (
         <Wrapper className="form-wrapper">
             <div id="logo">
-                <Icon type={`driff-logo`} width={`110px`} height={`80px`} bgColor={`#7a1b8c`} />
+                <Icon type={`driff-logo`} width={`110px`} height={`80px`} bgColor={`#7a1b8c`}/>
             </div>
 
             <h5>{title}</h5>
 
             <Switch>
+                <Route path={"/authenticate/:token/:returnUrl?"} component={AuthenticateUserPanel} exact={true}/>
                 <Route path={"/login"} component={LoginPanel}/>
                 <Route path={"/reset-password"} component={ResetPasswordPanel}/>
                 <Route path={"/register"} component={RegisterPanel}/>

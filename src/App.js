@@ -16,7 +16,7 @@ function App() {
                     <PreLoader/>
                     <Switch>
                         <ScrollToTop>
-                            <AppRoute path="*" authenticated={true}/>
+                            <AppRoute path="*" authenticated={authenticated}/>
                         </ScrollToTop>
                     </Switch>
                 </>

@@ -11,3 +11,8 @@ export {
 export {
     getUserSettings
 } from "./settings"
+
+export {
+    login,
+    googleLogin,
+} from "./user";
