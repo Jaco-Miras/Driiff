@@ -1,7 +1,7 @@
 // import {uniqBy} from "lodash";
 // import {getCurrentTimestamp} from "../../helpers/dateFormatter";
 // import {localizeDate} from "../../helpers/momentFormatJS";
-import {convertArrayToObject} from '../../helpers/arrayHelper';
+import {convertArrayToObject} from "../../helpers/arrayHelper";
 
 /** Initial State  */
 const INITIAL_STATE = {
@@ -9,7 +9,7 @@ const INITIAL_STATE = {
     channels: {},
     selectedChannel: null,
     startNewChannels: {},
-    channelDrafts: []
+    channelDrafts: [],
 };
 
 export default function (state = INITIAL_STATE, action) {
@@ -22,16 +22,16 @@ export default function (state = INITIAL_STATE, action) {
                     hasMore: true,
                     skip: 0,
                     replies: [],
-                    selected: false
-                }
-            })
+                    selected: false,
+                };
+            });
             return {
                 ...state,
                 channels: {
-                    ...state.channels, 
-                    ...convertArrayToObject(results, "id")
-                }
-            }
+                    ...state.channels,
+                    ...convertArrayToObject(results, "id"),
+                },
+            };
         }
         case "UPDATE_CHANNEL_REDUCER": {
             return state;

@@ -1,13 +1,13 @@
 import PropTypes from "prop-types";
 import React, {forwardRef, useState} from "react";
+import {useSelector} from "react-redux";
 import {withRouter} from "react-router-dom";
 import Skeleton from "react-skeleton-loader";
 import styled from "styled-components";
 import departmentIcon from "../../assets/icon/teams/r/secundary.svg";
 import topicIcon from "../../assets/icon/topic/r/secundary.svg";
-import botIcon from "../../assets/img/gripp-bot.png";
 import defaultIcon from "../../assets/icon/user/avatar/l/no_outline.png";
-import {useSelector} from 'react-redux';
+import botIcon from "../../assets/img/gripp-bot.png";
 
 const AvatarContainerDiv = styled.div`
     position: relative;
@@ -109,15 +109,15 @@ const Avatar = forwardRef((props, ref) => {
         onAvatarClick = null,
         ...otherProps
     } = props;
-    const onlineUsers = useSelector(state => state.users.onlineUsers)
-    const user = useSelector(state => state.session.user)
+    const onlineUsers = useSelector(state => state.users.onlineUsers);
+    const user = useSelector(state => state.session.user);
     const noBorder = id === user.id && !chat;
     const [isLoaded, setIsLoaded] = useState(false);
     const [showInitials, setShowInitials] = useState(false);
     const handleImageLoad = () => {
         setIsLoaded(true);
     };
-    
+
     const isOnline = onlineUsers.filter(ou => ou.user_id === user.id).length ? true : false;
     const getSize = (size) => {
         switch (size) {

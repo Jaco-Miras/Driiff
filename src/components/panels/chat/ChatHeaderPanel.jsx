@@ -6,7 +6,7 @@ const Wrapper = styled.div`
 `;
 
 const Typing = styled.div`
-    opacity: ${props => props.isTyping ? '1' : 0};
+    opacity: ${props => props.isTyping ? "1" : 0};
 `;
 
 const ChatHeaderPanel = (props) => {
@@ -15,10 +15,10 @@ const ChatHeaderPanel = (props) => {
 
     //const chatChannel = useSelector(state => state.chat.selectedChannel);
     const chatChannel = {
-        title: 'Orelie Rockhall',
+        title: "Orelie Rockhall",
         typing: false,
-        channel_image_link: `https://24.driff.online/user-profile/38?timestamp=1589155257`
-    }
+        channel_image_link: `https://24.driff.online/user-profile/38?timestamp=1589155257`,
+    };
 
     return (
         <Wrapper className={`chat-header border-bottom ${className}`}>

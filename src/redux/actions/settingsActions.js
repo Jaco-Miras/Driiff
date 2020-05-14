@@ -1,7 +1,5 @@
-import dispatchActionToReducer, {SimpleDispatchActionToReducer} from "../actionDispatcher";
-import {
-    getUserSettings as getUserSettingsService
-} from "../services";
+import dispatchActionToReducer from "../actionDispatcher";
+import {getUserSettings as getUserSettingsService} from "../services";
 
 export function getUserSettings(payload, callback) {
     return dispatchActionToReducer(

@@ -1,17 +1,19 @@
 import React, {useEffect} from "react";
+import {useDispatch} from "react-redux";
 import {DashboardFooterPanel, DashboardHeaderPanel, DashboardNavigationPanel} from "../components/panels";
 import ChatContentPanel from "../components/panels/chat/ChatContentPanel";
 import ChatSidebarPanel from "../components/panels/chat/ChatSidebarPanel";
-import {useDispatch} from 'react-redux';
-import {getUserSettings} from '../redux/actions/settingsActions';
+import {getUserSettings} from "../redux/actions/settingsActions";
 
 const DashboardLayout = () => {
 
-    const dispatch = useDispatch()
+    const dispatch = useDispatch();
 
     useEffect(() => {
-        dispatch(getUserSettings())
-    },[])
+        dispatch(getUserSettings());
+
+        //eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     return (
         <>

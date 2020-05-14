@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
-import styled from 'styled-components';
-import ChannelIcon from './ChannelIcon';
-import ChannelTitle from './ChannelTitle'
-import ChannelOptions from './ChannelOptions';
-import ReplyPreview from './ReplyPreview';
-import ChatDateIcons from './ChatDateIcons';
+import React, {useState} from "react";
+import styled from "styled-components";
+import ChannelIcon from "./ChannelIcon";
+import ChannelOptions from "./ChannelOptions";
+import ChannelTitle from "./ChannelTitle";
+import ChatDateIcons from "./ChatDateIcons";
+import ReplyPreview from "./ReplyPreview";
 
 const ChannelListContainer = styled.li`
     padding: 10px 5px;
@@ -49,19 +49,19 @@ const ChannelListContainer = styled.li`
         position: absolute;
         right: 1rem;
     }
-`
+`;
 const ChannelTitlePreview = styled.div`
     flex: 1;
     max-width: calc(100% - 105px);
-`
+`;
 
 const ChannelList = props => {
     const {channel} = props;
-    const [optionsVisible, setOptionsVisible] = useState(false)
+    const [optionsVisible, setOptionsVisible] = useState(false);
     const onShowOptions = () => {
-      setOptionsVisible(!optionsVisible)
-    }
-    
+        setOptionsVisible(!optionsVisible);
+    };
+
     return (
         <ChannelListContainer optionsVisible={optionsVisible}>
             <ChannelIcon channel={channel}/>
@@ -69,10 +69,10 @@ const ChannelList = props => {
                 <ChannelTitle channel={channel}/>
                 <ReplyPreview channel={channel}/>
             </ChannelTitlePreview>
-            <ChatDateIcons className={'chat-date-icons'} channel={channel} optionsVisible={optionsVisible}/>
+            <ChatDateIcons className={"chat-date-icons"} channel={channel} optionsVisible={optionsVisible}/>
             <ChannelOptions channel={channel} onShowOptions={onShowOptions}/>
         </ChannelListContainer>
-    )
-}
+    );
+};
 
-export default ChannelList
+export default ChannelList;

@@ -14,7 +14,7 @@ const DashboardNavigationPanel = (props) => {
     return (
         <Wrapper className={`navigation ${className}`}>
 
-            <DashboardNavigationTabPanel />
+            <DashboardNavigationTabPanel/>
 
             <div id="ascrail2002" className="nicescroll-rails nicescroll-rails-vr"
                  styles="width: 8px; z-index: 4; cursor: default; position: absolute; top: 0px; left: 112px; height: 378.3px; display: none; opacity: 0;">

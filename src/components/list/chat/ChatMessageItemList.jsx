@@ -47,20 +47,20 @@ const ChatMessageItem = (props) => {
 
                 {/*
                  <i className="ti-file mr-2 font-size-20 mt-2"></i>
-                <div>
-                    <div>important_documents.pdf <i className="text-muted small">(50KB)</i>
-                    </div>
-                    <ul className="list-inline small">
-                        <li className="list-inline-item"><a href="/">Download</a></li>
-                        <li className="list-inline-item"><a href="/">View</a></li>
-                    </ul>
-                </div>*/}
+                 <div>
+                 <div>important_documents.pdf <i className="text-muted small">(50KB)</i>
+                 </div>
+                 <ul className="list-inline small">
+                 <li className="list-inline-item"><a href="/">Download</a></li>
+                 <li className="list-inline-item"><a href="/">View</a></li>
+                 </ul>
+                 </div>*/}
 
                 {/*<img src="https://via.placeholder.com/600X600" alt="fpo-placeholder"/>
-                Lorem ipsum dolor sit amet, consectetur
-                adipisicing elit.
-                Exercitationem fuga iure iusto libero, possimus quasi quis repellat sint tempora
-                ullam!*/}
+                 Lorem ipsum dolor sit amet, consectetur
+                 adipisicing elit.
+                 Exercitationem fuga iure iusto libero, possimus quasi quis repellat sint tempora
+                 ullam!*/}
             </MessageItemContent>
             <span className="time small text-muted font-italic">Yesterday</span>
         </Wrapper>

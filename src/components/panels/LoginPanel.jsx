@@ -150,7 +150,10 @@ const LoginPanel = (props) => {
 
                     if (res) {
                         if (res.data.message && res.data.message === "need_verify_via_email") {
-                            setFormMessage({...formMessage, success: "Login successful! A code was sent to your email for further verification."});
+                            setFormMessage({
+                                ...formMessage,
+                                success: "Login successful! A code was sent to your email for further verification.",
+                            });
                             let cb = {
                                 key: new Date().getTime(),
                                 type: "modal",
@@ -166,7 +169,10 @@ const LoginPanel = (props) => {
                             console.log(cb);
                             //openModalAction(cb);
                         } else {
-                            setFormMessage({...formMessage, success: "Login successful! A code was sent to your email for further verification."});
+                            setFormMessage({
+                                ...formMessage,
+                                success: "Login successful! A code was sent to your email for further verification.",
+                            });
 
                             const returnUrl = (
                                 (typeof props.location.state !== "undefined")

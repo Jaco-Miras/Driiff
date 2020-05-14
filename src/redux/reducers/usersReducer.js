@@ -1,7 +1,7 @@
 const INITIAL_STATE = {
     users: {},
     viewedProfile: null,
-    onlineUsers: []
+    onlineUsers: [],
 };
 
 export default (state = INITIAL_STATE, action) => {

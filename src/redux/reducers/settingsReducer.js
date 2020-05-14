@@ -75,7 +75,7 @@ export default (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 userSettings: settings,
-                isLoaded: true
+                isLoaded: true,
             };
         }
         default:

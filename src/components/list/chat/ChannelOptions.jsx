@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from "react";
-import {useSelector, useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import styled from "styled-components";
 import archiveIcon from "../../../assets/icon/archive/l/active.svg";
 import crossIcon from "../../../assets/icon/close/r/secundary.svg";
@@ -7,16 +7,16 @@ import muteIcon from "../../../assets/icon/mute/r/mute_secundary.svg";
 import eyeCloseIcon from "../../../assets/img/eye-close-active.png";
 import moreIcon from "../../../assets/img/more-menu-icons/secundary.svg";
 import pinIcon from "../../../assets/img/svgs/chat/pin_white.svg";
+import {
+    markReadChannel,
+    markUnreadChannel,
+    setSelectedChannel,
+    updateChannel,
+    updateChannelReducer,
+    updateUnreadChatReplies,
+} from "../../../redux/actions/chatActions";
 import useOutsideClick from "../../hooks/useOutsideClick";
 import {useTooltipOrientation, useTooltipPosition} from "../../hooks/useTooltipOrientation";
-import {
-    updateChannel, 
-    updateChannelReducer, 
-    setSelectedChannel, 
-    markReadChannel,
-    updateUnreadChatReplies,
-    markUnreadChannel
-} from '../../../redux/actions/chatActions';
 
 const MoreButtonContainer = styled.div`
   border-radius: 50%;
@@ -267,7 +267,7 @@ const MuteBtn = styled.div`
 `;
 
 const ChannelOptions = props => {
-    const { channel } = props;
+    const {channel} = props;
 
     const dispatch = useDispatch();
     const [showMoreOptions, setShowMoreOptions] = useState(false);
@@ -279,7 +279,7 @@ const ChannelOptions = props => {
     const [toolTipPosition] = useTooltipPosition(moreRef, tooltipRef, scrollEl, showMoreOptions);
     const [sharedChannel, setSharedChannel] = useState(false);
     const sharedSlugs = useSelector(state => state.global.slugs);
-    const selectedChannel = useSelector(state => state.chat.selectedChannel)
+    const selectedChannel = useSelector(state => state.chat.selectedChannel);
 
     useEffect(() => {
         if (channel.is_shared) {
@@ -333,7 +333,7 @@ const ChannelOptions = props => {
                 is_pinned: !channel.is_pinned,
             };
             dispatch(updateChannelReducer(updatedChannel));
-        }))
+        }));
     };
 
     const handleMuteChat = () => {
@@ -359,7 +359,7 @@ const ChannelOptions = props => {
                 is_muted: !channel.is_muted,
             };
             dispatch(updateChannelReducer(updatedChannel));
-        }))
+        }));
     };
     const handleHideChat = () => {
         let payload = {
@@ -414,7 +414,7 @@ const ChannelOptions = props => {
                 slug: sharedSlugs.filter(s => s.slug_name === channel.slug_owner)[0].slug_name,
             };
         }
-        
+
         if (channel.total_unread === 0 && channel.is_read === 1) {
             dispatch(markUnreadChannel(payload, (err, res) => {
                 if (err) return;
@@ -460,7 +460,7 @@ const ChannelOptions = props => {
         ref={moreRef}
         onClick={e => {
             e.stopPropagation();
-            handleShowMoreOptions()
+            handleShowMoreOptions();
         }}
         data-event="touchstart focus mouseover"
         data-event-off="mouseout"

@@ -5,12 +5,12 @@ export {
     markReadChannel,
     markUnreadChannel,
     getChannel,
-    getLastVisitedChannel
-} from "./chat"
+    getLastVisitedChannel,
+} from "./chat";
 
 export {
-    getUserSettings
-} from "./settings"
+    getUserSettings,
+} from "./settings";
 
 export {
     login,

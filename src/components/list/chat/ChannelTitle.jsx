@@ -1,5 +1,5 @@
-import React from 'react';
-import styled from 'styled-components';
+import React from "react";
+import styled from "styled-components";
 
 const ChannelTitleContainer = styled.div`
     font-weight: 600;
@@ -7,14 +7,14 @@ const ChannelTitleContainer = styled.div`
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
-`
+`;
 
 const ChannelTitle = props => {
     return (
         <ChannelTitleContainer className={`channel-title`}>
             {props.channel.title}
         </ChannelTitleContainer>
-    )
-}
+    );
+};
 
-export default ChannelTitle
+export default ChannelTitle;

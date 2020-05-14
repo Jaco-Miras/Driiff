@@ -12,14 +12,20 @@ const Blank = (props) => {
 
     return (
         <Wrapper className={`messages ${className}`} tabIndex="2">
-            <ChatMessageItem reply={{message:'Hi!', timestamp: Math.floor(Date.now() / 1000), author: false}}/>
+            <ChatMessageItem reply={{message: "Hi!", timestamp: Math.floor(Date.now() / 1000), author: false}}/>
 
-            <ChatMessageItem reply={{message:'Lorem ipsum dolor sit amet, consectetur\n' +
-                    '                    adipisicing elit.\n' +
-                    '                    Exercitationem fuga iure iusto libero, possimus quasi quis repellat sint tempora\n' +
-                    '                    ullam!', timestamp: Math.floor(Date.now() / 1000), author: true}}/>
+            <ChatMessageItem reply={{
+                message: "Lorem ipsum dolor sit amet, consectetur\n" +
+                    "                    adipisicing elit.\n" +
+                    "                    Exercitationem fuga iure iusto libero, possimus quasi quis repellat sint tempora\n" +
+                    "                    ullam!", timestamp: Math.floor(Date.now() / 1000), author: true,
+            }}/>
 
-            <ChatMessageItem reply={{message:'Hello! How are you today?', timestamp: Math.floor(Date.now() / 1000), author: false}}/>
+            <ChatMessageItem reply={{
+                message: "Hello! How are you today?",
+                timestamp: Math.floor(Date.now() / 1000),
+                author: false,
+            }}/>
 
             <div className="message-item me">
                 <div className="message-item-content">Lorem ipsum dolor sit.</div>
