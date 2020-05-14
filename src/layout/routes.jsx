@@ -19,7 +19,7 @@ export const AppRoute = ({authenticated, children, ...props}) => {
                     <Route
                         {...props}
                         component={DashboardLayout}
-                        path="/dashboard">
+                        path={["/dashboard"]}>
                         {children}
                     </Route>
                     <Redirect
@@ -37,7 +37,7 @@ export const AppRoute = ({authenticated, children, ...props}) => {
                 <Route
                     {...props}
                     component={GuestLayout}
-                    path="/(register|reset-password|login)/">
+                    path={["/register", "/reset-password", "/login"]}>
                     {children}
                 </Route>
                 <Redirect
