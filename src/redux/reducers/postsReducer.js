@@ -1,7 +1,5 @@
 const INITIAL_STATE = {
-    _global: {
-        user: {},
-    },
+    user: {},
     posts: {},
     totalPostsCount: 0,
     unreadPostsCount: 0,

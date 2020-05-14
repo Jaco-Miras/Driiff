@@ -6,6 +6,7 @@ import {
     markUnreadChannel as markUnreadChannelService,
     getChannel as getChannelService,
     getLastVisitedChannel as getLastVisitedChannelService,
+    getChatMessages as getChatMessagesService,
 } from "../services";
 
 
@@ -89,6 +90,32 @@ export function getLastVisitedChannel(payload, callback) {
         "GET_LAST_VISITED_CHANNEL_START",
         "GET_LAST_VISITED_CHANNEL_SUCCESS",
         "GET_LAST_VISITED_CHANNEL_FAILURE",
+        callback,
+    );
+}
+
+export function updateMemberTimestamp(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "UPDATE_MEMBER_TIMESTAMP",
+        payload,
+        callback,
+    );
+}
+
+export function addToChannels(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "ADD_TO_CHANNELS",
+        payload,
+        callback,
+    );
+}
+
+export function getChatMessages(payload, callback) {
+    return dispatchActionToReducer(
+        getChatMessagesService(payload),
+        "GET_CHAT_MESSAGES_START",
+        "GET_CHAT_MESSAGES_SUCCESS",
+        "GET_CHAT_MESSAGES_FAILURE",
         callback,
     );
 }

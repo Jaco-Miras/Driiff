@@ -5,7 +5,8 @@ export {
     markReadChannel,
     markUnreadChannel,
     getChannel,
-    getLastVisitedChannel
+    getLastVisitedChannel,
+    getChatMessages,
 } from "./chat"
 
 export {
@@ -14,5 +15,12 @@ export {
 
 export {
     login,
+    getOnlineUsers,
+    getUser,
     googleLogin,
 } from "./user";
+
+export {
+    getConnectedSlugs,
+    getAllRecipients,
+} from "./global"

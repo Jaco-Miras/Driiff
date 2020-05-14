@@ -1,6 +1,6 @@
 import {useEffect} from 'react';
 import {useDispatch} from 'react-redux';
-import {getChannel, setSelectedChannel, getLastVisitedChannel} from '../../redux/actions/chatActions';
+import {getChannel, setSelectedChannel, getLastVisitedChannel, addToChannels} from '../../redux/actions/chatActions';
 
 const useLoadLastVisitedChannel = (props) => {
     //const { history} = props
@@ -20,6 +20,7 @@ const useLoadLastVisitedChannel = (props) => {
                         skip: 0,
                         hasMore: true,
                     };
+                    dispatch(addToChannels(activeChannel))
                     dispatch(setSelectedChannel(activeChannel))
                 })
             );

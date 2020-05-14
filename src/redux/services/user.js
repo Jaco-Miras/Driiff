@@ -385,3 +385,11 @@ export function googleLogin(payload) {
         actualUrl: `${getAPIUrl({noSlug: true})}/auth/google?slug=${payload.driff}`,
     });
 }
+
+export function getOnlineUsers(payload) {
+    return apiCall({
+        method: "GET",
+        url: `/v2/users-online`,
+        data: payload,
+    });
+}

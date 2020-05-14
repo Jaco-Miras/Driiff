@@ -8,7 +8,8 @@ import {withRouter} from "react-router-dom";
 import {useSelector} from 'react-redux';
 
 const Wrapper = styled.div`
-    overflow: hidden; outline: currentcolor none medium;
+    overflow: hidden; 
+    // outline: currentcolor none medium;
 `;
 
 const ChatSidebarContentPanel = (props) => {

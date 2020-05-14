@@ -64,3 +64,17 @@ export function getLastVisitedChannel(payload) {
         url,
     });
 }
+
+export function getChatMessages(payload) {
+    const {channel_id, skip, limit} = payload;
+    let url = `/v2/post-channel-messages?channel_id=${channel_id}&skip=${skip}&limit=${limit}`;
+    if (payload.is_shared_topic) {
+        url += `&topic_id=${payload.topic_id}`;
+    }
+    return apiCall({
+        method: "GET",
+        url: url,
+        is_shared: payload.topic_id ? true : false,
+        data: payload,
+    });
+}

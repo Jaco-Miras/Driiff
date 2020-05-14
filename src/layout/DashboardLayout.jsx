@@ -4,13 +4,15 @@ import ChatContentPanel from "../components/panels/chat/ChatContentPanel";
 import ChatSidebarPanel from "../components/panels/chat/ChatSidebarPanel";
 import {useDispatch} from 'react-redux';
 import {getUserSettings} from '../redux/actions/settingsActions';
-
+import {getAllRecipients} from '../redux/actions/globalActions';
+import Socket from '../components/socket/socket'
 const DashboardLayout = () => {
 
     const dispatch = useDispatch()
 
     useEffect(() => {
         dispatch(getUserSettings())
+        dispatch(getAllRecipients())
     },[])
 
     return (
@@ -18,7 +20,7 @@ const DashboardLayout = () => {
             <DashboardHeaderPanel/>
 
             <DashboardNavigationPanel/>
-
+            <Socket/>
             <div className="main-content">
                 <div className="container-fluid h-100">
                     <div className="row no-gutters chat-block">
