@@ -1,6 +1,7 @@
 import React, {useState} from "react";
 import {SlateContent, SlateEditor} from "slate-editor";
 import styled from "styled-components";
+import ChatInput from '../../forms/ChatInput';
 
 const Wrapper = styled.div`
 `;
@@ -20,7 +21,7 @@ const ChatFooterPanel = (props) => {
 
     return (
         <Wrapper className={`chat-footer border-top ${className}`}>
-            <form className="d-flex">
+            <div className="d-flex">
                 <button className="btn btn-outline-light mr-2" type="button" title="" data-toggle="tooltip"
                         data-original-title="Emoji">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
@@ -33,11 +34,12 @@ const ChatFooterPanel = (props) => {
                     </svg>
                 </button>
                 <div className="flex-grow-1">
-                    test
+                    <ChatInput/>
+                    {/* test
                     <ReplyInput
                         className="form-control" placeholder="Write your message">
                         <SlateContent value={reply}/>
-                    </ReplyInput>
+                    </ReplyInput> */}
                 </div>
                 <div className="chat-footer-buttons d-flex">
                     <button onClick={handleSubmit} className="btn btn-primary" type="submit">
@@ -58,7 +60,7 @@ const ChatFooterPanel = (props) => {
                         </svg>
                     </button>
                 </div>
-            </form>
+            </div>
         </Wrapper>
     );
 };

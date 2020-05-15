@@ -7,6 +7,7 @@ import ChatSidebarPanel from "../components/panels/chat/ChatSidebarPanel";
 import Socket from "../components/socket/socket";
 import {getAllRecipients} from "../redux/actions/globalActions";
 import {getUserSettings} from "../redux/actions/settingsActions";
+import {getMentions} from "../redux/actions/userAction";
 
 const MainContent = styled.div`
     padding-top: 1rem;
@@ -34,7 +35,7 @@ const DashboardLayout = () => {
     useEffect(() => {
         dispatch(getUserSettings());
         dispatch(getAllRecipients());
-
+        dispatch(getMentions())
         //eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 

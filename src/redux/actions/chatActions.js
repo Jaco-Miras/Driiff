@@ -1,5 +1,6 @@
 import dispatchActionToReducer, {SimpleDispatchActionToReducer} from "../actionDispatcher";
 import {
+    createChatMessage as createChatMessageService,
     getChannel as getChannelService,
     getChannels as getChannelsService,
     getChatMessages as getChatMessagesService,
@@ -7,6 +8,7 @@ import {
     markReadChannel as markReadChannelService,
     markUnreadChannel as markUnreadChannelService,
     updateChannel as updateChannelService,
+    updateChatMessage as updateChatMessageService,
 } from "../services";
 
 
@@ -124,6 +126,50 @@ export function markAllMessagesAsRead(cbdata, callback) {
     return SimpleDispatchActionToReducer(
         "MARK_ALL_MESSAGES_AS_READ",
         cbdata,
+        callback,
+    );
+}
+
+export function addChatMessage(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "ADD_CHAT_MESSAGE",
+        payload,
+        callback,
+    );
+}
+
+export function createChatMessage(payload, callback) {
+    return dispatchActionToReducer(
+        createChatMessageService(payload),
+        "CREATE_CHAT_MESSAGE_START",
+        "CREATE_CHAT_MESSAGE_SUCCESS",
+        "CREATE_CHAT_MESSAGE_FAILURE",
+        callback,
+    );
+}
+
+export function updateChatMessage(payload, callback) {
+    return dispatchActionToReducer(
+        updateChatMessageService(payload),
+        "UPDATE_CHAT_MESSAGE_START",
+        "UPDATE_CHAT_MESSAGE_SUCCESS",
+        "UPDATE_CHAT_MESSAGE_FAILURE",
+        callback,
+    );
+}
+
+export function incomingChatMessage(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "INCOMING_CHAT_MESSAGE",
+        payload,
+        callback,
+    );
+}
+
+export function incomingChatMessageFromOthers(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "INCOMING_CHAT_MESSAGE_FROM_OTHERS",
+        payload,
         callback,
     );
 }

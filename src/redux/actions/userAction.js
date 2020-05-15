@@ -1,6 +1,7 @@
 import dispatchActionToReducer from "../actionDispatcher";
 import {
     getOnlineUsers as getOnlineUsersService,
+    getMentions as getMentionsService,
     getUser as getUserService,
     googleLogin as googleLoginService,
     login as loginService,
@@ -53,6 +54,16 @@ export function getUser(userId, history, callback) {
         "GET_USER_START",
         "GET_USER_SUCCESS",
         "GET_USER_FAILURE",
+        callback,
+    );
+}
+
+export function getMentions(callback) {
+    return dispatchActionToReducer(
+        getMentionsService(),
+        "GET_MENTION_USERS_START",
+        "GET_MENTION_USERS_SUCCESS",
+        "GET_MENTION_USERS_FAILURE",
         callback,
     );
 }

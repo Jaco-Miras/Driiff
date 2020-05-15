@@ -160,7 +160,7 @@ export function getUsers() {
     });
 }
 
-export function getMentionAsUsers() {
+export function getMentions() {
     return apiCall({
         method: "GET",
         url: `/v2/mention/users`,

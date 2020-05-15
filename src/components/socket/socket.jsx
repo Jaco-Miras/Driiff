@@ -14,9 +14,14 @@ import {pushBrowserNotification} from "../../helpers/pushHelper";
 import {updateFaviconState} from "../../helpers/slugHelper";
 import {stripHtml} from "../../helpers/stringFormatter";
 import {urlify} from "../../helpers/urlContentHelper";
-import {updateMemberTimestamp} from "../../redux/actions/chatActions";
 import {getConnectedSlugs, setBrowserTabStatus} from "../../redux/actions/globalActions";
 import {getOnlineUsers, getUser} from "../../redux/actions/userAction";
+import {
+    updateMemberTimestamp, 
+    markAllMessagesAsRead, 
+    incomingChatMessage,
+    incomingChatMessageFromOthers,
+} from "../../redux/actions/chatActions";
 // import {
 //     addChatBox,
 //     addChatMembers,
@@ -576,44 +581,45 @@ class Socket extends PureComponent {
                         }
                     });
                 }
+                // @todo
                 //check if the incoming message is from hidden channel
-                let channelFound = false;
-                let isChannelHidden = false;
-                this.props.activeChatChannels.forEach(ac => {
-                    if (ac.id === e.channel_id) {
-                        channelFound = true;
-                        isChannelHidden = !!ac.is_hidden;
-                    }
-                });
+                // let channelFound = false;
+                // let isChannelHidden = false;
+                // this.props.activeChatChannels.forEach(ac => {
+                //     if (ac.id === e.channel_id) {
+                //         channelFound = true;
+                //         isChannelHidden = !!ac.is_hidden;
+                //     }
+                // });
 
-                if (channelFound) {
-                    if (isChannelHidden) {
-                        this.props.getChatChannelAction({channel_id: e.channel_id}, (err, res) => {
-                            if (err) return;
-                            let channel = {
-                                ...res.data,
-                                selected: false,
-                                is_hidden: 0,
-                                replies: [],
-                                skip: 0,
-                                hasMore: true,
-                            };
-                            this.props.updateChannelAction(channel);
-                        });
-                    }
-                } else {
-                    this.props.getChatChannelAction({channel_id: e.channel_id}, (err, res) => {
-                        if (err) return;
-                        let channel = {
-                            ...res.data,
-                            selected: false,
-                            replies: [],
-                            skip: 0,
-                            hasMore: true,
-                        };
-                        this.props.addActiveChatChannelsAction([channel]);
-                    });
-                }
+                // if (channelFound) {
+                //     if (isChannelHidden) {
+                //         this.props.getChatChannelAction({channel_id: e.channel_id}, (err, res) => {
+                //             if (err) return;
+                //             let channel = {
+                //                 ...res.data,
+                //                 selected: false,
+                //                 is_hidden: 0,
+                //                 replies: [],
+                //                 skip: 0,
+                //                 hasMore: true,
+                //             };
+                //             this.props.updateChannelAction(channel);
+                //         });
+                //     }
+                // } else {
+                //     this.props.getChatChannelAction({channel_id: e.channel_id}, (err, res) => {
+                //         if (err) return;
+                //         let channel = {
+                //             ...res.data,
+                //             selected: false,
+                //             replies: [],
+                //             skip: 0,
+                //             hasMore: true,
+                //         };
+                //         this.props.addActiveChatChannelsAction([channel]);
+                //     });
+                // }
 
                 let fromUser = {};
                 if (e.message_from === 0) {
@@ -634,18 +640,6 @@ class Socket extends PureComponent {
 
                 if (e.reference_id === undefined || e.reference_id === null) {
                     let payload = {
-                        id: e.entity_id,
-                        channel_id: e.channel_id,
-                        body: e.message,
-                        created_at: e.created_at,
-                        user: fromUser,
-                        files: e.files,
-                        reactions: [],
-                        quote: e.quote ? {
-                            ...e.quote,
-                            user_id: e.quote.user ? e.quote.user.id : e.quote.user_id,
-                        } : null,
-                        is_deleted: 0,
                         last_reply: {
                             user: fromUser,
                             body: e.message,
@@ -672,9 +666,7 @@ class Socket extends PureComponent {
                             channel_id: e.channel_id,
                             g_date: localizeDate(e.created_at.timestamp, "YYYY-MM-DD"),
                             code: e.code,
-                        },
-                        unfurls: e.unfurls,
-                        mention_html: e.mention_html ? e.mention_html : null,
+                        }
                     };
 
                     if (e.message_original) {
@@ -699,12 +691,13 @@ class Socket extends PureComponent {
 
                     this.props.incomingChatMessageFromOthers(payload);
 
+                    //@todo
                     //if incoming chat message is on selected channel and current url is not on chat page
-                    if (this.props.selectedChannel && this.props.selectedChannel.id === e.channel_id && this.props.match.path !== "/chat") {
-                        if (e.id !== 0) {
-                            this.props.addUnreadChatCount({channel_id: e.channel_id});
-                        }
-                    }
+                    // if (this.props.selectedChannel && this.props.selectedChannel.id === e.channel_id && this.props.match.path !== "/chat") {
+                    //     if (e.id !== 0) {
+                    //         this.props.addUnreadChatCount({channel_id: e.channel_id});
+                    //     }
+                    // }
 
                     if (e.id === 0 && e.is_muted) {
 
@@ -732,6 +725,7 @@ class Socket extends PureComponent {
                             if (!(this.props.selectedChannel && this.props.selectedChannel.id === e.channel_id && document.querySelector("body").classList.contains("visible"))
                                 && (Object.entries(this.props.settings).length === 0 ||
                                     this.props.settings.DISABLE_SOUND !== "1")) {
+                                        //@todo
                                 // audio.play({
                                 //     onplay: () => {
                                 //     },
@@ -744,6 +738,7 @@ class Socket extends PureComponent {
                         }
                     }
                 } else {
+                    // with reference id
                     let reply = {
                         body: e.message,
                         created_at: e.created_at,
@@ -764,6 +759,7 @@ class Socket extends PureComponent {
                         channel_id: e.channel_id,
                         g_date: localizeDate(e.created_at.timestamp, "YYYY-MM-DD"),
                         code: e.code,
+                        reference_id: e.reference_id
                     };
 
                     if (e.message_original) {
@@ -774,17 +770,6 @@ class Socket extends PureComponent {
                     }
 
                     let payload = {
-                        id: e.id,
-                        message_id: e.entity_id,
-                        channel_id: e.channel_id,
-                        reference_id: e.reference_id,
-                        body: e.message,
-                        user: fromUser,
-                        is_deleted: 0,
-                        quote: e.quote ? {
-                            ...e.quote,
-                            user_id: e.quote.user.id,
-                        } : null,
                         last_reply: {
                             user: fromUser,
                             body: e.message,
@@ -793,9 +778,6 @@ class Socket extends PureComponent {
                             is_read: true,
                         },
                         reply: reply,
-                        unfurls: e.unfurls,
-                        mention_html: e.mention_html ? e.mention_html : null,
-                        user_last_reply: reply,
                     };
 
                     if (urlArray.length) {
@@ -807,8 +789,8 @@ class Socket extends PureComponent {
                             },
                         };
                     }
-                    this.props.markAllMessagesAsReadAction({channel_id: e.channel_id});
-                    this.props.incomingChatMessageAction(payload);
+                    this.props.markAllMessagesAsRead({channel_id: e.channel_id});
+                    this.props.incomingChatMessage(payload);
                 }
             })
             .listen(".delete-post-channel-member", e => {
@@ -1311,11 +1293,11 @@ class Socket extends PureComponent {
 }
 
 function mapStateToProps({
-                             session: {user},
-                             settings: {userSettings},
-                             chat: {channels, selectedChannel},
-                             posts: {posts},
-                         }) {
+        session: {user},
+        settings: {userSettings},
+        chat: {channels, selectedChannel},
+        posts: {posts},
+    }) {
     return {
         user,
         settings: userSettings,
@@ -1332,6 +1314,9 @@ function mapDispatchToProps(dispatch) {
         getConnectedSlugs: bindActionCreators(getConnectedSlugs, dispatch),
         getUser: bindActionCreators(getUser, dispatch),
         updateMemberTimestamp: bindActionCreators(updateMemberTimestamp, dispatch),
+        markAllMessagesAsRead: bindActionCreators(markAllMessagesAsRead, dispatch),
+        incomingChatMessage: bindActionCreators(incomingChatMessage, dispatch),
+        incomingChatMessageFromOthers: bindActionCreators(incomingChatMessageFromOthers, dispatch),
         // logoutAction: bindActionCreators(logout, dispatch),
         // simpleNewNotificationSocketAction: bindActionCreators(simpleNewNotificationSocket, dispatch),
         // getNotificationsAction: bindActionCreators(getNotifications, dispatch),

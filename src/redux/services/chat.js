@@ -78,3 +78,23 @@ export function getChatMessages(payload) {
         data: payload,
     });
 }
+
+export function createChatMessage(payload) {
+    let url = `/v2/post-channel-messages`;
+    return apiCall({
+        method: "POST",
+        url: url,
+        data: payload,
+        is_shared: payload.topic_id ? true : false,
+    });
+}
+
+export function updateChatMessage(payload) {
+    let url = `/v2/post-channel-messages/${payload.message_id}`;
+    return apiCall({
+        method: "PUT",
+        url: url,
+        data: payload,
+        is_shared: payload.topic_id ? true : false,
+    });
+}

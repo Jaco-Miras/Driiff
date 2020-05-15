@@ -7,6 +7,8 @@ export {
     getChannel,
     getLastVisitedChannel,
     getChatMessages,
+    createChatMessage,
+    updateChatMessage,
 } from "./chat";
 
 export {
@@ -18,6 +20,7 @@ export {
     logout,
     googleLogin,
     getOnlineUsers,
+    getMentions,
     getUser,
 } from "./user";
 

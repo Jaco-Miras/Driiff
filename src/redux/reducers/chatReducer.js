@@ -1,6 +1,6 @@
 // import {uniqBy} from "lodash";
 import {convertArrayToObject} from "../../helpers/arrayHelper";
-// import {getCurrentTimestamp} from "../../helpers/dateFormatter";
+import {getCurrentTimestamp} from "../../helpers/dateFormatter";
 import {localizeDate} from "../../helpers/momentFormatJS";
 
 /** Initial State  */
@@ -196,6 +196,101 @@ export default function (state = INITIAL_STATE, action) {
                     [action.data.id]: action.data
                 },
                 unreadChatCount: state.unreadChatCount > 0 ? state.unreadChatCount - action.data.minus_count : state.unreadChatCount,
+            };
+        }
+        case "ADD_CHAT_MESSAGE": {
+            let channel = {...state.channels[action.data.channel_id]}
+            channel = {
+                ...channel,
+                replies: [...channel.replies, action.data]
+            }
+            return {
+                ...state,
+                channels: {
+                    ...state.channels,
+                    [action.data.channel_id]: channel
+                },
+                selectedChannel: state.selectedChannel.id === action.data.channel_id ?
+                    {
+                        ...state.selectedChannel,
+                        replies: [...state.selectedChannel.replies, action.data],
+                    }
+                    : state.selectedChannel,
+            };
+        }
+        case "INCOMING_CHAT_MESSAGE": {
+            let haveReference = false;
+            if (state.selectedChannel && state.selectedChannel.id === action.data.reply.channel_id) {
+                state.selectedChannel.replies.forEach(rep => {
+                    if (rep.reference_id === action.data.reply.reference_id) {
+                        haveReference = true;
+                        return
+                    }
+                });
+            }
+            let channel = null
+            if (Object.keys(state.channels).length > 0 && state.channels.hasOwnProperty(action.data.reply.channel_id)) {
+                channel = {...state.channels[action.data.reply.channel_id]}
+                channel = {
+                    ...channel,
+                    replies: [...channel.replies, action.data.reply],
+                    last_visited_at_timestamp: getCurrentTimestamp(),
+                    last_reply: action.data.last_reply,
+                }
+            }
+            return {
+                ...state,
+                selectedChannel: state.selectedChannel && state.selectedChannel.id === action.data.reply.channel_id ?
+                    {
+                        ...state.selectedChannel,
+                        last_visited_at_timestamp: getCurrentTimestamp(),
+                        last_reply: action.data.last_reply,
+                        replies: haveReference ? state.selectedChannel.replies.map(r => {
+                                if (r.id === action.data.reply.reference_id) {
+                                    return action.data.reply;
+                                } else {
+                                    return r;
+                                }
+                            })
+                            : [...state.selectedChannel.replies, action.data.reply],
+                    }
+                : state.selectedChannel,
+                channels: channel !== null ? 
+                    {
+                        ...state.channels,
+                        [action.data.reply.channel_id]: channel
+                    }
+                : state.channels
+            };
+        }
+        case "INCOMING_CHAT_MESSAGE_FROM_OTHERS": {
+            let channel = null
+            if (Object.keys(state.channels).length > 0 && state.channels.hasOwnProperty(action.data.reply.channel_id)) {
+                channel = {...state.channels[action.data.reply.channel_id]}
+                channel = {
+                    ...channel,
+                    replies: [...channel.replies, action.data.reply],
+                    last_reply: action.data.last_reply,
+                    total_unread: state.selectedChannel && state.selectedChannel.id === action.data.reply.channel_id 
+                        ? channel.total_unread 
+                        : channel.total_unread + 1
+                }
+            }
+            return {
+                ...state,
+                channels: channel !== null ? 
+                    {
+                        ...state.channels,
+                        [action.data.reply.channel_id]: channel
+                    }
+                : state.channels,
+                selectedChannel: state.selectedChannel && state.selectedChannel.id === action.data.reply.channel_id ?
+                    {
+                        ...state.selectedChannel,
+                        replies: [...state.selectedChannel.replies, action.data.reply],
+                        last_reply: action.data.last_reply ? action.data.last_reply : state.selectedChannel.last_reply,
+                    }
+                    : state.selectedChannel,
             };
         }
         default:
