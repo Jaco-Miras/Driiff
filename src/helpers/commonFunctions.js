@@ -183,6 +183,8 @@ export const getHttpStatus = (url, async = false) => {
         let http = new XMLHttpRequest();
 
         http.open("HEAD", url, async);
+        http.setRequestHeader("Access-Control-Allow-Origin", "*");
+        http.setRequestHeader("Accept", "application/json");
         http.send();
 
         if (http.status === 0)

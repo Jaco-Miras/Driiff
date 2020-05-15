@@ -19,6 +19,8 @@ export {
     googleLogin,
     getOnlineUsers,
     getUser,
+    authenticateGoogleLogin,
+    resetPassword,
 } from "./user";
 
 export {

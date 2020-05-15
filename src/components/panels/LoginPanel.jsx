@@ -4,8 +4,9 @@ import {Link} from "react-router-dom";
 import styled from "styled-components";
 import {$_GET, getThisDeviceInfo} from "../../helpers/commonFunctions";
 import {getSlugName, processDriffLogin} from "../../helpers/slugHelper";
-import {userLogin} from "../../redux/actions/actions";
-import {userGoogleLogin} from "../../redux/actions/userAction";
+import {EmailRegex} from "../../helpers/stringFormatter";
+import {toggleLoading} from "../../redux/actions/globalActions";
+import {userGoogleLogin, userLogin} from "../../redux/actions/userAction";
 
 const Wrapper = styled.form`
     ${props => props.error !== "" &&
@@ -94,6 +95,9 @@ const LoginPanel = (props) => {
         if (form.email === "") {
             valid = false;
             errorData = {...errorData, email: "Email is required."};
+        } else if (!EmailRegex.test(form.email)) {
+            valid = false;
+            errorData = {...errorData, email: "Email is not valid."};
         }
 
         if (form.password === "") {
@@ -142,8 +146,16 @@ const LoginPanel = (props) => {
             }
 
             dispatch(
+                toggleLoading(true),
+            );
+
+            dispatch(
                 userLogin(payload, (err, res) => {
                     if (err) {
+                        dispatch(
+                            toggleLoading(false),
+                        );
+
                         setFormMessage({...formMessage, error: "Invalid email or password."});
                         ref.email.current.focus();
                     }
@@ -171,14 +183,14 @@ const LoginPanel = (props) => {
                         } else {
                             setFormMessage({
                                 ...formMessage,
-                                success: "Login successful! A code was sent to your email for further verification.",
+                                success: "Login successful!",
                             });
 
                             const returnUrl = (
                                 (typeof props.location.state !== "undefined")
                                 && (typeof props.location.state.from !== "undefined")
                                 && (props.location.state.from !== "/logout")
-                            ) ? props.location.state.from.pathname + props.location.state.from.search : "/chat";
+                            ) ? props.location.state.from.pathname + props.location.state.from.search : "/dashboard";
                             processDriffLogin(res.data, returnUrl);
                         }
                     }

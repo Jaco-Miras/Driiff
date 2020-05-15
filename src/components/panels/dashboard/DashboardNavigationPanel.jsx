@@ -21,7 +21,7 @@ const DashboardNavigationPanel = (props) => {
 
     const {className = ""} = props;
 
-    const navMode = useSelector(state => state.settings.navMode);
+    const navMode = useSelector(state => state.global.navMode);
 
     return (
         <Wrapper className={`navigation ${className}`} navMode={navMode}>

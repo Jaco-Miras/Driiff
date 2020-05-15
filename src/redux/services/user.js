@@ -396,6 +396,18 @@ export function googleLogin(payload) {
     });
 }
 
+/**
+ * @param {Object} payload
+ * @returns {Promise<* | void>}
+ */
+export function authenticateGoogleLogin(payload) {
+    return apiNoTokenCall({
+        method: "POST",
+        actualUrl: `${getAPIUrl({noSlug: true})}/auth/google/user`,
+        data: payload
+    });
+}
+
 export function getOnlineUsers(payload) {
     return apiCall({
         method: "GET",

@@ -1,15 +1,15 @@
 const INITIAL_STATE = {
     user: {},
     recipients: [],
-    isLoading: 0,
+    isLoading: false,
     isBrowserActive: true,
     modals: {},
     slugs: [],
+    navMode: 2,
 };
 
 export default (state = INITIAL_STATE, action) => {
     switch (action.type) {
-
         case "SET_BROWSER_TAB_STATUS": {
             return {
                 ...state,
@@ -22,6 +22,16 @@ export default (state = INITIAL_STATE, action) => {
                 recipients: action.data.recipients.filter(r => r.name !== null),
             };
         }
+        case "SET_NAV_MODE":
+            return {
+                ...state,
+                navMode: action.data.mode,
+            };
+        case "TOGGLE_LOADING":
+            return {
+                ...state,
+                isLoading: typeof action.data !== "undefined" ? action.data : !state.isLoading,
+            };
         default:
             return state;
     }

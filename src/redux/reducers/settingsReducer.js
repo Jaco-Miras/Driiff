@@ -39,7 +39,6 @@ const INITIAL_STATE = {
         },
     },
     isLoaded: false,
-    navMode: 2,
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -79,11 +78,6 @@ export default (state = INITIAL_STATE, action) => {
                 isLoaded: true,
             };
         }
-        case "SET_NAV_MODE":
-            return {
-                ...state,
-                navMode: action.data.mode,
-            };
         default:
             return state;
     }
