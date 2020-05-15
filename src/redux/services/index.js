@@ -22,6 +22,8 @@ export {
     getOnlineUsers,
     getMentions,
     getUser,
+    authenticateGoogleLogin,
+    resetPassword,
 } from "./user";
 
 export {

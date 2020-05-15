@@ -2,6 +2,7 @@ import React, {useEffect, useState} from "react";
 import {Route, Switch, useLocation, withRouter} from "react-router-dom";
 import styled from "styled-components";
 import {Icon} from "../components/common";
+import useUserLogin from "../components/hooks/useUserLogin";
 import useUserLogout from "../components/hooks/useUserLogout";
 import {LoginPanel, RegisterPanel, ResetPasswordPanel} from "../components/panels";
 
@@ -10,6 +11,7 @@ const Wrapper = styled.div`
 
 const GuestLayout = (props) => {
 
+    useUserLogin(props);
     useUserLogout(props);
 
     const location = useLocation();
@@ -30,7 +32,10 @@ const GuestLayout = (props) => {
                 setTitle("Create account");
                 break;
             default:
-                setTitle("Sign in");
+                if(location.pathname.indexOf("authenticate") !== -1)
+                    setTitle("Authentication");
+                else
+                    setTitle("Sign in");
         }
     }, [location]);
 

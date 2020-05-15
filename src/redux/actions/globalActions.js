@@ -28,3 +28,20 @@ export function getAllRecipients(payload, callback) {
         callback,
     );
 }
+
+export function setNavMode(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "SET_NAV_MODE",
+        payload,
+        callback,
+    );
+}
+
+export function toggleLoading(payload, callback) {
+    console.log(payload)
+    return SimpleDispatchActionToReducer(
+        "TOGGLE_LOADING",
+        payload,
+        callback,
+    );
+}
