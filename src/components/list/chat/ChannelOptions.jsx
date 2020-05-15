@@ -10,7 +10,7 @@ import pinIcon from "../../../assets/img/svgs/chat/pin_white.svg";
 import {
     markReadChannel,
     markUnreadChannel,
-    setSelectedChannel,
+    //setSelectedChannel,
     updateChannel,
     updateChannelReducer,
     updateUnreadChatReplies,
@@ -391,7 +391,7 @@ const ChannelOptions = props => {
             };
             dispatch(updateChannelReducer(updatedChannel));
             if (selectedChannel.id === channel.id) {
-                dispatch(setSelectedChannel(props.firstChannel));
+                //dispatch(setSelectedChannel(props.firstChannel));
             }
         }));
     };
@@ -483,9 +483,9 @@ const ChannelOptions = props => {
                     {channel.is_muted ? `Unmute` : `Mute`}
                 </MuteBtn>
                 {
-                    channel.is_hidden === 0 && channel.type !== "PERSONAL_BOT" &&
+                    channel.type !== "PERSONAL_BOT" &&
                     <HideBtn onClick={handleHideChat}>
-                        Hide
+                        {channel.is_hidden === 0 ? `Hide` : 'Unhide'}
                     </HideBtn>
                 }
                 {

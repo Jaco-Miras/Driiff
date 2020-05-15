@@ -119,3 +119,11 @@ export function getChatMessages(payload, callback) {
         callback,
     );
 }
+
+export function markAllMessagesAsRead(cbdata, callback) {
+    return SimpleDispatchActionToReducer(
+        "MARK_ALL_MESSAGES_AS_READ",
+        cbdata,
+        callback,
+    );
+}

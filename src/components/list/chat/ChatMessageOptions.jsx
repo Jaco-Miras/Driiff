@@ -10,6 +10,7 @@ import shareIcon from "../../../assets/icon/share/r/secundary.svg";
 import moreIcon from "../../../assets/img/more-menu-icons/secundary.svg";
 import {copyTextToClipboard} from "../../../helpers/commonFunctions";
 import {getBaseUrl} from "../../../helpers/slugHelper";
+import {useSelector} from 'react-redux';
 // import {addChatBox, deleteChatMessageV2} from "../../../redux/actions";
 import useOutsideClick from "../../hooks/useOutsideClick";
 import {
@@ -168,10 +169,11 @@ const ForwardButton = styled.div`
 `;
 
 const ChatMessageOptions = props => {
-    const {isAuthor, replyData, className = "", selectedChannel, slugs} = props;
+    const {isAuthor, replyData, className = "", selectedChannel} = props;
     const [showMoreOptions, setShowMoreOptions] = useState(false);
     const tooltipRef = useRef();
     const moreRef = useRef();
+    const slugs = useSelector(state => state.global.slugs)
     const scrollEl = document.getElementById("infinite-scroll-chat-replies");
     const [orientation] = useTooltipOrientation(moreRef, tooltipRef, scrollEl, showMoreOptions);
     const [hOrientation] = useTooltipHorizontalOrientation(moreRef, tooltipRef, scrollEl, showMoreOptions);

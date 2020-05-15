@@ -10,6 +10,9 @@ import {getUserSettings} from "../redux/actions/settingsActions";
 
 const MainContent = styled.div`
     padding-top: 1rem;
+    //apply test height
+    height: calc(100vh - 100px);
+    overflow: hidden;
     ${props => {
     switch (props.navMode) {
         case 0:

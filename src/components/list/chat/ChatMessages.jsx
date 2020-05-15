@@ -6,7 +6,13 @@ import {withRouter} from "react-router-dom";
 import {bindActionCreators} from "redux";
 import styled from "styled-components";
 import {localizeChatTimestamp, localizeDate} from "../../../helpers/momentFormatJS";
-import {getChatMessages, setSelectedChannel} from "../../../redux/actions/chatActions";
+import { getChatMessages, 
+    setSelectedChannel, 
+    markReadChannel, 
+    updateChannelReducer,
+    markAllMessagesAsRead,
+    updateUnreadChatReplies,
+} from "../../../redux/actions/chatActions";
 // import {
 //     addChatBox,
 //     addChatChannelMembersV2,
@@ -359,6 +365,7 @@ const ChatLoader = styled.div`
 `;
 
 const InfiniteScroll = styled.div`
+    width: 100%;
     ul {
         margin: 0;
     }
@@ -429,119 +436,6 @@ class ChatMessages extends React.PureComponent {
         document.removeEventListener("keydown", this.handleEditOnArrowUp, false);
     }
 
-    componentDidMount() {
-        console.log("mount channel");
-        const {selectedChannel, sharedSlugs} = this.props;
-        document.addEventListener("keydown", this.handleEditOnArrowUp, false);
-        if (this.props.selectedChannel.skip === 0) this.loadReplies();
-        this.setState({activeChannelId: this.props.selectedChannel.id});
-        if (this.props.selectedChannel.is_read === 1) {
-            if (selectedChannel.is_shared && sharedSlugs.length) {
-                let slug = sharedSlugs.filter(s => s.slug_name === selectedChannel.slug_owner);
-                if (slug.length) {
-                    this.props.markReadChatChannelAction({
-                        channel_id: selectedChannel.id,
-                        is_shared: true,
-                        topic_id: selectedChannel.entity_id,
-                        token: slug[0].access_token,
-                        slug: slug[0].slug_name,
-                    });
-                }
-            } else {
-                //this.props.markReadChatChannelAction({channel_id: selectedChannel.id});
-            }
-            let updatedChannel = {
-                ...selectedChannel,
-                total_unread: 0,
-            };
-            //this.props.updateChannelAction(updatedChannel);
-        }
-    }
-
-    componentDidUpdate(prevProps, prevState, snapshot) {
-        const {selectedChannel} = this.props;
-        // console.log(prevProps, this.props)
-        if (selectedChannel.replies.length && !this.state.fetchingReplies) {
-            this.attachedImgEventListener();
-            this.attachedClickListenerToChatUrl();
-        }
-        //change channel
-        if (this.state.activeChannelId !== prevState.activeChannelId) {
-
-            let elButton = document.querySelector(".btn-go-latest");
-            if (elButton) elButton.classList.add("hide");
-
-            if (selectedChannel.replies.length === 0 && selectedChannel.hasMore) {
-                this.loadReplies();
-            }
-            //make sure after switching to other page empty state persists
-            if (selectedChannel.hasMore)
-                this.setState({initializing: true});
-            else
-                this.setState({initializing: selectedChannel.replies.length !== 0});
-        }
-
-        // has replies
-        if (selectedChannel.replies.length) {
-            document.removeEventListener("keydown", this.handleEditOnArrowUp, false);
-            document.addEventListener("keydown", this.handleEditOnArrowUp, false);
-
-            let hasUnreadMessage = selectedChannel.replies.filter(r => r.is_read === false).length > 0;
-            if (this.state.bottomRefInView && hasUnreadMessage && this.props.isBrowserActive && selectedChannel.is_read === 1) {
-                this.props.markAllMessagesAsReadAction({channel_id: selectedChannel.id});
-                this.props.markReadChatChannelAction({channel_id: selectedChannel.id}, (err, res) => {
-                    if (err) return;
-                    let updatedChannel = {
-                        ...selectedChannel,
-                        mark_new_messages_as_read: true,
-                        mark_unread: selectedChannel.mark_unread,
-                        total_unread: 0,
-                        minus_count: selectedChannel.total_unread,
-                    };
-                    // props.updateChannelAction(updatedChannel);
-                    this.props.updateUnreadChatRepliesAction(updatedChannel);
-                });
-
-            }
-            if (this.state.bottomRefInView && selectedChannel.replies.length && selectedChannel.replies.length - prevProps.selectedChannel.replies.length < 5) {
-                if (this.props.chatBottomRef && this.props.chatBottomRef.current) {
-                    this.props.chatBottomRef.current.scrollIntoView(false);
-                } else {
-                    let scrollC = document.querySelector(".intersection-bottom-ref");
-                    if (scrollC) scrollC.scrollIntoView(false);
-                }
-            }
-
-            if (this.state.messageRefInView || this.state.loadMoreInView) {
-                this.loadReplies();
-            }
-        }
-    }
-
-    handleEditOnArrowUp = e => {
-        const {selectedChannel} = this.props;
-        if (e.keyCode === 38) {
-            if (e.target.classList.contains("ql-editor")) {
-                if (e.target.innerText.trim() === "" && !e.target.contains(document.querySelector(".ql-editor .anchor-blot"))) {
-                    e.preventDefault();
-                    let lastReply = selectedChannel.replies.sort((a, b) => b.created_at.timestamp - a.created_at.timestamp)
-                        .filter(r => {
-                                if (selectedChannel.is_shared && this.props.sharedSlugs.length) {
-                                    return (this.props.sharedSlugs.filter(s => s.slug_name === selectedChannel.slug_owner)[0].external_id) && (typeof r.id === "number") && r.is_deleted === 0;
-                                } else {
-                                    return r.is_deleted === 0 && r.user.id === this.props.user.id && (typeof r.id === "number");
-                                }
-                            },
-                        )[0];
-
-                    if (typeof lastReply !== "undefined") {
-                        this.handleEditReply(lastReply);
-                    }
-                }
-            }
-        }
-    };
-
     loadReplies = () => {
         const {selectedChannel, sharedSlugs, getChatMessages} = this.props;
         if (!this.state.fetchingReplies) {
@@ -604,6 +498,113 @@ class ChatMessages extends React.PureComponent {
                     if (this.state.initializing === true) this.setState({initializing: false});
 
                 });
+            }
+        }
+    };
+
+    componentDidMount() {
+        const {
+            selectedChannel, 
+            sharedSlugs, 
+            markReadChannel, 
+            updateChannelReducer,
+        } = this.props;
+        //document.addEventListener("keydown", this.handleEditOnArrowUp, false);
+        // this.setState({activeChannelId: this.props.selectedChannel.id});
+
+        if (selectedChannel.skip === 0) this.loadReplies();
+        if (selectedChannel.is_read === 1) {
+            if (selectedChannel.is_shared && sharedSlugs.length) {
+                let slug = sharedSlugs.filter(s => s.slug_name === selectedChannel.slug_owner);
+                if (slug.length) {
+                    markReadChannel({
+                        channel_id: selectedChannel.id,
+                        is_shared: true,
+                        topic_id: selectedChannel.entity_id,
+                        token: slug[0].access_token,
+                        slug: slug[0].slug_name,
+                    });
+                }
+            } else {
+                markReadChannel({channel_id: selectedChannel.id})
+            }
+            let updatedChannel = {
+                ...selectedChannel,
+                total_unread: 0,
+            };
+            updateChannelReducer(updatedChannel)
+        }
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        const {selectedChannel, markReadChannel, markAllMessagesAsRead, updateUnreadChatReplies } = this.props;
+        // if (selectedChannel.replies.length && !this.state.fetchingReplies) {
+        //     this.attachedImgEventListener();
+        //     this.attachedClickListenerToChatUrl();
+        // }
+
+        //change channel
+        if (prevProps.selectedChannel && prevProps.selectedChannel.id !== selectedChannel.id) {
+            if (selectedChannel.skip === 0) this.loadReplies()
+        }
+
+        // has replies
+        if (selectedChannel.replies.length) {
+            document.removeEventListener("keydown", this.handleEditOnArrowUp, false);
+            document.addEventListener("keydown", this.handleEditOnArrowUp, false);
+
+            let hasUnreadMessage = selectedChannel.replies.filter(r => r.is_read === false).length > 0;
+            if (this.state.bottomRefInView && hasUnreadMessage && this.props.isBrowserActive && selectedChannel.is_read === 1) {
+                markAllMessagesAsRead({channel_id: selectedChannel.id});
+                markReadChannel({channel_id: selectedChannel.id}, (err, res) => {
+                    if (err) return;
+                    let updatedChannel = {
+                        ...selectedChannel,
+                        mark_new_messages_as_read: true,
+                        mark_unread: selectedChannel.mark_unread,
+                        total_unread: 0,
+                        minus_count: selectedChannel.total_unread,
+                    };
+                    updateUnreadChatReplies(updatedChannel);
+                });
+
+            }
+
+            if (this.state.bottomRefInView && selectedChannel.replies.length && selectedChannel.replies.length - prevProps.selectedChannel.replies.length < 5) {
+                if (this.props.chatBottomRef && this.props.chatBottomRef.current) {
+                    this.props.chatBottomRef.current.scrollIntoView(false);
+                } else {
+                    let scrollC = document.querySelector(".intersection-bottom-ref");
+                    if (scrollC) scrollC.scrollIntoView(false);
+                }
+            }
+
+            if (this.state.messageRefInView || this.state.loadMoreInView) {
+                this.loadReplies();
+            }
+        }
+    }
+
+    handleEditOnArrowUp = e => {
+        const {selectedChannel} = this.props;
+        if (e.keyCode === 38) {
+            if (e.target.classList.contains("ql-editor")) {
+                if (e.target.innerText.trim() === "" && !e.target.contains(document.querySelector(".ql-editor .anchor-blot"))) {
+                    e.preventDefault();
+                    let lastReply = selectedChannel.replies.sort((a, b) => b.created_at.timestamp - a.created_at.timestamp)
+                        .filter(r => {
+                                if (selectedChannel.is_shared && this.props.sharedSlugs.length) {
+                                    return (this.props.sharedSlugs.filter(s => s.slug_name === selectedChannel.slug_owner)[0].external_id) && (typeof r.id === "number") && r.is_deleted === 0;
+                                } else {
+                                    return r.is_deleted === 0 && r.user.id === this.props.user.id && (typeof r.id === "number");
+                                }
+                            },
+                        )[0];
+
+                    if (typeof lastReply !== "undefined") {
+                        this.handleEditReply(lastReply);
+                    }
+                }
             }
         }
     };
@@ -1110,6 +1111,10 @@ function mapDispatchToProps(dispatch) {
     return {
         getChatMessages: bindActionCreators(getChatMessages, dispatch),
         setSelectedChannel: bindActionCreators(setSelectedChannel, dispatch),
+        updateChannelReducer: bindActionCreators(updateChannelReducer, dispatch),
+        markReadChannel: bindActionCreators(markReadChannel, dispatch),
+        markAllMessagesAsRead: bindActionCreators(markAllMessagesAsRead, dispatch),
+        updateUnreadChatReplies: bindActionCreators(updateUnreadChatReplies, dispatch),
         // addSelectedChannelChatMessageReducer: bindActionCreators(addSelectedChannelChatMessage, dispatch),
         // updateChatMessageAction: bindActionCreators(updateChatMessageV2, dispatch),
         // setDetailModalOpenAction: bindActionCreators(setDetailModalOpen, dispatch),

@@ -56,7 +56,7 @@ const ChannelListContainer = styled.li`
 `;
 const ChannelTitlePreview = styled.div`
     flex: 1;
-    max-width: calc(100% - 105px);
+    max-width: calc(100% - 120px);
 `;
 
 const ChannelList = props => {

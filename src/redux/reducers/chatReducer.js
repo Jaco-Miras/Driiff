@@ -10,6 +10,7 @@ const INITIAL_STATE = {
     selectedChannel: null,
     startNewChannels: {},
     channelDrafts: [],
+    unreadChatCount: 0
 };
 
 export default function (state = INITIAL_STATE, action) {
@@ -124,76 +125,77 @@ export default function (state = INITIAL_STATE, action) {
             };
         }
         case "GET_CHAT_MESSAGES_SUCCESS": {
+            let channel = {...state.channels[action.data.channel_id]}
+            channel = {
+                ...channel,
+                replies: [...action.data.results.map(r => {
+                    if (action.data.type === "PERSONAL_BOT" && r.body.search(/You asked me to remind you about/) > -1) {
+                        r.original_body = r.body;
+
+                        const channelName = r.body.replace(r.body.substr(0, r.body.search(" in ") + 4, r.body), "");
+                        r.body = r.body.replace(` in ${channelName}`, ` in <a class="push" data-href="/chat/${r.quote.channel_code}">#${channelName}</a>`);
+
+                        const link = `/chat/${r.quote.channel_code}/${r.quote.code}`;
+                        r.body = r.body.replace("this message", `<a class="push" data-href="${link}">this message</a>`);
+
+                        if (r.is_completed === true) {
+                            r.body = `<span class="completed">${r.body}</span><br/> ${r.original_body.replace("You asked me to remind you", "OK! I’ve marked the reminder")} as complete.`;
+                        } else {
+                            r.body = `${r.body}<br/> <span class="action"><a class="btn btn-complete btn-action" data-message_id="${r.id}">Mark as Complete</a> <a class="btn btn-delete btn-action" data-message_id="${r.id}">Delete</a></span>`;
+                        }
+                    }
+
+                    return {
+                        ...r,
+                        is_read: true,
+                        channel_id: action.data.channel_id,
+                        g_date: localizeDate(r.created_at.timestamp, "YYYY-MM-DD"),
+                    };
+                }), ...channel.replies],
+                read_only: action.data.read_only,
+                hasMore: action.data.results.length === 20,
+                skip: channel.skip === 0 && channel.replies.length ?
+                        channel.replies.length + 20 : channel.skip + 20,
+            }
             return {
                 ...state,
-                // activeChatChannels: state.activeChatChannels.map(ac => {
-                //     if (ac.id === action.data.channel_id) {
-                //         return {
-                //             ...ac,
-                //             read_only: action.data.read_only,
-                //             replies: uniqBy([...action.data.results.map(r => {
-                //                 if (ac.type === "PERSONAL_BOT" && r.body.search(/You asked me to remind you about/) > -1) {
-                //                     r.original_body = r.body;
-
-                //                     const channelName = r.body.replace(r.body.substr(0, r.body.search(" in ") + 4, r.body), "");
-                //                     r.body = r.body.replace(` in ${channelName}`, ` in <a data-href="/chat/${r.quote.channel_code}">#${channelName}</a>`);
-
-                //                     const link = `/chat/${r.quote.channel_code}/${r.quote.code}`;
-                //                     r.body = r.body.replace("this message", `<a class="push" data-href="${link}">this message</a>`);
-
-                //                     if (r.is_completed === true) {
-                //                         r.body = `<span class="completed">${r.body}</span><br/> ${r.original_body.replace("You asked me to remind you", "OK! I’ve marked the reminder")} as complete.`;
-                //                     } else {
-                //                         r.body = `${r.body}<br/> <span class="action"><a class="btn btn-complete btn-action" data-message_id="${r.id}">Mark as Complete</a> <a class="btn btn-delete btn-action" data-message_id="${r.id}">Delete</a></span>`;
-                //                     }
-                //                 }
-
-                //                 return {
-                //                     ...r,
-                //                     is_read: true,
-                //                     channel_id: action.data.channel_id,
-                //                     g_date: localizeDate(r.created_at.timestamp, "YYYY-MM-DD"),
-                //                 };
-                //             }), ...ac.replies], "id"),
-                //             hasMore: action.data.results.length === 20,
-                //             skip: ac.skip === 0 && ac.replies.length ?
-                //                 ac.replies.length + 20 : ac.skip + 20,
-                //         };
-                //     } else return ac;
-                // }),
-                selectedChannel: {
-                    ...state.selectedChannel,
-                    read_only: action.data.read_only,
-                    replies: action.data.channel_id === state.selectedChannel.id ?
-                        [...action.data.results.map(r => {
-                            if (action.data.type === "PERSONAL_BOT" && r.body.search(/You asked me to remind you about/) > -1) {
-                                r.original_body = r.body;
-
-                                const channelName = r.body.replace(r.body.substr(0, r.body.search(" in ") + 4, r.body), "");
-                                r.body = r.body.replace(` in ${channelName}`, ` in <a class="push" data-href="/chat/${r.quote.channel_code}">#${channelName}</a>`);
-
-                                const link = `/chat/${r.quote.channel_code}/${r.quote.code}`;
-                                r.body = r.body.replace("this message", `<a class="push" data-href="${link}">this message</a>`);
-
-                                if (r.is_completed === true) {
-                                    r.body = `<span class="completed">${r.body}</span><br/> ${r.original_body.replace("You asked me to remind you", "OK! I’ve marked the reminder")} as complete.`;
-                                } else {
-                                    r.body = `${r.body}<br/> <span class="action"><a class="btn btn-complete btn-action" data-message_id="${r.id}">Mark as Complete</a> <a class="btn btn-delete btn-action" data-message_id="${r.id}">Delete</a></span>`;
-                                }
-                            }
-
-                            return {
-                                ...r,
-                                is_read: true,
-                                channel_id: action.data.channel_id,
-                                g_date: localizeDate(r.created_at.timestamp, "YYYY-MM-DD"),
-                            };
-                        }), ...state.selectedChannel.replies]
-                        : state.selectedChannel.replies,
-                    hasMore: action.data.results.length === 20,
-                    skip: state.selectedChannel.skip === 0 && state.selectedChannel.replies.length ?
-                        state.selectedChannel.replies.length + 20 : state.selectedChannel.skip + 20,
+                channels: {
+                    ...state.channels,
+                    [action.data.channel_id]: channel
                 },
+                selectedChannel: channel.id === state.selectedChannel.id ? channel : state.selectedChannel
+            };
+        }
+        case "MARK_ALL_MESSAGES_AS_READ": {
+            let channel = {...state.channels[action.data.channel_id]}
+            channel = {
+                ...channel,
+                replies: channel.replies.map(r => {
+                    return {
+                        ...r,
+                        is_read: true
+                    }
+                })
+            }
+            return {
+                ...state,
+                selectedChannel: state.selectedChannel && state.selectedChannel.id === action.data.channel_id  ?
+                    channel : state.selectedChannel,
+                channels: {
+                    ...state.channels,
+                    [action.data.channel_id]: channel
+                }
+            };
+        }
+        case "UPDATE_UNREAD_CHAT_REPLIES": {
+            return {
+                ...state,
+                selectedChannel: action.data.id === state.selectedChannel.id ? action.data : state.selectedChannel,
+                channels: {
+                    ...state.channels,
+                    [action.data.id]: action.data
+                },
+                unreadChatCount: state.unreadChatCount > 0 ? state.unreadChatCount - action.data.minus_count : state.unreadChatCount,
             };
         }
         default:
