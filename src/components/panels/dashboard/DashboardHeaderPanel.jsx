@@ -1,7 +1,7 @@
 import React from "react";
 import {useDispatch, useSelector} from "react-redux";
 import styled from "styled-components";
-import {setNavMode, toggleLoading} from "../../../redux/actions/globalActions";
+import {setNavMode} from "../../../redux/actions/globalActions";
 
 const Wrapper = styled.div`
     ${props => {
