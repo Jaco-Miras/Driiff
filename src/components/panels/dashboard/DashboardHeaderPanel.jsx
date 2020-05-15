@@ -1,7 +1,7 @@
 import React from "react";
 import {useDispatch, useSelector} from "react-redux";
 import styled from "styled-components";
-import {setNavMode} from "../../../redux/actions/settingsActions";
+import {setNavMode, toggleLoading} from "../../../redux/actions/globalActions";
 
 const Wrapper = styled.div`
     ${props => {
@@ -21,7 +21,7 @@ const DashboardHeaderPanel = (props) => {
     const {className = ""} = props;
 
     const dispatch = useDispatch();
-    const navMode = useSelector(state => state.settings.navMode);
+    const navMode = useSelector(state => state.global.navMode);
 
     const handleToggleNavigation = (e) => {
         e.preventDefault();

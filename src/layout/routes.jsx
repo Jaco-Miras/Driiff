@@ -1,6 +1,5 @@
 import React from "react";
 import {Redirect, Route, Switch} from "react-router-dom";
-import AuthenticateUserPanel from "../components/panels/AuthenticateUserPanel";
 import DashboardLayout from "./DashboardLayout";
 import GuestLayout from "./GuestLayout";
 
@@ -33,11 +32,10 @@ export const AppRoute = ({authenticated, children, ...props}) => {
             </>
             :
             <Switch>
-                <Route path={"/authenticate/:token/:returnUrl?"} component={AuthenticateUserPanel} exact={true}/>
                 <Route
                     {...props}
                     component={GuestLayout}
-                    path={["/register", "/reset-password", "/login"]}>
+                    path={["/register", "/reset-password", "/login", "/authenticate/:token/:returnUrl?"]}>
                     {children}
                 </Route>
                 <Redirect

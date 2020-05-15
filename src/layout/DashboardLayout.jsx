@@ -26,7 +26,7 @@ const DashboardLayout = () => {
 
     const dispatch = useDispatch();
 
-    const navMode = useSelector(state => state.settings.navMode);
+    const navMode = useSelector(state => state.global.navMode);
 
     useEffect(() => {
         dispatch(getUserSettings());

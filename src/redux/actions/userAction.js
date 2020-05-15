@@ -1,10 +1,12 @@
 import dispatchActionToReducer from "../actionDispatcher";
 import {
+    authenticateGoogleLogin as authenticateGoogleLoginService,
     getOnlineUsers as getOnlineUsersService,
     getUser as getUserService,
     googleLogin as googleLoginService,
     login as loginService,
     logout as logoutService,
+    resetPassword as resetPasswordService,
 } from "../services";
 
 export const userLogin = (payload, callback) => {
@@ -37,6 +39,16 @@ export const userGoogleLogin = (payload, callback) => {
     );
 };
 
+export const authenticateGoogleLogin = (payload, callback) => {
+    return dispatchActionToReducer(
+        authenticateGoogleLoginService(payload),
+        "GOOGLE_AUTH_LOGIN_START",
+        "GOOGLE_AUTH_LOGIN_SUCCESS",
+        "GOOGLE_AUTH_LOGIN_FAILURE",
+        callback,
+    );
+};
+
 export function getOnlineUsers(payload, callback) {
     return dispatchActionToReducer(
         getOnlineUsersService(payload),
@@ -50,6 +62,16 @@ export function getOnlineUsers(payload, callback) {
 export function getUser(userId, history, callback) {
     return dispatchActionToReducer(
         getUserService(userId, history),
+        "GET_USER_START",
+        "GET_USER_SUCCESS",
+        "GET_USER_FAILURE",
+        callback,
+    );
+}
+
+export function resetPassword(payload, callback) {
+    return dispatchActionToReducer(
+        resetPasswordService(payload),
         "GET_USER_START",
         "GET_USER_SUCCESS",
         "GET_USER_FAILURE",
