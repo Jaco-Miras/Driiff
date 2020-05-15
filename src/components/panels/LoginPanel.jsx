@@ -3,10 +3,11 @@ import {useDispatch} from "react-redux";
 import {Link} from "react-router-dom";
 import styled from "styled-components";
 import {$_GET, getThisDeviceInfo} from "../../helpers/commonFunctions";
-import {getSlugName, processDriffLogin} from "../../helpers/slugHelper";
+import {getSlugName} from "../../helpers/slugHelper";
 import {EmailRegex} from "../../helpers/stringFormatter";
 import {toggleLoading} from "../../redux/actions/globalActions";
 import {userGoogleLogin, userLogin} from "../../redux/actions/userAction";
+import {processBackendLogin, storeLoginToken} from "../hooks/useUserLogin";
 
 const Wrapper = styled.form`
     ${props => props.error !== "" &&
@@ -191,7 +192,8 @@ const LoginPanel = (props) => {
                                 && (typeof props.location.state.from !== "undefined")
                                 && (props.location.state.from !== "/logout")
                             ) ? props.location.state.from.pathname + props.location.state.from.search : "/dashboard";
-                            processDriffLogin(res.data, returnUrl);
+                            storeLoginToken(res.data);
+                            processBackendLogin(res.data, returnUrl);
                         }
                     }
                 }),

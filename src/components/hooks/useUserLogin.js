@@ -2,12 +2,31 @@ import {useEffect} from "react";
 import {useDispatch} from "react-redux";
 import {sessionService} from "redux-react-session";
 import {$_GET, getUrlParams} from "../../helpers/commonFunctions";
-import {processDriffLogin} from "../../helpers/slugHelper";
+import {getAPIUrl, getCurrentDriffUrl} from "../../helpers/slugHelper";
 import {authenticateGoogleLogin} from "../../redux/actions/userAction";
+
+export const storeLoginToken = (payload) => {
+    localStorage.setItem("userAuthToken", JSON.stringify(payload));
+    localStorage.setItem("token", payload.download_token);
+    localStorage.setItem("atoken", payload.auth_token);
+};
+
+export const getFrontEndAuthUrl = (payload, returnUrl = "") => {
+    if (returnUrl !== "")
+        returnUrl = `/${btoa(returnUrl)}`;
+
+    return `/authenticate/${payload.access_token}${returnUrl}`;
+};
+
+export const processBackendLogin = (payload, returnUrl) => {
+    let redirectLink = `${getCurrentDriffUrl()}${getFrontEndAuthUrl(payload, returnUrl)}`;
+    window.location.href = `${getAPIUrl({isDNS: true})}/auth-web/login?token=${payload.auth_token}&redirect_link=${redirectLink}`;
+};
 
 const useUserLogin = (props) => {
 
     const dispatch = useDispatch();
+    const {path} = props.match;
 
     useEffect(() => {
         const {
@@ -80,14 +99,13 @@ const useUserLogin = (props) => {
                     console.log(err);
 
                     if (res) {
-                        processDriffLogin(res.data, "/dashboard");
+                        storeLoginToken(res.data);
+                        history.push(getFrontEndAuthUrl(res.data, "/dashboard"));
                     }
                 }),
             );
         }
-
-        //eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [path]);
 };
 
 export default useUserLogin;

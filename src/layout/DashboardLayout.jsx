@@ -1,6 +1,7 @@
 import React, {useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import styled from "styled-components";
+import useUserLogout from "../components/hooks/useUserLogout";
 import {DashboardFooterPanel, DashboardHeaderPanel, DashboardNavigationPanel} from "../components/panels";
 import ChatContentPanel from "../components/panels/chat/ChatContentPanel";
 import ChatSidebarPanel from "../components/panels/chat/ChatSidebarPanel";
@@ -26,7 +27,9 @@ const MainContent = styled.div`
 }}
 `;
 
-const DashboardLayout = () => {
+const DashboardLayout = (props) => {
+
+    useUserLogout(props);
 
     const dispatch = useDispatch();
 
