@@ -502,17 +502,14 @@ class ChatMessages extends React.PureComponent {
         }
     };
 
-    componentDidMount() {
+    handleReadChannel = () => {
         const {
-            selectedChannel, 
-            sharedSlugs, 
-            markReadChannel, 
+            selectedChannel,
+            sharedSlugs,
+            markReadChannel,
             updateChannelReducer,
         } = this.props;
-        //document.addEventListener("keydown", this.handleEditOnArrowUp, false);
-        // this.setState({activeChannelId: this.props.selectedChannel.id});
 
-        if (selectedChannel.skip === 0) this.loadReplies();
         if (selectedChannel.is_read === 1) {
             if (selectedChannel.is_shared && sharedSlugs.length) {
                 let slug = sharedSlugs.filter(s => s.slug_name === selectedChannel.slug_owner);
@@ -536,6 +533,17 @@ class ChatMessages extends React.PureComponent {
         }
     }
 
+    componentDidMount() {
+        const {
+            selectedChannel
+        } = this.props;
+        //document.addEventListener("keydown", this.handleEditOnArrowUp, false);
+        // this.setState({activeChannelId: this.props.selectedChannel.id});
+
+        if (selectedChannel.skip === 0) this.loadReplies();
+        this.handleReadChannel()
+    }
+
     componentDidUpdate(prevProps, prevState, snapshot) {
         const {selectedChannel, markReadChannel, markAllMessagesAsRead, updateUnreadChatReplies } = this.props;
         // if (selectedChannel.replies.length && !this.state.fetchingReplies) {
@@ -545,7 +553,8 @@ class ChatMessages extends React.PureComponent {
 
         //change channel
         if (prevProps.selectedChannel && prevProps.selectedChannel.id !== selectedChannel.id) {
-            if (selectedChannel.skip === 0) this.loadReplies()
+            if (selectedChannel.skip === 0) this.loadReplies();
+            this.handleReadChannel()
         }
 
         // has replies
