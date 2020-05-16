@@ -77,6 +77,19 @@ const ChatReplyContainer = styled.div`
         font-size: .5rem;
         color: transparent;
   }
+  .mention {
+    background: rgb(189, 189, 189);
+    box-shadow: none;
+    padding: 5px;
+    border-radius: 30px;
+    color: #fff;
+    display: inline-block;
+    width: auto;
+    height: auto;
+  }
+  .mention.is-author {
+    background-image: linear-gradient(105deg, #972c86, #794997);
+  }
 `;
 
 const ChatList = styled.li`
@@ -120,6 +133,25 @@ const ChatBubbleContainer = styled.div`
   flex-flow: column;
   flex-flow: ${props => (props.isAuthor ? "row" : "row-reverse")};  
   margin-left: ${props => (!props.isAuthor && !props.showAvatar) || (!props.isAuthor && props.showAvatar && props.isBot) ? "40px" : "0"};
+  ${props => (props.isAuthor === true && "position: relative; right: 15px;")};
+  
+  &:before {
+    content: '';
+    border: 10px solid transparent;
+        border-right-color: transparent;
+    border-right-color: #f0f0f0;
+    position: absolute;
+    top: 8px;
+    left: 25px;        
+    z-index: 1;
+    
+    ${props => (props.isAuthor === true && `
+        left: auto;
+        right: -20px;
+        border-left-color: #f1e6ef;
+        border-right-color: transparent;
+    `)};
+}
 `;
 const ChatActionsContainer = styled.div`
     display: flex;
@@ -575,7 +607,16 @@ class ChatMessages extends React.PureComponent {
             markAllMessagesAsRead,
             updateUnreadChatReplies,
             historicalPositions,
+            user,
         } = this.props;
+
+        //to be relocated
+        let el = document.querySelectorAll(`.mention[data-id="${user.id}"]`);
+        if (el.length) {
+            el.forEach(mentionEl => {
+                mentionEl.classList.add("is-author");
+            });
+        }
         // @to do
         // if (selectedChannel.replies.length && !this.state.fetchingReplies) {
         //     this.attachedImgEventListener();
@@ -1035,12 +1076,9 @@ class ChatMessages extends React.PureComponent {
                                                                 {
                                                                     !isAuthor && showAvatar && !isBot &&
                                                                     <StyledAvatar
-                                                                        profileImageLink={reply.user.profile_image_link}
                                                                         id={reply.user.id}
-                                                                        noClick={true}
-                                                                        size={"xs"}
+                                                                        imageLink={reply.user.profile_image_link}
                                                                         name={reply.user.name}
-                                                                        marginRight={10}
                                                                     />
                                                                 }
                                                             </ChatBubbleContainer>

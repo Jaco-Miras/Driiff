@@ -5,7 +5,7 @@ const Svg = styled.svg`
     ${props => typeof props.rotate !== "undefined" && `transform: rotate(${props.rotate}deg);`};
 `;
 
-export const SvgIconFeather = React.memo((props) => {
+export const SvgIconFeather = React.memo(React.forwardRef((props, ref) => {
     const {
         className = "",
         width = 24,
@@ -227,16 +227,16 @@ export const SvgIconFeather = React.memo((props) => {
     }, [icon]);
 
     return (
-        <Svg xmlns="http://www.w3.org/2000/svg" width={width} height={height} viewBox={viewBox} fill={fill}
+        <Svg ref={ref} xmlns="http://www.w3.org/2000/svg" width={width} height={height} viewBox={viewBox} fill={fill}
              stroke={stroke} strokeWidth={strokeWidth} strokeLinecap={strokeLinecap} strokeLinejoin={strokeLinejoin}
              className={`feather feather-${icon} ${className}`}
              {...rest}>
             {content}
         </Svg>
     );
-});
+}));
 
-export const SvgIcon = React.memo((props) => {
+export const SvgIcon = React.memo(React.forwardRef((props, ref) => {
     const {
         className = "",
         width = 24,
@@ -270,6 +270,7 @@ export const SvgIcon = React.memo((props) => {
                             id="Combined-Shape" fill="url(#linearGradient-1)" fill-rule="nonzero"></path>
                     </g>
                 </>);
+                break;
             case "reply":
                 setViewBox("0 0 41 31");
                 setContent(<>
@@ -356,11 +357,11 @@ export const SvgIcon = React.memo((props) => {
     }, [icon]);
 
     return (
-        <Svg xmlns="http://www.w3.org/2000/svg" width={width} height={height} viewBox={viewBox} fill={fill}
+        <Svg ref={ref} xmlns="http://www.w3.org/2000/svg" width={width} height={height} viewBox={viewBox} fill={fill}
              stroke={stroke} strokeWidth={strokeWidth} stroke-linecap={strokeLinecap} strokeLinejoin={strokeLinejoin}
              className={`icon-${icon} ${className}`}
              {...rest}>
             {content}
         </Svg>
     );
-});
+}));

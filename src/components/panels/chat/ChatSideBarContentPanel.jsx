@@ -26,7 +26,10 @@ const ChatSidebarContentPanel = (props) => {
                      role="tabpanel"
                      aria-labelledby="pills-home-tab">
                     <p className="small mb-0">Recent chats</p>
-                    {isLoaded && <ChannelsSidebar search={search}/>}
+                    {
+                        isLoaded &&
+                        <ChannelsSidebar search={search}/>
+                    }
                     {/* <div className="chat-lists">
                      <div className="list-group list-group-flush">
                      <ChatRecentList/>
@@ -36,14 +39,7 @@ const ChatSidebarContentPanel = (props) => {
                 <div className={`tab-pane fade ${pill === "pills-contact" && "show active"}`} id="pills-contact"
                      role="tabpanel"
                      aria-labelledby="pills-contact-tab">
-                    <p className="small mb-0">142 Contacts</p>
-                    <div>
-                        <ul className="list-group list-group-flush">
-                            <li className="list-group-item d-flex align-items-center pl-0 pr-0 pb-3 pt-3">
-                                <ChatContactsList name={`Test`} country={`Netherlands`}/>
-                            </li>
-                        </ul>
-                    </div>
+                    <ChatContactsList search={search}/>
                 </div>
             </div>
         </Wrapper>

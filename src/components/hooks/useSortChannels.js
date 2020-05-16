@@ -1,7 +1,7 @@
 import {useSelector} from "react-redux";
 
 
-const useSortChannels = (search) => {
+const useSortChannels = (search, options = {}) => {
 
     const channels = useSelector(state => state.chat.channels);
     const channelDrafts = useSelector(state => state.chat.channelDrafts);
@@ -17,6 +17,7 @@ const useSortChannels = (search) => {
         }
 
     };
+
     let results = Object.values(channels)
         //.concat(this.props.startNewChannels)
         .filter(channel => {
@@ -26,8 +27,20 @@ const useSortChannels = (search) => {
             if (typeof channel.add_open_topic === "undefined")
                 channel.add_open_topic = 0;
 
+            if (options.type && options.type === "DIRECT") {
+                if (!(channel.type === "DIRECT" || channel.type === "PERSON")) {
+                    return false;
+                } else if (channel.members.length !== 2) {
+                    return false;
+                }
+            }
+
             if (search === "") {
-                return channel.is_hidden === 0 && channel.is_archived === 0 && channel.add_user === 0 && channel.add_open_topic === 0;
+                if (options.showHidden) {
+                    return channel.is_archived === 0 && channel.add_open_topic === 0;
+                } else {
+                    return channel.is_hidden === 0 && channel.is_archived === 0 && channel.add_user === 0 && channel.add_open_topic === 0;
+                }
             } else {
                 return channel.search
                     .toLowerCase()
