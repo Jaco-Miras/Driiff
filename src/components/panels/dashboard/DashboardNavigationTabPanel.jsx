@@ -27,7 +27,6 @@ const DashboardNavigationTabPanel = (props) => {
     const history = useHistory();
 
     const handleIconClick = (e) => {
-        alert("test");
     };
 
     const handleLogout = (e) => {

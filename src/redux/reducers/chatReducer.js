@@ -12,7 +12,7 @@ const INITIAL_STATE = {
     channelDrafts: [],
     unreadChatCount: 0,
     historicalPositions: [],
-    editChatMessage: null
+    editChatMessage: null,
 };
 
 export default function (state = INITIAL_STATE, action) {
@@ -436,9 +436,9 @@ export default function (state = INITIAL_STATE, action) {
             }
         }
         case "INCOMING_UPDATED_CHAT_MESSAGE": {
-            let channel = null
+            let channel = null;
             if (Object.keys(state.channels).length > 0 && state.channels.hasOwnProperty(action.data.channel_id)) {
-                channel = {...state.channels[action.data.channel_id]}
+                channel = {...state.channels[action.data.channel_id]};
                 channel = {
                     ...channel,
                     replies: channel.replies.map(r => {
@@ -455,29 +455,29 @@ export default function (state = INITIAL_STATE, action) {
                         ...channel.last_reply,
                         body: action.data.body,
                     } : channel.last_reply,
-                }
+                };
             }
             return {
                 ...state,
-                channels: channel !== null ? 
+                channels: channel !== null ?
                     {
                         ...state.channels,
-                        [action.data.channel_id]: channel
+                        [action.data.channel_id]: channel,
                     }
-                : state.channels,
+                    : state.channels,
                 selectedChannel: state.selectedChannel && state.selectedChannel.id === action.data.channel_id ?
                     {
-                        ...channel
+                        ...channel,
                     }
-                : state.selectedChannel,
+                    : state.selectedChannel,
             };
         }
         case "SET_EDIT_CHAT_MESSAGE": {
             return {
                 ...state,
                 //editChatMessage: action.data.set_to_null ? null : action.data
-                editChatMessage: action.data
-            }
+                editChatMessage: action.data,
+            };
         }
         default:
             return state;

@@ -1,8 +1,13 @@
-import React, {useRef, useState, useEffect} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import styled from "styled-components";
 import {localizeDate} from "../../helpers/momentFormatJS";
-import {addChatMessage, createChatMessage, updateChatMessage, setEditChatMessage} from "../../redux/actions/chatActions";
+import {
+    addChatMessage,
+    createChatMessage,
+    setEditChatMessage,
+    updateChatMessage,
+} from "../../redux/actions/chatActions";
 import useQuillModules from "../hooks/useQuillModules";
 import QuillEditor from "./QuillEditor";
 
@@ -32,7 +37,7 @@ const ChatInput = props => {
     const selectedChannel = useSelector(state => state.chat.selectedChannel);
     const slugs = useSelector(state => state.global.slugs);
     const user = useSelector(state => state.session.user);
-    const editChatMessage = useSelector(state => state.chat.editChatMessage)
+    const editChatMessage = useSelector(state => state.chat.editChatMessage);
 
     const [text, setText] = useState("");
     const [textOnly, setTextOnly] = useState("");
@@ -192,8 +197,8 @@ const ChatInput = props => {
                     // }
                 }),
             );
-            setEditMode(false)
-            setEditMessage(null)
+            setEditMode(false);
+            setEditMessage(null);
         } else {
             dispatch(
                 createChatMessage(payload, (err, data) => {
@@ -227,23 +232,23 @@ const ChatInput = props => {
 
     const handleQuillChange = (content, delta, source, editor) => {
 
-        if (selectedChannel === null) return
+        if (selectedChannel === null) return;
 
         const textOnly = editor.getText(content);
 
         if (textOnly.trim() === "" && editMode) {
-            setEditMode(false)
-            setEditMessage(null)
+            setEditMode(false);
+            setEditMessage(null);
             //edit message in redux
-            console.log(editChatMessage !== null,)
+            console.log(editChatMessage !== null);
             if (editChatMessage !== null) {
-                dispatch(setEditChatMessage(null))
+                dispatch(setEditChatMessage(null));
             }
         }
 
-        setText(content)
-        setTextOnly(textOnly)
-        setQuillContents(editor.getContents())
+        setText(content);
+        setTextOnly(textOnly);
+        setQuillContents(editor.getContents());
 
         if (editor.getContents().ops && editor.getContents().ops.length) {
             handleMentionUser(editor.getContents().ops.filter(m => m.insert.mention).map(i => i.insert.mention.id));
@@ -299,10 +304,10 @@ const ChatInput = props => {
 
     const handleSetEditMessageStates = (reply) => {
         reactQuillRef.current.getEditor().clipboard.dangerouslyPasteHTML(0, reply.body);
-        setText(reply.body)
-        setEditMessage(reply)
-        setEditMode(true)
-    }
+        setText(reply.body);
+        setEditMessage(reply);
+        setEditMode(true);
+    };
 
     const handleEditOnArrowUp = e => {
         if (e.keyCode === 38) {
@@ -320,7 +325,7 @@ const ChatInput = props => {
                         )[0];
 
                     if (typeof lastReply !== "undefined") {
-                        handleSetEditMessageStates(lastReply)
+                        handleSetEditMessageStates(lastReply);
                     }
                 }
             }
@@ -332,15 +337,15 @@ const ChatInput = props => {
             document.addEventListener("keydown", handleEditOnArrowUp, false);
         }
         return () => document.removeEventListener("keydown", handleEditOnArrowUp, false);
-    }, [selectedChannel])
+    }, [selectedChannel]);
 
     useEffect(() => {
         if (editChatMessage && !editMode && editMessage === null) {
-            handleSetEditMessageStates(editChatMessage)
+            handleSetEditMessageStates(editChatMessage);
         }
-    }, [editChatMessage])
-    
-    const [modules] = useQuillModules('chat', handleSubmit)
+    }, [editChatMessage]);
+
+    const [modules] = useQuillModules("chat", handleSubmit);
 
     return (
         <StyledQuillEditor
