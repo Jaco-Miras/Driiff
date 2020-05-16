@@ -1,5 +1,6 @@
 import React from "react";
 import {useSelector} from "react-redux";
+import {useHistory} from "react-router-dom";
 import styled from "styled-components";
 
 const Wrapper = styled.div`
@@ -9,9 +10,11 @@ const DashboardNavigationTabPanel = (props) => {
 
     const {className = ""} = props;
     const user = useSelector(state => state.session.user);
+    const history = useHistory();
 
-    const handleLogout = () => {
-
+    const handleLogout = (e) => {
+        e.preventDefault();
+        history.push("/logout");
     };
 
     return (

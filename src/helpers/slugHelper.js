@@ -293,20 +293,6 @@ export const getCurrentDriffUrl = () => {
     }
 };
 
-export const processDriffLogin = (dataSet, returnUrl) => {
-    console.log(dataSet, "LOGIN_PROCESS");
-
-    localStorage.setItem("userAuthToken", JSON.stringify(dataSet));
-    localStorage.setItem("token", dataSet.download_token);
-    localStorage.setItem("atoken", dataSet.auth_token);
-
-    returnUrl = btoa(returnUrl);
-    returnUrl = `/${returnUrl}`;
-
-    let redirectLink = `${getCurrentDriffUrl()}/authenticate/${dataSet.access_token}${returnUrl}`;
-    window.location.href = `${getAPIUrl({isDNS: true})}/auth-web/login?token=${dataSet.auth_token}&redirect_link=${redirectLink}`;
-};
-
 export const imgAsLogin = () => {
     if (localStorage.getItem("atoken") && localStorage.getItem("slug")) {
         return <img alt={`login token`}

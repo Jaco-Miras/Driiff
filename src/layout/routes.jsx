@@ -11,14 +11,8 @@ export const AppRoute = ({authenticated, children, ...props}) => {
                 <Switch>
                     <Route
                         {...props}
-                        component={GuestLayout}
-                        path="/logout">
-                        {children}
-                    </Route>
-                    <Route
-                        {...props}
                         component={DashboardLayout}
-                        path={["/dashboard"]}>
+                        path={["/dashboard", "/logout", "/logged-out"]}>
                         {children}
                     </Route>
                     <Redirect
