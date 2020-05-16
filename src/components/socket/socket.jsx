@@ -19,6 +19,7 @@ import {
     incomingChatMessage,
     incomingChatMessageFromOthers,
     incomingChatMessageReaction,
+    incomingUpdatedChatMessage,
     markAllMessagesAsRead,
     updateChannelReducer,
     updateMemberTimestamp,
@@ -984,7 +985,7 @@ class Socket extends PureComponent {
                     updated_at: e.created_at,
                     unfurls: e.unfurls,
                 };
-                this.props.incomingUpdatedChatMessageAction(payload);
+                this.props.incomingUpdatedChatMessage(payload);
             })
             .listen(".delete-chat-notification", e => {
                 let payload = {
@@ -1290,6 +1291,7 @@ function mapDispatchToProps(dispatch) {
         updateChannelReducer: bindActionCreators(updateChannelReducer, dispatch),
         incomingArchivedChannel: bindActionCreators(incomingArchivedChannel, dispatch),
         incomingChatMessageReaction: bindActionCreators(incomingChatMessageReaction, dispatch),
+        incomingUpdatedChatMessage: bindActionCreators(incomingUpdatedChatMessage, dispatch),
         // logoutAction: bindActionCreators(logout, dispatch),
         // simpleNewNotificationSocketAction: bindActionCreators(simpleNewNotificationSocket, dispatch),
         // getNotificationsAction: bindActionCreators(getNotifications, dispatch),

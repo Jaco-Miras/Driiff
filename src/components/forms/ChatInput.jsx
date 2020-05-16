@@ -1,8 +1,8 @@
-import React, {useRef, useState} from "react";
+import React, {useRef, useState, useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import styled from "styled-components";
 import {localizeDate} from "../../helpers/momentFormatJS";
-import {addChatMessage, createChatMessage, updateChatMessage} from "../../redux/actions/chatActions";
+import {addChatMessage, createChatMessage, updateChatMessage, setEditChatMessage} from "../../redux/actions/chatActions";
 import useQuillModules from "../hooks/useQuillModules";
 import QuillEditor from "./QuillEditor";
 
@@ -32,6 +32,7 @@ const ChatInput = props => {
     const selectedChannel = useSelector(state => state.chat.selectedChannel);
     const slugs = useSelector(state => state.global.slugs);
     const user = useSelector(state => state.session.user);
+    const editChatMessage = useSelector(state => state.chat.editChatMessage)
 
     const [text, setText] = useState("");
     const [textOnly, setTextOnly] = useState("");
@@ -191,6 +192,8 @@ const ChatInput = props => {
                     // }
                 }),
             );
+            setEditMode(false)
+            setEditMessage(null)
         } else {
             dispatch(
                 createChatMessage(payload, (err, data) => {
@@ -224,12 +227,23 @@ const ChatInput = props => {
 
     const handleQuillChange = (content, delta, source, editor) => {
 
-        if (selectedChannel === null) return;
+        if (selectedChannel === null) return
+
         const textOnly = editor.getText(content);
 
-        setText(content);
-        setTextOnly(textOnly);
-        setQuillContents(editor.getContents());
+        if (textOnly.trim() === "" && editMode) {
+            setEditMode(false)
+            setEditMessage(null)
+            //edit message in redux
+            console.log(editChatMessage !== null,)
+            if (editChatMessage !== null) {
+                dispatch(setEditChatMessage(null))
+            }
+        }
+
+        setText(content)
+        setTextOnly(textOnly)
+        setQuillContents(editor.getContents())
 
         if (editor.getContents().ops && editor.getContents().ops.length) {
             handleMentionUser(editor.getContents().ops.filter(m => m.insert.mention).map(i => i.insert.mention.id));
@@ -283,7 +297,50 @@ const ChatInput = props => {
         }
     };
 
-    const [modules] = useQuillModules("chat", handleSubmit);
+    const handleSetEditMessageStates = (reply) => {
+        reactQuillRef.current.getEditor().clipboard.dangerouslyPasteHTML(0, reply.body);
+        setText(reply.body)
+        setEditMessage(reply)
+        setEditMode(true)
+    }
+
+    const handleEditOnArrowUp = e => {
+        if (e.keyCode === 38) {
+            if (e.target.classList.contains("ql-editor")) {
+                if (e.target.innerText.trim() === "" && !e.target.contains(document.querySelector(".ql-editor .anchor-blot"))) {
+                    e.preventDefault();
+                    let lastReply = selectedChannel.replies.sort((a, b) => b.created_at.timestamp - a.created_at.timestamp)
+                        .filter(r => {
+                                if (selectedChannel.is_shared && slugs.length) {
+                                    return (slugs.filter(s => s.slug_name === selectedChannel.slug_owner)[0].external_id) && (typeof r.id === "number") && r.is_deleted === 0;
+                                } else {
+                                    return r.is_deleted === 0 && r.user && r.user.id === user.id && (typeof r.id === "number");
+                                }
+                            },
+                        )[0];
+
+                    if (typeof lastReply !== "undefined") {
+                        handleSetEditMessageStates(lastReply)
+                    }
+                }
+            }
+        }
+    };
+
+    useEffect(() => {
+        if (selectedChannel && selectedChannel.replies.length) {
+            document.addEventListener("keydown", handleEditOnArrowUp, false);
+        }
+        return () => document.removeEventListener("keydown", handleEditOnArrowUp, false);
+    }, [selectedChannel])
+
+    useEffect(() => {
+        if (editChatMessage && !editMode && editMessage === null) {
+            handleSetEditMessageStates(editChatMessage)
+        }
+    }, [editChatMessage])
+    
+    const [modules] = useQuillModules('chat', handleSubmit)
 
     return (
         <StyledQuillEditor

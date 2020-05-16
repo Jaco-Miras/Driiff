@@ -15,6 +15,12 @@ export default (state = INITIAL_STATE, action) => {
                 mentions: convertArrayToObject(action.data.result, "id"),
             };
         }
+        case "GET_ONLINE_USERS_SUCCESS": {
+            return {
+                ...state,
+                onlineUsers: action.data.result,
+            };
+        }
         default:
             return state;
     }

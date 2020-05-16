@@ -12,6 +12,7 @@ const INITIAL_STATE = {
     channelDrafts: [],
     unreadChatCount: 0,
     historicalPositions: [],
+    editChatMessage: null
 };
 
 export default function (state = INITIAL_STATE, action) {
@@ -432,6 +433,50 @@ export default function (state = INITIAL_STATE, action) {
                     ...state,
                     historicalPositions: [action.data],
                 };
+            }
+        }
+        case "INCOMING_UPDATED_CHAT_MESSAGE": {
+            let channel = null
+            if (Object.keys(state.channels).length > 0 && state.channels.hasOwnProperty(action.data.channel_id)) {
+                channel = {...state.channels[action.data.channel_id]}
+                channel = {
+                    ...channel,
+                    replies: channel.replies.map(r => {
+                        if (r.id === action.data.message_id) {
+                            return Object.assign({}, r, {
+                                body: action.data.body,
+                                mention_html: action.data.mention_html,
+                                updated_at: action.data.updated_at,
+                                unfurls: action.data.unfurls,
+                            });
+                        } else return r;
+                    }),
+                    last_reply: channel.last_reply && channel.last_reply.id === action.data.message_id ? {
+                        ...channel.last_reply,
+                        body: action.data.body,
+                    } : channel.last_reply,
+                }
+            }
+            return {
+                ...state,
+                channels: channel !== null ? 
+                    {
+                        ...state.channels,
+                        [action.data.channel_id]: channel
+                    }
+                : state.channels,
+                selectedChannel: state.selectedChannel && state.selectedChannel.id === action.data.channel_id ?
+                    {
+                        ...channel
+                    }
+                : state.selectedChannel,
+            };
+        }
+        case "SET_EDIT_CHAT_MESSAGE": {
+            return {
+                ...state,
+                //editChatMessage: action.data.set_to_null ? null : action.data
+                editChatMessage: action.data
             }
         }
         default:

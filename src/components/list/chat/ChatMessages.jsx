@@ -604,8 +604,8 @@ class ChatMessages extends React.PureComponent {
             }
             // has replies
             if (selectedChannel.replies.length) {
-                document.removeEventListener("keydown", this.handleEditOnArrowUp, false);
-                document.addEventListener("keydown", this.handleEditOnArrowUp, false);
+                // document.removeEventListener("keydown", this.handleEditOnArrowUp, false);
+                // document.addEventListener("keydown", this.handleEditOnArrowUp, false);
 
                 let hasUnreadMessage = selectedChannel.replies.filter(r => r.is_read === false).length > 0;
                 if (this.state.bottomRefInView && hasUnreadMessage && this.props.isBrowserActive && selectedChannel.is_read === 1) {

@@ -1,5 +1,5 @@
 import React, {useRef, useState} from "react";
-import {connect, useSelector} from "react-redux";
+import {useSelector, useDispatch} from "react-redux";
 import styled from "styled-components";
 import crossIcon from "../../../assets/icon/close/l/active.svg";
 import convoIcon from "../../../assets/icon/conversations/r/inactive.svg";
@@ -17,6 +17,7 @@ import {
     useTooltipOrientation,
     useTooltipPosition,
 } from "../../hooks/useTooltipOrientation";
+import {setEditChatMessage} from '../../../redux/actions/chatActions';
 
 const ChatMoreButtonDiv = styled.div`
   display: inline-flex;
@@ -170,6 +171,7 @@ const ForwardButton = styled.div`
 const ChatMessageOptions = props => {
     const {isAuthor, replyData, className = "", selectedChannel} = props;
     const [showMoreOptions, setShowMoreOptions] = useState(false);
+    const dispatch = useDispatch()
     const tooltipRef = useRef();
     const moreRef = useRef();
     const slugs = useSelector(state => state.global.slugs);
@@ -212,7 +214,8 @@ const ChatMessageOptions = props => {
         // props.addChatBoxAction(cb);
     };
     const handleEditReply = () => {
-        props.onEditReply(replyData);
+        dispatch(setEditChatMessage(replyData))
+        // props.onEditReply(replyData);
     };
     const handleQuoteReply = () => {
         props.onQuoteReply(replyData);
@@ -309,14 +312,4 @@ const ChatMessageOptions = props => {
     </ChatMoreButtonDiv>;
 };
 
-function mapDispatchToProps(dispatch) {
-    return {
-        // addChatBoxAction: bindActionCreators(addChatBox, dispatch),
-        // deleteChatMessageV2Action: bindActionCreators(deleteChatMessageV2, dispatch),
-    };
-}
-
-export default connect(
-    null,
-    mapDispatchToProps,
-)(React.memo(ChatMessageOptions));
+export default React.memo(ChatMessageOptions);
