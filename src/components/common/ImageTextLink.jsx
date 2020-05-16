@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import React, {forwardRef} from "react";
 import styled from "styled-components";
-import SvgImage from "./SvgImage";
+import {SvgIcon} from "./SvgIcon";
 
 const ImageTextLinkContainer = styled.span`
   justify-content: center;
@@ -83,8 +83,8 @@ const ImageTextLink = forwardRef((props, ref) => {
             data-event="touchstart focus mouseover" data-event-off="mouseout" data-tip={dataTip}
         >
             {iconLeft && (
-                <SvgImage
-                    className={`svg-image-icon-left`}
+                <SvgIcon
+                    className={`svg-icon-left`}
                     onClick={e => handleLeftIconClick(e)}
                     icon={iconLeft}
                     rotate={iconLeftRotate}
@@ -97,24 +97,24 @@ const ImageTextLink = forwardRef((props, ref) => {
                 onClick={e => handleOnClick(e)}
             >
                 {(iconPosition === "right" || iconPosition === "both") && icon && (
-                    <SvgImage
-                        className={`svg-image-icon-right`}
+                    <SvgIcon
+                        className={`svg-icon-right`}
                         icon={icon}
                         rotate={rotate}
                     />
                 )}
                 {children}
                 {(iconPosition === "left" || iconPosition === "both") && icon && (
-                    <SvgImage
-                        className={`svg-image-icon-left`}
+                    <SvgIcon
+                        className={`svg-icon-left`}
                         icon={icon}
                         rotate={rotate}
                     />
                 )}
             </a>
             {iconRight && (
-                <SvgImage
-                    className={`svg-image-icon-right`}
+                <SvgIcon
+                    className={`svg-icon-right`}
                     onClick={e => handleRightIconClick(e)}
                     icon={iconRight}
                     rotate={iconRightRotate}
