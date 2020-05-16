@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {Route, Switch, useLocation, withRouter} from "react-router-dom";
 import styled from "styled-components";
-import {Icon} from "../components/common";
+import {SvgIcon} from "../components/common/SvgIcon";
 import useUserLogin from "../components/hooks/useUserLogin";
 import {LoginPanel, RegisterPanel, ResetPasswordPanel} from "../components/panels";
 
@@ -40,7 +40,7 @@ const GuestLayout = (props) => {
     return (
         <Wrapper className="form-wrapper">
             <div id="logo">
-                <Icon type={`driff-logo`} width={`110px`} height={`80px`} bgColor={`#7a1b8c`}/>
+                <SvgIcon icon={`driff-logo`} width="110" height="80"/>
             </div>
 
             <h5>{title}</h5>

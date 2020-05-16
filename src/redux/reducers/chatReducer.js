@@ -10,7 +10,7 @@ const INITIAL_STATE = {
     selectedChannel: null,
     startNewChannels: {},
     channelDrafts: [],
-    unreadChatCount: 0
+    unreadChatCount: 0,
 };
 
 export default function (state = INITIAL_STATE, action) {
@@ -125,7 +125,7 @@ export default function (state = INITIAL_STATE, action) {
             };
         }
         case "GET_CHAT_MESSAGES_SUCCESS": {
-            let channel = {...state.channels[action.data.channel_id]}
+            let channel = {...state.channels[action.data.channel_id]};
             channel = {
                 ...channel,
                 replies: [...action.data.results.map(r => {
@@ -155,36 +155,36 @@ export default function (state = INITIAL_STATE, action) {
                 read_only: action.data.read_only,
                 hasMore: action.data.results.length === 20,
                 skip: channel.skip === 0 && channel.replies.length ?
-                        channel.replies.length + 20 : channel.skip + 20,
-            }
+                    channel.replies.length + 20 : channel.skip + 20,
+            };
             return {
                 ...state,
                 channels: {
                     ...state.channels,
-                    [action.data.channel_id]: channel
+                    [action.data.channel_id]: channel,
                 },
-                selectedChannel: channel.id === state.selectedChannel.id ? channel : state.selectedChannel
+                selectedChannel: channel.id === state.selectedChannel.id ? channel : state.selectedChannel,
             };
         }
         case "MARK_ALL_MESSAGES_AS_READ": {
-            let channel = {...state.channels[action.data.channel_id]}
+            let channel = {...state.channels[action.data.channel_id]};
             channel = {
                 ...channel,
                 replies: channel.replies.map(r => {
                     return {
                         ...r,
-                        is_read: true
-                    }
-                })
-            }
+                        is_read: true,
+                    };
+                }),
+            };
             return {
                 ...state,
-                selectedChannel: state.selectedChannel && state.selectedChannel.id === action.data.channel_id  ?
+                selectedChannel: state.selectedChannel && state.selectedChannel.id === action.data.channel_id ?
                     channel : state.selectedChannel,
                 channels: {
                     ...state.channels,
-                    [action.data.channel_id]: channel
-                }
+                    [action.data.channel_id]: channel,
+                },
             };
         }
         case "UPDATE_UNREAD_CHAT_REPLIES": {
@@ -193,22 +193,22 @@ export default function (state = INITIAL_STATE, action) {
                 selectedChannel: action.data.id === state.selectedChannel.id ? action.data : state.selectedChannel,
                 channels: {
                     ...state.channels,
-                    [action.data.id]: action.data
+                    [action.data.id]: action.data,
                 },
                 unreadChatCount: state.unreadChatCount > 0 ? state.unreadChatCount - action.data.minus_count : state.unreadChatCount,
             };
         }
         case "ADD_CHAT_MESSAGE": {
-            let channel = {...state.channels[action.data.channel_id]}
+            let channel = {...state.channels[action.data.channel_id]};
             channel = {
                 ...channel,
-                replies: [...channel.replies, action.data]
-            }
+                replies: [...channel.replies, action.data],
+            };
             return {
                 ...state,
                 channels: {
                     ...state.channels,
-                    [action.data.channel_id]: channel
+                    [action.data.channel_id]: channel,
                 },
                 selectedChannel: state.selectedChannel.id === action.data.channel_id ?
                     {
@@ -224,19 +224,19 @@ export default function (state = INITIAL_STATE, action) {
                 state.selectedChannel.replies.forEach(rep => {
                     if (rep.reference_id === action.data.reply.reference_id) {
                         haveReference = true;
-                        return
+
                     }
                 });
             }
-            let channel = null
+            let channel = null;
             if (Object.keys(state.channels).length > 0 && state.channels.hasOwnProperty(action.data.reply.channel_id)) {
-                channel = {...state.channels[action.data.reply.channel_id]}
+                channel = {...state.channels[action.data.reply.channel_id]};
                 channel = {
                     ...channel,
                     replies: [...channel.replies, action.data.reply],
                     last_visited_at_timestamp: getCurrentTimestamp(),
                     last_reply: action.data.last_reply,
-                }
+                };
             }
             return {
                 ...state,
@@ -254,36 +254,36 @@ export default function (state = INITIAL_STATE, action) {
                             })
                             : [...state.selectedChannel.replies, action.data.reply],
                     }
-                : state.selectedChannel,
-                channels: channel !== null ? 
+                    : state.selectedChannel,
+                channels: channel !== null ?
                     {
                         ...state.channels,
-                        [action.data.reply.channel_id]: channel
+                        [action.data.reply.channel_id]: channel,
                     }
-                : state.channels
+                    : state.channels,
             };
         }
         case "INCOMING_CHAT_MESSAGE_FROM_OTHERS": {
-            let channel = null
+            let channel = null;
             if (Object.keys(state.channels).length > 0 && state.channels.hasOwnProperty(action.data.reply.channel_id)) {
-                channel = {...state.channels[action.data.reply.channel_id]}
+                channel = {...state.channels[action.data.reply.channel_id]};
                 channel = {
                     ...channel,
                     replies: [...channel.replies, action.data.reply],
                     last_reply: action.data.last_reply,
-                    total_unread: state.selectedChannel && state.selectedChannel.id === action.data.reply.channel_id 
-                        ? channel.total_unread 
-                        : channel.total_unread + 1
-                }
+                    total_unread: state.selectedChannel && state.selectedChannel.id === action.data.reply.channel_id
+                        ? channel.total_unread
+                        : channel.total_unread + 1,
+                };
             }
             return {
                 ...state,
-                channels: channel !== null ? 
+                channels: channel !== null ?
                     {
                         ...state.channels,
-                        [action.data.reply.channel_id]: channel
+                        [action.data.reply.channel_id]: channel,
                     }
-                : state.channels,
+                    : state.channels,
                 selectedChannel: state.selectedChannel && state.selectedChannel.id === action.data.reply.channel_id ?
                     {
                         ...state.selectedChannel,

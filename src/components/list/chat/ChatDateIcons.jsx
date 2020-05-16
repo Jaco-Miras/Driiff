@@ -1,8 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import {localizeChatChannelDate} from "../../../helpers/momentFormatJS";
-//import BadgeIcon from "../../common/BadgeIcon";
-import SvgImage from "../../common/SvgImage";
+import {SvgIcon} from "../../common/SvgIcon";
 
 const DateIconsContainer = styled.div`
   text-align: right;
@@ -18,13 +17,13 @@ const DateIconsContainer = styled.div`
     color: #676767;
   }
 `;
-const MuteIcon = styled(SvgImage)`
+const MuteIcon = styled(SvgIcon)`
     filter: brightness(0) saturate(100%) invert(43%) sepia(19%) saturate(0%) hue-rotate(214deg) brightness(87%) contrast(86%);      
     position: relative;
     top: -3px;
     right: 5px;
 `;
-const PinIcon = styled(SvgImage)`
+const PinIcon = styled(SvgIcon)`
     filter: brightness(0) saturate(100%) invert(43%) sepia(19%) saturate(0%) hue-rotate(214deg) brightness(60%) contrast(86%);    
     position: relative;
     top: -3px;
@@ -42,11 +41,11 @@ const ChatDateIcons = props => {
     const {channel, optionsVisible} = props;
     const handleNotificationBadges = () => {
         if (channel.is_read === 0) {
-            return <Badge className={`badge badge-primary badge-pill ml-auto unread`}>0</Badge>
+            return <Badge className={`badge badge-primary badge-pill ml-auto unread`}>0</Badge>;
             //return (<span className={`badge-container unread`} value={""}><BadgeIcon/></span>);
         } else {
             if (channel.total_unread > 0) {
-                return <Badge className="badge badge-primary badge-pill ml-auto">{channel.total_unread}</Badge>
+                return <Badge className="badge badge-primary badge-pill ml-auto">{channel.total_unread}</Badge>;
                 //return (<span className={`badge-container`}><BadgeIcon value={channel.total_unread}/></span>);
             } else {
                 return null;

@@ -38,7 +38,7 @@ export function setNavMode(payload, callback) {
 }
 
 export function toggleLoading(payload, callback) {
-    console.log(payload)
+    console.log(payload);
     return SimpleDispatchActionToReducer(
         "TOGGLE_LOADING",
         payload,

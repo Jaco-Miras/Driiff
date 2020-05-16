@@ -1,22 +1,15 @@
-import React, {useState} from "react";
-import {SlateContent, SlateEditor} from "slate-editor";
+import React from "react";
 import styled from "styled-components";
-import ChatInput from '../../forms/ChatInput';
+import ChatInput from "../../forms/ChatInput";
 
 const Wrapper = styled.div`
-`;
-
-const ReplyInput = styled(SlateEditor)`
 `;
 
 const ChatFooterPanel = (props) => {
 
     const {className = ""} = props;
 
-    const {reply, setReply} = useState("Test");
-
     const handleSubmit = (e) => {
-        setReply("Test");
     };
 
     return (
@@ -36,10 +29,10 @@ const ChatFooterPanel = (props) => {
                 <div className="flex-grow-1">
                     <ChatInput/>
                     {/* test
-                    <ReplyInput
-                        className="form-control" placeholder="Write your message">
-                        <SlateContent value={reply}/>
-                    </ReplyInput> */}
+                     <ReplyInput
+                     className="form-control" placeholder="Write your message">
+                     <SlateContent value={reply}/>
+                     </ReplyInput> */}
                 </div>
                 <div className="chat-footer-buttons d-flex">
                     <button onClick={handleSubmit} className="btn btn-primary" type="submit">

@@ -38,7 +38,7 @@ const DashboardLayout = (props) => {
     useEffect(() => {
         dispatch(getUserSettings());
         dispatch(getAllRecipients());
-        dispatch(getMentions())
+        dispatch(getMentions());
         //eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 

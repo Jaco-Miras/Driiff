@@ -105,7 +105,7 @@ const useUserLogin = (props) => {
                 }),
             );
         }
-    }, [path]);
+    }, [path, dispatch, props]);
 };
 
 export default useUserLogin;

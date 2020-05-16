@@ -14,14 +14,14 @@ import {pushBrowserNotification} from "../../helpers/pushHelper";
 import {updateFaviconState} from "../../helpers/slugHelper";
 import {stripHtml} from "../../helpers/stringFormatter";
 import {urlify} from "../../helpers/urlContentHelper";
-import {getConnectedSlugs, setBrowserTabStatus} from "../../redux/actions/globalActions";
-import {getOnlineUsers, getUser} from "../../redux/actions/userAction";
 import {
-    updateMemberTimestamp, 
-    markAllMessagesAsRead, 
     incomingChatMessage,
     incomingChatMessageFromOthers,
+    markAllMessagesAsRead,
+    updateMemberTimestamp,
 } from "../../redux/actions/chatActions";
+import {getConnectedSlugs, setBrowserTabStatus} from "../../redux/actions/globalActions";
+import {getOnlineUsers, getUser} from "../../redux/actions/userAction";
 // import {
 //     addChatBox,
 //     addChatMembers,
@@ -666,7 +666,7 @@ class Socket extends PureComponent {
                             channel_id: e.channel_id,
                             g_date: localizeDate(e.created_at.timestamp, "YYYY-MM-DD"),
                             code: e.code,
-                        }
+                        },
                     };
 
                     if (e.message_original) {
@@ -725,7 +725,7 @@ class Socket extends PureComponent {
                             if (!(this.props.selectedChannel && this.props.selectedChannel.id === e.channel_id && document.querySelector("body").classList.contains("visible"))
                                 && (Object.entries(this.props.settings).length === 0 ||
                                     this.props.settings.DISABLE_SOUND !== "1")) {
-                                        //@todo
+                                //@todo
                                 // audio.play({
                                 //     onplay: () => {
                                 //     },
@@ -759,7 +759,7 @@ class Socket extends PureComponent {
                         channel_id: e.channel_id,
                         g_date: localizeDate(e.created_at.timestamp, "YYYY-MM-DD"),
                         code: e.code,
-                        reference_id: e.reference_id
+                        reference_id: e.reference_id,
                     };
 
                     if (e.message_original) {
@@ -1293,11 +1293,11 @@ class Socket extends PureComponent {
 }
 
 function mapStateToProps({
-        session: {user},
-        settings: {userSettings},
-        chat: {channels, selectedChannel},
-        posts: {posts},
-    }) {
+                             session: {user},
+                             settings: {userSettings},
+                             chat: {channels, selectedChannel},
+                             posts: {posts},
+                         }) {
     return {
         user,
         settings: userSettings,

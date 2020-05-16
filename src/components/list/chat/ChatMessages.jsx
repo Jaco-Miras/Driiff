@@ -6,11 +6,12 @@ import {withRouter} from "react-router-dom";
 import {bindActionCreators} from "redux";
 import styled from "styled-components";
 import {localizeChatTimestamp, localizeDate} from "../../../helpers/momentFormatJS";
-import { getChatMessages, 
-    setSelectedChannel, 
-    markReadChannel, 
-    updateChannelReducer,
+import {
+    getChatMessages,
     markAllMessagesAsRead,
+    markReadChannel,
+    setSelectedChannel,
+    updateChannelReducer,
     updateUnreadChatReplies,
 } from "../../../redux/actions/chatActions";
 // import {
@@ -504,9 +505,9 @@ class ChatMessages extends React.PureComponent {
 
     componentDidMount() {
         const {
-            selectedChannel, 
-            sharedSlugs, 
-            markReadChannel, 
+            selectedChannel,
+            sharedSlugs,
+            markReadChannel,
             updateChannelReducer,
         } = this.props;
         //document.addEventListener("keydown", this.handleEditOnArrowUp, false);
@@ -526,18 +527,18 @@ class ChatMessages extends React.PureComponent {
                     });
                 }
             } else {
-                markReadChannel({channel_id: selectedChannel.id})
+                markReadChannel({channel_id: selectedChannel.id});
             }
             let updatedChannel = {
                 ...selectedChannel,
                 total_unread: 0,
             };
-            updateChannelReducer(updatedChannel)
+            updateChannelReducer(updatedChannel);
         }
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        const {selectedChannel, markReadChannel, markAllMessagesAsRead, updateUnreadChatReplies } = this.props;
+        const {selectedChannel, markReadChannel, markAllMessagesAsRead, updateUnreadChatReplies} = this.props;
         // if (selectedChannel.replies.length && !this.state.fetchingReplies) {
         //     this.attachedImgEventListener();
         //     this.attachedClickListenerToChatUrl();
@@ -545,7 +546,7 @@ class ChatMessages extends React.PureComponent {
 
         //change channel
         if (prevProps.selectedChannel && prevProps.selectedChannel.id !== selectedChannel.id) {
-            if (selectedChannel.skip === 0) this.loadReplies()
+            if (selectedChannel.skip === 0) this.loadReplies();
         }
 
         // has replies
