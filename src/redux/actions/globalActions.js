@@ -1,5 +1,9 @@
 import dispatchActionToReducer, {SimpleDispatchActionToReducer} from "../actionDispatcher";
-import {getAllRecipients as getAllRecipientsService, getConnectedSlugs as getConnectedSlugsService} from "../services";
+import {
+    getAllRecipients as getAllRecipientsService, 
+    getConnectedSlugs as getConnectedSlugsService,
+    generateUnfurl as generateUnfurlService,
+} from "../services";
 
 export function setBrowserTabStatus(payload, callback) {
     return SimpleDispatchActionToReducer(
@@ -41,6 +45,24 @@ export function toggleLoading(payload, callback) {
     console.log(payload)
     return SimpleDispatchActionToReducer(
         "TOGGLE_LOADING",
+        payload,
+        callback,
+    );
+}
+
+export function generateUnfurl(payload, callback) {
+    return dispatchActionToReducer(
+        generateUnfurlService(payload),
+        "GENERATE_UNFURL_START",
+        "GENERATE_UNFURL_SUCCESS",
+        "GENERATE_UNFURL_FAILURE",
+        callback,
+    );
+}
+
+export function generateUnfurlReducer(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "GENERATE_UNFURL_REDUCER",
         payload,
         callback,
     );

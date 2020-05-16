@@ -9,6 +9,7 @@ export {
     getChatMessages,
     createChatMessage,
     updateChatMessage,
+    chatReaction,
 } from "./chat";
 
 export {
@@ -29,4 +30,5 @@ export {
 export {
     getConnectedSlugs,
     getAllRecipients,
+    generateUnfurl,
 } from "./global";

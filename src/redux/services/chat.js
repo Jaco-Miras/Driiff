@@ -98,3 +98,13 @@ export function updateChatMessage(payload) {
         is_shared: payload.topic_id ? true : false,
     });
 }
+
+export function chatReaction(payload) {
+    let url = `/v2/post-message-react`;
+    return apiCall({
+        method: "POST",
+        url: url,
+        data: payload,
+        is_shared: payload.is_shared ? true : false,
+    });
+}

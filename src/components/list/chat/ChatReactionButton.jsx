@@ -2,7 +2,9 @@ import React, {useRef, useState} from "react";
 import styled from "styled-components";
 import EmojiButton from "../../common/EmojiButton";
 import PickerEmoji from "../../common/PickerEmoji";
+import {useDispatch} from 'react-redux';
 import {useTooltipHorizontalOrientation, useTooltipOrientation} from "../../hooks/useTooltipOrientation";
+import {chatReaction} from '../../../redux/actions/chatActions';
 
 const ChatReactionButtonContainer = styled.div`
     border-radius:50%;    
@@ -29,6 +31,8 @@ const StyledPickerEmoji = styled(PickerEmoji)`
 
 const ChatReactionButton = props => {
     const {isAuthor, reply, scrollRef = null} = props;
+
+    const dispatch = useDispatch();
     const pickerRef = useRef();
     const chatOptionsRef = useRef();
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
@@ -41,9 +45,9 @@ const ChatReactionButton = props => {
             message_id: reply.id,
             react_type: e.id,
         };
-        props.chatReactionAction(payload, (err, res) => {
-            console.log(res, "chat reaction response");
-        });
+        dispatch(
+            chatReaction(payload)
+        )
     };
 
     const handlePickerMouseLeave = () => {

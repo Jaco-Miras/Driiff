@@ -14,13 +14,21 @@ import {pushBrowserNotification} from "../../helpers/pushHelper";
 import {updateFaviconState} from "../../helpers/slugHelper";
 import {stripHtml} from "../../helpers/stringFormatter";
 import {urlify} from "../../helpers/urlContentHelper";
-import {getConnectedSlugs, setBrowserTabStatus} from "../../redux/actions/globalActions";
+import {
+    getConnectedSlugs, 
+    setBrowserTabStatus,
+    generateUnfurl,
+    generateUnfurlReducer,
+} from "../../redux/actions/globalActions";
 import {getOnlineUsers, getUser} from "../../redux/actions/userAction";
 import {
     updateMemberTimestamp, 
     markAllMessagesAsRead, 
     incomingChatMessage,
     incomingChatMessageFromOthers,
+    updateChannelReducer,
+    incomingArchivedChannel,
+    incomingChatMessageReaction,
 } from "../../redux/actions/chatActions";
 // import {
 //     addChatBox,
@@ -545,7 +553,7 @@ class Socket extends PureComponent {
                 this.props.incomingUpdatedChatChannelNameAction(data);
             })
             .listen(".member-update-timestamp", e => {
-                console.log("seen member", e);
+                //console.log("seen member", e);
                 this.props.updateMemberTimestamp(e);
             })
             .listen(".chat-notification", e => {
@@ -564,13 +572,12 @@ class Socket extends PureComponent {
 
                 let urlArray = [...new Set(urlify(e.message))];
                 if (urlArray.length) {
-                    this.props.generateUnfurlAction({
+                    this.props.generateUnfurl({
                         type: "chat",
                         message_id: e.entity_id,
                         link_url: urlArray[0],
                     }, (err, res) => {
                         if (res) {
-                            console.log(res);
                             this.props.generateUnfurlReducer({
                                 unfurls: res.data.unfurls,
                                 channel_id: e.channel_id,
@@ -581,45 +588,6 @@ class Socket extends PureComponent {
                         }
                     });
                 }
-                // @todo
-                //check if the incoming message is from hidden channel
-                // let channelFound = false;
-                // let isChannelHidden = false;
-                // this.props.activeChatChannels.forEach(ac => {
-                //     if (ac.id === e.channel_id) {
-                //         channelFound = true;
-                //         isChannelHidden = !!ac.is_hidden;
-                //     }
-                // });
-
-                // if (channelFound) {
-                //     if (isChannelHidden) {
-                //         this.props.getChatChannelAction({channel_id: e.channel_id}, (err, res) => {
-                //             if (err) return;
-                //             let channel = {
-                //                 ...res.data,
-                //                 selected: false,
-                //                 is_hidden: 0,
-                //                 replies: [],
-                //                 skip: 0,
-                //                 hasMore: true,
-                //             };
-                //             this.props.updateChannelAction(channel);
-                //         });
-                //     }
-                // } else {
-                //     this.props.getChatChannelAction({channel_id: e.channel_id}, (err, res) => {
-                //         if (err) return;
-                //         let channel = {
-                //             ...res.data,
-                //             selected: false,
-                //             replies: [],
-                //             skip: 0,
-                //             hasMore: true,
-                //         };
-                //         this.props.addActiveChatChannelsAction([channel]);
-                //     });
-                // }
 
                 let fromUser = {};
                 if (e.message_from === 0) {
@@ -691,7 +659,7 @@ class Socket extends PureComponent {
 
                     this.props.incomingChatMessageFromOthers(payload);
 
-                    //@todo
+                    //@todo together with service worker
                     //if incoming chat message is on selected channel and current url is not on chat page
                     // if (this.props.selectedChannel && this.props.selectedChannel.id === e.channel_id && this.props.match.path !== "/chat") {
                     //     if (e.id !== 0) {
@@ -944,7 +912,7 @@ class Socket extends PureComponent {
             })
             .listen(".archived-chat-channel", e => {
                 console.log(e, "archived chat");
-                this.props.incomingArchivedChatAction(e.channel_data);
+                this.props.incomingArchivedChannel(e.channel_data);
             })
             .listen(".new-chat-channel", e => {
                 console.log(e, "chat channel");
@@ -1317,6 +1285,11 @@ function mapDispatchToProps(dispatch) {
         markAllMessagesAsRead: bindActionCreators(markAllMessagesAsRead, dispatch),
         incomingChatMessage: bindActionCreators(incomingChatMessage, dispatch),
         incomingChatMessageFromOthers: bindActionCreators(incomingChatMessageFromOthers, dispatch),
+        generateUnfurl: bindActionCreators(generateUnfurl, dispatch),
+        generateUnfurlReducer: bindActionCreators(generateUnfurlReducer, dispatch),
+        updateChannelReducer: bindActionCreators(updateChannelReducer, dispatch),
+        incomingArchivedChannel: bindActionCreators(incomingArchivedChannel, dispatch),
+        incomingChatMessageReaction: bindActionCreators(incomingChatMessageReaction, dispatch),
         // logoutAction: bindActionCreators(logout, dispatch),
         // simpleNewNotificationSocketAction: bindActionCreators(simpleNewNotificationSocket, dispatch),
         // getNotificationsAction: bindActionCreators(getNotifications, dispatch),

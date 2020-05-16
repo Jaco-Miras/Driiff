@@ -10,7 +10,8 @@ const INITIAL_STATE = {
     selectedChannel: null,
     startNewChannels: {},
     channelDrafts: [],
-    unreadChatCount: 0
+    unreadChatCount: 0,
+    historicalPositions: [],
 };
 
 export default function (state = INITIAL_STATE, action) {
@@ -233,6 +234,7 @@ export default function (state = INITIAL_STATE, action) {
                 channel = {...state.channels[action.data.reply.channel_id]}
                 channel = {
                     ...channel,
+                    is_hidden: 0,
                     replies: [...channel.replies, action.data.reply],
                     last_visited_at_timestamp: getCurrentTimestamp(),
                     last_reply: action.data.last_reply,
@@ -270,6 +272,7 @@ export default function (state = INITIAL_STATE, action) {
                 channel = {
                     ...channel,
                     replies: [...channel.replies, action.data.reply],
+                    is_hidden: 0,
                     last_reply: action.data.last_reply,
                     total_unread: state.selectedChannel && state.selectedChannel.id === action.data.reply.channel_id 
                         ? channel.total_unread 
@@ -292,6 +295,144 @@ export default function (state = INITIAL_STATE, action) {
                     }
                     : state.selectedChannel,
             };
+        }
+        case "GENERATE_UNFURL_REDUCER": {
+            if (action.data.channel_id) {
+                let channel = null
+                if (Object.keys(state.channels).length > 0 && state.channels.hasOwnProperty(action.data.channel_id)) {
+                    channel = {...state.channels[action.data.channel_id]}
+                    channel = {
+                        ...channel,
+                        replies: channel.replies.map(r => {
+                            if (r.id === action.data.message_id) {
+                                return {
+                                    ...r,
+                                    unfurls: action.data.unfurls,
+                                    unfurl_loading: false,
+                                };
+                            } else {
+                                return r;
+                            }
+                        })
+                    }
+                }
+                return {
+                    ...state,
+                    selectedChannel: state.selectedChannel && state.selectedChannel.id === action.data.channel_id ?
+                        {
+                            ...state.selectedChannel,
+                            replies: state.selectedChannel.replies.map(r => {
+                                if (r.id === action.data.message_id) {
+                                    return {
+                                        ...r,
+                                        unfurls: action.data.unfurls,
+                                        unfurl_loading: false,
+                                    };
+                                } else {
+                                    return r;
+                                }
+                            }),
+                        }
+                        : state.selectedChannel,
+                    channels: channel !== null ? 
+                        {
+                            ...state.channels,
+                            [action.data.channel_id]: channel
+                        }
+                    : state.channels,
+                };
+            } else {
+                return state;
+            }
+        }
+        case "INCOMING_ARCHIVED_CHANNEL": {
+            let channel = null
+            if (Object.keys(state.channels).length > 0 && state.channels.hasOwnProperty(action.data.channel_id)) {
+                channel = {...state.channels[action.data.channel_id]}
+                channel = {
+                    ...channel,
+                    is_archived:  action.data.status === "ARCHIVED" ? 1 : 0
+                }
+            }
+            return {
+                ...state,
+                channels: channel !== null ? 
+                    {
+                        ...state.channels,
+                        [action.data.channel_id]: channel
+                    }
+                : state.channels,
+                selectedChannel: state.selectedChannel && state.selectedChannel.id === action.data.channel_id ?
+                    {
+                        ...state.selectedChannel,
+                        is_archived: action.data.status === "ARCHIVED" ? 1 : 0,
+                    }
+                : state.selectedChannel,
+            };
+        }
+        case "INCOMING_CHAT_MESSAGE_REACTION": {
+            let channel = null
+            if (Object.keys(state.channels).length > 0 && state.channels.hasOwnProperty(action.data.channel_id)) {
+                channel = {...state.channels[action.data.channel_id]}
+                channel = {
+                    ...channel,
+                    replies: channel.replies.map(r => {
+                        if (r.id === action.data.message_id) {
+                            if (action.data.status === "CREATED") {
+                                let reactions = r.reactions.filter(reaction => reaction.id !== action.data.id);
+                                return Object.assign({}, r, {reactions: [...reactions, action.data]});
+                            } else {
+                                return Object.assign({}, r, {reactions: r.reactions.filter(reaction => reaction.id !== action.data.id)});
+                            }
+                        } else return r;
+                    })
+                }
+            }
+            return {
+                ...state,
+                channels: channel !== null ? 
+                    {
+                        ...state.channels,
+                        [action.data.channel_id]: channel
+                    }
+                : state.channels,
+                selectedChannel: state.selectedChannel && state.selectedChannel.id === action.data.channel_id ?
+                    {
+                        ...channel
+                    }
+                : state.selectedChannel,
+            };
+        }
+        case "SET_CHANNEL_HISTORICAL_POSITION": {
+            let channelExists = false;
+            if (state.historicalPositions.length) {
+                state.historicalPositions.forEach(hp => {
+                    if (hp.channel_id === action.data.channel_id) {
+                        channelExists = true;
+                        return
+                    }
+                });
+                if (channelExists) {
+                    return {
+                        ...state,
+                        historicalPositions: state.historicalPositions.map(h => {
+                            if (h.channel_id === action.data.channel_id) {
+                                return action.data;
+                            } else return h;
+                        }),
+                    };
+                } else {
+                    return {
+                        ...state,
+                        historicalPositions: [...state.historicalPositions, action.data],
+                    };
+                }
+            } else {
+                return {
+                    ...state,
+                    historicalPositions: [action.data],
+                };
+            }
         }
         default:
             return state;

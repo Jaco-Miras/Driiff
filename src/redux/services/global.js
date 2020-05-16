@@ -15,3 +15,15 @@ export function getAllRecipients(payload) {
         url: `/v1/recipients?is_shared_topic=1`,
     });
 }
+
+export function generateUnfurl(payload) {
+    let url = `/v2/post-message-unfurl`;
+    if (payload.type === "task") {
+        url = `/v2/task-comment-unfurl`;
+    }
+    return apiCall({
+        method: "POST",
+        url: url,
+        data: payload,
+    });
+}

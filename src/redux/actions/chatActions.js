@@ -9,6 +9,7 @@ import {
     markUnreadChannel as markUnreadChannelService,
     updateChannel as updateChannelService,
     updateChatMessage as updateChatMessageService,
+    chatReaction as chatReactionService,
 } from "../services";
 
 
@@ -169,6 +170,40 @@ export function incomingChatMessage(payload, callback) {
 export function incomingChatMessageFromOthers(payload, callback) {
     return SimpleDispatchActionToReducer(
         "INCOMING_CHAT_MESSAGE_FROM_OTHERS",
+        payload,
+        callback,
+    );
+}
+
+export function incomingArchivedChannel(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "INCOMING_ARCHIVED_CHANNEL",
+        payload,
+        callback,
+    );
+}
+
+export function chatReaction(payload, callback) {
+    return dispatchActionToReducer(
+        chatReactionService(payload),
+        "CHAT_REACTIONS_START",
+        "CHAT_REACTIONS_SUCCESS",
+        "CHAT_REACTIONS_FAILURE",
+        callback,
+    );
+}
+
+export function incomingChatMessageReaction(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "INCOMING_CHAT_MESSAGE_REACTION",
+        payload,
+        callback,
+    );
+}
+
+export function setChannelHistoricalPosition(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "SET_CHANNEL_HISTORICAL_POSITION",
         payload,
         callback,
     );

@@ -96,13 +96,6 @@ const ChatReactions = props => {
         <ChatReactionsContainer isAuthor={isAuthor}>
             {
                 groupedReactions.slice(0, 7).map(r => {
-                    // let userReacted = false
-                    // r.reactions.forEach(u => {
-                    //     if (u.user_id === loggedUser.id) {
-                    //         userReacted = true
-                    //         return
-                    //     }
-                    // })
                     return (
                         <EmojiReaction
                             userReacted={false}

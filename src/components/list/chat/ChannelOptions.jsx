@@ -397,7 +397,30 @@ const ChannelOptions = props => {
     };
 
     const handleCloseArchiveChat = () => {
-        props.handleShowArchiveConfirmation(channel);
+        // let payload = {
+        //     id: channel.id,
+        //     is_pinned: channel.is_pinned,
+        //     is_archived: channel.is_archived === 0 ? 1 : 0,
+        //     is_muted: channel.is_muted,
+        //     title: channel.title,
+        // };
+        // if (sharedChannel && sharedSlugs.length) {
+        //     payload = {
+        //         ...payload,
+        //         is_shared: true,
+        //         token: sharedSlugs.filter(s => s.slug_name === channel.slug_owner)[0].access_token,
+        //         slug: sharedSlugs.filter(s => s.slug_name === channel.slug_owner)[0].slug_name,
+        //     };
+        // }
+        // dispatch(updateChannel(payload, (err, res) => {
+        //     if (err) return;
+        //     let updatedChannel = {
+        //         ...channel,
+        //         is_muted: !channel.is_muted,
+        //     };
+        //     dispatch(updateChannelReducer(updatedChannel));
+        // }));
+        //props.handleShowArchiveConfirmation(channel);
     };
 
     const handleMarkAsUnreadSelected = e => {
