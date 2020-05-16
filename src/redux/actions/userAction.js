@@ -1,8 +1,8 @@
 import dispatchActionToReducer from "../actionDispatcher";
 import {
     authenticateGoogleLogin as authenticateGoogleLoginService,
-    getOnlineUsers as getOnlineUsersService,
     getMentions as getMentionsService,
+    getOnlineUsers as getOnlineUsersService,
     getUser as getUserService,
     googleLogin as googleLoginService,
     login as loginService,

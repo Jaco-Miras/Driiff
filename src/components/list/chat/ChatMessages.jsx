@@ -6,13 +6,14 @@ import {withRouter} from "react-router-dom";
 import {bindActionCreators} from "redux";
 import styled from "styled-components";
 import {localizeChatTimestamp, localizeDate} from "../../../helpers/momentFormatJS";
-import { getChatMessages, 
-    setSelectedChannel, 
-    markReadChannel, 
-    updateChannelReducer,
+import {
+    getChatMessages,
     markAllMessagesAsRead,
-    updateUnreadChatReplies,
+    markReadChannel,
     setChannelHistoricalPosition,
+    setSelectedChannel,
+    updateChannelReducer,
+    updateUnreadChatReplies,
 } from "../../../redux/actions/chatActions";
 // import {
 //     addChatBox,
@@ -441,7 +442,7 @@ class ChatMessages extends React.PureComponent {
         this.props.setChannelHistoricalPosition({
             channel_id: this.props.selectedChannel.id,
             scrollPosition: scrollComponent.scrollHeight - scrollComponent.scrollTop,
-        })
+        });
         document.removeEventListener("keydown", this.handleEditOnArrowUp, false);
     }
 
@@ -532,32 +533,32 @@ class ChatMessages extends React.PureComponent {
                     });
                 }
             } else {
-                markReadChannel({channel_id: selectedChannel.id})
+                markReadChannel({channel_id: selectedChannel.id});
             }
             let updatedChannel = {
                 ...selectedChannel,
                 total_unread: 0,
             };
-            updateChannelReducer(updatedChannel)
+            updateChannelReducer(updatedChannel);
         }
-    }
+    };
 
     componentDidMount() {
         const {
-            selectedChannel
+            selectedChannel,
         } = this.props;
         //document.addEventListener("keydown", this.handleEditOnArrowUp, false);
         // this.setState({activeChannelId: this.props.selectedChannel.id});
 
         if (selectedChannel.skip === 0) this.loadReplies();
-        this.handleReadChannel()
+        this.handleReadChannel();
     }
 
     getSnapshotBeforeUpdate(prevProps, prevState) {
         const {selectedChannel} = this.props;
         const scrollComponent = this.scrollComponent.current;
         if (prevProps.selectedChannel) {
-            
+
             if (scrollComponent) {
                 if (selectedChannel.replies.length > 20 & prevProps.selectedChannel.replies.length < selectedChannel.replies.length) {
                     return scrollComponent.scrollHeight - scrollComponent.scrollTop;
@@ -568,10 +569,10 @@ class ChatMessages extends React.PureComponent {
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        const { 
-            selectedChannel, 
-            markReadChannel, 
-            markAllMessagesAsRead, 
+        const {
+            selectedChannel,
+            markReadChannel,
+            markAllMessagesAsRead,
             updateUnreadChatReplies,
             historicalPositions,
         } = this.props;
@@ -586,7 +587,7 @@ class ChatMessages extends React.PureComponent {
         if (this.props.selectedChannel && prevProps.selectedChannel.id !== selectedChannel.id) {
 
             if (selectedChannel.skip === 0) this.loadReplies();
-            this.handleReadChannel()
+            this.handleReadChannel();
 
             if (historicalPositions.length) {
                 historicalPositions.forEach(hp => {
@@ -1161,7 +1162,7 @@ function mapStateToProps(state) {
         onlineUsers,
         isBrowserActive,
         selectedChannel,
-        historicalPositions
+        historicalPositions,
     };
 }
 

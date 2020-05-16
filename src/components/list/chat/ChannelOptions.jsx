@@ -10,7 +10,6 @@ import pinIcon from "../../../assets/img/svgs/chat/pin_white.svg";
 import {
     markReadChannel,
     markUnreadChannel,
-    //setSelectedChannel,
     updateChannel,
     updateChannelReducer,
     updateUnreadChatReplies,
@@ -508,7 +507,7 @@ const ChannelOptions = props => {
                 {
                     channel.type !== "PERSONAL_BOT" &&
                     <HideBtn onClick={handleHideChat}>
-                        {channel.is_hidden === 0 ? `Hide` : 'Unhide'}
+                        {channel.is_hidden === 0 ? `Hide` : "Unhide"}
                     </HideBtn>
                 }
                 {

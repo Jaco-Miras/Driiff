@@ -2,7 +2,7 @@ import React, {useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {withRouter} from "react-router-dom";
 import styled from "styled-components";
-import {setSelectedChannel, setChannelHistoricalPosition} from "../../../redux/actions/chatActions";
+import {setChannelHistoricalPosition, setSelectedChannel} from "../../../redux/actions/chatActions";
 import ChannelIcon from "./ChannelIcon";
 import ChannelOptions from "./ChannelOptions";
 import ChannelTitle from "./ChannelTitle";
@@ -72,16 +72,16 @@ const ChannelList = props => {
     const handleSelectChannel = () => {
         //this.props.handleShowNewChatWindow(false);
         //this.handleBlurSearchInput(e);
-        
+
         if (selectedChannel.id !== channel.id) {
-          const scrollComponent = document.getElementById('component-chat-thread')
-          if (scrollComponent) {
-            dispatch(setChannelHistoricalPosition({
-                channel_id: selectedChannel.id,
-                scrollPosition: scrollComponent.scrollHeight - scrollComponent.scrollTop,
-            }));
-          }
-          
+            const scrollComponent = document.getElementById("component-chat-thread");
+            if (scrollComponent) {
+                dispatch(setChannelHistoricalPosition({
+                    channel_id: selectedChannel.id,
+                    scrollPosition: scrollComponent.scrollHeight - scrollComponent.scrollTop,
+                }));
+            }
+
             dispatch(
                 setSelectedChannel({...channel, selected: true}),
             );

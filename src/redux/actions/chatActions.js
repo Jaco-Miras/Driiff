@@ -1,5 +1,6 @@
 import dispatchActionToReducer, {SimpleDispatchActionToReducer} from "../actionDispatcher";
 import {
+    chatReaction as chatReactionService,
     createChatMessage as createChatMessageService,
     getChannel as getChannelService,
     getChannels as getChannelsService,
@@ -9,7 +10,6 @@ import {
     markUnreadChannel as markUnreadChannelService,
     updateChannel as updateChannelService,
     updateChatMessage as updateChatMessageService,
-    chatReaction as chatReactionService,
 } from "../services";
 
 

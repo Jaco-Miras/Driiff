@@ -1,8 +1,8 @@
 import dispatchActionToReducer, {SimpleDispatchActionToReducer} from "../actionDispatcher";
 import {
-    getAllRecipients as getAllRecipientsService, 
-    getConnectedSlugs as getConnectedSlugsService,
     generateUnfurl as generateUnfurlService,
+    getAllRecipients as getAllRecipientsService,
+    getConnectedSlugs as getConnectedSlugsService,
 } from "../services";
 
 export function setBrowserTabStatus(payload, callback) {
@@ -42,7 +42,7 @@ export function setNavMode(payload, callback) {
 }
 
 export function toggleLoading(payload, callback) {
-    console.log(payload)
+    console.log(payload);
     return SimpleDispatchActionToReducer(
         "TOGGLE_LOADING",
         payload,

@@ -1,10 +1,10 @@
 import React, {useRef, useState} from "react";
+import {useDispatch} from "react-redux";
 import styled from "styled-components";
+import {chatReaction} from "../../../redux/actions/chatActions";
 import EmojiButton from "../../common/EmojiButton";
 import PickerEmoji from "../../common/PickerEmoji";
-import {useDispatch} from 'react-redux';
 import {useTooltipHorizontalOrientation, useTooltipOrientation} from "../../hooks/useTooltipOrientation";
-import {chatReaction} from '../../../redux/actions/chatActions';
 
 const ChatReactionButtonContainer = styled.div`
     border-radius:50%;    
@@ -46,8 +46,8 @@ const ChatReactionButton = props => {
             react_type: e.id,
         };
         dispatch(
-            chatReaction(payload)
-        )
+            chatReaction(payload),
+        );
     };
 
     const handlePickerMouseLeave = () => {

@@ -1,12 +1,12 @@
-import React, {forwardRef} from 'react';
 import "quill-mention";
+import React, {forwardRef} from "react";
 import ReactQuill from "react-quill";
-import 'react-quill/dist/quill.snow.css';
+import "react-quill/dist/quill.snow.css";
 
-const QuillEditor = forwardRef((props,ref) => {
+const QuillEditor = forwardRef((props, ref) => {
 
     return (
-        <ReactQuill 
+        <ReactQuill
             theme="snow"
             {...props}
             ref={ref}
@@ -27,6 +27,6 @@ const QuillEditor = forwardRef((props,ref) => {
             // onKeyUp={this.handleQuillKeyUp}
             // onFocus={this.loadDraft}
         />
-    )
-})
-export default QuillEditor
+    );
+});
+export default QuillEditor;

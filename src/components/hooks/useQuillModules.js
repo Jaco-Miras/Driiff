@@ -1,8 +1,8 @@
-import {useEffect, useState, useRef} from 'react';
-import {useSelector} from 'react-redux';
+import {useEffect, useRef, useState} from "react";
 import {osName} from "react-device-detect";
+import {useSelector} from "react-redux";
 
-const useQuillModules = (mode, callback, mentionOrientation = 'top') => {
+const useQuillModules = (mode, callback, mentionOrientation = "top") => {
     const [modules, setModules] = useState({});
     // const [mentionOpen, setMentionOpen] = useState(false)
     const userMentions = useSelector(state => state.users.mentions);
@@ -15,7 +15,7 @@ const useQuillModules = (mode, callback, mentionOrientation = 'top') => {
 
     const handleSubmit = () => {
         savedCallback.current();
-    }
+    };
 
     useEffect(() => {
         const all = {
@@ -78,7 +78,7 @@ const useQuillModules = (mode, callback, mentionOrientation = 'top') => {
                         },
                     },
                 },
-            }
+            },
         };
         setModules(modules);
 
@@ -88,4 +88,4 @@ const useQuillModules = (mode, callback, mentionOrientation = 'top') => {
     return [modules];
 };
 
-export default useQuillModules
+export default useQuillModules;

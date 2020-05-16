@@ -42,11 +42,11 @@ const ChatDateIcons = props => {
     const {channel, optionsVisible} = props;
     const handleNotificationBadges = () => {
         if (channel.is_read === 0) {
-            return <Badge className={`badge badge-primary badge-pill ml-auto unread`}>0</Badge>
+            return <Badge className={`badge badge-primary badge-pill ml-auto unread`}>0</Badge>;
             //return (<span className={`badge-container unread`} value={""}><BadgeIcon/></span>);
         } else {
             if (channel.total_unread > 0) {
-                return <Badge className="badge badge-primary badge-pill ml-auto">{channel.total_unread}</Badge>
+                return <Badge className="badge badge-primary badge-pill ml-auto">{channel.total_unread}</Badge>;
                 //return (<span className={`badge-container`}><BadgeIcon value={channel.total_unread}/></span>);
             } else {
                 return null;

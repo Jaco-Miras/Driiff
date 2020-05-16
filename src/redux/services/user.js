@@ -404,7 +404,7 @@ export function authenticateGoogleLogin(payload) {
     return apiNoTokenCall({
         method: "POST",
         actualUrl: `${getAPIUrl({noSlug: true})}/auth/google/user`,
-        data: payload
+        data: payload,
     });
 }
 

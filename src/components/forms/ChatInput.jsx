@@ -1,11 +1,10 @@
-import React, {useState, useRef, useEffect} from 'react';
-import styled from 'styled-components';
-import { useSelector, useDispatch } from 'react-redux';
-import QuillEditor from './QuillEditor';
-import useQuillModules from '../hooks/useQuillModules';
-import {toastr} from "react-redux-toastr";
+import React, {useRef, useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
+import styled from "styled-components";
 import {localizeDate} from "../../helpers/momentFormatJS";
-import {createChatMessage, updateChatMessage, addChatMessage } from '../../redux/actions/chatActions';
+import {addChatMessage, createChatMessage, updateChatMessage} from "../../redux/actions/chatActions";
+import useQuillModules from "../hooks/useQuillModules";
+import QuillEditor from "./QuillEditor";
 
 const StyledQuillEditor = styled(QuillEditor)`
     &.chat-input {
@@ -30,21 +29,21 @@ const ChatInput = props => {
 
     const dispatch = useDispatch();
     const reactQuillRef = useRef();
-    const selectedChannel = useSelector(state => state.chat.selectedChannel)
-    const slugs = useSelector(state => state.global.slugs)
-    const user = useSelector(state => state.session.user)
+    const selectedChannel = useSelector(state => state.chat.selectedChannel);
+    const slugs = useSelector(state => state.global.slugs);
+    const user = useSelector(state => state.session.user);
 
-    const [text, setText] = useState('')
-    const [textOnly, setTextOnly] = useState('')
-    const [quillContents, setQuillContents] = useState([])
-    const [mounted, setMounted] = useState(false)
-    const [mentionedUserIds, setMentionedUserIds] = useState([])
-    const [ignoredMentionedUserIds, setIgnoredMentionedUserIds] = useState([])
-    const [editMode, setEditMode] = useState(false)
-    const [editMessage, setEditMessage] = useState(null)
-    
+    const [text, setText] = useState("");
+    const [textOnly, setTextOnly] = useState("");
+    const [quillContents, setQuillContents] = useState([]);
+    const [mounted, setMounted] = useState(false);
+    const [mentionedUserIds, setMentionedUserIds] = useState([]);
+    const [ignoredMentionedUserIds, setIgnoredMentionedUserIds] = useState([]);
+    const [editMode, setEditMode] = useState(false);
+    const [editMessage, setEditMessage] = useState(null);
+
     const handleSubmit = () => {
-        
+
         //let specialCommands = ["/sound-on", "/sound-off"];
         // if (specialCommands.includes(textOnly.trim())) {
         //     setText("")
@@ -75,7 +74,7 @@ const ChatInput = props => {
         let mention_ids = [];
         let haveGif = false;
         let reference_id = require("shortid").generate();
-        let allIds = selectedChannel.members.map(m => m.id)
+        let allIds = selectedChannel.members.map(m => m.id);
 
         if (quillContents.ops && quillContents.ops.length > 0) {
 
@@ -100,8 +99,8 @@ const ChatInput = props => {
             });
         }
 
-        if ( textOnly.trim() === "" && mention_ids.length === 0 && !haveGif ) return;
-        
+        if (textOnly.trim() === "" && mention_ids.length === 0 && !haveGif) return;
+
         let payload = {
             channel_id: selectedChannel.id,
             body: text,
@@ -165,9 +164,9 @@ const ChatInput = props => {
         // this.props.onClearQuote();
 
         if (!editMode) {
-            dispatch(addChatMessage(obj))
+            dispatch(addChatMessage(obj));
         }
-        if (reactQuillRef.current){
+        if (reactQuillRef.current) {
             reactQuillRef.current.getEditor().setContents([]);
             // reactQuillRef.current.getEditor().setText('');
         }
@@ -190,20 +189,20 @@ const ChatInput = props => {
                     //     this.setState({lastReplyId: ""});
                     //     this.handleEditReplyClose();
                     // }
-                })
+                }),
             );
         } else {
             dispatch(
                 createChatMessage(payload, (err, data) => {
-                // if (this.props.cbOnCreate) {
-                //     this.props.cbOnCreate();
-                // }
-                })
+                    // if (this.props.cbOnCreate) {
+                    //     this.props.cbOnCreate();
+                    // }
+                }),
             );
         }
-        setTextOnly("")
-        setText("")
-        
+        setTextOnly("");
+        setText("");
+
         // this.setState({
         //     text: "",
         //     lastReplyId: timestamp,
@@ -221,22 +220,22 @@ const ChatInput = props => {
         //         });
         //     }
         // });
-    }
+    };
 
     const handleQuillChange = (content, delta, source, editor) => {
 
-        if (selectedChannel === null) return
+        if (selectedChannel === null) return;
         const textOnly = editor.getText(content);
 
-        setText(content)
-        setTextOnly(textOnly)
-        setQuillContents(editor.getContents())
+        setText(content);
+        setTextOnly(textOnly);
+        setQuillContents(editor.getContents());
 
         if (editor.getContents().ops && editor.getContents().ops.length) {
             handleMentionUser(editor.getContents().ops.filter(m => m.insert.mention).map(i => i.insert.mention.id));
         }
 
-            
+
         let channel = null;
         if (selectedChannel.is_shared) {
             if (window[selectedChannel.slug_owner]) {
@@ -261,7 +260,7 @@ const ChatInput = props => {
         // }
     };
 
-   const handleMentionUser = mention_ids => {
+    const handleMentionUser = mention_ids => {
         mention_ids = mention_ids.map(id => parseInt(id)).filter(id => !isNaN(id));
         if (mention_ids.length) {
             //check for recipients/type
@@ -272,28 +271,28 @@ const ChatInput = props => {
                 ignoreIds.forEach(pid => {
                     if (pid === parseInt(id)) {
                         userFound = true;
-                        return
+
                     }
                 });
                 return !userFound;
             });
-            setMentionedUserIds(userIds.length ? userIds.map(id => parseInt(id)) : [])
+            setMentionedUserIds(userIds.length ? userIds.map(id => parseInt(id)) : []);
         } else {
-            setIgnoredMentionedUserIds([])
-            setMentionedUserIds([])
+            setIgnoredMentionedUserIds([]);
+            setMentionedUserIds([]);
         }
     };
-    
-    const [modules] = useQuillModules('chat', handleSubmit)
+
+    const [modules] = useQuillModules("chat", handleSubmit);
 
     return (
-        <StyledQuillEditor 
-            className={'chat-input'} 
+        <StyledQuillEditor
+            className={"chat-input"}
             modules={modules}
             ref={reactQuillRef}
             onChange={handleQuillChange}
         />
-    )
-}
+    );
+};
 
-export default ChatInput
+export default ChatInput;

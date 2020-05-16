@@ -1,9 +1,9 @@
 import {Emoji} from "emoji-mart";
 import React from "react";
+import {useDispatch} from "react-redux";
 import styled from "styled-components";
+import {chatReaction} from "../../../../redux/actions/chatActions";
 import UserListPopUp from "../../../common/UserListPopUp";
-import {chatReaction} from '../../../../redux/actions/chatActions';
-import {useDispatch} from 'react-redux';
 
 const EmojiContainer = styled.div`
     background: #dedede;
@@ -34,9 +34,9 @@ const StyledUserListPopUp = styled(UserListPopUp)`
 `;
 
 const EmojiReaction = props => {
-    const {type, count , reactions, isAuthor, reply } = props;
+    const {type, count, reactions, isAuthor, reply} = props;
 
-    const dispatch = useDispatch()
+    const dispatch = useDispatch();
 
     const handleToggleReact = () => {
         let payload = {
