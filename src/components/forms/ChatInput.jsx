@@ -13,6 +13,10 @@ const StyledQuillEditor = styled(QuillEditor)`
         max-height: 130px;
         overflow: auto;
         overflow-x: hidden;
+        position: static;
+    }
+    .ql-container {
+        position: static;
     }
     .ql-toolbar {
         display: none;
@@ -22,6 +26,33 @@ const StyledQuillEditor = styled(QuillEditor)`
     }
     .ql-container {
         border: none;
+    }
+    .ql-mention-list-container-top, .ql-mention-list-container {
+        width: 300px !important;
+        max-height: 170px;
+        background: rgb(255, 255, 255);
+        border-radius: 10px;
+        box-shadow: rgba(26, 26, 26, 0.4) 0px 2px 3px 0px, rgba(0, 0, 0, 0.1) 0px 1px 3px 0px;
+        overflow-x: hidden;
+        overflow-y: auto;
+        z-index: 2;
+
+        .ql-mention-list {
+            padding: 0;
+
+            .ql-mention-list-item {
+            display: flex;
+            align-items: center;
+            padding-top: 1rem;
+            padding-bottom: 1rem;
+            padding-left: 1rem;
+
+            &.selected {
+                background-image: linear-gradient(105deg, #972c86, #794997);
+                color: #fff;
+            }
+            }
+        }
     }
 `;
 /***  Commented out code are to be visited/refactored ***/
@@ -37,7 +68,7 @@ const ChatInput = props => {
     const [text, setText] = useState("");
     const [textOnly, setTextOnly] = useState("");
     const [quillContents, setQuillContents] = useState([]);
-    const [mounted, setMounted] = useState(false);
+    //const [mounted, setMounted] = useState(false);
     const [mentionedUserIds, setMentionedUserIds] = useState([]);
     const [ignoredMentionedUserIds, setIgnoredMentionedUserIds] = useState([]);
     const [editMode, setEditMode] = useState(false);

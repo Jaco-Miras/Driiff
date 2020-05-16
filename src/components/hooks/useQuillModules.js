@@ -3,7 +3,9 @@ import {osName} from "react-device-detect";
 import {useSelector} from "react-redux";
 
 const useQuillModules = (mode, callback, mentionOrientation = "top") => {
+
     const [modules, setModules] = useState({});
+    const [mentionValues, setMentionValues] = useState([])
     // const [mentionOpen, setMentionOpen] = useState(false)
     const userMentions = useSelector(state => state.users.mentions);
 
@@ -17,7 +19,7 @@ const useQuillModules = (mode, callback, mentionOrientation = "top") => {
         savedCallback.current();
     };
 
-    useEffect(() => {
+    const handleSetModule = () => {
         const all = {
             id: require("shortid").generate(),
             profile_image_link: require("../../assets/icon/teams/r/secundary.svg"),
@@ -33,6 +35,7 @@ const useQuillModules = (mode, callback, mentionOrientation = "top") => {
                 class: "user-pic",
             });
         }), all];
+        setMentionValues(newAtValues)
         const modules = {
             mention: {
                 allowedChars: /^[A-Za-z\sÅÄÖåäö]*$/,
@@ -81,9 +84,18 @@ const useQuillModules = (mode, callback, mentionOrientation = "top") => {
             },
         };
         setModules(modules);
+    }
 
+    useEffect(() => {
+        handleSetModule()
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+
+    useEffect(() => {
+        if (Object.keys(userMentions).length && (Object.keys(userMentions).length + 1) !== mentionValues.length) {
+            handleSetModule()
+        }
+    }, [Object.keys(userMentions).length])
 
     return [modules];
 };
