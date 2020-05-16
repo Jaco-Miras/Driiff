@@ -77,6 +77,19 @@ const ChatReplyContainer = styled.div`
         font-size: .5rem;
         color: transparent;
   }
+  .mention {
+    background: rgb(189, 189, 189);
+    box-shadow: none;
+    padding: 5px;
+    border-radius: 30px;
+    color: #fff;
+    display: inline-block;
+    width: auto;
+    height: auto;
+  }
+  .mention.is-author {
+    background-image: linear-gradient(105deg, #972c86, #794997);
+  }
 `;
 
 const ChatList = styled.li`
@@ -575,7 +588,16 @@ class ChatMessages extends React.PureComponent {
             markAllMessagesAsRead,
             updateUnreadChatReplies,
             historicalPositions,
+            user
         } = this.props;
+
+        //to be relocated
+        let el = document.querySelectorAll(`.mention[data-id="${user.id}"]`);
+        if (el.length) {
+            el.forEach(mentionEl => {
+                mentionEl.classList.add("is-author");
+            });
+        }
         // @to do
         // if (selectedChannel.replies.length && !this.state.fetchingReplies) {
         //     this.attachedImgEventListener();
@@ -604,8 +626,8 @@ class ChatMessages extends React.PureComponent {
             }
             // has replies
             if (selectedChannel.replies.length) {
-                document.removeEventListener("keydown", this.handleEditOnArrowUp, false);
-                document.addEventListener("keydown", this.handleEditOnArrowUp, false);
+                // document.removeEventListener("keydown", this.handleEditOnArrowUp, false);
+                // document.addEventListener("keydown", this.handleEditOnArrowUp, false);
 
                 let hasUnreadMessage = selectedChannel.replies.filter(r => r.is_read === false).length > 0;
                 if (this.state.bottomRefInView && hasUnreadMessage && this.props.isBrowserActive && selectedChannel.is_read === 1) {

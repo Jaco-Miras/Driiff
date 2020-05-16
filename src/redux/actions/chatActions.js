@@ -208,3 +208,19 @@ export function setChannelHistoricalPosition(payload, callback) {
         callback,
     );
 }
+
+export function incomingUpdatedChatMessage(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "INCOMING_UPDATED_CHAT_MESSAGE",
+        payload,
+        callback,
+    );
+}
+
+export function setEditChatMessage(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "SET_EDIT_CHAT_MESSAGE",
+        payload,
+        callback,
+    );
+}

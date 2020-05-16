@@ -20,6 +20,10 @@ const ArchivedDiv = styled.div`
     }
 `;
 
+const ChatInputContainer = styled.div`
+    position: relative;
+`
+
 const ChatFooterPanel = (props) => {
 
     const {className = ""} = props;
@@ -53,14 +57,14 @@ const ChatFooterPanel = (props) => {
                                     <line x1="15" y1="9" x2="15.01" y2="9"></line>
                                 </svg>
                             </button>
-                            <div className="flex-grow-1">
+                            <ChatInputContainer className="flex-grow-1">
                                 <ChatInput/>
                                 {/* test
                                  <ReplyInput
                                  className="form-control" placeholder="Write your message">
                                  <SlateContent value={reply}/>
                                  </ReplyInput> */}
-                            </div>
+                            </ChatInputContainer>
                             <div className="chat-footer-buttons d-flex">
                                 <button onClick={handleSubmit} className="btn btn-primary" type="submit">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"

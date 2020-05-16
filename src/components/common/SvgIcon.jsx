@@ -270,6 +270,7 @@ export const SvgIcon = React.memo((props) => {
                             id="Combined-Shape" fill="url(#linearGradient-1)" fill-rule="nonzero"></path>
                     </g>
                 </>);
+                break;
             case "reply":
                 setViewBox("0 0 41 31");
                 setContent(<>
