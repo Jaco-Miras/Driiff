@@ -1,8 +1,6 @@
-import PropTypes from "prop-types";
 import React, {forwardRef} from "react";
 import styled from "styled-components";
 
-const iconArchive = require("../../assets/icon/archive/l/active.svg");
 const iconArrow = require("../../assets/icon/arrow/back/r/white@2x.png");
 const iconArrowDown = require("../../assets/icon/arrow/down/r/arrow_down_r_secundary.svg");
 const iconTopic = require("../../assets/icon/topic_icon/people_group/l/active.svg");
@@ -33,7 +31,6 @@ const iconClosedEye = require("../../assets/icon/login/closed-eye.svg");
 const iconOpenedEye = require("../../assets/icon/login/open-eye.svg");
 const iconEdit = require("../../assets/icon/icon/edit/edit-secundary.svg");
 const iconCheck = require("../../assets/icon/favourites/secundary.svg");
-const iconReply = require("../../assets/icon/Icons_notification/Reply/l/active.svg");
 const iconClap = require("../../assets/icon/clap/l/active.svg");
 const iconMention = require("../../assets/icon/Icons_notification/Mention/active.svg");
 const iconPost = require("../../assets/icon/post/l/active.svg");
@@ -51,12 +48,10 @@ const iconLock = require("../../assets/icon/private/r/secundary.svg");
 const iconUnlock = require("../../assets/icon/not_private/r/secundary.svg");
 const iconSend = require("../../assets/icon/send/r/send-secundary.svg");
 const iconGoogleLogin = require("../../assets/icon/google-logo.svg");
-const iconImageVideo = require("../../assets/icon/imagevideo.svg");
 const iconDownload = require("../../assets/icon/download/r/download_r_secundary.svg");
 const iconPlus = require("../../assets/img/svgs/choose-members-plus/secundary.svg");
 const iconComment = require("../../assets/icon/conversations/r/secundary.svg");
 const iconQuote = require("../../assets/icon/conversations/r/secundary.svg");
-const iconMute = require("../../assets/icon/mute/r/mute_secundary.svg");
 const logoHeartDriff = require("../../assets/img/heart_driff_logo.png");
 const iconPrioCritical = require("../../assets/icon/priority/critical/r/secundary.svg");
 const iconPrioHigh = require("../../assets/icon/priority/high/r/secundary.svg");
@@ -68,17 +63,16 @@ const iconShared = require("../../assets/icon/share/r/inactive.svg");
 const iconGrippBot = require("../../assets/img/gripp-bot.png");
 const iconHeartWhite = require("../../assets/img/heart-white.svg");
 const iconLink = require("../../assets/icon/link/l/active.svg");
-const iconPin = require("../../assets/icon/pin/r/secundary.svg");
 const iconMenuFavorites = require("../../assets/icon/icon/menu-favourites/favourites-menu-inactive.svg");
 const iconNewChat = require("../../assets/icon/new-chat/inactive.svg");
 
-const SvgImageContainer = styled.img`
+const Wrapper = styled.img`
     transform: ${props => props.rotate ? `rotate(${props.rotate}deg)` : "rotate(0deg)"};
 `;
 
 const SvgImage = forwardRef((props, ref) => {
 
-    const {className = "", dataTip = "", rotate, icon, onClick, dataSet, ...otherProps} = props;
+    const {className = "", dataTip = "", rotate, icon, onClick, dataSet, ...rest} = props;
 
     const handleOnClick = (e) => {
         if (onClick) {
@@ -92,8 +86,6 @@ const SvgImage = forwardRef((props, ref) => {
 
     const getIconImageSource = (icon) => {
         switch (icon) {
-            case "archive":
-                return iconArchive;
             case "arrow":
                 return iconArrow;
             case "arrow-down":
@@ -155,8 +147,6 @@ const SvgImage = forwardRef((props, ref) => {
                 return iconEdit;
             case "check":
                 return iconCheck;
-            case "reply":
-                return iconReply;
             case "clap":
                 return iconClap;
             case "mention":
@@ -194,8 +184,6 @@ const SvgImage = forwardRef((props, ref) => {
                 return iconSend;
             case "google-login":
                 return iconGoogleLogin;
-            case "image-video":
-                return iconImageVideo;
             case "download":
                 return iconDownload;
             case "plus":
@@ -204,10 +192,6 @@ const SvgImage = forwardRef((props, ref) => {
                 return iconComment;
             case "quote":
                 return iconQuote;
-            case "mute":
-                return iconMute;
-            case "pin":
-                return iconPin;
             case "heart-driff":
                 return logoHeartDriff;
             case "prio-critical":
@@ -240,33 +224,19 @@ const SvgImage = forwardRef((props, ref) => {
     };
 
     return (
-        <SvgImageContainer
+        <Wrapper
             ref={ref}
             alt={`${icon} icon`}
-            className={`img component-svg-image icon-${icon} ${className}`}
+            className={`icon-${icon} ${className}`}
             src={getIconImageSource(icon)}
             rotate={rotate}
             onClick={e => handleOnClick(e)}
             data-event="touchstart focus mouseover"
             data-event-off="mouseout"
             data-tip={dataTip}
-            {...otherProps}
+            {...rest}
         />
     );
 });
-
-const {string, func, number, object, oneOfType} = PropTypes;
-
-SvgImage.propTypes = {
-    className: string,
-    icon: string,
-    dataTip: string,
-    onClick: func,
-    dataSet: oneOfType([
-        number,
-        string,
-        object,
-    ]),
-};
 
 export default React.memo(SvgImage);
