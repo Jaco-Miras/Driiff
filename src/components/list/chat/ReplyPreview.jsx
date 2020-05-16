@@ -4,7 +4,7 @@ import {useSelector} from "react-redux";
 import styled from "styled-components";
 import quillHelper from "../../../helpers/quillHelper";
 import {_t} from "../../../helpers/stringFormatter";
-import SvgImage from "../../common/SvgImage";
+import {SvgIcon} from "../../common/SvgIcon";
 
 const PreviewTextContainer = styled.div`
 `;
@@ -121,14 +121,14 @@ const ReplyPreview = props => {
             if (showPreviewIcon) {
                 previewText =
                     renderToString(
-                        <SvgImage className={`image-video-icon`} icon={`image-video`}/>,
+                        <SvgIcon className={`image-video-icon`} icon={`image-video`}/>,
                     ) + previewText;
             }
 
             if (channel.last_reply.user) {
                 if (channel.last_reply.user && channel.last_reply.user.id === user.id) {
                     previewText =
-                        renderToString(<SvgImage className={`reply-icon`} icon={`reply`}/>) + previewText;
+                        renderToString(<SvgIcon className={`reply-icon`} icon={`reply`}/>) + previewText;
                 } else {
                     previewText =
                         renderToString(
