@@ -20,7 +20,6 @@ const ChatSidebarPanel = (props) => {
     };
 
     const handleSearch = (e) => {
-        alert(search);
     };
 
     const handleTabChange = (e) => {
