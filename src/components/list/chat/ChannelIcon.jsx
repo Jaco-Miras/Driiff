@@ -59,11 +59,9 @@ const ChannelIcon = props => {
             {
                 channel.profile && channel.members.length <= 2 && channel.type === "DIRECT" &&
                 <StyledAvatar
-                    size={"s"}
-                    profileImageLink={channel.profile.profile_image_link}
+                    imageLink={channel.profile.profile_image_link}
                     id={channel.profile.id}
                     name={channel.profile.name}
-                    partialName={""}
                     noClick={true}
                 />
             }

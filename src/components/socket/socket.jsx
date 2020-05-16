@@ -1000,14 +1000,14 @@ class Socket extends PureComponent {
             })
             .listen(".updated-notification-counter", e => {
                 console.log(e, "updated counter");
-                const reducer = (accumulator, currentValue) => accumulator + currentValue;
-                let count = 0;
+                //const reducer = (accumulator, currentValue) => accumulator + currentValue;
+                //let count = 0;
                 let chatCount = e.result.filter(c => {
                     if (c.entity_type === "CHAT_MESSAGE" || c.entity_type === "CHAT_REMINDER_MESSAGE") return true;
                     else return false;
                 });
                 if (chatCount.length) {
-                    count = chatCount.map(c => c.count).flat().reduce(reducer);
+                    //count = chatCount.map(c => c.count).flat().reduce(reducer);
                 }
                 // let chat_count = null;
                 // if (e.result.filter(r => r.entity_type === 'CHAT_MESSAGE').length) {

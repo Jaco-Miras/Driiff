@@ -1,6 +1,5 @@
 import React, {useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {withRouter} from "react-router-dom";
 import styled from "styled-components";
 import {setChannelHistoricalPosition, setSelectedChannel} from "../../../redux/actions/chatActions";
 import ChannelIcon from "./ChannelIcon";
@@ -14,7 +13,7 @@ const ChannelListContainer = styled.li`
     border-bottom: 1px solid #dedede;
     display: flex;
     align-items: center;
-    background: ${props => props.selected ? "rgba(241, 230, 239)" : "#fff"};
+    background: ${props => props.selected ? "rgba(241, 230, 239)" : "#fff"};    
     &:hover {
         /* uncomment for background on hover
         background: #f1e6ef;
@@ -31,6 +30,8 @@ const ChannelListContainer = styled.li`
             color: #000;
           }
         }*/
+        cursor: pointer;
+        cursor: hand;
         
         .more-button-component {
           opacity: 1;
@@ -102,4 +103,4 @@ const ChannelList = props => {
     );
 };
 
-export default withRouter(ChannelList);
+export default ChannelList;
