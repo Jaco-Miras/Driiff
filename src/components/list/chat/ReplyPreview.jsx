@@ -6,79 +6,24 @@ import quillHelper from "../../../helpers/quillHelper";
 import {_t} from "../../../helpers/stringFormatter";
 import {SvgIcon} from "../../common";
 
-const PreviewTextContainer = styled.div`
+const Wrapper = styled.span`
 `;
-const LastReplyContent = styled.span`
-    color: #676767;
-    font-size: 1rem;
-    align-items: center;
-    font-weight: 400;
-    display: inline-block;  
+const LastReplyContent = styled.span`      
 `;
 const DraftContent = styled.span`
-    display: block;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
 `;
 const LastReplyName = styled.span`
-    display: inline-block;
-    font-weight: 400;
-    font-size: 1rem;    
-    color: #676767;
-    margin-right: 2px;
 `;
 const LastReplyBody = styled.div`
-    display: inherit;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
-    color: #676767;
-    font-size: 1rem;
-    font-weight: ${props => props.isUnread ? "bold" : "normal"};
-
-    span{
-        font-weight: inherit;
+`;
+const TextIcon = styled(SvgIcon)`
+    filter: brightness(0) saturate(100%) invert(79%) sepia(14%) saturate(364%) hue-rotate(194deg) brightness(86%) contrast(88%);
+    width: 11px;
+    height: 11px;
+    
+    &.icon-image-video {
+        margin-left: 0.2rem;
     }
-
-    span.is-deleted {
-        font-style: italic;
-        color: #9d9d9d;
-    }
-    
-    .mention {
-        background-color: transparent;
-    }    
-    
-      img {
-        height: 1rem;
-        display: inline-block;
-        
-        &.anchor-blot {
-            display: none;
-        }
-      }
-      .image-video-icon,
-      .reply-icon {
-        filter: brightness(0) saturate(100%) invert(41%) sepia(0%) saturate(1%) hue-rotate(245deg) brightness(93%) contrast(83%);
-        min-width: 1rem;
-        min-height: 1rem;
-        margin: 0 4px;
-        position: relative;
-        //top: 4px;
-        
-        .active & {
-            filter: brightness(0) saturate(100%) invert(41%) sepia(0%) saturate(1%) hue-rotate(245deg) brightness(93%) contrast(83%);
-        }
-    
-        &:hover {
-          filter: ${props => (props.selected ? "brightness(0) invert(1)" : "none")};
-        }
-      }
-      
-      .image-video-icon {
-        top: 4px;
-      }
 `;
 
 const ReplyPreview = props => {
@@ -121,14 +66,14 @@ const ReplyPreview = props => {
             if (showPreviewIcon) {
                 previewText =
                     renderToString(
-                        <SvgIcon className={`image-video-icon`} icon={`image-video`}/>,
+                        <TextIcon icon={`image-video`}/>,
                     ) + previewText;
             }
 
             if (channel.last_reply.user) {
                 if (channel.last_reply.user && channel.last_reply.user.id === user.id) {
                     previewText =
-                        renderToString(<SvgIcon className={`reply-icon`} icon={`reply`}/>) + previewText;
+                        renderToString(<TextIcon icon={`reply`}/>) + previewText;
                 } else {
                     previewText =
                         renderToString(
@@ -159,7 +104,7 @@ const ReplyPreview = props => {
         setPreviewText(previewText);
     }, [channel.last_reply, channel.replies, channel.id, user.id, channelDrafts, settings.CHAT_SETTINGS.preview_message]);
     return (
-        <PreviewTextContainer>
+        <Wrapper className={`small text-muted`}>
             <LastReplyBody
                 isUnread={channel.total_unread > 0}
                 className={`last-reply-body`}
@@ -167,7 +112,7 @@ const ReplyPreview = props => {
                     __html: previewText,
                 }}
             />
-        </PreviewTextContainer>
+        </Wrapper>
     );
 };
 

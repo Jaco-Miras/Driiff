@@ -1,5 +1,7 @@
 import React from "react";
+import {useDispatch, useSelector} from "react-redux";
 import styled from "styled-components";
+import {setChannelHistoricalPosition, setSelectedChannel} from "../../../redux/actions/chatActions";
 import {SvgIconFeather} from "../../common";
 import {useLoadChannels, useSortChannels} from "../../hooks";
 import ChannelIcon from "./ChannelIcon";
@@ -16,14 +18,37 @@ const ChatHeader = styled.h4`
 const Wrapper = styled.div`
 `;
 
-const Contacts = styled.div`
+const Contacts = styled.ul`
+    li {
+        cursor: pointer;
+        cursor: hand;
+    }
 `;
 
 const ChatContactsList = props => {
     const {className = "", search} = props;
+    const dispatch = useDispatch();
+    const selectedChannel = useSelector(state => state.chat.selectedChannel);
 
     useLoadChannels();
     const [sortedChannels] = useSortChannels(search, {showHidden: true, type: "DIRECT"});
+
+    const handleSelectChannel = (channel) => {
+        if (selectedChannel.id !== channel.id) {
+            const scrollComponent = document.getElementById("component-chat-thread");
+            if (scrollComponent) {
+                dispatch(setChannelHistoricalPosition({
+                    channel_id: selectedChannel.id,
+                    scrollPosition: scrollComponent.scrollHeight - scrollComponent.scrollTop,
+                }));
+            }
+
+            dispatch(
+                setSelectedChannel({...channel, selected: true}),
+            );
+            //props.history.push(`/chat/${updatedChannel.code}`);
+        }
+    };
 
     return (
         <Wrapper className={`chat-lists ${className}`}>
@@ -64,9 +89,12 @@ const ChatContactsList = props => {
                             chatHeader = "Archived";
                         }
                         return (
-                            <React.Fragment key={channel.code}>
+                            <li className="list-group-item d-flex align-items-center pl-0 pr-0 pb-3 pt-3"
+                                key={channel.code}
+                                onClick={e => {
+                                    handleSelectChannel(channel);
+                                }}>
                                 {search !== "" && chatHeader !== "" && <ChatHeader>{chatHeader}</ChatHeader>}
-                                {/*<ChannelList channel={channel}/>*/}
                                 <div className="pr-3">
                                     <ChannelIcon channel={channel}/>
                                 </div>
@@ -77,7 +105,7 @@ const ChatContactsList = props => {
                                 <div className="text-right ml-auto">
                                     <SvgIconFeather icon="message-circle"/>
                                 </div>
-                            </React.Fragment>
+                            </li>
                         );
                     })
                 }

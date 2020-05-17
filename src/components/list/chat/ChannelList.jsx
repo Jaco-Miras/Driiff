@@ -8,65 +8,54 @@ import ChannelTitle from "./ChannelTitle";
 import ChatDateIcons from "./ChatDateIcons";
 import ReplyPreview from "./ReplyPreview";
 
-const ChannelListContainer = styled.li`
-    padding: 10px 5px;
-    border-bottom: 1px solid #dedede;
-    display: flex;
-    align-items: center;
-    background: ${props => props.selected ? "rgba(241, 230, 239)" : "#fff"};    
-    &:hover {
-        /* uncomment for background on hover
-        background: #f1e6ef;
-        color: #000;
-        border-radius: 0;
-        
-        @media (max-width: 575.99px) {
-            background: #fff;
-        }
+const Wrapper = styled.span`
+    cursor: pointer;
+    cursor: hand;
     
-        p {
-          color: #000;
-          a {
-            color: #000;
-          }
-        }*/
-        cursor: pointer;
-        cursor: hand;
-        
+    &:hover {
         .more-button-component {
-          opacity: 1;
-          z-index: 7;
-          
-          &.active {
-            &:before {
-              background-color: #fff;
+            opacity: 1;
+            z-index: 1;
+            
+            &.active {
+                color: #fff !important;
+                background-color: #972c86;
             }
-            background-color: #972c86;
-          }
-        }
-        
+        }        
         .chat-timestamp {
-          opacity: 0;
+            opacity: 0;
+            display: none;
         }
-      }
-    .more-button-component {
-        opacity: 0;
-        position: absolute;
-        right: 30px;
     }
+    .chat-timestamp {
+        position: absolute;
+        right: 20px;
+    }
+    .feather-more-horizontal {
+        width: 25px;
+        height: 25px;
+        position: relative;
+        right: 28px;
+        border: 1px solid #dee2e6;
+        padding: 3px;
+        top: 5px;
+    }    
 `;
+
 const ChannelTitlePreview = styled.div`
-    flex: 1;
-    max-width: calc(100% - 120px);
+`;
+
+const Timestamp = styled.div`
+    position: relative;    
 `;
 
 const ChannelList = props => {
-    const {channel} = props;
+    const {className = "", channel} = props;
     const [optionsVisible, setOptionsVisible] = useState(false);
     const dispatch = useDispatch();
     const selectedChannel = useSelector(state => state.chat.selectedChannel);
 
-    const onShowOptions = () => {
+    const toggleOptions = () => {
         setOptionsVisible(!optionsVisible);
     };
 
@@ -91,15 +80,19 @@ const ChannelList = props => {
     };
 
     return (
-        <ChannelListContainer optionsVisible={optionsVisible} selected={channel.selected} onClick={handleSelectChannel}>
+        <Wrapper
+            className={`list-group-item active d-flex pl-0 pr-0 pb-3 pt-3 ${className}`}
+            optionsVisible={optionsVisible} selected={channel.selected} onClick={handleSelectChannel}>
             <ChannelIcon channel={channel}/>
-            <ChannelTitlePreview>
+            <ChannelTitlePreview className={`flex-grow- 1`}>
                 <ChannelTitle channel={channel}/>
                 <ReplyPreview channel={channel}/>
             </ChannelTitlePreview>
-            <ChatDateIcons className={"chat-date-icons"} channel={channel} optionsVisible={optionsVisible}/>
-            <ChannelOptions channel={channel} onShowOptions={onShowOptions}/>
-        </ChannelListContainer>
+            <Timestamp className="text-right ml-auto">
+                <ChatDateIcons className={"chat-date-icons"} channel={channel} optionsVisible={optionsVisible}/>
+                <ChannelOptions channel={channel} onShowOptions={toggleOptions}/>
+            </Timestamp>
+        </Wrapper>
     );
 };
 

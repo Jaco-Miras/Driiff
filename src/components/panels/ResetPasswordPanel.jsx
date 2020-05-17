@@ -56,7 +56,7 @@ const ResetPasswordPanel = () => {
     };
 
     const _validateForm = (e) => {
-        setFormMessage({error: "", success: ""})
+        setFormMessage({error: "", success: ""});
 
         let valid = true;
 

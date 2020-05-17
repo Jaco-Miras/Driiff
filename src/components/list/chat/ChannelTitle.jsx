@@ -1,17 +1,15 @@
 import React from "react";
 import styled from "styled-components";
 
-const ChannelTitleContainer = styled.div`
-    font-weight: 600;
-    display: block;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
+const ChannelTitleContainer = styled.h6`    
 `;
 
 const ChannelTitle = props => {
+
+    const {className = ""} = props;
+
     return (
-        <ChannelTitleContainer className={`channel-title`}>
+        <ChannelTitleContainer className={`mb-1 ${className}`}>
             {props.channel.title}
         </ChannelTitleContainer>
     );

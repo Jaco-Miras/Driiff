@@ -6,8 +6,10 @@ const Wrapper = styled.div`
 
 const Blank = (props) => {
 
+    const {className = ""} = props;
+
     return (
-        <Wrapper className={`${props.className}`}>
+        <Wrapper className={`${className}`}>
         </Wrapper>
     );
 };

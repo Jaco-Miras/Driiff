@@ -14,7 +14,7 @@ const PickerContainer = styled.div`
 `;
 const PickerEmoji = React.forwardRef((props, ref) => {
 
-    const {handleShowEmojiPicker} = props;
+    const {className = "", handleShowEmojiPicker} = props;
     const handleOnMouseLeave = () => {
         if (props.onMouseLeave) {
             props.onMouseLeave();
@@ -27,7 +27,7 @@ const PickerEmoji = React.forwardRef((props, ref) => {
         <PickerContainer
             ref={ref}
             orientation={props.orientation}
-            className={props.className}
+            className={className}
             onMouseLeave={handleOnMouseLeave}
         >
             <Picker
