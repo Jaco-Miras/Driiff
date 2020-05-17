@@ -8,6 +8,8 @@ import {
     login as loginService,
     logout as logoutService,
     resetPassword as resetPasswordService,
+    updatePassword as updatePasswordService,
+    checkDriffUserEmail as checkDriffUserEmailService,
 } from "../services";
 
 export const userLogin = (payload, callback) => {
@@ -83,9 +85,29 @@ export function getMentions(callback) {
 export function resetPassword(payload, callback) {
     return dispatchActionToReducer(
         resetPasswordService(payload),
-        "GET_USER_START",
-        "GET_USER_SUCCESS",
-        "GET_USER_FAILURE",
+        "RESET_PASSWORD_START",
+        "RESET_PASSWORD_SUCCESS",
+        "RESET_PASSWORD_FAILURE",
+        callback,
+    );
+}
+
+export function updatePassword(payload, callback) {
+    return dispatchActionToReducer(
+        updatePasswordService(payload),
+        "RESET_PASSWORD_START",
+        "RESET_PASSWORD_SUCCESS",
+        "RESET_PASSWORD_FAILURE",
+        callback,
+    );
+}
+
+export function checkDriffUserEmail(payload, callback) {
+    return dispatchActionToReducer(
+        checkDriffUserEmailService(payload),
+        "CHECK_DRIFF_EMAIL_START",
+        "CHECK_DRIFF_EMAIL_SUCCESS",
+        "CHECK_DRIFF_EMAIL_FAILURE",
         callback,
     );
 }

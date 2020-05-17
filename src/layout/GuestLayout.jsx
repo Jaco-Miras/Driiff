@@ -3,7 +3,7 @@ import {Route, Switch, useLocation, withRouter} from "react-router-dom";
 import styled from "styled-components";
 import {SvgIcon} from "../components/common";
 import {useUserLogin} from "../components/hooks";
-import {LoginPanel, RegisterPanel, ResetPasswordPanel} from "../components/panels";
+import {LoginPanel, RegisterPanel, ResetPasswordPanel, UpdatePasswordPanel} from "../components/panels";
 
 const Wrapper = styled.div`
 `;
@@ -32,6 +32,8 @@ const GuestLayout = (props) => {
             default:
                 if (location.pathname.indexOf("authenticate") !== -1)
                     setTitle("Authentication");
+                else if (location.pathname.indexOf("resetpassword") !== -1)
+                    setTitle("Update Password");
                 else
                     setTitle("Sign in");
         }
@@ -47,6 +49,7 @@ const GuestLayout = (props) => {
 
             <Switch>
                 <Route path={"/login"} component={LoginPanel}/>
+                <Route path={"/resetpassword/:token/:email"} component={UpdatePasswordPanel} exact/>
                 <Route path={"/reset-password"} component={ResetPasswordPanel}/>
                 <Route path={"/register"} component={RegisterPanel}/>
             </Switch>
