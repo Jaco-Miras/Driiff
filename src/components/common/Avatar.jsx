@@ -74,7 +74,7 @@ const Avatar = forwardRef((props, ref) => {
         className={`avatar avatar-sm ${isOnline && "avatar-state-success"} ${className} ${isLoaded && "ico-avatar-loaded"}`}
         onClick={handleOnClick}>
         {
-            !isLoaded || !noLoader || !showInitials &&
+            (!isLoaded || !noLoader || !showInitials) &&
             <Skeleton borderRadius="50%" widthRandomness={0}
                       heightRandomness={0}/>
         }

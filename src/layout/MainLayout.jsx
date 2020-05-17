@@ -2,6 +2,7 @@ import React, {useEffect} from "react";
 import {useDispatch} from "react-redux";
 import styled from "styled-components";
 import useUserLogout from "../components/hooks/useUserLogout";
+import {ModalPanel} from "../components/panels";
 import {MainContentPanel, MainHeaderPanel, MainNavigationPanel} from "../components/panels/main";
 import Socket from "../components/socket/socket";
 import {getAllRecipients} from "../redux/actions/globalActions";
@@ -32,6 +33,7 @@ const MainLayout = (props) => {
                 <MainNavigationPanel/>
                 <MainContentPanel/>
             </MainContent>
+            <ModalPanel/>
             <Socket/>
         </>
     );

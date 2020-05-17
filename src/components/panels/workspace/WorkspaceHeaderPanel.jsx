@@ -9,26 +9,12 @@ import {SvgIconFeather} from "../../common/SvgIcon";
 const WorkspaceName = styled.h1`    
 `;
 
-const MainNavLink = styled(Link)`
-`;
-
 const WorspaceHeaderPanel = (props) => {
-
-    const {className = ""} = props;
 
     const dispatch = useDispatch();
     const match = useRouteMatch();
     const navMode = useSelector(state => state.global.navMode);
     const user = useSelector(state => state.session.user);
-
-    const handleToggleNavigation = (e) => {
-        e.preventDefault();
-
-        const mode = navMode - 1;
-        dispatch(
-            setNavMode({mode: mode < 0 ? 2 : mode}),
-        );
-    };
 
     useEffect(() => {
         const body = document.querySelector("body");
@@ -39,7 +25,7 @@ const WorspaceHeaderPanel = (props) => {
         dispatch(
             setNavMode({mode: mode < 0 ? 2 : mode}),
         );
-    }, [match.path]);
+    }, [match.path, dispatch]);
 
     return (
         <>

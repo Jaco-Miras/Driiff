@@ -30,13 +30,14 @@ const WorkspaceNavigationMenuBodyPanel = (props) => {
                         <div id="elements" className="open">
                             <ul>
                                 <li className="navigation-divider">
-                                    <SvgIconFeather icon="plus" /> New workspace
+                                    <SvgIconFeather icon="plus"/> New workspace
                                 </li>
                                 <li>
-                                    <a href="#">Consolidated<i className="sub-menu-arrow"></i></a>
+                                    <a href="/">Consolidated<i className="sub-menu-arrow"></i></a>
                                 </li>
                                 <li>
-                                    <a href="#">SodaStream<i className="sub-menu-arrow ti-angle-up rotate-in ti-minus"></i></a>
+                                    <a href="/">SodaStream<i
+                                        className="sub-menu-arrow ti-angle-up rotate-in ti-minus"></i></a>
                                     <ul style={{display: "block"}}>
                                         <li><a href="basic-cards.html">Website </a></li>
                                         <li><a href="image-cards.html">Market Strategy </a></li>

@@ -16,7 +16,6 @@ const CompanyHeaderPanel = (props) => {
 
     const dispatch = useDispatch();
     const match = useRouteMatch();
-    const navMode = useSelector(state => state.global.navMode);
     const user = useSelector(state => state.session.user);
 
     useEffect(() => {
@@ -28,7 +27,7 @@ const CompanyHeaderPanel = (props) => {
         dispatch(
             setNavMode({mode: mode < 0 ? 2 : mode}),
         );
-    }, [match.path]);
+    }, [match.path, dispatch]);
 
     return (
         <>

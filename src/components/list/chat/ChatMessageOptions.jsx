@@ -174,7 +174,7 @@ const ChatMessageOptions = props => {
     const dispatch = useDispatch();
     const tooltipRef = useRef();
     const moreRef = useRef();
-    const slugs = useSelector(state => state.global.slugs);
+    //const slugs = useSelector(state => state.global.slugs);
     const scrollEl = document.getElementById("infinite-scroll-chat-replies");
     const [orientation] = useTooltipOrientation(moreRef, tooltipRef, scrollEl, showMoreOptions);
     const [hOrientation] = useTooltipHorizontalOrientation(moreRef, tooltipRef, scrollEl, showMoreOptions);

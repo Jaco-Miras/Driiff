@@ -67,3 +67,19 @@ export function generateUnfurlReducer(payload, callback) {
         callback,
     );
 }
+
+export function addToModals(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "ADD_TO_MODALS",
+        payload,
+        callback,
+    );
+}
+
+export function clearModal(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "CLEAR_MODAL",
+        payload,
+        callback,
+    );
+}
