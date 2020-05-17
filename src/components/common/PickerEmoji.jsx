@@ -1,7 +1,8 @@
 import {Picker} from "emoji-mart";
 import "emoji-mart/css/emoji-mart.css";
-import React, {useEffect} from "react";
+import React from "react";
 import styled from "styled-components";
+import useOutsideClick from '../hooks/useOutsideClick';
 
 const PickerContainer = styled.div`
     position: absolute;
@@ -13,38 +14,14 @@ const PickerContainer = styled.div`
 `;
 const PickerEmoji = React.forwardRef((props, ref) => {
 
+    const { handleShowEmojiPicker } = props
     const handleOnMouseLeave = () => {
         if (props.onMouseLeave) {
             props.onMouseLeave();
         }
     };
-    useEffect(() => {
-        const handleEscapeKey = e => {
-            if (e.keyCode === 27) {
-                props.handleShowEmojiPicker();
-                document.removeEventListener("keydown", handleEscapeKey, false);
-            }
-        };
-        const handleOutsideClick = e => {
-            if (ref) {
-                let pickerBtn = document.querySelector(".picker-btn");
-                if (ref.current.contains(e.target) || e.target.contains(pickerBtn)) {
 
-                } else {
-                    props.handleShowEmojiPicker();
-                    document.removeEventListener("mousedown", handleOutsideClick, false);
-                }
-            }
-        };
-        document.addEventListener("mousedown", handleOutsideClick, false);
-        document.addEventListener("keydown", handleEscapeKey, false);
-        return () => {
-            document.removeEventListener("mousedown", handleOutsideClick, false);
-            document.removeEventListener("keydown", handleEscapeKey, false);
-        };
-
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    useOutsideClick(ref, handleShowEmojiPicker, true);
 
     return (
         <PickerContainer

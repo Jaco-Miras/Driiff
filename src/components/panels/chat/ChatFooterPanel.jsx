@@ -1,8 +1,9 @@
-import React, {useRef} from "react";
+import React, {useRef, useState} from "react";
 import {useSelector} from "react-redux";
 import styled from "styled-components";
 import {SvgIconFeather} from "../../common/SvgIcon";
 import ChatInput from "../../forms/ChatInput";
+import PickerEmoji from '../../common/PickerEmoji';
 
 const Wrapper = styled.div`
 `;
@@ -38,18 +39,43 @@ const IconButton = styled(SvgIconFeather)`
     }
 `;
 
+const Dflex = styled.div`
+`
+
+const StyledPickerEmoji = styled(PickerEmoji)`
+    right: unset;
+    bottom: 70px;
+`
+
 const ChatFooterPanel = (props) => {
 
     const {className = ""} = props;
+
+    const pickerRef = useRef()
+    const [showEmojiPicker, setShowEmojiPicker] = useState(false)
+    const [selectedEmoji, setSelectedEmoji] = useState(null)
 
     const selectedChannel = useSelector(state => state.chat.selectedChannel);
 
     const handleSend = (e) => {
     }
 
+    const handleShowEmojiPicker = () => {
+        setShowEmojiPicker(!showEmojiPicker)
+    }
+
+    const onSelectEmoji = (e) => {
+        setSelectedEmoji(e)
+        setShowEmojiPicker(false)
+    }
+
+    const onClearEmoji = () => {
+        setSelectedEmoji(null)
+    }
+
     return (
         <Wrapper className={`chat-footer border-top ${className}`}>
-            <div className="d-flex">
+            <Dflex className="d-flex">
                 {
                     selectedChannel && selectedChannel.is_archived === 1 ?
                         <ArchivedDiv>
@@ -57,9 +83,9 @@ const ChatFooterPanel = (props) => {
                         </ArchivedDiv>
                         :
                         <React.Fragment>
-                            <IconButton icon="smile"/>
+                            <IconButton onClick={handleShowEmojiPicker} icon="smile"/>
                             <ChatInputContainer className="flex-grow-1">
-                                <ChatInput/>
+                                <ChatInput selectedEmoji={selectedEmoji} onClearEmoji={onClearEmoji}/>
                             </ChatInputContainer>
                             <div className="chat-footer-buttons d-flex">
                                 <IconButton onClick={handleSend} icon="send"/>
@@ -67,7 +93,16 @@ const ChatFooterPanel = (props) => {
                             </div>
                         </React.Fragment>
                 }
-            </div>
+                {
+                    showEmojiPicker === true &&
+                    <StyledPickerEmoji
+                        handleShowEmojiPicker={handleShowEmojiPicker}
+                        onSelectEmoji={onSelectEmoji}
+                        orientation={'top'}
+                        ref={pickerRef}
+                    />
+                }
+            </Dflex>
         </Wrapper>
     );
 };
