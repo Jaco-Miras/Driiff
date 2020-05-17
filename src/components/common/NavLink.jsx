@@ -11,7 +11,7 @@ const NavLink = (props) => {
     //if url is
     if (activeClass === "" && location.pathname.indexOf(props.to) === 0) {
         activeClass = "active";
-    } else if(props.to.indexOf(`/${location.pathname.split("/")[1]}`) === 0) {
+    } else if (props.to.indexOf(`/${location.pathname.split("/")[1]}`) === 0) {
         activeClass = "active";
     }
 

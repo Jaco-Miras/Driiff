@@ -3,8 +3,7 @@ import {useDispatch} from "react-redux";
 import {useHistory} from "react-router-dom";
 import styled from "styled-components";
 import {setNavMode} from "../../../redux/actions/globalActions";
-import {NavLink} from "../../common";
-import {SvgIcon, SvgIconFeather} from "../../common";
+import {NavLink, SvgIcon, SvgIconFeather} from "../../common";
 
 const Wrapper = styled.div`
 `;

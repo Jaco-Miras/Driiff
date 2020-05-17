@@ -2,7 +2,6 @@ import lodash from "lodash";
 import {useEffect, useState} from "react";
 
 
-
 const useTooltipHorizontalOrientation = (mainRef, tooltipRef, scrollEl, when) => {
     const [orientation, setOrientation] = useState("left");
 
@@ -89,7 +88,7 @@ export const useTooltipOrientation = (mainRef, tooltipRef, scrollEl, when, offse
 
     return {
         vertical: orientation,
-        horizontal : useTooltipHorizontalOrientation(mainRef, tooltipRef, scrollEl, when)
+        horizontal: useTooltipHorizontalOrientation(mainRef, tooltipRef, scrollEl, when),
     };
 };
 

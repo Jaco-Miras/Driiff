@@ -40,7 +40,7 @@ const CompanyHeaderPanel = (props) => {
     const user = useSelector(state => state.session.user);
 
     useEffect(() => {
-        const body = document.querySelector("body");
+        const body = document.body;
         body.classList.add("stretch-layout");
         body.classList.add("navigation-toggle-one");
 

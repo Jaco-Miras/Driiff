@@ -35,7 +35,8 @@ export const AppRoute = ({authenticated, children, ...props}) => {
                 <Route
                     {...props}
                     component={GuestLayout}
-                    path={["/register", "/resetpassword/:token/:email", "/reset-password", "/login", "/authenticate/:token/:returnUrl?"]} exact>
+                    path={["/register", "/resetpassword/:token/:email", "/reset-password", "/login", "/authenticate/:token/:returnUrl?"]}
+                    exact>
                     {children}
                 </Route>
                 <Redirect

@@ -14,7 +14,7 @@ const WorspaceHeaderPanel = (props) => {
     const user = useSelector(state => state.session.user);
 
     useEffect(() => {
-        const body = document.querySelector("body");
+        const body = document.body;
         body.classList.add("stretch-layout");
         body.classList.remove("navigation-toggle-one");
     }, [match.path, dispatch]);

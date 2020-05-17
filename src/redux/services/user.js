@@ -245,7 +245,7 @@ export function forgotEmail(payload) {
     return apiNoTokenCall({
         method: "POST",
         url: url,
-        data: payload
+        data: payload,
     });
 }
 

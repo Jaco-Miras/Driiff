@@ -20,6 +20,7 @@ const MainLayout = (props) => {
 
 
     useEffect(() => {
+        document.body.classList.remove("form-membership");
         dispatch(getUserSettings());
         dispatch(getAllRecipients());
         dispatch(getMentions());

@@ -1,6 +1,7 @@
 import dispatchActionToReducer from "../actionDispatcher";
 import {
     authenticateGoogleLogin as authenticateGoogleLoginService,
+    checkDriffUserEmail as checkDriffUserEmailService,
     getMentions as getMentionsService,
     getOnlineUsers as getOnlineUsersService,
     getUser as getUserService,
@@ -9,7 +10,6 @@ import {
     logout as logoutService,
     resetPassword as resetPasswordService,
     updatePassword as updatePasswordService,
-    checkDriffUserEmail as checkDriffUserEmailService,
 } from "../services";
 
 export const userLogin = (payload, callback) => {

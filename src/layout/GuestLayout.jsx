@@ -30,9 +30,9 @@ const GuestLayout = (props) => {
                 setTitle("Create account");
                 break;
             default:
-                if (location.pathname.indexOf("authenticate") !== -1)
+                if (location.pathname.indexOf("/authenticate/") === 0)
                     setTitle("Authentication");
-                else if (location.pathname.indexOf("resetpassword") !== -1)
+                else if (location.pathname.indexOf("/resetpassword/") === 0)
                     setTitle("Update Password");
                 else
                     setTitle("Sign in");
