@@ -5,6 +5,8 @@ import styled from "styled-components";
 const Wrapper = styled.div`
     ${props => {
     switch (props.navMode) {
+        case 3:
+            return `display: none !important;`;
         case 1:
             return `display: none !important;`;
         default:

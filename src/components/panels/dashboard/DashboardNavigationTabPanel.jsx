@@ -1,10 +1,19 @@
 import React from "react";
-import {useSelector} from "react-redux";
+import {useDispatch} from "react-redux";
 import {useHistory} from "react-router-dom";
 import styled from "styled-components";
-import {SvgIconFeather} from "../../common/SvgIcon";
+import {setNavMode} from "../../../redux/actions/globalActions";
+import {SvgIcon, SvgIconFeather} from "../../common/SvgIcon";
 
 const Wrapper = styled.div`
+`;
+
+const DriffLogo = styled(SvgIcon)`
+    width: 70px;
+    height: 30px;
+    filter: brightness(0) saturate(100%) invert(1);
+    cursor: pointer;
+    cursor: hand; 
 `;
 
 const NavIconContainer = styled.span`
@@ -23,10 +32,21 @@ const NavIcon = styled(SvgIconFeather)`
 const DashboardNavigationTabPanel = (props) => {
 
     const {className = ""} = props;
-    const user = useSelector(state => state.session.user);
     const history = useHistory();
+    const dispatch = useDispatch();
 
     const handleIconClick = (e) => {
+        e.preventDefault();
+        if (e.target.dataset.link) {
+            dispatch(
+                setNavMode({mode: 3}),
+            );
+        } else {
+            dispatch(
+                setNavMode({mode: 2}),
+            );
+        }
+        history.push(e.target.dataset.link);
     };
 
     const handleLogout = (e) => {
@@ -37,15 +57,10 @@ const DashboardNavigationTabPanel = (props) => {
     return (
         <Wrapper className={`navigation-menu-tab ${className}`}>
             <div>
-                <div className="navigation-menu-tab-header" data-toggle="tooltip" title=""
+                <div className="navigation-menu-tab-header" data-toggle="tooltip" title="Driff"
                      data-placement="right"
-                     data-original-title={user.name}>
-                    <a href="/" className="nav-link" data-toggle="dropdown" aria-expanded="false">
-                        <figure className="avatar avatar-sm">
-                            <img src={user.profile_image_link} className="rounded-circle"
-                                 alt="avatar"/>
-                        </figure>
-                    </a>
+                     data-original-title="Driff">
+                    <DriffLogo icon="driff-logo" data-link="/" onClick={handleIconClick}/>
                 </div>
             </div>
             <div className="flex-grow-1">
@@ -57,12 +72,12 @@ const DashboardNavigationTabPanel = (props) => {
                     </li>
                     <li>
                         <NavIconContainer>
-                            <NavIcon icon={`command`} onClick={handleIconClick}/>
+                            <NavIcon icon={`command`} data-link="/workspace" onClick={handleIconClick}/>
                         </NavIconContainer>
                     </li>
                     <li>
                         <NavIconContainer className={`nav-container active`}>
-                            <NavIcon icon={`message-circle`} onClick={handleIconClick}/>
+                            <NavIcon icon={`message-circle`} data-link="/company/chat" onClick={handleIconClick}/>
                         </NavIconContainer>
                     </li>
                 </ul>
@@ -71,7 +86,7 @@ const DashboardNavigationTabPanel = (props) => {
                 <ul>
                     <li>
                         <NavIconContainer className={`nav-container`}>
-                            <NavIcon icon={`settings`} onClick={handleLogout}/>
+                            <NavIcon icon={`settings`} data-link="settings" onClick={handleIconClick}/>
                         </NavIconContainer>
                     </li>
                     <li>
