@@ -1,4 +1,4 @@
-import React, {useRef} from "react";
+import React from "react";
 import {useSelector} from "react-redux";
 import styled from "styled-components";
 import {SvgIconFeather} from "../../common/SvgIcon";
@@ -45,7 +45,7 @@ const ChatFooterPanel = (props) => {
     const selectedChannel = useSelector(state => state.chat.selectedChannel);
 
     const handleSend = (e) => {
-    }
+    };
 
     return (
         <Wrapper className={`chat-footer border-top ${className}`}>

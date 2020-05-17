@@ -12,7 +12,7 @@ export const AppRoute = ({authenticated, children, ...props}) => {
                     <Route
                         {...props}
                         component={DashboardLayout}
-                        path={["/dashboard", "/logout", "/logged-out"]}>
+                        path={["/dashboard", "posts", "/chat", "/peope", "files", "/logout", "/logged-out"]}>
                         {children}
                     </Route>
                     <Redirect

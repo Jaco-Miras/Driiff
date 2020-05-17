@@ -7,6 +7,8 @@ import DashboardNavigationMenuBodyPanel from "./DashboardNavigationMenuBodyPanel
 const Wrapper = styled.div`
     ${props => {
     switch (props.navMode) {
+        case 3:
+            return `width: auto;`;
         case 0:
             return `display: none`;
         case 1:
