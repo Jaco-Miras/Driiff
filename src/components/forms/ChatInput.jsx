@@ -63,7 +63,7 @@ const StyledQuillEditor = styled(QuillEditor)`
 /***  Commented out code are to be visited/refactored ***/
 const ChatInput = props => {
 
-    const {selectedEmoji, onClearEmoji} = props
+    const {selectedEmoji, onClearEmoji} = props;
     const dispatch = useDispatch();
     const reactQuillRef = useRef();
     const selectedChannel = useSelector(state => state.chat.selectedChannel);
@@ -364,7 +364,7 @@ const ChatInput = props => {
         }
     };
 
-     //to be converted into hooks
+    //to be converted into hooks
     useEffect(() => {
         if (selectedChannel && selectedChannel.replies.length) {
             document.addEventListener("keydown", handleEditOnArrowUp, false);
@@ -379,7 +379,7 @@ const ChatInput = props => {
         }
     }, [editChatMessage]);
 
-     //to be converted into hooks
+    //to be converted into hooks
     useEffect(() => {
         if (selectedEmoji) {
             const editor = reactQuillRef.current.getEditor();
@@ -387,9 +387,9 @@ const ChatInput = props => {
             const cursorPosition = editor.getSelection().index;
             editor.insertText(cursorPosition, selectedEmoji.native);
             editor.setSelection(cursorPosition + 2);
-            onClearEmoji()
+            onClearEmoji();
         }
-    },[selectedEmoji])
+    }, [selectedEmoji]);
 
     const [modules] = useQuillModules("chat", handleSubmit);
 

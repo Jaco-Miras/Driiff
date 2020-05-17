@@ -1,9 +1,9 @@
 import React, {useRef, useState} from "react";
 import {useSelector} from "react-redux";
 import styled from "styled-components";
+import PickerEmoji from "../../common/PickerEmoji";
 import {SvgIconFeather} from "../../common/SvgIcon";
 import ChatInput from "../../forms/ChatInput";
-import PickerEmoji from '../../common/PickerEmoji';
 
 const Wrapper = styled.div`
 `;
@@ -40,38 +40,38 @@ const IconButton = styled(SvgIconFeather)`
 `;
 
 const Dflex = styled.div`
-`
+`;
 
 const StyledPickerEmoji = styled(PickerEmoji)`
     right: unset;
     bottom: 70px;
-`
+`;
 
 const ChatFooterPanel = (props) => {
 
     const {className = ""} = props;
 
-    const pickerRef = useRef()
-    const [showEmojiPicker, setShowEmojiPicker] = useState(false)
-    const [selectedEmoji, setSelectedEmoji] = useState(null)
+    const pickerRef = useRef();
+    const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+    const [selectedEmoji, setSelectedEmoji] = useState(null);
 
     const selectedChannel = useSelector(state => state.chat.selectedChannel);
 
     const handleSend = (e) => {
-    }
+    };
 
     const handleShowEmojiPicker = () => {
-        setShowEmojiPicker(!showEmojiPicker)
-    }
+        setShowEmojiPicker(!showEmojiPicker);
+    };
 
     const onSelectEmoji = (e) => {
-        setSelectedEmoji(e)
-        setShowEmojiPicker(false)
-    }
+        setSelectedEmoji(e);
+        setShowEmojiPicker(false);
+    };
 
     const onClearEmoji = () => {
-        setSelectedEmoji(null)
-    }
+        setSelectedEmoji(null);
+    };
 
     return (
         <Wrapper className={`chat-footer border-top ${className}`}>
@@ -98,7 +98,7 @@ const ChatFooterPanel = (props) => {
                     <StyledPickerEmoji
                         handleShowEmojiPicker={handleShowEmojiPicker}
                         onSelectEmoji={onSelectEmoji}
-                        orientation={'top'}
+                        orientation={"top"}
                         ref={pickerRef}
                     />
                 }
