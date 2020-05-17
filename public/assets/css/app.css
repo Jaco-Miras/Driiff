@@ -10016,7 +10016,7 @@ code[class*="language-"], pre[class*="language-"] {
 }
 
 .header .avatar.avatar-state-success:before {
-  border-color: #1565C0;
+  border-color: #fff;
 }
 
 .header .header-app-list a, .header .header-app-list .chat-block .chat-sidebar .chat-sidebar-content .list-group .list-group-item.active, .chat-block .chat-sidebar .chat-sidebar-content .list-group .header .header-app-list .list-group-item.active, .header .header-app-list form .input-group .input-group-append button.btn, .header form .input-group .input-group-append .header-app-list button.btn {

@@ -15,6 +15,10 @@ const Wrapper = styled.div`
     }    
 `;
 
+const Image = styled.img`
+    display: ${props => props.display ? "inherit" : "none"};
+`;
+
 const Avatar = forwardRef((props, ref) => {
     const {
         className = "",
@@ -22,7 +26,6 @@ const Avatar = forwardRef((props, ref) => {
         id,
         name,
         children,
-        noLoader = false,
         partialName = null,
         isAnonymous = false,
         type = "USER",
@@ -74,15 +77,18 @@ const Avatar = forwardRef((props, ref) => {
         className={`avatar avatar-sm ${isOnline && "avatar-state-success"} ${className} ${isLoaded && "ico-avatar-loaded"}`}
         onClick={handleOnClick}>
         {
-            (!isLoaded || !noLoader || !showInitials) &&
+            isLoaded ?
+                <></>
+                :
             <Skeleton borderRadius="50%" widthRandomness={0}
                       heightRandomness={0}/>
         }
         {
             showInitials ?
-                <span>fs{handleInitials(name).substring(0, 2)}</span>
+                <span>{handleInitials(name).substring(0, 2)}</span>
                 :
-                <img
+                <Image
+                    display={isLoaded}
                     className="rounded-circle"
                     onLoad={handleImageLoad}
                     onError={handleImageError}
