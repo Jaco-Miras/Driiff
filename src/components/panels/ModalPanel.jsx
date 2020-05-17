@@ -1,6 +1,6 @@
-import React from 'react';
-import styled from 'styled-components';
-import { useSelector } from 'react-redux';
+import React from "react";
+import {useSelector} from "react-redux";
+import styled from "styled-components";
 import ConfirmationModal from "../modals/ConfirmationModal";
 
 const ModalPanelContainer = styled.div`
@@ -13,8 +13,8 @@ const ModalPanelContainer = styled.div`
 `;
 
 const ModalPanel = props => {
-    
-    const modals = useSelector(state => state.global.modals)
+
+    const modals = useSelector(state => state.global.modals);
 
     if (Object.keys(modals).length > 0) {
         return (
@@ -22,18 +22,19 @@ const ModalPanel = props => {
                 {
                     Object.values(modals).map(modal => {
                         switch (modal.type) {
-                            case "confirmation": return <ConfirmationModal key={modal.type} data={modal}/>
+                            case "confirmation":
+                                return <ConfirmationModal key={modal.type} data={modal}/>;
                             default:
-                                return null
+                                return null;
                         }
                     })
                 }
-                
+
             </ModalPanelContainer>
-        )
+        );
     } else {
         return null;
     }
-}
+};
 
-export default React.memo(ModalPanel)
+export default React.memo(ModalPanel);

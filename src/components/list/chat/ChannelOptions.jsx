@@ -14,7 +14,7 @@ import {
     updateChannelReducer,
     updateUnreadChatReplies,
 } from "../../../redux/actions/chatActions";
-import { addToModals } from "../../../redux/actions/globalActions";
+import {addToModals} from "../../../redux/actions/globalActions";
 import useOutsideClick from "../../hooks/useOutsideClick";
 import {useTooltipOrientation, useTooltipPosition} from "../../hooks/useTooltipOrientation";
 
@@ -413,24 +413,24 @@ const ChannelOptions = props => {
             };
         }
         dispatch(
-            updateChannel(payload)
+            updateChannel(payload),
         );
-    }
+    };
     const handleShowArchiveConfirmation = () => {
-        
+
         let payload = {
-            type: 'confirmation',
-            headerText: 'Chat archive',
-            submitText: 'Archive',
-            cancelText: 'Cancel',
-            bodyText: 'Are you sure you want to archive this chat?',
+            type: "confirmation",
+            headerText: "Chat archive",
+            submitText: "Archive",
+            cancelText: "Cancel",
+            bodyText: "Are you sure you want to archive this chat?",
             actions: {
-                onSubmit: handleArchiveChat
-            }
-        }
+                onSubmit: handleArchiveChat,
+            },
+        };
 
         dispatch(
-            addToModals(payload)
+            addToModals(payload),
         );
     };
 

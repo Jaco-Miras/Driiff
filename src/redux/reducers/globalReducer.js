@@ -39,18 +39,18 @@ export default (state = INITIAL_STATE, action) => {
                 ...state,
                 modals: {
                     ...state.modals,
-                    [action.data.type]: action.data
-                }
-            }
+                    [action.data.type]: action.data,
+                },
+            };
         }
         case "CLEAR_MODAL": {
-            let updatedModals = { ...state.modals }
-            delete updatedModals[action.data.type]
+            let updatedModals = {...state.modals};
+            delete updatedModals[action.data.type];
 
             return {
                 ...state,
-                modals: updatedModals
-            }
+                modals: updatedModals,
+            };
         }
         default:
             return state;
