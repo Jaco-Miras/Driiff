@@ -1,8 +1,7 @@
 import React, {useRef, useState} from "react";
 import {useSelector} from "react-redux";
 import styled from "styled-components";
-import PickerEmoji from "../../common/PickerEmoji";
-import {SvgIconFeather} from "../../common/SvgIcon";
+import {PickerEmoji, SvgIconFeather} from "../../common";
 import ChatInput from "../../forms/ChatInput";
 
 const Wrapper = styled.div`

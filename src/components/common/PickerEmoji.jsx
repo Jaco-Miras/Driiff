@@ -2,7 +2,7 @@ import {Picker} from "emoji-mart";
 import "emoji-mart/css/emoji-mart.css";
 import React from "react";
 import styled from "styled-components";
-import useOutsideClick from "../hooks/useOutsideClick";
+import {useOutsideClick} from "../hooks";
 
 const PickerContainer = styled.div`
     position: absolute;

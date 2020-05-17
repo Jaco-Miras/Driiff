@@ -41,8 +41,7 @@ import {
 //     updateChannel,
 //     updateUnreadChatReplies,
 // } from "../../../redux/actions/revampActions";
-import Avatar from "../../common/Avatar";
-import Loader from "../../common/Loader";
+import {Avatar, Loader} from "../../common";
 import NoReply from "../../common/NoReply";
 import ChatBubble from "./ChatBubble";
 import ChatMessageOptions from "./ChatMessageOptions";

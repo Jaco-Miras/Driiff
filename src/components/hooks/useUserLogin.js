@@ -23,7 +23,7 @@ export const processBackendLogin = (payload, returnUrl) => {
     window.location.href = `${getAPIUrl({isDNS: true})}/auth-web/login?token=${payload.auth_token}&redirect_link=${redirectLink}`;
 };
 
-const useUserLogin = (props) => {
+export const useUserLogin = (props) => {
 
     const dispatch = useDispatch();
     const {path} = props.match;
@@ -107,5 +107,3 @@ const useUserLogin = (props) => {
         }
     }, [path, dispatch, props]);
 };
-
-export default useUserLogin;

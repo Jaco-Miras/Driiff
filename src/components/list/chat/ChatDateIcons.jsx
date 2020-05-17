@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import {localizeChatChannelDate} from "../../../helpers/momentFormatJS";
-import {SvgIcon} from "../../common/SvgIcon";
+import {SvgIcon} from "../../common";
 
 const DateIconsContainer = styled.div`
   text-align: right;

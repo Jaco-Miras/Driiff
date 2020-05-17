@@ -34,4 +34,5 @@ const useOutsideClick = (ref, callback, when) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [when]);
 };
+
 export default useOutsideClick;

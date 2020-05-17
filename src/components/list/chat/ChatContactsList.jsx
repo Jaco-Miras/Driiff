@@ -1,8 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import {SvgIconFeather} from "../../common/SvgIcon";
-import useLoadChannels from "../../hooks/useLoadChannels";
-import useSortChannels from "../../hooks/useSortChannels";
+import {SvgIconFeather} from "../../common";
+import {useLoadChannels, useSortChannels} from "../../hooks";
 import ChannelIcon from "./ChannelIcon";
 
 const ChatHeader = styled.h4`

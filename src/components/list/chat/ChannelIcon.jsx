@@ -4,7 +4,7 @@ import postIcon from "../../../assets/icon/conversations/l/active.svg";
 import teamIcon from "../../../assets/icon/departments/department.svg";
 import botIcon from "../../../assets/icon/person/l/active.svg";
 import topicIcon from "../../../assets/icon/topic_icon/people_group/l/active.svg";
-import Avatar from "../../common/Avatar";
+import {Avatar} from "../../common";
 
 const ChannelIconContainer = styled.div`
     border-radius: 50%;

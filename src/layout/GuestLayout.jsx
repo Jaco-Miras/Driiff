@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from "react";
 import {Route, Switch, useLocation, withRouter} from "react-router-dom";
 import styled from "styled-components";
-import {SvgIcon} from "../components/common/SvgIcon";
-import useUserLogin from "../components/hooks/useUserLogin";
+import {SvgIcon} from "../components/common";
+import {useUserLogin} from "../components/hooks";
 import {LoginPanel, RegisterPanel, ResetPasswordPanel} from "../components/panels";
 
 const Wrapper = styled.div`

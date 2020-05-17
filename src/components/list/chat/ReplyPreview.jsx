@@ -4,7 +4,7 @@ import {useSelector} from "react-redux";
 import styled from "styled-components";
 import quillHelper from "../../../helpers/quillHelper";
 import {_t} from "../../../helpers/stringFormatter";
-import {SvgIcon} from "../../common/SvgIcon";
+import {SvgIcon} from "../../common";
 
 const PreviewTextContainer = styled.div`
 `;

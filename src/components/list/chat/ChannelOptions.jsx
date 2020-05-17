@@ -15,8 +15,7 @@ import {
     updateUnreadChatReplies,
 } from "../../../redux/actions/chatActions";
 import {addToModals} from "../../../redux/actions/globalActions";
-import useOutsideClick from "../../hooks/useOutsideClick";
-import {useTooltipOrientation, useTooltipPosition} from "../../hooks/useTooltipOrientation";
+import {useOutsideClick, useTooltipOrientation, useTooltipPosition} from "../../hooks";
 
 const MoreButtonContainer = styled.div`
   border-radius: 50%;
@@ -275,7 +274,7 @@ const ChannelOptions = props => {
     const tooltipRef = useRef();
     const moreRef = useRef();
     const scrollEl = document.getElementById("chat-channels");
-    const [orientation] = useTooltipOrientation(moreRef, tooltipRef, scrollEl, showMoreOptions);
+    const orientation = useTooltipOrientation(moreRef, tooltipRef, scrollEl, showMoreOptions);
     const [toolTipPosition] = useTooltipPosition(moreRef, tooltipRef, scrollEl, showMoreOptions);
     const [sharedChannel, setSharedChannel] = useState(false);
     const sharedSlugs = useSelector(state => state.global.slugs);
@@ -504,9 +503,9 @@ const ChannelOptions = props => {
             showMoreOptions &&
             <MoreTooltip
                 ref={tooltipRef}
-                className={`more-options-tooltip ${tooltipAdjustment ? "adjust" : ""} orientation-${orientation}`}
+                className={`more-options-tooltip ${tooltipAdjustment ? "adjust" : ""} orientation-${orientation.vertical}`}
                 position={toolTipPosition}
-                orientation={orientation}>
+                orientation={orientation.vertical}>
                 <PinBtn onClick={handlePinButton}>
                     {channel.is_pinned ? `Unpin` : `Pin`}
                 </PinBtn>

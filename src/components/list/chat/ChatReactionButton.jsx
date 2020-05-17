@@ -2,9 +2,8 @@ import React, {useEffect, useRef, useState} from "react";
 import {useDispatch} from "react-redux";
 import styled from "styled-components";
 import {chatReaction} from "../../../redux/actions/chatActions";
-import PickerEmoji from "../../common/PickerEmoji";
-import {SvgIconFeather} from "../../common/SvgIcon";
-import {useTooltipHorizontalOrientation, useTooltipOrientation} from "../../hooks/useTooltipOrientation";
+import {PickerEmoji, SvgIconFeather} from "../../common";
+import {useTooltipOrientation} from "../../hooks";
 
 const ChatReactionButtonContainer = styled.div`
     border-radius:50%;    
@@ -58,8 +57,7 @@ const ChatReactionButton = props => {
         }, 1000);
     };
 
-    const [orientation] = useTooltipOrientation(chatOptionsRef, pickerRef, scrollRef, showEmojiPicker, 0);
-    const [hOrientation] = useTooltipHorizontalOrientation(chatOptionsRef, pickerRef, null, showEmojiPicker);
+    const orientation = useTooltipOrientation(chatOptionsRef, pickerRef, scrollRef, showEmojiPicker, 0);
 
     useEffect(() => {
         if (showEmojiPicker) {
@@ -88,8 +86,8 @@ const ChatReactionButton = props => {
                     isAuthor={isAuthor}
                     className={"chat-reaction-picker"}
                     ref={pickerRef}
-                    orientation={orientation}
-                    hOrientation={hOrientation}
+                    orientation={orientation.vertical}
+                    hOrientation={orientation.horizontal}
                     onSelectEmoji={handleSelectEmoji}
                     handleShowEmojiPicker={handleShowEmojiPicker}
                 />

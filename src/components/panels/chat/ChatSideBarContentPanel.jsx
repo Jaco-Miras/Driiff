@@ -2,7 +2,7 @@ import React from "react";
 import {useSelector} from "react-redux";
 import {withRouter} from "react-router-dom";
 import styled from "styled-components";
-import useLoadLastVisitedChannel from "../../hooks/useLoadLastVisitedChannel";
+import {useLoadLastVisitedChannel} from "../../hooks";
 //import ChatRecentList from "../../list/chat/ChatRecentList";
 import ChannelsSidebar from "../../list/chat/ChannelsSidebar";
 import ChatContactsList from "../../list/chat/ChatContactsList";

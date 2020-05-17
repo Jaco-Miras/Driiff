@@ -1,7 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import useLoadChannels from "../../hooks/useLoadChannels";
-import useSortChannels from "../../hooks/useSortChannels";
+import {useLoadChannels, useSortChannels} from "../../hooks";
 import ChannelList from "./ChannelList";
 
 const ChannelsSidebarContainer = styled.div`
