@@ -2,7 +2,7 @@ import React, {useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import styled from "styled-components";
 import useUserLogout from "../components/hooks/useUserLogout";
-import {DashboardFooterPanel, DashboardHeaderPanel, DashboardNavigationPanel} from "../components/panels";
+import {DashboardFooterPanel, DashboardHeaderPanel, DashboardNavigationPanel, ModalPanel} from "../components/panels";
 import ChatContentPanel from "../components/panels/chat/ChatContentPanel";
 import ChatSidebarPanel from "../components/panels/chat/ChatSidebarPanel";
 import Socket from "../components/socket/socket";
@@ -57,6 +57,7 @@ const DashboardLayout = (props) => {
                 </div>
                 <DashboardFooterPanel/>
             </MainContent>
+            <ModalPanel/>
         </>
     );
 };
