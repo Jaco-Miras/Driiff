@@ -475,8 +475,47 @@ export default function (state = INITIAL_STATE, action) {
         case "SET_EDIT_CHAT_MESSAGE": {
             return {
                 ...state,
-                //editChatMessage: action.data.set_to_null ? null : action.data
                 editChatMessage: action.data,
+            };
+        }
+        case "INCOMING_DELETED_CHAT_MESSAGE": {
+            let channel = null;
+            if (Object.keys(state.channels).length > 0 && state.channels.hasOwnProperty(action.data.channel_id)) {
+                channel = {...state.channels[action.data.channel_id]};
+                channel = {
+                    ...channel,
+                    replies: channel.replies.map(r => {
+                        if (r.id === action.data.message_id) {
+                            return {
+                                ...r,
+                                is_deleted: 1,
+                                body: "CHAT_MESSAGE_DELETED",
+                                files: [],
+                            };
+                        } else {
+                            return r;
+                        }
+                    }),
+                    last_reply: channel.last_reply.id === action.data.message_id ? {
+                        ...channel.last_reply,
+                        body: "The chat message has been deleted",
+                        is_deleted: true,
+                    } : channel.last_reply,
+                };
+            }
+            return {
+                ...state,
+                channels: channel !== null ?
+                    {
+                        ...state.channels,
+                        [action.data.channel_id]: channel,
+                    }
+                    : state.channels,
+                selectedChannel: state.selectedChannel && state.selectedChannel.id === action.data.channel_id ?
+                    {
+                        ...channel,
+                    }
+                    : state.selectedChannel,
             };
         }
         default:

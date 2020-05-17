@@ -2,6 +2,7 @@ import dispatchActionToReducer, {SimpleDispatchActionToReducer} from "../actionD
 import {
     chatReaction as chatReactionService,
     createChatMessage as createChatMessageService,
+    deleteChatMessage as deleteChatMessageService,
     getChannel as getChannelService,
     getChannels as getChannelsService,
     getChatMessages as getChatMessagesService,
@@ -220,6 +221,24 @@ export function incomingUpdatedChatMessage(payload, callback) {
 export function setEditChatMessage(payload, callback) {
     return SimpleDispatchActionToReducer(
         "SET_EDIT_CHAT_MESSAGE",
+        payload,
+        callback,
+    );
+}
+
+export function deleteChatMessage(payload, callback) {
+    return dispatchActionToReducer(
+        deleteChatMessageService(payload),
+        "DELETE_CHAT_MESSAGE_START",
+        "DELETE_CHAT_MESSAGE_SUCCESS",
+        "DELETE_CHAT_MESSAGE_FAILURE",
+        callback,
+    );
+}
+
+export function incomingDeletedChatMessage(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "INCOMING_DELETED_CHAT_MESSAGE",
         payload,
         callback,
     );

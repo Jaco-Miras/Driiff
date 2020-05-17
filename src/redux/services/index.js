@@ -10,6 +10,7 @@ export {
     createChatMessage,
     updateChatMessage,
     chatReaction,
+    deleteChatMessage,
 } from "./chat";
 
 export {

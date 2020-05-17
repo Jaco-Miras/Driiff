@@ -10,8 +10,8 @@ import shareIcon from "../../../assets/icon/share/r/secundary.svg";
 import moreIcon from "../../../assets/img/more-menu-icons/secundary.svg";
 import {copyTextToClipboard} from "../../../helpers/commonFunctions";
 import {getBaseUrl} from "../../../helpers/slugHelper";
-import {setEditChatMessage} from "../../../redux/actions/chatActions";
-// import {addChatBox, deleteChatMessageV2} from "../../../redux/actions";
+import {setEditChatMessage, deleteChatMessage} from "../../../redux/actions/chatActions";
+import {addToModals} from "../../../redux/actions/globalActions";
 import useOutsideClick from "../../hooks/useOutsideClick";
 import {
     useTooltipHorizontalOrientation,
@@ -174,7 +174,7 @@ const ChatMessageOptions = props => {
     const dispatch = useDispatch();
     const tooltipRef = useRef();
     const moreRef = useRef();
-    //const slugs = useSelector(state => state.global.slugs);
+    const slugs = useSelector(state => state.global.slugs);
     const scrollEl = document.getElementById("infinite-scroll-chat-replies");
     const [orientation] = useTooltipOrientation(moreRef, tooltipRef, scrollEl, showMoreOptions);
     const [hOrientation] = useTooltipHorizontalOrientation(moreRef, tooltipRef, scrollEl, showMoreOptions);
@@ -185,33 +185,34 @@ const ChatMessageOptions = props => {
         //props.handleShowOptions(!showMoreOptions)
     };
 
-    // const handleDeleteReply = (e, modalData) => {
-    //     props.deleteChatMessageV2Action({
-    //         message_id: replyData.id,
-    //         topic_id: selectedChannel.is_shared ? selectedChannel.entity_id : null,
-    //         is_shared: selectedChannel.is_shared ? true : false,
-    //         slug: selectedChannel.slug_owner,
-    //         token: props.slugs.length && props.slugs.filter(s => s.slug_name === props.selectedChannel.slug_owner).length ?
-    //             props.slugs.length && props.slugs.filter(s => s.slug_name === props.selectedChannel.slug_owner)[0].access_token : null,
-    //     });
-    // };
+    const handleDeleteReply = () => {
+        dispatch(
+            deleteChatMessage({
+                message_id: replyData.id,
+                topic_id: selectedChannel.is_shared ? selectedChannel.entity_id : null,
+                is_shared: selectedChannel.is_shared ? true : false,
+                slug: selectedChannel.slug_owner,
+                token: slugs.length && slugs.filter(s => s.slug_name === selectedChannel.slug_owner).length ?
+                    slugs.length && slugs.filter(s => s.slug_name === selectedChannel.slug_owner)[0].access_token : null,
+            })
+        );
+    };
+
     const handleRemoveReply = () => {
-        // let date = new Date();
-        // let timestamp = date.getTime();
-        // let cb = {
-        //     id: timestamp,
-        //     type: "modal",
-        //     modal: "modal_dialog_yes_no",
-        //     expand: true,
-        //     minimize: false,
-        //     title: "Delete reply",
-        //     reply: replyData,
-        //     channel: selectedChannel,
-        //     callback: {
-        //         handleYes: handleDeleteReply,
-        //     },
-        // };
-        // props.addChatBoxAction(cb);
+        let payload = {
+            type: "confirmation",
+            headerText: "Delete chat",
+            submitText: "Delete",
+            cancelText: "Cancel",
+            bodyText: "Are you sure you want to delete this chat?",
+            actions: {
+                onSubmit: handleDeleteReply,
+            },
+        };
+
+        dispatch(
+            addToModals(payload),
+        );
     };
     const handleEditReply = () => {
         dispatch(setEditChatMessage(replyData));
@@ -235,36 +236,6 @@ const ChatMessageOptions = props => {
         copyTextToClipboard(link);
         setShowMoreOptions(!showMoreOptions);
     };
-
-    // useEffect(() => {
-    //     if (showMoreOptions) {
-    //         const handleEscapeKey = e => {
-    //             //console.log('escape');
-    //             if (e.keyCode === 27) {
-    //                 setShowMoreOptions(false);
-    //             }
-    //         };
-    //         const handleOutsideClick = e => {
-    //             e.preventDefault();
-    //             //e.stopPropagation();
-    //             //console.log('click');
-    //             if (moreRef && moreRef.contains) {
-    //                 if (!moreRef.contains(e.target)) {
-    //                     setShowMoreOptions(false);
-    //                     //document.removeEventListener('touchstart', handleOutsideClick, false)
-    //                     document.removeEventListener('click', handleOutsideClick, false)
-    //                 }
-    //             }
-    //         };
-    //         document.addEventListener('keydown', handleEscapeKey, false);
-    //         document.addEventListener('click', handleOutsideClick, false);
-    //         return () => {
-    //             document.removeEventListener('keydown', handleEscapeKey, false);
-    //             document.removeEventListener('click', handleOutsideClick, false);
-    //         }
-    //     }
-
-    // }, [showMoreOptions]);
 
     useOutsideClick(tooltipRef, handleButtonClick, showMoreOptions);
 

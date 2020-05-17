@@ -19,6 +19,7 @@ import {
     incomingChatMessage,
     incomingChatMessageFromOthers,
     incomingChatMessageReaction,
+    incomingDeletedChatMessage,
     incomingUpdatedChatMessage,
     markAllMessagesAsRead,
     updateChannelReducer,
@@ -992,7 +993,7 @@ class Socket extends PureComponent {
                     channel_id: e.channel_id,
                     message_id: e.id,
                 };
-                this.props.incomingDeletedChatMessageAction(payload);
+                this.props.incomingDeletedChatMessage(payload);
             })
             .listen(".chat-message-react", e => {
                 console.log(e);
@@ -1292,6 +1293,7 @@ function mapDispatchToProps(dispatch) {
         incomingArchivedChannel: bindActionCreators(incomingArchivedChannel, dispatch),
         incomingChatMessageReaction: bindActionCreators(incomingChatMessageReaction, dispatch),
         incomingUpdatedChatMessage: bindActionCreators(incomingUpdatedChatMessage, dispatch),
+        incomingDeletedChatMessage: bindActionCreators(incomingDeletedChatMessage, dispatch),
         // logoutAction: bindActionCreators(logout, dispatch),
         // simpleNewNotificationSocketAction: bindActionCreators(simpleNewNotificationSocket, dispatch),
         // getNotificationsAction: bindActionCreators(getNotifications, dispatch),

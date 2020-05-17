@@ -108,3 +108,13 @@ export function chatReaction(payload) {
         is_shared: payload.is_shared ? true : false,
     });
 }
+
+export function deleteChatMessage(payload) {
+    let url = `/v2/post-channel-messages/${payload.message_id}`;
+    return apiCall({
+        method: "DELETE",
+        url: url,
+        data: payload,
+        is_shared: payload.is_shared ? true : false,
+    });
+}
