@@ -2,8 +2,8 @@ import React from "react";
 import {useSelector} from "react-redux";
 import styled from "styled-components";
 import ChatMessages from "../../list/chat/ChatMessages";
-import ChatFooterPanel from "./ChatFooterPanel";
-import ChatHeaderPanel from "./ChatHeaderPanel";
+import {ChatFooterPanel, ChatHeaderPanel} from "./index";
+
 
 const Wrapper = styled.div`
 `;

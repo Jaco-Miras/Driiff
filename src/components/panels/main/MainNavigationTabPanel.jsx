@@ -29,7 +29,7 @@ const NavIcon = styled(SvgIconFeather)`
     cursor: hand;
 `;
 
-const DashboardNavigationTabPanel = (props) => {
+const MainNavigationTabPanel = (props) => {
 
     const {className = ""} = props;
     const history = useHistory();
@@ -72,12 +72,12 @@ const DashboardNavigationTabPanel = (props) => {
                     </li>
                     <li>
                         <NavIconContainer>
-                            <NavIcon icon={`command`} data-link="/workspace" onClick={handleIconClick}/>
+                            <NavIcon icon={`command`} data-link="/workspace/dashboard" onClick={handleIconClick}/>
                         </NavIconContainer>
                     </li>
                     <li>
                         <NavIconContainer className={`nav-container active`}>
-                            <NavIcon icon={`message-circle`} data-link="/company/chat" onClick={handleIconClick}/>
+                            <NavIcon icon={`message-circle`} data-link="/chat" onClick={handleIconClick}/>
                         </NavIconContainer>
                     </li>
                 </ul>
@@ -86,7 +86,7 @@ const DashboardNavigationTabPanel = (props) => {
                 <ul>
                     <li>
                         <NavIconContainer className={`nav-container`}>
-                            <NavIcon icon={`settings`} data-link="settings" onClick={handleIconClick}/>
+                            <NavIcon icon={`settings`} data-link="/settings" onClick={handleIconClick}/>
                         </NavIconContainer>
                     </li>
                     <li>
@@ -100,4 +100,4 @@ const DashboardNavigationTabPanel = (props) => {
     );
 };
 
-export default React.memo(DashboardNavigationTabPanel);
+export default React.memo(MainNavigationTabPanel);

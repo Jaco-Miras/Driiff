@@ -1,31 +1,10 @@
-import React from "react";
+import React, {useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {Link} from "react-router-dom";
+import {Link, useRouteMatch} from "react-router-dom";
 import styled from "styled-components";
 import {setNavMode} from "../../../redux/actions/globalActions";
 import Avatar from "../../common/Avatar";
 import {SvgIconFeather} from "../../common/SvgIcon";
-
-const Wrapper = styled.div`
-    ${props => {
-    switch (props.navMode) {
-        case 3:
-            return `
-            margin-left: 75px;;
-            
-            .navigation-toggler {
-                display: none;
-            }
-            `;
-        case 0:
-            return `margin-left: 0;`;
-        case 1:
-            return `margin-left: 75px;`;
-        default:
-            return ``;
-    }
-}}
-`;
 
 const CompanyName = styled.h1`    
 `;
@@ -33,32 +12,28 @@ const CompanyName = styled.h1`
 const MainNavLink = styled(Link)`
 `;
 
-const DashboardHeaderPanel = (props) => {
-
-    const {className = ""} = props;
+const CompanyHeaderPanel = (props) => {
 
     const dispatch = useDispatch();
+    const match = useRouteMatch();
     const navMode = useSelector(state => state.global.navMode);
     const user = useSelector(state => state.session.user);
 
-    const handleToggleNavigation = (e) => {
-        e.preventDefault();
+    useEffect(() => {
+        const body = document.querySelector("body");
+        body.classList.add("stretch-layout");
+        body.classList.add("navigation-toggle-one");
 
-        const mode = navMode - 1;
+        const mode = 1;
         dispatch(
             setNavMode({mode: mode < 0 ? 2 : mode}),
         );
-    };
+    }, [match.path]);
 
     return (
-        <Wrapper className={`header ${className}`} navMode={navMode}>
+        <>
             <div>
                 <ul className="navbar-nav">
-                    <li className="nav-item navigation-toggler">
-                        <a href="/" onClick={handleToggleNavigation} className="nav-link" title="Hide navigation">
-                            <SvgIconFeather icon="arrow-left"/>
-                        </a>
-                    </li>
                     <li className="nav-item navigation-toggler mobile-toggler">
                         <a href="/" className="nav-link" title="Show navigation">
                             <SvgIconFeather icon="menu"/>
@@ -69,26 +44,25 @@ const DashboardHeaderPanel = (props) => {
                         <CompanyName>ZUID Creatives</CompanyName>
                     </li>
                     <li className="nav-item">
-                        <MainNavLink to="/">Dashboard</MainNavLink>
+                        <MainNavLink to="/dashboard">Dashboard</MainNavLink>
                     </li>
                     <li className="nav-item">
-                        <MainNavLink to="/">Posts</MainNavLink>
+                        <MainNavLink to="/posts">Posts</MainNavLink>
                     </li>
                     <li className="nav-item">
-                        <MainNavLink to="/">Chat</MainNavLink>
+                        <MainNavLink to="/chat">Chat</MainNavLink>
                     </li>
                     <li className="nav-item">
-                        <MainNavLink to="/">Files</MainNavLink>
+                        <MainNavLink to="/files">Files</MainNavLink>
                     </li>
                     <li className="nav-item">
-                        <MainNavLink to="/">People</MainNavLink>
+                        <MainNavLink to="/people">People</MainNavLink>
                     </li>
                 </ul>
             </div>
 
             <div>
                 <ul className="navbar-nav">
-
                     <li className="nav-item">
                         <a href="/" className="nav-link dropdown-toggle" data-toggle="dropdown">
                             <img className="mr-2" src="assets/media/image/flags/262-united-kingdom.png" alt="flag"
@@ -117,8 +91,6 @@ const DashboardHeaderPanel = (props) => {
                             <Avatar name={user.name} imageLink={user.profile_image_link}/>
                         </a>
                         <div className="dropdown-menu dropdown-menu-right dropdown-menu-big">
-
-
                             <div id="ascrail2003" className="nicescroll-rails nicescroll-rails-vr"
                                  styles="width: 8px; z-index: 1000; cursor: default; position: absolute; top: 65.8px; left: 292px; height: 299px; display: none;">
                                 <div
@@ -135,8 +107,8 @@ const DashboardHeaderPanel = (props) => {
                     </li>
                 </ul>
             </div>
-        </Wrapper>
+        </>
     );
 };
 
-export default React.memo(DashboardHeaderPanel);
+export default React.memo(CompanyHeaderPanel);

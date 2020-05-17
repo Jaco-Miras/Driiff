@@ -2,7 +2,8 @@ import React, {useState} from "react";
 import {useSelector} from "react-redux";
 import styled from "styled-components";
 import SearchForm from "../../forms/SearchForm";
-import ChatSideBarContentPanel from "./ChatSideBarContentPanel";
+import {ChatSideBarContentPanel} from "./index";
+
 
 const Wrapper = styled.div`
 `;
@@ -76,7 +77,6 @@ const ChatSidebarPanel = (props) => {
                     </li>
                 </ul>
             </div>
-
             <ChatSideBarContentPanel pill={tabPill} isLoaded={settings.isLoaded} search={search}/>
         </Wrapper>
     );

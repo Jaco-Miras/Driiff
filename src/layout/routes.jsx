@@ -1,7 +1,7 @@
 import React from "react";
 import {Redirect, Route, Switch} from "react-router-dom";
-import DashboardLayout from "./DashboardLayout";
 import GuestLayout from "./GuestLayout";
+import MainLayout from "./MainLayout";
 
 export const AppRoute = ({authenticated, children, ...props}) => {
 
@@ -11,8 +11,14 @@ export const AppRoute = ({authenticated, children, ...props}) => {
                 <Switch>
                     <Route
                         {...props}
-                        component={DashboardLayout}
-                        path={["/dashboard", "posts", "/chat", "/peope", "files", "/logout", "/logged-out"]}>
+                        component={MainLayout}
+                        path={["/dashboard", "/posts", "/chat", "/files", "/people", "/settings", "/logout", "/logged-out"]}>
+                        {children}
+                    </Route>
+                    <Route
+                        {...props}
+                        component={MainLayout}
+                        path={["/workspace/dashboard", "/workspace/posts", "/workspace/chat", "/workspace/files", "/workspace/people", "/workspace/settings"]}>
                         {children}
                     </Route>
                     <Redirect
