@@ -54,20 +54,20 @@ import SeenIndicator from "./SeenIndicator";
 import SystemMessage from "./SystemMessage";
 
 const ChatReplyContainer = styled.div`
-  background: transparent;  
+  background: transparent;
   background-repeat: repeat;
   height: calc(100% - 181px);
   overflow-y: auto;
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
   z-index: 1;
-  font-family: sans-serif;
+  font-family: 'Inter', sans-serif;
   > ul {
     list-style: none;
     margin: 0;
     padding: 0;
   }
-  
+
   &.is-processed {
     opacity: 0;
   }
@@ -97,7 +97,7 @@ const ChatList = styled.li`
     width: 100%;
     margin-bottom: 5px;
     text-align: center;
-    
+
     .chat-actions-container {
         opacity: 0;
     }
@@ -108,19 +108,29 @@ const ChatList = styled.li`
     }
 `;
 const TimestampDiv = styled.div`
-  text-align: center;
-  margin: 15px 0;
-  font-weight: 600;
-  z-index: 10;
-  position: sticky;
-  // top: -13px;
+    z-index: 10;
+    position: sticky;
     top: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    padding: 0 20px;
+    color: #a7abc3;
+    margin: 20px 0;
+    &:before, &:after {
+        content: '';
+        display: block;
+        height: 1px;
+        background-color: #e1e1e1;
+        flex: 1;
+    }
     span {
         background: #fff;
         padding: 5px 10px;
         border-radius: 5px;
-        margin-top: 1em;
         display: inline-block;
+        font-size: 11px;
     }
 `;
 const ChatBubbleContainer = styled.div`
@@ -130,10 +140,10 @@ const ChatBubbleContainer = styled.div`
   //align-items: ${props => props.isAuthor ? "flex-end" : "flex-start"};
   justify-content: flex-end;
   flex-flow: column;
-  flex-flow: ${props => (props.isAuthor ? "row" : "row-reverse")};  
+  flex-flow: ${props => (props.isAuthor ? "row" : "row-reverse")};
   margin-left: ${props => (!props.isAuthor && !props.showAvatar) || (!props.isAuthor && props.showAvatar && props.isBot) ? "40px" : "0"};
   ${props => (props.isAuthor === true && "position: relative; right: 15px;")};
-  
+
   &:before {
     content: '';
     border: 10px solid transparent;
@@ -141,9 +151,9 @@ const ChatBubbleContainer = styled.div`
     border-right-color: #f0f0f0;
     position: absolute;
     top: 8px;
-    left: 25px;        
+    left: 25px;
     z-index: 1;
-    
+
     ${props => (props.isAuthor === true && `
         left: auto;
         right: -20px;
@@ -154,10 +164,10 @@ const ChatBubbleContainer = styled.div`
 `;
 const ChatActionsContainer = styled.div`
     display: flex;
-    flex-flow: ${props => (props.isAuthor ? "row-reverse" : "row")};  
+    flex-flow: ${props => (props.isAuthor ? "row-reverse" : "row")};
     flex-wrap: wrap;
     ${props => (props.isAuthor ? "margin-right: 10px" : "margin-left: 10px")};
-    min-width: 100px;    
+    min-width: 100px;
     max-height: 25px;
 `;
 const SystemChatActionsContainer = styled.div`
@@ -165,8 +175,8 @@ const SystemChatActionsContainer = styled.div`
     flex-direction: row;
     flex-wrap: wrap;
     ${props => (props.isAuthor ? "margin-right: 10px" : "margin-left: 10px")};
-    min-width: 100px;    
-    max-height: 25px;    
+    min-width: 100px;
+    max-height: 25px;
 `;
 
 const MessageOptions = styled(ChatMessageOptions)`
@@ -176,12 +186,12 @@ const MessageOptions = styled(ChatMessageOptions)`
     flex: 1;
     margin: 5px;
     max-width: 25px;
-    
+
     .more-options-tooltip {
         &.orientation-bottom {
             bottom: auto;
             top: 35px;
-            
+
             @media (max-width: 575.99px) {
                 top: 20px;
             }
@@ -192,7 +202,7 @@ const MessageOptions = styled(ChatMessageOptions)`
                 &:before {
                     left: auto;
                     right: 85%;
-                    bottom: 100%;                        
+                    bottom: 100%;
                 }
                 &:after {
                     left: auto;
@@ -202,10 +212,10 @@ const MessageOptions = styled(ChatMessageOptions)`
             }
             &.hOrientation-left {
                 right: -5px;
-                left: auto;                    
+                left: auto;
 
                 &:before {
-                    left: 90%;                        
+                    left: 90%;
                 }
                 &:after {
                     left: 90%;
@@ -216,22 +226,22 @@ const MessageOptions = styled(ChatMessageOptions)`
                 bottom: 100%;
                 transform: rotate(180deg)
             }
-            
+
             &::after {
                 top: auto;
                 bottom: 100%;
                 transform: rotate(180deg)
             }
-            
+
             @media (max-width: 1399.99px) {
                 &.hOrientation-right {
                     left: -10px;
                     top: 35px;
-    
+
                     &:before {
                         left: auto;
                         right: 85%;
-                        bottom: 100%;                        
+                        bottom: 100%;
                     }
                     &:after {
                         left: auto;
@@ -239,27 +249,27 @@ const MessageOptions = styled(ChatMessageOptions)`
                         bottom: 100%;
                     }
                 }
-                
+
                 &.hOrientation-left {
                     right: -5px;
-                    left: auto;                    
-    
+                    left: auto;
+
                     &:before {
-                        left: 90%;                        
+                        left: 90%;
                     }
                     &:after {
                         left: 90%;
                     }
                 }
             }
-        
+
             @media (max-width: 575.99px) {
                 &.hOrientation-left {
-                    right: 200px;                  
-    
+                    right: 200px;
+
                     &:before {
                         left: 90%;
-                        right: auto;                        
+                        right: auto;
                     }
                     &:after {
                         left: 90%;
@@ -268,33 +278,33 @@ const MessageOptions = styled(ChatMessageOptions)`
                 }
             }
         }
-         
+
         &.orientation-top {
             @media (max-width: 575.99px) {
                 bottom: 110%;
                 top: auto;
             }
-            
+
             &.hOrientation-right {
                 left: -5px;
-                
+
                 &:before {
                     left: 12px;
                 }
                 &:after {
                     left: 12px;
                 }
-                
+
                 @media (max-width: 575.99px) {
                     top: auto;
                     bottom: 120%;
                     right: auto;
                     left: 0;
-                    
+
                     &:before {
                         right: auto;
                         top: 100%;
-                        transform: unset;                        
+                        transform: unset;
                     }
                     &:after {
                         right: auto;
@@ -303,15 +313,15 @@ const MessageOptions = styled(ChatMessageOptions)`
                     }
                 }
             }
-            
-            &.hOrientation-left {            
+
+            &.hOrientation-left {
                 right: -5px;
                 left: auto;
-                
+
                 &:before {
                     top: 100%;
                     right: 5px;
-                    left: auto;                    
+                    left: auto;
                     transform: unset;
                 }
                 &:after {
@@ -369,8 +379,8 @@ const SystemMessageContainer = styled.div`
     float: left;
     align-items: center;
     justify-content: flex-end;
-    flex-flow: ${props => (props.isAuthor ? "row" : "row-reverse")}; 
-    
+    flex-flow: ${props => (props.isAuthor ? "row" : "row-reverse")};
+
     .chat-options {
         visibility: hidden;
     }
