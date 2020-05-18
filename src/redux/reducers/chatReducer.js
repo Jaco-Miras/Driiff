@@ -13,6 +13,7 @@ const INITIAL_STATE = {
     unreadChatCount: 0,
     historicalPositions: [],
     editChatMessage: null,
+    sendButtonClicked: false,
 };
 
 export default function (state = INITIAL_STATE, action) {
@@ -517,6 +518,12 @@ export default function (state = INITIAL_STATE, action) {
                     }
                     : state.selectedChannel,
             };
+        }
+        case "ON_CLICK_SEND_BUTTON": {
+            return {
+                ...state,
+                sendButtonClicked: action.data
+            }
         }
         default:
             return state;

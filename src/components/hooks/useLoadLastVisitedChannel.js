@@ -1,11 +1,13 @@
 import {useEffect} from "react";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {addToChannels, getChannel, getLastVisitedChannel, setSelectedChannel} from "../../redux/actions/chatActions";
 
 const useLoadLastVisitedChannel = (props) => {
     //const { history} = props
     const {path, params} = props.match;
     const dispatch = useDispatch();
+
+    const selectedChannel = useSelector(state => state.chat.selectedChannel);
 
     useEffect(() => {
         const loadSelectedChannel = channel_id => {
@@ -25,15 +27,17 @@ const useLoadLastVisitedChannel = (props) => {
                 }),
             );
         };
-        if (path === "/chat/:cid" || path === "/chat/:cid/mid") {
-            loadSelectedChannel({channel_id: params.cid});
-        } else {
-            dispatch(
-                getLastVisitedChannel({}, (err, res) => {
-                    loadSelectedChannel({channel_id: res.data.code});
-                    //history.push(`/chat/${res.data.code}`);
-                }),
-            );
+        if (selectedChannel === null) {
+            if (path === "/chat/:cid" || path === "/chat/:cid/mid") {
+                loadSelectedChannel({channel_id: params.cid});
+            } else {
+                dispatch(
+                    getLastVisitedChannel({}, (err, res) => {
+                        loadSelectedChannel({channel_id: res.data.code});
+                        //history.push(`/chat/${res.data.code}`);
+                    }),
+                );
+            }
         }
 
         //eslint-disable-next-line react-hooks/exhaustive-deps

@@ -237,11 +237,18 @@ const ChatMessageOptions = props => {
         setShowMoreOptions(!showMoreOptions);
     };
 
-    useOutsideClick(tooltipRef, handleButtonClick, showMoreOptions);
-
     const handleForwardMessage = () => {
-        props.onForwardMessage(replyData);
+        let payload = {
+            type: "forward",
+            message: replyData
+        };
+
+        dispatch(
+            addToModals(payload),
+        );
     };
+
+    useOutsideClick(tooltipRef, handleButtonClick, showMoreOptions);
 
     return <ChatMoreButtonDiv
         className={`chat-more-button ${className}`}

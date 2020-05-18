@@ -1,11 +1,12 @@
 import {useEffect, useState} from "react";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {getChannels} from "../../redux/actions/chatActions";
 
 const useLoadChannels = () => {
 
     const dispatch = useDispatch();
     //const settings  = useSelector(state => state.user.settings)
+    const channels = useSelector(state => state.chat.channels);
     const [activeChannelsLoaded, setActiveChannelsLoaded] = useState(false);
     const [hiddenChannelsLoaded, setHiddenChannelsLoaded] = useState(false);
     const [archivedChannelsLoaded, setArchivedChannelsLoaded] = useState(false);
@@ -54,11 +55,12 @@ const useLoadChannels = () => {
                 }),
             );
         };
-
-        fetchChannels(true, 20);
-        fetchChannels(true, 5, "hidden");
-        fetchChannels(true, 5, "archived");
-
+        
+        if (Object.keys(channels).length === 0) {
+            fetchChannels(true, 20);
+            fetchChannels(true, 5, "hidden");
+            fetchChannels(true, 5, "archived");
+        }
         //eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 

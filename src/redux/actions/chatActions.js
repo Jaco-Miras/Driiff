@@ -243,3 +243,11 @@ export function incomingDeletedChatMessage(payload, callback) {
         callback,
     );
 }
+
+export function onClickSendButton(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "ON_CLICK_SEND_BUTTON",
+        payload,
+        callback,
+    );
+}

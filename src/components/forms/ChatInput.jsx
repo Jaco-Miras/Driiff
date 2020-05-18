@@ -7,6 +7,7 @@ import {
     createChatMessage,
     setEditChatMessage,
     updateChatMessage,
+    onClickSendButton,
 } from "../../redux/actions/chatActions";
 import useQuillModules from "../hooks/useQuillModules";
 import QuillEditor from "./QuillEditor";
@@ -70,6 +71,7 @@ const ChatInput = props => {
     const slugs = useSelector(state => state.global.slugs);
     const user = useSelector(state => state.session.user);
     const editChatMessage = useSelector(state => state.chat.editChatMessage);
+    const sendButtonClicked = useSelector(state => state.chat.sendButtonClicked);
 
     const [text, setText] = useState("");
     const [textOnly, setTextOnly] = useState("");
@@ -390,6 +392,13 @@ const ChatInput = props => {
             onClearEmoji();
         }
     }, [selectedEmoji]);
+
+    useEffect(() => {
+        if (sendButtonClicked) {
+            dispatch(onClickSendButton(false));
+            handleSubmit()
+        }
+    }, [sendButtonClicked]);
 
     const [modules] = useQuillModules("chat", handleSubmit);
 

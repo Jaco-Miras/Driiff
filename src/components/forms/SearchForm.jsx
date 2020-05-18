@@ -6,12 +6,12 @@ const Wrapper = styled.form`
 
 const SearchForm = (props) => {
 
-    const {onChange, onClick} = props;
+    const {className = "", onChange, onClick, placeholder = "Chat search"} = props;
 
     return (
         <Wrapper className={`${props.className}`}>
             <div className="input-group">
-                <input onChange={onChange} type="text" className="form-control" placeholder="Chat search"/>
+                <input onChange={onChange} type="text" className="form-control" placeholder={placeholder}/>
                 <div className="input-group-append">
                     <button onClick={onClick} className="btn btn-outline-light" type="button">
                         <i className="ti-search"></i>

@@ -1,9 +1,10 @@
 import React, {useRef, useState} from "react";
-import {useSelector} from "react-redux";
+import {useSelector, useDispatch} from "react-redux";
 import styled from "styled-components";
 import PickerEmoji from "../../common/PickerEmoji";
 import {SvgIconFeather} from "../../common/SvgIcon";
 import ChatInput from "../../forms/ChatInput";
+import {onClickSendButton} from "../../../redux/actions/chatActions";
 
 const Wrapper = styled.div`
 `;
@@ -51,13 +52,15 @@ const ChatFooterPanel = (props) => {
 
     const {className = ""} = props;
 
+    const dispatch = useDispatch();
     const pickerRef = useRef();
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
     const [selectedEmoji, setSelectedEmoji] = useState(null);
 
     const selectedChannel = useSelector(state => state.chat.selectedChannel);
 
-    const handleSend = (e) => {
+    const handleSend = () => {
+        dispatch(onClickSendButton(true));
     };
 
     const handleShowEmojiPicker = () => {

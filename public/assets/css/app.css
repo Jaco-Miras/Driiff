@@ -7378,6 +7378,12 @@ body.modal-open .modal.show .modal-dialog {
   border-bottom: none;
 }
 
+.modal .modal-dialog .modal-content .modal-header.bg-primary,
+.modal .modal-dialog .modal-content .modal-footer.bg-primary {
+  background: #7a1b8b;
+  color: #fff;
+}
+
 .modal .modal-dialog .modal-content .modal-header .modal-title {
   font-size: 17px;
   font-weight: 600;
