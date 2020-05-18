@@ -251,3 +251,19 @@ export function onClickSendButton(payload, callback) {
         callback,
     );
 }
+
+export function addQuote(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "ADD_QUOTE",
+        payload,
+        callback,
+    );
+}
+
+export function clearQuote(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "CLEAR_QUOTE",
+        payload,
+        callback,
+    );
+}

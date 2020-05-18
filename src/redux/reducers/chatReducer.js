@@ -14,6 +14,7 @@ const INITIAL_STATE = {
     historicalPositions: [],
     editChatMessage: null,
     sendButtonClicked: false,
+    chatQuotes: {},
 };
 
 export default function (state = INITIAL_STATE, action) {
@@ -524,6 +525,35 @@ export default function (state = INITIAL_STATE, action) {
                 ...state,
                 sendButtonClicked: action.data
             }
+        }
+        case "ADD_QUOTE": {
+            let updatedQuotes = state.chatQuotes;
+            if (Object.keys(state.chatQuotes).length > 0 && state.chatQuotes.hasOwnProperty(action.data.channel_id)) {
+                updatedQuotes = { ...state.chatQuotes }
+                delete updatedQuotes[action.data.channel_id];
+                updatedQuotes = {
+                    ...updatedQuotes,
+                    [action.data.channel_id]: action.data,
+                }
+            } else {
+                updatedQuotes = {
+                    ...state.chatQuotes,
+                    [action.data.channel_id]: action.data,
+                }
+            }
+            return {
+                ...state,
+                chatQuotes: updatedQuotes
+            };
+        }
+        case "CLEAR_QUOTE": {
+            let updatedQuotes = {...state.chatQuotes};
+            delete updatedQuotes[action.data.channel_id];
+
+            return {
+                ...state,
+                chatQuotes: updatedQuotes,
+            };
         }
         default:
             return state;

@@ -10,7 +10,7 @@ import shareIcon from "../../../assets/icon/share/r/secundary.svg";
 import moreIcon from "../../../assets/img/more-menu-icons/secundary.svg";
 import {copyTextToClipboard} from "../../../helpers/commonFunctions";
 import {getBaseUrl} from "../../../helpers/slugHelper";
-import {deleteChatMessage, setEditChatMessage} from "../../../redux/actions/chatActions";
+import {deleteChatMessage, setEditChatMessage, addQuote} from "../../../redux/actions/chatActions";
 import {addToModals} from "../../../redux/actions/globalActions";
 import {useOutsideClick, useTooltipOrientation, useTooltipPosition} from "../../hooks";
 
@@ -210,10 +210,20 @@ const ChatMessageOptions = props => {
     };
     const handleEditReply = () => {
         dispatch(setEditChatMessage(replyData));
-        // props.onEditReply(replyData);
+        if (replyData.quote) {
+            let quote = {
+                ...replyData.quote,
+                channel_id: replyData.channel_id
+            }
+            dispatch(
+                addQuote(quote)
+            );
+        }
     };
     const handleQuoteReply = () => {
-        props.onQuoteReply(replyData);
+        dispatch(
+            addQuote(replyData)
+        );
     };
     const handleSetReminder = () => {
         props.cbSetReminderPopUp(replyData);

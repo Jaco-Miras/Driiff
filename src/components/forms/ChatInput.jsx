@@ -8,8 +8,10 @@ import {
     setEditChatMessage,
     updateChatMessage,
     onClickSendButton,
+    clearQuote,
+    addQuote,
 } from "../../redux/actions/chatActions";
-import {useQuillModules} from "../hooks";
+import {useQuillModules, useSelectQuote} from "../hooks";
 import QuillEditor from "./QuillEditor";
 
 const StyledQuillEditor = styled(QuillEditor)`
@@ -81,6 +83,8 @@ const ChatInput = props => {
     const [ignoredMentionedUserIds, setIgnoredMentionedUserIds] = useState([]);
     const [editMode, setEditMode] = useState(false);
     const [editMessage, setEditMessage] = useState(null);
+
+    const [quote] = useSelectQuote()
 
     const handleSubmit = () => {
 
@@ -158,15 +162,15 @@ const ChatInput = props => {
         };
 
         //revisit store to redux
-        // if (this.props.replyQuote) {
-        //     payload.quote = {
-        //         id: this.props.replyQuote.id,
-        //         body: this.props.replyQuote.body,
-        //         user_id: this.props.replyQuote.user.id,
-        //         user: this.props.replyQuote.user,
-        //         files: this.props.replyQuote.files,
-        //     };
-        // }
+        if (quote) {
+            payload.quote = {
+                id: quote.id,
+                body: quote.body,
+                user_id: quote.user.id,
+                user: quote.user,
+                files: quote.files,
+            };
+        }
 
         let obj = {
             message: text,
@@ -191,24 +195,17 @@ const ChatInput = props => {
             reactions: [],
             id: reference_id,
             reference_id: reference_id,
-            //quote: this.props.replyQuote ? payload.quote : null,
-            quote: null,
+            quote: quote,
             unfurls: [],
             g_date: localizeDate(timestamp, "YYYY-MM-DD"),
         };
 
-        // if (this.props.onCreateChannel) {
-        //     this.props.onCreateChannel(obj, payload);
-        //     return;
-        // }
-        // this.props.onClearQuote();
 
         if (!editMode) {
             dispatch(addChatMessage(obj));
         }
         if (reactQuillRef.current) {
             reactQuillRef.current.getEditor().setContents([]);
-            // reactQuillRef.current.getEditor().setText('');
         }
 
         if (editMode) {
@@ -217,33 +214,28 @@ const ChatInput = props => {
                 message_id: editMessage.id,
                 reply_id: editMessage.id,
             };
-            // if (this.props.replyQuote) {
-            //     payload.quote = this.props.replyQuote.ref_quote;
-            // }
+            if (quote) {
+                payload.quote = quote;
+            }
             dispatch(
-                updateChatMessage(payloadEdit, (err, data) => {
-                    // if (this.props.cbOnUpdate) {
-                    //     this.props.cbOnUpdate(payloadEdit);
-                    // }
-                    // if (!err) {
-                    //     this.setState({lastReplyId: ""});
-                    //     this.handleEditReplyClose();
-                    // }
-                }),
+                updateChatMessage(payloadEdit)
             );
             setEditMode(false);
             setEditMessage(null);
         } else {
             dispatch(
-                createChatMessage(payload, (err, data) => {
-                    // if (this.props.cbOnCreate) {
-                    //     this.props.cbOnCreate();
-                    // }
-                }),
+                createChatMessage(payload)
+            );
+        }
+
+        if (quote) {
+            dispatch(
+                clearQuote(quote)
             );
         }
         setTextOnly("");
         setText("");
+        setQuillContents([])
 
         // this.setState({
         //     text: "",
@@ -341,6 +333,14 @@ const ChatInput = props => {
         setText(reply.body);
         setEditMessage(reply);
         setEditMode(true);
+        if (reply.quote) {
+            dispatch(
+                addQuote({
+                    ...reply.quote,
+                    channel_id: reply.channel_id
+                })
+            );
+        }
     };
 
     const handleEditOnArrowUp = e => {
@@ -400,6 +400,7 @@ const ChatInput = props => {
         }
     }, [sendButtonClicked]);
 
+    console.log(editMessage)
     const [modules] = useQuillModules("chat", handleSubmit);
 
     return (

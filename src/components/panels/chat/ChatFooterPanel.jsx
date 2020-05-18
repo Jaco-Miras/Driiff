@@ -3,6 +3,7 @@ import {useSelector, useDispatch} from "react-redux";
 import styled from "styled-components";
 import {PickerEmoji, SvgIconFeather} from "../../common";
 import ChatInput from "../../forms/ChatInput";
+import ChatQuote from "../../list/chat/ChatQuote";
 import {onClickSendButton} from "../../../redux/actions/chatActions";
 
 const Wrapper = styled.div`
@@ -77,6 +78,12 @@ const ChatFooterPanel = (props) => {
 
     return (
         <Wrapper className={`chat-footer border-top ${className}`}>
+            {
+                selectedChannel && selectedChannel.is_archived === 0 &&
+                <Dflex className="d-flex pr-2 pl-2">
+                    <ChatQuote/>
+                </Dflex>
+            }
             <Dflex className="d-flex">
                 {
                     selectedChannel && selectedChannel.is_archived === 1 ?

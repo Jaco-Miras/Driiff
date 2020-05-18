@@ -6,3 +6,4 @@ export {default as useSortChannels} from "./useSortChannels";
 export * from "./useTooltipOrientation";
 export * from "./useUserLogin";
 export {default as useUserLogout} from "./useUserLogout";
+export {default as useSelectQuote} from "./useSelectQuote";
