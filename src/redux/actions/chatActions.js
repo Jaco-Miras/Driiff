@@ -4,6 +4,7 @@ import {
     createChatMessage as createChatMessageService,
     deleteChatMessage as deleteChatMessageService,
     getChannel as getChannelService,
+    getChannelDrafts as getChannelDraftsService,
     getChannels as getChannelsService,
     getChatMessages as getChatMessagesService,
     getLastVisitedChannel as getLastVisitedChannelService,
@@ -275,6 +276,32 @@ export function setChatReminder(payload, callback) {
         "SET_CHAT_REMINDER_START",
         "SET_CHAT_REMINDER_SUCCESS",
         "SET_CHAT_REMINDER_FAILURE",
+        callback,
+    );
+}
+
+export function addToChannelDraft(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "ADD_TO_CHANNEL_DRAFTS",
+        payload,
+        callback,
+    );
+}
+
+export function clearChannelDraft(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "CLEAR_CHANNEL_DRAFT",
+        payload,
+        callback,
+    );
+}
+
+export function getChannelDrafts(payload, callback) {
+    return dispatchActionToReducer(
+        getChannelDraftsService(payload),
+        "GET_CHANNEL_DRAFTS_START",
+        "GET_CHANNEL_DRAFTS_SUCCESS",
+        "GET_CHANNEL_DRAFTS_FAILURE",
         callback,
     );
 }

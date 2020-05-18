@@ -27,3 +27,26 @@ export function generateUnfurl(payload) {
         data: payload,
     });
 }
+
+export function saveDraft(payload) {
+    return apiCall({
+        method: "POST",
+        url: `/v1/drafts?draft_type=${payload.type}`,
+        data: payload,
+    });
+}
+
+export function updateDraft(payload) {
+    return apiCall({
+        method: "PUT",
+        url: `/v1/drafts/${payload.draft_id}?draft_type=${payload.type}`,
+        data: payload,
+    });
+}
+
+export function deleteDraft(payload) {
+    return apiCall({
+        method: "DELETE",
+        url: `/v1/drafts/${payload.draft_id}?draft_type=${payload.type}`,
+    });
+}

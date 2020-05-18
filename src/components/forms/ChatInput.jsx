@@ -10,9 +10,11 @@ import {
     onClickSendButton,
     clearQuote,
     addQuote,
+    clearChannelDraft,
 } from "../../redux/actions/chatActions";
-import {useQuillModules, useSelectQuote} from "../hooks";
+import {useQuillModules, useSelectQuote, useQuillInput, useDraft} from "../hooks";
 import QuillEditor from "./QuillEditor";
+import { deleteDraft } from "../../redux/actions/globalActions";
 
 const StyledQuillEditor = styled(QuillEditor)`
     &.chat-input {
@@ -83,6 +85,7 @@ const ChatInput = props => {
     const [ignoredMentionedUserIds, setIgnoredMentionedUserIds] = useState([]);
     const [editMode, setEditMode] = useState(false);
     const [editMessage, setEditMessage] = useState(null);
+    const [draftId, setDraftId] = useState(null);
 
     const [quote] = useSelectQuote()
 
@@ -161,7 +164,6 @@ const ChatInput = props => {
                 slugs.filter(s => s.slug_name === selectedChannel.slug_owner)[0].slug_name : null,
         };
 
-        //revisit store to redux
         if (quote) {
             payload.quote = {
                 id: quote.id,
@@ -185,12 +187,8 @@ const ChatInput = props => {
             is_completed: true,
             is_transferred: false,
             is_deleted: 0,
-            created_at: {
-                timestamp: timestamp,
-            },
-            updated_at: {
-                timestamp: timestamp,
-            },
+            created_at: { timestamp: timestamp },
+            updated_at: { timestamp: timestamp },
             channel_id: selectedChannel.id,
             reactions: [],
             id: reference_id,
@@ -203,9 +201,6 @@ const ChatInput = props => {
 
         if (!editMode) {
             dispatch(addChatMessage(obj));
-        }
-        if (reactQuillRef.current) {
-            reactQuillRef.current.getEditor().setContents([]);
         }
 
         if (editMode) {
@@ -233,28 +228,21 @@ const ChatInput = props => {
                 clearQuote(quote)
             );
         }
+        if (draftId) {
+            dispatch(deleteDraft({type: "channel", draft_id: draftId}));
+            dispatch(clearChannelDraft({channel_id: selectedChannel.id}));
+        }
+        handleClearQuillInput();
+    };
+
+    const handleClearQuillInput = () => {
         setTextOnly("");
         setText("");
         setQuillContents([])
-
-        // this.setState({
-        //     text: "",
-        //     lastReplyId: timestamp,
-        //     files: [],
-        //     file_ids: [],
-        //     post_file_ids: [],
-        //     showEmojiPicker: false,
-        //     showGifPicker: false,
-        // }, () => {
-        //     if (this.props.channelDrafts[this.props.channelId]) {
-        //         this.props.deleteChannelDraftAction(this.props.channelDrafts[this.props.channelId], (err, res) => {
-        //             this.props.deleteSelectedChannelDraftAction({
-        //                 channel_id: this.props.channelId,
-        //             });
-        //         });
-        //     }
-        // });
-    };
+        if (reactQuillRef.current) {
+            reactQuillRef.current.getEditor().setContents([]);
+        }
+    }
 
     const handleQuillChange = (content, delta, source, editor) => {
 
@@ -266,7 +254,6 @@ const ChatInput = props => {
             setEditMode(false);
             setEditMessage(null);
             //edit message in redux
-            console.log(editChatMessage !== null);
             if (editChatMessage !== null) {
                 dispatch(setEditChatMessage(null));
             }
@@ -299,10 +286,6 @@ const ChatInput = props => {
                 channel_id: selectedChannel.id,
             });
         }
-
-        // if (this.props.cbOnChange) {
-        //     this.props.cbOnChange(reactQuillRef);
-        // }
     };
 
     const handleMentionUser = mention_ids => {
@@ -399,6 +382,19 @@ const ChatInput = props => {
             handleSubmit()
         }
     }, [sendButtonClicked]);
+    
+    const loadDraftCallback = (draft) => {
+        if (draft === null) {
+            setDraftId(null);
+        } else {
+            reactQuillRef.current.getEditor().clipboard.dangerouslyPasteHTML(0, draft.text);
+            setDraftId(draft.draft_id);
+            setText(draft.text);
+        }
+    }
+    
+    useQuillInput(handleClearQuillInput);
+    useDraft(loadDraftCallback, "channel", text, textOnly, draftId);
     
     const [modules] = useQuillModules("chat", handleSubmit);
 

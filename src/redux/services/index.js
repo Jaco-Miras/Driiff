@@ -12,6 +12,7 @@ export {
     chatReaction,
     deleteChatMessage,
     setChatReminder,
+    getChannelDrafts,
 } from "./chat";
 
 export {
@@ -32,7 +33,10 @@ export {
 } from "./user";
 
 export {
+    deleteDraft,
     getConnectedSlugs,
     getAllRecipients,
     generateUnfurl,
+    saveDraft,
+    updateDraft,
 } from "./global";

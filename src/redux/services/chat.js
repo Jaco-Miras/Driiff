@@ -132,3 +132,12 @@ export function setChatReminder(payload) {
         data: payload,
     });
 }
+
+export function getChannelDrafts(payload) {
+    let url = `/v1/drafts?draft_type=channel`;
+    return apiCall({
+        method: "GET",
+        url: url,
+        data: payload,
+    });
+}

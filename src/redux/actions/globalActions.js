@@ -1,8 +1,11 @@
 import dispatchActionToReducer, {SimpleDispatchActionToReducer} from "../actionDispatcher";
 import {
+    deleteDraft as deleteDraftService,
     generateUnfurl as generateUnfurlService,
     getAllRecipients as getAllRecipientsService,
     getConnectedSlugs as getConnectedSlugsService,
+    saveDraft as saveDraftService,
+    updateDraft as updateDraftService,
 } from "../services";
 
 export function setBrowserTabStatus(payload, callback) {
@@ -79,6 +82,36 @@ export function clearModal(payload, callback) {
     return SimpleDispatchActionToReducer(
         "CLEAR_MODAL",
         payload,
+        callback,
+    );
+}
+
+export function saveDraft(payload, callback) {
+    return dispatchActionToReducer(
+        saveDraftService(payload),
+        "SAVE_DRAFT_START",
+        "SAVE_DRAFT_SUCCESS",
+        "SAVE_DRAFT_FAILURE",
+        callback,
+    );
+}
+
+export function updateDraft(payload, callback) {
+    return dispatchActionToReducer(
+        updateDraftService(payload),
+        "UPDATE_DRAFT_START",
+        "UPDATE_DRAFT_SUCCESS",
+        "UPDATE_DRAFT_FAILURE",
+        callback,
+    );
+}
+
+export function deleteDraft(payload, callback) {
+    return dispatchActionToReducer(
+        deleteDraftService(payload),
+        "DELETE_DRAFT_START",
+        "DELETE_DRAFT_SUCCESS",
+        "DELETE_DRAFT_FAILURE",
         callback,
     );
 }

@@ -9,7 +9,7 @@ const INITIAL_STATE = {
     channels: {},
     selectedChannel: null,
     startNewChannels: {},
-    channelDrafts: [],
+    channelDrafts: {},
     unreadChatCount: 0,
     historicalPositions: [],
     editChatMessage: null,
@@ -553,6 +553,52 @@ export default function (state = INITIAL_STATE, action) {
             return {
                 ...state,
                 chatQuotes: updatedQuotes,
+            };
+        }
+        case "ADD_TO_CHANNEL_DRAFTS": {
+            let updatedChannelDrafts = state.channelDrafts;
+            if (Object.keys(state.channelDrafts).length > 0 && state.channelDrafts.hasOwnProperty(action.data.channel_id)) {
+                updatedChannelDrafts = { ...state.channelDrafts}
+                delete updatedChannelDrafts[action.data.channel_id];
+                updatedChannelDrafts = {
+                    ...updatedChannelDrafts,
+                    [action.data.channel_id]: action.data,
+                }
+            } else {
+                updatedChannelDrafts = {
+                    ...updatedChannelDrafts,
+                    [action.data.channel_id]: action.data,
+                }
+            }
+            return {
+                ...state,
+                channelDrafts: updatedChannelDrafts
+            };
+        }
+        case "CLEAR_CHANNEL_DRAFT": {
+            let updatedChannelDrafts = {...state.channelDrafts};
+            delete updatedChannelDrafts[action.data.channel_id];
+
+            return {
+                ...state,
+                channelDrafts: updatedChannelDrafts,
+            };
+        }
+        case "GET_CHANNEL_DRAFTS_SUCCESS": {
+            let channelDrafts = state.channelDrafts;
+            action.data
+                .filter(item => {
+                    return item.data.type === "channel";
+                })
+                .map((item, index) => {
+                    channelDrafts[item.data.channel_id] = {
+                        ...item.data,
+                        draft_id: item.id,
+                    };
+                });
+            return {
+                ...state,
+                channelDrafts: channelDrafts,
             };
         }
         default:
