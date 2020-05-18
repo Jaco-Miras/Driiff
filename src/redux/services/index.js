@@ -11,6 +11,7 @@ export {
     updateChatMessage,
     chatReaction,
     deleteChatMessage,
+    setChatReminder,
 } from "./chat";
 
 export {

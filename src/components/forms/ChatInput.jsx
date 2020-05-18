@@ -399,8 +399,7 @@ const ChatInput = props => {
             handleSubmit()
         }
     }, [sendButtonClicked]);
-
-    console.log(editMessage)
+    
     const [modules] = useQuillModules("chat", handleSubmit);
 
     return (

@@ -118,3 +118,17 @@ export function deleteChatMessage(payload) {
         is_shared: payload.is_shared ? true : false,
     });
 }
+
+/**
+ * @param {Object} payload
+ * @param {number} payload.message_id
+ * @param {string} payload.set_time
+ */
+export function setChatReminder(payload) {
+    let url = `/v2/set-reminder`;
+    return apiCall({
+        method: "POST",
+        url: url,
+        data: payload,
+    });
+}

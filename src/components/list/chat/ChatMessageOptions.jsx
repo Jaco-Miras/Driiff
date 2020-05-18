@@ -226,7 +226,14 @@ const ChatMessageOptions = props => {
         );
     };
     const handleSetReminder = () => {
-        props.cbSetReminderPopUp(replyData);
+        let payload = {
+            type: "reminder",
+            message: replyData
+        };
+
+        dispatch(
+            addToModals(payload),
+        );
     };
     const handleTooltipMouseLeave = () => {
         console.log("mouseLeave");

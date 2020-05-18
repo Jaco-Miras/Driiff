@@ -9,6 +9,7 @@ import {
     getLastVisitedChannel as getLastVisitedChannelService,
     markReadChannel as markReadChannelService,
     markUnreadChannel as markUnreadChannelService,
+    setChatReminder as setChatReminderService,
     updateChannel as updateChannelService,
     updateChatMessage as updateChatMessageService,
 } from "../services";
@@ -264,6 +265,16 @@ export function clearQuote(payload, callback) {
     return SimpleDispatchActionToReducer(
         "CLEAR_QUOTE",
         payload,
+        callback,
+    );
+}
+
+export function setChatReminder(payload, callback) {
+    return dispatchActionToReducer(
+        setChatReminderService(payload),
+        "SET_CHAT_REMINDER_START",
+        "SET_CHAT_REMINDER_SUCCESS",
+        "SET_CHAT_REMINDER_FAILURE",
         callback,
     );
 }

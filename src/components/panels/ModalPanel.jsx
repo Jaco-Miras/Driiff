@@ -1,7 +1,7 @@
 import React from "react";
 import {useSelector} from "react-redux";
 import styled from "styled-components";
-import {ConfirmationModal, ChatForwardModal} from "../modals";
+import {ConfirmationModal, ChatForwardModal, ChatReminderModal} from "../modals";
 
 const ModalPanelContainer = styled.div`
     // z-index: 7;
@@ -26,6 +26,8 @@ const ModalPanel = props => {
                                 return <ConfirmationModal key={modal.type} data={modal}/>;
                             case "forward":
                                 return <ChatForwardModal key={modal.type} data={modal}/>;
+                            case "reminder":
+                                return <ChatReminderModal key={modal.type} data={modal}/>;
                             default:
                                 return null;
                         }

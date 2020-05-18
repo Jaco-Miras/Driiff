@@ -33,7 +33,7 @@ const ChatHeaderPanel = (props) => {
                 <div className="pr-3">
                     {
                         chatChannel.members.map(m => {
-                            return <Avatar name={m.name} imageLink={m.profile_image_link}/>;
+                            return <Avatar key={m.name} name={m.name} imageLink={m.profile_image_link}/>;
                         })
                     }
                 </div>
