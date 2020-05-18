@@ -1,26 +1,13 @@
 import React from "react";
 import styled from "styled-components";
-import useLoadChannels from "../../hooks/useLoadChannels";
-import useSortChannels from "../../hooks/useSortChannels";
+import {useLoadChannels, useSortChannels} from "../../hooks";
 import ChannelList from "./ChannelList";
 
-const ChannelsSidebarContainer = styled.div`
-    height: 100%;
+const ChannelsSidebarContainer = styled.div`    
 `;
-const Channels = styled.ul`
-    padding: 0;
-    margin: 0;
-    list-style: none;
-    height: 100%;
-    //overflow: auto;
+const Channels = styled.ul`    
 `;
-const ChatHeader = styled.h4`
-    margin: 1rem 0 0;
-    padding: 0.5rem 0 0.5rem 15px;
-    background: #972C86; 
-    font-weight: 600;    
-    color: #fff;
-    font-size: 1rem;
+const ChatHeader = styled.h4`    
 `;
 
 const ChannelsSidebar = props => {

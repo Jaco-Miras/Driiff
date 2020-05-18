@@ -1,7 +1,7 @@
 import React, {useRef} from "react";
 import styled from "styled-components";
-import Avatar from "../common/Avatar";
-import useOutsideClick from "../hooks/useOutsideClick";
+import {Avatar} from "../common";
+import {useOutsideClick} from "../hooks";
 
 const UserListPopUpContainer = styled.div`
     ul {

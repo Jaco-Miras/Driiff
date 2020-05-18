@@ -3,7 +3,7 @@ import React from "react";
 import {useDispatch} from "react-redux";
 import styled from "styled-components";
 import {chatReaction} from "../../../../redux/actions/chatActions";
-import UserListPopUp from "../../../common/UserListPopUp";
+import {UserListPopUp} from "../../../common";
 
 const EmojiContainer = styled.div`
     background: #dedede;

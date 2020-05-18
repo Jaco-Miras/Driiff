@@ -1,7 +1,7 @@
 import React, {useEffect} from "react";
 import {useDispatch} from "react-redux";
 import styled from "styled-components";
-import useUserLogout from "../components/hooks/useUserLogout";
+import {useUserLogout} from "../components/hooks";
 import {ModalPanel} from "../components/panels";
 import {MainContentPanel, MainHeaderPanel, MainNavigationPanel} from "../components/panels/main";
 import Socket from "../components/socket/socket";
@@ -20,6 +20,7 @@ const MainLayout = (props) => {
 
 
     useEffect(() => {
+        document.body.classList.remove("form-membership");
         dispatch(getUserSettings());
         dispatch(getAllRecipients());
         dispatch(getMentions());

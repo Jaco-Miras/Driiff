@@ -9,7 +9,7 @@ const SearchForm = (props) => {
     const {className = "", onChange, onClick, placeholder = "Chat search"} = props;
 
     return (
-        <Wrapper className={`${props.className}`}>
+        <Wrapper className={`${className}`}>
             <div className="input-group">
                 <input onChange={onChange} type="text" className="form-control" placeholder={placeholder}/>
                 <div className="input-group-append">

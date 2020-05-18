@@ -80,8 +80,8 @@ const Avatar = forwardRef((props, ref) => {
             isLoaded ?
                 <></>
                 :
-            <Skeleton borderRadius="50%" widthRandomness={0}
-                      heightRandomness={0}/>
+                <Skeleton borderRadius="50%" widthRandomness={0}
+                          heightRandomness={0}/>
         }
         {
             showInitials ?

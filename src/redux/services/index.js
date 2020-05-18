@@ -26,6 +26,8 @@ export {
     getUser,
     authenticateGoogleLogin,
     resetPassword,
+    updatePassword,
+    checkDriffUserEmail,
 } from "./user";
 
 export {

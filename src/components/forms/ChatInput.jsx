@@ -9,7 +9,7 @@ import {
     updateChatMessage,
     onClickSendButton,
 } from "../../redux/actions/chatActions";
-import useQuillModules from "../hooks/useQuillModules";
+import {useQuillModules} from "../hooks";
 import QuillEditor from "./QuillEditor";
 
 const StyledQuillEditor = styled(QuillEditor)`

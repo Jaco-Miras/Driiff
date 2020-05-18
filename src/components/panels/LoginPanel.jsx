@@ -7,7 +7,7 @@ import {getSlugName} from "../../helpers/slugHelper";
 import {EmailRegex} from "../../helpers/stringFormatter";
 import {toggleLoading} from "../../redux/actions/globalActions";
 import {userGoogleLogin, userLogin} from "../../redux/actions/userAction";
-import {processBackendLogin, storeLoginToken} from "../hooks/useUserLogin";
+import {processBackendLogin, storeLoginToken} from "../hooks";
 
 const Wrapper = styled.form`
     ${props => props.error !== "" &&

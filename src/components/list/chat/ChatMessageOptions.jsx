@@ -10,14 +10,9 @@ import shareIcon from "../../../assets/icon/share/r/secundary.svg";
 import moreIcon from "../../../assets/img/more-menu-icons/secundary.svg";
 import {copyTextToClipboard} from "../../../helpers/commonFunctions";
 import {getBaseUrl} from "../../../helpers/slugHelper";
-import {setEditChatMessage, deleteChatMessage} from "../../../redux/actions/chatActions";
+import {deleteChatMessage, setEditChatMessage} from "../../../redux/actions/chatActions";
 import {addToModals} from "../../../redux/actions/globalActions";
-import useOutsideClick from "../../hooks/useOutsideClick";
-import {
-    useTooltipHorizontalOrientation,
-    useTooltipOrientation,
-    useTooltipPosition,
-} from "../../hooks/useTooltipOrientation";
+import {useOutsideClick, useTooltipOrientation, useTooltipPosition} from "../../hooks";
 
 const ChatMoreButtonDiv = styled.div`
   display: inline-flex;
@@ -176,8 +171,7 @@ const ChatMessageOptions = props => {
     const moreRef = useRef();
     const slugs = useSelector(state => state.global.slugs);
     const scrollEl = document.getElementById("infinite-scroll-chat-replies");
-    const [orientation] = useTooltipOrientation(moreRef, tooltipRef, scrollEl, showMoreOptions);
-    const [hOrientation] = useTooltipHorizontalOrientation(moreRef, tooltipRef, scrollEl, showMoreOptions);
+    const orientation = useTooltipOrientation(moreRef, tooltipRef, scrollEl, showMoreOptions);
     const [toolTipPosition] = useTooltipPosition(moreRef, tooltipRef, scrollEl, showMoreOptions);
 
     const handleButtonClick = () => {
@@ -194,7 +188,7 @@ const ChatMessageOptions = props => {
                 slug: selectedChannel.slug_owner,
                 token: slugs.length && slugs.filter(s => s.slug_name === selectedChannel.slug_owner).length ?
                     slugs.length && slugs.filter(s => s.slug_name === selectedChannel.slug_owner)[0].access_token : null,
-            })
+            }),
         );
     };
 
@@ -264,11 +258,10 @@ const ChatMessageOptions = props => {
             <MoreTooltip
                 ref={tooltipRef}
                 isAuthor={isAuthor}
-                //className={`more-options-tooltip orientation-top hOrientation-left`}
-                className={`more-options-tooltip orientation-${orientation} hOrientation-${hOrientation}`}
+                className={`more-options-tooltip orientation-${orientation.vertical} hOrientation-${orientation.horizontal}`}
                 position={toolTipPosition}
-                orientation={orientation}
-                horizontalOrientation={hOrientation}
+                orientation={orientation.vertical}
+                horizontalOrientation={orientation.vertical}
                 onMouseLeave={() => handleTooltipMouseLeave()}
             >
                 <Reminder onClick={e => handleSetReminder()}>

@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import styled from "styled-components";
-import UserListPopUp from "../../common/UserListPopUp";
+import {UserListPopUp} from "../../common";
 
 const SeenIndicatorContainer = styled.div`
     // position: absolute;

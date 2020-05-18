@@ -1,5 +1,6 @@
 import {useEffect} from "react";
 import {useDispatch} from "react-redux";
+import {useHistory, useRouteMatch} from "react-router-dom";
 import {sessionService} from "redux-react-session";
 import {$_GET, getUrlParams} from "../../helpers/commonFunctions";
 import {getAPIUrl, getCurrentDriffUrl} from "../../helpers/slugHelper";
@@ -23,30 +24,23 @@ export const processBackendLogin = (payload, returnUrl) => {
     window.location.href = `${getAPIUrl({isDNS: true})}/auth-web/login?token=${payload.auth_token}&redirect_link=${redirectLink}`;
 };
 
-const useUserLogin = (props) => {
+export const useUserLogin = (props) => {
 
     const dispatch = useDispatch();
-    const {path} = props.match;
+    const history = useHistory();
+    const authMatch = useRouteMatch("/authenticate/:token/:returnUrl?");
 
     useEffect(() => {
-        const {
-            history,
-            match: {
-                params: {
-                    token,
-                    returnUrl,
-                },
-            },
-        } = props;
 
-        if (typeof token !== "undefined") {
+        //authenticate user login from backend
+        if (authMatch !== null) {
             let userAuthToken = localStorage.getItem("userAuthToken");
-            let goTo = atob(returnUrl);
+            let goTo = atob(authMatch.params.returnUrl);
 
             if (userAuthToken) {
                 let dataSet = JSON.parse(userAuthToken);
 
-                if (dataSet.access_token !== token) {
+                if (dataSet.access_token !== authMatch.params.token) {
                     localStorage.removeItem("userAuthToken");
                 }
 
@@ -84,7 +78,7 @@ const useUserLogin = (props) => {
                             //this.props.redux.action.openModal(cb);
                         }
 
-                        if (returnUrl) {
+                        if (authMatch.params.returnUrl) {
                             history.push(goTo);
                         }
                     });
@@ -105,7 +99,5 @@ const useUserLogin = (props) => {
                 }),
             );
         }
-    }, [path, dispatch, props]);
+    }, [authMatch, dispatch, history, props]);
 };
-
-export default useUserLogin;

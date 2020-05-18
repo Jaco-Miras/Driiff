@@ -16,8 +16,7 @@ import quillHelper from "../../../helpers/quillHelper";
 import {_t, getEmojiRegexPattern, stripGif} from "../../../helpers/stringFormatter";
 import {setSelectedChannel} from "../../../redux/actions/chatActions";
 // import {addFilesToView} from "../../../redux/actions/revampActions";
-import ImageTextLink from "../../common/ImageTextLink";
-import SvgImage from "../../common/SvgImage";
+import {ImageTextLink, SvgImage} from "../../common";
 import MessageFiles from "./Files/MessageFiles";
 import Unfurl from "./Unfurl/Unfurl";
 

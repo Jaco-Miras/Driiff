@@ -1,8 +1,7 @@
 import React from "react";
 import {useSelector} from "react-redux";
 import styled from "styled-components";
-import Avatar from "../../common/Avatar";
-import {SvgIconFeather} from "../../common/SvgIcon";
+import {Avatar, SvgIconFeather} from "../../common";
 
 const Wrapper = styled.div`
 `;

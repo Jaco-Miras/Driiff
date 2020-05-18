@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import {SvgIconFeather} from "../../common/SvgIcon";
+import {SvgIconFeather} from "../../common";
 
 const Wrapper = styled.div`
 `;

@@ -1,10 +1,8 @@
 import React, {useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {Link, useRouteMatch} from "react-router-dom";
+import {useRouteMatch} from "react-router-dom";
 import styled from "styled-components";
-import {setNavMode} from "../../../redux/actions/globalActions";
-import Avatar from "../../common/Avatar";
-import {SvgIconFeather} from "../../common/SvgIcon";
+import {Avatar, SvgIconFeather} from "../../common";
 
 const WorkspaceName = styled.h1`    
 `;
@@ -13,18 +11,12 @@ const WorspaceHeaderPanel = (props) => {
 
     const dispatch = useDispatch();
     const match = useRouteMatch();
-    const navMode = useSelector(state => state.global.navMode);
     const user = useSelector(state => state.session.user);
 
     useEffect(() => {
-        const body = document.querySelector("body");
+        const body = document.body;
         body.classList.add("stretch-layout");
         body.classList.remove("navigation-toggle-one");
-
-        const mode = 1;
-        dispatch(
-            setNavMode({mode: mode < 0 ? 2 : mode}),
-        );
     }, [match.path, dispatch]);
 
     return (

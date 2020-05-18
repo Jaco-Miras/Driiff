@@ -3,7 +3,7 @@ import {useDispatch} from "react-redux";
 import {useHistory} from "react-router-dom";
 import styled from "styled-components";
 import {setNavMode} from "../../../redux/actions/globalActions";
-import {SvgIcon, SvgIconFeather} from "../../common/SvgIcon";
+import {NavLink, SvgIcon, SvgIconFeather} from "../../common";
 
 const Wrapper = styled.div`
 `;
@@ -16,7 +16,7 @@ const DriffLogo = styled(SvgIcon)`
     cursor: hand; 
 `;
 
-const NavIconContainer = styled.span`
+const NavIconContainer = styled(NavLink)`
     display: flex;
     color: #fff;
     height: 55px;
@@ -49,11 +49,6 @@ const MainNavigationTabPanel = (props) => {
         history.push(e.target.dataset.link);
     };
 
-    const handleLogout = (e) => {
-        e.preventDefault();
-        history.push("/logout");
-    };
-
     return (
         <Wrapper className={`navigation-menu-tab ${className}`}>
             <div>
@@ -66,18 +61,18 @@ const MainNavigationTabPanel = (props) => {
             <div className="flex-grow-1">
                 <ul>
                     <li>
-                        <NavIconContainer>
-                            <NavIcon icon={`bar-chart-2`} onClick={handleIconClick}/>
+                        <NavIconContainer to="/dashboard">
+                            <NavIcon icon={`bar-chart-2`}/>
                         </NavIconContainer>
                     </li>
                     <li>
-                        <NavIconContainer>
-                            <NavIcon icon={`command`} data-link="/workspace/dashboard" onClick={handleIconClick}/>
+                        <NavIconContainer to="/workspace/dashboard">
+                            <NavIcon icon={`command`}/>
                         </NavIconContainer>
                     </li>
                     <li>
-                        <NavIconContainer className={`nav-container active`}>
-                            <NavIcon icon={`message-circle`} data-link="/chat" onClick={handleIconClick}/>
+                        <NavIconContainer to="/chat">
+                            <NavIcon icon={`message-circle`}/>
                         </NavIconContainer>
                     </li>
                 </ul>
@@ -85,13 +80,13 @@ const MainNavigationTabPanel = (props) => {
             <div>
                 <ul>
                     <li>
-                        <NavIconContainer className={`nav-container`}>
-                            <NavIcon icon={`settings`} data-link="/settings" onClick={handleIconClick}/>
+                        <NavIconContainer to="/settings">
+                            <NavIcon icon={`settings`}/>
                         </NavIconContainer>
                     </li>
                     <li>
-                        <NavIconContainer className={`nav-container`}>
-                            <NavIcon icon={`log-out`} onClick={handleLogout}/>
+                        <NavIconContainer to="/logout">
+                            <NavIcon icon={`log-out`}/>
                         </NavIconContainer>
                     </li>
                 </ul>

@@ -4,20 +4,9 @@ import postIcon from "../../../assets/icon/conversations/l/active.svg";
 import teamIcon from "../../../assets/icon/departments/department.svg";
 import botIcon from "../../../assets/icon/person/l/active.svg";
 import topicIcon from "../../../assets/icon/topic_icon/people_group/l/active.svg";
-import Avatar from "../../common/Avatar";
+import {Avatar} from "../../common";
 
-const ChannelIconContainer = styled.div`
-    border-radius: 50%;
-    min-width: 40px;
-    width: 40px;
-    height: 40px;
-    margin-right: 10px;
-    background: #fff;
-    color: #972c86;
-    border: 1px solid #ddd;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+const Wrapper = styled.div`    
     :before{
         content: '';
         mask-image: ${props => props.type === "PERSONAL_BOT" ? `url(${botIcon})`
@@ -26,19 +15,26 @@ const ChannelIconContainer = styled.div`
             : `url(${topicIcon})`};
         background: linear-gradient(105deg, #972c86, #794997);
         mask-repeat: no-repeat;
-        mask-size: 100%;
+        mask-size: 90%;
         mask-position:center;
-        width: 20px;
-        height: 20px;
+        width: 32px;
+        height: 32px;
         display: ${props => props.type === "DIRECT" ? "none" : "inline-block"};
     }
     > span {
-        font-size: .8rem;
+        font-size: 11px;
+        background-color: #cccccc;
+        color: #fff;
+        display: inline-block;
+        padding: 5px;
+        border-radius: 100%;
+        width: 30px;
+        height: 30px;
+        text-align: center;
     }
 `;
 
-const StyledAvatar = styled(Avatar)`
-  border: 1px solid #ddd;
+const StyledAvatar = styled(Avatar)`  
 `;
 
 const handleInitials = title => {
@@ -51,10 +47,12 @@ const handleInitials = title => {
 };
 
 const ChannelIcon = props => {
-    const {channel, className} = props;
+    const {className = "", channel} = props;
+
     return (
-        <ChannelIconContainer className={`channel-icon ${className}`}
-                              type={channel.type}
+        <Wrapper
+            className={`pr-3 ${className}`}
+            type={channel.type}
         >
             {
                 channel.profile && channel.members.length <= 2 && channel.type === "DIRECT" &&
@@ -69,7 +67,7 @@ const ChannelIcon = props => {
                 channel.members.length > 2 && channel.type === "DIRECT" &&
                 <span>{handleInitials(channel.title).substring(0, 3)}</span>
             }
-        </ChannelIconContainer>
+        </Wrapper>
     );
 };
 

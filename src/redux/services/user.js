@@ -197,7 +197,7 @@ export function getUserFiles(uid) {
  * @param {string} payload.email
  * @returns {Promise<*>}
  */
-export function forgotPassword(payload) {
+export function resetPassword(payload) {
     return apiNoTokenCall({
         method: "POST",
         url: "/password/email",
@@ -213,7 +213,7 @@ export function forgotPassword(payload) {
  * @param {string} payload.password
  * @returns {Promise<*>}
  */
-export function resetPassword(payload) {
+export function updatePassword(payload) {
     let url = `/password/reset`;
 
     return apiNoTokenCall({
@@ -233,12 +233,19 @@ export function forgotSlug(email) {
     });
 }
 
-export function forgotEmail(email) {
-    let url = `/check-user?email=${email}`;
+/**
+ *
+ * @param {Object} payload
+ * @param {string} payload.email
+ * @returns {Promise<*>}
+ */
+export function forgotEmail(payload) {
+    let url = `/check-user`;
 
     return apiNoTokenCall({
         method: "POST",
         url: url,
+        data: payload,
     });
 }
 

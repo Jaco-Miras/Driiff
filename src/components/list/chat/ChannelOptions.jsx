@@ -5,7 +5,6 @@ import archiveIcon from "../../../assets/icon/archive/l/active.svg";
 import crossIcon from "../../../assets/icon/close/r/secundary.svg";
 import muteIcon from "../../../assets/icon/mute/r/mute_secundary.svg";
 import eyeCloseIcon from "../../../assets/img/eye-close-active.png";
-import moreIcon from "../../../assets/img/more-menu-icons/secundary.svg";
 import pinIcon from "../../../assets/img/svgs/chat/pin_white.svg";
 import {
     markReadChannel,
@@ -15,38 +14,16 @@ import {
     updateUnreadChatReplies,
 } from "../../../redux/actions/chatActions";
 import {addToModals} from "../../../redux/actions/globalActions";
-import useOutsideClick from "../../hooks/useOutsideClick";
-import {useTooltipOrientation, useTooltipPosition} from "../../hooks/useTooltipOrientation";
+import {SvgIconFeather} from "../../common";
+import {useOutsideClick, useTooltipOrientation, useTooltipPosition} from "../../hooks";
 
-const MoreButtonContainer = styled.div`
-  border-radius: 50%;
-  width: 30px;
-  height: 30px;
-  min-width: 30px;
-  min-height: 30px;
-  margin-left: auto;
-  cursor: pointer;
-  position: relative;
-  display: inline-flex;
-  background: ${props => (props.show && !props.selected ? "#972c86" : "#fff")};
-  opacity: ${props => (props.show && !props.selected ? "1 !important" : "0")};
-  
-  :before {
-    content: "";
-    mask-image: url(${moreIcon});
-    background-color: ${props =>
-    props.show && !props.selected ? "#fff" : "#972c86"};
-    mask-repeat: no-repeat;
-    mask-size: 60%;
-    mask-position: center;
-    width: 100%;
-    height: 100%;
-    display: inline-block;
-  }
-  
-  > div {
+const MoreButton = styled(SvgIconFeather)`
+    background: ${props => (props.show && !props.selected ? "#972c86" : "#fff")};
+    opacity: ${props => (props.show && !props.selected ? "1 !important" : "0")};    
+    border-radius: 50%;
+    width: 15px;
+    height: 15px;  
     cursor: pointer;
-  }
 `;
 const MoreTooltip = styled.div`
   z-index: 5;
@@ -57,7 +34,7 @@ const MoreTooltip = styled.div`
   border: 1px solid #fafafa;
   border-radius: 6px;
   position: absolute;  
-  right: -10px;
+  right: 15px;
   padding: 15px 15px;
   cursor: pointer;
   box-shadow: 0 0 3px 0 rgba(26, 26, 26, 0.4), 0 1px 3px 0 rgba(0, 0, 0, 0.1);
@@ -138,7 +115,7 @@ const MoreTooltip = styled.div`
     }
     
     &.orientation-bottom {
-        top: 160%;
+        top: 110%;
         
         &:before {
             right 12px;
@@ -275,7 +252,7 @@ const ChannelOptions = props => {
     const tooltipRef = useRef();
     const moreRef = useRef();
     const scrollEl = document.getElementById("chat-channels");
-    const [orientation] = useTooltipOrientation(moreRef, tooltipRef, scrollEl, showMoreOptions);
+    const orientation = useTooltipOrientation(moreRef, tooltipRef, scrollEl, showMoreOptions);
     const [toolTipPosition] = useTooltipPosition(moreRef, tooltipRef, scrollEl, showMoreOptions);
     const [sharedChannel, setSharedChannel] = useState(false);
     const sharedSlugs = useSelector(state => state.global.slugs);
@@ -486,27 +463,27 @@ const ChannelOptions = props => {
     useOutsideClick(tooltipRef, handleShowMoreOptions, showMoreOptions);
 
 
-    return <MoreButtonContainer
-        className={`more-button-component ${showMoreOptions ? "active" : ""}`}
-        windowState={props.windowState}
-        selected={props.selected}
-        show={showMoreOptions}
-        ref={moreRef}
-        onClick={e => {
-            e.stopPropagation();
-            handleShowMoreOptions();
-        }}
-        data-event="touchstart focus mouseover"
-        data-event-off="mouseout"
-        data-tip="Options"
-    >
+    return <>
+        <MoreButton
+            icon="more-horizontal"
+            className={`more-button-component ${showMoreOptions ? "active" : ""}`}
+            show={showMoreOptions}
+            ref={moreRef}
+            onClick={e => {
+                e.stopPropagation();
+                handleShowMoreOptions();
+            }}
+            data-event="touchstart focus mouseover"
+            data-event-off="mouseout"
+            data-tip="Options"
+        />
         {
             showMoreOptions &&
             <MoreTooltip
                 ref={tooltipRef}
-                className={`more-options-tooltip ${tooltipAdjustment ? "adjust" : ""} orientation-${orientation}`}
+                className={`more-options-tooltip ${tooltipAdjustment ? "adjust" : ""} orientation-${orientation.vertical}`}
                 position={toolTipPosition}
-                orientation={orientation}>
+                orientation={orientation.vertical}>
                 <PinBtn onClick={handlePinButton}>
                     {channel.is_pinned ? `Unpin` : `Pin`}
                 </PinBtn>
@@ -530,7 +507,7 @@ const ChannelOptions = props => {
                 }
             </MoreTooltip>
         }
-    </MoreButtonContainer>;
+    </>;
 };
 
 export default React.memo(ChannelOptions);
