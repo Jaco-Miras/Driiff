@@ -39,4 +39,5 @@ export {
     generateUnfurl,
     saveDraft,
     updateDraft,
+    uploadDocument,
 } from "./global";

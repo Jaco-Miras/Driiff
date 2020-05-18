@@ -198,7 +198,6 @@ const ChatInput = props => {
             g_date: localizeDate(timestamp, "YYYY-MM-DD"),
         };
 
-
         if (!editMode) {
             dispatch(addChatMessage(obj));
         }

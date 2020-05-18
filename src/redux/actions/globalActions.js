@@ -6,6 +6,7 @@ import {
     getConnectedSlugs as getConnectedSlugsService,
     saveDraft as saveDraftService,
     updateDraft as updateDraftService,
+    uploadDocument as uploadDocumentService,
 } from "../services";
 
 export function setBrowserTabStatus(payload, callback) {
@@ -112,6 +113,16 @@ export function deleteDraft(payload, callback) {
         "DELETE_DRAFT_START",
         "DELETE_DRAFT_SUCCESS",
         "DELETE_DRAFT_FAILURE",
+        callback,
+    );
+}
+
+export function uploadDocument(payload, callback) {
+    return dispatchActionToReducer(
+        uploadDocumentService(payload),
+        "UPLOAD_DOCUMENT_START",
+        "UPLOAD_DOCUMENT_SUCCESS",
+        "UPLOAD_DOCUMENT_FAIL",
         callback,
     );
 }

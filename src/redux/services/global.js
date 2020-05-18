@@ -50,3 +50,16 @@ export function deleteDraft(payload) {
         url: `/v1/drafts/${payload.draft_id}?draft_type=${payload.type}`,
     });
 }
+
+export function uploadDocument(payload) {
+
+    let url = `/v1/files?file_type=${payload.file_type}`;
+    if (payload.folder_id) {
+        url += `&folder_id=${payload.folder_id}`;
+    }
+    return apiCall({
+        method: "POST",
+        url: url,
+        data: payload.file,
+    });
+}

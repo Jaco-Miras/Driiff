@@ -1,0 +1,303 @@
+import React, {useState, useRef, useEffect} from "react";
+import styled from "styled-components";
+import { useDispatch, useSelector } from "react-redux";
+import { Button, Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
+import { clearModal } from "../../redux/actions/globalActions";
+import QuillEditor from "../forms/QuillEditor";
+import { useQuillModules } from "../hooks";
+import docIcon from "../../assets/img/svgs/documents-icons/documents_secundary.svg";
+import { createChatMessage } from "../../redux/actions/chatActions";
+import { uploadDocument } from "../../redux/services/global";
+
+const StyledQuillEditor = styled(QuillEditor)`
+    .ql-mention-list-container-top, .ql-mention-list-container {
+        width: 300px !important;
+        max-height: 170px;
+        background: rgb(255, 255, 255);
+        border-radius: 10px;
+        box-shadow: rgba(26, 26, 26, 0.4) 0px 2px 3px 0px, rgba(0, 0, 0, 0.1) 0px 1px 3px 0px;
+        overflow-x: hidden;
+        overflow-y: auto;
+        z-index: 2;
+
+        .ql-mention-list {
+            padding: 0;
+
+            .ql-mention-list-item {
+            display: flex;
+            align-items: center;
+            padding-top: 1rem;
+            padding-bottom: 1rem;
+            padding-left: 1rem;
+
+            &.selected {
+                background-image: linear-gradient(105deg, #972c86, #794997);
+                color: #fff;
+            }
+            }
+        }
+    }
+`;
+
+const FilesPreviewContainer = styled.div`
+    width:  100%;
+    margin-top: 15px;
+    ul{
+        margin: 0;
+        padding: 0;
+        border: 1px solid #ddd;
+        padding: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: ${props => props.hasOneFile ? "center" : "flex-start"};
+        overflow-x: auto;
+    }
+    li{
+        list-style: none;
+        margin: 0 10px;
+        height: 160px;
+        width: 200px;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        position: relative;
+        img{
+            height: 100%;
+            width: 100%;
+            object-fit: cover;
+            border-radius: inherit;
+        }
+        span{
+            position: absolute;
+            top: -10px;
+            right: -6px;
+            display: none;
+            color: black;
+        }
+        span:hover{
+            color: #7a1b8b;
+            cursor: pointer;
+        }
+    }
+    li:hover span{
+        display: ${props => props.hasOneFile ? "none" : "block"};
+    }
+`;
+
+const DocDiv = styled.div`
+    height: 100%;
+    width: 100%;
+    display: flex;
+    padding: 10px;
+    align-items: flex-start;
+    :before {
+        content: "";
+        mask-image: url(${docIcon});
+        background-color: #972c86;
+        mask-repeat: no-repeat;
+        mask-size: 100%;
+        mask-position: center;
+        min-width: 30px;
+        min-height: 30px;
+        display: inline-block;
+      }
+`;
+
+const FileUploadModal = props => {
+
+    const { type, mode, droppedFiles } = props.data;
+    console.log(props)
+    const dispatch = useDispatch();
+    const reactQuillRef = useRef();
+    const selectedChannel = useSelector(state => state.chat.selectedChannel);
+    const user = useSelector(state => state.session.user);
+
+    const [modal, setModal] = useState(true);
+    const [uploading, setUploading] = useState(false);
+    const [files, setFiles] = useState(droppedFiles);
+    const [uploadedFiles, setUploadedFiles] = useState([]);
+    const [sending, setSending] = useState(false);
+    const [comment, setComment] = useState("");
+    const [textOnly, setTextOnly] = useState("");
+    const [quillContents, setQuillContents] = useState([]);
+    
+
+    const toggle = () => {
+        setModal(!modal);
+        dispatch(
+            clearModal({type: type}),
+        );
+    };
+
+    const handleRemoveFile = (file) => {
+        setFiles(files.filter(f => f.id !== file.id));
+    };
+
+    async function uploadFiles() {
+        await Promise.all(
+            files.map(file => uploadDocument({
+                    user_id: user.id,
+                    file: file.bodyFormData,
+                    file_type: "private",
+                    folder_id: null,
+                }),
+            ),
+        ).then(result => {
+            setUploadedFiles(result.map(res => res.data));
+        });
+    }
+
+    const handleUpload = () => {
+        if (!uploading && !sending) {
+            setUploading(true);
+            uploadFiles();
+        }
+    };
+
+    const handleSendChat = (body, mention_ids) => {
+        uploadedFiles.forEach((file, k) => {
+            let payload = {};
+            if (k === uploadedFiles.length - 1) {
+                payload = {
+                    channel_id: selectedChannel.id,
+                    body: body,
+                    mention_ids: mention_ids,
+                    file_ids: [file.id],
+                    quote: null,
+                    reference_id: require("shortid").generate(),
+                    reference_title: selectedChannel.title,
+                };
+                setTimeout(() => {
+                    dispatch(createChatMessage(payload));
+                }, 300);
+                setUploadedFiles([]);
+                toggle();
+            } else {
+                payload = {
+                    channel_id: selectedChannel.id,
+                    body: "",
+                    mention_ids: [],
+                    file_ids: [file.id],
+                    quote: null,
+                    reference_id: require("shortid").generate(),
+                    reference_title: selectedChannel.title,
+                };
+                dispatch(createChatMessage(payload));
+            }
+        });
+    };
+
+    useEffect(() => {
+        if (uploadedFiles.length) {
+            if (uploadedFiles.length === files.length) {
+                let mention_ids = [];
+                let body = comment;
+                let haveGif = false;
+                if (quillContents.ops && quillContents.ops.length > 0) {
+                    let mentionIds = quillContents.ops.filter(id => {
+                        return id.insert.mention ? id : null;
+                    }).map(mid => Number(mid.insert.mention.id));
+                    mention_ids = [...new Set(mentionIds)];
+                    if (mention_ids.includes(NaN)) {
+                        mention_ids = [...new Set([...mention_ids.filter(id => !isNaN(id)), ...selectedChannel.members.map(m => m.id)])];
+                    } else {
+                        //remove the nan in mention ids
+                        mention_ids = mention_ids.filter(id => !isNaN(id));
+                    }
+                    
+                    quillContents.ops.forEach(op => {
+                        if (op.insert.image) {
+                            haveGif = true;
+                            return
+                        }
+                    });
+                }
+
+                if (textOnly.trim() === "" && mention_ids.length === 0 && !haveGif) {
+                    body = "<span></span>";
+                }
+
+                if (uploadedFiles.filter(f => isNaN(f.id)).length) {
+
+                } else {
+                    if (mode === "chat") {
+                        if (!sending) {
+                            handleSendChat(body, mention_ids)
+                            setSending(true);
+                        }
+                    }
+                    // if (modalData.quote) {
+                    //     modalData.onClearQuote();
+                    // }
+                    // modalData.onClearContent();
+                }
+            }
+        }
+    });
+
+    const handleQuillChange = (content, delta, source, editor) => {
+        setComment(content);
+        setQuillContents(editor.getContents());
+        setTextOnly(editor.getText(content));
+    };
+
+    const [modules] = useQuillModules("chat_upload");
+
+    return (
+        <Modal isOpen={modal} toggle={toggle} centered>
+            <ModalHeader toggle={toggle} className='bg-primary'>File upload</ModalHeader>
+            <ModalBody>
+            <StyledQuillEditor
+                    className={"chat-input"}
+                    modules={modules}
+                    ref={reactQuillRef}
+                    placeholder={`Add message. Type @ to mention someone.`}
+                    readOnly={uploading}
+                    onChange={handleQuillChange}
+            />
+                <FilesPreview
+                    files={files}
+                    onRemoveFile={handleRemoveFile}
+                />
+            </ModalBody>
+            <ModalFooter>
+                <Button color="primary" onClick={handleUpload}>Upload</Button>{" "}
+                <Button color="secondary" onClick={toggle}>Cancel</Button>
+            </ModalFooter>
+        </Modal>
+    );
+};
+
+const FilesPreview = props => {
+    const {files, onRemoveFile} = props;
+
+    const handleRemoveFile = file => {
+        onRemoveFile(file);
+    };
+
+    return (
+        <FilesPreviewContainer hasOneFile={files.length === 1}>
+            <ul>
+                {
+                    files.map((file, i) => {
+                        return (
+                            <li key={i}>
+                                <button className="close" aria-label="close" 
+                                    onClick={e => handleRemoveFile(file)}>
+                                    <span aria-hidden="true">x</span>
+                                </button>
+                                {
+                                    file.type === "IMAGE" && <img alt="file" src={file.src}/>
+                                }
+                                {
+                                    file.type !== "IMAGE" && <DocDiv>{file.name}</DocDiv>
+                                }
+                            </li>
+                        );
+                    })
+                }
+            </ul>
+        </FilesPreviewContainer>
+    );
+};
+
+export default React.memo(FileUploadModal);

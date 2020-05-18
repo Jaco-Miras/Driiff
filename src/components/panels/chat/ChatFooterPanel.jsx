@@ -50,7 +50,7 @@ const StyledPickerEmoji = styled(PickerEmoji)`
 
 const ChatFooterPanel = (props) => {
 
-    const {className = ""} = props;
+    const { className = "", onShowFileDialog } = props;
 
     const dispatch = useDispatch();
     const pickerRef = useRef();
@@ -98,7 +98,7 @@ const ChatFooterPanel = (props) => {
                             </ChatInputContainer>
                             <div className="chat-footer-buttons d-flex">
                                 <IconButton onClick={handleSend} icon="send"/>
-                                <IconButton icon="paperclip"/>
+                                <IconButton onClick={onShowFileDialog} icon="paperclip"/>
                             </div>
                         </React.Fragment>
                 }
