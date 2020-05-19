@@ -13,6 +13,8 @@ export {
     deleteChatMessage,
     setChatReminder,
     getChannelDrafts,
+    getGlobalRecipients,
+    createNewChat,
 } from "./chat";
 
 export {

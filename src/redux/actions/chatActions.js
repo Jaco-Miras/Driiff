@@ -2,11 +2,13 @@ import dispatchActionToReducer, {SimpleDispatchActionToReducer} from "../actionD
 import {
     chatReaction as chatReactionService,
     createChatMessage as createChatMessageService,
+    createNewChat as createNewChatService,
     deleteChatMessage as deleteChatMessageService,
     getChannel as getChannelService,
     getChannelDrafts as getChannelDraftsService,
     getChannels as getChannelsService,
     getChatMessages as getChatMessagesService,
+    getGlobalRecipients as getGlobalRecipientsService,
     getLastVisitedChannel as getLastVisitedChannelService,
     markReadChannel as markReadChannelService,
     markUnreadChannel as markUnreadChannelService,
@@ -16,7 +18,7 @@ import {
 } from "../services";
 
 
-export function setSelectedChannel(payload, callback) {
+export function setSelectedChannel(payload, callback) {    
     return SimpleDispatchActionToReducer(
         "SET_SELECTED_CHANNEL",
         payload,
@@ -302,6 +304,41 @@ export function getChannelDrafts(payload, callback) {
         "GET_CHANNEL_DRAFTS_START",
         "GET_CHANNEL_DRAFTS_SUCCESS",
         "GET_CHANNEL_DRAFTS_FAILURE",
+        callback,
+    );
+}
+
+/**
+ * Get all recipients which are not added by the user yet
+ *
+ * @param payload
+ * @param callback
+ * @returns {function(...[*]=)}
+ */
+export function getGlobalRecipients(payload = {}, callback) {
+    return dispatchActionToReducer(
+        getGlobalRecipientsService(payload),
+        "GET_GLOBAL_RECIPIENTS_START",
+        "GET_GLOBAL_RECIPIENTS_SUCCESS",
+        "GET_GLOBAL_RECIPIENTS_FAILURE",
+        callback,
+    );
+}
+
+export function createNewChat(payload, callback) {
+    return dispatchActionToReducer(
+        createNewChatService(payload),
+        "CREATE_NEW_CHAT_START",
+        "CREATE_NEW_CHAT_SUCCESS",
+        "CREATE_NEW_CHAT_FAILURE",
+        callback,
+    );
+}
+
+export function deleteAddNewChatChannel(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "DELETE_ADD_NEW_CHAT_CHANNEL",
+        payload,
         callback,
     );
 }
