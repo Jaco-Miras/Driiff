@@ -111,7 +111,11 @@ const ChatContactsList = props => {
                 return false;
             }
 
-            if (c.members.length > 2 || !(c.members.length === 1 && c.add_user === 1)) {
+            if (c.members.length > 2) {
+                return false;
+            }
+
+            if (c.members.length === 1 && c.add_user !== 1) {
                 return false;
             }
 
