@@ -1,19 +1,19 @@
-'use strict';
+"use strict";
 $(document).ready(function () {
 
     var colors = {
-        primary: $('.colors .bg-primary').css('background-color'),
-        primaryLight: $('.colors .bg-primary-bright').css('background-color'),
-        secondary: $('.colors .bg-secondary').css('background-color'),
-        secondaryLight: $('.colors .bg-secondary-bright').css('background-color'),
-        info: $('.colors .bg-info').css('background-color'),
-        infoLight: $('.colors .bg-info-bright').css('background-color'),
-        success: $('.colors .bg-success').css('background-color'),
-        successLight: $('.colors .bg-success-bright').css('background-color'),
-        danger: $('.colors .bg-danger').css('background-color'),
-        dangerLight: $('.colors .bg-danger-bright').css('background-color'),
-        warning: $('.colors .bg-warning').css('background-color'),
-        warningLight: $('.colors .bg-warning-bright').css('background-color'),
+        primary: $(".colors .bg-primary").css("background-color"),
+        primaryLight: $(".colors .bg-primary-bright").css("background-color"),
+        secondary: $(".colors .bg-secondary").css("background-color"),
+        secondaryLight: $(".colors .bg-secondary-bright").css("background-color"),
+        info: $(".colors .bg-info").css("background-color"),
+        infoLight: $(".colors .bg-info-bright").css("background-color"),
+        success: $(".colors .bg-success").css("background-color"),
+        successLight: $(".colors .bg-success-bright").css("background-color"),
+        danger: $(".colors .bg-danger").css("background-color"),
+        dangerLight: $(".colors .bg-danger-bright").css("background-color"),
+        warning: $(".colors .bg-warning").css("background-color"),
+        warningLight: $(".colors .bg-warning-bright").css("background-color"),
     };
 
     chartjs_one();
@@ -32,7 +32,7 @@ $(document).ready(function () {
         var element = document.getElementById("chartjs_one");
         element.height = 100;
         new Chart(element, {
-            type: 'bar',
+            type: "bar",
             data: {
                 labels: ["Africa", "Asia", "Europe", "Latin America", "North America"],
                 datasets: [
@@ -43,19 +43,19 @@ $(document).ready(function () {
                             colors.secondary,
                             colors.success,
                             colors.warning,
-                            colors.info
+                            colors.info,
                         ],
-                        data: [2478,3267,1734,2084,3000]
-                    }
-                ]
+                        data: [2478, 3267, 1734, 2084, 3000],
+                    },
+                ],
             },
             options: {
-                legend: { display: false },
+                legend: {display: false},
                 title: {
                     display: true,
-                    text: 'Predicted world population (millions) in 2050'
-                }
-            }
+                    text: "Predicted world population (millions) in 2050",
+                },
+            },
         });
     }
 
@@ -63,7 +63,7 @@ $(document).ready(function () {
         var element = document.getElementById("chartjs_two");
         element.height = 100;
         new Chart(element, {
-            type: 'line',
+            type: "line",
             data: {
                 labels: ["January", "February", "March", "April", "May", "June", "July"],
                 datasets: [{
@@ -76,15 +76,15 @@ $(document).ready(function () {
                     label: "Asia",
                     borderColor: colors.success,
                     backgroundColor: colors.successLight,
-                }
-                ]
+                },
+                ],
             },
             options: {
                 title: {
                     display: true,
-                    text: 'World population per region (in millions)'
-                }
-            }
+                    text: "World population per region (in millions)",
+                },
+            },
         });
     }
 
@@ -92,7 +92,7 @@ $(document).ready(function () {
         var element = document.getElementById("chartjs_three");
         element.height = 100;
         new Chart(element, {
-            type: 'pie',
+            type: "pie",
             data: {
                 labels: ["Africa", "Asia", "Europe", "Latin America", "North America"],
                 datasets: [{
@@ -103,17 +103,17 @@ $(document).ready(function () {
                         colors.secondary,
                         colors.success,
                         colors.warning,
-                        colors.info
+                        colors.info,
                     ],
-                    data: [2478,3267,734,1784,933]
-                }]
+                    data: [2478, 3267, 734, 1784, 933],
+                }],
             },
             options: {
                 title: {
                     display: true,
-                    text: 'Predicted world population (millions) in 2050'
-                }
-            }
+                    text: "Predicted world population (millions) in 2050",
+                },
+            },
         });
     }
 
@@ -121,7 +121,7 @@ $(document).ready(function () {
         var element = document.getElementById("chartjs_four");
         element.height = 100;
         new Chart(element, {
-            type: 'radar',
+            type: "radar",
             data: {
                 labels: ["Africa", "Asia", "Europe", "Latin America", "North America"],
                 datasets: [
@@ -131,23 +131,23 @@ $(document).ready(function () {
                         backgroundColor: colors.primaryLight,
                         borderColor: colors.primary,
                         pointBorderColor: "#fff",
-                        data: [8.77,55.61,21.69,6.62,6.82]
+                        data: [8.77, 55.61, 21.69, 6.62, 6.82],
                     }, {
                         label: "2050",
                         fill: true,
                         backgroundColor: colors.successLight,
                         borderColor: colors.success,
                         pointBorderColor: "#fff",
-                        data: [25.48,54.16,7.61,8.06,4.45]
-                    }
-                ]
+                        data: [25.48, 54.16, 7.61, 8.06, 4.45],
+                    },
+                ],
             },
             options: {
                 title: {
                     display: true,
-                    text: 'Distribution in % of world population'
-                }
-            }
+                    text: "Distribution in % of world population",
+                },
+            },
         });
     }
 
@@ -155,7 +155,7 @@ $(document).ready(function () {
         var element = document.getElementById("chartjs_five");
         element.height = 100;
         new Chart(element, {
-            type: 'horizontalBar',
+            type: "horizontalBar",
             data: {
                 labels: ["Africa", "Asia", "Europe", "Latin America", "North America"],
                 datasets: [
@@ -166,19 +166,19 @@ $(document).ready(function () {
                             colors.secondary,
                             colors.success,
                             colors.warning,
-                            colors.info
+                            colors.info,
                         ],
-                        data: [2478,5267,734,784,433]
-                    }
-                ]
+                        data: [2478, 5267, 734, 784, 433],
+                    },
+                ],
             },
             options: {
-                legend: { display: false },
+                legend: {display: false},
                 title: {
                     display: true,
-                    text: 'Predicted world population (millions) in 2050'
-                }
-            }
+                    text: "Predicted world population (millions) in 2050",
+                },
+            },
         });
     }
 
@@ -186,42 +186,42 @@ $(document).ready(function () {
         var element = document.getElementById("chartjs_six");
         element.height = 100;
         new Chart(element, {
-            type: 'bar',
+            type: "bar",
             data: {
                 labels: ["1900", "1950", "1999", "2050"],
                 datasets: [{
                     label: "Europe",
                     type: "line",
                     borderColor: colors.warning,
-                    data: [408,547,675,734],
-                    fill: false
+                    data: [408, 547, 675, 734],
+                    fill: false,
                 }, {
                     label: "Africa",
                     type: "line",
                     borderColor: colors.success,
-                    data: [133,221,783,2478],
-                    fill: false
+                    data: [133, 221, 783, 2478],
+                    fill: false,
                 }, {
                     label: "Europe",
                     type: "bar",
                     backgroundColor: colors.secondary,
-                    data: [408,547,675,734],
+                    data: [408, 547, 675, 734],
                 }, {
                     label: "Africa",
                     type: "bar",
                     backgroundColor: colors.primary,
                     backgroundColorHover: "#3e95cd",
-                    data: [133,221,783,2478]
-                }
-                ]
+                    data: [133, 221, 783, 2478],
+                },
+                ],
             },
             options: {
                 title: {
                     display: true,
-                    text: 'Population growth (millions): Europe & Africa'
+                    text: "Population growth (millions): Europe & Africa",
                 },
-                legend: { display: false }
-            }
+                legend: {display: false},
+            },
         });
     }
 

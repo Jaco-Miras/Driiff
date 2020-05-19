@@ -523,27 +523,27 @@ export default function (state = INITIAL_STATE, action) {
         case "ON_CLICK_SEND_BUTTON": {
             return {
                 ...state,
-                sendButtonClicked: action.data
-            }
+                sendButtonClicked: action.data,
+            };
         }
         case "ADD_QUOTE": {
             let updatedQuotes = state.chatQuotes;
             if (Object.keys(state.chatQuotes).length > 0 && state.chatQuotes.hasOwnProperty(action.data.channel_id)) {
-                updatedQuotes = { ...state.chatQuotes }
+                updatedQuotes = {...state.chatQuotes};
                 delete updatedQuotes[action.data.channel_id];
                 updatedQuotes = {
                     ...updatedQuotes,
                     [action.data.channel_id]: action.data,
-                }
+                };
             } else {
                 updatedQuotes = {
                     ...state.chatQuotes,
                     [action.data.channel_id]: action.data,
-                }
+                };
             }
             return {
                 ...state,
-                chatQuotes: updatedQuotes
+                chatQuotes: updatedQuotes,
             };
         }
         case "CLEAR_QUOTE": {
@@ -558,21 +558,21 @@ export default function (state = INITIAL_STATE, action) {
         case "ADD_TO_CHANNEL_DRAFTS": {
             let updatedChannelDrafts = state.channelDrafts;
             if (Object.keys(state.channelDrafts).length > 0 && state.channelDrafts.hasOwnProperty(action.data.channel_id)) {
-                updatedChannelDrafts = { ...state.channelDrafts}
+                updatedChannelDrafts = {...state.channelDrafts};
                 delete updatedChannelDrafts[action.data.channel_id];
                 updatedChannelDrafts = {
                     ...updatedChannelDrafts,
                     [action.data.channel_id]: action.data,
-                }
+                };
             } else {
                 updatedChannelDrafts = {
                     ...updatedChannelDrafts,
                     [action.data.channel_id]: action.data,
-                }
+                };
             }
             return {
                 ...state,
-                channelDrafts: updatedChannelDrafts
+                channelDrafts: updatedChannelDrafts,
             };
         }
         case "CLEAR_CHANNEL_DRAFT": {

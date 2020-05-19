@@ -1,10 +1,10 @@
 import React, {useRef, useState} from "react";
-import {useSelector, useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import styled from "styled-components";
+import {onClickSendButton} from "../../../redux/actions/chatActions";
 import {PickerEmoji, SvgIconFeather} from "../../common";
 import ChatInput from "../../forms/ChatInput";
 import ChatQuote from "../../list/chat/ChatQuote";
-import {onClickSendButton} from "../../../redux/actions/chatActions";
 
 const Wrapper = styled.div`
 `;
@@ -50,7 +50,7 @@ const StyledPickerEmoji = styled(PickerEmoji)`
 
 const ChatFooterPanel = (props) => {
 
-    const { className = "", onShowFileDialog } = props;
+    const {className = "", onShowFileDialog} = props;
 
     const dispatch = useDispatch();
     const pickerRef = useRef();

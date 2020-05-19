@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 $(document).ready(function () {
 
     apex_chart_one();
@@ -21,9 +21,9 @@ $(document).ready(function () {
 
     function apex_chart_one() {
         var lastDate = 0;
-        var data = []
-        var TICKINTERVAL = 86400000
-        let XAXISRANGE = 777600000
+        var data = [];
+        var TICKINTERVAL = 86400000;
+        let XAXISRANGE = 777600000;
 
         function getDayWiseTimeSeries(baseval, count, yrange) {
             var i = 0;
@@ -32,17 +32,17 @@ $(document).ready(function () {
                 var y = Math.floor(Math.random() * (yrange.max - yrange.min + 1)) + yrange.min;
 
                 data.push({
-                    x, y
+                    x, y,
                 });
-                lastDate = baseval
+                lastDate = baseval;
                 baseval += TICKINTERVAL;
                 i++;
             }
         }
 
-        getDayWiseTimeSeries(new Date('11 Feb 2017 GMT').getTime(), 10, {
+        getDayWiseTimeSeries(new Date("11 Feb 2017 GMT").getTime(), 10, {
             min: 10,
-            max: 90
+            max: 90,
         });
 
         function getNewSeries(baseval, yrange) {
@@ -53,66 +53,66 @@ $(document).ready(function () {
                 // IMPORTANT
                 // we reset the x and y of the data which is out of drawing area
                 // to prevent memory leaks
-                data[i].x = newDate - XAXISRANGE - TICKINTERVAL
-                data[i].y = 0
+                data[i].x = newDate - XAXISRANGE - TICKINTERVAL;
+                data[i].y = 0;
             }
 
             data.push({
                 x: newDate,
-                y: Math.floor(Math.random() * (yrange.max - yrange.min + 1)) + yrange.min
-            })
+                y: Math.floor(Math.random() * (yrange.max - yrange.min + 1)) + yrange.min,
+            });
 
         }
 
         var options = {
             chart: {
                 height: 350,
-                type: 'line',
+                type: "line",
                 animations: {
                     enabled: true,
-                    easing: 'linear',
+                    easing: "linear",
                     dynamicAnimation: {
-                        speed: 1000
-                    }
+                        speed: 1000,
+                    },
                 },
                 toolbar: {
-                    show: false
+                    show: false,
                 },
                 zoom: {
-                    enabled: false
-                }
+                    enabled: false,
+                },
             },
             dataLabels: {
-                enabled: false
+                enabled: false,
             },
             stroke: {
-                curve: 'smooth'
+                curve: "smooth",
             },
             series: [{
-                data: data
+                data: data,
             }],
             title: {
-                text: 'Dynamic Updating Chart',
-                align: 'left'
+                text: "Dynamic Updating Chart",
+                align: "left",
             },
             markers: {
-                size: 0
+                size: 0,
             },
             xaxis: {
-                type: 'datetime',
+                type: "datetime",
                 range: XAXISRANGE,
             },
             yaxis: {
-                max: 100
+                max: 100,
             },
             legend: {
-                show: false
+                show: false,
             },
         };
 
         var chart = new ApexCharts(
             document.querySelector("#apex_chart_one"),
-            options
+            options,
         );
 
         chart.render();
@@ -120,59 +120,59 @@ $(document).ready(function () {
         window.setInterval(function () {
             getNewSeries(lastDate, {
                 min: 10,
-                max: 90
-            })
+                max: 90,
+            });
             chart.updateSeries([{
-                data: data
-            }])
-        }, 1000)
+                data: data,
+            }]);
+        }, 1000);
     }
 
     function apex_chart_two() {
         var ts2 = 1484418600000;
         var dates = [];
-        var spikes = [5, -5, 3, -3, 8, -8]
+        var spikes = [5, -5, 3, -3, 8, -8];
         for (var i = 0; i < 120; i++) {
             ts2 = ts2 + 86400000;
             var innerArr = [ts2, dataSeries[1][i].value];
-            dates.push(innerArr)
+            dates.push(innerArr);
         }
 
         var options = {
             chart: {
-                type: 'area',
+                type: "area",
                 stacked: false,
                 height: 350,
                 zoom: {
-                    type: 'x',
-                    enabled: true
+                    type: "x",
+                    enabled: true,
                 },
                 toolbar: {
-                    autoSelected: 'zoom'
-                }
+                    autoSelected: "zoom",
+                },
             },
             dataLabels: {
-                enabled: false
+                enabled: false,
             },
             series: [{
-                name: 'XYZ MOTORS',
-                data: dates
+                name: "XYZ MOTORS",
+                data: dates,
             }],
             markers: {
                 size: 0,
             },
             title: {
-                text: 'Stock Price Movement',
-                align: 'left'
+                text: "Stock Price Movement",
+                align: "left",
             },
             fill: {
-                type: 'gradient',
+                type: "gradient",
                 gradient: {
                     shadeIntensity: 1,
                     inverseColors: false,
                     opacityFrom: 0.5,
                     opacityTo: 0,
-                    stops: [0, 90, 100]
+                    stops: [0, 90, 100],
                 },
             },
             yaxis: {
@@ -184,26 +184,26 @@ $(document).ready(function () {
                     },
                 },
                 title: {
-                    text: 'Price'
+                    text: "Price",
                 },
             },
             xaxis: {
-                type: 'datetime',
+                type: "datetime",
             },
 
             tooltip: {
                 shared: false,
                 y: {
                     formatter: function (val) {
-                        return (val / 1000000).toFixed(0)
-                    }
-                }
-            }
-        }
+                        return (val / 1000000).toFixed(0);
+                    },
+                },
+            },
+        };
 
         var chart = new ApexCharts(
             document.querySelector("#apex_chart_two"),
-            options
+            options,
         );
 
         chart.render();
@@ -213,36 +213,36 @@ $(document).ready(function () {
         var options = {
             chart: {
                 height: 350,
-                type: 'area',
+                type: "area",
             },
             dataLabels: {
-                enabled: false
+                enabled: false,
             },
             stroke: {
-                curve: 'smooth'
+                curve: "smooth",
             },
             series: [{
-                name: 'series1',
-                data: [31, 40, 28, 51, 42, 109, 100]
+                name: "series1",
+                data: [31, 40, 28, 51, 42, 109, 100],
             }, {
-                name: 'series2',
-                data: [11, 32, 45, 32, 34, 52, 41]
+                name: "series2",
+                data: [11, 32, 45, 32, 34, 52, 41],
             }],
 
             xaxis: {
-                type: 'datetime',
+                type: "datetime",
                 categories: ["2018-09-19T00:00:00", "2018-09-19T01:30:00", "2018-09-19T02:30:00", "2018-09-19T03:30:00", "2018-09-19T04:30:00", "2018-09-19T05:30:00", "2018-09-19T06:30:00"],
             },
             tooltip: {
                 x: {
-                    format: 'dd/MM/yy HH:mm'
+                    format: "dd/MM/yy HH:mm",
                 },
-            }
-        }
+            },
+        };
 
         var chart = new ApexCharts(
             document.querySelector("#apex_chart_three"),
-            options
+            options,
         );
 
         chart.render();
@@ -252,57 +252,57 @@ $(document).ready(function () {
         var options = {
             chart: {
                 height: 350,
-                type: 'bar',
+                type: "bar",
             },
             plotOptions: {
                 bar: {
                     horizontal: false,
-                    columnWidth: '55%',
-                    endingShape: 'rounded'
+                    columnWidth: "55%",
+                    endingShape: "rounded",
                 },
             },
             dataLabels: {
-                enabled: false
+                enabled: false,
             },
             stroke: {
                 show: true,
                 width: 2,
-                colors: ['transparent']
+                colors: ["transparent"],
             },
             series: [{
-                name: 'Net Profit',
-                data: [44, 55, 57, 56, 61, 58, 63, 60, 66]
+                name: "Net Profit",
+                data: [44, 55, 57, 56, 61, 58, 63, 60, 66],
             }, {
-                name: 'Revenue',
-                data: [76, 85, 101, 98, 87, 105, 91, 114, 94]
+                name: "Revenue",
+                data: [76, 85, 101, 98, 87, 105, 91, 114, 94],
             }, {
-                name: 'Free Cash Flow',
-                data: [35, 41, 36, 26, 45, 48, 52, 53, 41]
+                name: "Free Cash Flow",
+                data: [35, 41, 36, 26, 45, 48, 52, 53, 41],
             }],
             xaxis: {
-                categories: ['Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct'],
+                categories: ["Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct"],
             },
             yaxis: {
                 title: {
-                    text: '$ (thousands)'
-                }
+                    text: "$ (thousands)",
+                },
             },
             fill: {
-                opacity: 1
+                opacity: 1,
 
             },
             tooltip: {
                 y: {
                     formatter: function (val) {
-                        return "$ " + val + " thousands"
-                    }
-                }
-            }
-        }
+                        return "$ " + val + " thousands";
+                    },
+                },
+            },
+        };
 
         var chart = new ApexCharts(
             document.querySelector("#apex_chart_four"),
-            options
+            options,
         );
 
         chart.render();
@@ -312,47 +312,47 @@ $(document).ready(function () {
         var options = {
             chart: {
                 height: 350,
-                type: 'bar',
+                type: "bar",
                 stacked: true,
-                stackType: '100%'
+                stackType: "100%",
             },
             responsive: [{
                 breakpoint: 480,
                 options: {
                     legend: {
-                        position: 'bottom',
+                        position: "bottom",
                         offsetX: -10,
-                        offsetY: 0
-                    }
-                }
+                        offsetY: 0,
+                    },
+                },
             }],
             series: [{
-                name: 'PRODUCT A',
-                data: [44, 55, 41, 67, 22, 43, 21, 49]
-            },{
-                name: 'PRODUCT B',
-                data: [13, 23, 20, 8, 13, 27, 33, 12]
-            },{
-                name: 'PRODUCT C',
-                data: [11, 17, 15, 15, 21, 14, 15, 13]
+                name: "PRODUCT A",
+                data: [44, 55, 41, 67, 22, 43, 21, 49],
+            }, {
+                name: "PRODUCT B",
+                data: [13, 23, 20, 8, 13, 27, 33, 12],
+            }, {
+                name: "PRODUCT C",
+                data: [11, 17, 15, 15, 21, 14, 15, 13],
             }],
             xaxis: {
-                categories: ['2011 Q1', '2011 Q2', '2011 Q3', '2011 Q4', '2012 Q1', '2012 Q2', '2012 Q3', '2012 Q4'],
+                categories: ["2011 Q1", "2011 Q2", "2011 Q3", "2011 Q4", "2012 Q1", "2012 Q2", "2012 Q3", "2012 Q4"],
             },
             fill: {
-                opacity: 1
+                opacity: 1,
             },
 
             legend: {
-                position: 'right',
+                position: "right",
                 offsetX: 0,
-                offsetY: 50
+                offsetY: 50,
             },
-        }
+        };
 
         var chart = new ApexCharts(
             document.querySelector("#apex_chart_five"),
-            options
+            options,
         );
 
         chart.render();
@@ -362,75 +362,75 @@ $(document).ready(function () {
         var options = {
             chart: {
                 height: 380,
-                type: 'bar'
+                type: "bar",
             },
             plotOptions: {
                 bar: {
-                    barHeight: '100%',
+                    barHeight: "100%",
                     distributed: true,
                     horizontal: true,
                     dataLabels: {
-                        position: 'bottom'
+                        position: "bottom",
                     },
-                }
+                },
             },
-            colors: ['#33b2df', '#546E7A', '#d4526e', '#13d8aa', '#A5978B', '#2b908f', '#f9a3a4', '#90ee7e', '#f48024', '#69d2e7'],
+            colors: ["#33b2df", "#546E7A", "#d4526e", "#13d8aa", "#A5978B", "#2b908f", "#f9a3a4", "#90ee7e", "#f48024", "#69d2e7"],
             dataLabels: {
                 enabled: true,
-                textAnchor: 'start',
+                textAnchor: "start",
                 style: {
-                    colors: ['#fff']
+                    colors: ["#fff"],
                 },
-                formatter: function(val, opt) {
-                    return opt.w.globals.labels[opt.dataPointIndex] + ":  " + val
+                formatter: function (val, opt) {
+                    return opt.w.globals.labels[opt.dataPointIndex] + ":  " + val;
                 },
                 offsetX: 0,
                 dropShadow: {
-                    enabled: true
-                }
+                    enabled: true,
+                },
             },
             series: [{
-                data: [400, 430, 448, 470, 540, 580, 690, 1100, 1200, 1380]
+                data: [400, 430, 448, 470, 540, 580, 690, 1100, 1200, 1380],
             }],
             stroke: {
                 width: 1,
-                colors: ['#fff']
+                colors: ["#fff"],
             },
             xaxis: {
-                categories: ['South Korea', 'Canada', 'United Kingdom', 'Netherlands', 'Italy', 'France', 'Japan', 'United States', 'China', 'India'],
+                categories: ["South Korea", "Canada", "United Kingdom", "Netherlands", "Italy", "France", "Japan", "United States", "China", "India"],
             },
             yaxis: {
                 labels: {
-                    show: false
-                }
+                    show: false,
+                },
             },
             title: {
-                text: 'Custom DataLabels',
-                align: 'center',
-                floating: true
+                text: "Custom DataLabels",
+                align: "center",
+                floating: true,
             },
             subtitle: {
-                text: 'Category Names as DataLabels inside bars',
-                align: 'center',
+                text: "Category Names as DataLabels inside bars",
+                align: "center",
             },
             tooltip: {
-                theme: 'dark',
+                theme: "dark",
                 x: {
-                    show: false
+                    show: false,
                 },
                 y: {
                     title: {
-                        formatter: function() {
-                            return ''
-                        }
-                    }
-                }
-            }
-        }
+                        formatter: function () {
+                            return "";
+                        },
+                    },
+                },
+            },
+        };
 
         var chart = new ApexCharts(
             document.querySelector("#apex_chart_six"),
-            options
+            options,
         );
 
         chart.render();
@@ -440,26 +440,26 @@ $(document).ready(function () {
         var options = {
             chart: {
                 width: 380,
-                type: 'pie',
+                type: "pie",
             },
-            labels: ['Team A', 'Team B', 'Team C', 'Team D', 'Team E'],
+            labels: ["Team A", "Team B", "Team C", "Team D", "Team E"],
             series: [44, 55, 13, 43, 22],
             responsive: [{
                 breakpoint: 480,
                 options: {
                     chart: {
-                        width: 200
+                        width: 200,
                     },
                     legend: {
-                        position: 'bottom'
-                    }
-                }
-            }]
-        }
+                        position: "bottom",
+                    },
+                },
+            }],
+        };
 
         var chart = new ApexCharts(
             document.querySelector("#apex_chart_seven"),
-            options
+            options,
         );
 
         chart.render();
@@ -470,7 +470,8 @@ $(document).ready(function () {
             var i = 0;
             var series = [];
             while (i < count) {
-                var x = Math.floor(Math.random() * (750 - 1 + 1)) + 1;;
+                var x = Math.floor(Math.random() * (750 - 1 + 1)) + 1;
+
                 var y = Math.floor(Math.random() * (yrange.max - yrange.min + 1)) + yrange.min;
                 var z = Math.floor(Math.random() * (75 - 15 + 1)) + 15;
 
@@ -485,58 +486,58 @@ $(document).ready(function () {
         var options = {
             chart: {
                 height: 350,
-                type: 'bubble',
+                type: "bubble",
             },
             dataLabels: {
-                enabled: false
+                enabled: false,
             },
             series: [{
-                name: 'Bubble1',
-                data: generateData(new Date('11 Feb 2017 GMT').getTime(), 20, {
+                name: "Bubble1",
+                data: generateData(new Date("11 Feb 2017 GMT").getTime(), 20, {
                     min: 10,
-                    max: 60
-                })
+                    max: 60,
+                }),
             },
                 {
-                    name: 'Bubble2',
-                    data: generateData(new Date('11 Feb 2017 GMT').getTime(), 20, {
+                    name: "Bubble2",
+                    data: generateData(new Date("11 Feb 2017 GMT").getTime(), 20, {
                         min: 10,
-                        max: 60
-                    })
+                        max: 60,
+                    }),
                 },
                 {
-                    name: 'Bubble3',
-                    data: generateData(new Date('11 Feb 2017 GMT').getTime(), 20, {
+                    name: "Bubble3",
+                    data: generateData(new Date("11 Feb 2017 GMT").getTime(), 20, {
                         min: 10,
-                        max: 60
-                    })
+                        max: 60,
+                    }),
                 },
                 {
-                    name: 'Bubble4',
-                    data: generateData(new Date('11 Feb 2017 GMT').getTime(), 20, {
+                    name: "Bubble4",
+                    data: generateData(new Date("11 Feb 2017 GMT").getTime(), 20, {
                         min: 10,
-                        max: 60
-                    })
-                }
+                        max: 60,
+                    }),
+                },
             ],
             fill: {
-                opacity: 0.8
+                opacity: 0.8,
             },
             title: {
-                text: 'Simple Bubble Chart'
+                text: "Simple Bubble Chart",
             },
             xaxis: {
                 tickAmount: 12,
-                type: 'category',
+                type: "category",
             },
             yaxis: {
-                max: 70
-            }
-        }
+                max: 70,
+            },
+        };
 
         var chart = new ApexCharts(
             document.querySelector("#apex_chart_eight"),
-            options
+            options,
         );
 
         chart.render();
@@ -546,42 +547,42 @@ $(document).ready(function () {
         var options = {
             chart: {
                 height: 350,
-                type: 'radar',
+                type: "radar",
                 dropShadow: {
                     enabled: true,
                     blur: 1,
                     left: 1,
-                    top: 1
-                }
+                    top: 1,
+                },
             },
             series: [{
-                name: 'Series 1',
+                name: "Series 1",
                 data: [80, 50, 30, 40, 100, 20],
             }, {
-                name: 'Series 2',
+                name: "Series 2",
                 data: [20, 30, 40, 80, 20, 80],
             }, {
-                name: 'Series 3',
+                name: "Series 3",
                 data: [44, 76, 78, 13, 43, 10],
             }],
             title: {
-                text: 'Radar Chart - Multi Series'
+                text: "Radar Chart - Multi Series",
             },
             stroke: {
-                width: 0
+                width: 0,
             },
             fill: {
-                opacity: 0.4
+                opacity: 0.4,
             },
             markers: {
-                size: 0
+                size: 0,
             },
-            labels: ['2011', '2012', '2013', '2014', '2015', '2016']
-        }
+            labels: ["2011", "2012", "2013", "2014", "2015", "2016"],
+        };
 
         var chart = new ApexCharts(
             document.querySelector("#apex_chart_nine"),
-            options
+            options,
         );
 
         chart.render();
@@ -589,25 +590,25 @@ $(document).ready(function () {
         function update() {
 
             function randomSeries() {
-                var arr = []
-                for(var i = 0; i < 6; i++) {
-                    arr.push(Math.floor(Math.random() * 100))
+                var arr = [];
+                for (var i = 0; i < 6; i++) {
+                    arr.push(Math.floor(Math.random() * 100));
                 }
 
-                return arr
+                return arr;
             }
 
 
             chart.updateSeries([{
-                name: 'Series 1',
+                name: "Series 1",
                 data: randomSeries(),
             }, {
-                name: 'Series 2',
+                name: "Series 2",
                 data: randomSeries(),
             }, {
-                name: 'Series 3',
+                name: "Series 3",
                 data: randomSeries(),
-            }])
+            }]);
         }
     }
 

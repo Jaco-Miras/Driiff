@@ -1,5 +1,5 @@
-import { useEffect, useRef } from "react";
-import { useSelector } from "react-redux";
+import {useEffect, useRef} from "react";
+import {useSelector} from "react-redux";
 import usePreviousValue from "./usePreviousValue";
 
 const useQuillInput = (callback) => {

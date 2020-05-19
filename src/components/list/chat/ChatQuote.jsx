@@ -1,9 +1,9 @@
 import React from "react";
+import {useDispatch} from "react-redux";
 import styled from "styled-components";
-import { useDispatch } from "react-redux";
-import { useSelectQuote } from "../../hooks";
-import { SvgIconFeather } from "../../common";
-import { clearQuote } from "../../../redux/actions/chatActions";
+import {clearQuote} from "../../../redux/actions/chatActions";
+import {SvgIconFeather} from "../../common";
+import {useSelectQuote} from "../../hooks";
 
 const QuoteWrapper = styled.div`
     padding: 0 10px 10px;
@@ -56,7 +56,7 @@ const ChatQuote = props => {
 
     const handleClearQuote = () => {
         dispatch(
-            clearQuote(quote)
+            clearQuote(quote),
         );
     };
 
@@ -64,18 +64,18 @@ const ChatQuote = props => {
         return (
             <QuoteWrapper>
                 <span className={`quote-author-name`}
-                    dangerouslySetInnerHTML={{__html: quote.user ? quote.user.name : ""}}></span>
+                      dangerouslySetInnerHTML={{__html: quote.user ? quote.user.name : ""}}></span>
                 <span className={`quote-message`}
-                        dangerouslySetInnerHTML={{__html: quote.body ? quoteBody.split("</p>")[0] : ""}}
+                      dangerouslySetInnerHTML={{__html: quote.body ? quoteBody.split("</p>")[0] : ""}}
                 ></span>
                 <span className={`quote-clear-container`}
-                        onClick={handleClearQuote}>
+                      onClick={handleClearQuote}>
                     <IconButton icon="x"/>
                 </span>
             </QuoteWrapper>
-        )
+        );
     } else {
-        return null
+        return null;
     }
 };
 

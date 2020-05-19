@@ -1,6 +1,6 @@
-'use strict';
+"use strict";
 $(document).ready(function () {
 
-    $("input.tagsinput").tagsinput('items');
+    $("input.tagsinput").tagsinput("items");
 
 });

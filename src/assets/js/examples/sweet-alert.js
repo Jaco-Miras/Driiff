@@ -1,22 +1,22 @@
-'use strict';
+"use strict";
 $(document).ready(function () {
-    $('.sweet-basic').on('click', function () {
-        swal('Hello world!');
+    $(".sweet-basic").on("click", function () {
+        swal("Hello world!");
     });
-    $('.sweet-success').on('click', function () {
+    $(".sweet-success").on("click", function () {
         swal("Good job!", "You clicked the button!", "success");
     });
-    $('.sweet-warning').on('click', function () {
+    $(".sweet-warning").on("click", function () {
         swal("Good job!", "You clicked the button!", "warning");
     });
-    $('.sweet-error').on('click', function () {
+    $(".sweet-error").on("click", function () {
         swal("Good job!", "You clicked the button!", "error");
     });
-    $('.sweet-info').on('click', function () {
+    $(".sweet-info").on("click", function () {
         swal("Good job!", "You clicked the button!", "info");
     });
 
-    $('.sweet-multiple').on('click', function () {
+    $(".sweet-multiple").on("click", function () {
         swal({
             title: "Are you sure?",
             text: "Once deleted, you will not be able to recover this imaginary file!",
@@ -36,7 +36,7 @@ $(document).ready(function () {
                 }
             });
     });
-    $('.sweet-prompt').on('click', function () {
+    $(".sweet-prompt").on("click", function () {
         swal("Write something here:", {
             content: "input",
         })
@@ -44,9 +44,9 @@ $(document).ready(function () {
                 swal(`You typed: ${value}`);
             });
     });
-    $('.sweet-ajax').on('click', function () {
+    $(".sweet-ajax").on("click", function () {
         swal({
-            text: 'Search for a movie. e.g. "La La Land".',
+            text: "Search for a movie. e.g. \"La La Land\".",
             content: "input",
             button: {
                 text: "Search!",

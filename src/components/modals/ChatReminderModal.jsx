@@ -1,13 +1,13 @@
-import React, { useState } from "react";
-import styled from "styled-components";
 import moment from "moment";
-import toaster from "toasted-notes";
+import React, {useState} from "react";
 import DateTimePicker from "react-datetime-picker";
-import { useDispatch, useSelector } from "react-redux";
-import { Button, Modal, ModalHeader, ModalFooter, ModalBody } from "reactstrap";
-import { formatHoursAMPM, formatMonthsOrdinalDay, formatWeeekDayName } from "../../helpers/dateFormatter";
-import { setChatReminder } from "../../redux/actions/chatActions";
-import { clearModal } from "../../redux/actions/globalActions";
+import {useDispatch, useSelector} from "react-redux";
+import {Button, Modal, ModalBody, ModalFooter, ModalHeader} from "reactstrap";
+import styled from "styled-components";
+import toaster from "toasted-notes";
+import {formatHoursAMPM, formatMonthsOrdinalDay, formatWeeekDayName} from "../../helpers/dateFormatter";
+import {setChatReminder} from "../../redux/actions/chatActions";
+import {clearModal} from "../../redux/actions/globalActions";
 import RadioInput from "../forms/RadioInput";
 
 
@@ -63,7 +63,7 @@ const ChatReminderModal = props => {
 
         dispatch(
             setChatReminder(payload, (err, res) => {
-                toggle()
+                toggle();
                 let messageAuthor = "You";
                 let messageTime = "";
                 let today = new Date();
@@ -111,7 +111,7 @@ const ChatReminderModal = props => {
 
                 toaster.notify(`I will remind you about this message ("${div.innerText} from ${messageAuthor} in ${messageTime}")`,
                     {position: "bottom-left"});
-            })
+            }),
         );
     };
 

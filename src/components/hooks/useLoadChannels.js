@@ -55,7 +55,7 @@ const useLoadChannels = () => {
                 }),
             );
         };
-        
+
         if (Object.keys(channels).length === 0) {
             fetchChannels(true, 20);
             fetchChannels(true, 5, "hidden");

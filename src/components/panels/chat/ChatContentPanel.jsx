@@ -1,10 +1,10 @@
-import React, { useRef, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import React, {useRef, useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
 import styled from "styled-components";
+import {addToModals} from "../../../redux/actions/globalActions";
+import {DropDocument} from "../../dropzone/DropDocument";
 import ChatMessages from "../../list/chat/ChatMessages";
 import {ChatFooterPanel, ChatHeaderPanel} from "./index";
-import { DropDocument } from "../../dropzone/DropDocument";
-import { addToModals } from "../../../redux/actions/globalActions";
 
 
 const Wrapper = styled.div`
@@ -16,16 +16,16 @@ const ChatContentPanel = (props) => {
     const dropzoneRef = useRef();
     const {className = ""} = props;
     const selectedChannel = useSelector(state => state.chat.selectedChannel);
-    const [showDropzone, setShowDropzone] = useState(false)
+    const [showDropzone, setShowDropzone] = useState(false);
 
     const handleOpenFileDialog = () => {
         if (dropzoneRef.current) {
             dropzoneRef.current.open();
         }
     };
-    
+
     const handleHideDropzone = () => {
-        setShowDropzone(false)
+        setShowDropzone(false);
     };
 
     const dropAction = (acceptedFiles) => {
@@ -67,21 +67,21 @@ const ChatContentPanel = (props) => {
                 });
             }
         });
-        handleHideDropzone()
+        handleHideDropzone();
 
         let modal = {
             type: "file_upload",
             droppedFiles: attachedFiles,
-            mode: "chat"
-        }
+            mode: "chat",
+        };
 
         dispatch(addToModals(modal));
     };
 
     return (
         <Wrapper className={`chat-content ${className}`}>
-            <DropDocument 
-                hide={true} 
+            <DropDocument
+                hide={true}
                 ref={dropzoneRef}
                 onDragLeave={handleHideDropzone}
                 onDrop={({acceptedFiles}) => {

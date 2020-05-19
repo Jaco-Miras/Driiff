@@ -1,39 +1,39 @@
 .tourStep {
-	border: none;
+  border: none;
 
-	&.right {
-		margin-left: 10px;
-	}
+  &.right {
+    margin-left: 10px;
+  }
 
-	&.left {
-		margin-right: 10px;
-	}
+  &.left {
+    margin-right: 10px;
+  }
 
-	&.top {
-		margin-top: -10px;
-	}
+  &.top {
+    margin-top: -10px;
+  }
 
-	&.bottom {
-		margin-top: 10px;
-	}
+  &.bottom {
+    margin-top: 10px;
+  }
 
-	.popover-navigation {
-		border-top: 1px solid #ddd;
-		padding: .5rem .75rem;
-		display: flex;
-		align-items: center;
+  .popover-navigation {
+    border-top: 1px solid #ddd;
+    padding: .5rem .75rem;
+    display: flex;
+    align-items: center;
 
-		span {
-			font-size: $default-font-size - 2;
-			color: white - 100
-		}
+    span {
+      font-size: $default-font-size - 2;
+      color: white - 100
+    }
 
-		.popover-navigation-buttons {
-			margin-left: auto;
+    .popover-navigation-buttons {
+      margin-left: auto;
 
-			.btn {
-				margin-left: 5px;
-			}
-		}
-	}
+      .btn {
+        margin-left: 5px;
+      }
+    }
+  }
 }

@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react";
-import styled from "styled-components";
-import { useSelector } from "react-redux";
+import React, {useEffect, useState} from "react";
 import {renderToString} from "react-dom/server";
-import ImageTextLink from "../common/ImageTextLink";
+import {useSelector} from "react-redux";
+import styled from "styled-components";
 import quillHelper from "../../helpers/quillHelper";
+import ImageTextLink from "../common/ImageTextLink";
 
 const StyledImageTextLink = styled(ImageTextLink)`
     display: block;
@@ -18,11 +18,11 @@ const useSelectQuote = props => {
 
     useEffect(() => {
         if (Object.keys(quotes).length > 0) {
-            let selectedQuote = Object.values(quotes).filter(q => q.channel_id === selectedChannel.id)
+            let selectedQuote = Object.values(quotes).filter(q => q.channel_id === selectedChannel.id);
             if (selectedQuote.length) {
                 setQuote(selectedQuote[0]);
                 selectedQuote = selectedQuote[0];
-                console.log(selectedQuote)
+                console.log(selectedQuote);
                 let selectedQuoteBody = "";
                 let div = document.createElement("div");
                 div.innerHTML = selectedQuote.body;
@@ -94,7 +94,7 @@ const useSelectQuote = props => {
         }
     }, [Object.values(quotes), Object.values(quotes).length]);
 
-    return [quote, quoteBody]
-}
+    return [quote, quoteBody];
+};
 
 export default useSelectQuote;

@@ -1,8 +1,8 @@
-import { useEffect, useRef } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import {useEffect, useRef} from "react";
+import {useDispatch, useSelector} from "react-redux";
+import {addToChannelDraft, getChannelDrafts} from "../../redux/actions/chatActions";
+import {saveDraft, updateDraft} from "../../redux/actions/globalActions";
 import usePreviousValue from "./usePreviousValue";
-import { saveDraft, updateDraft } from "../../redux/actions/globalActions";
-import { getChannelDrafts, addToChannelDraft } from "../../redux/actions/chatActions";
 
 const useDraft = (callback, type, text, textOnly, draftId) => {
 
@@ -16,7 +16,7 @@ const useDraft = (callback, type, text, textOnly, draftId) => {
     useEffect(() => {
         savedCallback.current = callback;
     });
-    
+
     const handleLoadDraft = () => {
         if (Object.keys(drafts).length > 0 && drafts.hasOwnProperty(selectedChannel.id)) {
             let draft = {...drafts[selectedChannel.id]};
@@ -24,11 +24,11 @@ const useDraft = (callback, type, text, textOnly, draftId) => {
         } else {
             savedCallback.current(null);
         }
-    }
+    };
 
     const handleSaveDraft = (id) => {
 
-        if (textOnly.trim() === "") return
+        if (textOnly.trim() === "") return;
 
         let payload = {
             draft_type: type,
@@ -36,27 +36,27 @@ const useDraft = (callback, type, text, textOnly, draftId) => {
             created_at: {
                 timestamp: Math.floor(Date.now() / 1000),
             },
-        }
-        if (type === 'channel') {
+        };
+        if (type === "channel") {
             payload = {
                 ...payload,
                 text: text,
-                channel_id: id
-            }
+                channel_id: id,
+            };
         }
         if (draftId) {
             payload = {
                 ...payload,
-                draft_id: draftId
-            }
-            console.log(payload)
+                draft_id: draftId,
+            };
+            console.log(payload);
             dispatch(updateDraft(payload));
         } else {
             dispatch(saveDraft(payload));
         }
 
         dispatch(addToChannelDraft(payload));
-    }
+    };
 
     // useEffect(() => {
     //     savedCallback.current = callback;
@@ -67,7 +67,7 @@ const useDraft = (callback, type, text, textOnly, draftId) => {
     // };
     useEffect(() => {
         dispatch(getChannelDrafts());
-        return () => handleSaveDraft()
+        return () => handleSaveDraft();
     }, []);
 
     useEffect(() => {
