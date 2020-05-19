@@ -18,7 +18,7 @@ const useQuillInput = (callback) => {
 
     useEffect(() => {
         if (previousChannel !== null && selectedChannel !== null) {
-            if (previousChannel.id !== selectedChannel.id) {
+            if (previousChannel && previousChannel.id !== selectedChannel.id) {
                 handleClearInput();
             }
         }

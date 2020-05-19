@@ -2,7 +2,7 @@ import React, {useState, useRef, useEffect} from "react";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import { Button, Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
-import { clearModal } from "../../redux/actions/globalActions";
+import { clearModal, clearInputData, saveInputData } from "../../redux/actions/globalActions";
 import QuillEditor from "../forms/QuillEditor";
 import { useQuillModules } from "../hooks";
 import docIcon from "../../assets/img/svgs/documents-icons/documents_secundary.svg";
@@ -110,6 +110,7 @@ const FileUploadModal = props => {
     const reactQuillRef = useRef();
     const selectedChannel = useSelector(state => state.chat.selectedChannel);
     const user = useSelector(state => state.session.user);
+    const savedInput = useSelector(state => state.global.dataFromInput);
 
     const [modal, setModal] = useState(true);
     const [uploading, setUploading] = useState(false);
@@ -120,12 +121,21 @@ const FileUploadModal = props => {
     const [textOnly, setTextOnly] = useState("");
     const [quillContents, setQuillContents] = useState([]);
     
+    useEffect(() => {
+        if (savedInput !== null) {
+            reactQuillRef.current.getEditor().clipboard.dangerouslyPasteHTML(0, savedInput.text);
+            setComment(savedInput.text);
+            setTextOnly(savedInput.textOnly);
+            setQuillContents(savedInput.quillContents);
+        }
+    }, [savedInput])
 
     const toggle = () => {
         setModal(!modal);
         dispatch(
             clearModal({type: type}),
         );
+        dispatch(saveInputData({sent: false}));
     };
 
     const handleRemoveFile = (file) => {
@@ -170,7 +180,9 @@ const FileUploadModal = props => {
                     dispatch(createChatMessage(payload));
                 }, 300);
                 setUploadedFiles([]);
-                toggle();
+                dispatch(saveInputData({sent: true}));
+                dispatch(clearModal({type: type}));
+                //toggle();
             } else {
                 payload = {
                     channel_id: selectedChannel.id,

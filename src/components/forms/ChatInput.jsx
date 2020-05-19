@@ -12,7 +12,7 @@ import {
     addQuote,
     clearChannelDraft,
 } from "../../redux/actions/chatActions";
-import {useQuillModules, useSelectQuote, useQuillInput, useDraft} from "../hooks";
+import {useQuillModules, useSelectQuote, useQuillInput, useDraft, useSaveInput} from "../hooks";
 import QuillEditor from "./QuillEditor";
 import { deleteDraft } from "../../redux/actions/globalActions";
 
@@ -391,7 +391,8 @@ const ChatInput = props => {
             setText(draft.text);
         }
     }
-    
+
+    useSaveInput(handleClearQuillInput, text, textOnly, quillContents);
     useQuillInput(handleClearQuillInput);
     useDraft(loadDraftCallback, "channel", text, textOnly, draftId);
     

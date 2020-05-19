@@ -67,12 +67,13 @@ const useDraft = (callback, type, text, textOnly, draftId) => {
     // };
     useEffect(() => {
         dispatch(getChannelDrafts());
+        handleLoadDraft();
         return () => handleSaveDraft()
     }, []);
 
     useEffect(() => {
         if (previousChannel !== null && selectedChannel !== null) {
-            if (previousChannel.id !== selectedChannel.id) {
+            if (previousChannel && previousChannel.id !== selectedChannel.id) {
                 handleSaveDraft(previousChannel.id);
                 handleLoadDraft();
             }

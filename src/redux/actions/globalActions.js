@@ -126,3 +126,19 @@ export function uploadDocument(payload, callback) {
         callback,
     );
 }
+
+export function saveInputData(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "SAVE_INPUT_DATA",
+        payload,
+        callback,
+    );
+}
+
+export function clearInputData(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "CLEAR_INPUT_DATA",
+        payload,
+        callback,
+    );
+}
