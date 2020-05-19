@@ -61,7 +61,6 @@ const ChatReplyContainer = styled.div`
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
   z-index: 1;
-  font-family: 'Inter', sans-serif;
   > ul {
     list-style: none;
     margin: 0;
@@ -97,7 +96,6 @@ const ChatList = styled.li`
     width: 100%;
     margin-bottom: 5px;
     text-align: center;
-
     .chat-actions-container {
         opacity: 0;
     }
@@ -108,59 +106,50 @@ const ChatList = styled.li`
     }
 `;
 const TimestampDiv = styled.div`
-    z-index: 10;
-    position: sticky;
+  text-align: center;
+  margin: 15px 0;
+  font-weight: 600;
+  z-index: 10;
+  position: sticky;
+  // top: -13px;
     top: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-    padding: 0 20px;
-    color: #a7abc3;
-    margin: 20px 0;
-    &:before, &:after {
-        content: '';
-        display: block;
-        height: 1px;
-        background-color: #e1e1e1;
-        flex: 1;
-    }
     span {
         background: #fff;
         padding: 5px 10px;
         border-radius: 5px;
+        margin-top: 1em;
         display: inline-block;
-        font-size: 11px;
     }
 `;
 const ChatBubbleContainer = styled.div`
-  display: flex;
-  width: 100%;
-  align-items: center;
-  //align-items: ${props => props.isAuthor ? "flex-end" : "flex-start"};
-  justify-content: flex-end;
-  flex-flow: column;
-  flex-flow: ${props => (props.isAuthor ? "row" : "row-reverse")};
-  margin-left: ${props => (!props.isAuthor && !props.showAvatar) || (!props.isAuthor && props.showAvatar && props.isBot) ? "40px" : "0"};
-  ${props => (props.isAuthor === true && "position: relative; right: 15px;")};
+    display: flex;
+    width: 100%;
+    align-items: center;
+    //align-items: ${props => props.isAuthor ? "flex-end" : "flex-start"};
+    justify-content: flex-end;
+    flex-flow: column;
+    flex-flow: ${props => (props.isAuthor ? "row" : "row-reverse")};
+    margin-left: ${props => (!props.isAuthor && !props.showAvatar) || (!props.isAuthor && props.showAvatar && props.isBot) ? "22px" : "0"};
+    ${props => (props.isAuthor === true && "position: relative; right: 15px;")};
 
-  &:before {
-    content: '';
-    border: 10px solid transparent;
-        border-right-color: transparent;
-    border-right-color: #f0f0f0;
-    position: absolute;
-    top: 8px;
-    left: 25px;
-    z-index: 1;
 
-    ${props => (props.isAuthor === true && `
-        left: auto;
-        right: -20px;
-        border-left-color: #f1e6ef;
+    margin-top: ${props => ((props.showAvatar && !props.isAuthor ) ? "20px" : "0px")};
+    &:before {
+        ${props => (props.showAvatar && "content: '';")};
+        border: 10px solid transparent;
         border-right-color: transparent;
-    `)};
-}
+        border-right-color: #f0f0f0;
+        position: absolute;
+        top: ${props => ((props.showAvatar && !props.isAuthor ) ? "28px" : "8px")};;
+        left: 20px;
+        z-index: 1;
+        ${props => (props.isAuthor === true && `
+            left: auto;
+            right: -20px;
+            border-left-color: #7A1B8B;
+            border-right-color: transparent;
+        `)};
+    }
 `;
 const ChatActionsContainer = styled.div`
     display: flex;
@@ -338,9 +327,13 @@ const ChatBubbleQuoteDiv = styled.div`
   //width: 100%;
   //overflow: hidden;
   max-width: 90%;
+
+
+
   position: relative;
   flex-flow: column;
   display: inherit;
+  margin-left: 18px;
   > img {
     // max-height: ${props => props.maxImgHeight > 300 ? `${props.maxImgHeight}px;` : "300px"};
     max-height: 300px;
@@ -416,6 +409,13 @@ const InfiniteScroll = styled.div`
 
 const StyledAvatar = styled(Avatar)`
     align-self: flex-start;
+    margin-top: 4px;
+    width: 21px !important;
+    height: 21px !important;
+    img {
+        width: 21px !important;
+        height: 21px !important;
+    }
 `;
 
 class ChatMessages extends React.PureComponent {
