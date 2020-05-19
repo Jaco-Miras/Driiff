@@ -28,6 +28,10 @@ const ChatContentPanel = (props) => {
         setShowDropzone(false);
     };
 
+    const handleShowDropzone = () => {
+        setShowDropzone(true);
+    };
+
     const dropAction = (acceptedFiles) => {
 
         let attachedFiles = [];
@@ -79,9 +83,9 @@ const ChatContentPanel = (props) => {
     };
 
     return (
-        <Wrapper className={`chat-content ${className}`}>
+        <Wrapper className={`chat-content ${className}`} onDragOver={handleShowDropzone}>
             <DropDocument
-                hide={true}
+                hide={!showDropzone}
                 ref={dropzoneRef}
                 onDragLeave={handleHideDropzone}
                 onDrop={({acceptedFiles}) => {
@@ -92,7 +96,7 @@ const ChatContentPanel = (props) => {
             <ChatHeaderPanel/>
             {selectedChannel !== null && <ChatMessages/>}
             {/* <ChatMessagesPanel/> */}
-            <ChatFooterPanel onShowFileDialog={handleOpenFileDialog}/>
+            <ChatFooterPanel onShowFileDialog={handleOpenFileDialog} dropAction={dropAction}/>
         </Wrapper>
     );
 };

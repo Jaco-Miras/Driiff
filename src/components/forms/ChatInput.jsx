@@ -68,7 +68,7 @@ const StyledQuillEditor = styled(QuillEditor)`
 /***  Commented out code are to be visited/refactored ***/
 const ChatInput = props => {
 
-    const {selectedEmoji, onClearEmoji} = props;
+    const {selectedEmoji, onClearEmoji, dropAction} = props;
     const dispatch = useDispatch();
     const reactQuillRef = useRef();
     const selectedChannel = useSelector(state => state.chat.selectedChannel);
@@ -347,6 +347,28 @@ const ChatInput = props => {
             }
         }
     };
+
+    useEffect(() => {
+        const handlePaste = (e) => {
+            let files = [];
+            
+            if (e.clipboardData.items.length) {
+                for (let i = 0; i < e.clipboardData.items.length; i++) {
+                    let item = e.clipboardData.items[i];
+                    if (item.kind === "file") {
+                        files.push(item.getAsFile(item.type));
+                    }
+                }
+            }
+            if (files.length) {
+                dropAction(files);
+            }
+        };
+
+        document.addEventListener("paste", handlePaste, false);
+
+        return () =>  document.removeEventListener("paste", handlePaste, false);
+    }, []);
 
     //to be converted into hooks
     useEffect(() => {

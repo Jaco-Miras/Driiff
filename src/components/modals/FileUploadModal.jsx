@@ -105,7 +105,7 @@ const DocDiv = styled.div`
 const FileUploadModal = props => {
 
     const {type, mode, droppedFiles} = props.data;
-    console.log(props);
+    
     const dispatch = useDispatch();
     const reactQuillRef = useRef();
     const selectedChannel = useSelector(state => state.chat.selectedChannel);
