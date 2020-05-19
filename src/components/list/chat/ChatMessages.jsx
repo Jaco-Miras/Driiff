@@ -97,7 +97,7 @@ const ChatList = styled.li`
     margin-bottom: 5px;
     text-align: center;
     .chat-actions-container {
-        opacity: 1;
+        opacity: 0;
     }
     &:hover {
         .chat-actions-container {
@@ -174,14 +174,14 @@ const ChatActionsContainer = styled.div`
     flex-wrap: wrap;
     ${props => (props.isAuthor ? "margin-right: 10px" : "margin-left: 10px")};
     min-width: 100px;
-    ${"" /* max-height: 25px; */}
-
     height: 100%;
-    background: blue;
-    ${"" /* position: absolute; */}
-
-    ${"" /* ${props => (props.isAuthor ? "left: 100%" : "right: 100%")}; */}
-
+    color: #a7abc3;
+    background: #ffffff;
+    position: absolute;
+    display: flex;
+    align-items: center;
+    top: 0;
+    ${props => (props.isAuthor ? "right: 100%" : "left: 100%")};
 `;
 const SystemChatActionsContainer = styled.div`
     display: flex;

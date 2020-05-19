@@ -30,7 +30,7 @@ const MoreButton = styled.button`
     content: "";
     mask-image: url(${moreIcon});
     background-color: ${props =>
-    props.showMoreOptions ? "#972c86" : "#676767"};
+    props.showMoreOptions ? "#972c86" : "#a7abc3"};
     mask-repeat: no-repeat;
     mask-size: 100%;
     mask-position: center;
