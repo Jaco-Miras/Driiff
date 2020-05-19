@@ -111,14 +111,13 @@ const ChatContactsList = props => {
                 return false;
             }
 
-            if (c.members.length > 2) {
+            if (c.members.length > 2 || !(c.members.length === 1 && c.add_user === 1)) {
                 return false;
             }
 
             if (c.title !== "PERSONAL_BOT") {
                 const recipient = c.members.filter(m => m.id !== user.id)[0];
                 if (recipient.id) {
-                    console.log(recipients, recipient.id);
                     if (recipients.includes(recipient.id)) {
                         return false;
                     } else {
