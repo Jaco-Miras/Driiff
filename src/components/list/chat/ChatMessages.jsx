@@ -106,19 +106,15 @@ const ChatList = styled.li`
     }
 `;
 const TimestampDiv = styled.div`
-  text-align: center;
-  margin: 15px 0;
-  font-weight: 600;
-  z-index: 10;
-  position: sticky;
-  // top: -13px;
-    top: 0;
+    width: 100%; 
+    text-align: center; 
+    border-bottom: 1px solid #dee2e6; 
+    line-height: 0.1em;
+    margin: 10px 0 20px;
+  
     span {
-        background: #fff;
-        padding: 5px 10px;
-        border-radius: 5px;
-        margin-top: 1em;
-        display: inline-block;
+        background:#fff; 
+        padding:0 10px; 
     }
 `;
 const ChatBubbleContainer = styled.div`
