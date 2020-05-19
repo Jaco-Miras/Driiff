@@ -1,9 +1,9 @@
 import React from "react";
-import { useSelector, useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import styled from "styled-components";
-import { SvgIconFeather } from "../../common";
-import { updateChannel } from "../../../redux/actions/chatActions";
-import { addToModals } from "../../../redux/actions/globalActions";
+import {updateChannel} from "../../../redux/actions/chatActions";
+import {addToModals} from "../../../redux/actions/globalActions";
+import {SvgIconFeather} from "../../common";
 import ChatMembers from "../../list/chat/ChatMembers";
 import ChatTitleTyping from "../../list/chat/ChatTitleTyping";
 

@@ -1,7 +1,7 @@
 import React from "react";
+import {useSelector} from "react-redux";
 import styled from "styled-components";
-import { useSelector } from "react-redux";
-import { useIsUserTyping } from "../../hooks";
+import {useIsUserTyping} from "../../hooks";
 
 const ChatTitleTypingContainer = styled.div`
     h6 {
@@ -23,7 +23,7 @@ const ChatTitleTyping = props => {
             <h6 className="mb-1">{chatChannel.title}</h6>
             <Typing isTyping={usersTyping.length} className="m-0 small text-success">typing...</Typing>
         </ChatTitleTypingContainer>
-    )
+    );
 };
 
 export default ChatTitleTyping;

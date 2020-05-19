@@ -94,7 +94,8 @@ const ChatFooterPanel = (props) => {
                         <React.Fragment>
                             <IconButton onClick={handleShowEmojiPicker} icon="smile"/>
                             <ChatInputContainer className="flex-grow-1">
-                                <ChatInput selectedEmoji={selectedEmoji} onClearEmoji={onClearEmoji} dropAction={dropAction}/>
+                                <ChatInput selectedEmoji={selectedEmoji} onClearEmoji={onClearEmoji}
+                                           dropAction={dropAction}/>
                             </ChatInputContainer>
                             <div className="chat-footer-buttons d-flex">
                                 <IconButton onClick={handleSend} icon="send"/>

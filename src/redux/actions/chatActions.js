@@ -18,7 +18,7 @@ import {
 } from "../services";
 
 
-export function setSelectedChannel(payload, callback) {    
+export function setSelectedChannel(payload, callback) {
     return SimpleDispatchActionToReducer(
         "SET_SELECTED_CHANNEL",
         payload,

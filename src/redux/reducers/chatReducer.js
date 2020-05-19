@@ -72,7 +72,7 @@ export default function (state = INITIAL_STATE, action) {
 
             delete channel[action.data.old_id];
 
-            channel[action.data.id] = action.data;            
+            channel[action.data.id] = action.data;
 
             return {
                 ...state,

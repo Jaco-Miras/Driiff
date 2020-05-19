@@ -1,13 +1,13 @@
-import React, { useEffect, useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { Button, Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
+import React, {useEffect, useRef, useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
+import {Button, Modal, ModalBody, ModalFooter, ModalHeader} from "reactstrap";
 import styled from "styled-components";
-import QuillEditor from "../forms/QuillEditor";
-import { useQuillModules } from "../hooks";
 import docIcon from "../../assets/img/svgs/documents-icons/documents_secundary.svg";
-import { createChatMessage } from "../../redux/actions/chatActions";
-import { clearModal, saveInputData } from "../../redux/actions/globalActions";
-import { uploadDocument } from "../../redux/services/global";
+import {createChatMessage} from "../../redux/actions/chatActions";
+import {clearModal, saveInputData} from "../../redux/actions/globalActions";
+import {uploadDocument} from "../../redux/services/global";
+import QuillEditor from "../forms/QuillEditor";
+import {useQuillModules} from "../hooks";
 
 const StyledQuillEditor = styled(QuillEditor)`
     .ql-mention-list-container-top, .ql-mention-list-container {
@@ -128,7 +128,7 @@ const FileUploadModal = props => {
             setTextOnly(savedInput.textOnly);
             setQuillContents(savedInput.quillContents);
         }
-    }, [savedInput])
+    }, [savedInput]);
 
     const toggle = () => {
         setModal(!modal);

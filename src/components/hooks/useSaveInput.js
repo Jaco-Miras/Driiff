@@ -1,6 +1,6 @@
-import { useEffect, useRef } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { saveInputData, clearInputData } from "../../redux/actions/globalActions";
+import {useEffect, useRef} from "react";
+import {useDispatch, useSelector} from "react-redux";
+import {clearInputData, saveInputData} from "../../redux/actions/globalActions";
 
 const useSaveInput = (callback, text, textOnly, quillContents) => {
 
@@ -30,11 +30,11 @@ const useSaveInput = (callback, text, textOnly, quillContents) => {
             let payload = {
                 text,
                 textOnly,
-                quillContents
-            }
+                quillContents,
+            };
             dispatch(saveInputData(payload));
         }
     }, [Object.keys(modals).length]);
-}
+};
 
 export default useSaveInput;

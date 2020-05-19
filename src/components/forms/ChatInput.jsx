@@ -370,7 +370,7 @@ const ChatInput = props => {
 
         document.addEventListener("paste", handlePaste, false);
 
-        return () =>  document.removeEventListener("paste", handlePaste, false);
+        return () => document.removeEventListener("paste", handlePaste, false);
     }, []);
 
     //to be converted into hooks

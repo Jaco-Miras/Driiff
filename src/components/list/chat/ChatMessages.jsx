@@ -143,11 +143,11 @@ const ChatBubbleContainer = styled.div`
     ${props => (props.isAuthor === true && "position: relative; right: 15px;")};
 
 
-    ${'' /* margin-top: ${props => ((props.showAvatar && !props.isAuthor ) ? "20px" : "0px")}; */}
-    margin-top: ${props => ((props.showAvatar ) && "36px")};
+    ${"" /* margin-top: ${props => ((props.showAvatar && !props.isAuthor ) ? "20px" : "0px")}; */}
+    margin-top: ${props => ((props.showAvatar) && "36px")};
 
     margin-top: ${props => ((props.showAvatar && props.isAuthor) && "20px")};
-    ${'' /* background: ${props => ((props.isAuthor ) ? "red" : "blue")}; */}
+    ${"" /* background: ${props => ((props.isAuthor ) ? "red" : "blue")}; */}
 
 
 
@@ -157,7 +157,7 @@ const ChatBubbleContainer = styled.div`
         border-right-color: transparent;
         border-right-color: #f0f0f0;
         position: absolute;
-        top: ${props => ((props.showAvatar && !props.isAuthor ) ? "42px" : "8px")};;
+        top: ${props => ((props.showAvatar && !props.isAuthor) ? "42px" : "8px")};;
         left: 20px;
         z-index: 1;
         ${props => (props.isAuthor === true && `
@@ -174,13 +174,13 @@ const ChatActionsContainer = styled.div`
     flex-wrap: wrap;
     ${props => (props.isAuthor ? "margin-right: 10px" : "margin-left: 10px")};
     min-width: 100px;
-    ${'' /* max-height: 25px; */}
+    ${"" /* max-height: 25px; */}
 
     height: 100%;
     background: blue;
-    ${'' /* position: absolute; */}
+    ${"" /* position: absolute; */}
 
-    ${'' /* ${props => (props.isAuthor ? "left: 100%" : "right: 100%")}; */}
+    ${"" /* ${props => (props.isAuthor ? "left: 100%" : "right: 100%")}; */}
 
 `;
 const SystemChatActionsContainer = styled.div`
