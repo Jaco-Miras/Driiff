@@ -61,6 +61,7 @@ const Avatar = forwardRef((props, ref) => {
     };
 
     const handleImageError = e => {
+        setIsLoaded(true);
         setShowInitials(true);
     };
 

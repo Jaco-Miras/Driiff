@@ -1,6 +1,6 @@
 import {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {getChannels} from "../../redux/actions/chatActions";
+import {getChannels, getGlobalRecipients} from "../../redux/actions/chatActions";
 
 const useLoadChannels = () => {
 
@@ -61,6 +61,10 @@ const useLoadChannels = () => {
             fetchChannels(true, 5, "hidden");
             fetchChannels(true, 5, "archived");
         }
+
+        dispatch(
+            getGlobalRecipients({})
+        )
         //eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 

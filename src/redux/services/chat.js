@@ -141,3 +141,30 @@ export function getChannelDrafts(payload) {
         data: payload,
     });
 }
+
+/**
+ * @param payload
+ * @param payload.search
+ * @returns {Promise<*>}
+ */
+export function getGlobalRecipients(payload) {
+    let url = `/v2/global-recipients?${objToUrlParams(payload)}`;
+    return apiCall({
+        method: "GET",
+        url: url,
+        data: payload,
+    });
+}
+
+/**
+ * @param payload
+ * @returns {Promise<*>}
+ */
+export function createNewChat(payload) {
+    let url = `/v2/chat-channel/create`;
+    return apiCall({
+        method: "POST",
+        url: url,
+        data: payload,
+    });
+}
