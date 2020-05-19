@@ -241,6 +241,9 @@ const ChatInput = props => {
         if (reactQuillRef.current) {
             reactQuillRef.current.getEditor().setContents([]);
         }
+        if (editChatMessage !== null) {
+            dispatch(setEditChatMessage(null));
+        }
     };
 
     const handleQuillChange = (content, delta, source, editor) => {
@@ -378,6 +381,20 @@ const ChatInput = props => {
         return () => document.removeEventListener("keydown", handleEditOnArrowUp, false);
     }, [selectedChannel]);
 
+    useEffect(() => {
+        const escapeHandler = e => {
+            if (e.keyCode === 27) {
+                handleClearQuillInput();
+            }
+        };
+        if (editMode) {
+            document.addEventListener("keydown", escapeHandler);
+        } else {
+            document.removeEventListener("keydown", escapeHandler);
+        }
+        return () => document.removeEventListener("keydown", escapeHandler);
+    }, [editMode]);
+
     //to be converted into hooks
     useEffect(() => {
         if (editChatMessage && !editMode && editMessage === null) {
@@ -415,7 +432,7 @@ const ChatInput = props => {
     };
 
     useSaveInput(handleClearQuillInput, text, textOnly, quillContents);
-    useQuillInput(handleClearQuillInput);
+    useQuillInput(handleClearQuillInput, reactQuillRef);
     useDraft(loadDraftCallback, "channel", text, textOnly, draftId);
 
     const [modules] = useQuillModules("chat", handleSubmit);

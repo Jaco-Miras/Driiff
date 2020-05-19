@@ -58,7 +58,7 @@ const ChannelIcon = props => {
                 channel.profile && channel.members.length <= 2 && channel.type === "DIRECT" &&
                 <StyledAvatar
                     imageLink={channel.profile.profile_image_link}
-                    id={channel.profile.id}
+                    userId={channel.profile.id}
                     name={channel.profile.name}
                     noClick={true}
                 />

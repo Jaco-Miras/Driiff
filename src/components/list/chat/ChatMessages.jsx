@@ -1085,7 +1085,7 @@ class ChatMessages extends React.PureComponent {
                                                                 {
                                                                     !isAuthor && showAvatar && !isBot &&
                                                                     <StyledAvatar
-                                                                        id={reply.user.id}
+                                                                        userId={reply.user.id}
                                                                         imageLink={reply.user.profile_image_link}
                                                                         name={reply.user.name}
                                                                     />

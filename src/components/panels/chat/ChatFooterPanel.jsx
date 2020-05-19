@@ -69,7 +69,7 @@ const ChatFooterPanel = (props) => {
 
     const onSelectEmoji = (e) => {
         setSelectedEmoji(e);
-        setShowEmojiPicker(false);
+        //setShowEmojiPicker(false);
     };
 
     const onClearEmoji = () => {
