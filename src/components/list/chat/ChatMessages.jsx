@@ -1017,37 +1017,6 @@ class ChatMessages extends React.PureComponent {
                                                                             onClick={e => this.handleResendMessage(reply.payload)}></i></FailedSpan>
                                                                         : null
                                                                 }
-
-                                                                <ChatActionsContainer
-                                                                    isAuthor={isAuthor}
-                                                                    className="chat-actions-container"
-                                                                >
-                                                                    {
-                                                                        <ChatReactionButton
-                                                                            isAuthor={isAuthor}
-                                                                            theme={this.props.settings.CHAT_SETTINGS.chat_message_theme}
-                                                                            scrollRef={this.props.innerRef}
-                                                                            reply={reply}
-                                                                            chatReactionAction={this.props.chatReactionV2Action}
-                                                                        />
-                                                                    }
-                                                                    {
-                                                                        !isNaN(reply.id) && reply.is_deleted === 0 &&
-                                                                        <MessageOptions
-                                                                            className={"chat-message-options"}
-                                                                            selectedChannel={this.props.selectedChannel}
-                                                                            isAuthor={isAuthor}
-                                                                            replyData={reply}
-                                                                            cbOnRemoveReply={this.handleRemoveReply}
-                                                                            onEditReply={this.handleEditReply}
-                                                                            onQuoteReply={this.handleQuoteReply}
-                                                                            cbSetReminderPopUp={this.props.cbSetReminderPopUp}
-                                                                            slugs={this.props.sharedSlugs}
-                                                                            onForwardMessage={this.props.onForwardMessage}
-                                                                        />
-                                                                    }
-                                                                </ChatActionsContainer>
-
                                                                 <ChatBubbleQuoteDiv
                                                                     //className={`chat-bubble-quote-div ${animation ? isAuthor ? "animated fadeInRightBig" : "animated fadeInLeftBig" : ""}`}
                                                                     isAuthor={isAuthor}
@@ -1081,7 +1050,35 @@ class ChatMessages extends React.PureComponent {
                                                                         handleMessageRefChange={this.handleMessageRefChange}
                                                                         addMessageRef={this.getLoadRef(reply.id)}
                                                                         {...this.props}
-                                                                    />
+                                                                    ><ChatActionsContainer
+                                                                        isAuthor={isAuthor}
+                                                                        className="chat-actions-container"
+                                                                    >
+                                                                        {
+                                                                            <ChatReactionButton
+                                                                                isAuthor={isAuthor}
+                                                                                theme={this.props.settings.CHAT_SETTINGS.chat_message_theme}
+                                                                                scrollRef={this.props.innerRef}
+                                                                                reply={reply}
+                                                                                chatReactionAction={this.props.chatReactionV2Action}
+                                                                            />
+                                                                        }
+                                                                        {
+                                                                            !isNaN(reply.id) && reply.is_deleted === 0 &&
+                                                                            <MessageOptions
+                                                                                className={"chat-message-options"}
+                                                                                selectedChannel={this.props.selectedChannel}
+                                                                                isAuthor={isAuthor}
+                                                                                replyData={reply}
+                                                                                cbOnRemoveReply={this.handleRemoveReply}
+                                                                                onEditReply={this.handleEditReply}
+                                                                                onQuoteReply={this.handleQuoteReply}
+                                                                                cbSetReminderPopUp={this.props.cbSetReminderPopUp}
+                                                                                slugs={this.props.sharedSlugs}
+                                                                                onForwardMessage={this.props.onForwardMessage}
+                                                                            />
+                                                                        }
+                                                                    </ChatActionsContainer></ChatBubble>
                                                                     {
                                                                         reply.reactions.length > 0 &&
                                                                         <ChatReactions

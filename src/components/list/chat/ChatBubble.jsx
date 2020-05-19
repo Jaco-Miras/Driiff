@@ -931,6 +931,7 @@ const ChatBubble = forwardRef((props, ref) => {
                 </ChatTimeStamp>
             </>
         }
+        {props.children}
     </ChatBubbleContainer>;
 });
 
