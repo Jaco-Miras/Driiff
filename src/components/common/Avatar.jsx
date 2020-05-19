@@ -29,13 +29,14 @@ const Avatar = forwardRef((props, ref) => {
         partialName = null,
         isAnonymous = false,
         type = "USER",
+        userId,
         ...rest
     } = props;
 
     const history = useHistory();
     const user = useSelector(state => state.session.user);
     const onlineUsers = useSelector(state => state.users.onlineUsers);
-    const isOnline = onlineUsers.filter(ou => ou.user_id === user.id).length ? true : false;
+    const isOnline = onlineUsers.filter(ou => ou.user_id === userId).length ? true : false;
 
     const [isLoaded, setIsLoaded] = useState(false);
     const [showInitials, setShowInitials] = useState(false);

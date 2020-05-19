@@ -62,7 +62,7 @@ const WorspaceHeaderPanel = (props) => {
                     </li>
                     <li className="nav-item dropdown">
                         <a href="/" className="nav-link" title="User menu" data-toggle="dropdown">
-                            <Avatar name={user.name} imageLink={user.profile_image_link}/>
+                            <Avatar userId={user.id} name={user.name} imageLink={user.profile_image_link}/>
                         </a>
                         <div className="dropdown-menu dropdown-menu-right dropdown-menu-big">
                             <div id="ascrail2003" className="nicescroll-rails nicescroll-rails-vr"

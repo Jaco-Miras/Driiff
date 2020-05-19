@@ -72,7 +72,7 @@ const UserListPopUp = props => {
                                 <Avatar
                                     size={"xs"}
                                     profileImageLink={u.profile_image_link}
-                                    id={u.id}
+                                    userId={u.id}
                                     name={u.name}
                                     partialName={u.partial_name}
                                     noClick={true}
