@@ -1,12 +1,12 @@
-import React, { useState } from "react";
+import React, {useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
+import {Modal, ModalFooter, ModalHeader} from "reactstrap";
 import styled from "styled-components";
-import { useDispatch, useSelector } from "react-redux";
-import ChannelIcon from "../list/chat/ChannelIcon";
-import { clearModal } from "../../redux/actions/globalActions";
-import { Modal, ModalHeader, ModalFooter } from "reactstrap";
+import {createChatMessage, setSelectedChannel} from "../../redux/actions/chatActions";
+import {clearModal} from "../../redux/actions/globalActions";
+import {SvgIconFeather} from "../common";
 import SearchForm from "../forms/SearchForm";
-import { SvgIconFeather } from "../common";
-import { createChatMessage, setSelectedChannel } from "../../redux/actions/chatActions";
+import ChannelIcon from "../list/chat/ChannelIcon";
 
 const IconButton = styled(SvgIconFeather)`
     cursor: pointer;
@@ -183,7 +183,7 @@ const ChatForwardModal = props => {
                 chosenChannel &&
                 <StyledModalFooter>
                     <span className='chosen-channel-title'>{chosenChannel ? chosenChannel.title : null}</span>
-                    <IconButton onClick={handleForwardMessage} icon="send" className={'bg-primary'}/>
+                    <IconButton onClick={handleForwardMessage} icon="send" className={"bg-primary"}/>
                 </StyledModalFooter>
             }
         </Modal>

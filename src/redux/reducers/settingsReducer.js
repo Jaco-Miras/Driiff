@@ -14,8 +14,8 @@ const INITIAL_STATE = {
                 preset: "default",
                 self: {
                     chat_bubble_focus_border_color: "rgba(151,44,134,0.25)",
-                    chat_bubble_text_color: "#000000",
-                    chat_bubble_background_color: "#f1e6ef",
+                    chat_bubble_text_color: "#ffffff",
+                    chat_bubble_background_color: "#7A1B8B",
                     chat_bubble_link_color: "#007bff",
                     chat_bubble_hover_color: "#972c86",
                     chat_bubble_quote_background_color: "#e6b8e3",
@@ -25,9 +25,9 @@ const INITIAL_STATE = {
                 },
                 others: {
                     chat_bubble_focus_border_color: "rgba(151,44,134,0.25)",
-                    chat_bubble_name_text_color: "#007180",
+                    chat_bubble_name_text_color: "#AAB0C8",
                     chat_bubble_text_color: "#000000",
-                    chat_bubble_background_color: "#ebebeb",
+                    chat_bubble_background_color: "#F0F0F0",
                     chat_bubble_link_color: "#007bff",
                     chat_bubble_hover_color: "#0056b3",
                     chat_bubble_quote_background_color: "#cbcbcb",
@@ -47,30 +47,31 @@ export default (state = INITIAL_STATE, action) => {
             let settings = state.userSettings;
             settings["isLoaded"] = true;
 
-            for (const index in action.data.settings) {
-                let item = action.data.settings[index];
-                let key = Object.keys(item)[0];
-                let value = item[key];
+            // # Don't load custom theme, maybe in the future again
+            // for (const index in action.data.settings) {
+            //     let item = action.data.settings[index];
+            //     let key = Object.keys(item)[0];
+            //     let value = item[key];
 
-                switch (key) {
-                    case "CHAT_SETTINGS": {
+            //     switch (key) {
+            //         case "CHAT_SETTINGS": {
 
-                        //do not apply chat message theme from db if preset is default
-                        if (value.chat_message_theme.preset === "default") {
-                            delete value["chat_message_theme"];
-                        }
+            //             //do not apply chat message theme from db if preset is default
+            //             if (value.chat_message_theme.preset === "default") {
+            //                 delete value["chat_message_theme"];
+            //             }
 
-                        settings[key] = {
-                            ...settings[key],
-                            ...value,
-                        };
-                        break;
-                    }
-                    default: {
-                        settings[key] = value;
-                    }
-                }
-            }
+            //             settings[key] = {
+            //                 ...settings[key],
+            //                 ...value,
+            //             };
+            //             break;
+            //         }
+            //         default: {
+            //             settings[key] = value;
+            //         }
+            //     }
+            // }
 
             return {
                 ...state,
@@ -81,4 +82,4 @@ export default (state = INITIAL_STATE, action) => {
         default:
             return state;
     }
-} 
+}

@@ -10,7 +10,7 @@ import shareIcon from "../../../assets/icon/share/r/secundary.svg";
 import moreIcon from "../../../assets/img/more-menu-icons/secundary.svg";
 import {copyTextToClipboard} from "../../../helpers/commonFunctions";
 import {getBaseUrl} from "../../../helpers/slugHelper";
-import {deleteChatMessage, setEditChatMessage, addQuote} from "../../../redux/actions/chatActions";
+import {addQuote, deleteChatMessage, setEditChatMessage} from "../../../redux/actions/chatActions";
 import {addToModals} from "../../../redux/actions/globalActions";
 import {useOutsideClick, useTooltipOrientation, useTooltipPosition} from "../../hooks";
 
@@ -213,22 +213,22 @@ const ChatMessageOptions = props => {
         if (replyData.quote) {
             let quote = {
                 ...replyData.quote,
-                channel_id: replyData.channel_id
-            }
+                channel_id: replyData.channel_id,
+            };
             dispatch(
-                addQuote(quote)
+                addQuote(quote),
             );
         }
     };
     const handleQuoteReply = () => {
         dispatch(
-            addQuote(replyData)
+            addQuote(replyData),
         );
     };
     const handleSetReminder = () => {
         let payload = {
             type: "reminder",
-            message: replyData
+            message: replyData,
         };
 
         dispatch(
@@ -251,7 +251,7 @@ const ChatMessageOptions = props => {
     const handleForwardMessage = () => {
         let payload = {
             type: "forward",
-            message: replyData
+            message: replyData,
         };
 
         dispatch(

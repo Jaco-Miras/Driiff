@@ -6,7 +6,8 @@ import {chatReaction} from "../../../../redux/actions/chatActions";
 import {UserListPopUp} from "../../../common";
 
 const EmojiContainer = styled.div`
-    background: #dedede;
+    ${'' /* background: #dedede; */}
+    background: #AAB0C8;
     padding: 4px;
     display: flex;
     align-items: center;

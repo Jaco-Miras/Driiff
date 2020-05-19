@@ -1,12 +1,12 @@
-import React, {useState, useRef, useEffect} from "react";
-import styled from "styled-components";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Button, Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
-import { clearModal, clearInputData, saveInputData } from "../../redux/actions/globalActions";
+import styled from "styled-components";
 import QuillEditor from "../forms/QuillEditor";
 import { useQuillModules } from "../hooks";
 import docIcon from "../../assets/img/svgs/documents-icons/documents_secundary.svg";
 import { createChatMessage } from "../../redux/actions/chatActions";
+import { clearModal, saveInputData } from "../../redux/actions/globalActions";
 import { uploadDocument } from "../../redux/services/global";
 
 const StyledQuillEditor = styled(QuillEditor)`
@@ -104,8 +104,8 @@ const DocDiv = styled.div`
 
 const FileUploadModal = props => {
 
-    const { type, mode, droppedFiles } = props.data;
-    console.log(props)
+    const {type, mode, droppedFiles} = props.data;
+    console.log(props);
     const dispatch = useDispatch();
     const reactQuillRef = useRef();
     const selectedChannel = useSelector(state => state.chat.selectedChannel);
@@ -215,11 +215,11 @@ const FileUploadModal = props => {
                         //remove the nan in mention ids
                         mention_ids = mention_ids.filter(id => !isNaN(id));
                     }
-                    
+
                     quillContents.ops.forEach(op => {
                         if (op.insert.image) {
                             haveGif = true;
-                            return
+
                         }
                     });
                 }
@@ -233,7 +233,7 @@ const FileUploadModal = props => {
                 } else {
                     if (mode === "chat") {
                         if (!sending) {
-                            handleSendChat(body, mention_ids)
+                            handleSendChat(body, mention_ids);
                             setSending(true);
                         }
                     }
@@ -258,14 +258,14 @@ const FileUploadModal = props => {
         <Modal isOpen={modal} toggle={toggle} centered>
             <ModalHeader toggle={toggle} className='bg-primary'>File upload</ModalHeader>
             <ModalBody>
-            <StyledQuillEditor
+                <StyledQuillEditor
                     className={"chat-input"}
                     modules={modules}
                     ref={reactQuillRef}
                     placeholder={`Add message. Type @ to mention someone.`}
                     readOnly={uploading}
                     onChange={handleQuillChange}
-            />
+                />
                 <FilesPreview
                     files={files}
                     onRemoveFile={handleRemoveFile}
@@ -293,8 +293,8 @@ const FilesPreview = props => {
                     files.map((file, i) => {
                         return (
                             <li key={i}>
-                                <button className="close" aria-label="close" 
-                                    onClick={e => handleRemoveFile(file)}>
+                                <button className="close" aria-label="close"
+                                        onClick={e => handleRemoveFile(file)}>
                                     <span aria-hidden="true">x</span>
                                 </button>
                                 {

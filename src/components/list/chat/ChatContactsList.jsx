@@ -94,7 +94,6 @@ const ChatContactsList = props => {
                                 onClick={e => {
                                     handleSelectChannel(channel);
                                 }}>
-                                {search !== "" && chatHeader !== "" && <ChatHeader>{chatHeader}</ChatHeader>}
                                 <div className="pr-3">
                                     <ChannelIcon channel={channel}/>
                                 </div>

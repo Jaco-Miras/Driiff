@@ -27,13 +27,14 @@ const ChatBubbleContainer = styled.div`
     //flex-flow: ${props => props.isAuthor ? "row-reverse" : "row"};
     padding: 5px;
     //padding-bottom: 2px;
-    border-radius: 10px;
+    border-radius: 8px;
     background: ${props => (props.isAuthor ? props.theme.self.chat_bubble_background_color : props.theme.others.chat_bubble_background_color)};
     text-align: left;
     min-width: 100px;
     width: 100%;
     color: ${props => (props.isAuthor ? props.theme.self.chat_bubble_text_color : props.theme.others.chat_bubble_text_color)};
     font-size: 1rem;
+    overflow: visible;
     // justify-content: space-between;
 
     &:focus {
@@ -41,23 +42,28 @@ const ChatBubbleContainer = styled.div`
         -moz-box-shadow: 0 0 0 1px ${props => (props.isAuthor ? props.theme.self.chat_bubble_focus_border_color : props.theme.others.chat_bubble_focus_border_color)};
         box-shadow: 0 0 0 1px ${props => (props.isAuthor ? props.theme.self.chat_bubble_focus_border_color : props.theme.others.chat_bubble_focus_border_color)};
     }
-    
+
     a:not([href]):not([tabindex]) {
         color: ${props => (props.isAuthor ? props.theme.self.chat_bubble_link_color : props.theme.others.chat_bubble_link_color)};
-        
+
         &:hover {
-            color: ${props => (props.isAuthor ? props.theme.self.chat_bubble_hover_color : props.theme.others.chat_bubble_hover_color)};        
+            color: ${props => (props.isAuthor ? props.theme.self.chat_bubble_hover_color : props.theme.others.chat_bubble_hover_color)};
         }
     }
-    
+
     video{
         width: 100%;
     }
     p.reply-author {
         color: ${props => props.isAuthor ? "#ffffff" : props.theme.others.chat_bubble_name_text_color};
         font-weight: 600;
+        font-size: 12px;
+        font-style: italic;
         margin: 0;
-        display: inline-block;
+        display: block;
+        position: absolute;
+        top: -24px;
+        white-space: nowrap;
     }
     span.emoticon-body {
         font-size: 35px;
@@ -70,8 +76,8 @@ const ChatBubbleContainer = styled.div`
     //     max-width: 100%;
     //     max-height: 300px;
     // }
-    
-    
+
+
     span.reply-date{
         font-size: .75em;
     }
@@ -88,7 +94,7 @@ const ChatBubbleContainer = styled.div`
           text-align: left;
           position: relative;
           margin-left: 10px;
-          
+
           :before {
             content: '';
             position: absolute;
@@ -108,7 +114,7 @@ const ChatBubbleContainer = styled.div`
         color: #9d9d9d;
     }
     .mention {
-        // background-image: linear-gradient(105deg,#46598d, #4f99a6);        
+        // background-image: linear-gradient(105deg,#46598d, #4f99a6);
         &[data-value="All"] {
             background-image: linear-gradient(105deg,#972c86,#794997);
         }
@@ -144,7 +150,7 @@ const ChatBubbleContainer = styled.div`
 `;
 
 const QuoteContainer = styled.div`
-  background: ${props => (props.isAuthor ? props.theme.self.chat_bubble_quote_background_color : props.theme.others.chat_bubble_quote_background_color)};    
+  background: ${props => (props.isAuthor ? props.theme.self.chat_bubble_quote_background_color : props.theme.others.chat_bubble_quote_background_color)};
   border-radius: 10px 10px 0 0;
   margin: -5px -5px 10px -5px;
   text-align: left;
@@ -202,7 +208,7 @@ color: ${props => (props.isAuthor ? props.theme.self.chat_bubble_quote_text_colo
                 word-break: unset;
             }
         }
-        
+
         &:hover {
             overflow: unset;
             white-space: unset;
@@ -218,14 +224,14 @@ const GrippBotIcon = styled(SvgImage)`
     margin-right: -5px;
     left: -3px;
     filter: invert(25%) sepia(36%) saturate(4250%) hue-rotate(165deg) brightness(95%) contrast(101%);
-    
+
     &:hover {
         filter: invert(25%) sepia(36%) saturate(4250%) hue-rotate(165deg) brightness(95%) contrast(101%);
     }
 `;
 
 const ChatMessageFiles = styled(MessageFiles)`
-    img {    
+    img {
         cursor: pointer;
         cursor: hand;
     }
@@ -234,28 +240,28 @@ const ChatMessageFiles = styled(MessageFiles)`
         cursor: pointer;
         cursor: hand;
     }
-    .reply-file-item {        
+    .reply-file-item {
         display: block;
         font-weight: bold;
-        
+
         &.component-image-text-link {
             img.component-svg-image {
                 display: inline-block;
                 width: 20px;
                 height: 20px;
                 margin-right: 5px;
-                filter: brightness(0) saturate(100%) ${props => (props.isAuthor ? hexToCSSFilter(props.theme.self.chat_bubble_link_color).filter : hexToCSSFilter(props.theme.others.chat_bubble_link_color).filter)};                                
+                filter: brightness(0) saturate(100%) ${props => (props.isAuthor ? hexToCSSFilter(props.theme.self.chat_bubble_link_color).filter : hexToCSSFilter(props.theme.others.chat_bubble_link_color).filter)};
             }
-        
+
             &:hover {
                 color: #972C86;
-                
+
                 img.component-svg-image {
-                    filter: brightness(0) saturate(100%) ${props => (props.isAuthor ? hexToCSSFilter(props.theme.self.chat_bubble_hover_color).filter : hexToCSSFilter(props.theme.others.chat_bubble_hover_color).filter)};                       
+                    filter: brightness(0) saturate(100%) ${props => (props.isAuthor ? hexToCSSFilter(props.theme.self.chat_bubble_hover_color).filter : hexToCSSFilter(props.theme.others.chat_bubble_hover_color).filter)};
                 }
             }
-        }        
-        
+        }
+
         &.file-only {
             img {
                 width: 52.5px;
@@ -269,7 +275,7 @@ const ReplyContent = styled.span`
     ul {
         list-style-type: none;
     }
-    
+
     a,
     a:not([href]):not([tabindex]) {
         color: ${props => (props.isAuthor ? props.theme.self.chat_bubble_link_color : props.theme.others.chat_bubble_link_color)};
@@ -277,24 +283,24 @@ const ReplyContent = styled.span`
         &:hover {
             color: ${props => (props.isAuthor ? props.theme.self.chat_bubble_hover_color : props.theme.others.chat_bubble_hover_color)};
         }
-        
+
         &.btn {
             border: 1px solid ${props => (props.isAuthor ? props.theme.self.chat_bubble_link_color : props.theme.others.chat_bubble_link_color)};
-            
+
             &:focus,
             &:hover {
                 border: 1px solid ${props => (props.isAuthor ? props.theme.self.chat_bubble_hover_color : props.theme.others.chat_bubble_hover_color)};
             }
-            
+
             &.btn-action {
                 margin-top: 0.5rem;
                 border-radius: 8px;
             }
-            
+
             &.btn-delete {
                 border: 1px solid ${props => (props.isAuthor ? props.theme.self.chat_bubble_hover_color : props.theme.others.chat_bubble_hover_color)};
                 color: ${props => (props.isAuthor ? props.theme.self.chat_bubble_hover_color : props.theme.others.chat_bubble_hover_color)};
-                
+
                 &:focus,
                 &:hover {
                     border: 1px solid ${props => (props.isAuthor ? props.theme.self.chat_bubble_link_color : props.theme.others.chat_bubble_link_color)};
@@ -303,7 +309,7 @@ const ReplyContent = styled.span`
             }
         }
     }
-        
+
     span.completed {
         text-decoration:line-through;
     }
@@ -315,10 +321,11 @@ const ChatContentClap = styled.div`
 
   .chat-content {
       width: 100%;
+      padding-left: 0;
   }
 
   .chat-clap{
-    float: ${props => props.isAuthor ? "left" : "right"};      
+    float: ${props => props.isAuthor ? "left" : "right"};
   }
 `;
 const ChatContent = styled.div`
@@ -333,28 +340,28 @@ const ChatContent = styled.div`
         width: 100%;
         display: block;
         // ${props => props.isAuthor ? "margin-left: 30px" : "margin-right: 30px"};
-        
+
         p {
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: pre-wrap;
             word-wrap: break-word;
-    
+
             a {
                 color: rgba(18, 100, 163, 1);
                 overflow: hidden;
                 white-space: nowrap;
                 text-overflow: ellipsis;
-    
+
                 @media only screen and (max-width: 1024px) {
                     white-space: normal;
                     word-break: break-word;
-    
+
                     &:hover {
                         word-break: unset;
                     }
                 }
-                
+
                 &:hover {
                     overflow: unset;
                     white-space: unset;
@@ -370,7 +377,7 @@ const ChatContent = styled.div`
         left: 0;
         overflow: hidden;
         height: 250px;
-    
+
         .gifPlayer {
             padding: 10px;
             max-height: 250px;

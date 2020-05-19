@@ -4,17 +4,17 @@ import styled from "styled-components";
 import {localizeDate} from "../../helpers/momentFormatJS";
 import {
     addChatMessage,
-    createChatMessage,
-    setEditChatMessage,
-    updateChatMessage,
-    onClickSendButton,
-    clearQuote,
     addQuote,
     clearChannelDraft,
+    clearQuote,
+    createChatMessage,
+    onClickSendButton,
+    setEditChatMessage,
+    updateChatMessage,
 } from "../../redux/actions/chatActions";
-import {useQuillModules, useSelectQuote, useQuillInput, useDraft, useSaveInput} from "../hooks";
+import {deleteDraft} from "../../redux/actions/globalActions";
+import {useDraft, useQuillInput, useQuillModules, useSaveInput, useSelectQuote} from "../hooks";
 import QuillEditor from "./QuillEditor";
-import { deleteDraft } from "../../redux/actions/globalActions";
 
 const StyledQuillEditor = styled(QuillEditor)`
     &.chat-input {
@@ -87,7 +87,7 @@ const ChatInput = props => {
     const [editMessage, setEditMessage] = useState(null);
     const [draftId, setDraftId] = useState(null);
 
-    const [quote] = useSelectQuote()
+    const [quote] = useSelectQuote();
 
     const handleSubmit = () => {
 
@@ -187,8 +187,8 @@ const ChatInput = props => {
             is_completed: true,
             is_transferred: false,
             is_deleted: 0,
-            created_at: { timestamp: timestamp },
-            updated_at: { timestamp: timestamp },
+            created_at: {timestamp: timestamp},
+            updated_at: {timestamp: timestamp},
             channel_id: selectedChannel.id,
             reactions: [],
             id: reference_id,
@@ -212,19 +212,19 @@ const ChatInput = props => {
                 payload.quote = quote;
             }
             dispatch(
-                updateChatMessage(payloadEdit)
+                updateChatMessage(payloadEdit),
             );
             setEditMode(false);
             setEditMessage(null);
         } else {
             dispatch(
-                createChatMessage(payload)
+                createChatMessage(payload),
             );
         }
 
         if (quote) {
             dispatch(
-                clearQuote(quote)
+                clearQuote(quote),
             );
         }
         if (draftId) {
@@ -237,11 +237,11 @@ const ChatInput = props => {
     const handleClearQuillInput = () => {
         setTextOnly("");
         setText("");
-        setQuillContents([])
+        setQuillContents([]);
         if (reactQuillRef.current) {
             reactQuillRef.current.getEditor().setContents([]);
         }
-    }
+    };
 
     const handleQuillChange = (content, delta, source, editor) => {
 
@@ -319,8 +319,8 @@ const ChatInput = props => {
             dispatch(
                 addQuote({
                     ...reply.quote,
-                    channel_id: reply.channel_id
-                })
+                    channel_id: reply.channel_id,
+                }),
             );
         }
     };
@@ -378,10 +378,10 @@ const ChatInput = props => {
     useEffect(() => {
         if (sendButtonClicked) {
             dispatch(onClickSendButton(false));
-            handleSubmit()
+            handleSubmit();
         }
     }, [sendButtonClicked]);
-    
+
     const loadDraftCallback = (draft) => {
         if (draft === null) {
             setDraftId(null);
@@ -390,12 +390,12 @@ const ChatInput = props => {
             setDraftId(draft.draft_id);
             setText(draft.text);
         }
-    }
+    };
 
     useSaveInput(handleClearQuillInput, text, textOnly, quillContents);
     useQuillInput(handleClearQuillInput);
     useDraft(loadDraftCallback, "channel", text, textOnly, draftId);
-    
+
     const [modules] = useQuillModules("chat", handleSubmit);
 
     return (
