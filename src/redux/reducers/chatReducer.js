@@ -20,6 +20,64 @@ const INITIAL_STATE = {
 export default function (state = INITIAL_STATE, action) {
 
     switch (action.type) {
+        case "GET_GLOBAL_RECIPIENTS_SUCCESS": {
+            const results = action.data.result.map(ac => {
+                if (ac.type === "USER") {
+                    ac.type = "DIRECT";
+                    ac.members = [ac.id];
+                    ac.replies = [];
+                    ac.add_user = 1;
+                    ac.profile = {
+                        first_name: ac.first_name,
+                        id: ac.id,
+                        name: ac.name,
+                        profile_image_link: ac.profile_image_link,
+                    };
+                }
+
+                if (ac.type === "TOPIC") {
+                    ac.members = ac.channel_members;
+                    ac.replies = [];
+                    ac.add_open_topic = 1;
+
+                    if (ac.channel_code === null) {
+                        ac.recipient_ids = [ac.id];
+                    } else {
+                        ac.hasMore = true;
+                        ac.code = ac.channel_code;
+                        ac.entity_id = ac.channel_id;
+                        ac.read_only = true;
+                    }
+                }
+
+                return {
+                    ...ac,
+                    id: ac.key_id,
+                    title: ac.name,
+                    is_pinned: 0,
+                    is_hidden: 0,
+                    is_archived: 0,
+                };
+            });
+            return {
+                ...state,
+                channels: {
+                    ...state.channels,
+                    ...convertArrayToObject(results, "id"),
+                },
+            };
+        }
+        case "DELETE_ADD_NEW_CHAT_CHANNEL":
+            let channel = state.channels;
+
+            delete channel[action.data.old_id];
+
+            channel[action.data.id] = action.data;            
+
+            return {
+                ...state,
+                channels: channel,
+            };
         case "GET_CHANNELS_SUCCESS": {
             let results = action.data.results.filter(r => {
                 if (state.selectedChannel && state.selectedChannel.id === r.id) return false;
