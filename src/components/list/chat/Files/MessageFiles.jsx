@@ -7,11 +7,11 @@ import FilePill from "./FilePill";
 const MessageFilesContainer = styled.div`
     position: relative;
     z-index: 1;
-    border-radius: 10px;
+    border-radius: 8px;
     //background: ${props => props.filesLength === 1 && props.type === "chat" ? "#dedede" : "transparent"};
 `;
 const FilesLink = styled.div`
-    margin-bottom: 0.5rem;    
+    margin-bottom: 0.5rem;
 `;
 const FilesContainer = styled.div`
     display: flex;

@@ -8,11 +8,14 @@ const SeenIndicatorContainer = styled.div`
     // left: ${props => props.isAuthor ? "unset" : "5px"};
     //top: 100%;
     text-align: ${props => props.isAuthor ? "right" : "left"};
+    color: #a7abc3;
+    font-style: italic;
     z-index: 2;
-    font-size: .7em;
+    font-size: 11px;
     cursor: pointer;
-    padding: 0 5px;
-    //bottom: -15px;
+    position: absolute;
+    bottom: -18px;
+    right: 0;
 `;
 const StyledUserListPopUp = styled(UserListPopUp)`
     position: absolute;

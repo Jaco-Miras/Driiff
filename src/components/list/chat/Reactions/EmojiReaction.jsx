@@ -7,11 +7,11 @@ import {UserListPopUp} from "../../../common";
 
 const EmojiContainer = styled.div`
     ${'' /* background: #dedede; */}
-    background: #AAB0C8;
+    background: ${props => props.isAuthor ? "rgba(151, 81, 163, 0.6)" : "rgba(240, 240, 240, 0.8)"};
     padding: 4px;
     display: flex;
     align-items: center;
-    border-radius: 10px;
+    border-radius: 8px;
     margin: 0 2px;
     cursor: pointer;
     position: relative;
@@ -48,8 +48,8 @@ const EmojiReaction = props => {
     };
 
     return (
-        <EmojiContainer onClick={handleToggleReact}>
-            <Emoji emoji={type} size={16}/>
+        <EmojiContainer onClick={handleToggleReact} isAuthor={isAuthor}>
+            <Emoji emoji={type}  size={16}/>
             {count > 1 ? <span>{count}</span> : null}
             <StyledUserListPopUp
                 className={"chat-emoji-users-list"}

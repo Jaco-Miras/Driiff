@@ -41,7 +41,7 @@ const StyledQuillEditor = styled(QuillEditor)`
         width: 300px !important;
         max-height: 170px;
         background: rgb(255, 255, 255);
-        border-radius: 10px;
+        border-radius: 8px;
         box-shadow: rgba(26, 26, 26, 0.4) 0px 2px 3px 0px, rgba(0, 0, 0, 0.1) 0px 1px 3px 0px;
         overflow-x: hidden;
         overflow-y: auto;
@@ -354,7 +354,7 @@ const ChatInput = props => {
     useEffect(() => {
         const handlePaste = (e) => {
             let files = [];
-            
+
             if (e.clipboardData.items.length) {
                 for (let i = 0; i < e.clipboardData.items.length; i++) {
                     let item = e.clipboardData.items[i];

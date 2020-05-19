@@ -20,7 +20,7 @@ const MoreEmojis = styled.div`
     padding: 2px 5px;
     display: flex;
     align-items: center;
-    border-radius: 10px;
+    border-radius: 8px;
     margin: 0 2px;
     position: relative;
     cursor: pointer;
@@ -34,7 +34,7 @@ const MoreEmojis = styled.div`
 const StyledMoreEmojiLists = styled(MoreEmojiLists)`
     position: absolute;
     background: #dedede;
-    border-radius: 10px;
+    border-radius: 8px;
     max-width: 100px;
     min-width: 60px;
     padding: 5px;

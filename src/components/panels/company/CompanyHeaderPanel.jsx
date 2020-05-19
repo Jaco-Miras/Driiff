@@ -7,26 +7,28 @@ import {Avatar, NavLink, SvgIconFeather} from "../../common";
 
 const NavBar = styled.ul`
     li {
-        justify-content: center;  
+        justify-content: center;
         align-items: center;
-        
+
         h2 {
             letter-spacing: -0.5px;
             margin-bottom: 0;
+            color: #82828A;
+            font-weight: 500;
         }
     }
 `;
 
 const CompanyName = styled.h2`
-    margin-right: 1rem;    
+    margin-right: 1rem;
 `;
 
 const MainNavLink = styled(NavLink)`
-    padding: 10px 40px;    
-    border-radius: 10px;
+    padding: 10px 40px;
+    border-radius: 8px;
     color: #828282;
     margin: 0 0.2rem;
-    
+
     &.active {
         background-color: #7a1b8b;
         color: #fff;
@@ -107,7 +109,7 @@ const CompanyHeaderPanel = (props) => {
                     </li>
                     <li className="nav-item dropdown">
                         <a href="/" className="nav-link" title="User menu" data-toggle="dropdown">
-                            <Avatar userId={user.id} name={user.name} imageLink={user.profile_image_link}/>
+                            <Avatar name={user.name} imageLink={user.profile_image_link}/>
                         </a>
                         <div className="dropdown-menu dropdown-menu-right dropdown-menu-big">
                             <div id="ascrail2003" className="nicescroll-rails nicescroll-rails-vr"
