@@ -5,6 +5,7 @@ import {BrowserRouter} from "react-router-dom";
 import App from "./App";
 import store from "./redux/store/configStore";
 import * as serviceWorker from "./serviceWorker";
+import './assets/css/app.css';
 
 const wrapApp = reduxStore => (
     <Provider store={reduxStore}>
