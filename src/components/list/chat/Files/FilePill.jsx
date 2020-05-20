@@ -4,7 +4,7 @@ import docIcon from "../../../../assets/img/svgs/documents-icons/documents_secun
 import {getAPIUrl} from "../../../../helpers/slugHelper";
 
 const ImgLoader = styled.div`
-    position: relative;    
+    position: relative;
     border: 1px solid #ddd;
     background-color: transparent;
     max-height: 150px;
@@ -14,24 +14,24 @@ const ImgLoader = styled.div`
 `;
 
 const ImgLoaderDiv = styled.div`
-    border: 10px solid #f3f3f3; 
+    border: 10px solid #f3f3f3;
     border-top: 10px solid #972c86;
     border-radius: 50%;
     width: 60px;
     height: 60px;
     animation: spin 2s linear infinite;
-    
+
     position: absolute;
     margin: auto;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    
+
     @keyframes spin {
         0% { transform: rotate(0deg); }
         100% { transform: rotate(360deg); }
-      }      
+      }
 `;
 
 const FileImage = styled.img`
@@ -62,13 +62,13 @@ const FileVideo = styled.video`
 
 const FilePillContainer = styled.div`
     // margin-top: 5px;
-    // margin-right: 20px;    
-    border-radius: 10px;
+    // margin-right: 20px;
+    border-radius: 8px;
     background: ${props => props.type === "image" ? "transparent" : "#dedede"};
     cursor: pointer;
     cursor: hand;
-    
-    > img{    
+
+    > img{
         border: 1px solid #ddd;
         border-radius: inherit;
         // max-height: 200px;

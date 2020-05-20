@@ -1,20 +1,20 @@
-import React, { useEffect, useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { Button, Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
+import React, {useEffect, useRef, useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
+import {Button, Modal, ModalBody, ModalFooter, ModalHeader} from "reactstrap";
 import styled from "styled-components";
-import QuillEditor from "../forms/QuillEditor";
-import { useQuillModules } from "../hooks";
 import docIcon from "../../assets/img/svgs/documents-icons/documents_secundary.svg";
-import { createChatMessage } from "../../redux/actions/chatActions";
-import { clearModal, saveInputData } from "../../redux/actions/globalActions";
-import { uploadDocument } from "../../redux/services/global";
+import {createChatMessage} from "../../redux/actions/chatActions";
+import {clearModal, saveInputData} from "../../redux/actions/globalActions";
+import {uploadDocument} from "../../redux/services/global";
+import QuillEditor from "../forms/QuillEditor";
+import {useQuillModules} from "../hooks";
 
 const StyledQuillEditor = styled(QuillEditor)`
     .ql-mention-list-container-top, .ql-mention-list-container {
         width: 300px !important;
         max-height: 170px;
         background: rgb(255, 255, 255);
-        border-radius: 10px;
+        border-radius: 8px;
         box-shadow: rgba(26, 26, 26, 0.4) 0px 2px 3px 0px, rgba(0, 0, 0, 0.1) 0px 1px 3px 0px;
         overflow-x: hidden;
         overflow-y: auto;
@@ -58,7 +58,7 @@ const FilesPreviewContainer = styled.div`
         height: 160px;
         width: 200px;
         border: 1px solid #ddd;
-        border-radius: 10px;
+        border-radius: 8px;
         position: relative;
         img{
             height: 100%;
@@ -105,7 +105,7 @@ const DocDiv = styled.div`
 const FileUploadModal = props => {
 
     const {type, mode, droppedFiles} = props.data;
-    
+
     const dispatch = useDispatch();
     const reactQuillRef = useRef();
     const selectedChannel = useSelector(state => state.chat.selectedChannel);
@@ -120,7 +120,7 @@ const FileUploadModal = props => {
     const [comment, setComment] = useState("");
     const [textOnly, setTextOnly] = useState("");
     const [quillContents, setQuillContents] = useState([]);
-    
+
     useEffect(() => {
         if (savedInput !== null) {
             reactQuillRef.current.getEditor().clipboard.dangerouslyPasteHTML(0, savedInput.text);
@@ -128,7 +128,7 @@ const FileUploadModal = props => {
             setTextOnly(savedInput.textOnly);
             setQuillContents(savedInput.quillContents);
         }
-    }, [savedInput])
+    }, [savedInput]);
 
     const toggle = () => {
         setModal(!modal);

@@ -68,7 +68,7 @@ const useDraft = (callback, type, text, textOnly, draftId) => {
     useEffect(() => {
         dispatch(getChannelDrafts());
         handleLoadDraft();
-        return () => handleSaveDraft()
+        return () => handleSaveDraft();
     }, []);
 
     useEffect(() => {

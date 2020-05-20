@@ -6,7 +6,7 @@ const INITIAL_STATE = {
     modals: {},
     slugs: [],
     navMode: 2,
-    dataFromInput: null
+    dataFromInput: null,
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -56,14 +56,14 @@ export default (state = INITIAL_STATE, action) => {
         case "SAVE_INPUT_DATA": {
             return {
                 ...state,
-                dataFromInput: action.data
-            }
+                dataFromInput: action.data,
+            };
         }
         case "CLEAR_INPUT_DATA": {
             return {
                 ...state,
-                dataFromInput: null
-            }
+                dataFromInput: null,
+            };
         }
         default:
             return state;

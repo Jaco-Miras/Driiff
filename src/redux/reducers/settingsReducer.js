@@ -14,7 +14,7 @@ const INITIAL_STATE = {
                 preset: "default",
                 self: {
                     chat_bubble_focus_border_color: "rgba(151,44,134,0.25)",
-                    chat_bubble_text_color: "#ffffff",
+                    chat_bubble_text_color: "#ffffffe6",
                     chat_bubble_background_color: "#7A1B8B",
                     chat_bubble_link_color: "#007bff",
                     chat_bubble_hover_color: "#972c86",

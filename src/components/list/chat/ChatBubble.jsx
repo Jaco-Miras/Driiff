@@ -25,15 +25,16 @@ const ChatBubbleContainer = styled.div`
     display: inline-flex;
     flex-flow: column;
     //flex-flow: ${props => props.isAuthor ? "row-reverse" : "row"};
-    padding: 5px;
-    //padding-bottom: 2px;
+    padding: 7px 15px;
     border-radius: 8px;
     background: ${props => (props.isAuthor ? props.theme.self.chat_bubble_background_color : props.theme.others.chat_bubble_background_color)};
     text-align: left;
-    min-width: 100px;
+    min-width: 0;
     width: 100%;
     color: ${props => (props.isAuthor ? props.theme.self.chat_bubble_text_color : props.theme.others.chat_bubble_text_color)};
-    font-size: 1rem;
+    font-size: .835rem;
+    line-height: 1.5rem;
+
     overflow: visible;
     // justify-content: space-between;
 
@@ -56,13 +57,14 @@ const ChatBubbleContainer = styled.div`
     }
     p.reply-author {
         color: ${props => props.isAuthor ? "#ffffff" : props.theme.others.chat_bubble_name_text_color};
-        font-weight: 600;
+        font-weight: 400;
         font-size: 12px;
         font-style: italic;
         margin: 0;
         display: block;
         position: absolute;
         top: -24px;
+        left: 0;
         white-space: nowrap;
     }
     span.emoticon-body {
@@ -79,7 +81,18 @@ const ChatBubbleContainer = styled.div`
 
 
     span.reply-date{
-        font-size: .75em;
+        color: #a7abc3;
+        font-style: italic;
+        font-size: 11px;
+        position: absolute;
+        top: 0;
+        ${props => props.isAuthor ? "left: -40px;" : "right: -40px;"};
+
+        display: flex;
+        height: 100%;
+        align-items: center;
+
+
     }
     // * {
     //     word-break: break-all;
@@ -151,8 +164,9 @@ const ChatBubbleContainer = styled.div`
 
 const QuoteContainer = styled.div`
   background: ${props => (props.isAuthor ? props.theme.self.chat_bubble_quote_background_color : props.theme.others.chat_bubble_quote_background_color)};
-  border-radius: 10px 10px 0 0;
-  margin: -5px -5px 10px -5px;
+  background: #fff3;
+  border-radius: 8px 8px 0 0;
+  margin: -10px -15px 10px -15px;
   text-align: left;
   padding: 10px 10px 10px 20px;
   overflow: hidden;
@@ -331,11 +345,9 @@ const ChatContentClap = styled.div`
 const ChatContent = styled.div`
     .reply-author {
         // padding: ${props => props.isAuthor ? "0 10px 0 40px" : "0 40px 0 10px"};
-        padding: 0 5px;
         ${props => props.isAuthor ? "margin-left: 30px" : "margin-right: 30px"};
     }
     .reply-content {
-        padding: 0 5px;
         clear: both;
         width: 100%;
         display: block;
@@ -918,6 +930,7 @@ const ChatBubble = forwardRef((props, ref) => {
                 </ChatTimeStamp>
             </>
         }
+        {props.children}
     </ChatBubbleContainer>;
 });
 

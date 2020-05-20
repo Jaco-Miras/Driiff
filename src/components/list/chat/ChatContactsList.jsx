@@ -37,7 +37,7 @@ const ChatContactsList = props => {
             let old_channel = channel;
             dispatch(
                 createNewChat({
-                    title: null,
+                    title: "",
                     type: "person",
                     recipient_ids: channel.members,
                 }, (err, res) => {
@@ -111,7 +111,11 @@ const ChatContactsList = props => {
                 return false;
             }
 
-            if (c.members.length > 2 || !(c.members.length === 1 && c.add_user === 1)) {
+            if (c.members.length > 2) {
+                return false;
+            }
+
+            if (c.members.length === 1 && c.add_user !== 1) {
                 return false;
             }
 

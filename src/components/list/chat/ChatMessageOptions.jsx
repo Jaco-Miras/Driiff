@@ -30,7 +30,7 @@ const MoreButton = styled.button`
     content: "";
     mask-image: url(${moreIcon});
     background-color: ${props =>
-    props.showMoreOptions ? "#972c86" : "#676767"};
+    props.showMoreOptions ? "#972c86" : "#a7abc3"};
     mask-repeat: no-repeat;
     mask-size: 100%;
     mask-position: center;
@@ -58,7 +58,7 @@ const MoreTooltip = styled.div`
     left: -108px;
     padding: 10px;
     cursor: pointer;
-    box-shadow: 0 0 3px 0 rgba(26, 26, 26, 0.4), 0 1px 3px 0 rgba(0, 0, 0, 0.1);    
+    box-shadow: 0 0 3px 0 rgba(26, 26, 26, 0.4), 0 1px 3px 0 rgba(0, 0, 0, 0.1);
     :before{
         content: "";
         position: absolute;
@@ -89,14 +89,14 @@ const MoreTooltip = styled.div`
         :after {
             top: 11px;
             right: ${props => (props.isAuthor ? "auto" : "-23px")};
-            left: ${props => (props.isAuthor ? "-23px" : "auto")};            
-            transform: ${props => (props.isAuthor ? "rotate(90deg)" : "rotate(-90deg)")};        
+            left: ${props => (props.isAuthor ? "-23px" : "auto")};
+            transform: ${props => (props.isAuthor ? "rotate(90deg)" : "rotate(-90deg)")};
         }
         :before {
             top: 8px;
             right: ${props => (props.isAuthor ? "auto" : "-28px")};
             left: ${props => (props.isAuthor ? "-28px" : "auto")};
-            transform: ${props => (props.isAuthor ? "rotate(90deg)" : "rotate(-90deg)")};        
+            transform: ${props => (props.isAuthor ? "rotate(90deg)" : "rotate(-90deg)")};
         }
     }
     button:hover{

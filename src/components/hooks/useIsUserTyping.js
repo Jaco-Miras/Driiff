@@ -1,9 +1,9 @@
-import { useState, useEffect, useRef } from "react";
-import { useSelector } from "react-redux";
+import {useEffect, useRef, useState} from "react";
+import {useSelector} from "react-redux";
 import usePreviousValue from "./usePreviousValue";
 
 const useIsUserTyping = props => {
-    
+
     const channel = useSelector(state => state.chat.selectedChannel);
     const user = useSelector(state => state.session.user);
 
@@ -17,7 +17,7 @@ const useIsUserTyping = props => {
             if (channel.id === e.channel_id) {
                 clearTimeout(timeout.current);
                 timeout.current = setTimeout(() => {
-                    setUsersTyping([])
+                    setUsersTyping([]);
                 }, 3000);
                 if (e.user.id !== user.id) {
                     if (usersTyping.length) {
@@ -25,11 +25,11 @@ const useIsUserTyping = props => {
                         usersTyping.forEach(u => {
                             if (u.id === e.user.id) {
                                 userExist = true;
-                                return;
+
                             }
                         });
                         if (!userExist) {
-                            setUsersTyping([...usersTyping, e.user])
+                            setUsersTyping([...usersTyping, e.user]);
                         }
                     } else {
                         setUsersTyping([e.user]);
@@ -44,7 +44,7 @@ const useIsUserTyping = props => {
                         .listenForWhisper("typing", e => {
                             handleSetUserTyping(e);
                         });
-                    }
+                }
             } else {
                 if (window.Echo) {
                     window.Echo.private(localStorage.getItem("slug") + `.App.Channel.` + channel.id)
@@ -69,6 +69,6 @@ const useIsUserTyping = props => {
     }, [channel, previousChannel]);
 
     return usersTyping;
-}
+};
 
 export default useIsUserTyping;

@@ -63,8 +63,8 @@ const useLoadChannels = () => {
         }
 
         dispatch(
-            getGlobalRecipients({})
-        )
+            getGlobalRecipients({}),
+        );
         //eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 

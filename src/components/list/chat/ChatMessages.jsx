@@ -106,19 +106,29 @@ const ChatList = styled.li`
     }
 `;
 const TimestampDiv = styled.div`
-  text-align: center;
-  margin: 15px 0;
-  font-weight: 600;
-  z-index: 10;
-  position: sticky;
-  // top: -13px;
+    z-index: 10;
+    position: sticky;
     top: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    padding: 0 20px;
+    color: #a7abc3;
+    margin: 20px 0;
+    &:before, &:after {
+        content: '';
+        display: block;
+        height: 1px;
+        background-color: #e1e1e1;
+        flex: 1;
+    }
     span {
         background: #fff;
         padding: 5px 10px;
         border-radius: 5px;
-        margin-top: 1em;
         display: inline-block;
+        font-size: 11px;
     }
 `;
 const ChatBubbleContainer = styled.div`
@@ -133,14 +143,21 @@ const ChatBubbleContainer = styled.div`
     ${props => (props.isAuthor === true && "position: relative; right: 15px;")};
 
 
-    margin-top: ${props => ((props.showAvatar && !props.isAuthor ) ? "20px" : "0px")};
+    ${"" /* margin-top: ${props => ((props.showAvatar && !props.isAuthor ) ? "20px" : "0px")}; */}
+    margin-top: ${props => ((props.showAvatar) && "36px")};
+
+    margin-top: ${props => ((props.showAvatar && props.isAuthor) && "20px")};
+    ${"" /* background: ${props => ((props.isAuthor ) ? "red" : "blue")}; */}
+
+
+
     &:before {
         ${props => (props.showAvatar && "content: '';")};
         border: 10px solid transparent;
         border-right-color: transparent;
         border-right-color: #f0f0f0;
         position: absolute;
-        top: ${props => ((props.showAvatar && !props.isAuthor ) ? "28px" : "8px")};;
+        top: ${props => ((props.showAvatar && !props.isAuthor) ? "42px" : "8px")};;
         left: 20px;
         z-index: 1;
         ${props => (props.isAuthor === true && `
@@ -157,7 +174,14 @@ const ChatActionsContainer = styled.div`
     flex-wrap: wrap;
     ${props => (props.isAuthor ? "margin-right: 10px" : "margin-left: 10px")};
     min-width: 100px;
-    max-height: 25px;
+    height: 100%;
+    color: #a7abc3;
+    background: #ffffff;
+    position: absolute;
+    display: flex;
+    align-items: center;
+    top: 0;
+    ${props => (props.isAuthor ? "right: 100%" : "left: 100%")};
 `;
 const SystemChatActionsContainer = styled.div`
     display: flex;
@@ -326,14 +350,11 @@ const MessageOptions = styled(ChatMessageOptions)`
 const ChatBubbleQuoteDiv = styled.div`
   //width: 100%;
   //overflow: hidden;
-  max-width: 90%;
-
-
-
+  max-width: 75%;
   position: relative;
   flex-flow: column;
   display: inherit;
-  margin-left: 18px;
+  ${props => (!props.isAuthor === true && "margin-left: 18px")};
   > img {
     // max-height: ${props => props.maxImgHeight > 300 ? `${props.maxImgHeight}px;` : "300px"};
     max-height: 300px;
@@ -359,7 +380,7 @@ const ChatBubbleQuoteDiv = styled.div`
 const SystemMessageContainer = styled.div`
     position: relative;
     display: inline-flex;
-    border-radius: 10px;
+    border-radius: 8px;
     //background: #f1e6ef;
     background: #f4f4f4f4;
     text-align: left;
@@ -373,7 +394,6 @@ const SystemMessageContainer = styled.div`
     align-items: center;
     justify-content: flex-end;
     flex-flow: ${props => (props.isAuthor ? "row" : "row-reverse")};
-
     .chat-options {
         visibility: hidden;
     }
@@ -997,39 +1017,9 @@ class ChatMessages extends React.PureComponent {
                                                                             onClick={e => this.handleResendMessage(reply.payload)}></i></FailedSpan>
                                                                         : null
                                                                 }
-
-                                                                <ChatActionsContainer
-                                                                    isAuthor={isAuthor}
-                                                                    className="chat-actions-container"
-                                                                >
-                                                                    {
-                                                                        <ChatReactionButton
-                                                                            isAuthor={isAuthor}
-                                                                            theme={this.props.settings.CHAT_SETTINGS.chat_message_theme}
-                                                                            scrollRef={this.props.innerRef}
-                                                                            reply={reply}
-                                                                            chatReactionAction={this.props.chatReactionV2Action}
-                                                                        />
-                                                                    }
-                                                                    {
-                                                                        !isNaN(reply.id) && reply.is_deleted === 0 &&
-                                                                        <MessageOptions
-                                                                            className={"chat-message-options"}
-                                                                            selectedChannel={this.props.selectedChannel}
-                                                                            isAuthor={isAuthor}
-                                                                            replyData={reply}
-                                                                            cbOnRemoveReply={this.handleRemoveReply}
-                                                                            onEditReply={this.handleEditReply}
-                                                                            onQuoteReply={this.handleQuoteReply}
-                                                                            cbSetReminderPopUp={this.props.cbSetReminderPopUp}
-                                                                            slugs={this.props.sharedSlugs}
-                                                                            onForwardMessage={this.props.onForwardMessage}
-                                                                        />
-                                                                    }
-                                                                </ChatActionsContainer>
-
                                                                 <ChatBubbleQuoteDiv
                                                                     //className={`chat-bubble-quote-div ${animation ? isAuthor ? "animated fadeInRightBig" : "animated fadeInLeftBig" : ""}`}
+                                                                    isAuthor={isAuthor}
                                                                     className={`chat-bubble-quote-div`}
                                                                 >
                                                                     <ChatBubble
@@ -1060,7 +1050,35 @@ class ChatMessages extends React.PureComponent {
                                                                         handleMessageRefChange={this.handleMessageRefChange}
                                                                         addMessageRef={this.getLoadRef(reply.id)}
                                                                         {...this.props}
-                                                                    />
+                                                                    ><ChatActionsContainer
+                                                                        isAuthor={isAuthor}
+                                                                        className="chat-actions-container"
+                                                                    >
+                                                                        {
+                                                                            <ChatReactionButton
+                                                                                isAuthor={isAuthor}
+                                                                                theme={this.props.settings.CHAT_SETTINGS.chat_message_theme}
+                                                                                scrollRef={this.props.innerRef}
+                                                                                reply={reply}
+                                                                                chatReactionAction={this.props.chatReactionV2Action}
+                                                                            />
+                                                                        }
+                                                                        {
+                                                                            !isNaN(reply.id) && reply.is_deleted === 0 &&
+                                                                            <MessageOptions
+                                                                                className={"chat-message-options"}
+                                                                                selectedChannel={this.props.selectedChannel}
+                                                                                isAuthor={isAuthor}
+                                                                                replyData={reply}
+                                                                                cbOnRemoveReply={this.handleRemoveReply}
+                                                                                onEditReply={this.handleEditReply}
+                                                                                onQuoteReply={this.handleQuoteReply}
+                                                                                cbSetReminderPopUp={this.props.cbSetReminderPopUp}
+                                                                                slugs={this.props.sharedSlugs}
+                                                                                onForwardMessage={this.props.onForwardMessage}
+                                                                            />
+                                                                        }
+                                                                    </ChatActionsContainer></ChatBubble>
                                                                     {
                                                                         reply.reactions.length > 0 &&
                                                                         <ChatReactions
@@ -1085,7 +1103,7 @@ class ChatMessages extends React.PureComponent {
                                                                 {
                                                                     !isAuthor && showAvatar && !isBot &&
                                                                     <StyledAvatar
-                                                                        userId={reply.user.id}
+                                                                        id={reply.user.id}
                                                                         imageLink={reply.user.profile_image_link}
                                                                         name={reply.user.name}
                                                                     />
