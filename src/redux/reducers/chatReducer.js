@@ -290,7 +290,7 @@ export default function (state = INITIAL_STATE, action) {
                 state.selectedChannel.replies.forEach(rep => {
                     if (rep.reference_id === action.data.reply.reference_id) {
                         haveReference = true;
-
+                        return
                     }
                 });
             }
@@ -300,7 +300,14 @@ export default function (state = INITIAL_STATE, action) {
                 channel = {
                     ...channel,
                     is_hidden: 0,
-                    replies: [...channel.replies, action.data.reply],
+                    replies: haveReference ? channel.replies.map(r => {
+                                if (r.id === action.data.reply.reference_id) {
+                                    return action.data.reply;
+                                } else {
+                                    return r;
+                                }
+                            }) 
+                        : [...channel.replies, action.data.reply],
                     last_visited_at_timestamp: getCurrentTimestamp(),
                     last_reply: action.data.last_reply,
                 };
