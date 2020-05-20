@@ -43,13 +43,13 @@ const CompanyHeaderPanel = (props) => {
 
     useEffect(() => {
         const body = document.body;
-        body.classList.add("stretch-layout");
         body.classList.add("navigation-toggle-one");
 
-        const mode = 1;
-        dispatch(
-            setNavMode({mode: mode < 0 ? 2 : mode}),
-        );
+        if(match.path === "/people") {
+            body.classList.remove("stretch-layout");
+        } else {
+            body.classList.add("stretch-layout");
+        }
     }, [match.path, dispatch]);
 
     return (

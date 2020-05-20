@@ -6,7 +6,7 @@ const Wrapper = styled.form`
 
 const SearchForm = (props) => {
 
-    const {className = "", onChange, onClick, placeholder = "Chat search"} = props;
+    const {className = "", onChange, onClick, placeholder = "Search"} = props;
 
     return (
         <Wrapper className={`${className}`}>

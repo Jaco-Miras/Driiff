@@ -39,7 +39,7 @@ const ChatContactsList = props => {
                 createNewChat({
                     title: "",
                     type: "person",
-                    recipient_ids: channel.members,
+                    recipient_ids: [channel.members[0].id],
                 }, (err, res) => {
                     if (err)
                         console.log(err);
@@ -103,15 +103,11 @@ const ChatContactsList = props => {
             return a.created_at > b.created_at;
         })
         .filter(c => {
-            if (c.is_archived) {
+            if (c.is_archived || c.is_hidden) {
                 return false;
             }
 
-            if (["TOPIC", "POST"].includes(c.type)) {
-                return false;
-            }
-
-            if (c.members.length > 2) {
+            if (["TOPIC", "POST", "GROUP", "COMPANY", "PERSONAL_BOT"].includes(c.type)) {
                 return false;
             }
 
@@ -119,23 +115,13 @@ const ChatContactsList = props => {
                 return false;
             }
 
-            if (c.title !== "PERSONAL_BOT") {
-                const recipient = c.members.filter(m => m.id !== user.id)[0];
-                if (recipient.id) {
-                    if (recipients.includes(recipient.id)) {
-                        return false;
-                    } else {
-                        recipients.push(recipient.id);
-                    }
+            const recipient = c.members.filter(m => m.id !== user.id)[0];
+            if (recipient.id) {
+                if (recipients.includes(recipient.id)) {
+                    return false;
                 } else {
-                    if (recipients.includes(recipient)) {
-                        return false;
-                    } else {
-                        recipients.push(recipient);
-                    }
+                    recipients.push(recipient.id);
                 }
-            } else {
-                return false;
             }
 
             if (search !== "") {

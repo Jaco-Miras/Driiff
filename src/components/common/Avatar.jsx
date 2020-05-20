@@ -9,6 +9,8 @@ import defaultIcon from "../../assets/icon/user/avatar/l/no_outline.png";
 import botIcon from "../../assets/img/gripp-bot.png";
 
 const Wrapper = styled.div`
+    position: relative;
+    
     .react-skeleton-load {
         height: 100% !important;
         width: 100% !important;
@@ -17,6 +19,17 @@ const Wrapper = styled.div`
 
 const Image = styled.img`
     display: ${props => props.display ? "inherit" : "none"};
+`;
+
+const Initials = styled.span`
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    height: 20px;
+    text-align: center;
 `;
 
 const Avatar = forwardRef((props, ref) => {
@@ -34,7 +47,6 @@ const Avatar = forwardRef((props, ref) => {
     } = props;
 
     const history = useHistory();
-    const user = useSelector(state => state.session.user);
     const onlineUsers = useSelector(state => state.users.onlineUsers);
     const isOnline = onlineUsers.filter(ou => ou.user_id === userId).length ? true : false;
 
@@ -87,7 +99,7 @@ const Avatar = forwardRef((props, ref) => {
         }
         {
             showInitials ?
-                <span>{handleInitials(name).substring(0, 2)}</span>
+                <Initials>{handleInitials(name).substring(0, 2)}</Initials>
                 :
                 <Image
                     display={isLoaded}

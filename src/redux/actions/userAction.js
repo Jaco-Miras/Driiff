@@ -5,6 +5,7 @@ import {
     getMentions as getMentionsService,
     getOnlineUsers as getOnlineUsersService,
     getUser as getUserService,
+    getUsers as getUsersService,
     googleLogin as googleLoginService,
     login as loginService,
     logout as logoutService,
@@ -108,6 +109,16 @@ export function checkDriffUserEmail(payload, callback) {
         "CHECK_DRIFF_EMAIL_START",
         "CHECK_DRIFF_EMAIL_SUCCESS",
         "CHECK_DRIFF_EMAIL_FAILURE",
+        callback,
+    );
+}
+
+export function getUsers(payload, callback) {
+    return dispatchActionToReducer(
+        getUsersService(payload),
+        "GET_USERS_START",
+        "GET_USERS_SUCCESS",
+        "GET_USERS_FAIL",
         callback,
     );
 }

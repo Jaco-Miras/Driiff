@@ -7,6 +7,8 @@ import ChatInput from "../../forms/ChatInput";
 import ChatQuote from "../../list/chat/ChatQuote";
 
 const Wrapper = styled.div`
+    position: relative;
+    z-index: 100;
 `;
 
 const ArchivedDiv = styled.div`

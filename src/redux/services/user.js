@@ -1,3 +1,4 @@
+import {objToUrlParams} from "../../helpers/commonFunctions";
 import {getAPIUrl} from "../../helpers/slugHelper";
 import {apiCall, apiNoTokenCall} from "./service";
 
@@ -150,13 +151,6 @@ export function trustDevice(payload = {}) {
         method: "POST",
         url: "/v1/trusted",
         data: payload,
-    });
-}
-
-export function getUsers() {
-    return apiCall({
-        method: "GET",
-        url: `/users`,
     });
 }
 
@@ -420,5 +414,13 @@ export function getOnlineUsers(payload) {
         method: "GET",
         url: `/v2/users-online`,
         data: payload,
+    });
+}
+
+export function getUsers(payload = {}) {
+    let url = `/v1/users?${objToUrlParams(payload)}`;
+    return apiCall({
+        method: "GET",
+        url: url,
     });
 }

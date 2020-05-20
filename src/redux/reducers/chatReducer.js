@@ -21,10 +21,15 @@ export default function (state = INITIAL_STATE, action) {
 
     switch (action.type) {
         case "GET_GLOBAL_RECIPIENTS_SUCCESS": {
-            const results = action.data.result.map(ac => {
+            let channels = state.channels;
+            action.data.result.forEach((ac, index) => {
                 if (ac.type === "USER") {
                     ac.type = "DIRECT";
-                    ac.members = [ac.id];
+                    ac.members = [{
+                        id: ac.id,
+                        name: ac.name,
+                        profile_image_link: ac.profile_image_link,
+                    }];
                     ac.replies = [];
                     ac.add_user = 1;
                     ac.profile = {
@@ -50,7 +55,8 @@ export default function (state = INITIAL_STATE, action) {
                     }
                 }
 
-                return {
+                channels[ac.key_id] = {
+                    ...channels[ac.key_id],
                     ...ac,
                     id: ac.key_id,
                     title: ac.name,
@@ -61,42 +67,42 @@ export default function (state = INITIAL_STATE, action) {
             });
             return {
                 ...state,
-                channels: {
-                    ...state.channels,
-                    ...convertArrayToObject(results, "id"),
-                },
+                channels: channels,
             };
         }
         case "DELETE_ADD_NEW_CHAT_CHANNEL":
             let channel = state.channels;
 
-            delete channel[action.data.old_id];
+            delete channel[action.data.key_id];
 
-            channel[action.data.id] = action.data;
+            channel[action.data.id] = {
+                ...channel[action.data.id],
+                ...action.data,
+            };
 
             return {
                 ...state,
                 channels: channel,
             };
         case "GET_CHANNELS_SUCCESS": {
-            let results = action.data.results.filter(r => {
+            let channels = state.channels;
+            action.data.results.filter(r => {
                 if (state.selectedChannel && state.selectedChannel.id === r.id) return false;
                 else return true;
-            }).map(r => {
-                return {
+            }).forEach((r, i) => {
+                channels[r.id] = {
+                    ...channels[r.id],
                     ...r,
                     hasMore: true,
                     skip: 0,
                     replies: [],
                     selected: false,
-                };
+                }
             });
+
             return {
                 ...state,
-                channels: {
-                    ...state.channels,
-                    ...convertArrayToObject(results, "id"),
-                },
+                channels: channels,
             };
         }
         case "UPDATE_CHANNEL_REDUCER": {
