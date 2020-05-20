@@ -45,7 +45,7 @@ const ChatSidebarPanel = (props) => {
     return (
         <Wrapper className={`chat-sidebar ${className}`}>
             <div className="chat-sidebar-header">
-                <Search onChange={onSearchChange} onClick={handleSearch}/>
+                <Search onChange={onSearchChange} onClick={handleSearch} placeholder="Chat search" />
                 <ul ref={ref.navTab} className="nav nav-tabs" role="tablist">
                     <li className="nav-item">
                         <span className="nav-link active" id="pills-home-tab" data-toggle="pill"

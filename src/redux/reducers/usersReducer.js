@@ -1,5 +1,3 @@
-import {convertArrayToObject} from "../../helpers/arrayHelper";
-
 const INITIAL_STATE = {
     users: {},
     getUserFilter: {

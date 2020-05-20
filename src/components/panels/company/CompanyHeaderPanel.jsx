@@ -2,7 +2,6 @@ import React, {useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {useRouteMatch} from "react-router-dom";
 import styled from "styled-components";
-import {setNavMode} from "../../../redux/actions/globalActions";
 import {Avatar, NavLink, SvgIconFeather} from "../../common";
 
 const NavBar = styled.ul`
@@ -45,7 +44,7 @@ const CompanyHeaderPanel = (props) => {
         const body = document.body;
         body.classList.add("navigation-toggle-one");
 
-        if(match.path === "/people") {
+        if (match.path === "/people") {
             body.classList.remove("stretch-layout");
         } else {
             body.classList.add("stretch-layout");
