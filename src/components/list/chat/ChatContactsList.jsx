@@ -170,7 +170,7 @@ const ChatContactsList = props => {
                                     <ChannelIcon channel={channel}/>
                                 </div>
                                 <div>
-                                    <h6 className="mb-1">{channel.title}</h6>
+                                    <h6 className="mb-1">{channel.title} - {channel.id} - {channel.type}</h6>
                                     <div className="small text-muted"></div>
                                 </div>
                                 <div className="text-right ml-auto">
