@@ -11,7 +11,7 @@ const PickerContainer = styled.div`
     right: 5px;
     top: ${props => props.orientation === "bottom" ? "75px" : null};
     z-index: 9999;
-    background-color: #fff;
+    background-color: transparent;
 `;
 
 const SwitchButton = styled.div`

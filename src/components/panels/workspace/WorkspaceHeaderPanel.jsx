@@ -39,16 +39,19 @@ const WorspaceHeaderPanel = (props) => {
                 <ul className="navbar-nav">
                     <li className="nav-item">
                         <a href="/" className="nav-link dropdown-toggle" data-toggle="dropdown">
-                            <img className="mr-2" src="/assets/media/image/flags/262-united-kingdom.png" alt="flag"
+                            <img className="mr-2"
+                                 src={require("../../../assets/media/image/flags/262-united-kingdom.png")} alt="flag"
                                  width="18"/> English
                         </a>
                         <div className="dropdown-menu">
                             <a href="/" className="nav-link dropdown-toggle" data-toggle="dropdown">
-                                <img className="mr-2" src="/assets/media/image/flags/262-united-kingdom.png" alt="flag"
+                                <img className="mr-2" src={require("../../../assets/media/image/flags/262-united-kingdom.png")}
+                                     alt="flag"
                                      width="18"/> English
                             </a>
                             <a href="/" className="dropdown-item">
-                                <img src="assets/media/image/flags/195-netherlands.png" className="mr-2" alt="flag"
+                                <img src={require("../../../assets/media/image/flags/195-netherlands.png")} className="mr-2"
+                                     alt="flag"
                                      width="18"/>
                                 Dutch
                             </a>
@@ -61,9 +64,7 @@ const WorspaceHeaderPanel = (props) => {
                         </a>
                     </li>
                     <li className="nav-item dropdown">
-                        <a href="/" className="nav-link" title="User menu" data-toggle="dropdown">
-                            <Avatar userId={user.id} name={user.name} imageLink={user.profile_image_link}/>
-                        </a>
+                        <Avatar userId={user.id} name={user.name} imageLink={user.profile_image_link}/>
                         <div className="dropdown-menu dropdown-menu-right dropdown-menu-big">
                             <div id="ascrail2003" className="nicescroll-rails nicescroll-rails-vr"
                                  styles="width: 8px; z-index: 1000; cursor: default; position: absolute; top: 65.8px; left: 292px; height: 299px; display: none;">

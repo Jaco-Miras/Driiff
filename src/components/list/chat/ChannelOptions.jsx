@@ -502,7 +502,7 @@ const ChannelOptions = props => {
                 {
                     (channel.type !== "PERSONAL_BOT" || channel.type !== "COMPANY") &&
                     <CloseBtn onClick={handleShowArchiveConfirmation}>
-                        {channel.is_archived === 0 ? `Archive` : "Unacrhive"}
+                        {channel.is_archived === 0 ? `Archive` : "Unarchive"}
                     </CloseBtn>
                 }
             </MoreTooltip>
