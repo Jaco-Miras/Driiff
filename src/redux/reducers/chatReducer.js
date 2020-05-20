@@ -659,6 +659,32 @@ export default function (state = INITIAL_STATE, action) {
                 channelDrafts: channelDrafts,
             };
         }
+        case "INCOMING_UPDATED_CHANNEL_DETAIL": {
+            let channel = null;
+            if (Object.keys(state.channels).length > 0 && state.channels.hasOwnProperty(action.data.id)) {
+                channel = {...state.channels[action.data.id]};
+                channel = {
+                    ...channel,
+                    members: action.data.members,
+                    title: action.data.title,
+                    replies: [...channel.replies, action.data.message],
+                };
+            }
+            return {
+                ...state,
+                channels: channel !== null ?
+                    {
+                        ...state.channels,
+                        [action.data.id]: channel,
+                    }
+                    : state.channels,
+                selectedChannel: state.selectedChannel && state.selectedChannel.id === action.data.id ?
+                    {
+                        ...channel,
+                    }
+                    : state.selectedChannel,
+            };
+        }
         default:
             return state;
     }

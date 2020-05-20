@@ -21,6 +21,7 @@ import {
     incomingChatMessageReaction,
     incomingDeletedChatMessage,
     incomingUpdatedChatMessage,
+    incomingUpdatedChannelDetail,
     markAllMessagesAsRead,
     updateChannelReducer,
     updateMemberTimestamp,
@@ -552,7 +553,7 @@ class Socket extends PureComponent {
                         quote: null,
                     },
                 };
-                this.props.incomingUpdatedChatChannelNameAction(data);
+                this.props.incomingUpdatedChannelDetail(data);
             })
             .listen(".member-update-timestamp", e => {
                 //console.log("seen member", e);
@@ -1294,6 +1295,7 @@ function mapDispatchToProps(dispatch) {
         incomingChatMessageReaction: bindActionCreators(incomingChatMessageReaction, dispatch),
         incomingUpdatedChatMessage: bindActionCreators(incomingUpdatedChatMessage, dispatch),
         incomingDeletedChatMessage: bindActionCreators(incomingDeletedChatMessage, dispatch),
+        incomingUpdatedChannelDetail: bindActionCreators(incomingUpdatedChannelDetail, dispatch),
         // logoutAction: bindActionCreators(logout, dispatch),
         // simpleNewNotificationSocketAction: bindActionCreators(simpleNewNotificationSocket, dispatch),
         // getNotificationsAction: bindActionCreators(getNotifications, dispatch),

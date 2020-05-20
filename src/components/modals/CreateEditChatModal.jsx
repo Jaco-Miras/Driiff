@@ -1,31 +1,34 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
-import { Button, FormFeedback, Label, Input, Modal, ModalBody, ModalHeader } from "reactstrap";
+import { Button, Label, Input, InputGroup, Modal, ModalBody, ModalHeader } from "reactstrap";
 import Select, {components} from "react-select";
 import { clearModal } from "../../redux/actions/globalActions";
 import Avatar from "../common/Avatar";
+import { editChannelDetail } from "../../redux/actions/chatActions";
 
 const CreateEditChatModal = props => {
 
-    const type = "chat_create_edit"
-    const mode = "edit"
-    //const { type, mode } = props.data;
+    const { type, mode } = props.data;
 
     const dispatch = useDispatch();
     const [modal, setModal] = useState(true);
     const users = useSelector(state => state.users.mentions);
-    const [selectedUsers, setSelectedUsers] = useState([])
+    const channel = useSelector(state => state.chat.selectedChannel);
+    const [selectedUsers, setSelectedUsers] = useState(channel.members.map(m =>{
+        return {
+            ...m,
+            value: m.id,
+            label: m.first_name
+        }
+    }));
+    const [inputValue, setInputValue] = useState(channel.title);
 
     const toggle = () => {
         setModal(!modal);
         dispatch(
             clearModal({type: type}),
         );
-    };
-
-    const handleConfirm = () => {
-        toggle();
     };
 
     const WrapperDiv = styled.div`
@@ -121,19 +124,57 @@ const CreateEditChatModal = props => {
     })
 
     const handleSelect = e => {
-        console.log(e)
-        setSelectedUsers(e)
-    }
+        setSelectedUsers(e);
+    };
+
+    const handleInputChange = e => {
+        setInputValue(e.target.value)
+    };
+
+    const handleConfirm = () => {
+        const removed_members = channel.members.filter(m => {
+            let userFound = false
+            selectedUsers.forEach(u => {
+                if (u.id === m.id) {
+                    userFound = true
+                    return
+                }
+            })
+            return !userFound
+        }).map(m => m.id);
+
+        const added_members = selectedUsers.filter(u => {
+            let userFound = false
+            channel.members.forEach(m => {
+                if (m.id === u.id) {
+                    userFound = true
+                    return
+                }
+            })
+            return !userFound
+        }).map(m => m.id);
+
+        let payload = {
+            channel_name: inputValue.trim(),
+            channel_id: channel.id,
+            remove_member_ids: removed_members,
+	        add_member_ids: added_members
+        };
+    
+        dispatch(editChannelDetail(payload));
+        toggle();
+    };
 
     return (
+        
         <Modal isOpen={modal} toggle={toggle} centered size={"md"}>
             <ModalHeader toggle={toggle}>{mode === "edit" ? "Edit chat" : "New group chat"}</ModalHeader>
             <ModalBody>
-                <WrapperDiv>
-                    <Label for="chat">Chat title</Label>
-                    <Input valid />
-                    {/* <FormFeedback>Sweet! that name is available</FormFeedback> */}
-                </WrapperDiv>
+                <InputGroup>
+                    <Label for="chat" style={{minWidth: "90px", margin: "0 20px 0 0", alignSelf: "center"}}>Chat title</Label>
+                    <Input style={{borderRadius: "5px"}} defaultValue={mode === "edit" ? channel.title : ""} onChange={handleInputChange}/>
+                </InputGroup>
+            
                 <WrapperDiv>
                     <Label for="chat">People</Label>
                     <Select
@@ -155,4 +196,4 @@ const CreateEditChatModal = props => {
     );
 };
 
-export default React.memo(CreateEditChatModal);
+export default CreateEditChatModal;

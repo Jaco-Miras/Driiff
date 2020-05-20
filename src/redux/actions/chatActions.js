@@ -4,6 +4,7 @@ import {
     createChatMessage as createChatMessageService,
     createNewChat as createNewChatService,
     deleteChatMessage as deleteChatMessageService,
+    editChannelDetail as editChannelDetailService,
     getChannel as getChannelService,
     getChannelDrafts as getChannelDraftsService,
     getChannels as getChannelsService,
@@ -338,6 +339,24 @@ export function createNewChat(payload, callback) {
 export function deleteAddNewChatChannel(payload, callback) {
     return SimpleDispatchActionToReducer(
         "DELETE_ADD_NEW_CHAT_CHANNEL",
+        payload,
+        callback,
+    );
+}
+
+export function editChannelDetail(payload, callback) {
+    return dispatchActionToReducer(
+        editChannelDetailService(payload),
+        "EDIT_CHANNEL_DETAIL_START",
+        "EDIT_CHANNEL_DETIL_SUCCESS",
+        "EDIT_CHANNEL_DETAIL_FAILURE",
+        callback,
+    );
+}
+
+export function incomingUpdatedChannelDetail(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "INCOMING_UPDATED_CHANNEL_DETAIL",
         payload,
         callback,
     );

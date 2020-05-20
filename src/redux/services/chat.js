@@ -168,3 +168,12 @@ export function createNewChat(payload) {
         data: payload,
     });
 }
+
+export function editChannelDetail(payload) {
+    let url = `/v2/chat-channel/update-name`;
+    return apiCall({
+        method: "PUT",
+        url: url,
+        data: payload,
+    });
+}

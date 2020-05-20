@@ -17,15 +17,16 @@ const useQuillInput = (callback, quillRef) => {
     };
 
     useEffect(() => {
-        const handleReplyBoxKeyDown = (e) => {
-            let f = document.querySelector(":focus");
-            if (f === null) {
-                if (quillRef.current) quillRef.current.focus();
-            }
-        };
-        document.addEventListener("keydown", handleReplyBoxKeyDown, true);
+        // temporarily remove due to issues
+        // const handleReplyBoxKeyDown = (e) => {
+        //     let f = document.querySelector(":focus");
+        //     if (f === null) {
+        //         if (quillRef.current) quillRef.current.focus();
+        //     }
+        // };
+        // document.addEventListener("keydown", handleReplyBoxKeyDown, true);
 
-        return () => document.removeEventListener("keydown", handleReplyBoxKeyDown, true);
+        // return () => document.removeEventListener("keydown", handleReplyBoxKeyDown, true);
     }, []);
 
     useEffect(() => {

@@ -15,6 +15,7 @@ export {
     getChannelDrafts,
     getGlobalRecipients,
     createNewChat,
+    editChannelDetail,
 } from "./chat";
 
 export {
