@@ -58,6 +58,7 @@ const ChatFooterPanel = (props) => {
     const pickerRef = useRef();
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
     const [selectedEmoji, setSelectedEmoji] = useState(null);
+    const [selectedGif, setSelectedGif] = useState(null);
 
     const selectedChannel = useSelector(state => state.chat.selectedChannel);
 
@@ -71,11 +72,18 @@ const ChatFooterPanel = (props) => {
 
     const onSelectEmoji = (e) => {
         setSelectedEmoji(e);
-        //setShowEmojiPicker(false);
+    };
+
+    const onSelectGif = (e) => {
+        setSelectedGif(e);
     };
 
     const onClearEmoji = () => {
         setSelectedEmoji(null);
+    };
+
+    const onClearGif = () => {
+        setSelectedGif(null);
     };
 
     return (
@@ -96,8 +104,10 @@ const ChatFooterPanel = (props) => {
                         <React.Fragment>
                             <IconButton onClick={handleShowEmojiPicker} icon="smile"/>
                             <ChatInputContainer className="flex-grow-1">
-                                <ChatInput selectedEmoji={selectedEmoji} onClearEmoji={onClearEmoji}
-                                           dropAction={dropAction}/>
+                                <ChatInput
+                                    selectedGif={selectedGif} onClearGif={onClearGif}
+                                    selectedEmoji={selectedEmoji} onClearEmoji={onClearEmoji}
+                                    dropAction={dropAction}/>
                             </ChatInputContainer>
                             <div className="chat-footer-buttons d-flex">
                                 <IconButton onClick={handleSend} icon="send"/>
@@ -110,6 +120,7 @@ const ChatFooterPanel = (props) => {
                     <StyledPickerEmoji
                         handleShowEmojiPicker={handleShowEmojiPicker}
                         onSelectEmoji={onSelectEmoji}
+                        onSelectGif={onSelectGif}
                         orientation={"top"}
                         ref={pickerRef}
                     />

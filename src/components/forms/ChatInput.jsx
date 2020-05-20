@@ -68,7 +68,7 @@ const StyledQuillEditor = styled(QuillEditor)`
 /***  Commented out code are to be visited/refactored ***/
 const ChatInput = props => {
 
-    const {selectedEmoji, onClearEmoji, dropAction} = props;
+    const {selectedEmoji, onClearEmoji, selectedGif, onClearGif, dropAction} = props;
     const dispatch = useDispatch();
     const reactQuillRef = useRef();
     const selectedChannel = useSelector(state => state.chat.selectedChannel);
@@ -413,6 +413,17 @@ const ChatInput = props => {
             onClearEmoji();
         }
     }, [selectedEmoji]);
+
+    useEffect( () => {
+        if(selectedGif) {
+            const editor = reactQuillRef.current.getEditor();
+            reactQuillRef.current.focus();
+            const cursorPosition = editor.getSelection().index;
+            editor.insertEmbed(cursorPosition, "image", selectedGif.images.downsized.url);
+            editor.setSelection(cursorPosition + 5);
+            onClearGif();
+        }
+    }, [selectedGif])
 
     useEffect(() => {
         if (sendButtonClicked) {
