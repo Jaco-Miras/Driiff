@@ -124,7 +124,7 @@ const ChatBubbleContainer = styled.div`
     }
     span.is-deleted {
         font-style: italic;
-        color: #9d9d9d;
+        color: #ffffffe6;
     }
     .mention {
         // background-image: linear-gradient(105deg,#46598d, #4f99a6);
@@ -139,8 +139,8 @@ const ChatBubbleContainer = styled.div`
         &[data-value="All"],
         &.is-author {
             box-shadow: none;
-            padding: 5px;
-            border-radius: 30px;
+            padding: 0 4px;
+            border-radius: 8px;
             color: #fff;
             display: inline-block;
             width: auto;
@@ -164,7 +164,7 @@ const ChatBubbleContainer = styled.div`
 
 const QuoteContainer = styled.div`
   background: ${props => (props.isAuthor ? props.theme.self.chat_bubble_quote_background_color : props.theme.others.chat_bubble_quote_background_color)};
-  background: #fff3;
+  background: #8C3B9B;
   border-radius: 8px 8px 0 0;
   margin: -10px -15px 10px -15px;
   text-align: left;
@@ -174,6 +174,7 @@ const QuoteContainer = styled.div`
   cursor: pointer;
   cursor: hand;
   max-width: ${props => props.hasFiles ? "210px" : "auto"};
+  color: rgba(255,255,255, 0.8);
   &:before {
     height: 70%;
     width: 5px;
@@ -183,7 +184,9 @@ const QuoteContainer = styled.div`
     display: inline-block;
     float: left;
     left: 5px;
+    opacity: 0.8;
   }
+
 `;
 const QuoteAuthor = styled.div`
   font-weight: 600;
@@ -358,7 +361,6 @@ const ChatContent = styled.div`
             text-overflow: ellipsis;
             white-space: pre-wrap;
             word-wrap: break-word;
-
             a {
                 color: rgba(18, 100, 163, 1);
                 overflow: hidden;
@@ -434,22 +436,28 @@ const StyledImageTextLink = styled(ImageTextLink)`
 `;
 
 const ForwardedSpan = styled.span`
-    color: #778899;
+    color: #AAB0C8;
     font-style: italic;
     display: flex;
     align-items: center;
-    padding: 0 5px;
-    font-size: .8rem;
+    font-size: 12px;
+    position: absolute;
+    top: calc(50% - 25px);
+    margin: 0 10px;
+    ${props => !props.isAuthor ? "left: 100%" : "right: 100%;"};
+    height: 25px;
+    white-space: nowrap;
     :before{
         content: "";
-        background-color: #778899;
+        background-color: #AAB0C8;
         mask-repeat: no-repeat;
         mask-size: 100%;
         mask-position: center;
-        width: 20px;
-        height: 20px;
+        width: 12px;
+        height: 12px;
         display: inline-block;
         margin-right: 2px;
+        margin-bottom: -2px;
         mask-image: url(${forwardIcon});
         transform: rotateY(180deg);
     }
@@ -853,7 +861,7 @@ const ChatBubble = forwardRef((props, ref) => {
                             </QuoteContainer>
                         }
                         {
-                            reply.is_transferred && <ForwardedSpan>Forwarded message</ForwardedSpan>
+                            reply.is_transferred && <ForwardedSpan isAuthor={isAuthor}>Forwarded message</ForwardedSpan>
                         }
                         {
                             !isAuthor && showAvatar &&

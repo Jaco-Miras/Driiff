@@ -76,17 +76,14 @@ const ChatReplyContainer = styled.div`
         color: transparent;
   }
   .mention {
-    background: rgb(189, 189, 189);
-    box-shadow: none;
-    padding: 5px;
-    border-radius: 30px;
-    color: #fff;
+    border-radius: 8px;
+    background: #7A1B8B;
     display: inline-block;
     width: auto;
     height: auto;
   }
   .mention.is-author {
-    background-image: linear-gradient(105deg, #972c86, #794997);
+    background: #8C3B9B;
   }
 `;
 
@@ -173,7 +170,7 @@ const ChatActionsContainer = styled.div`
     flex-flow: ${props => (props.isAuthor ? "row-reverse" : "row")};
     flex-wrap: wrap;
     ${props => (props.isAuthor ? "margin-right: 10px" : "margin-left: 10px")};
-    min-width: 100px;
+    min-width: 150px;
     height: 100%;
     color: #a7abc3;
     background: #ffffff;
@@ -363,7 +360,17 @@ const ChatBubbleQuoteDiv = styled.div`
     object-fit: cover;
   }
   .edited-message{
-      color: #646464;
+    color: #AAB0C8;
+    font-style: italic;
+    display: flex;
+    align-items: center;
+    font-size: 12px;
+    position: absolute;
+    top: 50%;
+    margin: 0 10px;
+    height: 25px;
+    white-space: nowrap;
+    ${props => !props.isAuthor ? "left: 100%" : "right: 100%;"};
   }
   .chat-options {
     visibility: hidden;
