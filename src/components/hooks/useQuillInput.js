@@ -33,6 +33,7 @@ const useQuillInput = (callback, quillRef) => {
         if (previousChannel !== null && selectedChannel !== null) {
             if (previousChannel && previousChannel.id !== selectedChannel.id) {
                 handleClearInput();
+                quillRef.current.focus();
             }
         }
     }, [selectedChannel, previousChannel]);

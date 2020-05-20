@@ -139,47 +139,38 @@ export default function (state = INITIAL_STATE, action) {
             };
         }
         case "UPDATE_MEMBER_TIMESTAMP": {
-            let channel = state.channels[action.data.channel_id];
-            if (typeof channel !== "undefined") {
-                return {
-                    ...state,
-                    selectedChannel: state.selectedChannel && state.selectedChannel.id === action.data.channel_id
-                        ? {
-                            ...state.selectedChannel,
-                            is_read: 1,
-                            members: state.selectedChannel.members.map(m => {
-                                if (m.id === action.data.member_id) {
-                                    return {
-                                        ...m,
-                                        last_visited_at: {
-                                            timestamp: action.data.timestamp + 3,
-                                        },
-                                    };
-                                } else return m;
-                            }),
-                        }
-                        : state.selectedChannel,
-                    channels: {
-                        ...state.channels,
-                        [action.data.channel_id]: {
-                            ...channel,
-                            is_read: 1,
-                            members: channel.members.map(m => {
-                                if (m.id === action.data.member_id) {
-                                    return {
-                                        ...m,
-                                        last_visited_at: {
-                                            timestamp: action.data.timestamp + 3,
-                                        },
-                                    };
-                                } else return m;
-                            }),
-                        },
-                    },
+            let channel = null;
+            if (Object.keys(state.channels).length > 0 && state.channels.hasOwnProperty(action.data.channel_id)){
+                channel = {...state.channels[action.data.channel_id]};
+                channel = {
+                    ...channel,
+                    is_read: 1,
+                    members: channel.members.map(m => {
+                        if (m.id === action.data.member_id) {
+                            return {
+                                ...m,
+                                last_visited_at: {
+                                    timestamp: action.data.timestamp + 3,
+                                },
+                            };
+                        } else return m;
+                    }),
                 };
-            } else {
-                return state;
             }
+            return {
+                ...state,
+                channels: channel !== null ?
+                    {
+                        ...state.channels,
+                        [action.data.channel_id]: channel,
+                    }
+                    : state.channels,
+                selectedChannel: state.selectedChannel && state.selectedChannel.id === action.data.channel_id ?
+                    {
+                        ...channel,
+                    }
+                    : state.selectedChannel,
+            };
         }
         case "ADD_TO_CHANNELS": {
 
@@ -234,24 +225,32 @@ export default function (state = INITIAL_STATE, action) {
             };
         }
         case "MARK_ALL_MESSAGES_AS_READ": {
-            let channel = {...state.channels[action.data.channel_id]};
-            channel = {
-                ...channel,
-                replies: channel.replies.map(r => {
-                    return {
-                        ...r,
-                        is_read: true,
-                    };
-                }),
-            };
+            let channel = null;
+            if (Object.keys(state.channels).length > 0 && state.channels.hasOwnProperty(action.data.channel_id)){
+                channel = {...state.channels[action.data.channel_id]};
+                channel = {
+                    ...channel,
+                    replies: channel.replies.map(r => {
+                        return {
+                            ...r,
+                            is_read: true,
+                        };
+                    }),
+                };
+            }
             return {
                 ...state,
+                channels: channel !== null ?
+                    {
+                        ...state.channels,
+                        [action.data.channel_id]: channel,
+                    }
+                    : state.channels,
                 selectedChannel: state.selectedChannel && state.selectedChannel.id === action.data.channel_id ?
-                    channel : state.selectedChannel,
-                channels: {
-                    ...state.channels,
-                    [action.data.channel_id]: channel,
-                },
+                    {
+                        ...channel,
+                    }
+                    : state.selectedChannel,
             };
         }
         case "UPDATE_UNREAD_CHAT_REPLIES": {

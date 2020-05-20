@@ -668,18 +668,19 @@ class ChatMessages extends React.PureComponent {
 
                 let hasUnreadMessage = selectedChannel.replies.filter(r => r.is_read === false).length > 0;
                 if (this.state.bottomRefInView && hasUnreadMessage && this.props.isBrowserActive && selectedChannel.is_read === 1) {
-                    markAllMessagesAsRead({channel_id: selectedChannel.id});
-                    markReadChannel({channel_id: selectedChannel.id}, (err, res) => {
-                        if (err) return;
-                        let updatedChannel = {
-                            ...selectedChannel,
-                            mark_new_messages_as_read: true,
-                            mark_unread: selectedChannel.mark_unread,
-                            total_unread: 0,
-                            minus_count: selectedChannel.total_unread,
-                        };
-                        updateUnreadChatReplies(updatedChannel);
-                    });
+                    console.log('mark read')
+                    // markAllMessagesAsRead({channel_id: selectedChannel.id});
+                    // markReadChannel({channel_id: selectedChannel.id}, (err, res) => {
+                    //     if (err) return;
+                    //     let updatedChannel = {
+                    //         ...selectedChannel,
+                    //         mark_new_messages_as_read: true,
+                    //         mark_unread: selectedChannel.mark_unread,
+                    //         total_unread: 0,
+                    //         minus_count: selectedChannel.total_unread,
+                    //     };
+                    //     updateUnreadChatReplies(updatedChannel);
+                    // });
 
                 }
 
