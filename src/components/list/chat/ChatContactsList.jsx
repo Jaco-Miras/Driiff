@@ -14,6 +14,16 @@ import ChannelIcon from "./ChannelIcon";
 const Wrapper = styled.div`
 `;
 
+const NewGroupButton = styled.div`
+    cursor: pointer;
+    cursor: hand;
+    
+    span {
+        position: relative;
+        top: 1px;
+    }
+`;
+
 const Contacts = styled.ul`
     li {
         cursor: pointer;
@@ -31,6 +41,10 @@ const ChatContactsList = props => {
     const channels = useSelector(state => state.chat.channels);
     const user = useSelector(state => state.session.user);
     const [oldChannel, setOldChannel] = useState(null);
+
+    const handleNewGroupChat = () => {
+
+    };
 
     const handleSelectChannel = (channel) => {
         if (channel.add_user) {
@@ -141,7 +155,12 @@ const ChatContactsList = props => {
 
     return (
         <Wrapper className={`chat-lists ${className}`}>
-            <p className="small mb-0">{sortedChannels.length} Contacts</p>
+            <div className="d-flex align-items-center">
+                <p className="small mb-0">{sortedChannels.length} Contacts</p>
+                <NewGroupButton className="small mb-0 text-right ml-auto" onClick={handleNewGroupChat}>
+                    <SvgIconFeather width={18} height={18} icon="plus"/> <span>New group chat</span>
+                </NewGroupButton>
+            </div>
             <Contacts className={`list-group list-group-flush`}>
                 {
                     sortedChannels.map((channel, k, arr) => {

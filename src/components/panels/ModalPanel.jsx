@@ -1,13 +1,7 @@
 import React from "react";
 import {useSelector} from "react-redux";
 import styled from "styled-components";
-import {
-    ChatForwardModal,
-    ChatReminderModal,
-    ConfirmationModal,
-    CreateEditChatModal,
-    FileUploadModal,
-} from "../modals";
+import {ChatForwardModal, ChatReminderModal, ConfirmationModal, CreateEditChatModal, FileUploadModal} from "../modals";
 
 const ModalPanelContainer = styled.div`
     // z-index: 7;

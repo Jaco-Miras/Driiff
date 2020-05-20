@@ -88,7 +88,7 @@ const Avatar = forwardRef((props, ref) => {
 
     return <Wrapper
         {...rest}
-        className={`avatar avatar-sm ${isOnline && "avatar-state-success"} ${className} ${isLoaded && "ico-avatar-loaded"}`}
+        className={`avatar avatar-sm ${isOnline && "avatar-state-success"} ${className} ${isLoaded && "ico-avatar-loaded"} ${showInitials === true && "border"}`}
         onClick={handleOnClick}>
         {
             isLoaded ?

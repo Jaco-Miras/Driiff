@@ -8,6 +8,8 @@ import ChatMembers from "../../list/chat/ChatMembers";
 import ChatTitleTyping from "../../list/chat/ChatTitleTyping";
 
 const Wrapper = styled.div`
+    position: relative;
+    z-index: 2;
 `;
 
 
@@ -17,6 +19,8 @@ const IconButton = styled(SvgIconFeather)`
     padding: 0px 12px;
     height: 30px;
     width: 40px;
+    cursor: pointer;
+    cursor: hand;    
 `;
 
 const ChatHeaderPanel = (props) => {
@@ -61,7 +65,7 @@ const ChatHeaderPanel = (props) => {
         };
 
         dispatch(
-            addToModals(payload)
+            addToModals(payload),
         );
     };
 
@@ -69,16 +73,18 @@ const ChatHeaderPanel = (props) => {
 
         let payload = {
             type: "chat_create_edit",
-            mode: "edit"
+            mode: "edit",
         };
 
         dispatch(
-            addToModals(payload)
+            addToModals(payload),
         );
-    }
+    };
 
     if (chatChannel === null)
         return null;
+
+    console.log(chatChannel.type);
 
     return (
         <Wrapper className={`chat-header border-bottom ${className}`}>
@@ -89,15 +95,20 @@ const ChatHeaderPanel = (props) => {
                 }
                 <div className="ml-auto">
                     <ul className="nav align-items-center">
-                        <li className="mr-4 d-sm-inline d-none">
-                            <IconButton icon={`edit-3`} onClick={handleShowChatEditModal}/>
-                        </li>
-                        <li className="mr-4 d-sm-inline d-none">
-                            <IconButton icon={`trash`} onClick={handleShowArchiveConfirmation}/>
-                        </li>
-                        <li className="ml-4 mobile-chat-close-btn">
-                            <IconButton icon={`x`}/>
-                        </li>
+                        {
+                            (["DIRECT", "PERSONAL_BOT", "COMPANY"].includes(chatChannel.type) === false) &&
+                            <>
+                                <li className="mr-4 d-sm-inline d-none">
+                                    <IconButton icon={`edit-3`} onClick={handleShowChatEditModal}/>
+                                </li>
+                                <li className="mr-4 d-sm-inline d-none">
+                                    <IconButton icon={`trash`} onClick={handleShowArchiveConfirmation}/>
+                                </li>
+                                <li className="ml-4 mobile-chat-close-btn">
+                                    <IconButton icon={`x`}/>
+                                </li>
+                            </>
+                        }
                     </ul>
                 </div>
             </div>

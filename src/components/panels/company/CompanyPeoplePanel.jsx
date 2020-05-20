@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import styled from "styled-components";
 import {getUsers} from "../../../redux/actions/userAction";
@@ -21,6 +21,9 @@ const CompanyPeoplePanel = (props) => {
     const users = useSelector(state => state.users.users);
     const userFilter = useSelector(state => state.users.getUserFilter);
     const [search, setSearch] = useState("");
+    const ref = {
+        search: useRef(),
+    };
 
     const handleSearchChange = (e) => {
         setSearch(e.target.value);
@@ -50,15 +53,16 @@ const CompanyPeoplePanel = (props) => {
             getUsers(userFilter),
         );
 
+        ref.search.current.focus();
+
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
-
 
     return (
         <Wrapper className={`container-fluid h-100 ${className}`}>
             <div className="card">
                 <div className="card-body">
-                    <Search placeholder="People search" onChange={handleSearchChange}/>
+                    <Search ref={ref.search} placeholder="People search" onChange={handleSearchChange} autoFocus/>
                     <div className="row">
                         {
                             userSort.map((user, id) => {

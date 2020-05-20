@@ -1,5 +1,4 @@
 // import {uniqBy} from "lodash";
-import {convertArrayToObject} from "../../helpers/arrayHelper";
 import {getCurrentTimestamp} from "../../helpers/dateFormatter";
 import {localizeDate} from "../../helpers/momentFormatJS";
 
@@ -97,7 +96,7 @@ export default function (state = INITIAL_STATE, action) {
                     skip: 0,
                     replies: [],
                     selected: false,
-                }
+                };
             });
 
             return {
@@ -654,7 +653,7 @@ export default function (state = INITIAL_STATE, action) {
                 .filter(item => {
                     return item.data.type === "channel";
                 })
-                .map((item, index) => {
+                .forEach((item, index) => {
                     channelDrafts[item.data.channel_id] = {
                         ...item.data,
                         draft_id: item.id,
