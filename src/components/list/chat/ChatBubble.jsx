@@ -123,7 +123,7 @@ const ChatBubbleContainer = styled.div`
     }
     span.is-deleted {
         font-style: italic;
-        color: #9d9d9d;
+        color: #ffffffe6;
     }
     .mention {
         // background-image: linear-gradient(105deg,#46598d, #4f99a6);
@@ -138,8 +138,8 @@ const ChatBubbleContainer = styled.div`
         &[data-value="All"],
         &.is-author {
             box-shadow: none;
-            padding: 5px;
-            border-radius: 30px;
+            padding: 0 4px;
+            border-radius: 8px;
             color: #fff;
             display: inline-block;
             width: auto;
@@ -163,7 +163,7 @@ const ChatBubbleContainer = styled.div`
 
 const QuoteContainer = styled.div`
   background: ${props => (props.isAuthor ? props.theme.self.chat_bubble_quote_background_color : props.theme.others.chat_bubble_quote_background_color)};
-  background: #fff3;
+  background: #8C3B9B;
   border-radius: 8px 8px 0 0;
   margin: -10px -15px 10px -15px;
   text-align: left;
@@ -173,6 +173,7 @@ const QuoteContainer = styled.div`
   cursor: pointer;
   cursor: hand;
   max-width: ${props => props.hasFiles ? "210px" : "auto"};
+  color: rgba(255,255,255, 0.8);
   &:before {
     height: 70%;
     width: 5px;
@@ -182,7 +183,9 @@ const QuoteContainer = styled.div`
     display: inline-block;
     float: left;
     left: 5px;
+    opacity: 0.8;
   }
+
 `;
 const QuoteAuthor = styled.div`
   font-weight: 600;
@@ -452,7 +455,8 @@ const StyledImageTextLink = styled(ImageTextLink)`
 `;
 
 const ForwardedSpan = styled.span`
-    color: #a7abc3;
+    color: #AAB0C8;
+    font-style: italic;
     position: absolute;
     top: -25px;
     left: 0;
@@ -463,7 +467,7 @@ const ForwardedSpan = styled.span`
         position: relative;
         top: 2px;
         margin-right: 5px;
-    }    
+    } 
 `;
 
 const ChatBubble = forwardRef((props, ref) => {
