@@ -431,6 +431,10 @@ const ChatInput = props => {
         }
     };
 
+    useEffect(() => {
+        reactQuillRef.current.focus();
+    }, [selectedChannel]);
+
     useSaveInput(handleClearQuillInput, text, textOnly, quillContents);
     useQuillInput(handleClearQuillInput, reactQuillRef);
     useDraft(loadDraftCallback, "channel", text, textOnly, draftId);

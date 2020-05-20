@@ -2,6 +2,10 @@ import {convertArrayToObject} from "../../helpers/arrayHelper";
 
 const INITIAL_STATE = {
     users: {},
+    getUserFilter: {
+        limit: 1000,
+        skip: 0,
+    },
     viewedProfile: null,
     onlineUsers: [],
     mentions: {},
@@ -10,9 +14,17 @@ const INITIAL_STATE = {
 export default (state = INITIAL_STATE, action) => {
     switch (action.type) {
         case "GET_MENTION_USERS_SUCCESS": {
+            let mentions = state.mentions;
+            action.data.result.map((item, index) => {
+                mentions[item.id] = {
+                    ...mentions[item.id],
+                    ...item,
+                };
+            });
+
             return {
                 ...state,
-                mentions: convertArrayToObject(action.data.result, "id"),
+                mentions: mentions,
             };
         }
         case "GET_ONLINE_USERS_SUCCESS": {
@@ -21,6 +33,23 @@ export default (state = INITIAL_STATE, action) => {
                 onlineUsers: action.data.result,
             };
         }
+        case "GET_USERS_SUCCESS":
+            let users = state.users;
+            action.data.users.map((item, index) => {
+                users[item.id] = {
+                    ...users[item.id],
+                    ...item,
+                };
+            });
+
+            return {
+                ...state,
+                users: users,
+                getUserFilter: {
+                    limit: 1000,
+                    skip: action.data.next_skip,
+                },
+            };
         default:
             return state;
     }

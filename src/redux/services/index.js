@@ -32,6 +32,7 @@ export {
     resetPassword,
     updatePassword,
     checkDriffUserEmail,
+    getUsers,
 } from "./user";
 
 export {

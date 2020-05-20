@@ -706,7 +706,7 @@ class ChatMessages extends React.PureComponent {
                         if (scrollC) scrollC.scrollIntoView(false);
                     }
                 } else if (selectedChannel.replies.length - prevProps.selectedChannel.replies.length === 1) {
-                    if (selectedChannel.last_reply.user && selectedChannel.last_reply.user.id === this.props.user.id) {
+                    if (selectedChannel.last_reply && selectedChannel.last_reply.user && selectedChannel.last_reply.user.id === this.props.user.id) {
                         this.chatBottomRef.current.scrollIntoView(false);
                     }
                 }
