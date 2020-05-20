@@ -129,12 +129,17 @@ const ChatContactsList = props => {
                 return false;
             }
 
-            const recipient = c.members.filter(m => m.id !== user.id)[0];
-            if (recipient.id) {
-                if (recipients.includes(recipient.id)) {
-                    return false;
-                } else {
-                    recipients.push(recipient.id);
+            /**
+             * c.members for add_user IS NOT THE USER ID
+             */
+            if(c.add_user !== 1) {
+                const recipient = c.members.filter(m => m.id !== user.id)[0];
+                if (recipient.id) {
+                    if (recipients.includes(recipient.id)) {
+                        return false;
+                    } else {
+                        recipients.push(recipient.id);
+                    }
                 }
             }
 

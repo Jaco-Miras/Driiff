@@ -148,25 +148,6 @@ const ChatBubbleContainer = styled.div`
 
     margin-top: ${props => ((props.showAvatar && props.isAuthor) && "20px")};
     ${"" /* background: ${props => ((props.isAuthor ) ? "red" : "blue")}; */}
-
-
-
-    &:before {
-        ${props => (props.showAvatar && "content: '';")};
-        border: 10px solid transparent;
-        border-right-color: transparent;
-        border-right-color: #f0f0f0;
-        position: absolute;
-        top: ${props => ((props.showAvatar && !props.isAuthor) ? "42px" : "8px")};;
-        left: 20px;
-        z-index: 1;
-        ${props => (props.isAuthor === true && `
-            left: auto;
-            right: -20px;
-            border-left-color: #7A1B8B;
-            border-right-color: transparent;
-        `)};
-    }
 `;
 const ChatActionsContainer = styled.div`
     display: flex;
@@ -428,10 +409,11 @@ const InfiniteScroll = styled.div`
 `;
 
 const StyledAvatar = styled(Avatar)`
-    align-self: flex-start;
-    margin-top: 4px;
+    align-self: flex-start;    
     width: 21px !important;
     height: 21px !important;
+    margin-top: ${props => props.isForwardedMessage === true ? "25px" : "4px" };
+    
     img {
         width: 21px !important;
         height: 21px !important;
@@ -1103,6 +1085,7 @@ class ChatMessages extends React.PureComponent {
                                                                 {
                                                                     !isAuthor && showAvatar && !isBot &&
                                                                     <StyledAvatar
+                                                                        isForwardedMessage={reply.is_transferred}
                                                                         id={reply.user.id}
                                                                         imageLink={reply.user.profile_image_link}
                                                                         name={reply.user.name}

@@ -30,6 +30,12 @@ export const SvgIconFeather = React.memo(React.forwardRef((props, ref) => {
                 <line x1="3" y1="18" x2="21" y2="18"></line>
             </>;
             break;
+        case "corner-up-right":
+            content = <>
+                <polyline points="15 14 20 9 15 4"></polyline>
+                <path d="M4 20v-7a4 4 0 0 1 4-4h12"></path>
+            </>;
+            break;
         case "arrow-left":
             content = <>
                 <line x1="19" y1="12" x2="5" y2="12"></line>

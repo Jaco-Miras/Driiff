@@ -10,13 +10,12 @@ import {withRouter} from "react-router-dom";
 import Skeleton from "react-skeleton-loader";
 import {bindActionCreators} from "redux";
 import styled from "styled-components";
-import forwardIcon from "../../../assets/icon/Icons_notification/Reply/l/active.svg";
 import {localizeDate} from "../../../helpers/momentFormatJS";
 import quillHelper from "../../../helpers/quillHelper";
 import {_t, getEmojiRegexPattern, stripGif} from "../../../helpers/stringFormatter";
 import {setSelectedChannel} from "../../../redux/actions/chatActions";
 // import {addFilesToView} from "../../../redux/actions/revampActions";
-import {ImageTextLink, SvgImage} from "../../common";
+import {ImageTextLink, SvgIconFeather, SvgImage} from "../../common";
 import MessageFiles from "./Files/MessageFiles";
 import Unfurl from "./Unfurl/Unfurl";
 
@@ -29,14 +28,13 @@ const ChatBubbleContainer = styled.div`
     border-radius: 8px;
     background: ${props => (props.isAuthor ? props.theme.self.chat_bubble_background_color : props.theme.others.chat_bubble_background_color)};
     text-align: left;
-    min-width: 0;
+    min-width: 159px;
     width: 100%;
     color: ${props => (props.isAuthor ? props.theme.self.chat_bubble_text_color : props.theme.others.chat_bubble_text_color)};
     font-size: .835rem;
     line-height: 1.5rem;
-
     overflow: visible;
-    // justify-content: space-between;
+    ${props => props.isForwardedMessage === true && "margin-top: 25px;" }
 
     &:focus {
         -webkit-box-shadow: 0 0 0 1px ${props => (props.isAuthor ? props.theme.self.chat_bubble_focus_border_color : props.theme.others.chat_bubble_focus_border_color)};
@@ -66,6 +64,7 @@ const ChatBubbleContainer = styled.div`
         top: -24px;
         left: 0;
         white-space: nowrap;
+        ${props => props.isForwardedMessage === true && "top: -40px;" }
     }
     span.emoticon-body {
         font-size: 35px;
@@ -343,6 +342,25 @@ const ChatContentClap = styled.div`
   }
 `;
 const ChatContent = styled.div`
+    &:before {
+        ${props => (props.showAvatar && "content: '';")};
+        border: 10px solid transparent;
+        border-right-color: transparent;
+        border-right-color: #f0f0f0;
+        position: absolute;
+        top: 8px;
+        left: -20px;
+        z-index: 1;
+        ${props => (props.isAuthor === true && `
+            left: auto;
+            right: -20px;
+            border-left-color: #7A1B8B;
+            border-right-color: transparent;
+        `)};            
+        width: 20px;
+        height: 20px;
+    }
+    
     .reply-author {
         // padding: ${props => props.isAuthor ? "0 10px 0 40px" : "0 40px 0 10px"};
         ${props => props.isAuthor ? "margin-left: 30px" : "margin-right: 30px"};
@@ -434,25 +452,18 @@ const StyledImageTextLink = styled(ImageTextLink)`
 `;
 
 const ForwardedSpan = styled.span`
-    color: #778899;
-    font-style: italic;
-    display: flex;
-    align-items: center;
-    padding: 0 5px;
-    font-size: .8rem;
-    :before{
-        content: "";
-        background-color: #778899;
-        mask-repeat: no-repeat;
-        mask-size: 100%;
-        mask-position: center;
-        width: 20px;
-        height: 20px;
-        display: inline-block;
-        margin-right: 2px;
-        mask-image: url(${forwardIcon});
-        transform: rotateY(180deg);
-    }
+    color: #a7abc3;
+    position: absolute;
+    top: -25px;
+    left: 0;
+    
+    svg {
+        width: 15px;
+        height: 15px;
+        position: relative;
+        top: 2px;
+        margin-right: 5px;
+    }    
 `;
 
 const ChatBubble = forwardRef((props, ref) => {
@@ -819,16 +830,22 @@ const ChatBubble = forwardRef((props, ref) => {
         tabIndex={reply.id}
         className={`chat-bubble ql-editor`}
         showAvatar={showAvatar}
-        //lastReply={lastReply}
         isAuthor={isAuthor}
+        isForwardedMessage={reply.is_transferred}
         theme={props.settings.CHAT_SETTINGS.chat_message_theme}>
         {
             <>
+                {
+                    reply.is_transferred &&
+                    <ForwardedSpan className="small">
+                        <SvgIconFeather icon="corner-up-right" />Forwarded message
+                    </ForwardedSpan>
+                }
                 <ChatContentClap
                     ref={addMessageRef ? loadRef : null}
                     className='chat-content-clap'
                     isAuthor={isAuthor}>
-                    <ChatContent className={`chat-content animated slower ${highlightedText ? "is-highlighted" : ""}`}>
+                    <ChatContent showAvatar={showAvatar} isAuthor={isAuthor} className={`chat-content animated slower ${highlightedText ? "is-highlighted" : ""}`}>
                         {
                             reply.quote && reply.quote.body && (reply.is_deleted === 0) &&
                             (reply.quote.user_id !== undefined || reply.quote.user !== undefined) &&
@@ -851,9 +868,6 @@ const ChatBubble = forwardRef((props, ref) => {
                                     dangerouslySetInnerHTML={{__html: replyQuoteBody.split("</p>")[0]}}
                                 ></QuoteContent>
                             </QuoteContainer>
-                        }
-                        {
-                            reply.is_transferred && <ForwardedSpan>Forwarded message</ForwardedSpan>
                         }
                         {
                             !isAuthor && showAvatar &&
