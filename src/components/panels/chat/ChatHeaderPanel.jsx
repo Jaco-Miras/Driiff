@@ -61,9 +61,21 @@ const ChatHeaderPanel = (props) => {
         };
 
         dispatch(
-            addToModals(payload),
+            addToModals(payload)
         );
     };
+
+    const handleShowChatEditModal = () => {
+
+        let payload = {
+            type: "chat_create_edit",
+            mode: "edit"
+        };
+
+        dispatch(
+            addToModals(payload)
+        );
+    }
 
     if (chatChannel === null)
         return null;
@@ -78,7 +90,7 @@ const ChatHeaderPanel = (props) => {
                 <div className="ml-auto">
                     <ul className="nav align-items-center">
                         <li className="mr-4 d-sm-inline d-none">
-                            <IconButton icon={`edit-3`}/>
+                            <IconButton icon={`edit-3`} onClick={handleShowChatEditModal}/>
                         </li>
                         <li className="mr-4 d-sm-inline d-none">
                             <IconButton icon={`trash`} onClick={handleShowArchiveConfirmation}/>

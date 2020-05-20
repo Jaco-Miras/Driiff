@@ -1,7 +1,13 @@
 import React from "react";
 import {useSelector} from "react-redux";
 import styled from "styled-components";
-import {ChatForwardModal, ChatReminderModal, ConfirmationModal, FileUploadModal} from "../modals";
+import {
+    ChatForwardModal,
+    ChatReminderModal,
+    ConfirmationModal,
+    CreateEditChatModal,
+    FileUploadModal,
+} from "../modals";
 
 const ModalPanelContainer = styled.div`
     // z-index: 7;
@@ -30,12 +36,13 @@ const ModalPanel = props => {
                                 return <ChatReminderModal key={modal.type} data={modal}/>;
                             case "file_upload":
                                 return <FileUploadModal key={modal.type} data={modal}/>;
+                            case "chat_create_edit":
+                                return <CreateEditChatModal key={modal.type} data={modal}/>;
                             default:
                                 return null;
                         }
                     })
                 }
-
             </ModalPanelContainer>
         );
     } else {
