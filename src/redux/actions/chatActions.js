@@ -13,6 +13,7 @@ import {
     getLastVisitedChannel as getLastVisitedChannelService,
     markReadChannel as markReadChannelService,
     markUnreadChannel as markUnreadChannelService,
+    searchExistingChat as searchExistingChatService,
     setChatReminder as setChatReminderService,
     updateChannel as updateChannelService,
     updateChatMessage as updateChatMessageService,
@@ -358,6 +359,24 @@ export function incomingUpdatedChannelDetail(payload, callback) {
     return SimpleDispatchActionToReducer(
         "INCOMING_UPDATED_CHANNEL_DETAIL",
         payload,
+        callback,
+    );
+}
+
+export function updateNewCreatedChannel(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "UPDATE_NEW_CREATED_CHANNEL",
+        payload,
+        callback,
+    );
+}
+
+export function searchExistingChat(payload, callback) {
+    return dispatchActionToReducer(
+        searchExistingChatService(payload),
+        "SEARCH_EXISTING_CHAT_START",
+        "SEARCH_EXISTING_CHAT_SUCCESS",
+        "SEARCH_EXISTING_CHAT_FAILURE",
         callback,
     );
 }

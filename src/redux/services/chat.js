@@ -177,3 +177,12 @@ export function editChannelDetail(payload) {
         data: payload,
     });
 }
+
+export function searchExistingChat(payload) {
+    let url = `/v2/search-post-channels`;
+    return apiCall({
+        method: "POST",
+        url: url,
+        data: payload,
+    });
+}

@@ -690,6 +690,19 @@ export default function (state = INITIAL_STATE, action) {
                     : state.selectedChannel,
             };
         }
+        case "UPDATE_NEW_CREATED_CHANNEL": {
+            let updatedChanels = {...state.channels}
+            delete updatedChanels[action.data.reference_id];
+
+            return {
+                ...state,
+                channels: {
+                    ...updatedChanels,
+                    [action.data.id]: action.data
+                },
+                selectedChannel: action.data
+            }
+        }
         default:
             return state;
     }

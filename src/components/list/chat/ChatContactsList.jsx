@@ -10,6 +10,7 @@ import {
 import {SvgIconFeather} from "../../common";
 import {useLoadChannels} from "../../hooks";
 import ChannelIcon from "./ChannelIcon";
+import { addToModals } from "../../../redux/actions/globalActions";
 
 const Wrapper = styled.div`
 `;
@@ -130,7 +131,7 @@ const ChatContactsList = props => {
             }
 
             const recipient = c.members.filter(m => m.id !== user.id)[0];
-            if (recipient.id) {
+            if (recipient && recipient.id) {
                 if (recipients.includes(recipient.id)) {
                     return false;
                 } else {
@@ -153,12 +154,24 @@ const ChatContactsList = props => {
             },
         );
 
+    const handleOpenGropupChatModal = () => {
+        let payload = {
+            type: "chat_create_edit",
+            mode: "new",
+        };
+
+        dispatch(
+            addToModals(payload),
+        );
+    }
+    
     return (
         <Wrapper className={`chat-lists ${className}`}>
             <div className="d-flex align-items-center">
                 <p className="small mb-0">{sortedChannels.length} Contacts</p>
                 <NewGroupButton className="small mb-0 text-right ml-auto" onClick={handleNewGroupChat}>
-                    <SvgIconFeather width={18} height={18} icon="plus"/> <span>New group chat</span>
+                    <SvgIconFeather width={18} height={18} icon="plus"/> 
+                    <span onClick={handleOpenGropupChatModal}>New group chat</span>
                 </NewGroupButton>
             </div>
             <Contacts className={`list-group list-group-flush`}>

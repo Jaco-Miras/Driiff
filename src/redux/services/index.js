@@ -16,6 +16,7 @@ export {
     getGlobalRecipients,
     createNewChat,
     editChannelDetail,
+    searchExistingChat,
 } from "./chat";
 
 export {
