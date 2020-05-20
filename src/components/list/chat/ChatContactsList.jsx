@@ -37,7 +37,7 @@ const ChatContactsList = props => {
             let old_channel = channel;
             dispatch(
                 createNewChat({
-                    title: null,
+                    title: "",
                     type: "person",
                     recipient_ids: channel.members,
                 }, (err, res) => {
