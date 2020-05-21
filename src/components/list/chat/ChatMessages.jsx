@@ -81,6 +81,8 @@ const ChatReplyContainer = styled.div`
     display: inline-block;
     width: auto;
     height: auto;
+    color: #fff;
+    padding: 2px 5px;
   }
   .mention.is-author {
     background: #8C3B9B;
