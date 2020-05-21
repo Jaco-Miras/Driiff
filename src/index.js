@@ -2,6 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import {Provider} from "react-redux";
 import {BrowserRouter} from "react-router-dom";
+import "toasted-notes/src/styles.css";
 import App from "./App";
 import "./assets/css/app.css";
 import store from "./redux/store/configStore";
