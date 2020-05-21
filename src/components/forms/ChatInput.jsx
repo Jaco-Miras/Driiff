@@ -15,11 +15,17 @@ import {
 import {deleteDraft} from "../../redux/actions/globalActions";
 import {useDraft, useQuillInput, useQuillModules, useSaveInput, useSelectQuote} from "../hooks";
 import QuillEditor from "./QuillEditor";
+import BodyMention from "../common/BodyMention";
+
+const Wrapper = styled.div`
+    border: 1px solid #afb8bd;
+    border-radius: 5px;
+`;
 
 const StyledQuillEditor = styled(QuillEditor)`
     &.chat-input {
-        border: 1px solid #afb8bd;
-        border-radius: 5px;
+        // border: 1px solid #afb8bd;
+        // border-radius: 5px;
         max-height: 130px;
         overflow: auto;
         overflow-x: hidden;
@@ -441,9 +447,43 @@ const ChatInput = props => {
         }
     };
 
-    // useEffect(() => {
-    //     reactQuillRef.current.focus();
-    // }, [selectedChannel]);
+    const handleAddMentionedUsers = users => {
+        
+        //@to do
+        // let memberPayload = {
+        //     channel_id: this.props.channelId,
+        //     recipient_ids: users.map(u => u.type_id),
+        // };
+        // this.props.addChatChannelMembersV2Action(memberPayload, (err, res) => {
+        //     // this.setState({sendingChannelMembers: false});
+        //     if (err) return;
+        //     let newMembers = users.map(user => {
+        //         return {
+        //             user: {
+        //                 id: user.type_id,
+        //                 name: user.name,
+        //                 profile_image_link: user.profile_image_link,
+        //             },
+        //             id: user.type_id,
+        //             name: user.name,
+        //             profile_image_link: user.profile_image_link,
+        //         };
+        //     });
+        //     let updatePayload = {
+        //         channel_id: this.props.channelId,
+        //         newMembers: newMembers,
+        //     };
+        //     this.props.updateChannelMembersAction(updatePayload);
+        //     this.setState({ignoredMentionedUserIds: [...this.state.ignoredMentionedUserIds, ...users.map(u => u.type_id)]});
+        // });
+        
+        setMentionedUserIds([]);
+    };
+
+    const handleIgnoreMentionedUsers = users => {
+        setIgnoredMentionedUserIds(users.map(u => u.type_id));
+        setMentionedUserIds([]);
+    };
 
     useSaveInput(handleClearQuillInput, text, textOnly, quillContents);
     useQuillInput(handleClearQuillInput, reactQuillRef);
@@ -452,12 +492,24 @@ const ChatInput = props => {
     const [modules] = useQuillModules("chat", handleSubmit);
 
     return (
-        <StyledQuillEditor
-            className={"chat-input"}
-            modules={modules}
-            ref={reactQuillRef}
-            onChange={handleQuillChange}
-        />
+        <Wrapper>
+            {
+                mentionedUserIds.length > 0 && 
+                <BodyMention
+                    onAddUsers={handleAddMentionedUsers}
+                    onDoNothing={handleIgnoreMentionedUsers}
+                    userIds={mentionedUserIds}
+                    type={'chat'}
+                    basedOnId={false}
+                />
+            }
+            <StyledQuillEditor
+                className={"chat-input"}
+                modules={modules}
+                ref={reactQuillRef}
+                onChange={handleQuillChange}
+            />
+        </Wrapper>
     );
 };
 
