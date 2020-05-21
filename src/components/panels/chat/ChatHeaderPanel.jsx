@@ -84,8 +84,6 @@ const ChatHeaderPanel = (props) => {
     if (chatChannel === null)
         return null;
 
-    console.log(chatChannel.type);
-
     return (
         <Wrapper className={`chat-header border-bottom ${className}`}>
             <div className="d-flex align-items-center">
@@ -101,14 +99,19 @@ const ChatHeaderPanel = (props) => {
                                 <li className="mr-4 d-sm-inline d-none">
                                     <IconButton icon={`edit-3`} onClick={handleShowChatEditModal}/>
                                 </li>
-                                <li className="mr-4 d-sm-inline d-none">
-                                    <IconButton icon={`trash`} onClick={handleShowArchiveConfirmation}/>
-                                </li>
-                                <li className="ml-4 mobile-chat-close-btn">
-                                    <IconButton icon={`x`}/>
-                                </li>
                             </>
                         }
+                        {
+                            (["PERSONAL_BOT", "COMPANY"].includes(chatChannel.type) === false) &&
+                            <>
+                            <li className="mr-4 d-sm-inline d-none">
+                                <IconButton icon={`trash`} onClick={handleShowArchiveConfirmation}/>
+                            </li>
+                            </>
+                        }
+                        <li className="ml-4 mobile-chat-close-btn">
+                            <IconButton icon={`x`}/>
+                        </li>
                     </ul>
                 </div>
             </div>
