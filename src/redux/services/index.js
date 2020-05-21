@@ -46,3 +46,8 @@ export {
     updateDraft,
     uploadDocument,
 } from "./global";
+
+export {
+    getChannelFiles,
+    getFiles,
+} from "./files";

@@ -8,6 +8,7 @@ import Socket from "../components/socket/socket";
 import {getAllRecipients} from "../redux/actions/globalActions";
 import {getUserSettings} from "../redux/actions/settingsActions";
 import {getMentions} from "../redux/actions/userAction";
+import {getFiles} from "../redux/actions/fileActions";
 
 const MainContent = styled.div`
 `;
@@ -18,12 +19,16 @@ const MainLayout = (props) => {
 
     const dispatch = useDispatch();
     const user = useSelector(state => state.session.user);
+    const files = useSelector(state => state.files.files);
 
     useEffect(() => {
         document.body.classList.remove("form-membership");
         dispatch(getUserSettings());
         dispatch(getAllRecipients());
         dispatch(getMentions());
+        if (Object.keys(files).length === 0) {
+            dispatch(getFiles({sort: "desc"}));
+        }
         //eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
