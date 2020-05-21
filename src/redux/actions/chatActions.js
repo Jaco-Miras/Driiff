@@ -12,6 +12,7 @@ import {
     getGlobalRecipients as getGlobalRecipientsService,
     getLastVisitedChannel as getLastVisitedChannelService,
     markReadChannel as markReadChannelService,
+    markReminderComplete as markReminderCompleteService,
     markUnreadChannel as markUnreadChannelService,
     searchExistingChat as searchExistingChatService,
     setChatReminder as setChatReminderService,
@@ -369,6 +370,24 @@ export function searchExistingChat(payload, callback) {
         "SEARCH_EXISTING_CHAT_START",
         "SEARCH_EXISTING_CHAT_SUCCESS",
         "SEARCH_EXISTING_CHAT_FAILURE",
+        callback,
+    );
+}
+
+export function updateChatMessageReminderComplete(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "UPDATE_CHAT_MESSAGE_REMINDER_COMPLETE",
+        payload,
+        callback,
+    );
+}
+
+export function markReminderComplete(payload, callback) {
+    return dispatchActionToReducer(
+        markReminderCompleteService(payload),
+        "MARK_REMINDER_COMPLETE_START",
+        "MARK_REMINDER_COMPLETE_SUCCESS",
+        "MARK_REMINDER_COMPLETE_FAILURE",
         callback,
     );
 }

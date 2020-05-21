@@ -186,3 +186,17 @@ export function searchExistingChat(payload) {
         data: payload,
     });
 }
+
+/**
+ * @param payload
+ * @param payload.message_id
+ * @returns {Promise<*>}
+ */
+export function markReminderComplete(payload) {
+    let url = `/v2/bot-marked-completed`;
+    return apiCall({
+        method: "PUT",
+        url: url,
+        data: payload,
+    });
+}

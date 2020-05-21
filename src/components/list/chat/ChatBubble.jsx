@@ -11,7 +11,7 @@ import styled from "styled-components";
 import {localizeDate} from "../../../helpers/momentFormatJS";
 import quillHelper from "../../../helpers/quillHelper";
 import {_t, getEmojiRegexPattern, stripGif} from "../../../helpers/stringFormatter";
-import {setSelectedChannel} from "../../../redux/actions/chatActions";
+import {setSelectedChannel, updateChatMessage, markReminderComplete, updateChatMessageReminderComplete} from "../../../redux/actions/chatActions";
 import {ImageTextLink, SvgIconFeather, SvgImage} from "../../common";
 import MessageFiles from "./Files/MessageFiles";
 import Unfurl from "./Unfurl/Unfurl";
@@ -291,6 +291,7 @@ const ReplyContent = styled.span`
 
     a,
     a:not([href]):not([tabindex]) {
+        cursor: pointer;
         color: ${props => (props.isAuthor ? props.theme.self.chat_bubble_link_color : props.theme.others.chat_bubble_link_color)};
         &:focus,
         &:hover {
@@ -310,15 +311,9 @@ const ReplyContent = styled.span`
                 border-radius: 8px;
             }
 
-            &.btn-delete {
-                border: 1px solid ${props => (props.isAuthor ? props.theme.self.chat_bubble_hover_color : props.theme.others.chat_bubble_hover_color)};
+            &.btn-complete {
                 color: ${props => (props.isAuthor ? props.theme.self.chat_bubble_hover_color : props.theme.others.chat_bubble_hover_color)};
-
-                &:focus,
-                &:hover {
-                    border: 1px solid ${props => (props.isAuthor ? props.theme.self.chat_bubble_link_color : props.theme.others.chat_bubble_link_color)};
-                    color: ${props => (props.isAuthor ? props.theme.self.chat_bubble_link_color : props.theme.others.chat_bubble_link_color)};
-                }
+                border: 1px solid ${props => (props.isAuthor ? props.theme.self.chat_bubble_hover_color : props.theme.others.chat_bubble_hover_color)};
             }
         }
     }
@@ -497,16 +492,20 @@ const ChatBubble = forwardRef((props, ref) => {
 
 
     const handleMarkComplete = () => {
-        props.markReminderCompleteAction({message_id: reply.id}, (err, res) => {
-            if (err)
-                console.log(err);
+        dispatch(
+            markReminderComplete({message_id: reply.id}, (err, res) => {
+                if (err)
+                    console.log(err);
 
-            if (res)
-                props.updateChatMessageReminderCompleteAction({
-                    channel_id: reply.channel_id,
-                    message_id: reply.id,
-                });
-        });
+                if (res)
+                    dispatch(
+                        updateChatMessageReminderComplete({
+                            channel_id: reply.channel_id,
+                            message_id: reply.id,
+                        })
+                    );
+            })
+        );
     };
 
     const handleRemoveReply = () => {
@@ -518,11 +517,13 @@ const ChatBubble = forwardRef((props, ref) => {
         const link = `/chat/${reply.quote.channel_code}/${reply.quote.code}`;
         newBody = newBody.replace("this message", `<a class="push" href="${link}">this message</a>`);
 
-        props.updateChatMessageAction({
-            body: newBody,
-            message_id: reply.id,
-            reply_id: reply.id,
-        });
+        dispatch(
+            updateChatMessage({
+                body: newBody,
+                message_id: reply.id,
+                reply_id: reply.id,
+            })
+        );
     };
 
     const handleChannelMessageLink = (e) => {
