@@ -17,6 +17,7 @@ export {
     createNewChat,
     editChannelDetail,
     searchExistingChat,
+    markReminderComplete,
 } from "./chat";
 
 export {

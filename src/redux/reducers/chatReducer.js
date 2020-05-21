@@ -193,7 +193,7 @@ export default function (state = INITIAL_STATE, action) {
             channel = {
                 ...channel,
                 replies: [...action.data.results.map(r => {
-                    if (action.data.type === "PERSONAL_BOT" && r.body.search(/You asked me to remind you about/) > -1) {
+                    if (channel.type === "PERSONAL_BOT" && r.body.search(/You asked me to remind you about/) > -1) {
                         r.original_body = r.body;
 
                         const channelName = r.body.replace(r.body.substr(0, r.body.search(" in ") + 4, r.body), "");
@@ -706,6 +706,46 @@ export default function (state = INITIAL_STATE, action) {
             return {
                 ...state,
                 user: action.data,
+            };
+        }
+        case "UPDATE_CHAT_MESSAGE_REMINDER_COMPLETE": {
+            let channel = null;
+            if (Object.keys(state.channels).length > 0 && state.channels.hasOwnProperty(action.data.channel_id)) {
+                channel = {...state.channels[action.data.channel_id]};
+                channel = {
+                    ...channel,
+                    replies: channel.replies.map(r => {
+                        if (r.id === action.data.message_id) {
+                            let ac = state.selectedChannel;
+
+                            if (r.original_body)
+                                r.body = r.original_body;
+
+                            const channelName = r.body.replace(r.body.substr(0, r.body.search(" in ") + 4, r.body), "");
+                            r.body = r.body.replace(` in ${channelName}`, ` in <a class="push" data-href="/chat/${r.quote.channel_code}">#${channelName}</a>`);
+
+                            const link = `/chat/${r.quote.channel_code}/${r.quote.code}`;
+                            r.body = r.body.replace("this message", `<a class="push" data-href="${link}">this message</a>`);
+
+                            r.body = `<span class="completed">${r.body}</span><br/> ${r.original_body.replace("You asked me to remind you", "OK! I’ve marked the reminder")} as complete.`;
+                            return r;
+                        } else return r;
+                    }),
+                };
+            }
+            return {
+                ...state,
+                channels: channel !== null ?
+                    {
+                        ...state.channels,
+                        [action.data.channel_id]: channel,
+                    }
+                    : state.channels,
+                selectedChannel: state.selectedChannel && state.selectedChannel.id === action.data.channel_id ?
+                    {
+                        ...channel,
+                    }
+                    : state.selectedChannel,
             };
         }
         default:
