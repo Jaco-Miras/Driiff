@@ -142,3 +142,11 @@ export function clearInputData(payload, callback) {
         callback,
     );
 }
+
+export function addUserToReducers(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "ADD_USER_TO_REDUCERS",
+        payload,
+        callback,
+    );
+}

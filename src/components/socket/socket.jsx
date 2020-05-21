@@ -15,6 +15,8 @@ import {updateFaviconState} from "../../helpers/slugHelper";
 import {stripHtml} from "../../helpers/stringFormatter";
 import {urlify} from "../../helpers/urlContentHelper";
 import {
+    addToChannels,
+    getChannel,
     incomingArchivedChannel,
     incomingChatMessage,
     incomingChatMessageFromOthers,
@@ -27,6 +29,7 @@ import {
     updateMemberTimestamp,
 } from "../../redux/actions/chatActions";
 import {
+    addUserToReducers,
     generateUnfurl,
     generateUnfurlReducer,
     getConnectedSlugs,
@@ -166,7 +169,12 @@ class Socket extends PureComponent {
     };
 
     componentDidMount() {
-
+        this.props.addUserToReducers({
+            id: this.props.user.id,
+            name: this.props.user.name,
+            partial_name: this.props.user.partial_name,
+            profile_image_link: this.props.user.profile_image_link
+        });
         // Set the name of the hidden property and the change event for visibility
         if (typeof document.hidden !== "undefined") { // Opera 12.10 and Firefox 18 and later support 
             this.setState({hidden: "hidden", visibilityChange: "visibilitychange"});
@@ -175,7 +183,6 @@ class Socket extends PureComponent {
         } else if (typeof document.webkitHidden !== "undefined") {
             this.setState({hidden: "webkitHidden", visibilityChange: "webkitvisibilitychange"});
         }
-
 
         this.props.getOnlineUsers();
         setInterval(() => {
@@ -201,7 +208,6 @@ class Socket extends PureComponent {
                     },
                 });
                 //this.setState({hasInitiateEcho: true})
-                console.log(window.Echo);
                 setTimeout(() => {
                     this.onListen(localStorage.getItem("slug"), this.props.user.id);
                 }, 2000);
@@ -556,7 +562,7 @@ class Socket extends PureComponent {
                 this.props.incomingUpdatedChannelDetail(data);
             })
             .listen(".member-update-timestamp", e => {
-                //console.log("seen member", e);
+                console.log("seen member", e);
                 this.props.updateMemberTimestamp(e);
             })
             .listen(".chat-notification", e => {
@@ -919,63 +925,19 @@ class Socket extends PureComponent {
             })
             .listen(".new-chat-channel", e => {
                 console.log(e, "chat channel");
-                // if (e.channel_data.creator_by.id !== this.props.user.id) {
-                //     if (e.channel_data.entity_type === "DIRECT") {
-                //         let channel = {
-                //             id: e.channel_data.channel_id,
-                //             entity_id: e.channel_data.post_id,
-                //             type: e.channel_data.entity_type,
-                //             code: e.channel_data.code,
-                //             // title: e.channel_data.channel.members.length <= 2 ?
-                //             //     e.channel_data.channel.members.filter(m => m.id !== this.props.user.id)[0].first_name
-                //             //     : e.channel_data.channel.title,
-                //             title: e.channel_data.channel_title,
-                //             is_archived: 0,
-                //             is_pinned: 0,
-                //             is_hidden: 0,
-                //             is_muted: 0,
-                //             total_unread: 0,
-                //             profile: e.channel_data.creator_by,
-                //             selected: true,
-                //             inviter: null,
-                //             hasMore: true,
-                //             skip: 0,
-                //             members: e.channel_data.channel.members,
-                //             replies: [],
-                //             created_at: {
-                //                 timestamp: Math.round(+new Date() / 1000),
-                //             },
-                //             last_reply: null,
-                //         };
-                //         this.props.addActiveChatChannelsAction([channel]);
-                //     } else {
-                //         // not direct type and channel creator is other user
-                //         let channel = {
-                //             id: e.channel_data.channel_id,
-                //             entity_id: e.channel_data.post_id,
-                //             type: e.channel_data.entity_type,
-                //             title: e.channel_data.channel_title,
-                //             code: e.channel_data.code,
-                //             is_archived: 0,
-                //             is_pinned: 0,
-                //             is_hidden: 0,
-                //             is_muted: 0,
-                //             total_unread: 0,
-                //             profile: null,
-                //             selected: true,
-                //             inviter: null,
-                //             hasMore: false,
-                //             skip: 0,
-                //             members: e.channel_data.channel.members,
-                //             replies: [],
-                //             created_at: {
-                //                 timestamp: Math.round(+new Date() / 1000),
-                //             },
-                //             last_reply: null,
-                //         };
-                //         this.props.addActiveChatChannelsAction([channel]);
-                //     }
-                // }
+                if (e.channel_data.creator_by.id !== this.props.user.id) {
+                    this.props.getChannel({channel_id: e.channel_data.channel_id}, (err, res) => {
+                        if (err) return
+                        let channel = {
+                            ...res.data,
+                            selected: false,
+                            replies: [],
+                            skip: 0,
+                            hasMore: true,
+                        }
+                        this.props.addToChannels(channel)
+                    })
+                }
             })
             .listen(".update-chat-message", e => {
                 console.log("incoming update chat message", e);
@@ -1280,6 +1242,9 @@ function mapStateToProps({
 
 function mapDispatchToProps(dispatch) {
     return {
+        addToChannels: bindActionCreators(addToChannels, dispatch),
+        addUserToReducers: bindActionCreators(addUserToReducers, dispatch),
+        getChannel: bindActionCreators(getChannel, dispatch),
         setBrowserTabStatus: bindActionCreators(setBrowserTabStatus, dispatch),
         getOnlineUsers: bindActionCreators(getOnlineUsers, dispatch),
         getConnectedSlugs: bindActionCreators(getConnectedSlugs, dispatch),
@@ -1296,6 +1261,7 @@ function mapDispatchToProps(dispatch) {
         incomingUpdatedChatMessage: bindActionCreators(incomingUpdatedChatMessage, dispatch),
         incomingDeletedChatMessage: bindActionCreators(incomingDeletedChatMessage, dispatch),
         incomingUpdatedChannelDetail: bindActionCreators(incomingUpdatedChannelDetail, dispatch),
+        
         // logoutAction: bindActionCreators(logout, dispatch),
         // simpleNewNotificationSocketAction: bindActionCreators(simpleNewNotificationSocket, dispatch),
         // getNotificationsAction: bindActionCreators(getNotifications, dispatch),

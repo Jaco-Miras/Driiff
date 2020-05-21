@@ -1,5 +1,5 @@
 const INITIAL_STATE = {
-    user: {},
+    user: null,
     recipients: [],
     isLoading: false,
     isBrowserActive: true,
@@ -64,6 +64,12 @@ export default (state = INITIAL_STATE, action) => {
                 ...state,
                 dataFromInput: null,
             };
+        }
+        case "ADD_USER_TO_REDUCERS": {
+            return {
+                ...state,
+                user: action.data
+            }
         }
         default:
             return state;

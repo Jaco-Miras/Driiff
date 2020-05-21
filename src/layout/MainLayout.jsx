@@ -1,5 +1,5 @@
 import React, {useEffect} from "react";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import styled from "styled-components";
 import {useUserLogout} from "../components/hooks";
 import {ModalPanel} from "../components/panels";
@@ -17,7 +17,7 @@ const MainLayout = (props) => {
     useUserLogout(props);
 
     const dispatch = useDispatch();
-
+    const user = useSelector(state => state.session.user);
 
     useEffect(() => {
         document.body.classList.remove("form-membership");
@@ -35,7 +35,9 @@ const MainLayout = (props) => {
                 <MainContentPanel/>
             </MainContent>
             <ModalPanel/>
-            <Socket/>
+            {
+                user.id !== undefined && <Socket/>
+            }
         </>
     );
 };

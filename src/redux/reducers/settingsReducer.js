@@ -1,4 +1,5 @@
 const INITIAL_STATE = {
+    user: null,
     companySettings: null,
     userSettings: {
         isLoaded: false,
@@ -43,6 +44,12 @@ const INITIAL_STATE = {
 
 export default (state = INITIAL_STATE, action) => {
     switch (action.type) {
+        case "ADD_USER_TO_REDUCERS": {
+            return {
+                ...state,
+                user: action.data
+            }
+        }
         case "GET_USER_SETTINGS_SUCCESS": {
             let settings = state.userSettings;
             settings["isLoaded"] = true;

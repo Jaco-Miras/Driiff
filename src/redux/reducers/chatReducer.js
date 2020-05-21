@@ -4,7 +4,7 @@ import {localizeDate} from "../../helpers/momentFormatJS";
 
 /** Initial State  */
 const INITIAL_STATE = {
-    user: {},
+    user: null,
     channels: {},
     selectedChannel: null,
     startNewChannels: {},
@@ -150,6 +150,7 @@ export default function (state = INITIAL_STATE, action) {
                 channel = {
                     ...channel,
                     is_read: 1,
+                    total_unread: state.user && state.user.id === action.data.member_id ? 0 : channel.total_unread,
                     members: channel.members.map(m => {
                         if (m.id === action.data.member_id) {
                             return {
@@ -700,6 +701,12 @@ export default function (state = INITIAL_STATE, action) {
                     }
                     : state.selectedChannel,
             };
+        }
+        case "ADD_USER_TO_REDUCERS": {
+            return {
+                ...state,
+                user: action.data
+            }
         }
         default:
             return state;

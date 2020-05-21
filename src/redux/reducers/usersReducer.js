@@ -1,5 +1,5 @@
 const INITIAL_STATE = {
-    users: {},
+    user: null,
     getUserFilter: {
         limit: 1000,
         skip: 0,
@@ -11,6 +11,12 @@ const INITIAL_STATE = {
 
 export default (state = INITIAL_STATE, action) => {
     switch (action.type) {
+        case "ADD_USER_TO_REDUCERS": {
+            return {
+                ...state,
+                user: action.data
+            }
+        }
         case "GET_MENTION_USERS_SUCCESS": {
             let mentions = state.mentions;
             action.data.result.forEach((item, index) => {
