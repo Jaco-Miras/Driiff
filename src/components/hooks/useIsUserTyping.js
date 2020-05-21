@@ -12,52 +12,63 @@ const useIsUserTyping = props => {
 
     const timeout = useRef();
 
-    useEffect(() => {
-        const handleSetUserTyping = (e) => {
-            if (channel.id === e.channel_id) {
-                clearTimeout(timeout.current);
-                timeout.current = setTimeout(() => {
-                    setUsersTyping([]);
-                }, 3000);
-                if (e.user.id !== user.id) {
-                    if (usersTyping.length) {
-                        let userExist = false;
-                        usersTyping.forEach(u => {
-                            if (u.id === e.user.id) {
-                                userExist = true;
+    timeout.current = setTimeout(() => {
+        setUsersTyping([]);
+    }, 3000);
 
-                            }
-                        });
-                        if (!userExist) {
-                            setUsersTyping([...usersTyping, e.user]);
+    const handleSetUserTyping = (e) => {
+        if (channel.id === e.channel_id) {
+            console.log(e, channel.id)
+            clearTimeout(timeout.current);
+            if (e.user.id !== user.id) {
+                if (usersTyping.length) {
+                    let userExist = false;
+                    usersTyping.forEach(u => {
+                        if (u.id === e.user.id) {
+                            userExist = true;
+
                         }
-                    } else {
-                        setUsersTyping([e.user]);
+                    });
+                    if (!userExist) {
+                        setUsersTyping([...usersTyping, e.user]);
                     }
+                } else {
+                    setUsersTyping([e.user]);
                 }
             }
-        };
-        const handleSubscribeToChannel = () => {
-            if (channel.is_shared) {
-                if (window[channel.slug_owner]) {
-                    window[channel.slug_owner].private(channel.slug_owner + `.App.Channel.` + channel.id)
-                        .listenForWhisper("typing", e => {
-                            handleSetUserTyping(e);
-                        });
+        }
+    };
+
+    const handleSubscribeToChannel = (leaveId = null) => {
+        setUsersTyping([]);
+        if (channel.is_shared) {
+            if (window[channel.slug_owner]) {
+                if (leaveId) {
+                    window[channel.slug_owner].leave(channel.slug_owner + `.App.Channel.` + leaveId);
                 }
-            } else {
-                if (window.Echo) {
-                    window.Echo.private(localStorage.getItem("slug") + `.App.Channel.` + channel.id)
-                        .listenForWhisper("typing", e => {
-                            handleSetUserTyping(e);
-                        });
-                }
+                window[channel.slug_owner].private(channel.slug_owner + `.App.Channel.` + channel.id)
+                    .listenForWhisper("typing", e => {
+                        handleSetUserTyping(e);
+                    });
             }
-        };
+        } else {
+            if (window.Echo) {
+                if (leaveId) {
+                    window.Echo.leave(localStorage.getItem("slug") + `.App.Channel.` + leaveId);
+                }
+                window.Echo.private(localStorage.getItem("slug") + `.App.Channel.` + channel.id)
+                    .listenForWhisper("typing", e => {
+                        handleSetUserTyping(e);
+                    });
+            }
+        }
+    };
+
+    useEffect(() => {
 
         if (previousChannel !== null && channel !== null) {
             if (previousChannel && previousChannel.id !== channel.id) {
-                handleSubscribeToChannel();
+                handleSubscribeToChannel(previousChannel.id);
             }
         }
         if ((previousChannel === undefined || previousChannel === null) && channel !== null) {
