@@ -1,11 +1,6 @@
 import React, {useEffect, useRef, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import styled from "styled-components";
-import archiveIcon from "../../../assets/icon/archive/l/active.svg";
-import crossIcon from "../../../assets/icon/close/r/secundary.svg";
-import muteIcon from "../../../assets/icon/mute/r/mute_secundary.svg";
-import eyeCloseIcon from "../../../assets/img/eye-close-active.png";
-import pinIcon from "../../../assets/img/svgs/chat/pin_white.svg";
 import {
     markReadChannel,
     markUnreadChannel,
@@ -198,48 +193,15 @@ const MoreTooltip = styled.div`
         border-bottom: 1px solid #c3c3c3;
         cursor: pointer;
         
-        :before {
-            content: "";
-            background-color: #4d4d4d;
-            mask-repeat: no-repeat;
-            mask-size: 100%;
-            mask-position: center;
-            width: 24px;
-            height: 24px;
-            display: inline-block;
-            margin-right: 20px;
-        }
-        :hover:before {
-            background-color: #972c86;
-        }
-        :hover {
-            color: #972c86;
+        svg {
+            margin-right: 12px;
         }
     }    
 `;
-const PinBtn = styled.div`
-  :before {
-    mask-image: url(${pinIcon});
-  }
-`;
-const CloseBtn = styled.div`
-    :before {
-        mask-image: url(${archiveIcon});
-    }
-`;
-const HideBtn = styled.div`
-    :before {
-        mask-image: url(${crossIcon});
-    }
-`;
-const MarkAsUnreadBtn = styled.div`
-    :before {
-        mask-image: url(${eyeCloseIcon});
-    }
-`;
-const MuteBtn = styled.div`
-    :before {
-        mask-image: url(${muteIcon});
+const Icon = styled(SvgIconFeather)`
+    &.fill {
+        fill: #c3c3c3;
+        color: #c3c3c3 !important;
     }
 `;
 
@@ -484,26 +446,31 @@ const ChannelOptions = props => {
                 className={`more-options-tooltip ${tooltipAdjustment ? "adjust" : ""} orientation-${orientation.vertical}`}
                 position={toolTipPosition}
                 orientation={orientation.vertical}>
-                <PinBtn onClick={handlePinButton}>
+                <div onClick={handlePinButton}>
+                    <Icon className={channel.is_pinned && `fill`} icon="star"/>
                     {channel.is_pinned ? `Unpin` : `Pin`}
-                </PinBtn>
-                <MarkAsUnreadBtn onClick={e => handleMarkAsUnreadSelected(e)}>
+                </div>
+                <div onClick={e => handleMarkAsUnreadSelected(e)}>
+                    <Icon icon={channel.mark_unread || (!channel.mark_unread && channel.total_unread) ? `eye` : `eye-off`}/>
                     {(channel.mark_unread || (!channel.mark_unread && channel.total_unread > 0)) ? `Mark as Read` : `Mark as Unread`}
-                </MarkAsUnreadBtn>
-                <MuteBtn onClick={handleMuteChat}>
+                </div>
+                <div onClick={handleMuteChat}>
+                    <Icon icon={channel.is_muted ? `volume-2` : `volume-x`}/>
                     {channel.is_muted ? `Unmute` : `Mute`}
-                </MuteBtn>
+                </div>
                 {
                     channel.type !== "PERSONAL_BOT" &&
-                    <HideBtn onClick={handleHideChat}>
+                    <div onClick={handleHideChat}>
+                        <Icon icon="x"/>
                         {channel.is_hidden === 0 ? `Hide` : "Unhide"}
-                    </HideBtn>
+                    </div>
                 }
                 {
                     (channel.type !== "PERSONAL_BOT" || channel.type !== "COMPANY") &&
-                    <CloseBtn onClick={handleShowArchiveConfirmation}>
+                    <div onClick={handleShowArchiveConfirmation}>
+                        <Icon icon="archive"/>
                         {channel.is_archived === 0 ? `Archive` : "Unarchive"}
-                    </CloseBtn>
+                    </div>
                 }
             </MoreTooltip>
         }
@@ -511,3 +478,4 @@ const ChannelOptions = props => {
 };
 
 export default React.memo(ChannelOptions);
+

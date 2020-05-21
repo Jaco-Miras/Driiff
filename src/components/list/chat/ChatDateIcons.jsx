@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import {localizeChatChannelDate} from "../../../helpers/momentFormatJS";
-import {SvgIcon} from "../../common";
+import {SvgIconFeather} from "../../common";
 
 const Wrapper = styled.div`
     display: ${props => props.optionsVisible ? "none" : "initial"};
@@ -10,21 +10,13 @@ const ActionContainer = styled.div`
     position: relative;
     top: 4px;
 `;
-const MuteIcon = styled(SvgIcon)`
+const Icon = styled(SvgIconFeather)`
     filter: brightness(0) saturate(100%) invert(43%) sepia(19%) saturate(0%) hue-rotate(214deg) brightness(87%) contrast(86%);      
     position: relative;
     top: -3px;
-    right: 5px;
+    right: 0;
     width: 15px;
     height: 15px;
-`;
-const PinIcon = styled(SvgIcon)`
-    filter: brightness(0) saturate(100%) invert(43%) sepia(19%) saturate(0%) hue-rotate(214deg) brightness(60%) contrast(86%);    
-    position: relative;
-    top: -3px;
-    right: 5px;
-    width: 15px;
-    height: 15px;      
 `;
 
 const Badge = styled.span`
@@ -61,11 +53,11 @@ const ChatDateIcons = props => {
             <ActionContainer>
                 {
                     !!channel.is_muted &&
-                    <MuteIcon icon={`mute`}/>
+                    <Icon icon="volume-x" className={`${!!channel.is_pinned && "mr-1"}`}/>
                 }
                 {
                     !!channel.is_pinned &&
-                    <PinIcon icon={`pin`} rotate={45}/>
+                    <Icon icon="star"/>
                 }
             </ActionContainer>
         </Wrapper>
