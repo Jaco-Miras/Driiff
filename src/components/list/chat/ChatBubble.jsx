@@ -1,20 +1,17 @@
 import {hexToCSSFilter} from "hex-to-css-filter";
-// import {findAll} from "highlight-words-core";
 import React, {forwardRef, useEffect, useRef, useState} from "react";
 import {renderToString} from "react-dom/server";
 import GifPlayer from "react-gif-player";
 import "react-gif-player/src/GifPlayer.scss";
 import {useInView} from "react-intersection-observer";
-import {connect, useSelector} from "react-redux";
-import {withRouter} from "react-router-dom";
+import {useDispatch, useSelector} from "react-redux";
+import {useHistory} from "react-router-dom";
 import Skeleton from "react-skeleton-loader";
-import {bindActionCreators} from "redux";
 import styled from "styled-components";
 import {localizeDate} from "../../../helpers/momentFormatJS";
 import quillHelper from "../../../helpers/quillHelper";
 import {_t, getEmojiRegexPattern, stripGif} from "../../../helpers/stringFormatter";
 import {setSelectedChannel} from "../../../redux/actions/chatActions";
-// import {addFilesToView} from "../../../redux/actions/revampActions";
 import {ImageTextLink, SvgIconFeather, SvgImage} from "../../common";
 import MessageFiles from "./Files/MessageFiles";
 import Unfurl from "./Unfurl/Unfurl";
@@ -27,14 +24,18 @@ const ChatBubbleContainer = styled.div`
     padding: 7px 15px;
     border-radius: 8px;
     background: ${props => (props.isAuthor ? props.theme.self.chat_bubble_background_color : props.theme.others.chat_bubble_background_color)};
-    text-align: left;
-    min-width: 159px;
+    text-align: left;    
     width: 100%;
     color: ${props => (props.isAuthor ? props.theme.self.chat_bubble_text_color : props.theme.others.chat_bubble_text_color)};
-    font-size: .835rem;
-    line-height: 1.5rem;
+    font-size: .835rem;    
     overflow: visible;
-    ${props => props.isForwardedMessage === true && "margin-top: 25px;"}
+    ${props => props.isForwardedMessage === true && `
+        margin-top: 25px;
+        min-width: 159px;
+    `}
+    ${props => props.isEmoticonOnly === true && `
+        background: none;
+    `}
 
     &:focus {
         -webkit-box-shadow: 0 0 0 1px ${props => (props.isAuthor ? props.theme.self.chat_bubble_focus_border_color : props.theme.others.chat_bubble_focus_border_color)};
@@ -67,7 +68,7 @@ const ChatBubbleContainer = styled.div`
         ${props => props.isForwardedMessage === true && "top: -40px;"}
     }
     span.emoticon-body {
-        font-size: 35px;
+        font-size: 2.5rem;
     }
     .reply-content img{
         max-width: 100%;
@@ -473,16 +474,15 @@ const ForwardedSpan = styled.span`
 const ChatBubble = forwardRef((props, ref) => {
     const {
         reply,
-        //lastReply,
         showAvatar,
-        //loggedUser,
-        //recipients,
         selectedChannel,
         showGifPlayer,
         isAuthor,
         addMessageRef,
     } = props;
 
+    const dispatch = useDispatch();
+    const history = useHistory();
     const [chatFiles, setChatFiles] = useState([]);
     const [loadRef, loadInView] = useInView({
         threshold: 1,
@@ -523,7 +523,7 @@ const ChatBubble = forwardRef((props, ref) => {
 
     const handleChannelMessageLink = (e) => {
         e.preventDefault();
-        props.history.push(e.currentTarget.dataset.href);
+        history.push(e.currentTarget.dataset.href);
         return false;
     };
 
@@ -574,7 +574,9 @@ const ChatBubble = forwardRef((props, ref) => {
         if (reply.quote.channel_id) {
             let sc = props.activeChatChannels.filter(ac => ac.id === reply.quote.channel_id)[0];
             if (sc) {
-                props.setSelectedChannelAction(sc);
+                dispatch(
+                    setSelectedChannel(sc),
+                );
             }
 
             setTimeout(() => {
@@ -657,7 +659,6 @@ const ChatBubble = forwardRef((props, ref) => {
         setChatFiles(chatFiles);
     }, [selectedChannel.replies]);
 
-    //const [isAuthor] = useState(reply.user.id === loggedUser.id);
 
     let isEmoticonOnly = false;
     let replyBody = "";
@@ -665,6 +666,7 @@ const ChatBubble = forwardRef((props, ref) => {
         replyBody = _t(reply.body, "The chat message has been deleted");
     } else {
         replyBody = quillHelper.parseEmoji(reply.body);
+
         if (reply.created_at.timestamp !== reply.updated_at.timestamp) {
             replyBody = `${replyBody}<span class='edited-message'>(edited)</span>`;
         }
@@ -836,6 +838,7 @@ const ChatBubble = forwardRef((props, ref) => {
         showAvatar={showAvatar}
         isAuthor={isAuthor}
         isForwardedMessage={reply.is_transferred}
+        isEmoticonOnly={isEmoticonOnly}
         theme={props.settings.CHAT_SETTINGS.chat_message_theme}>
         {
             <>
@@ -897,9 +900,6 @@ const ChatBubble = forwardRef((props, ref) => {
                             />
                         }
                         {
-                            // reply.call_data ?
-                            //     <CallMessage data={reply.call_data}/>
-                            //     :
                             <ReplyContent
                                 hasFiles={reply.files.filter(f => f.type === "image").length > 0}
                                 theme={props.settings.CHAT_SETTINGS.chat_message_theme}
@@ -953,24 +953,4 @@ const ChatBubble = forwardRef((props, ref) => {
     </ChatBubbleContainer>;
 });
 
-
-// function mapStateToProps(state) {
-//     const {
-//         chat: {activeChatChannels},
-//     } = state;
-//     return {
-//         activeChatChannels
-//     }
-// }
-
-function mapDispatchToProps(dispatch) {
-    return {
-        setSelectedChannelAction: bindActionCreators(setSelectedChannel, dispatch),
-        //addFilesToViewAction: bindActionCreators(addFilesToView, dispatch),
-    };
-}
-
-export default withRouter(connect(
-    null,
-    mapDispatchToProps,
-)(React.memo(ChatBubble)));
+export default React.memo(ChatBubble);

@@ -1,6 +1,6 @@
 import "quill-mention";
 import React, {forwardRef} from "react";
-import ReactQuill from "react-quill";
+import ReactQuill, {Quill} from "react-quill";
 import "react-quill/dist/quill.snow.css";
 
 const QuillEditor = forwardRef((props, ref) => {
@@ -10,23 +10,11 @@ const QuillEditor = forwardRef((props, ref) => {
             theme="snow"
             {...props}
             ref={ref}
-            // onBlur={this.handleBlurOnQuill}
-            // modules={this.modules}
-            // ref={el => (this.quillRef = el)}
-            // placeholder={
-            //     this.state.draftId
-            //         ? "You have unsaved reply"
-            //         : this.props.mode === "chat" &&
-            //         this.props.status === "initial"
-            //         ? "Starting chat..."
-            //         : placeholder
-            // }
-            // value={this.state.text}
-            // onChange={this.handleQuillChange}
-            // onKeyDown={this.handleQuillKeyDown}
-            // onKeyUp={this.handleQuillKeyUp}
-            // onFocus={this.loadDraft}
         />
     );
 });
 export default QuillEditor;
+
+const Block = Quill.import('blots/block');
+Block.tagName = 'div';
+Quill.register(Block);
