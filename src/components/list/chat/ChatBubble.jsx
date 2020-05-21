@@ -28,11 +28,7 @@ const ChatBubbleContainer = styled.div`
     width: 100%;
     color: ${props => (props.isAuthor ? props.theme.self.chat_bubble_text_color : props.theme.others.chat_bubble_text_color)};
     font-size: .835rem;    
-    overflow: visible;
-    ${props => props.isForwardedMessage === true && `
-        margin-top: 25px;
-        min-width: 159px;
-    `}
+    overflow: visible;    
     ${props => props.isEmoticonOnly === true && `
         background: none;
     `}
@@ -346,6 +342,7 @@ const ChatContentClap = styled.div`
   }
 `;
 const ChatContent = styled.div`
+    ${props => (props.isEmoticonOnly && `
     &:before {
         ${props => (props.showAvatar && "content: '';")};
         border: 10px solid transparent;
@@ -364,6 +361,7 @@ const ChatContent = styled.div`
         width: 20px;
         height: 20px;
     }
+    `)}
     
     .reply-author {
         // padding: ${props => props.isAuthor ? "0 10px 0 40px" : "0 40px 0 10px"};
@@ -455,12 +453,18 @@ const StyledImageTextLink = styled(ImageTextLink)`
   display: block;
 `;
 
-const ForwardedSpan = styled.span`
+const ForwardedSpan = styled.span`    
     color: #AAB0C8;
     font-style: italic;
+    display: flex;
+    align-items: center;
+    font-size: 12px;
     position: absolute;
-    top: -25px;
-    left: 0;
+    top: calc(50% - 25px);
+    margin: 0 10px;
+    ${props => props.isAuthor ? "right: 100%;" : "left: 100%;"};
+    height: 25px;
+    white-space: nowrap;
     
     svg {
         width: 15px;
@@ -837,14 +841,13 @@ const ChatBubble = forwardRef((props, ref) => {
         className={`chat-bubble ql-editor`}
         showAvatar={showAvatar}
         isAuthor={isAuthor}
-        isForwardedMessage={reply.is_transferred}
         isEmoticonOnly={isEmoticonOnly}
         theme={props.settings.CHAT_SETTINGS.chat_message_theme}>
         {
             <>
                 {
                     reply.is_transferred &&
-                    <ForwardedSpan className="small">
+                    <ForwardedSpan className="small" isAuthor={isAuthor}>
                         <SvgIconFeather icon="corner-up-right"/>Forwarded message
                     </ForwardedSpan>
                 }
@@ -852,7 +855,7 @@ const ChatBubble = forwardRef((props, ref) => {
                     ref={addMessageRef ? loadRef : null}
                     className='chat-content-clap'
                     isAuthor={isAuthor}>
-                    <ChatContent showAvatar={showAvatar} isAuthor={isAuthor}
+                    <ChatContent showAvatar={showAvatar} isAuthor={isAuthor} isEmoticonOnly={isEmoticonOnly}
                                  className={`chat-content animated slower ${highlightedText ? "is-highlighted" : ""}`}>
                         {
                             reply.quote && reply.quote.body && (reply.is_deleted === 0) &&
