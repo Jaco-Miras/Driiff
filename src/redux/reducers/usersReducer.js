@@ -1,5 +1,6 @@
 const INITIAL_STATE = {
     user: null,
+    users: {},
     getUserFilter: {
         limit: 1000,
         skip: 0,
