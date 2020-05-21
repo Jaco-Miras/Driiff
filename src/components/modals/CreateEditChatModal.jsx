@@ -132,23 +132,8 @@ const CreateEditChatModal = props => {
     const [text, setText] = useState("");
     const [textOnly, setTextOnly] = useState("");
     const [valid, setValid] = useState(false);
+    const [chatExists, setChatExists] = useState(false);
     const [searching, setSearching] = useState(false);
-
-    useEffect(() => {
-        if (mode === "edit") {
-            let currentMembers = channel.members.map(m => {
-                return {
-                    ...m,
-                    value: m.id,
-                    label: m.first_name,
-                };
-            });
-            setSelectedUsers(currentMembers);
-            setInputValue(channel.title);
-        }
-
-        //eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
 
     const toggle = () => {
         setModal(!modal);
@@ -168,15 +153,15 @@ const CreateEditChatModal = props => {
     const handleSelect = e => {
         if (e === null) {
             setSelectedUsers([]);
-            if (mode === "new") setValid(false);
-        } else setSelectedUsers(e);
+        } else {
+            setSelectedUsers(e);
+            handleSearchExistingChat();
+        }
     };
 
     const handleInputChange = e => {
-        setInputValue(e.target.value);
-        if (mode === "new") {
-            setValid(false);
-        }
+        setInputValue(e.target.value.trim());
+        handleSearchExistingChat();
     };
 
     const handleConfirm = () => {
@@ -186,7 +171,6 @@ const CreateEditChatModal = props => {
                 selectedUsers.forEach(u => {
                     if (u.id === m.id) {
                         userFound = true;
-
                     }
                 });
                 return !userFound;
@@ -204,7 +188,7 @@ const CreateEditChatModal = props => {
             }).map(m => m.id);
 
             let payload = {
-                channel_name: inputValue.trim(),
+                channel_name: inputValue,
                 channel_id: channel.id,
                 remove_member_ids: removed_members,
                 add_member_ids: added_members,
@@ -212,8 +196,6 @@ const CreateEditChatModal = props => {
 
             dispatch(editChannelDetail(payload));
         } else {
-
-            if (inputValue.trim() === "" && selectedUsers.length === 0) return;
 
             let placeholderId = require("shortid").generate();
             let timestamp = Math.round(+new Date() / 1000);
@@ -346,19 +328,23 @@ const CreateEditChatModal = props => {
     };
 
     const handleSearchExistingChat = lodash.debounce(() => {
-        let recipient_ids = recipients.filter(r => r.type === "USER").filter(r => {
-            let userFound = false;
-            selectedUsers.forEach(u => {
-                if (u.id === r.type_id) {
-                    userFound = true;
-
-                }
-            });
-            return userFound;
-        }).map(r => r.id);
+        /**
+         * @todo fix recipient ids
+         */
+        let recipient_ids = recipients
+            .filter(r => r.type === "USER")
+            .filter(r => {
+                let userFound = false;
+                selectedUsers.forEach(u => {
+                    if (u.id === r.type_id) {
+                        userFound = true;
+                    }
+                });
+                return userFound;
+            }).map(r => r.id);
 
         let payload = {
-            title: inputValue.trim(),
+            title: inputValue,
             search_recipient_ids: recipient_ids,
         };
         if (recipient_ids.length) {
@@ -367,28 +353,51 @@ const CreateEditChatModal = props => {
                 searchExistingChat(payload, (err, res) => {
                     setSearching(false);
                     if (err) {
-                        setValid(false);
                         return;
                     }
                     if (res.data.channel_id) {
-                        setValid(false);
+                        setChatExists(true);
                     } else {
-                        setValid(true);
+                        setChatExists(false);
                     }
                 }),
             );
         }
-    }, 1000);
-
-    useEffect(() => {
-        if (mode === "new") {
-            if (selectedUsers.length) {
-                handleSearchExistingChat();
-            }
-        }
-    }, [handleSearchExistingChat, mode, selectedUsers.length, inputValue]);
+    }, 500);
 
     const [modules] = useQuillModules("group_chat");
+
+    useEffect(() => {
+        if (mode === "edit") {
+            let currentMembers = channel.members.map(m => {
+                return {
+                    ...m,
+                    value: m.id,
+                    label: m.first_name,
+                };
+            });
+            setSelectedUsers(currentMembers);
+            setInputValue(channel.title);
+        }
+
+        //eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    useEffect(() => {
+        if (!searching) {
+            let valid = true;
+            if (inputValue === "") {
+                valid = false;
+            }
+            if (selectedUsers.length === 0) {
+                valid = false;
+            }
+            if (chatExists === true) {
+                valid = false;
+            }
+            setValid(valid);
+        }
+    }, [inputValue, selectedUsers, chatExists, searching]);
 
     return (
 
