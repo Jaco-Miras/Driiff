@@ -337,9 +337,9 @@ export function createNewChat(payload, callback) {
     );
 }
 
-export function deleteAddNewChatChannel(payload, callback) {
+export function renameChannelKey(payload, callback) {
     return SimpleDispatchActionToReducer(
-        "DELETE_ADD_NEW_CHAT_CHANNEL",
+        "RENAME_CHANNEL_KEY",
         payload,
         callback,
     );
@@ -358,14 +358,6 @@ export function editChannelDetail(payload, callback) {
 export function incomingUpdatedChannelDetail(payload, callback) {
     return SimpleDispatchActionToReducer(
         "INCOMING_UPDATED_CHANNEL_DETAIL",
-        payload,
-        callback,
-    );
-}
-
-export function updateNewCreatedChannel(payload, callback) {
-    return SimpleDispatchActionToReducer(
-        "UPDATE_NEW_CREATED_CHANNEL",
         payload,
         callback,
     );

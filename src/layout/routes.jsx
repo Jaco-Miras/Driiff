@@ -24,7 +24,7 @@ export const AppRoute = ({authenticated, children, ...props}) => {
                     <Redirect
                         from="*"
                         to={{
-                            pathname: "/dashboard",
+                            pathname: "/chat",
                             state: {from: props.location},
                         }}
                     />

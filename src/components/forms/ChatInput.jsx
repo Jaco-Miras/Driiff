@@ -90,7 +90,6 @@ const ChatInput = props => {
     const [quote] = useSelectQuote();
 
     const handleSubmit = () => {
-
         //let specialCommands = ["/sound-on", "/sound-off"];
         // if (specialCommands.includes(textOnly.trim())) {
         //     setText("")
@@ -414,8 +413,8 @@ const ChatInput = props => {
         }
     }, [selectedEmoji]);
 
-    useEffect( () => {
-        if(selectedGif) {
+    useEffect(() => {
+        if (selectedGif) {
             const editor = reactQuillRef.current.getEditor();
             reactQuillRef.current.focus();
             const cursorPosition = editor.getSelection().index;
@@ -423,7 +422,7 @@ const ChatInput = props => {
             editor.setSelection(cursorPosition + 5);
             onClearGif();
         }
-    }, [selectedGif])
+    }, [selectedGif]);
 
     useEffect(() => {
         if (sendButtonClicked) {

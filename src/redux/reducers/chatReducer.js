@@ -69,19 +69,25 @@ export default function (state = INITIAL_STATE, action) {
                 channels: channels,
             };
         }
-        case "DELETE_ADD_NEW_CHAT_CHANNEL":
-            let channel = state.channels;
+        case "RENAME_CHANNEL_KEY":
+            let channels = state.channels;
+            delete channels[action.data.old_id];
+            delete action.data.old_id;
 
-            delete channel[action.data.key_id];
+            channels[action.data.id] = action.data;
 
-            channel[action.data.id] = {
-                ...channel[action.data.id],
-                ...action.data,
-            };
+            let selectedChannel = state.selectedChannel;
+            if (action.data.selected) {
+                if (selectedChannel) {
+                    channels[selectedChannel.id].selected = false;
+                }
+                selectedChannel = action.data;
+            }
 
             return {
                 ...state,
-                channels: channel,
+                channels: channels,
+                selectedChannel: selectedChannel,
             };
         case "GET_CHANNELS_SUCCESS": {
             let channels = state.channels;
@@ -105,26 +111,25 @@ export default function (state = INITIAL_STATE, action) {
             };
         }
         case "UPDATE_CHANNEL_REDUCER": {
+            let channel = {
+                ...state.channels[action.data.id],
+                ...action.data,
+            };
+
             return {
                 ...state,
                 channels: {
                     ...state.channels,
-                    [action.data.id]: action.data,
+                    [action.data.id]: channel,
                 },
-                selectedChannel: state.selectedChannel && state.selectedChannel.id === action.data.id ? action.data : state.selectedChannel,
+                selectedChannel: state.selectedChannel && state.selectedChannel.id === channel.id ? channel : state.selectedChannel,
             };
         }
         case "SET_SELECTED_CHANNEL": {
-            let channel = action.data;
-
-            if (channel.last_reply)
-                channel.last_reply.body = channel.last_reply.body.replace(" in ", " in #");
-
-            channel.original_title = channel.title;
-
-            if (channel.original_title === "PERSONAL_BOT") {
-                channel.type = "PERSONAL_BOT";
-            }
+            let channel = {
+                ...state.channels[action.data.id],
+                ...action.data,
+            };
 
             let updatedChannels = {...state.channels};
             if (state.selectedChannel) {
@@ -134,13 +139,13 @@ export default function (state = INITIAL_STATE, action) {
 
             return {
                 ...state,
-                selectedChannel: action.data,
+                selectedChannel: channel,
                 channels: updatedChannels,
             };
         }
         case "UPDATE_MEMBER_TIMESTAMP": {
             let channel = null;
-            if (Object.keys(state.channels).length > 0 && state.channels.hasOwnProperty(action.data.channel_id)){
+            if (Object.keys(state.channels).length > 0 && state.channels.hasOwnProperty(action.data.channel_id)) {
                 channel = {...state.channels[action.data.channel_id]};
                 channel = {
                     ...channel,
@@ -226,7 +231,7 @@ export default function (state = INITIAL_STATE, action) {
         }
         case "MARK_ALL_MESSAGES_AS_READ": {
             let channel = null;
-            if (Object.keys(state.channels).length > 0 && state.channels.hasOwnProperty(action.data.channel_id)){
+            if (Object.keys(state.channels).length > 0 && state.channels.hasOwnProperty(action.data.channel_id)) {
                 channel = {...state.channels[action.data.channel_id]};
                 channel = {
                     ...channel,
@@ -695,19 +700,6 @@ export default function (state = INITIAL_STATE, action) {
                     }
                     : state.selectedChannel,
             };
-        }
-        case "UPDATE_NEW_CREATED_CHANNEL": {
-            let updatedChanels = {...state.channels}
-            delete updatedChanels[action.data.reference_id];
-
-            return {
-                ...state,
-                channels: {
-                    ...updatedChanels,
-                    [action.data.id]: action.data
-                },
-                selectedChannel: action.data
-            }
         }
         default:
             return state;

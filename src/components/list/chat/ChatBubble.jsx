@@ -34,7 +34,7 @@ const ChatBubbleContainer = styled.div`
     font-size: .835rem;
     line-height: 1.5rem;
     overflow: visible;
-    ${props => props.isForwardedMessage === true && "margin-top: 25px;" }
+    ${props => props.isForwardedMessage === true && "margin-top: 25px;"}
 
     &:focus {
         -webkit-box-shadow: 0 0 0 1px ${props => (props.isAuthor ? props.theme.self.chat_bubble_focus_border_color : props.theme.others.chat_bubble_focus_border_color)};
@@ -64,7 +64,7 @@ const ChatBubbleContainer = styled.div`
         top: -24px;
         left: 0;
         white-space: nowrap;
-        ${props => props.isForwardedMessage === true && "top: -40px;" }
+        ${props => props.isForwardedMessage === true && "top: -40px;"}
     }
     span.emoticon-body {
         font-size: 35px;
@@ -842,14 +842,15 @@ const ChatBubble = forwardRef((props, ref) => {
                 {
                     reply.is_transferred &&
                     <ForwardedSpan className="small">
-                        <SvgIconFeather icon="corner-up-right" />Forwarded message
+                        <SvgIconFeather icon="corner-up-right"/>Forwarded message
                     </ForwardedSpan>
                 }
                 <ChatContentClap
                     ref={addMessageRef ? loadRef : null}
                     className='chat-content-clap'
                     isAuthor={isAuthor}>
-                    <ChatContent showAvatar={showAvatar} isAuthor={isAuthor} className={`chat-content animated slower ${highlightedText ? "is-highlighted" : ""}`}>
+                    <ChatContent showAvatar={showAvatar} isAuthor={isAuthor}
+                                 className={`chat-content animated slower ${highlightedText ? "is-highlighted" : ""}`}>
                         {
                             reply.quote && reply.quote.body && (reply.is_deleted === 0) &&
                             (reply.quote.user_id !== undefined || reply.quote.user !== undefined) &&

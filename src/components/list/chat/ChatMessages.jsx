@@ -419,7 +419,7 @@ const StyledAvatar = styled(Avatar)`
     align-self: flex-start;    
     width: 21px !important;
     height: 21px !important;
-    margin-top: ${props => props.isForwardedMessage === true ? "25px" : "4px" };
+    margin-top: ${props => props.isForwardedMessage === true ? "25px" : "4px"};
     
     img {
         width: 21px !important;

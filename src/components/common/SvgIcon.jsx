@@ -90,6 +90,11 @@ export const SvgIconFeather = React.memo(React.forwardRef((props, ref) => {
                 <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
             </>;
             break;
+        case "play":
+            content = <>
+                <polygon points="5 3 19 12 5 21 5 3"></polygon>
+            </>;
+            break;
         case "plus":
             content = <>
                 <line x1="12" y1="5" x2="12" y2="19"></line>
