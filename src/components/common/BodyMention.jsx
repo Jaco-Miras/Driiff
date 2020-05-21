@@ -15,6 +15,7 @@ const BodyMentionDiv = styled.div`
         font-weight: 600;
         border: 1px solid #ddd;
     }
+`;
 const BodyMention = props => {
     const {onAddUsers, onDoNothing, userIds, type = "post", basedOnId = true} = props;
     const userRecipients = useSelector(state => state.global.recipients.filter(r => r.type === "USER"));
