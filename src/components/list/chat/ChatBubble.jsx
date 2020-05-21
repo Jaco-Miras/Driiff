@@ -342,6 +342,7 @@ const ChatContentClap = styled.div`
   }
 `;
 const ChatContent = styled.div`
+    ${props => (props.isEmoticonOnly && `
     &:before {
         ${props => (props.showAvatar && "content: '';")};
         border: 10px solid transparent;
@@ -360,6 +361,7 @@ const ChatContent = styled.div`
         width: 20px;
         height: 20px;
     }
+    `)}
     
     .reply-author {
         // padding: ${props => props.isAuthor ? "0 10px 0 40px" : "0 40px 0 10px"};
@@ -853,7 +855,7 @@ const ChatBubble = forwardRef((props, ref) => {
                     ref={addMessageRef ? loadRef : null}
                     className='chat-content-clap'
                     isAuthor={isAuthor}>
-                    <ChatContent showAvatar={showAvatar} isAuthor={isAuthor}
+                    <ChatContent showAvatar={showAvatar} isAuthor={isAuthor} isEmoticonOnly={isEmoticonOnly}
                                  className={`chat-content animated slower ${highlightedText ? "is-highlighted" : ""}`}>
                         {
                             reply.quote && reply.quote.body && (reply.is_deleted === 0) &&
