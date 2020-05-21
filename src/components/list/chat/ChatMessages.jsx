@@ -48,7 +48,6 @@ import ChatMessageOptions from "./ChatMessageOptions";
 import ChatNewMessagesLine from "./ChatNewMessageLine";
 import ChatReactionButton from "./ChatReactionButton";
 import ChatUnfurl from "./ChatUnfurl";
-import ChatUnreadLine from "./ChatUnreadLine";
 import ChatReactions from "./Reactions/ChatReactions";
 import SeenIndicator from "./SeenIndicator";
 import SystemMessage from "./SystemMessage";
@@ -674,24 +673,12 @@ class ChatMessages extends React.PureComponent {
             }
             // has replies
             if (selectedChannel.replies.length) {
-                // document.removeEventListener("keydown", this.handleEditOnArrowUp, false);
-                // document.addEventListener("keydown", this.handleEditOnArrowUp, false);
 
                 let hasUnreadMessage = selectedChannel.replies.filter(r => r.is_read === false).length > 0;
                 if (this.state.bottomRefInView && hasUnreadMessage && this.props.isBrowserActive && selectedChannel.is_read === 1) {
                     console.log("mark read");
                     markAllMessagesAsRead({channel_id: selectedChannel.id});
-                    markReadChannel({channel_id: selectedChannel.id}, (err, res) => {
-                        if (err) return;
-                        let updatedChannel = {
-                            ...selectedChannel,
-                            mark_new_messages_as_read: true,
-                            mark_unread: selectedChannel.mark_unread,
-                            total_unread: 0,
-                            minus_count: selectedChannel.total_unread,
-                        };
-                        //updateUnreadChatReplies(updatedChannel);
-                    });
+                    markReadChannel({channel_id: selectedChannel.id});
 
                 }
 
@@ -714,30 +701,6 @@ class ChatMessages extends React.PureComponent {
             }
         }
     }
-
-    handleEditOnArrowUp = e => {
-        const {selectedChannel} = this.props;
-        if (e.keyCode === 38) {
-            if (e.target.classList.contains("ql-editor")) {
-                if (e.target.innerText.trim() === "" && !e.target.contains(document.querySelector(".ql-editor .anchor-blot"))) {
-                    e.preventDefault();
-                    let lastReply = selectedChannel.replies.sort((a, b) => b.created_at.timestamp - a.created_at.timestamp)
-                        .filter(r => {
-                                if (selectedChannel.is_shared && this.props.sharedSlugs.length) {
-                                    return (this.props.sharedSlugs.filter(s => s.slug_name === selectedChannel.slug_owner)[0].external_id) && (typeof r.id === "number") && r.is_deleted === 0;
-                                } else {
-                                    return r.is_deleted === 0 && r.user.id === this.props.user.id && (typeof r.id === "number");
-                                }
-                            },
-                        )[0];
-
-                    if (typeof lastReply !== "undefined") {
-                        this.handleEditReply(lastReply);
-                    }
-                }
-            }
-        }
-    };
 
     handleResendMessage = payload => {
         this.props.createChatMessageV2Action(payload, (err, res) => {
@@ -828,16 +791,9 @@ class ChatMessages extends React.PureComponent {
     };
 
     render() {
-        const {
-            selectedChannel,
-            showFloatBar,
-        } = this.props;
+        const { selectedChannel } = this.props;
 
         let lastReplyUserId = 0;
-        let hasUnReadLine = false;
-        let unreadMessage = false;
-        let hasNewMessageLine = false;
-        let newMessage = false;
 
         let groupedMessages = [];
 
@@ -898,11 +854,11 @@ class ChatMessages extends React.PureComponent {
                                                         this.props.sharedSlugs.filter(s => s.slug_name === selectedChannel.slug_owner)[0].external_id === reply.user.id
                                                         : reply.user.id === this.props.user.id : false;
 
-                                                    //let lastReply = false;
                                                     let showAvatar = false;
                                                     let showTimestamp = false;
                                                     let showGifPlayer = false;
                                                     let isBot = false;
+                                                    let showMessageLine = false;
 
                                                     if (reply.user) {
                                                         if (reply.created_at.timestamp) {
@@ -923,29 +879,10 @@ class ChatMessages extends React.PureComponent {
                                                                 showAvatar = true;
                                                             }
                                                         }
-
-                                                        if (unreadMessage) {
-                                                            hasUnReadLine = true;
-                                                            unreadMessage = false;
+                                                        
+                                                        if (k !== 0 && e[k - 1].is_read === true && reply.is_read === false) {
+                                                            showMessageLine = true;
                                                         }
-
-                                                        if (newMessage) {
-                                                            hasNewMessageLine = true;
-                                                            newMessage = false;
-                                                        }
-
-                                                        if (!hasUnReadLine && reply.user.id !== this.props.user.id && selectedChannel.mark_unread && selectedChannel.last_visited_at_timestamp < reply.created_at.timestamp) {
-                                                            unreadMessage = true;
-                                                        }
-
-                                                        if (!hasNewMessageLine && reply.user.id !== this.props.user.id && showFloatBar &&
-                                                            !reply.is_read && !selectedChannel.mark_new_messages_as_read && !selectedChannel.mark_unread && selectedChannel.last_visited_at_timestamp < reply.created_at.timestamp) {
-                                                            newMessage = true;
-                                                        }
-
-                                                        // if (k === selectedChannel.replies.length - 1) {
-                                                        //     lastReply = true;
-                                                        // }
                                                         if (k !== 0 && e[k - 1].user === null) {
                                                             showAvatar = true;
                                                         }
@@ -993,14 +930,7 @@ class ChatMessages extends React.PureComponent {
                                                         showTimestamp={showTimestamp}
                                                     >
                                                         {
-                                                            reply.user && unreadMessage ? (
-                                                                <ChatUnreadLine/>
-                                                            ) : null
-                                                        }
-                                                        {
-                                                            reply.user && newMessage ? (
-                                                                <ChatNewMessagesLine/>
-                                                            ) : null
+                                                            reply.user && showMessageLine && <ChatNewMessagesLine/>  
                                                         }
                                                         {
                                                             reply.user &&
