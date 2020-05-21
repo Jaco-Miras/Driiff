@@ -10,3 +10,4 @@ export {default as PickerEmoji} from "./PickerEmoji";
 export * from "./SvgIcon";
 export {default as UserListPopUp} from "./UserListPopUp";
 export {default as SvgImage} from "./SvgImage";
+export {default as CommonPicker} from "./CommonPicker";

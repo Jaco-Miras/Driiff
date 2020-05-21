@@ -419,7 +419,7 @@ const StyledAvatar = styled(Avatar)`
     align-self: flex-start;    
     width: 21px !important;
     height: 21px !important;
-    margin-top: ${props => props.isForwardedMessage === true ? "25px" : "4px" };
+    margin-top: ${props => props.isForwardedMessage === true ? "25px" : "4px"};
     
     img {
         width: 21px !important;
@@ -668,7 +668,7 @@ class ChatMessages extends React.PureComponent {
 
                 let hasUnreadMessage = selectedChannel.replies.filter(r => r.is_read === false).length > 0;
                 if (this.state.bottomRefInView && hasUnreadMessage && this.props.isBrowserActive && selectedChannel.is_read === 1) {
-                    console.log('mark read')
+                    console.log("mark read");
                     // markAllMessagesAsRead({channel_id: selectedChannel.id});
                     // markReadChannel({channel_id: selectedChannel.id}, (err, res) => {
                     //     if (err) return;

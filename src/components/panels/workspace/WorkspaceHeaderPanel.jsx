@@ -45,12 +45,14 @@ const WorspaceHeaderPanel = (props) => {
                         </a>
                         <div className="dropdown-menu">
                             <a href="/" className="nav-link dropdown-toggle" data-toggle="dropdown">
-                                <img className="mr-2" src={require("../../../assets/media/image/flags/262-united-kingdom.png")}
+                                <img className="mr-2"
+                                     src={require("../../../assets/media/image/flags/262-united-kingdom.png")}
                                      alt="flag"
                                      width="18"/> English
                             </a>
                             <a href="/" className="dropdown-item">
-                                <img src={require("../../../assets/media/image/flags/195-netherlands.png")} className="mr-2"
+                                <img src={require("../../../assets/media/image/flags/195-netherlands.png")}
+                                     className="mr-2"
                                      alt="flag"
                                      width="18"/>
                                 Dutch

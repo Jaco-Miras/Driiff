@@ -2,7 +2,7 @@ import React, {useRef, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import styled from "styled-components";
 import {onClickSendButton} from "../../../redux/actions/chatActions";
-import {PickerEmoji, SvgIconFeather} from "../../common";
+import {CommonPicker, SvgIconFeather} from "../../common";
 import ChatInput from "../../forms/ChatInput";
 import ChatQuote from "../../list/chat/ChatQuote";
 
@@ -45,7 +45,7 @@ const IconButton = styled(SvgIconFeather)`
 const Dflex = styled.div`
 `;
 
-const StyledPickerEmoji = styled(PickerEmoji)`
+const PickerContainer = styled(CommonPicker)`
     right: unset;
     bottom: 70px;
 `;
@@ -55,7 +55,9 @@ const ChatFooterPanel = (props) => {
     const {className = "", onShowFileDialog, dropAction} = props;
 
     const dispatch = useDispatch();
-    const pickerRef = useRef();
+    const ref = {
+        picker: useRef(),
+    };
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
     const [selectedEmoji, setSelectedEmoji] = useState(null);
     const [selectedGif, setSelectedGif] = useState(null);
@@ -63,7 +65,9 @@ const ChatFooterPanel = (props) => {
     const selectedChannel = useSelector(state => state.chat.selectedChannel);
 
     const handleSend = () => {
-        dispatch(onClickSendButton(true));
+        dispatch(
+            onClickSendButton(true),
+        );
     };
 
     const handleShowEmojiPicker = () => {
@@ -84,6 +88,7 @@ const ChatFooterPanel = (props) => {
 
     const onClearGif = () => {
         setSelectedGif(null);
+        handleSend();
     };
 
     return (
@@ -117,12 +122,13 @@ const ChatFooterPanel = (props) => {
                 }
                 {
                     showEmojiPicker === true &&
-                    <StyledPickerEmoji
+                    <PickerContainer
+                        handleSend={handleSend}
                         handleShowEmojiPicker={handleShowEmojiPicker}
                         onSelectEmoji={onSelectEmoji}
                         onSelectGif={onSelectGif}
                         orientation={"top"}
-                        ref={pickerRef}
+                        ref={ref.picker}
                     />
                 }
             </Dflex>

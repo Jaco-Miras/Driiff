@@ -85,16 +85,20 @@ const CompanyHeaderPanel = (props) => {
                 <ul className="navbar-nav">
                     <li className="nav-item">
                         <a href="/" className="nav-link dropdown-toggle" data-toggle="dropdown">
-                            <img className="mr-2" src={require("../../../assets/media/image/flags/262-united-kingdom.png")} alt="flag"
+                            <img className="mr-2"
+                                 src={require("../../../assets/media/image/flags/262-united-kingdom.png")} alt="flag"
                                  width="18"/> English
                         </a>
                         <div className="dropdown-menu">
                             <a href="/" className="nav-link dropdown-toggle" data-toggle="dropdown">
-                                <img className="mr-2" src={require("../../../assets/media/image/flags/262-united-kingdom.png")} alt="flag"
+                                <img className="mr-2"
+                                     src={require("../../../assets/media/image/flags/262-united-kingdom.png")}
+                                     alt="flag"
                                      width="18"/> English
                             </a>
                             <a href="/" className="dropdown-item">
-                                <img src={require("../../../assets/media/image/flags/195-netherlands.png")} className="mr-2" alt="flag"
+                                <img src={require("../../../assets/media/image/flags/195-netherlands.png")}
+                                     className="mr-2" alt="flag"
                                      width="18"/>
                                 Dutch
                             </a>

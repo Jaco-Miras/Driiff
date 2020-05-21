@@ -27,6 +27,19 @@ const StyledPickerEmoji = styled(PickerEmoji)`
     top: ${props => props.orientation === "bottom" ? "35px" : null};
     left: ${props => props.hOrientation === "left" ? "unset" : "0"};
     right: ${props => props.hOrientation === "left" ? "5px" : "unset"};
+    
+    li {        
+        &:before {
+            content: "" !important;
+            margin:0 !important;
+            display: none !important;            
+        }
+        
+        padding-left: 0 !important;
+        text-align: left !important;
+        position: relative !important;
+        margin-left: 10px !important;
+    }
 `;
 
 const ChatReactionButton = props => {
