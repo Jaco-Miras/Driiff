@@ -47,8 +47,8 @@ export default (state = INITIAL_STATE, action) => {
         case "ADD_USER_TO_REDUCERS": {
             return {
                 ...state,
-                user: action.data
-            }
+                user: action.data,
+            };
         }
         case "GET_USER_SETTINGS_SUCCESS": {
             let settings = state.userSettings;

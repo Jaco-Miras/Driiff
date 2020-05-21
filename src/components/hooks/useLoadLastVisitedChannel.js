@@ -3,7 +3,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {addToChannels, getChannel, getLastVisitedChannel, setSelectedChannel} from "../../redux/actions/chatActions";
 
 const useLoadLastVisitedChannel = (props) => {
-    const { history} = props;
+    const {history} = props;
     const {path, params} = props.match;
     const dispatch = useDispatch();
 

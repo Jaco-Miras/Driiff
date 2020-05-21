@@ -1,6 +1,6 @@
 import React, {useState} from "react";
-import {withRouter} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
+import {withRouter} from "react-router-dom";
 import styled from "styled-components";
 import {setChannelHistoricalPosition, setSelectedChannel} from "../../../redux/actions/chatActions";
 import ChannelIcon from "./ChannelIcon";

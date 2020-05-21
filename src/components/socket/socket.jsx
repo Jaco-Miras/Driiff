@@ -173,7 +173,7 @@ class Socket extends PureComponent {
             id: this.props.user.id,
             name: this.props.user.name,
             partial_name: this.props.user.partial_name,
-            profile_image_link: this.props.user.profile_image_link
+            profile_image_link: this.props.user.profile_image_link,
         });
         // Set the name of the hidden property and the change event for visibility
         if (typeof document.hidden !== "undefined") { // Opera 12.10 and Firefox 18 and later support 
@@ -927,16 +927,16 @@ class Socket extends PureComponent {
                 console.log(e, "chat channel");
                 if (e.channel_data.creator_by.id !== this.props.user.id) {
                     this.props.getChannel({channel_id: e.channel_data.channel_id}, (err, res) => {
-                        if (err) return
+                        if (err) return;
                         let channel = {
                             ...res.data,
                             selected: false,
                             replies: [],
                             skip: 0,
                             hasMore: true,
-                        }
-                        this.props.addToChannels(channel)
-                    })
+                        };
+                        this.props.addToChannels(channel);
+                    });
                 }
             })
             .listen(".update-chat-message", e => {
@@ -1261,7 +1261,7 @@ function mapDispatchToProps(dispatch) {
         incomingUpdatedChatMessage: bindActionCreators(incomingUpdatedChatMessage, dispatch),
         incomingDeletedChatMessage: bindActionCreators(incomingDeletedChatMessage, dispatch),
         incomingUpdatedChannelDetail: bindActionCreators(incomingUpdatedChannelDetail, dispatch),
-        
+
         // logoutAction: bindActionCreators(logout, dispatch),
         // simpleNewNotificationSocketAction: bindActionCreators(simpleNewNotificationSocket, dispatch),
         // getNotificationsAction: bindActionCreators(getNotifications, dispatch),

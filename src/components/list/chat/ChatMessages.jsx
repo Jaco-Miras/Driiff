@@ -598,9 +598,9 @@ class ChatMessages extends React.PureComponent {
     componentDidMount() {
         const {
             selectedChannel,
-            historicalPositions
+            historicalPositions,
         } = this.props;
-        
+
         const scrollComponent = this.scrollComponent.current;
 
         if (historicalPositions.length) {
@@ -679,7 +679,7 @@ class ChatMessages extends React.PureComponent {
 
                 let hasUnreadMessage = selectedChannel.replies.filter(r => r.is_read === false).length > 0;
                 if (this.state.bottomRefInView && hasUnreadMessage && this.props.isBrowserActive && selectedChannel.is_read === 1) {
-                    console.log('mark read')
+                    console.log("mark read");
                     markAllMessagesAsRead({channel_id: selectedChannel.id});
                     markReadChannel({channel_id: selectedChannel.id}, (err, res) => {
                         if (err) return;

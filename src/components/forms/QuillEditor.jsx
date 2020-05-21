@@ -15,6 +15,6 @@ const QuillEditor = forwardRef((props, ref) => {
 });
 export default QuillEditor;
 
-const Block = Quill.import('blots/block');
-Block.tagName = 'div';
+const Block = Quill.import("blots/block");
+Block.tagName = "div";
 Quill.register(Block);
