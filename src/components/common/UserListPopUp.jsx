@@ -71,7 +71,7 @@ const UserListPopUp = props => {
                             <li key={k}>
                                 <Avatar
                                     size={"xs"}
-                                    profileImageLink={u.profile_image_link}
+                                    imageLink={u.profile_image_link}
                                     userId={u.id}
                                     name={u.name}
                                     partialName={u.partial_name}
