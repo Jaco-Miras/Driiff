@@ -898,9 +898,8 @@ const ChatBubble = forwardRef((props, ref) => {
                                 isAuthor={isAuthor}
                                 theme={props.settings.CHAT_SETTINGS.chat_message_theme}
                                 chatFiles={chatFiles}
-                                //addFilesToViewAction={props.addFilesToViewAction}
-                                //fileOnly={fileOnly}
                                 files={reply.files}
+                                reply={reply}
                             />
                         }
                         {

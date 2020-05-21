@@ -4,6 +4,7 @@ const INITIAL_STATE = {
     user: null,
     files: {},
     channelFiles: {},
+    viewFiles: null
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -25,8 +26,16 @@ export default (state = INITIAL_STATE, action) => {
                 ...state,
                 channelFiles: {
                     ...state.channelFiles,
-                    [action.data.channel_id]: action.data.results.map(f => f.file_id)
+                    [action.data.channel_id]: action.data.results
+                    //temporary
+                    //[action.data.channel_id]: action.data.results.map(f => f.file_id)
                 }
+            }
+        }
+        case "SET_VIEW_FILES": {
+            return {
+                ...state,
+                viewFiles: action.data
             }
         }
         default:
