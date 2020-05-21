@@ -1,4 +1,5 @@
 import React, {useState} from "react";
+import {withRouter} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import styled from "styled-components";
 import {setChannelHistoricalPosition, setSelectedChannel} from "../../../redux/actions/chatActions";
@@ -60,8 +61,6 @@ const ChannelList = props => {
     };
 
     const handleSelectChannel = () => {
-        //this.props.handleShowNewChatWindow(false);
-        //this.handleBlurSearchInput(e);
 
         if (selectedChannel.id !== channel.id) {
             const scrollComponent = document.getElementById("component-chat-thread");
@@ -75,7 +74,7 @@ const ChannelList = props => {
             dispatch(
                 setSelectedChannel({...channel, selected: true}),
             );
-            //props.history.push(`/chat/${updatedChannel.code}`);
+            props.history.push(`/chat/${channel.code}`);
         }
     };
 
@@ -96,4 +95,4 @@ const ChannelList = props => {
     );
 };
 
-export default ChannelList;
+export default withRouter(ChannelList);

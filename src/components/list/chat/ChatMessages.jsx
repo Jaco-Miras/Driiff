@@ -598,9 +598,18 @@ class ChatMessages extends React.PureComponent {
     componentDidMount() {
         const {
             selectedChannel,
+            historicalPositions
         } = this.props;
-        //document.addEventListener("keydown", this.handleEditOnArrowUp, false);
-        // this.setState({activeChannelId: this.props.selectedChannel.id});
+        
+        const scrollComponent = this.scrollComponent.current;
+
+        if (historicalPositions.length) {
+            historicalPositions.forEach(hp => {
+                if (hp.channel_id === selectedChannel.id && scrollComponent) {
+                    scrollComponent.scrollTop = scrollComponent.scrollHeight - hp.scrollPosition;
+                }
+            });
+        }
 
         if (selectedChannel.skip === 0) this.loadReplies();
         this.handleReadChannel();
@@ -625,7 +634,7 @@ class ChatMessages extends React.PureComponent {
             selectedChannel,
             markReadChannel,
             markAllMessagesAsRead,
-            updateUnreadChatReplies,
+            //updateUnreadChatReplies,
             historicalPositions,
             user,
         } = this.props;

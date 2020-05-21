@@ -12,7 +12,7 @@ export const AppRoute = ({authenticated, children, ...props}) => {
                     <Route
                         {...props}
                         component={MainLayout}
-                        path={["/dashboard", "/posts", "/chat", "/files", "/people", "/settings", "/logout", "/logged-out"]}>
+                        path={["/dashboard", "/posts", "/chat", "/chat/:cid", "/chat/:cid/:mid", "/files", "/people", "/settings", "/logout", "/logged-out"]}>
                         {children}
                     </Route>
                     <Route

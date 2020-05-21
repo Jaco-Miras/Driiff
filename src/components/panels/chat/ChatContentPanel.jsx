@@ -10,6 +10,10 @@ import {ChatFooterPanel, ChatHeaderPanel} from "./index";
 const Wrapper = styled.div`
 `;
 
+const ChatMessagesPlaceholder = styled.div`
+    flex: 1;
+`;
+
 const ChatContentPanel = (props) => {
 
     const dispatch = useDispatch();
@@ -94,7 +98,7 @@ const ChatContentPanel = (props) => {
                 onCancel={handleHideDropzone}
             />
             <ChatHeaderPanel/>
-            {selectedChannel !== null && <ChatMessages/>}
+            {selectedChannel !== null ? <ChatMessages/> : <ChatMessagesPlaceholder/>}
             {/* <ChatMessagesPanel/> */}
             <ChatFooterPanel onShowFileDialog={handleOpenFileDialog} dropAction={dropAction}/>
         </Wrapper>
