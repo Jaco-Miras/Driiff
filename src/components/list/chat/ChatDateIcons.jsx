@@ -28,10 +28,11 @@ const PinIcon = styled(SvgIcon)`
 `;
 
 const Badge = styled.span`
-    color: #fff;
+    color: #fff !important;
+        
     &.unread {
-        color: #7a1b8b;
-    }
+        color: #7a1b8b !important;
+    }    
 `;
 
 const ChatDateIcons = props => {
