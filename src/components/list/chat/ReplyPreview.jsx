@@ -15,6 +15,7 @@ const DraftContent = styled.span`
 const LastReplyName = styled.span`
 `;
 const LastReplyBody = styled.div`
+    max-width: calc(100% - 4.5rem);
 `;
 const TextIcon = styled(SvgIcon)`
     filter: brightness(0) saturate(100%) invert(79%) sepia(14%) saturate(364%) hue-rotate(194deg) brightness(86%) contrast(88%);

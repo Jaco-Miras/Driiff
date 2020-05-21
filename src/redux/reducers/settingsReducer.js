@@ -10,7 +10,7 @@ const INITIAL_STATE = {
                 order_by: "channel_date_updated",
                 sort_by: "DESC",
             },
-            preview_message: false,
+            preview_message: true,
             chat_message_theme: {
                 preset: "default",
                 self: {

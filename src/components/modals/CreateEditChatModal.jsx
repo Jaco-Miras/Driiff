@@ -275,7 +275,7 @@ const CreateEditChatModal = props => {
                 recipient_ids: recipient_ids,
                 title: inputValue,
             };
-            if (textOnly.trim !== "") {
+            if (textOnly.trim().length !== 0) {
                 payload = {
                     ...payload,
                     message_body: text,
@@ -328,9 +328,6 @@ const CreateEditChatModal = props => {
     };
 
     const handleSearchExistingChat = lodash.debounce(() => {
-        /**
-         * @todo fix recipient ids
-         */
         let recipient_ids = recipients
             .filter(r => r.type === "USER")
             .filter(r => {
