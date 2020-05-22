@@ -1,8 +1,8 @@
 import React from "react";
 import {useSelector} from "react-redux";
 import styled from "styled-components";
-import {ChatForwardModal, ChatReminderModal, ConfirmationModal, CreateEditChatModal, FileUploadModal} from "../modals";
 import FileViewer from "../common/FileViewer";
+import {ChatForwardModal, ChatReminderModal, ConfirmationModal, CreateEditChatModal, FileUploadModal} from "../modals";
 
 const ModalPanelContainer = styled.div`
     z-index: 7;
@@ -46,8 +46,8 @@ const ModalPanel = props => {
             <ModalPanelContainer>
                 <FileViewer/>
             </ModalPanelContainer>
-        )
-    } else return null
+        );
+    } else return null;
 };
 
 export default React.memo(ModalPanel);

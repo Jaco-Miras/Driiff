@@ -104,9 +104,9 @@ const ChatHeaderPanel = (props) => {
                         {
                             (["PERSONAL_BOT", "COMPANY"].includes(chatChannel.type) === false) &&
                             <>
-                            <li className="mr-4 d-sm-inline d-none">
-                                <IconButton icon={`trash`} onClick={handleShowArchiveConfirmation}/>
-                            </li>
+                                <li className="mr-4 d-sm-inline d-none">
+                                    <IconButton icon={`trash`} onClick={handleShowArchiveConfirmation}/>
+                                </li>
                             </>
                         }
                         <li className="ml-4 mobile-chat-close-btn">
