@@ -9,6 +9,8 @@ const Wrapper = styled.div`
 const ActionContainer = styled.div`
     position: relative;
     top: 4px;
+    display: flex;
+    flex-direction: row-reverse;
 `;
 const Icon = styled(SvgIconFeather)`
     filter: brightness(0) saturate(100%) invert(43%) sepia(19%) saturate(0%) hue-rotate(214deg) brightness(87%) contrast(86%);      
@@ -52,12 +54,12 @@ const ChatDateIcons = props => {
             </span>
             <ActionContainer>
                 {
-                    !!channel.is_muted &&
-                    <Icon icon="volume-x" className={`${!!channel.is_pinned && "mr-1"}`}/>
-                }
-                {
                     !!channel.is_pinned &&
                     <Icon icon="star"/>
+                }
+                {
+                    !!channel.is_muted &&
+                    <Icon icon="volume-x" className={`${!!channel.is_pinned && "mr-1"}`}/>
                 }
             </ActionContainer>
         </Wrapper>

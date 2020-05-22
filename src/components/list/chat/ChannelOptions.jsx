@@ -448,10 +448,11 @@ const ChannelOptions = props => {
                 orientation={orientation.vertical}>
                 <div onClick={handlePinButton}>
                     <Icon className={channel.is_pinned && `fill`} icon="star"/>
-                    {channel.is_pinned ? `Unpin` : `Pin`}
+                    {channel.is_pinned ? `Unfavorite` : `Favorite`}
                 </div>
                 <div onClick={e => handleMarkAsUnreadSelected(e)}>
-                    <Icon icon={channel.mark_unread || (!channel.mark_unread && channel.total_unread) ? `eye` : `eye-off`}/>
+                    <Icon
+                        icon={channel.mark_unread || (!channel.mark_unread && channel.total_unread) ? `eye` : `eye-off`}/>
                     {(channel.mark_unread || (!channel.mark_unread && channel.total_unread > 0)) ? `Mark as Read` : `Mark as Unread`}
                 </div>
                 <div onClick={handleMuteChat}>

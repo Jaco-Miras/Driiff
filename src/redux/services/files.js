@@ -1,7 +1,7 @@
 import {apiCall} from "./index";
 
 export function getFiles(payload) {
-    const { sort } = payload;
+    const {sort} = payload;
     let url = `/v1/files`;
     if (payload.sort) {
         url += `?sort=${sort}`;

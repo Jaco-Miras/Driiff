@@ -791,7 +791,7 @@ class ChatMessages extends React.PureComponent {
     };
 
     render() {
-        const { selectedChannel } = this.props;
+        const {selectedChannel} = this.props;
 
         let lastReplyUserId = 0;
 
@@ -879,7 +879,7 @@ class ChatMessages extends React.PureComponent {
                                                                 showAvatar = true;
                                                             }
                                                         }
-                                                        
+
                                                         if (k !== 0 && e[k - 1].is_read === true && reply.is_read === false) {
                                                             showMessageLine = true;
                                                         }
@@ -930,7 +930,7 @@ class ChatMessages extends React.PureComponent {
                                                         showTimestamp={showTimestamp}
                                                     >
                                                         {
-                                                            reply.user && showMessageLine && <ChatNewMessagesLine/>  
+                                                            reply.user && showMessageLine && <ChatNewMessagesLine/>
                                                         }
                                                         {
                                                             reply.user &&

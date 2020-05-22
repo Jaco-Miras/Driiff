@@ -1,7 +1,9 @@
 import React, {forwardRef, useState} from "react";
+import {useDispatch} from "react-redux";
 import styled from "styled-components";
 import arrowDown from "../../../../assets/icon/arrow/down/r/arrow_down_r_secundary.svg";
 import arrowRight from "../../../../assets/icon/arrow/right/white-arrow-right.svg";
+import {setViewFiles} from "../../../../redux/actions/fileActions";
 import FilePill from "./FilePill";
 
 const MessageFilesContainer = styled.div`
@@ -36,24 +38,28 @@ const FileShowDiv = styled.a`
 `;
 
 const MessageFiles = forwardRef((props, ref) => {
-    const {files, chatFiles, type = "chat", ...otherProps} = props;
+    const {files, chatFiles, reply, type = "chat", ...otherProps} = props;
+
+    const dispatch = useDispatch();
+
     const [showFiles, setShowFiles] = useState(true);
     const handleToggleShowFile = () => {
         setShowFiles(!showFiles);
     };
-    //console.log(files)
+    console.log(files);
+    console.log(reply);
+
     const handlePreviewFile = (e, file) => {
         e.stopPropagation();
-        const isFile = (element) => {
-            return element.id === file.id;
-        };
 
-        if (props.addFilesToViewAction) {
-            if (chatFiles) {
-                props.addFilesToViewAction({files: chatFiles, fileIndex: chatFiles.findIndex(isFile)});
-            } else {
-                props.addFilesToViewAction({files: files, fileIndex: files.findIndex(isFile)});
-            }
+        if (type === "chat") {
+            let payload = {
+                channel_id: reply.channel_id,
+                file_id: file.file_id,
+            };
+            dispatch(
+                setViewFiles(payload),
+            );
         }
     };
 

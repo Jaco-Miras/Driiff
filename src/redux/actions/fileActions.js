@@ -1,8 +1,5 @@
-import dispatchActionToReducer from "../actionDispatcher";
-import {
-    getChannelFiles as getChannelFilesService,
-    getFiles as getFilesService,
-} from "../services";
+import dispatchActionToReducer, {SimpleDispatchActionToReducer} from "../actionDispatcher";
+import {getChannelFiles as getChannelFilesService, getFiles as getFilesService} from "../services";
 
 export function getFiles(payload, callback) {
     return dispatchActionToReducer(
@@ -20,6 +17,14 @@ export function getChannelFiles(payload, callback) {
         "GET_CHANNEL_FILES_START",
         "GET_CHANNEL_FILES_SUCCESS",
         "GET_CHANNEL_FILES_FAILURE",
+        callback,
+    );
+}
+
+export function setViewFiles(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "SET_VIEW_FILES",
+        payload,
         callback,
     );
 }
