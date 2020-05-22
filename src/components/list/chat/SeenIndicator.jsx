@@ -15,7 +15,9 @@ const SeenIndicatorContainer = styled.div`
     cursor: pointer;
     position: absolute;
     bottom: -18px;
-    right: 0;
+    white-space: nowrap;
+    ${props => props.isAuthor ? "right: 0px" : "left: 0px"};
+
 `;
 const StyledUserListPopUp = styled(UserListPopUp)`
     position: absolute;

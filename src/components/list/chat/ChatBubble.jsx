@@ -29,14 +29,16 @@ const ChatBubbleContainer = styled.div`
     padding: 7px 15px;
     border-radius: 8px;
     background: ${props => (props.isAuthor ? props.theme.self.chat_bubble_background_color : props.theme.others.chat_bubble_background_color)};
-    text-align: left;    
+    text-align: left;
     width: 100%;
     color: ${props => (props.isAuthor ? props.theme.self.chat_bubble_text_color : props.theme.others.chat_bubble_text_color)};
-    font-size: .835rem;    
-    overflow: visible;    
+    font-size: .835rem;
+    overflow: visible;
     ${props => props.isEmoticonOnly === true && `
         background: none;
     `}
+
+
 
     &:focus {
         -webkit-box-shadow: 0 0 0 1px ${props => (props.isAuthor ? props.theme.self.chat_bubble_focus_border_color : props.theme.others.chat_bubble_focus_border_color)};
@@ -165,33 +167,49 @@ const ChatBubbleContainer = styled.div`
 
 const QuoteContainer = styled.div`
   background: ${props => (props.isAuthor ? props.theme.self.chat_bubble_quote_background_color : props.theme.others.chat_bubble_quote_background_color)};
-  background: #8C3B9B;
+  ${'' /* background: #8C3B9B; */}
   border-radius: 8px 8px 0 0;
-  margin: -10px -15px 10px -15px;
+  margin: -7px -15px 10px -15px;
   text-align: left;
   padding: 10px 10px 10px 20px;
-  overflow: hidden;
+  ${'' /* overflow: hidden; */}
   position: relative;
   cursor: pointer;
   cursor: hand;
   max-width: ${props => props.hasFiles ? "210px" : "auto"};
-  color: rgba(255,255,255, 0.8);
+  ${'' /* color: rgba(255,255,255, 0.8); */}
   &:before {
     height: 70%;
     width: 5px;
     background: ${props => (props.isAuthor ? props.theme.self.chat_bubble_quote_background_color : props.theme.others.chat_bubble_quote_background_color)};
+    background: #ffffffe6;
     position: absolute;
-    content: ' ';
+    ${props => (( !props.isEmoticonOnly)  && "content: ''")};
+
     display: inline-block;
     float: left;
     left: 5px;
     opacity: 0.8;
   }
+  &:after {
+    ${props => (( !props.isEmoticonOnly)  && "content: ''")};
+    border: 10px solid transparent;
+    ${props => props.isAuthor ? "border-left-color: " + props.theme.self.chat_bubble_quote_background_color : "border-right-color: " + props.theme.others.chat_bubble_quote_background_color};
+    position: absolute;
+    top: ${props => ((props.showAvatar && !props.isAuthor) ? "6px" : "8px")};;
+
+    z-index: 1;
+    ${props => !props.isAuthor ? "left: -19px" : "right: -20px"};
+}
 
 `;
 const QuoteAuthor = styled.div`
   font-weight: 600;
-  color: ${props => (props.isAuthor ? props.theme.self.chat_bubble_text_color : props.theme.others.chat_bubble_name_text_color)};
+  ${'' /* color: ${props => (props.isAuthor ? props.theme.self.chat_bubble_quote_text_color : props.theme.others.chat_bubble_quote_text_color )}; */}
+  ${'' /* color: red; */}
+
+  ${'' /* color: ${props => (props.isAuthor ? 'red' : 'blue' )}; */}
+
 `;
 const QuoteContent = styled.div`
 color: ${props => (props.isAuthor ? props.theme.self.chat_bubble_quote_text_color : props.theme.others.chat_bubble_quote_text_color)};
@@ -213,7 +231,7 @@ color: ${props => (props.isAuthor ? props.theme.self.chat_bubble_quote_text_colo
     word-wrap: break-word;
 
     a {
-        color: rgba(18, 100, 163, 1);
+        color: ${props => (props.isAuthor ? '#ffffffe6' : '#8C3B9B')};
         overflow: hidden;
         white-space: nowrap;
         text-overflow: ellipsis;
@@ -298,6 +316,7 @@ const ReplyContent = styled.span`
     a:not([href]):not([tabindex]) {
         cursor: pointer;
         color: ${props => (props.isAuthor ? props.theme.self.chat_bubble_link_color : props.theme.others.chat_bubble_link_color)};
+        text-decoration: underline;
         &:focus,
         &:hover {
             color: ${props => (props.isAuthor ? props.theme.self.chat_bubble_hover_color : props.theme.others.chat_bubble_hover_color)};
@@ -342,7 +361,7 @@ const ChatContentClap = styled.div`
   }
 `;
 const ChatContent = styled.div`
-    ${props => (props.isEmoticonOnly && `
+    ${props => (!props.isEmoticonOnly && `
     &:before {
         ${props => (props.showAvatar && "content: '';")};
         border: 10px solid transparent;
@@ -357,12 +376,12 @@ const ChatContent = styled.div`
             right: -20px;
             border-left-color: #7A1B8B;
             border-right-color: transparent;
-        `)};            
+        `)};
         width: 20px;
         height: 20px;
     }
     `)}
-    
+
     .reply-author {
         // padding: ${props => props.isAuthor ? "0 10px 0 40px" : "0 40px 0 10px"};
         ${props => props.isAuthor ? "margin-left: 30px" : "margin-right: 30px"};
@@ -380,7 +399,7 @@ const ChatContent = styled.div`
             word-wrap: break-word;
 
             a {
-                color: rgba(18, 100, 163, 1);
+                color: ${props => (props.isAuthor ? '#ff4444' : '#ff4444')};
                 overflow: hidden;
                 white-space: nowrap;
                 text-overflow: ellipsis;
@@ -451,9 +470,12 @@ const ChatTimeStamp = styled.div`
 
 const StyledImageTextLink = styled(ImageTextLink)`
   display: block;
+  svg, polyline, circle, g {
+      stroke: ${props => (props.isAuthor ? '#ffffffe6' : '#8C3B9B')};
+  }
 `;
 
-const ForwardedSpan = styled.span`    
+const ForwardedSpan = styled.span`
     color: #AAB0C8;
     font-style: italic;
     display: flex;
@@ -465,14 +487,14 @@ const ForwardedSpan = styled.span`
     ${props => props.isAuthor ? "right: 100%;" : "left: 100%;"};
     height: 25px;
     white-space: nowrap;
-    
+
     svg {
         width: 15px;
         height: 15px;
         position: relative;
         top: 2px;
         margin-right: 5px;
-    } 
+    }
 `;
 
 const ChatBubble = forwardRef((props, ref) => {
@@ -707,6 +729,7 @@ const ChatBubble = forwardRef((props, ref) => {
                     target={`_blank`}
                     href={images[0].getAttribute("src")}
                     icon={`image-video`}
+                    isAuthor={isAuthor}
                 >
                     Photo
                 </StyledImageTextLink>,
@@ -721,6 +744,7 @@ const ChatBubble = forwardRef((props, ref) => {
                     target={`_blank`}
                     href={videos[0].getAttribute("player-source")}
                     icon={`image-video`}
+                    isAuthor={isAuthor}
                 >
                     Video
                 </StyledImageTextLink>,
@@ -735,6 +759,7 @@ const ChatBubble = forwardRef((props, ref) => {
                             target={`_blank`}
                             href={file.view_link}
                             icon={`image-video`}
+                            isAuthor={isAuthor}
                         >
                             Photo
                         </StyledImageTextLink>,
@@ -746,6 +771,7 @@ const ChatBubble = forwardRef((props, ref) => {
                             target={`_blank`}
                             href={file.view_link}
                             icon={`image-video`}
+                            isAuthor={isAuthor}
                         >
                             Video
                         </StyledImageTextLink>,
@@ -757,6 +783,7 @@ const ChatBubble = forwardRef((props, ref) => {
                             target={`_blank`}
                             href={file.view_link}
                             icon={`documents`}
+                            isAuthor={isAuthor}
                         >
                             {file.filename ? `${file.filename} ` : `${file.name} `}
                         </StyledImageTextLink>,
@@ -867,6 +894,8 @@ const ChatBubble = forwardRef((props, ref) => {
                             reply.quote && reply.quote.body && (reply.is_deleted === 0) &&
                             (reply.quote.user_id !== undefined || reply.quote.user !== undefined) &&
                             <QuoteContainer
+                                showAvatar={showAvatar}
+                                isEmoticonOnly={isEmoticonOnly}
                                 hasFiles={reply.files.filter(f => f.type === "image").length > 0}
                                 theme={props.settings.CHAT_SETTINGS.chat_message_theme}
                                 onClick={handleQuoteClick} isAuthor={isAuthor}>
