@@ -448,7 +448,7 @@ const ChannelOptions = props => {
                 orientation={orientation.vertical}>
                 <div onClick={handlePinButton}>
                     <Icon className={channel.is_pinned && `fill`} icon="star"/>
-                    {channel.is_pinned ? `Unpin` : `Pin`}
+                    {channel.is_pinned ? `Unfavorite` : `Favorite`}
                 </div>
                 <div onClick={e => handleMarkAsUnreadSelected(e)}>
                     <Icon
