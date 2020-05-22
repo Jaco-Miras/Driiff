@@ -101,7 +101,7 @@ const MultiValueContainer = ({children, selectProps, ...props}) => {
     });
     return (
         <components.MultiValueContainer {...props}>
-            {
+            {/* {
                 props.data && selectProps.inputValue === "" &&
                 <StyledAvatar
                     className="react-select-avatar"
@@ -110,7 +110,7 @@ const MultiValueContainer = ({children, selectProps, ...props}) => {
                     name={props.data.name}
                     partialName={props.data.partial_name}
                 />
-            }
+            } */}
             {newChildren}
         </components.MultiValueContainer>
     );

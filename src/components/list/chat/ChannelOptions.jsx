@@ -352,7 +352,17 @@ const ChannelOptions = props => {
             };
         }
         dispatch(
-            updateChannel(payload),
+            updateChannel(payload, (err,res) => {
+                if (err) return;
+                if (channel.is_archived === 1) {
+                    dispatch(
+                        updateChannelReducer({
+                            ...channel,
+                            is_archived: 0
+                        })
+                    )
+                }
+            })
         );
     };
     const handleShowArchiveConfirmation = () => {
@@ -367,6 +377,14 @@ const ChannelOptions = props => {
                 onSubmit: handleArchiveChat,
             },
         };
+
+        if (channel.is_archived === 1) {
+            payload = {
+                ...payload,
+                submitText: "Unarchive",
+                bodyText: "Are you sure you want to unarchive this chat?"
+            }
+        }
 
         dispatch(
             addToModals(payload),
