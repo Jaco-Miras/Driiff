@@ -11,7 +11,12 @@ import styled from "styled-components";
 import {localizeDate} from "../../../helpers/momentFormatJS";
 import quillHelper from "../../../helpers/quillHelper";
 import {_t, getEmojiRegexPattern, stripGif} from "../../../helpers/stringFormatter";
-import {setSelectedChannel, updateChatMessage, markReminderComplete, updateChatMessageReminderComplete} from "../../../redux/actions/chatActions";
+import {
+    markReminderComplete,
+    setSelectedChannel,
+    updateChatMessage,
+    updateChatMessageReminderComplete,
+} from "../../../redux/actions/chatActions";
 import {ImageTextLink, SvgIconFeather, SvgImage} from "../../common";
 import MessageFiles from "./Files/MessageFiles";
 import Unfurl from "./Unfurl/Unfurl";
@@ -502,9 +507,9 @@ const ChatBubble = forwardRef((props, ref) => {
                         updateChatMessageReminderComplete({
                             channel_id: reply.channel_id,
                             message_id: reply.id,
-                        })
+                        }),
                     );
-            })
+            }),
         );
     };
 
@@ -522,7 +527,7 @@ const ChatBubble = forwardRef((props, ref) => {
                 body: newBody,
                 message_id: reply.id,
                 reply_id: reply.id,
-            })
+            }),
         );
     };
 

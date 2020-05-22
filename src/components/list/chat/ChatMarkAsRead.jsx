@@ -1,8 +1,8 @@
 import React from "react";
 import {isMobile} from "react-device-detect";
+import {useDispatch} from "react-redux";
 import styled from "styled-components";
-import { useDispatch } from "react-redux";
-import { markAllMessagesAsRead, markReadChannel } from "../../../redux/actions/chatActions";
+import {markAllMessagesAsRead, markReadChannel} from "../../../redux/actions/chatActions";
 //import {SvgIconFeather} from "../../common";
 
 const ChatMarkAsReadDiv = styled.div`
@@ -30,7 +30,7 @@ const ChatMarkAsRead = props => {
     const dispatch = useDispatch();
 
     const handleMarkMessageAsRead = (e) => {
-       
+
         dispatch(markAllMessagesAsRead({channel_id: channel.id}));
         dispatch(markReadChannel({channel_id: channel.id}));
     };

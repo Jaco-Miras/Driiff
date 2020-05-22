@@ -9,7 +9,7 @@ const useCountUnreadReplies = props => {
         unreadReplyCount = channel.replies.filter(r => !r.is_read).length;
     }
 
-    return unreadReplyCount
+    return unreadReplyCount;
 };
 
 export default useCountUnreadReplies;

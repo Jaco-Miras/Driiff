@@ -1,7 +1,7 @@
 import {useEffect, useRef} from "react";
-import {useSelector, useDispatch} from "react-redux";
-import usePreviousValue from "./usePreviousValue";
+import {useDispatch, useSelector} from "react-redux";
 import {getChannelFiles} from "../../redux/actions/fileActions";
+import usePreviousValue from "./usePreviousValue";
 
 const useQuillInput = (callback, quillRef) => {
 
@@ -24,11 +24,11 @@ const useQuillInput = (callback, quillRef) => {
             let payload = {
                 channel_id: selectedChannel.id,
                 skip: 0,
-                limit: 100
-            }
+                limit: 100,
+            };
             dispatch(getChannelFiles(payload));
         }
-    }
+    };
 
     useEffect(() => {
         // temporarily remove due to issues

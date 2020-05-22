@@ -1,8 +1,5 @@
 import dispatchActionToReducer, {SimpleDispatchActionToReducer} from "../actionDispatcher";
-import {
-    getChannelFiles as getChannelFilesService,
-    getFiles as getFilesService,
-} from "../services";
+import {getChannelFiles as getChannelFilesService, getFiles as getFilesService} from "../services";
 
 export function getFiles(payload, callback) {
     return dispatchActionToReducer(

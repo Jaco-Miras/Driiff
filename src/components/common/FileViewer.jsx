@@ -1,12 +1,12 @@
-import React, {forwardRef, useEffect, useState, useRef} from "react";
+import React, {forwardRef, useEffect, useRef, useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
 import styled from "styled-components";
 import {localizeDate} from "../../helpers/momentFormatJS";
 import {getAPIUrl} from "../../helpers/slugHelper";
-import ImageTextLink from "./ImageTextLink";
-import SvgImage from "./SvgImage";
-import {useSelector, useDispatch} from "react-redux";
 import {setViewFiles} from "../../redux/actions/fileActions";
 import {useOutsideClick} from "../hooks";
+import ImageTextLink from "./ImageTextLink";
+import {SvgIconFeather} from "./SvgIcon";
 
 const FileViewerContainer = styled.div`
     position: fixed;
@@ -76,46 +76,29 @@ const FileIcon = styled(ImageTextLink)`
     }
 `;
 
-const DownloadIcon = styled(SvgImage)`
-    &.component-svg-image {
-        width: 30px;
-        height: 30px;
-        filter: brightness(0) saturate(100%) invert(1);
-        cursor: pointer;
-        position: relative;
-        top: -3px;
-        
-        &:hover {
-            filter: brightness(0) saturate(100%) invert(1);
-        }
-    }
+const DownloadIcon = styled(SvgIconFeather)`
+    position: relative;
+    top: -3px;
+    margin-right: 5px;
 `;
 
-const CloseIcon = styled(SvgImage)`
-    &.component-svg-image {
-        position: absolute;
-        z-index: 1;
-        width: 30px;
-        height: 30px;
-        filter: brightness(0) saturate(100%) invert(1);
-        cursor: pointer;
-        right: 0;
-        top: 0;
-        
-        &:hover {
-            filter: brightness(0) saturate(100%) invert(1);
-        }
-    }
+const CloseIcon = styled(SvgIconFeather)`
+    position: absolute;
+    right: 5px;
+    top: 5px;
+    cursor: pointer;
+    z-index: 1;
 `;
 const FileNameContainer = styled.p`
     display: block;
     text-align: left;
+    margin-bottom: 0;
 `;
 const FileName = styled.a`
     position: relative;
     z-index: 1;    
     display: inline-block;
-    font-size: 28px;
+    font-size: 16px;
     font-weight: 500;    
     margin: 1rem 1rem 0;
     color: #fff;
@@ -128,7 +111,7 @@ const FileName = styled.a`
 const FileCreated = styled.p`
     width: 100%;
     display: block;
-    font-size: 1rem;
+    font-size: 11px;
     font-weight: normal;
     text-align: left;
     margin: 0 1rem 1rem;
@@ -167,7 +150,7 @@ const PreviewContainer = styled.div`
     }
 `;
 
-const ArrowIcon = styled.i`
+const ArrowIcon = styled(SvgIconFeather)`
     opacity: ${props => props.show ? "1" : "0"};
     visibility: ${props => props.show ? "visible" : "hidden"};
     position: absolute;   
@@ -175,12 +158,16 @@ const ArrowIcon = styled.i`
     z-index: 1;
     cursor: pointer;
     cursor: hand;    
+    z-index: 1;
+    height: 40px;
+    width: 40px;  
     
-    &.fa-arrow-left {
-        left: 1%;
+    &.next {
+        right: 10px;
     }
-    &.fa-arrow-right {
-        right: 1%;
+    
+    &.back {
+        left: 10px;
     }
 `;
 
@@ -192,16 +179,19 @@ const FileViewer = forwardRef((props, ref) => {
     const dispatch = useDispatch();
     const channelFiles = useSelector(state => state.files.channelFiles);
     const viewFiles = useSelector(state => state.files.viewFiles);
-    
+
     const [activeIndex, setActiveIndex] = useState(0);
     const [files, setFiles] = useState([]);
 
     useEffect(() => {
 
         if (Object.keys(channelFiles).length && channelFiles.hasOwnProperty(viewFiles.channel_id)) {
-            setFiles(channelFiles[viewFiles.channel_id])
-            //set ur index here based on viewFiles file id
-            //setActiveIndex(0);
+            setFiles(channelFiles[viewFiles.channel_id]);
+            channelFiles[viewFiles.channel_id].forEach((file, index) => {
+                if (file.file_id === viewFiles.file_id) {
+                    setActiveIndex(index);
+                }
+            });
         }
     }, []);
 
@@ -231,38 +221,9 @@ const FileViewer = forwardRef((props, ref) => {
             setActiveIndex(activeIndex - 1);
     };
 
-    // useEffect(() => {
-    //     const handleOutsideClick = e => {
-    //         e.preventDefault();
-    //         e.stopPropagation();
-    //         if (fileDiv) {
-    //             if (fileDiv.contains(e.target)) {
-    //                 if (e.target.classList.contains("iframe-img-container") || e.target.classList.contains("fileviewer-container")) {
-    //                     dispatch(setViewFiles(null));
-    //                 }
-    //             }
-    //         }
-    //     };
-    //     const handleEscapeKey = e => {
-    //         if (e.keyCode === 27) dispatch(setViewFiles(null));
-    //     };
-    //     document.addEventListener("click", handleOutsideClick, false);
-    //     document.addEventListener("keydown", handleEscapeKey, false);
-    //     // let ov = document.getElementById("component-bg-overlay");
-    //     // ov.classList.add("d-block");
-    //     return () => {
-    //         document.removeEventListener("keydown", handleEscapeKey, false);
-    //         document.removeEventListener("click", handleOutsideClick, false);
-    //         // let ov = document.getElementById("component-bg-overlay");
-    //         // ov.classList.remove("d-block");
-    //     };
-
-    //     // eslint-disable-next-line react-hooks/exhaustive-deps
-    // }, []);
-
     const handleCloseFileViewer = () => {
         dispatch(setViewFiles(null));
-    }
+    };
 
     useOutsideClick(fileRef, handleCloseFileViewer, true);
 
@@ -375,18 +336,18 @@ const FileViewer = forwardRef((props, ref) => {
         window.focus();
     };
 
+    console.log(files, channelFiles);
     let file = files[activeIndex];
 
-    if (files.length === 0) return
+    if (files.length === 0) return;
 
     return <FileViewerContainer
         className={`fileviewer-container ${className}`} ref={fileRef}>
         <PreviewContainer
             className='iframe-img-container'>
-            <ArrowIcon
-                show={files.length > 1} className={`fas fa-arrow-left`}
-                onClick={e => showPreviousFile(e)}/>
-            <CloseIcon icon={`close`} onClick={e => handleClose(e)}/>
+            <ArrowIcon className="back" icon="play" show={files.length > 1} rotate={180}
+                       onClick={e => showPreviousFile(e)}/>
+            <CloseIcon icon={`x`} onClick={e => handleClose(e)}/>
             <FileNameContainer>
                 <FileName onClick={e => handleDownloadFile(e, file)} href={file.download_link} download={file.filename}
                           target={`_blank`}>
@@ -402,9 +363,7 @@ const FileViewer = forwardRef((props, ref) => {
                     return renderFile(f, index);
                 })
             }
-            <ArrowIcon
-                show={files.length > 1} className={`fas fa-arrow-right`}
-                onClick={e => showNextFile(e)}/>
+            <ArrowIcon className="next" icon="play" show={files.length > 1} onClick={e => showNextFile(e)}/>
         </PreviewContainer>
     </FileViewerContainer>;
 });

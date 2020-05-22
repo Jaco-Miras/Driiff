@@ -451,7 +451,8 @@ const ChannelOptions = props => {
                     {channel.is_pinned ? `Unpin` : `Pin`}
                 </div>
                 <div onClick={e => handleMarkAsUnreadSelected(e)}>
-                    <Icon icon={channel.mark_unread || (!channel.mark_unread && channel.total_unread) ? `eye` : `eye-off`}/>
+                    <Icon
+                        icon={channel.mark_unread || (!channel.mark_unread && channel.total_unread) ? `eye` : `eye-off`}/>
                     {(channel.mark_unread || (!channel.mark_unread && channel.total_unread > 0)) ? `Mark as Read` : `Mark as Unread`}
                 </div>
                 <div onClick={handleMuteChat}>

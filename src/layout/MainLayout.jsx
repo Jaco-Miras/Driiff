@@ -5,10 +5,10 @@ import {useUserLogout} from "../components/hooks";
 import {ModalPanel} from "../components/panels";
 import {MainContentPanel, MainHeaderPanel, MainNavigationPanel} from "../components/panels/main";
 import Socket from "../components/socket/socket";
+import {getFiles} from "../redux/actions/fileActions";
 import {getAllRecipients} from "../redux/actions/globalActions";
 import {getUserSettings} from "../redux/actions/settingsActions";
 import {getMentions} from "../redux/actions/userAction";
-import {getFiles} from "../redux/actions/fileActions";
 
 const MainContent = styled.div`
 `;
