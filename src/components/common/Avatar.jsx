@@ -4,9 +4,9 @@ import {useHistory} from "react-router-dom";
 import Skeleton from "react-skeleton-loader";
 import styled from "styled-components";
 import departmentIcon from "../../assets/icon/teams/r/secundary.svg";
-import topicIcon from "../../assets/icon/topic/r/secundary.svg";
 import defaultIcon from "../../assets/icon/user/avatar/l/no_outline.png";
 import botIcon from "../../assets/img/gripp-bot.png";
+import {SvgIconFeather} from "./SvgIcon";
 
 const Wrapper = styled.div`
     position: relative;
@@ -101,15 +101,21 @@ const Avatar = forwardRef((props, ref) => {
             showInitials ?
                 <Initials>{handleInitials(name).substring(0, 2)}</Initials>
                 :
-                <Image
-                    display={isLoaded}
-                    className="rounded-circle"
-                    onLoad={handleImageLoad}
-                    onError={handleImageError}
-                    src={type === "DEPARTMENT" ? departmentIcon : type === "TOPIC" ? topicIcon :
-                        imageLink !== null && !isAnonymous ? name === "Gripp Offerte Bot" ? botIcon : imageLink : defaultIcon}
-                    alt={name}
-                />
+                <>
+                    {
+                        type === "GROUP" ?
+                            <SvgIconFeather icon="users"/>
+                            :
+                            <Image
+                                display={isLoaded}
+                                className="rounded-circle"
+                                onLoad={handleImageLoad}
+                                onError={handleImageError}
+                                src={type === "DEPARTMENT" ? departmentIcon : imageLink !== null && !isAnonymous ? name === "Gripp Offerte Bot" ? botIcon : imageLink : defaultIcon}
+                                alt={name}
+                            />
+                    }
+                </>
         }
         {children}
     </Wrapper>;

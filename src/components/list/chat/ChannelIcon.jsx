@@ -4,9 +4,9 @@ import postIcon from "../../../assets/icon/conversations/l/active.svg";
 import teamIcon from "../../../assets/icon/departments/department.svg";
 import botIcon from "../../../assets/icon/person/l/active.svg";
 import topicIcon from "../../../assets/icon/topic_icon/people_group/l/active.svg";
-import {Avatar} from "../../common";
+import {Avatar, SvgIconFeather} from "../../common";
 
-const Wrapper = styled.div`    
+const Wrapper = styled.div`
     :before{
         content: '';
         mask-image: ${props => props.type === "PERSONAL_BOT" ? `url(${botIcon})`
@@ -19,7 +19,7 @@ const Wrapper = styled.div`
         mask-position:center;
         width: 32px;
         height: 32px;
-        display: ${props => props.type === "DIRECT" ? "none" : "inline-block"};
+        display: ${props => ["DIRECT", "GROUP"].includes(props.type) ? "none" : "inline-block"};
     }
     > span {
         font-size: 11px;
@@ -36,7 +36,11 @@ const Wrapper = styled.div`
 
 const StyledAvatar = styled(Avatar)`  
 `;
-
+const Icon = styled(SvgIconFeather)`
+    color: #7a1b8b !important;
+    height: 30px;
+    width: 30px;
+`;
 const handleInitials = title => {
     var result = "";
     var tokens = title.split(" ");
@@ -55,13 +59,18 @@ const ChannelIcon = props => {
             type={channel.type}
         >
             {
-                channel.profile && channel.members.length <= 2 && channel.type === "DIRECT" &&
+                channel.profile && channel.members.length >= 2 && channel.type === "DIRECT" &&
                 <StyledAvatar
+                    type={channel.type}
                     imageLink={channel.profile.profile_image_link}
                     userId={channel.profile.id}
                     name={channel.profile.name}
                     noClick={true}
                 />
+            }
+            {
+                channel.type === "GROUP" &&
+                <Icon icon="users"/>
             }
             {
                 channel.members.length > 2 && channel.type === "DIRECT" &&
