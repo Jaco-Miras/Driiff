@@ -1,5 +1,6 @@
 import dispatchActionToReducer, {SimpleDispatchActionToReducer} from "../actionDispatcher";
 import {
+    addChannelMembers as addChannelMembersService,
     chatReaction as chatReactionService,
     createChatMessage as createChatMessageService,
     createNewChat as createNewChatService,
@@ -7,6 +8,7 @@ import {
     editChannelDetail as editChannelDetailService,
     getChannel as getChannelService,
     getChannelDrafts as getChannelDraftsService,
+    getChannelMembers as getChannelMembersService,
     getChannels as getChannelsService,
     getChatMessages as getChatMessagesService,
     getGlobalRecipients as getGlobalRecipientsService,
@@ -388,6 +390,34 @@ export function markReminderComplete(payload, callback) {
         "MARK_REMINDER_COMPLETE_START",
         "MARK_REMINDER_COMPLETE_SUCCESS",
         "MARK_REMINDER_COMPLETE_FAILURE",
+        callback,
+    );
+}
+
+export function addChannelMembers(payload, callback) {
+    return dispatchActionToReducer(
+        addChannelMembersService(payload),
+        "ADD_CHANNEL_MEMBERS_START",
+        "ADD_CHANNEL_MEMBERS_SUCCESS",
+        "ADD_CHANNEL_MEMBERS_FAILURE",
+        callback,
+    );
+}
+
+export function getChannelMembers(payload, callback) {
+    return dispatchActionToReducer(
+        getChannelMembersService(payload),
+        "GET_CHAT_MEMBERS_START",
+        "GET_CHAT_MEMBERS_SUCCESS",
+        "GET_CHAT_MEMBERS_FAILURE",
+        callback,
+    );
+}
+
+export function updateChannelMembersTitle(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "UPDATE_CHANNEL_MEMBERS_TITLE",
+        payload,
         callback,
     );
 }

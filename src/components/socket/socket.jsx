@@ -17,6 +17,7 @@ import {urlify} from "../../helpers/urlContentHelper";
 import {
     addToChannels,
     getChannel,
+    getChannelMembers,
     incomingArchivedChannel,
     incomingChatMessage,
     incomingChatMessageFromOthers,
@@ -25,6 +26,7 @@ import {
     incomingUpdatedChannelDetail,
     incomingUpdatedChatMessage,
     markAllMessagesAsRead,
+    updateChannelMembersTitle,
     updateChannelReducer,
     updateMemberTimestamp,
 } from "../../redux/actions/chatActions";
@@ -880,44 +882,55 @@ class Socket extends PureComponent {
                     quote: e.quote,
                 };
                 this.props.incomingChatMessageFromOthers(message);
-                if (this.props.activeChatChannels.length) {
-                    this.props.getChatChannelAction({channel_id: e.channel_id}, (err, res) => {
-                        console.log(res);
-                        if (err) return;
-                        // update chat members
-                        if (this.props.activeChatChannels.filter(ac => ac.id === res.data.id).length) {
-                            let channel = this.props.activeChatChannels.filter(ac => ac.id === res.data.id)[0];
-                            let updatedChannel = {
-                                ...channel,
-                                members: res.data.members,
-                                profile: null,
-                            };
-                            if (channel.type === "DIRECT") {
-                                let payload = {
-                                    //title: res.data.members.map(m => m.first_name).slice(0, 6).join(', '),
-                                    title: res.data.title,
-                                    id: channel.id,
-                                    is_pinned: channel.is_pinned,
-                                    is_archived: channel.is_archived,
-                                    is_muted: channel.is_muted,
-                                };
-                                this.props.updateChatChannelV2Action(payload, (err, res) => {
-                                    if (err) {
-                                        console.log(err, "error");
-                                    }
-                                });
-                                updatedChannel = {
-                                    ...updatedChannel,
-                                    //title: res.data.members.map(m => m.first_name).slice(0, 6).join(', ')
-                                };
-                                this.props.updateChannelAction(updatedChannel);
-                            } else {
-                                this.props.updateChannelAction(updatedChannel);
-                            }
-                        }
+                this.props.getChannel({channel_id: e.channel_id}, (err,res) => {
+                    console.log(res)
+                    if (err) return
+                    let payload = {
+                        channel_id: e.channel_id,
+                        members: res.data.members,
+                        title: res.data.title
+                    }
+                    this.props.updateChannelMembersTitle(payload);
+                })
+                //this.props.getChannelMembers({channel_id: e.channel_id})
+                // if (this.props.activeChatChannels.length) {
+                //     this.props.getChatChannelAction({channel_id: e.channel_id}, (err, res) => {
+                //         console.log(res);
+                //         if (err) return;
+                //         // update chat members
+                //         if (this.props.activeChatChannels.filter(ac => ac.id === res.data.id).length) {
+                //             let channel = this.props.activeChatChannels.filter(ac => ac.id === res.data.id)[0];
+                //             let updatedChannel = {
+                //                 ...channel,
+                //                 members: res.data.members,
+                //                 profile: null,
+                //             };
+                //             if (channel.type === "DIRECT") {
+                //                 let payload = {
+                //                     //title: res.data.members.map(m => m.first_name).slice(0, 6).join(', '),
+                //                     title: res.data.title,
+                //                     id: channel.id,
+                //                     is_pinned: channel.is_pinned,
+                //                     is_archived: channel.is_archived,
+                //                     is_muted: channel.is_muted,
+                //                 };
+                //                 this.props.updateChatChannelV2Action(payload, (err, res) => {
+                //                     if (err) {
+                //                         console.log(err, "error");
+                //                     }
+                //                 });
+                //                 updatedChannel = {
+                //                     ...updatedChannel,
+                //                     //title: res.data.members.map(m => m.first_name).slice(0, 6).join(', ')
+                //                 };
+                //                 this.props.updateChannelAction(updatedChannel);
+                //             } else {
+                //                 this.props.updateChannelAction(updatedChannel);
+                //             }
+                //         }
 
-                    });
-                }
+                //     });
+                // }
             })
             .listen(".archived-chat-channel", e => {
                 console.log(e, "archived chat");
@@ -1261,6 +1274,8 @@ function mapDispatchToProps(dispatch) {
         incomingUpdatedChatMessage: bindActionCreators(incomingUpdatedChatMessage, dispatch),
         incomingDeletedChatMessage: bindActionCreators(incomingDeletedChatMessage, dispatch),
         incomingUpdatedChannelDetail: bindActionCreators(incomingUpdatedChannelDetail, dispatch),
+        getChannelMembers: bindActionCreators(getChannelMembers, dispatch),
+        updateChannelMembersTitle: bindActionCreators(updateChannelMembersTitle, dispatch)
 
         // logoutAction: bindActionCreators(logout, dispatch),
         // simpleNewNotificationSocketAction: bindActionCreators(simpleNewNotificationSocket, dispatch),

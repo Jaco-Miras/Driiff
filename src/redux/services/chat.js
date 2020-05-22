@@ -200,3 +200,20 @@ export function markReminderComplete(payload) {
         data: payload,
     });
 }
+
+export function addChannelMembers(payload) {
+    let url = `/v2/post-channel-members`;
+    return apiCall({
+        method: "POST",
+        url: url,
+        data: payload,
+    });
+}
+
+export function getChannelMembers(payload) {
+    let url = `/v2/post-channel-members?channel_id=${payload.channel_id}`;
+    return apiCall({
+        method: "GET",
+        url: url,
+    });
+}

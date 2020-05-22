@@ -3,6 +3,7 @@ import {useDispatch, useSelector} from "react-redux";
 import styled from "styled-components";
 import {localizeDate} from "../../helpers/momentFormatJS";
 import {
+    addChannelMembers,
     addChatMessage,
     addQuote,
     clearChannelDraft,
@@ -449,33 +450,16 @@ const ChatInput = props => {
 
     const handleAddMentionedUsers = users => {
         
-        //@to do
-        // let memberPayload = {
-        //     channel_id: this.props.channelId,
-        //     recipient_ids: users.map(u => u.type_id),
-        // };
-        // this.props.addChatChannelMembersV2Action(memberPayload, (err, res) => {
-        //     // this.setState({sendingChannelMembers: false});
-        //     if (err) return;
-        //     let newMembers = users.map(user => {
-        //         return {
-        //             user: {
-        //                 id: user.type_id,
-        //                 name: user.name,
-        //                 profile_image_link: user.profile_image_link,
-        //             },
-        //             id: user.type_id,
-        //             name: user.name,
-        //             profile_image_link: user.profile_image_link,
-        //         };
-        //     });
-        //     let updatePayload = {
-        //         channel_id: this.props.channelId,
-        //         newMembers: newMembers,
-        //     };
-        //     this.props.updateChannelMembersAction(updatePayload);
-        //     this.setState({ignoredMentionedUserIds: [...this.state.ignoredMentionedUserIds, ...users.map(u => u.type_id)]});
-        // });
+        let memberPayload = {
+            channel_id: selectedChannel.id,
+            recipient_ids: users.map(u => u.type_id),
+        };
+        dispatch(
+            addChannelMembers(memberPayload, (err, res) => {
+                if (err) return;
+                setIgnoredMentionedUserIds([...ignoredMentionedUserIds, ...users.map(u => u.type_id)])
+            })
+        );
         
         setMentionedUserIds([]);
     };

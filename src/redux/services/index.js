@@ -1,5 +1,6 @@
 export {apiCall, apiNoTokenCall} from "./service";
 export {
+    addChannelMembers,
     getChannels,
     updateChannel,
     markReadChannel,
@@ -18,6 +19,7 @@ export {
     editChannelDetail,
     searchExistingChat,
     markReminderComplete,
+    getChannelMembers,
 } from "./chat";
 
 export {
