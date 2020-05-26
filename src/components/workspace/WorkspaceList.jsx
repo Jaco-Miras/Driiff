@@ -16,13 +16,13 @@ const WorkspaceList = props => {
     return (
         <WorkspaceListWrapper>
             <a onClick={handleShowTopics}>{workspace.name}
-                {   workspace.topics.length > 0 && <i className="sub-menu-arrow ti-angle-up rotate-in ti-minus"></i> }
+                {  Object.keys(workspace.topics).length > 0 && <i className="sub-menu-arrow ti-angle-up rotate-in ti-minus"></i> }
             </a>
             {
-                workspace.topics.length > 0 &&
+                Object.keys(workspace.topics).length > 0 &&
                 <ul style={{display: "block"}}>
                     {
-                    workspace.topics.map(topic => {
+                    Object.keys(workspace.topics).length > 0 && Object.values(workspace.topics).map(topic => {
                         return <TopicList key={topic.id} topic={topic}/>
                     })
                     }

@@ -3,6 +3,7 @@ import {convertArrayToObject} from "../../helpers/arrayHelper";
 const INITIAL_STATE = {
     user: {},
     workspaces: {},
+    activeTopic: null
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -14,10 +15,26 @@ export default (state = INITIAL_STATE, action) => {
             };
         }
         case "GET_WORKSPACES_SUCCESS": {
-            console.log(action.data)
+            let workspaces = {...state.workspaces};
+            action.data.workspaces.forEach(ws => {
+                let topics = {};
+                if (ws.topics.length > 0) {
+                    ws.topics.forEach(t => {
+                        topics[t.id] = { ...t,
+                            selected: false
+                        }
+                    })
+                }
+                workspaces[ws.id] = {
+                    ...workspaces[ws.id],
+                    ...ws,
+                    selected: false,
+                    topics: topics
+                };
+            })
             return {
                 ...state,
-                workspaces: convertArrayToObject(action.data.workspaces, 'id')
+                workspaces: workspaces
             }
         }
         default:

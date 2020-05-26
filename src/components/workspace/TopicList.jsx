@@ -9,7 +9,7 @@ const TopicList = props => {
     const {className = "", topic} = props;
 
     const handleSelectTopic = () => {
-        
+        //set the selected topic
     }
     
     return (
