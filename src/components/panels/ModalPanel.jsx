@@ -2,15 +2,18 @@ import React from "react";
 import {useSelector} from "react-redux";
 import styled from "styled-components";
 import FileViewer from "../common/FileViewer";
-import {ChatForwardModal, ChatReminderModal, ConfirmationModal, CreateEditChatModal, FileUploadModal} from "../modals";
+import {
+    ChatForwardModal, ChatReminderModal, ConfirmationModal, CreateEditChatModal, 
+    FileUploadModal, WorkspaceFolderModal,
+} from "../modals";
 
 const ModalPanelContainer = styled.div`
     z-index: 7;
-    height: 100%;
-    width: 100%;
-    position: fixed;
-    top: 0;
-    left: 0;
+    // height: 100%;
+    // width: 100%;
+    // position: fixed;
+    // top: 0;
+    // left: 0;
 `;
 
 const ModalPanel = props => {
@@ -34,6 +37,8 @@ const ModalPanel = props => {
                                 return <FileUploadModal key={modal.type} data={modal}/>;
                             case "chat_create_edit":
                                 return <CreateEditChatModal key={modal.type} data={modal}/>;
+                            case "workspace_folder": 
+                                return <WorkspaceFolderModal key={modal.type} data={modal}/>;
                             default:
                                 return null;
                         }
