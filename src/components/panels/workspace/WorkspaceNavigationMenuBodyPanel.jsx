@@ -2,8 +2,9 @@ import React, {useEffect} from "react";
 import styled from "styled-components";
 import {useDispatch, useSelector} from "react-redux";
 import {SvgIconFeather} from "../../common";
-import {getWorkspaces} from "../../../redux/actions/workspaceActions";
-import {WorkspaceList} from "../../workspace"
+import {getWorkspaces, getWorkspaceTopics} from "../../../redux/actions/workspaceActions";
+import {WorkspaceList} from "../../workspace";
+import {addToModals} from "../../../redux/actions/globalActions";
 
 const Wrapper = styled.div`
 `;
@@ -20,8 +21,20 @@ const WorkspaceNavigationMenuBodyPanel = (props) => {
             dispatch(
                 getWorkspaces({is_external: 0})
             );
+            dispatch(getWorkspaceTopics({is_external: 0}))
         }
     }, []);
+
+    const handleShowFolderModal = () => {
+        let payload = {
+            type: "workspace_folder"
+        }
+        // let body = document.getElementsByTagName("BODY")[0];
+        // body.classList.add("modal-open")
+        dispatch(
+            addToModals(payload)
+        );
+    };
 
     return (
         <>
@@ -43,7 +56,7 @@ const WorkspaceNavigationMenuBodyPanel = (props) => {
                     <div className="navigation-menu-group">
                         <div id="elements" className="open">
                             <ul>
-                                <li className="navigation-divider">
+                                <li className="navigation-divider" onClick={handleShowFolderModal}>
                                     <SvgIconFeather icon="plus"/> New folder
                                 </li>
                                 <li className="navigation-divider">

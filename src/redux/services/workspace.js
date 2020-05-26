@@ -84,7 +84,7 @@ export function moveWorkspaceTopic(payload) {
  * @returns {Promise<*>}
  */
 export function getWorkspaceTopics(payload) {
-    let url = `/v2/workspace?is_external=${payload.is_external}`;
+    let url = `/v2/workspace-topics?is_external=${payload.is_external}`;
     if (payload.search !== undefined) {
         url += `&search=${payload.search}`
     }

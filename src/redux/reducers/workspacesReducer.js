@@ -3,7 +3,8 @@ import {convertArrayToObject} from "../../helpers/arrayHelper";
 const INITIAL_STATE = {
     user: {},
     workspaces: {},
-    activeTopic: null
+    activeTopic: null,
+    activeTab: "internal"
 };
 
 export default (state = INITIAL_STATE, action) => {
