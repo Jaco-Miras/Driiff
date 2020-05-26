@@ -59,46 +59,7 @@ const MoreTooltip = styled.div`
     padding: 10px;
     cursor: pointer;
     box-shadow: 0 0 3px 0 rgba(26, 26, 26, 0.4), 0 1px 3px 0 rgba(0, 0, 0, 0.1);
-    :before{
-        content: "";
-        position: absolute;
-        top: 100%;
-        //left: ${props => (props.isAuthor ? "51%" : "39%")};
-        left: 50%;
-        margin-left: -8px;
-        border-width: 13px;
-        border-style: solid;
-        border-color: rgba(0, 0, 0, 0.1) transparent transparent transparent;
-    }
-    :after{
-        content: "";
-        position: absolute;
-        top: 100%;
-        left: 50%;
-        //left: ${props => (props.isAuthor ? "53%" : "41%")};
-        margin-left: -5px;
-        border-width: 10px;
-        border-style: solid;
-        border-color: #FAFAFA transparent transparent transparent;
-    }
-    @media only screen and (max-width: 575.99px) {
-        top: -12px;
-        position: relative;
-        right: ${props => (props.isAuthor ? "auto" : "270px")};
-        left: ${props => (props.isAuthor ? "0" : "auto")};
-        :after {
-            top: 11px;
-            right: ${props => (props.isAuthor ? "auto" : "-23px")};
-            left: ${props => (props.isAuthor ? "-23px" : "auto")};
-            transform: ${props => (props.isAuthor ? "rotate(90deg)" : "rotate(-90deg)")};
-        }
-        :before {
-            top: 8px;
-            right: ${props => (props.isAuthor ? "auto" : "-28px")};
-            left: ${props => (props.isAuthor ? "-28px" : "auto")};
-            transform: ${props => (props.isAuthor ? "rotate(90deg)" : "rotate(-90deg)")};
-        }
-    }
+
     button:hover{
         color: #972c86;
     }

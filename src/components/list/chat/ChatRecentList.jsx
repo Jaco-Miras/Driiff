@@ -4,7 +4,7 @@ import styled from "styled-components";
 const Wrapper = styled.a`
 `;
 
-const Timestamp = styled.div`    
+const Timestamp = styled.div`
 `;
 
 const Badge = styled.span`

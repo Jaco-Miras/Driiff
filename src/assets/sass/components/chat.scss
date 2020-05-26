@@ -2,7 +2,7 @@
   height: 100%;
   @extend .card;
   padding: 1.5rem;
-
+  overflow: hidden;
   .chat-sidebar {
     height: 100%;
     display: flex;
@@ -20,7 +20,7 @@
       height: 100%;
       display: flex;
       flex-direction: column;
-      overflow: auto;
+      overflow: visible;
 
       .list-group {
         .list-group-item.active {

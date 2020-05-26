@@ -15,11 +15,15 @@ yarn start-dev
 Login dev:
 
 ```
-Username:
 rt@make24.nl
-
-Password:
 password1
+```
+
+or
+
+```
+jessryll@makedevelopment.com
+devpassword
 ```
 
 ## Test environment

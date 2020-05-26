@@ -372,41 +372,15 @@ export const SvgIcon = React.memo(React.forwardRef((props, ref) => {
             </>;
             break;
         case "reply":
-            viewBox = "0 0 41 31";
+            viewBox = "0 0 24 24";
             content = <>
-                <defs>
-                    <linearGradient x1="-1.11022302e-14%" y1="1.72254642e-14%" x2="100%" y2="100%"
-                                    id="linearGradient-1">
-                        <stop stop-color="#972C86" offset="0%"></stop>
-                        <stop stop-color="#794997" offset="40%"></stop>
-                        <stop stop-color="#007180" offset="100%"></stop>
-                    </linearGradient>
-                </defs>
-                <g id="E---Notifications" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                    <g id="E1---01a-Notifications---Overview" transform="translate(-42.000000, -1381.000000)"
-                       fill="url(#linearGradient-1)" fill-rule="nonzero">
-                        <g id="Group-13" transform="translate(20.000000, 1364.000000)">
-                            <g id="Group-24-Copy-3" transform="translate(11.000000, 0.000000)">
-                                <g id="_icon/reply/l/active" transform="translate(8.000000, 9.000000)">
-                                    <path
-                                        d="M20.5,37 C20.5,38.309747 18.9390974,38.990409 17.9793234,38.0991902 L3.97932335,25.0991902 C3.35630446,24.5206727 3.3381597,23.54052 3.93933983,22.9393398 L17.9393398,8.93933983 C18.8842871,7.99439254 20.5,8.66364272 20.5,10 L20.5,19.3691406 C20.5,20.1975677 19.8284271,20.8691406 19,20.8691406 C18.1715729,20.8691406 17.5,20.1975677 17.5,19.3691406 L17.5,13.6213203 L7.16133128,23.9599891 L17.5,33.5601814 L17.5,24.5 C17.5,23.6715729 18.1715729,23 19,23 L34.2221177,23 C39.3466003,23 43.5008143,27.154214 43.5008143,32.2786967 C43.5008143,32.6274968 43.4811465,32.9760194 43.4419044,33.322605 C43.3487014,34.1457725 42.6058364,34.7375257 41.7826689,34.6443227 C40.9595014,34.5511198 40.3677483,33.8082547 40.4609512,32.9850873 C40.4875055,32.7505601 40.5008143,32.5147223 40.5008143,32.2786967 C40.5008143,28.8110682 37.6897461,26 34.2221177,26 L20.5,26 L20.5,37 Z"
-                                        id="Path"></path>
-                                </g>
-                            </g>
-                        </g>
-                    </g>
-                </g>
+                <polyline points="15 14 20 9 15 4"></polyline><path d="M4 20v-7a4 4 0 0 1 4-4h12"></path>
             </>;
             break;
         case "image-video":
-            viewBox = "0 0 24 24";
+            viewBox = "0 0 512 512";
             content = <>
-                <g id="_icon/image/r/secundary" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                    <polyline id="Rectangle" stroke="#972C86" stroke-width="2" strokeLinecap="round"
-                              stroke-linejoin="round"
-                              points="22 20 2 20 2 5 22 5 22 16 16.0291414 10 11.0499567 15 8.05828278 13 5 15.0710678"></polyline>
-                    <circle id="Oval-2" fill="#972C86" cx="7" cy="9" r="1.5"></circle>
-                </g>
+                <path fill="currentColor" d="M464 64H48C21.49 64 0 85.49 0 112v288c0 26.51 21.49 48 48 48h416c26.51 0 48-21.49 48-48V112c0-26.51-21.49-48-48-48zm-6 336H54a6 6 0 0 1-6-6V118a6 6 0 0 1 6-6h404a6 6 0 0 1 6 6v276a6 6 0 0 1-6 6zM128 152c-22.091 0-40 17.909-40 40s17.909 40 40 40 40-17.909 40-40-17.909-40-40-40zM96 352h320v-80l-87.515-87.515c-4.686-4.686-12.284-4.686-16.971 0L192 304l-39.515-39.515c-4.686-4.686-12.284-4.686-16.971 0L96 304v48z" class=""></path>
             </>;
             break;
         case "pin":

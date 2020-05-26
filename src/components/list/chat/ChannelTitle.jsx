@@ -1,8 +1,10 @@
 import React from "react";
 import styled from "styled-components";
 
-const ChannelTitleContainer = styled.h6`    
+const ChannelTitleContainer = styled.h6`
+    color: #828282;
 `;
+
 
 const ChannelTitle = props => {
 

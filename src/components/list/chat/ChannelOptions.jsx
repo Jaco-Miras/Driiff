@@ -13,190 +13,116 @@ import {SvgIconFeather} from "../../common";
 import {useOutsideClick, useTooltipOrientation, useTooltipPosition} from "../../hooks";
 
 const MoreButton = styled(SvgIconFeather)`
-    background: ${props => (props.show && !props.selected ? "#972c86" : "#fff")};
-    opacity: ${props => (props.show && !props.selected ? "1 !important" : "0")};    
+    ${'' /* background: ${props => (props.show && !props.selected ? "#972c86" : "#fff")}; */}
+    opacity: ${props => (props.show && !props.selected ? "1 !important" : "0")};
     border-radius: 50%;
     width: 15px;
-    height: 15px;  
+    height: 15px;
     cursor: pointer;
 `;
 const MoreTooltip = styled.div`
   z-index: 5;
-  width: 240px;
+  width: 160px;
   height: auto;
-  background-color: #fafafa;
+  background-color: #ffffff;
   color: #4d4d4d;
-  border: 1px solid #fafafa;
+  border: 1px solid #ffffff;
   border-radius: 6px;
-  position: absolute;  
-  right: 15px;
-  padding: 15px 15px;
+  position: absolute;
+  right: 0px;
+  padding: 8px 15px;
   cursor: pointer;
   box-shadow: 0 0 3px 0 rgba(26, 26, 26, 0.4), 0 1px 3px 0 rgba(0, 0, 0, 0.1);
-  
   &.orientation-top {
     bottom: 45px;
-    
+
     &:before {
         right 12px;
         bottom: -15px;
         content: "";
-        position: absolute;     
+        position: absolute;
         border-width: ${props => props.orientation === "bottom" ? "13px" : "unset"};
         border-style: ${props => props.orientation === "bottom" ? "solid" : "unset"};
         border-color: ${props => props.orientation === "bottom" ? "transparent transparent rgba(0, 0, 0, 0.1) transparent" : "unset"};
         border-left: ${props => props.orientation === "top" && "13px solid transparent"};
         border-right: ${props => props.orientation === "top" && "13px solid transparent"};
         border-top: ${props => props.orientation === "top" && "13px solid rgba(0,0,0,0.1)"};
-    
+
         @media (max-width: 1199.99px) {
             right: auto;
             left: -21px;
             bottom: 11px;
             transform: rotate(90deg);
         }
-            
+
         @media (max-width: 575.99px) {
             right: -21px;
             left: auto;
             transform: rotate(-90deg);
         }
   }
-  
+
     &:after {
         right 12px;
         bottom: -13px;
         content: "";
-        position: absolute; 
+        position: absolute;
         border-width: ${props => props.orientation === "bottom" ? "10px" : "unset"};
         border-style: ${props => props.orientation === "bottom" ? "solid" : "unset"};
         border-color: ${props => props.orientation === "bottom" ? "transparent transparent #FAFAFA transparent" : "unset"};
         border-left: ${props => props.orientation === "top" && "13px solid transparent"};
         border-right: ${props => props.orientation === "top" && "13px solid transparent"};
         border-top: ${props => props.orientation === "top" && "13px solid #fafafa"};
-        
-        @media (max-width: 1199.99px) {        
+
+        @media (max-width: 1199.99px) {
             left: -19px;
             right: auto;
             bottom: 10px;
             transform: rotate(90deg);
         }
-            
+
         @media (max-width: 575.99px) {
             right: -19px;
             left: auto;
             transform: rotate(-90deg);
         }
       }
-    
+
         @media (max-width: 1199.99px) {
           position: fixed;
           bottom: ${props => props.position - 30}px;
           left: 465px;
         }
-        
+
         @media (max-width: 991.99px) {
             left: 375px;
         }
-        
+
         @media (max-width: 767.99px) {
             left: 200px;
         }
-        
+
         @media (max-width: 575.99px) {
             right: 75px;
             left: auto;
         }
     }
-    
+
     &.orientation-bottom {
-        top: 110%;
-        
-        &:before {
-            right 12px;
-            bottom: 100%;
-            content: "";
-            position: absolute;     
-            border-width: ${props => props.orientation === "bottom" ? "13px" : "unset"};
-            border-style: ${props => props.orientation === "bottom" ? "solid" : "unset"};
-            border-color: ${props => props.orientation === "bottom" ? "transparent transparent rgba(0, 0, 0, 0.1) transparent" : "unset"};
-            border-left: ${props => props.orientation === "top" && "13px solid transparent"};
-            border-right: ${props => props.orientation === "top" && "13px solid transparent"};
-            border-top: ${props => props.orientation === "top" && "13px solid rgba(0,0,0,0.1)"};
-            
-            @media (max-width: 1199.99px) {
-                right: auto;
-                left: -25px;
-                transform: rotate(-90deg);
-                top: 8px;
-            }            
-            
-            @media (max-width: 575.99px) {
-                right: -25px;
-                left: auto;
-                transform: rotate(90deg);
-            }
-          }
-          &:after {
-            right 14px;
-            bottom: 100%;
-            content: "";
-            position: absolute; 
-            border-width: ${props => props.orientation === "bottom" ? "10px" : "unset"};
-            border-style: ${props => props.orientation === "bottom" ? "solid" : "unset"};
-            border-color: ${props => props.orientation === "bottom" ? "transparent transparent #FAFAFA transparent" : "unset"};
-            border-left: ${props => props.orientation === "top" && "13px solid transparent"};
-            border-right: ${props => props.orientation === "top" && "13px solid transparent"};
-            border-top: ${props => props.orientation === "top" && "13px solid #fafafa"};
-            
-            @media (max-width: 1199.99px) {        
-                left: -20px;
-                right: auto;
-                top: 10px;
-                transform: rotate(-90deg);
-            }
-            
-            @media (max-width: 575.99px) {
-                right: -20px;
-                left: auto;
-                transform: rotate(90deg);
-            }
-          }
-        
-        @media (max-width: 1199.99px) {
-          position: fixed;
-          top: ${props => props.position - 10}px;
-          bottom: auto;
-          left: 465px;
-        }
-        
-        @media (max-width: 991.99px) {
-            left: 375px;
-        }
-        
-        @media (max-width: 767.99px) {
-            left: 200px;
-        }
-        
-        @media (max-width: 575.99px) {
-            right: 75px;
-            left: auto;
-        }
+        top: 100%;
     }
     > div {
         display: inline-flex;
         align-items: center;
-        font-weight: 200;
+        font-weight: 400;
         font-size: 15px;
-        padding: 10px 0;
+        padding: 4px 0;
         width: 100%;
-        border-bottom: 1px solid #c3c3c3;
         cursor: pointer;
-        
         svg {
             margin-right: 12px;
         }
-    }    
+    }
 `;
 const Icon = styled(SvgIconFeather)`
     &.fill {
@@ -465,29 +391,23 @@ const ChannelOptions = props => {
                 position={toolTipPosition}
                 orientation={orientation.vertical}>
                 <div onClick={handlePinButton}>
-                    <Icon className={channel.is_pinned && `fill`} icon="star"/>
                     {channel.is_pinned ? `Unfavorite` : `Favorite`}
                 </div>
                 <div onClick={e => handleMarkAsUnreadSelected(e)}>
-                    <Icon
-                        icon={channel.mark_unread || (!channel.mark_unread && channel.total_unread) ? `eye` : `eye-off`}/>
                     {(channel.mark_unread || (!channel.mark_unread && channel.total_unread > 0)) ? `Mark as Read` : `Mark as Unread`}
                 </div>
                 <div onClick={handleMuteChat}>
-                    <Icon icon={channel.is_muted ? `volume-2` : `volume-x`}/>
                     {channel.is_muted ? `Unmute` : `Mute`}
                 </div>
                 {
                     channel.type !== "PERSONAL_BOT" &&
                     <div onClick={handleHideChat}>
-                        <Icon icon="x"/>
                         {channel.is_hidden === 0 ? `Hide` : "Unhide"}
                     </div>
                 }
                 {
                     (channel.type !== "PERSONAL_BOT" || channel.type !== "COMPANY") &&
                     <div onClick={handleShowArchiveConfirmation}>
-                        <Icon icon="archive"/>
                         {channel.is_archived === 0 ? `Archive` : "Unarchive"}
                     </div>
                 }
