@@ -8,7 +8,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {useHistory} from "react-router-dom";
 import Skeleton from "react-skeleton-loader";
 import styled from "styled-components";
-import {localizeDate} from "../../../helpers/momentFormatJS";
+import {todayOrYesterdayDate} from "../../../helpers/momentFormatJS";
 import quillHelper from "../../../helpers/quillHelper";
 import {_t, getEmojiRegexPattern, stripGif} from "../../../helpers/stringFormatter";
 import {
@@ -89,13 +89,11 @@ const ChatBubbleContainer = styled.div`
         font-size: 11px;
         position: absolute;
         top: 0;
-        ${props => props.isAuthor ? "left: -40px;" : "right: -40px;"};
-
+        ${props => props.isAuthor ? "right: 100%" : "left: 100%"};
         display: flex;
         height: 100%;
         align-items: center;
-
-
+        white-space: nowrap;
     }
     // * {
     //     word-break: break-all;
@@ -865,6 +863,7 @@ const ChatBubble = forwardRef((props, ref) => {
         }
     }
 
+
     const hasFiles = reply.files.filter(f => f.type === "image").length > 0;
 
     return <ChatBubbleContainer
@@ -979,9 +978,9 @@ const ChatBubble = forwardRef((props, ref) => {
                 </ChatContentClap>
                 <ChatTimeStamp className='chat-timestamp'
                                isAuthor={isAuthor}>
-                <span className="reply-date created">
-                            {reply.created_at.diff_for_humans ? "sending..." : localizeDate(reply.created_at.timestamp, "HH:mm")}
-                        </span>
+                    <span className="reply-date created">
+                        {reply.created_at.diff_for_humans ? "sending..." : todayOrYesterdayDate(reply.created_at.timestamp)}
+                    </span>
                 </ChatTimeStamp>
             </>
         }
