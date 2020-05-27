@@ -673,9 +673,6 @@ const ChatBubble = forwardRef((props, ref) => {
     }, [addMessageRef, loadInView, props, props.handleMessageRefChange, reply.id]);
 
     useEffect(() => {
-        /**
-         * @todo must be in redux
-         */
         let chatFiles = [];
         for (const i in selectedChannel.replies) {
             const r = selectedChannel.replies[i];
@@ -868,13 +865,15 @@ const ChatBubble = forwardRef((props, ref) => {
         }
     }
 
+    const hasFiles = reply.files.filter(f => f.type === "image").length > 0;
+
     return <ChatBubbleContainer
         ref={refComponent}
         tabIndex={reply.id}
         className={`chat-bubble ql-editor`}
         showAvatar={showAvatar}
         isAuthor={isAuthor}
-        hideBg={isEmoticonOnly || showGifPlayer}
+        hideBg={isEmoticonOnly || showGifPlayer || (hasFiles && replyBody === "<span></span>")}
         theme={props.settings.CHAT_SETTINGS.chat_message_theme}>
         {
             <>
@@ -896,7 +895,7 @@ const ChatBubble = forwardRef((props, ref) => {
                             <QuoteContainer
                                 showAvatar={showAvatar}
                                 isEmoticonOnly={isEmoticonOnly}
-                                hasFiles={reply.files.filter(f => f.type === "image").length > 0}
+                                hasFiles={hasFiles}
                                 theme={props.settings.CHAT_SETTINGS.chat_message_theme}
                                 onClick={handleQuoteClick} isAuthor={isAuthor}>
                                 {
@@ -938,7 +937,7 @@ const ChatBubble = forwardRef((props, ref) => {
                         }
                         {
                             <ReplyContent
-                                hasFiles={reply.files.filter(f => f.type === "image").length > 0}
+                                hasFiles={hasFiles}
                                 theme={props.settings.CHAT_SETTINGS.chat_message_theme}
                                 isAuthor={isAuthor}
                                 className={`reply-content ${isEmoticonOnly ? "emoticon-body" : ""} ${reply.is_deleted ? "is-deleted" : ""}`}

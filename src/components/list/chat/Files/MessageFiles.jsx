@@ -46,8 +46,6 @@ const MessageFiles = forwardRef((props, ref) => {
     const handleToggleShowFile = () => {
         setShowFiles(!showFiles);
     };
-    console.log(files);
-    console.log(reply);
 
     const handlePreviewFile = (e, file) => {
         e.stopPropagation();
