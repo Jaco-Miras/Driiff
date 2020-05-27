@@ -75,16 +75,17 @@ const ChatReplyContainer = styled.div`
         color: transparent;
   }
   .mention {
-    border-radius: 8px;
-    background: #7A1B8B;
+    background: transparent;
     display: inline-block;
     width: auto;
     height: auto;
-    color: #fff;
-    padding: 2px 5px;
+    color: #ffffff;
+    padding: 0;
   }
   .mention.is-author {
-    background: #8C3B9B;
+    color: #7A1B8B;
+    background: transparent;
+    padding: 0;
   }
 `;
 
