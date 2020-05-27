@@ -2,9 +2,30 @@ import React, {useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {useRouteMatch} from "react-router-dom";
 import styled from "styled-components";
-import {Avatar, SvgIconFeather} from "../../common";
+import {Avatar, NavLink, SvgIconFeather} from "../../common";
 
-const WorkspaceName = styled.h1`    
+const NavBar = styled.ul`
+    li {
+        justify-content: center;
+        align-items: center;
+    }
+`;
+
+const WorkspaceName = styled.h2`
+    margin-right: 1rem;
+    letter-spacing: -0.5px;
+    margin-bottom: 0;
+    color: #82828A;
+    font-weight: 500;
+`;
+
+const SubWorkspaceName = styled.h3`
+    font-size: 20px;    
+    letter-spacing: -0.5px;
+    margin-bottom: 0;
+    color: #82828A;
+    font-weight: 500;
+    text-transform: lowercase;
 `;
 
 const WorspaceHeaderPanel = (props) => {
@@ -22,17 +43,19 @@ const WorspaceHeaderPanel = (props) => {
     return (
         <>
             <div>
-                <ul className="navbar-nav">
+                <NavBar className="navbar-nav">
                     <li className="nav-item navigation-toggler mobile-toggler">
                         <a href="/" className="nav-link" title="Show navigation">
                             <SvgIconFeather icon="menu"/>
                         </a>
                     </li>
                     <li className="nav-item">
-                        <WorkspaceName>SodaStream</WorkspaceName>
-                        <WorkspaceName>website</WorkspaceName>
+                        <WorkspaceName>Workspace</WorkspaceName>
                     </li>
-                </ul>
+                    <li className="nav-item">
+                        <SubWorkspaceName>Sub workspace item</SubWorkspaceName>
+                    </li>
+                </NavBar>
             </div>
 
             <div>
@@ -52,8 +75,7 @@ const WorspaceHeaderPanel = (props) => {
                             </a>
                             <a href="/" className="dropdown-item">
                                 <img src={require("../../../assets/media/image/flags/195-netherlands.png")}
-                                     className="mr-2"
-                                     alt="flag"
+                                     className="mr-2" alt="flag"
                                      width="18"/>
                                 Dutch
                             </a>
@@ -66,7 +88,7 @@ const WorspaceHeaderPanel = (props) => {
                         </a>
                     </li>
                     <li className="nav-item dropdown">
-                        <Avatar userId={user.id} name={user.name} imageLink={user.profile_image_link}/>
+                        <Avatar name={user.name} imageLink={user.profile_image_link}/>
                         <div className="dropdown-menu dropdown-menu-right dropdown-menu-big">
                             <div id="ascrail2003" className="nicescroll-rails nicescroll-rails-vr"
                                  styles="width: 8px; z-index: 1000; cursor: default; position: absolute; top: 65.8px; left: 292px; height: 299px; display: none;">

@@ -8,7 +8,7 @@ import ChatQuote from "../../list/chat/ChatQuote";
 
 const Wrapper = styled.div`
     position: relative;
-    z-index: 100;
+    z-index: 1;    
 `;
 
 const ArchivedDiv = styled.div`

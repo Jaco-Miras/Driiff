@@ -25,8 +25,18 @@ const StyledUserListPopUp = styled(UserListPopUp)`
     max-width: 250px;
     left: ${props => props.isAuthor ? "unset" : "5px"};
     right: ${props => props.isAuthor ? "5px" : "unset"};
+    
     ul {
         max-height: 250px;
+        
+        li {
+            display: block;
+            text-align: left;
+            
+            > span {
+                margin-left: 10px;
+            }
+        }
     }
 `;
 

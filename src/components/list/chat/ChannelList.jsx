@@ -12,17 +12,14 @@ import ReplyPreview from "./ReplyPreview";
 const Wrapper = styled.span`
     cursor: pointer;
     cursor: hand;
-    
     &:hover {
         .more-button-component {
             opacity: 1;
             z-index: 1;
-            
             &.active {
-                color: #fff !important;
-                background-color: #972c86;
+                color: #4d4d4d !important;
             }
-        }        
+        }
         .chat-timestamp {
             opacity: 0;
             display: none;
@@ -30,24 +27,33 @@ const Wrapper = styled.span`
     }
     .chat-timestamp {
         position: absolute;
-        right: 20px;
+        right: 0px;
+        svg {
+            margin-left: 4px;
+        }
+        .badge {
+            position: absolute;
+            left: calc(-100% - 4px);
+        }
     }
     .feather-more-horizontal {
         width: 25px;
         height: 25px;
         position: relative;
-        right: 28px;
-        border: 1px solid #dee2e6;
+        right: 0;
+        ${'' /* border: 1px solid #dee2e6; */}
+        fill: currentColor;
         padding: 3px;
-        top: 5px;
-    }    
+        top: 2px;
+    }
 `;
 
 const ChannelTitlePreview = styled.div`
+    padding-right: 60px;
 `;
 
 const Timestamp = styled.div`
-    position: relative;    
+    position: relative;
 `;
 
 const ChannelList = props => {
@@ -80,10 +86,10 @@ const ChannelList = props => {
 
     return (
         <Wrapper
-            className={`list-group-item active d-flex pl-0 pr-0 pb-3 pt-3 ${className}`}
+            className={`list-group-item d-flex align-items-center link-1 pl-0 pr-0 pb-3 pt-3 ${className}`}
             optionsVisible={optionsVisible} selected={channel.selected} onClick={handleSelectChannel}>
             <ChannelIcon channel={channel}/>
-            <ChannelTitlePreview className={`flex-grow- 1`}>
+            <ChannelTitlePreview className={`flex-grow-1`}>
                 <ChannelTitle channel={channel}/>
                 <ReplyPreview channel={channel}/>
             </ChannelTitlePreview>

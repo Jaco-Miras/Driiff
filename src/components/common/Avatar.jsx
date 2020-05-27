@@ -22,14 +22,16 @@ const Image = styled.img`
 `;
 
 const Initials = styled.span`
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    background-color: #fff;
+    display: flex;    
     margin: auto;
     height: 20px;
     text-align: center;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    align-items: center;
+    justify-content: center;
 `;
 
 const Avatar = forwardRef((props, ref) => {
@@ -99,7 +101,7 @@ const Avatar = forwardRef((props, ref) => {
         }
         {
             showInitials ?
-                <Initials>{handleInitials(name).substring(0, 2)}</Initials>
+                <Initials className="rounded-circle">{handleInitials(name).substring(0, 2)}</Initials>
                 :
                 <>
                     {

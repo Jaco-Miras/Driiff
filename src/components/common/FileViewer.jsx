@@ -4,6 +4,7 @@ import styled from "styled-components";
 import {localizeDate} from "../../helpers/momentFormatJS";
 import {getAPIUrl} from "../../helpers/slugHelper";
 import {setViewFiles} from "../../redux/actions/fileActions";
+import "../../vendors/lightbox/magnific-popup.css";
 import {useOutsideClick} from "../hooks";
 import ImageTextLink from "./ImageTextLink";
 import {SvgIconFeather} from "./SvgIcon";
@@ -36,24 +37,6 @@ const FileViewerContainer = styled.div`
         bottom: 0;
         cursor: pointer;
         cursor: hand;
-    }
-        
-    img.file{
-        max-height: 85%;
-        max-width: 85%;
-        margin:auto;
-        position: absolute;
-        top: 65px;
-        left: 0;
-        right: 0;
-        bottom: 0;
-    }
-    
-    .file-item {
-        position: absolute;
-        top: 0;
-        width: 100%;
-        height: 100%;
     }
 `;
 
@@ -118,10 +101,10 @@ const FileCreated = styled.p`
 `;
 const PreviewContainer = styled.div`
     position: relative;
-    top: 8%;
+    top: 0;
     margin: 0 auto;
-    width: 80%;
-    height: 80%;
+    width: 100%;
+    height: 100%;
     overflow: hidden;
     align-items: center;
     justify-content: center;    
@@ -150,25 +133,25 @@ const PreviewContainer = styled.div`
     }
 `;
 
-const ArrowIcon = styled(SvgIconFeather)`
+const CloseButton = styled.button`
+    &:focus {
+        outline: none;
+    }
+`;
+
+const ArrowButton = styled.button`
     opacity: ${props => props.show ? "1" : "0"};
     visibility: ${props => props.show ? "visible" : "hidden"};
-    position: absolute;   
-    top: calc(50% - 30px);
-    z-index: 1;
-    cursor: pointer;
-    cursor: hand;    
-    z-index: 1;
-    height: 40px;
-    width: 40px;  
     
-    &.next {
-        right: 10px;
+    &:focus {
+        outline: none;
     }
-    
-    &.back {
-        left: 10px;
-    }
+`;
+
+const FileWrapper = styled.figure`
+    box-sizing: border-box;
+    padding: 40px 0;
+    margin: 0 auto;
 `;
 
 
@@ -287,7 +270,7 @@ const FileViewer = forwardRef((props, ref) => {
 
         switch (file.type.toLowerCase()) {
             case "video":
-                return <div key={index} data-index={index} className={`file-item`}>
+                return <div key={index} data-index={index} className={`file-item mfp-img`}>
                     <img className={`d-none`} src={require("../../assets/icon/limitations/l/text.svg")}
                          alt={`File not found.`}/>
                     <video
@@ -301,7 +284,7 @@ const FileViewer = forwardRef((props, ref) => {
                         src={file.view_link}></video>
                 </div>;
             case "image":
-                return <div key={index} data-index={index} className={`file-item`}>
+                return <div key={index} data-index={index} className={`file-item mfp-img`}>
                     <img
                         data-index={index}
                         data-attempt={0}
@@ -311,7 +294,7 @@ const FileViewer = forwardRef((props, ref) => {
                         key={index} style={style} className={`file d-none`} src={file.view_link} alt='file preview'/>
                 </div>;
             case "pdf":
-                return <div key={index} data-index={index} className={`file-item`}>
+                return <div key={index} data-index={index} className={`file-item mfp-img`}>
                     <iframe
                         ref={e => refFiles[index] = e}
                         title={file.name}
@@ -321,7 +304,7 @@ const FileViewer = forwardRef((props, ref) => {
                         frameBorder="0"></iframe>
                 </div>;
             default:
-                return <div key={index} data-index={index} className={`file-item`}>
+                return <div key={index} data-index={index} className={`file-item mfp-img`}>
                     <FileIcon ref={e => refFiles[index] = e}
                               key={index} style={style} iconLeft={`documents`}
                               onClick={e => handleDownloadFile(e, file)}>{file.type.toLowerCase()}</FileIcon>
@@ -336,7 +319,6 @@ const FileViewer = forwardRef((props, ref) => {
         window.focus();
     };
 
-    console.log(files, channelFiles);
     let file = files[activeIndex];
 
     if (files.length === 0) return;
@@ -345,9 +327,6 @@ const FileViewer = forwardRef((props, ref) => {
         className={`fileviewer-container ${className}`} ref={fileRef}>
         <PreviewContainer
             className='iframe-img-container'>
-            <ArrowIcon className="back" icon="play" show={files.length > 1} rotate={180}
-                       onClick={e => showPreviousFile(e)}/>
-            <CloseIcon icon={`x`} onClick={e => handleClose(e)}/>
             <FileNameContainer>
                 <FileName onClick={e => handleDownloadFile(e, file)} href={file.download_link} download={file.filename}
                           target={`_blank`}>
@@ -358,12 +337,37 @@ const FileViewer = forwardRef((props, ref) => {
                 file.created_at && file.created_at.timestamp &&
                 <FileCreated>{localizeDate(file.created_at.timestamp)} ● {file.type.toLowerCase()}</FileCreated>
             }
-            {
-                files.map((f, index) => {
-                    return renderFile(f, index);
-                })
-            }
-            <ArrowIcon className="next" icon="play" show={files.length > 1} onClick={e => showNextFile(e)}/>
+            <div className="mfp-container mfp-s-ready mfp-image-holder">
+                <div className="mfp-content">
+                    <div className="mfp-figure">
+                        <CloseButton onClick={e => handleClose(e)} title="Close (Esc)" type="button" className="mfp-close">×</CloseButton>
+                        <FileWrapper>
+                            {
+                                files.map((f, index) => {
+                                    return renderFile(f, index);
+                                })
+                            }
+                            <figcaption>
+                                <div className="mfp-bottom-bar">
+                                    <div className="mfp-title"></div>
+                                    <div className="mfp-counter">{`${activeIndex + 1} of ${files.length}`}</div>
+                                </div>
+                            </figcaption>
+                        </FileWrapper>
+                    </div>
+                </div>
+                <div className="mfp-preloader">Loading...</div>
+                <ArrowButton
+                    show={files.length > 1}
+                    onClick={e => showPreviousFile(e)}
+                    title="Previous (Left arrow key)" type="button"
+                    className="mfp-arrow mfp-arrow-left mfp-prevent-close"></ArrowButton>
+                <ArrowButton
+                    show={files.length > 1}
+                    onClick={e => showNextFile(e)}
+                    title="Next (Right arrow key)" type="button"
+                    className="mfp-arrow mfp-arrow-right mfp-prevent-close"></ArrowButton>
+            </div>
         </PreviewContainer>
     </FileViewerContainer>;
 });

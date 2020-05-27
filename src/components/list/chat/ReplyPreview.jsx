@@ -7,24 +7,32 @@ import {_t} from "../../../helpers/stringFormatter";
 import {SvgIcon} from "../../common";
 
 const Wrapper = styled.span`
+    display: table;
+    table-layout: fixed;
+    width: 100%;
 `;
-const LastReplyContent = styled.span`      
+const LastReplyContent = styled.span`
 `;
 const DraftContent = styled.span`
 `;
 const LastReplyName = styled.span`
 `;
 const LastReplyBody = styled.div`
-    max-width: calc(100% - 4.5rem);
+    min-width: 200px;
+    text-overflow: ellipsis;
+    max-height: 40px;
+    display: table-cell;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    svg {
+        margin-right: 4px;
+        display: inline;
+    }
 `;
 const TextIcon = styled(SvgIcon)`
-    filter: brightness(0) saturate(100%) invert(79%) sepia(14%) saturate(364%) hue-rotate(194deg) brightness(86%) contrast(88%);
-    width: 11px;
-    height: 11px;
-    
-    &.icon-image-video {
-        margin-left: 0.2rem;
-    }
+    max-width: 12px;
+    height: 100%;
 `;
 
 const ReplyPreview = props => {
@@ -73,8 +81,7 @@ const ReplyPreview = props => {
 
             if (channel.last_reply.user) {
                 if (channel.last_reply.user && channel.last_reply.user.id === user.id) {
-                    previewText =
-                        renderToString(<TextIcon icon={`reply`}/>) + previewText;
+                    previewText = previewText;
                 } else {
                     previewText =
                         renderToString(
@@ -105,7 +112,7 @@ const ReplyPreview = props => {
         setPreviewText(previewText);
     }, [channel.last_reply, channel.replies, channel.id, user.id, channelDrafts, settings.CHAT_SETTINGS.preview_message]);
     return (
-        <Wrapper className={`small text-muted`}>
+        <Wrapper className={`small text-muted `}>
             <LastReplyBody
                 isUnread={channel.total_unread > 0}
                 className={`last-reply-body`}

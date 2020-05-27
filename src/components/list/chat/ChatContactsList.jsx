@@ -19,7 +19,7 @@ const Wrapper = styled.div`
 const NewGroupButton = styled.div`
     cursor: pointer;
     cursor: hand;
-    
+
     span {
         position: relative;
         top: 1px;
@@ -175,7 +175,7 @@ const ChatContactsList = props => {
             }
 
             if (search !== "") {
-                return channel.search
+                return channel.title
                     .toLowerCase()
                     .indexOf(search.toLowerCase()) > -1;
             }
