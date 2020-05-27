@@ -15,9 +15,10 @@ const WorkspaceNavigationMenuBodyPanel = (props) => {
     const dispatch = useDispatch();
 
     const workspaces = useSelector(state => state.workspaces.workspaces);
+    const workspacesLoaded = useSelector(state => state.workspaces.workspacesLoaded);
     
     useEffect(() => {
-        if (Object.keys(workspaces).length === 0) {
+        if (!workspacesLoaded) {
             dispatch(
                 getWorkspaces({is_external: 0})
             );

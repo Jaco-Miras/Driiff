@@ -5,7 +5,7 @@ import {Modal, ModalHeader} from "reactstrap";
 import {clearModal} from "../../redux/actions/globalActions";
 import QuillEditor from "../forms/QuillEditor";
 import {useQuillModules} from "../hooks";
-import {createWorkspace} from "../../redux/actions/workspaceActions";
+import {createWorkspace, updateWorkspace, deleteWorkspace, moveWorkspaceTopic} from "../../redux/actions/workspaceActions";
 
 
 const PopUpBody = styled.div`
@@ -78,15 +78,20 @@ const WorkspaceFolderModal = props => {
 
     const handleCreateWorkspaceFolder = () => {
         let payload = {
-            name: name,
-            description: text,
-            is_external: 0,
-            is_folder: 1,
-            is_lock: 0,
-            //member_ids: [3,2]
+            // name: name,
+            // description: text,
+            // is_external: 0,
+            // is_folder: 1,
+            // is_lock: 0,
+            // // member_ids: [3,2],
+            // workspace_id: 1,
+            // topic_id: 100
         }
+
         dispatch(
-            createWorkspace(payload)
+            //moveWorkspaceTopic(payload)
+            //updateWorkspace(payload)
+            //createWorkspace(payload)
         );
         toggle();
     }

@@ -210,3 +210,35 @@ export function getPostStatusCount(payload, callback) {
         callback,
     );
 }
+
+export function incomingWorkspaceFolder(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "INCOMING_WORKSPACE_FOLDER",
+        payload,
+        callback,
+    );
+}
+
+export function incomingWorkspace(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "INCOMING_WORKSPACE",
+        payload,
+        callback,
+    );
+}
+
+export function incomingUpdatedWorkspaceFolder(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "INCOMING_UPDATED_WORKSPACE_FOLDER",
+        payload,
+        callback,
+    );
+}
+
+export function incomingMovedTopic(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "INCOMING_MOVED_TOPIC",
+        payload,
+        callback,
+    );
+}

@@ -37,10 +37,11 @@ export function createWorkspace(payload) {
  * @param {Object} payload
  * @param {string} payload.name
  * @param {number} payload.is_external
+ * @param {number} payload.workspace_id
  * @returns {Promise<*>}
  */
 export function updateWorkspace(payload) {
-    let url = `/v2/workspace`;
+    let url = `/v2/workspace/${payload.workspace_id}`;
     return apiCall({
         method: "PUT",
         url: url,
@@ -69,7 +70,7 @@ export function deleteWorkspace(payload) {
  * @returns {Promise<*>}
  */
 export function moveWorkspaceTopic(payload) {
-    let url = `/v2/move-topic-workspace}`;
+    let url = `/v2/move-topic-workspace`;
     return apiCall({
         method: "PUT",
         url: url,

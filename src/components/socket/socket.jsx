@@ -38,6 +38,12 @@ import {
     setBrowserTabStatus,
 } from "../../redux/actions/globalActions";
 import {getOnlineUsers, getUser} from "../../redux/actions/userAction";
+import {
+    incomingWorkspaceFolder, 
+    incomingWorkspace, 
+    incomingUpdatedWorkspaceFolder,
+    incomingMovedTopic
+} from "../../redux/actions/workspaceActions";
 // import {
 //     addChatBox,
 //     addChatMembers,
@@ -414,6 +420,22 @@ class Socket extends PureComponent {
             .listen(".delete-topic", e => {
                 this.props.incomingDeletedTopic(e);
             })
+            .listen(".new-workspace", e => {
+                console.log(e, 'new workspace')
+                if (e.topic !== undefined) {
+                    this.props.incomingWorkspace(e)
+                } else {
+                    this.props.incomingWorkspaceFolder(e.workspace);
+                }
+            })
+            .listen(".update-workspace", e => {
+                console.log(e, 'update workspace')
+                this.props.incomingUpdatedWorkspaceFolder(e)
+            })
+            .listen(".move-topic-workspace", e => {
+                console.log(e, 'move workspace')
+                this.props.incomingMovedTopic(e)
+            })  
             .notification((notification) => {
                 console.log(notification, "broadcast notification");
             });
@@ -509,6 +531,10 @@ class Socket extends PureComponent {
                     });
                 }
                 this.props.incomingUpdatedReplyAction(e.message);
+            })
+            .listen(".move-private-topic-workspace", e => {
+                console.log(e, 'move workspace private')
+                this.props.incomingMovedTopic(e)
             })
             .listen(".new-private-topic", e => {
                 this.props.incomingCreatedTopic(e);
@@ -1275,7 +1301,11 @@ function mapDispatchToProps(dispatch) {
         incomingDeletedChatMessage: bindActionCreators(incomingDeletedChatMessage, dispatch),
         incomingUpdatedChannelDetail: bindActionCreators(incomingUpdatedChannelDetail, dispatch),
         getChannelMembers: bindActionCreators(getChannelMembers, dispatch),
-        updateChannelMembersTitle: bindActionCreators(updateChannelMembersTitle, dispatch)
+        updateChannelMembersTitle: bindActionCreators(updateChannelMembersTitle, dispatch),
+        incomingWorkspaceFolder: bindActionCreators(incomingWorkspaceFolder, dispatch),
+        incomingWorkspace: bindActionCreators(incomingWorkspace, dispatch),
+        incomingUpdatedWorkspaceFolder: bindActionCreators(incomingUpdatedWorkspaceFolder, dispatch),
+        incomingMovedTopic: bindActionCreators(incomingMovedTopic, dispatch),
 
         // logoutAction: bindActionCreators(logout, dispatch),
         // simpleNewNotificationSocketAction: bindActionCreators(simpleNewNotificationSocket, dispatch),
