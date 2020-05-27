@@ -22,8 +22,12 @@ export default (state = INITIAL_STATE, action) => {
                 let topics = {};
                 if (ws.topics.length > 0) {
                     ws.topics.forEach(t => {
-                        topics[t.id] = { ...t,
-                            selected: false
+                        topics[t.id] = { 
+                            ...t,
+                            selected: false,
+                            is_external: ws.is_external,
+                            workspace_id: ws.id,
+                            workspace_name: ws.name,
                         }
                     })
                 }
@@ -132,6 +136,44 @@ export default (state = INITIAL_STATE, action) => {
                 return state
             } else {
                 return state;
+            }
+        }
+        case "SET_ACTIVE_TOPIC": {
+            let newWorkspaces = {...state.workspaces};
+            if (state.activeTopic) {
+                newWorkspaces = {
+                    ...newWorkspaces,
+                    [state.activeTopic.workspace_id]: {
+                        ...newWorkspaces[state.activeTopic.workspace_id],
+                        topics: {
+                            ...newWorkspaces[state.activeTopic.workspace_id].topics,
+                            [state.activeTopic.id]: {
+                                ...state.activeTopic,
+                                selected: false
+                            }
+                        },
+                        selected: state.activeTopic.workspace_id === action.data.workspace_id
+                    }
+                }
+            }
+            newWorkspaces = {
+                ...newWorkspaces,
+                [action.data.workspace_id]: {
+                    ...newWorkspaces[action.data.workspace_id],
+                    topics: {
+                        ...newWorkspaces[action.data.workspace_id].topics,
+                        [action.data.id]: {
+                            ...action.data,
+                            selected: true
+                        }
+                    },
+                    selected: true
+                }
+            }
+            return {
+                ...state,
+                workspaces: newWorkspaces,
+                activeTopic: {...action.data, selected: true}
             }
         }
         default:

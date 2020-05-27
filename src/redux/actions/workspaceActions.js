@@ -242,3 +242,11 @@ export function incomingMovedTopic(payload, callback) {
         callback,
     );
 }
+
+export function setActiveTopic(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "SET_ACTIVE_TOPIC",
+        payload,
+        callback,
+    );
+}

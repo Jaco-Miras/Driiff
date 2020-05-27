@@ -3,7 +3,7 @@ import styled from "styled-components";
 import {withRouter} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import {SvgIconFeather} from "../../common";
-import {getWorkspaces, getWorkspaceTopics} from "../../../redux/actions/workspaceActions";
+import {getWorkspaces, getWorkspaceTopics, setActiveTopic} from "../../../redux/actions/workspaceActions";
 import {WorkspaceList} from "../../workspace";
 import {addToModals} from "../../../redux/actions/globalActions";
 
@@ -18,22 +18,58 @@ const WorkspaceNavigationMenuBodyPanel = (props) => {
     const workspaces = useSelector(state => state.workspaces.workspaces);
     const workspacesLoaded = useSelector(state => state.workspaces.workspacesLoaded);
     const activeTopic = useSelector(state => state.workspaces.activeTopic);
-    console.log(props)
+
     useEffect(() => {
         if (!workspacesLoaded) {
             dispatch(
-                getWorkspaces({is_external: 0})
+                getWorkspaces({is_external: 0}, (err,res) => {
+                    if (err) return;
+                    if (props.match.params.hasOwnProperty("wsid") && props.match.params.wsid !== undefined) {
+                        //set the topic
+                        let topic = null;
+                        let wsfolder = null;
+                        res.data.workspaces.forEach(ws => {
+                            if (ws.topics.length) {
+                                ws.topics.forEach(t => {
+                                    if (t.id === parseInt(props.match.params.wsid)) {
+                                        wsfolder = ws;
+                                        topic = t;
+                                        return;
+                                    } else return;
+                                })
+                            } else {
+                                return
+                            }
+                        })
+                        if (topic) {
+                            topic = {
+                                ...topic,
+                                selected: true,
+                                is_external: wsfolder.is_external,
+                                workspace_id: wsfolder.id,
+                                workspace_name: wsfolder.name,
+                            }
+                            dispatch(setActiveTopic(topic));
+                        }
+                    }
+                })
             );
-            dispatch(getWorkspaceTopics({is_external: 0}))
-            //check for params in the url to check for redirect
-            //props.history.push(`/workspace/internal/wow-2/1/workspace-under-1/159/dashboard`)
+            dispatch(getWorkspaceTopics({is_external: 0}));
         } else {
-            // if workspaces is already loaded and the url is default url then no redirect
-            // if theres an active topic then redirect to that url
-            ///props.history.push(`/workspace/internal/wow-2/1/workspace-under-1/159/dashboard`)
-            // if (activeTopic) {
-            //     props.history.push(`/workspace/internal/wow-2/1/workspace-under-1/159/dashboard`)
-            // }
+            if (activeTopic && props.match.url === "/workspace/dashboard") {
+                let path = `/workspace/${activeTopic.is_external === 0 ? 'internal' : 'external'}/`;
+                if (activeTopic.workspace_id !== undefined) {
+                    path += `${activeTopic.workspace_name}/${activeTopic.workspace_id}/${activeTopic.name}/${activeTopic.id}/dashboard`;
+                } else {
+                    path += `${activeTopic.name}/${activeTopic.id}/dashboard`;
+                }
+                props.history.push(path)
+            } else if (activeTopic && props.match.params.hasOwnProperty("wsid")) {
+                //check if the active topic id is different in the params
+                if (props.match.params.wsid !== undefined && parseInt(props.match.params.wsid) !== activeTopic.id) {
+                    //find the new topic id in workspaces and set to active
+                }
+            }
         }
     }, []);
 
