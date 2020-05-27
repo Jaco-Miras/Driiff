@@ -8,6 +8,7 @@ import {localizeDate} from "../../helpers/momentFormatJS";
 import {createNewChat, editChannelDetail, renameChannelKey, searchExistingChat} from "../../redux/actions/chatActions";
 import {clearModal} from "../../redux/actions/globalActions";
 import {Avatar} from "../common";
+import {PeopleSelect} from "../forms";
 import QuillEditor from "../forms/QuillEditor";
 import {useQuillModules} from "../hooks";
 
@@ -31,23 +32,6 @@ const WrapperDiv = styled.div`
     }
 `;
 
-const SelectOption = styled.div`
-    display: flex;
-    flex-flow: row;
-    align-items: center;
-    padding-left: 5px;
-    :hover{
-        background: #DEEBFF;
-    }
-`;
-
-const StyledAvatar = styled(Avatar)`
-    min-width: 2rem;
-    min-height: 2rem;
-    margin: 5px;
-    border: none;
-`;
-
 const StyledQuillEditor = styled(QuillEditor)`
     &.group-chat-input {
         border: 1px solid #afb8bd;
@@ -68,53 +52,6 @@ const StyledQuillEditor = styled(QuillEditor)`
         padding: 5px;
     }
 `;
-
-const Option = props => {
-    return (
-        <SelectOption>
-            {
-                props.data &&
-                <StyledAvatar
-                    className="react-select-avatar"
-                    key={props.data.id}
-                    imageLink={props.data.profile_image_link}
-                    name={props.data.name}
-                    partialName={props.data.partial_name}
-                />
-            }
-            <components.Option {...props}></components.Option>
-        </SelectOption>
-    );
-};
-
-const MultiValueContainer = ({children, selectProps, ...props}) => {
-    let newChildren = children.map((c, i) => {
-        if (i === 0) {
-            return {
-                ...c,
-                props: {
-                    ...c.props,
-                    children: props.data.first_name,
-                },
-            };
-        } else return c;
-    });
-    return (
-        <components.MultiValueContainer {...props}>
-            {/* {
-                props.data && selectProps.inputValue === "" &&
-                <StyledAvatar
-                    className="react-select-avatar"
-                    key={props.data.id}
-                    imageLink={props.data.profile_image_link}
-                    name={props.data.name}
-                    partialName={props.data.partial_name}
-                />
-            } */}
-            {newChildren}
-        </components.MultiValueContainer>
-    );
-};
 
 const CreateEditChatModal = props => {
 
@@ -416,15 +353,9 @@ const CreateEditChatModal = props => {
                            valid={valid}
                     />
                 </InputGroup>
-
                 <WrapperDiv>
                     <Label for="people">People</Label>
-                    <Select
-                        className={"react-select-container"}
-                        classNamePrefix={"react-select"}
-                        isMulti={true}
-                        isClearable={false}
-                        components={{Option, MultiValueContainer}}
+                    <PeopleSelect
                         options={options}
                         value={selectedUsers}
                         onChange={handleSelect}
