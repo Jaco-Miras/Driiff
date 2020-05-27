@@ -4,7 +4,7 @@ const INITIAL_STATE = {
     user: {},
     workspaces: {},
     activeTopic: null,
-    activeTab: "internal",
+    activeTab: "intern",
     workspacesLoaded: false
 };
 
@@ -174,6 +174,12 @@ export default (state = INITIAL_STATE, action) => {
                 ...state,
                 workspaces: newWorkspaces,
                 activeTopic: {...action.data, selected: true}
+            }
+        }
+        case "SET_ACTIVE_TAB": {
+            return {
+                ...state,
+                activeTab: action.data
             }
         }
         default:

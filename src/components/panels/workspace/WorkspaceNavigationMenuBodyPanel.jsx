@@ -3,7 +3,7 @@ import styled from "styled-components";
 import {withRouter} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import {SvgIconFeather} from "../../common";
-import {getWorkspaces, getWorkspaceTopics, setActiveTopic} from "../../../redux/actions/workspaceActions";
+import {getWorkspaces, getWorkspaceTopics, setActiveTopic, setActiveTab} from "../../../redux/actions/workspaceActions";
 import {WorkspaceList} from "../../workspace";
 import {addToModals} from "../../../redux/actions/globalActions";
 
@@ -18,6 +18,7 @@ const WorkspaceNavigationMenuBodyPanel = (props) => {
     const workspaces = useSelector(state => state.workspaces.workspaces);
     const workspacesLoaded = useSelector(state => state.workspaces.workspacesLoaded);
     const activeTopic = useSelector(state => state.workspaces.activeTopic);
+    const activeTab = useSelector(state => state.workspaces.activeTab);
 
     useEffect(() => {
         if (!workspacesLoaded) {
@@ -84,6 +85,10 @@ const WorkspaceNavigationMenuBodyPanel = (props) => {
         );
     };
 
+    const handleSelectTab = (e, tab) => {
+        dispatch(setActiveTab(tab));
+    }
+
     return (
         <>
             <Wrapper className={`navigation-menu-body ${className}`}>
@@ -92,14 +97,14 @@ const WorkspaceNavigationMenuBodyPanel = (props) => {
                     <h4>Workspaces</h4>
 
                     <ul className="nav nav-tabs" id="pills-tab" role="tablist">
-                        <li className="nav-item">
-                            <span className="nav-link active" id="pills-home-tab"
-                                  data-toggle="pill" role="tab" aria-controls="pills-home"
-                                  aria-selected="true">Intern</span></li>
-                        <li className="nav-item">
-                            <span className="nav-link" id="pills-contact-tab" data-toggle="pill"
-                                  role="tab" aria-controls="pills-contact"
-                                  aria-selected="false">Extern</span></li>
+                        <li className="nav-item" onClick={e => handleSelectTab(e,"intern")}>
+                            <span className={`nav-link ${activeTab === "intern" ? "active" : ""}`} id="pills-intern-tab"
+                                  data-toggle="pill" role="tab" aria-controls="pills-intern"
+                                  aria-selected={activeTab === "intern" ? "true" : "false"}>Intern</span></li>
+                        <li className="nav-item" onClick={e => handleSelectTab(e,"extern")}>
+                            <span className={`nav-link ${activeTab === "extern" ? "active" : ""}`} id="pills-extern-tab" data-toggle="pill"
+                                  role="tab" aria-controls="pills-extern"
+                                  aria-selected={activeTab === "intern" ? "true" : "false"}>Extern</span></li>
                     </ul>
                     <div className="navigation-menu-group">
                         <div id="elements" className="open">

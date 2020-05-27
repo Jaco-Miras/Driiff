@@ -250,3 +250,11 @@ export function setActiveTopic(payload, callback) {
         callback,
     );
 }
+
+export function setActiveTab(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "SET_ACTIVE_TAB",
+        payload,
+        callback,
+    );
+}
