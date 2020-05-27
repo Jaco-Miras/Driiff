@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import {withRouter} from "react-router-dom";
 import {NavLink, SvgIconFeather} from "../../common";
 
 const Wrapper = styled.div`    
@@ -37,25 +38,29 @@ const WorkspacePageHeaderPanel = (props) => {
 
     const {className = ""} = props;
 
+    let pathname = props.match.url;
+    let lastIndex = pathname.lastIndexOf("/");
+    pathname = pathname.substr(0,lastIndex);
+
     return (
         <>
             <Wrapper className={`page-header ${className}`}>
                 <div className="container-fluid d-sm-flex justify-content-between">
                     <Navbar className="navbar-nav">
                         <li className="nav-item">
-                            <MainNavLink isSub={true} to="/workspace/dashboard">Dashboard</MainNavLink>
+                            <MainNavLink isSub={true} to={`${pathname}/dashboard`}>Dashboard</MainNavLink>
                         </li>
                         <li className="nav-item">
-                            <MainNavLink isSub={true} to="/workspace/posts">Posts</MainNavLink>
+                            <MainNavLink isSub={true} to={`${pathname}/posts`}>Posts</MainNavLink>
                         </li>
                         <li className="nav-item">
-                            <MainNavLink isSub={true} to="/workspace/chat">Chat</MainNavLink>
+                            <MainNavLink isSub={true} to={`${pathname}/chat`}>Chat</MainNavLink>
                         </li>
                         <li className="nav-item">
-                            <MainNavLink isSub={true} to="/workspace/files">Files</MainNavLink>
+                            <MainNavLink isSub={true} to={`${pathname}/files`}>Files</MainNavLink>
                         </li>
                         <li className="nav-item">
-                            <MainNavLink isSub={true} to="/workspace/people">People</MainNavLink>
+                            <MainNavLink isSub={true} to={`${pathname}/people`}>People</MainNavLink>
                         </li>
                         <li className="nav-item">
                             <SvgIconFeather icon="settings"/>
@@ -67,4 +72,4 @@ const WorkspacePageHeaderPanel = (props) => {
     );
 };
 
-export default React.memo(WorkspacePageHeaderPanel);
+export default React.memo(withRouter(WorkspacePageHeaderPanel));

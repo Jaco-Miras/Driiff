@@ -1,5 +1,6 @@
 import React, {useEffect} from "react";
 import styled from "styled-components";
+import {withRouter} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import {SvgIconFeather} from "../../common";
 import {getWorkspaces, getWorkspaceTopics} from "../../../redux/actions/workspaceActions";
@@ -16,13 +17,23 @@ const WorkspaceNavigationMenuBodyPanel = (props) => {
 
     const workspaces = useSelector(state => state.workspaces.workspaces);
     const workspacesLoaded = useSelector(state => state.workspaces.workspacesLoaded);
-    
+    const activeTopic = useSelector(state => state.workspaces.activeTopic);
+    console.log(props)
     useEffect(() => {
         if (!workspacesLoaded) {
             dispatch(
                 getWorkspaces({is_external: 0})
             );
             dispatch(getWorkspaceTopics({is_external: 0}))
+            //check for params in the url to check for redirect
+            //props.history.push(`/workspace/internal/wow-2/1/workspace-under-1/159/dashboard`)
+        } else {
+            // if workspaces is already loaded and the url is default url then no redirect
+            // if theres an active topic then redirect to that url
+            ///props.history.push(`/workspace/internal/wow-2/1/workspace-under-1/159/dashboard`)
+            // if (activeTopic) {
+            //     props.history.push(`/workspace/internal/wow-2/1/workspace-under-1/159/dashboard`)
+            // }
         }
     }, []);
 
@@ -89,4 +100,4 @@ const WorkspaceNavigationMenuBodyPanel = (props) => {
     );
 };
 
-export default React.memo(WorkspaceNavigationMenuBodyPanel);
+export default React.memo(withRouter(WorkspaceNavigationMenuBodyPanel));
