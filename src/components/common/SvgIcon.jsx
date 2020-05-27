@@ -251,6 +251,11 @@ export const SvgIconFeather = React.memo(React.forwardRef((props, ref) => {
                 <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
             </>;
             break;
+        case "folder":
+            content = <>
+                <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+            </>;
+            break;
         case "file":
             content = <>
                 <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path>
