@@ -175,7 +175,7 @@ const ChatContactsList = props => {
             }
 
             if (search !== "") {
-                return channel.search
+                return channel.title
                     .toLowerCase()
                     .indexOf(search.toLowerCase()) > -1;
             }
