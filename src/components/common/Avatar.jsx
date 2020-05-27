@@ -22,14 +22,13 @@ const Image = styled.img`
 `;
 
 const Initials = styled.span`
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    display: block;    
     margin: auto;
     height: 20px;
     text-align: center;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 `;
 
 const Avatar = forwardRef((props, ref) => {
