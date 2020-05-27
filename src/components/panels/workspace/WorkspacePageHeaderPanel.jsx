@@ -8,10 +8,16 @@ const Wrapper = styled.div`
 const Navbar = styled.ul`
     display: block;
     width: 100%;
+    margin-left: -30px;
     
     li {
         display: inline-block;
         width: 15%;
+        text-align: center;
+        
+        &:last-child {
+            text-align: right;
+        }
     }
 `;
 
