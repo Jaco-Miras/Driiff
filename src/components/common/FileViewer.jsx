@@ -4,6 +4,7 @@ import styled from "styled-components";
 import {localizeDate} from "../../helpers/momentFormatJS";
 import {getAPIUrl} from "../../helpers/slugHelper";
 import {setViewFiles} from "../../redux/actions/fileActions";
+import "../../vendors/lightbox/magnific-popup.css";
 import {useOutsideClick} from "../hooks";
 import ImageTextLink from "./ImageTextLink";
 import {SvgIconFeather} from "./SvgIcon";
@@ -118,10 +119,10 @@ const FileCreated = styled.p`
 `;
 const PreviewContainer = styled.div`
     position: relative;
-    top: 8%;
+    top: 0;
     margin: 0 auto;
-    width: 80%;
-    height: 80%;
+    width: 100%;
+    height: 100%;
     overflow: hidden;
     align-items: center;
     justify-content: center;    
@@ -150,24 +151,12 @@ const PreviewContainer = styled.div`
     }
 `;
 
-const ArrowIcon = styled(SvgIconFeather)`
+const ArrowButton = styled.button`
     opacity: ${props => props.show ? "1" : "0"};
     visibility: ${props => props.show ? "visible" : "hidden"};
-    position: absolute;   
-    top: calc(50% - 30px);
-    z-index: 1;
-    cursor: pointer;
-    cursor: hand;    
-    z-index: 1;
-    height: 40px;
-    width: 40px;  
     
-    &.next {
-        right: 10px;
-    }
-    
-    &.back {
-        left: 10px;
+    &:focus {
+        outline: none;
     }
 `;
 
@@ -299,6 +288,9 @@ const FileViewer = forwardRef((props, ref) => {
                         onLoadStart={handleVideoOnLoad}
                         onError={handleVideoOnError}
                         src={file.view_link}></video>
+                    {
+                        `${activeIndex + 1} of ${files.length}`
+                    }
                 </div>;
             case "image":
                 return <div key={index} data-index={index} className={`file-item`}>
@@ -309,6 +301,9 @@ const FileViewer = forwardRef((props, ref) => {
                         onError={handleImageOnError}
                         ref={e => refFiles[index] = e}
                         key={index} style={style} className={`file d-none`} src={file.view_link} alt='file preview'/>
+                    {
+                        `${activeIndex + 1} of ${files.length}`
+                    }
                 </div>;
             case "pdf":
                 return <div key={index} data-index={index} className={`file-item`}>
@@ -319,12 +314,18 @@ const FileViewer = forwardRef((props, ref) => {
                         className={`iframe file`}
                         src={file.view_link}
                         frameBorder="0"></iframe>
+                    {
+                        `${activeIndex + 1} of ${files.length}`
+                    }
                 </div>;
             default:
                 return <div key={index} data-index={index} className={`file-item`}>
                     <FileIcon ref={e => refFiles[index] = e}
                               key={index} style={style} iconLeft={`documents`}
                               onClick={e => handleDownloadFile(e, file)}>{file.type.toLowerCase()}</FileIcon>
+                    {
+                        `${activeIndex + 1} of ${files.length}`
+                    }
                 </div>;
         }
     };
@@ -336,7 +337,6 @@ const FileViewer = forwardRef((props, ref) => {
         window.focus();
     };
 
-    console.log(files, channelFiles);
     let file = files[activeIndex];
 
     if (files.length === 0) return;
@@ -345,8 +345,6 @@ const FileViewer = forwardRef((props, ref) => {
         className={`fileviewer-container ${className}`} ref={fileRef}>
         <PreviewContainer
             className='iframe-img-container'>
-            <ArrowIcon className="back" icon="play" show={files.length > 1} rotate={180}
-                       onClick={e => showPreviousFile(e)}/>
             <CloseIcon icon={`x`} onClick={e => handleClose(e)}/>
             <FileNameContainer>
                 <FileName onClick={e => handleDownloadFile(e, file)} href={file.download_link} download={file.filename}
@@ -358,12 +356,40 @@ const FileViewer = forwardRef((props, ref) => {
                 file.created_at && file.created_at.timestamp &&
                 <FileCreated>{localizeDate(file.created_at.timestamp)} ● {file.type.toLowerCase()}</FileCreated>
             }
-            {
-                files.map((f, index) => {
-                    return renderFile(f, index);
-                })
-            }
-            <ArrowIcon className="next" icon="play" show={files.length > 1} onClick={e => showNextFile(e)}/>
+            <div className="mfp-container mfp-s-ready mfp-image-holder">
+                <div className="mfp-content">
+                    <div className="mfp-figure">
+                        <button title="Close (Esc)" type="button" className="mfp-close">×</button>
+                        <figure>
+                            {
+                                files.map((f, index) => {
+                                    return renderFile(f, index);
+                                })
+                            }
+                            <figcaption>
+                                <div className="mfp-bottom-bar">
+                                    <div className="mfp-title"></div>
+                                    <div className="mfp-counter">3 of 6</div>
+                                </div>
+                            </figcaption></figure>
+                    </div>
+                </div>
+                <div className="mfp-preloader">Loading...</div>
+                <button title="Previous (Left arrow key)" type="button"
+                        className="mfp-arrow mfp-arrow-left mfp-prevent-close"></button>
+                <button title="Next (Right arrow key)" type="button"
+                        className="mfp-arrow mfp-arrow-right mfp-prevent-close"></button>
+            </div>
+            <ArrowButton
+                show={files.length > 1}
+                onClick={e => showPreviousFile(e)}
+                title="Previous (Left arrow key)" type="button"
+                         className="mfp-arrow mfp-arrow-left mfp-prevent-close"></ArrowButton>
+            <ArrowButton
+                show={files.length > 1}
+                onClick={e => showNextFile(e)}
+                title="Next (Right arrow key)" type="button"
+                         className="mfp-arrow mfp-arrow-right mfp-prevent-close"></ArrowButton>
         </PreviewContainer>
     </FileViewerContainer>;
 });

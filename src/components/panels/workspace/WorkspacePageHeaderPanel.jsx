@@ -1,12 +1,30 @@
 import React from "react";
-import {Link} from "react-router-dom";
 import styled from "styled-components";
-import {SvgIconFeather} from "../../common";
+import {NavLink, SvgIconFeather} from "../../common";
 
-const Wrapper = styled.div`
+const Wrapper = styled.div`    
 `;
 
-const MainNavLink = styled(Link)`
+const Navbar = styled.ul`
+    display: block;
+    width: 100%;
+    
+    li {
+        display: inline-block;
+        width: 15%;
+    }
+`;
+
+const MainNavLink = styled(NavLink)`    
+    padding: 10px 40px;
+    border-radius: 8px;
+    color: #5d5d5d;
+    margin: 0 0.2rem;
+
+    &.active {
+        background-color: #7a1b8b;
+        color: #fff;
+    }
 `;
 
 const WorkspacePageHeaderPanel = (props) => {
@@ -17,26 +35,26 @@ const WorkspacePageHeaderPanel = (props) => {
         <>
             <Wrapper className={`page-header ${className}`}>
                 <div className="container-fluid d-sm-flex justify-content-between">
-                    <ul className="navbar-nav">
+                    <Navbar className="navbar-nav">
                         <li className="nav-item">
-                            <MainNavLink to="/workspace/dashboard">Dashboard</MainNavLink>
+                            <MainNavLink isSub={true} to="/workspace/dashboard">Dashboard</MainNavLink>
                         </li>
                         <li className="nav-item">
-                            <MainNavLink to="/workspace/posts">Posts</MainNavLink>
+                            <MainNavLink isSub={true} to="/workspace/posts">Posts</MainNavLink>
                         </li>
                         <li className="nav-item">
-                            <MainNavLink to="/workspace/chat">Chat</MainNavLink>
+                            <MainNavLink isSub={true} to="/workspace/chat">Chat</MainNavLink>
                         </li>
                         <li className="nav-item">
-                            <MainNavLink to="/workspace/files">Files</MainNavLink>
+                            <MainNavLink isSub={true} to="/workspace/files">Files</MainNavLink>
                         </li>
                         <li className="nav-item">
-                            <MainNavLink to="/workspace/people">People</MainNavLink>
+                            <MainNavLink isSub={true} to="/workspace/people">People</MainNavLink>
                         </li>
                         <li className="nav-item">
                             <SvgIconFeather icon="settings"/>
                         </li>
-                    </ul>
+                    </Navbar>
                 </div>
             </Wrapper>
         </>

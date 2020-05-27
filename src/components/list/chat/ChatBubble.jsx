@@ -34,7 +34,7 @@ const ChatBubbleContainer = styled.div`
     color: ${props => (props.isAuthor ? props.theme.self.chat_bubble_text_color : props.theme.others.chat_bubble_text_color)};
     font-size: .835rem;
     overflow: visible;
-    ${props => props.isEmoticonOnly === true && `
+    ${props => props.hideBg === true && `
         background: none;
     `}
 
@@ -874,7 +874,7 @@ const ChatBubble = forwardRef((props, ref) => {
         className={`chat-bubble ql-editor`}
         showAvatar={showAvatar}
         isAuthor={isAuthor}
-        isEmoticonOnly={isEmoticonOnly}
+        hideBg={isEmoticonOnly || showGifPlayer}
         theme={props.settings.CHAT_SETTINGS.chat_message_theme}>
         {
             <>

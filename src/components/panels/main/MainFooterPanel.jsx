@@ -1,7 +1,8 @@
 import React from "react";
 import styled from "styled-components";
 
-const Wrapper = styled.footer`    
+const Wrapper = styled.footer`
+    z-index: 1 !important;    
 `;
 
 const MainFooterPanel = (props) => {

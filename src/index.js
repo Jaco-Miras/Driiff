@@ -5,6 +5,7 @@ import {BrowserRouter} from "react-router-dom";
 import "toasted-notes/src/styles.css";
 import App from "./App";
 import "./assets/css/app.css";
+import "./vendors/bundle.css";
 import store from "./redux/store/configStore";
 import * as serviceWorker from "./serviceWorker";
 
