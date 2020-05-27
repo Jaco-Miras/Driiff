@@ -1,6 +1,10 @@
-import React from "react";
+import React, {useEffect} from "react";
 import styled from "styled-components";
+import {useDispatch, useSelector} from "react-redux";
 import {SvgIconFeather} from "../../common";
+import {getWorkspaces, getWorkspaceTopics} from "../../../redux/actions/workspaceActions";
+import {WorkspaceList} from "../../workspace";
+import {addToModals} from "../../../redux/actions/globalActions";
 
 const Wrapper = styled.div`
 `;
@@ -8,6 +12,29 @@ const Wrapper = styled.div`
 const WorkspaceNavigationMenuBodyPanel = (props) => {
 
     const {className = ""} = props;
+    const dispatch = useDispatch();
+
+    const workspaces = useSelector(state => state.workspaces.workspaces);
+    
+    useEffect(() => {
+        if (Object.keys(workspaces).length === 0) {
+            dispatch(
+                getWorkspaces({is_external: 0})
+            );
+            dispatch(getWorkspaceTopics({is_external: 0}))
+        }
+    }, []);
+
+    const handleShowFolderModal = () => {
+        let payload = {
+            type: "workspace_folder"
+        }
+        // let body = document.getElementsByTagName("BODY")[0];
+        // body.classList.add("modal-open")
+        dispatch(
+            addToModals(payload)
+        );
+    };
 
     return (
         <>
@@ -29,21 +56,17 @@ const WorkspaceNavigationMenuBodyPanel = (props) => {
                     <div className="navigation-menu-group">
                         <div id="elements" className="open">
                             <ul>
+                                <li className="navigation-divider" onClick={handleShowFolderModal}>
+                                    <SvgIconFeather icon="plus"/> New folder
+                                </li>
                                 <li className="navigation-divider">
                                     <SvgIconFeather icon="plus"/> New workspace
                                 </li>
-                                <li>
-                                    <a href="/">Consolidated<i className="sub-menu-arrow"></i></a>
-                                </li>
-                                <li>
-                                    <a href="/">SodaStream<i
-                                        className="sub-menu-arrow ti-angle-up rotate-in ti-minus"></i></a>
-                                    <ul style={{display: "block"}}>
-                                        <li><a href="basic-cards.html">Website </a></li>
-                                        <li><a href="image-cards.html">Market Strategy </a></li>
-                                        <li><a href="card-scroll.html">Facebook Campaign </a></li>
-                                    </ul>
-                                </li>
+                                {
+                                    Object.values(workspaces).map(ws => {
+                                        return <WorkspaceList key={ws.id} workspace={ws}/>
+                                    })
+                                }
                             </ul>
                         </div>
                     </div>

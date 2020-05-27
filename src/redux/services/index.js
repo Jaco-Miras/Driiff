@@ -54,3 +54,25 @@ export {
     getChannelFiles,
     getFiles,
 } from "./files";
+
+export {
+    createWorkspace,
+    createWorkspacePost,
+    deleteWorkspace,
+    deleteWorkspaceFile,
+    getPostStatusCount,
+    getWorkspaceDetail,
+    getWorkspaceFileDetails,
+    getWorkspaceFiles,
+    getWorkspacePosts,
+    getWorkspacePostDetail,
+    getWorkspaceTopics,
+    getWorkspaceTrashFiles,
+    getWorkspaces,
+    moveWorkspaceTopic,
+    restoreWorkspaceFile,
+    updatePostStatus,
+    updateWorkspace,
+    updateWorkspacePost,
+    uploadWorkspaceFile,
+} from "./workspace";

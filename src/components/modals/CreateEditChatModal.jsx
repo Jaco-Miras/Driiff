@@ -155,13 +155,13 @@ const CreateEditChatModal = props => {
             setSelectedUsers([]);
         } else {
             setSelectedUsers(e);
-            handleSearchExistingChat();
+            //handleSearchExistingChat();
         }
     };
 
     const handleInputChange = e => {
         setInputValue(e.target.value.trim());
-        handleSearchExistingChat();
+        //handleSearchExistingChat();
     };
 
     const handleConfirm = () => {
@@ -379,6 +379,12 @@ const CreateEditChatModal = props => {
 
         //eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+
+    useEffect(() => {
+        if (selectedUsers.length) {
+            handleSearchExistingChat();
+        }
+    }, [inputValue, selectedUsers.length]);
 
     useEffect(() => {
         if (!searching) {
