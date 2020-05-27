@@ -19,7 +19,7 @@ const Wrapper = styled.div`
 const NewGroupButton = styled.div`
     cursor: pointer;
     cursor: hand;
-    
+
     span {
         position: relative;
         top: 1px;

@@ -9906,6 +9906,7 @@ textarea {
     position: relative;
     background: #fff;
     border: none;
+    overflow: hidden;
     -webkit-box-shadow: 0 3px 10px rgba(62, 85, 120, 0.045);
     -moz-box-shadow: 0 3px 10px rgba(62, 85, 120, 0.045);
     box-shadow: 0 3px 10px rgba(62, 85, 120, 0.045);
@@ -14177,7 +14178,7 @@ body.form-membership .form-wrapper hr {
     -moz-box-direction: normal;
     -ms-flex-direction: column;
     flex-direction: column;
-    overflow: auto;
+    overflow: visible;
 }
 
 .chat-block .chat-sidebar .chat-sidebar-content .list-group .list-group-item.active {
