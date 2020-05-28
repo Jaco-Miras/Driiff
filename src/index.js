@@ -4,7 +4,7 @@ import {Provider} from "react-redux";
 import {BrowserRouter} from "react-router-dom";
 
 import App from "./App";
-import "./assets/css/app.scss";
+import "./assets/style/app.scss";
 
 import "toasted-notes/src/styles.css";
 import store from "./redux/store/configStore";
