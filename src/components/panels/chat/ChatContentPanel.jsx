@@ -10,6 +10,7 @@ import {ChatFooterPanel, ChatHeaderPanel} from "./index";
 
 
 const Wrapper = styled.div`
+    width: 100%;
 `;
 
 const ChatMessagesPlaceholder = styled.div`

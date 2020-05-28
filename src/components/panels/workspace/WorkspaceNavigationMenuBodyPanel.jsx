@@ -8,6 +8,10 @@ import {WorkspaceList} from "../../workspace";
 import {addToModals} from "../../../redux/actions/globalActions";
 
 const Wrapper = styled.div`
+    .navigation-divider {
+        cursor: pointer;
+        cursor: hand;
+    }
 `;
 
 const WorkspaceNavigationMenuBodyPanel = (props) => {
@@ -55,7 +59,7 @@ const WorkspaceNavigationMenuBodyPanel = (props) => {
                     }
                 })
             );
-            dispatch(getWorkspaceTopics({is_external: 0}));
+            //dispatch(getWorkspaceTopics({is_external: 0}));
         } else {
             if (activeTopic && props.match.url === "/workspace/dashboard") {
                 let path = `/workspace/${activeTopic.is_external === 0 ? 'internal' : 'external'}/`;
@@ -80,6 +84,15 @@ const WorkspaceNavigationMenuBodyPanel = (props) => {
         }
         // let body = document.getElementsByTagName("BODY")[0];
         // body.classList.add("modal-open")
+        dispatch(
+            addToModals(payload)
+        );
+    };
+
+    const handleShowWorkspaceModal = () => {
+        let payload = {
+            type: "workspace_create_edit"
+        }
         dispatch(
             addToModals(payload)
         );
@@ -112,12 +125,12 @@ const WorkspaceNavigationMenuBodyPanel = (props) => {
                                 <li className="navigation-divider" onClick={handleShowFolderModal}>
                                     <SvgIconFeather icon="plus"/> New folder
                                 </li>
-                                <li className="navigation-divider">
+                                <li className="navigation-divider" onClick={handleShowWorkspaceModal}>
                                     <SvgIconFeather icon="plus"/> New workspace
                                 </li>
                                 {
                                     Object.values(workspaces).map(ws => {
-                                        return <WorkspaceList key={ws.id} workspace={ws}/>
+                                        return <WorkspaceList key={ws.key_id} workspace={ws}/>
                                     })
                                 }
                             </ul>

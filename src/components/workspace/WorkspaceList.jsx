@@ -1,6 +1,9 @@
 import React, {useState} from "react";
+import {useHistory} from "react-router-dom";
+import {useDispatch} from "react-redux";
 import styled from "styled-components";
 import TopicList from "./TopicList";
+import {setActiveTopic} from "../../redux/actions/workspaceActions";
 
 const WorkspaceListWrapper = styled.li`
     cursor: pointer;
@@ -13,19 +16,37 @@ const WorkspaceList = props => {
 
     const {className = "", workspace} = props;
 
+    const dispatch = useDispatch();
+    let history = useHistory();
+
     const [showTopics, setShowTopics] = useState(true);
 
+    const handleSelectWorkpace = () => {
+        //set the selected topic
+        if (workspace.selected) return;
+        if (workspace.is_external === 1) {
+
+        } else {
+            dispatch(setActiveTopic(workspace));
+            history.push(`/workspace/internal/${workspace.name}/${workspace.id}/dashboard`);
+        }
+    }
+
     const handleShowTopics = () => {
-        setShowTopics(!showTopics)
+        if (workspace.type === "FOLDER") {
+            setShowTopics(!showTopics)
+        } else {
+            handleSelectWorkpace();
+        }
     };
 
     return (
         <WorkspaceListWrapper selected={workspace.selected}>
             <a onClick={handleShowTopics}>{workspace.name}
-                {  Object.keys(workspace.topics).length > 0 && <i className="sub-menu-arrow ti-angle-up rotate-in ti-minus"></i> }
+                {  workspace.type === "FOLDER" && <i className="sub-menu-arrow ti-angle-up rotate-in ti-minus"></i> }
             </a>
             {
-                Object.keys(workspace.topics).length > 0 && showTopics &&
+                workspace.type === "FOLDER" && showTopics &&
                 <ul style={{display: "block"}}>
                     {
                     Object.keys(workspace.topics).length > 0 && Object.values(workspace.topics).map(topic => {
@@ -38,4 +59,4 @@ const WorkspaceList = props => {
     )
 }
 
-export default WorkspaceList
+export default WorkspaceList;
