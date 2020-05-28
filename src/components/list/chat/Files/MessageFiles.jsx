@@ -10,19 +10,26 @@ const MessageFilesContainer = styled.div`
     position: relative;
     z-index: 1;
     border-radius: 8px;
-    //background: ${props => props.filesLength === 1 && props.type === "chat" ? "#dedede" : "transparent"};
+    color: #828282;    
 `;
+
 const FilesLink = styled.div`
     margin-bottom: 0.5rem;
 `;
+
 const FilesContainer = styled.div`
     display: flex;
     flex-flow: column;
 `;
 
+const FileWrapper = styled(FilePill)`
+`;
+
 const FileShowDiv = styled.a`
     display:flex;
     align-items: center;
+    border:10px solid #000;
+    
     :after {
         content: "";
         mask-image: ${props =>
@@ -38,7 +45,7 @@ const FileShowDiv = styled.a`
 `;
 
 const MessageFiles = forwardRef((props, ref) => {
-    const {files, chatFiles, reply, type = "chat", ...otherProps} = props;
+    const {className = "", files, chatFiles, reply, type = "chat", ...otherProps} = props;
 
     const dispatch = useDispatch();
 
@@ -61,35 +68,36 @@ const MessageFiles = forwardRef((props, ref) => {
         }
     };
 
-    return <MessageFilesContainer {...otherProps} filesLength={files.length} type={type}>
+    return <MessageFilesContainer
+        className={`message-files ${className}`}
+        filesLength={files.length} type={type}
+        {...otherProps}>
         {
-            files.length ?
-                type === "chat" && files.length === 1 ? null
-                    :
-                    <FileShowDiv onClick={handleToggleShowFile} show={showFiles}>
-                        {files.length > 1 ? `${files.length} files` : `1 file`}
-                    </FileShowDiv>
-                : null
+            files.length >= 1 && (type === "chat" && files.length === 1) === false &&
+            <FileShowDiv onClick={handleToggleShowFile} show={showFiles}>
+                {files.length > 1 ? `${files.length} files` : `1 file`}
+            </FileShowDiv>
         }
         <FilesContainer>
             {
                 showFiles &&
                 files.map((file, key) => {
                     if (files.length === 1 && type === "chat") {
-                        return <FilePill
+                        return <FileWrapper
                             key={key}
                             cbFilePreview={handlePreviewFile}
                             file={file}
+                            data-file-type={file.type}
                         />;
                     } else {
                         return <FilesLink key={file.id}>
-                            <FilePill
+                            <FileWrapper
                                 cbFilePreview={handlePreviewFile}
                                 file={file}
+                                data-file-type={file.type}
                             />
                         </FilesLink>;
                     }
-
                 })
             }
         </FilesContainer>

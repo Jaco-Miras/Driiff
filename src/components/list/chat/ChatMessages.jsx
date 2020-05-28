@@ -969,6 +969,7 @@ class ChatMessages extends React.PureComponent {
                                                                     isAuthor={isAuthor}
                                                                     className={`chat-bubble-quote-div`}
                                                                 >
+
                                                                     <ChatBubble
                                                                         isAuthor={isAuthor}
                                                                         reply={reply}
