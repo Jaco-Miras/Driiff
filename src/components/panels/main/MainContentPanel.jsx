@@ -1,5 +1,5 @@
 import React from "react";
-import {Route, Switch} from "react-router-dom";
+import {Route, Switch, withRouter} from "react-router-dom";
 import styled from "styled-components";
 import {
     CompanyChatPanel,
@@ -21,14 +21,15 @@ import {
 import {MainFooterPanel} from "./index";
 
 const Wrapper = styled.div`
+    padding-bottom: ${props => props.isOnWorkspace ? "calc(1.875rem * 4)!important" : "calc(1.875rem * 2)"};
 `;
 
 const MainContentPanel = (props) => {
 
     const {className = ""} = props;
-
+    
     return (
-        <Wrapper className={`main-content ${className}`}>
+        <Wrapper className={`main-content ${className}`} isOnWorkspace={props.match.url.includes("/workspace")}>
             <Switch>
                 <Route
                     {...props}
@@ -120,4 +121,4 @@ const MainContentPanel = (props) => {
     );
 };
 
-export default React.memo(MainContentPanel);
+export default React.memo(withRouter(MainContentPanel));

@@ -91,12 +91,14 @@ const WorkspaceNavigationMenuBodyPanel = (props) => {
 
     const handleShowWorkspaceModal = () => {
         let payload = {
-            type: "workspace_create_edit"
+            type: "workspace_create_edit",
+            mode: "create"
         }
+
         dispatch(
             addToModals(payload)
         );
-    };
+    }
 
     const handleSelectTab = (e, tab) => {
         dispatch(setActiveTab(tab));

@@ -91,8 +91,7 @@ const WorkspaceChatPanel = (props) => {
     return (
         <Wrapper className={`container-fluid h-100 ${className}`}>
             <div className="row no-gutters chat-block">
-                <ChatSidebarPanel className={`col-lg-4 border-right`}/>
-                <ChatContentPanel className={`col-lg-8`}/>
+                <ChatContentPanel className={`col-lg-12`}/>
             </div>
         </Wrapper>
     );
