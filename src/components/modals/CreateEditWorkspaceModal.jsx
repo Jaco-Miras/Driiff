@@ -4,7 +4,7 @@ import {Input, InputGroup, Label, Modal, ModalBody, ModalHeader} from "reactstra
 import styled from "styled-components";
 import {clearModal} from "../../redux/actions/globalActions";
 import {createWorkspace} from "../../redux/actions/workspaceActions";
-import {FolderSelect, PeopleSelect} from "../forms";
+import {CheckBox, FolderSelect, PeopleSelect} from "../forms";
 import QuillEditor from "../forms/QuillEditor";
 import {useQuillModules} from "../hooks";
 
@@ -89,9 +89,6 @@ const CreateEditWorkspaceModal = forwardRef((props, ref) => {
         description: "",
         textOnly: "",
     });
-    const elRef = {
-        name: useRef(),
-    };
 
     const toggle = () => {
         setModal(!modal);
@@ -192,10 +189,6 @@ const CreateEditWorkspaceModal = forwardRef((props, ref) => {
         });
     }, []);
 
-    useEffect(() => {
-        console.log(elRef.name);
-    }, [elRef.name]);
-
     return (
         <Modal isOpen={modal} toggle={toggle} centered size={"md"}>
             <StyledModalHeader toggle={toggle} className={"workspace-modal-header"}>
@@ -203,7 +196,7 @@ const CreateEditWorkspaceModal = forwardRef((props, ref) => {
                 <span className="intern-extern">{activeTab}</span>
             </StyledModalHeader>
             <ModalBody>
-                <WrapperDiv ref={e => elRef.name = e}>
+                <WrapperDiv>
                     <Label for="chat">
                         Worskpace name</Label>
                     <Input
@@ -215,12 +208,7 @@ const CreateEditWorkspaceModal = forwardRef((props, ref) => {
                 </WrapperDiv>
                 <WrapperDiv>
                     <Label for="has_folder"></Label>
-                    <div className="custom-control custom-checkbox">
-                        <input name="has_folder" type="checkbox" className="custom-control-input"
-                               checked={form.has_folder} readOnly/>
-                        <label className="custom-control-label" data-name="has_folder" onClick={toggleCheck}>Add
-                            folder</label>
-                    </div>
+                    <CheckBox type="success" name="has_folder" checked={form.has_folder} onClick={toggleCheck}>Add folder</CheckBox>
                 </WrapperDiv>
                 {
                     form.has_folder === true &&
@@ -254,12 +242,7 @@ const CreateEditWorkspaceModal = forwardRef((props, ref) => {
                 </WrapperDiv>
                 <WrapperDiv>
                     <Label></Label>
-                    <div className="custom-control custom-checkbox">
-                        <input name="is_private" type="checkbox" className="custom-control-input"
-                               checked={form.is_private} readOnly/>
-                        <label className="custom-control-label" data-name="is_private" onClick={toggleCheck}>Lock
-                            workspace</label>
-                    </div>
+                    <CheckBox name="is_private" checked={form.is_private} onClick={toggleCheck}>Lock workspace</CheckBox>
                     <button
                         className="btn btn-primary"
                         disabled={form.selectedUsers.length === 0 || form.name === ""}

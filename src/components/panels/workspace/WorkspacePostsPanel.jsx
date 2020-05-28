@@ -1,5 +1,7 @@
 import React from "react";
+import {useDispatch, useSelector} from "react-redux";
 import styled from "styled-components";
+import {addToModals} from "../../../redux/actions/globalActions";
 
 const Wrapper = styled.div`
 `;
@@ -7,1155 +9,1170 @@ const Wrapper = styled.div`
 const WorkspacePostsPanel = (props) => {
 
     const {className = ""} = props;
+    const dispatch = useDispatch();
+    const topic = useSelector(state => state.workspaces.activeTopic);
+
+    const handleShowWorkspacePostModal = (e) => {
+        let payload = {
+            type: "workspace_post_create_edit",
+            mode: "create",
+            item: {
+                workspace: topic,
+            },
+        };
+
+        dispatch(
+            addToModals(payload),
+        );
+    };
 
     return (
         <Wrapper className={`container-fluid h-100 ${className}`}>
-                <div className="row app-block">
-                    <div className="col-md-3 app-sidebar">
-                        <div className="card">
-                            <div className="card-body">
-                                <button className="btn btn-secondary btn-block" data-toggle="modal"
-                                        data-target="#newTaskModal">
-                                    New Task
-                                </button>
+            <div className="row app-block">
+                <div className="col-md-3 app-sidebar">
+                    <div className="card">
+                        <div className="card-body">
+                            <button className="btn btn-secondary btn-block" onClick={handleShowWorkspacePostModal}>
+                                Create new post
+                            </button>
+                        </div>
+                        <div className="app-sidebar-menu"
+                             styles="overflow: hidden; outline: currentcolor none medium;" tabIndex="2">
+                            <div className="list-group list-group-flush">
+                                <a href="#" className="list-group-item active d-flex align-items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                         viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"
+                                         stroke-linecap="round" stroke-linejoin="round"
+                                         className="feather feather-mail mr-2 width-15 height-15">
+                                        <path
+                                            d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                                        <polyline points="22,6 12,13 2,6"></polyline>
+                                    </svg>
+                                    All
+                                </a>
+                                <a href="#" className="list-group-item">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                         viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"
+                                         stroke-linecap="round" stroke-linejoin="round"
+                                         className="feather feather-send mr-2 width-15 height-15">
+                                        <line x1="22" y1="2" x2="11" y2="13"></line>
+                                        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                                    </svg>
+                                    My posts
+                                </a>
                             </div>
-                            <div className="app-sidebar-menu"
-                                 styles="overflow: hidden; outline: currentcolor none medium;" tabIndex="2">
-                                <div className="list-group list-group-flush">
-                                    <a href="#" className="list-group-item active d-flex align-items-center">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                             viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"
-                                             stroke-linecap="round" stroke-linejoin="round"
-                                             className="feather feather-mail mr-2 width-15 height-15">
-                                            <path
-                                                d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-                                            <polyline points="22,6 12,13 2,6"></polyline>
-                                        </svg>
-                                        All
-                                    </a>
-                                    <a href="#" className="list-group-item">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                             viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"
-                                             stroke-linecap="round" stroke-linejoin="round"
-                                             className="feather feather-send mr-2 width-15 height-15">
-                                            <line x1="22" y1="2" x2="11" y2="13"></line>
-                                            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-                                        </svg>
-                                        My Task
-                                    </a>
-                                </div>
-                                <div className="card-body">
-                                    <h6 className="mb-0">Tags</h6>
-                                </div>
-                                <div className="list-group list-group-flush">
-                                    <a href="#" className="list-group-item d-flex align-items-center">
-                                        <span className="text-warning fa fa-circle mr-2"></span>
-                                        Theme Support
-                                        <span className="small ml-auto">5</span>
-                                    </a>
-                                    <a href="#" className="list-group-item d-flex align-items-center">
-                                        <span className="text-success fa fa-circle mr-2"></span>
-                                        Freelance
-                                    </a>
-                                    <a href="#" className="list-group-item d-flex align-items-center">
-                                        <span className="text-danger fa fa-circle mr-2"></span>
-                                        Social
-                                    </a>
-                                    <a href="#" className="list-group-item d-flex align-items-center">
-                                        <span className="text-info fa fa-circle mr-2"></span>
-                                        Friends
-                                    </a>
-                                    <a href="#" className="list-group-item d-flex align-items-center">
-                                        <span className="text-secondary fa fa-circle mr-2"></span>
-                                        Coding
-                                    </a>
-                                </div>
+                            <div className="card-body">
+                                <h6 className="mb-0">Tags</h6>
+                            </div>
+                            <div className="list-group list-group-flush">
+                                <a href="#" className="list-group-item d-flex align-items-center">
+                                    <span className="text-warning fa fa-circle mr-2"></span>
+                                    Theme Support
+                                    <span className="small ml-auto">5</span>
+                                </a>
+                                <a href="#" className="list-group-item d-flex align-items-center">
+                                    <span className="text-success fa fa-circle mr-2"></span>
+                                    Freelance
+                                </a>
+                                <a href="#" className="list-group-item d-flex align-items-center">
+                                    <span className="text-danger fa fa-circle mr-2"></span>
+                                    Social
+                                </a>
+                                <a href="#" className="list-group-item d-flex align-items-center">
+                                    <span className="text-info fa fa-circle mr-2"></span>
+                                    Friends
+                                </a>
+                                <a href="#" className="list-group-item d-flex align-items-center">
+                                    <span className="text-secondary fa fa-circle mr-2"></span>
+                                    Coding
+                                </a>
                             </div>
                         </div>
                     </div>
-                    <div className="col-md-9 app-content">
-                        <div className="app-content-overlay"></div>
-                        <div className="app-action">
-                            <div className="action-left">
-                                <ul className="list-inline">
-                                    <li className="list-inline-item mb-0">
-                                        <a href="#" className="btn btn-outline-light dropdown-toggle"
-                                           data-toggle="dropdown">
-                                            Filter
-                                        </a>
-                                        <div className="dropdown-menu">
-                                            <a className="dropdown-item" href="#">Favourites</a>
-                                            <a className="dropdown-item" href="#">Done</a>
-                                            <a className="dropdown-item" href="#">Deleted</a>
-                                        </div>
-                                    </li>
-                                    <li className="list-inline-item mb-0">
-                                        <a href="#" className="btn btn-outline-light dropdown-toggle"
-                                           data-toggle="dropdown">
-                                            Sort
-                                        </a>
-                                        <div className="dropdown-menu">
-                                            <a className="dropdown-item" href="#">Ascending</a>
-                                            <a className="dropdown-item" href="#">Descending</a>
-                                        </div>
-                                    </li>
-                                </ul>
+                </div>
+                <div className="col-md-9 app-content">
+                    <div className="app-content-overlay"></div>
+                    <div className="app-action">
+                        <div className="action-left">
+                            <ul className="list-inline">
+                                <li className="list-inline-item mb-0">
+                                    <a href="#" className="btn btn-outline-light dropdown-toggle"
+                                       data-toggle="dropdown">
+                                        Filter
+                                    </a>
+                                    <div className="dropdown-menu">
+                                        <a className="dropdown-item" href="#">Favourites</a>
+                                        <a className="dropdown-item" href="#">Done</a>
+                                        <a className="dropdown-item" href="#">Deleted</a>
+                                    </div>
+                                </li>
+                                <li className="list-inline-item mb-0">
+                                    <a href="#" className="btn btn-outline-light dropdown-toggle"
+                                       data-toggle="dropdown">
+                                        Sort
+                                    </a>
+                                    <div className="dropdown-menu">
+                                        <a className="dropdown-item" href="#">Ascending</a>
+                                        <a className="dropdown-item" href="#">Descending</a>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        <div className="action-right">
+                            <form className="d-flex mr-3">
+                                <a href="#" className="app-sidebar-menu-button btn btn-outline-light">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                         viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"
+                                         stroke-linecap="round" stroke-linejoin="round"
+                                         className="feather feather-menu width-15 height-15">
+                                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                                    </svg>
+                                </a>
+                                <div className="input-group">
+                                    <input type="text" className="form-control" placeholder="Task search"
+                                           aria-describedby="button-addon1"/>
+                                    <div className="input-group-append">
+                                        <button className="btn btn-outline-light" type="button"
+                                                id="button-addon1">
+                                            <i className="ti-search"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                            <div className="app-pager d-flex align-items-center">
+                                <div className="mr-3">1-50 of 253</div>
+                                <nav aria-label="Page navigation example">
+                                    <ul className="pagination">
+                                        <li className="page-item">
+                                            <a className="page-link" href="#" aria-label="Previous">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                     viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                     stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+                                                     className="feather feather-chevron-left width-15 height-15">
+                                                    <polyline points="15 18 9 12 15 6"></polyline>
+                                                </svg>
+                                            </a>
+                                        </li>
+                                        <li className="page-item">
+                                            <a className="page-link" href="#" aria-label="Next">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                     viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                     stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+                                                     className="feather feather-chevron-right width-15 height-15">
+                                                    <polyline points="9 18 15 12 9 6"></polyline>
+                                                </svg>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </nav>
                             </div>
-                            <div className="action-right">
-                                <form className="d-flex mr-3">
-                                    <a href="#" className="app-sidebar-menu-button btn btn-outline-light">
+                        </div>
+                    </div>
+                    <div className="card card-body app-content-body">
+                        <div className="app-lists" styles="overflow: hidden; outline: currentcolor none medium;"
+                             tabIndex="1">
+                            <ul className="list-group list-group-flush ui-sortable">
+                                <li className="list-group-item task-list active">
+                                    <div className="mr-3">
+                                        <a href="#" className="app-sortable-handle ui-sortable-handle">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                 viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                 stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+                                                 className="feather feather-move width-15 height-15">
+                                                <polyline points="5 9 2 12 5 15"></polyline>
+                                                <polyline points="9 5 12 2 15 5"></polyline>
+                                                <polyline points="15 19 12 22 9 19"></polyline>
+                                                <polyline points="19 9 22 12 19 15"></polyline>
+                                                <line x1="2" y1="12" x2="22" y2="12"></line>
+                                                <line x1="12" y1="2" x2="12" y2="22"></line>
+                                            </svg>
+                                        </a>
+                                    </div>
+                                    <div>
+                                        <div
+                                            className="custom-control custom-checkbox custom-checkbox-success mr-2">
+                                            <input type="checkbox" className="custom-control-input"
+                                                   id="customCheck1" checked=""/>
+                                            <label className="custom-control-label"
+                                                   htmlFor="customCheck1"></label>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <a href="#" className="add-star mr-3" title="Add stars">
+                                            <i className="fa fa-star-o font-size-16"></i>
+                                        </a>
+                                    </div>
+                                    <div className="flex-grow-1 min-width-0">
+                                        <div className="mb-1 d-flex align-items-center justify-content-between">
+                                            <div className="app-list-title text-truncate">How To Protect Your
+                                                Computer Very
+                                                Useful Tips
+                                            </div>
+                                            <div className="pl-3 d-flex align-items-center">
+                                                <div className="mr-3 d-sm-inline d-none">
+                                                    <div className="badge badge-danger">Social</div>
+                                                </div>
+                                                <div className="mr-3 d-sm-inline d-none">
+                                                    <div className="avatar-group">
+                                                        <figure className="avatar avatar-sm" title=""
+                                                                data-toggle="tooltip"
+                                                                data-original-title="Lisle Essam">
+                                                            <img src="https://via.placeholder.com/128X128"
+                                                                 className="rounded-circle" alt="image"/>
+                                                        </figure>
+                                                        <figure className="avatar avatar-sm" title=""
+                                                                data-toggle="tooltip"
+                                                                data-original-title="Baxie Roseblade">
+                                                            <img src="https://via.placeholder.com/128X128"
+                                                                 className="rounded-circle" alt="image"/>
+                                                        </figure>
+                                                        <figure className="avatar avatar-sm" title=""
+                                                                data-toggle="tooltip"
+                                                                data-original-title="Mella Mixter">
+                                                            <img src="https://via.placeholder.com/128X128"
+                                                                 className="rounded-circle" alt="image"/>
+                                                        </figure>
+                                                        <figure className="avatar avatar-sm" title=""
+                                                                data-toggle="tooltip"
+                                                                data-original-title="Jo Hugill">
+                                                            <img src="https://via.placeholder.com/128X128"
+                                                                 className="rounded-circle" alt="image"/>
+                                                        </figure>
+                                                        <figure className="avatar avatar-sm" title=""
+                                                                data-toggle="tooltip"
+                                                                data-original-title="Cullie Philcott">
+                                                            <img src="https://via.placeholder.com/128X128"
+                                                                 className="rounded-circle" alt="image"/>
+                                                        </figure>
+                                                    </div>
+                                                </div>
+                                                <a href="#" title="" data-toggle="tooltip"
+                                                   data-original-title="Delete">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                         viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                         stroke-width="1" stroke-linecap="round"
+                                                         stroke-linejoin="round"
+                                                         className="feather feather-trash-2 width-15 height-15">
+                                                        <polyline points="3 6 5 6 21 6"></polyline>
+                                                        <path
+                                                            d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                                        <line x1="10" y1="11" x2="10" y2="17"></line>
+                                                        <line x1="14" y1="11" x2="14" y2="17"></line>
+                                                    </svg>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li className="list-group-item task-list active">
+                                    <div className="mr-3">
+                                        <a href="#" className="app-sortable-handle ui-sortable-handle">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                 viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                 stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+                                                 className="feather feather-move width-15 height-15">
+                                                <polyline points="5 9 2 12 5 15"></polyline>
+                                                <polyline points="9 5 12 2 15 5"></polyline>
+                                                <polyline points="15 19 12 22 9 19"></polyline>
+                                                <polyline points="19 9 22 12 19 15"></polyline>
+                                                <line x1="2" y1="12" x2="22" y2="12"></line>
+                                                <line x1="12" y1="2" x2="12" y2="22"></line>
+                                            </svg>
+                                        </a>
+                                    </div>
+                                    <div>
+                                        <div
+                                            className="custom-control custom-checkbox custom-checkbox-success mr-2">
+                                            <input type="checkbox" className="custom-control-input"
+                                                   id="customCheck2" checked=""/>
+                                            <label className="custom-control-label"
+                                                   htmlFor="customCheck2"></label>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <a href="#" className="add-star mr-3" title="Add stars">
+                                            <i className="fa fa-star font-size-16 text-warning"></i>
+                                        </a>
+                                    </div>
+                                    <div className="flex-grow-1 min-width-0">
+                                        <div className="mb-1 d-flex align-items-center justify-content-between">
+                                            <div className="app-list-title text-truncate">How Hypnosis Can Help You
+                                            </div>
+                                            <div className="pl-3 d-flex align-items-center">
+                                                <div className="mr-3 d-sm-inline d-none">
+                                                    <div className="badge badge-warning">Theme Support</div>
+                                                </div>
+                                                <div className="mr-3 d-sm-inline d-none">
+                                                    <div className="avatar-group">
+                                                        <figure className="avatar avatar-sm" title=""
+                                                                data-toggle="tooltip"
+                                                                data-original-title="Baxie Roseblade">
+                                                            <img src="https://via.placeholder.com/128X128"
+                                                                 className="rounded-circle" alt="image"/>
+                                                        </figure>
+                                                        <figure className="avatar avatar-sm" title=""
+                                                                data-toggle="tooltip"
+                                                                data-original-title="Mella Mixter">
+                                                            <img src="https://via.placeholder.com/128X128"
+                                                                 className="rounded-circle" alt="image"/>
+                                                        </figure>
+                                                        <figure className="avatar avatar-sm" title=""
+                                                                data-toggle="tooltip"
+                                                                data-original-title="Jo Hugill">
+                                                            <img src="https://via.placeholder.com/128X128"
+                                                                 className="rounded-circle" alt="image"/>
+                                                        </figure>
+                                                        <figure className="avatar avatar-sm" title=""
+                                                                data-toggle="tooltip"
+                                                                data-original-title="Cullie Philcott">
+                                                            <img src="https://via.placeholder.com/128X128"
+                                                                 className="rounded-circle" alt="image"/>
+                                                        </figure>
+                                                    </div>
+                                                </div>
+                                                <a href="#" title="" data-toggle="tooltip"
+                                                   data-original-title="Delete">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                         viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                         stroke-width="1" stroke-linecap="round"
+                                                         stroke-linejoin="round"
+                                                         className="feather feather-trash-2 width-15 height-15">
+                                                        <polyline points="3 6 5 6 21 6"></polyline>
+                                                        <path
+                                                            d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                                        <line x1="10" y1="11" x2="10" y2="17"></line>
+                                                        <line x1="14" y1="11" x2="14" y2="17"></line>
+                                                    </svg>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li className="list-group-item task-list">
+                                    <div className="mr-3">
+                                        <a href="#" className="app-sortable-handle ui-sortable-handle">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                 viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                 stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+                                                 className="feather feather-move width-15 height-15">
+                                                <polyline points="5 9 2 12 5 15"></polyline>
+                                                <polyline points="9 5 12 2 15 5"></polyline>
+                                                <polyline points="15 19 12 22 9 19"></polyline>
+                                                <polyline points="19 9 22 12 19 15"></polyline>
+                                                <line x1="2" y1="12" x2="22" y2="12"></line>
+                                                <line x1="12" y1="2" x2="12" y2="22"></line>
+                                            </svg>
+                                        </a>
+                                    </div>
+                                    <div>
+                                        <div
+                                            className="custom-control custom-checkbox custom-checkbox-success mr-2">
+                                            <input type="checkbox" className="custom-control-input"
+                                                   id="customCheck3"/>
+                                            <label className="custom-control-label"
+                                                   htmlFor="customCheck3"></label>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <a href="#" className="add-star mr-3" title="Add stars">
+                                            <i className="fa fa-star font-size-16 text-warning"></i>
+                                        </a>
+                                    </div>
+                                    <div className="flex-grow-1 min-width-0">
+                                        <div className="mb-1 d-flex align-items-center justify-content-between">
+                                            <div className="app-list-title text-truncate">Dealing With Technical
+                                                Support 10
+                                                Useful Tips
+                                            </div>
+                                            <div className="pl-3 d-flex align-items-center">
+                                                <div className="mr-3 d-sm-inline d-none">
+                                                    <div className="badge badge-info">Friends</div>
+                                                </div>
+                                                <div className="mr-3 d-sm-inline d-none">
+                                                    <div className="avatar-group">
+                                                        <div className="avatar avatar-sm" title=""
+                                                             data-toggle="tooltip"
+                                                             data-original-title="Polly Everist">
+                                                                <span
+                                                                    className="avatar-title bg-primary rounded-circle">P</span>
+                                                        </div>
+                                                        <div className="avatar avatar-sm" title=""
+                                                             data-toggle="tooltip"
+                                                             data-original-title="Godwin Adanez">
+                                                                <span
+                                                                    className="avatar-title bg-success rounded-circle">G</span>
+                                                        </div>
+                                                        <figure className="avatar avatar-sm" title=""
+                                                                data-toggle="tooltip"
+                                                                data-original-title="Lisle Essam">
+                                                            <img src="https://via.placeholder.com/128X128"
+                                                                 className="rounded-circle" alt="image"/>
+                                                        </figure>
+                                                        <figure className="avatar avatar-sm" title=""
+                                                                data-toggle="tooltip"
+                                                                data-original-title="Baxie Roseblade">
+                                                            <img src="https://via.placeholder.com/128X128"
+                                                                 className="rounded-circle" alt="image"/>
+                                                        </figure>
+                                                        <figure className="avatar avatar-sm" title=""
+                                                                data-toggle="tooltip"
+                                                                data-original-title="Mella Mixter">
+                                                            <img src="https://via.placeholder.com/128X128"
+                                                                 className="rounded-circle" alt="image"/>
+                                                        </figure>
+                                                        <figure className="avatar avatar-sm" title=""
+                                                                data-toggle="tooltip"
+                                                                data-original-title="Jo Hugill">
+                                                            <img src="https://via.placeholder.com/128X128"
+                                                                 className="rounded-circle" alt="image"/>
+                                                        </figure>
+                                                        <figure className="avatar avatar-sm" title=""
+                                                                data-toggle="tooltip"
+                                                                data-original-title="Cullie Philcott">
+                                                            <img src="https://via.placeholder.com/128X128"
+                                                                 className="rounded-circle" alt="image"/>
+                                                        </figure>
+                                                    </div>
+                                                </div>
+                                                <a href="#" title="" data-toggle="tooltip"
+                                                   data-original-title="Delete">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                         viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                         stroke-width="1" stroke-linecap="round"
+                                                         stroke-linejoin="round"
+                                                         className="feather feather-trash-2 width-15 height-15">
+                                                        <polyline points="3 6 5 6 21 6"></polyline>
+                                                        <path
+                                                            d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                                        <line x1="10" y1="11" x2="10" y2="17"></line>
+                                                        <line x1="14" y1="11" x2="14" y2="17"></line>
+                                                    </svg>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li className="list-group-item task-list active">
+                                    <div className="mr-3">
+                                        <a href="#" className="app-sortable-handle ui-sortable-handle">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                 viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                 stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+                                                 className="feather feather-move width-15 height-15">
+                                                <polyline points="5 9 2 12 5 15"></polyline>
+                                                <polyline points="9 5 12 2 15 5"></polyline>
+                                                <polyline points="15 19 12 22 9 19"></polyline>
+                                                <polyline points="19 9 22 12 19 15"></polyline>
+                                                <line x1="2" y1="12" x2="22" y2="12"></line>
+                                                <line x1="12" y1="2" x2="12" y2="22"></line>
+                                            </svg>
+                                        </a>
+                                    </div>
+                                    <div>
+                                        <div
+                                            className="custom-control custom-checkbox custom-checkbox-success mr-2">
+                                            <input type="checkbox" className="custom-control-input"
+                                                   id="customCheck4" checked=""/>
+                                            <label className="custom-control-label"
+                                                   htmlFor="customCheck4"></label>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <a href="#" className="add-star mr-3" title="Add stars">
+                                            <i className="fa fa-star-o font-size-16"></i>
+                                        </a>
+                                    </div>
+                                    <div className="flex-grow-1 min-width-0">
+                                        <div className="mb-1 d-flex align-items-center justify-content-between">
+                                            <div className="app-list-title text-truncate">Get The Boot A Birds Eye
+                                                Look Into
+                                                Mcse Boot Camps
+                                            </div>
+                                            <div className="pl-3 d-flex align-items-center">
+                                                <div className="mr-3 d-sm-inline d-none">
+                                                    <div className="badge badge-warning">Social</div>
+                                                </div>
+                                                <div className="mr-3 d-sm-inline d-none">
+                                                    <div className="avatar-group">
+                                                        <div className="avatar avatar-sm" title=""
+                                                             data-toggle="tooltip"
+                                                             data-original-title="Godwin Adanez">
+                                                                <span
+                                                                    className="avatar-title bg-success rounded-circle">G</span>
+                                                        </div>
+                                                        <figure className="avatar avatar-sm" title=""
+                                                                data-toggle="tooltip"
+                                                                data-original-title="Lisle Essam">
+                                                            <img src="https://via.placeholder.com/128X128"
+                                                                 className="rounded-circle" alt="image"/>
+                                                        </figure>
+                                                    </div>
+                                                </div>
+                                                <a href="#" title="" data-toggle="tooltip"
+                                                   data-original-title="Delete">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                         viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                         stroke-width="1" stroke-linecap="round"
+                                                         stroke-linejoin="round"
+                                                         className="feather feather-trash-2 width-15 height-15">
+                                                        <polyline points="3 6 5 6 21 6"></polyline>
+                                                        <path
+                                                            d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                                        <line x1="10" y1="11" x2="10" y2="17"></line>
+                                                        <line x1="14" y1="11" x2="14" y2="17"></line>
+                                                    </svg>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li className="list-group-item task-list">
+                                    <div className="mr-3">
+                                        <a href="#" className="app-sortable-handle ui-sortable-handle">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                 viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                 stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+                                                 className="feather feather-move width-15 height-15">
+                                                <polyline points="5 9 2 12 5 15"></polyline>
+                                                <polyline points="9 5 12 2 15 5"></polyline>
+                                                <polyline points="15 19 12 22 9 19"></polyline>
+                                                <polyline points="19 9 22 12 19 15"></polyline>
+                                                <line x1="2" y1="12" x2="22" y2="12"></line>
+                                                <line x1="12" y1="2" x2="12" y2="22"></line>
+                                            </svg>
+                                        </a>
+                                    </div>
+                                    <div>
+                                        <div
+                                            className="custom-control custom-checkbox custom-checkbox-success mr-2">
+                                            <input type="checkbox" className="custom-control-input"
+                                                   id="customCheck5"/>
+                                            <label className="custom-control-label"
+                                                   htmlFor="customCheck5"></label>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <a href="#" className="add-star mr-3" title="Add stars">
+                                            <i className="fa fa-star-o font-size-16"></i>
+                                        </a>
+                                    </div>
+                                    <div className="flex-grow-1 min-width-0">
+                                        <div className="mb-1 d-flex align-items-center justify-content-between">
+                                            <div className="app-list-title text-truncate">Buying Used Electronic
+                                                Test
+                                                Equipment.
+                                            </div>
+                                            <div className="pl-3 d-flex align-items-center">
+                                                <div className="mr-3 d-sm-inline d-none">
+                                                    <div className="badge badge-success">Freelance</div>
+                                                </div>
+                                                <div className="mr-3 d-sm-inline d-none">
+                                                    <div className="avatar-group">
+                                                        <div className="avatar avatar-sm" title=""
+                                                             data-toggle="tooltip"
+                                                             data-original-title="Polly Everist">
+                                                                <span
+                                                                    className="avatar-title bg-primary rounded-circle">P</span>
+                                                        </div>
+                                                        <div className="avatar avatar-sm" title=""
+                                                             data-toggle="tooltip"
+                                                             data-original-title="Godwin Adanez">
+                                                                <span
+                                                                    className="avatar-title bg-success rounded-circle">G</span>
+                                                        </div>
+                                                        <figure className="avatar avatar-sm" title=""
+                                                                data-toggle="tooltip"
+                                                                data-original-title="Lisle Essam">
+                                                            <img src="https://via.placeholder.com/128X128"
+                                                                 className="rounded-circle" alt="image"/>
+                                                        </figure>
+                                                        <figure className="avatar avatar-sm" title=""
+                                                                data-toggle="tooltip"
+                                                                data-original-title="Baxie Roseblade">
+                                                            <img src="https://via.placeholder.com/128X128"
+                                                                 className="rounded-circle" alt="image"/>
+                                                        </figure>
+                                                        <figure className="avatar avatar-sm" title=""
+                                                                data-toggle="tooltip"
+                                                                data-original-title="Mella Mixter">
+                                                            <img src="https://via.placeholder.com/128X128"
+                                                                 className="rounded-circle" alt="image"/>
+                                                        </figure>
+                                                    </div>
+                                                </div>
+                                                <a href="#" title="" data-toggle="tooltip"
+                                                   data-original-title="Delete">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                         viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                         stroke-width="1" stroke-linecap="round"
+                                                         stroke-linejoin="round"
+                                                         className="feather feather-trash-2 width-15 height-15">
+                                                        <polyline points="3 6 5 6 21 6"></polyline>
+                                                        <path
+                                                            d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                                        <line x1="10" y1="11" x2="10" y2="17"></line>
+                                                        <line x1="14" y1="11" x2="14" y2="17"></line>
+                                                    </svg>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li className="list-group-item task-list">
+                                    <div className="mr-3">
+                                        <a href="#" className="app-sortable-handle ui-sortable-handle">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                 viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                 stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+                                                 className="feather feather-move width-15 height-15">
+                                                <polyline points="5 9 2 12 5 15"></polyline>
+                                                <polyline points="9 5 12 2 15 5"></polyline>
+                                                <polyline points="15 19 12 22 9 19"></polyline>
+                                                <polyline points="19 9 22 12 19 15"></polyline>
+                                                <line x1="2" y1="12" x2="22" y2="12"></line>
+                                                <line x1="12" y1="2" x2="12" y2="22"></line>
+                                            </svg>
+                                        </a>
+                                    </div>
+                                    <div>
+                                        <div
+                                            className="custom-control custom-checkbox custom-checkbox-success mr-2">
+                                            <input type="checkbox" className="custom-control-input"
+                                                   id="customCheck6"/>
+                                            <label className="custom-control-label"
+                                                   htmlFor="customCheck6"></label>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <a href="#" className="add-star mr-3" title="Add stars">
+                                            <i className="fa fa-star-o font-size-16"></i>
+                                        </a>
+                                    </div>
+                                    <div className="flex-grow-1 min-width-0">
+                                        <div className="mb-1 d-flex align-items-center justify-content-between">
+                                            <div className="app-list-title text-truncate">Fix Responsiveness
+                                            </div>
+                                            <div className="pl-3 d-flex align-items-center">
+                                                <div className="mr-3 d-sm-inline d-none">
+                                                    <div className="badge badge-warning">Theme Support</div>
+                                                </div>
+                                                <div className="mr-3 d-sm-inline d-none">
+                                                    <div className="avatar-group">
+                                                        <div className="avatar avatar-sm" title=""
+                                                             data-toggle="tooltip"
+                                                             data-original-title="Godwin Adanez">
+                                                                <span
+                                                                    className="avatar-title bg-warning rounded-circle">G</span>
+                                                        </div>
+                                                        <div className="avatar avatar-sm" title=""
+                                                             data-toggle="tooltip"
+                                                             data-original-title="Polly Everist">
+                                                                <span
+                                                                    className="avatar-title bg-info rounded-circle">P</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <a href="#" title="" data-toggle="tooltip"
+                                                   data-original-title="Delete">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                         viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                         stroke-width="1" stroke-linecap="round"
+                                                         stroke-linejoin="round"
+                                                         className="feather feather-trash-2 width-15 height-15">
+                                                        <polyline points="3 6 5 6 21 6"></polyline>
+                                                        <path
+                                                            d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                                        <line x1="10" y1="11" x2="10" y2="17"></line>
+                                                        <line x1="14" y1="11" x2="14" y2="17"></line>
+                                                    </svg>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li className="list-group-item task-list">
+                                    <div className="mr-3">
+                                        <a href="#" className="app-sortable-handle ui-sortable-handle">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                 viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                 stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+                                                 className="feather feather-move width-15 height-15">
+                                                <polyline points="5 9 2 12 5 15"></polyline>
+                                                <polyline points="9 5 12 2 15 5"></polyline>
+                                                <polyline points="15 19 12 22 9 19"></polyline>
+                                                <polyline points="19 9 22 12 19 15"></polyline>
+                                                <line x1="2" y1="12" x2="22" y2="12"></line>
+                                                <line x1="12" y1="2" x2="12" y2="22"></line>
+                                            </svg>
+                                        </a>
+                                    </div>
+                                    <div>
+                                        <div
+                                            className="custom-control custom-checkbox custom-checkbox-success mr-2">
+                                            <input type="checkbox" className="custom-control-input"
+                                                   id="customCheck7"/>
+                                            <label className="custom-control-label"
+                                                   htmlFor="customCheck7"></label>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <a href="#" className="add-star mr-3" title="Add stars">
+                                            <i className="fa fa-star font-size-16 text-warning"></i>
+                                        </a>
+                                    </div>
+                                    <div className="flex-grow-1 min-width-0">
+                                        <div className="mb-1 d-flex align-items-center justify-content-between">
+                                            <div className="app-list-title text-truncate">
+                                                Hypnotherapy For Motivation Getting The Drive Back
+                                            </div>
+                                            <div className="pl-3 d-flex align-items-center">
+                                                <div className="mr-3 d-sm-inline d-none">
+                                                    <div className="badge badge-secondary">Coding</div>
+                                                </div>
+                                                <div className="mr-3 d-sm-inline d-none">
+                                                    <div className="avatar-group">
+                                                        <figure className="avatar avatar-sm" title=""
+                                                                data-toggle="tooltip"
+                                                                data-original-title="Baxie Roseblade">
+                                                            <img src="https://via.placeholder.com/128X128"
+                                                                 className="rounded-circle" alt="image"/>
+                                                        </figure>
+                                                    </div>
+                                                </div>
+                                                <a href="#" title="" data-toggle="tooltip"
+                                                   data-original-title="Delete">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                         viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                         stroke-width="1" stroke-linecap="round"
+                                                         stroke-linejoin="round"
+                                                         className="feather feather-trash-2 width-15 height-15">
+                                                        <polyline points="3 6 5 6 21 6"></polyline>
+                                                        <path
+                                                            d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                                        <line x1="10" y1="11" x2="10" y2="17"></line>
+                                                        <line x1="14" y1="11" x2="14" y2="17"></line>
+                                                    </svg>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li className="list-group-item task-list">
+                                    <div className="mr-3">
+                                        <a href="#" className="app-sortable-handle ui-sortable-handle">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                 viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                 stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+                                                 className="feather feather-move width-15 height-15">
+                                                <polyline points="5 9 2 12 5 15"></polyline>
+                                                <polyline points="9 5 12 2 15 5"></polyline>
+                                                <polyline points="15 19 12 22 9 19"></polyline>
+                                                <polyline points="19 9 22 12 19 15"></polyline>
+                                                <line x1="2" y1="12" x2="22" y2="12"></line>
+                                                <line x1="12" y1="2" x2="12" y2="22"></line>
+                                            </svg>
+                                        </a>
+                                    </div>
+                                    <div>
+                                        <div
+                                            className="custom-control custom-checkbox custom-checkbox-success mr-2">
+                                            <input type="checkbox" className="custom-control-input"
+                                                   id="customCheck8"/>
+                                            <label className="custom-control-label"
+                                                   htmlFor="customCheck8"></label>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <a href="#" className="add-star mr-3" title="Add stars">
+                                            <i className="fa fa-star-o font-size-16"></i>
+                                        </a>
+                                    </div>
+                                    <div className="flex-grow-1 min-width-0">
+                                        <div className="mb-1 d-flex align-items-center justify-content-between">
+                                            <div className="app-list-title text-truncate">Are You Struggling In Life
+                                            </div>
+                                            <div className="pl-3 d-flex align-items-center">
+                                                <div className="mr-3 d-sm-inline d-none">
+                                                    <div className="badge badge-warning">Theme Support</div>
+                                                </div>
+                                                <div className="mr-3">
+                                                    <div className="avatar-group">
+                                                        <div className="avatar avatar-sm" title=""
+                                                             data-toggle="tooltip"
+                                                             data-original-title="Polly Everist">
+                                                                <span
+                                                                    className="avatar-title bg-primary rounded-circle">P</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <a href="#" title="" data-toggle="tooltip"
+                                                   data-original-title="Delete">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                         viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                         stroke-width="1" stroke-linecap="round"
+                                                         stroke-linejoin="round"
+                                                         className="feather feather-trash-2 width-15 height-15">
+                                                        <polyline points="3 6 5 6 21 6"></polyline>
+                                                        <path
+                                                            d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                                        <line x1="10" y1="11" x2="10" y2="17"></line>
+                                                        <line x1="14" y1="11" x2="14" y2="17"></line>
+                                                    </svg>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li className="list-group-item task-list">
+                                    <div className="mr-3">
+                                        <a href="#" className="app-sortable-handle ui-sortable-handle">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                 viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                 stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+                                                 className="feather feather-move width-15 height-15">
+                                                <polyline points="5 9 2 12 5 15"></polyline>
+                                                <polyline points="9 5 12 2 15 5"></polyline>
+                                                <polyline points="15 19 12 22 9 19"></polyline>
+                                                <polyline points="19 9 22 12 19 15"></polyline>
+                                                <line x1="2" y1="12" x2="22" y2="12"></line>
+                                                <line x1="12" y1="2" x2="12" y2="22"></line>
+                                            </svg>
+                                        </a>
+                                    </div>
+                                    <div>
+                                        <div
+                                            className="custom-control custom-checkbox custom-checkbox-success mr-2">
+                                            <input type="checkbox" className="custom-control-input"
+                                                   id="customCheck9"/>
+                                            <label className="custom-control-label"
+                                                   htmlFor="customCheck9"></label>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <a href="#" className="add-star mr-3" title="Add stars">
+                                            <i className="fa fa-star-o font-size-16"></i>
+                                        </a>
+                                    </div>
+                                    <div className="flex-grow-1 min-width-0">
+                                        <div className="mb-1 d-flex align-items-center justify-content-between">
+                                            <div className="app-list-title text-truncate">Believing Is The Absence
+                                                Of Doubt
+                                            </div>
+                                            <div className="pl-3 d-flex align-items-center">
+                                                <div className="mr-3 d-sm-inline d-none">
+                                                    <div className="badge badge-success">Freelance</div>
+                                                </div>
+                                                <div className="mr-3 d-sm-inline d-none">
+                                                    <div className="avatar-group">
+                                                        <figure className="avatar avatar-sm" title=""
+                                                                data-toggle="tooltip"
+                                                                data-original-title="Lisle Essam">
+                                                            <img src="https://via.placeholder.com/128X128"
+                                                                 className="rounded-circle" alt="image"/>
+                                                        </figure>
+                                                        <figure className="avatar avatar-sm" title=""
+                                                                data-toggle="tooltip"
+                                                                data-original-title="Baxie Roseblade">
+                                                            <img src="https://via.placeholder.com/128X128"
+                                                                 className="rounded-circle" alt="image"/>
+                                                        </figure>
+                                                        <figure className="avatar avatar-sm" title=""
+                                                                data-toggle="tooltip"
+                                                                data-original-title="Mella Mixter">
+                                                            <img src="https://via.placeholder.com/128X128"
+                                                                 className="rounded-circle" alt="image"/>
+                                                        </figure>
+                                                    </div>
+                                                </div>
+                                                <a href="#" title="" data-toggle="tooltip"
+                                                   data-original-title="Delete">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                         viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                         stroke-width="1" stroke-linecap="round"
+                                                         stroke-linejoin="round"
+                                                         className="feather feather-trash-2 width-15 height-15">
+                                                        <polyline points="3 6 5 6 21 6"></polyline>
+                                                        <path
+                                                            d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                                        <line x1="10" y1="11" x2="10" y2="17"></line>
+                                                        <line x1="14" y1="11" x2="14" y2="17"></line>
+                                                    </svg>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li className="list-group-item task-list">
+                                    <div className="mr-3">
+                                        <a href="#" className="app-sortable-handle ui-sortable-handle">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                 viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                 stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+                                                 className="feather feather-move width-15 height-15">
+                                                <polyline points="5 9 2 12 5 15"></polyline>
+                                                <polyline points="9 5 12 2 15 5"></polyline>
+                                                <polyline points="15 19 12 22 9 19"></polyline>
+                                                <polyline points="19 9 22 12 19 15"></polyline>
+                                                <line x1="2" y1="12" x2="22" y2="12"></line>
+                                                <line x1="12" y1="2" x2="12" y2="22"></line>
+                                            </svg>
+                                        </a>
+                                    </div>
+                                    <div>
+                                        <div
+                                            className="custom-control custom-checkbox custom-checkbox-success mr-2">
+                                            <input type="checkbox" className="custom-control-input"
+                                                   id="customCheck10"/>
+                                            <label className="custom-control-label"
+                                                   htmlFor="customCheck10"></label>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <a href="#" className="add-star mr-3" title="Add stars">
+                                            <i className="fa fa-star-o font-size-16"></i>
+                                        </a>
+                                    </div>
+                                    <div className="flex-grow-1 min-width-0">
+                                        <div className="mb-1 d-flex align-items-center justify-content-between">
+                                            <div className="app-list-title text-truncate">Success Steps For Your
+                                                Personal Or
+                                                Business Life
+                                            </div>
+                                            <div className="pl-3 d-flex align-items-center">
+                                                <div className="mr-3 d-sm-inline d-none">
+                                                    <div className="badge badge-danger">Social</div>
+                                                </div>
+                                                <div className="mr-3 d-sm-inline d-none">
+                                                    <div className="avatar-group">
+                                                        <figure className="avatar avatar-sm" title=""
+                                                                data-toggle="tooltip"
+                                                                data-original-title="Mella Mixter">
+                                                            <img src="https://via.placeholder.com/128X128"
+                                                                 className="rounded-circle" alt="image"/>
+                                                        </figure>
+                                                        <div className="avatar avatar-sm" title=""
+                                                             data-toggle="tooltip"
+                                                             data-original-title="Polly Everist">
+                                                                <span
+                                                                    className="avatar-title bg-primary rounded-circle">P</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <a href="#" title="" data-toggle="tooltip"
+                                                   data-original-title="Delete">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                         viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                         stroke-width="1" stroke-linecap="round"
+                                                         stroke-linejoin="round"
+                                                         className="feather feather-trash-2 width-15 height-15">
+                                                        <polyline points="3 6 5 6 21 6"></polyline>
+                                                        <path
+                                                            d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                                        <line x1="10" y1="11" x2="10" y2="17"></line>
+                                                        <line x1="14" y1="11" x2="14" y2="17"></line>
+                                                    </svg>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li className="list-group-item task-list">
+                                    <div className="mr-3">
+                                        <a href="#" className="app-sortable-handle ui-sortable-handle">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                 viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                 stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+                                                 className="feather feather-move width-15 height-15">
+                                                <polyline points="5 9 2 12 5 15"></polyline>
+                                                <polyline points="9 5 12 2 15 5"></polyline>
+                                                <polyline points="15 19 12 22 9 19"></polyline>
+                                                <polyline points="19 9 22 12 19 15"></polyline>
+                                                <line x1="2" y1="12" x2="22" y2="12"></line>
+                                                <line x1="12" y1="2" x2="12" y2="22"></line>
+                                            </svg>
+                                        </a>
+                                    </div>
+                                    <div>
+                                        <div
+                                            className="custom-control custom-checkbox custom-checkbox-success mr-2">
+                                            <input type="checkbox" className="custom-control-input"
+                                                   id="customCheck11"/>
+                                            <label className="custom-control-label"
+                                                   htmlFor="customCheck11"></label>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <a href="#" className="add-star mr-3" title="Add stars">
+                                            <i className="fa fa-star-o font-size-16"></i>
+                                        </a>
+                                    </div>
+                                    <div className="flex-grow-1 min-width-0">
+                                        <div className="mb-1 d-flex align-items-center justify-content-between">
+                                            <div className="app-list-title text-truncate">Don't Let The Outtakes
+                                                Take You
+                                                Out
+                                            </div>
+                                            <div className="pl-3 d-flex align-items-center">
+                                                <div className="mr-3 d-sm-inline d-none">
+                                                    <div className="badge badge-warning">Theme Support</div>
+                                                </div>
+                                                <div className="mr-3">
+                                                    <div className="avatar-group">
+                                                        <div className="avatar avatar-sm" title=""
+                                                             data-toggle="tooltip"
+                                                             data-original-title="Godwin Adanez">
+                                                                <span
+                                                                    className="avatar-title bg-success rounded-circle">G</span>
+                                                        </div>
+                                                        <figure className="avatar avatar-sm" title=""
+                                                                data-toggle="tooltip"
+                                                                data-original-title="Lisle Essam">
+                                                            <img src="https://via.placeholder.com/128X128"
+                                                                 className="rounded-circle" alt="image"/>
+                                                        </figure>
+                                                    </div>
+                                                </div>
+                                                <a href="#" title="" data-toggle="tooltip"
+                                                   data-original-title="Delete">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                         viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                         stroke-width="1" stroke-linecap="round"
+                                                         stroke-linejoin="round"
+                                                         className="feather feather-trash-2 width-15 height-15">
+                                                        <polyline points="3 6 5 6 21 6"></polyline>
+                                                        <path
+                                                            d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                                        <line x1="10" y1="11" x2="10" y2="17"></line>
+                                                        <line x1="14" y1="11" x2="14" y2="17"></line>
+                                                    </svg>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li className="list-group-item task-list">
+                                    <div className="mr-3">
+                                        <a href="#" className="app-sortable-handle ui-sortable-handle">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                 viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                 stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+                                                 className="feather feather-move width-15 height-15">
+                                                <polyline points="5 9 2 12 5 15"></polyline>
+                                                <polyline points="9 5 12 2 15 5"></polyline>
+                                                <polyline points="15 19 12 22 9 19"></polyline>
+                                                <polyline points="19 9 22 12 19 15"></polyline>
+                                                <line x1="2" y1="12" x2="22" y2="12"></line>
+                                                <line x1="12" y1="2" x2="12" y2="22"></line>
+                                            </svg>
+                                        </a>
+                                    </div>
+                                    <div>
+                                        <div
+                                            className="custom-control custom-checkbox custom-checkbox-success mr-2">
+                                            <input type="checkbox" className="custom-control-input"
+                                                   id="customCheck12"/>
+                                            <label className="custom-control-label"
+                                                   htmlFor="customCheck12"></label>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <a href="#" className="add-star mr-3" title="Add stars">
+                                            <i className="fa fa-star-o font-size-16"></i>
+                                        </a>
+                                    </div>
+                                    <div className="flex-grow-1 min-width-0">
+                                        <div className="mb-1 d-flex align-items-center justify-content-between">
+                                            <div className="app-list-title text-truncate">It is a good idea to think
+                                                of your
+                                                PC as an office.
+                                            </div>
+                                            <div className="pl-3 d-flex align-items-center">
+                                                <div className="mr-3 d-sm-inline d-none">
+                                                    <div className="badge badge-warning">Theme Support</div>
+                                                </div>
+                                                <div className="mr-3 d-sm-inline d-none">
+                                                    <div className="avatar-group">
+                                                        <div className="avatar avatar-sm" title=""
+                                                             data-toggle="tooltip"
+                                                             data-original-title="Godwin Adanez">
+                                                                <span
+                                                                    className="avatar-title bg-success rounded-circle">G</span>
+                                                        </div>
+                                                        <figure className="avatar avatar-sm" title=""
+                                                                data-toggle="tooltip"
+                                                                data-original-title="Lisle Essam">
+                                                            <img src="https://via.placeholder.com/128X128"
+                                                                 className="rounded-circle" alt="image"/>
+                                                        </figure>
+                                                        <figure className="avatar avatar-sm" title=""
+                                                                data-toggle="tooltip"
+                                                                data-original-title="Baxie Roseblade">
+                                                            <img src="https://via.placeholder.com/128X128"
+                                                                 className="rounded-circle" alt="image"/>
+                                                        </figure>
+                                                        <figure className="avatar avatar-sm" title=""
+                                                                data-toggle="tooltip"
+                                                                data-original-title="Mella Mixter">
+                                                            <img src="https://via.placeholder.com/128X128"
+                                                                 className="rounded-circle" alt="image"/>
+                                                        </figure>
+                                                        <div className="avatar avatar-sm" title=""
+                                                             data-toggle="tooltip"
+                                                             data-original-title="Polly Everist">
+                                                                <span
+                                                                    className="avatar-title bg-primary rounded-circle">P</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <a href="#" title="" data-toggle="tooltip"
+                                                   data-original-title="Delete">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                         viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                         stroke-width="1" stroke-linecap="round"
+                                                         stroke-linejoin="round"
+                                                         className="feather feather-trash-2 width-15 height-15">
+                                                        <polyline points="3 6 5 6 21 6"></polyline>
+                                                        <path
+                                                            d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                                        <line x1="10" y1="11" x2="10" y2="17"></line>
+                                                        <line x1="14" y1="11" x2="14" y2="17"></line>
+                                                    </svg>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        <div className="card app-detail">
+                            <div className="card-header">
+                                <div className="app-detail-action-left">
+                                    <a className="app-detail-close-button" href="#">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                              viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"
                                              stroke-linecap="round" stroke-linejoin="round"
-                                             className="feather feather-menu width-15 height-15">
-                                            <line x1="3" y1="12" x2="21" y2="12"></line>
-                                            <line x1="3" y1="6" x2="21" y2="6"></line>
-                                            <line x1="3" y1="18" x2="21" y2="18"></line>
+                                             className="feather feather-arrow-left mr-3">
+                                            <line x1="19" y1="12" x2="5" y2="12"></line>
+                                            <polyline points="12 19 5 12 12 5"></polyline>
                                         </svg>
                                     </a>
-                                    <div className="input-group">
-                                        <input type="text" className="form-control" placeholder="Task search"
-                                               aria-describedby="button-addon1" />
-                                            <div className="input-group-append">
-                                                <button className="btn btn-outline-light" type="button"
-                                                        id="button-addon1">
-                                                    <i className="ti-search"></i>
-                                                </button>
-                                            </div>
-                                    </div>
-                                </form>
-                                <div className="app-pager d-flex align-items-center">
-                                    <div className="mr-3">1-50 of 253</div>
-                                    <nav aria-label="Page navigation example">
-                                        <ul className="pagination">
-                                            <li className="page-item">
-                                                <a className="page-link" href="#" aria-label="Previous">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                         viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                         stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
-                                                         className="feather feather-chevron-left width-15 height-15">
-                                                        <polyline points="15 18 9 12 15 6"></polyline>
-                                                    </svg>
-                                                </a>
-                                            </li>
-                                            <li className="page-item">
-                                                <a className="page-link" href="#" aria-label="Next">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                         viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                         stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
-                                                         className="feather feather-chevron-right width-15 height-15">
-                                                        <polyline points="9 18 15 12 9 6"></polyline>
-                                                    </svg>
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </nav>
+                                    <h5 className="mb-0">Draw design and presentation for customers. </h5>
                                 </div>
-                            </div>
-                        </div>
-                        <div className="card card-body app-content-body">
-                            <div className="app-lists" styles="overflow: hidden; outline: currentcolor none medium;"
-                                 tabIndex="1">
-                                <ul className="list-group list-group-flush ui-sortable">
-                                    <li className="list-group-item task-list active">
-                                        <div className="mr-3">
-                                            <a href="#" className="app-sortable-handle ui-sortable-handle">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                     viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                     stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
-                                                     className="feather feather-move width-15 height-15">
-                                                    <polyline points="5 9 2 12 5 15"></polyline>
-                                                    <polyline points="9 5 12 2 15 5"></polyline>
-                                                    <polyline points="15 19 12 22 9 19"></polyline>
-                                                    <polyline points="19 9 22 12 19 15"></polyline>
-                                                    <line x1="2" y1="12" x2="22" y2="12"></line>
-                                                    <line x1="12" y1="2" x2="12" y2="22"></line>
-                                                </svg>
-                                            </a>
-                                        </div>
-                                        <div>
-                                            <div
-                                                className="custom-control custom-checkbox custom-checkbox-success mr-2">
-                                                <input type="checkbox" className="custom-control-input"
-                                                       id="customCheck1" checked="" />
-                                                    <label className="custom-control-label"
-                                                           htmlFor="customCheck1"></label>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <a href="#" className="add-star mr-3" title="Add stars">
-                                                <i className="fa fa-star-o font-size-16"></i>
-                                            </a>
-                                        </div>
-                                        <div className="flex-grow-1 min-width-0">
-                                            <div className="mb-1 d-flex align-items-center justify-content-between">
-                                                <div className="app-list-title text-truncate">How To Protect Your
-                                                    Computer Very
-                                                    Useful Tips
-                                                </div>
-                                                <div className="pl-3 d-flex align-items-center">
-                                                    <div className="mr-3 d-sm-inline d-none">
-                                                        <div className="badge badge-danger">Social</div>
-                                                    </div>
-                                                    <div className="mr-3 d-sm-inline d-none">
-                                                        <div className="avatar-group">
-                                                            <figure className="avatar avatar-sm" title=""
-                                                                    data-toggle="tooltip"
-                                                                    data-original-title="Lisle Essam">
-                                                                <img src="https://via.placeholder.com/128X128"
-                                                                     className="rounded-circle" alt="image" />
-                                                            </figure>
-                                                            <figure className="avatar avatar-sm" title=""
-                                                                    data-toggle="tooltip"
-                                                                    data-original-title="Baxie Roseblade">
-                                                                <img src="https://via.placeholder.com/128X128"
-                                                                     className="rounded-circle" alt="image" />
-                                                            </figure>
-                                                            <figure className="avatar avatar-sm" title=""
-                                                                    data-toggle="tooltip"
-                                                                    data-original-title="Mella Mixter">
-                                                                <img src="https://via.placeholder.com/128X128"
-                                                                     className="rounded-circle" alt="image" />
-                                                            </figure>
-                                                            <figure className="avatar avatar-sm" title=""
-                                                                    data-toggle="tooltip"
-                                                                    data-original-title="Jo Hugill">
-                                                                <img src="https://via.placeholder.com/128X128"
-                                                                     className="rounded-circle" alt="image" />
-                                                            </figure>
-                                                            <figure className="avatar avatar-sm" title=""
-                                                                    data-toggle="tooltip"
-                                                                    data-original-title="Cullie Philcott">
-                                                                <img src="https://via.placeholder.com/128X128"
-                                                                     className="rounded-circle" alt="image" />
-                                                            </figure>
-                                                        </div>
-                                                    </div>
-                                                    <a href="#" title="" data-toggle="tooltip"
-                                                       data-original-title="Delete">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                             viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                             stroke-width="1" stroke-linecap="round"
-                                                             stroke-linejoin="round"
-                                                             className="feather feather-trash-2 width-15 height-15">
-                                                            <polyline points="3 6 5 6 21 6"></polyline>
-                                                            <path
-                                                                d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                                                            <line x1="10" y1="11" x2="10" y2="17"></line>
-                                                            <line x1="14" y1="11" x2="14" y2="17"></line>
-                                                        </svg>
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li className="list-group-item task-list active">
-                                        <div className="mr-3">
-                                            <a href="#" className="app-sortable-handle ui-sortable-handle">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                     viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                     stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
-                                                     className="feather feather-move width-15 height-15">
-                                                    <polyline points="5 9 2 12 5 15"></polyline>
-                                                    <polyline points="9 5 12 2 15 5"></polyline>
-                                                    <polyline points="15 19 12 22 9 19"></polyline>
-                                                    <polyline points="19 9 22 12 19 15"></polyline>
-                                                    <line x1="2" y1="12" x2="22" y2="12"></line>
-                                                    <line x1="12" y1="2" x2="12" y2="22"></line>
-                                                </svg>
-                                            </a>
-                                        </div>
-                                        <div>
-                                            <div
-                                                className="custom-control custom-checkbox custom-checkbox-success mr-2">
-                                                <input type="checkbox" className="custom-control-input"
-                                                       id="customCheck2" checked="" />
-                                                    <label className="custom-control-label"
-                                                           htmlFor="customCheck2"></label>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <a href="#" className="add-star mr-3" title="Add stars">
-                                                <i className="fa fa-star font-size-16 text-warning"></i>
-                                            </a>
-                                        </div>
-                                        <div className="flex-grow-1 min-width-0">
-                                            <div className="mb-1 d-flex align-items-center justify-content-between">
-                                                <div className="app-list-title text-truncate">How Hypnosis Can Help You
-                                                </div>
-                                                <div className="pl-3 d-flex align-items-center">
-                                                    <div className="mr-3 d-sm-inline d-none">
-                                                        <div className="badge badge-warning">Theme Support</div>
-                                                    </div>
-                                                    <div className="mr-3 d-sm-inline d-none">
-                                                        <div className="avatar-group">
-                                                            <figure className="avatar avatar-sm" title=""
-                                                                    data-toggle="tooltip"
-                                                                    data-original-title="Baxie Roseblade">
-                                                                <img src="https://via.placeholder.com/128X128"
-                                                                     className="rounded-circle" alt="image" />
-                                                            </figure>
-                                                            <figure className="avatar avatar-sm" title=""
-                                                                    data-toggle="tooltip"
-                                                                    data-original-title="Mella Mixter">
-                                                                <img src="https://via.placeholder.com/128X128"
-                                                                     className="rounded-circle" alt="image" />
-                                                            </figure>
-                                                            <figure className="avatar avatar-sm" title=""
-                                                                    data-toggle="tooltip"
-                                                                    data-original-title="Jo Hugill">
-                                                                <img src="https://via.placeholder.com/128X128"
-                                                                     className="rounded-circle" alt="image" />
-                                                            </figure>
-                                                            <figure className="avatar avatar-sm" title=""
-                                                                    data-toggle="tooltip"
-                                                                    data-original-title="Cullie Philcott">
-                                                                <img src="https://via.placeholder.com/128X128"
-                                                                     className="rounded-circle" alt="image" />
-                                                            </figure>
-                                                        </div>
-                                                    </div>
-                                                    <a href="#" title="" data-toggle="tooltip"
-                                                       data-original-title="Delete">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                             viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                             stroke-width="1" stroke-linecap="round"
-                                                             stroke-linejoin="round"
-                                                             className="feather feather-trash-2 width-15 height-15">
-                                                            <polyline points="3 6 5 6 21 6"></polyline>
-                                                            <path
-                                                                d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                                                            <line x1="10" y1="11" x2="10" y2="17"></line>
-                                                            <line x1="14" y1="11" x2="14" y2="17"></line>
-                                                        </svg>
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li className="list-group-item task-list">
-                                        <div className="mr-3">
-                                            <a href="#" className="app-sortable-handle ui-sortable-handle">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                     viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                     stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
-                                                     className="feather feather-move width-15 height-15">
-                                                    <polyline points="5 9 2 12 5 15"></polyline>
-                                                    <polyline points="9 5 12 2 15 5"></polyline>
-                                                    <polyline points="15 19 12 22 9 19"></polyline>
-                                                    <polyline points="19 9 22 12 19 15"></polyline>
-                                                    <line x1="2" y1="12" x2="22" y2="12"></line>
-                                                    <line x1="12" y1="2" x2="12" y2="22"></line>
-                                                </svg>
-                                            </a>
-                                        </div>
-                                        <div>
-                                            <div
-                                                className="custom-control custom-checkbox custom-checkbox-success mr-2">
-                                                <input type="checkbox" className="custom-control-input"
-                                                       id="customCheck3" />
-                                                    <label className="custom-control-label"
-                                                           htmlFor="customCheck3"></label>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <a href="#" className="add-star mr-3" title="Add stars">
-                                                <i className="fa fa-star font-size-16 text-warning"></i>
-                                            </a>
-                                        </div>
-                                        <div className="flex-grow-1 min-width-0">
-                                            <div className="mb-1 d-flex align-items-center justify-content-between">
-                                                <div className="app-list-title text-truncate">Dealing With Technical
-                                                    Support 10
-                                                    Useful Tips
-                                                </div>
-                                                <div className="pl-3 d-flex align-items-center">
-                                                    <div className="mr-3 d-sm-inline d-none">
-                                                        <div className="badge badge-info">Friends</div>
-                                                    </div>
-                                                    <div className="mr-3 d-sm-inline d-none">
-                                                        <div className="avatar-group">
-                                                            <div className="avatar avatar-sm" title=""
-                                                                 data-toggle="tooltip"
-                                                                 data-original-title="Polly Everist">
-                                                                <span
-                                                                    className="avatar-title bg-primary rounded-circle">P</span>
-                                                            </div>
-                                                            <div className="avatar avatar-sm" title=""
-                                                                 data-toggle="tooltip"
-                                                                 data-original-title="Godwin Adanez">
-                                                                <span
-                                                                    className="avatar-title bg-success rounded-circle">G</span>
-                                                            </div>
-                                                            <figure className="avatar avatar-sm" title=""
-                                                                    data-toggle="tooltip"
-                                                                    data-original-title="Lisle Essam">
-                                                                <img src="https://via.placeholder.com/128X128"
-                                                                     className="rounded-circle" alt="image" />
-                                                            </figure>
-                                                            <figure className="avatar avatar-sm" title=""
-                                                                    data-toggle="tooltip"
-                                                                    data-original-title="Baxie Roseblade">
-                                                                <img src="https://via.placeholder.com/128X128"
-                                                                     className="rounded-circle" alt="image" />
-                                                            </figure>
-                                                            <figure className="avatar avatar-sm" title=""
-                                                                    data-toggle="tooltip"
-                                                                    data-original-title="Mella Mixter">
-                                                                <img src="https://via.placeholder.com/128X128"
-                                                                     className="rounded-circle" alt="image" />
-                                                            </figure>
-                                                            <figure className="avatar avatar-sm" title=""
-                                                                    data-toggle="tooltip"
-                                                                    data-original-title="Jo Hugill">
-                                                                <img src="https://via.placeholder.com/128X128"
-                                                                     className="rounded-circle" alt="image" />
-                                                            </figure>
-                                                            <figure className="avatar avatar-sm" title=""
-                                                                    data-toggle="tooltip"
-                                                                    data-original-title="Cullie Philcott">
-                                                                <img src="https://via.placeholder.com/128X128"
-                                                                     className="rounded-circle" alt="image" />
-                                                            </figure>
-                                                        </div>
-                                                    </div>
-                                                    <a href="#" title="" data-toggle="tooltip"
-                                                       data-original-title="Delete">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                             viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                             stroke-width="1" stroke-linecap="round"
-                                                             stroke-linejoin="round"
-                                                             className="feather feather-trash-2 width-15 height-15">
-                                                            <polyline points="3 6 5 6 21 6"></polyline>
-                                                            <path
-                                                                d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                                                            <line x1="10" y1="11" x2="10" y2="17"></line>
-                                                            <line x1="14" y1="11" x2="14" y2="17"></line>
-                                                        </svg>
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li className="list-group-item task-list active">
-                                        <div className="mr-3">
-                                            <a href="#" className="app-sortable-handle ui-sortable-handle">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                     viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                     stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
-                                                     className="feather feather-move width-15 height-15">
-                                                    <polyline points="5 9 2 12 5 15"></polyline>
-                                                    <polyline points="9 5 12 2 15 5"></polyline>
-                                                    <polyline points="15 19 12 22 9 19"></polyline>
-                                                    <polyline points="19 9 22 12 19 15"></polyline>
-                                                    <line x1="2" y1="12" x2="22" y2="12"></line>
-                                                    <line x1="12" y1="2" x2="12" y2="22"></line>
-                                                </svg>
-                                            </a>
-                                        </div>
-                                        <div>
-                                            <div
-                                                className="custom-control custom-checkbox custom-checkbox-success mr-2">
-                                                <input type="checkbox" className="custom-control-input"
-                                                       id="customCheck4" checked="" />
-                                                    <label className="custom-control-label"
-                                                           htmlFor="customCheck4"></label>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <a href="#" className="add-star mr-3" title="Add stars">
-                                                <i className="fa fa-star-o font-size-16"></i>
-                                            </a>
-                                        </div>
-                                        <div className="flex-grow-1 min-width-0">
-                                            <div className="mb-1 d-flex align-items-center justify-content-between">
-                                                <div className="app-list-title text-truncate">Get The Boot A Birds Eye
-                                                    Look Into
-                                                    Mcse Boot Camps
-                                                </div>
-                                                <div className="pl-3 d-flex align-items-center">
-                                                    <div className="mr-3 d-sm-inline d-none">
-                                                        <div className="badge badge-warning">Social</div>
-                                                    </div>
-                                                    <div className="mr-3 d-sm-inline d-none">
-                                                        <div className="avatar-group">
-                                                            <div className="avatar avatar-sm" title=""
-                                                                 data-toggle="tooltip"
-                                                                 data-original-title="Godwin Adanez">
-                                                                <span
-                                                                    className="avatar-title bg-success rounded-circle">G</span>
-                                                            </div>
-                                                            <figure className="avatar avatar-sm" title=""
-                                                                    data-toggle="tooltip"
-                                                                    data-original-title="Lisle Essam">
-                                                                <img src="https://via.placeholder.com/128X128"
-                                                                     className="rounded-circle" alt="image" />
-                                                            </figure>
-                                                        </div>
-                                                    </div>
-                                                    <a href="#" title="" data-toggle="tooltip"
-                                                       data-original-title="Delete">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                             viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                             stroke-width="1" stroke-linecap="round"
-                                                             stroke-linejoin="round"
-                                                             className="feather feather-trash-2 width-15 height-15">
-                                                            <polyline points="3 6 5 6 21 6"></polyline>
-                                                            <path
-                                                                d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                                                            <line x1="10" y1="11" x2="10" y2="17"></line>
-                                                            <line x1="14" y1="11" x2="14" y2="17"></line>
-                                                        </svg>
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li className="list-group-item task-list">
-                                        <div className="mr-3">
-                                            <a href="#" className="app-sortable-handle ui-sortable-handle">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                     viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                     stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
-                                                     className="feather feather-move width-15 height-15">
-                                                    <polyline points="5 9 2 12 5 15"></polyline>
-                                                    <polyline points="9 5 12 2 15 5"></polyline>
-                                                    <polyline points="15 19 12 22 9 19"></polyline>
-                                                    <polyline points="19 9 22 12 19 15"></polyline>
-                                                    <line x1="2" y1="12" x2="22" y2="12"></line>
-                                                    <line x1="12" y1="2" x2="12" y2="22"></line>
-                                                </svg>
-                                            </a>
-                                        </div>
-                                        <div>
-                                            <div
-                                                className="custom-control custom-checkbox custom-checkbox-success mr-2">
-                                                <input type="checkbox" className="custom-control-input"
-                                                       id="customCheck5" />
-                                                    <label className="custom-control-label"
-                                                           htmlFor="customCheck5"></label>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <a href="#" className="add-star mr-3" title="Add stars">
-                                                <i className="fa fa-star-o font-size-16"></i>
-                                            </a>
-                                        </div>
-                                        <div className="flex-grow-1 min-width-0">
-                                            <div className="mb-1 d-flex align-items-center justify-content-between">
-                                                <div className="app-list-title text-truncate">Buying Used Electronic
-                                                    Test
-                                                    Equipment.
-                                                </div>
-                                                <div className="pl-3 d-flex align-items-center">
-                                                    <div className="mr-3 d-sm-inline d-none">
-                                                        <div className="badge badge-success">Freelance</div>
-                                                    </div>
-                                                    <div className="mr-3 d-sm-inline d-none">
-                                                        <div className="avatar-group">
-                                                            <div className="avatar avatar-sm" title=""
-                                                                 data-toggle="tooltip"
-                                                                 data-original-title="Polly Everist">
-                                                                <span
-                                                                    className="avatar-title bg-primary rounded-circle">P</span>
-                                                            </div>
-                                                            <div className="avatar avatar-sm" title=""
-                                                                 data-toggle="tooltip"
-                                                                 data-original-title="Godwin Adanez">
-                                                                <span
-                                                                    className="avatar-title bg-success rounded-circle">G</span>
-                                                            </div>
-                                                            <figure className="avatar avatar-sm" title=""
-                                                                    data-toggle="tooltip"
-                                                                    data-original-title="Lisle Essam">
-                                                                <img src="https://via.placeholder.com/128X128"
-                                                                     className="rounded-circle" alt="image" />
-                                                            </figure>
-                                                            <figure className="avatar avatar-sm" title=""
-                                                                    data-toggle="tooltip"
-                                                                    data-original-title="Baxie Roseblade">
-                                                                <img src="https://via.placeholder.com/128X128"
-                                                                     className="rounded-circle" alt="image" />
-                                                            </figure>
-                                                            <figure className="avatar avatar-sm" title=""
-                                                                    data-toggle="tooltip"
-                                                                    data-original-title="Mella Mixter">
-                                                                <img src="https://via.placeholder.com/128X128"
-                                                                     className="rounded-circle" alt="image" />
-                                                            </figure>
-                                                        </div>
-                                                    </div>
-                                                    <a href="#" title="" data-toggle="tooltip"
-                                                       data-original-title="Delete">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                             viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                             stroke-width="1" stroke-linecap="round"
-                                                             stroke-linejoin="round"
-                                                             className="feather feather-trash-2 width-15 height-15">
-                                                            <polyline points="3 6 5 6 21 6"></polyline>
-                                                            <path
-                                                                d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                                                            <line x1="10" y1="11" x2="10" y2="17"></line>
-                                                            <line x1="14" y1="11" x2="14" y2="17"></line>
-                                                        </svg>
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li className="list-group-item task-list">
-                                        <div className="mr-3">
-                                            <a href="#" className="app-sortable-handle ui-sortable-handle">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                     viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                     stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
-                                                     className="feather feather-move width-15 height-15">
-                                                    <polyline points="5 9 2 12 5 15"></polyline>
-                                                    <polyline points="9 5 12 2 15 5"></polyline>
-                                                    <polyline points="15 19 12 22 9 19"></polyline>
-                                                    <polyline points="19 9 22 12 19 15"></polyline>
-                                                    <line x1="2" y1="12" x2="22" y2="12"></line>
-                                                    <line x1="12" y1="2" x2="12" y2="22"></line>
-                                                </svg>
-                                            </a>
-                                        </div>
-                                        <div>
-                                            <div
-                                                className="custom-control custom-checkbox custom-checkbox-success mr-2">
-                                                <input type="checkbox" className="custom-control-input"
-                                                       id="customCheck6" />
-                                                    <label className="custom-control-label"
-                                                           htmlFor="customCheck6"></label>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <a href="#" className="add-star mr-3" title="Add stars">
-                                                <i className="fa fa-star-o font-size-16"></i>
-                                            </a>
-                                        </div>
-                                        <div className="flex-grow-1 min-width-0">
-                                            <div className="mb-1 d-flex align-items-center justify-content-between">
-                                                <div className="app-list-title text-truncate">Fix Responsiveness
-                                                </div>
-                                                <div className="pl-3 d-flex align-items-center">
-                                                    <div className="mr-3 d-sm-inline d-none">
-                                                        <div className="badge badge-warning">Theme Support</div>
-                                                    </div>
-                                                    <div className="mr-3 d-sm-inline d-none">
-                                                        <div className="avatar-group">
-                                                            <div className="avatar avatar-sm" title=""
-                                                                 data-toggle="tooltip"
-                                                                 data-original-title="Godwin Adanez">
-                                                                <span
-                                                                    className="avatar-title bg-warning rounded-circle">G</span>
-                                                            </div>
-                                                            <div className="avatar avatar-sm" title=""
-                                                                 data-toggle="tooltip"
-                                                                 data-original-title="Polly Everist">
-                                                                <span
-                                                                    className="avatar-title bg-info rounded-circle">P</span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <a href="#" title="" data-toggle="tooltip"
-                                                       data-original-title="Delete">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                             viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                             stroke-width="1" stroke-linecap="round"
-                                                             stroke-linejoin="round"
-                                                             className="feather feather-trash-2 width-15 height-15">
-                                                            <polyline points="3 6 5 6 21 6"></polyline>
-                                                            <path
-                                                                d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                                                            <line x1="10" y1="11" x2="10" y2="17"></line>
-                                                            <line x1="14" y1="11" x2="14" y2="17"></line>
-                                                        </svg>
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li className="list-group-item task-list">
-                                        <div className="mr-3">
-                                            <a href="#" className="app-sortable-handle ui-sortable-handle">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                     viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                     stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
-                                                     className="feather feather-move width-15 height-15">
-                                                    <polyline points="5 9 2 12 5 15"></polyline>
-                                                    <polyline points="9 5 12 2 15 5"></polyline>
-                                                    <polyline points="15 19 12 22 9 19"></polyline>
-                                                    <polyline points="19 9 22 12 19 15"></polyline>
-                                                    <line x1="2" y1="12" x2="22" y2="12"></line>
-                                                    <line x1="12" y1="2" x2="12" y2="22"></line>
-                                                </svg>
-                                            </a>
-                                        </div>
-                                        <div>
-                                            <div
-                                                className="custom-control custom-checkbox custom-checkbox-success mr-2">
-                                                <input type="checkbox" className="custom-control-input"
-                                                       id="customCheck7" />
-                                                    <label className="custom-control-label"
-                                                           htmlFor="customCheck7"></label>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <a href="#" className="add-star mr-3" title="Add stars">
-                                                <i className="fa fa-star font-size-16 text-warning"></i>
-                                            </a>
-                                        </div>
-                                        <div className="flex-grow-1 min-width-0">
-                                            <div className="mb-1 d-flex align-items-center justify-content-between">
-                                                <div className="app-list-title text-truncate">
-                                                    Hypnotherapy For Motivation Getting The Drive Back
-                                                </div>
-                                                <div className="pl-3 d-flex align-items-center">
-                                                    <div className="mr-3 d-sm-inline d-none">
-                                                        <div className="badge badge-secondary">Coding</div>
-                                                    </div>
-                                                    <div className="mr-3 d-sm-inline d-none">
-                                                        <div className="avatar-group">
-                                                            <figure className="avatar avatar-sm" title=""
-                                                                    data-toggle="tooltip"
-                                                                    data-original-title="Baxie Roseblade">
-                                                                <img src="https://via.placeholder.com/128X128"
-                                                                     className="rounded-circle" alt="image" />
-                                                            </figure>
-                                                        </div>
-                                                    </div>
-                                                    <a href="#" title="" data-toggle="tooltip"
-                                                       data-original-title="Delete">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                             viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                             stroke-width="1" stroke-linecap="round"
-                                                             stroke-linejoin="round"
-                                                             className="feather feather-trash-2 width-15 height-15">
-                                                            <polyline points="3 6 5 6 21 6"></polyline>
-                                                            <path
-                                                                d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                                                            <line x1="10" y1="11" x2="10" y2="17"></line>
-                                                            <line x1="14" y1="11" x2="14" y2="17"></line>
-                                                        </svg>
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li className="list-group-item task-list">
-                                        <div className="mr-3">
-                                            <a href="#" className="app-sortable-handle ui-sortable-handle">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                     viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                     stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
-                                                     className="feather feather-move width-15 height-15">
-                                                    <polyline points="5 9 2 12 5 15"></polyline>
-                                                    <polyline points="9 5 12 2 15 5"></polyline>
-                                                    <polyline points="15 19 12 22 9 19"></polyline>
-                                                    <polyline points="19 9 22 12 19 15"></polyline>
-                                                    <line x1="2" y1="12" x2="22" y2="12"></line>
-                                                    <line x1="12" y1="2" x2="12" y2="22"></line>
-                                                </svg>
-                                            </a>
-                                        </div>
-                                        <div>
-                                            <div
-                                                className="custom-control custom-checkbox custom-checkbox-success mr-2">
-                                                <input type="checkbox" className="custom-control-input"
-                                                       id="customCheck8" />
-                                                    <label className="custom-control-label"
-                                                           htmlFor="customCheck8"></label>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <a href="#" className="add-star mr-3" title="Add stars">
-                                                <i className="fa fa-star-o font-size-16"></i>
-                                            </a>
-                                        </div>
-                                        <div className="flex-grow-1 min-width-0">
-                                            <div className="mb-1 d-flex align-items-center justify-content-between">
-                                                <div className="app-list-title text-truncate">Are You Struggling In Life
-                                                </div>
-                                                <div className="pl-3 d-flex align-items-center">
-                                                    <div className="mr-3 d-sm-inline d-none">
-                                                        <div className="badge badge-warning">Theme Support</div>
-                                                    </div>
-                                                    <div className="mr-3">
-                                                        <div className="avatar-group">
-                                                            <div className="avatar avatar-sm" title=""
-                                                                 data-toggle="tooltip"
-                                                                 data-original-title="Polly Everist">
-                                                                <span
-                                                                    className="avatar-title bg-primary rounded-circle">P</span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <a href="#" title="" data-toggle="tooltip"
-                                                       data-original-title="Delete">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                             viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                             stroke-width="1" stroke-linecap="round"
-                                                             stroke-linejoin="round"
-                                                             className="feather feather-trash-2 width-15 height-15">
-                                                            <polyline points="3 6 5 6 21 6"></polyline>
-                                                            <path
-                                                                d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                                                            <line x1="10" y1="11" x2="10" y2="17"></line>
-                                                            <line x1="14" y1="11" x2="14" y2="17"></line>
-                                                        </svg>
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li className="list-group-item task-list">
-                                        <div className="mr-3">
-                                            <a href="#" className="app-sortable-handle ui-sortable-handle">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                     viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                     stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
-                                                     className="feather feather-move width-15 height-15">
-                                                    <polyline points="5 9 2 12 5 15"></polyline>
-                                                    <polyline points="9 5 12 2 15 5"></polyline>
-                                                    <polyline points="15 19 12 22 9 19"></polyline>
-                                                    <polyline points="19 9 22 12 19 15"></polyline>
-                                                    <line x1="2" y1="12" x2="22" y2="12"></line>
-                                                    <line x1="12" y1="2" x2="12" y2="22"></line>
-                                                </svg>
-                                            </a>
-                                        </div>
-                                        <div>
-                                            <div
-                                                className="custom-control custom-checkbox custom-checkbox-success mr-2">
-                                                <input type="checkbox" className="custom-control-input"
-                                                       id="customCheck9" />
-                                                    <label className="custom-control-label"
-                                                           htmlFor="customCheck9"></label>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <a href="#" className="add-star mr-3" title="Add stars">
-                                                <i className="fa fa-star-o font-size-16"></i>
-                                            </a>
-                                        </div>
-                                        <div className="flex-grow-1 min-width-0">
-                                            <div className="mb-1 d-flex align-items-center justify-content-between">
-                                                <div className="app-list-title text-truncate">Believing Is The Absence
-                                                    Of Doubt
-                                                </div>
-                                                <div className="pl-3 d-flex align-items-center">
-                                                    <div className="mr-3 d-sm-inline d-none">
-                                                        <div className="badge badge-success">Freelance</div>
-                                                    </div>
-                                                    <div className="mr-3 d-sm-inline d-none">
-                                                        <div className="avatar-group">
-                                                            <figure className="avatar avatar-sm" title=""
-                                                                    data-toggle="tooltip"
-                                                                    data-original-title="Lisle Essam">
-                                                                <img src="https://via.placeholder.com/128X128"
-                                                                     className="rounded-circle" alt="image" />
-                                                            </figure>
-                                                            <figure className="avatar avatar-sm" title=""
-                                                                    data-toggle="tooltip"
-                                                                    data-original-title="Baxie Roseblade">
-                                                                <img src="https://via.placeholder.com/128X128"
-                                                                     className="rounded-circle" alt="image" />
-                                                            </figure>
-                                                            <figure className="avatar avatar-sm" title=""
-                                                                    data-toggle="tooltip"
-                                                                    data-original-title="Mella Mixter">
-                                                                <img src="https://via.placeholder.com/128X128"
-                                                                     className="rounded-circle" alt="image" />
-                                                            </figure>
-                                                        </div>
-                                                    </div>
-                                                    <a href="#" title="" data-toggle="tooltip"
-                                                       data-original-title="Delete">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                             viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                             stroke-width="1" stroke-linecap="round"
-                                                             stroke-linejoin="round"
-                                                             className="feather feather-trash-2 width-15 height-15">
-                                                            <polyline points="3 6 5 6 21 6"></polyline>
-                                                            <path
-                                                                d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                                                            <line x1="10" y1="11" x2="10" y2="17"></line>
-                                                            <line x1="14" y1="11" x2="14" y2="17"></line>
-                                                        </svg>
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li className="list-group-item task-list">
-                                        <div className="mr-3">
-                                            <a href="#" className="app-sortable-handle ui-sortable-handle">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                     viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                     stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
-                                                     className="feather feather-move width-15 height-15">
-                                                    <polyline points="5 9 2 12 5 15"></polyline>
-                                                    <polyline points="9 5 12 2 15 5"></polyline>
-                                                    <polyline points="15 19 12 22 9 19"></polyline>
-                                                    <polyline points="19 9 22 12 19 15"></polyline>
-                                                    <line x1="2" y1="12" x2="22" y2="12"></line>
-                                                    <line x1="12" y1="2" x2="12" y2="22"></line>
-                                                </svg>
-                                            </a>
-                                        </div>
-                                        <div>
-                                            <div
-                                                className="custom-control custom-checkbox custom-checkbox-success mr-2">
-                                                <input type="checkbox" className="custom-control-input"
-                                                       id="customCheck10" />
-                                                    <label className="custom-control-label"
-                                                           htmlFor="customCheck10"></label>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <a href="#" className="add-star mr-3" title="Add stars">
-                                                <i className="fa fa-star-o font-size-16"></i>
-                                            </a>
-                                        </div>
-                                        <div className="flex-grow-1 min-width-0">
-                                            <div className="mb-1 d-flex align-items-center justify-content-between">
-                                                <div className="app-list-title text-truncate">Success Steps For Your
-                                                    Personal Or
-                                                    Business Life
-                                                </div>
-                                                <div className="pl-3 d-flex align-items-center">
-                                                    <div className="mr-3 d-sm-inline d-none">
-                                                        <div className="badge badge-danger">Social</div>
-                                                    </div>
-                                                    <div className="mr-3 d-sm-inline d-none">
-                                                        <div className="avatar-group">
-                                                            <figure className="avatar avatar-sm" title=""
-                                                                    data-toggle="tooltip"
-                                                                    data-original-title="Mella Mixter">
-                                                                <img src="https://via.placeholder.com/128X128"
-                                                                     className="rounded-circle" alt="image" />
-                                                            </figure>
-                                                            <div className="avatar avatar-sm" title=""
-                                                                 data-toggle="tooltip"
-                                                                 data-original-title="Polly Everist">
-                                                                <span
-                                                                    className="avatar-title bg-primary rounded-circle">P</span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <a href="#" title="" data-toggle="tooltip"
-                                                       data-original-title="Delete">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                             viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                             stroke-width="1" stroke-linecap="round"
-                                                             stroke-linejoin="round"
-                                                             className="feather feather-trash-2 width-15 height-15">
-                                                            <polyline points="3 6 5 6 21 6"></polyline>
-                                                            <path
-                                                                d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                                                            <line x1="10" y1="11" x2="10" y2="17"></line>
-                                                            <line x1="14" y1="11" x2="14" y2="17"></line>
-                                                        </svg>
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li className="list-group-item task-list">
-                                        <div className="mr-3">
-                                            <a href="#" className="app-sortable-handle ui-sortable-handle">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                     viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                     stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
-                                                     className="feather feather-move width-15 height-15">
-                                                    <polyline points="5 9 2 12 5 15"></polyline>
-                                                    <polyline points="9 5 12 2 15 5"></polyline>
-                                                    <polyline points="15 19 12 22 9 19"></polyline>
-                                                    <polyline points="19 9 22 12 19 15"></polyline>
-                                                    <line x1="2" y1="12" x2="22" y2="12"></line>
-                                                    <line x1="12" y1="2" x2="12" y2="22"></line>
-                                                </svg>
-                                            </a>
-                                        </div>
-                                        <div>
-                                            <div
-                                                className="custom-control custom-checkbox custom-checkbox-success mr-2">
-                                                <input type="checkbox" className="custom-control-input"
-                                                       id="customCheck11" />
-                                                    <label className="custom-control-label"
-                                                           htmlFor="customCheck11"></label>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <a href="#" className="add-star mr-3" title="Add stars">
-                                                <i className="fa fa-star-o font-size-16"></i>
-                                            </a>
-                                        </div>
-                                        <div className="flex-grow-1 min-width-0">
-                                            <div className="mb-1 d-flex align-items-center justify-content-between">
-                                                <div className="app-list-title text-truncate">Don't Let The Outtakes
-                                                    Take You
-                                                    Out
-                                                </div>
-                                                <div className="pl-3 d-flex align-items-center">
-                                                    <div className="mr-3 d-sm-inline d-none">
-                                                        <div className="badge badge-warning">Theme Support</div>
-                                                    </div>
-                                                    <div className="mr-3">
-                                                        <div className="avatar-group">
-                                                            <div className="avatar avatar-sm" title=""
-                                                                 data-toggle="tooltip"
-                                                                 data-original-title="Godwin Adanez">
-                                                                <span
-                                                                    className="avatar-title bg-success rounded-circle">G</span>
-                                                            </div>
-                                                            <figure className="avatar avatar-sm" title=""
-                                                                    data-toggle="tooltip"
-                                                                    data-original-title="Lisle Essam">
-                                                                <img src="https://via.placeholder.com/128X128"
-                                                                     className="rounded-circle" alt="image" />
-                                                            </figure>
-                                                        </div>
-                                                    </div>
-                                                    <a href="#" title="" data-toggle="tooltip"
-                                                       data-original-title="Delete">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                             viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                             stroke-width="1" stroke-linecap="round"
-                                                             stroke-linejoin="round"
-                                                             className="feather feather-trash-2 width-15 height-15">
-                                                            <polyline points="3 6 5 6 21 6"></polyline>
-                                                            <path
-                                                                d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                                                            <line x1="10" y1="11" x2="10" y2="17"></line>
-                                                            <line x1="14" y1="11" x2="14" y2="17"></line>
-                                                        </svg>
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li className="list-group-item task-list">
-                                        <div className="mr-3">
-                                            <a href="#" className="app-sortable-handle ui-sortable-handle">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                     viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                     stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
-                                                     className="feather feather-move width-15 height-15">
-                                                    <polyline points="5 9 2 12 5 15"></polyline>
-                                                    <polyline points="9 5 12 2 15 5"></polyline>
-                                                    <polyline points="15 19 12 22 9 19"></polyline>
-                                                    <polyline points="19 9 22 12 19 15"></polyline>
-                                                    <line x1="2" y1="12" x2="22" y2="12"></line>
-                                                    <line x1="12" y1="2" x2="12" y2="22"></line>
-                                                </svg>
-                                            </a>
-                                        </div>
-                                        <div>
-                                            <div
-                                                className="custom-control custom-checkbox custom-checkbox-success mr-2">
-                                                <input type="checkbox" className="custom-control-input"
-                                                       id="customCheck12" />
-                                                    <label className="custom-control-label"
-                                                           htmlFor="customCheck12"></label>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <a href="#" className="add-star mr-3" title="Add stars">
-                                                <i className="fa fa-star-o font-size-16"></i>
-                                            </a>
-                                        </div>
-                                        <div className="flex-grow-1 min-width-0">
-                                            <div className="mb-1 d-flex align-items-center justify-content-between">
-                                                <div className="app-list-title text-truncate">It is a good idea to think
-                                                    of your
-                                                    PC as an office.
-                                                </div>
-                                                <div className="pl-3 d-flex align-items-center">
-                                                    <div className="mr-3 d-sm-inline d-none">
-                                                        <div className="badge badge-warning">Theme Support</div>
-                                                    </div>
-                                                    <div className="mr-3 d-sm-inline d-none">
-                                                        <div className="avatar-group">
-                                                            <div className="avatar avatar-sm" title=""
-                                                                 data-toggle="tooltip"
-                                                                 data-original-title="Godwin Adanez">
-                                                                <span
-                                                                    className="avatar-title bg-success rounded-circle">G</span>
-                                                            </div>
-                                                            <figure className="avatar avatar-sm" title=""
-                                                                    data-toggle="tooltip"
-                                                                    data-original-title="Lisle Essam">
-                                                                <img src="https://via.placeholder.com/128X128"
-                                                                     className="rounded-circle" alt="image" />
-                                                            </figure>
-                                                            <figure className="avatar avatar-sm" title=""
-                                                                    data-toggle="tooltip"
-                                                                    data-original-title="Baxie Roseblade">
-                                                                <img src="https://via.placeholder.com/128X128"
-                                                                     className="rounded-circle" alt="image" />
-                                                            </figure>
-                                                            <figure className="avatar avatar-sm" title=""
-                                                                    data-toggle="tooltip"
-                                                                    data-original-title="Mella Mixter">
-                                                                <img src="https://via.placeholder.com/128X128"
-                                                                     className="rounded-circle" alt="image" />
-                                                            </figure>
-                                                            <div className="avatar avatar-sm" title=""
-                                                                 data-toggle="tooltip"
-                                                                 data-original-title="Polly Everist">
-                                                                <span
-                                                                    className="avatar-title bg-primary rounded-circle">P</span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <a href="#" title="" data-toggle="tooltip"
-                                                       data-original-title="Delete">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                             viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                             stroke-width="1" stroke-linecap="round"
-                                                             stroke-linejoin="round"
-                                                             className="feather feather-trash-2 width-15 height-15">
-                                                            <polyline points="3 6 5 6 21 6"></polyline>
-                                                            <path
-                                                                d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                                                            <line x1="10" y1="11" x2="10" y2="17"></line>
-                                                            <line x1="14" y1="11" x2="14" y2="17"></line>
-                                                        </svg>
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </li>
-                                </ul>
-                            </div>
-                            <div className="card app-detail">
-                                <div className="card-header">
-                                    <div className="app-detail-action-left">
-                                        <a className="app-detail-close-button" href="#">
+                                <div className="app-detail-action-right">
+                                    <div>
+                                        <a href="#" className="btn btn-success" data-toggle="tooltip" title=""
+                                           data-original-title="2:44 AM">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                 viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"
-                                                 stroke-linecap="round" stroke-linejoin="round"
-                                                 className="feather feather-arrow-left mr-3">
-                                                <line x1="19" y1="12" x2="5" y2="12"></line>
-                                                <polyline points="12 19 5 12 12 5"></polyline>
+                                                 viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                 stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+                                                 className="feather feather-check mr-2">
+                                                <polyline points="20 6 9 17 4 12"></polyline>
                                             </svg>
+                                            Completed
                                         </a>
-                                        <h5 className="mb-0">Draw design and presentation for customers. </h5>
-                                    </div>
-                                    <div className="app-detail-action-right">
-                                        <div>
-                                            <a href="#" className="btn btn-success" data-toggle="tooltip" title=""
-                                               data-original-title="2:44 AM">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                     viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                     stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
-                                                     className="feather feather-check mr-2">
-                                                    <polyline points="20 6 9 17 4 12"></polyline>
-                                                </svg>
-                                                Completed
-                                            </a>
-                                            <span data-toggle="modal" data-target="#editTaskModal">
+                                        <span data-toggle="modal" data-target="#editTaskModal">
                                         <a href="#" className="btn btn-outline-light ml-2" title=""
                                            data-toggle="tooltip" data-original-title="Edit Task">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -1165,127 +1182,127 @@ const WorkspacePostsPanel = (props) => {
                                                 d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
                                         </a>
                                     </span>
-                                            <a href="#" className="btn btn-outline-light ml-2" data-toggle="tooltip"
-                                               title="" data-original-title="Delete Task">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                     viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                     stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
-                                                     className="feather feather-trash">
-                                                    <polyline points="3 6 5 6 21 6"></polyline>
-                                                    <path
-                                                        d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                                                </svg>
-                                            </a>
-                                        </div>
+                                        <a href="#" className="btn btn-outline-light ml-2" data-toggle="tooltip"
+                                           title="" data-original-title="Delete Task">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                 viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                 stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+                                                 className="feather feather-trash">
+                                                <polyline points="3 6 5 6 21 6"></polyline>
+                                                <path
+                                                    d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                            </svg>
+                                        </a>
                                     </div>
                                 </div>
-                                <div className="app-detail-article">
-                                    <div className="card-body">
-                                        <div className="d-flex align-items-center p-l-r-0 m-b-20">
-                                            <div className="d-flex align-items-center">
-                                                <div className="avatar-group">
-                                                    <div className="avatar avatar-sm" title="" data-toggle="tooltip"
-                                                         data-original-title="Polly Everist">
+                            </div>
+                            <div className="app-detail-article">
+                                <div className="card-body">
+                                    <div className="d-flex align-items-center p-l-r-0 m-b-20">
+                                        <div className="d-flex align-items-center">
+                                            <div className="avatar-group">
+                                                <div className="avatar avatar-sm" title="" data-toggle="tooltip"
+                                                     data-original-title="Polly Everist">
                                                         <span
                                                             className="avatar-title bg-primary rounded-circle">P</span>
-                                                    </div>
-                                                    <div className="avatar avatar-sm" title="" data-toggle="tooltip"
-                                                         data-original-title="Godwin Adanez">
+                                                </div>
+                                                <div className="avatar avatar-sm" title="" data-toggle="tooltip"
+                                                     data-original-title="Godwin Adanez">
                                                         <span
                                                             className="avatar-title bg-success rounded-circle">G</span>
-                                                    </div>
-                                                    <figure className="avatar avatar-sm" title="" data-toggle="tooltip"
-                                                            data-original-title="Lisle Essam">
-                                                        <img src="https://via.placeholder.com/128X128"
-                                                             className="rounded-circle" alt="image" />
-                                                    </figure>
-                                                    <figure className="avatar avatar-sm" title="" data-toggle="tooltip"
-                                                            data-original-title="Baxie Roseblade">
-                                                        <img src="https://via.placeholder.com/128X128"
-                                                             className="rounded-circle" alt="image" />
-                                                    </figure>
-                                                    <figure className="avatar avatar-sm" title="" data-toggle="tooltip"
-                                                            data-original-title="Mella Mixter">
-                                                        <img src="https://via.placeholder.com/128X128"
-                                                             className="rounded-circle" alt="image" />
-                                                    </figure>
                                                 </div>
-                                            </div>
-                                            <div className="ml-auto">
-                                                <span className="badge bg-warning badge-pill mr-2">Theme Support</span>
-                                                <a href="#" data-toggle="tooltip" title="" className="mr-2"
-                                                   data-original-title="Files">
-                                                    <i className="fa fa-paperclip"></i>
-                                                </a>
-                                                <a href="#" className="mr-2">
-                                                    <i className="fa fa-star font-size-16 text-warning"></i>
-                                                </a>
-                                                <span className="text-muted">4:14 AM</span>
+                                                <figure className="avatar avatar-sm" title="" data-toggle="tooltip"
+                                                        data-original-title="Lisle Essam">
+                                                    <img src="https://via.placeholder.com/128X128"
+                                                         className="rounded-circle" alt="image"/>
+                                                </figure>
+                                                <figure className="avatar avatar-sm" title="" data-toggle="tooltip"
+                                                        data-original-title="Baxie Roseblade">
+                                                    <img src="https://via.placeholder.com/128X128"
+                                                         className="rounded-circle" alt="image"/>
+                                                </figure>
+                                                <figure className="avatar avatar-sm" title="" data-toggle="tooltip"
+                                                        data-original-title="Mella Mixter">
+                                                    <img src="https://via.placeholder.com/128X128"
+                                                         className="rounded-circle" alt="image"/>
+                                                </figure>
                                             </div>
                                         </div>
-                                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consectetur
-                                            corporis
-                                            incidunt labore modi numquam omnis pariatur possimus suscipit vitae
-                                            voluptas?</p>
-                                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Animi aperiam
-                                            asperiores
-                                            error esse fugiat fugit laboriosam necessitatibus officia, placeat, quam
-                                            quis
-                                            reprehenderit similique soluta suscipit tempore! Consequuntur eligendi hic
-                                            in
-                                            libero
-                                            nostrum rem ut? At itaque laboriosam natus provident reprehenderit.</p>
+                                        <div className="ml-auto">
+                                            <span className="badge bg-warning badge-pill mr-2">Theme Support</span>
+                                            <a href="#" data-toggle="tooltip" title="" className="mr-2"
+                                               data-original-title="Files">
+                                                <i className="fa fa-paperclip"></i>
+                                            </a>
+                                            <a href="#" className="mr-2">
+                                                <i className="fa fa-star font-size-16 text-warning"></i>
+                                            </a>
+                                            <span className="text-muted">4:14 AM</span>
+                                        </div>
                                     </div>
-                                    <hr className="m-0" />
-                                        <div className="card-body">
-                                            <h6 className="mb-3 font-size-11 text-uppercase">Files</h6>
-                                            <ul className="list-unstyled mb-0">
-                                                <li className="small">
-                                                    <a href="#">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                             viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                             stroke-width="1" stroke-linecap="round"
-                                                             stroke-linejoin="round"
-                                                             className="feather feather-paperclip mr-1 width-15 height-15">
-                                                            <path
-                                                                d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path>
-                                                        </svg>
-                                                        uikit-design.psd
-                                                    </a>
-                                                </li>
-                                                <li className="small">
-                                                    <a href="#">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                             viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                             stroke-width="1" stroke-linecap="round"
-                                                             stroke-linejoin="round"
-                                                             className="feather feather-paperclip mr-1 width-15 height-15">
-                                                            <path
-                                                                d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path>
-                                                        </svg>
-                                                        uikit-design.sketch
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                        <hr className="m-0" />
-                                            <div className="card-body">
-                                                <h6 className="mb-3 font-size-11 text-uppercase">Comment</h6>
-                                                <div className="reply-email-quill-editor mb-3 ql-container ql-snow">
-                                                    <div className="ql-editor ql-blank" data-gramm="false"
-                                                         data-placeholder="Type something... " contentEditable="true">
-                                                        <p><br/></p></div>
-                                                    <div className="ql-clipboard" tabIndex="-1"
-                                                         contentEditable="true"></div>
-                                                    <div className="ql-tooltip ql-hidden"><a className="ql-preview"
-                                                                                             target="_blank"
-                                                                                             href="about:blank"></a><input
-                                                        type="text" data-formula="e=mc^2"
-                                                        data-link="https://quilljs.com" data-video="Embed URL" /><a
-                                                        className="ql-action"></a><a className="ql-remove"></a></div>
-                                                </div>
-                                                <div className="d-flex justify-content-between">
-                                                    <div className="reply-email-quill-toolbar ql-toolbar ql-snow">
+                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consectetur
+                                        corporis
+                                        incidunt labore modi numquam omnis pariatur possimus suscipit vitae
+                                        voluptas?</p>
+                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Animi aperiam
+                                        asperiores
+                                        error esse fugiat fugit laboriosam necessitatibus officia, placeat, quam
+                                        quis
+                                        reprehenderit similique soluta suscipit tempore! Consequuntur eligendi hic
+                                        in
+                                        libero
+                                        nostrum rem ut? At itaque laboriosam natus provident reprehenderit.</p>
+                                </div>
+                                <hr className="m-0"/>
+                                <div className="card-body">
+                                    <h6 className="mb-3 font-size-11 text-uppercase">Files</h6>
+                                    <ul className="list-unstyled mb-0">
+                                        <li className="small">
+                                            <a href="#">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                     viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                     stroke-width="1" stroke-linecap="round"
+                                                     stroke-linejoin="round"
+                                                     className="feather feather-paperclip mr-1 width-15 height-15">
+                                                    <path
+                                                        d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path>
+                                                </svg>
+                                                uikit-design.psd
+                                            </a>
+                                        </li>
+                                        <li className="small">
+                                            <a href="#">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                     viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                     stroke-width="1" stroke-linecap="round"
+                                                     stroke-linejoin="round"
+                                                     className="feather feather-paperclip mr-1 width-15 height-15">
+                                                    <path
+                                                        d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path>
+                                                </svg>
+                                                uikit-design.sketch
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <hr className="m-0"/>
+                                <div className="card-body">
+                                    <h6 className="mb-3 font-size-11 text-uppercase">Comment</h6>
+                                    <div className="reply-email-quill-editor mb-3 ql-container ql-snow">
+                                        <div className="ql-editor ql-blank" data-gramm="false"
+                                             data-placeholder="Type something... " contentEditable="true">
+                                            <p><br/></p></div>
+                                        <div className="ql-clipboard" tabIndex="-1"
+                                             contentEditable="true"></div>
+                                        <div className="ql-tooltip ql-hidden"><a className="ql-preview"
+                                                                                 target="_blank"
+                                                                                 href="about:blank"></a><input
+                                            type="text" data-formula="e=mc^2"
+                                            data-link="https://quilljs.com" data-video="Embed URL"/><a
+                                            className="ql-action"></a><a className="ql-remove"></a></div>
+                                    </div>
+                                    <div className="d-flex justify-content-between">
+                                        <div className="reply-email-quill-toolbar ql-toolbar ql-snow">
                                         <span className="ql-formats mr-0">
                                           <button className="ql-bold" type="button"><svg viewBox="0 0 18 18"> <path
                                               className="ql-stroke"
@@ -1314,25 +1331,25 @@ const WorkspacePostsPanel = (props) => {
                                               className="ql-even ql-fill"
                                               points="5 12 5 11 7 9 8 10 11 7 13 9 13 12 5 12"></polyline> </svg></button>
                                         </span>
-                                                    </div>
-                                                    <button className="btn btn-primary">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                             viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                             stroke-width="1" stroke-linecap="round"
-                                                             stroke-linejoin="round"
-                                                             className="feather feather-send mr-2">
-                                                            <line x1="22" y1="2" x2="11" y2="13"></line>
-                                                            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-                                                        </svg>
-                                                        Send
-                                                    </button>
-                                                </div>
-                                            </div>
+                                        </div>
+                                        <button className="btn btn-primary">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                 viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                 stroke-width="1" stroke-linecap="round"
+                                                 stroke-linejoin="round"
+                                                 className="feather feather-send mr-2">
+                                                <line x1="22" y1="2" x2="11" y2="13"></line>
+                                                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                                            </svg>
+                                            Send
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
         </Wrapper>
     );
 };

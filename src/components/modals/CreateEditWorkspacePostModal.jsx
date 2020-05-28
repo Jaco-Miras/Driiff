@@ -1,12 +1,12 @@
-import React, {useRef, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {Input, InputGroup, Label, Modal, ModalBody, ModalHeader} from "reactstrap";
 import styled from "styled-components";
 import {clearModal} from "../../redux/actions/globalActions";
+import {createWorkspace} from "../../redux/actions/workspaceActions";
 import {FolderSelect, PeopleSelect} from "../forms";
 import QuillEditor from "../forms/QuillEditor";
 import {useQuillModules} from "../hooks";
-import {createWorkspace} from "../../redux/actions/workspaceActions";
 
 const WrapperDiv = styled(InputGroup)`
     display: flex;
@@ -28,7 +28,7 @@ const WrapperDiv = styled(InputGroup)`
     }
 `;
 
-const SelectFolder = styled(FolderSelect)`
+const SelectWorkspace = styled(FolderSelect)`
     flex: 1 0 0;
     width: 1%;
 `;
@@ -72,7 +72,7 @@ const StyledModalHeader = styled(ModalHeader)`
 
 const CreateEditWorkspacePostModal = props => {
 
-    const {type, mode} = props.data;
+    const {type, mode, item = {}} = props.data;
 
     const reactQuillRef = useRef();
     const dispatch = useDispatch();
@@ -85,7 +85,7 @@ const CreateEditWorkspacePostModal = props => {
         has_folder: false,
         name: "",
         selectedUsers: [],
-        selectedFolder: null,
+        selectedWorkspace: null,
         description: "",
         textOnly: "",
     });
@@ -97,15 +97,6 @@ const CreateEditWorkspacePostModal = props => {
         );
     };
 
-    const toggleCheck = (e) => {
-        const name = e.target.dataset.name;
-        setForm({
-            ...form,
-            [name]: !form[name],
-            selectedFolder: name === "has_folder" && form.has_folder ? null : form.selectedFolder
-        });
-    };
-
     const userOptions = Object.values(users).map(u => {
         return {
             ...u,
@@ -114,7 +105,7 @@ const CreateEditWorkspacePostModal = props => {
         };
     });
 
-    const folderOptions = Object.values(workspaces).filter(ws => ws.type === "FOLDER").map(ws => {
+    const workspaceOptions = Object.values(workspaces).filter(ws => ws.type === "WORKSPACE").map(ws => {
         return {
             value: ws.id,
             label: ws.name,
@@ -125,28 +116,28 @@ const CreateEditWorkspacePostModal = props => {
         if (e === null) {
             setForm({
                 ...form,
-                selectedUsers: []
-            })
+                selectedUsers: [],
+            });
         } else {
             setForm({
                 ...form,
-                selectedUsers: e
-            })
+                selectedUsers: e,
+            });
         }
     };
 
-    const handleSelectFolder = e => {
+    const handleSelectWorkspace = e => {
         setForm({
             ...form,
-            selectedFolder: e
-        })
-    }
+            selectedWorkspace: e,
+        });
+    };
 
     const handleNameChange = e => {
         setForm({
             ...form,
-            name: e.target.value.trim()
-        })
+            name: e.target.value.trim(),
+        });
     };
 
     const handleConfirm = () => {
@@ -155,28 +146,40 @@ const CreateEditWorkspacePostModal = props => {
             description: form.description,
             is_external: activeTab === "extern" ? 1 : 0,
             member_ids: form.selectedUsers.map(u => u.id),
-            is_lock: form.is_private ? 1 : 0,   
-        }
-        if (form.selectedFolder) {
+            is_lock: form.is_private ? 1 : 0,
+        };
+        if (form.selectedWorkspace) {
             payload = {
                 ...payload,
-                workspace_id: form.selectedFolder.value
-            }
+                workspace_id: form.selectedWorkspace.value,
+            };
         }
         dispatch(createWorkspace(payload));
         toggle();
-    }
+    };
 
     const handleQuillChange = (content, delta, source, editor) => {
         const textOnly = editor.getText(content);
         setForm({
             ...form,
             description: content,
-            textOnly: textOnly
-        })
+            textOnly: textOnly,
+        });
     };
 
     const [modules] = useQuillModules("workspace");
+
+    useEffect(() => {
+        if (item.workspace !== null) {
+            setForm({
+                ...form,
+                selectedWorkspace: {
+                    value: item.workspace.id,
+                    label: item.workspace.name,
+                },
+            });
+        }
+    }, []);
 
     return (
 
@@ -186,37 +189,25 @@ const CreateEditWorkspacePostModal = props => {
             </StyledModalHeader>
             <ModalBody>
                 <WrapperDiv>
-                    <Label for="chat">
-                        Worskpace name</Label>
+                    <Label for="post-title">Post title</Label>
                     <Input style={{borderRadius: "5px"}}
                            defaultValue={mode === "edit" ? "" : ""}
                            onChange={handleNameChange}
+                           autoFocus
                     />
                 </WrapperDiv>
                 <WrapperDiv>
-                    <Label for="has_folder"></Label>
-                    <div className="custom-control custom-checkbox">
-                        <input name="has_folder" type="checkbox" className="custom-control-input"
-                               checked={form.has_folder}/>
-                        <label className="custom-control-label" data-name="has_folder" onClick={toggleCheck}>Add
-                            folder</label>
-                    </div>
+                    <Label for="workspace">Workspace</Label>
+                    <SelectWorkspace
+                        options={workspaceOptions}
+                        value={form.selectedWorkspace}
+                        onChange={handleSelectWorkspace}
+                        isMulti={false}
+                        isClearable={true}
+                    />
                 </WrapperDiv>
-                {
-                    form.has_folder === true &&
-                    <WrapperDiv>
-                        <Label for="people">Folder</Label>
-                        <SelectFolder
-                            options={folderOptions}
-                            value={form.selectedFolders}
-                            onChange={handleSelectFolder}
-                            isMulti={false}
-                            isClearable={true}
-                        />
-                    </WrapperDiv>
-                }
                 <WrapperDiv>
-                    <Label for="people">Team</Label>
+                    <Label for="responsible">Responsible</Label>
                     <SelectPeople
                         options={userOptions}
                         value={form.selectedUsers}
@@ -234,12 +225,7 @@ const CreateEditWorkspacePostModal = props => {
                 </WrapperDiv>
                 <WrapperDiv>
                     <Label></Label>
-                    <div className="custom-control custom-checkbox">
-                        <input name="is_private" type="checkbox" className="custom-control-input"
-                               checked={form.is_private}/>
-                        <label className="custom-control-label" data-name="is_private" onClick={toggleCheck}>Lock
-                            workspace</label>
-                    </div>
+                    <span>More options ^</span>
                     <button
                         className="btn btn-primary"
                         disabled={form.selectedUsers.length === 0 || form.name === ""}

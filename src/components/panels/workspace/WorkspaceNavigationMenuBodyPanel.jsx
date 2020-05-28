@@ -42,6 +42,8 @@ const Wrapper = styled.div`
                         margin: 0 0 0 30px;
                         padding: 0;
                         color: #a7abc3;
+                        font-size: 12px;
+                        font-weight: normal;
                         
                         svg {
                             width: 18px;
