@@ -94,7 +94,7 @@ const ChatHeaderPanel = (props) => {
                 <div className="ml-auto">
                     <ul className="nav align-items-center">
                         {
-                            (["DIRECT", "PERSONAL_BOT", "COMPANY"].includes(chatChannel.type) === false) &&
+                            (["DIRECT", "PERSONAL_BOT", "COMPANY", "TOPIC"].includes(chatChannel.type) === false) &&
                             <>
                                 <li className="mr-4 d-sm-inline d-none">
                                     <IconButton icon={`edit-3`} onClick={handleShowChatEditModal}/>
@@ -102,7 +102,7 @@ const ChatHeaderPanel = (props) => {
                             </>
                         }
                         {
-                            (["PERSONAL_BOT", "COMPANY"].includes(chatChannel.type) === false) &&
+                            (["PERSONAL_BOT", "COMPANY", "TOPIC"].includes(chatChannel.type) === false) &&
                             <>
                                 <li className="mr-4 d-sm-inline d-none">
                                     <IconButton icon={`trash`} onClick={handleShowArchiveConfirmation}/>
