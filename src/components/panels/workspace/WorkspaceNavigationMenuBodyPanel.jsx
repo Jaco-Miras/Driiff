@@ -8,6 +8,10 @@ import {WorkspaceList} from "../../workspace";
 import {addToModals} from "../../../redux/actions/globalActions";
 
 const Wrapper = styled.div`
+    .navigation-divider {
+        cursor: pointer;
+        cursor: hand;
+    }
 `;
 
 const WorkspaceNavigationMenuBodyPanel = (props) => {
@@ -85,6 +89,15 @@ const WorkspaceNavigationMenuBodyPanel = (props) => {
         );
     };
 
+    const handleShowWorkspaceModal = () => {
+        let payload = {
+            type: "workspace_create_edit"
+        }
+        dispatch(
+            addToModals(payload)
+        );
+    };
+
     const handleSelectTab = (e, tab) => {
         dispatch(setActiveTab(tab));
     }
@@ -112,7 +125,7 @@ const WorkspaceNavigationMenuBodyPanel = (props) => {
                                 <li className="navigation-divider" onClick={handleShowFolderModal}>
                                     <SvgIconFeather icon="plus"/> New folder
                                 </li>
-                                <li className="navigation-divider">
+                                <li className="navigation-divider" onClick={handleShowWorkspaceModal}>
                                     <SvgIconFeather icon="plus"/> New workspace
                                 </li>
                                 {
