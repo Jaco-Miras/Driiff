@@ -37,9 +37,6 @@ const ChatBubbleContainer = styled.div`
     ${props => props.hideBg === true && `
         background: none;
     `}
-
-
-
     &:focus {
         -webkit-box-shadow: 0 0 0 1px ${props => (props.isAuthor ? props.theme.self.chat_bubble_focus_border_color : props.theme.others.chat_bubble_focus_border_color)};
         -moz-box-shadow: 0 0 0 1px ${props => (props.isAuthor ? props.theme.self.chat_bubble_focus_border_color : props.theme.others.chat_bubble_focus_border_color)};
@@ -125,24 +122,24 @@ const ChatBubbleContainer = styled.div`
     }
     span.is-deleted {
         font-style: italic;
-        color: #ffffffe6;
+        color: ${props => props.isAuthor ? "#ffffffe6" : "#AAB0C8"};
     }
     .mention {
-        // background-image: linear-gradient(105deg,#46598d, #4f99a6);
+        ${'' /* // background-image: linear-gradient(105deg,#46598d, #4f99a6);
         &[data-value="All"] {
             background-image: linear-gradient(105deg,#972c86,#794997);
         }
-
         &.is-author {
             background-image: linear-gradient(105deg,#972c86,#794997);
-        }
-
+        } */}
+        font-weight: ${props => props.isAuthor ? "none" : "bold"};
+        color: ${props => props.isAuthor ? "#ffffff" : "#7A1B8B"};
         &[data-value="All"],
         &.is-author {
             box-shadow: none;
             padding: 0 4px;
             border-radius: 8px;
-            color: #fff;
+            text-decoration: underline;
             display: inline-block;
             width: auto;
             height: auto;
@@ -428,7 +425,7 @@ const ChatContent = styled.div`
         height: 250px;
 
         .gifPlayer {
-            padding: 10px;
+            padding: px;
             max-height: 250px;
         }
 

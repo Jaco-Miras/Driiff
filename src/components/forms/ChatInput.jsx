@@ -39,7 +39,7 @@ const StyledQuillEditor = styled(QuillEditor)`
         display: none;
     }
     .ql-editor {
-        padding: 5px;
+        padding: 9px 9px;
     }
     .ql-container {
         border: none;
@@ -64,10 +64,11 @@ const StyledQuillEditor = styled(QuillEditor)`
             padding-bottom: 1rem;
             padding-left: 1rem;
 
-            &.selected {
-                background-image: linear-gradient(105deg, #972c86, #794997);
-                color: #fff;
-            }
+                &.selected {
+                    background: #7A1B8B;
+                    color: #fff;
+                    cursor: pointer;
+                }
             }
         }
     }
@@ -449,7 +450,7 @@ const ChatInput = props => {
     };
 
     const handleAddMentionedUsers = users => {
-        
+
         let memberPayload = {
             channel_id: selectedChannel.id,
             recipient_ids: users.map(u => u.type_id),
@@ -460,7 +461,7 @@ const ChatInput = props => {
                 setIgnoredMentionedUserIds([...ignoredMentionedUserIds, ...users.map(u => u.type_id)])
             })
         );
-        
+
         setMentionedUserIds([]);
     };
 
@@ -478,7 +479,7 @@ const ChatInput = props => {
     return (
         <Wrapper>
             {
-                mentionedUserIds.length > 0 && 
+                mentionedUserIds.length > 0 &&
                 <BodyMention
                     onAddUsers={handleAddMentionedUsers}
                     onDoNothing={handleIgnoreMentionedUsers}
