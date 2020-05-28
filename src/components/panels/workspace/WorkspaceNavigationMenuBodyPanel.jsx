@@ -8,6 +8,10 @@ import {WorkspaceList} from "../../workspace";
 import {addToModals} from "../../../redux/actions/globalActions";
 
 const Wrapper = styled.div`
+    .navigation-divider {
+        cursor: pointer;
+        cursor: hand;
+    }
 `;
 
 const WorkspaceNavigationMenuBodyPanel = (props) => {
