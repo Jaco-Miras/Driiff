@@ -12,6 +12,9 @@ import ReplyPreview from "./ReplyPreview";
 const Wrapper = styled.span`
     cursor: pointer;
     cursor: hand;
+    position: relative;
+    ${props => props.selected && "padding-left: 14px !important"};
+
     &:hover {
         .more-button-component {
             opacity: 1;
@@ -24,7 +27,25 @@ const Wrapper = styled.span`
             opacity: 0;
             display: none;
         }
+        h6 {
+            color: #7A1B8B;
+        }
     }
+    h6 {
+        ${props => props.selected && "color: #7A1B8B"};
+    }
+    &:after {
+        ${props => props.selected && "content: ''"};
+        width: 3px;
+        height: 100%;
+        background: #7A1B8B;
+        display: block;
+        position: absolute;
+        left: 0;
+        top: 0;
+    }
+
+
     .chat-timestamp {
         position: absolute;
         right: 0px;

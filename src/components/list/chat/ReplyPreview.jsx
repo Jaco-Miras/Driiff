@@ -84,11 +84,12 @@ const ReplyPreview = props => {
                     previewText = previewText;
                 } else {
                     previewText =
+                        previewText +
                         renderToString(
                             <LastReplyName className="last-reply-name">
-                                {channel.last_reply.user.first_name}:
+                                {channel.last_reply.user.first_name}
                             </LastReplyName>,
-                        ) + previewText;
+                        );
                 }
 
                 previewText = previewText.replace("NEW_ACCOUNT_ACTIVATED", "New account activated");

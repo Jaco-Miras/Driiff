@@ -1,4 +1,13 @@
+$blue: #7A1B8B;
+$purple: $blue;
+$color-primary: #7a1b8b;
+$color-secondary: #8C3B9B;
+
 @import "~bootstrap/scss/bootstrap.scss";
+.btn-outline-primary {
+    border-color: $purple;
+}
+
 
 @font-face {
     font-family: Inter;
