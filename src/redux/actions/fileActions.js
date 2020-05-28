@@ -29,6 +29,14 @@ export function addFilesToChannel(payload, callback) {
     );
 }
 
+export function deleteFilesFromChannel(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "DELETE_CHANNEL_FILES",
+        payload,
+        callback,
+    );
+}
+
 export function setViewFiles(payload, callback) {
     return SimpleDispatchActionToReducer(
         "SET_VIEW_FILES",

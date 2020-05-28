@@ -30,7 +30,7 @@ import {
     updateChannelReducer,
     updateMemberTimestamp,
 } from "../../redux/actions/chatActions";
-import {addFilesToChannel} from "../../redux/actions/fileActions";
+import {addFilesToChannel, deleteFilesFromChannel} from "../../redux/actions/fileActions";
 import {
     addUserToReducers,
     generateUnfurl,
@@ -429,7 +429,7 @@ class Socket extends PureComponent {
                     this.props.incomingWorkspaceFolder({
                         ...e.workspace,
                         key_id: e.key_id,
-                        type: e.type
+                        type: e.type,
                     });
                 }
             })
@@ -1004,11 +1004,16 @@ class Socket extends PureComponent {
                 this.props.incomingUpdatedChatMessage(payload);
             })
             .listen(".delete-chat-notification", e => {
+                console.log(e);
                 let payload = {
                     channel_id: e.channel_id,
                     message_id: e.id,
                 };
                 this.props.incomingDeletedChatMessage(payload);
+                this.props.deleteFilesFromChannelAction({
+                    channel_id: e.channel_id,
+                    file_ids: e.file_ids
+                });
             })
             .listen(".chat-message-react", e => {
                 console.log(e);
@@ -1306,6 +1311,7 @@ function mapDispatchToProps(dispatch) {
         incomingChatMessage: bindActionCreators(incomingChatMessage, dispatch),
         incomingChatMessageFromOthers: bindActionCreators(incomingChatMessageFromOthers, dispatch),
         addFilesToChannelAction: bindActionCreators(addFilesToChannel, dispatch),
+        deleteFilesFromChannelAction: bindActionCreators(deleteFilesFromChannel, dispatch),
         generateUnfurl: bindActionCreators(generateUnfurl, dispatch),
         generateUnfurlReducer: bindActionCreators(generateUnfurlReducer, dispatch),
         updateChannelReducer: bindActionCreators(updateChannelReducer, dispatch),
@@ -1352,7 +1358,6 @@ function mapDispatchToProps(dispatch) {
         // updateChatCounterAction: bindActionCreators(updateChatCounter, dispatch),
         // incomingChatMessageAction: bindActionCreators(incomingChatMessage, dispatch),
         // incomingUpdatedChatMessageAction: bindActionCreators(incomingUpdatedChatMessage, dispatch),
-        // incomingDeletedChatMessageAction: bindActionCreators(incomingDeletedChatMessage, dispatch),
         // incomingChatMessageReaction: bindActionCreators(incomingChatMessageReaction, dispatch),
         // incomingVideoChatCallAction: bindActionCreators(incomingVideoChatCall, dispatch),
         // //getAllTotalUnreadChatV2Action: bindActionCreators(getAllTotalUnreadChatV2, dispatch),

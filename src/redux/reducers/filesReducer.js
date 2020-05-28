@@ -32,9 +32,9 @@ export default (state = INITIAL_STATE, action) => {
                 },
             };
         }
-        case "ADD_CHANNEL_FILES":
+        case "ADD_CHANNEL_FILES": {
             let channelFiles = [];
-            if(typeof state.channelFiles[action.data.channel_id] !== "undefined") {
+            if (typeof state.channelFiles[action.data.channel_id] !== "undefined") {
                 channelFiles = state.channelFiles[action.data.channel_id];
             }
 
@@ -45,6 +45,29 @@ export default (state = INITIAL_STATE, action) => {
                     [action.data.channel_id]: channelFiles.concat(action.data.files),
                 },
             };
+        }
+        case "DELETE_CHANNEL_FILES": {
+            let channelFiles = [];
+            if (typeof state.channelFiles[action.data.channel_id] !== "undefined") {
+                channelFiles = state.channelFiles[action.data.channel_id];
+            }
+
+            return {
+                ...state,
+                channelFiles: {
+                    ...state.channelFiles,
+                    [action.data.channel_id]: channelFiles.filter(cf => {
+                        let fileFound = false;
+                        for(let i in action.data.file_ids) {
+                            if(cf.file_id === action.data.file_ids[i]) {
+                                fileFound = true;
+                            }
+                        }
+                        return !fileFound;
+                    })
+                },
+            };
+        }
         case "SET_VIEW_FILES": {
             return {
                 ...state,
