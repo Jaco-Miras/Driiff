@@ -4,8 +4,8 @@ import styled from "styled-components";
 
 const BodyMentionDiv = styled.div`
     margin: 10px;
-    border-radius: 10px;
-    background: #f4f4f4;
+    border-radius: 8px;
+    background: #F0F0F0;
     padding: 10px;
     display: block;
     button {
@@ -55,7 +55,7 @@ const BodyMention = props => {
                         mentionedUsers.map((mu, i) => {
                             if (i === mentionedUsers.length - 1 && mentionedUsers.length > 1) {
                                 return (
-                                    <span key={i} className="mention-normal"> and 
+                                    <span key={i} className="mention-normal"> and
                                         <span className="mention" data-denotation-char="@" data-id={mu.type_id}
                                               data-value={mu.name}>
                                             <span className="mention-name pointer" data-mid={mu.type_id}
@@ -89,8 +89,8 @@ const BodyMention = props => {
                     }
                     &nbsp;{pText}</p></div>
             <div>
-                <button onClick={handleAddToPost}>{addText}</button>
-                <button onClick={handleDoNothing}>Do nothing</button>
+                <button class="btn-primary" onClick={handleAddToPost}>{addText}</button>
+                <button class="btn-outline-primary" onClick={handleDoNothing}>Do nothing</button>
             </div>
         </BodyMentionDiv>
     );

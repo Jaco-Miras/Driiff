@@ -31,7 +31,7 @@ const StyledQuillEditor = styled(QuillEditor)`
             padding-left: 1rem;
 
             &.selected {
-                background-image: linear-gradient(105deg, #972c86, #794997);
+                background: #7A1B8B;
                 color: #fff;
             }
             }

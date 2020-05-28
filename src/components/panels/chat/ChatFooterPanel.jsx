@@ -8,7 +8,7 @@ import ChatQuote from "../../list/chat/ChatQuote";
 
 const Wrapper = styled.div`
     position: relative;
-    z-index: 1;    
+    z-index: 1;
 `;
 
 const ArchivedDiv = styled.div`
@@ -34,7 +34,7 @@ const IconButton = styled(SvgIconFeather)`
     width: 40px;
     padding: 10px;
     border-radius: 8px;
-    
+
     &.feather-send {
         border: 1px solid #7a1b8b;
         background-color: #7a1b8b;
@@ -99,7 +99,7 @@ const ChatFooterPanel = (props) => {
                     <ChatQuote/>
                 </Dflex>
             }
-            <Dflex className="d-flex">
+            <Dflex className="d-flex align-items-center">
                 {
                     selectedChannel && selectedChannel.is_archived === 1 ?
                         <ArchivedDiv>
