@@ -13,3 +13,4 @@ export {default as useDraft} from "./useDraft";
 export {default as useSaveInput} from "./useSaveInput";
 export {default as useIsUserTyping} from "./useIsUserTyping";
 export {default as useCountUnreadReplies} from "./useCountUnreadReplies";
+export {default as useSetWorkspace} from "./useSetWorkspace";
