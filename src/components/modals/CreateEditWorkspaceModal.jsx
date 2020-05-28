@@ -63,6 +63,13 @@ const StyledQuillEditor = styled(QuillEditor)`
     }
 `;
 
+const StyledModalHeader = styled(ModalHeader)`
+    .intern-extern {
+        margin-left: 10px;
+        font-size: .7rem;
+    }
+`;
+
 const CreateEditWorkspaceModal = props => {
 
     const {type, mode} = props.data;
@@ -174,7 +181,10 @@ const CreateEditWorkspaceModal = props => {
     return (
 
         <Modal isOpen={modal} toggle={toggle} centered size={"md"}>
-            <ModalHeader toggle={toggle}>{mode === "edit" ? "Edit workspace" : "Create new workspace"}</ModalHeader>
+            <StyledModalHeader toggle={toggle} className={"workspace-modal-header"}>
+                {mode === "edit" ? "Edit workspace" : "Create new workspace"}
+                <span className="intern-extern">{activeTab}</span>
+            </StyledModalHeader>
             <ModalBody>
                 <WrapperDiv>
                     <Label for="chat">

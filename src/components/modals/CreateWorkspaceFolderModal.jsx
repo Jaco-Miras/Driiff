@@ -52,6 +52,13 @@ const StyledQuillEditor = styled(QuillEditor)`
     }
 `;
 
+const StyledModalHeader = styled(ModalHeader)`
+    .intern-extern {
+        margin-left: 10px;
+        font-size: .7rem;
+    }
+`;
+
 const CreateWorkspaceFolderModal = props => {
 
     const {type, mode} = props.data;
@@ -116,7 +123,10 @@ const CreateWorkspaceFolderModal = props => {
     return (
 
         <Modal isOpen={modal} toggle={toggle} centered size={"md"}>
-            <ModalHeader toggle={toggle}>{mode === "edit" ? "Edit folder" : "Create new folder"}</ModalHeader>
+            <StyledModalHeader toggle={toggle} className={"workspace-folder-header"}>
+                {mode === "edit" ? "Edit folder" : "Create new folder"}
+                <span className="intern-extern">{activeTab}</span>
+            </StyledModalHeader>
             <ModalBody>
                 <WrapperDiv>
                     <Label for="folder">
