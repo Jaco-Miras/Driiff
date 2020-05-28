@@ -4,7 +4,7 @@ import styled from "styled-components";
 import FileViewer from "../common/FileViewer";
 import {
     ChatForwardModal, ChatReminderModal, ConfirmationModal, CreateEditChatModal, CreateEditWorkspaceModal,
-    FileUploadModal, CreateWorkspaceFolderModal
+    FileUploadModal, CreateWorkspaceFolderModal, CreateEditWorkspacePostModal,
 } from "../modals";
 
 const ModalPanelContainer = styled.div`
@@ -41,6 +41,8 @@ const ModalPanel = props => {
                                 return <CreateWorkspaceFolderModal key={modal.type} data={modal}/>;
                             case "workspace_create_edit":
                                 return <CreateEditWorkspaceModal key={modal.type} data={modal}/>;
+                            case "workspace_post_create_edit":
+                                return <CreateEditWorkspacePostModal key={modal.type} data={modal}/>;
                             default:
                                 return null;
                         }

@@ -8,8 +8,12 @@ import ChannelsSidebar from "../../list/chat/ChannelsSidebar";
 import ChatContactsList from "../../list/chat/ChatContactsList";
 
 const Wrapper = styled.div`
-    overflow: hidden; 
-    // outline: currentcolor none medium;
+    overflow: auto !important;
+    &::-webkit-scrollbar {
+        display: none;
+    }
+    -ms-overflow-style: none;
+    scrollbar-width: none;    
 `;
 
 const ChatSidebarContentPanel = (props) => {

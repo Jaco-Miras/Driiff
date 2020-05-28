@@ -1,12 +1,12 @@
-import React, {forwardRef, useEffect, useRef, useState} from "react";
+import React, {useRef, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {Input, InputGroup, Label, Modal, ModalBody, ModalHeader} from "reactstrap";
 import styled from "styled-components";
 import {clearModal} from "../../redux/actions/globalActions";
-import {createWorkspace} from "../../redux/actions/workspaceActions";
 import {FolderSelect, PeopleSelect} from "../forms";
 import QuillEditor from "../forms/QuillEditor";
 import {useQuillModules} from "../hooks";
+import {createWorkspace} from "../../redux/actions/workspaceActions";
 
 const WrapperDiv = styled(InputGroup)`
     display: flex;
@@ -70,9 +70,9 @@ const StyledModalHeader = styled(ModalHeader)`
     }
 `;
 
-const CreateEditWorkspaceModal = forwardRef((props, ref) => {
+const CreateEditWorkspacePostModal = props => {
 
-    const {type, mode, item = {}} = props.data;
+    const {type, mode} = props.data;
 
     const reactQuillRef = useRef();
     const dispatch = useDispatch();
@@ -89,9 +89,6 @@ const CreateEditWorkspaceModal = forwardRef((props, ref) => {
         description: "",
         textOnly: "",
     });
-    const elRef = {
-        name: useRef(),
-    };
 
     const toggle = () => {
         setModal(!modal);
@@ -105,7 +102,7 @@ const CreateEditWorkspaceModal = forwardRef((props, ref) => {
         setForm({
             ...form,
             [name]: !form[name],
-            selectedFolder: name === "has_folder" && form.has_folder ? null : form.selectedFolder,
+            selectedFolder: name === "has_folder" && form.has_folder ? null : form.selectedFolder
         });
     };
 
@@ -128,28 +125,28 @@ const CreateEditWorkspaceModal = forwardRef((props, ref) => {
         if (e === null) {
             setForm({
                 ...form,
-                selectedUsers: [],
-            });
+                selectedUsers: []
+            })
         } else {
             setForm({
                 ...form,
-                selectedUsers: e,
-            });
+                selectedUsers: e
+            })
         }
     };
 
     const handleSelectFolder = e => {
         setForm({
             ...form,
-            selectedFolder: e,
-        });
-    };
+            selectedFolder: e
+        })
+    }
 
     const handleNameChange = e => {
         setForm({
             ...form,
-            name: e.target.value.trim(),
-        });
+            name: e.target.value.trim()
+        })
     };
 
     const handleConfirm = () => {
@@ -158,66 +155,49 @@ const CreateEditWorkspaceModal = forwardRef((props, ref) => {
             description: form.description,
             is_external: activeTab === "extern" ? 1 : 0,
             member_ids: form.selectedUsers.map(u => u.id),
-            is_lock: form.is_private ? 1 : 0,
-        };
+            is_lock: form.is_private ? 1 : 0,   
+        }
         if (form.selectedFolder) {
             payload = {
                 ...payload,
-                workspace_id: form.selectedFolder.value,
-            };
+                workspace_id: form.selectedFolder.value
+            }
         }
         dispatch(createWorkspace(payload));
         toggle();
-    };
+    }
 
     const handleQuillChange = (content, delta, source, editor) => {
         const textOnly = editor.getText(content);
         setForm({
             ...form,
             description: content,
-            textOnly: textOnly,
-        });
+            textOnly: textOnly
+        })
     };
 
     const [modules] = useQuillModules("workspace");
 
-    useEffect(() => {
-        setForm({
-            ...form,
-            has_folder: true,
-            selectedFolder: {
-                value: item.id,
-                label: item.name,
-            },
-        });
-    }, []);
-
-    useEffect(() => {
-        console.log(elRef.name);
-    }, [elRef.name]);
-
     return (
+
         <Modal isOpen={modal} toggle={toggle} centered size={"md"}>
             <StyledModalHeader toggle={toggle} className={"workspace-modal-header"}>
-                {mode === "edit" ? "Edit workspace" : "Create new workspace"}
-                <span className="intern-extern">{activeTab}</span>
+                {mode === "edit" ? "Edit post" : "Create new post"}
             </StyledModalHeader>
             <ModalBody>
-                <WrapperDiv ref={e => elRef.name = e}>
+                <WrapperDiv>
                     <Label for="chat">
                         Worskpace name</Label>
-                    <Input
-                        style={{borderRadius: "5px"}}
-                        defaultValue={mode === "edit" ? "" : ""}
-                        onChange={handleNameChange}
-                        autoFocus
+                    <Input style={{borderRadius: "5px"}}
+                           defaultValue={mode === "edit" ? "" : ""}
+                           onChange={handleNameChange}
                     />
                 </WrapperDiv>
                 <WrapperDiv>
                     <Label for="has_folder"></Label>
                     <div className="custom-control custom-checkbox">
                         <input name="has_folder" type="checkbox" className="custom-control-input"
-                               checked={form.has_folder} readOnly/>
+                               checked={form.has_folder}/>
                         <label className="custom-control-label" data-name="has_folder" onClick={toggleCheck}>Add
                             folder</label>
                     </div>
@@ -228,7 +208,7 @@ const CreateEditWorkspaceModal = forwardRef((props, ref) => {
                         <Label for="people">Folder</Label>
                         <SelectFolder
                             options={folderOptions}
-                            value={form.selectedFolder}
+                            value={form.selectedFolders}
                             onChange={handleSelectFolder}
                             isMulti={false}
                             isClearable={true}
@@ -256,7 +236,7 @@ const CreateEditWorkspaceModal = forwardRef((props, ref) => {
                     <Label></Label>
                     <div className="custom-control custom-checkbox">
                         <input name="is_private" type="checkbox" className="custom-control-input"
-                               checked={form.is_private} readOnly/>
+                               checked={form.is_private}/>
                         <label className="custom-control-label" data-name="is_private" onClick={toggleCheck}>Lock
                             workspace</label>
                     </div>
@@ -270,6 +250,6 @@ const CreateEditWorkspaceModal = forwardRef((props, ref) => {
             </ModalBody>
         </Modal>
     );
-});
+};
 
-export default CreateEditWorkspaceModal;
+export default CreateEditWorkspacePostModal;

@@ -9,9 +9,58 @@ import {addToModals} from "../../../redux/actions/globalActions";
 import {restoreLastVisitedChannel} from "../../../redux/actions/chatActions";
 
 const Wrapper = styled.div`
-    .navigation-divider {
-        cursor: pointer;
-        cursor: hand;
+    &::-webkit-scrollbar {
+        display: none;
+    }
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    
+    &.navigation-menu-body {        
+        h4 {
+            color: #7a1b8b;    
+            text-transform: uppercase;
+            margin: 14px 0 14px 32px;
+            font-size: 16px;
+        }
+        .nav-tabs {
+            margin-left: 30px;
+            
+            .nav-item {
+                cursor: pointer;
+                cursor: hand;
+            }
+        }
+        .navigation-menu-group{
+            ul {
+                li {
+                    font-size: 16px;
+                
+                    &.navigation-divider {
+                        cursor: pointer;
+                        cursor: hand;
+                        text-transform: none;
+                        margin: 0 0 0 30px;
+                        padding: 0;
+                        color: #a7abc3;
+                        
+                        svg {
+                            width: 18px;
+                            height: 18px;
+                        }
+                    }
+                    
+                    > ul {
+                        li {
+                            list-style-type: disc;
+                            margin-left: 45px;
+                            margin-bottom: 10px;
+                            color: #828282;
+                            font-size: 14px;
+                        }
+                    }
+                }
+            }
+        }
     }
 `;
 
