@@ -1,4 +1,4 @@
-import {convertArrayToObject} from "../../helpers/arrayHelper";
+//import {convertArrayToObject} from "../../helpers/arrayHelper";
 
 const INITIAL_STATE = {
     user: {},
@@ -66,24 +66,36 @@ export default (state = INITIAL_STATE, action) => {
         case "INCOMING_WORKSPACE": {
             if (state.workspacesLoaded) {
                 let newWorkspaces = {...state.workspaces};
-                newWorkspaces = {
-                    ...newWorkspaces,
-                    [action.data.workspace.id]: {
-                        ...newWorkspaces[action.data.workspace.id],
-                        topics: {
-                            ...newWorkspaces[action.data.workspace.id].topics,
-                            [action.data.topic.id]: {
-                                ...action.data.topic,
-                                selected: false,
-                                unread_posts: 0,
-                                unread_chats: 0,
-                                private: action.data.topic.private ? 1 : 0,
-                                channel: action.data.channel
-                            }
-                        },
-                        selected: false
+                if (action.data.workspace) {
+                    newWorkspaces = {
+                        ...newWorkspaces,
+                        [action.data.workspace.id]: {
+                            ...newWorkspaces[action.data.workspace.id],
+                            topics: {
+                                ...newWorkspaces[action.data.workspace.id].topics,
+                                [action.data.topic.id]: {
+                                    ...action.data.topic,
+                                    selected: false,
+                                    unread_posts: 0,
+                                    unread_chats: 0,
+                                    private: action.data.topic.private ? 1 : 0,
+                                    channel: action.data.channel
+                                }
+                            },
+                            selected: false
+                        }
+                    }
+                } else {
+                    newWorkspaces = {
+                        ...newWorkspaces,
+                        [action.data.id]: {
+                            ...action.data,
+                            name: action.data.topic.name,
+                            selected: false,
+                        }
                     }
                 }
+                
                 return {
                     ...state,
                     workspaces: newWorkspaces

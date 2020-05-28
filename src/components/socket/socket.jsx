@@ -425,7 +425,11 @@ class Socket extends PureComponent {
                 if (e.topic !== undefined) {
                     this.props.incomingWorkspace(e)
                 } else {
-                    this.props.incomingWorkspaceFolder(e.workspace);
+                    this.props.incomingWorkspaceFolder({
+                        ...e.workspace,
+                        key_id: e.key_id,
+                        type: e.type
+                    });
                 }
             })
             .listen(".update-workspace", e => {

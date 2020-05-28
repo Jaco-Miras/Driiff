@@ -85,6 +85,17 @@ const WorkspaceNavigationMenuBodyPanel = (props) => {
         );
     };
 
+    const handleShowWorkspaceModal = () => {
+        let payload = {
+            type: "workspace_create_edit",
+            mode: "create"
+        }
+
+        dispatch(
+            addToModals(payload)
+        );
+    }
+
     const handleSelectTab = (e, tab) => {
         dispatch(setActiveTab(tab));
     }
@@ -112,7 +123,7 @@ const WorkspaceNavigationMenuBodyPanel = (props) => {
                                 <li className="navigation-divider" onClick={handleShowFolderModal}>
                                     <SvgIconFeather icon="plus"/> New folder
                                 </li>
-                                <li className="navigation-divider">
+                                <li className="navigation-divider" onClick={handleShowWorkspaceModal}>
                                     <SvgIconFeather icon="plus"/> New workspace
                                 </li>
                                 {

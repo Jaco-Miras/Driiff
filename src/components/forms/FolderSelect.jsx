@@ -1,7 +1,7 @@
 import React, {forwardRef} from "react";
 import Select, {components} from "react-select";
 import styled from "styled-components";
-import {Avatar, SvgIconFeather} from "../common";
+import {SvgIconFeather} from "../common";
 
 const SelectOption = styled.div`
     display: flex;
@@ -35,27 +35,22 @@ const Option = props => {
 };
 
 const MultiValueContainer = ({children, selectProps, ...props}) => {
-    let newChildren = children.map((c, i) => {
-        if (i === 0) {
-            return {
-                ...c,
-                props: {
-                    ...c.props,
-                    children: props.data.first_name,
-                },
-            };
-        } else return c;
-    });
     return (
         <components.MultiValueContainer {...props}>
-            {newChildren}
+            {children}
         </components.MultiValueContainer>
     );
 };
 
 const FolderSelect = forwardRef((props, ref) => {
 
-    const {className = "", isMulti = true, isClearable = false, ...otherProps} = props;
+    const {className = "", isMulti = false, isClearable = false, ...otherProps} = props;
+
+    let components = {Option};
+    
+    if (isMulti) {
+        components = {Option, MultiValueContainer};
+    }
 
     return <Select
         ref={ref}
@@ -63,7 +58,7 @@ const FolderSelect = forwardRef((props, ref) => {
         classNamePrefix={"react-select"}
         isMulti={isMulti}
         isClearable={isClearable}
-        components={{Option, MultiValueContainer}}
+        components={components}
         {...otherProps}
     />;
 });
