@@ -10,14 +10,14 @@ import {FolderSelect, PeopleSelect} from "../forms";
 import QuillEditor from "../forms/QuillEditor";
 import {useQuillModules} from "../hooks";
 
-const WrapperDiv = styled.div`
+const WrapperDiv = styled(InputGroup)`
     display: flex;
     align-items: center;
     margin: 20px 0;
     label {
         white-space: nowrap;
         margin: 0 20px 0 0;
-        min-width: 90px;
+        min-width: 109px;
     }
     button {
         margin-left: auto;
@@ -30,7 +30,21 @@ const WrapperDiv = styled.div`
     }
 `;
 
+const SelectFolder = styled(FolderSelect)`
+    flex: 1 0 0;
+    width: 1%;
+`;
+
+const SelectPeople = styled(PeopleSelect)`
+    flex: 1 0 0;
+    width: 1%;
+`;
+
 const StyledQuillEditor = styled(QuillEditor)`
+    flex: 1 0 0;
+    width: 1%;
+    height: 80px;
+    
     &.group-chat-input {
         border: 1px solid #afb8bd;
         border-radius: 5px;
@@ -354,15 +368,15 @@ const CreateEditWorkspaceModal = props => {
         <Modal isOpen={modal} toggle={toggle} centered size={"md"}>
             <ModalHeader toggle={toggle}>{mode === "edit" ? "Edit workspace" : "Create new workspace"}</ModalHeader>
             <ModalBody>
-                <InputGroup>
-                    <Label for="chat" style={{minWidth: "90px", margin: "0 20px 0 0", alignSelf: "center"}}>
+                <WrapperDiv>
+                    <Label for="chat">
                         Worskpace name</Label>
                     <Input style={{borderRadius: "5px"}}
                            defaultValue={mode === "edit" ? channel.title : ""}
                            onChange={handleInputChange}
                            valid={valid}
                     />
-                </InputGroup>
+                </WrapperDiv>
                 <WrapperDiv>
                     <Label for="has_folder"></Label>
                     <div className="custom-control custom-checkbox">
@@ -376,7 +390,7 @@ const CreateEditWorkspaceModal = props => {
                     form.has_folder === true &&
                     <WrapperDiv>
                         <Label for="people">Folder</Label>
-                        <FolderSelect
+                        <SelectFolder
                             options={options}
                             value={selectedUsers}
                             onChange={handleSelect}
@@ -385,7 +399,7 @@ const CreateEditWorkspaceModal = props => {
                 }
                 <WrapperDiv>
                     <Label for="people">Team</Label>
-                    <PeopleSelect
+                    <SelectPeople
                         options={options}
                         value={selectedUsers}
                         onChange={handleSelect}
@@ -400,13 +414,14 @@ const CreateEditWorkspaceModal = props => {
                         onChange={handleQuillChange}
                     />
                 </WrapperDiv>
-                <div className="custom-control custom-checkbox">
-                    <input name="is_private" type="checkbox" className="custom-control-input"
-                           checked={form.is_private}/>
-                    <label className="custom-control-label" data-name="is_private" onClick={toggleCheck}>Lock
-                        workspace</label>
-                </div>
                 <WrapperDiv>
+                    <Label></Label>
+                    <div className="custom-control custom-checkbox">
+                        <input name="is_private" type="checkbox" className="custom-control-input"
+                               checked={form.is_private}/>
+                        <label className="custom-control-label" data-name="is_private" onClick={toggleCheck}>Lock
+                            workspace</label>
+                    </div>
                     <button
                         className="btn btn-primary"
                         disabled={searching || !valid}

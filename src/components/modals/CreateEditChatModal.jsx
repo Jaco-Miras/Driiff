@@ -12,7 +12,7 @@ import {PeopleSelect} from "../forms";
 import QuillEditor from "../forms/QuillEditor";
 import {useQuillModules} from "../hooks";
 
-const WrapperDiv = styled.div`
+const WrapperDiv = styled(InputGroup)`
     display: flex;
     align-items: center;
     margin: 20px 0;
@@ -24,15 +24,20 @@ const WrapperDiv = styled.div`
     button {
         margin-left: auto;
     }
-    .react-select-container {
-        width: 100%;
-    }
     .react-select__multi-value__label {
         align-self: center;
     }
 `;
 
+const SelectPeople = styled(PeopleSelect)`
+    flex: 1 0 0;
+    width: 1%;
+`;
+
 const StyledQuillEditor = styled(QuillEditor)`
+    flex: 1 0 0;
+    width: 1%;
+    
     &.group-chat-input {
         border: 1px solid #afb8bd;
         border-radius: 5px;
@@ -344,18 +349,18 @@ const CreateEditChatModal = props => {
         <Modal isOpen={modal} toggle={toggle} centered size={"md"}>
             <ModalHeader toggle={toggle}>{mode === "edit" ? "Edit chat" : "New group chat"}</ModalHeader>
             <ModalBody>
-                <InputGroup>
-                    <Label for="chat" style={{minWidth: "90px", margin: "0 20px 0 0", alignSelf: "center"}}>Chat
+                <WrapperDiv>
+                    <Label for="chat">Chat
                         title</Label>
                     <Input style={{borderRadius: "5px"}}
                            defaultValue={mode === "edit" ? channel.title : ""}
                            onChange={handleInputChange}
                            valid={valid}
                     />
-                </InputGroup>
+                </WrapperDiv>
                 <WrapperDiv>
                     <Label for="people">People</Label>
-                    <PeopleSelect
+                    <SelectPeople
                         options={options}
                         value={selectedUsers}
                         onChange={handleSelect}

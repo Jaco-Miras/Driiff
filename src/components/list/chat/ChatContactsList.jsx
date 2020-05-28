@@ -202,7 +202,7 @@ const ChatContactsList = props => {
 
                         return (
                             <li className="list-group-item d-flex align-items-center pl-0 pr-0 pb-3 pt-3"
-                                key={channel.code}
+                                key={channel.id}
                                 onClick={e => {
                                     handleSelectChannel(channel);
                                 }}>

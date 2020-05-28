@@ -25,19 +25,6 @@ const FileViewerContainer = styled.div`
     .fas{
         cursor: pointer;
     }
-    
-    video.file{
-        max-height: 85%;
-        max-width: 85%;
-        margin:auto;
-        position: absolute;
-        top: 65px;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        cursor: pointer;
-        cursor: hand;
-    }
 `;
 
 const FileIcon = styled(ImageTextLink)`
@@ -65,13 +52,6 @@ const DownloadIcon = styled(SvgIconFeather)`
     margin-right: 5px;
 `;
 
-const CloseIcon = styled(SvgIconFeather)`
-    position: absolute;
-    right: 5px;
-    top: 5px;
-    cursor: pointer;
-    z-index: 1;
-`;
 const FileNameContainer = styled.p`
     display: block;
     text-align: left;
