@@ -28,19 +28,29 @@ const useLoadLastVisitedChannel = (props) => {
             );
         };
         if (selectedChannel === null) {
-            if (path === "/chat/:cid" || path === "/chat/:cid/mid") {
+            if(["/workspace/chat", "/workspace/chat/:cid", "/workspace/chat/:cid/mid"].includes(path)) {
+                history.push(`/workspace/chat/${params.cid}`);
+            } else if (path === "/chat/:cid" || path === "/chat/:cid/mid") {
                 loadSelectedChannel({channel_id: params.cid});
                 history.push(`/chat/${params.cid}`);
             } else {
                 dispatch(
                     getLastVisitedChannel({}, (err, res) => {
                         loadSelectedChannel({channel_id: res.data.code});
-                        history.push(`/chat/${res.data.code}`);
+                        if(["/workspace/chat", "/workspace/chat/:cid", "/workspace/chat/:cid/mid"].includes(path)) {
+                            history.push(`/workspace/chat/${res.data.code}`);
+                        } else {
+                            history.push(`/chat/${res.data.code}`);
+                        }
                     }),
                 );
             }
         } else {
-            history.push(`/chat/${selectedChannel.code}`);
+            if(["/workspace/chat", "/workspace/chat/:cid", "/workspace/chat/:cid/mid"].includes(path)) {
+                history.push(`/workspace/chat/${selectedChannel.code}`);
+            } else {
+                history.push(`/chat/${selectedChannel.code}`);
+            }
         }
 
         //eslint-disable-next-line react-hooks/exhaustive-deps
