@@ -9,11 +9,11 @@ const BodyMentionDiv = styled.div`
     padding: 10px;
     display: block;
     button {
-        border-radius: 10px;
+        border-radius: 8px;
         margin-right: 10px;
         padding: 5px 10px;
         font-weight: 600;
-        border: 1px solid #ddd;
+
     }
 `;
 const BodyMention = props => {
@@ -89,8 +89,8 @@ const BodyMention = props => {
                     }
                     &nbsp;{pText}</p></div>
             <div>
-                <button class="btn-primary" onClick={handleAddToPost}>{addText}</button>
-                <button class="btn-outline-primary" onClick={handleDoNothing}>Do nothing</button>
+                <button className="btn-primary" onClick={handleAddToPost}>{addText}</button>
+                <button className="btn-outline-primary" onClick={handleDoNothing}>Do nothing</button>
             </div>
         </BodyMentionDiv>
     );
