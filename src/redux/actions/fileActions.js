@@ -21,6 +21,14 @@ export function getChannelFiles(payload, callback) {
     );
 }
 
+export function addFilesToChannel(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "ADD_CHANNEL_FILES",
+        payload,
+        callback,
+    );
+}
+
 export function setViewFiles(payload, callback) {
     return SimpleDispatchActionToReducer(
         "SET_VIEW_FILES",

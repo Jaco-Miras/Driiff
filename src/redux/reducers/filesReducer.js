@@ -32,6 +32,19 @@ export default (state = INITIAL_STATE, action) => {
                 },
             };
         }
+        case "ADD_CHANNEL_FILES":
+            let channelFiles = [];
+            if(typeof state.channelFiles[action.data.channel_id] !== "undefined") {
+                channelFiles = state.channelFiles[action.data.channel_id];
+            }
+
+            return {
+                ...state,
+                channelFiles: {
+                    ...state.channelFiles,
+                    [action.data.channel_id]: channelFiles.concat(action.data.files),
+                },
+            };
         case "SET_VIEW_FILES": {
             return {
                 ...state,

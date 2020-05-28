@@ -30,6 +30,7 @@ import {
     updateChannelReducer,
     updateMemberTimestamp,
 } from "../../redux/actions/chatActions";
+import {addFilesToChannel} from "../../redux/actions/fileActions";
 import {
     addUserToReducers,
     generateUnfurl,
@@ -39,10 +40,10 @@ import {
 } from "../../redux/actions/globalActions";
 import {getOnlineUsers, getUser} from "../../redux/actions/userAction";
 import {
-    incomingWorkspaceFolder, 
-    incomingWorkspace, 
+    incomingMovedTopic,
     incomingUpdatedWorkspaceFolder,
-    incomingMovedTopic
+    incomingWorkspace,
+    incomingWorkspaceFolder,
 } from "../../redux/actions/workspaceActions";
 // import {
 //     addChatBox,
@@ -421,21 +422,21 @@ class Socket extends PureComponent {
                 this.props.incomingDeletedTopic(e);
             })
             .listen(".new-workspace", e => {
-                console.log(e, 'new workspace')
+                console.log(e, "new workspace");
                 if (e.topic !== undefined) {
-                    this.props.incomingWorkspace(e)
+                    this.props.incomingWorkspace(e);
                 } else {
                     this.props.incomingWorkspaceFolder(e.workspace);
                 }
             })
             .listen(".update-workspace", e => {
-                console.log(e, 'update workspace')
-                this.props.incomingUpdatedWorkspaceFolder(e)
+                console.log(e, "update workspace");
+                this.props.incomingUpdatedWorkspaceFolder(e);
             })
             .listen(".move-topic-workspace", e => {
-                console.log(e, 'move workspace')
-                this.props.incomingMovedTopic(e)
-            })  
+                console.log(e, "move workspace");
+                this.props.incomingMovedTopic(e);
+            })
             .notification((notification) => {
                 console.log(notification, "broadcast notification");
             });
@@ -533,8 +534,8 @@ class Socket extends PureComponent {
                 this.props.incomingUpdatedReplyAction(e.message);
             })
             .listen(".move-private-topic-workspace", e => {
-                console.log(e, 'move workspace private')
-                this.props.incomingMovedTopic(e)
+                console.log(e, "move workspace private");
+                this.props.incomingMovedTopic(e);
             })
             .listen(".new-private-topic", e => {
                 this.props.incomingCreatedTopic(e);
@@ -695,6 +696,10 @@ class Socket extends PureComponent {
                     }
 
                     this.props.incomingChatMessageFromOthers(payload);
+                    this.props.addFilesToChannelAction({
+                        channel_id: e.channel_id,
+                        files: e.files,
+                    });
 
                     //@todo together with service worker
                     //if incoming chat message is on selected channel and current url is not on chat page
@@ -796,6 +801,10 @@ class Socket extends PureComponent {
                     }
                     //this.props.markAllMessagesAsRead({channel_id: e.channel_id});
                     this.props.incomingChatMessage(payload);
+                    this.props.addFilesToChannelAction({
+                        channel_id: e.channel_id,
+                        files: e.files,
+                    });
                 }
             })
             .listen(".delete-post-channel-member", e => {
@@ -908,16 +917,16 @@ class Socket extends PureComponent {
                     quote: e.quote,
                 };
                 this.props.incomingChatMessageFromOthers(message);
-                this.props.getChannel({channel_id: e.channel_id}, (err,res) => {
-                    console.log(res)
-                    if (err) return
+                this.props.getChannel({channel_id: e.channel_id}, (err, res) => {
+                    console.log(res);
+                    if (err) return;
                     let payload = {
                         channel_id: e.channel_id,
                         members: res.data.members,
-                        title: res.data.title
-                    }
+                        title: res.data.title,
+                    };
                     this.props.updateChannelMembersTitle(payload);
-                })
+                });
                 //this.props.getChannelMembers({channel_id: e.channel_id})
                 // if (this.props.activeChatChannels.length) {
                 //     this.props.getChatChannelAction({channel_id: e.channel_id}, (err, res) => {
@@ -1292,6 +1301,7 @@ function mapDispatchToProps(dispatch) {
         markAllMessagesAsRead: bindActionCreators(markAllMessagesAsRead, dispatch),
         incomingChatMessage: bindActionCreators(incomingChatMessage, dispatch),
         incomingChatMessageFromOthers: bindActionCreators(incomingChatMessageFromOthers, dispatch),
+        addFilesToChannelAction: bindActionCreators(addFilesToChannel, dispatch),
         generateUnfurl: bindActionCreators(generateUnfurl, dispatch),
         generateUnfurlReducer: bindActionCreators(generateUnfurlReducer, dispatch),
         updateChannelReducer: bindActionCreators(updateChannelReducer, dispatch),
@@ -1340,7 +1350,6 @@ function mapDispatchToProps(dispatch) {
         // incomingUpdatedChatMessageAction: bindActionCreators(incomingUpdatedChatMessage, dispatch),
         // incomingDeletedChatMessageAction: bindActionCreators(incomingDeletedChatMessage, dispatch),
         // incomingChatMessageReaction: bindActionCreators(incomingChatMessageReaction, dispatch),
-        // incomingChatMessageFromOthers: bindActionCreators(incomingChatMessageFromOthers, dispatch),
         // incomingVideoChatCallAction: bindActionCreators(incomingVideoChatCall, dispatch),
         // //getAllTotalUnreadChatV2Action: bindActionCreators(getAllTotalUnreadChatV2, dispatch),
         // addChatBoxAction: bindActionCreators(addChatBox, dispatch),
