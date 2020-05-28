@@ -162,7 +162,11 @@ export default (state = INITIAL_STATE, action) => {
                                 ...newWorkspaces[state.activeTopic.workspace_id].topics,
                                 [state.activeTopic.id]: {
                                     ...state.activeTopic,
-                                    selected: false
+                                    selected: false,
+                                    channel: {
+                                        ...state.activeTopic.channel,
+                                        channel_loaded: true,
+                                    }
                                 }
                             },
                             selected: false
@@ -174,7 +178,8 @@ export default (state = INITIAL_STATE, action) => {
                         ...newWorkspaces,
                         [state.activeTopic.id]: {
                             ...newWorkspaces[state.activeTopic.id],
-                            selected: false
+                            selected: false,
+                            channel_loaded: true,
                         }
                     }
                 }
@@ -188,7 +193,11 @@ export default (state = INITIAL_STATE, action) => {
                             ...newWorkspaces[action.data.workspace_id].topics,
                             [action.data.id]: {
                                 ...action.data,
-                                selected: true
+                                selected: true,
+                                channel: {
+                                    ...action.data.channel,
+                                    channel_loaded: true,
+                                }
                             }
                         },
                         selected: true
@@ -199,7 +208,8 @@ export default (state = INITIAL_STATE, action) => {
                     ...newWorkspaces,
                     [action.data.id]: {
                         ...newWorkspaces[action.data.id],
-                        selected: true
+                        selected: true,
+                        channel_loaded: true,
                     }
                 }
             }

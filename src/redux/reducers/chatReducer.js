@@ -14,7 +14,8 @@ const INITIAL_STATE = {
     editChatMessage: null,
     sendButtonClicked: false,
     chatQuotes: {},
-    channelsLoaded: false
+    channelsLoaded: false,
+    lastVisitedChannel: null
 };
 
 export default function (state = INITIAL_STATE, action) {
@@ -786,6 +787,20 @@ export default function (state = INITIAL_STATE, action) {
                     }
                     : state.selectedChannel,
             };
+        }
+        case "SAVE_LAST_VISITED_CHANNEL": {
+            console.log(action.data)
+            return {
+                ...state,
+                lastVisitedChannel: action.data
+            }
+        }
+        case "RESTORE_LAST_VISITED_CHANNEL": {
+            let channel = {...state.channels[action.data.channel_id]};
+            return {
+                ...state,
+                selectedChannel: channel
+            }
         }
         default:
             return state;

@@ -3,9 +3,10 @@ import styled from "styled-components";
 import {withRouter} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import {SvgIconFeather} from "../../common";
-import {getWorkspaces, getWorkspaceTopics, setActiveTopic, setActiveTab} from "../../../redux/actions/workspaceActions";
+import {getWorkspaces, setActiveTopic, setActiveTab} from "../../../redux/actions/workspaceActions";
 import {WorkspaceList} from "../../workspace";
 import {addToModals} from "../../../redux/actions/globalActions";
+import {restoreLastVisitedChannel} from "../../../redux/actions/chatActions";
 
 const Wrapper = styled.div`
     .navigation-divider {
@@ -65,8 +66,10 @@ const WorkspaceNavigationMenuBodyPanel = (props) => {
                 let path = `/workspace/${activeTopic.is_external === 0 ? 'internal' : 'external'}/`;
                 if (activeTopic.workspace_id !== undefined) {
                     path += `${activeTopic.workspace_name}/${activeTopic.workspace_id}/${activeTopic.name}/${activeTopic.id}/dashboard`;
+                    dispatch(restoreLastVisitedChannel({channel_id: activeTopic.channel.id}));
                 } else {
                     path += `${activeTopic.name}/${activeTopic.id}/dashboard`;
+                    dispatch(restoreLastVisitedChannel({channel_id: activeTopic.topic_detail.channel.id}));
                 }
                 props.history.push(path)
             } else if (activeTopic && props.match.params.hasOwnProperty("wsid")) {

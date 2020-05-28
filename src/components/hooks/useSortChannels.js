@@ -18,7 +18,7 @@ const useSortChannels = (search, options = {}) => {
 
     };
 
-    let results = Object.values(channels)
+    let results = Object.values(channels).filter(c => c.type !== "TOPIC")
         //.concat(this.props.startNewChannels)
         .filter(channel => {
             if (typeof channel.add_user === "undefined")

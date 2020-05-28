@@ -4,6 +4,7 @@ import {useDispatch} from "react-redux";
 import styled from "styled-components";
 import TopicList from "./TopicList";
 import {setActiveTopic} from "../../redux/actions/workspaceActions";
+import {getChannel, setSelectedChannel, addToChannels} from "../../redux/actions/chatActions";
 
 const WorkspaceListWrapper = styled.li`
     cursor: pointer;
@@ -29,6 +30,22 @@ const WorkspaceList = props => {
         } else {
             dispatch(setActiveTopic(workspace));
             history.push(`/workspace/internal/${workspace.name}/${workspace.id}/dashboard`);
+            if (workspace.channel_loaded === undefined) {
+                dispatch(
+                    getChannel({channel_id: workspace.topic_detail.channel.id}, (err,res) => {
+                        if (err) return;
+                        let channel = {
+                            ...res.data,
+                            hasMore: true,
+                            skip: 0,
+                            replies: [],
+                            selected: true,
+                        }
+                        dispatch(addToChannels(channel));
+                        dispatch(setSelectedChannel(channel));
+                    })
+                );
+            }
         }
     }
 
