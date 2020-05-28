@@ -18,7 +18,7 @@ const TopicList = props => {
 
     const handleSelectTopic = () => {
         //set the selected topic
-        
+        if (topic.selected) return;
         if (topic.is_external === 1) {
 
         } else {

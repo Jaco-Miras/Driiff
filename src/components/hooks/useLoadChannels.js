@@ -7,6 +7,7 @@ const useLoadChannels = () => {
     const dispatch = useDispatch();
     //const settings  = useSelector(state => state.user.settings)
     const channels = useSelector(state => state.chat.channels);
+    const channelsLoaded = useSelector(state => state.chat.channelsLoaded);
     const [activeChannelsLoaded, setActiveChannelsLoaded] = useState(false);
     const [hiddenChannelsLoaded, setHiddenChannelsLoaded] = useState(false);
     const [archivedChannelsLoaded, setArchivedChannelsLoaded] = useState(false);
@@ -56,7 +57,7 @@ const useLoadChannels = () => {
             );
         };
 
-        if (Object.keys(channels).length === 0) {
+        if (!channelsLoaded) {
             fetchChannels(true, 20);
             fetchChannels(true, 5, "hidden");
             fetchChannels(true, 5, "archived");

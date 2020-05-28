@@ -55,7 +55,7 @@ const WorkspaceNavigationMenuBodyPanel = (props) => {
                     }
                 })
             );
-            dispatch(getWorkspaceTopics({is_external: 0}));
+            //dispatch(getWorkspaceTopics({is_external: 0}));
         } else {
             if (activeTopic && props.match.url === "/workspace/dashboard") {
                 let path = `/workspace/${activeTopic.is_external === 0 ? 'internal' : 'external'}/`;
@@ -117,7 +117,7 @@ const WorkspaceNavigationMenuBodyPanel = (props) => {
                                 </li>
                                 {
                                     Object.values(workspaces).map(ws => {
-                                        return <WorkspaceList key={ws.id} workspace={ws}/>
+                                        return <WorkspaceList key={ws.key_id} workspace={ws}/>
                                     })
                                 }
                             </ul>

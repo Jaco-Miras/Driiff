@@ -14,6 +14,7 @@ const INITIAL_STATE = {
     editChatMessage: null,
     sendButtonClicked: false,
     chatQuotes: {},
+    channelsLoaded: false
 };
 
 export default function (state = INITIAL_STATE, action) {
@@ -108,7 +109,20 @@ export default function (state = INITIAL_STATE, action) {
             return {
                 ...state,
                 channels: channels,
+                channelsLoaded: true
             };
+        }
+        case "GET_WORKSPACES_SUCCESS": {
+            //let topics = action.data.workspaces.map(ws => ws.topics).flat().filter(t => t !== undefined);
+            // let topicChannels = action.data.workspaces.map(ws => {
+            //     if (ws.type === "FOLDER") {
+            //         return ws.topics
+            //     } else if (ws.type === "WORKSPACE") {
+            //         return ws.topic_detail
+            //     }
+            // })
+            // console.log(topicChannels.flat());
+            return state;
         }
         case "UPDATE_CHANNEL_REDUCER": {
             let channel = {

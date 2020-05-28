@@ -20,7 +20,7 @@ export default (state = INITIAL_STATE, action) => {
             let workspaces = {...state.workspaces};
             action.data.workspaces.forEach(ws => {
                 let topics = {};
-                if (ws.topics.length > 0) {
+                if (ws.topics !== undefined && ws.topics.length > 0) {
                     ws.topics.forEach(t => {
                         topics[t.id] = { 
                             ...t,
@@ -141,35 +141,57 @@ export default (state = INITIAL_STATE, action) => {
         case "SET_ACTIVE_TOPIC": {
             let newWorkspaces = {...state.workspaces};
             if (state.activeTopic) {
-                newWorkspaces = {
-                    ...newWorkspaces,
-                    [state.activeTopic.workspace_id]: {
-                        ...newWorkspaces[state.activeTopic.workspace_id],
-                        topics: {
-                            ...newWorkspaces[state.activeTopic.workspace_id].topics,
-                            [state.activeTopic.id]: {
-                                ...state.activeTopic,
-                                selected: false
-                            }
-                        },
-                        selected: state.activeTopic.workspace_id === action.data.workspace_id
+                if (state.activeTopic.workspace_id !== undefined) {
+                    newWorkspaces = {
+                        ...newWorkspaces,
+                        [state.activeTopic.workspace_id]: {
+                            ...newWorkspaces[state.activeTopic.workspace_id],
+                            topics: {
+                                ...newWorkspaces[state.activeTopic.workspace_id].topics,
+                                [state.activeTopic.id]: {
+                                    ...state.activeTopic,
+                                    selected: false
+                                }
+                            },
+                            selected: false
+                        }
+                    }
+                } else {
+                    //last active is direct workspace
+                    newWorkspaces = {
+                        ...newWorkspaces,
+                        [state.activeTopic.id]: {
+                            ...newWorkspaces[state.activeTopic.id],
+                            selected: false
+                        }
                     }
                 }
             }
-            newWorkspaces = {
-                ...newWorkspaces,
-                [action.data.workspace_id]: {
-                    ...newWorkspaces[action.data.workspace_id],
-                    topics: {
-                        ...newWorkspaces[action.data.workspace_id].topics,
-                        [action.data.id]: {
-                            ...action.data,
-                            selected: true
-                        }
-                    },
-                    selected: true
+            if (action.data.workspace_id !== undefined) {
+                newWorkspaces = {
+                    ...newWorkspaces,
+                    [action.data.workspace_id]: {
+                        ...newWorkspaces[action.data.workspace_id],
+                        topics: {
+                            ...newWorkspaces[action.data.workspace_id].topics,
+                            [action.data.id]: {
+                                ...action.data,
+                                selected: true
+                            }
+                        },
+                        selected: true
+                    }
+                }
+            } else {
+                newWorkspaces = {
+                    ...newWorkspaces,
+                    [action.data.id]: {
+                        ...newWorkspaces[action.data.id],
+                        selected: true
+                    }
                 }
             }
+            
             return {
                 ...state,
                 workspaces: newWorkspaces,
