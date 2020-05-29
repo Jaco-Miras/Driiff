@@ -7,17 +7,18 @@ import {clearModal} from "../../redux/actions/globalActions";
 import {SvgIconFeather} from "../common";
 import SearchForm from "../forms/SearchForm";
 import ChannelIcon from "../list/chat/ChannelIcon";
+import {ModalHeaderSection} from "./index";
 
 const IconButton = styled(SvgIconFeather)`
     cursor: pointer;
     cursor: hand;
     border: 1px solid #afb8bd;
     height: 38px;
-    margin: -1px 5px;
+    margin: -1px 8px;
     width: 40px;
     padding: 10px;
     border-radius: 8px;
-    
+
     // &.feather-send {
     //     border: 1px solid #7a1b8b;
     //     background-color: #7a1b8b;
@@ -149,9 +150,9 @@ const ChatForwardModal = props => {
 
     return (
         <Modal isOpen={modal} toggle={toggle} centered className='chat-forward-modal'>
-            <ModalHeader toggle={toggle} className='bg-primary'>
+            <ModalHeaderSection toggle={toggle}>
                 Transfer the message to
-            </ModalHeader>
+            </ModalHeaderSection>
             <PopUpBody>
                 <Search onChange={handleInputChange} onClick={handleSearch} placeholder="Channel search"/>
                 <ChannelsContainer>

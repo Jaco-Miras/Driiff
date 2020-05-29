@@ -1,20 +1,31 @@
 import React, {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {Input, InputGroup, Label, Modal, ModalBody, ModalHeader} from "reactstrap";
+import {Input, InputGroup, Label, Modal, ModalBody} from "reactstrap";
 import styled from "styled-components";
 import {clearModal} from "../../redux/actions/globalActions";
 import {createWorkspace} from "../../redux/actions/workspaceActions";
-import {DescriptionInput} from "../forms";
+import {CheckBox, DescriptionInput, InputFeedback} from "../forms";
+import {ModalHeaderSection} from "./index";
 
 const WrapperDiv = styled(InputGroup)`
     display: flex;
     align-items: center;
     margin: 20px 0;
+    
+    > .form-control:not(:first-child) {
+        border-radius: 5px;
+    }
+    
     label {
         white-space: nowrap;
         margin: 0 20px 0 0;
         min-width: 109px;
     }
+    
+    .input-feedback {
+        margin-left: 130px;
+    }
+    
     button {
         margin-left: auto;
     }
@@ -24,14 +35,6 @@ const WrapperDiv = styled(InputGroup)`
     .react-select__multi-value__label {
         align-self: center;
     }
-`;
-
-const StyledModalHeader = styled(ModalHeader)`
-    color: #505050;  
-    font-size: 17px;
-    font-weight: 600;
-    letter-spacing: 0;
-    line-height: 26px;
 `;
 
 const ActiveTabName = styled.span`
@@ -57,17 +60,23 @@ const CreateWorkspaceFolderModal = props => {
 
     const {type, mode} = props.data;
 
-    //const reactQuillRef = useRef();
     const dispatch = useDispatch();
-    const [modal, setModal] = useState(true);
+    const workspaces = useSelector(state => state.workspaces.workspaces);
     const channel = useSelector(state => state.chat.selectedChannel);
     const activeTab = useSelector(state => state.workspaces.activeTab);
+    const [modal, setModal] = useState(true);
     const [activeTabName, setActiveTabName] = useState("Internal");
     const [form, setForm] = useState({
         is_private: false,
         name: "",
         description: "",
         textOnly: "",
+    });
+    const [valid, setValid] = useState({
+        name: null,
+    });
+    const [feedback, setFeedback] = useState({
+        name: "",
     });
 
     const toggle = () => {
@@ -86,10 +95,40 @@ const CreateWorkspaceFolderModal = props => {
     };
 
     const handleNameChange = e => {
+        if (valid.name !== null) {
+            setValid({
+                ...form,
+                name: null,
+            });
+        }
         setForm({
             ...form,
             name: e.target.value.trim(),
         });
+    };
+
+    const handleNameBlur = e => {
+        setValid({
+            ...valid,
+            name: form.name !== "",
+        });
+
+        if (form.name === "") {
+            setFeedback({
+                ...feedback,
+                name: "Please provide a folder name.",
+            });
+        } else if (Object.values(workspaces).filter(w => w.name.toLowerCase() === form.name.toLowerCase()).length) {
+            setFeedback({
+                ...feedback,
+                name: "Folder name already exists.",
+            });
+        } else {
+            setFeedback({
+                ...feedback,
+                name: "",
+            });
+        }
     };
 
     const handleConfirm = () => {
@@ -124,33 +163,34 @@ const CreateWorkspaceFolderModal = props => {
     return (
 
         <Modal isOpen={modal} toggle={toggle} centered size={"md"}>
-            <StyledModalHeader toggle={toggle} className={"workspace-folder-header"}>
+            <ModalHeaderSection toggle={toggle} className={"workspace-folder-header"}>
                 {mode === "edit" ? "Edit folder" : "Create new folder"}
                 <ActiveTabName className="intern-extern">{activeTabName}</ActiveTabName>
-            </StyledModalHeader>
+            </ModalHeaderSection>
             <ModalBody>
                 <WrapperDiv>
                     <Label for="folder">
                         Folder name</Label>
-                    <Input style={{borderRadius: "5px"}}
-                           defaultValue={mode === "edit" ? channel.title : ""}
-                           onChange={handleNameChange}
+                    <Input
+                        defaultValue={mode === "edit" ? channel.title : ""}
+                        onChange={handleNameChange}
+                        onBlur={handleNameBlur}
+                        valid={valid.name}
+                        invalid={valid.name !== null && !valid.name}
+                        autoFocus
                     />
+                    <InputFeedback valid={valid.name}>{feedback.name}</InputFeedback>
                 </WrapperDiv>
                 <DescriptionInput
                     onChange={handleQuillChange}
                 />
                 <WrapperDiv style={{marginTop: "40px"}}>
                     <Label></Label>
-                    <div className="custom-control custom-checkbox">
-                        <input name="is_private" type="checkbox" className="custom-control-input"
-                               checked={form.is_private}/>
-                        <label className="custom-control-label" data-name="is_private" onClick={toggleCheck}>Lock
-                            workspace</label>
-                    </div>
+                    <CheckBox name="is_private" checked={form.is_private} onClick={toggleCheck}>Lock
+                        workspace</CheckBox>
                     <button
                         className="btn btn-primary"
-                        disabled={form.name === ""}
+                        disabled={valid.name}
                         onClick={handleConfirm}>
                         {mode === "edit" ? "Update workspace" : "Create workspace"}
                     </button>

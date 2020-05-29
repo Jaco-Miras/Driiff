@@ -2,6 +2,7 @@ import React, {useState} from "react";
 import {useDispatch} from "react-redux";
 import {Button, Modal, ModalBody, ModalFooter, ModalHeader} from "reactstrap";
 import {clearModal} from "../../redux/actions/globalActions";
+import {ModalHeaderSection} from "./index";
 
 const ConfirmationModal = props => {
 
@@ -23,7 +24,7 @@ const ConfirmationModal = props => {
 
     return (
         <Modal isOpen={modal} toggle={toggle} centered>
-            <ModalHeader toggle={toggle}>{headerText}</ModalHeader>
+            <ModalHeaderSection toggle={toggle}>{headerText}</ModalHeaderSection>
             <ModalBody>
                 {bodyText}
             </ModalBody>

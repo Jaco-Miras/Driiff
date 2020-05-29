@@ -12,12 +12,13 @@ const SeenIndicatorContainer = styled.div`
     font-style: italic;
     z-index: 2;
     font-size: 11px;
-    cursor: pointer;
     position: absolute;
     bottom: -18px;
     white-space: nowrap;
     ${props => props.isAuthor ? "right: 0px" : "left: 0px"};
-
+    span {
+        cursor: pointer;
+    }
 `;
 const StyledUserListPopUp = styled(UserListPopUp)`
     position: absolute;
@@ -25,14 +26,14 @@ const StyledUserListPopUp = styled(UserListPopUp)`
     max-width: 250px;
     left: ${props => props.isAuthor ? "unset" : "5px"};
     right: ${props => props.isAuthor ? "5px" : "unset"};
-    
+    z-index: 999;
     ul {
         max-height: 250px;
-        
+
         li {
             display: block;
             text-align: left;
-            
+
             > span {
                 margin-left: 10px;
             }

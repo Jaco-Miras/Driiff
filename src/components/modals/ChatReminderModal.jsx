@@ -9,6 +9,7 @@ import {formatHoursAMPM, formatMonthsOrdinalDay, formatWeeekDayName} from "../..
 import {setChatReminder} from "../../redux/actions/chatActions";
 import {clearModal} from "../../redux/actions/globalActions";
 import RadioInput from "../forms/RadioInput";
+import {ModalHeaderSection} from "./index";
 
 
 const InputContainer = styled.div`
@@ -117,9 +118,9 @@ const ChatReminderModal = props => {
 
     return (
         <Modal isOpen={modal} toggle={toggle} centered className='chat-forward-modal'>
-            <ModalHeader toggle={toggle} className='bg-primary'>
+            <ModalHeaderSection toggle={toggle}>
                 Chat reminder
-            </ModalHeader>
+            </ModalHeaderSection>
             <ModalBody>
                 <InputContainer>
                     <RadioInput
