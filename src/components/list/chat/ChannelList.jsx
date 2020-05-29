@@ -49,12 +49,13 @@ const Wrapper = styled.span`
     .chat-timestamp {
         position: absolute;
         right: 0px;
+        white-space: nowrap;
         svg {
             margin-left: 4px;
         }
         .badge {
             position: absolute;
-            left: calc(-100% - 4px);
+            right: calc(100% + 14px)
         }
     }
     .feather-more-horizontal {

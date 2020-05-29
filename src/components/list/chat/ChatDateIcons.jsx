@@ -13,7 +13,7 @@ const ActionContainer = styled.div`
     flex-direction: row-reverse;
 `;
 const Icon = styled(SvgIconFeather)`
-    filter: brightness(0) saturate(100%) invert(43%) sepia(19%) saturate(0%) hue-rotate(214deg) brightness(87%) contrast(86%);      
+    filter: brightness(0) saturate(100%) invert(43%) sepia(19%) saturate(0%) hue-rotate(214deg) brightness(87%) contrast(86%);
     position: relative;
     top: -3px;
     right: 0;
@@ -23,17 +23,17 @@ const Icon = styled(SvgIconFeather)`
 
 const Badge = styled.span`
     color: #fff !important;
-        
+
     &.unread {
         color: #7a1b8b !important;
-    }    
+    }
 `;
 
 const ChatDateIcons = props => {
     const {channel, optionsVisible} = props;
     const handleNotificationBadges = () => {
         if (channel.is_read === 0) {
-            return <Badge className={`badge badge-primary badge-pill ml-auto unread`}>0</Badge>;
+            // return <Badge className={`badge badge-primary badge-pill ml-auto unread`}>0</Badge>;
         } else {
             if (channel.total_unread > 0) {
                 return <Badge className="badge badge-primary badge-pill ml-auto">{channel.total_unread}</Badge>;

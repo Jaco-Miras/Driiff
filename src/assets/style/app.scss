@@ -1,192 +1,32 @@
+@import "../fonts/fonts.scss";
+
 $blue: #7A1B8B;
 $purple: $blue;
 $color-primary: #7a1b8b;
 $color-secondary: #8C3B9B;
 
 @import "~bootstrap/scss/bootstrap.scss";
+
+
+
 .btn-outline-primary {
     border-color: $purple;
 }
 
-
-@font-face {
-    font-family: Inter;
-    font-style: normal;
-    font-weight: 100;
-    font-display: swap;
-    src: url(../fonts/inter-ui/Inter-Thin-BETA.woff2) format("woff2"), url(../fonts/inter-ui/Inter-Thin-BETA.woff) format("woff");
+* {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    // -moz-osx-font-smoothing: grayscale;
+    // -webkit-font-smoothing: antialiased;
+}
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    position: relative;
+    background: #f1f2f7;
+    font-size: 0.835rem;
+    color: #505050;
 }
 
-@font-face {
-    font-family: Inter;
-    font-style: italic;
-    font-weight: 100;
-    font-display: swap;
-    src: url(../fonts/inter-ui/Inter-ThinItalic-BETA.woff2) format("woff2"), url(../fonts/inter-ui/Inter-ThinItalic-BETA.woff) format("woff");
-}
 
-@font-face {
-    font-family: Inter;
-    font-style: normal;
-    font-weight: 200;
-    font-display: swap;
-    src: url(../fonts/inter-ui/Inter-ExtraLight-BETA.woff2) format("woff2"), url(../fonts/inter-ui/Inter-ExtraLight-BETA.woff) format("woff");
-}
-
-@font-face {
-    font-family: Inter;
-    font-style: italic;
-    font-weight: 200;
-    font-display: swap;
-    src: url(../fonts/inter-ui/Inter-ExtraLightItalic-BETA.woff2) format("woff2"), url(../fonts/inter-ui/Inter-ExtraLightItalic-BETA.woff) format("woff");
-}
-
-@font-face {
-    font-family: Inter;
-    font-style: normal;
-    font-weight: 300;
-    font-display: swap;
-    src: url(../fonts/inter-ui/Inter-Light-BETA.woff2) format("woff2"), url(../fonts/inter-ui/Inter-Light-BETA.woff) format("woff");
-}
-
-@font-face {
-    font-family: Inter;
-    font-style: italic;
-    font-weight: 300;
-    font-display: swap;
-    src: url(../fonts/inter-ui/Inter-LightItalic-BETA.woff2) format("woff2"), url(../fonts/inter-ui/Inter-LightItalic-BETA.woff) format("woff");
-}
-
-@font-face {
-    font-family: Inter;
-    font-style: normal;
-    font-weight: 400;
-    font-display: swap;
-    src: url(../fonts/inter-ui/Inter-Regular.woff2) format("woff2"), url(../fonts/inter-ui/Inter-Regular.woff) format("woff");
-}
-
-@font-face {
-    font-family: Inter;
-    font-style: italic;
-    font-weight: 400;
-    font-display: swap;
-    src: url(../fonts/inter-ui/Inter-Italic.woff2) format("woff2"), url(../fonts/inter-ui/Inter-Italic.woff) format("woff");
-}
-
-@font-face {
-    font-family: Inter;
-    font-style: normal;
-    font-weight: 500;
-    font-display: swap;
-    src: url(../fonts/inter-ui/Inter-Medium.woff2) format("woff2"), url(../fonts/inter-ui/Inter-Medium.woff) format("woff");
-}
-
-@font-face {
-    font-family: Inter;
-    font-style: italic;
-    font-weight: 500;
-    font-display: swap;
-    src: url(../fonts/inter-ui/Inter-MediumItalic.woff2) format("woff2"), url(../fonts/inter-ui/Inter-MediumItalic.woff) format("woff");
-}
-
-@font-face {
-    font-family: Inter;
-    font-style: normal;
-    font-weight: 600;
-    font-display: swap;
-    src: url(../fonts/inter-ui/Inter-SemiBold.woff2) format("woff2"), url(../fonts/inter-ui/Inter-SemiBold.woff) format("woff");
-}
-
-@font-face {
-    font-family: Inter;
-    font-style: italic;
-    font-weight: 600;
-    font-display: swap;
-    src: url(../fonts/inter-ui/Inter-SemiBoldItalic.woff2) format("woff2"), url(../fonts/inter-ui/Inter-SemiBoldItalic.woff) format("woff");
-}
-
-@font-face {
-    font-family: Inter;
-    font-style: normal;
-    font-weight: 700;
-    font-display: swap;
-    src: url(../fonts/inter-ui/Inter-Bold.woff2) format("woff2"), url(../fonts/inter-ui/Inter-Bold.woff) format("woff");
-}
-
-@font-face {
-    font-family: Inter;
-    font-style: italic;
-    font-weight: 700;
-    font-display: swap;
-    src: url(../fonts/inter-ui/Inter-BoldItalic.woff2) format("woff2"), url(../fonts/inter-ui/Inter-BoldItalic.woff) format("woff");
-}
-
-@font-face {
-    font-family: Inter;
-    font-style: normal;
-    font-weight: 800;
-    font-display: swap;
-    src: url(../fonts/inter-ui/Inter-ExtraBold.woff2) format("woff2"), url(../fonts/inter-ui/Inter-ExtraBold.woff) format("woff");
-}
-
-@font-face {
-    font-family: Inter;
-    font-style: italic;
-    font-weight: 800;
-    font-display: swap;
-    src: url(../fonts/inter-ui/Inter-ExtraBoldItalic.woff2) format("woff2"), url(../fonts/inter-ui/Inter-ExtraBoldItalic.woff) format("woff");
-}
-
-@font-face {
-    font-family: Inter;
-    font-style: normal;
-    font-weight: 900;
-    font-display: swap;
-    src: url(../fonts/inter-ui/Inter-Black.woff2) format("woff2"), url(../fonts/inter-ui/Inter-Black.woff) format("woff");
-}
-
-@font-face {
-    font-family: Inter;
-    font-style: italic;
-    font-weight: 900;
-    font-display: swap;
-    src: url(../fonts/inter-ui/Inter-BlackItalic.woff2) format("woff2"), url(../fonts/inter-ui/Inter-BlackItalic.woff) format("woff");
-}
-
-@font-face {
-    font-family: "Inter var";
-    font-weight: 100 900;
-    font-display: swap;
-    font-style: normal;
-    font-named-instance: Regular;
-    src: url(../fonts/inter-ui/Inter-upright.var.woff2) format("woff2");
-}
-
-@font-face {
-    font-family: "Inter var";
-    font-weight: 100 900;
-    font-display: swap;
-    font-style: italic;
-    font-named-instance: Italic;
-    src: url(../fonts/inter-ui/Inter-italic.var.woff2) format("woff2");
-}
-
-@font-face {
-    font-family: "Inter var experimental";
-    font-weight: 100 900;
-    font-display: swap;
-    font-style: oblique 0deg 10deg;
-    src: url(../fonts/inter-ui/Inter.var.woff2) format("woff2");
-}
-
-@font-face {
-    font-family: themify;
-    src: url(../icons/themify/fonts/themify.eot?-fvbane);
-    src: url(../icons/themify/fonts/themify.eot?#iefix-fvbane) format("embedded-opentype"), url(../icons/themify/fonts/themify.woff?-fvbane) format("woff"), url(../icons/themify/fonts/themify.ttf?-fvbane) format("truetype"),
-    url(../icons/themify/fonts/themify.svg?-fvbane#themify) format("svg");
-    font-weight: 400;
-    font-style: normal;
-}
 
 [class*=" ti-"],
 [class^="ti-"] {
@@ -10469,26 +10309,19 @@ textarea {
     display: none !important;
 }
 
-body {
-    font-family: Inter, sans-serif;
-    position: relative;
-    background: #f1f2f7;
-    font-size: 0.835rem;
-    color: #505050;
-}
 
 body.no-scroll {
     overflow: hidden;
 }
 
-ul:not(.list-unstyled) {
-    margin: 0;
-    padding: 0;
-}
+// ul:not(.list-unstyled) {
+//     margin: 0;
+//     padding: 0;
+// }
 
-ul:not(.list-unstyled) li {
-    list-style-type: none;
-}
+// ul:not(.list-unstyled) li {
+//     list-style-type: none;
+// }
 
 .chat-block .chat-sidebar .chat-sidebar-content .list-group ul:not(.list-unstyled) li .list-group-item.active .icon,
 .header form .input-group .input-group-append ul:not(.list-unstyled) li button.btn .icon,
@@ -11817,7 +11650,7 @@ a.btn:hover[href="#previous"] {
 .btn.btn-outline-light:not(:disabled):not(.disabled):active,
 .btn.btn-outline-light:not(:disabled):not(.disabled):focus,
 .btn.btn-outline-light:not(:disabled):not(.disabled):hover {
-    color: #212529;
+    color: #ffffff;
 }
 
 .btn.btn-dark {
@@ -14163,9 +13996,11 @@ body.form-membership .form-wrapper hr {
     -moz-box-direction: normal;
     -ms-flex-direction: column;
     flex-direction: column;
-    padding-right: 1.5rem;
 }
 
+.chat-block .chat-sidebar .chat-sidebar-header {
+    padding-right: 24px;
+}
 .chat-block .chat-sidebar .chat-sidebar-header form {
     margin: 1.5rem 0;
 }
@@ -15221,6 +15056,7 @@ button.toast-close-button {
     border: none;
     padding: 0;
 }
+
 
 #compose .ql-editor,
 .app-block .ql-editor {
@@ -18392,6 +18228,11 @@ small {
     -webkit-box-shadow: 0 3px 10px rgba(62, 85, 120, 0.045);
     -moz-box-shadow: 0 3px 10px rgba(62, 85, 120, 0.045);
     box-shadow: 0 3px 10px rgba(62, 85, 120, 0.045);
+    ul {
+        margin: 0;
+        padding: 0;
+        list-style-type: none;
+    }
 }
 
 .navigation.sticky {

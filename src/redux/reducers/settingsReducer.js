@@ -22,7 +22,7 @@ const INITIAL_STATE = {
                     chat_bubble_quote_background_color: "#8C3B9B",
                     chat_bubble_quote_text_color: "#ffffffe6",
                     chat_bubble_quote_link_color: "#FF4445",
-                    chat_bubble_quote_hover_color: "#0056b3",
+                    chat_bubble_quote_hover_color: "#7a1b8b",
                 },
                 others: {
                     chat_bubble_focus_border_color: "rgba(151,44,134,0.25)",

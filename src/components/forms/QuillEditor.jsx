@@ -10,6 +10,7 @@ const QuillEditor = forwardRef((props, ref) => {
             theme="snow"
             {...props}
             ref={ref}
+            placeholder="Schrijf een bericht..."
         />
     );
 });

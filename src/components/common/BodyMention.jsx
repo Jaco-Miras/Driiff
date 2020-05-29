@@ -8,12 +8,12 @@ const BodyMentionDiv = styled.div`
     background: #F0F0F0;
     padding: 10px;
     display: block;
+    .mention-name {
+        color: #7a1b8b;
+    }
     button {
-        border-radius: 8px;
+        ${'' /* border-radius: 8px; */}
         margin-right: 10px;
-        padding: 5px 10px;
-        font-weight: 600;
-
     }
 `;
 const BodyMention = props => {
@@ -89,8 +89,8 @@ const BodyMention = props => {
                     }
                     &nbsp;{pText}</p></div>
             <div>
-                <button className="btn-primary" onClick={handleAddToPost}>{addText}</button>
-                <button className="btn-outline-primary" onClick={handleDoNothing}>Do nothing</button>
+                <button className="btn btn-primary" onClick={handleAddToPost}>{addText}</button>
+                <button className="btn btn-outline-primary" onClick={handleDoNothing}>Do nothing</button>
             </div>
         </BodyMentionDiv>
     );

@@ -30,7 +30,7 @@ const StyledQuillEditor = styled(QuillEditor)`
     // flex: 1 0 0;
     // width: 1%;
     height: 80px;
-    
+
     &.description-input {
         max-height: 130px;
         overflow: auto;
@@ -60,15 +60,23 @@ const IconButton = styled(SvgIconFeather)`
     cursor: hand;
     border: 1px solid #afb8bd;
     height: 1.5rem;
-    margin: -1px 5px;
+    margin: -1px 8px;
     width: 1.5rem;
     padding: 5px;
     border-radius: 8px;
-
+    transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    &:hover {
+        background: #afb8bd;
+        color: #ffffff;
+    }
     &.feather-send {
         border: 1px solid #7a1b8b;
         background-color: #7a1b8b;
         color: #fff;
+        transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+        &:hover {
+            background-color: #8C3B9B;
+        }
     }
 `;
 
@@ -92,7 +100,7 @@ const PickerContainer = styled(PickerEmoji)`
 const DescriptionInput = props => {
 
     const {onChange, showFileButton = false, onOpenFileDialog} = props;
-    
+
     const reactQuillRef = useRef();
     const pickerRef = useRef();
 

@@ -14,11 +14,11 @@ const IconButton = styled(SvgIconFeather)`
     cursor: hand;
     border: 1px solid #afb8bd;
     height: 38px;
-    margin: -1px 5px;
+    margin: -1px 8px;
     width: 40px;
     padding: 10px;
     border-radius: 8px;
-    
+
     // &.feather-send {
     //     border: 1px solid #7a1b8b;
     //     background-color: #7a1b8b;
