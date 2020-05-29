@@ -4,21 +4,28 @@ import {Input, InputGroup, Label, Modal, ModalBody} from "reactstrap";
 import styled from "styled-components";
 import {clearModal} from "../../redux/actions/globalActions";
 import {createWorkspace} from "../../redux/actions/workspaceActions";
-import {DescriptionInput} from "../forms";
+import {CheckBox, DescriptionInput, InputFeedback} from "../forms";
 import {ModalHeaderSection} from "./index";
 
 const WrapperDiv = styled(InputGroup)`
     display: flex;
     align-items: center;
     margin: 20px 0;
+    
     > .form-control:not(:first-child) {
         border-radius: 5px;
     }
+    
     label {
         white-space: nowrap;
         margin: 0 20px 0 0;
         min-width: 109px;
     }
+    
+    .input-feedback {
+        margin-left: 130px;
+    }
+    
     button {
         margin-left: auto;
     }
@@ -54,7 +61,7 @@ const CreateWorkspaceFolderModal = props => {
     const {type, mode} = props.data;
 
     const dispatch = useDispatch();
-    const workspaces  = useSelector(state => state.workspaces.workspaces);
+    const workspaces = useSelector(state => state.workspaces.workspaces);
     const channel = useSelector(state => state.chat.selectedChannel);
     const activeTab = useSelector(state => state.workspaces.activeTab);
     const [modal, setModal] = useState(true);
@@ -66,6 +73,9 @@ const CreateWorkspaceFolderModal = props => {
         textOnly: "",
     });
     const [valid, setValid] = useState({
+        name: null,
+    });
+    const [feedback, setFeedback] = useState({
         name: "",
     });
 
@@ -85,6 +95,12 @@ const CreateWorkspaceFolderModal = props => {
     };
 
     const handleNameChange = e => {
+        if (valid.name !== null) {
+            setValid({
+                ...form,
+                name: null,
+            });
+        }
         setForm({
             ...form,
             name: e.target.value.trim(),
@@ -92,8 +108,28 @@ const CreateWorkspaceFolderModal = props => {
     };
 
     const handleNameBlur = e => {
-        Object.values(workspaces).filter(w => w.name === form.name)
-    }
+        setValid({
+            ...valid,
+            name: form.name !== "",
+        });
+
+        if (form.name === "") {
+            setFeedback({
+                ...feedback,
+                name: "Please provide a folder name.",
+            });
+        } else if (Object.values(workspaces).filter(w => w.name.toLowerCase() === form.name.toLowerCase()).length) {
+            setFeedback({
+                ...feedback,
+                name: "Folder name already exists.",
+            });
+        } else {
+            setFeedback({
+                ...feedback,
+                name: "",
+            });
+        }
+    };
 
     const handleConfirm = () => {
         let payload = {
@@ -137,24 +173,24 @@ const CreateWorkspaceFolderModal = props => {
                         Folder name</Label>
                     <Input
                         defaultValue={mode === "edit" ? channel.title : ""}
-                           onChange={handleNameChange}
+                        onChange={handleNameChange}
                         onBlur={handleNameBlur}
+                        valid={valid.name}
+                        invalid={valid.name !== null && !valid.name}
+                        autoFocus
                     />
+                    <InputFeedback valid={valid.name}>{feedback.name}</InputFeedback>
                 </WrapperDiv>
                 <DescriptionInput
                     onChange={handleQuillChange}
                 />
                 <WrapperDiv style={{marginTop: "40px"}}>
                     <Label></Label>
-                    <div className="custom-control custom-checkbox">
-                        <input name="is_private" type="checkbox" className="custom-control-input"
-                               checked={form.is_private}/>
-                        <label className="custom-control-label" data-name="is_private" onClick={toggleCheck}>Lock
-                            workspace</label>
-                    </div>
+                    <CheckBox name="is_private" checked={form.is_private} onClick={toggleCheck}>Lock
+                        workspace</CheckBox>
                     <button
                         className="btn btn-primary"
-                        disabled={form.name === ""}
+                        disabled={valid.name}
                         onClick={handleConfirm}>
                         {mode === "edit" ? "Update workspace" : "Create workspace"}
                     </button>
