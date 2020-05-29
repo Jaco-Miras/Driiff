@@ -2,12 +2,12 @@ import {useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {
     addToChannels,
+    clearSelectedChannel,
     getChannel,
     getLastVisitedChannel,
     restoreLastVisitedChannel,
     saveLastVisitedChannel,
     setSelectedChannel,
-    clearSelectedChannel
 } from "../../redux/actions/chatActions";
 
 const useLoadLastVisitedChannel = (props) => {
@@ -44,7 +44,7 @@ const useLoadLastVisitedChannel = (props) => {
                 getLastVisitedChannel({}, (err, res) => {
                     loadSelectedChannel({channel_id: res.data.code});
                     history.push(`/chat/${res.data.code}`);
-                })
+                }),
             );
         } else {
             //channels already loaded then fetch the saved last visited channel

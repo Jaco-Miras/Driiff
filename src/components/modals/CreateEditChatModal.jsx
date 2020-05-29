@@ -1,12 +1,11 @@
 import lodash from "lodash";
 import React, {useEffect, useRef, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {Input, InputGroup, Label, Modal, ModalBody, ModalHeader} from "reactstrap";
+import {Input, InputGroup, Label, Modal, ModalBody} from "reactstrap";
 import styled from "styled-components";
 import {localizeDate} from "../../helpers/momentFormatJS";
 import {createNewChat, editChannelDetail, renameChannelKey, searchExistingChat} from "../../redux/actions/chatActions";
 import {clearModal} from "../../redux/actions/globalActions";
-import {SvgIconFeather} from "../common";
 import {PeopleSelect} from "../forms";
 import QuillEditor from "../forms/QuillEditor";
 import {useQuillModules} from "../hooks";
@@ -350,8 +349,7 @@ const CreateEditChatModal = props => {
             <ModalHeaderSection toggle={toggle}>{mode === "edit" ? "Edit chat" : "New group chat"}</ModalHeaderSection>
             <ModalBody>
                 <WrapperDiv>
-                    <Label for="chat">Chat
-                        title</Label>
+                    <Label for="chat">Chat title</Label>
                     <Input style={{borderRadius: "5px"}}
                            defaultValue={mode === "edit" ? channel.title : ""}
                            onChange={handleInputChange}

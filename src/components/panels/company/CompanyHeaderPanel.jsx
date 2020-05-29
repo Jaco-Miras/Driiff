@@ -57,7 +57,7 @@ const CompanyHeaderPanel = (props) => {
     const setThemeButton = (e) => {
         const body = document.body;
         body.classList.toggle("dark");
-    }
+    };
 
 
     useEffect(() => {

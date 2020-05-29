@@ -81,7 +81,7 @@ const ReplyPreview = props => {
 
             if (channel.last_reply.user) {
                 if (channel.last_reply.user && channel.last_reply.user.id === user.id) {
-                    previewText = previewText;
+                    //previewText = previewText;
                 } else {
                     previewText =
                         previewText +

@@ -58,13 +58,13 @@ export default (state = INITIAL_STATE, action) => {
                     ...state.channelFiles,
                     [action.data.channel_id]: channelFiles.filter(cf => {
                         let fileFound = false;
-                        for(let i in action.data.file_ids) {
-                            if(cf.file_id === action.data.file_ids[i]) {
+                        for (let i in action.data.file_ids) {
+                            if (cf.file_id === action.data.file_ids[i]) {
                                 fileFound = true;
                             }
                         }
                         return !fileFound;
-                    })
+                    }),
                 },
             };
         }

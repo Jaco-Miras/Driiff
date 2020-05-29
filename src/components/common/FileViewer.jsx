@@ -156,6 +156,8 @@ const FileViewer = forwardRef((props, ref) => {
                 }
             });
         }
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     let refFiles = {};

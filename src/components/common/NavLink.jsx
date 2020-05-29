@@ -3,7 +3,7 @@ import {Link, useLocation} from "react-router-dom";
 
 const NavLink = (props) => {
 
-    const {className = "", isSub = false} = props;
+    const {className = "", isSub = false, ...otherProps} = props;
     const location = useLocation();
 
     let activeClass = location.pathname === props.to ? "active" : "";
@@ -16,7 +16,7 @@ const NavLink = (props) => {
     }
 
     return (
-        <Link {...props} className={`${className} ${activeClass}`}>
+        <Link {...otherProps} className={`${className} ${activeClass}`}>
             {props.children}
         </Link>
     );

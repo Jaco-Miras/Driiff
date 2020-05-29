@@ -40,7 +40,7 @@ const WorkspacePostsPanel = (props) => {
                         <div className="app-sidebar-menu"
                              styles="overflow: hidden; outline: currentcolor none medium;" tabIndex="2">
                             <div className="list-group list-group-flush">
-                                <a href="#" className="list-group-item active d-flex align-items-center">
+                                <a href="/" className="list-group-item active d-flex align-items-center">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                          viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"
                                          stroke-linecap="round" stroke-linejoin="round"
@@ -51,7 +51,7 @@ const WorkspacePostsPanel = (props) => {
                                     </svg>
                                     All
                                 </a>
-                                <a href="#" className="list-group-item">
+                                <a href="/" className="list-group-item">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                          viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"
                                          stroke-linecap="round" stroke-linejoin="round"
@@ -66,24 +66,24 @@ const WorkspacePostsPanel = (props) => {
                                 <h6 className="mb-0">Tags</h6>
                             </div>
                             <div className="list-group list-group-flush">
-                                <a href="#" className="list-group-item d-flex align-items-center">
+                                <a href="/" className="list-group-item d-flex align-items-center">
                                     <span className="text-warning fa fa-circle mr-2"></span>
                                     Theme Support
                                     <span className="small ml-auto">5</span>
                                 </a>
-                                <a href="#" className="list-group-item d-flex align-items-center">
+                                <a href="/" className="list-group-item d-flex align-items-center">
                                     <span className="text-success fa fa-circle mr-2"></span>
                                     Freelance
                                 </a>
-                                <a href="#" className="list-group-item d-flex align-items-center">
+                                <a href="/" className="list-group-item d-flex align-items-center">
                                     <span className="text-danger fa fa-circle mr-2"></span>
                                     Social
                                 </a>
-                                <a href="#" className="list-group-item d-flex align-items-center">
+                                <a href="/" className="list-group-item d-flex align-items-center">
                                     <span className="text-info fa fa-circle mr-2"></span>
                                     Friends
                                 </a>
-                                <a href="#" className="list-group-item d-flex align-items-center">
+                                <a href="/" className="list-group-item d-flex align-items-center">
                                     <span className="text-secondary fa fa-circle mr-2"></span>
                                     Coding
                                 </a>
@@ -97,31 +97,31 @@ const WorkspacePostsPanel = (props) => {
                         <div className="action-left">
                             <ul className="list-inline">
                                 <li className="list-inline-item mb-0">
-                                    <a href="#" className="btn btn-outline-light dropdown-toggle"
+                                    <a href="/" className="btn btn-outline-light dropdown-toggle"
                                        data-toggle="dropdown">
                                         Filter
                                     </a>
                                     <div className="dropdown-menu">
-                                        <a className="dropdown-item" href="#">Favourites</a>
-                                        <a className="dropdown-item" href="#">Done</a>
-                                        <a className="dropdown-item" href="#">Deleted</a>
+                                        <a className="dropdown-item" href="/">Favourites</a>
+                                        <a className="dropdown-item" href="/">Done</a>
+                                        <a className="dropdown-item" href="/">Deleted</a>
                                     </div>
                                 </li>
                                 <li className="list-inline-item mb-0">
-                                    <a href="#" className="btn btn-outline-light dropdown-toggle"
+                                    <a href="/" className="btn btn-outline-light dropdown-toggle"
                                        data-toggle="dropdown">
                                         Sort
                                     </a>
                                     <div className="dropdown-menu">
-                                        <a className="dropdown-item" href="#">Ascending</a>
-                                        <a className="dropdown-item" href="#">Descending</a>
+                                        <a className="dropdown-item" href="/">Ascending</a>
+                                        <a className="dropdown-item" href="/">Descending</a>
                                     </div>
                                 </li>
                             </ul>
                         </div>
                         <div className="action-right">
                             <form className="d-flex mr-3">
-                                <a href="#" className="app-sidebar-menu-button btn btn-outline-light">
+                                <a href="/" className="app-sidebar-menu-button btn btn-outline-light">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                          viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"
                                          stroke-linecap="round" stroke-linejoin="round"
@@ -147,7 +147,7 @@ const WorkspacePostsPanel = (props) => {
                                 <nav aria-label="Page navigation example">
                                     <ul className="pagination">
                                         <li className="page-item">
-                                            <a className="page-link" href="#" aria-label="Previous">
+                                            <a className="page-link" href="/" aria-label="Previous">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                                      viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                                      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
@@ -157,7 +157,7 @@ const WorkspacePostsPanel = (props) => {
                                             </a>
                                         </li>
                                         <li className="page-item">
-                                            <a className="page-link" href="#" aria-label="Next">
+                                            <a className="page-link" href="/" aria-label="Next">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                                      viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                                      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
@@ -178,10 +178,11 @@ const WorkspacePostsPanel = (props) => {
                                 <PostItemPanel/>
                             </ul>
                         </div>
+
                         <div className="card app-detail">
                             <div className="card-header">
                                 <div className="app-detail-action-left">
-                                    <a className="app-detail-close-button" href="#">
+                                    <a className="app-detail-close-button" href="/">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                              viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"
                                              stroke-linecap="round" stroke-linejoin="round"
@@ -194,7 +195,7 @@ const WorkspacePostsPanel = (props) => {
                                 </div>
                                 <div className="app-detail-action-right">
                                     <div>
-                                        <a href="#" className="btn btn-success" data-toggle="tooltip" title=""
+                                        <a href="/" className="btn btn-success" data-toggle="tooltip" title=""
                                            data-original-title="2:44 AM">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                                  viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -205,7 +206,7 @@ const WorkspacePostsPanel = (props) => {
                                             Completed
                                         </a>
                                         <span data-toggle="modal" data-target="#editTaskModal">
-                                        <a href="#" className="btn btn-outline-light ml-2" title=""
+                                        <a href="/" className="btn btn-outline-light ml-2" title=""
                                            data-toggle="tooltip" data-original-title="Edit Task">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                                  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"
@@ -214,7 +215,7 @@ const WorkspacePostsPanel = (props) => {
                                                 d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
                                         </a>
                                     </span>
-                                        <a href="#" className="btn btn-outline-light ml-2" data-toggle="tooltip"
+                                        <a href="/" className="btn btn-outline-light ml-2" data-toggle="tooltip"
                                            title="" data-original-title="Delete Task">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                                  viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -262,11 +263,11 @@ const WorkspacePostsPanel = (props) => {
                                         </div>
                                         <div className="ml-auto">
                                             <span className="badge bg-warning badge-pill mr-2">Theme Support</span>
-                                            <a href="#" data-toggle="tooltip" title="" className="mr-2"
+                                            <a href="/" data-toggle="tooltip" title="" className="mr-2"
                                                data-original-title="Files">
                                                 <i className="fa fa-paperclip"></i>
                                             </a>
-                                            <a href="#" className="mr-2">
+                                            <a href="/" className="mr-2">
                                                 <i className="fa fa-star font-size-16 text-warning"></i>
                                             </a>
                                             <span className="text-muted">4:14 AM</span>
@@ -285,12 +286,13 @@ const WorkspacePostsPanel = (props) => {
                                         libero
                                         nostrum rem ut? At itaque laboriosam natus provident reprehenderit.</p>
                                 </div>
+
                                 <hr className="m-0"/>
                                 <div className="card-body">
                                     <h6 className="mb-3 font-size-11 text-uppercase">Files</h6>
                                     <ul className="list-unstyled mb-0">
                                         <li className="small">
-                                            <a href="#">
+                                            <a href="/">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                                      viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                                      stroke-width="1" stroke-linecap="round"
@@ -303,7 +305,7 @@ const WorkspacePostsPanel = (props) => {
                                             </a>
                                         </li>
                                         <li className="small">
-                                            <a href="#">
+                                            <a href="/">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                                      viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                                      stroke-width="1" stroke-linecap="round"

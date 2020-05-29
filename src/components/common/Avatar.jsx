@@ -18,7 +18,7 @@ const Wrapper = styled.div`
 `;
 
 const Image = styled.img`
-    display: ${props => props.display ? "inherit" : "none"};
+    display: ${props => props.show ? "inherit" : "none"};
 `;
 
 const Initials = styled.span`
@@ -109,7 +109,7 @@ const Avatar = forwardRef((props, ref) => {
                             <SvgIconFeather icon="users"/>
                             :
                             <Image
-                                display={isLoaded}
+                                show={isLoaded}
                                 className="rounded-circle"
                                 onLoad={handleImageLoad}
                                 onError={handleImageError}

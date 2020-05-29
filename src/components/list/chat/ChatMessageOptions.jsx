@@ -1,12 +1,6 @@
 import React, {useRef, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import styled from "styled-components";
-import crossIcon from "../../../assets/icon/close/l/active.svg";
-import convoIcon from "../../../assets/icon/conversations/r/inactive.svg";
-import pencilIcon from "../../../assets/icon/icon/edit/edit-secundary.svg";
-import forwardIcon from "../../../assets/icon/Icons_notification/Reply/l/active.svg";
-import reminderIcon from "../../../assets/icon/recent/r/secundary.svg";
-import shareIcon from "../../../assets/icon/share/r/secundary.svg";
 import moreIcon from "../../../assets/img/more-menu-icons/secundary.svg";
 import {copyTextToClipboard} from "../../../helpers/commonFunctions";
 import {getBaseUrl} from "../../../helpers/slugHelper";

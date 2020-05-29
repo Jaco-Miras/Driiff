@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import {useDispatch} from "react-redux";
-import {Button, Modal, ModalBody, ModalFooter, ModalHeader} from "reactstrap";
+import {Button, Modal, ModalBody, ModalFooter} from "reactstrap";
 import {clearModal} from "../../redux/actions/globalActions";
 import {ModalHeaderSection} from "./index";
 

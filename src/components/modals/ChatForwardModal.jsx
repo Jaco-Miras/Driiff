@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {Modal, ModalFooter, ModalHeader} from "reactstrap";
+import {Modal, ModalFooter} from "reactstrap";
 import styled from "styled-components";
 import {createChatMessage, setSelectedChannel} from "../../redux/actions/chatActions";
 import {clearModal} from "../../redux/actions/globalActions";

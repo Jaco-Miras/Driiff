@@ -83,7 +83,7 @@ const useDraft = (callback, type, text, textOnly, draftId) => {
         if (previousChannel === null && selectedChannel !== null) {
             handleLoadDraft();
         }
-    }, [selectedChannel, previousChannel]);
+    }, [selectedChannel, previousChannel, handleLoadDraft, handleSaveDraft]);
 
 };
 

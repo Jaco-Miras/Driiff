@@ -1,6 +1,6 @@
 // import {objToUrlParams} from "../../helpers/commonFunctions";
 // import {getAPIUrl} from "../../helpers/slugHelper";
-import {apiCall, apiNoTokenCall} from "./service";
+import {apiCall} from "./service";
 
 /**
  * @param {Object} payload
@@ -87,7 +87,7 @@ export function moveWorkspaceTopic(payload) {
 export function getWorkspaceTopics(payload) {
     let url = `/v2/workspace-topics?is_external=${payload.is_external}`;
     if (payload.search !== undefined) {
-        url += `&search=${payload.search}`
+        url += `&search=${payload.search}`;
     }
     return apiCall({
         method: "GET",
@@ -105,7 +105,7 @@ export function getWorkspaceTopics(payload) {
 export function getWorkspaceFiles(payload) {
     let url = `/v2/workspace-files?topic_id=${payload.topic_id}`;
     if (payload.search !== undefined) {
-        url += `&search=${payload.search}`
+        url += `&search=${payload.search}`;
     }
     return apiCall({
         method: "GET",
@@ -197,7 +197,7 @@ export function deleteWorkspaceFile(payload) {
 export function getWorkspacePosts(payload) {
     let url = `/v2/workspace?topic_id=${payload.topic_id}`;
     if (payload.search !== undefined) {
-        url += `&search=${payload.search}`
+        url += `&search=${payload.search}`;
     }
     return apiCall({
         method: "GET",

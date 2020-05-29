@@ -4,8 +4,8 @@ import styled from "styled-components";
 import {onClickSendButton} from "../../../redux/actions/chatActions";
 import {CommonPicker, SvgIconFeather} from "../../common";
 import ChatInput from "../../forms/ChatInput";
-import ChatQuote from "../../list/chat/ChatQuote";
 import {useIsMember} from "../../hooks";
+import ChatQuote from "../../list/chat/ChatQuote";
 
 const Wrapper = styled.div`
     position: relative;
@@ -106,7 +106,7 @@ const ChatFooterPanel = (props) => {
         handleSend();
     };
 
-    const isMember = useIsMember(selectedChannel && selectedChannel.members.length ? selectedChannel.members.map(m => m.id) : [])
+    const isMember = useIsMember(selectedChannel && selectedChannel.members.length ? selectedChannel.members.map(m => m.id) : []);
 
     return (
         <Wrapper className={`chat-footer border-top ${className}`}>

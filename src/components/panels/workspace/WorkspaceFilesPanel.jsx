@@ -25,7 +25,7 @@ const WorkspaceFilesPanel = (props) => {
                         <div className="app-sidebar-menu"
                              styles="overflow: hidden; outline: currentcolor none medium;" tabIndex="1">
                             <div className="list-group list-group-flush">
-                                <a href="" className="list-group-item active d-flex align-items-center">
+                                <a href="/" className="list-group-item active d-flex align-items-center">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                          viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"
                                          stroke-linecap="round" stroke-linejoin="round"
@@ -36,7 +36,7 @@ const WorkspaceFilesPanel = (props) => {
                                     All Files
                                     <span className="small ml-auto">45</span>
                                 </a>
-                                <a href="" className="list-group-item">
+                                <a href="/" className="list-group-item">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                          viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"
                                          stroke-linecap="round" stroke-linejoin="round"
@@ -47,7 +47,7 @@ const WorkspaceFilesPanel = (props) => {
                                     </svg>
                                     My Devices
                                 </a>
-                                <a href="" className="list-group-item">
+                                <a href="/" className="list-group-item">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                          viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"
                                          stroke-linecap="round" stroke-linejoin="round"
@@ -59,7 +59,7 @@ const WorkspaceFilesPanel = (props) => {
                                     </svg>
                                     Recents
                                 </a>
-                                <a href="" className="list-group-item d-flex align-items-center">
+                                <a href="/" className="list-group-item d-flex align-items-center">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                          viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"
                                          stroke-linecap="round" stroke-linejoin="round"
@@ -70,7 +70,7 @@ const WorkspaceFilesPanel = (props) => {
                                     Important
                                     <span className="small ml-auto">10</span>
                                 </a>
-                                <a href="" className="list-group-item">
+                                <a href="/" className="list-group-item">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                          viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"
                                          stroke-linecap="round" stroke-linejoin="round"
@@ -115,7 +115,7 @@ const WorkspaceFilesPanel = (props) => {
                         <div className="action-left">
                             <ul className="list-inline">
                                 <li className="list-inline-item mb-0">
-                                    <a href="#" className="btn btn-outline-light dropdown-toggle"
+                                    <a href="/" className="btn btn-outline-light dropdown-toggle"
                                        data-toggle="dropdown">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                              viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"
@@ -127,48 +127,48 @@ const WorkspaceFilesPanel = (props) => {
                                         Add
                                     </a>
                                     <div className="dropdown-menu">
-                                        <a className="dropdown-item" href="#">Folder</a>
-                                        <a className="dropdown-item" href="#">File</a>
+                                        <a className="dropdown-item" href="/">Folder</a>
+                                        <a className="dropdown-item" href="/">File</a>
                                     </div>
                                 </li>
                                 <li className="list-inline-item mb-0">
-                                    <a href="#" className="btn btn-outline-light dropdown-toggle"
+                                    <a href="/" className="btn btn-outline-light dropdown-toggle"
                                        data-toggle="dropdown">Folders</a>
                                     <div className="dropdown-menu">
-                                        <a className="dropdown-item d-flex justify-content-between" href="#">
+                                        <a className="dropdown-item d-flex justify-content-between" href="/">
                                             Video
                                             <span className="text-muted">21</span>
                                         </a>
-                                        <a className="dropdown-item d-flex justify-content-between" href="#">
+                                        <a className="dropdown-item d-flex justify-content-between" href="/">
                                             Image
                                             <span className="text-muted">5</span>
                                         </a>
-                                        <a className="dropdown-item d-flex justify-content-between" href="#">
+                                        <a className="dropdown-item d-flex justify-content-between" href="/">
                                             Audio
                                             <span className="text-muted">12</span>
                                         </a>
-                                        <a className="dropdown-item d-flex justify-content-between" href="#">
+                                        <a className="dropdown-item d-flex justify-content-between" href="/">
                                             Documents
                                             <span className="text-muted">7</span>
                                         </a>
                                     </div>
                                 </li>
                                 <li className="list-inline-item mb-0">
-                                    <a href="#" className="btn btn-outline-light dropdown-toggle"
+                                    <a href="/" className="btn btn-outline-light dropdown-toggle"
                                        data-toggle="dropdown">
                                         Order by
                                     </a>
                                     <div className="dropdown-menu">
-                                        <a className="dropdown-item" href="#">Date</a>
-                                        <a className="dropdown-item" href="#">Name</a>
-                                        <a className="dropdown-item" href="#">Size</a>
+                                        <a className="dropdown-item" href="/">Date</a>
+                                        <a className="dropdown-item" href="/">Name</a>
+                                        <a className="dropdown-item" href="/">Size</a>
                                     </div>
                                 </li>
                             </ul>
                         </div>
                         <div className="action-right">
                             <form className="d-flex mr-3">
-                                <a href="#" className="app-sidebar-menu-button btn btn-outline-light">
+                                <a href="/" className="app-sidebar-menu-button btn btn-outline-light">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                          viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"
                                          stroke-linecap="round" stroke-linejoin="round"
@@ -209,17 +209,17 @@ const WorkspaceFilesPanel = (props) => {
                                         <div className="app-file-icon">
                                             <i className="fa fa-file-pdf-o text-danger"></i>
                                             <div className="dropdown position-absolute top-0 right-0 mr-3">
-                                                <a href="#" className="font-size-14" data-toggle="dropdown">
+                                                <a href="/" className="font-size-14" data-toggle="dropdown">
                                                     <i className="fa fa-ellipsis-v"></i>
                                                 </a>
                                                 <div className="dropdown-menu dropdown-menu-right">
-                                                    <a href="#" className="dropdown-item">View Details</a>
-                                                    <a href="#" className="dropdown-item">Share</a>
-                                                    <a href="#" className="dropdown-item">Download</a>
-                                                    <a href="#" className="dropdown-item">Copy to</a>
-                                                    <a href="#" className="dropdown-item">Move to</a>
-                                                    <a href="#" className="dropdown-item">Rename</a>
-                                                    <a href="#" className="dropdown-item">Delete</a>
+                                                    <a href="/" className="dropdown-item">View Details</a>
+                                                    <a href="/" className="dropdown-item">Share</a>
+                                                    <a href="/" className="dropdown-item">Download</a>
+                                                    <a href="/" className="dropdown-item">Copy to</a>
+                                                    <a href="/" className="dropdown-item">Move to</a>
+                                                    <a href="/" className="dropdown-item">Rename</a>
+                                                    <a href="/" className="dropdown-item">Delete</a>
                                                 </div>
                                             </div>
                                         </div>
@@ -234,17 +234,17 @@ const WorkspaceFilesPanel = (props) => {
                                         <div className="app-file-icon">
                                             <i className="fa fa-file-excel-o text-success"></i>
                                             <div className="dropdown position-absolute top-0 right-0 mr-3">
-                                                <a href="#" className="font-size-14" data-toggle="dropdown">
+                                                <a href="/" className="font-size-14" data-toggle="dropdown">
                                                     <i className="fa fa-ellipsis-v"></i>
                                                 </a>
                                                 <div className="dropdown-menu dropdown-menu-right">
-                                                    <a href="#" className="dropdown-item">View Details</a>
-                                                    <a href="#" className="dropdown-item">Share</a>
-                                                    <a href="#" className="dropdown-item">Download</a>
-                                                    <a href="#" className="dropdown-item">Copy to</a>
-                                                    <a href="#" className="dropdown-item">Move to</a>
-                                                    <a href="#" className="dropdown-item">Rename</a>
-                                                    <a href="#" className="dropdown-item">Delete</a>
+                                                    <a href="/" className="dropdown-item">View Details</a>
+                                                    <a href="/" className="dropdown-item">Share</a>
+                                                    <a href="/" className="dropdown-item">Download</a>
+                                                    <a href="/" className="dropdown-item">Copy to</a>
+                                                    <a href="/" className="dropdown-item">Move to</a>
+                                                    <a href="/" className="dropdown-item">Rename</a>
+                                                    <a href="/" className="dropdown-item">Delete</a>
                                                 </div>
                                             </div>
                                         </div>
@@ -259,17 +259,17 @@ const WorkspaceFilesPanel = (props) => {
                                         <div className="app-file-icon">
                                             <i className="fa fa-file-text-o text-warning"></i>
                                             <div className="dropdown position-absolute top-0 right-0 mr-3">
-                                                <a href="#" className="font-size-14" data-toggle="dropdown">
+                                                <a href="/" className="font-size-14" data-toggle="dropdown">
                                                     <i className="fa fa-ellipsis-v"></i>
                                                 </a>
                                                 <div className="dropdown-menu dropdown-menu-right">
-                                                    <a href="#" className="dropdown-item">View Details</a>
-                                                    <a href="#" className="dropdown-item">Share</a>
-                                                    <a href="#" className="dropdown-item">Download</a>
-                                                    <a href="#" className="dropdown-item">Copy to</a>
-                                                    <a href="#" className="dropdown-item">Move to</a>
-                                                    <a href="#" className="dropdown-item">Rename</a>
-                                                    <a href="#" className="dropdown-item">Delete</a>
+                                                    <a href="/" className="dropdown-item">View Details</a>
+                                                    <a href="/" className="dropdown-item">Share</a>
+                                                    <a href="/" className="dropdown-item">Download</a>
+                                                    <a href="/" className="dropdown-item">Copy to</a>
+                                                    <a href="/" className="dropdown-item">Move to</a>
+                                                    <a href="/" className="dropdown-item">Rename</a>
+                                                    <a href="/" className="dropdown-item">Delete</a>
                                                 </div>
                                             </div>
                                         </div>
@@ -289,17 +289,17 @@ const WorkspaceFilesPanel = (props) => {
                                         <div className="app-file-icon">
                                             <i className="fa fa-file-powerpoint-o text-secondary"></i>
                                             <div className="dropdown position-absolute top-0 right-0 mr-3">
-                                                <a href="#" className="font-size-14" data-toggle="dropdown">
+                                                <a href="/" className="font-size-14" data-toggle="dropdown">
                                                     <i className="fa fa-ellipsis-v"></i>
                                                 </a>
                                                 <div className="dropdown-menu dropdown-menu-right">
-                                                    <a href="#" className="dropdown-item">View Details</a>
-                                                    <a href="#" className="dropdown-item">Share</a>
-                                                    <a href="#" className="dropdown-item">Download</a>
-                                                    <a href="#" className="dropdown-item">Copy to</a>
-                                                    <a href="#" className="dropdown-item">Move to</a>
-                                                    <a href="#" className="dropdown-item">Rename</a>
-                                                    <a href="#" className="dropdown-item">Delete</a>
+                                                    <a href="/" className="dropdown-item">View Details</a>
+                                                    <a href="/" className="dropdown-item">Share</a>
+                                                    <a href="/" className="dropdown-item">Download</a>
+                                                    <a href="/" className="dropdown-item">Copy to</a>
+                                                    <a href="/" className="dropdown-item">Move to</a>
+                                                    <a href="/" className="dropdown-item">Rename</a>
+                                                    <a href="/" className="dropdown-item">Delete</a>
                                                 </div>
                                             </div>
                                         </div>
@@ -314,17 +314,17 @@ const WorkspaceFilesPanel = (props) => {
                                         <div className="app-file-icon">
                                             <i className="fa fa-file-excel-o text-success"></i>
                                             <div className="dropdown position-absolute top-0 right-0 mr-3">
-                                                <a href="#" className="font-size-14" data-toggle="dropdown">
+                                                <a href="/" className="font-size-14" data-toggle="dropdown">
                                                     <i className="fa fa-ellipsis-v"></i>
                                                 </a>
                                                 <div className="dropdown-menu dropdown-menu-right">
-                                                    <a href="#" className="dropdown-item">View Details</a>
-                                                    <a href="#" className="dropdown-item">Share</a>
-                                                    <a href="#" className="dropdown-item">Download</a>
-                                                    <a href="#" className="dropdown-item">Copy to</a>
-                                                    <a href="#" className="dropdown-item">Move to</a>
-                                                    <a href="#" className="dropdown-item">Rename</a>
-                                                    <a href="#" className="dropdown-item">Delete</a>
+                                                    <a href="/" className="dropdown-item">View Details</a>
+                                                    <a href="/" className="dropdown-item">Share</a>
+                                                    <a href="/" className="dropdown-item">Download</a>
+                                                    <a href="/" className="dropdown-item">Copy to</a>
+                                                    <a href="/" className="dropdown-item">Move to</a>
+                                                    <a href="/" className="dropdown-item">Rename</a>
+                                                    <a href="/" className="dropdown-item">Delete</a>
                                                 </div>
                                             </div>
                                         </div>
@@ -339,17 +339,17 @@ const WorkspaceFilesPanel = (props) => {
                                         <div className="app-file-icon">
                                             <i className="fa fa-file-zip-o text-primary"></i>
                                             <div className="dropdown position-absolute top-0 right-0 mr-3">
-                                                <a href="#" className="font-size-14" data-toggle="dropdown">
+                                                <a href="/" className="font-size-14" data-toggle="dropdown">
                                                     <i className="fa fa-ellipsis-v"></i>
                                                 </a>
                                                 <div className="dropdown-menu dropdown-menu-right">
-                                                    <a href="#" className="dropdown-item">View Details</a>
-                                                    <a href="#" className="dropdown-item">Share</a>
-                                                    <a href="#" className="dropdown-item">Download</a>
-                                                    <a href="#" className="dropdown-item">Copy to</a>
-                                                    <a href="#" className="dropdown-item">Move to</a>
-                                                    <a href="#" className="dropdown-item">Rename</a>
-                                                    <a href="#" className="dropdown-item">Delete</a>
+                                                    <a href="/" className="dropdown-item">View Details</a>
+                                                    <a href="/" className="dropdown-item">Share</a>
+                                                    <a href="/" className="dropdown-item">Download</a>
+                                                    <a href="/" className="dropdown-item">Copy to</a>
+                                                    <a href="/" className="dropdown-item">Move to</a>
+                                                    <a href="/" className="dropdown-item">Rename</a>
+                                                    <a href="/" className="dropdown-item">Delete</a>
                                                 </div>
                                             </div>
                                         </div>
@@ -364,17 +364,17 @@ const WorkspaceFilesPanel = (props) => {
                                         <div className="app-file-icon">
                                             <i className="fa fa-file-word-o text-info"></i>
                                             <div className="dropdown position-absolute top-0 right-0 mr-3">
-                                                <a href="#" className="font-size-14" data-toggle="dropdown">
+                                                <a href="/" className="font-size-14" data-toggle="dropdown">
                                                     <i className="fa fa-ellipsis-v"></i>
                                                 </a>
                                                 <div className="dropdown-menu dropdown-menu-right">
-                                                    <a href="#" className="dropdown-item">View Details</a>
-                                                    <a href="#" className="dropdown-item">Share</a>
-                                                    <a href="#" className="dropdown-item">Download</a>
-                                                    <a href="#" className="dropdown-item">Copy to</a>
-                                                    <a href="#" className="dropdown-item">Move to</a>
-                                                    <a href="#" className="dropdown-item">Rename</a>
-                                                    <a href="#" className="dropdown-item">Delete</a>
+                                                    <a href="/" className="dropdown-item">View Details</a>
+                                                    <a href="/" className="dropdown-item">Share</a>
+                                                    <a href="/" className="dropdown-item">Download</a>
+                                                    <a href="/" className="dropdown-item">Copy to</a>
+                                                    <a href="/" className="dropdown-item">Move to</a>
+                                                    <a href="/" className="dropdown-item">Rename</a>
+                                                    <a href="/" className="dropdown-item">Delete</a>
                                                 </div>
                                             </div>
                                         </div>

@@ -1,6 +1,6 @@
 import React, {useEffect, useRef, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {Button, Modal, ModalBody, ModalFooter, ModalHeader} from "reactstrap";
+import {Button, Modal, ModalBody, ModalFooter} from "reactstrap";
 import styled from "styled-components";
 import docIcon from "../../assets/img/svgs/documents-icons/documents_secundary.svg";
 import {createChatMessage} from "../../redux/actions/chatActions";

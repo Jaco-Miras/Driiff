@@ -411,7 +411,9 @@ export const SvgIcon = React.memo(React.forwardRef((props, ref) => {
         case "image-video":
             viewBox = "0 0 448 512";
             content = <>
-                <path fill="currentColor" d="M128 192a32 32 0 1 0-32-32 32 32 0 0 0 32 32zM416 32H32A32 32 0 0 0 0 64v384a32 32 0 0 0 32 32h384a32 32 0 0 0 32-32V64a32 32 0 0 0-32-32zm-32 320H64V96h320zM268.8 209.07a16 16 0 0 0-25.6 0l-49.32 65.75L173.31 244a16 16 0 0 0-26.62 0L96 320h256z" class=""></path>
+                <path fill="currentColor"
+                      d="M128 192a32 32 0 1 0-32-32 32 32 0 0 0 32 32zM416 32H32A32 32 0 0 0 0 64v384a32 32 0 0 0 32 32h384a32 32 0 0 0 32-32V64a32 32 0 0 0-32-32zm-32 320H64V96h320zM268.8 209.07a16 16 0 0 0-25.6 0l-49.32 65.75L173.31 244a16 16 0 0 0-26.62 0L96 320h256z"
+                      class=""></path>
             </>;
             break;
         case "pin":
