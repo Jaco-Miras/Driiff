@@ -79,7 +79,9 @@ export default (state = INITIAL_STATE, action) => {
                                     unread_posts: 0,
                                     unread_chats: 0,
                                     private: action.data.topic.private ? 1 : 0,
-                                    channel: action.data.channel
+                                    channel: action.data.channel,
+                                    is_external: action.data.is_external,
+                                    workspace_name: action.data.workspace.name
                                 }
                             },
                             selected: false
@@ -92,6 +94,10 @@ export default (state = INITIAL_STATE, action) => {
                             ...action.data,
                             name: action.data.topic.name,
                             selected: false,
+                            topic_detail: {
+                                ...action.data.topic,
+                                channel: action.data.channel
+                            }
                         }
                     }
                 }
