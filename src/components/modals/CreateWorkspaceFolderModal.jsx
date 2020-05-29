@@ -1,11 +1,10 @@
-import React, {useRef, useState} from "react";
+import React, {useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {Input, InputGroup, Label, Modal, ModalBody, ModalHeader} from "reactstrap";
 import styled from "styled-components";
 import {clearModal} from "../../redux/actions/globalActions";
-import QuillEditor from "../forms/QuillEditor";
-import {useQuillModules} from "../hooks";
 import {createWorkspace} from "../../redux/actions/workspaceActions";
+import {DescriptionInput} from "../forms";
 
 const WrapperDiv = styled(InputGroup)`
     display: flex;
@@ -27,31 +26,6 @@ const WrapperDiv = styled(InputGroup)`
     }
 `;
 
-const StyledQuillEditor = styled(QuillEditor)`
-    flex: 1 0 0;
-    width: 1%;
-    height: 80px;
-    
-    &.folder-description-input {
-        border: 1px solid #afb8bd;
-        border-radius: 5px;
-        max-height: 130px;
-        overflow: auto;
-        overflow-x: hidden;
-        position: static;
-        width: 100%;
-    }
-    .ql-toolbar {
-        display: none;
-    }
-    .ql-container {
-        border: none;
-    }
-    .ql-editor {
-        padding: 5px;
-    }
-`;
-
 const StyledModalHeader = styled(ModalHeader)`
     .intern-extern {
         margin-left: 10px;
@@ -63,7 +37,7 @@ const CreateWorkspaceFolderModal = props => {
 
     const {type, mode} = props.data;
 
-    const reactQuillRef = useRef();
+    //const reactQuillRef = useRef();
     const dispatch = useDispatch();
     const [modal, setModal] = useState(true);
     const channel = useSelector(state => state.chat.selectedChannel);
@@ -118,8 +92,6 @@ const CreateWorkspaceFolderModal = props => {
         })
     };
 
-    const [modules] = useQuillModules("workspace");
-
     return (
 
         <Modal isOpen={modal} toggle={toggle} centered size={"md"}>
@@ -136,16 +108,10 @@ const CreateWorkspaceFolderModal = props => {
                            onChange={handleNameChange}
                     />
                 </WrapperDiv>
-                <WrapperDiv>
-                    <Label for="folderDescription">Description</Label>
-                    <StyledQuillEditor
-                        className="folder-description-input"
-                        modules={modules}
-                        ref={reactQuillRef}
-                        onChange={handleQuillChange}
-                    />
-                </WrapperDiv>
-                <WrapperDiv>
+                <DescriptionInput
+                    onChange={handleQuillChange}
+                />
+                <WrapperDiv style={{marginTop: "40px"}}>
                     <Label></Label>
                     <div className="custom-control custom-checkbox">
                         <input name="is_private" type="checkbox" className="custom-control-input"

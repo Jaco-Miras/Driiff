@@ -69,6 +69,7 @@ const useQuillModules = (mode, callback, mentionOrientation = "top") => {
                     return listDisplay;
                 },
             },
+            toolbar: ['bold', 'italic', 'underline', 'link', 'image'],
             keyboard: {
                 bindings: {
                     tab: false,

@@ -3,10 +3,9 @@ import {useDispatch, useSelector} from "react-redux";
 import {Input, InputGroup, Label, Modal, ModalBody, ModalHeader} from "reactstrap";
 import styled from "styled-components";
 import {clearModal} from "../../redux/actions/globalActions";
-import {FolderSelect, PeopleSelect} from "../forms";
-import QuillEditor from "../forms/QuillEditor";
-import {useQuillModules} from "../hooks";
+import {FolderSelect, PeopleSelect, DescriptionInput} from "../forms";
 import {createWorkspace} from "../../redux/actions/workspaceActions";
+import {DropDocument} from "../dropzone/DropDocument";
 
 const WrapperDiv = styled(InputGroup)`
     display: flex;
@@ -38,31 +37,6 @@ const SelectPeople = styled(PeopleSelect)`
     width: 1%;
 `;
 
-const StyledQuillEditor = styled(QuillEditor)`
-    flex: 1 0 0;
-    width: 1%;
-    height: 80px;
-    
-    &.group-chat-input {
-        border: 1px solid #afb8bd;
-        border-radius: 5px;
-        max-height: 130px;
-        overflow: auto;
-        overflow-x: hidden;
-        position: static;
-        width: 100%;
-    }
-    .ql-toolbar {
-        display: none;
-    }
-    .ql-container {
-        border: none;
-    }
-    .ql-editor {
-        padding: 5px;
-    }
-`;
-
 const StyledModalHeader = styled(ModalHeader)`
     .intern-extern {
         margin-left: 10px;
@@ -74,7 +48,8 @@ const CreateEditWorkspaceModal = props => {
 
     const {type, mode} = props.data;
 
-    const reactQuillRef = useRef();
+    //const reactQuillRef = useRef();
+    const dropzoneRef = useRef();
     const dispatch = useDispatch();
     const [modal, setModal] = useState(true);
     const users = useSelector(state => state.users.mentions);
@@ -89,6 +64,8 @@ const CreateEditWorkspaceModal = props => {
         description: "",
         textOnly: "",
     });
+    const [showDropzone, setShowDropzone] = useState(false);
+    const [attachedFiles, setAttachedFiles] = useState([]);
 
     const toggle = () => {
         setModal(!modal);
@@ -156,6 +133,7 @@ const CreateEditWorkspaceModal = props => {
             is_external: activeTab === "extern" ? 1 : 0,
             member_ids: form.selectedUsers.map(u => u.id),
             is_lock: form.is_private ? 1 : 0,   
+            //files: attachedFiles
         }
         if (form.selectedFolder) {
             payload = {
@@ -163,6 +141,8 @@ const CreateEditWorkspaceModal = props => {
                 workspace_id: form.selectedFolder.value
             }
         }
+        console.log(payload)
+
         dispatch(createWorkspace(payload));
         toggle();
     }
@@ -176,7 +156,62 @@ const CreateEditWorkspaceModal = props => {
         })
     };
 
-    const [modules] = useQuillModules("workspace");
+    const handleOpenFileDialog = () => {
+        if (dropzoneRef.current) {
+            dropzoneRef.current.open();
+        }
+    };
+
+    const handleHideDropzone = () => {
+        setShowDropzone(false);
+    };
+
+    const handleShowDropzone = () => {
+        setShowDropzone(true);
+    };
+
+    const dropAction = (acceptedFiles) => {
+
+        let attachedFiles = [];
+        acceptedFiles.forEach(file => {
+            var bodyFormData = new FormData();
+            bodyFormData.append("file", file);
+            let shortFileId = require("shortid").generate();
+            if (file.type === "image/jpeg" || file.type === "image/png" || file.type === "image/gif" || file.type === "image/webp") {
+                attachedFiles.push({
+                    ...file,
+                    type: "IMAGE",
+                    id: shortFileId,
+                    status: false,
+                    src: URL.createObjectURL(file),
+                    bodyFormData: bodyFormData,
+                    name: file.name ? file.name : file.path,
+                });
+            } else if (file.type === "video/mp4") {
+                attachedFiles.push({
+                    ...file,
+                    type: "VIDEO",
+                    id: shortFileId,
+                    status: false,
+                    src: URL.createObjectURL(file),
+                    bodyFormData: bodyFormData,
+                    name: file.name ? file.name : file.path,
+                });
+            } else {
+                attachedFiles.push({
+                    ...file,
+                    type: "DOC",
+                    id: shortFileId,
+                    status: false,
+                    src: "#",
+                    bodyFormData: bodyFormData,
+                    name: file.name ? file.name : file.path,
+                });
+            }
+        });
+        setAttachedFiles(attachedFiles)
+        handleHideDropzone();
+    };
 
     return (
 
@@ -185,7 +220,16 @@ const CreateEditWorkspaceModal = props => {
                 {mode === "edit" ? "Edit workspace" : "Create new workspace"}
                 <span className="intern-extern">{activeTab}</span>
             </StyledModalHeader>
-            <ModalBody>
+            <ModalBody onDragOver={handleShowDropzone}>
+                <DropDocument
+                    hide={!showDropzone}
+                    ref={dropzoneRef}
+                    onDragLeave={handleHideDropzone}
+                    onDrop={({acceptedFiles}) => {
+                        dropAction(acceptedFiles);
+                    }}
+                    onCancel={handleHideDropzone}
+                />
                 <WrapperDiv>
                     <Label for="chat">
                         Worskpace name</Label>
@@ -224,16 +268,10 @@ const CreateEditWorkspaceModal = props => {
                         onChange={handleSelectUser}
                     />
                 </WrapperDiv>
-                <WrapperDiv>
-                    <Label for="firstMessage">Description</Label>
-                    <StyledQuillEditor
-                        className="group-chat-input"
-                        modules={modules}
-                        ref={reactQuillRef}
-                        onChange={handleQuillChange}
-                    />
-                </WrapperDiv>
-                <WrapperDiv>
+                <DescriptionInput
+                    onChange={handleQuillChange}
+                />
+                <WrapperDiv style={{marginTop: "40px"}}>
                     <Label></Label>
                     <div className="custom-control custom-checkbox">
                         <input name="is_private" type="checkbox" className="custom-control-input"
