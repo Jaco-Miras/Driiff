@@ -9,6 +9,13 @@ import ChatQuote from "../../list/chat/ChatQuote";
 const Wrapper = styled.div`
     position: relative;
     z-index: 1;
+    > div > svg:first-child {
+        margin-left: 0 !important;
+    }
+    .chat-footer-buttons svg:last-of-type {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
 `;
 
 const ArchivedDiv = styled.div`
@@ -30,15 +37,22 @@ const IconButton = styled(SvgIconFeather)`
     cursor: hand;
     border: 1px solid #afb8bd;
     height: 38px;
-    margin: -1px 5px;
-    width: 40px;
-    padding: 10px;
+    margin: -1px 8px;
+    width: 47px;
+    padding: 10px 0;
     border-radius: 8px;
-
+    transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    &:hover {
+        background: #afb8bd;
+        color: #ffffff;
+    }
     &.feather-send {
         border: 1px solid #7a1b8b;
         background-color: #7a1b8b;
         color: #fff;
+        &:hover {
+            background-color: #8C3B9B;
+        }
     }
 `;
 

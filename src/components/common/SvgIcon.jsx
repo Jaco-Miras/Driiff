@@ -262,6 +262,11 @@ export const SvgIconFeather = React.memo(React.forwardRef((props, ref) => {
                 <polyline points="13 2 13 9 20 9"></polyline>
             </>;
             break;
+        case "moon":
+            content = <>
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+            </>;
+            break;
         case "bell":
             content = <>
                 <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
@@ -404,14 +409,9 @@ export const SvgIcon = React.memo(React.forwardRef((props, ref) => {
             </>;
             break;
         case "image-video":
-            viewBox = "0 0 24 24";
+            viewBox = "0 0 448 512";
             content = <>
-                <g id="_icon/image/r/secundary" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
-                    <polyline id="Rectangle" stroke="#972C86" strokeWidth="2" strokeLinecap="round"
-                              strokeLinejoin="round"
-                              points="22 20 2 20 2 5 22 5 22 16 16.0291414 10 11.0499567 15 8.05828278 13 5 15.0710678"></polyline>
-                    <circle id="Oval-2" fill="#972C86" cx="7" cy="9" r="1.5"></circle>
-                </g>
+                <path fill="currentColor" d="M128 192a32 32 0 1 0-32-32 32 32 0 0 0 32 32zM416 32H32A32 32 0 0 0 0 64v384a32 32 0 0 0 32 32h384a32 32 0 0 0 32-32V64a32 32 0 0 0-32-32zm-32 320H64V96h320zM268.8 209.07a16 16 0 0 0-25.6 0l-49.32 65.75L173.31 244a16 16 0 0 0-26.62 0L96 320h256z" class=""></path>
             </>;
             break;
         case "pin":

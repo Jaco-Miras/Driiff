@@ -26,14 +26,14 @@ const MoreTooltip = styled.div`
   height: auto;
   background-color: #ffffff;
   color: #4d4d4d;
-  border: 1px solid #ffffff;
-  border-radius: 6px;
+  border-radius: 8px;
   position: absolute;
-  right: 0px;
-  padding: 8px 15px;
+  right: 6px;
+  padding: 8px 0px;
   cursor: pointer;
-  box-shadow: 0 0 3px 0 rgba(26, 26, 26, 0.4), 0 1px 3px 0 rgba(0, 0, 0, 0.1);
-  &.orientation-top {
+  box-shadow: 0 5px 10px -1px rgba(0,0,0,.15);
+  border-top: 1px solid #eeeeee !important;
+  ${'' /* &.orientation-top {
     bottom: 45px;
 
     &:before {
@@ -60,7 +60,7 @@ const MoreTooltip = styled.div`
             left: auto;
             transform: rotate(-90deg);
         }
-  }
+  } */}
 
     &:after {
         right 12px;
@@ -112,15 +112,12 @@ const MoreTooltip = styled.div`
         top: 100%;
     }
     > div {
-        display: inline-flex;
-        align-items: center;
-        font-weight: 400;
-        font-size: 15px;
-        padding: 4px 0;
-        width: 100%;
+        text-align: left;
+        padding: 4px 24px;
         cursor: pointer;
-        svg {
-            margin-right: 12px;
+        &:hover {
+            background-color: #F0F0F0;
+            color: #7A1B8B;
         }
     }
 `;

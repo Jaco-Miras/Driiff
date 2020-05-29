@@ -123,7 +123,7 @@ const TimestampDiv = styled.div`
         flex: 1;
     }
     span {
-        background: #fff;
+
         padding: 5px 10px;
         border-radius: 5px;
         display: inline-block;
@@ -198,25 +198,13 @@ const MessageOptions = styled(ChatMessageOptions)`
     .more-options-tooltip {
         &.orientation-bottom {
             bottom: auto;
-            top: 35px;
-
+            top: 24px;
             @media (max-width: 575.99px) {
                 top: 20px;
             }
             &.hOrientation-right {
-                left: -10px;
-                top: 35px;
-
-                &:before {
-                    left: auto;
-                    right: 85%;
-                    bottom: 100%;
-                }
-                &:after {
-                    left: auto;
-                    right: 86%;
-                    bottom: 100%;
-                }
+                ${props => !props.isAuthor ? "left: -10px" : "left: -180px;"};
+                top: 24px;
             }
             &.hOrientation-left {
                 right: -5px;
@@ -229,60 +217,22 @@ const MessageOptions = styled(ChatMessageOptions)`
                     left: 90%;
                 }
             }
-            &::before {
-                top: auto;
-                bottom: 100%;
-                transform: rotate(180deg)
-            }
-
-            &::after {
-                top: auto;
-                bottom: 100%;
-                transform: rotate(180deg)
-            }
 
             @media (max-width: 1399.99px) {
                 &.hOrientation-right {
                     left: -10px;
-                    top: 35px;
-
-                    &:before {
-                        left: auto;
-                        right: 85%;
-                        bottom: 100%;
-                    }
-                    &:after {
-                        left: auto;
-                        right: 86%;
-                        bottom: 100%;
-                    }
+                    top: 24px;
                 }
 
                 &.hOrientation-left {
                     right: -5px;
                     left: auto;
-
-                    &:before {
-                        left: 90%;
-                    }
-                    &:after {
-                        left: 90%;
-                    }
                 }
             }
 
             @media (max-width: 575.99px) {
                 &.hOrientation-left {
                     right: 200px;
-
-                    &:before {
-                        left: 90%;
-                        right: auto;
-                    }
-                    &:after {
-                        left: 90%;
-                        right: auto;
-                    }
                 }
             }
         }
@@ -295,49 +245,17 @@ const MessageOptions = styled(ChatMessageOptions)`
 
             &.hOrientation-right {
                 left: -5px;
-
-                &:before {
-                    left: 12px;
-                }
-                &:after {
-                    left: 12px;
-                }
-
                 @media (max-width: 575.99px) {
                     top: auto;
                     bottom: 120%;
                     right: auto;
                     left: 0;
-
-                    &:before {
-                        right: auto;
-                        top: 100%;
-                        transform: unset;
-                    }
-                    &:after {
-                        right: auto;
-                        top: 100%;
-                        transform: unset;
-                    }
                 }
             }
 
             &.hOrientation-left {
                 right: -5px;
                 left: auto;
-
-                &:before {
-                    top: 100%;
-                    right: 5px;
-                    left: auto;
-                    transform: unset;
-                }
-                &:after {
-                    top: 100%;
-                    right: 8px;
-                    left: auto;
-                    transform: unset;
-                }
             }
         }
     }

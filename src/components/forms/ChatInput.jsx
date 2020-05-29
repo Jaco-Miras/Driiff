@@ -19,8 +19,8 @@ import {useDraft, useQuillInput, useQuillModules, useSaveInput, useSelectQuote} 
 import QuillEditor from "./QuillEditor";
 
 const Wrapper = styled.div`
-    border: 1px solid #afb8bd;
-    border-radius: 5px;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
 `;
 
 const StyledQuillEditor = styled(QuillEditor)`
@@ -40,6 +40,9 @@ const StyledQuillEditor = styled(QuillEditor)`
     }
     .ql-editor {
         padding: 9px 9px;
+        .mention {
+            color: #7a1b8b;
+        }
     }
     .ql-container {
         border: none;

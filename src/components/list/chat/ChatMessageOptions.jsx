@@ -44,47 +44,30 @@ const MoreButton = styled.button`
 `;
 const MoreTooltip = styled.div`
     z-index: 30;
-    width: 230px;
     height: auto;
-    display: inline-flex;
-    flex-flow: column;
-    background-color: #FAFAFA;
-    color: #4d4d4d;
-    border: 1px solid #FAFAFA;
-    border-radius: 6px;
     position: absolute;
-    bottom: 150%;
-    //left: ${props => (props.isAuthor ? "-82px" : "-60px")};
+    bottom: calc(100% + 12px);
     left: -108px;
-    padding: 10px;
     cursor: pointer;
-    box-shadow: 0 0 3px 0 rgba(26, 26, 26, 0.4), 0 1px 3px 0 rgba(0, 0, 0, 0.1);
-
+    width: 200px;
+    height: auto;
+    background-color: #ffffff;
+    color: #4d4d4d;
+    border-radius: 8px;
+    padding: 8px 0px;
+    cursor: pointer;
+    box-shadow: 0 5px 10px -1px rgba(0,0,0,.15);
+    border-top: 1px solid #eeeeee !important;
     button:hover{
         color: #972c86;
     }
     > div {
-        display: inline-flex;
-        align-items: center;
-        padding: 10px 0;
-        width: 100%;
-        border-bottom: 1px solid #c3c3c3;
-        :before {
-            content: "";
-            background-color: #4d4d4d;
-            mask-repeat: no-repeat;
-            mask-size: 100%;
-            mask-position: center;
-            width: 16px;
-            height: 16px;
-            display: inline-block;
-            margin-right: 10px;
-        }
-        :hover:before {
-            background-color: #972c86;
-        }
-        :hover {
-            color: #972c86;
+        text-align: left;
+        padding: 4px 24px;
+        cursor: pointer;
+        &:hover {
+            background-color: #F0F0F0;
+            color: #7A1B8B;
         }
     }
     >div:last-child{
@@ -92,36 +75,17 @@ const MoreTooltip = styled.div`
     }
 `;
 const EditReplyButton = styled.div`
-  :before {
-    mask-image: url(${pencilIcon});
-  }
 `;
 const RemoveReplyButton = styled.div`
-    :before {
-        mask-image: url(${crossIcon});
-    }
 `;
 
 const Reminder = styled.div`
-    :before {
-        mask-image: url(${reminderIcon});
-    }
 `;
 const QuoteButton = styled.div`
-    :before {
-        mask-image: url(${convoIcon});
-    }
 `;
 const SharePostButton = styled.div`
-    :before{
-        mask-image: url(${shareIcon});
-    }
 `;
 const ForwardButton = styled.div`
-    :before{
-        mask-image: url(${forwardIcon});
-        transform: rotateY(180deg);
-    }
 `;
 
 const ChatMessageOptions = props => {

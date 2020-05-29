@@ -15,11 +15,24 @@ const NavBar = styled.ul`
             color: #82828A;
             font-weight: 500;
         }
+
     }
 `;
 
 const CompanyName = styled.h2`
     margin-right: 1rem;
+`;
+
+const ThemeSwitch = styled.span`
+    color: #828282;
+    padding: 10px 0px;
+    cursor: pointer;
+    &:hover {
+        color: #000000;
+    }
+    svg {
+        width: 18px;
+    }
 `;
 
 const MainNavLink = styled(NavLink)`
@@ -39,6 +52,13 @@ const CompanyHeaderPanel = (props) => {
     const dispatch = useDispatch();
     const match = useRouteMatch();
     const user = useSelector(state => state.session.user);
+
+
+    const setThemeButton = (e) => {
+        const body = document.body;
+        body.classList.toggle("dark");
+    }
+
 
     useEffect(() => {
         const body = document.body;
@@ -103,6 +123,11 @@ const CompanyHeaderPanel = (props) => {
                                 Dutch
                             </a>
                         </div>
+                    </li>
+                    <li className="nav-item">
+                        <ThemeSwitch title="Light or Dark mode" onClick={setThemeButton}>
+                            <SvgIconFeather icon="moon"/>
+                        </ThemeSwitch>
                     </li>
                     <li className="nav-item dropdown">
                         <a href="/" className="nav-link nav-link-notify" title="Notifications"

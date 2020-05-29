@@ -3,11 +3,12 @@ import styled from "styled-components";
 import {useLoadChannels, useSortChannels} from "../../hooks";
 import ChannelList from "./ChannelList";
 
-const ChannelsSidebarContainer = styled.div`    
+const ChannelsSidebarContainer = styled.div`
 `;
-const Channels = styled.ul`    
+const Channels = styled.ul`
+    padding-right: 24px;
 `;
-const ChatHeader = styled.h4`    
+const ChatHeader = styled.h4`
 `;
 
 const ChannelsSidebar = props => {

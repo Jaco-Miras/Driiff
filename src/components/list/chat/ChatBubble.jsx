@@ -300,7 +300,7 @@ const ChatMessageFiles = styled(MessageFiles)`
             }
         }
     }
-    
+
     ${props => props.hasMessage &&
     `
     `}
@@ -315,12 +315,13 @@ const ReplyContent = styled.span`
     a:not([href]):not([tabindex]) {
         cursor: pointer;
         color: ${props => (props.isAuthor ? props.theme.self.chat_bubble_link_color : props.theme.others.chat_bubble_link_color)};
+        color: ${props => (!props.isAuthor ? '#7a1b8b' : '#ffffff99')};
         text-decoration: underline;
         &:focus,
         &:hover {
-            color: ${props => (props.isAuthor ? props.theme.self.chat_bubble_hover_color : props.theme.others.chat_bubble_hover_color)};
+            ${'' /* color: ${props => (props.isAuthor ? props.theme.self.chat_bubble_hover_color : props.theme.others.chat_bubble_hover_color)}; */}
+            color: ${props => (!props.isAuthor ? '#7a1b8b' : '#ffffff')};
         }
-
         &.btn {
             border: 1px solid ${props => (props.isAuthor ? props.theme.self.chat_bubble_link_color : props.theme.others.chat_bubble_link_color)};
 

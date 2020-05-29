@@ -20,7 +20,12 @@ const IconButton = styled(SvgIconFeather)`
     height: 30px;
     width: 40px;
     cursor: pointer;
-    cursor: hand;    
+    cursor: hand;
+    transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    &:hover {
+        background: #afb8bd;
+        color: #ffffff;
+    }
 `;
 
 const ChatHeaderPanel = (props) => {
