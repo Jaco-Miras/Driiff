@@ -24,10 +24,10 @@ const BodyMention = props => {
         userIds.forEach(id => {
             if (basedOnId && id === user.id) {
                 userFound = true;
-                return;
+
             } else if (!basedOnId && id === user.type_id) {
                 userFound = true;
-                return;
+
             }
         });
         return userFound;

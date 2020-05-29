@@ -13,7 +13,7 @@ import {SvgIconFeather} from "../../common";
 import {useOutsideClick, useTooltipOrientation, useTooltipPosition} from "../../hooks";
 
 const MoreButton = styled(SvgIconFeather)`
-    ${'' /* background: ${props => (props.show && !props.selected ? "#972c86" : "#fff")}; */}
+    ${"" /* background: ${props => (props.show && !props.selected ? "#972c86" : "#fff")}; */}
     opacity: ${props => (props.show && !props.selected ? "1 !important" : "0")};
     border-radius: 50%;
     width: 15px;
@@ -278,17 +278,17 @@ const ChannelOptions = props => {
             };
         }
         dispatch(
-            updateChannel(payload, (err,res) => {
+            updateChannel(payload, (err, res) => {
                 if (err) return;
                 if (channel.is_archived === 1) {
                     dispatch(
                         updateChannelReducer({
                             ...channel,
-                            is_archived: 0
-                        })
-                    )
+                            is_archived: 0,
+                        }),
+                    );
                 }
-            })
+            }),
         );
     };
     const handleShowArchiveConfirmation = () => {
@@ -308,8 +308,8 @@ const ChannelOptions = props => {
             payload = {
                 ...payload,
                 submitText: "Unarchive",
-                bodyText: "Are you sure you want to unarchive this chat?"
-            }
+                bodyText: "Are you sure you want to unarchive this chat?",
+            };
         }
 
         dispatch(

@@ -1,11 +1,10 @@
-import React, {useState, useRef} from "react";
-import styled from "styled-components";
-import {useDispatch, useSelector} from "react-redux";
+import React, {useRef, useState} from "react";
+import {useDispatch} from "react-redux";
 import {Modal, ModalHeader} from "reactstrap";
+import styled from "styled-components";
 import {clearModal} from "../../redux/actions/globalActions";
 import QuillEditor from "../forms/QuillEditor";
 import {useQuillModules} from "../hooks";
-import {createWorkspace, updateWorkspace, deleteWorkspace, moveWorkspaceTopic} from "../../redux/actions/workspaceActions";
 
 
 const PopUpBody = styled.div`
@@ -66,7 +65,7 @@ const WorkspaceFolderModal = props => {
     };
 
     const handleNameChange = e => {
-        setName(e.target.value)
+        setName(e.target.value);
     };
 
     const handleQuillChange = (content, delta, source, editor) => {
@@ -86,7 +85,7 @@ const WorkspaceFolderModal = props => {
             // // member_ids: [3,2],
             // workspace_id: 1,
             // topic_id: 100
-        }
+        };
 
         dispatch(
             //moveWorkspaceTopic(payload)
@@ -94,7 +93,7 @@ const WorkspaceFolderModal = props => {
             //createWorkspace(payload)
         );
         toggle();
-    }
+    };
 
     const [modules] = useQuillModules(type);
 
@@ -118,11 +117,13 @@ const WorkspaceFolderModal = props => {
                     />
                 </FormGroupDiv>
                 <FormGroupDiv>
-                    <button type="button" onClick={handleCreateWorkspaceFolder} class="btn btn-primary">Create workspace</button>
+                    <button type="button" onClick={handleCreateWorkspaceFolder} class="btn btn-primary">Create
+                        workspace
+                    </button>
                 </FormGroupDiv>
             </PopUpBody>
         </Modal>
-    )
-}
+    );
+};
 
-export default WorkspaceFolderModal
+export default WorkspaceFolderModal;

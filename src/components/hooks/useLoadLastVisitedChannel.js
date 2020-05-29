@@ -1,7 +1,12 @@
 import {useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {addToChannels, getChannel, getLastVisitedChannel, setSelectedChannel, 
-    saveLastVisitedChannel, restoreLastVisitedChannel, 
+import {
+    addToChannels,
+    getChannel,
+    getLastVisitedChannel,
+    restoreLastVisitedChannel,
+    saveLastVisitedChannel,
+    setSelectedChannel,
 } from "../../redux/actions/chatActions";
 
 const useLoadLastVisitedChannel = (props) => {
@@ -34,7 +39,7 @@ const useLoadLastVisitedChannel = (props) => {
 
         if (!channelsLoaded) {
             if (selectedChannel === null) {
-                if(["/workspace/chat", "/workspace/chat/:cid", "/workspace/chat/:cid/mid"].includes(path)) {
+                if (["/workspace/chat", "/workspace/chat/:cid", "/workspace/chat/:cid/mid"].includes(path)) {
                     history.push(`/workspace/chat/${params.cid}`);
                 } else if (path === "/chat/:cid" || path === "/chat/:cid/mid") {
                     loadSelectedChannel({channel_id: params.cid});
@@ -43,7 +48,7 @@ const useLoadLastVisitedChannel = (props) => {
                     dispatch(
                         getLastVisitedChannel({}, (err, res) => {
                             loadSelectedChannel({channel_id: res.data.code});
-                            if(["/workspace/chat", "/workspace/chat/:cid", "/workspace/chat/:cid/mid"].includes(path)) {
+                            if (["/workspace/chat", "/workspace/chat/:cid", "/workspace/chat/:cid/mid"].includes(path)) {
                                 history.push(`/workspace/chat/${res.data.code}`);
                             } else {
                                 history.push(`/chat/${res.data.code}`);
@@ -52,7 +57,7 @@ const useLoadLastVisitedChannel = (props) => {
                     );
                 }
             } else {
-                if(["/workspace/chat", "/workspace/chat/:cid", "/workspace/chat/:cid/mid"].includes(path)) {
+                if (["/workspace/chat", "/workspace/chat/:cid", "/workspace/chat/:cid/mid"].includes(path)) {
                     history.push(`/workspace/chat/${selectedChannel.code}`);
                 } else {
                     history.push(`/chat/${selectedChannel.code}`);
@@ -72,8 +77,8 @@ const useLoadLastVisitedChannel = (props) => {
         return () => {
             //save the last visited channel on unmount
             dispatch(saveLastVisitedChannel(selectedChannel));
-        }
-    }, [selectedChannel])
+        };
+    }, [selectedChannel]);
 
 };
 

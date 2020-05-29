@@ -320,7 +320,8 @@ const FileViewer = forwardRef((props, ref) => {
             <div className="mfp-container mfp-s-ready mfp-image-holder">
                 <div className="mfp-content">
                     <div className="mfp-figure">
-                        <CloseButton onClick={e => handleClose(e)} title="Close (Esc)" type="button" className="mfp-close">×</CloseButton>
+                        <CloseButton onClick={e => handleClose(e)} title="Close (Esc)" type="button"
+                                     className="mfp-close">×</CloseButton>
                         <FileWrapper>
                             {
                                 files.map((f, index) => {

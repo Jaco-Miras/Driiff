@@ -1,6 +1,6 @@
 import React from "react";
-import styled from "styled-components";
 import {withRouter} from "react-router-dom";
+import styled from "styled-components";
 import {NavLink, SvgIconFeather} from "../../common";
 
 const Wrapper = styled.div`    
@@ -40,7 +40,7 @@ const WorkspacePageHeaderPanel = (props) => {
 
     let pathname = props.match.url;
     let lastIndex = pathname.lastIndexOf("/");
-    pathname = pathname.substr(0,lastIndex);
+    pathname = pathname.substr(0, lastIndex);
 
     return (
         <>

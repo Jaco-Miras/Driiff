@@ -7,6 +7,7 @@ import {getSlugName} from "../../helpers/slugHelper";
 import {EmailRegex} from "../../helpers/stringFormatter";
 import {toggleLoading} from "../../redux/actions/globalActions";
 import {userGoogleLogin, userLogin} from "../../redux/actions/userAction";
+import {CheckBox} from "../forms";
 import {processBackendLogin, storeLoginToken} from "../hooks";
 
 const Wrapper = styled.form`
@@ -76,7 +77,7 @@ const LoginPanel = (props) => {
     const toggleCheck = (e) => {
         setForm({
             ...form,
-            remember_me: !form.remember_me,
+            [e.target.dataset.name]: !form[e.target.dataset.name],
         });
     };
 
@@ -231,13 +232,7 @@ const LoginPanel = (props) => {
                        placeholder="Password" required/>
             </FormGroup>
             <div className="form-group d-flex justify-content-between">
-                <div className="custom-control custom-checkbox" onClick={handleRememberMe}>
-                    <input name="remember_me" type="checkbox" className="custom-control-input"
-                           checked={form.remember_me} onChange={handleRememberMe}/>
-                    <label className="custom-control-label" data-name="remember_me" onClick={toggleCheck}>Remember
-                        me</label>
-                </div>
-
+                <CheckBox name="remember_me" checked={form.remember_me} onClick={toggleCheck}>Remember me</CheckBox>
                 <Link to="/reset-password">Reset password</Link>
             </div>
             <button className="btn btn-primary btn-block" onClick={handleSignIn}>Sign in</button>

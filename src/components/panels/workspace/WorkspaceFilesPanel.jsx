@@ -19,7 +19,7 @@ const WorkspaceFilesPanel = (props) => {
                                 Upload Files
                             </button>
                             <form className="d-none" id="file-upload">
-                                <input type="file" multiple="" />
+                                <input type="file" multiple=""/>
                             </form>
                         </div>
                         <div className="app-sidebar-menu"
@@ -180,10 +180,10 @@ const WorkspaceFilesPanel = (props) => {
                                 </a>
                                 <div className="input-group">
                                     <input type="text" className="form-control" placeholder="Search file"
-                                           aria-describedby="button-addon1" />
+                                           aria-describedby="button-addon1"/>
                                     <div className="input-group-append">
                                         <button className="btn btn-outline-light" type="button"
-                                                id="button-addon1" >
+                                                id="button-addon1">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                                  viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                                  stroke-width="1" stroke-linecap="round" stroke-linejoin="round"

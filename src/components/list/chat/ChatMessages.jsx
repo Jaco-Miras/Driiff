@@ -79,11 +79,11 @@ const ChatReplyContainer = styled.div`
     display: inline-block;
     width: auto;
     height: auto;
-    ${'' /* color: #ffffff; */}
+    ${"" /* color: #ffffff; */}
     padding: 0;
   }
   .mention.is-author {
-    ${'' /* color: #7A1B8B; */}
+    ${"" /* color: #7A1B8B; */}
     background: transparent;
     padding: 0;
   }
@@ -969,6 +969,7 @@ class ChatMessages extends React.PureComponent {
                                                                     isAuthor={isAuthor}
                                                                     className={`chat-bubble-quote-div`}
                                                                 >
+
                                                                     <ChatBubble
                                                                         isAuthor={isAuthor}
                                                                         reply={reply}

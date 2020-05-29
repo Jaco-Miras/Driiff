@@ -60,27 +60,19 @@ const FileVideo = styled.video`
     min-width: 200px;
 `;
 
-const FilePillContainer = styled.div`
-    // margin-top: 5px;
-    // margin-right: 20px;
-    border-radius: 8px;
-    background: ${props => props.type === "image" ? "transparent" : "#dedede"};
+const FilePillContainer = styled.div`    
+    border-radius: 8px;    
     cursor: pointer;
     cursor: hand;
 
     > img{
         border: 1px solid #ddd;
         border-radius: inherit;
-        // max-height: 200px;
-        // max-width: 200px;
         object-fit: cover;
         max-height: 150px;
         min-height: 150px;
         max-width: 200px;
         min-width: 200px;
-
-        //height: auto;
-        //max-width: 100%;
     }
 `;
 const DocFile = styled.div`
@@ -89,6 +81,7 @@ const DocFile = styled.div`
     justify-content: center;
     min-height: 100px;
     padding: 0 10px;
+    
     >img{
         width: 30px;
         height: 30px;
@@ -96,7 +89,7 @@ const DocFile = styled.div`
 `;
 
 const FilePill = forwardRef((props, ref) => {
-    const {file, cbFilePreview} = props;
+    const {className = "", file, cbFilePreview, ...otherProps} = props;
     const refImageLoader = useRef();
     const refImage = useRef();
     const refVideoLoader = useRef();
@@ -142,7 +135,9 @@ const FilePill = forwardRef((props, ref) => {
         }
     };
 
-    return <FilePillContainer type={file.type.toLowerCase()}>
+    return <FilePillContainer
+        className={`file-pill ${className}`}
+        {...otherProps}>
         {
             file.type.toLowerCase() === "image" ?
                 <>
