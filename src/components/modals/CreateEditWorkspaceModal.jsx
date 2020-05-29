@@ -13,6 +13,7 @@ const WrapperDiv = styled(InputGroup)`
     display: flex;
     align-items: center;
     margin: ${props => props.margin ? props.margin : "20px 0"};
+
     > .form-control:not(:first-child) {
         border-radius: 5px;
     }
@@ -292,9 +293,18 @@ const CreateEditWorkspaceModal = forwardRef((props, ref) => {
     }
 
     useEffect(() => {
+        let currentUser = null;
+        if (Object.values(users).length) {
+            currentUser = {
+                ...users[user.id],
+                value: user.id,
+                label: user.name,
+            };
+        }
         setForm({
             ...form,
             has_folder: true,
+            selectedUsers: currentUser ? [currentUser] : [],
             selectedFolder: Object.keys(item).length === 0 ? null : {
                 value: item.id,
                 label: item.name,
