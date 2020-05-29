@@ -7,6 +7,7 @@ import {clearModal} from "../../redux/actions/globalActions";
 import {SvgIconFeather} from "../common";
 import SearchForm from "../forms/SearchForm";
 import ChannelIcon from "../list/chat/ChannelIcon";
+import {ModalHeaderSection} from "./index";
 
 const IconButton = styled(SvgIconFeather)`
     cursor: pointer;
@@ -149,9 +150,9 @@ const ChatForwardModal = props => {
 
     return (
         <Modal isOpen={modal} toggle={toggle} centered className='chat-forward-modal'>
-            <ModalHeader toggle={toggle} className='bg-primary'>
+            <ModalHeaderSection toggle={toggle}>
                 Transfer the message to
-            </ModalHeader>
+            </ModalHeaderSection>
             <PopUpBody>
                 <Search onChange={handleInputChange} onClick={handleSearch} placeholder="Channel search"/>
                 <ChannelsContainer>

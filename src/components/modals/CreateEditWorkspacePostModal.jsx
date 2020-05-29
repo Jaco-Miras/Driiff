@@ -7,6 +7,7 @@ import {createWorkspace} from "../../redux/actions/workspaceActions";
 import {FolderSelect, PeopleSelect} from "../forms";
 import QuillEditor from "../forms/QuillEditor";
 import {useQuillModules} from "../hooks";
+import {ModalHeaderSection} from "./index";
 
 const WrapperDiv = styled(InputGroup)`
     display: flex;
@@ -60,13 +61,6 @@ const StyledQuillEditor = styled(QuillEditor)`
     }
     .ql-editor {
         padding: 5px;
-    }
-`;
-
-const StyledModalHeader = styled(ModalHeader)`
-    .intern-extern {
-        margin-left: 10px;
-        font-size: .7rem;
     }
 `;
 
@@ -194,9 +188,9 @@ const CreateEditWorkspacePostModal = props => {
     return (
 
         <Modal isOpen={modal} toggle={toggle} centered size={"md"}>
-            <StyledModalHeader toggle={toggle} className={"workspace-modal-header"}>
+            <ModalHeaderSection toggle={toggle}>
                 {mode === "edit" ? "Edit post" : "Create new post"}
-            </StyledModalHeader>
+            </ModalHeaderSection>
             <ModalBody>
                 <WrapperDiv>
                     <Label for="post-title">Post title</Label>

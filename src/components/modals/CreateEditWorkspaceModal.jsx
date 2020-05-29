@@ -8,6 +8,7 @@ import {uploadDocument} from "../../redux/services/global";
 import {FileAttachments} from "../common";
 import {DropDocument} from "../dropzone/DropDocument";
 import {CheckBox, DescriptionInput, FolderSelect, PeopleSelect} from "../forms";
+import {ModalHeaderSection} from "./index";
 
 const WrapperDiv = styled(InputGroup)`
     display: flex;
@@ -41,14 +42,6 @@ const SelectFolder = styled(FolderSelect)`
 const SelectPeople = styled(PeopleSelect)`
     flex: 1 0 0;
     width: 1%;
-`;
-
-const StyledModalHeader = styled(ModalHeader)`
-    color: #505050;  
-    font-size: 17px;
-    font-weight: 600;
-    letter-spacing: 0;
-    line-height: 26px;
 `;
 
 const ActiveTabName = styled.span`
@@ -335,10 +328,10 @@ const CreateEditWorkspaceModal = forwardRef((props, ref) => {
 
     return (
         <Modal isOpen={modal} toggle={toggle} centered size={"md"}>
-            <StyledModalHeader toggle={toggle} className={"workspace-modal-header"}>
+            <ModalHeaderSection toggle={toggle}>
                 {mode === "edit" ? "Edit workspace" : "Create new workspace"}
                 <ActiveTabName className="intern-extern">{activeTabName}</ActiveTabName>
-            </StyledModalHeader>
+            </ModalHeaderSection>
             <ModalBody onDragOver={handleShowDropzone}>
                 <DropDocument
                     hide={!showDropzone}

@@ -8,6 +8,7 @@ import {clearModal, saveInputData} from "../../redux/actions/globalActions";
 import {uploadDocument} from "../../redux/services/global";
 import QuillEditor from "../forms/QuillEditor";
 import {useQuillModules} from "../hooks";
+import {ModalHeaderSection} from "./index";
 
 const StyledQuillEditor = styled(QuillEditor)`
     .ql-mention-list-container-top, .ql-mention-list-container {
@@ -256,7 +257,7 @@ const FileUploadModal = props => {
 
     return (
         <Modal isOpen={modal} toggle={toggle} centered>
-            <ModalHeader toggle={toggle} className='bg-primary'>File upload</ModalHeader>
+            <ModalHeaderSection toggle={toggle}>File upload</ModalHeaderSection>
             <ModalBody>
                 <StyledQuillEditor
                     className={"chat-input"}

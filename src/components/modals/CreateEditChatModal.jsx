@@ -6,9 +6,11 @@ import styled from "styled-components";
 import {localizeDate} from "../../helpers/momentFormatJS";
 import {createNewChat, editChannelDetail, renameChannelKey, searchExistingChat} from "../../redux/actions/chatActions";
 import {clearModal} from "../../redux/actions/globalActions";
+import {SvgIconFeather} from "../common";
 import {PeopleSelect} from "../forms";
 import QuillEditor from "../forms/QuillEditor";
 import {useQuillModules} from "../hooks";
+import {ModalHeaderSection} from "./index";
 
 const WrapperDiv = styled(InputGroup)`
     display: flex;
@@ -345,7 +347,7 @@ const CreateEditChatModal = props => {
     return (
 
         <Modal isOpen={modal} toggle={toggle} centered size={"md"}>
-            <ModalHeader toggle={toggle}>{mode === "edit" ? "Edit chat" : "New group chat"}</ModalHeader>
+            <ModalHeaderSection toggle={toggle}>{mode === "edit" ? "Edit chat" : "New group chat"}</ModalHeaderSection>
             <ModalBody>
                 <WrapperDiv>
                     <Label for="chat">Chat

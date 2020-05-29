@@ -1,15 +1,19 @@
 import React, {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {Input, InputGroup, Label, Modal, ModalBody, ModalHeader} from "reactstrap";
+import {Input, InputGroup, Label, Modal, ModalBody} from "reactstrap";
 import styled from "styled-components";
 import {clearModal} from "../../redux/actions/globalActions";
 import {createWorkspace} from "../../redux/actions/workspaceActions";
 import {DescriptionInput} from "../forms";
+import {ModalHeaderSection} from "./index";
 
 const WrapperDiv = styled(InputGroup)`
     display: flex;
     align-items: center;
     margin: 20px 0;
+    > .form-control:not(:first-child) {
+        border-radius: 5px;
+    }
     label {
         white-space: nowrap;
         margin: 0 20px 0 0;
@@ -24,14 +28,6 @@ const WrapperDiv = styled(InputGroup)`
     .react-select__multi-value__label {
         align-self: center;
     }
-`;
-
-const StyledModalHeader = styled(ModalHeader)`
-    color: #505050;  
-    font-size: 17px;
-    font-weight: 600;
-    letter-spacing: 0;
-    line-height: 26px;
 `;
 
 const ActiveTabName = styled.span`
@@ -57,17 +53,20 @@ const CreateWorkspaceFolderModal = props => {
 
     const {type, mode} = props.data;
 
-    //const reactQuillRef = useRef();
     const dispatch = useDispatch();
-    const [modal, setModal] = useState(true);
+    const workspaces  = useSelector(state => state.workspaces.workspaces);
     const channel = useSelector(state => state.chat.selectedChannel);
     const activeTab = useSelector(state => state.workspaces.activeTab);
+    const [modal, setModal] = useState(true);
     const [activeTabName, setActiveTabName] = useState("Internal");
     const [form, setForm] = useState({
         is_private: false,
         name: "",
         description: "",
         textOnly: "",
+    });
+    const [valid, setValid] = useState({
+        name: "",
     });
 
     const toggle = () => {
@@ -91,6 +90,10 @@ const CreateWorkspaceFolderModal = props => {
             name: e.target.value.trim(),
         });
     };
+
+    const handleNameBlur = e => {
+        Object.values(workspaces).filter(w => w.name === form.name)
+    }
 
     const handleConfirm = () => {
         let payload = {
@@ -124,17 +127,18 @@ const CreateWorkspaceFolderModal = props => {
     return (
 
         <Modal isOpen={modal} toggle={toggle} centered size={"md"}>
-            <StyledModalHeader toggle={toggle} className={"workspace-folder-header"}>
+            <ModalHeaderSection toggle={toggle} className={"workspace-folder-header"}>
                 {mode === "edit" ? "Edit folder" : "Create new folder"}
                 <ActiveTabName className="intern-extern">{activeTabName}</ActiveTabName>
-            </StyledModalHeader>
+            </ModalHeaderSection>
             <ModalBody>
                 <WrapperDiv>
                     <Label for="folder">
                         Folder name</Label>
-                    <Input style={{borderRadius: "5px"}}
-                           defaultValue={mode === "edit" ? channel.title : ""}
+                    <Input
+                        defaultValue={mode === "edit" ? channel.title : ""}
                            onChange={handleNameChange}
+                        onBlur={handleNameBlur}
                     />
                 </WrapperDiv>
                 <DescriptionInput

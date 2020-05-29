@@ -5,6 +5,7 @@ import styled from "styled-components";
 import {clearModal} from "../../redux/actions/globalActions";
 import QuillEditor from "../forms/QuillEditor";
 import {useQuillModules} from "../hooks";
+import {ModalHeaderSection} from "./index";
 
 
 const PopUpBody = styled.div`
@@ -99,9 +100,9 @@ const WorkspaceFolderModal = props => {
 
     return (
         <Modal isOpen={modal} toggle={toggle} centered className='chat-forward-modal'>
-            <ModalHeader toggle={toggle}>
+            <ModalHeaderSection toggle={toggle}>
                 Create new folder
-            </ModalHeader>
+            </ModalHeaderSection>
             <PopUpBody>
                 <FormGroupDiv class="form-group">
                     <label for="folderName">Folder name</label>
