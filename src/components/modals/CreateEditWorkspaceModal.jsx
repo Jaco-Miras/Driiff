@@ -3,21 +3,24 @@ import {useDispatch, useSelector} from "react-redux";
 import {Input, InputGroup, Label, Modal, ModalBody, ModalHeader} from "reactstrap";
 import styled from "styled-components";
 import {clearModal} from "../../redux/actions/globalActions";
-import {CheckBox, FolderSelect, PeopleSelect, DescriptionInput} from "../forms";
 import {createWorkspace} from "../../redux/actions/workspaceActions";
-import {DropDocument} from "../dropzone/DropDocument";
-import {FileAttachments} from "../common";
 import {uploadDocument} from "../../redux/services/global";
+import {FileAttachments} from "../common";
+import {DropDocument} from "../dropzone/DropDocument";
+import {CheckBox, DescriptionInput, FolderSelect, PeopleSelect} from "../forms";
 
 const WrapperDiv = styled(InputGroup)`
     display: flex;
     align-items: center;
     margin: ${props => props.margin ? props.margin : "20px 0"};
+    > .form-control:not(:first-child) {
+        border-radius: 5px;
+    }
     label {
         white-space: nowrap;
         margin: 0 20px 0 0;
         min-width: 109px;
-    }
+    }    
     button {
         margin-left: auto;
     }
@@ -70,7 +73,6 @@ const CreateEditWorkspaceModal = forwardRef((props, ref) => {
 
     const {type, mode, item = {}} = props.data;
 
-    //const reactQuillRef = useRef();
     const dropzoneRef = useRef();
     const dispatch = useDispatch();
     const [modal, setModal] = useState(true);
@@ -91,6 +93,23 @@ const CreateEditWorkspaceModal = forwardRef((props, ref) => {
     const [showDropzone, setShowDropzone] = useState(false);
     const [attachedFiles, setAttachedFiles] = useState([]);
     const [uploadedFiles, setUploadedFiles] = useState([]);
+    const [valid, setValid] = useState({
+        name: false,
+        folder: false,
+        team: false,
+    });
+
+    const _validateName = () => {
+        if (form.name === ""
+            || (form.has_folder && (form.selectedFolder === null || Object.values(workspaces[form.selectedFolder.value].topics)
+                .filter(t => t.name.toLowerCase() === form.name.toLowerCase()).length !== 0))
+            || Object.values(workspaces)
+                .filter(w => w.name.toLowerCase() === form.name.toLowerCase()).length !== 0) {
+            return false;
+        } else {
+            return true;
+        }
+    };
 
     const toggle = () => {
         setModal(!modal);
@@ -101,10 +120,11 @@ const CreateEditWorkspaceModal = forwardRef((props, ref) => {
 
     const toggleCheck = (e) => {
         const name = e.target.dataset.name;
+        const checked = !form[name];
         setForm({
             ...form,
-            [name]: !form[name],
-            selectedFolder: name === "has_folder" && form.has_folder ? null : form.selectedFolder,
+            [name]: checked,
+            selectedFolder: name === "has_folder" && !checked ? null : form.selectedFolder,
         });
     };
 
@@ -129,10 +149,18 @@ const CreateEditWorkspaceModal = forwardRef((props, ref) => {
                 ...form,
                 selectedUsers: [],
             });
+            setValid({
+                ...valid,
+                team: false,
+            });
         } else {
             setForm({
                 ...form,
                 selectedUsers: e,
+            });
+            setValid({
+                ...valid,
+                team: true,
             });
         }
     };
@@ -145,9 +173,20 @@ const CreateEditWorkspaceModal = forwardRef((props, ref) => {
     };
 
     const handleNameChange = e => {
+        setValid({
+            ...valid,
+            name: false,
+        });
         setForm({
             ...form,
             name: e.target.value.trim(),
+        });
+    };
+
+    const handleNameBlur = (e) => {
+        setValid({
+            ...valid,
+            name: _validateName(),
         });
     };
 
@@ -157,17 +196,15 @@ const CreateEditWorkspaceModal = forwardRef((props, ref) => {
             description: form.description,
             is_external: activeTab === "extern" ? 1 : 0,
             member_ids: form.selectedUsers.map(u => u.id),
-            is_lock: form.is_private ? 1 : 0,   
-            //files: attachedFiles,
-            files_ids: uploadedFiles.map(f => f.id)
-        }
+            is_lock: form.is_private ? 1 : 0,
+            files_ids: uploadedFiles.map(f => f.id),
+        };
         if (form.selectedFolder) {
             payload = {
                 ...payload,
                 workspace_id: form.selectedFolder.value,
             };
         }
-        console.log(payload)
 
         dispatch(createWorkspace(payload));
         toggle();
@@ -258,7 +295,7 @@ const CreateEditWorkspaceModal = forwardRef((props, ref) => {
         setForm({
             ...form,
             has_folder: true,
-            selectedFolder: {
+            selectedFolder: Object.keys(item).length === 0 ? null : {
                 value: item.id,
                 label: item.name,
             },
@@ -272,6 +309,19 @@ const CreateEditWorkspaceModal = forwardRef((props, ref) => {
             setActiveTabName("External");
         }
     }, [activeTab]);
+
+    useEffect(() => {
+        let folderValid = true;
+        if (form.has_folder && form.selectedFolder === null) {
+            folderValid = false;
+        }
+
+        setValid({
+            ...valid,
+            folder: folderValid,
+            name: _validateName(),
+        });
+    }, [form.has_folder, form.selectedFolder]);
 
     return (
         <Modal isOpen={modal} toggle={toggle} centered size={"md"}>
@@ -293,16 +343,20 @@ const CreateEditWorkspaceModal = forwardRef((props, ref) => {
                     <Label for="chat">
                         Worskpace name</Label>
                     <Input
-                        style={{borderRadius: "5px"}}
+                        name="name"
                         defaultValue={mode === "edit" ? "" : ""}
                         onChange={handleNameChange}
+                        onBlur={handleNameBlur}
+                        valid={valid.name}
                         autoFocus
                     />
                 </WrapperDiv>
                 <WrapperDiv>
                     <Label for="has_folder"></Label>
-                    <CheckBox type="success" name="has_folder" checked={form.has_folder} onClick={toggleCheck}>Add
-                        folder</CheckBox>
+                    <CheckBox
+                        valid={valid.folder}
+                        type="success" name="has_folder"
+                        checked={form.has_folder} onClick={toggleCheck}>Add folder</CheckBox>
                 </WrapperDiv>
                 {
                     form.has_folder === true &&
@@ -320,6 +374,7 @@ const CreateEditWorkspaceModal = forwardRef((props, ref) => {
                 <WrapperDiv>
                     <Label for="people">Team</Label>
                     <SelectPeople
+                        valid={valid.team}
                         options={userOptions}
                         value={form.selectedUsers}
                         onChange={handleSelectUser}
@@ -339,11 +394,12 @@ const CreateEditWorkspaceModal = forwardRef((props, ref) => {
                 }
                 <WrapperDiv margin={attachedFiles.length ? "20px 0" : "40px 0 20px"}>
                     <Label></Label>
-                    <CheckBox name="is_private" checked={form.is_private} onClick={toggleCheck}>Lock
-                        workspace</CheckBox>
+                    <CheckBox
+                        name="is_private"
+                        checked={form.is_private} onClick={toggleCheck}>Lock workspace</CheckBox>
                     <button
                         className="btn btn-primary"
-                        disabled={form.selectedUsers.length === 0 || form.name === "" || attachedFiles.length !== uploadedFiles.length}
+                        disabled={Object.values(valid).filter(v => !v).length}
                         onClick={handleConfirm}>
                         {mode === "edit" ? "Update workspace" : "Create workspace"}
                     </button>

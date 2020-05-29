@@ -85,7 +85,7 @@ const CreateEditWorkspacePostModal = props => {
         has_folder: false,
         name: "",
         selectedUsers: [],
-        selectedWorkspace: null,
+        selectedWorkspaces: [],
         description: "",
         textOnly: "",
     });
@@ -127,10 +127,17 @@ const CreateEditWorkspacePostModal = props => {
     };
 
     const handleSelectWorkspace = e => {
-        setForm({
-            ...form,
-            selectedWorkspace: e,
-        });
+        if (e === null) {
+            setForm({
+                ...form,
+                selectedWorkspaces: [],
+            });
+        } else {
+            setForm({
+                ...form,
+                selectedWorkspaces: e,
+            });
+        }
     };
 
     const handleNameChange = e => {
@@ -148,10 +155,13 @@ const CreateEditWorkspacePostModal = props => {
             member_ids: form.selectedUsers.map(u => u.id),
             is_lock: form.is_private ? 1 : 0,
         };
-        if (form.selectedWorkspace) {
+        /**
+         * @todo must be multiple
+         */
+        if (form.selectedWorkspaces) {
             payload = {
                 ...payload,
-                workspace_id: form.selectedWorkspace.value,
+                workspace_ids: form.selectedWorkspaces.value,
             };
         }
         dispatch(createWorkspace(payload));
@@ -200,9 +210,9 @@ const CreateEditWorkspacePostModal = props => {
                     <Label for="workspace">Workspace</Label>
                     <SelectWorkspace
                         options={workspaceOptions}
-                        value={form.selectedWorkspace}
+                        value={form.selectedWorkspaces}
                         onChange={handleSelectWorkspace}
-                        isMulti={false}
+                        isMulti={true}
                         isClearable={true}
                     />
                 </WrapperDiv>
