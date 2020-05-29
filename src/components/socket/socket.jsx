@@ -891,7 +891,7 @@ class Socket extends PureComponent {
                 }
             })
             .listen(".topic-first-message", e => {
-                // exists on the create topic endpoint
+                // exists on the create topic endpoint and it will create first message on the topic channel
             })
             .listen(".new-added-member-chat", e => {
                 console.log("new chat member", e);
