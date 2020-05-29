@@ -301,27 +301,29 @@ class Socket extends PureComponent {
     }
 
     onListen = (external = localStorage.getItem("slug"), ex_id = this.props.user.id) => {
-        window.Echo.join(external + ".App.User.Online")
-            .here(viewers => {
-                console.log(viewers, "viewers");
-            })
-            .joining(user => {
-                console.log(user, "joining");
-            })
-            .leaving(user => {
-                console.log(user, "leaving");
-            });
-        if (window.Echo.connector.channels[`presence-${external}.App.User.Online`]) {
-            window.Echo.connector.channels[`presence-${external}.App.User.Online`].socket.on("connect", function () {
-                console.log("online users channel connected", window[external]);
-            });
-            window.Echo.connector.channels[`presence-${external}.App.User.Online`].socket.on("reconnect", function () {
-                console.log("online users channel re-connected");
-            });
-            window.Echo.connector.channels[`presence-${external}.App.User.Online`].socket.on("disconnect", function () {
-                console.log("online users channel disconnected");
-            });
-        }
+        // user online
+        // window.Echo.join(external + ".App.User.Online")
+        //     .here(viewers => {
+        //         console.log(viewers, "viewers");
+        //     })
+        //     .joining(user => {
+        //         console.log(user, "joining");
+        //     })
+        //     .leaving(user => {
+        //         console.log(user, "leaving");
+        //     });
+            
+        // if (window.Echo.connector.channels[`presence-${external}.App.User.Online`]) {
+        //     window.Echo.connector.channels[`presence-${external}.App.User.Online`].socket.on("connect", function () {
+        //         console.log("online users channel connected", window[external]);
+        //     });
+        //     window.Echo.connector.channels[`presence-${external}.App.User.Online`].socket.on("reconnect", function () {
+        //         console.log("online users channel re-connected");
+        //     });
+        //     window.Echo.connector.channels[`presence-${external}.App.User.Online`].socket.on("disconnect", function () {
+        //         console.log("online users channel disconnected");
+        //     });
+        // }
 
         //let audio = document.createElement("audio");
         // audio.src = chatSound;
@@ -376,16 +378,17 @@ class Socket extends PureComponent {
                     this.props.addChatBoxAction(cb);
                 }
             })
-            .listen(".chat-channel", e => {
+            // old socket for chat channel
+            // .listen(".chat-channel", e => {
 
-            })
-            .listen(".read_channel", e => {
-                this.props.updateChatCounterAction(e);
-            })
-            .listen(".archive-chat-discussion", e => {
-                //console.log(e, 'archive');
-                this.props.incomingArchivedChatAction(e);
-            })
+            // })
+            // .listen(".read_channel", e => {
+            //     this.props.updateChatCounterAction(e);
+            // })
+            // .listen(".archive-chat-discussion", e => {
+            //     //console.log(e, 'archive');
+            //     this.props.incomingArchivedChatAction(e);
+            // })
             .listen(".post-follow", e => {
                 console.log(e, "follow");
                 this.props.addRemovePostRecipientAction({
@@ -502,9 +505,10 @@ class Socket extends PureComponent {
 
                 //this.props.addChatNotificationAction(e)
             })
-            .listen(".post-created", e => {
-                //console.log(e, 'post created');
-            })
+            // .listen(".post-created", e => {
+            //     //console.log(e, 'post created');
+            //     // old version
+            // })
             .listen(".post-view", e => {
                 //console.log(e, 'post view');
                 let payload = {
@@ -517,16 +521,17 @@ class Socket extends PureComponent {
                 console.log(e, "comment post view");
                 this.props.updatePostCommentViewers(e);
             })
-            .listen(".post-updated", e => {
-                //console.log(e, 'post updated')
-            })
+            // .listen(".post-updated", e => {
+            //     //console.log(e, 'post updated')
+            //     // old version
+            // })
             .listen(".post-deleted", e => {
                 //console.log(e, 'post deleted');
                 this.props.incomingDeletedPostAction({post_id: e.post_id});
             })
-            .listen(".reply-created", e => {
-                //console.log(e, 'reply created');
-            })
+            // .listen(".reply-created", e => {
+            //     //console.log(e, 'reply created');
+            // })
             .listen(".reply-updated", e => {
                 console.log(e, "reply updated");
                 if (e.message.invited_recipient_ids.length) {
@@ -886,7 +891,7 @@ class Socket extends PureComponent {
                 }
             })
             .listen(".topic-first-message", e => {
-
+                // exists on the create topic endpoint
             })
             .listen(".new-added-member-chat", e => {
                 console.log("new chat member", e);
