@@ -1,4 +1,4 @@
-import React, {useRef, useState} from "react";
+import React, {useRef, useState, useEffect} from "react";
 import styled from "styled-components";
 import {InputGroup, Label} from "reactstrap";
 import QuillEditor from "./QuillEditor";
@@ -117,6 +117,10 @@ const DescriptionInput = props => {
         editor.insertText(cursorPosition, e.native);
         editor.setSelection(cursorPosition + 2);
     };
+
+    // useEffect(() => {
+    //     reactQuillRef.current.blur();
+    // }, []);
 
     const [modules] = useQuillModules("description");
 

@@ -162,7 +162,7 @@ const CreateWorkspaceFolderModal = props => {
 
     return (
 
-        <Modal isOpen={modal} toggle={toggle} centered size={"md"}>
+        <Modal isOpen={modal} toggle={toggle} centered size={"md"} autoFocus={false}>
             <ModalHeaderSection toggle={toggle} className={"workspace-folder-header"}>
                 {mode === "edit" ? "Edit folder" : "Create new folder"}
                 <ActiveTabName className="intern-extern">{activeTabName}</ActiveTabName>

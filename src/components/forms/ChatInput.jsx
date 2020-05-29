@@ -362,6 +362,10 @@ const ChatInput = props => {
     };
 
     useEffect(() => {
+        if (reactQuillRef.current) {
+            reactQuillRef.current.focus();
+        }
+
         const handlePaste = (e) => {
             let files = [];
 

@@ -327,7 +327,7 @@ const CreateEditWorkspaceModal = forwardRef((props, ref) => {
     }, [form.has_folder, form.selectedFolder]);
 
     return (
-        <Modal isOpen={modal} toggle={toggle} centered size={"md"}>
+        <Modal isOpen={modal} toggle={toggle} centered size={"md"} autoFocus={false}>
             <ModalHeaderSection toggle={toggle}>
                 {mode === "edit" ? "Edit workspace" : "Create new workspace"}
                 <ActiveTabName className="intern-extern">{activeTabName}</ActiveTabName>
