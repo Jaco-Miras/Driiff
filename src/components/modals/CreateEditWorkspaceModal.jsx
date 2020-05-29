@@ -255,9 +255,18 @@ const CreateEditWorkspaceModal = forwardRef((props, ref) => {
     }
 
     useEffect(() => {
+        let currentUser = null;
+        if (Object.values(users).length) {
+            currentUser = {
+                ...users[user.id],
+                value: user.id,
+                label: user.name
+            }
+        }
         setForm({
             ...form,
             has_folder: true,
+            selectedUsers: currentUser? [currentUser] : [],
             selectedFolder: {
                 value: item.id,
                 label: item.name,
