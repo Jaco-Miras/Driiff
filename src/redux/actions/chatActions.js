@@ -437,3 +437,11 @@ export function restoreLastVisitedChannel(payload, callback) {
         callback,
     );
 }
+
+export function clearSelectedChannel(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "CLEAR_SELECTED_CHANNEL",
+        payload,
+        callback,
+    );
+}

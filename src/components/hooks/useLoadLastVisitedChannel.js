@@ -7,6 +7,7 @@ import {
     restoreLastVisitedChannel,
     saveLastVisitedChannel,
     setSelectedChannel,
+    clearSelectedChannel
 } from "../../redux/actions/chatActions";
 
 const useLoadLastVisitedChannel = (props) => {
@@ -38,31 +39,13 @@ const useLoadLastVisitedChannel = (props) => {
         };
 
         if (!channelsLoaded) {
-            if (selectedChannel === null) {
-                if (["/workspace/chat", "/workspace/chat/:cid", "/workspace/chat/:cid/mid"].includes(path)) {
-                    history.push(`/workspace/chat/${params.cid}`);
-                } else if (path === "/chat/:cid" || path === "/chat/:cid/mid") {
-                    loadSelectedChannel({channel_id: params.cid});
-                    history.push(`/chat/${params.cid}`);
-                } else {
-                    dispatch(
-                        getLastVisitedChannel({}, (err, res) => {
-                            loadSelectedChannel({channel_id: res.data.code});
-                            if (["/workspace/chat", "/workspace/chat/:cid", "/workspace/chat/:cid/mid"].includes(path)) {
-                                history.push(`/workspace/chat/${res.data.code}`);
-                            } else {
-                                history.push(`/chat/${res.data.code}`);
-                            }
-                        }),
-                    );
-                }
-            } else {
-                if (["/workspace/chat", "/workspace/chat/:cid", "/workspace/chat/:cid/mid"].includes(path)) {
-                    history.push(`/workspace/chat/${selectedChannel.code}`);
-                } else {
-                    history.push(`/chat/${selectedChannel.code}`);
-                }
-            }
+            dispatch(clearSelectedChannel());
+            dispatch(
+                getLastVisitedChannel({}, (err, res) => {
+                    loadSelectedChannel({channel_id: res.data.code});
+                    history.push(`/chat/${res.data.code}`);
+                })
+            );
         } else {
             //channels already loaded then fetch the saved last visited channel
             if (lastVisitedChannel !== null) {

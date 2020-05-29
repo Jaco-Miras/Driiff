@@ -802,6 +802,12 @@ export default function (state = INITIAL_STATE, action) {
                 selectedChannel: channel
             }
         }
+        case "CLEAR_SELECTED_CHANNEL": {
+            return {
+                ...state,
+                selectedChannel: null
+            }
+        }
         default:
             return state;
     }

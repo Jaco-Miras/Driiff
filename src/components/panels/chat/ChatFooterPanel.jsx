@@ -5,6 +5,7 @@ import {onClickSendButton} from "../../../redux/actions/chatActions";
 import {CommonPicker, SvgIconFeather} from "../../common";
 import ChatInput from "../../forms/ChatInput";
 import ChatQuote from "../../list/chat/ChatQuote";
+import {useIsMember} from "../../hooks";
 
 const Wrapper = styled.div`
     position: relative;
@@ -91,6 +92,8 @@ const ChatFooterPanel = (props) => {
         handleSend();
     };
 
+    const isMember = useIsMember(selectedChannel && selectedChannel.members.length ? selectedChannel.members.map(m => m.id) : [])
+
     return (
         <Wrapper className={`chat-footer border-top ${className}`}>
             {
@@ -99,39 +102,51 @@ const ChatFooterPanel = (props) => {
                     <ChatQuote/>
                 </Dflex>
             }
-            <Dflex className="d-flex align-items-center">
-                {
-                    selectedChannel && selectedChannel.is_archived === 1 ?
-                        <ArchivedDiv>
-                            <h4>Channel archived</h4>
-                        </ArchivedDiv>
-                        :
-                        <React.Fragment>
-                            <IconButton onClick={handleShowEmojiPicker} icon="smile"/>
-                            <ChatInputContainer className="flex-grow-1">
-                                <ChatInput
-                                    selectedGif={selectedGif} onClearGif={onClearGif}
-                                    selectedEmoji={selectedEmoji} onClearEmoji={onClearEmoji}
-                                    dropAction={dropAction}/>
-                            </ChatInputContainer>
-                            <div className="chat-footer-buttons d-flex">
-                                <IconButton onClick={handleSend} icon="send"/>
-                                <IconButton onClick={onShowFileDialog} icon="paperclip"/>
-                            </div>
-                        </React.Fragment>
-                }
-                {
-                    showEmojiPicker === true &&
-                    <PickerContainer
-                        handleSend={handleSend}
-                        handleShowEmojiPicker={handleShowEmojiPicker}
-                        onSelectEmoji={onSelectEmoji}
-                        onSelectGif={onSelectGif}
-                        orientation={"top"}
-                        ref={ref.picker}
-                    />
-                }
-            </Dflex>
+            {
+                isMember &&
+                <Dflex className="d-flex align-items-center">
+                    {
+                        selectedChannel && selectedChannel.is_archived === 1 ?
+                            <ArchivedDiv>
+                                <h4>Channel archived</h4>
+                            </ArchivedDiv>
+                            :
+                            <React.Fragment>
+                                <IconButton onClick={handleShowEmojiPicker} icon="smile"/>
+                                <ChatInputContainer className="flex-grow-1">
+                                    <ChatInput
+                                        selectedGif={selectedGif} onClearGif={onClearGif}
+                                        selectedEmoji={selectedEmoji} onClearEmoji={onClearEmoji}
+                                        dropAction={dropAction}/>
+                                </ChatInputContainer>
+                                <div className="chat-footer-buttons d-flex">
+                                    <IconButton onClick={handleSend} icon="send"/>
+                                    <IconButton onClick={onShowFileDialog} icon="paperclip"/>
+                                </div>
+                            </React.Fragment>
+                    }
+                    {
+                        showEmojiPicker === true &&
+                        <PickerContainer
+                            handleSend={handleSend}
+                            handleShowEmojiPicker={handleShowEmojiPicker}
+                            onSelectEmoji={onSelectEmoji}
+                            onSelectGif={onSelectGif}
+                            orientation={"top"}
+                            ref={ref.picker}
+                        />
+                    }
+                </Dflex>
+            }
+            {
+                isMember === false &&
+                <Dflex>
+                    {
+                        //waiting for design
+                    }
+                    <div>join workspace</div>
+                </Dflex>
+            }
         </Wrapper>
     );
 };
