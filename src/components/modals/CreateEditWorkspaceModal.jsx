@@ -6,11 +6,13 @@ import {clearModal} from "../../redux/actions/globalActions";
 import {CheckBox, FolderSelect, PeopleSelect, DescriptionInput} from "../forms";
 import {createWorkspace} from "../../redux/actions/workspaceActions";
 import {DropDocument} from "../dropzone/DropDocument";
+import {FileAttachments} from "../common";
+import {uploadDocument} from "../../redux/services/global";
 
 const WrapperDiv = styled(InputGroup)`
     display: flex;
     align-items: center;
-    margin: 20px 0;
+    margin: ${props => props.margin ? props.margin : "20px 0"};
     label {
         white-space: nowrap;
         margin: 0 20px 0 0;
@@ -72,6 +74,7 @@ const CreateEditWorkspaceModal = forwardRef((props, ref) => {
     const dropzoneRef = useRef();
     const dispatch = useDispatch();
     const [modal, setModal] = useState(true);
+    const user = useSelector(state => state.session.user);
     const users = useSelector(state => state.users.mentions);
     const workspaces = useSelector(state => state.workspaces.workspaces);
     const activeTab = useSelector(state => state.workspaces.activeTab);
@@ -87,6 +90,7 @@ const CreateEditWorkspaceModal = forwardRef((props, ref) => {
     });
     const [showDropzone, setShowDropzone] = useState(false);
     const [attachedFiles, setAttachedFiles] = useState([]);
+    const [uploadedFiles, setUploadedFiles] = useState([]);
 
     const toggle = () => {
         setModal(!modal);
@@ -154,7 +158,8 @@ const CreateEditWorkspaceModal = forwardRef((props, ref) => {
             is_external: activeTab === "extern" ? 1 : 0,
             member_ids: form.selectedUsers.map(u => u.id),
             is_lock: form.is_private ? 1 : 0,   
-            //files: attachedFiles
+            //files: attachedFiles,
+            files_ids: uploadedFiles.map(f => f.id)
         }
         if (form.selectedFolder) {
             payload = {
@@ -230,9 +235,24 @@ const CreateEditWorkspaceModal = forwardRef((props, ref) => {
                 });
             }
         });
-        setAttachedFiles(attachedFiles)
+        setAttachedFiles(attachedFiles);
+        uploadFiles(attachedFiles);
         handleHideDropzone();
     };
+
+    async function uploadFiles(files) {
+        await Promise.all(
+            files.map(file => uploadDocument({
+                    user_id: user.id,
+                    file: file.bodyFormData,
+                    file_type: "private",
+                    folder_id: null,
+                }),
+            ),
+        ).then(result => {
+            setUploadedFiles(result.map(res => res.data));
+        });
+    }
 
     useEffect(() => {
         setForm({
@@ -306,15 +326,24 @@ const CreateEditWorkspaceModal = forwardRef((props, ref) => {
                     />
                 </WrapperDiv>
                 <DescriptionInput
+                    showFileButton={true}
                     onChange={handleQuillChange}
+                    onOpenFileDialog={handleOpenFileDialog}
                 />
-                <WrapperDiv style={{marginTop: "40px"}}>
+                {
+                    attachedFiles.length > 0 &&
+                    <WrapperDiv margin={"40px 0 20px"}>
+                        <Label></Label>
+                        <FileAttachments attachedFiles={attachedFiles}/>
+                    </WrapperDiv>
+                }
+                <WrapperDiv margin={attachedFiles.length ? "20px 0" : "40px 0 20px"}>
                     <Label></Label>
                     <CheckBox name="is_private" checked={form.is_private} onClick={toggleCheck}>Lock
                         workspace</CheckBox>
                     <button
                         className="btn btn-primary"
-                        disabled={form.selectedUsers.length === 0 || form.name === ""}
+                        disabled={form.selectedUsers.length === 0 || form.name === "" || attachedFiles.length !== uploadedFiles.length}
                         onClick={handleConfirm}>
                         {mode === "edit" ? "Update workspace" : "Create workspace"}
                     </button>
