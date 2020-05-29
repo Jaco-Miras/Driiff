@@ -12,7 +12,7 @@ const BodyMentionDiv = styled.div`
         color: #7a1b8b;
     }
     button {
-        ${'' /* border-radius: 8px; */}
+        ${"" /* border-radius: 8px; */}
         margin-right: 10px;
     }
 `;

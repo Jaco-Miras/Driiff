@@ -92,7 +92,7 @@ const useSelectQuote = props => {
             setQuote(null);
             setQuoteBody(null);
         }
-    }, [Object.values(quotes), Object.values(quotes).length]);
+    }, [quotes, selectedChannel.id]);
 
     return [quote, quoteBody];
 };

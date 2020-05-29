@@ -1,6 +1,6 @@
 import React, {useEffect, useRef, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {Input, InputGroup, Label, Modal, ModalBody, ModalHeader} from "reactstrap";
+import {Input, InputGroup, Label, Modal, ModalBody} from "reactstrap";
 import styled from "styled-components";
 import {clearModal} from "../../redux/actions/globalActions";
 import {createWorkspace} from "../../redux/actions/workspaceActions";
@@ -183,6 +183,8 @@ const CreateEditWorkspacePostModal = props => {
                 },
             });
         }
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (

@@ -6,7 +6,7 @@ const useLoadChannels = () => {
 
     const dispatch = useDispatch();
     //const settings  = useSelector(state => state.user.settings)
-    const channels = useSelector(state => state.chat.channels);
+    //const channels = useSelector(state => state.chat.channels);
     const channelsLoaded = useSelector(state => state.chat.channelsLoaded);
     const [activeChannelsLoaded, setActiveChannelsLoaded] = useState(false);
     const [hiddenChannelsLoaded, setHiddenChannelsLoaded] = useState(false);

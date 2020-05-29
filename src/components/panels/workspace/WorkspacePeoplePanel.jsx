@@ -1,5 +1,6 @@
 import React, {useEffect, useRef, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
+import {useHistory} from "react-router-dom";
 import styled from "styled-components";
 import {getUsers} from "../../../redux/actions/userAction";
 import {Avatar, SvgIconFeather} from "../../common";
@@ -17,8 +18,11 @@ const WorkspacePeoplePanel = (props) => {
 
     const {className = ""} = props;
 
+    const history = useHistory();
     const dispatch = useDispatch();
     const users = useSelector(state => state.users.users);
+    const workspaces = useSelector(state => state.workspaces.workspaces);
+    const activeTopic = useSelector(state => state.workspaces.activeTopic);
     const userFilter = useSelector(state => state.users.getUserFilter);
     const [search, setSearch] = useState("");
     const ref = {
@@ -33,6 +37,10 @@ const WorkspacePeoplePanel = (props) => {
         .filter(user => {
             if (user.active !== 1)
                 return false;
+
+            if (!workspaces[activeTopic.workspace_id].member_ids.includes(user.id)) {
+                return false;
+            }
 
             if (search !== "") {
                 return user.name

@@ -102,7 +102,8 @@ const WorspaceHeaderPanel = (props) => {
                             :
                             <>
                                 <li className="nav-item">
-                                    <WorkspaceButton onClick={handleShowWorkspaceModal}>New workspace <SvgIconFeather icon="play" /></WorkspaceButton>
+                                    <WorkspaceButton onClick={handleShowWorkspaceModal}>New workspace <SvgIconFeather
+                                        icon="play"/></WorkspaceButton>
                                 </li>
                             </>
                     }

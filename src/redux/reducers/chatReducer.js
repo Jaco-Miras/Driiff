@@ -15,7 +15,7 @@ const INITIAL_STATE = {
     sendButtonClicked: false,
     chatQuotes: {},
     channelsLoaded: false,
-    lastVisitedChannel: null
+    lastVisitedChannel: null,
 };
 
 export default function (state = INITIAL_STATE, action) {
@@ -110,7 +110,7 @@ export default function (state = INITIAL_STATE, action) {
             return {
                 ...state,
                 channels: channels,
-                channelsLoaded: true
+                channelsLoaded: true,
             };
         }
         case "GET_WORKSPACES_SUCCESS": {
@@ -731,8 +731,6 @@ export default function (state = INITIAL_STATE, action) {
                     ...channel,
                     replies: channel.replies.map(r => {
                         if (r.id === action.data.message_id) {
-                            let ac = state.selectedChannel;
-
                             if (r.original_body)
                                 r.body = r.original_body;
 
@@ -770,7 +768,7 @@ export default function (state = INITIAL_STATE, action) {
                 channel = {
                     ...channel,
                     members: action.data.members,
-                    title: action.data.title
+                    title: action.data.title,
                 };
             }
             return {
@@ -789,24 +787,24 @@ export default function (state = INITIAL_STATE, action) {
             };
         }
         case "SAVE_LAST_VISITED_CHANNEL": {
-            console.log(action.data)
+            console.log(action.data);
             return {
                 ...state,
-                lastVisitedChannel: action.data
-            }
+                lastVisitedChannel: action.data,
+            };
         }
         case "RESTORE_LAST_VISITED_CHANNEL": {
             let channel = {...state.channels[action.data.channel_id]};
             return {
                 ...state,
-                selectedChannel: channel
-            }
+                selectedChannel: channel,
+            };
         }
         case "CLEAR_SELECTED_CHANNEL": {
             return {
                 ...state,
-                selectedChannel: null
-            }
+                selectedChannel: null,
+            };
         }
         default:
             return state;

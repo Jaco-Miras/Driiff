@@ -71,9 +71,6 @@ const LoginPanel = (props) => {
         success: "",
     });
 
-    const handleRememberMe = (e) => {
-    };
-
     const toggleCheck = (e) => {
         setForm({
             ...form,

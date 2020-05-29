@@ -69,7 +69,7 @@ const useQuillModules = (mode, callback, mentionOrientation = "top") => {
                     return listDisplay;
                 },
             },
-            toolbar: ['bold', 'italic', 'underline', 'link', 'image'],
+            toolbar: ["bold", "italic", "underline", "link", "image"],
             keyboard: {
                 bindings: {
                     tab: false,
@@ -89,6 +89,7 @@ const useQuillModules = (mode, callback, mentionOrientation = "top") => {
 
     useEffect(() => {
         handleSetModule();
+
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -96,7 +97,7 @@ const useQuillModules = (mode, callback, mentionOrientation = "top") => {
         if (Object.keys(userMentions).length && (Object.keys(userMentions).length + 1) !== mentionValues.length) {
             handleSetModule();
         }
-    }, [Object.keys(userMentions).length]);
+    }, [Object.keys(userMentions).length], mentionValues.length);
 
     return [modules];
 };

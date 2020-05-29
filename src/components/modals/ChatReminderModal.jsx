@@ -2,7 +2,7 @@ import moment from "moment";
 import React, {useState} from "react";
 import DateTimePicker from "react-datetime-picker";
 import {useDispatch, useSelector} from "react-redux";
-import {Button, Modal, ModalBody, ModalFooter, ModalHeader} from "reactstrap";
+import {Button, Modal, ModalBody, ModalFooter} from "reactstrap";
 import styled from "styled-components";
 import toaster from "toasted-notes";
 import {formatHoursAMPM, formatMonthsOrdinalDay, formatWeeekDayName} from "../../helpers/dateFormatter";

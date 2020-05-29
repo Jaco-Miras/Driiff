@@ -41,6 +41,8 @@ const useQuillInput = (callback, quillRef) => {
         // document.addEventListener("keydown", handleReplyBoxKeyDown, true);
 
         // return () => document.removeEventListener("keydown", handleReplyBoxKeyDown, true);
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {

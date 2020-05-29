@@ -10,7 +10,7 @@ const useIsMember = (members = []) => {
     useEffect(() => {
         if (members.length > 0) {
             const checkForId = id => id === user.id;
-            setIsMember(members.some(checkForId))
+            setIsMember(members.some(checkForId));
         }
     }, [members.length]);
 

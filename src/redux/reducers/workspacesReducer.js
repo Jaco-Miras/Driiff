@@ -5,7 +5,7 @@ const INITIAL_STATE = {
     workspaces: {},
     activeTopic: null,
     activeTab: "intern",
-    workspacesLoaded: false
+    workspacesLoaded: false,
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -22,27 +22,27 @@ export default (state = INITIAL_STATE, action) => {
                 let topics = {};
                 if (ws.topics !== undefined && ws.topics.length > 0) {
                     ws.topics.forEach(t => {
-                        topics[t.id] = { 
+                        topics[t.id] = {
                             ...t,
                             selected: false,
                             is_external: ws.is_external,
                             workspace_id: ws.id,
                             workspace_name: ws.name,
-                        }
-                    })
+                        };
+                    });
                 }
                 workspaces[ws.id] = {
                     ...workspaces[ws.id],
                     ...ws,
                     selected: false,
-                    topics: topics
+                    topics: topics,
                 };
-            })
+            });
             return {
                 ...state,
                 workspaces: workspaces,
-                workspacesLoaded: true
-            }
+                workspacesLoaded: true,
+            };
         }
         case "INCOMING_WORKSPACE_FOLDER": {
             if (state.workspacesLoaded) {
@@ -52,15 +52,15 @@ export default (state = INITIAL_STATE, action) => {
                     [action.data.id]: {
                         ...action.data,
                         topics: {},
-                        selected: false
-                    }
-                }
+                        selected: false,
+                    },
+                };
                 return {
                     ...state,
-                    workspaces: newWorkspaces
-                }
+                    workspaces: newWorkspaces,
+                };
             } else {
-                return state
+                return state;
             }
         }
         case "INCOMING_WORKSPACE": {
@@ -79,12 +79,12 @@ export default (state = INITIAL_STATE, action) => {
                                     unread_posts: 0,
                                     unread_chats: 0,
                                     private: action.data.topic.private ? 1 : 0,
-                                    channel: action.data.channel
-                                }
+                                    channel: action.data.channel,
+                                },
                             },
-                            selected: false
-                        }
-                    }
+                            selected: false,
+                        },
+                    };
                 } else {
                     newWorkspaces = {
                         ...newWorkspaces,
@@ -92,14 +92,14 @@ export default (state = INITIAL_STATE, action) => {
                             ...action.data,
                             name: action.data.topic.name,
                             selected: false,
-                        }
-                    }
+                        },
+                    };
                 }
-                
+
                 return {
                     ...state,
-                    workspaces: newWorkspaces
-                }
+                    workspaces: newWorkspaces,
+                };
             } else {
                 return state;
             }
@@ -110,14 +110,14 @@ export default (state = INITIAL_STATE, action) => {
                 workspace = {
                     ...workspace,
                     name: action.data.name,
-                }
+                };
                 return {
                     ...state,
                     workspaces: {
                         ...state.workspaces,
-                        [action.data.id]: workspace
-                    }
-                }
+                        [action.data.id]: workspace,
+                    },
+                };
             } else {
                 return state;
             }
@@ -140,12 +140,12 @@ export default (state = INITIAL_STATE, action) => {
                 //     ...newWorkspaces,
                 //     [action.data.workspace_id]: workspace
                 // }
-                
+
                 // return {
                 //     ...state,
                 //     workspaces: newWorkspaces
                 // }
-                return state
+                return state;
             } else {
                 return state;
             }
@@ -166,12 +166,12 @@ export default (state = INITIAL_STATE, action) => {
                                     channel: {
                                         ...state.activeTopic.channel,
                                         channel_loaded: true,
-                                    }
-                                }
+                                    },
+                                },
                             },
-                            selected: false
-                        }
-                    }
+                            selected: false,
+                        },
+                    };
                 } else {
                     //last active is direct workspace
                     newWorkspaces = {
@@ -180,8 +180,8 @@ export default (state = INITIAL_STATE, action) => {
                             ...newWorkspaces[state.activeTopic.id],
                             selected: false,
                             channel_loaded: true,
-                        }
-                    }
+                        },
+                    };
                 }
             }
             if (action.data.workspace_id !== undefined) {
@@ -197,12 +197,12 @@ export default (state = INITIAL_STATE, action) => {
                                 channel: {
                                     ...action.data.channel,
                                     channel_loaded: true,
-                                }
-                            }
+                                },
+                            },
                         },
-                        selected: true
-                    }
-                }
+                        selected: true,
+                    },
+                };
             } else {
                 newWorkspaces = {
                     ...newWorkspaces,
@@ -210,21 +210,21 @@ export default (state = INITIAL_STATE, action) => {
                         ...newWorkspaces[action.data.id],
                         selected: true,
                         channel_loaded: true,
-                    }
-                }
+                    },
+                };
             }
-            
+
             return {
                 ...state,
                 workspaces: newWorkspaces,
-                activeTopic: {...action.data, selected: true}
-            }
+                activeTopic: {...action.data, selected: true},
+            };
         }
         case "SET_ACTIVE_TAB": {
             return {
                 ...state,
-                activeTab: action.data
-            }
+                activeTab: action.data,
+            };
         }
         default:
             return state;

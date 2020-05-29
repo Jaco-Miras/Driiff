@@ -1,6 +1,6 @@
 import React, {useRef, useState} from "react";
 import {useDispatch} from "react-redux";
-import {Modal, ModalHeader} from "reactstrap";
+import {Modal} from "reactstrap";
 import styled from "styled-components";
 import {clearModal} from "../../redux/actions/globalActions";
 import QuillEditor from "../forms/QuillEditor";

@@ -312,7 +312,7 @@ class Socket extends PureComponent {
         //     .leaving(user => {
         //         console.log(user, "leaving");
         //     });
-            
+
         // if (window.Echo.connector.channels[`presence-${external}.App.User.Online`]) {
         //     window.Echo.connector.channels[`presence-${external}.App.User.Online`].socket.on("connect", function () {
         //         console.log("online users channel connected", window[external]);

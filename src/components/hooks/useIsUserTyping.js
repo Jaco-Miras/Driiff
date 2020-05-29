@@ -76,7 +76,7 @@ const useIsUserTyping = props => {
 
         return () => clearTimeout(timeout.current);
 
-    }, [channel, previousChannel]);
+    }, [channel, previousChannel, handleSubscribeToChannel]);
 
     return usersTyping;
 };
