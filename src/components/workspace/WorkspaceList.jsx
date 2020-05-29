@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {useDispatch} from "react-redux";
 import {useHistory} from "react-router-dom";
 import styled from "styled-components";
@@ -10,10 +10,12 @@ import TopicList from "./TopicList";
 
 const Wrapper = styled.li`
     cursor: pointer;
+    cursor: hand;
     
     > a {
-        font-weight: bold;
-        color: ${props => props.selected ? "#7a1b8b !important" : "#000"};
+        font-weight: ${props => props.selected ? "bold" : "normal"};
+        color: ${props => props.selected ? "#7a1b8b !important" : "#64625C"};
+        margin-bottom: 10px;
     }
     
     ul {
@@ -21,15 +23,31 @@ const Wrapper = styled.li`
             &.nav-action {
                 list-style-type: none !important;
                 margin-left: 26px !important;
-                color: #a7abc3 !important;
-                font-size 12px !important;
+                color: #BEBEBE !important;
+                font-size: 9px !important;
+                font-weight: normal;
                 
                 svg {
-                    width: 16px;
-                    height: 16px;
+                    width: 7px;
+                    height: 7x;
+                    margin-right: 9px;
                 }
             }
         }
+    }
+`;
+
+const TopicNav = styled.ul`
+    display: block !important;
+    overflow: hidden;    
+    transition: all .3s ease;
+
+    &.enter-active {
+        max-height: ${props => props.maxHeight}px;        
+    }
+
+    &.leave-active {
+        max-height: 0px;
     }
 `;
 
@@ -38,9 +56,15 @@ const WorkspaceList = props => {
     const {className = "", workspace} = props;
 
     const dispatch = useDispatch();
-    let history = useHistory();
+    const history = useHistory();
+    const ref = {
+        container: useRef(null),
+        arrow: useRef(null),
+        nav: useRef(null),
+    };
 
-    const [showTopics, setShowTopics] = useState(true);
+    const [showTopics, setShowTopics] = useState(false);
+    const [maxHeight, setMaxHeight] = useState(0);
 
     const handleSelectWorkpace = () => {
         //set the selected topic
@@ -69,7 +93,9 @@ const WorkspaceList = props => {
         }
     };
 
-    const handleShowTopics = () => {
+    const handleShowTopics = (e) => {
+        e.preventDefault();
+
         if (workspace.type === "FOLDER") {
             setShowTopics(!showTopics);
         } else {
@@ -81,25 +107,56 @@ const WorkspaceList = props => {
         let payload = {
             type: "workspace_create_edit",
             mode: "create",
-            item: workspace
-        }
+            item: workspace,
+        };
 
         dispatch(
-            addToModals(payload)
+            addToModals(payload),
         );
-    }
+    };
+
+    useEffect(() => {
+        if (ref.nav.current !== null) {
+            setMaxHeight(ref.nav.current.offsetHeight);
+
+            const navClassList = ref.nav.current.classList;
+            navClassList.add("leave-active");
+        }
+    }, [ref.nav, maxHeight]);
+
+    useEffect(() => {
+        if (ref.container.current && ref.arrow.current) {
+            let navClassList = ref.nav.current.classList;
+            let iClassList = ref.arrow.current.classList;
+
+            if (showTopics) {
+                iClassList.remove("ti-plus");
+                iClassList.add("ti-minus");
+                iClassList.add("rotate-in");
+                navClassList.add("enter-active");
+                navClassList.remove("leave-active");
+            } else {
+                iClassList.add("ti-plus");
+                iClassList.remove("ti-minus");
+                iClassList.remove("rotate-in");
+                navClassList.add("leave-active");
+                navClassList.remove("enter-active");
+            }
+        }
+    }, [showTopics]);
 
     return (
-        <Wrapper className={`worskpace-list ${className}`} selected={workspace.selected}>
-            <a onClick={handleShowTopics}>{workspace.name}
+        <Wrapper ref={ref.container} className={`worskpace-list ${className}`} selected={workspace.selected}>
+            <a href="/" onClick={handleShowTopics}>{workspace.name}
                 {
                     workspace.type === "FOLDER" &&
-                    <i className={`sub-menu-arrow ti-angle-${showTopics ? "up" : "down"} rotate-in ti-minus`}></i>
+                    <i ref={ref.arrow}
+                       className={`sub-menu-arrow ti-angle-up`}></i>
                 }
             </a>
             {
-                workspace.type === "FOLDER" && showTopics &&
-                <ul style={{display: "block"}}>
+                workspace.type === "FOLDER" &&
+                <TopicNav ref={ref.nav} maxHeight={maxHeight}>
                     {
                         Object.keys(workspace.topics).length > 0 && Object.values(workspace.topics).map(topic => {
                             return <TopicList key={topic.id} topic={topic}/>;
@@ -108,7 +165,7 @@ const WorkspaceList = props => {
                     <li className="nav-action" onClick={handleShowWorkspaceModal}>
                         <SvgIconFeather icon="plus"/> New workspace
                     </li>
-                </ul>
+                </TopicNav>
             }
         </Wrapper>
     );

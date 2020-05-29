@@ -302,7 +302,7 @@ const ChatMessageFiles = styled(MessageFiles)`
     }
     
     ${props => props.hasMessage &&
-	`
+    `
     `}
 `;
 const ReplyContent = styled.span`
@@ -866,7 +866,7 @@ const ChatBubble = forwardRef((props, ref) => {
 
 
     const hasFiles = reply.files.length > 0;
-    const hasMessage = reply.body !== "<span></span>"
+    const hasMessage = reply.body !== "<span></span>";
 
     return <ChatBubbleContainer
         ref={refComponent}

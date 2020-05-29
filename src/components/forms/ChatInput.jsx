@@ -14,9 +14,9 @@ import {
     updateChatMessage,
 } from "../../redux/actions/chatActions";
 import {deleteDraft} from "../../redux/actions/globalActions";
+import BodyMention from "../common/BodyMention";
 import {useDraft, useQuillInput, useQuillModules, useSaveInput, useSelectQuote} from "../hooks";
 import QuillEditor from "./QuillEditor";
-import BodyMention from "../common/BodyMention";
 
 const Wrapper = styled.div`
     border: 1px solid #afb8bd;
@@ -458,8 +458,8 @@ const ChatInput = props => {
         dispatch(
             addChannelMembers(memberPayload, (err, res) => {
                 if (err) return;
-                setIgnoredMentionedUserIds([...ignoredMentionedUserIds, ...users.map(u => u.type_id)])
-            })
+                setIgnoredMentionedUserIds([...ignoredMentionedUserIds, ...users.map(u => u.type_id)]);
+            }),
         );
 
         setMentionedUserIds([]);
@@ -484,7 +484,7 @@ const ChatInput = props => {
                     onAddUsers={handleAddMentionedUsers}
                     onDoNothing={handleIgnoreMentionedUsers}
                     userIds={mentionedUserIds}
-                    type={'chat'}
+                    type={"chat"}
                     basedOnId={false}
                 />
             }

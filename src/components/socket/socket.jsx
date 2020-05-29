@@ -1012,7 +1012,7 @@ class Socket extends PureComponent {
                 this.props.incomingDeletedChatMessage(payload);
                 this.props.deleteFilesFromChannelAction({
                     channel_id: e.channel_id,
-                    file_ids: e.file_ids
+                    file_ids: e.file_ids,
                 });
             })
             .listen(".chat-message-react", e => {

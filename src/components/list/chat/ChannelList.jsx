@@ -62,7 +62,7 @@ const Wrapper = styled.span`
         height: 25px;
         position: relative;
         right: 0;
-        ${'' /* border: 1px solid #dee2e6; */}
+        ${"" /* border: 1px solid #dee2e6; */}
         fill: currentColor;
         padding: 3px;
         top: 2px;

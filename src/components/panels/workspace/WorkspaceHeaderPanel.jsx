@@ -2,7 +2,7 @@ import React, {useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {useRouteMatch} from "react-router-dom";
 import styled from "styled-components";
-import {Avatar, NavLink, SvgIconFeather} from "../../common";
+import {Avatar, SvgIconFeather} from "../../common";
 
 const NavBar = styled.ul`
     li {

@@ -21,10 +21,12 @@ const CheckBox = forwardRef((props, ref) => {
     }
 
     return (
-        <Wrapper data-name={name} className={`custom-control custom-checkbox ${classType}${className}`} onClick={onClick}>
-            <input ref={ref} name={name} data-name={name} type="checkbox" className="custom-control-input" checked={checked}
+        <Wrapper data-name={name} className={`custom-control custom-checkbox ${classType}${className}`}
+                 onClick={onClick}>
+            <input ref={ref} name={name} data-name={name} type="checkbox" className="custom-control-input"
+                   checked={checked}
                    readOnly {...otherProps}/>
-            <label data-name={name}  className="custom-control-label">{children}</label>
+            <label data-name={name} className="custom-control-label">{children}</label>
         </Wrapper>
     );
 });

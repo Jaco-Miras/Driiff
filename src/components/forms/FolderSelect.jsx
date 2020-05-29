@@ -47,7 +47,7 @@ const FolderSelect = forwardRef((props, ref) => {
     const {className = "", isMulti = false, isClearable = false, ...otherProps} = props;
 
     let components = {Option};
-    
+
     if (isMulti) {
         components = {Option, MultiValueContainer};
     }

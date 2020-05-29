@@ -64,9 +64,29 @@ const StyledQuillEditor = styled(QuillEditor)`
 `;
 
 const StyledModalHeader = styled(ModalHeader)`
-    .intern-extern {
-        margin-left: 10px;
-        font-size: .7rem;
+    color: #505050;  
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: 0;
+    line-height: 26px;
+`;
+
+const ActiveTabName = styled.span`
+    color: #505050;
+    font-size: 10px;
+    font-weight: 400;    
+    margin-left: 13px;
+    
+    &::before{
+        content: '';
+        display: inline-block;
+        width: 4px;
+        height: 4px;
+        -moz-border-radius: 7.5px;
+        -webkit-border-radius: 7.5px;
+        border-radius: 7.5px;
+        background-color: #B8B8B8;
+        margin-right: 9px;
     }
 `;
 
@@ -80,6 +100,7 @@ const CreateEditWorkspaceModal = forwardRef((props, ref) => {
     const users = useSelector(state => state.users.mentions);
     const workspaces = useSelector(state => state.workspaces.workspaces);
     const activeTab = useSelector(state => state.workspaces.activeTab);
+    const [activeTabName, setActiveTabName] = useState("Internal");
     const [form, setForm] = useState({
         is_private: false,
         has_folder: false,
@@ -189,11 +210,19 @@ const CreateEditWorkspaceModal = forwardRef((props, ref) => {
         });
     }, []);
 
+    useEffect(() => {
+        if (activeTab !== "extern") {
+            setActiveTabName("Internal");
+        } else {
+            setActiveTabName("External");
+        }
+    }, [activeTab]);
+
     return (
         <Modal isOpen={modal} toggle={toggle} centered size={"md"}>
             <StyledModalHeader toggle={toggle} className={"workspace-modal-header"}>
                 {mode === "edit" ? "Edit workspace" : "Create new workspace"}
-                <span className="intern-extern">{activeTab}</span>
+                <ActiveTabName className="intern-extern">{activeTabName}</ActiveTabName>
             </StyledModalHeader>
             <ModalBody>
                 <WrapperDiv>
@@ -208,7 +237,8 @@ const CreateEditWorkspaceModal = forwardRef((props, ref) => {
                 </WrapperDiv>
                 <WrapperDiv>
                     <Label for="has_folder"></Label>
-                    <CheckBox type="success" name="has_folder" checked={form.has_folder} onClick={toggleCheck}>Add folder</CheckBox>
+                    <CheckBox type="success" name="has_folder" checked={form.has_folder} onClick={toggleCheck}>Add
+                        folder</CheckBox>
                 </WrapperDiv>
                 {
                     form.has_folder === true &&
@@ -242,7 +272,8 @@ const CreateEditWorkspaceModal = forwardRef((props, ref) => {
                 </WrapperDiv>
                 <WrapperDiv>
                     <Label></Label>
-                    <CheckBox name="is_private" checked={form.is_private} onClick={toggleCheck}>Lock workspace</CheckBox>
+                    <CheckBox name="is_private" checked={form.is_private} onClick={toggleCheck}>Lock
+                        workspace</CheckBox>
                     <button
                         className="btn btn-primary"
                         disabled={form.selectedUsers.length === 0 || form.name === ""}
