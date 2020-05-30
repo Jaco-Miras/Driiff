@@ -1,16 +1,12 @@
 import React from "react";
 import styled from "styled-components";
 
-const Wrapper = styled.div`
-    display: block;
+const Wrapper = styled.div`    
 `;
 
 const InputFeedback = (props) => {
 
     const {className = "", valid, children} = props;
-
-    if (valid === null)
-        return <></>;
 
     return (
         <Wrapper className={`input-feedback ${valid ? "valid" : "invalid"}-feedback ${className}`}>

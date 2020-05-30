@@ -74,4 +74,4 @@ const PickerEmoji = React.forwardRef((props, ref) => {
     );
 });
 
-export default PickerEmoji;
+export default React.memo(PickerEmoji);

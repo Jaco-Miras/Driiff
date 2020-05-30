@@ -148,4 +148,4 @@ const DescriptionInput = props => {
     )
 };
 
-export default DescriptionInput;
+export default React.memo(DescriptionInput);

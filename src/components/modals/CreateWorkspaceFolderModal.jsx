@@ -1,7 +1,8 @@
-import React, {useEffect, useState} from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {Input, InputGroup, Label, Modal, ModalBody} from "reactstrap";
 import styled from "styled-components";
+import toaster from "toasted-notes";
 import {clearModal} from "../../redux/actions/globalActions";
 import {createWorkspace} from "../../redux/actions/workspaceActions";
 import {CheckBox, DescriptionInput, InputFeedback} from "../forms";
@@ -78,7 +79,6 @@ const CreateWorkspaceFolderModal = props => {
     const [feedback, setFeedback] = useState({
         name: "",
     });
-
     const toggle = () => {
         setModal(!modal);
         dispatch(
@@ -86,28 +86,15 @@ const CreateWorkspaceFolderModal = props => {
         );
     };
 
-    const toggleCheck = (e) => {
+    const toggleCheck = useCallback((e) => {
         const name = e.target.dataset.name;
-        setForm({
-            ...form,
-            [name]: !form[name],
-        });
-    };
+        setForm(prevState => ({
+            ...prevState,
+            [name]: !prevState[name],
+        }));
+    }, [setForm]);
 
-    const handleNameChange = e => {
-        if (valid.name !== null) {
-            setValid({
-                ...form,
-                name: null,
-            });
-        }
-        setForm({
-            ...form,
-            name: e.target.value.trim(),
-        });
-    };
-
-    const handleNameBlur = e => {
+    const validateName = useCallback(() => {
         setValid({
             ...valid,
             name: form.name !== "",
@@ -129,9 +116,27 @@ const CreateWorkspaceFolderModal = props => {
                 name: "",
             });
         }
-    };
+    }, [form.name, valid, setValid, feedback, setFeedback, workspaces]);
 
-    const handleConfirm = () => {
+    const handleNameChange = useCallback(e => {
+        e.persist();
+        if (valid.name !== null) {
+            setValid(prevState => ({
+                ...prevState,
+                name: null,
+            }));
+        }
+        setForm(prevState => ({
+            ...prevState,
+            name: e.target.value.trim(),
+        }));
+    }, [valid.name, setValid, setForm]);
+
+    const handleNameBlur = useCallback(e => {
+        validateName();
+    }, [validateName]);
+
+    const handleConfirm = useCallback(() => {
         let payload = {
             name: form.name,
             description: form.description,
@@ -139,18 +144,32 @@ const CreateWorkspaceFolderModal = props => {
             is_folder: 1,
             is_lock: form.is_private ? 1 : 0,
         };
-        dispatch(createWorkspace(payload));
-        toggle();
-    };
+        dispatch(
+            createWorkspace(payload, (err, res) => {
+                if(err) {
+                    console.log(err);
+                    toaster.notify(
+                        <span>Folder creation failed.<br/>Please try again.</span>,
+                        {position: "bottom-left"});
+                }
+                if(res) {
+                    toaster.notify(
+                        <span><b>{form.name}</b> folder is created</span>,
+                        {position: "bottom-left"});
+                    toggle();
+                }
+            }),
+        );
+    }, [dispatch, toggle, activeTab, form.description, form.is_private, form.name, valid.name, setForm]);
 
-    const handleQuillChange = (content, delta, source, editor) => {
+    const handleQuillChange = useCallback((content, delta, source, editor) => {
         const textOnly = editor.getText(content);
-        setForm({
-            ...form,
+        setForm(prevState => ({
+            ...prevState,
             description: content,
             textOnly: textOnly,
-        });
-    };
+        }));
+    }, [setForm]);
 
     useEffect(() => {
         if (activeTab !== "extern") {
@@ -158,10 +177,9 @@ const CreateWorkspaceFolderModal = props => {
         } else {
             setActiveTabName("External");
         }
-    }, [activeTab]);
+    }, [activeTab, setActiveTabName]);
 
     return (
-
         <Modal isOpen={modal} toggle={toggle} centered size={"md"} autoFocus={false}>
             <ModalHeaderSection toggle={toggle} className={"workspace-folder-header"}>
                 {mode === "edit" ? "Edit folder" : "Create new folder"}
@@ -190,7 +208,7 @@ const CreateWorkspaceFolderModal = props => {
                         workspace</CheckBox>
                     <button
                         className="btn btn-primary"
-                        disabled={valid.name}
+                        disabled={valid.name === null || valid.name === false}
                         onClick={handleConfirm}>
                         {mode === "edit" ? "Update workspace" : "Create workspace"}
                     </button>
@@ -200,4 +218,4 @@ const CreateWorkspaceFolderModal = props => {
     );
 };
 
-export default CreateWorkspaceFolderModal;
+export default React.memo(CreateWorkspaceFolderModal);
