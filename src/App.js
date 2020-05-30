@@ -1,5 +1,4 @@
 import React, {useEffect} from "react";
-import {useSelector} from "react-redux";
 import {Switch} from "react-router-dom";
 import ScrollToTop from "react-router-scroll-top";
 import {PreLoader} from "./components/panels";
@@ -10,8 +9,6 @@ import {AppRoute} from "./layout/routes";
 
 function App() {
 
-    const session = useSelector(state => state.session);
-
     useEffect(() => {
 
         translation.init();
@@ -21,17 +18,12 @@ function App() {
 
     return (
         <div className="App">
-            {
-                session.checked === true &&
-                <>
-                    <PreLoader/>
-                    <Switch>
-                        <ScrollToTop>
-                            <AppRoute path="*" authenticated={session.authenticated}/>
-                        </ScrollToTop>
-                    </Switch>
-                </>
-            }
+            <PreLoader/>
+            <Switch>
+                <ScrollToTop>
+                    <AppRoute path="*"/>
+                </ScrollToTop>
+            </Switch>
         </div>
     );
 }

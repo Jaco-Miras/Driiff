@@ -1,9 +1,16 @@
 import React from "react";
+import {useSelector} from "react-redux";
 import {Redirect, Route, Switch} from "react-router-dom";
 import GuestLayout from "./GuestLayout";
 import MainLayout from "./MainLayout";
 
-export const AppRoute = ({authenticated, children, ...props}) => {
+export const AppRoute = ({children, ...props}) => {
+
+    const session = useSelector(state => state.session.checked === true && state.session);
+    const authenticated = session.authenticated;
+
+    if(!session.checked)
+        return null;
 
     return (
         authenticated ?

@@ -1,6 +1,7 @@
 import React, {useEffect, useRef, useState} from "react";
 import {useDispatch} from "react-redux";
 import {useHistory, useRouteMatch} from "react-router-dom";
+import {Badge} from "reactstrap";
 import styled from "styled-components";
 import {addToChannels, getChannel, setSelectedChannel} from "../../redux/actions/chatActions";
 import {addToModals} from "../../redux/actions/globalActions";
@@ -12,11 +13,17 @@ const Wrapper = styled.li`
     ${props => !props.show && `display: none;`} 
     cursor: pointer;
     cursor: hand;
+    position: relative;
     
     > a {
         font-weight: ${props => props.selected ? "bold" : "normal"};
         color: ${props => props.selected ? "#7a1b8b !important" : "#64625C"};
         margin-bottom: 10px;
+        
+        .badge {
+            position: absolute;
+            right: 25px;
+        }
     }
 `;
 
@@ -134,11 +141,15 @@ const WorkspaceList = props => {
     return (
         <Wrapper ref={ref.container} className={`worskpace-list ${className}`} selected={workspace.selected}
                  show={show}>
-            <a href="/" onClick={handleShowTopics}>{workspace.name}
+            <a className={`${workspace.selected && "active"}`} href="/" onClick={handleShowTopics}>{workspace.name}
                 {
                     workspace.type === "FOLDER" &&
                     <i ref={ref.arrow}
                        className={`sub-menu-arrow ti-angle-up`}></i>
+                }
+                {
+                    workspace.id === 12 &&
+                    <Badge color="danger">5</Badge>
                 }
             </a>
             {

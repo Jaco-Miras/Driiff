@@ -15,7 +15,7 @@ const Wrapper = styled.div`
     -ms-overflow-style: none;
     scrollbar-width: none;
     
-    &.navigation-menu-body {        
+    &.navigation-menu-body {            
         h4 {
             color: #7a1b8b;    
             text-transform: uppercase;
@@ -24,6 +24,7 @@ const Wrapper = styled.div`
         }
         .nav-tabs {
             margin-left: 30px;
+            width: calc(100% - 55px);
             
             .nav-item {
                 cursor: pointer;
@@ -51,6 +52,10 @@ const Wrapper = styled.div`
                             margin-right: 9px;
                         }
                     }
+                    
+                    a {
+                        padding: 10px 70px 10px 30px;
+                    }
     
                     > ul {
                         li {                                    
@@ -59,9 +64,11 @@ const Wrapper = styled.div`
                             color: #828282;
                             font-size: 11px;
                             max-width:calc(100% - 75px);                            
-                            white-space: nowrap;
-                            overflow: hidden;
-                            text-overflow: ellipsis;
+                            // white-space: nowrap;
+                            // overflow: hidden;
+                            // text-overflow: ellipsis;
+                            position: relative;
+                            padding-left: 18px;
                                             
                             &.nav-action {
                                 list-style-type: none !important;
@@ -69,26 +76,27 @@ const Wrapper = styled.div`
                                 color: #BEBEBE !important;
                                 font-size: 9px !important;
                                 font-weight: normal;
-                                padding-left: 5px;
+                                padding-left: 22px;
                                 
                                 svg {
                                     width: 7px;
-                                    margin-right: 9px;
+                                    left: 6px;
+                                    top:-4px;                                    
                                 }
                             }
                   
                             svg {
                               color: #828282;      
-                              position: relative;
+                              position: absolute;
                               
                               &.feather-lock{
-                                top:-2px;
+                                top:-3px;
+                                left: 0;
                               }
                               &.feather-circle{
                                 left: 3px;
-                                width:4px;
-                                margin-right: 15px;
-                                top:-1px;
+                                width:4px;                                
+                                top:-2px;
                                 fill: #828282;
                               }
                             }
@@ -241,18 +249,6 @@ const WorkspaceNavigationMenuBodyPanel = (props) => {
                     </div>
                 </div>
             </Wrapper>
-            <div id="ascrail2002" className="nicescroll-rails nicescroll-rails-vr"
-                 styles="width: 8px; z-index: 4; cursor: default; position: absolute; top: 0px; left: 112px; height: 378.3px; display: none; opacity: 0;">
-                <div
-                    styles="position: relative; top: 0px; float: right; width: 6px; height: 0px; background-color: rgb(66, 66, 66); border: 1px solid rgb(255, 255, 255); background-clip: padding-box; border-radius: 5px;"
-                    className="nicescroll-cursors"></div>
-            </div>
-            <div id="ascrail2002-hr" className="nicescroll-rails nicescroll-rails-hr"
-                 styles="height: 8px; z-index: 4; top: 370.3px; left: 0px; position: absolute; cursor: default; display: none; opacity: 0;">
-                <div
-                    styles="position: absolute; top: 0px; height: 6px; width: 0px; background-color: rgb(66, 66, 66); border: 1px solid rgb(255, 255, 255); background-clip: padding-box; border-radius: 5px; left: 0px;"
-                    className="nicescroll-cursors"></div>
-            </div>
         </>
     );
 };
