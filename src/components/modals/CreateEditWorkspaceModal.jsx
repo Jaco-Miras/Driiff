@@ -229,13 +229,13 @@ const CreateEditWorkspaceModal = forwardRef((props, ref) => {
 
     const dropAction = (acceptedFiles) => {
 
-        let attachedFiles = [];
+        let selectedFiles = [];
         acceptedFiles.forEach(file => {
             var bodyFormData = new FormData();
             bodyFormData.append("file", file);
             let shortFileId = require("shortid").generate();
             if (file.type === "image/jpeg" || file.type === "image/png" || file.type === "image/gif" || file.type === "image/webp") {
-                attachedFiles.push({
+                selectedFiles.push({
                     ...file,
                     type: "IMAGE",
                     id: shortFileId,
@@ -245,7 +245,7 @@ const CreateEditWorkspaceModal = forwardRef((props, ref) => {
                     name: file.name ? file.name : file.path,
                 });
             } else if (file.type === "video/mp4") {
-                attachedFiles.push({
+                selectedFiles.push({
                     ...file,
                     type: "VIDEO",
                     id: shortFileId,
@@ -255,7 +255,7 @@ const CreateEditWorkspaceModal = forwardRef((props, ref) => {
                     name: file.name ? file.name : file.path,
                 });
             } else {
-                attachedFiles.push({
+                selectedFiles.push({
                     ...file,
                     type: "DOC",
                     id: shortFileId,
@@ -266,8 +266,8 @@ const CreateEditWorkspaceModal = forwardRef((props, ref) => {
                 });
             }
         });
-        setAttachedFiles(attachedFiles);
-        uploadFiles(attachedFiles);
+        setAttachedFiles([...attachedFiles, ...selectedFiles]);
+        //uploadFiles(attachedFiles);
         handleHideDropzone();
     };
 
@@ -343,6 +343,7 @@ const CreateEditWorkspaceModal = forwardRef((props, ref) => {
                         dropAction(acceptedFiles);
                     }}
                     onCancel={handleHideDropzone}
+                    attachedFiles={attachedFiles}
                 />
                 <WrapperDiv>
                     <Label for="chat">

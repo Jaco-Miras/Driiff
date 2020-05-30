@@ -195,7 +195,7 @@ export function deleteWorkspaceFile(payload) {
  * @returns {Promise<*>}
  */
 export function getWorkspacePosts(payload) {
-    let url = `/v2/workspace?topic_id=${payload.topic_id}`;
+    let url = `/v1/posts?topic_id=${payload.topic_id}`;
     if (payload.search !== undefined) {
         url += `&search=${payload.search}`;
     }

@@ -83,27 +83,37 @@ const WorkspaceNavigationMenuBodyPanel = (props) => {
                 getWorkspaces({is_external: 0}, (err, res) => {
                     if (err) return;
                     if (props.match.params.hasOwnProperty("wsid") && props.match.params.wsid !== undefined) {
-                        //set the topic
                         let topic = null;
                         let wsfolder = null;
                         res.data.workspaces.forEach(ws => {
-                            if (ws.topics.length) {
+                            if (ws.type === "FOLDER" && ws.topics.length) {
                                 ws.topics.forEach(t => {
                                     if (t.id === parseInt(props.match.params.wsid)) {
                                         wsfolder = ws;
                                         topic = t;
-
+                                        return;
                                     }
                                 });
+                            } else {
+                                if (ws.id === parseInt(props.match.params.wsid)) {
+                                    topic = ws;
+                                    return;
+                                }
                             }
                         });
-                        if (topic) {
+                        if (topic && wsfolder) {
                             topic = {
                                 ...topic,
                                 selected: true,
                                 is_external: wsfolder.is_external,
                                 workspace_id: wsfolder.id,
                                 workspace_name: wsfolder.name,
+                            };
+                            dispatch(setActiveTopic(topic));
+                        } else if (topic && wsfolder === null) {
+                            topic = {
+                                ...topic,
+                                selected: true,
                             };
                             dispatch(setActiveTopic(topic));
                         }

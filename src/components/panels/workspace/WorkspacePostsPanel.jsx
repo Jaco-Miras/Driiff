@@ -1,8 +1,11 @@
-import React from "react";
+import React, {useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
+import {useParams} from "react-router-dom";
 import styled from "styled-components";
 import {addToModals} from "../../../redux/actions/globalActions";
 import PostItemPanel from "../post/PostItemPanel";
+import {useIsMember} from "../../hooks";
+import {getWorkspacePosts} from "../../../redux/actions/workspaceActions";
 
 const Wrapper = styled.div`
 `;
@@ -10,6 +13,7 @@ const Wrapper = styled.div`
 const WorkspacePostsPanel = (props) => {
 
     const {className = ""} = props;
+    const params = useParams();
     const dispatch = useDispatch();
     const topic = useSelector(state => state.workspaces.activeTopic);
 
@@ -27,15 +31,31 @@ const WorkspacePostsPanel = (props) => {
         );
     };
 
+    useEffect(() => {
+        if (params.wsid !== undefined) {
+            dispatch(
+                getWorkspacePosts({topic_id: parseInt(params.wsid)}, (err,res) => {
+                    console.log(res)
+                })
+            );
+        }
+        // console.log(topic)
+    }, []);
+
+    const isMember = useIsMember(topic && topic.member_ids.length ? topic.member_ids : []);
+
     return (
         <Wrapper className={`container-fluid h-100 ${className}`}>
             <div className="row app-block">
                 <div className="col-md-3 app-sidebar">
                     <div className="card">
                         <div className="card-body">
-                            <button className="btn btn-secondary btn-block" onClick={handleShowWorkspacePostModal}>
-                                Create new post
-                            </button>
+                            {
+                                isMember &&
+                                <button className="btn btn-secondary btn-block" onClick={handleShowWorkspacePostModal}>
+                                    Create new post
+                                </button>
+                            }
                         </div>
                         <div className="app-sidebar-menu"
                              styles="overflow: hidden; outline: currentcolor none medium;" tabIndex="2">

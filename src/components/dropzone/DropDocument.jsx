@@ -16,7 +16,7 @@ const Section = styled.section`
 
 export const DropDocument = forwardRef((props, ref) => {
 
-    const {onCancel, onDrop, noX = false, disableInput = false, openOnLoad = false, placeholderText = `Drag 'n' drop your files here.`, hide} = props;
+    const {attachedFiles, onCancel, onDrop, noX = false, disableInput = false, openOnLoad = false, placeholderText = `Drag 'n' drop your files here.`, hide} = props;
 
     const cbOnDrop = useCallback(({acceptedFiles, rejectedFiles}) => {
 
@@ -33,7 +33,7 @@ export const DropDocument = forwardRef((props, ref) => {
         onDrop({acceptedFiles});
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [attachedFiles]);
 
     // useEffect(() => {
     //     if (dropzoneRef.current && openOnLoad) {

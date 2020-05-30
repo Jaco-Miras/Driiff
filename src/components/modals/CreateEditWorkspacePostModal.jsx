@@ -1,9 +1,9 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, {useCallback, useEffect, useRef, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {Input, InputGroup, Label, Modal, ModalBody} from "reactstrap";
 import styled from "styled-components";
 import {clearModal} from "../../redux/actions/globalActions";
-import {createWorkspace} from "../../redux/actions/workspaceActions";
+import {createWorkspacePost} from "../../redux/actions/workspaceActions";
 import {FolderSelect, PeopleSelect} from "../forms";
 import QuillEditor from "../forms/QuillEditor";
 import {useQuillModules} from "../hooks";
@@ -71,9 +71,11 @@ const CreateEditWorkspacePostModal = props => {
     const reactQuillRef = useRef();
     const dispatch = useDispatch();
     const [modal, setModal] = useState(true);
-    const users = useSelector(state => state.users.mentions);
+    const user = useSelector(state => state.session.user);
     const workspaces = useSelector(state => state.workspaces.workspaces);
     const activeTab = useSelector(state => state.workspaces.activeTab);
+    const [workspaceOptions, setWorkspaceOptions] = useState([]);
+    const [userOptions, setUserOptions] = useState([]);
     const [form, setForm] = useState({
         is_private: false,
         has_folder: false,
@@ -90,21 +92,6 @@ const CreateEditWorkspacePostModal = props => {
             clearModal({type: type}),
         );
     };
-
-    const userOptions = Object.values(users).map(u => {
-        return {
-            ...u,
-            value: u.id,
-            label: u.name,
-        };
-    });
-
-    const workspaceOptions = Object.values(workspaces).filter(ws => ws.type === "WORKSPACE").map(ws => {
-        return {
-            value: ws.id,
-            label: ws.name,
-        };
-    });
 
     const handleSelectUser = e => {
         if (e === null) {
@@ -143,22 +130,14 @@ const CreateEditWorkspacePostModal = props => {
 
     const handleConfirm = () => {
         let payload = {
-            name: form.name,
-            description: form.description,
-            is_external: activeTab === "extern" ? 1 : 0,
-            member_ids: form.selectedUsers.map(u => u.id),
-            is_lock: form.is_private ? 1 : 0,
+            title: form.name,
+            body: form.description,
+            responsible_ids: form.selectedUsers.map(u => u.id),
+            type: "post",
+            personal: 0,
+            workspace_ids: form.selectedWorkspaces.map(ws => ws.value),
         };
-        /**
-         * @todo must be multiple
-         */
-        if (form.selectedWorkspaces) {
-            payload = {
-                ...payload,
-                workspace_ids: form.selectedWorkspaces.value,
-            };
-        }
-        dispatch(createWorkspace(payload));
+        dispatch(createWorkspacePost(payload));
         toggle();
     };
 
@@ -175,21 +154,91 @@ const CreateEditWorkspacePostModal = props => {
 
     useEffect(() => {
         if (item.workspace !== null) {
+            let members = [];
+            if (item.workspace.members && item.workspace.members.length) {
+                members = item.workspace.members.map(m => {
+                    return {
+                        ...m,
+                        value: m.id,
+                        label: m.name
+                    }
+                })
+                setUserOptions(members);
+            }
             setForm({
                 ...form,
-                selectedWorkspace: {
+                selectedWorkspaces: [{
                     value: item.workspace.id,
                     label: item.workspace.name,
-                },
+                }],
+                selectedUsers: [{
+                    value: user.id,
+                    label: user.name,
+                    name: user.name,
+                    first_name: user.first_name,
+                    profile_image_link: user.profile_image_link,
+                }]
             });
         }
-
+        
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
+    useEffect(() => {
+        if (Object.values(workspaces).length) {
+            const wsTopics = Object.values(workspaces).map(ws => {
+                if (ws.type === "FOLDER") {
+                    if (Object.keys(ws.topics).length) {
+                        return Object.values(ws.topics)
+                    } return null
+                } else {
+                    return ws
+                }
+            }).flat().filter(ws => ws !== null);
+        
+            const workspaceOptions = wsTopics.map(ws => {
+                return {
+                    ...ws,
+                    value: ws.id,
+                    label: ws.name,
+                };
+            });
+            setWorkspaceOptions(workspaceOptions);
+        }
+    }, [Object.values(workspaces).length]);
+
+    const unique = useCallback((a, i, c) => {
+        return c.findIndex(u => u.id === a.id) === i
+    }, []);
+
+    useEffect(() => {
+        if (form.selectedWorkspaces.length) {
+            let wsMembers = form.selectedWorkspaces.map(ws => {
+                if (ws.members !== undefined && ws.members.length) {
+                    return ws.members
+                } else return []
+            })
+
+            let uniqueMembers = [...wsMembers.flat()];
+            //const unique = (a, i, c) => c.findIndex(u => u.id === a.id) === i
+            uniqueMembers = uniqueMembers.filter(unique)
+
+            if (uniqueMembers.length) {
+                uniqueMembers = uniqueMembers.map(u => {
+                    return {
+                        ...u,
+                        value: u.id,
+                        label: u.name,
+                    };
+                });
+                setUserOptions(uniqueMembers)
+            }
+        }
+    }, [form.selectedWorkspaces.length])
+
     return (
 
-        <Modal isOpen={modal} toggle={toggle} centered size={"md"}>
+        <Modal isOpen={modal} toggle={toggle} centered size={"md"} autoFocus={false}>
             <ModalHeaderSection toggle={toggle}>
                 {mode === "edit" ? "Edit post" : "Create new post"}
             </ModalHeaderSection>
@@ -234,7 +283,7 @@ const CreateEditWorkspacePostModal = props => {
                     <span>More options ^</span>
                     <button
                         className="btn btn-primary"
-                        disabled={form.selectedUsers.length === 0 || form.name === ""}
+                        disabled={form.selectedUsers.length === 0 || form.name === "" || form.selectedWorkspaces.length === 0}
                         onClick={handleConfirm}>
                         {mode === "edit" ? "Update workspace" : "Create workspace"}
                     </button>

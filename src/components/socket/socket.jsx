@@ -1044,6 +1044,7 @@ class Socket extends PureComponent {
                 //this.props.incomingReadChannelReducer({channel_id: e.entity_id, updated_chat_count: count});
             })
             .notification((notification) => {
+                console.log(notification)
                 //let checkNotificationExists = this.props.notifications.filter(n => n.id === notification.id).length;
                 // if (checkNotificationExists === 0) {
                 //     if (this.props.notifications.length === 0) {
