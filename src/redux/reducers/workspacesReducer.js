@@ -1,11 +1,12 @@
-//import {convertArrayToObject} from "../../helpers/arrayHelper";
+import {convertArrayToObject} from "../../helpers/arrayHelper";
 
 const INITIAL_STATE = {
     user: {},
     workspaces: {},
     activeTopic: null,
     activeTab: "intern",
-    workspacesLoaded: false
+    workspacesLoaded: false,
+    workspacePosts: {}
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -230,6 +231,19 @@ export default (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 activeTab: action.data
+            }
+        }
+        case "ADD_TO_WORKSPACE_POSTS": {
+            let convertedPosts = convertArrayToObject(action.data.posts, "id");
+            return {
+                ...state,
+                workspacePosts: {
+                    ...state.workspacePosts,
+                    [action.data.topic_id]: {
+                        ...[action.data.topic_id].posts,
+                        ...convertedPosts
+                    }
+                }
             }
         }
         default:

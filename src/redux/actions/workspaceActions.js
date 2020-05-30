@@ -258,3 +258,11 @@ export function setActiveTab(payload, callback) {
         callback,
     );
 }
+
+export function addToWorkspacePosts(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "ADD_TO_WORKSPACE_POSTS",
+        payload,
+        callback,
+    );
+}

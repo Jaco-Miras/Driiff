@@ -4,8 +4,8 @@ import {useParams} from "react-router-dom";
 import styled from "styled-components";
 import {addToModals} from "../../../redux/actions/globalActions";
 import PostItemPanel from "../post/PostItemPanel";
-import {useIsMember} from "../../hooks";
-import {getWorkspacePosts} from "../../../redux/actions/workspaceActions";
+import {useIsMember, useGetWorkspacePosts} from "../../hooks";
+import {addToWorkspacePosts, getWorkspacePosts} from "../../../redux/actions/workspaceActions";
 
 const Wrapper = styled.div`
 `;
@@ -36,14 +36,23 @@ const WorkspacePostsPanel = (props) => {
             dispatch(
                 getWorkspacePosts({topic_id: parseInt(params.wsid)}, (err,res) => {
                     console.log(res)
+                    if (err) return;
+                    dispatch(
+                        addToWorkspacePosts({
+                            topic_id: parseInt(params.wsid),
+                            posts: res.data.posts
+                        })
+                    )
                 })
             );
         }
         // console.log(topic)
     }, []);
 
+    const posts = useGetWorkspacePosts(parseInt(params.wsid));
     const isMember = useIsMember(topic && topic.member_ids.length ? topic.member_ids : []);
 
+    console.log(posts)
     return (
         <Wrapper className={`container-fluid h-100 ${className}`}>
             <div className="row app-block">
@@ -195,7 +204,12 @@ const WorkspacePostsPanel = (props) => {
                         <div className="app-lists" styles="overflow: hidden; outline: currentcolor none medium;"
                              tabIndex="1">
                             <ul className="list-group list-group-flush ui-sortable">
-                                <PostItemPanel/>
+                                {
+                                    posts && 
+                                    Object.values(posts).map(post => {
+                                        return <PostItemPanel key={post.id} post={post}/>
+                                    })
+                                }
                             </ul>
                         </div>
 

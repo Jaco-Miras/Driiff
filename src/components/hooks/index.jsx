@@ -15,3 +15,4 @@ export {default as useIsUserTyping} from "./useIsUserTyping";
 export {default as useCountUnreadReplies} from "./useCountUnreadReplies";
 export {default as useSetWorkspace} from "./useSetWorkspace";
 export {default as useIsMember} from "./useIsMember";
+export {default as useGetWorkspacePosts} from "./useGetWorkspacePosts";
