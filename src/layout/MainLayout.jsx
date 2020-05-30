@@ -1,5 +1,6 @@
 import React, {useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
+import {Route} from "react-router-dom";
 import styled from "styled-components";
 import {useUserLogout} from "../components/hooks";
 import {ModalPanel} from "../components/panels";
@@ -29,6 +30,7 @@ const MainLayout = (props) => {
         if (Object.keys(files).length === 0) {
             dispatch(getFiles({sort: "desc"}));
         }
+
         //eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -37,11 +39,15 @@ const MainLayout = (props) => {
             <MainHeaderPanel/>
             <MainContent id="main">
                 <MainNavigationPanel/>
-                <MainContentPanel/>
+                <Route
+                    {...props}
+                    component={MainContentPanel}
+                    path={["/:page"]}/>
             </MainContent>
             <ModalPanel/>
             {
-                user.id !== undefined && <Socket/>
+                user.id !== undefined &&
+                <Socket/>
             }
         </>
     );

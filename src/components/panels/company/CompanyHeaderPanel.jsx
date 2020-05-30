@@ -64,12 +64,40 @@ const CompanyHeaderPanel = (props) => {
         const body = document.body;
         body.classList.add("navigation-toggle-one");
 
-        if (match.path === "/people") {
+        if (match.params.page === "people") {
             body.classList.remove("stretch-layout");
         } else {
             body.classList.add("stretch-layout");
         }
-    }, [match.path, dispatch]);
+
+        let pageName = "";
+        switch (match.params.page) {
+            case "posts": {
+                pageName = "Posts";
+                break;
+            }
+            case "chat": {
+                pageName = "Chat";
+                break;
+            }
+            case "files": {
+                pageName = "Files";
+                break;
+            }
+            case "people": {
+                pageName = "People";
+                break;
+            }
+            case "settings": {
+                pageName = "Settings";
+                break;
+            }
+            default: {
+                pageName = "Dashboard";
+            }
+        }
+        document.title = `Driff - ${pageName}`;
+    }, [match.params, dispatch]);
 
     return (
         <>

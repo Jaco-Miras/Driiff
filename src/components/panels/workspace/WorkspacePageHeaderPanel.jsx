@@ -38,9 +38,7 @@ const WorkspacePageHeaderPanel = (props) => {
 
     const {className = ""} = props;
 
-    let pathname = props.match.url;
-    let lastIndex = pathname.lastIndexOf("/");
-    pathname = pathname.substr(0, lastIndex);
+    const pathname = props.match.url.replace(`/workspace/${props.match.params.page}`, "");
 
     return (
         <>
@@ -48,19 +46,19 @@ const WorkspacePageHeaderPanel = (props) => {
                 <div className="container-fluid d-sm-flex justify-content-between">
                     <Navbar className="navbar-nav">
                         <li className="nav-item">
-                            <MainNavLink isSub={true} to={`${pathname}/dashboard`}>Dashboard</MainNavLink>
+                            <MainNavLink isSub={true} to={`/workspace/dashboard$/{pathname}`}>Dashboard</MainNavLink>
                         </li>
                         <li className="nav-item">
-                            <MainNavLink isSub={true} to={`${pathname}/posts`}>Posts</MainNavLink>
+                            <MainNavLink isSub={true} to={`/workspace/posts${pathname}`}>Posts</MainNavLink>
                         </li>
                         <li className="nav-item">
-                            <MainNavLink isSub={true} to={`${pathname}/chat`}>Chat</MainNavLink>
+                            <MainNavLink isSub={true} to={`/workspace/chat${pathname}`}>Chat</MainNavLink>
                         </li>
                         <li className="nav-item">
-                            <MainNavLink isSub={true} to={`${pathname}/files`}>Files</MainNavLink>
+                            <MainNavLink isSub={true} to={`/workspace/files${pathname}`}>Files</MainNavLink>
                         </li>
                         <li className="nav-item">
-                            <MainNavLink isSub={true} to={`${pathname}/people`}>People</MainNavLink>
+                            <MainNavLink isSub={true} to={`/workspace/people${pathname}`}>People</MainNavLink>
                         </li>
                         <li className="nav-item">
                             <SvgIconFeather icon="settings"/>
@@ -72,4 +70,4 @@ const WorkspacePageHeaderPanel = (props) => {
     );
 };
 
-export default React.memo(withRouter(WorkspacePageHeaderPanel));
+export default React.memo(WorkspacePageHeaderPanel);

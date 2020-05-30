@@ -51,14 +51,47 @@ const Wrapper = styled.div`
                             margin-right: 9px;
                         }
                     }
-                    
+    
                     > ul {
-                        li {
-                            list-style-type: disc;
-                            margin-left: 45px;
+                        li {                                    
+                            margin-left: 30px;
                             margin-bottom: 10px;
                             color: #828282;
                             font-size: 11px;
+                            max-width:calc(100% - 75px);                            
+                            white-space: nowrap;
+                            overflow: hidden;
+                            text-overflow: ellipsis;
+                                            
+                            &.nav-action {
+                                list-style-type: none !important;
+                                margin-left: 26px !important;
+                                color: #BEBEBE !important;
+                                font-size: 9px !important;
+                                font-weight: normal;
+                                padding-left: 5px;
+                                
+                                svg {
+                                    width: 7px;
+                                    margin-right: 9px;
+                                }
+                            }
+                  
+                            svg {
+                              color: #828282;      
+                              position: relative;
+                              
+                              &.feather-lock{
+                                top:-2px;
+                              }
+                              &.feather-circle{
+                                left: 3px;
+                                width:4px;
+                                margin-right: 15px;
+                                top:-1px;
+                                fill: #828282;
+                              }
+                            }
                         }
                     }
                 }
@@ -135,7 +168,6 @@ const WorkspaceNavigationMenuBodyPanel = (props) => {
                     }
                 }),
             );
-            //dispatch(getWorkspaceTopics({is_external: 0}));
         } else {
             if (activeTopic && props.match.url === "/workspace/dashboard") {
                 let path = `/workspace/${activeTopic.is_external === 0 ? "internal" : "external"}/`;
@@ -164,7 +196,6 @@ const WorkspaceNavigationMenuBodyPanel = (props) => {
                 <div className="" styles="overflow: hidden; outline: currentcolor none medium;"
                      tabIndex="3">
                     <h4>Workspaces</h4>
-
                     <ul className="nav nav-tabs" id="pills-tab" role="tablist">
                         <li className="nav-item" onClick={e => handleSelectTab(e, "intern")}>
                             <span
