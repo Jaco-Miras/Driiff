@@ -58,7 +58,7 @@ const WorkspaceList = props => {
         } else {
             dispatch(setActiveTopic(workspace));
 
-            history.push(`/workspace/${route.params.page}/${workspace.name}/${workspace.id}`);
+            history.push(`/workspace/${route.params.page}/${workspace.id}/${workspace.name}`);
 
             if (workspace.channel_loaded === undefined) {
                 dispatch(
