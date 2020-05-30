@@ -50,6 +50,7 @@ const useLoadLastVisitedChannel = (props) => {
             //channels already loaded then fetch the saved last visited channel
             if (lastVisitedChannel !== null) {
                 dispatch(restoreLastVisitedChannel({channel_id: lastVisitedChannel.id}));
+                history.push(`/chat/${lastVisitedChannel.code}`);
             }
         }
 

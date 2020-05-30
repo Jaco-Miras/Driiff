@@ -180,12 +180,12 @@ const WorkspaceNavigationMenuBodyPanel = (props) => {
             );
         } else {
             if (activeTopic && props.match.url === "/workspace/dashboard") {
-                let path = `/workspace/${activeTopic.is_external === 0 ? "internal" : "external"}/`;
+                let path = `/workspace/dashboard/${activeTopic.is_external === 0 ? "internal" : "external"}/`;
                 if (activeTopic.workspace_id !== undefined) {
-                    path += `${activeTopic.workspace_name}/${activeTopic.workspace_id}/${activeTopic.name}/${activeTopic.id}/dashboard`;
+                    path += `${activeTopic.workspace_name}/${activeTopic.workspace_id}/${activeTopic.name}/${activeTopic.id}`;
                     dispatch(restoreLastVisitedChannel({channel_id: activeTopic.channel.id}));
                 } else {
-                    path += `${activeTopic.name}/${activeTopic.id}/dashboard`;
+                    path += `${activeTopic.name}/${activeTopic.id}`;
                     dispatch(restoreLastVisitedChannel({channel_id: activeTopic.topic_detail.channel.id}));
                 }
                 history.push(path);
