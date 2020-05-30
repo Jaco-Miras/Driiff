@@ -1,9 +1,9 @@
 import React from "react";
-import {ModalHeader} from "reactstrap";
 import styled from "styled-components";
 import {SvgIconFeather} from "../common";
 
-const Wrapper = styled(ModalHeader)`
+
+const Wrapper = styled.div`
     font-size: 17px;
     color: #505050;
     font-weight: 600;
@@ -20,11 +20,14 @@ const Icon = styled(SvgIconFeather)`
 
 const ModalHeaderSection = (props) => {
 
-    const {className = "", children, ...otherProps} = props;
+    const {className = "", children, toggle, ...otherProps} = props;
 
     return (
-        <Wrapper className={`model-header-section ${className}`} charCode={<Icon icon="x"/>} {...otherProps}>
-            {children}
+        <Wrapper className={`model-header-section modal-header ${className}`} {...otherProps}>
+            <h5 className="modal-title">{children}</h5>
+            <button type="button" onClick={toggle} className="close" aria-label="Close">
+                <span aria-hidden="true"><Icon icon="x"/></span>
+            </button>
         </Wrapper>
     );
 };

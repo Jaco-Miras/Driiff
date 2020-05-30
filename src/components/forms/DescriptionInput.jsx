@@ -1,9 +1,9 @@
-import React, {useRef, useState, useEffect} from "react";
+import React, {useRef, useState} from "react";
 import styled from "styled-components";
 import {InputGroup, Label} from "reactstrap";
 import QuillEditor from "./QuillEditor";
 import {useQuillModules} from "../hooks";
-import {SvgIconFeather, PickerEmoji} from "../common";
+import {PickerEmoji, SvgIconFeather} from "../common";
 
 const WrapperDiv = styled(InputGroup)`
     display: flex;
@@ -118,10 +118,6 @@ const DescriptionInput = props => {
         editor.setSelection(cursorPosition + 2);
     };
 
-    // useEffect(() => {
-    //     reactQuillRef.current.blur();
-    // }, []);
-
     const [modules] = useQuillModules("description");
 
     return (
@@ -136,7 +132,7 @@ const DescriptionInput = props => {
                 />
                 <Buttons>
                     <IconButton onClick={handleShowEmojiPicker} icon="smile"/>
-                    { showFileButton && <IconButton onClick={onOpenFileDialog} icon="paperclip"/> }
+                    {showFileButton && <IconButton onClick={onOpenFileDialog} icon="paperclip"/>}
                 </Buttons>
             </DescriptionInputWrapper>
             {

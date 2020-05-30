@@ -1,5 +1,4 @@
 import React from "react";
-import {useSelector} from "react-redux";
 import styled from "styled-components";
 import ChatJumpTo from "./ChatJumpTo";
 import ChatMarkAsRead from "./ChatMarkAsRead";
@@ -29,9 +28,6 @@ const ChatUnreadFloatBarWrapper = styled.div`
 `;
 
 const ChatUnreadFloatBar = props => {
-
-    const channel = useSelector(state => state.chat.selectedChannel);
-    const user = useSelector(state => state.session.user);
 
     return (
         <ChatUnreadFloatBarWrapper className="chat-unread-floatbar">
