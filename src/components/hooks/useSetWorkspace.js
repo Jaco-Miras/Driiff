@@ -20,7 +20,7 @@ const useSetWorkspace = props => {
             if (params.folderId !== undefined) {
                 topic = workspaces[params.folderId].topics[params.workspaceId];
                 channel_id = workspaces[params.folderId].topics[params.workspaceId].channel.id;
-            } else if(params.workspaceId) {
+            } else if (params.workspaceId) {
                 topic = workspaces[params.workspaceId];
                 channel_id = workspaces[params.workspaceId].topic_detail.channel.id;
             }

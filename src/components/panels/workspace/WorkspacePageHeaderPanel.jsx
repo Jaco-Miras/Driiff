@@ -46,7 +46,7 @@ const WorkspacePageHeaderPanel = (props) => {
                 <div className="container-fluid d-sm-flex justify-content-between">
                     <Navbar className="navbar-nav">
                         <li className="nav-item">
-                            <MainNavLink isSub={true} to={`/workspace/dashboard$/{pathname}`}>Dashboard</MainNavLink>
+                            <MainNavLink isSub={true} to={`/workspace/dashboard${pathname}`}>Dashboard</MainNavLink>
                         </li>
                         <li className="nav-item">
                             <MainNavLink isSub={true} to={`/workspace/posts${pathname}`}>Posts</MainNavLink>

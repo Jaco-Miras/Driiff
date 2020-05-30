@@ -1,11 +1,9 @@
-import React, {useEffect} from "react";
+import React from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {useParams} from "react-router-dom";
 import styled from "styled-components";
 import {addToModals} from "../../../redux/actions/globalActions";
 import PostItemPanel from "../post/PostItemPanel";
 import {useIsMember, useGetWorkspacePosts} from "../../hooks";
-import {addToWorkspacePosts, getWorkspacePosts} from "../../../redux/actions/workspaceActions";
 
 const Wrapper = styled.div`
 `;
@@ -13,7 +11,6 @@ const Wrapper = styled.div`
 const WorkspacePostsPanel = (props) => {
 
     const {className = ""} = props;
-    const params = useParams();
     const dispatch = useDispatch();
     const topic = useSelector(state => state.workspaces.activeTopic);
 
@@ -31,28 +28,9 @@ const WorkspacePostsPanel = (props) => {
         );
     };
 
-    useEffect(() => {
-        if (params.workspaceId !== undefined) {
-            dispatch(
-                getWorkspacePosts({topic_id: parseInt(params.workspaceId)}, (err,res) => {
-                    console.log(res)
-                    if (err) return;
-                    dispatch(
-                        addToWorkspacePosts({
-                            topic_id: parseInt(params.workspaceId),
-                            posts: res.data.posts
-                        })
-                    )
-                })
-            );
-        }
-        // console.log(topic)
-    }, []);
-
-    const posts = useGetWorkspacePosts(parseInt(params.workspaceId));
+    const posts = useGetWorkspacePosts();
     const isMember = useIsMember(topic && topic.member_ids.length ? topic.member_ids : []);
 
-    console.log(posts)
     return (
         <Wrapper className={`container-fluid h-100 ${className}`}>
             <div className="row app-block">

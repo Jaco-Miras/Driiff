@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import {Avatar, SvgIconFeather} from "../../common";
+import {AvatarGroup, SvgIconFeather} from "../../common";
 import {CheckBox} from "../../forms";
 
 const Wrapper = styled.li`
@@ -25,7 +25,11 @@ const PostItemPanel = (props) => {
                         <div className="mr-3 d-sm-inline d-none">
                             <div className="badge badge-danger">Category</div>
                         </div>
-                        <div className="mr-3 d-sm-inline d-none">
+                        {
+                            post.users_responsible.length > 0 &&
+                            <AvatarGroup users={post.users_responsible}/>
+                        }
+                        {/* <div className="mr-3 d-sm-inline d-none">
                             <div className="avatar-group">
                                 {
                                     post.users_responsible.length > 0 &&
@@ -34,7 +38,7 @@ const PostItemPanel = (props) => {
                                     })
                                 }
                             </div>
-                        </div>
+                        </div> */}
                         <SvgIconFeather icon="trash-2"/>
                     </div>
                 </div>

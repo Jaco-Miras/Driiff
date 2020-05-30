@@ -1,12 +1,35 @@
 import {useEffect} from "react";
-import {useSelector} from "react-redux";
+import {useParams} from "react-router-dom";
+import {useSelector, useDispatch} from "react-redux";
+import {addToWorkspacePosts, getWorkspacePosts} from "../../redux/actions/workspaceActions";
 
-const useGetWorkspacePosts = workspace_id => {
+const useGetWorkspacePosts = () => {
 
+    const dispatch = useDispatch();
+    const params = useParams();
     const wsPosts = useSelector(state => state.workspaces.workspacePosts);
 
-    if (Object.keys(wsPosts).length && wsPosts.hasOwnProperty(workspace_id)) {
-        return wsPosts[workspace_id];
+    useEffect(() => {
+        if (params.workspaceId !== undefined) {
+            if (!wsPosts.hasOwnProperty(params.workspaceId)) {
+                dispatch(
+                    getWorkspacePosts({topic_id: parseInt(params.workspaceId)}, (err,res) => {
+                        console.log(res)
+                        if (err) return;
+                        dispatch(
+                            addToWorkspacePosts({
+                                topic_id: parseInt(params.workspaceId),
+                                posts: res.data.posts
+                            })
+                        )
+                    })
+                );
+            }
+        }
+    }, [params]);
+
+    if (Object.keys(wsPosts).length && wsPosts.hasOwnProperty(params.workspaceId)) {
+        return wsPosts[params.workspaceId];
     } else {
         return null;
     }

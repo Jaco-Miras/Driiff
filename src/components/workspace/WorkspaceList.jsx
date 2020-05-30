@@ -50,7 +50,7 @@ const WorkspaceList = props => {
     const [showTopics, setShowTopics] = useState(false);
     const [maxHeight, setMaxHeight] = useState(0);
 
-    const handleSelectWorkpace = () => {
+    const handleSelectWorkspace = () => {
         //set the selected topic
         if (workspace.selected) return;
         if (workspace.is_external === 1) {
@@ -85,7 +85,7 @@ const WorkspaceList = props => {
         if (workspace.type === "FOLDER") {
             setShowTopics(!showTopics);
         } else {
-            handleSelectWorkpace();
+            handleSelectWorkspace();
         }
     };
 
