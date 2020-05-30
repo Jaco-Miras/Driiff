@@ -23,6 +23,17 @@ export const SvgIconFeather = React.memo(React.forwardRef((props, ref) => {
     let content = "";
 
     switch (icon) {
+        case "circle":
+            content = <>
+                <circle cx="12" cy="12" r="10"></circle>
+            </>;
+            break;
+        case "lock":
+            content = <>
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            </>;
+            break;
         case "user-plus":
             content = <>
                 <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>

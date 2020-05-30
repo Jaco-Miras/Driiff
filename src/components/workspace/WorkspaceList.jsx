@@ -1,6 +1,6 @@
 import React, {useEffect, useRef, useState} from "react";
 import {useDispatch} from "react-redux";
-import {useHistory} from "react-router-dom";
+import {useHistory, useRouteMatch} from "react-router-dom";
 import styled from "styled-components";
 import {addToChannels, getChannel, setSelectedChannel} from "../../redux/actions/chatActions";
 import {addToModals} from "../../redux/actions/globalActions";
@@ -9,6 +9,7 @@ import {SvgIconFeather} from "../common";
 import TopicList from "./TopicList";
 
 const Wrapper = styled.li`
+    ${props => !props.show && `display: none;`} 
     cursor: pointer;
     cursor: hand;
     
@@ -16,24 +17,6 @@ const Wrapper = styled.li`
         font-weight: ${props => props.selected ? "bold" : "normal"};
         color: ${props => props.selected ? "#7a1b8b !important" : "#64625C"};
         margin-bottom: 10px;
-    }
-    
-    ul {
-        li {
-            &.nav-action {
-                list-style-type: none !important;
-                margin-left: 26px !important;
-                color: #BEBEBE !important;
-                font-size: 9px !important;
-                font-weight: normal;
-                
-                svg {
-                    width: 7px;
-                    height: 7x;
-                    margin-right: 9px;
-                }
-            }
-        }
     }
 `;
 
@@ -53,10 +36,11 @@ const TopicNav = styled.ul`
 
 const WorkspaceList = props => {
 
-    const {className = "", workspace} = props;
+    const {className = "", show = true, workspace} = props;
 
     const dispatch = useDispatch();
     const history = useHistory();
+    const route = useRouteMatch();
     const ref = {
         container: useRef(null),
         arrow: useRef(null),
@@ -73,7 +57,9 @@ const WorkspaceList = props => {
 
         } else {
             dispatch(setActiveTopic(workspace));
-            history.push(`/workspace/internal/${workspace.name}/${workspace.id}/dashboard`);
+
+            history.push(`/workspace/${route.params.page}/${workspace.id}/${workspace.name}`);
+
             if (workspace.channel_loaded === undefined) {
                 dispatch(
                     getChannel({channel_id: workspace.topic_detail.channel.id}, (err, res) => {
@@ -146,7 +132,8 @@ const WorkspaceList = props => {
     }, [showTopics]);
 
     return (
-        <Wrapper ref={ref.container} className={`worskpace-list ${className}`} selected={workspace.selected}>
+        <Wrapper ref={ref.container} className={`worskpace-list ${className}`} selected={workspace.selected}
+                 show={show}>
             <a href="/" onClick={handleShowTopics}>{workspace.name}
                 {
                     workspace.type === "FOLDER" &&

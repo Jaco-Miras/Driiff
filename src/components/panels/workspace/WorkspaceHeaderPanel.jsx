@@ -77,7 +77,35 @@ const WorspaceHeaderPanel = (props) => {
         const body = document.body;
         body.classList.add("stretch-layout");
         body.classList.remove("navigation-toggle-one");
-    }, [match.path, dispatch]);
+
+        let pageName = "";
+        switch (match.params.page) {
+            case "posts": {
+                pageName = "Posts";
+                break;
+            }
+            case "chat": {
+                pageName = "Chat";
+                break;
+            }
+            case "files": {
+                pageName = "Files";
+                break;
+            }
+            case "people": {
+                pageName = "People";
+                break;
+            }
+            case "settings": {
+                pageName = "Settings";
+                break;
+            }
+            default: {
+                pageName = "Dashboard";
+            }
+        }
+        document.title = `Driff - Workspace ${pageName}`;
+    }, [match.params.page, dispatch]);
 
     return (
         <>
@@ -90,22 +118,32 @@ const WorspaceHeaderPanel = (props) => {
                     </li>
                     {
                         activeTopic ?
-                            <>
-                                <li className="nav-item">
-                                    <WorkspaceName>{activeTopic.workspace_name}</WorkspaceName>
-                                </li>
-                                <li className="nav-item">
+                        <>
+                            {
+                                typeof activeTopic.workspace_name === "undefined" ?
+                                <>
+                                    <li className="nav-item">
+                                        <WorkspaceName>{activeTopic.name}</WorkspaceName>
+                                    </li>
+                                </> : <>
 
-                                    <SubWorkspaceName>{activeTopic.name}</SubWorkspaceName>
-                                </li>
-                            </>
-                            :
-                            <>
-                                <li className="nav-item">
-                                    <WorkspaceButton onClick={handleShowWorkspaceModal}>New workspace <SvgIconFeather
-                                        icon="play"/></WorkspaceButton>
-                                </li>
-                            </>
+                                    <li className="nav-item">
+                                        <WorkspaceName>{activeTopic.workspace_name}</WorkspaceName>
+                                    </li>
+                                    <li className="nav-item">
+
+                                        <SubWorkspaceName>{activeTopic.name}</SubWorkspaceName>
+                                    </li>
+                                </>
+                            }
+                        </>
+                                    :
+                        <>
+                            <li className="nav-item">
+                                <WorkspaceButton onClick={handleShowWorkspaceModal}>New workspace <SvgIconFeather
+                                    icon="play"/></WorkspaceButton>
+                            </li>
+                        </>
                     }
                 </NavBar>
             </div>

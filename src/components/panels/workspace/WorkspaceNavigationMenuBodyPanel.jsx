@@ -1,6 +1,6 @@
 import React, {useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {withRouter} from "react-router-dom";
+import {useHistory} from "react-router-dom";
 import styled from "styled-components";
 import {restoreLastVisitedChannel} from "../../../redux/actions/chatActions";
 import {addToModals} from "../../../redux/actions/globalActions";
@@ -51,14 +51,47 @@ const Wrapper = styled.div`
                             margin-right: 9px;
                         }
                     }
-                    
+    
                     > ul {
-                        li {
-                            list-style-type: disc;
-                            margin-left: 45px;
+                        li {                                    
+                            margin-left: 30px;
                             margin-bottom: 10px;
                             color: #828282;
                             font-size: 11px;
+                            max-width:calc(100% - 75px);                            
+                            white-space: nowrap;
+                            overflow: hidden;
+                            text-overflow: ellipsis;
+                                            
+                            &.nav-action {
+                                list-style-type: none !important;
+                                margin-left: 26px !important;
+                                color: #BEBEBE !important;
+                                font-size: 9px !important;
+                                font-weight: normal;
+                                padding-left: 5px;
+                                
+                                svg {
+                                    width: 7px;
+                                    margin-right: 9px;
+                                }
+                            }
+                  
+                            svg {
+                              color: #828282;      
+                              position: relative;
+                              
+                              &.feather-lock{
+                                top:-2px;
+                              }
+                              &.feather-circle{
+                                left: 3px;
+                                width:4px;
+                                margin-right: 15px;
+                                top:-1px;
+                                fill: #828282;
+                              }
+                            }
                         }
                     }
                 }
@@ -71,11 +104,36 @@ const WorkspaceNavigationMenuBodyPanel = (props) => {
 
     const {className = ""} = props;
     const dispatch = useDispatch();
+    const history = useHistory();
 
     const workspaces = useSelector(state => state.workspaces.workspaces);
     const workspacesLoaded = useSelector(state => state.workspaces.workspacesLoaded);
     const activeTopic = useSelector(state => state.workspaces.activeTopic);
     const activeTab = useSelector(state => state.workspaces.activeTab);
+
+    const handleShowFolderModal = () => {
+        let payload = {
+            type: "workspace_folder",
+        };        
+        dispatch(
+            addToModals(payload),
+        );
+    };
+
+    const handleShowWorkspaceModal = () => {
+        let payload = {
+            type: "workspace_create_edit",
+            mode: "create",
+        };
+
+        dispatch(
+            addToModals(payload),
+        );
+    };
+
+    const handleSelectTab = (e, tab) => {
+        dispatch(setActiveTab(tab));
+    };
 
     useEffect(() => {
         if (!workspacesLoaded) {
@@ -120,7 +178,6 @@ const WorkspaceNavigationMenuBodyPanel = (props) => {
                     }
                 }),
             );
-            //dispatch(getWorkspaceTopics({is_external: 0}));
         } else {
             if (activeTopic && props.match.url === "/workspace/dashboard") {
                 let path = `/workspace/${activeTopic.is_external === 0 ? "internal" : "external"}/`;
@@ -131,7 +188,7 @@ const WorkspaceNavigationMenuBodyPanel = (props) => {
                     path += `${activeTopic.name}/${activeTopic.id}/dashboard`;
                     dispatch(restoreLastVisitedChannel({channel_id: activeTopic.topic_detail.channel.id}));
                 }
-                props.history.push(path);
+                history.push(path);
             } else if (activeTopic && props.match.params.hasOwnProperty("wsid")) {
                 //check if the active topic id is different in the params
                 if (props.match.params.wsid !== undefined && parseInt(props.match.params.wsid) !== activeTopic.id) {
@@ -143,49 +200,24 @@ const WorkspaceNavigationMenuBodyPanel = (props) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    const handleShowFolderModal = () => {
-        let payload = {
-            type: "workspace_folder",
-        };
-        // let body = document.getElementsByTagName("BODY")[0];
-        // body.classList.add("modal-open")
-        dispatch(
-            addToModals(payload),
-        );
-    };
-
-    const handleShowWorkspaceModal = () => {
-        let payload = {
-            type: "workspace_create_edit",
-            mode: "create",
-        };
-
-        dispatch(
-            addToModals(payload),
-        );
-    };
-
-    const handleSelectTab = (e, tab) => {
-        dispatch(setActiveTab(tab));
-    };
-
     return (
         <>
             <Wrapper className={`navigation-menu-body ${className}`}>
                 <div className="" styles="overflow: hidden; outline: currentcolor none medium;"
                      tabIndex="3">
                     <h4>Workspaces</h4>
-
                     <ul className="nav nav-tabs" id="pills-tab" role="tablist">
                         <li className="nav-item" onClick={e => handleSelectTab(e, "intern")}>
-                            <span className={`nav-link ${activeTab === "intern" ? "active" : ""}`} id="pills-intern-tab"
-                                  data-toggle="pill" role="tab" aria-controls="pills-intern"
-                                  aria-selected={activeTab === "intern" ? "true" : "false"}>Intern</span></li>
+                            <span
+                                className={`nav-link ${activeTab === "intern" ? "active" : ""}`}
+                                data-toggle="pill" role="tab" aria-controls="pills-intern"
+                                aria-selected={activeTab === "intern" ? "true" : "false"}>Intern</span></li>
                         <li className="nav-item" onClick={e => handleSelectTab(e, "extern")}>
-                            <span className={`nav-link ${activeTab === "extern" ? "active" : ""}`} id="pills-extern-tab"
-                                  data-toggle="pill"
-                                  role="tab" aria-controls="pills-extern"
-                                  aria-selected={activeTab === "intern" ? "true" : "false"}>Extern</span></li>
+                            <span
+                                className={`nav-link ${activeTab === "extern" ? "active" : ""}`}
+                                data-toggle="pill"
+                                role="tab" aria-controls="pills-extern"
+                                aria-selected={activeTab === "intern" ? "true" : "false"}>Extern</span></li>
                     </ul>
                     <div className="navigation-menu-group">
                         <div id="elements" className="open">
@@ -197,9 +229,12 @@ const WorkspaceNavigationMenuBodyPanel = (props) => {
                                     <SvgIconFeather icon="plus"/> New workspace
                                 </li>
                                 {
-                                    Object.values(workspaces).map(ws => {
-                                        return <WorkspaceList key={ws.key_id} workspace={ws}/>;
-                                    })
+                                    Object.values(workspaces)
+                                        .map(ws => {
+                                            return <WorkspaceList
+                                                show={ws.is_external === (activeTab === "intern" ? 0 : 1)}
+                                                key={ws.key_id} workspace={ws}/>;
+                                        })
                                 }
                             </ul>
                         </div>
@@ -222,4 +257,4 @@ const WorkspaceNavigationMenuBodyPanel = (props) => {
     );
 };
 
-export default React.memo(withRouter(WorkspaceNavigationMenuBodyPanel));
+export default React.memo(WorkspaceNavigationMenuBodyPanel);

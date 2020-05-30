@@ -1,13 +1,19 @@
 import React from "react";
 import {useDispatch} from "react-redux";
-import {useHistory} from "react-router-dom";
+import {useHistory, useParams, useRouteMatch} from "react-router-dom";
 import styled from "styled-components";
 import {addToChannels, getChannel, setSelectedChannel} from "../../redux/actions/chatActions";
 import {setActiveTopic} from "../../redux/actions/workspaceActions";
+import {SvgIconFeather} from "../common";
 
-const TopicListWrapper = styled.li`
+const TopicListWrapper = styled.li`    
     cursor: pointer;
-    color: ${props => props.selected ? "#7a1b8b !important" : "#000"};
+    color: ${props => props.selected ? "#7a1b8b !important" : "#000"}; 
+`;
+
+const Icon = styled(SvgIconFeather)`
+    margin-right: 10px;
+    width: 10px;        
 `;
 
 const TopicList = props => {
@@ -15,10 +21,10 @@ const TopicList = props => {
     const {className = "", topic} = props;
 
     const dispatch = useDispatch();
-    let history = useHistory();
+    const history = useHistory();
+    const route = useRouteMatch();
 
     const handleSelectTopic = () => {
-        //set the selected topic
         if (topic.selected) return;
         if (topic.is_external === 1) {
 
@@ -41,13 +47,20 @@ const TopicList = props => {
                         }),
                     );
                 }
-                history.push(`/workspace/internal/${topic.workspace_name}/${topic.workspace_id}/${topic.name}/${topic.id}/dashboard`);
+
+                if(typeof topic.workspace_name === "undefined") {
+                    history.push(`/workspace/${route.params.page}/${topic.id}/${topic.name}`);
+                } else {
+                    history.push(`/workspace/${route.params.page}/${topic.workspace_id}/${topic.workspace_name}/${topic.id}/${topic.name}`);
+                }
             }
         }
     };
 
     return (
-        <TopicListWrapper className={`topic-list ${className}`} onClick={handleSelectTopic} selected={topic.selected}>
+        <TopicListWrapper
+            className={`topic-list ${className}`} onClick={handleSelectTopic} selected={topic.selected}>
+            <Icon icon={topic.private === 1 ? "lock" : "circle"}/>
             {topic.name}
         </TopicListWrapper>
     );

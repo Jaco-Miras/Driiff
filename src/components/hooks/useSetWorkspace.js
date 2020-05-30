@@ -17,14 +17,14 @@ const useSetWorkspace = props => {
             //set the active topic
             let topic = null;
             let channel_id = null;
-            if (params.wsfid !== undefined) {
-                topic = workspaces[params.wsfid].topics[params.wsid];
-                channel_id = workspaces[params.wsfid].topics[params.wsid].channel.id;
-            } else {
-                //direct workspace
-                topic = workspaces[params.wsid];
-                channel_id = workspaces[params.wsid].topic_detail.channel.id;
+            if (params.folderId !== undefined) {
+                topic = workspaces[params.folderId].topics[params.workspaceId];
+                channel_id = workspaces[params.folderId].topics[params.workspaceId].channel.id;
+            } else if(params.workspaceId) {
+                topic = workspaces[params.workspaceId];
+                channel_id = workspaces[params.workspaceId].topic_detail.channel.id;
             }
+
             if (topic) {
                 dispatch(setActiveTopic(topic));
                 if (topic.channel_loaded === undefined) {
