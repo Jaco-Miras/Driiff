@@ -140,20 +140,20 @@ const WorkspaceNavigationMenuBodyPanel = (props) => {
             dispatch(
                 getWorkspaces({is_external: 0}, (err, res) => {
                     if (err) return;
-                    if (props.match.params.hasOwnProperty("wsid") && props.match.params.wsid !== undefined) {
+                    if (props.match.params.hasOwnProperty("workspaceId") && props.match.params.workspaceId !== undefined) {
                         let topic = null;
                         let wsfolder = null;
                         res.data.workspaces.forEach(ws => {
                             if (ws.type === "FOLDER" && ws.topics.length) {
                                 ws.topics.forEach(t => {
-                                    if (t.id === parseInt(props.match.params.wsid)) {
+                                    if (t.id === parseInt(props.match.params.workspaceId)) {
                                         wsfolder = ws;
                                         topic = t;
                                         return;
                                     }
                                 });
                             } else {
-                                if (ws.id === parseInt(props.match.params.wsid)) {
+                                if (ws.id === parseInt(props.match.params.workspaceId)) {
                                     topic = ws;
                                     return;
                                 }
@@ -189,9 +189,9 @@ const WorkspaceNavigationMenuBodyPanel = (props) => {
                     dispatch(restoreLastVisitedChannel({channel_id: activeTopic.topic_detail.channel.id}));
                 }
                 history.push(path);
-            } else if (activeTopic && props.match.params.hasOwnProperty("wsid")) {
+            } else if (activeTopic && props.match.params.hasOwnProperty("workspaceId")) {
                 //check if the active topic id is different in the params
-                if (props.match.params.wsid !== undefined && parseInt(props.match.params.wsid) !== activeTopic.id) {
+                if (props.match.params.workspaceId !== undefined && parseInt(props.match.params.workspaceId) !== activeTopic.id) {
                     //find the new topic id in workspaces and set to active
                 }
             }

@@ -32,14 +32,14 @@ const WorkspacePostsPanel = (props) => {
     };
 
     useEffect(() => {
-        if (params.wsid !== undefined) {
+        if (params.workspaceId !== undefined) {
             dispatch(
-                getWorkspacePosts({topic_id: parseInt(params.wsid)}, (err,res) => {
+                getWorkspacePosts({topic_id: parseInt(params.workspaceId)}, (err,res) => {
                     console.log(res)
                     if (err) return;
                     dispatch(
                         addToWorkspacePosts({
-                            topic_id: parseInt(params.wsid),
+                            topic_id: parseInt(params.workspaceId),
                             posts: res.data.posts
                         })
                     )
@@ -49,7 +49,7 @@ const WorkspacePostsPanel = (props) => {
         // console.log(topic)
     }, []);
 
-    const posts = useGetWorkspacePosts(parseInt(params.wsid));
+    const posts = useGetWorkspacePosts(parseInt(params.workspaceId));
     const isMember = useIsMember(topic && topic.member_ids.length ? topic.member_ids : []);
 
     console.log(posts)
