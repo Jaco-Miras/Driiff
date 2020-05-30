@@ -9,6 +9,7 @@ import {SvgIconFeather} from "../common";
 import TopicList from "./TopicList";
 
 const Wrapper = styled.li`
+    ${props=> !props.show && `display: none;`} 
     cursor: pointer;
     cursor: hand;
     
@@ -53,7 +54,7 @@ const TopicNav = styled.ul`
 
 const WorkspaceList = props => {
 
-    const {className = "", workspace} = props;
+    const {className = "", show = true, workspace} = props;
 
     const dispatch = useDispatch();
     const history = useHistory();
@@ -146,7 +147,7 @@ const WorkspaceList = props => {
     }, [showTopics]);
 
     return (
-        <Wrapper ref={ref.container} className={`worskpace-list ${className}`} selected={workspace.selected}>
+        <Wrapper ref={ref.container} className={`worskpace-list ${className}`} selected={workspace.selected} show={show}>
             <a href="/" onClick={handleShowTopics}>{workspace.name}
                 {
                     workspace.type === "FOLDER" &&
