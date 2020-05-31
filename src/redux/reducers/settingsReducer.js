@@ -4,6 +4,7 @@ const INITIAL_STATE = {
     user: {
         isLoaded: false,
         LANGUAGE: null,
+        DARK_MODE: "0",
         DISABLE_SOUND: "0",
         CHAT_SETTINGS: {
             open_topic_channels: [],
@@ -55,31 +56,58 @@ export default (state = INITIAL_STATE, action) => {
             let settings = state.user;
             settings["isLoaded"] = true;
 
-            // # Don't load custom theme, maybe in the future again
-            // for (const index in action.data.settings) {
-            //     let item = action.data.settings[index];
-            //     let key = Object.keys(item)[0];
-            //     let value = item[key];
+            let loadedKey = [];
+            for (const index in action.data.settings) {
+                let item = action.data.settings[index];
+                let key = Object.keys(item)[0];
+                let value = item[key];
 
-            //     switch (key) {
-            //         case "CHAT_SETTINGS": {
+                /* NOTE!!!
+                 1) backend stores duplicate keys
+                 2) we ignore those duplicate key values
+                 */
+                if(loadedKey.includes(key)) {
+                    continue;
+                }
 
-            //             //do not apply chat message theme from db if preset is default
-            //             if (value.chat_message_theme.preset === "default") {
-            //                 delete value["chat_message_theme"];
-            //             }
+                loadedKey.push(key);
 
-            //             settings[key] = {
-            //                 ...settings[key],
-            //                 ...value,
-            //             };
-            //             break;
-            //         }
-            //         default: {
-            //             settings[key] = value;
-            //         }
-            //     }
-            // }
+                switch (key) {
+                    case "CHAT_SETTINGS": {
+                        /* NOTE!!!
+                         1) backend ACCEPTS ONLY disable_sound and chat_settings parameters
+                         2) we move other keys to user[key] eg: user[LANGUAGE] instead of CHAT_SETTINGS[key]
+                         */
+                        const nonChatSettings = ["language", "dark_mode"];
+                        nonChatSettings.forEach((ncs, i) => {
+                            if (typeof value[ncs] !== "undefined") {
+                                settings[ncs.toUpperCase()] = value[ncs];
+                                delete value[ncs];
+                            }
+                        });
+
+                        /* NOTE!!!
+                         1) Previous chat message theme will no longer be used.
+                         2) We will move their settings to old_chat_message_theme
+                         */
+                        if (value.chat_message_theme.preset === "default") {
+                            delete value["chat_message_theme"];
+                        } else {
+                            value["old_chat_message_theme"] = value["chat_message_theme"];
+                            delete value["chat_message_theme"];
+                        }
+
+                        settings[key] = {
+                            ...settings[key],
+                            ...value,
+                        };
+                        break;
+                    }
+                    default: {
+                        settings[key] = value;
+                    }
+                }
+            }
 
             return {
                 ...state,

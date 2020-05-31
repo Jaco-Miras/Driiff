@@ -6,7 +6,7 @@ const Wrapper = styled.img`
 
 const Flag = (props) => {
 
-    const {className = "", countryAbbr = "", ...otherProps} = props;
+    const {className = "", countryAbbr = "nl", ...otherProps} = props;
 
     let source = "";
     switch (countryAbbr.toLocaleLowerCase()) {

@@ -1,7 +1,8 @@
-import React, {useState} from "react";
+import React, {useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import styled from "styled-components";
 import {toggleLoading} from "../../../redux/actions/globalActions";
+import {setUserSettings} from "../../../redux/actions/settingsActions";
 import {Avatar, SvgIconFeather} from "../../common";
 import Flag from "../../common/Flag";
 import {_t, setLocale} from "../../hooks";
@@ -40,6 +41,7 @@ const HomeProfileNavigation = (props) => {
     const dispatch = useDispatch();
     const user = useSelector(state => state.session.user);
     const language = useSelector(state => state.settings.user.LANGUAGE);
+    const darkMode = useSelector(state => state.settings.user.DARK_MODE);
 
     const languageOptions = {
         "en": _t("LANGUAGE.ENGLISH", "English"),
@@ -48,9 +50,11 @@ const HomeProfileNavigation = (props) => {
 
     const setThemeButton = (e) => {
         hideActiveDropDown(e);
-
-        const body = document.body;
-        body.classList.toggle("dark");
+        dispatch(
+            setUserSettings({
+                DARK_MODE: darkMode === "0" ? "1" : "0",
+            }),
+        );
     };
 
     const hideActiveDropDown = (e) => {
@@ -87,6 +91,15 @@ const HomeProfileNavigation = (props) => {
             );
         });
     };
+
+    useEffect(() => {
+        const body = document.body;
+        if (darkMode === "0") {
+            body.classList.remove("dark");
+        } else {
+            body.classList.add("dark");
+        }
+    }, [darkMode]);
 
     return (
         <Wrapper className={`header-profile-navigation navbar-nav${className}`}>
