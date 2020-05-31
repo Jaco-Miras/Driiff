@@ -39,10 +39,10 @@ const HomeProfileNavigation = (props) => {
 
     const dispatch = useDispatch();
     const user = useSelector(state => state.session.user);
-    const [language, setLanguage] = useState("uk");
+    const language = useSelector(state => state.settings.user.LANGUAGE);
 
     const languageOptions = {
-        "uk": _t("LANGUAGE.ENGLISH", "English"),
+        "en": _t("LANGUAGE.ENGLISH", "English"),
         "nl": _t("LANGUAGE.DUTCH", "Dutch"),
     };
 
@@ -78,8 +78,6 @@ const HomeProfileNavigation = (props) => {
             .querySelector(".dropdown-menu")
             .classList.toggle("show");
 
-        setLanguage(e.target.dataset.lang);
-
         dispatch(
             toggleLoading(),
         );
@@ -100,7 +98,7 @@ const HomeProfileNavigation = (props) => {
                 <div className="dropdown-menu">
                     <a href="/" className="dropdown-item" onClick={handleSelectLanguage} data-lang="en">
                         <Flag countryAbbr="uk" className="mr-2" width="18"/>
-                        {languageOptions.uk}
+                        {languageOptions.en}
                     </a>
                     <a href="/" className="dropdown-item" onClick={handleSelectLanguage} data-lang="nl">
                         <Flag countryAbbr="nl" className="mr-2" width="18"/>

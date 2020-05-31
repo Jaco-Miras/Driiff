@@ -10,6 +10,9 @@ const Flag = (props) => {
 
     let source = "";
     switch (countryAbbr.toLocaleLowerCase()) {
+        case "en":
+            source = require("../../assets/media/image/flags/262-united-kingdom.png");
+            break;
         case "uk":
             source = require("../../assets/media/image/flags/262-united-kingdom.png");
             break;

@@ -1,7 +1,17 @@
-import {useCallback, useEffect, useState} from "react";
+import {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {getHttpStatus} from "../../helpers/commonFunctions";
 import {addTranslationObject, getTranslationObject} from "../../redux/actions/globalActions";
+import {setUserSettings} from "../../redux/actions/settingsActions";
+
+export const getBrowserLanguage = () => {
+    const lang = navigator.language || navigator.userLanguage;
+
+    return {
+        main: lang.split("-")[0],
+        exact: lang,
+    };
+};
 
 const useTranslation = () => {
 
@@ -9,15 +19,10 @@ const useTranslation = () => {
 
     const i18n = useSelector(state => state.global.i18n);
     const language = useSelector(state => state.settings.user.LANGUAGE);
-    const [dictFile, setDictFile] = useState("");
 
-    const getBrowserLanguage = useCallback(() => {
-        const lang = navigator.language || navigator.userLanguage;
-        return {
-            main: lang.split("-")[0],
-            exact: lang,
-        };
-    }, []);
+    const [dictFile, setDictFile] = useState({});
+    const {REACT_APP_dictionary_file} = process.env;
+    const lang = getBrowserLanguage();
 
     useEffect(() => {
         if (localStorage.getItem(`i18n`)) {
@@ -26,31 +31,73 @@ const useTranslation = () => {
                     JSON.parse(localStorage.getItem(`i18n`)),
                 ),
             );
+            dispatch(
+                setUserSettings({
+                    LANGUAGE: localStorage.getItem(`i18n_lang`),
+                }),
+            );
         } else {
-            const {REACT_APP_dictionary_file} = process.env;
-            const lang = getBrowserLanguage();
-            let valid = false;
+            setDictFile(preventDefault => {
+                return {
+                    lang: lang.exact,
+                    file: `${REACT_APP_dictionary_file}/${lang.exact}`,
+                };
+            });
 
-            let dictFile = `${REACT_APP_dictionary_file}/${lang.main}`;
-            if (!valid && getHttpStatus(dictFile, false) !== false) {
-                setDictFile(preventDefault => dictFile);
-            }
+            // @todo add slug conditions
+            // let dictFile = `${getBaseUrl()}/api/lang/en`;
+            // if (getHttpStatus(dictFile, false) !== false) {
+            //     setDictFile(preventDefault => dictFile);
+            // } else {
+            //     dictFile = `${REACT_APP_dictionary_file}/${lang.exact}`;
+            //     setDictFile(preventDefault => dictFile);
+            // }
         }
 
         //eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {
-        if (dictFile) {
+        const lang = getBrowserLanguage();
+
+        if (dictFile.file) {
             dispatch(
                 getTranslationObject({
-                    url: dictFile,
+                    url: dictFile.file,
                 }, (err, res) => {
-                    localStorage.setItem(`i18n`, JSON.stringify(res.data));
+                    if (err) {
+                        console.log(err, dictFile.file, "error loading dictionary file");
+                    }
+
+                    if (res) {
+                        if (res.data === "") {
+                            if (dictFile === `${REACT_APP_dictionary_file}/${lang.exact}`) {
+                                setDictFile(preventDefault => {
+                                    return {
+                                        lang: lang.main,
+                                        file: `${REACT_APP_dictionary_file}/${lang.main}`,
+                                    };
+                                });
+                            } else if (dictFile === `${REACT_APP_dictionary_file}/${lang.main}`) {
+                                setDictFile(preventDefault => {
+                                    return {
+                                        lang: "en",
+                                        file: `${REACT_APP_dictionary_file}/en`,
+                                    };
+                                });
+                            }
+                        } else {
+                            dispatch(
+                                setUserSettings({
+                                    LANGUAGE: dictFile.lang,
+                                }),
+                            );
+                        }
+                    }
                 }),
             );
         }
-    }, [dispatch, dictFile]);
+    }, [dispatch, dictFile, REACT_APP_dictionary_file]);
 
     /**
      * Save added text to local storage
@@ -58,10 +105,16 @@ const useTranslation = () => {
     useEffect(() => {
         localStorage.setItem(`i18n`, JSON.stringify(i18n));
     }, [i18n]);
+
+    /**
+     * Save language change to local storage
+     */
+    useEffect(() => {
+        localStorage.setItem(`i18n_lang`, language);
+    }, [language]);
 };
 
 export const translate = (i18n, code, default_value, replacement = null) => {
-
     let translation = default_value;
     if (i18n !== null && typeof i18n[code] !== "undefined") {
         translation = i18n[code];
@@ -109,17 +162,20 @@ export const _t = (code, default_value, replacement = null) => {
 
 export const setLocale = (lang, dispatch, callback = null) => {
     const {REACT_APP_dictionary_file} = process.env;
-    let valid = false;
 
     let dictFile = `${REACT_APP_dictionary_file}/${lang}`;
-    if (!valid && getHttpStatus(dictFile, false) !== false) {
+    if (getHttpStatus(dictFile, false) !== false) {
         dispatch(
             getTranslationObject({
                 url: dictFile,
             }, (err, res) => {
-                localStorage.setItem(`i18n`, JSON.stringify(res.data));
-                if(callback)
-                    callback()
+                if (callback)
+                    callback();
+            }),
+        );
+        dispatch(
+            setUserSettings({
+                LANGUAGE: lang,
             }),
         );
     }
