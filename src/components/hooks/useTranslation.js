@@ -8,7 +8,7 @@ const useTranslation = () => {
     const dispatch = useDispatch();
 
     const i18n = useSelector(state => state.global.i18n);
-    //const language = useSelector(state => state.settings.userSettings.LANGUANGE);
+    const language = useSelector(state => state.settings.user.LANGUAGE);
     const [dictFile, setDictFile] = useState("");
 
     const getBrowserLanguage = useCallback(() => {

@@ -55,7 +55,7 @@ const ChannelsSidebar = props => {
                             chatHeader = "Archived";
                         }
                         return (
-                            <React.Fragment key={channel.code}>
+                            <React.Fragment key={channel.id}>
                                 {search !== "" && chatHeader !== "" && <ChatHeader>{chatHeader}</ChatHeader>}
                                 <ChannelList channel={channel}/>
                             </React.Fragment>

@@ -22,7 +22,7 @@ const ChatSidebarPanel = (props) => {
 
     const {className = ""} = props;
 
-    const settings = useSelector(state => state.settings.userSettings);
+    const settings = useSelector(state => state.settings.user);
     const [search, setSearch] = useState("");
     const [tabPill, setTabPill] = useState("pills-home");
     const ref = {

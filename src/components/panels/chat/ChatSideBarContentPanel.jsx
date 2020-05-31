@@ -19,7 +19,7 @@ const Wrapper = styled.div`
 const ChatSidebarContentPanel = (props) => {
 
     const {className = "", pill = "pills-home", search} = props;
-    const isLoaded = useSelector(state => state.settings.isLoaded);
+    const isLoaded = useSelector(state => state.settings.user.isLoaded);
     useLoadLastVisitedChannel(props);
 
     return (

@@ -1,9 +1,9 @@
 const INITIAL_STATE = {
-    user: null,
-    companySettings: null,
-    userSettings: {
+    sessionUser: null,
+    company: null,
+    user: {
         isLoaded: false,
-        LANGUANGE: null,
+        LANGUAGE: null,
         DISABLE_SOUND: "0",
         CHAT_SETTINGS: {
             open_topic_channels: [],
@@ -48,11 +48,11 @@ export default (state = INITIAL_STATE, action) => {
         case "ADD_USER_TO_REDUCERS": {
             return {
                 ...state,
-                user: action.data,
+                sessionUser: action.data,
             };
         }
         case "GET_USER_SETTINGS_SUCCESS": {
-            let settings = state.userSettings;
+            let settings = state.user;
             settings["isLoaded"] = true;
 
             // # Don't load custom theme, maybe in the future again
@@ -83,8 +83,16 @@ export default (state = INITIAL_STATE, action) => {
 
             return {
                 ...state,
-                userSettings: settings,
-                isLoaded: true,
+                user: settings,
+            };
+        }
+        case "UPDATE_USER_SETTINGS": {
+            return {
+                ...state,
+                user: {
+                    ...state.user,
+                    ...action.data,
+                },
             };
         }
         default:

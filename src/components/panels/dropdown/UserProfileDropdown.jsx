@@ -1,7 +1,7 @@
 import React from "react";
 import {useSelector} from "react-redux";
 import styled from "styled-components";
-import {Avatar} from "../../common";
+import {Avatar, SvgIconFeather} from "../../common";
 
 const Wrapper = styled.div`
     position: absolute;
@@ -26,11 +26,7 @@ const UserProfileDropdown = (props) => {
                     {user.name}
                     <a href="#" className="btn btn-primary btn-sm ml-2" data-toggle="tooltip" title=""
                        data-original-title="Edit profile">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                             stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
-                             className="feather feather-edit-2">
-                            <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
-                        </svg>
+                        <SvgIconFeather icon="edit-2" />
                     </a>
                 </h6>
                 <small>Balance: <strong>$105</strong></small>

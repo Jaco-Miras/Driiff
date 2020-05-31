@@ -877,7 +877,7 @@ const ChatBubble = forwardRef((props, ref) => {
         showAvatar={showAvatar}
         isAuthor={isAuthor}
         hideBg={isEmoticonOnly || showGifPlayer || (hasFiles && replyBody === "<span></span>")}
-        theme={props.settings.CHAT_SETTINGS.chat_message_theme}>
+        theme={props.settings.chat_message_theme}>
         {
             <>
                 {
@@ -899,19 +899,19 @@ const ChatBubble = forwardRef((props, ref) => {
                                 showAvatar={showAvatar}
                                 isEmoticonOnly={isEmoticonOnly}
                                 hasFiles={hasFiles}
-                                theme={props.settings.CHAT_SETTINGS.chat_message_theme}
+                                theme={props.settings.chat_message_theme}
                                 onClick={handleQuoteClick} isAuthor={isAuthor}>
                                 {
                                     reply.quote.user_id === user.id ?
                                     <QuoteAuthor
-                                        theme={props.settings.CHAT_SETTINGS.chat_message_theme}
+                                        theme={props.settings.chat_message_theme}
                                         isAuthor={true}>{`You`}</QuoteAuthor> :
                                     <QuoteAuthor
-                                        theme={props.settings.CHAT_SETTINGS.chat_message_theme}
+                                        theme={props.settings.chat_message_theme}
                                         isAuthor={reply.quote.user_id === user.id}>{replyQuoteAuthor}</QuoteAuthor>
                                 }
                                 <QuoteContent
-                                    theme={props.settings.CHAT_SETTINGS.chat_message_theme}
+                                    theme={props.settings.chat_message_theme}
                                     isAuthor={isAuthor}
                                     dangerouslySetInnerHTML={{__html: replyQuoteBody.split("</p>")[0]}}
                                 ></QuoteContent>
@@ -933,16 +933,17 @@ const ChatBubble = forwardRef((props, ref) => {
                             <ChatMessageFiles
                                 hasMessage={hasMessage}
                                 isAuthor={isAuthor}
-                                theme={props.settings.CHAT_SETTINGS.chat_message_theme}
+                                theme={props.settings.chat_message_theme}
                                 chatFiles={chatFiles}
                                 files={reply.files}
                                 reply={reply}
+                                type="chat"
                             />
                         }
                         {
                             <ReplyContent
                                 hasFiles={hasFiles}
-                                theme={props.settings.CHAT_SETTINGS.chat_message_theme}
+                                theme={props.settings.chat_message_theme}
                                 isAuthor={isAuthor}
                                 className={`reply-content ${isEmoticonOnly ? "emoticon-body" : ""} ${reply.is_deleted ? "is-deleted" : ""}`}
                                 dangerouslySetInnerHTML={showGifPlayer ? {__html: stripGif(replyBody)} : {__html: replyBody}}

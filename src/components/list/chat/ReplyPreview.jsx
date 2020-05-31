@@ -37,7 +37,7 @@ const TextIcon = styled(SvgIcon)`
 
 const ReplyPreview = props => {
     const {channel} = props;
-    const settings = useSelector(state => state.settings.userSettings);
+    const settings = useSelector(state => state.settings.user.CHAT_SETTINGS);
     const user = useSelector(state => state.session.user);
     const channelDrafts = useSelector(state => state.chat.channelDrafts);
     const [previewText, setPreviewText] = useState("");
@@ -46,7 +46,7 @@ const ReplyPreview = props => {
         let showPreviewIcon = false;
         let previewText = "";
         let lastReplyBody = "";
-        if (channel.last_reply && settings.CHAT_SETTINGS.preview_message) {
+        if (channel.last_reply && settings.preview_message) {
             if (channel.last_reply.is_deleted) {
                 //translation error thus _tf is used tmp
                 lastReplyBody = t(channel.last_reply.body, "The chat message has been deleted.");
@@ -109,7 +109,7 @@ const ReplyPreview = props => {
         }
 
         setPreviewText(previewText);
-    }, [channel.last_reply, channel.replies, channel.id, user.id, channelDrafts, settings.CHAT_SETTINGS.preview_message]);
+    }, [channel.last_reply, channel.replies, channel.id, user.id, channelDrafts, settings.preview_message]);
 
     return (
         <Wrapper className={`small text-muted `}>

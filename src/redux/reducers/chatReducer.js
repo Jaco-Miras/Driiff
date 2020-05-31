@@ -787,7 +787,6 @@ export default function (state = INITIAL_STATE, action) {
             };
         }
         case "SAVE_LAST_VISITED_CHANNEL": {
-            console.log(action.data);
             return {
                 ...state,
                 lastVisitedChannel: action.data,

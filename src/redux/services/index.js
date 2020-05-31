@@ -24,6 +24,7 @@ export {
 
 export {
     getUserSettings,
+    updateUserSettings,
 } from "./settings";
 
 export {

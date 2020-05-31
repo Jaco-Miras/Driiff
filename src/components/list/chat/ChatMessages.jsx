@@ -923,7 +923,7 @@ class ChatMessages extends React.PureComponent {
                                                                         {
                                                                             <ChatReactionButton
                                                                                 isAuthor={isAuthor}
-                                                                                theme={this.props.settings.CHAT_SETTINGS.chat_message_theme}
+                                                                                theme={this.props.settings.chat_message_theme}
                                                                                 scrollRef={this.props.innerRef}
                                                                                 reply={reply}
                                                                                 chatReactionAction={this.props.chatReactionV2Action}
@@ -991,7 +991,7 @@ class ChatMessages extends React.PureComponent {
                                                                     {
                                                                         <ChatReactionButton
                                                                             isAuthor={isAuthor}
-                                                                            theme={this.props.settings.CHAT_SETTINGS.chat_message_theme}
+                                                                            theme={this.props.settings.chat_message_theme}
                                                                             scrollRef={this.props.innerRef}
                                                                             reply={reply}
                                                                             chatReactionAction={this.props.chatReactionV2Action}
@@ -1083,13 +1083,13 @@ function mapStateToProps(state) {
     const {
         global: {isBrowserActive, slugs},
         session: {user},
-        settings: {userSettings},
         users: {onlineUsers},
         chat: {selectedChannel, historicalPositions},
     } = state;
+
     return {
         user,
-        settings: userSettings,
+        settings: state.settings.user.CHAT_SETTINGS,
         sharedSlugs: slugs,
         onlineUsers,
         isBrowserActive,
