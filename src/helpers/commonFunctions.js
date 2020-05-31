@@ -159,7 +159,8 @@ function fallbackCopyTextToClipboard(text) {
     try {
         var successful = document.execCommand("copy");
         if (successful) toaster.notify(`Copied task link`, {position: "bottom-left"});
-    } catch (err) {
+    }
+    catch (err) {
         console.error("Fallback: Oops, unable to copy", err);
     }
     document.body.removeChild(textArea);
@@ -177,7 +178,7 @@ export const copyTextToClipboard = (text, notification = `Copied text to clipboa
     });
 };
 
-export const getHttpStatus = (url, async = false) => {
+export const getHttpStatus = (url, async = true) => {
 
     try {
         let http = new XMLHttpRequest();
@@ -191,7 +192,8 @@ export const getHttpStatus = (url, async = false) => {
             return false;
 
         return http.status;
-    } catch (err) {
+    }
+    catch (err) {
         console.log(err);
         return false;
     }

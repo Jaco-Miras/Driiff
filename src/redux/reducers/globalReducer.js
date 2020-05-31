@@ -1,5 +1,7 @@
 const INITIAL_STATE = {
     user: null,
+    i18n: null,
+    i18nLoaded: false,
     recipients: [],
     isLoading: false,
     isBrowserActive: true,
@@ -70,6 +72,16 @@ export default (state = INITIAL_STATE, action) => {
                 ...state,
                 user: action.data,
             };
+        }
+        case "GET_TRANSLATION_OBJECT_SUCCESS": {
+            return {
+                ...state,
+                i18n: state.i18n === null ? action.data : {
+                    ...state.i18n,
+                    ...action.data
+                },
+                i18nLoaded: true
+            }
         }
         default:
             return state;

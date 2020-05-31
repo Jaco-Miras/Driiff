@@ -6,10 +6,11 @@ import MainLayout from "./MainLayout";
 
 export const AppRoute = ({children, ...props}) => {
 
-    const session = useSelector(state => state.session.checked === true && state.session);
+    const session = useSelector(state => state.session);
+    const i18nLoaded = useSelector(state => state.global.i18nLoaded);
     const authenticated = session.authenticated;
 
-    if(!session.checked)
+    if(!session.checked || !i18nLoaded)
         return null;
 
     return (

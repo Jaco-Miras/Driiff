@@ -3,8 +3,8 @@ import {renderToString} from "react-dom/server";
 import {useSelector} from "react-redux";
 import styled from "styled-components";
 import quillHelper from "../../../helpers/quillHelper";
-import {_t} from "../../../helpers/stringFormatter";
 import {SvgIcon} from "../../common";
+import {_tf} from "../../hooks/useTranslation";
 
 const Wrapper = styled.span`
     display: table;
@@ -48,10 +48,8 @@ const ReplyPreview = props => {
         let lastReplyBody = "";
         if (channel.last_reply && settings.CHAT_SETTINGS.preview_message) {
             if (channel.last_reply.is_deleted) {
-                lastReplyBody = _t(
-                    channel.last_reply.body,
-                    "The chat message has been deleted",
-                );
+                //translation error thus _tf is used tmp
+                lastReplyBody = _tf(channel.last_reply.body, "The chat message has been deleted.");
                 lastReplyBody = "<span class=\"is-deleted\">" + lastReplyBody + "</span>";
             } else {
                 lastReplyBody = quillHelper.parseEmoji(channel.last_reply.body);
@@ -112,6 +110,7 @@ const ReplyPreview = props => {
 
         setPreviewText(previewText);
     }, [channel.last_reply, channel.replies, channel.id, user.id, channelDrafts, settings.CHAT_SETTINGS.preview_message]);
+
     return (
         <Wrapper className={`small text-muted `}>
             <LastReplyBody
