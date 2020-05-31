@@ -60,7 +60,7 @@ const useTranslation = () => {
     }, [i18n]);
 };
 
-const translate = (i18n, code, default_value, replacement = null) => {
+export const translate = (i18n, code, default_value, replacement = null) => {
 
     let translation = default_value;
     if (i18n !== null && typeof i18n[code] !== "undefined") {
@@ -82,7 +82,7 @@ const translate = (i18n, code, default_value, replacement = null) => {
     return translation;
 };
 
-export const _tf = (code, default_value, replacement = null) => {
+export const t = (code, default_value, replacement = null) => {
     return translate(JSON.parse(localStorage.getItem(`i18n`)), code, default_value, replacement);
 };
 
@@ -105,6 +105,24 @@ export const _t = (code, default_value, replacement = null) => {
     }, [dispatch, i18n, code, default_value, replacement]);
 
     return translation;
+};
+
+export const setLocale = (lang, dispatch, callback = null) => {
+    const {REACT_APP_dictionary_file} = process.env;
+    let valid = false;
+
+    let dictFile = `${REACT_APP_dictionary_file}/${lang}`;
+    if (!valid && getHttpStatus(dictFile, false) !== false) {
+        dispatch(
+            getTranslationObject({
+                url: dictFile,
+            }, (err, res) => {
+                localStorage.setItem(`i18n`, JSON.stringify(res.data));
+                if(callback)
+                    callback()
+            }),
+        );
+    }
 };
 
 export default useTranslation;
