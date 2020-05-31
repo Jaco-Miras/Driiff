@@ -1,4 +1,4 @@
-import {apiCall} from "./index";
+import {apiCall, apiNoTokenCall} from "./index";
 
 export function getConnectedSlugs(payload) {
     let url = `/v2/connected-slugs`;
@@ -52,7 +52,6 @@ export function deleteDraft(payload) {
 }
 
 export function uploadDocument(payload) {
-
     let url = `/v1/files?file_type=${payload.file_type}`;
     if (payload.folder_id) {
         url += `&folder_id=${payload.folder_id}`;
@@ -61,5 +60,12 @@ export function uploadDocument(payload) {
         method: "POST",
         url: url,
         data: payload.file,
+    });
+}
+
+export function getTranslationObject(payload) {
+    return apiNoTokenCall({
+        method: "GET",
+        actualUrl: payload.url,
     });
 }

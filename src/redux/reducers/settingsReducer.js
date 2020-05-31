@@ -3,6 +3,7 @@ const INITIAL_STATE = {
     companySettings: null,
     userSettings: {
         isLoaded: false,
+        LANGUANGE: null,
         DISABLE_SOUND: "0",
         CHAT_SETTINGS: {
             open_topic_channels: [],

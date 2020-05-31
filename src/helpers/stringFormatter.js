@@ -1,8 +1,6 @@
 //import React from "react";
 import {toArray} from "react-emoji-render";
-import {apiNoTokenCall} from "../redux/services";
-import {$_GET, getHttpStatus} from "./commonFunctions";
-import {getBaseUrl, getSlugName, getSupportedUserLanguage} from "./slugHelper";
+import {getSlugName} from "./slugHelper";
 
 export const EmailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
@@ -90,17 +88,17 @@ export const parseTaskUrl = value => {
 };
 
 /*export const parseEmojisAndHtml = value => {
- const emojisArray = toArray(value);
- const newValue = emojisArray.map(node => {
- if (typeof node === "string") {
- return <span dangerouslySetInnerHTML={{ __html: node }} />;
- }
- return node.props.children;
- });
- return newValue;
- };*/
+    const emojisArray = toArray(value);
+    const newValue = emojisArray.map(node => {
+        if (typeof node === "string") {
+            return <span dangerouslySetInnerHTML={{__html: node}}/>;
+        }
+        return node.props.children;
+    });
+    return newValue;
+};*/
 
-export class translation {
+/*export class translation {
 
     static async init() {
         let driff = getSlugName();
@@ -201,7 +199,7 @@ export class translation {
 
 export const _t = (code, default_value, replacement = null) => {
     return translation._t(code, default_value, replacement);
-};
+};*/
 
 export const getEmojiRegexPattern = () => {
     return [

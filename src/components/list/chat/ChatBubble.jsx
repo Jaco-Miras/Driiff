@@ -10,7 +10,7 @@ import Skeleton from "react-skeleton-loader";
 import styled from "styled-components";
 import {todayOrYesterdayDate} from "../../../helpers/momentFormatJS";
 import quillHelper from "../../../helpers/quillHelper";
-import {_t, getEmojiRegexPattern, stripGif} from "../../../helpers/stringFormatter";
+import {getEmojiRegexPattern, stripGif} from "../../../helpers/stringFormatter";
 import {
     markReminderComplete,
     setSelectedChannel,
@@ -18,6 +18,7 @@ import {
     updateChatMessageReminderComplete,
 } from "../../../redux/actions/chatActions";
 import {ImageTextLink, SvgIconFeather, SvgImage} from "../../common";
+import {_t} from "../../hooks/useTranslation";
 import MessageFiles from "./Files/MessageFiles";
 import Unfurl from "./Unfurl/Unfurl";
 
@@ -902,12 +903,12 @@ const ChatBubble = forwardRef((props, ref) => {
                                 onClick={handleQuoteClick} isAuthor={isAuthor}>
                                 {
                                     reply.quote.user_id === user.id ?
-                                        <QuoteAuthor
-                                            theme={props.settings.CHAT_SETTINGS.chat_message_theme}
-                                            isAuthor={true}>{`You`}</QuoteAuthor> :
-                                        <QuoteAuthor
-                                            theme={props.settings.CHAT_SETTINGS.chat_message_theme}
-                                            isAuthor={reply.quote.user_id === user.id}>{replyQuoteAuthor}</QuoteAuthor>
+                                    <QuoteAuthor
+                                        theme={props.settings.CHAT_SETTINGS.chat_message_theme}
+                                        isAuthor={true}>{`You`}</QuoteAuthor> :
+                                    <QuoteAuthor
+                                        theme={props.settings.CHAT_SETTINGS.chat_message_theme}
+                                        isAuthor={reply.quote.user_id === user.id}>{replyQuoteAuthor}</QuoteAuthor>
                                 }
                                 <QuoteContent
                                     theme={props.settings.CHAT_SETTINGS.chat_message_theme}

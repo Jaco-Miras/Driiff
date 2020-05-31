@@ -4,6 +4,7 @@ import {
     generateUnfurl as generateUnfurlService,
     getAllRecipients as getAllRecipientsService,
     getConnectedSlugs as getConnectedSlugsService,
+    getTranslationObject as getTranslationObjectService,
     saveDraft as saveDraftService,
     updateDraft as updateDraftService,
     uploadDocument as uploadDocumentService,
@@ -147,6 +148,24 @@ export function addUserToReducers(payload, callback) {
     return SimpleDispatchActionToReducer(
         "ADD_USER_TO_REDUCERS",
         payload,
+        callback,
+    );
+}
+
+export function addTranslationObject(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "GET_TRANSLATION_OBJECT_SUCCESS",
+        payload,
+        callback,
+    );
+}
+
+export function getTranslationObject(payload, callback) {
+    return dispatchActionToReducer(
+        getTranslationObjectService(payload),
+        "GET_TRANSLATION_OBJECT_START",
+        "GET_TRANSLATION_OBJECT_SUCCESS",
+        "GET_TRANSLATION_OBJECT_FAIL",
         callback,
     );
 }

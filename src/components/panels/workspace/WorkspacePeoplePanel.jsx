@@ -38,8 +38,17 @@ const WorkspacePeoplePanel = (props) => {
             if (user.active !== 1)
                 return false;
 
-            if (!workspaces[activeTopic.workspace_id].member_ids.includes(user.id)) {
-                return false;
+            if(activeTopic) {
+                if(activeTopic.workspace_id) {
+                    if (!workspaces[activeTopic.workspace_id].member_ids.includes(user.id)) {
+                        return false;
+                    }
+                } else {
+                    console.log(activeTopic)
+                    if (!workspaces[activeTopic.id].member_ids.includes(user.id)) {
+                        return false;
+                    }
+                }
             }
 
             if (search !== "") {

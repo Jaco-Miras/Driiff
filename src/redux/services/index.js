@@ -48,6 +48,7 @@ export {
     saveDraft,
     updateDraft,
     uploadDocument,
+    getTranslationObject,
 } from "./global";
 
 export {
