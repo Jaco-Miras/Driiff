@@ -16,3 +16,5 @@ export {default as useCountUnreadReplies} from "./useCountUnreadReplies";
 export {default as useSetWorkspace} from "./useSetWorkspace";
 export {default as useIsMember} from "./useIsMember";
 export {default as useGetWorkspacePosts} from "./useGetWorkspacePosts";
+export * from "./useTranslation";
+export {default as useSettings} from "./useSettings";

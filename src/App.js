@@ -1,7 +1,7 @@
 import React from "react";
 import {Switch} from "react-router-dom";
 import ScrollToTop from "react-router-scroll-top";
-import useTranslation from "./components/hooks/useTranslation";
+import {useTranslation} from "./components/hooks";
 import {PreLoader} from "./components/panels";
 import {AppRoute} from "./layout/routes";
 

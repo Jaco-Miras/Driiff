@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import {_t} from "../../hooks/useTranslation";
+import {_t} from "../../hooks";
 
 const Wrapper = styled.div`
 `;

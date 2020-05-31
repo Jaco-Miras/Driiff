@@ -13,7 +13,7 @@ export const getBrowserLanguage = () => {
     };
 };
 
-const useTranslation = () => {
+export const useTranslation = () => {
 
     const dispatch = useDispatch();
 
@@ -180,5 +180,3 @@ export const setLocale = (lang, dispatch, callback = null) => {
         );
     }
 };
-
-export default useTranslation;

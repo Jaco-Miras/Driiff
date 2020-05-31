@@ -4,7 +4,7 @@ import {useSelector} from "react-redux";
 import styled from "styled-components";
 import quillHelper from "../../../helpers/quillHelper";
 import {SvgIcon} from "../../common";
-import {t} from "../../hooks/useTranslation";
+import {t} from "../../hooks";
 
 const Wrapper = styled.span`
     display: table;

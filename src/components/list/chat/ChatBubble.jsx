@@ -18,7 +18,7 @@ import {
     updateChatMessageReminderComplete,
 } from "../../../redux/actions/chatActions";
 import {ImageTextLink, SvgIconFeather, SvgImage} from "../../common";
-import {_t} from "../../hooks/useTranslation";
+import {_t} from "../../hooks";
 import MessageFiles from "./Files/MessageFiles";
 import Unfurl from "./Unfurl/Unfurl";
 

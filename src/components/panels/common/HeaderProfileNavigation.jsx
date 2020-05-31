@@ -4,7 +4,7 @@ import styled from "styled-components";
 import {toggleLoading} from "../../../redux/actions/globalActions";
 import {Avatar, SvgIconFeather} from "../../common";
 import Flag from "../../common/Flag";
-import {_t, setLocale} from "../../hooks/useTranslation";
+import {_t, setLocale} from "../../hooks";
 import {NotificationDropDown} from "../dropdown";
 import UserProfileDropDown from "../dropdown/UserProfileDropdown";
 
