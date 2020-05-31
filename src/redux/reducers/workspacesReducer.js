@@ -240,8 +240,25 @@ export default (state = INITIAL_STATE, action) => {
                 workspacePosts: {
                     ...state.workspacePosts,
                     [action.data.topic_id]: {
-                        ...[action.data.topic_id].posts,
-                        ...convertedPosts
+                        filter: null,
+                        sort: null,
+                        posts: {
+                            ...[action.data.topic_id].posts,
+                            ...convertedPosts
+                        }
+                    }
+                }
+            }
+        }
+        case "UPDATE_WORKSPACE_POST_FILTER_SORT": {
+            return {
+                ...state,
+                workspacePosts: {
+                    ...state.workspacePosts,
+                    [action.data.topic_id]: {
+                        ...state.workspacePosts[action.data.topic_id],
+                        filter: action.data.filter ? action.data.filter : state.workspacePosts[action.data.topic_id].filter,
+                        sort: action.data.sort ? action.data.sort : state.workspacePosts[action.data.topic_id].sort,
                     }
                 }
             }

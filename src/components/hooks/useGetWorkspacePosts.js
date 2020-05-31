@@ -29,7 +29,25 @@ const useGetWorkspacePosts = () => {
     }, [params]);
 
     if (Object.keys(wsPosts).length && wsPosts.hasOwnProperty(params.workspaceId)) {
-        return wsPosts[params.workspaceId];
+        let filter = wsPosts[params.workspaceId].filter;
+        let sort =wsPosts[params.workspaceId].sort;
+        if (filter !== null || sort !== null){
+            if (sort && filter === null) {
+                return Object.values(wsPosts[params.workspaceId].posts).sort((a,b) => {
+                    if (sort === "asc") {
+                        return a.updated_at.timestamp > b.updated_at.timestamp ? 1 : -1
+                    } else {
+                        return a.updated_at.timestamp < b.updated_at.timestamp ? 1 : -1
+                    }
+                })
+            } else if (filter && sort === null) {
+                return wsPosts[params.workspaceId].posts;
+            } else {
+                return wsPosts[params.workspaceId].posts;
+            }
+        } else {
+            return wsPosts[params.workspaceId].posts;
+        }
     } else {
         return null;
     }

@@ -13,3 +13,4 @@ export {default as SvgImage} from "./SvgImage";
 export {default as CommonPicker} from "./CommonPicker";
 export {default as FileAttachments} from "./FileAttachments";
 export {default as AvatarGroup} from "./AvatarGroup";
+export {default as ButtonDropdown} from "./ButtonDropdown";

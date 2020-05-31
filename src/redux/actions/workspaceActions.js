@@ -266,3 +266,11 @@ export function addToWorkspacePosts(payload, callback) {
         callback,
     );
 }
+
+export function updateWorkspacePostFilterSort(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "UPDATE_WORKSPACE_POST_FILTER_SORT",
+        payload,
+        callback,
+    );
+}
