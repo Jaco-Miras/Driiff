@@ -1,7 +1,7 @@
 import React from "react";
-import {withRouter} from "react-router-dom";
 import styled from "styled-components";
-import {NavLink, SvgIconFeather} from "../../common";
+import {NavLink} from "../../common";
+import {SettingsLink} from "../../workspace";
 
 const Wrapper = styled.div`    
 `;
@@ -60,9 +60,7 @@ const WorkspacePageHeaderPanel = (props) => {
                         <li className="nav-item">
                             <MainNavLink isSub={true} to={`/workspace/people${pathname}`}>People</MainNavLink>
                         </li>
-                        <li className="nav-item">
-                            <SvgIconFeather icon="settings"/>
-                        </li>
+                        <SettingsLink/>
                     </Navbar>
                 </div>
             </Wrapper>

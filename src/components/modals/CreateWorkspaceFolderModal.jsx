@@ -4,7 +4,7 @@ import {Input, InputGroup, Label, Modal, ModalBody} from "reactstrap";
 import styled from "styled-components";
 import toaster from "toasted-notes";
 import {clearModal} from "../../redux/actions/globalActions";
-import {createWorkspace} from "../../redux/actions/workspaceActions";
+import {createWorkspace, updateWorkspace} from "../../redux/actions/workspaceActions";
 import {CheckBox, DescriptionInput, InputFeedback} from "../forms";
 import {ModalHeaderSection} from "./index";
 
@@ -59,11 +59,10 @@ const ActiveTabName = styled.span`
 
 const CreateWorkspaceFolderModal = props => {
 
-    const {type, mode} = props.data;
+    const {type, mode, item = null} = props.data;
 
     const dispatch = useDispatch();
     const workspaces = useSelector(state => state.workspaces.workspaces);
-    const channel = useSelector(state => state.chat.selectedChannel);
     const activeTab = useSelector(state => state.workspaces.activeTab);
     const [modal, setModal] = useState(true);
     const [activeTabName, setActiveTabName] = useState("Internal");
@@ -72,6 +71,7 @@ const CreateWorkspaceFolderModal = props => {
         name: "",
         description: "",
         textOnly: "",
+        workspace_id: null,
     });
     const [valid, setValid] = useState({
         name: null,
@@ -99,24 +99,46 @@ const CreateWorkspaceFolderModal = props => {
             ...valid,
             name: form.name !== "",
         });
-
-        if (form.name === "") {
-            setFeedback({
-                ...feedback,
-                name: "Please provide a folder name.",
-            });
-        } else if (Object.values(workspaces).filter(w => w.name.toLowerCase() === form.name.toLowerCase()).length) {
-            setFeedback({
-                ...feedback,
-                name: "Folder name already exists.",
-            });
+        
+        if (mode === "edit") {
+            if (form.name === "") {
+                setFeedback({
+                    ...feedback,
+                    name: "Please provide a folder name.",
+                });
+            } else if (Object.values(workspaces).filter(w => w.name.toLowerCase() === form.name.toLowerCase()).length) {
+                if (item.workspace_name !== form.name) {
+                    setFeedback({
+                        ...feedback,
+                        name: "Folder name already exists.",
+                    });
+                }
+            } else {
+                setFeedback({
+                    ...feedback,
+                    name: "",
+                });
+            }
         } else {
-            setFeedback({
-                ...feedback,
-                name: "",
-            });
+    
+            if (form.name === "") {
+                setFeedback({
+                    ...feedback,
+                    name: "Please provide a folder name.",
+                });
+            } else if (Object.values(workspaces).filter(w => w.name.toLowerCase() === form.name.toLowerCase()).length) {
+                setFeedback({
+                    ...feedback,
+                    name: "Folder name already exists.",
+                });
+            } else {
+                setFeedback({
+                    ...feedback,
+                    name: "",
+                });
+            }
         }
-    }, [form.name, valid, setValid, feedback, setFeedback, workspaces]);
+    }, [form.name, valid, setValid, feedback, setFeedback, workspaces, mode]);
 
     const handleNameChange = useCallback(e => {
         e.persist();
@@ -144,23 +166,44 @@ const CreateWorkspaceFolderModal = props => {
             is_folder: 1,
             is_lock: form.is_private ? 1 : 0,
         };
-        dispatch(
-            createWorkspace(payload, (err, res) => {
-                if(err) {
-                    console.log(err);
-                    toaster.notify(
-                        <span>Folder creation failed.<br/>Please try again.</span>,
-                        {position: "bottom-left"});
-                }
-                if(res) {
-                    toaster.notify(
-                        <span><b>{form.name}</b> folder is created</span>,
-                        {position: "bottom-left"});
-                    toggle();
-                }
-            }),
-        );
-    }, [dispatch, toggle, activeTab, form.description, form.is_private, form.name, valid.name, setForm]);
+        if (mode === "edit") {
+            payload = {
+                ...payload,
+                workspace_id: form.workspace_id
+            }
+            dispatch(
+                updateWorkspace(payload, (err, res) => {
+                    if(err) {
+                        toaster.notify(
+                            <span>Folder update failed.<br/>Please try again.</span>,
+                            {position: "bottom-left"});
+                    }
+                    if(res) {
+                        toaster.notify(
+                            <span><b>{form.name}</b> folder is updated</span>,
+                            {position: "bottom-left"});
+                        toggle();
+                    }
+                }),
+            );
+        } else {
+            dispatch(
+                createWorkspace(payload, (err, res) => {
+                    if(err) {
+                        toaster.notify(
+                            <span>Folder creation failed.<br/>Please try again.</span>,
+                            {position: "bottom-left"});
+                    }
+                    if(res) {
+                        toaster.notify(
+                            <span><b>{form.name}</b> folder is created</span>,
+                            {position: "bottom-left"});
+                        toggle();
+                    }
+                }),
+            );
+        }
+    }, [dispatch, toggle, activeTab, form.description, form.is_private, form.name, valid.name, setForm, mode]);
 
     const handleQuillChange = useCallback((content, delta, source, editor) => {
         const textOnly = editor.getText(content);
@@ -179,6 +222,22 @@ const CreateWorkspaceFolderModal = props => {
         }
     }, [activeTab, setActiveTabName]);
 
+    useEffect(() => {
+        if (mode === "edit") {
+            let folder = {...workspaces[item.workspace_id]};
+            if (folder) {
+                setForm({
+                    ...form,
+                    name: folder.name,
+                    description: folder.description,
+                    textOnly: folder.description,
+                    is_private: folder.is_lock === 1,
+                    workspace_id: folder.id,
+                })
+            }
+        }
+    }, []);
+
     return (
         <Modal isOpen={modal} toggle={toggle} centered size={"md"} autoFocus={false}>
             <ModalHeaderSection toggle={toggle} className={"workspace-folder-header"}>
@@ -190,7 +249,7 @@ const CreateWorkspaceFolderModal = props => {
                     <Label for="folder">
                         Folder name</Label>
                     <Input
-                        defaultValue={mode === "edit" ? channel.title : ""}
+                        defaultValue={mode === "edit" ? item.workspace_name : ""}
                         onChange={handleNameChange}
                         onBlur={handleNameBlur}
                         valid={valid.name}
@@ -201,6 +260,8 @@ const CreateWorkspaceFolderModal = props => {
                 </WrapperDiv>
                 <DescriptionInput
                     onChange={handleQuillChange}
+                    defaultValue={mode === "edit" && item ? item.workspace_description : ""}
+                    mode={mode}
                 />
                 <WrapperDiv style={{marginTop: "40px"}}>
                     <Label></Label>

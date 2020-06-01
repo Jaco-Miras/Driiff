@@ -29,6 +29,7 @@ export default (state = INITIAL_STATE, action) => {
                             is_external: ws.is_external,
                             workspace_id: ws.id,
                             workspace_name: ws.name,
+                            workspace_description: ws.description,
                         }
                     })
                 }
@@ -123,7 +124,14 @@ export default (state = INITIAL_STATE, action) => {
                     workspaces: {
                         ...state.workspaces,
                         [action.data.id]: workspace
-                    }
+                    },
+                    activeTopic: state.activeTopic && state.activeTopic.workspace_id !== undefined && state.activeTopic.workspace_id === action.data.id ?
+                        {
+                            ...state.activeTopic,
+                            workspace_name: action.data.name,
+                            workspace_description: action.data.description,
+                        }
+                    : state.activeTopic
                 }
             } else {
                 return state;

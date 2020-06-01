@@ -122,6 +122,7 @@ const WorkspaceNavigationMenuBodyPanel = (props) => {
     const handleShowFolderModal = () => {
         let payload = {
             type: "workspace_folder",
+            mode: "create",
         };        
         dispatch(
             addToModals(payload),
@@ -174,6 +175,7 @@ const WorkspaceNavigationMenuBodyPanel = (props) => {
                                 is_external: wsfolder.is_external,
                                 workspace_id: wsfolder.id,
                                 workspace_name: wsfolder.name,
+                                workspace_description: wsfolder.description,
                             };
                             dispatch(setActiveTopic(topic));
                         } else if (topic && wsfolder === null) {
