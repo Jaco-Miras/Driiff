@@ -1,7 +1,7 @@
 import React, {useCallback, useRef, useState} from "react";
 import styled from "styled-components";
 import {useDispatch, useSelector} from "react-redux";
-import {useOutsideClick} from "../hooks";
+import {useOutsideClick, useIsMember} from "../hooks";
 import {SvgIconFeather} from "../common";
 import {addToModals} from "../../redux/actions/globalActions";
 
@@ -62,6 +62,10 @@ const SettingsLink = props => {
     };
 
     useOutsideClick(wrapperRef, toggle, show);
+
+    const isMember = useIsMember(topic ? topic.member_ids : []);
+
+    if (!isMember) return null;
 
     return (
         <SettingsLinkList className="nav-item" ref={wrapperRef}>
