@@ -32,7 +32,6 @@ const LastReplyBody = styled.div`
 `;
 const TextIcon = styled(SvgIcon)`
     max-width: 12px;
-    height: 100%;
 `;
 
 const ReplyPreview = props => {

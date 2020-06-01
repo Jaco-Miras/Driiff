@@ -279,7 +279,7 @@ const FileUploadModal = props => {
                         <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>
                     }
                     Upload</Button>{" "}
-                <Button color="secondary" onClick={toggle}>Cancel</Button>
+                <Button outline color="secondary" onClick={toggle}>Cancel</Button>
             </ModalFooter>
         </Modal>
     );

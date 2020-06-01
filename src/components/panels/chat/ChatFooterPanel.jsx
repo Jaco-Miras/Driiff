@@ -38,7 +38,7 @@ const IconButton = styled(SvgIconFeather)`
     cursor: pointer;
     cursor: hand;
     border: 1px solid #afb8bd;
-    height: 38px;
+    height: 37px;
     margin: -1px 8px;
     width: 47px;
     padding: 10px 0;
@@ -67,11 +67,11 @@ const Dflex = styled.div`
         align-items: center;
         justify-content: center;
         padding: 20px 0;
-        
+
         > div {
             flex: 0 1 100%;
         }
-        
+
         .channel-name{
             color: #64625C;
             font-size: 17px;
@@ -86,7 +86,7 @@ const Dflex = styled.div`
             text-transform: lowercase;
             margin-bottom: 16px;
         }
-        .channel-action {    
+        .channel-action {
             button {
                 background-image: linear-gradient(102deg,#972c86,#794997);
                 color: #fff;
@@ -109,7 +109,7 @@ const Dflex = styled.div`
             padding: 10px;
             color: #fff;
         }
-    }    
+    }
 `;
 
 const PickerContainer = styled(CommonPicker)`

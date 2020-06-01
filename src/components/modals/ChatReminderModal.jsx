@@ -204,7 +204,7 @@ const ChatReminderModal = props => {
             </ModalBody>
             <ModalFooter>
                 <Button color="primary" onClick={handleSnooze}>Snooze</Button>{" "}
-                <Button color="secondary" onClick={toggle}>Cancel</Button>
+                <Button outline color="secondary" onClick={toggle}>Cancel</Button>
             </ModalFooter>
         </Modal>
     );
