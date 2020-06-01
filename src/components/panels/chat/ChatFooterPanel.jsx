@@ -1,6 +1,7 @@
 import React, {useRef, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import styled from "styled-components";
+import {localizeChatTimestamp} from "../../../helpers/momentFormatJS";
 import {onClickSendButton} from "../../../redux/actions/chatActions";
 import {CommonPicker, SvgIconFeather} from "../../common";
 import ChatInput from "../../forms/ChatInput";
@@ -58,6 +59,57 @@ const IconButton = styled(SvgIconFeather)`
 `;
 
 const Dflex = styled.div`
+    &.channel-viewing {
+        display: flex;
+        flex-wrap: wrap;
+        background-color: #f8f8f8;
+        text-align: center;
+        align-items: center;
+        justify-content: center;
+        padding: 20px 0;
+        
+        > div {
+            flex: 0 1 100%;
+        }
+        
+        .channel-name{
+            color: #64625C;
+            font-size: 17px;
+            font-weight: 600;
+        }
+        .channel-create {
+            letter-spacing: 0;
+            margin-bottom: 0;
+            color: #B8B8B8;
+            font-weight: normal;
+            font-size: 19px;
+            text-transform: lowercase;
+            margin-bottom: 16px;
+        }
+        .channel-action {    
+            button {
+                background-image: linear-gradient(102deg,#972c86,#794997);
+                color: #fff;
+                border: none;
+                padding: 8px 15px;
+                border-radius: 20px;
+                font-size: 19px;
+                font-weight: 600;
+            }
+        }
+        .feather-plus {
+            cursor: pointer;
+            cursor: hand;
+            position: absolute;
+            right: 25px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50px;
+            background: linear-gradient(to right bottom, rgb(151, 44, 134), rgb(121, 73, 151) 40%, rgb(0, 113, 128));
+            padding: 10px;
+            color: #fff;
+        }
+    }    
 `;
 
 const PickerContainer = styled(CommonPicker)`
@@ -121,23 +173,23 @@ const ChatFooterPanel = (props) => {
                 <Dflex className="d-flex align-items-center">
                     {
                         selectedChannel && selectedChannel.is_archived === 1 ?
-                            <ArchivedDiv>
-                                <h4>Channel archived</h4>
-                            </ArchivedDiv>
-                            :
-                            <React.Fragment>
-                                <IconButton onClick={handleShowEmojiPicker} icon="smile"/>
-                                <ChatInputContainer className="flex-grow-1">
-                                    <ChatInput
-                                        selectedGif={selectedGif} onClearGif={onClearGif}
-                                        selectedEmoji={selectedEmoji} onClearEmoji={onClearEmoji}
-                                        dropAction={dropAction}/>
-                                </ChatInputContainer>
-                                <div className="chat-footer-buttons d-flex">
-                                    <IconButton onClick={handleSend} icon="send"/>
-                                    <IconButton onClick={onShowFileDialog} icon="paperclip"/>
-                                </div>
-                            </React.Fragment>
+                        <ArchivedDiv>
+                            <h4>Channel archived</h4>
+                        </ArchivedDiv>
+                                                                             :
+                        <React.Fragment>
+                            <IconButton onClick={handleShowEmojiPicker} icon="smile"/>
+                            <ChatInputContainer className="flex-grow-1">
+                                <ChatInput
+                                    selectedGif={selectedGif} onClearGif={onClearGif}
+                                    selectedEmoji={selectedEmoji} onClearEmoji={onClearEmoji}
+                                    dropAction={dropAction}/>
+                            </ChatInputContainer>
+                            <div className="chat-footer-buttons d-flex">
+                                <IconButton onClick={handleSend} icon="send"/>
+                                <IconButton onClick={onShowFileDialog} icon="paperclip"/>
+                            </div>
+                        </React.Fragment>
                     }
                     {
                         showEmojiPicker === true &&
@@ -154,11 +206,14 @@ const ChatFooterPanel = (props) => {
             }
             {
                 isMember === false &&
-                <Dflex>
-                    {
-                        //waiting for design
-                    }
-                    <div>join workspace</div>
+                <Dflex className="channel-viewing">
+                    <div className="channel-name">You are viewing #{selectedChannel.title}</div>
+                    <div className="channel-create">Created
+                        by {selectedChannel.creator.name} on {localizeChatTimestamp(selectedChannel.created_at.timestamp)}</div>
+                    <div className="channel-action">
+                        <button>Join workspace chat</button>
+                    </div>
+                    <SvgIconFeather icon="plus"/>
                 </Dflex>
             }
         </Wrapper>

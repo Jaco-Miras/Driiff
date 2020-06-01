@@ -1,5 +1,6 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
+import {useRouteMatch} from "react-router-dom";
 import styled from "styled-components";
 import {updateChannel} from "../../../redux/actions/chatActions";
 import {addToModals} from "../../../redux/actions/globalActions";
@@ -33,8 +34,10 @@ const ChatHeaderPanel = (props) => {
     const {className = ""} = props;
 
     const dispatch = useDispatch();
+    const routeMatch = useRouteMatch();
     const chatChannel = useSelector(state => state.chat.selectedChannel);
     const sharedSlugs = useSelector(state => state.global.slugs);
+    const [page, setPage] = useState("chat");
 
     const handleArchiveChat = () => {
         let payload = {
@@ -86,15 +89,24 @@ const ChatHeaderPanel = (props) => {
         );
     };
 
+    useEffect(() => {
+        setPage(routeMatch.path.split("/").filter(p => {
+            return p.length !== 0;
+        })[0]);
+    }, [routeMatch.path, setPage]);
+
     if (chatChannel === null)
         return null;
 
     return (
         <Wrapper className={`chat-header border-bottom ${className}`}>
             <div className="d-flex align-items-center">
-                <ChatMembers/>
                 {
-                    chatChannel !== null && <ChatTitleTyping/>
+                    page === "chat" &&
+                    <>
+                        <ChatMembers/>
+                        <ChatTitleTyping/>
+                    </>
                 }
                 <div className="ml-auto">
                     <ul className="nav align-items-center">
@@ -119,6 +131,10 @@ const ChatHeaderPanel = (props) => {
                         </li>
                     </ul>
                 </div>
+                {
+                    page === "workspace" &&
+                    <ChatMembers/>
+                }
             </div>
         </Wrapper>
     );
