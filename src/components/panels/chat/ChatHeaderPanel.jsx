@@ -108,7 +108,18 @@ const ChatHeaderPanel = (props) => {
                         <ChatTitleTyping/>
                     </>
                 }
+                {
+                    page === "workspace" &&
+                    <>
+                        <ChatMembers page={"workspace"}/>
+                        <ChatTitleTyping page={"workspace"}/>
+                    </>
+                }
                 <div className="ml-auto">
+                    {
+                        page === "workspace" &&
+                        <ChatMembers/>
+                    }
                     <ul className="nav align-items-center">
                         {
                             (["DIRECT", "PERSONAL_BOT", "COMPANY", "TOPIC"].includes(chatChannel.type) === false) &&
@@ -131,10 +142,6 @@ const ChatHeaderPanel = (props) => {
                         </li>
                     </ul>
                 </div>
-                {
-                    page === "workspace" &&
-                    <ChatMembers/>
-                }
             </div>
         </Wrapper>
     );
