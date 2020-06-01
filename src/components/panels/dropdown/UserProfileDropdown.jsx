@@ -1,5 +1,6 @@
-import React from "react";
+import React, {useCallback} from "react";
 import {useSelector} from "react-redux";
+import {useHistory} from "react-router-dom";
 import styled from "styled-components";
 import {Avatar, SvgIconFeather} from "../../common";
 
@@ -15,10 +16,17 @@ const UserProfileDropdown = (props) => {
 
     const {className = ""} = props;
 
+    const history = useHistory();
     const user = useSelector(state => state.session.user);
 
+    const handleSignOut = useCallback((e) => {
+        e.preventDefault();
+        history.push("/logout");
+    }, []);
+
     return (
-        <Wrapper className={`user-profile-dropdown dropdown-menu dropdown-menu-big ${className}`} x-placement="bottom-end">
+        <Wrapper className={`user-profile-dropdown dropdown-menu dropdown-menu-big ${className}`}
+                 x-placement="bottom-end">
             <div className="p-3 text-center" data-backround-image="assets/media/image/image1.jpg"
                  styles="background: rgba(0, 0, 0, 0) url(&quot;assets/media/image/image1.jpg&quot;) repeat scroll 0% 0%;">
                 <Avatar name={user.name} imageLink={user.profile_image_link}/>
@@ -26,7 +34,7 @@ const UserProfileDropdown = (props) => {
                     {user.name}
                     <a href="#" className="btn btn-primary btn-sm ml-2" data-toggle="tooltip" title=""
                        data-original-title="Edit profile">
-                        <SvgIconFeather icon="edit-2" />
+                        <SvgIconFeather icon="edit-2"/>
                     </a>
                 </h6>
                 <small>Balance: <strong>$105</strong></small>
@@ -53,7 +61,8 @@ const UserProfileDropdown = (props) => {
                     </a>
                     <a href="#" className="list-group-item" data-sidebar-target="#settings">Billing</a>
                     <a href="#" className="list-group-item" data-sidebar-target="#settings">Need help?</a>
-                    <a href="#" className="list-group-item text-danger" data-sidebar-target="#settings">Sign Out!</a>
+                    <a href="#" className="list-group-item text-danger" data-sidebar-target="#settings"
+                       onClick={handleSignOut}>Sign Out!</a>
                 </div>
             </div>
         </Wrapper>

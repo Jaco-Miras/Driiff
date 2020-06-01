@@ -19,9 +19,11 @@ const useSettings = props => {
                 disable_sound: userSettings.DISABLE_SOUND,
                 chat_settings: {
                     ...userSettings.CHAT_SETTINGS,
+                },
+                general_settings: {
                     language: userSettings.LANGUAGE,
                     dark_mode: userSettings.DARK_MODE,
-                },
+                }
             };
             dispatch(
                 updateUserSettings(

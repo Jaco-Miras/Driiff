@@ -56,36 +56,13 @@ export default (state = INITIAL_STATE, action) => {
             let settings = state.user;
             settings["isLoaded"] = true;
 
-            let loadedKey = [];
             for (const index in action.data.settings) {
                 let item = action.data.settings[index];
                 let key = Object.keys(item)[0];
                 let value = item[key];
 
-                /* NOTE!!!
-                 1) backend stores duplicate keys
-                 2) we ignore those duplicate key values
-                 */
-                if(loadedKey.includes(key)) {
-                    continue;
-                }
-
-                loadedKey.push(key);
-
                 switch (key) {
                     case "CHAT_SETTINGS": {
-                        /* NOTE!!!
-                         1) backend ACCEPTS ONLY disable_sound and chat_settings parameters
-                         2) we move other keys to user[key] eg: user[LANGUAGE] instead of CHAT_SETTINGS[key]
-                         */
-                        const nonChatSettings = ["language", "dark_mode"];
-                        nonChatSettings.forEach((ncs, i) => {
-                            if (typeof value[ncs] !== "undefined") {
-                                settings[ncs.toUpperCase()] = value[ncs];
-                                delete value[ncs];
-                            }
-                        });
-
                         /* NOTE!!!
                          1) Previous chat message theme will no longer be used.
                          2) We will move their settings to old_chat_message_theme
@@ -101,6 +78,12 @@ export default (state = INITIAL_STATE, action) => {
                             ...settings[key],
                             ...value,
                         };
+                        break;
+                    }
+                    case "GENERAL_SETTINGS": {
+                        for (const k in value) {
+                            settings[k.toUpperCase()] = value[k];
+                        }
                         break;
                     }
                     default: {
