@@ -1,6 +1,6 @@
 import React from "react";
 import {useDispatch} from "react-redux";
-import {useHistory, useParams, useRouteMatch} from "react-router-dom";
+import {useHistory, useRouteMatch} from "react-router-dom";
 import styled from "styled-components";
 import {addToChannels, getChannel, setSelectedChannel} from "../../redux/actions/chatActions";
 import {setActiveTopic} from "../../redux/actions/workspaceActions";
@@ -48,7 +48,7 @@ const TopicList = props => {
                     );
                 }
 
-                if(typeof topic.workspace_name === "undefined") {
+                if (typeof topic.workspace_name === "undefined") {
                     history.push(`/workspace/${route.params.page}/${topic.id}/${topic.name}`);
                 } else {
                     history.push(`/workspace/${route.params.page}/${topic.workspace_id}/${topic.workspace_name}/${topic.id}/${topic.name}`);
