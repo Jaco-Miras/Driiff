@@ -1,6 +1,5 @@
-import React, {useEffect} from "react";
+import React from "react";
 import {useSelector} from "react-redux";
-import {useHistory} from "react-router-dom";
 import styled from "styled-components";
 import {useSetWorkspace} from "../../hooks";
 
@@ -13,20 +12,7 @@ const WorkspaceDashboardPanel = (props) => {
 
     useSetWorkspace();
 
-    const history = useHistory();
-    const activeTopicSettings = useSelector(state => state.settings.user.GENERAL_SETTINGS.active_topic);
     const topic = useSelector(state => state.workspaces.activeTopic);
-
-    useEffect(() => {
-        if (topic === null && activeTopicSettings !== null) {
-            if (activeTopicSettings.workspace === null) {
-                history.push(`/workspace/dashboard/${activeTopicSettings.topic.id}/${activeTopicSettings.topic.name}`);
-            } else {
-                history.push(`/workspace/dashboard/${activeTopicSettings.workspace.id}/${activeTopicSettings.workspace.name}/${activeTopicSettings.topic.id}/${activeTopicSettings.topic.name}`);
-            }
-        }
-
-    }, [activeTopicSettings, topic]);
 
     return (
         <Wrapper className={`container-fluid h-100 ${className}`}>

@@ -1,19 +1,23 @@
 import {useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {useParams} from "react-router-dom";
+import {useParams, useRouteMatch, useHistory} from "react-router-dom";
 import {addToChannels, getChannel, setSelectedChannel} from "../../redux/actions/chatActions";
 import {setUserGeneralSetting} from "../../redux/actions/settingsActions";
+import {setActiveTopic} from "../../redux/actions/workspaceActions";
 
 const useSetWorkspace = () => {
 
     const dispatch = useDispatch();
+    const history = useHistory();
     const params = useParams();
+    const route = useRouteMatch();
+    const activeTopicSettings = useSelector(state => state.settings.user.GENERAL_SETTINGS.active_topic);
     const activeTopic = useSelector(state => state.workspaces.activeTopic);
     const workspacesLoaded = useSelector(state => state.workspaces.workspacesLoaded);
     const workspaces = useSelector(state => state.workspaces.workspaces);
 
     useEffect(() => {
-        if (workspacesLoaded && activeTopic === null) {
+        if (workspacesLoaded && activeTopic === null && activeTopicSettings !== null) {
             //set the active topic
             let topic = null;
             let channel_id = null;
@@ -23,10 +27,22 @@ const useSetWorkspace = () => {
             } else if (params.workspaceId) {
                 topic = workspaces[params.workspaceId];
                 channel_id = workspaces[params.workspaceId].topic_detail.channel.id;
+
+                //set active topic from settings
+            } else {
+                if (activeTopicSettings.workspace !== null) {
+                    topic = workspaces[activeTopicSettings.workspace.id].topics[activeTopicSettings.topic.id];
+                    channel_id = workspaces[activeTopicSettings.workspace.id].topics[activeTopicSettings.topic.id].channel.id;
+                    history.push(`${route.path}/${workspaces[activeTopicSettings.workspace.id].id}/${workspaces[activeTopicSettings.workspace.id].name}/${topic.id}/${topic.name}`);
+                } else {
+                    topic = workspaces[activeTopicSettings.topic.id];
+                    channel_id = workspaces[activeTopicSettings.topic.id].topic_detail.channel.id;
+                    history.push(`${route.path}/${topic.id}/${topic.name}`);
+                }
             }
 
             if (topic) {
-                //dispatch(setActiveTopic(topic));
+                dispatch(setActiveTopic(topic));
                 if (topic.channel_loaded === undefined) {
                     dispatch(
                         getChannel({channel_id: channel_id}, (err, res) => {
@@ -45,7 +61,7 @@ const useSetWorkspace = () => {
                 }
             }
         }
-    }, [workspacesLoaded, activeTopic]);
+    }, [workspacesLoaded, activeTopic, dispatch, params.folderId, params.workspaceId, workspaces]);
 
     useEffect(() => {
         if (activeTopic !== null) {

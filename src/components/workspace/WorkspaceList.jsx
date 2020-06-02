@@ -136,7 +136,7 @@ const WorkspaceList = props => {
     };
 
     const showTopicList = useCallback((show) => {
-        if (ref.container.current && ref.arrow.current) {
+        if (workspace.type === "FOLDER" && ref.container.current && ref.arrow.current) {
             let navClassList = ref.nav.current.classList;
             let iClassList = ref.arrow.current.classList;
             let badge = ref.arrow.current.parentElement.querySelector(".badge");
@@ -165,7 +165,7 @@ const WorkspaceList = props => {
                 }
             }
         }
-    }, [ref.arrow, ref.container, ref.nav, dispatch]);
+    }, [workspace.type, ref.arrow, ref.container, ref.nav]);
 
     useEffect(() => {
         if (showTopics === null) {

@@ -152,18 +152,18 @@ const ChatFooterPanel = (props) => {
         dispatch(
             joinWorkspace({
                 group_id: selectedChannel.entity_id,
-                user_id: user.id
+                user_id: user.id,
             }, (err, res) => {
                 if (err) return;
                 dispatch(
                     joinWorkspaceReducer({
                         channel_id: selectedChannel.id,
                         topic_id: selectedChannel.entity_id,
-                        user: user
-                    })
-                )
-            })
-        )
+                        user: user,
+                    }),
+                );
+            }),
+        );
     };
 
     const isMember = useIsMember(selectedChannel && selectedChannel.members.length ? selectedChannel.members.map(m => m.id) : []);
@@ -213,7 +213,7 @@ const ChatFooterPanel = (props) => {
                 </Dflex>
             }
             {
-                isMember === false &&
+                isMember === false && selectedChannel !== null &&
                 <Dflex className="channel-viewing">
                     <div className="channel-name">You are viewing #{selectedChannel.title}</div>
                     <div className="channel-create">Created
