@@ -12,25 +12,30 @@ const useIsUserTyping = props => {
 
     const timerRef = useRef(null);
 
+    const usersRef = useRef(usersTyping);
+
+    useEffect(() => {
+        usersRef.current = usersTyping;
+    });
+
     const handleSetUserTyping = (e) => {
         if (channel.id === e.channel_id) {
-            console.log(usersTyping)
             clearTimeout(timerRef.current)
             timerRef.current = setTimeout(() => {
                 console.log("clear", usersTyping)
                 setUsersTyping([]);
-            }, 5000);
+            }, 3000);
             
             if (e.user.id !== user.id) {
-                if (usersTyping.length) {
+                if (usersRef.current.length) {
                     let userExist = false;
-                    usersTyping.forEach(u => {
+                    usersRef.current.forEach(u => {
                         if (u.id === e.user.id) {
                             userExist = true;
                         }
                     });
                     if (!userExist) {
-                        setUsersTyping([...usersTyping, e.user]);
+                        setUsersTyping([...usersRef.current, e.user]);
                     }
                 } else {
                     setUsersTyping([e.user]);
