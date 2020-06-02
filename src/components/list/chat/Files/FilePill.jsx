@@ -18,23 +18,20 @@ const ImgLoaderDiv = styled.div`
     width: 2rem;
     height: 2rem;
     vertical-align: text-bottom;
-    background-color: #8C3B9B;
-    border-radius: 50%;
-    opacity: 0;
-    animation: spinner-grow .75s linear infinite;
     position: absolute;
     margin: auto;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    @keyframes spinner-grow {
-        0% {
-            transform: scale(0)
-        }
-        50% {
-            opacity: 1
-        }
+    border: .25em solid #7A1B8B;
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: spin .75s linear infinite;
+    opacity: 0.8;
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
     }
 `;
 
@@ -82,6 +79,7 @@ const FilePillContainer = styled.div`
 const DocFile = styled.div`
     .card {
         margin-bottom: 0;
+        min-width: 180px;
     }
     >img{
         width: 30px;

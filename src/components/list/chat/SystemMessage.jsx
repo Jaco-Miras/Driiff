@@ -9,42 +9,19 @@ const SystemMessageContainer = styled.span`
 
 const SystemMessageContent = styled.span`
     display: block;
-
-    .channel-title{
-        font-weight: 600;
-    }
-    .channel-new-members{
-        color: #007180;
-        font-weight: 600;
-    }
 `;
 const ChatTimeStamp = styled.div`
-    // position: absolute;
-    // left: ${props => props.isAuthor ? "5px" : "unset"};
-    // right: ${props => props.isAuthor ? "unset" : "5px"};
-    color: #676767;
-    font-size: .75em;
+    color: #a7abc3;
+    font-style: italic;
+    font-size: 11px;
+    position: absolute;
+    top: 0;
+    left: calc(100% + 10px);
     display: flex;
-    flex-flow: ${props => props.isAuthor ? "row" : "row-reverse"};
-    .reply-date{
-        margin: ${props => props.isAuthor ? "0 10px 0 0" : "0 0 0 10px"};
-    }
-    .reply-date.updated{
-        // -webkit-transition: all 0.2s ease-in-out;
-        // -o-transition: all 0.2s ease-in-out;
-        // transition: all 0.2s ease-in-out;
-        >span:last-child{
-            display: none;
-        }
-    }
-    .reply-date.updated:hover{
-        >span:first-child{
-            display: none;
-        }
-        >span:last-child{
-            display: block;
-        }
-    }
+    height: 100%;
+    align-items: center;
+    white-space: nowrap;
+    ${'' /* display: none; */}
 `;
 
 const SystemMessage = forwardRef((props, ref) => {
@@ -145,9 +122,9 @@ const SystemMessage = forwardRef((props, ref) => {
         <ChatTimeStamp
             className='chat-timestamp'
             isAuthor={false}>
-        <span className="reply-date created">
-            {reply.created_at.diff_for_humans ? "sending..." : localizeDate(reply.created_at.timestamp, "HH:mm")}
-        </span>
+            <span className="reply-date created">
+                {reply.created_at.diff_for_humans ? "sending..." : localizeDate(reply.created_at.timestamp, "HH:mm")}
+            </span>
         </ChatTimeStamp>
     </SystemMessageContainer>;
 });

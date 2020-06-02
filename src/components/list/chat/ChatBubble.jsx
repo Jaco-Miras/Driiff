@@ -35,10 +35,9 @@ const ChatBubbleContainer = styled.div`
     color: ${props => (props.isAuthor ? props.theme.self.chat_bubble_text_color : props.theme.others.chat_bubble_text_color)};
     font-size: .835rem;
     overflow: visible;
-    ${props => props.hideBg === true && `
+    ${props => (props.hideBg === true && !props.isEmoticonOnly) && `
         background: none;
-        padding-left: 0;
-        padding-right: 0;
+        padding: 0;
     `}
     &:focus {
         -webkit-box-shadow: 0 0 0 1px ${props => (props.isAuthor ? props.theme.self.chat_bubble_focus_border_color : props.theme.others.chat_bubble_focus_border_color)};
@@ -431,12 +430,10 @@ const ChatContent = styled.div`
         left: 0;
         overflow: hidden;
         height: 250px;
-
         .gifPlayer {
-            padding: px;
+            border-radius: 8px;
             max-height: 250px;
         }
-
         .play_button {
             padding: 12px 10px;
         }
