@@ -97,18 +97,6 @@ const Dflex = styled.div`
                 font-weight: 600;
             }
         }
-        .feather-plus {
-            cursor: pointer;
-            cursor: hand;
-            position: absolute;
-            right: 25px;
-            width: 60px;
-            height: 60px;
-            border-radius: 50px;
-            background: linear-gradient(to right bottom, rgb(151, 44, 134), rgb(121, 73, 151) 40%, rgb(0, 113, 128));
-            padding: 10px;
-            color: #fff;
-        }
     }
 `;
 
@@ -213,7 +201,6 @@ const ChatFooterPanel = (props) => {
                     <div className="channel-action">
                         <button>Join workspace chat</button>
                     </div>
-                    <SvgIconFeather icon="plus"/>
                 </Dflex>
             }
         </Wrapper>
