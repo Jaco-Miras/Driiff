@@ -805,6 +805,38 @@ export default function (state = INITIAL_STATE, action) {
                 selectedChannel: null,
             };
         }
+        case "JOIN_WORKSPACE_REDUCER": {
+            let user = {
+                id: action.data.user.id,
+                name: action.data.user.name,
+                first_name: action.data.user.first_name,
+                profile_image_link: action.data.user.profile_image_link,
+                partial_name: action.data.user.partial_name,
+                last_visited_at: {
+                    timestamp: Math.floor(Date.now() / 1000)
+                }
+            }
+            let updatedChannels = {...state.channels};
+            let channel = {...updatedChannels[action.data.channel_id]};
+            channel = {
+                ...channel,
+                members: [...channel.members, user]
+            }
+            updatedChannels = {
+                ...updatedChannels,
+                [action.data.channel_id]: channel
+            }
+            return {
+                ...state,
+                selectedChannel: state.selectedChannel.id === action.data.channel_id ?
+                {
+                    ...state.selectedChannel,
+                    members: [...state.selectedChannel.members, user]
+                }
+                : state.selectedChannel,
+                channels: updatedChannels
+            }
+        }
         default:
             return state;
     }

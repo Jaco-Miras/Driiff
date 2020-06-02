@@ -24,7 +24,7 @@ const ChatMembers = props => {
         <ChatMembersContainer className={`pr-3`}>
             {
                 page === "chat" ?
-                    chatChannel.members.filter(m => m.id !== user.id).map((m, i) => {
+                    chatChannel.members.map((m, i) => {
                         return (
                             <StyledAvatar
                                 userId={m.id}

@@ -13,6 +13,7 @@ import {
     getWorkspaces as getWorkspacesService,
     getWorkspaceTopics as getWorkspaceTopicsService,
     getWorkspaceTrashFiles as getWorkspaceTrashFilesService,
+    joinWorkspace as joinWorkspaceService,
     moveWorkspaceTopic as moveWorkspaceTopicService,
     restoreWorkspaceFile as restoreWorkspaceFileService,
     updatePostStatus as updatePostStatusService,
@@ -270,6 +271,24 @@ export function addToWorkspacePosts(payload, callback) {
 export function updateWorkspacePostFilterSort(payload, callback) {
     return SimpleDispatchActionToReducer(
         "UPDATE_WORKSPACE_POST_FILTER_SORT",
+        payload,
+        callback,
+    );
+}
+
+export function joinWorkspace(payload, callback) {
+    return dispatchActionToReducer(
+        joinWorkspaceService(payload),
+        "JOIN_WORKSPACE_START",
+        "JOIN_WORKSPACE_SUCCESS",
+        "JOIN_WORKSPACE_FAIL",
+        callback,
+    );
+}
+
+export function joinWorkspaceReducer(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "JOIN_WORKSPACE_REDUCER",
         payload,
         callback,
     );

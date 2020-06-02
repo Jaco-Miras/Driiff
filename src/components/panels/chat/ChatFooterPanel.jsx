@@ -3,6 +3,7 @@ import {useDispatch, useSelector} from "react-redux";
 import styled from "styled-components";
 import {localizeChatTimestamp} from "../../../helpers/momentFormatJS";
 import {onClickSendButton} from "../../../redux/actions/chatActions";
+import {joinWorkspace, joinWorkspaceReducer} from "../../../redux/actions/workspaceActions";
 import {CommonPicker, SvgIconFeather} from "../../common";
 import ChatInput from "../../forms/ChatInput";
 import {useIsMember} from "../../hooks";
@@ -118,6 +119,7 @@ const ChatFooterPanel = (props) => {
     const [selectedGif, setSelectedGif] = useState(null);
 
     const selectedChannel = useSelector(state => state.chat.selectedChannel);
+    const user = useSelector(state => state.session.user);
 
     const handleSend = () => {
         dispatch(
@@ -144,6 +146,24 @@ const ChatFooterPanel = (props) => {
     const onClearGif = () => {
         setSelectedGif(null);
         handleSend();
+    };
+
+    const handleJoinWorkspace = () => {
+        dispatch(
+            joinWorkspace({
+                group_id: selectedChannel.entity_id,
+                user_id: user.id
+            }, (err, res) => {
+                if (err) return;
+                dispatch(
+                    joinWorkspaceReducer({
+                        channel_id: selectedChannel.id,
+                        topic_id: selectedChannel.entity_id,
+                        user: user
+                    })
+                )
+            })
+        )
     };
 
     const isMember = useIsMember(selectedChannel && selectedChannel.members.length ? selectedChannel.members.map(m => m.id) : []);
@@ -199,7 +219,7 @@ const ChatFooterPanel = (props) => {
                     <div className="channel-create">Created
                         by {selectedChannel.creator.name} on {localizeChatTimestamp(selectedChannel.created_at.timestamp)}</div>
                     <div className="channel-action">
-                        <button>Join workspace chat</button>
+                        <button onClick={handleJoinWorkspace}>Join workspace chat</button>
                     </div>
                 </Dflex>
             }
