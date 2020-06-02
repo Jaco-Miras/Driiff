@@ -69,7 +69,7 @@ const Wrapper = styled.div`
                             margin-bottom: 10px;
                             color: #828282;
                             font-size: 11px;
-                            max-width:calc(100% - 75px);                            
+                            max-width:calc(100% - 95px);                            
                             // white-space: nowrap;
                             // overflow: hidden;
                             // text-overflow: ellipsis;

@@ -3,9 +3,6 @@ const INITIAL_STATE = {
     company: null,
     user: {
         isLoaded: false,
-        ACTIVE_TOPIC: null,
-        LANGUAGE: null,
-        DARK_MODE: "0",
         DISABLE_SOUND: "0",
         CHAT_SETTINGS: {
             open_topic_channels: [],
@@ -40,6 +37,12 @@ const INITIAL_STATE = {
                     chat_bubble_quote_hover_color: "#0056b3",
                 },
             },
+        },
+        GENERAL_SETTINGS: {
+            dark_mode: "0",
+            language: null,
+            active_topic: null,
+            workspace_open_folder: {},
         },
     },
     isLoaded: false,
@@ -82,9 +85,11 @@ export default (state = INITIAL_STATE, action) => {
                         break;
                     }
                     case "GENERAL_SETTINGS": {
-                        for (const k in value) {
-                            settings[k.toUpperCase()] = value[k];
-                        }
+                        settings[key] = {
+                            ...settings[key],
+                            ...value,
+                            workspace_open_folder: {}
+                        };
                         break;
                     }
                     default: {
@@ -93,9 +98,27 @@ export default (state = INITIAL_STATE, action) => {
                 }
             }
 
+            console.log(settings);
+
             return {
                 ...state,
                 user: settings,
+            };
+        }
+        case "UPDATE_USER_GENERAL_SETTING": {
+            console.log({
+                ...state.user.GENERAL_SETTINGS,
+                ...action.data,
+            })
+            return {
+                ...state,
+                user: {
+                    ...state.user,
+                    GENERAL_SETTINGS: {
+                        ...state.user.GENERAL_SETTINGS,
+                        ...action.data,
+                    },
+                },
             };
         }
         case "UPDATE_USER_SETTINGS": {

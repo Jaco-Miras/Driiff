@@ -1,6 +1,7 @@
 import React from "react";
 import {useDispatch} from "react-redux";
 import {useHistory, useRouteMatch} from "react-router-dom";
+import {Badge} from "reactstrap";
 import styled from "styled-components";
 import {addToChannels, getChannel, setSelectedChannel} from "../../redux/actions/chatActions";
 import {setActiveTopic} from "../../redux/actions/workspaceActions";
@@ -58,11 +59,21 @@ const TopicList = props => {
         }
     };
 
+    const unread_count = topic.unread_chats + topic.unread_posts;
+
     return (
         <TopicListWrapper
             className={`topic-list ${className}`} onClick={handleSelectTopic} selected={topic.selected}>
             <Icon icon={topic.private === 1 ? "lock" : "circle"}/>
             {topic.name}
+            {
+                unread_count > 0 &&
+                <Badge color="danger">
+                    {
+                        unread_count
+                    }
+                </Badge>
+            }
         </TopicListWrapper>
     );
 };

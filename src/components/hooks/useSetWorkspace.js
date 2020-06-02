@@ -2,8 +2,7 @@ import {useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {useParams} from "react-router-dom";
 import {addToChannels, getChannel, setSelectedChannel} from "../../redux/actions/chatActions";
-import {setUserSettings} from "../../redux/actions/settingsActions";
-import {setActiveTopic} from "../../redux/actions/workspaceActions";
+import {setUserGeneralSetting} from "../../redux/actions/settingsActions";
 
 const useSetWorkspace = () => {
 
@@ -51,8 +50,8 @@ const useSetWorkspace = () => {
     useEffect(() => {
         if (activeTopic !== null) {
             dispatch(
-                setUserSettings({
-                    ACTIVE_TOPIC: {
+                setUserGeneralSetting({
+                    active_topic: {
                         topic: {
                             id: activeTopic.id,
                             name: activeTopic.name,

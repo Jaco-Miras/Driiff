@@ -14,7 +14,7 @@ const WorkspaceDashboardPanel = (props) => {
     useSetWorkspace();
 
     const history = useHistory();
-    const activeTopicSettings = useSelector(state => state.settings.user.ACTIVE_TOPIC);
+    const activeTopicSettings = useSelector(state => state.settings.user.GENERAL_SETTINGS.active_topic);
     const topic = useSelector(state => state.workspaces.activeTopic);
 
     useEffect(() => {
