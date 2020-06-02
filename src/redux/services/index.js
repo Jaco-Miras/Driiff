@@ -72,6 +72,7 @@ export {
     getWorkspaceTopics,
     getWorkspaceTrashFiles,
     getWorkspaces,
+    joinWorkspace,
     moveWorkspaceTopic,
     restoreWorkspaceFile,
     updatePostStatus,

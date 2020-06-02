@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import {ChatContentPanel} from "../chat";
+import {useSetWorkspace} from "../../hooks";
 
 const Wrapper = styled.div`
 `;
@@ -9,6 +10,8 @@ const WorkspaceChatPanel = (props) => {
 
     const {className = ""} = props;
 
+    useSetWorkspace();
+    
     return (
         <Wrapper className={`container-fluid h-100 ${className}`}>
             <div className="row no-gutters chat-block">

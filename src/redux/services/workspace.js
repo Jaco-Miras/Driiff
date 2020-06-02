@@ -304,3 +304,18 @@ export function getPostStatusCount(payload) {
         data: payload,
     });
 }
+
+/**
+ * @param {Object} payload
+ * @param {number} payload.group_id
+ * @param {number} payload.user_id
+ * @returns {Promise<*>}
+ */
+export function joinWorkspace(payload) {
+    let url = `/v1/members`;
+    return apiCall({
+        method: "POST",
+        url: url,
+        data: payload,
+    });
+}

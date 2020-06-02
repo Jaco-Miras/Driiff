@@ -553,6 +553,7 @@ class Socket extends PureComponent {
                 this.props.incomingUpdatedTopic(e);
             })
             .listen(".new-member", e => {
+                console.log(e, "join member")
                 if (typeof e.user !== "undefined") {
                     let payload = {
                         group_id: e.group_id,
@@ -561,11 +562,11 @@ class Socket extends PureComponent {
                         mode: "member",
                         user: e.user,
                     };
-                    this.props.updateTopicMembersAction(payload);
+                    // this.props.updateTopicMembersAction(payload);
                 }
             })
             .listen(".left-member", e => {
-                //console.log(e, 'left member');
+                console.log(e, 'left member');
                 if (e.user.id !== undefined) {
                     let payload = {
                         group_id: e.group_id,
@@ -574,7 +575,7 @@ class Socket extends PureComponent {
                         mode: "member",
                         user: e.user,
                     };
-                    this.props.updateTopicMembersAction(payload);
+                    //this.props.updateTopicMembersAction(payload);
                 }
             })
             .listen(".unread-channel", e => {

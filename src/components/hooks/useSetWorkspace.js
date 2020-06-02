@@ -27,7 +27,7 @@ const useSetWorkspace = () => {
             }
 
             if (topic) {
-                dispatch(setActiveTopic(topic));
+                //dispatch(setActiveTopic(topic));
                 if (topic.channel_loaded === undefined) {
                     dispatch(
                         getChannel({channel_id: channel_id}, (err, res) => {
