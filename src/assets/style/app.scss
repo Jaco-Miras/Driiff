@@ -82,6 +82,15 @@ body.dark {
   }
 }
 
+.chat-actions-container {
+  display: flex;
+  align-items: center;
+  background: #ffffff;
+}
+.system-reply-list-item {
+  margin: 36px 0 12px 0;
+}
+
 
 
 [class*=" ti-"],

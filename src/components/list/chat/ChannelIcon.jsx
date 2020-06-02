@@ -74,7 +74,7 @@ const ChannelIcon = props => {
             }
             {
                 channel.type === "PERSONAL_BOT" &&
-                <Icon icon="users"/>
+                <Icon icon="user"/>
             }
             {
                 channel.members.length > 2 && channel.type === "DIRECT" &&

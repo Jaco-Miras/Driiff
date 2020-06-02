@@ -68,25 +68,29 @@ const ReplyPreview = props => {
             }
 
             previewText += lastReplyBody;
+            const noText = previewText.replace(/\s/g, '');
 
             if (showPreviewIcon) {
+
                 previewText =
-                    renderToString(
-                        <TextIcon icon={`image-video`}/>,
-                    ) + previewText;
+                renderToString(
+                    <TextIcon icon={`image-video`}/>,
+                ) + previewText;
             }
 
             if (channel.last_reply.user) {
                 if (channel.last_reply.user && channel.last_reply.user.id === user.id) {
-                    //previewText = previewText;
+                    if(!noText && showPreviewIcon) {
+                        previewText =
+                        previewText + 'Photo'
+                    }
                 } else {
                     previewText =
-                        previewText +
-                        renderToString(
-                            <LastReplyName className="last-reply-name">
-                                {channel.last_reply.user.first_name}
-                            </LastReplyName>,
-                        );
+                    renderToString(
+                        <LastReplyName className="last-reply-name">
+                            {channel.last_reply.user.first_name}:
+                        </LastReplyName>,
+                    ) + ' ' + previewText;
                 }
 
                 previewText = previewText.replace("NEW_ACCOUNT_ACTIVATED", "New account activated");

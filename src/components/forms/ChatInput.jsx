@@ -507,6 +507,12 @@ const ChatInput = props => {
                 ref={reactQuillRef}
                 onChange={handleQuillChange}
             />
+            {/* {
+                replyEdit &&
+                <SvgImage
+                    onClick={this.handleEditReplyClose}
+                    className={`edit-reply-close`} icon={`close`}/>
+            } */}
         </Wrapper>
     );
 };
