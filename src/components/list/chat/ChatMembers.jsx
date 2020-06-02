@@ -2,6 +2,7 @@ import React from "react";
 import {useSelector} from "react-redux";
 import styled from "styled-components";
 import {Avatar} from "../../common";
+import {useIsUserTyping} from "../../hooks";
 
 const ChatMembersContainer = styled.div`
 `;
@@ -14,24 +15,41 @@ const StyledAvatar = styled(Avatar)`
 
 const ChatMembers = props => {
 
+    const {page = "chat"} = props;
     const chatChannel = useSelector(state => state.chat.selectedChannel);
     const user = useSelector(state => state.session.user);
+    const [usersTyping] = useIsUserTyping();
 
     return (
         <ChatMembersContainer className={`pr-3`}>
             {
-                chatChannel.members.filter(m => m.id !== user.id).map((m, i) => {
-                    return (
-                        <StyledAvatar
-                            userId={m.id}
-                            firstUser={i === 0}
-                            className="chat-members"
-                            key={m.name}
-                            name={m.name}
-                            imageLink={m.profile_image_link}
-                        />
-                    );
-                })
+                page === "chat" ?
+                    chatChannel.members.filter(m => m.id !== user.id).map((m, i) => {
+                        return (
+                            <StyledAvatar
+                                userId={m.id}
+                                firstUser={i === 0}
+                                className="chat-members"
+                                key={m.name}
+                                name={m.name}
+                                imageLink={m.profile_image_link}
+                            />
+                        );
+                    })
+                : page === "workspace" && usersTyping.length ?
+                    usersTyping.map((m, i) => {
+                        return (
+                            <StyledAvatar
+                                userId={m.id}
+                                firstUser={i === 0}
+                                className="chat-members"
+                                key={m.name}
+                                name={m.name}
+                                imageLink={m.profile_image_link}
+                            />
+                        );
+                    })
+                : null
             }
         </ChatMembersContainer>
     );

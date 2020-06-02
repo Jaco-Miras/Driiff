@@ -169,3 +169,7 @@ export function getTranslationObject(payload, callback) {
         callback,
     );
 }
+
+export function postTranslationObject() {
+
+}

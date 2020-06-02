@@ -177,14 +177,33 @@ const ChatActionsContainer = styled.div`
     ${props => (props.isAuthor ? "right: 100%" : "left: 100%")};
     height: calc(100% + 4px);
     margin-top: -2px;
+    transition: opacity 0.3s ease;
 `;
 const SystemChatActionsContainer = styled.div`
-    display: flex;
+    ${'' /* display: flex;
     flex-direction: row;
     flex-wrap: wrap;
+    ${props => (props.isAuthor ? "margin-right: 10px" : "margin-left: 10px")}; */}
+
+    display: flex;
+    flex-flow: ${props => (props.isAuthor ? "row-reverse" : "row")};
+    flex-wrap: wrap;
     ${props => (props.isAuthor ? "margin-right: 10px" : "margin-left: 10px")};
-    min-width: 100px;
-    max-height: 25px;
+    min-width: 150px;
+    height: 100%;
+    color: #a7abc3;
+    background: #ffffff;
+    position: absolute;
+    display: flex;
+    align-items: center;
+    top: 0;
+    ${props => (props.isAuthor ? "right: 100%" : "left: 100%")};
+    height: calc(100% + 4px);
+    margin-top: -2px;
+    transition: opacity 0.3s ease;
+    button {
+        margin: 5px;
+    }
 `;
 
 const MessageOptions = styled(ChatMessageOptions)`
@@ -194,7 +213,6 @@ const MessageOptions = styled(ChatMessageOptions)`
     flex: 1;
     margin: 5px;
     max-width: 25px;
-
     .more-options-tooltip {
         &.orientation-bottom {
             bottom: auto;
@@ -304,15 +322,14 @@ const SystemMessageContainer = styled.div`
     position: relative;
     display: inline-flex;
     border-radius: 8px;
-    //background: #f1e6ef;
     background: #f4f4f4f4;
     text-align: left;
     min-width: 100px;
     max-width: 100%;
-    color: #201e1e;
-    font-weight: 100;
-    font-size: 15px;
-    padding: 5px 10px;
+    ${'' /* font-weight: 100; */}
+    ${'' /* font-size: 15px; */}
+    padding: 7px 15px;
+    line-height: 1.5rem;
     float: left;
     align-items: center;
     justify-content: flex-end;
@@ -774,7 +791,7 @@ class ChatMessages extends React.PureComponent {
 
                                 return (
                                     <div key={gm.key}>
-                                        <TimestampDiv>
+                                        <TimestampDiv className="timestamp-container">
                                             {
                                                 <span>{localizeChatTimestamp(gm.replies[0].created_at.timestamp, "ddd, MMM DD, YYYY")}</span>
                                             }
@@ -870,7 +887,7 @@ class ChatMessages extends React.PureComponent {
                                                             reply.user &&
                                                             <ChatBubbleContainer
                                                                 isAuthor={isAuthor}
-                                                                className={`chat-reply-list-item chat-reply-list-item-${reply.id}`}
+                                                                className={`chat-reply-list-item chat-reply-list-item-${reply.id} ${!isAuthor ? "chat-left" : "chat-right"}`}
                                                                 data-message-id={reply.id}
                                                                 showAvatar={showAvatar}
                                                                 isBot={isBot}
@@ -981,42 +998,10 @@ class ChatMessages extends React.PureComponent {
                                                             reply.user === null &&
                                                             <ChatBubbleContainer
                                                                 //ref={this.getLoadRef(reply.id)}
-                                                                className={`chat-reply-list-item chat-reply-list-item-${reply.id}`}
+                                                                className={`chat-reply-list-item system-reply-list-item chat-reply-list-item-${reply.id}`}
                                                                 data-message-id={reply.id}
                                                                 isAuthor={false}>
-                                                                <SystemChatActionsContainer
-                                                                    isAuthor={isAuthor}
-                                                                    className="chat-actions-container"
-                                                                >
-                                                                    {
-                                                                        <ChatReactionButton
-                                                                            isAuthor={isAuthor}
-                                                                            theme={this.props.settings.chat_message_theme}
-                                                                            scrollRef={this.props.innerRef}
-                                                                            reply={reply}
-                                                                            chatReactionAction={this.props.chatReactionV2Action}
-                                                                        />
-                                                                    }
-                                                                    {
-                                                                        !isNaN(reply.id) && reply.is_deleted === 0 &&
-                                                                        <ChatMessageOptions
-                                                                            className={"chat-message-options"}
-                                                                            selectedChannel={this.props.selectedChannel}
-                                                                            isAuthor={isAuthor}
-                                                                            replyData={reply}
-                                                                            cbOnRemoveReply={this.handleRemoveReply}
-                                                                            onEditReply={this.handleEditReply}
-                                                                            onQuoteReply={this.handleQuoteReply}
-                                                                            setDetailModalOpenAction={
-                                                                                this.props.setDetailModalOpenAction
-                                                                            }
-                                                                            chatData={this.props.chatData}
-                                                                            cbSetReminderPopUp={this.props.cbSetReminderPopUp}
-                                                                            slugs={this.props.sharedSlugs}
-                                                                        />
-                                                                    }
 
-                                                                </SystemChatActionsContainer>
                                                                 <ChatBubbleQuoteDiv
                                                                     //className={`chat-bubble-quote-div ${animation ? isAuthor ? "animated fadeInRightBig" : "animated fadeInLeftBig" : ""}`}
                                                                     className={`chat-bubble-quote-div`}
@@ -1039,6 +1024,39 @@ class ChatMessages extends React.PureComponent {
                                                                                 />
                                                                                 : null
                                                                         }
+                                                                        <SystemChatActionsContainer
+                                                                            isAuthor={isAuthor}
+                                                                            className="chat-actions-container"
+                                                                        >
+                                                                            {
+                                                                                <ChatReactionButton
+                                                                                    isAuthor={isAuthor}
+                                                                                    theme={this.props.settings.chat_message_theme}
+                                                                                    scrollRef={this.props.innerRef}
+                                                                                    reply={reply}
+                                                                                    chatReactionAction={this.props.chatReactionV2Action}
+                                                                                />
+                                                                            }
+                                                                            {
+                                                                                !isNaN(reply.id) && reply.is_deleted === 0 &&
+                                                                                <ChatMessageOptions
+                                                                                    className={"chat-message-options"}
+                                                                                    selectedChannel={this.props.selectedChannel}
+                                                                                    isAuthor={isAuthor}
+                                                                                    replyData={reply}
+                                                                                    cbOnRemoveReply={this.handleRemoveReply}
+                                                                                    onEditReply={this.handleEditReply}
+                                                                                    onQuoteReply={this.handleQuoteReply}
+                                                                                    setDetailModalOpenAction={
+                                                                                        this.props.setDetailModalOpenAction
+                                                                                    }
+                                                                                    chatData={this.props.chatData}
+                                                                                    cbSetReminderPopUp={this.props.cbSetReminderPopUp}
+                                                                                    slugs={this.props.sharedSlugs}
+                                                                                />
+                                                                            }
+
+                                                                        </SystemChatActionsContainer>
                                                                     </SystemMessageContainer>
                                                                     {
                                                                         reply.reactions.length > 0 &&

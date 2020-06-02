@@ -3,6 +3,7 @@ const INITIAL_STATE = {
     company: null,
     user: {
         isLoaded: false,
+        ACTIVE_TOPIC: null,
         LANGUAGE: null,
         DARK_MODE: "0",
         DISABLE_SOUND: "0",

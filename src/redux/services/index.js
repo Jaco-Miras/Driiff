@@ -55,6 +55,7 @@ export {
 export {
     getChannelFiles,
     getFiles,
+    postWorkspaceFiles
 } from "./files";
 
 export {

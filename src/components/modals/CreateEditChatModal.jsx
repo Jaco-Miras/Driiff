@@ -36,7 +36,7 @@ const SelectPeople = styled(PeopleSelect)`
 const StyledQuillEditor = styled(QuillEditor)`
     flex: 1 0 0;
     width: 1%;
-    
+
     &.group-chat-input {
         border: 1px solid #afb8bd;
         border-radius: 5px;

@@ -94,12 +94,28 @@ const CreateWorkspaceFolderModal = props => {
         }));
     }, [setForm]);
 
+    useEffect(() => {
+        if (mode === "edit") {
+            let folder = {...workspaces[item.workspace_id]};
+            if (folder) {
+                setForm({
+                    ...form,
+                    name: folder.name,
+                    description: folder.description,
+                    textOnly: folder.description,
+                    is_private: folder.is_lock === 1,
+                    workspace_id: folder.id,
+                })
+            }
+        }
+    }, []);
+
     const validateName = useCallback(() => {
         setValid({
             ...valid,
             name: form.name !== "",
         });
-        
+
         if (mode === "edit") {
             if (form.name === "") {
                 setFeedback({
@@ -120,7 +136,7 @@ const CreateWorkspaceFolderModal = props => {
                 });
             }
         } else {
-    
+
             if (form.name === "") {
                 setFeedback({
                     ...feedback,
@@ -138,7 +154,7 @@ const CreateWorkspaceFolderModal = props => {
                 });
             }
         }
-    }, [form.name, valid, setValid, feedback, setFeedback, workspaces, mode]);
+    }, [form.name, valid, setValid, feedback, setFeedback, workspaces]);
 
     const handleNameChange = useCallback(e => {
         e.persist();
@@ -154,7 +170,7 @@ const CreateWorkspaceFolderModal = props => {
         }));
     }, [valid.name, setValid, setForm]);
 
-    const handleNameBlur = useCallback(e => {
+    const handleNameBlur = useCallback(() => {
         validateName();
     }, [validateName]);
 
@@ -175,6 +191,7 @@ const CreateWorkspaceFolderModal = props => {
             dispatch(
                 updateWorkspace(payload, (err, res) => {
                     if(err) {
+                        console.log(err);
                         toaster.notify(
                             <span>Folder update failed.<br/>Please try again.</span>,
                             {position: "bottom-left"});
@@ -191,6 +208,7 @@ const CreateWorkspaceFolderModal = props => {
             dispatch(
                 createWorkspace(payload, (err, res) => {
                     if(err) {
+                        console.log(err);
                         toaster.notify(
                             <span>Folder creation failed.<br/>Please try again.</span>,
                             {position: "bottom-left"});
@@ -223,22 +241,6 @@ const CreateWorkspaceFolderModal = props => {
         }
     }, [activeTab, setActiveTabName]);
 
-    useEffect(() => {
-        if (mode === "edit") {
-            let folder = {...workspaces[item.workspace_id]};
-            if (folder) {
-                setForm({
-                    ...form,
-                    name: folder.name,
-                    description: folder.description,
-                    textOnly: folder.description,
-                    is_private: folder.is_lock === 1,
-                    workspace_id: folder.id,
-                })
-            }
-        }
-    }, []);
-
     return (
         <Modal isOpen={modal} toggle={toggle} centered size={"md"} autoFocus={false}>
             <ModalHeaderSection toggle={toggle} className={"workspace-folder-header"}>
@@ -265,14 +267,14 @@ const CreateWorkspaceFolderModal = props => {
                     mode={mode}
                 />
                 <WrapperDiv style={{marginTop: "40px"}}>
-                    <Label></Label>
+                    <Label/>
                     <CheckBox name="is_private" checked={form.is_private} onClick={toggleCheck}>Lock
                         workspace</CheckBox>
                     <button
                         className="btn btn-primary"
                         disabled={valid.name === null || valid.name === false}
                         onClick={handleConfirm}>
-                        {mode === "edit" ? "Update workspace" : "Create workspace"}
+                        {mode === "edit" ? "Update workspace" : "Create folder"}
                     </button>
                 </WrapperDiv>
             </ModalBody>

@@ -21,93 +21,18 @@ const MoreButton = styled(SvgIconFeather)`
     cursor: pointer;
 `;
 const MoreTooltip = styled.div`
-  z-index: 5;
-  width: 160px;
-  height: auto;
-  background-color: #ffffff;
-  color: #4d4d4d;
-  border-radius: 8px;
-  position: absolute;
-  right: 6px;
-  padding: 8px 0px;
-  cursor: pointer;
-  box-shadow: 0 5px 10px -1px rgba(0,0,0,.15);
-  border-top: 1px solid #eeeeee !important;
-  ${"" /* &.orientation-top {
- bottom: 45px;
-
- &:before {
- right 12px;
- bottom: -15px;
- content: "";
- position: absolute;
- border-width: ${props => props.orientation === "bottom" ? "13px" : "unset"};
- border-style: ${props => props.orientation === "bottom" ? "solid" : "unset"};
- border-color: ${props => props.orientation === "bottom" ? "transparent transparent rgba(0, 0, 0, 0.1) transparent" : "unset"};
- border-left: ${props => props.orientation === "top" && "13px solid transparent"};
- border-right: ${props => props.orientation === "top" && "13px solid transparent"};
- border-top: ${props => props.orientation === "top" && "13px solid rgba(0,0,0,0.1)"};
-
- @media (max-width: 1199.99px) {
- right: auto;
- left: -21px;
- bottom: 11px;
- transform: rotate(90deg);
- }
-
- @media (max-width: 575.99px) {
- right: -21px;
- left: auto;
- transform: rotate(-90deg);
- }
- } */}
-
-    &:after {
-        right 12px;
-        bottom: -13px;
-        content: "";
-        position: absolute;
-        border-width: ${props => props.orientation === "bottom" ? "10px" : "unset"};
-        border-style: ${props => props.orientation === "bottom" ? "solid" : "unset"};
-        border-color: ${props => props.orientation === "bottom" ? "transparent transparent #FAFAFA transparent" : "unset"};
-        border-left: ${props => props.orientation === "top" && "13px solid transparent"};
-        border-right: ${props => props.orientation === "top" && "13px solid transparent"};
-        border-top: ${props => props.orientation === "top" && "13px solid #fafafa"};
-
-        @media (max-width: 1199.99px) {
-            left: -19px;
-            right: auto;
-            bottom: 10px;
-            transform: rotate(90deg);
-        }
-
-        @media (max-width: 575.99px) {
-            right: -19px;
-            left: auto;
-            transform: rotate(-90deg);
-        }
-      }
-
-        @media (max-width: 1199.99px) {
-          position: fixed;
-          bottom: ${props => props.position - 30}px;
-          left: 465px;
-        }
-
-        @media (max-width: 991.99px) {
-            left: 375px;
-        }
-
-        @media (max-width: 767.99px) {
-            left: 200px;
-        }
-
-        @media (max-width: 575.99px) {
-            right: 75px;
-            left: auto;
-        }
-    }
-
+    z-index: 5;
+    width: 160px;
+    height: auto;
+    background-color: #ffffff;
+    color: #4d4d4d;
+    border-radius: 8px;
+    position: absolute;
+    right: 6px;
+    padding: 8px 0px;
+    cursor: pointer;
+    box-shadow: 0 5px 10px -1px rgba(0,0,0,.15);
+    border-top: 1px solid #eeeeee !important;
     &.orientation-bottom {
         top: 100%;
     }

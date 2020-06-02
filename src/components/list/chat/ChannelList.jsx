@@ -25,7 +25,7 @@ const Wrapper = styled.span`
         }
         .chat-timestamp {
             opacity: 0;
-            display: none;
+            visibility: hidden;
         }
         h6 {
             color: #7A1B8B;
@@ -50,6 +50,7 @@ const Wrapper = styled.span`
         position: absolute;
         right: 0px;
         white-space: nowrap;
+        transition: opacity 0.3s ease;
         svg {
             margin-left: 4px;
         }

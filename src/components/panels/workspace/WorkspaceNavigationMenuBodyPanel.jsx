@@ -35,6 +35,12 @@ const Wrapper = styled.div`
             ul {
                 li {
                     font-size: 13px;
+                    
+                    &:hover {
+                        a {
+                            font-weight: bold;
+                        }
+                    }
                 
                     &.navigation-divider {
                         cursor: pointer;
@@ -69,6 +75,10 @@ const Wrapper = styled.div`
                             // text-overflow: ellipsis;
                             position: relative;
                             padding-left: 18px;
+                            
+                            &:hover {
+                                color: #7a1b8b;
+                            }
                                             
                             &.nav-action {
                                 list-style-type: none !important;
@@ -123,7 +133,7 @@ const WorkspaceNavigationMenuBodyPanel = (props) => {
         let payload = {
             type: "workspace_folder",
             mode: "create",
-        };        
+        };
         dispatch(
             addToModals(payload),
         );
@@ -152,22 +162,25 @@ const WorkspaceNavigationMenuBodyPanel = (props) => {
                     if (props.match.params.hasOwnProperty("workspaceId") && props.match.params.workspaceId !== undefined) {
                         let topic = null;
                         let wsfolder = null;
-                        res.data.workspaces.forEach(ws => {
+                        for(const i in res.data.workspaces) {
+                            const ws = res.data.workspaces[i];
+
                             if (ws.type === "FOLDER" && ws.topics.length) {
-                                ws.topics.forEach(t => {
+                                for(const i in ws.topics) {
+                                    const t = ws.topics[i];
                                     if (t.id === parseInt(props.match.params.workspaceId)) {
                                         wsfolder = ws;
                                         topic = t;
-                                        return;
+                                        break;
                                     }
-                                });
+                                }
                             } else {
                                 if (ws.id === parseInt(props.match.params.workspaceId)) {
                                     topic = ws;
-                                    return;
+                                    break;
                                 }
                             }
-                        });
+                        }
                         if (topic && wsfolder) {
                             topic = {
                                 ...topic,
@@ -214,8 +227,7 @@ const WorkspaceNavigationMenuBodyPanel = (props) => {
     return (
         <>
             <Wrapper className={`navigation-menu-body ${className}`}>
-                <div className="" styles="overflow: hidden; outline: currentcolor none medium;"
-                     tabIndex="3">
+                <div tabIndex="3">
                     <h4>Workspaces</h4>
                     <ul className="nav nav-tabs" id="pills-tab" role="tablist">
                         <li className="nav-item" onClick={e => handleSelectTab(e, "intern")}>

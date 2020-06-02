@@ -18,6 +18,10 @@ const SeenIndicatorContainer = styled.div`
     ${props => props.isAuthor ? "right: 0px" : "left: 0px"};
     span {
         cursor: pointer;
+        &:hover {
+            color: #7A1B8B;
+            transition: color 0.3s;
+        }
     }
 `;
 const StyledUserListPopUp = styled(UserListPopUp)`

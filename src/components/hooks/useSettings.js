@@ -2,10 +2,11 @@ import {useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {getUserSettings, updateUserSettings} from "../../redux/actions/settingsActions";
 
-const useSettings = props => {
+const useSettings = () => {
 
     const dispatch = useDispatch();
     const userSettings = useSelector(state => state.settings.user);
+    const activeTopic = useSelector(state => state.workspaces.activeTopic);
 
     useEffect(() => {
         dispatch(
@@ -23,7 +24,8 @@ const useSettings = props => {
                 general_settings: {
                     language: userSettings.LANGUAGE,
                     dark_mode: userSettings.DARK_MODE,
-                }
+                    active_topic: userSettings.ACTIVE_TOPIC,
+                },
             };
             dispatch(
                 updateUserSettings(
@@ -32,6 +34,13 @@ const useSettings = props => {
             );
         }
     }, [userSettings]);
+
+
+    useEffect(() => {
+        if (activeTopic !== null) {
+            console.log(activeTopic);
+        }
+    }, [activeTopic]);
 };
 
 export default useSettings;

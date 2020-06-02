@@ -1,23 +1,29 @@
-import React, {forwardRef, useEffect, useRef, useState} from "react";
+import React, {forwardRef, useCallback, useEffect, useRef, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {Input, InputGroup, Label, Modal, ModalBody} from "reactstrap";
 import styled from "styled-components";
+import toaster from "toasted-notes";
+import {setPendingUploadFilesToWorkspace} from "../../redux/actions/fileActions";
 import {clearModal} from "../../redux/actions/globalActions";
 import {createWorkspace, updateWorkspace} from "../../redux/actions/workspaceActions";
-import {uploadDocument} from "../../redux/services/global";
 import {FileAttachments} from "../common";
 import {DropDocument} from "../dropzone/DropDocument";
-import {CheckBox, DescriptionInput, FolderSelect, PeopleSelect} from "../forms";
+import {CheckBox, DescriptionInput, FolderSelect, InputFeedback, PeopleSelect} from "../forms";
 import {ModalHeaderSection} from "./index";
 
 const WrapperDiv = styled(InputGroup)`
     display: flex;
     align-items: center;
-    margin: ${props => props.margin ? props.margin : "20px 0"};
+    margin-bottom: 20px;    
 
     > .form-control:not(:first-child) {
         border-radius: 5px;
     }
+    
+    .input-feedback {
+        margin-left: 130px;
+    }
+    
     label {
         white-space: nowrap;
         margin: 0 20px 0 0;
@@ -31,6 +37,30 @@ const WrapperDiv = styled(InputGroup)`
     }
     .react-select__multi-value__label {
         align-self: center;
+    }
+    
+    .file-attachments {
+        position: relative;
+        max-width: 100%;
+        margin-left: 128px;
+        
+        ul {
+            margin-right: 128px;
+            margin-bottom: 0;
+            
+            li {                
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                overflow: hidden;
+            }
+        }
+    }
+    &.file-attachment-wrapper {
+        margin-top: 30px;
+        margin-bottom: -20px;
+    }
+    &.action-wrapper {
+        margin-top: 40px;
     }
 `;
 
@@ -67,7 +97,6 @@ const CreateEditWorkspaceModal = forwardRef((props, ref) => {
 
     const {type, mode, item = {}} = props.data;
 
-    const dropzoneRef = useRef();
     const dispatch = useDispatch();
     const [modal, setModal] = useState(true);
     const user = useSelector(state => state.session.user);
@@ -77,33 +106,65 @@ const CreateEditWorkspaceModal = forwardRef((props, ref) => {
     const [activeTabName, setActiveTabName] = useState("Internal");
     const [form, setForm] = useState({
         is_private: false,
-        has_folder: false,
+        has_folder: Object.keys(item).length === 0 ? false : true,
         name: "",
         selectedUsers: [],
-        selectedFolder: null,
+        selectedFolder: Object.keys(item).length === 0 ? null : {
+            value: item.id,
+            label: item.name,
+        },
         description: "",
         textOnly: "",
     });
     const [showDropzone, setShowDropzone] = useState(false);
     const [attachedFiles, setAttachedFiles] = useState([]);
-    const [uploadedFiles, setUploadedFiles] = useState([]);
+    const [loading, setLoading] = useState(false);
     const [valid, setValid] = useState({
-        name: false,
-        folder: false,
-        team: false,
+        name: null,
+        has_folder: null,
+        team: null,
     });
+    const [feedback, setFeedback] = useState({
+        name: "",
+        folder: "",
+        team: "",
+    });
+    const formRef = {
+        dropzoneRef: useRef(),
+    };
 
-    const _validateName = () => {
-        if (form.name === ""
-            || (form.has_folder && (form.selectedFolder === null || Object.values(workspaces[form.selectedFolder.value].topics)
+    const _validateName = useCallback(() => {
+        if (form.name === "") {
+            setFeedback(prevState => ({
+                ...prevState, name: "Workspace name is required.",
+            }));
+            setValid(prevState => ({
+                ...prevState, name: false,
+            }));
+            return false;
+        }
+
+        if ((form.has_folder && (form.selectedFolder === null || Object.values(workspaces[form.selectedFolder.value].topics)
                 .filter(t => t.name.toLowerCase() === form.name.toLowerCase()).length !== 0))
             || Object.values(workspaces)
                 .filter(w => w.name.toLowerCase() === form.name.toLowerCase()).length !== 0) {
-            return false;
-        } else {
+            setFeedback(prevState => {
+                return {...prevState, name: "Workspace name already exists."};
+            });
+            setValid(prevState => {
+                return {...prevState, name: true};
+            });
             return true;
         }
-    };
+
+        setFeedback(prevState => {
+            return {...prevState, name: ""};
+        });
+
+        setValid(prevState => {
+            return {...prevState, name: true};
+        });
+    }, [form.name, form.has_folder, form.selectedFolder, workspaces, setValid, setFeedback]);
 
     const toggle = () => {
         setModal(!modal);
@@ -115,10 +176,9 @@ const CreateEditWorkspaceModal = forwardRef((props, ref) => {
     const toggleCheck = (e) => {
         const name = e.target.dataset.name;
         const checked = !form[name];
-        setForm({
-            ...form,
-            [name]: checked,
-            selectedFolder: name === "has_folder" && !checked ? null : form.selectedFolder,
+
+        setForm(prevState => {
+            return {...prevState, [name]: checked};
         });
     };
 
@@ -139,59 +199,61 @@ const CreateEditWorkspaceModal = forwardRef((props, ref) => {
 
     const handleSelectUser = e => {
         if (e === null) {
-            setForm({
-                ...form,
+            setForm(prevState => ({
+                ...prevState,
                 selectedUsers: [],
-            });
-            setValid({
-                ...valid,
+            }));
+            setValid(prevState => ({
+                ...prevState,
                 team: false,
-            });
+            }));
         } else {
-            setForm({
-                ...form,
+            setForm(prevState => ({
+                ...prevState,
                 selectedUsers: e,
-            });
-            setValid({
-                ...valid,
+            }));
+            setValid(prevState => ({
+                ...prevState,
                 team: true,
-            });
+            }));
         }
     };
 
     const handleSelectFolder = e => {
-        setForm({
-            ...form,
+        setForm(prevState => ({
+            ...prevState,
             selectedFolder: e,
-        });
+        }));
     };
 
     const handleNameChange = e => {
-        setValid({
-            ...valid,
-            name: false,
-        });
-        setForm({
-            ...form,
-            name: e.target.value.trim(),
-        });
+        e.persist();
+        setForm(prevState => ({
+            ...prevState, name: e.target.value.trim(),
+        }));
+    };
+
+    const handleNameFocus = (e) => {
+        setFeedback(prevState => ({
+            ...prevState, name: "",
+        }));
+        setValid(prevState => ({
+            ...prevState, name: null,
+        }));
     };
 
     const handleNameBlur = (e) => {
-        setValid({
-            ...valid,
-            name: _validateName(),
-        });
+        _validateName();
     };
 
     const handleConfirm = () => {
+        setLoading(true);
         let payload = {
             name: form.name,
             description: form.description,
             is_external: activeTab === "extern" ? 1 : 0,
             member_ids: form.selectedUsers.map(u => u.id),
             is_lock: form.is_private ? 1 : 0,
-            files_ids: uploadedFiles.map(f => f.id),
         };
         if (form.selectedFolder) {
             payload = {
@@ -232,24 +294,58 @@ const CreateEditWorkspaceModal = forwardRef((props, ref) => {
             }
             dispatch(updateWorkspace(payload))
         } else {
-            dispatch(createWorkspace(payload));
+            dispatch(
+                createWorkspace(payload, (err, res) => {
+                    if (err) {
+                        console.log(err);
+                        setLoading(false);
+                        toaster.notify(
+                            <span>Workspace creation failed.<br/>Please try again.</span>,
+                            {position: "bottom-left"});
+                    }
+    
+                    if (res) {
+                        let formData = new FormData();
+                        for (const i in attachedFiles) {
+                            formData.append("files[" + i + "]", attachedFiles[i].rawFile);
+                        }
+    
+                        dispatch(
+                            setPendingUploadFilesToWorkspace({
+                                is_primary: 1,
+                                topic_id: 199,
+                                files: formData,
+                            }),
+                        );
+    
+                        toaster.notify(
+                            <span><b>{form.name}</b> workspace is created
+                                {
+                                    form.selectedFolder !== null &&
+                                    <> <b>{form.selectedFolder.label}</b> under directory</>
+                                }.
+                            </span>,
+                            {position: "bottom-left"});
+                        toggle();
+                    }
+                }));
         }
         
         toggle();
     };
 
-    const handleQuillChange = (content, delta, source, editor) => {
+    const handleQuillChange = useCallback((content, delta, source, editor) => {
         const textOnly = editor.getText(content);
-        setForm({
-            ...form,
+        setForm(prevState => ({
+            ...prevState,
             description: content,
             textOnly: textOnly,
-        });
-    };
+        }));
+    }, [setForm]);
 
     const handleOpenFileDialog = () => {
-        if (dropzoneRef.current) {
-            dropzoneRef.current.open();
+        if (formRef.dropzoneRef.current) {
+            formRef.dropzoneRef.current.open();
         }
     };
 
@@ -265,59 +361,43 @@ const CreateEditWorkspaceModal = forwardRef((props, ref) => {
 
         let selectedFiles = [];
         acceptedFiles.forEach(file => {
-            var bodyFormData = new FormData();
-            bodyFormData.append("file", file);
             let shortFileId = require("shortid").generate();
             if (file.type === "image/jpeg" || file.type === "image/png" || file.type === "image/gif" || file.type === "image/webp") {
                 selectedFiles.push({
-                    ...file,
+                    rawFile: file,
                     type: "IMAGE",
                     id: shortFileId,
                     status: false,
                     src: URL.createObjectURL(file),
-                    bodyFormData: bodyFormData,
                     name: file.name ? file.name : file.path,
                 });
             } else if (file.type === "video/mp4") {
                 selectedFiles.push({
-                    ...file,
+                    rawFile: file,
                     type: "VIDEO",
                     id: shortFileId,
                     status: false,
                     src: URL.createObjectURL(file),
-                    bodyFormData: bodyFormData,
                     name: file.name ? file.name : file.path,
                 });
             } else {
                 selectedFiles.push({
-                    ...file,
+                    rawFile: file,
                     type: "DOC",
                     id: shortFileId,
                     status: false,
-                    src: "#",
-                    bodyFormData: bodyFormData,
+                    src: URL.createObjectURL(file),
                     name: file.name ? file.name : file.path,
                 });
             }
         });
-        setAttachedFiles([...attachedFiles, ...selectedFiles]);
-        //uploadFiles(attachedFiles);
+        setAttachedFiles(prevState => [...prevState, ...selectedFiles]);
         handleHideDropzone();
     };
 
-    async function uploadFiles(files) {
-        await Promise.all(
-            files.map(file => uploadDocument({
-                    user_id: user.id,
-                    file: file.bodyFormData,
-                    file_type: "private",
-                    folder_id: null,
-                }),
-            ),
-        ).then(result => {
-            setUploadedFiles(result.map(res => res.data));
-        });
-    }
+    const handleRemoveFile = (e) => {
+        setAttachedFiles(prevState => attachedFiles.filter(f => f.id !== e.currentTarget.dataset.fileId));
+    };
 
     useEffect(() => {
         let currentUser = null;
@@ -365,13 +445,18 @@ const CreateEditWorkspaceModal = forwardRef((props, ref) => {
                 team: true,
             });
         } else {
-            setForm({
-                ...form,
-                has_folder: true,
+            setForm(prevState => ({
+                ...prevState,
                 selectedUsers: currentUser ? [currentUser] : [],
-            });
+            }));
+    
+            setValid(prevState => ({
+                ...prevState,
+                team: currentUser ? true : null,
+                name: null,
+            }));
         }
-
+        
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -388,12 +473,12 @@ const CreateEditWorkspaceModal = forwardRef((props, ref) => {
         if (form.has_folder && form.selectedFolder === null) {
             folderValid = false;
         }
+        setValid(prevState => ({
+            ...prevState,
+            has_folder: folderValid,
+        }));
 
-        setValid({
-            ...valid,
-            folder: folderValid,
-            name: _validateName(),
-        });
+        _validateName();
     }, [form.has_folder, form.selectedFolder]);
 
     return (
@@ -405,7 +490,7 @@ const CreateEditWorkspaceModal = forwardRef((props, ref) => {
             <ModalBody onDragOver={handleShowDropzone}>
                 <DropDocument
                     hide={!showDropzone}
-                    ref={dropzoneRef}
+                    ref={formRef.dropzoneRef}
                     onDragLeave={handleHideDropzone}
                     onDrop={({acceptedFiles}) => {
                         dropAction(acceptedFiles);
@@ -419,16 +504,18 @@ const CreateEditWorkspaceModal = forwardRef((props, ref) => {
                     <Input
                         name="name"
                         defaultValue={mode === "edit" ? item.name : ""}
+                        onFocus={handleNameFocus}
                         onChange={handleNameChange}
                         onBlur={handleNameBlur}
                         valid={valid.name}
+                        invalid={valid.name !== null && !valid.name}
                         autoFocus
                     />
+                    <InputFeedback valid={valid.name}>{feedback.name}</InputFeedback>
                 </WrapperDiv>
                 <WrapperDiv>
                     <Label for="has_folder"></Label>
                     <CheckBox
-                        valid={valid.folder}
                         type="success" name="has_folder"
                         checked={form.has_folder} onClick={toggleCheck}>Add folder</CheckBox>
                 </WrapperDiv>
@@ -443,6 +530,7 @@ const CreateEditWorkspaceModal = forwardRef((props, ref) => {
                             isMulti={false}
                             isClearable={true}
                         />
+                        <InputFeedback valid={valid.has_folder}>{feedback.has_folder}</InputFeedback>
                     </WrapperDiv>
                 }
                 <WrapperDiv>
@@ -453,6 +541,7 @@ const CreateEditWorkspaceModal = forwardRef((props, ref) => {
                         value={form.selectedUsers}
                         onChange={handleSelectUser}
                     />
+                    <InputFeedback valid={valid.user}>{feedback.user}</InputFeedback>
                 </WrapperDiv>
                 <DescriptionInput
                     showFileButton={true}
@@ -463,13 +552,12 @@ const CreateEditWorkspaceModal = forwardRef((props, ref) => {
                 />
                 {
                     attachedFiles.length > 0 &&
-                    <WrapperDiv margin={"40px 0 20px"}>
-                        <Label></Label>
-                        <FileAttachments attachedFiles={attachedFiles}/>
+                    <WrapperDiv className="file-attachment-wrapper">
+                        <FileAttachments attachedFiles={attachedFiles} handleRemoveFile={handleRemoveFile}/>
                     </WrapperDiv>
                 }
-                <WrapperDiv margin={attachedFiles.length ? "20px 0" : "40px 0 20px"}>
-                    <Label></Label>
+                <WrapperDiv className="action-wrapper">
+                    <Label/>
                     <CheckBox
                         name="is_private"
                         checked={form.is_private} onClick={toggleCheck}>Lock workspace</CheckBox>
@@ -477,6 +565,11 @@ const CreateEditWorkspaceModal = forwardRef((props, ref) => {
                         className="btn btn-primary"
                         disabled={Object.values(valid).filter(v => !v).length}
                         onClick={handleConfirm}>
+                        {
+                            loading &&
+                            <span className="spinner-border spinner-border-sm mr-2" role="status"
+                                  aria-hidden="true"></span>
+                        }
                         {mode === "edit" ? "Update workspace" : "Create workspace"}
                     </button>
                 </WrapperDiv>

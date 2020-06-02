@@ -1,3 +1,4 @@
+import {getTranslationAPIUrl} from "../../helpers/slugHelper";
 import {apiCall, apiNoTokenCall} from "./index";
 
 export function getConnectedSlugs(payload) {
@@ -13,6 +14,7 @@ export function getAllRecipients(payload) {
     return apiCall({
         method: "GET",
         url: `/v1/recipients?is_shared_topic=1`,
+        data: payload
     });
 }
 
@@ -67,5 +69,15 @@ export function getTranslationObject(payload) {
     return apiNoTokenCall({
         method: "GET",
         actualUrl: payload.url,
+    });
+}
+
+export function postTranslationObject(payload) {
+    return apiNoTokenCall({
+        method: "GET",
+        actualUrl: `${getTranslationAPIUrl()}/generate-translation-raw`,
+        data: {
+            raws: payload,
+        },
     });
 }

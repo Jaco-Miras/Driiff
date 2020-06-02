@@ -15,12 +15,13 @@ const Typing = styled.div`
 
 const ChatTitleTyping = props => {
 
+    const { page = "chat" } = props;
     const chatChannel = useSelector(state => state.chat.selectedChannel);
-    const usersTyping = useIsUserTyping();
-
+    const [usersTyping, userNames] = useIsUserTyping();
+    
     return (
         <ChatTitleTypingContainer>
-            <h6 className="mb-1">{chatChannel.title}</h6>
+            <h6 className="mb-1">{page === "chat" ? chatChannel.title : userNames}</h6>
             <Typing isTyping={usersTyping.length} className="m-0 small text-success">typing...</Typing>
         </ChatTitleTypingContainer>
     );

@@ -39,9 +39,13 @@ const StyledQuillEditor = styled(QuillEditor)`
         display: none;
     }
     .ql-editor {
-        padding: 9px 9px;
+        padding: 5px 9px;
         .mention {
             color: #7a1b8b;
+        }
+        &:focus {
+            box-shadow: none;
+            border-color: rgba(122, 27, 139, 0.8);
         }
     }
     .ql-container {
@@ -486,7 +490,7 @@ const ChatInput = props => {
     const [modules] = useQuillModules("chat", handleSubmit);
 
     return (
-        <Wrapper>
+        <Wrapper className="chat-input-wrapper">
             {
                 mentionedUserIds.length > 0 &&
                 <BodyMention
@@ -503,6 +507,12 @@ const ChatInput = props => {
                 ref={reactQuillRef}
                 onChange={handleQuillChange}
             />
+            {/* {
+                replyEdit &&
+                <SvgImage
+                    onClick={this.handleEditReplyClose}
+                    className={`edit-reply-close`} icon={`close`}/>
+            } */}
         </Wrapper>
     );
 };

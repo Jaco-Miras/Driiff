@@ -14,7 +14,7 @@ const WorkspaceFilesPanel = (props) => {
                 <div className="col-md-3 app-sidebar">
                     <div className="card">
                         <div className="card-body">
-                            <button className="btn btn-secondary btn-block file-upload-btn" data-toggle="modal"
+                            <button className="btn btn-outline-primary btn-block file-upload-btn" data-toggle="modal"
                                     data-target="#compose">
                                 Upload Files
                             </button>
