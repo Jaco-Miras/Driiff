@@ -1,11 +1,11 @@
-import React, {forwardRef, useCallback, useEffect, useRef, useState} from "react";
+import React, {useCallback, useEffect, useRef, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {Input, InputGroup, Label, Modal, ModalBody} from "reactstrap";
 import styled from "styled-components";
 import toaster from "toasted-notes";
 import {setPendingUploadFilesToWorkspace} from "../../redux/actions/fileActions";
 import {clearModal} from "../../redux/actions/globalActions";
-import {createWorkspace} from "../../redux/actions/workspaceActions";
+import {createWorkspace, updateWorkspace} from "../../redux/actions/workspaceActions";
 import {FileAttachments} from "../common";
 import {DropDocument} from "../dropzone/DropDocument";
 import {CheckBox, DescriptionInput, FolderSelect, InputFeedback, PeopleSelect} from "../forms";
@@ -93,9 +93,9 @@ const ActiveTabName = styled.span`
     }
 `;
 
-const CreateEditWorkspaceModal = forwardRef((props, ref) => {
+const CreateEditWorkspaceModal = (props) => {
 
-    const {type, mode, item = {}} = props.data;
+    const {type, mode, item = null} = props.data;
 
     const dispatch = useDispatch();
     const [modal, setModal] = useState(true);
@@ -106,10 +106,10 @@ const CreateEditWorkspaceModal = forwardRef((props, ref) => {
     const [activeTabName, setActiveTabName] = useState("Internal");
     const [form, setForm] = useState({
         is_private: false,
-        has_folder: Object.keys(item).length === 0 ? false : true,
+        has_folder: item !== null,
         name: "",
         selectedUsers: [],
-        selectedFolder: Object.keys(item).length === 0 ? null : {
+        selectedFolder: item === null ? null : {
             value: item.id,
             label: item.name,
         },
@@ -144,10 +144,17 @@ const CreateEditWorkspaceModal = forwardRef((props, ref) => {
             return false;
         }
 
-        if ((form.has_folder && (form.selectedFolder === null || Object.values(workspaces[form.selectedFolder.value].topics)
-                .filter(t => t.name.toLowerCase() === form.name.toLowerCase()).length !== 0))
-            || Object.values(workspaces)
-                .filter(w => w.name.toLowerCase() === form.name.toLowerCase()).length !== 0) {
+        if ((form.has_folder &&
+            form.selectedFolder !== null &&
+            Object.values(workspaces[form.selectedFolder.value].topics).some(t => {
+                if (mode === "edit") {
+                    return t.id === item.id ? false : t.name.toLowerCase() === form.name.toLowerCase();
+                } else {
+                    return t.name.toLowerCase() === form.name.toLowerCase();
+                }
+            }))
+            ||
+            Object.values(workspaces).some(w => w.name.toLowerCase() === form.name.toLowerCase())) {
             setFeedback(prevState => {
                 return {...prevState, name: "Workspace name already exists."};
             });
@@ -233,7 +240,7 @@ const CreateEditWorkspaceModal = forwardRef((props, ref) => {
         }));
     };
 
-    const handleNameFocus = (e) => {
+    const handleNameFocus = () => {
         setFeedback(prevState => ({
             ...prevState, name: "",
         }));
@@ -242,7 +249,7 @@ const CreateEditWorkspaceModal = forwardRef((props, ref) => {
         }));
     };
 
-    const handleNameBlur = (e) => {
+    const handleNameBlur = () => {
         _validateName();
     };
 
@@ -262,41 +269,72 @@ const CreateEditWorkspaceModal = forwardRef((props, ref) => {
             };
         }
 
-        dispatch(
-            createWorkspace(payload, (err, res) => {
-                if (err) {
-                    console.log(err);
-                    setLoading(false);
-                    toaster.notify(
-                        <span>Workspace creation failed.<br/>Please try again.</span>,
-                        {position: "bottom-left"});
+        if (mode === "edit") {
+            const removed_members = item.members.filter(m => {
+                for (const i in form.selectedUsers) {
+                    if (form.selectedUsers[i].id === m.id) {
+                        return false;
+                    }
                 }
+                return true;
+            }).map(m => m.id);
 
-                if (res) {
-                    let formData = new FormData();
-                    for (const i in attachedFiles) {
-                        formData.append("files[" + i + "]", attachedFiles[i].rawFile);
+            const added_members = form.selectedUsers.filter(u => {
+                for (const i in item.members) {
+                    if (item.members[i].id === u.id) {
+                        return false;
+                    }
+                }
+                return true;
+            }).map(m => m.id);
+
+            payload = {
+                ...payload,
+                workspace_id: form.selectedFolder ? form.selectedFolder.value : 0,
+                topic_id: item.id,
+                removed_member_ids: removed_members,
+                new_member_ids: added_members,
+            };
+            dispatch(updateWorkspace(payload));
+        } else {
+            dispatch(
+                createWorkspace(payload, (err, res) => {
+                    if (err) {
+                        console.log(err);
+                        setLoading(false);
+                        toaster.notify(
+                            <span>Workspace creation failed.<br/>Please try again.</span>,
+                            {position: "bottom-left"});
                     }
 
-                    dispatch(
-                        setPendingUploadFilesToWorkspace({
-                            is_primary: 1,
-                            topic_id: 199,
-                            files: formData,
-                        }),
-                    );
+                    if (res) {
+                        let formData = new FormData();
+                        for (const i in attachedFiles) {
+                            formData.append("files[" + i + "]", attachedFiles[i].rawFile);
+                        }
 
-                    toaster.notify(
-                        <span><b>{form.name}</b> workspace is created
-                            {
-                                form.selectedFolder !== null &&
-                                <> <b>{form.selectedFolder.label}</b> under directory</>
-                            }.
-                        </span>,
-                        {position: "bottom-left"});
-                    toggle();
-                }
-            }));
+                        dispatch(
+                            setPendingUploadFilesToWorkspace({
+                                is_primary: 1,
+                                topic_id: 199,
+                                files: formData,
+                            }),
+                        );
+
+                        toaster.notify(
+                            <span><b>{form.name}</b> workspace is created
+                                {
+                                    form.selectedFolder !== null &&
+                                    <> <b>{form.selectedFolder.label}</b> under directory</>
+                                }.
+                            </span>,
+                            {position: "bottom-left"});
+                        toggle();
+                    }
+                }));
+        }
+
+        toggle();
     };
 
     const handleQuillChange = useCallback((content, delta, source, editor) => {
@@ -361,7 +399,7 @@ const CreateEditWorkspaceModal = forwardRef((props, ref) => {
     };
 
     const handleRemoveFile = (e) => {
-        setAttachedFiles(prevState => attachedFiles.filter(f => f.id !== e.currentTarget.dataset.fileId));
+        setAttachedFiles(prevState => prevState.filter(f => f.id !== e.currentTarget.dataset.fileId));
     };
 
     useEffect(() => {
@@ -373,16 +411,50 @@ const CreateEditWorkspaceModal = forwardRef((props, ref) => {
                 label: user.name,
             };
         }
-        setForm(prevState => ({
-            ...prevState,
-            selectedUsers: currentUser ? [currentUser] : [],
-        }));
+        if (mode === "edit") {
+            let members = [];
+            let is_private = item.type !== undefined && item.type === "WORKSPACE" ? item.is_lock === 1 : item.private === 1;
+            if (item.members.length) {
+                members = item.members.map(m => {
+                    return {
+                        ...m,
+                        value: m.id,
+                        label: m.name,
+                    };
+                });
+            }
+            setForm({
+                ...form,
+                has_folder: item.workspace_id !== undefined,
+                selectedUsers: members,
+                selectedFolder: item.workspace_id !== undefined ? {
+                        value: item.workspace_id,
+                        label: item.workspace_name,
+                    }
+                                                                : null,
+                description: item.description,
+                textOnly: item.description,
+                name: item.name,
+                is_private: is_private,
+            });
+            setValid({
+                name: true,
+                folder: true,
+                team: true,
+            });
+        } else {
+            setForm(prevState => ({
+                ...prevState,
+                selectedUsers: currentUser ? [currentUser] : [],
+            }));
 
-        setValid(prevState => ({
-            ...prevState,
-            team: currentUser ? true : null,
-            name: null,
-        }));
+            setValid(prevState => ({
+                ...prevState,
+                team: currentUser ? true : null,
+                name: null,
+            }));
+        }
+
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -429,7 +501,7 @@ const CreateEditWorkspaceModal = forwardRef((props, ref) => {
                         Worskpace name</Label>
                     <Input
                         name="name"
-                        defaultValue={mode === "edit" ? "" : ""}
+                        defaultValue={mode === "edit" ? item.name : ""}
                         onFocus={handleNameFocus}
                         onChange={handleNameChange}
                         onBlur={handleNameBlur}
@@ -440,7 +512,7 @@ const CreateEditWorkspaceModal = forwardRef((props, ref) => {
                     <InputFeedback valid={valid.name}>{feedback.name}</InputFeedback>
                 </WrapperDiv>
                 <WrapperDiv>
-                    <Label for="has_folder"></Label>
+                    <Label for="has_folder"/>
                     <CheckBox
                         type="success" name="has_folder"
                         checked={form.has_folder} onClick={toggleCheck}>Add folder</CheckBox>
@@ -473,6 +545,8 @@ const CreateEditWorkspaceModal = forwardRef((props, ref) => {
                     showFileButton={true}
                     onChange={handleQuillChange}
                     onOpenFileDialog={handleOpenFileDialog}
+                    defaultValue={mode === "edit" && item ? item.description : ""}
+                    mode={mode}
                 />
                 {
                     attachedFiles.length > 0 &&
@@ -492,7 +566,7 @@ const CreateEditWorkspaceModal = forwardRef((props, ref) => {
                         {
                             loading &&
                             <span className="spinner-border spinner-border-sm mr-2" role="status"
-                                  aria-hidden="true"></span>
+                                  aria-hidden="true"/>
                         }
                         {mode === "edit" ? "Update workspace" : "Create workspace"}
                     </button>
@@ -500,6 +574,6 @@ const CreateEditWorkspaceModal = forwardRef((props, ref) => {
             </ModalBody>
         </Modal>
     );
-});
+};
 
-export default CreateEditWorkspaceModal;
+export default React.memo(CreateEditWorkspaceModal);
