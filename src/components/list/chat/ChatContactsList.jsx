@@ -27,6 +27,7 @@ const NewGroupButton = styled.div`
 `;
 
 const Contacts = styled.ul`
+    padding-right: 24px;
     li {
         cursor: pointer;
         cursor: hand;

@@ -33,35 +33,6 @@ const MoreTooltip = styled.div`
   cursor: pointer;
   box-shadow: 0 5px 10px -1px rgba(0,0,0,.15);
   border-top: 1px solid #eeeeee !important;
-  ${"" /* &.orientation-top {
- bottom: 45px;
-
- &:before {
- right 12px;
- bottom: -15px;
- content: "";
- position: absolute;
- border-width: ${props => props.orientation === "bottom" ? "13px" : "unset"};
- border-style: ${props => props.orientation === "bottom" ? "solid" : "unset"};
- border-color: ${props => props.orientation === "bottom" ? "transparent transparent rgba(0, 0, 0, 0.1) transparent" : "unset"};
- border-left: ${props => props.orientation === "top" && "13px solid transparent"};
- border-right: ${props => props.orientation === "top" && "13px solid transparent"};
- border-top: ${props => props.orientation === "top" && "13px solid rgba(0,0,0,0.1)"};
-
- @media (max-width: 1199.99px) {
- right: auto;
- left: -21px;
- bottom: 11px;
- transform: rotate(90deg);
- }
-
- @media (max-width: 575.99px) {
- right: -21px;
- left: auto;
- transform: rotate(-90deg);
- }
- } */}
-
     &:after {
         right 12px;
         bottom: -13px;

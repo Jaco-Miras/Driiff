@@ -364,7 +364,7 @@ const ChatContentClap = styled.div`
 const ChatContent = styled.div`
     ${props => (!props.isEmoticonOnly && `
     &:before {
-        ${props => (props.showAvatar && "content: '';")};
+        ${props => (props.showAvatar && "content: ''")};
         border: 10px solid transparent;
         border-right-color: transparent;
         border-right-color: #f0f0f0;

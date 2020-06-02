@@ -30,7 +30,7 @@ const ConfirmationModal = props => {
             </ModalBody>
             <ModalFooter>
                 <Button color="primary" onClick={handleConfirm}>{submitText}</Button>{" "}
-                <Button color="secondary" onClick={toggle}>{cancelText}</Button>
+                <Button outline color="secondary" onClick={toggle}>{cancelText}</Button>
             </ModalFooter>
         </Modal>
     );

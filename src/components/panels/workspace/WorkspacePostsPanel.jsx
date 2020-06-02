@@ -39,7 +39,7 @@ const WorkspacePostsPanel = (props) => {
                         <div className="card-body">
                             {
                                 isMember &&
-                                <button className="btn btn-secondary btn-block" onClick={handleShowWorkspacePostModal}>
+                                <button className="btn btn-outline-primary btn-block" onClick={handleShowWorkspacePostModal}>
                                     Create new post
                                 </button>
                             }
@@ -106,7 +106,7 @@ const WorkspacePostsPanel = (props) => {
                              tabIndex="1">
                             <ul className="list-group list-group-flush ui-sortable">
                                 {
-                                    posts && 
+                                    posts &&
                                     Object.values(posts).map(post => {
                                         return <PostItemPanel key={post.id} post={post}/>
                                     })
