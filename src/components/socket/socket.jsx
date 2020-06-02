@@ -462,6 +462,10 @@ class Socket extends PureComponent {
                     });
                 }
             })
+            .listen(".update-lock-workspace", e => {
+                console.log(e, "update lock workspace");
+                this.props.incomingUpdatedWorkspaceFolder(e);
+            })
             .listen(".users-online", e => {
                 //console.log(e, 'users-online');
                 this.props.currentOnlineUsers(e.current_users_online.map(u => {
