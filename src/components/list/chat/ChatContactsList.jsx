@@ -14,15 +14,29 @@ import {useLoadChannels} from "../../hooks";
 import ChannelIcon from "./ChannelIcon";
 
 const Wrapper = styled.div`
+    .channel-number-new-group-wrapper {
+        padding-right: 24px;
+    }
 `;
 
 const NewGroupButton = styled.div`
     cursor: pointer;
-    cursor: hand;
-
+    color: #BEBEBE;
+    transition: color 0.3s;
     span {
         position: relative;
         top: 1px;
+        color: #BEBEBE;
+        transition: color 0.3s;
+    }
+    svg {
+        margin-right: 8px;
+    }
+    &:hover {
+        color: #7A1B8B;
+        span {
+            color: #7A1B8B
+        }
     }
 `;
 
@@ -190,10 +204,10 @@ const ChatContactsList = props => {
 
     return (
         <Wrapper className={`chat-lists ${className}`}>
-            <div className="d-flex align-items-center">
+            <div className="d-flex align-items-center channel-number-new-group-wrapper">
                 <p className="small mb-0">{sortedChannels.length} Contacts</p>
                 <NewGroupButton className="small mb-0 text-right ml-auto" onClick={handleOpenGropupChatModal}>
-                    <SvgIconFeather width={18} height={18} icon="plus"/>
+                    <SvgIconFeather width={14} height={14} icon="plus"/>
                     <span>New group chat</span>
                 </NewGroupButton>
             </div>

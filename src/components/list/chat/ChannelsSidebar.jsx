@@ -33,7 +33,7 @@ const ChannelsSidebar = props => {
                         if (k !== 0 && arr[k - 1].is_pinned === 1 && channel.is_pinned === 0) {
                             chatHeader = "Recent";
                         } else if (k === 0 && channel.is_pinned === 1) {
-                            chatHeader = "Pinned";
+                            chatHeader = "Favorite";
                         } else if (k === 0 && channel.is_pinned === 0) {
                             chatHeader = "Recent";
                         }

@@ -1,6 +1,6 @@
 import React, {forwardRef, useRef} from "react";
 import styled from "styled-components";
-import docIcon from "../../../../assets/img/svgs/documents-icons/documents_secundary.svg";
+import {SvgIcon} from "../../../common";
 import {getAPIUrl} from "../../../../helpers/slugHelper";
 
 const ImgLoader = styled.div`
@@ -80,15 +80,11 @@ const FilePillContainer = styled.div`
     }
 `;
 const DocFile = styled.div`
-    display: flex;
-    align-items:center;
-    justify-content: center;
-    min-height: 100px;
-    padding: 0 10px;
-
+    .card {
+        margin-bottom: 0;
+    }
     >img{
         width: 30px;
-        height: 30px;
     }
 `;
 
@@ -177,8 +173,14 @@ const FilePill = forwardRef((props, ref) => {
                     </FileVideo>
                 </>
                 : <DocFile onClick={handleViewFile}>
-                    <img src={docIcon} alt={"document"}/>
-                    <p>{file.filename ? file.filename.substr(0, file.filename.lastIndexOf(".")) : file.name.substr(0, file.name.lastIndexOf("."))}</p>
+                    <div class="card app-file-list">
+                        <div class="app-file-icon">
+                            <SvgIcon icon={`document`} width="28" height="32"/>
+                        </div>
+                        <div class="p-2 small">
+                            <div>{file.filename ? file.filename.substr(0, file.filename.lastIndexOf(".")) : file.name.substr(0, file.name.lastIndexOf("."))}</div>
+                        </div>
+                    </div>
                 </DocFile>
         }
     </FilePillContainer>;

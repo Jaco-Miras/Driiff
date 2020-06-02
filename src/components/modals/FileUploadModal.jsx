@@ -2,7 +2,7 @@ import React, {useEffect, useRef, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {Button, Modal, ModalBody, ModalFooter} from "reactstrap";
 import styled from "styled-components";
-import docIcon from "../../assets/img/svgs/documents-icons/documents_secundary.svg";
+import {SvgIcon} from "../common";
 import {createChatMessage} from "../../redux/actions/chatActions";
 import {clearModal, saveInputData} from "../../redux/actions/globalActions";
 import {uploadDocument} from "../../redux/services/global";
@@ -78,6 +78,10 @@ const FilesPreviewContainer = styled.div`
             color: #7a1b8b;
             cursor: pointer;
         }
+        .app-file-list {
+            min-height: 158px;
+            border: 0;
+        }
     }
     li:hover span{
         display: ${props => props.hasOneFile ? "none" : "block"};
@@ -85,22 +89,12 @@ const FilesPreviewContainer = styled.div`
 `;
 
 const DocDiv = styled.div`
-    height: 100%;
+    ${'' /* height: 100%;
     width: 100%;
     display: flex;
     padding: 10px;
-    align-items: flex-start;
-    :before {
-        content: "";
-        mask-image: url(${docIcon});
-        background-color: #972c86;
-        mask-repeat: no-repeat;
-        mask-size: 100%;
-        mask-position: center;
-        min-width: 30px;
-        min-height: 30px;
-        display: inline-block;
-      }
+    align-items: flex-start; */}
+
 `;
 
 const FileUploadModal = props => {
@@ -307,7 +301,14 @@ const FilesPreview = props => {
                                     file.type === "IMAGE" && <img alt="file" src={file.src}/>
                                 }
                                 {
-                                    file.type !== "IMAGE" && <DocDiv>{file.name}</DocDiv>
+                                    file.type !== "IMAGE" && <DocDiv className="card app-file-list">
+                                        <div class="app-file-icon">
+                                            <SvgIcon icon={`document`} width="28" height="32"/>
+                                        </div>
+                                        <div class="p-2 small">
+                                            {file.name}
+                                        </div>
+                                    </DocDiv>
                                 }
                             </li>
                         );

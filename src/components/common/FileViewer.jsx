@@ -13,7 +13,7 @@ const FileViewerContainer = styled.div`
     position: fixed;
     top: 0;
     left: 0;
-    width:100%; 
+    width:100%;
     height:100%;
     z-index: 99;
     pointer-events: auto;
@@ -21,7 +21,7 @@ const FileViewerContainer = styled.div`
     justify-content: space-evenly;
     font-size: 2.5em;
     color: #fff;
-    
+
     .fas{
         cursor: pointer;
     }
@@ -38,7 +38,7 @@ const FileIcon = styled(ImageTextLink)`
             width: auto;
             height: 80%;
             filter: brightness(0) saturate(100%) invert(1);
-            
+
             &:hover {
                 filter: brightness(0) saturate(100%) invert(1);
             }
@@ -59,13 +59,13 @@ const FileNameContainer = styled.p`
 `;
 const FileName = styled.a`
     position: relative;
-    z-index: 1;    
+    z-index: 1;
     display: inline-block;
     font-size: 16px;
-    font-weight: 500;    
+    font-weight: 500;
     margin: 1rem 1rem 0;
     color: #fff;
-    
+
     &:hover {
         text-decoration: none;
         color: #fff;
@@ -87,10 +87,10 @@ const PreviewContainer = styled.div`
     height: 100%;
     overflow: hidden;
     align-items: center;
-    justify-content: center;    
+    justify-content: center;
     text-align: center;
     background-color: rgba(24, 24, 26,0.5);
-    
+
     :before{
         background-color: rgba(0, 0, 0, 0.8);
         opacity: 0.5;
@@ -103,9 +103,9 @@ const PreviewContainer = styled.div`
         display: block;
         z-index: -1;
     }
-    
+
     .iframe{
-        width:100%; 
+        width:100%;
         height:100%;
         display: block;
         margin-left: auto;
@@ -122,7 +122,7 @@ const CloseButton = styled.button`
 const ArrowButton = styled.button`
     opacity: ${props => props.show ? "1" : "0"};
     visibility: ${props => props.show ? "visible" : "hidden"};
-    
+
     &:focus {
         outline: none;
     }

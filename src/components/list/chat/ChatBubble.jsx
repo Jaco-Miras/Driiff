@@ -37,6 +37,8 @@ const ChatBubbleContainer = styled.div`
     overflow: visible;
     ${props => props.hideBg === true && `
         background: none;
+        padding-left: 0;
+        padding-right: 0;
     `}
     &:focus {
         -webkit-box-shadow: 0 0 0 1px ${props => (props.isAuthor ? props.theme.self.chat_bubble_focus_border_color : props.theme.others.chat_bubble_focus_border_color)};
