@@ -31,6 +31,7 @@ const TopicList = props => {
         } else {
             if (topic.workspace_id !== undefined) {
                 dispatch(setActiveTopic(topic));
+
                 if (topic.channel.channel_loaded === undefined) {
                     dispatch(
                         getChannel({channel_id: topic.channel.id}, (err, res) => {

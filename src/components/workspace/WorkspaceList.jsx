@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, {useCallback, useEffect, useRef, useState} from "react";
 import {useDispatch} from "react-redux";
 import {useHistory, useRouteMatch} from "react-router-dom";
 import {Badge} from "reactstrap";
@@ -54,7 +54,7 @@ const WorkspaceList = props => {
         nav: useRef(null),
     };
 
-    const [showTopics, setShowTopics] = useState(false);
+    const [showTopics, setShowTopics] = useState(null);
     const [maxHeight, setMaxHeight] = useState(0);
 
     const handleSelectWorkspace = () => {
@@ -63,7 +63,9 @@ const WorkspaceList = props => {
         if (workspace.is_external === 1) {
 
         } else {
-            dispatch(setActiveTopic(workspace));
+            dispatch(
+                setActiveTopic(workspace),
+            );
 
             history.push(`/workspace/${route.params.page}/${workspace.id}/${workspace.name}`);
 
@@ -108,21 +110,12 @@ const WorkspaceList = props => {
         );
     };
 
-    useEffect(() => {
-        if (ref.nav.current !== null) {
-            setMaxHeight(ref.nav.current.offsetHeight);
-
-            const navClassList = ref.nav.current.classList;
-            navClassList.add("leave-active");
-        }
-    }, [ref.nav, maxHeight]);
-
-    useEffect(() => {
+    const showTopicList = useCallback((show) => {
         if (ref.container.current && ref.arrow.current) {
             let navClassList = ref.nav.current.classList;
             let iClassList = ref.arrow.current.classList;
 
-            if (showTopics) {
+            if (show) {
                 iClassList.remove("ti-plus");
                 iClassList.add("ti-minus");
                 iClassList.add("rotate-in");
@@ -136,7 +129,32 @@ const WorkspaceList = props => {
                 navClassList.remove("enter-active");
             }
         }
-    }, [showTopics]);
+    }, [ref.arrow, ref.container, ref.nav]);
+
+    useEffect(() => {
+        if (showTopics === null) {
+            setShowTopics(workspace.selected);
+        }
+
+        //eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    useEffect(() => {
+        if (ref.nav.current !== null) {
+            setMaxHeight(ref.nav.current.offsetHeight);
+
+            const navClassList = ref.nav.current.classList;
+            navClassList.add("leave-active");
+        }
+    }, [ref.nav, maxHeight]);
+
+    useEffect(() => {
+        showTopicList(showTopics);
+    }, [showTopics, showTopicList]);
+
+    useEffect(() => {
+        showTopicList(workspace.selected);
+    }, [workspace.selected, showTopicList]);
 
     return (
         <Wrapper ref={ref.container} className={`worskpace-list ${className}`} selected={workspace.selected}
@@ -145,16 +163,13 @@ const WorkspaceList = props => {
                 {
                     workspace.type === "FOLDER" &&
                     <i ref={ref.arrow}
-                       className={`sub-menu-arrow ti-angle-up`}></i>
+                       className={`sub-menu-arrow ti-angle-up`} />
                 }
-                {/* {
-                    workspace.id === 12 &&
-                    <Badge color="danger">5</Badge>
-                } */}
                 {
-                    workspace.unread_count > 0 && <Badge color="danger">
+                    workspace.unread_count > 0 &&
+                    <Badge color="danger">
                         {
-                            workspace.unread_count 
+                            workspace.unread_count
                         }
                     </Badge>
                 }
