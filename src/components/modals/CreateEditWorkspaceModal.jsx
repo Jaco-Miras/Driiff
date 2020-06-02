@@ -351,7 +351,7 @@ const CreateEditWorkspaceModal = forwardRef((props, ref) => {
                     type: "DOC",
                     id: shortFileId,
                     status: false,
-                    src: "#",
+                    src: URL.createObjectURL(file),
                     name: file.name ? file.name : file.path,
                 });
             }

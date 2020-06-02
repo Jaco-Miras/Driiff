@@ -741,7 +741,7 @@ class Socket extends PureComponent {
                                 }
                             }
 
-                            if (!(this.props.selectedChannel && this.props.selectedChannel.id === e.channel_id && document.querySelector("body").classList.contains("visible"))
+                            if (!(this.props && this.props.selectedChannel !== null && this.props.selectedChannel.id === e.channel_id && document.querySelector("body").classList.contains("visible"))
                                 && (Object.entries(this.props.settings).length === 0 ||
                                     this.props.settings.DISABLE_SOUND !== "1")) {
                                 //@todo
