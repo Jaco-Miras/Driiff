@@ -170,7 +170,7 @@ const CreateWorkspaceFolderModal = props => {
         }));
     }, [valid.name, setValid, setForm]);
 
-    const handleNameBlur = useCallback(e => {
+    const handleNameBlur = useCallback(() => {
         validateName();
     }, [validateName]);
 
@@ -266,14 +266,14 @@ const CreateWorkspaceFolderModal = props => {
                     mode={mode}
                 />
                 <WrapperDiv style={{marginTop: "40px"}}>
-                    <Label></Label>
+                    <Label/>
                     <CheckBox name="is_private" checked={form.is_private} onClick={toggleCheck}>Lock
                         workspace</CheckBox>
                     <button
                         className="btn btn-primary"
                         disabled={valid.name === null || valid.name === false}
                         onClick={handleConfirm}>
-                        {mode === "edit" ? "Update workspace" : "Create workspace"}
+                        {mode === "edit" ? "Update workspace" : "Create folder"}
                     </button>
                 </WrapperDiv>
             </ModalBody>
