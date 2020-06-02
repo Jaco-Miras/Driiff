@@ -169,7 +169,8 @@ const CreateWorkspaceFolderModal = props => {
         if (mode === "edit") {
             payload = {
                 ...payload,
-                workspace_id: form.workspace_id
+                workspace_id: form.workspace_id,
+                topic_id: form.workspace_id
             }
             dispatch(
                 updateWorkspace(payload, (err, res) => {

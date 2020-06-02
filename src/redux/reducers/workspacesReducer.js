@@ -113,11 +113,12 @@ export default (state = INITIAL_STATE, action) => {
             }
         }
         case "INCOMING_UPDATED_WORKSPACE_FOLDER": {
-            if (state.workspacesLoaded) {
+            if (state.workspacesLoaded && action.data.type === "FOLDER") {
                 let workspace = {...state.workspaces[action.data.id]};
                 workspace = {
                     ...workspace,
                     name: action.data.name,
+                    description: action.data.description,
                 }
                 return {
                     ...state,
@@ -132,6 +133,146 @@ export default (state = INITIAL_STATE, action) => {
                             workspace_description: action.data.description,
                         }
                     : state.activeTopic
+                }
+            } else if (state.workspacesLoaded && action.data.type === "WORKSPACE") {
+                let workspace = null;
+                if (action.data.workspace_id === 0) {
+                    //direct workspace
+                    if (action.data.original_workspace_id === 0) {
+                        // still direct workspace
+                        workspace = {...state.workspaces[action.data.id]};
+                        workspace = {
+                            ...workspace,
+                            name: action.data.name,
+                            member_ids: action.data.member_ids,
+                            members: action.data.members,
+                            description: action.data.description,
+                        }
+                        return {
+                            ...state,
+                            workspaces: {
+                                ...state.workspaces,
+                                [action.data.id]: workspace
+                            },
+                            activeTopic: state.activeTopic && state.activeTopic.id === action.data.id ?
+                                {
+                                    ...state.activeTopic,
+                                    ...workspace
+                                }
+                            : state.activeTopic
+                        }
+                    } else {
+                        //make workspace as direct
+                        //delete the original workspace
+                        let newWorkspaces = {...state.workspaces};
+                        workspace = {...newWorkspaces[action.data.original_workspace_id].topics[action.data.id]};
+                        delete newWorkspaces[action.data.original_workspace_id].topics[action.data.id]
+
+                        workspace = {
+                            ...workspace,
+                            name: action.data.name,
+                            description: action.data.description,
+                            member_ids: action.data.member_ids,
+                            members: action.data.members,
+                            type: action.data.type,
+                            key_id: action.data.key_id
+                        }
+                        delete workspace.workspace_id;
+                        delete workspace.workspace_name;
+                        delete workspace.workspace_descripiton;
+                        newWorkspaces = {
+                            ...newWorkspaces,
+                            [action.data.id]: workspace
+                        }
+                        return {
+                            ...state,
+                            workspaces: newWorkspaces,
+                            activeTopic: state.activeTopic && state.activeTopic.id === action.data.id ?
+                                {
+                                    ...workspace
+                                }
+                            : state.activeTopic
+                        }
+                    }
+                } else {
+                    //workspace under folder
+                    let workspace = null;
+                    if (action.data.original_workspace_id === action.data.workspace_id) {
+                        //no change on folder workspace
+                        let newWorkspaces = {...state.workspaces};
+                        workspace = {...newWorkspaces[action.data.original_workspace_id].topics[action.data.id]};
+                        workspace = {
+                            ...workspace,
+                            name: action.data.name,
+                            description: action.data.description,
+                            member_ids: action.data.member_ids,
+                            members: action.data.members,
+                        }
+                        newWorkspaces = {
+                            ...newWorkspaces,
+                            [action.data.workspace_id]: {
+                                ...newWorkspaces[action.data.workspace_id],
+                                topics: {
+                                    ...newWorkspaces[action.data.workspace_id].topics,
+                                    [action.data.id]: workspace
+                                }
+                            }
+                        }
+                        return {
+                            ...state,
+                            workspaces: newWorkspaces,
+                            activeTopic: state.activeTopic && state.activeTopic.workspace_id !== undefined && state.activeTopic.id === action.data.id ?
+                                {
+                                    ...state.activeTopic,
+                                    ...workspace
+                                }
+                            : state.activeTopic
+                        }
+                    } else {
+                        //moved workspace to another folder
+                        // delete original workspace
+                        let newWorkspaces = {...state.workspaces};
+                        let workspaceFolder = {...newWorkspaces[action.data.workspace_id]}
+                        
+                        if (action.data.original_workspace_id === 0) {
+                            workspace = {...newWorkspaces[action.data.id]};
+                            delete newWorkspaces[action.data.id]
+                        } else {
+                            workspace = {...newWorkspaces[action.data.original_workspace_id].topics[action.data.id]};
+                            delete newWorkspaces[action.data.original_workspace_id].topics[action.data.id]
+                        }
+                        
+                        workspace = {
+                            ...workspace,
+                            name: action.data.name,
+                            description: action.data.description,
+                            member_ids: action.data.member_ids,
+                            members: action.data.members,
+                            workspace_id: action.data.workspace_id,
+                            workspace_descripiton: workspaceFolder.description,
+                            workspace_name: workspaceFolder.name
+                        }
+                        newWorkspaces = {
+                            ...newWorkspaces,
+                            [action.data.workspace_id]: {
+                                ...newWorkspaces[action.data.workspace_id],
+                                topics: {
+                                    ...newWorkspaces[action.data.workspace_id].topics,
+                                    [action.data.id]: workspace
+                                }
+                            }
+                        }
+                        return {
+                            ...state,
+                            workspaces: newWorkspaces,
+                            activeTopic: state.activeTopic && state.activeTopic.workspace_id !== undefined && state.activeTopic.id === action.data.id ?
+                                {
+                                    ...state.activeTopic,
+                                    ...workspace
+                                }
+                            : state.activeTopic
+                        }
+                    }
                 }
             } else {
                 return state;

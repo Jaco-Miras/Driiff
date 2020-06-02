@@ -439,6 +439,23 @@ class Socket extends PureComponent {
             .listen(".update-workspace", e => {
                 console.log(e, "update workspace");
                 this.props.incomingUpdatedWorkspaceFolder(e);
+                if (this.props.activeTopic && this.props.activeTopic.id === e.id && 
+                    e.type === "WORKSPACE" && this.props.match.path === "/workspace") {
+                    let currentPage = this.props.location.pathname;
+                    currentPage = currentPage.split('/')[2]
+                    if (e.workspace_id === 0) {
+                        //direct workspace
+                        if (e.original_workspace_id !== 0) {
+                            //now direct workspace url
+                            this.props.history.push(`/workspace/${currentPage}/${e.id}/${e.name}`);
+                        }
+                    } else {
+                        //moved workspace to another folder
+                        if (e.original_workspace_id !== e.workspace_id) {
+                            this.props.history.push(`/workspace/${currentPage}/${e.workspace_id}/${e.original_workspace_name}/${e.id}/${e.name}`);
+                        }
+                    }
+                }
             })
             .listen(".move-topic-workspace", e => {
                 console.log(e, "move workspace");
@@ -600,7 +617,7 @@ class Socket extends PureComponent {
                 this.props.incomingUpdatedChannelDetail(data);
             })
             .listen(".member-update-timestamp", e => {
-                console.log("seen member", e);
+                //console.log("seen member", e);
                 this.props.updateMemberTimestamp(e);
             })
             .listen(".chat-notification", e => {
@@ -741,18 +758,18 @@ class Socket extends PureComponent {
                                 }
                             }
 
-                            if (!(this.props.selectedChannel && this.props.selectedChannel.id === e.channel_id && document.querySelector("body").classList.contains("visible"))
-                                && (Object.entries(this.props.settings).length === 0 ||
-                                    this.props.settings.DISABLE_SOUND !== "1")) {
-                                //@todo
-                                // audio.play({
-                                //     onplay: () => {
-                                //     },
-                                //     onerror: function (errorCode, description) {
-                                //         console.log(errorCode, description);
-                                //     },
-                                // });
-                            }
+                            // if (!(this.props.selectedChannel && this.props.selectedChannel.id === e.channel_id && document.querySelector("body").classList.contains("visible"))
+                            //     && (Object.entries(this.props.settings).length === 0 ||
+                            //         this.props.settings.DISABLE_SOUND !== "1")) {
+                            //     //@todo
+                            //     // audio.play({
+                            //     //     onplay: () => {
+                            //     //     },
+                            //     //     onerror: function (errorCode, description) {
+                            //     //         console.log(errorCode, description);
+                            //     //     },
+                            //     // });
+                            // }
 
                         }
                     }
@@ -1281,7 +1298,7 @@ class Socket extends PureComponent {
 
 
     };
-
+    
     render() {
         return <PreloadEmojiImage
             src={"https://unpkg.com/emoji-datasource-apple@5.0.1/img/apple/sheets-256/64.png"}/>;
@@ -1293,6 +1310,7 @@ function mapStateToProps({
                              settings: {userSettings},
                              chat: {channels, selectedChannel},
                              posts: {posts},
+                             workspaces: {activeTopic}
                          }) {
     return {
         user,
@@ -1300,6 +1318,7 @@ function mapStateToProps({
         channels,
         selectedChannel,
         posts,
+        activeTopic,
     };
 }
 
@@ -1420,4 +1439,4 @@ function mapDispatchToProps(dispatch) {
     };
 }
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Socket));
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Socket));

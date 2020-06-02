@@ -3,7 +3,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {Input, InputGroup, Label, Modal, ModalBody} from "reactstrap";
 import styled from "styled-components";
 import {clearModal} from "../../redux/actions/globalActions";
-import {createWorkspace} from "../../redux/actions/workspaceActions";
+import {createWorkspace, updateWorkspace} from "../../redux/actions/workspaceActions";
 import {uploadDocument} from "../../redux/services/global";
 import {FileAttachments} from "../common";
 import {DropDocument} from "../dropzone/DropDocument";
@@ -200,7 +200,41 @@ const CreateEditWorkspaceModal = forwardRef((props, ref) => {
             };
         }
 
-        dispatch(createWorkspace(payload));
+        if (mode === "edit") {
+            const removed_members = item.members.filter(m => {
+                let userFound = false;
+                form.selectedUsers.forEach(u => {
+                    if (u.id === m.id) {
+                        userFound = true;
+                        return;
+                    }
+                });
+                return !userFound;
+            }).map(m => m.id);
+
+            const added_members = form.selectedUsers.filter(u => {
+                let userFound = false;
+                item.members.forEach(m => {
+                    if (m.id === u.id) {
+                        userFound = true;
+                        return;
+                    }
+                });
+                return !userFound;
+            }).map(m => m.id);
+
+            payload = {
+                ...payload,
+                workspace_id: form.selectedFolder ? form.selectedFolder.value : 0,
+                topic_id: item.id,
+                removed_member_ids: removed_members,
+                new_member_ids: added_members,
+            }
+            dispatch(updateWorkspace(payload))
+        } else {
+            dispatch(createWorkspace(payload));
+        }
+        
         toggle();
     };
 
@@ -294,15 +328,49 @@ const CreateEditWorkspaceModal = forwardRef((props, ref) => {
                 label: user.name,
             };
         }
-        setForm({
-            ...form,
-            has_folder: true,
-            selectedUsers: currentUser ? [currentUser] : [],
-            selectedFolder: Object.keys(item).length === 0 ? null : {
-                value: item.id,
-                label: item.name,
-            },
-        });
+        if (mode === "edit") {
+            let members = [];
+            let is_private = false;
+            if (item.members.length) {
+                members = item.members.map(m => {
+                    return {
+                        ...m,
+                        value: m.id,
+                        label: m.name
+                    }
+                })
+            }
+            if (item.type !== undefined && item.type === "WORKSPACE") {
+                is_private = item.is_lock === 1 ? true : false
+            } else {
+                is_private = item.private === 1 ? true : false
+            }
+            setForm({
+                ...form,
+                has_folder: item.workspace_id !== undefined ? true : false,
+                selectedUsers: members,
+                selectedFolder: item.workspace_id !== undefined ? {
+                    value: item.workspace_id,
+                    label: item.workspace_name
+                }
+                : null,
+                description: item.description,
+                textOnly: item.description,
+                name: item.name,
+                is_private: is_private
+            });
+            setValid({
+                name: true,
+                folder: true,
+                team: true,
+            });
+        } else {
+            setForm({
+                ...form,
+                has_folder: true,
+                selectedUsers: currentUser ? [currentUser] : [],
+            });
+        }
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
@@ -350,7 +418,7 @@ const CreateEditWorkspaceModal = forwardRef((props, ref) => {
                         Worskpace name</Label>
                     <Input
                         name="name"
-                        defaultValue={mode === "edit" ? "" : ""}
+                        defaultValue={mode === "edit" ? item.name : ""}
                         onChange={handleNameChange}
                         onBlur={handleNameBlur}
                         valid={valid.name}
@@ -390,6 +458,8 @@ const CreateEditWorkspaceModal = forwardRef((props, ref) => {
                     showFileButton={true}
                     onChange={handleQuillChange}
                     onOpenFileDialog={handleOpenFileDialog}
+                    defaultValue={mode === "edit" && item ? item.description : ""}
+                    mode={mode}
                 />
                 {
                     attachedFiles.length > 0 &&

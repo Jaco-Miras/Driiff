@@ -41,7 +41,7 @@ export function createWorkspace(payload) {
  * @returns {Promise<*>}
  */
 export function updateWorkspace(payload) {
-    let url = `/v2/workspace/${payload.workspace_id}`;
+    let url = `/v2/workspace/${payload.topic_id}`;
     return apiCall({
         method: "PUT",
         url: url,
