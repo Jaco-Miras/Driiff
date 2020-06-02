@@ -7,17 +7,33 @@ import {addToModals} from "../../redux/actions/globalActions";
 
 const SettingsLinkList = styled.li`
     position: relative;
+    
     > a:after{
         display: none;
     }
+    
+    .dropdown-toggle {
+        cursor: pointer;
+        cursor: hand;
+        
+        &:after {
+            display: none;
+        }
+    }
+    
     .dropdown-menu {
         position: absolute;
         top: 25px;
         left: 25px;
+        
+        > span {
+            cursor: pointer;
+            cursor: hand;
+        }
     }
 `;
 
-const SettingsLink = props => {
+const SettingsLink = () => {
 
     const wrapperRef = useRef();
     const dispatch = useDispatch();
@@ -69,21 +85,21 @@ const SettingsLink = props => {
 
     return (
         <SettingsLinkList className="nav-item" ref={wrapperRef}>
-            <a className={`dropdown-toggle ${show ? "show" : ""}`} 
+            <span className={`dropdown-toggle ${show ? "show" : ""}`}
                 data-toggle="dropdown"
                 onClick={handleToggle}>
                 <SvgIconFeather icon="settings"/>
-            </a>
+            </span>
             <div className={`dropdown-menu ${show ? "show" : ""}`}>
-                <a className="dropdown-item" data-name="folder" onClick={handleDropdownItemClick}>
+                <span className="dropdown-item" data-name="folder" onClick={handleDropdownItemClick}>
                     Folder settings
-                </a>
-                <a className="dropdown-item" data-name="workspace" onClick={handleDropdownItemClick}>
+                </span>
+                <span className="dropdown-item" data-name="workspace" onClick={handleDropdownItemClick}>
                     Workspace settings
-                </a>
+                </span>
             </div>
         </SettingsLinkList>
     )
 };
 
-export default SettingsLink;
+export default React.memo(SettingsLink);
