@@ -5,6 +5,8 @@ const INITIAL_STATE = {
     files: {},
     channelFiles: {},
     viewFiles: null,
+    pendingWorkspaceFilesUpload: {},
+    progressWorkspaceFilesUpload: {},
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -72,6 +74,37 @@ export default (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 viewFiles: action.data,
+            };
+        }
+        case "PREPARE_WORKSPACE_FILES_UPLOAD": {
+            return {
+                ...state,
+                pendingWorkspaceFilesUpload: {
+                    ...state.pendingWorkspaceFilesUpload,
+                    [action.data.workspace_id]: action.data,
+                },
+            };
+        }
+        case "PROCESS_WORKSPACE_FILES_UPLOAD": {
+            let pendingWorkspaceFilesUpload = state.pendingWorkspaceFilesUpload;
+            delete state.pendingWorkspaceFilesUpload[action.data.workspace_id];
+
+            return {
+                ...state,
+                pendingWorkspaceFilesUpload: pendingWorkspaceFilesUpload,
+                progressWorkspaceFilesUpload: {
+                    ...state.progressWorkspaceFilesUpload,
+                    [action.data.workspace_id]: action.data,
+                },
+            };
+        }
+        case "UPLOADING_WORKSPACE_FILES_SUCCESS": {
+            let progressWorkspaceFilesUpload = state.progressWorkspaceFilesUpload;
+            delete state.progressWorkspaceFilesUpload[action.data.workspace_id];
+
+            return {
+                ...state,
+                progressWorkspaceFilesUpload: progressWorkspaceFilesUpload,
             };
         }
         default:

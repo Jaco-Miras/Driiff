@@ -3,6 +3,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {Route} from "react-router-dom";
 import styled from "styled-components";
 import {useUserLogout} from "../components/hooks";
+import useFilesUpload from "../components/hooks/useFilesUpload";
 import {ModalPanel} from "../components/panels";
 import {MainContentPanel, MainHeaderPanel, MainNavigationPanel} from "../components/panels/main";
 import Socket from "../components/socket/socket";
@@ -17,6 +18,7 @@ const MainContent = styled.div`
 const MainLayout = (props) => {
 
     useUserLogout(props);
+    useFilesUpload(props);
 
     const dispatch = useDispatch();
     const user = useSelector(state => state.session.user);

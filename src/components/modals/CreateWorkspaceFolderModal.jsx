@@ -160,7 +160,7 @@ const CreateWorkspaceFolderModal = props => {
                 }
             }),
         );
-    }, [dispatch, toggle, activeTab, form.description, form.is_private, form.name, valid.name, setForm]);
+    }, [dispatch, toggle, activeTab, form.description, form.is_private, form.name]);
 
     const handleQuillChange = useCallback((content, delta, source, editor) => {
         const textOnly = editor.getText(content);
