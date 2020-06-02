@@ -177,6 +177,7 @@ const ChatActionsContainer = styled.div`
     ${props => (props.isAuthor ? "right: 100%" : "left: 100%")};
     height: calc(100% + 4px);
     margin-top: -2px;
+    transition: opacity 0.3s ease;
 `;
 const SystemChatActionsContainer = styled.div`
     display: flex;
@@ -774,7 +775,7 @@ class ChatMessages extends React.PureComponent {
 
                                 return (
                                     <div key={gm.key}>
-                                        <TimestampDiv>
+                                        <TimestampDiv className="timestamp-container">
                                             {
                                                 <span>{localizeChatTimestamp(gm.replies[0].created_at.timestamp, "ddd, MMM DD, YYYY")}</span>
                                             }
@@ -870,7 +871,7 @@ class ChatMessages extends React.PureComponent {
                                                             reply.user &&
                                                             <ChatBubbleContainer
                                                                 isAuthor={isAuthor}
-                                                                className={`chat-reply-list-item chat-reply-list-item-${reply.id}`}
+                                                                className={`chat-reply-list-item chat-reply-list-item-${reply.id} ${!isAuthor ? "chat-left" : "chat-right"}`}
                                                                 data-message-id={reply.id}
                                                                 showAvatar={showAvatar}
                                                                 isBot={isBot}

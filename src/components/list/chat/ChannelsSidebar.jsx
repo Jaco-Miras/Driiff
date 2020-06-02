@@ -7,8 +7,15 @@ const ChannelsSidebarContainer = styled.div`
 `;
 const Channels = styled.ul`
     padding-right: 24px;
+    h4:first-of-type {
+        margin-top: 12px !important;
+    }
 `;
 const ChatHeader = styled.h4`
+    font-weight: 300;
+    padding-bottom: 16px;
+    margin: 24px 0 6px 0;
+    border-bottom: 1px solid #ebebeb;
 `;
 
 const ChannelsSidebar = props => {
@@ -26,7 +33,7 @@ const ChannelsSidebar = props => {
                         if (k !== 0 && arr[k - 1].is_pinned === 1 && channel.is_pinned === 0) {
                             chatHeader = "Recent";
                         } else if (k === 0 && channel.is_pinned === 1) {
-                            chatHeader = "Pinned";
+                            chatHeader = "Favorite";
                         } else if (k === 0 && channel.is_pinned === 0) {
                             chatHeader = "Recent";
                         }

@@ -7,20 +7,6 @@ import topicIcon from "../../../assets/icon/topic_icon/people_group/l/active.svg
 import {Avatar, SvgIconFeather} from "../../common";
 
 const Wrapper = styled.div`
-    :before{
-        content: '';
-        mask-image: ${props => props.type === "PERSONAL_BOT" ? `url(${botIcon})`
-    : props.type === "COMPANY" ? `url(${teamIcon})`
-        : props.type === "POST" ? `url(${postIcon})`
-            : `url(${topicIcon})`};
-        background: linear-gradient(105deg, #972c86, #794997);
-        mask-repeat: no-repeat;
-        mask-size: 90%;
-        mask-position:center;
-        width: 32px;
-        height: 32px;
-        display: ${props => ["DIRECT", "GROUP"].includes(props.type) ? "none" : "inline-block"};
-    }
     > span {
         font-size: 11px;
         background-color: #cccccc;
@@ -32,14 +18,20 @@ const Wrapper = styled.div`
         height: 30px;
         text-align: center;
     }
+    > svg {
+        padding: 6px;
+        background-color: #eeeeee;
+        border-radius: 50%;
+    }
 `;
 
-const StyledAvatar = styled(Avatar)`  
+const StyledAvatar = styled(Avatar)`
 `;
 const Icon = styled(SvgIconFeather)`
     color: #7a1b8b !important;
     height: 30px;
     width: 30px;
+
 `;
 const handleInitials = title => {
     var result = "";
@@ -70,6 +62,18 @@ const ChannelIcon = props => {
             }
             {
                 channel.type === "GROUP" &&
+                <Icon icon="users"/>
+            }
+            {
+                channel.type === "COMPANY" &&
+                <Icon icon="users"/>
+            }
+            {
+                channel.type === "POST" &&
+                <Icon icon="users"/>
+            }
+            {
+                channel.type === "PERSONAL_BOT" &&
                 <Icon icon="users"/>
             }
             {

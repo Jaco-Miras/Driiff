@@ -1,6 +1,6 @@
 import React, {forwardRef, useRef} from "react";
 import styled from "styled-components";
-import docIcon from "../../../../assets/img/svgs/documents-icons/documents_secundary.svg";
+import {SvgIcon} from "../../../common";
 import {getAPIUrl} from "../../../../helpers/slugHelper";
 
 const ImgLoader = styled.div`
@@ -14,24 +14,28 @@ const ImgLoader = styled.div`
 `;
 
 const ImgLoaderDiv = styled.div`
-    border: 10px solid #f3f3f3;
-    border-top: 10px solid #972c86;
+    display: inline-block;
+    width: 2rem;
+    height: 2rem;
+    vertical-align: text-bottom;
+    background-color: #8C3B9B;
     border-radius: 50%;
-    width: 60px;
-    height: 60px;
-    animation: spin 2s linear infinite;
-
+    opacity: 0;
+    animation: spinner-grow .75s linear infinite;
     position: absolute;
     margin: auto;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-
-    @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-      }
+    @keyframes spinner-grow {
+        0% {
+            transform: scale(0)
+        }
+        50% {
+            opacity: 1
+        }
+    }
 `;
 
 const FileImage = styled.img`
@@ -60,8 +64,8 @@ const FileVideo = styled.video`
     min-width: 200px;
 `;
 
-const FilePillContainer = styled.div`    
-    border-radius: 8px;    
+const FilePillContainer = styled.div`
+    border-radius: 8px;
     cursor: pointer;
     cursor: hand;
 
@@ -76,15 +80,11 @@ const FilePillContainer = styled.div`
     }
 `;
 const DocFile = styled.div`
-    display: flex;
-    align-items:center;
-    justify-content: center;
-    min-height: 100px;
-    padding: 0 10px;
-    
+    .card {
+        margin-bottom: 0;
+    }
     >img{
         width: 30px;
-        height: 30px;
     }
 `;
 
@@ -173,8 +173,14 @@ const FilePill = forwardRef((props, ref) => {
                     </FileVideo>
                 </>
                 : <DocFile onClick={handleViewFile}>
-                    <img src={docIcon} alt={"document"}/>
-                    <p>{file.filename ? file.filename.substr(0, file.filename.lastIndexOf(".")) : file.name.substr(0, file.name.lastIndexOf("."))}</p>
+                    <div class="card app-file-list">
+                        <div class="app-file-icon">
+                            <SvgIcon icon={`document`} width="28" height="32"/>
+                        </div>
+                        <div class="p-2 small">
+                            <div>{file.filename ? file.filename.substr(0, file.filename.lastIndexOf(".")) : file.name.substr(0, file.name.lastIndexOf("."))}</div>
+                        </div>
+                    </div>
                 </DocFile>
         }
     </FilePillContainer>;

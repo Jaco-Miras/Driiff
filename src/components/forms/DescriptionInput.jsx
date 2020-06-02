@@ -1,4 +1,4 @@
-import React, {useRef, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import styled from "styled-components";
 import {InputGroup, Label} from "reactstrap";
 import QuillEditor from "./QuillEditor";
@@ -99,7 +99,7 @@ const PickerContainer = styled(PickerEmoji)`
 
 const DescriptionInput = props => {
 
-    const {onChange, showFileButton = false, onOpenFileDialog} = props;
+    const {onChange, showFileButton = false, onOpenFileDialog, defaultValue = "", mode=""} = props;
 
     const reactQuillRef = useRef();
     const pickerRef = useRef();
@@ -117,6 +117,14 @@ const DescriptionInput = props => {
         editor.insertText(cursorPosition, e.native);
         editor.setSelection(cursorPosition + 2);
     };
+
+    useEffect(() => {
+        if (mode === "edit" && defaultValue) {
+            const editor = reactQuillRef.current.getEditor();
+            editor.clipboard.dangerouslyPasteHTML(0, defaultValue);
+            reactQuillRef.current.blur();
+        }
+    }, []);
 
     const [modules] = useQuillModules("description");
 

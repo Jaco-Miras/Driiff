@@ -147,9 +147,16 @@ const WorkspaceList = props => {
                     <i ref={ref.arrow}
                        className={`sub-menu-arrow ti-angle-up`}></i>
                 }
-                {
+                {/* {
                     workspace.id === 12 &&
                     <Badge color="danger">5</Badge>
+                } */}
+                {
+                    workspace.unread_count > 0 && <Badge color="danger">
+                        {
+                            workspace.unread_count 
+                        }
+                    </Badge>
                 }
             </a>
             {

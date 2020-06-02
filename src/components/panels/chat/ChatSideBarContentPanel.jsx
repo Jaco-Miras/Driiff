@@ -2,10 +2,13 @@ import React from "react";
 import {useSelector} from "react-redux";
 import {withRouter} from "react-router-dom";
 import styled from "styled-components";
+import {useDispatch} from "react-redux";
 import {useLoadLastVisitedChannel} from "../../hooks";
 //import ChatRecentList from "../../list/chat/ChatRecentList";
 import ChannelsSidebar from "../../list/chat/ChannelsSidebar";
 import ChatContactsList from "../../list/chat/ChatContactsList";
+import {addToModals} from "../../../redux/actions/globalActions";
+import {SvgIconFeather} from "../../common";
 
 const Wrapper = styled.div`
     overflow: auto !important;
@@ -13,14 +16,52 @@ const Wrapper = styled.div`
         display: none;
     }
     -ms-overflow-style: none;
-    scrollbar-width: none;    
+    scrollbar-width: none;
+    .recent-new-group-wrapper {
+        padding-right: 24px;
+    }
 `;
+
+const NewGroupButton = styled.div`
+    cursor: pointer;
+    color: #BEBEBE;
+    transition: color 0.3s;
+    span {
+        position: relative;
+        top: 1px;
+        color: #BEBEBE;
+        transition: color 0.3s;
+    }
+    svg {
+        margin-right: 8px;
+    }
+    &:hover {
+        color: #7A1B8B;
+        span {
+            color: #7A1B8B
+        }
+    }
+`;
+
 
 const ChatSidebarContentPanel = (props) => {
 
     const {className = "", pill = "pills-home", search} = props;
     const isLoaded = useSelector(state => state.settings.user.isLoaded);
     useLoadLastVisitedChannel(props);
+
+    const dispatch = useDispatch();
+
+    const handleOpenGropupChatModal = () => {
+        let payload = {
+            type: "chat_create_edit",
+            mode: "new",
+        };
+
+        dispatch(
+            addToModals(payload),
+        );
+    };
 
     return (
         <Wrapper className={`chat-sidebar-content ${className}`} tabIndex="1">
@@ -29,7 +70,15 @@ const ChatSidebarContentPanel = (props) => {
                 <div className={`tab-pane fade ${pill === "pills-home" && "show active"}`} id="pills-home"
                      role="tabpanel"
                      aria-labelledby="pills-home-tab">
-                    <p className="small mb-0">Recent chats</p>
+                    <div class="d-flex align-items-center recent-new-group-wrapper">
+                        <p className="small mb-0">Recent chats</p>
+
+                        <NewGroupButton className="small mb-0 text-right ml-auto" onClick={handleOpenGropupChatModal}>
+                            <SvgIconFeather width={14} height={14} icon="plus"/>
+                            <span>New group chat</span>
+                        </NewGroupButton>
+                    </div>
+
                     {
                         isLoaded &&
                         <ChannelsSidebar search={search}/>

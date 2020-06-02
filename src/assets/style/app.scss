@@ -26,6 +26,63 @@ body {
   color: #505050;
 }
 
+.ql-editor {
+  line-height: 1.5rem;
+}
+.chat-input-wrapper {
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+.chat-input-wrapper:focus-within {
+  border-color: rgba(122, 27, 139, 0.8) !important;
+}
+
+body.dark {
+  .chat-left {
+    .chat-bubble {
+      background: #454c6699 !important;
+      color: #c7c7c7 !important;
+    }
+    .chat-emoji {
+      background: #454c66;
+    }
+  }
+
+  .chat-right {
+
+  }
+
+  .chat-actions-container {
+    background: #313852;
+  }
+  .timestamp-container {
+    color: #9f9f9f  ;
+    &:before, &:after {
+      background-color: #454c66;
+    }
+  }
+  .chat-footer {
+    .feather-smile, .feather-paperclip, .chat-input-wrapper {
+      border-color: #454c66!important;
+    }
+  }
+}
+
+.more-options-tooltip {
+  animation: bottom-fade 0.3s ease;
+}
+
+@keyframes bottom-fade {
+  0% {
+      opacity: 0;
+      transform: translateY(15px);
+  }
+  100% {
+      opacity: 1;
+      transform: translateY(0);
+  }
+}
+
+
 
 [class*=" ti-"],
 [class^="ti-"] {
@@ -10522,22 +10579,22 @@ a.link-3:hover {
   color: #7a1b8b;
 }
 
-.chat-block .chat-sidebar .chat-sidebar-content .list-group .list-group-item.active:not(.active.list-group-item),
-.chat-block .chat-sidebar .chat-sidebar-content .list-group .list-group-item.active:not(.btn):active,
-.chat-block .chat-sidebar .chat-sidebar-content .list-group .list-group-item.active:not(.btn):focus,
-.chat-block .chat-sidebar .chat-sidebar-content .list-group .list-group-item.active:not(.btn):hover,
-.header form .input-group .input-group-append button.btn:not(.active.list-group-item),
-.header form .input-group .input-group-append button.btn:not(.btn):active,
-.header form .input-group .input-group-append button.btn:not(.btn):focus,
-.header form .input-group .input-group-append button.btn:not(.btn):hover,
-a:not(.active.list-group-item),
-a:not(.btn):active,
-a:not(.btn):focus,
-a:not(.btn):hover {
-  text-decoration: none !important;
-  color: #000;
-  outline: 0;
-}
+// .chat-block .chat-sidebar .chat-sidebar-content .list-group .list-group-item.active:not(.active.list-group-item),
+// .chat-block .chat-sidebar .chat-sidebar-content .list-group .list-group-item.active:not(.btn):active,
+// .chat-block .chat-sidebar .chat-sidebar-content .list-group .list-group-item.active:not(.btn):focus,
+// .chat-block .chat-sidebar .chat-sidebar-content .list-group .list-group-item.active:not(.btn):hover,
+// .header form .input-group .input-group-append button.btn:not(.active.list-group-item),
+// .header form .input-group .input-group-append button.btn:not(.btn):active,
+// .header form .input-group .input-group-append button.btn:not(.btn):focus,
+// .header form .input-group .input-group-append button.btn:not(.btn):hover,
+// a:not(.active.list-group-item),
+// a:not(.btn):active,
+// a:not(.btn):focus,
+// a:not(.btn):hover {
+//   text-decoration: none !important;
+//   color: #000;
+//   outline: 0;
+// }
 
 .chat-block .chat-sidebar .chat-sidebar-content .list-group .btn.list-group-item.active:active,
 .chat-block .chat-sidebar .chat-sidebar-content .list-group .btn.list-group-item.active:focus,
@@ -15061,6 +15118,10 @@ button.toast-close-button {
 #compose .ql-editor,
 .app-block .ql-editor {
   min-height: 70px;
+}
+.ql-editor.ql-blank::before {
+  right: inherit;
+  left: 10px;
 }
 
 .app-sortable-handle {
@@ -19700,6 +19761,7 @@ body.dark .ql-container.ql-snow {
 body.dark .ql-editor.ql-blank::before {
   color: #c7c7c7;
 }
+
 
 body.dark .ql-fill,
 body.dark .ql-snow .ql-stroke {

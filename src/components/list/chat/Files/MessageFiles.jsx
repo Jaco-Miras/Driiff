@@ -10,7 +10,7 @@ const MessageFilesContainer = styled.div`
     position: relative;
     z-index: 1;
     border-radius: 8px;
-    color: #828282;    
+    color: #828282;
 `;
 
 const FilesLink = styled.div`
@@ -29,7 +29,7 @@ const FileShowDiv = styled.a`
     display:flex;
     align-items: center;
     border:10px solid #000;
-    
+
     :after {
         content: "";
         mask-image: ${props =>
