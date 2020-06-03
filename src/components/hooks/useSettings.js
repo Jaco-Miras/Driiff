@@ -6,7 +6,6 @@ const useSettings = () => {
 
     const dispatch = useDispatch();
     const userSettings = useSelector(state => state.settings.user);
-    const activeTopic = useSelector(state => state.workspaces.activeTopic);
 
     useEffect(() => {
         dispatch(
@@ -22,9 +21,7 @@ const useSettings = () => {
                     ...userSettings.CHAT_SETTINGS,
                 },
                 general_settings: {
-                    language: userSettings.LANGUAGE,
-                    dark_mode: userSettings.DARK_MODE,
-                    active_topic: userSettings.ACTIVE_TOPIC,
+                    ...userSettings.GENERAL_SETTINGS,
                 },
             };
             dispatch(
@@ -34,13 +31,6 @@ const useSettings = () => {
             );
         }
     }, [userSettings]);
-
-
-    useEffect(() => {
-        if (activeTopic !== null) {
-            console.log(activeTopic);
-        }
-    }, [activeTopic]);
 };
 
 export default useSettings;

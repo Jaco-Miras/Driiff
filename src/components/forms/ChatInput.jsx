@@ -14,6 +14,7 @@ import {
     updateChatMessage,
 } from "../../redux/actions/chatActions";
 import {deleteDraft} from "../../redux/actions/globalActions";
+import {SvgIconFeather} from "../common";
 import BodyMention from "../common/BodyMention";
 import {useDraft, useQuillInput, useQuillModules, useSaveInput, useSelectQuote} from "../hooks";
 import QuillEditor from "./QuillEditor";
@@ -80,6 +81,16 @@ const StyledQuillEditor = styled(QuillEditor)`
         }
     }
 `;
+
+const CloseButton = styled(SvgIconFeather)`
+    position: absolute;
+    top: 8px;
+    right: 5px;
+    cursor: pointer;
+    cursor: hand;
+    color: #000;
+`;
+
 /***  Commented out code are to be visited/refactored ***/
 const ChatInput = props => {
 
@@ -169,13 +180,13 @@ const ChatInput = props => {
             file_ids: [],
             reference_id: reference_id,
             reference_title: selectedChannel.type === "DIRECT" && selectedChannel.members.length === 2
-                ? `${user.first_name} in a direct message` : selectedChannel.title,
+                             ? `${user.first_name} in a direct message` : selectedChannel.title,
             topic_id: selectedChannel.is_shared ? selectedChannel.entity_id : null,
             is_shared: selectedChannel.is_shared ? selectedChannel.entity_id : null,
             token: slugs.length && slugs.filter(s => s.slug_name === selectedChannel.slug_owner).length ?
-                slugs.filter(s => s.slug_name === selectedChannel.slug_owner)[0].access_token : null,
+                   slugs.filter(s => s.slug_name === selectedChannel.slug_owner)[0].access_token : null,
             slug: slugs.length && slugs.filter(s => s.slug_name === selectedChannel.slug_owner).length ?
-                slugs.filter(s => s.slug_name === selectedChannel.slug_owner)[0].slug_name : null,
+                  slugs.filter(s => s.slug_name === selectedChannel.slug_owner)[0].slug_name : null,
         };
 
         if (quote) {
@@ -471,7 +482,9 @@ const ChatInput = props => {
         dispatch(
             addChannelMembers(memberPayload, (err, res) => {
                 if (err) return;
-                setIgnoredMentionedUserIds([...ignoredMentionedUserIds, ...users.map(u => u.type_id)]);
+
+                if (res)
+                    setIgnoredMentionedUserIds([...ignoredMentionedUserIds, ...users.map(u => u.type_id)]);
             }),
         );
 
@@ -481,6 +494,12 @@ const ChatInput = props => {
     const handleIgnoreMentionedUsers = users => {
         setIgnoredMentionedUserIds(users.map(u => u.type_id));
         setMentionedUserIds([]);
+    };
+
+    const handleEditReplyClose = () => {
+        setEditMode(false);
+        setEditMessage(null);
+        handleClearQuillInput();
     };
 
     useSaveInput(handleClearQuillInput, text, textOnly, quillContents);
@@ -507,12 +526,10 @@ const ChatInput = props => {
                 ref={reactQuillRef}
                 onChange={handleQuillChange}
             />
-            {/* {
-                replyEdit &&
-                <SvgImage
-                    onClick={this.handleEditReplyClose}
-                    className={`edit-reply-close`} icon={`close`}/>
-            } */}
+            {
+                editMode &&
+                <CloseButton icon="x" onClick={handleEditReplyClose}/>
+            }
         </Wrapper>
     );
 };

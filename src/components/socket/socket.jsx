@@ -467,6 +467,22 @@ class Socket extends PureComponent {
 
 
         window.Echo.private(`${external}.App.User.${this.props.user.id}`)
+            .listen(".new-lock-workspace", e => {
+                console.log(e, "new workspace lock");
+                if (e.topic !== undefined) {
+                    this.props.incomingWorkspace(e);
+                } else {
+                    this.props.incomingWorkspaceFolder({
+                        ...e.workspace,
+                        key_id: e.key_id,
+                        type: e.type,
+                    });
+                }
+            })
+            .listen(".update-lock-workspace", e => {
+                console.log(e, "update lock workspace");
+                this.props.incomingUpdatedWorkspaceFolder(e);
+            })
             .listen(".users-online", e => {
                 //console.log(e, 'users-online');
                 this.props.currentOnlineUsers(e.current_users_online.map(u => {

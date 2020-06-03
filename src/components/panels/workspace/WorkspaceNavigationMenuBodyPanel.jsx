@@ -36,7 +36,8 @@ const Wrapper = styled.div`
                     font-size: 13px;
                     
                     &:hover {
-                        a {
+                        
+                        a {                            
                             font-weight: bold;
                         }
                     }
@@ -50,6 +51,10 @@ const Wrapper = styled.div`
                         color: #BEBEBE;
                         font-size: 9px;
                         font-weight: normal;
+                        
+                        &:hover {
+                            color: #7a1b8b;
+                        }
                         
                         svg {
                             width: 7px;
@@ -68,7 +73,7 @@ const Wrapper = styled.div`
                             margin-bottom: 10px;
                             color: #828282;
                             font-size: 11px;
-                            max-width:calc(100% - 75px);                            
+                            max-width:calc(100% - 95px);                            
                             // white-space: nowrap;
                             // overflow: hidden;
                             // text-overflow: ellipsis;

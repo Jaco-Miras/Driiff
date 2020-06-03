@@ -1,10 +1,11 @@
-import React, {useCallback, useEffect, useRef, useState} from "react";
-import {useDispatch} from "react-redux";
+import React, {useEffect, useRef, useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
 import {useHistory, useRouteMatch} from "react-router-dom";
 import {Badge} from "reactstrap";
 import styled from "styled-components";
 import {addToChannels, getChannel, setSelectedChannel} from "../../redux/actions/chatActions";
 import {addToModals} from "../../redux/actions/globalActions";
+import {setUserGeneralSetting} from "../../redux/actions/settingsActions";
 import {SvgIconFeather} from "../common";
 import TopicList from "./TopicList";
 
@@ -20,8 +21,33 @@ const Wrapper = styled.li`
         margin-bottom: 10px;
         
         .badge {
+            padding: 3px 7px;
             position: absolute;
             right: 25px;
+            overflow: hidden;    
+            transition: all .3s ease;
+            top: 12px;
+            opacity: 1;
+            
+            &.enter-active {                
+                transform: translate(0, 0);                        
+            }
+            
+            &.leave-active {
+                opacity: 0;                
+                transform: translate(0, 100%);                
+            }
+        }
+    }
+    
+    ul {
+        li {
+            .badge {
+                padding: 3px 7px;
+                position: absolute;
+                right: -40px;
+                top: 0;
+            }
         }
     }
 `;
@@ -53,8 +79,22 @@ const WorkspaceList = props => {
         nav: useRef(null),
     };
 
+    const workspace_open_folder = useSelector(state => state.settings.user.GENERAL_SETTINGS.workspace_open_folder);
+
     const [showTopics, setShowTopics] = useState(null);
-    const [maxHeight, setMaxHeight] = useState(0);
+    const [maxHeight, setMaxHeight] = useState(null);
+
+    const handleShowWorkspaceModal = () => {
+        let payload = {
+            type: "workspace_create_edit",
+            mode: "create",
+            item: workspace,
+        };
+
+        dispatch(
+            addToModals(payload),
+        );
+    };
 
     const handleSelectWorkspace = () => {
         //set the selected topic
@@ -88,78 +128,51 @@ const WorkspaceList = props => {
         e.preventDefault();
 
         if (workspace.type === "FOLDER") {
-            setShowTopics(!showTopics);
+            if (!showTopics) {
+                dispatch(
+                    setUserGeneralSetting({
+                        workspace_open_folder: {
+                            ...workspace_open_folder,
+                            [workspace.id]: workspace.id,
+                        },
+                    }),
+                );
+            } else {
+                delete workspace_open_folder[workspace.id];
+                dispatch(
+                    setUserGeneralSetting({
+                        workspace_open_folder: workspace_open_folder,
+                    }),
+                );
+            }
+            setShowTopics(prevState => !prevState);
         } else {
             handleSelectWorkspace();
         }
     };
 
-    const handleShowWorkspaceModal = () => {
-        let payload = {
-            type: "workspace_create_edit",
-            mode: "create",
-            item: workspace,
-        };
-
-        dispatch(
-            addToModals(payload),
-        );
-    };
-
-    const showTopicList = useCallback((show) => {
-        if (ref.container.current && ref.arrow.current) {
-            let navClassList = ref.nav.current.classList;
-            let iClassList = ref.arrow.current.classList;
-
-            if (show) {
-                iClassList.remove("ti-plus");
-                iClassList.add("ti-minus");
-                iClassList.add("rotate-in");
-                navClassList.add("enter-active");
-                navClassList.remove("leave-active");
-            } else {
-                iClassList.add("ti-plus");
-                iClassList.remove("ti-minus");
-                iClassList.remove("rotate-in");
-                navClassList.add("leave-active");
-                navClassList.remove("enter-active");
-            }
-        }
-    }, [ref.arrow, ref.container, ref.nav]);
-
-    useEffect(() => {
-        if (showTopics === null) {
-            setShowTopics(workspace.selected);
-        }
-
-        //eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-
     useEffect(() => {
         if (ref.nav.current !== null) {
             setMaxHeight(ref.nav.current.offsetHeight);
-
-            const navClassList = ref.nav.current.classList;
-            navClassList.add("leave-active");
         }
     }, [ref.nav, maxHeight]);
 
     useEffect(() => {
-        showTopicList(showTopics);
-    }, [showTopics, showTopicList]);
-
-    useEffect(() => {
-        showTopicList(workspace.selected);
-    }, [workspace.selected, showTopicList]);
+        if (showTopics === null && maxHeight !== null) {
+            setShowTopics(workspace.selected || workspace_open_folder.hasOwnProperty(workspace.id));
+        }
+    }, [showTopics, workspace.id, workspace.selected, maxHeight, workspace_open_folder]);
 
     return (
-        <Wrapper ref={ref.container} className={`worskpace-list ${className}`} selected={workspace.selected}
+        <Wrapper ref={ref.container} className={`worskpace-list ${className}`}
+                 selected={workspace.selected}
                  show={show}>
-            <a className={`${workspace.selected && "active"}`} href="/" onClick={handleShowTopics}>{workspace.name}
+            <a className={`${workspace.selected && "active"}`} href="/"
+               onClick={handleShowTopics}>{workspace.name}
                 {
                     workspace.type === "FOLDER" &&
                     <i ref={ref.arrow}
-                       className={`sub-menu-arrow ti-angle-up`} />
+                       className={`sub-menu-arrow ti-angle-up ${showTopics ? "ti-minus rotate-in" : "ti-plus"}`}/>
                 }
                 {
                     workspace.unread_count > 0 &&
@@ -172,7 +185,8 @@ const WorkspaceList = props => {
             </a>
             {
                 workspace.type === "FOLDER" &&
-                <TopicNav ref={ref.nav} maxHeight={maxHeight}>
+                <TopicNav ref={ref.nav} maxHeight={maxHeight}
+                          className={showTopics === null ? "" : showTopics ? "enter-active" : "leave-active"}>
                     {
                         Object.keys(workspace.topics).length > 0 && Object.values(workspace.topics).map(topic => {
                             return <TopicList key={topic.id} topic={topic}/>;

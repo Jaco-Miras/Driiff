@@ -28,3 +28,11 @@ export function setUserSettings(payload, callback) {
         callback,
     );
 }
+
+export function setUserGeneralSetting(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "UPDATE_USER_GENERAL_SETTING",
+        payload,
+        callback,
+    );
+}

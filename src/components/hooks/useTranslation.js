@@ -2,7 +2,7 @@ import {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {getHttpStatus} from "../../helpers/commonFunctions";
 import {addTranslationObject, getTranslationObject} from "../../redux/actions/globalActions";
-import {setUserSettings} from "../../redux/actions/settingsActions";
+import {setUserGeneralSetting} from "../../redux/actions/settingsActions";
 
 export const getBrowserLanguage = () => {
     const lang = navigator.language || navigator.userLanguage;
@@ -32,8 +32,8 @@ export const useTranslation = () => {
                 ),
             );
             dispatch(
-                setUserSettings({
-                    LANGUAGE: localStorage.getItem(`i18n_lang`),
+                setUserGeneralSetting({
+                    language: localStorage.getItem(`i18n_lang`),
                 }),
             );
         } else {
@@ -88,8 +88,8 @@ export const useTranslation = () => {
                             }
                         } else {
                             dispatch(
-                                setUserSettings({
-                                    LANGUAGE: dictFile.lang,
+                                setUserGeneralSetting({
+                                    language: dictFile.lang,
                                 }),
                             );
                         }
@@ -174,8 +174,8 @@ export const setLocale = (lang, dispatch, callback = null) => {
             }),
         );
         dispatch(
-            setUserSettings({
-                LANGUAGE: lang,
+            setUserGeneralSetting({
+                language: lang,
             }),
         );
     }
