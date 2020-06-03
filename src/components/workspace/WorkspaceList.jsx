@@ -180,7 +180,7 @@ const WorkspaceList = props => {
                 }
                 {
                     workspace.unread_count > 0 &&
-                    <Badge color="danger">
+                    <Badge className={`${showTopics ? "leave-active" : "enter-active"}`} color="danger">
                         {
                             workspace.unread_count
                         }
