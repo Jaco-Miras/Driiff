@@ -1,11 +1,25 @@
 import React, {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {useHistory} from "react-router-dom";
+import {Badge} from "reactstrap";
 import styled from "styled-components";
 import {setNavMode, getUnreadNotificationCounterEntries} from "../../../redux/actions/globalActions";
 import {NavLink, SvgIcon, SvgIconFeather, BadgeIcon} from "../../common";
 
 const Wrapper = styled.div`
+    li {
+        position: relative;
+        
+        .badge {
+            position: relative;
+            width: 8px;
+            height: 8px;
+            padding: 0;
+            top: -8px;
+            right: 0px;
+            background: #f44;           
+        }
+    }
 `;
 
 const DriffLogo = styled(SvgIcon)`
@@ -81,7 +95,7 @@ const MainNavigationTabPanel = (props) => {
                         <NavIconContainer to="/chat">
                             <NavIcon icon={`message-circle`}/>
                             {
-                                unread.length >= 1 && <BadgeIcon/>
+                                unread.length >= 1 && <Badge>&nbsp;</Badge>
                             }
                         </NavIconContainer>
                     </li>
