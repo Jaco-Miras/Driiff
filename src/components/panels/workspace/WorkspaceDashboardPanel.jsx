@@ -1,7 +1,6 @@
 import React from "react";
 import {useSelector} from "react-redux";
 import styled from "styled-components";
-import {useSetWorkspace} from "../../hooks";
 
 const Wrapper = styled.div`
 `;
@@ -9,8 +8,6 @@ const Wrapper = styled.div`
 const WorkspaceDashboardPanel = (props) => {
 
     const {className = ""} = props;
-
-    useSetWorkspace();
 
     const topic = useSelector(state => state.workspaces.activeTopic);
 
