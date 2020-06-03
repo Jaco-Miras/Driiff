@@ -796,7 +796,7 @@ export default function (state = INITIAL_STATE, action) {
             let channel = {...state.channels[action.data.channel_id]};
             return {
                 ...state,
-                selectedChannel: channel,
+                selectedChannel: channel.hasOwnProperty("id") ? channel : state.selectedChannel,
             };
         }
         case "CLEAR_SELECTED_CHANNEL": {

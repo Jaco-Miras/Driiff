@@ -5,7 +5,8 @@ import {Badge} from "reactstrap";
 import styled from "styled-components";
 import {setNavMode} from "../../../redux/actions/globalActions";
 import {NavLink, SvgIcon, SvgIconFeather} from "../../common";
-import {useLoadChannels} from "../../hooks";
+//import {useLoadChannels} from "../../hooks";
+import {replaceChar} from "../../../helpers/stringFormatter";
 
 const Wrapper = styled.div`
     li {
@@ -46,13 +47,14 @@ const NavIcon = styled(SvgIconFeather)`
 
 const MainNavigationTabPanel = (props) => {
 
-    useLoadChannels();
+    //useLoadChannels();
 
     const {className = ""} = props;
     const history = useHistory();
     const dispatch = useDispatch();
 
-    const {channels, channelsLoaded} = useSelector(state => state.chat);
+    const generalSettings = useSelector(state => state.settings.user.GENERAL_SETTINGS);
+    const {channels, channelsLoaded, lastVisitedChannel} = useSelector(state => state.chat);
     const [hasUnread, setHasUnread] = useState(false);
 
     const handleIconClick = (e) => {
@@ -73,7 +75,7 @@ const MainNavigationTabPanel = (props) => {
         if (Object.keys(channels).length !== 0) {
             let totalUnread = false;
             for (const i in channels) {
-                console.log(channels[i]);
+                //console.log(channels[i]);
                 if (channels[i].total_unread >= 1) {
                     totalUnread = true;
                     break;
@@ -82,6 +84,16 @@ const MainNavigationTabPanel = (props) => {
             setHasUnread(totalUnread);
         }
     }, [channelsLoaded, channels, setHasUnread]);
+
+    let workspacePath = "/workspace/dashboard";
+    if (generalSettings.active_topic) {
+        const {workspace, topic} =  generalSettings.active_topic;
+        if (workspace) {
+            workspacePath += `/${workspace.id}/${replaceChar(workspace.name)}/${topic.id}/${replaceChar(topic.name)}/`;
+        } else {
+            workspacePath += `/${topic.id}/${replaceChar(topic.name)}/`;
+        }
+    }
 
     return (
         <Wrapper className={`navigation-menu-tab ${className}`}>
@@ -100,12 +112,13 @@ const MainNavigationTabPanel = (props) => {
                         </NavIconContainer>
                     </li>
                     <li>
-                        <NavIconContainer to="/workspace/dashboard">
+                        <NavIconContainer to={workspacePath}>
                             <NavIcon icon={`command`}/>
                         </NavIconContainer>
                     </li>
                     <li>
-                        <NavIconContainer to="/chat">
+                        <NavIconContainer to={lastVisitedChannel !== null && lastVisitedChannel.hasOwnProperty("code") ? 
+                            `/chat/${lastVisitedChannel.code}` : "/chat"}>
                             <NavIcon icon={`message-circle`}/>
                             {
                                 hasUnread === true &&

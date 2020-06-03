@@ -598,7 +598,7 @@ class Socket extends PureComponent {
                     // this.props.updateTopicMembersAction(payload);
                 }
             })
-            .listen("new-topic-member", e => {
+            .listen(".new-topic-member", e => {
                 console.log('new workspace member', e)
             })
             .listen(".left-member", e => {

@@ -3,7 +3,6 @@ import {useDispatch} from "react-redux";
 import {useHistory, useRouteMatch} from "react-router-dom";
 import {Badge} from "reactstrap";
 import styled from "styled-components";
-import {addToChannels, getChannel, setSelectedChannel} from "../../redux/actions/chatActions";
 import {SvgIconFeather} from "../common";
 import {replaceChar} from "../../helpers/stringFormatter";
 
@@ -31,23 +30,6 @@ const TopicList = props => {
 
         } else {
             if (topic.workspace_id !== undefined) {
-
-                if (topic.channel.channel_loaded === undefined) {
-                    dispatch(
-                        getChannel({channel_id: topic.channel.id}, (err, res) => {
-                            if (err) return;
-                            let channel = {
-                                ...res.data,
-                                hasMore: true,
-                                skip: 0,
-                                replies: [],
-                                selected: true,
-                            };
-                            dispatch(addToChannels(channel));
-                            dispatch(setSelectedChannel(channel));
-                        }),
-                    );
-                }
 
                 if (typeof topic.workspace_name === "undefined") {
                     history.push(`/workspace/${route.params.page}/${topic.id}/${replaceChar(topic.name)}`);

@@ -3,7 +3,6 @@ import {useDispatch, useSelector} from "react-redux";
 import {useHistory, useRouteMatch} from "react-router-dom";
 import {Badge} from "reactstrap";
 import styled from "styled-components";
-import {addToChannels, getChannel, setSelectedChannel} from "../../redux/actions/chatActions";
 import {addToModals} from "../../redux/actions/globalActions";
 import {setUserGeneralSetting} from "../../redux/actions/settingsActions";
 import {SvgIconFeather} from "../common";
@@ -100,29 +99,8 @@ const WorkspaceList = props => {
     const handleSelectWorkspace = () => {
         //set the selected topic
         if (workspace.selected) return;
-        // if (workspace.is_external === 1) {
 
-        // } else {
-
-            history.push(`/workspace/${route.params.page}/${workspace.id}/${replaceChar(workspace.name)}`);
-
-            if (workspace.channel_loaded === undefined) {
-                dispatch(
-                    getChannel({channel_id: workspace.topic_detail.channel.id}, (err, res) => {
-                        if (err) return;
-                        let channel = {
-                            ...res.data,
-                            hasMore: true,
-                            skip: 0,
-                            replies: [],
-                            selected: true,
-                        };
-                        dispatch(addToChannels(channel));
-                        dispatch(setSelectedChannel(channel));
-                    }),
-                );
-            }
-       // }
+        history.push(`/workspace/${route.params.page}/${workspace.id}/${replaceChar(workspace.name)}`);
     };
 
     const handleShowTopics = (e) => {
