@@ -181,14 +181,13 @@ const useSetWorkspace = () => {
                 //find the new topic id in workspaces and set to active
                 if (params.hasOwnProperty("folderId")) {
                     let workspace = {...workspaces[params.folderId].topics[params.workspaceId]};
-                    
                     if (workspace.hasOwnProperty("id")) {
                         dispatch(setActiveTopic(workspace));
-                        if (workspace.channel_loaded === undefined) {
-                            getAndSetChannel(workspace.topic_detail.channel.id);
+                        if (workspace.channel.channel_loaded === undefined) {
+                            getAndSetChannel(workspace.channel.id);
                         } else {
-                            if (channels.hasOwnProperty(workspace.topic_detail.channel.id)) {
-                                let channel = {...channels[workspace.topic_detail.channel.id]};
+                            if (channels.hasOwnProperty(workspace.channel.id)) {
+                                let channel = {...channels[workspace.channel.id]};
                                 dispatch(setSelectedChannel(channel));
                             }
                         }
@@ -197,11 +196,11 @@ const useSetWorkspace = () => {
                     let workspace = {...workspaces[params.workspaceId]};
                     if (workspace.hasOwnProperty("id")) {
                         dispatch(setActiveTopic(workspace));
-                        if (workspace.channel.channel_loaded === undefined) {
-                            getAndSetChannel(workspace.channel.id);
+                        if (workspace.topic_detail.channel_loaded === undefined) {
+                            getAndSetChannel(workspace.topic_detail.channel.id);
                         } else {
-                            if (channels.hasOwnProperty(workspace.channel.id)) {
-                                let channel = {...channels[workspace.channel.id]};
+                            if (channels.hasOwnProperty(workspace.topic_detail.channel.id)) {
+                                let channel = {...channels[workspace.topic_detail.channel.id]};
                                 dispatch(setSelectedChannel(channel));
                             }
                         }
