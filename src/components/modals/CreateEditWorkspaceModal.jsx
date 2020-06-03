@@ -1,5 +1,6 @@
 import React, {useCallback, useEffect, useRef, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
+import {useHistory} from "react-router-dom";
 import {Input, InputGroup, Label, Modal, ModalBody} from "reactstrap";
 import styled from "styled-components";
 import toaster from "toasted-notes";
@@ -97,6 +98,7 @@ const CreateEditWorkspaceModal = (props) => {
 
     const {type, mode, item = null} = props.data;
 
+    const history = useHistory();
     const dispatch = useDispatch();
     const [modal, setModal] = useState(true);
     const user = useSelector(state => state.session.user);
@@ -308,19 +310,27 @@ const CreateEditWorkspaceModal = (props) => {
                     }
 
                     if (res) {
-                        let formData = new FormData();
-                        for (const i in attachedFiles) {
-                            formData.append("files[" + i + "]", attachedFiles[i].rawFile);
+                        if (attachedFiles.length) {
+                            let formData = new FormData();
+                            for (const i in attachedFiles) {
+                                formData.append("files[" + i + "]", attachedFiles[i].rawFile);
+                            }
+
+                            dispatch(
+                                setPendingUploadFilesToWorkspace({
+                                    is_primary: 1,
+                                    topic_id: 199,
+                                    files: formData,
+                                }),
+                            );
                         }
-
-                        dispatch(
-                            setPendingUploadFilesToWorkspace({
-                                is_primary: 1,
-                                topic_id: 199,
-                                files: formData,
-                            }),
-                        );
-
+                        //redirect url
+                        if (form.selectedFolder) {
+                            history.push(`/workspace/dashboard/${form.selectedFolder.value}/${form.selectedFolder.label}/${res.data.id}/${form.name}`);
+                        } else {
+                            history.push(`/workspace/dashboard/${res.data.id}/${form.name}`);
+                        }
+                        
                         toaster.notify(
                             <span><b>{form.name}</b> workspace is created
                                 {

@@ -6,7 +6,6 @@ import styled from "styled-components";
 import {addToChannels, getChannel, setSelectedChannel} from "../../redux/actions/chatActions";
 import {addToModals} from "../../redux/actions/globalActions";
 import {setUserGeneralSetting} from "../../redux/actions/settingsActions";
-import {setActiveTopic} from "../../redux/actions/workspaceActions";
 import {SvgIconFeather} from "../common";
 import TopicList from "./TopicList";
 
@@ -103,9 +102,6 @@ const WorkspaceList = props => {
         if (workspace.is_external === 1) {
 
         } else {
-            dispatch(
-                setActiveTopic(workspace),
-            );
 
             history.push(`/workspace/${route.params.page}/${workspace.id}/${workspace.name}`);
 

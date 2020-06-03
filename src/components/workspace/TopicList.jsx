@@ -4,7 +4,6 @@ import {useHistory, useRouteMatch} from "react-router-dom";
 import {Badge} from "reactstrap";
 import styled from "styled-components";
 import {addToChannels, getChannel, setSelectedChannel} from "../../redux/actions/chatActions";
-import {setActiveTopic} from "../../redux/actions/workspaceActions";
 import {SvgIconFeather} from "../common";
 
 const TopicListWrapper = styled.li`    
@@ -31,7 +30,6 @@ const TopicList = props => {
 
         } else {
             if (topic.workspace_id !== undefined) {
-                dispatch(setActiveTopic(topic));
 
                 if (topic.channel.channel_loaded === undefined) {
                     dispatch(
