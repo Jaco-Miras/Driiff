@@ -37,7 +37,8 @@ const Wrapper = styled.div`
                     font-size: 13px;
                     
                     &:hover {
-                        a {
+                        
+                        a {                            
                             font-weight: bold;
                         }
                     }
@@ -51,6 +52,10 @@ const Wrapper = styled.div`
                         color: #BEBEBE;
                         font-size: 9px;
                         font-weight: normal;
+                        
+                        &:hover {
+                            color: #7a1b8b;
+                        }
                         
                         svg {
                             width: 7px;
@@ -162,11 +167,11 @@ const WorkspaceNavigationMenuBodyPanel = (props) => {
                     if (props.match.params.hasOwnProperty("workspaceId") && props.match.params.workspaceId !== undefined) {
                         let topic = null;
                         let wsfolder = null;
-                        for(const i in res.data.workspaces) {
+                        for (const i in res.data.workspaces) {
                             const ws = res.data.workspaces[i];
 
                             if (ws.type === "FOLDER" && ws.topics.length) {
-                                for(const i in ws.topics) {
+                                for (const i in ws.topics) {
                                     const t = ws.topics[i];
                                     if (t.id === parseInt(props.match.params.workspaceId)) {
                                         wsfolder = ws;

@@ -1,6 +1,5 @@
 import React, {useEffect, useRef, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {useHistory} from "react-router-dom";
 import styled from "styled-components";
 import {getUsers} from "../../../redux/actions/userAction";
 import {Avatar, SvgIconFeather} from "../../common";
@@ -18,7 +17,6 @@ const WorkspacePeoplePanel = (props) => {
 
     const {className = ""} = props;
 
-    const history = useHistory();
     const dispatch = useDispatch();
     const users = useSelector(state => state.users.users);
     const workspaces = useSelector(state => state.workspaces.workspaces);
@@ -38,13 +36,12 @@ const WorkspacePeoplePanel = (props) => {
             if (user.active !== 1)
                 return false;
 
-            if(activeTopic) {
-                if(activeTopic.workspace_id) {
+            if (activeTopic) {
+                if (activeTopic.workspace_id) {
                     if (!workspaces[activeTopic.workspace_id].member_ids.includes(user.id)) {
                         return false;
                     }
                 } else {
-                    console.log(activeTopic)
                     if (!workspaces[activeTopic.id].member_ids.includes(user.id)) {
                         return false;
                     }
@@ -82,7 +79,7 @@ const WorkspacePeoplePanel = (props) => {
                     <Search ref={ref.search} placeholder="People search" onChange={handleSearchChange} autoFocus/>
                     <div className="row">
                         {
-                            userSort.map((user, id) => {
+                            userSort.map((user) => {
                                 return <div className="col-12 col-md-6">
                                     <div className="card border" key={user.id}>
                                         <div className="card-body">

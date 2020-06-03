@@ -88,7 +88,6 @@ export default (state = INITIAL_STATE, action) => {
                         settings[key] = {
                             ...settings[key],
                             ...value,
-                            workspace_open_folder: {}
                         };
                         break;
                     }
