@@ -18,3 +18,4 @@ export {default as useIsMember} from "./useIsMember";
 export {default as useGetWorkspacePosts} from "./useGetWorkspacePosts";
 export * from "./useTranslation";
 export {default as useSettings} from "./useSettings";
+export {default as useSortWorkspaces} from "./useSortWorkspaces";
