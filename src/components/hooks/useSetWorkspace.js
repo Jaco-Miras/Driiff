@@ -71,10 +71,10 @@ const useSetWorkspace = () => {
             //set the active topic
             let topic = null;
             let channel_id = null;
-            if (params.folderId !== undefined) {
+            if (params.folderId !== undefined && workspaces.hasOwnProperty(params.folderId)) {
                 topic = workspaces[params.folderId].topics[params.workspaceId];
                 channel_id = workspaces[params.folderId].topics[params.workspaceId].channel.id;
-            } else if (params.workspaceId) {
+            } else if (workspaces.hasOwnProperty(params.workspaceId) && params.workspaceId) {
                 topic = workspaces[params.workspaceId];
                 channel_id = workspaces[params.workspaceId].topic_detail.channel.id;
 
