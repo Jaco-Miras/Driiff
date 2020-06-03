@@ -1,10 +1,11 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {useHistory} from "react-router-dom";
 import {Badge} from "reactstrap";
 import styled from "styled-components";
 import {setNavMode} from "../../../redux/actions/globalActions";
 import {NavLink, SvgIcon, SvgIconFeather} from "../../common";
+import {useLoadChannels} from "../../hooks";
 
 const Wrapper = styled.div`
     li {
@@ -45,12 +46,14 @@ const NavIcon = styled(SvgIconFeather)`
 
 const MainNavigationTabPanel = (props) => {
 
+    useLoadChannels();
+
     const {className = ""} = props;
     const history = useHistory();
     const dispatch = useDispatch();
 
-    const channels = useSelector(state => state.chat.channels);
-    console.log(channels);
+    const {channels, channelsLoaded} = useSelector(state => state.chat);
+    const [hasUnread, setHasUnread] = useState(false);
 
     const handleIconClick = (e) => {
         e.preventDefault();
@@ -65,6 +68,20 @@ const MainNavigationTabPanel = (props) => {
         }
         history.push(e.target.dataset.link);
     };
+
+    useEffect(() => {
+        if (Object.keys(channels).length !== 0) {
+            let totalUnread = false;
+            for (const i in channels) {
+                console.log(channels[i]);
+                if (channels[i].total_unread >= 1) {
+                    totalUnread = true;
+                    break;
+                }
+            }
+            setHasUnread(totalUnread);
+        }
+    }, [channelsLoaded, channels, setHasUnread]);
 
     return (
         <Wrapper className={`navigation-menu-tab ${className}`}>
@@ -90,7 +107,10 @@ const MainNavigationTabPanel = (props) => {
                     <li>
                         <NavIconContainer to="/chat">
                             <NavIcon icon={`message-circle`}/>
-                            <Badge>&nbsp;</Badge>
+                            {
+                                hasUnread === true &&
+                                <Badge>&nbsp;</Badge>
+                            }
                         </NavIconContainer>
                     </li>
                 </ul>
