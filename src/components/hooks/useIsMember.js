@@ -12,7 +12,7 @@ const useIsMember = (members = []) => {
             const checkForId = id => id === user.id;
             setIsMember(members.some(checkForId));
         }
-    }, [members.length]);
+    }, [members]);
 
     return isMember;
 
