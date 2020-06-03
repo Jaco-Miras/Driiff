@@ -1,6 +1,12 @@
 import {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {getChannels, getGlobalRecipients} from "../../redux/actions/chatActions";
+import {
+    addToChannels,
+    getChannel,
+    getChannels,
+    getGlobalRecipients,
+    getLastVisitedChannel, setSelectedChannel,
+} from "../../redux/actions/chatActions";
 
 const useLoadChannels = () => {
 
@@ -16,6 +22,30 @@ const useLoadChannels = () => {
         let activeChannelSkip = 0;
         let hiddenChannelSkip = 0;
         let archiveChannelSkip = 0;
+
+        const loadSelectedChannel = channel_id => {
+            dispatch(
+                getChannel(channel_id, (err, res) => {
+                    if (err) return;
+
+                    let activeChannel = {
+                        ...res.data,
+                        selected: true,
+                        replies: [],
+                        skip: 0,
+                        hasMore: true,
+                    };
+                    dispatch(addToChannels(activeChannel));
+                    dispatch(setSelectedChannel(activeChannel));
+                }),
+            );
+        };
+
+        dispatch(
+            getLastVisitedChannel({}, (err, res) => {
+                loadSelectedChannel({channel_id: res.data.code});
+            }),
+        );
 
         const fetchChannels = (hasMore = false, limit = 5, filter = null) => {
             let payload = {
