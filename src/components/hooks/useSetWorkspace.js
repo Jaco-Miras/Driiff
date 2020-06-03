@@ -8,7 +8,7 @@ import {
     setSelectedChannel,
 } from "../../redux/actions/chatActions";
 import {setUserGeneralSetting} from "../../redux/actions/settingsActions";
-import {getWorkspaces, setActiveTopic} from "../../redux/actions/workspaceActions";
+import {getWorkspaces, setActiveTopic, setActiveTab} from "../../redux/actions/workspaceActions";
 
 const useSetWorkspace = () => {
 
@@ -20,6 +20,7 @@ const useSetWorkspace = () => {
     const activeTopicSettings = useSelector(state => state.settings.user.GENERAL_SETTINGS.active_topic);
     const activeTopic = useSelector(state => state.workspaces.activeTopic);
     const workspacesLoaded = useSelector(state => state.workspaces.workspacesLoaded);
+    const externalWorkspacesLoaded = useSelector(state => state.workspaces.externalWorkspacesLoaded);
     const workspaces = useSelector(state => state.workspaces.workspaces);
 
     useEffect(() => {
@@ -69,6 +70,10 @@ const useSetWorkspace = () => {
                     }
                 }),
             );
+        } else if (workspacesLoaded && !externalWorkspacesLoaded) {
+            dispatch(
+                getWorkspaces({is_external: 1})
+            )
         }
 
         if (workspacesLoaded && activeTopic === null && activeTopicSettings !== null) {
@@ -97,6 +102,9 @@ const useSetWorkspace = () => {
             }
 
             if (topic) {
+                dispatch(
+                    setActiveTab(topic.is_external === 0 ? "intern" : "extern")
+                );
                 dispatch(setActiveTopic(topic));
                 if (topic.channel_loaded === undefined) {
                     dispatch(
@@ -116,7 +124,7 @@ const useSetWorkspace = () => {
                 }
             }
         }
-    }, [workspacesLoaded, activeTopic, dispatch, params.folderId, params.workspaceId, workspaces]);
+    }, [externalWorkspacesLoaded, workspacesLoaded, activeTopic, dispatch, params.folderId, params.workspaceId, workspaces]);
 
     useEffect(() => {
         if (activeTopic !== null) {

@@ -6,6 +6,7 @@ const INITIAL_STATE = {
     activeTopic: null,
     activeTab: "intern",
     workspacesLoaded: false,
+    externalWorkspacesLoaded: false,
     workspacePosts: {}
 };
 
@@ -43,7 +44,8 @@ export default (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 workspaces: workspaces,
-                workspacesLoaded: true
+                workspacesLoaded: !state.workspacesLoaded && action.data.is_external === 0 ? true : state.workspacesLoaded,
+                externalWorkspacesLoaded: !state.externalWorkspacesLoaded && action.data.is_external === 1 ? true : state.externalWorkspacesLoaded,
             }
         }
         case "INCOMING_WORKSPACE_FOLDER": {

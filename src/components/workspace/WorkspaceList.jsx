@@ -99,9 +99,9 @@ const WorkspaceList = props => {
     const handleSelectWorkspace = () => {
         //set the selected topic
         if (workspace.selected) return;
-        if (workspace.is_external === 1) {
+        // if (workspace.is_external === 1) {
 
-        } else {
+        // } else {
 
             history.push(`/workspace/${route.params.page}/${workspace.id}/${workspace.name}`);
 
@@ -121,7 +121,7 @@ const WorkspaceList = props => {
                     }),
                 );
             }
-        }
+       // }
     };
 
     const handleShowTopics = (e) => {
