@@ -199,7 +199,11 @@ const CreateEditWorkspaceModal = (props) => {
         };
     });
 
-    const folderOptions = Object.values(workspaces).filter(ws => ws.type === "FOLDER").map(ws => {
+    const folderOptions = Object.values(workspaces).filter(ws => ws.type === "FOLDER")
+    .filter(ws => {
+        if (activeTab === "extern") return ws.is_external === 1;
+        else return ws.is_external === 0;
+    }).map(ws => {
         return {
             value: ws.id,
             label: ws.name,
