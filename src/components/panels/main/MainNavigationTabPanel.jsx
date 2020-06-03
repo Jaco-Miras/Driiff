@@ -1,11 +1,25 @@
 import React from "react";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {useHistory} from "react-router-dom";
+import {Badge} from "reactstrap";
 import styled from "styled-components";
 import {setNavMode} from "../../../redux/actions/globalActions";
 import {NavLink, SvgIcon, SvgIconFeather} from "../../common";
 
 const Wrapper = styled.div`
+    li {
+        position: relative;
+        
+        .badge {
+            position: relative;
+            width: 8px;
+            height: 8px;
+            padding: 0;
+            top: -8px;
+            right: 0px;
+            background: #f44;           
+        }
+    }
 `;
 
 const DriffLogo = styled(SvgIcon)`
@@ -34,6 +48,9 @@ const MainNavigationTabPanel = (props) => {
     const {className = ""} = props;
     const history = useHistory();
     const dispatch = useDispatch();
+
+    const channels = useSelector(state => state.chat.channels);
+    console.log(channels);
 
     const handleIconClick = (e) => {
         e.preventDefault();
@@ -73,6 +90,7 @@ const MainNavigationTabPanel = (props) => {
                     <li>
                         <NavIconContainer to="/chat">
                             <NavIcon icon={`message-circle`}/>
+                            <Badge>&nbsp;</Badge>
                         </NavIconContainer>
                     </li>
                 </ul>
