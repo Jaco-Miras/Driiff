@@ -9,6 +9,7 @@ const INITIAL_STATE = {
     slugs: [],
     navMode: 2,
     dataFromInput: null,
+    unreadCounter: [],
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -81,6 +82,12 @@ export default (state = INITIAL_STATE, action) => {
                     ...action.data
                 },
                 i18nLoaded: true
+            }
+        }
+        case "GET_UNREAD_NOTIFICATION_COUNTER_SUCCESS": {
+            return {
+                ...state,
+                unreadCounter: action.data
             }
         }
         default:

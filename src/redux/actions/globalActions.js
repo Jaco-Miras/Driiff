@@ -8,6 +8,7 @@ import {
     saveDraft as saveDraftService,
     updateDraft as updateDraftService,
     uploadDocument as uploadDocumentService,
+    getUnreadNotificationCounterEntries as getUnreadNotificationCounterEntriesService,
 } from "../services";
 
 export function setBrowserTabStatus(payload, callback) {
@@ -172,4 +173,14 @@ export function getTranslationObject(payload, callback) {
 
 export function postTranslationObject() {
 
+}
+
+export function getUnreadNotificationCounterEntries(payload, callback) {
+    return dispatchActionToReducer(
+        getUnreadNotificationCounterEntriesService(payload),
+        "GET_UNREAD_NOTIFICATION_COUNTER_START",
+        "GET_UNREAD_NOTIFICATION_COUNTER_SUCCESS",
+        "GET_UNREAD_NOTIFICATION_COUNTER_FAIL",
+        callback,
+    );
 }

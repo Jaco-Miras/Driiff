@@ -50,6 +50,7 @@ export {
     updateDraft,
     uploadDocument,
     getTranslationObject,
+    getUnreadNotificationCounterEntries,
 } from "./global";
 
 export {

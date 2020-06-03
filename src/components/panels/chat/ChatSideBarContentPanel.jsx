@@ -70,7 +70,7 @@ const ChatSidebarContentPanel = (props) => {
                 <div className={`tab-pane fade ${pill === "pills-home" && "show active"}`} id="pills-home"
                      role="tabpanel"
                      aria-labelledby="pills-home-tab">
-                    <div class="d-flex align-items-center recent-new-group-wrapper">
+                    <div className="d-flex align-items-center recent-new-group-wrapper">
                         <p className="small mb-0">Recent chats</p>
 
                         <NewGroupButton className="small mb-0 text-right ml-auto" onClick={handleOpenGropupChatModal}>

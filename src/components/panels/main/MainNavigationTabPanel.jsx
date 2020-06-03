@@ -1,9 +1,9 @@
-import React from "react";
-import {useDispatch} from "react-redux";
+import React, {useEffect, useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
 import {useHistory} from "react-router-dom";
 import styled from "styled-components";
-import {setNavMode} from "../../../redux/actions/globalActions";
-import {NavLink, SvgIcon, SvgIconFeather} from "../../common";
+import {setNavMode, getUnreadNotificationCounterEntries} from "../../../redux/actions/globalActions";
+import {NavLink, SvgIcon, SvgIconFeather, BadgeIcon} from "../../common";
 
 const Wrapper = styled.div`
 `;
@@ -34,6 +34,13 @@ const MainNavigationTabPanel = (props) => {
     const {className = ""} = props;
     const history = useHistory();
     const dispatch = useDispatch();
+
+    const unread = useSelector(state =>  state.global.unreadCounter);
+    useEffect(() => {
+        dispatch(
+            getUnreadNotificationCounterEntries({})
+        )
+    }, [unread] );
 
     const handleIconClick = (e) => {
         e.preventDefault();
@@ -73,6 +80,9 @@ const MainNavigationTabPanel = (props) => {
                     <li>
                         <NavIconContainer to="/chat">
                             <NavIcon icon={`message-circle`}/>
+                            {
+                                unread.length >= 1 && <BadgeIcon/>
+                            }
                         </NavIconContainer>
                     </li>
                 </ul>
