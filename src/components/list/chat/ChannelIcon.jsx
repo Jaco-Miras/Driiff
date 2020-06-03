@@ -1,9 +1,5 @@
 import React from "react";
 import styled from "styled-components";
-import postIcon from "../../../assets/icon/conversations/l/active.svg";
-import teamIcon from "../../../assets/icon/departments/department.svg";
-import botIcon from "../../../assets/icon/person/l/active.svg";
-import topicIcon from "../../../assets/icon/topic_icon/people_group/l/active.svg";
 import {Avatar, SvgIconFeather} from "../../common";
 
 const Wrapper = styled.div`
@@ -43,6 +39,7 @@ const handleInitials = title => {
 };
 
 const ChannelIcon = props => {
+
     const {className = "", channel} = props;
 
     return (
@@ -51,7 +48,7 @@ const ChannelIcon = props => {
             type={channel.type}
         >
             {
-                channel.profile && channel.members.length >= 2 && channel.type === "DIRECT" &&
+                channel.profile && channel.members.length >= 1 && channel.type === "DIRECT" &&
                 <StyledAvatar
                     type={channel.type}
                     imageLink={channel.profile.profile_image_link}
