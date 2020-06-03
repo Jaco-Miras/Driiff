@@ -380,7 +380,7 @@ export default function (state = INITIAL_STATE, action) {
                         [action.data.reply.channel_id]: channel,
                     }
                     : state.channels,
-                selectedChannel: state.selectedChannel && state.selectedChannel.id === action.data.reply.channel_id ?
+                selectedChannel: state.selectedChannel && state.selectedChannel.id === action.data.reply.channel_id && state.selectedChannel.replies ?
                     {
                         ...state.selectedChannel,
                         replies: [...state.selectedChannel.replies, action.data.reply],

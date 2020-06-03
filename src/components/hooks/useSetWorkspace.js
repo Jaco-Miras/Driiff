@@ -1,10 +1,14 @@
 import {useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {useParams, useHistory, useRouteMatch} from "react-router-dom";
-import {setUserSettings} from "../../redux/actions/settingsActions";
-import {addToChannels, getChannel, setSelectedChannel, restoreLastVisitedChannel} from "../../redux/actions/chatActions";
+import {useHistory, useParams, useRouteMatch} from "react-router-dom";
+import {
+    addToChannels,
+    getChannel,
+    restoreLastVisitedChannel,
+    setSelectedChannel,
+} from "../../redux/actions/chatActions";
 import {setUserGeneralSetting} from "../../redux/actions/settingsActions";
-import {getWorkspaces, setActiveTopic} from "../../redux/actions/workspaceActions";
+import {getWorkspaces, setActiveTopic, setActiveTab} from "../../redux/actions/workspaceActions";
 import {replaceChar} from "../../helpers/stringFormatter";
 
 const useSetWorkspace = () => {
@@ -17,6 +21,7 @@ const useSetWorkspace = () => {
     const activeTopicSettings = useSelector(state => state.settings.user.GENERAL_SETTINGS.active_topic);
     const activeTopic = useSelector(state => state.workspaces.activeTopic);
     const workspacesLoaded = useSelector(state => state.workspaces.workspacesLoaded);
+    const externalWorkspacesLoaded = useSelector(state => state.workspaces.externalWorkspacesLoaded);
     const workspaces = useSelector(state => state.workspaces.workspaces);
 
     useEffect(() => {
@@ -27,11 +32,11 @@ const useSetWorkspace = () => {
                     if (params.hasOwnProperty("workspaceId") && params.workspaceId !== undefined) {
                         let topic = null;
                         let wsfolder = null;
-                        for(const i in res.data.workspaces) {
+                        for (const i in res.data.workspaces) {
                             const ws = res.data.workspaces[i];
 
                             if (ws.type === "FOLDER" && ws.topics.length) {
-                                for(const i in ws.topics) {
+                                for (const i in ws.topics) {
                                     const t = ws.topics[i];
                                     if (t.id === parseInt(params.workspaceId)) {
                                         wsfolder = ws;
@@ -66,26 +71,31 @@ const useSetWorkspace = () => {
                     }
                 }),
             );
+        } else if (workspacesLoaded && !externalWorkspacesLoaded) {
+            dispatch(
+                getWorkspaces({is_external: 1})
+            )
         }
 
         if (workspacesLoaded && activeTopic === null && activeTopicSettings !== null) {
             //set the active topic
             let topic = null;
             let channel_id = null;
-            if (params.folderId !== undefined) {
+            if (params.folderId !== undefined && workspaces.hasOwnProperty(params.folderId)) {
                 topic = workspaces[params.folderId].topics[params.workspaceId];
                 channel_id = workspaces[params.folderId].topics[params.workspaceId].channel.id;
-            } else if (params.workspaceId) {
+            } else if (workspaces.hasOwnProperty(params.workspaceId) && params.workspaceId) {
                 topic = workspaces[params.workspaceId];
                 channel_id = workspaces[params.workspaceId].topic_detail.channel.id;
 
                 //set active topic from settings
             } else {
-                if (activeTopicSettings.workspace !== null) {
+                if (activeTopicSettings.workspace !== null && workspaces.hasOwnProperty(activeTopicSettings.workspace.id)
+                    && workspaces[activeTopicSettings.workspace.id].topics.hasOwnProperty(activeTopicSettings.workspace.id)) {
                     topic = workspaces[activeTopicSettings.workspace.id].topics[activeTopicSettings.topic.id];
                     channel_id = workspaces[activeTopicSettings.workspace.id].topics[activeTopicSettings.topic.id].channel.id;
                     history.push(`${route.path}/${workspaces[activeTopicSettings.workspace.id].id}/${workspaces[activeTopicSettings.workspace.id].name}/${topic.id}/${topic.name}`);
-                } else {
+                } else if (workspaces.hasOwnProperty(activeTopicSettings.topic.id)) {
                     topic = workspaces[activeTopicSettings.topic.id];
                     channel_id = workspaces[activeTopicSettings.topic.id].topic_detail.channel.id;
                     history.push(`${route.path}/${topic.id}/${topic.name}`);
@@ -93,6 +103,9 @@ const useSetWorkspace = () => {
             }
 
             if (topic) {
+                dispatch(
+                    setActiveTab(topic.is_external === 0 ? "intern" : "extern")
+                );
                 dispatch(setActiveTopic(topic));
                 if (topic.channel_loaded === undefined) {
                     dispatch(
@@ -112,7 +125,7 @@ const useSetWorkspace = () => {
                 }
             }
         }
-    }, [workspacesLoaded, activeTopic, dispatch, params.folderId, params.workspaceId, workspaces]);
+    }, [externalWorkspacesLoaded, workspacesLoaded, activeTopic, dispatch, params.folderId, params.workspaceId, workspaces]);
 
     useEffect(() => {
         if (activeTopic !== null) {
@@ -152,7 +165,7 @@ const useSetWorkspace = () => {
                 //find the new topic id in workspaces and set to active
                 if (params.hasOwnProperty("folderId")) {
                     let workspace = {...workspaces[params.folderId].topics[params.workspaceId]};
-                    console.log(workspace)
+                    console.log(workspace);
                     if (workspace.hasOwnProperty("id")) {
                         dispatch(setActiveTopic(workspace));
                     }
@@ -164,7 +177,7 @@ const useSetWorkspace = () => {
                 }
             }
         }
-    }, [activeTopic, match, params])
+    }, [activeTopic, match, params]);
 };
 
 export default useSetWorkspace;

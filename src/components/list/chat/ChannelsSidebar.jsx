@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import {useLoadChannels, useSortChannels} from "../../hooks";
+import {useSortChannels} from "../../hooks";
 import ChannelList from "./ChannelList";
 
 const ChannelsSidebarContainer = styled.div`
@@ -21,7 +21,6 @@ const ChatHeader = styled.h4`
 const ChannelsSidebar = props => {
     const {className, search} = props;
 
-    useLoadChannels();
     const [sortedChannels] = useSortChannels(search);
 
     return (

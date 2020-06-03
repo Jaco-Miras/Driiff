@@ -201,15 +201,15 @@ const CreateEditWorkspaceModal = (props) => {
     });
 
     const folderOptions = Object.values(workspaces).filter(ws => ws.type === "FOLDER")
-    .filter(ws => {
-        if (activeTab === "extern") return ws.is_external === 1;
-        else return ws.is_external === 0;
-    }).map(ws => {
-        return {
-            value: ws.id,
-            label: ws.name,
-        };
-    });
+        .filter(ws => {
+            if (activeTab === "extern") return ws.is_external === 1;
+            else return ws.is_external === 0;
+        }).map(ws => {
+            return {
+                value: ws.id,
+                label: ws.name,
+            };
+        });
 
     const handleSelectUser = e => {
         if (e === null) {
@@ -335,7 +335,7 @@ const CreateEditWorkspaceModal = (props) => {
                         } else {
                             history.push(`/workspace/dashboard/${res.data.id}/${replaceChar(form.name)}`);
                         }
-                        
+
                         toaster.notify(
                             <span><b>{form.name}</b> workspace is created
                                 {
@@ -413,9 +413,9 @@ const CreateEditWorkspaceModal = (props) => {
         handleHideDropzone();
     };
 
-    const handleRemoveFile = (e) => {
-        setAttachedFiles(prevState => prevState.filter(f => f.id !== e.currentTarget.dataset.fileId));
-    };
+    const handleRemoveFile = useCallback((fileId) => {
+        setAttachedFiles(prevState => prevState.filter(f => f.id !== fileId));
+    }, [setAttachedFiles]);
 
     useEffect(() => {
         let currentUser = null;

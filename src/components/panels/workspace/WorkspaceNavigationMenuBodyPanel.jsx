@@ -5,7 +5,7 @@ import {addToModals} from "../../../redux/actions/globalActions";
 import {setActiveTab} from "../../../redux/actions/workspaceActions";
 import {SvgIconFeather} from "../../common";
 import {WorkspaceList} from "../../workspace";
-import {useSetWorkspace} from "../../hooks";
+import {useSetWorkspace, useSortWorkspaces} from "../../hooks";
 
 const Wrapper = styled.div`
     &::-webkit-scrollbar {
@@ -158,6 +158,7 @@ const WorkspaceNavigationMenuBodyPanel = (props) => {
     };
 
     useSetWorkspace();
+    const sortedWorkspaces = useSortWorkspaces();
 
     return (
         <>
@@ -187,7 +188,7 @@ const WorkspaceNavigationMenuBodyPanel = (props) => {
                                     <SvgIconFeather icon="plus"/> New workspace
                                 </li>
                                 {
-                                    Object.values(workspaces)
+                                    sortedWorkspaces
                                         .map(ws => {
                                             return <WorkspaceList
                                                 show={ws.is_external === (activeTab === "intern" ? 0 : 1)}

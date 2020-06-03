@@ -100,9 +100,9 @@ const WorkspaceList = props => {
     const handleSelectWorkspace = () => {
         //set the selected topic
         if (workspace.selected) return;
-        if (workspace.is_external === 1) {
+        // if (workspace.is_external === 1) {
 
-        } else {
+        // } else {
 
             history.push(`/workspace/${route.params.page}/${workspace.id}/${replaceChar(workspace.name)}`);
 
@@ -122,7 +122,7 @@ const WorkspaceList = props => {
                     }),
                 );
             }
-        }
+       // }
     };
 
     const handleShowTopics = (e) => {
@@ -177,7 +177,7 @@ const WorkspaceList = props => {
                 }
                 {
                     workspace.unread_count > 0 &&
-                    <Badge color="danger">
+                    <Badge className={`${showTopics ? "leave-active" : "enter-active"}`} color="danger">
                         {
                             workspace.unread_count
                         }
