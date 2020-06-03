@@ -452,7 +452,7 @@ class Socket extends PureComponent {
                     } else {
                         //moved workspace to another folder
                         if (e.original_workspace_id !== e.workspace_id) {
-                            this.props.history.push(`/workspace/${currentPage}/${e.workspace_id}/${e.original_workspace_name}/${e.id}/${e.name}`);
+                            this.props.history.push(`/workspace/${currentPage}/${e.workspace_id}/${e.current_workspace_folder_name}/${e.id}/${e.name}`);
                         }
                     }
                 }

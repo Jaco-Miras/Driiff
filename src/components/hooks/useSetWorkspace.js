@@ -1,19 +1,69 @@
 import {useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {useParams} from "react-router-dom";
-import {addToChannels, getChannel, setSelectedChannel} from "../../redux/actions/chatActions";
+import {useParams, useHistory, useRouteMatch} from "react-router-dom";
+import {addToChannels, getChannel, setSelectedChannel, restoreLastVisitedChannel} from "../../redux/actions/chatActions";
 import {setUserSettings} from "../../redux/actions/settingsActions";
-import {setActiveTopic} from "../../redux/actions/workspaceActions";
+import {getWorkspaces, setActiveTopic} from "../../redux/actions/workspaceActions";
 
 const useSetWorkspace = () => {
 
     const dispatch = useDispatch();
     const params = useParams();
+    const history = useHistory();
+    const match = useRouteMatch();
     const activeTopic = useSelector(state => state.workspaces.activeTopic);
     const workspacesLoaded = useSelector(state => state.workspaces.workspacesLoaded);
     const workspaces = useSelector(state => state.workspaces.workspaces);
 
     useEffect(() => {
+        if (!workspacesLoaded) {
+            dispatch(
+                getWorkspaces({is_external: 0}, (err, res) => {
+                    if (err) return;
+                    if (params.hasOwnProperty("workspaceId") && params.workspaceId !== undefined) {
+                        let topic = null;
+                        let wsfolder = null;
+                        for(const i in res.data.workspaces) {
+                            const ws = res.data.workspaces[i];
+
+                            if (ws.type === "FOLDER" && ws.topics.length) {
+                                for(const i in ws.topics) {
+                                    const t = ws.topics[i];
+                                    if (t.id === parseInt(params.workspaceId)) {
+                                        wsfolder = ws;
+                                        topic = t;
+                                        break;
+                                    }
+                                }
+                            } else {
+                                if (ws.id === parseInt(params.workspaceId)) {
+                                    topic = ws;
+                                    break;
+                                }
+                            }
+                        }
+                        if (topic && wsfolder) {
+                            topic = {
+                                ...topic,
+                                selected: true,
+                                is_external: wsfolder.is_external,
+                                workspace_id: wsfolder.id,
+                                workspace_name: wsfolder.name,
+                                workspace_description: wsfolder.description,
+                            };
+                            dispatch(setActiveTopic(topic));
+                        } else if (topic && wsfolder === null) {
+                            topic = {
+                                ...topic,
+                                selected: true,
+                            };
+                            dispatch(setActiveTopic(topic));
+                        }
+                    }
+                }),
+            );
+        }
+
         if (workspacesLoaded && activeTopic === null) {
             //set the active topic
             let topic = null;
@@ -66,6 +116,39 @@ const useSetWorkspace = () => {
             );
         }
     }, [activeTopic]);
+
+    useEffect(() => {
+        //console.log(params)
+        if (activeTopic && match.url === "/workspace/dashboard") {
+            let path = `/workspace/dashboard/`;
+            //let path = `/workspace/dashboard/${activeTopic.is_external === 0 ? "internal" : "external"}/`;
+            if (activeTopic.workspace_id !== undefined) {
+                path += `${activeTopic.workspace_id}/${activeTopic.workspace_name}/${activeTopic.id}/${activeTopic.name}/`;
+                dispatch(restoreLastVisitedChannel({channel_id: activeTopic.channel.id}));
+            } else {
+                path += `${activeTopic.id}/${activeTopic.name}`;
+                dispatch(restoreLastVisitedChannel({channel_id: activeTopic.topic_detail.channel.id}));
+            }
+            history.push(path);
+        } else if (activeTopic && params.hasOwnProperty("workspaceId")) {
+            //check if the active topic id is different in the params
+            if (params.workspaceId !== undefined && parseInt(params.workspaceId) !== activeTopic.id) {
+                //find the new topic id in workspaces and set to active
+                if (params.hasOwnProperty("folderId")) {
+                    let workspace = {...workspaces[params.folderId].topics[params.workspaceId]};
+                    console.log(workspace)
+                    if (workspace.hasOwnProperty("id")) {
+                        dispatch(setActiveTopic(workspace));
+                    }
+                } else {
+                    let workspace = {...workspaces[params.workspaceId]};
+                    if (workspace.hasOwnProperty("id")) {
+                        dispatch(setActiveTopic(workspace));
+                    }
+                }
+            }
+        }
+    }, [activeTopic, match, params])
 };
 
 export default useSetWorkspace;

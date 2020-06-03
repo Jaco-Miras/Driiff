@@ -1,12 +1,11 @@
-import React, {useEffect} from "react";
+import React from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {useHistory} from "react-router-dom";
 import styled from "styled-components";
-import {restoreLastVisitedChannel} from "../../../redux/actions/chatActions";
 import {addToModals} from "../../../redux/actions/globalActions";
-import {getWorkspaces, setActiveTab, setActiveTopic} from "../../../redux/actions/workspaceActions";
+import {setActiveTab} from "../../../redux/actions/workspaceActions";
 import {SvgIconFeather} from "../../common";
 import {WorkspaceList} from "../../workspace";
+import {useSetWorkspace} from "../../hooks";
 
 const Wrapper = styled.div`
     &::-webkit-scrollbar {
@@ -122,11 +121,10 @@ const WorkspaceNavigationMenuBodyPanel = (props) => {
 
     const {className = ""} = props;
     const dispatch = useDispatch();
-    const history = useHistory();
 
     const workspaces = useSelector(state => state.workspaces.workspaces);
-    const workspacesLoaded = useSelector(state => state.workspaces.workspacesLoaded);
-    const activeTopic = useSelector(state => state.workspaces.activeTopic);
+    // const workspacesLoaded = useSelector(state => state.workspaces.workspacesLoaded);
+    // const activeTopic = useSelector(state => state.workspaces.activeTopic);
     const activeTab = useSelector(state => state.workspaces.activeTab);
 
     const handleShowFolderModal = () => {
@@ -154,75 +152,7 @@ const WorkspaceNavigationMenuBodyPanel = (props) => {
         dispatch(setActiveTab(tab));
     };
 
-    useEffect(() => {
-        if (!workspacesLoaded) {
-            dispatch(
-                getWorkspaces({is_external: 0}, (err, res) => {
-                    if (err) return;
-                    if (props.match.params.hasOwnProperty("workspaceId") && props.match.params.workspaceId !== undefined) {
-                        let topic = null;
-                        let wsfolder = null;
-                        for(const i in res.data.workspaces) {
-                            const ws = res.data.workspaces[i];
-
-                            if (ws.type === "FOLDER" && ws.topics.length) {
-                                for(const i in ws.topics) {
-                                    const t = ws.topics[i];
-                                    if (t.id === parseInt(props.match.params.workspaceId)) {
-                                        wsfolder = ws;
-                                        topic = t;
-                                        break;
-                                    }
-                                }
-                            } else {
-                                if (ws.id === parseInt(props.match.params.workspaceId)) {
-                                    topic = ws;
-                                    break;
-                                }
-                            }
-                        }
-                        if (topic && wsfolder) {
-                            topic = {
-                                ...topic,
-                                selected: true,
-                                is_external: wsfolder.is_external,
-                                workspace_id: wsfolder.id,
-                                workspace_name: wsfolder.name,
-                                workspace_description: wsfolder.description,
-                            };
-                            dispatch(setActiveTopic(topic));
-                        } else if (topic && wsfolder === null) {
-                            topic = {
-                                ...topic,
-                                selected: true,
-                            };
-                            dispatch(setActiveTopic(topic));
-                        }
-                    }
-                }),
-            );
-        } else {
-            if (activeTopic && props.match.url === "/workspace/dashboard") {
-                let path = `/workspace/dashboard/`;
-                //let path = `/workspace/dashboard/${activeTopic.is_external === 0 ? "internal" : "external"}/`;
-                if (activeTopic.workspace_id !== undefined) {
-                    path += `${activeTopic.workspace_id}/${activeTopic.workspace_name}/${activeTopic.id}/${activeTopic.name}/`;
-                    dispatch(restoreLastVisitedChannel({channel_id: activeTopic.channel.id}));
-                } else {
-                    path += `${activeTopic.id}/${activeTopic.name}`;
-                    dispatch(restoreLastVisitedChannel({channel_id: activeTopic.topic_detail.channel.id}));
-                }
-                history.push(path);
-            } else if (activeTopic && props.match.params.hasOwnProperty("workspaceId")) {
-                //check if the active topic id is different in the params
-                if (props.match.params.workspaceId !== undefined && parseInt(props.match.params.workspaceId) !== activeTopic.id) {
-                    //find the new topic id in workspaces and set to active
-                }
-            }
-        }
-
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    useSetWorkspace();
 
     return (
         <>
