@@ -12,6 +12,36 @@ const Wrapper = styled.div`
             cursor: pointer;
             cursor: hand;            
         }
+        
+        &.files {
+            width: 320px;
+            
+            li {
+                padding-right: 16px;
+                
+                &:hover {
+                    color: #972c86;
+                    
+                    svg.feather-trash-2 {
+                        color: #505050;
+                    }
+                }
+                
+                svg {
+                    &.feather-trash-2 {
+                        position: absolute;
+                        margin-left: 5px;                        
+                        width: 11px;
+                        top: -1px;
+                        right: 0;
+                        
+                        &:hover {   
+                            color: #972c86;
+                        }
+                    }                    
+               }
+            }
+        }        
     }
 `;
 
@@ -78,19 +108,19 @@ const FileAttachments = props => {
                 return <video
                     className="file"
                     controls playsInline autoPlay={false}
-                    src={f.src} />;
+                    src={f.src}/>;
             default:
                 switch (f.rawFile.type) {
                     case "application/x-zip-compressed":
-                        return <i className="fa fa-file-zip-o text-primary" />;
+                        return <i className="fa fa-file-zip-o text-primary"/>;
                     case "application/pdf":
-                        return <i className="fa fa-file-pdf-o text-danger" />;
+                        return <i className="fa fa-file-pdf-o text-danger"/>;
                     case "text/plain":
-                        return <i className="fa fa-file-text-o text-warning" />;
+                        return <i className="fa fa-file-text-o text-warning"/>;
                     case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
-                        return <i className="fa fa-file-excel-o text-success" />;
+                        return <i className="fa fa-file-excel-o text-success"/>;
                     default:
-                        return <i className="fa fa-file text-warning" />;
+                        return <i className="fa fa-file text-warning"/>;
                 }
         }
     };
@@ -98,7 +128,7 @@ const FileAttachments = props => {
     const handleClick = (e) => {
         const index = e.currentTarget.dataset.targetIndex;
 
-        if(filePreview !== null && filePreview.file.id === attachedFiles[index].id) {
+        if (filePreview !== null && filePreview.file.id === attachedFiles[index].id) {
             closePreview(e);
         } else {
             setFilePreview({
@@ -113,7 +143,10 @@ const FileAttachments = props => {
     };
 
     const handleDelete = (e) => {
-        handleRemoveFile(e);
+        e.preventDefault();
+        e.stopPropagation();
+
+        handleRemoveFile(e.currentTarget.dataset.fileId);
         setFilePreview(null);
     };
 
@@ -126,6 +159,9 @@ const FileAttachments = props => {
                             data-target-index={i} key={i}
                             onClick={handleClick}
                             title={f.name}><AttachmentIcon icon="paperclip"/>{f.name}
+                            <SvgIconFeather
+                                data-file-id={f.id}
+                                onClick={handleDelete} icon="trash-2"/>
                         </li>;
                     })
                 }
