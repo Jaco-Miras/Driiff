@@ -5,6 +5,7 @@ import {Badge} from "reactstrap";
 import styled from "styled-components";
 import {addToChannels, getChannel, setSelectedChannel} from "../../redux/actions/chatActions";
 import {SvgIconFeather} from "../common";
+import {replaceChar} from "../../helpers/stringFormatter";
 
 const TopicListWrapper = styled.li`    
     cursor: pointer;
@@ -49,9 +50,9 @@ const TopicList = props => {
                 }
 
                 if (typeof topic.workspace_name === "undefined") {
-                    history.push(`/workspace/${route.params.page}/${topic.id}/${topic.name}`);
+                    history.push(`/workspace/${route.params.page}/${topic.id}/${replaceChar(topic.name)}`);
                 } else {
-                    history.push(`/workspace/${route.params.page}/${topic.workspace_id}/${topic.workspace_name}/${topic.id}/${topic.name}`);
+                    history.push(`/workspace/${route.params.page}/${topic.workspace_id}/${replaceChar(topic.workspace_name)}/${topic.id}/${replaceChar(topic.name)}`);
                 }
             }
         }

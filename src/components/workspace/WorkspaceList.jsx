@@ -8,6 +8,7 @@ import {addToModals} from "../../redux/actions/globalActions";
 import {setUserGeneralSetting} from "../../redux/actions/settingsActions";
 import {SvgIconFeather} from "../common";
 import TopicList from "./TopicList";
+import {replaceChar} from "../../helpers/stringFormatter";
 
 const Wrapper = styled.li`
     ${props => !props.show && `display: none;`} 
@@ -103,7 +104,7 @@ const WorkspaceList = props => {
 
         } else {
 
-            history.push(`/workspace/${route.params.page}/${workspace.id}/${workspace.name}`);
+            history.push(`/workspace/${route.params.page}/${workspace.id}/${replaceChar(workspace.name)}`);
 
             if (workspace.channel_loaded === undefined) {
                 dispatch(

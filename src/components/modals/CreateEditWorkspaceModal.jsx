@@ -11,6 +11,7 @@ import {FileAttachments} from "../common";
 import {DropDocument} from "../dropzone/DropDocument";
 import {CheckBox, DescriptionInput, FolderSelect, InputFeedback, PeopleSelect} from "../forms";
 import {ModalHeaderSection} from "./index";
+import {replaceChar} from "../../helpers/stringFormatter";
 
 const WrapperDiv = styled(InputGroup)`
     display: flex;
@@ -330,9 +331,9 @@ const CreateEditWorkspaceModal = (props) => {
                         }
                         //redirect url
                         if (form.selectedFolder) {
-                            history.push(`/workspace/dashboard/${form.selectedFolder.value}/${form.selectedFolder.label}/${res.data.id}/${form.name}`);
+                            history.push(`/workspace/dashboard/${form.selectedFolder.value}/${replaceChar(form.selectedFolder.label)}/${res.data.id}/${replaceChar(form.name)}`);
                         } else {
-                            history.push(`/workspace/dashboard/${res.data.id}/${form.name}`);
+                            history.push(`/workspace/dashboard/${res.data.id}/${replaceChar(form.name)}`);
                         }
                         
                         toaster.notify(

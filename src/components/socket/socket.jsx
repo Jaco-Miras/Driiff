@@ -12,7 +12,7 @@ import {$_GET, isIPAddress} from "../../helpers/commonFunctions";
 import {localizeDate} from "../../helpers/momentFormatJS";
 import {pushBrowserNotification} from "../../helpers/pushHelper";
 import {updateFaviconState} from "../../helpers/slugHelper";
-import {stripHtml} from "../../helpers/stringFormatter";
+import {stripHtml,replaceChar} from "../../helpers/stringFormatter";
 import {urlify} from "../../helpers/urlContentHelper";
 import {
     addToChannels,
@@ -447,12 +447,12 @@ class Socket extends PureComponent {
                         //direct workspace
                         if (e.original_workspace_id !== 0) {
                             //now direct workspace url
-                            this.props.history.push(`/workspace/${currentPage}/${e.id}/${e.name}`);
+                            this.props.history.push(`/workspace/${currentPage}/${e.id}/${replaceChar(e.name)}`);
                         }
                     } else {
                         //moved workspace to another folder
                         if (e.original_workspace_id !== e.workspace_id) {
-                            this.props.history.push(`/workspace/${currentPage}/${e.workspace_id}/${e.current_workspace_folder_name}/${e.id}/${e.name}`);
+                            this.props.history.push(`/workspace/${currentPage}/${e.workspace_id}/${replaceChar(e.current_workspace_folder_name)}/${e.id}/${replaceChar(e.name)}`);
                         }
                     }
                 }

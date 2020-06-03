@@ -268,3 +268,7 @@ export const dataURLtoFile = (dataurl, filename) => {
         lastModified: Date.now(),
     });
 };
+
+export const replaceChar = (name, char = "-") => {
+    return name.toLowerCase().replace(/\s|\//g, char);
+};

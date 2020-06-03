@@ -5,6 +5,7 @@ import {setUserSettings} from "../../redux/actions/settingsActions";
 import {addToChannels, getChannel, setSelectedChannel, restoreLastVisitedChannel} from "../../redux/actions/chatActions";
 import {setUserGeneralSetting} from "../../redux/actions/settingsActions";
 import {getWorkspaces, setActiveTopic} from "../../redux/actions/workspaceActions";
+import {replaceChar} from "../../helpers/stringFormatter";
 
 const useSetWorkspace = () => {
 
@@ -138,10 +139,10 @@ const useSetWorkspace = () => {
             let path = `/workspace/dashboard/`;
             //let path = `/workspace/dashboard/${activeTopic.is_external === 0 ? "internal" : "external"}/`;
             if (activeTopic.workspace_id !== undefined) {
-                path += `${activeTopic.workspace_id}/${activeTopic.workspace_name}/${activeTopic.id}/${activeTopic.name}/`;
+                path += `${activeTopic.workspace_id}/${replaceChar(activeTopic.workspace_name)}/${activeTopic.id}/${replaceChar(activeTopic.name)}/`;
                 dispatch(restoreLastVisitedChannel({channel_id: activeTopic.channel.id}));
             } else {
-                path += `${activeTopic.id}/${activeTopic.name}`;
+                path += `${activeTopic.id}/${replaceChar(activeTopic.name)}`;
                 dispatch(restoreLastVisitedChannel({channel_id: activeTopic.topic_detail.channel.id}));
             }
             history.push(path);
