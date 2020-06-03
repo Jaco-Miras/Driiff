@@ -4,7 +4,8 @@ import {Input, InputGroup, Label, Modal, ModalBody} from "reactstrap";
 import styled from "styled-components";
 import {clearModal} from "../../redux/actions/globalActions";
 import {createWorkspacePost} from "../../redux/actions/workspaceActions";
-import {FolderSelect, PeopleSelect} from "../forms";
+import {SvgIconFeather} from "../common";
+import {CheckBox, FolderSelect, PeopleSelect} from "../forms";
 import QuillEditor from "../forms/QuillEditor";
 import {useQuillModules} from "../hooks";
 import {ModalHeaderSection} from "./index";
@@ -26,6 +27,12 @@ const WrapperDiv = styled(InputGroup)`
     }
     .react-select__multi-value__label {
         align-self: center;
+    }
+    
+    &.more-option {
+        margin-left: 130px;
+        width: 100%;
+        margin-right: -130px;
     }
 `;
 
@@ -64,11 +71,57 @@ const StyledQuillEditor = styled(QuillEditor)`
     }
 `;
 
+const CheckBoxGroup = styled.div`
+    display: flex;    
+    overflow: hidden;    
+    transition: all .3s ease;
+    width: 100%;
+    
+    &.enter-active {
+        max-height: ${props => props.maxHeight}px;        
+    }
+
+    &.leave-active {
+        max-height: 0px;
+    }
+    
+    label {
+        min-width: auto;
+        font-size: 12.6px;
+    
+        &:hover {
+            color: #972c86;
+        }
+    }
+`;
+
+const MoreOption = styled.div`
+    cursor: pointer;
+    cursor: hand;
+    margin-bottom: 5px;
+    
+    &:hover {
+        color: #972c86;
+    }
+    
+    svg {
+        transition: all 0.3s;
+        width: 15px;
+        margin-left: 5px;
+        
+        &.ti-plus {
+            transform: rotate(-540deg);
+        }
+        &.rotate-in {            
+            transform: rotate(0deg);        
+        }
+    }
+`;
+
 const CreateEditWorkspacePostModal = props => {
 
     const {type, mode, item = {}} = props.data;
 
-    const reactQuillRef = useRef();
     const dispatch = useDispatch();
     const [modal, setModal] = useState(true);
     const user = useSelector(state => state.session.user);
@@ -76,7 +129,12 @@ const CreateEditWorkspacePostModal = props => {
     const activeTab = useSelector(state => state.workspaces.activeTab);
     const [workspaceOptions, setWorkspaceOptions] = useState([]);
     const [userOptions, setUserOptions] = useState([]);
+    const [showMoreOptions, setShowMoreOptions] = useState(null);
+    const [maxHeight, setMaxHeight] = useState(null);
     const [form, setForm] = useState({
+        must_read: false,
+        reply_required: false,
+        no_reply: false,
         is_private: false,
         has_folder: false,
         name: "",
@@ -85,7 +143,12 @@ const CreateEditWorkspacePostModal = props => {
         description: "",
         textOnly: "",
     });
-
+    const formRef = {
+        reactQuillRef: useRef(null),
+        more_options: useRef(null),
+        dropZone: useRef(null),
+        arrow: useRef(null),
+    };
     const toggle = () => {
         setModal(!modal);
         dispatch(
@@ -150,6 +213,38 @@ const CreateEditWorkspacePostModal = props => {
         });
     };
 
+    const toggleCheck = useCallback((e) => {
+        const name = e.target.dataset.name;
+        switch (name) {
+            case "no_reply": {
+                setForm(prevState => ({
+                    ...prevState,
+                    [name]: !prevState[name],
+                    reply_required: !prevState[name] === true ? false : prevState["reply_required"],
+                }));
+                break;
+            }
+            case "reply_required": {
+                setForm(prevState => ({
+                    ...prevState,
+                    [name]: !prevState[name],
+                    no_reply: !prevState[name] === true ? false : prevState["no_reply"],
+                }));
+                break;
+            }
+            default: {
+                setForm(prevState => ({
+                    ...prevState,
+                    [name]: !prevState[name],
+                }));
+            }
+        }
+    }, [setForm]);
+
+    const toggleMoreOptions = () => {
+        setShowMoreOptions(!showMoreOptions);
+    };
+
     const [modules] = useQuillModules("workspace");
 
     useEffect(() => {
@@ -160,9 +255,9 @@ const CreateEditWorkspacePostModal = props => {
                     return {
                         ...m,
                         value: m.id,
-                        label: m.name
-                    }
-                })
+                        label: m.name,
+                    };
+                });
                 setUserOptions(members);
             }
             setForm({
@@ -177,10 +272,10 @@ const CreateEditWorkspacePostModal = props => {
                     name: user.name,
                     first_name: user.first_name,
                     profile_image_link: user.profile_image_link,
-                }]
+                }],
             });
         }
-        
+
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -189,13 +284,14 @@ const CreateEditWorkspacePostModal = props => {
             const wsTopics = Object.values(workspaces).map(ws => {
                 if (ws.type === "FOLDER") {
                     if (Object.keys(ws.topics).length) {
-                        return Object.values(ws.topics)
-                    } return null
+                        return Object.values(ws.topics);
+                    }
+                    return null;
                 } else {
-                    return ws
+                    return ws;
                 }
             }).flat().filter(ws => ws !== null);
-        
+
             const workspaceOptions = wsTopics.map(ws => {
                 return {
                     ...ws,
@@ -208,20 +304,20 @@ const CreateEditWorkspacePostModal = props => {
     }, [Object.values(workspaces).length]);
 
     const unique = useCallback((a, i, c) => {
-        return c.findIndex(u => u.id === a.id) === i
+        return c.findIndex(u => u.id === a.id) === i;
     }, []);
 
     useEffect(() => {
         if (form.selectedWorkspaces.length) {
             let wsMembers = form.selectedWorkspaces.map(ws => {
                 if (ws.members !== undefined && ws.members.length) {
-                    return ws.members
-                } else return []
-            })
+                    return ws.members;
+                } else return [];
+            });
 
             let uniqueMembers = [...wsMembers.flat()];
             //const unique = (a, i, c) => c.findIndex(u => u.id === a.id) === i
-            uniqueMembers = uniqueMembers.filter(unique)
+            uniqueMembers = uniqueMembers.filter(unique);
 
             if (uniqueMembers.length) {
                 uniqueMembers = uniqueMembers.map(u => {
@@ -231,10 +327,22 @@ const CreateEditWorkspacePostModal = props => {
                         label: u.name,
                     };
                 });
-                setUserOptions(uniqueMembers)
+                setUserOptions(uniqueMembers);
             }
         }
-    }, [form.selectedWorkspaces.length])
+    }, [form.selectedWorkspaces.length]);
+
+    useEffect(() => {
+        console.log(formRef.more_options);
+    }, []);
+
+
+    useEffect(() => {
+        if (formRef.more_options.current !== null && maxHeight === null) {
+            setMaxHeight(formRef.more_options.current.offsetHeight);
+            setShowMoreOptions(false);
+        }
+    }, [formRef, setMaxHeight]);
 
     return (
 
@@ -274,18 +382,32 @@ const CreateEditWorkspacePostModal = props => {
                     <StyledQuillEditor
                         className="group-chat-input"
                         modules={modules}
-                        ref={reactQuillRef}
+                        ref={formRef.reactQuillRef}
                         onChange={handleQuillChange}
                     />
                 </WrapperDiv>
+                <WrapperDiv className="more-option">
+                    <MoreOption
+                        onClick={toggleMoreOptions}>More options
+                        <SvgIconFeather icon="chevron-down"
+                                        className={`sub-menu-arrow ti-angle-up ${showMoreOptions ? "ti-minus rotate-in" : " ti-plus"}`}/></MoreOption>
+
+                    <CheckBoxGroup ref={formRef.more_options} maxHeight={maxHeight}
+                                   className={showMoreOptions === null ? "" : showMoreOptions ? "enter-active" : "leave-active"}>
+                        <CheckBox name="must_read" checked={form.must_read} onClick={toggleCheck} type="success">Must
+                            read</CheckBox>
+                        <CheckBox name="reply_required" checked={form.reply_required} onClick={toggleCheck}
+                                  type="danger">Reply required</CheckBox>
+                        <CheckBox name="no_reply" checked={form.no_reply} onClick={toggleCheck} type="dark">No
+                            replies</CheckBox>
+                    </CheckBoxGroup>
+                </WrapperDiv>
                 <WrapperDiv>
-                    <Label></Label>
-                    <span>More options ^</span>
                     <button
                         className="btn btn-primary"
                         disabled={form.selectedUsers.length === 0 || form.name === "" || form.selectedWorkspaces.length === 0}
                         onClick={handleConfirm}>
-                        {mode === "edit" ? "Update workspace" : "Create workspace"}
+                        {mode === "edit" ? "Update workspace" : "Create post"}
                     </button>
                 </WrapperDiv>
             </ModalBody>
