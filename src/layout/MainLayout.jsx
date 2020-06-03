@@ -11,12 +11,14 @@ import {getFiles} from "../redux/actions/fileActions";
 import {getAllRecipients} from "../redux/actions/globalActions";
 import {getUserSettings} from "../redux/actions/settingsActions";
 import {getMentions} from "../redux/actions/userAction";
+import usePushNotification from "../components/webpush/usePushNotification";
 
 const MainContent = styled.div`
 `;
 
 const MainLayout = (props) => {
 
+    usePushNotification();
     useUserLogout(props);
     useFilesUpload(props);
 

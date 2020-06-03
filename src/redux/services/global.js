@@ -81,3 +81,21 @@ export function postTranslationObject(payload) {
         },
     });
 }
+
+export function subscribePushNotifications(payload) {
+    let url = `/v2/push-api-notification`;
+    return apiCall({
+        method: "POST",
+        url: url,
+        data: payload,
+    });
+}
+
+export function getPushNotification(payload) {
+    let url = `/v2/push-api-notification?subscription_id=${payload.sub_id}`;
+    return apiCall({
+        method: "GET",
+        url: url,
+        data: payload,
+    });
+}

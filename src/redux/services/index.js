@@ -43,13 +43,15 @@ export {
 
 export {
     deleteDraft,
-    getConnectedSlugs,
     getAllRecipients,
+    getConnectedSlugs,
+    getPushNotification,
+    getTranslationObject,
     generateUnfurl,
     saveDraft,
+    subscribePushNotifications,
     updateDraft,
     uploadDocument,
-    getTranslationObject,
 } from "./global";
 
 export {

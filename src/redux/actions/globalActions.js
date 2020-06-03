@@ -4,8 +4,10 @@ import {
     generateUnfurl as generateUnfurlService,
     getAllRecipients as getAllRecipientsService,
     getConnectedSlugs as getConnectedSlugsService,
+    getPushNotification as getPushNotificationService,
     getTranslationObject as getTranslationObjectService,
     saveDraft as saveDraftService,
+    subscribePushNotifications as subscribePushNotificationsService,
     updateDraft as updateDraftService,
     uploadDocument as uploadDocumentService,
 } from "../services";
@@ -173,3 +175,23 @@ export function getTranslationObject(payload, callback) {
 export function postTranslationObject() {
 
 }
+
+export const getPushNotification = (payload, callback) => {
+    return dispatchActionToReducer(
+        getPushNotificationService(payload),
+        "GET_PUSH_NOTIFICATION_START",
+        "GET_PUSH_NOTIFICATION_SUCCESS",
+        "GET_PUSH_NOTIFICATION_FAILURE",
+        callback,
+    );
+};
+
+export const subscribePushNotifications = (payload, callback) => {
+    return dispatchActionToReducer(
+        subscribePushNotificationsService(payload),
+        "SUBSCRIBE_PUSH_NOTIFICATIONS_START",
+        "SUBSCRIBE_PUSH_NOTIFICATIONS_SUCCESS",
+        "SUBSCRIBE_PUSH_NOTIFICATIONS_FAILURE",
+        callback,
+    );
+};
