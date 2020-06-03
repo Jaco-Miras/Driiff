@@ -77,20 +77,20 @@ const FileAttachments = props => {
             case "VIDEO":
                 return <video
                     className="file"
-                    controls playsInline type='video/mp4' autoPlay={false}
-                    src={f.src}></video>;
+                    controls playsInline autoPlay={false}
+                    src={f.src} />;
             default:
                 switch (f.rawFile.type) {
                     case "application/x-zip-compressed":
-                        return <i className="fa fa-file-zip-o text-primary"></i>;
+                        return <i className="fa fa-file-zip-o text-primary" />;
                     case "application/pdf":
-                        return <i className="fa fa-file-pdf-o text-danger"></i>;
+                        return <i className="fa fa-file-pdf-o text-danger" />;
                     case "text/plain":
-                        return <i className="fa fa-file-text-o text-warning"></i>;
+                        return <i className="fa fa-file-text-o text-warning" />;
                     case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
-                        return <i className="fa fa-file-excel-o text-success"></i>;
+                        return <i className="fa fa-file-excel-o text-success" />;
                     default:
-                        return <i className="fa fa-file text-warning"></i>;
+                        return <i className="fa fa-file text-warning" />;
                 }
         }
     };
@@ -108,7 +108,7 @@ const FileAttachments = props => {
         }
     };
 
-    const closePreview = (e) => {
+    const closePreview = () => {
         setFilePreview(null);
     };
 
@@ -122,8 +122,6 @@ const FileAttachments = props => {
             <ul className="files">
                 {
                     attachedFiles.map((f, i) => {
-                        console.log(f.rawFile);
-
                         return <li
                             data-target-index={i} key={i}
                             onClick={handleClick}
