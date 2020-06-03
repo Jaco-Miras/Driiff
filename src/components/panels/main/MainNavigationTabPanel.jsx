@@ -75,8 +75,7 @@ const MainNavigationTabPanel = (props) => {
         if (Object.keys(channels).length !== 0) {
             let totalUnread = false;
             for (const i in channels) {
-                //console.log(channels[i]);
-                if (channels[i].total_unread >= 1) {
+                if (channels[i].hasOwnProperty("total_unread") && channels[i].total_unread >= 1) {
                     totalUnread = true;
                     break;
                 }
