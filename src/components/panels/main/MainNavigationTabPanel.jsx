@@ -48,13 +48,12 @@ const MainNavigationTabPanel = (props) => {
     const {className = ""} = props;
     const history = useHistory();
     const dispatch = useDispatch();
-
     const unread = useSelector(state =>  state.global.unreadCounter);
     useEffect(() => {
         dispatch(
             getUnreadNotificationCounterEntries({})
         )
-    }, [unread] );
+    }, []);
 
     const handleIconClick = (e) => {
         e.preventDefault();
