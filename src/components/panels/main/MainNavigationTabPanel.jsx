@@ -3,9 +3,8 @@ import {useDispatch, useSelector} from "react-redux";
 import {useHistory} from "react-router-dom";
 import {Badge} from "reactstrap";
 import styled from "styled-components";
-import {setNavMode} from "../../../redux/actions/globalActions";
+import {setNavMode, getUnreadNotificationCounterEntries} from "../../../redux/actions/globalActions";
 import {NavLink, SvgIcon, SvgIconFeather} from "../../common";
-//import {useLoadChannels} from "../../hooks";
 import {replaceChar} from "../../../helpers/stringFormatter";
 
 const Wrapper = styled.div`
@@ -47,14 +46,12 @@ const NavIcon = styled(SvgIconFeather)`
 
 const MainNavigationTabPanel = (props) => {
 
-    //useLoadChannels();
-
     const {className = ""} = props;
     const history = useHistory();
     const dispatch = useDispatch();
 
     const generalSettings = useSelector(state => state.settings.user.GENERAL_SETTINGS);
-    const {channels, channelsLoaded, lastVisitedChannel} = useSelector(state => state.chat);
+    const unread = useSelector(state =>  state.global.unreadCounter);
     const [hasUnread, setHasUnread] = useState(false);
 
     const handleIconClick = (e) => {
@@ -72,18 +69,26 @@ const MainNavigationTabPanel = (props) => {
     };
 
     useEffect(() => {
-        if (Object.keys(channels).length !== 0) {
-            let totalUnread = false;
-            for (const i in channels) {
-                if (channels[i].hasOwnProperty("total_unread") && channels[i].total_unread >= 1) {
-                    totalUnread = true;
-                    break;
-                }
-            }
-            setHasUnread(totalUnread);
-        }
-    }, [channelsLoaded, channels, setHasUnread]);
+        dispatch(
+            getUnreadNotificationCounterEntries()
+        )
+    }, []);
 
+
+    useEffect(() => {
+        /**
+         * @todo seggregat for chat
+         */
+        if (unread.length >= 1) {
+            setHasUnread(true);
+        } else {
+            setHasUnread(false);
+        }
+    }, [unread])
+
+    /**
+     * @todo must not be here
+     */
     let workspacePath = "/workspace/dashboard";
     if (generalSettings.active_topic) {
         const {workspace, topic} =  generalSettings.active_topic;
@@ -116,7 +121,7 @@ const MainNavigationTabPanel = (props) => {
                         </NavIconContainer>
                     </li>
                     <li>
-                        <NavIconContainer to={lastVisitedChannel !== null && lastVisitedChannel.hasOwnProperty("code") ? 
+                        <NavIconContainer to={lastVisitedChannel !== null && lastVisitedChannel.hasOwnProperty("code") ?
                             `/chat/${lastVisitedChannel.code}` : "/chat"}>
                             <NavIcon icon={`message-circle`}/>
                             {

@@ -9,6 +9,7 @@ const INITIAL_STATE = {
     slugs: [],
     navMode: 2,
     dataFromInput: null,
+    unreadCounter: [],
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -81,6 +82,39 @@ export default (state = INITIAL_STATE, action) => {
                     ...action.data
                 },
                 i18nLoaded: true
+            }
+        }
+        case "GET_UNREAD_NOTIFICATION_COUNTER_SUCCESS": {
+            return {
+                ...state,
+                unreadCounter: action.data
+            }
+        }
+        case "UPDATE_GENERAL_CHAT_NOTIFICATION": {
+            if (state.unreadCounter.length === 0) {
+                return {
+                    ...state,
+                    unreadCounter: [...state.unreadCounter, action.data]
+                }
+            }
+
+            return {
+                ...state,
+                unreadCounter: state.unreadCounter.map(e => {
+                    if (action.data.entity_type === e.entity_type) {
+                        return {
+                            count: e.count + 1,
+                            entity_type: e.entity_type,
+                        }
+                    } 
+                    return e;
+                }),
+            }
+        }
+        case "UPDATE_UNREAD_LIST_COUNTER": {
+            return {
+                ...state,
+                unreadCounter: action.data
             }
         }
         default:

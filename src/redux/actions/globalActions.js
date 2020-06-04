@@ -10,6 +10,7 @@ import {
     subscribePushNotifications as subscribePushNotificationsService,
     updateDraft as updateDraftService,
     uploadDocument as uploadDocumentService,
+    getUnreadNotificationCounterEntries as getUnreadNotificationCounterEntriesService,
 } from "../services";
 
 export function setBrowserTabStatus(payload, callback) {
@@ -195,3 +196,28 @@ export const subscribePushNotifications = (payload, callback) => {
         callback,
     );
 };
+export function getUnreadNotificationCounterEntries(payload, callback) {
+    return dispatchActionToReducer(
+        getUnreadNotificationCounterEntriesService(payload),
+        "GET_UNREAD_NOTIFICATION_COUNTER_START",
+        "GET_UNREAD_NOTIFICATION_COUNTER_SUCCESS",
+        "GET_UNREAD_NOTIFICATION_COUNTER_FAIL",
+        callback,
+    );
+}
+
+export function updateGeneralChat(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "UPDATE_GENERAL_CHAT_NOTIFICATION",
+        payload,
+        callback,
+    )
+}
+
+export function updateUnreadNotificationCounterEntries(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "UPDATE_UNREAD_LIST_COUNTER",
+        payload,
+        callback,
+    );
+}

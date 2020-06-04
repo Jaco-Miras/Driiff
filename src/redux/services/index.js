@@ -52,6 +52,7 @@ export {
     subscribePushNotifications,
     updateDraft,
     uploadDocument,
+    getUnreadNotificationCounterEntries,
 } from "./global";
 
 export {

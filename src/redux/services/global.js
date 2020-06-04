@@ -99,3 +99,12 @@ export function getPushNotification(payload) {
         data: payload,
     });
 }
+
+export function getUnreadNotificationCounterEntries(payload) {
+    let url = `/v2/notification-counter-entries`;
+    return apiCall({
+        method: "GET",
+        url: url,
+        data: payload,
+    });
+}
