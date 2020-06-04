@@ -1,4 +1,4 @@
-import React, {useRef, useState} from "react";
+import React, {useCallback, useEffect, useRef, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import styled from "styled-components";
 import {addToModals} from "../../../redux/actions/globalActions";
@@ -89,6 +89,21 @@ const ChatContentPanel = (props) => {
 
         dispatch(addToModals(modal));
     };
+
+    const handleOnKeyDown = useCallback(() => {
+
+        if(document.activeElement.tagName.toLowerCase() !== "input") {
+            document.querySelector(".chat-footer .ql-editor").focus();
+        }
+    }, []);
+
+    useEffect(() => {
+        document.addEventListener("keydown", handleOnKeyDown, false);
+
+        return () => {
+            document.removeEventListener("keydown", handleOnKeyDown, false);
+        }
+    }, [handleOnKeyDown])
 
     return (
         <Wrapper className={`chat-content ${className}`} onDragOver={handleShowDropzone}>
