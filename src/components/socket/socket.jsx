@@ -37,6 +37,8 @@ import {
     generateUnfurlReducer,
     getConnectedSlugs,
     setBrowserTabStatus,
+    updateGeneralChat,
+    updateUnreadNotificationCounterEntries,
 } from "../../redux/actions/globalActions";
 import {getOnlineUsers, getUser} from "../../redux/actions/userAction";
 import {
@@ -639,6 +641,24 @@ class Socket extends PureComponent {
             })
             .listen(".chat-notification", e => {
                 console.log(e);
+                
+                let notificationCounterEntryPayload = {}
+                // check the workspace_id on the notification socket response
+                if (e.workspace_id === undefined || e.workspace_id === null || e.workspace_id === 0) {
+                    if (e.entity_type === "REMINDER_MESSAGE") {
+                        notificationCounterEntryPayload = {
+                            count: 1,
+                            entity_type: "REMINDER_MESSAGE",
+                        };
+                    } else {
+                        notificationCounterEntryPayload = {
+                            count: 1,
+                            entity_type: "CHAT_MESSAGE",
+                        }
+                    }
+
+                    this.props.updateGeneralChat(notificationCounterEntryPayload);
+                }
 
                 if (e.entity_type === "REMINDER_MESSAGE") {
                     e.message_original = e.message;
@@ -1064,6 +1084,9 @@ class Socket extends PureComponent {
                 console.log(e, "updated counter");
                 //const reducer = (accumulator, currentValue) => accumulator + currentValue;
                 //let count = 0;
+
+                /* update the list of unread notification list */
+                this.props.updateUnreadNotificationCounterEntries(e.result);
                 let chatCount = e.result.filter(c => {
                     if (c.entity_type === "CHAT_MESSAGE" || c.entity_type === "CHAT_REMINDER_MESSAGE") return true;
                     else return false;
@@ -1329,7 +1352,7 @@ function mapStateToProps({
                              settings: {userSettings},
                              chat: {channels, selectedChannel},
                              posts: {posts},
-                             workspaces: {activeTopic}
+                             workspaces: {activeTopic, workspaceChannelIds}
                          }) {
     return {
         user,
@@ -1338,6 +1361,7 @@ function mapStateToProps({
         selectedChannel,
         posts,
         activeTopic,
+        workspaceChannelIds,
     };
 }
 
@@ -1370,7 +1394,8 @@ function mapDispatchToProps(dispatch) {
         incomingWorkspace: bindActionCreators(incomingWorkspace, dispatch),
         incomingUpdatedWorkspaceFolder: bindActionCreators(incomingUpdatedWorkspaceFolder, dispatch),
         incomingMovedTopic: bindActionCreators(incomingMovedTopic, dispatch),
-
+        updateGeneralChat: bindActionCreators(updateGeneralChat, dispatch),
+        updateUnreadNotificationCounterEntries: bindActionCreators(updateUnreadNotificationCounterEntries, dispatch),
         // logoutAction: bindActionCreators(logout, dispatch),
         // simpleNewNotificationSocketAction: bindActionCreators(simpleNewNotificationSocket, dispatch),
         // getNotificationsAction: bindActionCreators(getNotifications, dispatch),

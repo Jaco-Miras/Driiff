@@ -49,12 +49,19 @@ const MainNavigationTabPanel = (props) => {
     const history = useHistory();
     const dispatch = useDispatch();
     const unread = useSelector(state =>  state.global.unreadCounter);
+    const [hasUnread, setHasUnread] = useState(false);
     useEffect(() => {
         dispatch(
             getUnreadNotificationCounterEntries({})
         )
     }, []);
-
+    useEffect(() => {
+        if (unread.length >= 1) {
+            setHasUnread(true);
+        } else {
+            setHasUnread(false);
+        }
+    }, [unread])
     const handleIconClick = (e) => {
         e.preventDefault();
         if (e.target.dataset.link) {
@@ -94,7 +101,7 @@ const MainNavigationTabPanel = (props) => {
                         <NavIconContainer to="/chat">
                             <NavIcon icon={`message-circle`}/>
                             {
-                                unread.length >= 1 && <Badge>&nbsp;</Badge>
+                                hasUnread === true && <Badge>&nbsp;</Badge>
                             }
                         </NavIconContainer>
                     </li>
