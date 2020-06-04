@@ -91,8 +91,11 @@ const ChatContentPanel = (props) => {
     };
 
     const handleOnKeyDown = useCallback(() => {
-        if(!(document.activeElement.tagName.toLowerCase() === "input" || document.activeElement.classList.contains("ql-editor"))) {
-            document.querySelector(".chat-footer .ql-editor").focus();
+        if (!(document.activeElement.tagName.toLowerCase() === "input" ||
+            document.activeElement.classList.contains("ql-editor") && !document.activeElement.classList.contains("chat-bubble"))) {
+            if (document.querySelector(".chat-footer .ql-editor")) {
+                document.querySelector(".chat-footer .ql-editor").focus();
+            }
         }
     }, []);
 
@@ -101,8 +104,8 @@ const ChatContentPanel = (props) => {
 
         return () => {
             document.removeEventListener("keydown", handleOnKeyDown, false);
-        }
-    }, [handleOnKeyDown])
+        };
+    }, [handleOnKeyDown]);
 
     return (
         <Wrapper className={`chat-content ${className}`} onDragOver={handleShowDropzone}>

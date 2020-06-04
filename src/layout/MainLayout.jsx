@@ -7,11 +7,11 @@ import useFilesUpload from "../components/hooks/useFilesUpload";
 import {ModalPanel} from "../components/panels";
 import {MainContentPanel, MainHeaderPanel, MainNavigationPanel} from "../components/panels/main";
 import Socket from "../components/socket/socket";
+import usePushNotification from "../components/webpush/usePushNotification";
 import {getFiles} from "../redux/actions/fileActions";
 import {getAllRecipients} from "../redux/actions/globalActions";
 import {getUserSettings} from "../redux/actions/settingsActions";
 import {getMentions} from "../redux/actions/userAction";
-import usePushNotification from "../components/webpush/usePushNotification";
 
 const MainContent = styled.div`
 `;
@@ -42,7 +42,10 @@ const MainLayout = (props) => {
         <>
             <MainHeaderPanel/>
             <MainContent id="main">
-                <MainNavigationPanel/>
+                <Route
+                    {...props}
+                    component={MainNavigationPanel}
+                    path={["/:page"]}/>
                 <Route
                     {...props}
                     component={MainContentPanel}

@@ -113,7 +113,7 @@ const MainNavigationTabPanel = (props) => {
                                               `/chat/${lastVisitedChannel.code}` : "/chat"}>
                             <NavIcon icon={`message-circle`}/>
                             {
-                                unreadCounter.hasOwnProperty("chat_message") && unreadCounter.chat_message >= 1 &&
+                                props.match.params.page === "workspace" && unreadCounter.hasOwnProperty("chat_message") && unreadCounter.chat_message >= 1 &&
                                 <Badge data-count={unreadCounter.chat_message}>&nbsp;</Badge>
                             }
                         </NavIconContainer>

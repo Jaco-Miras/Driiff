@@ -13,7 +13,11 @@ const MainNavigationPanel = (props) => {
 
     return (
         <Wrapper className={`navigation ${className}`}>
-            <MainNavigationTabPanel/>
+            <Route
+                {...props}
+                component={MainNavigationTabPanel}
+                path={["/:page"]}
+            />
             <Route
                 {...props}
                 component={WorkspaceNavigationMenuBodyPanel}
