@@ -99,7 +99,7 @@ const MainNavigationTabPanel = (props) => {
             <div className="flex-grow-1">
                 <ul>
                     <li>
-                        <NavIconContainer to="/dashboard">
+                        <NavIconContainer active={false} to="/dashboard">
                             <NavIcon icon={`bar-chart-2`}/>
                         </NavIconContainer>
                     </li>
@@ -109,12 +109,15 @@ const MainNavigationTabPanel = (props) => {
                         </NavIconContainer>
                     </li>
                     <li>
-                        <NavIconContainer to={lastVisitedChannel !== null && lastVisitedChannel.hasOwnProperty("code") ?
-                                              `/chat/${lastVisitedChannel.code}` : "/chat"}>
+                        <NavIconContainer
+                            active={["dashboard", "posts", "chat", "files", "people"].includes(props.match.params.page)}
+                            to={lastVisitedChannel !== null && lastVisitedChannel.hasOwnProperty("code") ?
+                                `/chat/${lastVisitedChannel.code}` : "/chat"}>
                             <NavIcon icon={`message-circle`}/>
                             {
-                                props.match.params.page === "workspace" && unreadCounter.hasOwnProperty("chat_message") && unreadCounter.chat_message >= 1 &&
-                                <Badge data-count={unreadCounter.chat_message}>&nbsp;</Badge>
+                                unreadCounter.hasOwnProperty("chat_message") && unreadCounter.chat_message >= 1 &&
+                                <Badge
+                                    data-count={unreadCounter.chat_message}>&nbsp;</Badge>
                             }
                         </NavIconContainer>
                     </li>
