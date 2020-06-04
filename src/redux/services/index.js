@@ -62,6 +62,10 @@ export {
 } from "./files";
 
 export {
+    favoritePost,
+} from "./post";
+
+export {
     createWorkspace,
     createWorkspacePost,
     deleteWorkspace,
