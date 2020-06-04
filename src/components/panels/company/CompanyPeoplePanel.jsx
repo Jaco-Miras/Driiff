@@ -4,6 +4,7 @@ import styled from "styled-components";
 import {getUsers} from "../../../redux/actions/userAction";
 import {Avatar, SvgIconFeather} from "../../common";
 import SearchForm from "../../forms/SearchForm";
+import {useFocusInput} from "../../hooks";
 
 const Wrapper = styled.div`    
 `;
@@ -57,6 +58,8 @@ const CompanyPeoplePanel = (props) => {
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+
+    useFocusInput(ref.search.current);
 
     return (
         <Wrapper className={`company-people container-fluid h-100 ${className}`}>
