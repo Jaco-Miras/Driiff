@@ -53,28 +53,33 @@ const PostFilterSearchPanel = props => {
     }
 
     const sortDropdown = {
-        label: "Sort",
+        label: "Sorteren",
         items: [
             {
-                value: "asc",
-                label: "Ascending",
+                value: "favorite",
+                label: "Starred / favoriet",
                 onClick: handleClickSort
             },
             {   
-                value: "desc",
-                label: "Descending",
+                value: "recent",
+                label: "Datum (recent)",
                 onClick: handleClickSort
-            }
+            },
+            {   
+                value: "unread",
+                label: "Ongelezen",
+                onClick: handleClickSort
+            },
         ]
-    }
+    };
 
     return (
         <div className="app-action" style={{overflow: "unset"}}>
             <div className="action-left">
                 <ul className="list-inline">
-                    <li className="list-inline-item mb-0" style={{position: "relative"}}>
+                    {/* <li className="list-inline-item mb-0" style={{position: "relative"}}>
                         <ButtonDropdown dropdown={filterDropdown}/>
-                    </li>
+                    </li> */}
                     <li className="list-inline-item mb-0" style={{position: "relative"}}>
                         <ButtonDropdown dropdown={sortDropdown}/>
                     </li>
@@ -103,7 +108,7 @@ const PostFilterSearchPanel = props => {
                         </div>
                     </div>
                 </form>
-                <div className="app-pager d-flex align-items-center">
+                {/* <div className="app-pager d-flex align-items-center">
                     <div className="mr-3">1-50 of 253</div>
                     <nav aria-label="Page navigation example">
                         <ul className="pagination">
@@ -129,7 +134,7 @@ const PostFilterSearchPanel = props => {
                             </li>
                         </ul>
                     </nav>
-                </div>
+                </div> */}
             </div>
         </div>
     )

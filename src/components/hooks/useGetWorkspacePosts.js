@@ -34,10 +34,10 @@ const useGetWorkspacePosts = () => {
         if (filter !== null || sort !== null){
             if (sort && filter === null) {
                 return Object.values(wsPosts[params.workspaceId].posts).sort((a,b) => {
-                    if (sort === "asc") {
-                        return a.updated_at.timestamp > b.updated_at.timestamp ? 1 : -1
-                    } else {
-                        return a.updated_at.timestamp < b.updated_at.timestamp ? 1 : -1
+                    if (sort === "favorite") {
+                        return a.is_favourite === b.is_favourite ? 1 : -1
+                    } else if (sort === 'unread') {
+                        return a.is_updated === b.is_updated ? 1 : -1
                     }
                 })
             } else if (filter && sort === null) {
