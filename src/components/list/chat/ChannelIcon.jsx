@@ -54,7 +54,7 @@ const ChannelIcon = props => {
                     imageLink={channel.profile.profile_image_link}
                     userId={channel.profile.id}
                     name={channel.profile.name}
-                    noClick={true}
+                    noDefaultClick={true}
                 />
             }
             {

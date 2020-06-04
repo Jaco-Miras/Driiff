@@ -132,7 +132,7 @@ const HomeProfileNavigation = (props) => {
             </li>
             <li className="nav-item dropdown">
                 <a href="/" className="nav-link" data-toggle="dropdown" title={user.name} onClick={toggleDropdown}>
-                    <Avatar name={user.name} imageLink={user.profile_image_link} noClick={true}/>
+                    <Avatar name={user.name} imageLink={user.profile_image_link} noDefaultClick={true}/>
                 </a>
                 <UserProfileDropDown/>
             </li>
