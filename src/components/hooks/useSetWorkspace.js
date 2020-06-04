@@ -196,7 +196,7 @@ const useSetWorkspace = () => {
                     let workspace = {...workspaces[params.workspaceId]};
                     if (workspace.hasOwnProperty("id")) {
                         dispatch(setActiveTopic(workspace));
-                        if (workspace.topic_detail.channel_loaded === undefined) {
+                        if (workspace.channel_loaded === undefined) {
                             getAndSetChannel(workspace.topic_detail.channel.id);
                         } else {
                             if (channels.hasOwnProperty(workspace.topic_detail.channel.id)) {
@@ -212,7 +212,7 @@ const useSetWorkspace = () => {
                 if (params.hasOwnProperty("folderId")) {
                     let workspace = {...workspaces[params.folderId].topics[params.workspaceId]};
                     if (workspace.hasOwnProperty("id")) {
-                        if (workspace.channel_loaded === undefined) {
+                        if (workspace.channel.channel_loaded === undefined) {
                             getAndSetChannel(workspace.channel.id);
                         } else {
                             if (channels.hasOwnProperty(workspace.channel.id)) {
