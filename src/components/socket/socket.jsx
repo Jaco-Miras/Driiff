@@ -12,7 +12,7 @@ import {$_GET, isIPAddress} from "../../helpers/commonFunctions";
 import {localizeDate} from "../../helpers/momentFormatJS";
 import {pushBrowserNotification} from "../../helpers/pushHelper";
 import {updateFaviconState} from "../../helpers/slugHelper";
-import {stripHtml,replaceChar} from "../../helpers/stringFormatter";
+import {replaceChar, stripHtml} from "../../helpers/stringFormatter";
 import {urlify} from "../../helpers/urlContentHelper";
 import {
     addToChannels,
@@ -37,8 +37,8 @@ import {
     generateUnfurlReducer,
     getConnectedSlugs,
     setBrowserTabStatus,
-    updateGeneralChat,
-    updateUnreadNotificationCounterEntries,
+    setGeneralChat,
+    setUnreadNotificationCounterEntries,
 } from "../../redux/actions/globalActions";
 import {getOnlineUsers, getUser} from "../../redux/actions/userAction";
 import {
@@ -298,7 +298,7 @@ class Socket extends PureComponent {
             prevProps.unreadChatReplies !== this.props.unreadChatReplies
         ) {
             let count = this.props.unreadPostEntries + this.props.unreadChatReplies;
-            updateFaviconState(count === 0 ? false : true);
+            updateFaviconState(count !== 0);
         }
     }
 
@@ -441,10 +441,10 @@ class Socket extends PureComponent {
             .listen(".update-workspace", e => {
                 console.log(e, "update workspace");
                 this.props.incomingUpdatedWorkspaceFolder(e);
-                if (this.props.activeTopic && this.props.activeTopic.id === e.id && 
+                if (this.props.activeTopic && this.props.activeTopic.id === e.id &&
                     e.type === "WORKSPACE" && this.props.match.path === "/workspace") {
                     let currentPage = this.props.location.pathname;
-                    currentPage = currentPage.split('/')[2]
+                    currentPage = currentPage.split("/")[2];
                     if (e.workspace_id === 0) {
                         //direct workspace
                         if (e.original_workspace_id !== 0) {
@@ -588,7 +588,7 @@ class Socket extends PureComponent {
                 this.props.incomingUpdatedTopic(e);
             })
             .listen(".new-member", e => {
-                console.log(e, "join member")
+                console.log(e, "join member");
                 if (typeof e.user !== "undefined") {
                     let payload = {
                         group_id: e.group_id,
@@ -601,10 +601,10 @@ class Socket extends PureComponent {
                 }
             })
             .listen(".new-topic-member", e => {
-                console.log('new workspace member', e)
+                console.log("new workspace member", e);
             })
             .listen(".left-member", e => {
-                console.log(e, 'left member');
+                console.log(e, "left member");
                 if (e.user.id !== undefined) {
                     let payload = {
                         group_id: e.group_id,
@@ -644,8 +644,8 @@ class Socket extends PureComponent {
             })
             .listen(".chat-notification", e => {
                 console.log(e);
-                
-                let notificationCounterEntryPayload = {}
+
+                let notificationCounterEntryPayload = {};
                 // check the workspace_id on the notification socket response
                 if (e.workspace_id === undefined || e.workspace_id === null || e.workspace_id === 0) {
                     if (e.entity_type === "REMINDER_MESSAGE") {
@@ -657,10 +657,10 @@ class Socket extends PureComponent {
                         notificationCounterEntryPayload = {
                             count: 1,
                             entity_type: "CHAT_MESSAGE",
-                        }
+                        };
                     }
 
-                    this.props.updateGeneralChat(notificationCounterEntryPayload);
+                    this.props.setGeneralChat(notificationCounterEntryPayload);
                 }
 
                 if (e.entity_type === "REMINDER_MESSAGE") {
@@ -1089,10 +1089,9 @@ class Socket extends PureComponent {
                 //let count = 0;
 
                 /* update the list of unread notification list */
-                this.props.updateUnreadNotificationCounterEntries(e.result);
+                this.props.setUnreadNotificationCounterEntries(e.result);
                 let chatCount = e.result.filter(c => {
-                    if (c.entity_type === "CHAT_MESSAGE" || c.entity_type === "CHAT_REMINDER_MESSAGE") return true;
-                    else return false;
+                    return (c.entity_type === "CHAT_MESSAGE" || c.entity_type === "CHAT_REMINDER_MESSAGE");
                 });
                 if (chatCount.length) {
                     //count = chatCount.map(c => c.count).flat().reduce(reducer);
@@ -1106,7 +1105,7 @@ class Socket extends PureComponent {
                 //this.props.incomingReadChannelReducer({channel_id: e.entity_id, updated_chat_count: count});
             })
             .notification((notification) => {
-                console.log(notification)
+                console.log(notification);
                 //let checkNotificationExists = this.props.notifications.filter(n => n.id === notification.id).length;
                 // if (checkNotificationExists === 0) {
                 //     if (this.props.notifications.length === 0) {
@@ -1343,7 +1342,7 @@ class Socket extends PureComponent {
 
 
     };
-    
+
     render() {
         return <PreloadEmojiImage
             src={"https://unpkg.com/emoji-datasource-apple@5.0.1/img/apple/sheets-256/64.png"}/>;
@@ -1355,7 +1354,7 @@ function mapStateToProps({
                              settings: {userSettings},
                              chat: {channels, selectedChannel},
                              posts: {posts},
-                             workspaces: {activeTopic, workspaceChannelIds}
+                             workspaces: {activeTopic, workspaceChannelIds},
                          }) {
     return {
         user,
@@ -1397,8 +1396,8 @@ function mapDispatchToProps(dispatch) {
         incomingWorkspace: bindActionCreators(incomingWorkspace, dispatch),
         incomingUpdatedWorkspaceFolder: bindActionCreators(incomingUpdatedWorkspaceFolder, dispatch),
         incomingMovedTopic: bindActionCreators(incomingMovedTopic, dispatch),
-        updateGeneralChat: bindActionCreators(updateGeneralChat, dispatch),
-        updateUnreadNotificationCounterEntries: bindActionCreators(updateUnreadNotificationCounterEntries, dispatch),
+        setGeneralChat: bindActionCreators(setGeneralChat, dispatch),
+        setUnreadNotificationCounterEntries: bindActionCreators(setUnreadNotificationCounterEntries, dispatch),
         // logoutAction: bindActionCreators(logout, dispatch),
         // simpleNewNotificationSocketAction: bindActionCreators(simpleNewNotificationSocket, dispatch),
         // getNotificationsAction: bindActionCreators(getNotifications, dispatch),

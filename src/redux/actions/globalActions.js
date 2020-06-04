@@ -206,7 +206,7 @@ export function getUnreadNotificationCounterEntries(payload, callback) {
     );
 }
 
-export function updateGeneralChat(payload, callback) {
+export function setGeneralChat(payload, callback) {
     return SimpleDispatchActionToReducer(
         "UPDATE_GENERAL_CHAT_NOTIFICATION",
         payload,
@@ -214,7 +214,7 @@ export function updateGeneralChat(payload, callback) {
     )
 }
 
-export function updateUnreadNotificationCounterEntries(payload, callback) {
+export function setUnreadNotificationCounterEntries(payload, callback) {
     return SimpleDispatchActionToReducer(
         "UPDATE_UNREAD_LIST_COUNTER",
         payload,

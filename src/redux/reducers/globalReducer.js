@@ -9,7 +9,7 @@ const INITIAL_STATE = {
     slugs: [],
     navMode: 2,
     dataFromInput: null,
-    unreadCounter: [],
+    unreadCounter: {},
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -79,43 +79,50 @@ export default (state = INITIAL_STATE, action) => {
                 ...state,
                 i18n: state.i18n === null ? action.data : {
                     ...state.i18n,
-                    ...action.data
+                    ...action.data,
                 },
-                i18nLoaded: true
-            }
+                i18nLoaded: true,
+            };
         }
         case "GET_UNREAD_NOTIFICATION_COUNTER_SUCCESS": {
-            return {
-                ...state,
-                unreadCounter: action.data
-            }
-        }
-        case "UPDATE_GENERAL_CHAT_NOTIFICATION": {
-            if (state.unreadCounter.length === 0) {
-                return {
-                    ...state,
-                    unreadCounter: [...state.unreadCounter, action.data]
-                }
+            let unreadCounter = state.unreadCounter;
+
+            for (const i in action.data) {
+                const item = action.data[i];
+                unreadCounter = {
+                    ...unreadCounter,
+                    [item.entity_type.toLowerCase()]: item.count,
+                };
             }
 
             return {
                 ...state,
-                unreadCounter: state.unreadCounter.map(e => {
-                    if (action.data.entity_type === e.entity_type) {
-                        return {
-                            count: e.count + 1,
-                            entity_type: e.entity_type,
-                        }
-                    } 
-                    return e;
-                }),
-            }
+                unreadCounter: unreadCounter,
+            };
         }
-        case "UPDATE_UNREAD_LIST_COUNTER": {
+        case "UPDATE_GENERAL_CHAT_NOTIFICATION": {
+            let unreadCounter = state.unreadCounter;
+            unreadCounter[action.data.entity_type.toLowerCase()] = unreadCounter[action.data.entity_type.toLowerCase()] + action.data.count;
+
             return {
                 ...state,
-                unreadCounter: action.data
+                unreadCounter: unreadCounter,
+            };
+        }
+        case "UPDATE_UNREAD_LIST_COUNTER": {
+            let unreadCounter = state.unreadCounter;
+
+            for (const i in action.data) {
+                const item = action.data[i];
+                unreadCounter = {
+                    ...unreadCounter,
+                    [item.entity_type.toLowerCase()]: item.count,
+                };
             }
+            return {
+                ...state,
+                unreadCounter: unreadCounter,
+            };
         }
         default:
             return state;

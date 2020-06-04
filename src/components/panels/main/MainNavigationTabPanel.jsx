@@ -3,9 +3,9 @@ import {useDispatch, useSelector} from "react-redux";
 import {useHistory} from "react-router-dom";
 import {Badge} from "reactstrap";
 import styled from "styled-components";
-import {setNavMode, getUnreadNotificationCounterEntries} from "../../../redux/actions/globalActions";
-import {NavLink, SvgIcon, SvgIconFeather} from "../../common";
 import {replaceChar} from "../../../helpers/stringFormatter";
+import {getUnreadNotificationCounterEntries, setNavMode} from "../../../redux/actions/globalActions";
+import {NavLink, SvgIcon, SvgIconFeather} from "../../common";
 
 const Wrapper = styled.div`
     li {
@@ -50,9 +50,11 @@ const MainNavigationTabPanel = (props) => {
     const history = useHistory();
     const dispatch = useDispatch();
 
-    const generalSettings = useSelector(state => state.settings.user.GENERAL_SETTINGS);
-    const unread = useSelector(state =>  state.global.unreadCounter);
-    const [hasUnread, setHasUnread] = useState(false);
+    const {active_topic} = useSelector(state => state.settings.user.GENERAL_SETTINGS);
+    const {lastVisitedChannel} = useSelector(state => state.chat);
+    const unreadCounter = useSelector(state => state.global.unreadCounter);
+
+    const [workspacePath, setWorkpacePath] = useState("/workspace/dashboard");
 
     const handleIconClick = (e) => {
         e.preventDefault();
@@ -70,34 +72,20 @@ const MainNavigationTabPanel = (props) => {
 
     useEffect(() => {
         dispatch(
-            getUnreadNotificationCounterEntries()
-        )
+            getUnreadNotificationCounterEntries(),
+        );
     }, []);
 
-
     useEffect(() => {
-        /**
-         * @todo seggregat for chat
-         */
-        if (unread.length >= 1) {
-            setHasUnread(true);
-        } else {
-            setHasUnread(false);
+        if (active_topic) {
+            const {workspace, topic} = active_topic;
+            if (workspace) {
+                setWorkpacePath(`/workspace/dashboard/${workspace.id}/${replaceChar(workspace.name)}/${topic.id}/${replaceChar(topic.name)}/`);
+            } else {
+                setWorkpacePath(`/workspace/dashboard/${topic.id}/${replaceChar(topic.name)}/`);
+            }
         }
-    }, [unread])
-
-    /**
-     * @todo must not be here
-     */
-    let workspacePath = "/workspace/dashboard";
-    if (generalSettings.active_topic) {
-        const {workspace, topic} =  generalSettings.active_topic;
-        if (workspace) {
-            workspacePath += `/${workspace.id}/${replaceChar(workspace.name)}/${topic.id}/${replaceChar(topic.name)}/`;
-        } else {
-            workspacePath += `/${topic.id}/${replaceChar(topic.name)}/`;
-        }
-    }
+    }, [active_topic]);
 
     return (
         <Wrapper className={`navigation-menu-tab ${className}`}>
@@ -122,11 +110,11 @@ const MainNavigationTabPanel = (props) => {
                     </li>
                     <li>
                         <NavIconContainer to={lastVisitedChannel !== null && lastVisitedChannel.hasOwnProperty("code") ?
-                            `/chat/${lastVisitedChannel.code}` : "/chat"}>
+                                              `/chat/${lastVisitedChannel.code}` : "/chat"}>
                             <NavIcon icon={`message-circle`}/>
                             {
-                                hasUnread === true &&
-                                <Badge>&nbsp;</Badge>
+                                unreadCounter.hasOwnProperty("chat_message") && unreadCounter.chat_message >= 1 &&
+                                <Badge data-count={unreadCounter.chat_message}>&nbsp;</Badge>
                             }
                         </NavIconContainer>
                     </li>
