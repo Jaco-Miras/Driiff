@@ -91,8 +91,7 @@ const ChatContentPanel = (props) => {
     };
 
     const handleOnKeyDown = useCallback(() => {
-
-        if(document.activeElement.tagName.toLowerCase() !== "input") {
+        if(!(document.activeElement.tagName.toLowerCase() === "input" || document.activeElement.classList.contains("ql-editor"))) {
             document.querySelector(".chat-footer .ql-editor").focus();
         }
     }, []);
