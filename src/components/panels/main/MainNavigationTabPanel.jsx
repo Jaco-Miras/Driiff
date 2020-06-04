@@ -87,6 +87,12 @@ const MainNavigationTabPanel = (props) => {
         }
     }, [active_topic]);
 
+    let showCompanyBadge = false;
+    if ((unreadCounter.hasOwnProperty("chat_message") && unreadCounter.chat_message >= 1) ||
+        (unreadCounter.hasOwnProperty("chat_reminder_message") && unreadCounter.chat_reminder_message >= 1)) {
+        showCompanyBadge = true;
+    }
+
     return (
         <Wrapper className={`navigation-menu-tab ${className}`}>
             <div>
