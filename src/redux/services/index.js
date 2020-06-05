@@ -63,6 +63,7 @@ export {
 
 export {
     favoritePost,
+    postMarkDone,
 } from "./post";
 
 export {

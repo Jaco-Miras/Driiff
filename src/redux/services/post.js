@@ -14,3 +14,19 @@ export function favoritePost(payload) {
         data: payload,
     });
 }
+
+/**
+ * @param {Object} payload
+ * @param {number} payload.post_id
+ * @returns {Promise<*>}
+ */
+export function postMarkDone(payload) {
+    let url = `/v1/mark-done`;
+
+    return apiCall({
+        method: "PATCH",
+        url: url,
+        data: payload,
+        is_shared: payload.is_shared ? true : false,
+    });
+}

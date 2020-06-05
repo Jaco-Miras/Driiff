@@ -3,7 +3,8 @@ import styled from "styled-components";
 import {useDispatch} from "react-redux";
 import {AvatarGroup, SvgIconFeather} from "../../common";
 import {CheckBox} from "../../forms";
-import {favoritePost} from "../../../redux/actions/postActions";
+import {favoritePost, postMarkDone} from "../../../redux/actions/postActions";
+import {addToModals} from "../../../redux/actions/globalActions";
 import {PostBadge} from "./index";
 
 const Wrapper = styled.li`
@@ -18,12 +19,39 @@ const PostItemPanel = (props) => {
         dispatch(
             favoritePost({type: "post", type_id: post.id})
         )
-    }
+    };
+
+    const handleMarkPost = () => {
+        dispatch(
+            postMarkDone({post_id: post.id})
+        )
+    };
+
+    const handleArchivePost = () => {
+        const onConfirm = () => {
+            
+        };
+
+        let payload = {
+            type: "confirmation",
+            headerText: "Archive post?",
+            submitText: "Archive",
+            cancelText: "Cancel",
+            bodyText: "Are you sure you want to archive this post?",
+            actions: {
+                onSubmit: onConfirm,
+            },
+        };
+
+        dispatch(
+            addToModals(payload),
+        );
+    };
 
     return (
         <Wrapper className={`list-group-item post-item-list ${className}`}>
             <div className="custom-control custom-checkbox custom-checkbox-success mr-2">
-                <CheckBox name="test"/>
+                <CheckBox name="test" checked={post.is_mark_done} onClick={handleMarkPost}/>
             </div>
             <div>
                 <SvgIconFeather icon="star" onClick={handleFavoritePost}/>
@@ -37,17 +65,7 @@ const PostItemPanel = (props) => {
                             post.users_responsible.length > 0 &&
                             <AvatarGroup users={post.users_responsible}/>
                         }
-                        {/* <div className="mr-3 d-sm-inline d-none">
-                            <div className="avatar-group">
-                                {
-                                    post.users_responsible.length > 0 &&
-                                    post.users_responsible.map(u => {
-                                        return <Avatar name={u.name} imageLink={u.profile_image_link} id={u.id}/>
-                                    })
-                                }
-                            </div>
-                        </div> */}
-                        <SvgIconFeather icon="trash-2"/>
+                        <SvgIconFeather icon="trash-2" onClick={handleArchivePost}/>
                     </div>
                 </div>
             </div>
