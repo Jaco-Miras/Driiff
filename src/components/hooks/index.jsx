@@ -16,7 +16,7 @@ export {default as useCountUnreadReplies} from "./useCountUnreadReplies";
 export {default as useSetWorkspace} from "./useSetWorkspace";
 export {default as useIsMember} from "./useIsMember";
 export {default as useGetWorkspacePosts} from "./useGetWorkspacePosts";
-export * from "./useTranslation";
+export {default as useTranslation}  from "./useTranslation";
 export {default as useSettings} from "./useSettings";
 export {default as useSortWorkspaces} from "./useSortWorkspaces";
 export {default as useFocusInput} from "./useFocusInput";

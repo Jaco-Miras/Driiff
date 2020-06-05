@@ -1,13 +1,13 @@
 import React, {useEffect, useRef, useState} from "react";
-import {useDispatch, useSelector} from "react-redux";
+import {useDispatch} from "react-redux";
 import {useHistory, useRouteMatch} from "react-router-dom";
 import {Badge} from "reactstrap";
 import styled from "styled-components";
-import {addToModals} from "../../redux/actions/globalActions";
-import {setUserGeneralSetting} from "../../redux/actions/settingsActions";
-import {SvgIconFeather} from "../common";
-import TopicList from "./TopicList";
 import {replaceChar} from "../../helpers/stringFormatter";
+import {addToModals} from "../../redux/actions/globalActions";
+import {SvgIconFeather} from "../common";
+import {useSettings} from "../hooks";
+import TopicList from "./TopicList";
 
 const Wrapper = styled.li`
     ${props => !props.show && `display: none;`} 
@@ -79,7 +79,8 @@ const WorkspaceList = props => {
         nav: useRef(null),
     };
 
-    const workspace_open_folder = useSelector(state => state.settings.user.GENERAL_SETTINGS.workspace_open_folder);
+    const {generalSettings: {workspace_open_folder}, setGeneralSetting} = useSettings();
+
 
     const [showTopics, setShowTopics] = useState(null);
     const [maxHeight, setMaxHeight] = useState(null);
@@ -108,21 +109,17 @@ const WorkspaceList = props => {
 
         if (workspace.type === "FOLDER") {
             if (!showTopics) {
-                dispatch(
-                    setUserGeneralSetting({
-                        workspace_open_folder: {
-                            ...workspace_open_folder,
-                            [workspace.id]: workspace.id,
-                        },
-                    }),
-                );
+                setGeneralSetting({
+                    workspace_open_folder: {
+                        ...workspace_open_folder,
+                        [workspace.id]: workspace.id,
+                    },
+                });
             } else {
                 delete workspace_open_folder[workspace.id];
-                dispatch(
-                    setUserGeneralSetting({
-                        workspace_open_folder: workspace_open_folder,
-                    }),
-                );
+                setGeneralSetting({
+                    workspace_open_folder: workspace_open_folder,
+                });
             }
             setShowTopics(prevState => !prevState);
         } else {

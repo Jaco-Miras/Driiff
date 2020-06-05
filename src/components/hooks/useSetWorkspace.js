@@ -1,24 +1,25 @@
 import {useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {useHistory, useParams, useRouteMatch} from "react-router-dom";
+import {replaceChar} from "../../helpers/stringFormatter";
 import {
     addToChannels,
     getChannel,
     restoreLastVisitedChannel,
     setSelectedChannel,
 } from "../../redux/actions/chatActions";
-import {setUserGeneralSetting} from "../../redux/actions/settingsActions";
-import {getWorkspaces, setActiveTopic, setActiveTab} from "../../redux/actions/workspaceActions";
-import {replaceChar} from "../../helpers/stringFormatter";
+import {getWorkspaces, setActiveTab, setActiveTopic} from "../../redux/actions/workspaceActions";
+import {useSettings} from "./index";
 
 const useSetWorkspace = () => {
+
+    const {generalSettings: {active_topic: activeTopicSettings}, setGeneralSetting} = useSettings();
 
     const dispatch = useDispatch();
     const history = useHistory();
     const params = useParams();
     const match = useRouteMatch();
     const route = useRouteMatch();
-    const activeTopicSettings = useSelector(state => state.settings.user.GENERAL_SETTINGS.active_topic);
     const {activeTopic, workspaces, workspacesLoaded, externalWorkspacesLoaded} = useSelector(state => state.workspaces);
     const channels = useSelector(state => state.chat.channels);
 
@@ -71,8 +72,8 @@ const useSetWorkspace = () => {
             );
         } else if (workspacesLoaded && !externalWorkspacesLoaded) {
             dispatch(
-                getWorkspaces({is_external: 1})
-            )
+                getWorkspaces({is_external: 1}),
+            );
         }
 
         if (workspacesLoaded && activeTopic === null && activeTopicSettings !== null) {
@@ -102,7 +103,7 @@ const useSetWorkspace = () => {
 
             if (topic) {
                 dispatch(
-                    setActiveTab(topic.is_external === 0 ? "intern" : "extern")
+                    setActiveTab(topic.is_external === 0 ? "intern" : "extern"),
                 );
                 dispatch(setActiveTopic(topic));
                 if (topic.channel_loaded === undefined) {
@@ -127,20 +128,18 @@ const useSetWorkspace = () => {
 
     useEffect(() => {
         if (activeTopic !== null) {
-            dispatch(
-                setUserGeneralSetting({
-                    active_topic: {
-                        topic: {
-                            id: activeTopic.id,
-                            name: activeTopic.name,
-                        },
-                        workspace: typeof activeTopic.workspace_name === "undefined" ? null : {
-                            id: activeTopic.workspace_id,
-                            name: activeTopic.workspace_name,
-                        },
+            setGeneralSetting({
+                active_topic: {
+                    topic: {
+                        id: activeTopic.id,
+                        name: activeTopic.name,
                     },
-                }),
-            );
+                    workspace: typeof activeTopic.workspace_name === "undefined" ? null : {
+                        id: activeTopic.workspace_id,
+                        name: activeTopic.workspace_name,
+                    },
+                },
+            });
         }
     }, [activeTopic]);
 
@@ -206,7 +205,7 @@ const useSetWorkspace = () => {
                         }
                     }
                 }
-            } 
+            }
             //when going back to workspace and the activeTopic id matches the id on the params
             else if (params.workspaceId !== undefined && parseInt(params.workspaceId) === activeTopic.id) {
                 if (params.hasOwnProperty("folderId")) {
