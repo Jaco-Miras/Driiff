@@ -10,12 +10,12 @@ const WorkspacePostsPanel = (props) => {
 
     const {className = ""} = props;
 
-    const posts = useGetWorkspacePosts();
+    const {posts, filter, tag, sort} = useGetWorkspacePosts();
 
     return (
         <Wrapper className={`container-fluid h-100 ${className}`}>
             <div className="row app-block">
-                <PostSidebar/>
+                <PostSidebar filter={filter} tag={tag} sort={sort}/>
                 <div className="col-md-9 app-content">
                     <div className="app-content-overlay"></div>
                     <PostFilterSearchPanel/>
@@ -25,14 +25,14 @@ const WorkspacePostsPanel = (props) => {
                             <ul className="list-group list-group-flush ui-sortable">
                                 {
                                     posts &&
-                                    Object.values(posts).map(post => {
+                                    posts.map(post => {
                                         return <PostItemPanel key={post.id} post={post}/>
                                     })
                                 }
                             </ul>
                         </div>
 
-                        <div className="card app-detail">
+                        {/* <div className="card app-detail">
                             <div className="card-header">
                                 <div className="app-detail-action-left">
                                     <a className="app-detail-close-button" href="/">
@@ -233,7 +233,7 @@ const WorkspacePostsPanel = (props) => {
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </div> */}
                     </div>
                 </div>
             </div>

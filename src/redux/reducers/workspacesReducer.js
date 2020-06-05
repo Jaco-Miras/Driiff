@@ -391,8 +391,9 @@ export default (state = INITIAL_STATE, action) => {
                 workspacePosts: {
                     ...state.workspacePosts,
                     [action.data.topic_id]: {
-                        filter: null,
+                        filter: "all",
                         sort: null,
+                        tag: null,
                         posts: {
                             ...[action.data.topic_id].posts,
                             ...convertedPosts
@@ -408,8 +409,13 @@ export default (state = INITIAL_STATE, action) => {
                     ...state.workspacePosts,
                     [action.data.topic_id]: {
                         ...state.workspacePosts[action.data.topic_id],
-                        filter: action.data.filter ? action.data.filter : state.workspacePosts[action.data.topic_id].filter,
-                        sort: action.data.sort ? action.data.sort : state.workspacePosts[action.data.topic_id].sort,
+                        filter: action.data.filter ? 
+                            action.data.filter === state.workspacePosts[action.data.topic_id].filter ? null 
+                            : action.data.filter : state.workspacePosts[action.data.topic_id].filter,
+                        sort: action.data.sort ? action.data.sort === state.workspacePosts[action.data.topic_id].sort ? null 
+                            : action.data.sort : state.workspacePosts[action.data.topic_id].sort,
+                        tag: action.data.tag ? action.data.tag === state.workspacePosts[action.data.topic_id].tag ? null 
+                            : action.data.tag : state.workspacePosts[action.data.topic_id].tag
                     }
                 }
             }
