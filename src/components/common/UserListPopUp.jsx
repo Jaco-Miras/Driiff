@@ -78,7 +78,7 @@ const UserListPopUp = props => {
                                     userId={u.id}
                                     name={u.name}
                                     partialName={u.partial_name}
-                                    noClick={true}
+                                    noDefaultClick={true}
                                 />
                                 <span>{u.name}</span>
                             </li>

@@ -4,6 +4,7 @@ import styled from "styled-components";
 import {getUsers} from "../../../redux/actions/userAction";
 import {Avatar, SvgIconFeather} from "../../common";
 import SearchForm from "../../forms/SearchForm";
+import {useFocusInput} from "../../hooks";
 
 const Wrapper = styled.div`    
 `;
@@ -58,14 +59,16 @@ const CompanyPeoplePanel = (props) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
+    useFocusInput(ref.search.current);
+
     return (
-        <Wrapper className={`container-fluid h-100 ${className}`}>
+        <Wrapper className={`company-people container-fluid h-100 ${className}`}>
             <div className="card">
                 <div className="card-body">
                     <Search ref={ref.search} placeholder="People search" onChange={handleSearchChange} autoFocus/>
                     <div className="row">
                         {
-                            userSort.map((user, id) => {
+                            userSort.map((user) => {
                                 return <div className="col-12 col-md-6">
                                     <div className="card border" key={user.id}>
                                         <div className="card-body">
