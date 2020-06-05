@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useRef, useState} from "react";
+import React, {useRef, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import styled from "styled-components";
 import {addToModals} from "../../../redux/actions/globalActions";
@@ -20,24 +20,27 @@ const ChatMessagesPlaceholder = styled.div`
 const ChatContentPanel = (props) => {
 
     const dispatch = useDispatch();
-    const dropzoneRef = useRef();
     const {className = ""} = props;
     const selectedChannel = useSelector(state => state.chat.selectedChannel);
-    const [showDropzone, setShowDropzone] = useState(false);
+    const [showDropZone, setshowDropZone] = useState(false);
     const unreadCount = useCountUnreadReplies();
 
+    const refs = {
+        dropZoneRef: useRef(),
+    };
+
     const handleOpenFileDialog = () => {
-        if (dropzoneRef.current) {
-            dropzoneRef.current.open();
+        if (refs.dropZoneRef.current) {
+            refs.dropZoneRef.current.open();
         }
     };
 
     const handleHideDropzone = () => {
-        setShowDropzone(false);
+        setshowDropZone(false);
     };
 
-    const handleShowDropzone = () => {
-        setShowDropzone(true);
+    const handleshowDropZone = () => {
+        setshowDropZone(true);
     };
 
     const dropAction = (acceptedFiles) => {
@@ -90,30 +93,13 @@ const ChatContentPanel = (props) => {
         dispatch(addToModals(modal));
     };
 
-    const handleOnKeyDown = useCallback(() => {
-        if (!(document.activeElement.tagName.toLowerCase() === "input" ||
-            document.activeElement.classList.contains("ql-editor") && !document.activeElement.classList.contains("chat-bubble"))) {
-            if (document.querySelector(".chat-footer .ql-editor")) {
-                document.querySelector(".chat-footer .ql-editor").focus();
-            }
-        }
-    }, []);
-
-    useEffect(() => {
-        document.addEventListener("keydown", handleOnKeyDown, false);
-
-        return () => {
-            document.removeEventListener("keydown", handleOnKeyDown, false);
-        };
-    }, [handleOnKeyDown]);
-
     useFocusInput(document.querySelector(".chat-footer .ql-editor"));
 
     return (
-        <Wrapper className={`chat-content ${className}`} onDragOver={handleShowDropzone}>
+        <Wrapper className={`chat-content ${className}`} onDragOver={handleshowDropZone}>
             <DropDocument
-                hide={!showDropzone}
-                ref={dropzoneRef}
+                hide={!showDropZone}
+                ref={refs.dropZoneRef}
                 onDragLeave={handleHideDropzone}
                 onDrop={({acceptedFiles}) => {
                     dropAction(acceptedFiles);

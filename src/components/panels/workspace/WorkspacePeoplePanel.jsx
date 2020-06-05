@@ -7,6 +7,12 @@ import SearchForm from "../../forms/SearchForm";
 import {WorkspaceUserItemList} from "../../list/people";
 
 const Wrapper = styled.div`
+    overflow: auto;  
+    &::-webkit-scrollbar {
+        display: none;
+    }
+    -ms-overflow-style: none;
+    scrollbar-width: none;
 `;
 
 const Search = styled(SearchForm)`
