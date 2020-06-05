@@ -11,6 +11,8 @@ import {setUserGeneralSetting} from "../../redux/actions/settingsActions";
 import {getWorkspaces, setActiveTopic, setActiveTab} from "../../redux/actions/workspaceActions";
 import {replaceChar} from "../../helpers/stringFormatter";
 
+let init = false;
+let externalInit = false;
 const useSetWorkspace = () => {
 
     const dispatch = useDispatch();
@@ -23,7 +25,8 @@ const useSetWorkspace = () => {
     const channels = useSelector(state => state.chat.channels);
 
     useEffect(() => {
-        if (!workspacesLoaded) {
+        if (!init) {
+            init = true;
             dispatch(
                 getWorkspaces({is_external: 0}, (err, res) => {
                     if (err) return;
@@ -69,7 +72,8 @@ const useSetWorkspace = () => {
                     }
                 }),
             );
-        } else if (workspacesLoaded && !externalWorkspacesLoaded) {
+        } else if (init && !externalInit) {
+            externalInit = true;
             dispatch(
                 getWorkspaces({is_external: 1})
             )

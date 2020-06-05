@@ -20,7 +20,7 @@ export const AppRoute = ({children, ...props}) => {
                 <Route
                     {...props}
                     component={MainLayout}
-                    path={["/dashboard", "/posts", "/chat", "/files", "/people", "/settings", "/logout", "/logged-out"]}>
+                    path={["/profile", "/dashboard", "/posts", "/chat", "/files", "/people", "/settings", "/logout", "/logged-out"]}>
                     {children}
                 </Route>
                 <Route

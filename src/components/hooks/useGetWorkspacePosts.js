@@ -1,4 +1,4 @@
-import {useEffect} from "react";
+import {useEffect, useState} from "react";
 import {useParams} from "react-router-dom";
 import {useSelector, useDispatch} from "react-redux";
 import {addToWorkspacePosts, getWorkspacePosts} from "../../redux/actions/workspaceActions";
@@ -8,13 +8,17 @@ const useGetWorkspacePosts = () => {
     const dispatch = useDispatch();
     const params = useParams();
     const wsPosts = useSelector(state => state.workspaces.workspacePosts);
+    const user = useSelector(state => state.session.user);
+    const [fetchingPost, setFetchingPost] = useState(false);
 
     useEffect(() => {
         if (params.workspaceId !== undefined) {
-            if (!wsPosts.hasOwnProperty(params.workspaceId)) {
+            if (!wsPosts.hasOwnProperty(params.workspaceId) && !fetchingPost) {
+                setFetchingPost(true);
                 dispatch(
                     getWorkspacePosts({topic_id: parseInt(params.workspaceId)}, (err,res) => {
                         console.log(res)
+                        setFetchingPost(false);
                         if (err) return;
                         dispatch(
                             addToWorkspacePosts({
@@ -30,28 +34,64 @@ const useGetWorkspacePosts = () => {
 
     if (Object.keys(wsPosts).length && wsPosts.hasOwnProperty(params.workspaceId)) {
         let filter = wsPosts[params.workspaceId].filter;
-        let sort =wsPosts[params.workspaceId].sort;
-        if (filter !== null || sort !== null){
-            if (sort && filter === null) {
-                return Object.values(wsPosts[params.workspaceId].posts).sort((a,b) => {
-                    if (sort === "asc") {
-                        return a.updated_at.timestamp > b.updated_at.timestamp ? 1 : -1
+        let sort = wsPosts[params.workspaceId].sort;
+        let tag = wsPosts[params.workspaceId].tag;
+        let posts = wsPosts[params.workspaceId].posts;
+        if (filter || tag) {
+            let filteredPosts = Object.values(posts).filter(p => {
+                if (filter) {
+                    if (filter === "my_posts") {
+                        return p.author.id === user.id
+                    } else if (filter === "draft") {
+                        return true
+                    } else if (filter === "star") {
+                        return p.is_favourite;
                     } else {
-                        return a.updated_at.timestamp < b.updated_at.timestamp ? 1 : -1
+                        return true
                     }
-                })
-            } else if (filter && sort === null) {
-                return wsPosts[params.workspaceId].posts;
-            } else {
-                return wsPosts[params.workspaceId].posts;
-            }
+                } else {
+                    return true
+                }
+            }).filter(p => {
+                if (tag) {
+                    if (tag === "is_must_reply") {
+                        return p.is_must_reply === 1;
+                    } else if (filter === "is_must_read") {
+                        return p.is_must_read === 1;
+                    } else if (filter === "is_read_only") {
+                        return p.is_read_only === 1;
+                    } else {
+                        return true
+                    }
+                } else {
+                    return true
+                }
+            }).sort((a,b) => {
+                if (sort === "favorite") {
+                    return a.is_favourite === b.is_favourite ? 1 : -1
+                } else if (sort === 'unread') {
+                    return a.is_updated === b.is_updated ? 1 : -1
+                }
+            })
+            return {
+                posts: filteredPosts, filter, tag, sort
+            };
         } else {
-            return wsPosts[params.workspaceId].posts;
+            return {
+                posts: Object.values(wsPosts[params.workspaceId].posts), 
+                filter: null,
+                tag: null, 
+                sort: null
+            };
         }
     } else {
-        return null;
+        return {
+            posts: null,
+            filter: null,
+            tag: null,
+            sort: null
+        };
     }
-    
 };
 
 export default useGetWorkspacePosts;

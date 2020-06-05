@@ -3,7 +3,7 @@ import {useDispatch, useSelector} from "react-redux";
 import styled from "styled-components";
 import {addToModals} from "../../../redux/actions/globalActions";
 import {DropDocument} from "../../dropzone/DropDocument";
-import {useCountUnreadReplies} from "../../hooks";
+import {useCountUnreadReplies, useFocusInput} from "../../hooks";
 import ChatMessages from "../../list/chat/ChatMessages";
 import ChatUnreadFloatBar from "../../list/chat/ChatUnreadFloatBar";
 import {ChatFooterPanel, ChatHeaderPanel} from "./index";
@@ -106,6 +106,8 @@ const ChatContentPanel = (props) => {
             document.removeEventListener("keydown", handleOnKeyDown, false);
         };
     }, [handleOnKeyDown]);
+
+    useFocusInput(document.querySelector(".chat-footer .ql-editor"));
 
     return (
         <Wrapper className={`chat-content ${className}`} onDragOver={handleShowDropzone}>

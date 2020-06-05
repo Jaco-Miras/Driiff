@@ -1,4 +1,4 @@
-import React, {forwardRef, useState} from "react";
+import React, {useState} from "react";
 import {useSelector} from "react-redux";
 import {useHistory} from "react-router-dom";
 import Skeleton from "react-skeleton-loader";
@@ -34,7 +34,7 @@ const Initials = styled.span`
     justify-content: center;
 `;
 
-const Avatar = forwardRef((props, ref) => {
+const Avatar = (props) => {
     const {
         className = "",
         imageLink,
@@ -45,12 +45,14 @@ const Avatar = forwardRef((props, ref) => {
         isAnonymous = false,
         type = "USER",
         userId,
+        onClick = null,
+        noDefaultClick = false,
         ...rest
     } = props;
 
     const history = useHistory();
     const onlineUsers = useSelector(state => state.users.onlineUsers);
-    const isOnline = onlineUsers.filter(ou => ou.user_id === userId).length ? true : false;
+    const isOnline = onlineUsers.some(ou => ou.user_id === userId);
 
     const [isLoaded, setIsLoaded] = useState(false);
     const [showInitials, setShowInitials] = useState(false);
@@ -59,13 +61,13 @@ const Avatar = forwardRef((props, ref) => {
         setIsLoaded(true);
     };
 
-    const handleOnClick = (e) => {
-        if (props.noClick)
+    const handleOnClick = () => {
+        if (onClick)
+            onClick();
+
+        if (props.noDefaultClick)
             return;
 
-        if (props.onClick) {
-            props.onClick();
-        }
         if (type === "USER") {
             if (partialName) history.push(`/profile/${partialName}`);
             else history.push(`/profile/${id}`);
@@ -74,7 +76,7 @@ const Avatar = forwardRef((props, ref) => {
         }
     };
 
-    const handleImageError = e => {
+    const handleImageError = () => {
         setIsLoaded(true);
         setShowInitials(true);
     };
@@ -90,38 +92,37 @@ const Avatar = forwardRef((props, ref) => {
 
     return <Wrapper
         {...rest}
-        className={`avatar avatar-sm ${isOnline && "avatar-state-success"} ${className} ${isLoaded && "ico-avatar-loaded"} ${showInitials === true && "border"}`}
+        className={`avatar avatar-sm ${isOnline && "avatar-state-success"} ${isLoaded && "ico-avatar-loaded"} ${showInitials === true && "border"} ${className}`}
         onClick={handleOnClick}>
         {
-            isLoaded ?
-                <></>
-                :
-                <Skeleton borderRadius="50%" widthRandomness={0}
-                          heightRandomness={0}/>
+            isLoaded === false &&
+            <Skeleton
+                borderRadius="50%" widthRandomness={0}
+                heightRandomness={0}/>
         }
         {
             showInitials ?
-                <Initials className="rounded-circle">{handleInitials(name).substring(0, 2)}</Initials>
-                :
-                <>
-                    {
-                        type === "GROUP" ?
-                            <SvgIconFeather icon="users"/>
-                            :
-                            <Image
-                                show={isLoaded}
-                                className="rounded-circle"
-                                onLoad={handleImageLoad}
-                                onError={handleImageError}
-                                src={type === "DEPARTMENT" ? departmentIcon : imageLink !== null && !isAnonymous ? name === "Gripp Offerte Bot" ? botIcon : imageLink : defaultIcon}
-                                alt={name}
-                            />
-                    }
-                </>
+            <Initials className="rounded-circle">{handleInitials(name).substring(0, 2)}</Initials>
+                         :
+            <>
+                {
+                    type === "GROUP" ?
+                    <SvgIconFeather icon="users"/>
+                                     :
+                    <Image
+                        show={isLoaded}
+                        className="rounded-circle"
+                        onLoad={handleImageLoad}
+                        onError={handleImageError}
+                        src={type === "DEPARTMENT" ? departmentIcon : imageLink !== null && !isAnonymous ? name === "Gripp Offerte Bot" ? botIcon : imageLink : defaultIcon}
+                        alt={name}
+                    />
+                }
+            </>
         }
         {children}
     </Wrapper>;
-});
+};
 
 
 export default React.memo(Avatar);

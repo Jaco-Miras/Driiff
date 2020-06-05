@@ -1,9 +1,10 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, {useCallback, useEffect, useRef, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
+import {useHistory} from "react-router-dom";
 import styled from "styled-components";
 import {getUsers} from "../../../redux/actions/userAction";
-import {Avatar, SvgIconFeather} from "../../common";
 import SearchForm from "../../forms/SearchForm";
+import {WorkspaceUserItemList} from "../../list/people";
 
 const Wrapper = styled.div`
 `;
@@ -18,11 +19,16 @@ const WorkspacePeoplePanel = (props) => {
     const {className = ""} = props;
 
     const dispatch = useDispatch();
+    const history = useHistory();
+
     const users = useSelector(state => state.users.users);
     const workspaces = useSelector(state => state.workspaces.workspaces);
+    const activeTab = useSelector(state => state.workspaces.activeTab);
     const activeTopic = useSelector(state => state.workspaces.activeTopic);
     const userFilter = useSelector(state => state.users.getUserFilter);
+
     const [search, setSearch] = useState("");
+
     const ref = {
         search: useRef(),
     };
@@ -72,39 +78,25 @@ const WorkspacePeoplePanel = (props) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
+    const handleUserNameClick = useCallback((user) => {
+        history.push(`/profile/${user.id}/${user.name}`);
+    }, []);
+
+    const handleUserChat = useCallback((user) => {
+        console.log(user);
+    }, []);
+
     return (
-        <Wrapper className={`container-fluid h-100 ${className}`}>
+        <Wrapper className={`workspace-people container-fluid h-100 ${className}`}>
             <div className="card">
                 <div className="card-body">
                     <Search ref={ref.search} placeholder="People search" onChange={handleSearchChange} autoFocus/>
                     <div className="row">
                         {
                             userSort.map((user) => {
-                                return <div className="col-12 col-md-6">
-                                    <div className="card border" key={user.id}>
-                                        <div className="card-body">
-                                            <div
-                                                className="d-flex align-items-center">
-                                                <div className="pr-3">
-                                                    <Avatar id={user.id} name={user.name}
-                                                            imageLink={user.profile_image_link}/>
-                                                </div>
-                                                <div>
-                                                    <h6 className="mb-1 ">{user.name} {user.id}</h6>
-                                                    <span className="small text-muted">
-                                                    {
-                                                        user.role !== null &&
-                                                        <>{user.role.display_name}</>
-                                                    }
-                                                </span>
-                                                </div>
-                                                <div className="text-right ml-auto">
-                                                    <SvgIconFeather icon="message-circle"/>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>;
+                                return <WorkspaceUserItemList
+                                    user={user} onNameClick={handleUserNameClick}
+                                    onChatClick={activeTab === "intern" && handleUserChat}/>;
                             })
                         }
                     </div>

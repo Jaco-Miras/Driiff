@@ -9,6 +9,7 @@ import {
     CompanyPostsPanel,
     CompanySettingsPanel,
 } from "../company";
+import {UserProfilePanel} from "../user";
 import {
     WorkspaceChatPanel,
     WorkspaceDashboardPanel,
@@ -41,6 +42,10 @@ const MainContentPanel = (props) => {
                     ]}/>
             </Switch>
             <Switch>
+                <Route
+                    {...props}
+                    component={UserProfilePanel}
+                    path={["/profile", "/profile/:id/:name"]}/>
                 <Route
                     {...props}
                     component={CompanyDashboardPanel}
