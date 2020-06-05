@@ -198,7 +198,10 @@ const CreateEditWorkspacePostModal = props => {
             responsible_ids: form.selectedUsers.map(u => u.value),
             type: "post",
             personal: 0,
-            workspace_ids: form.selectedWorkspaces.map(ws => ws.value),
+            recipient_ids: form.selectedWorkspaces.map(ws => ws.value),
+            must_read: form.must_read ? 1 : 0,
+            must_reply: form.must_reply ? 1 : 0,
+            read_only: form.no_reply ? 1 : 0,
         };
         dispatch(createWorkspacePost(payload));
         toggle();
