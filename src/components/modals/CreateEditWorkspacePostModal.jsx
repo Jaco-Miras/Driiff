@@ -195,7 +195,7 @@ const CreateEditWorkspacePostModal = props => {
         let payload = {
             title: form.name,
             body: form.description,
-            responsible_ids: form.selectedUsers.map(u => u.id),
+            responsible_ids: form.selectedUsers.map(u => u.value),
             type: "post",
             personal: 0,
             workspace_ids: form.selectedWorkspaces.map(ws => ws.value),
@@ -267,6 +267,7 @@ const CreateEditWorkspacePostModal = props => {
                     label: item.workspace.name,
                 }],
                 selectedUsers: [{
+                    id: user.id,
                     value: user.id,
                     label: user.name,
                     name: user.name,
