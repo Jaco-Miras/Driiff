@@ -1,16 +1,10 @@
 import React, {useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import styled from "styled-components";
-import {
-    createNewChat,
-    renameChannelKey,
-    setChannelHistoricalPosition,
-    setSelectedChannel,
-    updateChannel,
-} from "../../../redux/actions/chatActions";
+import {setChannelHistoricalPosition} from "../../../redux/actions/chatActions";
 import {addToModals} from "../../../redux/actions/globalActions";
 import {SvgIconFeather} from "../../common";
-import {useLoadChannels} from "../../hooks";
+import {useLoadChannels, useUserChannels} from "../../hooks";
 import ChannelIcon from "./ChannelIcon";
 
 const Wrapper = styled.div`
@@ -53,74 +47,14 @@ const ChatContactsList = props => {
     useLoadChannels();
 
     const {className = "", search} = props;
+
     const dispatch = useDispatch();
-    const selectedChannel = useSelector(state => state.chat.selectedChannel);
-    const sharedSlugs = useSelector(state => state.global.slugs);
-    const channels = useSelector(state => state.chat.channels);
+
+    const {channels, selectChannel, selectedChannel} = useUserChannels();
+
     const user = useSelector(state => state.session.user);
 
-    const handleCreateChannel = (channel) => {
-        let old_channel = channel;
-        dispatch(
-            createNewChat({
-                title: "",
-                type: "person",
-                recipient_ids: [channel.members[0].id],
-            }, (err, res) => {
-                if (err)
-                    console.log(err);
-
-                if (res) {
-                    let timestamp = Math.round(+new Date() / 1000);
-                    let channel = {
-                        ...res.data.channel,
-                        old_id: old_channel.id,
-                        code: res.data.code,
-                        selected: true,
-                        hasMore: false,
-                        skip: 0,
-                        replies: [],
-                        created_at: {
-                            timestamp: timestamp,
-                        },
-                        last_reply: null,
-                        title: old_channel.first_name,
-                    };
-                    dispatch(
-                        renameChannelKey(channel),
-                    );
-                }
-            }),
-        );
-    };
-
-    const handleUnarchiveUser = (channel) => {
-        let payload = {
-            id: channel.id,
-            is_pinned: channel.is_pinned,
-            is_archived: 0,
-            is_muted: channel.is_muted,
-            title: channel.title,
-        };
-
-        if (channel.is_shared && sharedSlugs.length) {
-            payload = {
-                ...payload,
-                is_shared: true,
-                token: sharedSlugs.filter(s => s.slug_name === channel.slug_owner)[0].access_token,
-                slug: sharedSlugs.filter(s => s.slug_name === channel.slug_owner)[0].slug_name,
-            };
-        }
-        dispatch(
-            updateChannel(payload, () => {
-                dispatch(
-                    setSelectedChannel({...channel, is_archived: 0}),
-                );
-            }),
-        );
-    };
-
-    const handleOpenGropupChatModal = () => {
+    const handleOpenGroupChatModal = () => {
         let payload = {
             type: "chat_create_edit",
             mode: "new",
@@ -129,23 +63,6 @@ const ChatContactsList = props => {
         dispatch(
             addToModals(payload),
         );
-    };
-
-    const handleSelectChannel = (channel) => {
-
-        //if contact doesn't have a chat channel yet
-        if (channel.add_user) {
-            handleCreateChannel(channel);
-
-            //if unarchived archived chat
-        } else if (channel.is_archived === 1) {
-            handleUnarchiveUser(channel);
-
-        } else {
-            dispatch(
-                setSelectedChannel({...channel, selected: true}),
-            );
-        }
     };
 
     useEffect(() => {
@@ -189,6 +106,14 @@ const ChatContactsList = props => {
                 }
             }
 
+            /**
+             * @todo title needs fixing
+             */
+            if (!channel.hasOwnProperty("title")) {
+                console.log(channel);
+                return false;
+            }
+
             if (search !== "") {
                 return channel.title
                     .toLowerCase()
@@ -196,37 +121,40 @@ const ChatContactsList = props => {
             }
 
             return true;
-        }).sort(
+        })
+        /*
+         * @todo title needs fixing
+        .sort(
             (a, b) => {
                 return a.title.localeCompare(b.title);
             },
-        );
+        );*/
 
     return (
         <Wrapper className={`chat-lists ${className}`}>
             <div className="d-flex align-items-center channel-number-new-group-wrapper">
                 <p className="small mb-0">{sortedChannels.length} Contacts</p>
-                <NewGroupButton className="small mb-0 text-right ml-auto" onClick={handleOpenGropupChatModal}>
+                <NewGroupButton className="small mb-0 text-right ml-auto" onClick={handleOpenGroupChatModal}>
                     <SvgIconFeather width={14} height={14} icon="plus"/>
                     <span>New group chat</span>
                 </NewGroupButton>
             </div>
             <Contacts className={`list-group list-group-flush`}>
                 {
-                    sortedChannels.map((channel, k, arr) => {
-
+                    sortedChannels.map((channel) => {
                         return (
                             <li className="list-group-item d-flex align-items-center pl-0 pr-0 pb-3 pt-3"
                                 key={channel.id}
                                 onClick={e => {
-                                    handleSelectChannel(channel);
+                                    e.preventDefault();
+                                    selectChannel(channel);
                                 }}>
                                 <div className="pr-3">
                                     <ChannelIcon channel={channel}/>
                                 </div>
                                 <div>
                                     <h6 className="mb-1">{channel.title}</h6>
-                                    <div className="small text-muted"></div>
+                                    <div className="small text-muted" />
                                 </div>
                                 <div className="text-right ml-auto">
                                     <SvgIconFeather icon="message-circle"/>

@@ -4,7 +4,7 @@ import {
     //addToChannels,
     getChannel,
     getChannels,
-    getGlobalRecipients,
+    //getGlobalRecipients,
     getLastVisitedChannel, 
     //setSelectedChannel,
 } from "../../redux/actions/chatActions";
@@ -12,8 +12,6 @@ import {
 const useLoadChannels = () => {
 
     const dispatch = useDispatch();
-    //const settings  = useSelector(state => state.user.settings)
-    //const channels = useSelector(state => state.chat.channels);
     const channelsLoaded = useSelector(state => state.chat.channelsLoaded);
     const [activeChannelsLoaded, setActiveChannelsLoaded] = useState(false);
     const [hiddenChannelsLoaded, setHiddenChannelsLoaded] = useState(false);
@@ -28,16 +26,6 @@ const useLoadChannels = () => {
             dispatch(
                 getChannel(channel_id, (err, res) => {
                     if (err) return;
-
-                    // let activeChannel = {
-                    //     ...res.data,
-                    //     selected: true,
-                    //     replies: [],
-                    //     skip: 0,
-                    //     hasMore: true,
-                    // };
-                    //dispatch(addToChannels(activeChannel));
-                    //dispatch(setSelectedChannel(activeChannel));
                 }),
             );
         };
@@ -93,10 +81,6 @@ const useLoadChannels = () => {
             fetchChannels(true, 5, "hidden");
             fetchChannels(true, 5, "archived");
         }
-
-        dispatch(
-            getGlobalRecipients({}),
-        );
         //eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 

@@ -12,13 +12,15 @@ const useUsers = () => {
     const dispatch = useDispatch();
     const {users, getUserFilter} = useSelector(state => state.users);
 
-    const fetchUsers = useCallback(({skip = 0, limit = getUserFilter.limit, ...res}, callBack) => {
+    const fetchUsers = useCallback(({skip = 0, limit = getUserFilter.limit, ...res},
+                                    callback = () => {
+                                    }) => {
         dispatch(
             getUsers({
                 ...res,
                 skip: skip,
                 limit: limit,
-            }, callBack),
+            }, callback),
         );
     }, [getUserFilter.limit]);
 
