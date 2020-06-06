@@ -1,9 +1,9 @@
 import React from "react";
 import styled from "styled-components";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {AvatarGroup, SvgIconFeather} from "../../common";
 import {CheckBox} from "../../forms";
-import {favoritePost, postMarkDone} from "../../../redux/actions/postActions";
+import {favoritePost, postArchive, postMarkDone, removePost} from "../../../redux/actions/postActions";
 import {addToModals} from "../../../redux/actions/globalActions";
 import {PostBadge} from "./index";
 
@@ -13,6 +13,7 @@ const Wrapper = styled.li`
 const PostItemPanel = (props) => {
 
     const dispatch = useDispatch();
+    const topic = useSelector(state => state.workspaces.activeTopic);
     const {className = "", post} = props;
 
     const handleFavoritePost = () => {
@@ -29,7 +30,20 @@ const PostItemPanel = (props) => {
 
     const handleArchivePost = () => {
         const onConfirm = () => {
-            
+            dispatch(
+                postArchive({
+                    post_id: post.id,
+                    is_archived: post.is_archived === 1 ? 0 : 1,
+                }, (err, res) => {
+                    if (err) return;
+                    dispatch(
+                        removePost({
+                            post_id: post.id,
+                            topic_id: topic.id
+                        })
+                    )
+                })
+            )
         };
 
         let payload = {
