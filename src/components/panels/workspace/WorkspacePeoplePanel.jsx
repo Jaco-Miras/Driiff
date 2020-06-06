@@ -1,12 +1,18 @@
 import React, {useCallback, useEffect, useRef, useState} from "react";
-import {useDispatch, useSelector} from "react-redux";
+import {useSelector} from "react-redux";
 import {useHistory} from "react-router-dom";
 import styled from "styled-components";
-import {getUsers} from "../../../redux/actions/userAction";
 import SearchForm from "../../forms/SearchForm";
+import {useFocusInput, useUserChannels} from "../../hooks";
 import {WorkspaceUserItemList} from "../../list/people";
 
 const Wrapper = styled.div`
+    overflow: auto;  
+    &::-webkit-scrollbar {
+        display: none;
+    }
+    -ms-overflow-style: none;
+    scrollbar-width: none;
 `;
 
 const Search = styled(SearchForm)`
@@ -18,14 +24,11 @@ const WorkspacePeoplePanel = (props) => {
 
     const {className = ""} = props;
 
-    const dispatch = useDispatch();
+    const {users, userChannel, selectUserChannel} = useUserChannels();
+
     const history = useHistory();
 
-    const users = useSelector(state => state.users.users);
-    const workspaces = useSelector(state => state.workspaces.workspaces);
-    const activeTab = useSelector(state => state.workspaces.activeTab);
-    const activeTopic = useSelector(state => state.workspaces.activeTopic);
-    const userFilter = useSelector(state => state.users.getUserFilter);
+    const {workspaces, activeTab, activeTopic} = useSelector(state => state.workspaces);
 
     const [search, setSearch] = useState("");
 
@@ -37,8 +40,36 @@ const WorkspacePeoplePanel = (props) => {
         setSearch(e.target.value);
     };
 
+    const handleUserNameClick = useCallback((user) => {
+        history.push(`/profile/${user.id}/${user.name}`);
+    }, []);
+
+    const handleUserChat = useCallback((user) => {
+        selectUserChannel(user, (channel) => {
+            console.log(channel);
+            history.push(`/chat/${channel.code}`);
+        });
+    }, []);
+
+    useEffect(() => {
+        ref.search.current.focus();
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    useFocusInput(ref.search.current);
+
     const userSort = Object.values(users)
+        .sort(
+            (a, b) => {
+                return a.name.localeCompare(b.name);
+            },
+        )
         .filter(user => {
+
+            if (!userChannel.hasOwnProperty(user.id))
+                return false;
+
             if (user.active !== 1)
                 return false;
 
@@ -61,30 +92,7 @@ const WorkspacePeoplePanel = (props) => {
             }
 
             return true;
-        })
-        .sort(
-            (a, b) => {
-                return a.name.localeCompare(b.name);
-            },
-        );
-
-    useEffect(() => {
-        dispatch(
-            getUsers(userFilter),
-        );
-
-        ref.search.current.focus();
-
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-
-    const handleUserNameClick = useCallback((user) => {
-        history.push(`/profile/${user.id}/${user.name}`);
-    }, []);
-
-    const handleUserChat = useCallback((user) => {
-        console.log(user);
-    }, []);
+        });
 
     return (
         <Wrapper className={`workspace-people container-fluid h-100 ${className}`}>
@@ -95,6 +103,7 @@ const WorkspacePeoplePanel = (props) => {
                         {
                             userSort.map((user) => {
                                 return <WorkspaceUserItemList
+                                    key={user.id}
                                     user={user} onNameClick={handleUserNameClick}
                                     onChatClick={activeTab === "intern" && handleUserChat}/>;
                             })

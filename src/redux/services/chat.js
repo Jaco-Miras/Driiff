@@ -27,7 +27,7 @@ export function updateChannel(payload) {
         method: "PUT",
         url: url,
         data: payload,
-        is_shared: payload.is_shared ? true : false,
+        is_shared: !!payload.is_shared,
     });
 }
 
@@ -36,7 +36,7 @@ export function markReadChannel(payload) {
         method: "PUT",
         url: `/v2/read-notification-counter/all-chat?channel_id=${payload.channel_id}`,
         data: payload,
-        is_shared: payload.is_shared ? true : false,
+        is_shared: !!payload.is_shared,
     });
 }
 
@@ -45,12 +45,12 @@ export function markUnreadChannel(payload) {
         method: "PUT",
         url: `/v2/unread-notification-counter/all-chat?channel_id=${payload.channel_id}`,
         data: payload,
-        is_shared: payload.is_shared ? true : false,
+        is_shared: !!payload.is_shared,
     });
 }
 
 export function getChannel(payload) {
-    let url = `/v2/post-channels/${payload.channel_id}`;
+    let url = `/v2/post-channels/${payload.code}`;
     return apiCall({
         method: "GET",
         url: url,
@@ -61,7 +61,8 @@ export function getLastVisitedChannel(payload) {
     let url = `/v2/last-visit-channel`;
     return apiCall({
         method: "GET",
-        url,
+        url: url,
+        data: payload,
     });
 }
 
@@ -105,7 +106,7 @@ export function chatReaction(payload) {
         method: "POST",
         url: url,
         data: payload,
-        is_shared: payload.is_shared ? true : false,
+        is_shared: !!payload.is_shared,
     });
 }
 
@@ -115,7 +116,7 @@ export function deleteChatMessage(payload) {
         method: "DELETE",
         url: url,
         data: payload,
-        is_shared: payload.is_shared ? true : false,
+        is_shared: !!payload.is_shared,
     });
 }
 

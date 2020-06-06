@@ -10,7 +10,6 @@ import tags from "./tagsReducer";
 import users from "./usersReducer";
 import workspaces from "./workspacesReducer";
 
-
 const appReducer = combineReducers({
     session: sessionReducer,
     chat,

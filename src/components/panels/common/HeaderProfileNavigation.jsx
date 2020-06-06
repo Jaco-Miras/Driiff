@@ -2,10 +2,9 @@ import React, {useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import styled from "styled-components";
 import {toggleLoading} from "../../../redux/actions/globalActions";
-import {setUserGeneralSetting} from "../../../redux/actions/settingsActions";
 import {Avatar, SvgIconFeather} from "../../common";
 import Flag from "../../common/Flag";
-import {_t, setLocale} from "../../hooks";
+import {useSettings, useTranslation} from "../../hooks";
 import {NotificationDropDown} from "../dropdown";
 import UserProfileDropDown from "../dropdown/UserProfileDropdown";
 
@@ -38,9 +37,12 @@ const HomeProfileNavigation = (props) => {
 
     const {className = ""} = props;
 
+    const {generalSettings: {dark_mode, language}, setGeneralSetting} = useSettings();
+    const {_t, setLocale} = useTranslation();
+
     const dispatch = useDispatch();
+
     const user = useSelector(state => state.session.user);
-    const {dark_mode, language} = useSelector(state => state.settings.user.GENERAL_SETTINGS);
 
     const languageOptions = {
         "en": _t("LANGUAGE.ENGLISH", "English"),
@@ -49,11 +51,9 @@ const HomeProfileNavigation = (props) => {
 
     const setThemeButton = (e) => {
         hideActiveDropDown(e);
-        dispatch(
-            setUserGeneralSetting({
-                dark_mode: dark_mode === "0" ? "1" : "0",
-            }),
-        );
+        setGeneralSetting({
+            dark_mode: dark_mode === "0" ? "1" : "0",
+        });
     };
 
     const hideActiveDropDown = (e) => {
@@ -84,7 +84,7 @@ const HomeProfileNavigation = (props) => {
         dispatch(
             toggleLoading(),
         );
-        setLocale(e.target.dataset.lang, dispatch, () => {
+        setLocale(e.target.dataset.lang, () => {
             dispatch(
                 toggleLoading(),
             );
