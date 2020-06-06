@@ -168,7 +168,6 @@ const useChannel = () => {
 
             dispatch(
                 getLastVisitedChannel({}, (err, res) => {
-                    console.log(res.data);
                     loadSelectedChannel(res.data.code, (err, res) => {
                         if (err) {
                             console.log(err);

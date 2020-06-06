@@ -4,7 +4,7 @@ import styled from "styled-components";
 import {setChannelHistoricalPosition} from "../../../redux/actions/chatActions";
 import {addToModals} from "../../../redux/actions/globalActions";
 import {SvgIconFeather} from "../../common";
-import {useLoadChannels, useUserChannels} from "../../hooks";
+import {useUserChannels} from "../../hooks";
 import ChannelIcon from "./ChannelIcon";
 
 const Wrapper = styled.div`
@@ -43,8 +43,6 @@ const Contacts = styled.ul`
 `;
 
 const ChatContactsList = props => {
-
-    useLoadChannels();
 
     const {className = "", search} = props;
 
@@ -121,14 +119,14 @@ const ChatContactsList = props => {
             }
 
             return true;
-        })
-        /*
-         * @todo title needs fixing
-        .sort(
-            (a, b) => {
-                return a.title.localeCompare(b.title);
-            },
-        );*/
+        });
+    /*
+     * @todo title needs fixing
+     .sort(
+     (a, b) => {
+     return a.title.localeCompare(b.title);
+     },
+     );*/
 
     return (
         <Wrapper className={`chat-lists ${className}`}>
@@ -154,7 +152,7 @@ const ChatContactsList = props => {
                                 </div>
                                 <div>
                                     <h6 className="mb-1">{channel.title}</h6>
-                                    <div className="small text-muted" />
+                                    <div className="small text-muted"/>
                                 </div>
                                 <div className="text-right ml-auto">
                                     <SvgIconFeather icon="message-circle"/>
