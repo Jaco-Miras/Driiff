@@ -11,6 +11,8 @@ import {
 import {getWorkspaces, setActiveTab, setActiveTopic} from "../../redux/actions/workspaceActions";
 import {useSettings} from "./index";
 
+let init = false;
+let externalInit = false;
 const useSetWorkspace = () => {
 
     const {generalSettings: {active_topic: activeTopicSettings}, setGeneralSetting} = useSettings();
@@ -24,7 +26,8 @@ const useSetWorkspace = () => {
     const channels = useSelector(state => state.chat.channels);
 
     useEffect(() => {
-        if (!workspacesLoaded) {
+        if (!init) {
+            init = true;
             dispatch(
                 getWorkspaces({is_external: 0}, (err, res) => {
                     if (err) return;
@@ -70,7 +73,8 @@ const useSetWorkspace = () => {
                     }
                 }),
             );
-        } else if (workspacesLoaded && !externalWorkspacesLoaded) {
+        } else if (init && !externalInit) {
+            externalInit = true;
             dispatch(
                 getWorkspaces({is_external: 1}),
             );
