@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import {Avatar, SvgIconFeather} from "../../common";
+import {Avatar, SvgIconFeather} from "../../../common";
 
 const Wrapper = styled.div`
     .avatar {
@@ -17,7 +17,7 @@ const Wrapper = styled.div`
     }
 `;
 
-const WorkspaceUserItemList = (props) => {
+const PeopleListItem = (props) => {
 
     const {
         className = "",
@@ -72,4 +72,4 @@ const WorkspaceUserItemList = (props) => {
     );
 };
 
-export default React.memo(WorkspaceUserItemList);
+export default React.memo(PeopleListItem);

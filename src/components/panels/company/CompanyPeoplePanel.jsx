@@ -3,7 +3,7 @@ import {useHistory} from "react-router-dom";
 import styled from "styled-components";
 import SearchForm from "../../forms/SearchForm";
 import {useUserChannels} from "../../hooks";
-import {WorkspaceUserItemList} from "../../list/people/index";
+import {PeopleListItem} from "../../list/people/item";
 
 const Wrapper = styled.div`    
 `;
@@ -79,7 +79,7 @@ const CompanyPeoplePanel = (props) => {
                     <div className="row">
                         {
                             userSort.map((user) => {
-                                return <WorkspaceUserItemList
+                                return <PeopleListItem
                                     key={user.id}
                                     user={user} onNameClick={handleUserNameClick}
                                     onChatClick={handleUserChat}/>;

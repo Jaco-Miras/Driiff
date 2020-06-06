@@ -34,6 +34,7 @@ export default function (state = INITIAL_STATE, action) {
                         name: state.user.name,
                         profile_image_link: state.user.profile_image_link,
                     }];
+                    ac.title = ac.user.name;
                     ac.replies = [];
                     ac.recipient_ids = [ac.id];
                     ac.add_user = true;

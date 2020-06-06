@@ -5,7 +5,7 @@ import {setChannelHistoricalPosition} from "../../../redux/actions/chatActions";
 import {addToModals} from "../../../redux/actions/globalActions";
 import {SvgIconFeather} from "../../common";
 import {useUserChannels} from "../../hooks";
-import ChannelIcon from "./ChannelIcon";
+import {ChatContactIListItem} from "./item";
 
 const Wrapper = styled.div`
     .channel-number-new-group-wrapper {
@@ -93,23 +93,11 @@ const ChatContactsList = props => {
             /**
              * c.members for add_user IS NOT THE USER ID
              */
-            if (channel.add_user !== 1) {
-                const recipient = channel.members.filter(m => m.id !== user.id)[0];
-                if (recipient.id) {
-                    if (recipients.includes(recipient.id)) {
-                        return false;
-                    } else {
-                        recipients.push(recipient.id);
-                    }
-                }
-            }
-
-            /**
-             * @todo title needs fixing
-             */
-            if (!channel.hasOwnProperty("title")) {
-                console.log(channel);
+            const recipient = channel.members.find(m => m.id !== user.id);
+            if (recipients.includes(recipient.id)) {
                 return false;
+            } else {
+                recipients.push(recipient.id);
             }
 
             if (search !== "") {
@@ -120,13 +108,6 @@ const ChatContactsList = props => {
 
             return true;
         });
-    /*
-     * @todo title needs fixing
-     .sort(
-     (a, b) => {
-     return a.title.localeCompare(b.title);
-     },
-     );*/
 
     return (
         <Wrapper className={`chat-lists ${className}`}>
@@ -141,23 +122,7 @@ const ChatContactsList = props => {
                 {
                     sortedChannels.map((channel) => {
                         return (
-                            <li className="list-group-item d-flex align-items-center pl-0 pr-0 pb-3 pt-3"
-                                key={channel.id}
-                                onClick={e => {
-                                    e.preventDefault();
-                                    selectChannel(channel);
-                                }}>
-                                <div className="pr-3">
-                                    <ChannelIcon channel={channel}/>
-                                </div>
-                                <div>
-                                    <h6 className="mb-1">{channel.title}</h6>
-                                    <div className="small text-muted"/>
-                                </div>
-                                <div className="text-right ml-auto">
-                                    <SvgIconFeather icon="message-circle"/>
-                                </div>
-                            </li>
+                            <ChatContactIListItem key={channel.id} onChannelClick={selectChannel} channel={channel}/>
                         );
                     })
                 }
