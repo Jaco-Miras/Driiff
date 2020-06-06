@@ -11,7 +11,7 @@ const PostSearch = props => {
     let topic_id = parseInt(params.workspaceId);
 
     const handleInputChange = e => {
-        if (searchValue.trim() === "") handleClearSearchPosts();
+        if (e.target.value.trim() === "" && searchValue !== "") handleClearSearchPosts();
         setSearchValue(e.target.value);
     };
 
