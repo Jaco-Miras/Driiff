@@ -1,10 +1,10 @@
-import React, {useEffect, useRef, useState} from "react";
-import {useDispatch, useSelector} from "react-redux";
+import React, {useCallback, useEffect, useRef, useState} from "react";
+import {useSelector} from "react-redux";
+import {useHistory} from "react-router-dom";
 import styled from "styled-components";
-import {getUsers} from "../../../redux/actions/userAction";
-import {Avatar, SvgIconFeather} from "../../common";
 import SearchForm from "../../forms/SearchForm";
-import {useFocusInput} from "../../hooks";
+import {useUserChannels} from "../../hooks";
+import {WorkspaceUserItemList} from "../../list/people/index";
 
 const Wrapper = styled.div`    
 `;
@@ -18,10 +18,14 @@ const CompanyPeoplePanel = (props) => {
 
     const {className = ""} = props;
 
-    const dispatch = useDispatch();
-    const users = useSelector(state => state.users.users);
-    const userFilter = useSelector(state => state.users.getUserFilter);
+    const {users, userChannel, selectUserChannel} = useUserChannels();
+
+    const history = useHistory();
+
+    const {workspaces, activeTab, activeTopic} = useSelector(state => state.workspaces);
+
     const [search, setSearch] = useState("");
+
     const ref = {
         search: useRef(),
     };
@@ -30,10 +34,47 @@ const CompanyPeoplePanel = (props) => {
         setSearch(e.target.value);
     };
 
+    const handleUserNameClick = useCallback((user) => {
+        history.push(`/profile/${user.id}/${user.name}`);
+    }, [history]);
+
+    const handleUserChat = useCallback((user) => {
+        selectUserChannel(user, (channel) => {
+            history.push(`/chat/${channel.code}`);
+        });
+    }, [history]);
+
+    useEffect(() => {
+        ref.search.current.focus();
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
     const userSort = Object.values(users)
+        .sort(
+            (a, b) => {
+                return a.name.localeCompare(b.name);
+            },
+        )
         .filter(user => {
+
+            if (!userChannel.hasOwnProperty(user.id))
+                return false;
+
             if (user.active !== 1)
                 return false;
+
+            if (activeTopic) {
+                if (activeTopic.workspace_id) {
+                    if (!workspaces[activeTopic.workspace_id].member_ids.includes(user.id)) {
+                        return false;
+                    }
+                } else {
+                    if (!workspaces[activeTopic.id].member_ids.includes(user.id)) {
+                        return false;
+                    }
+                }
+            }
 
             if (search !== "") {
                 return user.name
@@ -42,58 +83,21 @@ const CompanyPeoplePanel = (props) => {
             }
 
             return true;
-        })
-        .sort(
-            (a, b) => {
-                return a.name.localeCompare(b.name);
-            },
-        );
+        });
 
-    useEffect(() => {
-        dispatch(
-            getUsers(userFilter),
-        );
-
-        ref.search.current.focus();
-
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-
-    useFocusInput(ref.search.current);
 
     return (
-        <Wrapper className={`company-people container-fluid h-100 ${className}`}>
+        <Wrapper className={`workspace-people container-fluid h-100 ${className}`}>
             <div className="card">
                 <div className="card-body">
                     <Search ref={ref.search} placeholder="People search" onChange={handleSearchChange} autoFocus/>
                     <div className="row">
                         {
                             userSort.map((user) => {
-                                return <div className="col-12 col-md-6">
-                                    <div className="card border" key={user.id}>
-                                        <div className="card-body">
-                                            <div
-                                                className="d-flex align-items-center">
-                                                <div className="pr-3">
-                                                    <Avatar id={user.id} name={user.name}
-                                                            imageLink={user.profile_image_link}/>
-                                                </div>
-                                                <div>
-                                                    <h6 className="mb-1 ">{user.name} {user.id}</h6>
-                                                    <span className="small text-muted">
-                                                    {
-                                                        user.role !== null &&
-                                                        <>{user.role.display_name}</>
-                                                    }
-                                                </span>
-                                                </div>
-                                                <div className="text-right ml-auto">
-                                                    <SvgIconFeather icon="message-circle"/>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>;
+                                return <WorkspaceUserItemList
+                                    key={user.id}
+                                    user={user} onNameClick={handleUserNameClick}
+                                    onChatClick={activeTab === "intern" && handleUserChat}/>;
                             })
                         }
                     </div>

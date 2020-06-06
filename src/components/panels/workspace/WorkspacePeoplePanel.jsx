@@ -42,22 +42,19 @@ const WorkspacePeoplePanel = (props) => {
 
     const handleUserNameClick = useCallback((user) => {
         history.push(`/profile/${user.id}/${user.name}`);
-    }, []);
+    }, [history]);
 
     const handleUserChat = useCallback((user) => {
         selectUserChannel(user, (channel) => {
-            console.log(channel);
             history.push(`/chat/${channel.code}`);
         });
-    }, []);
+    }, [history]);
 
     useEffect(() => {
         ref.search.current.focus();
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
-
-    useFocusInput(ref.search.current);
 
     const userSort = Object.values(users)
         .sort(
@@ -93,6 +90,8 @@ const WorkspacePeoplePanel = (props) => {
 
             return true;
         });
+
+    useFocusInput(ref.search.current);
 
     return (
         <Wrapper className={`workspace-people container-fluid h-100 ${className}`}>
