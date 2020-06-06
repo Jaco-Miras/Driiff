@@ -489,6 +489,14 @@ export default (state = INITIAL_STATE, action) => {
                 return state
             }
         }
+        case "REMOVE_POST": {
+            let newWorkspacePosts = {...state.workspacePosts};
+            delete state.workspacePosts[action.data.topic_id].posts[action.data.post_id];
+            return {
+                ...state,
+                workspacePosts: newWorkspacePosts
+            }
+        }
         default:
             return state;
     }

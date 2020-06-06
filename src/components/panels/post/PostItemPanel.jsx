@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {AvatarGroup, SvgIconFeather} from "../../common";
 import {CheckBox} from "../../forms";
 import {favoritePost, postArchive, postMarkDone, removePost} from "../../../redux/actions/postActions";
@@ -13,18 +13,59 @@ const Wrapper = styled.li`
 const PostItemPanel = (props) => {
 
     const dispatch = useDispatch();
+    const topic = useSelector(state => state.workspaces.activeTopic);
     const {className = "", post} = props;
 
     const handleFavoritePost = () => {
         dispatch(
             favoritePost({type: "post", type_id: post.id})
         )
-    }
+    };
+
+    const handleMarkPost = () => {
+        dispatch(
+            postMarkDone({post_id: post.id})
+        )
+    };
+
+    const handleArchivePost = () => {
+        const onConfirm = () => {
+            dispatch(
+                postArchive({
+                    post_id: post.id,
+                    is_archived: post.is_archived === 1 ? 0 : 1,
+                }, (err, res) => {
+                    if (err) return;
+                    dispatch(
+                        removePost({
+                            post_id: post.id,
+                            topic_id: topic.id
+                        })
+                    )
+                })
+            )
+        };
+
+        let payload = {
+            type: "confirmation",
+            headerText: "Archive post?",
+            submitText: "Archive",
+            cancelText: "Cancel",
+            bodyText: "Are you sure you want to archive this post?",
+            actions: {
+                onSubmit: onConfirm,
+            },
+        };
+
+        dispatch(
+            addToModals(payload),
+        );
+    };
 
     return (
         <Wrapper className={`list-group-item post-item-list ${className}`}>
             <div className="custom-control custom-checkbox custom-checkbox-success mr-2">
-                <CheckBox name="test"/>
+                <CheckBox name="test" checked={post.is_mark_done} onClick={handleMarkPost}/>
             </div>
             <div>
                 <SvgIconFeather icon="star" onClick={handleFavoritePost}/>

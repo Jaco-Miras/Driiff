@@ -14,3 +14,36 @@ export function favoritePost(payload) {
         data: payload,
     });
 }
+
+/**
+ * @param {Object} payload
+ * @param {number} payload.post_id
+ * @returns {Promise<*>}
+ */
+export function postMarkDone(payload) {
+    let url = `/v1/mark-done`;
+
+    return apiCall({
+        method: "PATCH",
+        url: url,
+        data: payload,
+        is_shared: payload.is_shared ? true : false,
+    });
+}
+
+/**
+ * @param {Object} payload
+ * @param {number} payload.post_id
+ * @param {number} payload.is_archived
+ * @returns {Promise<*>}
+ */
+export function postArchive(payload) {
+    let url = `/v2/post-toggle-archived`;
+
+    return apiCall({
+        method: "POST",
+        url: url,
+        data: payload,
+        is_shared: payload.is_shared ? true : false,
+    });
+}
