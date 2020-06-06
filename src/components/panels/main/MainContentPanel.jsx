@@ -57,7 +57,7 @@ const MainContentPanel = (props) => {
                 <Route
                     {...props}
                     component={CompanyChatPanel}
-                    path={["/chat"]}/>
+                    path={["/chat/:code?"]}/>
                 <Route
                     {...props}
                     component={CompanyFilesPanel}

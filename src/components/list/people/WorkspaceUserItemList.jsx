@@ -11,7 +11,7 @@ const Wrapper = styled.div`
         cursor: pointer;
         cursor: hand;
     }
-    .message-circle {
+    .feather-message-circle {
         cursor: pointer;
         cursor: hand;
     }

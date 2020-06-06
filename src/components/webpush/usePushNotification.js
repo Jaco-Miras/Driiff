@@ -51,12 +51,12 @@ export default function usePushNotifications() {
         });
     };
     //
-    console.log(userConsent)
+    console.log(userConsent);
     /**
      * define a click handler that creates a push notification subscription.
      * Once the subscription is created, it uses the setUserSubscription hook
      */
-    const onClickSusbribeToPushNotification = () => {
+    const onClickSubscribeToPushNotification = () => {
         setLoading(true);
         setError(false);
         setSubsubscribing(true);
@@ -122,18 +122,18 @@ export default function usePushNotifications() {
             setLoading(true);
             setError(false);
             registerServiceWorker().then(() => {
-                if (userConsent === 'default') {
-                  askUserPermission().then(consent => {
-                    setSuserConsent(consent);
-                    if (consent !== "granted") {
-                      setError({
-                        name: "Consent denied",
-                        message: "You denied the consent to receive notifications",
-                        code: 0
-                      });
-                    }
-                    setLoading(false);
-                  });
+                if (userConsent === "default") {
+                    askUserPermission().then(consent => {
+                        setSuserConsent(consent);
+                        if (consent !== "granted") {
+                            setError({
+                                name: "Consent denied",
+                                message: "You denied the consent to receive notifications",
+                                code: 0,
+                            });
+                        }
+                        setLoading(false);
+                    });
                 }
                 //setLoading(false);
             });
@@ -148,14 +148,14 @@ export default function usePushNotifications() {
         setLoading(true);
         setError(false);
         setFetchingSubscription(true);
-        const getExixtingSubscription = async () => {
+        const getExistingSubscription = async () => {
             const existingSubscription = await getUserSubscription();
             console.log(existingSubscription, "existing subscription");
             setUserSubscription(existingSubscription);
             setFetchingSubscription(false);
             setLoading(false);
         };
-        getExixtingSubscription();
+        getExistingSubscription();
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
@@ -169,7 +169,7 @@ export default function usePushNotifications() {
          * define a click handler that creates a push notification subscription.
          * Once the subscription is created, it uses the setUserSubscription hook
          */
-        const onClickSusbribeToPushNotification = () => {
+        const onClickSubscribeToPushNotification = () => {
             setLoading(true);
             setError(false);
             setSubsubscribing(true);
@@ -198,7 +198,7 @@ export default function usePushNotifications() {
         };
 
         if (userSubscription === null && subscribing === null && fetchingSubscription === false) {
-            onClickSusbribeToPushNotification();
+            onClickSubscribeToPushNotification();
         }
     }, [userSubscription, subscribing, fetchingSubscription, dispatch]);
 
@@ -207,7 +207,7 @@ export default function usePushNotifications() {
      */
     return {
         onClickAskUserPermission,
-        onClickSusbribeToPushNotification,
+        onClickSubscribeToPushNotification,
         onClickSendSubscriptionToPushServer,
         pushServerSubscriptionId,
         onClickSendNotification,

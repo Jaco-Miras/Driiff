@@ -1,14 +1,12 @@
 import React from "react";
-import {useSelector} from "react-redux";
+import {useDispatch} from "react-redux";
 import {withRouter} from "react-router-dom";
 import styled from "styled-components";
-import {useDispatch} from "react-redux";
-import {useLoadLastVisitedChannel} from "../../hooks";
+import {addToModals} from "../../../redux/actions/globalActions";
+import {SvgIconFeather} from "../../common";
 //import ChatRecentList from "../../list/chat/ChatRecentList";
 import ChannelsSidebar from "../../list/chat/ChannelsSidebar";
 import ChatContactsList from "../../list/chat/ChatContactsList";
-import {addToModals} from "../../../redux/actions/globalActions";
-import {SvgIconFeather} from "../../common";
 
 const Wrapper = styled.div`
     overflow: auto !important;
@@ -47,8 +45,6 @@ const NewGroupButton = styled.div`
 const ChatSidebarContentPanel = (props) => {
 
     const {className = "", pill = "pills-home", search} = props;
-    const isLoaded = useSelector(state => state.settings.user.isLoaded);
-    useLoadLastVisitedChannel(props);
 
     const dispatch = useDispatch();
 
@@ -78,11 +74,7 @@ const ChatSidebarContentPanel = (props) => {
                             <span>New group chat</span>
                         </NewGroupButton>
                     </div>
-
-                    {
-                        isLoaded &&
-                        <ChannelsSidebar search={search}/>
-                    }
+                    <ChannelsSidebar search={search}/>
                 </div>
                 <div className={`tab-pane fade ${pill === "pills-contact" && "show active"}`} id="pills-contact"
                      role="tabpanel"

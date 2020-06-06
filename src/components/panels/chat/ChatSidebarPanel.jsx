@@ -1,5 +1,4 @@
-import React, {useRef, useState} from "react";
-import {useSelector} from "react-redux";
+import React, {useCallback, useRef, useState} from "react";
 import styled from "styled-components";
 import SearchForm from "../../forms/SearchForm";
 import {ChatSideBarContentPanel} from "./index";
@@ -22,10 +21,10 @@ const ChatSidebarPanel = (props) => {
 
     const {className = ""} = props;
 
-    const settings = useSelector(state => state.settings.user);
     const [search, setSearch] = useState("");
     const [tabPill, setTabPill] = useState("pills-home");
-    const ref = {
+
+    const refs = {
         navTab: useRef(),
     };
 
@@ -33,20 +32,17 @@ const ChatSidebarPanel = (props) => {
         setSearch(e.target.value);
     };
 
-    const handleSearch = (e) => {
-    };
-
-    const handleTabChange = (e) => {
+    const handleTabChange = useCallback((e) => {
         setTabPill(e.target.getAttribute("aria-controls"));
-        ref.navTab.current.querySelector(".nav-link.active").classList.remove("active");
+        refs.navTab.current.querySelector(".nav-link.active").classList.remove("active");
         e.target.classList.add("active");
-    };
+    }, [setTabPill]);
 
     return (
         <Wrapper className={`chat-sidebar ${className}`}>
             <div className="chat-sidebar-header">
-                <Search onChange={onSearchChange} onClick={handleSearch} placeholder="Chat search"/>
-                <ul ref={ref.navTab} className="nav nav-tabs" role="tablist">
+                <Search onChange={onSearchChange} placeholder="Chat search"/>
+                <ul ref={refs.navTab} className="nav nav-tabs" role="tabList">
                     <li className="nav-item">
                         <span className="nav-link active" id="pills-home-tab" data-toggle="pill"
                               onClick={handleTabChange} role="tab" aria-controls="pills-home"
@@ -59,7 +55,7 @@ const ChatSidebarPanel = (props) => {
                     </li>
                 </ul>
             </div>
-            <ChatSideBarContentPanel pill={tabPill} isLoaded={settings.isLoaded} search={search}/>
+            <ChatSideBarContentPanel pill={tabPill} search={search}/>
         </Wrapper>
     );
 };

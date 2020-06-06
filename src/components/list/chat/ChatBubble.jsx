@@ -1,5 +1,5 @@
 import {hexToCSSFilter} from "hex-to-css-filter";
-import React, {forwardRef, useEffect, useRef, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {renderToString} from "react-dom/server";
 import GifPlayer from "react-gif-player";
 import "react-gif-player/src/GifPlayer.scss";
@@ -18,7 +18,7 @@ import {
     updateChatMessageReminderComplete,
 } from "../../../redux/actions/chatActions";
 import {ImageTextLink, SvgIconFeather, SvgImage} from "../../common";
-import {_t} from "../../hooks";
+import {useTranslation} from "../../hooks";
 import MessageFiles from "./Files/MessageFiles";
 import Unfurl from "./Unfurl/Unfurl";
 
@@ -497,7 +497,7 @@ const ForwardedSpan = styled.span`
     }
 `;
 
-const ChatBubble = forwardRef((props, ref) => {
+const ChatBubble = (props) => {
     const {
         reply,
         showAvatar,
@@ -507,8 +507,11 @@ const ChatBubble = forwardRef((props, ref) => {
         addMessageRef,
     } = props;
 
+    const {_t} = useTranslation();
+
     const dispatch = useDispatch();
     const history = useHistory();
+
     const [chatFiles, setChatFiles] = useState([]);
     const [loadRef, loadInView] = useInView({
         threshold: 1,
@@ -690,12 +693,11 @@ const ChatBubble = forwardRef((props, ref) => {
 
 
     let isEmoticonOnly = false;
-    let replyBody = "";
+
+    let replyBody = quillHelper.parseEmoji(reply.body);
     if (reply.is_deleted) {
         replyBody = _t(reply.body, "The chat message has been deleted");
     } else {
-        replyBody = quillHelper.parseEmoji(reply.body);
-
         if (reply.created_at.timestamp !== reply.updated_at.timestamp) {
             replyBody = `${replyBody}<span class='edited-message'>(edited)</span>`;
         }
@@ -990,6 +992,6 @@ const ChatBubble = forwardRef((props, ref) => {
         }
         {props.children}
     </ChatBubbleContainer>;
-});
+};
 
 export default React.memo(ChatBubble);
