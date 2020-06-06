@@ -50,7 +50,7 @@ const WorkspaceUserItemList = (props) => {
                                         imageLink={user.profile_image_link}/>
                             </div>
                             <div>
-                                <h6 className="user-name mb-1 " onClick={handleOnNameClick}>{user.name} {user.id}</h6>
+                                <h6 className="user-name mb-1 " onClick={handleOnNameClick}>{user.name}</h6>
                                 <span className="small text-muted">
                                     {
                                         user.role !== null &&

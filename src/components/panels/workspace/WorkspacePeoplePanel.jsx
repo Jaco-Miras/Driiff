@@ -24,7 +24,7 @@ const WorkspacePeoplePanel = (props) => {
 
     const {className = ""} = props;
 
-    const {users, userChannel, selectUserChannel} = useUserChannels();
+    const {users, userChannels, selectUserChannel} = useUserChannels();
 
     const history = useHistory();
 
@@ -32,7 +32,7 @@ const WorkspacePeoplePanel = (props) => {
 
     const [search, setSearch] = useState("");
 
-    const ref = {
+    const refs = {
         search: useRef(),
     };
 
@@ -51,7 +51,7 @@ const WorkspacePeoplePanel = (props) => {
     }, [history]);
 
     useEffect(() => {
-        ref.search.current.focus();
+        refs.search.current.focus();
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
@@ -64,7 +64,7 @@ const WorkspacePeoplePanel = (props) => {
         )
         .filter(user => {
 
-            if (!userChannel.hasOwnProperty(user.id))
+            if (!userChannels.hasOwnProperty(user.id))
                 return false;
 
             if (user.active !== 1)
@@ -91,13 +91,13 @@ const WorkspacePeoplePanel = (props) => {
             return true;
         });
 
-    useFocusInput(ref.search.current);
+    useFocusInput(refs.search.current);
 
     return (
         <Wrapper className={`workspace-people container-fluid h-100 ${className}`}>
             <div className="card">
                 <div className="card-body">
-                    <Search ref={ref.search} placeholder="People search" onChange={handleSearchChange} autoFocus/>
+                    <Search ref={refs.search} placeholder="People search" onChange={handleSearchChange} autoFocus/>
                     <div className="row">
                         {
                             userSort.map((user) => {
