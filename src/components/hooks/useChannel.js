@@ -62,12 +62,10 @@ const useChannel = () => {
                         title: old_channel.first_name,
                     };
                     dispatch(
-                        renameChannelKey(channel, (err, res) => {
+                        renameChannelKey(channel, (err) => {
                             if (err) {
                                 console.log(err);
                             }
-
-                            console.log(res);
 
                             callback(err, {
                                 data: channel,
@@ -98,7 +96,7 @@ const useChannel = () => {
             };
         }
         dispatch(
-            updateChannel(payload, (err, res) => {
+            updateChannel(payload, (err) => {
                 callback(err, {
                     data: {...channel, is_archived: 0},
                 });
