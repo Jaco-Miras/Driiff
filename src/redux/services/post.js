@@ -47,3 +47,48 @@ export function postArchive(payload) {
         is_shared: payload.is_shared ? true : false,
     });
 }
+
+/**
+ * @param {Object} payload
+ * @param {number} payload.post_id
+ * @param {number} payload.unread
+ * @returns {Promise<*>}
+ */
+export function postToggleRead(payload) {
+    let url = `/v2/post-toggle-unread`;
+
+    return apiCall({
+        method: "POST",
+        url: url,
+        data: payload,
+        is_shared: payload.is_shared ? true : false,
+    });
+}
+
+/**
+ * @param {Object} payload
+ * @param {number} payload.post_id
+ * @returns {Promise<*>}
+ */
+export function followPost(payload) {
+    return apiCall({
+        method: "PATCH",
+        url: `/v1/follows?post_id=${payload.post_id}`,
+        data: payload,
+        is_shared: payload.is_shared ? true : false,
+    });
+}
+
+/**
+ * @param {Object} payload
+ * @param {number} payload.post_id
+ * @returns {Promise<*>}
+ */
+export function unFollowPost(payload) {
+    return apiCall({
+        method: "DELETE",
+        url: `/v1/follows?post_id=${payload.post_id}`,
+        data: payload,
+        is_shared: payload.is_shared ? true : false,
+    });
+}

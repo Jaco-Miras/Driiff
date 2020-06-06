@@ -1,10 +1,13 @@
 import React, {useRef, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
+import {useLocation} from "react-router-dom";
 import styled from "styled-components";
+import toaster from "toasted-notes";
 import moreIcon from "../../../assets/img/more-menu-icons/secundary.svg";
 import {copyTextToClipboard} from "../../../helpers/commonFunctions";
 import {getBaseUrl} from "../../../helpers/slugHelper";
 import {addToModals} from "../../../redux/actions/globalActions";
+import {postToggleRead, followPost, unFollowPost} from "../../../redux/actions/postActions";
 import {useOutsideClick, useTooltipOrientation, useTooltipPosition} from "../../hooks";
 
 const ChatMoreButtonDiv = styled.div`
@@ -70,12 +73,16 @@ const MoreTooltip = styled.div`
 
 
 const PostOptions = props => {
+
     const {className = "", post} = props;
-    const [showMoreOptions, setShowMoreOptions] = useState(false);
+
+    const location = useLocation();
     const dispatch = useDispatch();
     const tooltipRef = useRef();
     const moreRef = useRef();
     const slugs = useSelector(state => state.global.slugs);
+    const user = useSelector(state => state.session.user);
+    const [showMoreOptions, setShowMoreOptions] = useState(false);
     const scrollEl = document.getElementById("infinite-scroll-chat-replies");
     const orientation = useTooltipOrientation(moreRef, tooltipRef, null, showMoreOptions, "bottom", 0);
     const [toolTipPosition] = useTooltipPosition(moreRef, tooltipRef, null, showMoreOptions);
@@ -86,19 +93,52 @@ const PostOptions = props => {
     };
 
     const handleTooltipMouseLeave = () => {
-        console.log("mouseLeave");
         setTimeout(() => {
             setShowMoreOptions(false);
         }, 1000);
     };
 
     const handleCopyLink = e => {
-        // e.stopPropagation();
-        // let link = `${getBaseUrl()}/chat/${selectedChannel.code}/${replyData.code}`;
-        // copyTextToClipboard(link);
-        // setShowMoreOptions(!showMoreOptions);
+        e.stopPropagation();
+        let link = `${getBaseUrl()}${location.pathname}/post/${post.id}`;
+        copyTextToClipboard(link);
+        setShowMoreOptions(!showMoreOptions);
     };
 
+    const handleMarkReadUnread = (value) => {
+        dispatch(
+            postToggleRead({
+                post_id: post.id,
+                unread: value
+            })
+        )
+    };
+
+    const handlePostFollow = () => {
+        if (post.is_followed) {
+            //When: The user is following/recipient of the post - and not the creator.
+            dispatch(
+                unFollowPost({post_id: post.id}, (err,res) => {
+                    if (err) return;
+                    let notification = `You’ve stopped to follow ${post.title}`;
+                    toaster.notify(notification, {position: "bottom-left"});
+                })
+            );
+        } else {
+            //When: The user not following the post and the post is in an open topic.
+            dispatch(
+                followPost({post_id: post.id}, (err,res) => {
+                    if (err) return;
+                    let notification = `You’ve started to follow ${post.title}`;
+                    toaster.notify(notification, {position: "bottom-left"});
+                })
+            );
+        }
+    };
+
+    const handleShowSnoozeModal = () => {
+
+    }
 
     useOutsideClick(tooltipRef, handleButtonClick, showMoreOptions);
 
@@ -122,21 +162,24 @@ const PostOptions = props => {
                 horizontalOrientation={orientation.vertical}
                 onMouseLeave={handleTooltipMouseLeave}
             >
-                <div>
+                <div onClick={() => handleMarkReadUnread(0)}>
                     Mark as read
                 </div>
-                <div>
+                <div onClick={() => handleMarkReadUnread(1)}>
                     Mark as unread
                 </div>
                 <div onClick={handleCopyLink}>
                     Share post
                 </div>
-                <div>
+                <div onClick={handleShowSnoozeModal}>
                     Snooze post
                 </div>
-                <div>
-                    {post.is_followed ? "Unfollow" : "Follow"}
-                </div>
+                {
+                    post.author.id !== user.id && 
+                    <div onClick={handlePostFollow}>
+                        {post.is_followed ? "Unfollow" : "Follow"}
+                    </div>
+                }
             </MoreTooltip>
 
         }

@@ -1,8 +1,11 @@
 import dispatchActionToReducer, {SimpleDispatchActionToReducer} from "../actionDispatcher";
 import {
     favoritePost as favoritePostService,
+    followPost as followPostService,
     postArchive as postArchiveService,
     postMarkDone as postMarkDoneService,
+    postToggleRead as postToggleReadService,
+    unFollowPost as unFollowPostService,
 } from "../services";
 
 export function favoritePost(payload, callback) {
@@ -39,6 +42,36 @@ export function removePost(payload, callback) {
     return SimpleDispatchActionToReducer(
         "REMOVE_POST",
         payload,
+        callback,
+    );
+}
+
+export function postToggleRead(payload, callback) {
+    return dispatchActionToReducer(
+        postToggleReadService(payload),
+        "POST_TOGGLE_READ_START",
+        "POST_TOGGLE_READ_SUCCESS",
+        "POST_TOGGLE_READ_FAIL",
+        callback,
+    );
+}
+
+export function followPost(payload, callback) {
+    return dispatchActionToReducer(
+        followPostService(payload),
+        "POST_FOLLOW_START",
+        "POST_FOLOW_SUCCESS",
+        "POST_FOLOW_FAIL",
+        callback,
+    );
+}
+
+export function unFollowPost(payload, callback) {
+    return dispatchActionToReducer(
+        unFollowPostService(payload),
+        "POST_UNFOLLOW_START",
+        "POST_UNFOLOW_SUCCESS",
+        "POST_UNFOLOW_FAIL",
         callback,
     );
 }
