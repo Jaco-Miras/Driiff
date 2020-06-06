@@ -4,6 +4,7 @@ import {useDispatch} from "react-redux";
 import {AvatarGroup, SvgIconFeather} from "../../common";
 import {CheckBox} from "../../forms";
 import {favoritePost} from "../../../redux/actions/postActions";
+import {PostBadge} from "./index";
 
 const Wrapper = styled.li`
 `;
@@ -31,9 +32,7 @@ const PostItemPanel = (props) => {
                 <div className="mb-1 d-flex align-items-center justify-content-between">
                     <div className="app-list-title text-truncate">{post.title}</div>
                     <div className="pl-3 d-flex align-items-center">
-                        <div className="mr-3 d-sm-inline d-none">
-                            <div className="badge badge-danger">Category</div>
-                        </div>
+                        <PostBadge post={post}/>
                         {
                             post.users_responsible.length > 0 &&
                             <AvatarGroup users={post.users_responsible}/>

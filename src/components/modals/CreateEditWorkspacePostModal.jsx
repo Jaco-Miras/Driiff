@@ -7,7 +7,7 @@ import {createWorkspacePost} from "../../redux/actions/workspaceActions";
 import {SvgIconFeather} from "../common";
 import {CheckBox, FolderSelect, PeopleSelect} from "../forms";
 import QuillEditor from "../forms/QuillEditor";
-import {useQuillModules} from "../hooks";
+import {useQuillModules, useGetWorkspaceAndUserOptions} from "../hooks";
 import {ModalHeaderSection} from "./index";
 
 const WrapperDiv = styled(InputGroup)`
@@ -125,10 +125,10 @@ const CreateEditWorkspacePostModal = props => {
     const dispatch = useDispatch();
     const [modal, setModal] = useState(true);
     const user = useSelector(state => state.session.user);
-    const workspaces = useSelector(state => state.workspaces.workspaces);
-    const activeTab = useSelector(state => state.workspaces.activeTab);
-    const [workspaceOptions, setWorkspaceOptions] = useState([]);
-    const [userOptions, setUserOptions] = useState([]);
+    // const workspaces = useSelector(state => state.workspaces.workspaces);
+    // const activeTab = useSelector(state => state.workspaces.activeTab);
+    // const [workspaceOptions, setWorkspaceOptions] = useState([]);
+    //const [userOptions, setUserOptions] = useState([]);
     const [showMoreOptions, setShowMoreOptions] = useState(null);
     const [maxHeight, setMaxHeight] = useState(null);
     const [form, setForm] = useState({
@@ -195,10 +195,14 @@ const CreateEditWorkspacePostModal = props => {
         let payload = {
             title: form.name,
             body: form.description,
-            responsible_ids: form.selectedUsers.map(u => u.id),
+            responsible_ids: form.selectedUsers.map(u => u.value),
             type: "post",
             personal: 0,
-            workspace_ids: form.selectedWorkspaces.map(ws => ws.value),
+            recipient_ids: form.selectedWorkspaces.filter(ws => ws.type !== "FOLDER").map(ws => ws.value),
+            must_read: form.must_read ? 1 : 0,
+            must_reply: form.must_reply ? 1 : 0,
+            read_only: form.no_reply ? 1 : 0,
+            workspace_ids: form.selectedWorkspaces.filter(ws => ws.type === "FOLDER").map(ws => ws.value)
         };
         dispatch(createWorkspacePost(payload));
         toggle();
@@ -249,24 +253,15 @@ const CreateEditWorkspacePostModal = props => {
 
     useEffect(() => {
         if (item.workspace !== null) {
-            let members = [];
-            if (item.workspace.members && item.workspace.members.length) {
-                members = item.workspace.members.map(m => {
-                    return {
-                        ...m,
-                        value: m.id,
-                        label: m.name,
-                    };
-                });
-                setUserOptions(members);
-            }
             setForm({
                 ...form,
                 selectedWorkspaces: [{
+                    ...item.workspace,
                     value: item.workspace.id,
                     label: item.workspace.name,
                 }],
                 selectedUsers: [{
+                    id: user.id,
                     value: user.id,
                     label: user.name,
                     name: user.name,
@@ -280,59 +275,6 @@ const CreateEditWorkspacePostModal = props => {
     }, []);
 
     useEffect(() => {
-        if (Object.values(workspaces).length) {
-            const wsTopics = Object.values(workspaces).map(ws => {
-                if (ws.type === "FOLDER") {
-                    if (Object.keys(ws.topics).length) {
-                        return Object.values(ws.topics);
-                    }
-                    return null;
-                } else {
-                    return ws;
-                }
-            }).flat().filter(ws => ws !== null);
-
-            const workspaceOptions = wsTopics.map(ws => {
-                return {
-                    ...ws,
-                    value: ws.id,
-                    label: ws.name,
-                };
-            });
-            setWorkspaceOptions(workspaceOptions);
-        }
-    }, [Object.values(workspaces).length]);
-
-    const unique = useCallback((a, i, c) => {
-        return c.findIndex(u => u.id === a.id) === i;
-    }, []);
-
-    useEffect(() => {
-        if (form.selectedWorkspaces.length) {
-            let wsMembers = form.selectedWorkspaces.map(ws => {
-                if (ws.members !== undefined && ws.members.length) {
-                    return ws.members;
-                } else return [];
-            });
-
-            let uniqueMembers = [...wsMembers.flat()];
-            //const unique = (a, i, c) => c.findIndex(u => u.id === a.id) === i
-            uniqueMembers = uniqueMembers.filter(unique);
-
-            if (uniqueMembers.length) {
-                uniqueMembers = uniqueMembers.map(u => {
-                    return {
-                        ...u,
-                        value: u.id,
-                        label: u.name,
-                    };
-                });
-                setUserOptions(uniqueMembers);
-            }
-        }
-    }, [form.selectedWorkspaces.length]);
-
-    useEffect(() => {
         console.log(formRef.more_options);
     }, []);
 
@@ -343,6 +285,8 @@ const CreateEditWorkspacePostModal = props => {
             setShowMoreOptions(false);
         }
     }, [formRef, setMaxHeight]);
+
+    const [wsOptions, userOptions] = useGetWorkspaceAndUserOptions(form.selectedWorkspaces, item);
 
     return (
 
@@ -362,7 +306,7 @@ const CreateEditWorkspacePostModal = props => {
                 <WrapperDiv>
                     <Label for="workspace">Workspace</Label>
                     <SelectWorkspace
-                        options={workspaceOptions}
+                        options={wsOptions}
                         value={form.selectedWorkspaces}
                         onChange={handleSelectWorkspace}
                         isMulti={true}

@@ -20,3 +20,4 @@ export * from "./useTranslation";
 export {default as useSettings} from "./useSettings";
 export {default as useSortWorkspaces} from "./useSortWorkspaces";
 export {default as useFocusInput} from "./useFocusInput";
+export {default as useGetWorkspaceAndUserOptions} from "./useGetWorkspaceAndUserOptions";

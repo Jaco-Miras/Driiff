@@ -31,6 +31,7 @@ export default (state = INITIAL_STATE, action) => {
                             workspace_id: ws.id,
                             workspace_name: ws.name,
                             workspace_description: ws.description,
+                            type: "TOPIC",
                         }
                     })
                 }
