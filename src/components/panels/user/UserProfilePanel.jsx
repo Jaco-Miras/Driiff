@@ -29,7 +29,7 @@ const UserProfilePanel = (props) => {
                             <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Delectus repudiandae
                                 eveniet
                                 harum.</p>
-                            <a href="#" className="btn btn-outline-primary">
+                            <a href="/" className="btn btn-outline-primary">
                                 <SvgIconFeather icon="edit-2" />
                                 Edit Profile
                             </a>
@@ -57,7 +57,7 @@ const UserProfilePanel = (props) => {
                         <div className="card-body">
                             <h6 className="card-title d-flex justify-content-between align-items-center">
                                 Information
-                                <a href="#" className="btn btn-outline-light btn-sm">
+                                <a href="/" className="btn btn-outline-light btn-sm">
                                     <SvgIconFeather icon="edit-2" />
                                     Edit
                                 </a>
@@ -101,7 +101,7 @@ const UserProfilePanel = (props) => {
                         <div className="card-body">
                             <h6 className="card-title d-flex justify-content-between align-items-center">
                                 Photos
-                                <a href="#" className="btn btn-outline-light btn-sm">
+                                <a href="/" className="btn btn-outline-light btn-sm">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                          viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1"
                                          strokeLinecap="round" strokeLinejoin="round"
@@ -116,27 +116,27 @@ const UserProfilePanel = (props) => {
                             <div className="row row-xs">
                                 <div className="col-lg-4 mb-3">
                                     <img className="img-fluid rounded" src="https://via.placeholder.com/1200X900"
-                                         alt="image"/>
+                                         alt=" "/>
                                 </div>
                                 <div className="col-lg-4 mb-3">
                                     <img className="img-fluid rounded" src="https://via.placeholder.com/1200X900"
-                                         alt="image"/>
+                                         alt=" "/>
                                 </div>
                                 <div className="col-lg-4 mb-3">
                                     <img className="img-fluid rounded" src="https://via.placeholder.com/1200X900"
-                                         alt="image"/>
+                                         alt=" "/>
                                 </div>
                                 <div className="col-lg-4 mb-3">
                                     <img className="img-fluid rounded" src="https://via.placeholder.com/1200X900"
-                                         alt="image"/>
+                                         alt=" "/>
                                 </div>
                                 <div className="col-lg-4 mb-3">
                                     <img className="img-fluid rounded" src="https://via.placeholder.com/1200X900"
-                                         alt="image"/>
+                                         alt=" "/>
                                 </div>
                                 <div className="col-lg-4 mb-3">
                                     <img className="img-fluid rounded" src="https://via.placeholder.com/1200X900"
-                                         alt="image"/>
+                                         alt=" "/>
                                 </div>
                             </div>
                         </div>
@@ -229,7 +229,7 @@ const UserProfilePanel = (props) => {
                                 <div className="text-right">
                                     <ul className="list-inline">
                                         <li className="list-inline-item">
-                                            <a href="#" data-toggle="tooltip" title=""
+                                            <a href="/" data-toggle="tooltip" title=""
                                                className="btn btn-outline-light" data-original-title="Add Image">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                                      viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -242,7 +242,7 @@ const UserProfilePanel = (props) => {
                                             </a>
                                         </li>
                                         <li className="list-inline-item">
-                                            <a href="#" data-toggle="tooltip" title=""
+                                            <a href="/" data-toggle="tooltip" title=""
                                                className="btn btn-outline-light" data-original-title="Add Video">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                                      viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -254,7 +254,7 @@ const UserProfilePanel = (props) => {
                                             </a>
                                         </li>
                                         <li className="list-inline-item">
-                                            <a href="#" data-toggle="tooltip" title=""
+                                            <a href="/" data-toggle="tooltip" title=""
                                                className="btn btn-outline-light" data-original-title="Add File">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                                      viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -316,24 +316,24 @@ const UserProfilePanel = (props) => {
                                             </div>
                                         </div>
                                         <div className="dropdown ml-auto">
-                                            <a href="#" data-toggle="dropdown">
+                                            <a href="/" data-toggle="dropdown">
                                                 <i className="fa fa-ellipsis-v"></i>
                                             </a>
                                             <div className="dropdown-menu dropdown-menu-right">
-                                                <a href="#" className="dropdown-item">Share</a>
-                                                <a href="#" className="dropdown-item">Edit</a>
-                                                <a href="#" className="dropdown-item">Delete</a>
+                                                <a href="/" className="dropdown-item">Share</a>
+                                                <a href="/" className="dropdown-item">Edit</a>
+                                                <a href="/" className="dropdown-item">Delete</a>
                                             </div>
                                         </div>
                                     </div>
                                     <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet dolor eos id
                                         ipsa
                                         nobis omnis, tenetur? Dolor officiis omnis quo?</p>
-                                    <a href="#">
+                                    <a href="/">
                                         <div className="row no-gutters border border-radius-1">
                                             <div className="col-3">
                                                 <img src="https://via.placeholder.com/600X600" className="img-fluid"
-                                                     alt="image"/>
+                                                     alt=" "/>
                                             </div>
                                             <div className="col-9 p-3">
                                                 <h5>Algolia Integration</h5>
@@ -347,7 +347,7 @@ const UserProfilePanel = (props) => {
                                     </a>
                                     <div className="d-flex justify-content-between align-items-center mt-4">
                                         <div>
-                                            <a href="#" title="" data-toggle="tooltip" data-original-title="Like">
+                                            <a href="/" title="" data-toggle="tooltip" data-original-title="Like">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                                      viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                                      strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"
@@ -359,7 +359,7 @@ const UserProfilePanel = (props) => {
                                             </a>
                                         </div>
                                         <div>
-                                            <a href="#" title="" data-toggle="tooltip"
+                                            <a href="/" title="" data-toggle="tooltip"
                                                data-original-title="Comments">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                                      viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -370,7 +370,7 @@ const UserProfilePanel = (props) => {
                                                 </svg>
                                                 3
                                             </a>
-                                            <a href="#" className="ml-3" title="" data-toggle="tooltip"
+                                            <a href="/" className="ml-3" title="" data-toggle="tooltip"
                                                data-original-title="Share">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                                      viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -402,13 +402,13 @@ const UserProfilePanel = (props) => {
                                             </div>
                                         </div>
                                         <div className="dropdown ml-auto">
-                                            <a href="#" data-toggle="dropdown">
+                                            <a href="/" data-toggle="dropdown">
                                                 <i className="fa fa-ellipsis-v"></i>
                                             </a>
                                             <div className="dropdown-menu dropdown-menu-right">
-                                                <a href="#" className="dropdown-item">Share</a>
-                                                <a href="#" className="dropdown-item">Edit</a>
-                                                <a href="#" className="dropdown-item">Delete</a>
+                                                <a href="/" className="dropdown-item">Share</a>
+                                                <a href="/" className="dropdown-item">Edit</a>
+                                                <a href="/" className="dropdown-item">Delete</a>
                                             </div>
                                         </div>
                                     </div>
@@ -420,7 +420,7 @@ const UserProfilePanel = (props) => {
                                         nobis omnis, tenetur? Dolor officiis omnis quo?</p>
                                     <div className="d-flex justify-content-between align-items-center mt-4">
                                         <div>
-                                            <a href="#" title="" data-toggle="tooltip" data-original-title="Like">
+                                            <a href="/" title="" data-toggle="tooltip" data-original-title="Like">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                                      viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                                      strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"
@@ -432,7 +432,7 @@ const UserProfilePanel = (props) => {
                                             </a>
                                         </div>
                                         <div>
-                                            <a href="#" title="" data-toggle="tooltip"
+                                            <a href="/" title="" data-toggle="tooltip"
                                                data-original-title="Comments">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                                      viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -443,7 +443,7 @@ const UserProfilePanel = (props) => {
                                                 </svg>
                                                 13
                                             </a>
-                                            <a href="#" className="ml-3" title="" data-toggle="tooltip"
+                                            <a href="/" className="ml-3" title="" data-toggle="tooltip"
                                                data-original-title="Share">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                                      viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -474,13 +474,13 @@ const UserProfilePanel = (props) => {
                                                     </div>
                                                 </div>
                                                 <div className="dropdown ml-auto">
-                                                    <a href="#" data-toggle="dropdown">
+                                                    <a href="/" data-toggle="dropdown">
                                                         <i className="fa fa-ellipsis-v"></i>
                                                     </a>
                                                     <div className="dropdown-menu dropdown-menu-right">
-                                                        <a href="#" className="dropdown-item">Share</a>
-                                                        <a href="#" className="dropdown-item">Edit</a>
-                                                        <a href="#" className="dropdown-item">Delete</a>
+                                                        <a href="/" className="dropdown-item">Share</a>
+                                                        <a href="/" className="dropdown-item">Edit</a>
+                                                        <a href="/" className="dropdown-item">Delete</a>
                                                     </div>
                                                 </div>
                                             </div>
@@ -488,7 +488,7 @@ const UserProfilePanel = (props) => {
                                                 ducimus?</p>
                                             <div className="d-flex justify-content-between align-items-center">
                                                 <div>
-                                                    <a href="#" title="" data-toggle="tooltip"
+                                                    <a href="/" title="" data-toggle="tooltip"
                                                        data-original-title="Like">
                                                         <svg xmlns="http://www.w3.org/2000/svg" width="24"
                                                              height="24" viewBox="0 0 24 24" fill="none"
@@ -500,7 +500,7 @@ const UserProfilePanel = (props) => {
                                                         </svg>
                                                         3
                                                     </a>
-                                                    <a href="#" className="ml-3">
+                                                    <a href="/" className="ml-3">
                                                         Reply
                                                     </a>
                                                 </div>
@@ -519,13 +519,13 @@ const UserProfilePanel = (props) => {
                                                     </div>
                                                 </div>
                                                 <div className="dropdown ml-auto">
-                                                    <a href="#" data-toggle="dropdown">
+                                                    <a href="/" data-toggle="dropdown">
                                                         <i className="fa fa-ellipsis-v"></i>
                                                     </a>
                                                     <div className="dropdown-menu dropdown-menu-right">
-                                                        <a href="#" className="dropdown-item">Share</a>
-                                                        <a href="#" className="dropdown-item">Edit</a>
-                                                        <a href="#" className="dropdown-item">Delete</a>
+                                                        <a href="/" className="dropdown-item">Share</a>
+                                                        <a href="/" className="dropdown-item">Edit</a>
+                                                        <a href="/" className="dropdown-item">Delete</a>
                                                     </div>
                                                 </div>
                                             </div>
@@ -535,7 +535,7 @@ const UserProfilePanel = (props) => {
                                                 minus nisi omnis quod sequi suscipit totam veritatis voluptatum.</p>
                                             <div className="d-flex justify-content-between align-items-center">
                                                 <div>
-                                                    <a href="#" title="" data-toggle="tooltip"
+                                                    <a href="/" title="" data-toggle="tooltip"
                                                        data-original-title="Like">
                                                         <svg xmlns="http://www.w3.org/2000/svg" width="24"
                                                              height="24" viewBox="0 0 24 24" fill="none"
@@ -547,7 +547,7 @@ const UserProfilePanel = (props) => {
                                                         </svg>
                                                         1
                                                     </a>
-                                                    <a href="#" className="ml-3">
+                                                    <a href="/" className="ml-3">
                                                         Reply
                                                     </a>
                                                 </div>
@@ -586,13 +586,13 @@ const UserProfilePanel = (props) => {
                                             </div>
                                         </div>
                                         <div className="dropdown ml-auto">
-                                            <a href="#" data-toggle="dropdown">
+                                            <a href="/" data-toggle="dropdown">
                                                 <i className="fa fa-ellipsis-v"></i>
                                             </a>
                                             <div className="dropdown-menu dropdown-menu-right">
-                                                <a href="#" className="dropdown-item">Share</a>
-                                                <a href="#" className="dropdown-item">Edit</a>
-                                                <a href="#" className="dropdown-item">Delete</a>
+                                                <a href="/" className="dropdown-item">Share</a>
+                                                <a href="/" className="dropdown-item">Edit</a>
+                                                <a href="/" className="dropdown-item">Delete</a>
                                             </div>
                                         </div>
                                     </div>
@@ -602,16 +602,16 @@ const UserProfilePanel = (props) => {
                                     <div className="row row-xs">
                                         <div className="col-6">
                                             <img src="https://via.placeholder.com/600X600"
-                                                 className="w-100 border-radius-1" alt="image"/>
+                                                 className="w-100 border-radius-1" alt=" "/>
                                         </div>
                                         <div className="col-6">
                                             <img src="https://via.placeholder.com/600X600"
-                                                 className="w-100 border-radius-1" alt="image"/>
+                                                 className="w-100 border-radius-1" alt=" "/>
                                         </div>
                                     </div>
                                     <div className="d-flex justify-content-between align-items-center mt-4">
                                         <div>
-                                            <a href="#" title="" data-toggle="tooltip" data-original-title="Like">
+                                            <a href="/" title="" data-toggle="tooltip" data-original-title="Like">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                                      viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                                      strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"
@@ -623,7 +623,7 @@ const UserProfilePanel = (props) => {
                                             </a>
                                         </div>
                                         <div>
-                                            <a href="#" title="" data-toggle="tooltip"
+                                            <a href="/" title="" data-toggle="tooltip"
                                                data-original-title="Comments">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                                      viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -634,7 +634,7 @@ const UserProfilePanel = (props) => {
                                                 </svg>
                                                 33
                                             </a>
-                                            <a href="#" className="ml-3" title="" data-toggle="tooltip"
+                                            <a href="/" className="ml-3" title="" data-toggle="tooltip"
                                                data-original-title="Share">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                                      viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -660,27 +660,27 @@ const UserProfilePanel = (props) => {
                                     <div className="timeline">
                                         <div className="timeline-item">
                                             <div>
-                                                <a href="#">
+                                                <a href="/">
                                                     <figure className="avatar avatar-sm mr-3 bring-forward">
                                                         <img src="https://via.placeholder.com/128X128"
-                                                             className="rounded-circle" alt="image"/>
+                                                             className="rounded-circle" alt=" "/>
                                                     </figure>
                                                 </a>
                                             </div>
                                             <div>
                                                 <h6 className="d-flex justify-content-between mb-4">
                                             <span>
-                                                <a href="#">Martina Ash</a> shared a link
+                                                <a href="/">Martina Ash</a> shared a link
                                             </span>
                                                     <span
                                                         className="text-muted font-weight-normal">Tue 8:17pm</span>
                                                 </h6>
-                                                <a href="#">
+                                                <a href="/">
                                                     <div className="mb-3 border border-radius-1">
                                                         <div className="row no-gutters">
                                                             <div className="col-2">
                                                                 <img src="https://via.placeholder.com/600X600"
-                                                                     className="w-100" alt="image"/>
+                                                                     className="w-100" alt=" "/>
                                                             </div>
                                                             <div className="col-10 p-3">
                                                                 <h5 className="line-height-16">Connection title</h5>
@@ -702,12 +702,12 @@ const UserProfilePanel = (props) => {
                                             <div>
                                                 <h6 className="d-flex justify-content-between mb-4">
                                             <span>
-                                                <a href="#">Jonny Richie</a> shared a post
+                                                <a href="/">Jonny Richie</a> shared a post
                                             </span>
                                                     <span
                                                         className="text-muted font-weight-normal">Tue 8:17pm</span>
                                                 </h6>
-                                                <a href="#">
+                                                <a href="/">
                                                     <div className="mb-3 border p-3 border-radius-1">
                                                         Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ab
                                                         aliquid aperiam commodi culpa debitis deserunt enim itaque
@@ -729,12 +729,12 @@ const UserProfilePanel = (props) => {
                                             <div>
                                                 <h6 className="d-flex justify-content-between mb-4">
                                             <span>
-                                                <a href="#">Jonny Richie</a> attached file
+                                                <a href="/">Jonny Richie</a> attached file
                                             </span>
                                                     <span
                                                         className="text-muted font-weight-normal">Tue 8:17pm</span>
                                                 </h6>
-                                                <a href="#">
+                                                <a href="/">
                                                     <div className="mb-3 border p-3 border-radius-1">
                                                         <i className="fa fa-file-pdf-o mr-2"></i> filename12334.pdf
                                                     </div>
@@ -753,7 +753,7 @@ const UserProfilePanel = (props) => {
                                             <div>
                                                 <h6 className="d-flex justify-content-between mb-4">
                                             <span>
-                                                <a href="#">Jonny Richie</a> shared files
+                                                <a href="/">Jonny Richie</a> shared files
                                             </span>
                                                     <span
                                                         className="text-muted font-weight-normal">Tue 8:17pm</span>
@@ -762,19 +762,19 @@ const UserProfilePanel = (props) => {
                                                     <div className="col-xl-3 col-lg-4 col-md-6">
                                                         <figure>
                                                             <img src="https://via.placeholder.com/1200X900"
-                                                                 className="w-100 border-radius-1" alt="image"/>
+                                                                 className="w-100 border-radius-1" alt=" "/>
                                                         </figure>
                                                     </div>
                                                     <div className="col-xl-3 col-lg-4 col-md-6">
                                                         <figure>
                                                             <img src="https://via.placeholder.com/1200X900"
-                                                                 className="w-100 border-radius-1" alt="image"/>
+                                                                 className="w-100 border-radius-1" alt=" "/>
                                                         </figure>
                                                     </div>
                                                     <div className="col-xl-3 col-lg-4 col-md-6">
                                                         <figure>
                                                             <img src="https://via.placeholder.com/1200X900"
-                                                                 className="w-100 border-radius-1" alt="image"/>
+                                                                 className="w-100 border-radius-1" alt=" "/>
                                                         </figure>
                                                     </div>
                                                 </div>
@@ -790,7 +790,7 @@ const UserProfilePanel = (props) => {
                                             <div>
                                                 <h6 className="d-flex justify-content-between">
                                            <span>
-                                               <a href="#">Jonny Richie</a> shared video
+                                               <a href="/">Jonny Richie</a> shared video
                                            </span>
                                                     <span
                                                         className="text-muted font-weight-normal">Tue 8:17pm</span>
@@ -834,7 +834,7 @@ const UserProfilePanel = (props) => {
                                                                 Team Leader
                                                             </p>
                                                         </div>
-                                                        <a href="#" className="ml-auto" title=""
+                                                        <a href="/" className="ml-auto" title=""
                                                            data-toggle="tooltip" data-original-title="Message">
                                                             <svg xmlns="http://www.w3.org/2000/svg" width="24"
                                                                  height="24" viewBox="0 0 24 24" fill="none"
@@ -865,7 +865,7 @@ const UserProfilePanel = (props) => {
                                                                 Team Leader
                                                             </p>
                                                         </div>
-                                                        <a href="#" className="ml-auto" title=""
+                                                        <a href="/" className="ml-auto" title=""
                                                            data-toggle="tooltip" data-original-title="Message">
                                                             <svg xmlns="http://www.w3.org/2000/svg" width="24"
                                                                  height="24" viewBox="0 0 24 24" fill="none"
@@ -896,7 +896,7 @@ const UserProfilePanel = (props) => {
                                                                 Agent
                                                             </p>
                                                         </div>
-                                                        <a href="#" className="ml-auto" title=""
+                                                        <a href="/" className="ml-auto" title=""
                                                            data-toggle="tooltip" data-original-title="Message">
                                                             <svg xmlns="http://www.w3.org/2000/svg" width="24"
                                                                  height="24" viewBox="0 0 24 24" fill="none"
@@ -927,7 +927,7 @@ const UserProfilePanel = (props) => {
                                                                 Contact
                                                             </p>
                                                         </div>
-                                                        <a href="#" className="ml-auto" title=""
+                                                        <a href="/" className="ml-auto" title=""
                                                            data-toggle="tooltip" data-original-title="Message">
                                                             <svg xmlns="http://www.w3.org/2000/svg" width="24"
                                                                  height="24" viewBox="0 0 24 24" fill="none"
@@ -958,7 +958,7 @@ const UserProfilePanel = (props) => {
                                                                 Agent
                                                             </p>
                                                         </div>
-                                                        <a href="#" className="ml-auto" title=""
+                                                        <a href="/" className="ml-auto" title=""
                                                            data-toggle="tooltip" data-original-title="Message">
                                                             <svg xmlns="http://www.w3.org/2000/svg" width="24"
                                                                  height="24" viewBox="0 0 24 24" fill="none"
@@ -989,7 +989,7 @@ const UserProfilePanel = (props) => {
                                                                 Contact
                                                             </p>
                                                         </div>
-                                                        <a href="#" className="ml-auto" title=""
+                                                        <a href="/" className="ml-auto" title=""
                                                            data-toggle="tooltip" data-original-title="Message">
                                                             <svg xmlns="http://www.w3.org/2000/svg" width="24"
                                                                  height="24" viewBox="0 0 24 24" fill="none"
