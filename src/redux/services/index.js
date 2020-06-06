@@ -45,6 +45,7 @@ export {
     deleteDraft,
     getAllRecipients,
     getConnectedSlugs,
+    getDrafts,
     getPushNotification,
     getTranslationObject,
     generateUnfurl,

@@ -37,16 +37,6 @@ const PostItemPanel = (props) => {
                             post.users_responsible.length > 0 &&
                             <AvatarGroup users={post.users_responsible}/>
                         }
-                        {/* <div className="mr-3 d-sm-inline d-none">
-                            <div className="avatar-group">
-                                {
-                                    post.users_responsible.length > 0 &&
-                                    post.users_responsible.map(u => {
-                                        return <Avatar name={u.name} imageLink={u.profile_image_link} id={u.id}/>
-                                    })
-                                }
-                            </div>
-                        </div> */}
                         <SvgIconFeather icon="trash-2"/>
                     </div>
                 </div>

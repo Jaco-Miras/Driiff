@@ -2,7 +2,7 @@ import React, {useCallback, useEffect, useRef, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {Input, InputGroup, Label, Modal, ModalBody} from "reactstrap";
 import styled from "styled-components";
-import {clearModal} from "../../redux/actions/globalActions";
+import {clearModal, saveDraft} from "../../redux/actions/globalActions";
 import {createWorkspacePost} from "../../redux/actions/workspaceActions";
 import {SvgIconFeather} from "../common";
 import {CheckBox, FolderSelect, PeopleSelect} from "../forms";
@@ -125,6 +125,7 @@ const CreateEditWorkspacePostModal = props => {
     const dispatch = useDispatch();
     const [modal, setModal] = useState(true);
     const user = useSelector(state => state.session.user);
+    const activeTopic = useSelector(state => state.workspaces.activeTopic);
     // const workspaces = useSelector(state => state.workspaces.workspaces);
     // const activeTab = useSelector(state => state.workspaces.activeTab);
     // const [workspaceOptions, setWorkspaceOptions] = useState([]);
@@ -137,10 +138,10 @@ const CreateEditWorkspacePostModal = props => {
         no_reply: false,
         is_private: false,
         has_folder: false,
-        name: "",
+        title: "",
         selectedUsers: [],
         selectedWorkspaces: [],
-        description: "",
+        body: "",
         textOnly: "",
     });
     const formRef = {
@@ -149,7 +150,10 @@ const CreateEditWorkspacePostModal = props => {
         dropZone: useRef(null),
         arrow: useRef(null),
     };
-    const toggle = () => {
+    const toggle = (saveDraft = true) => {
+        if (saveDraft && mode !== "edit") {
+            handleSaveDraft();
+        }
         setModal(!modal);
         dispatch(
             clearModal({type: type}),
@@ -187,14 +191,33 @@ const CreateEditWorkspacePostModal = props => {
     const handleNameChange = e => {
         setForm({
             ...form,
-            name: e.target.value.trim(),
+            title: e.target.value.trim(),
         });
+    };
+
+    const handleSaveDraft = () => {
+        if (form.title == "" && form.body === "" && !form.selectedUsers.length) return;
+        else {
+            let payload = {
+                type: "post",
+                form: {
+                    ...form,
+                    must_read: form.must_read ? 1 : 0,
+                    must_reply: form.must_reply ? 1 : 0,
+                    read_only: form.no_reply ? 1 : 0,
+                    users_responsible: form.selectedUsers,
+                },
+                timestamp: Math.floor(Date.now() / 1000),
+                topic_id: activeTopic.id
+            };
+            dispatch(saveDraft(payload));
+        }
     };
 
     const handleConfirm = () => {
         let payload = {
-            title: form.name,
-            body: form.description,
+            title: form.title,
+            body: form.body,
             responsible_ids: form.selectedUsers.map(u => u.value),
             type: "post",
             personal: 0,
@@ -205,14 +228,14 @@ const CreateEditWorkspacePostModal = props => {
             workspace_ids: form.selectedWorkspaces.filter(ws => ws.type === "FOLDER").map(ws => ws.value)
         };
         dispatch(createWorkspacePost(payload));
-        toggle();
+        toggle(false);
     };
 
     const handleQuillChange = (content, delta, source, editor) => {
         const textOnly = editor.getText(content);
         setForm({
             ...form,
-            description: content,
+            body: content,
             textOnly: textOnly,
         });
     };
@@ -349,7 +372,7 @@ const CreateEditWorkspacePostModal = props => {
                 <WrapperDiv>
                     <button
                         className="btn btn-primary"
-                        disabled={form.selectedUsers.length === 0 || form.name === "" || form.selectedWorkspaces.length === 0}
+                        disabled={form.selectedUsers.length === 0 || form.title === "" || form.selectedWorkspaces.length === 0}
                         onClick={handleConfirm}>
                         {mode === "edit" ? "Update workspace" : "Create post"}
                     </button>

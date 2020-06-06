@@ -4,6 +4,7 @@ import {
     generateUnfurl as generateUnfurlService,
     getAllRecipients as getAllRecipientsService,
     getConnectedSlugs as getConnectedSlugsService,
+    getDrafts as getDraftsService,
     getPushNotification as getPushNotificationService,
     getTranslationObject as getTranslationObjectService,
     saveDraft as saveDraftService,
@@ -218,6 +219,16 @@ export function setUnreadNotificationCounterEntries(payload, callback) {
     return SimpleDispatchActionToReducer(
         "UPDATE_UNREAD_LIST_COUNTER",
         payload,
+        callback,
+    );
+}
+
+export function getDrafts(payload, callback) {
+    return dispatchActionToReducer(
+        getDraftsService(payload),
+        "GET_DRAFTS_START",
+        "GET_DRAFTS_SUCCESS",
+        "GET_DRAFTS_FAIL",
         callback,
     );
 }
