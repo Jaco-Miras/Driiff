@@ -45,7 +45,10 @@ const MainContentPanel = (props) => {
                 <Route
                     {...props}
                     component={UserProfilePanel}
-                    path={["/profile", "/profile/:id/:name"]}/>
+                    path={[
+                        "/profile/:id/:name",
+                        "/profile"
+                    ]}/>
                 <Route
                     {...props}
                     component={CompanyDashboardPanel}

@@ -46,6 +46,7 @@ const useUsers = () => {
 
     return {
         users,
+        getUserFilter,
         fetchUsers,
         fetchMoreUsers,
     };
