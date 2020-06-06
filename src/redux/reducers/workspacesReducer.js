@@ -386,6 +386,18 @@ export default (state = INITIAL_STATE, action) => {
                 activeTab: action.data
             }
         }
+        case "ADD_POST_SEARCH_RESULT": {
+            return {
+                ...state,
+                workspacePosts: {
+                    ...state.workspacePosts,
+                    [action.data.topic_id]: {
+                        ...state.workspacePosts[action.data.topic_id],
+                        searchResults: action.data.search_result
+                    }
+                }
+            }
+        }
         case "ADD_TO_WORKSPACE_POSTS": {
             let convertedPosts = convertArrayToObject(action.data.posts, "id");
             let postDrafts = [];
@@ -404,6 +416,7 @@ export default (state = INITIAL_STATE, action) => {
                         filter: null,
                         sort: null,
                         tag: null,
+                        searchResults: [],
                         posts: {
                             ...[action.data.topic_id].posts,
                             ...convertedPosts,
@@ -503,6 +516,14 @@ export default (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 drafts: action.data
+            }
+        }
+        case "REMOVE_POST": {
+            let newWorkspacePosts = {...state.workspacePosts};
+            delete state.workspacePosts[action.data.topic_id].posts[action.data.post_id];
+            return {
+                ...state,
+                workspacePosts: newWorkspacePosts
             }
         }
         default:

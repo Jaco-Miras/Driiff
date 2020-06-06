@@ -64,6 +64,11 @@ export {
 
 export {
     favoritePost,
+    followPost,
+    postArchive,
+    postMarkDone,
+    postToggleRead,
+    unFollowPost,
 } from "./post";
 
 export {

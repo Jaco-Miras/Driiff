@@ -37,6 +37,7 @@ const useGetWorkspacePosts = () => {
         let sort = wsPosts[params.workspaceId].sort;
         let tag = wsPosts[params.workspaceId].tag;
         let posts = wsPosts[params.workspaceId].posts;
+        let searchResults = wsPosts[params.workspaceId].searchResults;
         if (filter || tag) {
             let filteredPosts = Object.values(posts).filter(p => {
                 if (filter) {
@@ -75,10 +76,25 @@ const useGetWorkspacePosts = () => {
                     return a.is_updated === b.is_updated ? 1 : -1
                 }
             })
+            if (searchResults.length) {
+                filteredPosts = filteredPosts.filter(p => {
+                    return searchResults.some(s => {
+                        return p.id === s.id;
+                    });
+                })
+            }
             return {
                 posts: filteredPosts, filter, tag, sort
             };
         } else {
+            let filteredPosts = Object.values(wsPosts[params.workspaceId].posts)
+            if (searchResults.length) {
+                filteredPosts = Object.values(wsPosts[params.workspaceId].posts).filter(p => {
+                    return searchResults.some(s => {
+                        return p.id === s.id;
+                    });
+                })
+            }
             return {
                 posts: Object.values(wsPosts[params.workspaceId].posts).filter(p => {
                     if (p.hasOwnProperty("draft_type")) return false;
