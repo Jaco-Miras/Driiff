@@ -20,7 +20,7 @@ const WorkspacePostsPanel = (props) => {
                     <div className="app-content-overlay"></div>
                     <PostFilterSearchPanel/>
                     <div className="card card-body app-content-body">
-                        <div className="app-lists" styles="overflow: hidden; outline: currentcolor none medium;"
+                        <div className="app-lists"
                              tabIndex="1">
                             <ul className="list-group list-group-flush ui-sortable">
                                 {

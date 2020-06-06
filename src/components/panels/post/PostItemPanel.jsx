@@ -3,8 +3,9 @@ import styled from "styled-components";
 import {useDispatch} from "react-redux";
 import {AvatarGroup, SvgIconFeather} from "../../common";
 import {CheckBox} from "../../forms";
-import {favoritePost} from "../../../redux/actions/postActions";
-import {PostBadge} from "./index";
+import {favoritePost, postArchive, postMarkDone, removePost} from "../../../redux/actions/postActions";
+import {addToModals} from "../../../redux/actions/globalActions";
+import {PostBadge, PostOptions} from "./index";
 
 const Wrapper = styled.li`
 `;
@@ -37,17 +38,8 @@ const PostItemPanel = (props) => {
                             post.users_responsible.length > 0 &&
                             <AvatarGroup users={post.users_responsible}/>
                         }
-                        {/* <div className="mr-3 d-sm-inline d-none">
-                            <div className="avatar-group">
-                                {
-                                    post.users_responsible.length > 0 &&
-                                    post.users_responsible.map(u => {
-                                        return <Avatar name={u.name} imageLink={u.profile_image_link} id={u.id}/>
-                                    })
-                                }
-                            </div>
-                        </div> */}
-                        <SvgIconFeather icon="trash-2"/>
+                        <PostOptions post={post}/>
+                        <SvgIconFeather icon="trash-2" onClick={handleArchivePost}/>
                     </div>
                 </div>
             </div>
