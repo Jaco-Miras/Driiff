@@ -1,4 +1,4 @@
-import {useEffect} from "react";
+import {useEffect, useState, useCallback} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {useHistory, useParams, useRouteMatch} from "react-router-dom";
 import {replaceChar} from "../../helpers/stringFormatter";
@@ -7,12 +7,11 @@ import {
     getChannel,
     restoreLastVisitedChannel,
     setSelectedChannel,
+    clearSelectedChannel
 } from "../../redux/actions/chatActions";
 import {getWorkspaces, setActiveTab, setActiveTopic} from "../../redux/actions/workspaceActions";
 import {useSettings} from "./index";
 
-let init = false;
-let externalInit = false;
 const useSetWorkspace = () => {
 
     const {generalSettings: {active_topic: activeTopicSettings}, setGeneralSetting} = useSettings();
@@ -24,10 +23,29 @@ const useSetWorkspace = () => {
     const route = useRouteMatch();
     const {activeTopic, workspaces, workspacesLoaded, externalWorkspacesLoaded} = useSelector(state => state.workspaces);
     const channels = useSelector(state => state.chat.channels);
+    const [init, setInit] = useState(false);
+    const [exInit, setExInit] = useState(false);
+
+    const getAndSetChannel = useCallback((code) => {
+        dispatch(
+            getChannel({code}, (err, res) => {
+                if (err) return;
+                let channel = {
+                    ...res.data,
+                    hasMore: true,
+                    skip: 0,
+                    replies: [],
+                    selected: true,
+                };
+                dispatch(addToChannels(channel));
+                dispatch(setSelectedChannel(channel));
+            }),
+        );
+    }, []);
 
     useEffect(() => {
-        if (!init) {
-            init = true;
+        if (!init && !workspacesLoaded) {
+            setInit(true)
             dispatch(
                 getWorkspaces({is_external: 0}, (err, res) => {
                     if (err) return;
@@ -73,8 +91,8 @@ const useSetWorkspace = () => {
                     }
                 }),
             );
-        } else if (init && !externalInit) {
-            externalInit = true;
+        } else if (init && !exInit && !externalWorkspacesLoaded) {
+            setExInit(true)
             dispatch(
                 getWorkspaces({is_external: 1}),
             );
@@ -86,21 +104,16 @@ const useSetWorkspace = () => {
             let channel_id = null;
             if (params.folderId !== undefined && workspaces.hasOwnProperty(params.folderId)) {
                 topic = workspaces[params.folderId].topics[params.workspaceId];
-                channel_id = workspaces[params.folderId].topics[params.workspaceId].channel.id;
             } else if (workspaces.hasOwnProperty(params.workspaceId) && params.workspaceId) {
                 topic = workspaces[params.workspaceId];
-                channel_id = workspaces[params.workspaceId].topic_detail.channel.id;
-
                 //set active topic from settings
             } else {
                 if (activeTopicSettings.workspace !== null && workspaces.hasOwnProperty(activeTopicSettings.workspace.id)
                     && workspaces[activeTopicSettings.workspace.id].topics.hasOwnProperty(activeTopicSettings.workspace.id)) {
                     topic = workspaces[activeTopicSettings.workspace.id].topics[activeTopicSettings.topic.id];
-                    channel_id = workspaces[activeTopicSettings.workspace.id].topics[activeTopicSettings.topic.id].channel.id;
                     history.push(`${route.path}/${workspaces[activeTopicSettings.workspace.id].id}/${workspaces[activeTopicSettings.workspace.id].name}/${topic.id}/${topic.name}`);
                 } else if (workspaces.hasOwnProperty(activeTopicSettings.topic.id)) {
                     topic = workspaces[activeTopicSettings.topic.id];
-                    channel_id = workspaces[activeTopicSettings.topic.id].topic_detail.channel.id;
                     history.push(`${route.path}/${topic.id}/${topic.name}`);
                 }
             }
@@ -110,25 +123,21 @@ const useSetWorkspace = () => {
                     setActiveTab(topic.is_external === 0 ? "intern" : "extern"),
                 );
                 dispatch(setActiveTopic(topic));
-                if (topic.channel_loaded === undefined) {
-                    dispatch(
-                        getChannel({channel_id: channel_id}, (err, res) => {
-                            if (err) return;
-                            let channel = {
-                                ...res.data,
-                                hasMore: true,
-                                skip: 0,
-                                replies: [],
-                                selected: true,
-                            };
-                            dispatch(addToChannels(channel));
-                            dispatch(setSelectedChannel(channel));
-                        }),
-                    );
+                if (topic.type === "WORKSPACE") {
+                    if (topic.channel_loaded === undefined) {
+                        getAndSetChannel(topic.topic_detail.channel.code);
+                    }
+                } else {
+                    if (topic.channel.channel_loaded === undefined) {
+                        getAndSetChannel(topic.channel.code);
+                    }   
                 }
             }
         }
-    }, [externalWorkspacesLoaded, workspacesLoaded, activeTopic, dispatch, params.folderId, params.workspaceId, workspaces]);
+        return () => {
+            dispatch(clearSelectedChannel());
+        }
+    }, [externalWorkspacesLoaded, workspacesLoaded, activeTopic, dispatch, params, workspaces, init, exInit]);
 
     useEffect(() => {
         if (activeTopic !== null) {
@@ -146,23 +155,6 @@ const useSetWorkspace = () => {
             });
         }
     }, [activeTopic]);
-
-    const getAndSetChannel = (channel_id) => {
-        dispatch(
-            getChannel({channel_id: channel_id}, (err, res) => {
-                if (err) return;
-                let channel = {
-                    ...res.data,
-                    hasMore: true,
-                    skip: 0,
-                    replies: [],
-                    selected: true,
-                };
-                dispatch(addToChannels(channel));
-                dispatch(setSelectedChannel(channel));
-            }),
-        );
-    };
 
     useEffect(() => {
         //console.log(params)
@@ -187,7 +179,7 @@ const useSetWorkspace = () => {
                     if (workspace.hasOwnProperty("id")) {
                         dispatch(setActiveTopic(workspace));
                         if (workspace.channel.channel_loaded === undefined) {
-                            getAndSetChannel(workspace.channel.id);
+                            getAndSetChannel(workspace.channel.code);
                         } else {
                             if (channels.hasOwnProperty(workspace.channel.id)) {
                                 let channel = {...channels[workspace.channel.id]};
@@ -200,7 +192,7 @@ const useSetWorkspace = () => {
                     if (workspace.hasOwnProperty("id")) {
                         dispatch(setActiveTopic(workspace));
                         if (workspace.channel_loaded === undefined) {
-                            getAndSetChannel(workspace.topic_detail.channel.id);
+                            getAndSetChannel(workspace.topic_detail.channel.code);
                         } else {
                             if (channels.hasOwnProperty(workspace.topic_detail.channel.id)) {
                                 let channel = {...channels[workspace.topic_detail.channel.id]};
@@ -216,7 +208,7 @@ const useSetWorkspace = () => {
                     let workspace = {...workspaces[params.folderId].topics[params.workspaceId]};
                     if (workspace.hasOwnProperty("id")) {
                         if (workspace.channel.channel_loaded === undefined) {
-                            getAndSetChannel(workspace.channel.id);
+                            getAndSetChannel(workspace.channel.code);
                         } else {
                             if (channels.hasOwnProperty(workspace.channel.id)) {
                                 let channel = {...channels[workspace.channel.id]};
@@ -228,7 +220,7 @@ const useSetWorkspace = () => {
                     let workspace = {...workspaces[params.workspaceId]};
                     if (workspace.hasOwnProperty("id")) {
                         if (workspace.channel_loaded === undefined) {
-                            getAndSetChannel(workspace.topic_detail.channel.id);
+                            getAndSetChannel(workspace.topic_detail.channel.code);
                         } else {
                             if (channels.hasOwnProperty(workspace.topic_detail.channel.id)) {
                                 let channel = {...channels[workspace.topic_detail.channel.id]};
