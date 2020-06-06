@@ -385,6 +385,18 @@ export default (state = INITIAL_STATE, action) => {
                 activeTab: action.data
             }
         }
+        case "ADD_POST_SEARCH_RESULT": {
+            return {
+                ...state,
+                workspacePosts: {
+                    ...state.workspacePosts,
+                    [action.data.topic_id]: {
+                        ...state.workspacePosts[action.data.topic_id],
+                        searchResults: action.data.search_result
+                    }
+                }
+            }
+        }
         case "ADD_TO_WORKSPACE_POSTS": {
             let convertedPosts = convertArrayToObject(action.data.posts, "id");
             return {
@@ -395,6 +407,7 @@ export default (state = INITIAL_STATE, action) => {
                         filter: "all",
                         sort: null,
                         tag: null,
+                        searchResults: [],
                         posts: {
                             ...[action.data.topic_id].posts,
                             ...convertedPosts

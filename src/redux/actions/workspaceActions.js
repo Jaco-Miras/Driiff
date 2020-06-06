@@ -293,3 +293,11 @@ export function joinWorkspaceReducer(payload, callback) {
         callback,
     );
 }
+
+export function addPostSearchResult(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "ADD_POST_SEARCH_RESULT",
+        payload,
+        callback,
+    );
+}
