@@ -26,7 +26,8 @@ const useChannel = () => {
     const sharedSlugs = useSelector(state => state.global.slugs);
     const {channels, selectedChannel, channelsLoaded, lastVisitedChannel} = useSelector(state => state.chat);
 
-    const loadSelectedChannel = useCallback((code, callback = () => {}) => {
+    const loadSelectedChannel = useCallback((code, callback = () => {
+    }) => {
         dispatch(
             getChannel({code: code}, callback),
         );
@@ -112,16 +113,22 @@ const useChannel = () => {
             console.log(channel, "channel not found");
         } else if (channel.hasOwnProperty("add_user") && channel.add_user === true) {
             createUserChannel(channel, (err, res) => {
+                const channel = res.data;
                 dispatch(
-                    setSelectedChannel(res.data),
+                    setSelectedChannel(res.data, () => {
+                        callback(channel)
+                    }),
                 );
             });
 
             //if unarchived archived chat
         } else if (channel.is_archived === 1) {
             unArchiveChannel(channel, (err, res) => {
+                const channel = res.data;
                 dispatch(
-                    setSelectedChannel(res.data),
+                    setSelectedChannel(res.data, () => {
+                        callback(channel)
+                    }),
                 );
             });
 

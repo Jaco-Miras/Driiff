@@ -1,4 +1,4 @@
-import {useCallback, useEffect, useState} from "react";
+import {useCallback, useEffect, useRef} from "react";
 import {useDispatch} from "react-redux";
 import {getGlobalRecipients} from "../../redux/actions/chatActions";
 import {useChannel, useUsers} from "./index";
@@ -6,7 +6,7 @@ import {useChannel, useUsers} from "./index";
 let init = true;
 
 /**
- * @returns {{fetchUsers: function({skip?: *, limit?: *, [p: string]: *}, *=): void, unArchiveChannel: function(*): void, selectedChannel: *, fetchMoreUsers: function(): void, selectChannel: function(*=, *=): void, loadSelectedChannel: function(*=, *=): void, users: *, createUserChannel: function(*, *=): void, selectUserChannel: (...args: any[]) => any, channels: *, fetchChannels: function({skip?: *, limit?: *, [p: string]: *}, *=): void, userChannel: {}, lastVisitedChannel: *, channelsLoaded: *}}
+ * @returns {{fetchUsers: function({skip?: *, limit?: *, [p: string]: *}, *=): void, userChannels: {}, unArchiveChannel: function(*, *=): void, selectedChannel: *, fetchMoreUsers: function(): void, selectChannel: function(*=, *=): void, loadSelectedChannel: function(*=, *=): void, users: *, createUserChannel: function(*, *=): void, selectUserChannel: (...args: any[]) => any, channels: *, fetchChannels: function({skip?: *, limit?: *, [p: string]: *}, *=): void, lastVisitedChannel: *, channelsLoaded: *}}
  */
 const useUserChannels = () => {
 
@@ -14,20 +14,16 @@ const useUserChannels = () => {
 
     const users = useUsers();
     const {channels, selectChannel} = useChannel();
-    const [userChannel, setUserChannel] = useState({});
+    const userChannels = useRef({});
 
     const selectUserChannel = useCallback((user,
                                            callback = () => {
                                            }) => {
-        for (const i in channels) {
-            let channel = channels[i];
-
-            if (channel.type !== "DIRECT")
-                continue;
-
-            if (channel.profile.id === user.id) {
-                selectChannel(channel, callback);
-            }
+        try {
+            selectChannel(channels[userChannels.current[user.id]], callback);
+        }
+        catch (e) {
+            console.log("no channel from selected user");
         }
     }, [channels, selectChannel]);
 
@@ -38,14 +34,12 @@ const useUserChannels = () => {
             if (channel.type !== "DIRECT")
                 continue;
 
-            if (!userChannel.hasOwnProperty(channel.profile.id)) {
-                setUserChannel({
-                    ...userChannel,
-                    [channel.profile.id]: channel.id,
-                });
-            }
+            userChannels.current = {
+                ...userChannels.current,
+                [channel.profile.id]: channel.id,
+            };
         }
-    }, [users, channels, userChannel]);
+    }, [users, channels]);
 
     useEffect(() => {
         if (init) {
@@ -60,20 +54,13 @@ const useUserChannels = () => {
             );
         }
 
-        /*setDirectChannels(Object.keys(channels)
-         .filter(key => channels[key].type === "DIRECT")
-         .reduce((obj, key) => {
-         obj[key] = channels[key];
-         return obj;
-         }, {}));*/
-
         //eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return {
         ...useChannel(),
         ...useUsers(),
-        userChannel,
+        userChannels: userChannels.current,
         selectUserChannel,
     };
 };

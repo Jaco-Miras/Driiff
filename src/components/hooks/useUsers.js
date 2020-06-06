@@ -22,13 +22,13 @@ const useUsers = () => {
                 limit: limit,
             }, callback),
         );
-    }, [getUserFilter.limit]);
+    }, [dispatch, getUserFilter.limit]);
 
     const fetchMoreUsers = useCallback(() => {
         if (getUserFilter.hasMore) {
             fetchUsers(getUserFilter.skip, getUserFilter.limit);
         }
-    }, [getUserFilter]);
+    }, [fetchUsers, getUserFilter]);
 
     useEffect(() => {
         if (init) {
@@ -40,10 +40,13 @@ const useUsers = () => {
                 }
             });
         }
+
+        //eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return {
         users,
+        getUserFilter,
         fetchUsers,
         fetchMoreUsers,
     };

@@ -1,0 +1,1 @@
+export {default as PeopleListItem} from "./PeopleListItem";
