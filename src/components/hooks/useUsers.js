@@ -12,33 +12,38 @@ const useUsers = () => {
     const dispatch = useDispatch();
     const {users, getUserFilter} = useSelector(state => state.users);
 
-    const fetchUsers = useCallback((skip = 0, limit = getUserFilter.limit) => {
+    const fetchUsers = useCallback(({skip = 0, limit = getUserFilter.limit, ...res}, callBack) => {
         dispatch(
             getUsers({
+                ...res,
                 skip: skip,
-                limit: limit
-            }),
+                limit: limit,
+            }, callBack),
         );
     }, [getUserFilter.limit]);
 
     const fetchMoreUsers = useCallback(() => {
-        if(getUserFilter.hasMore) {
+        if (getUserFilter.hasMore) {
             fetchUsers(getUserFilter.skip, getUserFilter.limit);
         }
-    }, [getUserFilter]) ;
+    }, [getUserFilter]);
 
     useEffect(() => {
         if (init) {
             init = false;
 
-            fetchUsers();
+            fetchUsers({}, (err) => {
+                if (err) {
+                    console.log(err);
+                }
+            });
         }
     }, []);
 
     return {
         users,
         fetchUsers,
-        fetchMoreUsers
+        fetchMoreUsers,
     };
 };
 
