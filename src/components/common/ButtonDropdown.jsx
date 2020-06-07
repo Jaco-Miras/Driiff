@@ -27,6 +27,7 @@ const ButtonDropdown = props => {
                 {
                     dropdown.items.map(item => {
                         return <a className="dropdown-item" 
+                            key={item.value}
                             data-value={item.value}
                             data-name={item.label} 
                             onClick={e => {

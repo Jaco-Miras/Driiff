@@ -403,10 +403,13 @@ export default (state = INITIAL_STATE, action) => {
             let postDrafts = [];
             if (state.drafts.length) {
                 state.drafts.forEach(d => {
-                    if (d.data.type === "post" && action.data.topic_id === d.data.topic_id) {
+                    if (d.data.type === "draft_post" && action.data.topic_id === d.data.topic_id) {
                         postDrafts.push({...d.data,...d.data.form, draft_id: d.id})
                     }
                 })
+            }
+            if (postDrafts.length) {
+                postDrafts = convertArrayToObject(postDrafts, "id");
             }
             return {
                 ...state,

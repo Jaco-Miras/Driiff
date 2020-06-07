@@ -17,49 +17,73 @@ const PostItemPanel = (props) => {
     const {className = "", post} = props;
 
     const handleFavoritePost = () => {
+        if (post.type === "draft_post") return;
         dispatch(
             favoritePost({type: "post", type_id: post.id})
         )
     };
 
     const handleMarkPost = () => {
+        if (post.type === "draft_post") return;
         dispatch(
             postMarkDone({post_id: post.id})
         )
     };
+    const handleOpenPost = () => {
+        if (post.type === "draft_post") {
+            let payload = {
+                type: "workspace_post_create_edit",
+                mode: "create",
+                item: {
+                    workspace: topic,
+                    draft: post
+                },
+            };
+    
+            dispatch(
+                addToModals(payload),
+            );
+        } else {
+            //redirec to post detail page
+        }
+    };
 
     const handleArchivePost = () => {
-        const onConfirm = () => {
+        if (post.type === "draft_post") {
+            
+        } else {
+            const onConfirm = () => {
+                dispatch(
+                    postArchive({
+                        post_id: post.id,
+                        is_archived: post.is_archived === 1 ? 0 : 1,
+                    }, (err, res) => {
+                        if (err) return;
+                        dispatch(
+                            removePost({
+                                post_id: post.id,
+                                topic_id: topic.id
+                            })
+                        )
+                    })
+                )
+            };
+    
+            let payload = {
+                type: "confirmation",
+                headerText: "Archive post?",
+                submitText: "Archive",
+                cancelText: "Cancel",
+                bodyText: "Are you sure you want to archive this post?",
+                actions: {
+                    onSubmit: onConfirm,
+                },
+            };
+    
             dispatch(
-                postArchive({
-                    post_id: post.id,
-                    is_archived: post.is_archived === 1 ? 0 : 1,
-                }, (err, res) => {
-                    if (err) return;
-                    dispatch(
-                        removePost({
-                            post_id: post.id,
-                            topic_id: topic.id
-                        })
-                    )
-                })
-            )
-        };
-
-        let payload = {
-            type: "confirmation",
-            headerText: "Archive post?",
-            submitText: "Archive",
-            cancelText: "Cancel",
-            bodyText: "Are you sure you want to archive this post?",
-            actions: {
-                onSubmit: onConfirm,
-            },
-        };
-
-        dispatch(
-            addToModals(payload),
-        );
+                addToModals(payload),
+            );
+        }
     };
 
     return (
@@ -72,14 +96,17 @@ const PostItemPanel = (props) => {
             </div>
             <div className="flex-grow-1 min-width-0">
                 <div className="mb-1 d-flex align-items-center justify-content-between">
-                    <div className="app-list-title text-truncate">{post.title}</div>
+                    <div className="app-list-title text-truncate" onClick={handleOpenPost}>{post.title}</div>
                     <div className="pl-3 d-flex align-items-center">
                         <PostBadge post={post}/>
                         {
                             post.users_responsible.length > 0 &&
                             <AvatarGroup users={post.users_responsible}/>
                         }
-                        <PostOptions post={post}/>
+                        {
+                            post.type !== "draft_post" &&
+                            <PostOptions post={post}/>
+                        }
                         <SvgIconFeather icon="trash-2" onClick={handleArchivePost}/>
                     </div>
                 </div>

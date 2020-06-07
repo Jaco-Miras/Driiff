@@ -10,7 +10,7 @@ const AvatarGroup = props => {
             <div className="avatar-group">
                 {
                     users.map(u => {
-                        return <Avatar name={u.name} imageLink={u.profile_image_link} id={u.id}/>
+                        return <Avatar key={u.id} name={u.name} imageLink={u.profile_image_link} id={u.id}/>
                     })
                 }
             </div>
