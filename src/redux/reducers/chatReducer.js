@@ -59,7 +59,6 @@ export default function (state = INITIAL_STATE, action) {
                     ...channels[ac.key_id],
                     ...ac,
                     id: ac.key_id,
-                    title: ac.name,
                     is_pinned: 0,
                     is_hidden: 0,
                     is_archived: 0,
