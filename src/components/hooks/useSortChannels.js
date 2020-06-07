@@ -1,11 +1,11 @@
 import {useSelector} from "react-redux";
-import {useChannel, useSettings} from "./index";
+import {useChannels, useSettings} from "./index";
 
 
 const useSortChannels = (search, options = {}) => {
 
     const {chatSettings: settings} = useSettings();
-    const {channels} = useChannel();
+    const {channels} = useChannels();
 
     const channelDrafts = useSelector(state => state.chat.channelDrafts);
 
