@@ -45,7 +45,7 @@ const Contacts = styled.ul`
 
 const ChatContactsList = props => {
 
-    const {className = "", search} = props;
+    const {className = "", channels, selectedChannel, userChannels, search} = props;
 
     const dispatch = useDispatch();
     const history = useHistory();
@@ -108,6 +108,11 @@ const ChatContactsList = props => {
                 recipients.push(recipient.id);
             }
 
+            if (!Object.values(userChannels).includes(channel.id)) {
+                return false;
+            }
+
+
             if (search !== "") {
                 return channel.title
                     .toLowerCase()
@@ -115,6 +120,9 @@ const ChatContactsList = props => {
             }
 
             return true;
+        })
+        .sort((a, b) => {
+            return a.title.localeCompare(b.title);
         });
 
     return (
@@ -130,7 +138,10 @@ const ChatContactsList = props => {
                 {
                     sortedChannels.map((channel) => {
                         return (
-                            <ChatContactIListItem key={channel.id} onChannelClick={selectChannel} channel={channel}/>
+                            <ChatContactIListItem
+                                key={channel.id}
+                                onChannelClick={handleChannelClick}
+                                channel={channel}/>
                         );
                     })
                 }
@@ -139,4 +150,4 @@ const ChatContactsList = props => {
     );
 };
 
-export default ChatContactsList;
+export default React.memo(ChatContactsList);
