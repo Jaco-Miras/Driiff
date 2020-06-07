@@ -1,10 +1,11 @@
-import React, {useEffect} from "react";
+import React, {useCallback, useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
+import {useHistory} from "react-router-dom";
 import styled from "styled-components";
 import {setChannelHistoricalPosition} from "../../../redux/actions/chatActions";
 import {addToModals} from "../../../redux/actions/globalActions";
 import {SvgIconFeather} from "../../common";
-import {useUserChannels} from "../../hooks";
+import useChannelActions from "../../hooks/useChannelActions";
 import {ChatContactIListItem} from "./item";
 
 const Wrapper = styled.div`
@@ -47,10 +48,17 @@ const ChatContactsList = props => {
     const {className = "", search} = props;
 
     const dispatch = useDispatch();
+    const history = useHistory();
 
-    const {channels, selectChannel, selectedChannel} = useUserChannels();
+    const {selectChannel} = useChannelActions();
 
     const user = useSelector(state => state.session.user);
+
+    const handleChannelClick = useCallback((channel) => {
+        selectChannel(channel, (channel) => {
+            history.push(`/chat/${channel.code}`);
+        });
+    }, [history, selectChannel]);
 
     const handleOpenGroupChatModal = () => {
         let payload = {

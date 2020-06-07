@@ -3,7 +3,7 @@ import {useDispatch} from "react-redux";
 import styled from "styled-components";
 import {addToModals} from "../../../redux/actions/globalActions";
 import {DropDocument} from "../../dropzone/DropDocument";
-import {useChannels, useCountUnreadReplies, useFocusInput} from "../../hooks";
+import {useCountUnreadReplies, useFocusInput} from "../../hooks";
 import ChatMessages from "../../list/chat/ChatMessages";
 import ChatUnreadFloatBar from "../../list/chat/ChatUnreadFloatBar";
 import {ChatFooterPanel, ChatHeaderPanel} from "./index";
@@ -19,11 +19,9 @@ const ChatMessagesPlaceholder = styled.div`
 
 const ChatContentPanel = (props) => {
 
-    const {className = ""} = props;
+    const {className = "", selectedChannel} = props;
 
     const dispatch = useDispatch();
-
-    const {selectedChannel} = useChannels();
 
     const [showDropZone, setshowDropZone] = useState(false);
     const unreadCount = useCountUnreadReplies();

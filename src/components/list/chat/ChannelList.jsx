@@ -88,7 +88,7 @@ const Timestamp = styled.div`
 const ChannelList = props => {
     const {className = "", channel} = props;
     const [optionsVisible, setOptionsVisible] = useState(false);
-    const dispatch = useDispatch();
+
     const selectedChannel = useSelector(state => state.chat.selectedChannel);
 
     const toggleOptions = () => {
@@ -97,20 +97,15 @@ const ChannelList = props => {
 
     const handleSelectChannel = () => {
 
-        if (selectedChannel.id !== channel.id) {
+        if (selectedChannel !== null) {
             const scrollComponent = document.getElementById("component-chat-thread");
             if (scrollComponent) {
-                dispatch(setChannelHistoricalPosition({
-                    channel_id: selectedChannel.id,
-                    scrollPosition: scrollComponent.scrollHeight - scrollComponent.scrollTop,
-                }));
+                channelActions.saveHistoricalPosition(selectedChannel.id, scrollComponent);
             }
-
-            dispatch(
-                setSelectedChannel({...channel, selected: true}),
-            );
-            props.history.push(`/chat/${channel.code}`);
         }
+
+        channelActions.selectChannel({...channel, selected: true});
+        props.history.push(`/chat/${channel.code}`);
     };
 
     return (
