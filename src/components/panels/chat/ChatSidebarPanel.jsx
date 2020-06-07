@@ -1,4 +1,4 @@
-import React, {useCallback, useRef, useState} from "react";
+import React, {useCallback, useEffect, useRef, useState} from "react";
 import styled from "styled-components";
 import SearchForm from "../../forms/SearchForm";
 import {ChatSideBarContentPanel} from "./index";
@@ -19,10 +19,10 @@ const Search = styled(SearchForm)`
 
 const ChatSidebarPanel = (props) => {
 
-    const {className = ""} = props;
+    const {className = "", activeTabPill = "pills-home"} = props;
 
     const [search, setSearch] = useState("");
-    const [tabPill, setTabPill] = useState("pills-home");
+    const [tabPill, setTabPill] = useState(activeTabPill);
 
     const refs = {
         navTab: useRef(),
@@ -37,6 +37,18 @@ const ChatSidebarPanel = (props) => {
         refs.navTab.current.querySelector(".nav-link.active").classList.remove("active");
         e.target.classList.add("active");
     }, [setTabPill]);
+
+    useEffect(() => {
+        refs.navTab.current.querySelector(".nav-link.active").classList.remove("active");
+
+        let e = refs.navTab.current.querySelector(`.nav-link[aria-controls="${activeTabPill}"]`);
+        if(e) {
+            e.classList.add("active");
+            setTabPill(e.getAttribute("aria-controls"));
+        } else {
+            console.log(`[aria-controls="${activeTabPill}"]`)
+        }
+    }, [activeTabPill])
 
     return (
         <Wrapper className={`chat-sidebar ${className}`}>

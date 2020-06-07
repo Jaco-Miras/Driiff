@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import {Avatar, SvgIconFeather} from "../../common";
+import {Avatar, SvgIconFeather} from "../../../common";
 
 const Wrapper = styled.div`
     .avatar {
@@ -17,7 +17,7 @@ const Wrapper = styled.div`
     }
 `;
 
-const WorkspaceUserItemList = (props) => {
+const PeopleListItem = (props) => {
 
     const {
         className = "",
@@ -50,7 +50,7 @@ const WorkspaceUserItemList = (props) => {
                                         imageLink={user.profile_image_link}/>
                             </div>
                             <div>
-                                <h6 className="user-name mb-1 " onClick={handleOnNameClick}>{user.name} {user.id}</h6>
+                                <h6 className="user-name mb-1 " onClick={handleOnNameClick}>{user.name}</h6>
                                 <span className="small text-muted">
                                     {
                                         user.role !== null &&
@@ -72,4 +72,4 @@ const WorkspaceUserItemList = (props) => {
     );
 };
 
-export default React.memo(WorkspaceUserItemList);
+export default React.memo(PeopleListItem);

@@ -12,6 +12,7 @@ const CompanyChatPanel = (props) => {
 
     const {selectChannel, lastVisitedChannel, loadSelectedChannel} = useChannel();
     const [useLastVisitedChannel, setUseLastVisitedChannel] = useState(false);
+    const [activeTabPill, setActiveTabPill] = useState("home");
 
     useEffect(() => {
         if (typeof props.match.params.code === "undefined") {
@@ -24,13 +25,14 @@ const CompanyChatPanel = (props) => {
     }, []);
 
     useEffect(() => {
-        if(useLastVisitedChannel && lastVisitedChannel !== null) {
+        if (useLastVisitedChannel && lastVisitedChannel !== null) {
             selectChannel(lastVisitedChannel, () => {
+                setActiveTabPill(lastVisitedChannel.type === "DIRECT" ? "contact" : "home");
                 props.history.push(`/chat/${lastVisitedChannel.code}`);
             });
         } else {
             const code = props.match.params.code;
-            if(typeof code !== "undefined") {
+            if (typeof code !== "undefined") {
                 loadSelectedChannel(code, (err, res) => {
                     if (err) {
                         console.log(err);
@@ -38,6 +40,7 @@ const CompanyChatPanel = (props) => {
 
                     if (res) {
                         selectChannel(res.data);
+                        setActiveTabPill(res.data.type === "DIRECT" ? "contact" : "home");
                     }
                 });
             }
@@ -45,9 +48,9 @@ const CompanyChatPanel = (props) => {
     }, [lastVisitedChannel]);
 
     return (
-        <Wrapper className={`container-fluid h-100 ${className}`}>
+        <Wrapper className={`company-chat-panel container-fluid h-100 ${className}`}>
             <div className="row no-gutters chat-block">
-                <ChatSidebarPanel className={`col-lg-4 border-right`}/>
+                <ChatSidebarPanel className={`col-lg-4 border-right`} activeTabPill={`pills-${activeTabPill}`}/>
                 <ChatContentPanel className={`col-lg-8`}/>
             </div>
         </Wrapper>
