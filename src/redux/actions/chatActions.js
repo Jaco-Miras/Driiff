@@ -422,7 +422,7 @@ export function updateChannelMembersTitle(payload, callback) {
     );
 }
 
-export function saveLastVisitedChannel(payload, callback) {
+export function setLastVisitedChannel(payload, callback) {
     return SimpleDispatchActionToReducer(
         "SAVE_LAST_VISITED_CHANNEL",
         payload,

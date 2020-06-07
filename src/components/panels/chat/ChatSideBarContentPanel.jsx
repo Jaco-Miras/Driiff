@@ -1,10 +1,8 @@
 import React from "react";
 import {useDispatch} from "react-redux";
-import {withRouter} from "react-router-dom";
 import styled from "styled-components";
 import {addToModals} from "../../../redux/actions/globalActions";
 import {SvgIconFeather} from "../../common";
-//import ChatRecentList from "../../list/chat/ChatRecentList";
 import ChannelsSidebar from "../../list/chat/ChannelsSidebar";
 import ChatContactsList from "../../list/chat/ChatContactsList";
 
@@ -44,7 +42,7 @@ const NewGroupButton = styled.div`
 
 const ChatSidebarContentPanel = (props) => {
 
-    const {className = "", pill = "pills-home", search} = props;
+    const {className = "", pill = "pills-home", search, channels, userChannels, selectedChannel} = props;
 
     const dispatch = useDispatch();
 
@@ -74,16 +72,20 @@ const ChatSidebarContentPanel = (props) => {
                             <span>New group chat</span>
                         </NewGroupButton>
                     </div>
-                    <ChannelsSidebar search={search}/>
+                    <ChannelsSidebar search={search}
+                                     channels={channels} selectedChannel={selectedChannel}/>
                 </div>
                 <div className={`tab-pane fade ${pill === "pills-contact" && "show active"}`} id="pills-contact"
                      role="tabpanel"
                      aria-labelledby="pills-contact-tab">
-                    <ChatContactsList search={search}/>
+                    <ChatContactsList search={search}
+                                      channels={channels}
+                                      userChannels={userChannels}
+                                      selectedChannel={selectedChannel}/>
                 </div>
             </div>
         </Wrapper>
     );
 };
 
-export default withRouter(React.memo(ChatSidebarContentPanel));
+export default React.memo(ChatSidebarContentPanel);

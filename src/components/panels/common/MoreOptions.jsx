@@ -72,17 +72,25 @@ const MoreTooltip = styled.div`
 
 const MoreOptions = props => {
 
-    const {className = "", item, moreButton = `horizontal`, children = "More Options", width = 200, scrollRef = null, ...rest} = props;
+    const {
+        className = "", item, moreButton = `horizontal`, children = "More Options",
+        width = 200, scrollRef = null, onClick = null,
+        ...rest
+    } = props;
+
     const refs = {
         options: useRef(),
         container: useRef(),
         scrollRef: scrollRef,
     };
+
     const [showMoreOptions, setShowMoreOptions] = useState(false);
 
     const {orientation} = useTooltipOrientation(refs.container, refs.options, scrollRef, showMoreOptions, "bottom", 0);
 
-    const handleClick = () => {
+    const handleClick = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
         setShowMoreOptions(!showMoreOptions);
     };
 
@@ -92,14 +100,15 @@ const MoreOptions = props => {
         }, 500);
     };
 
-    useOutsideClick(refs.options, handleClick, showMoreOptions);
+    useOutsideClick(refs.options, handleMouseLeave, showMoreOptions);
 
     return <Wrapper
         className={`more-options ${className}`}
         onClick={handleClick}
         ref={refs.container}
         {...rest}>
-        <SvgIconFeather data-event="touchstart focus mouseover" data-event-off="mouseout" data-tip="Message options" icon={`more-${moreButton}`}/>
+        <SvgIconFeather data-event="touchstart focus mouseover" data-event-off="mouseout" data-tip="Message options"
+                        icon={`more-${moreButton}`}/>
         {
             showMoreOptions &&
             <MoreTooltip

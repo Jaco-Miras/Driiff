@@ -1,15 +1,13 @@
 import {useSelector} from "react-redux";
-import {useChannels, useSettings} from "./index";
+import {useSettings} from "./index";
 
 
-const useSortChannels = (search, options = {}) => {
-
-    const {chatSettings: settings} = useSettings();
-    const {channels} = useChannels();
-
-    const channelDrafts = useSelector(state => state.chat.channelDrafts);
+const useSortChannels = (channels, search, options = {}) => {
 
     const user = useSelector(state => state.session.user);
+    const {chatSettings: settings} = useSettings();
+
+    const channelDrafts = useSelector(state => state.chat.channelDrafts);
 
     const getChannelTitle = (ac) => {
         if (ac.type === "DIRECT" && ac.members.length === 2) {

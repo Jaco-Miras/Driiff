@@ -1,220 +1,32 @@
-import {useCallback, useEffect} from "react";
-import {useDispatch, useSelector} from "react-redux";
-import {
-    createNewChat,
-    getChannel,
-    getChannels,
-    getLastVisitedChannel,
-    renameChannelKey,
-    saveLastVisitedChannel,
-    setSelectedChannel,
-    updateChannel,
-} from "../../redux/actions/chatActions";
-import {useSettings} from "./index";
+import {useEffect} from "react";
+import {useSelector} from "react-redux";
+import useChannelActions from "./useChannelActions";
 
 let init = true;
-let limit = 50;
 
 /**
- * @returns {{createUserChannel: (...args: any[]) => any, channels, fetchChannels: (...args: any[]) => any, selectedChannel, unArchiveUser: (...args: any[]) => any, channelsLoaded, selectChannel: (...args: any[]) => any, loadSelectedChannel: (...args: any[]) => any}}
+ * @returns {{channels, selectedChannel, lastVisitedChannel, actions: {createUserChannel: (...args: any[]) => any, saveHistoricalPosition: (...args: any[]) => any, fetchChannels: (...args: any[]) => any, fetchNoUserChannels: (...args: any[]) => any, fetchLastVisitedChannel: (...args: any[]) => any, unArchiveChannel: (...args: any[]) => any, fetchAllChannels: (...args: any[]) => any, selectChannel: (...args: any[]) => any, loadSelectedChannel: (...args: any[]) => any, saveLastVisitedChannel: (...args: any[]) => any}, channelsLoaded}}
  */
 const useChannels = () => {
-
-    const {chatSettings} = useSettings();
-
-    const dispatch = useDispatch();
-    const sharedSlugs = useSelector(state => state.global.slugs);
     const {channels, selectedChannel, channelsLoaded, lastVisitedChannel} = useSelector(state => state.chat);
-
-    const loadSelectedChannel = useCallback((code, callback = () => {
-    }) => {
-        dispatch(
-            getChannel({code: code}, callback),
-        );
-    }, []);
-
-    const createUserChannel = useCallback((channel, callback = () => {
-    }) => {
-        let old_channel = channel;
-        dispatch(
-            createNewChat({
-                title: "",
-                type: "person",
-                recipient_ids: channel.recipient_ids,
-            }, (err, res) => {
-                if (err)
-                    console.log(err);
-
-                if (res) {
-                    let timestamp = Math.round(+new Date() / 1000);
-                    let channel = {
-                        ...res.data.channel,
-                        old_id: old_channel.id,
-                        code: res.data.code,
-                        selected: true,
-                        hasMore: false,
-                        skip: 0,
-                        replies: [],
-                        created_at: {
-                            timestamp: timestamp,
-                        },
-                        last_reply: null,
-                        title: old_channel.first_name,
-                    };
-                    dispatch(
-                        renameChannelKey(channel, (err) => {
-                            if (err) {
-                                console.log(err);
-                            }
-
-                            callback(err, {
-                                data: channel,
-                            });
-                        }),
-                    );
-                }
-            }),
-        );
-    }, [dispatch]);
-
-    const unArchiveChannel = useCallback((channel, callback = () => {
-    }) => {
-        let payload = {
-            id: channel.id,
-            is_pinned: channel.is_pinned,
-            is_archived: 0,
-            is_muted: channel.is_muted,
-            //title: channel.title,
-        };
-
-        if (channel.is_shared && sharedSlugs.length) {
-            payload = {
-                ...payload,
-                is_shared: true,
-                token: sharedSlugs.filter(s => s.slug_name === channel.slug_owner)[0].access_token,
-                slug: sharedSlugs.filter(s => s.slug_name === channel.slug_owner)[0].slug_name,
-            };
-        }
-        dispatch(
-            updateChannel(payload, (err) => {
-                callback(err, {
-                    data: {...channel, is_archived: 0},
-                });
-            }),
-        );
-    }, [dispatch, sharedSlugs]);
-
-    const selectChannel = useCallback((channel, callback = () => {
-    }) => {
-        //if contact doesn't have a chat channel yet
-        if (typeof channel === "undefined") {
-            console.log(channel, "channel not found");
-        } else if (channel.hasOwnProperty("add_user") && channel.add_user === true) {
-            createUserChannel(channel, (err, res) => {
-                const channel = res.data;
-                dispatch(
-                    setSelectedChannel(res.data, () => {
-                        callback(channel)
-                    }),
-                );
-            });
-
-            //if unarchived archived chat
-        } else if (channel.is_archived === 1) {
-            unArchiveChannel(channel, (err, res) => {
-                const channel = res.data;
-                dispatch(
-                    setSelectedChannel(res.data, () => {
-                        callback(channel)
-                    }),
-                );
-            });
-
-        } else {
-            dispatch(
-                setSelectedChannel({...channel, selected: true}),
-            );
-            callback(channel);
-        }
-    }, [dispatch, createUserChannel, unArchiveChannel]);
-
-    const fetchChannels = useCallback(({skip = 0, limit = limit, ...res},
-                                       callback = () => {
-                                       }) => {
-        let payload = {
-            ...res,
-            skip: skip,
-            limit: limit,
-            order_by: chatSettings.order_channel.order_by,
-            sort_by: chatSettings.order_channel.sort_by.toLowerCase(),
-        };
-
-        dispatch(
-            getChannels(payload, callback),
-        );
-    }, [dispatch]);
-
-    const fetchAllChannels = useCallback(({skip = 0, limit = limit, ...res},
-                                          callback = () => {
-                                          }) => {
-        let payload = {
-            ...res,
-            skip: skip,
-            limit: limit,
-            order_by: chatSettings.order_channel.order_by,
-            sort_by: chatSettings.order_channel.sort_by.toLowerCase(),
-        };
-
-        dispatch(
-            getChannels(payload, (err, res) => {
-                if (err) {
-                    console.log(err);
-                }
-
-                if (res.data.results.length === limit) {
-                    fetchAllChannels({
-                        ...payload,
-                        skip: payload.skip + limit,
-                    });
-                } else {
-                    callback(err, res);
-                }
-            }),
-        );
-    }, [dispatch]);
+    const actions = useChannelActions();
 
     useEffect(() => {
         if (init) {
             init = false;
 
-            dispatch(
-                getLastVisitedChannel({}, (err, res) => {
-                    loadSelectedChannel(res.data.code, (err, res) => {
-                        if (err) {
-                            console.log(err);
-                        }
-
-                        if (res) {
-                            dispatch(
-                                saveLastVisitedChannel(res.data),
-                            );
-                        }
-                    });
-                }),
-            );
-
-            fetchAllChannels({
+            actions.fetchAllChannels({
                 skip: 0,
                 limit: 100,
             });
 
-            fetchAllChannels({
+            actions.fetchAllChannels({
                 skip: 0,
                 limit: 20,
                 filter: "hidden",
             });
 
-            fetchAllChannels({
+            actions.fetchAllChannels({
                 skip: 0,
                 limit: 20,
                 filter: "archived",
@@ -225,15 +37,11 @@ const useChannels = () => {
     }, []);
 
     return {
+        actions,
         channels,
         selectedChannel,
         lastVisitedChannel,
         channelsLoaded,
-        loadSelectedChannel,
-        unArchiveChannel,
-        createUserChannel,
-        selectChannel,
-        fetchChannels,
     };
 };
 
