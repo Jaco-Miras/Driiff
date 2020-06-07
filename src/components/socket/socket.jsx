@@ -224,9 +224,9 @@ class Socket extends PureComponent {
                 }, 2000);
             }
         });
-        this.props.getConnectedSlugs({}, (err, res) => {
-            console.log(res, "slugs");
-        });
+        // this.props.getConnectedSlugs({}, (err, res) => {
+        //     console.log(res, "slugs");
+        // });
         // this.props.getAllEntriesCountAction();
 
         this._initializedSocket();

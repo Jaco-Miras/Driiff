@@ -1,20 +1,31 @@
-import React, {useCallback} from "react";
+import React, {useRef} from "react";
 import styled from "styled-components";
 import {useDispatch, useSelector} from "react-redux";
+import {useLocation} from "react-router-dom";
+import toaster from "toasted-notes";
 import {AvatarGroup, SvgIconFeather} from "../../common";
 import {CheckBox} from "../../forms";
-import {favoritePost, postArchive, postMarkDone, removePost} from "../../../redux/actions/postActions";
+import {favoritePost, followPost, postArchive, postMarkDone, postToggleRead, removePost, unFollowPost} from "../../../redux/actions/postActions";
 import {addToModals} from "../../../redux/actions/globalActions";
 import {MoreOptions} from "../common";
-import {PostBadge, PostOptions} from "./index";
+import {PostBadge} from "./index";
+import {copyTextToClipboard} from "../../../helpers/commonFunctions";
+import {getBaseUrl} from "../../../helpers/slugHelper";
 
 const Wrapper = styled.li`
+    .feather-more-vertical {
+        width: auto;
+    }
 `;
 
 const PostItemPanel = (props) => {
 
+    const renders = useRef(0)
+    console.log("renders post", renders.current++)
     const dispatch = useDispatch();
+    const location = useLocation();
     const topic = useSelector(state => state.workspaces.activeTopic);
+    const user = useSelector(state => state.session.user);
     const {className = "", post} = props;
 
     const handleFavoritePost = () => {
@@ -87,21 +98,54 @@ const PostItemPanel = (props) => {
         }
     };
 
-    const handleMarkAsRead = useCallback(() => {
-        console.log(post);
-    }, [post]);
+    const handleMarkAsRead = () => {
+        dispatch(
+            postToggleRead({
+                post_id: post.id,
+                unread: 0
+            })
+        )
+    };
 
-    const handleMarkAsUnread = useCallback(() => {
-        console.log(post);
-    }, [post]);
+    const handleMarkAsUnread = () => {
+        dispatch(
+            postToggleRead({
+                post_id: post.id,
+                unread: 1
+            })
+        )
+    };
 
-    const handleShare = useCallback(() => {
-        console.log(post);
-    }, [post]);
+    const handleShare = () => {
+        let link = `${getBaseUrl()}${location.pathname}/post/${post.id}`;
+        copyTextToClipboard(link);
+    };
 
-    const handleSnooze = useCallback(() => {
+    const handleSnooze = () => {
         console.log(post);
-    }, [post]);
+    };
+
+    const handleFollow = () => {
+        if (post.is_followed) {
+            //When: The user is following/recipient of the post - and not the creator.
+            dispatch(
+                unFollowPost({post_id: post.id}, (err,res) => {
+                    if (err) return;
+                    let notification = `You’ve stopped to follow ${post.title}`;
+                    toaster.notify(notification, {position: "bottom-left"});
+                })
+            );
+        } else {
+            //When: The user not following the post and the post is in an open topic.
+            dispatch(
+                followPost({post_id: post.id}, (err,res) => {
+                    if (err) return;
+                    let notification = `You’ve started to follow ${post.title}`;
+                    toaster.notify(notification, {position: "bottom-left"});
+                })
+            );
+        }
+    };
 
     return (
         <Wrapper className={`list-group-item post-item-list ${className}`}>
@@ -127,6 +171,12 @@ const PostItemPanel = (props) => {
                                 <div onClick={handleMarkAsUnread}>Mark as unread</div>
                                 <div onClick={handleShare}>Share</div>
                                 <div onClick={handleSnooze}>Snooze</div>
+                                {
+                                    post.author.id !== user.id && 
+                                    <div onClick={handleFollow}>
+                                        {post.is_followed ? "Unfollow" : "Follow"}
+                                    </div>
+                                }
                             </MoreOptions>
                         }
                         <SvgIconFeather icon="trash-2" onClick={handleArchivePost}/>

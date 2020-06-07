@@ -9,7 +9,7 @@ import {MainContentPanel, MainHeaderPanel, MainNavigationPanel} from "../compone
 import Socket from "../components/socket/socket";
 import usePushNotification from "../components/webpush/usePushNotification";
 import {getFiles} from "../redux/actions/fileActions";
-import {getAllRecipients} from "../redux/actions/globalActions";
+import {getAllRecipients, getConnectedSlugs} from "../redux/actions/globalActions";
 import {getMentions} from "../redux/actions/userAction";
 
 const MainContent = styled.div`
@@ -29,6 +29,7 @@ const MainLayout = (props) => {
         document.body.classList.remove("form-membership");
         dispatch(getAllRecipients());
         dispatch(getMentions());
+        dispatch(getConnectedSlugs());
         if (Object.keys(files).length === 0) {
             dispatch(getFiles({sort: "desc"}));
         }
