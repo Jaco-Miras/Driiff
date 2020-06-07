@@ -1,136 +1,78 @@
 import lodash from "lodash";
-import {useEffect, useState} from "react";
+import {useCallback, useEffect, useState} from "react";
 
+export const useTooltipOrientation = (mainRef, tooltipRef, scrollEl = null, when) => {
 
-const useTooltipHorizontalOrientation = (mainRef, tooltipRef, scrollEl, when) => {
-    const [orientation, setOrientation] = useState("left");
+    const [orientation, setOrientation] = useState({
+        vertical: null,
+        horizontal: null,
+    });
+
+    const verticalOrientation = useCallback(() => {
+        if (!mainRef) {
+            return null;
+        }
+
+        const elPos = mainRef.current.getBoundingClientRect();
+
+        let benchMark = window.innerHeight / 2;
+        let adjust = 0;
+        if (scrollEl) {
+            adjust = scrollEl.offsetParent.getBoundingClientRect().y;
+            benchMark = scrollEl.offsetParent.clientHeight / 2;
+        }
+
+        if ((elPos.y - adjust) < benchMark) {
+            return "bottom";
+        } else {
+            return "top";
+        }
+    }, [mainRef, scrollEl]);
+
+    const horizontalOrientation = useCallback(() => {
+        if (!mainRef) {
+            return null;
+        }
+
+        const elPos = mainRef.current.getBoundingClientRect();
+
+        let benchMark = window.innerWidth / 2;
+        let adjust = 0;
+        if (scrollEl) {
+            adjust = scrollEl.offsetParent.getBoundingClientRect().x;
+            benchMark = scrollEl.offsetParent.clientWidth / 2;
+        }
+
+        if ((elPos.x - adjust) < benchMark) {
+            return "right";
+        } else {
+            return "left";
+        }
+    }, [mainRef, scrollEl]);
 
     useEffect(() => {
         const calculatePosition = lodash.debounce(() => {
-            if (mainRef && mainRef.current) {
-                let elPos = mainRef.current.getBoundingClientRect();
-                let screenWidth = window.innerWidth;
-                if ((screenWidth - elPos.x) < (tooltipRef.current.clientWidth + 30)) {
-                    setOrientation("left");
-                } else {
-                    setOrientation("right");
-                }
-            }
+            setOrientation({
+                vertical: verticalOrientation(),
+                horizontal: horizontalOrientation(),
+            });
         }, 200);
 
         if (when) {
+            calculatePosition();
+
             if (scrollEl) {
                 scrollEl.addEventListener("scroll", calculatePosition);
             }
-            if (mainRef && mainRef.current) {
-                let elPos = mainRef.current.getBoundingClientRect();
-                let screenWidth = window.innerWidth;
 
-                if (tooltipRef.current) {
-                    if ((screenWidth - elPos.x) < (tooltipRef.current.clientWidth + 30)) {
-                        setOrientation("left");
-                    } else {
-                        setOrientation("right");
-                    }
-                }
-            }
             return () => {
                 if (scrollEl)
                     scrollEl.removeEventListener("scroll", calculatePosition);
             };
         }
-    }, [when, mainRef, scrollEl, tooltipRef]);
-
-    return orientation;
-};
-
-export const useTooltipOrientation = (mainRef, tooltipRef, scrollEl, when, offset = 215) => {
-    const [orientation, setOrientation] = useState("bottom");
-
-    useEffect(() => {
-        const calculatePosition = lodash.debounce(() => {
-            if (mainRef && mainRef.current) {
-                let elPos = mainRef.current.getBoundingClientRect();
-                let screenHeight = window.innerHeight;
-                if (tooltipRef.current) {
-                    if ((screenHeight - elPos.y) < (tooltipRef.current.clientHeight + offset)) {
-                        setOrientation("top");
-                    } else {
-                        setOrientation("bottom");
-                    }
-                }
-            }
-        }, 200);
-
-        if (when) {
-            if (scrollEl) {
-                scrollEl.addEventListener("scroll", calculatePosition);
-            }
-
-            if (mainRef && mainRef.current) {
-                let elPos = mainRef.current.getBoundingClientRect();
-                let screenHeight = window.innerHeight;
-
-                if (tooltipRef.current) {
-                    if ((screenHeight - elPos.y) < (tooltipRef.current.clientHeight + offset)) {
-                        setOrientation("top");
-                    } else {
-                        setOrientation("bottom");
-                    }
-                }
-            }
-            return () => {
-                if (scrollEl)
-                    scrollEl.removeEventListener("scroll", calculatePosition);
-            };
-        }
-    }, [when, mainRef, scrollEl, tooltipRef, offset]);
+    }, [when, scrollEl, horizontalOrientation, verticalOrientation]);
 
     return {
-        vertical: orientation,
-        horizontal: useTooltipHorizontalOrientation(mainRef, tooltipRef, scrollEl, when),
+        orientation
     };
-};
-
-export const useTooltipPosition = (mainRef, tooltipRef, scrollEl, when) => {
-    const [position, setPosition] = useState(0);
-
-    useEffect(() => {
-        const calculatePosition = lodash.debounce(() => {
-            if (mainRef && mainRef.current) {
-                let elPos = mainRef.current.getBoundingClientRect();
-                let screenHeight = window.innerHeight;
-
-                if ((screenHeight - elPos.y) < (tooltipRef.current.clientHeight + 215)) {
-                    setPosition(Math.floor(screenHeight - elPos.y));
-                } else {
-                    setPosition(Math.floor(elPos.y));
-                }
-            }
-        }, 200);
-
-        if (when) {
-            if (scrollEl) {
-                scrollEl.addEventListener("scroll", calculatePosition);
-            }
-            if (mainRef && mainRef.current) {
-                let elPos = mainRef.current.getBoundingClientRect();
-                let screenHeight = window.innerHeight;
-
-                if (tooltipRef.current) {
-                    if ((screenHeight - elPos.y) < (tooltipRef.current.clientHeight + 215)) {
-                        setPosition(Math.floor(screenHeight - elPos.y));
-                    } else {
-                        setPosition(Math.floor(elPos.y));
-                    }
-                }
-            }
-            return () => {
-                if (scrollEl)
-                    scrollEl.removeEventListener("scroll", calculatePosition);
-            };
-        }
-    }, [when, mainRef, scrollEl, tooltipRef]);
-
-    return [position];
 };

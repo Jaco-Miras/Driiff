@@ -1040,10 +1040,11 @@ class ChatMessages extends React.PureComponent {
                                                                             {
                                                                                 !isNaN(reply.id) && reply.is_deleted === 0 &&
                                                                                 <ChatMessageOptions
+                                                                                    scrollRef={this.scrollComponent}
+                                                                                    replyData={reply}
                                                                                     className={"chat-message-options"}
                                                                                     selectedChannel={this.props.selectedChannel}
                                                                                     isAuthor={isAuthor}
-                                                                                    replyData={reply}
                                                                                     cbOnRemoveReply={this.handleRemoveReply}
                                                                                     onEditReply={this.handleEditReply}
                                                                                     onQuoteReply={this.handleQuoteReply}
@@ -1055,7 +1056,6 @@ class ChatMessages extends React.PureComponent {
                                                                                     slugs={this.props.sharedSlugs}
                                                                                 />
                                                                             }
-
                                                                         </SystemChatActionsContainer>
                                                                     </SystemMessageContainer>
                                                                     {

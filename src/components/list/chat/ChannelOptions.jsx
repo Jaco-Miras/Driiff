@@ -10,7 +10,7 @@ import {
 } from "../../../redux/actions/chatActions";
 import {addToModals} from "../../../redux/actions/globalActions";
 import {SvgIconFeather} from "../../common";
-import {useOutsideClick, useTooltipOrientation, useTooltipPosition} from "../../hooks";
+import {useOutsideClick, useTooltipOrientation} from "../../hooks";
 
 const MoreButton = styled(SvgIconFeather)`
     ${"" /* background: ${props => (props.show && !props.selected ? "#972c86" : "#fff")}; */}
@@ -57,7 +57,6 @@ const ChannelOptions = props => {
     const moreRef = useRef();
     const scrollEl = document.getElementById("chat-channels");
     const orientation = useTooltipOrientation(moreRef, tooltipRef, scrollEl, showMoreOptions);
-    const [toolTipPosition] = useTooltipPosition(moreRef, tooltipRef, scrollEl, showMoreOptions);
     const [sharedChannel, setSharedChannel] = useState(false);
     const sharedSlugs = useSelector(state => state.global.slugs);
     const selectedChannel = useSelector(state => state.chat.selectedChannel);
@@ -304,7 +303,6 @@ const ChannelOptions = props => {
             <MoreTooltip
                 ref={tooltipRef}
                 className={`more-options-tooltip ${tooltipAdjustment ? "adjust" : ""} orientation-${orientation.vertical}`}
-                position={toolTipPosition}
                 orientation={orientation.vertical}>
                 <div onClick={handlePinButton}>
                     {channel.is_pinned ? `Unfavorite` : `Favorite`}
