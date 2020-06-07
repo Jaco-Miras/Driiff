@@ -19,9 +19,9 @@ const ChatHeader = styled.h4`
 `;
 
 const ChannelsSidebar = props => {
-    const {className, search} = props;
+    const {className, search, channels, selectedChannel} = props;
 
-    const [sortedChannels] = useSortChannels(search);
+    const [sortedChannels] = useSortChannels(channels, search);
 
     return (
         <ChannelsSidebarContainer className={`chat-lists ${className}`}>
@@ -63,7 +63,7 @@ const ChannelsSidebar = props => {
                         return (
                             <React.Fragment key={channel.id}>
                                 {search !== "" && chatHeader !== "" && <ChatHeader>{chatHeader}</ChatHeader>}
-                                <ChannelList channel={channel}/>
+                                <ChannelList channel={channel} selectedChannel={selectedChannel}/>
                             </React.Fragment>
                         );
                     })

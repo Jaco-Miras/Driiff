@@ -19,7 +19,7 @@ const Search = styled(SearchForm)`
 
 const ChatSidebarPanel = (props) => {
 
-    const {className = "", activeTabPill = "pills-home"} = props;
+    const {className = "", activeTabPill = "pills-home", channels, userChannels, selectedChannel} = props;
 
     const [search, setSearch] = useState("");
     const [tabPill, setTabPill] = useState(activeTabPill);
@@ -42,13 +42,13 @@ const ChatSidebarPanel = (props) => {
         refs.navTab.current.querySelector(".nav-link.active").classList.remove("active");
 
         let e = refs.navTab.current.querySelector(`.nav-link[aria-controls="${activeTabPill}"]`);
-        if(e) {
+        if (e) {
             e.classList.add("active");
             setTabPill(e.getAttribute("aria-controls"));
         } else {
-            console.log(`[aria-controls="${activeTabPill}"]`)
+            console.log(`[aria-controls="${activeTabPill}"]`);
         }
-    }, [activeTabPill])
+    }, [activeTabPill]);
 
     return (
         <Wrapper className={`chat-sidebar ${className}`}>
@@ -67,7 +67,10 @@ const ChatSidebarPanel = (props) => {
                     </li>
                 </ul>
             </div>
-            <ChatSideBarContentPanel pill={tabPill} search={search}/>
+            <ChatSideBarContentPanel pill={tabPill} search={search}
+                                     channels={channels}
+                                     userChannels={userChannels}
+                                     selectedChannel={selectedChannel}/>
         </Wrapper>
     );
 };

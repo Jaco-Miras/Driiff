@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import styled from "styled-components";
-import {useChannels} from "../../hooks";
+import {useUserChannels} from "../../hooks";
 import {ChatContentPanel, ChatSidebarPanel} from "../chat";
 
 const Wrapper = styled.div`
@@ -10,8 +10,8 @@ const CompanyChatPanel = (props) => {
 
     const {className = ""} = props;
 
-    const {selectChannel, lastVisitedChannel, loadSelectedChannel} = useChannels();
-    const [useLastVisitedChannel, setUseLastVisitedChannel] = useState(false);
+    const {lastVisitedChannel, channels, userChannels, selectedChannel, actions: channelActions} = useUserChannels();
+    const [useLastVisitedChannel, setUseLastVisitedChannel] = useState(null);
     const [activeTabPill, setActiveTabPill] = useState("home");
 
     useEffect(() => {
@@ -24,34 +24,55 @@ const CompanyChatPanel = (props) => {
         //eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    useEffect(() => {
-        if (useLastVisitedChannel && lastVisitedChannel !== null) {
-            selectChannel(lastVisitedChannel, () => {
+
+    const setLastVisitedChannel = () => {
+        if (lastVisitedChannel) {
+            channelActions.selectChannel(lastVisitedChannel, () => {
                 setActiveTabPill(lastVisitedChannel.type === "DIRECT" ? "contact" : "home");
                 props.history.push(`/chat/${lastVisitedChannel.code}`);
             });
         } else {
-            const code = props.match.params.code;
-            if (typeof code !== "undefined") {
-                loadSelectedChannel(code, (err, res) => {
-                    if (err) {
-                        console.log(err);
-                    }
-
-                    if (res) {
-                        selectChannel(res.data);
-                        setActiveTabPill(res.data.type === "DIRECT" ? "contact" : "home");
-                    }
+            channelActions.fetchLastVisitedChannel((err, res) => {
+                channelActions.loadSelectedChannel(res.data.code, (err, res) => {
+                    channelActions.saveLastVisitedChannel(res.data, () => {
+                        channelActions.selectChannel(res.data, () => {
+                            setActiveTabPill(res.data.type === "DIRECT" ? "contact" : "home");
+                            props.history.push(`/chat/${res.data.code}`);
+                        });
+                    });
                 });
+            });
+        }
+    };
+
+    const setVisitedChannel = () => {
+        channelActions.loadSelectedChannel(props.match.params.code, (err, res) => {
+            if (res) {
+                channelActions.selectChannel(res.data);
+                setActiveTabPill(res.data.type === "DIRECT" ? "contact" : "home");
+            }
+        });
+    };
+
+    useEffect(() => {
+        if (useLastVisitedChannel !== null) {
+            if (useLastVisitedChannel) {
+                setLastVisitedChannel();
+            } else {
+                setVisitedChannel();
             }
         }
-    }, [lastVisitedChannel]);
+    }, [useLastVisitedChannel]);
 
     return (
         <Wrapper className={`company-chat-panel container-fluid h-100 ${className}`}>
             <div className="row no-gutters chat-block">
-                <ChatSidebarPanel className={`col-lg-4 border-right`} activeTabPill={`pills-${activeTabPill}`}/>
-                <ChatContentPanel className={`col-lg-8`}/>
+                <ChatSidebarPanel className={`col-lg-4 border-right`} activeTabPill={`pills-${activeTabPill}`}
+                                  channels={channels}
+                                  userChannels={userChannels}
+                                  selectedChannel={selectedChannel}/>
+                <ChatContentPanel className={`col-lg-8`}
+                                  selectedChannel={selectedChannel}/>
             </div>
         </Wrapper>
     );

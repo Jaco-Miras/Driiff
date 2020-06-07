@@ -1,8 +1,6 @@
 import React, {useState} from "react";
-import {useDispatch, useSelector} from "react-redux";
-import {withRouter} from "react-router-dom";
 import styled from "styled-components";
-import {setChannelHistoricalPosition, setSelectedChannel} from "../../../redux/actions/chatActions";
+import useChannelActions from "../../hooks/useChannelActions";
 import ChannelIcon from "./ChannelIcon";
 import ChannelOptions from "./ChannelOptions";
 import ChannelTitle from "./ChannelTitle";
@@ -86,10 +84,11 @@ const Timestamp = styled.div`
 `;
 
 const ChannelList = props => {
-    const {className = "", channel} = props;
+
+    const channelActions = useChannelActions();
+
+    const {className = "", channel, selectedChannel} = props;
     const [optionsVisible, setOptionsVisible] = useState(false);
-    const dispatch = useDispatch();
-    const selectedChannel = useSelector(state => state.chat.selectedChannel);
 
     const toggleOptions = () => {
         setOptionsVisible(!optionsVisible);
@@ -97,20 +96,15 @@ const ChannelList = props => {
 
     const handleSelectChannel = () => {
 
-        if (selectedChannel.id !== channel.id) {
+        if (selectedChannel !== null) {
             const scrollComponent = document.getElementById("component-chat-thread");
             if (scrollComponent) {
-                dispatch(setChannelHistoricalPosition({
-                    channel_id: selectedChannel.id,
-                    scrollPosition: scrollComponent.scrollHeight - scrollComponent.scrollTop,
-                }));
+                channelActions.saveHistoricalPosition(selectedChannel.id, scrollComponent);
             }
-
-            dispatch(
-                setSelectedChannel({...channel, selected: true}),
-            );
-            props.history.push(`/chat/${channel.code}`);
         }
+
+        channelActions.selectChannel({...channel, selected: true});
+        props.history.push(`/chat/${channel.code}`);
     };
 
     return (
@@ -130,4 +124,4 @@ const ChannelList = props => {
     );
 };
 
-export default withRouter(ChannelList);
+export default ChannelList;
