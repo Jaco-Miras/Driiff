@@ -10,6 +10,7 @@ import {
     clearSelectedChannel
 } from "../../redux/actions/chatActions";
 import {getWorkspaces, setActiveTab, setActiveTopic} from "../../redux/actions/workspaceActions";
+import {getDrafts} from "../../redux/actions/globalActions";
 import {useSettings} from "./index";
 
 const useSetWorkspace = () => {
@@ -41,6 +42,13 @@ const useSetWorkspace = () => {
                 dispatch(setSelectedChannel(channel));
             }),
         );
+    }, []);
+
+    useEffect(() => {
+        dispatch(getDrafts());
+        return () => {
+            dispatch(clearSelectedChannel());
+        }
     }, []);
 
     useEffect(() => {
@@ -133,9 +141,6 @@ const useSetWorkspace = () => {
                     }   
                 }
             }
-        }
-        return () => {
-            dispatch(clearSelectedChannel());
         }
     }, [externalWorkspacesLoaded, workspacesLoaded, activeTopic, dispatch, params, workspaces, init, exInit]);
 

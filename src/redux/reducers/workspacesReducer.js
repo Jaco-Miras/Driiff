@@ -7,7 +7,8 @@ const INITIAL_STATE = {
     activeTab: "intern",
     workspacesLoaded: false,
     externalWorkspacesLoaded: false,
-    workspacePosts: {}
+    workspacePosts: {},
+    drafts: []
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -399,18 +400,30 @@ export default (state = INITIAL_STATE, action) => {
         }
         case "ADD_TO_WORKSPACE_POSTS": {
             let convertedPosts = convertArrayToObject(action.data.posts, "id");
+            let postDrafts = [];
+            if (state.drafts.length) {
+                state.drafts.forEach(d => {
+                    if (d.data.type === "draft_post" && action.data.topic_id === d.data.topic_id) {
+                        postDrafts.push({...d.data,...d.data.form, draft_id: d.id})
+                    }
+                })
+            }
+            if (postDrafts.length) {
+                postDrafts = convertArrayToObject(postDrafts, "id");
+            }
             return {
                 ...state,
                 workspacePosts: {
                     ...state.workspacePosts,
                     [action.data.topic_id]: {
-                        filter: "all",
+                        filter: null,
                         sort: null,
                         tag: null,
                         searchResults: [],
                         posts: {
                             ...[action.data.topic_id].posts,
-                            ...convertedPosts
+                            ...convertedPosts,
+                            ...postDrafts
                         }
                     }
                 }
@@ -500,6 +513,12 @@ export default (state = INITIAL_STATE, action) => {
                 }
             } else {
                 return state
+            }
+        }
+        case "GET_DRAFTS_SUCCESS": {
+            return {
+                ...state,
+                drafts: action.data
             }
         }
         case "REMOVE_POST": {

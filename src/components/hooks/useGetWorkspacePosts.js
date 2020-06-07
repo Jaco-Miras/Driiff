@@ -42,9 +42,11 @@ const useGetWorkspacePosts = () => {
             let filteredPosts = Object.values(posts).filter(p => {
                 if (filter) {
                     if (filter === "my_posts") {
-                        return p.author.id === user.id
+                        if (p.hasOwnProperty("author")) return p.author.id === user.id;
+                        else return false;
                     } else if (filter === "draft") {
-                        return true
+                        if (p.hasOwnProperty("draft_type")) return true;
+                        else return false;
                     } else if (filter === "star") {
                         return p.is_favourite;
                     } else {
@@ -94,7 +96,10 @@ const useGetWorkspacePosts = () => {
                 })
             }
             return {
-                posts: filteredPosts, 
+                posts: Object.values(wsPosts[params.workspaceId].posts).filter(p => {
+                    if (p.hasOwnProperty("draft_type")) return false;
+                    else return true
+                }), 
                 filter: null,
                 tag: null, 
                 sort: null

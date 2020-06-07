@@ -108,3 +108,10 @@ export function getUnreadNotificationCounterEntries(payload) {
         data: payload,
     });
 }
+
+export function getDrafts(payload) {
+    return apiCall({
+        method: "GET",
+        url: `/v1/drafts`,
+    });
+}

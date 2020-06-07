@@ -2,7 +2,7 @@ import React, {useCallback, useEffect, useRef, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {Input, InputGroup, Label, Modal, ModalBody} from "reactstrap";
 import styled from "styled-components";
-import {clearModal} from "../../redux/actions/globalActions";
+import {clearModal, deleteDraft, saveDraft, updateDraft} from "../../redux/actions/globalActions";
 import {createWorkspacePost} from "../../redux/actions/workspaceActions";
 import {SvgIconFeather} from "../common";
 import {CheckBox, FolderSelect, PeopleSelect} from "../forms";
@@ -125,22 +125,20 @@ const CreateEditWorkspacePostModal = props => {
     const dispatch = useDispatch();
     const [modal, setModal] = useState(true);
     const user = useSelector(state => state.session.user);
-    // const workspaces = useSelector(state => state.workspaces.workspaces);
-    // const activeTab = useSelector(state => state.workspaces.activeTab);
-    // const [workspaceOptions, setWorkspaceOptions] = useState([]);
-    //const [userOptions, setUserOptions] = useState([]);
+    const activeTopic = useSelector(state => state.workspaces.activeTopic);
     const [showMoreOptions, setShowMoreOptions] = useState(null);
     const [maxHeight, setMaxHeight] = useState(null);
+    const [draftId, setDraftId] = useState(null);
     const [form, setForm] = useState({
         must_read: false,
         reply_required: false,
         no_reply: false,
         is_private: false,
         has_folder: false,
-        name: "",
+        title: "",
         selectedUsers: [],
         selectedWorkspaces: [],
-        description: "",
+        body: "",
         textOnly: "",
     });
     const formRef = {
@@ -149,7 +147,10 @@ const CreateEditWorkspacePostModal = props => {
         dropZone: useRef(null),
         arrow: useRef(null),
     };
-    const toggle = () => {
+    const toggle = (saveDraft = true) => {
+        if (saveDraft && mode !== "edit") {
+            handleSaveDraft();
+        }
         setModal(!modal);
         dispatch(
             clearModal({type: type}),
@@ -187,14 +188,46 @@ const CreateEditWorkspacePostModal = props => {
     const handleNameChange = e => {
         setForm({
             ...form,
-            name: e.target.value.trim(),
+            title: e.target.value,
         });
+    };
+
+    const handleSaveDraft = () => {
+        if (form.title == "" && form.body === "" && !form.selectedUsers.length) return;
+        else {
+            let timestamp = Math.floor(Date.now() / 1000);
+            let payload = {
+                type: "draft_post",
+                form: {
+                    ...form,
+                    must_read: form.must_read ? 1 : 0,
+                    must_reply: form.must_reply ? 1 : 0,
+                    read_only: form.no_reply ? 1 : 0,
+                    users_responsible: form.selectedUsers,
+                },
+                timestamp: timestamp,
+                topic_id: activeTopic.id,
+                id: timestamp,
+                is_must_read: form.must_read ? 1 : 0,
+                is_must_reply: form.must_reply ? 1 : 0,
+                is_read_only: form.no_reply ? 1 : 0,
+            };
+            if (draftId) {
+                payload = {
+                    ...payload,
+                    draft_id: draftId
+                }
+                dispatch(updateDraft(payload));
+            } else {
+                dispatch(saveDraft(payload));
+            }
+        }
     };
 
     const handleConfirm = () => {
         let payload = {
-            title: form.name,
-            body: form.description,
+            title: form.title,
+            body: form.body,
             responsible_ids: form.selectedUsers.map(u => u.value),
             type: "post",
             personal: 0,
@@ -204,15 +237,23 @@ const CreateEditWorkspacePostModal = props => {
             read_only: form.no_reply ? 1 : 0,
             workspace_ids: form.selectedWorkspaces.filter(ws => ws.type === "FOLDER").map(ws => ws.value)
         };
+        if (draftId) {
+            dispatch(
+                deleteDraft({
+                    type: "draft_post",
+                    draft_id: draftId
+                })
+            )
+        }
         dispatch(createWorkspacePost(payload));
-        toggle();
+        toggle(false);
     };
 
     const handleQuillChange = (content, delta, source, editor) => {
         const textOnly = editor.getText(content);
         setForm({
             ...form,
-            description: content,
+            body: content,
             textOnly: textOnly,
         });
     };
@@ -252,7 +293,10 @@ const CreateEditWorkspacePostModal = props => {
     const [modules] = useQuillModules("workspace");
 
     useEffect(() => {
-        if (item.workspace !== null) {
+        if (item.workspace !== null && item.hasOwnProperty("draft")) {
+            setForm(item.draft.form);
+            setDraftId(item.draft.draft_id);
+        } else if (item.workspace !== null) {
             setForm({
                 ...form,
                 selectedWorkspaces: [{
@@ -299,6 +343,7 @@ const CreateEditWorkspacePostModal = props => {
                     <Label for="post-title">Post title</Label>
                     <Input style={{borderRadius: "5px"}}
                            defaultValue={mode === "edit" ? "" : ""}
+                           value={form.title}
                            onChange={handleNameChange}
                            autoFocus
                     />
@@ -349,7 +394,7 @@ const CreateEditWorkspacePostModal = props => {
                 <WrapperDiv>
                     <button
                         className="btn btn-primary"
-                        disabled={form.selectedUsers.length === 0 || form.name === "" || form.selectedWorkspaces.length === 0}
+                        disabled={form.selectedUsers.length === 0 || form.title === "" || form.selectedWorkspaces.length === 0}
                         onClick={handleConfirm}>
                         {mode === "edit" ? "Update workspace" : "Create post"}
                     </button>
