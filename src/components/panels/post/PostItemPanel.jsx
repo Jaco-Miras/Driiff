@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useCallback} from "react";
 import styled from "styled-components";
 import {useDispatch, useSelector} from "react-redux";
 import {AvatarGroup, SvgIconFeather} from "../../common";
