@@ -1,8 +1,6 @@
 import React, {useState} from "react";
-import {useDispatch, useSelector} from "react-redux";
-import {withRouter} from "react-router-dom";
 import styled from "styled-components";
-import {setChannelHistoricalPosition, setSelectedChannel} from "../../../redux/actions/chatActions";
+import useChannelActions from "../../hooks/useChannelActions";
 import ChannelIcon from "./ChannelIcon";
 import ChannelOptions from "./ChannelOptions";
 import ChannelTitle from "./ChannelTitle";
@@ -86,10 +84,11 @@ const Timestamp = styled.div`
 `;
 
 const ChannelList = props => {
-    const {className = "", channel} = props;
-    const [optionsVisible, setOptionsVisible] = useState(false);
 
-    const selectedChannel = useSelector(state => state.chat.selectedChannel);
+    const channelActions = useChannelActions();
+
+    const {className = "", channel, selectedChannel} = props;
+    const [optionsVisible, setOptionsVisible] = useState(false);
 
     const toggleOptions = () => {
         setOptionsVisible(!optionsVisible);
@@ -125,4 +124,4 @@ const ChannelList = props => {
     );
 };
 
-export default withRouter(ChannelList);
+export default ChannelList;
