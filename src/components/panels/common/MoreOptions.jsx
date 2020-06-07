@@ -6,16 +6,10 @@ import {useOutsideClick, useTooltipOrientation} from "../../hooks";
 const Wrapper = styled.div`
   display: inline-flex;
   position: relative;
-`;
-const MoreButton = styled.button`
-  width: 16px;
-  height: 16px;
-  padding: 0;
-  cursor: pointer;
-  border: none;
-  background: transparent;
   
   svg {
+    cursor: pointer;
+    cursor: hand;
     width: 100%;
     
     &:hover {
@@ -48,7 +42,7 @@ const MoreTooltip = styled.div`
         bottom: auto;
     }
     &.orientation-left {
-        right: calc(100% + 25px);
+        right: calc(100% + 5px);
         left: auto;
     }
     &.orientation-right {
@@ -105,10 +99,7 @@ const MoreOptions = props => {
         onClick={handleClick}
         ref={refs.container}
         {...rest}>
-        <MoreButton
-            data-event="touchstart focus mouseover" data-event-off="mouseout" data-tip="Message options">
-            <SvgIconFeather icon={`more-${moreButton}`}/>
-        </MoreButton>
+        <SvgIconFeather data-event="touchstart focus mouseover" data-event-off="mouseout" data-tip="Message options" icon={`more-${moreButton}`}/>
         {
             showMoreOptions &&
             <MoreTooltip

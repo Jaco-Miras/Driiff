@@ -14,9 +14,15 @@ const Wrapper = styled.span`
     cursor: hand;
     position: relative;
     ${props => props.selected && "padding-left: 14px !important"};
+    
+    .more-options {
+        position: relative;        
+        opacity: 0;
+        z-index: -1;
+    }
 
     &:hover {
-        .more-button-component {
+        .more-options {
             opacity: 1;
             z-index: 1;
             &.active {

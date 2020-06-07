@@ -18,8 +18,8 @@ export const useTooltipOrientation = (mainRef, tooltipRef, scrollEl = null, when
         let benchMark = window.innerHeight / 2;
         let adjust = 0;
         if (scrollEl) {
-            adjust = scrollEl.offsetParent.getBoundingClientRect().y;
-            benchMark = scrollEl.offsetParent.clientHeight / 2;
+            adjust = scrollEl.parentElement.getBoundingClientRect().y;
+            benchMark = scrollEl.parentElement.clientHeight / 2;
         }
 
         if ((elPos.y - adjust) < benchMark) {
@@ -39,8 +39,8 @@ export const useTooltipOrientation = (mainRef, tooltipRef, scrollEl = null, when
         let benchMark = window.innerWidth / 2;
         let adjust = 0;
         if (scrollEl) {
-            adjust = scrollEl.offsetParent.getBoundingClientRect().x;
-            benchMark = scrollEl.offsetParent.clientWidth / 2;
+            adjust = scrollEl.parentElement.getBoundingClientRect().x;
+            benchMark = scrollEl.parentElement.clientWidth / 2;
         }
 
         if ((elPos.x - adjust) < benchMark) {

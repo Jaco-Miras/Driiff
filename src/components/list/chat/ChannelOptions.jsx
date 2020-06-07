@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import styled from "styled-components";
 import {
@@ -9,42 +9,20 @@ import {
     updateUnreadChatReplies,
 } from "../../../redux/actions/chatActions";
 import {addToModals} from "../../../redux/actions/globalActions";
-import {SvgIconFeather} from "../../common";
-import {useOutsideClick, useTooltipOrientation} from "../../hooks";
+import {MoreOptions} from "../../panels/common";
 
-const MoreButton = styled(SvgIconFeather)`
-    ${"" /* background: ${props => (props.show && !props.selected ? "#972c86" : "#fff")}; */}
-    opacity: ${props => (props.show && !props.selected ? "1 !important" : "0")};
-    border-radius: 50%;
-    width: 15px;
-    height: 15px;
-    cursor: pointer;
-`;
-const MoreTooltip = styled.div`
-    z-index: 5;
-    width: 160px;
-    height: auto;
-    background-color: #ffffff;
-    color: #4d4d4d;
-    border-radius: 8px;
-    position: absolute;
-    right: 6px;
-    padding: 8px 0px;
-    cursor: pointer;
-    box-shadow: 0 5px 10px -1px rgba(0,0,0,.15);
-    border-top: 1px solid #eeeeee !important;
-    &.orientation-bottom {
-        top: 100%;
-    }
-    > div {
-        text-align: left;
-        padding: 4px 24px;
-        cursor: pointer;
-        &:hover {
-            background-color: #F0F0F0;
-            color: #7A1B8B;
+const Wrapper = styled(MoreOptions)`
+    .more-options-tooltip {
+        &.orientation-left {
+            right: calc(100% - 20px);
         }
-    }
+        &.orientation-bottom {
+            top: 100%;
+        }    
+        &.orientation-top {
+            bottom: 25px;
+        }
+    }        
 `;
 
 const ChannelOptions = props => {
@@ -52,11 +30,7 @@ const ChannelOptions = props => {
 
     const dispatch = useDispatch();
     const [showMoreOptions, setShowMoreOptions] = useState(false);
-    const [tooltipAdjustment, setTooltipAdjustment] = useState(false);
-    const tooltipRef = useRef();
-    const moreRef = useRef();
-    const scrollEl = document.getElementById("chat-channels");
-    const orientation = useTooltipOrientation(moreRef, tooltipRef, scrollEl, showMoreOptions);
+    const scrollEl = document.getElementById("pills-contact");
     const [sharedChannel, setSharedChannel] = useState(false);
     const sharedSlugs = useSelector(state => state.global.slugs);
     const selectedChannel = useSelector(state => state.chat.selectedChannel);
@@ -68,19 +42,6 @@ const ChannelOptions = props => {
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
-
-    useEffect(() => {
-        if (tooltipRef.current) {
-            let i = tooltipRef.current.querySelectorAll("div").length;
-
-            if (i > 4) {
-                tooltipRef.current.classList.remove("top");
-                setTooltipAdjustment(true);
-            } else {
-                setTooltipAdjustment(false);
-            }
-        }
-    }, [showMoreOptions]);
 
     const handlePinButton = () => {
         let payload = {
@@ -281,52 +242,31 @@ const ChannelOptions = props => {
         setShowMoreOptions(!showMoreOptions);
         props.onShowOptions();
     };
-    useOutsideClick(tooltipRef, handleShowMoreOptions, showMoreOptions);
-
 
     return <>
-        <MoreButton
-            icon="more-horizontal"
-            className={`more-button-component ${showMoreOptions ? "active" : ""}`}
-            show={showMoreOptions}
-            ref={moreRef}
-            onClick={e => {
-                e.stopPropagation();
-                handleShowMoreOptions();
-            }}
-            data-event="touchstart focus mouseover"
-            data-event-off="mouseout"
-            data-tip="Options"
-        />
-        {
-            showMoreOptions &&
-            <MoreTooltip
-                ref={tooltipRef}
-                className={`more-options-tooltip ${tooltipAdjustment ? "adjust" : ""} orientation-${orientation.vertical}`}
-                orientation={orientation.vertical}>
-                <div onClick={handlePinButton}>
-                    {channel.is_pinned ? `Unfavorite` : `Favorite`}
+        <Wrapper channel={channel} scrollRef={scrollEl}>
+            <div onClick={handlePinButton}>
+                {channel.is_pinned ? `Unfavorite` : `Favorite`}
+            </div>
+            <div onClick={e => handleMarkAsUnreadSelected(e)}>
+                {(channel.mark_unread || (!channel.mark_unread && channel.total_unread > 0)) ? `Mark as Read` : `Mark as Unread`}
+            </div>
+            <div onClick={handleMuteChat}>
+                {channel.is_muted ? `Unmute` : `Mute`}
+            </div>
+            {
+                channel.type !== "PERSONAL_BOT" &&
+                <div onClick={handleHideChat}>
+                    {channel.is_hidden === 0 ? `Hide` : "Unhide"}
                 </div>
-                <div onClick={e => handleMarkAsUnreadSelected(e)}>
-                    {(channel.mark_unread || (!channel.mark_unread && channel.total_unread > 0)) ? `Mark as Read` : `Mark as Unread`}
+            }
+            {
+                (channel.type !== "PERSONAL_BOT" || channel.type !== "COMPANY") &&
+                <div onClick={handleShowArchiveConfirmation}>
+                    {channel.is_archived === 0 ? `Archive` : "Unarchive"}
                 </div>
-                <div onClick={handleMuteChat}>
-                    {channel.is_muted ? `Unmute` : `Mute`}
-                </div>
-                {
-                    channel.type !== "PERSONAL_BOT" &&
-                    <div onClick={handleHideChat}>
-                        {channel.is_hidden === 0 ? `Hide` : "Unhide"}
-                    </div>
-                }
-                {
-                    (channel.type !== "PERSONAL_BOT" || channel.type !== "COMPANY") &&
-                    <div onClick={handleShowArchiveConfirmation}>
-                        {channel.is_archived === 0 ? `Archive` : "Unarchive"}
-                    </div>
-                }
-            </MoreTooltip>
-        }
+            }
+        </Wrapper>
     </>;
 };
 
