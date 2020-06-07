@@ -1,7 +1,7 @@
 import {useCallback, useEffect, useRef} from "react";
 import {useDispatch} from "react-redux";
 import {getGlobalRecipients} from "../../redux/actions/chatActions";
-import {useChannel, useUsers} from "./index";
+import {useChannels, useUsers} from "./index";
 
 let init = true;
 
@@ -13,7 +13,7 @@ const useUserChannels = () => {
     const dispatch = useDispatch();
 
     const users = useUsers();
-    const {channels, selectChannel} = useChannel();
+    const {channels, selectChannel} = useChannels();
     const userChannels = useRef({});
 
     const selectUserChannel = useCallback((user,
@@ -58,7 +58,7 @@ const useUserChannels = () => {
     }, []);
 
     return {
-        ...useChannel(),
+        ...useChannels(),
         ...useUsers(),
         userChannels: userChannels.current,
         selectUserChannel,

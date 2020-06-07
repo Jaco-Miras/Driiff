@@ -18,7 +18,7 @@ let limit = 50;
 /**
  * @returns {{createUserChannel: (...args: any[]) => any, channels, fetchChannels: (...args: any[]) => any, selectedChannel, unArchiveUser: (...args: any[]) => any, channelsLoaded, selectChannel: (...args: any[]) => any, loadSelectedChannel: (...args: any[]) => any}}
  */
-const useChannel = () => {
+const useChannels = () => {
 
     const {chatSettings} = useSettings();
 
@@ -237,4 +237,4 @@ const useChannel = () => {
     };
 };
 
-export default useChannel;
+export default useChannels;

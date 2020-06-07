@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import styled from "styled-components";
-import {useChannel} from "../../hooks";
+import {useChannels} from "../../hooks";
 import {ChatContentPanel, ChatSidebarPanel} from "../chat";
 
 const Wrapper = styled.div`
@@ -10,7 +10,7 @@ const CompanyChatPanel = (props) => {
 
     const {className = ""} = props;
 
-    const {selectChannel, lastVisitedChannel, loadSelectedChannel} = useChannel();
+    const {selectChannel, lastVisitedChannel, loadSelectedChannel} = useChannels();
     const [useLastVisitedChannel, setUseLastVisitedChannel] = useState(false);
     const [activeTabPill, setActiveTabPill] = useState("home");
 
