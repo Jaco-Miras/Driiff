@@ -2,9 +2,9 @@ import React, {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {useRouteMatch} from "react-router-dom";
 import styled from "styled-components";
-import {updateChannel} from "../../../redux/actions/chatActions";
 import {addToModals} from "../../../redux/actions/globalActions";
 import {SvgIconFeather} from "../../common";
+import useChannelActions from "../../hooks/useChannelActions";
 import ChatMembers from "../../list/chat/ChatMembers";
 import ChatTitleTyping from "../../list/chat/ChatTitleTyping";
 
@@ -31,34 +31,24 @@ const IconButton = styled(SvgIconFeather)`
 
 const ChatHeaderPanel = (props) => {
 
+    /**
+     * @todo refactor
+     */
     const {className = ""} = props;
 
     const dispatch = useDispatch();
     const routeMatch = useRouteMatch();
+
+    const channelActions = useChannelActions();
+
     const chatChannel = useSelector(state => state.chat.selectedChannel);
-    const sharedSlugs = useSelector(state => state.global.slugs);
+
     const [page, setPage] = useState("chat");
 
     const handleArchiveChat = () => {
-        let payload = {
-            id: chatChannel.id,
-            is_pinned: chatChannel.is_pinned,
-            is_archived: chatChannel.is_archived === 0 ? 1 : 0,
-            is_muted: chatChannel.is_muted,
-            title: chatChannel.title,
-        };
-        if (chatChannel.is_shared && sharedSlugs.length) {
-            payload = {
-                ...payload,
-                is_shared: true,
-                token: sharedSlugs.filter(s => s.slug_name === chatChannel.slug_owner)[0].access_token,
-                slug: sharedSlugs.filter(s => s.slug_name === chatChannel.slug_owner)[0].slug_name,
-            };
-        }
-        dispatch(
-            updateChannel(payload),
-        );
+        channelActions.archive(chatChannel);
     };
+
     const handleShowArchiveConfirmation = () => {
 
         let payload = {

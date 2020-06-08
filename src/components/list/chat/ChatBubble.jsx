@@ -12,13 +12,13 @@ import {todayOrYesterdayDate} from "../../../helpers/momentFormatJS";
 import quillHelper from "../../../helpers/quillHelper";
 import {getEmojiRegexPattern, stripGif} from "../../../helpers/stringFormatter";
 import {
-    markReminderComplete,
+    putMarkReminderComplete,
     setSelectedChannel,
-    updateChatMessage,
-    updateChatMessageReminderComplete,
+    putChatMessage,
 } from "../../../redux/actions/chatActions";
 import {ImageTextLink, SvgIconFeather, SvgImage} from "../../common";
 import {useTranslation} from "../../hooks";
+import useChatMessageActions from "../../hooks/useChatMessageActions";
 import MessageFiles from "./Files/MessageFiles";
 import Unfurl from "./Unfurl/Unfurl";
 
@@ -499,6 +499,7 @@ const ForwardedSpan = styled.span`
 
 const ChatBubble = (props) => {
     const {
+        channel,
         reply,
         showAvatar,
         selectedChannel,
@@ -523,13 +524,13 @@ const ChatBubble = (props) => {
 
     const handleMarkComplete = () => {
         dispatch(
-            markReminderComplete({message_id: reply.id}, (err, res) => {
+            putMarkReminderComplete({message_id: reply.id}, (err, res) => {
                 if (err)
                     console.log(err);
 
                 if (res)
                     dispatch(
-                        updateChatMessageReminderComplete({
+                        putMarkReminderComplete({
                             channel_id: reply.channel_id,
                             message_id: reply.id,
                         }),
@@ -548,7 +549,7 @@ const ChatBubble = (props) => {
         newBody = newBody.replace("this message", `<a class="push" href="${link}">this message</a>`);
 
         dispatch(
-            updateChatMessage({
+            putChatMessage({
                 body: newBody,
                 message_id: reply.id,
                 reply_id: reply.id,
@@ -866,7 +867,6 @@ const ChatBubble = (props) => {
             replyQuoteBody = `Update: ${newReplyBody}'s account is activated.`;
         }
     }
-
 
     const hasFiles = reply.files.length > 0;
     const hasMessage = reply.body !== "<span></span>";

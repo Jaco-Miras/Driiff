@@ -3,15 +3,15 @@ import {useDispatch, useSelector} from "react-redux";
 import styled from "styled-components";
 import {localizeDate} from "../../helpers/momentFormatJS";
 import {
-    addChannelMembers,
+    postChannelMembers,
     addChatMessage,
     addQuote,
     clearChannelDraft,
     clearQuote,
-    createChatMessage,
+    postChatMessage,
     onClickSendButton,
     setEditChatMessage,
-    updateChatMessage,
+    putChatMessage,
 } from "../../redux/actions/chatActions";
 import {deleteDraft} from "../../redux/actions/globalActions";
 import {SvgIconFeather} from "../common";
@@ -241,13 +241,13 @@ const ChatInput = props => {
                 payload.quote = quote;
             }
             dispatch(
-                updateChatMessage(payloadEdit),
+                putChatMessage(payloadEdit),
             );
             setEditMode(false);
             setEditMessage(null);
         } else {
             dispatch(
-                createChatMessage(payload),
+                postChatMessage(payload),
             );
         }
 
@@ -484,7 +484,7 @@ const ChatInput = props => {
             recipient_ids: users.map(u => u.type_id),
         };
         dispatch(
-            addChannelMembers(memberPayload, (err, res) => {
+            postChannelMembers(memberPayload, (err, res) => {
                 if (err) return;
 
                 if (res)

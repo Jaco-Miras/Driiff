@@ -22,3 +22,4 @@ export {default as useGetWorkspaceAndUserOptions} from "./useGetWorkspaceAndUser
 export {default as useChannels}  from "./useChannels";
 export {default as useUserChannels} from "./useUserChannels";
 export {default as useUsers} from "./useUsers";
+export {default as useLogRenders} from "./useLogRenders";

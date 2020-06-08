@@ -8,11 +8,11 @@ import styled from "styled-components";
 import {localizeChatTimestamp, localizeDate} from "../../../helpers/momentFormatJS";
 import {
     getChatMessages,
-    markAllMessagesAsRead,
-    markReadChannel,
+    setAllMessagesAsRead,
+    putMarkReadChannel,
     setChannelHistoricalPosition,
     setSelectedChannel,
-    updateChannelReducer,
+    setChannel,
     updateUnreadChatReplies,
 } from "../../../redux/actions/chatActions";
 // import {
@@ -24,7 +24,7 @@ import {
 //     createChatMessageV2,
 //     getChatMessage,
 //     getTaskData,
-//     markAllMessagesAsRead,
+//     setAllMessagesAsRead,
 //     onFailedMessageSend,
 //     setDetailModalOpen,
 //     setFetchingReplies,
@@ -518,15 +518,15 @@ class ChatMessages extends React.PureComponent {
         const {
             selectedChannel,
             sharedSlugs,
-            markReadChannel,
-            updateChannelReducer,
+            putMarkReadChannel,
+            setChannel,
         } = this.props;
 
         if (selectedChannel.is_read === 1) {
             if (selectedChannel.is_shared && sharedSlugs.length) {
                 let slug = sharedSlugs.filter(s => s.slug_name === selectedChannel.slug_owner);
                 if (slug.length) {
-                    markReadChannel({
+                    putMarkReadChannel({
                         channel_id: selectedChannel.id,
                         is_shared: true,
                         topic_id: selectedChannel.entity_id,
@@ -535,13 +535,13 @@ class ChatMessages extends React.PureComponent {
                     });
                 }
             } else {
-                markReadChannel({channel_id: selectedChannel.id});
+                putMarkReadChannel({channel_id: selectedChannel.id});
             }
             let updatedChannel = {
                 ...selectedChannel,
                 total_unread: 0,
             };
-            updateChannelReducer(updatedChannel);
+            setChannel(updatedChannel);
         }
     };
 
@@ -582,8 +582,8 @@ class ChatMessages extends React.PureComponent {
     componentDidUpdate(prevProps, prevState, snapshot) {
         const {
             selectedChannel,
-            markReadChannel,
-            markAllMessagesAsRead,
+            putMarkReadChannel,
+            setAllMessagesAsRead,
             //updateUnreadChatReplies,
             historicalPositions,
             user,
@@ -628,8 +628,8 @@ class ChatMessages extends React.PureComponent {
                 let hasUnreadMessage = selectedChannel.replies.filter(r => r.is_read === false).length > 0;
                 if (this.state.bottomRefInView && hasUnreadMessage && this.props.isBrowserActive && selectedChannel.is_read === 1) {
                     console.log("mark read");
-                    markAllMessagesAsRead({channel_id: selectedChannel.id});
-                    markReadChannel({channel_id: selectedChannel.id});
+                    setAllMessagesAsRead({channel_id: selectedChannel.id});
+                    putMarkReadChannel({channel_id: selectedChannel.id});
 
                 }
 
@@ -906,6 +906,7 @@ class ChatMessages extends React.PureComponent {
                                                             >
 
                                                                 <ChatBubble
+                                                                    channel={selectedChannel}
                                                                     isAuthor={isAuthor}
                                                                     reply={reply}
                                                                     loggedUser={this.props.user}
@@ -1120,34 +1121,11 @@ function mapDispatchToProps(dispatch) {
     return {
         getChatMessages: bindActionCreators(getChatMessages, dispatch),
         setSelectedChannel: bindActionCreators(setSelectedChannel, dispatch),
-        updateChannelReducer: bindActionCreators(updateChannelReducer, dispatch),
-        markReadChannel: bindActionCreators(markReadChannel, dispatch),
-        markAllMessagesAsRead: bindActionCreators(markAllMessagesAsRead, dispatch),
+        setChannel: bindActionCreators(setChannel, dispatch),
+        putMarkReadChannel: bindActionCreators(putMarkReadChannel, dispatch),
+        setAllMessagesAsRead: bindActionCreators(setAllMessagesAsRead, dispatch),
         updateUnreadChatReplies: bindActionCreators(updateUnreadChatReplies, dispatch),
         setChannelHistoricalPosition: bindActionCreators(setChannelHistoricalPosition, dispatch),
-        // addSelectedChannelChatMessageReducer: bindActionCreators(addSelectedChannelChatMessage, dispatch),
-        // updateChatMessageAction: bindActionCreators(updateChatMessageV2, dispatch),
-        // setDetailModalOpenAction: bindActionCreators(setDetailModalOpen, dispatch),
-        // chatReactionV2Action: bindActionCreators(chatReactionV2, dispatch),
-        // markAsUnreadChatAction: bindActionCreators(markAsUnreadChat, dispatch),
-        // addChatChannelMembersV2Action: bindActionCreators(addChatChannelMembersV2, dispatch),
-        // updateChannelMembersAction: bindActionCreators(updateChannelMembers, dispatch),
-        // updateLastVisitedChannelAction: bindActionCreators(updateLastVisitedChannel, dispatch),
-        // updateChannelAction: bindActionCreators(updateChannel, dispatch),
-        // updateUnreadChatRepliesAction: bindActionCreators(updateUnreadChatReplies, dispatch),
-        // createChatMessageV2Action: bindActionCreators(createChatMessageV2, dispatch),
-        // onFailedMessageSend: bindActionCreators(onFailedMessageSend, dispatch),
-        // markReadChatChannelAction: bindActionCreators(markReadChatChannel, dispatch),
-        // deleteUnfurlAction: bindActionCreators(deleteUnfurl, dispatch),
-        // removeUnfurl: bindActionCreators(removeUnfurl, dispatch),
-        // setChatThreadScrollPositionAction: bindActionCreators(setChatThreadScrollPosition, dispatch),
-        // deleteChatThreadScrollPositionAction: bindActionCreators(deleteChatThreadScrollPosition, dispatch),
-        // markAllMessagesAsReadAction: bindActionCreators(markAllMessagesAsRead, dispatch),
-        // addChatBoxAction: bindActionCreators(addChatBox, dispatch),
-        // getTaskDataAction: bindActionCreators(getTaskData, dispatch),
-        // setFetchingReplies: bindActionCreators(setFetchingReplies, dispatch),
-        // clearHistoricalPosition: bindActionCreators(clearHistoricalPosition, dispatch),
-        // getChatMessageAction: bindActionCreators(getChatMessage, dispatch),
     };
 }
 

@@ -1,14 +1,8 @@
 import React, {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import styled from "styled-components";
-import {
-    markReadChannel,
-    markUnreadChannel,
-    updateChannel,
-    updateChannelReducer,
-    updateUnreadChatReplies,
-} from "../../../redux/actions/chatActions";
 import {addToModals} from "../../../redux/actions/globalActions";
+import useChannelActions from "../../hooks/useChannelActions";
 import {MoreOptions} from "../../panels/common";
 
 const Wrapper = styled(MoreOptions)`
@@ -20,153 +14,60 @@ const Wrapper = styled(MoreOptions)`
             top: 100%;
         }    
         &.orientation-top {
-            bottom: 25px;
+            bottom: 20px;
         }
     }        
 `;
 
 const ChannelOptions = props => {
-    const {channel} = props;
+    const {selectedChannel, channel} = props;
 
     const dispatch = useDispatch();
+
+    const channelActions = useChannelActions();
+
     const [showMoreOptions, setShowMoreOptions] = useState(false);
+
     const scrollEl = document.getElementById("pills-contact");
-    const [sharedChannel, setSharedChannel] = useState(false);
-    const sharedSlugs = useSelector(state => state.global.slugs);
-    const selectedChannel = useSelector(state => state.chat.selectedChannel);
-
-    useEffect(() => {
-        if (channel.is_shared) {
-            setSharedChannel(true);
-        }
-
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
 
     const handlePinButton = () => {
-        let payload = {
-            id: channel.id,
-            is_pinned: !channel.is_pinned,
-            is_archived: channel.is_archived,
-            is_muted: channel.is_muted,
-            title: channel.title,
-        };
-
-        if (channel.type === "PERSONAL_BOT") {
-            payload = {
-                ...payload,
-                pinned_personal_bot: 1,
-            };
+        if (channel.is_pinned) {
+            channelActions.unPin(channel);
+        } else {
+            channelActions.pin(channel);
         }
-
-        if (sharedChannel && sharedSlugs.length) {
-            payload = {
-                ...payload,
-                is_shared: true,
-                token: sharedSlugs.filter(s => s.slug_name === channel.slug_owner)[0].access_token,
-                slug: sharedSlugs.filter(s => s.slug_name === channel.slug_owner)[0].slug_name,
-            };
-        }
-        dispatch(updateChannel(payload, (err, res) => {
-            if (err) return;
-            let updatedChannel = {
-                ...channel,
-                is_pinned: !channel.is_pinned,
-            };
-            dispatch(updateChannelReducer(updatedChannel));
-        }));
     };
 
     const handleMuteChat = () => {
-        let payload = {
-            id: channel.id,
-            is_pinned: channel.is_pinned,
-            is_archived: channel.is_archived,
-            is_muted: !channel.is_muted,
-            title: channel.title,
-        };
-        if (sharedChannel && sharedSlugs.length) {
-            payload = {
-                ...payload,
-                is_shared: true,
-                token: sharedSlugs.filter(s => s.slug_name === channel.slug_owner)[0].access_token,
-                slug: sharedSlugs.filter(s => s.slug_name === channel.slug_owner)[0].slug_name,
-            };
+        if (channel.is_muted) {
+            channelActions.unMute(channel);
+        } else {
+            channelActions.mute(channel);
         }
-        dispatch(updateChannel(payload, (err, res) => {
-            if (err) return;
-            let updatedChannel = {
-                ...channel,
-                is_muted: !channel.is_muted,
-            };
-            dispatch(updateChannelReducer(updatedChannel));
-        }));
     };
     const handleHideChat = () => {
-        let payload = {
-            id: channel.id,
-            is_pinned: channel.is_pinned,
-            is_archived: channel.is_archived,
-            is_muted: channel.is_muted,
-            title: channel.title,
-            is_hide: !channel.is_hidden,
-        };
-        if (sharedChannel && sharedSlugs.length) {
-            payload = {
-                ...payload,
-                is_shared: true,
-                token: sharedSlugs.filter(s => s.slug_name === channel.slug_owner)[0].access_token,
-                slug: sharedSlugs.filter(s => s.slug_name === channel.slug_owner)[0].slug_name,
-            };
+        if (channel.is_hidden) {
+            channelActions.unHide(channel);
+        } else {
+            channelActions.hide(channel);
         }
+
         if (channel.total_unread > 0) {
-            dispatch(markReadChannel({channel_id: channel.id}));
+            channelActions.markAsRead(channel);
         }
-        dispatch(updateChannel(payload, (err, res) => {
-            if (err) return;
-            let updatedChannel = {
-                ...channel,
-                selected: false,
-                is_hidden: channel.is_hidden === 0 ? 1 : 0,
-                total_unread: 0,
-            };
-            dispatch(updateChannelReducer(updatedChannel));
-            if (selectedChannel.id === channel.id) {
-                //dispatch(setSelectedChannel(props.firstChannel));
-            }
-        }));
+
+        if (selectedChannel.id === channel.id) {
+            /**
+             * @todo find a fallback channel
+             */
+            //channelActions.select();
+        }
     };
 
     const handleArchiveChat = () => {
-        let payload = {
-            id: channel.id,
-            is_pinned: channel.is_pinned,
-            is_archived: channel.is_archived === 0 ? 1 : 0,
-            is_muted: channel.is_muted,
-            title: channel.title,
-        };
-        if (sharedChannel && sharedSlugs.length) {
-            payload = {
-                ...payload,
-                is_shared: true,
-                token: sharedSlugs.filter(s => s.slug_name === channel.slug_owner)[0].access_token,
-                slug: sharedSlugs.filter(s => s.slug_name === channel.slug_owner)[0].slug_name,
-            };
-        }
-        dispatch(
-            updateChannel(payload, (err, res) => {
-                if (err) return;
-                if (channel.is_archived === 1) {
-                    dispatch(
-                        updateChannelReducer({
-                            ...channel,
-                            is_archived: 0,
-                        }),
-                    );
-                }
-            }),
-        );
+        channelActions.archive(channel);
     };
+
     const handleShowArchiveConfirmation = () => {
 
         let payload = {
@@ -195,48 +96,38 @@ const ChannelOptions = props => {
 
     const handleMarkAsUnreadSelected = e => {
         e.stopPropagation();
-        handleShowMoreOptions();
-        let payload = {
-            channel_id: channel.id,
-        };
-        if (sharedChannel && sharedSlugs.length) {
-            payload = {
-                ...payload,
-                is_shared: true,
-                token: sharedSlugs.filter(s => s.slug_name === channel.slug_owner)[0].access_token,
-                slug: sharedSlugs.filter(s => s.slug_name === channel.slug_owner)[0].slug_name,
-            };
-        }
 
         if (channel.total_unread === 0 && channel.is_read === 1) {
-            dispatch(markUnreadChannel(payload, (err, res) => {
-                if (err) return;
-                let updatedChannel = {
-                    ...channel,
-                    mark_unread: !channel.mark_unread,
-                    mark_new_messages_as_read: true,
-                    is_read: 0,
-                    total_unread: 0,
-                    minus_count: channel.total_unread,
-                };
-                //props.updateChannelAction(updatedChannel);
-                dispatch(updateUnreadChatReplies(updatedChannel));
-            }));
+            channelActions.markAsUnRead(channel, () => {
+                /*
+                 @todo solve
+                 let updatedChannel = {
+                 ...channel,
+                 mark_unread: !channel.mark_unread,
+                 mark_new_messages_as_read: true,
+                 is_read: 0,
+                 total_unread: 0,
+                 minus_count: channel.total_unread,
+                 };
+                 dispatch(updateUnreadChatReplies(updatedChannel));*/
+            });
         } else {
-            dispatch(markReadChannel(payload, (err, res) => {
-                if (err) return;
-                let updatedChannel = {
-                    ...channel,
-                    mark_new_messages_as_read: false,
-                    mark_unread: channel.mark_unread,
-                    is_read: 1,
-                    total_unread: 0,
-                    minus_count: channel.total_unread,
-                };
-                //props.updateChannelAction(updatedChannel);
-                dispatch(updateUnreadChatReplies(updatedChannel));
-            }));
+            channelActions.markAsRead(channel, () => {
+                /*
+                 @todo solve
+                 let updatedChannel = {
+                 ...channel,
+                 mark_new_messages_as_read: false,
+                 mark_unread: channel.mark_unread,
+                 is_read: 1,
+                 total_unread: 0,
+                 minus_count: channel.total_unread,
+                 };
+                 dispatch(updateUnreadChatReplies(updatedChannel));*/
+            });
         }
+
+        handleShowMoreOptions();
     };
     const handleShowMoreOptions = () => {
         setShowMoreOptions(!showMoreOptions);

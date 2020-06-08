@@ -3,7 +3,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {Button, Modal, ModalBody, ModalFooter} from "reactstrap";
 import styled from "styled-components";
 import {SvgIcon} from "../common";
-import {createChatMessage} from "../../redux/actions/chatActions";
+import {postChatMessage} from "../../redux/actions/chatActions";
 import {clearModal, saveInputData} from "../../redux/actions/globalActions";
 import {uploadDocument} from "../../redux/services/global";
 import QuillEditor from "../forms/QuillEditor";
@@ -172,7 +172,7 @@ const FileUploadModal = props => {
                     reference_title: selectedChannel.title,
                 };
                 setTimeout(() => {
-                    dispatch(createChatMessage(payload));
+                    dispatch(postChatMessage(payload));
                 }, 300);
                 setUploadedFiles([]);
                 dispatch(saveInputData({sent: true}));
@@ -188,7 +188,7 @@ const FileUploadModal = props => {
                     reference_id: require("shortid").generate(),
                     reference_title: selectedChannel.title,
                 };
-                dispatch(createChatMessage(payload));
+                dispatch(postChatMessage(payload));
             }
         });
     };

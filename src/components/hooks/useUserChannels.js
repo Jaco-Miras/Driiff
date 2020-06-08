@@ -4,11 +4,11 @@ import {useChannels, useUsers} from "./index";
 let init = true;
 
 /**
- * @returns {{fetchUsers: function({skip?: *, limit?: *, [p: string]: *}, *=): void, selectUserChannel: (...args: any[]) => any, getUserFilter: *, channels: *, userChannels: {}, selectedChannel: *, fetchMoreUsers: function(): void, lastVisitedChannel: *, actions: {createUserChannel: function(*, *=): void, saveHistoricalPosition: function(*=, *, *=): void, fetchChannels: function({skip?: *, limit?: *, [p: string]: *}, *=): void, fetchNoUserChannels: function(*=): void, fetchLastVisitedChannel: function(*=): void, unArchiveChannel: function({channel: *, sharedSlugs: *}, *=): void, fetchAllChannels: function({skip?: *, limit?: *, [p: string]: *}, *=): void, selectChannel: function(*=, *=): void, loadSelectedChannel: function(*=, *=): void, saveLastVisitedChannel: function(*=, *=): void}, channelsLoaded: *, users: *}}
+ * @returns {{fetchUsers: function({skip?: *, limit?: *, [p: string]: *}, *=): void, selectUserChannel: (...args: any[]) => any, getUserFilter: *, channels: *, userChannels: {}, selectedChannel: *, fetchMoreUsers: function(): void, lastVisitedChannel: *, actions: {fetchMembersById: function(*=, *=): void, saveHistoricalPosition: function(*=, *, *=): void, unArchive: function(*=, *=): void, fetchNoChannelUsers: function(*=): void, createByUserChannel: function(*, *=): void, select: function(*=, *=): void, update: function(*, *, *=): void, unMute: function(*=, *=): void, markAsRead: function(*=, *=): void, searchExisting: function(*=, *=, *=): void, pin: function(*=, *=): void, fetchLastVisited: function(*=): void, fetchByCode: function(*=, *=): void, unPin: function(*=, *=): void, fetchAll: function({skip?: *, limit?: *, [p: string]: *}, *=): void, saveLastVisited: function(*=, *=): void, archive: function(*=, *=): void, mute: function(*=, *=): void, unHide: function(*=, *=): void, updateName: function(*=, *=, *=): void, hide: function(*=, *=): void, addMembers: function(*=, *=, *=): void, deleteMembers: function(*=, *=, *=): void, fetch: function({skip?: *, limit?: *, [p: string]: *}, *=): void, fetchDrafts: function(*=): void, markAsUnRead: function(*=, *=): void}, channelsLoaded: *, users: *}}
  */
 const useUserChannels = () => {
 
-    const {channels, actions: chatActions} = useChannels();
+    const {channels, actions: channelActions} = useChannels();
     const userChannels = useRef({});
 
     for (const i in channels) {
@@ -31,17 +31,17 @@ const useUserChannels = () => {
                                            callback = () => {
                                            }) => {
         try {
-            chatActions.selectChannel(channels[userChannels.current[user.id]], callback);
+            channelActions.select(channels[userChannels.current[user.id]], callback);
         }
         catch (e) {
             console.log("no channel from selected user");
         }
-    }, [channels, chatActions]);
+    }, [channels, channelActions]);
 
     useEffect(() => {
         if (init) {
             init = false;
-            chatActions.fetchNoUserChannels((err) => {
+            channelActions.fetchNoChannelUsers((err) => {
                 if (err)
                     init = false;
             });

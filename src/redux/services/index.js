@@ -1,25 +1,26 @@
 export {apiCall, apiNoTokenCall} from "./service";
 export {
-    addChannelMembers,
+    getGlobalRecipients,
     getChannels,
-    updateChannel,
-    markReadChannel,
-    markUnreadChannel,
     getChannel,
     getLastVisitedChannel,
-    getChatMessages,
-    createChatMessage,
-    updateChatMessage,
-    chatReaction,
-    deleteChatMessage,
-    setChatReminder,
     getChannelDrafts,
-    getGlobalRecipients,
-    createNewChat,
-    editChannelDetail,
-    searchExistingChat,
-    markReminderComplete,
     getChannelMembers,
+    putChannel,
+    putChannelUpdateName,
+    putMarkReadChannel,
+    putMarkUnreadChannel,
+    postCreateChannel,
+    postSearchExistingChannels,
+    postChannelMembers,
+    deleteChannelMembers,
+    getChatMessages,
+    postChatMessage,
+    postChatReminder,
+    postChatReaction,
+    putChatMessage,
+    putMarkReminderComplete,
+    deleteChatMessage,
 } from "./chat";
 
 export {
@@ -59,7 +60,7 @@ export {
 export {
     getChannelFiles,
     getFiles,
-    postWorkspaceFiles
+    postWorkspaceFiles,
 } from "./files";
 
 export {

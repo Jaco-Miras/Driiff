@@ -107,7 +107,7 @@ const ChannelList = props => {
             }
         }
 
-        channelActions.selectChannel({...channel, selected: true});
+        channelActions.select({...channel, selected: true});
         history.push(`/chat/${channel.code}`);
     };
 
@@ -121,8 +121,14 @@ const ChannelList = props => {
                 <ReplyPreview channel={channel}/>
             </ChannelTitlePreview>
             <Timestamp className="text-right ml-auto">
-                <ChatDateIcons className={"chat-date-icons"} channel={channel} optionsVisible={optionsVisible}/>
-                <ChannelOptions channel={channel} onShowOptions={toggleOptions}/>
+                <ChatDateIcons
+                    className={"chat-date-icons"}
+                    channel={channel}
+                    optionsVisible={optionsVisible}/>
+                <ChannelOptions
+                    selectedChannel={selectedChannel}
+                    channel={channel}
+                    onShowOptions={toggleOptions}/>
             </Timestamp>
         </Wrapper>
     );

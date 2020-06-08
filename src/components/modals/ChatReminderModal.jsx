@@ -6,7 +6,7 @@ import {Button, Modal, ModalBody, ModalFooter} from "reactstrap";
 import styled from "styled-components";
 import toaster from "toasted-notes";
 import {formatHoursAMPM, formatMonthsOrdinalDay, formatWeeekDayName} from "../../helpers/dateFormatter";
-import {setChatReminder} from "../../redux/actions/chatActions";
+import {postChatReminder} from "../../redux/actions/chatActions";
 import {clearModal} from "../../redux/actions/globalActions";
 import RadioInput from "../forms/RadioInput";
 import {ModalHeaderSection} from "./index";
@@ -23,6 +23,9 @@ const InputContainer = styled.div`
 
 const ChatReminderModal = props => {
 
+    /**
+     * @todo refactor
+     */
     const {type, message} = props.data;
 
     const dispatch = useDispatch();
@@ -63,7 +66,7 @@ const ChatReminderModal = props => {
         };
 
         dispatch(
-            setChatReminder(payload, (err, res) => {
+            postChatReminder(payload, (err, res) => {
                 toggle();
                 let messageAuthor = "You";
                 let messageTime = "";
