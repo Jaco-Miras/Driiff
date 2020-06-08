@@ -1,19 +1,21 @@
 import dispatchActionToReducer, {SimpleDispatchActionToReducer} from "../actionDispatcher";
 import {
-    favoritePost as favoritePostService,
-    followPost as followPostService,
     postArchive as postArchiveService,
+    postCreate as postCreateService,
+    postFavorite as postFavoriteService,
+    postFollow as postFollowService,
     postMarkDone as postMarkDoneService,
+    postSnooze as postSnoozeService,
     postToggleRead as postToggleReadService,
-    unFollowPost as unFollowPostService,
+    postUnfollow as postUnfollowService,
 } from "../services";
 
-export function favoritePost(payload, callback) {
+export function postFavorite(payload, callback) {
     return dispatchActionToReducer(
-        favoritePostService(payload),
-        "FAVORITE_POST_START",
-        "FAVORITE_POST_SUCCESS",
-        "FAVORITE_POST_FAIL",
+        postFavoriteService(payload),
+        "POST_FAVORITE_START",
+        "POST_FAVORITE_SUCCESS",
+        "POST_FAVORRITE_FAIL",
         callback,
     );
 }
@@ -56,9 +58,9 @@ export function postToggleRead(payload, callback) {
     );
 }
 
-export function followPost(payload, callback) {
+export function postFollow(payload, callback) {
     return dispatchActionToReducer(
-        followPostService(payload),
+        postFollowService(payload),
         "POST_FOLLOW_START",
         "POST_FOLOW_SUCCESS",
         "POST_FOLOW_FAIL",
@@ -66,12 +68,32 @@ export function followPost(payload, callback) {
     );
 }
 
-export function unFollowPost(payload, callback) {
+export function postUnfollow(payload, callback) {
     return dispatchActionToReducer(
-        unFollowPostService(payload),
+        postUnfollowService(payload),
         "POST_UNFOLLOW_START",
         "POST_UNFOLOW_SUCCESS",
         "POST_UNFOLOW_FAIL",
+        callback,
+    );
+}
+
+export function postSnooze(payload, callback) {
+    return dispatchActionToReducer(
+        postSnoozeService(payload),
+        "POST_SNOOZE_START",
+        "POST_SNOOZE_SUCCESS",
+        "POST_SNOOZE_FAIL",
+        callback,
+    );
+}
+
+export function postCreate(payload, callback) {
+    return dispatchActionToReducer(
+        postCreateService(payload),
+        "POST_CREATE_START",
+        "POST_CREATE_SUCCESS",
+        "POST_CREATE_FAIL",
         callback,
     );
 }

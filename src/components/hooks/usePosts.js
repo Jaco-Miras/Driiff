@@ -3,7 +3,7 @@ import {useParams} from "react-router-dom";
 import {useSelector, useDispatch} from "react-redux";
 import {addToWorkspacePosts, getWorkspacePosts} from "../../redux/actions/workspaceActions";
 
-const useGetWorkspacePosts = () => {
+const usePosts = () => {
 
     const dispatch = useDispatch();
     const params = useParams();
@@ -89,14 +89,14 @@ const useGetWorkspacePosts = () => {
         } else {
             let filteredPosts = Object.values(wsPosts[params.workspaceId].posts)
             if (searchResults.length) {
-                filteredPosts = Object.values(wsPosts[params.workspaceId].posts).filter(p => {
+                filteredPosts = filteredPosts.filter(p => {
                     return searchResults.some(s => {
                         return p.id === s.id;
                     });
                 })
             }
             return {
-                posts: Object.values(wsPosts[params.workspaceId].posts).filter(p => {
+                posts: filteredPosts.filter(p => {
                     if (p.hasOwnProperty("draft_type")) return false;
                     else return true
                 }), 
@@ -115,4 +115,4 @@ const useGetWorkspacePosts = () => {
     }
 };
 
-export default useGetWorkspacePosts;
+export default usePosts;

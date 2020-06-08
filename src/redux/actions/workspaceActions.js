@@ -1,7 +1,6 @@
 import dispatchActionToReducer, {SimpleDispatchActionToReducer} from "../actionDispatcher";
 import {
     createWorkspace as createWorkspaceService,
-    createWorkspacePost as createWorkspacePostService,
     deleteWorkspace as deleteWorkspaceService,
     deleteWorkspaceFile as deleteWorkspaceFileService,
     getPostStatusCount as getPostStatusCountService,
@@ -158,16 +157,6 @@ export function getWorkspacePosts(payload, callback) {
         "GET_WORKSPACE_POSTS_START",
         "GET_WORKSPACE_POSTS_SUCCESS",
         "GET_WORKSPACE_POSTS_FAIL",
-        callback,
-    );
-}
-
-export function createWorkspacePost(payload, callback) {
-    return dispatchActionToReducer(
-        createWorkspacePostService(payload),
-        "CREATE_WORKSPACE_POST_START",
-        "CREATE_WORKSPACE_POST_SUCCESS",
-        "CREATE_WORKSPACE_POST_FAIL",
         callback,
     );
 }

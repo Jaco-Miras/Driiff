@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import {PostFilterSearchPanel, PostItemPanel, PostSidebar} from "../post";
-import {useGetWorkspacePosts} from "../../hooks";
+import {usePosts, usePostActions} from "../../hooks";
 
 const Wrapper = styled.div`
 `;
@@ -10,7 +10,8 @@ const WorkspacePostsPanel = (props) => {
 
     const {className = ""} = props;
 
-    const {posts, filter, tag, sort} = useGetWorkspacePosts();
+    const {posts, filter, tag, sort} = usePosts();
+    const postActions = usePostActions();
 
     return (
         <Wrapper className={`container-fluid h-100 ${className}`}>
@@ -26,7 +27,7 @@ const WorkspacePostsPanel = (props) => {
                                 {
                                     posts &&
                                     posts.map(post => {
-                                        return <PostItemPanel key={post.id} post={post}/>
+                                        return <PostItemPanel key={post.id} post={post} postActions={postActions}/>
                                     })
                                 }
                             </ul>

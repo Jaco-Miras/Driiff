@@ -2,9 +2,10 @@ import React, {useCallback, useEffect, useRef, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {Input, InputGroup, Label, Modal, ModalBody} from "reactstrap";
 import styled from "styled-components";
+import moment from "moment";
 import {clearModal, deleteDraft, saveDraft, updateDraft} from "../../redux/actions/globalActions";
-import {createWorkspacePost} from "../../redux/actions/workspaceActions";
-import {SvgIconFeather} from "../common";
+import {postCreate} from "../../redux/actions/postActions";
+import {SvgIconFeather, DatePicker} from "../common";
 import {CheckBox, FolderSelect, PeopleSelect} from "../forms";
 import QuillEditor from "../forms/QuillEditor";
 import {useQuillModules, useGetWorkspaceAndUserOptions} from "../hooks";
@@ -118,6 +119,9 @@ const MoreOption = styled.div`
     }
 `;
 
+const StyledDatePicker = styled(DatePicker)`
+`;
+
 const CreateEditWorkspacePostModal = props => {
 
     const {type, mode, item = {}} = props.data;
@@ -140,6 +144,8 @@ const CreateEditWorkspacePostModal = props => {
         selectedWorkspaces: [],
         body: "",
         textOnly: "",
+        show_at: null,
+        end_at: null,
     });
     const formRef = {
         reactQuillRef: useRef(null),
@@ -235,7 +241,9 @@ const CreateEditWorkspacePostModal = props => {
             must_read: form.must_read ? 1 : 0,
             must_reply: form.must_reply ? 1 : 0,
             read_only: form.no_reply ? 1 : 0,
-            workspace_ids: form.selectedWorkspaces.filter(ws => ws.type === "FOLDER").map(ws => ws.value)
+            workspace_ids: form.selectedWorkspaces.filter(ws => ws.type === "FOLDER").map(ws => ws.value),
+            show_at: form.show_at ? moment(form.show_at, "YYYY-MM-DD").format("YYYY-MM-DD") : null,
+            end_at: form.end_at ? moment(form.end_at, "YYYY-MM-DD").format("YYYY-MM-DD") : null
         };
         if (draftId) {
             dispatch(
@@ -245,7 +253,7 @@ const CreateEditWorkspacePostModal = props => {
                 })
             )
         }
-        dispatch(createWorkspacePost(payload));
+        dispatch(postCreate(payload));
         toggle(false);
     };
 
@@ -330,6 +338,20 @@ const CreateEditWorkspacePostModal = props => {
         }
     }, [formRef, setMaxHeight]);
 
+    const handleSelectStartDate = useCallback(value => {
+        setForm(f => ({
+            ...f,
+            show_at: value
+        }))
+    }, [setForm]);
+
+    const handleSelectEndDate = useCallback(value => {
+        setForm(f => ({
+            ...f,
+            end_at: value
+        }))
+    }, [setForm]);
+
     const [wsOptions, userOptions] = useGetWorkspaceAndUserOptions(form.selectedWorkspaces, item);
 
     return (
@@ -390,6 +412,16 @@ const CreateEditWorkspacePostModal = props => {
                         <CheckBox name="no_reply" checked={form.no_reply} onClick={toggleCheck} type="dark">No
                             replies</CheckBox>
                     </CheckBoxGroup>
+                </WrapperDiv>
+                <WrapperDiv>
+                    <StyledDatePicker className={"start-date"} 
+                        onChange={handleSelectStartDate}
+                        value={form.show_at}
+                    />
+                    <StyledDatePicker className={"end-date"} 
+                        onChange={handleSelectEndDate}
+                        value={form.end_at}
+                    />
                 </WrapperDiv>
                 <WrapperDiv>
                     <button

@@ -11,6 +11,7 @@ import {
     CreateEditWorkspacePostModal,
     CreateWorkspaceFolderModal,
     FileUploadModal,
+    PostSnoozeModal
 } from "../modals";
 
 const ModalPanelContainer = styled.div`
@@ -44,6 +45,8 @@ const ModalPanel = props => {
                                 return <CreateEditWorkspaceModal key={modal.type} data={modal}/>;
                             case "workspace_post_create_edit":
                                 return <CreateEditWorkspacePostModal key={modal.type} data={modal}/>;
+                            case "snooze_post":
+                                return <PostSnoozeModal key={modal.type} data={modal}/>;
                             default:
                                 return null;
                         }

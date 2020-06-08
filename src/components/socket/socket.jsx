@@ -403,19 +403,19 @@ class Socket extends PureComponent {
                 });
             })
             .listen(".post-unfollow", e => {
-                console.log(e, "unfollow");
-                let isAuthor = false;
-                e.user_unfollow.forEach(u => {
-                    if (u.id === this.props.user.id) {
-                        isAuthor = true;
+                // console.log(e, "unfollow");
+                // let isAuthor = false;
+                // e.user_unfollow.forEach(u => {
+                //     if (u.id === this.props.user.id) {
+                //         isAuthor = true;
 
-                    }
-                });
-                let payload = {
-                    ...e,
-                    is_followed: !isAuthor,
-                };
-                this.props.userUnfollowPost(payload);
+                //     }
+                // });
+                // let payload = {
+                //     ...e,
+                //     is_followed: !isAuthor,
+                // };
+                // this.props.userUnfollowPost(payload);
             })
             .listen(".create-topic", e => {
                 this.props.incomingCreatedTopic(e);

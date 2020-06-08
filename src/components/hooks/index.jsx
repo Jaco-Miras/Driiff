@@ -13,7 +13,7 @@ export {default as useIsUserTyping} from "./useIsUserTyping";
 export {default as useCountUnreadReplies} from "./useCountUnreadReplies";
 export {default as useSetWorkspace} from "./useSetWorkspace";
 export {default as useIsMember} from "./useIsMember";
-export {default as useGetWorkspacePosts} from "./useGetWorkspacePosts";
+export {default as usePosts} from "./usePosts";
 export {default as useTranslation}  from "./useTranslation";
 export {default as useSettings} from "./useSettings";
 export {default as useSortWorkspaces} from "./useSortWorkspaces";
@@ -22,4 +22,6 @@ export {default as useGetWorkspaceAndUserOptions} from "./useGetWorkspaceAndUser
 export {default as useChannels}  from "./useChannels";
 export {default as useUserChannels} from "./useUserChannels";
 export {default as useUsers} from "./useUsers";
+export {default as usePostActions} from "./usePostActions";
+export {default as useCountRenders} from "./useCountRenders";
 export {default as useLogRenders} from "./useLogRenders";
