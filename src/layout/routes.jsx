@@ -1,6 +1,7 @@
 import React from "react";
 import {useSelector} from "react-redux";
 import {Redirect, Route, Switch} from "react-router-dom";
+import {TestChat} from "../components/test";
 import usePushNotification from "../components/webpush/usePushNotification";
 import GuestLayout from "./GuestLayout";
 import MainLayout from "./MainLayout";
@@ -19,6 +20,12 @@ export const AppRoute = ({children, ...props}) => {
         authenticated ?
         <>
             <Switch>
+                <Route
+                    {...props}
+                    component={TestChat}
+                    path={["/test/chat"]}>
+                    {children}
+                </Route>
                 <Route
                     {...props}
                     component={MainLayout}
