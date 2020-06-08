@@ -19,10 +19,13 @@ const MainNavigationPanel = (props) => {
                 path={["/:page"]}
             />
             <Route
+                exact={true}
                 {...props}
                 component={WorkspaceNavigationMenuBodyPanel}
                 path={[
+                    "/workspace/:page/:folderId/:folderName/:workspaceId/:workspaceName/post/:postId/:postTitle",
                     "/workspace/:page/:folderId/:folderName/:workspaceId/:workspaceName",
+                    "/workspace/:page/:workspaceId/:workspaceName/post/:postId/:postTitle",
                     "/workspace/:page/:workspaceId/:workspaceName",
                     "/workspace/:page",
                 ]}/>

@@ -82,10 +82,13 @@ const MainContentPanel = (props) => {
                         "/workspace/dashboard",
                     ]}/>
                 <Route
+                    exact={true}
                     {...props}
                     component={WorkspacePostsPanel}
                     path={[
+                        "/workspace/posts/:folderId/:folderName/:workspaceId/:workspaceName/post/:postId/:postTitle",
                         "/workspace/posts/:folderId/:folderName/:workspaceId/:workspaceName",
+                        "/workspace/posts/:workspaceId/:workspaceName/post/:postId/:postTitle",
                         "/workspace/posts/:workspaceId/:workspaceName",
                         "/workspace/posts",
                     ]}/>

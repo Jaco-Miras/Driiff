@@ -10,7 +10,7 @@ const usePosts = () => {
     const wsPosts = useSelector(state => state.workspaces.workspacePosts);
     const user = useSelector(state => state.session.user);
     const [fetchingPost, setFetchingPost] = useState(false);
-
+    
     useEffect(() => {
         if (params.workspaceId !== undefined) {
             if (!wsPosts.hasOwnProperty(params.workspaceId) && !fetchingPost) {
@@ -38,6 +38,10 @@ const usePosts = () => {
         let tag = wsPosts[params.workspaceId].tag;
         let posts = wsPosts[params.workspaceId].posts;
         let searchResults = wsPosts[params.workspaceId].searchResults;
+        let post = null;
+        if (posts.hasOwnProperty(params.postId)) {
+            post = {...posts[params.postId]};
+        }
         if (filter || tag) {
             let filteredPosts = Object.values(posts).filter(p => {
                 if (filter) {
@@ -84,7 +88,7 @@ const usePosts = () => {
                 })
             }
             return {
-                posts: filteredPosts, filter, tag, sort
+                posts: filteredPosts, filter, tag, sort, post
             };
         } else {
             let filteredPosts = Object.values(wsPosts[params.workspaceId].posts)
@@ -102,7 +106,8 @@ const usePosts = () => {
                 }), 
                 filter: null,
                 tag: null, 
-                sort: null
+                sort: null,
+                post: post
             };
         }
     } else {
@@ -110,7 +115,8 @@ const usePosts = () => {
             posts: null,
             filter: null,
             tag: null,
-            sort: null
+            sort: null,
+            post: null
         };
     }
 };

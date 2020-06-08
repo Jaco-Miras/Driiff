@@ -1,6 +1,6 @@
 import {useCallback} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {useLocation} from "react-router-dom";
+import {useLocation, useHistory} from "react-router-dom";
 import toaster from "toasted-notes";
 import {postFavorite, postArchive, postFollow, postMarkDone, postToggleRead, removePost, postUnfollow} from "../../redux/actions/postActions";
 import {addToModals} from "../../redux/actions/globalActions";
@@ -11,6 +11,7 @@ const usePostActions = () => {
 
     const dispatch = useDispatch();
     const location = useLocation();
+    const history = useHistory();
     const topic = useSelector(state => state.workspaces.activeTopic);
 
     const starPost = useCallback((post) => {
@@ -42,9 +43,10 @@ const usePostActions = () => {
                 addToModals(payload),
             );
         } else {
-            //redirec to post detail page
+            //redirect to post detail page
+            history.push(location.pathname+`/post/${post.id}/${post.title}`)
         }
-    }, [dispatch]);
+    }, [dispatch, location]);
 
     const archivePost = useCallback((post) => {
         if (post.type === "draft_post") {

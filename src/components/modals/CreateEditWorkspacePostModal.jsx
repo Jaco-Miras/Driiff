@@ -5,11 +5,12 @@ import styled from "styled-components";
 import moment from "moment";
 import {clearModal, deleteDraft, saveDraft, updateDraft} from "../../redux/actions/globalActions";
 import {postCreate} from "../../redux/actions/postActions";
-import {SvgIconFeather, DatePicker} from "../common";
-import {CheckBox, FolderSelect, PeopleSelect} from "../forms";
+import {SvgIconFeather, DatePicker, FileAttachments} from "../common";
+import {CheckBox, DescriptionInput, FolderSelect, PeopleSelect} from "../forms";
 import QuillEditor from "../forms/QuillEditor";
 import {useQuillModules, useGetWorkspaceAndUserOptions} from "../hooks";
 import {ModalHeaderSection} from "./index";
+import {DropDocument} from "../dropzone/DropDocument";
 
 const WrapperDiv = styled(InputGroup)`
     display: flex;
@@ -34,6 +35,26 @@ const WrapperDiv = styled(InputGroup)`
         margin-left: 130px;
         width: 100%;
         margin-right: -130px;
+    }
+    &.file-attachment-wrapper {
+        margin-top: 30px;
+        margin-bottom: 20px;
+    }
+    .file-attachments {
+        position: relative;
+        max-width: 100%;
+        margin-left: 128px;
+        
+        ul {
+            margin-right: 128px;
+            margin-bottom: 0;
+            
+            li {                
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                overflow: hidden;
+            }
+        }
     }
 `;
 
@@ -133,6 +154,8 @@ const CreateEditWorkspacePostModal = props => {
     const [showMoreOptions, setShowMoreOptions] = useState(null);
     const [maxHeight, setMaxHeight] = useState(null);
     const [draftId, setDraftId] = useState(null);
+    const [showDropzone, setShowDropzone] = useState(false);
+    const [attachedFiles, setAttachedFiles] = useState([]);
     const [form, setForm] = useState({
         must_read: false,
         reply_required: false,
@@ -150,7 +173,7 @@ const CreateEditWorkspacePostModal = props => {
     const formRef = {
         reactQuillRef: useRef(null),
         more_options: useRef(null),
-        dropZone: useRef(null),
+        dropzone: useRef(null),
         arrow: useRef(null),
     };
     const toggle = (saveDraft = true) => {
@@ -352,6 +375,62 @@ const CreateEditWorkspacePostModal = props => {
         }))
     }, [setForm]);
 
+    const handleOpenFileDialog = () => {
+        if (formRef.dropzone.current) {
+            formRef.dropzone.current.open();
+        }
+    };
+
+    const handleHideDropzone = () => {
+        setShowDropzone(false);
+    };
+
+    const handleShowDropzone = () => {
+        setShowDropzone(true);
+    };
+
+    const dropAction = (acceptedFiles) => {
+
+        let selectedFiles = [];
+        acceptedFiles.forEach(file => {
+            let shortFileId = require("shortid").generate();
+            if (file.type === "image/jpeg" || file.type === "image/png" || file.type === "image/gif" || file.type === "image/webp") {
+                selectedFiles.push({
+                    rawFile: file,
+                    type: "IMAGE",
+                    id: shortFileId,
+                    status: false,
+                    src: URL.createObjectURL(file),
+                    name: file.name ? file.name : file.path,
+                });
+            } else if (file.type === "video/mp4") {
+                selectedFiles.push({
+                    rawFile: file,
+                    type: "VIDEO",
+                    id: shortFileId,
+                    status: false,
+                    src: URL.createObjectURL(file),
+                    name: file.name ? file.name : file.path,
+                });
+            } else {
+                selectedFiles.push({
+                    rawFile: file,
+                    type: "DOC",
+                    id: shortFileId,
+                    status: false,
+                    src: URL.createObjectURL(file),
+                    name: file.name ? file.name : file.path,
+                });
+            }
+        });
+        setAttachedFiles(prevState => [...prevState, ...selectedFiles]);
+        handleHideDropzone();
+    };
+
+    const handleRemoveFile = useCallback((fileId) => {
+        setAttachedFiles(prevState => prevState.filter(f => f.id !== fileId));
+    }, [setAttachedFiles]);
+
     const [wsOptions, userOptions] = useGetWorkspaceAndUserOptions(form.selectedWorkspaces, item);
 
     return (
@@ -361,6 +440,16 @@ const CreateEditWorkspacePostModal = props => {
                 {mode === "edit" ? "Edit post" : "Create new post"}
             </ModalHeaderSection>
             <ModalBody>
+                <DropDocument
+                    hide={!showDropzone}
+                    ref={formRef.dropzone}
+                    onDragLeave={handleHideDropzone}
+                    onDrop={({acceptedFiles}) => {
+                        dropAction(acceptedFiles);
+                    }}
+                    onCancel={handleHideDropzone}
+                    attachedFiles={attachedFiles}
+                />
                 <WrapperDiv>
                     <Label for="post-title">Post title</Label>
                     <Input style={{borderRadius: "5px"}}
@@ -390,13 +479,26 @@ const CreateEditWorkspacePostModal = props => {
                 </WrapperDiv>
                 <WrapperDiv>
                     <Label for="firstMessage">Description</Label>
-                    <StyledQuillEditor
+                    <DescriptionInput
+                        showFileButton={true}
+                        onChange={handleQuillChange}
+                        onOpenFileDialog={handleOpenFileDialog}
+                        defaultValue={mode === "edit" && item ? item.description : ""}
+                        mode={mode}
+                    />
+                    {/* <StyledQuillEditor
                         className="group-chat-input"
                         modules={modules}
                         ref={formRef.reactQuillRef}
                         onChange={handleQuillChange}
-                    />
+                    /> */}
                 </WrapperDiv>
+                {
+                    attachedFiles.length > 0 &&
+                    <WrapperDiv className="file-attachment-wrapper">
+                        <FileAttachments attachedFiles={attachedFiles} handleRemoveFile={handleRemoveFile}/>
+                    </WrapperDiv>
+                }
                 <WrapperDiv className="more-option">
                     <MoreOption
                         onClick={toggleMoreOptions}>More options

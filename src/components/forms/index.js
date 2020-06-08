@@ -7,3 +7,4 @@ export {default as FolderSelect} from "./FolderSelect";
 export {default as DescriptionInput} from "./DescriptionInput";
 export {default as CheckBox} from "./CheckBox";
 export {default as InputFeedback} from "./InputFeedback";
+export {default as PostInput} from "./PostInput";
