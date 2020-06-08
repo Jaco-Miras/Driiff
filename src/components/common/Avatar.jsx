@@ -11,9 +11,15 @@ import {SvgIconFeather} from "./SvgIcon";
 const Wrapper = styled.div`
     position: relative;
     
-    .react-skeleton-load {
-        height: 100% !important;
+    .react-skeleton-load {        
+        display: flex;    
+        margin: auto;        
+        text-align: center;
         width: 100% !important;
+        height: 100% !important;
+        object-fit: cover;
+        align-items: center;
+        justify-content: center;
     }    
 `;
 
@@ -92,7 +98,7 @@ const Avatar = (props) => {
 
     return <Wrapper
         {...rest}
-        className={`avatar avatar-sm ${isOnline && "avatar-state-success"} ${isLoaded && "ico-avatar-loaded"} ${showInitials === true && "border"} ${className}`}
+        className={`avatar avatar-sm ${isOnline ? "avatar-state-success" : ""} ${isLoaded ? "ico-avatar-loaded" : ""} ${showInitials ? "border" : ""} ${className}`}
         onClick={handleOnClick}>
         {
             isLoaded === false &&
