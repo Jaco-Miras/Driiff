@@ -74,7 +74,7 @@ const MoreOptions = props => {
 
     const {
         className = "", item, moreButton = `horizontal`, children = "More Options",
-        width = 200, scrollRef = null, onClick = null,
+        width = 200, scrollRef = null,
         ...rest
     } = props;
 
