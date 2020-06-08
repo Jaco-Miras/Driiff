@@ -63,17 +63,18 @@ export {
 } from "./files";
 
 export {
-    favoritePost,
-    followPost,
     postArchive,
+    postCreate,
+    postFavorite,
+    postFollow,
     postMarkDone,
+    postSnooze,
     postToggleRead,
-    unFollowPost,
+    postUnfollow,
 } from "./post";
 
 export {
     createWorkspace,
-    createWorkspacePost,
     deleteWorkspace,
     deleteWorkspaceFile,
     getPostStatusCount,

@@ -3,7 +3,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {Input, InputGroup, Label, Modal, ModalBody} from "reactstrap";
 import styled from "styled-components";
 import {clearModal, deleteDraft, saveDraft, updateDraft} from "../../redux/actions/globalActions";
-import {createWorkspacePost} from "../../redux/actions/workspaceActions";
+import {postCreate} from "../../redux/actions/postActions";
 import {SvgIconFeather} from "../common";
 import {CheckBox, FolderSelect, PeopleSelect} from "../forms";
 import QuillEditor from "../forms/QuillEditor";
@@ -245,7 +245,7 @@ const CreateEditWorkspacePostModal = props => {
                 })
             )
         }
-        dispatch(createWorkspacePost(payload));
+        dispatch(postCreate(payload));
         toggle(false);
     };
 

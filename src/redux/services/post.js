@@ -6,7 +6,7 @@ import {apiCall} from "./index";
  * @param {string} payload.type
  * @returns {Promise<*>}
  */
-export function favoritePost(payload) {
+export function postFavorite(payload) {
     let url = `/v1/favourites`;
     return apiCall({
         method: "POST",
@@ -70,7 +70,7 @@ export function postToggleRead(payload) {
  * @param {number} payload.post_id
  * @returns {Promise<*>}
  */
-export function followPost(payload) {
+export function postFollow(payload) {
     return apiCall({
         method: "PATCH",
         url: `/v1/follows?post_id=${payload.post_id}`,
@@ -84,11 +84,47 @@ export function followPost(payload) {
  * @param {number} payload.post_id
  * @returns {Promise<*>}
  */
-export function unFollowPost(payload) {
+export function postUnfollow(payload) {
     return apiCall({
         method: "DELETE",
         url: `/v1/follows?post_id=${payload.post_id}`,
         data: payload,
         is_shared: payload.is_shared ? true : false,
+    });
+}
+
+/**
+ * @param {Object} payload
+ * @param {number} payload.post_id
+ * @param {LoDashImplicitStringWrapper} payload.set_time
+ * @returns {Promise<*>}
+ */
+export function postSnooze(payload) {
+    let url = `/v1/snooze-post`;
+    return apiCall({
+        method: "POST",
+        url,
+        data: payload,
+    });
+}
+
+/**
+ * @param {Object} payload
+ * @param {number} payload.post_id
+ * @param {string} payload.title
+ * @param {string} payload.body
+ * @param {string} payload.status
+ * @param {array} payload.recipient_ids
+ * @param {array} payload.workspace_ids
+ * @param {string} payload.type
+ * @param {number} payload.personal
+ * @returns {Promise<*>}
+ */
+export function postCreate(payload) {
+    let url = `/v1/posts`;
+    return apiCall({
+        method: "POST",
+        url: url,
+        data: payload,
     });
 }
