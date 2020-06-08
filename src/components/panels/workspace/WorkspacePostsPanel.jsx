@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import {PostFilterSearchPanel, PostItemPanel, PostSidebar} from "../post";
-import {useGetWorkspacePosts, usePostActions} from "../../hooks";
+import {usePosts, usePostActions} from "../../hooks";
 
 const Wrapper = styled.div`
 `;
@@ -10,7 +10,7 @@ const WorkspacePostsPanel = (props) => {
 
     const {className = ""} = props;
 
-    const {posts, filter, tag, sort} = useGetWorkspacePosts();
+    const {posts, filter, tag, sort} = usePosts();
     const postActions = usePostActions();
 
     return (
