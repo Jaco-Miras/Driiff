@@ -18,7 +18,7 @@ const Wrapper = styled.div`
   }
 `;
 const MoreTooltip = styled.div`
-    ${props => props.show && `display: none;`}
+    ${props => props.hide && `display: none;`}
     z-index: 30;
     height: auto;
     position: absolute;
@@ -114,7 +114,7 @@ const MoreOptions = props => {
             <MoreTooltip
                 ref={refs.options}
                 width={width}
-                show={orientation.vertical === null || orientation.horizontal === null}
+                hide={orientation.vertical === null || orientation.horizontal === null}
                 className={`more-options-tooltip orientation-${orientation.vertical} orientation-${orientation.horizontal}`}
                 onMouseLeave={handleMouseLeave}
             >

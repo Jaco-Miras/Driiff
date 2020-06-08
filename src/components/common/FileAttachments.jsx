@@ -1,8 +1,12 @@
-import React, {useState} from "react";
+import React, {useRef, useState} from "react";
 import styled from "styled-components";
+import {useOutsideClick, useTooltipOrientation} from "../hooks";
 import {SvgIconFeather} from "./index";
 
 const Wrapper = styled.div`
+    position: relative;
+    transition: all 0.3;
+    
     ul {
         padding:0;
     
@@ -46,14 +50,28 @@ const Wrapper = styled.div`
 `;
 
 const Tooltip = styled.span`
+    ${props => props.hide && `display: none;` }
     position: absolute;
-    top: ${props => props.offsetTop}px;
-    left: 50px;
     z-index: 1000;
     background-color: #fff;
     padding: 10px 10px 5px;
     border: 1px solid #e1e1e1;
-    border-radius: 8px;;
+    border-radius: 8px;
+    
+    &.orientation-top {        
+        top: ${props => props.offsetTop - (props.clientHeight + 20)}px;        
+    }
+    &.orientation-bottom {
+        top: ${props => props.offsetTop};
+    }
+    &.orientation-left {
+        right: 30px;
+        left: auto;
+    }
+    &.orientation-right {
+        left: 30px;
+        right: auto;
+    }
     
     .fa {
         font-size: 42px;
@@ -97,8 +115,13 @@ const AttachmentIcon = styled(SvgIconFeather)`
 
 const FileAttachments = props => {
 
-    const {className = "", attachedFiles, handleRemoveFile} = props;
+    const {className = "", attachedFiles, handleRemoveFile, scrollRef = null} = props;
     const [filePreview, setFilePreview] = useState(null);
+
+    const refs = {
+        main: useRef(null),
+        tooltip: useRef(null),
+    };
 
     const renderFile = (f) => {
         switch (f.type) {
@@ -127,7 +150,6 @@ const FileAttachments = props => {
 
     const handleClick = (e) => {
         const index = e.currentTarget.dataset.targetIndex;
-
         if (filePreview !== null && filePreview.file.id === attachedFiles[index].id) {
             closePreview(e);
         } else {
@@ -150,8 +172,17 @@ const FileAttachments = props => {
         setFilePreview(null);
     };
 
+    const handleMouseLeave = () => {
+        setTimeout(() => {
+            setFilePreview(null);
+        }, 500);
+    };
+
+    const {orientation} = useTooltipOrientation(refs.main, refs.tooltip, scrollRef, filePreview !== null);
+    useOutsideClick(refs.main, closePreview, filePreview !== null);
+
     return (
-        <Wrapper className={`file-attachments ${className}`}>
+        <Wrapper ref={refs.main} className={`file-attachments ${className}`} onMouseLeave={handleMouseLeave}>
             <ul className="files">
                 {
                     attachedFiles.map((f, i) => {
@@ -169,7 +200,11 @@ const FileAttachments = props => {
             {
                 filePreview !== null &&
                 <Tooltip
-                    className="tool-tip" offsetTop={filePreview.offsetTop}>
+                    ref={refs.tooltip}
+                    hide={orientation.horizontal === null || orientation.vertical === null}
+                    className={`tool-tip orientation-${orientation.horizontal} orientation-${orientation.vertical}`}
+                    clientHeight={orientation.clientHeight}
+                    offsetTop={filePreview.offsetTop}>
                     <a target="_blank" href={filePreview.file.src}>{renderFile(filePreview.file)}
                         <span className="file-name">{filePreview.file.name}</span></a>
                     <span className="file-delete" data-file-id={filePreview.file.id}
