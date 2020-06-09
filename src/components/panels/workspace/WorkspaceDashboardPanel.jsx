@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import TimelinePanel from "../common/TimelinePanel";
-import {DashboardAboutWorkspace, DashboardTeam} from "../dashboard";
+import {DashboardAboutWorkspace, DashboardTeam, RecentPosts} from "../dashboard";
 
 const Wrapper = styled.div`    
     overflow: auto !important;
@@ -26,6 +26,7 @@ const WorkspaceDashboardPanel = (props) => {
 
                 <div className={`col-md-6`}>
                     <DashboardTeam/>
+                    <RecentPosts/>
                 </div>
             </div>
         </Wrapper>
