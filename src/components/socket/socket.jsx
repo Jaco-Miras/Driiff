@@ -157,26 +157,26 @@ class Socket extends PureComponent {
         };
     }
 
-    handleVisibilityChange = () => {
-        if (document[this.state.hidden]) {
-            this.setState({focus: false});
-            this.props.setBrowserTabStatus({status: false});
-        } else {
-            this.setState({focus: true});
-            this.props.setBrowserTabStatus({status: true});
-        }
-    };
+    // handleVisibilityChange = () => {
+    //     if (document[this.state.hidden]) {
+    //         this.setState({focus: false});
+    //         this.props.setBrowserTabStatus({status: false});
+    //     } else {
+    //         this.setState({focus: true});
+    //         this.props.setBrowserTabStatus({status: true});
+    //     }
+    // };
 
     _initializedSocket = () => {
-        var visibilityChange;
-        if (typeof document.hidden !== "undefined") { // Opera 12.10 and Firefox 18 and later support 
-            visibilityChange = "visibilitychange";
-        } else if (typeof document.msHidden !== "undefined") {
-            visibilityChange = "msvisibilitychange";
-        } else if (typeof document.webkitHidden !== "undefined") {
-            visibilityChange = "webkitvisibilitychange";
-        }
-        document.addEventListener(visibilityChange, this.handleVisibilityChange, false);
+        // var visibilityChange;
+        // if (typeof document.hidden !== "undefined") { // Opera 12.10 and Firefox 18 and later support 
+        //     visibilityChange = "visibilitychange";
+        // } else if (typeof document.msHidden !== "undefined") {
+        //     visibilityChange = "msvisibilitychange";
+        // } else if (typeof document.webkitHidden !== "undefined") {
+        //     visibilityChange = "webkitvisibilitychange";
+        // }
+        // document.addEventListener(visibilityChange, this.handleVisibilityChange, false);
     };
 
     componentDidMount() {
@@ -187,13 +187,13 @@ class Socket extends PureComponent {
             profile_image_link: this.props.user.profile_image_link,
         });
         // Set the name of the hidden property and the change event for visibility
-        if (typeof document.hidden !== "undefined") { // Opera 12.10 and Firefox 18 and later support 
-            this.setState({hidden: "hidden", visibilityChange: "visibilitychange"});
-        } else if (typeof document.msHidden !== "undefined") {
-            this.setState({hidden: "msHidden", visibilityChange: "msvisibilitychange"});
-        } else if (typeof document.webkitHidden !== "undefined") {
-            this.setState({hidden: "webkitHidden", visibilityChange: "webkitvisibilitychange"});
-        }
+        // if (typeof document.hidden !== "undefined") { // Opera 12.10 and Firefox 18 and later support 
+        //     this.setState({hidden: "hidden", visibilityChange: "visibilitychange"});
+        // } else if (typeof document.msHidden !== "undefined") {
+        //     this.setState({hidden: "msHidden", visibilityChange: "msvisibilitychange"});
+        // } else if (typeof document.webkitHidden !== "undefined") {
+        //     this.setState({hidden: "webkitHidden", visibilityChange: "webkitvisibilitychange"});
+        // }
 
         this.props.getOnlineUsers();
         setInterval(() => {
@@ -260,7 +260,7 @@ class Socket extends PureComponent {
 
     componentWillUnmount() {
         localStorage.removeItem("has_active");
-        document.removeEventListener(this.state.visibilityChange, this.handleVisibilityChange, false);
+        //document.removeEventListener(this.state.visibilityChange, this.handleVisibilityChange, false);
     }
 
     componentDidUpdate(prevProps, prevState) {

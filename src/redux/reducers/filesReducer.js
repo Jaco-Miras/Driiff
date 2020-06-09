@@ -34,6 +34,24 @@ export default (state = INITIAL_STATE, action) => {
                 },
             };
         }
+        case "INCOMING_CHAT_MESSAGE": {
+            if (action.data.files.length) {
+                let channelFiles = [];
+                if (typeof state.channelFiles[action.data.channel_id] !== "undefined") {
+                    channelFiles = state.channelFiles[action.data.channel_id];
+                }
+
+                return {
+                    ...state,
+                    channelFiles: {
+                        ...state.channelFiles,
+                        [action.data.channel_id]: channelFiles.concat(action.data.files),
+                    },
+                };
+            } else {
+                return state
+            }
+        }
         case "ADD_CHANNEL_FILES": {
             let channelFiles = [];
             if (typeof state.channelFiles[action.data.channel_id] !== "undefined") {

@@ -26,3 +26,5 @@ export {default as useUsers} from "./useUsers";
 export {default as usePostActions} from "./usePostActions";
 export {default as useCountRenders} from "./useCountRenders";
 export {default as useLogRenders} from "./useLogRenders";
+export {default as useVisibilityChange} from "./useVisibilityChange";
+export {default as useSocketConnection} from "./useSocketConnection";

@@ -2,14 +2,15 @@ import React, {useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {Route} from "react-router-dom";
 import styled from "styled-components";
-import {useUserLogout} from "../components/hooks";
+import {useUserLogout, useVisibilityChange, useSocketConnection} from "../components/hooks";
 import useFilesUpload from "../components/hooks/useFilesUpload";
 import {ModalPanel} from "../components/panels";
 import {MainContentPanel, MainHeaderPanel, MainNavigationPanel} from "../components/panels/main";
-import Socket from "../components/socket/socket";
+//import Socket from "../components/socket/socket";
 import {getFiles} from "../redux/actions/fileActions";
 import {getAllRecipients, getConnectedSlugs} from "../redux/actions/globalActions";
 import {getMentions} from "../redux/actions/userAction";
+import SocketListeners from "../components/socket/socketListeners";
 
 const MainContent = styled.div`
 `;
@@ -18,6 +19,8 @@ const MainLayout = (props) => {
 
     useUserLogout(props);
     useFilesUpload(props);
+    useVisibilityChange();
+    useSocketConnection();
 
     const user = useSelector(state => state.session.user);
 
@@ -51,9 +54,13 @@ const MainLayout = (props) => {
                     path={["/:page"]}/>
             </MainContent>
             <ModalPanel/>
-            {
+            {/* {
                 user.id !== undefined &&
                 <Socket/>
+            } */}
+            {
+                user.id !== undefined && window.Echo !== undefined &&
+                <SocketListeners/>
             }
         </>
     );

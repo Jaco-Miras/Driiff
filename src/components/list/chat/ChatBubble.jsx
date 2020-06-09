@@ -502,7 +502,7 @@ const ChatBubble = (props) => {
         addMessageRef,
     } = props;
 
-    const {_t} = useTranslation();
+    //const {_t} = useTranslation();
 
     const chatMessageActions = useChatMessageActions();
 
@@ -676,7 +676,8 @@ const ChatBubble = (props) => {
 
     let replyBody = quillHelper.parseEmoji(reply.body);
     if (reply.is_deleted) {
-        replyBody = _t(reply.body, "The chat message has been deleted");
+        //replyBody = _t(reply.body, "The chat message has been deleted");
+        replyBody = "The chat message has been deleted";
     } else {
         if (reply.created_at.timestamp !== reply.updated_at.timestamp) {
             replyBody = `${replyBody}<span class='edited-message'>(edited)</span>`;

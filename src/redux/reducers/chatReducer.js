@@ -304,53 +304,51 @@ export default function (state = INITIAL_STATE, action) {
         }
         case "INCOMING_CHAT_MESSAGE": {
             let haveReference = false;
-            if (state.selectedChannel && state.selectedChannel.id === action.data.reply.channel_id) {
-                state.selectedChannel.replies.forEach(rep => {
-                    if (rep.reference_id === action.data.reply.reference_id) {
-                        haveReference = true;
-
-                    }
-                });
+            if (state.selectedChannel && state.selectedChannel.id === action.data.channel_id) {
+                haveReference = state.selectedChannel.replies.some(r => r.reference_id === action.data.reference_id)
             }
             let channel = null;
-            if (Object.keys(state.channels).length > 0 && state.channels.hasOwnProperty(action.data.reply.channel_id)) {
-                channel = {...state.channels[action.data.reply.channel_id]};
+            if (Object.keys(state.channels).length > 0 && state.channels.hasOwnProperty(action.data.channel_id)) {
+                channel = {...state.channels[action.data.channel_id]};
                 channel = {
                     ...channel,
                     is_hidden: 0,
                     replies: haveReference ? channel.replies.map(r => {
-                                               if (r.id === action.data.reply.reference_id) {
-                                                   return action.data.reply;
+                                               if (r.id === action.data.reference_id) {
+                                                   return action.data;
                                                } else {
                                                    return r;
                                                }
                                            })
-                                           : [...channel.replies, action.data.reply],
+                                           : [...channel.replies, action.data],
                     last_visited_at_timestamp: getCurrentTimestamp(),
-                    last_reply: action.data.last_reply,
+                    last_reply: action.data,
+                    total_unread: state.selectedChannel && state.selectedChannel.id === action.data.channel_id
+                                  ? channel.total_unread
+                                  : channel.total_unread + 1,
                 };
             }
             return {
                 ...state,
-                selectedChannel: state.selectedChannel && state.selectedChannel.id === action.data.reply.channel_id ?
+                selectedChannel: state.selectedChannel && state.selectedChannel.id === action.data.channel_id ?
                     {
                         ...state.selectedChannel,
                         last_visited_at_timestamp: getCurrentTimestamp(),
-                        last_reply: action.data.last_reply,
+                        last_reply: action.data,
                         replies: haveReference ? state.selectedChannel.replies.map(r => {
-                                                   if (r.id === action.data.reply.reference_id) {
-                                                       return action.data.reply;
+                                                   if (r.id === action.data.reference_id) {
+                                                       return action.data;
                                                    } else {
                                                        return r;
                                                    }
                                                })
-                                               : [...state.selectedChannel.replies, action.data.reply],
+                                               : [...state.selectedChannel.replies, action.data],
                     }
                                                                                                                     : state.selectedChannel,
                 channels: channel !== null ?
                     {
                         ...state.channels,
-                        [action.data.reply.channel_id]: channel,
+                        [action.data.channel_id]: channel,
                     }
                                            : state.channels,
             };
@@ -531,16 +529,15 @@ export default function (state = INITIAL_STATE, action) {
                 channel = {
                     ...channel,
                     replies: channel.replies.map(r => {
-                        if (r.id === action.data.message_id) {
-                            return Object.assign({}, r, {
+                        if (r.id === action.data.id) {
+                            return {
+                                ...r,
                                 body: action.data.body,
-                                mention_html: action.data.mention_html,
                                 updated_at: action.data.updated_at,
-                                unfurls: action.data.unfurls,
-                            });
+                            }
                         } else return r;
                     }),
-                    last_reply: channel.last_reply && channel.last_reply.id === action.data.message_id ? {
+                    last_reply: channel.last_reply && channel.last_reply.id === action.data.id ? {
                         ...channel.last_reply,
                         body: action.data.body,
                     } : channel.last_reply,
@@ -574,18 +571,19 @@ export default function (state = INITIAL_STATE, action) {
                 channel = {
                     ...channel,
                     replies: channel.replies.map(r => {
-                        if (r.id === action.data.message_id) {
+                        if (r.id === action.data.id) {
                             return {
                                 ...r,
                                 is_deleted: 1,
-                                body: "CHAT_MESSAGE_DELETED",
+                                //body: "CHAT_MESSAGE_DELETED",
+                                body: "The chat message has been deleted",
                                 files: [],
                             };
                         } else {
                             return r;
                         }
                     }),
-                    last_reply: channel.last_reply.id === action.data.message_id ? {
+                    last_reply: channel.last_reply.id === action.data.id ? {
                         ...channel.last_reply,
                         body: "The chat message has been deleted",
                         is_deleted: true,

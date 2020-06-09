@@ -40,7 +40,7 @@ const ReplyPreview = props => {
     const user = useSelector(state => state.session.user);
     const channelDrafts = useSelector(state => state.chat.channelDrafts);
 
-    const {_t} = useTranslation();
+    //const {_t} = useTranslation();
 
 
     let showPreviewIcon = false;
@@ -49,7 +49,7 @@ const ReplyPreview = props => {
     if (channel.last_reply && settings.preview_message) {
         if (channel.last_reply.is_deleted) {
             //translation error thus _tf is used tmp
-            lastReplyBody = _t(channel.last_reply.body, "The chat message has been deleted.");
+            //lastReplyBody = _t(channel.last_reply.body, "The chat message has been deleted.");
             lastReplyBody = "<span class=\"is-deleted\">" + lastReplyBody + "</span>";
         } else {
             lastReplyBody = quillHelper.parseEmoji(channel.last_reply.body);

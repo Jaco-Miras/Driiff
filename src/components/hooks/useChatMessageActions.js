@@ -25,7 +25,8 @@ const useChatMessageActions = () => {
     const dispatch = useDispatch();
 
     const getSharedPayload = useCallback((channel) => {
-        if (channel.is_shared && sharedSlugs.length) {
+        
+        if (channel && channel.is_shared && sharedSlugs.length) {
             let slug = sharedSlugs.filter(s => s.slug_name === channel.slug_owner)[0];
             return {
                 is_shared_topic: 1,
