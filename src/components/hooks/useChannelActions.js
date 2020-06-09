@@ -499,7 +499,7 @@ const useChannelActions = () => {
         dispatch(
             postSearchExistingChannels({
                 title: title,
-                recipient_ids: recipientIds,
+                search_recipient_ids: recipientIds,
             }, callback),
         );
     }, [dispatch]);
@@ -579,6 +579,7 @@ const useChannelActions = () => {
     }, [dispatch, fetchByCode, saveLastVisited]);
 
     return {
+        create,
         createByUserChannel,
         fetchAll,
         fetch,

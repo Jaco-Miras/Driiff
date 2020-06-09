@@ -3,15 +3,15 @@ import {useDispatch, useSelector} from "react-redux";
 import styled from "styled-components";
 import {localizeDate} from "../../helpers/momentFormatJS";
 import {
-    addChannelMembers,
+    postChannelMembers,
     addChatMessage,
     addQuote,
     clearChannelDraft,
     clearQuote,
-    createChatMessage,
+    postChatMessage,
     onClickSendButton,
     setEditChatMessage,
-    updateChatMessage,
+    putChatMessage,
 } from "../../redux/actions/chatActions";
 import {deleteDraft} from "../../redux/actions/globalActions";
 import {SvgIconFeather} from "../common";
@@ -45,7 +45,6 @@ const StyledQuillEditor = styled(QuillEditor)`
     }
     .ql-editor {
         padding: 5px 9px;
-        min-height: 30px;
         .mention {
             color: #7a1b8b;
         }
@@ -53,6 +52,7 @@ const StyledQuillEditor = styled(QuillEditor)`
             box-shadow: none;
             border-color: rgba(122, 27, 139, 0.8);
         }
+        min-height: 30px;
     }
     .ql-container {
         border: none;
@@ -242,13 +242,13 @@ const PostInput = props => {
                 payload.quote = quote;
             }
             dispatch(
-                updateChatMessage(payloadEdit),
+                putChatMessage(payloadEdit),
             );
             setEditMode(false);
             setEditMessage(null);
         } else {
             dispatch(
-                createChatMessage(payload),
+                postChatMessage(payload),
             );
         }
 
@@ -485,7 +485,7 @@ const PostInput = props => {
             recipient_ids: users.map(u => u.type_id),
         };
         dispatch(
-            addChannelMembers(memberPayload, (err, res) => {
+            postChannelMembers(memberPayload, (err, res) => {
                 if (err) return;
 
                 if (res)

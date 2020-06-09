@@ -4,11 +4,11 @@ import {useDispatch, useSelector} from "react-redux";
 import {Input, InputGroup, Label, Modal, ModalBody} from "reactstrap";
 import styled from "styled-components";
 import {localizeDate} from "../../helpers/momentFormatJS";
-import {postCreateChannel, putChannelUpdateName, renameChannelKey, postSearchExistingChannels} from "../../redux/actions/chatActions";
+import {renameChannelKey} from "../../redux/actions/chatActions";
 import {clearModal} from "../../redux/actions/globalActions";
 import {PeopleSelect} from "../forms";
 import QuillEditor from "../forms/QuillEditor";
-import {useQuillModules} from "../hooks";
+import {useQuillModules, useChannelActions} from "../hooks";
 import {ModalHeaderSection} from "./index";
 
 const WrapperDiv = styled(InputGroup)`
@@ -79,6 +79,8 @@ const CreateEditChatModal = props => {
     const [chatExists, setChatExists] = useState(false);
     const [searching, setSearching] = useState(false);
 
+    const channelActions = useChannelActions();
+
     const toggle = () => {
         setModal(!modal);
         dispatch(
@@ -134,9 +136,13 @@ const CreateEditChatModal = props => {
                 channel_id: channel.id,
                 remove_member_ids: removed_members,
                 add_member_ids: added_members,
+                id: channel.id,
+                title: inputValue,
+                members: selectedUsers
             };
 
-            dispatch(putChannelUpdateName(payload));
+            //dispatch(putChannelUpdateName(payload));
+            channelActions.update(channel,payload)
         } else {
 
             let placeholderId = require("shortid").generate();
@@ -225,38 +231,36 @@ const CreateEditChatModal = props => {
             }
 
             let old_channel = channel;
-            dispatch(
-                postCreateChannel(payload, (err, res) => {
-                    if (err) return;
+            const createCallback = (err,res) => {
+                if (err) return;
+                let payload = {
+                    ...channel,
+                    id: res.data.channel.id,
+                    old_id: old_channel.id,
+                    code: res.data.code,
+                    members: res.data.channel.members ? res.data.channel.members : channel.members,
+                    profile: res.data.channel.profile,
+                    type: "GROUP",
+                    last_reply: res.data.channel.last_reply,
+                    replies: [{
+                        ...message,
+                        id: res.data.last_reply.id,
+                        channel_id: res.data.channel.id,
+                        created_at: {
+                            timestamp: message.created_at.timestamp,
+                        },
+                        updated_at: {
+                            timestamp: message.created_at.timestamp,
+                        },
+                    }],
+                    selected: true,
+                };
 
-                    let payload = {
-                        ...channel,
-                        id: res.data.channel.id,
-                        old_id: old_channel.id,
-                        code: res.data.code,
-                        members: res.data.channel.members ? res.data.channel.members : channel.members,
-                        profile: res.data.channel.profile,
-                        type: "GROUP",
-                        last_reply: res.data.channel.last_reply,
-                        replies: [{
-                            ...message,
-                            id: res.data.last_reply.id,
-                            channel_id: res.data.channel.id,
-                            created_at: {
-                                timestamp: message.created_at.timestamp,
-                            },
-                            updated_at: {
-                                timestamp: message.created_at.timestamp,
-                            },
-                        }],
-                        selected: true,
-                    };
-
-                    dispatch(
-                        renameChannelKey(payload),
-                    );
-                }),
-            );
+                dispatch(
+                    renameChannelKey(payload),
+                );
+            }
+            channelActions.create(payload, createCallback);
         }
 
         toggle();
@@ -282,25 +286,23 @@ const CreateEditChatModal = props => {
                 return userFound;
             }).map(r => r.id);
 
-        let payload = {
-            title: inputValue,
-            search_recipient_ids: recipient_ids,
-        };
         if (recipient_ids.length) {
             setSearching(true);
-            dispatch(
-                postSearchExistingChannels(payload, (err, res) => {
-                    setSearching(false);
-                    if (err) {
-                        return;
-                    }
-                    if (res.data.channel_id) {
-                        setChatExists(true);
-                    } else {
-                        setChatExists(false);
-                    }
-                }),
-            );
+            const callback = (err,res) => {
+                setSearching(false);
+                if (err) {
+                    return;
+                }
+                if (res.data.channel_id) {
+                    setChatExists(true);
+                } else {
+                    setChatExists(false);
+                }
+            }
+            channelActions.searchExisting(
+                inputValue,
+                recipient_ids,
+                callback);
         }
     }, 500);
 

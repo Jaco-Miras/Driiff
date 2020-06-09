@@ -20,6 +20,7 @@ export {default as useSortWorkspaces} from "./useSortWorkspaces";
 export {default as useFocusInput} from "./useFocusInput";
 export {default as useGetWorkspaceAndUserOptions} from "./useGetWorkspaceAndUserOptions";
 export {default as useChannels}  from "./useChannels";
+export {default as useChannelActions}  from "./useChannelActions";
 export {default as useUserChannels} from "./useUserChannels";
 export {default as useUsers} from "./useUsers";
 export {default as usePostActions} from "./usePostActions";

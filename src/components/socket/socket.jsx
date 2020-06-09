@@ -703,9 +703,9 @@ class Socket extends PureComponent {
                     };
                 } else {
                     fromUser = {
-                        id: e.message_from.user_id,
+                        id: e.message_from.id,
                         first_name: e.message_from.first_name,
-                        name: e.message_from.user_name,
+                        name: e.message_from.name,
                         profile_image_link: e.message_from.profile_image_link,
                     };
                 }
