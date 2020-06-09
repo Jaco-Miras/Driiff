@@ -4,20 +4,15 @@ import {renderToString} from "react-dom/server";
 import GifPlayer from "react-gif-player";
 import "react-gif-player/src/GifPlayer.scss";
 import {useInView} from "react-intersection-observer";
-import {useDispatch, useSelector} from "react-redux";
+import {useSelector} from "react-redux";
 import {useHistory} from "react-router-dom";
 import Skeleton from "react-skeleton-loader";
 import styled from "styled-components";
 import {todayOrYesterdayDate} from "../../../helpers/momentFormatJS";
 import quillHelper from "../../../helpers/quillHelper";
 import {getEmojiRegexPattern, stripGif} from "../../../helpers/stringFormatter";
-import {
-    putMarkReminderComplete,
-    setSelectedChannel,
-    putChatMessage,
-} from "../../../redux/actions/chatActions";
 import {ImageTextLink, SvgIconFeather, SvgImage} from "../../common";
-import {useTranslation} from "../../hooks";
+import {useSettings, useTranslation} from "../../hooks";
 import useChatMessageActions from "../../hooks/useChatMessageActions";
 import MessageFiles from "./Files/MessageFiles";
 import Unfurl from "./Unfurl/Unfurl";
@@ -499,7 +494,6 @@ const ForwardedSpan = styled.span`
 
 const ChatBubble = (props) => {
     const {
-        channel,
         reply,
         showAvatar,
         selectedChannel,
@@ -510,33 +504,22 @@ const ChatBubble = (props) => {
 
     const {_t} = useTranslation();
 
-    const dispatch = useDispatch();
+    const chatMessageActions = useChatMessageActions();
+
     const history = useHistory();
 
     const [chatFiles, setChatFiles] = useState([]);
     const [loadRef, loadInView] = useInView({
         threshold: 1,
     });
+    const {chatSettings} = useSettings();
     const recipients = useSelector(state => state.global.recipients);
     const user = useSelector(state => state.session.user);
     const refComponent = useRef();
 
 
     const handleMarkComplete = () => {
-        dispatch(
-            putMarkReminderComplete({message_id: reply.id}, (err, res) => {
-                if (err)
-                    console.log(err);
-
-                if (res)
-                    dispatch(
-                        putMarkReminderComplete({
-                            channel_id: reply.channel_id,
-                            message_id: reply.id,
-                        }),
-                    );
-            }),
-        );
+        chatMessageActions.markComplete(reply.id);
     };
 
     const handleRemoveReply = () => {
@@ -548,13 +531,11 @@ const ChatBubble = (props) => {
         const link = `/chat/${reply.quote.channel_code}/${reply.quote.code}`;
         newBody = newBody.replace("this message", `<a class="push" href="${link}">this message</a>`);
 
-        dispatch(
-            putChatMessage({
-                body: newBody,
-                message_id: reply.id,
-                reply_id: reply.id,
-            }),
-        );
+        chatMessageActions.edit({
+            body: newBody,
+            message_id: reply.id,
+            reply_id: reply.id,
+        });
     };
 
     const handleChannelMessageLink = (e) => {
@@ -610,9 +591,7 @@ const ChatBubble = (props) => {
         if (reply.quote.channel_id) {
             let sc = props.activeChatChannels.filter(ac => ac.id === reply.quote.channel_id)[0];
             if (sc) {
-                dispatch(
-                    setSelectedChannel(sc),
-                );
+                chatMessageActions.channelActions.select(sc);
             }
 
             setTimeout(() => {
@@ -878,7 +857,7 @@ const ChatBubble = (props) => {
         showAvatar={showAvatar}
         isAuthor={isAuthor}
         hideBg={isEmoticonOnly || showGifPlayer || (hasFiles && replyBody === "<span></span>")}
-        theme={props.settings.chat_message_theme}>
+        theme={chatSettings.chat_message_theme}>
         {
             <>
                 {
@@ -900,19 +879,19 @@ const ChatBubble = (props) => {
                                 showAvatar={showAvatar}
                                 isEmoticonOnly={isEmoticonOnly}
                                 hasFiles={hasFiles}
-                                theme={props.settings.chat_message_theme}
+                                theme={chatSettings.chat_message_theme}
                                 onClick={handleQuoteClick} isAuthor={isAuthor}>
                                 {
                                     reply.quote.user_id === user.id ?
                                     <QuoteAuthor
-                                        theme={props.settings.chat_message_theme}
+                                        theme={chatSettings.chat_message_theme}
                                         isAuthor={true}>{`You`}</QuoteAuthor> :
                                     <QuoteAuthor
-                                        theme={props.settings.chat_message_theme}
+                                        theme={chatSettings.chat_message_theme}
                                         isAuthor={reply.quote.user_id === user.id}>{replyQuoteAuthor}</QuoteAuthor>
                                 }
                                 <QuoteContent
-                                    theme={props.settings.chat_message_theme}
+                                    theme={chatSettings.chat_message_theme}
                                     isAuthor={isAuthor}
                                     dangerouslySetInnerHTML={{__html: replyQuoteBody.split("</p>")[0]}}
                                 ></QuoteContent>
@@ -925,7 +904,8 @@ const ChatBubble = (props) => {
                                     isBot === true &&
                                     <GrippBotIcon icon={`gripp-bot`}/>
                                 }
-                                <p className={"reply-author"}>{reply.user.name.replace("  ", " ")}</p>
+                                {/* @todo reply.message_from.name and reply.user.name issue
+                                 <p className={"reply-author"}>{reply.message_from.name.replace("  ", " ")}</p>*/}
                             </>
 
                         }
@@ -934,7 +914,7 @@ const ChatBubble = (props) => {
                             <ChatMessageFiles
                                 hasMessage={hasMessage}
                                 isAuthor={isAuthor}
-                                theme={props.settings.chat_message_theme}
+                                theme={chatSettings.chat_message_theme}
                                 chatFiles={chatFiles}
                                 files={reply.files}
                                 reply={reply}
@@ -944,7 +924,7 @@ const ChatBubble = (props) => {
                         {
                             <ReplyContent
                                 hasFiles={hasFiles}
-                                theme={props.settings.chat_message_theme}
+                                theme={chatSettings.chat_message_theme}
                                 isAuthor={isAuthor}
                                 className={`reply-content ${isEmoticonOnly ? "emoticon-body" : ""} ${reply.is_deleted ? "is-deleted" : ""}`}
                                 dangerouslySetInnerHTML={showGifPlayer ? {__html: stripGif(replyBody)} : {__html: replyBody}}

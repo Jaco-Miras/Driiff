@@ -4,6 +4,7 @@ import styled from "styled-components";
 import {addToModals} from "../../../redux/actions/globalActions";
 import {DropDocument} from "../../dropzone/DropDocument";
 import {useCountUnreadReplies, useFocusInput} from "../../hooks";
+import useChatMessageActions from "../../hooks/useChatMessageActions";
 import ChatMessages from "../../list/chat/ChatMessages";
 import ChatUnreadFloatBar from "../../list/chat/ChatUnreadFloatBar";
 import {ChatFooterPanel, ChatHeaderPanel} from "./index";
@@ -22,6 +23,7 @@ const ChatContentPanel = (props) => {
     const {className = "", selectedChannel} = props;
 
     const dispatch = useDispatch();
+    const chatMessageActions = useChatMessageActions();
 
     const [showDropZone, setshowDropZone] = useState(false);
     const unreadCount = useCountUnreadReplies();
@@ -109,7 +111,8 @@ const ChatContentPanel = (props) => {
             />
             <ChatHeaderPanel/>
             {selectedChannel !== null && unreadCount > 0 && <ChatUnreadFloatBar/>}
-            {selectedChannel !== null ? <ChatMessages/> : <ChatMessagesPlaceholder/>}
+            {selectedChannel !== null ? <ChatMessages chatMessageActions={chatMessageActions} /> :
+             <ChatMessagesPlaceholder/>}
             {/* <ChatMessagesPanel/> */}
             <ChatFooterPanel onShowFileDialog={handleOpenFileDialog} dropAction={dropAction}/>
         </Wrapper>

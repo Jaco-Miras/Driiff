@@ -315,12 +315,6 @@ const useChannelActions = () => {
             });
 
         } else {
-            if (!channel.hasOwnProperty("replies")) {
-                channel = {
-                    ...channel,
-                    replies: [],
-                };
-            }
             dispatch(
                 setSelectedChannel({
                     ...channel,
@@ -581,6 +575,7 @@ const useChannelActions = () => {
     return {
         create,
         createByUserChannel,
+        create,
         fetchAll,
         fetch,
         fetchNoChannelUsers,
