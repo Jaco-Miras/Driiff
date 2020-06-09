@@ -27,7 +27,7 @@ const Wrapper = styled.div`
     }
 `;
 
-const AboutWorkspace = (props) => {
+const DashboardAboutWorkspace = (props) => {
 
     const {className = ""} = props;
 
@@ -93,4 +93,4 @@ const AboutWorkspace = (props) => {
     );
 };
 
-export default React.memo(AboutWorkspace);
+export default React.memo(DashboardAboutWorkspace);

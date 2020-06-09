@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import TimelinePanel from "../common/TimelinePanel";
-import {AboutWorkspace} from "../dashboard";
+import {DashboardAboutWorkspace, DashboardTeam} from "../dashboard";
 
 const Wrapper = styled.div`    
     overflow: auto !important;
@@ -20,11 +20,12 @@ const WorkspaceDashboardPanel = (props) => {
         <Wrapper className={`container-fluid h-100 ${className}`}>
             <div className={`row`}>
                 <div className={`col-md-6`}>
-                    <AboutWorkspace/>
+                    <DashboardAboutWorkspace/>
                     <TimelinePanel/>
                 </div>
 
                 <div className={`col-md-6`}>
+                    <DashboardTeam/>
                 </div>
             </div>
         </Wrapper>

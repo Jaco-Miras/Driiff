@@ -36,7 +36,7 @@ const useChannelActions = () => {
      * @returns {{}|{is_shared: boolean, slug: string, token: string}}
      */
     const getSharedPayload = useCallback((channel) => {
-        if (channel && sharedSlugs.length) {
+        if (channel.is_shared && sharedSlugs.length) {
             return {
                 is_shared: true,
                 token: sharedSlugs.filter(s => s.slug_name === channel.slug_owner)[0].access_token,
