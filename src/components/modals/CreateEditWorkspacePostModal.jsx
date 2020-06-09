@@ -324,16 +324,16 @@ const CreateEditWorkspacePostModal = props => {
     const [modules] = useQuillModules("workspace");
 
     useEffect(() => {
-        if (item.workspace !== null && item.hasOwnProperty("draft")) {
+        if (activeTopic !== null && item.hasOwnProperty("draft")) {
             setForm(item.draft.form);
             setDraftId(item.draft.draft_id);
-        } else if (item.workspace !== null) {
+        } else if (activeTopic !== null) {
             setForm({
                 ...form,
                 selectedWorkspaces: [{
-                    ...item.workspace,
-                    value: item.workspace.id,
-                    label: item.workspace.name,
+                    ...activeTopic,
+                    value: activeTopic.id,
+                    label: activeTopic.name,
                 }],
                 selectedUsers: [{
                     id: user.id,

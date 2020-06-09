@@ -63,9 +63,9 @@ const usePosts = () => {
                 if (tag) {
                     if (tag === "is_must_reply") {
                         return p.is_must_reply === 1;
-                    } else if (filter === "is_must_read") {
+                    } else if (tag === "is_must_read") {
                         return p.is_must_read === 1;
-                    } else if (filter === "is_read_only") {
+                    } else if (tag === "is_read_only") {
                         return p.is_read_only === 1;
                     } else {
                         return true
@@ -88,7 +88,7 @@ const usePosts = () => {
                 })
             }
             return {
-                posts: filteredPosts, filter, tag, sort, post
+                posts: filteredPosts, filter, tag, sort, post, user
             };
         } else {
             let filteredPosts = Object.values(wsPosts[params.workspaceId].posts)
@@ -107,7 +107,8 @@ const usePosts = () => {
                 filter: null,
                 tag: null, 
                 sort: null,
-                post: post
+                post: post,
+                user
             };
         }
     } else {
@@ -116,7 +117,8 @@ const usePosts = () => {
             filter: null,
             tag: null,
             sort: null,
-            post: null
+            post: null,
+            user
         };
     }
 };

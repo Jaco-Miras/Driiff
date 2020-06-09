@@ -1,6 +1,6 @@
 import {useCallback} from "react";
-import {useDispatch, useSelector} from "react-redux";
-import {useLocation, useHistory} from "react-router-dom";
+import {useDispatch} from "react-redux";
+import {useLocation, useHistory, useParams} from "react-router-dom";
 import toaster from "toasted-notes";
 import {postFavorite, postArchive, postFollow, postMarkDone, postToggleRead, removePost, postUnfollow} from "../../redux/actions/postActions";
 import {addToModals} from "../../redux/actions/globalActions";
@@ -12,7 +12,7 @@ const usePostActions = () => {
     const dispatch = useDispatch();
     const location = useLocation();
     const history = useHistory();
-    const topic = useSelector(state => state.workspaces.activeTopic);
+    const params = useParams();
 
     const starPost = useCallback((post) => {
         if (post.type === "draft_post") return;
@@ -34,7 +34,6 @@ const usePostActions = () => {
                 type: "workspace_post_create_edit",
                 mode: "create",
                 item: {
-                    workspace: topic,
                     draft: post
                 },
             };
@@ -44,6 +43,7 @@ const usePostActions = () => {
             );
         } else {
             //redirect to post detail page
+            console.log(location.pathname)
             history.push(location.pathname+`/post/${post.id}/${post.title}`)
         }
     }, [dispatch, location]);
@@ -54,7 +54,7 @@ const usePostActions = () => {
                 dispatch(
                     removePost({
                         post_id: post.id,
-                        topic_id: topic.id
+                        topic_id: parseInt(params.workspaceId)
                     })
                 )
             };
@@ -84,9 +84,12 @@ const usePostActions = () => {
                         dispatch(
                             removePost({
                                 post_id: post.id,
-                                topic_id: topic.id
+                                topic_id: parseInt(params.workspaceId)
                             })
                         )
+                        if (params.hasOwnProperty("postId")) {
+                            history.goBack();
+                        }
                     })
                 )
             };
@@ -106,7 +109,7 @@ const usePostActions = () => {
                 addToModals(payload),
             );
         }
-    }, [dispatch]);
+    }, [dispatch, params]);
 
     const markAsRead = useCallback((post) => {
         dispatch(

@@ -34,7 +34,7 @@ const PostItemPanel = (props) => {
                 <CheckBox name="test" checked={post.is_mark_done} onClick={() => markPost(post)}/>
             </div>
             <div>
-                <SvgIconFeather icon="star" onClick={() => starPost(post)}/>
+                <SvgIconFeather icon="star" onClick={() => starPost(post)} fill={post.is_favourite ? "#ffc107" : "none"}/>
             </div>
             <div className="flex-grow-1 min-width-0">
                 <div className="mb-1 d-flex align-items-center justify-content-between">
@@ -60,7 +60,7 @@ const PostItemPanel = (props) => {
                                 }
                             </MoreOptions>
                         }
-                        <SvgIconFeather icon="trash-2" onClick={() => archivePost(post)}/>
+                        <SvgIconFeather icon="archive" onClick={() => archivePost(post)}/>
                     </div>
                 </div>
             </div>

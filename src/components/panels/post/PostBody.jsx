@@ -6,11 +6,23 @@ import {localizeDate} from "../../../helpers/momentFormatJS";
 
 const Wrapper = styled.div`
     flex: unset;
+    svg {
+        cursor: pointer;
+        margin-right: 5px;
+    }
 `;
 
 const PostBody = props => {
 
-    const {post} = props;
+    const {post, postActions} = props;
+
+    const handleStarPost = () => {
+        postActions.starPost(post)
+    };
+
+    const handleArchivePost = () => {
+        postActions.archivePost(post)
+    };
 
     return (
         <Wrapper className="card-body">
@@ -21,13 +33,14 @@ const PostBody = props => {
                         <AvatarGroup users={post.users_responsible}/>
                     }
                 </div>
-                <div className="ml-auto">
+                <div className="ml-auto d-flex align-items-center">
                     <PostBadge post={post}/>
                     {
                         post.files.length > 0 &&
                         <SvgIconFeather icon="paperclip" width={16} height={16}/>
                     }
-                    <SvgIconFeather icon="star" fill="#ffc107" width={16} height={16}/>
+                    <SvgIconFeather onCLick={handleStarPost} icon="star" fill={post.is_favourite ? "#ffc107" : "none"} width={16} height={16}/>
+                    <SvgIconFeather onClick={handleArchivePost} icon="archive" width={16} height={16}/>
                     <span className="text-muted">{localizeDate(post.created_at.timestamp, "LT")}</span>
                 </div>
             </div>

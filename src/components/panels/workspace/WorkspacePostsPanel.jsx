@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import {PostDetail, PostFilterSearchPanel, PostItemPanel, PostSidebar} from "../post";
-import {usePosts, usePostActions} from "../../hooks";
+import {usePosts, usePostActions, useCountRenders} from "../../hooks";
 
 const Wrapper = styled.div`
 `;
@@ -10,9 +10,9 @@ const WorkspacePostsPanel = (props) => {
 
     const {className = ""} = props;
 
-    const {posts, filter, tag, sort, post} = usePosts();
+    const {posts, filter, tag, sort, post, user} = usePosts();
     const postActions = usePostActions();
-
+    useCountRenders("posts panel")
     return (
         <Wrapper className={`container-fluid h-100 ${className}`}>
             <div className="row app-block">
@@ -32,7 +32,7 @@ const WorkspacePostsPanel = (props) => {
                                 }
                             </ul>
                         </div>
-                        <PostDetail post={post}/>
+                        <PostDetail post={post} postActions={postActions} user={user}/>
                     </div>
                 </div>
             </div>

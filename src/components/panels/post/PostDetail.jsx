@@ -23,7 +23,7 @@ const PostRepliesDiv = styled.div`
 
 const PostDetail = props => {
 
-    const {post} = props;
+    const {post, postActions, user} = props;
     const history = useHistory();
     const handleClosePost = () => {
         history.goBack();
@@ -52,7 +52,7 @@ const PostDetail = props => {
                     <div className="app-detail-action-right">
                         <div>
                             <span data-toggle="modal" data-target="#editTaskModal">
-                            <a href="/" className="btn btn-outline-light ml-2" title=""
+                            <a className="btn btn-outline-light ml-2" title=""
                                 data-toggle="tooltip" data-original-title="Edit Task">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                         viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"
@@ -61,7 +61,9 @@ const PostDetail = props => {
                                     d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
                             </a>
                         </span>
-                            <a href="/" className="btn btn-outline-light ml-2" data-toggle="tooltip"
+                        {
+                            post.author.id === user.id &&
+                            <a className="btn btn-outline-light ml-2" data-toggle="tooltip"
                                 title="" data-original-title="Delete Task">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                         viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -72,11 +74,12 @@ const PostDetail = props => {
                                         d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
                                 </svg>
                             </a>
+                        }
                         </div>
                     </div>
                 </div>
                 <div className="app-detail-article">
-                    <PostBody post={post}/>
+                    <PostBody post={post} postActions={postActions}/>
                     <hr className="m-0"/>
                     {
                         post.files.length > 0  &&
@@ -158,4 +161,4 @@ const PostDetail = props => {
     )
 };
 
-export default PostDetail;
+export default React.memo(PostDetail);

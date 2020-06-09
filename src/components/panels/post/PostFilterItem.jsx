@@ -3,6 +3,12 @@ import styled from "styled-components";
 import {useDispatch, useSelector} from "react-redux";
 import {updateWorkspacePostFilterSort} from "../../../redux/actions/workspaceActions";
 
+const Wrapper = styled.div`
+    a {
+        cursor: pointer;
+    }
+`;
+
 const PostFilterItem = props => {
 
     const {filter} = props;
@@ -21,7 +27,7 @@ const PostFilterItem = props => {
     };
 
     return (
-        <div className="list-group list-group-flush">
+        <Wrapper className="list-group list-group-flush">
             <a className={`list-group-item d-flex align-items-center ${filter && filter === "all" ? "active" : ""}`} data-value="all" onClick={handleClickFilter}>
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                         viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"
@@ -63,7 +69,7 @@ const PostFilterItem = props => {
                 </svg>
                 Concepten
             </a>
-        </div>
+        </Wrapper>
     );
 };
 
