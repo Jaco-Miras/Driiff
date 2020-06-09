@@ -2,7 +2,7 @@ import React, {useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {Modal, ModalFooter} from "reactstrap";
 import styled from "styled-components";
-import {createChatMessage, setSelectedChannel} from "../../redux/actions/chatActions";
+import {postChatMessage, setSelectedChannel} from "../../redux/actions/chatActions";
 import {clearModal} from "../../redux/actions/globalActions";
 import {SvgIconFeather} from "../common";
 import SearchForm from "../forms/SearchForm";
@@ -87,6 +87,9 @@ const ChatForwardModal = props => {
 
     const {type, message} = props.data;
 
+    /**
+     * @todo refactor
+     */
     const dispatch = useDispatch();
     const channels = useSelector(state => state.chat.channels);
     const [inputValue, setInputValue] = useState("");
@@ -117,7 +120,7 @@ const ChatForwardModal = props => {
 
         chosenChannel.selected = true;
         dispatch(
-            createChatMessage(payload, () => {
+            postChatMessage(payload, () => {
                 chosenChannel.selected = true;
                 dispatch(
                     setSelectedChannel(chosenChannel),

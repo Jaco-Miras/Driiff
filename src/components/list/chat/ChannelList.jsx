@@ -1,4 +1,5 @@
 import React, {useState} from "react";
+import {useHistory} from "react-router-dom";
 import styled from "styled-components";
 import useChannelActions from "../../hooks/useChannelActions";
 import ChannelIcon from "./ChannelIcon";
@@ -15,7 +16,7 @@ const Wrapper = styled.span`
     
     .more-options {
         position: relative;        
-        opacity: 0;
+        opacity: 0; 
         z-index: -1;
     }
 
@@ -87,7 +88,10 @@ const ChannelList = props => {
 
     const channelActions = useChannelActions();
 
+    const history = useHistory();
+
     const {className = "", channel, selectedChannel} = props;
+
     const [optionsVisible, setOptionsVisible] = useState(false);
 
     const toggleOptions = () => {
@@ -103,8 +107,8 @@ const ChannelList = props => {
             }
         }
 
-        channelActions.selectChannel({...channel, selected: true});
-        props.history.push(`/chat/${channel.code}`);
+        channelActions.select({...channel, selected: true});
+        history.push(`/chat/${channel.code}`);
     };
 
     return (
@@ -117,8 +121,14 @@ const ChannelList = props => {
                 <ReplyPreview channel={channel}/>
             </ChannelTitlePreview>
             <Timestamp className="text-right ml-auto">
-                <ChatDateIcons className={"chat-date-icons"} channel={channel} optionsVisible={optionsVisible}/>
-                <ChannelOptions channel={channel} onShowOptions={toggleOptions}/>
+                <ChatDateIcons
+                    className={"chat-date-icons"}
+                    channel={channel}
+                    optionsVisible={optionsVisible}/>
+                <ChannelOptions
+                    selectedChannel={selectedChannel}
+                    channel={channel}
+                    onShowOptions={toggleOptions}/>
             </Timestamp>
         </Wrapper>
     );

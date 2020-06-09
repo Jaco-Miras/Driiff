@@ -24,3 +24,4 @@ export {default as useUserChannels} from "./useUserChannels";
 export {default as useUsers} from "./useUsers";
 export {default as usePostActions} from "./usePostActions";
 export {default as useCountRenders} from "./useCountRenders";
+export {default as useLogRenders} from "./useLogRenders";

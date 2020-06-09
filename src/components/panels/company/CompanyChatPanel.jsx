@@ -27,28 +27,22 @@ const CompanyChatPanel = (props) => {
 
     const setLastVisitedChannel = () => {
         if (lastVisitedChannel) {
-            channelActions.selectChannel(lastVisitedChannel, () => {
+            channelActions.select(lastVisitedChannel, () => {
                 setActiveTabPill(lastVisitedChannel.type === "DIRECT" ? "contact" : "home");
                 props.history.push(`/chat/${lastVisitedChannel.code}`);
             });
         } else {
-            channelActions.fetchLastVisitedChannel((err, res) => {
-                channelActions.loadSelectedChannel(res.data.code, (err, res) => {
-                    channelActions.saveLastVisitedChannel(res.data, () => {
-                        channelActions.selectChannel(res.data, () => {
-                            setActiveTabPill(res.data.type === "DIRECT" ? "contact" : "home");
-                            props.history.push(`/chat/${res.data.code}`);
-                        });
-                    });
-                });
+            channelActions.fetchLastVisited((err, res) => {
+                setActiveTabPill(res.data.type === "DIRECT" ? "contact" : "home");
+                props.history.push(`/chat/${res.data.code}`);
             });
         }
     };
 
     const setVisitedChannel = () => {
-        channelActions.loadSelectedChannel(props.match.params.code, (err, res) => {
+        channelActions.fetchByCode(props.match.params.code, (err, res) => {
             if (res) {
-                channelActions.selectChannel(res.data);
+                channelActions.select(res.data);
                 setActiveTabPill(res.data.type === "DIRECT" ? "contact" : "home");
             }
         });

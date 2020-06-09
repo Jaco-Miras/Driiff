@@ -7,7 +7,6 @@ import useFilesUpload from "../components/hooks/useFilesUpload";
 import {ModalPanel} from "../components/panels";
 import {MainContentPanel, MainHeaderPanel, MainNavigationPanel} from "../components/panels/main";
 import Socket from "../components/socket/socket";
-import usePushNotification from "../components/webpush/usePushNotification";
 import {getFiles} from "../redux/actions/fileActions";
 import {getAllRecipients, getConnectedSlugs} from "../redux/actions/globalActions";
 import {getMentions} from "../redux/actions/userAction";
@@ -17,12 +16,13 @@ const MainContent = styled.div`
 
 const MainLayout = (props) => {
 
-    usePushNotification();
     useUserLogout(props);
     useFilesUpload(props);
 
-    const dispatch = useDispatch();
     const user = useSelector(state => state.session.user);
+
+    const dispatch = useDispatch();
+
     const files = useSelector(state => state.files.files);
 
     useEffect(() => {

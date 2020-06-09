@@ -4,7 +4,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {Input, InputGroup, Label, Modal, ModalBody} from "reactstrap";
 import styled from "styled-components";
 import {localizeDate} from "../../helpers/momentFormatJS";
-import {createNewChat, editChannelDetail, renameChannelKey, searchExistingChat} from "../../redux/actions/chatActions";
+import {postCreateChannel, putChannelUpdateName, renameChannelKey, postSearchExistingChannels} from "../../redux/actions/chatActions";
 import {clearModal} from "../../redux/actions/globalActions";
 import {PeopleSelect} from "../forms";
 import QuillEditor from "../forms/QuillEditor";
@@ -59,6 +59,9 @@ const StyledQuillEditor = styled(QuillEditor)`
 
 const CreateEditChatModal = props => {
 
+    /**
+     * @todo refactor
+     */
     const {type, mode} = props.data;
 
     const reactQuillRef = useRef();
@@ -96,13 +99,11 @@ const CreateEditChatModal = props => {
             setSelectedUsers([]);
         } else {
             setSelectedUsers(e);
-            //handleSearchExistingChat();
         }
     };
 
     const handleInputChange = e => {
         setInputValue(e.target.value.trim());
-        //handleSearchExistingChat();
     };
 
     const handleConfirm = () => {
@@ -135,7 +136,7 @@ const CreateEditChatModal = props => {
                 add_member_ids: added_members,
             };
 
-            dispatch(editChannelDetail(payload));
+            dispatch(putChannelUpdateName(payload));
         } else {
 
             let placeholderId = require("shortid").generate();
@@ -225,7 +226,7 @@ const CreateEditChatModal = props => {
 
             let old_channel = channel;
             dispatch(
-                createNewChat(payload, (err, res) => {
+                postCreateChannel(payload, (err, res) => {
                     if (err) return;
 
                     let payload = {
@@ -288,7 +289,7 @@ const CreateEditChatModal = props => {
         if (recipient_ids.length) {
             setSearching(true);
             dispatch(
-                searchExistingChat(payload, (err, res) => {
+                postSearchExistingChannels(payload, (err, res) => {
                     setSearching(false);
                     if (err) {
                         return;

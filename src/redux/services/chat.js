@@ -21,7 +21,7 @@ export function getChannels(payload) {
     });
 }
 
-export function updateChannel(payload) {
+export function putChannel(payload) {
     let url = `/v2/post-channels/${payload.id}`;
     return apiCall({
         method: "PUT",
@@ -31,21 +31,25 @@ export function updateChannel(payload) {
     });
 }
 
-export function markReadChannel(payload) {
+export function putMarkReadChannel(payload) {
+    const {channel_id, ...rest} = payload;
+
     return apiCall({
         method: "PUT",
-        url: `/v2/read-notification-counter/all-chat?channel_id=${payload.channel_id}`,
-        data: payload,
+        url: `/v2/read-notification-counter/all-chat?channel_id=${channel_id}`,
         is_shared: !!payload.is_shared,
+        data: rest,
     });
 }
 
-export function markUnreadChannel(payload) {
+export function putMarkUnreadChannel(payload) {
+    const {channel_id, ...rest} = payload;
+
     return apiCall({
         method: "PUT",
-        url: `/v2/unread-notification-counter/all-chat?channel_id=${payload.channel_id}`,
-        data: payload,
+        url: `/v2/unread-notification-counter/all-chat?channel_id=${channel_id}`,
         is_shared: !!payload.is_shared,
+        data: rest,
     });
 }
 
@@ -67,20 +71,22 @@ export function getLastVisitedChannel(payload) {
 }
 
 export function getChatMessages(payload) {
-    const {channel_id, skip, limit} = payload;
+    const {channel_id, skip, limit, topic_id, ...rest} = payload;
+
     let url = `/v2/post-channel-messages?channel_id=${channel_id}&skip=${skip}&limit=${limit}`;
     if (payload.is_shared_topic) {
-        url += `&topic_id=${payload.topic_id}`;
+        url += `&topic_id=${topic_id}`;
     }
+
     return apiCall({
         method: "GET",
         url: url,
         is_shared: payload.topic_id ? true : false,
-        data: payload,
+        data: rest,
     });
 }
 
-export function createChatMessage(payload) {
+export function postChatMessage(payload) {
     let url = `/v2/post-channel-messages`;
     return apiCall({
         method: "POST",
@@ -90,7 +96,7 @@ export function createChatMessage(payload) {
     });
 }
 
-export function updateChatMessage(payload) {
+export function putChatMessage(payload) {
     let url = `/v2/post-channel-messages/${payload.message_id}`;
     return apiCall({
         method: "PUT",
@@ -100,7 +106,7 @@ export function updateChatMessage(payload) {
     });
 }
 
-export function chatReaction(payload) {
+export function postChatReaction(payload) {
     let url = `/v2/post-message-react`;
     return apiCall({
         method: "POST",
@@ -125,7 +131,7 @@ export function deleteChatMessage(payload) {
  * @param {number} payload.message_id
  * @param {string} payload.set_time
  */
-export function setChatReminder(payload) {
+export function postChatReminder(payload) {
     let url = `/v2/set-reminder`;
     return apiCall({
         method: "POST",
@@ -161,7 +167,7 @@ export function getGlobalRecipients(payload) {
  * @param payload
  * @returns {Promise<*>}
  */
-export function createNewChat(payload) {
+export function postCreateChannel(payload) {
     let url = `/v2/chat-channel/create`;
     return apiCall({
         method: "POST",
@@ -170,7 +176,7 @@ export function createNewChat(payload) {
     });
 }
 
-export function editChannelDetail(payload) {
+export function putChannelUpdateName(payload) {
     let url = `/v2/chat-channel/update-name`;
     return apiCall({
         method: "PUT",
@@ -179,7 +185,7 @@ export function editChannelDetail(payload) {
     });
 }
 
-export function searchExistingChat(payload) {
+export function postSearchExistingChannels(payload) {
     let url = `/v2/search-post-channels`;
     return apiCall({
         method: "POST",
@@ -193,7 +199,7 @@ export function searchExistingChat(payload) {
  * @param payload.message_id
  * @returns {Promise<*>}
  */
-export function markReminderComplete(payload) {
+export function putMarkReminderComplete(payload) {
     let url = `/v2/bot-marked-completed`;
     return apiCall({
         method: "PUT",
@@ -202,10 +208,19 @@ export function markReminderComplete(payload) {
     });
 }
 
-export function addChannelMembers(payload) {
+export function postChannelMembers(payload) {
     let url = `/v2/post-channel-members`;
     return apiCall({
         method: "POST",
+        url: url,
+        data: payload,
+    });
+}
+
+export function deleteChannelMembers(payload) {
+    let url = `/v2/post-channel-members`;
+    return apiCall({
+        method: "DELETE",
         url: url,
         data: payload,
     });

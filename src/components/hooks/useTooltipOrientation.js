@@ -55,6 +55,7 @@ export const useTooltipOrientation = (mainRef, tooltipRef, scrollEl = null, when
             setOrientation({
                 vertical: verticalOrientation(),
                 horizontal: horizontalOrientation(),
+                clientHeight: tooltipRef.current.clientHeight
             });
         }, 200);
 

@@ -25,10 +25,10 @@ import {
     incomingDeletedChatMessage,
     incomingUpdatedChannelDetail,
     incomingUpdatedChatMessage,
-    markAllMessagesAsRead,
+    setAllMessagesAsRead,
     updateChannelMembersTitle,
-    updateChannelReducer,
-    updateMemberTimestamp,
+    setChannel,
+    setMemberTimestamp,
 } from "../../redux/actions/chatActions";
 import {addFilesToChannel, deleteFilesFromChannel} from "../../redux/actions/fileActions";
 import {
@@ -81,7 +81,7 @@ import {
 //     loggingInUser,
 //     loggingOutUser,
 //     logout,
-//     markAllMessagesAsRead,
+//     setAllMessagesAsRead,
 //     moveTaskSocketReducer,
 //     newColumnReducer,
 //     onlineUsers,
@@ -90,7 +90,7 @@ import {
 //     updateChatBox,
 //     updateChatChannelV2,
 //     updateChatCounter,
-//     updateMemberTimestamp,
+//     setMemberTimestamp,
 //     updateOnlineUserTimestamp,
 //     updatePostCommentViewers,
 //     updatePostReaders,
@@ -640,7 +640,7 @@ class Socket extends PureComponent {
             })
             .listen(".member-update-timestamp", e => {
                 //console.log("seen member", e);
-                this.props.updateMemberTimestamp(e);
+                this.props.setMemberTimestamp(e);
             })
             .listen(".chat-notification", e => {
                 console.log(e);
@@ -867,7 +867,7 @@ class Socket extends PureComponent {
                             },
                         };
                     }
-                    //this.props.markAllMessagesAsRead({channel_id: e.channel_id});
+                    //this.props.setAllMessagesAsRead({channel_id: e.channel_id});
                     this.props.incomingChatMessage(payload);
                     this.props.addFilesToChannelAction({
                         channel_id: e.channel_id,
@@ -1376,15 +1376,15 @@ function mapDispatchToProps(dispatch) {
         getOnlineUsers: bindActionCreators(getOnlineUsers, dispatch),
         getConnectedSlugs: bindActionCreators(getConnectedSlugs, dispatch),
         getUser: bindActionCreators(getUser, dispatch),
-        updateMemberTimestamp: bindActionCreators(updateMemberTimestamp, dispatch),
-        markAllMessagesAsRead: bindActionCreators(markAllMessagesAsRead, dispatch),
+        setMemberTimestamp: bindActionCreators(setMemberTimestamp, dispatch),
+        setAllMessagesAsRead: bindActionCreators(setAllMessagesAsRead, dispatch),
         incomingChatMessage: bindActionCreators(incomingChatMessage, dispatch),
         incomingChatMessageFromOthers: bindActionCreators(incomingChatMessageFromOthers, dispatch),
         addFilesToChannelAction: bindActionCreators(addFilesToChannel, dispatch),
         deleteFilesFromChannelAction: bindActionCreators(deleteFilesFromChannel, dispatch),
         generateUnfurl: bindActionCreators(generateUnfurl, dispatch),
         generateUnfurlReducer: bindActionCreators(generateUnfurlReducer, dispatch),
-        updateChannelReducer: bindActionCreators(updateChannelReducer, dispatch),
+        setChannel: bindActionCreators(setChannel, dispatch),
         incomingArchivedChannel: bindActionCreators(incomingArchivedChannel, dispatch),
         incomingChatMessageReaction: bindActionCreators(incomingChatMessageReaction, dispatch),
         incomingUpdatedChatMessage: bindActionCreators(incomingUpdatedChatMessage, dispatch),
@@ -1460,7 +1460,7 @@ function mapDispatchToProps(dispatch) {
         // currentOnlineUsers: bindActionCreators(currentOnlineUsers, dispatch),
         // generateUnfurlAction: bindActionCreators(generateUnfurl, dispatch),
         // generateUnfurlReducer: bindActionCreators(generateUnfurlReducer, dispatch),
-        // markAllMessagesAsReadAction: bindActionCreators(markAllMessagesAsRead, dispatch),
+        // setAllMessagesAsReadAction: bindActionCreators(setAllMessagesAsRead, dispatch),
         // updateChatChannelV2Action: bindActionCreators(updateChatChannelV2, dispatch),
         // getConnectedSlugsAction: bindActionCreators(getConnectedSlugs, dispatch),
         // updatePostCommentViewers: bindActionCreators(updatePostCommentViewers, dispatch),
@@ -1474,7 +1474,7 @@ function mapDispatchToProps(dispatch) {
         // addUnreadChatCount: bindActionCreators(addUnreadChatCount, dispatch),
         // incomingUpdatedChatChannelNameAction: bindActionCreators(incomingUpdatedChatChannelName, dispatch),
         // setBrowserTabStatus: bindActionCreators(setBrowserTabStatus, dispatch),
-        // updateMemberTimestamp: bindActionCreators(updateMemberTimestamp, dispatch),
+        // setMemberTimestamp: bindActionCreators(setMemberTimestamp, dispatch),
         // incomingUnreadChannel: bindActionCreators(incomingUnreadChannel, dispatch),
         // incomingCreatedTopic: bindActionCreators(incomingCreatedTopic, dispatch),
         // incomingDeletedTopic: bindActionCreators(incomingDeletedTopic, dispatch),

@@ -50,15 +50,15 @@ const ChatContactsList = props => {
     const dispatch = useDispatch();
     const history = useHistory();
 
-    const {selectChannel} = useChannelActions();
+    const channelAction = useChannelActions();
 
     const user = useSelector(state => state.session.user);
 
     const handleChannelClick = useCallback((channel) => {
-        selectChannel(channel, (channel) => {
+        channelAction.select(channel, (channel) => {
             history.push(`/chat/${channel.code}`);
         });
-    }, [history, selectChannel]);
+    }, [history, channelAction]);
 
     const handleOpenGroupChatModal = () => {
         let payload = {

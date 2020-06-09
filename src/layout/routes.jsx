@@ -1,22 +1,31 @@
 import React from "react";
 import {useSelector} from "react-redux";
 import {Redirect, Route, Switch} from "react-router-dom";
+import {TestChat} from "../components/test";
+import usePushNotification from "../components/webpush/usePushNotification";
 import GuestLayout from "./GuestLayout";
 import MainLayout from "./MainLayout";
 
 export const AppRoute = ({children, ...props}) => {
 
+    const push = usePushNotification();
     const session = useSelector(state => state.session);
     const i18nLoaded = useSelector(state => state.global.i18nLoaded);
     const authenticated = session.authenticated;
 
-    if(!session.checked || !i18nLoaded)
+    if (!session.checked || !i18nLoaded || push.loading)
         return null;
 
     return (
         authenticated ?
         <>
             <Switch>
+                <Route
+                    {...props}
+                    component={TestChat}
+                    path={["/test/chat"]}>
+                    {children}
+                </Route>
                 <Route
                     {...props}
                     component={MainLayout}
