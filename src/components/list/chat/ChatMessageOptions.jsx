@@ -1,30 +1,21 @@
 import React, {useState} from "react";
-import {useDispatch, useSelector} from "react-redux";
-import {copyTextToClipboard} from "../../../helpers/commonFunctions";
-import {getBaseUrl} from "../../../helpers/slugHelper";
-import {addQuote, deleteChatMessage, setEditChatMessage} from "../../../redux/actions/chatActions";
+import {useDispatch} from "react-redux";
 import {addToModals} from "../../../redux/actions/globalActions";
+import useChatMessageActions from "../../hooks/useChatMessageActions";
 
 import {MoreOptions} from "../../panels/common";
 
 const ChatMessageOptions = props => {
+
     const {isAuthor, replyData, className = "", selectedChannel} = props;
     const [showMoreOptions, setShowMoreOptions] = useState(false);
     const dispatch = useDispatch();
-    const slugs = useSelector(state => state.global.slugs);
     const scrollEl = document.getElementById("infinite-scroll-chat-replies");
 
+    const chatMessageActions = useChatMessageActions();
+
     const handleDeleteReply = () => {
-        dispatch(
-            deleteChatMessage({
-                message_id: replyData.id,
-                topic_id: selectedChannel.is_shared ? selectedChannel.entity_id : null,
-                is_shared: !!selectedChannel.is_shared,
-                slug: selectedChannel.slug_owner,
-                token: slugs.length && slugs.filter(s => s.slug_name === selectedChannel.slug_owner).length ?
-                       slugs.length && slugs.filter(s => s.slug_name === selectedChannel.slug_owner)[0].access_token : null,
-            }),
-        );
+        chatMessageActions.remove(replyData.id);
     };
 
     const handleRemoveReply = () => {
@@ -43,23 +34,15 @@ const ChatMessageOptions = props => {
             addToModals(payload),
         );
     };
+
     const handleEditReply = () => {
-        dispatch(setEditChatMessage(replyData));
-        if (replyData.quote) {
-            let quote = {
-                ...replyData.quote,
-                channel_id: replyData.channel_id,
-            };
-            dispatch(
-                addQuote(quote),
-            );
-        }
+        chatMessageActions.setEdit(replyData);
     };
+
     const handleQuoteReply = () => {
-        dispatch(
-            addQuote(replyData),
-        );
+        chatMessageActions.setQuote(replyData);
     };
+
     const handleSetReminder = () => {
         let payload = {
             type: "reminder",
@@ -73,14 +56,14 @@ const ChatMessageOptions = props => {
 
     const handleCopyLink = e => {
         e.stopPropagation();
-        let link = `${getBaseUrl()}/chat/${selectedChannel.code}/${replyData.code}`;
-        copyTextToClipboard(link);
+        chatMessageActions.clipboardLink(selectedChannel, replyData);
         setShowMoreOptions(!showMoreOptions);
     };
 
     const handleForwardMessage = () => {
         let payload = {
             type: "forward",
+            channel: selectedChannel,
             message: replyData,
         };
 

@@ -47,7 +47,6 @@ const ChatReactionButton = props => {
 
     const chatMessageAction = useChatMessageActions();
 
-
     const pickerRef = useRef();
     const chatOptionsRef = useRef();
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
@@ -66,8 +65,6 @@ const ChatReactionButton = props => {
         }, 1000);
     };
 
-    const orientation = useTooltipOrientation(chatOptionsRef, pickerRef, scrollRef, showEmojiPicker, 0);
-
     useEffect(() => {
         if (showEmojiPicker) {
             setTimeout(() => {
@@ -77,6 +74,8 @@ const ChatReactionButton = props => {
             setDisplayEmojiPicker(false);
         }
     }, [showEmojiPicker]);
+
+    const orientation = useTooltipOrientation(chatOptionsRef, pickerRef, scrollRef, showEmojiPicker, 0);
 
     return (
         <ChatReactionButtonContainer
