@@ -4,6 +4,7 @@ import {useHistory} from "react-router-dom";
 import {Input, InputGroup, Label, Modal, ModalBody} from "reactstrap";
 import styled from "styled-components";
 import toaster from "toasted-notes";
+import {replaceChar} from "../../helpers/stringFormatter";
 import {setPendingUploadFilesToWorkspace} from "../../redux/actions/fileActions";
 import {clearModal} from "../../redux/actions/globalActions";
 import {createWorkspace, updateWorkspace} from "../../redux/actions/workspaceActions";
@@ -11,7 +12,6 @@ import {FileAttachments} from "../common";
 import {DropDocument} from "../dropzone/DropDocument";
 import {CheckBox, DescriptionInput, FolderSelect, InputFeedback, PeopleSelect} from "../forms";
 import {ModalHeaderSection} from "./index";
-import {replaceChar} from "../../helpers/stringFormatter";
 
 const WrapperDiv = styled(InputGroup)`
     display: flex;
@@ -40,7 +40,9 @@ const WrapperDiv = styled(InputGroup)`
     .react-select__multi-value__label {
         align-self: center;
     }
-    
+    .files {
+        width: 320px;
+    }
     .file-attachments {
         position: relative;
         max-width: 100%;

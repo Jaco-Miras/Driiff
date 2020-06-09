@@ -17,8 +17,7 @@ const Wrapper = styled.div`
             cursor: hand;            
         }
         
-        &.files {
-            width: 320px;
+        &.files {            
             
             li {
                 padding-right: 16px;
