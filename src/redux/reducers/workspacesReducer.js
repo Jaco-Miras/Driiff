@@ -8,6 +8,7 @@ const INITIAL_STATE = {
     workspacesLoaded: false,
     externalWorkspacesLoaded: false,
     workspacePosts: {},
+    postComments: {},
     drafts: []
 };
 
@@ -527,6 +528,30 @@ export default (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 workspacePosts: newWorkspacePosts
+            }
+        }
+        case "FETCH_COMMENTS_SUCCESS": {
+            let comments = {};
+            if (action.data.messages.length) {
+                action.data.messages.forEach(c => {
+                    comments[c.id] = { 
+                        ...c,
+                        replies: convertArrayToObject(c.replies, "id"),
+                        skip: c.replies.length,
+                        hasMore: c.replies.length === 10,
+                        limit: 10
+                    }
+                })
+            }
+            return {
+                ...state,
+                postComments: {
+                    [action.data.post_id]: {
+                        skip: action.data.next_skip,
+                        hasMore: action.data.messages.length === 20,
+                        comments: comments
+                    }
+                }
             }
         }
         default:

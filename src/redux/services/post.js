@@ -128,3 +128,50 @@ export function postCreate(payload) {
         data: payload,
     });
 }
+
+/**
+ * @param {Object} payload
+ * @param {number} payload.body
+ * @param {array} payload.file_ids
+ * @param {array} payload.mention_ids
+ * @param {number} payload.post_id
+ * @param {number} payload.personalized_for_id
+ * @param {number} payload.parent_id
+ * @param {number} payload.reference_id
+ * @returns {Promise<*>}
+ */
+export function postComment(payload) {
+    let url = "/v1/messages"
+    return apiCall({
+        method: "POST",
+        url: url,
+        data: payload,
+    });
+}
+
+export function fetchComments(payload) {
+    return apiCall({
+        method: "GET",
+        url: payload.url,
+    });
+}
+
+/**
+ * @param {Object} payload
+ * @param {number} payload.body
+ * @param {array} payload.file_ids
+ * @param {array} payload.mention_ids
+ * @param {number} payload.post_id
+ * @param {number} payload.personalized_for_id
+ * @param {number} payload.parent_id
+ * @param {number} payload.reference_id
+ * @returns {Promise<*>}
+ */
+export function putComment(payload) {
+    let url = `/v1/messages/${payload.id}`;
+    return apiCall({
+        method: "PUT",
+        url: url,
+        data: payload,
+    });
+}

@@ -28,3 +28,5 @@ export {default as useCountRenders} from "./useCountRenders";
 export {default as useLogRenders} from "./useLogRenders";
 export {default as useVisibilityChange} from "./useVisibilityChange";
 export {default as useSocketConnection} from "./useSocketConnection";
+export {default as useComments} from "./useComments";
+export {default as useCommentActions} from "./useCommentActions";

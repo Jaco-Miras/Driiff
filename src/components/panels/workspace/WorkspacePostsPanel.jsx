@@ -6,6 +6,12 @@ import {usePosts, usePostActions, useCountRenders} from "../../hooks";
 const Wrapper = styled.div`
 `;
 
+const PostDetailWrapper = styled.div`
+    .card-body {
+        padding: 1rem 1.5rem;
+    }
+`;
+
 const WorkspacePostsPanel = (props) => {
 
     const {className = ""} = props;
@@ -32,7 +38,12 @@ const WorkspacePostsPanel = (props) => {
                                 }
                             </ul>
                         </div>
-                        <PostDetail post={post} postActions={postActions} user={user}/>
+                        <PostDetailWrapper className={`card app-detail ${post ? "show" : ""}`}>
+                        {
+                            post && <PostDetail post={post} postActions={postActions} user={user}/>
+                        }
+                        </PostDetailWrapper>
+                        
                     </div>
                 </div>
             </div>

@@ -10,7 +10,6 @@ import {
     clearQuote,
     postChatMessage,
     onClickSendButton,
-    setEditChatMessage,
     putChatMessage,
 } from "../../redux/actions/chatActions";
 import {deleteDraft} from "../../redux/actions/globalActions";
@@ -18,6 +17,10 @@ import {SvgIconFeather} from "../common";
 import BodyMention from "../common/BodyMention";
 import {useDraft, useQuillInput, useQuillModules, useSaveInput, useSelectQuote} from "../hooks";
 import QuillEditor from "./QuillEditor";
+import {
+    postComment,
+    setEditComment
+} from "../../redux/actions/postActions";
 
 const Wrapper = styled.div`
     border: 1px solid #dee2e6;
@@ -99,13 +102,13 @@ const CloseButton = styled(SvgIconFeather)`
 /***  Commented out code are to be visited/refactored ***/
 const PostInput = props => {
 
-    const {selectedEmoji, onClearEmoji, selectedGif, onClearGif, dropAction} = props;
+    const {selectedEmoji, onClearEmoji, selectedGif, onClearGif, dropAction, post, parentId, commentActions} = props;
     const dispatch = useDispatch();
     const reactQuillRef = useRef();
     const selectedChannel = useSelector(state => state.chat.selectedChannel);
     const slugs = useSelector(state => state.global.slugs);
     const user = useSelector(state => state.session.user);
-    const editChatMessage = useSelector(state => state.chat.editChatMessage);
+    const editPostComment = useSelector(state => state.posts.editPostComment);
     const sendButtonClicked = useSelector(state => state.chat.sendButtonClicked);
 
     const [text, setText] = useState("");
@@ -121,31 +124,6 @@ const PostInput = props => {
     const [quote] = useSelectQuote();
 
     const handleSubmit = () => {
-        //let specialCommands = ["/sound-on", "/sound-off"];
-        // if (specialCommands.includes(textOnly.trim())) {
-        //     setText("")
-        //     setTextOnly("")
-        //     reactQuillRef.getEditor().setContents([]);
-        //     reactQuillRef.getEditor().setText("");
-
-        //     switch (textOnly.trim()) {
-        //         case "/sound-on":
-        //         case "/sound-off": {
-        //             let payload = {
-        //                 disable_sound: textOnly.trim() === "/sound-on" ? "0" : "1",
-        //             };
-        //             this.props.updateSettingsAction(payload, (err, res) => {
-        //                 this.props.updateUserSettingsAction(payload);
-        //                 toastr.success("Chat Notification",
-        //                     `Successfully turned ${textOnly.trim() === "/sound-on" ? "on" : "off"}`);
-        //             });
-        //             break;
-        //         }
-        //         default: {
-        //         }
-        //     }
-        //     return;
-        // }
 
         let timestamp = Math.floor(Date.now() / 1000);
         let mention_ids = [];
@@ -179,19 +157,14 @@ const PostInput = props => {
         if (textOnly.trim() === "" && mention_ids.length === 0 && !haveGif) return;
 
         let payload = {
-            channel_id: selectedChannel.id,
+            post_id: post.id,
             body: text,
             mention_ids: mention_ids,
             file_ids: [],
+            post_file_ids: [],
             reference_id: reference_id,
-            reference_title: selectedChannel.type === "DIRECT" && selectedChannel.members.length === 2
-                             ? `${user.first_name} in a direct message` : selectedChannel.title,
-            topic_id: selectedChannel.is_shared ? selectedChannel.entity_id : null,
-            is_shared: selectedChannel.is_shared ? selectedChannel.entity_id : null,
-            token: slugs.length && slugs.filter(s => s.slug_name === selectedChannel.slug_owner).length ?
-                   slugs.filter(s => s.slug_name === selectedChannel.slug_owner)[0].access_token : null,
-            slug: slugs.length && slugs.filter(s => s.slug_name === selectedChannel.slug_owner).length ?
-                  slugs.filter(s => s.slug_name === selectedChannel.slug_owner)[0].slug_name : null,
+            personalized_for_id: null,
+            parent_id: parentId,
         };
 
         if (quote) {
@@ -225,31 +198,23 @@ const PostInput = props => {
             reference_id: reference_id,
             quote: quote,
             unfurls: [],
-            g_date: localizeDate(timestamp, "YYYY-MM-DD"),
         };
 
         if (!editMode) {
-            dispatch(addChatMessage(obj));
+            //dispatch(addChatMessage(obj));
         }
 
         if (editMode) {
-            let payloadEdit = {
+            payload = {
                 ...payload,
-                message_id: editMessage.id,
-                reply_id: editMessage.id,
+                id: editMessage.id,
+                parent_id: editMessage.parent_id
             };
-            if (quote) {
-                payload.quote = quote;
-            }
-            dispatch(
-                putChatMessage(payloadEdit),
-            );
+            commentActions.edit(payload)
             setEditMode(false);
             setEditMessage(null);
         } else {
-            dispatch(
-                postChatMessage(payload),
-            );
+            commentActions.create(payload)
         }
 
         if (quote) {
@@ -271,8 +236,8 @@ const PostInput = props => {
         if (reactQuillRef.current) {
             reactQuillRef.current.getEditor().setContents([]);
         }
-        if (editChatMessage !== null) {
-            dispatch(setEditChatMessage(null));
+        if (editPostComment !== null) {
+            dispatch(setEditComment(null));
         }
     };
 
@@ -286,8 +251,8 @@ const PostInput = props => {
             setEditMode(false);
             setEditMessage(null);
             //edit message in redux
-            if (editChatMessage !== null) {
-                dispatch(setEditChatMessage(null));
+            if (editPostComment !== null) {
+                dispatch(setEditComment(null));
             }
         }
 
@@ -300,47 +265,47 @@ const PostInput = props => {
         }
 
 
-        let channel = null;
-        if (selectedChannel.is_shared) {
-            if (window[selectedChannel.slug_owner]) {
-                channel = window[selectedChannel.slug_owner].private(selectedChannel.slug_owner + `.App.Channel.${selectedChannel.id}`);
-                channel.whisper("typing", {
-                    user: user,
-                    typing: true,
-                    channel_id: selectedChannel.id,
-                });
-            }
-        } else {
-            channel = window.Echo.private(localStorage.getItem("slug") + `.App.Channel.${selectedChannel.id}`);
-            channel.whisper("typing", {
-                user: user,
-                typing: true,
-                channel_id: selectedChannel.id,
-            });
-        }
+        // let channel = null;
+        // if (selectedChannel.is_shared) {
+        //     if (window[selectedChannel.slug_owner]) {
+        //         channel = window[selectedChannel.slug_owner].private(selectedChannel.slug_owner + `.App.Channel.${selectedChannel.id}`);
+        //         channel.whisper("typing", {
+        //             user: user,
+        //             typing: true,
+        //             channel_id: selectedChannel.id,
+        //         });
+        //     }
+        // } else {
+        //     channel = window.Echo.private(localStorage.getItem("slug") + `.App.Channel.${selectedChannel.id}`);
+        //     channel.whisper("typing", {
+        //         user: user,
+        //         typing: true,
+        //         channel_id: selectedChannel.id,
+        //     });
+        // }
     };
 
     const handleMentionUser = mention_ids => {
-        mention_ids = mention_ids.map(id => parseInt(id)).filter(id => !isNaN(id));
-        if (mention_ids.length) {
-            //check for recipients/type
-            if (selectedChannel.type === "PERSONAL_BOT") return;
-            let ignoreIds = [user.id, ...selectedChannel.members.map(m => m.id), ...ignoredMentionedUserIds];
-            let userIds = mention_ids.filter(id => {
-                let userFound = false;
-                ignoreIds.forEach(pid => {
-                    if (pid === parseInt(id)) {
-                        userFound = true;
+        // mention_ids = mention_ids.map(id => parseInt(id)).filter(id => !isNaN(id));
+        // if (mention_ids.length) {
+        //     //check for recipients/type
+        //     if (selectedChannel.type === "PERSONAL_BOT") return;
+        //     let ignoreIds = [user.id, ...selectedChannel.members.map(m => m.id), ...ignoredMentionedUserIds];
+        //     let userIds = mention_ids.filter(id => {
+        //         let userFound = false;
+        //         ignoreIds.forEach(pid => {
+        //             if (pid === parseInt(id)) {
+        //                 userFound = true;
 
-                    }
-                });
-                return !userFound;
-            });
-            setMentionedUserIds(userIds.length ? userIds.map(id => parseInt(id)) : []);
-        } else {
-            setIgnoredMentionedUserIds([]);
-            setMentionedUserIds([]);
-        }
+        //             }
+        //         });
+        //         return !userFound;
+        //     });
+        //     setMentionedUserIds(userIds.length ? userIds.map(id => parseInt(id)) : []);
+        // } else {
+        //     setIgnoredMentionedUserIds([]);
+        //     setMentionedUserIds([]);
+        // }
     };
 
     const handleSetEditMessageStates = (reply) => {
@@ -355,29 +320,6 @@ const PostInput = props => {
                     channel_id: reply.channel_id,
                 }),
             );
-        }
-    };
-
-    const handleEditOnArrowUp = e => {
-        if (e.keyCode === 38) {
-            if (e.target.classList.contains("ql-editor")) {
-                if (e.target.innerText.trim() === "" && !e.target.contains(document.querySelector(".ql-editor .anchor-blot"))) {
-                    e.preventDefault();
-                    let lastReply = selectedChannel.replies.sort((a, b) => b.created_at.timestamp - a.created_at.timestamp)
-                        .filter(r => {
-                                if (selectedChannel.is_shared && slugs.length) {
-                                    return (slugs.filter(s => s.slug_name === selectedChannel.slug_owner)[0].external_id) && (typeof r.id === "number") && r.is_deleted === 0;
-                                } else {
-                                    return r.is_deleted === 0 && r.user && r.user.id === user.id && (typeof r.id === "number");
-                                }
-                            },
-                        )[0];
-
-                    if (typeof lastReply !== "undefined") {
-                        handleSetEditMessageStates(lastReply);
-                    }
-                }
-            }
         }
     };
 
@@ -410,12 +352,12 @@ const PostInput = props => {
     }, []);
 
     //to be converted into hooks
-    useEffect(() => {
-        if (selectedChannel && selectedChannel.replies.length) {
-            document.addEventListener("keydown", handleEditOnArrowUp, false);
-        }
-        return () => document.removeEventListener("keydown", handleEditOnArrowUp, false);
-    }, [selectedChannel]);
+    // useEffect(() => {
+    //     if (selectedChannel && selectedChannel.replies.length) {
+    //         document.addEventListener("keydown", handleEditOnArrowUp, false);
+    //     }
+    //     return () => document.removeEventListener("keydown", handleEditOnArrowUp, false);
+    // }, [selectedChannel]);
 
     useEffect(() => {
         const escapeHandler = e => {
@@ -433,10 +375,10 @@ const PostInput = props => {
 
     //to be converted into hooks
     useEffect(() => {
-        if (editChatMessage && !editMode && editMessage === null) {
-            handleSetEditMessageStates(editChatMessage);
+        if (editPostComment && !editMode && editMessage === null) {
+            handleSetEditMessageStates(editPostComment);
         }
-    }, [editChatMessage]);
+    }, [editPostComment]);
 
     //to be converted into hooks
     useEffect(() => {
@@ -468,15 +410,15 @@ const PostInput = props => {
         }
     }, [sendButtonClicked]);
 
-    const loadDraftCallback = (draft) => {
-        if (draft === null) {
-            setDraftId(null);
-        } else {
-            reactQuillRef.current.getEditor().clipboard.dangerouslyPasteHTML(0, draft.text);
-            setDraftId(draft.draft_id);
-            setText(draft.text);
-        }
-    };
+    // const loadDraftCallback = (draft) => {
+    //     if (draft === null) {
+    //         setDraftId(null);
+    //     } else {
+    //         reactQuillRef.current.getEditor().clipboard.dangerouslyPasteHTML(0, draft.text);
+    //         setDraftId(draft.draft_id);
+    //         setText(draft.text);
+    //     }
+    // };
 
     const handleAddMentionedUsers = users => {
 
@@ -509,9 +451,9 @@ const PostInput = props => {
 
     useSaveInput(handleClearQuillInput, text, textOnly, quillContents);
     useQuillInput(handleClearQuillInput, reactQuillRef);
-    useDraft(loadDraftCallback, "channel", text, textOnly, draftId);
+    // useDraft(loadDraftCallback, "channel", text, textOnly, draftId);
 
-    const [modules] = useQuillModules("chat", handleSubmit);
+    const [modules] = useQuillModules("post_comment", handleSubmit);
 
     return (
         <Wrapper className="chat-input-wrapper">

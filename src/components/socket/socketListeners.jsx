@@ -78,13 +78,16 @@ class SocketListeners extends PureComponent {
                                     null);
                         }
                     }
+                    break;
                 }
                 case "CHAT_UPDATE": {
                     this.props.incomingUpdatedChatMessage(e);
+                    break;
                 }
                 case "CHAT_DELETE": {
                     //@change response and add the delete file reducer
                     this.props.incomingDeletedChatMessage(e);
+                    break;
                 }
 
                 default:

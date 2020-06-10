@@ -8,3 +8,4 @@ export {default as PostSearch} from "./PostSearch";
 export {default as PostDetail} from "./PostDetail";
 export {default as PostDetailFooter} from "./PostDetailFooter";
 export {default as PostBody} from "./PostBody";
+export {default as PostComments} from "./PostComments";

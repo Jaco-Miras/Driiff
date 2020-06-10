@@ -61,6 +61,7 @@ const IconButton = styled(SvgIconFeather)`
 `;
 
 const Dflex = styled.div`
+    // width: 100%;
     &.channel-viewing {
         display: flex;
         flex-wrap: wrap;
@@ -109,7 +110,7 @@ const PickerContainer = styled(CommonPicker)`
 
 const PostDetailFooter = (props) => {
 
-    const {className = "", onShowFileDialog, dropAction, post} = props;
+    const {className = "", onShowFileDialog, dropAction, post, parentId = null, commentActions} = props;
 
     const dispatch = useDispatch();
     const ref = {
@@ -190,6 +191,9 @@ const PostDetailFooter = (props) => {
                             <IconButton onClick={handleShowEmojiPicker} icon="smile"/>
                             <ChatInputContainer className="flex-grow-1">
                                 <PostInput
+                                    commentActions={commentActions}
+                                    parentId={parentId}
+                                    post={post}
                                     selectedGif={selectedGif} onClearGif={onClearGif}
                                     selectedEmoji={selectedEmoji} onClearEmoji={onClearEmoji}
                                     dropAction={dropAction}/>

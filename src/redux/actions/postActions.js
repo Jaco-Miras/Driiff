@@ -1,13 +1,16 @@
 import dispatchActionToReducer, {SimpleDispatchActionToReducer} from "../actionDispatcher";
 import {
+    fetchComments as fetchCommentsService,
     postArchive as postArchiveService,
     postCreate as postCreateService,
+    postComment as postCommentService,
     postFavorite as postFavoriteService,
     postFollow as postFollowService,
     postMarkDone as postMarkDoneService,
     postSnooze as postSnoozeService,
     postToggleRead as postToggleReadService,
     postUnfollow as postUnfollowService,
+    putComment as putCommentService,
 } from "../services";
 
 export function postFavorite(payload, callback) {
@@ -94,6 +97,44 @@ export function postCreate(payload, callback) {
         "POST_CREATE_START",
         "POST_CREATE_SUCCESS",
         "POST_CREATE_FAIL",
+        callback,
+    );
+}
+
+export function postComment(payload, callback) {
+    return dispatchActionToReducer(
+        postCommentService(payload),
+        "POST_COMMENT_START",
+        "POST_COMMENT_SUCCESS",
+        "POST_COMMENT_FAIL",
+        callback,
+    );
+}
+
+export function fetchComments(payload, callback) {
+    return dispatchActionToReducer(
+        fetchCommentsService(payload),
+        "FETCH_COMMENTS_START",
+        "FETCH_COMMENTS_SUCCESS",
+        "FETCH_COMMENTS_FAIL",
+        callback,
+    );
+}
+
+export function setEditComment(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "SET_EDIT_POST_COMMENT",
+        payload,
+        callback,
+    );
+}
+
+export function putComment(payload, callback) {
+    return dispatchActionToReducer(
+        putCommentService(payload),
+        "UPDATE_COMMENT_START",
+        "UPDATE_COMMENT_SUCCESS",
+        "UPDATE_COMMENT_FAIL",
         callback,
     );
 }

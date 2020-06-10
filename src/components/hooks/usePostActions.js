@@ -2,10 +2,13 @@ import {useCallback} from "react";
 import {useDispatch} from "react-redux";
 import {useLocation, useHistory, useParams} from "react-router-dom";
 import toaster from "toasted-notes";
-import {postFavorite, postArchive, postFollow, postMarkDone, postToggleRead, removePost, postUnfollow} from "../../redux/actions/postActions";
 import {addToModals} from "../../redux/actions/globalActions";
 import {copyTextToClipboard} from "../../helpers/commonFunctions";
 import {getBaseUrl} from "../../helpers/slugHelper";
+import {
+    postFavorite, postArchive, postFollow, postMarkDone, 
+    postToggleRead, removePost, postUnfollow,
+} from "../../redux/actions/postActions";
 
 const usePostActions = () => {
 

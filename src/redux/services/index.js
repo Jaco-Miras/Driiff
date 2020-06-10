@@ -64,14 +64,17 @@ export {
 } from "./files";
 
 export {
+    fetchComments,
     postArchive,
     postCreate,
+    postComment,
     postFavorite,
     postFollow,
     postMarkDone,
     postSnooze,
     postToggleRead,
     postUnfollow,
+    putComment,
 } from "./post";
 
 export {
