@@ -1,6 +1,6 @@
 import {useCallback} from "react";
 import {useDispatch} from "react-redux";
-import { fetchComments, setEditComment, postComment, putComment } from "../../redux/actions/postActions"
+import { addComment, fetchComments, setEditComment, postComment, putComment } from "../../redux/actions/postActions"
 
 const useCommentActions = props => {
 
@@ -18,6 +18,12 @@ const useCommentActions = props => {
         )
     }, [dispatch]);
 
+    const add = useCallback((payload) => {
+        dispatch(
+            addComment(payload)
+        )
+    }, [dispatch]);
+
     const create = useCallback((payload) => {
         dispatch(
             postComment(payload)
@@ -31,10 +37,11 @@ const useCommentActions = props => {
     }, [dispatch]);
 
     return {
+        add,
         create,
+        edit,
         fetchPostComments,
         setToEdit,
-        edit
     }
 };
 

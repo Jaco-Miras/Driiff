@@ -102,7 +102,8 @@ const CloseButton = styled(SvgIconFeather)`
 /***  Commented out code are to be visited/refactored ***/
 const PostInput = props => {
 
-    const {selectedEmoji, onClearEmoji, selectedGif, onClearGif, dropAction, post, parentId, commentActions} = props;
+    const { selectedEmoji, onClearEmoji, selectedGif, onClearGif, dropAction, 
+        post, parentId, commentActions, userMention, handleClearUserMention} = props;
     const dispatch = useDispatch();
     const reactQuillRef = useRef();
     const selectedChannel = useSelector(state => state.chat.selectedChannel);
@@ -177,31 +178,36 @@ const PostInput = props => {
             };
         }
 
-        let obj = {
-            message: text,
-            body: text,
-            mention_ids: mention_ids,
-            user: user,
-            original_body: text,
-            is_read: true,
-            editable: 1,
-            files: [],
-            is_archive: 0,
-            is_completed: true,
-            is_transferred: false,
-            is_deleted: 0,
-            created_at: {timestamp: timestamp},
-            updated_at: {timestamp: timestamp},
-            channel_id: selectedChannel.id,
-            reactions: [],
-            id: reference_id,
-            reference_id: reference_id,
-            quote: quote,
-            unfurls: [],
-        };
-
         if (!editMode) {
-            //dispatch(addChatMessage(obj));
+            let commentObj = {
+                author: user,
+                body: text,
+                clap_count: 0,
+                code: timestamp,
+                created_at: {timestamp: timestamp},
+                files: [],
+                id: reference_id,
+                is_archive: false,
+                is_editable: true,
+                is_edited: 0,
+                is_favourite: false,
+                mention_ids: mention_ids,
+                original_body: text,
+                parent_id: parentId,
+                personalized_for_id: null,
+                post_id: post.id,
+                quote: null,
+                reference_id: reference_id,
+                ref_quote: null,
+                replies: {},
+                total_replies: 0,
+                total_unread_replies: 0,
+                updated_at: {timestamp: timestamp},
+                unfurls: [],
+                user_clap_count: 0,
+            };
+
+            commentActions.add(commentObj)
         }
 
         if (editMode) {
@@ -243,9 +249,11 @@ const PostInput = props => {
 
     const handleQuillChange = (content, delta, source, editor) => {
 
-        if (selectedChannel === null) return;
-
         const textOnly = editor.getText(content);
+
+        if (textOnly.trim() === "" && userMention) {
+            handleClearUserMention();
+        }
 
         if (textOnly.trim() === "" && editMode) {
             setEditMode(false);
@@ -263,26 +271,6 @@ const PostInput = props => {
         if (editor.getContents().ops && editor.getContents().ops.length) {
             handleMentionUser(editor.getContents().ops.filter(m => m.insert.mention).map(i => i.insert.mention.id));
         }
-
-
-        // let channel = null;
-        // if (selectedChannel.is_shared) {
-        //     if (window[selectedChannel.slug_owner]) {
-        //         channel = window[selectedChannel.slug_owner].private(selectedChannel.slug_owner + `.App.Channel.${selectedChannel.id}`);
-        //         channel.whisper("typing", {
-        //             user: user,
-        //             typing: true,
-        //             channel_id: selectedChannel.id,
-        //         });
-        //     }
-        // } else {
-        //     channel = window.Echo.private(localStorage.getItem("slug") + `.App.Channel.${selectedChannel.id}`);
-        //     channel.whisper("typing", {
-        //         user: user,
-        //         typing: true,
-        //         channel_id: selectedChannel.id,
-        //     });
-        // }
     };
 
     const handleMentionUser = mention_ids => {
@@ -322,6 +310,12 @@ const PostInput = props => {
             );
         }
     };
+
+    useEffect(() => {
+        if (userMention) {
+            reactQuillRef.current.getEditor().clipboard.dangerouslyPasteHTML(0, userMention);
+        }
+    }, [userMention]);
 
     useEffect(() => {
         if (reactQuillRef.current) {

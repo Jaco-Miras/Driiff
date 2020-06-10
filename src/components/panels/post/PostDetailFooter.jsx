@@ -110,7 +110,8 @@ const PickerContainer = styled(CommonPicker)`
 
 const PostDetailFooter = (props) => {
 
-    const {className = "", onShowFileDialog, dropAction, post, parentId = null, commentActions} = props;
+    const {className = "", onShowFileDialog, dropAction, post, parentId = null, 
+            commentActions, userMention = null, handleClearUserMention = null} = props;
 
     const dispatch = useDispatch();
     const ref = {
@@ -191,6 +192,8 @@ const PostDetailFooter = (props) => {
                             <IconButton onClick={handleShowEmojiPicker} icon="smile"/>
                             <ChatInputContainer className="flex-grow-1">
                                 <PostInput
+                                    userMention={userMention}
+                                    handleClearUserMention={handleClearUserMention}
                                     commentActions={commentActions}
                                     parentId={parentId}
                                     post={post}

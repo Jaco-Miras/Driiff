@@ -138,3 +138,11 @@ export function putComment(payload, callback) {
         callback,
     );
 }
+
+export function addComment(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "ADD_COMMENT",
+        payload,
+        callback,
+    );
+}

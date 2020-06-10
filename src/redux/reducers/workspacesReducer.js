@@ -554,6 +554,39 @@ export default (state = INITIAL_STATE, action) => {
                 }
             }
         }
+        case "ADD_COMMENT": {
+            let postComment = {...state.postComments[action.data.post_id]};
+            if (action.data.parent_id) {
+                postComment = {
+                    ...postComment,
+                    comments: {
+                        ...postComment.comments,
+                        [action.data.parent_id]: {
+                            ...postComment.comments[action.data.parent_id],
+                            replies: {
+                                ...postComment.comments[action.data.parent_id].replies,
+                                [action.data.id]: action.data
+                            }
+                        }
+                    }
+                }
+            } else {
+                postComment = {
+                    ...postComment,
+                    comments: {
+                        ...postComment.comments,
+                        [action.data.id]: action.data
+                    }
+                }
+            }
+            return {
+                ...state,
+                postComments: {
+                    ...state.postComments,
+                    [action.data.post_id]: postComment
+                }
+            }
+        }
         default:
             return state;
     }

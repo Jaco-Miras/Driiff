@@ -34,14 +34,24 @@ const Reply = styled.span`
 
 const Comment = props => {
 
-    const {comment, post, type = "main", user, commentActions} = props;
+    const {comment, post, type = "main", user, commentActions, parentId} = props;
 
     const [showInput, setShowInput] = useState(false);
+    const [userMention, setUserMention] = useState(null);
 
     const handleShowInput = useCallback(() => {
-        setShowInput(prevState => !prevState )
+        setShowInput(prevState => !prevState)
     }, [setShowInput]);
     
+    const handleMentionUser = () => {
+        setUserMention(`<p><span class="mention" data-index="0" data-denotation-char="@" data-id="${comment.author.id}" data-value="${comment.author.name}">
+        <span contenteditable="false"><span class="ql-mention-denotation-char">@</span>${comment.author.name}</span></span></p> `);
+        setShowInput(true);
+    };
+
+    const handleClearUserMention = useCallback(() => {
+        setUserMention(null)
+    }, []);
 
     return (
         <Wrapper>
@@ -61,7 +71,7 @@ const Comment = props => {
                         </div>
                         {
                             user.id !== comment.author.id &&
-                            <div>
+                            <div onClick={handleMentionUser}>
                                 Mention user
                             </div>
                         }
@@ -75,14 +85,20 @@ const Comment = props => {
             </CommentWrapper>
             {
                 showInput &&
-                <CommentInput post={post} parentId={type === "main" ? comment.id : null}/>
+                <CommentInput 
+                    post={post} 
+                    parentId={type === "main" ? comment.id : parentId} 
+                    commentActions={commentActions}
+                    userMention={userMention}
+                    handleClearUserMention={handleClearUserMention}
+                />
             }
             {
                 type === "main" && Object.values(comment.replies).length > 0 &&
-                <SubComments comments={comment.replies} post={post} user={user} commentActions={commentActions}/>
+                <SubComments comments={comment.replies} post={post} user={user} commentActions={commentActions} parentId={type === "main" ? comment.id : null}/>
             }
         </Wrapper>
     )
 };
 
-export default Comment;
+export default React.memo(Comment);
