@@ -8,7 +8,7 @@ import {renameChannelKey} from "../../redux/actions/chatActions";
 import {clearModal} from "../../redux/actions/globalActions";
 import {PeopleSelect} from "../forms";
 import QuillEditor from "../forms/QuillEditor";
-import {useQuillModules, useChannelActions} from "../hooks";
+import {useChannelActions, useQuillModules} from "../hooks";
 import {ModalHeaderSection} from "./index";
 
 const WrapperDiv = styled(InputGroup)`
@@ -138,11 +138,11 @@ const CreateEditChatModal = props => {
                 add_member_ids: added_members,
                 id: channel.id,
                 title: inputValue,
-                members: selectedUsers
             };
 
-            //dispatch(putChannelUpdateName(payload));
-            channelActions.update(channel,payload)
+            channel.members = selectedUsers;
+
+            channelActions.update(channel, payload);
         } else {
 
             let placeholderId = require("shortid").generate();

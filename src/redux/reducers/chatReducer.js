@@ -110,6 +110,15 @@ export default function (state = INITIAL_STATE, action) {
                 channelsLoaded: true,
             };
         }
+        case "GET_CHANNEL_SUCCESS": {
+            return {
+                ...state,
+                channels: {
+                    ...state.channels,
+                    [action.data.id]: action.data,
+                },
+            };
+        }
         case "GET_WORKSPACES_SUCCESS": {
             //let topics = action.data.workspaces.map(ws => ws.topics).flat().filter(t => t !== undefined);
             // let topicChannels = action.data.workspaces.map(ws => {

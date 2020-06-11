@@ -1,26 +1,26 @@
 import dispatchActionToReducer, {SimpleDispatchActionToReducer} from "../actionDispatcher";
 import {
-    getChannels as getChannelsService,
+    deleteChannelMembers as deleteChannelMembersService,
+    deleteChatMessage as deleteChatMessageService,
     getChannel as getChannelService,
-    getLastVisitedChannel as getLastVisitedChannelService,
     getChannelDrafts as getChannelDraftsService,
-    getGlobalRecipients as getGlobalRecipientsService,
     getChannelMembers as getChannelMembersService,
-    putChannel as putChannelService,
-    putMarkReadChannel as putMarkReadChannelService,
-    putMarkUnreadChannel as putMarkUnreadChannelService,
+    getChannels as getChannelsService,
+    getChatMessages as getChatMessagesService,
+    getGlobalRecipients as getGlobalRecipientsService,
+    getLastVisitedChannel as getLastVisitedChannelService,
+    postChannelMembers as postChannelMembersService,
+    postChatMessage as postChatMessageService,
+    postChatReaction as postChatReactionService,
+    postChatReminder as postChatReminderService,
     postCreateChannel as postCreateChannelService,
     postSearchExistingChannels as postSearchExistingChannelsService,
-    postChannelMembers as postChannelMembersService,
+    putChannel as putChannelService,
     putChannelUpdateName as putChannelUpdateNameService,
-    deleteChannelMembers as deleteChannelMembersService,
-    getChatMessages as getChatMessagesService,
-    postChatMessage as postChatMessageService,
-    postChatReminder as postChatReminderService,
-    postChatReaction as postChatReactionService,
     putChatMessage as putChatMessageService,
+    putMarkReadChannel as putMarkReadChannelService,
     putMarkReminderComplete as putMarkReminderCompleteService,
-    deleteChatMessage as deleteChatMessageService,
+    putMarkUnreadChannel as putMarkUnreadChannelService,
 } from "../services";
 
 
@@ -91,9 +91,9 @@ export function putMarkUnreadChannel(payload, callback) {
 export function getChannel(payload, callback) {
     return dispatchActionToReducer(
         getChannelService(payload),
-        "GET_CHAT_CHANNEL_START",
-        "GET_CHAT_CHANNEL_SUCCESS",
-        "GET_CHAT_CHANNEL_FAIL",
+        "GET_CHANNEL_START",
+        "GET_CHANNEL_SUCCESS",
+        "GET_CHANNEL_FAIL",
         callback,
     );
 }

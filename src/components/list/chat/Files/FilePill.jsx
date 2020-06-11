@@ -1,7 +1,7 @@
 import React, {forwardRef, useRef} from "react";
 import styled from "styled-components";
-import {SvgIcon} from "../../../common";
 import {getAPIUrl} from "../../../../helpers/slugHelper";
+import {SvgIcon} from "../../../common";
 
 const ImgLoader = styled.div`
     position: relative;
@@ -103,7 +103,7 @@ const FilePill = forwardRef((props, ref) => {
     };
 
     const handleImageOnError = (e) => {
-        console.log(e, "image did not load");
+        console.log(file, "image did not load");
         if (e.currentTarget.dataset.attempt === "0") {
             e.currentTarget.dataset.attempt = 1;
             e.currentTarget.src = `${getAPIUrl({isDNS: true})}/file-view-attempt/${file.file_id}/${localStorage.getItem("atoken")}`;
@@ -156,7 +156,7 @@ const FilePill = forwardRef((props, ref) => {
                         title={file.filename}/>
                 </>
                 : file.type.toLowerCase() === "video" ?
-                <>
+                  <>
                     <ImgLoader ref={refVideoLoader}>
                         <ImgLoaderDiv className={`img-loader`}/>
                     </ImgLoader>
@@ -166,20 +166,20 @@ const FilePill = forwardRef((props, ref) => {
                         width="320" height="240" controls playsInline
                         onLoadStart={handleVideoOnLoad}
                         onError={handleVideoOnError}>
-                        <source src={file.view_link} type="video/mp4"></source>
+                        <source src={file.view_link} type="video/mp4"/>
                         Your browser does not support the video tag.
                     </FileVideo>
                 </>
                 : <DocFile onClick={handleViewFile}>
-                    <div class="card app-file-list">
-                        <div class="app-file-icon">
-                            <SvgIcon icon={`document`} width="28" height="32"/>
-                        </div>
-                        <div class="p-2 small">
-                            <div>{file.filename ? file.filename.substr(0, file.filename.lastIndexOf(".")) : file.name.substr(0, file.name.lastIndexOf("."))}</div>
-                        </div>
-                    </div>
-                </DocFile>
+                      <div className="card app-file-list">
+                          <div className="app-file-icon">
+                              <SvgIcon icon={`document`} width="28" height="32"/>
+                          </div>
+                          <div className="p-2 small">
+                              <div>{file.filename ? file.filename.substr(0, file.filename.lastIndexOf(".")) : file.name.substr(0, file.name.lastIndexOf("."))}</div>
+                          </div>
+                      </div>
+                  </DocFile>
         }
     </FilePillContainer>;
 });

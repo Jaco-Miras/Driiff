@@ -95,6 +95,8 @@ const RecentPosts = (props) => {
         if (scrollRef === null) {
             setScrollRef(e);
         }
+
+        //eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (
