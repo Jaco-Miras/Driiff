@@ -59,7 +59,7 @@ const DashboardAboutWorkspace = (props) => {
     ];
 
     return (
-        <Wrapper className={`about-workspace card ${className}`}>
+        <Wrapper className={`dashboard-about-workspace card ${className}`}>
             <div className="card-body">
                 <h5 className="card-title">About this workspace <SvgIconFeather icon="edit"/></h5>
                 <p>In the section called “About this workspace”, the description is shown that is made during the

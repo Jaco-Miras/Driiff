@@ -4,9 +4,7 @@ import {SvgIconFeather} from "../../common";
 import {useLogRenders} from "../../hooks";
 import {TeamListItem} from "../../list/people/item";
 
-const Wrapper = styled.div`
-    border-left: 5px solid #822492;
-    
+const Wrapper = styled.div`    
     .feather-edit {
         cursor: pointer;
         cursor: hand;
@@ -92,7 +90,7 @@ const DashboardTeam = (props) => {
     }, []);
 
     return (
-        <Wrapper className={`about-workspace card ${className}`}>
+        <Wrapper className={`dashboard-team card ${className}`}>
             <div ref={assignRef} className="card-body">
                 <h5 className="card-title">Team <SvgIconFeather icon="edit"/></h5>
                 <p>The team of a workspace is shown here.<br/>
