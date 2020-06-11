@@ -86,7 +86,7 @@ const MoreOptions = props => {
 
     const [showMoreOptions, setShowMoreOptions] = useState(false);
 
-    const {orientation} = useTooltipOrientation(refs.container, refs.options, scrollRef, showMoreOptions, "bottom", 0);
+    const {orientation} = useTooltipOrientation(refs.container, refs.options, scrollRef, showMoreOptions);
 
     const handleClick = (e) => {
         e.preventDefault();

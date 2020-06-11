@@ -12,7 +12,7 @@ import {
     postCreateChannel,
     postSearchExistingChannels,
     putChannel,
-    putChannelUpdateName,
+    putChannelUpdate,
     putMarkReadChannel,
     putMarkUnreadChannel,
     renameChannelKey,
@@ -128,7 +128,7 @@ const useChannelActions = () => {
      * @param {Object} channelUpdate - channel attributes update
      * @param {function} [callback]
      */
-    const update = useCallback((channel, channelUpdate, callback = () => {}) => {
+    const updateStatus = useCallback((channel, channelUpdate, callback = () => {}) => {
         let payload = {
             is_pinned: channel.is_pinned,
             is_muted: channel.is_muted,
@@ -170,8 +170,8 @@ const useChannelActions = () => {
             is_archived: 1,
         };
 
-        update(channel, payload, callback);
-    }, [update]);
+        updateStatus(channel, payload, callback);
+    }, [updateStatus]);
 
     /**
      * @param {Object} channel
@@ -186,8 +186,8 @@ const useChannelActions = () => {
             is_archived: 0,
         };
 
-        update(channel, payload, callback);
-    }, [update]);
+        updateStatus(channel, payload, callback);
+    }, [updateStatus]);
 
     /**
      * @param {Object} channel
@@ -202,8 +202,8 @@ const useChannelActions = () => {
             is_pinned: 1,
         };
 
-        update(channel, payload, callback);
-    }, [update]);
+        updateStatus(channel, payload, callback);
+    }, [updateStatus]);
 
     /**
      * @param {Object} channel
@@ -218,8 +218,8 @@ const useChannelActions = () => {
             is_pinned: 0,
         };
 
-        update(channel, payload, callback);
-    }, [update]);
+        updateStatus(channel, payload, callback);
+    }, [updateStatus]);
 
     /**
      * @param {Object} channel
@@ -234,8 +234,8 @@ const useChannelActions = () => {
             is_muted: 1,
         };
 
-        update(channel, payload, callback);
-    }, [update]);
+        updateStatus(channel, payload, callback);
+    }, [updateStatus]);
 
     /**
      * @param {Object} channel
@@ -250,8 +250,8 @@ const useChannelActions = () => {
             is_muted: 0,
         };
 
-        update(channel, payload, callback);
-    }, [update]);
+        updateStatus(channel, payload, callback);
+    }, [updateStatus]);
 
     /**
      * @param {Object} channel
@@ -264,8 +264,8 @@ const useChannelActions = () => {
             is_hide: 1,
         };
 
-        update(channel, payload, callback);
-    }, [update]);
+        updateStatus(channel, payload, callback);
+    }, [updateStatus]);
 
     /**
      * @param {Object} channel
@@ -278,8 +278,8 @@ const useChannelActions = () => {
             is_hide: 0,
         };
 
-        update(channel, payload, callback);
-    }, [update]);
+        updateStatus(channel, payload, callback);
+    }, [updateStatus]);
 
     /**
      * @param {Object} channel
@@ -535,19 +535,20 @@ const useChannelActions = () => {
 
 
     /**
-     * @param {number} channelId
-     * @param {string} name
+     * @param {Object} payload
+     * @param {number} payload.channel_id
+     * @param {string} payload.channel_name
+     * @param {Array} add_member_ids
+     * @param {Array} remove_member_ids
      * @param {function} [callback]
      */
-    const updateName = useCallback((
-        channelId,
-        name,
+    const update = useCallback((
+        payload,
         callback = () => {}) => {
 
         dispatch(
-            putChannelUpdateName({
-                channel_id: channelId,
-                channel_name: name,
+            putChannelUpdate({
+                payload,
             }, callback),
         );
     }, [dispatch]);
@@ -587,7 +588,7 @@ const useChannelActions = () => {
         select,
         archive,
         unArchive,
-        update,
+        updateStatus,
         pin,
         unPin,
         mute,
@@ -599,7 +600,7 @@ const useChannelActions = () => {
         searchExisting,
         addMembers,
         deleteMembers,
-        updateName,
+        update,
     };
 };
 

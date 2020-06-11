@@ -132,17 +132,18 @@ const CreateEditChatModal = props => {
             }).map(m => m.id);
 
             let payload = {
-                channel_name: inputValue,
                 channel_id: channel.id,
+                channel_name: inputValue,
                 remove_member_ids: removed_members,
                 add_member_ids: added_members,
                 id: channel.id,
-                title: inputValue,
             };
 
             channel.members = selectedUsers;
+            channel.title = inputValue;
+            alert("Missing body we need to discuss");
 
-            channelActions.update(channel, payload);
+            channelActions.update(payload);
         } else {
 
             let placeholderId = require("shortid").generate();

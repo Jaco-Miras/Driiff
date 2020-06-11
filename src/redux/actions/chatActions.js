@@ -16,7 +16,7 @@ import {
     postCreateChannel as postCreateChannelService,
     postSearchExistingChannels as postSearchExistingChannelsService,
     putChannel as putChannelService,
-    putChannelUpdateName as putChannelUpdateNameService,
+    putChannelUpdate as putChannelUpdateService,
     putChatMessage as putChatMessageService,
     putMarkReadChannel as putMarkReadChannelService,
     putMarkReminderComplete as putMarkReminderCompleteService,
@@ -349,9 +349,9 @@ export function renameChannelKey(payload, callback) {
     );
 }
 
-export function putChannelUpdateName(payload, callback) {
+export function putChannelUpdate(payload, callback) {
     return dispatchActionToReducer(
-        putChannelUpdateNameService(payload),
+        putChannelUpdateService(payload),
         "EDIT_CHANNEL_DETAIL_START",
         "EDIT_CHANNEL_DETIL_SUCCESS",
         "EDIT_CHANNEL_DETAIL_FAILURE",

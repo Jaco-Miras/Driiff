@@ -7,7 +7,7 @@ export {
     getChannelDrafts,
     getChannelMembers,
     putChannel,
-    putChannelUpdateName,
+    putChannelUpdate,
     putMarkReadChannel,
     putMarkUnreadChannel,
     postCreateChannel,
