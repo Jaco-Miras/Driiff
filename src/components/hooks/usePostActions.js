@@ -5,6 +5,7 @@ import toaster from "toasted-notes";
 import {addToModals} from "../../redux/actions/globalActions";
 import {copyTextToClipboard} from "../../helpers/commonFunctions";
 import {getBaseUrl} from "../../helpers/slugHelper";
+import {replaceChar} from "../../helpers/stringFormatter";
 import {
     postFavorite, postArchive, postFollow, postMarkDone, 
     postToggleRead, removePost, postUnfollow, deletePost
@@ -47,7 +48,7 @@ const usePostActions = () => {
         } else {
             //redirect to post detail page
             console.log(location.pathname)
-            history.push(location.pathname+`/post/${post.id}/${post.title}`)
+            history.push(location.pathname+`/post/${post.id}/${replaceChar(post.title)}`)
         }
     }, [dispatch, location]);
 

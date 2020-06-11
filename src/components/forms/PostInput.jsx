@@ -1,11 +1,10 @@
 import React, {useEffect, useRef, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import styled from "styled-components";
-import {localizeDate} from "../../helpers/momentFormatJS";
+// import {localizeDate} from "../../helpers/momentFormatJS";
 import {
     postChannelMembers,
     addQuote,
-    onClickSendButton,
 } from "../../redux/actions/chatActions";
 import {deleteDraft} from "../../redux/actions/globalActions";
 import {SvgIconFeather} from "../common";
@@ -13,7 +12,6 @@ import BodyMention from "../common/BodyMention";
 import {useDraft, useQuillInput, useQuillModules, useSaveInput, useCommentQuote} from "../hooks";
 import QuillEditor from "./QuillEditor";
 import {
-    postComment,
     setEditComment
 } from "../../redux/actions/postActions";
 
@@ -97,7 +95,7 @@ const CloseButton = styled(SvgIconFeather)`
 /***  Commented out code are to be visited/refactored ***/
 const PostInput = props => {
 
-    const { selectedEmoji, onClearEmoji, selectedGif, onClearGif, dropAction, 
+    const { selectedEmoji, onClearEmoji, selectedGif, onClearGif, dropAction, sent, handleClearSent,
         post, parentId, commentActions, userMention, handleClearUserMention, commentId} = props;
     const dispatch = useDispatch();
     const reactQuillRef = useRef();
@@ -105,7 +103,7 @@ const PostInput = props => {
     //const slugs = useSelector(state => state.global.slugs);
     const user = useSelector(state => state.session.user);
     const editPostComment = useSelector(state => state.posts.editPostComment);
-    const sendButtonClicked = useSelector(state => state.chat.sendButtonClicked);
+    //const sendButtonClicked = useSelector(state => state.chat.sendButtonClicked);
 
     const [text, setText] = useState("");
     const [textOnly, setTextOnly] = useState("");
@@ -391,11 +389,11 @@ const PostInput = props => {
     }, [selectedGif]);
 
     useEffect(() => {
-        if (sendButtonClicked) {
-            dispatch(onClickSendButton(false));
+        if (sent) {
             handleSubmit();
+            handleClearSent();
         }
-    }, [sendButtonClicked]);
+    }, [sent]);
 
     // const loadDraftCallback = (draft) => {
     //     if (draft === null) {

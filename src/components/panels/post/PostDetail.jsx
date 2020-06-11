@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import {useHistory} from "react-router-dom"
-import {FileAttachments} from "../../common";
+import {FileAttachments, SvgIconFeather} from "../../common";
 import {PostDetailFooter, PostBody, PostComments} from "./index";
 import {useComments, useCommentActions} from "../../hooks";
 
@@ -10,6 +10,11 @@ const MainBody = styled.div`
     flex-grow: 1;
     width: 100%;
     flex-flow: column;
+`;
+
+const Counters = styled.div`
+    width: 100%;
+    padding: .5rem 1.5rem;
 `;
 
 const PostDetail = props => {
@@ -70,6 +75,13 @@ const PostDetail = props => {
             <MainBody className="app-detail-article">
                 <PostBody post={post} postActions={postActions}/>
                 <hr className="m-0"/>
+                <Counters className="d-flex align-items-center">
+                    <div><SvgIconFeather icon="heart"/>{post.clap_count}</div>
+                    <div className="ml-auto">
+                        <SvgIconFeather icon="message-square"/>{post.reply_count}
+                        <SvgIconFeather icon="eye"/>{post.view_user_ids.length}
+                    </div>
+                </Counters>
                 {
                     post.files.length > 0  &&
                     <>
