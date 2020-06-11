@@ -81,7 +81,7 @@ export function getChatMessages(payload) {
     return apiCall({
         method: "GET",
         url: url,
-        is_shared: payload.topic_id ? true : false,
+        is_shared: !!payload.topic_id,
         data: rest,
     });
 }
@@ -92,7 +92,7 @@ export function postChatMessage(payload) {
         method: "POST",
         url: url,
         data: payload,
-        is_shared: payload.topic_id ? true : false,
+        is_shared: !!payload.topic_id,
     });
 }
 
@@ -102,7 +102,7 @@ export function putChatMessage(payload) {
         method: "PUT",
         url: url,
         data: payload,
-        is_shared: payload.topic_id ? true : false,
+        is_shared: !!payload.topic_id,
     });
 }
 
@@ -176,8 +176,8 @@ export function postCreateChannel(payload) {
     });
 }
 
-export function putChannelUpdateName(payload) {
-    let url = `/v2/chat-channel/update-name`;
+export function putChannelUpdate(payload) {
+    let url = `/v2/chat-channel/update`;
     return apiCall({
         method: "PUT",
         url: url,
