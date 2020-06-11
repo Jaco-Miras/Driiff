@@ -36,7 +36,7 @@ const useChannelActions = () => {
      * @returns {{}|{is_shared: boolean, slug: string, token: string}}
      */
     const getSharedPayload = useCallback((channel) => {
-        if (channel.is_shared && sharedSlugs.length) {
+        if (channel.hasOwnProperty("is_shared") && channel.is_shared && sharedSlugs.length) {
             return {
                 is_shared: true,
                 token: sharedSlugs.filter(s => s.slug_name === channel.slug_owner)[0].access_token,
@@ -138,7 +138,7 @@ const useChannelActions = () => {
         payload = {
             ...payload,
             ...channelUpdate,
-            ...getSharedPayload(channel.is_shared),
+            ...getSharedPayload(channel),
         };
 
         dispatch(
@@ -304,7 +304,7 @@ const useChannelActions = () => {
             });
 
             //if unarchived archived chat
-        } else if (channel.is_archived === 1) {
+        } else if (channel.type === "DIRECT" && channel.members.length === 2 && channel.is_archived === 1) {
             unArchive(channel, (err, res) => {
                 const channel = res.data;
                 dispatch(
@@ -575,7 +575,6 @@ const useChannelActions = () => {
     return {
         create,
         createByUserChannel,
-        create,
         fetchAll,
         fetch,
         fetchNoChannelUsers,

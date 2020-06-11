@@ -109,7 +109,7 @@ const ChatContentPanel = (props) => {
                 }}
                 onCancel={handleHideDropzone}
             />
-            <ChatHeaderPanel/>
+            <ChatHeaderPanel channel={selectedChannel}/>
             {selectedChannel !== null && unreadCount > 0 && <ChatUnreadFloatBar/>}
             {selectedChannel !== null ? <ChatMessages chatMessageActions={chatMessageActions} /> :
              <ChatMessagesPlaceholder/>}

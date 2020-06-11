@@ -33,8 +33,10 @@ const CompanyChatPanel = (props) => {
             });
         } else {
             channelActions.fetchLastVisited((err, res) => {
-                setActiveTabPill(res.data.type === "DIRECT" ? "contact" : "home");
-                props.history.push(`/chat/${res.data.code}`);
+                channelActions.select(res.data, () => {
+                    setActiveTabPill(res.data.type === "DIRECT" ? "contact" : "home");
+                    props.history.push(`/chat/${res.data.code}`);
+                });
             });
         }
     };

@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {useDispatch, useSelector} from "react-redux";
+import {useDispatch} from "react-redux";
 import {useRouteMatch} from "react-router-dom";
 import styled from "styled-components";
 import {addToModals} from "../../../redux/actions/globalActions";
@@ -34,22 +34,25 @@ const ChatHeaderPanel = (props) => {
     /**
      * @todo refactor
      */
-    const {className = ""} = props;
+    const {className = "", channel} = props;
 
     const dispatch = useDispatch();
     const routeMatch = useRouteMatch();
 
     const channelActions = useChannelActions();
 
-    const chatChannel = useSelector(state => state.chat.selectedChannel);
-
     const [page, setPage] = useState("chat");
 
     const handleArchiveChat = () => {
-        channelActions.archive(chatChannel);
+        channelActions.archive(channel);
     };
 
     const handleShowArchiveConfirmation = () => {
+
+        if (channel.is_archived) {
+            channelActions.unArchive(channel);
+            return;
+        }
 
         let payload = {
             type: "confirmation",
@@ -85,7 +88,7 @@ const ChatHeaderPanel = (props) => {
         })[0]);
     }, [routeMatch.path, setPage]);
 
-    if (chatChannel === null)
+    if (channel === null)
         return null;
 
     return (
@@ -112,7 +115,8 @@ const ChatHeaderPanel = (props) => {
                     }
                     <ul className="nav align-items-center">
                         {
-                            (["DIRECT", "PERSONAL_BOT", "COMPANY", "TOPIC"].includes(chatChannel.type) === false) &&
+                            (["DIRECT", "PERSONAL_BOT", "COMPANY", "TOPIC"].includes(channel.type) === false) &&
+                            !channel.is_archived &&
                             <>
                                 <li className="mr-4 d-sm-inline d-none">
                                     <IconButton icon={`edit-3`} onClick={handleShowChatEditModal}/>
@@ -120,10 +124,12 @@ const ChatHeaderPanel = (props) => {
                             </>
                         }
                         {
-                            (["PERSONAL_BOT", "COMPANY", "TOPIC"].includes(chatChannel.type) === false) &&
+                            (["PERSONAL_BOT", "COMPANY", "TOPIC"].includes(channel.type) === false) &&
                             <>
-                                <li className="mr-4 d-sm-inline d-none">
-                                    <IconButton icon={`trash`} onClick={handleShowArchiveConfirmation}/>
+                                <li className="mr-4 d-sm-inline d-none"
+                                    title={channel.is_archived ? `Restore` : `Archive`}>
+                                    <IconButton icon={channel.is_archived ? `rotate-ccw` : `trash-2`}
+                                                onClick={handleShowArchiveConfirmation}/>
                                 </li>
                             </>
                         }

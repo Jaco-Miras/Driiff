@@ -11,6 +11,7 @@ const TimelinePanel = (props) => {
 
     const timeline = [
         {
+            id: 0,
             type: "post",
             item: {
                 created_at: {
@@ -52,6 +53,7 @@ const TimelinePanel = (props) => {
             },
         },
         {
+            id: 1,
             type: "post",
             item: {
                 created_at: {
@@ -68,6 +70,7 @@ const TimelinePanel = (props) => {
             },
         },
         {
+            id: 2,
             type: "post",
             item: {
                 created_at: {
@@ -88,6 +91,7 @@ const TimelinePanel = (props) => {
             },
         },
         {
+            id: 3,
             type: "member",
             item: {
                 action: "leave",
@@ -101,6 +105,7 @@ const TimelinePanel = (props) => {
             },
         },
         {
+            id: 4,
             type: "member",
             item: {
                 action: "join",
@@ -114,6 +119,7 @@ const TimelinePanel = (props) => {
             },
         },
         {
+            id: 5,
             type: "file",
             item: {
                 created_at: {
@@ -152,6 +158,7 @@ const TimelinePanel = (props) => {
             },
         },
         {
+            id: 6,
             type: "file",
             item: {
                 created_at: {
@@ -196,11 +203,11 @@ const TimelinePanel = (props) => {
                         timeline.map(t => {
                             switch (t.type) {
                                 case "member":
-                                    return <MemberTimeline member={t.item}/>;
+                                    return <MemberTimeline key={t.id} member={t.item}/>;
                                 case "post":
-                                    return <PostTimeline post={t.item}/>;
+                                    return <PostTimeline key={t.id} post={t.item}/>;
                                 case "file":
-                                    return <AttachFileTimeline data={t.item}/>;
+                                    return <AttachFileTimeline key={t.id} data={t.item}/>;
                             }
                         })
                     }
