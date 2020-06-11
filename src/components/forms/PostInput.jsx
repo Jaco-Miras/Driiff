@@ -1,25 +1,19 @@
 import React, {useEffect, useRef, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import styled from "styled-components";
-import {localizeDate} from "../../helpers/momentFormatJS";
+// import {localizeDate} from "../../helpers/momentFormatJS";
 import {
     postChannelMembers,
-    addChatMessage,
     addQuote,
-    clearChannelDraft,
-    clearQuote,
-    postChatMessage,
-    onClickSendButton,
-    putChatMessage,
 } from "../../redux/actions/chatActions";
 import {deleteDraft} from "../../redux/actions/globalActions";
 import {SvgIconFeather} from "../common";
 import BodyMention from "../common/BodyMention";
-import {useDraft, useQuillInput, useQuillModules, useSaveInput, useSelectQuote} from "../hooks";
+import {useDraft, useQuillInput, useQuillModules, useSaveInput, useCommentQuote} from "../hooks";
 import QuillEditor from "./QuillEditor";
 import {
-    postComment,
-    setEditComment
+    setEditComment,
+    setParentIdForUpload
 } from "../../redux/actions/postActions";
 
 const Wrapper = styled.div`
@@ -102,15 +96,15 @@ const CloseButton = styled(SvgIconFeather)`
 /***  Commented out code are to be visited/refactored ***/
 const PostInput = props => {
 
-    const { selectedEmoji, onClearEmoji, selectedGif, onClearGif, dropAction, 
-        post, parentId, commentActions, userMention, handleClearUserMention} = props;
+    const { selectedEmoji, onClearEmoji, selectedGif, onClearGif, dropAction, sent, handleClearSent,
+        post, parentId, commentActions, userMention, handleClearUserMention, commentId} = props;
     const dispatch = useDispatch();
     const reactQuillRef = useRef();
     const selectedChannel = useSelector(state => state.chat.selectedChannel);
-    const slugs = useSelector(state => state.global.slugs);
+    //const slugs = useSelector(state => state.global.slugs);
     const user = useSelector(state => state.session.user);
     const editPostComment = useSelector(state => state.posts.editPostComment);
-    const sendButtonClicked = useSelector(state => state.chat.sendButtonClicked);
+    //const sendButtonClicked = useSelector(state => state.chat.sendButtonClicked);
 
     const [text, setText] = useState("");
     const [textOnly, setTextOnly] = useState("");
@@ -122,7 +116,7 @@ const PostInput = props => {
     const [editMessage, setEditMessage] = useState(null);
     const [draftId, setDraftId] = useState(null);
 
-    const [quote] = useSelectQuote();
+    const [quote] = useCommentQuote(commentId);
 
     const handleSubmit = () => {
 
@@ -172,8 +166,8 @@ const PostInput = props => {
             payload.quote = {
                 id: quote.id,
                 body: quote.body,
-                user_id: quote.user.id,
-                user: quote.user,
+                user_id: quote.author.id,
+                user: quote.author,
                 files: quote.files,
             };
         }
@@ -196,9 +190,9 @@ const PostInput = props => {
                 parent_id: parentId,
                 personalized_for_id: null,
                 post_id: post.id,
-                quote: null,
+                quote: quote,
                 reference_id: reference_id,
-                ref_quote: null,
+                ref_quote: quote,
                 replies: {},
                 total_replies: 0,
                 total_unread_replies: 0,
@@ -224,14 +218,12 @@ const PostInput = props => {
         }
 
         if (quote) {
-            dispatch(
-                clearQuote(quote),
-            );
+            commentActions.clearQuote(commentId)
         }
-        if (draftId) {
-            dispatch(deleteDraft({type: "channel", draft_id: draftId}));
-            dispatch(clearChannelDraft({channel_id: selectedChannel.id}));
-        }
+        // if (draftId) {
+        //     dispatch(deleteDraft({type: "channel", draft_id: draftId}));
+        //     dispatch(clearChannelDraft({channel_id: selectedChannel.id}));
+        // }
         handleClearQuillInput();
     };
 
@@ -335,6 +327,7 @@ const PostInput = props => {
             }
             if (files.length) {
                 dropAction(files);
+                dispatch(setParentIdForUpload(parentId))
             }
         };
 
@@ -398,11 +391,11 @@ const PostInput = props => {
     }, [selectedGif]);
 
     useEffect(() => {
-        if (sendButtonClicked) {
-            dispatch(onClickSendButton(false));
+        if (sent) {
             handleSubmit();
+            handleClearSent();
         }
-    }, [sendButtonClicked]);
+    }, [sent]);
 
     // const loadDraftCallback = (draft) => {
     //     if (draft === null) {

@@ -1,13 +1,12 @@
-import React, {useRef, useState} from "react";
+import React, {useCallback, useRef, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import styled from "styled-components";
 //import {localizeChatTimestamp} from "../../../helpers/momentFormatJS";
-import {onClickSendButton} from "../../../redux/actions/chatActions";
 import {joinWorkspace, joinWorkspaceReducer} from "../../../redux/actions/workspaceActions";
 import {CommonPicker, SvgIconFeather} from "../../common";
 import PostInput from "../../forms/PostInput";
 import {useIsMember} from "../../hooks";
-import ChatQuote from "../../list/chat/ChatQuote";
+import {CommentQuote} from "../../list/post/item";
 
 const Wrapper = styled.div`
     position: relative;
@@ -111,7 +110,7 @@ const PickerContainer = styled(CommonPicker)`
 const PostDetailFooter = (props) => {
 
     const {className = "", onShowFileDialog, dropAction, post, parentId = null, 
-            commentActions, userMention = null, handleClearUserMention = null} = props;
+            commentActions, userMention = null, handleClearUserMention = null, commentId = null} = props;
 
     const dispatch = useDispatch();
     const ref = {
@@ -120,15 +119,18 @@ const PostDetailFooter = (props) => {
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
     const [selectedEmoji, setSelectedEmoji] = useState(null);
     const [selectedGif, setSelectedGif] = useState(null);
+    const [sent, setSent] = useState(false);
 
     const topic = useSelector(state => state.workspaces.activeTopic);
     const user = useSelector(state => state.session.user);
 
-    const handleSend = () => {
-        dispatch(
-            onClickSendButton(true),
-        );
-    };
+    const handleSend = useCallback(() => {
+        setSent(true)
+    }, [setSent]);
+
+    const handleClearSent = useCallback(() => {
+        setSent(false)
+    }, [setSent]);
 
     const handleShowEmojiPicker = () => {
         setShowEmojiPicker(!showEmojiPicker);
@@ -168,17 +170,16 @@ const PostDetailFooter = (props) => {
             }),
         );
     };
-
+    
     const isMember = useIsMember(topic && topic.members.length ? topic.members.map(m => m.id) : []);
 
     return (
         <Wrapper className={`chat-footer card-body ${className}`}>
-            {/* {
-                selectedChannel && selectedChannel.is_archived === 0 &&
+            {
                 <Dflex className="d-flex pr-2 pl-2">
-                    <ChatQuote/>
+                    <CommentQuote commentActions={commentActions} commentId={commentId}/>
                 </Dflex>
-            } */}
+            }
             {
                 isMember &&
                 <Dflex className="d-flex align-items-center">
@@ -192,6 +193,9 @@ const PostDetailFooter = (props) => {
                             <IconButton onClick={handleShowEmojiPicker} icon="smile"/>
                             <ChatInputContainer className="flex-grow-1">
                                 <PostInput
+                                    handleClearSent={handleClearSent}
+                                    sent={sent}
+                                    commentId={commentId}
                                     userMention={userMention}
                                     handleClearUserMention={handleClearUserMention}
                                     commentActions={commentActions}
@@ -203,14 +207,13 @@ const PostDetailFooter = (props) => {
                             </ChatInputContainer>
                             <div className="chat-footer-buttons d-flex">
                                 <IconButton onClick={handleSend} icon="send"/>
-                                <IconButton onClick={onShowFileDialog} icon="paperclip"/>
+                                <IconButton onClick={()=>onShowFileDialog(parentId)} icon="paperclip"/>
                             </div>
                         </React.Fragment>
                     }
                     {
                         showEmojiPicker === true &&
                         <PickerContainer
-                            handleSend={handleSend}
                             handleShowEmojiPicker={handleShowEmojiPicker}
                             onSelectEmoji={onSelectEmoji}
                             onSelectGif={onSelectGif}

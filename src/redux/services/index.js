@@ -64,6 +64,7 @@ export {
 } from "./files";
 
 export {
+    deletePost,
     fetchComments,
     postArchive,
     postCreate,

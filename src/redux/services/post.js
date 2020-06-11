@@ -175,3 +175,12 @@ export function putComment(payload) {
         data: payload,
     });
 }
+
+export function deletePost(payload) {
+    let url = `/v1/posts/${payload.id}`;
+    return apiCall({
+        method: "DELETE",
+        url: url,
+        data: payload,
+    });
+}

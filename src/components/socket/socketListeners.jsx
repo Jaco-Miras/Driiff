@@ -57,6 +57,12 @@ class SocketListeners extends PureComponent {
 
         // new socket
         window.Echo.private(`${localStorage.getItem("slug")}.Driff.User.${this.props.user.id}`)
+        .listen(".post-notification", e => {
+
+        })
+        .listen(".post-comment-notification", e => {
+            
+        })
         .listen(".chat-notification", e => {
             console.log(e, "chat-notification");
             const {user, selectedChannel, isBrowserActive} = this.props;

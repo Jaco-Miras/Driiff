@@ -1,5 +1,6 @@
 import dispatchActionToReducer, {SimpleDispatchActionToReducer} from "../actionDispatcher";
 import {
+    deletePost as deletePostService,
     fetchComments as fetchCommentsService,
     postArchive as postArchiveService,
     postCreate as postCreateService,
@@ -142,6 +143,40 @@ export function putComment(payload, callback) {
 export function addComment(payload, callback) {
     return SimpleDispatchActionToReducer(
         "ADD_COMMENT",
+        payload,
+        callback,
+    );
+}
+
+export function addCommentQuote(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "ADD_COMMENT_QUOTE",
+        payload,
+        callback,
+    );
+}
+
+export function clearCommentQuote(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "CLEAR_COMMENT_QUOTE",
+        payload,
+        callback,
+    );
+}
+
+export function deletePost(payload, callback) {
+    return dispatchActionToReducer(
+        deletePostService(payload),
+        "DELETE_POST_START",
+        "DELETE_POST_SUCCESS",
+        "DELETE_POST_FAIL",
+        callback,
+    );
+}
+
+export function setParentIdForUpload(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "SET_PARENT_ID",
         payload,
         callback,
     );

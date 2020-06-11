@@ -1,9 +1,13 @@
-import React from "react";
+import React, {useRef, useState} from "react";
 import styled from "styled-components";
+import {useDispatch} from "react-redux";
 import {useHistory} from "react-router-dom"
-import {FileAttachments} from "../../common";
+import {FileAttachments, SvgIconFeather} from "../../common";
 import {PostDetailFooter, PostBody, PostComments} from "./index";
 import {useComments, useCommentActions} from "../../hooks";
+import {DropDocument} from "../../dropzone/DropDocument";
+import {addToModals} from "../../../redux/actions/globalActions";
+import {setParentIdForUpload} from "../../../redux/actions/postActions";
 
 const MainBody = styled.div`
     display: flex;
@@ -12,16 +16,93 @@ const MainBody = styled.div`
     flex-flow: column;
 `;
 
+const Counters = styled.div`
+    width: 100%;
+    padding: .5rem 1.5rem;
+`;
+
 const PostDetail = props => {
 
     const {post, postActions, user} = props;
+    const dispatch = useDispatch();
     const history = useHistory();
+    const [showDropZone, setshowDropZone] = useState(false);
+
     const handleClosePost = () => {
         history.goBack();
     };
     const commentActions = useCommentActions();
     const comments = useComments(post, commentActions);
-    console.log(postActions)
+    
+    const refs = {
+        dropZoneRef: useRef(),
+    };
+
+    const handleOpenFileDialog = (parentId) => {
+        dispatch(setParentIdForUpload(parentId))
+        if (refs.dropZoneRef.current) {
+            refs.dropZoneRef.current.open();
+        }
+    };
+
+    const handleHideDropzone = () => {
+        setshowDropZone(false);
+    };
+
+    const handleshowDropZone = () => {
+        setshowDropZone(true);
+    };
+
+    const dropAction = (acceptedFiles) => {
+
+        let attachedFiles = [];
+        acceptedFiles.forEach(file => {
+            var bodyFormData = new FormData();
+            bodyFormData.append("file", file);
+            let shortFileId = require("shortid").generate();
+            if (file.type === "image/jpeg" || file.type === "image/png" || file.type === "image/gif" || file.type === "image/webp") {
+                attachedFiles.push({
+                    ...file,
+                    type: "IMAGE",
+                    id: shortFileId,
+                    status: false,
+                    src: URL.createObjectURL(file),
+                    bodyFormData: bodyFormData,
+                    name: file.name ? file.name : file.path,
+                });
+            } else if (file.type === "video/mp4") {
+                attachedFiles.push({
+                    ...file,
+                    type: "VIDEO",
+                    id: shortFileId,
+                    status: false,
+                    src: URL.createObjectURL(file),
+                    bodyFormData: bodyFormData,
+                    name: file.name ? file.name : file.path,
+                });
+            } else {
+                attachedFiles.push({
+                    ...file,
+                    type: "DOC",
+                    id: shortFileId,
+                    status: false,
+                    src: "#",
+                    bodyFormData: bodyFormData,
+                    name: file.name ? file.name : file.path,
+                });
+            }
+        });
+        handleHideDropzone();
+
+        let modal = {
+            type: "file_upload",
+            droppedFiles: attachedFiles,
+            mode: "post",
+            post: post,
+        };
+
+        dispatch(addToModals(modal));
+    };
 
     return (
         <>
@@ -52,7 +133,7 @@ const PostDetail = props => {
                     </span>
                     {
                         post.author.id === user.id &&
-                        <a className="btn btn-outline-light ml-2" data-toggle="tooltip"
+                        <a onClick={() => postActions.trash(post)} className="btn btn-outline-light ml-2" data-toggle="tooltip"
                             title="" data-original-title="Delete Task">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                     viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -67,9 +148,25 @@ const PostDetail = props => {
                     </div>
                 </div>
             </div>
-            <MainBody className="app-detail-article">
+            <MainBody className="app-detail-article" onDragOver={handleshowDropZone}>
+                <DropDocument
+                    hide={!showDropZone}
+                    ref={refs.dropZoneRef}
+                    onDragLeave={handleHideDropzone}
+                    onDrop={({acceptedFiles}) => {
+                        dropAction(acceptedFiles);
+                    }}
+                    onCancel={handleHideDropzone}
+                />
                 <PostBody post={post} postActions={postActions}/>
                 <hr className="m-0"/>
+                <Counters className="d-flex align-items-center">
+                    <div><SvgIconFeather icon="heart"/>{post.clap_count}</div>
+                    <div className="ml-auto">
+                        <SvgIconFeather icon="message-square"/>{post.reply_count}
+                        <SvgIconFeather icon="eye"/>{post.view_user_ids.length}
+                    </div>
+                </Counters>
                 {
                     post.files.length > 0  &&
                     <>
@@ -80,9 +177,11 @@ const PostDetail = props => {
                     <hr className="m-0"/>
                     </>
                 }
-                <PostComments comments={comments} post={post} user={user} commentActions={commentActions}/>
+                <PostComments comments={comments} post={post} user={user} commentActions={commentActions}
+                    onShowFileDialog={handleOpenFileDialog} dropAction={dropAction}
+                />
                 <hr className="m-0"/>
-                <PostDetailFooter post={post} commentActions={commentActions}/>
+                <PostDetailFooter post={post} commentActions={commentActions} onShowFileDialog={handleOpenFileDialog} dropAction={dropAction}/>
             </MainBody>
         </>
     )
