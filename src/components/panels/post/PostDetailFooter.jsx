@@ -170,7 +170,7 @@ const PostDetailFooter = (props) => {
             }),
         );
     };
-
+    
     const isMember = useIsMember(topic && topic.members.length ? topic.members.map(m => m.id) : []);
 
     return (
@@ -207,7 +207,7 @@ const PostDetailFooter = (props) => {
                             </ChatInputContainer>
                             <div className="chat-footer-buttons d-flex">
                                 <IconButton onClick={handleSend} icon="send"/>
-                                <IconButton onClick={onShowFileDialog} icon="paperclip"/>
+                                <IconButton onClick={()=>onShowFileDialog(parentId)} icon="paperclip"/>
                             </div>
                         </React.Fragment>
                     }

@@ -4,7 +4,8 @@ const INITIAL_STATE = {
     totalPostsCount: 0,
     unreadPostsCount: 0,
     editPostComment: null,
-    commentQuotes: {}
+    commentQuotes: {},
+    parentId: null
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -49,6 +50,12 @@ export default (state = INITIAL_STATE, action) => {
                 ...state,
                 commentQuotes: updatedQuotes,
             };
+        }
+        case "SET_PARENT_ID": {
+            return {
+                ...state,
+                parentId: action.data
+            }
         }
         default:
             return state;

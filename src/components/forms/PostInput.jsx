@@ -12,7 +12,8 @@ import BodyMention from "../common/BodyMention";
 import {useDraft, useQuillInput, useQuillModules, useSaveInput, useCommentQuote} from "../hooks";
 import QuillEditor from "./QuillEditor";
 import {
-    setEditComment
+    setEditComment,
+    setParentIdForUpload
 } from "../../redux/actions/postActions";
 
 const Wrapper = styled.div`
@@ -326,6 +327,7 @@ const PostInput = props => {
             }
             if (files.length) {
                 dropAction(files);
+                dispatch(setParentIdForUpload(parentId))
             }
         };
 

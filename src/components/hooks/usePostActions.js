@@ -47,7 +47,7 @@ const usePostActions = () => {
             );
         } else {
             //redirect to post detail page
-            console.log(location.pathname)
+            console.log(location.pathname, `/post/${post.id}/${replaceChar(post.title)}`)
             history.push(location.pathname+`/post/${post.id}/${replaceChar(post.title)}`)
         }
     }, [dispatch, location]);

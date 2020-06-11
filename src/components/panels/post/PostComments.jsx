@@ -22,7 +22,7 @@ const Wrapper = styled.div`
 
 const PostComments = props => {
 
-    const {comments, post, user, commentActions} = props;
+    const {comments, post, user, commentActions, onShowFileDialog, dropAction} = props;
 
     return (
         <Wrapper className="card-body">
@@ -31,7 +31,8 @@ const PostComments = props => {
                 <ul>
                 {
                     Object.values(comments).map(c => {
-                        return <Comment key={c.id} comment={c} post={post} user={user} commentActions={commentActions}/>
+                        return <Comment key={c.id} comment={c} post={post} user={user} 
+                        commentActions={commentActions} onShowFileDialog={onShowFileDialog} dropAction={dropAction}/>
                     })
                 }
                 </ul>

@@ -173,3 +173,11 @@ export function deletePost(payload, callback) {
         callback,
     );
 }
+
+export function setParentIdForUpload(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "SET_PARENT_ID",
+        payload,
+        callback,
+    );
+}

@@ -34,7 +34,7 @@ const Reply = styled.span`
 
 const Comment = props => {
 
-    const {comment, post, type = "main", user, commentActions, parentId} = props;
+    const {comment, post, type = "main", user, commentActions, parentId, onShowFileDialog, dropAction} = props;
 
     const [showInput, setShowInput] = useState(false);
     const [userMention, setUserMention] = useState(null);
@@ -101,11 +101,15 @@ const Comment = props => {
                     commentActions={commentActions}
                     userMention={userMention}
                     handleClearUserMention={handleClearUserMention}
+                    onShowFileDialog={onShowFileDialog} dropAction={dropAction}
                 />
             }
             {
                 type === "main" && Object.values(comment.replies).length > 0 &&
-                <SubComments comments={comment.replies} post={post} user={user} commentActions={commentActions} parentId={type === "main" ? comment.id : null}/>
+                <SubComments comments={comment.replies} post={post} user={user} 
+                    commentActions={commentActions} parentId={type === "main" ? comment.id : null}
+                    onShowFileDialog={onShowFileDialog} dropAction={dropAction}
+                />
             }
         </Wrapper>
     )

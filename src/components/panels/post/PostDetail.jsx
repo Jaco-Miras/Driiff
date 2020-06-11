@@ -1,9 +1,13 @@
-import React from "react";
+import React, {useRef, useState} from "react";
 import styled from "styled-components";
+import {useDispatch} from "react-redux";
 import {useHistory} from "react-router-dom"
 import {FileAttachments, SvgIconFeather} from "../../common";
 import {PostDetailFooter, PostBody, PostComments} from "./index";
 import {useComments, useCommentActions} from "../../hooks";
+import {DropDocument} from "../../dropzone/DropDocument";
+import {addToModals} from "../../../redux/actions/globalActions";
+import {setParentIdForUpload} from "../../../redux/actions/postActions";
 
 const MainBody = styled.div`
     display: flex;
@@ -20,13 +24,85 @@ const Counters = styled.div`
 const PostDetail = props => {
 
     const {post, postActions, user} = props;
+    const dispatch = useDispatch();
     const history = useHistory();
+    const [showDropZone, setshowDropZone] = useState(false);
+
     const handleClosePost = () => {
         history.goBack();
     };
     const commentActions = useCommentActions();
     const comments = useComments(post, commentActions);
-    console.log(postActions)
+    
+    const refs = {
+        dropZoneRef: useRef(),
+    };
+
+    const handleOpenFileDialog = (parentId) => {
+        dispatch(setParentIdForUpload(parentId))
+        if (refs.dropZoneRef.current) {
+            refs.dropZoneRef.current.open();
+        }
+    };
+
+    const handleHideDropzone = () => {
+        setshowDropZone(false);
+    };
+
+    const handleshowDropZone = () => {
+        setshowDropZone(true);
+    };
+
+    const dropAction = (acceptedFiles) => {
+
+        let attachedFiles = [];
+        acceptedFiles.forEach(file => {
+            var bodyFormData = new FormData();
+            bodyFormData.append("file", file);
+            let shortFileId = require("shortid").generate();
+            if (file.type === "image/jpeg" || file.type === "image/png" || file.type === "image/gif" || file.type === "image/webp") {
+                attachedFiles.push({
+                    ...file,
+                    type: "IMAGE",
+                    id: shortFileId,
+                    status: false,
+                    src: URL.createObjectURL(file),
+                    bodyFormData: bodyFormData,
+                    name: file.name ? file.name : file.path,
+                });
+            } else if (file.type === "video/mp4") {
+                attachedFiles.push({
+                    ...file,
+                    type: "VIDEO",
+                    id: shortFileId,
+                    status: false,
+                    src: URL.createObjectURL(file),
+                    bodyFormData: bodyFormData,
+                    name: file.name ? file.name : file.path,
+                });
+            } else {
+                attachedFiles.push({
+                    ...file,
+                    type: "DOC",
+                    id: shortFileId,
+                    status: false,
+                    src: "#",
+                    bodyFormData: bodyFormData,
+                    name: file.name ? file.name : file.path,
+                });
+            }
+        });
+        handleHideDropzone();
+
+        let modal = {
+            type: "file_upload",
+            droppedFiles: attachedFiles,
+            mode: "post",
+            post: post,
+        };
+
+        dispatch(addToModals(modal));
+    };
 
     return (
         <>
@@ -72,7 +148,16 @@ const PostDetail = props => {
                     </div>
                 </div>
             </div>
-            <MainBody className="app-detail-article">
+            <MainBody className="app-detail-article" onDragOver={handleshowDropZone}>
+                <DropDocument
+                    hide={!showDropZone}
+                    ref={refs.dropZoneRef}
+                    onDragLeave={handleHideDropzone}
+                    onDrop={({acceptedFiles}) => {
+                        dropAction(acceptedFiles);
+                    }}
+                    onCancel={handleHideDropzone}
+                />
                 <PostBody post={post} postActions={postActions}/>
                 <hr className="m-0"/>
                 <Counters className="d-flex align-items-center">
@@ -92,9 +177,11 @@ const PostDetail = props => {
                     <hr className="m-0"/>
                     </>
                 }
-                <PostComments comments={comments} post={post} user={user} commentActions={commentActions}/>
+                <PostComments comments={comments} post={post} user={user} commentActions={commentActions}
+                    onShowFileDialog={handleOpenFileDialog} dropAction={dropAction}
+                />
                 <hr className="m-0"/>
-                <PostDetailFooter post={post} commentActions={commentActions}/>
+                <PostDetailFooter post={post} commentActions={commentActions} onShowFileDialog={handleOpenFileDialog} dropAction={dropAction}/>
             </MainBody>
         </>
     )
