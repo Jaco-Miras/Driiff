@@ -240,6 +240,12 @@ export const SvgIconFeather = React.memo(React.forwardRef((props, ref) => {
                 <polyline points="21 15 16 10 5 21"/>
             </>;
             break;
+        case "heart":
+            content = <>
+                <path
+                    d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+            </>;
+            break;
         case "video":
             content = <>
                 <polygon points="23 7 16 12 23 17 23 7"/>
