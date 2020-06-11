@@ -111,11 +111,19 @@ export default function (state = INITIAL_STATE, action) {
             };
         }
         case "GET_CHANNEL_SUCCESS": {
+            let channel = state.channels[action.data.id];
+
+            if (typeof channel === "undefined")
+                channel = {};
+
             return {
                 ...state,
                 channels: {
                     ...state.channels,
-                    [action.data.id]: action.data,
+                    [action.data.id]: {
+                        ...channel,
+                        ...action.data,
+                    },
                 },
             };
         }
