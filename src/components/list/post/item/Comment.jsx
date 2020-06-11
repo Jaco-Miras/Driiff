@@ -53,8 +53,17 @@ const Comment = props => {
         setUserMention(null)
     }, []);
 
+    const handleQuote = () => {
+        setShowInput(true);
+        commentActions.addQuote(comment)
+    }
+
     return (
         <Wrapper>
+            {
+                comment.quote &&
+                <div>{comment.quote.body}</div>
+            }
             <CommentWrapper type={type}>
                 <CommentHeader className="d-flex">
                     <div></div>
@@ -66,7 +75,7 @@ const Comment = props => {
                                 Edit reply
                             </div>
                         }
-                        <div>
+                        <div onClick={handleQuote}>
                             Quote
                         </div>
                         {
@@ -86,6 +95,7 @@ const Comment = props => {
             {
                 showInput &&
                 <CommentInput 
+                    commentId={comment.id}
                     post={post} 
                     parentId={type === "main" ? comment.id : parentId} 
                     commentActions={commentActions}

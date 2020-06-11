@@ -30,3 +30,4 @@ export {default as useVisibilityChange} from "./useVisibilityChange";
 export {default as useSocketConnection} from "./useSocketConnection";
 export {default as useComments} from "./useComments";
 export {default as useCommentActions} from "./useCommentActions";
+export {default as useCommentQuote} from "./useCommentQuote";

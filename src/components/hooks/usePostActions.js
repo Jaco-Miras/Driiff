@@ -7,7 +7,7 @@ import {copyTextToClipboard} from "../../helpers/commonFunctions";
 import {getBaseUrl} from "../../helpers/slugHelper";
 import {
     postFavorite, postArchive, postFollow, postMarkDone, 
-    postToggleRead, removePost, postUnfollow,
+    postToggleRead, removePost, postUnfollow, deletePost
 } from "../../redux/actions/postActions";
 
 const usePostActions = () => {
@@ -170,6 +170,42 @@ const usePostActions = () => {
         }
     }, [dispatch]);
 
+    const trash = useCallback((post) => {
+        const onConfirm = () => {
+            dispatch(
+                deletePost({
+                    id: post.id,
+                }, (err, res) => {
+                    if (err) return;
+                    dispatch(
+                        removePost({
+                            post_id: post.id,
+                            topic_id: parseInt(params.workspaceId)
+                        })
+                    )
+                    if (params.hasOwnProperty("postId")) {
+                        history.goBack();
+                    }
+                })
+            )
+        };
+
+        let payload = {
+            type: "confirmation",
+            headerText: "Delete post?",
+            submitText: "Delete",
+            cancelText: "Cancel",
+            bodyText: "Are you sure you want to delete this post?",
+            actions: {
+                onSubmit: onConfirm,
+            },
+        };
+
+        dispatch(
+            addToModals(payload),
+        );
+    }, [dispatch]);
+
     return {
         starPost,
         markPost,
@@ -179,7 +215,8 @@ const usePostActions = () => {
         markAsUnread,
         sharePost,
         snoozePost,
-        followPost
+        followPost,
+        trash
     }
 };
 

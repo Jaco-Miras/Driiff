@@ -7,7 +7,7 @@ import {joinWorkspace, joinWorkspaceReducer} from "../../../redux/actions/worksp
 import {CommonPicker, SvgIconFeather} from "../../common";
 import PostInput from "../../forms/PostInput";
 import {useIsMember} from "../../hooks";
-import ChatQuote from "../../list/chat/ChatQuote";
+import {CommentQuote} from "../../list/post/item";
 
 const Wrapper = styled.div`
     position: relative;
@@ -111,7 +111,7 @@ const PickerContainer = styled(CommonPicker)`
 const PostDetailFooter = (props) => {
 
     const {className = "", onShowFileDialog, dropAction, post, parentId = null, 
-            commentActions, userMention = null, handleClearUserMention = null} = props;
+            commentActions, userMention = null, handleClearUserMention = null, commentId = null} = props;
 
     const dispatch = useDispatch();
     const ref = {
@@ -173,12 +173,11 @@ const PostDetailFooter = (props) => {
 
     return (
         <Wrapper className={`chat-footer card-body ${className}`}>
-            {/* {
-                selectedChannel && selectedChannel.is_archived === 0 &&
+            {
                 <Dflex className="d-flex pr-2 pl-2">
-                    <ChatQuote/>
+                    <CommentQuote commentActions={commentActions} commentId={commentId}/>
                 </Dflex>
-            } */}
+            }
             {
                 isMember &&
                 <Dflex className="d-flex align-items-center">
@@ -192,6 +191,7 @@ const PostDetailFooter = (props) => {
                             <IconButton onClick={handleShowEmojiPicker} icon="smile"/>
                             <ChatInputContainer className="flex-grow-1">
                                 <PostInput
+                                    commentId={commentId}
                                     userMention={userMention}
                                     handleClearUserMention={handleClearUserMention}
                                     commentActions={commentActions}

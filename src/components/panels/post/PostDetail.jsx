@@ -52,7 +52,7 @@ const PostDetail = props => {
                     </span>
                     {
                         post.author.id === user.id &&
-                        <a className="btn btn-outline-light ml-2" data-toggle="tooltip"
+                        <a onClick={() => postActions.trash(post)} className="btn btn-outline-light ml-2" data-toggle="tooltip"
                             title="" data-original-title="Delete Task">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                     viewBox="0 0 24 24" fill="none" stroke="currentColor"
