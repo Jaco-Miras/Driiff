@@ -65,23 +65,21 @@ const DashboardTeam = (props) => {
         //eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
+    if (!workspace)
+        return <></>;
+
     return (
         <Wrapper className={`dashboard-team card ${className}`}>
             <div ref={assignRef} className="card-body">
-            {
-                workspace && 
-                    <>
-                    <h5 className="card-title">
-                        {workspace.hasOwnProperty("workspace_name") ? `${workspace.workspace_name} (${workspace.name})` : workspace.name} team</h5>
-                    <ul className="list-group list-group-flush">
-                        {
-                            workspace.members.map(member => {
-                                return <TeamListItem key={member.id} member={member} parentRef={scrollRef}/>;
-                            })
-                        }
-                    </ul>
-                    </>
-            }
+                <h5 className="card-title">
+                    {workspace.hasOwnProperty("workspace_name") ? `${workspace.workspace_name} (${workspace.name})` : workspace.name} team</h5>
+                <ul className="list-group list-group-flush">
+                    {
+                        workspace.members.map(member => {
+                            return <TeamListItem key={member.id} member={member} parentRef={scrollRef}/>;
+                        })
+                    }
+                </ul>
             </div>
         </Wrapper>
     );
