@@ -5,14 +5,23 @@ import {updateWorkspacePostFilterSort} from "../../../redux/actions/workspaceAct
 import {SvgIconFeather} from "../../common";
 
 const Wrapper = styled.div`
-    a {
+    > span {
         cursor: pointer;
+        cursor: hand;
+        
+        &.active {
+            border-color: #ebebeb !important;
+        }
+        
+        svg {
+            width: 16px;
+        }
     }
 `;
 
 const PostFilterItem = props => {
 
-    const {filter} = props;
+    const {className = "", filter = "all"} = props;
     const dispatch = useDispatch();
     const topic = useSelector(state => state.workspaces.activeTopic);
 
@@ -21,34 +30,35 @@ const PostFilterItem = props => {
             dispatch(
                 updateWorkspacePostFilterSort({
                     topic_id: topic.id,
-                    filter: e.target.dataset.value
-                })
-            )
+                    filter: e.target.dataset.value,
+                }),
+            );
         }
     };
 
     return (
-        <Wrapper className="list-group list-group-flush">
-            <a className={`list-group-item d-flex align-items-center ${filter && filter === "all" ? "active" : ""}`}
-               data-value="all" onClick={handleClickFilter}>
-                <SvgIconFeather icon="mail"/>
+        <Wrapper className={`post-filter-item list-group list-group-flush ${className}`}>
+            <span
+                className={`list-group-item d-flex align-items-center ${filter === null || filter === "all" ? "active" : ""}`}
+                data-value="all" onClick={handleClickFilter}>
+                <SvgIconFeather className="mr-2" icon="book-open"/>
                 All
-            </a>
-            <a className={`list-group-item ${filter && filter === "my_posts" ? "active" : ""}`} data-value="my_posts"
-               onClick={handleClickFilter}>
-                <SvgIconFeather icon="send"/>
+            </span>
+            <span className={`list-group-item ${filter && filter === "my_posts" ? "active" : ""}`} data-value="my_posts"
+                  onClick={handleClickFilter}>
+                <SvgIconFeather className="mr-2" icon="send"/>
                 My posts
-            </a>
-            <a className={`list-group-item ${filter && filter === "star" ? "active" : ""}`} data-value="star"
-               onClick={handleClickFilter}>
-                <SvgIconFeather icon="send"/>
+            </span>
+            <span className={`list-group-item ${filter && filter === "star" ? "active" : ""}`} data-value="star"
+                  onClick={handleClickFilter}>
+                <SvgIconFeather className="mr-2" icon="star"/>
                 Starred
-            </a>
-            <a className={`list-group-item ${filter && filter === "draft" ? "active" : ""}`} data-value="draft"
-               onClick={handleClickFilter}>
-                <SvgIconFeather icon="send"/>
+            </span>
+            <span className={`list-group-item ${filter && filter === "draft" ? "active" : ""}`} data-value="draft"
+                  onClick={handleClickFilter}>
+                <SvgIconFeather className="mr-2" icon="edit-3"/>
                 Drafts
-            </a>
+            </span>
         </Wrapper>
     );
 };
