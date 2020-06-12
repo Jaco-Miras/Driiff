@@ -1,5 +1,6 @@
-import React from "react";
+import React, {useRef, useState} from "react";
 import styled from "styled-components";
+import {DropDocument} from "../../dropzone/DropDocument";
 import {FileListItem} from "../../list/file/item";
 import {MoreOptions} from "../common";
 import {ImportantFiles, PopularFiles, RecentEditedFile, RemoveFiles} from "./index";
@@ -31,6 +32,9 @@ const MoreButton = styled(MoreOptions)`
 const FilesBody = (props) => {
 
     const {className = "", filter, search} = props;
+    const refs = {
+        dropZone: useRef(null),
+    };
 
 
     const files = [
@@ -98,8 +102,32 @@ const FilesBody = (props) => {
 
     const scrollRef = document.querySelector(".app-content-body");
 
+    const [showDropZone, setShowDropZone] = useState(false);
+
+    const handleHideDropZone = () => {
+        setShowDropZone(false);
+    };
+
+    const handleShowDropZone = () => {
+        setShowDropZone(true);
+    };
+
+    const dropAction = (files) => {
+        console.log(files);
+        setShowDropZone(false);
+    };
+
     return (
-        <Wrapper className={`files-body card app-content-body ${className}`}>
+        <Wrapper className={`files-body card app-content-body ${className}`} onDragOver={handleShowDropZone}>
+            <DropDocument
+                hide={!showDropZone}
+                ref={refs.dropZone}
+                onDragLeave={handleHideDropZone}
+                onDrop={({acceptedFiles}) => {
+                    dropAction(acceptedFiles);
+                }}
+                onCancel={handleHideDropZone}
+            />
             <div className="card-body">
                 <MoreButton moreButton="settings">
                     <div>Move to</div>
