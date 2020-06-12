@@ -73,7 +73,7 @@ const MoreTooltip = styled.div`
 const MoreOptions = props => {
 
     const {
-        className = "", item, moreButton = `horizontal`, children = "More Options",
+        className = "", item, moreButton = `more-horizontal`, children = "More Options",
         width = 200, scrollRef = null,
         ...rest
     } = props;
@@ -108,7 +108,7 @@ const MoreOptions = props => {
         ref={refs.container}
         {...rest}>
         <SvgIconFeather data-event="touchstart focus mouseover" data-event-off="mouseout" data-tip="Message options"
-                        icon={`more-${moreButton}`}/>
+                        icon={moreButton}/>
         {
             showMoreOptions &&
             <MoreTooltip

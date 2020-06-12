@@ -27,8 +27,6 @@ const FileOptions = props => {
 
     const [showMoreOptions, setShowMoreOptions] = useState(false);
 
-    const scrollEl = document.getElementById(".app-content-body");
-
     const handleViewDetail = () => {
 
     };
@@ -60,7 +58,7 @@ const FileOptions = props => {
     return (
         <Wrapper
             className={`file-options ${className}`}
-            moreButton="vertical"
+            moreButton="more-vertical"
             file={file} scrollRef={scrollRef}>
             <div onClick={handleViewDetail}>View Details</div>
             <div onClick={handleFavorite}>Un/Favorite</div>

@@ -1,10 +1,13 @@
 import React from "react";
 import styled from "styled-components";
 import {FileListItem} from "../../list/file/item";
+import {MoreOptions} from "../common";
 import {ImportantFiles, PopularFiles, RecentEditedFile, RemoveFiles} from "./index";
 
 const Wrapper = styled.div`
-    .card-body {    
+    .card-body {
+        position: relative;
+            
         overflow: auto !important;
         &::-webkit-scrollbar {
             display: none;
@@ -15,6 +18,14 @@ const Wrapper = styled.div`
             padding-right: 24px;
         }
     }
+`;
+
+const MoreButton = styled(MoreOptions)`
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    width: 18px;
+}
 `;
 
 const FilesBody = (props) => {
@@ -90,7 +101,11 @@ const FilesBody = (props) => {
     return (
         <Wrapper className={`files-body card app-content-body ${className}`}>
             <div className="card-body">
-                {search}
+                <MoreButton moreButton="settings">
+                    <div>Move to</div>
+                    <div>Delete</div>
+                </MoreButton>
+
                 {
                     filter === "" &&
                     <>
@@ -105,21 +120,21 @@ const FilesBody = (props) => {
                                 })
                             }
                         </div>
-                        <PopularFiles scrollRef={scrollRef}/>
-                        <RecentEditedFile scrollRef={scrollRef}/>
+                        <PopularFiles search={search} scrollRef={scrollRef}/>
+                        <RecentEditedFile search={search} scrollRef={scrollRef}/>
                     </>
                 }
                 {
                     filter === "recent" &&
-                    <RecentEditedFile scrollRef={scrollRef}/>
+                    <RecentEditedFile search={search} scrollRef={scrollRef}/>
                 }
                 {
                     filter === "important" &&
-                    <ImportantFiles scrollRef={scrollRef}/>
+                    <ImportantFiles search={search} scrollRef={scrollRef}/>
                 }
                 {
                     filter === "removed" &&
-                    <RemoveFiles scrollRef={scrollRef}/>
+                    <RemoveFiles search={search} scrollRef={scrollRef}/>
                 }
             </div>
         </Wrapper>
