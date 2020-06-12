@@ -1,41 +1,52 @@
-import React, { useCallback, useRef, useState } from 'react';
+import React, {useCallback, useRef, useState} from "react";
 import styled from "styled-components";
 import {useOutsideClick} from "../hooks";
 
 const Wrapper = styled.div`
-`
+    .dropdown-toggle {
+        &.show {
+            color: #fff;
+            background: #afb8bd;
+            border-color: #afb8bd;
+        }
+    }
+    .dropdown-item {
+        cursor: pointer;
+        cursor: hand;
+    }
+`;
 
 const ButtonDropdown = props => {
 
-    const {dropdown} = props;
+    const {className = "", dropdown} = props;
     const wrapperRef = useRef();
     const [show, setShow] = useState(false);
     const toggle = useCallback(() => {
-        setShow(!show)
+        setShow(!show);
     }, [show]);
 
     useOutsideClick(wrapperRef, toggle, show);
 
     return (
-        <Wrapper ref={wrapperRef}>
-            <a className={`btn btn-outline-light dropdown-toggle ${show ? "show" : ""}`} 
-            data-toggle="dropdown"
-            onClick={toggle}>
+        <Wrapper className={`button-dropdown ${className}`} ref={wrapperRef}>
+            <span
+                className={`btn btn-outline-light dropdown-toggle d-flex justify-content-between ${show ? "show" : ""}`}
+                data-toggle="dropdown"
+                onClick={toggle}>
                 {dropdown.label}
-            </a>
+            </span>
             <div className={`dropdown-menu ${show ? "show" : ""}`}>
                 {
                     dropdown.items.map(item => {
-                        return <a className="dropdown-item" 
-                            key={item.value}
-                            data-value={item.value}
-                            data-name={item.label} 
-                            onClick={e => {
-                                item.onClick(e)
-                                toggle()
-                            }}>
+                        return <span className="dropdown-item d-flex justify-content-between"
+                                     key={item.value}
+                                     data-value={item.value}
+                                     onClick={e => {
+                                         item.onClick(e);
+                                         toggle();
+                                     }}>
                             {item.label}
-                        </a>
+                        </span>;
                     })
                 }
             </div>
