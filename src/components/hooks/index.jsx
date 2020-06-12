@@ -31,3 +31,5 @@ export {default as useSocketConnection} from "./useSocketConnection";
 export {default as useComments} from "./useComments";
 export {default as useCommentActions} from "./useCommentActions";
 export {default as useCommentQuote} from "./useCommentQuote";
+export {default as useWorkspace} from "./useWorkspace";
+export {default as useWorkspaceActions} from "./useWorkspaceActions";

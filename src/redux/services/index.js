@@ -88,13 +88,16 @@ export {
     postToggleRead,
     postUnfollow,
     putComment,
+    putPost,
 } from "./post";
 
 export {
     createWorkspace,
     deleteWorkspace,
+    fetchDetail,
+    fetchPrimaryFiles,
+    fetchMembers,
     getPostStatusCount,
-    getWorkspaceDetail,
     getWorkspacePosts,
     getWorkspacePostDetail,
     getWorkspaceTopics,
@@ -103,5 +106,4 @@ export {
     moveWorkspaceTopic,
     updatePostStatus,
     updateWorkspace,
-    updateWorkspacePost,
 } from "./workspace";

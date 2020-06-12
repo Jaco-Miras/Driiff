@@ -4,7 +4,7 @@ import {Input, InputGroup, Label, Modal, ModalBody} from "reactstrap";
 import styled from "styled-components";
 import moment from "moment";
 import {clearModal, deleteDraft, saveDraft, updateDraft} from "../../redux/actions/globalActions";
-import {postCreate} from "../../redux/actions/postActions";
+import {postCreate, putPost} from "../../redux/actions/postActions";
 import {SvgIconFeather, DatePicker, FileAttachments} from "../common";
 import {CheckBox, DescriptionInput, FolderSelect, PeopleSelect} from "../forms";
 import QuillEditor from "../forms/QuillEditor";
@@ -266,7 +266,9 @@ const CreateEditWorkspacePostModal = props => {
             read_only: form.no_reply ? 1 : 0,
             workspace_ids: form.selectedWorkspaces.filter(ws => ws.type === "FOLDER").map(ws => ws.value),
             show_at: form.show_at ? moment(form.show_at, "YYYY-MM-DD").format("YYYY-MM-DD") : null,
-            end_at: form.end_at ? moment(form.end_at, "YYYY-MM-DD").format("YYYY-MM-DD") : null
+            end_at: form.end_at ? moment(form.end_at, "YYYY-MM-DD").format("YYYY-MM-DD") : null,
+            tag_ids: [],
+            file_ids: [],
         };
         if (draftId) {
             dispatch(
@@ -276,7 +278,16 @@ const CreateEditWorkspacePostModal = props => {
                 })
             )
         }
-        dispatch(postCreate(payload));
+        if (mode === "edit") {
+            payload = {
+                ...payload,
+                id: item.post.id,
+                files: []
+            }
+            dispatch(putPost(payload));
+        } else {
+            dispatch(postCreate(payload));
+        }
         toggle(false);
     };
 
@@ -327,7 +338,7 @@ const CreateEditWorkspacePostModal = props => {
         if (activeTopic !== null && item.hasOwnProperty("draft")) {
             setForm(item.draft.form);
             setDraftId(item.draft.draft_id);
-        } else if (activeTopic !== null) {
+        } else if (activeTopic !== null && mode !== "edit") {
             setForm({
                 ...form,
                 selectedWorkspaces: [{
@@ -343,6 +354,29 @@ const CreateEditWorkspacePostModal = props => {
                     first_name: user.first_name,
                     profile_image_link: user.profile_image_link,
                 }],
+            });
+        } else if (mode === "edit" && item.hasOwnProperty("post")) {
+            setForm({
+                ...form,
+                body: item.post.body,
+                textOnly: item.post.body,
+                title: item.post.title,
+                hast_folder: activeTopic.hasOwnProperty("workspace_id"),
+                no_reply: item.post.is_read_only,
+                must_read: item.post.is_must_read,
+                reply_required: item.post.is_must_reply,
+                selectedWorkspaces: [{
+                    ...activeTopic,
+                    value: activeTopic.id,
+                    label: activeTopic.name,
+                }],
+                selectedUsers: item.post.users_responsible.map(u => {
+                    return {
+                        ...u,
+                        value: u.id,
+                        label: u.name
+                    }
+                }),
             });
         }
 
@@ -431,7 +465,7 @@ const CreateEditWorkspacePostModal = props => {
         setAttachedFiles(prevState => prevState.filter(f => f.id !== fileId));
     }, [setAttachedFiles]);
 
-    const [wsOptions, userOptions] = useGetWorkspaceAndUserOptions(form.selectedWorkspaces, item);
+    const [wsOptions, userOptions] = useGetWorkspaceAndUserOptions(form.selectedWorkspaces, activeTopic);
 
     return (
 
@@ -483,7 +517,7 @@ const CreateEditWorkspacePostModal = props => {
                         showFileButton={true}
                         onChange={handleQuillChange}
                         onOpenFileDialog={handleOpenFileDialog}
-                        defaultValue={mode === "edit" && item ? item.description : ""}
+                        defaultValue={mode === "edit" ? item.post.body : ""}
                         mode={mode}
                     />
                     {/* <StyledQuillEditor
@@ -530,7 +564,7 @@ const CreateEditWorkspacePostModal = props => {
                         className="btn btn-primary"
                         disabled={form.selectedUsers.length === 0 || form.title === "" || form.selectedWorkspaces.length === 0}
                         onClick={handleConfirm}>
-                        {mode === "edit" ? "Update workspace" : "Create post"}
+                        {mode === "edit" ? "Update post" : "Create post"}
                     </button>
                 </WrapperDiv>
             </ModalBody>

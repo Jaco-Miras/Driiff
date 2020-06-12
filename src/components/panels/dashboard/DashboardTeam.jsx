@@ -1,6 +1,6 @@
 import React, {useCallback, useState} from "react";
 import styled from "styled-components";
-import {SvgIconFeather} from "../../common";
+// import {SvgIconFeather} from "../../common";
 import {useLogRenders} from "../../hooks";
 import {TeamListItem} from "../../list/people/item";
 
@@ -52,34 +52,10 @@ const Wrapper = styled.div`
 
 const DashboardTeam = (props) => {
 
-    const {className = ""} = props;
+    const {className = "", workspace} = props;
     const [scrollRef, setScrollRef] = useState(null);
 
     useLogRenders();
-
-    const users = [
-        {
-            id: 1,
-            name: "User 1",
-            role: {
-                name: "Leader",
-            },
-        },
-        {
-            id: 2,
-            name: "User 2",
-            role: {
-                name: "Member",
-            },
-        },
-        {
-            id: 3,
-            name: "User 2",
-            role: {
-                name: "Member",
-            },
-        },
-    ];
 
     const assignRef = useCallback((e) => {
         if (scrollRef === null) {
@@ -92,23 +68,20 @@ const DashboardTeam = (props) => {
     return (
         <Wrapper className={`dashboard-team card ${className}`}>
             <div ref={assignRef} className="card-body">
-                <h5 className="card-title">Team <SvgIconFeather icon="edit"/></h5>
-                <p>The team of a workspace is shown here.<br/>
-                    PENDING From this location, the members can be given a certain role or can be removed from the
-                    workspace.<br/>
-                    The sorting of the team is done alphabetically, based on the first name.</p>
-                <p>Behavior remove<br/>
-                    The user selects the more options next to a team member<br/>
-                    The user selects the option to remove the user<br/>
-                    The system opens the ‘edit workspace’ option - with the cogwheel icon being active<br/>
-                    The user can amend its changes</p>
-                <ul className="list-group list-group-flush">
-                    {
-                        users.map(user => {
-                            return <TeamListItem key={user.id} user={user} parentRef={scrollRef}/>;
-                        })
-                    }
-                </ul>
+            {
+                workspace && 
+                    <>
+                    <h5 className="card-title">
+                        {workspace.hasOwnProperty("workspace_name") ? `${workspace.workspace_name} (${workspace.name})` : workspace.name} team</h5>
+                    <ul className="list-group list-group-flush">
+                        {
+                            workspace.members.map(member => {
+                                return <TeamListItem key={member.id} member={member} parentRef={scrollRef}/>;
+                            })
+                        }
+                    </ul>
+                    </>
+            }
             </div>
         </Wrapper>
     );

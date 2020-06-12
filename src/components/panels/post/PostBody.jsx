@@ -39,7 +39,7 @@ const PostBody = props => {
                         post.files.length > 0 &&
                         <SvgIconFeather icon="paperclip" width={16} height={16}/>
                     }
-                    <SvgIconFeather onCLick={handleStarPost} icon="star" fill={post.is_favourite ? "#ffc107" : "none"} width={16} height={16}/>
+                    <SvgIconFeather onClick={handleStarPost} icon="star" fill={post.is_favourite ? "#ffc107" : "none"} width={16} height={16}/>
                     <SvgIconFeather onClick={handleArchivePost} icon="archive" width={16} height={16}/>
                     <span className="text-muted">{localizeDate(post.created_at.timestamp, "LT")}</span>
                 </div>

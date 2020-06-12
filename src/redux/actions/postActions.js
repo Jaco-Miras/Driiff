@@ -12,6 +12,7 @@ import {
     postToggleRead as postToggleReadService,
     postUnfollow as postUnfollowService,
     putComment as putCommentService,
+    putPost as putPostService,
 } from "../services";
 
 export function postFavorite(payload, callback) {
@@ -177,6 +178,56 @@ export function deletePost(payload, callback) {
 export function setParentIdForUpload(payload, callback) {
     return SimpleDispatchActionToReducer(
         "SET_PARENT_ID",
+        payload,
+        callback,
+    );
+}
+
+export function starPostReducer(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "STAR_POST_REDUCER",
+        payload,
+        callback,
+    );
+}
+
+export function markPostReducer(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "MARK_POST_REDUCER",
+        payload,
+        callback,
+    );
+}
+
+export function putPost(payload, callback) {
+    return dispatchActionToReducer(
+        putPostService(payload),
+        "UPADATE_POST_START",
+        "UPADATE_POST_SUCCESS",
+        "UPADATE_POST_FAIL",
+        callback,
+    );
+}
+
+export function incomingPost(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "INCOMING_POST",
+        payload,
+        callback,
+    );
+}
+
+export function incomingDeletedPost(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "INCOMING_DELETED_POST",
+        payload,
+        callback,
+    );
+}
+
+export function incomingComment(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "INCOMING_COMMENT",
         payload,
         callback,
     );

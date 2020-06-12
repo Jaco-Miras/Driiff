@@ -152,27 +152,6 @@ export function createWorkspacePost(payload) {
 /**
  * @param {Object} payload
  * @param {number} payload.post_id
- * @param {string} payload.title
- * @param {string} payload.body
- * @param {string} payload.status
- * @param {array} payload.recipient_ids
- * @param {array} payload.workspace_ids
- * @param {string} payload.type
- * @param {number} payload.personal
- * @returns {Promise<*>}
- */
-export function updateWorkspacePost(payload) {
-    let url = `/v1/posts/${payload.post_id}`;
-    return apiCall({
-        method: "PUT",
-        url: url,
-        data: payload,
-    });
-}
-
-/**
- * @param {Object} payload
- * @param {number} payload.post_id
  * @param {string} payload.status
  * @returns {Promise<*>}
  */
@@ -190,8 +169,8 @@ export function updatePostStatus(payload) {
  * @param {number} payload.topic_id
  * @returns {Promise<*>}
  */
-export function getWorkspaceDetail(payload) {
-    let url = `/v2/workspace-dashboard?topic_id=${payload.topic_id}`;
+export function fetchDetail(payload) {
+    let url = `/v2/workspace-dashboard-detail?topic_id=${payload.topic_id}`;
     return apiCall({
         method: "GET",
         url: url,
@@ -223,6 +202,34 @@ export function joinWorkspace(payload) {
     let url = `/v1/members`;
     return apiCall({
         method: "POST",
+        url: url,
+        data: payload,
+    });
+}
+
+/**
+ * @param {Object} payload
+ * @param {number} payload.topic_id
+ * @returns {Promise<*>}
+ */
+export function fetchPrimaryFiles(payload) {
+    let url = `/v2/workspace-primary-files?topic_id=${payload.topic_id}`;
+    return apiCall({
+        method: "GET",
+        url: url,
+        data: payload,
+    });
+}
+
+/**
+ * @param {Object} payload
+ * @param {number} payload.topic_id
+ * @returns {Promise<*>}
+ */
+export function fetchMembers(payload) {
+    let url = `/v2/workspace-dashboard-members?topic_id=${payload.topic_id}`;
+    return apiCall({
+        method: "GET",
         url: url,
         data: payload,
     });

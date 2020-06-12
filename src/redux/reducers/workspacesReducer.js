@@ -587,6 +587,120 @@ export default (state = INITIAL_STATE, action) => {
                 }
             }
         }
+        case "STAR_POST_REDUCER": {
+            return {
+                ...state,
+                workspacePosts: {
+                    [action.data.topic_id]: {
+                        ...state.workspacePosts[action.data.topic_id],
+                        posts: {
+                            ...state.workspacePosts[action.data.topic_id].posts,
+                            [action.data.post_id]: {
+                                ...state.workspacePosts[action.data.topic_id].posts[action.data.post_id],
+                                is_favourite: !state.workspacePosts[action.data.topic_id].posts[action.data.post_id].is_favourite
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        case "MARK_POST_REDUCER": {
+            return {
+                ...state,
+                workspacePosts: {
+                    [action.data.topic_id]: {
+                        ...state.workspacePosts[action.data.topic_id],
+                        posts: {
+                            ...state.workspacePosts[action.data.topic_id].posts,
+                            [action.data.post_id]: {
+                                ...state.workspacePosts[action.data.topic_id].posts[action.data.post_id],
+                                is_mark_done: !state.workspacePosts[action.data.topic_id].posts[action.data.post_id].is_mark_done
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        case "INCOMING_POST": {
+            let newWorkspacePosts = {...state.workspacePosts};
+            action.data.recipient_ids.forEach(id => {
+                if (newWorkspacePosts.hasOwnProperty(id)) {
+                    newWorkspacePosts[id].posts[action.data.id] = action.data
+                } else {
+                    return;
+                }
+            })
+            return {
+                ...state,
+                workspacePosts: newWorkspacePosts
+            }
+        }
+        case "INCOMING_DELETED_POST": {
+            let newWorkspacePosts = {...state.workspacePosts};
+            //need recipient ids
+            return {
+                ...state,
+                workspacePosts: newWorkspacePosts
+            }
+        }
+        case "INCOMING_COMMENT": {
+            let newPostComments = {...state.postComments};
+            let newWorkspacePosts = {...state.workspacePosts};
+            if (action.data.workspaces.length && action.data.SOCKET_TYPE === "POST_COMMENT_CREATE") {
+                action.data.workspaces.forEach(ws => {
+                    if (newWorkspacePosts.hasOwnProperty(ws.topic_id) && newWorkspacePosts[ws.topic_id].posts.hasOwnProperty(action.data.post_id)) {
+                        newWorkspacePosts[ws.topic_id].posts[action.data.post_id].reply_count = newWorkspacePosts[ws.topic_id].posts[action.data.post_id].reply_count + 1;
+                    }
+                })
+            }
+            if (newPostComments.hasOwnProperty(action.data.post_id)) {
+                if (action.data.reference_id) {
+                    delete newPostComments[action.data.post_id].comments[action.data.reference_id]
+                }
+                newPostComments[action.data.post_id].comments[action.data.id] = action.data;
+            }
+            return {
+                ...state,
+                postComments: newPostComments,
+                workspacePosts: newWorkspacePosts
+            }
+        }
+        case "ADD_PRIMARY_FILES": {
+            let newWorkspaces = {...state.workspaces};
+            if (action.data.folder_id) {
+                newWorkspaces[action.data.folder_id].topics[action.data.id].primary_files = action.data.files;
+            } else {
+                newWorkspaces[action.data.id].primary_files = action.data.files;
+            }
+            return {
+                ...state,
+                workspaces: newWorkspaces,
+                activeTopic: state.activeTopic.id === action.data.id ? 
+                    {
+                        ...state.activeTopic,
+                        primary_files: action.data.files
+                    }
+                    : state.activeTopic
+            }
+        }
+        case "UPLOADING_WORKSPACE_FILES_SUCCESS": {
+            let newWorkspaces = {...state.workspaces};
+            if (action.data.workspace_id) {
+                newWorkspaces[action.data.workspace_id].topics[action.data.topic_id].primary_files = action.data.files;
+            } else {
+                newWorkspaces[action.data.topic_id].primary_files = action.data.files;
+            }
+            return {
+                ...state,
+                workspaces: newWorkspaces,
+                activeTopic: state.activeTopic.id === action.data.topic_id ? 
+                    {
+                        ...state.activeTopic,
+                        primary_files: action.data.files
+                    }
+                    : state.activeTopic
+            }
+        }
         default:
             return state;
     }

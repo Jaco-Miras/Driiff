@@ -8,7 +8,8 @@ import {getBaseUrl} from "../../helpers/slugHelper";
 import {replaceChar} from "../../helpers/stringFormatter";
 import {
     postFavorite, postArchive, postFollow, postMarkDone, 
-    postToggleRead, removePost, postUnfollow, deletePost
+    postToggleRead, removePost, postUnfollow, deletePost,
+    starPostReducer, markPostReducer, putPost, postCreate
 } from "../../redux/actions/postActions";
 
 const usePostActions = () => {
@@ -20,15 +21,33 @@ const usePostActions = () => {
 
     const starPost = useCallback((post) => {
         if (post.type === "draft_post") return;
+        let topic_id = parseInt(params.workspaceId);
         dispatch(
-            postFavorite({type: "post", type_id: post.id})
+            postFavorite({type: "post", type_id: post.id}, (err,res) => {
+                if (err) return;
+                dispatch(
+                    starPostReducer({
+                        post_id: post.id,
+                        topic_id
+                    })
+                )
+            })
         )
     }, [dispatch]);
 
     const markPost = useCallback((post) => {
         if (post.type === "draft_post") return;
+        let topic_id = parseInt(params.workspaceId);
         dispatch(
-            postMarkDone({post_id: post.id})
+            postMarkDone({post_id: post.id}, (err,res) => {
+                if (err) return;
+                dispatch(
+                    markPostReducer({
+                        post_id: post.id,
+                        topic_id
+                    })
+                )
+            })
         )
     }, []);
 
@@ -207,6 +226,50 @@ const usePostActions = () => {
         );
     }, [dispatch]);
 
+    const showModal = useCallback((mode = "create", post = null) => {
+        let payload = {
+            type: "workspace_post_create_edit",
+            mode: mode,
+        };
+        if (mode === "edit") {
+            payload = {
+                ...payload,
+                item: {
+                    post: post
+                },
+                action: {
+                    update: update
+                }
+            }
+        } else {
+            payload = {
+                ...payload,
+                item: {
+                    post: post
+                },
+                action: {
+                    create: create
+                }
+            }
+        }
+
+        dispatch(
+            addToModals(payload),
+        );
+    }, [dispatch]);
+
+    const create = useCallback((payload) => {
+        dispatch(
+            postCreate(payload)
+        );
+    }, [dispatch]);
+
+    const update = useCallback((payload) => {
+        dispatch(
+            putPost(payload)
+        );
+    }, [dispatch]);
+
     return {
         starPost,
         markPost,
@@ -217,7 +280,9 @@ const usePostActions = () => {
         sharePost,
         snoozePost,
         followPost,
-        trash
+        trash,
+        showModal,
+        update
     }
 };
 
