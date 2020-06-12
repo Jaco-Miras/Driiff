@@ -60,7 +60,19 @@ export {
 export {
     getChannelFiles,
     getFiles,
+    getWorkspacePrimaryFiles,
+    getWorkspaceFilesDetail,
+    getWorkspaceFiles,
+    getWorkspacePopularFiles,
+    getWorkspaceTrashFiles,
+    getWorkspaceFavoriteFiles,
+    getWorkspaceRecentlyEditedFiles,
+    getWorkspaceFolders,
     postWorkspaceFiles,
+    patchWorkspaceFileViewed,
+    restoreWorkspaceFile,
+    deleteWorkspaceFile,
+    uploadWorkspaceFile,
 } from "./files";
 
 export {
@@ -81,21 +93,15 @@ export {
 export {
     createWorkspace,
     deleteWorkspace,
-    deleteWorkspaceFile,
     getPostStatusCount,
     getWorkspaceDetail,
-    getWorkspaceFileDetails,
-    getWorkspaceFiles,
     getWorkspacePosts,
     getWorkspacePostDetail,
     getWorkspaceTopics,
-    getWorkspaceTrashFiles,
     getWorkspaces,
     joinWorkspace,
     moveWorkspaceTopic,
-    restoreWorkspaceFile,
     updatePostStatus,
     updateWorkspace,
     updateWorkspacePost,
-    uploadWorkspaceFile,
 } from "./workspace";
