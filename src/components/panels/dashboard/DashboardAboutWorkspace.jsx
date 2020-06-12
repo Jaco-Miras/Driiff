@@ -29,65 +29,24 @@ const Wrapper = styled.div`
 
 const DashboardAboutWorkspace = (props) => {
 
-    const {className = ""} = props;
-
-    const attachedFiles = [
-        {
-            "rawFile": {},
-            "type": "IMAGE",
-            "id": "ggWzh1hws",
-            "status": false,
-            "src": "https://miro.medium.com/max/3000/1*MI686k5sDQrISBM6L8pf5A.jpeg",
-            "name": "empty-sea-beach-background_74190-313.jpg"
-        },
-        {
-            "rawFile": {},
-            "type": "IMAGE",
-            "id": "68ylv-PNrN",
-            "status": false,
-            "src": "https://4.img-dpreview.com/files/p/E~TS590x0~articles/3925134721/0266554465.jpeg",
-            "name": "2020-04-06_1843.png"
-        },
-        {
-            "rawFile": {},
-            "type": "IMAGE",
-            "id": "9fj7PXIfN2",
-            "status": false,
-            "src": "https://mht.wtf/post/content-aware-resize/sample-image.jpeg",
-            "name": "petition.png"
-        }
-    ];
+    const {className = "", workspace} = props;
 
     return (
         <Wrapper className={`dashboard-about-workspace card ${className}`}>
             <div className="card-body">
                 <h5 className="card-title">About this workspace <SvgIconFeather icon="edit"/></h5>
-                <p>In the section called “About this workspace”, the description is shown that is made during the
-                    workspace creation process. This can also be edited, by anyone.</p>
-
-                <p>This description can contain:</p>
-                <ul>
-                    <li>Text</li>
-                    <li>Rich text</li>
-                    <li>Bullet list</li>
-                </ul>
-
-                <p>Files (as an attachment)</p>
-                <ul>
-                    <li>Video</li>
-                    <li>Images</li>
-                    <li>Files</li>
-                    <li>Behavior editing</li>
-                </ul>
-                <ul>
-                    <li>The user selects the pencil icon</li>
-                    <li>The system opens the ‘edit workspace’ option - with the cogwheel icon being active</li>
-                    <li>The user can amend its changes</li>
-                </ul>
-
-                <hr/>
-                File Attachments:
-                <FileAttachments attachedFiles={attachedFiles}/>
+                {
+                    workspace && 
+                    <div dangerouslySetInnerHTML={{__html: workspace.description}}/>
+                }
+                {
+                    workspace && workspace.primary_files && workspace.primary_files.length > 0 &&
+                    <>
+                    <hr/>
+                    <span>File attachments:</span>
+                    <FileAttachments attachedFiles={workspace.primary_files}/>
+                    </>
+                }
             </div>
         </Wrapper>
     );

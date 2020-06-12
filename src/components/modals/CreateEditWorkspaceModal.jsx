@@ -326,7 +326,7 @@ const CreateEditWorkspaceModal = (props) => {
                             dispatch(
                                 setPendingUploadFilesToWorkspace({
                                     is_primary: 1,
-                                    topic_id: 199,
+                                    topic_id: res.data.id,
                                     files: formData,
                                 }),
                             );

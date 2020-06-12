@@ -665,6 +665,42 @@ export default (state = INITIAL_STATE, action) => {
                 workspacePosts: newWorkspacePosts
             }
         }
+        case "ADD_PRIMARY_FILES": {
+            let newWorkspaces = {...state.workspaces};
+            if (action.data.folder_id) {
+                newWorkspaces[action.data.folder_id].topics[action.data.id].primary_files = action.data.files;
+            } else {
+                newWorkspaces[action.data.id].primary_files = action.data.files;
+            }
+            return {
+                ...state,
+                workspaces: newWorkspaces,
+                activeTopic: state.activeTopic.id === action.data.id ? 
+                    {
+                        ...state.activeTopic,
+                        primary_files: action.data.files
+                    }
+                    : state.activeTopic
+            }
+        }
+        case "UPLOADING_WORKSPACE_FILES_SUCCESS": {
+            let newWorkspaces = {...state.workspaces};
+            if (action.data.workspace_id) {
+                newWorkspaces[action.data.workspace_id].topics[action.data.topic_id].primary_files = action.data.files;
+            } else {
+                newWorkspaces[action.data.topic_id].primary_files = action.data.files;
+            }
+            return {
+                ...state,
+                workspaces: newWorkspaces,
+                activeTopic: state.activeTopic.id === action.data.topic_id ? 
+                    {
+                        ...state.activeTopic,
+                        primary_files: action.data.files
+                    }
+                    : state.activeTopic
+            }
+        }
         default:
             return state;
     }

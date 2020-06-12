@@ -94,8 +94,10 @@ export {
 export {
     createWorkspace,
     deleteWorkspace,
+    fetchDetail,
+    fetchPrimaryFiles,
+    fetchMembers,
     getPostStatusCount,
-    getWorkspaceDetail,
     getWorkspacePosts,
     getWorkspacePostDetail,
     getWorkspaceTopics,
