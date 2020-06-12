@@ -22,12 +22,12 @@ const Icon = styled(SvgIconFeather)`
 
 const FileSidebar = (props) => {
 
-    const {className = "", filterFile, filter = "all", storage = {amount: 10, limit: 25}} = props;
+    const {className = "", filterFile, filter = "all", dropZoneRef, storage = {amount: 10, limit: 25}} = props;
 
     const handleShowUploadModal = () => {
-        const input = document.createElement("input");
-        input.setAttribute("type", "file");
-        input.click();
+        if (dropZoneRef.current) {
+            dropZoneRef.current.open();
+        }
     };
 
     return (

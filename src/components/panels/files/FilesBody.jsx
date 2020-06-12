@@ -1,4 +1,4 @@
-import React, {useRef, useState} from "react";
+import React, {useState} from "react";
 import styled from "styled-components";
 import {DropDocument} from "../../dropzone/DropDocument";
 import {FileListItem} from "../../list/file/item";
@@ -31,11 +31,7 @@ const MoreButton = styled(MoreOptions)`
 
 const FilesBody = (props) => {
 
-    const {className = "", filter, search} = props;
-    const refs = {
-        dropZone: useRef(null),
-    };
-
+    const {className = "", dropZoneRef, filter, search} = props;
 
     const files = [
         {
@@ -120,8 +116,8 @@ const FilesBody = (props) => {
     return (
         <Wrapper className={`files-body card app-content-body ${className}`} onDragOver={handleShowDropZone}>
             <DropDocument
+                ref={dropZoneRef}
                 hide={!showDropZone}
-                ref={refs.dropZone}
                 onDragLeave={handleHideDropZone}
                 onDrop={({acceptedFiles}) => {
                     dropAction(acceptedFiles);

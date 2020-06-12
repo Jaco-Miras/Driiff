@@ -1,4 +1,4 @@
-import React, {useCallback, useState} from "react";
+import React, {useCallback, useRef, useState} from "react";
 import styled from "styled-components";
 import {FilesBody, FilesHeader, FilesSidebar} from "../files";
 
@@ -17,6 +17,10 @@ const WorkspaceFilesPanel = (props) => {
     const [filter, setFilter] = useState("");
     const [search, setSearch] = useState("");
 
+    const refs = {
+        dropZone: useRef(null),
+    };
+
     const handleFilterFile = useCallback((e) => {
         setFilter(e.target.dataset.filter);
     }, []);
@@ -28,11 +32,12 @@ const WorkspaceFilesPanel = (props) => {
     return (
         <Wrapper className={`container-fluid h-100 ${className}`}>
             <div className="row app-block">
-                <FilesSidebar className="col-md-3" filterFile={handleFilterFile} filter={filter}/>
+                <FilesSidebar dropZoneRef={refs.dropZone} className="col-md-3" filterFile={handleFilterFile}
+                              filter={filter}/>
                 <div className="col-md-9 app-content">
                     <div className="app-content-overlay"/>
-                    <FilesHeader onSearchChange={handleSearchChange}/>
-                    <FilesBody filter={filter} search={search}/>
+                    <FilesHeader dropZoneRef={refs.dropZone} onSearchChange={handleSearchChange}/>
+                    <FilesBody dropZoneRef={refs.dropZone} filter={filter} search={search}/>
                 </div>
             </div>
         </Wrapper>

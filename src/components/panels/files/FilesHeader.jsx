@@ -21,13 +21,11 @@ const Wrapper = styled.div`
 
 const FilesHeader = (props) => {
 
-    const {className = "", onSearchChange} = props;
+    const {className = "", dropZoneRef, onSearchChange} = props;
 
-    const handleClickAdd = (e) => {
-        if (e.target.dataset.value === "file") {
-            const input = document.createElement("input");
-            input.setAttribute("type", "file");
-            input.click();
+    const handleClickAdd = () => {
+        if (dropZoneRef.current) {
+            dropZoneRef.current.open();
         }
     };
 
