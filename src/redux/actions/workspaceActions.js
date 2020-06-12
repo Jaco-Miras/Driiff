@@ -2,22 +2,16 @@ import dispatchActionToReducer, {SimpleDispatchActionToReducer} from "../actionD
 import {
     createWorkspace as createWorkspaceService,
     deleteWorkspace as deleteWorkspaceService,
-    deleteWorkspaceFile as deleteWorkspaceFileService,
     getPostStatusCount as getPostStatusCountService,
     getWorkspaceDetail as getWorkspaceDetailService,
-    getWorkspaceFileDetails as getWorkspaceFileDetailsService,
-    getWorkspaceFiles as getWorkspaceFilesService,
     getWorkspacePostDetail as getWorkspacePostDetailService,
     getWorkspacePosts as getWorkspacePostsService,
     getWorkspaces as getWorkspacesService,
     getWorkspaceTopics as getWorkspaceTopicsService,
-    getWorkspaceTrashFiles as getWorkspaceTrashFilesService,
     joinWorkspace as joinWorkspaceService,
     moveWorkspaceTopic as moveWorkspaceTopicService,
-    restoreWorkspaceFile as restoreWorkspaceFileService,
     updatePostStatus as updatePostStatusService,
     updateWorkspace as updateWorkspaceService,
-    uploadWorkspaceFile as uploadWorkspaceFileService,
 } from "../services";
 
 export function getWorkspaces(payload, callback) {
@@ -86,66 +80,6 @@ export function getWorkspaceTopics(payload, callback) {
         "GET_WORKSPACE_TOPICS_START",
         "GET_WORKSPACE_TOPICS_SUCCESS",
         "GET_WORKSPACE_TOPICS_FAIL",
-        callback,
-    );
-}
-
-export function getWorkspaceFiles(payload, callback) {
-    return dispatchActionToReducer(
-        getWorkspaceFilesService(payload),
-        "GET_WORKSPACE_FILES_START",
-        "GET_WORKSPACE_FILES_SUCCESS",
-        "GET_WORKSPACE_FILES_FAIL",
-        callback,
-    );
-}
-
-export function uploadWorkspaceFile(payload, callback) {
-    return dispatchActionToReducer(
-        uploadWorkspaceFileService(payload),
-        "UPLOAD_WORKSPACE_FILE_START",
-        "UPLOAD_WORKSPACE_FILE_SUCCESS",
-        "UPLOAD_WORKSPACE_FILE_FAIL",
-        callback,
-    );
-}
-
-export function getWorkspaceFileDetails(payload, callback) {
-    return dispatchActionToReducer(
-        getWorkspaceFileDetailsService(payload),
-        "GET_WORKSPACE_FILE_DETAILS_START",
-        "GET_WORKSPACE_FILE_DETAILS_SUCCESS",
-        "GET_WORKSPACE_FILE_DETAILS_FAIL",
-        callback,
-    );
-}
-
-export function getWorkspaceTrashFiles(payload, callback) {
-    return dispatchActionToReducer(
-        getWorkspaceTrashFilesService(payload),
-        "GET_WORKSPACE_TRASH_FILES_START",
-        "GET_WORKSPACE_TRASH_FILES_SUCCESS",
-        "GET_WORKSPACE_TRASH_FILES_FAIL",
-        callback,
-    );
-}
-
-export function deleteWorkspaceFile(payload, callback) {
-    return dispatchActionToReducer(
-        deleteWorkspaceFileService(payload),
-        "DELETE_WORKSPACE_FILE_START",
-        "DELETE_WORKSPACE_FILE_SUCCESS",
-        "DELETE_WORKSPACE_FILE_FAIL",
-        callback,
-    );
-}
-
-export function restoreWorkspaceFile(payload, callback) {
-    return dispatchActionToReducer(
-        restoreWorkspaceFileService(payload),
-        "RESTORE_WORKSPACE_FILE_START",
-        "RESTORE_WORKSPACE_FILE_SUCCESS",
-        "RESTORE_WORKSPACE_FILE_FAIL",
         callback,
     );
 }

@@ -3,9 +3,7 @@ import styled from "styled-components";
 import {SvgIconFeather} from "../../common";
 import {RecentPostListItem} from "../../list/post/item";
 
-const Wrapper = styled.div`
-    border-left: 5px solid #822492;
-    
+const Wrapper = styled.div`    
     .feather-refresh-ccw {
         cursor: pointer;
         cursor: hand;
@@ -100,7 +98,7 @@ const RecentPosts = (props) => {
     }, []);
 
     return (
-        <Wrapper className={`about-workspace card ${className}`}>
+        <Wrapper className={`recent-posts card ${className}`}>
             <div ref={assignRef} className="card-body">
                 <h5 className="card-title">Recent posts <SvgIconFeather icon="refresh-ccw"/></h5>
                 <p>The widget for recent posts is not global. It follows personal changes, such as ‘mark as done’.</p>

@@ -2,6 +2,7 @@ import React from "react";
 import {useSelector} from "react-redux";
 import {Redirect, Route, Switch} from "react-router-dom";
 import {TestChat} from "../components/test";
+import TestFiles from "../components/test/TestFiles";
 import usePushNotification from "../components/webpush/usePushNotification";
 import GuestLayout from "./GuestLayout";
 import MainLayout from "./MainLayout";
@@ -20,6 +21,12 @@ export const AppRoute = ({children, ...props}) => {
         authenticated ?
         <>
             <Switch>
+                <Route
+                    {...props}
+                    component={TestFiles}
+                    path={["/test/files/workspace/:workspaceId"]}>
+                    {children}
+                </Route>
                 <Route
                     {...props}
                     component={TestChat}

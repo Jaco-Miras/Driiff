@@ -1,8 +1,8 @@
-import React, {useState, useCallback} from "react";
+import React, {useCallback, useState} from "react";
 import styled from "styled-components";
-import {SubComments} from "./index";
-import {PostDetailFooter} from "../../../panels/post/index";
 import {MoreOptions} from "../../../panels/common";
+import {PostDetailFooter} from "../../../panels/post/index";
+import {SubComments} from "./index";
 
 const Wrapper = styled.li`
 `;
@@ -66,9 +66,8 @@ const Comment = props => {
             }
             <CommentWrapper type={type}>
                 <CommentHeader className="d-flex">
-                    <div></div>
                     <div>{comment.author.name} {comment.id}</div>
-                    <MoreOptions moreButton={`vertical`}>
+                    <MoreOptions moreButton={`more-vertical`}>
                         {
                             user.id === comment.author.id &&
                             <div onClick={() => commentActions.setToEdit(comment)}>

@@ -12,7 +12,7 @@ const TeamListItem = (props) => {
 
     return (
         <Wrapper className={`team-list-item list-group-item d-flex align-items-center p-l-r-0 ${className}`}>
-            <MoreOptions moreButton="vertical" scrollRef={parentRef}>
+            <MoreOptions moreButton="more-vertical" scrollRef={parentRef}>
                 <div>Remove</div>
             </MoreOptions>
             <div>
