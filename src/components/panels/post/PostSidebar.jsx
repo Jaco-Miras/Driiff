@@ -1,17 +1,24 @@
 import React from "react";
 import {useDispatch, useSelector} from "react-redux";
 import styled from "styled-components";
-import {useIsMember} from "../../hooks";
 import {addToModals} from "../../../redux/actions/globalActions";
+import {useIsMember} from "../../hooks";
 import {PostFilterItem, PostFilterTag} from "./index";
+
+const Wrapper = styled.div`
+ .app-sidebar-menu {
+ overflow: hidden;
+ outline: currentcolor none medium;
+ }
+ `;
 
 const PostSidebar = props => {
 
-    const {filter, tag, sort} = props;
+    const {className = "", filter, tag} = props;
     const dispatch = useDispatch();
     const topic = useSelector(state => state.workspaces.activeTopic);
 
-    const handleShowWorkspacePostModal = (e) => {
+    const handleShowWorkspacePostModal = () => {
         let payload = {
             type: "workspace_post_create_edit",
             mode: "create",
@@ -28,7 +35,7 @@ const PostSidebar = props => {
     const isMember = useIsMember(topic && topic.member_ids.length ? topic.member_ids : []);
 
     return (
-        <div className="col-md-3 app-sidebar">
+        <Wrapper className={`post-sidebar col-md-3 app-sidebar ${className}`}>
             <div className="card">
                 <div className="card-body">
                     {
@@ -38,8 +45,7 @@ const PostSidebar = props => {
                         </button>
                     }
                 </div>
-                <div className="app-sidebar-menu"
-                        styles="overflow: hidden; outline: currentcolor none medium;" tabIndex="2">
+                <div className="app-sidebar-menu" tabIndex="2">
                     <PostFilterItem filter={filter}/>
                     <div className="card-body">
                         <h6 className="mb-0">Tags</h6>
@@ -47,8 +53,8 @@ const PostSidebar = props => {
                     <PostFilterTag tag={tag}/>
                 </div>
             </div>
-        </div>
-    )
+        </Wrapper>
+    );
 };
 
 export default PostSidebar;
