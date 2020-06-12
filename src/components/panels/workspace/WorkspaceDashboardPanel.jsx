@@ -1,8 +1,8 @@
 import React from "react";
 import styled from "styled-components";
+import {useWorkspace} from "../../hooks";
 import TimelinePanel from "../common/TimelinePanel";
 import {DashboardAboutWorkspace, DashboardTeam, RecentPosts} from "../dashboard";
-import {useWorkspace} from "../../hooks";
 
 const Wrapper = styled.div`    
     overflow: auto !important;
