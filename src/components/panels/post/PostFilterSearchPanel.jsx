@@ -1,8 +1,8 @@
 import React from "react";
+import {useDispatch, useSelector} from "react-redux";
 import styled from "styled-components";
-import {useSelector, useDispatch} from "react-redux";
-import {ButtonDropdown} from "../../common";
 import {updateWorkspacePostFilterSort} from "../../../redux/actions/workspaceActions";
+import {ButtonDropdown} from "../../common";
 import {PostSearch} from "./index";
 
 const Wrapper = styled.div`
@@ -14,6 +14,7 @@ const Wrapper = styled.div`
 
 const PostFilterSearchPanel = props => {
 
+    const {className = ""} = props;
     const dispatch = useDispatch();
     const topic = useSelector(state => state.workspaces.activeTopic);
 
@@ -61,33 +62,33 @@ const PostFilterSearchPanel = props => {
     }
 
     const sortDropdown = {
-        label: "Sorteren",
+        label: "Order by",
         items: [
             {
                 value: "favorite",
-                label: "Starred / favoriet",
-                onClick: handleClickSort
+                label: "Starred / Favorite",
+                onClick: handleClickSort,
             },
-            {   
+            {
                 value: "recent",
-                label: "Datum (recent)",
-                onClick: handleClickSort
+                label: "Recent",
+                onClick: handleClickSort,
             },
-            {   
+            {
                 value: "unread",
-                label: "Ongelezen",
-                onClick: handleClickSort
+                label: "Unread",
+                onClick: handleClickSort,
             },
         ]
     };
 
     return (
-        <Wrapper className="app-action">
+        <Wrapper className={`post-filter-search-panel app-action ${className}`}>
             <div className="action-left">
                 <ul className="list-inline">
                     {/* <li className="list-inline-item mb-0" style={{position: "relative"}}>
-                        <ButtonDropdown dropdown={filterDropdown}/>
-                    </li> */}
+                     <ButtonDropdown dropdown={filterDropdown}/>
+                     </li> */}
                     <li className="list-inline-item mb-0" style={{position: "relative"}}>
                         <ButtonDropdown dropdown={sortDropdown}/>
                     </li>
