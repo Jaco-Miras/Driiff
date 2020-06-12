@@ -1,63 +1,114 @@
 import React from "react";
 import styled from "styled-components";
-import {SvgIconFeather} from "../../common";
+import {ButtonDropdown, SvgIconFeather} from "../../common";
 
 const Wrapper = styled.div`
+    overflow: inherit !important;
+    
+    .action-left {
+        ul {
+            margin-bottom: 0;
+            
+            li {
+                position: relative;
+                
+                .button-dropdown {
+                }
+            }
+        }
+    }
 `;
 
 const FilesHeader = (props) => {
 
     const {className = "", onSearchChange} = props;
 
-    const toggleDropDown = () => {};
+    const handleClickAdd = () => {
+
+    };
+
+    const handleClickFolder = () => {
+
+    };
+
+    const handleClickOrderBy = () => {
+    };
+
+    const addDropDown = {
+        label: <><SvgIconFeather className="mr-1" icon="plus"/> Add</>,
+        items: [
+            {
+                value: "folder",
+                label: "Folder",
+                onClick: handleClickAdd,
+            },
+            {
+                value: "file",
+                label: "File",
+                onClick: handleClickAdd,
+            },
+        ],
+    };
+
+    const folderDropDown = {
+        label: "Folders",
+        items: [
+            {
+                value: "favorite",
+                label: <>Video <span className="text-muted">21</span></>,
+                onClick: handleClickFolder,
+            },
+            {
+                value: "recent",
+                label: "Image",
+                onClick: handleClickFolder,
+            },
+            {
+                value: "unread",
+                label: "Audio",
+                onClick: handleClickFolder,
+            },
+            {
+                value: "unread",
+                label: "Documents",
+                onClick: handleClickFolder,
+            },
+        ],
+    };
+
+    const orderByDropDown = {
+        label: "Order by",
+        items: [
+            {
+                value: "favorite",
+                label: "Starred / favoriet",
+                onClick: handleClickOrderBy,
+            },
+            {
+                value: "recent",
+                label: "Datum (recent)",
+                onClick: handleClickOrderBy,
+            },
+            {
+                value: "unread",
+                label: "Ongelezen",
+                onClick: handleClickOrderBy,
+            },
+        ],
+    };
 
     return (
         <Wrapper className={`files-header app-action ${className}`}>
             <div className="action-left">
                 <ul className="list-inline">
                     <li className="list-inline-item mb-0">
-                        <span className="btn btn-outline-light dropdown-toggle"
-                              data-toggle="dropdown">
-                            <SvgIconFeather icon="plus"/>
-                            Add
-                        </span>
-                        <div className="dropdown-menu">
-                            <a className="dropdown-item" href="/">Folder</a>
-                            <a className="dropdown-item" href="/">File</a>
-                        </div>
+                        <ButtonDropdown dropdown={addDropDown}/>
                     </li>
                     <li className="list-inline-item mb-0">
-                        <span className="btn btn-outline-light dropdown-toggle"
-                              data-toggle="dropdown">Folders</span>
-                        <div className="dropdown-menu">
-                            <a className="dropdown-item d-flex justify-content-between" href="/">
-                                Video
-                                <span className="text-muted">21</span>
-                            </a>
-                            <a className="dropdown-item d-flex justify-content-between" href="/">
-                                Image
-                                <span className="text-muted">5</span>
-                            </a>
-                            <a className="dropdown-item d-flex justify-content-between" href="/">
-                                Audio
-                                <span className="text-muted">12</span>
-                            </a>
-                            <a className="dropdown-item d-flex justify-content-between" href="/">
-                                Documents
-                                <span className="text-muted">7</span>
-                            </a>
-                        </div>
+                        <ButtonDropdown dropdown={folderDropDown}/>
                     </li>
                     <li className="list-inline-item mb-0">
-                        <span className="btn btn-outline-light dropdown-toggle"
-                              data-toggle="dropdown">
-                            Order by
-                        </span>
-                        <div className="dropdown-menu">
-                            <a className="dropdown-item" href="/">Date</a>
-                            <a className="dropdown-item" href="/">Name</a>
-                            <a className="dropdown-item" href="/">Size</a>
-                        </div>
+                        <ButtonDropdown dropdown={orderByDropDown}/>
                     </li>
                 </ul>
             </div>
