@@ -25,6 +25,9 @@ const FileSidebar = (props) => {
     const {className = "", filterFile, filter = "all", storage = {amount: 10, limit: 25}} = props;
 
     const handleShowUploadModal = () => {
+        const input = document.createElement("input");
+        input.setAttribute("type", "file");
+        input.click();
     };
 
     return (

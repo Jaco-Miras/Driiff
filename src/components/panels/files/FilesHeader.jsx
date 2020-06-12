@@ -23,8 +23,12 @@ const FilesHeader = (props) => {
 
     const {className = "", onSearchChange} = props;
 
-    const handleClickAdd = () => {
-
+    const handleClickAdd = (e) => {
+        if (e.target.dataset.value === "file") {
+            const input = document.createElement("input");
+            input.setAttribute("type", "file");
+            input.click();
+        }
     };
 
     const handleClickFolder = () => {
