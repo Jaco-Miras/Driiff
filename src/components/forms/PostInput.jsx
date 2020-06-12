@@ -208,7 +208,8 @@ const PostInput = props => {
             payload = {
                 ...payload,
                 id: editMessage.id,
-                parent_id: editMessage.parent_id
+                parent_id: editMessage.parent_id,
+                reference_id: null
             };
             commentActions.edit(payload)
             setEditMode(false);

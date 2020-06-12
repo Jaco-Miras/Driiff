@@ -29,6 +29,11 @@ import {
     setGeneralChat,
     setUnreadNotificationCounterEntries,
 } from "../../redux/actions/globalActions";
+import {
+    incomingPost,
+    incomingDeletedPost,
+    incomingComment
+} from "../../redux/actions/postActions";
 import {getOnlineUsers, getUser} from "../../redux/actions/userAction";
 import {
     incomingMovedTopic,
@@ -58,10 +63,45 @@ class SocketListeners extends PureComponent {
         // new socket
         window.Echo.private(`${localStorage.getItem("slug")}.Driff.User.${this.props.user.id}`)
         .listen(".post-notification", e => {
+            console.log(e, "post-notif")
+            switch (e.SOCKET_TYPE) {
+                case "POST_CREATE": {
+                    this.props.incomingPost(e);
+                    break;
+                }
+                case "POST_UPDATE": {
+                    this.props.incomingPost(e);
+                    break;
+                }
+                case "POST_DELETE": {
+                    this.props.incomingDeletedPost(e);
+                    break;
+                }
+                case "POST_COMMENT_UPDATE": {
+                    this.props.incomingComment(e);
+                    break;
+                }
 
+                default:
+                    return null;
+            }
         })
         .listen(".post-comment-notification", e => {
+            console.log(e, "comment-notif")
             
+            switch (e.SOCKET_TYPE) {
+                case "POST_COMMENT_CREATE": {
+                    this.props.incomingComment(e);
+                    break;
+                }
+                case "POST_COMMENT_UPDATE": {
+                    this.props.incomingComment(e);
+                    break;
+                }
+
+                default:
+                    return null;
+            }
         })
         .listen(".chat-notification", e => {
             console.log(e, "chat-notification");
@@ -535,6 +575,10 @@ function mapDispatchToProps(dispatch) {
         incomingMovedTopic: bindActionCreators(incomingMovedTopic, dispatch),
         setGeneralChat: bindActionCreators(setGeneralChat, dispatch),
         setUnreadNotificationCounterEntries: bindActionCreators(setUnreadNotificationCounterEntries, dispatch),
+
+        incomingPost: bindActionCreators(incomingPost, dispatch),
+        incomingDeletedPost: bindActionCreators(incomingDeletedPost, dispatch),
+        incomingComment: bindActionCreators(incomingComment, dispatch)
     };
 }
 

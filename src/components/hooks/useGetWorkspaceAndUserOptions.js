@@ -1,7 +1,7 @@
 import {useEffect, useState, useCallback} from "react";
 import {useSelector} from "react-redux";
 
-const useGetWorkspaceAndUserOptions = (selectedWorkspaces, item) => {
+const useGetWorkspaceAndUserOptions = (selectedWorkspaces, workspace) => {
 
     const activeTab = useSelector(state => state.workspaces.activeTab);
     const workspaces = useSelector(state => state.workspaces.workspaces);
@@ -9,10 +9,10 @@ const useGetWorkspaceAndUserOptions = (selectedWorkspaces, item) => {
     const [userOptions, setUserOptions] = useState([]);
 
     useEffect(() => {
-        if (item.workspace !== null) {
+        if (workspace !== null) {
             let members = [];
-            if (item.workspace.members && item.workspace.members.length) {
-                members = item.workspace.members.map(m => {
+            if (workspace.members && workspace.members.length) {
+                members = workspace.members.map(m => {
                     return {
                         ...m,
                         value: m.id,

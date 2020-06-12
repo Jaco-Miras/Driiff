@@ -184,3 +184,24 @@ export function deletePost(payload) {
         data: payload,
     });
 }
+
+/**
+ * @param {Object} payload
+ * @param {number} payload.post_id
+ * @param {string} payload.title
+ * @param {string} payload.body
+ * @param {string} payload.status
+ * @param {array} payload.recipient_ids
+ * @param {array} payload.workspace_ids
+ * @param {string} payload.type
+ * @param {number} payload.personal
+ * @returns {Promise<*>}
+ */
+export function putPost(payload) {
+    let url = `/v1/posts/${payload.id}`;
+    return apiCall({
+        method: "PUT",
+        url: url,
+        data: payload,
+    });
+}

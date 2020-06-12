@@ -17,7 +17,6 @@ import {
     restoreWorkspaceFile as restoreWorkspaceFileService,
     updatePostStatus as updatePostStatusService,
     updateWorkspace as updateWorkspaceService,
-    updateWorkspacePost as updateWorkspacePostService,
     uploadWorkspaceFile as uploadWorkspaceFileService,
 } from "../services";
 
@@ -167,16 +166,6 @@ export function getWorkspacePostDetail(payload, callback) {
         "GET_WORKSPACE_POST_DETAIL_START",
         "GET_WORKSPACE_POST_DETAIL_SUCCESS",
         "GET_WORKSPACE_POST_DETAIL_FAIL",
-        callback,
-    );
-}
-
-export function updateWorkspacePost(payload, callback) {
-    return dispatchActionToReducer(
-        updateWorkspacePostService(payload),
-        "UPADATE_WORKSPACE_POST_START",
-        "UPADATE_WORKSPACE_POST_SUCCESS",
-        "UPADATE_WORKSPACE_POST_FAIL",
         callback,
     );
 }

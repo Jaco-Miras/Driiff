@@ -1,28 +1,15 @@
 import React from "react";
-import {useDispatch, useSelector} from "react-redux";
-import styled from "styled-components";
+import {useSelector} from "react-redux";
 import {useIsMember} from "../../hooks";
-import {addToModals} from "../../../redux/actions/globalActions";
 import {PostFilterItem, PostFilterTag} from "./index";
 
 const PostSidebar = props => {
 
-    const {filter, tag, sort} = props;
-    const dispatch = useDispatch();
+    const {filter, tag, postActions} = props;
     const topic = useSelector(state => state.workspaces.activeTopic);
 
-    const handleShowWorkspacePostModal = (e) => {
-        let payload = {
-            type: "workspace_post_create_edit",
-            mode: "create",
-            item: {
-                workspace: topic,
-            },
-        };
-
-        dispatch(
-            addToModals(payload),
-        );
+    const handleShowWorkspacePostModal = () => {
+        postActions.showModal("create");
     };
 
     const isMember = useIsMember(topic && topic.member_ids.length ? topic.member_ids : []);

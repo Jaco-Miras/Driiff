@@ -22,7 +22,7 @@ const WorkspacePostsPanel = (props) => {
     return (
         <Wrapper className={`container-fluid h-100 ${className}`}>
             <div className="row app-block">
-                <PostSidebar filter={filter} tag={tag} sort={sort}/>
+                <PostSidebar filter={filter} tag={tag} sort={sort} postActions={postActions}/>
                 <div className="col-md-9 app-content">
                     <div className="app-content-overlay"></div>
                     <PostFilterSearchPanel/>

@@ -76,6 +76,7 @@ export {
     postToggleRead,
     postUnfollow,
     putComment,
+    putPost,
 } from "./post";
 
 export {
@@ -96,6 +97,5 @@ export {
     restoreWorkspaceFile,
     updatePostStatus,
     updateWorkspace,
-    updateWorkspacePost,
     uploadWorkspaceFile,
 } from "./workspace";
