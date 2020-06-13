@@ -3,6 +3,8 @@ import styled from "styled-components";
 import {useOutsideClick} from "../hooks";
 
 const Wrapper = styled.div`
+    position: relative;
+    
     .dropdown-toggle {
         &:after {
             margin-left: 10px;

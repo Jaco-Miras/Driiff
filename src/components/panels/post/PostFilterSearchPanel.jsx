@@ -1,14 +1,18 @@
-import React from "react";
-import {useDispatch, useSelector} from "react-redux";
+import React, {useState} from "react";
+import {useDispatch} from "react-redux";
 import styled from "styled-components";
 import {updateWorkspacePostFilterSort} from "../../../redux/actions/workspaceActions";
 import {ButtonDropdown} from "../../common";
+import {useCountRenders} from "../../hooks";
 import {PostSearch} from "./index";
 
 const Wrapper = styled.div`
     overflow: unset!important;
-    .list-inline {
-        margin-bottom: 0
+    
+    .action-left {
+        ul.list-inline {            
+            margin-bottom: 0;
+        }
     }
 `;
 
