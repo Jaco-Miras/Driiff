@@ -1,23 +1,49 @@
-import React, {useRef} from "react";
-import styled from "styled-components";
+import React, {useState} from "react";
 import {useSelector} from "react-redux";
+import styled from "styled-components";
 import {AvatarGroup, SvgIconFeather} from "../../common";
 import {CheckBox} from "../../forms";
 import {MoreOptions} from "../common";
 import {PostBadge} from "./index";
 
 const Wrapper = styled.li`
-    .feather-more-vertical {
-        width: auto;
+    .custom-checkbox {
+        padding-left: 12px;
     }
+    .app-list-title {
+        &.text-success {
+            text-decoration: line-through;
+        }
+    }
+    
+    &:hover {
+        .more-options {
+            display: flex;
+        }
+    }
+    
+    .more-options {
+        display: none;
+        
+        svg {
+            width: 16px;
+        }
+    }
+`;
+
+const Icon = styled(SvgIconFeather)`
+    width: 16px;
 `;
 
 const PostItemPanel = (props) => {
 
     const user = useSelector(state => state.session.user);
     const {className = "", post, postActions} = props;
-    
-    const {starPost,
+    const [done, setDone] = useState(post.is_mark_done);
+    const [star, setStar] = useState(post.is_favourite);
+
+    const {
+        starPost,
         markPost,
         openPost,
         archivePost,
@@ -25,45 +51,63 @@ const PostItemPanel = (props) => {
         markAsUnread,
         sharePost,
         snoozePost,
-        followPost
+        followPost,
     } = postActions;
 
+    const handleMarkDone = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        markPost(post);
+        setDone(!done);
+    };
+
+    const hanldeStarPost = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        starPost(post);
+        setStar(!star);
+    };
+
     return (
-        <Wrapper className={`list-group-item post-item-list ${className}`}>
-            <div className="custom-control custom-checkbox custom-checkbox-success mr-2">
-                <CheckBox name="test" checked={post.is_mark_done} onClick={() => markPost(post)}/>
+        <Wrapper className={`list-group-item post-item-panel ${className}`} onClick={() => openPost(post)}>
+            <div className="custom-control custom-checkbox custom-checkbox-success">
+                <CheckBox name="test" checked={done} onClick={handleMarkDone}/>
             </div>
             <div>
-                <SvgIconFeather icon="star" onClick={() => starPost(post)} fill={post.is_favourite ? "#ffc107" : "none"}/>
+                <Icon
+                    className="mr-2"
+                    icon="star" onClick={hanldeStarPost}
+                    stroke={star ? "#ffc107" : "currentcolor"}
+                    fill={star ? "#ffc107" : "none"}/>
             </div>
             <div className="flex-grow-1 min-width-0">
-                <div className="mb-1 d-flex align-items-center justify-content-between">
-                    <div className="app-list-title text-truncate" onClick={() => openPost(post)}>{post.title}</div>
+                <div className="d-flex align-items-center justify-content-between">
+                    <div className={`app-list-title text-truncate ${done ? "text-success" : ""}`}>{post.title}</div>
                     <div className="pl-3 d-flex align-items-center">
                         <PostBadge post={post}/>
                         {
                             post.users_responsible.length > 0 &&
                             <AvatarGroup users={post.users_responsible}/>
                         }
-                        {
-                            post.type !== "draft_post" &&
-                            <MoreOptions item={post} width={170} moreButton={`vertical`}>
-                                <div onClick={() => markAsRead(post)}>Mark as read</div>
-                                <div onClick={() => markAsUnread(post)}>Mark as unread</div>
-                                <div onClick={() => sharePost(post)}>Share</div>
-                                <div onClick={() => snoozePost(post)}>Snooze</div>
-                                {
-                                    post.author.id !== user.id && 
-                                    <div onClick={() => followPost(post)}>
-                                        {post.is_followed ? "Unfollow" : "Follow"}
-                                    </div>
-                                }
-                            </MoreOptions>
-                        }
-                        <SvgIconFeather icon="archive" onClick={() => archivePost(post)}/>
+                        <Icon icon="archive" onClick={() => archivePost(post)}/>
                     </div>
                 </div>
             </div>
+            {
+                post.type !== "draft_post" &&
+                <MoreOptions className="ml-2" item={post} width={170} moreButton={`more-vertical`}>
+                    <div onClick={() => markAsRead(post)}>Mark as read</div>
+                    <div onClick={() => markAsUnread(post)}>Mark as unread</div>
+                    <div onClick={() => sharePost(post)}>Share</div>
+                    <div onClick={() => snoozePost(post)}>Snooze</div>
+                    {
+                        post.author.id !== user.id &&
+                        <div onClick={() => followPost(post)}>
+                            {post.is_followed ? "Unfollow" : "Follow"}
+                        </div>
+                    }
+                </MoreOptions>
+            }
         </Wrapper>
     );
 };

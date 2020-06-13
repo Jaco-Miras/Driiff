@@ -67,7 +67,9 @@ const Avatar = (props) => {
         setIsLoaded(true);
     };
 
-    const handleOnClick = () => {
+    const handleOnClick = (e) => {
+        e.stopPropagation();
+
         if (onClick)
             onClick();
 
