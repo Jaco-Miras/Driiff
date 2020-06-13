@@ -16,16 +16,20 @@ const WorkspacePostsPanel = (props) => {
 
     const {className = ""} = props;
 
+    const workspace = useSelector(state => state.workspaces.activeTopic);
+
     const {posts, filter, tag, sort, post, user} = usePosts();
     const postActions = usePostActions();
-    useCountRenders("posts panel")
+
+    useCountRenders("posts panel");
+
     return (
         <Wrapper className={`container-fluid h-100 ${className}`}>
             <div className="row app-block">
                 <PostSidebar filter={filter} tag={tag} sort={sort} postActions={postActions}/>
                 <div className="col-md-9 app-content">
-                    <div className="app-content-overlay"></div>
-                    <PostFilterSearchPanel/>
+                    <div className="app-content-overlay"/>
+                    <PostFilterSearchPanel activeSort={sort} workspace={workspace}/>
                     <div className="card card-body app-content-body">
                         <div className="app-lists"
                              tabIndex="1">

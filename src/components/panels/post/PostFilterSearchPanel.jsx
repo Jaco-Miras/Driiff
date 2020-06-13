@@ -14,55 +14,28 @@ const Wrapper = styled.div`
 
 const PostFilterSearchPanel = props => {
 
-    const {className = ""} = props;
+    const {className = "", activeSort = null, workspace} = props;
+
     const dispatch = useDispatch();
-    const topic = useSelector(state => state.workspaces.activeTopic);
+
+    const [sort, setSort] = useState(activeSort);
 
     const handleClickSort = e => {
-        if (topic) {
-            dispatch(
-                updateWorkspacePostFilterSort({
-                    topic_id: topic.id,
-                    sort: e.target.dataset.value
-                })
-            )
-        }   
-    }
+        if (sort === e.target.dataset.value)
+            setSort(null);
+        else
+            setSort(e.target.dataset.value);
 
-    const handleClickFilter = e => {
-        if (topic) {
-            dispatch(
-                updateWorkspacePostFilterSort({
-                    topic_id: topic.id,
-                    filter: e.target.dataset.value
-                })
-            )
-        }
-    }
-
-    const filterDropdown = {
-        label: "Filter",
-        items: [
-            {   
-                value: "fav",
-                label: "Favourites",
-                onClick: handleClickFilter
-            },
-            {
-                value: "done",
-                label: "Done",
-                onClick: handleClickFilter
-            },
-            {
-                value: "deleted",
-                label: "Deleted",
-                onClick: handleClickFilter
-            },
-        ]
-    }
+        dispatch(
+            updateWorkspacePostFilterSort({
+                topic_id: workspace.id,
+                sort: e.target.dataset.value,
+            }),
+        );
+    };
 
     const sortDropdown = {
-        label: "Order by",
+        label: "Sort by",
         items: [
             {
                 value: "favorite",
@@ -89,8 +62,8 @@ const PostFilterSearchPanel = props => {
                     {/* <li className="list-inline-item mb-0" style={{position: "relative"}}>
                      <ButtonDropdown dropdown={filterDropdown}/>
                      </li> */}
-                    <li className="list-inline-item mb-0" style={{position: "relative"}}>
-                        <ButtonDropdown dropdown={sortDropdown}/>
+                    <li className="list-inline-item mb-0">
+                        <ButtonDropdown value={sort} dropdown={sortDropdown}/>
                     </li>
                 </ul>
             </div>
@@ -101,4 +74,4 @@ const PostFilterSearchPanel = props => {
     )
 };
 
-export default PostFilterSearchPanel;
+export default React.memo(PostFilterSearchPanel);
