@@ -1,7 +1,5 @@
 import React, {useCallback, useState} from "react";
 import styled from "styled-components";
-// import {SvgIconFeather} from "../../common";
-import {useLogRenders} from "../../hooks";
 import {TeamListItem} from "../../list/people/item";
 
 const Wrapper = styled.div`    
@@ -54,8 +52,6 @@ const DashboardTeam = (props) => {
 
     const {className = "", workspace} = props;
     const [scrollRef, setScrollRef] = useState(null);
-
-    useLogRenders();
 
     const assignRef = useCallback((e) => {
         if (scrollRef === null) {

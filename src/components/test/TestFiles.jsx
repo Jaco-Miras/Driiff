@@ -2,15 +2,12 @@ import React from "react";
 import {useParams} from "react-router-dom";
 import styled from "styled-components";
 import {$_GET} from "../../helpers/commonFunctions";
-import {useLogRenders} from "../hooks";
 import useWorkspaceFileActions from "../hooks/useWorkspaceFileActions";
 
 const Wrapper = styled.div`
 `;
 
 const TestChat = (props) => {
-
-    useLogRenders();
 
     const params = useParams();
 

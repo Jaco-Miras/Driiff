@@ -1,14 +1,11 @@
 import React from "react";
 import styled from "styled-components";
-import {useLogRenders} from "../hooks";
 import useChannelActions from "../hooks/useChannelActions";
 
 const Wrapper = styled.div`
 `;
 
 const TestChat = (props) => {
-
-    useLogRenders();
 
     const {className = ""} = props;
 
