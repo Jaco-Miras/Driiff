@@ -5,6 +5,9 @@ import {useCountRenders, usePostActions, usePosts} from "../../hooks";
 import {PostDetail, PostFilterSearchPanel, PostItemPanel, PostSidebar} from "../post";
 
 const Wrapper = styled.div`
+    .search-title {
+        margin: 1.5rem 1.5rem 0;
+    }
 `;
 
 const PostDetailWrapper = styled.div`
@@ -19,7 +22,7 @@ const WorkspacePostsPanel = (props) => {
 
     const workspace = useSelector(state => state.workspaces.activeTopic);
 
-    const {posts, filter, tag, sort, post, user} = usePosts();
+    const {posts, filter, tag, sort, post, user, search} = usePosts();
 
     const postActions = usePostActions();
 
@@ -41,6 +44,23 @@ const WorkspacePostsPanel = (props) => {
                     <div className="card card-body app-content-body">
                         <div className="app-lists"
                              tabIndex="1">
+                            {
+                                search !== null &&
+                                <>
+                                    {
+                                        posts.length === 0 ?
+                                        <h6 className="search-title card-title font-size-11 text-uppercase mb-4">No
+                                            result found: {search}</h6>
+                                                           :
+                                        posts.length === 1 ?
+                                        <h6 className="search-title card-title font-size-11 text-uppercase mb-4">Search
+                                            Result: {search}</h6>
+                                                           :
+                                        <h6 className="search-title card-title font-size-11 text-uppercase mb-4">Search
+                                            Results: {search}</h6>
+                                    }
+                                </>
+                            }
                             <ul className="list-group list-group-flush ui-sortable">
                                 {
                                     posts &&
@@ -55,7 +75,6 @@ const WorkspacePostsPanel = (props) => {
                                 post && <PostDetail post={post} postActions={postActions} user={user}/>
                             }
                         </PostDetailWrapper>
-
                     </div>
                 </div>
             </div>

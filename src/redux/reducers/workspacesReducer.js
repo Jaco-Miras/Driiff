@@ -394,7 +394,8 @@ export default (state = INITIAL_STATE, action) => {
                     ...state.workspacePosts,
                     [action.data.topic_id]: {
                         ...state.workspacePosts[action.data.topic_id],
-                        searchResults: action.data.search_result
+                        search: action.data.search,
+                        searchResults: action.data.search_result,
                     }
                 }
             }
@@ -420,12 +421,13 @@ export default (state = INITIAL_STATE, action) => {
                         filter: null,
                         sort: null,
                         tag: null,
+                        search: null,
                         searchResults: [],
                         posts: {
                             ...[action.data.topic_id].posts,
                             ...convertedPosts,
-                            ...postDrafts
-                        }
+                            ...postDrafts,
+                        },
                     }
                 }
             }
@@ -626,8 +628,6 @@ export default (state = INITIAL_STATE, action) => {
             action.data.recipient_ids.forEach(id => {
                 if (newWorkspacePosts.hasOwnProperty(id)) {
                     newWorkspacePosts[id].posts[action.data.id] = action.data
-                } else {
-                    return;
                 }
             })
             return {

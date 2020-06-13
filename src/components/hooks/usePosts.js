@@ -1,6 +1,6 @@
 import {useEffect, useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
 import {useParams} from "react-router-dom";
-import {useSelector, useDispatch} from "react-redux";
 import {addToWorkspacePosts, getWorkspacePosts} from "../../redux/actions/workspaceActions";
 
 const usePosts = () => {
@@ -10,23 +10,23 @@ const usePosts = () => {
     const wsPosts = useSelector(state => state.workspaces.workspacePosts);
     const user = useSelector(state => state.session.user);
     const [fetchingPost, setFetchingPost] = useState(false);
-    
+
     useEffect(() => {
         if (params.workspaceId !== undefined) {
             if (!wsPosts.hasOwnProperty(params.workspaceId) && !fetchingPost) {
                 setFetchingPost(true);
                 dispatch(
-                    getWorkspacePosts({topic_id: parseInt(params.workspaceId)}, (err,res) => {
-                        console.log(res)
+                    getWorkspacePosts({topic_id: parseInt(params.workspaceId)}, (err, res) => {
+                        console.log(res);
                         setFetchingPost(false);
                         if (err) return;
                         dispatch(
                             addToWorkspacePosts({
                                 topic_id: parseInt(params.workspaceId),
-                                posts: res.data.posts
-                            })
-                        )
-                    })
+                                posts: res.data.posts,
+                            }),
+                        );
+                    }),
                 );
             }
         }
@@ -37,6 +37,7 @@ const usePosts = () => {
         let sort = wsPosts[params.workspaceId].sort;
         let tag = wsPosts[params.workspaceId].tag;
         let posts = wsPosts[params.workspaceId].posts;
+        let search = wsPosts[params.workspaceId].search;
         let searchResults = wsPosts[params.workspaceId].searchResults;
         let post = null;
         if (posts.hasOwnProperty(params.postId)) {
@@ -49,15 +50,14 @@ const usePosts = () => {
                         if (p.hasOwnProperty("author")) return p.author.id === user.id;
                         else return false;
                     } else if (filter === "draft") {
-                        if (p.hasOwnProperty("draft_type")) return true;
-                        else return false;
+                        return (p.hasOwnProperty("draft_type"));
                     } else if (filter === "star") {
                         return p.is_favourite;
                     } else {
-                        return true
+                        return true;
                     }
                 } else {
-                    return true
+                    return true;
                 }
             }).filter(p => {
                 if (tag) {
@@ -68,47 +68,47 @@ const usePosts = () => {
                     } else if (tag === "is_read_only") {
                         return p.is_read_only === 1;
                     } else {
-                        return true
+                        return true;
                     }
                 } else {
-                    return true
+                    return true;
                 }
-            }).sort((a,b) => {
+            }).sort((a, b) => {
                 if (sort === "favorite") {
-                    return a.is_favourite === b.is_favourite ? 1 : -1
-                } else if (sort === 'unread') {
-                    return a.is_updated === b.is_updated ? 1 : -1
+                    return a.is_favourite === b.is_favourite ? 1 : -1;
+                } else if (sort === "unread") {
+                    return a.is_updated === b.is_updated ? 1 : -1;
                 }
-            })
+            });
             if (searchResults.length) {
                 filteredPosts = filteredPosts.filter(p => {
                     return searchResults.some(s => {
                         return p.id === s.id;
                     });
-                })
+                });
             }
             return {
-                posts: filteredPosts, filter, tag, sort, post, user
+                posts: filteredPosts, filter, tag, sort, post, user, search,
             };
         } else {
-            let filteredPosts = Object.values(wsPosts[params.workspaceId].posts)
+            let filteredPosts = Object.values(wsPosts[params.workspaceId].posts);
             if (searchResults.length) {
                 filteredPosts = filteredPosts.filter(p => {
                     return searchResults.some(s => {
                         return p.id === s.id;
                     });
-                })
+                });
             }
             return {
                 posts: filteredPosts.filter(p => {
-                    if (p.hasOwnProperty("draft_type")) return false;
-                    else return true
-                }), 
+                    return !(p.hasOwnProperty("draft_type"));
+                }),
                 filter: null,
-                tag: null, 
+                tag: null,
                 sort: null,
                 post: post,
-                user
+                search,
+                user,
             };
         }
     } else {
@@ -118,7 +118,8 @@ const usePosts = () => {
             tag: null,
             sort: null,
             post: null,
-            user
+            search: null,
+            user,
         };
     }
 };

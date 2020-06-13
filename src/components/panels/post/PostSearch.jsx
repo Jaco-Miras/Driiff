@@ -1,13 +1,14 @@
 import React, {useState} from "react";
 import {useDispatch} from "react-redux";
 import {useParams} from "react-router-dom";
-import {getWorkspacePosts, addPostSearchResult} from "../../../redux/actions/workspaceActions";
+import {addPostSearchResult, getWorkspacePosts} from "../../../redux/actions/workspaceActions";
 
-const PostSearch = props => {
+const PostSearch = () => {
 
     const dispatch = useDispatch();
     const params = useParams();
     const [searchValue, setSearchValue] = useState("");
+
     let topic_id = parseInt(params.workspaceId);
 
     const handleInputChange = e => {
@@ -19,7 +20,8 @@ const PostSearch = props => {
         dispatch(
             addPostSearchResult({
                 topic_id: topic_id,
-                search_result: []
+                search: null,
+                search_result: [],
             })
         );
     };
@@ -40,7 +42,8 @@ const PostSearch = props => {
                 dispatch(
                     addPostSearchResult({
                         topic_id: topic_id,
-                        search_result: res.data.posts
+                        search: searchValue,
+                        search_result: res.data.posts,
                     })
                 )
                 console.log(res, 'search result')
@@ -55,11 +58,11 @@ const PostSearch = props => {
             <div className="input-group-append">
                 <button className="btn btn-outline-light" type="button"
                         id="button-addon1" onClick={handleSearch}>
-                    <i className="ti-search"></i>
+                    <i className="ti-search"/>
                 </button>
             </div>
         </div>
     )
 };
 
-export default PostSearch;
+export default React.memo(PostSearch);
