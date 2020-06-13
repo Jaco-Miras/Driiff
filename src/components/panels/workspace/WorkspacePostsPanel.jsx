@@ -1,7 +1,8 @@
 import React from "react";
+import {useSelector} from "react-redux";
 import styled from "styled-components";
+import {useCountRenders, usePostActions, usePosts} from "../../hooks";
 import {PostDetail, PostFilterSearchPanel, PostItemPanel, PostSidebar} from "../post";
-import {usePosts, usePostActions, useCountRenders} from "../../hooks";
 
 const Wrapper = styled.div`
 `;
@@ -19,14 +20,21 @@ const WorkspacePostsPanel = (props) => {
     const workspace = useSelector(state => state.workspaces.activeTopic);
 
     const {posts, filter, tag, sort, post, user} = usePosts();
+
     const postActions = usePostActions();
+
+    const count = {
+        is_must_reply: 0,
+        is_must_read: 0,
+        is_read_only: 0,
+    };
 
     useCountRenders("posts panel");
 
     return (
         <Wrapper className={`container-fluid h-100 ${className}`}>
             <div className="row app-block">
-                <PostSidebar filter={filter} tag={tag} sort={sort} postActions={postActions}/>
+                <PostSidebar workspace={workspace} filter={filter} tag={tag} postActions={postActions} count={count}/>
                 <div className="col-md-9 app-content">
                     <div className="app-content-overlay"/>
                     <PostFilterSearchPanel activeSort={sort} workspace={workspace}/>
@@ -37,17 +45,17 @@ const WorkspacePostsPanel = (props) => {
                                 {
                                     posts &&
                                     posts.map(p => {
-                                        return <PostItemPanel key={p.id} post={p} postActions={postActions}/>
+                                        return <PostItemPanel key={p.id} post={p} postActions={postActions}/>;
                                     })
                                 }
                             </ul>
                         </div>
                         <PostDetailWrapper className={`card app-detail ${post ? "show" : ""}`}>
-                        {
-                            post && <PostDetail post={post} postActions={postActions} user={user}/>
-                        }
+                            {
+                                post && <PostDetail post={post} postActions={postActions} user={user}/>
+                            }
                         </PostDetailWrapper>
-                        
+
                     </div>
                 </div>
             </div>

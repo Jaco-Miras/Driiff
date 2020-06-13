@@ -1,5 +1,5 @@
 import React from "react";
-import {useDispatch, useSelector} from "react-redux";
+import {useDispatch} from "react-redux";
 import styled from "styled-components";
 import {updateWorkspacePostFilterSort} from "../../../redux/actions/workspaceActions";
 import {SvgIconFeather} from "../../common";
@@ -21,19 +21,17 @@ const Wrapper = styled.div`
 
 const PostFilterItem = props => {
 
-    const {className = "", filter = "all"} = props;
+    const {className = "", workspace, filter = "all"} = props;
+
     const dispatch = useDispatch();
-    const topic = useSelector(state => state.workspaces.activeTopic);
 
     const handleClickFilter = e => {
-        if (topic) {
-            dispatch(
-                updateWorkspacePostFilterSort({
-                    topic_id: topic.id,
-                    filter: e.target.dataset.value,
-                }),
-            );
-        }
+        dispatch(
+            updateWorkspacePostFilterSort({
+                topic_id: workspace.id,
+                filter: e.target.dataset.value,
+            }),
+        );
     };
 
     return (
@@ -63,4 +61,4 @@ const PostFilterItem = props => {
     );
 };
 
-export default PostFilterItem;
+export default React.memo(PostFilterItem);
