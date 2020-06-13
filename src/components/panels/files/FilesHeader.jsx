@@ -1,6 +1,9 @@
-import React from "react";
+import React, {useRef} from "react";
+import {useDispatch} from "react-redux";
 import styled from "styled-components";
+import {addToModals} from "../../../redux/actions/globalActions";
 import {ButtonDropdown, SvgIconFeather} from "../../common";
+import {useTranslation} from "../../hooks";
 
 const Wrapper = styled.div`
     overflow: inherit !important;
@@ -21,7 +24,13 @@ const Wrapper = styled.div`
 
 const FilesHeader = (props) => {
 
+    const {_t} = useTranslation();
     const {className = "", dropZoneRef, onSearchChange} = props;
+    const dispatch = useDispatch();
+    const dictionary = {
+        createFolder: _t("CREATE_FOLDER", "Create folder"),
+        create: _t("CREATE", "Create"),
+    };
 
     const handleClickAdd = () => {
         if (dropZoneRef.current) {
@@ -29,8 +38,32 @@ const FilesHeader = (props) => {
         }
     };
 
-    const handleClickFolder = () => {
+    const folderName = useRef("");
+    const handleCreateFolder = () => {
+    };
 
+    const handleCreateFolderClose = () => {
+        folderName.current = "";
+    };
+
+    const handleFolderNameChange = (e) => {
+        folderName.current = e.target.value.trim();
+    };
+
+    const handleClickFolder = () => {
+        let payload = {
+            type: "single_input",
+            title: dictionary.createFolder,
+            defaultValue: "",
+            labelPrimaryAction: dictionary.create,
+            onPrimaryAction: handleCreateFolder,
+            onChange: handleFolderNameChange,
+            onClose: handleCreateFolderClose,
+        };
+
+        dispatch(
+            addToModals(payload),
+        );
     };
 
     const handleClickOrderBy = () => {
@@ -42,7 +75,7 @@ const FilesHeader = (props) => {
             {
                 value: "folder",
                 label: "Folder",
-                onClick: handleClickAdd,
+                onClick: handleClickFolder,
             },
             {
                 value: "file",

@@ -11,14 +11,15 @@ import {
     CreateEditWorkspacePostModal,
     CreateWorkspaceFolderModal,
     FileUploadModal,
-    PostSnoozeModal
+    PostSnoozeModal,
+    SingleInputModal,
 } from "../modals";
 
 const ModalPanelContainer = styled.div`
     z-index: 7;
 `;
 
-const ModalPanel = props => {
+const ModalPanel = () => {
 
     const modals = useSelector(state => state.global.modals);
     const viewFiles = useSelector(state => state.files.viewFiles);
@@ -47,6 +48,8 @@ const ModalPanel = props => {
                                 return <CreateEditWorkspacePostModal key={modal.type} data={modal}/>;
                             case "snooze_post":
                                 return <PostSnoozeModal key={modal.type} data={modal}/>;
+                            case "single_input":
+                                return <SingleInputModal key={modal.type} {...modal} />;
                             default:
                                 return null;
                         }

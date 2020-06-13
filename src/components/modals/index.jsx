@@ -8,3 +8,4 @@ export {default as CreateWorkspaceFolderModal} from "./CreateWorkspaceFolderModa
 export {default as CreateEditWorkspacePostModal} from "./CreateEditWorkspacePostModal";
 export {default as ModalHeaderSection} from "./ModalHeaderSection";
 export {default as PostSnoozeModal} from "./PostSnoozeModal";
+export {default as SingleInputModal} from "./SingleInputModal";
