@@ -2,8 +2,8 @@ import React, {useCallback, useRef, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import styled from "styled-components";
 //import {localizeChatTimestamp} from "../../../helpers/momentFormatJS";
-import {joinWorkspace, joinWorkspaceReducer} from "../../../redux/actions/workspaceActions";
-import {CommonPicker, SvgIconFeather} from "../../common";
+import {joinWorkspace} from "../../../redux/actions/workspaceActions";
+import {Avatar, CommonPicker, SvgIconFeather} from "../../common";
 import PostInput from "../../forms/PostInput";
 import {useIsMember} from "../../hooks";
 import {CommentQuote} from "../../list/post/item";
@@ -109,8 +109,10 @@ const PickerContainer = styled(CommonPicker)`
 
 const PostDetailFooter = (props) => {
 
-    const {className = "", onShowFileDialog, dropAction, post, parentId = null, 
-            commentActions, userMention = null, handleClearUserMention = null, commentId = null} = props;
+    const {
+        className = "", onShowFileDialog, dropAction, post, parentId = null,
+        commentActions, userMention = null, handleClearUserMention = null, commentId = null, innerRef = null,
+    } = props;
 
     const dispatch = useDispatch();
     const ref = {
@@ -174,7 +176,7 @@ const PostDetailFooter = (props) => {
     const isMember = useIsMember(topic && topic.members.length ? topic.members.map(m => m.id) : []);
 
     return (
-        <Wrapper className={`chat-footer card-body ${className}`}>
+        <Wrapper className={`post-detail-footer card-body ${className}`}>
             {
                 <Dflex className="d-flex pr-2 pl-2">
                     <CommentQuote commentActions={commentActions} commentId={commentId}/>
@@ -190,8 +192,8 @@ const PostDetailFooter = (props) => {
                         </ArchivedDiv>
                         :
                         <React.Fragment>
-                            <IconButton onClick={handleShowEmojiPicker} icon="smile"/>
-                            <ChatInputContainer className="flex-grow-1">
+                            <Avatar className="mr-2" imageLink={user.profile_image_link}/>
+                            <ChatInputContainer ref={innerRef} className="flex-grow-1">
                                 <PostInput
                                     handleClearSent={handleClearSent}
                                     sent={sent}
@@ -207,7 +209,8 @@ const PostDetailFooter = (props) => {
                             </ChatInputContainer>
                             <div className="chat-footer-buttons d-flex">
                                 <IconButton onClick={handleSend} icon="send"/>
-                                <IconButton onClick={()=>onShowFileDialog(parentId)} icon="paperclip"/>
+                                <IconButton onClick={() => onShowFileDialog(parentId)} icon="paperclip"/>
+                                <IconButton onClick={handleShowEmojiPicker} icon="smile"/>
                             </div>
                         </React.Fragment>
                     }

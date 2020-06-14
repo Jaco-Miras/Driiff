@@ -1,13 +1,13 @@
 import React, {useRef, useState} from "react";
-import styled from "styled-components";
 import {useDispatch} from "react-redux";
-import {useHistory} from "react-router-dom"
-import {FileAttachments, SvgIconFeather} from "../../common";
-import {PostDetailFooter, PostBody, PostComments} from "./index";
-import {useComments, useCommentActions} from "../../hooks";
-import {DropDocument} from "../../dropzone/DropDocument";
+import {useHistory} from "react-router-dom";
+import styled from "styled-components";
 import {addToModals} from "../../../redux/actions/globalActions";
 import {setParentIdForUpload} from "../../../redux/actions/postActions";
+import {FileAttachments, SvgIconFeather} from "../../common";
+import {DropDocument} from "../../dropzone/DropDocument";
+import {useCommentActions, useComments} from "../../hooks";
+import {PostBody, PostComments, PostDetailFooter} from "./index";
 
 const MainBody = styled.div`
     display: flex;
@@ -19,6 +19,15 @@ const MainBody = styled.div`
 const Counters = styled.div`
     width: 100%;
     padding: .5rem 1.5rem;
+`;
+
+const Icon = styled(SvgIconFeather)`
+    width: 16px;
+    
+    &.close {
+        cursor: pointer;
+        cursor: hand;
+    }
 `;
 
 const PostDetail = props => {
@@ -33,13 +42,13 @@ const PostDetail = props => {
     };
     const commentActions = useCommentActions();
     const comments = useComments(post, commentActions);
-    
+
     const refs = {
         dropZoneRef: useRef(),
     };
 
     const handleOpenFileDialog = (parentId) => {
-        dispatch(setParentIdForUpload(parentId))
+        dispatch(setParentIdForUpload(parentId));
         if (refs.dropZoneRef.current) {
             refs.dropZoneRef.current.open();
         }
@@ -108,15 +117,7 @@ const PostDetail = props => {
         <>
             <div className="card-header">
                 <div className="app-detail-action-left">
-                    <a className="app-detail-close-button" onClick={handleClosePost}>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"
-                                stroke-linecap="round" stroke-linejoin="round"
-                                className="feather feather-arrow-left mr-3">
-                            <line x1="19" y1="12" x2="5" y2="12"></line>
-                            <polyline points="12 19 5 12 12 5"></polyline>
-                        </svg>
-                    </a>
+                    <Icon className="close mr-2" icon="arrow-left" onClick={handleClosePost}/>
                     <h5 className="mb-0">{post.title}</h5>
                 </div>
                 <div className="app-detail-action-right">
@@ -124,26 +125,17 @@ const PostDetail = props => {
                         post.author.id === user.id &&
                         <div>
                             <span data-toggle="modal" data-target="#editTaskModal">
-                            <a onClick={() => postActions.showModal("edit",post)} className="btn btn-outline-light ml-2" title=""
-                                data-toggle="tooltip" data-original-title="Edit Task">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"
-                                        stroke-linecap="round" stroke-linejoin="round"
-                                        className="feather feather-edit-3"><path d="M12 20h9"></path><path
-                                    d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+                            <a onClick={() => postActions.showModal("edit", post)}
+                               className="btn btn-outline-light ml-2" title=""
+                               data-toggle="tooltip" data-original-title="Edit Task">
+                                <Icon icon="edit-3"/>
                             </a>
                             </span>
-                        
-                            <a onClick={() => postActions.trash(post)} className="btn btn-outline-light ml-2" data-toggle="tooltip"
-                                title="" data-original-title="Delete Task">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                        viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                        stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
-                                        className="feather feather-trash">
-                                    <polyline points="3 6 5 6 21 6"></polyline>
-                                    <path
-                                        d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                                </svg>
+
+                            <a onClick={() => postActions.trash(post)} className="btn btn-outline-light ml-2"
+                               data-toggle="tooltip"
+                               title="" data-original-title="Delete Task">
+                                <Icon icon="trash"/>
                             </a>
                         </div>
                     }
@@ -162,30 +154,32 @@ const PostDetail = props => {
                 <PostBody post={post} postActions={postActions}/>
                 <hr className="m-0"/>
                 <Counters className="d-flex align-items-center">
-                    <div><SvgIconFeather icon="heart"/>{post.clap_count}</div>
+                    <div><Icon className="mr-2" icon="heart"/>{post.clap_count}</div>
                     <div className="ml-auto">
-                        <SvgIconFeather icon="message-square"/>{post.reply_count}
-                        <SvgIconFeather icon="eye"/>{post.view_user_ids.length}
+                        <Icon className="mr-2" icon="message-square"/>{post.reply_count}
+                        <Icon className="ml-2 mr-2" icon="eye"/>{post.view_user_ids.length}
                     </div>
                 </Counters>
                 {
-                    post.files.length > 0  &&
+                    post.files.length > 0 &&
                     <>
-                    <div className="card-body">
-                        <h6 className="mb-3 font-size-11 text-uppercase">Files</h6>
-                        <FileAttachments attachedFiles={post.files}/>
-                    </div>
-                    <hr className="m-0"/>
+                        <div className="card-body">
+                            <h6 className="mb-3 font-size-11 text-uppercase">Files</h6>
+                            <FileAttachments attachedFiles={post.files}/>
+                        </div>
+                        <hr className="m-0"/>
                     </>
                 }
-                <PostComments comments={comments} post={post} user={user} commentActions={commentActions}
+                <PostComments
+                    comments={comments} post={post} user={user} commentActions={commentActions}
                     onShowFileDialog={handleOpenFileDialog} dropAction={dropAction}
                 />
                 <hr className="m-0"/>
-                <PostDetailFooter post={post} commentActions={commentActions} onShowFileDialog={handleOpenFileDialog} dropAction={dropAction}/>
+                <PostDetailFooter post={post} commentActions={commentActions} onShowFileDialog={handleOpenFileDialog}
+                                  dropAction={dropAction}/>
             </MainBody>
         </>
-    )
+    );
 };
 
 export default React.memo(PostDetail);

@@ -13,28 +13,39 @@ const Wrapper = styled.div`
         list-style: none;
         padding: 0;
         margin: 0;
-        width: 100%;
+        margin-left: auto;        
     }
     > ul {
+        width: 100%;
+                
         overflow: auto;
+        &::-webkit-scrollbar {
+            display: none;
+        }
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+        .recent-new-group-wrapper {
+            padding-right: 24px;
+        }
     }
 `;
 
 const PostComments = props => {
 
-    const {comments, post, user, commentActions, onShowFileDialog, dropAction} = props;
+    const {className = "", comments, post, user, commentActions, onShowFileDialog, dropAction} = props;
 
     return (
-        <Wrapper className="card-body">
+        <Wrapper className={`post-comments card-body ${className}`}>
             {
                 comments &&
                 <ul>
-                {
-                    Object.values(comments).map(c => {
-                        return <Comment key={c.id} comment={c} post={post} user={user} 
-                        commentActions={commentActions} onShowFileDialog={onShowFileDialog} dropAction={dropAction}/>
-                    })
-                }
+                    {
+                        Object.values(comments).map(c => {
+                            return <Comment key={c.id} comment={c} post={post} user={user}
+                                            commentActions={commentActions} onShowFileDialog={onShowFileDialog}
+                                            dropAction={dropAction}/>;
+                        })
+                    }
                 </ul>
             }
         </Wrapper>

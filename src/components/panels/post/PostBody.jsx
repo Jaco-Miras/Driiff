@@ -1,8 +1,8 @@
-import React from "react";
+import React, {useState} from "react";
 import styled from "styled-components";
+import {localizeDate} from "../../../helpers/momentFormatJS";
 import {AvatarGroup, SvgIconFeather} from "../../common";
 import {PostBadge} from "./index";
-import {localizeDate} from "../../../helpers/momentFormatJS";
 
 const Wrapper = styled.div`
     flex: unset;
@@ -12,16 +12,25 @@ const Wrapper = styled.div`
     }
 `;
 
+const Icon = styled(SvgIconFeather)`
+    width: 16px;
+    cursor: pointer;
+    cursor: hand;
+`;
+
 const PostBody = props => {
 
     const {post, postActions} = props;
 
+    const [star, setStar] = useState(post.is_favourite);
+
     const handleStarPost = () => {
-        postActions.starPost(post)
+        postActions.starPost(post);
+        setStar(!star);
     };
 
     const handleArchivePost = () => {
-        postActions.archivePost(post)
+        postActions.archivePost(post);
     };
 
     return (
@@ -37,10 +46,11 @@ const PostBody = props => {
                     <PostBadge post={post}/>
                     {
                         post.files.length > 0 &&
-                        <SvgIconFeather icon="paperclip" width={16} height={16}/>
+                        <Icon className="mr-2" icon="paperclip"/>
                     }
-                    <SvgIconFeather onClick={handleStarPost} icon="star" fill={post.is_favourite ? "#ffc107" : "none"} width={16} height={16}/>
-                    <SvgIconFeather onClick={handleArchivePost} icon="archive" width={16} height={16}/>
+                    <Icon className="mr-2" onClick={handleStarPost} icon="star" fill={star ? "#ffc107" : "none"}
+                          stroke={star ? "#ffc107" : "currentcolor"}/>
+                    <Icon className="mr-2" onClick={handleArchivePost} icon="archive"/>
                     <span className="text-muted">{localizeDate(post.created_at.timestamp, "LT")}</span>
                 </div>
             </div>
@@ -51,4 +61,4 @@ const PostBody = props => {
     )
 };
 
-export default PostBody;
+export default React.memo(PostBody);

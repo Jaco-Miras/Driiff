@@ -2,23 +2,29 @@ import React from "react";
 import styled from "styled-components";
 import {Comment} from "./index";
 
+const Wrapper = styled.ul`    
+    width: 95%;
+`;
+
 const SubComments = props => {
 
-    const {comments, post, commentActions, parentId, user, onShowFileDialog, dropAction} = props;
-    
+    const {className = "", comments, post, commentActions, parentId, user, onShowFileDialog, dropAction, parentShowInput} = props;
+
     return (
         comments &&
-        <ul>
+        <Wrapper className={`sub-comments ${className}`}>
             {
                 Object.values(comments).map(c => {
-                    return <Comment key={c.id} comment={c} type="sub" post={post} user={user} 
-                    commentActions={commentActions} parentId={parentId}
-                    onShowFileDialog={onShowFileDialog} dropAction={dropAction}
-                />
+                    return <Comment
+                        key={c.id} comment={c} type="sub" post={post} user={user}
+                        parentShowInput={() => {parentShowInput(c.id);}}
+                        commentActions={commentActions} parentId={parentId}
+                        onShowFileDialog={onShowFileDialog} dropAction={dropAction}
+                    />;
                 })
             }
-        </ul>
-    )
+        </Wrapper>
+    );
 };
 
 export default React.memo(SubComments);
