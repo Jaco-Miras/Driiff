@@ -9,7 +9,8 @@ import {replaceChar} from "../../helpers/stringFormatter";
 import {
     postFavorite, postArchive, postFollow, postMarkDone, 
     postToggleRead, removePost, postUnfollow, deletePost,
-    starPostReducer, markPostReducer, putPost, postCreate
+    starPostReducer, markPostReducer, putPost, postCreate,
+    postClap
 } from "../../redux/actions/postActions";
 
 const usePostActions = () => {
@@ -25,14 +26,16 @@ const usePostActions = () => {
         dispatch(
             postFavorite({type: "post", type_id: post.id}, (err,res) => {
                 if (err) return;
-                dispatch(
-                    starPostReducer({
-                        post_id: post.id,
-                        topic_id
-                    })
-                )
+                //@to do
+                // if err then reverse the action/data in the reducer
             })
-        )
+        );
+        dispatch(
+            starPostReducer({
+                post_id: post.id,
+                topic_id
+            })
+        );
     }, [dispatch]);
 
     const markPost = useCallback((post) => {
@@ -41,14 +44,16 @@ const usePostActions = () => {
         dispatch(
             postMarkDone({post_id: post.id}, (err,res) => {
                 if (err) return;
-                dispatch(
-                    markPostReducer({
-                        post_id: post.id,
-                        topic_id
-                    })
-                )
+                //@to do
+                // if err then reverse the action/data in the reducer
             })
-        )
+        );
+        dispatch(
+            markPostReducer({
+                post_id: post.id,
+                topic_id
+            })
+        );
     }, []);
 
     const openPost = useCallback((post) => {
@@ -270,6 +275,12 @@ const usePostActions = () => {
         );
     }, [dispatch]);
 
+    const clap = useCallback((payload) => {
+        dispatch(
+            postClap(payload)
+        );
+    }, [dispatch]);
+
     return {
         starPost,
         markPost,
@@ -282,7 +293,8 @@ const usePostActions = () => {
         followPost,
         trash,
         showModal,
-        update
+        update,
+        clap
     }
 };
 

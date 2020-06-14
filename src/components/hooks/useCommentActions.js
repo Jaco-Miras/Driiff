@@ -1,7 +1,7 @@
 import {useCallback} from "react";
 import {useDispatch} from "react-redux";
 import { addComment, fetchComments, setEditComment, postComment, putComment,
-        addCommentQuote, clearCommentQuote,
+        addCommentQuote, clearCommentQuote, postClap
 } from "../../redux/actions/postActions"
 
 const useCommentActions = props => {
@@ -50,9 +50,16 @@ const useCommentActions = props => {
         )
     }, [dispatch]);
 
+    const clap = useCallback((payload) => {
+        dispatch(
+            postClap(payload)
+        );
+    }, [dispatch]);
+
     return {
         add,
         addQuote,
+        clap,
         clearQuote,
         create,
         edit,

@@ -99,10 +99,17 @@ const usePosts = () => {
                     });
                 });
             }
+            filteredPosts = filteredPosts.filter(p => {
+                return !(p.hasOwnProperty("draft_type"));
+            }).sort((a, b) => {
+                if (sort === "favorite") {
+                    return a.is_favourite === b.is_favourite ? 1 : -1;
+                } else if (sort === "unread") {
+                    return a.is_updated === b.is_updated ? 1 : -1;
+                }
+            });
             return {
-                posts: filteredPosts.filter(p => {
-                    return !(p.hasOwnProperty("draft_type"));
-                }),
+                posts: filteredPosts,
                 filter: null,
                 tag: null,
                 sort: null,

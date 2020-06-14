@@ -1,9 +1,9 @@
-import React, {useState} from "react";
+import React from "react";
 import {useDispatch} from "react-redux";
 import styled from "styled-components";
 import {updateWorkspacePostFilterSort} from "../../../redux/actions/workspaceActions";
 import {ButtonDropdown} from "../../common";
-import {useCountRenders} from "../../hooks";
+// import {useCountRenders} from "../../hooks";
 import {PostSearch} from "./index";
 
 const Wrapper = styled.div`
@@ -22,13 +22,7 @@ const PostFilterSearchPanel = props => {
 
     const dispatch = useDispatch();
 
-    const [sort, setSort] = useState(activeSort);
-
     const handleClickSort = e => {
-        if (sort === e.target.dataset.value)
-            setSort(null);
-        else
-            setSort(e.target.dataset.value);
 
         dispatch(
             updateWorkspacePostFilterSort({
@@ -67,7 +61,7 @@ const PostFilterSearchPanel = props => {
                      <ButtonDropdown dropdown={filterDropdown}/>
                      </li> */}
                     <li className="list-inline-item mb-0">
-                        <ButtonDropdown value={sort} dropdown={sortDropdown}/>
+                        <ButtonDropdown value={activeSort} dropdown={sortDropdown}/>
                     </li>
                 </ul>
             </div>

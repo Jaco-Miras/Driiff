@@ -90,6 +90,16 @@ const Comment = props => {
         inputFocus();
     }, [inputFocus]);
 
+    const handleReaction = () => {
+        let payload = {
+            post_id: post.id,
+            id: comment.id,
+            clap: comment.user_clap_count === 0 ? 1 : 0,
+            personalized_for_id: null,
+        }
+        commentActions.clap(payload);
+    }
+
     return (
         <>
             <Wrapper ref={refs.main} className={`comment card border ${className}`}>
@@ -126,7 +136,7 @@ const Comment = props => {
                         className="mt-2 mb-3"
                         dangerouslySetInnerHTML={{__html: comment.body}}/>
                     <div className="d-flex align-items-center justify-content-start">
-                        <Icon className="mr-2" icon="heart"/> 3
+                        <Icon className="mr-2" icon="heart" onClick={handleReaction}/> 
                         {comment.clap_count > 0 ? comment.clap_count : null}
                         <Reply className="ml-3" onClick={handleShowInput}>Comment</Reply>
                     </div>
