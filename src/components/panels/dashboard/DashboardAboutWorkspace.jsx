@@ -27,6 +27,13 @@ const Wrapper = styled.div`
     }
 `;
 
+const DashboardDescription = styled.div`
+    img {
+        max-width: 100%;
+        max-height: 250px;
+    }
+`;
+
 const DashboardAboutWorkspace = (props) => {
 
     const {className = "", onEditClick, workspace} = props;
@@ -37,7 +44,7 @@ const DashboardAboutWorkspace = (props) => {
                 <h5 className="card-title">About this workspace <SvgIconFeather icon="edit" onClick={onEditClick}/></h5>
                 {
                     workspace && 
-                    <div dangerouslySetInnerHTML={{__html: workspace.description}}/>
+                    <DashboardDescription dangerouslySetInnerHTML={{__html: workspace.description}}/>
                 }
                 {
                     workspace && workspace.primary_files && workspace.primary_files.length > 0 &&
