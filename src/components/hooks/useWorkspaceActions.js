@@ -10,7 +10,7 @@ import {
     addPrimaryFiles,
     fetchDetail,
     fetchMembers,
-    fetchPrimaryFiles
+    fetchPrimaryFiles,
 } from "../../redux/actions/workspaceActions";
 
 const useWorkspaceActions = () => {

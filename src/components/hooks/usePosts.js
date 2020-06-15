@@ -2,12 +2,14 @@ import {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {useParams} from "react-router-dom";
 import {addToWorkspacePosts, getWorkspacePosts} from "../../redux/actions/workspaceActions";
+import {fetchRecentPosts} from "../../redux/actions/postActions";
 
 const usePosts = () => {
 
     const dispatch = useDispatch();
     const params = useParams();
     const wsPosts = useSelector(state => state.workspaces.workspacePosts);
+    const recentPosts = useSelector(state => state.posts.recentPosts);
     const user = useSelector(state => state.session.user);
     const [fetchingPost, setFetchingPost] = useState(false);
 
@@ -15,6 +17,9 @@ const usePosts = () => {
         if (params.workspaceId !== undefined) {
             if (!wsPosts.hasOwnProperty(params.workspaceId) && !fetchingPost) {
                 setFetchingPost(true);
+                dispatch(
+                    fetchRecentPosts({topic_id: params.workspaceId})
+                );
                 dispatch(
                     getWorkspacePosts({topic_id: parseInt(params.workspaceId)}, (err, res) => {
                         console.log(res);
@@ -31,6 +36,12 @@ const usePosts = () => {
             }
         }
     }, [params]);
+
+    let rPosts = null;
+
+    if (Object.keys(recentPosts).length && recentPosts.hasOwnProperty(params.workspaceId)) {
+        rPosts = recentPosts[params.workspaceId].posts;
+    }
 
     if (Object.keys(wsPosts).length && wsPosts.hasOwnProperty(params.workspaceId)) {
         let filter = wsPosts[params.workspaceId].filter;
@@ -88,7 +99,7 @@ const usePosts = () => {
                 });
             }
             return {
-                posts: filteredPosts, filter, tag, sort, post, user, search,
+                posts: filteredPosts, filter, tag, sort, post, search, user, recentPosts: rPosts
             };
         } else {
             let filteredPosts = Object.values(wsPosts[params.workspaceId].posts);
@@ -116,6 +127,7 @@ const usePosts = () => {
                 post: post,
                 search,
                 user,
+                recentPosts: rPosts
             };
         }
     } else {
@@ -127,6 +139,7 @@ const usePosts = () => {
             post: null,
             search: null,
             user,
+            recentPosts: rPosts
         };
     }
 };

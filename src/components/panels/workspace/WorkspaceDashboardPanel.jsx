@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import {useWorkspace} from "../../hooks";
+import {useWorkspace, usePosts} from "../../hooks";
 import TimelinePanel from "../common/TimelinePanel";
 import {DashboardAboutWorkspace, DashboardTeam, RecentPosts} from "../dashboard";
 
@@ -17,8 +17,10 @@ const WorkspaceDashboardPanel = (props) => {
 
     const {className = ""} = props;
 
-    const {workspace} = useWorkspace();
+    const {workspace, actions} = useWorkspace();
+    const {recentPosts} = usePosts();
 
+    console.log(recentPosts)
     return (
         <Wrapper className={`container-fluid h-100 ${className}`}>
             <div className={`row`}>
@@ -29,7 +31,7 @@ const WorkspaceDashboardPanel = (props) => {
 
                 <div className={`col-md-6`}>
                     <DashboardTeam workspace={workspace}/>
-                    <RecentPosts/>
+                    <RecentPosts posts={recentPosts}/>
                 </div>
             </div>
         </Wrapper>

@@ -1,12 +1,12 @@
 import {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {useParams} from "react-router-dom";
+//import {useParams} from "react-router-dom";
 import {useWorkspaceActions} from "../hooks";
 
 const useWorkspace = props => {
 
-    const dispatch = useDispatch();
-    const params = useParams();
+    // const dispatch = useDispatch();
+    // const params = useParams();
 
     const workspaceActions = useWorkspaceActions();
     const activeTopic = useSelector(state => state.workspaces.activeTopic);
@@ -30,7 +30,8 @@ const useWorkspace = props => {
     }, [fetchingPrimary, activeTopic]);
 
     return {
-        workspace: activeTopic
+        workspace: activeTopic,
+        actions: workspaceActions,
     }
 };
 

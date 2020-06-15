@@ -1,7 +1,9 @@
 import React, {useCallback, useState} from "react";
+import {useRouteMatch} from "react-router-dom";
 import styled from "styled-components";
 import {SvgIconFeather} from "../../common";
 import {RecentPostListItem} from "../../list/post/item";
+import {usePostActions} from "../../hooks";
 
 const Wrapper = styled.div`    
     .feather-refresh-ccw {
@@ -51,43 +53,11 @@ const Wrapper = styled.div`
 
 const RecentPosts = (props) => {
 
-    const {className = ""} = props;
-    const [scrollRef, setScrollRef] = useState(null);
+    const {className = "", posts} = props;
 
-    const posts = [
-        {
-            id: 1,
-            title: "Post 1",
-            is_mark_done: true,
-            created_at: {
-                timestamp: 1591713000,
-            },
-        },
-        {
-            id: 2,
-            title: "Post 2",
-            is_mark_done: false,
-            created_at: {
-                timestamp: 1589038200,
-            },
-        },
-        {
-            id: 3,
-            title: "Post 3",
-            is_mark_done: false,
-            created_at: {
-                timestamp: 1592351400,
-            },
-        },
-        {
-            id: 4,
-            title: "Post 4",
-            is_mark_done: true,
-            created_at: {
-                timestamp: 1591630300,
-            },
-        },
-    ];
+    const postActions = usePostActions();
+    const match = useRouteMatch();
+    const [scrollRef, setScrollRef] = useState(null);
 
     const assignRef = useCallback((e) => {
         if (scrollRef === null) {
@@ -97,24 +67,31 @@ const RecentPosts = (props) => {
         //eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
+    const handleOpenPost = (post) => {
+        postActions.openPost(post, match.url.replace("/workspace/dashboard/", "/workspace/posts/"))
+    };
+    
+    const handleRefetchPosts = () => {
+        if (match.params.hasOwnProperty("workspaceId")) {
+            postActions.getRecentPosts(match.params.workspaceId)
+        }
+    };
+
     return (
         <Wrapper className={`recent-posts card ${className}`}>
             <div ref={assignRef} className="card-body">
-                <h5 className="card-title">Recent posts <SvgIconFeather icon="refresh-ccw"/></h5>
-                <p>The widget for recent posts is not global. It follows personal changes, such as ‘mark as done’.</p>
-                <p>The system displays the latest activity posts on top</p>
-                <p>The system refreshes the list only when the user isn’t watching the dashboard, in case the user is
-                    watching the dashboard / recent posts - it is required to select the refresh icon.</p>
-                <p>The user can check / mark as done the posts, by using the checkbox</p>
-                <p>The user can navigate to the post detail, by clicking on anything connected to the post except the
-                    checkbox.</p>
-                <ul className="list-group list-group-flush">
+                <h5 className="card-title">Recent posts <SvgIconFeather icon="refresh-ccw" onClick={handleRefetchPosts}/></h5>
+                {
+                    posts &&
+                    <ul className="list-group list-group-flush">
                     {
-                        posts.map(post => {
-                            return <RecentPostListItem key={post.id} post={post} parentRef={scrollRef}/>;
+                        Object.values(posts).map(post => {
+                            return <RecentPostListItem key={post.id} post={post} parentRef={scrollRef} 
+                                postActions={postActions} onOpenPost={handleOpenPost}/>;
                         })
                     }
-                </ul>
+                    </ul>
+                }
             </div>
         </Wrapper>
     );
