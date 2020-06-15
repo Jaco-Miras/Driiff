@@ -744,6 +744,24 @@ export default (state = INITIAL_STATE, action) => {
                 workspaceTimeline: newWorkspaceTimeline
             }
         }
+        case "FETCH_WORKSPACE_MEMBERS_SUCCESS": {
+            let newWorkspaces = {...state.workspaces};
+            if (action.data.workspace_id !== 0) {
+                newWorkspaces[action.data.workspace_id].topics[action.data.id].members = action.data.members;
+            } else {
+                newWorkspaces[action.data.id].members = action.data.members;
+            }
+            return {
+                ...state,
+                workspaces: newWorkspaces,
+                activeTopic: state.activeTopic && state.activeTopic.id === action.data.id ? 
+                    {
+                        ...state.activeTopic,
+                        members: action.data.members
+                    }
+                    : state.activeTopic
+            }
+        }
         default:
             return state;
     }
