@@ -1,7 +1,9 @@
 import React, {useRef, useState} from "react";
+import {useDispatch} from "react-redux";
 import styled from "styled-components";
 import {useOutsideClick, useTooltipOrientation} from "../hooks";
 import {SvgIconFeather} from "./index";
+import {setViewFiles} from "../../redux/actions/fileActions";
 
 const Wrapper = styled.div`
     position: relative;
@@ -114,7 +116,8 @@ const AttachmentIcon = styled(SvgIconFeather)`
 
 const FileAttachments = props => {
 
-    const {className = "", attachedFiles, handleRemoveFile, scrollRef = null} = props;
+    const {className = "", attachedFiles, handleRemoveFile, scrollRef = null, type = "modal", workspace = null} = props;
+    const dispatch = useDispatch();
     const [filePreview, setFilePreview] = useState(null);
 
     const refs = {
@@ -149,13 +152,25 @@ const FileAttachments = props => {
 
     const handleClick = (e) => {
         const index = e.currentTarget.dataset.targetIndex;
-        if (filePreview !== null && filePreview.file.id === attachedFiles[index].id) {
-            closePreview(e);
+        if (type === "modal") {
+            if (filePreview !== null && filePreview.file.id === attachedFiles[index].id) {
+                closePreview(e);
+            } else {
+                setFilePreview({
+                    file: attachedFiles[index],
+                    offsetTop: e.currentTarget.offsetTop + 20,
+                });
+            }
         } else {
-            setFilePreview({
-                file: attachedFiles[index],
-                offsetTop: e.currentTarget.offsetTop + 20,
-            });
+            if (workspace) {
+                let payload = {
+                    workspace_id: workspace.id,
+                    file_id: attachedFiles[index].id,
+                };
+                dispatch(
+                    setViewFiles(payload),
+                );
+            }
         }
     };
 
@@ -167,8 +182,13 @@ const FileAttachments = props => {
         e.preventDefault();
         e.stopPropagation();
 
-        handleRemoveFile(e.currentTarget.dataset.fileId);
-        setFilePreview(null);
+        if (type === "modal") {
+            handleRemoveFile(e.currentTarget.dataset.fileId);
+            setFilePreview(null);
+        } else {
+            
+        }
+        
     };
 
     const handleMouseLeave = () => {

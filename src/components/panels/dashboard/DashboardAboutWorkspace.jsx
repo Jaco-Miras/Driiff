@@ -29,12 +29,12 @@ const Wrapper = styled.div`
 
 const DashboardAboutWorkspace = (props) => {
 
-    const {className = "", workspace} = props;
+    const {className = "", onEditClick, workspace} = props;
 
     return (
         <Wrapper className={`dashboard-about-workspace card ${className}`}>
             <div className="card-body">
-                <h5 className="card-title">About this workspace <SvgIconFeather icon="edit"/></h5>
+                <h5 className="card-title">About this workspace <SvgIconFeather icon="edit" onClick={onEditClick}/></h5>
                 {
                     workspace && 
                     <div dangerouslySetInnerHTML={{__html: workspace.description}}/>
@@ -44,7 +44,7 @@ const DashboardAboutWorkspace = (props) => {
                     <>
                     <hr/>
                     <span>File attachments:</span>
-                    <FileAttachments attachedFiles={workspace.primary_files}/>
+                    <FileAttachments attachedFiles={workspace.primary_files} workspace={workspace} type="workspace"/>
                     </>
                 }
             </div>

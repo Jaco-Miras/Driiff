@@ -7,6 +7,7 @@ const INITIAL_STATE = {
     viewFiles: null,
     pendingWorkspaceFilesUpload: {},
     progressWorkspaceFilesUpload: {},
+    workspaceFiles: {}
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -124,6 +125,17 @@ export default (state = INITIAL_STATE, action) => {
                 ...state,
                 progressWorkspaceFilesUpload: progressWorkspaceFilesUpload,
             };
+        }
+        case "ADD_PRIMARY_FILES": {
+            return {
+                ...state,
+                workspaceFiles: {
+                    ...state.workspaceFiles,
+                    [action.data.id]: {
+                        files: action.data.files
+                    }
+                }
+            }
         }
         default:
             return state;
