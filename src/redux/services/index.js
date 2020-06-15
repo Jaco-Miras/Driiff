@@ -79,6 +79,7 @@ export {
     deletePost,
     fetchComments,
     postArchive,
+    postClap,
     postCreate,
     postComment,
     postFavorite,

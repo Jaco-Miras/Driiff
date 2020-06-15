@@ -3,6 +3,7 @@ import {
     deletePost as deletePostService,
     fetchComments as fetchCommentsService,
     postArchive as postArchiveService,
+    postClap as postClapService,
     postCreate as postCreateService,
     postComment as postCommentService,
     postFavorite as postFavoriteService,
@@ -229,6 +230,16 @@ export function incomingComment(payload, callback) {
     return SimpleDispatchActionToReducer(
         "INCOMING_COMMENT",
         payload,
+        callback,
+    );
+}
+
+export function postClap(payload, callback) {
+    return dispatchActionToReducer(
+        postClapService(payload),
+        "POST_CLAP_START",
+        "POST_CLAP_SUCCESS",
+        "POST_CLAP_FAIL",
         callback,
     );
 }

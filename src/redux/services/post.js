@@ -205,3 +205,20 @@ export function putPost(payload) {
         data: payload,
     });
 }
+
+/**
+ * @param {Object} payload
+ * @param {number} payload.post_id
+ * @param {number} payload.clap
+ * @param {number} payload.personalized_for_id
+ * @param {id} payload.id
+ * @returns {Promise<*>}
+ */
+export function postClap(payload) {
+    let url = `/v1/post-clap`;
+    return apiCall({
+        method: "POST",
+        url: url,
+        data: payload,
+    });
+}

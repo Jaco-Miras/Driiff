@@ -19,6 +19,9 @@ const MainBody = styled.div`
 const Counters = styled.div`
     width: 100%;
     padding: .5rem 1.5rem;
+    .seen-indicator, .post-reaction {
+        cursor: pointer;
+    }
 `;
 
 const Icon = styled(SvgIconFeather)`
@@ -113,6 +116,16 @@ const PostDetail = props => {
         dispatch(addToModals(modal));
     };
 
+    const handleReaction = () => {
+        let payload = {
+            post_id: post.id,
+            id: null,
+            clap: post.user_clap_count === 0 ? 1 : 0,
+            personalized_for_id: null,
+        }
+        postActions.clap(payload);
+    }
+
     return (
         <>
             <div className="card-header">
@@ -154,10 +167,12 @@ const PostDetail = props => {
                 <PostBody post={post} postActions={postActions}/>
                 <hr className="m-0"/>
                 <Counters className="d-flex align-items-center">
-                    <div><Icon className="mr-2" icon="heart"/>{post.clap_count}</div>
+                    <div><Icon className="mr-2 post-reaction" icon="heart" onClick={handleReaction}/>
+                        {post.clap_count}
+                    </div>
                     <div className="ml-auto">
                         <Icon className="mr-2" icon="message-square"/>{post.reply_count}
-                        <Icon className="ml-2 mr-2" icon="eye"/>{post.view_user_ids.length}
+                        <Icon className="ml-2 r-2 seen-indicator" icon="eye"/>{post.view_user_ids.length}
                     </div>
                 </Counters>
                 {

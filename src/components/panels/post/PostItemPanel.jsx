@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React from "react";
 import {useSelector} from "react-redux";
 import styled from "styled-components";
 import {AvatarGroup, SvgIconFeather} from "../../common";
@@ -39,8 +39,6 @@ const PostItemPanel = (props) => {
 
     const user = useSelector(state => state.session.user);
     const {className = "", post, postActions} = props;
-    const [done, setDone] = useState(post.is_mark_done);
-    const [star, setStar] = useState(post.is_favourite);
 
     const {
         starPost,
@@ -58,38 +56,42 @@ const PostItemPanel = (props) => {
         e.preventDefault();
         e.stopPropagation();
         markPost(post);
-        setDone(!done);
     };
 
-    const hanldeStarPost = (e) => {
+    const handleStarPost = (e) => {
         e.preventDefault();
         e.stopPropagation();
         starPost(post);
-        setStar(!star);
     };
+
+    const handleArchivePost = e => {
+        e.preventDefault();
+        e.stopPropagation();
+        archivePost(post);
+    }
 
     return (
         <Wrapper className={`list-group-item post-item-panel ${className}`} onClick={() => openPost(post)}>
             <div className="custom-control custom-checkbox custom-checkbox-success">
-                <CheckBox name="test" checked={done} onClick={handleMarkDone}/>
+                <CheckBox name="test" checked={post.is_mark_done} onClick={handleMarkDone}/>
             </div>
             <div>
                 <Icon
                     className="mr-2"
-                    icon="star" onClick={hanldeStarPost}
-                    stroke={star ? "#ffc107" : "currentcolor"}
-                    fill={star ? "#ffc107" : "none"}/>
+                    icon="star" onClick={handleStarPost}
+                    stroke={post.is_favourite ? "#ffc107" : "currentcolor"}
+                    fill={post.is_favourite ? "#ffc107" : "none"}/>
             </div>
             <div className="flex-grow-1 min-width-0">
                 <div className="d-flex align-items-center justify-content-between">
-                    <div className={`app-list-title text-truncate ${done ? "text-success" : ""}`}>{post.title}</div>
+                    <div className={`app-list-title text-truncate ${post.is_mark_done ? "text-success" : ""}`}>{post.title}</div>
                     <div className="pl-3 d-flex align-items-center">
                         <PostBadge post={post}/>
                         {
                             post.users_responsible.length > 0 &&
                             <AvatarGroup users={post.users_responsible}/>
                         }
-                        <Icon icon="archive" onClick={() => archivePost(post)}/>
+                        <Icon icon="archive" onClick={handleArchivePost}/>
                     </div>
                 </div>
             </div>

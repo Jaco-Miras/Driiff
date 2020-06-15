@@ -34,6 +34,8 @@ const WorkspacePostsPanel = (props) => {
 
     useCountRenders("posts panel");
 
+    console.log(post)
+
     return (
         <Wrapper className={`container-fluid h-100 ${className}`}>
             <div className="row app-block">
