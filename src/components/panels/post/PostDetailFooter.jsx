@@ -103,7 +103,7 @@ const Dflex = styled.div`
 `;
 
 const PickerContainer = styled(CommonPicker)`
-    right: unset;
+    right: 25px;
     bottom: 70px;
 `;
 

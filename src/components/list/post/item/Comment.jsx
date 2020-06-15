@@ -9,6 +9,10 @@ const Wrapper = styled.li`
     margin-bottom: 1rem;        
 `;
 
+const InputWrapper = styled.li`
+    overflow: initial;
+`;
+
 const CommentWrapper = styled.div`
 `;
 
@@ -143,7 +147,7 @@ const Comment = props => {
             }
             {
                 showInput !== null &&
-                <li className="card">
+                <InputWrapper className="card">
                     <CommentInput
                         innerRef={refs.input}
                         user={user}
@@ -155,7 +159,7 @@ const Comment = props => {
                         handleClearUserMention={handleClearUserMention}
                         onShowFileDialog={onShowFileDialog} dropAction={dropAction}
                     />
-                </li>
+                </InputWrapper>
             }
         </>
 
