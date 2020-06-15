@@ -1,16 +1,18 @@
 import {useEffect, useState} from "react";
-import {useDispatch, useSelector} from "react-redux";
-//import {useParams} from "react-router-dom";
+import {useSelector} from "react-redux";
+import {useParams} from "react-router-dom";
 import {useWorkspaceActions} from "../hooks";
 
 const useWorkspace = props => {
 
     // const dispatch = useDispatch();
-    // const params = useParams();
+    const params = useParams();
 
     const workspaceActions = useWorkspaceActions();
     const activeTopic = useSelector(state => state.workspaces.activeTopic);
+    const workspaceTimeline = useSelector(state => state.workspaces.workspaceTimeline);
     const [fetchingPrimary, setFetchingPrimary] = useState(false);
+    const [fetchingTimeline, setFetchingTimeline] = useState(false);
 
     useEffect(() => {
         if (!fetchingPrimary && activeTopic && !activeTopic.hasOwnProperty("primary_files")) {
@@ -29,9 +31,21 @@ const useWorkspace = props => {
         }
     }, [fetchingPrimary, activeTopic]);
 
+    useEffect(() => {
+        if (activeTopic && !fetchingTimeline && !workspaceTimeline.hasOwnProperty(activeTopic.id)) {
+            workspaceActions.getTimeline(activeTopic.id);
+        }
+    }, [fetchingTimeline, activeTopic, workspaceTimeline]);
+
+    let timeline = null;
+    if (Object.keys(workspaceTimeline).length && workspaceTimeline.hasOwnProperty(params.workspaceId)) {
+        timeline = workspaceTimeline[params.workspaceId].timeline;
+    }
+
     return {
         workspace: activeTopic,
         actions: workspaceActions,
+        timeline
     }
 };
 

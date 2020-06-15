@@ -11,6 +11,7 @@ import {
     fetchDetail,
     fetchMembers,
     fetchPrimaryFiles,
+    fetchTimeline
 } from "../../redux/actions/workspaceActions";
 
 const useWorkspaceActions = () => {
@@ -41,11 +42,18 @@ const useWorkspaceActions = () => {
         )
     }, [dispatch]);
 
+    const getTimeline = useCallback((id, callback) => {
+        dispatch(
+            fetchTimeline({topic_id: id}, callback)
+        )
+    }, [dispatch]);
+
     return {
         addPrimaryFilesToWorkspace,
         getDetail,
         getMembers,
         getPrimaryFiles,
+        getTimeline,
     }
 };
 

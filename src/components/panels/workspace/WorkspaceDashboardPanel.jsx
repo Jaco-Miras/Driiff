@@ -17,16 +17,15 @@ const WorkspaceDashboardPanel = (props) => {
 
     const {className = ""} = props;
 
-    const {workspace, actions} = useWorkspace();
+    const {workspace, actions, timeline} = useWorkspace();
     const {recentPosts} = usePosts();
 
-    console.log(recentPosts)
     return (
         <Wrapper className={`container-fluid h-100 ${className}`}>
             <div className={`row`}>
                 <div className={`col-md-6`}>
                     <DashboardAboutWorkspace workspace={workspace}/>
-                    <TimelinePanel/>
+                    <TimelinePanel timeline={timeline}/>
                 </div>
 
                 <div className={`col-md-6`}>

@@ -20,7 +20,7 @@ const Wrapper = styled.div`
 
 const PostTimeline = (props) => {
 
-    const {className = "", post} = props;
+    const {className = "", data} = props;
     const history = useHistory();
 
     const handleLinkClick = (e) => {
@@ -31,27 +31,27 @@ const PostTimeline = (props) => {
     return (
         <Wrapper className={`timeline-item ${className}`}>
             <div>
-                <Avatar className="mr-3" name={post.user.name} imageLink={post.user.profile_image_link}/>
+                <Avatar className="mr-3" name={data.user.name} imageLink={data.user.profile_image_link}/>
             </div>
             <div>
                 <h6 className="d-flex justify-content-between mb-4">
                     <span className="title">
-                        {post.user.name} <a href="/" onClick={handleLinkClick}>shared a post</a>
+                        {data.user.name} <a onClick={handleLinkClick}>shared a post</a>
                     </span>
                     <span
-                        className="text-muted font-weight-normal">{localizeChatTimestamp(post.created_at.timestamp)}</span>
+                        className="text-muted font-weight-normal">{localizeChatTimestamp(data.created_at.timestamp)}</span>
                 </h6>
-                <a href="/" onClick={handleLinkClick}>
+                <a onClick={handleLinkClick}>
                     <div className="mb-3 border p-3 border-radius-1">
-                        {post.body}
+                        <div dangerouslySetInnerHTML={{__html: data.body}}/>
                     </div>
                 </a>
 
                 {
-                    post.files.length >= 1 &&
+                    data.files && data.files.length >= 1 &&
                     <>
                         File attachments:
-                        <FileAttachments attachedFiles={post.files}/>
+                        <FileAttachments attachedFiles={data.files}/>
                     </>
                 }
             </div>

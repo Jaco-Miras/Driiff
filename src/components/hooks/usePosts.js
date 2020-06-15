@@ -1,7 +1,7 @@
 import {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {useParams} from "react-router-dom";
-import {addToWorkspacePosts, getWorkspacePosts} from "../../redux/actions/workspaceActions";
+import {addToWorkspacePosts, getWorkspacePosts, fetchTimeline} from "../../redux/actions/workspaceActions";
 import {fetchRecentPosts} from "../../redux/actions/postActions";
 
 const usePosts = () => {
@@ -19,6 +19,9 @@ const usePosts = () => {
                 setFetchingPost(true);
                 dispatch(
                     fetchRecentPosts({topic_id: params.workspaceId})
+                );
+                dispatch(
+                    fetchTimeline({topic_id: params.workspaceId})
                 );
                 dispatch(
                     getWorkspacePosts({topic_id: parseInt(params.workspaceId)}, (err, res) => {

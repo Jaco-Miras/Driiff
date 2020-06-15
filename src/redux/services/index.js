@@ -100,6 +100,7 @@ export {
     fetchDetail,
     fetchPrimaryFiles,
     fetchMembers,
+    fetchTimeline,
     getPostStatusCount,
     getWorkspacePosts,
     getWorkspacePostDetail,

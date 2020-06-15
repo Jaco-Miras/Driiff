@@ -234,3 +234,19 @@ export function fetchMembers(payload) {
         data: payload,
     });
 }
+
+
+
+/**
+ * @param {Object} payload
+ * @param {number} payload.topic_id
+ * @returns {Promise<*>}
+ */
+export function fetchTimeline(payload) {
+    let url = `/v2/workspace-dashboard-timeline?topic_id=${payload.topic_id}`;
+    return apiCall({
+        method: "GET",
+        url: url,
+        data: payload,
+    });
+}

@@ -9,7 +9,8 @@ const INITIAL_STATE = {
     externalWorkspacesLoaded: false,
     workspacePosts: {},
     postComments: {},
-    drafts: []
+    drafts: [],
+    workspaceTimeline: {}
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -728,6 +729,19 @@ export default (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 postComments: newPostComments
+            }
+        }
+        case "FETCH_TIMELINE_SUCCESS": {
+            let newWorkspaceTimeline = {...state.workspaceTimeline};
+            newWorkspaceTimeline = {
+                ...newWorkspaceTimeline,
+                [action.data.topic_id]: {
+                    timeline: convertArrayToObject(action.data.timeline, "id")
+                }
+            }
+            return {
+                ...state,
+                workspaceTimeline: newWorkspaceTimeline
             }
         }
         default:
