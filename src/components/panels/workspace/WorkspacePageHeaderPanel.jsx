@@ -38,7 +38,13 @@ const WorkspacePageHeaderPanel = (props) => {
 
     const {className = ""} = props;
 
-    const pathname = props.match.url.replace(`/workspace/${props.match.params.page}`, "");
+    let pathname = props.match.url;
+    if (props.match.path === "/workspace/:page/:workspaceId/:workspaceName/post/:postId/:postTitle") {
+        pathname = pathname.split("/post/")[0].replace(`/workspace/${props.match.params.page}`, "")
+    } else  {
+        pathname = pathname.replace(`/workspace/${props.match.params.page}`, "");
+    }
+ 
 
     return (
         <>

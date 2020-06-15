@@ -33,10 +33,13 @@ const MainContentPanel = (props) => {
         <Wrapper className={`main-content ${className}`} isOnWorkspace={props.match.params.page === "workspace"}>
             <Switch>
                 <Route
+                    exact={true}
                     {...props}
                     component={WorkspacePageHeaderPanel}
                     path={[
+                        "/workspace/:page/:folderId/:folderName/:workspaceId/:workspaceName/post/:postId/:postTitle",
                         "/workspace/:page/:folderId/:folderName/:workspaceId/:workspaceName",
+                        "/workspace/:page/:workspaceId/:workspaceName/post/:postId/:postTitle",
                         "/workspace/:page/:workspaceId/:workspaceName",
                         "/workspace/:page",
                     ]}/>

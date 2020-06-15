@@ -701,6 +701,35 @@ export default (state = INITIAL_STATE, action) => {
                     : state.activeTopic
             }
         }
+        case "INCOMING_POST_CLAP": {
+            let newWorkspacePosts = {...state.workspacePosts};
+            Object.values(newWorkspacePosts).forEach(ws => {
+                if (ws.posts.hasOwnProperty(action.data.post_id)) {
+                    ws.posts[action.data.post_id].clap_count = action.data.clap_count === 0 ? ws.posts[action.data.post_id].clap_count - 1 : ws.posts[action.data.post_id].clap_count + 1;
+                    ws.posts[action.data.post_id].user_clap_count = action.data.clap_count;
+                }
+            })
+            return {
+                ...state,
+                workspacePosts: newWorkspacePosts
+            }
+        }
+        case "INCOMING_COMMENT_CLAP": {
+            let newPostComments = {...state.postComments};
+            if (action.data.parent_message_id) {
+                newPostComments[action.data.post_id].comments[action.data.parent_message_id].replies[action.data.message_id].clap_count = action.data.clap_count === 0 ? 
+                    newPostComments[action.data.post_id].comments[action.data.parent_message_id].replies[action.data.message_id].clap_count - 1 : newPostComments[action.data.post_id].comments[action.data.parent_message_id].replies[action.data.message_id].clap_count + 1;
+                    newPostComments[action.data.post_id].comments[action.data.parent_message_id].replies[action.data.message_id].user_clap_count = action.data.clap_count;
+            } else {
+                newPostComments[action.data.post_id].comments[action.data.message_id].clap_count = action.data.clap_count === 0 ? 
+                    newPostComments[action.data.post_id].comments[action.data.message_id].clap_count - 1 : newPostComments[action.data.post_id].comments[action.data.message_id].clap_count + 1;
+                    newPostComments[action.data.post_id].comments[action.data.message_id].user_clap_count = action.data.clap_count;
+            }
+            return {
+                ...state,
+                postComments: newPostComments
+            }
+        }
         default:
             return state;
     }

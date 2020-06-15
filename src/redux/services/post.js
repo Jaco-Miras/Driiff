@@ -222,3 +222,19 @@ export function postClap(payload) {
         data: payload,
     });
 }
+
+/**
+ * @param {Object} payload
+ * @param {number} payload.id
+ * @param {string} payload.reaction
+ * @param {number} payload.counter
+ * @returns {Promise<*>}
+ */
+export function postCommentClap(payload) {
+    let url = `/messages/${payload.id}/reactions`;
+    return apiCall({
+        method: "POST",
+        url: url,
+        data: payload,
+    });
+}

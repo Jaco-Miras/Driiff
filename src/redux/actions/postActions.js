@@ -6,6 +6,7 @@ import {
     postClap as postClapService,
     postCreate as postCreateService,
     postComment as postCommentService,
+    postCommentClap as postCommentClapService,
     postFavorite as postFavoriteService,
     postFollow as postFollowService,
     postMarkDone as postMarkDoneService,
@@ -240,6 +241,32 @@ export function postClap(payload, callback) {
         "POST_CLAP_START",
         "POST_CLAP_SUCCESS",
         "POST_CLAP_FAIL",
+        callback,
+    );
+}
+
+export function postCommentClap(payload, callback) {
+    return dispatchActionToReducer(
+        postCommentClapService(payload),
+        "POST_COMMENT_CLAP_START",
+        "POST_COMMENT_CLAP_SUCCESS",
+        "POST_COMMENT_CLAP_FAIL",
+        callback,
+    );
+}
+
+export function incomingPostClap(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "INCOMING_POST_CLAP",
+        payload,
+        callback,
+    );
+}
+
+export function incomingCommentClap(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "INCOMING_COMMENT_CLAP",
+        payload,
         callback,
     );
 }

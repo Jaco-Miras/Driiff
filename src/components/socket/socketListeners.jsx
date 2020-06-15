@@ -31,8 +31,10 @@ import {
 } from "../../redux/actions/globalActions";
 import {
     incomingPost,
+    incomingPostClap,
+    incomingComment,
+    incomingCommentClap,
     incomingDeletedPost,
-    incomingComment
 } from "../../redux/actions/postActions";
 import {getOnlineUsers, getUser} from "../../redux/actions/userAction";
 import {
@@ -81,6 +83,10 @@ class SocketListeners extends PureComponent {
                     this.props.incomingComment(e);
                     break;
                 }
+                case "POST_CLAP_TOGGLE": {
+                    this.props.incomingPostClap(e);
+                    break;
+                }
 
                 default:
                     return null;
@@ -96,6 +102,10 @@ class SocketListeners extends PureComponent {
                 }
                 case "POST_COMMENT_UPDATE": {
                     this.props.incomingComment(e);
+                    break;
+                }
+                case "POST_COMMENT_CLAP_TOGGLE": {
+                    this.props.incomingCommentClap(e);
                     break;
                 }
 
@@ -577,8 +587,10 @@ function mapDispatchToProps(dispatch) {
         setUnreadNotificationCounterEntries: bindActionCreators(setUnreadNotificationCounterEntries, dispatch),
 
         incomingPost: bindActionCreators(incomingPost, dispatch),
+        incomingPostClap: bindActionCreators(incomingPostClap, dispatch),
         incomingDeletedPost: bindActionCreators(incomingDeletedPost, dispatch),
-        incomingComment: bindActionCreators(incomingComment, dispatch)
+        incomingComment: bindActionCreators(incomingComment, dispatch),
+        incomingCommentClap: bindActionCreators(incomingCommentClap, dispatch),
     };
 }
 

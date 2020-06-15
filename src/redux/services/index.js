@@ -82,6 +82,7 @@ export {
     postClap,
     postCreate,
     postComment,
+    postCommentClap,
     postFavorite,
     postFollow,
     postMarkDone,
