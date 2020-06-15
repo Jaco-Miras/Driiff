@@ -13,18 +13,24 @@ const Wrapper = styled.div`
     }
     -ms-overflow-style: none;
     scrollbar-width: none;
-    
-    &.navigation-menu-body {            
+    &.navigation-menu-body {
+        border-right: 1px solid #f1f1f1;
         h4 {
-            color: #7a1b8b;    
+            color: #7a1b8b;
             text-transform: uppercase;
-            margin: 14px 0 14px 32px;
-            font-size: 16px;
+            margin: 0 32px;
+            height: 32px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+        }
+        #elements > ul:first-of-type {
+            margin-bottom: 6px;
         }
         .nav-tabs {
             margin-left: 30px;
             width: calc(100% - 55px);
-            
+
             .nav-item {
                 cursor: pointer;
                 cursor: hand;
@@ -33,15 +39,7 @@ const Wrapper = styled.div`
         .navigation-menu-group{
             ul {
                 li {
-                    font-size: 13px;
-                    
-                    &:hover {
-                        
-                        a {                            
-                            font-weight: bold;
-                        }
-                    }
-                
+                    font-size: .835rem;
                     &.navigation-divider {
                         cursor: pointer;
                         cursor: hand;
@@ -51,39 +49,39 @@ const Wrapper = styled.div`
                         color: #BEBEBE;
                         font-size: 9px;
                         font-weight: normal;
-                        
+
                         &:hover {
                             color: #7a1b8b;
                         }
-                        
+
                         svg {
                             width: 7px;
                             height: 7px;
                             margin-right: 9px;
                         }
                     }
-                    
+
                     a {
                         padding: 10px 70px 10px 30px;
                     }
-    
+
                     > ul {
-                        li {                                    
+                        li {
                             margin-left: 30px;
                             margin-bottom: 10px;
                             color: #828282;
                             font-size: 11px;
-                            max-width:calc(100% - 95px);                            
+                            max-width:calc(100% - 95px);
                             // white-space: nowrap;
                             // overflow: hidden;
                             // text-overflow: ellipsis;
                             position: relative;
                             padding-left: 18px;
-                            
+
                             &:hover {
                                 color: #7a1b8b;
                             }
-                                            
+
                             &.nav-action {
                                 list-style-type: none !important;
                                 margin-left: 26px !important;
@@ -91,26 +89,26 @@ const Wrapper = styled.div`
                                 font-size: 9px !important;
                                 font-weight: normal;
                                 padding-left: 22px;
-                                
+
                                 svg {
                                     width: 7px;
                                     left: 6px;
-                                    top:-4px;                                    
+                                    top:-4px;
                                 }
                             }
-                  
+
                             svg {
-                              color: #828282;      
+                              color: #828282;
                               position: absolute;
-                              
+
                               &.feather-lock{
                                 top:-3px;
                                 left: 0;
                               }
                               &.feather-circle{
                                 left: 3px;
-                                width:4px;                                
-                                top:-2px;
+                                width:6px;
+                                top:-3px;
                                 fill: #828282;
                               }
                             }
@@ -187,6 +185,8 @@ const WorkspaceNavigationMenuBodyPanel = (props) => {
                                 <li className="navigation-divider" onClick={handleShowWorkspaceModal}>
                                     <SvgIconFeather icon="plus"/> New workspace
                                 </li>
+                            </ul>
+                            <ul>
                                 {
                                     sortedWorkspaces
                                         .map(ws => {
