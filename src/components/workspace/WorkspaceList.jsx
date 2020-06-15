@@ -10,36 +10,34 @@ import {useSettings} from "../hooks";
 import TopicList from "./TopicList";
 
 const Wrapper = styled.li`
-    ${props => !props.show && `display: none;`} 
+    ${props => !props.show && `display: none;`}
     cursor: pointer;
     cursor: hand;
     position: relative;
-    
+
     > a {
         font-weight: ${props => props.selected ? "bold" : "normal"};
         color: ${props => props.selected ? "#7a1b8b !important" : "#64625C"};
-        margin-bottom: 10px;
-        
         .badge {
             padding: 3px 7px;
             position: absolute;
             right: 25px;
-            overflow: hidden;    
+            overflow: hidden;
             transition: all .3s ease;
             top: 12px;
             opacity: 1;
-            
-            &.enter-active {                
-                transform: translate(0, 0);                        
+
+            &.enter-active {
+                transform: translate(0, 0);
             }
-            
+
             &.leave-active {
-                opacity: 0;                
-                transform: translate(0, 100%);                
+                opacity: 0;
+                transform: translate(0, 100%);
             }
         }
     }
-    
+
     ul {
         li {
             .badge {
@@ -54,11 +52,12 @@ const Wrapper = styled.li`
 
 const TopicNav = styled.ul`
     display: block !important;
-    overflow: hidden;    
+    overflow: hidden;
     transition: all .3s ease;
 
     &.enter-active {
-        max-height: ${props => props.maxHeight}px;        
+        max-height: ${props => props.maxHeight}px;
+        margin: 4px 0 8px 2px;
     }
 
     &.leave-active {

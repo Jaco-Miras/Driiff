@@ -2,6 +2,7 @@ import React, {forwardRef, useRef} from "react";
 import styled from "styled-components";
 import {getAPIUrl} from "../../../../helpers/slugHelper";
 import {SvgIcon} from "../../../common";
+import useFiles from "../../../hooks/useFiles";
 
 const ImgLoader = styled.div`
     position: relative;
@@ -133,6 +134,9 @@ const FilePill = forwardRef((props, ref) => {
         }
     };
 
+    const fileHandler = useFiles();
+    // console.log(file)
+
     return <FilePillContainer
         className={`file-pill ${className}`}
         {...otherProps}>
@@ -172,12 +176,12 @@ const FilePill = forwardRef((props, ref) => {
                 </>
                 : <DocFile onClick={handleViewFile}>
                       <div className="card app-file-list">
-                          <div className="app-file-icon">
-                              <SvgIcon icon={`document`} width="28" height="32"/>
-                          </div>
-                          <div className="p-2 small">
-                              <div>{file.filename ? file.filename.substr(0, file.filename.lastIndexOf(".")) : file.name.substr(0, file.name.lastIndexOf("."))}</div>
-                          </div>
+                        <div className="app-file-icon">
+                            { fileHandler.getFileIcon(file.type)}
+                        </div>
+                        <div className="p-2 small">
+                            <div>{file.filename }</div>
+                        </div>
                       </div>
                   </DocFile>
         }

@@ -18294,7 +18294,8 @@ small {
   position: fixed;
   top: 0;
   bottom: 0;
-  border-right: 1px solid #f1f1f1;
+  left: 0;
+  // border-right: 1px solid #f1f1f1;
   -webkit-box-shadow: 0 3px 10px rgba(62, 85, 120, 0.045);
   -moz-box-shadow: 0 3px 10px rgba(62, 85, 120, 0.045);
   box-shadow: 0 3px 10px rgba(62, 85, 120, 0.045);
@@ -19707,6 +19708,10 @@ body.dark .text-muted {
 body.dark .table td,
 body.dark .table th {
   border-color: rgba(155, 155, 155, 0.2);
+}
+
+body.dark .navigation-menu-body {
+  border-right: 1px solid #454c66;
 }
 
 body.dark .border-bottom {
