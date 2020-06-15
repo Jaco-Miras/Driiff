@@ -4,11 +4,7 @@ import "react-giphy-select/lib/styles.css";
 import styled from "styled-components";
 
 const PickerContainer = styled.div`
-    position: absolute;
-    bottom: ${props => props.orientation === "top" ? "45px" : null};
-    left: 0;
-    top: ${props => props.orientation === "bottom" ? "75px" : null};
-    z-index: 9999;
+    position: relative;
     background-color: #fff;
     
     .selectDiv {
@@ -40,6 +36,8 @@ const PickerContainer = styled.div`
 `;
 
 const PickerGif = React.forwardRef((props, ref) => {
+
+    const {className = ""} = props;
 
     useEffect(() => {
         const handleEscapeKey = e => {
@@ -80,6 +78,7 @@ const PickerGif = React.forwardRef((props, ref) => {
 
     return (
         <PickerContainer
+            className={`picker-gif ${className}`}
             ref={ref}
             orientation={props.orientation}>
             <GiphySelect
