@@ -134,6 +134,26 @@ class SocketListeners extends PureComponent {
                                     null);
                         }
                     }
+
+                    let notificationCounterEntryPayload = {};
+                    // update the unread indicator
+                    if (e.workspace_id === undefined || e.workspace_id === null || e.workspace_id === 0) {
+                        if (e.entity_type === "REMINDER_MESSAGE") {
+                            notificationCounterEntryPayload = {
+                                count: 1,
+                                entity_type: "REMINDER_MESSAGE",
+                            };
+                        } else {
+                            notificationCounterEntryPayload = {
+                                count: 1,
+                                entity_type: "CHAT_MESSAGE",
+                            };
+                        }
+
+                        this.props.setGeneralChat(notificationCounterEntryPayload);
+                    }
+
+
                     break;
                 }
                 case "CHAT_UPDATE": {
@@ -528,6 +548,12 @@ class SocketListeners extends PureComponent {
             .listen(".chat-message-react", e => {
                 console.log(e);
                 this.props.incomingChatMessageReaction({...e, user_name: e.name});
+            })
+            .listen(".updated-notification-counter", e => {
+                console.log(e, "updated counter");
+                
+                this.props.setUnreadNotificationCounterEntries(e.result);
+            
             })
             .notification((notification) => {
                 console.log(notification);

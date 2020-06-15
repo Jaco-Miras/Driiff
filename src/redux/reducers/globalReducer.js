@@ -102,12 +102,21 @@ export default (state = INITIAL_STATE, action) => {
         }
         case "UPDATE_GENERAL_CHAT_NOTIFICATION": {
             let unreadCounter = state.unreadCounter;
-            unreadCounter[action.data.entity_type.toLowerCase()] = unreadCounter[action.data.entity_type.toLowerCase()] + action.data.count;
-
+            let unreadType =  action.data.entity_type.toLowerCase();
+            if (typeof unreadCounter[unreadType] != undefined) {
+                const item = action.data;
+                unreadCounter = {
+                    ...unreadCounter,
+                    [item.entity_type.toLowerCase()]: item.count
+                }
+            } else {
+                unreadCounter[unreadType] = unreadCounter[unreadType] + action.data.count;
+            }
             return {
                 ...state,
                 unreadCounter: unreadCounter,
             };
+
         }
         case "UPDATE_UNREAD_LIST_COUNTER": {
             let unreadCounter = state.unreadCounter;
