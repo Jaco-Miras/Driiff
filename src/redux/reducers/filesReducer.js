@@ -127,17 +127,23 @@ export default (state = INITIAL_STATE, action) => {
             };
         }
         case "ADD_PRIMARY_FILES": {
-            return {
-                ...state,
-                workspaceFiles: {
-                    ...state.workspaceFiles,
+            let newWorkspaceFiles = {...state.workspaceFiles};
+            if (newWorkspaceFiles.hasOwnProperty(action.data.id)) {
+                newWorkspaceFiles[action.data.id].files = {
+                    ...newWorkspaceFiles[action.data.id].files,
+                    ...convertArrayToObject(action.data.files, "id")
+                }
+            } else {
+                newWorkspaceFiles = {
+                    ...newWorkspaceFiles,
                     [action.data.id]: {
-                        files: {
-                            ...state.workspaceFiles[action.data.id].files,
-                            ...convertArrayToObject(action.data.files, "id")
-                        }
+                        files: convertArrayToObject(action.data.files, "id")
                     }
                 }
+            }
+            return {
+                ...state,
+                workspaceFiles: newWorkspaceFiles
             }
         }
         default:

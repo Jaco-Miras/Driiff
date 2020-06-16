@@ -303,7 +303,7 @@ const CreateEditWorkspaceModal = (props) => {
             } else if (removed_members.length) {
                 system_message += `${removed_members.map(m => m.name).join(", ")} left.`;
             }
-            
+
             payload = {
                 ...payload,
                 workspace_id: form.selectedFolder ? form.selectedFolder.value : 0,
@@ -442,9 +442,12 @@ const CreateEditWorkspaceModal = (props) => {
             if (item.members.length) {
                 members = item.members.map(m => {
                     return {
-                        ...m,
                         value: m.id,
                         label: m.name,
+                        name: m.name,
+                        id: m.id,
+                        first_name: m.first_name,
+                        profile_image_link: m.profile_image_link
                     };
                 });
             }
