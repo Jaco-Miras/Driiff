@@ -18,7 +18,9 @@ const useWorkspace = props => {
         if (!fetchingPrimary && activeTopic && !activeTopic.hasOwnProperty("primary_files")) {
             setFetchingPrimary(true)
             const callback = (err,res) => {
-                setFetchingPrimary(false)
+                setTimeout(() => {
+                    setFetchingPrimary(false)
+                }, 300);
                 if (err) return;
                 let payload = {
                     id: activeTopic.id,
@@ -28,12 +30,21 @@ const useWorkspace = props => {
                 workspaceActions.addPrimaryFilesToWorkspace(payload);
             }
             workspaceActions.getPrimaryFiles(activeTopic.id,callback);
+            if (!activeTopic.members[0].hasOwnProperty("role")) {
+                workspaceActions.getMembers(activeTopic.id);
+            }
         }
     }, [fetchingPrimary, activeTopic]);
 
     useEffect(() => {
         if (activeTopic && !fetchingTimeline && !workspaceTimeline.hasOwnProperty(activeTopic.id)) {
-            workspaceActions.getTimeline(activeTopic.id);
+            setFetchingTimeline(true);
+            const cb = (err,res) => {
+                setTimeout(() => {
+                    setFetchingTimeline(false)
+                }, 300);
+            }
+            workspaceActions.getTimeline(activeTopic.id, cb);
         }
     }, [fetchingTimeline, activeTopic, workspaceTimeline]);
 

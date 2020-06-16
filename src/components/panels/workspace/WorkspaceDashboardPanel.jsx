@@ -20,16 +20,21 @@ const WorkspaceDashboardPanel = (props) => {
     const {workspace, actions, timeline} = useWorkspace();
     const {recentPosts} = usePosts();
 
+    const handleEditClick = () => {
+        actions.showModal(workspace, "edit", "workspace");
+    };
+
+
     return (
         <Wrapper className={`container-fluid h-100 ${className}`}>
             <div className={`row`}>
                 <div className={`col-md-6`}>
-                    <DashboardAboutWorkspace workspace={workspace}/>
+                    <DashboardAboutWorkspace workspace={workspace} onEditClick={handleEditClick}/>
                     <TimelinePanel timeline={timeline}/>
                 </div>
 
                 <div className={`col-md-6`}>
-                    <DashboardTeam workspace={workspace}/>
+                    <DashboardTeam workspace={workspace} onEditClick={handleEditClick}/>
                     <RecentPosts posts={recentPosts}/>
                 </div>
             </div>

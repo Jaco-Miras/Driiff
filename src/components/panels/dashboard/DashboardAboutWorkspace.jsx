@@ -27,24 +27,31 @@ const Wrapper = styled.div`
     }
 `;
 
+const DashboardDescription = styled.div`
+    img {
+        max-width: 100%;
+        max-height: 250px;
+    }
+`;
+
 const DashboardAboutWorkspace = (props) => {
 
-    const {className = "", workspace} = props;
+    const {className = "", onEditClick, workspace} = props;
 
     return (
         <Wrapper className={`dashboard-about-workspace card ${className}`}>
             <div className="card-body">
-                <h5 className="card-title">About this workspace <SvgIconFeather icon="edit"/></h5>
+                <h5 className="card-title">About this workspace <SvgIconFeather icon="edit" onClick={onEditClick}/></h5>
                 {
                     workspace && 
-                    <div dangerouslySetInnerHTML={{__html: workspace.description}}/>
+                    <DashboardDescription dangerouslySetInnerHTML={{__html: workspace.description}}/>
                 }
                 {
                     workspace && workspace.primary_files && workspace.primary_files.length > 0 &&
                     <>
                     <hr/>
                     <span>File attachments:</span>
-                    <FileAttachments attachedFiles={workspace.primary_files}/>
+                    <FileAttachments attachedFiles={workspace.primary_files} workspace={workspace} type="workspace"/>
                     </>
                 }
             </div>

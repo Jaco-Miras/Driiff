@@ -3,7 +3,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {useRouteMatch} from "react-router-dom";
 import styled from "styled-components";
 import {addToModals} from "../../../redux/actions/globalActions";
-import {Avatar, SvgIconFeather} from "../../common";
+import {SvgIconFeather} from "../../common";
 import {HeaderProfileNavigation} from "../common";
 
 const NavBar = styled.ul`
@@ -56,11 +56,10 @@ const WorkspaceButton = styled.h3`
     }
 `;
 
-const WorspaceHeaderPanel = (props) => {
+const WorspaceHeaderPanel = () => {
 
     const dispatch = useDispatch();
     const match = useRouteMatch();
-    const user = useSelector(state => state.session.user);
     const activeTopic = useSelector(state => state.workspaces.activeTopic);
 
     const handleShowWorkspaceModal = () => {
@@ -76,7 +75,6 @@ const WorspaceHeaderPanel = (props) => {
 
     useEffect(() => {
         const body = document.body;
-        body.classList.add("stretch-layout");
         body.classList.remove("navigation-toggle-one");
 
         let pageName = "";
@@ -105,6 +103,13 @@ const WorspaceHeaderPanel = (props) => {
                 pageName = "Dashboard";
             }
         }
+
+        if (["Dashboard", "Posts", "Files", "People"].includes(pageName)) {
+            body.classList.remove("stretch-layout");
+        } else {
+            body.classList.add("stretch-layout");
+        }
+
         document.title = `Driff - Workspace ${pageName}`;
     }, [match.params.page, dispatch]);
 

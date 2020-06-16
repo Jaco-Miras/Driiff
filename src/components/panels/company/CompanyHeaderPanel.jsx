@@ -1,8 +1,8 @@
 import React, {useEffect} from "react";
-import {useDispatch, useSelector} from "react-redux";
+import {useDispatch} from "react-redux";
 import {useRouteMatch} from "react-router-dom";
 import styled from "styled-components";
-import {Avatar, NavLink, SvgIconFeather} from "../../common";
+import {NavLink, SvgIconFeather} from "../../common";
 import HomeProfileNavigation from "../common/HeaderProfileNavigation";
 
 const NavBar = styled.ul`
@@ -36,7 +36,7 @@ const MainNavLink = styled(NavLink)`
     }
 `;
 
-const CompanyHeaderPanel = (props) => {
+const CompanyHeaderPanel = () => {
 
     const dispatch = useDispatch();
     const match = useRouteMatch();
@@ -45,7 +45,7 @@ const CompanyHeaderPanel = (props) => {
         const body = document.body;
         body.classList.add("navigation-toggle-one");
 
-        if (match.params.page === "people") {
+        if (["people", "workspace", "post"].includes(match.params.page)) {
             body.classList.remove("stretch-layout");
         } else {
             body.classList.add("stretch-layout");

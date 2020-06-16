@@ -50,7 +50,7 @@ const Wrapper = styled.div`
 
 const DashboardTeam = (props) => {
 
-    const {className = "", workspace} = props;
+    const {className = "", workspace, onEditClick} = props;
     const [scrollRef, setScrollRef] = useState(null);
 
     const assignRef = useCallback((e) => {
@@ -72,7 +72,7 @@ const DashboardTeam = (props) => {
                 <ul className="list-group list-group-flush">
                     {
                         workspace.members.map(member => {
-                            return <TeamListItem key={member.id} member={member} parentRef={scrollRef}/>;
+                            return <TeamListItem key={member.id} member={member} parentRef={scrollRef} onEditClick={onEditClick}/>;
                         })
                     }
                 </ul>

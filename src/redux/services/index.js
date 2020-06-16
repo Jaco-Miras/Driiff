@@ -24,6 +24,7 @@ export {
 } from "./chat";
 
 export {
+    getDriffSettings,
     getUserSettings,
     updateUserSettings,
 } from "./settings";

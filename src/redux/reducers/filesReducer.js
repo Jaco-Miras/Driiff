@@ -7,6 +7,7 @@ const INITIAL_STATE = {
     viewFiles: null,
     pendingWorkspaceFilesUpload: {},
     progressWorkspaceFilesUpload: {},
+    workspaceFiles: {}
 };
 
 export default (state = INITIAL_STATE, action) => {
