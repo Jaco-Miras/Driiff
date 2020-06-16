@@ -10,7 +10,7 @@ import {
     postFavorite, postArchive, postFollow, postMarkDone, 
     postToggleRead, removePost, postUnfollow, deletePost,
     starPostReducer, markPostReducer, putPost, postCreate,
-    postClap
+    postClap, fetchRecentPosts
 } from "../../redux/actions/postActions";
 
 const usePostActions = () => {
@@ -56,7 +56,7 @@ const usePostActions = () => {
         );
     }, []);
 
-    const openPost = useCallback((post) => {
+    const openPost = useCallback((post, path = null) => {
         if (post.type === "draft_post") {
             let payload = {
                 type: "workspace_post_create_edit",
@@ -70,9 +70,11 @@ const usePostActions = () => {
                 addToModals(payload),
             );
         } else {
-            //redirect to post detail page
-            console.log(location.pathname, `/post/${post.id}/${replaceChar(post.title)}`)
-            history.push(location.pathname+`/post/${post.id}/${replaceChar(post.title)}`)
+            if (path) {
+                history.push(path+`/post/${post.id}/${replaceChar(post.title)}`)
+            } else {
+                history.push(location.pathname+`/post/${post.id}/${replaceChar(post.title)}`)
+            }
         }
     }, [dispatch, location]);
 
@@ -281,6 +283,12 @@ const usePostActions = () => {
         );
     }, [dispatch]);
 
+    const getRecentPosts = useCallback((id, callback) => {
+        dispatch(
+            fetchRecentPosts({topic_id: id}, callback)
+        )
+    }, [dispatch]);
+
     return {
         starPost,
         markPost,
@@ -294,7 +302,8 @@ const usePostActions = () => {
         trash,
         showModal,
         update,
-        clap
+        clap,
+        getRecentPosts
     }
 };
 

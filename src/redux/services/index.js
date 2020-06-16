@@ -24,6 +24,7 @@ export {
 } from "./chat";
 
 export {
+    getDriffSettings,
     getUserSettings,
     updateUserSettings,
 } from "./settings";
@@ -78,6 +79,7 @@ export {
 export {
     deletePost,
     fetchComments,
+    fetchRecentPosts,
     postArchive,
     postClap,
     postCreate,
@@ -99,6 +101,7 @@ export {
     fetchDetail,
     fetchPrimaryFiles,
     fetchMembers,
+    fetchTimeline,
     getPostStatusCount,
     getWorkspacePosts,
     getWorkspacePostDetail,

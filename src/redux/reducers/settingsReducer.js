@@ -1,6 +1,6 @@
 const INITIAL_STATE = {
     sessionUser: null,
-    company: null,
+    driff: {},
     user: {
         isLoaded: false,
         DISABLE_SOUND: "0",
@@ -56,43 +56,63 @@ export default (state = INITIAL_STATE, action) => {
                 sessionUser: action.data,
             };
         }
+        case "GET_DRIFF_SETTINGS_SUCCESS": {
+            let driff = state.company;
+            for (const index in action.data) {
+                if (action.data.hasOwnProperty(index)) {
+                    const item = action.data[index];
+                    const key = Object.keys(item)[0];
+                    const value = item[key];
+                    driff = {
+                        ...driff,
+                        [key]: value,
+                    };
+                }
+            }
+            return {
+                ...state,
+                driff: driff,
+            };
+        }
         case "GET_USER_SETTINGS_SUCCESS": {
             let settings = state.user;
             settings["isLoaded"] = true;
 
             for (const index in action.data.settings) {
-                let item = action.data.settings[index];
-                let key = Object.keys(item)[0];
-                let value = item[key];
+                if (action.data.settings.hasOwnProperty(index)) {
+                    let item = action.data.settings[index];
+                    let key = Object.keys(item)[0];
+                    let value = item[key];
 
-                switch (key) {
-                    case "CHAT_SETTINGS": {
-                        /* NOTE!!!
-                         1) Previous chat message theme will no longer be used.
-                         2) We will move their settings to old_chat_message_theme
-                         */
-                        if (value.chat_message_theme.preset === "default") {
-                            delete value["chat_message_theme"];
-                        } else {
-                            value["old_chat_message_theme"] = value["chat_message_theme"];
-                            delete value["chat_message_theme"];
+                    switch (key) {
+                        case "CHAT_SETTINGS": {
+                            /* NOTE!!!
+                             1) Previous chat message theme will no longer be used.
+                             2) We will move their settings to old_chat_message_theme
+                             */
+                            if (value.chat_message_theme.preset === "default") {
+                                delete value["chat_message_theme"];
+                            } else {
+                                value["old_chat_message_theme"] = value["chat_message_theme"];
+                                delete value["chat_message_theme"];
+                            }
+
+                            settings[key] = {
+                                ...settings[key],
+                                ...value,
+                            };
+                            break;
                         }
-
-                        settings[key] = {
-                            ...settings[key],
-                            ...value,
-                        };
-                        break;
-                    }
-                    case "GENERAL_SETTINGS": {
-                        settings[key] = {
-                            ...settings[key],
-                            ...value,
-                        };
-                        break;
-                    }
-                    default: {
-                        settings[key] = value;
+                        case "GENERAL_SETTINGS": {
+                            settings[key] = {
+                                ...settings[key],
+                                ...value,
+                            };
+                            break;
+                        }
+                        default: {
+                            settings[key] = value;
+                        }
                     }
                 }
             }

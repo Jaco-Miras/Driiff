@@ -142,6 +142,7 @@ const FileViewer = forwardRef((props, ref) => {
     const dispatch = useDispatch();
     const channelFiles = useSelector(state => state.files.channelFiles);
     const viewFiles = useSelector(state => state.files.viewFiles);
+    const workspaceFiles = useSelector(state => state.files.workspaceFiles);
 
     const [activeIndex, setActiveIndex] = useState(0);
     const [files, setFiles] = useState([]);
@@ -151,6 +152,14 @@ const FileViewer = forwardRef((props, ref) => {
         if (Object.keys(channelFiles).length && channelFiles.hasOwnProperty(viewFiles.channel_id)) {
             setFiles(channelFiles[viewFiles.channel_id]);
             channelFiles[viewFiles.channel_id].forEach((file, index) => {
+                if (file.file_id === viewFiles.file_id) {
+                    setActiveIndex(index);
+                }
+            });
+        }
+        if (Object.keys(workspaceFiles).length && workspaceFiles.hasOwnProperty(viewFiles.workspace_id)) {
+            setFiles(workspaceFiles[viewFiles.workspace_id].files);
+            workspaceFiles[viewFiles.workspace_id].files.forEach((file, index) => {
                 if (file.file_id === viewFiles.file_id) {
                     setActiveIndex(index);
                 }

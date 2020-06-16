@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import {useWorkspace} from "../../hooks";
+import {useWorkspace, usePosts} from "../../hooks";
 import TimelinePanel from "../common/TimelinePanel";
 import {DashboardAboutWorkspace, DashboardTeam, RecentPosts} from "../dashboard";
 
@@ -17,19 +17,25 @@ const WorkspaceDashboardPanel = (props) => {
 
     const {className = ""} = props;
 
-    const {workspace} = useWorkspace();
+    const {workspace, actions, timeline} = useWorkspace();
+    const {recentPosts} = usePosts();
+
+    const handleEditClick = () => {
+        actions.showModal(workspace, "edit", "workspace");
+    };
+
 
     return (
         <Wrapper className={`container-fluid h-100 ${className}`}>
             <div className={`row`}>
                 <div className={`col-md-6`}>
-                    <DashboardAboutWorkspace workspace={workspace}/>
-                    <TimelinePanel/>
+                    <DashboardAboutWorkspace workspace={workspace} onEditClick={handleEditClick}/>
+                    <TimelinePanel timeline={timeline}/>
                 </div>
 
                 <div className={`col-md-6`}>
-                    <DashboardTeam workspace={workspace}/>
-                    <RecentPosts/>
+                    <DashboardTeam workspace={workspace} onEditClick={handleEditClick}/>
+                    <RecentPosts posts={recentPosts}/>
                 </div>
             </div>
         </Wrapper>

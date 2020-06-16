@@ -238,3 +238,18 @@ export function postCommentClap(payload) {
         data: payload,
     });
 }
+
+
+/**
+ * @param {Object} payload
+ * @param {number} payload.topic_id
+ * @returns {Promise<*>}
+ */
+export function fetchRecentPosts(payload) {
+    let url = `/v2/workspace-dashboard-recent-posts?topic_id=${payload.topic_id}`;
+    return apiCall({
+        method: "GET",
+        url: url,
+        data: payload,
+    });
+}

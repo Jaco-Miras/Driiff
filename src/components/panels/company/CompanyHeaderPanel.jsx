@@ -29,7 +29,7 @@ const MainNavLink = styled(NavLink)`
     border-radius: 8px;
     color: #828282;
     margin: 0 0.2rem;
-
+    transition: none;
     &.active {
         background-color: #7a1b8b;
         color: #fff;

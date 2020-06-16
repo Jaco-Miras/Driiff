@@ -5,6 +5,7 @@ import {
     fetchDetail as fetchDetailService,
     fetchPrimaryFiles as fetchPrimaryFilesService,
     fetchMembers as fetchMembersService,
+    fetchTimeline as fetchTimelineService,
     getPostStatusCount as getPostStatusCountService,
     getWorkspacePostDetail as getWorkspacePostDetailService,
     getWorkspacePosts as getWorkspacePostsService,
@@ -241,6 +242,16 @@ export function fetchMembers(payload, callback) {
         "FETCH_WORKSPACE_MEMBERS_START",
         "FETCH_WORKSPACE_MEMBERS_SUCCESS",
         "FETCH_WORKSPACE_MEMBERS_FAIL",
+        callback,
+    );
+}
+
+export function fetchTimeline(payload, callback) {
+    return dispatchActionToReducer(
+        fetchTimelineService(payload),
+        "FETCH_TIMELINE_START",
+        "FETCH_TIMELINE_SUCCESS",
+        "FETCH_TIMELINE_FAIL",
         callback,
     );
 }

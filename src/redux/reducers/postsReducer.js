@@ -1,3 +1,5 @@
+import {convertArrayToObject} from "../../helpers/arrayHelper";
+
 const INITIAL_STATE = {
     user: null,
     posts: {},
@@ -5,7 +7,8 @@ const INITIAL_STATE = {
     unreadPostsCount: 0,
     editPostComment: null,
     commentQuotes: {},
-    parentId: null
+    parentId: null,
+    recentPosts: {}
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -55,6 +58,34 @@ export default (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 parentId: action.data
+            }
+        }
+        case "FETCH_RECENT_POSTS_SUCCESS": {
+            return {
+                ...state,
+                recentPosts: {
+                    [action.data.topic_id]: {
+                        folderId: action.data.workspace_id,
+                        posts: convertArrayToObject(action.data.posts, "id")
+                    }
+                }
+            }
+        }
+        case "MARK_POST_REDUCER": {
+            return {
+                ...state,
+                recentPosts: {
+                    [action.data.topic_id]: {
+                        ...state.recentPosts[action.data.topic_id],
+                        posts: {
+                            ...state.recentPosts[action.data.topic_id].posts,
+                            [action.data.post_id]: {
+                                ...state.recentPosts[action.data.topic_id].posts[action.data.post_id],
+                                is_mark_done: !state.recentPosts[action.data.topic_id].posts[action.data.post_id].is_mark_done
+                            }
+                        }
+                    }
+                }
             }
         }
         default:

@@ -2,6 +2,7 @@ import dispatchActionToReducer, {SimpleDispatchActionToReducer} from "../actionD
 import {
     deletePost as deletePostService,
     fetchComments as fetchCommentsService,
+    fetchRecentPosts as fetchRecentPostsService,
     postArchive as postArchiveService,
     postClap as postClapService,
     postCreate as postCreateService,
@@ -267,6 +268,16 @@ export function incomingCommentClap(payload, callback) {
     return SimpleDispatchActionToReducer(
         "INCOMING_COMMENT_CLAP",
         payload,
+        callback,
+    );
+}
+
+export function fetchRecentPosts(payload, callback) {
+    return dispatchActionToReducer(
+        fetchRecentPostsService(payload),
+        "FETCH_RECENT_POSTS_START",
+        "FETCH_RECENT_POSTS_SUCCESS",
+        "FETCH_RECENT_POSTS_FAIL",
         callback,
     );
 }

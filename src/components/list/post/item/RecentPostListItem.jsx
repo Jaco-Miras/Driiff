@@ -30,10 +30,17 @@ const RecentPostListItem = (props) => {
     const {
         className = "",
         post,
+        postActions,
+        onOpenPost
     } = props;
 
     const toggleCheck = (e) => {
         e.stopPropagation();
+        postActions.markPost(post);
+    };
+
+    const handleOpenPost = e => {
+        onOpenPost(post)
     };
 
     return (
@@ -42,7 +49,7 @@ const RecentPostListItem = (props) => {
             <div className="custom-control custom-checkbox custom-checkbox-success mr-2">
                 <CheckBox name="mark_done" checked={post.is_mark_done} onClick={toggleCheck}/>
             </div>
-            <div className="flex-grow-1 min-width-0">
+            <div className="flex-grow-1 min-width-0" onClick={handleOpenPost}>
                 <div className="mb-1 d-flex align-items-center justify-content-between">
                     <div
                         className={`app-list-title ${post.is_mark_done ? "done" : ""} text-truncate`}>{post.title}</div>
