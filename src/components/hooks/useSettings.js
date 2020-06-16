@@ -1,6 +1,11 @@
 import {useCallback, useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {getUserSettings, setUserGeneralSetting, updateUserSettings} from "../../redux/actions/settingsActions";
+import {
+    getDriffSettings,
+    getUserSettings,
+    setUserGeneralSetting,
+    updateUserSettings,
+} from "../../redux/actions/settingsActions";
 
 let init = true;
 
@@ -10,7 +15,7 @@ let init = true;
 const useSettings = () => {
 
     const dispatch = useDispatch();
-    const userSettings = useSelector(state => state.settings.user);
+    const {driff: driffSettings, user: userSettings} = useSelector(state => state.settings);
 
     const setGeneralSetting = useCallback((e) => {
         dispatch(
@@ -37,6 +42,10 @@ const useSettings = () => {
             init = false;
 
             dispatch(
+                getDriffSettings(),
+            );
+
+            dispatch(
                 getUserSettings(),
             );
         }
@@ -44,6 +53,7 @@ const useSettings = () => {
 
     return {
         userSettings,
+        driffSettings,
         chatSettings: userSettings.CHAT_SETTINGS,
         generalSettings: userSettings.GENERAL_SETTINGS,
         setGeneralSetting,

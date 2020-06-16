@@ -1,6 +1,10 @@
+import React from "react";
+
 const INITIAL_STATE = {
     sessionUser: null,
-    driff: {},
+    driff: {
+        company_name: "ZUID Creatives",
+    },
     user: {
         isLoaded: false,
         DISABLE_SOUND: "0",
@@ -57,7 +61,7 @@ export default (state = INITIAL_STATE, action) => {
             };
         }
         case "GET_DRIFF_SETTINGS_SUCCESS": {
-            let driff = state.company;
+            let driff = state.driff;
             for (const index in action.data) {
                 if (action.data.hasOwnProperty(index)) {
                     const item = action.data[index];
