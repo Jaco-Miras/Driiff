@@ -297,11 +297,11 @@ const CreateEditWorkspaceModal = (props) => {
                 return true;
             });
 
-            let system_message = `${form.name} updated: `;
+            let system_message = `${form.name} updated`;
             if (added_members.length) {
-                system_message += `${added_members.map(m => m.name).join(", ")} joined `;
+                system_message += `: ${added_members.map(m => m.name).join(", ")} joined`;
             } else if (removed_members.length) {
-                system_message += `${removed_members.map(m => m.name).join(", ")} left.`;
+                system_message += ` ${removed_members.map(m => m.name).join(", ")} left`;
             }
 
             payload = {

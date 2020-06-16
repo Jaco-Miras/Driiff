@@ -19,25 +19,28 @@ const Wrapper = styled.div`
 
 const MemberTimeline = (props) => {
 
-    const {className = "", member} = props;
+    const {className = "", data} = props;
 
     return (
         <Wrapper className={`timeline-item ${className}`}>
             <div>
-                <Avatar className="mr-3" name={member.user.name} imageLink={member.user.profile_image_link}/>
+                {/* <Avatar className="mr-3" name={member.user.name} imageLink={member.user.profile_image_link}/> */}
             </div>
             <div>
                 <h6 className="d-flex justify-content-between mb-4">
                     <span className="action-text">
-                    {
+                        {
+                            data.body
+                        }
+                    {/* {
                         member.action === "join" ?
                         <>{member.user.name} <span className="joined"> has joined.</span></>
                                                  :
                         <>{member.user.name} <span className="left"> has left.</span></>
-                    }
+                    } */}
                     </span>
                     <span
-                        className="text-muted font-weight-normal">{localizeChatTimestamp(member.created_at.timestamp)}</span>
+                        className="text-muted font-weight-normal">{localizeChatTimestamp(data.created_at.timestamp)}</span>
                 </h6>
             </div>
         </Wrapper>
