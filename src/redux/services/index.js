@@ -113,3 +113,8 @@ export {
     updatePostStatus,
     updateWorkspace,
 } from "./workspace";
+
+export {
+    postRegisterDriff,
+    patchCheckDriff,
+} from "./driff";
