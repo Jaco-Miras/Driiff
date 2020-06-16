@@ -2,7 +2,7 @@ import React, {forwardRef, useRef} from "react";
 import styled from "styled-components";
 import {getAPIUrl} from "../../../../helpers/slugHelper";
 import {SvgIcon} from "../../../common";
-import useFiles from "../../../hooks/useFiles";
+import useFileActions from "../../../hooks/useFileActions";
 
 const ImgLoader = styled.div`
     position: relative;
@@ -134,7 +134,7 @@ const FilePill = forwardRef((props, ref) => {
         }
     };
 
-    const fileHandler = useFiles();
+    const fileHandler = useFileActions();
     // console.log(file)
 
     return <FilePillContainer

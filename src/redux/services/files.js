@@ -85,14 +85,14 @@ export function getWorkspaceFolders(payload) {
 export function getWorkspaceFilesDetail(payload) {
     return apiCall({
         method: "GET",
-        url: `/api/v2/workspace-files-detail?${objToUrlParams(payload)}`,
+        url: `/v2/workspace-files-detail?${objToUrlParams(payload)}`,
     });
 }
 
 export function patchWorkspaceFileViewed(payload) {
     return apiCall({
         method: "PATCH",
-        url: `/api/v2/workspace-file-viewed?${objToUrlParams(payload)}`,
+        url: `/v2/workspace-file-viewed?${objToUrlParams(payload)}`,
     });
 }
 

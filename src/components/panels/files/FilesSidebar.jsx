@@ -22,7 +22,7 @@ const Icon = styled(SvgIconFeather)`
 
 const FileSidebar = (props) => {
 
-    const {className = "", filterFile, filter = "all", dropZoneRef, storage = {amount: 10, limit: 25}} = props;
+    const {className = "", filterFile, filter = "all", dropZoneRef, storage = {amount: 10, limit: 25}, wsFiles} = props;
 
     const handleShowUploadModal = () => {
         if (dropZoneRef.current) {
@@ -48,7 +48,7 @@ const FileSidebar = (props) => {
                                 className="list-group-item d-flex align-items-center">
                             <Icon className="mr-2" icon="folder"/>
                             All Files
-                            <span className="small ml-auto">45</span>
+                                <span className="small ml-auto">{wsFiles && wsFiles.count > 0 ? wsFiles.count : null}</span>
                         </Filter>
                         <Filter onClick={filterFile} data-filter="recent" active={filter === "recent"}
                                 className="list-group-item">
@@ -59,12 +59,13 @@ const FileSidebar = (props) => {
                                 className="list-group-item d-flex align-items-center">
                             <Icon className="mr-2" icon="star"/>
                             Important
-                            <span className="small ml-auto">10</span>
+                            <span className="small ml-auto">{wsFiles && wsFiles.stars > 0 ? wsFiles.stars : null}</span>
                         </Filter>
                         <Filter onClick={filterFile} data-filter="removed" active={filter === "removed"}
-                                className="list-group-item">
+                                className="list-group-item d-flex align-items-center">
                             <Icon className="mr-2" icon="trash"/>
                             Removed
+                            <span className="small ml-auto">{wsFiles && wsFiles.trash > 0 ? wsFiles.trash : null}</span>
                         </Filter>
                     </div>
                     <div className="card-body">

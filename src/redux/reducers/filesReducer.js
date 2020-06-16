@@ -129,15 +129,126 @@ export default (state = INITIAL_STATE, action) => {
         case "ADD_PRIMARY_FILES": {
             let newWorkspaceFiles = {...state.workspaceFiles};
             if (newWorkspaceFiles.hasOwnProperty(action.data.id)) {
-                newWorkspaceFiles[action.data.id].files = {
-                    ...newWorkspaceFiles[action.data.id].files,
-                    ...convertArrayToObject(action.data.files, "id")
+                newWorkspaceFiles = {
+                    [action.data.id]: {
+                        ...newWorkspaceFiles[action.data.id],
+                        files: {...convertArrayToObject(action.data.files, "id"), ...newWorkspaceFiles[action.data.id].files},
+                    }
                 }
             } else {
                 newWorkspaceFiles = {
                     ...newWorkspaceFiles,
                     [action.data.id]: {
-                        files: convertArrayToObject(action.data.files, "id")
+                        files: convertArrayToObject(action.data.files, "id"),
+                        storage: 0,
+                        count: 0,
+                        stars: 0,
+                        trash: 0,
+                        popular_files: [],
+                        recently_edited: []
+                    }
+                }
+            }
+            return {
+                ...state,
+                workspaceFiles: newWorkspaceFiles
+            }
+        }
+        case "GET_WORKSPACE_FILES_SUCCESS": {
+            let newWorkspaceFiles = {...state.workspaceFiles};
+            if (newWorkspaceFiles.hasOwnProperty(action.data.topic_id)) {
+                newWorkspaceFiles = {
+                    [action.data.topic_id]: {
+                        ...newWorkspaceFiles[action.data.topic_id],
+                        files: {...convertArrayToObject(action.data.files, "id"), ...newWorkspaceFiles[action.data.topic_id].files},
+                    }
+                }
+            } else {
+                newWorkspaceFiles = {
+                    ...newWorkspaceFiles,
+                    [action.data.topic_id]: {
+                        files: convertArrayToObject(action.data.files, "id"),
+                        storage: 0,
+                        count: 0,
+                        stars: 0,
+                        trash: 0,
+                        popular_files: [],
+                        recently_edited: []
+                    }
+                }
+            }
+            return {
+                ...state,
+                workspaceFiles: newWorkspaceFiles
+            }
+        }
+        case "GET_WORKSPACE_FILE_DETAILS_SUCCESS": {
+            let newWorkspaceFiles = {...state.workspaceFiles};
+            if (newWorkspaceFiles.hasOwnProperty(action.data.topic_id)) {
+                newWorkspaceFiles = {
+                    [action.data.topic_id]: {
+                        ...newWorkspaceFiles[action.data.topic_id],
+                        storage: action.data.total_storage,
+                        count: action.data.total_file_count,
+                        stars: action.data.total_file_stars,
+                        trash: action.data.total_file_trash,
+                    }
+                }
+            } else {
+                newWorkspaceFiles = {
+                    ...newWorkspaceFiles,
+                    [action.data.topic_id]: {
+                        ...newWorkspaceFiles[action.data.topic_id],
+                        storage: action.data.total_storage,
+                        count: action.data.total_file_count,
+                        stars: action.data.total_file_stars,
+                        trash: action.data.total_file_trash,
+                    }
+                }
+            }
+            return {
+                ...state,
+                workspaceFiles: newWorkspaceFiles
+            }
+        }
+        case "GET_WORKSPACE_POPULAR_FILES_SUCCESS": {
+            let newWorkspaceFiles = {...state.workspaceFiles};
+            if (newWorkspaceFiles.hasOwnProperty(action.data.topic_id)) {
+                newWorkspaceFiles = {
+                    [action.data.topic_id]: {
+                        ...newWorkspaceFiles[action.data.topic_id],
+                        popular_files: action.data.files.map(f => f.id)
+                    }
+                }
+            } else {
+                newWorkspaceFiles = {
+                    ...newWorkspaceFiles,
+                    [action.data.topic_id]: {
+                        ...newWorkspaceFiles[action.data.topic_id],
+                        popular_files: action.data.files.map(f => f.id)
+                    }
+                }
+            }
+            return {
+                ...state,
+                workspaceFiles: newWorkspaceFiles
+            }
+        }
+        case "GET_WORKSPACE_RECENT_EDIT_FILES_SUCCESS": {
+            let newWorkspaceFiles = {...state.workspaceFiles};
+            if (newWorkspaceFiles.hasOwnProperty(action.data.topic_id)) {
+                newWorkspaceFiles = {
+                    [action.data.topic_id]: {
+                        ...newWorkspaceFiles[action.data.topic_id],
+                        recently_edited: action.data.files.map(f => f.id)
+                    }
+                }
+            } else {
+                newWorkspaceFiles = {
+                    ...newWorkspaceFiles,
+                    [action.data.topic_id]: {
+                        ...newWorkspaceFiles[action.data.topic_id],
+                        recently_edited: action.data.files.map(f => f.id)
                     }
                 }
             }
