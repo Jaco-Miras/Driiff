@@ -13,10 +13,10 @@ const Wrapper = styled.span`
     cursor: hand;
     position: relative;
     ${props => props.selected && "padding-left: 14px !important"};
-    
+
     .more-options {
-        position: relative;        
-        opacity: 0; 
+        position: relative;
+        opacity: 0;
         z-index: -1;
     }
 
@@ -58,6 +58,7 @@ const Wrapper = styled.span`
         transition: opacity 0.3s ease;
         svg {
             margin-left: 4px;
+            fill: #000000;
         }
         .badge {
             position: absolute;

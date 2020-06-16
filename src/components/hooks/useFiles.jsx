@@ -4,7 +4,6 @@ const useFiles = () => {
 
     const getFileIcon = (mimeType = "") => {
 
-        console.log(mimeType)
         if (mimeType.includes("image")) {
             return <i className="fa fa-file-image-o text-instagram"/>;
         } else if (mimeType.includes("audio")) {

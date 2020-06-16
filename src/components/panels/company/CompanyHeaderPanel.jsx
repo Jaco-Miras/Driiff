@@ -9,14 +9,12 @@ const NavBar = styled.ul`
     li {
         justify-content: center;
         align-items: center;
-
         h2 {
             letter-spacing: -0.5px;
             margin-bottom: 0;
             color: #82828A;
             font-weight: 500;
         }
-
     }
 `;
 
@@ -40,6 +38,11 @@ const CompanyHeaderPanel = () => {
 
     const dispatch = useDispatch();
     const match = useRouteMatch();
+
+    const handleMenuOpenMobile = (e) => {
+        e.preventDefault();
+        document.body.classList.add("navigation-show");
+    };
 
     useEffect(() => {
         const body = document.body;
@@ -85,7 +88,7 @@ const CompanyHeaderPanel = () => {
             <div>
                 <NavBar className="navbar-nav">
                     <li className="nav-item navigation-toggler mobile-toggler">
-                        <a href="/" className="nav-link" title="Show navigation">
+                        <a href="/" className="nav-link" title="Show navigation" onClick={handleMenuOpenMobile}>
                             <SvgIconFeather icon="menu"/>
                         </a>
                     </li>
