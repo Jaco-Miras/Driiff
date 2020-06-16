@@ -108,6 +108,11 @@ const MainNavigationTabPanel = (props) => {
                     <li>
                         <NavIconContainer to={workspacePath}>
                             <NavIcon icon={`command`}/>
+                            {
+                                (unreadCounter.workspace_chat_message + unreadCounter.workspace_post) >= 1 &&
+                                <Badge
+                                    data-count={unreadCounter.chat_message}>&nbsp;</Badge>
+                            }
                         </NavIconContainer>
                     </li>
                     <li>
