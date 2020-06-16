@@ -31,16 +31,13 @@ const PostSidebar = props => {
                         </button>
                     }
                 </div>
-                {
-                    workspace &&
-                    <div className="app-sidebar-menu" tabIndex="2">
-                        <PostFilterItem workspace={workspace} filter={filter}/>
-                        <div className="card-body">
-                            <h6 className="mb-0">Tags</h6>
-                        </div>
-                        <PostFilterTag count={count} workspace={workspace} tag={tag}/>
+                <div className="app-sidebar-menu" tabIndex="2">
+                    <PostFilterItem workspace={workspace} filter={filter}/>
+                    <div className="card-body">
+                        <h6 className="mb-0">Tags</h6>
                     </div>
-                }
+                    <PostFilterTag count={count} workspace={workspace} tag={tag}/>
+                </div>
             </div>
         </Wrapper>
     )

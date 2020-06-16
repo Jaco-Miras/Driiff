@@ -1,7 +1,7 @@
 import React from "react";
 import {useSelector} from "react-redux";
 import styled from "styled-components";
-import {useCountRenders, usePostActions, usePosts} from "../../hooks";
+import {usePostActions, usePosts} from "../../hooks";
 import {PostDetail, PostFilterSearchPanel, PostItemPanel, PostSidebar} from "../post";
 
 const Wrapper = styled.div`
@@ -32,10 +32,6 @@ const WorkspacePostsPanel = (props) => {
         is_read_only: 0,
     };
 
-    useCountRenders("posts panel");
-
-    console.log(post)
-
     return (
         <Wrapper className={`container-fluid h-100 ${className}`}>
             <div className="row app-block">
@@ -44,39 +40,41 @@ const WorkspacePostsPanel = (props) => {
                     <div className="app-content-overlay"/>
                     <PostFilterSearchPanel activeSort={sort} workspace={workspace}/>
                     <div className="card card-body app-content-body">
-                        <div className="app-lists"
-                             tabIndex="1">
-                            {
-                                search !== null &&
-                                <>
-                                    {
-                                        posts.length === 0 ?
-                                        <h6 className="search-title card-title font-size-11 text-uppercase mb-4">No
-                                            result found: {search}</h6>
-                                                           :
-                                        posts.length === 1 ?
-                                        <h6 className="search-title card-title font-size-11 text-uppercase mb-4">Search
-                                            Result: {search}</h6>
-                                                           :
-                                        <h6 className="search-title card-title font-size-11 text-uppercase mb-4">Search
-                                            Results: {search}</h6>
-                                    }
-                                </>
-                            }
-                            <ul className="list-group list-group-flush ui-sortable">
+                        {
+                            post ?
+                            <PostDetailWrapper className={`card`}>
+                                <PostDetail post={post} postActions={postActions} user={user}/>
+                            </PostDetailWrapper>
+                                 :
+                            <div className="app-lists"
+                                 tabIndex="1">
                                 {
-                                    posts &&
-                                    posts.map(p => {
-                                        return <PostItemPanel key={p.id} post={p} postActions={postActions}/>;
-                                    })
+                                    search !== null &&
+                                    <>
+                                        {
+                                            posts.length === 0 ?
+                                            <h6 className="search-title card-title font-size-11 text-uppercase mb-4">No
+                                                result found: {search}</h6>
+                                                               :
+                                            posts.length === 1 ?
+                                            <h6 className="search-title card-title font-size-11 text-uppercase mb-4">Search
+                                                Result: {search}</h6>
+                                                               :
+                                            <h6 className="search-title card-title font-size-11 text-uppercase mb-4">Search
+                                                Results: {search}</h6>
+                                        }
+                                    </>
                                 }
-                            </ul>
-                        </div>
-                        <PostDetailWrapper className={`card app-detail ${post ? "show" : ""}`}>
-                            {
-                                post && <PostDetail post={post} postActions={postActions} user={user}/>
-                            }
-                        </PostDetailWrapper>
+                                <ul className="list-group list-group-flush ui-sortable">
+                                    {
+                                        posts &&
+                                        posts.map(p => {
+                                            return <PostItemPanel key={p.id} post={p} postActions={postActions}/>;
+                                        })
+                                    }
+                                </ul>
+                            </div>
+                        }
                     </div>
                 </div>
             </div>

@@ -9,6 +9,33 @@ import {DropDocument} from "../../dropzone/DropDocument";
 import {useCommentActions, useComments} from "../../hooks";
 import {PostBody, PostComments, PostDetailFooter} from "./index";
 
+const MainHeader = styled.div`
+    ul {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        margin: 0;
+        padding: 0;
+        height: 33px;       
+
+        li {
+            list-style: none;
+            
+            .post-title {
+                width: 100%; 
+        
+                span {
+                width: ${props => props.postTitleWidth}px;
+                display: block;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                }
+            }
+        }
+    }
+`;
+
 const MainBody = styled.div`
     display: flex;
     flex-grow: 1;
@@ -47,7 +74,7 @@ const PostDetail = props => {
     const comments = useComments(post, commentActions);
 
     const refs = {
-        dropZoneRef: useRef(),
+        dropZoneRef: useRef(null),
     };
 
     const handleOpenFileDialog = (parentId) => {
@@ -122,21 +149,24 @@ const PostDetail = props => {
             id: null,
             clap: post.user_clap_count === 0 ? 1 : 0,
             personalized_for_id: null,
-        }
+        };
         postActions.clap(payload);
-    }
+    };
 
     return (
         <>
-            <div className="card-header">
-                <div className="app-detail-action-left">
-                    <Icon className="close mr-2" icon="arrow-left" onClick={handleClosePost}/>
-                    <h5 className="mb-0">{post.title}</h5>
+            <MainHeader className="card-header d-flex justify-content-between">
+                <div>
+                    <ul>
+                        <li><Icon className="close mr-2" icon="arrow-left" onClick={handleClosePost}/></li>
+                        <li><h5 ref={refs.title} className="post-title mb-0"><span>{post.title}</span></h5></li>
+                    </ul>
                 </div>
-                <div className="app-detail-action-right">
+                <div>
                     {
                         post.author.id === user.id &&
-                        <div>
+                        <ul>
+                            <li>
                             <span data-toggle="modal" data-target="#editTaskModal">
                             <a onClick={() => postActions.showModal("edit", post)}
                                className="btn btn-outline-light ml-2" title=""
@@ -144,17 +174,19 @@ const PostDetail = props => {
                                 <Icon icon="edit-3"/>
                             </a>
                             </span>
-
-                            <a onClick={() => postActions.trash(post)} className="btn btn-outline-light ml-2"
-                               data-toggle="tooltip"
-                               title="" data-original-title="Delete Task">
-                                <Icon icon="trash"/>
-                            </a>
-                        </div>
+                            </li>
+                            <li>
+                                <a onClick={() => postActions.trash(post)} className="btn btn-outline-light ml-2"
+                                   data-toggle="tooltip"
+                                   title="" data-original-title="Delete Task">
+                                    <Icon icon="trash"/>
+                                </a>
+                            </li>
+                        </ul>
                     }
                 </div>
-            </div>
-            <MainBody className="app-detail-article" onDragOver={handleshowDropZone}>
+            </MainHeader>
+            <MainBody onDragOver={handleshowDropZone}>
                 <DropDocument
                     hide={!showDropZone}
                     ref={refs.dropZoneRef}
@@ -172,7 +204,7 @@ const PostDetail = props => {
                     </div>
                     <div className="ml-auto">
                         <Icon className="mr-2" icon="message-square"/>{post.reply_count}
-                        <Icon className="ml-2 r-2 seen-indicator" icon="eye"/>{post.view_user_ids.length}
+                        <Icon className="ml-2 mr-2 seen-indicator" icon="eye"/>{post.view_user_ids.length}
                     </div>
                 </Counters>
                 {

@@ -3,12 +3,6 @@ import styled from "styled-components";
 import {Comment} from "../../list/post/item";
 
 const Wrapper = styled.div`
-    display: flex;
-    flex-grow: 1;
-    width: 100%;
-    height: auto;
-    overflow: hidden;
-    flex-basis: 0;
     ul {
         list-style: none;
         padding: 0;
@@ -17,16 +11,6 @@ const Wrapper = styled.div`
     }
     > ul {
         width: 100%;
-                
-        overflow: auto;
-        &::-webkit-scrollbar {
-            display: none;
-        }
-        -ms-overflow-style: none;
-        scrollbar-width: none;
-        .recent-new-group-wrapper {
-            padding-right: 24px;
-        }
     }
 `;
 
