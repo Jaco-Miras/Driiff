@@ -141,3 +141,18 @@ export function deleteWorkspaceFile(payload) {
         data: payload,
     });
 }
+
+/**
+ * @param {Object} payload
+ * @param {number} payload.topic_id
+ * @param {string} payload.name
+ * @returns {Promise<*>}
+ */
+export function postFolder(payload) {
+    let url = `/v2/workspace-folders`;
+    return apiCall({
+        method: "POST",
+        url: url,
+        data: payload,
+    });
+}

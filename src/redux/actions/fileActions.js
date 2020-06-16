@@ -12,6 +12,7 @@ import {
     getWorkspaceRecentlyEditedFiles as getWorkspaceRecentlyEditedFilesService,
     getWorkspaceTrashFiles as getWorkspaceTrashFilesService,
     patchWorkspaceFileViewed as patchWorkspaceFileViewedService,
+    postFolder as postFolderService,
     postWorkspaceFiles as postWorkspaceFilesService,
     restoreWorkspaceFile as restoreWorkspaceFileService,
     uploadWorkspaceFile as uploadWorkspaceFileService,
@@ -203,6 +204,16 @@ export function restoreWorkspaceFile(payload, callback) {
         "RESTORE_WORKSPACE_FILE_START",
         "RESTORE_WORKSPACE_FILE_SUCCESS",
         "RESTORE_WORKSPACE_FILE_FAIL",
+        callback,
+    );
+}
+
+export function addFolder(payload, callback) {
+    return dispatchActionToReducer(
+        postFolderService(payload),
+        "ADD_FOLDER_START",
+        "ADD_FOLDER_SUCCESS",
+        "ADD_FOLDER_FAIL",
         callback,
     );
 }

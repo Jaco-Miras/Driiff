@@ -1,9 +1,6 @@
-import React, {useRef} from "react";
-import {useDispatch} from "react-redux";
+import React from "react";
 import styled from "styled-components";
-import {addToModals} from "../../../redux/actions/globalActions";
 import {ButtonDropdown, SvgIconFeather} from "../../common";
-import {useTranslation} from "../../hooks";
 
 const Wrapper = styled.div`
     overflow: inherit !important;
@@ -24,46 +21,16 @@ const Wrapper = styled.div`
 
 const FilesHeader = (props) => {
 
-    const {_t} = useTranslation();
-    const {className = "", dropZoneRef, onSearchChange} = props;
-    const dispatch = useDispatch();
-    const dictionary = {
-        createFolder: _t("CREATE_FOLDER", "Create folder"),
-        create: _t("CREATE", "Create"),
-    };
-
+    const {className = "", dropZoneRef, onSearchChange, wsFiles, handleAddEditFolder} = props;
+    
     const handleClickAdd = () => {
         if (dropZoneRef.current) {
             dropZoneRef.current.open();
         }
     };
 
-    const folderName = useRef("");
-    const handleCreateFolder = () => {
-    };
-
-    const handleCreateFolderClose = () => {
-        folderName.current = "";
-    };
-
-    const handleFolderNameChange = (e) => {
-        folderName.current = e.target.value.trim();
-    };
-
     const handleClickFolder = () => {
-        let payload = {
-            type: "single_input",
-            title: dictionary.createFolder,
-            defaultValue: "",
-            labelPrimaryAction: dictionary.create,
-            onPrimaryAction: handleCreateFolder,
-            onChange: handleFolderNameChange,
-            onClose: handleCreateFolderClose,
-        };
-
-        dispatch(
-            addToModals(payload),
-        );
+        
     };
 
     const handleClickOrderBy = () => {
@@ -75,7 +42,7 @@ const FilesHeader = (props) => {
             {
                 value: "folder",
                 label: "Folder",
-                onClick: handleClickFolder,
+                onClick: () => handleAddEditFolder("add"),
             },
             {
                 value: "file",
@@ -87,28 +54,16 @@ const FilesHeader = (props) => {
 
     const folderDropDown = {
         label: "Folders",
-        items: [
-            {
-                value: "favorite",
-                label: <>Video <span className="text-muted">21</span></>,
-                onClick: handleClickFolder,
-            },
-            {
-                value: "recent",
-                label: "Image",
-                onClick: handleClickFolder,
-            },
-            {
-                value: "unread",
-                label: "Audio",
-                onClick: handleClickFolder,
-            },
-            {
-                value: "unread",
-                label: "Documents",
-                onClick: handleClickFolder,
-            },
-        ],
+        items: wsFiles && Object.values(wsFiles.folders).length ? 
+            Object.values(wsFiles.folders).map(f => {
+                return {
+                    value: f.id,
+                    label: f.search,
+                    //label: <>Video <span className="text-muted">21</span></>,
+                    onClick: handleClickFolder
+                }
+            })
+            : []
     };
 
     const orderByDropDown = {

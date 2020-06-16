@@ -1,7 +1,7 @@
 import React, {useCallback} from "react";
 import {useDispatch} from "react-redux";
 import {getWorkspaceFiles, getWorkspaceFilesDetail, getWorkspacePopularFiles,
-        getWorkspaceRecentlyEditedFiles,
+        getWorkspaceRecentlyEditedFiles, addFolder, getWorkspaceFolders
 } from "../../redux/actions/fileActions";
 
 const useFileActions = () => {
@@ -56,10 +56,24 @@ const useFileActions = () => {
         );
     }, [dispatch]);
 
+    const createFolder = useCallback((payload, callback) => {
+        dispatch(
+            addFolder(payload)
+        );
+    }, [dispatch]);
+
+    const getFolders = useCallback((payload, callback) => {
+        dispatch(
+            getWorkspaceFolders(payload)
+        );
+    }, [dispatch]);
+
     return {
+        createFolder,
         getFileIcon,
         getFiles,
         getFilesDetail,
+        getFolders,
         getPopularFiles,
         getEditedFiles,
     };

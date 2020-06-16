@@ -140,6 +140,7 @@ export default (state = INITIAL_STATE, action) => {
                     ...newWorkspaceFiles,
                     [action.data.id]: {
                         files: convertArrayToObject(action.data.files, "id"),
+                        folders: {},
                         storage: 0,
                         count: 0,
                         stars: 0,
@@ -168,6 +169,7 @@ export default (state = INITIAL_STATE, action) => {
                     ...newWorkspaceFiles,
                     [action.data.topic_id]: {
                         files: convertArrayToObject(action.data.files, "id"),
+                        folders: {},
                         storage: 0,
                         count: 0,
                         stars: 0,
@@ -249,6 +251,29 @@ export default (state = INITIAL_STATE, action) => {
                     [action.data.topic_id]: {
                         ...newWorkspaceFiles[action.data.topic_id],
                         recently_edited: action.data.files.map(f => f.id)
+                    }
+                }
+            }
+            return {
+                ...state,
+                workspaceFiles: newWorkspaceFiles
+            }
+        }
+        case "GET_WORKSPACE_FOLDER_SUCCESS": {
+            let newWorkspaceFiles = {...state.workspaceFiles};
+            if (newWorkspaceFiles.hasOwnProperty(action.data.topic_id)) {
+                newWorkspaceFiles = {
+                    [action.data.topic_id]: {
+                        ...newWorkspaceFiles[action.data.topic_id],
+                        folders: convertArrayToObject(action.data.folders, "id"),
+                    }
+                }
+            } else {
+                newWorkspaceFiles = {
+                    ...newWorkspaceFiles,
+                    [action.data.topic_id]: {
+                        ...newWorkspaceFiles[action.data.topic_id],
+                        folders: convertArrayToObject(action.data.folders, "id"),
                     }
                 }
             }

@@ -71,6 +71,7 @@ export {
     getWorkspaceFolders,
     postWorkspaceFiles,
     patchWorkspaceFileViewed,
+    postFolder,
     restoreWorkspaceFile,
     deleteWorkspaceFile,
     uploadWorkspaceFile,

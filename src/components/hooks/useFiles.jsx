@@ -19,6 +19,7 @@ const useFiles = () => {
                 fileActions.getFilesDetail(activeTopic.id);
                 fileActions.getPopularFiles(activeTopic.id);
                 fileActions.getEditedFiles(activeTopic.id);
+                fileActions.getFolders({topic_id: activeTopic.id});
             };
             setFetchingFiles(true);
             fileActions.getFiles(activeTopic.id, cb);   
@@ -28,10 +29,14 @@ const useFiles = () => {
     if (Object.values(workspaceFiles).length && workspaceFiles.hasOwnProperty(params.workspaceId)) {
         return {
             wsFiles: workspaceFiles[activeTopic.id],
+            actions: fileActions,
+            topic: activeTopic
         };
     } else {
         return {
             wsFiles: null,
+            actions: fileActions,
+            topic: activeTopic
         }
     }
     
