@@ -128,6 +128,15 @@ export default (state = INITIAL_STATE, action) => {
                     [item.entity_type.toLowerCase()]: item.count,
                 };
             }
+            for (const x in unreadCounter) {
+                const xItem = unreadCounter[x];
+                if (typeof action.data[xItem.entity_type.toUpperCase()] === undefined) {
+                    unreadCounter = {
+                        ...unreadCounter,
+                        [xItem.entity_type.toLowerCase()]: 0
+                    }
+                }
+            }
             return {
                 ...state,
                 unreadCounter: unreadCounter,
