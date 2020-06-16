@@ -308,7 +308,7 @@ const CreateEditWorkspaceModal = (props) => {
                 ...payload,
                 workspace_id: form.selectedFolder ? form.selectedFolder.value : 0,
                 topic_id: item.id,
-                removed_member_ids: removed_members.map(m => m.id),
+                remove_member_ids: removed_members.map(m => m.id),
                 new_member_ids: added_members.map(m => m.id),
                 system_message: system_message
             };
