@@ -125,6 +125,20 @@ export default (state = INITIAL_STATE, action) => {
                 progressWorkspaceFilesUpload: progressWorkspaceFilesUpload,
             };
         }
+        case "ADD_PRIMARY_FILES": {
+            return {
+                ...state,
+                workspaceFiles: {
+                    ...state.workspaceFiles,
+                    [action.data.id]: {
+                        files: {
+                            ...state.workspaceFiles[action.data.id].files,
+                            ...convertArrayToObject(action.data.files, "id")
+                        }
+                    }
+                }
+            }
+        }
         default:
             return state;
     }

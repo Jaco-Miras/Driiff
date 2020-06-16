@@ -286,7 +286,7 @@ const CreateEditWorkspaceModal = (props) => {
                     }
                 }
                 return true;
-            }).map(m => m.id);
+            });
 
             const added_members = form.selectedUsers.filter(u => {
                 for (const i in item.members) {
@@ -295,14 +295,22 @@ const CreateEditWorkspaceModal = (props) => {
                     }
                 }
                 return true;
-            }).map(m => m.id);
+            });
 
+            let system_message = `${form.name} updated: `;
+            if (added_members.length) {
+                system_message += `${added_members.map(m => m.name).join(", ")} joined `;
+            } else if (removed_members.length) {
+                system_message += `${removed_members.map(m => m.name).join(", ")} left.`;
+            }
+            
             payload = {
                 ...payload,
                 workspace_id: form.selectedFolder ? form.selectedFolder.value : 0,
                 topic_id: item.id,
-                removed_member_ids: removed_members,
-                new_member_ids: added_members,
+                removed_member_ids: removed_members.map(m => m.id),
+                new_member_ids: added_members.map(m => m.id),
+                system_message: system_message
             };
             dispatch(updateWorkspace(payload));
         } else {
