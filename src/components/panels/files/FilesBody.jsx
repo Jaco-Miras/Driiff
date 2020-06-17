@@ -31,70 +31,7 @@ const MoreButton = styled(MoreOptions)`
 
 const FilesBody = (props) => {
 
-    const {className = "", dropZoneRef, filter, search, wsFiles} = props;
-
-    // const files = [
-    //     {
-    //         id: 1,
-    //         name: "image",
-    //         mimeType: "image",
-    //         size: "0.5kb",
-    //     },
-    //     {
-    //         id: 2,
-    //         name: "audio",
-    //         mimeType: "audio",
-    //         size: "0.5kb",
-    //     },
-    //     {
-    //         id: 3,
-    //         name: "video",
-    //         mimeType: "video",
-    //         size: "0.5kb",
-    //     },
-    //     {
-    //         id: 4,
-    //         name: "pdf",
-    //         mimeType: "pdf",
-    //         size: "0.5kb",
-    //     },
-    //     {
-    //         id: 5,
-    //         name: "archive.zip",
-    //         mimeType: "zip",
-    //         size: "0.5kb",
-    //     },
-    //     {
-    //         id: 6,
-    //         name: "excel",
-    //         mimeType: "excel",
-    //         size: "0.5kb",
-    //     },
-    //     {
-    //         id: 7,
-    //         name: "powerpoint",
-    //         mimeType: "powerpoint",
-    //         size: "0.5kb",
-    //     },
-    //     {
-    //         id: 8,
-    //         name: "word",
-    //         mimeType: "word",
-    //         size: "0.5kb",
-    //     },
-    //     {
-    //         id: 9,
-    //         name: "script",
-    //         mimeType: "script",
-    //         size: "0.5kb",
-    //     },
-    //     {
-    //         id: 10,
-    //         name: "text",
-    //         mimeType: "text",
-    //         size: "0.5kb",
-    //     },
-    // ];
+    const {className = "", dropZoneRef, filter, search, wsFiles, handleAddEditFolder} = props;
 
     const scrollRef = document.querySelector(".app-content-body");
 
@@ -113,6 +50,14 @@ const FilesBody = (props) => {
         setShowDropZone(false);
     };
 
+    const handleRemoveFolder = () => {
+        
+    };
+
+    const handleEditFolder = () => {
+        handleAddEditFolder("update", "test")
+    };
+
     return (
         <Wrapper className={`files-body card app-content-body ${className}`} onDragOver={handleShowDropZone}>
             <DropDocument
@@ -126,8 +71,8 @@ const FilesBody = (props) => {
             />
             <div className="card-body">
                 <MoreButton moreButton="settings">
-                    <div>Move to</div>
-                    <div>Delete</div>
+                    <div onClick={handleEditFolder}>Edit folder</div>
+                    <div onClick={handleRemoveFolder}>Remove folder</div>
                 </MoreButton>
 
                 {

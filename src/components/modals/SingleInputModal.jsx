@@ -58,6 +58,11 @@ const SingleInputModal = (props) => {
 
     useFocusInput(focus);
 
+    const handleConfirm = () => {
+        onPrimaryAction();
+        toggle();
+    };
+
     return (
         <Wrapper ref={refs.main} isOpen={true} toggle={toggle} centered
                  className={`single-input-modal ${className}`} {...otherProps}>
@@ -78,7 +83,7 @@ const SingleInputModal = (props) => {
                     onClick={handleClose}>{labelClose}</button>
                 <button
                     type="button" className="btn btn-primary"
-                    onClick={onPrimaryAction}>{labelPrimaryAction}</button>
+                    onClick={handleConfirm}>{labelPrimaryAction}</button>
             </ModalFooter>
         </Wrapper>
     );

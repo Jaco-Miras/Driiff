@@ -5,13 +5,16 @@ import {
     getWorkspaceFilesDetail,
     getWorkspacePopularFiles,
     getWorkspaceRecentlyEditedFiles,
+    addFolder,
+    getWorkspaceFolders,
 } from "../../redux/actions/fileActions";
 
 const useFileActions = () => {
 
     const dispatch = useDispatch();
+    const getFileIcon = (mimeType = "") => {
 
-    const getFileIcon = (mimeType) => {
+        console.log(mimeType)
         if (mimeType.includes("image")) {
             return <i className="fa fa-file-image-o text-instagram"/>;
         } else if (mimeType.includes("audio")) {
@@ -36,32 +39,46 @@ const useFileActions = () => {
 
     const getFiles = useCallback((id, callback) => {
         dispatch(
-            getWorkspaceFiles({topic_id: id}, callback),
+            getWorkspaceFiles({topic_id: id}, callback)
         );
     }, [dispatch]);
 
     const getFilesDetail = useCallback((id, callback) => {
         dispatch(
-            getWorkspaceFilesDetail({topic_id: id}, callback),
+            getWorkspaceFilesDetail({topic_id: id})
         );
     }, [dispatch]);
 
     const getPopularFiles = useCallback((id, callback) => {
         dispatch(
-            getWorkspacePopularFiles({topic_id: id}, callback),
+            getWorkspacePopularFiles({topic_id: id})
         );
     }, [dispatch]);
 
     const getEditedFiles = useCallback((id, callback) => {
         dispatch(
-            getWorkspaceRecentlyEditedFiles({topic_id: id}, callback),
+            getWorkspaceRecentlyEditedFiles({topic_id: id})
+        );
+    }, [dispatch]);
+
+    const createFolder = useCallback((payload, callback) => {
+        dispatch(
+            addFolder(payload)
+        );
+    }, [dispatch]);
+
+    const getFolders = useCallback((payload, callback) => {
+        dispatch(
+            getWorkspaceFolders(payload)
         );
     }, [dispatch]);
 
     return {
+        createFolder,
         getFileIcon,
         getFiles,
         getFilesDetail,
+        getFolders,
         getPopularFiles,
         getEditedFiles,
     };
