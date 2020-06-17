@@ -69,6 +69,13 @@ class SocketListeners extends PureComponent {
             switch (e.SOCKET_TYPE) {
                 case "POST_CREATE": {
                     this.props.incomingPost(e);
+                    if (e.workspace_ids && e.workspace_ids.length >= 1) {
+                        notificationCounterEntryPayload = {
+                            count: 1,
+                            entity_type: "WORKSPACE_POST",
+                        }
+                        this.props.setGeneralChat(notificationCounterEntryPayload);
+                    }
                     break;
                 }
                 case "POST_UPDATE": {
@@ -98,6 +105,13 @@ class SocketListeners extends PureComponent {
             switch (e.SOCKET_TYPE) {
                 case "POST_COMMENT_CREATE": {
                     this.props.incomingComment(e);
+                    if (e.workspaces && e.workspaces.length >= 1) {
+                        notificationCounterEntryPayload = {
+                            count: 1,
+                            entity_type: "WORKSPACE_POST",
+                        }
+                        this.props.setGeneralChat(notificationCounterEntryPayload);
+                    }
                     break;
                 }
                 case "POST_COMMENT_UPDATE": {
@@ -149,11 +163,14 @@ class SocketListeners extends PureComponent {
                                 entity_type: "CHAT_MESSAGE",
                             };
                         }
-
-                        this.props.setGeneralChat(notificationCounterEntryPayload);
+                    } else {
+                        notificationCounterEntryPayload = {
+                            count: 1,
+                            entity_type: "WORKSPACE_CHAT_MESSAGE",
+                        }
                     }
-
-
+                
+                    this.props.setGeneralChat(notificationCounterEntryPayload);
                     break;
                 }
                 case "CHAT_UPDATE": {
