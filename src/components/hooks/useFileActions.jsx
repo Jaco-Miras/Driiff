@@ -14,8 +14,9 @@ import {
 const useFileActions = () => {
 
     const dispatch = useDispatch();
+    const getFileIcon = (mimeType = "") => {
 
-    const getFileIcon = (mimeType) => {
+        console.log(mimeType);
         if (mimeType.includes("image")) {
             return <i className="fa fa-file-image-o text-instagram"/>;
         } else if (mimeType.includes("audio")) {
@@ -64,13 +65,13 @@ const useFileActions = () => {
 
     const createFolder = useCallback((payload, callback) => {
         dispatch(
-            addFolder(payload, callback)
+            addFolder(payload, callback),
         );
     }, [dispatch]);
 
     const getFolders = useCallback((payload, callback) => {
         dispatch(
-            getWorkspaceFolders(payload)
+            getWorkspaceFolders(payload, callback),
         );
     }, [dispatch]);
 
