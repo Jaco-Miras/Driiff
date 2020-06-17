@@ -61,7 +61,7 @@ const ChatSidebarContentPanel = (props) => {
         <Wrapper className={`chat-sidebar-content ${className}`} tabIndex="1">
 
             <div className="tab-content pt-3" id="pills-tabContent">
-                <div className={`tab-pane fade ${pill === "pills-home" && "show active"}`} id="pills-home"
+                <div className={`tab-panel fade ${pill === "pills-home" && "show active"}`} id="pills-home"
                      role="tabpanel"
                      aria-labelledby="pills-home-tab">
                     <div className="d-flex align-items-center recent-new-group-wrapper">
@@ -75,7 +75,7 @@ const ChatSidebarContentPanel = (props) => {
                     <ChannelsSidebar search={search}
                                      channels={channels} selectedChannel={selectedChannel}/>
                 </div>
-                <div className={`tab-pane fade ${pill === "pills-contact" && "show active"}`} id="pills-contact"
+                <div className={`tab-panel fade ${pill === "pills-contact" && "show active"}`} id="pills-contact"
                      role="tabpanel"
                      aria-labelledby="pills-contact-tab">
                     <ChatContactsList search={search}

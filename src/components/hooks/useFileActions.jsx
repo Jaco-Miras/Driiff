@@ -1,16 +1,21 @@
 import React, {useCallback} from "react";
 import {useDispatch} from "react-redux";
-import {getWorkspaceFiles, getWorkspaceFilesDetail, getWorkspacePopularFiles,
-        getWorkspaceRecentlyEditedFiles, addFolder, getWorkspaceFolders, putFolder,
-        uploadWorkspaceFiles
+import {
+    addFolder,
+    getWorkspaceFiles, 
+    getWorkspaceFilesDetail,
+    getWorkspaceFolders,
+    getWorkspacePopularFiles,
+    getWorkspaceRecentlyEditedFiles, 
+    putFolder,
+    uploadWorkspaceFiles
 } from "../../redux/actions/fileActions";
 
 const useFileActions = () => {
 
     const dispatch = useDispatch();
-    const getFileIcon = (mimeType = "") => {
 
-        console.log(mimeType)
+    const getFileIcon = (mimeType) => {
         if (mimeType.includes("image")) {
             return <i className="fa fa-file-image-o text-instagram"/>;
         } else if (mimeType.includes("audio")) {
@@ -41,19 +46,19 @@ const useFileActions = () => {
 
     const getFilesDetail = useCallback((id, callback) => {
         dispatch(
-            getWorkspaceFilesDetail({topic_id: id})
+            getWorkspaceFilesDetail({topic_id: id}, callback),
         );
     }, [dispatch]);
 
     const getPopularFiles = useCallback((id, callback) => {
         dispatch(
-            getWorkspacePopularFiles({topic_id: id})
+            getWorkspacePopularFiles({topic_id: id}, callback),
         );
     }, [dispatch]);
 
     const getEditedFiles = useCallback((id, callback) => {
         dispatch(
-            getWorkspaceRecentlyEditedFiles({topic_id: id})
+            getWorkspaceRecentlyEditedFiles({topic_id: id}, callback),
         );
     }, [dispatch]);
 

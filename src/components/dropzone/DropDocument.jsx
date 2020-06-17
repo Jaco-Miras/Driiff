@@ -7,9 +7,9 @@ import "./DropDocument.css";
 
 const Section = styled.section`
     display: ${props => props.hide ? "none" : "block"};
-    @media only screen and (max-width: 991.99px){
+    ${'' /* @media only screen and (max-width: 992px){
        display: block;
-    }
+    } */}
 `;
 
 //const dropzoneRef = createRef();

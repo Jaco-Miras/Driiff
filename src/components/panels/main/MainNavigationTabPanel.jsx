@@ -10,7 +10,7 @@ import {NavLink, SvgIcon, SvgIconFeather} from "../../common";
 const Wrapper = styled.div`
     li {
         position: relative;
-        
+
         .badge {
             position: relative;
             width: 8px;
@@ -18,7 +18,7 @@ const Wrapper = styled.div`
             padding: 0;
             top: -8px;
             right: 0px;
-            background: #f44;           
+            background: #f44;
         }
     }
 `;
@@ -28,7 +28,7 @@ const DriffLogo = styled(SvgIcon)`
     height: 30px;
     filter: brightness(0) saturate(100%) invert(1);
     cursor: pointer;
-    cursor: hand; 
+    cursor: hand;
 `;
 
 const NavIconContainer = styled(NavLink)`
@@ -111,7 +111,7 @@ const MainNavigationTabPanel = (props) => {
                             {
                                 (unreadCounter.workspace_chat_message + unreadCounter.workspace_post) >= 1 &&
                                 <Badge
-                                    data-count={unreadCounter.chat_message}>&nbsp;</Badge>
+                                    data-count={(unreadCounter.workspace_chat_message + unreadCounter.workspace_post)}>&nbsp;</Badge>
                             }
                         </NavIconContainer>
                     </li>

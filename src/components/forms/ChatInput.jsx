@@ -30,7 +30,7 @@ const StyledQuillEditor = styled(QuillEditor)`
         // border-radius: 5px;
         max-height: 130px;
         position: static;
-        overflow: auto;  
+        overflow: auto;
         &::-webkit-scrollbar {
             display: none;
         }
@@ -382,7 +382,10 @@ const ChatInput = props => {
 
     useEffect(() => {
         if (reactQuillRef.current) {
-            reactQuillRef.current.focus();
+            const width = window.innerWidth;
+            if(width > 620) {
+                reactQuillRef.current.focus();
+            }
         }
 
         const handlePaste = (e) => {

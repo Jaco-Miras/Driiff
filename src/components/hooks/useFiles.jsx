@@ -77,7 +77,7 @@ const useFiles = () => {
             folder: null
         }
     }
-    
+
 };
 
 export default useFiles;

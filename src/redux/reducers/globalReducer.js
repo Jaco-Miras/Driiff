@@ -101,7 +101,7 @@ export default (state = INITIAL_STATE, action) => {
             };
         }
         case "UPDATE_GENERAL_CHAT_NOTIFICATION": {
-            let unreadCounter = state.unreadCounter;
+            let unreadCounter = {...state.unreadCounter};
             let unreadType =  action.data.entity_type.toLowerCase();
             
             unreadCounter[unreadType] = unreadCounter[unreadType] + action.data.count;

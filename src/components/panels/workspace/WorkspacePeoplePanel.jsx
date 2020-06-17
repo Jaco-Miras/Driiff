@@ -48,7 +48,7 @@ const WorkspacePeoplePanel = (props) => {
         selectUserChannel(user, (channel) => {
             history.push(`/chat/${channel.code}`);
         });
-    }, [history]);
+    }, [history, selectUserChannel]);
 
     useEffect(() => {
         refs.search.current.focus();
