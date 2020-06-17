@@ -12,7 +12,7 @@ import {getDriffName} from "../hooks/useDriff";
 
 const Wrapper = styled.form`
     ${props => props.error !== "" &&
-    `&:before {        
+    `&:before {
         content: "${props.error}";
         display: block;
         color: red;
@@ -21,9 +21,9 @@ const Wrapper = styled.form`
         margin-left: 0;
         margin-bottom: 0.5rem;
     }`}
-    
+
     ${props => props.success !== "" &&
-    `&:before {        
+    `&:before {
         content: "${props.success}";
         display: block;
         color: #59a869;
@@ -31,12 +31,12 @@ const Wrapper = styled.form`
         text-align: left;
         margin-left: 0;
         margin-bottom: 0.5rem;
-    }`}    
+    }`}
 `;
 
 const FormGroup = styled.div`
     ${props => props.error !== "" &&
-    `&:after {        
+    `&:after {
         content: "${props.error}";
         display: block;
         color: red;

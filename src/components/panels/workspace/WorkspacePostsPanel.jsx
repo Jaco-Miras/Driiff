@@ -33,7 +33,7 @@ const WorkspacePostsPanel = (props) => {
     };
 
     return (
-        <Wrapper className={`container-fluid h-100 ${className}`}>
+        <Wrapper className={`container-fluid h-100 h-w-min ${className}`}>
             <div className="row app-block">
                 <PostSidebar workspace={workspace} filter={filter} tag={tag} postActions={postActions} count={count}/>
                 <div className="col-md-9 app-content">

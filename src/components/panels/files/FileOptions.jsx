@@ -23,16 +23,17 @@ const Wrapper = styled(MoreOptions)`
 
 const FileOptions = props => {
 
-    const {className = "", file, scrollRef} = props;
+    const {className = "", file, scrollRef, actions} = props;
 
     const [showMoreOptions, setShowMoreOptions] = useState(false);
 
     const handleViewDetail = () => {
-
+        actions.viewFiles(file);
     };
 
     const handleFavorite = () => {
-
+        actions.favorite(file);
+        //need socket
     };
 
     const handleShare = () => {
@@ -40,7 +41,7 @@ const FileOptions = props => {
     };
 
     const handleDownload = () => {
-
+        window.open(file.download_link);
     };
 
     const handleMoveTo = () => {
@@ -48,11 +49,15 @@ const FileOptions = props => {
     };
 
     const handleRename = () => {
-
+        actions.renameFile(file);
     };
 
     const handleDelete = () => {
+        //error on delete endpoint
+        const cb = (err,res) => {
 
+        };
+        actions.removeFile(file, cb)
     };
 
     return (

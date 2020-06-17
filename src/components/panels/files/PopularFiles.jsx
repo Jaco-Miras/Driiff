@@ -7,7 +7,7 @@ const Wrapper = styled.div`
 
 const PopularFiles = (props) => {
 
-    const {className = "", wsFiles} = props;
+    const {className = "", wsFiles, actions} = props;
 
     // const files = [
     //     {
@@ -43,7 +43,7 @@ const PopularFiles = (props) => {
                     wsFiles && wsFiles.popular_files.length > 0 &&
                     wsFiles.popular_files.map(id => {
                         return (
-                            <FileListItem key={id} className="col-xl-3 col-lg-4 col-md-6 col-sm-12" file={wsFiles.files[id]}/>
+                            <FileListItem key={id} className="col-xl-3 col-lg-4 col-md-6 col-sm-12" file={wsFiles.files[id]} actions={actions}/>
                         );
                     })
                 }

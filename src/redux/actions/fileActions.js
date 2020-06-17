@@ -1,5 +1,7 @@
 import dispatchActionToReducer, {SimpleDispatchActionToReducer} from "../actionDispatcher";
 import {
+    deleteFile as deleteFileService,
+    deleteFolder as deleteFolderService,
     deleteWorkspaceFile as deleteWorkspaceFileService,
     getChannelFiles as getChannelFilesService,
     getFiles as getFilesService,
@@ -14,6 +16,8 @@ import {
     patchWorkspaceFileViewed as patchWorkspaceFileViewedService,
     postFolder as postFolderService,
     putFolder as putFolderService,
+    putFile as putFileService,
+    postFavorite as postFavoriteService,
     postWorkspaceFiles as postWorkspaceFilesService,
     restoreWorkspaceFile as restoreWorkspaceFileService,
     uploadWorkspaceFile as uploadWorkspaceFileService,
@@ -243,6 +247,62 @@ export function uploadWorkspaceFiles(payload, callback) {
 export function incomingFolder(payload, callback) {
     return SimpleDispatchActionToReducer(
         "INCOMING_FOLDER",
+        payload,
+        callback,
+    );
+}
+
+export function deleteFolder(payload, callback) {
+    return dispatchActionToReducer(
+        deleteFolderService(payload),
+        "DELETE_FOLDER_START",
+        "DELETE_FOLDER_SUCCESS",
+        "DELETE_FOLDER_FAIL",
+        callback,
+    );
+}
+
+export function incomingDeletedFolder(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "INCOMING_DELETED_FOLDER",
+        payload,
+        callback,
+    );
+}
+
+export function favoriteFile(payload, callback) {
+    return dispatchActionToReducer(
+        postFavoriteService(payload),
+        "FAVORITE_FILE_START",
+        "FAVORITE_FILE_SUCCESS",
+        "FAVORITE_FILE_FAIL",
+        callback,
+    );
+}
+
+export function deleteFile(payload, callback) {
+    return dispatchActionToReducer(
+        deleteFileService(payload),
+        "DELETE_FILE_START",
+        "DELETE_FILE_SUCCESS",
+        "DELETE_FILE_FAIL",
+        callback,
+    );
+}
+
+export function putFile(payload, callback) {
+    return dispatchActionToReducer(
+        putFileService(payload),
+        "UPDATE_FILENAME_START",
+        "UPDATE_FILENAME_SUCCESS",
+        "UPDATE_FILENAME_FAIL",
+        callback,
+    );
+}
+
+export function incomingFile(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "INCOMING_FILE",
         payload,
         callback,
     );

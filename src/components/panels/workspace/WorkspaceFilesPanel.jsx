@@ -12,7 +12,7 @@ const Wrapper = styled.div`
     .app-sidebar-menu {
         overflow: hidden;
         outline: currentcolor none medium;
-    }    
+    }
 `;
 
 const WorkspaceFilesPanel = (props) => {
@@ -33,13 +33,13 @@ const WorkspaceFilesPanel = (props) => {
         dropZone: useRef(null),
     };
 
-    const handleFilterFile = useCallback((e) => {
+    const handleFilterFile = (e) => {
         if (params.hasOwnProperty("fileFolderId")) {
             let pathname = history.location.pathname.split("/folder/")[0]
             history.push(pathname);
         }
         setFilter(e.target.dataset.filter);
-    }, []);
+    };
 
     const handleSearchChange = useCallback((e) => {
         setSearch(e.target.value);
@@ -121,14 +121,14 @@ const WorkspaceFilesPanel = (props) => {
                 onPrimaryAction: handleUpdateFolder,
             };
         }
-        
+
         dispatch(
             addToModals(payload),
         );
     }
 
     return (
-        <Wrapper className={`container-fluid h-100 ${className}`}>
+        <Wrapper className={`container-fluid h-100 h-w-min ${className}`}>
             <div className="row app-block">
                 <FilesSidebar dropZoneRef={refs.dropZone} className="col-md-3" filterFile={handleFilterFile}
                               filter={filter} wsFiles={wsFiles}/>
@@ -137,7 +137,7 @@ const WorkspaceFilesPanel = (props) => {
                     <FilesHeader dropZoneRef={refs.dropZone} onSearchChange={handleSearchChange} history={history}
                         wsFiles={wsFiles} handleAddEditFolder={handleAddEditFolder} folders={folders}/>
                     <FilesBody dropZoneRef={refs.dropZone} filter={filter} search={search} folder={folder} fileIds={fileIds}
-                        actions={actions} params={params} wsFiles={wsFiles} handleAddEditFolder={handleAddEditFolder}/>
+                        history={history} actions={actions} params={params} wsFiles={wsFiles} handleAddEditFolder={handleAddEditFolder}/>
                 </div>
             </div>
         </Wrapper>

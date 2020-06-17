@@ -1,6 +1,5 @@
 import React from "react";
 import styled from "styled-components";
-import useFileActions from "../../../hooks/useFileActions";
 import {FileOptions} from "../../../panels/files";
 
 const Wrapper = styled.div`
@@ -18,16 +17,14 @@ const Wrapper = styled.div`
 
 const FileListItem = (props) => {
 
-    const {className = "", file, scrollRef} = props;
-
-    const fileHandler = useFileActions();
+    const {className = "", file, scrollRef, actions} = props;
 
     return (
         <Wrapper className={`file-list-item ${className}`}>
             <div className="card app-file-list">
                 <div className="app-file-icon">
-                    {fileHandler.getFileIcon(file.mime_type)}
-                    <FileOptions scrollRef={scrollRef}/>
+                    {actions.getFileIcon(file.mime_type)}
+                    <FileOptions scrollRef={scrollRef} file={file} actions={actions}/>
                 </div>
                 <div className="p-2 small">
                     <div>{file.search}</div>

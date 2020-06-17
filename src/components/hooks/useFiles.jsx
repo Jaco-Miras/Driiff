@@ -5,8 +5,8 @@ import {useFileActions} from "../hooks";
 
 const useFiles = () => {
 
-    const fileActions = useFileActions();
     const params = useParams();
+    const fileActions = useFileActions(params);
 
     const activeTopic = useSelector(state => state.workspaces.activeTopic);
     const workspaceFiles = useSelector(state => state.files.workspaceFiles);
@@ -17,6 +17,7 @@ const useFiles = () => {
             const cb = (err,res) => {
                 setFetchingFiles(false);
                 fileActions.getFilesDetail(activeTopic.id);
+                fileActions.getFavoriteFiles(activeTopic.id);
                 fileActions.getPopularFiles(activeTopic.id);
                 fileActions.getEditedFiles(activeTopic.id);
                 fileActions.getFolders({topic_id: activeTopic.id});
