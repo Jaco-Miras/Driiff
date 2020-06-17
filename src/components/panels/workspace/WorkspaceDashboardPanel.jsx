@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import {useWorkspace, usePosts} from "../../hooks";
+import {usePosts, useWorkspace} from "../../hooks";
 import TimelinePanel from "../common/TimelinePanel";
 import {DashboardAboutWorkspace, DashboardTeam, RecentPosts} from "../dashboard";
 
