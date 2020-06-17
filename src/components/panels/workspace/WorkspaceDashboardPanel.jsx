@@ -4,7 +4,7 @@ import {usePosts, useWorkspace} from "../../hooks";
 import TimelinePanel from "../common/TimelinePanel";
 import {DashboardAboutWorkspace, DashboardTeam, RecentPosts} from "../dashboard";
 
-const Wrapper = styled.div`    
+const Wrapper = styled.div`
     overflow: auto !important;
     &::-webkit-scrollbar {
         display: none;
@@ -26,7 +26,7 @@ const WorkspaceDashboardPanel = (props) => {
 
 
     return (
-        <Wrapper className={`container-fluid h-100 ${className}`}>
+        <Wrapper className={`container-fluid h-w-min ${className}`}>
             <div className={`row`}>
                 <div className={`col-md-6`}>
                     <DashboardAboutWorkspace workspace={workspace} onEditClick={handleEditClick}/>

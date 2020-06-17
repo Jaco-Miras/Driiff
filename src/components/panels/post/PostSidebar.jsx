@@ -22,8 +22,8 @@ const PostSidebar = props => {
 
     return (
         <Wrapper className="col-md-3 app-sidebar">
-            <div className="card">
-                <div className="card-body">
+            <div className="">
+                <div>
                     {
                         isMember &&
                         <button className="btn btn-outline-primary btn-block" onClick={handleShowWorkspacePostModal}>

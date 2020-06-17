@@ -426,12 +426,17 @@ const ChatContent = styled.div`
         left: 0;
         overflow: hidden;
         height: 250px;
+        cursor: pointer;
         .gifPlayer {
             border-radius: 8px;
             max-height: 250px;
         }
         .play_button {
-            padding: 12px 10px;
+            height: 60px;
+            width: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
     }
 `;

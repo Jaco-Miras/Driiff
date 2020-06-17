@@ -12,7 +12,7 @@ const WorkspaceChatPanel = (props) => {
     const selectedChannel = useSelector(state => state.chat.selectedChannel);
 
     return (
-        <Wrapper className={`container-fluid h-100 ${className}`}>
+        <Wrapper className={`container-fluid workspace-chat ${className}`}>
             <div className="row no-gutters chat-block">
                 <ChatContentPanel className={`col-lg-12`} selectedChannel={selectedChannel}/>
             </div>

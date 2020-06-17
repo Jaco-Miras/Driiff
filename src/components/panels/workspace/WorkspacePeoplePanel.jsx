@@ -7,7 +7,7 @@ import {useFocusInput, useUserChannels} from "../../hooks";
 import {PeopleListItem} from "../../list/people/item";
 
 const Wrapper = styled.div`
-    overflow: auto;  
+    overflow: auto;
     &::-webkit-scrollbar {
         display: none;
     }
@@ -94,7 +94,7 @@ const WorkspacePeoplePanel = (props) => {
     useFocusInput(refs.search.current);
 
     return (
-        <Wrapper className={`workspace-people container-fluid h-100 ${className}`}>
+        <Wrapper className={`workspace-people container-fluid ${className}`}>
             <div className="card">
                 <div className="card-body">
                     <Search ref={refs.search} placeholder="People search" onChange={handleSearchChange} autoFocus/>

@@ -16,20 +16,20 @@ const MainHeader = styled.div`
         align-items: center;
         margin: 0;
         padding: 0;
-        height: 33px;       
+        ${'' /* height: 33px; */}
 
         li {
             list-style: none;
-            
+
             .post-title {
-                width: 100%; 
-        
+                width: 100%;
+
                 span {
-                width: ${props => props.postTitleWidth}px;
+                ${'' /* width: ${props => props.postTitleWidth}px;
                 display: block;
                 white-space: nowrap;
                 overflow: hidden;
-                text-overflow: ellipsis;
+                text-overflow: ellipsis; */}
                 }
             }
         }
@@ -53,7 +53,7 @@ const Counters = styled.div`
 
 const Icon = styled(SvgIconFeather)`
     width: 16px;
-    
+
     &.close {
         cursor: pointer;
         cursor: hand;
