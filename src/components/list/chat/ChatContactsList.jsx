@@ -102,10 +102,14 @@ const ChatContactsList = props => {
              * c.members for add_user IS NOT THE USER ID
              */
             const recipient = channel.members.find(m => m.id !== user.id);
-            if (recipients.includes(recipient.id)) {
-                return false;
+            if (typeof recipient !== "undefined") {
+                if (recipients.includes(recipient.id)) {
+                    return false;
+                } else {
+                    recipients.push(recipient.id);
+                }
             } else {
-                recipients.push(recipient.id);
+                return false;
             }
 
             if (!Object.values(userChannels).includes(channel.id)) {
