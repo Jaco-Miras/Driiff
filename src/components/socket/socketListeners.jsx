@@ -70,11 +70,11 @@ class SocketListeners extends PureComponent {
                 case "POST_CREATE": {
                     this.props.incomingPost(e);
                     if (e.workspace_ids && e.workspace_ids.length >= 1) {
-                        notificationCounterEntryPayload = {
+                    
+                        this.props.setGeneralChat({
                             count: 1,
                             entity_type: "WORKSPACE_POST",
-                        }
-                        this.props.setGeneralChat(notificationCounterEntryPayload);
+                        });
                     }
                     break;
                 }
@@ -106,11 +106,10 @@ class SocketListeners extends PureComponent {
                 case "POST_COMMENT_CREATE": {
                     this.props.incomingComment(e);
                     if (e.workspaces && e.workspaces.length >= 1) {
-                        notificationCounterEntryPayload = {
+                        this.props.setGeneralChat({
                             count: 1,
                             entity_type: "WORKSPACE_POST",
-                        }
-                        this.props.setGeneralChat(notificationCounterEntryPayload);
+                        });
                     }
                     break;
                 }
