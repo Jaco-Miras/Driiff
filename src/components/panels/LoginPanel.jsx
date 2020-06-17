@@ -3,12 +3,12 @@ import {useDispatch} from "react-redux";
 import {Link} from "react-router-dom";
 import styled from "styled-components";
 import {$_GET, getThisDeviceInfo} from "../../helpers/commonFunctions";
-import {getSlugName} from "../../helpers/slugHelper";
 import {EmailRegex} from "../../helpers/stringFormatter";
 import {toggleLoading} from "../../redux/actions/globalActions";
 import {userGoogleLogin, userLogin} from "../../redux/actions/userAction";
 import {CheckBox} from "../forms";
 import {processBackendLogin, storeLoginToken} from "../hooks";
+import {getDriffName} from "../hooks/useDriff";
 
 const Wrapper = styled.form`
     ${props => props.error !== "" &&
