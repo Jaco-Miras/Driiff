@@ -158,6 +158,10 @@ export default (state = INITIAL_STATE, action) => {
         case "GET_WORKSPACE_FILES_SUCCESS": {
             let newWorkspaceFiles = {...state.workspaceFiles};
             if (newWorkspaceFiles.hasOwnProperty(action.data.topic_id)) {
+                if (action.data.folder_id && newWorkspaceFiles[action.data.topic_id].folders.hasOwnProperty(action.data.folder_id)) {
+                    newWorkspaceFiles[action.data.topic_id].folders[action.data.folder_id].loaded = true;
+                    newWorkspaceFiles[action.data.topic_id].folders[action.data.folder_id].files = action.data.files.map(f => f.id)
+                }
                 newWorkspaceFiles = {
                     [action.data.topic_id]: {
                         ...newWorkspaceFiles[action.data.topic_id],

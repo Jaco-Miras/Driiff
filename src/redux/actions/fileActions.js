@@ -17,6 +17,7 @@ import {
     postWorkspaceFiles as postWorkspaceFilesService,
     restoreWorkspaceFile as restoreWorkspaceFileService,
     uploadWorkspaceFile as uploadWorkspaceFileService,
+    uploadWorkspaceFiles as uploadWorkspaceFilesService,
 } from "../services";
 
 export function getFiles(payload, callback) {
@@ -225,6 +226,16 @@ export function putFolder(payload, callback) {
         "UPDATE_FOLDER_START",
         "UPDATE_FOLDER_SUCCESS",
         "UPDATE_FOLDER_FAIL",
+        callback,
+    );
+}
+
+export function uploadWorkspaceFiles(payload, callback) {
+    return dispatchActionToReducer(
+        uploadWorkspaceFilesService(payload),
+        "UPLOAD_WORKSPACE_FILES_START",
+        "UPLOAD_WORKSPACE_FILES_SUCCESS",
+        "UPLOAD_WORKSPACE_FILES_FAIL",
         callback,
     );
 }

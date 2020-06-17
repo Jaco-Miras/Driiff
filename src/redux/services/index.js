@@ -76,6 +76,7 @@ export {
     restoreWorkspaceFile,
     deleteWorkspaceFile,
     uploadWorkspaceFile,
+    uploadWorkspaceFiles,
 } from "./files";
 
 export {

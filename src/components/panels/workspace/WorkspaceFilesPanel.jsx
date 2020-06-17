@@ -19,9 +19,9 @@ const WorkspaceFilesPanel = (props) => {
 
     const dispatch = useDispatch();
     const {_t} = useTranslation();
-    const {params, wsFiles, actions, topic, folders} = useFiles();
+    const {params, wsFiles, actions, topic, fileIds, folders, folder} = useFiles();
 
-    console.log(folders)
+    console.log(fileIds)
 
     const [filter, setFilter] = useState("");
     const [search, setSearch] = useState("");
@@ -113,7 +113,8 @@ const WorkspaceFilesPanel = (props) => {
                     <div className="app-content-overlay"/>
                     <FilesHeader dropZoneRef={refs.dropZone} onSearchChange={handleSearchChange} 
                         wsFiles={wsFiles} handleAddEditFolder={handleAddEditFolder} folders={folders}/>
-                    <FilesBody dropZoneRef={refs.dropZone} filter={filter} search={search} wsFiles={wsFiles} handleAddEditFolder={handleAddEditFolder}/>
+                    <FilesBody dropZoneRef={refs.dropZone} filter={filter} search={search} folder={folder} fileIds={fileIds}
+                        actions={actions} params={params} wsFiles={wsFiles} handleAddEditFolder={handleAddEditFolder}/>
                 </div>
             </div>
         </Wrapper>
