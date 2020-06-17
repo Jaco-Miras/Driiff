@@ -20,6 +20,10 @@ export const getDriffName = () => {
         return null;
     }
 
+    if (window.location.hostname === process.env.REACT_APP_localDNSName) {
+        return null;
+    }
+
     //process slug name from host name
     let hostnameArr = window.location.hostname.split(".");
     if (hostnameArr.length >= 3) {
