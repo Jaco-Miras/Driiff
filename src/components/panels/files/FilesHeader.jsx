@@ -1,6 +1,5 @@
 import React from "react";
 import styled from "styled-components";
-import {useHistory} from "react-router-dom";
 import {ButtonDropdown, SvgIconFeather} from "../../common";
 import {replaceChar} from "../../../helpers/stringFormatter";
 
@@ -23,10 +22,7 @@ const Wrapper = styled.div`
 
 const FilesHeader = (props) => {
 
-    const {className = "", dropZoneRef, onSearchChange, wsFiles, handleAddEditFolder, folders} = props;
-    
-    const history = useHistory();
-    //console.log(history)
+    const {className = "", dropZoneRef, onSearchChange, wsFiles, handleAddEditFolder, folders, history} = props;
 
     const handleClickAdd = () => {
         if (dropZoneRef.current) {

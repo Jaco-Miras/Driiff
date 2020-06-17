@@ -1,9 +1,11 @@
 import React, {useCallback, useRef, useState} from "react";
 import {useDispatch} from "react-redux";
+import {useHistory} from "react-router-dom";
 import styled from "styled-components";
 import {useFiles, useTranslation} from "../../hooks";
 import {FilesBody, FilesHeader, FilesSidebar} from "../files";
 import {addToModals} from "../../../redux/actions/globalActions";
+import {replaceChar} from "../../../helpers/stringFormatter";
 
 
 const Wrapper = styled.div`
@@ -18,10 +20,11 @@ const WorkspaceFilesPanel = (props) => {
     const {className = ""} = props;
 
     const dispatch = useDispatch();
+    const history = useHistory();
     const {_t} = useTranslation();
     const {params, wsFiles, actions, topic, fileIds, folders, folder} = useFiles();
 
-    console.log(fileIds)
+    // console.log(fileIds, history)
 
     const [filter, setFilter] = useState("");
     const [search, setSearch] = useState("");
@@ -31,6 +34,10 @@ const WorkspaceFilesPanel = (props) => {
     };
 
     const handleFilterFile = useCallback((e) => {
+        if (params.hasOwnProperty("fileFolderId")) {
+            let pathname = history.location.pathname.split("/folder/")[0]
+            history.push(pathname);
+        }
         setFilter(e.target.dataset.filter);
     }, []);
 
@@ -49,20 +56,36 @@ const WorkspaceFilesPanel = (props) => {
 
     const handleCreateFolder = () => {
         if (topic) {
+            let cb = (err,res) => {
+                if (err) return;
+                if (params.hasOwnProperty("fileFolderId")) {
+                    let pathname = history.location.pathname.split("/folder/")[0]
+                    history.push(pathname+`/folder/${res.data.folder.id}/${replaceChar(res.data.folder.search)}`);
+                } else {
+                    history.push(history.location.pathname+`/folder/${res.data.folder.id}/${replaceChar(res.data.folder.search)}`);
+                }
+            };
             actions.createFolder({
                 topic_id: topic.id,
                 name: folderName.current
-            })
+            }, cb);
         }
     };
 
     const handleUpdateFolder = () => {
         if (topic) {
+            let cb = (err,res) => {
+                if (err) return;
+                if (params.hasOwnProperty("fileFolderId")) {
+                    let pathname = history.location.pathname.split("/folder/")[0]
+                    history.push(pathname+`/folder/${res.data.folder.id}/${replaceChar(res.data.folder.search)}`);
+                }
+            };
             actions.updateFolder({
                 id: params.fileFolderId,
                 topic_id: topic.id,
                 name: folderName.current
-            })
+            }, cb)
         }
     };
 
@@ -89,10 +112,10 @@ const WorkspaceFilesPanel = (props) => {
                 onPrimaryAction: handleCreateFolder,
             };
         } else {
-            folderName.current = params.fileFolderName;
+            folderName.current = folder.search;
             payload = {
                 ...payload,
-                defaultValue: params.fileFolderName,
+                defaultValue: folder.search,
                 title: dictionary.updateFolder,
                 labelPrimaryAction: dictionary.update,
                 onPrimaryAction: handleUpdateFolder,
@@ -111,7 +134,7 @@ const WorkspaceFilesPanel = (props) => {
                               filter={filter} wsFiles={wsFiles}/>
                 <div className="col-md-9 app-content">
                     <div className="app-content-overlay"/>
-                    <FilesHeader dropZoneRef={refs.dropZone} onSearchChange={handleSearchChange} 
+                    <FilesHeader dropZoneRef={refs.dropZone} onSearchChange={handleSearchChange} history={history}
                         wsFiles={wsFiles} handleAddEditFolder={handleAddEditFolder} folders={folders}/>
                     <FilesBody dropZoneRef={refs.dropZone} filter={filter} search={search} folder={folder} fileIds={fileIds}
                         actions={actions} params={params} wsFiles={wsFiles} handleAddEditFolder={handleAddEditFolder}/>

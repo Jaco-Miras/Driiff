@@ -106,11 +106,11 @@ const FilesBody = (props) => {
                             }
                         </div>
                         {
-                            wsFiles && wsFiles.popular_files.length > 0 &&
+                            wsFiles && wsFiles.popular_files.length > 0 && folder === null &&
                             <PopularFiles search={search} scrollRef={scrollRef} wsFiles={wsFiles}/>
                         }
                         {
-                            wsFiles && wsFiles.recently_edited.length > 0 &&
+                            wsFiles && wsFiles.recently_edited.length > 0 && folder === null &&
                             <RecentEditedFile search={search} scrollRef={scrollRef} wsFiles={wsFiles}/>
                         }
                     </>

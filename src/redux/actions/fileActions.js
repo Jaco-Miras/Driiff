@@ -239,3 +239,11 @@ export function uploadWorkspaceFiles(payload, callback) {
         callback,
     );
 }
+
+export function incomingFolder(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "INCOMING_FOLDER",
+        payload,
+        callback,
+    );
+}

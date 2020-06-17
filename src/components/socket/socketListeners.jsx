@@ -19,7 +19,10 @@ import {
     setChannel,
     setMemberTimestamp,
 } from "../../redux/actions/chatActions";
-import {addFilesToChannel, deleteFilesFromChannel} from "../../redux/actions/fileActions";
+import {addFilesToChannel, 
+    deleteFilesFromChannel, 
+    incomingFolder,
+} from "../../redux/actions/fileActions";
 import {
     addUserToReducers,
     generateUnfurl,
@@ -64,6 +67,27 @@ class SocketListeners extends PureComponent {
 
         // new socket
         window.Echo.private(`${localStorage.getItem("slug")}.Driff.User.${this.props.user.id}`)
+        .listen(".workspace-folder-notification", e => {
+            console.log(e, 'folder')
+            switch (e.SOCKET_TYPE) {
+                case "FOLDER_CREATE": {
+                    this.props.incomingFolder(e);
+                    break;
+                }
+                case "FOLDER_UPDATE": {
+                    this.props.incomingFolder(e);
+                    break;
+                }
+                default:
+                    return null;
+            }
+        })
+        .listen(".workspace-file-notification", e => {
+            console.log(e, 'file')
+        })
+        .listen(".upload-bulk-private-workspace-files", e => {
+            console.log(e, 'files bulk')
+        })
         .listen(".post-notification", e => {
             console.log(e, "post-notif")
             switch (e.SOCKET_TYPE) {
@@ -633,6 +657,7 @@ function mapDispatchToProps(dispatch) {
         incomingDeletedPost: bindActionCreators(incomingDeletedPost, dispatch),
         incomingComment: bindActionCreators(incomingComment, dispatch),
         incomingCommentClap: bindActionCreators(incomingCommentClap, dispatch),
+        incomingFolder: bindActionCreators(incomingFolder, dispatch),
     };
 }
 

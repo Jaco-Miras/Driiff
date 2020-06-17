@@ -64,7 +64,7 @@ const useFileActions = () => {
 
     const createFolder = useCallback((payload, callback) => {
         dispatch(
-            addFolder(payload)
+            addFolder(payload, callback)
         );
     }, [dispatch]);
 
@@ -76,7 +76,7 @@ const useFileActions = () => {
 
     const updateFolder = useCallback((payload, callback) => {
         dispatch(
-            putFolder(payload)
+            putFolder(payload, callback)
         );
     }, [dispatch]);
 
