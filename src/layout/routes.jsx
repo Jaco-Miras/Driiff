@@ -3,7 +3,6 @@ import {useSelector} from "react-redux";
 import {Redirect, Route, Switch} from "react-router-dom";
 import {TestChat} from "../components/test";
 import TestFiles from "../components/test/TestFiles";
-import usePushNotification from "../components/webpush/usePushNotification";
 import GuestLayout from "./GuestLayout";
 import MainLayout from "./MainLayout";
 
@@ -15,8 +14,8 @@ export const AppRoute = ({children, ...props}) => {
     const authenticated = session.authenticated;
 
     // if (!session.checked || !i18nLoaded || push.loading)
-    if (!session.checked || !i18nLoaded)
-        return null;
+    //if (!session.checked || !i18nLoaded)
+    //return null;
 
     return (
         authenticated ?
