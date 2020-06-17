@@ -1,35 +1,40 @@
-import React from "react";
+import {useEffect, useState} from "react";
+import {useSelector} from "react-redux";
+import {useParams} from "react-router-dom";
+import {useFileActions} from "../hooks";
 
 const useFiles = () => {
 
-    const getFileIcon = (mimeType = "") => {
+    const fileActions = useFileActions();
+    const params = useParams();
 
-        console.log(mimeType)
-        if (mimeType.includes("image")) {
-            return <i className="fa fa-file-image-o text-instagram"/>;
-        } else if (mimeType.includes("audio")) {
-            return <i className="fa fa-file-audio-o text-dark"/>;
-        } else if (mimeType.includes("video")) {
-            return <i className="fa fa-file-video-o text-google"/>;
-        } else if (mimeType.includes("pdf")) {
-            return <i className="fa fa-file-pdf-o text-danger"/>;
-        } else if (mimeType.includes("zip") || mimeType.includes("archive") || mimeType.includes("x-rar")) {
-            return <i className="fa fa-file-zip-o text-primary"/>;
-        } else if (mimeType.includes("excel") || mimeType.includes("spreadsheet") || mimeType.includes("csv") || mimeType.includes("numbers")) {
-            return <i className="fa fa-file-excel-o text-success"/>;
-        } else if (mimeType.includes("powerpoint") || mimeType.includes("presentation")) {
-            return <i className="fa fa-file-powerpoint-o text-secondary"/>;
-        } else if (mimeType.includes("word") || mimeType.includes("document")) {
-            return <i className="fa fa-file-word-o text-info"/>;
-        } else if (mimeType.includes("script")) {
-            return <i className="fa fa-file-code-o"/>;
-        } else
-            return <i className="fa fa-file-text-o text-warning"/>;
-    };
+    const activeTopic = useSelector(state => state.workspaces.activeTopic);
+    const workspaceFiles = useSelector(state => state.files.workspaceFiles);
+    const [fetchingFiles, setFetchingFiles] = useState(false);
 
-    return {
-        getFileIcon,
-    };
+    useEffect(() => {
+        if (!fetchingFiles && activeTopic && !workspaceFiles.hasOwnProperty(activeTopic.id)) {
+            const cb = (err,res) => {
+                setFetchingFiles(false);
+                fileActions.getFilesDetail(activeTopic.id);
+                fileActions.getPopularFiles(activeTopic.id);
+                fileActions.getEditedFiles(activeTopic.id);
+            };
+            setFetchingFiles(true);
+            fileActions.getFiles(activeTopic.id, cb);   
+        }
+    }, [fetchingFiles, activeTopic, workspaceFiles]);
+
+    if (Object.values(workspaceFiles).length && workspaceFiles.hasOwnProperty(params.workspaceId)) {
+        return {
+            wsFiles: workspaceFiles[activeTopic.id],
+        };
+    } else {
+        return {
+            wsFiles: null,
+        }
+    }
+    
 };
 
 export default useFiles;

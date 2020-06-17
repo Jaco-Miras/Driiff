@@ -32,3 +32,5 @@ export {default as useCommentActions} from "./useCommentActions";
 export {default as useCommentQuote} from "./useCommentQuote";
 export {default as useWorkspace} from "./useWorkspace";
 export {default as useWorkspaceActions} from "./useWorkspaceActions";
+export {default as useFiles} from "./useFiles";
+export {default as useFileActions} from "./useFileActions";

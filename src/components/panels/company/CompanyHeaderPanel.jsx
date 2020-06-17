@@ -3,6 +3,7 @@ import {useDispatch} from "react-redux";
 import {useRouteMatch} from "react-router-dom";
 import styled from "styled-components";
 import {NavLink, SvgIconFeather} from "../../common";
+import useSettings from "../../hooks/useSettings";
 import HomeProfileNavigation from "../common/HeaderProfileNavigation";
 
 const NavBar = styled.ul`
@@ -38,8 +39,9 @@ const MainNavLink = styled(NavLink)`
 
 const CompanyHeaderPanel = () => {
 
-    const dispatch = useDispatch();
     const match = useRouteMatch();
+
+    const {driffSettings} = useSettings();
 
     useEffect(() => {
         const body = document.body;
@@ -78,7 +80,7 @@ const CompanyHeaderPanel = () => {
             }
         }
         document.title = `Driff - ${pageName}`;
-    }, [match.params, dispatch]);
+    }, [match.params]);
 
     return (
         <>
@@ -90,7 +92,7 @@ const CompanyHeaderPanel = () => {
                         </a>
                     </li>
                     <li className="nav-item">
-                        <CompanyName>ZUID Creatives</CompanyName>
+                        <CompanyName>{driffSettings.company_name}</CompanyName>
                     </li>
                     <li className="nav-item">
                         <MainNavLink to="/dashboard">Dashboard</MainNavLink>

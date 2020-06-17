@@ -20,8 +20,8 @@ const TimelinePanel = (props) => {
                         Object.values(timeline).sort((a,b) => { return b.item.created_at.timestamp > a.item.created_at.timestamp ? 1 : -1})
                         .map(t => {
                             switch (t.tag) {
-                                // case "CHAT_BOT":
-                                //     return <MemberTimeline key={t.id} member={t.item}/>;
+                                case "CHAT_BOT":
+                                    return <MemberTimeline key={t.id} data={t.item}/>;
                                 case "POST":
                                     return <PostTimeline key={t.id} data={t} data={t.item}/>;
                                 case "DOCUMENT":

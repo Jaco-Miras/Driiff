@@ -31,70 +31,70 @@ const MoreButton = styled(MoreOptions)`
 
 const FilesBody = (props) => {
 
-    const {className = "", dropZoneRef, filter, search} = props;
+    const {className = "", dropZoneRef, filter, search, wsFiles} = props;
 
-    const files = [
-        {
-            id: 1,
-            name: "image",
-            mimeType: "image",
-            size: "0.5kb",
-        },
-        {
-            id: 2,
-            name: "audio",
-            mimeType: "audio",
-            size: "0.5kb",
-        },
-        {
-            id: 3,
-            name: "video",
-            mimeType: "video",
-            size: "0.5kb",
-        },
-        {
-            id: 4,
-            name: "pdf",
-            mimeType: "pdf",
-            size: "0.5kb",
-        },
-        {
-            id: 5,
-            name: "archive.zip",
-            mimeType: "zip",
-            size: "0.5kb",
-        },
-        {
-            id: 6,
-            name: "excel",
-            mimeType: "excel",
-            size: "0.5kb",
-        },
-        {
-            id: 7,
-            name: "powerpoint",
-            mimeType: "powerpoint",
-            size: "0.5kb",
-        },
-        {
-            id: 8,
-            name: "word",
-            mimeType: "word",
-            size: "0.5kb",
-        },
-        {
-            id: 9,
-            name: "script",
-            mimeType: "script",
-            size: "0.5kb",
-        },
-        {
-            id: 10,
-            name: "text",
-            mimeType: "text",
-            size: "0.5kb",
-        },
-    ];
+    // const files = [
+    //     {
+    //         id: 1,
+    //         name: "image",
+    //         mimeType: "image",
+    //         size: "0.5kb",
+    //     },
+    //     {
+    //         id: 2,
+    //         name: "audio",
+    //         mimeType: "audio",
+    //         size: "0.5kb",
+    //     },
+    //     {
+    //         id: 3,
+    //         name: "video",
+    //         mimeType: "video",
+    //         size: "0.5kb",
+    //     },
+    //     {
+    //         id: 4,
+    //         name: "pdf",
+    //         mimeType: "pdf",
+    //         size: "0.5kb",
+    //     },
+    //     {
+    //         id: 5,
+    //         name: "archive.zip",
+    //         mimeType: "zip",
+    //         size: "0.5kb",
+    //     },
+    //     {
+    //         id: 6,
+    //         name: "excel",
+    //         mimeType: "excel",
+    //         size: "0.5kb",
+    //     },
+    //     {
+    //         id: 7,
+    //         name: "powerpoint",
+    //         mimeType: "powerpoint",
+    //         size: "0.5kb",
+    //     },
+    //     {
+    //         id: 8,
+    //         name: "word",
+    //         mimeType: "word",
+    //         size: "0.5kb",
+    //     },
+    //     {
+    //         id: 9,
+    //         name: "script",
+    //         mimeType: "script",
+    //         size: "0.5kb",
+    //     },
+    //     {
+    //         id: 10,
+    //         name: "text",
+    //         mimeType: "text",
+    //         size: "0.5kb",
+    //     },
+    // ];
 
     const scrollRef = document.querySelector(".app-content-body");
 
@@ -133,10 +133,11 @@ const FilesBody = (props) => {
                 {
                     filter === "" &&
                     <>
-                        <h6 className="font-size-11 text-uppercase mb-4">Showcase all available file icons - FPO -</h6>
+                        <h6 className="font-size-11 text-uppercase mb-4">All files</h6>
                         <div className="row">
                             {
-                                files.map(f => {
+                                wsFiles && 
+                                Object.values(wsFiles.files).map(f => {
                                     return (
                                         <FileListItem scrollRef={scrollRef} key={f.id}
                                                       className="col-xl-3 col-lg-4 col-md-6 col-sm-12" file={f}/>
@@ -144,13 +145,20 @@ const FilesBody = (props) => {
                                 })
                             }
                         </div>
-                        <PopularFiles search={search} scrollRef={scrollRef}/>
-                        <RecentEditedFile search={search} scrollRef={scrollRef}/>
+                        {
+                            wsFiles && wsFiles.popular_files.length > 0 &&
+                            <PopularFiles search={search} scrollRef={scrollRef} wsFiles={wsFiles}/>
+                        }
+                        {
+                            wsFiles && wsFiles.recently_edited.length > 0 &&
+                            <RecentEditedFile search={search} scrollRef={scrollRef} wsFiles={wsFiles}/>
+                        }
                     </>
                 }
                 {
                     filter === "recent" &&
-                    <RecentEditedFile search={search} scrollRef={scrollRef}/>
+                    wsFiles && wsFiles.recently_edited.length > 0 &&
+                    <RecentEditedFile search={search} scrollRef={scrollRef} wsFiles={wsFiles}/>
                 }
                 {
                     filter === "important" &&
