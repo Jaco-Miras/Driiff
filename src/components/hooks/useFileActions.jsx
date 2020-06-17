@@ -1,12 +1,12 @@
 import React, {useCallback} from "react";
 import {useDispatch} from "react-redux";
 import {
+    addFolder,
     getWorkspaceFiles,
     getWorkspaceFilesDetail,
+    getWorkspaceFolders,
     getWorkspacePopularFiles,
     getWorkspaceRecentlyEditedFiles,
-    addFolder,
-    getWorkspaceFolders,
 } from "../../redux/actions/fileActions";
 
 const useFileActions = () => {
@@ -14,7 +14,7 @@ const useFileActions = () => {
     const dispatch = useDispatch();
     const getFileIcon = (mimeType = "") => {
 
-        console.log(mimeType)
+        console.log(mimeType);
         if (mimeType.includes("image")) {
             return <i className="fa fa-file-image-o text-instagram"/>;
         } else if (mimeType.includes("audio")) {
@@ -39,37 +39,37 @@ const useFileActions = () => {
 
     const getFiles = useCallback((id, callback) => {
         dispatch(
-            getWorkspaceFiles({topic_id: id}, callback)
+            getWorkspaceFiles({topic_id: id}, callback),
         );
     }, [dispatch]);
 
     const getFilesDetail = useCallback((id, callback) => {
         dispatch(
-            getWorkspaceFilesDetail({topic_id: id})
+            getWorkspaceFilesDetail({topic_id: id}, callback),
         );
     }, [dispatch]);
 
     const getPopularFiles = useCallback((id, callback) => {
         dispatch(
-            getWorkspacePopularFiles({topic_id: id})
+            getWorkspacePopularFiles({topic_id: id}, callback),
         );
     }, [dispatch]);
 
     const getEditedFiles = useCallback((id, callback) => {
         dispatch(
-            getWorkspaceRecentlyEditedFiles({topic_id: id})
+            getWorkspaceRecentlyEditedFiles({topic_id: id}, callback),
         );
     }, [dispatch]);
 
     const createFolder = useCallback((payload, callback) => {
         dispatch(
-            addFolder(payload)
+            addFolder(payload, callback),
         );
     }, [dispatch]);
 
     const getFolders = useCallback((payload, callback) => {
         dispatch(
-            getWorkspaceFolders(payload)
+            getWorkspaceFolders(payload, callback),
         );
     }, [dispatch]);
 
