@@ -156,3 +156,36 @@ export function postFolder(payload) {
         data: payload,
     });
 }
+
+/**
+ * @param {Object} payload
+ * @param {number} payload.topic_id
+ * @param {string} payload.name
+ * @returns {Promise<*>}
+ */
+export function putFolder(payload) {
+    let url = `/v2/workspace-folders/${payload.id}`;
+    return apiCall({
+        method: "PUT",
+        url: url,
+        data: payload,
+    });
+}
+
+/**
+ * @param {Object} payload
+ * @param {number} payload.topic_id
+ * @param {number} payload.folder_id
+ * @returns {Promise<*>}
+ */
+export function uploadWorkspaceFiles(payload) {
+    let url = `/v2/workspace-bulk-files?topic_id=${payload.topic_id}&is_primary=0`;
+    if (payload.folder_id) {
+        url += `&folder_id=${payload.folder_id}`
+    }
+    return apiCall({
+        method: "POST",
+        url: url,
+        data: payload.files,
+    });
+}

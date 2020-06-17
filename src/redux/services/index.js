@@ -72,9 +72,11 @@ export {
     postWorkspaceFiles,
     patchWorkspaceFileViewed,
     postFolder,
+    putFolder,
     restoreWorkspaceFile,
     deleteWorkspaceFile,
     uploadWorkspaceFile,
+    uploadWorkspaceFiles,
 } from "./files";
 
 export {

@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import {ButtonDropdown, SvgIconFeather} from "../../common";
+import {replaceChar} from "../../../helpers/stringFormatter";
 
 const Wrapper = styled.div`
     overflow: inherit !important;
@@ -21,16 +22,19 @@ const Wrapper = styled.div`
 
 const FilesHeader = (props) => {
 
-    const {className = "", dropZoneRef, onSearchChange, wsFiles, handleAddEditFolder} = props;
-    
+    const {className = "", dropZoneRef, onSearchChange, wsFiles, handleAddEditFolder, folders, history} = props;
+
     const handleClickAdd = () => {
         if (dropZoneRef.current) {
             dropZoneRef.current.open();
         }
     };
 
-    const handleClickFolder = () => {
-        
+    const handleClickFolder = (e) => {
+        if (wsFiles.folders.hasOwnProperty(e.target.dataset.value)) {
+            let f = wsFiles.folders[e.target.dataset.value];
+            history.push(history.location.pathname+`/folder/${f.id}/${replaceChar(f.search)}`);
+        }
     };
 
     const handleClickOrderBy = () => {
@@ -54,8 +58,8 @@ const FilesHeader = (props) => {
 
     const folderDropDown = {
         label: "Folders",
-        items: wsFiles && Object.values(wsFiles.folders).length ? 
-            Object.values(wsFiles.folders).map(f => {
+        items: wsFiles && Object.values(folders).length ? 
+            Object.values(folders).map(f => {
                 return {
                     value: f.id,
                     label: f.search,

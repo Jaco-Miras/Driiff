@@ -11,7 +11,7 @@ const useFiles = () => {
     const activeTopic = useSelector(state => state.workspaces.activeTopic);
     const workspaceFiles = useSelector(state => state.files.workspaceFiles);
     const [fetchingFiles, setFetchingFiles] = useState(false);
-
+    
     useEffect(() => {
         if (!fetchingFiles && activeTopic && !workspaceFiles.hasOwnProperty(activeTopic.id)) {
             const cb = (err,res) => {
@@ -22,21 +22,59 @@ const useFiles = () => {
                 fileActions.getFolders({topic_id: activeTopic.id});
             };
             setFetchingFiles(true);
-            fileActions.getFiles(activeTopic.id, cb);
+            fileActions.getFiles({topic_id: activeTopic.id}, cb);   
         }
-    }, [fetchingFiles, activeTopic, workspaceFiles]);
+        if (!fetchingFiles && activeTopic && workspaceFiles.hasOwnProperty(activeTopic.id)) {
+            if (params.hasOwnProperty("fileFolderId") && 
+            workspaceFiles[activeTopic.id].folders.hasOwnProperty(params.fileFolderId) &&
+            !workspaceFiles[activeTopic.id].folders[params.fileFolderId].hasOwnProperty("loaded")) {
+                const cb = (err,res) => {
+                    setFetchingFiles(false);
+                };
+                setFetchingFiles(true);
+                
+                let payload = {
+                    topic_id: activeTopic.id,
+                    folder_id: parseInt(params.fileFolderId)
+                }
+                fileActions.getFiles(payload, cb)
+            }
+        }
+    }, [fetchingFiles, activeTopic, workspaceFiles, params]);
 
     if (Object.values(workspaceFiles).length && workspaceFiles.hasOwnProperty(params.workspaceId)) {
-        return {
-            wsFiles: workspaceFiles[activeTopic.id],
-            actions: fileActions,
-            topic: activeTopic
-        };
+        if (params.hasOwnProperty("fileFolderId") && 
+        workspaceFiles[activeTopic.id].folders.hasOwnProperty(params.fileFolderId) &&
+        workspaceFiles[activeTopic.id].folders[params.fileFolderId].hasOwnProperty('files')) {
+            return {
+                params,
+                wsFiles: workspaceFiles[activeTopic.id],
+                actions: fileActions,
+                topic: activeTopic,
+                fileIds: Object.values(workspaceFiles[activeTopic.id].folders[params.fileFolderId].files),
+                folders: Object.values(workspaceFiles[activeTopic.id].folders).filter(f => f.parent_folder == params.fileFolderId),
+                folder:  workspaceFiles[activeTopic.id].folders[params.fileFolderId]
+            };
+        } else {
+            return {
+                params,
+                wsFiles: workspaceFiles[activeTopic.id],
+                actions: fileActions,
+                topic: activeTopic,
+                fileIds: Object.values(workspaceFiles[activeTopic.id].files).map(f => f.id),
+                folders: workspaceFiles[activeTopic.id].folders,
+                folder: null
+            };
+        }
     } else {
         return {
+            params,
             wsFiles: null,
             actions: fileActions,
-            topic: activeTopic
+            topic: activeTopic,
+            fileIds: [],
+            folders: {},
+            folder: null
         }
     }
 

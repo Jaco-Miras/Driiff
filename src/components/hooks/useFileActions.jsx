@@ -2,11 +2,13 @@ import React, {useCallback} from "react";
 import {useDispatch} from "react-redux";
 import {
     addFolder,
-    getWorkspaceFiles,
+    getWorkspaceFiles, 
     getWorkspaceFilesDetail,
     getWorkspaceFolders,
     getWorkspacePopularFiles,
-    getWorkspaceRecentlyEditedFiles,
+    getWorkspaceRecentlyEditedFiles, 
+    putFolder,
+    uploadWorkspaceFiles
 } from "../../redux/actions/fileActions";
 
 const useFileActions = () => {
@@ -37,9 +39,9 @@ const useFileActions = () => {
             return <i className="fa fa-file-text-o text-warning"/>;
     };
 
-    const getFiles = useCallback((id, callback) => {
+    const getFiles = useCallback((payload, callback) => {
         dispatch(
-            getWorkspaceFiles({topic_id: id}, callback),
+            getWorkspaceFiles(payload, callback)
         );
     }, [dispatch]);
 
@@ -73,6 +75,18 @@ const useFileActions = () => {
         );
     }, [dispatch]);
 
+    const updateFolder = useCallback((payload, callback) => {
+        dispatch(
+            putFolder(payload, callback)
+        );
+    }, [dispatch]);
+
+    const uploadFiles = useCallback((payload, callback) => {
+        dispatch(
+            uploadWorkspaceFiles(payload)
+        );
+    }, [dispatch]);
+
     return {
         createFolder,
         getFileIcon,
@@ -81,6 +95,8 @@ const useFileActions = () => {
         getFolders,
         getPopularFiles,
         getEditedFiles,
+        updateFolder,
+        uploadFiles
     };
 };
 

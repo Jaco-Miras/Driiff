@@ -13,9 +13,11 @@ import {
     getWorkspaceTrashFiles as getWorkspaceTrashFilesService,
     patchWorkspaceFileViewed as patchWorkspaceFileViewedService,
     postFolder as postFolderService,
+    putFolder as putFolderService,
     postWorkspaceFiles as postWorkspaceFilesService,
     restoreWorkspaceFile as restoreWorkspaceFileService,
     uploadWorkspaceFile as uploadWorkspaceFileService,
+    uploadWorkspaceFiles as uploadWorkspaceFilesService,
 } from "../services";
 
 export function getFiles(payload, callback) {
@@ -214,6 +216,34 @@ export function addFolder(payload, callback) {
         "ADD_FOLDER_START",
         "ADD_FOLDER_SUCCESS",
         "ADD_FOLDER_FAIL",
+        callback,
+    );
+}
+
+export function putFolder(payload, callback) {
+    return dispatchActionToReducer(
+        putFolderService(payload),
+        "UPDATE_FOLDER_START",
+        "UPDATE_FOLDER_SUCCESS",
+        "UPDATE_FOLDER_FAIL",
+        callback,
+    );
+}
+
+export function uploadWorkspaceFiles(payload, callback) {
+    return dispatchActionToReducer(
+        uploadWorkspaceFilesService(payload),
+        "UPLOAD_WORKSPACE_FILES_START",
+        "UPLOAD_WORKSPACE_FILES_SUCCESS",
+        "UPLOAD_WORKSPACE_FILES_FAIL",
+        callback,
+    );
+}
+
+export function incomingFolder(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "INCOMING_FOLDER",
+        payload,
         callback,
     );
 }

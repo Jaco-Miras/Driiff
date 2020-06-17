@@ -68,7 +68,9 @@ const FileSidebar = (props) => {
                             <span className="small ml-auto">{wsFiles && wsFiles.trash > 0 ? wsFiles.trash : null}</span>
                         </Filter>
                     </div>
-                    <div className="card-body">
+                    
+                    {/* //revisit this
+                        <div className="card-body">
                         <h6 className="mb-4">Storage Status</h6>
                         <div className="d-flex align-items-center">
                             <div className="mr-3">
@@ -81,7 +83,7 @@ const FileSidebar = (props) => {
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> */}
                 </div>
             </div>
         </Wrapper>

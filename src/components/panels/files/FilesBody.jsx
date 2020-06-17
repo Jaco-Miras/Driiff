@@ -31,7 +31,8 @@ const MoreButton = styled(MoreOptions)`
 
 const FilesBody = (props) => {
 
-    const {className = "", dropZoneRef, filter, search, wsFiles, handleAddEditFolder} = props;
+    const {className = "", dropZoneRef, filter, search, wsFiles, 
+            handleAddEditFolder, actions, params, folder, fileIds } = props;
 
     const scrollRef = document.querySelector(".app-content-body");
 
@@ -45,9 +46,23 @@ const FilesBody = (props) => {
         setShowDropZone(true);
     };
 
-    const dropAction = (files) => {
-        console.log(files);
+    const dropAction = (attachedFiles) => {
+        console.log(attachedFiles);
         setShowDropZone(false);
+        
+        let formData = new FormData();
+        for (const i in attachedFiles) {
+            formData.append("files[" + i + "]", attachedFiles[i]);
+        }
+
+        let payload = {
+            is_primary: 0,
+            topic_id: params.workspaceId,
+            files: formData,
+            folder_id: params.fileFolderId
+        }
+
+        actions.uploadFiles(payload);
     };
 
     const handleRemoveFolder = () => {
@@ -55,7 +70,7 @@ const FilesBody = (props) => {
     };
 
     const handleEditFolder = () => {
-        handleAddEditFolder("update", "test")
+        handleAddEditFolder("update")
     };
 
     return (
@@ -82,20 +97,20 @@ const FilesBody = (props) => {
                         <div className="row">
                             {
                                 wsFiles && 
-                                Object.values(wsFiles.files).map(f => {
+                                fileIds.map(f => {
                                     return (
                                         <FileListItem scrollRef={scrollRef} key={f.id}
-                                                      className="col-xl-3 col-lg-4 col-md-6 col-sm-12" file={f}/>
+                                                      className="col-xl-3 col-lg-4 col-md-6 col-sm-12" file={wsFiles.files[f]}/>
                                     );
                                 })
                             }
                         </div>
                         {
-                            wsFiles && wsFiles.popular_files.length > 0 &&
+                            wsFiles && wsFiles.popular_files.length > 0 && folder === null &&
                             <PopularFiles search={search} scrollRef={scrollRef} wsFiles={wsFiles}/>
                         }
                         {
-                            wsFiles && wsFiles.recently_edited.length > 0 &&
+                            wsFiles && wsFiles.recently_edited.length > 0 && folder === null &&
                             <RecentEditedFile search={search} scrollRef={scrollRef} wsFiles={wsFiles}/>
                         }
                     </>
