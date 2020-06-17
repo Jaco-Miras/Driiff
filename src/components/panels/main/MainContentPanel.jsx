@@ -37,6 +37,8 @@ const MainContentPanel = (props) => {
                     {...props}
                     component={WorkspacePageHeaderPanel}
                     path={[
+                        "/workspace/:page/:folderId/:folderName/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName",
+                        "/workspace/:page/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName",
                         "/workspace/:page/:folderId/:folderName/:workspaceId/:workspaceName/post/:postId/:postTitle",
                         "/workspace/:page/:folderId/:folderName/:workspaceId/:workspaceName",
                         "/workspace/:page/:workspaceId/:workspaceName/post/:postId/:postTitle",
@@ -104,9 +106,12 @@ const MainContentPanel = (props) => {
                         "/workspace/chat",
                     ]}/>
                 <Route
+                    exact={true}
                     {...props}
                     component={WorkspaceFilesPanel}
                     path={[
+                        "/workspace/files/:folderId/:folderName/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName",
+                        "/workspace/files/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName",
                         "/workspace/files/:folderId/:folderName/:workspaceId/:workspaceName",
                         "/workspace/files/:workspaceId/:workspaceName",
                         "/workspace/files",

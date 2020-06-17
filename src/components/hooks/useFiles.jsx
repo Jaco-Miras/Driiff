@@ -11,7 +11,7 @@ const useFiles = () => {
     const activeTopic = useSelector(state => state.workspaces.activeTopic);
     const workspaceFiles = useSelector(state => state.files.workspaceFiles);
     const [fetchingFiles, setFetchingFiles] = useState(false);
-
+    
     useEffect(() => {
         if (!fetchingFiles && activeTopic && !workspaceFiles.hasOwnProperty(activeTopic.id)) {
             const cb = (err,res) => {
@@ -27,16 +27,30 @@ const useFiles = () => {
     }, [fetchingFiles, activeTopic, workspaceFiles]);
 
     if (Object.values(workspaceFiles).length && workspaceFiles.hasOwnProperty(params.workspaceId)) {
-        return {
-            wsFiles: workspaceFiles[activeTopic.id],
-            actions: fileActions,
-            topic: activeTopic
-        };
+        if (params.hasOwnProperty("fileFolderId")) {
+            return {
+                params,
+                wsFiles: workspaceFiles[activeTopic.id],
+                actions: fileActions,
+                topic: activeTopic,
+                folders: Object.values(workspaceFiles[activeTopic.id].folders).filter(f => f.parent_folder == params.fileFolderId)
+            };
+        } else {
+            return {
+                params,
+                wsFiles: workspaceFiles[activeTopic.id],
+                actions: fileActions,
+                topic: activeTopic,
+                folders: workspaceFiles[activeTopic.id].folders
+            };
+        }
     } else {
         return {
+            params,
             wsFiles: null,
             actions: fileActions,
-            topic: activeTopic
+            topic: activeTopic,
+            folders: {},
         }
     }
     

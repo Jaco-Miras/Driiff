@@ -19,9 +19,9 @@ const WorkspaceFilesPanel = (props) => {
 
     const dispatch = useDispatch();
     const {_t} = useTranslation();
-    const {wsFiles, actions, topic} = useFiles();
+    const {params, wsFiles, actions, topic, folders} = useFiles();
 
-    console.log(wsFiles)
+    console.log(folders)
 
     const [filter, setFilter] = useState("");
     const [search, setSearch] = useState("");
@@ -58,10 +58,11 @@ const WorkspaceFilesPanel = (props) => {
 
     const handleUpdateFolder = () => {
         if (topic) {
-            // actions.createFolder({
-            //     topic_id: topic.id,
-            //     name: folderName.current
-            // })
+            actions.updateFolder({
+                id: params.fileFolderId,
+                topic_id: topic.id,
+                name: folderName.current
+            })
         }
     };
 
@@ -73,7 +74,7 @@ const WorkspaceFilesPanel = (props) => {
         folderName.current = e.target.value.trim();
     };
 
-    const handleAddEditFolder = (mode = "add", name = "") => {
+    const handleAddEditFolder = (mode = "add") => {
         let payload = {
             type: "single_input",
             defaultValue: "",
@@ -88,10 +89,10 @@ const WorkspaceFilesPanel = (props) => {
                 onPrimaryAction: handleCreateFolder,
             };
         } else {
-            folderName.current = name;
+            folderName.current = params.fileFolderName;
             payload = {
                 ...payload,
-                defaultValue: name,
+                defaultValue: params.fileFolderName,
                 title: dictionary.updateFolder,
                 labelPrimaryAction: dictionary.update,
                 onPrimaryAction: handleUpdateFolder,
@@ -111,7 +112,7 @@ const WorkspaceFilesPanel = (props) => {
                 <div className="col-md-9 app-content">
                     <div className="app-content-overlay"/>
                     <FilesHeader dropZoneRef={refs.dropZone} onSearchChange={handleSearchChange} 
-                        wsFiles={wsFiles} handleAddEditFolder={handleAddEditFolder}/>
+                        wsFiles={wsFiles} handleAddEditFolder={handleAddEditFolder} folders={folders}/>
                     <FilesBody dropZoneRef={refs.dropZone} filter={filter} search={search} wsFiles={wsFiles} handleAddEditFolder={handleAddEditFolder}/>
                 </div>
             </div>

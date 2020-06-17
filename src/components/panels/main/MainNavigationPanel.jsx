@@ -23,6 +23,8 @@ const MainNavigationPanel = (props) => {
                 {...props}
                 component={WorkspaceNavigationMenuBodyPanel}
                 path={[
+                    "/workspace/:page/:folderId/:folderName/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName",
+                    "/workspace/:page/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName",
                     "/workspace/:page/:folderId/:folderName/:workspaceId/:workspaceName/post/:postId/:postTitle",
                     "/workspace/:page/:folderId/:folderName/:workspaceId/:workspaceName",
                     "/workspace/:page/:workspaceId/:workspaceName/post/:postId/:postTitle",

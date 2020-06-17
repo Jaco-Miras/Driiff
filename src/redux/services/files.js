@@ -156,3 +156,18 @@ export function postFolder(payload) {
         data: payload,
     });
 }
+
+/**
+ * @param {Object} payload
+ * @param {number} payload.topic_id
+ * @param {string} payload.name
+ * @returns {Promise<*>}
+ */
+export function putFolder(payload) {
+    let url = `/v2/workspace-folders/${payload.id}`;
+    return apiCall({
+        method: "PUT",
+        url: url,
+        data: payload,
+    });
+}

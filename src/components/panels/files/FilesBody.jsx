@@ -55,7 +55,7 @@ const FilesBody = (props) => {
     };
 
     const handleEditFolder = () => {
-        handleAddEditFolder("update", "test")
+        handleAddEditFolder("update")
     };
 
     return (
