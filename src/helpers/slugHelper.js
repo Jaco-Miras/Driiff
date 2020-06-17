@@ -4,85 +4,6 @@ import {driffData} from "../config/environment";
 import {apiCall} from "../redux/services";
 import {isIPAddress} from "./commonFunctions";
 
-
-export const redirectInvalidSlugName = async () => {
-    const {REACT_APP_localDNSName} = process.env;
-    let slugName = getSlugName();
-
-    if (isIPAddress(slugName) || window.location.hostname === "localhost") {
-        return false;
-    } else if (window.location.hostname !== REACT_APP_localDNSName) {
-        return await isSlugName(slugName).then((data) => {
-            if (data.status) {
-                localStorage.setItem("slug", slugName);
-                return false;
-            } else {
-                localStorage.setItem("slug", "");
-                setTimeout(() => {
-                    window.location.href = `${getBaseUrl({noSlug: true})}`;
-                }, 5000);
-                return true;
-            }
-        });
-    } else {
-        return false;
-    }
-};
-
-/**
- *
- * @param {Object} data
- * @param {string} data.title
- * @param {number|boolean} data.count
- */
-export const setDocumentTitle = (data = {}) => {
-    const {title = "", count = 0} = data;
-
-    if (title) {
-        if (count > 0) {
-            document.title = `(${count}) ${title}`;
-        } else {
-            document.title = title;
-        }
-        return;
-    }
-
-    let newLocationArr = window.location.pathname.split("/");
-    let pageName = newLocationArr[1].charAt(0).toUpperCase() + newLocationArr[1].slice(1);
-    if (!pageName) {
-        pageName = "Home";
-    }
-
-    let subPageName = "";
-    if (newLocationArr[2]) {
-        subPageName = newLocationArr[2].charAt(0).toUpperCase() + newLocationArr[2].slice(1);
-    }
-
-    let slugName = getSlugName();
-    let formattedSlugName = slugName.charAt(0).toUpperCase() + slugName.slice(1);
-
-    let documentTitle = "";
-    switch (newLocationArr.length) {
-        case 2: {
-            documentTitle = `${formattedSlugName}: ${pageName}`;
-            break;
-        }
-        case newLocationArr > 1: {
-            documentTitle = `${formattedSlugName}: ${pageName} - ${subPageName}`;
-            break;
-        }
-        default: {
-            documentTitle = formattedSlugName;
-        }
-    }
-
-    if (count > 0) {
-        document.title = `(${count}) ${documentTitle}`;
-    } else {
-        document.title = `${documentTitle}`;
-    }
-};
-
 export const updateFaviconState = (isActive = false) => {
     let link = document.querySelectorAll("link[rel*='icon']");
     let driffUrl = getCurrentDriffUrl();
@@ -187,7 +108,7 @@ export const updateFaviconState = (isActive = false) => {
 
 export const getCurrentDriffUrl = () => {
     const {REACT_APP_ENV, REACT_APP_localDNSName} = process.env;
-    const slugName = getSlugName();
+    const slugName = getDriffName();
     let url = window.location.protocol;
     let port = (window.location.port && window.location.port !== 80) ? `:${window.location.port}` : "";
 
@@ -215,7 +136,7 @@ export const imgAsLogin = () => {
 };
 
 export const getAPIUrl = (data = {}) => {
-    const driffName = getSlugName();
+    const driffName = getDriffName();
     const {REACT_APP_ENV, REACT_APP_apiProtocol, REACT_APP_apiBaseUrl, REACT_APP_apiDNSName, REACT_APP_mockServerBaseUrl} = process.env;
 
     switch (REACT_APP_ENV) {
@@ -226,13 +147,6 @@ export const getAPIUrl = (data = {}) => {
                 return `${REACT_APP_apiProtocol}${REACT_APP_apiBaseUrl}`;
             }
         case "development":
-            if (typeof data.isDNS !== "undefined" && data.isDNS === true) {
-                return `${REACT_APP_apiProtocol}${REACT_APP_apiDNSName}`;
-            } else if (data.is_shared && data.token) {
-                return `${REACT_APP_apiProtocol}${data.slug}.${REACT_APP_apiBaseUrl}`;
-            } else {
-                return `${REACT_APP_apiProtocol}${REACT_APP_apiBaseUrl}`;
-            }
         case "production":
             let url = REACT_APP_apiProtocol;
 
@@ -256,16 +170,22 @@ export const getAPIUrl = (data = {}) => {
 };
 
 export const getBaseUrl = (data = {}) => {
-    const driffName = getSlugName();
+    const driffName = getDriffName();
     const {REACT_APP_ENV, REACT_APP_localDNSProtocol, REACT_APP_localDNSName} = process.env;
+    let url = REACT_APP_localDNSProtocol;
 
     switch (REACT_APP_ENV) {
         case "local":
             return `${REACT_APP_localDNSProtocol}${REACT_APP_localDNSName}`;
         case "development":
-            return `${REACT_APP_localDNSProtocol}${REACT_APP_localDNSName}`;
+            if (typeof data.noSlug === "undefined" || data.noSlug !== true) {
+                url += `${driffName}.`;
+            }
+
+            url += REACT_APP_localDNSName;
+
+            return url;
         case "production":
-            let url = REACT_APP_localDNSProtocol;
             if (typeof data.noSlug === "undefined" || data.noSlug !== true) {
                 url += `${driffName}.`;
             }
@@ -276,13 +196,6 @@ export const getBaseUrl = (data = {}) => {
         default:
             return;
     }
-};
-
-export const getSocketUrl = (data = {}) => {
-    const slugName = getSlugName();
-    const {REACT_APP_socketDNSProtocol, REACT_APP_socketDNSName} = process.env;
-
-    return `${REACT_APP_socketDNSProtocol}${slugName}.${REACT_APP_socketDNSName}`;
 };
 
 export const isLoggedALlowed = () => {
@@ -357,7 +270,7 @@ export const getTranslationAPIUrl = () => {
     const {REACT_APP_translation_api_base_url} = process.env;
 
     let url = "";
-    if(typeof REACT_APP_translation_api_base_url !== "undefined") {
+    if (typeof REACT_APP_translation_api_base_url !== "undefined") {
         url = REACT_APP_translation_api_base_url;
     }
 
@@ -367,4 +280,4 @@ export const getTranslationAPIUrl = () => {
      */
 
     return url;
-}
+};

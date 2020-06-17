@@ -6,25 +6,45 @@ import {DriffRegisterPanel, PreLoader, RedirectPanel} from "./components/panels"
 import {AppRoute} from "./layout/routes";
 
 function App() {
-    let vh = window.innerHeight * 0.01;
-    document.documentElement.style.setProperty('--vh', `${vh}px`);
 
-    window.addEventListener('resize', () => {
-        vh = window.innerHeight * 0.01;
-        document.documentElement.style.setProperty('--vh', `${vh}px`);
-    });
+    const {setDriff, checkDriffName, redirected, registeredDriff, getRedirect} = useDriff();
 
-    useTranslation();
-    useSettings();
+    useEffect(() => {
+        const handleResize = () => {
+            let vh = window.innerHeight * 0.01;
+            document.documentElement.style.setProperty("--vh", `${vh}px`);
+        };
+
+        handleResize();
+        window.addEventListener("resize", handleResize);
+
+        return () => {
+            window.removeEventListener("resize", handleResize);
+        };
+    }, []);
+
+    if (redirected === null) {
+        return <></>;
+    }
 
     return (
         <div className="App">
-            <PreLoader/>
-            <Switch>
-                <ScrollToTop>
-                    <AppRoute path="*"/>
-                </ScrollToTop>
-            </Switch>
+            {
+                redirected === true ?
+                <RedirectPanel redirect={getRedirect}/>
+                                    :
+                registeredDriff === null ?
+                <DriffRegisterPanel setDriff={setDriff} checkDriffName={checkDriffName}/>
+                                         :
+                <>
+                    <PreLoader/>
+                    <Switch>
+                        <ScrollToTop>
+                            <AppRoute path="*"/>
+                        </ScrollToTop>
+                    </Switch>
+                </>
+            }
         </div>
     );
 }

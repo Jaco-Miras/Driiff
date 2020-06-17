@@ -2,10 +2,10 @@ import React, {useState} from "react";
 import {useDispatch} from "react-redux";
 import {Link} from "react-router-dom";
 import styled from "styled-components";
-import {getSlugName} from "../../helpers/slugHelper";
 import {EmailRegex} from "../../helpers/stringFormatter";
 import {toggleLoading} from "../../redux/actions/globalActions";
 import {checkDriffUserEmail, resetPassword} from "../../redux/actions/userAction";
+import {getDriffName} from "../hooks/useDriff";
 
 const Wrapper = styled.form`
     ${props => props.error !== "" &&
@@ -70,7 +70,7 @@ const ResetPasswordPanel = () => {
             /* @todo: backend not working */
             dispatch(
                 checkDriffUserEmail({
-                    driff: getSlugName(),
+                    driff: getDriffName(),
                     email: form.email,
                 }, (err, res) => {
                     console.log(err);

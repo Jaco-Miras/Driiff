@@ -204,7 +204,7 @@ const LoginPanel = (props) => {
 
         dispatch(
             userGoogleLogin({
-                driff: getSlugName(),
+                driff: getDriffName(),
             }, (err, res) => {
                 if (err) {
                     console.log(err);
