@@ -1,17 +1,18 @@
 import React, {useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {Route} from "react-router-dom";
+import {Route, Switch} from "react-router-dom";
 import styled from "styled-components";
-import {useUserLogout, useVisibilityChange, useSocketConnection} from "../components/hooks";
+import {useSocketConnection, useUserLogout, useVisibilityChange} from "../components/hooks";
 import useFilesUpload from "../components/hooks/useFilesUpload";
 import {ModalPanel} from "../components/panels";
-import MobileOverlay from "../components/panels/MobileOverlay";
 import {MainContentPanel, MainHeaderPanel, MainNavigationPanel} from "../components/panels/main";
+import MobileOverlay from "../components/panels/MobileOverlay";
+import {WorkspaceContentPanel} from "../components/panels/workspace";
+import SocketListeners from "../components/socket/socketListeners";
 //import Socket from "../components/socket/socket";
 import {getFiles} from "../redux/actions/fileActions";
 import {getAllRecipients, getConnectedSlugs} from "../redux/actions/globalActions";
 import {getMentions} from "../redux/actions/userAction";
-import SocketListeners from "../components/socket/socketListeners";
 
 const MainContent = styled.div`
 `;
@@ -49,17 +50,23 @@ const MainLayout = (props) => {
                     {...props}
                     component={MainNavigationPanel}
                     path={["/:page"]}/>
-                <Route
-                    {...props}
-                    component={MainContentPanel}
-                    path={["/:page"]}/>
+                <Switch>
+                    <Route
+                        {...props}
+                        component={WorkspaceContentPanel}
+                        path={["/workspace"]}/>
+                    <Route
+                        {...props}
+                        component={MainContentPanel}
+                        path={["/:page"]}/>
+                </Switch>
             </MainContent>
             <ModalPanel/>
             <MobileOverlay/>
             {/* {
-                user.id !== undefined &&
-                <Socket/>
-            } */}
+             user.id !== undefined &&
+             <Socket/>
+             } */}
             {
                 user.id !== undefined && window.Echo !== undefined &&
                 <SocketListeners/>

@@ -1,9 +1,14 @@
 import React, {useEffect} from "react";
 import {Switch} from "react-router-dom";
 import ScrollToTop from "react-router-scroll-top";
+import styled from "styled-components";
 import {useDriff} from "./components/hooks";
 import {DriffRegisterPanel, PreLoader, RedirectPanel} from "./components/panels";
 import {AppRoute} from "./layout/routes";
+
+const Wrapper = styled.div`
+    min-height: 100%;
+`;
 
 function App() {
 
@@ -28,7 +33,7 @@ function App() {
     }
 
     return (
-        <div className="App">
+        <Wrapper className="App">
             {
                 redirected === true ?
                 <RedirectPanel redirect={getRedirect}/>
@@ -45,7 +50,7 @@ function App() {
                     </Switch>
                 </>
             }
-        </div>
+        </Wrapper>
     );
 }
 
