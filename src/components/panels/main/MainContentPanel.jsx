@@ -22,7 +22,7 @@ import {
 import {MainFooterPanel} from "./index";
 
 const Wrapper = styled.div`
-    padding-bottom: ${props => props.isOnWorkspace ? "calc(1.875rem * 4)!important" : "calc(1.875rem * 2)"};
+    padding-bottom: ${props => props.isOnWorkspace ? "0 !important" : "calc(1.875rem * 2)"};
 `;
 
 const MainContentPanel = (props) => {

@@ -24,7 +24,6 @@ const Wrapper = styled.div`
 const ArchivedDiv = styled.div`
     width: 100%;
     text-align: center;
-    background: #f1f2f7;
     padding: 15px 10px;
     h4 {
         margin: 0;

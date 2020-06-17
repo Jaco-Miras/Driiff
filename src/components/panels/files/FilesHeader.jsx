@@ -9,6 +9,7 @@ const Wrapper = styled.div`
     .action-left {
         ul {
             margin-bottom: 0;
+            display: inherit;
             
             li {
                 position: relative;

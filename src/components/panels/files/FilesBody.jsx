@@ -32,7 +32,7 @@ const MoreButton = styled(MoreOptions)`
 const FilesBody = (props) => {
 
     const {className = "", dropZoneRef, filter, search, wsFiles, 
-            handleAddEditFolder, actions, params, folder, fileIds } = props;
+            handleAddEditFolder, actions, params, folder, fileIds, history } = props;
 
     const scrollRef = document.querySelector(".app-content-body");
 
@@ -59,14 +59,26 @@ const FilesBody = (props) => {
             is_primary: 0,
             topic_id: params.workspaceId,
             files: formData,
-            folder_id: params.fileFolderId
+        }
+        if (params.fileFolderId) {
+            payload = {
+                ...payload,
+                folder_id: params.fileFolderId
+            }
         }
 
         actions.uploadFiles(payload);
     };
 
     const handleRemoveFolder = () => {
-        
+        if (folder) {
+            let cb = (err,res) => {
+                if (err) return;
+                let pathname = history.location.pathname.split("/folder/")[0]
+                history.push(pathname);
+            }
+            actions.removeFolder(folder, params.workspaceId, cb);
+        }
     };
 
     const handleEditFolder = () => {
@@ -85,11 +97,13 @@ const FilesBody = (props) => {
                 onCancel={handleHideDropZone}
             />
             <div className="card-body">
-                <MoreButton moreButton="settings">
-                    <div onClick={handleEditFolder}>Edit folder</div>
-                    <div onClick={handleRemoveFolder}>Remove folder</div>
-                </MoreButton>
-
+                {
+                    folder &&
+                    <MoreButton moreButton="settings">
+                        <div onClick={handleEditFolder}>Edit folder</div>
+                        <div onClick={handleRemoveFolder}>Remove folder</div>
+                    </MoreButton>
+                }
                 {
                     filter === "" &&
                     <>
@@ -99,7 +113,7 @@ const FilesBody = (props) => {
                                 wsFiles && 
                                 fileIds.map(f => {
                                     return (
-                                        <FileListItem scrollRef={scrollRef} key={f.id}
+                                        <FileListItem scrollRef={scrollRef} key={f.id} actions={actions}
                                                       className="col-xl-3 col-lg-4 col-md-6 col-sm-12" file={wsFiles.files[f]}/>
                                     );
                                 })
@@ -107,26 +121,27 @@ const FilesBody = (props) => {
                         </div>
                         {
                             wsFiles && wsFiles.popular_files.length > 0 && folder === null &&
-                            <PopularFiles search={search} scrollRef={scrollRef} wsFiles={wsFiles}/>
+                            <PopularFiles search={search} scrollRef={scrollRef} wsFiles={wsFiles} actions={actions}/>
                         }
                         {
                             wsFiles && wsFiles.recently_edited.length > 0 && folder === null &&
-                            <RecentEditedFile search={search} scrollRef={scrollRef} wsFiles={wsFiles}/>
+                            <RecentEditedFile search={search} scrollRef={scrollRef} wsFiles={wsFiles} actions={actions}/>
                         }
                     </>
                 }
                 {
                     filter === "recent" &&
                     wsFiles && wsFiles.recently_edited.length > 0 &&
-                    <RecentEditedFile search={search} scrollRef={scrollRef} wsFiles={wsFiles}/>
+                    <RecentEditedFile search={search} scrollRef={scrollRef} wsFiles={wsFiles} actions={actions}/>
                 }
                 {
-                    filter === "important" &&
-                    <ImportantFiles search={search} scrollRef={scrollRef}/>
+                    filter === "important" && 
+                    wsFiles && wsFiles.favorite_files && wsFiles.favorite_files.length > 0 &&
+                    <ImportantFiles search={search} scrollRef={scrollRef} wsFiles={wsFiles} actions={actions}/>
                 }
                 {
                     filter === "removed" &&
-                    <RemoveFiles search={search} scrollRef={scrollRef}/>
+                    <RemoveFiles search={search} scrollRef={scrollRef} actions={actions}/>
                 }
             </div>
         </Wrapper>

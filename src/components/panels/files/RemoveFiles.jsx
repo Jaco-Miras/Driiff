@@ -7,7 +7,7 @@ const Wrapper = styled.div`
 
 const RemoveFiles = (props) => {
 
-    const {className = ""} = props;
+    const {className = "", actions} = props;
 
     const files = [{
         id: 1,
@@ -28,7 +28,7 @@ const RemoveFiles = (props) => {
                 {
                     files.map(f => {
                         return (
-                            <FileListItem key={f.id} className="col-xl-3 col-lg-4 col-md-6 col-sm-12" file={f}/>
+                            <FileListItem key={f.id} className="col-xl-3 col-lg-4 col-md-6 col-sm-12" file={f} actions={actions}/>
                         );
                     })
                 }

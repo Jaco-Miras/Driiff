@@ -50,7 +50,7 @@ export function getWorkspaceTrashFiles(payload) {
 export function getWorkspaceFavoriteFiles(payload) {
     return apiCall({
         method: "GET",
-        url: `/v2/workspace-files-favorite?${objToUrlParams(payload)}`,
+        url: `/v2/workspace-favorite-files?${objToUrlParams(payload)}`,
     });
 }
 
@@ -187,5 +187,67 @@ export function uploadWorkspaceFiles(payload) {
         method: "POST",
         url: url,
         data: payload.files,
+    });
+}
+
+/**
+ * @param {Object} payload
+ * @param {number} payload.topic_id
+ * @param {string} payload.id
+ * @returns {Promise<*>}
+ */
+export function deleteFolder(payload) {
+    let url = `/v2/workspace-folders/${payload.id}`;
+    return apiCall({
+        method: "DELETE",
+        url: url,
+        data: payload,
+    });
+}
+
+/**
+ * @param {Object} payload
+ * @param {number} payload.type_id
+ * @param {string} payload.type
+ * @returns {Promise<*>}
+ */
+export function postFavorite(payload) {
+    let url = `/v1/favourites`;
+    return apiCall({
+        method: "POST",
+        url: url,
+        data: payload,
+    });
+}
+
+/**
+ * @param {Object} payload
+ * @param {number} payload.link_id
+ * @param {number} payload.file_id
+ * @param {string} payload.link_type
+ * @returns {Promise<*>}
+ */
+export function deleteFile(payload) {
+    let url = `/v2/workspace-delete-file`;
+    return apiCall({
+        method: "DELETE",
+        url: url,
+        data: payload,
+    });
+}
+
+/**
+ * @param {Object} payload
+ * @param {number} payload.id
+ * @param {number} payload.topic_id
+ * @param {string} payload.name
+ * @returns {Promise<*>}
+ */
+export function putFile(payload) {
+    let url = `/v2/workspace-files/${payload.id}`;
+    return apiCall({
+        method: "PUT",
+        url: url,
+        data: payload,
     });
 }

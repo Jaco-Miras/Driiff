@@ -3,16 +3,16 @@ import {useDispatch} from "react-redux";
 import {Link} from "react-router-dom";
 import styled from "styled-components";
 import {$_GET, getThisDeviceInfo} from "../../helpers/commonFunctions";
+import {getSlugName} from "../../helpers/slugHelper";
 import {EmailRegex} from "../../helpers/stringFormatter";
 import {toggleLoading} from "../../redux/actions/globalActions";
 import {userGoogleLogin, userLogin} from "../../redux/actions/userAction";
 import {CheckBox} from "../forms";
 import {processBackendLogin, storeLoginToken} from "../hooks";
-import {getDriffName} from "../hooks/useDriff";
 
 const Wrapper = styled.form`
     ${props => props.error !== "" &&
-    `&:before {        
+    `&:before {
         content: "${props.error}";
         display: block;
         color: red;
@@ -21,9 +21,9 @@ const Wrapper = styled.form`
         margin-left: 0;
         margin-bottom: 0.5rem;
     }`}
-    
+
     ${props => props.success !== "" &&
-    `&:before {        
+    `&:before {
         content: "${props.success}";
         display: block;
         color: #59a869;
@@ -31,12 +31,12 @@ const Wrapper = styled.form`
         text-align: left;
         margin-left: 0;
         margin-bottom: 0.5rem;
-    }`}    
+    }`}
 `;
 
 const FormGroup = styled.div`
     ${props => props.error !== "" &&
-    `&:after {        
+    `&:after {
         content: "${props.error}";
         display: block;
         color: red;

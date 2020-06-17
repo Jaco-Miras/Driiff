@@ -17,9 +17,9 @@ export const AppRoute = ({children, ...props}) => {
     const i18nLoaded = useSelector(state => state.global.i18nLoaded);
     const authenticated = session.authenticated;
 
-    //if (!session.checked || !i18nLoaded || push.loading)
+    // if (!session.checked || !i18nLoaded || push.loading)
     if (!session.checked || !i18nLoaded)
-        return null;
+    return null;
 
     return (
         authenticated ?
