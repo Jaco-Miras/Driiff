@@ -189,3 +189,18 @@ export function uploadWorkspaceFiles(payload) {
         data: payload.files,
     });
 }
+
+/**
+ * @param {Object} payload
+ * @param {number} payload.topic_id
+ * @param {string} payload.id
+ * @returns {Promise<*>}
+ */
+export function deleteFolder(payload) {
+    let url = `/v2/workspace-folders/${payload.id}`;
+    return apiCall({
+        method: "DELETE",
+        url: url,
+        data: payload,
+    });
+}

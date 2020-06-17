@@ -77,6 +77,7 @@ export {
     deleteWorkspaceFile,
     uploadWorkspaceFile,
     uploadWorkspaceFiles,
+    deleteFolder,
 } from "./files";
 
 export {

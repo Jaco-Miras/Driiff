@@ -1,5 +1,6 @@
 import dispatchActionToReducer, {SimpleDispatchActionToReducer} from "../actionDispatcher";
 import {
+    deleteFolder as deleteFolderService,
     deleteWorkspaceFile as deleteWorkspaceFileService,
     getChannelFiles as getChannelFilesService,
     getFiles as getFilesService,
@@ -243,6 +244,24 @@ export function uploadWorkspaceFiles(payload, callback) {
 export function incomingFolder(payload, callback) {
     return SimpleDispatchActionToReducer(
         "INCOMING_FOLDER",
+        payload,
+        callback,
+    );
+}
+
+export function deleteFolder(payload, callback) {
+    return dispatchActionToReducer(
+        deleteFolderService(payload),
+        "DELETE_FOLDER_START",
+        "DELETE_FOLDER_SUCCESS",
+        "DELETE_FOLDER_FAIL",
+        callback,
+    );
+}
+
+export function incomingDeletedFolder(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "INCOMING_DELETED_FOLDER",
         payload,
         callback,
     );

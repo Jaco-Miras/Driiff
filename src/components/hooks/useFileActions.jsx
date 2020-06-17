@@ -2,6 +2,7 @@ import React, {useCallback} from "react";
 import {useDispatch} from "react-redux";
 import {
     addFolder,
+    deleteFolder,
     getWorkspaceFiles, 
     getWorkspaceFilesDetail,
     getWorkspaceFolders,
@@ -10,6 +11,9 @@ import {
     putFolder,
     uploadWorkspaceFiles
 } from "../../redux/actions/fileActions";
+import {
+    addToModals
+} from "../../redux/actions/globalActions";
 
 const useFileActions = () => {
 
@@ -87,6 +91,31 @@ const useFileActions = () => {
         );
     }, [dispatch]);
 
+    const removeFolder = useCallback((folder, topic_id, callback) => {
+        const handleDeleteFolder = () => {
+            dispatch(
+                deleteFolder({
+                    id: folder.id,
+                    topic_id: topic_id
+                }, callback)
+            );
+        };
+        let payload = {
+            type: "confirmation",
+            headerText: "Delete folder",
+            submitText: "Delete",
+            cancelText: "Cancel",
+            bodyText: "Are you sure you want to delete this folder?",
+            actions: {
+                onSubmit: handleDeleteFolder,
+            },
+        };
+
+        dispatch(
+            addToModals(payload),
+        );
+    }, [dispatch]);
+
     return {
         createFolder,
         getFileIcon,
@@ -95,6 +124,7 @@ const useFileActions = () => {
         getFolders,
         getPopularFiles,
         getEditedFiles,
+        removeFolder,
         updateFolder,
         uploadFiles
     };

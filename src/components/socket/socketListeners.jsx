@@ -22,6 +22,7 @@ import {
 import {addFilesToChannel, 
     deleteFilesFromChannel, 
     incomingFolder,
+    incomingDeletedFolder
 } from "../../redux/actions/fileActions";
 import {
     addUserToReducers,
@@ -76,6 +77,10 @@ class SocketListeners extends PureComponent {
                 }
                 case "FOLDER_UPDATE": {
                     this.props.incomingFolder(e);
+                    break;
+                }
+                case "FOLDER_DELETE": {
+                    this.props.incomingDeletedFolder(e);
                     break;
                 }
                 default:
@@ -658,6 +663,7 @@ function mapDispatchToProps(dispatch) {
         incomingComment: bindActionCreators(incomingComment, dispatch),
         incomingCommentClap: bindActionCreators(incomingCommentClap, dispatch),
         incomingFolder: bindActionCreators(incomingFolder, dispatch),
+        incomingDeletedFolder: bindActionCreators(incomingDeletedFolder, dispatch),
     };
 }
 

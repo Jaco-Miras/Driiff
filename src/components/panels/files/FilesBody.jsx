@@ -32,7 +32,7 @@ const MoreButton = styled(MoreOptions)`
 const FilesBody = (props) => {
 
     const {className = "", dropZoneRef, filter, search, wsFiles, 
-            handleAddEditFolder, actions, params, folder, fileIds } = props;
+            handleAddEditFolder, actions, params, folder, fileIds, history } = props;
 
     const scrollRef = document.querySelector(".app-content-body");
 
@@ -59,14 +59,26 @@ const FilesBody = (props) => {
             is_primary: 0,
             topic_id: params.workspaceId,
             files: formData,
-            folder_id: params.fileFolderId
+        }
+        if (folder) {
+            payload = {
+                ...payload,
+                folder_id: folder.id
+            }
         }
 
         actions.uploadFiles(payload);
     };
 
     const handleRemoveFolder = () => {
-        
+        if (folder) {
+            let cb = (err,res) => {
+                if (err) return;
+                let pathname = history.location.pathname.split("/folder/")[0]
+                history.push(pathname);
+            }
+            actions.removeFolder(folder, params.workspaceId, cb);
+        }
     };
 
     const handleEditFolder = () => {
@@ -85,11 +97,13 @@ const FilesBody = (props) => {
                 onCancel={handleHideDropZone}
             />
             <div className="card-body">
-                <MoreButton moreButton="settings">
-                    <div onClick={handleEditFolder}>Edit folder</div>
-                    <div onClick={handleRemoveFolder}>Remove folder</div>
-                </MoreButton>
-
+                {
+                    folder &&
+                    <MoreButton moreButton="settings">
+                        <div onClick={handleEditFolder}>Edit folder</div>
+                        <div onClick={handleRemoveFolder}>Remove folder</div>
+                    </MoreButton>
+                }
                 {
                     filter === "" &&
                     <>
