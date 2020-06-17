@@ -69,6 +69,13 @@ class SocketListeners extends PureComponent {
             switch (e.SOCKET_TYPE) {
                 case "POST_CREATE": {
                     this.props.incomingPost(e);
+                    if (e.workspace_ids && e.workspace_ids.length >= 1) {
+                    
+                        this.props.setGeneralChat({
+                            count: 1,
+                            entity_type: "WORKSPACE_POST",
+                        });
+                    }
                     break;
                 }
                 case "POST_UPDATE": {
@@ -98,6 +105,12 @@ class SocketListeners extends PureComponent {
             switch (e.SOCKET_TYPE) {
                 case "POST_COMMENT_CREATE": {
                     this.props.incomingComment(e);
+                    if (e.workspaces && e.workspaces.length >= 1) {
+                        this.props.setGeneralChat({
+                            count: 1,
+                            entity_type: "WORKSPACE_POST",
+                        });
+                    }
                     break;
                 }
                 case "POST_COMMENT_UPDATE": {
@@ -135,9 +148,9 @@ class SocketListeners extends PureComponent {
                         }
                     }
 
-                    let notificationCounterEntryPayload = {};
                     // update the unread indicator
                     if (e.workspace_id === undefined || e.workspace_id === null || e.workspace_id === 0) {
+                        let notificationCounterEntryPayload = {};
                         if (e.entity_type === "CHAT_REMINDER_MESSAGE") {
                             notificationCounterEntryPayload = {
                                 count: 1,
@@ -149,11 +162,14 @@ class SocketListeners extends PureComponent {
                                 entity_type: "CHAT_MESSAGE",
                             };
                         }
-
                         this.props.setGeneralChat(notificationCounterEntryPayload);
+                    } else {
+                        this.props.setGeneralChat({
+                            count: 1,
+                            entity_type: "WORKSPACE_CHAT_MESSAGE",
+                        })
                     }
-
-
+                
                     break;
                 }
                 case "CHAT_UPDATE": {
