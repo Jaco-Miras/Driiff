@@ -1,8 +1,8 @@
-import React from "react";
+import React, {useEffect} from "react";
 import {Switch} from "react-router-dom";
 import ScrollToTop from "react-router-scroll-top";
-import {useSettings, useTranslation} from "./components/hooks";
-import {PreLoader} from "./components/panels";
+import {useDriff} from "./components/hooks";
+import {DriffRegisterPanel, PreLoader, RedirectPanel} from "./components/panels";
 import {AppRoute} from "./layout/routes";
 
 function App() {

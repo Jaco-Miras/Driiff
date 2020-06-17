@@ -3,12 +3,12 @@ import {useDispatch} from "react-redux";
 import {Link} from "react-router-dom";
 import styled from "styled-components";
 import {$_GET, getThisDeviceInfo} from "../../helpers/commonFunctions";
-import {getSlugName} from "../../helpers/slugHelper";
 import {EmailRegex} from "../../helpers/stringFormatter";
 import {toggleLoading} from "../../redux/actions/globalActions";
 import {userGoogleLogin, userLogin} from "../../redux/actions/userAction";
 import {CheckBox} from "../forms";
 import {processBackendLogin, storeLoginToken} from "../hooks";
+import {getDriffName} from "../hooks/useDriff";
 
 const Wrapper = styled.form`
     ${props => props.error !== "" &&
@@ -238,7 +238,7 @@ const LoginPanel = (props) => {
             <ul className="list-inline">
                 <li className="list-inline-item">
                     <a href="/" onClick={handleGoogleLogIn} className="btn btn-floating btn-google">
-                        <i className="fa fa-google"></i>
+                        <i className="fa fa-google"/>
                     </a>
                 </li>
             </ul>

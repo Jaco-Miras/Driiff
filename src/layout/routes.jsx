@@ -1,6 +1,7 @@
 import React from "react";
 import {useSelector} from "react-redux";
 import {Redirect, Route, Switch} from "react-router-dom";
+import {useSettings, useTranslation} from "../components/hooks";
 import {TestChat} from "../components/test";
 import TestFiles from "../components/test/TestFiles";
 import GuestLayout from "./GuestLayout";

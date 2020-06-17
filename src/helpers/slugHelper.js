@@ -1,96 +1,8 @@
-import axios from "axios";
 import React from "react";
-import {sessionService} from "redux-react-session";
+import {getDriffName} from "../components/hooks/useDriff";
 import {driffData} from "../config/environment";
 import {apiCall} from "../redux/services";
-//import {purge} from "../redux/store/configStore";
-import {$_GET, isIPAddress} from "./commonFunctions";
-
-export const getSlugName = (fromLocalStorage = true) => {
-
-    const {REACT_APP_localDNSName} = process.env;
-
-    const {REACT_APP_ENV} = process.env;
-    if (REACT_APP_ENV === "development") {
-        localStorage.setItem("slug", "dev");
-    }
-
-    if (REACT_APP_ENV === "local") {
-        localStorage.setItem("slug", "lot4");
-    }
-
-    //get and set slug name from URL
-    let slug = $_GET("slugname");
-
-    if (slug) {
-        return slug;
-    }
-
-    //get slug name from local storage
-    slug = localStorage.getItem("slug");
-    if (fromLocalStorage && slug) {
-        return slug;
-    }
-
-    //accepts IP address as slug name
-    slug = window.location.hostname;
-    if (isIPAddress(slug)) {
-        return slug;
-    }
-
-    //process slug name from host name
-    let hostnameArr = window.location.hostname.split(".");
-
-    switch (hostnameArr.length) {
-        case 1:
-            if (hostnameArr[0] === "localhost") {
-                return hostnameArr[0];
-            } else {
-                return false;
-            }
-        case 2:
-            if (window.location.hostname === REACT_APP_localDNSName) {
-                return " ";
-            }
-            break;
-        default:
-            return hostnameArr[0];
-    }
-
-
-    return false;
-};
-
-export const isSlugName = async (slugName) => {
-
-    const {REACT_APP_apiProtocol, REACT_APP_apiBaseUrl} = process.env;
-
-    const url = `${REACT_APP_apiProtocol}${REACT_APP_apiBaseUrl}/check-slug?slug=${slugName}`;
-
-    return axios({
-        method: "PATCH",
-        url: url,
-        crossDomain: true,
-        headers: {
-            "Content-Type": "application/json",
-        },
-    })
-        .then(
-            function (res) {
-                return {
-                    status: res.data.status,
-                };
-            },
-        )
-        .catch(
-            error => {
-                return {
-                    status: false,
-                    data: error,
-                };
-            },
-        );
-};
+import {isIPAddress} from "./commonFunctions";
 
 
 export const redirectInvalidSlugName = async () => {
@@ -300,38 +212,6 @@ export const imgAsLogin = () => {
                     height={1} width={1}/>;
     } else {
     }
-};
-
-export const processDriffLogout = () => {
-
-    localStorage.removeItem("userAuthToken");
-    localStorage.removeItem("token");
-    localStorage.removeItem("atoken");
-
-    sessionService
-        .deleteSession()
-        .then(
-            () => {
-                sessionService
-                    .deleteUser()
-                    .then(() => {
-                        let redirectLink = `${getCurrentDriffUrl()}/logout`;
-                        //purge();
-                        window.location.href = `${getAPIUrl({isDNS: true})}/auth-web/logout?redirect_link=${redirectLink}`;
-                    });
-            },
-        );
-};
-
-export const getSupportedUserLanguage = () => {
-    let lang = navigator.language || navigator.userLanguage;
-    let userLang = lang.split("-")[0];
-
-    if (localStorage.getItem("loggedInUser.language")) {
-        userLang = localStorage.getItem("loggedInUser.language");
-    }
-
-    return userLang;
 };
 
 export const getAPIUrl = (data = {}) => {
