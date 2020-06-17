@@ -39,9 +39,15 @@ const MainNavLink = styled(NavLink)`
 
 const CompanyHeaderPanel = () => {
 
+    const dispatch = useDispatch();
     const match = useRouteMatch();
 
     const {driffSettings} = useSettings();
+
+    const handleMenuOpenMobile = (e) => {
+        e.preventDefault();
+        document.body.classList.add("navigation-show");
+    };
 
     useEffect(() => {
         const body = document.body;
@@ -87,7 +93,7 @@ const CompanyHeaderPanel = () => {
             <div>
                 <NavBar className="navbar-nav">
                     <li className="nav-item navigation-toggler mobile-toggler">
-                        <a href="/" className="nav-link" title="Show navigation">
+                        <a href="/" className="nav-link" title="Show navigation" onClick={handleMenuOpenMobile}>
                             <SvgIconFeather icon="menu"/>
                         </a>
                     </li>

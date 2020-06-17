@@ -30,7 +30,7 @@ const SubWorkspaceName = styled.h3`
     font-weight: normal;
     font-size: 19px;
     text-transform: lowercase;
-    
+
     &:before {
         content: '';
         display: inline-block;
@@ -49,7 +49,7 @@ const SubWorkspaceName = styled.h3`
 const WorkspaceButton = styled.h3`
     cursor: pointer;
     cursor: hand;
-    
+
     svg {
         fill: #505050;
         transform: rotate(90deg);
@@ -71,6 +71,11 @@ const WorspaceHeaderPanel = () => {
         dispatch(
             addToModals(payload),
         );
+    };
+
+    const handleMenuOpenMobile = (e) => {
+        e.preventDefault();
+        document.body.classList.add("navigation-show");
     };
 
     useEffect(() => {
@@ -118,7 +123,7 @@ const WorspaceHeaderPanel = () => {
             <div>
                 <NavBar className="navbar-nav">
                     <li className="nav-item navigation-toggler mobile-toggler">
-                        <a href="/" className="nav-link" title="Show navigation">
+                        <a href="/" className="nav-link" title="Show navigation" onClick={handleMenuOpenMobile}>
                             <SvgIconFeather icon="menu"/>
                         </a>
                     </li>

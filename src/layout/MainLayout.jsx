@@ -5,6 +5,7 @@ import styled from "styled-components";
 import {useUserLogout, useVisibilityChange, useSocketConnection} from "../components/hooks";
 import useFilesUpload from "../components/hooks/useFilesUpload";
 import {ModalPanel} from "../components/panels";
+import MobileOverlay from "../components/panels/MobileOverlay";
 import {MainContentPanel, MainHeaderPanel, MainNavigationPanel} from "../components/panels/main";
 //import Socket from "../components/socket/socket";
 import {getFiles} from "../redux/actions/fileActions";
@@ -54,6 +55,7 @@ const MainLayout = (props) => {
                     path={["/:page"]}/>
             </MainContent>
             <ModalPanel/>
+            <MobileOverlay/>
             {/* {
                 user.id !== undefined &&
                 <Socket/>

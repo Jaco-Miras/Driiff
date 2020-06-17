@@ -66,6 +66,7 @@ const ChatBubbleContainer = styled.div`
     }
     span.emoticon-body {
         font-size: 2.5rem;
+        padding: 30px 0;
     }
     .reply-content img{
         max-width: 100%;

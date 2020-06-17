@@ -21,7 +21,7 @@ const useFiles = () => {
                 fileActions.getEditedFiles(activeTopic.id);
             };
             setFetchingFiles(true);
-            fileActions.getFiles(activeTopic.id, cb);   
+            fileActions.getFiles(activeTopic.id, cb);
         }
     }, [fetchingFiles, activeTopic, workspaceFiles]);
 
@@ -34,7 +34,7 @@ const useFiles = () => {
             wsFiles: null,
         }
     }
-    
+
 };
 
 export default useFiles;

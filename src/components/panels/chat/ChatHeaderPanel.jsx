@@ -13,7 +13,6 @@ const Wrapper = styled.div`
     z-index: 2;
 `;
 
-
 const IconButton = styled(SvgIconFeather)`
     border: 1px solid #afb8bd;
     border-radius: 8px;
@@ -82,6 +81,10 @@ const ChatHeaderPanel = (props) => {
         );
     };
 
+    const goBackChannelSelect = () => {
+        document.body.classList.add("m-chat-channel-open");
+    };
+
     useEffect(() => {
         setPage(routeMatch.path.split("/").filter(p => {
             return p.length !== 0;
@@ -133,7 +136,7 @@ const ChatHeaderPanel = (props) => {
                                 </li>
                             </>
                         }
-                        <li className="ml-4 mobile-chat-close-btn">
+                        <li className="mobile-chat-close-btn" onClick={goBackChannelSelect}>
                             <IconButton icon={`x`}/>
                         </li>
                     </ul>
