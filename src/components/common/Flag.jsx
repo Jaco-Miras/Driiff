@@ -8,8 +8,12 @@ const Flag = (props) => {
 
     const {className = "", countryAbbr = "nl", ...otherProps} = props;
 
+    let country = countryAbbr;
+    if (countryAbbr === null)
+        country = "nl";
+
     let source = "";
-    switch (countryAbbr.toLocaleLowerCase()) {
+    switch (country.toLocaleLowerCase()) {
         case "en":
             source = require("../../assets/media/image/flags/262-united-kingdom.png");
             break;

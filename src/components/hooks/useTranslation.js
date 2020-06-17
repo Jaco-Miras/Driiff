@@ -42,9 +42,6 @@ export const useTranslation = () => {
                         JSON.parse(localStorage.getItem(`i18n`)),
                     ),
                 );
-                setGeneralSetting({
-                    language: localStorage.getItem(`i18n_lang`),
-                });
             } else {
                 setDictFile({
                     lang: lang.exact,
@@ -109,12 +106,14 @@ export const useTranslation = () => {
 
         if (replacement !== null) {
             for (const key in replacement) {
-                let specialPattern = new RegExp("::" + key + "::", "ig");
+                if (replacement.hasOwnProperty(key)) {
+                    let specialPattern = new RegExp("::" + key + "::", "ig");
 
-                if (replacement[key] === null) {
-                    translation = translation.replace(specialPattern, "");
-                } else {
-                    translation = translation.replace(specialPattern, replacement[key]);
+                    if (replacement[key] === null) {
+                        translation = translation.replace(specialPattern, "");
+                    } else {
+                        translation = translation.replace(specialPattern, replacement[key]);
+                    }
                 }
             }
         }

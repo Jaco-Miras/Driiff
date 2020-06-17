@@ -31,7 +31,7 @@ export const getDriffName = () => {
     }
 };
 
-const useDriff = (members = []) => {
+const useDriff = () => {
 
     const dispatch = useDispatch();
     const [redirected, setRedirected] = useState(null);
@@ -74,11 +74,17 @@ const useDriff = (members = []) => {
                 setRedirected(true);
             } else {
                 checkDriffName(driffName, (err, res) => {
-                    if (res.data.status) {
-                        setDriff(driffName);
-                    } else {
+                    if (err) {
                         localStorage.removeItem("slug");
                         setRedirected(true);
+                    }
+                    if (res) {
+                        if (res.data.status) {
+                            setDriff(driffName);
+                        } else {
+                            localStorage.removeItem("slug");
+                            setRedirected(true);
+                        }
                     }
                 });
             }

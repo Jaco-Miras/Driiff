@@ -35,7 +35,7 @@ const useSettings = () => {
                 );
             }),
         );
-    });
+    }, [dispatch, userSettings]);
 
     useEffect(() => {
         if (init) {
