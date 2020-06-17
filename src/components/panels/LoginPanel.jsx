@@ -12,7 +12,7 @@ import {processBackendLogin, storeLoginToken} from "../hooks";
 
 const Wrapper = styled.form`
     ${props => props.error !== "" &&
-    `&:before {        
+    `&:before {
         content: "${props.error}";
         display: block;
         color: red;
@@ -21,9 +21,9 @@ const Wrapper = styled.form`
         margin-left: 0;
         margin-bottom: 0.5rem;
     }`}
-    
+
     ${props => props.success !== "" &&
-    `&:before {        
+    `&:before {
         content: "${props.success}";
         display: block;
         color: #59a869;
@@ -31,12 +31,12 @@ const Wrapper = styled.form`
         text-align: left;
         margin-left: 0;
         margin-bottom: 0.5rem;
-    }`}    
+    }`}
 `;
 
 const FormGroup = styled.div`
     ${props => props.error !== "" &&
-    `&:after {        
+    `&:after {
         content: "${props.error}";
         display: block;
         color: red;
@@ -218,7 +218,7 @@ const LoginPanel = (props) => {
     };
 
     return (
-        <Wrapper error={formMessage.error} success={formMessage.success}>
+        <Wrapper className="fadeIn" error={formMessage.error} success={formMessage.success}>
             <FormGroup className="form-group" error={error.email}>
                 <input ref={ref.email} onChange={handleInputChange} name="email" type="email" className="form-control"
                        placeholder="Email" required autoFocus/>

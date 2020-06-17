@@ -2,11 +2,11 @@ import React, {useCallback} from "react";
 import {useDispatch} from "react-redux";
 import {
     addFolder,
-    getWorkspaceFiles, 
+    getWorkspaceFiles,
     getWorkspaceFilesDetail,
     getWorkspaceFolders,
     getWorkspacePopularFiles,
-    getWorkspaceRecentlyEditedFiles, 
+    getWorkspaceRecentlyEditedFiles,
     putFolder,
     uploadWorkspaceFiles
 } from "../../redux/actions/fileActions";
@@ -16,7 +16,6 @@ const useFileActions = () => {
     const dispatch = useDispatch();
     const getFileIcon = (mimeType = "") => {
 
-        console.log(mimeType);
         if (mimeType.includes("image")) {
             return <i className="fa fa-file-image-o text-instagram"/>;
         } else if (mimeType.includes("audio")) {

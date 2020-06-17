@@ -12,7 +12,7 @@ const Wrapper = styled.div`
     .app-sidebar-menu {
         overflow: hidden;
         outline: currentcolor none medium;
-    }    
+    }
 `;
 
 const WorkspaceFilesPanel = (props) => {
@@ -121,14 +121,14 @@ const WorkspaceFilesPanel = (props) => {
                 onPrimaryAction: handleUpdateFolder,
             };
         }
-        
+
         dispatch(
             addToModals(payload),
         );
     }
 
     return (
-        <Wrapper className={`container-fluid h-100 ${className}`}>
+        <Wrapper className={`container-fluid h-100 h-w-min ${className}`}>
             <div className="row app-block">
                 <FilesSidebar dropZoneRef={refs.dropZone} className="col-md-3" filterFile={handleFilterFile}
                               filter={filter} wsFiles={wsFiles}/>
