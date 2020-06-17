@@ -100,12 +100,18 @@ export function getWorkspaceTopics(payload) {
  * @param {Object} payload
  * @param {number} payload.topic_id
  * @param {string} payload.search
+ * @param {array}  payload.filters
  * @returns {Promise<*>}
  */
 export function getWorkspacePosts(payload) {
     let url = `/v1/posts?topic_id=${payload.topic_id}`;
     if (payload.search !== undefined) {
         url += `&search=${payload.search}`;
+    }
+    if (payload.filters !== undefined) {
+        for (var i = 0; i < payload.filters.length; i++) {
+            url += `&filter[]=${payload.filters[i]}`;
+        }
     }
     return apiCall({
         method: "GET",
@@ -244,6 +250,20 @@ export function fetchMembers(payload) {
  */
 export function fetchTimeline(payload) {
     let url = `/v2/workspace-dashboard-timeline?topic_id=${payload.topic_id}`;
+    return apiCall({
+        method: "GET",
+        url: url,
+        data: payload,
+    });
+}
+
+/**
+ * @param {Object} payload
+ * @param {number} payload.topic_id
+ * @returns {Promise<*>} 
+ */
+export function fetchWorkspaceTagCounters(payload) {
+    let url = `/v2/post-tags-entries?topic_id=${payload.topic_id}`;
     return apiCall({
         method: "GET",
         url: url,
