@@ -14,8 +14,8 @@ export const AppRoute = ({children, ...props}) => {
     const authenticated = session.authenticated;
 
     // if (!session.checked || !i18nLoaded || push.loading)
-    //if (!session.checked || !i18nLoaded)
-    //return null;
+    if (!session.checked || !i18nLoaded)
+    return null;
 
     return (
         authenticated ?

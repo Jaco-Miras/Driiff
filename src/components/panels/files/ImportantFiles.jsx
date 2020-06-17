@@ -7,28 +7,17 @@ const Wrapper = styled.div`
 
 const ImportantFiles = (props) => {
 
-    const {className = ""} = props;
-
-    const files = [{
-        id: 1,
-        name: "file name",
-        size: "20Mb",
-        mimeType: "image",
-    }, {
-        id: 2,
-        name: "file name 2",
-        size: "10Mb",
-        mimeType: "video",
-    }];
+    const {className = "", wsFiles, actions} = props;
 
     return (
         <Wrapper className={`important-files ${className}`}>
             <h6 className="font-size-11 text-uppercase mb-4">Important</h6>
             <div className="row">
                 {
-                    files.map(f => {
+                    wsFiles && wsFiles.favorite_files.length > 0 &&
+                    wsFiles.favorite_files.map(id => {
                         return (
-                            <FileListItem key={f.id} className="col-xl-3 col-lg-4 col-md-6 col-sm-12" file={f}/>
+                            <FileListItem key={id} className="col-xl-3 col-lg-4 col-md-6 col-sm-12" file={wsFiles.files[id]} actions={actions}/>
                         );
                     })
                 }

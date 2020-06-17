@@ -60,10 +60,10 @@ const FilesBody = (props) => {
             topic_id: params.workspaceId,
             files: formData,
         }
-        if (folder) {
+        if (params.fileFolderId) {
             payload = {
                 ...payload,
-                folder_id: folder.id
+                folder_id: params.fileFolderId
             }
         }
 
@@ -113,7 +113,7 @@ const FilesBody = (props) => {
                                 wsFiles && 
                                 fileIds.map(f => {
                                     return (
-                                        <FileListItem scrollRef={scrollRef} key={f.id}
+                                        <FileListItem scrollRef={scrollRef} key={f.id} actions={actions}
                                                       className="col-xl-3 col-lg-4 col-md-6 col-sm-12" file={wsFiles.files[f]}/>
                                     );
                                 })
@@ -121,26 +121,27 @@ const FilesBody = (props) => {
                         </div>
                         {
                             wsFiles && wsFiles.popular_files.length > 0 && folder === null &&
-                            <PopularFiles search={search} scrollRef={scrollRef} wsFiles={wsFiles}/>
+                            <PopularFiles search={search} scrollRef={scrollRef} wsFiles={wsFiles} actions={actions}/>
                         }
                         {
                             wsFiles && wsFiles.recently_edited.length > 0 && folder === null &&
-                            <RecentEditedFile search={search} scrollRef={scrollRef} wsFiles={wsFiles}/>
+                            <RecentEditedFile search={search} scrollRef={scrollRef} wsFiles={wsFiles} actions={actions}/>
                         }
                     </>
                 }
                 {
                     filter === "recent" &&
                     wsFiles && wsFiles.recently_edited.length > 0 &&
-                    <RecentEditedFile search={search} scrollRef={scrollRef} wsFiles={wsFiles}/>
+                    <RecentEditedFile search={search} scrollRef={scrollRef} wsFiles={wsFiles} actions={actions}/>
                 }
                 {
-                    filter === "important" &&
-                    <ImportantFiles search={search} scrollRef={scrollRef}/>
+                    filter === "important" && 
+                    wsFiles && wsFiles.favorite_files && wsFiles.favorite_files.length > 0 &&
+                    <ImportantFiles search={search} scrollRef={scrollRef} wsFiles={wsFiles} actions={actions}/>
                 }
                 {
                     filter === "removed" &&
-                    <RemoveFiles search={search} scrollRef={scrollRef}/>
+                    <RemoveFiles search={search} scrollRef={scrollRef} actions={actions}/>
                 }
             </div>
         </Wrapper>

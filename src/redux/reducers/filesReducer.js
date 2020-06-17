@@ -147,7 +147,8 @@ export default (state = INITIAL_STATE, action) => {
                         stars: 0,
                         trash: 0,
                         popular_files: [],
-                        recently_edited: []
+                        recently_edited: [],
+                        favorite_files: []
                     }
                 }
             }
@@ -180,7 +181,8 @@ export default (state = INITIAL_STATE, action) => {
                         stars: 0,
                         trash: 0,
                         popular_files: [],
-                        recently_edited: []
+                        recently_edited: [],
+                        favorite_files: []
                     }
                 }
             }
@@ -210,6 +212,29 @@ export default (state = INITIAL_STATE, action) => {
                         count: action.data.total_file_count,
                         stars: action.data.total_file_stars,
                         trash: action.data.total_file_trash,
+                    }
+                }
+            }
+            return {
+                ...state,
+                workspaceFiles: newWorkspaceFiles
+            }
+        }
+        case "GET_WORKSPACE_FAVORITE_FILES_SUCCESS": {
+            let newWorkspaceFiles = {...state.workspaceFiles};
+            if (newWorkspaceFiles.hasOwnProperty(action.data.topic_id)) {
+                newWorkspaceFiles = {
+                    [action.data.topic_id]: {
+                        ...newWorkspaceFiles[action.data.topic_id],
+                        favorite_files: action.data.files.map(f => f.id)
+                    }
+                }
+            } else {
+                newWorkspaceFiles = {
+                    ...newWorkspaceFiles,
+                    [action.data.topic_id]: {
+                        ...newWorkspaceFiles[action.data.topic_id],
+                        favorite_files: action.data.files.map(f => f.id)
                     }
                 }
             }
@@ -317,6 +342,31 @@ export default (state = INITIAL_STATE, action) => {
             if (newWorkspaceFiles.hasOwnProperty(action.data.topic_id)) {
                 if (newWorkspaceFiles[action.data.topic_id].hasOwnProperty("folders")) {
                     delete newWorkspaceFiles[action.data.topic_id].folders[action.data.folder.id];
+                   return {
+                       ...state,
+                       workspaceFiles: newWorkspaceFiles
+                   }
+                } else {
+                    return state;
+                }
+            } else {
+                return state;
+            }
+        }
+        case "INCOMING_FILE": {
+            let newWorkspaceFiles = {...state.workspaceFiles};
+            if (newWorkspaceFiles.hasOwnProperty(action.data.topic_id)) {
+                if (newWorkspaceFiles[action.data.topic_id].hasOwnProperty("folders")) {
+                    newWorkspaceFiles = {
+                        ...newWorkspaceFiles,
+                        [action.data.topic_id]: {
+                            ...newWorkspaceFiles[action.data.topic_id],
+                            files: {
+                                ...newWorkspaceFiles[action.data.topic_id].files,
+                                [action.data.file.id]: action.data.file
+                            }
+                        }
+                    }
                    return {
                        ...state,
                        workspaceFiles: newWorkspaceFiles

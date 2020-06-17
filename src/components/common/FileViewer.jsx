@@ -158,9 +158,9 @@ const FileViewer = forwardRef((props, ref) => {
             });
         }
         if (Object.keys(workspaceFiles).length && workspaceFiles.hasOwnProperty(viewFiles.workspace_id)) {
-            setFiles(workspaceFiles[viewFiles.workspace_id].files);
-            workspaceFiles[viewFiles.workspace_id].files.forEach((file, index) => {
-                if (file.file_id === viewFiles.file_id) {
+            setFiles(Object.values(workspaceFiles[viewFiles.workspace_id].files));
+            Object.values(workspaceFiles[viewFiles.workspace_id].files).forEach((file, index) => {
+                if (file.id === viewFiles.file_id) {
                     setActiveIndex(index);
                 }
             });
