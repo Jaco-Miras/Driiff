@@ -14,16 +14,22 @@ yarn start-dev
 
 Login dev:
 
+
 ```
+Api:
+
+dev24admin
+```
+
+```
+Login:
+
 rt@make24.nl
 password1
-```
 
-or
-
-```
 jessryll@makedevelopment.com
 devpassword
+
 ```
 
 ## Test environment
