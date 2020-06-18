@@ -2,10 +2,10 @@ import React, {useRef, useState} from "react";
 import {useDispatch} from "react-redux";
 import {Link, useHistory, useRouteMatch} from "react-router-dom";
 import styled from "styled-components";
-import {getSlugName} from "../../helpers/slugHelper";
 import {toggleLoading} from "../../redux/actions/globalActions";
 import {updatePassword, userGoogleLogin} from "../../redux/actions/userAction";
 import {processBackendLogin, storeLoginToken} from "../hooks";
+import {getDriffName} from "../hooks/useDriff";
 
 const Wrapper = styled.form`
     ${props => props.error !== "" &&
@@ -130,10 +130,10 @@ const UpdatePasswordPanel = (props) => {
                     });
 
                     const returnUrl = (
-                        (typeof props.location.state !== "undefined")
-                        && (typeof props.location.state.from !== "undefined")
-                        && (props.location.state.from !== "/logout")
-                    ) ? props.location.state.from.pathname + props.location.state.from.search : "/dashboard";
+                                          (typeof props.location.state !== "undefined")
+                                          && (typeof props.location.state.from !== "undefined")
+                                          && (props.location.state.from !== "/logout")
+                                      ) ? props.location.state.from.pathname + props.location.state.from.search : "/dashboard";
                     storeLoginToken(res.data);
                     processBackendLogin(res.data, returnUrl);
                 }
@@ -146,7 +146,7 @@ const UpdatePasswordPanel = (props) => {
 
         dispatch(
             userGoogleLogin({
-                driff: getSlugName(),
+                driff: getDriffName(),
             }, (err, res) => {
                 if (err) {
                     console.log(err);

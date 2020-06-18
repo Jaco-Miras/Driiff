@@ -1,175 +1,8 @@
-import axios from "axios";
 import React from "react";
-import {sessionService} from "redux-react-session";
+import {getDriffName} from "../components/hooks/useDriff";
 import {driffData} from "../config/environment";
 import {apiCall} from "../redux/services";
-//import {purge} from "../redux/store/configStore";
-import {$_GET, isIPAddress} from "./commonFunctions";
-
-export const getSlugName = (fromLocalStorage = true) => {
-
-    const {REACT_APP_localDNSName} = process.env;
-
-    const {REACT_APP_ENV} = process.env;
-    if (REACT_APP_ENV === "development") {
-        localStorage.setItem("slug", "dev");
-    }
-
-    if (REACT_APP_ENV === "local") {
-        localStorage.setItem("slug", "lot4");
-    }
-
-    //get and set slug name from URL
-    let slug = $_GET("slugname");
-
-    if (slug) {
-        return slug;
-    }
-
-    //get slug name from local storage
-    slug = localStorage.getItem("slug");
-    if (fromLocalStorage && slug) {
-        return slug;
-    }
-
-    //accepts IP address as slug name
-    slug = window.location.hostname;
-    if (isIPAddress(slug)) {
-        return slug;
-    }
-
-    //process slug name from host name
-    let hostnameArr = window.location.hostname.split(".");
-
-    switch (hostnameArr.length) {
-        case 1:
-            if (hostnameArr[0] === "localhost") {
-                return hostnameArr[0];
-            } else {
-                return false;
-            }
-        case 2:
-            if (window.location.hostname === REACT_APP_localDNSName) {
-                return " ";
-            }
-            break;
-        default:
-            return hostnameArr[0];
-    }
-
-
-    return false;
-};
-
-export const isSlugName = async (slugName) => {
-
-    const {REACT_APP_apiProtocol, REACT_APP_apiBaseUrl} = process.env;
-
-    const url = `${REACT_APP_apiProtocol}${REACT_APP_apiBaseUrl}/check-slug?slug=${slugName}`;
-
-    return axios({
-        method: "PATCH",
-        url: url,
-        crossDomain: true,
-        headers: {
-            "Content-Type": "application/json",
-        },
-    })
-        .then(
-            function (res) {
-                return {
-                    status: res.data.status,
-                };
-            },
-        )
-        .catch(
-            error => {
-                return {
-                    status: false,
-                    data: error,
-                };
-            },
-        );
-};
-
-
-export const redirectInvalidSlugName = async () => {
-    const {REACT_APP_localDNSName} = process.env;
-    let slugName = getSlugName();
-
-    if (isIPAddress(slugName) || window.location.hostname === "localhost") {
-        return false;
-    } else if (window.location.hostname !== REACT_APP_localDNSName) {
-        return await isSlugName(slugName).then((data) => {
-            if (data.status) {
-                localStorage.setItem("slug", slugName);
-                return false;
-            } else {
-                localStorage.setItem("slug", "");
-                setTimeout(() => {
-                    window.location.href = `${getBaseUrl({noSlug: true})}`;
-                }, 5000);
-                return true;
-            }
-        });
-    } else {
-        return false;
-    }
-};
-
-/**
- *
- * @param {Object} data
- * @param {string} data.title
- * @param {number|boolean} data.count
- */
-export const setDocumentTitle = (data = {}) => {
-    const {title = "", count = 0} = data;
-
-    if (title) {
-        if (count > 0) {
-            document.title = `(${count}) ${title}`;
-        } else {
-            document.title = title;
-        }
-        return;
-    }
-
-    let newLocationArr = window.location.pathname.split("/");
-    let pageName = newLocationArr[1].charAt(0).toUpperCase() + newLocationArr[1].slice(1);
-    if (!pageName) {
-        pageName = "Home";
-    }
-
-    let subPageName = "";
-    if (newLocationArr[2]) {
-        subPageName = newLocationArr[2].charAt(0).toUpperCase() + newLocationArr[2].slice(1);
-    }
-
-    let slugName = getSlugName();
-    let formattedSlugName = slugName.charAt(0).toUpperCase() + slugName.slice(1);
-
-    let documentTitle = "";
-    switch (newLocationArr.length) {
-        case 2: {
-            documentTitle = `${formattedSlugName}: ${pageName}`;
-            break;
-        }
-        case newLocationArr > 1: {
-            documentTitle = `${formattedSlugName}: ${pageName} - ${subPageName}`;
-            break;
-        }
-        default: {
-            documentTitle = formattedSlugName;
-        }
-    }
-
-    if (count > 0) {
-        document.title = `(${count}) ${documentTitle}`;
-    } else {
-        document.title = `${documentTitle}`;
-    }
-};
+import {isIPAddress} from "./commonFunctions";
 
 export const updateFaviconState = (isActive = false) => {
     let link = document.querySelectorAll("link[rel*='icon']");
@@ -274,17 +107,14 @@ export const updateFaviconState = (isActive = false) => {
 };
 
 export const getCurrentDriffUrl = () => {
-    const {REACT_APP_ENV, REACT_APP_localDNSName} = process.env;
-    const slugName = getSlugName();
+    const {REACT_APP_localDNSName} = process.env;
+    const slugName = getDriffName();
     let url = window.location.protocol;
     let port = (window.location.port && window.location.port !== 80) ? `:${window.location.port}` : "";
 
     if (isIPAddress(window.location.hostname) || window.location.hostname === "localhost") {
         return `${url}//${window.location.hostname}${port}`;
     } else {
-        if (REACT_APP_ENV === "development") {
-            return `${url}//${REACT_APP_localDNSName}${port}`;
-        }
         if (slugName) {
             return `${url}//${slugName}.${REACT_APP_localDNSName}${port}`;
         } else {
@@ -302,40 +132,8 @@ export const imgAsLogin = () => {
     }
 };
 
-export const processDriffLogout = () => {
-
-    localStorage.removeItem("userAuthToken");
-    localStorage.removeItem("token");
-    localStorage.removeItem("atoken");
-
-    sessionService
-        .deleteSession()
-        .then(
-            () => {
-                sessionService
-                    .deleteUser()
-                    .then(() => {
-                        let redirectLink = `${getCurrentDriffUrl()}/logout`;
-                        //purge();
-                        window.location.href = `${getAPIUrl({isDNS: true})}/auth-web/logout?redirect_link=${redirectLink}`;
-                    });
-            },
-        );
-};
-
-export const getSupportedUserLanguage = () => {
-    let lang = navigator.language || navigator.userLanguage;
-    let userLang = lang.split("-")[0];
-
-    if (localStorage.getItem("loggedInUser.language")) {
-        userLang = localStorage.getItem("loggedInUser.language");
-    }
-
-    return userLang;
-};
-
 export const getAPIUrl = (data = {}) => {
-    const driffName = getSlugName();
+    const driffName = getDriffName();
     const {REACT_APP_ENV, REACT_APP_apiProtocol, REACT_APP_apiBaseUrl, REACT_APP_apiDNSName, REACT_APP_mockServerBaseUrl} = process.env;
 
     switch (REACT_APP_ENV) {
@@ -346,13 +144,6 @@ export const getAPIUrl = (data = {}) => {
                 return `${REACT_APP_apiProtocol}${REACT_APP_apiBaseUrl}`;
             }
         case "development":
-            if (typeof data.isDNS !== "undefined" && data.isDNS === true) {
-                return `${REACT_APP_apiProtocol}${REACT_APP_apiDNSName}`;
-            } else if (data.is_shared && data.token) {
-                return `${REACT_APP_apiProtocol}${data.slug}.${REACT_APP_apiBaseUrl}`;
-            } else {
-                return `${REACT_APP_apiProtocol}${REACT_APP_apiBaseUrl}`;
-            }
         case "production":
             let url = REACT_APP_apiProtocol;
 
@@ -376,16 +167,22 @@ export const getAPIUrl = (data = {}) => {
 };
 
 export const getBaseUrl = (data = {}) => {
-    const driffName = getSlugName();
+    const driffName = getDriffName();
     const {REACT_APP_ENV, REACT_APP_localDNSProtocol, REACT_APP_localDNSName} = process.env;
+    let url = REACT_APP_localDNSProtocol;
 
     switch (REACT_APP_ENV) {
         case "local":
             return `${REACT_APP_localDNSProtocol}${REACT_APP_localDNSName}`;
         case "development":
-            return `${REACT_APP_localDNSProtocol}${REACT_APP_localDNSName}`;
+            if (typeof data.noSlug === "undefined" || data.noSlug !== true) {
+                url += `${driffName}.`;
+            }
+
+            url += REACT_APP_localDNSName;
+
+            return url;
         case "production":
-            let url = REACT_APP_localDNSProtocol;
             if (typeof data.noSlug === "undefined" || data.noSlug !== true) {
                 url += `${driffName}.`;
             }
@@ -396,13 +193,6 @@ export const getBaseUrl = (data = {}) => {
         default:
             return;
     }
-};
-
-export const getSocketUrl = (data = {}) => {
-    const slugName = getSlugName();
-    const {REACT_APP_socketDNSProtocol, REACT_APP_socketDNSName} = process.env;
-
-    return `${REACT_APP_socketDNSProtocol}${slugName}.${REACT_APP_socketDNSName}`;
 };
 
 export const isLoggedALlowed = () => {
@@ -467,7 +257,7 @@ export const checkUpdate = () => {
                     requirement: driffData.requirement,
                 },
             },
-        }).then((err, res) => {
+        }).then(() => {
             localStorage.setItem("driffVersion", driffData.version);
         });
     }
@@ -477,7 +267,7 @@ export const getTranslationAPIUrl = () => {
     const {REACT_APP_translation_api_base_url} = process.env;
 
     let url = "";
-    if(typeof REACT_APP_translation_api_base_url !== "undefined") {
+    if (typeof REACT_APP_translation_api_base_url !== "undefined") {
         url = REACT_APP_translation_api_base_url;
     }
 
@@ -487,4 +277,4 @@ export const getTranslationAPIUrl = () => {
      */
 
     return url;
-}
+};

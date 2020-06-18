@@ -1,14 +1,38 @@
-import {useEffect} from "react";
+import {useCallback, useEffect} from "react";
 import {useDispatch} from "react-redux";
+import {useHistory, useRouteMatch} from "react-router-dom";
 import {sessionService} from "redux-react-session";
 import {getAPIUrl, getCurrentDriffUrl} from "../../helpers/slugHelper";
 import {toggleLoading} from "../../redux/actions/globalActions";
 import {userLogout} from "../../redux/actions/userAction";
 
-const useUserLogout = (props) => {
+const useUserLogout = () => {
 
     const dispatch = useDispatch();
-    const {path} = props.match;
+    const history = useHistory();
+    const {path} = useRouteMatch();
+
+    const logout = useCallback(() => {
+        dispatch(
+            toggleLoading(true),
+        );
+        dispatch(
+            userLogout({}, () => {
+                localStorage.removeItem("userAuthToken");
+                localStorage.removeItem("token");
+                localStorage.removeItem("atoken");
+                sessionService
+                    .deleteSession()
+                    .then(() => sessionService.deleteUser())
+                    .then(() => {
+                        history.push("/login");
+                        dispatch(
+                            toggleLoading(false),
+                        );
+                    });
+            }),
+        );
+    }, [dispatch]);
 
     useEffect(() => {
         //log-out from the backend
@@ -19,29 +43,14 @@ const useUserLogout = (props) => {
 
         //log-out from the system
         if (path === "/logged-out") {
-            dispatch(
-                toggleLoading(true),
-            );
-            dispatch(
-                userLogout({}, (err, ress) => {
-                    localStorage.removeItem("userAuthToken");
-                    localStorage.removeItem("token");
-                    localStorage.removeItem("atoken");
-                    localStorage.clear();
-                    sessionService
-                        .deleteSession()
-                        .then(() => sessionService.deleteUser())
-                        .then(() => {
-                            props.history.push("/login");
-                            dispatch(
-                                toggleLoading(false),
-                            );
-                        });
-                }),
-            );
+            logout();
         }
 
-    }, [path, dispatch, props.history]);
+    }, [path, dispatch, history]);
+
+    return {
+        logout,
+    };
 };
 
 export default useUserLogout;

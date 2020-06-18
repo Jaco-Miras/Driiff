@@ -1,3 +1,4 @@
+export {default as useDriff} from "./useDriff";
 export {default as useOutsideClick} from "./useOutsideClick";
 export {default as useQuillModules} from "./useQuillModules";
 export {default as useSortChannels} from "./useSortChannels";

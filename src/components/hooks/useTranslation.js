@@ -2,7 +2,7 @@ import {useCallback, useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {getHttpStatus} from "../../helpers/commonFunctions";
 import {addTranslationObject, getTranslationObject} from "../../redux/actions/globalActions";
-import {useSettings} from "./index";
+import {useDriff, useSettings} from "./index";
 
 let init = true;
 
@@ -13,12 +13,14 @@ export const useTranslation = () => {
 
     const dispatch = useDispatch();
 
+    const {registeredDriff} = useDriff();
     const {generalSettings: {language}, setGeneralSetting} = useSettings();
 
     const i18n = useSelector(state => state.global.i18n);
 
     const [dictFile, setDictFile] = useState({});
     const {REACT_APP_dictionary_file} = process.env;
+    const dictionaryFile = REACT_APP_dictionary_file.replace("{{driffName}}", registeredDriff);
 
     const getBrowserLanguage = useCallback(() => {
         const lang = navigator.language || navigator.userLanguage;
@@ -40,13 +42,10 @@ export const useTranslation = () => {
                         JSON.parse(localStorage.getItem(`i18n`)),
                     ),
                 );
-                setGeneralSetting({
-                    language: localStorage.getItem(`i18n_lang`),
-                });
             } else {
                 setDictFile({
                     lang: lang.exact,
-                    file: `${REACT_APP_dictionary_file}/${lang.exact}`,
+                    file: `${dictionaryFile}/${lang.exact}`,
                 });
 
                 // @todo add slug conditions
@@ -77,15 +76,15 @@ export const useTranslation = () => {
 
                     if (res) {
                         if (res.data === "") {
-                            if (dictFile === `${REACT_APP_dictionary_file}/${lang.exact}`) {
+                            if (dictFile === `${dictionaryFile}/${lang.exact}`) {
                                 setDictFile({
                                     lang: lang.main,
-                                    file: `${REACT_APP_dictionary_file}/${lang.main}`,
+                                    file: `${dictionaryFile}/${lang.main}`,
                                 });
-                            } else if (dictFile === `${REACT_APP_dictionary_file}/${lang.main}`) {
+                            } else if (dictFile === `${dictionaryFile}/${lang.main}`) {
                                 setDictFile({
                                     lang: "en",
-                                    file: `${REACT_APP_dictionary_file}/en`,
+                                    file: `${dictionaryFile}/en`,
                                 });
                             }
                         } else {
@@ -97,7 +96,7 @@ export const useTranslation = () => {
                 }),
             );
         }
-    }, [dispatch, dictFile, REACT_APP_dictionary_file]);
+    }, [dispatch, dictFile, dictionaryFile]);
 
     const translate = useCallback((i18n, code, default_value, replacement = null) => {
         let translation = default_value;
@@ -107,12 +106,14 @@ export const useTranslation = () => {
 
         if (replacement !== null) {
             for (const key in replacement) {
-                let specialPattern = new RegExp("::" + key + "::", "ig");
+                if (replacement.hasOwnProperty(key)) {
+                    let specialPattern = new RegExp("::" + key + "::", "ig");
 
-                if (replacement[key] === null) {
-                    translation = translation.replace(specialPattern, "");
-                } else {
-                    translation = translation.replace(specialPattern, replacement[key]);
+                    if (replacement[key] === null) {
+                        translation = translation.replace(specialPattern, "");
+                    } else {
+                        translation = translation.replace(specialPattern, replacement[key]);
+                    }
                 }
             }
         }
@@ -142,9 +143,7 @@ export const useTranslation = () => {
     };
 
     const setLocale = useCallback((lang, callback = null) => {
-        const {REACT_APP_dictionary_file} = process.env;
-
-        let dictFile = `${REACT_APP_dictionary_file}/${lang}`;
+        let dictFile = `${dictionaryFile}/${lang}`;
         if (getHttpStatus(dictFile, false) !== false) {
             dispatch(
                 getTranslationObject({

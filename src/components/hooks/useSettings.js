@@ -6,15 +6,14 @@ import {
     setUserGeneralSetting,
     updateUserSettings,
 } from "../../redux/actions/settingsActions";
+import {useUserLogout} from "./index";
 
 let init = true;
 
-/**
- * @returns {{userSettings, chatSettings: {open_topic_channels: [], preview_message: boolean, chat_message_theme: {self: {chat_bubble_focus_border_color: string, chat_bubble_quote_link_color: string, chat_bubble_quote_hover_color: string, chat_bubble_hover_color: string, chat_bubble_link_color: string, chat_bubble_text_color: string, chat_bubble_quote_text_color: string, chat_bubble_background_color: string, chat_bubble_quote_background_color: string}, preset: string, others: {chat_bubble_focus_border_color: string, chat_bubble_quote_link_color: string, chat_bubble_quote_hover_color: string, chat_bubble_name_text_color: string, chat_bubble_hover_color: string, chat_bubble_link_color: string, chat_bubble_text_color: string, chat_bubble_quote_text_color: string, chat_bubble_background_color: string, chat_bubble_quote_background_color: string}}, order_channel: {order_by: string, sort_by: string}}, generalSettings: ({dark_mode: string, workspace_open_folder: {}, language: null, active_topic: null}|{dark_mode: string, workspace_open_folder: {}, language: null, active_topic: null}), setGeneralSetting: (...args: any[]) => any}}
- */
 const useSettings = () => {
 
     const dispatch = useDispatch();
+    const {logout} = useUserLogout();
     const {driff: driffSettings, user: userSettings} = useSelector(state => state.settings);
 
     const setGeneralSetting = useCallback((e) => {
@@ -35,23 +34,31 @@ const useSettings = () => {
                 );
             }),
         );
-    });
+    }, [dispatch, userSettings]);
+
+    const fetch = useCallback(() => {
+        dispatch(
+            getDriffSettings({}, (err) => {
+                if (err) {
+                    logout();
+                }
+            }),
+        );
+
+        dispatch(
+            getUserSettings(),
+        );
+    }, [dispatch]);
 
     useEffect(() => {
         if (init) {
             init = false;
-
-            dispatch(
-                getDriffSettings(),
-            );
-
-            dispatch(
-                getUserSettings(),
-            );
+            fetch();
         }
     }, []);
 
     return {
+        fetch,
         userSettings,
         driffSettings,
         chatSettings: userSettings.CHAT_SETTINGS,

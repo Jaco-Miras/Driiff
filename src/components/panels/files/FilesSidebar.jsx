@@ -48,10 +48,10 @@ const FileSidebar = (props) => {
                                 className="list-group-item d-flex align-items-center">
                             <Icon className="mr-2" icon="folder"/>
                             All Files
-                                <span className="small ml-auto">{wsFiles && wsFiles.count > 0 ? wsFiles.count : null}</span>
+                            <span className="small ml-auto">{wsFiles && wsFiles.count > 0 ? wsFiles.count : null}</span>
                         </Filter>
                         <Filter onClick={filterFile} data-filter="recent" active={filter === "recent"}
-                                className="list-group-item">
+                                className="list-group-item d-flex align-items-center">
                             <Icon className="mr-2" icon="upload-cloud"/>
                             Recently edited
                         </Filter>
@@ -68,9 +68,8 @@ const FileSidebar = (props) => {
                             <span className="small ml-auto">{wsFiles && wsFiles.trash > 0 ? wsFiles.trash : null}</span>
                         </Filter>
                     </div>
-                    
-                    {/* //revisit this
-                        <div className="card-body">
+
+                    <div className="card-body">
                         <h6 className="mb-4">Storage Status</h6>
                         <div className="d-flex align-items-center">
                             <div className="mr-3">
@@ -83,7 +82,7 @@ const FileSidebar = (props) => {
                                 </div>
                             </div>
                         </div>
-                    </div> */}
+                    </div>
                 </div>
             </div>
         </Wrapper>

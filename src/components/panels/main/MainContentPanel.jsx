@@ -10,15 +10,6 @@ import {
     CompanySettingsPanel,
 } from "../company";
 import {UserProfilePanel} from "../user";
-import {
-    WorkspaceChatPanel,
-    WorkspaceDashboardPanel,
-    WorkspaceFilesPanel,
-    WorkspacePageHeaderPanel,
-    WorkspacePeoplePanel,
-    WorkspacePostsPanel,
-    WorkspaceSettingsPanel,
-} from "../workspace";
 import {MainFooterPanel} from "./index";
 
 const Wrapper = styled.div`
@@ -33,26 +24,11 @@ const MainContentPanel = (props) => {
         <Wrapper className={`main-content ${className}`} isOnWorkspace={props.match.params.page === "workspace"}>
             <Switch>
                 <Route
-                    exact={true}
-                    {...props}
-                    component={WorkspacePageHeaderPanel}
-                    path={[
-                        "/workspace/:page/:folderId/:folderName/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName",
-                        "/workspace/:page/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName",
-                        "/workspace/:page/:folderId/:folderName/:workspaceId/:workspaceName/post/:postId/:postTitle",
-                        "/workspace/:page/:folderId/:folderName/:workspaceId/:workspaceName",
-                        "/workspace/:page/:workspaceId/:workspaceName/post/:postId/:postTitle",
-                        "/workspace/:page/:workspaceId/:workspaceName",
-                        "/workspace/:page",
-                    ]}/>
-            </Switch>
-            <Switch>
-                <Route
                     {...props}
                     component={UserProfilePanel}
                     path={[
                         "/profile/:id/:name",
-                        "/profile"
+                        "/profile",
                     ]}/>
                 <Route
                     {...props}
@@ -78,60 +54,6 @@ const MainContentPanel = (props) => {
                     {...props}
                     component={CompanySettingsPanel}
                     path={["/settings"]}/>
-                <Route
-                    {...props}
-                    component={WorkspaceDashboardPanel}
-                    path={[
-                        "/workspace/dashboard/:folderId/:folderName/:workspaceId/:workspaceName",
-                        "/workspace/dashboard/:workspaceId/:workspaceName",
-                        "/workspace/dashboard",
-                    ]}/>
-                <Route
-                    exact={true}
-                    {...props}
-                    component={WorkspacePostsPanel}
-                    path={[
-                        "/workspace/posts/:folderId/:folderName/:workspaceId/:workspaceName/post/:postId/:postTitle",
-                        "/workspace/posts/:folderId/:folderName/:workspaceId/:workspaceName",
-                        "/workspace/posts/:workspaceId/:workspaceName/post/:postId/:postTitle",
-                        "/workspace/posts/:workspaceId/:workspaceName",
-                        "/workspace/posts",
-                    ]}/>
-                <Route
-                    {...props}
-                    component={WorkspaceChatPanel}
-                    path={[
-                        "/workspace/chat/:folderId/:folderName/:workspaceId/:workspaceName",
-                        "/workspace/chat/:workspaceId/:workspaceName",
-                        "/workspace/chat",
-                    ]}/>
-                <Route
-                    exact={true}
-                    {...props}
-                    component={WorkspaceFilesPanel}
-                    path={[
-                        "/workspace/files/:folderId/:folderName/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName",
-                        "/workspace/files/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName",
-                        "/workspace/files/:folderId/:folderName/:workspaceId/:workspaceName",
-                        "/workspace/files/:workspaceId/:workspaceName",
-                        "/workspace/files",
-                    ]}/>
-                <Route
-                    {...props}
-                    component={WorkspacePeoplePanel}
-                    path={[
-                        "/workspace/people/:folderId/:folderName/:workspaceId/:workspaceName",
-                        "/workspace/people/:workspaceId/:workspaceName",
-                        "/workspace/people",
-                    ]}/>
-                <Route
-                    {...props}
-                    component={WorkspaceSettingsPanel}
-                    path={[
-                        "/workspace/settings/:folderId/:folderName/:workspaceId/:workspaceName",
-                        "/workspace/settings/:workspaceId/:workspaceName",
-                        "/workspace/settings",
-                    ]}/>
                 <Redirect
                     from="*"
                     to={{

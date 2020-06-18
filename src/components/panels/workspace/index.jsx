@@ -1,3 +1,4 @@
+export {default as WorkspaceContentPanel} from "./WorkspaceContentPanel";
 export {default as WorkspaceChatPanel} from "./WorkspaceChatPanel";
 export {default as WorkspaceDashboardPanel} from "./WorkspaceDashboardPanel";
 export {default as WorkspaceFilesPanel} from "./WorkspaceFilesPanel";

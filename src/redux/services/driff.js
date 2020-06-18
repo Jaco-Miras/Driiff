@@ -1,3 +1,4 @@
+import {getAPIUrl} from "../../helpers/slugHelper";
 import {apiNoTokenCall} from "./service";
 
 /**
@@ -36,10 +37,7 @@ export function postRegisterDriff(data) {
 export function patchCheckDriff(driffName) {
     return apiNoTokenCall({
         method: "PATCH",
-        url: `/check-slug`,
-        register: true,
-        data: {
-            slug: driffName,
-        },
+        actualUrl: `${getAPIUrl({noSlug: true})}/check-slug/?slug=${driffName}`,
+
     });
 }
