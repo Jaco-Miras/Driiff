@@ -251,3 +251,17 @@ export function putFile(payload) {
         data: payload,
     });
 }
+
+/**
+ * @param {Object} payload
+ * @param {number} payload.topic_id
+ * @returns {Promise<*>}
+ */
+export function deleteTrash(payload) {
+    let url = `/v2/workspace-delete-all-trash-files?topic_id=${payload.topic_id}`;
+    return apiCall({
+        method: "DELETE",
+        url: url,
+        data: payload,
+    });
+}

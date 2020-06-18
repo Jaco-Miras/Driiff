@@ -24,7 +24,7 @@ const Wrapper = styled.div`
 const FilesHeader = (props) => {
 
     const {className = "", dropZoneRef, onSearchChange, onSearch, onEnter,
-        wsFiles, handleAddEditFolder, folders, history} = props;
+        wsFiles, handleAddEditFolder, folders, history, params} = props;
 
     const handleClickAdd = () => {
         if (dropZoneRef.current) {
@@ -35,12 +35,14 @@ const FilesHeader = (props) => {
     const handleClickFolder = (e) => {
         if (wsFiles.folders.hasOwnProperty(e.target.dataset.value)) {
             let f = wsFiles.folders[e.target.dataset.value];
-            history.push(history.location.pathname+`/folder/${f.id}/${replaceChar(f.search)}`);
+            if (params.hasOwnProperty("fileFolderId")) {
+                history.push(history.location.pathname.split("/folder/")[0]+`/folder/${f.id}/${replaceChar(f.search)}`);
+            } else {
+                history.push(history.location.pathname+`/folder/${f.id}/${replaceChar(f.search)}`);
+            }
         }
     };
 
-    const handleClickOrderBy = () => {
-    };
 
     const addDropDown = {
         label: <><SvgIconFeather className="mr-1" icon="plus"/> Add</>,
