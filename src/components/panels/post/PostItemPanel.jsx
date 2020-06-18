@@ -10,7 +10,12 @@ const Wrapper = styled.li`
     .custom-checkbox {
         padding-left: 12px;
     }
+    
     .app-list-title {
+        &.has-unread {
+            font-weight:bold;
+        }
+        
         &.text-success {
             text-decoration: line-through;
         }
@@ -84,7 +89,14 @@ const PostItemPanel = (props) => {
             </div>
             <div className="flex-grow-1 min-width-0">
                 <div className="d-flex align-items-center justify-content-between">
-                    <div className={`app-list-title text-truncate ${post.is_mark_done ? "text-success" : ""}`}>{post.title}</div>
+                    <div
+                        className={`app-list-title text-truncate ${post.unread_count !== 0 ? "text-primary has-unread" : ""} ${post.is_mark_done ? "text-success" : ""}`}>
+                        <span>{post.title}</span>
+                        {
+                            post.unread_count !== 0 &&
+                            <div className="ml-2 badge badge-danger">{post.unread_count}</div>
+                        }
+                    </div>
                     <div className="pl-3 d-flex align-items-center">
                         <PostBadge post={post}/>
                         {

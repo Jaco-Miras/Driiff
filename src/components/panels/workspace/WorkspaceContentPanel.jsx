@@ -38,7 +38,7 @@ const EmptyState = styled.div`
 const WorkspaceContentPanel = (props) => {
 
     const {className = ""} = props;
-    const {workspaces, workspacesLoaded} = useWorkspace();
+    const {workspaces, workspacesLoaded, workspace} = useWorkspace();
     const dispatch = useDispatch();
 
     const handleShowWorkspaceModal = () => {
@@ -61,9 +61,9 @@ const WorkspaceContentPanel = (props) => {
                 Object.keys(workspaces).length >= 1 ?
                 <>
                     <Route
-                        exact={true}
                         {...props}
-                        component={WorkspacePageHeaderPanel}
+                        exact={true}
+                        render={(props) => <WorkspacePageHeaderPanel {...props} workspace={workspace}/>}
                         path={[
                             "/workspace/:page/:folderId/:folderName/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName",
                             "/workspace/:page/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName",
