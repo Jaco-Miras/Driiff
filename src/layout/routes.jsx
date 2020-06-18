@@ -9,8 +9,8 @@ import MainLayout from "./MainLayout";
 
 export const AppRoute = ({children, ...props}) => {
 
-    useTranslation();
     useSettings();
+    useTranslation();
 
     // const push = usePushNotification();
     const session = useSelector(state => state.session);

@@ -1,21 +1,23 @@
 import {useCallback, useEffect} from "react";
 import {useDispatch} from "react-redux";
+import {useHistory, useRouteMatch} from "react-router-dom";
 import {sessionService} from "redux-react-session";
 import {getAPIUrl, getCurrentDriffUrl} from "../../helpers/slugHelper";
 import {toggleLoading} from "../../redux/actions/globalActions";
 import {userLogout} from "../../redux/actions/userAction";
 
-const useUserLogout = (props) => {
+const useUserLogout = () => {
 
     const dispatch = useDispatch();
-    const {path} = props.match;
+    const history = useHistory();
+    const {path} = useRouteMatch();
 
     const logout = useCallback(() => {
         dispatch(
             toggleLoading(true),
         );
         dispatch(
-            userLogout({}, (err, ress) => {
+            userLogout({}, () => {
                 localStorage.removeItem("userAuthToken");
                 localStorage.removeItem("token");
                 localStorage.removeItem("atoken");
@@ -24,7 +26,7 @@ const useUserLogout = (props) => {
                     .deleteSession()
                     .then(() => sessionService.deleteUser())
                     .then(() => {
-                        props.history.push("/login");
+                        history.push("/login");
                         dispatch(
                             toggleLoading(false),
                         );
@@ -45,7 +47,7 @@ const useUserLogout = (props) => {
             logout();
         }
 
-    }, [path, dispatch, props.history]);
+    }, [path, dispatch, history]);
 
     return {
         logout,
