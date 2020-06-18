@@ -7,6 +7,7 @@ import {
     clearFileSearchResults,
     deleteFile,
     deleteFolder,
+    deleteTrash,
     favoriteFile,
     getWorkspaceFavoriteFiles,
     getWorkspaceFiles, 
@@ -278,6 +279,30 @@ const useFileActions = (params = null) => {
     const copyLink = useCallback(link => {
         copyTextToClipboard(link);
     }, []);
+
+    const removeTrashFiles = useCallback(() => {
+        const handleDeleteTrash = () => {
+            dispatch(
+                deleteTrash({
+                    topic_id: params.workspaceId
+                })
+            );
+        };
+        let payload = {
+            type: "confirmation",
+            headerText: "Delete trash",
+            submitText: "Delete",
+            cancelText: "Cancel",
+            bodyText: "Are you sure you want to delete all trash files?",
+            actions: {
+                onSubmit: handleDeleteTrash,
+            },
+        };
+
+        dispatch(
+            addToModals(payload),
+        );
+    }, [dispatch]);
     
     return {
         clearSearch,
@@ -294,6 +319,7 @@ const useFileActions = (params = null) => {
         getTrashFiles,
         removeFile,
         removeFolder,
+        removeTrashFiles,
         renameFile,
         search,
         updateFolder,

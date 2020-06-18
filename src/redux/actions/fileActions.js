@@ -3,6 +3,7 @@ import {
     deleteFile as deleteFileService,
     deleteFolder as deleteFolderService,
     deleteWorkspaceFile as deleteWorkspaceFileService,
+    deleteTrash as deleteTrashService,
     getChannelFiles as getChannelFilesService,
     getFiles as getFilesService,
     getWorkspaceFavoriteFiles as getWorkspaceFavoriteFilesService,
@@ -344,6 +345,16 @@ export function addRemoveFavorite(payload, callback) {
     return SimpleDispatchActionToReducer(
         "ADD_REMOVE_FAVORITE",
         payload,
+        callback,
+    );
+}
+
+export function deleteTrash(payload, callback) {
+    return dispatchActionToReducer(
+        deleteTrashService(payload),
+        "DELETE_TRASH_START",
+        "DELETE_TRASH_SUCCESS",
+        "DELETE_TRASH_FAIL",
         callback,
     );
 }
