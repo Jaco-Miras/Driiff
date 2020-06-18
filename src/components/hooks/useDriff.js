@@ -94,7 +94,7 @@ const useDriff = () => {
                     }
                     if (res) {
                         if (res.data.status) {
-                            setDriff(driffName, false);
+                            setDriff(driffName);
                         } else {
                             localStorage.removeItem("slug");
                             setRedirected(true);
