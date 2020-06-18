@@ -339,3 +339,11 @@ export function incomingFiles(payload, callback) {
         callback,
     );
 }
+
+export function addRemoveFavorite(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "ADD_REMOVE_FAVORITE",
+        payload,
+        callback,
+    );
+}

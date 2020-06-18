@@ -1,5 +1,4 @@
 import {convertArrayToObject} from "../../helpers/arrayHelper";
-import { act } from "react-dom/test-utils";
 
 const INITIAL_STATE = {
     user: null,
@@ -259,6 +258,7 @@ export default (state = INITIAL_STATE, action) => {
                 newWorkspaceFiles = {
                     [action.data.topic_id]: {
                         ...newWorkspaceFiles[action.data.topic_id],
+                        files: {...convertArrayToObject(action.data.files, "id"), ...newWorkspaceFiles[action.data.topic_id].files},
                         favorite_files: action.data.files.map(f => f.id)
                     }
                 }
@@ -267,6 +267,7 @@ export default (state = INITIAL_STATE, action) => {
                     ...newWorkspaceFiles,
                     [action.data.topic_id]: {
                         ...newWorkspaceFiles[action.data.topic_id],
+                        files: {...convertArrayToObject(action.data.files, "id"), ...newWorkspaceFiles[action.data.topic_id].files},
                         favorite_files: action.data.files.map(f => f.id)
                     }
                 }
@@ -484,7 +485,7 @@ export default (state = INITIAL_STATE, action) => {
         case "INCOMING_DELETED_FILE": {
             let newWorkspaceFiles = {...state.workspaceFiles};
             if (newWorkspaceFiles.hasOwnProperty(action.data.topic_id)) {
-                let file = newWorkspaceFiles[action.data.topic_id].files[action.data.file_id]
+                let file = {...newWorkspaceFiles[action.data.topic_id].files[action.data.file_id]};
                 newWorkspaceFiles = {
                     [action.data.topic_id]: {
                         ...newWorkspaceFiles[action.data.topic_id],
@@ -496,6 +497,7 @@ export default (state = INITIAL_STATE, action) => {
                         trash: newWorkspaceFiles[action.data.topic_id].trash + 1,
                     }
                 }
+                delete newWorkspaceFiles[action.data.topic_id].files[action.data.file_id];
                 if (newWorkspaceFiles[action.data.topic_id].hasOwnProperty("folders")) {
                     Object.values(newWorkspaceFiles[action.data.topic_id].folders).forEach(f => {
                         if (f.hasOwnProperty("files") && newWorkspaceFiles[action.data.topic_id].folders[f.id].files.length) {
@@ -515,6 +517,26 @@ export default (state = INITIAL_STATE, action) => {
             } else {
                 return state;
             }
+        }
+        case "ADD_REMOVE_FAVORITE": {
+            let newWorkspaceFiles = {...state.workspaceFiles};
+            newWorkspaceFiles[action.data.topic_id].files[action.data.file_id].is_favorite = action.data.is_favorite;
+            newWorkspaceFiles = {
+                ...newWorkspaceFiles,
+                [action.data.topic_id]: {
+                    ...newWorkspaceFiles[action.data.topic_id],
+                    stars: action.data.is_favorite ? 
+                            newWorkspaceFiles[action.data.topic_id].stars + 1 
+                            : newWorkspaceFiles[action.data.topic_id].stars - 1,
+                    favorite_files: action.data.is_favorite ? 
+                                [...newWorkspaceFiles[action.data.topic_id].favorite_files, action.data.file_id] 
+                                : newWorkspaceFiles[action.data.topic_id].favorite_files.filter(id => id != action.data.file_id)
+                }
+            }
+            return {
+                ...state,
+                workspaceFiles: newWorkspaceFiles
+            }     
         }
         default:
             return state;

@@ -3,6 +3,7 @@ import {useDispatch} from "react-redux";
 import {
     addFileSearchResults,
     addFolder,
+    addRemoveFavorite,
     clearFileSearchResults,
     deleteFile,
     deleteFolder,
@@ -203,12 +204,29 @@ const useFileActions = (params = null) => {
         
     }, [dispatch]);
 
-    const favorite = useCallback((file, callback) => {
+    const favorite = useCallback((file) => {
+        const cb = (err,res) => {
+            if (err) return;
+            let payload = {
+                file_id: file.id,
+                topic_id:params.workspaceId,
+                is_favorite: !file.is_favorite
+            }
+            if (params.hasOwnProperty("fileFolderId")) {
+                payload = {
+                    ...payload,
+                    folder_id: params.fileFolderId
+                }
+            }
+            dispatch(
+                addRemoveFavorite(payload)
+            );
+        }
         dispatch(
             favoriteFile({
                 type_id: file.id,
                 type: "file"
-            })
+            }, cb)
         );
     }, [dispatch]);
 
