@@ -14,6 +14,9 @@ const Wrapper = styled.div`
     .feather-message-circle {
         cursor: pointer;
         cursor: hand;
+        &:hover {
+            color: #7a1b8b;
+        }
     }
 `;
 

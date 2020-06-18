@@ -4,6 +4,7 @@ import {DropDocument} from "../../dropzone/DropDocument";
 import {FileListItem} from "../../list/file/item";
 import {MoreOptions} from "../common";
 import {ImportantFiles, PopularFiles, RecentEditedFile, RemoveFiles} from "./index";
+import {SvgIconFeather} from "../../common";
 
 const Wrapper = styled.div`
     .card-body {
@@ -17,6 +18,15 @@ const Wrapper = styled.div`
         scrollbar-width: none;
         .recent-new-group-wrapper {
             padding-right: 24px;
+        }
+    }
+    .feather-trash {
+        position: absolute;
+        right: 10px;
+        top: 10px;
+        width: 18px;
+        :hover {
+            cursor: pointer;
         }
     }
 `;
@@ -104,6 +114,10 @@ const FilesBody = (props) => {
                         <div onClick={handleEditFolder}>Edit folder</div>
                         <div onClick={handleRemoveFolder}>Remove folder</div>
                     </MoreButton>
+                }
+                {
+                  filter === "removed" &&
+                  <SvgIconFeather icon="trash" onClick={actions.removeTrashFiles}/>  
                 }
                 {
                     filter === "" &&

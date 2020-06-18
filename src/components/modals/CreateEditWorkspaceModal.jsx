@@ -7,7 +7,7 @@ import toaster from "toasted-notes";
 import {replaceChar} from "../../helpers/stringFormatter";
 import {setPendingUploadFilesToWorkspace} from "../../redux/actions/fileActions";
 import {clearModal} from "../../redux/actions/globalActions";
-import {createWorkspace, updateWorkspace} from "../../redux/actions/workspaceActions";
+import {createWorkspace, updateWorkspace, fetchTimeline} from "../../redux/actions/workspaceActions";
 import {FileAttachments} from "../common";
 import {DropDocument} from "../dropzone/DropDocument";
 import {CheckBox, DescriptionInput, FolderSelect, InputFeedback, PeopleSelect} from "../forms";
@@ -312,7 +312,13 @@ const CreateEditWorkspaceModal = (props) => {
                 new_member_ids: added_members.map(m => m.id),
                 system_message: system_message
             };
-            dispatch(updateWorkspace(payload));
+            const cb = (err,res) => {
+                if (err) return;
+                dispatch(
+                    fetchTimeline({topic_id: item.id})
+                );
+            }
+            dispatch(updateWorkspace(payload, cb));
         } else {
             dispatch(
                 createWorkspace(payload, (err, res) => {

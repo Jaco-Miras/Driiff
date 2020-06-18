@@ -3,6 +3,7 @@ import {
     deleteFile as deleteFileService,
     deleteFolder as deleteFolderService,
     deleteWorkspaceFile as deleteWorkspaceFileService,
+    deleteTrash as deleteTrashService,
     getChannelFiles as getChannelFilesService,
     getFiles as getFilesService,
     getWorkspaceFavoriteFiles as getWorkspaceFavoriteFilesService,

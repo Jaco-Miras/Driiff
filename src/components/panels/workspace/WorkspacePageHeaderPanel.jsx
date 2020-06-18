@@ -27,8 +27,9 @@ const MainNavLink = styled(NavLink)`
     border-radius: 8px;
     color: #5d5d5d;
     margin: 0 0.2rem;
-    transition: none;
+    transition: color 200ms ease 0ms;
     &.active {
+        transition: none;
         background-color: #7a1b8b;
         color: #fff;
     }
@@ -36,7 +37,7 @@ const MainNavLink = styled(NavLink)`
 
 const WorkspacePageHeaderPanel = (props) => {
 
-    const {className = ""} = props;
+    const {className = "", workspace} = props;
 
     let pathname = props.match.url;
     if (props.match.path === "/workspace/:page/:workspaceId/:workspaceName/post/:postId/:postTitle" ||
@@ -49,7 +50,6 @@ const WorkspacePageHeaderPanel = (props) => {
         pathname = pathname.replace(`/workspace/${props.match.params.page}`, "");
     }
 
-
     return (
         <>
             <Wrapper className={`page-header ${className}`}>
@@ -59,10 +59,22 @@ const WorkspacePageHeaderPanel = (props) => {
                             <MainNavLink isSub={true} to={`/workspace/dashboard${pathname}`}>Dashboard</MainNavLink>
                         </li>
                         <li className="nav-item">
-                            <MainNavLink isSub={true} to={`/workspace/posts${pathname}`}>Posts</MainNavLink>
+                            <MainNavLink isSub={true} to={`/workspace/posts${pathname}`}>
+                                Posts
+                                {
+                                    workspace !== null && workspace.topic_detail.unread_posts !== 0 &&
+                                    <div className="ml-2 badge badge-danger">{workspace.topic_detail.unread_posts}</div>
+                                }
+                            </MainNavLink>
                         </li>
                         <li className="nav-item">
-                            <MainNavLink isSub={true} to={`/workspace/chat${pathname}`}>Chat</MainNavLink>
+                            <MainNavLink isSub={true} to={`/workspace/chat${pathname}`}>
+                                Chat
+                                {
+                                    workspace !== null && workspace.topic_detail.unread_chats !== 0 &&
+                                    <div className="ml-2 badge badge-danger">{workspace.topic_detail.unread_chats}</div>
+                                }
+                            </MainNavLink>
                         </li>
                         <li className="nav-item">
                             <MainNavLink isSub={true} to={`/workspace/files${pathname}`}>Files</MainNavLink>

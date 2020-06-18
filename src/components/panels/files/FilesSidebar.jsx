@@ -10,8 +10,8 @@ const Wrapper = styled.div`
 const Filter = styled.span`
     cursor: pointer;
     cursor: hand;
-            
-    ${props => props.active && `            
+
+    ${props => props.active && `
         background: 0 0;
         color: #7a1b8b;
     `}
@@ -36,7 +36,7 @@ const FileSidebar = (props) => {
             <div className="card">
                 <div className="card-body">
                     <button
-                        className="btn btn-outline-primary btn-block file-upload-btn" onClick={handleShowUploadModal}>
+                        className="btn btn-primary btn-block file-upload-btn" onClick={handleShowUploadModal}>
                         Upload Files
                     </button>
                     <form className="d-none" id="file-upload">

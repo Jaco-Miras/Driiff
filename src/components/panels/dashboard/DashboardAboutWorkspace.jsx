@@ -5,26 +5,23 @@ import {FileAttachments, SvgIconFeather} from "../../common";
 const Wrapper = styled.div`
     border-left: 5px solid #822492;
     text-align: left;
-    
-    .feather-edit {
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+    .feather {
         cursor: pointer;
-        cursor: hand;
-        
         &:hover {
-            color: #972c86;
+            color: #7a1b8b;
         }
     }
-    
     .card-title {
         position: relative;
-        
+
         .feather-edit {
             right: 0;
             width: 16px;
             position: absolute;
         }
     }
-    
     .file-attachments {
         .files {
             width:100%;
@@ -48,7 +45,7 @@ const DashboardAboutWorkspace = (props) => {
             <div className="card-body">
                 <h5 className="card-title">About this workspace <SvgIconFeather icon="edit" onClick={onEditClick}/></h5>
                 {
-                    workspace && 
+                    workspace &&
                     <DashboardDescription dangerouslySetInnerHTML={{__html: workspace.description}}/>
                 }
                 {

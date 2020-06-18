@@ -8,18 +8,24 @@ const PostBadge = props => {
         return (
             <div className="mr-3 d-sm-inline d-none">
                 <div className={`badge 
-                    ${post.is_must_read === 1 ? "badge-danger": post.is_must_reply === 1 ? "badge-warning" : "badge-primary" }
+                    ${post.is_must_read === 1 ?
+                      "badge-danger" :
+                      post.is_must_reply === 1 ?
+                      "badge-warning" :
+                      post.is_read_only === 1 ?
+                      "badge-info" :
+                      "badge-primary"}
                 `}>
-                {
-                    post.is_must_read === 1 ? "Must read" : post.is_must_reply === 1 ? "Reply required" : "No replies"
-                }
+                    {
+                        post.is_must_read === 1 ? "Must read" : post.is_must_reply === 1 ? "Reply required" : "No replies"
+                    }
                 </div>
-            </div> 
-        )
+            </div>
+        );
     } else {
         return null;
     }
-    
+
 };
 
-export default PostBadge;
+export default React.memo(PostBadge);

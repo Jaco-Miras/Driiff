@@ -5,25 +5,25 @@ import {SvgIconFeather} from "../../common";
 import {RecentPostListItem} from "../../list/post/item";
 import {usePostActions} from "../../hooks";
 
-const Wrapper = styled.div`    
+const Wrapper = styled.div`
     .feather-refresh-ccw {
         cursor: pointer;
         cursor: hand;
     }
-    
+
     .card-title {
         position: relative;
-        
+
         .feather-refresh-ccw {
             right: 0;
             width: 16px;
             position: absolute;
         }
     }
-    
+
     .recent-post-list-item {
         position: relative;
-        
+
         .more-options-tooltip {
             &.orientation-top{
                 bottom: 10px;
@@ -35,18 +35,25 @@ const Wrapper = styled.div`
         &:hover {
             .more-options {
                 visibility: visible;
-                                       
+
             }
         }
-        
+
         .more-options {
-            visibility: hidden;                       
+            visibility: hidden;
         }
     }
-    
+
     .file-attachments {
         .files {
             width:100%;
+        }
+    }
+
+    .feather {
+        cursor: pointer;
+        &:hover {
+            color: #7a1b8b;
         }
     }
 `;
@@ -70,7 +77,7 @@ const RecentPosts = (props) => {
     const handleOpenPost = (post) => {
         postActions.openPost(post, match.url.replace("/workspace/dashboard/", "/workspace/posts/"))
     };
-    
+
     const handleRefetchPosts = () => {
         if (match.params.hasOwnProperty("workspaceId")) {
             postActions.getRecentPosts(match.params.workspaceId)
@@ -85,8 +92,8 @@ const RecentPosts = (props) => {
                     posts &&
                     <ul className="list-group list-group-flush">
                     {
-                        Object.values(posts).map(post => {
-                            return <RecentPostListItem key={post.id} post={post} parentRef={scrollRef} 
+                        Object.values(posts).sort((a,b) => b.created_at.timestamp > a.created_at.timestamp ? 1 : -1).map(post => {
+                            return <RecentPostListItem key={post.id} post={post} parentRef={scrollRef}
                                 postActions={postActions} onOpenPost={handleOpenPost}/>;
                         })
                     }
