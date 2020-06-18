@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React from "react";
 import styled from "styled-components";
 import {MoreOptions} from "../../panels/common";
 
@@ -25,7 +25,7 @@ const FileOptions = props => {
 
     const {className = "", file, scrollRef, actions} = props;
 
-    const [showMoreOptions, setShowMoreOptions] = useState(false);
+    //const [showMoreOptions, setShowMoreOptions] = useState(false);
 
     const handleViewDetail = () => {
         actions.viewFiles(file);
@@ -33,7 +33,6 @@ const FileOptions = props => {
 
     const handleFavorite = () => {
         actions.favorite(file);
-        //need socket
     };
 
     const handleShare = () => {
@@ -53,11 +52,7 @@ const FileOptions = props => {
     };
 
     const handleDelete = () => {
-        //error on delete endpoint
-        const cb = (err,res) => {
-
-        };
-        actions.removeFile(file, cb)
+        actions.removeFile(file);
     };
 
     return (
@@ -66,7 +61,7 @@ const FileOptions = props => {
             moreButton="more-vertical"
             file={file} scrollRef={scrollRef}>
             <div onClick={handleViewDetail}>View Details</div>
-            <div onClick={handleFavorite}>Un/Favorite</div>
+            <div onClick={handleFavorite}>{file.is_favorite ? "Unfavorite" : "Favorite"}</div>
             <div onClick={handleShare}>Share</div>
             <div onClick={handleDownload}>Download</div>
             <div onClick={handleMoveTo}>Move to</div>

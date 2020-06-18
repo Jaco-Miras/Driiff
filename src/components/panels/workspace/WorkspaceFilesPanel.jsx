@@ -149,8 +149,9 @@ const WorkspaceFilesPanel = (props) => {
                     filter={filter} wsFiles={wsFiles}/>
                 <div className="col-md-9 app-content">
                     <div className="app-content-overlay"/>
-                    <FilesHeader dropZoneRef={refs.dropZone} onSearchChange={handleSearchChange} history={history}
-                                 wsFiles={wsFiles} handleAddEditFolder={handleAddEditFolder} folders={folders}/>
+                    <FilesHeader dropZoneRef={refs.dropZone} history={history}
+                                onSearch={handleSearch} onSearchChange={handleSearchChange} onEnter={handleEnter}
+                                wsFiles={wsFiles} handleAddEditFolder={handleAddEditFolder} folders={folders}/>
                     <FilesBody dropZoneRef={refs.dropZone} filter={filter} search={search} folder={folder}
                                fileIds={fileIds}
                                history={history} actions={actions} params={params} wsFiles={wsFiles}
