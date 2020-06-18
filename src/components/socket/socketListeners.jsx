@@ -24,6 +24,8 @@ import {addFilesToChannel,
     incomingFolder,
     incomingDeletedFolder,
     incomingFile,
+    incomingFiles,
+    incomingDeletedFile
 } from "../../redux/actions/fileActions";
 import {
     addUserToReducers,
@@ -227,8 +229,20 @@ class SocketListeners extends PureComponent {
         })
 
         window.Echo.private(`${localStorage.getItem("slug")}.App.Broadcast`)
-        .listen(".upload-bulk-private-workspace-files", e => {
+        .listen(".upload-bulk-workspace-files", e => {
             console.log(e, 'files bulk')
+            this.props.incomingFiles(e);
+        })
+        .listen(".workspace-file-notification", e => {
+            console.log(e, 'file')
+            switch (e.SOCKET_TYPE) {
+                case "FILE_TRASH": {
+                    this.props.incomingDeletedFile(e);
+                    break;
+                }
+                default:
+                    return null;
+            }
         })
         // old / legacy channel
         window.Echo.private(`${localStorage.getItem("slug")}.App.User.${this.props.user.id}`)
@@ -679,6 +693,8 @@ function mapDispatchToProps(dispatch) {
         incomingFolder: bindActionCreators(incomingFolder, dispatch),
         incomingDeletedFolder: bindActionCreators(incomingDeletedFolder, dispatch),
         incomingFile: bindActionCreators(incomingFile, dispatch),
+        incomingFiles: bindActionCreators(incomingFiles, dispatch),
+        incomingDeletedFile: bindActionCreators(incomingDeletedFile, dispatch),
     };
 }
 

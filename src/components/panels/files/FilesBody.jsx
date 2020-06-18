@@ -95,6 +95,7 @@ const FilesBody = (props) => {
                     dropAction(acceptedFiles);
                 }}
                 onCancel={handleHideDropZone}
+                params={params}
             />
             <div className="card-body">
                 {
@@ -136,12 +137,13 @@ const FilesBody = (props) => {
                 }
                 {
                     filter === "important" && 
-                    wsFiles && wsFiles.favorite_files && wsFiles.favorite_files.length > 0 &&
+                    wsFiles && wsFiles.hasOwnProperty("favorite_files") && wsFiles.favorite_files.length > 0 &&
                     <ImportantFiles search={search} scrollRef={scrollRef} wsFiles={wsFiles} actions={actions}/>
                 }
                 {
                     filter === "removed" &&
-                    <RemoveFiles search={search} scrollRef={scrollRef} actions={actions}/>
+                    wsFiles && wsFiles.hasOwnProperty("trash_files") && Object.keys(wsFiles.trash_files).length > 0 &&
+                    <RemoveFiles search={search} scrollRef={scrollRef} wsFiles={wsFiles} actions={actions}/>
                 }
             </div>
         </Wrapper>

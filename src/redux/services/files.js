@@ -134,7 +134,7 @@ export function restoreWorkspaceFile(payload) {
  * @returns {Promise<*>}
  */
 export function deleteWorkspaceFile(payload) {
-    let url = `/v2/workspace-delete-file`;
+    let url = `/v2/workspace-delete-files`;
     return apiCall({
         method: "DELETE",
         url: url,
@@ -228,7 +228,7 @@ export function postFavorite(payload) {
  * @returns {Promise<*>}
  */
 export function deleteFile(payload) {
-    let url = `/v2/workspace-delete-file`;
+    let url = `/v2/workspace-files/${payload.file_id}?topic_id=${payload.topic_id}`;
     return apiCall({
         method: "DELETE",
         url: url,

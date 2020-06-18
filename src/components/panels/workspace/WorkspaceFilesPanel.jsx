@@ -42,8 +42,24 @@ const WorkspaceFilesPanel = (props) => {
     };
 
     const handleSearchChange = useCallback((e) => {
+        if (e.target.value === "") clearSearch();
         setSearch(e.target.value);
     }, [setSearch]);
+
+    const handleSearch = () => {
+        actions.search(search);
+    };
+
+    const clearSearch = () => {
+        setSearch("");
+        actions.clearSearch();
+    };
+
+    const handleEnter = useCallback((e) => {
+        if (e.key === "Enter") {
+            handleSearch();
+        }
+    }, [handleSearch]);
 
     const dictionary = {
         createFolder: _t("CREATE_FOLDER", "Create folder"),
@@ -134,8 +150,8 @@ const WorkspaceFilesPanel = (props) => {
                               filter={filter} wsFiles={wsFiles}/>
                 <div className="col-md-9 app-content">
                     <div className="app-content-overlay"/>
-                    <FilesHeader dropZoneRef={refs.dropZone} onSearchChange={handleSearchChange} history={history}
-                        wsFiles={wsFiles} handleAddEditFolder={handleAddEditFolder} folders={folders}/>
+                    <FilesHeader dropZoneRef={refs.dropZone} onSearchChange={handleSearchChange} onSearch={handleSearch} onEnter={handleEnter}
+                        history={history} wsFiles={wsFiles} handleAddEditFolder={handleAddEditFolder} folders={folders}/>
                     <FilesBody dropZoneRef={refs.dropZone} filter={filter} search={search} folder={folder} fileIds={fileIds}
                         history={history} actions={actions} params={params} wsFiles={wsFiles} handleAddEditFolder={handleAddEditFolder}/>
                 </div>

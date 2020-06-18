@@ -307,3 +307,35 @@ export function incomingFile(payload, callback) {
         callback,
     );
 }
+
+export function addFileSearchResults(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "ADD_FILE_SEARCH_RESULTS",
+        payload,
+        callback,
+    );
+}
+
+export function clearFileSearchResults(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "CLEAR_FILE_SEARCH_RESULTS",
+        payload,
+        callback,
+    );
+}
+
+export function incomingDeletedFile(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "INCOMING_DELETED_FILE",
+        payload,
+        callback,
+    );
+}
+
+export function incomingFiles(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "INCOMING_FILES",
+        payload,
+        callback,
+    );
+}

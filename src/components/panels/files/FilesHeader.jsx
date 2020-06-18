@@ -23,7 +23,8 @@ const Wrapper = styled.div`
 
 const FilesHeader = (props) => {
 
-    const {className = "", dropZoneRef, onSearchChange, wsFiles, handleAddEditFolder, folders, history} = props;
+    const {className = "", dropZoneRef, onSearchChange, onSearch, onEnter,
+        wsFiles, handleAddEditFolder, folders, history} = props;
 
     const handleClickAdd = () => {
         if (dropZoneRef.current) {
@@ -71,26 +72,26 @@ const FilesHeader = (props) => {
             : []
     };
 
-    const orderByDropDown = {
-        label: "Order by",
-        items: [
-            {
-                value: "favorite",
-                label: "Starred / favoriet",
-                onClick: handleClickOrderBy,
-            },
-            {
-                value: "recent",
-                label: "Datum (recent)",
-                onClick: handleClickOrderBy,
-            },
-            {
-                value: "unread",
-                label: "Ongelezen",
-                onClick: handleClickOrderBy,
-            },
-        ],
-    };
+    // const orderByDropDown = {
+    //     label: "Order by",
+    //     items: [
+    //         {
+    //             value: "favorite",
+    //             label: "Starred",
+    //             onClick: handleClickOrderBy,
+    //         },
+    //         {
+    //             value: "recent",
+    //             label: "Recent",
+    //             onClick: handleClickOrderBy,
+    //         },
+    //         {
+    //             value: "unread",
+    //             label: "",
+    //             onClick: handleClickOrderBy,
+    //         },
+    //     ],
+    // };
 
     return (
         <Wrapper className={`files-header app-action ${className}`}>
@@ -102,29 +103,25 @@ const FilesHeader = (props) => {
                     <li className="list-inline-item mb-0">
                         <ButtonDropdown dropdown={folderDropDown}/>
                     </li>
-                    <li className="list-inline-item mb-0">
+                    {/* <li className="list-inline-item mb-0">
                         <ButtonDropdown dropdown={orderByDropDown}/>
-                    </li>
+                    </li> */}
                 </ul>
             </div>
             <div className="action-right">
-                <form className="d-flex mr-3">
-                    <a href="/" className="app-sidebar-menu-button btn btn-outline-light">
-                        <SvgIconFeather icon="menu"/>
-                    </a>
-                    <div className="input-group">
-                        <input type="text"
-                               onChange={onSearchChange}
-                               className="form-control" placeholder="Search file"
-                               aria-describedby="button-addon1"/>
-                        <div className="input-group-append">
-                            <button className="btn btn-outline-light" type="button"
-                                    id="button-addon1">
-                                <SvgIconFeather icon="search"/>
-                            </button>
-                        </div>
+                <div className="input-group">
+                    <input type="text"
+                            onChange={onSearchChange}
+                            onKeyDown={onEnter}
+                            className="form-control" placeholder="Search file"
+                            aria-describedby="button-addon1"/>
+                    <div className="input-group-append">
+                        <button className="btn btn-outline-light" type="button"
+                                id="button-addon1" onClick={onSearch}>
+                            <SvgIconFeather icon="search"/>
+                        </button>
                     </div>
-                </form>
+                </div>
             </div>
         </Wrapper>
     );

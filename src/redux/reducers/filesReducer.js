@@ -182,7 +182,10 @@ export default (state = INITIAL_STATE, action) => {
                         trash: 0,
                         popular_files: [],
                         recently_edited: [],
-                        favorite_files: []
+                        favorite_files: [],
+                        trash_files: {},
+                        search_results: [],
+                        search_value: ""
                     }
                 }
             }
@@ -212,6 +215,31 @@ export default (state = INITIAL_STATE, action) => {
                         count: action.data.total_file_count,
                         stars: action.data.total_file_stars,
                         trash: action.data.total_file_trash,
+                    }
+                }
+            }
+            return {
+                ...state,
+                workspaceFiles: newWorkspaceFiles
+            }
+        }
+        case "GET_WORKSPACE_TRASH_FILES_SUCCESS": {
+            let newWorkspaceFiles = {...state.workspaceFiles};
+            if (newWorkspaceFiles.hasOwnProperty(action.data.topic_id)) {
+                newWorkspaceFiles = {
+                    [action.data.topic_id]: {
+                        ...newWorkspaceFiles[action.data.topic_id],
+                        //files: {...convertArrayToObject(action.data.files, "id"), ...newWorkspaceFiles[action.data.topic_id].files},
+                        trash_files: convertArrayToObject(action.data.files, "id")
+                    }
+                }
+            } else {
+                newWorkspaceFiles = {
+                    ...newWorkspaceFiles,
+                    [action.data.topic_id]: {
+                        ...newWorkspaceFiles[action.data.topic_id],
+                        //files: {...convertArrayToObject(action.data.files, "id"), ...newWorkspaceFiles[action.data.topic_id].files},
+                        trash_files: convertArrayToObject(action.data.files, "id")
                     }
                 }
             }
@@ -356,7 +384,7 @@ export default (state = INITIAL_STATE, action) => {
         case "INCOMING_FILE": {
             let newWorkspaceFiles = {...state.workspaceFiles};
             if (newWorkspaceFiles.hasOwnProperty(action.data.topic_id)) {
-                if (newWorkspaceFiles[action.data.topic_id].hasOwnProperty("folders")) {
+                // if (newWorkspaceFiles[action.data.topic_id].hasOwnProperty("folders")) {
                     newWorkspaceFiles = {
                         ...newWorkspaceFiles,
                         [action.data.topic_id]: {
@@ -371,8 +399,109 @@ export default (state = INITIAL_STATE, action) => {
                        ...state,
                        workspaceFiles: newWorkspaceFiles
                    }
+                // } else {
+                //     return state;
+                // }
+            } else {
+                return state;
+            }
+        }
+        case "INCOMING_FILES": {
+            let newWorkspaceFiles = {...state.workspaceFiles};
+            if (newWorkspaceFiles.hasOwnProperty(action.data.topic_id)) {
+                if (newWorkspaceFiles[action.data.topic_id].hasOwnProperty("folders")) {
+                    newWorkspaceFiles = {
+                        ...newWorkspaceFiles,
+                        [action.data.topic_id]: {
+                            ...newWorkspaceFiles[action.data.topic_id],
+                            folders: {
+                                ...newWorkspaceFiles[action.data.topic_id].folders,
+                                [action.data.folder_id]: {
+                                    ...newWorkspaceFiles[action.data.topic_id].folders[action.data.folder_id],
+                                    files: [...newWorkspaceFiles[action.data.topic_id].folders[action.data.folder_id].files, ...action.data.files.map(f => f.id)]
+                                }
+                            },
+                            files: {...convertArrayToObject(action.data.files, "id"), ...newWorkspaceFiles[action.data.topic_id].files}
+                        }
+                    }
                 } else {
-                    return state;
+                    newWorkspaceFiles = {
+                        ...newWorkspaceFiles,
+                        [action.data.topic_id]: {
+                            ...newWorkspaceFiles[action.data.topic_id],
+                            files: {...convertArrayToObject(action.data.files, "id"), ...newWorkspaceFiles[action.data.topic_id].files}
+                        }
+                    }
+                }
+                return {
+                    ...state,
+                    workspaceFiles: newWorkspaceFiles
+                }
+            } else {
+                return state;
+            }
+        }
+        case "ADD_FILE_SEARCH_RESULTS": {
+            let newWorkspaceFiles = {...state.workspaceFiles};
+            if (newWorkspaceFiles.hasOwnProperty(action.data.topic_id)) {
+                newWorkspaceFiles = {
+                    [action.data.topic_id]: {
+                        ...newWorkspaceFiles[action.data.topic_id],
+                        files: {...convertArrayToObject(action.data.search_results, "id"), ...newWorkspaceFiles[action.data.topic_id].files},
+                        search_results: action.data.search_results.map(f => f.id),
+                        search_value: action.data.search
+                    }
+                }
+            } 
+            return {
+                ...state,
+                workspaceFiles: newWorkspaceFiles
+            }
+        }
+        case "CLEAR_FILE_SEARCH_RESULTS": {
+            let newWorkspaceFiles = {...state.workspaceFiles};
+            if (newWorkspaceFiles.hasOwnProperty(action.data.topic_id)) {
+                newWorkspaceFiles = {
+                    [action.data.topic_id]: {
+                        ...newWorkspaceFiles[action.data.topic_id],
+                        search_results: [],
+                        search_value: ""
+                    }
+                }
+            } 
+            return {
+                ...state,
+                workspaceFiles: newWorkspaceFiles
+            }
+        }
+        case "INCOMING_DELETED_FILE": {
+            let newWorkspaceFiles = {...state.workspaceFiles};
+            if (newWorkspaceFiles.hasOwnProperty(action.data.topic_id)) {
+                let file = newWorkspaceFiles[action.data.topic_id].files[action.data.file_id]
+                newWorkspaceFiles = {
+                    [action.data.topic_id]: {
+                        ...newWorkspaceFiles[action.data.topic_id],
+                        trash_files: {
+                            ...newWorkspaceFiles[action.data.topic_id].trash_files, 
+                            [file.id]: file
+                        }
+                    }
+                }
+                if (newWorkspaceFiles[action.data.topic_id].hasOwnProperty("folders")) {
+                    Object.values(newWorkspaceFiles[action.data.topic_id].folders).forEach(f => {
+                        if (f.hasOwnProperty("files") && newWorkspaceFiles[action.data.topic_id].folders[f.id].files.length) {
+                            newWorkspaceFiles[action.data.topic_id].folders[f.id].files = newWorkspaceFiles[action.data.topic_id].folders[f.id].files.filter(id => id != action.data.file_id)
+                        } else return;
+                    })
+                   return {
+                       ...state,
+                       workspaceFiles: newWorkspaceFiles
+                   }
+                } else {
+                    return {
+                        ...state,
+                        workspaceFiles: newWorkspaceFiles
+                    }
                 }
             } else {
                 return state;

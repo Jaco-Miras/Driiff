@@ -21,6 +21,7 @@ const useFiles = () => {
                 fileActions.getPopularFiles(activeTopic.id);
                 fileActions.getEditedFiles(activeTopic.id);
                 fileActions.getFolders({topic_id: activeTopic.id});
+                fileActions.getTrashFiles(activeTopic.id);
             };
             setFetchingFiles(true);
             fileActions.getFiles({topic_id: activeTopic.id}, cb);   
@@ -47,22 +48,31 @@ const useFiles = () => {
         if (params.hasOwnProperty("fileFolderId") && 
         workspaceFiles[activeTopic.id].folders.hasOwnProperty(params.fileFolderId) &&
         workspaceFiles[activeTopic.id].folders[params.fileFolderId].hasOwnProperty('files')) {
+
+            let fileIds = Object.values(workspaceFiles[activeTopic.id].folders[params.fileFolderId].files);
+            if (workspaceFiles[activeTopic.id].hasOwnProperty("search_results") && workspaceFiles[activeTopic.id].search_results.length > 0) {
+                fileIds = workspaceFiles[activeTopic.id].search_results;
+            }
             return {
                 params,
                 wsFiles: workspaceFiles[activeTopic.id],
                 actions: fileActions,
                 topic: activeTopic,
-                fileIds: Object.values(workspaceFiles[activeTopic.id].folders[params.fileFolderId].files),
+                fileIds: fileIds,
                 folders: Object.values(workspaceFiles[activeTopic.id].folders).filter(f => f.parent_folder == params.fileFolderId),
                 folder:  workspaceFiles[activeTopic.id].folders[params.fileFolderId]
             };
         } else {
+            let fileIds = Object.values(workspaceFiles[activeTopic.id].files).map(f => f.id);
+            if (workspaceFiles[activeTopic.id].hasOwnProperty("search_results") && workspaceFiles[activeTopic.id].search_results.length > 0) {
+                fileIds = workspaceFiles[activeTopic.id].search_results;
+            }
             return {
                 params,
                 wsFiles: workspaceFiles[activeTopic.id],
                 actions: fileActions,
                 topic: activeTopic,
-                fileIds: Object.values(workspaceFiles[activeTopic.id].files).map(f => f.id),
+                fileIds: fileIds,
                 folders: workspaceFiles[activeTopic.id].folders,
                 folder: null
             };

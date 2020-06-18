@@ -1,7 +1,9 @@
 import React, {useCallback, useRef} from "react";
 import {useDispatch} from "react-redux";
 import {
+    addFileSearchResults,
     addFolder,
+    clearFileSearchResults,
     deleteFile,
     deleteFolder,
     favoriteFile,
@@ -11,6 +13,7 @@ import {
     getWorkspaceFolders,
     getWorkspacePopularFiles,
     getWorkspaceRecentlyEditedFiles, 
+    getWorkspaceTrashFiles,
     putFile,
     putFolder,
     setViewFiles,
@@ -19,6 +22,7 @@ import {
 import {
     addToModals
 } from "../../redux/actions/globalActions";
+import { actions } from "react-redux-toastr";
 
 const useFileActions = (params = null) => {
 
@@ -69,6 +73,12 @@ const useFileActions = (params = null) => {
     const getEditedFiles = useCallback((id, callback) => {
         dispatch(
             getWorkspaceRecentlyEditedFiles({topic_id: id}, callback),
+        );
+    }, [dispatch]);
+
+    const getTrashFiles = useCallback((id, callback) => {
+        dispatch(
+            getWorkspaceTrashFiles({topic_id: id}, callback),
         );
     }, [dispatch]);
 
@@ -127,7 +137,8 @@ const useFileActions = (params = null) => {
                 deleteFile({
                     file_id: file.id,
                     link_id: file.link_id,
-                    link_type: file.link_type
+                    link_type: file.link_type,
+                    topic_id: params.workspaceId
                 }, callback)
             );
         }
@@ -209,8 +220,38 @@ const useFileActions = (params = null) => {
             setViewFiles(payload),
         );
     }, [dispatch]);
+
+    const search = useCallback((searchValue) => {
+        let payload = {
+            topic_id: params.workspaceId,
+            search: searchValue
+        };
+        const cb = (err,res) => {
+            if (err) return;
+            dispatch(
+                addFileSearchResults({
+                    ...payload,
+                    search_results: res.data.files
+                })
+            );
+        };
+        dispatch(
+            getWorkspaceFiles(payload, cb),
+        );
+    }, [dispatch]);
+
+    const clearSearch = useCallback(() => {
+        let payload = {
+            topic_id: params.workspaceId,
+        };
+        
+        dispatch(
+            clearFileSearchResults(payload),
+        );
+    }, [dispatch]);
     
     return {
+        clearSearch,
         createFolder,
         favorite,
         getFavoriteFiles,
@@ -220,9 +261,11 @@ const useFileActions = (params = null) => {
         getFolders,
         getPopularFiles,
         getEditedFiles,
+        getTrashFiles,
         removeFile,
         removeFolder,
         renameFile,
+        search,
         updateFolder,
         uploadFiles,
         viewFiles,
