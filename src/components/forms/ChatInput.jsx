@@ -3,15 +3,15 @@ import {useDispatch, useSelector} from "react-redux";
 import styled from "styled-components";
 import {localizeDate} from "../../helpers/momentFormatJS";
 import {
-    postChannelMembers,
     addChatMessage,
     addQuote,
     clearChannelDraft,
     clearQuote,
-    postChatMessage,
     onClickSendButton,
-    setEditChatMessage,
+    postChannelMembers,
+    postChatMessage,
     putChatMessage,
+    setEditChatMessage,
 } from "../../redux/actions/chatActions";
 import {deleteDraft} from "../../redux/actions/globalActions";
 import {SvgIconFeather} from "../common";
@@ -268,7 +268,12 @@ const ChatInput = props => {
         setText("");
         setQuillContents([]);
         if (reactQuillRef.current) {
-            reactQuillRef.current.getEditor().setContents([]);
+            try {
+                reactQuillRef.current.getEditor().setContents([]);
+            }
+            catch (e) {
+                console.log(e);
+            }
         }
         if (editChatMessage !== null) {
             dispatch(setEditChatMessage(null));
@@ -383,7 +388,7 @@ const ChatInput = props => {
     useEffect(() => {
         if (reactQuillRef.current) {
             const width = window.innerWidth;
-            if(width > 620) {
+            if (width > 620) {
                 reactQuillRef.current.focus();
             }
         }

@@ -114,16 +114,13 @@ export default function (state = INITIAL_STATE, action) {
             let channel = state.channels[action.data.id];
 
             if (typeof channel === "undefined")
-                channel = {};
+                channel = action.data;
 
             return {
                 ...state,
                 channels: {
                     ...state.channels,
-                    [action.data.id]: {
-                        ...channel,
-                        ...action.data,
-                    },
+                    [action.data.id]: channel,
                 },
             };
         }
@@ -158,6 +155,10 @@ export default function (state = INITIAL_STATE, action) {
             let channel = {
                 ...state.channels[action.data.id],
                 ...action.data,
+                replies: [
+                    ...state.channels[action.data.id].replies,
+                    ...action.data.replies,
+                ],
             };
 
             let updatedChannels = {...state.channels};
@@ -322,7 +323,7 @@ export default function (state = INITIAL_STATE, action) {
         case "INCOMING_CHAT_MESSAGE": {
             let haveReference = false;
             if (state.selectedChannel && state.selectedChannel.id === action.data.channel_id) {
-                haveReference = state.selectedChannel.replies.some(r => r.reference_id === action.data.reference_id)
+                haveReference = state.selectedChannel.replies.some(r => r.reference_id === action.data.reference_id);
             }
             let channel = null;
             if (Object.keys(state.channels).length > 0 && state.channels.hasOwnProperty(action.data.channel_id)) {
@@ -361,7 +362,7 @@ export default function (state = INITIAL_STATE, action) {
                                                })
                                                : [...state.selectedChannel.replies, action.data],
                     }
-                                                                                                                    : state.selectedChannel,
+                                                                                                              : state.selectedChannel,
                 channels: channel !== null ?
                     {
                         ...state.channels,
@@ -551,7 +552,7 @@ export default function (state = INITIAL_STATE, action) {
                                 ...r,
                                 body: action.data.body,
                                 updated_at: action.data.updated_at,
-                            }
+                            };
                         } else return r;
                     }),
                     last_reply: channel.last_reply && channel.last_reply.id === action.data.id ? {
@@ -799,9 +800,15 @@ export default function (state = INITIAL_STATE, action) {
             };
         }
         case "SAVE_LAST_VISITED_CHANNEL": {
+            let channel = state.channels[action.data.id];
+
+            if (typeof channel === "undefined") {
+                channel = action.data;
+            }
+
             return {
                 ...state,
-                lastVisitedChannel: action.data,
+                lastVisitedChannel: channel,
             };
         }
         case "RESTORE_LAST_VISITED_CHANNEL": {
