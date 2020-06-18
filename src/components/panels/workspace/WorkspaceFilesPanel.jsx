@@ -2,10 +2,10 @@ import React, {useCallback, useRef, useState} from "react";
 import {useDispatch} from "react-redux";
 import {useHistory} from "react-router-dom";
 import styled from "styled-components";
+import {replaceChar} from "../../../helpers/stringFormatter";
+import {addToModals} from "../../../redux/actions/globalActions";
 import {useFiles, useTranslation} from "../../hooks";
 import {FilesBody, FilesHeader, FilesSidebar} from "../files";
-import {addToModals} from "../../../redux/actions/globalActions";
-import {replaceChar} from "../../../helpers/stringFormatter";
 
 
 const Wrapper = styled.div`
@@ -24,8 +24,6 @@ const WorkspaceFilesPanel = (props) => {
     const {_t} = useTranslation();
     const {params, wsFiles, actions, topic, fileIds, folders, folder} = useFiles();
 
-    // console.log(fileIds, history)
-
     const [filter, setFilter] = useState("");
     const [search, setSearch] = useState("");
 
@@ -35,7 +33,7 @@ const WorkspaceFilesPanel = (props) => {
 
     const handleFilterFile = (e) => {
         if (params.hasOwnProperty("fileFolderId")) {
-            let pathname = history.location.pathname.split("/folder/")[0]
+            let pathname = history.location.pathname.split("/folder/")[0];
             history.push(pathname);
         }
         setFilter(e.target.dataset.filter);
@@ -56,36 +54,36 @@ const WorkspaceFilesPanel = (props) => {
 
     const handleCreateFolder = () => {
         if (topic) {
-            let cb = (err,res) => {
+            let cb = (err, res) => {
                 if (err) return;
                 if (params.hasOwnProperty("fileFolderId")) {
-                    let pathname = history.location.pathname.split("/folder/")[0]
-                    history.push(pathname+`/folder/${res.data.folder.id}/${replaceChar(res.data.folder.search)}`);
+                    let pathname = history.location.pathname.split("/folder/")[0];
+                    history.push(pathname + `/folder/${res.data.folder.id}/${replaceChar(res.data.folder.search)}`);
                 } else {
-                    history.push(history.location.pathname+`/folder/${res.data.folder.id}/${replaceChar(res.data.folder.search)}`);
+                    history.push(history.location.pathname + `/folder/${res.data.folder.id}/${replaceChar(res.data.folder.search)}`);
                 }
             };
             actions.createFolder({
                 topic_id: topic.id,
-                name: folderName.current
+                name: folderName.current,
             }, cb);
         }
     };
 
     const handleUpdateFolder = () => {
         if (topic) {
-            let cb = (err,res) => {
+            let cb = (err, res) => {
                 if (err) return;
                 if (params.hasOwnProperty("fileFolderId")) {
-                    let pathname = history.location.pathname.split("/folder/")[0]
-                    history.push(pathname+`/folder/${res.data.folder.id}/${replaceChar(res.data.folder.search)}`);
+                    let pathname = history.location.pathname.split("/folder/")[0];
+                    history.push(pathname + `/folder/${res.data.folder.id}/${replaceChar(res.data.folder.search)}`);
                 }
             };
             actions.updateFolder({
                 id: params.fileFolderId,
                 topic_id: topic.id,
-                name: folderName.current
-            }, cb)
+                name: folderName.current,
+            }, cb);
         }
     };
 
@@ -125,19 +123,22 @@ const WorkspaceFilesPanel = (props) => {
         dispatch(
             addToModals(payload),
         );
-    }
+    };
 
     return (
         <Wrapper className={`container-fluid h-100 h-w-min ${className}`}>
             <div className="row app-block">
-                <FilesSidebar dropZoneRef={refs.dropZone} className="col-md-3" filterFile={handleFilterFile}
-                              filter={filter} wsFiles={wsFiles}/>
+                <FilesSidebar
+                    dropZoneRef={refs.dropZone} className="col-md-3" filterFile={handleFilterFile}
+                    filter={filter} wsFiles={wsFiles}/>
                 <div className="col-md-9 app-content">
                     <div className="app-content-overlay"/>
                     <FilesHeader dropZoneRef={refs.dropZone} onSearchChange={handleSearchChange} history={history}
-                        wsFiles={wsFiles} handleAddEditFolder={handleAddEditFolder} folders={folders}/>
-                    <FilesBody dropZoneRef={refs.dropZone} filter={filter} search={search} folder={folder} fileIds={fileIds}
-                        history={history} actions={actions} params={params} wsFiles={wsFiles} handleAddEditFolder={handleAddEditFolder}/>
+                                 wsFiles={wsFiles} handleAddEditFolder={handleAddEditFolder} folders={folders}/>
+                    <FilesBody dropZoneRef={refs.dropZone} filter={filter} search={search} folder={folder}
+                               fileIds={fileIds}
+                               history={history} actions={actions} params={params} wsFiles={wsFiles}
+                               handleAddEditFolder={handleAddEditFolder}/>
                 </div>
             </div>
         </Wrapper>

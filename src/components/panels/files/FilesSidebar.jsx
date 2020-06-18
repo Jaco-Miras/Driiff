@@ -4,6 +4,7 @@ import {SvgIconFeather} from "../../common";
 import {ProgressBar} from "../common";
 
 const Wrapper = styled.div`
+    text-align: left;
 `;
 
 const Filter = styled.span`
@@ -68,21 +69,23 @@ const FileSidebar = (props) => {
                             <span className="small ml-auto">{wsFiles && wsFiles.trash > 0 ? wsFiles.trash : null}</span>
                         </Filter>
                     </div>
-
-                    <div className="card-body">
-                        <h6 className="mb-4">Storage Status</h6>
-                        <div className="d-flex align-items-center">
-                            <div className="mr-3">
-                                <SvgIconFeather icon="database"/>
-                            </div>
-                            <div className="flex-grow-1">
-                                <ProgressBar amount={storage.amount} limit={storage.limit}/>
-                                <div className="line-height-12 small text-muted mt-2">{storage.amount}GB used
-                                    of {storage.limit}GB
+                    {
+                        typeof wsFiles !== "undefined" && wsFiles !== null &&
+                        <div className="card-body">
+                            <h6 className="mb-4">Storage Status</h6>
+                            <div className="d-flex align-items-center">
+                                <div className="mr-3">
+                                    <SvgIconFeather icon="database"/>
+                                </div>
+                                <div className="flex-grow-1">
+                                    <ProgressBar amount={wsFiles.storage / 1e9} limit={storage.limit}/>
+                                    <div className="line-height-12 small text-muted mt-2">{wsFiles.storage / 1e9}GB used
+                                        of {storage.limit}GB
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    }
                 </div>
             </div>
         </Wrapper>
