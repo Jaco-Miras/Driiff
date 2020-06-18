@@ -13,7 +13,8 @@ const useFiles = () => {
     const [fetchingFiles, setFetchingFiles] = useState(false);
     
     useEffect(() => {
-        if (!fetchingFiles && activeTopic && !workspaceFiles.hasOwnProperty(activeTopic.id)) {
+        if (!fetchingFiles && activeTopic && !workspaceFiles.hasOwnProperty(activeTopic.id) || 
+            (!fetchingFiles && activeTopic && workspaceFiles.hasOwnProperty(activeTopic.id) && !workspaceFiles[activeTopic.id].hasOwnProperty("loaded")) ) {
             const cb = (err,res) => {
                 setFetchingFiles(false);
                 fileActions.getFilesDetail(activeTopic.id);

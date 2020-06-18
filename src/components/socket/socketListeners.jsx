@@ -70,7 +70,7 @@ class SocketListeners extends PureComponent {
         });
 
         // new socket
-        window.Echo.private(`${localStorage.getItem("slug")}.Driff.User.${this.props.user.id}`)
+        window.Echo.private(`${localStorage.getItem("slug") === 'dev24admin' ? "dev" : localStorage.getItem("slug")}.Driff.User.${this.props.user.id}`)
         .listen(".workspace-folder-notification", e => {
             console.log(e, 'folder')
             switch (e.SOCKET_TYPE) {
@@ -228,7 +228,7 @@ class SocketListeners extends PureComponent {
             
         })
 
-        window.Echo.private(`${localStorage.getItem("slug")}.App.Broadcast`)
+        window.Echo.private(`${localStorage.getItem("slug") === 'dev24admin' ? "dev" : localStorage.getItem("slug")}.App.Broadcast`)
         .listen(".upload-bulk-workspace-files", e => {
             console.log(e, 'files bulk')
             this.props.incomingFiles(e);
@@ -245,7 +245,7 @@ class SocketListeners extends PureComponent {
             }
         })
         // old / legacy channel
-        window.Echo.private(`${localStorage.getItem("slug")}.App.User.${this.props.user.id}`)
+        window.Echo.private(`${localStorage.getItem("slug") === 'dev24admin' ? "dev" : localStorage.getItem("slug")}.App.User.${this.props.user.id}`)
             .listen(".new-lock-workspace", e => {
                 console.log(e, "new workspace lock");
                 if (e.topic !== undefined) {

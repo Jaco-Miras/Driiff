@@ -148,7 +148,10 @@ export default (state = INITIAL_STATE, action) => {
                         trash: 0,
                         popular_files: [],
                         recently_edited: [],
-                        favorite_files: []
+                        favorite_files: [],
+                        trash_files: {},
+                        search_results: [],
+                        search_value: "",
                     }
                 }
             }
@@ -168,6 +171,7 @@ export default (state = INITIAL_STATE, action) => {
                     [action.data.topic_id]: {
                         ...newWorkspaceFiles[action.data.topic_id],
                         files: {...convertArrayToObject(action.data.files, "id"), ...newWorkspaceFiles[action.data.topic_id].files},
+                        loaded: true
                     }
                 }
             } else {
@@ -185,7 +189,8 @@ export default (state = INITIAL_STATE, action) => {
                         favorite_files: [],
                         trash_files: {},
                         search_results: [],
-                        search_value: ""
+                        search_value: "",
+                        loaded: true
                     }
                 }
             }

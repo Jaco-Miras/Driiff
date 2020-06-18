@@ -12,6 +12,7 @@ import {
     getWorkspaceFilesDetail,
     getWorkspaceFolders,
     getWorkspacePopularFiles,
+    getWorkspacePrimaryFiles,
     getWorkspaceRecentlyEditedFiles, 
     getWorkspaceTrashFiles,
     putFile,
@@ -55,6 +56,12 @@ const useFileActions = (params = null) => {
     const getFiles = useCallback((payload, callback) => {
         dispatch(
             getWorkspaceFiles(payload, callback)
+        );
+    }, [dispatch]);
+
+    const getPrimaryFiles = useCallback((id, callback) => {
+        dispatch(
+            getWorkspacePrimaryFiles({topic_id: id}, callback),
         );
     }, [dispatch]);
 
