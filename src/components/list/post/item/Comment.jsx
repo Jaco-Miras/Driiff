@@ -120,31 +120,37 @@ const Comment = props => {
                                     imageLink={comment.author.profile_image_link}/>
                             {comment.author.first_name}
                         </div>
-                        <MoreOptions scrollRef={refs.body.current} moreButton={`more-vertical`}>
-                            {
-                                user.id === comment.author.id &&
-                                <div onClick={() => commentActions.setToEdit(comment)}>
-                                    Edit reply
+                        {
+                            post.is_read_only !== 1 &&
+                            <MoreOptions scrollRef={refs.body.current} moreButton={`more-vertical`}>
+                                {
+                                    user.id === comment.author.id &&
+                                    <div onClick={() => commentActions.setToEdit(comment)}>
+                                        Edit reply
+                                    </div>
+                                }
+                                <div onClick={handleQuote}>
+                                    Quote
                                 </div>
-                            }
-                            <div onClick={handleQuote}>
-                                Quote
-                            </div>
-                            {
-                                user.id !== comment.author.id &&
-                                <div onClick={handleMentionUser}>
-                                    Mention user
-                                </div>
-                            }
-                        </MoreOptions>
+                                {
+                                    user.id !== comment.author.id &&
+                                    <div onClick={handleMentionUser}>
+                                        Mention user
+                                    </div>
+                                }
+                            </MoreOptions>
+                        }
                     </CommentHeader>
                     <CommentBody
                         className="mt-2 mb-3"
                         dangerouslySetInnerHTML={{__html: comment.body}}/>
                     <div className="d-flex align-items-center justify-content-start">
-                        <Icon className="mr-2 comment-reaction" icon="heart" onClick={handleReaction}/> 
+                        <Icon className="mr-2 comment-reaction" icon="heart" onClick={handleReaction}/>
                         {comment.clap_count > 0 ? comment.clap_count : null}
-                        <Reply className="ml-3" onClick={handleShowInput}>Comment</Reply>
+                        {
+                            post.is_read_only !== 1 &&
+                            <Reply className="ml-3" onClick={handleShowInput}>Comment</Reply>
+                        }
                     </div>
                 </CommentWrapper>
             </Wrapper>

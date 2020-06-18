@@ -21,16 +21,6 @@ const Wrapper = styled.div`
     flex: unset;
 `;
 
-const ArchivedDiv = styled.div`
-    width: 100%;
-    text-align: center;
-    background: #f1f2f7;
-    padding: 15px 10px;
-    h4 {
-        margin: 0;
-    }
-`;
-
 const ChatInputContainer = styled.div`
     position: relative;
 `;
@@ -102,6 +92,17 @@ const Dflex = styled.div`
     }
 `;
 
+const NoReply = styled.div`
+    width: 100%;
+    
+    h4 {
+        width: calc(100% - 45px);
+        background-color: #f6f6f6;
+        border-radius: 0.5rem;
+        padding: 1rem;
+    }
+`;
+
 const PickerContainer = styled(CommonPicker)`
     right: 25px;
     bottom: 70px;
@@ -127,11 +128,11 @@ const PostDetailFooter = (props) => {
     const user = useSelector(state => state.session.user);
 
     const handleSend = useCallback(() => {
-        setSent(true)
+        setSent(true);
     }, [setSent]);
 
     const handleClearSent = useCallback(() => {
-        setSent(false)
+        setSent(false);
     }, [setSent]);
 
     const handleShowEmojiPicker = () => {
@@ -172,7 +173,7 @@ const PostDetailFooter = (props) => {
             }),
         );
     };
-    
+
     const isMember = useIsMember(topic && topic.members.length ? topic.members.map(m => m.id) : []);
 
     return (
@@ -187,10 +188,13 @@ const PostDetailFooter = (props) => {
                 <Dflex className="d-flex align-items-center">
                     {
                         post.is_read_only === 1 ?
-                        <ArchivedDiv>
+                        <NoReply className="d-flex align-items-center">
+                            <div>
+                                <Avatar className="mr-2" imageLink={user.profile_image_link}/>
+                            </div>
                             <h4>No reply allowed</h4>
-                        </ArchivedDiv>
-                        :
+                        </NoReply>
+                                                :
                         <React.Fragment>
                             <Avatar className="mr-2" imageLink={user.profile_image_link}/>
                             <ChatInputContainer ref={innerRef} className="flex-grow-1">
