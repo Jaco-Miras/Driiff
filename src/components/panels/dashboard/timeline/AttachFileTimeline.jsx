@@ -11,7 +11,7 @@ const AttachFileTimeline = (props) => {
     const {className = "", data} = props;
 
     return (
-        <Wrapper className={`timeline-item ${className}`}>
+        <Wrapper className={`attach-file-timeline timeline-item ${className}`}>
             <div>
                 <Avatar className="mr-3" name={data.user.name} imageLink={data.user.profile_image_link}/>
             </div>

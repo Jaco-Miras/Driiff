@@ -5,6 +5,7 @@ import {updateWorkspacePostFilterSort} from "../../../redux/actions/workspaceAct
 import {SvgIconFeather} from "../../common";
 
 const Wrapper = styled.div`
+    
     > span {
         cursor: pointer;
         cursor: hand;
@@ -42,18 +43,23 @@ const PostFilterItem = props => {
                 <SvgIconFeather className="mr-2" icon="book-open"/>
                 All
             </span>
-            <span className={`list-group-item ${filter && filter === "my_posts" ? "active" : ""}`} data-value="my_posts"
-                  onClick={handleClickFilter}>
+            <span
+                className={`list-group-item d-flex align-items-center ${filter && filter === "my_posts" ? "active" : ""}`}
+                data-value="my_posts"
+                onClick={handleClickFilter}>
                 <SvgIconFeather className="mr-2" icon="send"/>
                 My posts
             </span>
-            <span className={`list-group-item ${filter && filter === "star" ? "active" : ""}`} data-value="star"
+            <span className={`list-group-item d-flex align-items-center ${filter && filter === "star" ? "active" : ""}`}
+                  data-value="star"
                   onClick={handleClickFilter}>
                 <SvgIconFeather className="mr-2" icon="star"/>
                 Starred
             </span>
-            <span className={`list-group-item ${filter && filter === "draft" ? "active" : ""}`} data-value="draft"
-                  onClick={handleClickFilter}>
+            <span
+                className={`list-group-item d-flex align-items-center ${filter && filter === "draft" ? "active" : ""}`}
+                data-value="draft"
+                onClick={handleClickFilter}>
                 <SvgIconFeather className="mr-2" icon="edit-3"/>
                 Drafts
             </span>

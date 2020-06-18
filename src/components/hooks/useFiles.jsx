@@ -61,7 +61,7 @@ const useFiles = () => {
                 topic: activeTopic,
                 fileIds: fileIds,
                 folders: Object.values(workspaceFiles[activeTopic.id].folders).filter(f => f.parent_folder == params.fileFolderId),
-                folder:  workspaceFiles[activeTopic.id].folders[params.fileFolderId]
+                folder:  workspaceFiles[activeTopic.id].folders[params.fileFolderId],
             };
         } else {
             let fileIds = Object.values(workspaceFiles[activeTopic.id].files).map(f => f.id);
@@ -75,18 +75,18 @@ const useFiles = () => {
                 topic: activeTopic,
                 fileIds: fileIds,
                 folders: workspaceFiles[activeTopic.id].folders,
-                folder: null
+                folder: null,
             };
         }
     } else {
         return {
             params,
-            wsFiles: null,
+            wsFiles: activeTopic !== null ? workspaceFiles[activeTopic.id] : null,
             actions: fileActions,
             topic: activeTopic,
             fileIds: [],
             folders: {},
-            folder: null
+            folder: null,
         }
     }
 

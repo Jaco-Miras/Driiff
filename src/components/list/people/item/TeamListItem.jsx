@@ -1,9 +1,30 @@
 import React from "react";
+import {useHistory} from "react-router-dom";
 import styled from "styled-components";
 import {Avatar} from "../../../common";
 import {MoreOptions} from "../../../panels/common";
 
 const Wrapper = styled.li`
+    &:hover {        
+        .more-options {
+            display: flex;
+        }
+    }
+    
+    .more-options {
+        display: none;
+    }
+    
+    .avatar {
+        cursor: pointer;
+        cursor: hand;
+    }
+    
+    .profile-name {
+        cursor: pointer;
+        cursor: hand;
+    }
+    
     > .more-options svg {
         width: auto;
     }
@@ -12,6 +33,12 @@ const Wrapper = styled.li`
 const TeamListItem = (props) => {
 
     const {className = "", member, parentRef, onEditClick} = props;
+
+    const history = useHistory();
+
+    const handleClickName = () => {
+        history.push(`/profile/${member.id}/${member.name}`);
+    };
 
     return (
         <Wrapper className={`team-list-item list-group-item d-flex align-items-center p-l-r-0 ${className}`}>
@@ -24,14 +51,12 @@ const TeamListItem = (props) => {
                         partialName={member.partial_name}/>
             </div>
             <div>
-                <h6 className="m-b-0">{member.name}</h6>
+                <h6 className="profile-name m-b-0" onClick={handleClickName}>{member.name}</h6>
                 {
-                    member.role && <small className="text-muted">{member.role.name}</small>
+                    member.role &&
+                    <small className="text-muted">{member.role.name}</small>
                 }
             </div>
-            {/* <div className="ml-auto">
-                <span className="badge badge-success mr-2 d-sm-inline d-none">Completed</span>
-            </div> */}
         </Wrapper>
     );
 };
