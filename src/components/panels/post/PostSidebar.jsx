@@ -1,6 +1,5 @@
 import React from "react";
 import styled from "styled-components";
-import {useIsMember} from "../../hooks";
 import {PostFilterItem, PostFilterTag} from "./index";
 
 const Wrapper = styled.div`
@@ -12,13 +11,11 @@ const Wrapper = styled.div`
 
 const PostSidebar = props => {
 
-    const {workspace, filter, tag, count, postActions} = props;
+    const {workspace, isMember, filter, tag, count, postActions} = props;
 
     const handleShowWorkspacePostModal = () => {
         postActions.showModal("create");
     };
-
-    const isMember = useIsMember(workspace && workspace.member_ids.length ? workspace.member_ids : []);
 
     return (
         <Wrapper className="col-md-3 app-sidebar">

@@ -1,7 +1,8 @@
 import React from "react";
 import {useSelector} from "react-redux";
 import styled from "styled-components";
-import {usePostActions, usePosts} from "../../hooks";
+import {SvgEmptyState} from "../../common";
+import {useIsMember, usePostActions, usePosts} from "../../hooks";
 import {PostDetail, PostFilterSearchPanel, PostItemPanel, PostSidebar} from "../post";
 
 const Wrapper = styled.div`
@@ -9,6 +10,10 @@ const Wrapper = styled.div`
     
     .search-title {
         margin: 1.5rem 1.5rem 0;
+    }
+    
+    .app-content-body {
+        position: relative;
     }
 `;
 
@@ -18,15 +23,41 @@ const PostDetailWrapper = styled.div`
     }
 `;
 
+const EmptyState = styled.div`
+    position: absolute;
+    max-width: 375px;
+    height: 355px;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    text-align: center;
+    
+    svg {
+        display: block;
+    }
+    button {
+        width: auto !important;
+        margin: 2rem auto;
+    }    
+`;
+
 const WorkspacePostsPanel = (props) => {
 
     const {className = ""} = props;
 
     const workspace = useSelector(state => state.workspaces.activeTopic);
 
+    const isMember = useIsMember(workspace && workspace.member_ids.length ? workspace.member_ids : []);
+
     const {posts, filter, tag, sort, post, user, search} = usePosts();
 
     const postActions = usePostActions();
+
+    const handleShowWorkspacePostModal = () => {
+        postActions.showModal("create");
+    };
 
     const count = {
         is_must_reply: 0,
@@ -34,48 +65,66 @@ const WorkspacePostsPanel = (props) => {
         is_read_only: 0,
     };
 
+    if (posts === null)
+        return <></>;
+
     return (
         <Wrapper className={`container-fluid h-100 h-w-min ${className}`}>
             <div className="row app-block">
-                <PostSidebar workspace={workspace} filter={filter} tag={tag} postActions={postActions} count={count}/>
+                <PostSidebar isMember={isMember} workspace={workspace} filter={filter} tag={tag}
+                             postActions={postActions} count={count}/>
                 <div className="col-md-9 app-content">
                     <div className="app-content-overlay"/>
                     <PostFilterSearchPanel activeSort={sort} workspace={workspace}/>
                     <div className="card card-body app-content-body">
                         {
-                            post ?
-                            <PostDetailWrapper className={`card`}>
-                                <PostDetail post={post} postActions={postActions} user={user}/>
-                            </PostDetailWrapper>
-                                 :
-                            <div className="app-lists"
-                                 tabIndex="1">
+                            posts.length === 0 ?
+                            <EmptyState>
+                                <SvgEmptyState icon={3} width={345} height={282}/>
                                 {
-                                    search !== null &&
-                                    <>
-                                        {
-                                            posts.length === 0 ?
-                                            <h6 className="search-title card-title font-size-11 text-uppercase mb-4">No
-                                                result found: {search}</h6>
-                                                               :
-                                            posts.length === 1 ?
-                                            <h6 className="search-title card-title font-size-11 text-uppercase mb-4">Search
-                                                Result: {search}</h6>
-                                                               :
-                                            <h6 className="search-title card-title font-size-11 text-uppercase mb-4">Search
-                                                Results: {search}</h6>
-                                        }
-                                    </>
+                                    isMember &&
+                                    <button className="btn btn-outline-primary btn-block"
+                                            onClick={handleShowWorkspacePostModal}>
+                                        Create new post
+                                    </button>
                                 }
-                                <ul className="list-group list-group-flush ui-sortable">
+                            </EmptyState>
+                                               :
+                            <>{
+                                post ?
+                                <PostDetailWrapper className={`card`}>
+                                    <PostDetail post={post} postActions={postActions} user={user}/>
+                                </PostDetailWrapper>
+                                     :
+                                <div className="app-lists"
+                                     tabIndex="1">
                                     {
-                                        posts &&
-                                        posts.map(p => {
-                                            return <PostItemPanel key={p.id} post={p} postActions={postActions}/>;
-                                        })
+                                        search !== null &&
+                                        <>
+                                            {
+                                                posts.length === 0 ?
+                                                <h6 className="search-title card-title font-size-11 text-uppercase mb-4">No
+                                                    result found: {search}</h6>
+                                                                   :
+                                                posts.length === 1 ?
+                                                <h6 className="search-title card-title font-size-11 text-uppercase mb-4">Search
+                                                    Result: {search}</h6>
+                                                                   :
+                                                <h6 className="search-title card-title font-size-11 text-uppercase mb-4">Search
+                                                    Results: {search}</h6>
+                                            }
+                                        </>
                                     }
-                                </ul>
-                            </div>
+                                    <ul className="list-group list-group-flush ui-sortable">
+                                        {
+                                            posts &&
+                                            posts.map(p => {
+                                                return <PostItemPanel key={p.id} post={p} postActions={postActions}/>;
+                                            })
+                                        }
+                                    </ul>
+                                </div>
+                            }</>
                         }
                     </div>
                 </div>
