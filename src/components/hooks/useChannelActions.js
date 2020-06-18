@@ -542,6 +542,7 @@ const useChannelActions = () => {
      * @param {string} payload.channel_name
      * @param {Array} add_member_ids
      * @param {Array} remove_member_ids
+     * @param {string} payload.message_body
      * @param {function} [callback]
      */
     const update = useCallback((
@@ -549,9 +550,7 @@ const useChannelActions = () => {
         callback = () => {}) => {
 
         dispatch(
-            putChannelUpdate({
-                payload,
-            }, callback),
+            putChannelUpdate(payload, callback),
         );
     }, [dispatch]);
 
