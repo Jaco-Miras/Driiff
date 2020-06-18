@@ -9,6 +9,10 @@ const Wrapper = styled.div`
     .feather-edit {
         cursor: pointer;
         cursor: hand;
+        
+        &:hover {
+            color: #972c86;
+        }
     }
     
     .card-title {
