@@ -10,12 +10,12 @@ import {
     deleteTrash,
     favoriteFile,
     getWorkspaceFavoriteFiles,
-    getWorkspaceFiles, 
+    getWorkspaceFiles,
     getWorkspaceFilesDetail,
     getWorkspaceFolders,
     getWorkspacePopularFiles,
     getWorkspacePrimaryFiles,
-    getWorkspaceRecentlyEditedFiles, 
+    getWorkspaceRecentlyEditedFiles,
     getWorkspaceTrashFiles,
     putFile,
     putFolder,
@@ -126,10 +126,10 @@ const useFileActions = (params = null) => {
         };
         let payload = {
             type: "confirmation",
-            headerText: "Delete folder",
-            submitText: "Delete",
+            headerText: "Remove folder for everyone?",
+            submitText: "Remove",
             cancelText: "Cancel",
-            bodyText: "Are you sure you want to delete this folder?",
+            bodyText: "This folder will be moved to the recycle bin and will be permanently deleted after thirty days.",
             actions: {
                 onSubmit: handleDeleteFolder,
             },
@@ -177,11 +177,11 @@ const useFileActions = (params = null) => {
                 })
             )
         };
-    
+
         const handleFileNameClose = () => {
             fileName.current = "";
         };
-    
+
         const handleFileNameChange = (e) => {
             fileName.current = e.target.value.trim();
         };
@@ -198,11 +198,11 @@ const useFileActions = (params = null) => {
             onChange: handleFileNameChange,
             onClose: handleFileNameClose,
         };
-        
+
         dispatch(
             addToModals(payload),
         );
-        
+
     }, [dispatch]);
 
     const favorite = useCallback((file) => {
@@ -270,7 +270,7 @@ const useFileActions = (params = null) => {
         let payload = {
             topic_id: params.workspaceId,
         };
-        
+
         dispatch(
             clearFileSearchResults(payload),
         );

@@ -142,7 +142,7 @@ const WorkspaceFilesPanel = (props) => {
     };
 
     return (
-        <Wrapper className={`container-fluid h-100 h-w-min ${className}`}>
+        <Wrapper className={`container-fluid h-100 fadeIn ${className}`}>
             <div className="row app-block">
                 <FilesSidebar
                     dropZoneRef={refs.dropZone} className="col-md-3" filterFile={handleFilterFile}

@@ -7,11 +7,11 @@ import {PostDetail, PostFilterSearchPanel, PostItemPanel, PostSidebar} from "../
 
 const Wrapper = styled.div`
     text-align: left;
-    
+
     .search-title {
         margin: 1.5rem 1.5rem 0;
     }
-    
+
     .app-content-body {
         position: relative;
     }
@@ -33,14 +33,14 @@ const EmptyState = styled.div`
     bottom: 0;
     margin: auto;
     text-align: center;
-    
+
     svg {
         display: block;
     }
     button {
         width: auto !important;
         margin: 2rem auto;
-    }    
+    }
 `;
 
 const WorkspacePostsPanel = (props) => {
@@ -69,7 +69,7 @@ const WorkspacePostsPanel = (props) => {
         return <></>;
 
     return (
-        <Wrapper className={`container-fluid h-100 h-w-min ${className}`}>
+        <Wrapper className={`container-fluid h-100 fadeIn ${className}`}>
             <div className="row app-block">
                 <PostSidebar isMember={isMember} workspace={workspace} filter={filter} tag={tag}
                              postActions={postActions} count={count}/>

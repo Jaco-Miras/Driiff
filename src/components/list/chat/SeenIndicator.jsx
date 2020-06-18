@@ -9,7 +9,6 @@ const SeenIndicatorContainer = styled.div`
     //top: 100%;
     text-align: ${props => props.isAuthor ? "right" : "left"};
     color: #a7abc3;
-    font-style: italic;
     z-index: 2;
     font-size: 11px;
     position: absolute;

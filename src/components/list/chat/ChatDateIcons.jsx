@@ -13,7 +13,7 @@ const ActionContainer = styled.div`
     flex-direction: row-reverse;
 `;
 const Icon = styled(SvgIconFeather)`
-    filter: brightness(0) saturate(100%) invert(43%) sepia(19%) saturate(0%) hue-rotate(214deg) brightness(87%) contrast(86%);
+    ${'' /* filter: brightness(0) saturate(100%) invert(43%) sepia(19%) saturate(0%) hue-rotate(214deg) brightness(87%) contrast(86%); */}
     position: relative;
     top: -3px;
     right: 0;

@@ -139,7 +139,7 @@ const WorkspaceList = props => {
     }, [showTopics, workspace.id, workspace.selected, maxHeight, workspace_open_folder]);
 
     return (
-        <Wrapper ref={ref.container} className={`worskpace-list ${className}`}
+        <Wrapper ref={ref.container} className={`worskpace-list fadeIn ${className}`}
                  selected={workspace.selected}
                  show={show}>
             <a className={`${workspace.selected && "active"}`} href="/"
