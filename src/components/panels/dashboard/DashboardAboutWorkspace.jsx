@@ -4,6 +4,7 @@ import {FileAttachments, SvgIconFeather} from "../../common";
 
 const Wrapper = styled.div`
     border-left: 5px solid #822492;
+    text-align: left;
     
     .feather-edit {
         cursor: pointer;

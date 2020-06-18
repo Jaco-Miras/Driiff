@@ -23,15 +23,16 @@ const PostSidebar = props => {
     return (
         <Wrapper className="col-md-3 app-sidebar">
             <div className="">
-                <div>
+                <div className="app-sidebar-menu" tabIndex="2">
                     {
                         isMember &&
-                        <button className="btn btn-outline-primary btn-block" onClick={handleShowWorkspacePostModal}>
-                            Create new post
-                        </button>
+                        <div className="card-body">
+                            <button className="btn btn-outline-primary btn-block"
+                                    onClick={handleShowWorkspacePostModal}>
+                                Create new post
+                            </button>
+                        </div>
                     }
-                </div>
-                <div className="app-sidebar-menu" tabIndex="2">
                     <PostFilterItem workspace={workspace} filter={filter}/>
                     <div className="card-body">
                         <h6 className="mb-0">Tags</h6>
@@ -40,7 +41,7 @@ const PostSidebar = props => {
                 </div>
             </div>
         </Wrapper>
-    )
+    );
 };
 
 export default React.memo(PostSidebar);

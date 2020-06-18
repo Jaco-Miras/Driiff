@@ -22,10 +22,10 @@ const TopicTimeline = (props) => {
     const {className = "", data} = props;
 
     return (
-        <Wrapper className={`timeline-item ${className}`}>
+        <Wrapper className={`topic-timeline timeline-item ${className}`}>
             <div>
                 {
-                    data.user && 
+                    data.user &&
                     <Avatar className="mr-3" name={data.user.name} imageLink={data.user.profile_image_link}/>
                 }
             </div>

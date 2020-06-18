@@ -11,6 +11,10 @@ const Wrapper = styled.div`
     }
     -ms-overflow-style: none;
     scrollbar-width: none;
+    
+    h5 {
+        text-align: left;
+    }
 `;
 
 const WorkspaceDashboardPanel = (props) => {

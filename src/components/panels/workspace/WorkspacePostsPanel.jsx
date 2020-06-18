@@ -5,6 +5,8 @@ import {usePostActions, usePosts} from "../../hooks";
 import {PostDetail, PostFilterSearchPanel, PostItemPanel, PostSidebar} from "../post";
 
 const Wrapper = styled.div`
+    text-align: left;
+    
     .search-title {
         margin: 1.5rem 1.5rem 0;
     }

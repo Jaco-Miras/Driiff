@@ -29,7 +29,7 @@ const PostTimeline = (props) => {
     };
 
     return (
-        <Wrapper className={`timeline-item ${className}`}>
+        <Wrapper className={`post-timeline timeline-item ${className}`}>
             <div>
                 <Avatar className="mr-3" name={data.user.name} imageLink={data.user.profile_image_link}/>
             </div>
