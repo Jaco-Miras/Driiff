@@ -244,6 +244,39 @@ class SocketListeners extends PureComponent {
                     return null;
             }
         })
+        .listen(".new-workspace", e => {
+            console.log(e, "new workspace");
+            if (e.topic !== undefined) {
+                this.props.incomingWorkspace(e);
+            } else {
+                this.props.incomingWorkspaceFolder({
+                    ...e.workspace,
+                    key_id: e.key_id,
+                    type: e.type,
+                });
+            }
+        })
+        .listen(".update-workspace", e => {
+            console.log(e, "update workspace");
+            this.props.incomingUpdatedWorkspaceFolder(e);
+            if (this.props.activeTopic && this.props.activeTopic.id === e.id &&
+                e.type === "WORKSPACE" && this.props.match.path === "/workspace") {
+                let currentPage = this.props.location.pathname;
+                currentPage = currentPage.split("/")[2];
+                if (e.workspace_id === 0) {
+                    //direct workspace
+                    if (e.original_workspace_id !== 0) {
+                        //now direct workspace url
+                        this.props.history.push(`/workspace/${currentPage}/${e.id}/${replaceChar(e.name)}`);
+                    }
+                } else {
+                    //moved workspace to another folder
+                    if (e.original_workspace_id !== e.workspace_id) {
+                        this.props.history.push(`/workspace/${currentPage}/${e.workspace_id}/${replaceChar(e.current_workspace_folder_name)}/${e.id}/${replaceChar(e.name)}`);
+                    }
+                }
+            }
+        })
         // old / legacy channel
         window.Echo.private(`${localStorage.getItem("slug") === 'dev24admin' ? "dev" : localStorage.getItem("slug")}.App.User.${this.props.user.id}`)
             .listen(".new-lock-workspace", e => {
