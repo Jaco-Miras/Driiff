@@ -37,7 +37,7 @@ const FileOptions = props => {
     };
 
     const handleShare = () => {
-
+        actions.copyLink(file.view_link);
     };
 
     const handleDownload = () => {
