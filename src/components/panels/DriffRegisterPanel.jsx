@@ -2,6 +2,7 @@ import React, {useEffect, useRef, useState} from "react";
 import {withRouter} from "react-router-dom";
 import {Form, FormGroup, Input, InputGroup, InputGroupAddon, InputGroupText} from "reactstrap";
 import styled from "styled-components";
+import {isIPAddress} from "../../helpers/commonFunctions";
 import {SvgIcon} from "../common";
 import {useUserLogout} from "../hooks";
 
@@ -43,8 +44,11 @@ const DriffRegisterPanel = (props) => {
 
         checkDriffName(form.name, (err, res) => {
             if (res && res.data.status) {
-                setDriff(form.name);
-            } else {
+                if (isIPAddress(window.location.hostname) || window.location.hostname === "localhost") {
+                    setDriff(form.name);
+                } else {
+                    window.location.href = `${process.env.REACT_APP_apiProtocol}${driffName}.${process.env.REACT_APP_localDNSName}`;
+                }
             }
         });
     };
