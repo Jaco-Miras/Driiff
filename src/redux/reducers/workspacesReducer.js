@@ -717,18 +717,22 @@ export default (state = INITIAL_STATE, action) => {
         }
         case "INCOMING_COMMENT_CLAP": {
             let newPostComments = {...state.postComments};
-            if (action.data.parent_message_id) {
-                newPostComments[action.data.post_id].comments[action.data.parent_message_id].replies[action.data.message_id].clap_count = action.data.clap_count === 0 ? 
-                    newPostComments[action.data.post_id].comments[action.data.parent_message_id].replies[action.data.message_id].clap_count - 1 : newPostComments[action.data.post_id].comments[action.data.parent_message_id].replies[action.data.message_id].clap_count + 1;
-                    newPostComments[action.data.post_id].comments[action.data.parent_message_id].replies[action.data.message_id].user_clap_count = action.data.clap_count;
+            if (newPostComments.hasOwnProperty(action.data.post_id)) {
+                if (action.data.parent_message_id) {
+                    newPostComments[action.data.post_id].comments[action.data.parent_message_id].replies[action.data.message_id].clap_count = action.data.clap_count === 0 ? 
+                        newPostComments[action.data.post_id].comments[action.data.parent_message_id].replies[action.data.message_id].clap_count - 1 : newPostComments[action.data.post_id].comments[action.data.parent_message_id].replies[action.data.message_id].clap_count + 1;
+                        newPostComments[action.data.post_id].comments[action.data.parent_message_id].replies[action.data.message_id].user_clap_count = action.data.clap_count;
+                } else {
+                    newPostComments[action.data.post_id].comments[action.data.message_id].clap_count = action.data.clap_count === 0 ? 
+                        newPostComments[action.data.post_id].comments[action.data.message_id].clap_count - 1 : newPostComments[action.data.post_id].comments[action.data.message_id].clap_count + 1;
+                        newPostComments[action.data.post_id].comments[action.data.message_id].user_clap_count = action.data.clap_count;
+                }
+                return {
+                    ...state,
+                    postComments: newPostComments
+                }
             } else {
-                newPostComments[action.data.post_id].comments[action.data.message_id].clap_count = action.data.clap_count === 0 ? 
-                    newPostComments[action.data.post_id].comments[action.data.message_id].clap_count - 1 : newPostComments[action.data.post_id].comments[action.data.message_id].clap_count + 1;
-                    newPostComments[action.data.post_id].comments[action.data.message_id].user_clap_count = action.data.clap_count;
-            }
-            return {
-                ...state,
-                postComments: newPostComments
+                return state
             }
         }
         case "FETCH_TIMELINE_SUCCESS": {
