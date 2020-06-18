@@ -23,7 +23,7 @@ import {
 import {
     addToModals
 } from "../../redux/actions/globalActions";
-import { actions } from "react-redux-toastr";
+import {copyTextToClipboard} from "../../helpers/commonFunctions";
 
 const useFileActions = (params = null) => {
 
@@ -256,9 +256,14 @@ const useFileActions = (params = null) => {
             clearFileSearchResults(payload),
         );
     }, [dispatch]);
+
+    const copyLink = useCallback(link => {
+        copyTextToClipboard(link);
+    }, []);
     
     return {
         clearSearch,
+        copyLink,
         createFolder,
         favorite,
         getFavoriteFiles,

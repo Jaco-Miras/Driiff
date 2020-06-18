@@ -39,9 +39,13 @@ const WorkspacePageHeaderPanel = (props) => {
     const {className = ""} = props;
 
     let pathname = props.match.url;
-    if (props.match.path === "/workspace/:page/:workspaceId/:workspaceName/post/:postId/:postTitle") {
+    if (props.match.path === "/workspace/:page/:workspaceId/:workspaceName/post/:postId/:postTitle" ||
+        props.match.path === "/workspace/:page/:folderId/:folderName/:workspaceId/:workspaceName/post/:postId/:postTitle") {
         pathname = pathname.split("/post/")[0].replace(`/workspace/${props.match.params.page}`, "")
-    } else  {
+    } else if (props.match.path === "/workspace/:page/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName" ||
+                props.match.path === "/workspace/:page/:folderId/:folderName/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName") {
+        pathname = pathname.split("/folder/")[0].replace(`/workspace/${props.match.params.page}`, "")
+    } else {
         pathname = pathname.replace(`/workspace/${props.match.params.page}`, "");
     }
 

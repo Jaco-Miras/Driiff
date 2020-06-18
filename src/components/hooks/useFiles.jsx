@@ -50,9 +50,9 @@ const useFiles = () => {
         workspaceFiles[activeTopic.id].folders.hasOwnProperty(params.fileFolderId) &&
         workspaceFiles[activeTopic.id].folders[params.fileFolderId].hasOwnProperty('files')) {
 
-            let fileIds = Object.values(workspaceFiles[activeTopic.id].folders[params.fileFolderId].files);
+            let fileIds = Object.values(workspaceFiles[activeTopic.id].folders[params.fileFolderId].files).sort((a,b) => { return b > a ? 1 : -1});
             if (workspaceFiles[activeTopic.id].hasOwnProperty("search_results") && workspaceFiles[activeTopic.id].search_results.length > 0) {
-                fileIds = workspaceFiles[activeTopic.id].search_results;
+                fileIds = workspaceFiles[activeTopic.id].search_results.sort((a,b) => { return b > a ? 1 : -1});;
             }
             return {
                 params,
@@ -64,9 +64,9 @@ const useFiles = () => {
                 folder:  workspaceFiles[activeTopic.id].folders[params.fileFolderId],
             };
         } else {
-            let fileIds = Object.values(workspaceFiles[activeTopic.id].files).map(f => f.id);
+            let fileIds = Object.values(workspaceFiles[activeTopic.id].files).map(f => f.id).sort((a,b) => { return b > a ? 1 : -1});;
             if (workspaceFiles[activeTopic.id].hasOwnProperty("search_results") && workspaceFiles[activeTopic.id].search_results.length > 0) {
-                fileIds = workspaceFiles[activeTopic.id].search_results;
+                fileIds = workspaceFiles[activeTopic.id].search_results.sort((a,b) => { return b > a ? 1 : -1});;
             }
             return {
                 params,
