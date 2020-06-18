@@ -50,6 +50,9 @@ body.dark {
   .chat-right {
 
   }
+  .chat-sidebar-header {
+    background: #313852;
+  }
 
   .chat-actions-container {
     background: #313852;
@@ -20139,10 +20142,6 @@ body.dark.small-navigation .navigation-menu-body ul li.navigation-divider:after 
     // display: none;
   }
 
-  .chat-block .chat-content .mobile-chat-close-btn {
-    display: block;
-  }
-
   .chat-block .chat-content.mobile-open {
     display: -webkit-box;
     display: -webkit-flex;
@@ -20384,6 +20383,10 @@ body.dark.small-navigation .navigation-menu-body ul li.navigation-divider:after 
   .app-block {
     position: relative;
     overflow: hidden;
+  }
+
+  .chat-block .chat-content .mobile-chat-close-btn {
+    display: block;
   }
 
   .app-block .app-sidebar-menu-button {
@@ -20913,6 +20916,15 @@ body.dark.small-navigation .navigation-menu-body ul li.navigation-divider:after 
 
 .h-w-min {
   height: calc(100vh - 217px) !important;
+}
+.feather {
+  transition: color 200ms ease 0ms;
+}
+.list-group-item {
+  transition: background 200ms ease;
+  &:hover {
+    background: #fafafa;
+  }
 }
 // .h-100 {
 //   min-height: calc(100vh - 337px)
