@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import {useSelector} from "react-redux";
 import {Redirect, Route, Switch} from "react-router-dom";
 import {useSettings, useTranslation} from "../components/hooks";
@@ -9,20 +9,25 @@ import MainLayout from "./MainLayout";
 
 export const AppRoute = ({children, ...props}) => {
 
-    useSettings();
+    const {fetch: fetchSettings} = useSettings();
     useTranslation();
 
     // const push = usePushNotification();
     const session = useSelector(state => state.session);
     const i18nLoaded = useSelector(state => state.global.i18nLoaded);
-    const authenticated = session.authenticated;
+
+    useEffect(() => {
+        if (session.checked && session.authenticated) {
+            fetchSettings();
+        }
+    }, [session.checked, session.authenticated]);
 
     // if (!session.checked || !i18nLoaded || push.loading)
     if (!session.checked || !i18nLoaded)
-    return null;
+        return null;
 
     return (
-        authenticated ?
+        session.authenticated ?
         <>
             <Switch>
                 <Route

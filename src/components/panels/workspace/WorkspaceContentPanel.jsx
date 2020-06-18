@@ -58,7 +58,7 @@ const WorkspaceContentPanel = (props) => {
     return (
         <Wrapper className={`main-content h-100 ${className}`}>
             {
-                workspaces.length >= 1 ?
+                Object.keys(workspaces).length >= 1 ?
                 <>
                     <Route
                         exact={true}
@@ -136,7 +136,7 @@ const WorkspaceContentPanel = (props) => {
                             }}/>
                     </Switch>
                 </>
-                                       :
+                                                    :
                 <EmptyState>
                     <SvgEmptyState height={275} icon={1}/>
                     <h5>Start by creating a project.</h5>

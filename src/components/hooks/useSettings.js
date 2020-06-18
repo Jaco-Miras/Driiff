@@ -36,25 +36,29 @@ const useSettings = () => {
         );
     }, [dispatch, userSettings]);
 
+    const fetch = useCallback(() => {
+        dispatch(
+            getDriffSettings({}, (err) => {
+                if (err) {
+                    logout();
+                }
+            }),
+        );
+
+        dispatch(
+            getUserSettings(),
+        );
+    }, [dispatch]);
+
     useEffect(() => {
         if (init) {
             init = false;
-
-            dispatch(
-                getDriffSettings({}, (err) => {
-                    if (err) {
-                        logout();
-                    }
-                }),
-            );
-
-            dispatch(
-                getUserSettings(),
-            );
+            fetch();
         }
     }, []);
 
     return {
+        fetch,
         userSettings,
         driffSettings,
         chatSettings: userSettings.CHAT_SETTINGS,

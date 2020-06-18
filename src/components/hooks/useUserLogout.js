@@ -21,7 +21,6 @@ const useUserLogout = () => {
                 localStorage.removeItem("userAuthToken");
                 localStorage.removeItem("token");
                 localStorage.removeItem("atoken");
-                localStorage.clear();
                 sessionService
                     .deleteSession()
                     .then(() => sessionService.deleteUser())
