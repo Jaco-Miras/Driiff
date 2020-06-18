@@ -16,7 +16,7 @@ const AttachFileTimeline = (props) => {
                 <Avatar className="mr-3" name={data.user.name} imageLink={data.user.profile_image_link}/>
             </div>
             {
-                data.files.length === 1 &&
+                //data.files.length === 1 &&
                 <div>
                     <h6 className="d-flex justify-content-between mb-4">
                         <span>
@@ -27,37 +27,37 @@ const AttachFileTimeline = (props) => {
                     </h6>
                     <a href="#">
                         <div className="mb-3 border p-3 border-radius-1">
-                            <i className="fa fa-file-pdf-o mr-2"/> {data.files[0].name}
+                            <i className="fa fa-file-pdf-o mr-2"/> {data.name}
                         </div>
                     </a>
                 </div>
             }
             {
-                data.files.length > 1 &&
-                <div>
-                    <h6 className="d-flex justify-content-between mb-4">
-                        <span>
-                            <a href="#">{data.user.name}</a> shared files
-                        </span>
-                        <span
-                            className="text-muted font-weight-normal">{localizeChatTimestamp(data.created_at.timestamp)}</span>
-                    </h6>
-                    <div className="row row-xs">
-                        {
-                            data.files.map(f => {
-                                return (
-                                    <div key={f.id} className="col-xl-2 col-lg-3 col-md-4 col-sx-6">
-                                        <figure>
-                                            <img src={f.src}
-                                                 className="w-100 border-radius-1"
-                                                 alt={f.name}/>
-                                        </figure>
-                                    </div>
-                                );
-                            })
-                        }
-                    </div>
-                </div>
+                // data.files.length > 1 &&
+                // <div>
+                //     <h6 className="d-flex justify-content-between mb-4">
+                //         <span>
+                //             <a href="#">{data.user.name}</a> shared files
+                //         </span>
+                //         <span
+                //             className="text-muted font-weight-normal">{localizeChatTimestamp(data.created_at.timestamp)}</span>
+                //     </h6>
+                //     <div className="row row-xs">
+                //         {
+                //             data.files.map(f => {
+                //                 return (
+                //                     <div key={f.id} className="col-xl-2 col-lg-3 col-md-4 col-sx-6">
+                //                         <figure>
+                //                             <img src={f.src}
+                //                                  className="w-100 border-radius-1"
+                //                                  alt={f.name}/>
+                //                         </figure>
+                //                     </div>
+                //                 );
+                //             })
+                //         }
+                //     </div>
+                // </div>
             }
         </Wrapper>
     );
