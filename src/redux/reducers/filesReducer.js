@@ -538,6 +538,22 @@ export default (state = INITIAL_STATE, action) => {
                 workspaceFiles: newWorkspaceFiles
             }     
         }
+        case "INCOMING_MOVED_FILE": {
+            let newWorkspaceFiles = {...state.workspaceFiles};
+            if (newWorkspaceFiles.hasOwnProperty(action.data.topic_id)) {
+                if (newWorkspaceFiles[action.data.topic_id].folders[action.data.folder_id].hasOwnProperty("loaded")) {
+                    newWorkspaceFiles[action.data.topic_id].folders[action.data.folder_id].files = [...newWorkspaceFiles[action.data.topic_id].folders[action.data.folder_id].files, action.data.file_id];
+                   return {
+                       ...state,
+                       workspaceFiles: newWorkspaceFiles
+                   }
+                } else {
+                    return state;
+                }
+            } else {
+                return state;
+            }
+        }
         default:
             return state;
     }

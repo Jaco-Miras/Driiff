@@ -9,3 +9,4 @@ export {default as CreateEditWorkspacePostModal} from "./CreateEditWorkspacePost
 export {default as ModalHeaderSection} from "./ModalHeaderSection";
 export {default as PostSnoozeModal} from "./PostSnoozeModal";
 export {default as SingleInputModal} from "./SingleInputModal";
+export {default as MoveFilesModal} from "./MoveFilesModal";

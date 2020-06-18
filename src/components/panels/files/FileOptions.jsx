@@ -44,7 +44,7 @@ const FileOptions = props => {
     };
 
     const handleMoveTo = () => {
-
+        actions.moveFile(file);
     };
 
     const handleRename = () => {

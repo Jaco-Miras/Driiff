@@ -80,6 +80,8 @@ export {
     deleteFolder,
     deleteFile,
     putFile,
+    deleteTrash,
+    moveFile,
 } from "./files";
 
 export {

@@ -13,6 +13,7 @@ import {
     FileUploadModal,
     PostSnoozeModal,
     SingleInputModal,
+    MoveFilesModal,
 } from "../modals";
 
 const ModalPanelContainer = styled.div`
@@ -50,6 +51,8 @@ const ModalPanel = () => {
                                 return <PostSnoozeModal key={modal.type} data={modal}/>;
                             case "single_input":
                                 return <SingleInputModal key={modal.type} {...modal} />;
+                            case "move_files":
+                                return <MoveFilesModal key={modal.type} {...modal} />;
                             default:
                                 return null;
                         }

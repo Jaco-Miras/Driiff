@@ -278,6 +278,51 @@ const useFileActions = (params = null) => {
     const copyLink = useCallback(link => {
         copyTextToClipboard(link);
     }, []);
+
+    const removeTrashFiles = useCallback(() => {
+        const handleDeleteTrash = () => {
+            dispatch(
+                deleteTrash({
+                    topic_id: params.workspaceId
+                })
+            );
+        };
+        let payload = {
+            type: "confirmation",
+            headerText: "Delete trash",
+            submitText: "Delete",
+            cancelText: "Cancel",
+            bodyText: "Are you sure you want to delete all trash files?",
+            actions: {
+                onSubmit: handleDeleteTrash,
+            },
+        };
+
+        dispatch(
+            addToModals(payload),
+        );
+    }, [dispatch]);
+
+    const moveFile = useCallback((file) => {
+        
+        let payload = {
+            type: "move_files",
+            file: file,
+            topic_id: params.workspaceId,
+            folder_id: null,
+        };
+
+        if (params.hasOwnProperty("fileFolderId")) {
+            payload = {
+                ...payload,
+                folder_id: params.fileFolderId
+            }
+        }
+
+        dispatch(
+            addToModals(payload),
+        );
+    }, [dispatch]);
     
     return {
         clearSearch,
@@ -292,6 +337,7 @@ const useFileActions = (params = null) => {
         getPopularFiles,
         getEditedFiles,
         getTrashFiles,
+        moveFile,
         removeFile,
         removeFolder,
         renameFile,

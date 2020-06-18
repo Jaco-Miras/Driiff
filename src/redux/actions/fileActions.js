@@ -13,6 +13,7 @@ import {
     getWorkspacePrimaryFiles as getWorkspacePrimaryFilesService,
     getWorkspaceRecentlyEditedFiles as getWorkspaceRecentlyEditedFilesService,
     getWorkspaceTrashFiles as getWorkspaceTrashFilesService,
+    moveFile as moveFileService,
     patchWorkspaceFileViewed as patchWorkspaceFileViewedService,
     postFolder as postFolderService,
     putFolder as putFolderService,
@@ -343,6 +344,34 @@ export function incomingFiles(payload, callback) {
 export function addRemoveFavorite(payload, callback) {
     return SimpleDispatchActionToReducer(
         "ADD_REMOVE_FAVORITE",
+        payload,
+        callback,
+    );
+}
+
+export function deleteTrash(payload, callback) {
+    return dispatchActionToReducer(
+        deleteTrashService(payload),
+        "DELETE_TRASH_START",
+        "DELETE_TRASH_SUCCESS",
+        "DELETE_TRASH_FAIL",
+        callback,
+    );
+}
+
+export function moveFile(payload, callback) {
+    return dispatchActionToReducer(
+        moveFileService(payload),
+        "MOVE_FILE_START",
+        "MOVE_FILE_SUCCESS",
+        "MOVE_FILE_FAIL",
+        callback,
+    );
+}
+
+export function incomingMovedFile(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "INCOMING_MOVED_FILE",
         payload,
         callback,
     );

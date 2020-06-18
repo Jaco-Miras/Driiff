@@ -251,3 +251,33 @@ export function putFile(payload) {
         data: payload,
     });
 }
+
+/**
+ * @param {Object} payload
+ * @param {number} payload.topic_id
+ * @returns {Promise<*>}
+ */
+export function deleteTrash(payload) {
+    let url = `/v2/workspace-delete-all-trash-files?topic_id=${payload.topic_id}`;
+    return apiCall({
+        method: "DELETE",
+        url: url,
+        data: payload,
+    });
+}
+
+/**
+ * @param {Object} payload
+ * @param {number} payload.file_id
+ * @param {number} payload.topic_id
+ * @param {number} payload.folder_id
+ * @returns {Promise<*>}
+ */
+export function moveFile(payload) {
+    let url = `/v2/workspace-file-move`;
+    return apiCall({
+        method: "PUT",
+        url: url,
+        data: payload,
+    });
+}
