@@ -4,12 +4,12 @@ import {useOutsideClick} from "../hooks";
 
 const Wrapper = styled.div`
     position: relative;
-    
+
     .dropdown-toggle {
         &:after {
             margin-left: 10px;
         }
-        
+
         &.show {
             color: #fff;
             background: #afb8bd;

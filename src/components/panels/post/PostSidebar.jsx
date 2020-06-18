@@ -24,7 +24,7 @@ const PostSidebar = props => {
                     {
                         isMember &&
                         <div className="card-body">
-                            <button className="btn btn-outline-primary btn-block"
+                            <button className="btn btn-primary btn-block"
                                     onClick={handleShowWorkspacePostModal}>
                                 Create new post
                             </button>

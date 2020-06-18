@@ -7,25 +7,30 @@ import {addToModals} from "../../redux/actions/globalActions";
 
 const SettingsLinkList = styled.li`
     position: relative;
-    
+
     > a:after{
         display: none;
     }
-    
+
     .dropdown-toggle {
         cursor: pointer;
         cursor: hand;
-        
+
         &:after {
             display: none;
         }
+        .feather {
+            &:hover {
+                color: #000000;
+            }
+        }
     }
-    
+
     .dropdown-menu {
         position: absolute;
         top: 25px;
         left: 25px;
-        
+
         > span {
             cursor: pointer;
             cursor: hand;
@@ -64,7 +69,7 @@ const SettingsLink = () => {
             payload = {
                 ...payload,
                 type: "workspace_folder"
-            };        
+            };
         } else {
             payload = {
                 ...payload,
