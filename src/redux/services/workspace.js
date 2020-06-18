@@ -110,7 +110,7 @@ export function getWorkspacePosts(payload) {
     }
     if (payload.filters !== undefined) {
         for (var i = 0; i < payload.filters.length; i++) {
-            url += `&filter[]=${payload.filters[i]}`;
+            url += `&filter[${i}]=${payload.filters[i]}`;
         }
     }
     return apiCall({
