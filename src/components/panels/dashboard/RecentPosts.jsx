@@ -85,7 +85,7 @@ const RecentPosts = (props) => {
                     posts &&
                     <ul className="list-group list-group-flush">
                     {
-                        Object.values(posts).map(post => {
+                        Object.values(posts).sort((a,b) => b.created_at.timestamp > a.created_at.timestamp ? 1 : -1).map(post => {
                             return <RecentPostListItem key={post.id} post={post} parentRef={scrollRef} 
                                 postActions={postActions} onOpenPost={handleOpenPost}/>;
                         })
