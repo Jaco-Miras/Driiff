@@ -1,4 +1,5 @@
 import React, {forwardRef, useEffect, useState} from "react";
+import {renderToString} from "react-dom/server";
 import {useSelector} from "react-redux";
 import styled from "styled-components";
 import {localizeDate} from "../../../helpers/momentFormatJS";
@@ -68,6 +69,27 @@ const SystemMessage = forwardRef((props, ref) => {
             } else {
                 setBody(`Update: ${newBody}'s account is activated.`);
             }
+        } else if (reply.body.includes("CHANNEL_UPDATE::")) {
+            const data = JSON.parse(reply.body.replace("CHANNEL_UPDATE::", ""));
+
+            let newBody = "";
+            if (data.title !== "") {
+                newBody = <>{newBody}Channel is renamed to <b>#{data.title}</b><br/></>;
+            }
+
+            if (data.added_members.length >= 1) {
+                const am = recipients.filter(r => data.added_members.includes(r.type_id))
+                    .map(r => r.name);
+                newBody = <>{newBody}{am.join(", ")} is added.<br/></>;
+            }
+
+            if (data.removed_members.length >= 1) {
+                const rm = recipients.filter(r => data.removed_members.includes(r.type_id))
+                    .map(r => r.name);
+                newBody = <>{newBody}{rm.join(", ")} is removed.<br/></>;
+            }
+
+            setBody(renderToString(newBody));
         }
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -111,6 +133,27 @@ const SystemMessage = forwardRef((props, ref) => {
             } else {
                 setBody(`Update: ${newBody}'s account is activated.`);
             }
+        } else if (reply.body.includes("CHANNEL_UPDATE::")) {
+            const data = JSON.parse(reply.body.replace("CHANNEL_UPDATE::", ""));
+
+            let newBody = "";
+            if (data.title !== "") {
+                newBody = <>{newBody}Channel is renamed to <b>#{data.title}</b><br/></>;
+            }
+
+            if (data.added_members.length >= 1) {
+                const am = recipients.filter(r => data.added_members.includes(r.type_id))
+                    .map(r => r.name);
+                newBody = <>{newBody}{am.join(", ")} is added.<br/></>;
+            }
+
+            if (data.removed_members.length >= 1) {
+                const rm = recipients.filter(r => data.removed_members.includes(r.type_id))
+                    .map(r => r.name);
+                newBody = <>{newBody}{rm.join(", ")} is removed.<br/></>;
+            }
+
+            setBody(renderToString(newBody));
         }
     }, [recipients, recipients.length, chatName, reply.body, selectedChannel.title, selectedChannel.type]);
 

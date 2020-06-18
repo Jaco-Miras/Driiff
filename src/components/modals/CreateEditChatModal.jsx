@@ -132,16 +132,22 @@ const CreateEditChatModal = props => {
             }).map(m => m.id);
 
             let payload = {
+                id: channel.id,
                 channel_id: channel.id,
                 channel_name: inputValue,
                 remove_member_ids: removed_members,
                 add_member_ids: added_members,
-                id: channel.id,
+                message_body: `CHANNEL_UPDATE::${
+                    JSON.stringify({
+                        author: user.id,
+                        title: channel.title === inputValue ? "" : inputValue,
+                        added_members: added_members,
+                        removed_members: removed_members,
+                    })}`,
             };
 
             channel.members = selectedUsers;
             channel.title = inputValue;
-            alert("Missing body we need to discuss");
 
             channelActions.update(payload);
         } else {
@@ -232,7 +238,7 @@ const CreateEditChatModal = props => {
             }
 
             let old_channel = channel;
-            const createCallback = (err,res) => {
+            const createCallback = (err, res) => {
                 if (err) return;
                 let payload = {
                     ...channel,
@@ -260,7 +266,7 @@ const CreateEditChatModal = props => {
                 dispatch(
                     renameChannelKey(payload),
                 );
-            }
+            };
             channelActions.create(payload, createCallback);
         }
 
@@ -289,7 +295,7 @@ const CreateEditChatModal = props => {
 
         if (recipient_ids.length) {
             setSearching(true);
-            const callback = (err,res) => {
+            const callback = (err, res) => {
                 setSearching(false);
                 if (err) {
                     return;
@@ -299,7 +305,7 @@ const CreateEditChatModal = props => {
                 } else {
                     setChatExists(false);
                 }
-            }
+            };
             channelActions.searchExisting(
                 inputValue,
                 recipient_ids,
