@@ -42,9 +42,14 @@ const useDriff = () => {
     const [registeredDriff, setRegisteredDriff] = useState(null);
 
     const setDriff = useCallback((driffName) => {
-        localStorage.setItem("slug", driffName);
-        setRegisteredDriff(driffName);
-        setRedirected(false);
+        if (isIPAddress(window.location.hostname) || window.location.hostname === "localhost") {
+            localStorage.setItem("slug", driffName);
+            setRegisteredDriff(driffName);
+            setRedirected(false);
+        } else {
+            window.location.href = `${process.env.REACT_APP_apiProtocol}${driffName}.${process.env.REACT_APP_localDNSName}`;
+        }
+
     }, [setRedirected, setRegisteredDriff]);
 
     const getRedirect = () => {

@@ -107,7 +107,7 @@ export const updateFaviconState = (isActive = false) => {
 };
 
 export const getCurrentDriffUrl = () => {
-    const {REACT_APP_ENV, REACT_APP_localDNSName} = process.env;
+    const {REACT_APP_localDNSName} = process.env;
     const slugName = getDriffName();
     let url = window.location.protocol;
     let port = (window.location.port && window.location.port !== 80) ? `:${window.location.port}` : "";
@@ -115,9 +115,6 @@ export const getCurrentDriffUrl = () => {
     if (isIPAddress(window.location.hostname) || window.location.hostname === "localhost") {
         return `${url}//${window.location.hostname}${port}`;
     } else {
-        if (REACT_APP_ENV === "development") {
-            return `${url}//${REACT_APP_localDNSName}${port}`;
-        }
         if (slugName) {
             return `${url}//${slugName}.${REACT_APP_localDNSName}${port}`;
         } else {
@@ -260,7 +257,7 @@ export const checkUpdate = () => {
                     requirement: driffData.requirement,
                 },
             },
-        }).then((err, res) => {
+        }).then(() => {
             localStorage.setItem("driffVersion", driffData.version);
         });
     }
