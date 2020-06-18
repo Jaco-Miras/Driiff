@@ -20,7 +20,8 @@ const TeamListItem = (props) => {
                 <div onClick={onEditClick}>Remove</div>
             </MoreOptions>
             <div>
-                <Avatar id={member.id} name={member.name} imageLink={member.profile_image_link} partialName={member.partial_name}/>
+                <Avatar className="mr-2" id={member.id} name={member.name} imageLink={member.profile_image_link}
+                        partialName={member.partial_name}/>
             </div>
             <div>
                 <h6 className="m-b-0">{member.name}</h6>
