@@ -7,15 +7,18 @@ import {Avatar, FileAttachments} from "../../../common";
 const Wrapper = styled.div`
     .title {
         color: #828282;
-        
+        font-weight: normal;
         a {
             color: #505050;
+            font-weight: bold;
         }
     }
-    
+    img {
+        max-width: 100%;
+    }
     .files {
-    
-    }    
+
+    }
 `;
 
 const PostTimeline = (props) => {

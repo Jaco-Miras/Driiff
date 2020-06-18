@@ -58,7 +58,8 @@ const Wrapper = styled.span`
         transition: opacity 0.3s ease;
         svg {
             margin-left: 4px;
-            fill: #000000;
+            fill: #ffc107;
+            color: #ffc107;
         }
         .badge {
             position: absolute;

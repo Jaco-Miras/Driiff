@@ -94,7 +94,7 @@ const WorkspacePeoplePanel = (props) => {
     useFocusInput(refs.search.current);
 
     return (
-        <Wrapper className={`workspace-people container-fluid ${className}`}>
+        <Wrapper className={`workspace-people fadeIn container-fluid ${className}`}>
             <div className="card">
                 <div className="card-body">
                     <Search ref={refs.search} placeholder="People search" onChange={handleSearchChange} autoFocus/>

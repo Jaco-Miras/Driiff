@@ -11,6 +11,7 @@ const ImgLoader = styled.div`
     min-height: 150px;
     max-width: 200px;
     min-width: 200px;
+    border-radius: 8px;
 `;
 
 const ImgLoaderDiv = styled.div`

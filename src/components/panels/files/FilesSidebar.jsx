@@ -53,7 +53,7 @@ const FileSidebar = (props) => {
                         </Filter>
                         <Filter onClick={filterFile} data-filter="recent" active={filter === "recent"}
                                 className="list-group-item d-flex align-items-center">
-                            <Icon className="mr-2" icon="upload-cloud"/>
+                            <Icon className="mr-2" icon="monitor"/>
                             Recently edited
                         </Filter>
                         <Filter onClick={filterFile} data-filter="important" active={filter === "important"}
@@ -79,7 +79,7 @@ const FileSidebar = (props) => {
                                 </div>
                                 <div className="flex-grow-1">
                                     <ProgressBar amount={wsFiles.storage / 1e9} limit={storage.limit}/>
-                                    <div className="line-height-12 small text-muted mt-2">{wsFiles.storage / 1e9}GB used
+                                    <div className="line-height-12 small text-muted mt-2">{(wsFiles.storage / 1e9).toFixed(2)}GB used
                                         of {storage.limit}GB
                                     </div>
                                 </div>

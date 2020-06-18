@@ -20908,15 +20908,12 @@ body.dark.small-navigation .navigation-menu-body ul li.navigation-divider:after 
 }
 
 .workspace-chat {
-  height: calc(100vh - 228px);
+  height: calc(100vh - 198px);
 }
 .workspace-chat .chat-content {
   padding-left: 0 !important;
 }
 
-.h-w-min {
-  height: calc(100vh - 217px) !important;
-}
 .feather {
   transition: color 200ms ease 0ms;
 }
@@ -20926,9 +20923,3 @@ body.dark.small-navigation .navigation-menu-body ul li.navigation-divider:after 
     background: #fafafa;
   }
 }
-// .h-100 {
-//   min-height: calc(100vh - 337px)
-// }
-// .chat-block {
-//   height: 40%;
-// }

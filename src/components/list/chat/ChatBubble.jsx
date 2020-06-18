@@ -67,6 +67,8 @@ const ChatBubbleContainer = styled.div`
     span.emoticon-body {
         font-size: 2.5rem;
         padding: 30px 0;
+        text-align: right;
+        text-align: ${props => props.isAuthor ? "right" : "left"};
     }
     .reply-content img{
         max-width: 100%;
@@ -689,7 +691,7 @@ const ChatBubble = (props) => {
             replyBody = `${replyBody}<span class='edited-message'>(edited)</span>`;
         }
 
-        if (replyBody.length === 13) {
+        if (replyBody.length === 13 || replyBody.length === 2) {
             if (replyBody !== reply.body) {
                 isEmoticonOnly = true;
             } else {
@@ -857,6 +859,8 @@ const ChatBubble = (props) => {
     const hasFiles = reply.files.length > 0;
     const hasMessage = reply.body !== "<span></span>";
 
+
+
     return <ChatBubbleContainer
         ref={refComponent}
         tabIndex={reply.id}
@@ -933,7 +937,7 @@ const ChatBubble = (props) => {
                                 hasFiles={hasFiles}
                                 theme={chatSettings.chat_message_theme}
                                 isAuthor={isAuthor}
-                                className={`reply-content ${isEmoticonOnly ? "emoticon-body" : ""} ${reply.is_deleted ? "is-deleted" : ""}`}
+                                className={`reply-content miauw ${isEmoticonOnly ? "emoticon-body" : ""} ${reply.is_deleted ? "is-deleted" : ""}`}
                                 dangerouslySetInnerHTML={showGifPlayer ? {__html: stripGif(replyBody)} : {__html: replyBody}}
                             />
                         }

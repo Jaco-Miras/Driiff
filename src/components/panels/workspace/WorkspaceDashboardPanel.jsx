@@ -11,7 +11,7 @@ const Wrapper = styled.div`
     }
     -ms-overflow-style: none;
     scrollbar-width: none;
-    
+
     h5 {
         text-align: left;
     }
@@ -30,7 +30,7 @@ const WorkspaceDashboardPanel = (props) => {
 
 
     return (
-        <Wrapper className={`container-fluid h-w-min ${className}`}>
+        <Wrapper className={`container-fluid fadeIn ${className}`}>
             <div className={`row`}>
                 <div className={`col-md-6`}>
                     <DashboardAboutWorkspace workspace={workspace} onEditClick={handleEditClick}/>

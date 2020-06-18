@@ -18,14 +18,17 @@ import {
 const Wrapper = styled.div`
     position: relative;
     padding-bottom: 0 !important;
-    text-align: center;
 `;
 
 const EmptyState = styled.div`
+    height: 72vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     svg {
         display: block;
         margin: 0 auto 2rem;
-        
+
         circle {
             fill: transparent;
         }

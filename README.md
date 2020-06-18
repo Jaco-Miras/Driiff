@@ -19,14 +19,10 @@ Login development:
 
 
 ```
-Api:
-
+Api development:
 dev24admin
-```
 
-```
 Login:
-
 rt@make24.nl
 password1
 
