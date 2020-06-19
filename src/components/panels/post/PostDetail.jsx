@@ -10,10 +10,15 @@ import {useCommentActions, useComments} from "../../hooks";
 import {PostBody, PostComments, PostDetailFooter} from "./index";
 
 const MainHeader = styled.div`
+    > div {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
     ul {
         display: flex;
         flex-direction: row;
-        align-items: center;
+        align-items: center;        
         margin: 0;
         padding: 0;
         ${'' /* height: 33px; */}
