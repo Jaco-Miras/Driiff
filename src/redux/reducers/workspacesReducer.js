@@ -424,6 +424,7 @@ export default (state = INITIAL_STATE, action) => {
                         tag: null,
                         search: null,
                         searchResults: [],
+                        count: null,
                         posts: {
                             ...[action.data.topic_id].posts,
                             ...convertedPosts,
@@ -764,6 +765,22 @@ export default (state = INITIAL_STATE, action) => {
                         members: action.data.members
                     }
                     : state.activeTopic
+            }
+        }
+        case "FETCH_TAG_COUNTER_SUCCESS": {
+            return {
+                ...state,
+                workspacePosts: {
+                    ...state.workspacePosts,
+                    [action.data.topic_id]: {
+                        ...state.workspacePosts[action.data.topic_id],
+                        count: {
+                            is_must_reply: action.data.counters.filter(c => c.type === "MUST_REPLY")[0].counter,
+                            is_must_read: action.data.counters.filter(c => c.type === "MUST_READ")[0].counter,
+                            is_read_only: action.data.counters.filter(c => c.type === "READ_ONLY")[0].counter,
+                        }
+                    }
+                }
             }
         }
         default:

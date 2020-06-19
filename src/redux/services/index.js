@@ -88,6 +88,7 @@ export {
     deletePost,
     fetchComments,
     fetchRecentPosts,
+    fetchTagCounter,
     postArchive,
     postClap,
     postCreate,
