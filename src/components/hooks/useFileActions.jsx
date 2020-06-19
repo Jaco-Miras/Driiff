@@ -165,7 +165,7 @@ const useFileActions = (params = null) => {
         dispatch(
             addToModals(payload),
         );
-    }, [dispatch]);
+    }, [dispatch, params]);
 
     const renameFile = useCallback((file, callback) => {
         const handleUpdateFileName = () => {
@@ -229,7 +229,7 @@ const useFileActions = (params = null) => {
                 type: "file"
             }, cb)
         );
-    }, [dispatch]);
+    }, [dispatch, params]);
 
     const getFavoriteFiles = useCallback((id, callback) => {
         dispatch(
@@ -245,7 +245,7 @@ const useFileActions = (params = null) => {
         dispatch(
             setViewFiles(payload),
         );
-    }, [dispatch]);
+    }, [dispatch, params]);
 
     const search = useCallback((searchValue) => {
         let payload = {
@@ -264,7 +264,7 @@ const useFileActions = (params = null) => {
         dispatch(
             getWorkspaceFiles(payload, cb),
         );
-    }, [dispatch]);
+    }, [dispatch, params]);
 
     const clearSearch = useCallback(() => {
         let payload = {
@@ -274,7 +274,7 @@ const useFileActions = (params = null) => {
         dispatch(
             clearFileSearchResults(payload),
         );
-    }, [dispatch]);
+    }, [dispatch, params]);
 
     const copyLink = useCallback(link => {
         copyTextToClipboard(link);
@@ -302,7 +302,7 @@ const useFileActions = (params = null) => {
         dispatch(
             addToModals(payload),
         );
-    }, [dispatch]);
+    }, [dispatch, params]);
 
     const moveFile = useCallback((file) => {
         
@@ -323,7 +323,7 @@ const useFileActions = (params = null) => {
         dispatch(
             addToModals(payload),
         );
-    }, [dispatch]);
+    }, [dispatch, params]);
     
     return {
         clearSearch,

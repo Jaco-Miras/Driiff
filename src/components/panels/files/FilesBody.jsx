@@ -162,7 +162,7 @@ const FilesBody = (props) => {
                             {
                                 filter === "" &&
                                 <>
-                                    <h6 className="font-size-11 text-uppercase mb-4">All files</h6>
+                                    <h6 className="font-size-11 text-uppercase mb-4">{folder ? folder.search : "All files"}</h6>
                                     <div className="row">
                                         {
                                             wsFiles &&
