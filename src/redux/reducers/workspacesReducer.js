@@ -547,6 +547,33 @@ export default (state = INITIAL_STATE, action) => {
                 drafts: action.data
             }
         }
+        case "SAVE_DRAFT_SUCCESS": {
+            if (action.data.data.draft_type === "draft_post") {
+                return {
+                    ...state,
+                    drafts: [...state.drafts, action.data],
+                    workspacePosts: {
+                        ...state.workspacePosts,
+                        [action.data.data.topic_id]: {
+                            ...state.workspacePosts[action.data.data.topic_id],
+                            posts: {
+                                ...state.workspacePosts[action.data.data.topic_id].posts,
+                                [action.data.data.id]: {
+                                    ...action.data,
+                                    ...action.data.data,
+                                    ...action.data.data.form,
+                                    id: action.data.data.id,
+                                    draft_id: action.data.id,
+                                    form: action.data.data.form,
+                                }
+                            },
+                        }
+                    }
+                }
+            } else {
+                return state;
+            }
+        }
         case "REMOVE_POST": {
             let newWorkspacePosts = {...state.workspacePosts};
             delete state.workspacePosts[action.data.topic_id].posts[action.data.post_id];

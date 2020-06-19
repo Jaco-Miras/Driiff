@@ -1,7 +1,7 @@
 import moment from "moment";
 import React, {useCallback, useEffect, useRef, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {Input, InputGroup, Label, Modal, ModalBody} from "reactstrap";
+import {Input, InputGroup, Label, Modal, ModalBody, ModalHeader, ModalFooter, Button} from "reactstrap";
 import styled from "styled-components";
 import {clearModal, deleteDraft, saveDraft, updateDraft} from "../../redux/actions/globalActions";
 import {postCreate, putPost} from "../../redux/actions/postActions";
@@ -160,7 +160,18 @@ const CreateEditWorkspacePostModal = props => {
         dropzone: useRef(null),
         arrow: useRef(null),
     };
-    const toggle = (saveDraft = true) => {
+   
+    const [nestedModal, setNestedModal] = useState(false);
+    const [closeAll, setCloseAll] = useState(false);
+
+    const toggleNested = () => {
+        setNestedModal(!nestedModal);
+        setCloseAll(false);
+    };
+
+    const toggleAll = (saveDraft = false) => {
+        setNestedModal(!nestedModal);
+        setCloseAll(true);
         if (saveDraft && mode !== "edit") {
             handleSaveDraft();
         }
@@ -168,6 +179,10 @@ const CreateEditWorkspacePostModal = props => {
         dispatch(
             clearModal({type: type}),
         );
+    };
+
+    const toggle = () => {
+        toggleNested();
     };
 
     const handleSelectUser = e => {
@@ -223,6 +238,7 @@ const CreateEditWorkspacePostModal = props => {
                 is_must_read: form.must_read ? 1 : 0,
                 is_must_reply: form.must_reply ? 1 : 0,
                 is_read_only: form.no_reply ? 1 : 0,
+                created_at: {timestamp: timestamp}
             };
             if (draftId) {
                 payload = {
@@ -271,7 +287,7 @@ const CreateEditWorkspacePostModal = props => {
         } else {
             dispatch(postCreate(payload));
         }
-        toggle(false);
+        toggleAll(false);
     };
 
     const handleQuillChange = (content, delta, source, editor) => {
@@ -372,7 +388,7 @@ const CreateEditWorkspacePostModal = props => {
 
 
     useEffect(() => {
-        if (formRef.more_options.current !== null && maxHeight === null) {
+        if (formRef.more_options.current !== null && maxHeight === null && draftId === null) {
             setMaxHeight(formRef.more_options.current.offsetHeight);
             setShowMoreOptions(!!(item.post !== null && (item.post.is_read_only || item.post.is_must_read || item.post.is_must_reply)));
         }
@@ -457,6 +473,14 @@ const CreateEditWorkspacePostModal = props => {
                 {mode === "edit" ? "Edit post" : "Create new post"}
             </ModalHeaderSection>
             <ModalBody>
+                <Modal isOpen={nestedModal} toggle={toggleNested} onClosed={closeAll ? toggle : undefined} centered>
+                    <ModalHeader>Save draft</ModalHeader>
+                        <ModalBody>Save post draft</ModalBody>
+                    <ModalFooter>
+                        <Button color="primary" onClick={() => toggleAll(true)}>Save</Button>
+                        <Button color="secondary" onClick={toggleAll}>Discard</Button>
+                    </ModalFooter>
+                </Modal>
                 <DropDocument
                     hide={!showDropzone}
                     ref={formRef.dropzone}
@@ -539,11 +563,13 @@ const CreateEditWorkspacePostModal = props => {
                         className="mr-2 start-date"
                         onChange={handleSelectStartDate}
                         value={form.show_at}
+                        minDate={new Date(new Date().setDate(new Date().getDate() + 1))}
                     />
                     <StyledDatePicker
                         className="end-date"
                         onChange={handleSelectEndDate}
                         value={form.end_at}
+                        minDate={new Date(new Date().setDate(new Date().getDate() + 1))}
                     />
                 </WrapperDiv>
                 <WrapperDiv>

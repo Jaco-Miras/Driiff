@@ -2,7 +2,7 @@ import {useCallback} from "react";
 import {useDispatch} from "react-redux";
 import {useLocation, useHistory, useParams} from "react-router-dom";
 import toaster from "toasted-notes";
-import {addToModals} from "../../redux/actions/globalActions";
+import {addToModals, deleteDraft} from "../../redux/actions/globalActions";
 import {copyTextToClipboard} from "../../helpers/commonFunctions";
 import {getBaseUrl} from "../../helpers/slugHelper";
 import {replaceChar} from "../../helpers/stringFormatter";
@@ -82,6 +82,12 @@ const usePostActions = () => {
     const archivePost = useCallback((post) => {
         if (post.type === "draft_post") {
             const onConfirm = () => {
+                dispatch(
+                    deleteDraft({
+                        draft_id: post.draft_id,
+                        type: post.type
+                    })
+                )
                 dispatch(
                     removePost({
                         post_id: post.id,
