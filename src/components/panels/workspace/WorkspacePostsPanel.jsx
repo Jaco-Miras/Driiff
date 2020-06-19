@@ -24,13 +24,8 @@ const PostDetailWrapper = styled.div`
 `;
 
 const EmptyState = styled.div`
-    position: absolute;
-    max-width: 375px;
-    height: 355px;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    padding: 8rem 0;    
+    max-width: 375px;        
     margin: auto;
     text-align: center;
 
@@ -80,7 +75,7 @@ const WorkspacePostsPanel = (props) => {
                         {
                             posts.length === 0 ?
                             <EmptyState>
-                                <SvgEmptyState icon={3} width={345} height={282}/>
+                                <SvgEmptyState icon={3} height={252}/>
                                 {
                                     isMember &&
                                     <button className="btn btn-outline-primary btn-block"
