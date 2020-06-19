@@ -40,7 +40,7 @@ const MoreButton = styled(MoreOptions)`
 `;
 
 const EmptyState = styled.div`
-    padding: 8rem 0;    
+    padding: 5rem 0;    
     max-width: 375px;        
     margin: auto;
     text-align: center;
