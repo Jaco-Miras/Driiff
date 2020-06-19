@@ -161,6 +161,7 @@ const PostDetailFooter = (props) => {
                 group_id: topic.id,
                 user_id: user.id,
             }, (err, res) => {
+
                 if (err) return;
                 // dispatch(
                 //     joinWorkspaceReducer({
