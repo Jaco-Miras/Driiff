@@ -134,7 +134,7 @@ const FilesBody = (props) => {
             />
             <div className="card-body">
                 {
-                    typeof wsFiles !== "undefined" && fileIds.length === 0 ?
+                    typeof wsFiles !== "undefined" && fileIds.length === 0 && filter === "" && search === "" ?
                     <EmptyState>
                         <SvgEmptyState icon={4} height={282}/>
                         {
@@ -157,6 +157,7 @@ const FilesBody = (props) => {
                             }
                             {
                                 filter === "removed" &&
+                                wsFiles && wsFiles.hasOwnProperty("trash_files") && Object.keys(wsFiles.trash_files).length > 0 &&
                                 <SvgIconFeather icon="trash" onClick={actions.removeTrashFiles}/>
                             }
                             {

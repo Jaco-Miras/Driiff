@@ -377,3 +377,11 @@ export function incomingMovedFile(payload, callback) {
         callback,
     );
 }
+
+export function incomingEmptyTrash(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "INCOMING_EMPTY_TRASH",
+        payload,
+        callback,
+    );
+}

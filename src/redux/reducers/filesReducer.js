@@ -554,6 +554,19 @@ export default (state = INITIAL_STATE, action) => {
                 return state;
             }
         }
+        case "INCOMING_EMPTY_TRASH": {
+            let newWorkspaceFiles = {...state.workspaceFiles};
+            if (newWorkspaceFiles.hasOwnProperty(action.data.topic_id) && newWorkspaceFiles[action.data.topic_id].hasOwnProperty("trash_files")) {
+                newWorkspaceFiles[action.data.topic_id].trash_files = {};
+                newWorkspaceFiles[action.data.topic_id].trash = 0;
+                return {
+                    ...state,
+                    workspaceFiles: newWorkspaceFiles
+                }
+            } else {
+                return state;
+            }
+        }
         default:
             return state;
     }

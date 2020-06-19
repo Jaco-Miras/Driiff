@@ -27,6 +27,7 @@ import {addFilesToChannel,
     incomingFiles,
     incomingDeletedFile,
     incomingMovedFile,
+    incomingEmptyTrash,
 } from "../../redux/actions/fileActions";
 import {
     addUserToReducers,
@@ -100,6 +101,14 @@ class SocketListeners extends PureComponent {
                 }
                 case "FILE_MOVE": {
                     this.props.incomingMovedFile(e);
+                    break;
+                }
+                case "FILE_TRASH": {
+                    this.props.incomingDeletedFile(e);
+                    break;
+                }
+                case "FILE_EMPTY":{
+                    this.props.incomingEmptyTrash(e);
                     break;
                 }
                 default:
@@ -241,8 +250,20 @@ class SocketListeners extends PureComponent {
         .listen(".workspace-file-notification", e => {
             console.log(e, 'file')
             switch (e.SOCKET_TYPE) {
+                case "FILE_UPDATE": {
+                    this.props.incomingFile(e);
+                    break;
+                }
+                case "FILE_MOVE": {
+                    this.props.incomingMovedFile(e);
+                    break;
+                }
                 case "FILE_TRASH": {
                     this.props.incomingDeletedFile(e);
+                    break;
+                }
+                case "FILE_EMPTY":{
+                    this.props.incomingEmptyTrash(e);
                     break;
                 }
                 default:
@@ -734,6 +755,7 @@ function mapDispatchToProps(dispatch) {
         incomingFiles: bindActionCreators(incomingFiles, dispatch),
         incomingDeletedFile: bindActionCreators(incomingDeletedFile, dispatch),
         incomingMovedFile: bindActionCreators(incomingMovedFile, dispatch),
+        incomingEmptyTrash: bindActionCreators(incomingEmptyTrash, dispatch)
     };
 }
 
