@@ -50,20 +50,20 @@ const WorkspacePostsPanel = (props) => {
 
     const isMember = useIsMember(workspace && workspace.member_ids.length ? workspace.member_ids : []);
 
-    const {posts, filter, tag, sort, post, user, search} = usePosts();
-
     const postActions = usePostActions();
+
+    const {posts, filter, tag, sort, post, user, search, count} = usePosts(postActions);
 
     const handleShowWorkspacePostModal = () => {
         postActions.showModal("create");
     };
 
-    const count = {
-        is_must_reply: 0,
-        is_must_read: 0,
-        is_read_only: 0,
-    };
-
+    // const count = {
+    //     is_must_reply: 0,
+    //     is_must_read: 0,
+    //     is_read_only: 0,
+    // };
+    //console.log(count)
     if (posts === null)
         return <></>;
 
