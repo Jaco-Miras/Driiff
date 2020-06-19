@@ -4,7 +4,7 @@ import {Redirect, Route, Switch} from "react-router-dom";
 import styled from "styled-components";
 import {addToModals} from "../../../redux/actions/globalActions";
 import {SvgEmptyState} from "../../common";
-import {useWorkspace} from "../../hooks";
+import {useIsMember, useWorkspace} from "../../hooks";
 import {
     WorkspaceChatPanel,
     WorkspaceDashboardPanel,
@@ -41,8 +41,11 @@ const EmptyState = styled.div`
 const WorkspaceContentPanel = (props) => {
 
     const {className = ""} = props;
-    const {workspaces, workspacesLoaded, workspace} = useWorkspace();
+
     const dispatch = useDispatch();
+
+    const {workspaces, workspacesLoaded, workspace} = useWorkspace();
+    const isMember = useIsMember(workspace && workspace.member_ids.length ? workspace.member_ids : []);
 
     const handleShowWorkspaceModal = () => {
         let payload = {
@@ -107,7 +110,8 @@ const WorkspaceContentPanel = (props) => {
                         <Route
                             exact={true}
                             {...props}
-                            component={WorkspaceFilesPanel}
+                            render={(props) => <WorkspaceFilesPanel {...props} workspace={workspace}
+                                                                    isMember={isMember}/>}
                             path={[
                                 "/workspace/files/:folderId/:folderName/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName",
                                 "/workspace/files/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName",

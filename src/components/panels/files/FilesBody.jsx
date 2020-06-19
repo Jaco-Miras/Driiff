@@ -1,10 +1,10 @@
 import React, {useState} from "react";
 import styled from "styled-components";
+import {SvgEmptyState, SvgIconFeather} from "../../common";
 import {DropDocument} from "../../dropzone/DropDocument";
 import {FileListItem} from "../../list/file/item";
 import {MoreOptions} from "../common";
 import {ImportantFiles, PopularFiles, RecentEditedFile, RemoveFiles} from "./index";
-import {SvgIconFeather} from "../../common";
 
 const Wrapper = styled.div`
     .card-body {
@@ -39,14 +39,37 @@ const MoreButton = styled(MoreOptions)`
 }
 `;
 
+const EmptyState = styled.div`
+    padding: 8rem 0;    
+    max-width: 375px;        
+    margin: auto;
+    text-align: center;
+
+    svg {
+        display: block;
+    }
+    button {
+        width: auto !important;
+        margin: 2rem auto;
+    }
+`;
+
 const FilesBody = (props) => {
 
-    const {className = "", dropZoneRef, filter, search, wsFiles, 
-            handleAddEditFolder, actions, params, folder, fileIds, history } = props;
+    const {
+        className = "", dropZoneRef, filter, search, wsFiles, isMember,
+        handleAddEditFolder, actions, params, folder, fileIds, history,
+    } = props;
 
     const scrollRef = document.querySelector(".app-content-body");
 
     const [showDropZone, setShowDropZone] = useState(false);
+
+    const handleShowUploadModal = () => {
+        if (dropZoneRef.current) {
+            dropZoneRef.current.open();
+        }
+    };
 
     const handleHideDropZone = () => {
         setShowDropZone(false);
@@ -59,22 +82,24 @@ const FilesBody = (props) => {
     const dropAction = (attachedFiles) => {
         console.log(attachedFiles);
         setShowDropZone(false);
-        
+
         let formData = new FormData();
         for (const i in attachedFiles) {
-            formData.append("files[" + i + "]", attachedFiles[i]);
+            if (attachedFiles.hasOwnProperty(i)) {
+                formData.append("files[" + i + "]", attachedFiles[i]);
+            }
         }
 
         let payload = {
             is_primary: 0,
             topic_id: params.workspaceId,
             files: formData,
-        }
+        };
         if (params.fileFolderId) {
             payload = {
                 ...payload,
-                folder_id: params.fileFolderId
-            }
+                folder_id: params.fileFolderId,
+            };
         }
 
         actions.uploadFiles(payload);
@@ -82,17 +107,17 @@ const FilesBody = (props) => {
 
     const handleRemoveFolder = () => {
         if (folder) {
-            let cb = (err,res) => {
+            let cb = (err, res) => {
                 if (err) return;
-                let pathname = history.location.pathname.split("/folder/")[0]
+                let pathname = history.location.pathname.split("/folder/")[0];
                 history.push(pathname);
-            }
+            };
             actions.removeFolder(folder, params.workspaceId, cb);
         }
     };
 
     const handleEditFolder = () => {
-        handleAddEditFolder("update")
+        handleAddEditFolder("update");
     };
 
     return (
@@ -109,55 +134,77 @@ const FilesBody = (props) => {
             />
             <div className="card-body">
                 {
-                    folder &&
-                    <MoreButton moreButton="settings">
-                        <div onClick={handleEditFolder}>Edit folder</div>
-                        <div onClick={handleRemoveFolder}>Remove folder</div>
-                    </MoreButton>
-                }
-                {
-                  filter === "removed" &&
-                  <SvgIconFeather icon="trash" onClick={actions.removeTrashFiles}/>  
-                }
-                {
-                    filter === "" &&
-                    <>
-                        <h6 className="font-size-11 text-uppercase mb-4">All files</h6>
-                        <div className="row">
+                    typeof wsFiles !== "undefined" && fileIds.length === 0 ?
+                    <EmptyState>
+                        <SvgEmptyState icon={4} height={282}/>
+                        {
+                            isMember &&
+                            <button className="btn btn-outline-primary btn-block"
+                                    onClick={handleShowUploadModal}>
+                                Upload files
+                            </button>
+                        }
+                    </EmptyState>
+                                                                           :
+                    typeof wsFiles !== "undefined" &&
+                        <>
                             {
-                                wsFiles && 
-                                fileIds.map(f => {
-                                    return (
-                                        <FileListItem scrollRef={scrollRef} key={f.id} actions={actions}
-                                                      className="col-xl-3 col-lg-4 col-md-6 col-sm-12" file={wsFiles.files[f]}/>
-                                    );
-                                })
+                                folder &&
+                                <MoreButton moreButton="settings">
+                                    <div onClick={handleEditFolder}>Edit folder</div>
+                                    <div onClick={handleRemoveFolder}>Remove folder</div>
+                                </MoreButton>
                             }
-                        </div>
-                        {
-                            wsFiles && wsFiles.popular_files.length > 0 && folder === null &&
-                            <PopularFiles search={search} scrollRef={scrollRef} wsFiles={wsFiles} actions={actions}/>
-                        }
-                        {
-                            wsFiles && wsFiles.recently_edited.length > 0 && folder === null &&
-                            <RecentEditedFile search={search} scrollRef={scrollRef} wsFiles={wsFiles} actions={actions}/>
-                        }
-                    </>
-                }
-                {
-                    filter === "recent" &&
-                    wsFiles && wsFiles.recently_edited.length > 0 &&
-                    <RecentEditedFile search={search} scrollRef={scrollRef} wsFiles={wsFiles} actions={actions}/>
-                }
-                {
-                    filter === "important" && 
-                    wsFiles && wsFiles.hasOwnProperty("favorite_files") && wsFiles.favorite_files.length > 0 &&
-                    <ImportantFiles search={search} scrollRef={scrollRef} wsFiles={wsFiles} actions={actions}/>
-                }
-                {
-                    filter === "removed" &&
-                    wsFiles && wsFiles.hasOwnProperty("trash_files") && Object.keys(wsFiles.trash_files).length > 0 &&
-                    <RemoveFiles search={search} scrollRef={scrollRef} wsFiles={wsFiles} actions={actions}/>
+                            {
+                                filter === "removed" &&
+                                <SvgIconFeather icon="trash" onClick={actions.removeTrashFiles}/>
+                            }
+                            {
+                                filter === "" &&
+                                <>
+                                    <h6 className="font-size-11 text-uppercase mb-4">All files</h6>
+                                    <div className="row">
+                                        {
+                                            wsFiles &&
+                                            fileIds.map(f => {
+                                                return (
+                                                    <FileListItem scrollRef={scrollRef} key={f.id} actions={actions}
+                                                                  className="col-xl-3 col-lg-4 col-md-6 col-sm-12"
+                                                                  file={wsFiles.files[f]}/>
+                                                );
+                                            })
+                                        }
+                                    </div>
+                                    {
+                                        wsFiles && wsFiles.popular_files.length > 0 && folder === null &&
+                                        <PopularFiles search={search} scrollRef={scrollRef} wsFiles={wsFiles}
+                                                      actions={actions}/>
+                                    }
+                                    {
+                                        wsFiles && wsFiles.recently_edited.length > 0 && folder === null &&
+                                        <RecentEditedFile search={search} scrollRef={scrollRef} wsFiles={wsFiles}
+                                                          actions={actions}/>
+                                    }
+                                </>
+                            }
+                            {
+                                filter === "recent" &&
+                                wsFiles && wsFiles.recently_edited.length > 0 &&
+                                <RecentEditedFile search={search} scrollRef={scrollRef} wsFiles={wsFiles}
+                                                  actions={actions}/>
+                            }
+                            {
+                                filter === "important" &&
+                                wsFiles && wsFiles.hasOwnProperty("favorite_files") && wsFiles.favorite_files.length > 0 &&
+                                <ImportantFiles search={search} scrollRef={scrollRef} wsFiles={wsFiles}
+                                                actions={actions}/>
+                            }
+                            {
+                                filter === "removed" &&
+                                wsFiles && wsFiles.hasOwnProperty("trash_files") && Object.keys(wsFiles.trash_files).length > 0 &&
+                                <RemoveFiles search={search} scrollRef={scrollRef} wsFiles={wsFiles} actions={actions}/>
+                            }
+                        </>
                 }
             </div>
         </Wrapper>
