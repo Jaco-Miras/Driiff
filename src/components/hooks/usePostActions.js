@@ -10,7 +10,7 @@ import {
     postFavorite, postArchive, postFollow, postMarkDone, 
     postToggleRead, removePost, postUnfollow, deletePost,
     starPostReducer, markPostReducer, putPost, postCreate,
-    postClap, fetchRecentPosts
+    postClap, fetchRecentPosts, fetchTagCounter
 } from "../../redux/actions/postActions";
 
 const usePostActions = () => {
@@ -289,6 +289,12 @@ const usePostActions = () => {
         )
     }, [dispatch]);
 
+    const getTagsCount = useCallback((id, callback) => {
+        dispatch(
+            fetchTagCounter({topic_id: id})
+        );
+    }, [dispatch]);
+
     return {
         starPost,
         markPost,
@@ -303,7 +309,8 @@ const usePostActions = () => {
         showModal,
         update,
         clap,
-        getRecentPosts
+        getRecentPosts,
+        getTagsCount,
     }
 };
 

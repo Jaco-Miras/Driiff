@@ -4,7 +4,7 @@ import {useParams} from "react-router-dom";
 import {addToWorkspacePosts, getWorkspacePosts, fetchTimeline} from "../../redux/actions/workspaceActions";
 import {fetchRecentPosts} from "../../redux/actions/postActions";
 
-const usePosts = () => {
+const usePosts = (actions = null) => {
 
     const dispatch = useDispatch();
     const params = useParams();
@@ -28,6 +28,7 @@ const usePosts = () => {
                         console.log(res);
                         setFetchingPost(false);
                         if (err) return;
+                        actions && actions.getTagsCount(parseInt(params.workspaceId));
                         dispatch(
                             addToWorkspacePosts({
                                 topic_id: parseInt(params.workspaceId),
@@ -53,6 +54,7 @@ const usePosts = () => {
         let posts = wsPosts[params.workspaceId].posts;
         let search = wsPosts[params.workspaceId].search;
         let searchResults = wsPosts[params.workspaceId].searchResults;
+        let count = wsPosts[params.workspaceId].count;
         let post = null;
         if (posts.hasOwnProperty(params.postId)) {
             post = {...posts[params.postId]};
@@ -89,9 +91,11 @@ const usePosts = () => {
                 }
             }).sort((a, b) => {
                 if (sort === "favorite") {
-                    return a.is_favourite === b.is_favourite ? 1 : -1;
+                    return a.is_favourite === b.is_favourite ? 0 : a.is_favourite ? -1 : 1;
                 } else if (sort === "unread") {
-                    return a.is_updated === b.is_updated ? 1 : -1;
+                    return a.is_updated === b.is_updated ? 0 : a.is_updated ? -1 : 1;
+                } else {
+                    return b.created_at.timestamp > a.created_at.timestamp ? 1 : -1;
                 }
             });
             if (searchResults.length) {
@@ -102,7 +106,7 @@ const usePosts = () => {
                 });
             }
             return {
-                posts: filteredPosts, filter, tag, sort, post, search, user, recentPosts: rPosts
+                posts: filteredPosts, filter, tag, sort, post, search, user, recentPosts: rPosts, count
             };
         } else {
             let filteredPosts = Object.values(wsPosts[params.workspaceId].posts);
@@ -117,9 +121,11 @@ const usePosts = () => {
                 return !(p.hasOwnProperty("draft_type"));
             }).sort((a, b) => {
                 if (sort === "favorite") {
-                    return a.is_favourite === b.is_favourite ? 1 : -1;
+                    return a.is_favourite === b.is_favourite ? 0 : a.is_favourite ? -1 : 1;
                 } else if (sort === "unread") {
-                    return a.is_updated === b.is_updated ? 1 : -1;
+                    return a.is_updated === b.is_updated ? 0 : a.is_updated ? -1 : 1;
+                } else {
+                    return b.created_at.timestamp > a.created_at.timestamp ? 1 : -1;
                 }
             });
             return {
@@ -130,7 +136,8 @@ const usePosts = () => {
                 post: post,
                 search,
                 user,
-                recentPosts: rPosts
+                recentPosts: rPosts,
+                count
             };
         }
     } else {
@@ -142,7 +149,12 @@ const usePosts = () => {
             post: null,
             search: null,
             user,
-            recentPosts: rPosts
+            recentPosts: rPosts,
+            count: {
+                is_must_reply: 0,
+                is_must_read: 0,
+            is_read_only: 0,
+            }
         };
     }
 };

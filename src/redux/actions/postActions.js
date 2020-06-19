@@ -3,6 +3,7 @@ import {
     deletePost as deletePostService,
     fetchComments as fetchCommentsService,
     fetchRecentPosts as fetchRecentPostsService,
+    fetchTagCounter as fetchTagCounterService,
     postArchive as postArchiveService,
     postClap as postClapService,
     postCreate as postCreateService,
@@ -278,6 +279,16 @@ export function fetchRecentPosts(payload, callback) {
         "FETCH_RECENT_POSTS_START",
         "FETCH_RECENT_POSTS_SUCCESS",
         "FETCH_RECENT_POSTS_FAIL",
+        callback,
+    );
+}
+
+export function fetchTagCounter(payload, callback) {
+    return dispatchActionToReducer(
+        fetchTagCounterService(payload),
+        "FETCH_TAG_COUNTER_START",
+        "FETCH_TAG_COUNTER_SUCCESS",
+        "FETCH_TAG_COUNTER_FAIL",
         callback,
     );
 }

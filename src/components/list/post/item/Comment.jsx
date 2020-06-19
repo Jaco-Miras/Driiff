@@ -11,6 +11,7 @@ const Wrapper = styled.li`
 
 const InputWrapper = styled.li`
     overflow: initial;
+    z-index: 10;
 `;
 
 const CommentWrapper = styled.div`

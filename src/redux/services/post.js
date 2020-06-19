@@ -253,3 +253,18 @@ export function fetchRecentPosts(payload) {
         data: payload,
     });
 }
+
+
+/**
+ * @param {Object} payload
+ * @param {number} payload.topic_id
+ * @returns {Promise<*>}
+ */
+export function fetchTagCounter(payload) {
+    let url = `/v2/post-tags-entries?topic_id=${payload.topic_id}`;
+    return apiCall({
+        method: "GET",
+        url: url,
+        data: payload,
+    });
+}
