@@ -119,7 +119,6 @@ const FilesBody = (props) => {
     const handleEditFolder = () => {
         handleAddEditFolder("update");
     };
-
     return (
         <Wrapper className={`files-body card app-content-body ${className}`} onDragOver={handleShowDropZone}>
             <DropDocument
@@ -145,7 +144,7 @@ const FilesBody = (props) => {
                             </button>
                         }
                     </EmptyState>
-                                                                           :
+                                                                                                             :
                     typeof wsFiles !== "undefined" &&
                         <>
                             {
@@ -191,11 +190,11 @@ const FilesBody = (props) => {
                             {
                                 filter === "recent" &&
                                 <>
+                                    <RecentEditedFile
+                                        search={search} scrollRef={scrollRef} wsFiles={wsFiles}
+                                        actions={actions}/>
                                     {
-                                        wsFiles && wsFiles.recently_edited.length > 0 ?
-                                        <RecentEditedFile search={search} scrollRef={scrollRef} wsFiles={wsFiles}
-                                                          actions={actions}/>
-                                                                                      :
+                                        !(wsFiles && wsFiles.recently_edited.length > 0) &&
                                         <EmptyState>
                                             <SvgEmptyState icon={4} height={282}/>
                                             {
@@ -212,11 +211,10 @@ const FilesBody = (props) => {
                             {
                                 filter === "important" &&
                                 <>
+                                    <ImportantFiles search={search} scrollRef={scrollRef} wsFiles={wsFiles}
+                                                    actions={actions}/>
                                     {
-                                        wsFiles && wsFiles.hasOwnProperty("favorite_files") && wsFiles.favorite_files.length > 0 ?
-                                        <ImportantFiles search={search} scrollRef={scrollRef} wsFiles={wsFiles}
-                                                        actions={actions}/>
-                                                                                                                                 :
+                                        !(wsFiles && wsFiles.hasOwnProperty("favorite_files") && wsFiles.favorite_files.length > 0) &&
                                         <EmptyState>
                                             <SvgEmptyState icon={4} height={282}/>
                                             {
@@ -233,20 +231,12 @@ const FilesBody = (props) => {
                             {
                                 filter === "removed" &&
                                 <>
+                                    <RemoveFiles search={search} scrollRef={scrollRef} wsFiles={wsFiles}
+                                                 actions={actions}/>
                                     {
-                                        wsFiles && wsFiles.hasOwnProperty("trash_files") && Object.keys(wsFiles.trash_files).length > 0 ?
-                                        <RemoveFiles search={search} scrollRef={scrollRef} wsFiles={wsFiles}
-                                                     actions={actions}/>
-                                                                                                                                        :
+                                        !(wsFiles && wsFiles.hasOwnProperty("trash_files") && Object.keys(wsFiles.trash_files).length > 0) &&
                                         <EmptyState>
                                             <SvgEmptyState icon={4} height={282}/>
-                                            {
-                                                isMember &&
-                                                <button className="btn btn-outline-primary btn-block"
-                                                        onClick={handleShowUploadModal}>
-                                                    Upload files
-                                                </button>
-                                            }
                                         </EmptyState>
                                     }
                                 </>
