@@ -10,7 +10,8 @@ import {
     postFavorite, postArchive, postFollow, postMarkDone, 
     postToggleRead, removePost, postUnfollow, deletePost,
     starPostReducer, markPostReducer, putPost, postCreate,
-    postClap, fetchRecentPosts, fetchTagCounter
+    postClap, fetchRecentPosts, fetchTagCounter, fetchPosts,
+    addToWorkspacePosts
 } from "../../redux/actions/postActions";
 
 const usePostActions = () => {
@@ -36,7 +37,7 @@ const usePostActions = () => {
                 topic_id
             })
         );
-    }, [dispatch]);
+    }, [dispatch, params]);
 
     const markPost = useCallback((post) => {
         if (post.type === "draft_post") return;
@@ -54,7 +55,7 @@ const usePostActions = () => {
                 topic_id
             })
         );
-    }, []);
+    }, [dispatch, params]);
 
     const openPost = useCallback((post, path = null) => {
         if (post.type === "draft_post") {
@@ -231,7 +232,7 @@ const usePostActions = () => {
         dispatch(
             addToModals(payload),
         );
-    }, [dispatch]);
+    }, [dispatch, params]);
 
     const showModal = useCallback((mode = "create", post = null) => {
         let payload = {
@@ -295,6 +296,12 @@ const usePostActions = () => {
         );
     }, [dispatch]);
 
+    const getPosts = useCallback((payload, callback) => {
+        dispatch(
+            fetchPosts(payload, callback),
+        );
+    }, [dispatch]);
+
     return {
         starPost,
         markPost,
@@ -311,6 +318,7 @@ const usePostActions = () => {
         clap,
         getRecentPosts,
         getTagsCount,
+        getPosts
     }
 };
 

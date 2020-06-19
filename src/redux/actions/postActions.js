@@ -1,6 +1,7 @@
 import dispatchActionToReducer, {SimpleDispatchActionToReducer} from "../actionDispatcher";
 import {
     deletePost as deletePostService,
+    fetchPosts as fetchPostsService,
     fetchComments as fetchCommentsService,
     fetchRecentPosts as fetchRecentPostsService,
     fetchTagCounter as fetchTagCounterService,
@@ -289,6 +290,24 @@ export function fetchTagCounter(payload, callback) {
         "FETCH_TAG_COUNTER_START",
         "FETCH_TAG_COUNTER_SUCCESS",
         "FETCH_TAG_COUNTER_FAIL",
+        callback,
+    );
+}
+
+export function fetchPosts(payload, callback) {
+    return dispatchActionToReducer(
+        fetchPostsService(payload),
+        "GET_WORKSPACE_POSTS_START",
+        "GET_WORKSPACE_POSTS_SUCCESS",
+        "GET_WORKSPACE_POSTS_FAIL",
+        callback,
+    );
+}
+
+export function addToWorkspacePosts(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "ADD_TO_WORKSPACE_POSTS",
+        payload,
         callback,
     );
 }

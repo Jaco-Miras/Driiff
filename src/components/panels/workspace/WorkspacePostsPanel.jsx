@@ -3,7 +3,7 @@ import {useSelector} from "react-redux";
 import {useParams, useHistory} from "react-router-dom";
 import styled from "styled-components";
 import {SvgEmptyState} from "../../common";
-import {useIsMember, usePostActions, usePosts} from "../../hooks";
+import {useIsMember, usePosts} from "../../hooks";
 import {PostDetail, PostFilterSearchPanel, PostItemPanel, PostSidebar} from "../post";
 
 const Wrapper = styled.div`
@@ -54,12 +54,10 @@ const WorkspacePostsPanel = (props) => {
 
     const isMember = useIsMember(workspace && workspace.member_ids.length ? workspace.member_ids : []);
 
-    const postActions = usePostActions();
-
-    const {posts, filter, tag, sort, post, user, search, count} = usePosts(postActions);
+    const {actions, posts, filter, tag, sort, post, user, search, count} = usePosts();
 
     const handleShowWorkspacePostModal = () => {
-        postActions.showModal("create");
+        actions.showModal("create");
     };
 
     const handleGoback = useCallback(() => {
@@ -75,7 +73,7 @@ const WorkspacePostsPanel = (props) => {
         <Wrapper className={`container-fluid h-100 fadeIn ${className}`}>
             <div className="row app-block">
                 <PostSidebar isMember={isMember} workspace={workspace} filter={filter} tag={tag}
-                             postActions={postActions} count={count} onGoBack={handleGoback}/>
+                             postActions={actions} count={count} onGoBack={handleGoback}/>
                 <div className="col-md-9 app-content">
                     <div className="app-content-overlay"/>
                     <PostFilterSearchPanel activeSort={sort} workspace={workspace}/>
@@ -97,7 +95,7 @@ const WorkspacePostsPanel = (props) => {
                                 post ?
                                 <PostDetailWrapper>
                                     <PostDetail 
-                                        post={post} postActions={postActions} 
+                                        post={post} postActions={actions} 
                                         user={user} history={history}/>
                                 </PostDetailWrapper>
                                      :
@@ -124,7 +122,7 @@ const WorkspacePostsPanel = (props) => {
                                         {
                                             posts &&
                                             posts.map(p => {
-                                                return <PostItemPanel key={p.id} post={p} postActions={postActions}/>;
+                                                return <PostItemPanel key={p.id} post={p} postActions={actions}/>;
                                             })
                                         }
                                     </ul>

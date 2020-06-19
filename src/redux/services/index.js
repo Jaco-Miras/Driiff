@@ -86,6 +86,7 @@ export {
 
 export {
     deletePost,
+    fetchPosts,
     fetchComments,
     fetchRecentPosts,
     fetchTagCounter,
@@ -112,7 +113,6 @@ export {
     fetchMembers,
     fetchTimeline,
     getPostStatusCount,
-    getWorkspacePosts,
     getWorkspacePostDetail,
     getWorkspaceTopics,
     getWorkspaces,

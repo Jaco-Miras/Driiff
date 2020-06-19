@@ -87,16 +87,6 @@ export function getWorkspaceTopics(payload, callback) {
     );
 }
 
-export function getWorkspacePosts(payload, callback) {
-    return dispatchActionToReducer(
-        getWorkspacePostsService(payload),
-        "GET_WORKSPACE_POSTS_START",
-        "GET_WORKSPACE_POSTS_SUCCESS",
-        "GET_WORKSPACE_POSTS_FAIL",
-        callback,
-    );
-}
-
 export function getWorkspacePostDetail(payload, callback) {
     return dispatchActionToReducer(
         getWorkspacePostDetailService(payload),
@@ -170,14 +160,6 @@ export function setActiveTopic(payload, callback) {
 export function setActiveTab(payload, callback) {
     return SimpleDispatchActionToReducer(
         "SET_ACTIVE_TAB",
-        payload,
-        callback,
-    );
-}
-
-export function addToWorkspacePosts(payload, callback) {
-    return SimpleDispatchActionToReducer(
-        "ADD_TO_WORKSPACE_POSTS",
         payload,
         callback,
     );

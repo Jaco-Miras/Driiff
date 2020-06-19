@@ -1,11 +1,13 @@
 import {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {useParams} from "react-router-dom";
-import {addToWorkspacePosts, getWorkspacePosts, fetchTimeline} from "../../redux/actions/workspaceActions";
-import {fetchRecentPosts} from "../../redux/actions/postActions";
+import {fetchTimeline} from "../../redux/actions/workspaceActions";
+import {fetchRecentPosts, addToWorkspacePosts} from "../../redux/actions/postActions";
+import {usePostActions} from "./index";
 
-const usePosts = (actions = null) => {
+const usePosts = () => {
 
+    const actions = usePostActions();
     const dispatch = useDispatch();
     const params = useParams();
     const wsPosts = useSelector(state => state.workspaces.workspacePosts);
@@ -23,20 +25,22 @@ const usePosts = (actions = null) => {
                 dispatch(
                     fetchTimeline({topic_id: params.workspaceId})
                 );
-                dispatch(
-                    getWorkspacePosts({topic_id: parseInt(params.workspaceId)}, (err, res) => {
-                        console.log(res);
-                        setFetchingPost(false);
-                        if (err) return;
-                        actions && actions.getTagsCount(parseInt(params.workspaceId));
-                        dispatch(
-                            addToWorkspacePosts({
-                                topic_id: parseInt(params.workspaceId),
-                                posts: res.data.posts,
-                            }),
-                        );
-                    }),
-                );
+                let cb = (err, res) => {
+                    setFetchingPost(false);
+                    if (err) return;
+                    actions.getTagsCount(parseInt(params.workspaceId));
+                    dispatch(
+                        addToWorkspacePosts({
+                            topic_id: parseInt(params.workspaceId),
+                            posts: res.data.posts,
+                        }),
+                    );
+                }
+                let payload = {
+                    topic_id: parseInt(params.workspaceId)
+                }
+                actions.getPosts(payload, cb);
+                //actions.getPosts(["post", "must_read"], cb)
             }
         }
     }, [params]);
@@ -108,7 +112,16 @@ const usePosts = (actions = null) => {
                 });
             }
             return {
-                posts: filteredPosts, filter, tag, sort, post, search, user, recentPosts: rPosts, count
+                actions,
+                posts: filteredPosts, 
+                filter, 
+                tag, 
+                sort, 
+                post, 
+                search, 
+                user, 
+                recentPosts: 
+                rPosts, count
             };
         } else {
             let filteredPosts = Object.values(wsPosts[params.workspaceId].posts);
@@ -131,6 +144,7 @@ const usePosts = (actions = null) => {
                 }
             });
             return {
+                actions,
                 posts: filteredPosts,
                 filter: null,
                 tag: null,
@@ -144,6 +158,7 @@ const usePosts = (actions = null) => {
         }
     } else {
         return {
+            actions,
             posts: null,
             filter: null,
             tag: null,
