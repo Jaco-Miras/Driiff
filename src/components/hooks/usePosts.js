@@ -69,6 +69,8 @@ const usePosts = (actions = null) => {
                         return (p.hasOwnProperty("draft_type"));
                     } else if (filter === "star") {
                         return p.is_favourite;
+                    } else if (filter === "archive") {
+                        return p.is_archived === 1;
                     } else {
                         return true;
                     }

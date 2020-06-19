@@ -1,5 +1,6 @@
-import React from "react";
+import React, {useCallback} from "react";
 import {useSelector} from "react-redux";
+import {useParams, useHistory} from "react-router-dom";
 import styled from "styled-components";
 import {SvgEmptyState} from "../../common";
 import {useIsMember, usePostActions, usePosts} from "../../hooks";
@@ -46,6 +47,9 @@ const WorkspacePostsPanel = (props) => {
 
     const {className = ""} = props;
 
+    const params = useParams();
+    const history = useHistory();
+    
     const workspace = useSelector(state => state.workspaces.activeTopic);
 
     const isMember = useIsMember(workspace && workspace.member_ids.length ? workspace.member_ids : []);
@@ -58,12 +62,12 @@ const WorkspacePostsPanel = (props) => {
         postActions.showModal("create");
     };
 
-    // const count = {
-    //     is_must_reply: 0,
-    //     is_must_read: 0,
-    //     is_read_only: 0,
-    // };
-    //console.log(count)
+    const handleGoback = useCallback(() => {
+        if (params.hasOwnProperty("postId")) {
+            history.goBack();
+        }
+    }, [params, history]);
+
     if (posts === null)
         return <></>;
 
@@ -71,7 +75,7 @@ const WorkspacePostsPanel = (props) => {
         <Wrapper className={`container-fluid h-100 fadeIn ${className}`}>
             <div className="row app-block">
                 <PostSidebar isMember={isMember} workspace={workspace} filter={filter} tag={tag}
-                             postActions={postActions} count={count}/>
+                             postActions={postActions} count={count} onGoBack={handleGoback}/>
                 <div className="col-md-9 app-content">
                     <div className="app-content-overlay"/>
                     <PostFilterSearchPanel activeSort={sort} workspace={workspace}/>
@@ -92,7 +96,9 @@ const WorkspacePostsPanel = (props) => {
                             <>{
                                 post ?
                                 <PostDetailWrapper>
-                                    <PostDetail post={post} postActions={postActions} user={user}/>
+                                    <PostDetail 
+                                        post={post} postActions={postActions} 
+                                        user={user} history={history}/>
                                 </PostDetailWrapper>
                                      :
                                 <div className="app-lists"
