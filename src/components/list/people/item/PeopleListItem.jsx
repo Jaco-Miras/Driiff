@@ -18,6 +18,9 @@ const Wrapper = styled.div`
             color: #7a1b8b;
         }
     }
+    > .col-12 {
+       padding: 0;
+    }
 `;
 
 const PeopleListItem = (props) => {
