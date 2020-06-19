@@ -414,22 +414,43 @@ export default (state = INITIAL_STATE, action) => {
             if (postDrafts.length) {
                 postDrafts = convertArrayToObject(postDrafts, "id");
             }
-            return {
-                ...state,
-                workspacePosts: {
-                    ...state.workspacePosts,
-                    [action.data.topic_id]: {
-                        filter: null,
-                        sort: null,
-                        tag: null,
-                        search: null,
-                        searchResults: [],
-                        count: null,
-                        posts: {
-                            ...[action.data.topic_id].posts,
-                            ...convertedPosts,
-                            ...postDrafts,
-                        },
+            if (state.workspacePosts.hasOwnProperty(action.data.topic_id)) {
+                return {
+                    ...state,
+                    workspacePosts: {
+                        ...state.workspacePosts,
+                        [action.data.topic_id]: {
+                            filter: null,
+                            sort: null,
+                            tag: null,
+                            search: null,
+                            searchResults: [],
+                            count: null,
+                            posts: {
+                                ...state.workspacePosts[action.data.topic_id].posts,
+                                ...convertedPosts,
+                                ...postDrafts,
+                            },
+                        }
+                    }
+                }
+            } else {
+                return {
+                    ...state,
+                    workspacePosts: {
+                        ...state.workspacePosts,
+                        [action.data.topic_id]: {
+                            filter: null,
+                            sort: null,
+                            tag: null,
+                            search: null,
+                            searchResults: [],
+                            count: null,
+                            posts: {
+                                ...convertedPosts,
+                                ...postDrafts,
+                            },
+                        }
                     }
                 }
             }

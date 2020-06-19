@@ -40,7 +40,21 @@ const usePosts = () => {
                     topic_id: parseInt(params.workspaceId)
                 }
                 actions.getPosts(payload, cb);
-                //actions.getPosts(["post", "must_read"], cb)
+                let filterCb = (err,res) => {
+                    setFetchingPost(false);
+                    if (err) return;
+                    dispatch(
+                        addToWorkspacePosts({
+                            topic_id: parseInt(params.workspaceId),
+                            posts: res.data.posts,
+                            filter: res.data.posts
+                        }),
+                    );
+                }
+                actions.getPosts({
+                    filters: ["post", "archived"],
+                    topic_id: parseInt(params.workspaceId)
+                }, filterCb)
             }
         }
     }, [params]);
@@ -60,6 +74,7 @@ const usePosts = () => {
         let searchResults = wsPosts[params.workspaceId].searchResults;
         let count = wsPosts[params.workspaceId].count;
         let post = null;
+        console.log(posts, wsPosts[params.workspaceId])
         if (posts.hasOwnProperty(params.postId)) {
             post = {...posts[params.postId]};
         }
@@ -76,7 +91,7 @@ const usePosts = () => {
                     } else if (filter === "archive") {
                         return p.is_archived === 1;
                     } else {
-                        return true;
+                        return p.is_archived === 0;
                     }
                 } else {
                     return true;
@@ -133,7 +148,7 @@ const usePosts = () => {
                 });
             }
             filteredPosts = filteredPosts.filter(p => {
-                return !(p.hasOwnProperty("draft_type"));
+                return !(p.hasOwnProperty("draft_type")) && p.is_archived === 0;
             }).sort((a, b) => {
                 if (sort === "favorite") {
                     return a.is_favourite === b.is_favourite ? 0 : a.is_favourite ? -1 : 1;
