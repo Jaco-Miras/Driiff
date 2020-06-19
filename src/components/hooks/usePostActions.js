@@ -286,7 +286,7 @@ const usePostActions = () => {
 
     const getRecentPosts = useCallback((id, callback) => {
         dispatch(
-            fetchRecentPosts({topic_id: id}, callback)
+            fetchRecentPosts({topic_id: id})
         )
     }, [dispatch]);
 

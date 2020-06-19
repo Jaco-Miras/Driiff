@@ -45,7 +45,7 @@ const RecentPostListItem = (props) => {
 
     return (
         <Wrapper className={`recent-post-list-item list-group-item d-flex align-items-center p-l-r-0 ${className}`}
-                 onClick={toggleCheck}>
+                 onClick={handleOpenPost}>
             <div className="custom-control custom-checkbox custom-checkbox-success mr-2">
                 <CheckBox name="mark_done" checked={post.is_mark_done} onClick={toggleCheck}/>
             </div>

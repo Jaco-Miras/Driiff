@@ -2,7 +2,7 @@ import {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {useParams} from "react-router-dom";
 import {fetchTimeline} from "../../redux/actions/workspaceActions";
-import {fetchRecentPosts, addToWorkspacePosts} from "../../redux/actions/postActions";
+import {addToWorkspacePosts} from "../../redux/actions/postActions";
 import {usePostActions} from "./index";
 
 const usePosts = () => {
@@ -17,11 +17,9 @@ const usePosts = () => {
 
     useEffect(() => {
         if (params.workspaceId !== undefined) {
+            //actions.getRecentPosts(params.workspaceId);
             if (!wsPosts.hasOwnProperty(params.workspaceId) && !fetchingPost) {
                 setFetchingPost(true);
-                dispatch(
-                    fetchRecentPosts({topic_id: params.workspaceId})
-                );
                 dispatch(
                     fetchTimeline({topic_id: params.workspaceId})
                 );
@@ -74,7 +72,7 @@ const usePosts = () => {
         let searchResults = wsPosts[params.workspaceId].searchResults;
         let count = wsPosts[params.workspaceId].count;
         let post = null;
-        console.log(posts, wsPosts[params.workspaceId])
+        
         if (posts.hasOwnProperty(params.postId)) {
             post = {...posts[params.postId]};
         }
@@ -135,8 +133,8 @@ const usePosts = () => {
                 post, 
                 search, 
                 user, 
-                recentPosts: 
-                rPosts, count
+                recentPosts: rPosts, 
+                count,
             };
         } else {
             let filteredPosts = Object.values(wsPosts[params.workspaceId].posts);
@@ -185,7 +183,7 @@ const usePosts = () => {
             count: {
                 is_must_reply: 0,
                 is_must_read: 0,
-            is_read_only: 0,
+                is_read_only: 0,
             }
         };
     }

@@ -77,13 +77,13 @@ const Icon = styled(SvgIconFeather)`
 
 const PostDetail = props => {
 
-    const {post, postActions, user, history} = props;
+    const {post, postActions, user, onGoBack} = props;
     const dispatch = useDispatch();
-    // const history = useHistory();
+
     const [showDropZone, setshowDropZone] = useState(false);
 
     const handleClosePost = () => {
-        history.goBack();
+        onGoBack();
     };
     const commentActions = useCommentActions();
     const comments = useComments(post, commentActions);

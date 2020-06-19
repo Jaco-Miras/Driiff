@@ -59,10 +59,11 @@ const WorkspacePostsPanel = (props) => {
     const handleShowWorkspacePostModal = () => {
         actions.showModal("create");
     };
-
+    
     const handleGoback = useCallback(() => {
         if (params.hasOwnProperty("postId")) {
-            history.goBack();
+            let pathname = history.location.pathname.split("/post/")[0]
+            history.push(pathname);
         }
     }, [params, history]);
 
@@ -96,7 +97,8 @@ const WorkspacePostsPanel = (props) => {
                                 <PostDetailWrapper>
                                     <PostDetail 
                                         post={post} postActions={actions} 
-                                        user={user} history={history}/>
+                                        user={user} history={history}
+                                        onGoBack={handleGoback}/>
                                 </PostDetailWrapper>
                                      :
                                 <div className="app-lists"

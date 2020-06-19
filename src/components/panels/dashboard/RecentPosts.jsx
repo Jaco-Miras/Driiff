@@ -1,4 +1,4 @@
-import React, {useCallback, useState} from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import {useRouteMatch} from "react-router-dom";
 import styled from "styled-components";
 import {SvgIconFeather} from "../../common";
@@ -83,6 +83,10 @@ const RecentPosts = (props) => {
             postActions.getRecentPosts(match.params.workspaceId)
         }
     };
+
+    useEffect(() => {
+        postActions.getRecentPosts(match.params.workspaceId);
+    }, []);
 
     return (
         <Wrapper className={`recent-posts card ${className}`}>
