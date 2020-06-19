@@ -38,7 +38,6 @@ const FileIcon = styled(ImageTextLink)`
             width: auto;
             height: 80%;
             filter: brightness(0) saturate(100%) invert(1);
-
             &:hover {
                 filter: brightness(0) saturate(100%) invert(1);
             }
@@ -132,6 +131,9 @@ const FileWrapper = styled.figure`
     box-sizing: border-box;
     padding: 40px 0;
     margin: 0 auto;
+    img {
+        max-width: 100%;
+    }
 `;
 
 

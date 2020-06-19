@@ -145,9 +145,11 @@ const WorkspaceContentPanel = (props) => {
                 </>
                                                     :
                 <EmptyState>
-                    <SvgEmptyState height={275} icon={1}/>
-                    <h5>Start by creating a project.</h5>
-                    <button className="btn btn-primary" onClick={handleShowWorkspaceModal}>Create</button>
+                    <div>
+                        <SvgEmptyState height={275} icon={1}/>
+                        <h5>Start by creating a project.</h5>
+                        <button className="btn btn-primary" onClick={handleShowWorkspaceModal}>Create project</button>
+                    </div>
                 </EmptyState>
             }
         </Wrapper>

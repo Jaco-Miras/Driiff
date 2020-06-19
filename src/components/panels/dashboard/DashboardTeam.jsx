@@ -2,25 +2,25 @@ import React, {useCallback, useState} from "react";
 import styled from "styled-components";
 import {TeamListItem} from "../../list/people/item";
 
-const Wrapper = styled.div`    
+const Wrapper = styled.div`
     .feather-edit {
         cursor: pointer;
         cursor: hand;
     }
-    
+
     .card-title {
         position: relative;
-        
+
         .feather-edit {
             right: 0;
             width: 16px;
             position: absolute;
         }
     }
-    
+
     .team-list-item {
         position: relative;
-        
+
         .more-options-tooltip {
             &.orientation-top{
                 bottom: 10px;
@@ -32,15 +32,15 @@ const Wrapper = styled.div`
         &:hover {
             .more-options {
                 visibility: visible;
-                                       
+
             }
         }
-        
+
         .more-options {
-            visibility: hidden;                       
+            visibility: hidden;
         }
     }
-    
+
     .file-attachments {
         .files {
             width:100%;
@@ -67,8 +67,7 @@ const DashboardTeam = (props) => {
     return (
         <Wrapper className={`dashboard-team card ${className}`}>
             <div ref={assignRef} className="card-body">
-                <h5 className="card-title">
-                    {workspace.hasOwnProperty("workspace_name") ? `${workspace.workspace_name} (${workspace.name})` : workspace.name} team</h5>
+                <h5 className="card-title">Team</h5>
                 <ul className="list-group list-group-flush">
                     {
                         workspace.members.map(member => {

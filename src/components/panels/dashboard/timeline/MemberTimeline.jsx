@@ -3,13 +3,12 @@ import styled from "styled-components";
 import {localizeChatTimestamp} from "../../../../helpers/momentFormatJS";
 
 const Wrapper = styled.div`
+    font-weight: bold;
     .action-text {
         color: #828282;
-        
         .joined {
             color: #00c851
         }
-        
         .left {
             color: #f44;
         }

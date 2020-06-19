@@ -43,7 +43,7 @@ const useFileActions = (params = null) => {
             return <i className="fa fa-file-pdf-o text-danger"/>;
         } else if (mimeType.includes("zip") || mimeType.includes("archive") || mimeType.includes("x-rar")) {
             return <i className="fa fa-file-zip-o text-primary"/>;
-        } else if (mimeType.includes("excel") || mimeType.includes("spreadsheet") || mimeType.includes("csv") || mimeType.includes("numbers")) {
+        } else if (mimeType.includes("excel") || mimeType.includes("spreadsheet") || mimeType.includes("csv") || mimeType.includes("numbers") || mimeType.includes("xml")) {
             return <i className="fa fa-file-excel-o text-success"/>;
         } else if (mimeType.includes("powerpoint") || mimeType.includes("presentation")) {
             return <i className="fa fa-file-powerpoint-o text-secondary"/>;
@@ -305,7 +305,7 @@ const useFileActions = (params = null) => {
     }, [dispatch, params]);
 
     const moveFile = useCallback((file) => {
-        
+
         let payload = {
             type: "move_files",
             file: file,
@@ -344,7 +344,7 @@ const useFileActions = (params = null) => {
             addToModals(payload),
         );
     }, [dispatch, params]);
-    
+
     return {
         clearSearch,
         copyLink,

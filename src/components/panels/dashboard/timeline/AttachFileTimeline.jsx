@@ -2,13 +2,27 @@ import React from "react";
 import styled from "styled-components";
 import {localizeChatTimestamp} from "../../../../helpers/momentFormatJS";
 import {Avatar} from "../../../common";
+import useFileActions from "../../../hooks/useFileActions";
 
 const Wrapper = styled.div`
+    .timeline-file-icon  {
+        color: #505050;
+        display: flex;
+        align-items: center;
+        i {
+            margin-right: 8px;
+            display: inline-block;
+            filter: brightness(0) saturate(100%);
+        }
+    }
+    .file-text
+
 `;
 
 const AttachFileTimeline = (props) => {
 
     const {className = "", data} = props;
+    const fileHandler = useFileActions();
 
     return (
         <Wrapper className={`attach-file-timeline timeline-item ${className}`}>
@@ -16,20 +30,19 @@ const AttachFileTimeline = (props) => {
                 <Avatar className="mr-3" name={data.user.name} imageLink={data.user.profile_image_link}/>
             </div>
             {
-                //data.files.length === 1 &&
                 <div>
-                    <h6 className="d-flex justify-content-between mb-4">
+                    <h6 className="d-flex justify-content-between font-weight-bold mb-4">
                         <span>
-                            <a href="#">{data.user.name}</a> attached a file
+                            <a href="#" className="font-weight-normal">{data.user.name}</a> <span class="file-summary"></span>attached a file
                         </span>
                         <span
                             className="text-muted font-weight-normal">{localizeChatTimestamp(data.created_at.timestamp)}</span>
                     </h6>
-                    <a href="#">
-                        <div className="mb-3 border p-3 border-radius-1">
-                            <i className="fa fa-file-pdf-o mr-2"/> {data.name}
-                        </div>
-                    </a>
+                    <div className="mb-3 border p-3 border-radius-1">
+                        <a href={data.view_link} target="_blank" className="timeline-file-icon">
+                            {fileHandler.getFileIcon(data.mime_type)} <span>{data.name}</span>
+                        </a>
+                    </div>
                 </div>
             }
             {

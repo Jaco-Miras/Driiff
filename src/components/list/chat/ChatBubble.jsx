@@ -867,7 +867,7 @@ const ChatBubble = (props) => {
         className={`chat-bubble ql-editor`}
         showAvatar={showAvatar}
         isAuthor={isAuthor}
-        hideBg={isEmoticonOnly || showGifPlayer || (hasFiles && replyBody === "<span></span>")}
+        hideBg={isEmoticonOnly || showGifPlayer || (hasFiles && replyBody === "<span></span>") || (hasFiles && replyBody === "") }
         theme={chatSettings.chat_message_theme}>
         {
             <>

@@ -3,9 +3,9 @@ import React, {forwardRef, useState} from "react";
 import styled from "styled-components";
 
 const RadioInputContainer = styled.div`
-  display: inline-block;
+  display: flex;
+  align-items: center;
   position: relative;
-  padding-left: 30px;
   cursor: pointer;
   font-size: 1rem;
   -webkit-user-select: none;
@@ -26,23 +26,26 @@ const RadioInputContainer = styled.div`
   }
 
   .checkmark {
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 25px;
-    width: 25px;
+    height: 16px;
+    width: 16px;
     background-color: #fff;
     border-radius: 50%;
-    box-shadow: inset 0 1px 3px 0 rgba(26, 26, 26, 0.4);
+    border: 1px solid #adb5bd;
+    position: relative;
+    margin-right: 14px;
+    transition: all 200ms ease;
   }
 
   &:hover {
     input ~ .checkmark {
       background-color: #972c86;
+      border-color: #972c86;
+      box-shadow: 0 0 0 0.2rem rgba(170,102,204,.3);
     }
 
     input:checked ~ .checkmark {
       background-color: #972c86;
+      border-color: #972c86;
     }
 
     input ~ .checkmark:after {
@@ -65,12 +68,13 @@ const RadioInputContainer = styled.div`
   }
 
   .checkmark:after {
-    left: 4px;
-    top: 4px;
-    width: 17px;
-    height: 17px;
+    left: 3px;
+    top: 3px;
+    width: 8px;
+    height: 8px;
     background-color: #972c86;
     border-radius: 50%;
+    transition: all 200ms ease;
   }
 `;
 
@@ -102,6 +106,7 @@ const RadioInput = forwardRef((props, ref) => {
             }
             <span className={`checkmark`}/>
             {children}
+
         </RadioInputContainer>
     );
 });
