@@ -1,16 +1,15 @@
+import moment from "moment";
 import React, {useCallback, useEffect, useRef, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {Input, InputGroup, Label, Modal, ModalBody} from "reactstrap";
 import styled from "styled-components";
-import moment from "moment";
 import {clearModal, deleteDraft, saveDraft, updateDraft} from "../../redux/actions/globalActions";
 import {postCreate, putPost} from "../../redux/actions/postActions";
-import {SvgIconFeather, DatePicker, FileAttachments} from "../common";
-import {CheckBox, DescriptionInput, FolderSelect, PeopleSelect} from "../forms";
-import QuillEditor from "../forms/QuillEditor";
-import {useQuillModules, useGetWorkspaceAndUserOptions} from "../hooks";
-import {ModalHeaderSection} from "./index";
+import {DatePicker, FileAttachments, SvgIconFeather} from "../common";
 import {DropDocument} from "../dropzone/DropDocument";
+import {CheckBox, DescriptionInput, FolderSelect, PeopleSelect} from "../forms";
+import {useGetWorkspaceAndUserOptions, useQuillModules} from "../hooks";
+import {ModalHeaderSection} from "./index";
 
 const WrapperDiv = styled(InputGroup)`
     display: flex;
@@ -35,6 +34,16 @@ const WrapperDiv = styled(InputGroup)`
         margin-left: 130px;
         width: 100%;
         margin-right: -130px;
+    }
+    &.schedule-post {    
+        margin-left: 130px;
+        width: 100%;
+        margin-right: -130px;
+        
+        .react-date-picker__wrapper {            
+            border: thin solid hsl(0,0%,80%);
+            border-radius: 4px;
+        }
     }
     &.file-attachment-wrapper {
         margin-top: 30px;
@@ -66,31 +75,6 @@ const SelectWorkspace = styled(FolderSelect)`
 const SelectPeople = styled(PeopleSelect)`
     flex: 1 0 0;
     width: 1%;
-`;
-
-const StyledQuillEditor = styled(QuillEditor)`
-    flex: 1 0 0;
-    width: 1%;
-    height: 80px;
-    
-    &.group-chat-input {
-        border: 1px solid #afb8bd;
-        border-radius: 5px;
-        max-height: 130px;
-        overflow: auto;
-        overflow-x: hidden;
-        position: static;
-        width: 100%;
-    }
-    .ql-toolbar {
-        display: none;
-    }
-    .ql-container {
-        border: none;
-    }
-    .ql-editor {
-        padding: 5px;
-    }
 `;
 
 const CheckBoxGroup = styled.div`
@@ -222,15 +206,14 @@ const CreateEditWorkspacePostModal = props => {
     };
 
     const handleSaveDraft = () => {
-        if (form.title == "" && form.body === "" && !form.selectedUsers.length) return;
-        else {
+        if (!(form.title === "" && form.body === "" && !form.selectedUsers.length)) {
             let timestamp = Math.floor(Date.now() / 1000);
             let payload = {
                 type: "draft_post",
                 form: {
                     ...form,
                     must_read: form.must_read ? 1 : 0,
-                    must_reply: form.must_reply ? 1 : 0,
+                    must_reply: form.reply_required ? 1 : 0,
                     read_only: form.no_reply ? 1 : 0,
                     users_responsible: form.selectedUsers,
                 },
@@ -244,8 +227,8 @@ const CreateEditWorkspacePostModal = props => {
             if (draftId) {
                 payload = {
                     ...payload,
-                    draft_id: draftId
-                }
+                    draft_id: draftId,
+                };
                 dispatch(updateDraft(payload));
             } else {
                 dispatch(saveDraft(payload));
@@ -262,7 +245,7 @@ const CreateEditWorkspacePostModal = props => {
             personal: 0,
             recipient_ids: form.selectedWorkspaces.filter(ws => ws.type !== "FOLDER").map(ws => ws.value),
             must_read: form.must_read ? 1 : 0,
-            must_reply: form.must_reply ? 1 : 0,
+            must_reply: form.reply_required ? 1 : 0,
             read_only: form.no_reply ? 1 : 0,
             workspace_ids: form.selectedWorkspaces.filter(ws => ws.type === "FOLDER").map(ws => ws.value),
             show_at: form.show_at ? moment(form.show_at, "YYYY-MM-DD").format("YYYY-MM-DD") : null,
@@ -274,16 +257,16 @@ const CreateEditWorkspacePostModal = props => {
             dispatch(
                 deleteDraft({
                     type: "draft_post",
-                    draft_id: draftId
-                })
-            )
+                    draft_id: draftId,
+                }),
+            );
         }
         if (mode === "edit") {
             payload = {
                 ...payload,
                 id: item.post.id,
-                files: []
-            }
+                files: [],
+            };
             dispatch(putPost(payload));
         } else {
             dispatch(postCreate(payload));
@@ -374,8 +357,8 @@ const CreateEditWorkspacePostModal = props => {
                     return {
                         ...u,
                         value: u.id,
-                        label: u.name
-                    }
+                        label: u.name,
+                    };
                 }),
             });
         }
@@ -391,22 +374,22 @@ const CreateEditWorkspacePostModal = props => {
     useEffect(() => {
         if (formRef.more_options.current !== null && maxHeight === null) {
             setMaxHeight(formRef.more_options.current.offsetHeight);
-            setShowMoreOptions(false);
+            setShowMoreOptions(!!(item.post !== null && (item.post.is_read_only || item.post.is_must_read || item.post.is_must_reply)));
         }
     }, [formRef, setMaxHeight]);
 
     const handleSelectStartDate = useCallback(value => {
         setForm(f => ({
             ...f,
-            show_at: value
-        }))
+            show_at: value,
+        }));
     }, [setForm]);
 
     const handleSelectEndDate = useCallback(value => {
         setForm(f => ({
             ...f,
-            end_at: value
-        }))
+            end_at: value,
+        }));
     }, [setForm]);
 
     const handleOpenFileDialog = () => {
@@ -521,11 +504,11 @@ const CreateEditWorkspacePostModal = props => {
                         mode={mode}
                     />
                     {/* <StyledQuillEditor
-                        className="group-chat-input"
-                        modules={modules}
-                        ref={formRef.reactQuillRef}
-                        onChange={handleQuillChange}
-                    /> */}
+                     className="group-chat-input"
+                     modules={modules}
+                     ref={formRef.reactQuillRef}
+                     onChange={handleQuillChange}
+                     /> */}
                 </WrapperDiv>
                 {
                     attachedFiles.length > 0 &&
@@ -541,20 +524,24 @@ const CreateEditWorkspacePostModal = props => {
 
                     <CheckBoxGroup ref={formRef.more_options} maxHeight={maxHeight}
                                    className={showMoreOptions === null ? "" : showMoreOptions ? "enter-active" : "leave-active"}>
-                        <CheckBox name="must_read" checked={form.must_read} onClick={toggleCheck} type="success">Must
+                        <CheckBox name="must_read" checked={form.must_read} onClick={toggleCheck} type="danger">Must
                             read</CheckBox>
                         <CheckBox name="reply_required" checked={form.reply_required} onClick={toggleCheck}
-                                  type="danger">Reply required</CheckBox>
-                        <CheckBox name="no_reply" checked={form.no_reply} onClick={toggleCheck} type="dark">No
+                                  type="warning">Reply required</CheckBox>
+                        <CheckBox name="no_reply" checked={form.no_reply} onClick={toggleCheck} type="info">No
                             replies</CheckBox>
                     </CheckBoxGroup>
                 </WrapperDiv>
-                <WrapperDiv>
-                    <StyledDatePicker className={"start-date"} 
+                <WrapperDiv className="schedule-post">
+                    <Label>Schedule post</Label>
+                    <SvgIconFeather className="mr-2" width={18} icon="calendar"/>
+                    <StyledDatePicker
+                        className="mr-2 start-date"
                         onChange={handleSelectStartDate}
                         value={form.show_at}
                     />
-                    <StyledDatePicker className={"end-date"} 
+                    <StyledDatePicker
+                        className="end-date"
                         onChange={handleSelectEndDate}
                         value={form.end_at}
                     />
