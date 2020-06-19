@@ -1,6 +1,6 @@
 import React, {useRef, useState} from "react";
 import {useDispatch} from "react-redux";
-import {useHistory} from "react-router-dom";
+//import {useHistory} from "react-router-dom";
 import styled from "styled-components";
 import {addToModals} from "../../../redux/actions/globalActions";
 import {setParentIdForUpload} from "../../../redux/actions/postActions";
@@ -67,9 +67,9 @@ const Icon = styled(SvgIconFeather)`
 
 const PostDetail = props => {
 
-    const {post, postActions, user} = props;
+    const {post, postActions, user, history} = props;
     const dispatch = useDispatch();
-    const history = useHistory();
+    // const history = useHistory();
     const [showDropZone, setshowDropZone] = useState(false);
 
     const handleClosePost = () => {

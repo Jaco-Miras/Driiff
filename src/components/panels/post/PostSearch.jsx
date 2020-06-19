@@ -2,6 +2,7 @@ import React, {useState} from "react";
 import {useDispatch} from "react-redux";
 import {useParams} from "react-router-dom";
 import {addPostSearchResult, getWorkspacePosts} from "../../../redux/actions/workspaceActions";
+import {fetchPosts} from "../../../redux/actions/postActions";
 
 const PostSearch = () => {
 
@@ -34,7 +35,7 @@ const PostSearch = () => {
 
     const handleSearch = () => {
         dispatch(
-            getWorkspacePosts({
+            fetchPosts({
                 topic_id: topic_id,
                 search: searchValue
             }, (err,res) => {

@@ -11,7 +11,7 @@ const Wrapper = styled.div`
 
 const PostSidebar = props => {
 
-    const {workspace, isMember, filter, tag, count, postActions} = props;
+    const {workspace, isMember, filter, tag, count, postActions, onGoBack} = props;
 
     const handleShowWorkspacePostModal = () => {
         postActions.showModal("create");
@@ -30,11 +30,11 @@ const PostSidebar = props => {
                             </button>
                         </div>
                     }
-                    <PostFilterItem workspace={workspace} filter={filter}/>
+                    <PostFilterItem workspace={workspace} filter={filter} onGoBack={onGoBack}/>
                     <div className="card-body">
                         <h6 className="mb-0">Tags</h6>
                     </div>
-                    <PostFilterTag count={count} workspace={workspace} tag={tag}/>
+                    <PostFilterTag count={count} workspace={workspace} tag={tag} onGoBack={onGoBack}/>
                 </div>
             </div>
         </Wrapper>

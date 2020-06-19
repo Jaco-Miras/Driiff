@@ -268,3 +268,27 @@ export function fetchTagCounter(payload) {
         data: payload,
     });
 }
+
+/**
+ * @param {Object} payload
+ * @param {number} payload.topic_id
+ * @param {string} payload.search
+ * @param {array}  payload.filters
+ * @returns {Promise<*>}
+ */
+export function fetchPosts(payload) {
+    let url = `/v1/posts?topic_id=${payload.topic_id}`;
+    if (payload.search !== undefined) {
+        url += `&search=${payload.search}`;
+    }
+    if (payload.filters !== undefined) {
+        for (var i = 0; i < payload.filters.length; i++) {
+            url += `&filter[${i}]=${payload.filters[i]}`;
+        }
+    }
+    return apiCall({
+        method: "GET",
+        url: url,
+        data: payload,
+    });
+}

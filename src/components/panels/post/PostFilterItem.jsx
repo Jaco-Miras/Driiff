@@ -22,7 +22,7 @@ const Wrapper = styled.div`
 
 const PostFilterItem = props => {
 
-    const {className = "", workspace, filter = "all"} = props;
+    const {className = "", workspace, filter = "all", onGoBack} = props;
 
     const dispatch = useDispatch();
 
@@ -33,6 +33,7 @@ const PostFilterItem = props => {
                 filter: e.target.dataset.value,
             }),
         );
+        onGoBack();
     };
 
     return (
@@ -56,6 +57,12 @@ const PostFilterItem = props => {
                 <SvgIconFeather className="mr-2" icon="star"/>
                 Starred
             </span>
+            {/* <span className={`list-group-item d-flex align-items-center ${filter && filter === "archive" ? "active" : ""}`}
+                  data-value="archive"
+                  onClick={handleClickFilter}>
+                <SvgIconFeather className="mr-2" icon="archive"/>
+                Archived
+            </span> */}
             <span
                 className={`list-group-item d-flex align-items-center ${filter && filter === "draft" ? "active" : ""}`}
                 data-value="draft"

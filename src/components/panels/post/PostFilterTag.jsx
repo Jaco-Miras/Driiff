@@ -10,7 +10,7 @@ const Wrapper = styled.div`
 `;
 const PostFilterTag = props => {
 
-    const {className = "", workspace, tag, count} = props;
+    const {className = "", workspace, tag, count, onGoBack} = props;
 
     const dispatch = useDispatch();
 
@@ -21,6 +21,7 @@ const PostFilterTag = props => {
                 tag: e.target.dataset.value,
             }),
         );
+        onGoBack();
     };
 
     return (
