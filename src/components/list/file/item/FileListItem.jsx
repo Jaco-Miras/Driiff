@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import {SvgIconFeather} from "../../../common";
 import {FileOptions} from "../../../panels/files";
 
 const Wrapper = styled.div`
@@ -13,6 +14,15 @@ const Wrapper = styled.div`
             width: 16px;
         }
     }
+`;
+
+const Star = styled(SvgIconFeather)`
+    position: absolute;
+    top: 10px;
+    left: 5px;
+    width: 16px;
+    fill: #ffc107;
+    color: #ffc107;
 `;
 
 const FileListItem = (props) => {
@@ -33,10 +43,16 @@ const FileListItem = (props) => {
         fileSizeUnit = "GB";
     }
 
+    console.log(file);
+
     return (
         <Wrapper className={`file-list-item ${className}`}>
-            <div className="card app-file-list">
+            <div className="card  app-file-list">
                 <div className="app-file-icon">
+                    {
+                        file.is_favorite === true &&
+                        <Star icon="star"/>
+                    }
                     {actions.getFileIcon(file.mime_type)}
                     <FileOptions scrollRef={scrollRef} file={file} actions={actions}/>
                 </div>
