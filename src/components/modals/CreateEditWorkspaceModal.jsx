@@ -310,7 +310,13 @@ const CreateEditWorkspaceModal = (props) => {
                 topic_id: item.id,
                 remove_member_ids: removed_members.map(m => m.id),
                 new_member_ids: added_members.map(m => m.id),
-                system_message: system_message
+                system_message: `CHANNEL_UPDATE::${
+                    JSON.stringify({
+                        author: user,
+                        title: form.name,
+                        added_members: added_members,
+                        removed_members: removed_members,
+                    })}`
             };
             const cb = (err,res) => {
                 if (err) return;
