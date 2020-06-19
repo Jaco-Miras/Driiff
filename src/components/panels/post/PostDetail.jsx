@@ -56,6 +56,16 @@ const Counters = styled.div`
     }
 `;
 
+const PostFiles = styled(FileAttachments)`
+    li {
+        display: inline-block;
+        
+        &:not(:first-child) {
+            margin-left: 0.5rem;
+        }
+    }
+`;
+
 const Icon = styled(SvgIconFeather)`
     width: 16px;
 
@@ -217,7 +227,7 @@ const PostDetail = props => {
                     <>
                         <div className="card-body">
                             <h6 className="mb-3 font-size-11 text-uppercase">Files</h6>
-                            <FileAttachments attachedFiles={post.files}/>
+                            <PostFiles attachedFiles={post.files}/>
                         </div>
                         <hr className="m-0"/>
                     </>
