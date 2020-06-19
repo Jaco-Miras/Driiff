@@ -374,7 +374,7 @@ const CreateEditWorkspacePostModal = props => {
     useEffect(() => {
         if (formRef.more_options.current !== null && maxHeight === null) {
             setMaxHeight(formRef.more_options.current.offsetHeight);
-            //setShowMoreOptions(!!(item.post !== null && (item.post.is_read_only || item.post.is_must_read || item.post.is_must_reply)));
+            setShowMoreOptions(!!(item.post !== null && (item.post.is_read_only || item.post.is_must_read || item.post.is_must_reply)));
         }
     }, [formRef, setMaxHeight]);
 
