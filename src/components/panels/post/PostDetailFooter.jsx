@@ -196,7 +196,9 @@ const PostDetailFooter = (props) => {
                         </NoReply>
                                                 :
                         <React.Fragment>
-                            <Avatar className="mr-2" imageLink={user.profile_image_link}/>
+                            <div>
+                                <Avatar className="mr-2" imageLink={user.profile_image_link}/>
+                            </div>
                             <ChatInputContainer ref={innerRef} className="flex-grow-1">
                                 <PostInput
                                     handleClearSent={handleClearSent}
