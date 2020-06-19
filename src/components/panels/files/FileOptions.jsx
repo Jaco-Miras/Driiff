@@ -40,7 +40,7 @@ const FileOptions = props => {
     };
 
     const handleDownload = () => {
-        window.open(file.download_link);
+        actions.download(file);
     };
 
     const handleMoveTo = () => {

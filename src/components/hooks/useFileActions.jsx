@@ -324,11 +324,32 @@ const useFileActions = (params = null) => {
             addToModals(payload),
         );
     }, [dispatch, params]);
+
+    const download = useCallback((file) => {
+        const handleDownloadFile = () => {
+            window.open(file.download_link)
+        };
+        let payload = {
+            type: "confirmation",
+            headerText: "Download file",
+            submitText: "Download",
+            cancelText: "Cancel",
+            bodyText: `Download ${file.search}?`,
+            actions: {
+                onSubmit: handleDownloadFile,
+            },
+        };
+
+        dispatch(
+            addToModals(payload),
+        );
+    }, [dispatch, params]);
     
     return {
         clearSearch,
         copyLink,
         createFolder,
+        download,
         favorite,
         getFavoriteFiles,
         getFileIcon,
