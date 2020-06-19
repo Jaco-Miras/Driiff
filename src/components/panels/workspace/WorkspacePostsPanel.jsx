@@ -7,6 +7,10 @@ import {PostDetail, PostFilterSearchPanel, PostItemPanel, PostSidebar} from "../
 
 const Wrapper = styled.div`
     text-align: left;
+    
+    .app-block {
+        overflow: inherit;
+    }
 
     .search-title {
         margin: 1.5rem 1.5rem 0;
@@ -71,7 +75,7 @@ const WorkspacePostsPanel = (props) => {
                 <div className="col-md-9 app-content">
                     <div className="app-content-overlay"/>
                     <PostFilterSearchPanel activeSort={sort} workspace={workspace}/>
-                    <div className="card card-body app-content-body">
+                    <div className="card card-body app-content-body mb-2">
                         {
                             posts.length === 0 ?
                             <EmptyState>
@@ -87,7 +91,7 @@ const WorkspacePostsPanel = (props) => {
                                                :
                             <>{
                                 post ?
-                                <PostDetailWrapper className={`card`}>
+                                <PostDetailWrapper>
                                     <PostDetail post={post} postActions={postActions} user={user}/>
                                 </PostDetailWrapper>
                                      :

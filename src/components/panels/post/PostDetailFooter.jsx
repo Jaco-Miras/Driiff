@@ -10,7 +10,6 @@ import {CommentQuote} from "../../list/post/item";
 
 const Wrapper = styled.div`
     position: relative;
-    z-index: 1;
     > div > svg:first-child {
         margin-left: 0 !important;
     }
