@@ -1,7 +1,6 @@
 import {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {useParams} from "react-router-dom";
-import {fetchTimeline} from "../../redux/actions/workspaceActions";
 import {addToWorkspacePosts} from "../../redux/actions/postActions";
 import {usePostActions} from "./index";
 
@@ -20,9 +19,6 @@ const usePosts = () => {
             //actions.getRecentPosts(params.workspaceId);
             if (!wsPosts.hasOwnProperty(params.workspaceId) && !fetchingPost) {
                 setFetchingPost(true);
-                dispatch(
-                    fetchTimeline({topic_id: params.workspaceId})
-                );
                 let cb = (err, res) => {
                     setFetchingPost(false);
                     if (err) return;

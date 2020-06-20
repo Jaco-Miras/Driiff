@@ -19,7 +19,9 @@ const Wrapper = styled.div`
 
 const WorkspaceDashboardPanel = (props) => {
 
-    const {className = ""} = props;
+    const {className = "", match} = props;
+
+    const {params} = match;
 
     const {workspace, actions, timeline} = useWorkspace();
     const {recentPosts} = usePosts();
@@ -34,7 +36,7 @@ const WorkspaceDashboardPanel = (props) => {
             <div className={`row`}>
                 <div className={`col-md-6`}>
                     <DashboardAboutWorkspace workspace={workspace} onEditClick={handleEditClick}/>
-                    <TimelinePanel timeline={timeline}/>
+                    <TimelinePanel timeline={timeline} actions={actions} params={params}/>
                 </div>
 
                 <div className={`col-md-6`}>

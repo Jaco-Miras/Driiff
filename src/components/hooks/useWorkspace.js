@@ -11,7 +11,6 @@ const useWorkspace = () => {
     const workspaceActions = useWorkspaceActions();
     const {workspaces, activeTopic, workspaceTimeline, workspacesLoaded} = useSelector(state => state.workspaces);
     const [fetchingPrimary, setFetchingPrimary] = useState(false);
-    const [fetchingTimeline, setFetchingTimeline] = useState(false);
 
     useEffect(() => {
         if (!fetchingPrimary && activeTopic && !activeTopic.hasOwnProperty("primary_files")) {
@@ -29,23 +28,12 @@ const useWorkspace = () => {
                 workspaceActions.addPrimaryFilesToWorkspace(payload);
             };
             workspaceActions.getPrimaryFiles(activeTopic.id, callback);
-            if (!activeTopic.members[0].hasOwnProperty("role")) {
-                workspaceActions.getMembers(activeTopic.id);
-            }
+            //transfer to teams component
+            // if (!activeTopic.members[0].hasOwnProperty("role")) {
+            //     workspaceActions.getMembers(activeTopic.id);
+            // }
         }
     }, [fetchingPrimary, activeTopic]);
-
-    useEffect(() => {
-        if (activeTopic && !fetchingTimeline && !workspaceTimeline.hasOwnProperty(activeTopic.id)) {
-            setFetchingTimeline(true);
-            const cb = (err, res) => {
-                setTimeout(() => {
-                    setFetchingTimeline(false);
-                }, 300);
-            };
-            workspaceActions.getTimeline(activeTopic.id, cb);
-        }
-    }, [fetchingTimeline, activeTopic, workspaceTimeline]);
 
     let timeline = null;
     if (Object.keys(workspaceTimeline).length && workspaceTimeline.hasOwnProperty(params.workspaceId)) {

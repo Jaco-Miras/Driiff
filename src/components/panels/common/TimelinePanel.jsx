@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import styled from "styled-components";
 import {AttachFileTimeline, MemberTimeline, PostTimeline, TopicTimeline} from "../dashboard/timeline";
 
@@ -7,7 +7,13 @@ const Wrapper = styled.div`
 
 const TimelinePanel = (props) => {
 
-    const {className = "", timeline} = props;
+    const {className = "", timeline, actions, params} = props;
+
+    useEffect(() => {
+        if (params.hasOwnProperty("workspaceId")) {
+            actions.getTimeline(params.workspaceId);
+        }
+    }, []);
 
     return (
         <Wrapper className={`timeline-panel card ${className}`}>
