@@ -137,7 +137,7 @@ const FilesBody = (props) => {
                     typeof wsFiles !== "undefined" &&
                     <>
                         {
-                            folder && isMember && fileIds.length !== 0 &&
+                            folder && isMember &&
                             <MoreButton moreButton="settings">
                                 <div onClick={handleEditFolder}>Edit folder</div>
                                 <div onClick={handleRemoveFolder}>Remove folder</div>
