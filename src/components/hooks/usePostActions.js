@@ -11,7 +11,7 @@ import {
     postToggleRead, removePost, postUnfollow, deletePost,
     starPostReducer, markPostReducer, putPost, postCreate,
     postClap, fetchRecentPosts, fetchTagCounter, fetchPosts,
-    addToWorkspacePosts
+    addToWorkspacePosts, postVisit
 } from "../../redux/actions/postActions";
 
 const usePostActions = () => {
@@ -309,6 +309,12 @@ const usePostActions = () => {
         );
     }, [dispatch]);
 
+    const visit = useCallback((payload) => {
+        dispatch(
+            postVisit(payload),
+        );
+    }, [dispatch]);
+
     return {
         starPost,
         markPost,
@@ -325,7 +331,8 @@ const usePostActions = () => {
         clap,
         getRecentPosts,
         getTagsCount,
-        getPosts
+        getPosts,
+        visit
     }
 };
 

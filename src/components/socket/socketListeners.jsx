@@ -330,49 +330,29 @@ class SocketListeners extends PureComponent {
                     };
                 }));
             })
-            .listen(".start-discussion-message", e => {
-                console.log("chat notif socket", e);
-
-                this.props.getChatMembersV2Action({channel_id: e.channel_data.channel_id}, (err, res) => {
-                    let channel = {
-                        id: e.channel_data.channel_id,
-                        entity_id: e.channel_data.post_id,
-                        type: e.channel_data.entity_type,
-                        title: e.channel_data.channel_title,
-                        is_archived: 0,
-                        is_pinned: 0,
-                        is_hidden: 0,
-                        is_muted: 0,
-                        total_unread: 0,
-                        profile: null,
-                        selected: true,
-                        inviter: null,
-                        hasMore: true,
-                        skip: 0,
-                        members: res.data.results.map(u => u.user),
-                        replies: [],
-                        created_at: {
-                            timestamp: Math.round(+new Date() / 1000),
-                        },
-                        last_reply: null,
-                    };
-                    this.props.addActiveChatChannelsAction([channel]);
-                });
-
-                //this.props.addChatNotificationAction(e)
+            .listen(".post-view", e => {
+                console.log(e, 'post view');
+                let payload = {
+                    post_id: e.post_id,
+                    viewers: [e.user.id],
+                };
+                this.props.updatePostViewersAction(payload);
+            })
+            .listen(".updated-post-visitors", e => {
+                console.log(e, "comment post view");
+                this.props.updatePostCommentViewers(e);
             })
             
-            
-            .listen(".reply-updated", e => {
-                console.log(e, "reply updated");
-                if (e.message.invited_recipient_ids.length) {
-                    this.props.getPostAction({
-                        post_id: e.message.post_id,
-                        personal_for_id: e.message.personalized_for_id,
-                    });
-                }
-                this.props.incomingUpdatedReplyAction(e.message);
-            })
+            // .listen(".reply-updated", e => {
+            //     console.log(e, "reply updated");
+            //     if (e.message.invited_recipient_ids.length) {
+            //         this.props.getPostAction({
+            //             post_id: e.message.post_id,
+            //             personal_for_id: e.message.personalized_for_id,
+            //         });
+            //     }
+            //     this.props.incomingUpdatedReplyAction(e.message);
+            // })
             .listen(".move-private-topic-workspace", e => {
                 console.log(e, "move workspace private");
                 this.props.incomingMovedTopic(e);

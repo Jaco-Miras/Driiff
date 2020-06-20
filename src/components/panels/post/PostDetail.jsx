@@ -1,4 +1,4 @@
-import React, {useRef, useState} from "react";
+import React, {useRef, useState, useEffect} from "react";
 import {useDispatch} from "react-redux";
 //import {useHistory} from "react-router-dom";
 import styled from "styled-components";
@@ -167,6 +167,16 @@ const PostDetail = props => {
         };
         postActions.clap(payload);
     };
+
+    useEffect(() => {
+        const viewed = post.view_user_ids.some(id => id === user.id);
+        if (!viewed) {
+            postActions.visit({
+                post_id: post.id,
+                personalized_for_id: null
+            });
+        }
+    }, []);
 
     return (
         <>

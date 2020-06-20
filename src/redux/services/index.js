@@ -101,6 +101,7 @@ export {
     postSnooze,
     postToggleRead,
     postUnfollow,
+    postVisit,
     putComment,
     putPost,
 } from "./post";
