@@ -190,14 +190,14 @@ const PostDetailFooter = (props) => {
                         post.is_read_only === 1 ?
                         <NoReply className="d-flex align-items-center">
                             <div>
-                                <Avatar className="mr-2" imageLink={user.profile_image_link}/>
+                                <Avatar className="mr-2" name={user.name} imageLink={user.profile_image_link}/>
                             </div>
                             <h4>No reply allowed</h4>
                         </NoReply>
                                                 :
                         <React.Fragment>
                             <div>
-                                <Avatar className="mr-2" imageLink={user.profile_image_link}/>
+                                <Avatar className="mr-2" name={user.name} imageLink={user.profile_image_link}/>
                             </div>
                             <ChatInputContainer ref={innerRef} className="flex-grow-1">
                                 <PostInput

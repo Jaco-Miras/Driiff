@@ -90,7 +90,9 @@ const PostItemPanel = (props) => {
             <div className="flex-grow-1 min-width-0">
                 <div className="d-flex align-items-center justify-content-between">
                     <div
-                        className={`app-list-title text-truncate ${post.unread_count !== 0 || !post.is_updated ? "text-primary has-unread" : ""} ${post.is_mark_done ? "text-success" : ""}`}>
+                        className={`app-list-title text-truncate 
+                            ${post.unread_count !== 0 || !post.is_updated || post.is_unread === 1 ? "text-primary has-unread" : ""} 
+                            ${post.is_mark_done ? "text-success" : ""}`}>
                         <span>{post.title}</span>
                         {
                             post.unread_count !== 0 &&

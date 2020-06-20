@@ -89,13 +89,32 @@ const Avatar = (props) => {
         setShowInitials(true);
     };
 
+    // const hasWhiteSpace = (s) => {
+    //     return /\s/g.test(s);
+    // };
+      
     const handleInitials = title => {
-        var result = "";
+
+        if (typeof title === "undefined") return "";
+
+        var result = ""
         var tokens = title.split(" ");
         for (var i = 0; i < tokens.length; i++) {
             result += tokens[i].substring(0, 1).toUpperCase();
         }
-        return result;
+        return result.substring(0, 2);
+
+        // var result = "";
+        // if (hasWhiteSpace(title)) {
+        //     var tokens = title.split(" ");
+        //     for (var i = 0; i < tokens.length; i++) {
+        //         result += tokens[i].substring(0, 1).toUpperCase();
+        //     }
+        //     return result.substring(0, 2);
+        // } else {
+        //     result = title.charAt(0);
+        //     return result
+        // }
     };
 
     return <Wrapper
@@ -110,7 +129,7 @@ const Avatar = (props) => {
         }
         {
             showInitials ?
-            <Initials className="rounded-circle">{handleInitials(name).substring(0, 2)}</Initials>
+            <Initials className="rounded-circle">{handleInitials(name)}</Initials>
                          :
             <>
                 {

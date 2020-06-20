@@ -174,13 +174,14 @@ const usePostActions = () => {
     const snoozePost = useCallback((post) => {
         let payload = {
             type: "snooze_post",
-            post: post
+            post: post,
+            topic_id: params.workspaceId
         };
 
         dispatch(
             addToModals(payload)
         );
-    }, [dispatch]);
+    }, [dispatch, params]);
 
     const followPost = useCallback((post) => {
         if (post.is_followed) {

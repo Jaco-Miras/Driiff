@@ -5,7 +5,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {Button, Modal, ModalBody, ModalFooter} from "reactstrap";
 import styled from "styled-components";
 import toaster from "toasted-notes";
-import {postSnooze} from "../../redux/actions/postActions";
+import {postSnooze, removePost} from "../../redux/actions/postActions";
 import {clearModal} from "../../redux/actions/globalActions";
 import RadioInput from "../forms/RadioInput";
 import {ModalHeaderSection} from "./index";
@@ -22,7 +22,7 @@ const InputContainer = styled.div`
 
 const PostSnoozeModal = props => {
 
-    const {type, post} = props.data;
+    const {type, post, topic_id} = props.data;
 
     const dispatch = useDispatch();
     const user = useSelector(state => state.session.user);
@@ -64,6 +64,13 @@ const PostSnoozeModal = props => {
         dispatch(
             postSnooze(payload, (err, res) => {
                 toggle();
+                if (err) return;
+                dispatch(
+                    removePost({
+                        post_id: post.id,
+                        topic_id: topic_id
+                    })
+                )
                 let messageTime = "";
                 let today = new Date();
                 switch (setTimeValue) {
