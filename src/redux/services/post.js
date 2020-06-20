@@ -292,3 +292,18 @@ export function fetchPosts(payload) {
         data: payload,
     });
 }
+
+/**
+ * @param {Object} payload
+ * @param {number} payload.post_id
+ * @param {number} payload.personal_for_id
+ * @returns {Promise<*>}
+ */
+export function postVisit(payload) {
+    let url = `/v1/post-viewed`;
+    return apiCall({
+        method: "POST",
+        url: url,
+        data: payload,
+    });
+}

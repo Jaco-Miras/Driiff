@@ -16,6 +16,7 @@ import {
     postSnooze as postSnoozeService,
     postToggleRead as postToggleReadService,
     postUnfollow as postUnfollowService,
+    postVisit as postVisitService,
     putComment as putCommentService,
     putPost as putPostService,
 } from "../services";
@@ -308,6 +309,16 @@ export function addToWorkspacePosts(payload, callback) {
     return SimpleDispatchActionToReducer(
         "ADD_TO_WORKSPACE_POSTS",
         payload,
+        callback,
+    );
+}
+
+export function postVisit(payload, callback) {
+    return dispatchActionToReducer(
+        postVisitService(payload),
+        "POST_VISIT_START",
+        "POST_VISIT_SUCCESS",
+        "POST_VISIT_FAIL",
         callback,
     );
 }
