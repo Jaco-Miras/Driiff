@@ -77,7 +77,7 @@ const usePostActions = () => {
                 history.push(location.pathname+`/post/${post.id}/${replaceChar(post.title)}`)
             }
         }
-    }, [dispatch, location]);
+    }, [dispatch, history, location]);
 
     const archivePost = useCallback((post) => {
         if (post.type === "draft_post") {

@@ -85,7 +85,9 @@ const RecentPosts = (props) => {
     };
 
     useEffect(() => {
-        postActions.getRecentPosts(match.params.workspaceId);
+        if (match.params.hasOwnProperty("workspaceId")) {
+            postActions.getRecentPosts(match.params.workspaceId)
+        }
     }, []);
 
     return (
