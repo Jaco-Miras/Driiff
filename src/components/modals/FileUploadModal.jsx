@@ -12,6 +12,9 @@ import {ModalHeaderSection} from "./index";
 import {postComment, setParentIdForUpload} from "../../redux/actions/postActions";
 
 const StyledQuillEditor = styled(QuillEditor)`
+    .ql-editor {
+        min-height: 100px;
+    }
     .ql-mention-list-container-top, .ql-mention-list-container {
         width: 300px !important;
         max-height: 170px;
@@ -124,6 +127,7 @@ const FileUploadModal = props => {
             setComment(savedInput.text);
             setTextOnly(savedInput.textOnly);
             setQuillContents(savedInput.quillContents);
+            reactQuillRef.current.focus();
         }
     }, [savedInput]);
 
@@ -161,10 +165,10 @@ const FileUploadModal = props => {
     };
 
     const handleSubmit = (body, mention_ids) => {
-        uploadedFiles.forEach((file, k) => {
-            let payload = {};
-            if (k === uploadedFiles.length - 1) {
-                if (mode === "chat") {
+        if (mode === "chat") {
+            uploadedFiles.forEach((file, k) => {
+                let payload = {};
+                if (k === uploadedFiles.length - 1) {
                     payload = {
                         channel_id: selectedChannel.id,
                         body: body,
@@ -177,28 +181,12 @@ const FileUploadModal = props => {
                     setTimeout(() => {
                         dispatch(postChatMessage(payload));
                     }, 300);
-                } else if (mode === "post") {
-                    payload = {
-                        post_id: post.id,
-                        body: body,
-                        mention_ids: mention_ids,
-                        file_ids: [file.id],
-                        reference_id: require("shortid").generate(),
-                        personalized_for_id: null,
-                        parent_id: parentId,
-                    };
-                    setTimeout(() => {
-                        dispatch(postComment(payload));
-                        dispatch(setParentIdForUpload(null));
-                    }, 300);
-                }
-                
-                setUploadedFiles([]);
-                dispatch(saveInputData({sent: true}));
-                dispatch(clearModal({type: type}));
-                //toggle();
-            } else {
-                if (mode === "chat") {
+                    
+                    setUploadedFiles([]);
+                    dispatch(saveInputData({sent: true}));
+                    dispatch(clearModal({type: type}));
+                    //toggle();
+                } else {
                     payload = {
                         channel_id: selectedChannel.id,
                         body: "",
@@ -209,20 +197,24 @@ const FileUploadModal = props => {
                         reference_title: selectedChannel.title,
                     };
                     dispatch(postChatMessage(payload));
-                } else if (mode === "post") {
-                    payload = {
-                        post_id: post.id,
-                        body: body,
-                        mention_ids: mention_ids,
-                        file_ids: [file.id],
-                        reference_id: require("shortid").generate(),
-                        personalized_for_id: null,
-                        parent_id: parentId,
-                    };
-                    dispatch(postComment(payload));
                 }
+            });
+        } else if (mode === "post") {
+            let payload = {
+                post_id: post.id,
+                body: body,
+                mention_ids: mention_ids,
+                file_ids: uploadedFiles.map(f => f.id),
+                reference_id: require("shortid").generate(),
+                personalized_for_id: null,
+                parent_id: parentId,
             }
-        });
+            setUploadedFiles([]);
+            dispatch(postComment(payload));
+            dispatch(setParentIdForUpload(null));
+            dispatch(saveInputData({sent: true}));
+            dispatch(clearModal({type: type}));
+        }
     };
 
     useEffect(() => {
