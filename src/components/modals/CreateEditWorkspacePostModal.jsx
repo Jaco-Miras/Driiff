@@ -10,6 +10,7 @@ import {DropDocument} from "../dropzone/DropDocument";
 import {CheckBox, DescriptionInput, FolderSelect, PeopleSelect} from "../forms";
 import {useGetWorkspaceAndUserOptions, useQuillModules} from "../hooks";
 import {ModalHeaderSection} from "./index";
+import {uploadDocument} from "../../redux/services/global";
 
 const WrapperDiv = styled(InputGroup)`
     display: flex;
@@ -140,6 +141,7 @@ const CreateEditWorkspacePostModal = props => {
     const [draftId, setDraftId] = useState(null);
     const [showDropzone, setShowDropzone] = useState(false);
     const [attachedFiles, setAttachedFiles] = useState([]);
+    const [uploadedFiles, setUploadedFiles] = useState([]);
     const [form, setForm] = useState({
         must_read: false,
         reply_required: false,
@@ -281,11 +283,19 @@ const CreateEditWorkspacePostModal = props => {
             payload = {
                 ...payload,
                 id: item.post.id,
-                files: [],
+                file_ids: uploadedFiles.map(f => f.id)
             };
-            dispatch(putPost(payload));
+            if (attachedFiles.length) {
+                uploadFiles(payload, "edit");
+            } else {
+                dispatch(putPost(payload));
+            }
         } else {
-            dispatch(postCreate(payload));
+            if (attachedFiles.length) {
+                uploadFiles(payload, "create");
+            } else {
+                dispatch(postCreate(payload));
+            }
         }
         toggleAll(false);
     };
@@ -376,7 +386,14 @@ const CreateEditWorkspacePostModal = props => {
                         label: u.name,
                     };
                 }),
+                file_ids: item.post.files.map(f => f.id)
             });
+            setUploadedFiles(item.post.files.map(f => {
+                return {
+                    ...f,
+                    rawFile: f
+                }
+            }));
         }
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -425,11 +442,15 @@ const CreateEditWorkspacePostModal = props => {
     const dropAction = (acceptedFiles) => {
 
         let selectedFiles = [];
+        
         acceptedFiles.forEach(file => {
+            var bodyFormData = new FormData();
+            bodyFormData.append("file", file);
             let shortFileId = require("shortid").generate();
             if (file.type === "image/jpeg" || file.type === "image/png" || file.type === "image/gif" || file.type === "image/webp") {
                 selectedFiles.push({
                     rawFile: file,
+                    bodyFormData: bodyFormData,
                     type: "IMAGE",
                     id: shortFileId,
                     status: false,
@@ -439,6 +460,7 @@ const CreateEditWorkspacePostModal = props => {
             } else if (file.type === "video/mp4") {
                 selectedFiles.push({
                     rawFile: file,
+                    bodyFormData: bodyFormData,
                     type: "VIDEO",
                     id: shortFileId,
                     status: false,
@@ -448,6 +470,7 @@ const CreateEditWorkspacePostModal = props => {
             } else {
                 selectedFiles.push({
                     rawFile: file,
+                    bodyFormData: bodyFormData,
                     type: "DOC",
                     id: shortFileId,
                     status: false,
@@ -460,12 +483,38 @@ const CreateEditWorkspacePostModal = props => {
         handleHideDropzone();
     };
 
+    async function uploadFiles(payload, type = "create") {
+        await Promise.all(
+            attachedFiles.map(file => uploadDocument({
+                    user_id: user.id,
+                    file: file.bodyFormData,
+                    file_type: "private",
+                    folder_id: null,
+                }),
+            ),
+        ).then(result => {
+            if (type === "edit") {
+                payload = {
+                    ...payload,
+                    file_ids: [...result.map(res => res.data.id), ...payload.file_ids]
+                }
+                dispatch(putPost(payload));
+            } else {
+                payload = {
+                    ...payload,
+                    file_ids: result.map(res => res.data.id)
+                }
+                dispatch(postCreate(payload));
+            }
+        });
+    }
+
     const handleRemoveFile = useCallback((fileId) => {
         setAttachedFiles(prevState => prevState.filter(f => f.id !== fileId));
     }, [setAttachedFiles]);
 
     const [wsOptions, userOptions] = useGetWorkspaceAndUserOptions(form.selectedWorkspaces, activeTopic);
-
+    console.log(attachedFiles, uploadedFiles)
     return (
 
         <Modal isOpen={modal} toggle={toggle} centered size={"md"} autoFocus={false}>
@@ -535,9 +584,9 @@ const CreateEditWorkspacePostModal = props => {
                      /> */}
                 </WrapperDiv>
                 {
-                    attachedFiles.length > 0 &&
+                    (attachedFiles.length > 0 || uploadedFiles.length > 0) &&
                     <WrapperDiv className="file-attachment-wrapper">
-                        <FileAttachments attachedFiles={attachedFiles} handleRemoveFile={handleRemoveFile}/>
+                        <FileAttachments attachedFiles={[...attachedFiles, ...uploadedFiles]} handleRemoveFile={handleRemoveFile}/>
                     </WrapperDiv>
                 }
                 <WrapperDiv className="more-option">
