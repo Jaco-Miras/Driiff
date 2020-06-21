@@ -69,16 +69,16 @@ const Avatar = (props) => {
 
     const handleOnClick = (e) => {
         e.stopPropagation();
+        e.preventDefault();
 
         if (onClick)
-            onClick();
+            onClick(e);
 
         if (props.noDefaultClick)
             return;
 
         if (type === "USER") {
-            if (partialName) history.push(`/profile/${partialName}`);
-            else history.push(`/profile/${id}`);
+            history.push(`/profile/${id}/${name}`);
         } else if (type === "TOPIC") {
             history.push(`/topic/${id}/${name.toLowerCase().replace(/\s|\//g, "-")}`);
         }
