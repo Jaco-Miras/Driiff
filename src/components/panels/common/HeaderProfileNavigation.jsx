@@ -11,7 +11,24 @@ import UserProfileDropDown from "../dropdown/UserProfileDropdown";
 const Wrapper = styled.ul`
     > li {
         position: relative;
-        
+
+        .nav-link {
+            &.profile-button {
+                position: relative;
+                
+                .avatar-overlay {
+                    position: absolute;
+                    width: 100%;
+                    height: 100%;                    
+                    z-index:1;
+                }
+                .avatar {
+                    position: relative;
+                    z-index:0;
+                }
+            }
+        }
+                  
         .user-profile-dropdown {
             position: absolute;
             right: 0;
@@ -19,6 +36,8 @@ const Wrapper = styled.ul`
             top: -10px;
         }
     }
+      
+        
 `;
 
 const ThemeSwitch = styled.span`
@@ -131,10 +150,12 @@ const HomeProfileNavigation = (props) => {
                 <NotificationDropDown/>
             </li>
             <li className="nav-item dropdown">
-                <a href="/" className="nav-link" data-toggle="dropdown" title={user.name} onClick={toggleDropdown}>
+                <a href="/" className="nav-link profile-button" data-toggle="dropdown" title={user.name}
+                   onClick={toggleDropdown}>
+                    <div className="avatar-overlay"/>
                     <Avatar name={user.name} imageLink={user.profile_image_link} noDefaultClick={true}/>
                 </a>
-                <UserProfileDropDown/>
+                <UserProfileDropDown user={user}/>
             </li>
         </Wrapper>
     );

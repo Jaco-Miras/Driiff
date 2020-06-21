@@ -17,7 +17,6 @@ const ChatMembers = props => {
 
     const {page = "chat"} = props;
     const chatChannel = useSelector(state => state.chat.selectedChannel);
-    const user = useSelector(state => state.session.user);
     const [usersTyping] = useIsUserTyping();
 
     return (
@@ -27,7 +26,7 @@ const ChatMembers = props => {
                     chatChannel.members.map((m, i) => {
                         return (
                             <StyledAvatar
-                                userId={m.id}
+                                id={m.id}
                                 firstUser={i === 0}
                                 className="chat-members"
                                 key={m.name}
