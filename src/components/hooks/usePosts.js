@@ -84,8 +84,8 @@ const usePosts = () => {
                         return p.is_favourite;
                     } else if (filter === "archive") {
                         return p.is_archived === 1;
-                    } else {
-                        return p.is_archived === 0;
+                    } else if (filter === "all") {
+                        return true;
                     }
                 } else {
                     return true;

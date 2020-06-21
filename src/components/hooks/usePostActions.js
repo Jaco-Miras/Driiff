@@ -11,7 +11,7 @@ import {
     postToggleRead, removePost, postUnfollow, deletePost,
     starPostReducer, markPostReducer, putPost, postCreate,
     postClap, fetchRecentPosts, fetchTagCounter, fetchPosts,
-    addToWorkspacePosts, postVisit
+    addToWorkspacePosts, postVisit, archiveReducer
 } from "../../redux/actions/postActions";
 
 const usePostActions = () => {
@@ -119,9 +119,10 @@ const usePostActions = () => {
                     }, (err, res) => {
                         if (err) return;
                         dispatch(
-                            removePost({
+                            archiveReducer({
                                 post_id: post.id,
-                                topic_id: parseInt(params.workspaceId)
+                                topic_id: parseInt(params.workspaceId),
+                                is_archived: post.is_archived === 1 ? 0 : 1,
                             })
                         )
                         if (params.hasOwnProperty("postId")) {
@@ -146,7 +147,7 @@ const usePostActions = () => {
                 addToModals(payload),
             );
         }
-    }, [dispatch, params]);
+    }, [dispatch, params, history]);
 
     const markAsRead = useCallback((post) => {
         dispatch(

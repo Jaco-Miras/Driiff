@@ -58,6 +58,7 @@ import {pushBrowserNotification} from "../../helpers/pushHelper";
 import {updateFaviconState} from "../../helpers/slugHelper";
 import {replaceChar, stripHtml} from "../../helpers/stringFormatter";
 import {urlify} from "../../helpers/urlContentHelper";
+import moment from "moment";
 
 class SocketListeners extends PureComponent {
     constructor() {
@@ -123,7 +124,26 @@ class SocketListeners extends PureComponent {
             console.log(e, "post-notif")
             switch (e.SOCKET_TYPE) {
                 case "POST_CREATE": {
-                    this.props.incomingPost(e);
+                    if (e.show_at !== null) {
+                        let show = e.show_at;
+                        show = show.split("-")
+                        show = {
+                            'year': show[0],
+                            'month': show[1],
+                            'date': show[2].substring(0,2)
+                        }
+                        let d = new Date();
+                        let currentDate = {
+                            'year': d.getFullYear(),
+                            'month': d.getMonth() + 1,
+                            'date': d.getDate()
+                        }
+                        if (moment(show).dayOfYear() <= moment(currentDate).dayOfYear()) {
+                            this.props.incomingPost(e);
+                        }
+                    }  else {
+                        this.props.incomingPost(e);
+                    }
                     if (e.workspace_ids && e.workspace_ids.length >= 1) {
                     
                         this.props.setGeneralChat({

@@ -330,3 +330,11 @@ export function incomingPostViewer(payload, callback) {
         callback,
     );
 }
+
+export function archiveReducer(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "ARCHIVE_REDUCER",
+        payload,
+        callback,
+    );
+}

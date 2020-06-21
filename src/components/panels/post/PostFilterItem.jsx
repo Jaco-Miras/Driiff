@@ -39,7 +39,7 @@ const PostFilterItem = props => {
     return (
         <Wrapper className={`post-filter-item list-group list-group-flush ${className}`}>
             <span
-                className={`list-group-item d-flex align-items-center ${filter === null || filter === "all" ? "active" : ""}`}
+                className={`list-group-item d-flex align-items-center ${filter && filter === "all" ? "active" : ""}`}
                 data-value="all" onClick={handleClickFilter}>
                 <SvgIconFeather className="mr-2" icon="book-open"/>
                 All

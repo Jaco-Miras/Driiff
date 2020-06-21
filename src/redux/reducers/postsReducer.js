@@ -129,6 +129,14 @@ export default (state = INITIAL_STATE, action) => {
                 return state
             }
         }
+        case "ARCHIVE_REDUCER": {
+            let updatedPosts = {...state.posts};
+            updatedPosts[action.data.post_id].is_archived = action.data.is_archived;
+            return {
+                ...state,
+                posts: updatedPosts
+            }
+        }
         default:
             return state;
     }

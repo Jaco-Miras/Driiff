@@ -264,7 +264,7 @@ const CreateEditWorkspacePostModal = props => {
             must_reply: form.reply_required ? 1 : 0,
             read_only: form.no_reply ? 1 : 0,
             workspace_ids: form.selectedWorkspaces.filter(ws => ws.type === "FOLDER").map(ws => ws.value),
-            show_at: form.show_at ? moment(form.show_at, "YYYY-MM-DD").format("YYYY-MM-DD") : null,
+            show_at: form.show_at ? moment(form.show_at, "YYYY-MM-DD").format("YYYY-MM-DD") : form.end_at ? moment(new Date()).add(1,'day').format("YYYY-MM-DD") : null,
             end_at: form.end_at ? moment(form.end_at, "YYYY-MM-DD").format("YYYY-MM-DD") : null,
             tag_ids: [],
             file_ids: [],
@@ -519,7 +519,7 @@ const CreateEditWorkspacePostModal = props => {
                     />
                 </WrapperDiv>
                 <WrapperDiv>
-                    <Label for="firstMessage">Description</Label>
+                    {/* <Label for="firstMessage">Description</Label> */}
                     <DescriptionInput
                         showFileButton={true}
                         onChange={handleQuillChange}

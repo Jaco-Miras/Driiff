@@ -845,6 +845,14 @@ export default (state = INITIAL_STATE, action) => {
                 return state
             }
         }
+        case "ARCHIVE_REDUCER": {
+            let newWorkspacePosts = {...state.workspacePosts};
+            newWorkspacePosts[action.data.topic_id].posts[action.data.post_id].is_archived = action.data.is_archived;
+            return {
+                ...state,
+                workspacePosts: newWorkspacePosts
+            }
+        }
         default:
             return state;
     }
