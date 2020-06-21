@@ -981,7 +981,7 @@ function mapStateToProps(state) {
         global: {isBrowserActive, slugs},
         session: {user},
         users: {onlineUsers},
-        chat: {selectedChannel, historicalPositions},
+        chat: {historicalPositions},
     } = state;
 
     return {
@@ -990,7 +990,6 @@ function mapStateToProps(state) {
         sharedSlugs: slugs,
         onlineUsers,
         isBrowserActive,
-        selectedChannel,
         historicalPositions,
     };
 }

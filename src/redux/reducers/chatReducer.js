@@ -157,7 +157,7 @@ export default function (state = INITIAL_STATE, action) {
                 ...action.data,
                 replies: [
                     ...state.channels[action.data.id].replies,
-                    ...action.data.replies,
+                    //...action.data.replies,
                 ],
             };
 

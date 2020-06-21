@@ -514,7 +514,7 @@ const CreateEditWorkspacePostModal = props => {
     }, [setAttachedFiles]);
 
     const [wsOptions, userOptions] = useGetWorkspaceAndUserOptions(form.selectedWorkspaces, activeTopic);
-    console.log(attachedFiles, uploadedFiles)
+    
     return (
 
         <Modal isOpen={modal} toggle={toggle} centered size={"md"} autoFocus={false}>

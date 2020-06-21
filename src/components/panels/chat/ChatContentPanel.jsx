@@ -111,7 +111,7 @@ const ChatContentPanel = (props) => {
             />
             <ChatHeaderPanel channel={selectedChannel}/>
             {selectedChannel !== null && unreadCount > 0 && <ChatUnreadFloatBar/>}
-            {selectedChannel !== null ? <ChatMessages chatMessageActions={chatMessageActions} /> :
+            {selectedChannel !== null ? <ChatMessages selectedChannel={selectedChannel} chatMessageActions={chatMessageActions} /> :
              <ChatMessagesPlaceholder/>}
             {/* <ChatMessagesPanel/> */}
             <ChatFooterPanel onShowFileDialog={handleOpenFileDialog} dropAction={dropAction}/>
