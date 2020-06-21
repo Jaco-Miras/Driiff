@@ -363,7 +363,7 @@ class SocketListeners extends PureComponent {
             })
             .listen(".updated-post-visitors", e => {
                 console.log(e, "comment post view");
-                this.props.updatePostCommentViewers(e);
+                //this.props.updatePostCommentViewers(e);
             })
             .listen(".move-private-topic-workspace", e => {
                 console.log(e, "move workspace private");
