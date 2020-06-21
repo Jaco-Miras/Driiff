@@ -223,6 +223,14 @@ export function incomingPost(payload, callback) {
     );
 }
 
+export function incomingUpdatedPost(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "INCOMING_UPDATED_POST",
+        payload,
+        callback,
+    );
+}
+
 export function incomingDeletedPost(payload, callback) {
     return SimpleDispatchActionToReducer(
         "INCOMING_DELETED_POST",
@@ -334,6 +342,14 @@ export function incomingPostViewer(payload, callback) {
 export function archiveReducer(payload, callback) {
     return SimpleDispatchActionToReducer(
         "ARCHIVE_REDUCER",
+        payload,
+        callback,
+    );
+}
+
+export function markReadUnreadReducer(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "MARK_READ_UNREAD_REDUCER",
         payload,
         callback,
     );

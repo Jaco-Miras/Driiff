@@ -137,6 +137,17 @@ export default (state = INITIAL_STATE, action) => {
                 posts: updatedPosts
             }
         }
+        case "MARK_READ_UNREAD_REDUCER": {
+            let newPosts = {...state.posts};
+            newPosts[action.data.post_id].is_unread = action.data.unread;
+            if (action.data.unread === 0) {
+                newPosts[action.data.post_id].unread_count = action.data.unread;
+            }
+            return {
+                ...state,
+                posts: newPosts
+            }
+        }
         default:
             return state;
     }

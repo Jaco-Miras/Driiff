@@ -673,6 +673,25 @@ export default (state = INITIAL_STATE, action) => {
             let newWorkspacePosts = {...state.workspacePosts};
             action.data.recipient_ids.forEach(id => {
                 if (newWorkspacePosts.hasOwnProperty(id)) {
+                    newWorkspacePosts[id].posts[action.data.id] = action.data;
+                    if (newWorkspacePosts[id].posts[action.data.id].is_must_read === 1) {
+                        newWorkspacePosts[id].count.is_must_read = newWorkspacePosts[id].count.is_must_read + 1;
+                    } else if (newWorkspacePosts[id].posts[action.data.id].is_must_reply === 1) {
+                        newWorkspacePosts[id].count.is_must_reply = newWorkspacePosts[id].count.is_must_reply + 1;
+                    } else if (newWorkspacePosts[id].posts[action.data.id].is_read_only === 1) {
+                        newWorkspacePosts[id].count.is_read_only = newWorkspacePosts[id].count.is_read_only + 1;
+                    }
+                }
+            })
+            return {
+                ...state,
+                workspacePosts: newWorkspacePosts
+            }
+        }
+        case "INCOMING_UPDATED_POST": {
+            let newWorkspacePosts = {...state.workspacePosts};
+            action.data.recipient_ids.forEach(id => {
+                if (newWorkspacePosts.hasOwnProperty(id)) {
                     newWorkspacePosts[id].posts[action.data.id] = action.data
                 }
             })
@@ -830,10 +849,10 @@ export default (state = INITIAL_STATE, action) => {
         case "INCOMING_POST_VIEWER": {
             if (Object.keys(state.workspacePosts).length > 0) {
                 let updatedWsPosts = {...state.workspacePosts};
-                Object.values(updatedWsPosts).forEach(ws => {
+                Object.keys(updatedWsPosts).forEach(ws => {
                     if (ws.hasOwnProperty("posts")) {
                         if (ws.posts.hasOwnProperty(action.data.post_id)) {
-                            updatedWsPosts.posts[action.data.post_id].view_user_ids = [...updatedWsPosts.posts[action.data.post_id].view_user_ids, action.data.viewer.id]
+                            updatedWsPosts[ws].posts[action.data.post_id].view_user_ids = [...updatedWsPosts[ws].posts[action.data.post_id].view_user_ids, action.data.viewer.id]
                         }
                     }
                 })
@@ -848,6 +867,17 @@ export default (state = INITIAL_STATE, action) => {
         case "ARCHIVE_REDUCER": {
             let newWorkspacePosts = {...state.workspacePosts};
             newWorkspacePosts[action.data.topic_id].posts[action.data.post_id].is_archived = action.data.is_archived;
+            return {
+                ...state,
+                workspacePosts: newWorkspacePosts
+            }
+        }
+        case "MARK_READ_UNREAD_REDUCER": {
+            let newWorkspacePosts = {...state.workspacePosts};
+            newWorkspacePosts[action.data.topic_id].posts[action.data.post_id].is_unread = action.data.unread;
+            if (action.data.unread === 0) {
+                newWorkspacePosts[action.data.topic_id].posts[action.data.post_id].unread_count = action.data.unread;
+            }
             return {
                 ...state,
                 workspacePosts: newWorkspacePosts

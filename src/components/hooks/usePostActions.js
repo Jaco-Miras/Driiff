@@ -11,7 +11,7 @@ import {
     postToggleRead, removePost, postUnfollow, deletePost,
     starPostReducer, markPostReducer, putPost, postCreate,
     postClap, fetchRecentPosts, fetchTagCounter, fetchPosts,
-    addToWorkspacePosts, postVisit, archiveReducer
+    addToWorkspacePosts, postVisit, archiveReducer, markReadUnreadReducer
 } from "../../redux/actions/postActions";
 
 const usePostActions = () => {
@@ -150,22 +150,38 @@ const usePostActions = () => {
     }, [dispatch, params, history]);
 
     const markAsRead = useCallback((post) => {
+        let payload = {
+            post_id: post.id,
+            unread: 0,
+            topic_id: params.workspaceId
+        };
+        let cb = (err,res) => {
+            if (err) return;
+            dispatch(
+                markReadUnreadReducer(payload)
+            );
+        };
         dispatch(
-            postToggleRead({
-                post_id: post.id,
-                unread: 0
-            })
-        )
-    }, [dispatch]);
+            postToggleRead(payload, cb)
+        );
+    }, [dispatch, params]);
 
     const markAsUnread = useCallback((post) => {
+        let payload = {
+            post_id: post.id,
+            unread: 1,
+            topic_id: params.workspaceId
+        };
+        let cb = (err,res) => {
+            if (err) return;
+            dispatch(
+                markReadUnreadReducer(payload)
+            );
+        };
         dispatch(
-            postToggleRead({
-                post_id: post.id,
-                unread: 1
-            })
-        )
-    }, [dispatch]);
+            postToggleRead(payload, cb)
+        );
+    }, [dispatch, params]);
 
     const sharePost = useCallback((post) => {
         let link = `${getBaseUrl()}${location.pathname}/post/${post.id}`;

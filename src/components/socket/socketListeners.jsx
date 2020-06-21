@@ -45,6 +45,7 @@ import {
     incomingCommentClap,
     incomingDeletedPost,
     incomingPostViewer,
+    incomingUpdatedPost
 } from "../../redux/actions/postActions";
 import {getOnlineUsers, getUser} from "../../redux/actions/userAction";
 import {
@@ -124,23 +125,24 @@ class SocketListeners extends PureComponent {
             console.log(e, "post-notif")
             switch (e.SOCKET_TYPE) {
                 case "POST_CREATE": {
-                    if (e.show_at !== null) {
-                        let show = e.show_at;
-                        show = show.split("-")
-                        show = {
-                            'year': show[0],
-                            'month': show[1],
-                            'date': show[2].substring(0,2)
-                        }
-                        let d = new Date();
-                        let currentDate = {
-                            'year': d.getFullYear(),
-                            'month': d.getMonth() + 1,
-                            'date': d.getDate()
-                        }
-                        if (moment(show).dayOfYear() <= moment(currentDate).dayOfYear()) {
-                            this.props.incomingPost(e);
-                        }
+                    if (e.show_at !== null && this.props.user.id === e.author.id) {
+                        this.props.incomingPost(e);
+                        // let show = e.show_at;
+                        // show = show.split("-")
+                        // show = {
+                        //     'year': show[0],
+                        //     'month': show[1],
+                        //     'date': show[2].substring(0,2)
+                        // }
+                        // let d = new Date();
+                        // let currentDate = {
+                        //     'year': d.getFullYear(),
+                        //     'month': d.getMonth() + 1,
+                        //     'date': d.getDate()
+                        // }
+                        // if (moment(show).dayOfYear() <= moment(currentDate).dayOfYear()) {
+                        //     this.props.incomingPost(e);
+                        // }
                     }  else {
                         this.props.incomingPost(e);
                     }
@@ -154,7 +156,7 @@ class SocketListeners extends PureComponent {
                     break;
                 }
                 case "POST_UPDATE": {
-                    this.props.incomingPost(e);
+                    this.props.incomingUpdatedPost(e);
                     break;
                 }
                 case "POST_DELETE": {
@@ -728,7 +730,8 @@ function mapDispatchToProps(dispatch) {
         incomingDeletedFile: bindActionCreators(incomingDeletedFile, dispatch),
         incomingMovedFile: bindActionCreators(incomingMovedFile, dispatch),
         incomingEmptyTrash: bindActionCreators(incomingEmptyTrash, dispatch),
-        incomingPostViewer: bindActionCreators(incomingPostViewer, dispatch)
+        incomingPostViewer: bindActionCreators(incomingPostViewer, dispatch),
+        incomingUpdatedPost: bindActionCreators(incomingUpdatedPost, dispatch),
     };
 }
 
