@@ -322,3 +322,11 @@ export function postVisit(payload, callback) {
         callback,
     );
 }
+
+export function incomingPostViewer(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "INCOMING_POST_VIEWER",
+        payload,
+        callback,
+    );
+}

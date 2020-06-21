@@ -176,6 +176,9 @@ const PostDetail = props => {
                 personalized_for_id: null
             });
         }
+        if (post.is_unread === 1 || post.unread_count > 0) {
+            postActions.markAsRead(post);
+        }
     }, []);
 
     return (

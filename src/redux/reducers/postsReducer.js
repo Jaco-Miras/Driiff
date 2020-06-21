@@ -3,6 +3,7 @@ import {convertArrayToObject} from "../../helpers/arrayHelper";
 const INITIAL_STATE = {
     user: null,
     posts: {},
+    drafts: [],
     totalPostsCount: 0,
     unreadPostsCount: 0,
     editPostComment: null,
@@ -86,6 +87,46 @@ export default (state = INITIAL_STATE, action) => {
                         }
                     }
                 }
+            }
+        }
+        case "ADD_TO_WORKSPACE_POSTS": {
+            let convertedPosts = convertArrayToObject(action.data.posts, "id");
+            let postDrafts = [];
+            if (state.drafts.length) {
+                state.drafts.forEach(d => {
+                    if (d.data.type === "draft_post" && action.data.topic_id === d.data.topic_id) {
+                        postDrafts.push({...d.data,...d.data.form, draft_id: d.id})
+                    }
+                })
+            }
+            if (postDrafts.length) {
+                postDrafts = convertArrayToObject(postDrafts, "id");
+            }
+            return {
+                ...state,
+                posts: {
+                    ...state.posts,
+                    ...convertedPosts,
+                    ...postDrafts,
+                },
+            }
+        }
+        case "GET_DRAFTS_SUCCESS": {
+            return {
+                ...state,
+                drafts: action.data
+            }
+        }
+        case "INCOMING_POST_VIEWER": {
+            if (state.posts.hasOwnProperty[action.data.post_id]) {
+                let updatedPosts = {...state.posts};
+                updatedPosts[action.data.post_id].view_user_ids = [...updatedPosts[action.data.post_id].view_user_ids, action.data.viewer.id]
+                return {
+                    ...state,
+                    posts: updatedPosts
+                }
+            } else {
+                return state
             }
         }
         default:

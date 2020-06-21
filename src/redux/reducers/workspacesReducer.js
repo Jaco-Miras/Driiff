@@ -420,12 +420,7 @@ export default (state = INITIAL_STATE, action) => {
                     workspacePosts: {
                         ...state.workspacePosts,
                         [action.data.topic_id]: {
-                            filter: null,
-                            sort: null,
-                            tag: null,
-                            search: null,
-                            searchResults: [],
-                            count: null,
+                            ...state.workspacePosts[action.data.topic_id],
                             posts: {
                                 ...state.workspacePosts[action.data.topic_id].posts,
                                 ...convertedPosts,
@@ -450,6 +445,7 @@ export default (state = INITIAL_STATE, action) => {
                                 ...convertedPosts,
                                 ...postDrafts,
                             },
+                            post_ids: [...action.data.posts.map(p => p.id), ...state.drafts.map(d => d.data.id)]
                         }
                     }
                 }
@@ -829,6 +825,24 @@ export default (state = INITIAL_STATE, action) => {
                         }
                     }
                 }
+            }
+        }
+        case "INCOMING_POST_VIEWER": {
+            if (Object.keys(state.workspacePosts).length > 0) {
+                let updatedWsPosts = {...state.workspacePosts};
+                Object.values(updatedWsPosts).forEach(ws => {
+                    if (ws.hasOwnProperty("posts")) {
+                        if (ws.posts.hasOwnProperty(action.data.post_id)) {
+                            updatedWsPosts.posts[action.data.post_id].view_user_ids = [...updatedWsPosts.posts[action.data.post_id].view_user_ids, action.data.viewer.id]
+                        }
+                    }
+                })
+                return {
+                    ...state,
+                    workspacePosts: updatedWsPosts
+                }
+            } else {
+                return state
             }
         }
         default:

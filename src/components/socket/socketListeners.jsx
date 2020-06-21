@@ -44,6 +44,7 @@ import {
     incomingComment,
     incomingCommentClap,
     incomingDeletedPost,
+    incomingPostViewer,
 } from "../../redux/actions/postActions";
 import {getOnlineUsers, getUser} from "../../redux/actions/userAction";
 import {
@@ -334,34 +335,17 @@ class SocketListeners extends PureComponent {
                 console.log(e, 'post view');
                 let payload = {
                     post_id: e.post_id,
-                    viewers: [e.user.id],
+                    viewer: e.user,
                 };
-                this.props.updatePostViewersAction(payload);
+                this.props.incomingPostViewer(payload);
             })
             .listen(".updated-post-visitors", e => {
                 console.log(e, "comment post view");
                 this.props.updatePostCommentViewers(e);
             })
-            
-            // .listen(".reply-updated", e => {
-            //     console.log(e, "reply updated");
-            //     if (e.message.invited_recipient_ids.length) {
-            //         this.props.getPostAction({
-            //             post_id: e.message.post_id,
-            //             personal_for_id: e.message.personalized_for_id,
-            //         });
-            //     }
-            //     this.props.incomingUpdatedReplyAction(e.message);
-            // })
             .listen(".move-private-topic-workspace", e => {
                 console.log(e, "move workspace private");
                 this.props.incomingMovedTopic(e);
-            })
-            .listen(".new-private-topic", e => {
-                this.props.incomingCreatedTopic(e);
-            })
-            .listen(".update-private-topic", e => {
-                this.props.incomingUpdatedTopic(e);
             })
             .listen(".new-member", e => {
                 console.log(e, "join member");
@@ -645,18 +629,6 @@ class SocketListeners extends PureComponent {
                     });
                 }
             })
-            // .listen(".delete-chat-notification", e => {
-            //     console.log(e);
-            //     let payload = {
-            //         channel_id: e.channel_id,
-            //         message_id: e.id,
-            //     };
-            //     this.props.incomingDeletedChatMessage(payload);
-            //     this.props.deleteFilesFromChannelAction({
-            //         channel_id: e.channel_id,
-            //         file_ids: e.file_ids,
-            //     });
-            // })
             .listen(".chat-message-react", e => {
                 console.log(e);
                 this.props.incomingChatMessageReaction({...e, user_name: e.name});
@@ -735,7 +707,8 @@ function mapDispatchToProps(dispatch) {
         incomingFiles: bindActionCreators(incomingFiles, dispatch),
         incomingDeletedFile: bindActionCreators(incomingDeletedFile, dispatch),
         incomingMovedFile: bindActionCreators(incomingMovedFile, dispatch),
-        incomingEmptyTrash: bindActionCreators(incomingEmptyTrash, dispatch)
+        incomingEmptyTrash: bindActionCreators(incomingEmptyTrash, dispatch),
+        incomingPostViewer: bindActionCreators(incomingPostViewer, dispatch)
     };
 }
 

@@ -88,7 +88,7 @@ const RecentPosts = (props) => {
         if (match.params.hasOwnProperty("workspaceId")) {
             postActions.getRecentPosts(match.params.workspaceId)
         }
-    }, []);
+    }, [match.params.workspaceId]);
 
     return (
         <Wrapper className={`recent-posts card ${className}`}>

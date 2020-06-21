@@ -1,4 +1,4 @@
-import React, {useCallback} from "react";
+import React, {useCallback, useEffect} from "react";
 import {useSelector} from "react-redux";
 import {useParams, useHistory} from "react-router-dom";
 import styled from "styled-components";
@@ -66,6 +66,12 @@ const WorkspacePostsPanel = (props) => {
             history.push(pathname);
         }
     }, [params, history]);
+
+    useEffect(() => {
+        if (params.hasOwnProperty("workspaceId")) {
+            actions.getRecentPosts(params.workspaceId)
+        }
+    }, [params.workspaceId]);
 
     if (posts === null)
         return <></>;

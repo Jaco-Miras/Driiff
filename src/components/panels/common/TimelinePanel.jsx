@@ -13,7 +13,7 @@ const TimelinePanel = (props) => {
         if (params.hasOwnProperty("workspaceId")) {
             actions.getTimeline(params.workspaceId);
         }
-    }, []);
+    }, [params.workspaceId]);
 
     return (
         <Wrapper className={`timeline-panel card ${className}`}>
