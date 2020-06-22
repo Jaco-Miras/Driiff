@@ -120,6 +120,7 @@ class SocketListeners extends PureComponent {
         })
         .listen(".upload-bulk-private-workspace-files", e => {
             console.log(e, 'files bulk')
+            this.props.incomingFiles(e);
         })
         .listen(".post-notification", e => {
             console.log(e, "post-notif")
