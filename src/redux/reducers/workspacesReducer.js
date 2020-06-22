@@ -850,8 +850,8 @@ export default (state = INITIAL_STATE, action) => {
             if (Object.keys(state.workspacePosts).length > 0) {
                 let updatedWsPosts = {...state.workspacePosts};
                 Object.keys(updatedWsPosts).forEach(ws => {
-                    if (ws.hasOwnProperty("posts")) {
-                        if (ws.posts.hasOwnProperty(action.data.post_id)) {
+                    if (updatedWsPosts[ws].hasOwnProperty("posts")) {
+                        if (updatedWsPosts[ws].posts.hasOwnProperty(action.data.post_id)) {
                             updatedWsPosts[ws].posts[action.data.post_id].view_user_ids = [...updatedWsPosts[ws].posts[action.data.post_id].view_user_ids, action.data.viewer.id]
                         }
                     }
