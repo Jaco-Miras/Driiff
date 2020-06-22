@@ -141,7 +141,12 @@ const CreateEditChatModal = props => {
                 add_member_ids: added_members,
                 message_body: `CHANNEL_UPDATE::${
                     JSON.stringify({
-                        author: user.id,
+                        author: {
+                            id: user.id,
+                            name: user.name,
+                            partial_name: user.partial_name,
+                            profile_image_link: user.profile_image_link,
+                        },
                         title: channel.title === inputValue ? "" : inputValue,
                         added_members: added_members,
                         removed_members: removed_members,

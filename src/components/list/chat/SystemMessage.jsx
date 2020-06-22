@@ -3,6 +3,7 @@ import {renderToString} from "react-dom/server";
 import {useSelector} from "react-redux";
 import styled from "styled-components";
 import {localizeDate} from "../../../helpers/momentFormatJS";
+import {SvgIconFeather} from "../../common";
 
 const SystemMessageContainer = styled.span`
     display: block;
@@ -22,13 +23,15 @@ const ChatTimeStamp = styled.div`
     height: 100%;
     align-items: center;
     white-space: nowrap;
-    ${'' /* display: none; */}
+    ${"" /* display: none; */}
 `;
 
 const SystemMessage = forwardRef((props, ref) => {
 
     const {reply, selectedChannel, chatName} = props;
     const [body, setBody] = useState(reply.body);
+
+    const user = useSelector(state => state.session.user);
     const recipients = useSelector(state => state.global.recipients.filter(r => r.type === "USER"));
 
     useEffect(() => {
@@ -72,21 +75,91 @@ const SystemMessage = forwardRef((props, ref) => {
         } else if (reply.body.includes("CHANNEL_UPDATE::")) {
             const data = JSON.parse(reply.body.replace("CHANNEL_UPDATE::", ""));
 
-            let newBody = "";
-            if (data.title !== "") {
-                newBody = <>{newBody}Channel is renamed to <b>#{data.title}</b><br/></>;
+            let author = recipients.find(r => r.type_id === data.author.id);
+            if (author) {
+                if (data.author.id === user.id) {
+                    author.name = "You";
+                }
+            } else {
+                author = {
+                    name: "Someone",
+                };
             }
 
-            if (data.added_members.length >= 1) {
-                const am = recipients.filter(r => data.added_members.includes(r.type_id))
+            let newBody = "";
+            if (data.title !== "") {
+                newBody = <><SvgIconFeather width={16} icon="edit-3"/> {author.name} renamed this chat
+                    to <b>#{data.title}</b><br/></>;
+            }
+
+            if (data.added_members.includes(user.id) && data.added_members.length >= 1) {
+                const am = recipients.filter(r => data.added_members.includes(r.type_id) && r.type_id !== user.id)
                     .map(r => r.name);
-                newBody = <>{newBody}{am.join(", ")} is added.<br/></>;
+
+                if (data.author.id === user.id) {
+                    if (newBody === "") {
+                        newBody = <><b>{author.name}</b> joined </>;
+                    } else {
+                        newBody = <>{newBody} and joined</>;
+                    }
+
+                    if (am.length !== 0) {
+                        newBody = <>{newBody} and added <b>{am.join(", ")}</b><br/></>;
+                    }
+                } else {
+                    if (newBody === "") {
+                        newBody = <>{author.name} added </>;
+                    } else {
+                        newBody = <>{newBody} and added</>;
+                    }
+
+                    if (data.added_members.includes(user.id)) {
+                        if (am.length !== 0) {
+                            newBody = <>{newBody} <b>You and </b></>;
+                        } else {
+                            newBody = <>{newBody} <b>You</b></>;
+                        }
+                    }
+
+                    if (am.length !== 0) {
+                        newBody = <>{newBody} <b>{am.join(", ")}</b><br/></>;
+                    }
+                }
             }
 
             if (data.removed_members.length >= 1) {
-                const rm = recipients.filter(r => data.removed_members.includes(r.type_id))
+                const rm = recipients.filter(r => data.removed_members.includes(r.type_id) && r.type_id !== user.id)
                     .map(r => r.name);
-                newBody = <>{newBody}{rm.join(", ")} is removed.<br/></>;
+
+                if (data.removed_members.includes(user.id) && data.author.id === user.id) {
+                    if (newBody === "") {
+                        newBody = <><b>{author.name}</b> left </>;
+                    } else {
+                        newBody = <>{newBody} and left</>;
+                    }
+
+                    if (rm.length !== 0) {
+                        newBody = <>{newBody} and removed <b>{rm.join(", ")}</b><br/></>;
+                    }
+                } else {
+                    if (newBody === "") {
+                        newBody = <>{author.name} removed </>;
+                    } else {
+                        newBody = <>{newBody} and removed</>;
+                    }
+
+                    if (data.removed_members.includes(user.id)) {
+                        if (rm.length !== 0) {
+                            newBody = <>{newBody} <b>You and </b></>;
+                        } else {
+                            newBody = <>{newBody} <b>You</b></>;
+                        }
+                    }
+
+                    if (rm.length !== 0) {
+                        newBody = <>{newBody} <b>{rm.join(", ")}</b><br/></>;
+                    }
+                }
             }
 
             setBody(renderToString(newBody));
@@ -136,21 +209,91 @@ const SystemMessage = forwardRef((props, ref) => {
         } else if (reply.body.includes("CHANNEL_UPDATE::")) {
             const data = JSON.parse(reply.body.replace("CHANNEL_UPDATE::", ""));
 
+            let author = recipients.find(r => r.type_id === data.author.id);
+            if (author) {
+                if (data.author.id === user.id) {
+                    author.name = "You";
+                }
+            } else {
+                author = {
+                    name: "Someone",
+                };
+            }
+
             let newBody = "";
             if (data.title !== "") {
-                newBody = <>{newBody}Channel is renamed to <b>#{data.title}</b><br/></>;
+                newBody = <><SvgIconFeather width={16} icon="edit-3"/> {author.name} renamed this chat
+                    to <b>#{data.title}</b><br/></>;
             }
 
             if (data.added_members.length >= 1) {
-                const am = recipients.filter(r => data.added_members.includes(r.type_id))
+                const am = recipients.filter(r => data.added_members.includes(r.type_id) && r.type_id !== user.id)
                     .map(r => r.name);
-                newBody = <>{newBody}{am.join(", ")} is added.<br/></>;
+
+                if (data.added_members.includes(user.id) && data.author.id === user.id) {
+                    if (newBody === "") {
+                        newBody = <><b>{author.name}</b> joined </>;
+                    } else {
+                        newBody = <>{newBody} and joined</>;
+                    }
+
+                    if (am.length !== 0) {
+                        newBody = <>{newBody} and added <b>{am.join(", ")}</b><br/></>;
+                    }
+                } else {
+                    if (newBody === "") {
+                        newBody = <>{author.name} added </>;
+                    } else {
+                        newBody = <>{newBody} and added</>;
+                    }
+
+                    if (data.added_members.includes(user.id)) {
+                        if (am.length !== 0) {
+                            newBody = <>{newBody} <b>You and </b></>;
+                        } else {
+                            newBody = <>{newBody} <b>You</b></>;
+                        }
+                    }
+
+                    if (am.length !== 0) {
+                        newBody = <>{newBody} <b>{am.join(", ")}</b><br/></>;
+                    }
+                }
             }
 
             if (data.removed_members.length >= 1) {
-                const rm = recipients.filter(r => data.removed_members.includes(r.type_id))
+                const rm = recipients.filter(r => data.removed_members.includes(r.type_id) && r.type_id !== user.id)
                     .map(r => r.name);
-                newBody = <>{newBody}{rm.join(", ")} is removed.<br/></>;
+
+                if (data.removed_members.includes(user.id) && data.author.id === user.id) {
+                    if (newBody === "") {
+                        newBody = <><b>{author.name}</b> left </>;
+                    } else {
+                        newBody = <>{newBody} and left</>;
+                    }
+
+                    if (rm.length !== 0) {
+                        newBody = <>{newBody} and removed <b>{rm.join(", ")}</b><br/></>;
+                    }
+                } else {
+                    if (newBody === "") {
+                        newBody = <>{author.name} removed </>;
+                    } else {
+                        newBody = <>{newBody} and removed</>;
+                    }
+
+                    if (data.removed_members.includes(user.id)) {
+                        if (rm.length !== 0) {
+                            newBody = <>{newBody} <b>You and </b></>;
+                        } else {
+                            newBody = <>{newBody} <b>You</b></>;
+                        }
+                    }
+
+                    if (rm.length !== 0) {
+                        newBody = <>{newBody} <b>{rm.join(", ")}</b><br/></>;
+                    }
+                }
             }
 
             setBody(renderToString(newBody));
