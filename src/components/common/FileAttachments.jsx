@@ -1,5 +1,6 @@
 import React, {useRef, useState} from "react";
 import {useDispatch} from "react-redux";
+import {useParams} from "react-router-dom";
 import styled from "styled-components";
 import {useOutsideClick, useTooltipOrientation} from "../hooks";
 import {SvgIconFeather} from "./index";
@@ -118,6 +119,7 @@ const FileAttachments = props => {
 
     const {className = "", attachedFiles, handleRemoveFile, scrollRef = null, type = "modal", workspace = null} = props;
     const dispatch = useDispatch();
+    const params = useParams();
     const [filePreview, setFilePreview] = useState(null);
 
     const refs = {
@@ -135,17 +137,32 @@ const FileAttachments = props => {
                     controls playsInline autoPlay={false}
                     src={f.src}/>;
             default:
-                switch (f.rawFile.type) {
-                    case "application/x-zip-compressed":
-                        return <i className="fa fa-file-zip-o text-primary"/>;
-                    case "application/pdf":
-                        return <i className="fa fa-file-pdf-o text-danger"/>;
-                    case "text/plain":
-                        return <i className="fa fa-file-text-o text-warning"/>;
-                    case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
-                        return <i className="fa fa-file-excel-o text-success"/>;
-                    default:
-                        return <i className="fa fa-file text-warning"/>;
+                if (f.rawFile) {
+                    switch (f.rawFile.type) {
+                        case "application/x-zip-compressed":
+                            return <i className="fa fa-file-zip-o text-primary"/>;
+                        case "application/pdf":
+                            return <i className="fa fa-file-pdf-o text-danger"/>;
+                        case "text/plain":
+                            return <i className="fa fa-file-text-o text-warning"/>;
+                        case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
+                            return <i className="fa fa-file-excel-o text-success"/>;
+                        default:
+                            return <i className="fa fa-file text-warning"/>;
+                    }
+                } else {
+                    switch (f.type) {
+                        case "application/x-zip-compressed":
+                            return <i className="fa fa-file-zip-o text-primary"/>;
+                        case "application/pdf":
+                            return <i className="fa fa-file-pdf-o text-danger"/>;
+                        case "text/plain":
+                            return <i className="fa fa-file-text-o text-warning"/>;
+                        case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
+                            return <i className="fa fa-file-excel-o text-success"/>;
+                        default:
+                            return <i className="fa fa-file text-warning"/>;
+                    }
                 }
         }
     };
@@ -162,9 +179,9 @@ const FileAttachments = props => {
                 });
             }
         } else {
-            if (workspace) {
+            if (params.hasOwnProperty("workspaceId")) {
                 let payload = {
-                    workspace_id: workspace.id,
+                    workspace_id: params.workspaceId,
                     file_id: attachedFiles[index].id,
                 };
                 dispatch(
