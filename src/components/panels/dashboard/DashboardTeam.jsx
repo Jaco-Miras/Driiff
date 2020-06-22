@@ -29,15 +29,10 @@ const Wrapper = styled.div`
                 left: 100%;
             }
         }
-        &:hover {
-            .more-options {
-                visibility: visible;
-
-            }
-        }
 
         .more-options {
-            visibility: hidden;
+            visibility: visible;
+            display: flex;
         }
     }
 
