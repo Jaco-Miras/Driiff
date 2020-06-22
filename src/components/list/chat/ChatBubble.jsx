@@ -937,7 +937,7 @@ const ChatBubble = (props) => {
                                 hasFiles={hasFiles}
                                 theme={chatSettings.chat_message_theme}
                                 isAuthor={isAuthor}
-                                className={`reply-content miauw ${isEmoticonOnly ? "emoticon-body" : ""} ${reply.is_deleted ? "is-deleted" : ""}`}
+                                className={`reply-content ${isEmoticonOnly ? "emoticon-body" : ""} ${reply.is_deleted ? "is-deleted" : ""}`}
                                 dangerouslySetInnerHTML={showGifPlayer ? {__html: stripGif(replyBody)} : {__html: replyBody}}
                             />
                         }
