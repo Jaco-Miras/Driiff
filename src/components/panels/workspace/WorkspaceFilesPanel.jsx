@@ -147,7 +147,7 @@ const WorkspaceFilesPanel = (props) => {
                 <FilesSidebar
                     dropZoneRef={refs.dropZone} className="col-md-3" filterFile={handleFilterFile}
                     filter={filter} wsFiles={wsFiles}/>
-                <div className="col-md-9 app-content">
+                <div className="col-md-9 app-content mb-4">
                     <div className="app-content-overlay"/>
                     <FilesHeader dropZoneRef={refs.dropZone} history={history} params={params}
                                  onSearch={handleSearch} onSearchChange={handleSearchChange} onEnter={handleEnter}

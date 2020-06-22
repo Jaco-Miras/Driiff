@@ -6,14 +6,18 @@ const Wrapper = styled.div`
     position: relative;
 
     .dropdown-toggle {
+        color: #212529 !important;
         &:after {
             margin-left: 10px;
         }
 
         &.show {
-            color: #fff;
             background: #afb8bd;
             border-color: #afb8bd;
+            box-shadow: 0 0 0 0.2rem rgba(175,184,189,.4);
+        }
+        &:focus {
+            box-shadow: 0 0 0 0.2rem rgba(175,184,189,.4);
         }
     }
     .dropdown-item {

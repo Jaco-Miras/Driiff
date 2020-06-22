@@ -10,6 +10,7 @@ import {useCommentActions, useComments} from "../../hooks";
 import {PostBody, PostComments, PostDetailFooter} from "./index";
 
 const MainHeader = styled.div`
+    min-height: 70px;
     > div {
         display: flex;
         justify-content: center;
@@ -18,7 +19,7 @@ const MainHeader = styled.div`
     ul {
         display: flex;
         flex-direction: row;
-        align-items: center;        
+        align-items: center;
         margin: 0;
         padding: 0;
         ${'' /* height: 33px; */}
@@ -59,7 +60,7 @@ const Counters = styled.div`
 const PostFiles = styled(FileAttachments)`
     li {
         display: inline-block;
-        
+
         &:not(:first-child) {
             margin-left: 0.5rem;
         }

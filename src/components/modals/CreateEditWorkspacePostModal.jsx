@@ -30,20 +30,39 @@ const WrapperDiv = styled(InputGroup)`
     .react-select__multi-value__label {
         align-self: center;
     }
-    
+
     &.more-option {
         margin-left: 130px;
         width: 100%;
         margin-right: -130px;
     }
-    &.schedule-post {    
-        margin-left: 130px;
+    &.schedule-post {
+        ${'' /* margin-left: 130px; */}
         width: 100%;
-        margin-right: -130px;
-        
-        .react-date-picker__wrapper {            
-            border: thin solid hsl(0,0%,80%);
+        ${'' /* margin-right: -130px; */}
+        label {
+            margin: 0 20px 0 0;
+        }
+        .feather {
+            color: #c7ced6;
+        }
+        .react-date-picker__wrapper {
+            border: thin solid #c8ced5;
             border-radius: 4px;
+            color: #c7ced6;
+            .react-date-picker__inputGroup {
+                padding: 0 6px;
+            }
+        }
+        #placeholder {
+            color: #c7ced6;
+        }
+        input {
+            color: #505050;
+            &::-webkit-input-placeholder {
+                color: #c7ced6;
+            }
+
         }
     }
     &.file-attachment-wrapper {
@@ -54,12 +73,12 @@ const WrapperDiv = styled(InputGroup)`
         position: relative;
         max-width: 100%;
         margin-left: 128px;
-        
+
         ul {
             margin-right: 128px;
             margin-bottom: 0;
-            
-            li {                
+
+            li {
                 white-space: nowrap;
                 text-overflow: ellipsis;
                 overflow: hidden;
@@ -79,23 +98,24 @@ const SelectPeople = styled(PeopleSelect)`
 `;
 
 const CheckBoxGroup = styled.div`
-    display: flex;    
-    overflow: hidden;    
+    ${'' /* display: flex; */}
+    overflow: hidden;
     transition: all .3s ease;
     width: 100%;
-    
+
     &.enter-active {
-        max-height: ${props => props.maxHeight}px;        
+        max-height: ${props => props.maxHeight}px;
+        overflow: visible;
     }
 
     &.leave-active {
         max-height: 0px;
     }
-    
+
     label {
         min-width: auto;
         font-size: 12.6px;
-    
+
         &:hover {
             color: #972c86;
         }
@@ -106,21 +126,21 @@ const MoreOption = styled.div`
     cursor: pointer;
     cursor: hand;
     margin-bottom: 5px;
-    
+
     &:hover {
         color: #972c86;
     }
-    
+
     svg {
         transition: all 0.3s;
         width: 15px;
         margin-left: 5px;
-        
+
         &.ti-plus {
             transform: rotate(-540deg);
         }
-        &.rotate-in {            
-            transform: rotate(0deg);        
+        &.rotate-in {
+            transform: rotate(0deg);
         }
     }
 `;
@@ -162,7 +182,7 @@ const CreateEditWorkspacePostModal = props => {
         dropzone: useRef(null),
         arrow: useRef(null),
     };
-   
+
     const [nestedModal, setNestedModal] = useState(false);
     const [closeAll, setCloseAll] = useState(false);
 
@@ -442,7 +462,7 @@ const CreateEditWorkspacePostModal = props => {
     const dropAction = (acceptedFiles) => {
 
         let selectedFiles = [];
-        
+
         acceptedFiles.forEach(file => {
             var bodyFormData = new FormData();
             bodyFormData.append("file", file);
@@ -514,7 +534,7 @@ const CreateEditWorkspacePostModal = props => {
     }, [setAttachedFiles]);
 
     const [wsOptions, userOptions] = useGetWorkspaceAndUserOptions(form.selectedWorkspaces, activeTopic);
-    
+
     return (
 
         <Modal isOpen={modal} toggle={toggle} centered size={"md"} autoFocus={false}>
@@ -597,29 +617,36 @@ const CreateEditWorkspacePostModal = props => {
 
                     <CheckBoxGroup ref={formRef.more_options} maxHeight={maxHeight}
                                    className={showMoreOptions === null ? "" : showMoreOptions ? "enter-active" : "leave-active"}>
-                        <CheckBox name="must_read" checked={form.must_read} onClick={toggleCheck} type="danger">Must
-                            read</CheckBox>
-                        <CheckBox name="reply_required" checked={form.reply_required} onClick={toggleCheck}
-                                  type="warning">Reply required</CheckBox>
-                        <CheckBox name="no_reply" checked={form.no_reply} onClick={toggleCheck} type="info">No
-                            replies</CheckBox>
+                        <div class="d-flex">
+                            <CheckBox name="must_read" checked={form.must_read} onClick={toggleCheck} type="danger">Must
+                                read</CheckBox>
+                            <CheckBox name="reply_required" checked={form.reply_required} onClick={toggleCheck}
+                                    type="warning">Reply required</CheckBox>
+                            <CheckBox name="no_reply" checked={form.no_reply} onClick={toggleCheck} type="info">No
+                                replies</CheckBox>
+                        </div>
+
+                        <WrapperDiv className="schedule-post">
+                                <Label>Schedule post</Label>
+                                <SvgIconFeather className="mr-2" width={18} icon="calendar"/>
+                                <StyledDatePicker
+                                    className="mr-2 start-date"
+                                    onChange={handleSelectStartDate}
+                                    value={form.show_at}
+                                    minDate={new Date(new Date().setDate(new Date().getDate() + 1))}
+                                />
+                                <StyledDatePicker
+                                    className="end-date"
+                                    onChange={handleSelectEndDate}
+                                    value={form.end_at}
+                                    minDate={new Date(new Date().setDate(new Date().getDate() + 1))}
+                                />
+                        </WrapperDiv>
+
                     </CheckBoxGroup>
-                </WrapperDiv>
-                <WrapperDiv className="schedule-post">
-                    <Label>Schedule post</Label>
-                    <SvgIconFeather className="mr-2" width={18} icon="calendar"/>
-                    <StyledDatePicker
-                        className="mr-2 start-date"
-                        onChange={handleSelectStartDate}
-                        value={form.show_at}
-                        minDate={new Date(new Date().setDate(new Date().getDate() + 1))}
-                    />
-                    <StyledDatePicker
-                        className="end-date"
-                        onChange={handleSelectEndDate}
-                        value={form.end_at}
-                        minDate={new Date(new Date().setDate(new Date().getDate() + 1))}
-                    />
+
+
+
                 </WrapperDiv>
                 <WrapperDiv>
                     <button
