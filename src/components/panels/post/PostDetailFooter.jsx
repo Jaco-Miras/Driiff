@@ -93,12 +93,11 @@ const Dflex = styled.div`
 
 const NoReply = styled.div`
     width: 100%;
-    
-    h4 {
-        width: calc(100% - 45px);
-        background-color: #f6f6f6;
-        border-radius: 0.5rem;
-        padding: 1rem;
+
+    .alert {
+        width: 100%;
+        margin-bottom: 0;
+        text-align: center;
     }
 `;
 
@@ -189,10 +188,7 @@ const PostDetailFooter = (props) => {
                     {
                         post.is_read_only === 1 ?
                         <NoReply className="d-flex align-items-center">
-                            <div>
-                                <Avatar className="mr-2" name={user.name} imageLink={user.profile_image_link}/>
-                            </div>
-                            <h4>No reply allowed</h4>
+                            <div class="alert alert-warning">No reply allowed</div>
                         </NoReply>
                                                 :
                         <React.Fragment>

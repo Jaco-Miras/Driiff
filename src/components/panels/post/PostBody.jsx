@@ -52,7 +52,7 @@ const PostBody = props => {
                         <AvatarGroup users={post.users_responsible}/>
                     }
                 </div>
-                <div className="ml-auto d-flex align-items-center">
+                <div className="ml-auto d-flex align-items-center text-muted">
                     {
                         // !isAuthor && post.is_read_requirement &&
                         // <MarkAsReadBtn onClick={markRead}>Mark as read</MarkAsReadBtn>
