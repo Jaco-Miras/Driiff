@@ -325,6 +325,11 @@ const CreateEditWorkspaceModal = (props) => {
             };
             const cb = (err,res) => {
                 if (err) return;
+                if (form.selectedFolder) {
+                    history.push(`/workspace/dashboard/${form.selectedFolder.value}/${replaceChar(form.selectedFolder.label)}/${res.data.id}/${replaceChar(form.name)}`);
+                } else {
+                    history.push(`/workspace/dashboard/${res.data.id}/${replaceChar(form.name)}`);
+                }
                 dispatch(
                     fetchTimeline({topic_id: item.id})
                 );
