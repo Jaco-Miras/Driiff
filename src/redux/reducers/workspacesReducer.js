@@ -101,6 +101,7 @@ export default (state = INITIAL_STATE, action) => {
                         [action.data.id]: {
                             ...action.data,
                             name: action.data.topic.name,
+                            description: action.data.topic.description,
                             selected: false,
                             topic_detail: {
                                 ...action.data.topic,
@@ -751,7 +752,11 @@ export default (state = INITIAL_STATE, action) => {
         case "UPLOADING_WORKSPACE_FILES_SUCCESS": {
             let newWorkspaces = {...state.workspaces};
             if (action.data.workspace_id) {
-                newWorkspaces[action.data.workspace_id].topics[action.data.topic_id].primary_files = action.data.files;
+                if (newWorkspaces[action.data.workspace_id].topics[action.data.topic_id].hasOwnProperty("primary_files")) {
+                    newWorkspaces[action.data.workspace_id].topics[action.data.topic_id].primary_files = [...newWorkspaces[action.data.workspace_id].topics[action.data.topic_id].primary_files, ...action.data.files];
+                } else {
+                    newWorkspaces[action.data.workspace_id].topics[action.data.topic_id].primary_files = action.data.files;
+                }
             } else {
                 newWorkspaces[action.data.topic_id].primary_files = action.data.files;
             }
@@ -761,7 +766,7 @@ export default (state = INITIAL_STATE, action) => {
                 activeTopic: state.activeTopic.id === action.data.topic_id ? 
                     {
                         ...state.activeTopic,
-                        primary_files: action.data.files
+                        primary_files: state.activeTopic.hasOwnProperty("primary_files") ? [...state.activeTopic.primary_files, ...action.data.files] : action.data.files
                     }
                     : state.activeTopic
             }

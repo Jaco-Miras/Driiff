@@ -225,7 +225,7 @@ const FileAttachments = props => {
                         return <li
                             data-target-index={i} key={i}
                             onClick={handleClick}
-                            title={f.name}><AttachmentIcon icon="paperclip"/>{f.name}
+                            title={f.search ? f.search : f.name}><AttachmentIcon icon="paperclip"/>{f.search ? f.search : f.name}
                             <SvgIconFeather
                                 data-file-id={f.id}
                                 onClick={handleDelete} icon="trash-2"/>

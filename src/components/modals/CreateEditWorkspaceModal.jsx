@@ -123,6 +123,7 @@ const CreateEditWorkspaceModal = (props) => {
     });
     const [showDropzone, setShowDropzone] = useState(false);
     const [attachedFiles, setAttachedFiles] = useState([]);
+    const [uploadedFiles, setUploadedFiles] = useState([]);
     const [loading, setLoading] = useState(false);
     const [valid, setValid] = useState({
         name: null,
@@ -318,6 +319,20 @@ const CreateEditWorkspaceModal = (props) => {
             };
             const cb = (err,res) => {
                 if (err) return;
+                if (attachedFiles.length) {
+                    let formData = new FormData();
+                    for (const i in attachedFiles) {
+                        formData.append("files[" + i + "]", attachedFiles[i].rawFile);
+                    }
+
+                    dispatch(
+                        setPendingUploadFilesToWorkspace({
+                            is_primary: 1,
+                            topic_id: res.data.id,
+                            files: formData,
+                        }),
+                    );
+                }
                 if (form.selectedFolder) {
                     history.push(`/workspace/dashboard/${form.selectedFolder.value}/${replaceChar(form.selectedFolder.label)}/${res.data.id}/${replaceChar(form.name)}`);
                 } else {
@@ -485,6 +500,9 @@ const CreateEditWorkspaceModal = (props) => {
                 folder: true,
                 team: true,
             });
+            if (item.hasOwnProperty("primary_files")) {
+                setUploadedFiles(item.primary_files);
+            }
         } else {
             setForm(prevState => ({
                 ...prevState,
@@ -592,9 +610,9 @@ const CreateEditWorkspaceModal = (props) => {
                     mode={mode}
                 />
                 {
-                    attachedFiles.length > 0 &&
+                    (attachedFiles.length > 0 || uploadedFiles.length > 0) &&
                     <WrapperDiv className="file-attachment-wrapper">
-                        <FileAttachments attachedFiles={attachedFiles} handleRemoveFile={handleRemoveFile}/>
+                        <FileAttachments attachedFiles={[...attachedFiles, ...uploadedFiles]} handleRemoveFile={handleRemoveFile}/>
                     </WrapperDiv>
                 }
                 <WrapperDiv className="action-wrapper">
