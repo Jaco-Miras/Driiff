@@ -20,6 +20,8 @@ const Navbar = styled.ul`
             text-align: right;
         }
     }
+    .badge {
+    }
 `;
 
 const MainNavLink = styled(NavLink)`
@@ -28,6 +30,8 @@ const MainNavLink = styled(NavLink)`
     color: #5d5d5d;
     margin: 0 0.2rem;
     transition: color 200ms ease 0ms;
+    display: inline-flex;
+    align-items: center;
     &.active {
         transition: none;
         background-color: #7a1b8b;
@@ -62,9 +66,9 @@ const WorkspacePageHeaderPanel = (props) => {
                             <MainNavLink isSub={true} to={`/workspace/posts${pathname}`}>
                                 Posts
                                 {
-                                    workspace !== null && 
+                                    workspace !== null &&
                                     (
-                                        (workspace.type === "TOPIC" && workspace.unread_posts !== 0) || 
+                                        (workspace.type === "TOPIC" && workspace.unread_posts !== 0) ||
                                         (workspace.type === "WORKSPACE" && workspace.topic_detail.unread_posts !== 0)
                                     ) &&
                                     <div className="ml-2 badge badge-danger">
@@ -77,9 +81,9 @@ const WorkspacePageHeaderPanel = (props) => {
                             <MainNavLink isSub={true} to={`/workspace/chat${pathname}`}>
                                 Chat
                                 {
-                                    workspace !== null && 
+                                    workspace !== null &&
                                     (
-                                        (workspace.type === "TOPIC" && workspace.unread_chats !== 0) || 
+                                        (workspace.type === "TOPIC" && workspace.unread_chats !== 0) ||
                                         (workspace.type === "WORKSPACE" && workspace.topic_detail.unread_chats !== 0)
                                     ) &&
                                     <div className="ml-2 badge badge-danger">

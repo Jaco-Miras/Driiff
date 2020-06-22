@@ -12,13 +12,15 @@ const Wrapper = styled.div`
         position: relative;
 
         .badge {
-            position: relative;
-            width: 8px;
-            height: 8px;
+            position: absolute;
+            width: 6px;
+            height: 6px;
             padding: 0;
-            top: -8px;
-            right: 0px;
-            background: #f44;
+            ${'' /* top: -8px; */}
+            background: rgba(255, 68, 68, 0.8);
+            right: 22px;
+            top: 16px;
+            z-index: 9;
         }
     }
 `;
