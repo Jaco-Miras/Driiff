@@ -16,6 +16,7 @@ const Wrapper = styled.li`
     position: relative;
 
     > a {
+        position: relative;
         font-weight: ${props => props.selected ? "bold" : "normal"};
         color: ${props => props.selected ? "#7a1b8b !important" : "#64625C"};
         .badge {
@@ -48,6 +49,13 @@ const Wrapper = styled.li`
             }
         }
     }
+`;
+
+const LockIcon = styled(SvgIconFeather)`
+    position: absolute;
+    width: 12px;
+    left: 12px;
+    top: 8px;
 `;
 
 const TopicNav = styled.ul`
@@ -143,7 +151,12 @@ const WorkspaceList = props => {
                  selected={workspace.selected}
                  show={show}>
             <a className={`${workspace.selected && "active"}`} href="/"
-               onClick={handleShowTopics}>{workspace.name}
+               onClick={handleShowTopics}>
+                {
+                    workspace.is_lock !== 0 &&
+                    <LockIcon icon="lock"/>
+                }
+                {workspace.name}
                 {
                     workspace.type === "FOLDER" &&
                     <i ref={ref.arrow}
