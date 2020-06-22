@@ -19,7 +19,7 @@ const Wrapper = styled.div`
 
 const WorkspaceDashboardPanel = (props) => {
 
-    const {className = "", match} = props;
+    const {className = "", isMember, match} = props;
 
     const {params} = match;
 
@@ -30,12 +30,11 @@ const WorkspaceDashboardPanel = (props) => {
         actions.showModal(workspace, "edit", "workspace");
     };
 
-
     return (
         <Wrapper className={`container-fluid fadeIn ${className}`}>
             <div className={`row`}>
                 <div className={`col-md-6`}>
-                    <DashboardAboutWorkspace workspace={workspace} onEditClick={handleEditClick}/>
+                    <DashboardAboutWorkspace isMember={isMember} workspace={workspace} onEditClick={handleEditClick}/>
                     <TimelinePanel timeline={timeline} actions={actions} params={params}/>
                 </div>
 

@@ -69,7 +69,8 @@ const WorkspaceContentPanel = (props) => {
                     <Route
                         {...props}
                         exact={true}
-                        render={(props) => <WorkspacePageHeaderPanel {...props} workspace={workspace}/>}
+                        render={(props) => <WorkspacePageHeaderPanel {...props} workspace={workspace}
+                                                                     isMember={isMember}/>}
                         path={[
                             "/workspace/:page/:folderId/:folderName/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName",
                             "/workspace/:page/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName",
@@ -82,7 +83,8 @@ const WorkspaceContentPanel = (props) => {
                     <Switch>
                         <Route
                             {...props}
-                            component={WorkspaceDashboardPanel}
+                            render={(props) => <WorkspaceDashboardPanel {...props} workspace={workspace}
+                                                                        isMember={isMember}/>}
                             path={[
                                 "/workspace/dashboard/:folderId/:folderName/:workspaceId/:workspaceName",
                                 "/workspace/dashboard/:workspaceId/:workspaceName",
