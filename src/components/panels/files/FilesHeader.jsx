@@ -103,7 +103,10 @@ const FilesHeader = (props) => {
                         <ButtonDropdown dropdown={addDropDown}/>
                     </li>
                     <li className="list-inline-item mb-0">
+                        {
+                        wsFiles && Object.values(folders).length > 0 && 
                         <ButtonDropdown dropdown={folderDropDown}/>
+                        }
                     </li>
                     {/* <li className="list-inline-item mb-0">
                         <ButtonDropdown dropdown={orderByDropDown}/>
