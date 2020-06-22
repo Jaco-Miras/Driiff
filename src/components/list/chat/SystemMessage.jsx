@@ -92,7 +92,7 @@ const SystemMessage = forwardRef((props, ref) => {
                     to <b>#{data.title}</b><br/></>;
             }
 
-            if (data.added_members.length >= 1) {
+            if (data.added_members.includes(user.id) && data.added_members.length >= 1) {
                 const am = recipients.filter(r => data.added_members.includes(r.type_id) && r.type_id !== user.id)
                     .map(r => r.name);
 
@@ -131,7 +131,7 @@ const SystemMessage = forwardRef((props, ref) => {
                 const rm = recipients.filter(r => data.removed_members.includes(r.type_id) && r.type_id !== user.id)
                     .map(r => r.name);
 
-                if (data.author.id === user.id) {
+                if (data.removed_members.includes(user.id) && data.author.id === user.id) {
                     if (newBody === "") {
                         newBody = <><b>{author.name}</b> left </>;
                     } else {
@@ -230,7 +230,7 @@ const SystemMessage = forwardRef((props, ref) => {
                 const am = recipients.filter(r => data.added_members.includes(r.type_id) && r.type_id !== user.id)
                     .map(r => r.name);
 
-                if (data.author.id === user.id) {
+                if (data.added_members.includes(user.id) && data.author.id === user.id) {
                     if (newBody === "") {
                         newBody = <><b>{author.name}</b> joined </>;
                     } else {
@@ -265,7 +265,7 @@ const SystemMessage = forwardRef((props, ref) => {
                 const rm = recipients.filter(r => data.removed_members.includes(r.type_id) && r.type_id !== user.id)
                     .map(r => r.name);
 
-                if (data.author.id === user.id) {
+                if (data.removed_members.includes(user.id) && data.author.id === user.id) {
                     if (newBody === "") {
                         newBody = <><b>{author.name}</b> left </>;
                     } else {
