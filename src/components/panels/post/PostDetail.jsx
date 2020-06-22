@@ -55,6 +55,10 @@ const Counters = styled.div`
     .seen-indicator, .post-reaction {
         cursor: pointer;
     }
+    .clap-true {
+        color: #f44;
+        fill: #f44;
+    }
 `;
 
 const PostFiles = styled(FileAttachments)`
@@ -189,6 +193,7 @@ const PostDetail = props => {
     const markRead = () => {
         postActions.markReadRequirement(post);
     };
+
     //console.log(post)
     return (
         <>
@@ -244,10 +249,10 @@ const PostDetail = props => {
                 <PostBody post={post} postActions={postActions} isAuthor={post.author.id === user.id}/>
                 <hr className="m-0"/>
                 <Counters className="d-flex align-items-center">
-                    <div><Icon className="mr-2 post-reaction" icon="heart" onClick={handleReaction}/>
+                    <div><Icon className={post.user_clap_count ? "mr-2 post-reaction clap-true" : "mr-2 post-reaction clap-false" }  icon="heart" onClick={handleReaction}/>
                         {post.clap_count}
                     </div>
-                    <div className="ml-auto">
+                    <div className="ml-auto text-muted">
                         <Icon className="mr-2" icon="message-square"/>{post.reply_count}
                         <Icon className="ml-2 mr-2 seen-indicator" icon="eye"/>{post.view_user_ids.length}
                     </div>

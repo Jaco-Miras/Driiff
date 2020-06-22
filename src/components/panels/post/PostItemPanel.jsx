@@ -7,6 +7,14 @@ import {MoreOptions} from "../common";
 import {PostBadge} from "./index";
 
 const Wrapper = styled.li`
+    &:first-of-type {
+        border-top-left-radius: 8px;
+        border-top-right-radius: 8px;
+    }
+    &:last-of-type {
+        border-bottom-left-radius: 8px;
+        border-bottom-right-radius: 8px;
+    }
     .custom-checkbox {
         padding-left: 12px;
     }
@@ -28,7 +36,7 @@ const Wrapper = styled.li`
     }
 
     .more-options {
-        display: none;
+        ${'' /* display: none; */}
 
         svg {
             width: 16px;
