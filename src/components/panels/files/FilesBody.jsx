@@ -1,5 +1,6 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import styled from "styled-components";
+import toaster from "toasted-notes";
 import {SvgEmptyState, SvgIconFeather} from "../../common";
 import {DropDocument} from "../../dropzone/DropDocument";
 import {FileListItem} from "../../list/file/item";
@@ -77,11 +78,12 @@ const FilesBody = (props) => {
     };
 
     const handleShowDropZone = () => {
-        setShowDropZone(true);
+        if (!showDropZone) {
+            setShowDropZone(true);
+        }
     };
 
     const dropAction = (attachedFiles) => {
-        console.log(attachedFiles);
         setShowDropZone(false);
 
         let formData = new FormData();
@@ -121,11 +123,24 @@ const FilesBody = (props) => {
         handleAddEditFolder("update");
     };
 
+    useEffect(() => {
+        if (showDropZone) {
+            setShowDropZone(false);
+        }
+    }, [wsFiles]);
+
+    useEffect(() => {
+        if (showDropZone && !isMember) {
+            toaster.notify(`You are not a member of this workspace.`,
+                {position: "bottom-left"});
+        }
+    }, [showDropZone]);
+
     return (
         <Wrapper className={`files-body card app-content-body ${className}`} onDragOver={handleShowDropZone}>
             <DropDocument
                 ref={dropZoneRef}
-                hide={!showDropZone}
+                hide={!(showDropZone && isMember === true)}
                 onDragLeave={handleHideDropZone}
                 onDrop={({acceptedFiles}) => {
                     dropAction(acceptedFiles);
@@ -158,9 +173,11 @@ const FilesBody = (props) => {
                                         wsFiles &&
                                         fileIds.map(f => {
                                             return (
-                                                <FileListItem scrollRef={scrollRef} key={f.id} actions={actions}
-                                                              className="col-xl-3 col-lg-4 col-md-6 col-sm-12"
-                                                              file={wsFiles.files[f]}/>
+                                                <FileListItem
+                                                    isMember={isMember}
+                                                    scrollRef={scrollRef} key={f.id} actions={actions}
+                                                    className="col-xl-3 col-lg-4 col-md-6 col-sm-12"
+                                                    file={wsFiles.files[f]}/>
                                             );
                                         })
                                     }

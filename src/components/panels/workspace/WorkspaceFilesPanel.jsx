@@ -145,17 +145,21 @@ const WorkspaceFilesPanel = (props) => {
         <Wrapper className={`container-fluid h-100 fadeIn ${className}`}>
             <div className="row app-block">
                 <FilesSidebar
+                    isMember={isMember}
                     dropZoneRef={refs.dropZone} className="col-md-3" filterFile={handleFilterFile}
                     filter={filter} wsFiles={wsFiles}/>
                 <div className="col-md-9 app-content mb-4">
                     <div className="app-content-overlay"/>
-                    <FilesHeader dropZoneRef={refs.dropZone} history={history} params={params}
-                                 onSearch={handleSearch} onSearchChange={handleSearchChange} onEnter={handleEnter}
-                                 wsFiles={wsFiles} handleAddEditFolder={handleAddEditFolder} folders={folders}/>
-                    <FilesBody dropZoneRef={refs.dropZone} filter={filter} search={search} folder={folder}
-                               fileIds={fileIds} isMember={isMember}
-                               history={history} actions={actions} params={params} wsFiles={wsFiles}
-                               handleAddEditFolder={handleAddEditFolder}/>
+                    <FilesHeader
+                        isMember={isMember}
+                        dropZoneRef={refs.dropZone} history={history} params={params}
+                        onSearch={handleSearch} onSearchChange={handleSearchChange} onEnter={handleEnter}
+                        wsFiles={wsFiles} handleAddEditFolder={handleAddEditFolder} folders={folders}/>
+                    <FilesBody
+                        dropZoneRef={refs.dropZone} filter={filter} search={search} folder={folder}
+                        fileIds={fileIds} isMember={isMember}
+                        history={history} actions={actions} params={params} wsFiles={wsFiles}
+                        handleAddEditFolder={handleAddEditFolder}/>
                 </div>
             </div>
         </Wrapper>

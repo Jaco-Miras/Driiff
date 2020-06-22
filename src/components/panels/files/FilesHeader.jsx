@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import {ButtonDropdown, SvgIconFeather} from "../../common";
 import {replaceChar} from "../../../helpers/stringFormatter";
+import {ButtonDropdown, SvgIconFeather} from "../../common";
 
 const Wrapper = styled.div`
     overflow: inherit !important;
@@ -23,8 +23,10 @@ const Wrapper = styled.div`
 
 const FilesHeader = (props) => {
 
-    const {className = "", dropZoneRef, onSearchChange, onSearch, onEnter,
-        wsFiles, handleAddEditFolder, folders, history, params} = props;
+    const {
+        className = "", isMember, dropZoneRef, onSearchChange, onSearch, onEnter,
+        wsFiles, handleAddEditFolder, folders, history, params,
+    } = props;
 
     const handleClickAdd = () => {
         if (dropZoneRef.current) {
@@ -99,15 +101,18 @@ const FilesHeader = (props) => {
         <Wrapper className={`files-header app-action ${className}`}>
             <div className="action-left">
                 <ul className="list-inline">
-                    <li className="list-inline-item mb-0">
-                        <ButtonDropdown dropdown={addDropDown}/>
-                    </li>
+                    {
+                        isMember === true &&
+                        <li className="list-inline-item mb-0">
+                            <ButtonDropdown dropdown={addDropDown}/>
+                        </li>
+                    }
                     <li className="list-inline-item mb-0">
                         <ButtonDropdown dropdown={folderDropDown}/>
                     </li>
                     {/* <li className="list-inline-item mb-0">
-                        <ButtonDropdown dropdown={orderByDropDown}/>
-                    </li> */}
+                     <ButtonDropdown dropdown={orderByDropDown}/>
+                     </li> */}
                 </ul>
             </div>
             <div className="action-right">
