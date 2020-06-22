@@ -75,6 +75,10 @@ const Icon = styled(SvgIconFeather)`
     }
 `;
 
+const MarkAsRead = styled.div`
+    cursor: pointer;
+`;
+
 const PostDetail = props => {
 
     const {post, postActions, user, onGoBack} = props;
@@ -181,6 +185,10 @@ const PostDetail = props => {
         }
     }, []);
 
+    const markRead = () => {
+        postActions.markReadRequirement(post);
+    };
+    //console.log(post)
     return (
         <>
             <MainHeader className="card-header d-flex justify-content-between">
@@ -191,6 +199,14 @@ const PostDetail = props => {
                     </ul>
                 </div>
                 <div>
+                    {
+                        post.author.id !== user.id && !post.is_read_requirement &&
+                        <MarkAsRead className="mr-3 d-sm-inline d-none" onClick={markRead}>
+                            <div className="badge badge-danger">
+                                Mark as read
+                            </div>
+                        </MarkAsRead>
+                    }
                     {
                         post.author.id === user.id &&
                         <ul>

@@ -39,9 +39,9 @@ const PostBody = props => {
         postActions.archivePost(post);
     };
 
-    const markRead = () => {
-        postActions.markReadRequirement(post);
-    };
+    // const markRead = () => {
+    //     postActions.markReadRequirement(post);
+    // };
 
     return (
         <Wrapper className="card-body">
@@ -54,16 +54,16 @@ const PostBody = props => {
                 </div>
                 <div className="ml-auto d-flex align-items-center">
                     {
-                        !isAuthor && !post.is_read_requirement &&
-                        <MarkAsReadBtn onClick={markRead}>Mark as read</MarkAsReadBtn>
+                        // !isAuthor && post.is_read_requirement &&
+                        // <MarkAsReadBtn onClick={markRead}>Mark as read</MarkAsReadBtn>
                     }
                     {
-                        !isAuthor && post.is_read_requirement &&
-                        <div className="mr-3 d-sm-inline d-none">
-                            <div className="badge badge-dark">
-                                I've read this
-                            </div>
-                        </div>
+                        // !isAuthor && post.is_read_requirement &&
+                        // <div className="mr-3 d-sm-inline d-none">
+                        //     <div className="badge badge-dark">
+                        //         I've read this
+                        //     </div>
+                        // </div>
                     }
                     {
                         (post.is_must_reply === 1 || post.is_read_only === 1 || !post.is_read_requirement) &&
