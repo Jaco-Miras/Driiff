@@ -98,6 +98,7 @@ export {
     postFavorite,
     postFollow,
     postMarkDone,
+    postMarkRead,
     postSnooze,
     postToggleRead,
     postUnfollow,

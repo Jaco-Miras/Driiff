@@ -883,6 +883,14 @@ export default (state = INITIAL_STATE, action) => {
                 workspacePosts: newWorkspacePosts
             }
         }
+        case "MUST_READ_REDUCER": {
+            let newWorkspacePosts = {...state.workspacePosts};
+            newWorkspacePosts[action.data.topic_id].posts[action.data.post_id].is_read_requirement = true;
+            return {
+                ...state,
+                workspacePosts: newWorkspacePosts
+            }
+        }
         default:
             return state;
     }

@@ -224,7 +224,7 @@ const PostDetail = props => {
                     }}
                     onCancel={handleHideDropzone}
                 />
-                <PostBody post={post} postActions={postActions}/>
+                <PostBody post={post} postActions={postActions} isAuthor={post.author.id === user.id}/>
                 <hr className="m-0"/>
                 <Counters className="d-flex align-items-center">
                     <div><Icon className="mr-2 post-reaction" icon="heart" onClick={handleReaction}/>

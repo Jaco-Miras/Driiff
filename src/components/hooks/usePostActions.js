@@ -11,7 +11,8 @@ import {
     postToggleRead, removePost, postUnfollow, deletePost,
     starPostReducer, markPostReducer, putPost, postCreate,
     postClap, fetchRecentPosts, fetchTagCounter, fetchPosts,
-    addToWorkspacePosts, postVisit, archiveReducer, markReadUnreadReducer
+    addToWorkspacePosts, postVisit, archiveReducer, markReadUnreadReducer,
+    postMarkRead, mustReadReducer
 } from "../../redux/actions/postActions";
 
 const usePostActions = () => {
@@ -332,6 +333,26 @@ const usePostActions = () => {
         );
     }, [dispatch]);
 
+    const markReadRequirement = useCallback((post) => {
+        let payload = {
+            post_id: post.id,
+            personalized_for_id: null,
+            mark_as_read: 1,
+        }
+        let cb = (err,res) => {
+            if (err) return;
+            dispatch(
+                mustReadReducer({
+                    post_id: post.id,
+                    topic_id: params.workspaceId
+                })
+            );
+        };
+        dispatch(
+            postMarkRead(payload, cb),
+        );
+    }, [dispatch, params]);
+
     return {
         starPost,
         markPost,
@@ -349,7 +370,8 @@ const usePostActions = () => {
         getRecentPosts,
         getTagsCount,
         getPosts,
-        visit
+        visit,
+        markReadRequirement
     }
 };
 

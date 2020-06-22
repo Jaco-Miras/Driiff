@@ -18,9 +18,15 @@ const Icon = styled(SvgIconFeather)`
     cursor: hand;
 `;
 
+const MarkAsReadBtn = styled.button`
+    background: #fff;
+    border-radius: 5px;
+    margin-right: 10px;
+`;
+
 const PostBody = props => {
 
-    const {post, postActions} = props;
+    const {post, postActions, isAuthor} = props;
 
     const [star, setStar] = useState(post.is_favourite);
 
@@ -33,6 +39,10 @@ const PostBody = props => {
         postActions.archivePost(post);
     };
 
+    const markRead = () => {
+        postActions.markReadRequirement(post);
+    };
+
     return (
         <Wrapper className="card-body">
             <div className="d-flex align-items-center p-l-r-0 m-b-20">
@@ -43,7 +53,22 @@ const PostBody = props => {
                     }
                 </div>
                 <div className="ml-auto d-flex align-items-center">
-                    <PostBadge post={post}/>
+                    {
+                        !isAuthor && !post.is_read_requirement &&
+                        <MarkAsReadBtn onClick={markRead}>Mark as read</MarkAsReadBtn>
+                    }
+                    {
+                        !isAuthor && post.is_read_requirement &&
+                        <div className="mr-3 d-sm-inline d-none">
+                            <div className="badge badge-dark">
+                                I've read this
+                            </div>
+                        </div>
+                    }
+                    {
+                        (post.is_must_reply === 1 || post.is_read_only === 1 || !post.is_read_requirement) &&
+                        <PostBadge post={post}/>
+                    }
                     {
                         post.files.length > 0 &&
                         <Icon className="mr-2" icon="paperclip"/>

@@ -13,6 +13,7 @@ import {
     postFavorite as postFavoriteService,
     postFollow as postFollowService,
     postMarkDone as postMarkDoneService,
+    postMarkRead as postMarkReadService,
     postSnooze as postSnoozeService,
     postToggleRead as postToggleReadService,
     postUnfollow as postUnfollowService,
@@ -350,6 +351,24 @@ export function archiveReducer(payload, callback) {
 export function markReadUnreadReducer(payload, callback) {
     return SimpleDispatchActionToReducer(
         "MARK_READ_UNREAD_REDUCER",
+        payload,
+        callback,
+    );
+}
+
+export function postMarkRead(payload, callback) {
+    return dispatchActionToReducer(
+        postMarkReadService(payload),
+        "POST_VISIT_START",
+        "POST_VISIT_SUCCESS",
+        "POST_VISIT_FAIL",
+        callback,
+    );
+}
+
+export function mustReadReducer(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "MUST_READ_REDUCER",
         payload,
         callback,
     );

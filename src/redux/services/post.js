@@ -307,3 +307,20 @@ export function postVisit(payload) {
         data: payload,
     });
 }
+
+/**
+ * @param {Object} payload
+ * @param {number} payload.post_id
+ * @param {number} payload.personal_for_id
+ * @param {number} payload.mark_as_read
+ * @returns {Promise<*>}
+ */
+
+export function postMarkRead(payload) {
+    let url = `/v1/post-mark-as-read`;
+    return apiCall({
+        method: "POST",
+        url: url,
+        data: payload,
+    });
+}

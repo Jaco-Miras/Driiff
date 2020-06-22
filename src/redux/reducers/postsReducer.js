@@ -148,6 +148,14 @@ export default (state = INITIAL_STATE, action) => {
                 posts: newPosts
             }
         }
+        case "MARK_READ_UNREAD_REDUCER": {
+            let newPosts = {...state.posts};
+            newPosts[action.data.post_id].is_read_requirement = true;
+            return {
+                ...state,
+                posts: newPosts
+            }
+        }
         default:
             return state;
     }
