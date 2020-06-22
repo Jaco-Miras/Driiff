@@ -135,10 +135,10 @@ const usePostActions = () => {
 
             let payload = {
                 type: "confirmation",
-                headerText: "Archive post?",
-                submitText: "Archive",
+                headerText: post.is_archived === 1 ? "Un-archive post?" : "Archive post?",
+                submitText: post.is_archived === 1 ? "Un-archive" : "Archive",
                 cancelText: "Cancel",
-                bodyText: "Are you sure you want to archive this post?",
+                bodyText: post.is_archived === 1 ? "Are you sure you want to un-archive this post?" : "Are you sure you want to archive this post?",
                 actions: {
                     onSubmit: onConfirm,
                 },
