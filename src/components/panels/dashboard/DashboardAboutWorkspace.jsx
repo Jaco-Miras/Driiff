@@ -38,12 +38,16 @@ const DashboardDescription = styled.div`
 
 const DashboardAboutWorkspace = (props) => {
 
-    const {className = "", onEditClick, workspace} = props;
+    const {className = "", onEditClick, workspace, isMember} = props;
 
     return (
         <Wrapper className={`dashboard-about-workspace card ${className}`}>
             <div className="card-body">
-                <h5 className="card-title">About this workspace <SvgIconFeather icon="edit" onClick={onEditClick}/></h5>
+                <h5 className="card-title">About this workspace {
+                    isMember === true &&
+                    <SvgIconFeather icon="edit" onClick={onEditClick}/>
+                }
+                </h5>
                 {
                     workspace &&
                     <DashboardDescription dangerouslySetInnerHTML={{__html: workspace.description}}/>
@@ -51,9 +55,10 @@ const DashboardAboutWorkspace = (props) => {
                 {
                     workspace && workspace.primary_files && workspace.primary_files.length > 0 &&
                     <>
-                    <hr/>
-                    <span>File attachments:</span>
-                    <FileAttachments attachedFiles={workspace.primary_files} workspace={workspace} type="workspace"/>
+                        <hr/>
+                        <span>File attachments:</span>
+                        <FileAttachments attachedFiles={workspace.primary_files} workspace={workspace}
+                                         type="workspace"/>
                     </>
                 }
             </div>

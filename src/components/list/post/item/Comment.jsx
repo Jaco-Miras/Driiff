@@ -1,6 +1,6 @@
 import React, {useCallback, useEffect, useRef, useState} from "react";
 import styled from "styled-components";
-import {Avatar, SvgIconFeather} from "../../../common";
+import {Avatar, FileAttachments, SvgIconFeather} from "../../../common";
 import {MoreOptions} from "../../../panels/common";
 import {PostDetailFooter} from "../../../panels/post/index";
 import {SubComments} from "./index";
@@ -145,6 +145,14 @@ const Comment = props => {
                     <CommentBody
                         className="mt-2 mb-3"
                         dangerouslySetInnerHTML={{__html: comment.body}}/>
+                    {
+                        comment.files.length >= 1 &&
+                        <>
+                            <hr/>
+                            <h6>Files</h6>
+                            <FileAttachments attachedFiles={comment.files}/>
+                        </>
+                    }
                     <div className="d-flex align-items-center justify-content-start">
                         <Icon className="mr-2 comment-reaction" icon="heart" onClick={handleReaction}/>
                         {comment.clap_count > 0 ? comment.clap_count : null}
