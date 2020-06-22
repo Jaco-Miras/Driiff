@@ -3,22 +3,21 @@ import styled from "styled-components";
 import {MoreOptions} from "../../panels/common";
 
 const Wrapper = styled(MoreOptions)`
-
-    .more-options-tooltip {    
+    .more-options-tooltip {
         position: absolute;
         font-size: .835rem;
         width: 150px;
-    
+
         &.orientation-left {
             right: calc(100% - 10px);
         }
         &.orientation-bottom {
             top: 100%;
-        }    
+        }
         &.orientation-top {
             bottom: 20px;
         }
-    }        
+    }
 `;
 
 const FileOptions = props => {

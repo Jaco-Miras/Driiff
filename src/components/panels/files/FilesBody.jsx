@@ -9,8 +9,9 @@ import {ImportantFiles, PopularFiles, RecentEditedFile, RemoveFiles} from "./ind
 const Wrapper = styled.div`
     .card-body {
         position: relative;
-            
-        overflow: auto !important;
+        overflow: visible !important;
+        padding-bottom: 12px;
+        min-height: 100px;
         &::-webkit-scrollbar {
             display: none;
         }
@@ -40,8 +41,8 @@ const MoreButton = styled(MoreOptions)`
 `;
 
 const EmptyState = styled.div`
-    padding: 5rem 0;    
-    max-width: 375px;        
+    padding: 5rem 0;
+    max-width: 375px;
     margin: auto;
     text-align: center;
 

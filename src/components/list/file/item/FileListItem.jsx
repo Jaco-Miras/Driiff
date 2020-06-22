@@ -6,7 +6,7 @@ import {FileOptions} from "../../../panels/files";
 const Wrapper = styled.div`
     .card {
         overflow: unset;
-        
+
         .file-options {
             position: absolute;
             top: 10px;
@@ -27,7 +27,7 @@ const Star = styled(SvgIconFeather)`
 
 const FileListItem = (props) => {
 
-    const {className = "", file, scrollRef, actions} = props;
+    const {className = "", file, actions} = props;
 
     let fileSize = 0;
     let fileSizeUnit = "";
@@ -54,7 +54,7 @@ const FileListItem = (props) => {
                         <Star icon="star"/>
                     }
                     {actions.getFileIcon(file.mime_type)}
-                    <FileOptions scrollRef={scrollRef} file={file} actions={actions}/>
+                    <FileOptions file={file} actions={actions}/>
                 </div>
                 <div className="p-2 small">
                     <div>{file.search}</div>

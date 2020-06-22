@@ -8,12 +8,14 @@ const Wrapper = styled.div`
     font-weight: bold;
     .action-text {
         margin: 0;
-        color: #828282;
+        color: #505050;
         .joined {
             color: #00c851
+            font-weight: bold;
         }
         .left {
             color: #f44;
+            font-weight: bold;
         }
     }
 `;

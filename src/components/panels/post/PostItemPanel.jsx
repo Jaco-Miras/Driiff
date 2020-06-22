@@ -10,28 +10,33 @@ const Wrapper = styled.li`
     .custom-checkbox {
         padding-left: 12px;
     }
-    
+
     .app-list-title {
         &.has-unread {
             font-weight:bold;
         }
-        
+
         &.text-success {
             text-decoration: line-through;
         }
     }
-    
+
     &:hover {
         .more-options {
             display: flex;
         }
     }
-    
+
     .more-options {
         display: none;
-        
+
         svg {
             width: 16px;
+        }
+    }
+    .feather {
+        &:hover {
+            color: #7a1b8b;
         }
     }
 `;
@@ -90,8 +95,8 @@ const PostItemPanel = (props) => {
             <div className="flex-grow-1 min-width-0">
                 <div className="d-flex align-items-center justify-content-between">
                     <div
-                        className={`app-list-title text-truncate 
-                            ${post.unread_count !== 0 || post.is_unread === 1 ? "text-primary has-unread" : ""} 
+                        className={`app-list-title text-truncate
+                            ${post.unread_count !== 0 || post.is_unread === 1 ? "text-primary has-unread" : ""}
                             ${post.is_mark_done ? "text-success" : ""}`}>
                         <span>{post.title}</span>
                         {
