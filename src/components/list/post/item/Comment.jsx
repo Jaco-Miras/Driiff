@@ -6,7 +6,7 @@ import {PostDetailFooter} from "../../../panels/post/index";
 import {SubComments} from "./index";
 
 const Wrapper = styled.li`
-    margin-bottom: 1rem;        
+    margin-bottom: 1rem;
 `;
 
 const InputWrapper = styled.li`
@@ -17,6 +17,10 @@ const InputWrapper = styled.li`
 const CommentWrapper = styled.div`
     .comment-reaction {
         cursor: pointer;
+    }
+    .clap-true {
+        color: #f44;
+        fill: #f44;
     }
 `;
 
@@ -29,7 +33,8 @@ const CommentHeader = styled.div`
         }
     }
 `;
-const CommentBody = styled.div`    
+const CommentBody = styled.div`
+
 `;
 
 const CommentInput = styled(PostDetailFooter)`
@@ -154,7 +159,7 @@ const Comment = props => {
                         </>
                     }
                     <div className="d-flex align-items-center justify-content-start">
-                        <Icon className="mr-2 comment-reaction" icon="heart" onClick={handleReaction}/>
+                        <Icon className={comment.user_clap_count ? 'mr-2 comment-reaction clap-true' : 'mr-2 comment-reaction clap-false'}  icon="heart" onClick={handleReaction}/>
                         {comment.clap_count > 0 ? comment.clap_count : null}
                         {
                             post.is_read_only !== 1 &&
