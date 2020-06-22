@@ -7,7 +7,7 @@ import toaster from "toasted-notes";
 import {replaceChar} from "../../helpers/stringFormatter";
 import {setPendingUploadFilesToWorkspace} from "../../redux/actions/fileActions";
 import {clearModal} from "../../redux/actions/globalActions";
-import {createWorkspace, updateWorkspace, fetchTimeline} from "../../redux/actions/workspaceActions";
+import {createWorkspace, fetchTimeline, updateWorkspace} from "../../redux/actions/workspaceActions";
 import {FileAttachments} from "../common";
 import {DropDocument} from "../dropzone/DropDocument";
 import {CheckBox, DescriptionInput, FolderSelect, InputFeedback, PeopleSelect} from "../forms";
@@ -286,7 +286,7 @@ const CreateEditWorkspaceModal = (props) => {
                     }
                 }
                 return true;
-            });
+            }).map(m => m.id);
 
             const added_members = form.selectedUsers.filter(u => {
                 for (const i in item.members) {
@@ -295,21 +295,14 @@ const CreateEditWorkspaceModal = (props) => {
                     }
                 }
                 return true;
-            });
-
-            let system_message = `${form.name} updated`;
-            if (added_members.length) {
-                system_message += `: ${added_members.map(m => m.name).join(", ")} joined`;
-            } else if (removed_members.length) {
-                system_message += ` ${removed_members.map(m => m.name).join(", ")} left`;
-            }
+            }).map(m => m.id);
 
             payload = {
                 ...payload,
                 workspace_id: form.selectedFolder ? form.selectedFolder.value : 0,
                 topic_id: item.id,
-                remove_member_ids: removed_members.map(m => m.id),
-                new_member_ids: added_members.map(m => m.id),
+                remove_member_ids: removed_members,
+                new_member_ids: added_members,
                 system_message: `CHANNEL_UPDATE::${
                     JSON.stringify({
                         author: {
@@ -318,7 +311,7 @@ const CreateEditWorkspaceModal = (props) => {
                             partial_name: user.partial_name,
                             profile_image_link: user.profile_image_link,
                         },
-                        title: form.name,
+                        title: form.name === item.title ? "" : form.name,
                         added_members: added_members,
                         removed_members: removed_members,
                     })}`
