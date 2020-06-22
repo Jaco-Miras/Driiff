@@ -18,6 +18,7 @@ import {
     updateChannelMembersTitle,
     setChannel,
     setMemberTimestamp,
+    setSelectedChannel
 } from "../../redux/actions/chatActions";
 import {addFilesToChannel, 
     deleteFilesFromChannel, 
@@ -120,6 +121,7 @@ class SocketListeners extends PureComponent {
         })
         .listen(".upload-bulk-private-workspace-files", e => {
             console.log(e, 'files bulk')
+            this.props.incomingFiles(e);
         })
         .listen(".post-notification", e => {
             console.log(e, "post-notif")
@@ -638,7 +640,7 @@ class SocketListeners extends PureComponent {
             .listen(".new-chat-channel", e => {
                 console.log(e, "chat channel");
                 if (e.channel_data.creator_by.id !== this.props.user.id) {
-                    this.props.getChannel({channel_id: e.channel_data.channel_id}, (err, res) => {
+                    this.props.getChannel({code: e.channel_data.code}, (err, res) => {
                         if (err) return;
                         let channel = {
                             ...res.data,
@@ -649,6 +651,20 @@ class SocketListeners extends PureComponent {
                         };
                         this.props.addToChannels(channel);
                     });
+                } else {
+                    // this.props.getChannel({code: e.channel_data.code}, (err, res) => {
+                    //     if (err) return;
+                    //     let channel = {
+                    //         ...res.data,
+                    //         selected: true,
+                    //         replies: [],
+                    //         skip: 0,
+                    //         hasMore: true,
+                    //     };
+                    //     this.props.addToChannels(channel);
+                    //     this.props.setSelectedChannel(channel);
+                    //     this.props.history.push(`/chat/${channel.code}`);
+                    // });
                 }
             })
             .listen(".chat-message-react", e => {

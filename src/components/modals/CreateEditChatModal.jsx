@@ -1,10 +1,11 @@
 import lodash from "lodash";
 import React, {useEffect, useRef, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
+import {useHistory} from "react-router-dom";
 import {Input, InputGroup, Label, Modal, ModalBody} from "reactstrap";
 import styled from "styled-components";
 import {localizeDate} from "../../helpers/momentFormatJS";
-import {renameChannelKey} from "../../redux/actions/chatActions";
+import {addToChannels, setSelectedChannel} from "../../redux/actions/chatActions";
 import {clearModal} from "../../redux/actions/globalActions";
 import {PeopleSelect} from "../forms";
 import QuillEditor from "../forms/QuillEditor";
@@ -66,6 +67,7 @@ const CreateEditChatModal = props => {
 
     const reactQuillRef = useRef();
     const dispatch = useDispatch();
+    const history = useHistory();
     const [modal, setModal] = useState(true);
     const users = useSelector(state => state.users.mentions);
     const channel = useSelector(state => state.chat.selectedChannel);
@@ -139,7 +141,12 @@ const CreateEditChatModal = props => {
                 add_member_ids: added_members,
                 message_body: `CHANNEL_UPDATE::${
                     JSON.stringify({
-                        author: user.id,
+                        author: {
+                            id: user.id,
+                            name: user.name,
+                            partial_name: user.partial_name,
+                            profile_image_link: user.profile_image_link,
+                        },
                         title: channel.title === inputValue ? "" : inputValue,
                         added_members: added_members,
                         removed_members: removed_members,
@@ -264,8 +271,12 @@ const CreateEditChatModal = props => {
                 };
 
                 dispatch(
-                    renameChannelKey(payload),
+                    addToChannels(payload),
                 );
+                dispatch(
+                    setSelectedChannel(payload)
+                );
+                history.push(`/chat/${channel.code}`);
             };
             channelActions.create(payload, createCallback);
         }
