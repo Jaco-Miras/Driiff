@@ -88,12 +88,12 @@ const Dflex = styled.div`
         }
         .channel-action {
             button {
-                background-image: linear-gradient(102deg,#972c86,#794997);
+                background: #7a1b8b;
                 color: #fff;
                 border: none;
                 padding: 8px 15px;
-                border-radius: 20px;
-                font-size: 19px;
+                border-radius: 8px;
+                font-size: 16px;
                 font-weight: 600;
             }
         }

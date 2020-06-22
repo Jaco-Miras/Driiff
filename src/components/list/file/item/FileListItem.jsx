@@ -27,23 +27,23 @@ const Star = styled(SvgIconFeather)`
 
 const FileListItem = (props) => {
 
-    const {className = "", file, actions} = props;
+    const {className = "", file, actions, isMember} = props;
 
     let fileSize = 0;
     let fileSizeUnit = "";
 
-    if (file.size < 1e+6) {
-        fileSize = file.size / 1000;
-        fileSizeUnit = "KB";
-    } else if (file.size < 1e+9) {
-        fileSize = file.size / 1e+6;
-        fileSizeUnit = "MB";
-    } else if (file.size < 1e+12) {
-        fileSize = file.size / 1e+9`$ GB`;
-        fileSizeUnit = "GB";
+    if (file.hasOwnProperty("size")) {
+        if (file.size < 1e+6) {
+            fileSize = file.size / 1000;
+            fileSizeUnit = "KB";
+        } else if (file.size < 1e+9) {
+            fileSize = file.size / 1e+6;
+            fileSizeUnit = "MB";
+        } else if (file.size < 1e+12) {
+            fileSize = file.size / 1e+9`$ GB`;
+            fileSizeUnit = "GB";
+        }
     }
-
-    console.log(file);
 
     return (
         <Wrapper className={`file-list-item ${className}`}>
@@ -54,7 +54,7 @@ const FileListItem = (props) => {
                         <Star icon="star"/>
                     }
                     {actions.getFileIcon(file.mime_type)}
-                    <FileOptions file={file} actions={actions}/>
+                    <FileOptions file={file} actions={actions} isMember={isMember}/>
                 </div>
                 <div className="p-2 small">
                     <div>{file.search}</div>

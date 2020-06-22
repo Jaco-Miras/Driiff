@@ -23,7 +23,12 @@ const Icon = styled(SvgIconFeather)`
 
 const FileSidebar = (props) => {
 
-    const {className = "", filterFile, filter = "all", dropZoneRef, storage = {amount: 10, limit: 25}, wsFiles} = props;
+    const {
+        className = "", isMember, filterFile, filter = "all", dropZoneRef, storage = {
+            amount: 10,
+            limit: 25,
+        }, wsFiles,
+    } = props;
 
     const handleShowUploadModal = () => {
         if (dropZoneRef.current) {
@@ -34,15 +39,18 @@ const FileSidebar = (props) => {
     return (
         <Wrapper className={`file-sidebar ${className}`}>
             <div className="card">
-                <div className="card-body">
-                    <button
-                        className="btn btn-primary btn-block file-upload-btn" onClick={handleShowUploadModal}>
-                        Upload Files
-                    </button>
-                    <form className="d-none" id="file-upload">
-                        <input type="file" multiple=""/>
-                    </form>
-                </div>
+                {
+                    isMember === true &&
+                    <div className="card-body">
+                        <button
+                            className="btn btn-primary btn-block file-upload-btn" onClick={handleShowUploadModal}>
+                            Upload Files
+                        </button>
+                        <form className="d-none" id="file-upload">
+                            <input type="file" multiple=""/>
+                        </form>
+                    </div>
+                }
                 <div className="app-sidebar-menu" tabIndex="1">
                     <div className="list-group list-group-flush">
                         <Filter onClick={filterFile} data-filter="" active={filter === ""}
@@ -79,7 +87,9 @@ const FileSidebar = (props) => {
                                 </div>
                                 <div className="flex-grow-1">
                                     <ProgressBar amount={wsFiles.storage / 1e9} limit={storage.limit}/>
-                                    <div className="line-height-12 small text-muted mt-2">{(wsFiles.storage / 1e9).toFixed(2)}GB used
+                                    <div
+                                        className="line-height-12 small text-muted mt-2">{(wsFiles.storage / 1e9).toFixed(2)}GB
+                                        used
                                         of {storage.limit}GB
                                     </div>
                                 </div>

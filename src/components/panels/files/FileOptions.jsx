@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import toaster from "toasted-notes";
 import {MoreOptions} from "../../panels/common";
 
 const Wrapper = styled(MoreOptions)`
@@ -22,7 +23,7 @@ const Wrapper = styled(MoreOptions)`
 
 const FileOptions = props => {
 
-    const {className = "", file, scrollRef, actions} = props;
+    const {className = "", file, scrollRef, actions, isMember} = props;
 
     //const [showMoreOptions, setShowMoreOptions] = useState(false);
 
@@ -43,15 +44,30 @@ const FileOptions = props => {
     };
 
     const handleMoveTo = () => {
-        actions.moveFile(file);
+        if (isMember) {
+            actions.moveFile(file);
+        } else {
+            toaster.notify(`You are not a member of this workspace.`,
+                {position: "bottom-left"});
+        }
     };
 
     const handleRename = () => {
-        actions.renameFile(file);
+        if (isMember) {
+            actions.renameFile(file);
+        } else {
+            toaster.notify(`You are not a member of this workspace.`,
+                {position: "bottom-left"});
+        }
     };
 
     const handleDelete = () => {
-        actions.removeFile(file);
+        if (isMember) {
+            actions.removeFile(file);
+        } else {
+            toaster.notify(`You are not a member of this workspace.`,
+                {position: "bottom-left"});
+        }
     };
 
     return (

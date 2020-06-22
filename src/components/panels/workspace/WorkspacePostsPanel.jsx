@@ -8,7 +8,7 @@ import {PostDetail, PostFilterSearchPanel, PostItemPanel, PostSidebar} from "../
 
 const Wrapper = styled.div`
     text-align: left;
-    
+
     .app-block {
         overflow: inherit;
     }
@@ -29,8 +29,8 @@ const PostDetailWrapper = styled.div`
 `;
 
 const EmptyState = styled.div`
-    padding: 8rem 0;    
-    max-width: 375px;        
+    padding: 8rem 0;
+    max-width: 375px;
     margin: auto;
     text-align: center;
 
@@ -49,7 +49,7 @@ const WorkspacePostsPanel = (props) => {
 
     const params = useParams();
     const history = useHistory();
-    
+
     const workspace = useSelector(state => state.workspaces.activeTopic);
 
     const isMember = useIsMember(workspace && workspace.member_ids.length ? workspace.member_ids : []);
@@ -59,7 +59,7 @@ const WorkspacePostsPanel = (props) => {
     const handleShowWorkspacePostModal = () => {
         actions.showModal("create");
     };
-    
+
     const handleGoback = useCallback(() => {
         if (params.hasOwnProperty("postId")) {
             let pathname = history.location.pathname.split("/post/")[0]
@@ -100,9 +100,9 @@ const WorkspacePostsPanel = (props) => {
                                                :
                             <>{
                                 post ?
-                                <PostDetailWrapper>
-                                    <PostDetail 
-                                        post={post} postActions={actions} 
+                                <PostDetailWrapper className="fadeIn">
+                                    <PostDetail
+                                        post={post} postActions={actions}
                                         user={user} history={history}
                                         onGoBack={handleGoback}/>
                                 </PostDetailWrapper>
@@ -126,7 +126,7 @@ const WorkspacePostsPanel = (props) => {
                                             }
                                         </>
                                     }
-                                    <ul className="list-group list-group-flush ui-sortable">
+                                    <ul className="list-group list-group-flush ui-sortable fadeIn">
                                         {
                                             posts &&
                                             posts.map(p => {

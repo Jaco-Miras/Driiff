@@ -1,5 +1,7 @@
 import React, {useCallback, useRef} from "react";
 import {useDispatch} from "react-redux";
+import toaster from "toasted-notes";
+import {copyTextToClipboard} from "../../helpers/commonFunctions";
 import {
     addFileSearchResults,
     addFolder,
@@ -22,10 +24,7 @@ import {
     setViewFiles,
     uploadWorkspaceFiles,
 } from "../../redux/actions/fileActions";
-import {
-    addToModals
-} from "../../redux/actions/globalActions";
-import {copyTextToClipboard} from "../../helpers/commonFunctions";
+import {addToModals} from "../../redux/actions/globalActions";
 
 const useFileActions = (params = null) => {
 
@@ -140,15 +139,19 @@ const useFileActions = (params = null) => {
         );
     }, [dispatch]);
 
-    const removeFile = useCallback((file, callback) => {
+    const removeFile = useCallback((file, callback = () => {}) => {
         const handleDeleteFile = () => {
             dispatch(
                 deleteFile({
                     file_id: file.id,
                     link_id: file.link_id,
                     link_type: file.link_type,
-                    topic_id: params.workspaceId
-                }, callback)
+                    topic_id: params.workspaceId,
+                }, (err, res) => {
+                    toaster.notify(`You have deleted ${file.search}.`,
+                        {position: "bottom-left"});
+                    callback(err, res);
+                }),
             );
         }
         let payload = {
@@ -173,7 +176,10 @@ const useFileActions = (params = null) => {
                 putFile({
                     id: file.id,
                     name: fileName.current,
-                    topic_id: params.workspaceId
+                    topic_id: params.workspaceId,
+                }, () => {
+                    toaster.notify(<span>You renamed <b>{file.search}</b> to {fileName.current}.</span>,
+                        {position: "bottom-left"});
                 })
             )
         };
@@ -185,7 +191,11 @@ const useFileActions = (params = null) => {
         const handleFileNameChange = (e) => {
             fileName.current = e.target.value.trim();
         };
+
         let filename = file.search.split(".").slice(0, -1).join(".");
+        if (filename === "") {
+            filename = file.search;
+        }
         //let extension = f.search.split(".").slice(1, 2).join(".");
 
         fileName.current = filename;
@@ -210,17 +220,21 @@ const useFileActions = (params = null) => {
             if (err) return;
             let payload = {
                 file_id: file.id,
-                topic_id:params.workspaceId,
-                is_favorite: !file.is_favorite
+                topic_id: params.workspaceId,
+                is_favorite: !file.is_favorite,
             }
             if (params.hasOwnProperty("fileFolderId")) {
                 payload = {
                     ...payload,
-                    folder_id: params.fileFolderId
-                }
+                    folder_id: params.fileFolderId,
+                };
             }
+
+            toaster.notify(`You marked ${file.search} ${!file.is_favorite ? "as favorite" : "unfavorite"}`,
+                {position: "bottom-left"});
+
             dispatch(
-                addRemoveFavorite(payload)
+                addRemoveFavorite(payload),
             );
         }
         dispatch(
