@@ -116,7 +116,8 @@ const ChannelList = props => {
     return (
         <Wrapper
             className={`list-group-item d-flex align-items-center link-1 pl-0 pr-0 pb-3 pt-3 ${className}`}
-            optionsVisible={optionsVisible} selected={channel.selected} onClick={handleSelectChannel}>
+            optionsVisible={optionsVisible} selected={selectedChannel !== null && channel.id === selectedChannel.id}
+            onClick={handleSelectChannel}>
             <ChannelIcon channel={channel}/>
             <ChannelTitlePreview className={`flex-grow-1`}>
                 <ChannelTitle channel={channel}/>
