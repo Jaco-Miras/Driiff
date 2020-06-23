@@ -84,7 +84,7 @@ const FileOptions = props => {
             <div onClick={handleDownload}>Download</div>
             <div onClick={handleMoveTo}>Move to</div>
             <div onClick={handleRename}>Rename</div>
-            <div onClick={handleDelete}>Delete</div>
+            <div onClick={handleDelete}>Remove</div>
         </Wrapper>
     );
 };

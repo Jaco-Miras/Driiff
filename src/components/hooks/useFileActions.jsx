@@ -148,7 +148,7 @@ const useFileActions = (params = null) => {
                     link_type: file.link_type,
                     topic_id: params.workspaceId,
                 }, (err, res) => {
-                    toaster.notify(`You have deleted ${file.search}.`,
+                    toaster.notify(`You have removed ${file.search}.`,
                         {position: "bottom-left"});
                     callback(err, res);
                 }),
@@ -156,10 +156,10 @@ const useFileActions = (params = null) => {
         }
         let payload = {
             type: "confirmation",
-            headerText: "Delete file",
-            submitText: "Delete",
+            headerText: "Remove file",
+            submitText: "Remove",
             cancelText: "Cancel",
-            bodyText: "Are you sure you want to delete this file?",
+            bodyText: "Are you sure you want to remove this file?",
             actions: {
                 onSubmit: handleDeleteFile,
             },
