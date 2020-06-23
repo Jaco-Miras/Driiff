@@ -11,6 +11,8 @@ import {processBackendLogin, storeLoginToken} from "../hooks";
 import {getDriffName} from "../hooks/useDriff";
 
 const Wrapper = styled.form`
+    margin: 50px auto;
+    max-width: 430px;
     ${props => props.error !== "" &&
     `&:before {
         content: "${props.error}";
@@ -218,7 +220,7 @@ const LoginPanel = (props) => {
     };
 
     return (
-        <Wrapper error={formMessage.error} success={formMessage.success}>
+        <Wrapper error={formMessage.error} success={formMessage.success} className="fadeIn">
             <FormGroup className="form-group" error={error.email}>
                 <input ref={ref.email} onChange={handleInputChange} name="email" type="email" className="form-control"
                        placeholder="Email" required autoFocus/>

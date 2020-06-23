@@ -20798,7 +20798,7 @@ body.dark.small-navigation .navigation-menu-body ul li.navigation-divider:after 
 }
 
 .fadeIn {
-   animation: fadeIn 0.3s cubic-bezier(.275, .420, .000, 1.000);
+  animation: fadeIn 0.3s cubic-bezier(.275, .420, .000, 1.000);
 }
 
 .overlay {
@@ -20929,7 +20929,6 @@ body.dark.small-navigation .navigation-menu-body ul li.navigation-divider:after 
 
 .fadeBottom {
   animation: fadeb 0.15s cubic-bezier(.275, .420, .000, 1.000);
-  // min-height: 200px;
 }
 @keyframes fadeb {
   0% {

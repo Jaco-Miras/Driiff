@@ -34,7 +34,7 @@ const MemberTimeline = (props) => {
 
     const renderTitle = () => {
         if (message.title !== "") {
-            return `renamed workspace to ${message.title}`;
+            return `Updated workspace to ${message.title}`;
         }
         if (message.added_members.length !== 0 || message.removed_members.length) {
         }

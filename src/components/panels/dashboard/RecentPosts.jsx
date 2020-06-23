@@ -90,12 +90,17 @@ const RecentPosts = (props) => {
         }
     }, [match.params.workspaceId]);
 
+    console.log('hiero')
+    // console.log(posts != null);
+    // console.log(posts != null && posts.length);
+    console.log(posts);
+
     return (
         <Wrapper className={`recent-posts card ${className}`}>
             <div ref={assignRef} className="card-body">
                 <h5 className="card-title">Recent posts <SvgIconFeather icon="refresh-ccw" onClick={handleRefetchPosts}/></h5>
                 {
-                    posts &&
+                    posts && Object.keys(posts).length ?
                     <ul className="list-group list-group-flush">
                     {
                         Object.values(posts).sort((a,b) => b.created_at.timestamp > a.created_at.timestamp ? 1 : -1).map(post => {
@@ -104,6 +109,8 @@ const RecentPosts = (props) => {
                         })
                     }
                     </ul>
+                    :
+                    <span className="medium text-muted">No recent posts.</span>
                 }
             </div>
         </Wrapper>

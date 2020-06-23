@@ -7,6 +7,8 @@ import {SvgIcon} from "../common";
 import {useUserLogout} from "../hooks";
 
 const Wrapper = styled.div`
+    margin: 50px auto;
+    max-width: 430px;
     .input-group {
         input {
             margin-bottom: 0 !important;
@@ -58,7 +60,7 @@ const DriffRegisterPanel = (props) => {
     }, []);
 
     return (
-        <Wrapper className={`driff-register-panel form-wrapper ${className}`}>
+        <Wrapper className={`driff-register-panel fadeIn form-wrapper ${className}`}>
             <div id="logo">
                 <SvgIcon icon={`driff-logo`} width="110" height="80"/>
             </div>
