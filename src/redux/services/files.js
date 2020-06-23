@@ -281,3 +281,17 @@ export function moveFile(payload) {
         data: payload,
     });
 }
+
+/**
+ * @param {Object} payload
+ * @param {number} payload.file_id
+ * @returns {Promise<*>}
+ */
+export function deletePostFile(payload) {
+    let url = `/v1/files/${payload.file_id}`;
+    return apiCall({
+        method: "DELETE",
+        url: url,
+        data: payload,
+    });
+}

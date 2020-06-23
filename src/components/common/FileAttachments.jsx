@@ -4,7 +4,8 @@ import {useParams} from "react-router-dom";
 import styled from "styled-components";
 import {useOutsideClick, useTooltipOrientation} from "../hooks";
 import {SvgIconFeather} from "./index";
-import {setViewFiles} from "../../redux/actions/fileActions";
+import {setViewFiles, deletePostFile} from "../../redux/actions/fileActions";
+import {addToModals} from "../../redux/actions/globalActions";
 
 const Wrapper = styled.div`
     position: relative;
@@ -203,7 +204,29 @@ const FileAttachments = props => {
             handleRemoveFile(e.currentTarget.dataset.fileId);
             setFilePreview(null);
         } else {
-            
+            //confirmation modal for deleting file attachment
+            // let id = e.currentTarget.dataset.fileId;
+            // const handleDeleteFile = () => {
+            //     dispatch(
+            //         deletePostFile({
+            //             file_id: id
+            //         })
+            //     );
+            // };
+            // let payload = {
+            //     type: "confirmation",
+            //     headerText: "Delete file",
+            //     submitText: "Remove",
+            //     cancelText: "Cancel",
+            //     bodyText: "Are you sure you want to delete this file?",
+            //     actions: {
+            //         onSubmit: handleDeleteFile,
+            //     },
+            // };
+    
+            // dispatch(
+            //     addToModals(payload),
+            // );
         }
         
     };

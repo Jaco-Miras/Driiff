@@ -2,6 +2,7 @@ import dispatchActionToReducer, {SimpleDispatchActionToReducer} from "../actionD
 import {
     deleteFile as deleteFileService,
     deleteFolder as deleteFolderService,
+    deletePostFile as deletePostFileService,
     deleteWorkspaceFile as deleteWorkspaceFileService,
     deleteTrash as deleteTrashService,
     getChannelFiles as getChannelFilesService,
@@ -382,6 +383,16 @@ export function incomingEmptyTrash(payload, callback) {
     return SimpleDispatchActionToReducer(
         "INCOMING_EMPTY_TRASH",
         payload,
+        callback,
+    );
+}
+
+export function deletePostFile(payload, callback) {
+    return dispatchActionToReducer(
+        deletePostFileService(payload),
+        "DELETE_POST_FILE_START",
+        "DELETE_POST_FILE_SUCCESS",
+        "DELETE_POST_FILE_FAIL",
         callback,
     );
 }

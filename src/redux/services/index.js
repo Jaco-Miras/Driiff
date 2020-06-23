@@ -82,6 +82,7 @@ export {
     putFile,
     deleteTrash,
     moveFile,
+    deletePostFile,
 } from "./files";
 
 export {
