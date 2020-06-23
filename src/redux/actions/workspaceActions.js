@@ -245,3 +245,11 @@ export function addToWorkspaceFiles(payload, callback) {
         callback,
     );
 }
+
+export function incomingTimeline(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "INCOMING_TIMELINE",
+        payload,
+        callback,
+    );
+}

@@ -54,6 +54,7 @@ import {
     incomingUpdatedWorkspaceFolder,
     incomingWorkspace,
     incomingWorkspaceFolder,
+    incomingTimeline
 } from "../../redux/actions/workspaceActions";
 import {localizeDate} from "../../helpers/momentFormatJS";
 import {pushBrowserNotification} from "../../helpers/pushHelper";
@@ -118,6 +119,10 @@ class SocketListeners extends PureComponent {
                 default:
                     return null;
             }
+        })
+        .listen(".workspace-timeline-notification", e => {
+            console.log(e, "timeline")
+            this.props.incomingTimeline(e);
         })
         .listen(".upload-bulk-private-workspace-files", e => {
             console.log(e, 'files bulk')
@@ -268,6 +273,10 @@ class SocketListeners extends PureComponent {
         })
 
         window.Echo.private(`${localStorage.getItem("slug") === 'dev24admin' ? "dev" : localStorage.getItem("slug")}.App.Broadcast`)
+        .listen(".workspace-timeline-notification", e => {
+            console.log(e, "timeline")
+            this.props.incomingTimeline(e);
+        })
         .listen(".upload-bulk-workspace-files", e => {
             console.log(e, 'files bulk')
             this.props.incomingFiles(e);
@@ -748,6 +757,7 @@ function mapDispatchToProps(dispatch) {
         incomingEmptyTrash: bindActionCreators(incomingEmptyTrash, dispatch),
         incomingPostViewer: bindActionCreators(incomingPostViewer, dispatch),
         incomingUpdatedPost: bindActionCreators(incomingUpdatedPost, dispatch),
+        incomingTimeline: bindActionCreators(incomingTimeline, dispatch),
     };
 }
 

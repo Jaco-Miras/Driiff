@@ -907,6 +907,18 @@ export default (state = INITIAL_STATE, action) => {
                 workspacePosts: newWorkspacePosts
             }
         }
+        case "INCOMING_TIMELINE": {
+            let newTimeline = {...state.workspaceTimeline};
+            if (newTimeline.hasOwnProperty(action.data.workspace_data.topic_id)) {
+                newTimeline[action.data.workspace_data.topic_id].timeline[action.data.timeline_data.id] = action.data.timeline_data;
+                return {
+                    ...state,
+                    workspaceTimeline: newTimeline
+                }
+            } else {
+                return state;
+            }
+        }
         default:
             return state;
     }
