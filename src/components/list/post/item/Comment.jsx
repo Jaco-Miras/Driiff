@@ -114,7 +114,7 @@ const Comment = props => {
 
     return (
         <>
-            <Wrapper ref={refs.main} className={`comment card border ${className}`}>
+            <Wrapper ref={refs.main} className={`comment card border fadeBottom ${className}`}>
                 {
                     comment.quote &&
                     <div>{comment.quote.body}</div>

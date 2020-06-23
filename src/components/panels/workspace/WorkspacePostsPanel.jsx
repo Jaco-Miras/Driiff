@@ -23,6 +23,7 @@ const Wrapper = styled.div`
 `;
 
 const PostDetailWrapper = styled.div`
+    min-height: 240px;
     .card-body {
         padding: 1rem 1.5rem;
     }

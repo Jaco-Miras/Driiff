@@ -20929,7 +20929,7 @@ body.dark.small-navigation .navigation-menu-body ul li.navigation-divider:after 
 
 .fadeBottom {
   animation: fadeb 0.15s cubic-bezier(.275, .420, .000, 1.000);
-  min-height: 200px;
+  // min-height: 200px;
 }
 @keyframes fadeb {
   0% {
