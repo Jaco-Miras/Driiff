@@ -29,21 +29,7 @@ const FileListItem = (props) => {
 
     const {className = "", file, actions, isMember} = props;
 
-    let fileSize = 0;
-    let fileSizeUnit = "";
-
-    if (file.hasOwnProperty("size")) {
-        if (file.size < 1e+6) {
-            fileSize = file.size / 1000;
-            fileSizeUnit = "KB";
-        } else if (file.size < 1e+9) {
-            fileSize = file.size / 1e+6;
-            fileSizeUnit = "MB";
-        } else if (file.size < 1e+12) {
-            fileSize = file.size / 1e+9`$ GB`;
-            fileSizeUnit = "GB";
-        }
-    }
+    const fileSizeUnit = actions.getFileSizeUnit(file.hasOwnProperty("size") ? file.size : 0);
 
     return (
         <Wrapper className={`file-list-item ${className}`}>
@@ -59,7 +45,7 @@ const FileListItem = (props) => {
                 <div className="p-2 small">
                     <div>{file.search}</div>
                     <div
-                        className="text-muted">{(fileSize).toString().match(/^-?\d+(?:\.\d{0,2})?/)[0]}{fileSizeUnit}</div>
+                        className="text-muted">{(fileSizeUnit.size).toString().match(/^-?\d+(?:\.\d{0,2})?/)[0]}{fileSizeUnit.unit}</div>
                 </div>
             </div>
         </Wrapper>

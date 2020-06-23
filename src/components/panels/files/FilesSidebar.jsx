@@ -24,10 +24,7 @@ const Icon = styled(SvgIconFeather)`
 const FileSidebar = (props) => {
 
     const {
-        className = "", isMember, filterFile, filter = "all", dropZoneRef, storage = {
-            amount: 10,
-            limit: 25,
-        }, wsFiles,
+        className = "", isMember, actions, filterFile, filter = "all", dropZoneRef, storageLimit = 25, wsFiles,
     } = props;
 
     const handleShowUploadModal = () => {
@@ -35,6 +32,9 @@ const FileSidebar = (props) => {
             dropZoneRef.current.open();
         }
     };
+
+    const fileSizeUnit = actions.getFileSizeUnit(wsFiles.storage);
+    const storageAmount = wsFiles.storage === 0 ? 0 : wsFiles.storage < 1e9 / 10 ? 1e9 / 10 : wsFiles.storage;
 
     return (
         <Wrapper className={`file-sidebar ${className}`}>
@@ -86,11 +86,11 @@ const FileSidebar = (props) => {
                                     <SvgIconFeather icon="database"/>
                                 </div>
                                 <div className="flex-grow-1">
-                                    <ProgressBar amount={wsFiles.storage / 1e9} limit={storage.limit}/>
+                                    <ProgressBar amount={storageAmount} limit={storageLimit * 1e9}/>
                                     <div
-                                        className="line-height-12 small text-muted mt-2">{(wsFiles.storage / 1e9).toFixed(2)}GB
-                                        used
-                                        of {storage.limit}GB
+                                        className="line-height-12 small text-muted mt-2">
+                                        {fileSizeUnit.size.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0]}{fileSizeUnit.unit} used
+                                        of {storageLimit}GB
                                     </div>
                                 </div>
                             </div>

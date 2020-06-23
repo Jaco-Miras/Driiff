@@ -359,6 +359,32 @@ const useFileActions = (params = null) => {
         );
     }, [dispatch, params]);
 
+    const getFileSizeUnit = useCallback((size) => {
+        if (size) {
+            if (size < 1e+6) {
+                return {
+                    size: size / 1000,
+                    unit: "KB",
+                };
+            } else if (size < 1e+9) {
+                return {
+                    size: size / 1e+6,
+                    unit: "MB",
+                };
+            } else if (size < 1e+12) {
+                return {
+                    size: size / 1e+9,
+                    unit: "GB",
+                };
+            }
+        } else {
+            return {
+                size: 0,
+                unit: "KB",
+            };
+        }
+    });
+
     return {
         clearSearch,
         copyLink,
@@ -382,6 +408,7 @@ const useFileActions = (params = null) => {
         updateFolder,
         uploadFiles,
         viewFiles,
+        getFileSizeUnit,
     };
 };
 
