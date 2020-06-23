@@ -2,7 +2,7 @@ import React from "react";
 import {useDispatch} from "react-redux";
 import {useRouteMatch} from "react-router-dom";
 import styled from "styled-components";
-import {localizeChatTimestamp} from "../../../../helpers/momentFormatJS";
+import {todayOrYesterdayDate} from "../../../../helpers/momentFormatJS";
 import {setViewFiles} from "../../../../redux/actions/fileActions";
 import {Avatar} from "../../../common";
 import useFileActions from "../../../hooks/useFileActions";
@@ -56,7 +56,7 @@ const AttachFileTimeline = (props) => {
                             onClick={handleFilePreview} className="file-summary">attached a file</span>
                         </span>
                         <span
-                            className="text-muted font-weight-normal">{localizeChatTimestamp(data.created_at.timestamp)}</span>
+                            className="text-muted font-weight-normal">{todayOrYesterdayDate(data.created_at.timestamp)}</span>
                     </h6>
                     <div className="mb-3 border p-3 border-radius-1">
                         <span onClick={handleFilePreview} className="timeline-file-icon">

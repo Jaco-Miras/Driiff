@@ -1,7 +1,7 @@
 import React from "react";
 import {useSelector} from "react-redux";
 import styled from "styled-components";
-import {localizeChatTimestamp} from "../../../../helpers/momentFormatJS";
+import {todayOrYesterdayDate} from "../../../../helpers/momentFormatJS";
 import {Avatar} from "../../../common";
 
 const Wrapper = styled.div`
@@ -92,7 +92,7 @@ const MemberTimeline = (props) => {
                         {message.author.name} {renderTitle()}
                     </span>
                     <span
-                        className="text-muted font-weight-normal">{localizeChatTimestamp(data.created_at.timestamp)}</span>
+                        className="text-muted font-weight-normal">{todayOrYesterdayDate(data.created_at.timestamp)}</span>
                 </h6>
                 {
                     message.added_members.length || message.removed_members.length ?

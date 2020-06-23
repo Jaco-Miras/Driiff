@@ -18,6 +18,9 @@ const Wrapper = styled(MoreOptions)`
         &.orientation-top {
             bottom: 20px;
         }
+        &.orientation-right {
+            right: calc(100% - 10px);
+        }
     }
 `;
 

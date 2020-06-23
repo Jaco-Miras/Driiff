@@ -1,21 +1,21 @@
 import React from "react";
 import {useHistory, useRouteMatch} from "react-router-dom";
 import styled from "styled-components";
-import {localizeChatTimestamp} from "../../../../helpers/momentFormatJS";
+import {todayOrYesterdayDate} from "../../../../helpers/momentFormatJS";
 import {Avatar, FileAttachments} from "../../../common";
 
 const Wrapper = styled.div`
     .title {
         color: #828282;
         font-weight: normal;
-        
+
         .post-title {
             cursor: pointer;
             cursor: hand;
             color: #505050;
             font-weight: 600;
-            
-            .text-primary {           
+
+            .text-primary {
                 font-weight: 600;
                 font-style: italic;
                 font-weight: normal;
@@ -52,7 +52,7 @@ const PostTimeline = (props) => {
                         {data.user.name} <span className="post-title" onClick={handleLinkClick} title={data.title}>shared a post: <span
                         className="text-primary">{data.title}</span></span>                    </span>
                     <span
-                        className="text-muted font-weight-normal">{localizeChatTimestamp(data.created_at.timestamp)}</span>
+                        className="text-muted font-weight-normal">{todayOrYesterdayDate(data.created_at.timestamp)}</span>
                 </h6>
                 <span onClick={handleLinkClick}>
                     <div className="mb-3 border p-3 border-radius-1">

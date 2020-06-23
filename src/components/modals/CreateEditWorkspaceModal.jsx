@@ -16,21 +16,21 @@ import {ModalHeaderSection} from "./index";
 const WrapperDiv = styled(InputGroup)`
     display: flex;
     align-items: center;
-    margin-bottom: 20px;    
+    margin-bottom: 20px;
 
     > .form-control:not(:first-child) {
         border-radius: 5px;
     }
-    
+
     .input-feedback {
         margin-left: 130px;
     }
-    
+
     label {
         white-space: nowrap;
         margin: 0 20px 0 0;
         min-width: 109px;
-    }    
+    }
     button {
         margin-left: auto;
     }
@@ -47,12 +47,12 @@ const WrapperDiv = styled(InputGroup)`
         position: relative;
         max-width: 100%;
         margin-left: 128px;
-        
+
         ul {
             margin-right: 128px;
             margin-bottom: 0;
-            
-            li {                
+
+            li {
                 white-space: nowrap;
                 text-overflow: ellipsis;
                 overflow: hidden;
@@ -76,14 +76,36 @@ const SelectFolder = styled(FolderSelect)`
 const SelectPeople = styled(PeopleSelect)`
     flex: 1 0 0;
     width: 1%;
+    .react-select__control--menu-is-open {
+        border-color: #7a1b8b !important;
+        box-shadow: none;
+    }
+    .react-select__option {
+        background-color: #ffffff;
+    }
+    .react-select__menu-list--is-multi > div {
+        &:hover {
+            background: #8C3B9B;
+            color: #ffffff;
+            cursor: pointer;
+            .react-select__option {
+                background: #8C3B9B;
+                cursor: pointer;
+            }
+        }
+    }
+    .react-select__control--is-focused {
+        border-color: #7a1b8b !important;
+        box-shadow: none;
+    }
 `;
 
 const ActiveTabName = styled.span`
     color: #505050;
     font-size: 10px;
-    font-weight: 400;    
+    font-weight: 400;
     margin-left: 13px;
-    
+
     &::before{
         content: '';
         display: inline-block;
