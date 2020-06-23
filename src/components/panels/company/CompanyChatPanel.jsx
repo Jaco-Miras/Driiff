@@ -12,7 +12,6 @@ const CompanyChatPanel = (props) => {
 
     const {lastVisitedChannel, channels, userChannels, selectedChannel, actions: channelActions} = useUserChannels();
     const [useLastVisitedChannel, setUseLastVisitedChannel] = useState(null);
-    const [activeTabPill, setActiveTabPill] = useState("home");
 
     useEffect(() => {
         if (typeof props.match.params.code === "undefined") {
@@ -28,13 +27,13 @@ const CompanyChatPanel = (props) => {
     const setLastVisitedChannel = () => {
         if (lastVisitedChannel) {
             channelActions.select(lastVisitedChannel, () => {
-                setActiveTabPill(lastVisitedChannel.type === "DIRECT" ? "contact" : "home");
+                //setActiveTabPill(lastVisitedChannel.type === "DIRECT" ? "contact" : "home");
                 props.history.push(`/chat/${lastVisitedChannel.code}`);
             });
         } else {
             channelActions.fetchLastVisited((err, res) => {
                 channelActions.select(res.data, () => {
-                    setActiveTabPill(res.data.type === "DIRECT" ? "contact" : "home");
+                    //setActiveTabPill(res.data.type === "DIRECT" ? "contact" : "home");
                     props.history.push(`/chat/${res.data.code}`);
                 });
             });
@@ -45,7 +44,7 @@ const CompanyChatPanel = (props) => {
         channelActions.fetchByCode(props.match.params.code, (err, res) => {
             if (res) {
                 channelActions.select(res.data);
-                setActiveTabPill(res.data.type === "DIRECT" ? "contact" : "home");
+                //setActiveTabPill(res.data.type === "DIRECT" ? "contact" : "home");
             }
         });
     };
@@ -63,12 +62,14 @@ const CompanyChatPanel = (props) => {
     return (
         <Wrapper className={`company-chat-panel container-fluid h-100 ${className}`}>
             <div className="row no-gutters chat-block">
-                <ChatSidebarPanel className={`col-lg-4 border-right`} activeTabPill={`pills-${activeTabPill}`}
-                                  channels={channels}
-                                  userChannels={userChannels}
-                                  selectedChannel={selectedChannel}/>
-                <ChatContentPanel className={`col-lg-8`}
-                                  selectedChannel={selectedChannel}/>
+                <ChatSidebarPanel
+                    className={`col-lg-4 border-right`}
+                    channels={channels}
+                    userChannels={userChannels}
+                    selectedChannel={selectedChannel}/>
+                <ChatContentPanel
+                    className={`col-lg-8`}
+                    selectedChannel={selectedChannel}/>
             </div>
         </Wrapper>
     );
