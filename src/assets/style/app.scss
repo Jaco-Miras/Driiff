@@ -20927,16 +20927,17 @@ body.dark.small-navigation .navigation-menu-body ul li.navigation-divider:after 
   animation: fadeIn 0.15s linear;
 }
 
-.fadeBottom {
-  animation: fadeb 0.15s linear;
-}
-@keyframes fadeb {
-  0% {
-    opacity: 0;
-    margin-bottom: -24px;
-  }
-  100% {
-    opacity: 1;
-    margin-bottom: 0;
-  }
-}
+// .fadeBottom {
+//   animation: fadeb 0.15s linear;
+// }
+// @keyframes fadeb {
+//   0% {
+//     opacity: 0;
+//     margin-bottom: -24px;
+//   }
+//   100% {
+//     opacity: 1;
+//     margin-bottom: 0;
+//   }
+// }
+

@@ -95,6 +95,28 @@ const SelectWorkspace = styled(FolderSelect)`
 const SelectPeople = styled(PeopleSelect)`
     flex: 1 0 0;
     width: 1%;
+    .react-select__control--menu-is-open {
+        border-color: #7a1b8b !important;
+        box-shadow: none;
+    }
+    .react-select__option {
+        background-color: #ffffff;
+    }
+    .react-select__menu-list--is-multi > div {
+        &:hover {
+            background: #8C3B9B;
+            color: #ffffff;
+            cursor: pointer;
+            .react-select__option {
+                background: #8C3B9B;
+                cursor: pointer;
+            }
+        }
+    }
+    .react-select__control--is-focused {
+        border-color: #7a1b8b !important;
+        box-shadow: none;
+    }
 `;
 
 const CheckBoxGroup = styled.div`
