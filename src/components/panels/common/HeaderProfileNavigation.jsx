@@ -150,7 +150,8 @@ const HomeProfileNavigation = (props) => {
                 <NotificationDropDown/>
             </li>
             <li className="nav-item dropdown">
-                <a href="/" className="nav-link profile-button" data-toggle="dropdown" title={user.name}
+
+            <a href="/" className="nav-link profile-button" data-toggle="dropdown" title={user.name}
                    onClick={toggleDropdown}>
                     <div className="avatar-overlay"/>
                     <Avatar name={user.name} imageLink={user.profile_image_link} noDefaultClick={true}/>
