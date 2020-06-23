@@ -84,60 +84,66 @@ const WorkspacePostsPanel = (props) => {
                 <div className="col-md-9 app-content">
                     <div className="app-content-overlay"/>
                     <PostFilterSearchPanel activeSort={sort} workspace={workspace}/>
-                    <div className="card card-body app-content-body mb-2">
+                    {/* <div className="card card-body app-content-body mb-4"> */}
                         {
                             posts.length === 0 ?
-                            <EmptyState>
-                                <SvgEmptyState icon={3} height={252}/>
-                                {
-                                    isMember &&
-                                    <button className="btn btn-outline-primary btn-block"
-                                            onClick={handleShowWorkspacePostModal}>
-                                        Create new post
-                                    </button>
-                                }
-                            </EmptyState>
-                                               :
+                            <div className="card card-body app-content-body mb-4">
+                                <EmptyState>
+                                    <SvgEmptyState icon={3} height={252}/>
+                                    {
+                                        isMember &&
+                                        <button className="btn btn-outline-primary btn-block"
+                                                onClick={handleShowWorkspacePostModal}>
+                                            Create new post
+                                        </button>
+                                    }
+                                </EmptyState>
+                            </div>
+                                :
                             <>{
                                 post ?
-                                <PostDetailWrapper className="fadeIn">
-                                    <PostDetail
-                                        post={post} postActions={actions}
-                                        user={user} history={history}
-                                        onGoBack={handleGoback}/>
-                                </PostDetailWrapper>
+                                <div className="card card-body app-content-body mb-4">
+                                    <PostDetailWrapper className="fadeBottom">
+                                        <PostDetail
+                                            post={post} postActions={actions}
+                                            user={user} history={history}
+                                            onGoBack={handleGoback}/>
+                                    </PostDetailWrapper>
+                                </div>
                                      :
-                                <div className="app-lists"
-                                     tabIndex="1">
-                                    {
-                                        search !== null &&
-                                        <>
-                                            {
-                                                posts.length === 0 ?
-                                                <h6 className="search-title card-title font-size-11 text-uppercase mb-4">No
-                                                    result found: {search}</h6>
-                                                                   :
-                                                posts.length === 1 ?
-                                                <h6 className="search-title card-title font-size-11 text-uppercase mb-4">Search
-                                                    Result: {search}</h6>
-                                                                   :
-                                                <h6 className="search-title card-title font-size-11 text-uppercase mb-4">Search
-                                                    Results: {search}</h6>
-                                            }
-                                        </>
-                                    }
-                                    <ul className="list-group list-group-flush ui-sortable fadeIn">
+                                <div className="card card-body app-content-body mb-4">
+                                    <div className="app-lists"
+                                        tabIndex="1">
                                         {
-                                            posts &&
-                                            posts.map(p => {
-                                                return <PostItemPanel key={p.id} post={p} postActions={actions}/>;
-                                            })
+                                            search !== null &&
+                                            <>
+                                                {
+                                                    posts.length === 0 ?
+                                                    <h6 className="search-title card-title font-size-11 text-uppercase mb-4">No
+                                                        result found: {search}</h6>
+                                                                    :
+                                                    posts.length === 1 ?
+                                                    <h6 className="search-title card-title font-size-11 text-uppercase mb-4">Search
+                                                        Result: {search}</h6>
+                                                                    :
+                                                    <h6 className="search-title card-title font-size-11 text-uppercase mb-4">Search
+                                                        Results: {search}</h6>
+                                                }
+                                            </>
                                         }
-                                    </ul>
+                                        <ul className="list-group list-group-flush ui-sortable fadeIn">
+                                            {
+                                                posts &&
+                                                posts.map(p => {
+                                                    return <PostItemPanel key={p.id} post={p} postActions={actions}/>;
+                                                })
+                                            }
+                                        </ul>
+                                    </div>
                                 </div>
                             }</>
                         }
-                    </div>
+                    {/* </div> */}
                 </div>
             </div>
         </Wrapper>
