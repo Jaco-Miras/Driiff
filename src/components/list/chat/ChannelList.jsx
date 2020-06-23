@@ -13,7 +13,7 @@ const Wrapper = styled.span`
     cursor: hand;
     position: relative;
     ${props => props.selected && "padding-left: 14px !important"};
-
+    transition: all 0.15s linear;
     .more-options {
         position: relative;
         opacity: 0;
@@ -48,6 +48,7 @@ const Wrapper = styled.span`
         position: absolute;
         left: 0;
         top: 0;
+        animation: fadeIn 0.15s linear;
     }
 
 

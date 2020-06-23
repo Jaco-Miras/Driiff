@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import {localizeChatTimestamp} from "../../../../helpers/momentFormatJS";
+import {todayOrYesterdayDate} from "../../../../helpers/momentFormatJS";
 import {Avatar} from "../../../common";
 
 const Wrapper = styled.div`
@@ -21,7 +21,7 @@ const WorkspaceTimeline = (props) => {
                         {workspace.user.name} <a href="#">shared a post</a>
                     </span>
                     <span
-                        className="text-muted font-weight-normal">{localizeChatTimestamp(workspace.created_at.timestamp)}</span>
+                        className="text-muted font-weight-normal">{todayOrYesterdayDate(workspace.created_at.timestamp)}</span>
                 </h6>
                 <a href="#">
                     <div className="mb-3 border p-3 border-radius-1">
