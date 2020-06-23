@@ -107,12 +107,12 @@ const FilesHeader = (props) => {
                             <ButtonDropdown dropdown={addDropDown}/>
                         </li>
                     }
-                    <li className="list-inline-item mb-0">
-                        <ButtonDropdown dropdown={folderDropDown}/>
-                    </li>
-                    {/* <li className="list-inline-item mb-0">
-                     <ButtonDropdown dropdown={orderByDropDown}/>
-                     </li> */}
+                    {
+                        Object.keys(folders).length >= 1 &&
+                        <li className="list-inline-item mb-0">
+                            <ButtonDropdown dropdown={folderDropDown}/>
+                        </li>
+                    }
                 </ul>
             </div>
             <div className="action-right">
