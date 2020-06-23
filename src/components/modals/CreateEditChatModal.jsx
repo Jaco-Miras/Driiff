@@ -278,7 +278,7 @@ const CreateEditChatModal = props => {
                     profile: res.data.channel.profile,
                     type: "GROUP",
                     last_reply: res.data.channel.last_reply,
-                    replies: [{
+                    replies: textOnly.trim().length !== 0 ? [{
                         ...message,
                         id: res.data.last_reply.id,
                         channel_id: res.data.channel.id,
@@ -288,7 +288,7 @@ const CreateEditChatModal = props => {
                         updated_at: {
                             timestamp: message.created_at.timestamp,
                         },
-                    }],
+                    }] : [],
                     selected: true,
                 };
 
