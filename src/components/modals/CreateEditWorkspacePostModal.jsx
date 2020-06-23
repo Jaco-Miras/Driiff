@@ -565,8 +565,8 @@ const CreateEditWorkspacePostModal = props => {
             </ModalHeaderSection>
             <ModalBody>
                 <Modal isOpen={nestedModal} toggle={toggleNested} onClosed={closeAll ? toggle : undefined} centered>
-                    <ModalHeader>Save draft</ModalHeader>
-                        <ModalBody>Save post draft</ModalBody>
+                    <ModalHeader>Save as draft</ModalHeader>
+                        <ModalBody>Not sure about the content? Save it as a draft.</ModalBody>
                     <ModalFooter>
                         <Button color="primary" onClick={() => toggleAll(true)}>Save</Button>
                         <Button color="secondary" onClick={toggleAll}>Discard</Button>
