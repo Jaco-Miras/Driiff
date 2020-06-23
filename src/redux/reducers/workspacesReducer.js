@@ -721,9 +721,20 @@ export default (state = INITIAL_STATE, action) => {
             }
             if (newPostComments.hasOwnProperty(action.data.post_id)) {
                 if (action.data.reference_id) {
-                    delete newPostComments[action.data.post_id].comments[action.data.reference_id]
+                    if (action.data.parent_id) {
+                        delete newPostComments[action.data.post_id].comments[action.data.parent_id].replies[action.data.reference_id];
+                        newPostComments[action.data.post_id].comments[action.data.parent_id].replies[action.data.id] = action.data;
+                    } else {
+                        delete newPostComments[action.data.post_id].comments[action.data.reference_id]
+                        newPostComments[action.data.post_id].comments[action.data.id] = action.data;
+                    }
+                } else {
+                    if (action.data.parent_id) {
+                        newPostComments[action.data.post_id].comments[action.data.parent_id].replies[action.data.id] = action.data;
+                    } else {
+                        newPostComments[action.data.post_id].comments[action.data.id] = action.data;
+                    }
                 }
-                newPostComments[action.data.post_id].comments[action.data.id] = action.data;
             }
             return {
                 ...state,

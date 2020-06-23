@@ -22,11 +22,16 @@ const usePosts = () => {
                 let cb = (err, res) => {
                     setFetchingPost(false);
                     if (err) return;
+                    let files = res.data.posts.map(p => p.files);
+                    if (files.length) {
+                        files = files.flat();
+                    }
                     actions.getTagsCount(parseInt(params.workspaceId));
                     dispatch(
                         addToWorkspacePosts({
                             topic_id: parseInt(params.workspaceId),
                             posts: res.data.posts,
+                            files
                         }),
                     );
                 }
@@ -37,11 +42,16 @@ const usePosts = () => {
                 let filterCb = (err,res) => {
                     setFetchingPost(false);
                     if (err) return;
+                    let files = res.data.posts.map(p => p.files);
+                    if (files.length) {
+                        files = files.flat();
+                    }
                     dispatch(
                         addToWorkspacePosts({
                             topic_id: parseInt(params.workspaceId),
                             posts: res.data.posts,
-                            filter: res.data.posts
+                            filter: res.data.posts,
+                            files
                         }),
                     );
                 }

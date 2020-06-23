@@ -673,7 +673,8 @@ const CreateEditWorkspacePostModal = props => {
                 <WrapperDiv>
                     <button
                         className="btn btn-primary"
-                        disabled={form.selectedUsers.length === 0 || form.title === "" || form.selectedWorkspaces.length === 0}
+                        disabled={form.selectedUsers.length === 0 || form.title === "" || 
+                                    form.textOnly.trim() === "" || form.selectedWorkspaces.length === 0}
                         onClick={handleConfirm}>
                         {mode === "edit" ? "Update post" : "Create post"}
                     </button>

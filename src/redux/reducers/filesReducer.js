@@ -159,6 +159,41 @@ export default (state = INITIAL_STATE, action) => {
                 workspaceFiles: newWorkspaceFiles
             }
         }
+        case "ADD_TO_WORKSPACE_POSTS": {
+            if (action.data.files.length) {
+                let newWorkspaceFiles = {...state.workspaceFiles};
+                if (newWorkspaceFiles.hasOwnProperty(action.data.topic_id)) {
+                    newWorkspaceFiles = {
+                        [action.data.topic_id]: {
+                            ...newWorkspaceFiles[action.data.topic_id],
+                            files: {...convertArrayToObject(action.data.files, "id"), ...newWorkspaceFiles[action.data.topic_id].files},
+                        }
+                    }
+                } else {
+                    newWorkspaceFiles = {
+                        ...newWorkspaceFiles,
+                        [action.data.topic_id]: {
+                            files: convertArrayToObject(action.data.files, "id"),
+                            folders: {},
+                            storage: 0,
+                            count: 0,
+                            stars: 0,
+                            trash: 0,
+                            popular_files: [],
+                            recently_edited: [],
+                            favorite_files: [],
+                            trash_files: {},
+                            search_results: [],
+                            search_value: "",
+                        }
+                    }
+                }
+                return {
+                    ...state,
+                    workspaceFiles: newWorkspaceFiles
+                }
+            } else return state;
+        }
         case "GET_WORKSPACE_FILES_SUCCESS": {
             let newWorkspaceFiles = {...state.workspaceFiles};
             if (newWorkspaceFiles.hasOwnProperty(action.data.topic_id)) {

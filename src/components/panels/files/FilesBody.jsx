@@ -174,8 +174,9 @@ const FilesBody = (props) => {
                                         fileIds.map(f => {
                                             return (
                                                 <FileListItem
+                                                    key={f}
                                                     isMember={isMember}
-                                                    scrollRef={scrollRef} key={f.id} actions={actions}
+                                                    scrollRef={scrollRef} actions={actions}
                                                     className="col-xl-3 col-lg-4 col-md-6 col-sm-12"
                                                     file={wsFiles.files[f]}/>
                                             );

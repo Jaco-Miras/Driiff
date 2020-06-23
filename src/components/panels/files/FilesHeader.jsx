@@ -25,7 +25,7 @@ const FilesHeader = (props) => {
 
     const {
         className = "", isMember, dropZoneRef, onSearchChange, onSearch, onEnter,
-        wsFiles, handleAddEditFolder, folders, history, params,
+        wsFiles, handleAddEditFolder, folders, history, params, clearFilter
     } = props;
 
     const handleClickAdd = () => {
@@ -35,6 +35,7 @@ const FilesHeader = (props) => {
     };
 
     const handleClickFolder = (e) => {
+        clearFilter();
         if (wsFiles.folders.hasOwnProperty(e.target.dataset.value)) {
             let f = wsFiles.folders[e.target.dataset.value];
             if (params.hasOwnProperty("fileFolderId")) {

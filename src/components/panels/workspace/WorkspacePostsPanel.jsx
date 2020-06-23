@@ -108,7 +108,8 @@ const WorkspacePostsPanel = (props) => {
                                         <PostDetail
                                             post={post} postActions={actions}
                                             user={user} history={history}
-                                            onGoBack={handleGoback}/>
+                                            onGoBack={handleGoback}
+                                            workspace={workspace}/>
                                     </PostDetailWrapper>
                                 </div>
                                      :

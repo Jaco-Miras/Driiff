@@ -86,7 +86,7 @@ const MarkAsRead = styled.div`
 
 const PostDetail = props => {
 
-    const {post, postActions, user, onGoBack} = props;
+    const {post, postActions, user, onGoBack, workspace} = props;
     const dispatch = useDispatch();
 
     const [showDropZone, setshowDropZone] = useState(false);
@@ -95,7 +95,7 @@ const PostDetail = props => {
         onGoBack();
     };
     const commentActions = useCommentActions();
-    const comments = useComments(post, commentActions);
+    const comments = useComments(post, commentActions, workspace);
 
     const refs = {
         dropZoneRef: useRef(null),
@@ -207,10 +207,11 @@ const PostDetail = props => {
                 <div>
                     {
                         post.author.id !== user.id && !post.is_read_requirement &&
-                        <MarkAsRead className="mr-3 d-sm-inline d-none" onClick={markRead}>
-                            <div className="badge badge-danger">
+                        <MarkAsRead className="mr-3 d-sm-inline d-none">
+                            <button className="btn btn-primary btn-block"
+                                    onClick={markRead}>
                                 Mark as read
-                            </div>
+                            </button>
                         </MarkAsRead>
                     }
                     {
@@ -262,7 +263,7 @@ const PostDetail = props => {
                     <>
                         <div className="card-body">
                             <h6 className="mb-3 font-size-11 text-uppercase">Files</h6>
-                            <PostFiles attachedFiles={post.files}/>
+                            <PostFiles attachedFiles={post.files} type="workspace"/>
                         </div>
                         <hr className="m-0"/>
                     </>

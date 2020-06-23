@@ -29,7 +29,7 @@ const FileListItem = (props) => {
 
     const {className = "", file, actions, isMember} = props;
 
-    const fileSizeUnit = actions.getFileSizeUnit(file.hasOwnProperty("size") ? file.size : 0);
+    const fileSizeUnit = actions.getFileSizeUnit(file.hasOwnProperty("size") && typeof file.size === "number" ? file.size : 0);
 
     return (
         <Wrapper className={`file-list-item ${className}`}>

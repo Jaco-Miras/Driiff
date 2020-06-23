@@ -237,3 +237,11 @@ export function fetchTimeline(payload, callback) {
         callback,
     );
 }
+
+export function addToWorkspaceFiles(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "ADD_TO_WORKSPACE_FILES",
+        payload,
+        callback,
+    );
+}

@@ -141,6 +141,10 @@ const WorkspaceFilesPanel = (props) => {
         );
     };
 
+    const clearFilter = useCallback(() => {
+        setFilter("");
+    }, [setFilter]);
+
     if (!wsFiles)
         return <></>;
 
@@ -155,7 +159,7 @@ const WorkspaceFilesPanel = (props) => {
                 <div className="col-md-9 app-content mb-4">
                     <div className="app-content-overlay"/>
                     <FilesHeader
-                        isMember={isMember}
+                        isMember={isMember} clearFilter={clearFilter}
                         dropZoneRef={refs.dropZone} history={history} params={params}
                         onSearch={handleSearch} onSearchChange={handleSearchChange} onEnter={handleEnter}
                         wsFiles={wsFiles} handleAddEditFolder={handleAddEditFolder} folders={folders}/>
