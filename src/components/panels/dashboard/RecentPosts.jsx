@@ -90,10 +90,6 @@ const RecentPosts = (props) => {
         }
     }, [match.params.workspaceId]);
 
-    console.log('hiero')
-    // console.log(posts != null);
-    // console.log(posts != null && posts.length);
-    console.log(posts);
 
     return (
         <Wrapper className={`recent-posts card ${className}`}>

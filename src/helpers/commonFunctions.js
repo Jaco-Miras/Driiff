@@ -166,7 +166,7 @@ function fallbackCopyTextToClipboard(text) {
     document.body.removeChild(textArea);
 }
 
-export const copyTextToClipboard = (text, notification = `Copied text to clipboard.`) => {
+export const copyTextToClipboard = (text, notification = `Copied file link to clipboard.`) => {
     if (!navigator.clipboard) {
         fallbackCopyTextToClipboard(text);
         return;
