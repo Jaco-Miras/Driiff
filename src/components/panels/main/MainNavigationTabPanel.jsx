@@ -103,11 +103,6 @@ const MainNavigationTabPanel = (props) => {
             <div className="flex-grow-1">
                 <ul>
                     <li>
-                        <NavIconContainer active={false} to="/dashboard">
-                            <NavIcon icon={`bar-chart-2`}/>
-                        </NavIconContainer>
-                    </li>
-                    <li>
                         <NavIconContainer to={workspacePath}>
                             <NavIcon icon={`command`}/>
                             {
