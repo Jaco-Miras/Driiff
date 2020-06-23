@@ -40,7 +40,7 @@ const GuestLayout = (props) => {
     }, [location]);
 
     return (
-        <Wrapper className="form-wrapper">
+        <Wrapper className="form-wrapper fadeIn">
             <div id="logo">
                 <SvgIcon icon={`driff-logo`} width="110" height="80"/>
             </div>

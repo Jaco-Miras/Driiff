@@ -132,7 +132,8 @@ const FileWrapper = styled.figure`
     padding: 40px 0;
     margin: 0 auto;
     img {
-        max-width: 100%;
+        max-width: 80vh;
+        max-height: 80vh;
     }
 `;
 

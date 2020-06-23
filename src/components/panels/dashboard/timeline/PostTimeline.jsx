@@ -49,17 +49,19 @@ const PostTimeline = (props) => {
             <div>
                 <h6 className="d-flex justify-content-between mb-4">
                     <span className="title">
-                        {data.user.name} <span className="post-title" onClick={handleLinkClick} title={data.title}>shared a post: <span
-                        className="text-primary">{data.title}</span></span>                    </span>
+                        {data.user.name} <span className="post-title" onClick={handleLinkClick} title={data.title}>shared the post  "{data.title}"</span>
+                    </span>
                     <span
                         className="text-muted font-weight-normal">{todayOrYesterdayDate(data.created_at.timestamp)}</span>
                 </h6>
-                <span onClick={handleLinkClick}>
-                    <div className="mb-3 border p-3 border-radius-1">
-                        <div dangerouslySetInnerHTML={{__html: data.body}}/>
-                    </div>
-                </span>
-
+                {
+                    data.body.replace(/<\/?[^>]+(>|$)/g, "") &&
+                    <span onClick={handleLinkClick}>
+                        <div className="mb-3 border p-3 border-radius-1">
+                            <div dangerouslySetInnerHTML={{__html: data.body}}/>
+                        </div>
+                    </span>
+                }
                 {
                     data.files && data.files.length >= 1 &&
                     <>
