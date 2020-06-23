@@ -13,7 +13,13 @@ const Wrapper = styled.div`
             cursor: pointer;
             cursor: hand;
             color: #505050;
-            font-weight: bold;
+            font-weight: 600;
+            
+            .text-primary {           
+                font-weight: 600;
+                font-style: italic;
+                font-weight: normal;
+            }
         }
     }
     img {
@@ -43,8 +49,8 @@ const PostTimeline = (props) => {
             <div>
                 <h6 className="d-flex justify-content-between mb-4">
                     <span className="title">
-                        {data.user.name} <span className="post-title" onClick={handleLinkClick} title={data.title}>shared a post</span>
-                    </span>
+                        {data.user.name} <span className="post-title" onClick={handleLinkClick} title={data.title}>shared a post: <span
+                        className="text-primary">{data.title}</span></span>                    </span>
                     <span
                         className="text-muted font-weight-normal">{localizeChatTimestamp(data.created_at.timestamp)}</span>
                 </h6>
