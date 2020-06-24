@@ -34,7 +34,7 @@ const PickerEmoji = React.forwardRef((props, ref) => {
                 title="Emoji"
                 set='apple'
                 onSelect={props.onSelectEmoji}
-                theme='dark'
+                theme='light'
                 //autoFocus
                 //showPreview={false}
                 showSkinTones={false}

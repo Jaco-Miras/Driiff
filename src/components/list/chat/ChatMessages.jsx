@@ -29,7 +29,9 @@ const ChatReplyContainer = styled.div`
     margin: 0;
     padding: 0;
   }
-
+  .chat-message-options svg {
+    fill: currentColor;
+  }
   &.is-processed {
     opacity: 0;
   }
