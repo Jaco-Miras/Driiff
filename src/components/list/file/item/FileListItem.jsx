@@ -43,7 +43,7 @@ const FileListItem = (props) => {
                     <FileOptions file={file} actions={actions} isMember={isMember}/>
                 </div>
                 <div className="p-2 small">
-                    <div>{file.search}</div>
+                    <div>{file.name ? file.name : file.search}</div>
                     <div
                         className="text-muted">{(fileSizeUnit.size).toString().match(/^-?\d+(?:\.\d{0,2})?/)[0]}{fileSizeUnit.unit}</div>
                 </div>

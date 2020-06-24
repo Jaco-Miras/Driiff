@@ -118,7 +118,10 @@ const AttachmentIcon = styled(SvgIconFeather)`
 
 const FileAttachments = props => {
 
-    const {className = "", attachedFiles, handleRemoveFile, scrollRef = null, type = "modal", workspace = null} = props;
+    const { 
+        className = "", attachedFiles, handleRemoveFile, scrollRef = null, 
+        type = "modal", workspace = null, post = null, comment = null
+    } = props;
     const dispatch = useDispatch();
     const params = useParams();
     const [filePreview, setFilePreview] = useState(null);
@@ -205,28 +208,32 @@ const FileAttachments = props => {
             setFilePreview(null);
         } else {
             //confirmation modal for deleting file attachment
-            // let id = e.currentTarget.dataset.fileId;
-            // const handleDeleteFile = () => {
-            //     dispatch(
-            //         deletePostFile({
-            //             file_id: id
-            //         })
-            //     );
-            // };
-            // let payload = {
-            //     type: "confirmation",
-            //     headerText: "Delete file",
-            //     submitText: "Remove",
-            //     cancelText: "Cancel",
-            //     bodyText: "Are you sure you want to delete this file?",
-            //     actions: {
-            //         onSubmit: handleDeleteFile,
-            //     },
-            // };
-    
-            // dispatch(
-            //     addToModals(payload),
-            // );
+            if (params.hasOwnProperty("postId")) {
+                let id = e.currentTarget.dataset.fileId;
+                const handleDeleteFile = () => {
+                    dispatch(
+                        deletePostFile({
+                            file_id: id,
+                            post_id: params.postId,
+                            message_id: comment ? comment.id : null
+                        })
+                    );
+                };
+                let payload = {
+                    type: "confirmation",
+                    headerText: "Delete file",
+                    submitText: "Remove",
+                    cancelText: "Cancel",
+                    bodyText: "Are you sure you want to delete this file?",
+                    actions: {
+                        onSubmit: handleDeleteFile,
+                    },
+                };
+        
+                dispatch(
+                    addToModals(payload),
+                );
+            }
         }
         
     };
@@ -239,6 +246,8 @@ const FileAttachments = props => {
 
     const {orientation} = useTooltipOrientation(refs.main, refs.tooltip, scrollRef, filePreview !== null);
     useOutsideClick(refs.main, closePreview, filePreview !== null);
+
+    console.log(attachedFiles, params)
 
     return (
         <Wrapper ref={refs.main} className={`file-attachments ${className}`} onMouseLeave={handleMouseLeave}>

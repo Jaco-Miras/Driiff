@@ -1,12 +1,17 @@
-import {useEffect} from "react";
-import {useSelector} from "react-redux";
-import {useUserActions} from "./index";
+import {useCallback, useEffect} from "react";
+import {useDispatch, useSelector} from "react-redux";
+import {getUsers} from "../../redux/actions/userAction";
 
 let init = true;
 
+/**
+ * @returns {{fetchUsers: (...args: any[]) => any, fetchMoreUsers: (...args: any[]) => any, users}}
+ */
 const useUsers = () => {
 
     const {users} = useSelector(state => state.users);
+    const {user: loggedUser} = useSelector(state => state.session);
+
     const userActions = useUserActions();
 
     useEffect(() => {
@@ -21,6 +26,7 @@ const useUsers = () => {
 
     return {
         users,
+        loggedUser,
         actions: userActions,
     };
 };

@@ -29,7 +29,11 @@ const TopicTimeline = (props) => {
             <div>
                 {
                     data.user &&
-                    <Avatar className="mr-3" name={data.user.name} imageLink={data.user.profile_image_link}/>
+                    <Avatar className="mr-3" 
+                        name={data.user.name} 
+                        imageLink={data.user.profile_image_link}
+                        id={data.user.id}
+                    />
                 }
             </div>
             <div>

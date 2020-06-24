@@ -396,3 +396,11 @@ export function deletePostFile(payload, callback) {
         callback,
     );
 }
+
+export function incomingDeletedPostFile(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "INCOMING_DELETED_POST_FILE",
+        payload,
+        callback,
+    );
+}

@@ -53,8 +53,11 @@ const ChannelIcon = props => {
                     type={channel.type}
                     imageLink={channel.profile.profile_image_link}
                     userId={channel.profile.id}
+                    id={channel.profile.id}
                     name={channel.profile.name}
-                    noDefaultClick={true}
+                    partialName={channel.profile.partial_name}
+                    type={"USER"}
+                    noDefaultClick={false}
                 />
             }
             {

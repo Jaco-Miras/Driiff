@@ -285,13 +285,15 @@ export function moveFile(payload) {
 /**
  * @param {Object} payload
  * @param {number} payload.file_id
+ * @param {number} payload.post_id
+ * @param {number} payload.message_id
  * @returns {Promise<*>}
  */
 export function deletePostFile(payload) {
-    let url = `/v1/files/${payload.file_id}`;
+    //let url = `/v2/post-delete-attachment?post_id=${payload.post_id}&file_id=${payload.file_id}`;
     return apiCall({
         method: "DELETE",
-        url: url,
+        url: `/v2/post-delete-attachment?${objToUrlParams(payload)}`,
         data: payload,
     });
 }

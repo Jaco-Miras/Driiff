@@ -1,5 +1,4 @@
-import React, {useCallback, useEffect, useState} from "react";
-import {FormGroup, Input, InputGroup, InputGroupAddon, InputGroupText, Label} from "reactstrap";
+import React from "react";
 import styled from "styled-components";
 import {Avatar, SvgIconFeather} from "../../common";
 import {useCountRenders, useUserActions, useUsers} from "../../hooks";
@@ -47,7 +46,7 @@ const UserProfilePanel = (props) => {
     const {className = ""} = props;
     const {id: userId} = props.match.params;
 
-    const {users} = useUsers();
+    const {users, currentUser} = useUsers();
     useCountRenders("user-profile");
 
     const {update, fetchById} = useUserActions();
@@ -59,10 +58,12 @@ const UserProfilePanel = (props) => {
 
     const [form, setForm] = useState(user ? {...user} : {});
 
+    //const [user, setUser] = useState(null);
     const togglePasswordUpdate = useCallback(() => {
         setPasswordUpdate(prevState => !prevState);
     }, [setPasswordUpdate]);
 
+    // console.log(user)
     const togglePasswordVisibility = useCallback(() => {
         setPasswordVisibility(prevState => !prevState);
     }, [setPasswordVisibility]);
@@ -115,17 +116,25 @@ const UserProfilePanel = (props) => {
                 <div className="col-md-4">
                     <div className="card">
                         <div className="card-body text-center">
-                            <Avatar imageLink={user.profile_image_link} name={form.name}/>
+                            <Avatar
+                                imageLink={user.profile_image_link}
+                                name={user.name}
+                                id={user.id}
+                                noDefaultClick={true}
+                            />
                             {
                                 editInformation ?
                                 <h5 className="mb-1">{form.first_name} {form.middle_name} {form.last_name}</h5>
                                                 :
                                 <h5 className="mb-1">{user.first_name} {user.middle_name} {user.last_name}</h5>
                             }
-                            <p className="text-muted small">Web Developer</p>
-                            <a href="/" className="btn btn-outline-primary">
-                                <SvgIconFeather className="mr-2" icon="edit-2"/> Edit Profile
-                            </a>
+                            <p className="text-muted small">{user.designation}</p>
+                            {
+                                isCurrentUser &&
+                                <span className="btn btn-outline-primary">
+                                    <SvgIconFeather className="mr-2" icon="edit-2"/> Edit <Profile></Profile>
+                                </span>
+                            }
                         </div>
                     </div>
 

@@ -3,6 +3,7 @@ import {useHistory} from "react-router-dom";
 import styled from "styled-components";
 import {Avatar, SvgIconFeather} from "../../common";
 import {ProgressBar} from "../common";
+import {replaceChar} from "../../../helpers/stringFormatter";
 
 const Wrapper = styled.div`
     position: absolute;
@@ -26,13 +27,17 @@ const UserProfileDropdown = (props) => {
         e.preventDefault();
 
         refs.container.current.classList.remove("show");
-        history.push(`/profile/${user.id}/${user.name}`);
+        history.push(`/profile/${user.id}/${replaceChar(user.name)}`);
     }, [user]);
 
     const handleSignOut = useCallback((e) => {
         e.preventDefault();
         history.push("/logout");
     }, []);
+
+    const handleRedirect = () => {
+        history.push(`/profile/${user.id}/${replaceChar(user.name)}`);
+    }
 
     return (
         <Wrapper ref={refs.container} className={`user-profile-dropdown dropdown-menu dropdown-menu-big ${className}`}
@@ -57,7 +62,7 @@ const UserProfileDropdown = (props) => {
                     <ProgressBar height={15} amount={5} limit={100}/>
                 </div>
                 <div className="list-group list-group-flush">
-                    <a href="#" className="list-group-item">Profile</a>
+                    <a className="list-group-item" onClick={handleRedirect}>Profile</a>
                     <a href="#" className="list-group-item d-flex">
                         Followers <span className="text-muted ml-auto">214</span>
                     </a>

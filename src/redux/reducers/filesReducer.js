@@ -637,6 +637,51 @@ export default (state = INITIAL_STATE, action) => {
                 workspaceFiles: newWorkspaceFiles
             }
         }
+        case "INCOMING_COMMENT": {
+            let newWorkspaceFiles = {...state.workspaceFiles};
+
+            if (action.data.workspaces.length && action.data.files.length) {
+                action.data.workspaces.forEach(ws => {
+                    if (newWorkspaceFiles.hasOwnProperty(ws.topic_id)) {
+                        newWorkspaceFiles[ws.topic_id].files = {...convertArrayToObject(action.data.files, "id"), ...newWorkspaceFiles[ws.topic_id].files}
+                    }
+                })
+                return {
+                    ...state,
+                    workspaceFiles: newWorkspaceFiles
+                }
+            } else {
+                return state;
+            }
+        }
+        case "INCOMING_POST": {
+            let newWorkspaceFiles = {...state.workspaceFiles};
+            if (action.data.files.length) {
+                action.data.recipient_ids.forEach(id => {
+                    if (newWorkspaceFiles.hasOwnProperty(id)) {
+                        newWorkspaceFiles[id].files = {...convertArrayToObject(action.data.files, "id"), ...newWorkspaceFiles[id].files}
+                    }
+                })
+                return {
+                    ...state,
+                    workspaceFiles: newWorkspaceFiles
+                }
+            } else {
+                return state
+            }
+        }
+        case "INCOMING_DELETED_POST_FILE": {
+            let newWorkspaceFiles = {...state.workspaceFiles};
+            if (action.data.connected_workspace.length && Object.keys(newWorkspaceFiles).length) {
+                action.data.connected_workspace.forEach(ws => {
+                    if (newWorkspaceFiles.hasOwnProperty(ws.topic_id) && newWorkspaceFiles[ws.topic_id].hasOwnProperty("files")) {
+                        delete newWorkspaceFiles[ws.topic_id].files[action.data.file_id]
+                    }
+                })
+            } else {
+                return state;
+            }
+        }
         default:
             return state;
     }

@@ -155,7 +155,7 @@ const Comment = props => {
                         <>
                             <hr/>
                             <h6>Files</h6>
-                            <FileAttachments attachedFiles={comment.files} type="workspace"/>
+                            <FileAttachments attachedFiles={comment.files} type="workspace" comment={comment}/>
                         </>
                     }
                     <div className="d-flex align-items-center justify-content-start">
