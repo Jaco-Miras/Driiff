@@ -1,13 +1,14 @@
 import {useCallback, useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import toaster from "toasted-notes";
 import {getUser, getUsers, putUser} from "../../redux/actions/userAction";
+import {useToaster} from "./index";
 
 let init = true;
 
 const useUserActions = () => {
 
     const dispatch = useDispatch();
+    const toaster = useToaster();
 
     const {getUserFilter} = useSelector(state => state.users);
 
@@ -71,12 +72,12 @@ const useUserActions = () => {
         dispatch(
             putUser(payload, (err, res) => {
                 if (err) {
-                    toaster.notify(`Saving profile information failed.`,
+                    toaster.error(`Saving profile information failed.`,
                         {position: "bottom-left"});
                 }
 
                 if (res) {
-                    toaster.notify(`Profile information saved.`,
+                    toaster.success(`Profile information saved.`,
                         {position: "bottom-left"});
                 }
 
@@ -84,6 +85,37 @@ const useUserActions = () => {
             }),
         );
     }, [dispatch]);
+
+    const getReadOnlyFields = useCallback((source) => {
+        switch (source) {
+            case "gripp":
+                return [
+                    "email",
+                    "designation",
+                    "house_number",
+                    "zip",
+                    "address",
+                    "place",
+                    "country",
+                    "birthday",
+                    "profile_image",
+                    "contact",
+                ];
+            default:
+                return [];
+        }
+    }, []);
+
+    const getRequiredFields = useCallback((source) => {
+        let required = ["first_name", "last_name", "password"];
+
+        switch (source) {
+            case "gripp":
+                return required;
+            default:
+                return required;
+        }
+    }, []);
 
     useEffect(() => {
         if (init) {
@@ -104,6 +136,8 @@ const useUserActions = () => {
         update,
         fetchById,
         fetchMore,
+        getReadOnlyFields,
+        getRequiredFields,
     };
 };
 

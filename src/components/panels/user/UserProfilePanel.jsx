@@ -1,8 +1,9 @@
-import React, {useCallback, useEffect, useState} from "react";
+import React, {useCallback, useEffect, useRef, useState} from "react";
 import {FormGroup, Input, InputGroup, InputGroupAddon, InputGroupText, Label} from "reactstrap";
 import styled from "styled-components";
-import {Avatar, SvgIconFeather} from "../../common";
-import {useUserActions, useUsers} from "../../hooks";
+import {Avatar, SvgIcon, SvgIconFeather} from "../../common";
+import InputFeedback from "../../forms/InputFeedback";
+import {useToaster, useUserActions, useUsers} from "../../hooks";
 
 const Wrapper = styled.div`    
     overflow: auto;  
@@ -42,21 +43,43 @@ const Wrapper = styled.div`
     }
 `;
 
+const ImportWarning = styled.div`
+`;
+
 const UserProfilePanel = (props) => {
 
     const {className = ""} = props;
 
+    const toaster = useToaster();
     const {users, loggedUser} = useUsers();
+    const {update, fetchById, getReadOnlyFields, getRequiredFields} = useUserActions();
 
-    const {update, fetchById} = useUserActions();
+    const user = users[props.match.params.id];
+    const readOnlyFields = getReadOnlyFields(user ? user.import_from : "");
+    const requiredFields = getRequiredFields(user ? user.import_from : "");
 
     const [editInformation, setEditInformation] = useState(false);
     const [passwordVisibility, setPasswordVisibility] = useState(false);
     const [passwordUpdate, setPasswordUpdate] = useState(false);
+    const [form, setForm] = useState(user && user.loaded ? user : {});
+    const [formUpdate, setFormUpdate] = useState({
+        valid: {},
+        feedbackState: {},
+        feedbackText: {},
+    });
 
-    const [userId, setUserId] = useState(props.match.params.id);
-    const [user, setUser] = useState(users[userId] && users.hasOwnProperty("loaded") ? users[userId] : null);
-    const [form, setForm] = useState(user ? {...user} : {});
+    const refs = {
+        first_name: useRef(null),
+        password: useRef(null),
+    };
+
+    const getValidClass = useCallback((valid) => {
+        if (typeof valid !== "boolean") {
+
+        } else {
+            return valid ? "is-valid" : "is-invalid";
+        }
+    }, []);
 
     //const [user, setUser] = useState(null);
     const togglePasswordUpdate = useCallback(() => {
@@ -68,53 +91,119 @@ const UserProfilePanel = (props) => {
         setPasswordVisibility(prevState => !prevState);
     }, [setPasswordVisibility]);
 
+    useEffect(() => {
+        if (passwordUpdate && refs.password.current) {
+            refs.password.current.focus();
+        }
+    }, [passwordUpdate, refs.password]);
+
     const toggleEditInformation = useCallback(() => {
         setEditInformation(prevState => !prevState);
         setForm({...user});
-    }, [user, setEditInformation]);
+        setFormUpdate({
+            valid: {},
+            feedbackState: {},
+            feedbackText: {},
+        });
+        setPasswordUpdate(false);
+    }, [user, setForm, setPasswordUpdate, setEditInformation]);
+
+    useEffect(() => {
+        if (editInformation && refs.first_name.current) {
+            refs.first_name.current.focus();
+        }
+    }, [editInformation, refs.first_name]);
 
     const handleInputChange = useCallback((e) => {
         if (e.target !== null) {
             const {name, value} = e.target;
             setForm(prevState => ({
                 ...prevState,
-                [name]: value,
+                [name]: value.trim(),
             }));
         }
     }, []);
 
-    const handleSave = useCallback(() => {
-        update(form, (err, res) => {
-            if (err) {
-            }
-            if (res) {
-                setEditInformation(false);
-            }
-        });
-    }, [form, update, setEditInformation]);
+    const handleInputBlur = useCallback((e) => {
+        if (e.target !== null) {
+            const {name, value} = e.target;
 
-    useEffect(() => {
-        if (users && (user === null || (user && user.id !== props.match.params))) {
-            if (users.hasOwnProperty(props.match.params.id) && users[props.match.params.id].hasOwnProperty("loaded")) {
-                setUserId(props.match.params.id);
+            if (user[name] === form[name]) {
+                setFormUpdate(prevState => ({
+                    valid: {
+                        ...prevState.valid,
+                        [name]: undefined,
+                    },
+                    feedbackState: {
+                        ...prevState.feedbackState,
+                        [name]: undefined,
+                    },
+                    feedbackText: {
+                        ...prevState.feedbackText,
+                        [name]: undefined,
+                    },
+                }));
+                return;
+            }
+
+            if (requiredFields.includes(name)) {
+                setFormUpdate(prevState => ({
+                    valid: {
+                        ...prevState.valid,
+                        [name]: value.trim() !== "",
+                    },
+                    feedbackState: {
+                        ...prevState.feedbackState,
+                        [name]: value.trim() !== "",
+                    },
+                    feedbackText: {
+                        ...prevState.feedbackText,
+                        [name]: value.trim() === "" ? `Field is required.` : "",
+                    },
+                }));
             } else {
-                fetchById(props.match.params.id, () => {
-                    setUserId(props.match.params.id);
-                });
+                setFormUpdate(prevState => ({
+                    valid: {
+                        ...prevState.valid,
+                        [name]: true,
+                    },
+                    feedbackState: prevState.feedbackState,
+                    feedbackText: prevState.feedbackText,
+                }));
             }
         }
-    }, [props.match.params.id, setUserId, fetchById]);
+    }, [user, form, requiredFields]);
+
+    const handleSave = useCallback(() => {
+        if (Object.values(formUpdate.valid).find(v => v === false) === false) {
+            toaster.error(`Some fields require your attention.`,
+                {position: "bottom-left"});
+        } else if (Object.values(formUpdate.valid).find(v => v === true) === true) {
+            update(form, (err, res) => {
+                if (err) {
+                }
+                if (res) {
+                    setEditInformation(false);
+                }
+            });
+        } else {
+            toaster.info(`Nothing was updated.`,
+                {position: "bottom-left"});
+            setEditInformation(false);
+        }
+    }, [form, formUpdate, update, setEditInformation]);
 
     useEffect(() => {
-        const selectedUser = users[userId] ? users[userId] : {};
+        const selectedUser = users[props.match.params.id] ? users[props.match.params.id] : {};
         if (selectedUser.hasOwnProperty("loaded")) {
-            if (user === null || (user.id !== selectedUser.id))
+            if (form.id !== selectedUser.id)
                 setForm(selectedUser);
-            setUser(selectedUser);
+        } else {
+            fetchById(props.match.params.id);
         }
-    }, [userId, users, setForm, setUser]);
+    }, [props.match.params.id, users, setForm]);
 
-    if (!user || !user.hasOwnProperty("loaded")) {
+    if (!form.id) {
         return <></>;
     }
 
@@ -124,6 +213,17 @@ const UserProfilePanel = (props) => {
                 <div className="col-md-4">
                     <div className="card">
                         <div className="card-body text-center">
+                            {
+                                user.import_from === "gripp" &&
+                                <SvgIcon className="mb-2" width={500} height={40} icon="gripp-logo"/>
+                            }
+                            {
+                                editInformation && user.import_from !== "driff" &&
+                                <ImportWarning className="text-primary mb-3">
+                                    The profile data is synchronized from an external source.<br/>
+                                    Some fields cannot be edited.
+                                </ImportWarning>
+                            }
                             <Avatar
                                 imageLink={user.profile_image_link}
                                 name={user.name}
@@ -136,10 +236,10 @@ const UserProfilePanel = (props) => {
                                                 :
                                 <h5 className="mb-1">{user.first_name} {user.middle_name} {user.last_name}</h5>
                             }
-                            <p className="text-muted small">{user.designation}</p>
+                            <p className="text-muted small">{user.role.name}</p>
                             {
                                 loggedUser.id === user.id &&
-                                <span className="btn btn-outline-primary">
+                                <span className="btn btn-outline-primary" onClick={toggleEditInformation}>
                                     <SvgIconFeather className="mr-2" icon="edit-2"/> Edit Profile
                                 </span>
                             }
@@ -236,74 +336,137 @@ const UserProfilePanel = (props) => {
                                         </span>
                                     </div>
                                 </h6>
-                                <div className="row mb-2">
-                                    <div className="col-6 text-muted">First Name:</div>
-                                    <div className="col-6">
-                                        <Input name="first_name" onChange={(e) => handleInputChange(e)}
-                                               defaultValue={user.first_name}/>
+                                {
+                                    !readOnlyFields.includes("first_name") &&
+                                    <div className="row mb-2">
+                                        <div className="col-6 text-muted">First Name:</div>
+                                        <div className="col-6">
+                                            <Input
+                                                className={getValidClass(formUpdate.valid.first_name)}
+                                                innerRef={refs.first_name}
+                                                name="first_name"
+                                                onChange={handleInputChange}
+                                                onBlur={handleInputBlur}
+                                                defaultValue={user.first_name}
+                                            />
+                                            <InputFeedback
+                                                valid={formUpdate.feedbackState.first_name}>{formUpdate.feedbackText.first_name}</InputFeedback>
+                                        </div>
                                     </div>
-                                </div>
-                                <div className="row mb-2">
-                                    <div className="col-6 text-muted">Middle Name:</div>
-                                    <div className="col-6">
-                                        <Input name="middle_name" onChange={handleInputChange}
-                                               defaultValue={user.middle_name}/>
+                                }
+                                {
+                                    !readOnlyFields.includes("middle_name") &&
+                                    <div className="row mb-2">
+                                        <div className="col-6 text-muted">Middle Name:</div>
+                                        <div className="col-6">
+                                            <Input
+                                                className={getValidClass(formUpdate.valid.middle_name)}
+                                                name="middle_name"
+                                                onChange={handleInputChange}
+                                                onBlur={handleInputBlur}
+                                                defaultValue={user.middle_name}/>
+                                            <InputFeedback
+                                                valid={formUpdate.feedbackState.middle_name}>{formUpdate.feedbackText.middle_name}</InputFeedback>
+                                        </div>
                                     </div>
-                                </div>
-                                <div className="row mb-2">
-                                    <div className="col-6 text-muted">Last Name:</div>
-                                    <div className="col-6">
-                                        <Input name="last_name" onChange={handleInputChange}
-                                               defaultValue={user.last_name}/>
+                                }
+                                {
+                                    !readOnlyFields.includes("last_name") &&
+                                    <div className="row mb-2">
+                                        <div className="col-6 text-muted">Last Name:</div>
+                                        <div className="col-6">
+                                            <Input
+                                                className={getValidClass(formUpdate.valid.last_name)}
+                                                name="last_name"
+                                                onChange={handleInputChange}
+                                                onBlur={handleInputBlur}
+                                                defaultValue={user.last_name}/>
+                                            <InputFeedback
+                                                valid={formUpdate.feedbackState.last_name}>{formUpdate.feedbackText.last_name}</InputFeedback>
+                                        </div>
                                     </div>
-                                </div>
-                                <div className="row mb-2">
-                                    <div className="col-6 text-muted">Password</div>
-                                    <div className="col-6">
-                                        <Label onClick={togglePasswordUpdate}
-                                               className={`cursor-pointer ${!passwordUpdate ? "" : "d-none"}`}>Click to
-                                            change your password.</Label>
-                                        <FormGroup
-                                            className={`form-group-password ${!!passwordUpdate ? "" : "d-none"}`}>
-                                            <InputGroup>
-                                                <Input
-                                                    name="password" onChange={handleInputChange}
-                                                    defaultValue=""
-                                                    type={passwordVisibility ? "text" : "password"}/>
-                                                <InputGroupAddon className="btn-toggle" addonType="append">
-                                                    <InputGroupText className="btn" onClick={togglePasswordVisibility}>
-                                                        <SvgIconFeather icon={passwordVisibility ? "eye-off" : "eye"}/></InputGroupText>
-                                                </InputGroupAddon>
-                                            </InputGroup>
-                                        </FormGroup>
+                                }
+                                {
+                                    !readOnlyFields.includes("password") &&
+                                    <div className="row mb-2">
+                                        <div className="col-6 text-muted">Password</div>
+                                        <div className="col-6">
+                                            <Label onClick={togglePasswordUpdate}
+                                                   className={`cursor-pointer ${!passwordUpdate ? "" : "d-none"}`}>Click
+                                                to
+                                                change your password.</Label>
+                                            <FormGroup
+                                                className={`form-group-password ${!!passwordUpdate ? "" : "d-none"}`}>
+                                                <InputGroup>
+                                                    <Input
+                                                        className={getValidClass(formUpdate.valid.password)}
+                                                        innerRef={refs.password}
+                                                        name="password"
+                                                        onChange={handleInputChange}
+                                                        onBlur={handleInputBlur}
+                                                        defaultValue=""
+                                                        type={passwordVisibility ? "text" : "password"}/>
+                                                    <InputGroupAddon className="btn-toggle" addonType="append">
+                                                        <InputGroupText className="btn"
+                                                                        onClick={togglePasswordVisibility}>
+                                                            <SvgIconFeather
+                                                                icon={passwordVisibility ? "eye-off" : "eye"}/></InputGroupText>
+                                                    </InputGroupAddon>
+                                                </InputGroup>
+                                                <InputFeedback
+                                                    valid={formUpdate.feedbackState.password}>{formUpdate.feedbackText.password}</InputFeedback>
+                                            </FormGroup>
+                                        </div>
                                     </div>
-                                </div>
-
-                                <div className="row mb-2">
-                                    <div className="col-6 text-muted">City:</div>
-                                    <div className="col-6">
-                                        <Input
-                                            name="place" onChange={handleInputChange}
-                                            defaultValue={user.place}/>
+                                }
+                                {
+                                    !readOnlyFields.includes("place") &&
+                                    <div className="row mb-2">
+                                        <div className="col-6 text-muted">City:</div>
+                                        <div className="col-6">
+                                            <Input
+                                                className={getValidClass(formUpdate.valid.place)}
+                                                name="place"
+                                                onChange={handleInputChange}
+                                                onBlur={handleInputBlur}
+                                                defaultValue={user.place}/>
+                                            <InputFeedback
+                                                valid={formUpdate.feedbackState.place}>{formUpdate.feedbackText.place}</InputFeedback>
+                                        </div>
                                     </div>
-                                </div>
-                                <div className="row mb-2">
-                                    <div className="col-6 text-muted">Address:</div>
-                                    <div className="col-6">
-                                        <Input
-                                            name="address"
-                                            onChange={handleInputChange}
-                                            defaultValue={user.address}/>
+                                }
+                                {
+                                    !readOnlyFields.includes("address") &&
+                                    <div className="row mb-2">
+                                        <div className="col-6 text-muted">Address:</div>
+                                        <div className="col-6">
+                                            <Input
+                                                className={getValidClass(formUpdate.valid.address)}
+                                                name="address"
+                                                onChange={handleInputChange}
+                                                onBlur={handleInputBlur}
+                                                defaultValue={user.address}/>
+                                            <InputFeedback
+                                                valid={formUpdate.feedbackState.address}>{formUpdate.feedbackText.address}</InputFeedback>
+                                        </div>
                                     </div>
-                                </div>
-                                <div className="row mb-2">
-                                    <div className="col-6 text-muted">Phone:</div>
-                                    <div className="col-6">
-                                        <Input
-                                            name="phone" onChange={handleInputChange}
-                                            defaultValue={user.phone}/>
+                                }
+                                {
+                                    !readOnlyFields.includes("phone") &&
+                                    <div className="row mb-2">
+                                        <div className="col-6 text-muted">Phone:</div>
+                                        <div className="col-6">
+                                            <Input
+                                                className={getValidClass(formUpdate.valid.phone)}
+                                                name="phone"
+                                                onChange={handleInputChange}
+                                                onBlur={handleInputBlur}
+                                                defaultValue={user.phone}/>
+                                            <InputFeedback
+                                                valid={formUpdate.feedbackState.phone}>{formUpdate.feedbackText.phone}</InputFeedback>
+                                        </div>
                                     </div>
-                                </div>
+                                }
                             </div>
                         }
                     </div>
