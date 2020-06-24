@@ -1,7 +1,8 @@
-import React from "react";
+import React, {useCallback, useEffect, useState} from "react";
+import {FormGroup, Input, InputGroup, InputGroupAddon, InputGroupText, Label} from "reactstrap";
 import styled from "styled-components";
 import {Avatar, SvgIconFeather} from "../../common";
-import {useCountRenders, useUserActions, useUsers} from "../../hooks";
+import {useUserActions, useUsers} from "../../hooks";
 
 const Wrapper = styled.div`    
     overflow: auto;  
@@ -44,18 +45,17 @@ const Wrapper = styled.div`
 const UserProfilePanel = (props) => {
 
     const {className = ""} = props;
-    const {id: userId} = props.match.params;
 
-    const {users, currentUser} = useUsers();
-    useCountRenders("user-profile");
+    const {users, loggedUser} = useUsers();
 
     const {update, fetchById} = useUserActions();
 
-    const [user, setUser] = useState(users[userId] ? users[userId] : null);
     const [editInformation, setEditInformation] = useState(false);
     const [passwordVisibility, setPasswordVisibility] = useState(false);
     const [passwordUpdate, setPasswordUpdate] = useState(false);
 
+    const [userId, setUserId] = useState(props.match.params.id);
+    const [user, setUser] = useState(users[userId] && users.hasOwnProperty("loaded") ? users[userId] : null);
     const [form, setForm] = useState(user ? {...user} : {});
 
     //const [user, setUser] = useState(null);
@@ -70,7 +70,8 @@ const UserProfilePanel = (props) => {
 
     const toggleEditInformation = useCallback(() => {
         setEditInformation(prevState => !prevState);
-    }, [setEditInformation]);
+        setForm({...user});
+    }, [user, setEditInformation]);
 
     const handleInputChange = useCallback((e) => {
         if (e.target !== null) {
@@ -82,7 +83,7 @@ const UserProfilePanel = (props) => {
         }
     }, []);
 
-    const handleSave = () => {
+    const handleSave = useCallback(() => {
         update(form, (err, res) => {
             if (err) {
             }
@@ -90,21 +91,28 @@ const UserProfilePanel = (props) => {
                 setEditInformation(false);
             }
         });
-    };
+    }, [form, update, setEditInformation]);
 
     useEffect(() => {
-        if (user === null || !user.hasOwnProperty("loaded")) {
-            fetchById(userId, (err, res) => {
-                console.log(res);
-            });
+        if (users && (user === null || (user && user.id !== props.match.params))) {
+            if (users.hasOwnProperty(props.match.params.id) && users[props.match.params.id].hasOwnProperty("loaded")) {
+                setUserId(props.match.params.id);
+            } else {
+                fetchById(props.match.params.id, () => {
+                    setUserId(props.match.params.id);
+                });
+            }
         }
-    }, []);
+    }, [props.match.params.id, setUserId, fetchById]);
 
     useEffect(() => {
-        const user = users[userId] ? users[userId] : null;
-        setForm(user);
-        setUser(user);
-    }, [users]);
+        const selectedUser = users[userId] ? users[userId] : {};
+        if (selectedUser.hasOwnProperty("loaded")) {
+            if (user === null || (user.id !== selectedUser.id))
+                setForm(selectedUser);
+            setUser(selectedUser);
+        }
+    }, [userId, users, setForm, setUser]);
 
     if (!user || !user.hasOwnProperty("loaded")) {
         return <></>;
@@ -130,9 +138,9 @@ const UserProfilePanel = (props) => {
                             }
                             <p className="text-muted small">{user.designation}</p>
                             {
-                                isCurrentUser &&
+                                loggedUser.id === user.id &&
                                 <span className="btn btn-outline-primary">
-                                    <SvgIconFeather className="mr-2" icon="edit-2"/> Edit <Profile></Profile>
+                                    <SvgIconFeather className="mr-2" icon="edit-2"/> Edit Profile
                                 </span>
                             }
                         </div>
@@ -144,9 +152,12 @@ const UserProfilePanel = (props) => {
                             <div className="card-body">
                                 <h6 className="card-title d-flex justify-content-between align-items-center">
                                     Information
-                                    <span onClick={toggleEditInformation} className="btn btn-outline-light btn-sm">
-                                        <SvgIconFeather className="mr-2" icon="edit-2"/> Edit
-                                    </span>
+                                    {
+                                        loggedUser.id === user.id &&
+                                        <span onClick={toggleEditInformation} className="btn btn-outline-light btn-sm">
+                                            <SvgIconFeather className="mr-2" icon="edit-2"/> Edit
+                                        </span>
+                                    }
                                 </h6>
                                 {
                                     user.first_name &&
@@ -229,20 +240,21 @@ const UserProfilePanel = (props) => {
                                     <div className="col-6 text-muted">First Name:</div>
                                     <div className="col-6">
                                         <Input name="first_name" onChange={(e) => handleInputChange(e)}
-                                               defaultValue={form.first_name}/>
+                                               defaultValue={user.first_name}/>
                                     </div>
                                 </div>
                                 <div className="row mb-2">
                                     <div className="col-6 text-muted">Middle Name:</div>
                                     <div className="col-6">
                                         <Input name="middle_name" onChange={handleInputChange}
-                                               value={form.middle_name}/>
+                                               defaultValue={user.middle_name}/>
                                     </div>
                                 </div>
                                 <div className="row mb-2">
                                     <div className="col-6 text-muted">Last Name:</div>
                                     <div className="col-6">
-                                        <Input name="last_name" onChange={handleInputChange} value={form.last_name}/>
+                                        <Input name="last_name" onChange={handleInputChange}
+                                               defaultValue={user.last_name}/>
                                     </div>
                                 </div>
                                 <div className="row mb-2">
@@ -254,8 +266,10 @@ const UserProfilePanel = (props) => {
                                         <FormGroup
                                             className={`form-group-password ${!!passwordUpdate ? "" : "d-none"}`}>
                                             <InputGroup>
-                                                <Input name="password" onChange={handleInputChange}
-                                                       type={passwordVisibility ? "text" : "password"}/>
+                                                <Input
+                                                    name="password" onChange={handleInputChange}
+                                                    defaultValue=""
+                                                    type={passwordVisibility ? "text" : "password"}/>
                                                 <InputGroupAddon className="btn-toggle" addonType="append">
                                                     <InputGroupText className="btn" onClick={togglePasswordVisibility}>
                                                         <SvgIconFeather icon={passwordVisibility ? "eye-off" : "eye"}/></InputGroupText>
@@ -268,19 +282,26 @@ const UserProfilePanel = (props) => {
                                 <div className="row mb-2">
                                     <div className="col-6 text-muted">City:</div>
                                     <div className="col-6">
-                                        <Input name="place" onChange={handleInputChange} value={form.place}/>
+                                        <Input
+                                            name="place" onChange={handleInputChange}
+                                            defaultValue={user.place}/>
                                     </div>
                                 </div>
                                 <div className="row mb-2">
                                     <div className="col-6 text-muted">Address:</div>
                                     <div className="col-6">
-                                        <Input name="address" onChange={handleInputChange} value={form.address}/>
+                                        <Input
+                                            name="address"
+                                            onChange={handleInputChange}
+                                            defaultValue={user.address}/>
                                     </div>
                                 </div>
                                 <div className="row mb-2">
                                     <div className="col-6 text-muted">Phone:</div>
                                     <div className="col-6">
-                                        <Input name="phone" onChange={handleInputChange} value={form.phone}/>
+                                        <Input
+                                            name="phone" onChange={handleInputChange}
+                                            defaultValue={user.phone}/>
                                     </div>
                                 </div>
                             </div>

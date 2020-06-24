@@ -1,12 +1,9 @@
-import {useCallback, useEffect} from "react";
-import {useDispatch, useSelector} from "react-redux";
-import {getUsers} from "../../redux/actions/userAction";
+import {useEffect} from "react";
+import {useSelector} from "react-redux";
+import {useUserActions} from "./index";
 
 let init = true;
 
-/**
- * @returns {{fetchUsers: (...args: any[]) => any, fetchMoreUsers: (...args: any[]) => any, users}}
- */
 const useUsers = () => {
 
     const {users} = useSelector(state => state.users);
