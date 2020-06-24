@@ -6,6 +6,7 @@ let init = true;
 const useUserChannels = () => {
 
     const {channels, actions: channelActions} = useChannels();
+    const {actions: userActions, ...otherUseUsers} = useUsers();
     const userChannels = useRef({});
 
     for (const i in channels) {
@@ -51,7 +52,8 @@ const useUserChannels = () => {
 
     return {
         ...useChannels(),
-        ...useUsers(),
+        ...otherUseUsers,
+        userActions,
         userChannels: userChannels.current,
         selectUserChannel,
     };
