@@ -20871,6 +20871,8 @@ body.dark.small-navigation .navigation-menu-body ul li.navigation-divider:after 
 }
 .fade:not(.show) {
   visibility: hidden;
+  opacity: 0;
+  transition: 0ms ease 0ms;
 }
 .chat-sidebar-header {
   position: absolute;
