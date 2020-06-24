@@ -954,6 +954,30 @@ export default (state = INITIAL_STATE, action) => {
                 return state;
             }
         }
+        case "INCOMING_DELETED_COMMENT": {
+            let newPostComments = {...state.postComments};
+            let newWorkspacePosts = {...state.workspacePosts};
+            if (action.data.workspaces.length) {
+                action.data.workspaces.forEach(ws => {
+                    if (newWorkspacePosts.hasOwnProperty(ws.topic_id) && newWorkspacePosts[ws.topic_id].posts.hasOwnProperty(action.data.post_id)) {
+                        newWorkspacePosts[ws.topic_id].posts[action.data.post_id].reply_count = newWorkspacePosts[ws.topic_id].posts[action.data.post_id].reply_count - 1;
+                        return;
+                    }
+                })
+            }
+            if (newPostComments.hasOwnProperty(action.data.post_id)) {
+                if (action.data.parent_id) {
+                    delete newPostComments[action.data.post_id].comments[action.data.parent_id].replies[action.data.id]
+                } else {
+                    delete newPostComments[action.data.post_id].comments[action.data.id]
+                }
+            }
+            return {
+                ...state,
+                postComments: newPostComments,
+                workspacePosts: newWorkspacePosts
+            }
+        }
         default:
             return state;
     }

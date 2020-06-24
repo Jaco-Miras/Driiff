@@ -144,6 +144,12 @@ const Comment = props => {
                                         Mention user
                                     </div>
                                 }
+                                {
+                                    user.id === comment.author.id &&
+                                    <div onClick={() => commentActions.remove(comment)}>
+                                        Remove reply
+                                    </div>
+                                }
                             </MoreOptions>
                         }
                     </CommentHeader>

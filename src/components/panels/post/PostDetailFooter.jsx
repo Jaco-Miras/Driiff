@@ -130,7 +130,6 @@ const PostDetailFooter = (props) => {
     const topic = useSelector(state => state.workspaces.activeTopic);
     const user = useSelector(state => state.session.user);
     const editPostComment = useSelector(state => state.posts.editPostComment);
-    console.log(editPostComment, commentId)
 
     const handleSend = useCallback(() => {
         setSent(true);

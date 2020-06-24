@@ -1,5 +1,6 @@
 import dispatchActionToReducer, {SimpleDispatchActionToReducer} from "../actionDispatcher";
 import {
+    deleteComment as deleteCommentService,
     deletePost as deletePostService,
     fetchPosts as fetchPostsService,
     fetchComments as fetchCommentsService,
@@ -369,6 +370,24 @@ export function postMarkRead(payload, callback) {
 export function mustReadReducer(payload, callback) {
     return SimpleDispatchActionToReducer(
         "MUST_READ_REDUCER",
+        payload,
+        callback,
+    );
+}
+
+export function deleteComment(payload, callback) {
+    return dispatchActionToReducer(
+        deleteCommentService(payload),
+        "DELETE_COMMENT_START",
+        "DELETE_COMMENT_SUCCESS",
+        "DELETE_COMMENT_FAIL",
+        callback,
+    );
+}
+
+export function incomingDeletedComment(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "INCOMING_DELETED_COMMENT",
         payload,
         callback,
     );
