@@ -919,6 +919,41 @@ export default (state = INITIAL_STATE, action) => {
                 return state;
             }
         }
+        case "INCOMING_DELETED_POST_FILE": {
+            let newWorkspacePosts = {...state.workspacePosts};
+            let newPostComments = {...state.postComments};
+            if (action.data.connected_workspace.length && Object.keys(newWorkspacePosts).length) {
+                action.data.connected_workspace.forEach(ws => {
+                    if (newWorkspacePosts.hasOwnProperty(ws.topic_id) && newWorkspacePosts[ws.topic_id].hasOwnProperty("posts")) {
+                        if (newWorkspacePosts[ws.topic_id].posts.hasOwnProperty(action.data.post_id)) {
+                            newWorkspacePosts[ws.topic_id].posts[action.data.post_id].files = newWorkspacePosts[ws.topic_id].posts[action.data.post_id].files.filter(f => f.id !== action.data.file_id)
+                        }
+                    }
+                    if (action.data.message_id) {
+                        if (Object.keys(newPostComments).length && newPostComments.hasOwnProperty(action.data.post_id)) {
+                            Object.values(newPostComments[action.data.post_id].comments).forEach(c => {
+                                if (c.id === action.data.message_id) {
+                                    newPostComments[action.data.post_id].comments[action.data.message_id].files = newPostComments[action.data.post_id].comments[action.data.message_id].files.filter(f => f.id !== action.data.file_id);
+                                    return
+                                } else {
+                                    if (c.replies.hasOwnProperty(action.data.message_id)) {
+                                        newPostComments[action.data.post_id].comments[c.id].replies[action.data.message_id].files = newPostComments[action.data.post_id].comments[c.id].replies[action.data.message_id].files.filter(f => f.id !== action.data.file_id);
+                                        return;
+                                    }
+                                }
+                            })
+                        }
+                    }
+                })
+                return {
+                    ...state,
+                    workspacePosts: newWorkspacePosts,
+                    postComments: newPostComments
+                }
+            } else {
+                return state;
+            }
+        }
         default:
             return state;
     }

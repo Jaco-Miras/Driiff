@@ -24,6 +24,7 @@ import {addFilesToChannel,
     deleteFilesFromChannel, 
     incomingFolder,
     incomingDeletedFolder,
+    incomingDeletedPostFile,
     incomingFile,
     incomingFiles,
     incomingDeletedFile,
@@ -273,6 +274,21 @@ class SocketListeners extends PureComponent {
         })
 
         window.Echo.private(`${localStorage.getItem("slug") === 'dev24admin' ? "dev" : localStorage.getItem("slug")}.App.Broadcast`)
+        .listen(".post-notification", e => {
+            console.log(e, "post notif broadcast")
+            switch (e.SOCKET_TYPE) {
+                case "POST_DELETE_ATTACHMENT": {
+                    this.props.incomingDeletedPostFile(e);
+                    break;
+                }
+                case "POST_COMMENT_DELETE_ATTACHMENT": {
+                    this.props.incomingDeletedPostFile(e);
+                    break;
+                }
+                default:
+                    return null;
+            }
+        })
         .listen(".workspace-timeline-notification", e => {
             console.log(e, "timeline")
             this.props.incomingTimeline(e);
@@ -758,6 +774,7 @@ function mapDispatchToProps(dispatch) {
         incomingPostViewer: bindActionCreators(incomingPostViewer, dispatch),
         incomingUpdatedPost: bindActionCreators(incomingUpdatedPost, dispatch),
         incomingTimeline: bindActionCreators(incomingTimeline, dispatch),
+        incomingDeletedPostFile: bindActionCreators(incomingDeletedPostFile, dispatch),
     };
 }
 

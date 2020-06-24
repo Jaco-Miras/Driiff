@@ -670,6 +670,18 @@ export default (state = INITIAL_STATE, action) => {
                 return state
             }
         }
+        case "INCOMING_DELETED_POST_FILE": {
+            let newWorkspaceFiles = {...state.workspaceFiles};
+            if (action.data.connected_workspace.length && Object.keys(newWorkspaceFiles).length) {
+                action.data.connected_workspace.forEach(ws => {
+                    if (newWorkspaceFiles.hasOwnProperty(ws.topic_id) && newWorkspaceFiles[ws.topic_id].hasOwnProperty("files")) {
+                        delete newWorkspaceFiles[ws.topic_id].files[action.data.file_id]
+                    }
+                })
+            } else {
+                return state;
+            }
+        }
         default:
             return state;
     }

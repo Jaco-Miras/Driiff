@@ -263,7 +263,7 @@ const PostDetail = props => {
                     <>
                         <div className="card-body">
                             <h6 className="mb-3 font-size-11 text-uppercase">Files</h6>
-                            <PostFiles attachedFiles={post.files} type="workspace"/>
+                            <PostFiles attachedFiles={post.files} type="workspace" post={post}/>
                         </div>
                         <hr className="m-0"/>
                     </>
