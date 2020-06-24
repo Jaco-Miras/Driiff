@@ -29,7 +29,9 @@ const ChatReplyContainer = styled.div`
     margin: 0;
     padding: 0;
   }
-
+  .chat-message-options svg {
+    fill: currentColor;
+  }
   &.is-processed {
     opacity: 0;
   }
@@ -959,7 +961,7 @@ class ChatMessages extends React.PureComponent {
                                         <InView as="div"
                                                 onChange={(inView, entry) => this.handleBottomRefChange(inView, entry)}>
                                                         <span className='intersection-bottom-ref'
-                                                              ref={this.chatBottomRef}>bot</span>
+                                                              ref={this.chatBottomRef}></span>
                                         </InView>
                                     }
                                 </div>

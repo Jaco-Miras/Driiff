@@ -31,6 +31,7 @@ const IconButton = styled(SvgIconFeather)`
     height: 37px;
     margin: -1px 8px;
     width: 47px;
+    min-width: 47px;
     padding: 10px 0;
     border-radius: 8px;
     transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;

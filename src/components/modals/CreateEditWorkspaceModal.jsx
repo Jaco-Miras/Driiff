@@ -565,8 +565,9 @@ const CreateEditWorkspaceModal = (props) => {
     return (
         <Modal isOpen={modal} toggle={toggle} centered size={"md"} autoFocus={false}>
             <ModalHeaderSection toggle={toggle}>
-                {mode === "edit" ? "Edit workspace" : "Create new workspace"}
-                <ActiveTabName className="intern-extern">{activeTabName}</ActiveTabName>
+                {mode === "edit" ? "Edit " + activeTabName + " workspace" : "Create new " + activeTabName +  " workspace"}
+
+                {/* <ActiveTabName className="intern-extern">{activeTabName}</ActiveTabName> */}
             </ModalHeaderSection>
             <ModalBody onDragOver={handleShowDropzone}>
                 <DropDocument
@@ -598,7 +599,7 @@ const CreateEditWorkspaceModal = (props) => {
                     <Label for="has_folder"/>
                     <CheckBox
                         type="success" name="has_folder"
-                        checked={form.has_folder} onClick={toggleCheck}>Add folder</CheckBox>
+                        checked={form.has_folder} onClick={toggleCheck}>Add to folder</CheckBox>
                 </WrapperDiv>
                 {
                     form.has_folder === true &&

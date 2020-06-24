@@ -15,14 +15,14 @@ const Wrapper = styled.div`
     background-color: transparent;
 `;
 
-const SwitchButton = styled.div`    
+const SwitchButton = styled.div`
     cursor: hand;
     cursor: pointer;
-    
+
     svg {
         position: relative;
         top: 1px;
-    }    
+    }
 `;
 
 const EmojiPicker = styled(Picker)`
@@ -63,7 +63,7 @@ const CommonPicker = React.forwardRef((props, ref) => {
                     title="Emoji"
                     set='apple'
                     onSelect={props.onSelectEmoji}
-                    theme='dark'
+                    theme='light'
                     showSkinTones={false}
                     i18n={
                         {
