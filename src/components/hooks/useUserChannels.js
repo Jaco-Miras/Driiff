@@ -1,5 +1,5 @@
 import {useCallback, useEffect, useRef} from "react";
-import {useChannels, useUsers} from "./index";
+import {useChannels, useUserActions} from "./index";
 
 let init = true;
 
@@ -52,7 +52,7 @@ const useUserChannels = () => {
 
     return {
         ...useChannels(),
-        ...useUsers(),
+        ...useUserActions(),
         userChannels: userChannels.current,
         selectUserChannel,
     };

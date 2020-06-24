@@ -1,7 +1,8 @@
-import React from "react";
+import React, {useCallback, useState} from "react";
+import {FormGroup, Input, InputGroup, InputGroupAddon, Label} from "reactstrap";
 import styled from "styled-components";
 import {Avatar, SvgIconFeather} from "../../common";
-import {useUsers} from "../../hooks";
+import {useUserActions} from "../../hooks";
 
 const Wrapper = styled.div`    
     overflow: auto;  
@@ -17,7 +18,8 @@ const UserProfilePanel = (props) => {
     const {className = ""} = props;
     const {id, name} = props.match.params;
 
-    const {users, getUserFilter} = useUsers();
+    const {users} = useUserActions();
+
     //const [user, setUser] = useState(null);
 
     let user = users[id];

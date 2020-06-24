@@ -7,7 +7,7 @@ let init = true;
 /**
  * @returns {{fetchUsers: (...args: any[]) => any, fetchMoreUsers: (...args: any[]) => any, users}}
  */
-const useUsers = () => {
+const useUserActions = () => {
 
     const dispatch = useDispatch();
     const {users, getUserFilter} = useSelector(state => state.users);
@@ -52,4 +52,4 @@ const useUsers = () => {
     };
 };
 
-export default useUsers;
+export default useUserActions;
