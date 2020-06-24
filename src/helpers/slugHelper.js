@@ -125,9 +125,11 @@ export const getCurrentDriffUrl = () => {
 
 export const imgAsLogin = () => {
     if (localStorage.getItem("atoken") && localStorage.getItem("slug")) {
-        return <img alt={`login token`}
-                    src={`${getAPIUrl({isDNS: true})}/auth-web/login?token=${localStorage.getItem("atoken")}`}
-                    height={1} width={1}/>;
+        return <img
+            style={{visibility: "hidden", display: "none"}}
+            alt={`login token`}
+            src={`${getAPIUrl({isDNS: true})}/auth-web/login?token=${localStorage.getItem("atoken")}`}
+            height={1} width={1}/>;
     } else {
     }
 };
