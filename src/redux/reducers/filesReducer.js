@@ -609,6 +609,34 @@ export default (state = INITIAL_STATE, action) => {
                 return state;
             }
         }
+        case "FETCH_TIMELINE_SUCCESS": {
+            let newWorkspaceFiles = {...state.workspaceFiles};
+            if (newWorkspaceFiles.hasOwnProperty(action.data.topic_id)) {
+                newWorkspaceFiles[action.data.topic_id].files = {...convertArrayToObject(action.data.timeline.filter(t => t.tag === "DOCUMENT").map(i => i.item), "id"), ...newWorkspaceFiles[action.data.topic_id].files}
+            } else {
+                newWorkspaceFiles = {
+                    ...newWorkspaceFiles,
+                    [action.data.topic_id]: {
+                        files: convertArrayToObject(action.data.timeline.filter(t => t.tag === "DOCUMENT").map(i => i.item), "id"),
+                        folders: {},
+                        storage: 0,
+                        count: 0,
+                        stars: 0,
+                        trash: 0,
+                        popular_files: [],
+                        recently_edited: [],
+                        favorite_files: [],
+                        trash_files: {},
+                        search_results: [],
+                        search_value: "",
+                    }
+                }
+            }
+            return {
+                ...state,
+                workspaceFiles: newWorkspaceFiles
+            }
+        }
         default:
             return state;
     }

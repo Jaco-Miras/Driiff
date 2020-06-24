@@ -147,7 +147,7 @@ const FileViewer = forwardRef((props, ref) => {
     const viewFiles = useSelector(state => state.files.viewFiles);
     const workspaceFiles = useSelector(state => state.files.workspaceFiles);
 
-    const [activeIndex, setActiveIndex] = useState(0);
+    const [activeIndex, setActiveIndex] = useState(null);
     const [files, setFiles] = useState([]);
 
     useEffect(() => {
@@ -205,7 +205,7 @@ const FileViewer = forwardRef((props, ref) => {
     useOutsideClick(fileRef, handleCloseFileViewer, true);
 
     useEffect(() => {
-        if (files.length) {
+        if (files.length && activeIndex) {
             let nodes = document.querySelectorAll(".fileviewer-container .file-item");
             for (let i = 0; i < nodes.length; i++) {
                 nodes[i].classList.add("d-none");
@@ -227,7 +227,7 @@ const FileViewer = forwardRef((props, ref) => {
     };
 
     const handleImageOnError = (e) => {
-        console.log(e, "image did not load");
+        //console.log(e, "image did not load");
         if (e.currentTarget.dataset.attempt === "0") {
             e.currentTarget.dataset.attempt = 1;
             e.currentTarget.src = `${getAPIUrl({isDNS: true})}/file-view-attempt/${file.file_id}/${localStorage.getItem("atoken")}`;
@@ -315,7 +315,7 @@ const FileViewer = forwardRef((props, ref) => {
 
     let file = files[activeIndex];
 
-    if (files.length === 0) return;
+    if (files.length === 0 || activeIndex === null) return;
 
     return <FileViewerContainer
         className={`fileviewer-container ${className}`} ref={fileRef}>

@@ -39,10 +39,13 @@ const AttachFileTimeline = (props) => {
     const handleFilePreview = () => {
         console.log(data, params);
         dispatch(
-            setViewFiles([data]),
+            setViewFiles({
+                workspace_id: params.workspaceId,
+                file_id: data.id
+            }),
         );
     };
-
+    console.log(data)
     return (
         <Wrapper className={`attach-file-timeline timeline-item ${className}`}>
             <div>
