@@ -27,11 +27,19 @@ const ArchivedDiv = styled.div`
     padding: 15px 10px;
     h4 {
         margin: 0;
+        display: flex;
+        justify-content: center;
+        alignt-items: center;
     }
 `;
 
 const ChatInputContainer = styled.div`
     position: relative;
+`;
+
+const Icon = styled(SvgIconFeather)`
+    margin-right: 6px;
+    width: 20px;
 `;
 
 const IconButton = styled(SvgIconFeather)`
@@ -182,7 +190,7 @@ const ChatFooterPanel = (props) => {
                     {
                         selectedChannel && selectedChannel.is_archived === 1 ?
                         <ArchivedDiv>
-                            <h4>Channel archived</h4>
+                            <h4><Icon icon="archive"/> This is an archived channel</h4>
                         </ArchivedDiv>
                                                                              :
                         <React.Fragment>

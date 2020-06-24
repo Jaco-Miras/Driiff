@@ -599,7 +599,7 @@ const CreateEditWorkspaceModal = (props) => {
                     <Label for="has_folder"/>
                     <CheckBox
                         type="success" name="has_folder"
-                        checked={form.has_folder} onClick={toggleCheck}>Add folder</CheckBox>
+                        checked={form.has_folder} onClick={toggleCheck}>Add to folder</CheckBox>
                 </WrapperDiv>
                 {
                     form.has_folder === true &&
