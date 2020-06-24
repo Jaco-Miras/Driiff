@@ -41,6 +41,7 @@ export {
     updatePassword,
     checkDriffUserEmail,
     getUsers,
+    putUser,
 } from "./user";
 
 export {

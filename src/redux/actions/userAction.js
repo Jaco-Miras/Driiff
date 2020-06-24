@@ -9,6 +9,7 @@ import {
     googleLogin as googleLoginService,
     login as loginService,
     logout as logoutService,
+    putUser as putUserService,
     resetPassword as resetPasswordService,
     updatePassword as updatePasswordService,
 } from "../services";
@@ -63,9 +64,9 @@ export function getOnlineUsers(payload, callback) {
     );
 }
 
-export function getUser(userId, history, callback) {
+export function getUser(payload, callback) {
     return dispatchActionToReducer(
-        getUserService(userId, history),
+        getUserService(payload),
         "GET_USER_START",
         "GET_USER_SUCCESS",
         "GET_USER_FAILURE",
@@ -119,6 +120,16 @@ export function getUsers(payload, callback) {
         "GET_USERS_START",
         "GET_USERS_SUCCESS",
         "GET_USERS_FAIL",
+        callback,
+    );
+}
+
+export function putUser(payload, callback) {
+    return dispatchActionToReducer(
+        putUserService(payload),
+        "UPDATE_USER_START",
+        "UPDATE_USER_SUCCESS",
+        "UPDATE_USER_FAIL",
         callback,
     );
 }

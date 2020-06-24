@@ -24,6 +24,7 @@ export {default as useChannels}  from "./useChannels";
 export {default as useChannelActions}  from "./useChannelActions";
 export {default as useUserChannels} from "./useUserChannels";
 export {default as useUserActions} from "./useUserActions";
+export {default as useUsers} from "./useUsers";
 export {default as usePostActions} from "./usePostActions";
 export {default as useCountRenders} from "./useCountRenders";
 export {default as useVisibilityChange} from "./useVisibilityChange";

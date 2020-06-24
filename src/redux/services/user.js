@@ -75,7 +75,7 @@ export function getUser(payload) {
  * @param {string} payload.id
  * @returns {Promise<*>}
  */
-export function updateUser(payload) {
+export function putUser(payload) {
     let url = `/users/${payload.id}`;
 
     return apiCall({
@@ -375,13 +375,6 @@ export function updateSettings(payload) {
         method: "PUT",
         url: `/v2/user-settings`,
         data: payload,
-    });
-}
-
-export function getUserSettings(payload) {
-    return apiCall({
-        method: "GET",
-        url: `/v2/user-settings`,
     });
 }
 

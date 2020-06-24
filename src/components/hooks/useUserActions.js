@@ -1,20 +1,24 @@
 import {useCallback, useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {getUsers} from "../../redux/actions/userAction";
+import toaster from "toasted-notes";
+import {getUser, getUsers, putUser} from "../../redux/actions/userAction";
 
 let init = true;
 
-/**
- * @returns {{fetchUsers: (...args: any[]) => any, fetchMoreUsers: (...args: any[]) => any, users}}
- */
 const useUserActions = () => {
 
     const dispatch = useDispatch();
-    const {users, getUserFilter} = useSelector(state => state.users);
 
-    const fetchUsers = useCallback(({skip = 0, limit = getUserFilter.limit, ...res},
-                                    callback = () => {
-                                    }) => {
+    const {getUserFilter} = useSelector(state => state.users);
+
+    const fetch = useCallback((
+        {
+            skip = 0,
+            limit = getUserFilter.limit,
+            ...res
+        },
+        callback = () => {},
+    ) => {
         dispatch(
             getUsers({
                 ...res,
@@ -24,17 +28,68 @@ const useUserActions = () => {
         );
     }, [dispatch, getUserFilter.limit]);
 
-    const fetchMoreUsers = useCallback(() => {
+    const fetchMore = useCallback(() => {
         if (getUserFilter.hasMore) {
-            fetchUsers(getUserFilter.skip, getUserFilter.limit);
+            fetch(getUserFilter.skip, getUserFilter.limit);
         }
-    }, [fetchUsers, getUserFilter]);
+    }, [fetch, getUserFilter]);
+
+    const fetchById = useCallback((userId, callback = () => {}) => {
+        dispatch(
+            getUser({id: userId}, callback),
+        );
+    }, [dispatch]);
+
+    const update = useCallback((user, callback = () => {}) => {
+        const allowed = ["id", "first_name", "last_name", "middle_name", "name", "password",
+            "role_id", "company", "designation", "skills", "email", "contact", "place", "address", "house_number",
+            "country", "zip_code", "birthday", "gender", "timezone", "language"];
+
+        let payload = {};
+        allowed.forEach(field => {
+            payload = {
+                ...payload,
+                [field]: user[field],
+            };
+
+            if (field === "password") {
+                if (user[field]) {
+                    payload = {
+                        ...payload,
+                        type: 2,
+                    };
+                } else {
+                    payload = {
+                        ...payload,
+                        password: "",
+                        type: 0,
+                    };
+                }
+            }
+        });
+
+        dispatch(
+            putUser(payload, (err, res) => {
+                if (err) {
+                    toaster.notify(`Saving profile information failed.`,
+                        {position: "bottom-left"});
+                }
+
+                if (res) {
+                    toaster.notify(`Profile information saved.`,
+                        {position: "bottom-left"});
+                }
+
+                callback(err, res);
+            }),
+        );
+    }, [dispatch]);
 
     useEffect(() => {
         if (init) {
             init = false;
 
-            fetchUsers({}, (err) => {
+            fetch({}, (err) => {
                 if (err) {
                     console.log(err);
                 }
@@ -45,10 +100,10 @@ const useUserActions = () => {
     }, []);
 
     return {
-        users,
-        getUserFilter,
-        fetchUsers,
-        fetchMoreUsers,
+        fetch,
+        update,
+        fetchById,
+        fetchMore,
     };
 };
 
