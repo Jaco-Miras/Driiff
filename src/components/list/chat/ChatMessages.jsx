@@ -959,7 +959,7 @@ class ChatMessages extends React.PureComponent {
                                         <InView as="div"
                                                 onChange={(inView, entry) => this.handleBottomRefChange(inView, entry)}>
                                                         <span className='intersection-bottom-ref'
-                                                              ref={this.chatBottomRef}>bot</span>
+                                                              ref={this.chatBottomRef}></span>
                                         </InView>
                                     }
                                 </div>

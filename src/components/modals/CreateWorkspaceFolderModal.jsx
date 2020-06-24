@@ -12,21 +12,21 @@ const WrapperDiv = styled(InputGroup)`
     display: flex;
     align-items: center;
     margin: 20px 0;
-    
+
     > .form-control:not(:first-child) {
         border-radius: 5px;
     }
-    
+
     label {
         white-space: nowrap;
         margin: 0 20px 0 0;
         min-width: 109px;
     }
-    
+
     .input-feedback {
         margin-left: 130px;
     }
-    
+
     button {
         margin-left: auto;
     }
@@ -41,9 +41,9 @@ const WrapperDiv = styled(InputGroup)`
 const ActiveTabName = styled.span`
     color: #505050;
     font-size: 10px;
-    font-weight: 400;    
+    font-weight: 400;
     margin-left: 13px;
-    
+
     &::before{
         content: '';
         display: inline-block;
@@ -244,8 +244,8 @@ const CreateWorkspaceFolderModal = props => {
     return (
         <Modal isOpen={modal} toggle={toggle} centered size={"md"} autoFocus={false}>
             <ModalHeaderSection toggle={toggle} className={"workspace-folder-header"}>
-                {mode === "edit" ? "Edit folder" : "Create new folder"}
-                <ActiveTabName className="intern-extern">{activeTabName}</ActiveTabName>
+                {mode === "edit" ? "Edit " + activeTabName + " folder" : "Create new " + activeTabName +  " folder"}
+                {/* <ActiveTabName className="intern-extern">{activeTabName}</ActiveTabName> */}
             </ModalHeaderSection>
             <ModalBody>
                 <WrapperDiv>
