@@ -6,12 +6,12 @@ import {useOutsideClick, useTooltipOrientation} from "../../hooks";
 const Wrapper = styled.div`
   display: inline-flex;
   position: relative;
-  
+
   svg {
     cursor: pointer;
     cursor: hand;
     width: 100%;
-    
+
     &:hover {
         color: #972c86;;
     }
@@ -32,9 +32,8 @@ const MoreTooltip = styled.div`
     cursor: pointer;
     box-shadow: 0 5px 10px -1px rgba(0,0,0,.15);
     border-top: 1px solid #eeeeee !important;
-    
-    
-    &.orientation-top {        
+
+    &.orientation-top {
         bottom: -10px;
     }
     &.orientation-bottom {
@@ -49,11 +48,11 @@ const MoreTooltip = styled.div`
         left: calc(100% + 25px);
         right: auto;
     }
-    
+
     button:hover{
         color: #972c86;
     }
-    
+
     > div {
         text-align: left;
         padding: 4px 24px;
@@ -63,7 +62,7 @@ const MoreTooltip = styled.div`
             color: #7A1B8B;
         }
     }
-    
+
     > div:last-child{
         border-bottom: none;
     }
