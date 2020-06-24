@@ -436,7 +436,7 @@ export default (state = INITIAL_STATE, action) => {
                     workspacePosts: {
                         ...state.workspacePosts,
                         [action.data.topic_id]: {
-                            filter: null,
+                            filter: "all",
                             sort: null,
                             tag: null,
                             search: null,

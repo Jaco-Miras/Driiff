@@ -107,6 +107,10 @@ const PickerContainer = styled(CommonPicker)`
     bottom: 70px;
 `;
 
+const FileNames = styled.div`
+    padding: 5px 45px;
+`;
+
 const PostDetailFooter = (props) => {
 
     const {
@@ -125,6 +129,8 @@ const PostDetailFooter = (props) => {
 
     const topic = useSelector(state => state.workspaces.activeTopic);
     const user = useSelector(state => state.session.user);
+    const editPostComment = useSelector(state => state.posts.editPostComment);
+    console.log(editPostComment, commentId)
 
     const handleSend = useCallback(() => {
         setSent(true);
@@ -185,6 +191,7 @@ const PostDetailFooter = (props) => {
             }
             {
                 isMember &&
+                <>
                 <Dflex className="d-flex align-items-center">
                     {
                         post.is_read_only === 1 ?
@@ -228,6 +235,18 @@ const PostDetailFooter = (props) => {
                         />
                     }
                 </Dflex>
+                {
+                    editPostComment && editPostComment.files.length > 0 &&
+                    <FileNames>
+                        {
+                            editPostComment.files.map(f => f.name).join(", ")
+                        }
+                    </FileNames>
+                }
+                <Dflex>
+
+                </Dflex>
+                </>
             }
             {
                 isMember === false && topic !== null &&

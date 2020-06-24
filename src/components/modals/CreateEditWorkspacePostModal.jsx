@@ -639,7 +639,7 @@ const CreateEditWorkspacePostModal = props => {
 
                     <CheckBoxGroup ref={formRef.more_options} maxHeight={maxHeight}
                                    className={showMoreOptions === null ? "" : showMoreOptions ? "enter-active" : "leave-active"}>
-                        <div class="d-flex">
+                        <div className="d-flex">
                             <CheckBox name="must_read" checked={form.must_read} onClick={toggleCheck} type="danger">Must
                                 read</CheckBox>
                             <CheckBox name="reply_required" checked={form.reply_required} onClick={toggleCheck}
