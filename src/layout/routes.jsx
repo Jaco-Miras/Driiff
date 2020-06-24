@@ -4,6 +4,7 @@ import {Redirect, Route, Switch} from "react-router-dom";
 import {useSettings, useTranslation} from "../components/hooks";
 import {TestChat} from "../components/test";
 import TestFiles from "../components/test/TestFiles";
+import {imgAsLogin} from "../helpers/slugHelper";
 import GuestLayout from "./GuestLayout";
 import MainLayout from "./MainLayout";
 
@@ -29,6 +30,9 @@ export const AppRoute = ({children, ...props}) => {
     return (
         session.authenticated ?
         <>
+            {
+                imgAsLogin()
+            }
             <Switch>
                 <Route
                     {...props}
