@@ -17,10 +17,15 @@ const UserProfilePanel = (props) => {
     const {className = ""} = props;
     const {id, name} = props.match.params;
 
-    const {users, getUserFilter} = useUsers();
+    const {users, getUserFilter, currentUser} = useUsers();
     //const [user, setUser] = useState(null);
 
     let user = users[id];
+    let isCurrentUser = false;
+    if (user && user.id === currentUser.id) {
+        isCurrentUser = true;
+    }
+    // console.log(user)
 
     /*useEffect(() => {
      if(getUserFilter.hasMore === false) {
@@ -38,16 +43,24 @@ const UserProfilePanel = (props) => {
                 <div className="col-md-4">
                     <div className="card">
                         <div className="card-body text-center">
-                            <Avatar imageLink={user.profile_image_link} name={user.name}/>
+                            <Avatar 
+                                imageLink={user.profile_image_link} 
+                                name={user.name}
+                                id={user.id}
+                                noDefaultClick={true}
+                            />
                             <h5 className="mb-1">{user.name}</h5>
-                            <p className="text-muted small">Web Developer</p>
-                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Delectus repudiandae
+                            <p className="text-muted small">{user.designation}</p>
+                            {/* <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Delectus repudiandae
                                 eveniet
-                                harum.</p>
-                            <a href="/" className="btn btn-outline-primary">
-                                <SvgIconFeather icon="edit-2"/>
-                                Edit Profile
-                            </a>
+                                harum.</p> */}
+                            {
+                                isCurrentUser &&
+                                <a className="btn btn-outline-primary">
+                                    <SvgIconFeather icon="edit-2"/>
+                                    Edit Profile
+                                </a>
+                            }
                         </div>
                         <hr className="m-0"/>
                         <div className="card-body">
@@ -72,10 +85,13 @@ const UserProfilePanel = (props) => {
                         <div className="card-body">
                             <h6 className="card-title d-flex justify-content-between align-items-center">
                                 Information
-                                <a href="/" className="btn btn-outline-light btn-sm">
-                                    <SvgIconFeather icon="edit-2"/>
-                                    Edit
-                                </a>
+                                {
+                                    isCurrentUser &&
+                                    <a className="btn btn-outline-light btn-sm">
+                                        <SvgIconFeather icon="edit-2"/>
+                                        Edit
+                                    </a>
+                                }
                             </h6>
                             <div className="row mb-2">
                                 <div className="col-6 text-muted">First Name:</div>
@@ -115,17 +131,20 @@ const UserProfilePanel = (props) => {
                             <div className="card-body">
                                 <h6 className="card-title d-flex justify-content-between align-items-center">
                                     Photos
-                                    <a href="/" className="btn btn-outline-light btn-sm">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                             viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1"
-                                             strokeLinecap="round" strokeLinejoin="round"
-                                             className="feather feather-upload mr-2">
-                                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                                            <polyline points="17 8 12 3 7 8"></polyline>
-                                            <line x1="12" y1="3" x2="12" y2="15"></line>
-                                        </svg>
-                                        Upload
-                                    </a>
+                                    {
+                                        isCurrentUser && 
+                                        <a className="btn btn-outline-light btn-sm">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1"
+                                                strokeLinecap="round" strokeLinejoin="round"
+                                                className="feather feather-upload mr-2">
+                                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                                <polyline points="17 8 12 3 7 8"></polyline>
+                                                <line x1="12" y1="3" x2="12" y2="15"></line>
+                                            </svg>
+                                            Upload
+                                        </a>
+                                    }
                                 </h6>
                                 <div className="row row-xs">
                                     <div className="col-lg-4 mb-3">

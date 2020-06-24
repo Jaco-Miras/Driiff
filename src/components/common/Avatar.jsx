@@ -7,9 +7,11 @@ import departmentIcon from "../../assets/icon/teams/r/secundary.svg";
 import defaultIcon from "../../assets/icon/user/avatar/l/no_outline.png";
 import botIcon from "../../assets/img/gripp-bot.png";
 import {SvgIconFeather} from "./SvgIcon";
+import {replaceChar} from "../../helpers/stringFormatter";
 
 const Wrapper = styled.div`
     position: relative;
+    cursor: pointer;
     
     .react-skeleton-load {        
         display: flex;    
@@ -78,9 +80,9 @@ const Avatar = (props) => {
             return;
 
         if (type === "USER") {
-            history.push(`/profile/${id}/${name}`);
+            history.push(`/profile/${id}/${replaceChar(name)}`);
         } else if (type === "TOPIC") {
-            history.push(`/topic/${id}/${name.toLowerCase().replace(/\s|\//g, "-")}`);
+            history.push(`/topic/${id}/${replaceChar(name)}`);
         }
     };
 

@@ -44,7 +44,11 @@ const PostTimeline = (props) => {
     return (
         <Wrapper className={`post-timeline timeline-item ${className}`}>
             <div>
-                <Avatar className="mr-3" name={data.user.name} imageLink={data.user.profile_image_link}/>
+                <Avatar className="mr-3" 
+                    name={data.user.name} 
+                    imageLink={data.user.profile_image_link}
+                    id={data.user.id}
+                />
             </div>
             <div>
                 <h6 className="d-flex justify-content-between mb-4">
