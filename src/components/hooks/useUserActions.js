@@ -1,7 +1,7 @@
 import {useCallback, useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {sessionService} from "redux-react-session";
-import {getUser, getUsers, postUploadProfileImage, putUser} from "../../redux/actions/userAction";
+import {checkDriffUserEmail, getUser, getUsers, postUploadProfileImage, putUser} from "../../redux/actions/userAction";
 import {useToaster} from "./index";
 
 let init = true;
@@ -13,6 +13,15 @@ const useUserActions = () => {
 
     const {getUserFilter} = useSelector(state => state.users);
     const {user: loggedUser} = useSelector(state => state.session);
+
+    const checkEmail = useCallback((email, callback = () => {}) => {
+        dispatch(
+            checkDriffUserEmail({
+                email: email,
+                driff: localStorage.getItem("slug"),
+            }, callback),
+        );
+    }, []);
 
     const fetch = useCallback((
         {
@@ -112,7 +121,7 @@ const useUserActions = () => {
     }, []);
 
     const getRequiredFields = useCallback((source) => {
-        let required = ["first_name", "last_name", "password"];
+        let required = ["first_name", "last_name", "password", "email"];
 
         switch (source) {
             case "gripp":
@@ -163,6 +172,7 @@ const useUserActions = () => {
     }, []);
 
     return {
+        checkEmail,
         fetch,
         update,
         updateProfileImage,

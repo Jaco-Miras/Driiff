@@ -2,6 +2,7 @@ import React, {useCallback, useEffect, useRef, useState} from "react";
 import {useDispatch} from "react-redux";
 import {FormGroup, Input, InputGroup, InputGroupAddon, InputGroupText, Label} from "reactstrap";
 import styled from "styled-components";
+import {EmailRegex} from "../../../helpers/stringFormatter";
 import {addToModals} from "../../../redux/actions/globalActions";
 import {Avatar, SvgIcon, SvgIconFeather} from "../../common";
 import {DropDocument} from "../../dropzone/DropDocument";
@@ -62,7 +63,7 @@ const UserProfilePanel = (props) => {
 
     const toaster = useToaster();
     const {users, loggedUser} = useUsers();
-    const {fetchById, getReadOnlyFields, getRequiredFields, update, updateProfileImage} = useUserActions();
+    const {checkEmail, fetchById, getReadOnlyFields, getRequiredFields, update, updateProfileImage} = useUserActions();
 
     const user = users[props.match.params.id];
     const isLoggedUser = user && loggedUser.id === user.id;
@@ -157,7 +158,78 @@ const UserProfilePanel = (props) => {
                 return;
             }
 
-            if (requiredFields.includes(name)) {
+            if (name === "email") {
+                if (requiredFields.includes(name) && value.trim() === "") {
+                    setFormUpdate(prevState => ({
+                        valid: {
+                            ...prevState.valid,
+                            [name]: false,
+                        },
+                        feedbackState: {
+                            ...prevState.feedbackState,
+                            [name]: false,
+                        },
+                        feedbackText: {
+                            ...prevState.feedbackText,
+                            [name]: `Email is required`,
+                        },
+                    }));
+
+                    return;
+                } else if (value.trim() !== "" && !EmailRegex.test(value.trim())) {
+                    setFormUpdate(prevState => ({
+                        valid: {
+                            ...prevState.valid,
+                            [name]: false,
+                        },
+                        feedbackState: {
+                            ...prevState.feedbackState,
+                            [name]: false,
+                        },
+                        feedbackText: {
+                            ...prevState.feedbackText,
+                            [name]: `Invalid email format`,
+                        },
+                    }));
+
+                    return;
+                } else {
+                    checkEmail(form.email, (err, res) => {
+                        if (res) {
+                            if (res.data.status) {
+                                setFormUpdate(prevState => ({
+                                    valid: {
+                                        ...prevState.valid,
+                                        [name]: false,
+                                    },
+                                    feedbackState: {
+                                        ...prevState.feedbackState,
+                                        [name]: false,
+                                    },
+                                    feedbackText: {
+                                        ...prevState.feedbackText,
+                                        [name]: `Email is already taken`,
+                                    },
+                                }));
+                            } else {
+                                setFormUpdate(prevState => ({
+                                    valid: {
+                                        ...prevState.valid,
+                                        [name]: true,
+                                    },
+                                    feedbackState: {
+                                        ...prevState.feedbackState,
+                                    },
+                                    feedbackText: {
+                                        ...prevState.feedbackText,
+                                    },
+                                }));
+                            }
+                        }
+                    });
+                }
+
+            } else if (requiredFields.includes(name)) {
                 setFormUpdate(prevState => ({
                     valid: {
                         ...prevState.valid,
@@ -588,6 +660,7 @@ const UserProfilePanel = (props) => {
                                         <div className="col-6 text-muted">Email:</div>
                                         <div className="col-6">
                                             <Input
+                                                type="email"
                                                 className={getValidClass(formUpdate.valid.email)}
                                                 name="email"
                                                 onChange={handleInputChange}
