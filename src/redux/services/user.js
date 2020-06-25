@@ -417,3 +417,15 @@ export function getUsers(payload = {}) {
         url: url,
     });
 }
+
+export function postUploadProfileImage(payload) {
+    let url = `/users/${payload.id}/upload-profile-image`;
+    return apiCall({
+        method: "POST",
+        url: url,
+        hasFile: true,
+        data: {
+            file: payload.file,
+        },
+    });
+}

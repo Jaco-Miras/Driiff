@@ -9,6 +9,7 @@ import {
     googleLogin as googleLoginService,
     login as loginService,
     logout as logoutService,
+    postUploadProfileImage as postUploadProfileImageService,
     putUser as putUserService,
     resetPassword as resetPasswordService,
     updatePassword as updatePasswordService,
@@ -130,6 +131,16 @@ export function putUser(payload, callback) {
         "UPDATE_USER_START",
         "UPDATE_USER_SUCCESS",
         "UPDATE_USER_FAIL",
+        callback,
+    );
+}
+
+export function postUploadProfileImage(payload, callback) {
+    return dispatchActionToReducer(
+        postUploadProfileImageService(payload),
+        "UPDATE_PROFILE_IMAGE_START",
+        "UPDATE_PROFILE_IMAGE_SUCCESS",
+        "UPDATE_PROFILE_IMAGE_FAILURE",
         callback,
     );
 }

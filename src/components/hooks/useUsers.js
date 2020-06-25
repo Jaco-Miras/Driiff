@@ -6,7 +6,7 @@ let init = true;
 
 const useUsers = () => {
 
-    const {users} = useSelector(state => state.users);
+    const {users, getUserFilter} = useSelector(state => state.users);
     const {user: loggedUser} = useSelector(state => state.session);
 
     const userActions = useUserActions();
@@ -23,6 +23,7 @@ const useUsers = () => {
 
     return {
         users,
+        getUserFilter,
         loggedUser,
         actions: userActions,
     };

@@ -1,7 +1,10 @@
 import React, {useCallback, useEffect, useRef, useState} from "react";
+import {useDispatch} from "react-redux";
 import {FormGroup, Input, InputGroup, InputGroupAddon, InputGroupText, Label} from "reactstrap";
 import styled from "styled-components";
+import {addToModals} from "../../../redux/actions/globalActions";
 import {Avatar, SvgIcon, SvgIconFeather} from "../../common";
+import {DropDocument} from "../../dropzone/DropDocument";
 import InputFeedback from "../../forms/InputFeedback";
 import {useToaster, useUserActions, useUsers} from "../../hooks";
 
@@ -15,6 +18,11 @@ const Wrapper = styled.div`
     
     .row-user-profile-panel {
         justify-content: center;
+    }
+    
+    .close {
+        border-radius: 100%;
+        padding: 2px;
     }
     
     label {
@@ -50,17 +58,21 @@ const UserProfilePanel = (props) => {
 
     const {className = ""} = props;
 
+    const dispatch = useDispatch();
+
     const toaster = useToaster();
     const {users, loggedUser} = useUsers();
-    const {update, fetchById, getReadOnlyFields, getRequiredFields} = useUserActions();
+    const {fetchById, getReadOnlyFields, getRequiredFields, update, updateProfileImage} = useUserActions();
 
     const user = users[props.match.params.id];
+    const isLoggedUser = user && loggedUser.id === user.id;
     const readOnlyFields = getReadOnlyFields(user ? user.import_from : "");
     const requiredFields = getRequiredFields(user ? user.import_from : "");
 
     const [editInformation, setEditInformation] = useState(false);
     const [passwordVisibility, setPasswordVisibility] = useState(false);
     const [passwordUpdate, setPasswordUpdate] = useState(false);
+    const [showDropZone, setShowDropZone] = useState(false);
     const [form, setForm] = useState(user && user.loaded ? user : {});
     const [formUpdate, setFormUpdate] = useState({
         valid: {},
@@ -69,6 +81,7 @@ const UserProfilePanel = (props) => {
     });
 
     const refs = {
+        dropZoneRef: useRef(null),
         first_name: useRef(null),
         password: useRef(null),
     };
@@ -81,12 +94,10 @@ const UserProfilePanel = (props) => {
         }
     }, []);
 
-    //const [user, setUser] = useState(null);
     const togglePasswordUpdate = useCallback(() => {
         setPasswordUpdate(prevState => !prevState);
     }, [setPasswordUpdate]);
 
-    // console.log(user)
     const togglePasswordVisibility = useCallback(() => {
         setPasswordVisibility(prevState => !prevState);
     }, [setPasswordVisibility]);
@@ -179,19 +190,84 @@ const UserProfilePanel = (props) => {
             toaster.error(`Some fields require your attention.`,
                 {position: "bottom-left"});
         } else if (Object.values(formUpdate.valid).find(v => v === true) === true) {
-            update(form, (err, res) => {
-                if (err) {
-                }
-                if (res) {
-                    setEditInformation(false);
-                }
-            });
+            if (form.profile_image_link !== user.profile_image_link) {
+                updateProfileImage(form, formUpdate.feedbackText.profile_image_link, (err, res) => {
+                    if (res) {
+                        setEditInformation(false);
+                    }
+                });
+            } else {
+                update(form, (err, res) => {
+                    if (res) {
+                        setEditInformation(false);
+                    }
+                });
+            }
         } else {
             toaster.info(`Nothing was updated.`,
                 {position: "bottom-left"});
             setEditInformation(false);
         }
     }, [form, formUpdate, update, setEditInformation]);
+
+    const handleAvatarClick = () => {
+        if (isLoggedUser) {
+            refs.dropZoneRef.current.open();
+        }
+    };
+
+    const handleShowDropZone = useCallback(() => {
+        if (!showDropZone)
+            setShowDropZone(true);
+    }, [showDropZone, setShowDropZone]);
+
+    const handleHideDropzone = useCallback(() => {
+        setShowDropZone(false);
+    }, [setShowDropZone]);
+
+    const handleUseProfilePic = useCallback((file, fileUrl) => {
+        setForm(prevState => ({
+            ...prevState,
+            profile_image_link: fileUrl,
+        }));
+        setFormUpdate(prevState => ({
+            valid: {
+                ...prevState.valid,
+                profile_image_link: true,
+            },
+            feedbackState: {
+                ...prevState.feedbackState,
+            },
+            feedbackText: {
+                ...prevState.feedbackText,
+                profile_image_link: file,
+            },
+        }));
+        setEditInformation(true);
+    }, []);
+
+    const dropAction = useCallback((uploadedFiles) => {
+        if (uploadedFiles.length === 0) {
+            toaster.error("File type not allowed. Please use an image file.",
+                {position: "bottom-left"});
+        } else if (uploadedFiles.length > 1) {
+            toaster.warning("Multiple files detected. First selected image will be used.",
+                {position: "bottom-left"});
+        }
+
+        let modal = {
+            type: "file_crop_upload",
+            imageFile: uploadedFiles[0],
+            mode: "profile",
+            handleSubmit: handleUseProfilePic,
+        };
+
+        dispatch(
+            addToModals(modal, () => {
+                handleHideDropzone();
+            }),
+        );
+    }, [handleUseProfilePic, handleHideDropzone]);
 
     useEffect(() => {
         const selectedUser = users[props.match.params.id] ? users[props.match.params.id] : {};
@@ -206,13 +282,25 @@ const UserProfilePanel = (props) => {
     if (!form.id) {
         return <></>;
     }
-
     return (
         <Wrapper className={`user-profile-panel container-fluid h-100 ${className}`}>
             <div className="row row-user-profile-panel">
                 <div className="col-md-4">
                     <div className="card">
-                        <div className="card-body text-center">
+                        <div className="card-body text-center" onDragOver={handleShowDropZone}>
+                            {
+                                isLoggedUser &&
+                                <DropDocument
+                                    acceptType="imageOnly"
+                                    hide={!showDropZone}
+                                    ref={refs.dropZoneRef}
+                                    onDragLeave={handleHideDropzone}
+                                    onDrop={({acceptedFiles}) => {
+                                        dropAction(acceptedFiles);
+                                    }}
+                                    onCancel={handleHideDropzone}
+                                />
+                            }
                             {
                                 user.import_from === "gripp" &&
                                 <SvgIcon className="mb-2" width={500} height={40} icon="gripp-logo"/>
@@ -224,12 +312,15 @@ const UserProfilePanel = (props) => {
                                     Some fields cannot be edited.
                                 </ImportWarning>
                             }
-                            <Avatar
-                                imageLink={user.profile_image_link}
-                                name={user.name}
-                                id={user.id}
-                                noDefaultClick={true}
-                            />
+                            {
+                                <Avatar
+                                    imageLink={form.profile_image_link}
+                                    name={form.name}
+                                    id={form.id}
+                                    onClick={handleAvatarClick}
+                                    noDefaultClick={true}
+                                />
+                            }
                             {
                                 editInformation ?
                                 <h5 className="mb-1">{form.first_name} {form.middle_name} {form.last_name}</h5>
@@ -238,10 +329,19 @@ const UserProfilePanel = (props) => {
                             }
                             <p className="text-muted small">{user.role.name}</p>
                             {
-                                loggedUser.id === user.id &&
-                                <span className="btn btn-outline-primary" onClick={toggleEditInformation}>
-                                    <SvgIconFeather className="mr-2" icon="edit-2"/> Edit Profile
-                                </span>
+                                isLoggedUser &&
+                                <>
+                                    {
+                                        editInformation ?
+                                        <span className="btn btn-outline-primary" onClick={handleSave}>
+                                            <SvgIconFeather className="mr-2" icon="save"/> Save Changes
+                                        </span>
+                                                        :
+                                        <span className="btn btn-outline-primary" onClick={toggleEditInformation}>
+                                            <SvgIconFeather className="mr-2" icon="edit-2"/> Edit Profile
+                                        </span>
+                                    }
+                                </>
                             }
                         </div>
                     </div>
@@ -253,7 +353,7 @@ const UserProfilePanel = (props) => {
                                 <h6 className="card-title d-flex justify-content-between align-items-center">
                                     Information
                                     {
-                                        loggedUser.id === user.id &&
+                                        isLoggedUser &&
                                         <span onClick={toggleEditInformation} className="btn btn-outline-light btn-sm">
                                             <SvgIconFeather className="mr-2" icon="edit-2"/> Edit
                                         </span>
@@ -328,11 +428,9 @@ const UserProfilePanel = (props) => {
                                 <h6 className="card-title d-flex justify-content-between align-items-center">
                                     Information
                                     <div>
-                                        <span onClick={handleSave} className="btn btn btn-outline-primary btn-sm mr-2">
-                                            <SvgIconFeather className="mr-2" icon="save"/> Save
-                                        </span>
-                                        <span onClick={toggleEditInformation} className="btn btn-outline-light btn-sm">
-                                            <SvgIconFeather className="mr-2" icon="x"/> Close
+                                        <span onClick={toggleEditInformation}
+                                              className="close btn btn-outline-light btn-sm">
+                                            <SvgIconFeather icon="x"/>
                                         </span>
                                     </div>
                                 </h6>
@@ -467,6 +565,17 @@ const UserProfilePanel = (props) => {
                                         </div>
                                     </div>
                                 }
+                                <div className="d-flex justify-content-between align-items-center mt-2">
+                                    <div>&nbsp;</div>
+                                    <div>
+                                        <span onClick={handleSave} className="btn btn btn-outline-primary btn-sm mr-2">
+                                            <SvgIconFeather className="mr-2" icon="save"/> Save Changes
+                                        </span>
+                                        <span onClick={toggleEditInformation} className="btn btn-outline-light btn-sm">
+                                            <SvgIconFeather className="mr-2" icon="x"/> Cancel
+                                        </span>
+                                    </div>
+                                </div>
                             </div>
                         }
                     </div>

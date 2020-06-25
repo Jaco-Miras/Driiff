@@ -1,6 +1,7 @@
 import {useCallback, useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {getUser, getUsers, putUser} from "../../redux/actions/userAction";
+import {sessionService} from "redux-react-session";
+import {getUser, getUsers, postUploadProfileImage, putUser} from "../../redux/actions/userAction";
 import {useToaster} from "./index";
 
 let init = true;
@@ -11,6 +12,7 @@ const useUserActions = () => {
     const toaster = useToaster();
 
     const {getUserFilter} = useSelector(state => state.users);
+    const {user: loggedUser} = useSelector(state => state.session);
 
     const fetch = useCallback((
         {
@@ -77,6 +79,9 @@ const useUserActions = () => {
                 }
 
                 if (res) {
+                    if (loggedUser.id === res.data.id) {
+                        sessionService.saveUser({...res.data});
+                    }
                     toaster.success(`Profile information saved.`,
                         {position: "bottom-left"});
                 }
@@ -117,6 +122,32 @@ const useUserActions = () => {
         }
     }, []);
 
+    /**
+     * @param {Object} user
+     * @param {File} file
+     * @param {Object} callback
+     */
+    const updateProfileImage = useCallback((user, file, callback = () => {}) => {
+        const payload = {
+            id: user.id,
+            file: file,
+        };
+        console.log(payload);
+        dispatch(
+            postUploadProfileImage(payload, (err, res) => {
+                if (err) {
+                    toaster.error(`Profile image upload failed.`);
+                    callback(err);
+                }
+
+                if (res) {
+                    user.profile_image_id = parseInt(res.data.profile_media_id);
+                    update(user, callback);
+                }
+            }),
+        );
+    }, []);
+
     useEffect(() => {
         if (init) {
             init = false;
@@ -134,6 +165,7 @@ const useUserActions = () => {
     return {
         fetch,
         update,
+        updateProfileImage,
         fetchById,
         fetchMore,
         getReadOnlyFields,
