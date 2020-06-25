@@ -19,6 +19,23 @@ const Wrapper = styled.div`
     
     .row-user-profile-panel {
         justify-content: center;
+        
+        .avatar {
+            width: 68px;
+            height: 68px;            
+        }
+        
+        input.designation {
+            &::-webkit-input-placeholder {                
+                font-size: 12px;
+            }            
+            &:-ms-input-placeholder {                
+                font-size: 12px;
+            }            
+            &::placeholder {
+                font-size: 12px;
+            }
+        }
     }
     
     .close {
@@ -175,7 +192,7 @@ const UserProfilePanel = (props) => {
                         },
                     }));
 
-                    return;
+
                 } else if (value.trim() !== "" && !EmailRegex.test(value.trim())) {
                     setFormUpdate(prevState => ({
                         valid: {
@@ -192,7 +209,7 @@ const UserProfilePanel = (props) => {
                         },
                     }));
 
-                    return;
+
                 } else {
                     checkEmail(form.email, (err, res) => {
                         if (res) {
@@ -395,6 +412,7 @@ const UserProfilePanel = (props) => {
                             }
                             {
                                 <Avatar
+                                    className="mb-2"
                                     imageLink={form.profile_image_link}
                                     name={form.name}
                                     id={form.id}
@@ -408,7 +426,24 @@ const UserProfilePanel = (props) => {
                                                 :
                                 <h5 className="mb-1">{user.first_name} {user.middle_name} {user.last_name}</h5>
                             }
-                            <p className="text-muted small">{user.role.name}</p>
+                            {
+                                editInformation && !readOnlyFields.includes("designation") ?
+                                <p className="text-muted small d-flex align-items-center mt-2">
+                                    <Input
+                                        style={{maxWidth: "320px", margin: "auto"}}
+                                        placeholder="Job Title eg. Manager, Team Leader, Designer"
+                                        className={`designation ${getValidClass(formUpdate.valid.designation)}`}
+                                        name="designation"
+                                        onChange={handleInputChange}
+                                        onBlur={handleInputBlur}
+                                        defaultValue={user.designation}
+                                    />
+                                    <InputFeedback
+                                        valid={formUpdate.feedbackState.designation}>{formUpdate.feedbackText.designation}</InputFeedback>
+                                </p>
+                                                                                           :
+                                <p className="text-muted small">{user.designation}</p>
+                            }
                             {
                                 isLoggedUser &&
                                 <>
@@ -579,7 +614,7 @@ const UserProfilePanel = (props) => {
                                         <div className="col-6 text-muted">Password</div>
                                         <div className="col-6">
                                             <Label onClick={togglePasswordUpdate}
-                                                   className={`cursor-pointer ${!passwordUpdate ? "" : "d-none"}`}>Click
+                                                   className={`cursor-pointer mb-0 ${!passwordUpdate ? "" : "d-none"}`}>Click
                                                 to
                                                 change your password.</Label>
                                             <FormGroup
