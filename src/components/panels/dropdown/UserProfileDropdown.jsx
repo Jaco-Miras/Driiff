@@ -43,7 +43,12 @@ const UserProfileDropdown = (props) => {
         <Wrapper ref={refs.container} className={`user-profile-dropdown dropdown-menu dropdown-menu-big ${className}`}
                  x-placement="bottom-end">
             <div className="p-3 text-center">
-                <Avatar name={user.name} imageLink={user.profile_image_link}/>
+                <Avatar 
+                    name={user.name} 
+                    imageLink={user.profile_image_link}
+                    id={user.id}
+                    partialName={user.partial_name}
+                />
                 <h6 className="d-flex align-items-center justify-content-center">
                     {user.name}
                     <span className="btn btn-primary btn-sm ml-2" data-toggle="tooltip" title=""

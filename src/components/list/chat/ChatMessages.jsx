@@ -494,7 +494,9 @@ class ChatMessages extends React.PureComponent {
         if (selectedChannel.skip === 0)
             this.loadReplies();
 
-        this.handleReadChannel();
+        if (selectedChannel.is_read === 1) {
+            this.handleReadChannel();
+        }
     }
 
     getSnapshotBeforeUpdate(prevProps, prevState) {

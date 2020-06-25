@@ -191,6 +191,13 @@ export default function (state = INITIAL_STATE, action) {
                             };
                         } else return m;
                     }),
+                    replies: action.data.member_id === state.user.id ? channel.replies.map(r => {
+                                return {
+                                    ...r,
+                                    is_read: true
+                                }
+                            }) 
+                            : channel.replies
                 };
             }
             return {
@@ -201,10 +208,8 @@ export default function (state = INITIAL_STATE, action) {
                         [action.data.channel_id]: channel,
                     }
                                            : state.channels,
-                selectedChannel: state.selectedChannel && state.selectedChannel.id === action.data.channel_id ?
-                    {
-                        ...channel,
-                    }
+                selectedChannel: state.selectedChannel && state.selectedChannel.id === parseInt(action.data.channel_id) ?
+                    channel
                                                                                                               : state.selectedChannel,
             };
         }

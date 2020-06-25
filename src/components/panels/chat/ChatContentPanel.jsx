@@ -110,10 +110,9 @@ const ChatContentPanel = (props) => {
                 onCancel={handleHideDropzone}
             />
             <ChatHeaderPanel channel={selectedChannel}/>
-            {selectedChannel !== null && unreadCount > 0 && <ChatUnreadFloatBar/>}
+            {selectedChannel !== null && unreadCount > 0 && <ChatUnreadFloatBar channel={selectedChannel}/>}
             {selectedChannel !== null ? <ChatMessages selectedChannel={selectedChannel} chatMessageActions={chatMessageActions} /> :
              <ChatMessagesPlaceholder/>}
-            {/* <ChatMessagesPanel/> */}
             <ChatFooterPanel onShowFileDialog={handleOpenFileDialog} dropAction={dropAction}/>
         </Wrapper>
     );

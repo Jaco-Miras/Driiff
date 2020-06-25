@@ -115,7 +115,9 @@ export default (state = INITIAL_STATE, action) => {
                     company: action.data.company,
                     designation: action.data.designation,
                     partial_name: action.data.partian_name,
-                    import_from: action.data.import_from
+                    import_from: action.data.import_from,
+                    place: action.data.place,
+                    address: action.data.address
                 }
             }
             if (Object.keys(state.mentions).length) {

@@ -497,10 +497,10 @@ const UserProfilePanel = (props) => {
                                     </div>
                                 }
                                 {
-                                    user.phone &&
+                                    user.contact &&
                                     <div className="row mb-2">
-                                        <div className="col-6 text-muted">Phone:</div>
-                                        <div className="col-6">{user.phone}</div>
+                                        <div className="col-6 text-muted">Contact:</div>
+                                        <div className="col-6">{user.contact}</div>
                                     </div>
                                 }
                                 {
@@ -639,18 +639,18 @@ const UserProfilePanel = (props) => {
                                     </div>
                                 }
                                 {
-                                    !readOnlyFields.includes("phone") &&
+                                    !readOnlyFields.includes("contact") &&
                                     <div className="row mb-2">
-                                        <div className="col-6 text-muted">Phone:</div>
+                                        <div className="col-6 text-muted">Contact:</div>
                                         <div className="col-6">
                                             <Input
-                                                className={getValidClass(formUpdate.valid.phone)}
-                                                name="phone"
+                                                className={getValidClass(formUpdate.valid.contact)}
+                                                name="contact"
                                                 onChange={handleInputChange}
                                                 onBlur={handleInputBlur}
-                                                defaultValue={user.phone}/>
+                                                defaultValue={user.contact}/>
                                             <InputFeedback
-                                                valid={formUpdate.feedbackState.phone}>{formUpdate.feedbackText.phone}</InputFeedback>
+                                                valid={formUpdate.feedbackState.contact}>{formUpdate.feedbackText.contact}</InputFeedback>
                                         </div>
                                     </div>
                                 }

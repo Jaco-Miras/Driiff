@@ -28,12 +28,12 @@ const ChatUnreadFloatBarWrapper = styled.div`
 `;
 
 const ChatUnreadFloatBar = props => {
-
+    const {channel} = props;
     return (
         <ChatUnreadFloatBarWrapper className="chat-unread-floatbar">
             <ChatJumpTo/>
             <ChatUnreadCounterMessage/>
-            <ChatMarkAsRead/>
+            <ChatMarkAsRead channel={channel}/>
         </ChatUnreadFloatBarWrapper>
     );
 };
