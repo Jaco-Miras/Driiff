@@ -20929,9 +20929,9 @@ body.dark.small-navigation .navigation-menu-body ul li.navigation-divider:after 
 }
 
 .fadeBottom {
-  animation: fadeb 0.15s cubic-bezier(.275, .420, .000, 1.000);
+  animation: fadeBottom 0.15s cubic-bezier(.275, .420, .000, 1.000);
 }
-@keyframes fadeb {
+@keyframes fadeBottom {
   0% {
     opacity: 0;
     margin-top: 24px;
