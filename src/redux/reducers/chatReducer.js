@@ -864,7 +864,14 @@ export default function (state = INITIAL_STATE, action) {
         case "UNREAD_CHANNEL_REDUCER": {
             let updatedChannels = {...state.channels};
             if (updatedChannels.hasOwnProperty(action.data.channel_id)) {
-                updatedChannels[action.data.channel_id].is_read = 0;
+                updatedChannels = {
+                    ...updatedChannels,
+                    [action.data.channel_id]: {
+                        ...updatedChannels[action.data.channel_id],
+                        is_read: 0
+                    }
+                }
+                
             }
             return {
                 ...state,

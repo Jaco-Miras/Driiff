@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useCallback} from "react";
 import styled from "styled-components";
 import {localizeChatChannelDate} from "../../../helpers/momentFormatJS";
 import {SvgIconFeather} from "../../common";
@@ -31,7 +31,7 @@ const Badge = styled.span`
 
 const ChatDateIcons = props => {
     const {channel, optionsVisible} = props;
-    const handleNotificationBadges = () => {
+    const handleNotificationBadges = useCallback(() => {
         if (channel.is_read === 0) {
             return <Badge className={`badge badge-primary badge-pill ml-auto unread`}>0</Badge>;
         } else {
@@ -41,7 +41,8 @@ const ChatDateIcons = props => {
                 return null;
             }
         }
-    };
+    }, [channel]);
+
     return (
         <Wrapper className="chat-timestamp" optionsVisible={optionsVisible}>
             {handleNotificationBadges()}
