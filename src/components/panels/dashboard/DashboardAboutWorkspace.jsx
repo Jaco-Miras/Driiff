@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import {FileAttachments, SvgIconFeather} from "../../common";
+import ShowMoreText from 'react-show-more-text';
 
 const Wrapper = styled.div`
     border-left: 5px solid #822492;
@@ -50,7 +51,18 @@ const DashboardAboutWorkspace = (props) => {
                 </h5>
                 {
                     workspace &&
-                    <DashboardDescription dangerouslySetInnerHTML={{__html: workspace.description}}/>
+                    <>
+                        <ShowMoreText
+                        lines={6}
+                        more='Show more'
+                        less='Show less'
+                        anchorClass=''
+                        expanded={false}
+                        >
+                            <DashboardDescription dangerouslySetInnerHTML={{__html: workspace.description}}/>
+                        </ShowMoreText>
+
+                    </>
                 }
                 {
                     workspace && workspace.primary_files && workspace.primary_files.length > 0 &&
