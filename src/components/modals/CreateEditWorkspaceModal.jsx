@@ -543,9 +543,9 @@ const CreateEditWorkspaceModal = (props) => {
 
     useEffect(() => {
         if (activeTab !== "extern") {
-            setActiveTabName("Internal");
+            setActiveTabName("internal");
         } else {
-            setActiveTabName("External");
+            setActiveTabName("external");
         }
     }, [activeTab]);
 

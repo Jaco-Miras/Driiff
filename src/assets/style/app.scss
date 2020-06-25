@@ -72,7 +72,6 @@ body.dark {
 
 .more-options-tooltip {
   animation: bottom-fade 0.3s ease;
-  z-index: 11 !important;
 }
 
 @keyframes bottom-fade {
@@ -20942,4 +20941,6 @@ body.dark.small-navigation .navigation-menu-body ul li.navigation-divider:after 
     margin-top: 0;
   }
 }
-
+.ql-image {
+  display: none !important;
+}
