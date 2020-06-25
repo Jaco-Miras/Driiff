@@ -18,7 +18,8 @@ import {
     updateChannelMembersTitle,
     setChannel,
     setMemberTimestamp,
-    setSelectedChannel
+    setSelectedChannel,
+    unreadChannelReducer,
 } from "../../redux/actions/chatActions";
 import {addFilesToChannel, 
     deleteFilesFromChannel, 
@@ -443,7 +444,7 @@ class SocketListeners extends PureComponent {
             })
             .listen(".unread-channel", e => {
                 console.log(e, "unread channel");
-                this.props.incomingUnreadChannel(e);
+                this.props.unreadChannelReducer(e);
             })
             .listen(".update-channel-name", e => {
                 console.log(e, "updated channel name");
@@ -793,6 +794,7 @@ function mapDispatchToProps(dispatch) {
         incomingDeletedPostFile: bindActionCreators(incomingDeletedPostFile, dispatch),
         incomingDeletedComment: bindActionCreators(incomingDeletedComment, dispatch),
         incomingUpdatedUser: bindActionCreators(incomingUpdatedUser, dispatch),
+        unreadChannelReducer: bindActionCreators(unreadChannelReducer, dispatch)
     };
 }
 

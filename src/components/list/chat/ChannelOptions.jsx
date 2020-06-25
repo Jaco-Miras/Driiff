@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from "react";
-import {useDispatch, useSelector} from "react-redux";
+import React, {useState} from "react";
+import {useDispatch} from "react-redux";
 import styled from "styled-components";
 import {addToModals} from "../../../redux/actions/globalActions";
 import useChannelActions from "../../hooks/useChannelActions";
@@ -65,7 +65,11 @@ const ChannelOptions = props => {
     };
 
     const handleArchiveChat = () => {
-        channelActions.archive(channel);
+        if (channel.is_archived === 1) {
+            channelActions.unArchive(channel);
+        } else {
+            channelActions.archive(channel);
+        }
     };
 
     const handleShowArchiveConfirmation = () => {
@@ -84,8 +88,9 @@ const ChannelOptions = props => {
         if (channel.is_archived === 1) {
             payload = {
                 ...payload,
+                headerText: "Chat Un-archive",
                 submitText: "Unarchive",
-                bodyText: "Are you sure you want to unarchive this chat?",
+                bodyText: "Are you sure you want to un-archive this chat?",
             };
         }
 
@@ -98,33 +103,9 @@ const ChannelOptions = props => {
         e.stopPropagation();
 
         if (channel.total_unread === 0 && channel.is_read === 1) {
-            channelActions.markAsUnRead(channel, () => {
-                /*
-                 @todo solve
-                 let updatedChannel = {
-                 ...channel,
-                 mark_unread: !channel.mark_unread,
-                 mark_new_messages_as_read: true,
-                 is_read: 0,
-                 total_unread: 0,
-                 minus_count: channel.total_unread,
-                 };
-                 dispatch(updateUnreadChatReplies(updatedChannel));*/
-            });
+            channelActions.markAsUnRead(channel);
         } else {
-            channelActions.markAsRead(channel, () => {
-                /*
-                 @todo solve
-                 let updatedChannel = {
-                 ...channel,
-                 mark_new_messages_as_read: false,
-                 mark_unread: channel.mark_unread,
-                 is_read: 1,
-                 total_unread: 0,
-                 minus_count: channel.total_unread,
-                 };
-                 dispatch(updateUnreadChatReplies(updatedChannel));*/
-            });
+            channelActions.markAsRead(channel);
         }
 
         handleShowMoreOptions();
@@ -140,7 +121,7 @@ const ChannelOptions = props => {
                 {channel.is_pinned ? `Unfavorite` : `Favorite`}
             </div>
             <div onClick={e => handleMarkAsUnreadSelected(e)}>
-                {(channel.mark_unread || (!channel.mark_unread && channel.total_unread > 0)) ? `Mark as Read` : `Mark as Unread`}
+                {(channel.total_unread === 0 && channel.is_read === 1) ? `Mark as unread` : `Mark as read`}
             </div>
             <div onClick={handleMuteChat}>
                 {channel.is_muted ? `Unmute` : `Mute`}

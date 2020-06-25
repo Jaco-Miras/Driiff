@@ -184,6 +184,7 @@ const useChannelActions = () => {
         let payload = {
             id: channel.id,
             is_archived: 0,
+            push_unarchived: 1
         };
 
         updateStatus(channel, payload, callback);
@@ -477,7 +478,7 @@ const useChannelActions = () => {
     ) => {
         dispatch(
             putMarkUnreadChannel({
-                channelId: channel.id,
+                channel_id: channel.id,
                 ...getSharedPayload(channel),
             }, callback),
         );

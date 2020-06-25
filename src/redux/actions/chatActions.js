@@ -456,3 +456,11 @@ export function clearSelectedChannel(payload, callback) {
         callback,
     );
 }
+
+export function unreadChannelReducer(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "UNREAD_CHANNEL_REDUCER",
+        payload,
+        callback,
+    );
+}
