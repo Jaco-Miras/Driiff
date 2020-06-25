@@ -22,7 +22,6 @@ const FileCropUploadModal = props => {
     const dispatch = useDispatch();
 
     const [modal, setModal] = useState(true);
-    const [imageSrc, setImageSrc] = useState(URL.createObjectURL(imageFile));
 
     const refs = {
         cropper: useState(null),
@@ -34,11 +33,6 @@ const FileCropUploadModal = props => {
         dispatch(
             clearModal({type: type}),
         );
-    };
-
-    const _crop = () => {
-        if (refs.cropper.current)
-            setImageSrc(refs.cropper.current.getCroppedCanvas().toDataURL("image/jpeg", 0.5));
     };
 
     const dataURLtoFile = (dataurl, filename) => {
@@ -59,7 +53,8 @@ const FileCropUploadModal = props => {
     };
 
     const handleCropImage = () => {
-        handleSubmit(dataURLtoFile(imageSrc, imageFile.name));
+        const imageSrc = refs.cropper.current.getCroppedCanvas().toDataURL("image/jpeg", 0.5);
+        handleSubmit(dataURLtoFile(imageSrc, imageFile.name), imageSrc);
         toggle();
     };
 
@@ -70,9 +65,8 @@ const FileCropUploadModal = props => {
                 style={{height: 320, width: "100%"}}
                 aspectRatio={1}
                 guides={false}
-                src={imageSrc}
+                src={URL.createObjectURL(imageFile)}
                 ref={refs.cropper}
-                crop={_crop}
             />
             <CropperFooter onClick={handleCropImage}>
                 Save
