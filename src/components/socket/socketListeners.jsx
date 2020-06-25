@@ -50,7 +50,7 @@ import {
     incomingUpdatedPost,
     incomingDeletedComment
 } from "../../redux/actions/postActions";
-import {getOnlineUsers, getUser} from "../../redux/actions/userAction";
+import {getOnlineUsers, getUser, incomingUpdatedUser} from "../../redux/actions/userAction";
 import {
     incomingMovedTopic,
     incomingUpdatedWorkspaceFolder,
@@ -279,6 +279,17 @@ class SocketListeners extends PureComponent {
         })
 
         window.Echo.private(`${localStorage.getItem("slug") === 'dev24admin' ? "dev" : localStorage.getItem("slug")}.App.Broadcast`)
+        .listen(".user-notification", e => {
+            console.log(e, "user notif")
+            switch (e.SOCKET_TYPE) {
+                case "USER_UPDATE": {
+                    this.props.incomingUpdatedUser(e);
+                    break;
+                }
+                default:
+                    return null;
+            }
+        })
         .listen(".post-notification", e => {
             console.log(e, "post notif broadcast")
             switch (e.SOCKET_TYPE) {
@@ -781,6 +792,7 @@ function mapDispatchToProps(dispatch) {
         incomingTimeline: bindActionCreators(incomingTimeline, dispatch),
         incomingDeletedPostFile: bindActionCreators(incomingDeletedPostFile, dispatch),
         incomingDeletedComment: bindActionCreators(incomingDeletedComment, dispatch),
+        incomingUpdatedUser: bindActionCreators(incomingUpdatedUser, dispatch),
     };
 }
 
