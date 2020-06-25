@@ -267,6 +267,7 @@ const CreateEditWorkspaceModal = (props) => {
 
     const handleNameChange = e => {
         e.persist();
+        _validateName();
         setForm(prevState => ({
             ...prevState, name: e.target.value.trim(),
         }));

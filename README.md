@@ -28,7 +28,6 @@ password1
 
 jessryll@makedevelopment.com
 devpassword
-
 ```
 
 ## Test environment
