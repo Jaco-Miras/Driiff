@@ -9,6 +9,7 @@ import ChatInput from "../../forms/ChatInput";
 import {useIsMember} from "../../hooks";
 import ChatQuote from "../../list/chat/ChatQuote";
 
+
 const Wrapper = styled.div`
     position: relative;
     z-index: 1;
@@ -195,7 +196,7 @@ const ChatFooterPanel = (props) => {
                         </ArchivedDiv>
                                                                              :
                         <React.Fragment>
-                            <IconButton onClick={handleShowEmojiPicker} icon="smile"/>
+                            <IconButton onClick={handleShowEmojiPicker} icon="smile" title="Emoji" data-toggle="tooltip"/>
                             <ChatInputContainer className="flex-grow-1">
                                 <ChatInput
                                     selectedGif={selectedGif} onClearGif={onClearGif}
