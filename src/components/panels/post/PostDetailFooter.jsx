@@ -22,6 +22,7 @@ const Wrapper = styled.div`
 
 const ChatInputContainer = styled.div`
     position: relative;
+    max-width: calc(100% - 165px);
 `;
 
 const IconButton = styled(SvgIconFeather)`

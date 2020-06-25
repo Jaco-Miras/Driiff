@@ -57,6 +57,46 @@ export default (state = INITIAL_STATE, action) => {
                     skip: action.data.next_skip,
                 },
             };
+        case "GET_USER_SUCCESS": {
+            const {CHAT_SETTINGS, DISABLE_SOUND, GENERAL_SETTINGS, ORDER_CHANNEL, id, ...userData} = action.data;
+
+            let user = state.users[id];
+            if (user) {
+                user = {
+                    ...user,
+                    userData,
+                };
+            } else {
+                user = userData;
+            }
+
+            return {
+                ...state,
+                users: {
+                    ...state.users,
+                    [id]: {
+                        id: id,
+                        ...user,
+                        loaded: true,
+                    },
+                },
+            };
+        }
+        case "UPDATE_USER_SUCCESS": {
+            const {CHAT_SETTINGS, DISABLE_SOUND, GENERAL_SETTINGS, ORDER_CHANNEL, id, ...userData} = action.data;
+
+            return {
+                ...state,
+                users: {
+                    ...state.users,
+                    [id]: {
+                        id: id,
+                        ...state.users[id],
+                        ...userData,
+                    },
+                },
+            };
+        }
         default:
             return state;
     }

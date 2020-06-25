@@ -10,10 +10,11 @@ import {
     CreateEditWorkspaceModal,
     CreateEditWorkspacePostModal,
     CreateWorkspaceFolderModal,
+    FileCropUploadModal,
     FileUploadModal,
+    MoveFilesModal,
     PostSnoozeModal,
     SingleInputModal,
-    MoveFilesModal,
 } from "../modals";
 
 const ModalPanelContainer = styled.div`
@@ -39,6 +40,8 @@ const ModalPanel = () => {
                                 return <ChatReminderModal key={modal.type} data={modal}/>;
                             case "file_upload":
                                 return <FileUploadModal key={modal.type} data={modal}/>;
+                            case "file_crop_upload":
+                                return <FileCropUploadModal key={modal.type} data={modal}/>;
                             case "chat_create_edit":
                                 return <CreateEditChatModal key={modal.type} data={modal}/>;
                             case "workspace_folder":

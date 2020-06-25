@@ -1,45 +1,21 @@
-import {useCallback, useEffect} from "react";
-import {useDispatch, useSelector} from "react-redux";
-import {getUsers} from "../../redux/actions/userAction";
+import {useEffect} from "react";
+import {useSelector} from "react-redux";
+import {useUserActions} from "./index";
 
 let init = true;
 
-/**
- * @returns {{fetchUsers: (...args: any[]) => any, fetchMoreUsers: (...args: any[]) => any, users}}
- */
 const useUsers = () => {
 
-    const dispatch = useDispatch();
     const {users, getUserFilter} = useSelector(state => state.users);
-    const user = useSelector(state => state.session.user);
+    const {user: loggedUser} = useSelector(state => state.session);
 
-    const fetchUsers = useCallback(({skip = 0, limit = getUserFilter.limit, ...res},
-                                    callback = () => {
-                                    }) => {
-        dispatch(
-            getUsers({
-                ...res,
-                skip: skip,
-                limit: limit,
-            }, callback),
-        );
-    }, [dispatch, getUserFilter.limit]);
-
-    const fetchMoreUsers = useCallback(() => {
-        if (getUserFilter.hasMore) {
-            fetchUsers(getUserFilter.skip, getUserFilter.limit);
-        }
-    }, [fetchUsers, getUserFilter]);
+    const userActions = useUserActions();
 
     useEffect(() => {
         if (init) {
             init = false;
 
-            fetchUsers({}, (err) => {
-                if (err) {
-                    console.log(err);
-                }
-            });
+            userActions.fetch({});
         }
 
         //eslint-disable-next-line react-hooks/exhaustive-deps
@@ -48,9 +24,8 @@ const useUsers = () => {
     return {
         users,
         getUserFilter,
-        fetchUsers,
-        fetchMoreUsers,
-        currentUser: user
+        loggedUser,
+        actions: userActions,
     };
 };
 
