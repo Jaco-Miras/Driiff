@@ -7,17 +7,20 @@ import "./DropDocument.css";
 
 const Section = styled.section`
     display: ${props => props.hide ? "none" : "block"};
-    ${'' /* @media only screen and (max-width: 992px){
-       display: block;
-    } */}
+    ${"" /* @media only screen and (max-width: 992px){
+ display: block;
+ } */}
 `;
 
 //const dropzoneRef = createRef();
 
 export const DropDocument = forwardRef((props, ref) => {
 
-    const {attachedFiles, onCancel, onDrop, noX = false, disableInput = false, 
-        openOnLoad = false, placeholderText = `Drag 'n' drop your files here.`, hide, params = null} = props;
+    const {
+        attachedFiles, onCancel, onDrop, noX = false, disableInput = false,
+        openOnLoad = false, placeholderText = `Drag 'n' drop your files here.`, hide, params = null,
+        acceptType = "",
+    } = props;
 
     const cbOnDrop = useCallback(({acceptedFiles, rejectedFiles}) => {
 
@@ -36,11 +39,22 @@ export const DropDocument = forwardRef((props, ref) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [attachedFiles, params]);
 
-    // useEffect(() => {
-    //     if (dropzoneRef.current && openOnLoad) {
-    //         dropzoneRef.current.open()
-    //     }
-    // }, []);
+    let accept = [
+        "image/ai", "image/bmp", "image/eps", "image/gif", "image/gpl", "image/iff", "image/jpeg", "image/jpg",
+        "image/pdn", "image/png", "image/psp", "image/svg",
+        ".7z", ".aac", ".ai", ".aif", ".aifc", ".aifc", ".aiff", ".aiff", ".avi", ".bmp", ".bmp", ".cab",
+        ".csv", ".doc", ".docx", ".dot", ".dotx", ".eps", ".epub", ".flac", ".flv", ".gif", ".ico", ".jpg", ".mj2",
+        ".mjp2", ".mkv", ".mng", ".mov", ".mp3", ".mp4", ".mpeg", ".mpp", ".mpt", ".numbers", ".odm", ".odm", ".odoc", ".odp",
+        ".ods", ".odt", ".oga", ".ogg", ".otp", ".ott", ".pages", ".pdf", ".pea", ".pez", ".png", ".pot", ".pps",
+        ".ppt", ".pptx", ".pptz", ".ps", ".qt", ".rar", ".raw", ".rtf", ".spx", ".stc", ".svg", ".tar", ".tgz",
+        ".tif", ".tiff", ".tsv", ".txt", ".vcf", ".wav", ".webm", ".webp", ".wma", ".wmv", ".xla", ".xlc", ".xls", ".xlsx",
+        ".xlt", ".xlw", ".xml", ".zip",
+    ];
+
+    if (acceptType === "imageOnly") {
+        accept = ["image/ai", "image/bmp", "image/eps", "image/gif", "image/gpl", "image/iff", "image/jpeg", "image/jpg",
+            "image/pdn", "image/png", "image/psp", "image/svg"];
+    }
 
     return <Dropzone
         ref={ref}
@@ -55,17 +69,7 @@ export const DropDocument = forwardRef((props, ref) => {
         hide={hide}
         openOnload={openOnLoad}
         noClick={disableInput}
-        accept={[
-            "image/ai", "image/bmp", "image/eps", "image/gif", "image/gpl", "image/iff", "image/jpeg", "image/jpg",
-            "image/pdn", "image/png", "image/psp", "image/svg",
-            ".7z", ".aac", ".ai", ".aif", ".aifc", ".aifc", ".aiff", ".aiff", ".avi", ".bmp", ".bmp", ".cab",
-            ".csv", ".doc", ".docx", ".dot", ".dotx", ".eps", ".epub", ".flac", ".flv", ".gif", ".ico", ".jpg", ".mj2",
-            ".mjp2", ".mkv", ".mng", ".mov", ".mp3", ".mp4", ".mpeg", ".mpp", ".mpt", ".numbers", ".odm", ".odm", ".odoc", ".odp",
-            ".ods", ".odt", ".oga", ".ogg", ".otp", ".ott", ".pages", ".pdf", ".pea", ".pez", ".png", ".pot", ".pps",
-            ".ppt", ".pptx", ".pptz", ".ps", ".qt", ".rar", ".raw", ".rtf", ".spx", ".stc", ".svg", ".tar", ".tgz",
-            ".tif", ".tiff", ".tsv", ".txt", ".vcf", ".wav", ".webm", ".webp", ".wma", ".wmv", ".xla", ".xlc", ".xls", ".xlsx",
-            ".xlt", ".xlw", ".xml", ".zip",
-        ]}>
+        accept={accept}>
         {
             ({getRootProps, getInputProps, isDragActive}) => {
                 return <Section hide={hide}>
@@ -77,13 +81,10 @@ export const DropDocument = forwardRef((props, ref) => {
                     </div>
                     {
                         !noX &&
-                        <a
-                            href="#cancel-file-input"
+                        <span
                             className="click-cancel-drop"
-                            onClick={e => {
-                                onCancel();
-                            }}
-                        ><i className="fa fa-times-circle fa-lg"></i></a>
+                            onClick={onCancel}
+                        ><i className="fa fa-times-circle fa-lg"/></span>
                     }
 
                 </Section>;
