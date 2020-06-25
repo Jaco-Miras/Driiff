@@ -37,3 +37,4 @@ export {default as useWorkspaceActions} from "./useWorkspaceActions";
 export {default as useFiles} from "./useFiles";
 export {default as useFileActions} from "./useFileActions";
 export {default as useToaster} from "./useToaster";
+export {default as useDebounce} from "./useDebounce";

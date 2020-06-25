@@ -1,7 +1,7 @@
 import React, {useRef, useState} from "react";
 import styled from "styled-components";
 import {SvgIconFeather} from "../../common";
-import {useOutsideClick, useTooltipOrientation} from "../../hooks";
+import {useDebounce, useOutsideClick, useTooltipOrientation} from "../../hooks";
 
 const Wrapper = styled.div`
   display: inline-flex;
@@ -94,20 +94,22 @@ const MoreOptions = props => {
     };
 
     const handleMouseLeave = () => {
-        setTimeout(() => {
-            setShowMoreOptions(false);
-        }, 500);
+        setShowMoreOptions(false);
     };
 
+    const handeleMouseLeaveDebounce = useDebounce(handleMouseLeave, 500);
     useOutsideClick(refs.options, handleMouseLeave, showMoreOptions);
 
     return <Wrapper
         className={`more-options ${className}`}
         onClick={handleClick}
         ref={refs.container}
+        onMouseEnter={handeleMouseLeaveDebounce.reset}
+        onMouseLeave={handeleMouseLeaveDebounce.apply}
         {...rest}>
-        <SvgIconFeather data-event="touchstart focus mouseover" data-event-off="mouseout" data-tip="Message options"
-                        icon={moreButton}/>
+        <SvgIconFeather
+            data-event="touchstart focus mouseover" data-event-off="mouseout" data-tip="Message options"
+            icon={moreButton}/>
         {
             showMoreOptions &&
             <MoreTooltip
@@ -115,7 +117,6 @@ const MoreOptions = props => {
                 width={width}
                 hide={orientation.vertical === null || orientation.horizontal === null}
                 className={`more-options-tooltip orientation-${orientation.vertical} orientation-${orientation.horizontal}`}
-                onMouseLeave={handleMouseLeave}
             >
                 {children}
             </MoreTooltip>
