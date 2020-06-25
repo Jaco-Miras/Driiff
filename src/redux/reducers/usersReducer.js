@@ -97,6 +97,41 @@ export default (state = INITIAL_STATE, action) => {
                 },
             };
         }
+        case "INCOMING_UPDATED_USER": {
+            let updatedUsers = {...state.users};
+            let updatedMentions = {...state.mentions};
+            if (Object.keys(state.users).length) {
+                updatedUsers[action.data.id] = {
+                    ...updatedUsers[action.data.id],
+                    id: action.data.id,
+                    first_name: action.data.first_name,
+                    middle_name: action.data.middle_name,
+                    last_name: action.data.last_name,
+                    name: action.data.name,
+                    email: action.data.email,
+                    active: action.data.active,
+                    profile_image_link: action.data.profile_image_link,
+                    contact: action.data.contact,
+                    company: action.data.company,
+                    designation: action.data.designation,
+                    partial_name: action.data.partian_name,
+                    import_from: action.data.import_from
+                }
+            }
+            if (Object.keys(state.mentions).length) {
+                updatedMentions[action.data.id] = {
+                    id: action.data.id,
+                    first_name: action.data.first_name,
+                    name: action.data.name,
+                    profile_image_link: action.data.profile_image_link,
+                }
+            }
+            return {
+                ...state,
+                users: updatedUsers,
+                mentions: updatedMentions
+            }
+        }
         default:
             return state;
     }

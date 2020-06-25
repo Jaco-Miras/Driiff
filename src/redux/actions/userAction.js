@@ -1,4 +1,4 @@
-import dispatchActionToReducer from "../actionDispatcher";
+import dispatchActionToReducer, {SimpleDispatchActionToReducer} from "../actionDispatcher";
 import {
     authenticateGoogleLogin as authenticateGoogleLoginService,
     checkDriffUserEmail as checkDriffUserEmailService,
@@ -141,6 +141,14 @@ export function postUploadProfileImage(payload, callback) {
         "UPDATE_PROFILE_IMAGE_START",
         "UPDATE_PROFILE_IMAGE_SUCCESS",
         "UPDATE_PROFILE_IMAGE_FAILURE",
+        callback,
+    );
+}
+
+export function incomingUpdatedUser(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "INCOMING_UPDATED_USER",
+        payload,
         callback,
     );
 }
