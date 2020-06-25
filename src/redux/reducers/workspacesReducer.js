@@ -460,9 +460,9 @@ export default (state = INITIAL_STATE, action) => {
                     [action.data.topic_id]: {
                         ...state.workspacePosts[action.data.topic_id],
                         filter: action.data.filter ? 
-                            action.data.filter === state.workspacePosts[action.data.topic_id].filter ? null 
+                            action.data.filter === state.workspacePosts[action.data.topic_id].filter ? state.workspacePosts[action.data.topic_id].filter
                             : action.data.filter : state.workspacePosts[action.data.topic_id].filter,
-                        sort: action.data.sort ? action.data.sort === state.workspacePosts[action.data.topic_id].sort ? null 
+                        sort: action.data.sort ? action.data.sort === state.workspacePosts[action.data.topic_id].sort ? state.workspacePosts[action.data.topic_id].sort
                             : action.data.sort : state.workspacePosts[action.data.topic_id].sort,
                         tag: action.data.tag ? action.data.tag === state.workspacePosts[action.data.topic_id].tag ? null 
                             : action.data.tag : state.workspacePosts[action.data.topic_id].tag
