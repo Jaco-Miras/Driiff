@@ -2,17 +2,21 @@ import "cropperjs/dist/cropper.css";
 import React, {useState} from "react";
 import Cropper from "react-cropper";
 import {useDispatch} from "react-redux";
-import {Modal} from "reactstrap";
+import {Button, Modal, ModalBody, ModalFooter} from "reactstrap";
 import styled from "styled-components";
 import {clearModal} from "../../redux/actions/globalActions";
 import {ModalHeaderSection} from "./index";
 
-const CropperFooter = styled.div`
-    padding: 10px;
-    background: #f4f4f4;
-    text-align: center;
-    width: 100%;
-    cursor: pointer;
+const Wrapper = styled(Modal)`
+    &.modal-dialog {
+        .modal-body {
+            padding: 0;
+            
+            .cropper-view-box {
+                border-radius: 50%;
+            }
+        }
+    }
 `;
 
 const FileCropUploadModal = props => {
@@ -59,19 +63,22 @@ const FileCropUploadModal = props => {
     };
 
     return (
-        <Modal isOpen={modal} toggle={toggle} centered>
+        <Wrapper isOpen={modal} toggle={toggle} centered>
             <ModalHeaderSection toggle={toggle}>Crop Image</ModalHeaderSection>
-            <Cropper
-                style={{height: 320, width: "100%"}}
-                aspectRatio={1}
-                guides={false}
-                src={URL.createObjectURL(imageFile)}
-                ref={refs.cropper}
-            />
-            <CropperFooter onClick={handleCropImage}>
-                Save
-            </CropperFooter>
-        </Modal>
+            <ModalBody style={{padding: 0}}>
+                <Cropper
+                    style={{height: 320, width: "100%"}}
+                    aspectRatio={1}
+                    guides={false}
+                    src={URL.createObjectURL(imageFile)}
+                    ref={refs.cropper}
+                />
+            </ModalBody>
+            <ModalFooter>
+                <Button color="primary" onClick={handleCropImage}>Save</Button>
+                <Button color="secondary" onClick={toggle}>Discard</Button>
+            </ModalFooter>
+        </Wrapper>
     );
 };
 
