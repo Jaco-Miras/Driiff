@@ -303,7 +303,8 @@ const UserProfilePanel = (props) => {
                             }
                             {
                                 user.import_from === "gripp" &&
-                                <SvgIcon className="mb-2" width={500} height={40} icon="gripp-logo"/>
+                                <SvgIcon className={editInformation ? "mb-2" : "mb-4"} width={500} height={40}
+                                         icon="gripp-logo"/>
                             }
                             {
                                 editInformation && user.import_from !== "driff" &&
