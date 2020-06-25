@@ -199,6 +199,10 @@ class SocketListeners extends PureComponent {
                     }
                     break;
                 }
+                case "POST_COMMENT_DELETE": {
+                    this.props.incomingDeletedComment(e);
+                    break;
+                }
                 case "POST_COMMENT_UPDATE": {
                     this.props.incomingComment(e);
                     break;
