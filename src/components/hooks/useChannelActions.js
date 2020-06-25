@@ -261,7 +261,7 @@ const useChannelActions = () => {
                               callback = () => {}) => {
         let payload = {
             id: channel.id,
-            is_hide: 1,
+            is_hidden: 1,
         };
 
         updateStatus(channel, payload, callback);
@@ -275,7 +275,7 @@ const useChannelActions = () => {
                                 callback = () => {}) => {
         let payload = {
             id: channel.id,
-            is_hide: 0,
+            is_hidden: 0,
         };
 
         updateStatus(channel, payload, callback);
