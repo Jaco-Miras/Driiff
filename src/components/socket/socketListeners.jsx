@@ -47,7 +47,8 @@ import {
     incomingCommentClap,
     incomingDeletedPost,
     incomingPostViewer,
-    incomingUpdatedPost
+    incomingUpdatedPost,
+    incomingDeletedComment
 } from "../../redux/actions/postActions";
 import {getOnlineUsers, getUser} from "../../redux/actions/userAction";
 import {
@@ -775,6 +776,7 @@ function mapDispatchToProps(dispatch) {
         incomingUpdatedPost: bindActionCreators(incomingUpdatedPost, dispatch),
         incomingTimeline: bindActionCreators(incomingTimeline, dispatch),
         incomingDeletedPostFile: bindActionCreators(incomingDeletedPostFile, dispatch),
+        incomingDeletedComment: bindActionCreators(incomingDeletedComment, dispatch),
     };
 }
 

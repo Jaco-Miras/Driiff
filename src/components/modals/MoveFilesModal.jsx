@@ -6,6 +6,7 @@ import Select from "react-select";
 import {clearModal} from "../../redux/actions/globalActions";
 import {moveFile} from "../../redux/actions/fileActions";
 import {ModalHeaderSection} from "./index";
+import toaster from "toasted-notes";
 
 
 const Wrapper = styled(Modal)`
@@ -53,12 +54,17 @@ const MoveFilesModal = (props) => {
 
     const handleConfirm = () => {
         if (selectedFolder) {
+            let cb = (err,res) => {
+                if (err) return;
+                toaster.notify(`${file.search} has been moved to ${selectedFolder.label}`,
+                    {position: "bottom-left"});
+            }
             dispatch(
                 moveFile({
                     file_id: file.id,
                     topic_id: topic_id,
                     folder_id: selectedFolder.id
-                })
+                }, cb)
             );
         }
         toggle();

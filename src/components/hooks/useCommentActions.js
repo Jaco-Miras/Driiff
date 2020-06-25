@@ -1,8 +1,9 @@
 import {useCallback} from "react";
 import {useDispatch} from "react-redux";
 import { addComment, fetchComments, setEditComment, postComment, putComment,
-        addCommentQuote, clearCommentQuote, postCommentClap
+        addCommentQuote, clearCommentQuote, postCommentClap, deleteComment
 } from "../../redux/actions/postActions"
+import { addToModals } from "../../redux/actions/globalActions";
 
 const useCommentActions = props => {
 
@@ -56,6 +57,47 @@ const useCommentActions = props => {
         );
     }, [dispatch]);
 
+    const remove = useCallback((comment) => {
+        console.log(comment)
+        const onConfirm = () => {
+            if (Object.keys(comment.replies).length > 0) {
+                let obj = {
+                    post_id: comment.post_id,
+                    id: comment.id,
+                    user_id: comment.author.id,
+                    body: "<i>The comment has been removed by the author.</i>",
+                    post_file_ids: [],
+                    file_ids: [],
+                    mention_ids: [],
+                    personalized_for_id: null,
+                    parent_id: comment.parent_id,
+                };
+                dispatch(
+                    putComment(obj)
+                )
+            } else {
+                dispatch(
+                    deleteComment({comment_id: comment.id})
+                );
+            }
+        };
+
+        let payload = {
+            type: "confirmation",
+            headerText: "Delete post comment?",
+            submitText: "Delete",
+            cancelText: "Cancel",
+            bodyText: "Are you sure you want to delete this comment?",
+            actions: {
+                onSubmit: onConfirm,
+            },
+        };
+
+        dispatch(
+            addToModals(payload),
+        );
+    }, [dispatch]);
+
     return {
         add,
         addQuote,
@@ -65,6 +107,7 @@ const useCommentActions = props => {
         edit,
         fetchPostComments,
         setToEdit,
+        remove
     }
 };
 

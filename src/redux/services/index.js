@@ -88,6 +88,7 @@ export {
 } from "./files";
 
 export {
+    deleteComment,
     deletePost,
     fetchPosts,
     fetchComments,

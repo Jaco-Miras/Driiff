@@ -324,3 +324,16 @@ export function postMarkRead(payload) {
         data: payload,
     });
 }
+
+/**
+ * @param {Object} payload
+ * @param {number} payload.comment_id
+ * @returns {Promise<*>}
+ */
+export function deleteComment(payload) {
+    let url = `/v1/messages/${payload.comment_id}`;
+    return apiCall({
+        method: "DELETE",
+        url,
+    });
+}
