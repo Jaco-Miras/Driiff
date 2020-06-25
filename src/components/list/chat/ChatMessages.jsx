@@ -847,7 +847,7 @@ class ChatMessages extends React.PureComponent {
                                                                             />
                                                                         }
                                                                         {
-                                                                            !isNaN(reply.id) && reply.is_deleted === 0 &&
+                                                                            !isNaN(reply.id) && (reply.is_deleted === 0 || !reply.is_deleted) &&
                                                                             <MessageOptions
                                                                                 className={"chat-message-options"}
                                                                                 selectedChannel={this.props.selectedChannel}

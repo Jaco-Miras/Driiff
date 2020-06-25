@@ -1,8 +1,9 @@
 import {useEffect, useRef, useState} from "react";
 import {osName} from "react-device-detect";
 import {useSelector} from "react-redux";
+import {Quill} from "react-quill";
 
-const useQuillModules = (mode, callback, mentionOrientation = "top") => {
+const useQuillModules = (mode, callback, mentionOrientation = "top", quillRef) => {
 
     const [modules, setModules] = useState({});
     const [mentionValues, setMentionValues] = useState([]);
@@ -81,6 +82,16 @@ const useQuillModules = (mode, callback, mentionOrientation = "top") => {
                             handleSubmit();
                         },
                     },
+                    linebreak: {
+                        key: 13,
+                        metaKey: true,
+                        handler: function (range, context) {
+                                if (osName.includes("Mac") && mode === "chat") {
+                                    quillRef.current.getEditor().insertEmbed(range.index + 1, 'block', true, 'user');
+                                    quillRef.current.getEditor().setSelection(range.index + 1, Quill.sources.SILENT);
+                                }
+                        }
+                    }
                 },
             },
         };

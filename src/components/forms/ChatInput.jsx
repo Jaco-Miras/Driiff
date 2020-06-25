@@ -372,7 +372,7 @@ const ChatInput = props => {
                                 if (selectedChannel.is_shared && slugs.length) {
                                     return (slugs.filter(s => s.slug_name === selectedChannel.slug_owner)[0].external_id) && (typeof r.id === "number") && r.is_deleted === 0;
                                 } else {
-                                    return r.is_deleted === 0 && r.user && r.user.id === user.id && (typeof r.id === "number");
+                                    return (r.is_deleted === 0 || !r.is_deleted) && r.user && r.user.id === user.id && (typeof r.id === "number");
                                 }
                             },
                         )[0];
@@ -518,7 +518,7 @@ const ChatInput = props => {
     useQuillInput(handleClearQuillInput, reactQuillRef);
     useDraft(loadDraftCallback, "channel", text, textOnly, draftId);
 
-    const [modules] = useQuillModules("chat", handleSubmit);
+    const [modules] = useQuillModules("chat", handleSubmit, "top", reactQuillRef);
 
     return (
         <Wrapper className="chat-input-wrapper">
