@@ -271,6 +271,10 @@ const UserProfilePanel = (props) => {
         );
     }, [handleUseProfilePic, handleHideDropzone]);
 
+    const handleEmailClick = useCallback(() => {
+        window.location.href = `mailto:${user.email}`;
+    }, [user]);
+
     useEffect(() => {
         const selectedUser = users[props.match.params.id] ? users[props.match.params.id] : {};
         if (selectedUser.hasOwnProperty("loaded")) {
@@ -427,6 +431,14 @@ const UserProfilePanel = (props) => {
                                         <div className="col-6">{user.phone}</div>
                                     </div>
                                 }
+                                {
+                                    user.email &&
+                                    <div className="row mb-2">
+                                        <div className="col-6 text-muted">Email:</div>
+                                        <div className="col-6 cursor-pointer"
+                                             onClick={handleEmailClick}>{user.email}</div>
+                                    </div>
+                                }
                             </div>
                                              :
                             <div className="card-body">
@@ -499,7 +511,7 @@ const UserProfilePanel = (props) => {
                                                 to
                                                 change your password.</Label>
                                             <FormGroup
-                                                className={`form-group-password ${!!passwordUpdate ? "" : "d-none"}`}>
+                                                className={`form-group-password mb-0 ${!!passwordUpdate ? "" : "d-none"}`}>
                                                 <InputGroup>
                                                     <Input
                                                         className={getValidClass(formUpdate.valid.password)}
@@ -570,7 +582,24 @@ const UserProfilePanel = (props) => {
                                         </div>
                                     </div>
                                 }
-                                <div className="d-flex justify-content-between align-items-center mt-2">
+                                {
+                                    !readOnlyFields.includes("email") &&
+                                    <div className="row mb-2">
+                                        <div className="col-6 text-muted">Email:</div>
+                                        <div className="col-6">
+                                            <Input
+                                                className={getValidClass(formUpdate.valid.email)}
+                                                name="email"
+                                                onChange={handleInputChange}
+                                                onBlur={handleInputBlur}
+                                                defaultValue={user.email}/>
+                                            <InputFeedback
+                                                valid={formUpdate.feedbackState.email}>{formUpdate.feedbackText.email}</InputFeedback>
+                                        </div>
+                                    </div>
+                                }
+                                <hr/>
+                                <div className="d-flex justify-content-between align-items-center mt-0">
                                     <div>&nbsp;</div>
                                     <div>
                                         <span onClick={handleSave} className="btn btn btn-outline-primary btn-sm mr-2">
