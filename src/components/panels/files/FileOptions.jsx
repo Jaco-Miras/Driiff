@@ -12,6 +12,10 @@ const Wrapper = styled(MoreOptions)`
         &.orientation-left {
             right: calc(100% - 10px);
         }
+        &.orientation-top {
+            top: 100% !important;
+            bottom: auto;
+        }
         &.orientation-bottom {
             top: 100%;
         }
@@ -19,7 +23,8 @@ const Wrapper = styled(MoreOptions)`
             bottom: 20px;
         }
         &.orientation-right {
-            right: calc(100% - 10px);
+            right: calc(100% - 10px) !important;
+            left: auto;
         }
     }
 `;
