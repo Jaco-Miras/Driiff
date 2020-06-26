@@ -20944,3 +20944,21 @@ body.dark.small-navigation .navigation-menu-body ul li.navigation-divider:after 
 .ql-image {
   display: none !important;
 }
+
+.react-tooltip-lite {
+  font-size: .835rem!important;
+  background: #000000b3;
+  padding: .25rem .5rem !important;
+  border-radius: .25rem !important;
+  text-align: center;
+  color: #fff;
+  opacity: 0;
+  transition: opacity 200ms ease 0ms;
+}
+.react-tooltip-lite-arrow {
+  transition: opacity 200ms ease 0ms;
+  opacity: 0;
+}
+.tooltip-active span {
+  opacity: 1;
+}
