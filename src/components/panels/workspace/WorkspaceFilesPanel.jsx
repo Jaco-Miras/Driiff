@@ -79,10 +79,17 @@ const WorkspaceFilesPanel = (props) => {
                     history.push(history.location.pathname + `/folder/${res.data.folder.id}/${replaceChar(res.data.folder.search)}`);
                 }
             };
-            actions.createFolder({
+            let payload = {
                 topic_id: topic.id,
                 name: folderName.current,
-            }, cb);
+            };
+            if (params.hasOwnProperty("fileFolderId")) {
+                payload = {
+                    ...payload,
+                    folder_id: params.fileFolderId
+                }
+            }
+            actions.createFolder(payload, cb);
         }
     };
 
@@ -155,7 +162,7 @@ const WorkspaceFilesPanel = (props) => {
                     actions={actions}
                     isMember={isMember}
                     dropZoneRef={refs.dropZone} className="col-md-3" filterFile={handleFilterFile}
-                    filter={filter} wsFiles={wsFiles}/>
+                    filter={filter} wsFiles={wsFiles} folders={folders} activeFolder={folder}/>
                 <div className="col-md-9 app-content mb-4">
                     <div className="app-content-overlay"/>
                     <FilesHeader

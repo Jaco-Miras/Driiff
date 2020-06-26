@@ -6,3 +6,4 @@ export {default as PopularFiles} from "./PopularFiles";
 export {default as RecentEditedFile} from "./RecentEditedFile";
 export {default as RemoveFiles} from "./RemoveFiles";
 export {default as FileOptions} from "./FileOptions";
+export {default as FolderList} from "./FolderList";
