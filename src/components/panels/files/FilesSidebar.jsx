@@ -90,7 +90,7 @@ const FileSidebar = (props) => {
                             <span className="small ml-auto">{wsFiles && wsFiles.trash > 0 ? wsFiles.trash : null}</span>
                         </Filter>
                         {
-                            folders && folders.length > 0 &&
+                            folders && folders.length > 0 && isMember === true &&
                             <Filter className="d-flex align-items-center folder-list">
                                 <ul>
                                 {

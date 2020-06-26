@@ -167,10 +167,23 @@ const FilesBody = (props) => {
                         {
                             filter === "" &&
                             <>
-                                <h6 className="font-size-11 text-uppercase mb-4">{folder ? folder.search : "All files"}</h6>
+                                <h6 className="font-size-11 text-uppercase mb-4">{
+                                    folder ? folder.search : params.hasOwnProperty("fileFolderName") ? params.fileFolderName.replace(/\-|\//g, " "): "All files"}
+                                </h6>
                                 <div className="row">
                                     {
-                                        wsFiles &&
+                                        wsFiles && params.hasOwnProperty("fileFolderId") && folder !== null ?
+                                        fileIds.map(f => {
+                                            return (
+                                                <FileListItem
+                                                    key={f}
+                                                    isMember={isMember}
+                                                    scrollRef={scrollRef} actions={actions}
+                                                    className="col-xl-3 col-lg-4 col-md-6 col-sm-12"
+                                                    file={wsFiles.files[f]}/>
+                                            );
+                                        })
+                                        : wsFiles && !params.hasOwnProperty("fileFolderId") && folder === null &&
                                         fileIds.map(f => {
                                             return (
                                                 <FileListItem
@@ -185,11 +198,13 @@ const FilesBody = (props) => {
                                 </div>
                                 {
                                     wsFiles && wsFiles.popular_files.length > 0 && folder === null &&
+                                    !params.hasOwnProperty("fileFolderId") && 
                                     <PopularFiles search={search} scrollRef={scrollRef} wsFiles={wsFiles}
                                                   actions={actions}/>
                                 }
                                 {
                                     wsFiles && wsFiles.recently_edited.length > 0 && folder === null &&
+                                    !params.hasOwnProperty("fileFolderId") && 
                                     <RecentEditedFile search={search} scrollRef={scrollRef} wsFiles={wsFiles}
                                                       actions={actions}/>
                                 }
