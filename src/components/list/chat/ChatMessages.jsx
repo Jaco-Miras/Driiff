@@ -360,7 +360,7 @@ class ChatMessages extends React.PureComponent {
         };
 
         this.scrollComponent = React.createRef();
-        this.chatBottomRef = React.createRef();
+        //this.chatBottomRef = React.createRef();
     }
 
 
@@ -449,8 +449,8 @@ class ChatMessages extends React.PureComponent {
                     }
 
                     if (selectedChannel.replies.length === 0 || selectedChannel.skip === 0) {
-                        if (this.chatBottomRef.current) {
-                            this.chatBottomRef.current.scrollIntoView(false);
+                        if (this.props.bottomRef.current) {
+                            this.props.bottomRef.current.scrollIntoView(false);
                         } else {
                             let scrollC = document.querySelector(".intersection-bottom-ref");
                             if (scrollC) scrollC.scrollIntoView();
@@ -557,7 +557,7 @@ class ChatMessages extends React.PureComponent {
             if (selectedChannel.replies.length) {
 
                 let hasUnreadMessage = selectedChannel.replies.filter(r => r.is_read === false).length > 0;
-                if (this.state.bottomRefInView && hasUnreadMessage && this.props.isBrowserActive && selectedChannel.is_read === 1) {
+                if (this.props.bottomRefVisible && hasUnreadMessage && this.props.isBrowserActive && selectedChannel.is_read === 1) {
                     this.props.chatMessageActions.channelActions.markAsRead(selectedChannel);
                 }
 
@@ -565,16 +565,16 @@ class ChatMessages extends React.PureComponent {
                     this.loadReplies();
                 }
 
-                if (this.state.bottomRefInView && (selectedChannel.replies.length - prevProps.selectedChannel.replies.length === 1)) {
-                    if (this.chatBottomRef && this.chatBottomRef.current) {
-                        this.chatBottomRef.current.scrollIntoView(false);
+                if (this.props.bottomRefVisible && (selectedChannel.replies.length - prevProps.selectedChannel.replies.length === 1)) {
+                    if (this.bottomRef && this.props.bottomRef.current) {
+                        this.props.bottomRef.current.scrollIntoView(false);
                     } else {
                         let scrollC = document.querySelector(".intersection-bottom-ref");
                         if (scrollC) scrollC.scrollIntoView(false);
                     }
                 } else if (selectedChannel.replies.length - prevProps.selectedChannel.replies.length === 1) {
                     if (selectedChannel.last_reply && selectedChannel.last_reply.user && selectedChannel.last_reply.user.id === this.props.user.id) {
-                        this.chatBottomRef.current.scrollIntoView(false);
+                        this.props.bottomRef.current.scrollIntoView(false);
                     }
                 }
             }
@@ -606,8 +606,7 @@ class ChatMessages extends React.PureComponent {
     };
 
     handleBottomRefChange = (inView, entry) => {
-        this.setState({bottomRefInView: inView});
-        //this.props.handleIsBottomRefVisibleChange(inView);
+        this.props.onBottomRefVisible(inView);
     };
 
     handleMessageRefChange = (inView, entry, id) => {
@@ -805,7 +804,7 @@ class ChatMessages extends React.PureComponent {
                                                     showTimestamp={showTimestamp}
                                                 >
                                                     {
-                                                        reply.user && showMessageLine && <ChatNewMessagesLine/>
+                                                        reply.user && showMessageLine && !this.props.bottomRefVisible && <ChatNewMessagesLine/>
                                                     }
                                                     {
                                                         reply.user &&
@@ -963,7 +962,7 @@ class ChatMessages extends React.PureComponent {
                                         <InView as="div"
                                                 onChange={(inView, entry) => this.handleBottomRefChange(inView, entry)}>
                                                         <span className='intersection-bottom-ref'
-                                                              ref={this.chatBottomRef}></span>
+                                                              ref={this.props.bottomRef}></span>
                                         </InView>
                                     }
                                 </div>

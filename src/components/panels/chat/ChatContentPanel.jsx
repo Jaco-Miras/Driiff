@@ -25,7 +25,9 @@ const ChatContentPanel = (props) => {
     const dispatch = useDispatch();
     const chatMessageActions = useChatMessageActions();
 
+    const bottomRef = useRef();
     const [showDropZone, setshowDropZone] = useState(false);
+    const [bottomRefVisible, setBottomRefVisible] = useState(false);
     const unreadCount = useCountUnreadReplies();
 
     const refs = {
@@ -110,9 +112,15 @@ const ChatContentPanel = (props) => {
                 onCancel={handleHideDropzone}
             />
             <ChatHeaderPanel channel={selectedChannel}/>
-            {selectedChannel !== null && unreadCount > 0 && <ChatUnreadFloatBar channel={selectedChannel}/>}
-            {selectedChannel !== null ? <ChatMessages selectedChannel={selectedChannel} chatMessageActions={chatMessageActions} /> :
-             <ChatMessagesPlaceholder/>}
+            {selectedChannel !== null && unreadCount > 0 && !bottomRefVisible && <ChatUnreadFloatBar channel={selectedChannel}/>}
+            {selectedChannel !== null ? 
+                <ChatMessages selectedChannel={selectedChannel} 
+                    chatMessageActions={chatMessageActions} 
+                    bottomRef={bottomRef}
+                    onBottomRefVisible={setBottomRefVisible}
+                    bottomRefVisible={bottomRefVisible}
+                /> 
+                : <ChatMessagesPlaceholder/>}
             <ChatFooterPanel onShowFileDialog={handleOpenFileDialog} dropAction={dropAction}/>
         </Wrapper>
     );
