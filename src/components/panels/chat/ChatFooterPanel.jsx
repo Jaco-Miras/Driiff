@@ -8,17 +8,19 @@ import {CommonPicker, SvgIconFeather} from "../../common";
 import ChatInput from "../../forms/ChatInput";
 import {useIsMember} from "../../hooks";
 import ChatQuote from "../../list/chat/ChatQuote";
-
+import Tooltip from 'react-tooltip-lite';
 
 const Wrapper = styled.div`
     position: relative;
     z-index: 1;
-    > div > svg:first-child {
-        margin-left: 0 !important;
-    }
-    .chat-footer-buttons svg:last-of-type {
-        margin-left: 0 !important;
-        margin-right: 0 !important;
+    .chat-footer-buttons {
+        svg.feather-send {
+            margin-left: 8px;
+        }
+        svg.feather-paperclip {
+            margin-left: 0;
+            margin-right: 0;
+        }
     }
 `;
 
@@ -49,7 +51,7 @@ const IconButton = styled(SvgIconFeather)`
     cursor: hand;
     border: 1px solid #afb8bd;
     height: 37px;
-    margin: -1px 8px;
+    margin: -1px 8px 0 0;
     width: 47px;
     min-width: 47px;
     padding: 10px 0;
@@ -178,6 +180,17 @@ const ChatFooterPanel = (props) => {
 
     const isMember = useIsMember(selectedChannel && selectedChannel.members.length ? selectedChannel.members.map(m => m.id) : []);
 
+
+    const toggleTooltip = () => {
+        let tooltips = document.querySelectorAll('span.react-tooltip-lite');
+
+        tooltips.forEach((tooltip) => {
+            tooltip.parentElement.classList.toggle('tooltip-active');
+        });
+
+    };
+
+
     return (
         <Wrapper className={`chat-footer border-top ${className}`}>
             {
@@ -194,9 +207,11 @@ const ChatFooterPanel = (props) => {
                         <ArchivedDiv>
                             <h4><Icon icon="archive"/> This is an archived channel</h4>
                         </ArchivedDiv>
-                                                                             :
+                        :
                         <React.Fragment>
-                            <IconButton onClick={handleShowEmojiPicker} icon="smile" title="Emoji" data-toggle="tooltip"/>
+                            <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Emoji">
+                                <IconButton onClick={handleShowEmojiPicker} icon="smile" />
+                            </Tooltip>
                             <ChatInputContainer className="flex-grow-1">
                                 <ChatInput
                                     selectedGif={selectedGif} onClearGif={onClearGif}
@@ -205,7 +220,9 @@ const ChatFooterPanel = (props) => {
                             </ChatInputContainer>
                             <div className="chat-footer-buttons d-flex">
                                 <IconButton onClick={handleSend} icon="send"/>
-                                <IconButton onClick={onShowFileDialog} icon="paperclip"/>
+                                <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Attach files">
+                                    <IconButton onClick={onShowFileDialog} icon="paperclip"/>
+                                </Tooltip>
                             </div>
                         </React.Fragment>
                     }
