@@ -10,7 +10,7 @@ import rootReducer from "../reducers";
 let middleware = [ReduxThunk];
 
 const logger = createLogger({
-    predicate: (getState, action) => isLoggedALlowed(),
+    predicate: (getState, action) => isLoggedALlowed(), //isLoggedALlowed() //false,
     collapsed: true,
 });
 middleware = [...middleware, logger, LogRocket.reduxMiddleware()];

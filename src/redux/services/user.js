@@ -75,7 +75,7 @@ export function getUser(payload) {
  * @param {string} payload.id
  * @returns {Promise<*>}
  */
-export function updateUser(payload) {
+export function putUser(payload) {
     let url = `/users/${payload.id}`;
 
     return apiCall({
@@ -378,13 +378,6 @@ export function updateSettings(payload) {
     });
 }
 
-export function getUserSettings(payload) {
-    return apiCall({
-        method: "GET",
-        url: `/v2/user-settings`,
-    });
-}
-
 /**
  * @param {Object} payload
  * @param {string} payload.driff
@@ -422,5 +415,17 @@ export function getUsers(payload = {}) {
     return apiCall({
         method: "GET",
         url: url,
+    });
+}
+
+export function postUploadProfileImage(payload) {
+    let url = `/users/${payload.id}/upload-profile-image`;
+    return apiCall({
+        method: "POST",
+        url: url,
+        hasFile: true,
+        data: {
+            file: payload.file,
+        },
     });
 }

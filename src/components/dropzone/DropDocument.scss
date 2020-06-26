@@ -1,0 +1,106 @@
+.click-cancel-drop {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 9999;
+    color: #ffffff;
+    background-color: #dee2e6;
+    text-shadow: none;
+    opacity: 1;
+    margin: 0;
+    font-size: 23px;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    border-radius: 50%;
+    align-items: center;
+    justify-content: center;
+    border: 0;
+    line-height: 0;
+}
+
+.file-list {
+    z-index: 1;
+    display: inline;
+}
+
+.storage-files {
+    list-style: none;
+}
+
+.file-item {
+    padding: 3px;
+    color: #972c86;
+    font-weight: 500;
+}
+
+.reply-document-dropdown {
+    box-shadow: none;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    padding: 20px;
+    margin-bottom: 20px;
+    display: inline-flex;
+    align-items: center;
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    z-index: 9999;
+}
+
+.reply-dropzone {
+    border: 2px dashed #dee2e6;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 8px;
+    padding: 8rem;
+
+    svg {
+        width: 60px;
+        height: 60px;
+        color: #dee2e6;
+    }
+    p {
+        color: #dee2e6;
+    }
+}
+
+/* .file-list-container {
+    position: absolute;
+    max-height: 100px;
+    margin-top: 10px;
+    margin-block-end: 1%;
+    bottom: 0;
+    width: 100%;
+}
+.file-list-container .storage-files-container {
+    list-style: none;
+    min-height: 100px;
+    max-height: 100px;
+    overflow-y: auto;
+}
+.file-list-container .storage-files-container .file-item-contain {
+    font-size: 14px;
+    display: block;
+    margin-bottom: 1%;
+}
+.file-list-container .storage-files-container .file-item-contain > span {
+    font-size: 12px;
+    color: #972c86;
+}
+.item-file-icon {
+    margin-right: 2%;
+}
+.item-file-icon:before {
+    background-image: url("../../../img/svgs/documents-icons/documents_secundary.svg");
+    width: 25px;
+    height: 25px;
+    background-size: cover;
+    content: '';
+    position: absolute;
+    cursor: pointer;
+} */

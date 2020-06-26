@@ -34,8 +34,8 @@ export const apiCall = async ({
     }
 
     const urls = register
-        ? `${getAPIUrl({noSlug: true})}${url}`
-        : is_shared ? `${getAPIUrl({
+                 ? `${getAPIUrl({noSlug: true})}${url}`
+                 : is_shared ? `${getAPIUrl({
             is_shared: true,
             token: data.token,
             slug: data.slug,
@@ -114,8 +114,8 @@ export const apiNoTokenCall = async ({
     }
 
     const urls = register
-        ? `${getAPIUrl({noSlug: true})}${url}`
-        : `${getAPIUrl()}${url}`;
+                 ? `${getAPIUrl({noSlug: true})}${url}`
+                 : `${getAPIUrl()}${url}`;
 
     function apiPromise() {
 
@@ -129,8 +129,8 @@ export const apiNoTokenCall = async ({
             if (url === "/announcement") {
                 api_url = `${REACT_APP_apiProtocol}${REACT_APP_apiBaseUrl}/announcement`;
             }
-
         }
+
         let axiosParam = {
             method,
             url: api_url,

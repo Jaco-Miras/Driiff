@@ -1,0 +1,255 @@
+import dispatchActionToReducer, {SimpleDispatchActionToReducer} from "../actionDispatcher";
+import {
+    createWorkspace as createWorkspaceService,
+    deleteWorkspace as deleteWorkspaceService,
+    fetchDetail as fetchDetailService,
+    fetchPrimaryFiles as fetchPrimaryFilesService,
+    fetchMembers as fetchMembersService,
+    fetchTimeline as fetchTimelineService,
+    getPostStatusCount as getPostStatusCountService,
+    getWorkspacePostDetail as getWorkspacePostDetailService,
+    getWorkspacePosts as getWorkspacePostsService,
+    getWorkspaces as getWorkspacesService,
+    getWorkspaceTopics as getWorkspaceTopicsService,
+    joinWorkspace as joinWorkspaceService,
+    moveWorkspaceTopic as moveWorkspaceTopicService,
+    updatePostStatus as updatePostStatusService,
+    updateWorkspace as updateWorkspaceService,
+} from "../services";
+
+export function getWorkspaces(payload, callback) {
+    return dispatchActionToReducer(
+        getWorkspacesService(payload),
+        "GET_WORKSPACES_START",
+        "GET_WORKSPACES_SUCCESS",
+        "GET_WORKSPACES_FAIL",
+        callback,
+    );
+}
+
+export function createWorkspace(payload, callback) {
+    return dispatchActionToReducer(
+        createWorkspaceService(payload),
+        "CREATE_WORKSPACE_START",
+        "CREATE_WORKSPACE_SUCCESS",
+        "CREATE_WORKSPACE_FAIL",
+        callback,
+    );
+}
+
+export function fetchDetail(payload, callback) {
+    return dispatchActionToReducer(
+        fetchDetailService(payload),
+        "GET_WORKSPACE_DETAIL_START",
+        "GET_WORKSPACE_DETAIL_SUCCESS",
+        "GET_WORKSPACE_DETAIL_FAIL",
+        callback,
+    );
+}
+
+export function updateWorkspace(payload, callback) {
+    return dispatchActionToReducer(
+        updateWorkspaceService(payload),
+        "UPDATE_WORKSPACE_START",
+        "UPDATE_WORKSPACE_SUCCESS",
+        "UPDATE_WORKSPACE_FAIL",
+        callback,
+    );
+}
+
+export function deleteWorkspace(payload, callback) {
+    return dispatchActionToReducer(
+        deleteWorkspaceService(payload),
+        "DELETE_WORKSPACE_START",
+        "DELETE_WORKSPACE_SUCCESS",
+        "DELETE_WORKSPACE_FAIL",
+        callback,
+    );
+}
+
+export function moveWorkspaceTopic(payload, callback) {
+    return dispatchActionToReducer(
+        moveWorkspaceTopicService(payload),
+        "MOVE_WORKSPACE_TOPIC_START",
+        "MOVE_WORKSPACE_TOPIC_SUCCESS",
+        "MOVE_WORKSPACE_TOPIC_FAIL",
+        callback,
+    );
+}
+
+export function getWorkspaceTopics(payload, callback) {
+    return dispatchActionToReducer(
+        getWorkspaceTopicsService(payload),
+        "GET_WORKSPACE_TOPICS_START",
+        "GET_WORKSPACE_TOPICS_SUCCESS",
+        "GET_WORKSPACE_TOPICS_FAIL",
+        callback,
+    );
+}
+
+export function getWorkspacePostDetail(payload, callback) {
+    return dispatchActionToReducer(
+        getWorkspacePostDetailService(payload),
+        "GET_WORKSPACE_POST_DETAIL_START",
+        "GET_WORKSPACE_POST_DETAIL_SUCCESS",
+        "GET_WORKSPACE_POST_DETAIL_FAIL",
+        callback,
+    );
+}
+
+export function updatePostStatus(payload, callback) {
+    return dispatchActionToReducer(
+        updatePostStatusService(payload),
+        "UPADATE_POST_STATUS_START",
+        "UPADATE_POST_STATUS_SUCCESS",
+        "UPADATE_POST_STATUS_FAIL",
+        callback,
+    );
+}
+
+export function getPostStatusCount(payload, callback) {
+    return dispatchActionToReducer(
+        getPostStatusCountService(payload),
+        "GET_POST_STATUS_COUNT_START",
+        "GET_POST_STATUS_COUNT_SUCCESS",
+        "GET_POST_STATUS_COUNT_FAIL",
+        callback,
+    );
+}
+
+export function incomingWorkspaceFolder(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "INCOMING_WORKSPACE_FOLDER",
+        payload,
+        callback,
+    );
+}
+
+export function incomingWorkspace(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "INCOMING_WORKSPACE",
+        payload,
+        callback,
+    );
+}
+
+export function incomingUpdatedWorkspaceFolder(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "INCOMING_UPDATED_WORKSPACE_FOLDER",
+        payload,
+        callback,
+    );
+}
+
+export function incomingMovedTopic(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "INCOMING_MOVED_TOPIC",
+        payload,
+        callback,
+    );
+}
+
+export function setActiveTopic(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "SET_ACTIVE_TOPIC",
+        payload,
+        callback,
+    );
+}
+
+export function setActiveTab(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "SET_ACTIVE_TAB",
+        payload,
+        callback,
+    );
+}
+
+export function updateWorkspacePostFilterSort(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "UPDATE_WORKSPACE_POST_FILTER_SORT",
+        payload,
+        callback,
+    );
+}
+
+export function joinWorkspace(payload, callback) {
+    return dispatchActionToReducer(
+        joinWorkspaceService(payload),
+        "JOIN_WORKSPACE_START",
+        "JOIN_WORKSPACE_SUCCESS",
+        "JOIN_WORKSPACE_FAIL",
+        callback,
+    );
+}
+
+export function joinWorkspaceReducer(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "JOIN_WORKSPACE_REDUCER",
+        payload,
+        callback,
+    );
+}
+
+export function addPostSearchResult(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "ADD_POST_SEARCH_RESULT",
+        payload,
+        callback,
+    );
+}
+
+export function fetchPrimaryFiles(payload, callback) {
+    return dispatchActionToReducer(
+        fetchPrimaryFilesService(payload),
+        "FETCH_WORKSPACE_PRIMARY_FILES_START",
+        "FETCH_WORKSPACE_PRIMARY_FILES_SUCCESS",
+        "FETCH_WORKSPACE_PRIMARY_FILES_FAIL",
+        callback,
+    );
+}
+
+export function addPrimaryFiles(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "ADD_PRIMARY_FILES",
+        payload,
+        callback,
+    );
+}
+
+
+export function fetchMembers(payload, callback) {
+    return dispatchActionToReducer(
+        fetchMembersService(payload),
+        "FETCH_WORKSPACE_MEMBERS_START",
+        "FETCH_WORKSPACE_MEMBERS_SUCCESS",
+        "FETCH_WORKSPACE_MEMBERS_FAIL",
+        callback,
+    );
+}
+
+export function fetchTimeline(payload, callback) {
+    return dispatchActionToReducer(
+        fetchTimelineService(payload),
+        "FETCH_TIMELINE_START",
+        "FETCH_TIMELINE_SUCCESS",
+        "FETCH_TIMELINE_FAIL",
+        callback,
+    );
+}
+
+export function addToWorkspaceFiles(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "ADD_TO_WORKSPACE_FILES",
+        payload,
+        callback,
+    );
+}
+
+export function incomingTimeline(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "INCOMING_TIMELINE",
+        payload,
+        callback,
+    );
+}

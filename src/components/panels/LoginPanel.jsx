@@ -3,15 +3,18 @@ import {useDispatch} from "react-redux";
 import {Link} from "react-router-dom";
 import styled from "styled-components";
 import {$_GET, getThisDeviceInfo} from "../../helpers/commonFunctions";
-import {getSlugName} from "../../helpers/slugHelper";
 import {EmailRegex} from "../../helpers/stringFormatter";
 import {toggleLoading} from "../../redux/actions/globalActions";
 import {userGoogleLogin, userLogin} from "../../redux/actions/userAction";
+import {CheckBox} from "../forms";
 import {processBackendLogin, storeLoginToken} from "../hooks";
+import {getDriffName} from "../hooks/useDriff";
 
 const Wrapper = styled.form`
+    margin: 50px auto;
+    max-width: 430px;
     ${props => props.error !== "" &&
-    `&:before {        
+    `&:before {
         content: "${props.error}";
         display: block;
         color: red;
@@ -20,9 +23,9 @@ const Wrapper = styled.form`
         margin-left: 0;
         margin-bottom: 0.5rem;
     }`}
-    
+
     ${props => props.success !== "" &&
-    `&:before {        
+    `&:before {
         content: "${props.success}";
         display: block;
         color: #59a869;
@@ -30,12 +33,12 @@ const Wrapper = styled.form`
         text-align: left;
         margin-left: 0;
         margin-bottom: 0.5rem;
-    }`}    
+    }`}
 `;
 
 const FormGroup = styled.div`
     ${props => props.error !== "" &&
-    `&:after {        
+    `&:after {
         content: "${props.error}";
         display: block;
         color: red;
@@ -70,13 +73,10 @@ const LoginPanel = (props) => {
         success: "",
     });
 
-    const handleRememberMe = (e) => {
-    };
-
     const toggleCheck = (e) => {
         setForm({
             ...form,
-            remember_me: !form.remember_me,
+            [e.target.dataset.name]: !form[e.target.dataset.name],
         });
     };
 
@@ -206,7 +206,7 @@ const LoginPanel = (props) => {
 
         dispatch(
             userGoogleLogin({
-                driff: getSlugName(),
+                driff: getDriffName(),
             }, (err, res) => {
                 if (err) {
                     console.log(err);
@@ -220,7 +220,7 @@ const LoginPanel = (props) => {
     };
 
     return (
-        <Wrapper error={formMessage.error} success={formMessage.success}>
+        <Wrapper error={formMessage.error} success={formMessage.success} className="fadeIn">
             <FormGroup className="form-group" error={error.email}>
                 <input ref={ref.email} onChange={handleInputChange} name="email" type="email" className="form-control"
                        placeholder="Email" required autoFocus/>
@@ -231,13 +231,7 @@ const LoginPanel = (props) => {
                        placeholder="Password" required/>
             </FormGroup>
             <div className="form-group d-flex justify-content-between">
-                <div className="custom-control custom-checkbox" onClick={handleRememberMe}>
-                    <input name="remember_me" type="checkbox" className="custom-control-input"
-                           checked={form.remember_me} onChange={handleRememberMe}/>
-                    <label className="custom-control-label" data-name="remember_me" onClick={toggleCheck}>Remember
-                        me</label>
-                </div>
-
+                <CheckBox name="remember_me" checked={form.remember_me} onClick={toggleCheck}>Remember me</CheckBox>
                 <Link to="/reset-password">Reset password</Link>
             </div>
             <button className="btn btn-primary btn-block" onClick={handleSignIn}>Sign in</button>
@@ -246,7 +240,7 @@ const LoginPanel = (props) => {
             <ul className="list-inline">
                 <li className="list-inline-item">
                     <a href="/" onClick={handleGoogleLogIn} className="btn btn-floating btn-google">
-                        <i className="fa fa-google"></i>
+                        <i className="fa fa-google"/>
                     </a>
                 </li>
             </ul>

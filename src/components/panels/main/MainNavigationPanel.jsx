@@ -13,11 +13,24 @@ const MainNavigationPanel = (props) => {
 
     return (
         <Wrapper className={`navigation ${className}`}>
-            <MainNavigationTabPanel/>
             <Route
                 {...props}
+                component={MainNavigationTabPanel}
+                path={["/:page"]}
+            />
+            <Route
+                exact={true}
+                {...props}
                 component={WorkspaceNavigationMenuBodyPanel}
-                path={["/workspace/dashboard", "/workspace/posts", "/workspace/chat", "/workspace/people", "/workspace/files", "/workspace/settings"]}/>
+                path={[
+                    "/workspace/:page/:folderId/:folderName/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName",
+                    "/workspace/:page/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName",
+                    "/workspace/:page/:folderId/:folderName/:workspaceId/:workspaceName/post/:postId/:postTitle",
+                    "/workspace/:page/:folderId/:folderName/:workspaceId/:workspaceName",
+                    "/workspace/:page/:workspaceId/:workspaceName/post/:postId/:postTitle",
+                    "/workspace/:page/:workspaceId/:workspaceName",
+                    "/workspace/:page",
+                ]}/>
         </Wrapper>
     );
 };

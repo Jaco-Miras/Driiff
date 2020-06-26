@@ -1,7 +1,9 @@
 import React, {forwardRef, useEffect, useState} from "react";
+import {renderToString} from "react-dom/server";
 import {useSelector} from "react-redux";
 import styled from "styled-components";
 import {localizeDate} from "../../../helpers/momentFormatJS";
+import {SvgIconFeather} from "../../common";
 
 const SystemMessageContainer = styled.span`
     display: block;
@@ -9,48 +11,27 @@ const SystemMessageContainer = styled.span`
 
 const SystemMessageContent = styled.span`
     display: block;
-
-    .channel-title{
-        font-weight: 600;
-    }
-    .channel-new-members{
-        color: #007180;
-        font-weight: 600;
-    }
 `;
 const ChatTimeStamp = styled.div`
-    // position: absolute;
-    // left: ${props => props.isAuthor ? "5px" : "unset"};
-    // right: ${props => props.isAuthor ? "unset" : "5px"};
-    color: #676767;
-    font-size: .75em;
+    color: #a7abc3;
+    font-style: italic;
+    font-size: 11px;
+    position: absolute;
+    top: 0;
+    left: calc(100% + 10px);
     display: flex;
-    flex-flow: ${props => props.isAuthor ? "row" : "row-reverse"};
-    .reply-date{
-        margin: ${props => props.isAuthor ? "0 10px 0 0" : "0 0 0 10px"};
-    }
-    .reply-date.updated{
-        // -webkit-transition: all 0.2s ease-in-out;
-        // -o-transition: all 0.2s ease-in-out;
-        // transition: all 0.2s ease-in-out;
-        >span:last-child{
-            display: none;
-        }
-    }
-    .reply-date.updated:hover{
-        >span:first-child{
-            display: none;
-        }
-        >span:last-child{
-            display: block;
-        }
-    }
+    height: 100%;
+    align-items: center;
+    white-space: nowrap;
+    ${"" /* display: none; */}
 `;
 
 const SystemMessage = forwardRef((props, ref) => {
 
     const {reply, selectedChannel, chatName} = props;
     const [body, setBody] = useState(reply.body);
+
+    const user = useSelector(state => state.session.user);
     const recipients = useSelector(state => state.global.recipients.filter(r => r.type === "USER"));
 
     useEffect(() => {
@@ -91,6 +72,97 @@ const SystemMessage = forwardRef((props, ref) => {
             } else {
                 setBody(`Update: ${newBody}'s account is activated.`);
             }
+        } else if (reply.body.includes("CHANNEL_UPDATE::")) {
+            const data = JSON.parse(reply.body.replace("CHANNEL_UPDATE::", ""));
+
+            let author = recipients.find(r => r.type_id === data.author.id);
+            if (author) {
+                if (data.author.id === user.id) {
+                    author.name = "You";
+                }
+            } else {
+                author = {
+                    name: "Someone",
+                };
+            }
+
+            let newBody = "";
+            if (data.title !== "") {
+                newBody = <><SvgIconFeather width={16} icon="edit-3"/> {author.name} renamed this chat
+                    to <b>#{data.title}</b><br/></>;
+            }
+
+            if (data.added_members.includes(user.id) && data.added_members.length >= 1) {
+                const am = recipients.filter(r => data.added_members.includes(r.type_id) && r.type_id !== user.id)
+                    .map(r => r.name);
+
+                if (data.author.id === user.id) {
+                    if (newBody === "") {
+                        newBody = <><b>{author.name}</b> joined </>;
+                    } else {
+                        newBody = <>{newBody} and joined</>;
+                    }
+
+                    if (am.length !== 0) {
+                        newBody = <>{newBody} and added <b>{am.join(", ")}</b><br/></>;
+                    }
+                } else {
+                    if (newBody === "") {
+                        newBody = <>{author.name} added </>;
+                    } else {
+                        newBody = <>{newBody} and added</>;
+                    }
+
+                    if (data.added_members.includes(user.id)) {
+                        if (am.length !== 0) {
+                            newBody = <>{newBody} <b>You and </b></>;
+                        } else {
+                            newBody = <>{newBody} <b>You</b></>;
+                        }
+                    }
+
+                    if (am.length !== 0) {
+                        newBody = <>{newBody} <b>{am.join(", ")}</b><br/></>;
+                    }
+                }
+            }
+
+            if (data.removed_members.length >= 1) {
+                const rm = recipients.filter(r => data.removed_members.includes(r.type_id) && r.type_id !== user.id)
+                    .map(r => r.name);
+
+                if (data.removed_members.includes(user.id) && data.author.id === user.id) {
+                    if (newBody === "") {
+                        newBody = <><b>{author.name}</b> left </>;
+                    } else {
+                        newBody = <>{newBody} and left</>;
+                    }
+
+                    if (rm.length !== 0) {
+                        newBody = <>{newBody} and removed <b>{rm.join(", ")}</b><br/></>;
+                    }
+                } else {
+                    if (newBody === "") {
+                        newBody = <>{author.name} removed </>;
+                    } else {
+                        newBody = <>{newBody} and removed</>;
+                    }
+
+                    if (data.removed_members.includes(user.id)) {
+                        if (rm.length !== 0) {
+                            newBody = <>{newBody} <b>You and </b></>;
+                        } else {
+                            newBody = <>{newBody} <b>You</b></>;
+                        }
+                    }
+
+                    if (rm.length !== 0) {
+                        newBody = <>{newBody} <b>{rm.join(", ")}</b><br/></>;
+                    }
+                }
+            }
+
+            setBody(renderToString(newBody));
         }
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -134,6 +206,97 @@ const SystemMessage = forwardRef((props, ref) => {
             } else {
                 setBody(`Update: ${newBody}'s account is activated.`);
             }
+        } else if (reply.body.includes("CHANNEL_UPDATE::")) {
+            const data = JSON.parse(reply.body.replace("CHANNEL_UPDATE::", ""));
+
+            let author = recipients.find(r => r.type_id === data.author.id);
+            if (author) {
+                if (data.author.id === user.id) {
+                    author.name = "You";
+                }
+            } else {
+                author = {
+                    name: "Someone",
+                };
+            }
+
+            let newBody = "";
+            if (data.title !== "") {
+                newBody = <><SvgIconFeather width={16} icon="edit-3"/> {author.name} renamed this chat
+                    to <b>#{data.title}</b><br/></>;
+            }
+
+            if (data.added_members.length >= 1) {
+                const am = recipients.filter(r => data.added_members.includes(r.type_id) && r.type_id !== user.id)
+                    .map(r => r.name);
+
+                if (data.added_members.includes(user.id) && data.author.id === user.id) {
+                    if (newBody === "") {
+                        newBody = <><b>{author.name}</b> joined </>;
+                    } else {
+                        newBody = <>{newBody} and joined</>;
+                    }
+
+                    if (am.length !== 0) {
+                        newBody = <>{newBody} and added <b>{am.join(", ")}</b><br/></>;
+                    }
+                } else {
+                    if (newBody === "") {
+                        newBody = <>{author.name} added </>;
+                    } else {
+                        newBody = <>{newBody} and added</>;
+                    }
+
+                    if (data.added_members.includes(user.id)) {
+                        if (am.length !== 0) {
+                            newBody = <>{newBody} <b>You and </b></>;
+                        } else {
+                            newBody = <>{newBody} <b>You</b></>;
+                        }
+                    }
+
+                    if (am.length !== 0) {
+                        newBody = <>{newBody} <b>{am.join(", ")}</b><br/></>;
+                    }
+                }
+            }
+
+            if (data.removed_members.length >= 1) {
+                const rm = recipients.filter(r => data.removed_members.includes(r.type_id) && r.type_id !== user.id)
+                    .map(r => r.name);
+
+                if (data.removed_members.includes(user.id) && data.author.id === user.id) {
+                    if (newBody === "") {
+                        newBody = <><b>{author.name}</b> left </>;
+                    } else {
+                        newBody = <>{newBody} and left</>;
+                    }
+
+                    if (rm.length !== 0) {
+                        newBody = <>{newBody} and removed <b>{rm.join(", ")}</b><br/></>;
+                    }
+                } else {
+                    if (newBody === "") {
+                        newBody = <>{author.name} removed </>;
+                    } else {
+                        newBody = <>{newBody} and removed</>;
+                    }
+
+                    if (data.removed_members.includes(user.id)) {
+                        if (rm.length !== 0) {
+                            newBody = <>{newBody} <b>You and </b></>;
+                        } else {
+                            newBody = <>{newBody} <b>You</b></>;
+                        }
+                    }
+
+                    if (rm.length !== 0) {
+                        newBody = <>{newBody} <b>{rm.join(", ")}</b><br/></>;
+                    }
+                }
+            }
+
+            setBody(renderToString(newBody));
         }
     }, [recipients, recipients.length, chatName, reply.body, selectedChannel.title, selectedChannel.type]);
 
@@ -145,9 +308,9 @@ const SystemMessage = forwardRef((props, ref) => {
         <ChatTimeStamp
             className='chat-timestamp'
             isAuthor={false}>
-        <span className="reply-date created">
-            {reply.created_at.diff_for_humans ? "sending..." : localizeDate(reply.created_at.timestamp, "HH:mm")}
-        </span>
+            <span className="reply-date created">
+                {reply.created_at.diff_for_humans ? "sending..." : localizeDate(reply.created_at.timestamp, "HH:mm")}
+            </span>
         </ChatTimeStamp>
     </SystemMessageContainer>;
 });

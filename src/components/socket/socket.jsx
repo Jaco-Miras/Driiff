@@ -12,11 +12,12 @@ import {$_GET, isIPAddress} from "../../helpers/commonFunctions";
 import {localizeDate} from "../../helpers/momentFormatJS";
 import {pushBrowserNotification} from "../../helpers/pushHelper";
 import {updateFaviconState} from "../../helpers/slugHelper";
-import {stripHtml} from "../../helpers/stringFormatter";
+import {replaceChar, stripHtml} from "../../helpers/stringFormatter";
 import {urlify} from "../../helpers/urlContentHelper";
 import {
     addToChannels,
     getChannel,
+    getChannelMembers,
     incomingArchivedChannel,
     incomingChatMessage,
     incomingChatMessageFromOthers,
@@ -24,18 +25,28 @@ import {
     incomingDeletedChatMessage,
     incomingUpdatedChannelDetail,
     incomingUpdatedChatMessage,
-    markAllMessagesAsRead,
-    updateChannelReducer,
-    updateMemberTimestamp,
+    setAllMessagesAsRead,
+    updateChannelMembersTitle,
+    setChannel,
+    setMemberTimestamp,
 } from "../../redux/actions/chatActions";
+import {addFilesToChannel, deleteFilesFromChannel} from "../../redux/actions/fileActions";
 import {
     addUserToReducers,
     generateUnfurl,
     generateUnfurlReducer,
     getConnectedSlugs,
     setBrowserTabStatus,
+    setGeneralChat,
+    setUnreadNotificationCounterEntries,
 } from "../../redux/actions/globalActions";
 import {getOnlineUsers, getUser} from "../../redux/actions/userAction";
+import {
+    incomingMovedTopic,
+    incomingUpdatedWorkspaceFolder,
+    incomingWorkspace,
+    incomingWorkspaceFolder,
+} from "../../redux/actions/workspaceActions";
 // import {
 //     addChatBox,
 //     addChatMembers,
@@ -70,7 +81,7 @@ import {getOnlineUsers, getUser} from "../../redux/actions/userAction";
 //     loggingInUser,
 //     loggingOutUser,
 //     logout,
-//     markAllMessagesAsRead,
+//     setAllMessagesAsRead,
 //     moveTaskSocketReducer,
 //     newColumnReducer,
 //     onlineUsers,
@@ -79,7 +90,7 @@ import {getOnlineUsers, getUser} from "../../redux/actions/userAction";
 //     updateChatBox,
 //     updateChatChannelV2,
 //     updateChatCounter,
-//     updateMemberTimestamp,
+//     setMemberTimestamp,
 //     updateOnlineUserTimestamp,
 //     updatePostCommentViewers,
 //     updatePostReaders,
@@ -146,26 +157,26 @@ class Socket extends PureComponent {
         };
     }
 
-    handleVisibilityChange = () => {
-        if (document[this.state.hidden]) {
-            this.setState({focus: false});
-            this.props.setBrowserTabStatus({status: false});
-        } else {
-            this.setState({focus: true});
-            this.props.setBrowserTabStatus({status: true});
-        }
-    };
+    // handleVisibilityChange = () => {
+    //     if (document[this.state.hidden]) {
+    //         this.setState({focus: false});
+    //         this.props.setBrowserTabStatus({status: false});
+    //     } else {
+    //         this.setState({focus: true});
+    //         this.props.setBrowserTabStatus({status: true});
+    //     }
+    // };
 
     _initializedSocket = () => {
-        var visibilityChange;
-        if (typeof document.hidden !== "undefined") { // Opera 12.10 and Firefox 18 and later support 
-            visibilityChange = "visibilitychange";
-        } else if (typeof document.msHidden !== "undefined") {
-            visibilityChange = "msvisibilitychange";
-        } else if (typeof document.webkitHidden !== "undefined") {
-            visibilityChange = "webkitvisibilitychange";
-        }
-        document.addEventListener(visibilityChange, this.handleVisibilityChange, false);
+        // var visibilityChange;
+        // if (typeof document.hidden !== "undefined") { // Opera 12.10 and Firefox 18 and later support 
+        //     visibilityChange = "visibilitychange";
+        // } else if (typeof document.msHidden !== "undefined") {
+        //     visibilityChange = "msvisibilitychange";
+        // } else if (typeof document.webkitHidden !== "undefined") {
+        //     visibilityChange = "webkitvisibilitychange";
+        // }
+        // document.addEventListener(visibilityChange, this.handleVisibilityChange, false);
     };
 
     componentDidMount() {
@@ -176,13 +187,13 @@ class Socket extends PureComponent {
             profile_image_link: this.props.user.profile_image_link,
         });
         // Set the name of the hidden property and the change event for visibility
-        if (typeof document.hidden !== "undefined") { // Opera 12.10 and Firefox 18 and later support 
-            this.setState({hidden: "hidden", visibilityChange: "visibilitychange"});
-        } else if (typeof document.msHidden !== "undefined") {
-            this.setState({hidden: "msHidden", visibilityChange: "msvisibilitychange"});
-        } else if (typeof document.webkitHidden !== "undefined") {
-            this.setState({hidden: "webkitHidden", visibilityChange: "webkitvisibilitychange"});
-        }
+        // if (typeof document.hidden !== "undefined") { // Opera 12.10 and Firefox 18 and later support 
+        //     this.setState({hidden: "hidden", visibilityChange: "visibilitychange"});
+        // } else if (typeof document.msHidden !== "undefined") {
+        //     this.setState({hidden: "msHidden", visibilityChange: "msvisibilitychange"});
+        // } else if (typeof document.webkitHidden !== "undefined") {
+        //     this.setState({hidden: "webkitHidden", visibilityChange: "webkitvisibilitychange"});
+        // }
 
         this.props.getOnlineUsers();
         setInterval(() => {
@@ -213,9 +224,9 @@ class Socket extends PureComponent {
                 }, 2000);
             }
         });
-        this.props.getConnectedSlugs({}, (err, res) => {
-            console.log(res, "slugs");
-        });
+        // this.props.getConnectedSlugs({}, (err, res) => {
+        //     console.log(res, "slugs");
+        // });
         // this.props.getAllEntriesCountAction();
 
         this._initializedSocket();
@@ -249,7 +260,7 @@ class Socket extends PureComponent {
 
     componentWillUnmount() {
         localStorage.removeItem("has_active");
-        document.removeEventListener(this.state.visibilityChange, this.handleVisibilityChange, false);
+        //document.removeEventListener(this.state.visibilityChange, this.handleVisibilityChange, false);
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -287,32 +298,34 @@ class Socket extends PureComponent {
             prevProps.unreadChatReplies !== this.props.unreadChatReplies
         ) {
             let count = this.props.unreadPostEntries + this.props.unreadChatReplies;
-            updateFaviconState(count === 0 ? false : true);
+            updateFaviconState(count !== 0);
         }
     }
 
     onListen = (external = localStorage.getItem("slug"), ex_id = this.props.user.id) => {
-        window.Echo.join(external + ".App.User.Online")
-            .here(viewers => {
-                console.log(viewers, "viewers");
-            })
-            .joining(user => {
-                console.log(user, "joining");
-            })
-            .leaving(user => {
-                console.log(user, "leaving");
-            });
-        if (window.Echo.connector.channels[`presence-${external}.App.User.Online`]) {
-            window.Echo.connector.channels[`presence-${external}.App.User.Online`].socket.on("connect", function () {
-                console.log("online users channel connected", window[external]);
-            });
-            window.Echo.connector.channels[`presence-${external}.App.User.Online`].socket.on("reconnect", function () {
-                console.log("online users channel re-connected");
-            });
-            window.Echo.connector.channels[`presence-${external}.App.User.Online`].socket.on("disconnect", function () {
-                console.log("online users channel disconnected");
-            });
-        }
+        // user online
+        // window.Echo.join(external + ".App.User.Online")
+        //     .here(viewers => {
+        //         console.log(viewers, "viewers");
+        //     })
+        //     .joining(user => {
+        //         console.log(user, "joining");
+        //     })
+        //     .leaving(user => {
+        //         console.log(user, "leaving");
+        //     });
+
+        // if (window.Echo.connector.channels[`presence-${external}.App.User.Online`]) {
+        //     window.Echo.connector.channels[`presence-${external}.App.User.Online`].socket.on("connect", function () {
+        //         console.log("online users channel connected", window[external]);
+        //     });
+        //     window.Echo.connector.channels[`presence-${external}.App.User.Online`].socket.on("reconnect", function () {
+        //         console.log("online users channel re-connected");
+        //     });
+        //     window.Echo.connector.channels[`presence-${external}.App.User.Online`].socket.on("disconnect", function () {
+        //         console.log("online users channel disconnected");
+        //     });
+        // }
 
         //let audio = document.createElement("audio");
         // audio.src = chatSound;
@@ -367,16 +380,17 @@ class Socket extends PureComponent {
                     this.props.addChatBoxAction(cb);
                 }
             })
-            .listen(".chat-channel", e => {
+            // old socket for chat channel
+            // .listen(".chat-channel", e => {
 
-            })
-            .listen(".read_channel", e => {
-                this.props.updateChatCounterAction(e);
-            })
-            .listen(".archive-chat-discussion", e => {
-                //console.log(e, 'archive');
-                this.props.incomingArchivedChatAction(e);
-            })
+            // })
+            // .listen(".read_channel", e => {
+            //     this.props.updateChatCounterAction(e);
+            // })
+            // .listen(".archive-chat-discussion", e => {
+            //     //console.log(e, 'archive');
+            //     this.props.incomingArchivedChatAction(e);
+            // })
             .listen(".post-follow", e => {
                 console.log(e, "follow");
                 this.props.addRemovePostRecipientAction({
@@ -389,19 +403,19 @@ class Socket extends PureComponent {
                 });
             })
             .listen(".post-unfollow", e => {
-                console.log(e, "unfollow");
-                let isAuthor = false;
-                e.user_unfollow.forEach(u => {
-                    if (u.id === this.props.user.id) {
-                        isAuthor = true;
+                // console.log(e, "unfollow");
+                // let isAuthor = false;
+                // e.user_unfollow.forEach(u => {
+                //     if (u.id === this.props.user.id) {
+                //         isAuthor = true;
 
-                    }
-                });
-                let payload = {
-                    ...e,
-                    is_followed: !isAuthor,
-                };
-                this.props.userUnfollowPost(payload);
+                //     }
+                // });
+                // let payload = {
+                //     ...e,
+                //     is_followed: !isAuthor,
+                // };
+                // this.props.userUnfollowPost(payload);
             })
             .listen(".create-topic", e => {
                 this.props.incomingCreatedTopic(e);
@@ -412,12 +426,65 @@ class Socket extends PureComponent {
             .listen(".delete-topic", e => {
                 this.props.incomingDeletedTopic(e);
             })
+            .listen(".new-workspace", e => {
+                console.log(e, "new workspace");
+                if (e.topic !== undefined) {
+                    this.props.incomingWorkspace(e);
+                } else {
+                    this.props.incomingWorkspaceFolder({
+                        ...e.workspace,
+                        key_id: e.key_id,
+                        type: e.type,
+                    });
+                }
+            })
+            .listen(".update-workspace", e => {
+                console.log(e, "update workspace");
+                this.props.incomingUpdatedWorkspaceFolder(e);
+                if (this.props.activeTopic && this.props.activeTopic.id === e.id &&
+                    e.type === "WORKSPACE" && this.props.match.path === "/workspace") {
+                    let currentPage = this.props.location.pathname;
+                    currentPage = currentPage.split("/")[2];
+                    if (e.workspace_id === 0) {
+                        //direct workspace
+                        if (e.original_workspace_id !== 0) {
+                            //now direct workspace url
+                            this.props.history.push(`/workspace/${currentPage}/${e.id}/${replaceChar(e.name)}`);
+                        }
+                    } else {
+                        //moved workspace to another folder
+                        if (e.original_workspace_id !== e.workspace_id) {
+                            this.props.history.push(`/workspace/${currentPage}/${e.workspace_id}/${replaceChar(e.current_workspace_folder_name)}/${e.id}/${replaceChar(e.name)}`);
+                        }
+                    }
+                }
+            })
+            .listen(".move-topic-workspace", e => {
+                console.log(e, "move workspace");
+                this.props.incomingMovedTopic(e);
+            })
             .notification((notification) => {
                 console.log(notification, "broadcast notification");
             });
 
 
         window.Echo.private(`${external}.App.User.${this.props.user.id}`)
+            .listen(".new-lock-workspace", e => {
+                console.log(e, "new workspace lock");
+                if (e.topic !== undefined) {
+                    this.props.incomingWorkspace(e);
+                } else {
+                    this.props.incomingWorkspaceFolder({
+                        ...e.workspace,
+                        key_id: e.key_id,
+                        type: e.type,
+                    });
+                }
+            })
+            .listen(".update-lock-workspace", e => {
+                console.log(e, "update lock workspace");
+                this.props.incomingUpdatedWorkspaceFolder(e);
+            })
             .listen(".users-online", e => {
                 //console.log(e, 'users-online');
                 this.props.currentOnlineUsers(e.current_users_online.map(u => {
@@ -473,9 +540,10 @@ class Socket extends PureComponent {
 
                 //this.props.addChatNotificationAction(e)
             })
-            .listen(".post-created", e => {
-                //console.log(e, 'post created');
-            })
+            // .listen(".post-created", e => {
+            //     //console.log(e, 'post created');
+            //     // old version
+            // })
             .listen(".post-view", e => {
                 //console.log(e, 'post view');
                 let payload = {
@@ -488,16 +556,17 @@ class Socket extends PureComponent {
                 console.log(e, "comment post view");
                 this.props.updatePostCommentViewers(e);
             })
-            .listen(".post-updated", e => {
-                //console.log(e, 'post updated')
-            })
+            // .listen(".post-updated", e => {
+            //     //console.log(e, 'post updated')
+            //     // old version
+            // })
             .listen(".post-deleted", e => {
                 //console.log(e, 'post deleted');
                 this.props.incomingDeletedPostAction({post_id: e.post_id});
             })
-            .listen(".reply-created", e => {
-                //console.log(e, 'reply created');
-            })
+            // .listen(".reply-created", e => {
+            //     //console.log(e, 'reply created');
+            // })
             .listen(".reply-updated", e => {
                 console.log(e, "reply updated");
                 if (e.message.invited_recipient_ids.length) {
@@ -508,6 +577,10 @@ class Socket extends PureComponent {
                 }
                 this.props.incomingUpdatedReplyAction(e.message);
             })
+            .listen(".move-private-topic-workspace", e => {
+                console.log(e, "move workspace private");
+                this.props.incomingMovedTopic(e);
+            })
             .listen(".new-private-topic", e => {
                 this.props.incomingCreatedTopic(e);
             })
@@ -515,6 +588,7 @@ class Socket extends PureComponent {
                 this.props.incomingUpdatedTopic(e);
             })
             .listen(".new-member", e => {
+                console.log(e, "join member");
                 if (typeof e.user !== "undefined") {
                     let payload = {
                         group_id: e.group_id,
@@ -523,11 +597,14 @@ class Socket extends PureComponent {
                         mode: "member",
                         user: e.user,
                     };
-                    this.props.updateTopicMembersAction(payload);
+                    // this.props.updateTopicMembersAction(payload);
                 }
             })
+            .listen(".new-topic-member", e => {
+                console.log("new workspace member", e);
+            })
             .listen(".left-member", e => {
-                //console.log(e, 'left member');
+                console.log(e, "left member");
                 if (e.user.id !== undefined) {
                     let payload = {
                         group_id: e.group_id,
@@ -536,7 +613,7 @@ class Socket extends PureComponent {
                         mode: "member",
                         user: e.user,
                     };
-                    this.props.updateTopicMembersAction(payload);
+                    //this.props.updateTopicMembersAction(payload);
                 }
             })
             .listen(".unread-channel", e => {
@@ -562,11 +639,29 @@ class Socket extends PureComponent {
                 this.props.incomingUpdatedChannelDetail(data);
             })
             .listen(".member-update-timestamp", e => {
-                console.log("seen member", e);
-                this.props.updateMemberTimestamp(e);
+                //console.log("seen member", e);
+                this.props.setMemberTimestamp(e);
             })
             .listen(".chat-notification", e => {
                 console.log(e);
+
+                let notificationCounterEntryPayload = {};
+                // check the workspace_id on the notification socket response
+                if (e.workspace_id === undefined || e.workspace_id === null || e.workspace_id === 0) {
+                    if (e.entity_type === "REMINDER_MESSAGE") {
+                        notificationCounterEntryPayload = {
+                            count: 1,
+                            entity_type: "REMINDER_MESSAGE",
+                        };
+                    } else {
+                        notificationCounterEntryPayload = {
+                            count: 1,
+                            entity_type: "CHAT_MESSAGE",
+                        };
+                    }
+
+                    this.props.setGeneralChat(notificationCounterEntryPayload);
+                }
 
                 if (e.entity_type === "REMINDER_MESSAGE") {
                     e.message_original = e.message;
@@ -608,9 +703,9 @@ class Socket extends PureComponent {
                     };
                 } else {
                     fromUser = {
-                        id: e.message_from.user_id,
+                        id: e.message_from.id,
                         first_name: e.message_from.first_name,
-                        name: e.message_from.user_name,
+                        name: e.message_from.name,
                         profile_image_link: e.message_from.profile_image_link,
                     };
                 }
@@ -667,6 +762,10 @@ class Socket extends PureComponent {
                     }
 
                     this.props.incomingChatMessageFromOthers(payload);
+                    this.props.addFilesToChannelAction({
+                        channel_id: e.channel_id,
+                        files: e.files,
+                    });
 
                     //@todo together with service worker
                     //if incoming chat message is on selected channel and current url is not on chat page
@@ -699,7 +798,9 @@ class Socket extends PureComponent {
                                 }
                             }
 
-                            if (!(this.props.selectedChannel && this.props.selectedChannel.id === e.channel_id && document.querySelector("body").classList.contains("visible"))
+                            /*
+                            remove causing error
+                            if (!(this.props && this.props.selectedChannel !== null && this.props.selectedChannel.id === e.channel_id && document.querySelector("body").classList.contains("visible"))
                                 && (Object.entries(this.props.settings).length === 0 ||
                                     this.props.settings.DISABLE_SOUND !== "1")) {
                                 //@todo
@@ -710,7 +811,7 @@ class Socket extends PureComponent {
                                 //         console.log(errorCode, description);
                                 //     },
                                 // });
-                            }
+                            }*/
 
                         }
                     }
@@ -766,8 +867,12 @@ class Socket extends PureComponent {
                             },
                         };
                     }
-                    //this.props.markAllMessagesAsRead({channel_id: e.channel_id});
+                    //this.props.setAllMessagesAsRead({channel_id: e.channel_id});
                     this.props.incomingChatMessage(payload);
+                    this.props.addFilesToChannelAction({
+                        channel_id: e.channel_id,
+                        files: e.files,
+                    });
                 }
             })
             .listen(".delete-post-channel-member", e => {
@@ -845,7 +950,7 @@ class Socket extends PureComponent {
                 }
             })
             .listen(".topic-first-message", e => {
-
+                // exists on the create topic endpoint and it will create first message on the topic channel
             })
             .listen(".new-added-member-chat", e => {
                 console.log("new chat member", e);
@@ -880,44 +985,55 @@ class Socket extends PureComponent {
                     quote: e.quote,
                 };
                 this.props.incomingChatMessageFromOthers(message);
-                if (this.props.activeChatChannels.length) {
-                    this.props.getChatChannelAction({channel_id: e.channel_id}, (err, res) => {
-                        console.log(res);
-                        if (err) return;
-                        // update chat members
-                        if (this.props.activeChatChannels.filter(ac => ac.id === res.data.id).length) {
-                            let channel = this.props.activeChatChannels.filter(ac => ac.id === res.data.id)[0];
-                            let updatedChannel = {
-                                ...channel,
-                                members: res.data.members,
-                                profile: null,
-                            };
-                            if (channel.type === "DIRECT") {
-                                let payload = {
-                                    //title: res.data.members.map(m => m.first_name).slice(0, 6).join(', '),
-                                    title: res.data.title,
-                                    id: channel.id,
-                                    is_pinned: channel.is_pinned,
-                                    is_archived: channel.is_archived,
-                                    is_muted: channel.is_muted,
-                                };
-                                this.props.updateChatChannelV2Action(payload, (err, res) => {
-                                    if (err) {
-                                        console.log(err, "error");
-                                    }
-                                });
-                                updatedChannel = {
-                                    ...updatedChannel,
-                                    //title: res.data.members.map(m => m.first_name).slice(0, 6).join(', ')
-                                };
-                                this.props.updateChannelAction(updatedChannel);
-                            } else {
-                                this.props.updateChannelAction(updatedChannel);
-                            }
-                        }
+                this.props.getChannel({channel_id: e.channel_id}, (err, res) => {
+                    console.log(res);
+                    if (err) return;
+                    let payload = {
+                        channel_id: e.channel_id,
+                        members: res.data.members,
+                        title: res.data.title,
+                    };
+                    this.props.updateChannelMembersTitle(payload);
+                });
+                //this.props.getChannelMembers({channel_id: e.channel_id})
+                // if (this.props.activeChatChannels.length) {
+                //     this.props.getChatChannelAction({channel_id: e.channel_id}, (err, res) => {
+                //         console.log(res);
+                //         if (err) return;
+                //         // update chat members
+                //         if (this.props.activeChatChannels.filter(ac => ac.id === res.data.id).length) {
+                //             let channel = this.props.activeChatChannels.filter(ac => ac.id === res.data.id)[0];
+                //             let updatedChannel = {
+                //                 ...channel,
+                //                 members: res.data.members,
+                //                 profile: null,
+                //             };
+                //             if (channel.type === "DIRECT") {
+                //                 let payload = {
+                //                     //title: res.data.members.map(m => m.first_name).slice(0, 6).join(', '),
+                //                     title: res.data.title,
+                //                     id: channel.id,
+                //                     is_pinned: channel.is_pinned,
+                //                     is_archived: channel.is_archived,
+                //                     is_muted: channel.is_muted,
+                //                 };
+                //                 this.props.updateChatChannelV2Action(payload, (err, res) => {
+                //                     if (err) {
+                //                         console.log(err, "error");
+                //                     }
+                //                 });
+                //                 updatedChannel = {
+                //                     ...updatedChannel,
+                //                     //title: res.data.members.map(m => m.first_name).slice(0, 6).join(', ')
+                //                 };
+                //                 this.props.updateChannelAction(updatedChannel);
+                //             } else {
+                //                 this.props.updateChannelAction(updatedChannel);
+                //             }
+                //         }
 
-                    });
-                }
+                //     });
+                // }
             })
             .listen(".archived-chat-channel", e => {
                 console.log(e, "archived chat");
@@ -952,11 +1068,16 @@ class Socket extends PureComponent {
                 this.props.incomingUpdatedChatMessage(payload);
             })
             .listen(".delete-chat-notification", e => {
+                console.log(e);
                 let payload = {
                     channel_id: e.channel_id,
                     message_id: e.id,
                 };
                 this.props.incomingDeletedChatMessage(payload);
+                this.props.deleteFilesFromChannelAction({
+                    channel_id: e.channel_id,
+                    file_ids: e.file_ids,
+                });
             })
             .listen(".chat-message-react", e => {
                 console.log(e);
@@ -966,9 +1087,11 @@ class Socket extends PureComponent {
                 console.log(e, "updated counter");
                 //const reducer = (accumulator, currentValue) => accumulator + currentValue;
                 //let count = 0;
+
+                /* update the list of unread notification list */
+                this.props.setUnreadNotificationCounterEntries(e.result);
                 let chatCount = e.result.filter(c => {
-                    if (c.entity_type === "CHAT_MESSAGE" || c.entity_type === "CHAT_REMINDER_MESSAGE") return true;
-                    else return false;
+                    return (c.entity_type === "CHAT_MESSAGE" || c.entity_type === "CHAT_REMINDER_MESSAGE");
                 });
                 if (chatCount.length) {
                     //count = chatCount.map(c => c.count).flat().reduce(reducer);
@@ -982,6 +1105,7 @@ class Socket extends PureComponent {
                 //this.props.incomingReadChannelReducer({channel_id: e.entity_id, updated_chat_count: count});
             })
             .notification((notification) => {
+                console.log(notification);
                 //let checkNotificationExists = this.props.notifications.filter(n => n.id === notification.id).length;
                 // if (checkNotificationExists === 0) {
                 //     if (this.props.notifications.length === 0) {
@@ -1230,6 +1354,7 @@ function mapStateToProps({
                              settings: {userSettings},
                              chat: {channels, selectedChannel},
                              posts: {posts},
+                             workspaces: {activeTopic, workspaceChannelIds},
                          }) {
     return {
         user,
@@ -1237,6 +1362,8 @@ function mapStateToProps({
         channels,
         selectedChannel,
         posts,
+        activeTopic,
+        workspaceChannelIds,
     };
 }
 
@@ -1249,19 +1376,28 @@ function mapDispatchToProps(dispatch) {
         getOnlineUsers: bindActionCreators(getOnlineUsers, dispatch),
         getConnectedSlugs: bindActionCreators(getConnectedSlugs, dispatch),
         getUser: bindActionCreators(getUser, dispatch),
-        updateMemberTimestamp: bindActionCreators(updateMemberTimestamp, dispatch),
-        markAllMessagesAsRead: bindActionCreators(markAllMessagesAsRead, dispatch),
+        setMemberTimestamp: bindActionCreators(setMemberTimestamp, dispatch),
+        setAllMessagesAsRead: bindActionCreators(setAllMessagesAsRead, dispatch),
         incomingChatMessage: bindActionCreators(incomingChatMessage, dispatch),
         incomingChatMessageFromOthers: bindActionCreators(incomingChatMessageFromOthers, dispatch),
+        addFilesToChannelAction: bindActionCreators(addFilesToChannel, dispatch),
+        deleteFilesFromChannelAction: bindActionCreators(deleteFilesFromChannel, dispatch),
         generateUnfurl: bindActionCreators(generateUnfurl, dispatch),
         generateUnfurlReducer: bindActionCreators(generateUnfurlReducer, dispatch),
-        updateChannelReducer: bindActionCreators(updateChannelReducer, dispatch),
+        setChannel: bindActionCreators(setChannel, dispatch),
         incomingArchivedChannel: bindActionCreators(incomingArchivedChannel, dispatch),
         incomingChatMessageReaction: bindActionCreators(incomingChatMessageReaction, dispatch),
         incomingUpdatedChatMessage: bindActionCreators(incomingUpdatedChatMessage, dispatch),
         incomingDeletedChatMessage: bindActionCreators(incomingDeletedChatMessage, dispatch),
         incomingUpdatedChannelDetail: bindActionCreators(incomingUpdatedChannelDetail, dispatch),
-
+        getChannelMembers: bindActionCreators(getChannelMembers, dispatch),
+        updateChannelMembersTitle: bindActionCreators(updateChannelMembersTitle, dispatch),
+        incomingWorkspaceFolder: bindActionCreators(incomingWorkspaceFolder, dispatch),
+        incomingWorkspace: bindActionCreators(incomingWorkspace, dispatch),
+        incomingUpdatedWorkspaceFolder: bindActionCreators(incomingUpdatedWorkspaceFolder, dispatch),
+        incomingMovedTopic: bindActionCreators(incomingMovedTopic, dispatch),
+        setGeneralChat: bindActionCreators(setGeneralChat, dispatch),
+        setUnreadNotificationCounterEntries: bindActionCreators(setUnreadNotificationCounterEntries, dispatch),
         // logoutAction: bindActionCreators(logout, dispatch),
         // simpleNewNotificationSocketAction: bindActionCreators(simpleNewNotificationSocket, dispatch),
         // getNotificationsAction: bindActionCreators(getNotifications, dispatch),
@@ -1293,9 +1429,7 @@ function mapDispatchToProps(dispatch) {
         // updateChatCounterAction: bindActionCreators(updateChatCounter, dispatch),
         // incomingChatMessageAction: bindActionCreators(incomingChatMessage, dispatch),
         // incomingUpdatedChatMessageAction: bindActionCreators(incomingUpdatedChatMessage, dispatch),
-        // incomingDeletedChatMessageAction: bindActionCreators(incomingDeletedChatMessage, dispatch),
         // incomingChatMessageReaction: bindActionCreators(incomingChatMessageReaction, dispatch),
-        // incomingChatMessageFromOthers: bindActionCreators(incomingChatMessageFromOthers, dispatch),
         // incomingVideoChatCallAction: bindActionCreators(incomingVideoChatCall, dispatch),
         // //getAllTotalUnreadChatV2Action: bindActionCreators(getAllTotalUnreadChatV2, dispatch),
         // addChatBoxAction: bindActionCreators(addChatBox, dispatch),
@@ -1326,7 +1460,7 @@ function mapDispatchToProps(dispatch) {
         // currentOnlineUsers: bindActionCreators(currentOnlineUsers, dispatch),
         // generateUnfurlAction: bindActionCreators(generateUnfurl, dispatch),
         // generateUnfurlReducer: bindActionCreators(generateUnfurlReducer, dispatch),
-        // markAllMessagesAsReadAction: bindActionCreators(markAllMessagesAsRead, dispatch),
+        // setAllMessagesAsReadAction: bindActionCreators(setAllMessagesAsRead, dispatch),
         // updateChatChannelV2Action: bindActionCreators(updateChatChannelV2, dispatch),
         // getConnectedSlugsAction: bindActionCreators(getConnectedSlugs, dispatch),
         // updatePostCommentViewers: bindActionCreators(updatePostCommentViewers, dispatch),
@@ -1340,7 +1474,7 @@ function mapDispatchToProps(dispatch) {
         // addUnreadChatCount: bindActionCreators(addUnreadChatCount, dispatch),
         // incomingUpdatedChatChannelNameAction: bindActionCreators(incomingUpdatedChatChannelName, dispatch),
         // setBrowserTabStatus: bindActionCreators(setBrowserTabStatus, dispatch),
-        // updateMemberTimestamp: bindActionCreators(updateMemberTimestamp, dispatch),
+        // setMemberTimestamp: bindActionCreators(setMemberTimestamp, dispatch),
         // incomingUnreadChannel: bindActionCreators(incomingUnreadChannel, dispatch),
         // incomingCreatedTopic: bindActionCreators(incomingCreatedTopic, dispatch),
         // incomingDeletedTopic: bindActionCreators(incomingDeletedTopic, dispatch),
@@ -1351,4 +1485,4 @@ function mapDispatchToProps(dispatch) {
     };
 }
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Socket));
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Socket));

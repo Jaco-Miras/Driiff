@@ -7,23 +7,35 @@ import {
     addQuote,
     clearChannelDraft,
     clearQuote,
-    createChatMessage,
     onClickSendButton,
+    postChannelMembers,
+    postChatMessage,
+    putChatMessage,
     setEditChatMessage,
-    updateChatMessage,
 } from "../../redux/actions/chatActions";
 import {deleteDraft} from "../../redux/actions/globalActions";
+import {SvgIconFeather} from "../common";
+import BodyMention from "../common/BodyMention";
 import {useDraft, useQuillInput, useQuillModules, useSaveInput, useSelectQuote} from "../hooks";
 import QuillEditor from "./QuillEditor";
 
+const Wrapper = styled.div`
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+`;
+
 const StyledQuillEditor = styled(QuillEditor)`
     &.chat-input {
-        border: 1px solid #afb8bd;
-        border-radius: 5px;
+        // border: 1px solid #afb8bd;
+        // border-radius: 5px;
         max-height: 130px;
-        overflow: auto;
-        overflow-x: hidden;
         position: static;
+        overflow: auto;
+        &::-webkit-scrollbar {
+            display: none;
+        }
+        -ms-overflow-style: none;
+        scrollbar-width: none;
     }
     .ql-container {
         position: static;
@@ -32,7 +44,14 @@ const StyledQuillEditor = styled(QuillEditor)`
         display: none;
     }
     .ql-editor {
-        padding: 5px;
+        padding: 5px 9px;
+        .mention {
+            color: #7a1b8b;
+        }
+        &:focus {
+            box-shadow: none;
+            border-color: rgba(122, 27, 139, 0.8);
+        }
     }
     .ql-container {
         border: none;
@@ -57,14 +76,25 @@ const StyledQuillEditor = styled(QuillEditor)`
             padding-bottom: 1rem;
             padding-left: 1rem;
 
-            &.selected {
-                background-image: linear-gradient(105deg, #972c86, #794997);
-                color: #fff;
-            }
+                &.selected {
+                    background: #7A1B8B;
+                    color: #fff;
+                    cursor: pointer;
+                }
             }
         }
     }
 `;
+
+const CloseButton = styled(SvgIconFeather)`
+    position: absolute;
+    top: 8px;
+    right: 5px;
+    cursor: pointer;
+    cursor: hand;
+    color: #000;
+`;
+
 /***  Commented out code are to be visited/refactored ***/
 const ChatInput = props => {
 
@@ -154,13 +184,13 @@ const ChatInput = props => {
             file_ids: [],
             reference_id: reference_id,
             reference_title: selectedChannel.type === "DIRECT" && selectedChannel.members.length === 2
-                ? `${user.first_name} in a direct message` : selectedChannel.title,
+                             ? `${user.first_name} in a direct message` : selectedChannel.title,
             topic_id: selectedChannel.is_shared ? selectedChannel.entity_id : null,
             is_shared: selectedChannel.is_shared ? selectedChannel.entity_id : null,
             token: slugs.length && slugs.filter(s => s.slug_name === selectedChannel.slug_owner).length ?
-                slugs.filter(s => s.slug_name === selectedChannel.slug_owner)[0].access_token : null,
+                   slugs.filter(s => s.slug_name === selectedChannel.slug_owner)[0].access_token : null,
             slug: slugs.length && slugs.filter(s => s.slug_name === selectedChannel.slug_owner).length ?
-                slugs.filter(s => s.slug_name === selectedChannel.slug_owner)[0].slug_name : null,
+                  slugs.filter(s => s.slug_name === selectedChannel.slug_owner)[0].slug_name : null,
         };
 
         if (quote) {
@@ -211,13 +241,13 @@ const ChatInput = props => {
                 payload.quote = quote;
             }
             dispatch(
-                updateChatMessage(payloadEdit),
+                putChatMessage(payloadEdit),
             );
             setEditMode(false);
             setEditMessage(null);
         } else {
             dispatch(
-                createChatMessage(payload),
+                postChatMessage(payload),
             );
         }
 
@@ -238,7 +268,12 @@ const ChatInput = props => {
         setText("");
         setQuillContents([]);
         if (reactQuillRef.current) {
-            reactQuillRef.current.getEditor().setContents([]);
+            try {
+                reactQuillRef.current.getEditor().setContents([]);
+            }
+            catch (e) {
+                console.log(e);
+            }
         }
         if (editChatMessage !== null) {
             dispatch(setEditChatMessage(null));
@@ -337,7 +372,7 @@ const ChatInput = props => {
                                 if (selectedChannel.is_shared && slugs.length) {
                                     return (slugs.filter(s => s.slug_name === selectedChannel.slug_owner)[0].external_id) && (typeof r.id === "number") && r.is_deleted === 0;
                                 } else {
-                                    return r.is_deleted === 0 && r.user && r.user.id === user.id && (typeof r.id === "number");
+                                    return (r.is_deleted === 0 || !r.is_deleted) && r.user && r.user.id === user.id && (typeof r.id === "number");
                                 }
                             },
                         )[0];
@@ -351,6 +386,13 @@ const ChatInput = props => {
     };
 
     useEffect(() => {
+        if (reactQuillRef.current) {
+            const width = window.innerWidth;
+            if (width > 620) {
+                reactQuillRef.current.focus();
+            }
+        }
+
         const handlePaste = (e) => {
             let files = [];
 
@@ -370,6 +412,8 @@ const ChatInput = props => {
         document.addEventListener("paste", handlePaste, false);
 
         return () => document.removeEventListener("paste", handlePaste, false);
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     //to be converted into hooks
@@ -441,23 +485,64 @@ const ChatInput = props => {
         }
     };
 
-    // useEffect(() => {
-    //     reactQuillRef.current.focus();
-    // }, [selectedChannel]);
+    const handleAddMentionedUsers = users => {
+
+        let memberPayload = {
+            channel_id: selectedChannel.id,
+            recipient_ids: users.map(u => u.type_id),
+        };
+        dispatch(
+            postChannelMembers(memberPayload, (err, res) => {
+                if (err) return;
+
+                if (res)
+                    setIgnoredMentionedUserIds([...ignoredMentionedUserIds, ...users.map(u => u.type_id)]);
+            }),
+        );
+
+        setMentionedUserIds([]);
+    };
+
+    const handleIgnoreMentionedUsers = users => {
+        setIgnoredMentionedUserIds(users.map(u => u.type_id));
+        setMentionedUserIds([]);
+    };
+
+    const handleEditReplyClose = () => {
+        setEditMode(false);
+        setEditMessage(null);
+        handleClearQuillInput();
+    };
 
     useSaveInput(handleClearQuillInput, text, textOnly, quillContents);
     useQuillInput(handleClearQuillInput, reactQuillRef);
     useDraft(loadDraftCallback, "channel", text, textOnly, draftId);
 
-    const [modules] = useQuillModules("chat", handleSubmit);
+    const [modules] = useQuillModules("chat", handleSubmit, "top", reactQuillRef);
 
     return (
-        <StyledQuillEditor
-            className={"chat-input"}
-            modules={modules}
-            ref={reactQuillRef}
-            onChange={handleQuillChange}
-        />
+        <Wrapper className="chat-input-wrapper">
+            {
+                mentionedUserIds.length > 0 &&
+                <BodyMention
+                    onAddUsers={handleAddMentionedUsers}
+                    onDoNothing={handleIgnoreMentionedUsers}
+                    userIds={mentionedUserIds}
+                    type={"chat"}
+                    basedOnId={false}
+                />
+            }
+            <StyledQuillEditor
+                className={"chat-input"}
+                modules={modules}
+                ref={reactQuillRef}
+                onChange={handleQuillChange}
+            />
+            {
+                editMode &&
+                <CloseButton icon="x" onClick={handleEditReplyClose}/>
+            }
+        </Wrapper>
     );
 };
 

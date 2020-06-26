@@ -1,48 +1,116 @@
 import React, {useRef, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import styled from "styled-components";
+import {localizeChatTimestamp} from "../../../helpers/momentFormatJS";
 import {onClickSendButton} from "../../../redux/actions/chatActions";
+import {joinWorkspace, joinWorkspaceReducer} from "../../../redux/actions/workspaceActions";
 import {CommonPicker, SvgIconFeather} from "../../common";
 import ChatInput from "../../forms/ChatInput";
+import {useIsMember} from "../../hooks";
 import ChatQuote from "../../list/chat/ChatQuote";
+import Tooltip from 'react-tooltip-lite';
 
 const Wrapper = styled.div`
     position: relative;
-    z-index: 100;
+    z-index: 1;
+    .chat-footer-buttons {
+        svg.feather-send {
+            margin-left: 8px;
+        }
+        svg.feather-paperclip {
+            margin-left: 0;
+            margin-right: 0;
+        }
+    }
 `;
 
 const ArchivedDiv = styled.div`
     width: 100%;
     text-align: center;
-    background: #f1f2f7;
     padding: 15px 10px;
     h4 {
         margin: 0;
+        display: flex;
+        justify-content: center;
+        alignt-items: center;
     }
 `;
 
 const ChatInputContainer = styled.div`
     position: relative;
+    max-width: calc(100% - 165px);
+`;
+
+const Icon = styled(SvgIconFeather)`
+    margin-right: 6px;
+    width: 20px;
 `;
 
 const IconButton = styled(SvgIconFeather)`
     cursor: pointer;
     cursor: hand;
     border: 1px solid #afb8bd;
-    height: 38px;
-    margin: -1px 5px;
-    width: 40px;
-    padding: 10px;
+    height: 37px;
+    margin: -1px 8px 0 0;
+    width: 47px;
+    min-width: 47px;
+    padding: 10px 0;
     border-radius: 8px;
-    
+    transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    &:hover {
+        background: #afb8bd;
+        color: #ffffff;
+    }
     &.feather-send {
         border: 1px solid #7a1b8b;
         background-color: #7a1b8b;
         color: #fff;
+        &:hover {
+            background-color: #8C3B9B;
+        }
     }
 `;
 
 const Dflex = styled.div`
+    &.channel-viewing {
+        display: flex;
+        flex-wrap: wrap;
+        background-color: #f8f8f8;
+        text-align: center;
+        align-items: center;
+        justify-content: center;
+        padding: 20px 0;
+
+        > div {
+            flex: 0 1 100%;
+        }
+
+        .channel-name{
+            color: #64625C;
+            font-size: 17px;
+            font-weight: 600;
+        }
+        .channel-create {
+            letter-spacing: 0;
+            margin-bottom: 0;
+            color: #B8B8B8;
+            font-weight: normal;
+            font-size: 19px;
+            text-transform: lowercase;
+            margin-bottom: 16px;
+        }
+        .channel-action {
+            button {
+                background: #7a1b8b;
+                color: #fff;
+                border: none;
+                padding: 8px 15px;
+                border-radius: 8px;
+                font-size: 16px;
+                font-weight: 600;
+            }
+        }
+    }
 `;
 
 const PickerContainer = styled(CommonPicker)`
@@ -63,6 +131,7 @@ const ChatFooterPanel = (props) => {
     const [selectedGif, setSelectedGif] = useState(null);
 
     const selectedChannel = useSelector(state => state.chat.selectedChannel);
+    const user = useSelector(state => state.session.user);
 
     const handleSend = () => {
         dispatch(
@@ -91,6 +160,37 @@ const ChatFooterPanel = (props) => {
         handleSend();
     };
 
+    const handleJoinWorkspace = () => {
+        dispatch(
+            joinWorkspace({
+                group_id: selectedChannel.entity_id,
+                user_id: user.id,
+            }, (err, res) => {
+                if (err) return;
+                dispatch(
+                    joinWorkspaceReducer({
+                        channel_id: selectedChannel.id,
+                        topic_id: selectedChannel.entity_id,
+                        user: user,
+                    }),
+                );
+            }),
+        );
+    };
+
+    const isMember = useIsMember(selectedChannel && selectedChannel.members.length ? selectedChannel.members.map(m => m.id) : []);
+
+
+    const toggleTooltip = () => {
+        let tooltips = document.querySelectorAll('span.react-tooltip-lite');
+
+        tooltips.forEach((tooltip) => {
+            tooltip.parentElement.classList.toggle('tooltip-active');
+        });
+
+    };
+
+
     return (
         <Wrapper className={`chat-footer border-top ${className}`}>
             {
@@ -99,15 +199,19 @@ const ChatFooterPanel = (props) => {
                     <ChatQuote/>
                 </Dflex>
             }
-            <Dflex className="d-flex">
-                {
-                    selectedChannel && selectedChannel.is_archived === 1 ?
+            {
+                isMember &&
+                <Dflex className="d-flex align-items-center">
+                    {
+                        selectedChannel && selectedChannel.is_archived === 1 ?
                         <ArchivedDiv>
-                            <h4>Channel archived</h4>
+                            <h4><Icon icon="archive"/> This is an archived channel</h4>
                         </ArchivedDiv>
                         :
                         <React.Fragment>
-                            <IconButton onClick={handleShowEmojiPicker} icon="smile"/>
+                            <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Emoji">
+                                <IconButton onClick={handleShowEmojiPicker} icon="smile" />
+                            </Tooltip>
                             <ChatInputContainer className="flex-grow-1">
                                 <ChatInput
                                     selectedGif={selectedGif} onClearGif={onClearGif}
@@ -116,22 +220,36 @@ const ChatFooterPanel = (props) => {
                             </ChatInputContainer>
                             <div className="chat-footer-buttons d-flex">
                                 <IconButton onClick={handleSend} icon="send"/>
-                                <IconButton onClick={onShowFileDialog} icon="paperclip"/>
+                                <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Attach files">
+                                    <IconButton onClick={onShowFileDialog} icon="paperclip"/>
+                                </Tooltip>
                             </div>
                         </React.Fragment>
-                }
-                {
-                    showEmojiPicker === true &&
-                    <PickerContainer
-                        handleSend={handleSend}
-                        handleShowEmojiPicker={handleShowEmojiPicker}
-                        onSelectEmoji={onSelectEmoji}
-                        onSelectGif={onSelectGif}
-                        orientation={"top"}
-                        ref={ref.picker}
-                    />
-                }
-            </Dflex>
+                    }
+                    {
+                        showEmojiPicker === true &&
+                        <PickerContainer
+                            handleSend={handleSend}
+                            handleShowEmojiPicker={handleShowEmojiPicker}
+                            onSelectEmoji={onSelectEmoji}
+                            onSelectGif={onSelectGif}
+                            orientation={"top"}
+                            ref={ref.picker}
+                        />
+                    }
+                </Dflex>
+            }
+            {
+                isMember === false && selectedChannel !== null &&
+                <Dflex className="channel-viewing">
+                    <div className="channel-name">You are viewing #{selectedChannel.title}</div>
+                    <div className="channel-create">Created
+                        by {selectedChannel.creator.name} on {localizeChatTimestamp(selectedChannel.created_at.timestamp)}</div>
+                    <div className="channel-action">
+                        <button onClick={handleJoinWorkspace}>Join workspace chat</button>
+                    </div>
+                </Dflex>
+            }
         </Wrapper>
     );
 };

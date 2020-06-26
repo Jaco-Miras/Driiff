@@ -1,26 +1,8 @@
 import React from "react";
 import styled from "styled-components";
-import postIcon from "../../../assets/icon/conversations/l/active.svg";
-import teamIcon from "../../../assets/icon/departments/department.svg";
-import botIcon from "../../../assets/icon/person/l/active.svg";
-import topicIcon from "../../../assets/icon/topic_icon/people_group/l/active.svg";
-import {Avatar} from "../../common";
+import {Avatar, SvgIconFeather} from "../../common";
 
-const Wrapper = styled.div`    
-    :before{
-        content: '';
-        mask-image: ${props => props.type === "PERSONAL_BOT" ? `url(${botIcon})`
-    : props.type === "COMPANY" ? `url(${teamIcon})`
-        : props.type === "POST" ? `url(${postIcon})`
-            : `url(${topicIcon})`};
-        background: linear-gradient(105deg, #972c86, #794997);
-        mask-repeat: no-repeat;
-        mask-size: 90%;
-        mask-position:center;
-        width: 32px;
-        height: 32px;
-        display: ${props => props.type === "DIRECT" ? "none" : "inline-block"};
-    }
+const Wrapper = styled.div`
     > span {
         font-size: 11px;
         background-color: #cccccc;
@@ -32,11 +14,21 @@ const Wrapper = styled.div`
         height: 30px;
         text-align: center;
     }
+    > svg {
+        padding: 6px;
+        background-color: #eeeeee;
+        border-radius: 50%;
+    }
 `;
 
-const StyledAvatar = styled(Avatar)`  
+const StyledAvatar = styled(Avatar)`
 `;
+const Icon = styled(SvgIconFeather)`
+    color: #7a1b8b !important;
+    height: 30px;
+    width: 30px;
 
+`;
 const handleInitials = title => {
     var result = "";
     var tokens = title.split(" ");
@@ -47,6 +39,7 @@ const handleInitials = title => {
 };
 
 const ChannelIcon = props => {
+
     const {className = "", channel} = props;
 
     return (
@@ -55,13 +48,33 @@ const ChannelIcon = props => {
             type={channel.type}
         >
             {
-                channel.profile && channel.members.length <= 2 && channel.type === "DIRECT" &&
+                channel.profile && channel.members.length >= 1 && channel.type === "DIRECT" &&
                 <StyledAvatar
+                    type={channel.type}
                     imageLink={channel.profile.profile_image_link}
                     userId={channel.profile.id}
+                    id={channel.profile.id}
                     name={channel.profile.name}
-                    noClick={true}
+                    partialName={channel.profile.partial_name}
+                    type={"USER"}
+                    noDefaultClick={false}
                 />
+            }
+            {
+                channel.type === "GROUP" &&
+                <Icon icon="users"/>
+            }
+            {
+                channel.type === "COMPANY" &&
+                <Icon icon="users"/>
+            }
+            {
+                channel.type === "POST" &&
+                <Icon icon="users"/>
+            }
+            {
+                channel.type === "PERSONAL_BOT" &&
+                <Icon icon="user"/>
             }
             {
                 channel.members.length > 2 && channel.type === "DIRECT" &&

@@ -1,66 +1,205 @@
 import React from "react";
+import {useDispatch, useSelector} from "react-redux";
 import styled from "styled-components";
+import {addToModals} from "../../../redux/actions/globalActions";
+import {setActiveTab} from "../../../redux/actions/workspaceActions";
 import {SvgIconFeather} from "../../common";
+import {WorkspaceList} from "../../workspace";
+import {useSetWorkspace, useSortWorkspaces} from "../../hooks";
 
 const Wrapper = styled.div`
+    &::-webkit-scrollbar {
+        display: none;
+    }
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    &.navigation-menu-body {
+        border-right: 1px solid #f1f1f1;
+        h4 {
+            color: #7a1b8b;
+            text-transform: uppercase;
+            margin: 0 32px;
+            height: 32px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+        }
+        #elements > ul:first-of-type {
+            margin-bottom: 6px;
+        }
+        .nav-tabs {
+            margin-left: 30px;
+            width: calc(100% - 55px);
+
+            .nav-item {
+                cursor: pointer;
+                cursor: hand;
+            }
+        }
+        .navigation-menu-group{
+            ul {
+                li {
+                    font-size: .835rem;
+                    &.navigation-divider {
+                        cursor: pointer;
+                        cursor: hand;
+                        text-transform: none;
+                        margin: 0 0 0 30px;
+                        padding: 0;
+                        color: #BEBEBE;
+                        font-size: 9px;
+                        font-weight: normal;
+
+                        &:hover {
+                            color: #7a1b8b;
+                        }
+
+                        svg {
+                            width: 7px;
+                            height: 7px;
+                            margin-right: 9px;
+                        }
+                    }
+
+                    a {
+                        padding: 10px 70px 10px 30px;
+                    }
+
+                    > ul {
+                        li {
+                            margin-left: 30px;
+                            margin-bottom: 10px;
+                            color: #828282;
+                            font-size: 11px;
+                            max-width:calc(100% - 95px);
+                            // white-space: nowrap;
+                            // overflow: hidden;
+                            // text-overflow: ellipsis;
+                            position: relative;
+                            padding-left: 18px;
+
+                            &:hover {
+                                color: #7a1b8b;
+                            }
+
+                            &.nav-action {
+                                list-style-type: none !important;
+                                margin-left: 26px !important;
+                                color: #BEBEBE !important;
+                                font-size: 9px !important;
+                                font-weight: normal;
+                                padding-left: 22px;
+
+                                svg {
+                                    width: 7px;
+                                    left: 6px;
+                                    top:-4px;
+                                }
+                            }
+
+                            svg {
+                              color: #828282;
+                              position: absolute;
+
+                              &.feather-lock{
+                                top:-3px;
+                                left: 0;
+                              }
+                              &.feather-circle{
+                                left: 3px;
+                                width:6px;
+                                top:-3px;
+                                fill: #828282;
+                              }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 `;
 
 const WorkspaceNavigationMenuBodyPanel = (props) => {
 
     const {className = ""} = props;
+    const dispatch = useDispatch();
+
+    const workspaces = useSelector(state => state.workspaces.workspaces);
+    // const workspacesLoaded = useSelector(state => state.workspaces.workspacesLoaded);
+    // const activeTopic = useSelector(state => state.workspaces.activeTopic);
+    const activeTab = useSelector(state => state.workspaces.activeTab);
+
+    const handleShowFolderModal = () => {
+        let payload = {
+            type: "workspace_folder",
+            mode: "create",
+        };
+        dispatch(
+            addToModals(payload),
+        );
+    };
+
+    const handleShowWorkspaceModal = () => {
+        let payload = {
+            type: "workspace_create_edit",
+            mode: "create",
+        };
+
+        dispatch(
+            addToModals(payload),
+        );
+    };
+
+    const handleSelectTab = (e, tab) => {
+        dispatch(setActiveTab(tab));
+    };
+
+    useSetWorkspace();
+    const sortedWorkspaces = useSortWorkspaces();
 
     return (
         <>
             <Wrapper className={`navigation-menu-body ${className}`}>
-                <div className="" styles="overflow: hidden; outline: currentcolor none medium;"
-                     tabIndex="3">
+                <div tabIndex="3">
                     <h4>Workspaces</h4>
-
                     <ul className="nav nav-tabs" id="pills-tab" role="tablist">
-                        <li className="nav-item">
-                            <span className="nav-link active" id="pills-home-tab"
-                                  data-toggle="pill" role="tab" aria-controls="pills-home"
-                                  aria-selected="true">Intern</span></li>
-                        <li className="nav-item">
-                            <span className="nav-link" id="pills-contact-tab" data-toggle="pill"
-                                  role="tab" aria-controls="pills-contact"
-                                  aria-selected="false">Extern</span></li>
+                        <li className="nav-item" onClick={e => handleSelectTab(e, "intern")}>
+                            <span
+                                className={`nav-link ${activeTab === "intern" ? "active" : ""}`}
+                                data-toggle="pill" role="tab" aria-controls="pills-intern"
+                                aria-selected={activeTab === "intern" ? "true" : "false"}>Intern</span></li>
+                        <li className="nav-item" onClick={e => handleSelectTab(e, "extern")}>
+                            <span
+                                className={`nav-link ${activeTab === "extern" ? "active" : ""}`}
+                                data-toggle="pill"
+                                role="tab" aria-controls="pills-extern"
+                                aria-selected={activeTab === "intern" ? "true" : "false"}>Extern</span></li>
                     </ul>
                     <div className="navigation-menu-group">
                         <div id="elements" className="open">
                             <ul>
-                                <li className="navigation-divider">
+                                <li className="navigation-divider" onClick={handleShowFolderModal}>
+                                    <SvgIconFeather icon="plus"/> New folder
+                                </li>
+                                <li className="navigation-divider" onClick={handleShowWorkspaceModal}>
                                     <SvgIconFeather icon="plus"/> New workspace
                                 </li>
-                                <li>
-                                    <a href="/">Consolidated<i className="sub-menu-arrow"></i></a>
-                                </li>
-                                <li>
-                                    <a href="/">SodaStream<i
-                                        className="sub-menu-arrow ti-angle-up rotate-in ti-minus"></i></a>
-                                    <ul style={{display: "block"}}>
-                                        <li><a href="basic-cards.html">Website </a></li>
-                                        <li><a href="image-cards.html">Market Strategy </a></li>
-                                        <li><a href="card-scroll.html">Facebook Campaign </a></li>
-                                    </ul>
-                                </li>
+                            </ul>
+                            <ul>
+                                {
+                                    sortedWorkspaces
+                                        .map(ws => {
+                                            return <WorkspaceList
+                                                show={ws.is_external === (activeTab === "intern" ? 0 : 1)}
+                                                key={ws.key_id} workspace={ws}/>;
+                                        })
+                                }
                             </ul>
                         </div>
                     </div>
                 </div>
             </Wrapper>
-            <div id="ascrail2002" className="nicescroll-rails nicescroll-rails-vr"
-                 styles="width: 8px; z-index: 4; cursor: default; position: absolute; top: 0px; left: 112px; height: 378.3px; display: none; opacity: 0;">
-                <div
-                    styles="position: relative; top: 0px; float: right; width: 6px; height: 0px; background-color: rgb(66, 66, 66); border: 1px solid rgb(255, 255, 255); background-clip: padding-box; border-radius: 5px;"
-                    className="nicescroll-cursors"></div>
-            </div>
-            <div id="ascrail2002-hr" className="nicescroll-rails nicescroll-rails-hr"
-                 styles="height: 8px; z-index: 4; top: 370.3px; left: 0px; position: absolute; cursor: default; display: none; opacity: 0;">
-                <div
-                    styles="position: absolute; top: 0px; height: 6px; width: 0px; background-color: rgb(66, 66, 66); border: 1px solid rgb(255, 255, 255); background-clip: padding-box; border-radius: 5px; left: 0px;"
-                    className="nicescroll-cursors"></div>
-            </div>
         </>
     );
 };

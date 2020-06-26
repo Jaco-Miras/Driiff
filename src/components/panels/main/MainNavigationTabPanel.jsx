@@ -1,11 +1,28 @@
-import React from "react";
-import {useDispatch} from "react-redux";
+import React, {useEffect, useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
 import {useHistory} from "react-router-dom";
+import {Badge} from "reactstrap";
 import styled from "styled-components";
-import {setNavMode} from "../../../redux/actions/globalActions";
+import {replaceChar} from "../../../helpers/stringFormatter";
+import {getUnreadNotificationCounterEntries, setNavMode} from "../../../redux/actions/globalActions";
 import {NavLink, SvgIcon, SvgIconFeather} from "../../common";
 
 const Wrapper = styled.div`
+    li {
+        position: relative;
+
+        .badge {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            padding: 0;
+            ${'' /* top: -8px; */}
+            background: rgba(255, 68, 68, 0.8);
+            right: 22px;
+            top: 16px;
+            z-index: 9;
+        }
+    }
 `;
 
 const DriffLogo = styled(SvgIcon)`
@@ -13,7 +30,7 @@ const DriffLogo = styled(SvgIcon)`
     height: 30px;
     filter: brightness(0) saturate(100%) invert(1);
     cursor: pointer;
-    cursor: hand; 
+    cursor: hand;
 `;
 
 const NavIconContainer = styled(NavLink)`
@@ -35,6 +52,12 @@ const MainNavigationTabPanel = (props) => {
     const history = useHistory();
     const dispatch = useDispatch();
 
+    const {active_topic} = useSelector(state => state.settings.user.GENERAL_SETTINGS);
+    const {lastVisitedChannel} = useSelector(state => state.chat);
+    const unreadCounter = useSelector(state => state.global.unreadCounter);
+
+    const [workspacePath, setWorkpacePath] = useState("/workspace/dashboard");
+
     const handleIconClick = (e) => {
         e.preventDefault();
         if (e.target.dataset.link) {
@@ -49,6 +72,25 @@ const MainNavigationTabPanel = (props) => {
         history.push(e.target.dataset.link);
     };
 
+    useEffect(() => {
+        dispatch(
+            getUnreadNotificationCounterEntries(),
+        );
+
+        //eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    useEffect(() => {
+        if (active_topic) {
+            const {workspace, topic} = active_topic;
+            if (workspace) {
+                setWorkpacePath(`/workspace/dashboard/${workspace.id}/${replaceChar(workspace.name)}/${topic.id}/${replaceChar(topic.name)}`);
+            } else {
+                setWorkpacePath(`/workspace/dashboard/${topic.id}/${replaceChar(topic.name)}`);
+            }
+        }
+    }, [active_topic]);
+
     return (
         <Wrapper className={`navigation-menu-tab ${className}`}>
             <div>
@@ -61,18 +103,26 @@ const MainNavigationTabPanel = (props) => {
             <div className="flex-grow-1">
                 <ul>
                     <li>
-                        <NavIconContainer to="/dashboard">
-                            <NavIcon icon={`bar-chart-2`}/>
-                        </NavIconContainer>
-                    </li>
-                    <li>
-                        <NavIconContainer to="/workspace/dashboard">
+                        <NavIconContainer to={workspacePath}>
                             <NavIcon icon={`command`}/>
+                            {
+                                (unreadCounter.workspace_chat_message + unreadCounter.workspace_post) >= 1 &&
+                                <Badge
+                                    data-count={(unreadCounter.workspace_chat_message + unreadCounter.workspace_post)}>&nbsp;</Badge>
+                            }
                         </NavIconContainer>
                     </li>
                     <li>
-                        <NavIconContainer to="/chat">
+                        <NavIconContainer
+                            active={["dashboard", "posts", "chat", "files", "people"].includes(props.match.params.page)}
+                            to={lastVisitedChannel !== null && lastVisitedChannel.hasOwnProperty("code") ?
+                                `/chat/${lastVisitedChannel.code}` : "/chat"}>
                             <NavIcon icon={`message-circle`}/>
+                            {
+                                unreadCounter.hasOwnProperty("chat_message") && unreadCounter.chat_message >= 1 &&
+                                <Badge
+                                    data-count={unreadCounter.chat_message}>&nbsp;</Badge>
+                            }
                         </NavIconContainer>
                     </li>
                 </ul>

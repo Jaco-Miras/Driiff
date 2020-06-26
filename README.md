@@ -1,7 +1,10 @@
 <p align="center"><img src="https://dev.drevv.com/static/media/driff-logo.cf17324f.svg" width="200"></p>
 
+# Staging enviorement
 
-# Driff Frontend Bordash
+[demo24.drevv.com](demo24.drevv.com)
+
+# Driff development
 
 How to run local?
 
@@ -12,14 +15,19 @@ Development command:
 yarn start-dev
 ```
 
-Login dev:
+Login development:
+
 
 ```
-Username:
-rt@make24.nl
+Api development:
+dev24admin
 
-Password:
+Login:
+rt@make24.nl
 password1
+
+jessryll@makedevelopment.com
+devpassword
 ```
 
 ## Test environment

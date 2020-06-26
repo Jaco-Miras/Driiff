@@ -1,15 +1,17 @@
 import React from "react";
 import styled from "styled-components";
 
-const ChannelTitleContainer = styled.h6`    
+const ChannelTitleContainer = styled.h6`
+    color: #828282;
+    ${props => props.channel.total_unread && "color: #7a1b8b"};
 `;
 
 const ChannelTitle = props => {
 
-    const {className = ""} = props;
+    const {channel, className = ""} = props;
 
     return (
-        <ChannelTitleContainer className={`mb-1 ${className}`}>
+        <ChannelTitleContainer className={`mb-1 ${className}`} channel={channel}>
             {props.channel.title}
         </ChannelTitleContainer>
     );

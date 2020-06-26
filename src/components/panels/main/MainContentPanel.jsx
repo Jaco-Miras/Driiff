@@ -1,5 +1,5 @@
 import React from "react";
-import {Route, Switch} from "react-router-dom";
+import {Redirect, Route, Switch} from "react-router-dom";
 import styled from "styled-components";
 import {
     CompanyChatPanel,
@@ -9,18 +9,11 @@ import {
     CompanyPostsPanel,
     CompanySettingsPanel,
 } from "../company";
-import {
-    WorkspaceChatPanel,
-    WorkspaceDashboardPanel,
-    WorkspaceFilesPanel,
-    WorkspacePageHeaderPanel,
-    WorkspacePeoplePanel,
-    WorkspacePostsPanel,
-    WorkspaceSettingsPanel,
-} from "../workspace";
+import {UserProfilePanel} from "../user";
 import {MainFooterPanel} from "./index";
 
 const Wrapper = styled.div`
+    padding-bottom: ${props => props.isOnWorkspace ? "0 !important" : "calc(1.875rem * 2)"};
 `;
 
 const MainContentPanel = (props) => {
@@ -28,15 +21,15 @@ const MainContentPanel = (props) => {
     const {className = ""} = props;
 
     return (
-        <Wrapper className={`main-content ${className}`}>
+        <Wrapper className={`main-content ${className}`} isOnWorkspace={props.match.params.page === "workspace"}>
             <Switch>
                 <Route
                     {...props}
-                    component={WorkspacePageHeaderPanel}
-                    path={["/workspace/dashboard", "/workspace/posts", "/workspace/chat", "/workspace/files",
-                        "/workspace/people", "/workspace/settings"]}/>
-            </Switch>
-            <Switch>
+                    component={UserProfilePanel}
+                    path={[
+                        "/profile/:id/:name",
+                        "/profile",
+                    ]}/>
                 <Route
                     {...props}
                     component={CompanyDashboardPanel}
@@ -48,7 +41,7 @@ const MainContentPanel = (props) => {
                 <Route
                     {...props}
                     component={CompanyChatPanel}
-                    path={["/chat"]}/>
+                    path={["/chat/:code?"]}/>
                 <Route
                     {...props}
                     component={CompanyFilesPanel}
@@ -61,30 +54,12 @@ const MainContentPanel = (props) => {
                     {...props}
                     component={CompanySettingsPanel}
                     path={["/settings"]}/>
-                <Route
-                    {...props}
-                    component={WorkspaceDashboardPanel}
-                    path={["/workspace/dashboard"]}/>
-                <Route
-                    {...props}
-                    component={WorkspacePostsPanel}
-                    path={["/workspace/posts"]}/>
-                <Route
-                    {...props}
-                    component={WorkspaceChatPanel}
-                    path={["/workspace/chat"]}/>
-                <Route
-                    {...props}
-                    component={WorkspaceFilesPanel}
-                    path={["/workspace/files"]}/>
-                <Route
-                    {...props}
-                    component={WorkspacePeoplePanel}
-                    path={["/workspace/people"]}/>
-                <Route
-                    {...props}
-                    component={WorkspaceSettingsPanel}
-                    path={["/workspace/settings"]}/>
+                <Redirect
+                    from="*"
+                    to={{
+                        pathname: "/workspace/dashboard",
+                        state: {from: props.location},
+                    }}/>
             </Switch>
             <MainFooterPanel/>
         </Wrapper>

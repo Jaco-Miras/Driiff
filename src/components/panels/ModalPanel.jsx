@@ -1,20 +1,30 @@
 import React from "react";
 import {useSelector} from "react-redux";
 import styled from "styled-components";
-import {ChatForwardModal, ChatReminderModal, ConfirmationModal, CreateEditChatModal, FileUploadModal} from "../modals";
+import FileViewer from "../common/FileViewer";
+import {
+    ChatForwardModal,
+    ChatReminderModal,
+    ConfirmationModal,
+    CreateEditChatModal,
+    CreateEditWorkspaceModal,
+    CreateEditWorkspacePostModal,
+    CreateWorkspaceFolderModal,
+    FileCropUploadModal,
+    FileUploadModal,
+    MoveFilesModal,
+    PostSnoozeModal,
+    SingleInputModal,
+} from "../modals";
 
 const ModalPanelContainer = styled.div`
-    // z-index: 7;
-    // height: 100%;
-    // width: 100%;
-    // position: fixed;
-    // top: 0;
-    // left: 0;
+    z-index: 7;
 `;
 
-const ModalPanel = props => {
+const ModalPanel = () => {
 
     const modals = useSelector(state => state.global.modals);
+    const viewFiles = useSelector(state => state.files.viewFiles);
 
     if (Object.keys(modals).length > 0) {
         return (
@@ -30,8 +40,22 @@ const ModalPanel = props => {
                                 return <ChatReminderModal key={modal.type} data={modal}/>;
                             case "file_upload":
                                 return <FileUploadModal key={modal.type} data={modal}/>;
+                            case "file_crop_upload":
+                                return <FileCropUploadModal key={modal.type} data={modal}/>;
                             case "chat_create_edit":
                                 return <CreateEditChatModal key={modal.type} data={modal}/>;
+                            case "workspace_folder":
+                                return <CreateWorkspaceFolderModal key={modal.type} data={modal}/>;
+                            case "workspace_create_edit":
+                                return <CreateEditWorkspaceModal key={modal.type} data={modal}/>;
+                            case "workspace_post_create_edit":
+                                return <CreateEditWorkspacePostModal key={modal.type} data={modal}/>;
+                            case "snooze_post":
+                                return <PostSnoozeModal key={modal.type} data={modal}/>;
+                            case "single_input":
+                                return <SingleInputModal key={modal.type} {...modal} />;
+                            case "move_files":
+                                return <MoveFilesModal key={modal.type} {...modal} />;
                             default:
                                 return null;
                         }
@@ -39,9 +63,13 @@ const ModalPanel = props => {
                 }
             </ModalPanelContainer>
         );
-    } else {
-        return null;
-    }
+    } else if (viewFiles !== null) {
+        return (
+            <ModalPanelContainer>
+                <FileViewer/>
+            </ModalPanelContainer>
+        );
+    } else return null;
 };
 
 export default React.memo(ModalPanel);

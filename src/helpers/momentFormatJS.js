@@ -118,3 +118,17 @@ const yesterdayDate = () => {
     date.setDate(date.getDate() - 1);
     return date.getDate();
 };
+
+export const todayOrYesterdayDate = (timestamp) => {
+    var utc = moment(timestamp, "X").toDate();
+    var local = moment(utc).local();
+    var hours = moment().diff(moment(utc), "hours");
+
+    if (hours < 24) {
+        return moment().calendar().substring(0, moment().calendar().indexOf(" ")) + ", " + local.format("HH:mm");
+    } else if (hours < 48) {
+        return moment().subtract(1, "days").calendar().substring(0, moment().subtract(1, "days").calendar().indexOf(" ")) + ", " + local.format("HH:mm");
+    } else {
+        return local.format("dddd[,] HH:mm");
+    }
+};

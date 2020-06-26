@@ -1,4 +1,4 @@
-import dispatchActionToReducer from "../actionDispatcher";
+import dispatchActionToReducer, {SimpleDispatchActionToReducer} from "../actionDispatcher";
 import {
     authenticateGoogleLogin as authenticateGoogleLoginService,
     checkDriffUserEmail as checkDriffUserEmailService,
@@ -9,6 +9,8 @@ import {
     googleLogin as googleLoginService,
     login as loginService,
     logout as logoutService,
+    postUploadProfileImage as postUploadProfileImageService,
+    putUser as putUserService,
     resetPassword as resetPasswordService,
     updatePassword as updatePasswordService,
 } from "../services";
@@ -63,9 +65,9 @@ export function getOnlineUsers(payload, callback) {
     );
 }
 
-export function getUser(userId, history, callback) {
+export function getUser(payload, callback) {
     return dispatchActionToReducer(
-        getUserService(userId, history),
+        getUserService(payload),
         "GET_USER_START",
         "GET_USER_SUCCESS",
         "GET_USER_FAILURE",
@@ -119,6 +121,34 @@ export function getUsers(payload, callback) {
         "GET_USERS_START",
         "GET_USERS_SUCCESS",
         "GET_USERS_FAIL",
+        callback,
+    );
+}
+
+export function putUser(payload, callback) {
+    return dispatchActionToReducer(
+        putUserService(payload),
+        "UPDATE_USER_START",
+        "UPDATE_USER_SUCCESS",
+        "UPDATE_USER_FAIL",
+        callback,
+    );
+}
+
+export function postUploadProfileImage(payload, callback) {
+    return dispatchActionToReducer(
+        postUploadProfileImageService(payload),
+        "UPDATE_PROFILE_IMAGE_START",
+        "UPDATE_PROFILE_IMAGE_SUCCESS",
+        "UPDATE_PROFILE_IMAGE_FAILURE",
+        callback,
+    );
+}
+
+export function incomingUpdatedUser(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "INCOMING_UPDATED_USER",
+        payload,
         callback,
     );
 }

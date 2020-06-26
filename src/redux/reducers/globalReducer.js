@@ -1,5 +1,7 @@
 const INITIAL_STATE = {
     user: null,
+    i18n: null,
+    i18nLoaded: false,
     recipients: [],
     isLoading: false,
     isBrowserActive: true,
@@ -7,6 +9,7 @@ const INITIAL_STATE = {
     slugs: [],
     navMode: 2,
     dataFromInput: null,
+    unreadCounter: {},
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -69,6 +72,59 @@ export default (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 user: action.data,
+            };
+        }
+        case "GET_TRANSLATION_OBJECT_SUCCESS": {
+            return {
+                ...state,
+                i18n: state.i18n === null ? action.data : {
+                    ...state.i18n,
+                    ...action.data,
+                },
+                i18nLoaded: true,
+            };
+        }
+        case "GET_UNREAD_NOTIFICATION_COUNTER_SUCCESS": {
+            let unreadCounter = state.unreadCounter;
+
+            for (const i in action.data) {
+                const item = action.data[i];
+                unreadCounter = {
+                    ...unreadCounter,
+                    [item.entity_type.toLowerCase()]: item.count,
+                };
+            }
+
+            return {
+                ...state,
+                unreadCounter: unreadCounter,
+            };
+        }
+        case "UPDATE_GENERAL_CHAT_NOTIFICATION": {
+            let unreadCounter = {...state.unreadCounter};
+            let unreadType =  action.data.entity_type.toLowerCase();
+            
+            unreadCounter[unreadType] = unreadCounter[unreadType] + action.data.count;
+            
+            return {
+                ...state,
+                unreadCounter: unreadCounter,
+            };
+
+        }
+        case "UPDATE_UNREAD_LIST_COUNTER": {
+            let unreadCounter = state.unreadCounter;
+
+            for (const i in action.data) {
+                const item = action.data[i];
+                unreadCounter = {
+                    ...unreadCounter,
+                    [item.entity_type.toLowerCase()]: item.count,
+                };
+            }
+            return {
+                ...state,
+                unreadCounter: unreadCounter,
             };
         }
         default:

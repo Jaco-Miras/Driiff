@@ -2,13 +2,14 @@ import moment from "moment";
 import React, {useState} from "react";
 import DateTimePicker from "react-datetime-picker";
 import {useDispatch, useSelector} from "react-redux";
-import {Button, Modal, ModalBody, ModalFooter, ModalHeader} from "reactstrap";
+import {Button, Modal, ModalBody, ModalFooter} from "reactstrap";
 import styled from "styled-components";
 import toaster from "toasted-notes";
 import {formatHoursAMPM, formatMonthsOrdinalDay, formatWeeekDayName} from "../../helpers/dateFormatter";
-import {setChatReminder} from "../../redux/actions/chatActions";
+import {postChatReminder} from "../../redux/actions/chatActions";
 import {clearModal} from "../../redux/actions/globalActions";
 import RadioInput from "../forms/RadioInput";
+import {ModalHeaderSection} from "./index";
 
 
 const InputContainer = styled.div`
@@ -22,6 +23,9 @@ const InputContainer = styled.div`
 
 const ChatReminderModal = props => {
 
+    /**
+     * @todo refactor
+     */
     const {type, message} = props.data;
 
     const dispatch = useDispatch();
@@ -62,7 +66,7 @@ const ChatReminderModal = props => {
         };
 
         dispatch(
-            setChatReminder(payload, (err, res) => {
+            postChatReminder(payload, (err, res) => {
                 toggle();
                 let messageAuthor = "You";
                 let messageTime = "";
@@ -117,9 +121,9 @@ const ChatReminderModal = props => {
 
     return (
         <Modal isOpen={modal} toggle={toggle} centered className='chat-forward-modal'>
-            <ModalHeader toggle={toggle} className='bg-primary'>
+            <ModalHeaderSection toggle={toggle}>
                 Chat reminder
-            </ModalHeader>
+            </ModalHeaderSection>
             <ModalBody>
                 <InputContainer>
                     <RadioInput
@@ -203,7 +207,7 @@ const ChatReminderModal = props => {
             </ModalBody>
             <ModalFooter>
                 <Button color="primary" onClick={handleSnooze}>Snooze</Button>{" "}
-                <Button color="secondary" onClick={toggle}>Cancel</Button>
+                <Button outline color="secondary" onClick={toggle}>Cancel</Button>
             </ModalFooter>
         </Modal>
     );

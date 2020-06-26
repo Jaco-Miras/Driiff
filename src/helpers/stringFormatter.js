@@ -1,8 +1,6 @@
 //import React from "react";
 import {toArray} from "react-emoji-render";
-import {apiNoTokenCall} from "../redux/services";
-import {$_GET, getHttpStatus} from "./commonFunctions";
-import {getBaseUrl, getSlugName, getSupportedUserLanguage} from "./slugHelper";
+import {getDriffName} from "../components/hooks/useDriff";
 
 export const EmailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
@@ -60,8 +58,8 @@ export const parseEmojis = value => {
 
 export const parseTaskUrl = value => {
     const {REACT_APP_localDNSName, REACT_APP_ENV} = process.env;
-    let taskUrl = `https://${getSlugName()}.${REACT_APP_localDNSName}/task/`;
-    let chatUrl = `https://${getSlugName()}.${REACT_APP_localDNSName}/chat/`;
+    let taskUrl = `https://${getDriffName()}.${REACT_APP_localDNSName}/task/`;
+    let chatUrl = `https://${getDriffName()}.${REACT_APP_localDNSName}/chat/`;
     if (REACT_APP_ENV === "development") {
         taskUrl = `https://${REACT_APP_localDNSName}/task/`;
         chatUrl = `https://${REACT_APP_localDNSName}/chat/`;
@@ -93,115 +91,12 @@ export const parseTaskUrl = value => {
  const emojisArray = toArray(value);
  const newValue = emojisArray.map(node => {
  if (typeof node === "string") {
- return <span dangerouslySetInnerHTML={{ __html: node }} />;
+ return <span dangerouslySetInnerHTML={{__html: node}}/>;
  }
  return node.props.children;
  });
  return newValue;
  };*/
-
-export class translation {
-
-    static async init() {
-        let driff = getSlugName();
-        let lang = getSupportedUserLanguage();
-        let defaultLang = "en";
-        let dictFile = "";
-
-        localStorage.removeItem(`i18n_${lang}`);
-
-        if (driff !== false) {
-            dictFile = `${getBaseUrl()}/api/lang/${lang}`;
-            if (getHttpStatus(dictFile, true) !== false) {
-                console.log(getHttpStatus(dictFile, true));
-                this.setDictionaryFile(dictFile, lang);
-                return;
-            }
-
-            dictFile = `${getBaseUrl()}/api/lang/${defaultLang}`;
-            if (getHttpStatus(dictFile, true) !== false) {
-                this.setDictionaryFile(dictFile, lang);
-                return;
-            }
-
-            dictFile = `${getBaseUrl({noSlug: true})}/api/lang/${lang}`;
-            if (getHttpStatus(dictFile, true) !== false) {
-                this.setDictionaryFile(dictFile, lang);
-                return;
-            }
-
-            dictFile = `${getBaseUrl({noSlug: true})}/api/lang/${defaultLang}`;
-            if (getHttpStatus(dictFile, true) !== false) {
-                this.setDictionaryFile(dictFile, lang);
-                return;
-            }
-        }
-
-        dictFile = `${getBaseUrl({noSlug: true})}/api/lang/${lang}`;
-        if (getHttpStatus(dictFile, true) !== false) {
-            this.setDictionaryFile(dictFile, lang);
-            return;
-        }
-
-        dictFile = `${getBaseUrl({noSlug: true})}/api/lang/${defaultLang}`;
-        if (getHttpStatus(dictFile, true) !== false) {
-            this.setDictionaryFile(dictFile, lang);
-            return;
-        }
-    };
-
-    static async setDictionaryFile(dictFile, lang = "en") {
-        apiNoTokenCall({
-            method: "GET",
-            actualUrl: dictFile,
-        }).then((res => {
-            localStorage.setItem(`i18n_${lang}`, JSON.stringify(res.data));
-        })).catch(error => {
-            console.log(error);
-        });
-    }
-
-    static _t(code, default_value, replacement = null) {
-
-        if ($_GET("_t") === "on") {
-            localStorage.setItem("_t", "on");
-        } else if ($_GET("_t") === "off") {
-            localStorage.removeItem("_t");
-        }
-
-        if (localStorage.getItem("_t")) {
-            return `**${default_value}**`;
-        }
-
-        let lang = getSupportedUserLanguage();
-        let translation = default_value;
-
-        if (localStorage.getItem(`i18n_${lang}`)) {
-            let i18n = JSON.parse(localStorage.getItem(`i18n_${lang}`));
-            if (i18n !== null && typeof i18n[code] !== "undefined") {
-                translation = i18n[code];
-            }
-        }
-
-        if (replacement !== null) {
-            for (const key in replacement) {
-                let specialPattern = new RegExp("::" + key + "::", "ig");
-
-                if (replacement[key] === null) {
-                    translation = translation.replace(specialPattern, "");
-                } else {
-                    translation = translation.replace(specialPattern, replacement[key]);
-                }
-            }
-        }
-
-        return translation;
-    }
-}
-
-export const _t = (code, default_value, replacement = null) => {
-    return translation._t(code, default_value, replacement);
-};
 
 export const getEmojiRegexPattern = () => {
     return [
@@ -269,4 +164,8 @@ export const dataURLtoFile = (dataurl, filename) => {
         type: mime,
         lastModified: Date.now(),
     });
+};
+
+export const replaceChar = (name, char = "-") => {
+    return name.toLowerCase().replace(/\s|\//g, char);
 };

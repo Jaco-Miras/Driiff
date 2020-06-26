@@ -10,7 +10,7 @@ const ChatReactionsContainer = styled.div`
     margin-top: -8px;
     display: inline-flex;
     max-width: 90%;
-    z-index: 20;
+    z-index: 1;
     flex-flow: ${props => props.isAuthor ? "row-reverse" : "row"};
     align-self: ${props => props.isAuthor ? "flex-end" : "flex-start"};
 `;

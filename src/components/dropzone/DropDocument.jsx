@@ -3,20 +3,28 @@ import Dropzone from "react-dropzone";
 import {toastr} from "react-redux-toastr";
 import "react-redux-toastr/lib/css/react-redux-toastr.min.css";
 import styled from "styled-components";
-import "./DropDocument.css";
+import {SvgIconFeather} from "../common";
+import "./DropDocument.scss";
 
 const Section = styled.section`
-    display: ${props => props.hide ? "none" : "block"};
-    @media only screen and (max-width: 991.99px){
-       display: block;
+    visibility: ${props => props.hide ? "hidden" : "visible"};
+    .reply-document-dropdown {
+        opacity: ${props => props.hide ? "0" : "1"};
+        transition: opacity 200ms ease;
+        background: rgba(255,255,255, 0.9);
     }
 `;
 
-//const dropzoneRef = createRef();
+const Icon = styled(SvgIconFeather)`
+`;
 
 export const DropDocument = forwardRef((props, ref) => {
 
-    const {onCancel, onDrop, noX = false, disableInput = false, openOnLoad = false, placeholderText = `Drag 'n' drop your files here.`, hide} = props;
+    const {
+        attachedFiles, onCancel, onDrop, noX = false, disableInput = false,
+        openOnLoad = false, placeholderText = `Drag 'n' drop your files here.`, hide, params = null,
+        acceptType = "",
+    } = props;
 
     const cbOnDrop = useCallback(({acceptedFiles, rejectedFiles}) => {
 
@@ -33,13 +41,24 @@ export const DropDocument = forwardRef((props, ref) => {
         onDrop({acceptedFiles});
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [attachedFiles, params]);
 
-    // useEffect(() => {
-    //     if (dropzoneRef.current && openOnLoad) {
-    //         dropzoneRef.current.open()
-    //     }
-    // }, []);
+    let accept = [
+        "image/ai", "image/bmp", "image/eps", "image/gif", "image/gpl", "image/iff", "image/jpeg", "image/jpg",
+        "image/pdn", "image/png", "image/psp", "image/svg",
+        ".7z", ".aac", ".ai", ".aif", ".aifc", ".aifc", ".aiff", ".aiff", ".avi", ".bmp", ".bmp", ".cab",
+        ".csv", ".doc", ".docx", ".dot", ".dotx", ".eps", ".epub", ".flac", ".flv", ".gif", ".ico", ".jpg", ".mj2",
+        ".mjp2", ".mkv", ".mng", ".mov", ".mp3", ".mp4", ".mpeg", ".mpp", ".mpt", ".numbers", ".odm", ".odm", ".odoc", ".odp",
+        ".ods", ".odt", ".oga", ".ogg", ".otp", ".ott", ".pages", ".pdf", ".pea", ".pez", ".png", ".pot", ".pps",
+        ".ppt", ".pptx", ".pptz", ".ps", ".qt", ".rar", ".raw", ".rtf", ".spx", ".stc", ".svg", ".tar", ".tgz",
+        ".tif", ".tiff", ".tsv", ".txt", ".vcf", ".wav", ".webm", ".webp", ".wma", ".wmv", ".xla", ".xlc", ".xls", ".xlsx",
+        ".xlt", ".xlw", ".xml", ".zip",
+    ];
+
+    if (acceptType === "imageOnly") {
+        accept = ["image/ai", "image/bmp", "image/eps", "image/gif", "image/gpl", "image/iff", "image/jpeg", "image/jpg",
+            "image/pdn", "image/png", "image/psp", "image/svg"];
+    }
 
     return <Dropzone
         ref={ref}
@@ -54,17 +73,7 @@ export const DropDocument = forwardRef((props, ref) => {
         hide={hide}
         openOnload={openOnLoad}
         noClick={disableInput}
-        accept={[
-            "image/ai", "image/bmp", "image/eps", "image/gif", "image/gpl", "image/iff", "image/jpeg", "image/jpg",
-            "image/pdn", "image/png", "image/psp", "image/svg",
-            ".7z", ".aac", ".ai", ".aif", ".aifc", ".aifc", ".aiff", ".aiff", ".avi", ".bmp", ".bmp", ".cab",
-            ".csv", ".doc", ".docx", ".dot", ".dotx", ".eps", ".epub", ".flac", ".flv", ".gif", ".ico", ".jpg", ".mj2",
-            ".mjp2", ".mkv", ".mng", ".mov", ".mp3", ".mp4", ".mpeg", ".mpp", ".mpt", ".numbers", ".odm", ".odm", ".odoc", ".odp",
-            ".ods", ".odt", ".oga", ".ogg", ".otp", ".ott", ".pages", ".pdf", ".pea", ".pez", ".png", ".pot", ".pps",
-            ".ppt", ".pptx", ".pptz", ".ps", ".qt", ".rar", ".raw", ".rtf", ".spx", ".stc", ".svg", ".tar", ".tgz",
-            ".tif", ".tiff", ".tsv", ".txt", ".vcf", ".wav", ".webm", ".webp", ".wma", ".wmv", ".xla", ".xlc", ".xls", ".xlsx",
-            ".xlt", ".xlw", ".xml", ".zip",
-        ]}>
+        accept={accept}>
         {
             ({getRootProps, getInputProps, isDragActive}) => {
                 return <Section hide={hide}>
@@ -72,17 +81,20 @@ export const DropDocument = forwardRef((props, ref) => {
                          className={`reply-document-dropdown ${isDragActive ? "show-border" : "no-border"}`}>
 
                         <input {...getInputProps()} />
-                        <p>{placeholderText}</p>
+
+                        <div className="reply-dropzone">
+                            <Icon icon="upload-cloud"/>
+                            <p>{placeholderText}</p>
+                        </div>
                     </div>
                     {
                         !noX &&
-                        <a
-                            href="#cancel-file-input"
+                        <button aria-label="close"
                             className="click-cancel-drop"
-                            onClick={e => {
-                                onCancel();
-                            }}
-                        ><i className="fa fa-times-circle fa-lg"></i></a>
+                            onClick={onCancel}
+                        >
+                        <span aria-hidden="true"><Icon icon="x"/></span>
+                        </button>
                     }
 
                 </Section>;

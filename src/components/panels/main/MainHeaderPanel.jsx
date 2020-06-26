@@ -16,12 +16,12 @@ const MainHeaderPanel = (props) => {
             <Switch>
                 <Route
                     {...props}
-                    component={CompanyHeaderPanel}
-                    path={["/dashboard", "/posts", "/chat", "/people", "/files", "/settings"]}/>
+                    component={WorkspaceHeaderPanel}
+                    path={["/workspace/:page"]}/>
                 <Route
                     {...props}
-                    component={WorkspaceHeaderPanel}
-                    path={["/workspace/dashboard", "/workspace/posts", "/workspace/chat", "/workspace/people", "/workspace/files", "/workspace/settings"]}/>
+                    component={CompanyHeaderPanel}
+                    path={["/:page"]}/>
             </Switch>
         </Wrapper>
     );

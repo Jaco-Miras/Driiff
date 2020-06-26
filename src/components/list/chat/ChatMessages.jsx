@@ -3,44 +3,8 @@ import React from "react";
 import {InView} from "react-intersection-observer";
 import {connect} from "react-redux";
 import {withRouter} from "react-router-dom";
-import {bindActionCreators} from "redux";
 import styled from "styled-components";
 import {localizeChatTimestamp, localizeDate} from "../../../helpers/momentFormatJS";
-import {
-    getChatMessages,
-    markAllMessagesAsRead,
-    markReadChannel,
-    setChannelHistoricalPosition,
-    setSelectedChannel,
-    updateChannelReducer,
-    updateUnreadChatReplies,
-} from "../../../redux/actions/chatActions";
-// import {
-//     addChatBox,
-//     addChatChannelMembersV2,
-//     addSelectedChannelChatMessage,
-//     chatReactionV2,
-//     clearHistoricalPosition,
-//     createChatMessageV2,
-//     getChatMessage,
-//     getTaskData,
-//     markAllMessagesAsRead,
-//     onFailedMessageSend,
-//     setDetailModalOpen,
-//     setFetchingReplies,
-//     updateChannelMembers,
-//     updateChatMessageV2,
-//     updateLastVisitedChannel,
-// } from "../../../redux/actions";
-// import {deleteChatThreadScrollPosition, setChatThreadScrollPosition} from "../../../redux/actions/chatActions";
-// import {
-//     deleteUnfurl,
-//     markAsUnreadChat,
-//     markReadChatChannel,
-//     removeUnfurl,
-//     updateChannel,
-//     updateUnreadChatReplies,
-// } from "../../../redux/actions/revampActions";
 import {Avatar, Loader} from "../../common";
 import NoReply from "../../common/NoReply";
 import ChatBubble from "./ChatBubble";
@@ -65,7 +29,9 @@ const ChatReplyContainer = styled.div`
     margin: 0;
     padding: 0;
   }
-
+  .chat-message-options svg {
+    fill: currentColor;
+  }
   &.is-processed {
     opacity: 0;
   }
@@ -75,16 +41,17 @@ const ChatReplyContainer = styled.div`
         color: transparent;
   }
   .mention {
-    border-radius: 8px;
-    background: #7A1B8B;
+    background: transparent;
     display: inline-block;
     width: auto;
     height: auto;
-    color: #fff;
-    padding: 2px 5px;
+    ${"" /* color: #ffffff; */}
+    padding: 0;
   }
   .mention.is-author {
-    background: #8C3B9B;
+    ${"" /* color: #7A1B8B; */}
+    background: transparent;
+    padding: 0;
   }
 `;
 
@@ -122,7 +89,7 @@ const TimestampDiv = styled.div`
         flex: 1;
     }
     span {
-        background: #fff;
+
         padding: 5px 10px;
         border-radius: 5px;
         display: inline-block;
@@ -139,13 +106,26 @@ const ChatBubbleContainer = styled.div`
     flex-flow: ${props => (props.isAuthor ? "row" : "row-reverse")};
     margin-left: ${props => (!props.isAuthor && !props.showAvatar) || (!props.isAuthor && props.showAvatar && props.isBot) ? "22px" : "0"};
     ${props => (props.isAuthor === true && "position: relative; right: 15px;")};
-
-
-    ${"" /* margin-top: ${props => ((props.showAvatar && !props.isAuthor ) ? "20px" : "0px")}; */}
     margin-top: ${props => ((props.showAvatar) && "36px")};
-
     margin-top: ${props => ((props.showAvatar && props.isAuthor) && "20px")};
-    ${"" /* background: ${props => ((props.isAuthor ) ? "red" : "blue")}; */}
+
+    ${props => (!props.isEmoticonOnly && `
+    &:before {
+        ${props => (props.showAvatar && "content: '';")};
+        border: 10px solid transparent;
+        border-right-color: transparent;
+        border-right-color: #f0f0f0;
+        position: absolute;
+        top: ${props => ((props.showAvatar && !props.isAuthor) ? "42px" : "8px")};;
+        left: 20px;
+        z-index: 1;
+        ${props => (props.isAuthor === true && `
+            left: auto;
+            right: -20px;
+            border-left-color: #7A1B8B;
+            border-right-color: transparent;
+        `)};
+    }`)}
 `;
 const ChatActionsContainer = styled.div`
     display: flex;
@@ -161,14 +141,35 @@ const ChatActionsContainer = styled.div`
     align-items: center;
     top: 0;
     ${props => (props.isAuthor ? "right: 100%" : "left: 100%")};
+    height: calc(100% + 4px);
+    margin-top: -2px;
+    transition: opacity 0.3s ease;
 `;
 const SystemChatActionsContainer = styled.div`
+    ${"" /* display: flex;
+ flex-direction: row;
+ flex-wrap: wrap;
+ ${props => (props.isAuthor ? "margin-right: 10px" : "margin-left: 10px")}; */}
+
     display: flex;
-    flex-direction: row;
+    flex-flow: ${props => (props.isAuthor ? "row-reverse" : "row")};
     flex-wrap: wrap;
     ${props => (props.isAuthor ? "margin-right: 10px" : "margin-left: 10px")};
-    min-width: 100px;
-    max-height: 25px;
+    min-width: 150px;
+    height: 100%;
+    color: #a7abc3;
+    background: #ffffff;
+    position: absolute;
+    display: flex;
+    align-items: center;
+    top: 0;
+    ${props => (props.isAuthor ? "right: 100%" : "left: 100%")};
+    height: calc(100% + 4px);
+    margin-top: -2px;
+    transition: opacity 0.3s ease;
+    button {
+        margin: 5px;
+    }
 `;
 
 const MessageOptions = styled(ChatMessageOptions)`
@@ -178,29 +179,16 @@ const MessageOptions = styled(ChatMessageOptions)`
     flex: 1;
     margin: 5px;
     max-width: 25px;
-
     .more-options-tooltip {
         &.orientation-bottom {
             bottom: auto;
-            top: 35px;
-
+            top: 24px;
             @media (max-width: 575.99px) {
                 top: 20px;
             }
             &.hOrientation-right {
-                left: -10px;
-                top: 35px;
-
-                &:before {
-                    left: auto;
-                    right: 85%;
-                    bottom: 100%;
-                }
-                &:after {
-                    left: auto;
-                    right: 86%;
-                    bottom: 100%;
-                }
+                ${props => !props.isAuthor ? "left: -10px" : "left: -180px;"};
+                top: 24px;
             }
             &.hOrientation-left {
                 right: -5px;
@@ -213,60 +201,22 @@ const MessageOptions = styled(ChatMessageOptions)`
                     left: 90%;
                 }
             }
-            &::before {
-                top: auto;
-                bottom: 100%;
-                transform: rotate(180deg)
-            }
-
-            &::after {
-                top: auto;
-                bottom: 100%;
-                transform: rotate(180deg)
-            }
 
             @media (max-width: 1399.99px) {
                 &.hOrientation-right {
                     left: -10px;
-                    top: 35px;
-
-                    &:before {
-                        left: auto;
-                        right: 85%;
-                        bottom: 100%;
-                    }
-                    &:after {
-                        left: auto;
-                        right: 86%;
-                        bottom: 100%;
-                    }
+                    top: 24px;
                 }
 
                 &.hOrientation-left {
                     right: -5px;
                     left: auto;
-
-                    &:before {
-                        left: 90%;
-                    }
-                    &:after {
-                        left: 90%;
-                    }
                 }
             }
 
             @media (max-width: 575.99px) {
                 &.hOrientation-left {
                     right: 200px;
-
-                    &:before {
-                        left: 90%;
-                        right: auto;
-                    }
-                    &:after {
-                        left: 90%;
-                        right: auto;
-                    }
                 }
             }
         }
@@ -279,49 +229,17 @@ const MessageOptions = styled(ChatMessageOptions)`
 
             &.hOrientation-right {
                 left: -5px;
-
-                &:before {
-                    left: 12px;
-                }
-                &:after {
-                    left: 12px;
-                }
-
                 @media (max-width: 575.99px) {
                     top: auto;
                     bottom: 120%;
                     right: auto;
                     left: 0;
-
-                    &:before {
-                        right: auto;
-                        top: 100%;
-                        transform: unset;
-                    }
-                    &:after {
-                        right: auto;
-                        top: 100%;
-                        transform: unset;
-                    }
                 }
             }
 
             &.hOrientation-left {
                 right: -5px;
                 left: auto;
-
-                &:before {
-                    top: 100%;
-                    right: 5px;
-                    left: auto;
-                    transform: unset;
-                }
-                &:after {
-                    top: 100%;
-                    right: 8px;
-                    left: auto;
-                    transform: unset;
-                }
             }
         }
     }
@@ -370,15 +288,14 @@ const SystemMessageContainer = styled.div`
     position: relative;
     display: inline-flex;
     border-radius: 8px;
-    //background: #f1e6ef;
     background: #f4f4f4f4;
     text-align: left;
     min-width: 100px;
     max-width: 100%;
-    color: #201e1e;
-    font-weight: 100;
-    font-size: 15px;
-    padding: 5px 10px;
+    ${"" /* font-weight: 100; */}
+    ${"" /* font-size: 15px; */}
+    padding: 7px 15px;
+    line-height: 1.5rem;
     float: left;
     align-items: center;
     justify-content: flex-end;
@@ -417,11 +334,11 @@ const InfiniteScroll = styled.div`
 `;
 
 const StyledAvatar = styled(Avatar)`
-    align-self: flex-start;    
+    align-self: flex-start;
     width: 21px !important;
     height: 21px !important;
     margin-top: ${props => props.isForwardedMessage === true ? "25px" : "4px"};
-    
+
     img {
         width: 21px !important;
         height: 21px !important;
@@ -432,6 +349,7 @@ class ChatMessages extends React.PureComponent {
 
     constructor(props) {
         super(props);
+
         this.state = {
             hasArrowUpListener: false,
             initializing: false,
@@ -490,63 +408,46 @@ class ChatMessages extends React.PureComponent {
 
     componentWillUnmount() {
         const scrollComponent = this.scrollComponent.current;
-        this.props.setChannelHistoricalPosition({
-            channel_id: this.props.selectedChannel.id,
-            scrollPosition: scrollComponent.scrollHeight - scrollComponent.scrollTop,
-        });
+
+        this.props.chatMessageActions.channelActions.saveHistoricalPosition(
+            this.props.selectedChannel.id,
+            scrollComponent,
+        );
         document.removeEventListener("keydown", this.handleEditOnArrowUp, false);
     }
 
     loadReplies = () => {
-        const {selectedChannel, sharedSlugs, getChatMessages} = this.props;
+        const {
+            selectedChannel,
+            chatMessageActions,
+        } = this.props;
+
         if (!this.state.fetchingReplies) {
             if (selectedChannel.hasMore) {
-                let payload = {};
-                let slug = sharedSlugs.filter(s => s.slug_name === selectedChannel.slug_owner);
                 this.setState({fetchingReplies: true});
-                if (typeof selectedChannel.replies === "undefined") {
+
+                let payload = {
+                    skip: 0,
+                    limit: 20,
+                };
+
+                if (typeof selectedChannel.replies !== "undefined") {
                     payload = {
-                        channel_id: selectedChannel.id,
-                        skip: 0,
-                        limit: 20,
-                    };
-                    if (sharedSlugs.length) {
-                        payload = {
-                            ...payload,
-                            is_shared_topic: selectedChannel.is_shared ? 1 : null,
-                            topic_id: selectedChannel.is_shared ? selectedChannel.entity_id : null,
-                            is_shared: selectedChannel.is_shared ? selectedChannel.entity_id : null,
-                            token: selectedChannel.is_shared && slug.length ? slug[0].access_token : null,
-                            slug: selectedChannel.is_shared && slug.length ? slug[0].slug_name : null,
-                        };
-                    }
-                } else {
-                    payload = {
-                        channel_id: selectedChannel.id,
                         skip: selectedChannel.skip === 0 && selectedChannel.replies.length ?
-                            selectedChannel.replies.length : selectedChannel.skip,
+                              selectedChannel.replies.length : selectedChannel.skip,
                         limit: 20,
                     };
-                    if (sharedSlugs.length) {
-                        payload = {
-                            ...payload,
-                            is_shared_topic: selectedChannel.is_shared ? 1 : null,
-                            topic_id: selectedChannel.is_shared ? selectedChannel.entity_id : null,
-                            is_shared: selectedChannel.is_shared ? selectedChannel.entity_id : null,
-                            token: selectedChannel.is_shared && slug.length ? slug[0].access_token : null,
-                            slug: selectedChannel.is_shared && slug.length ? slug[0].slug_name : null,
-                        };
-                    }
                 }
 
-                getChatMessages(payload, (err, res) => {
-                    //console.log(res, 'load message');
+                chatMessageActions.fetch(selectedChannel, payload, (err, res) => {
+
                     setTimeout(() => {
                         this.setState({fetchingReplies: false});
                     }, 500);
                     if (err) {
                         return;
                     }
+
                     if (selectedChannel.replies.length === 0 || selectedChannel.skip === 0) {
                         if (this.chatBottomRef.current) {
                             this.chatBottomRef.current.scrollIntoView(false);
@@ -556,8 +457,8 @@ class ChatMessages extends React.PureComponent {
                         }
                     }
 
-                    if (this.state.initializing === true) this.setState({initializing: false});
-
+                    if (this.state.initializing === true)
+                        this.setState({initializing: false});
                 });
             }
         }
@@ -566,32 +467,12 @@ class ChatMessages extends React.PureComponent {
     handleReadChannel = () => {
         const {
             selectedChannel,
-            sharedSlugs,
-            markReadChannel,
-            updateChannelReducer,
+            chatMessageActions: {
+                channelActions,
+            },
         } = this.props;
 
-        if (selectedChannel.is_read === 1) {
-            if (selectedChannel.is_shared && sharedSlugs.length) {
-                let slug = sharedSlugs.filter(s => s.slug_name === selectedChannel.slug_owner);
-                if (slug.length) {
-                    markReadChannel({
-                        channel_id: selectedChannel.id,
-                        is_shared: true,
-                        topic_id: selectedChannel.entity_id,
-                        token: slug[0].access_token,
-                        slug: slug[0].slug_name,
-                    });
-                }
-            } else {
-                markReadChannel({channel_id: selectedChannel.id});
-            }
-            let updatedChannel = {
-                ...selectedChannel,
-                total_unread: 0,
-            };
-            updateChannelReducer(updatedChannel);
-        }
+        channelActions.markAsRead(selectedChannel);
     };
 
     componentDidMount() {
@@ -610,8 +491,12 @@ class ChatMessages extends React.PureComponent {
             });
         }
 
-        if (selectedChannel.skip === 0) this.loadReplies();
-        this.handleReadChannel();
+        if (selectedChannel.skip === 0)
+            this.loadReplies();
+
+        if (selectedChannel.is_read === 1) {
+            this.handleReadChannel();
+        }
     }
 
     getSnapshotBeforeUpdate(prevProps, prevState) {
@@ -631,9 +516,6 @@ class ChatMessages extends React.PureComponent {
     componentDidUpdate(prevProps, prevState, snapshot) {
         const {
             selectedChannel,
-            markReadChannel,
-            markAllMessagesAsRead,
-            //updateUnreadChatReplies,
             historicalPositions,
             user,
         } = this.props;
@@ -676,10 +558,7 @@ class ChatMessages extends React.PureComponent {
 
                 let hasUnreadMessage = selectedChannel.replies.filter(r => r.is_read === false).length > 0;
                 if (this.state.bottomRefInView && hasUnreadMessage && this.props.isBrowserActive && selectedChannel.is_read === 1) {
-                    console.log("mark read");
-                    markAllMessagesAsRead({channel_id: selectedChannel.id});
-                    markReadChannel({channel_id: selectedChannel.id});
-
+                    this.props.chatMessageActions.channelActions.markAsRead(selectedChannel);
                 }
 
                 if (this.state.messageRefInView || this.state.loadMoreInView) {
@@ -714,6 +593,7 @@ class ChatMessages extends React.PureComponent {
     };
 
     handleEditReply = reply => {
+        alert("test");
         this.props.onEditReply(reply);
     };
 
@@ -764,12 +644,10 @@ class ChatMessages extends React.PureComponent {
                 if (this.props.selectedChannel.last_reply && this.props.selectedChannel.last_reply.user) {
                     if (this.props.selectedChannel.last_reply.user.id === this.props.user.id) {
                         //own user message
-                        if (this.props.user.id === m.id) return false;
-                        else return true;
+                        return !(this.props.user.id === m.id)
                     } else {
                         // other user message
-                        if (this.props.selectedChannel.last_reply.user.id === m.id) return false;
-                        else return true;
+                        return !(this.props.selectedChannel.last_reply.user.id === m.id)
                     }
                 } else {
                     return false;
@@ -781,9 +659,7 @@ class ChatMessages extends React.PureComponent {
             }
         }).filter(m => {
             if (m.last_visited_at) {
-                if (m.last_visited_at.timestamp >= this.props.selectedChannel.last_reply.created_at.timestamp) {
-                    return true;
-                } else return false;
+                return (m.last_visited_at.timestamp >= this.props.selectedChannel.last_reply.created_at.timestamp);
             } else {
                 return false;
             }
@@ -791,7 +667,7 @@ class ChatMessages extends React.PureComponent {
     };
 
     render() {
-        const { selectedChannel } = this.props;
+        const {selectedChannel} = this.props;
 
         let lastReplyUserId = 0;
 
@@ -807,7 +683,6 @@ class ChatMessages extends React.PureComponent {
         }
 
         return <ChatReplyContainer
-
             ref={this.scrollComponent}
             id={`component-chat-thread`}
             className={`component-chat-thread messages ${this.props.className}`}
@@ -836,303 +711,264 @@ class ChatMessages extends React.PureComponent {
                     }
                     {
                         selectedChannel.replies && selectedChannel.replies.length ?
-                            groupedMessages.map((gm, i) => {
+                        groupedMessages.map((gm, i) => {
 
-                                return (
-                                    <div key={gm.key}>
-                                        <TimestampDiv>
-                                            {
-                                                <span>{localizeChatTimestamp(gm.replies[0].created_at.timestamp, "ddd, MMM DD, YYYY")}</span>
-                                            }
-                                        </TimestampDiv>
-
+                            return (
+                                <div key={gm.key}>
+                                    <TimestampDiv className="timestamp-container">
                                         {
-                                            gm.replies.sort((a, b) => a.created_at.timestamp - b.created_at.timestamp)
-                                                .map((reply, k, e) => {
+                                            <span>{localizeChatTimestamp(gm.replies[0].created_at.timestamp, "ddd, MMM DD, YYYY")}</span>
+                                        }
+                                    </TimestampDiv>
 
-                                                    const isAuthor = reply.user ? selectedChannel.is_shared && this.props.sharedSlugs.length ?
-                                                        this.props.sharedSlugs.filter(s => s.slug_name === selectedChannel.slug_owner)[0].external_id === reply.user.id
-                                                        : reply.user.id === this.props.user.id : false;
+                                    {
+                                        gm.replies.sort((a, b) => a.created_at.timestamp - b.created_at.timestamp)
+                                            .map((reply, k, e) => {
 
-                                                    let showAvatar = false;
-                                                    let showTimestamp = false;
-                                                    let showGifPlayer = false;
-                                                    let isBot = false;
-                                                    let showMessageLine = false;
+                                                const isAuthor = reply.user ? selectedChannel.is_shared && this.props.sharedSlugs.length ?
+                                                                              this.props.sharedSlugs.filter(s => s.slug_name === selectedChannel.slug_owner)[0].external_id === reply.user.id
+                                                                                                                                         : reply.user.id === this.props.user.id : false;
 
-                                                    if (reply.user) {
-                                                        if (reply.created_at.timestamp) {
-                                                            if (k === 0) {
-                                                                showTimestamp = true;
-                                                                showAvatar = true;
-                                                            }
-                                                            if (
-                                                                k !== 0 &&
-                                                                localizeDate(e[k - 1].created_at.timestamp, "D") !==
-                                                                localizeDate(reply.created_at.timestamp, "D")
-                                                            ) {
-                                                                showTimestamp = true;
-                                                                showAvatar = true;
-                                                            }
-                                                            if (k !== 0 && (reply.created_at.timestamp - e[k - 1].created_at.timestamp) > 600) {
-                                                                //600 = 10 minutes
-                                                                showAvatar = true;
-                                                            }
-                                                        }
-                                                        
-                                                        if (k !== 0 && e[k - 1].is_read === true && reply.is_read === false) {
-                                                            showMessageLine = true;
-                                                        }
-                                                        if (k !== 0 && e[k - 1].user === null) {
+                                                let showAvatar = false;
+                                                let showTimestamp = false;
+                                                let showGifPlayer = false;
+                                                let isBot = false;
+                                                let showMessageLine = false;
+
+                                                if (reply.user) {
+                                                    if (reply.created_at.timestamp) {
+                                                        if (k === 0) {
+                                                            showTimestamp = true;
                                                             showAvatar = true;
                                                         }
-                                                        if (lastReplyUserId !== reply.user.id) {
+                                                        if (
+                                                            k !== 0 &&
+                                                            localizeDate(e[k - 1].created_at.timestamp, "D") !==
+                                                            localizeDate(reply.created_at.timestamp, "D")
+                                                        ) {
+                                                            showTimestamp = true;
                                                             showAvatar = true;
-                                                            lastReplyUserId = reply.user.id;
                                                         }
-
-                                                        if (typeof reply.body !== "undefined" && reply.body !== null) {
-                                                            if (reply.body.match(/\.(gif)/g) !== null) {
-                                                                showGifPlayer = true;
-                                                            }
-                                                        }
-                                                        let botCodes = ["gripp_bot_account", "gripp_bot_invoice", "gripp_bot_offerte",
-                                                            "gripp_bot_project", "gripp_bot_account", "driff_webhook_bot"];
-                                                        isBot = botCodes.includes(reply.user.code);
-                                                    } else {
-
-                                                        //remove duplicate messages from bot
-                                                        if (k !== 0) {
-                                                            let prevReply = gm.replies[k - 1];
-                                                            if (prevReply.body === reply.body) {
-                                                                if (Math.abs(reply.created_at.timestamp - prevReply.created_at.timestamp) <= 10)
-                                                                    return <></>;
-                                                            }
+                                                        if (k !== 0 && (reply.created_at.timestamp - e[k - 1].created_at.timestamp) > 600) {
+                                                            //600 = 10 minutes
+                                                            showAvatar = true;
                                                         }
                                                     }
 
-                                                    //let animation = false;
-                                                    // if (isAuthor && reply.created_at.diff_for_humans) {
-                                                    //     //animation = true;
-                                                    // } else if (!isAuthor && !reply.is_read) {
-                                                    //     //animation = true;
-                                                    // }
+                                                    if (k !== 0 && e[k - 1].is_read === true && reply.is_read === false) {
+                                                        showMessageLine = true;
+                                                    }
+                                                    if (k !== 0 && e[k - 1].user === null) {
+                                                        showAvatar = true;
+                                                    }
+                                                    if (lastReplyUserId !== reply.user.id) {
+                                                        showAvatar = true;
+                                                        lastReplyUserId = reply.user.id;
+                                                    }
 
-                                                    return <ChatList
-                                                        key={reply.id}
-                                                        //ref={this.getLoadRef(reply.id)}
-                                                        //ref={selectedChannel.replies[1].id === reply.id ? ref : null}
-                                                        data-message-id={reply.id}
-                                                        data-code={reply.code}
-                                                        data-timestamp={reply.created_at.timestamp}
-                                                        //data-chatdate={localizeChatTimestamp(reply.created_at.timestamp, 'llll')}
-                                                        className={`chat-list chat-list-item-${reply.id} code-${reply.code}`}
-                                                        showTimestamp={showTimestamp}
-                                                    >
-                                                        {
-                                                            reply.user && showMessageLine && <ChatNewMessagesLine/>  
+                                                    if (typeof reply.body !== "undefined" && reply.body !== null) {
+                                                        if (reply.body.match(/\.(gif)/g) !== null) {
+                                                            showGifPlayer = true;
                                                         }
-                                                        {
-                                                            reply.user &&
-                                                            <ChatBubbleContainer
+                                                    }
+                                                    let botCodes = ["gripp_bot_account", "gripp_bot_invoice", "gripp_bot_offerte",
+                                                        "gripp_bot_project", "gripp_bot_account", "driff_webhook_bot"];
+                                                    isBot = botCodes.includes(reply.user.code);
+                                                } else {
+
+                                                    //remove duplicate messages from bot
+                                                    if (k !== 0) {
+                                                        let prevReply = gm.replies[k - 1];
+                                                        if (prevReply.body === reply.body) {
+                                                            if (Math.abs(reply.created_at.timestamp - prevReply.created_at.timestamp) <= 10)
+                                                                return <></>;
+                                                        }
+                                                    }
+                                                }
+
+                                                //let animation = false;
+                                                // if (isAuthor && reply.created_at.diff_for_humans) {
+                                                //     //animation = true;
+                                                // } else if (!isAuthor && !reply.is_read) {
+                                                //     //animation = true;
+                                                // }
+
+                                                return <ChatList
+                                                    key={reply.id}
+                                                    //ref={this.getLoadRef(reply.id)}
+                                                    //ref={selectedChannel.replies[1].id === reply.id ? ref : null}
+                                                    data-message-id={reply.id}
+                                                    data-code={reply.code}
+                                                    data-timestamp={reply.created_at.timestamp}
+                                                    //data-chatdate={localizeChatTimestamp(reply.created_at.timestamp, 'llll')}
+                                                    className={`chat-list chat-list-item-${reply.id} code-${reply.code}`}
+                                                    showTimestamp={showTimestamp}
+                                                >
+                                                    {
+                                                        reply.user && showMessageLine && <ChatNewMessagesLine/>
+                                                    }
+                                                    {
+                                                        reply.user &&
+                                                        <ChatBubbleContainer
+                                                            isAuthor={isAuthor}
+                                                            className={`chat-reply-list-item chat-reply-list-item-${reply.id} ${!isAuthor ? "chat-left" : "chat-right"}`}
+                                                            data-message-id={reply.id}
+                                                            showAvatar={showAvatar}
+                                                            isBot={isBot}
+                                                        >
+                                                            {
+                                                                reply.message_failed ?
+                                                                <FailedSpan><i
+                                                                    className="fas fa-times-circle"
+                                                                    onClick={e => this.handleResendMessage(reply.payload)}></i></FailedSpan>
+                                                                                     : null
+                                                            }
+                                                            <ChatBubbleQuoteDiv
+                                                                //className={`chat-bubble-quote-div ${animation ? isAuthor ? "animated fadeInRightBig" : "animated fadeInLeftBig" : ""}`}
                                                                 isAuthor={isAuthor}
-                                                                className={`chat-reply-list-item chat-reply-list-item-${reply.id}`}
-                                                                data-message-id={reply.id}
-                                                                showAvatar={showAvatar}
-                                                                isBot={isBot}
+                                                                className={`chat-bubble-quote-div`}
                                                             >
-                                                                {
-                                                                    reply.message_failed ?
-                                                                        <FailedSpan><i
-                                                                            className="fas fa-times-circle"
-                                                                            onClick={e => this.handleResendMessage(reply.payload)}></i></FailedSpan>
-                                                                        : null
-                                                                }
-                                                                <ChatBubbleQuoteDiv
-                                                                    //className={`chat-bubble-quote-div ${animation ? isAuthor ? "animated fadeInRightBig" : "animated fadeInLeftBig" : ""}`}
+
+                                                                <ChatBubble
+                                                                    reply={reply}
+                                                                    showAvatar={showAvatar}
+                                                                    selectedChannel={this.props.selectedChannel}
+                                                                    showGifPlayer={showGifPlayer}
                                                                     isAuthor={isAuthor}
-                                                                    className={`chat-bubble-quote-div`}
-                                                                >
-                                                                    <ChatBubble
+                                                                    addMessageRef={this.getLoadRef(reply.id)}>
+                                                                    <ChatActionsContainer
+                                                                        isAuthor={isAuthor}
+                                                                        className="chat-actions-container">
+                                                                        {
+                                                                            <ChatReactionButton
+                                                                                isAuthor={isAuthor}
+                                                                                scrollRef={this.props.innerRef}
+                                                                                reply={reply}
+                                                                            />
+                                                                        }
+                                                                        {
+                                                                            !isNaN(reply.id) && (reply.is_deleted === 0 || !reply.is_deleted) &&
+                                                                            <MessageOptions
+                                                                                className={"chat-message-options"}
+                                                                                selectedChannel={this.props.selectedChannel}
+                                                                                isAuthor={isAuthor}
+                                                                                replyData={reply}
+                                                                            />
+                                                                        }
+                                                                    </ChatActionsContainer></ChatBubble>
+                                                                {
+                                                                    reply.reactions.length > 0 &&
+                                                                    <ChatReactions
+                                                                        reactions={reply.reactions}
                                                                         isAuthor={isAuthor}
                                                                         reply={reply}
                                                                         loggedUser={this.props.user}
-                                                                        showAvatar={showAvatar}
-                                                                        unfurlAction={this.props.unfurlAction}
-                                                                        createRatingAction={this.props.createRatingAction}
-                                                                        addClapCount={this.props.addClapCount}
-                                                                        addUnfurlData={e => {
-                                                                            this.props.addUnfurlData(e, selectedChannel.replies.length <= 10);
-                                                                        }}
-                                                                        channelId={this.props.selectedChannel.id}
-                                                                        getReplyClapsAction={this.props.getReplyClapsAction}
-                                                                        recipients={this.props.recipients}
-                                                                        updateChatMessageAction={this.props.updateChatMessageAction}
-                                                                        deleteUnfurlAction={this.props.deleteUnfurlAction}
-                                                                        removeUnfurl={this.props.removeUnfurl}
-                                                                        addChatChannelMembersV2Action={this.props.addChatChannelMembersV2Action}
-                                                                        updateChannelMembersAction={this.props.updateChannelMembersAction}
-                                                                        updateLastVisitedChannelAction={this.props.updateLastVisitedChannelAction}
+                                                                        chatReactionAction={this.props.chatReactionV2Action}
+                                                                    />
+                                                                }
+                                                                {
+                                                                    selectedChannel.last_reply && selectedChannel.last_reply.id === reply.id && this.filterSeenMembers().length > 0 &&
+                                                                    <SeenIndicator
+                                                                        isAuthor={isAuthor}
+                                                                        onClick={this.handleShowSeenUsers}
+                                                                        seenMembers={this.filterSeenMembers()}
+                                                                        isPersonal={this.props.selectedChannel.members.length === 2}
+                                                                    />
+                                                                }
+                                                            </ChatBubbleQuoteDiv>
+
+                                                            {
+                                                                !isAuthor && showAvatar && !isBot &&
+                                                                <StyledAvatar
+                                                                    isForwardedMessage={reply.is_transferred}
+                                                                    id={reply.user.id}
+                                                                    imageLink={reply.user.profile_image_link}
+                                                                    name={reply.user.name}
+                                                                />
+                                                            }
+                                                        </ChatBubbleContainer>
+                                                    }
+                                                    {
+                                                        reply.user === null &&
+                                                        <ChatBubbleContainer
+                                                            //ref={this.getLoadRef(reply.id)}
+                                                            className={`chat-reply-list-item system-reply-list-item chat-reply-list-item-${reply.id}`}
+                                                            data-message-id={reply.id}
+                                                            isAuthor={false}>
+
+                                                            <ChatBubbleQuoteDiv
+                                                                //className={`chat-bubble-quote-div ${animation ? isAuthor ? "animated fadeInRightBig" : "animated fadeInLeftBig" : ""}`}
+                                                                className={`chat-bubble-quote-div`}
+                                                            >
+                                                                <SystemMessageContainer isAuthor={false}>
+                                                                    <SystemMessage
                                                                         selectedChannel={this.props.selectedChannel}
-                                                                        chatReactionV2Action={this.props.chatReactionV2Action}
-                                                                        showGifPlayer={showGifPlayer}
+                                                                        reply={reply}
                                                                         chatName={this.props.chatName}
-                                                                        filterSearch={this.props.filterSearch}
-                                                                        handleMessageRefChange={this.handleMessageRefChange}
-                                                                        addMessageRef={this.getLoadRef(reply.id)}
-                                                                        {...this.props}
-                                                                    ><ChatActionsContainer
+                                                                    />
+                                                                    {
+                                                                        reply.unfurls.length ?
+                                                                        <ChatUnfurl
+                                                                            unfurlData={reply.unfurls}
+                                                                            isAuthor={false}
+                                                                            deleteChatUnfurlAction={this.props.deleteChatUnfurlAction}
+                                                                            removeChatUnfurlAction={this.props.removeChatUnfurlAction}
+                                                                            channelId={this.props.channelId}
+                                                                            replyId={reply.id}
+                                                                        />
+                                                                                             : null
+                                                                    }
+                                                                    <SystemChatActionsContainer
                                                                         isAuthor={isAuthor}
                                                                         className="chat-actions-container"
                                                                     >
                                                                         {
                                                                             <ChatReactionButton
                                                                                 isAuthor={isAuthor}
-                                                                                theme={this.props.settings.CHAT_SETTINGS.chat_message_theme}
                                                                                 scrollRef={this.props.innerRef}
                                                                                 reply={reply}
-                                                                                chatReactionAction={this.props.chatReactionV2Action}
                                                                             />
                                                                         }
                                                                         {
                                                                             !isNaN(reply.id) && reply.is_deleted === 0 &&
-                                                                            <MessageOptions
+                                                                            <ChatMessageOptions
+                                                                                scrollRef={this.scrollComponent}
+                                                                                replyData={reply}
                                                                                 className={"chat-message-options"}
                                                                                 selectedChannel={this.props.selectedChannel}
                                                                                 isAuthor={isAuthor}
-                                                                                replyData={reply}
-                                                                                cbOnRemoveReply={this.handleRemoveReply}
-                                                                                onEditReply={this.handleEditReply}
-                                                                                onQuoteReply={this.handleQuoteReply}
-                                                                                cbSetReminderPopUp={this.props.cbSetReminderPopUp}
-                                                                                slugs={this.props.sharedSlugs}
-                                                                                onForwardMessage={this.props.onForwardMessage}
                                                                             />
                                                                         }
-                                                                    </ChatActionsContainer></ChatBubble>
-                                                                    {
-                                                                        reply.reactions.length > 0 &&
-                                                                        <ChatReactions
-                                                                            reactions={reply.reactions}
-                                                                            isAuthor={isAuthor}
-                                                                            reply={reply}
-                                                                            loggedUser={this.props.user}
-                                                                            chatReactionAction={this.props.chatReactionV2Action}
-                                                                        />
-                                                                    }
-                                                                    {
-                                                                        selectedChannel.last_reply && selectedChannel.last_reply.id === reply.id && this.filterSeenMembers().length > 0 &&
-                                                                        <SeenIndicator
-                                                                            isAuthor={isAuthor}
-                                                                            onClick={this.handleShowSeenUsers}
-                                                                            seenMembers={this.filterSeenMembers()}
-                                                                            isPersonal={this.props.selectedChannel.members.length === 2}
-                                                                        />
-                                                                    }
-                                                                </ChatBubbleQuoteDiv>
-
+                                                                    </SystemChatActionsContainer>
+                                                                </SystemMessageContainer>
                                                                 {
-                                                                    !isAuthor && showAvatar && !isBot &&
-                                                                    <StyledAvatar
-                                                                        isForwardedMessage={reply.is_transferred}
-                                                                        id={reply.user.id}
-                                                                        imageLink={reply.user.profile_image_link}
-                                                                        name={reply.user.name}
+                                                                    reply.reactions.length > 0 &&
+                                                                    <ChatReactions
+                                                                        reactions={reply.reactions}
+                                                                        reply={reply}
+                                                                        isAuthor={false}
+                                                                        loggedUser={this.props.user}
+                                                                        chatReactionAction={this.props.chatReactionV2Action}
                                                                     />
                                                                 }
-                                                            </ChatBubbleContainer>
-                                                        }
-                                                        {
-                                                            reply.user === null &&
-                                                            <ChatBubbleContainer
-                                                                //ref={this.getLoadRef(reply.id)}
-                                                                className={`chat-reply-list-item chat-reply-list-item-${reply.id}`}
-                                                                data-message-id={reply.id}
-                                                                isAuthor={false}>
-                                                                <SystemChatActionsContainer
-                                                                    isAuthor={isAuthor}
-                                                                    className="chat-actions-container"
-                                                                >
-                                                                    {
-                                                                        <ChatReactionButton
-                                                                            isAuthor={isAuthor}
-                                                                            theme={this.props.settings.CHAT_SETTINGS.chat_message_theme}
-                                                                            scrollRef={this.props.innerRef}
-                                                                            reply={reply}
-                                                                            chatReactionAction={this.props.chatReactionV2Action}
-                                                                        />
-                                                                    }
-                                                                    {
-                                                                        !isNaN(reply.id) && reply.is_deleted === 0 &&
-                                                                        <ChatMessageOptions
-                                                                            className={"chat-message-options"}
-                                                                            selectedChannel={this.props.selectedChannel}
-                                                                            isAuthor={isAuthor}
-                                                                            replyData={reply}
-                                                                            cbOnRemoveReply={this.handleRemoveReply}
-                                                                            onEditReply={this.handleEditReply}
-                                                                            onQuoteReply={this.handleQuoteReply}
-                                                                            setDetailModalOpenAction={
-                                                                                this.props.setDetailModalOpenAction
-                                                                            }
-                                                                            chatData={this.props.chatData}
-                                                                            cbSetReminderPopUp={this.props.cbSetReminderPopUp}
-                                                                            slugs={this.props.sharedSlugs}
-                                                                        />
-                                                                    }
+                                                            </ChatBubbleQuoteDiv>
 
-                                                                </SystemChatActionsContainer>
-                                                                <ChatBubbleQuoteDiv
-                                                                    //className={`chat-bubble-quote-div ${animation ? isAuthor ? "animated fadeInRightBig" : "animated fadeInLeftBig" : ""}`}
-                                                                    className={`chat-bubble-quote-div`}
-                                                                >
-                                                                    <SystemMessageContainer isAuthor={false}>
-                                                                        <SystemMessage
-                                                                            selectedChannel={this.props.selectedChannel}
-                                                                            reply={reply}
-                                                                            chatName={this.props.chatName}
-                                                                        />
-                                                                        {
-                                                                            reply.unfurls.length ?
-                                                                                <ChatUnfurl
-                                                                                    unfurlData={reply.unfurls}
-                                                                                    isAuthor={false}
-                                                                                    deleteChatUnfurlAction={this.props.deleteChatUnfurlAction}
-                                                                                    removeChatUnfurlAction={this.props.removeChatUnfurlAction}
-                                                                                    channelId={this.props.channelId}
-                                                                                    replyId={reply.id}
-                                                                                />
-                                                                                : null
-                                                                        }
-                                                                    </SystemMessageContainer>
-                                                                    {
-                                                                        reply.reactions.length > 0 &&
-                                                                        <ChatReactions
-                                                                            reactions={reply.reactions}
-                                                                            reply={reply}
-                                                                            isAuthor={false}
-                                                                            loggedUser={this.props.user}
-                                                                            chatReactionAction={this.props.chatReactionV2Action}
-                                                                        />
-                                                                    }
-                                                                </ChatBubbleQuoteDiv>
-
-                                                            </ChatBubbleContainer>
-                                                        }
-                                                    </ChatList>;
-                                                })
-                                        }
-                                        {
-                                            groupedMessages.length >= 1 && i === (groupedMessages.length - 1) &&
-                                            <InView as="div"
-                                                    onChange={(inView, entry) => this.handleBottomRefChange(inView, entry)}>
+                                                        </ChatBubbleContainer>
+                                                    }
+                                                </ChatList>;
+                                            })
+                                    }
+                                    {
+                                        groupedMessages.length >= 1 && i === (groupedMessages.length - 1) &&
+                                        <InView as="div"
+                                                onChange={(inView, entry) => this.handleBottomRefChange(inView, entry)}>
                                                         <span className='intersection-bottom-ref'
-                                                              ref={this.chatBottomRef}>bot</span>
-                                            </InView>
-                                        }
-                                    </div>
-                                );
-                            }) : null
+                                                              ref={this.chatBottomRef}></span>
+                                        </InView>
+                                    }
+                                </div>
+                            );
+                        }) : null
                     }
                     {
                         (!this.state.initializing && !this.state.fetchingReplies && selectedChannel.replies && selectedChannel.replies.length < 1) &&
@@ -1148,57 +984,21 @@ function mapStateToProps(state) {
     const {
         global: {isBrowserActive, slugs},
         session: {user},
-        settings: {userSettings},
         users: {onlineUsers},
-        chat: {selectedChannel, historicalPositions},
+        chat: {historicalPositions},
     } = state;
+
     return {
         user,
-        settings: userSettings,
+        settings: state.settings.user.CHAT_SETTINGS,
         sharedSlugs: slugs,
         onlineUsers,
         isBrowserActive,
-        selectedChannel,
         historicalPositions,
-    };
-}
-
-function mapDispatchToProps(dispatch) {
-    return {
-        getChatMessages: bindActionCreators(getChatMessages, dispatch),
-        setSelectedChannel: bindActionCreators(setSelectedChannel, dispatch),
-        updateChannelReducer: bindActionCreators(updateChannelReducer, dispatch),
-        markReadChannel: bindActionCreators(markReadChannel, dispatch),
-        markAllMessagesAsRead: bindActionCreators(markAllMessagesAsRead, dispatch),
-        updateUnreadChatReplies: bindActionCreators(updateUnreadChatReplies, dispatch),
-        setChannelHistoricalPosition: bindActionCreators(setChannelHistoricalPosition, dispatch),
-        // addSelectedChannelChatMessageReducer: bindActionCreators(addSelectedChannelChatMessage, dispatch),
-        // updateChatMessageAction: bindActionCreators(updateChatMessageV2, dispatch),
-        // setDetailModalOpenAction: bindActionCreators(setDetailModalOpen, dispatch),
-        // chatReactionV2Action: bindActionCreators(chatReactionV2, dispatch),
-        // markAsUnreadChatAction: bindActionCreators(markAsUnreadChat, dispatch),
-        // addChatChannelMembersV2Action: bindActionCreators(addChatChannelMembersV2, dispatch),
-        // updateChannelMembersAction: bindActionCreators(updateChannelMembers, dispatch),
-        // updateLastVisitedChannelAction: bindActionCreators(updateLastVisitedChannel, dispatch),
-        // updateChannelAction: bindActionCreators(updateChannel, dispatch),
-        // updateUnreadChatRepliesAction: bindActionCreators(updateUnreadChatReplies, dispatch),
-        // createChatMessageV2Action: bindActionCreators(createChatMessageV2, dispatch),
-        // onFailedMessageSend: bindActionCreators(onFailedMessageSend, dispatch),
-        // markReadChatChannelAction: bindActionCreators(markReadChatChannel, dispatch),
-        // deleteUnfurlAction: bindActionCreators(deleteUnfurl, dispatch),
-        // removeUnfurl: bindActionCreators(removeUnfurl, dispatch),
-        // setChatThreadScrollPositionAction: bindActionCreators(setChatThreadScrollPosition, dispatch),
-        // deleteChatThreadScrollPositionAction: bindActionCreators(deleteChatThreadScrollPosition, dispatch),
-        // markAllMessagesAsReadAction: bindActionCreators(markAllMessagesAsRead, dispatch),
-        // addChatBoxAction: bindActionCreators(addChatBox, dispatch),
-        // getTaskDataAction: bindActionCreators(getTaskData, dispatch),
-        // setFetchingReplies: bindActionCreators(setFetchingReplies, dispatch),
-        // clearHistoricalPosition: bindActionCreators(clearHistoricalPosition, dispatch),
-        // getChatMessageAction: bindActionCreators(getChatMessage, dispatch),
     };
 }
 
 export default withRouter(connect(
     mapStateToProps,
-    mapDispatchToProps,
+    null,
 )(ChatMessages));

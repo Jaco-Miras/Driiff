@@ -1,7 +1,7 @@
 import React, {forwardRef, useRef} from "react";
 import styled from "styled-components";
-import docIcon from "../../../../assets/img/svgs/documents-icons/documents_secundary.svg";
 import {getAPIUrl} from "../../../../helpers/slugHelper";
+import useFileActions from "../../../hooks/useFileActions";
 
 const ImgLoader = styled.div`
     position: relative;
@@ -11,27 +11,29 @@ const ImgLoader = styled.div`
     min-height: 150px;
     max-width: 200px;
     min-width: 200px;
+    border-radius: 8px;
 `;
 
 const ImgLoaderDiv = styled.div`
-    border: 10px solid #f3f3f3;
-    border-top: 10px solid #972c86;
-    border-radius: 50%;
-    width: 60px;
-    height: 60px;
-    animation: spin 2s linear infinite;
-
+    display: inline-block;
+    width: 2rem;
+    height: 2rem;
+    vertical-align: text-bottom;
     position: absolute;
     margin: auto;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-
+    border: .25em solid #7A1B8B;
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: spin .75s linear infinite;
+    opacity: 0.8;
     @keyframes spin {
         0% { transform: rotate(0deg); }
         100% { transform: rotate(360deg); }
-      }
+    }
 `;
 
 const FileImage = styled.img`
@@ -61,42 +63,32 @@ const FileVideo = styled.video`
 `;
 
 const FilePillContainer = styled.div`
-    // margin-top: 5px;
-    // margin-right: 20px;
     border-radius: 8px;
-    background: ${props => props.type === "image" ? "transparent" : "#dedede"};
     cursor: pointer;
     cursor: hand;
 
     > img{
         border: 1px solid #ddd;
         border-radius: inherit;
-        // max-height: 200px;
-        // max-width: 200px;
         object-fit: cover;
         max-height: 150px;
         min-height: 150px;
         max-width: 200px;
         min-width: 200px;
-
-        //height: auto;
-        //max-width: 100%;
     }
 `;
 const DocFile = styled.div`
-    display: flex;
-    align-items:center;
-    justify-content: center;
-    min-height: 100px;
-    padding: 0 10px;
+    .card {
+        margin-bottom: 0;
+        min-width: 180px;
+    }
     >img{
         width: 30px;
-        height: 30px;
     }
 `;
 
 const FilePill = forwardRef((props, ref) => {
-    const {file, cbFilePreview} = props;
+    const {className = "", file, cbFilePreview, ...otherProps} = props;
     const refImageLoader = useRef();
     const refImage = useRef();
     const refVideoLoader = useRef();
@@ -112,7 +104,7 @@ const FilePill = forwardRef((props, ref) => {
     };
 
     const handleImageOnError = (e) => {
-        console.log(e, "image did not load");
+        console.log(file, "image did not load");
         if (e.currentTarget.dataset.attempt === "0") {
             e.currentTarget.dataset.attempt = 1;
             e.currentTarget.src = `${getAPIUrl({isDNS: true})}/file-view-attempt/${file.file_id}/${localStorage.getItem("atoken")}`;
@@ -142,45 +134,59 @@ const FilePill = forwardRef((props, ref) => {
         }
     };
 
-    return <FilePillContainer type={file.type.toLowerCase()}>
+    const fileHandler = useFileActions();
+    // console.log(file)
+
+    return <FilePillContainer
+        ref={ref}
+        className={`file-pill ${className}`}
+        {...otherProps}>
         {
             file.type.toLowerCase() === "image" ?
-                <>
-                    <ImgLoader ref={refImageLoader}>
-                        <ImgLoaderDiv className={`img-loader`}/>
-                    </ImgLoader>
-                    <FileImage
-                        ref={refImage}
-                        bgImg={file.view_link}
-                        data-attempt={0}
-                        className={`d-none`}
-                        onLoad={handleImageOnLoad}
-                        onError={handleImageOnError}
-                        height={150}
-                        onClick={handleViewFile}
-                        src={file.view_link}
-                        alt={file.filename}
-                        title={file.filename}/>
-                </>
-                : file.type.toLowerCase() === "video" ?
-                <>
-                    <ImgLoader ref={refVideoLoader}>
-                        <ImgLoaderDiv className={`img-loader`}/>
-                    </ImgLoader>
-                    <FileVideoOverlay onClick={handleViewFile}/>
-                    <FileVideo
-                        data-attempt={0}
-                        width="320" height="240" controls playsInline
-                        onLoadStart={handleVideoOnLoad}
-                        onError={handleVideoOnError}>
-                        <source src={file.view_link} type="video/mp4"></source>
-                        Your browser does not support the video tag.
-                    </FileVideo>
-                </>
-                : <DocFile onClick={handleViewFile}>
-                    <img src={docIcon} alt={"document"}/>
-                    <p>{file.filename ? file.filename.substr(0, file.filename.lastIndexOf(".")) : file.name.substr(0, file.name.lastIndexOf("."))}</p>
-                </DocFile>
+            <>
+                <ImgLoader ref={refImageLoader}>
+                    <ImgLoaderDiv className={`img-loader`}/>
+                </ImgLoader>
+                <FileImage
+                    ref={refImage}
+                    bgImg={file.view_link}
+                    data-attempt={0}
+                    className={`d-none`}
+                    onLoad={handleImageOnLoad}
+                    onError={handleImageOnError}
+                    height={150}
+                    onClick={handleViewFile}
+                    src={file.view_link}
+                    alt={file.filename}
+                    title={file.filename}/>
+            </>
+                                                : file.type.toLowerCase() === "video" ?
+                                                  <>
+                                                      <ImgLoader ref={refVideoLoader}>
+                                                          <ImgLoaderDiv className={`img-loader`}/>
+                                                      </ImgLoader>
+                                                      <FileVideoOverlay onClick={handleViewFile}/>
+                                                      <FileVideo
+                                                          data-attempt={0}
+                                                          width="320" height="240" controls playsInline
+                                                          onLoadStart={handleVideoOnLoad}
+                                                          onError={handleVideoOnError}>
+                                                          <source src={file.view_link} type="video/mp4"/>
+                                                          Your browser does not support the video tag.
+                                                      </FileVideo>
+                                                  </>
+                                                                                      :
+                                                  <DocFile
+                                                      onClick={handleViewFile}>
+                                                      <div className="card app-file-list">
+                                                          <div className="app-file-icon">
+                                                              {fileHandler.getFileIcon(file.type)}
+                                                          </div>
+                                                          <div className="p-2 small">
+                                                              <div>{file.filename}</div>
+                                                          </div>
+                                                      </div>
+                                                  </DocFile>
         }
     </FilePillContainer>;
 });

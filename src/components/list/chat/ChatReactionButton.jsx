@@ -1,9 +1,8 @@
 import React, {useEffect, useRef, useState} from "react";
-import {useDispatch} from "react-redux";
 import styled from "styled-components";
-import {chatReaction} from "../../../redux/actions/chatActions";
 import {PickerEmoji, SvgIconFeather} from "../../common";
 import {useTooltipOrientation} from "../../hooks";
+import useChatMessageActions from "../../hooks/useChatMessageActions";
 
 const ChatReactionButtonContainer = styled.div`
     border-radius:50%;    
@@ -43,9 +42,11 @@ const StyledPickerEmoji = styled(PickerEmoji)`
 `;
 
 const ChatReactionButton = props => {
+
     const {isAuthor, reply, scrollRef = null} = props;
 
-    const dispatch = useDispatch();
+    const chatMessageAction = useChatMessageActions();
+
     const pickerRef = useRef();
     const chatOptionsRef = useRef();
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
@@ -55,13 +56,7 @@ const ChatReactionButton = props => {
 
     const handleSelectEmoji = (e) => {
         handleShowEmojiPicker();
-        let payload = {
-            message_id: reply.id,
-            react_type: e.id,
-        };
-        dispatch(
-            chatReaction(payload),
-        );
+        chatMessageAction.react(reply.id, e.id);
     };
 
     const handlePickerMouseLeave = () => {
@@ -69,8 +64,6 @@ const ChatReactionButton = props => {
             setShowEmojiPicker(false);
         }, 1000);
     };
-
-    const orientation = useTooltipOrientation(chatOptionsRef, pickerRef, scrollRef, showEmojiPicker, 0);
 
     useEffect(() => {
         if (showEmojiPicker) {
@@ -81,6 +74,8 @@ const ChatReactionButton = props => {
             setDisplayEmojiPicker(false);
         }
     }, [showEmojiPicker]);
+
+    const orientation = useTooltipOrientation(chatOptionsRef, pickerRef, scrollRef, showEmojiPicker, 0);
 
     return (
         <ChatReactionButtonContainer

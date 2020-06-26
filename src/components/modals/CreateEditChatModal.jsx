@@ -1,17 +1,18 @@
 import lodash from "lodash";
 import React, {useEffect, useRef, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import Select, {components} from "react-select";
-import {Input, InputGroup, Label, Modal, ModalBody, ModalHeader} from "reactstrap";
+import {useHistory} from "react-router-dom";
+import {Input, InputGroup, Label, Modal, ModalBody} from "reactstrap";
 import styled from "styled-components";
 import {localizeDate} from "../../helpers/momentFormatJS";
-import {createNewChat, editChannelDetail, renameChannelKey, searchExistingChat} from "../../redux/actions/chatActions";
+import {addToChannels, setSelectedChannel} from "../../redux/actions/chatActions";
 import {clearModal} from "../../redux/actions/globalActions";
-import {Avatar} from "../common";
+import {PeopleSelect} from "../forms";
 import QuillEditor from "../forms/QuillEditor";
-import {useQuillModules} from "../hooks";
+import {useChannelActions, useQuillModules} from "../hooks";
+import {ModalHeaderSection} from "./index";
 
-const WrapperDiv = styled.div`
+const WrapperDiv = styled(InputGroup)`
     display: flex;
     align-items: center;
     margin: 20px 0;
@@ -23,32 +24,42 @@ const WrapperDiv = styled.div`
     button {
         margin-left: auto;
     }
-    .react-select-container {
-        width: 100%;
-    }
     .react-select__multi-value__label {
         align-self: center;
     }
 `;
 
-const SelectOption = styled.div`
-    display: flex;
-    flex-flow: row;
-    align-items: center;
-    padding-left: 5px;
-    :hover{
-        background: #DEEBFF;
+const SelectPeople = styled(PeopleSelect)`
+    flex: 1 0 0;
+    width: 1%;
+    .react-select__control--menu-is-open {
+        border-color: #7a1b8b !important;
+        box-shadow: none;
+    }
+    .react-select__option {
+        background-color: #ffffff;
+    }
+    .react-select__menu-list--is-multi > div {
+        &:hover {
+            background: #8C3B9B;
+            color: #ffffff;
+            cursor: pointer;
+            .react-select__option {
+                background: #8C3B9B;
+                cursor: pointer;
+            }
+        }
+    }
+    .react-select__control--is-focused {
+        border-color: #7a1b8b !important;
+        box-shadow: none;
     }
 `;
 
-const StyledAvatar = styled(Avatar)`
-    min-width: 2rem;
-    min-height: 2rem;
-    margin: 5px;
-    border: none;
-`;
-
 const StyledQuillEditor = styled(QuillEditor)`
+    flex: 1 0 0;
+    width: 1%;
+
     &.group-chat-input {
         border: 1px solid #afb8bd;
         border-radius: 5px;
@@ -69,59 +80,16 @@ const StyledQuillEditor = styled(QuillEditor)`
     }
 `;
 
-const Option = props => {
-    return (
-        <SelectOption>
-            {
-                props.data &&
-                <StyledAvatar
-                    className="react-select-avatar"
-                    key={props.data.id}
-                    imageLink={props.data.profile_image_link}
-                    name={props.data.name}
-                    partialName={props.data.partial_name}
-                />
-            }
-            <components.Option {...props}></components.Option>
-        </SelectOption>
-    );
-};
-
-const MultiValueContainer = ({children, selectProps, ...props}) => {
-    let newChildren = children.map((c, i) => {
-        if (i === 0) {
-            return {
-                ...c,
-                props: {
-                    ...c.props,
-                    children: props.data.first_name,
-                },
-            };
-        } else return c;
-    });
-    return (
-        <components.MultiValueContainer {...props}>
-            {
-                props.data && selectProps.inputValue === "" &&
-                <StyledAvatar
-                    className="react-select-avatar"
-                    key={props.data.id}
-                    imageLink={props.data.profile_image_link}
-                    name={props.data.name}
-                    partialName={props.data.partial_name}
-                />
-            }
-            {newChildren}
-        </components.MultiValueContainer>
-    );
-};
-
 const CreateEditChatModal = props => {
 
+    /**
+     * @todo refactor
+     */
     const {type, mode} = props.data;
 
     const reactQuillRef = useRef();
     const dispatch = useDispatch();
+    const history = useHistory();
     const [modal, setModal] = useState(true);
     const users = useSelector(state => state.users.mentions);
     const channel = useSelector(state => state.chat.selectedChannel);
@@ -134,6 +102,8 @@ const CreateEditChatModal = props => {
     const [valid, setValid] = useState(false);
     const [chatExists, setChatExists] = useState(false);
     const [searching, setSearching] = useState(false);
+
+    const channelActions = useChannelActions();
 
     const toggle = () => {
         setModal(!modal);
@@ -155,13 +125,11 @@ const CreateEditChatModal = props => {
             setSelectedUsers([]);
         } else {
             setSelectedUsers(e);
-            handleSearchExistingChat();
         }
     };
 
     const handleInputChange = e => {
         setInputValue(e.target.value.trim());
-        handleSearchExistingChat();
     };
 
     const handleConfirm = () => {
@@ -188,13 +156,29 @@ const CreateEditChatModal = props => {
             }).map(m => m.id);
 
             let payload = {
-                channel_name: inputValue,
+                id: channel.id,
                 channel_id: channel.id,
+                channel_name: inputValue,
                 remove_member_ids: removed_members,
                 add_member_ids: added_members,
+                message_body: `CHANNEL_UPDATE::${
+                    JSON.stringify({
+                        author: {
+                            id: user.id,
+                            name: user.name,
+                            partial_name: user.partial_name,
+                            profile_image_link: user.profile_image_link,
+                        },
+                        title: channel.title === inputValue ? "" : inputValue,
+                        added_members: added_members,
+                        removed_members: removed_members,
+                    })}`,
             };
 
-            dispatch(editChannelDetail(payload));
+            channel.members = selectedUsers;
+            channel.title = inputValue;
+
+            channelActions.update(payload);
         } else {
 
             let placeholderId = require("shortid").generate();
@@ -275,7 +259,7 @@ const CreateEditChatModal = props => {
                 recipient_ids: recipient_ids,
                 title: inputValue,
             };
-            if (textOnly.trim !== "") {
+            if (textOnly.trim().length !== 0) {
                 payload = {
                     ...payload,
                     message_body: text,
@@ -283,38 +267,40 @@ const CreateEditChatModal = props => {
             }
 
             let old_channel = channel;
-            dispatch(
-                createNewChat(payload, (err, res) => {
-                    if (err) return;
+            const createCallback = (err, res) => {
+                if (err) return;
+                let payload = {
+                    ...channel,
+                    id: res.data.channel.id,
+                    old_id: old_channel.id,
+                    code: res.data.code,
+                    members: res.data.channel.members ? res.data.channel.members : channel.members,
+                    profile: res.data.channel.profile,
+                    type: "GROUP",
+                    last_reply: res.data.channel.last_reply,
+                    replies: textOnly.trim().length !== 0 ? [{
+                        ...message,
+                        id: res.data.last_reply.id,
+                        channel_id: res.data.channel.id,
+                        created_at: {
+                            timestamp: message.created_at.timestamp,
+                        },
+                        updated_at: {
+                            timestamp: message.created_at.timestamp,
+                        },
+                    }] : [],
+                    selected: true,
+                };
 
-                    let payload = {
-                        ...channel,
-                        id: res.data.channel.id,
-                        old_id: old_channel.id,
-                        code: res.data.code,
-                        members: res.data.channel.members ? res.data.channel.members : channel.members,
-                        profile: res.data.channel.profile,
-                        type: "GROUP",
-                        last_reply: res.data.channel.last_reply,
-                        replies: [{
-                            ...message,
-                            id: res.data.last_reply.id,
-                            channel_id: res.data.channel.id,
-                            created_at: {
-                                timestamp: message.created_at.timestamp,
-                            },
-                            updated_at: {
-                                timestamp: message.created_at.timestamp,
-                            },
-                        }],
-                        selected: true,
-                    };
-
-                    dispatch(
-                        renameChannelKey(payload),
-                    );
-                }),
-            );
+                dispatch(
+                    addToChannels(payload),
+                );
+                dispatch(
+                    setSelectedChannel(payload)
+                );
+                history.push(`/chat/${channel.code}`);
+            };
+            channelActions.create(payload, createCallback);
         }
 
         toggle();
@@ -328,9 +314,6 @@ const CreateEditChatModal = props => {
     };
 
     const handleSearchExistingChat = lodash.debounce(() => {
-        /**
-         * @todo fix recipient ids
-         */
         let recipient_ids = recipients
             .filter(r => r.type === "USER")
             .filter(r => {
@@ -343,25 +326,23 @@ const CreateEditChatModal = props => {
                 return userFound;
             }).map(r => r.id);
 
-        let payload = {
-            title: inputValue,
-            search_recipient_ids: recipient_ids,
-        };
         if (recipient_ids.length) {
             setSearching(true);
-            dispatch(
-                searchExistingChat(payload, (err, res) => {
-                    setSearching(false);
-                    if (err) {
-                        return;
-                    }
-                    if (res.data.channel_id) {
-                        setChatExists(true);
-                    } else {
-                        setChatExists(false);
-                    }
-                }),
-            );
+            const callback = (err, res) => {
+                setSearching(false);
+                if (err) {
+                    return;
+                }
+                if (res.data.channel_id) {
+                    setChatExists(true);
+                } else {
+                    setChatExists(false);
+                }
+            };
+            channelActions.searchExisting(
+                inputValue,
+                recipient_ids,
+                callback);
         }
     }, 500);
 
@@ -384,6 +365,12 @@ const CreateEditChatModal = props => {
     }, []);
 
     useEffect(() => {
+        if (selectedUsers.length) {
+            handleSearchExistingChat();
+        }
+    }, [inputValue, selectedUsers.length]);
+
+    useEffect(() => {
         if (!searching) {
             let valid = true;
             if (inputValue === "") {
@@ -402,26 +389,19 @@ const CreateEditChatModal = props => {
     return (
 
         <Modal isOpen={modal} toggle={toggle} centered size={"md"}>
-            <ModalHeader toggle={toggle}>{mode === "edit" ? "Edit chat" : "New group chat"}</ModalHeader>
+            <ModalHeaderSection toggle={toggle}>{mode === "edit" ? "Edit chat" : "New group chat"}</ModalHeaderSection>
             <ModalBody>
-                <InputGroup>
-                    <Label for="chat" style={{minWidth: "90px", margin: "0 20px 0 0", alignSelf: "center"}}>Chat
-                        title</Label>
+                <WrapperDiv>
+                    <Label for="chat">Chat title</Label>
                     <Input style={{borderRadius: "5px"}}
                            defaultValue={mode === "edit" ? channel.title : ""}
                            onChange={handleInputChange}
                            valid={valid}
                     />
-                </InputGroup>
-
+                </WrapperDiv>
                 <WrapperDiv>
                     <Label for="people">People</Label>
-                    <Select
-                        className={"react-select-container"}
-                        classNamePrefix={"react-select"}
-                        isMulti={true}
-                        isClearable={false}
-                        components={{Option, MultiValueContainer}}
+                    <SelectPeople
                         options={options}
                         value={selectedUsers}
                         onChange={handleSelect}

@@ -7,31 +7,34 @@ const UserListPopUpContainer = styled.div`
     ul {
         margin: 0;
         list-style: none;
-        padding: 10px;
-        background-color: #FAFAFA;
-        color: #4d4d4d;
         box-shadow: 0 0 3px 0 rgba(26, 26, 26, 0.4), 0 1px 3px 0 rgba(0, 0, 0, 0.1);
-        border-radius: 6px;
         z-index:5;
         overflow: auto;
+
+        background-color: #ffffff;
+        color: #4d4d4d;
+        border-radius: 8px;
+        padding: 8px 8px;
+        cursor: pointer;
+        box-shadow: 0 5px 10px -1px rgba(0,0,0,.15);
+        border-top: 1px solid #eeeeee ;
+
     }
     li{
         white-space: nowrap;
-        font-size: 1rem;
         margin-bottom: 10px;
-        border-bottom: 1px solid #dedede;
         display: inline-flex;
         align-items:center;
         width: 100%;
         cursor: pointer;
         padding-bottom: 5px;
-        
+
         span {
             font-weight: 400;
         }
-        
-        &:hover {            
-            span {            
+
+        &:hover {
+            span {
                 color: #972c86;
                 text-decoration: underline;
             }
@@ -75,7 +78,7 @@ const UserListPopUp = props => {
                                     userId={u.id}
                                     name={u.name}
                                     partialName={u.partial_name}
-                                    noClick={true}
+                                    noDefaultClick={true}
                                 />
                                 <span>{u.name}</span>
                             </li>

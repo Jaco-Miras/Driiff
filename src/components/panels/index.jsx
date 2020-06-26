@@ -1,3 +1,5 @@
+export {default as RedirectPanel} from "./RedirectPanel";
+export {default as DriffRegisterPanel} from "./DriffRegisterPanel";
 export {default as LoginPanel} from "./LoginPanel";
 export {default as PreLoader} from "./PreLoader";
 export {default as ResetPasswordPanel} from "./ResetPasswordPanel";

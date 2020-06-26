@@ -1,38 +1,56 @@
 import React, {useEffect} from "react";
-import {useSelector} from "react-redux";
 import {Switch} from "react-router-dom";
 import ScrollToTop from "react-router-scroll-top";
-import {PreLoader} from "./components/panels";
-
-
-import {translation} from "./helpers/stringFormatter";
+import styled from "styled-components";
+import {useDriff} from "./components/hooks";
+import {DriffRegisterPanel, PreLoader, RedirectPanel} from "./components/panels";
 import {AppRoute} from "./layout/routes";
+
+const Wrapper = styled.div`
+    min-height: 100%;
+`;
 
 function App() {
 
-    const session = useSelector(state => state.session);
+    const {setDriff, checkDriffName, redirected, registeredDriff, getRedirect} = useDriff();
 
     useEffect(() => {
+        const handleResize = () => {
+            let vh = window.innerHeight * 0.01;
+            document.documentElement.style.setProperty("--vh", `${vh}px`);
+        };
 
-        translation.init();
+        handleResize();
+        window.addEventListener("resize", handleResize);
 
-        //eslint-disable-next-line react-hooks/exhaustive-deps
+        return () => {
+            window.removeEventListener("resize", handleResize);
+        };
     }, []);
 
+    if (redirected === null) {
+        return <></>;
+    }
+
     return (
-        <div className="App">
+        <Wrapper className="App">
             {
-                session.checked === true &&
+                redirected === true ?
+                <RedirectPanel redirect={getRedirect}/>
+                                    :
+                registeredDriff === null ?
+                <DriffRegisterPanel setDriff={setDriff} checkDriffName={checkDriffName}/>
+                                         :
                 <>
                     <PreLoader/>
                     <Switch>
                         <ScrollToTop>
-                            <AppRoute path="*" authenticated={session.authenticated}/>
+                            <AppRoute path="*"/>
                         </ScrollToTop>
                     </Switch>
                 </>
             }
-        </div>
+        </Wrapper>
     );
 }
 

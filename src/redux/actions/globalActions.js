@@ -4,9 +4,14 @@ import {
     generateUnfurl as generateUnfurlService,
     getAllRecipients as getAllRecipientsService,
     getConnectedSlugs as getConnectedSlugsService,
+    getDrafts as getDraftsService,
+    getPushNotification as getPushNotificationService,
+    getTranslationObject as getTranslationObjectService,
     saveDraft as saveDraftService,
+    subscribePushNotifications as subscribePushNotificationsService,
     updateDraft as updateDraftService,
     uploadDocument as uploadDocumentService,
+    getUnreadNotificationCounterEntries as getUnreadNotificationCounterEntriesService,
 } from "../services";
 
 export function setBrowserTabStatus(payload, callback) {
@@ -147,6 +152,83 @@ export function addUserToReducers(payload, callback) {
     return SimpleDispatchActionToReducer(
         "ADD_USER_TO_REDUCERS",
         payload,
+        callback,
+    );
+}
+
+export function addTranslationObject(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "GET_TRANSLATION_OBJECT_SUCCESS",
+        payload,
+        callback,
+    );
+}
+
+export function getTranslationObject(payload, callback) {
+    return dispatchActionToReducer(
+        getTranslationObjectService(payload),
+        "GET_TRANSLATION_OBJECT_START",
+        "GET_TRANSLATION_OBJECT_SUCCESS",
+        "GET_TRANSLATION_OBJECT_FAIL",
+        callback,
+    );
+}
+
+export function postTranslationObject() {
+
+}
+
+export const getPushNotification = (payload, callback) => {
+    return dispatchActionToReducer(
+        getPushNotificationService(payload),
+        "GET_PUSH_NOTIFICATION_START",
+        "GET_PUSH_NOTIFICATION_SUCCESS",
+        "GET_PUSH_NOTIFICATION_FAILURE",
+        callback,
+    );
+};
+
+export const subscribePushNotifications = (payload, callback) => {
+    return dispatchActionToReducer(
+        subscribePushNotificationsService(payload),
+        "SUBSCRIBE_PUSH_NOTIFICATIONS_START",
+        "SUBSCRIBE_PUSH_NOTIFICATIONS_SUCCESS",
+        "SUBSCRIBE_PUSH_NOTIFICATIONS_FAILURE",
+        callback,
+    );
+};
+export function getUnreadNotificationCounterEntries(payload, callback) {
+    return dispatchActionToReducer(
+        getUnreadNotificationCounterEntriesService(payload),
+        "GET_UNREAD_NOTIFICATION_COUNTER_START",
+        "GET_UNREAD_NOTIFICATION_COUNTER_SUCCESS",
+        "GET_UNREAD_NOTIFICATION_COUNTER_FAIL",
+        callback,
+    );
+}
+
+export function setGeneralChat(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "UPDATE_GENERAL_CHAT_NOTIFICATION",
+        payload,
+        callback,
+    )
+}
+
+export function setUnreadNotificationCounterEntries(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "UPDATE_UNREAD_LIST_COUNTER",
+        payload,
+        callback,
+    );
+}
+
+export function getDrafts(payload, callback) {
+    return dispatchActionToReducer(
+        getDraftsService(payload),
+        "GET_DRAFTS_START",
+        "GET_DRAFTS_SUCCESS",
+        "GET_DRAFTS_FAIL",
         callback,
     );
 }

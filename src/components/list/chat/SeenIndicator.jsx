@@ -9,13 +9,19 @@ const SeenIndicatorContainer = styled.div`
     //top: 100%;
     text-align: ${props => props.isAuthor ? "right" : "left"};
     color: #a7abc3;
-    font-style: italic;
     z-index: 2;
     font-size: 11px;
-    cursor: pointer;
     position: absolute;
     bottom: -18px;
-    right: 0;
+    white-space: nowrap;
+    ${props => props.isAuthor ? "right: 0px" : "left: 0px"};
+    span {
+        cursor: pointer;
+        &:hover {
+            color: #7A1B8B;
+            transition: color 0.3s;
+        }
+    }
 `;
 const StyledUserListPopUp = styled(UserListPopUp)`
     position: absolute;
@@ -23,8 +29,18 @@ const StyledUserListPopUp = styled(UserListPopUp)`
     max-width: 250px;
     left: ${props => props.isAuthor ? "unset" : "5px"};
     right: ${props => props.isAuthor ? "5px" : "unset"};
+    z-index: 999;
     ul {
         max-height: 250px;
+
+        li {
+            display: block;
+            text-align: left;
+
+            > span {
+                margin-left: 10px;
+            }
+        }
     }
 `;
 

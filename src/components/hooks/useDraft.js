@@ -18,7 +18,7 @@ const useDraft = (callback, type, text, textOnly, draftId) => {
     });
 
     const handleLoadDraft = () => {
-        if (Object.keys(drafts).length > 0 && drafts.hasOwnProperty(selectedChannel.id)) {
+        if (selectedChannel && Object.keys(drafts).length > 0 && drafts.hasOwnProperty(selectedChannel.id)) {
             let draft = {...drafts[selectedChannel.id]};
             savedCallback.current(draft);
         } else {
@@ -69,6 +69,8 @@ const useDraft = (callback, type, text, textOnly, draftId) => {
         dispatch(getChannelDrafts());
         handleLoadDraft();
         return () => handleSaveDraft();
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {
@@ -81,7 +83,7 @@ const useDraft = (callback, type, text, textOnly, draftId) => {
         if (previousChannel === null && selectedChannel !== null) {
             handleLoadDraft();
         }
-    }, [selectedChannel, previousChannel]);
+    }, [selectedChannel, previousChannel, handleLoadDraft, handleSaveDraft]);
 
 };
 

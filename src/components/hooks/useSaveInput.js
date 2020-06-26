@@ -26,15 +26,16 @@ const useSaveInput = (callback, text, textOnly, quillContents) => {
     }, [savedInput]);
 
     useEffect(() => {
+        //@to do need to revisit this function
         if (Object.keys(modals).length && modals.hasOwnProperty("file_upload")) {
             let payload = {
                 text,
                 textOnly,
                 quillContents,
             };
-            dispatch(saveInputData(payload));
+            if (textOnly.trim() !== "") dispatch(saveInputData(payload));
         }
-    }, [Object.keys(modals).length]);
+    }, [Object.keys(modals).length, textOnly]);
 };
 
 export default useSaveInput;

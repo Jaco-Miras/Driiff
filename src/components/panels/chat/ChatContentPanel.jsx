@@ -1,15 +1,17 @@
 import React, {useRef, useState} from "react";
-import {useDispatch, useSelector} from "react-redux";
+import {useDispatch} from "react-redux";
 import styled from "styled-components";
 import {addToModals} from "../../../redux/actions/globalActions";
 import {DropDocument} from "../../dropzone/DropDocument";
+import {useCountUnreadReplies, useFocusInput} from "../../hooks";
+import useChatMessageActions from "../../hooks/useChatMessageActions";
 import ChatMessages from "../../list/chat/ChatMessages";
-import {ChatFooterPanel, ChatHeaderPanel} from "./index";
 import ChatUnreadFloatBar from "../../list/chat/ChatUnreadFloatBar";
-import { useCountUnreadReplies } from "../../hooks";
+import {ChatFooterPanel, ChatHeaderPanel} from "./index";
 
 
 const Wrapper = styled.div`
+    width: 100%;
 `;
 
 const ChatMessagesPlaceholder = styled.div`
@@ -18,25 +20,30 @@ const ChatMessagesPlaceholder = styled.div`
 
 const ChatContentPanel = (props) => {
 
+    const {className = "", selectedChannel} = props;
+
     const dispatch = useDispatch();
-    const dropzoneRef = useRef();
-    const {className = ""} = props;
-    const selectedChannel = useSelector(state => state.chat.selectedChannel);
-    const [showDropzone, setShowDropzone] = useState(false);
+    const chatMessageActions = useChatMessageActions();
+
+    const [showDropZone, setshowDropZone] = useState(false);
     const unreadCount = useCountUnreadReplies();
 
+    const refs = {
+        dropZoneRef: useRef(),
+    };
+
     const handleOpenFileDialog = () => {
-        if (dropzoneRef.current) {
-            dropzoneRef.current.open();
+        if (refs.dropZoneRef.current) {
+            refs.dropZoneRef.current.open();
         }
     };
 
     const handleHideDropzone = () => {
-        setShowDropzone(false);
+        setshowDropZone(false);
     };
 
-    const handleShowDropzone = () => {
-        setShowDropzone(true);
+    const handleshowDropZone = () => {
+        setshowDropZone(true);
     };
 
     const dropAction = (acceptedFiles) => {
@@ -89,21 +96,23 @@ const ChatContentPanel = (props) => {
         dispatch(addToModals(modal));
     };
 
+    useFocusInput(document.querySelector(".chat-footer .ql-editor"));
+
     return (
-        <Wrapper className={`chat-content ${className}`} onDragOver={handleShowDropzone}>
+        <Wrapper className={`chat-content ${className}`} onDragOver={handleshowDropZone}>
             <DropDocument
-                hide={!showDropzone}
-                ref={dropzoneRef}
+                hide={!showDropZone}
+                ref={refs.dropZoneRef}
                 onDragLeave={handleHideDropzone}
                 onDrop={({acceptedFiles}) => {
                     dropAction(acceptedFiles);
                 }}
                 onCancel={handleHideDropzone}
             />
-            <ChatHeaderPanel/>
-            {selectedChannel !== null && unreadCount > 0 && <ChatUnreadFloatBar/>}
-            {selectedChannel !== null ? <ChatMessages/> : <ChatMessagesPlaceholder/>}
-            {/* <ChatMessagesPanel/> */}
+            <ChatHeaderPanel channel={selectedChannel}/>
+            {selectedChannel !== null && unreadCount > 0 && <ChatUnreadFloatBar channel={selectedChannel}/>}
+            {selectedChannel !== null ? <ChatMessages selectedChannel={selectedChannel} chatMessageActions={chatMessageActions} /> :
+             <ChatMessagesPlaceholder/>}
             <ChatFooterPanel onShowFileDialog={handleOpenFileDialog} dropAction={dropAction}/>
         </Wrapper>
     );

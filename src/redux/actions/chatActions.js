@@ -1,22 +1,26 @@
 import dispatchActionToReducer, {SimpleDispatchActionToReducer} from "../actionDispatcher";
 import {
-    chatReaction as chatReactionService,
-    createChatMessage as createChatMessageService,
-    createNewChat as createNewChatService,
+    deleteChannelMembers as deleteChannelMembersService,
     deleteChatMessage as deleteChatMessageService,
-    editChannelDetail as editChannelDetailService,
     getChannel as getChannelService,
     getChannelDrafts as getChannelDraftsService,
+    getChannelMembers as getChannelMembersService,
     getChannels as getChannelsService,
     getChatMessages as getChatMessagesService,
     getGlobalRecipients as getGlobalRecipientsService,
     getLastVisitedChannel as getLastVisitedChannelService,
-    markReadChannel as markReadChannelService,
-    markUnreadChannel as markUnreadChannelService,
-    searchExistingChat as searchExistingChatService,
-    setChatReminder as setChatReminderService,
-    updateChannel as updateChannelService,
-    updateChatMessage as updateChatMessageService,
+    postChannelMembers as postChannelMembersService,
+    postChatMessage as postChatMessageService,
+    postChatReaction as postChatReactionService,
+    postChatReminder as postChatReminderService,
+    postCreateChannel as postCreateChannelService,
+    postSearchExistingChannels as postSearchExistingChannelsService,
+    putChannel as putChannelService,
+    putChannelUpdate as putChannelUpdateService,
+    putChatMessage as putChatMessageService,
+    putMarkReadChannel as putMarkReadChannelService,
+    putMarkReminderComplete as putMarkReminderCompleteService,
+    putMarkUnreadChannel as putMarkUnreadChannelService,
 } from "../services";
 
 
@@ -38,9 +42,9 @@ export function getChannels(payload, callback) {
     );
 }
 
-export function updateChannel(payload, callback) {
+export function putChannel(payload, callback) {
     return dispatchActionToReducer(
-        updateChannelService(payload),
+        putChannelService(payload),
         "UPDATE_CHANNEL_START",
         "UPDATE_CHANNEL_SUCCESS",
         "UPDATE_CHANNEL_FAIL",
@@ -48,7 +52,7 @@ export function updateChannel(payload, callback) {
     );
 }
 
-export function updateChannelReducer(payload, callback) {
+export function setChannel(payload, callback) {
     return SimpleDispatchActionToReducer(
         "UPDATE_CHANNEL_REDUCER",
         payload,
@@ -56,9 +60,9 @@ export function updateChannelReducer(payload, callback) {
     );
 }
 
-export function markReadChannel(payload, callback) {
+export function putMarkReadChannel(payload, callback) {
     return dispatchActionToReducer(
-        markReadChannelService(payload),
+        putMarkReadChannelService(payload),
         "MARK_READ_CHANNEL_START",
         "MARK_READ_CHANNEL_SUCCESS",
         "MARK_READ_CHANNEL_FAIL",
@@ -74,9 +78,9 @@ export function updateUnreadChatReplies(payload, callback) {
     );
 }
 
-export function markUnreadChannel(payload, callback) {
+export function putMarkUnreadChannel(payload, callback) {
     return dispatchActionToReducer(
-        markUnreadChannelService(payload),
+        putMarkUnreadChannelService(payload),
         "MARK_AS_UNREAD_CHANNEL_START",
         "MARK_AS_UNREAD_CHANNEL_SUCCESS",
         "MARK_AS_UNREAD_CHANNEL_FAIL",
@@ -87,9 +91,9 @@ export function markUnreadChannel(payload, callback) {
 export function getChannel(payload, callback) {
     return dispatchActionToReducer(
         getChannelService(payload),
-        "GET_CHAT_CHANNEL_START",
-        "GET_CHAT_CHANNEL_SUCCESS",
-        "GET_CHAT_CHANNEL_FAIL",
+        "GET_CHANNEL_START",
+        "GET_CHANNEL_SUCCESS",
+        "GET_CHANNEL_FAIL",
         callback,
     );
 }
@@ -104,7 +108,7 @@ export function getLastVisitedChannel(payload, callback) {
     );
 }
 
-export function updateMemberTimestamp(payload, callback) {
+export function setMemberTimestamp(payload, callback) {
     return SimpleDispatchActionToReducer(
         "UPDATE_MEMBER_TIMESTAMP",
         payload,
@@ -130,7 +134,7 @@ export function getChatMessages(payload, callback) {
     );
 }
 
-export function markAllMessagesAsRead(cbdata, callback) {
+export function setAllMessagesAsRead(cbdata, callback) {
     return SimpleDispatchActionToReducer(
         "MARK_ALL_MESSAGES_AS_READ",
         cbdata,
@@ -146,9 +150,9 @@ export function addChatMessage(payload, callback) {
     );
 }
 
-export function createChatMessage(payload, callback) {
+export function postChatMessage(payload, callback) {
     return dispatchActionToReducer(
-        createChatMessageService(payload),
+        postChatMessageService(payload),
         "CREATE_CHAT_MESSAGE_START",
         "CREATE_CHAT_MESSAGE_SUCCESS",
         "CREATE_CHAT_MESSAGE_FAILURE",
@@ -156,9 +160,9 @@ export function createChatMessage(payload, callback) {
     );
 }
 
-export function updateChatMessage(payload, callback) {
+export function putChatMessage(payload, callback) {
     return dispatchActionToReducer(
-        updateChatMessageService(payload),
+        putChatMessageService(payload),
         "UPDATE_CHAT_MESSAGE_START",
         "UPDATE_CHAT_MESSAGE_SUCCESS",
         "UPDATE_CHAT_MESSAGE_FAILURE",
@@ -190,9 +194,9 @@ export function incomingArchivedChannel(payload, callback) {
     );
 }
 
-export function chatReaction(payload, callback) {
+export function postChatReaction(payload, callback) {
     return dispatchActionToReducer(
-        chatReactionService(payload),
+        postChatReactionService(payload),
         "CHAT_REACTIONS_START",
         "CHAT_REACTIONS_SUCCESS",
         "CHAT_REACTIONS_FAILURE",
@@ -274,9 +278,9 @@ export function clearQuote(payload, callback) {
     );
 }
 
-export function setChatReminder(payload, callback) {
+export function postChatReminder(payload, callback) {
     return dispatchActionToReducer(
-        setChatReminderService(payload),
+        postChatReminderService(payload),
         "SET_CHAT_REMINDER_START",
         "SET_CHAT_REMINDER_SUCCESS",
         "SET_CHAT_REMINDER_FAILURE",
@@ -327,9 +331,9 @@ export function getGlobalRecipients(payload = {}, callback) {
     );
 }
 
-export function createNewChat(payload, callback) {
+export function postCreateChannel(payload, callback) {
     return dispatchActionToReducer(
-        createNewChatService(payload),
+        postCreateChannelService(payload),
         "CREATE_NEW_CHAT_START",
         "CREATE_NEW_CHAT_SUCCESS",
         "CREATE_NEW_CHAT_FAILURE",
@@ -345,9 +349,9 @@ export function renameChannelKey(payload, callback) {
     );
 }
 
-export function editChannelDetail(payload, callback) {
+export function putChannelUpdate(payload, callback) {
     return dispatchActionToReducer(
-        editChannelDetailService(payload),
+        putChannelUpdateService(payload),
         "EDIT_CHANNEL_DETAIL_START",
         "EDIT_CHANNEL_DETIL_SUCCESS",
         "EDIT_CHANNEL_DETAIL_FAILURE",
@@ -363,12 +367,100 @@ export function incomingUpdatedChannelDetail(payload, callback) {
     );
 }
 
-export function searchExistingChat(payload, callback) {
+export function postSearchExistingChannels(payload, callback) {
     return dispatchActionToReducer(
-        searchExistingChatService(payload),
+        postSearchExistingChannelsService(payload),
         "SEARCH_EXISTING_CHAT_START",
         "SEARCH_EXISTING_CHAT_SUCCESS",
         "SEARCH_EXISTING_CHAT_FAILURE",
+        callback,
+    );
+}
+
+export function updateChatMessageReminderComplete(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "UPDATE_CHAT_MESSAGE_REMINDER_COMPLETE",
+        payload,
+        callback,
+    );
+}
+
+export function putMarkReminderComplete(payload, callback) {
+    return dispatchActionToReducer(
+        putMarkReminderCompleteService(payload),
+        "MARK_REMINDER_COMPLETE_START",
+        "MARK_REMINDER_COMPLETE_SUCCESS",
+        "MARK_REMINDER_COMPLETE_FAILURE",
+        callback,
+    );
+}
+
+export function postChannelMembers(payload, callback) {
+    return dispatchActionToReducer(
+        postChannelMembersService(payload),
+        "ADD_CHANNEL_MEMBERS_START",
+        "ADD_CHANNEL_MEMBERS_SUCCESS",
+        "ADD_CHANNEL_MEMBERS_FAILURE",
+        callback,
+    );
+}
+
+export function deleteChannelMembers(payload, callback) {
+    return dispatchActionToReducer(
+        deleteChannelMembersService(payload),
+        "DELETE_CHANNEL_MEMBERS_START",
+        "DELETE_CHANNEL_MEMBERS_SUCCESS",
+        "DELETE_CHANNEL_MEMBERS_FAILURE",
+        callback,
+    );
+}
+
+export function getChannelMembers(payload, callback) {
+    return dispatchActionToReducer(
+        getChannelMembersService(payload),
+        "GET_CHAT_MEMBERS_START",
+        "GET_CHAT_MEMBERS_SUCCESS",
+        "GET_CHAT_MEMBERS_FAILURE",
+        callback,
+    );
+}
+
+export function updateChannelMembersTitle(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "UPDATE_CHANNEL_MEMBERS_TITLE",
+        payload,
+        callback,
+    );
+}
+
+export function setLastVisitedChannel(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "SAVE_LAST_VISITED_CHANNEL",
+        payload,
+        callback,
+    );
+}
+
+export function restoreLastVisitedChannel(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "RESTORE_LAST_VISITED_CHANNEL",
+        payload,
+        callback,
+    );
+}
+
+export function clearSelectedChannel(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "CLEAR_SELECTED_CHANNEL",
+        payload,
+        callback,
+    );
+}
+
+export function unreadChannelReducer(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "UNREAD_CHANNEL_REDUCER",
+        payload,
         callback,
     );
 }

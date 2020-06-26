@@ -1,18 +1,19 @@
 import {hexToCSSFilter} from "hex-to-css-filter";
-import React, {forwardRef, useEffect, useRef, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {renderToString} from "react-dom/server";
 import GifPlayer from "react-gif-player";
 import "react-gif-player/src/GifPlayer.scss";
 import {useInView} from "react-intersection-observer";
-import {useDispatch, useSelector} from "react-redux";
+import {useSelector} from "react-redux";
 import {useHistory} from "react-router-dom";
 import Skeleton from "react-skeleton-loader";
 import styled from "styled-components";
-import {localizeDate} from "../../../helpers/momentFormatJS";
+import {todayOrYesterdayDate} from "../../../helpers/momentFormatJS";
 import quillHelper from "../../../helpers/quillHelper";
-import {_t, getEmojiRegexPattern, stripGif} from "../../../helpers/stringFormatter";
-import {setSelectedChannel} from "../../../redux/actions/chatActions";
+import {getEmojiRegexPattern, stripGif} from "../../../helpers/stringFormatter";
 import {ImageTextLink, SvgIconFeather, SvgImage} from "../../common";
+import {useSettings, useTranslation} from "../../hooks";
+import useChatMessageActions from "../../hooks/useChatMessageActions";
 import MessageFiles from "./Files/MessageFiles";
 import Unfurl from "./Unfurl/Unfurl";
 
@@ -24,15 +25,15 @@ const ChatBubbleContainer = styled.div`
     padding: 7px 15px;
     border-radius: 8px;
     background: ${props => (props.isAuthor ? props.theme.self.chat_bubble_background_color : props.theme.others.chat_bubble_background_color)};
-    text-align: left;    
+    text-align: left;
     width: 100%;
     color: ${props => (props.isAuthor ? props.theme.self.chat_bubble_text_color : props.theme.others.chat_bubble_text_color)};
-    font-size: .835rem;    
-    overflow: visible;    
-    ${props => props.isEmoticonOnly === true && `
+    font-size: .835rem;
+    overflow: visible;
+    ${props => (props.hideBg === true && !props.isEmoticonOnly) && `
         background: none;
+        padding: 0;
     `}
-
     &:focus {
         -webkit-box-shadow: 0 0 0 1px ${props => (props.isAuthor ? props.theme.self.chat_bubble_focus_border_color : props.theme.others.chat_bubble_focus_border_color)};
         -moz-box-shadow: 0 0 0 1px ${props => (props.isAuthor ? props.theme.self.chat_bubble_focus_border_color : props.theme.others.chat_bubble_focus_border_color)};
@@ -65,6 +66,9 @@ const ChatBubbleContainer = styled.div`
     }
     span.emoticon-body {
         font-size: 2.5rem;
+        padding: 30px 0;
+        text-align: right;
+        text-align: ${props => props.isAuthor ? "right" : "left"};
     }
     .reply-content img{
         max-width: 100%;
@@ -82,13 +86,11 @@ const ChatBubbleContainer = styled.div`
         font-size: 11px;
         position: absolute;
         top: 0;
-        ${props => props.isAuthor ? "left: -40px;" : "right: -40px;"};
-
+        ${props => props.isAuthor ? "right: 100%" : "left: 100%"};
         display: flex;
         height: 100%;
         align-items: center;
-
-
+        white-space: nowrap;
     }
     // * {
     //     word-break: break-all;
@@ -120,24 +122,24 @@ const ChatBubbleContainer = styled.div`
     }
     span.is-deleted {
         font-style: italic;
-        color: #ffffffe6;
+        color: ${props => props.isAuthor ? "#ffffffe6" : "#AAB0C8"};
     }
     .mention {
-        // background-image: linear-gradient(105deg,#46598d, #4f99a6);
-        &[data-value="All"] {
-            background-image: linear-gradient(105deg,#972c86,#794997);
-        }
-
-        &.is-author {
-            background-image: linear-gradient(105deg,#972c86,#794997);
-        }
-
+        ${"" /* // background-image: linear-gradient(105deg,#46598d, #4f99a6);
+ &[data-value="All"] {
+ background-image: linear-gradient(105deg,#972c86,#794997);
+ }
+ &.is-author {
+ background-image: linear-gradient(105deg,#972c86,#794997);
+ } */}
+        font-weight: ${props => props.isAuthor ? "none" : "bold"};
+        color: ${props => props.isAuthor ? "#ffffff" : "#7A1B8B"};
         &[data-value="All"],
         &.is-author {
             box-shadow: none;
             padding: 0 4px;
             border-radius: 8px;
-            color: #fff;
+            text-decoration: underline;
             display: inline-block;
             width: auto;
             height: auto;
@@ -160,33 +162,49 @@ const ChatBubbleContainer = styled.div`
 
 const QuoteContainer = styled.div`
   background: ${props => (props.isAuthor ? props.theme.self.chat_bubble_quote_background_color : props.theme.others.chat_bubble_quote_background_color)};
-  background: #8C3B9B;
+  ${"" /* background: #8C3B9B; */}
   border-radius: 8px 8px 0 0;
-  margin: -10px -15px 10px -15px;
+  margin: -7px -15px 10px -15px;
   text-align: left;
   padding: 10px 10px 10px 20px;
-  overflow: hidden;
+  ${"" /* overflow: hidden; */}
   position: relative;
   cursor: pointer;
   cursor: hand;
   max-width: ${props => props.hasFiles ? "210px" : "auto"};
-  color: rgba(255,255,255, 0.8);
+  ${"" /* color: rgba(255,255,255, 0.8); */}
   &:before {
     height: 70%;
     width: 5px;
     background: ${props => (props.isAuthor ? props.theme.self.chat_bubble_quote_background_color : props.theme.others.chat_bubble_quote_background_color)};
+    background: #ffffffe6;
     position: absolute;
-    content: ' ';
+    ${props => ((!props.isEmoticonOnly) && "content: ''")};
+
     display: inline-block;
     float: left;
     left: 5px;
     opacity: 0.8;
   }
+  &:after {
+    ${props => ((!props.isEmoticonOnly) && "content: ''")};
+    border: 10px solid transparent;
+    ${props => props.isAuthor ? "border-left-color: " + props.theme.self.chat_bubble_quote_background_color : "border-right-color: " + props.theme.others.chat_bubble_quote_background_color};
+    position: absolute;
+    top: ${props => ((props.showAvatar && !props.isAuthor) ? "6px" : "8px")};;
+
+    z-index: 1;
+    ${props => !props.isAuthor ? "left: -19px" : "right: -20px"};
+}
 
 `;
 const QuoteAuthor = styled.div`
   font-weight: 600;
-  color: ${props => (props.isAuthor ? props.theme.self.chat_bubble_text_color : props.theme.others.chat_bubble_name_text_color)};
+  ${"" /* color: ${props => (props.isAuthor ? props.theme.self.chat_bubble_quote_text_color : props.theme.others.chat_bubble_quote_text_color )}; */}
+  ${"" /* color: red; */}
+
+  ${"" /* color: ${props => (props.isAuthor ? 'red' : 'blue' )}; */}
+
 `;
 const QuoteContent = styled.div`
 color: ${props => (props.isAuthor ? props.theme.self.chat_bubble_quote_text_color : props.theme.others.chat_bubble_quote_text_color)};
@@ -208,7 +226,7 @@ color: ${props => (props.isAuthor ? props.theme.self.chat_bubble_quote_text_colo
     word-wrap: break-word;
 
     a {
-        color: rgba(18, 100, 163, 1);
+        color: ${props => (props.isAuthor ? "#ffffffe6" : "#8C3B9B")};
         overflow: hidden;
         white-space: nowrap;
         text-overflow: ellipsis;
@@ -282,6 +300,10 @@ const ChatMessageFiles = styled(MessageFiles)`
             }
         }
     }
+
+    ${props => props.hasMessage &&
+    `
+    `}
 `;
 const ReplyContent = styled.span`
     max-width: ${props => props.hasFiles ? "200px" : "auto"};
@@ -291,12 +313,15 @@ const ReplyContent = styled.span`
 
     a,
     a:not([href]):not([tabindex]) {
+        cursor: pointer;
         color: ${props => (props.isAuthor ? props.theme.self.chat_bubble_link_color : props.theme.others.chat_bubble_link_color)};
+        color: ${props => (!props.isAuthor ? "#7a1b8b" : "#ffffff99")};
+        text-decoration: underline;
         &:focus,
         &:hover {
-            color: ${props => (props.isAuthor ? props.theme.self.chat_bubble_hover_color : props.theme.others.chat_bubble_hover_color)};
+            ${"" /* color: ${props => (props.isAuthor ? props.theme.self.chat_bubble_hover_color : props.theme.others.chat_bubble_hover_color)}; */}
+            color: ${props => (!props.isAuthor ? "#7a1b8b" : "#ffffff")};
         }
-
         &.btn {
             border: 1px solid ${props => (props.isAuthor ? props.theme.self.chat_bubble_link_color : props.theme.others.chat_bubble_link_color)};
 
@@ -310,15 +335,9 @@ const ReplyContent = styled.span`
                 border-radius: 8px;
             }
 
-            &.btn-delete {
-                border: 1px solid ${props => (props.isAuthor ? props.theme.self.chat_bubble_hover_color : props.theme.others.chat_bubble_hover_color)};
+            &.btn-complete {
                 color: ${props => (props.isAuthor ? props.theme.self.chat_bubble_hover_color : props.theme.others.chat_bubble_hover_color)};
-
-                &:focus,
-                &:hover {
-                    border: 1px solid ${props => (props.isAuthor ? props.theme.self.chat_bubble_link_color : props.theme.others.chat_bubble_link_color)};
-                    color: ${props => (props.isAuthor ? props.theme.self.chat_bubble_link_color : props.theme.others.chat_bubble_link_color)};
-                }
+                border: 1px solid ${props => (props.isAuthor ? props.theme.self.chat_bubble_hover_color : props.theme.others.chat_bubble_hover_color)};
             }
         }
     }
@@ -342,9 +361,9 @@ const ChatContentClap = styled.div`
   }
 `;
 const ChatContent = styled.div`
-    ${props => (props.isEmoticonOnly && `
+    ${props => (!props.isEmoticonOnly && `
     &:before {
-        ${props => (props.showAvatar && "content: '';")};
+        ${props => (props.showAvatar && "content: ''")};
         border: 10px solid transparent;
         border-right-color: transparent;
         border-right-color: #f0f0f0;
@@ -357,12 +376,12 @@ const ChatContent = styled.div`
             right: -20px;
             border-left-color: #7A1B8B;
             border-right-color: transparent;
-        `)};            
+        `)};
         width: 20px;
         height: 20px;
     }
     `)}
-    
+
     .reply-author {
         // padding: ${props => props.isAuthor ? "0 10px 0 40px" : "0 40px 0 10px"};
         ${props => props.isAuthor ? "margin-left: 30px" : "margin-right: 30px"};
@@ -380,7 +399,7 @@ const ChatContent = styled.div`
             word-wrap: break-word;
 
             a {
-                color: rgba(18, 100, 163, 1);
+                color: ${props => (props.isAuthor ? "#ff4444" : "#ff4444")};
                 overflow: hidden;
                 white-space: nowrap;
                 text-overflow: ellipsis;
@@ -409,14 +428,17 @@ const ChatContent = styled.div`
         left: 0;
         overflow: hidden;
         height: 250px;
-
+        cursor: pointer;
         .gifPlayer {
-            padding: 10px;
+            border-radius: 8px;
             max-height: 250px;
         }
-
         .play_button {
-            padding: 12px 10px;
+            height: 60px;
+            width: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
     }
 `;
@@ -451,9 +473,12 @@ const ChatTimeStamp = styled.div`
 
 const StyledImageTextLink = styled(ImageTextLink)`
   display: block;
+  svg, polyline, circle, g {
+      stroke: ${props => (props.isAuthor ? "#ffffffe6" : "#8C3B9B")};
+  }
 `;
 
-const ForwardedSpan = styled.span`    
+const ForwardedSpan = styled.span`
     color: #AAB0C8;
     font-style: italic;
     display: flex;
@@ -465,17 +490,17 @@ const ForwardedSpan = styled.span`
     ${props => props.isAuthor ? "right: 100%;" : "left: 100%;"};
     height: 25px;
     white-space: nowrap;
-    
+
     svg {
         width: 15px;
         height: 15px;
         position: relative;
         top: 2px;
         margin-right: 5px;
-    } 
+    }
 `;
 
-const ChatBubble = forwardRef((props, ref) => {
+const ChatBubble = (props) => {
     const {
         reply,
         showAvatar,
@@ -485,28 +510,24 @@ const ChatBubble = forwardRef((props, ref) => {
         addMessageRef,
     } = props;
 
-    const dispatch = useDispatch();
+    //const {_t} = useTranslation();
+
+    const chatMessageActions = useChatMessageActions();
+
     const history = useHistory();
+
     const [chatFiles, setChatFiles] = useState([]);
     const [loadRef, loadInView] = useInView({
         threshold: 1,
     });
+    const {chatSettings} = useSettings();
     const recipients = useSelector(state => state.global.recipients);
     const user = useSelector(state => state.session.user);
     const refComponent = useRef();
 
 
     const handleMarkComplete = () => {
-        props.markReminderCompleteAction({message_id: reply.id}, (err, res) => {
-            if (err)
-                console.log(err);
-
-            if (res)
-                props.updateChatMessageReminderCompleteAction({
-                    channel_id: reply.channel_id,
-                    message_id: reply.id,
-                });
-        });
+        chatMessageActions.markComplete(reply.id);
     };
 
     const handleRemoveReply = () => {
@@ -518,7 +539,7 @@ const ChatBubble = forwardRef((props, ref) => {
         const link = `/chat/${reply.quote.channel_code}/${reply.quote.code}`;
         newBody = newBody.replace("this message", `<a class="push" href="${link}">this message</a>`);
 
-        props.updateChatMessageAction({
+        chatMessageActions.edit({
             body: newBody,
             message_id: reply.id,
             reply_id: reply.id,
@@ -578,9 +599,7 @@ const ChatBubble = forwardRef((props, ref) => {
         if (reply.quote.channel_id) {
             let sc = props.activeChatChannels.filter(ac => ac.id === reply.quote.channel_id)[0];
             if (sc) {
-                dispatch(
-                    setSelectedChannel(sc),
-                );
+                chatMessageActions.channelActions.select(sc);
             }
 
             setTimeout(() => {
@@ -645,9 +664,6 @@ const ChatBubble = forwardRef((props, ref) => {
     }, [addMessageRef, loadInView, props, props.handleMessageRefChange, reply.id]);
 
     useEffect(() => {
-        /**
-         * @todo must be in redux
-         */
         let chatFiles = [];
         for (const i in selectedChannel.replies) {
             const r = selectedChannel.replies[i];
@@ -665,17 +681,17 @@ const ChatBubble = forwardRef((props, ref) => {
 
 
     let isEmoticonOnly = false;
-    let replyBody = "";
-    if (reply.is_deleted) {
-        replyBody = _t(reply.body, "The chat message has been deleted");
-    } else {
-        replyBody = quillHelper.parseEmoji(reply.body);
 
+    let replyBody = quillHelper.parseEmoji(reply.body);
+    if (reply.is_deleted) {
+        //replyBody = _t(reply.body, "The chat message has been deleted");
+        replyBody = "The chat message has been deleted";
+    } else {
         if (reply.created_at.timestamp !== reply.updated_at.timestamp) {
             replyBody = `${replyBody}<span class='edited-message'>(edited)</span>`;
         }
 
-        if (replyBody.length === 13) {
+        if (replyBody.length === 13 || replyBody.length === 2) {
             if (replyBody !== reply.body) {
                 isEmoticonOnly = true;
             } else {
@@ -701,6 +717,7 @@ const ChatBubble = forwardRef((props, ref) => {
                     target={`_blank`}
                     href={images[0].getAttribute("src")}
                     icon={`image-video`}
+                    isAuthor={isAuthor}
                 >
                     Photo
                 </StyledImageTextLink>,
@@ -715,6 +732,7 @@ const ChatBubble = forwardRef((props, ref) => {
                     target={`_blank`}
                     href={videos[0].getAttribute("player-source")}
                     icon={`image-video`}
+                    isAuthor={isAuthor}
                 >
                     Video
                 </StyledImageTextLink>,
@@ -729,6 +747,7 @@ const ChatBubble = forwardRef((props, ref) => {
                             target={`_blank`}
                             href={file.view_link}
                             icon={`image-video`}
+                            isAuthor={isAuthor}
                         >
                             Photo
                         </StyledImageTextLink>,
@@ -740,6 +759,7 @@ const ChatBubble = forwardRef((props, ref) => {
                             target={`_blank`}
                             href={file.view_link}
                             icon={`image-video`}
+                            isAuthor={isAuthor}
                         >
                             Video
                         </StyledImageTextLink>,
@@ -751,6 +771,7 @@ const ChatBubble = forwardRef((props, ref) => {
                             target={`_blank`}
                             href={file.view_link}
                             icon={`documents`}
+                            isAuthor={isAuthor}
                         >
                             {file.filename ? `${file.filename} ` : `${file.name} `}
                         </StyledImageTextLink>,
@@ -835,14 +856,19 @@ const ChatBubble = forwardRef((props, ref) => {
         }
     }
 
+    const hasFiles = reply.files.length > 0;
+    const hasMessage = reply.body !== "<span></span>";
+
+
+
     return <ChatBubbleContainer
         ref={refComponent}
         tabIndex={reply.id}
         className={`chat-bubble ql-editor`}
         showAvatar={showAvatar}
         isAuthor={isAuthor}
-        isEmoticonOnly={isEmoticonOnly}
-        theme={props.settings.CHAT_SETTINGS.chat_message_theme}>
+        hideBg={isEmoticonOnly || showGifPlayer || (hasFiles && replyBody === "<span></span>") || (hasFiles && replyBody === "") }
+        theme={chatSettings.chat_message_theme}>
         {
             <>
                 {
@@ -861,20 +887,22 @@ const ChatBubble = forwardRef((props, ref) => {
                             reply.quote && reply.quote.body && (reply.is_deleted === 0) &&
                             (reply.quote.user_id !== undefined || reply.quote.user !== undefined) &&
                             <QuoteContainer
-                                hasFiles={reply.files.filter(f => f.type === "image").length > 0}
-                                theme={props.settings.CHAT_SETTINGS.chat_message_theme}
+                                showAvatar={showAvatar}
+                                isEmoticonOnly={isEmoticonOnly}
+                                hasFiles={hasFiles}
+                                theme={chatSettings.chat_message_theme}
                                 onClick={handleQuoteClick} isAuthor={isAuthor}>
                                 {
                                     reply.quote.user_id === user.id ?
-                                        <QuoteAuthor
-                                            theme={props.settings.CHAT_SETTINGS.chat_message_theme}
-                                            isAuthor={true}>{`You`}</QuoteAuthor> :
-                                        <QuoteAuthor
-                                            theme={props.settings.CHAT_SETTINGS.chat_message_theme}
-                                            isAuthor={reply.quote.user_id === user.id}>{replyQuoteAuthor}</QuoteAuthor>
+                                    <QuoteAuthor
+                                        theme={chatSettings.chat_message_theme}
+                                        isAuthor={true}>{`You`}</QuoteAuthor> :
+                                    <QuoteAuthor
+                                        theme={chatSettings.chat_message_theme}
+                                        isAuthor={reply.quote.user_id === user.id}>{replyQuoteAuthor}</QuoteAuthor>
                                 }
                                 <QuoteContent
-                                    theme={props.settings.CHAT_SETTINGS.chat_message_theme}
+                                    theme={chatSettings.chat_message_theme}
                                     isAuthor={isAuthor}
                                     dangerouslySetInnerHTML={{__html: replyQuoteBody.split("</p>")[0]}}
                                 ></QuoteContent>
@@ -887,25 +915,27 @@ const ChatBubble = forwardRef((props, ref) => {
                                     isBot === true &&
                                     <GrippBotIcon icon={`gripp-bot`}/>
                                 }
-                                <p className={"reply-author"}>{reply.user.name.replace("  ", " ")}</p>
+                                {/* @todo reply.message_from.name and reply.user.name issue
+                                 <p className={"reply-author"}>{reply.message_from.name.replace("  ", " ")}</p>*/}
                             </>
 
                         }
                         {
                             (reply.files.length > 0) && (!reply.is_deleted) &&
                             <ChatMessageFiles
+                                hasMessage={hasMessage}
                                 isAuthor={isAuthor}
-                                theme={props.settings.CHAT_SETTINGS.chat_message_theme}
+                                theme={chatSettings.chat_message_theme}
                                 chatFiles={chatFiles}
-                                //addFilesToViewAction={props.addFilesToViewAction}
-                                //fileOnly={fileOnly}
                                 files={reply.files}
+                                reply={reply}
+                                type="chat"
                             />
                         }
                         {
                             <ReplyContent
-                                hasFiles={reply.files.filter(f => f.type === "image").length > 0}
-                                theme={props.settings.CHAT_SETTINGS.chat_message_theme}
+                                hasFiles={hasFiles}
+                                theme={chatSettings.chat_message_theme}
                                 isAuthor={isAuthor}
                                 className={`reply-content ${isEmoticonOnly ? "emoticon-body" : ""} ${reply.is_deleted ? "is-deleted" : ""}`}
                                 dangerouslySetInnerHTML={showGifPlayer ? {__html: stripGif(replyBody)} : {__html: replyBody}}
@@ -925,17 +955,16 @@ const ChatBubble = forwardRef((props, ref) => {
                             })
                         }
                         {
-                            reply.unfurls && reply.unfurls.length && (!reply.is_deleted) && !showGifPlayer && !isBot ?
-                                <Unfurl
-                                    unfurlData={reply.unfurls}
-                                    isAuthor={isAuthor}
-                                    deleteUnfurlAction={props.deleteUnfurlAction}
-                                    removeUnfurl={props.removeUnfurl}
-                                    channelId={props.channelId}
-                                    messageId={reply.id}
-                                    type={"chat"}
-                                />
-                                : null
+                            (reply.unfurls && reply.unfurls.length && (!reply.is_deleted) && !showGifPlayer && !isBot) === true &&
+                            <Unfurl
+                                unfurlData={reply.unfurls}
+                                isAuthor={isAuthor}
+                                deleteUnfurlAction={props.deleteUnfurlAction}
+                                removeUnfurl={props.removeUnfurl}
+                                channelId={props.channelId}
+                                messageId={reply.id}
+                                type={"chat"}
+                            />
                         }
                         {
                             reply.unfurl_loading !== undefined && reply.unfurl_loading &&
@@ -946,14 +975,14 @@ const ChatBubble = forwardRef((props, ref) => {
                 </ChatContentClap>
                 <ChatTimeStamp className='chat-timestamp'
                                isAuthor={isAuthor}>
-                <span className="reply-date created">
-                            {reply.created_at.diff_for_humans ? "sending..." : localizeDate(reply.created_at.timestamp, "HH:mm")}
-                        </span>
+                    <span className="reply-date created">
+                        {reply.created_at.diff_for_humans ? "sending..." : todayOrYesterdayDate(reply.created_at.timestamp)}
+                    </span>
                 </ChatTimeStamp>
             </>
         }
         {props.children}
     </ChatBubbleContainer>;
-});
+};
 
 export default React.memo(ChatBubble);
