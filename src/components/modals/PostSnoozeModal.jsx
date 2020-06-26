@@ -1,14 +1,15 @@
 import moment from "moment";
 import React, {useState} from "react";
 import DateTimePicker from "react-datetime-picker";
-import {useDispatch, useSelector} from "react-redux";
+import {useDispatch} from "react-redux";
 import {Button, Modal, ModalBody, ModalFooter} from "reactstrap";
 import styled from "styled-components";
-import toaster from "toasted-notes";
+//import toaster from "toasted-notes";
 import {postSnooze, removePost} from "../../redux/actions/postActions";
 import {clearModal} from "../../redux/actions/globalActions";
 import RadioInput from "../forms/RadioInput";
 import {ModalHeaderSection} from "./index";
+import {useToaster} from "../hooks";
 
 
 const InputContainer = styled.div`
@@ -25,11 +26,17 @@ const PostSnoozeModal = props => {
     const {type, post, topic_id} = props.data;
 
     const dispatch = useDispatch();
-    const user = useSelector(state => state.session.user);
+    //const user = useSelector(state => state.session.user);
+    const toaster = useToaster();
+
+    const minD = new Date();
+    const m = minD.getMinutes();
+    minD.setMinutes(m+1);
 
     const [setTimeValue, setSetTimeValue] = useState(`20m`);
-    const [customTimeValue, setCustomTimeValue] = useState(new Date());
+    const [customTimeValue, setCustomTimeValue] = useState(minD);
     const [showDateTimePicker, setShowDateTimePicker] = useState(null);
+    const [validDate, setValidDate] = useState(true);
 
     const [modal, setModal] = useState(true);
     const toggle = () => {
@@ -42,16 +49,24 @@ const PostSnoozeModal = props => {
     const handleSetSnoozeTime = (e, setTime) => {
         setShowDateTimePicker(false);
         setSetTimeValue(setTime);
+        setValidDate(true);
     };
 
     const handlePickDateTime = (e) => {
-        setCustomTimeValue(e);
+        const minDate = new Date();
+        if (e > minDate) {
+            setCustomTimeValue(e);
+            setValidDate(true);
+        } else {
+            setValidDate(false);
+        }
         //setSetTimeValue(formatDateISO8601(e));
     };
 
     const handleSelectPickDateTime = (e) => {
         setSetTimeValue("pick_data");
         setShowDateTimePicker(true);
+        setValidDate(true);
     };
 
     const handleSnooze = (e) => {
@@ -106,7 +121,7 @@ const PostSnoozeModal = props => {
                         break;
                 }
 
-                toaster.notify(`You snoozed this ${post.title} ${messageTime}`,
+                toaster.success(`You snoozed this ${post.title} ${messageTime}`,
                     {position: "bottom-left"});
             }),
         );
@@ -190,16 +205,22 @@ const PostSnoozeModal = props => {
                     {
                         showDateTimePicker &&
                         <DateTimePicker
-                            minDate={new Date()}
+                            minDate={minD}
                             onChange={handlePickDateTime}
                             value={customTimeValue}
                             disableClock={true}
                         />
                     }
                 </InputContainer>
+                {
+                    validDate === false &&
+                    <div>
+                        Date time is invalid. Please select new date time.
+                    </div>
+                }
             </ModalBody>
             <ModalFooter>
-                <Button color="primary" onClick={handleSnooze}>Snooze</Button>{" "}
+                <Button disabled={!validDate} color="primary" onClick={handleSnooze}>Snooze</Button>{" "}
                 <Button outline color="secondary" onClick={toggle}>Cancel</Button>
             </ModalFooter>
         </Modal>
