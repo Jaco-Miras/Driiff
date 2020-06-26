@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import {SvgIconFeather} from "../../common";
 import {ProgressBar} from "../common";
+import {FolderList} from "./index";
 
 const Wrapper = styled.div`
     text-align: left;
@@ -15,6 +16,17 @@ const Filter = styled.span`
         background: 0 0;
         color: #7a1b8b;
     `}
+    &.folder-list {
+        > ul {
+            list-style: none;
+            padding: 0.75rem 1.5rem;
+            width: 100%;
+            
+            li {
+                margin-bottom: 10px;
+            }
+        }
+    }
 `;
 
 const Icon = styled(SvgIconFeather)`
@@ -24,7 +36,8 @@ const Icon = styled(SvgIconFeather)`
 const FileSidebar = (props) => {
 
     const {
-        className = "", isMember, actions, filterFile, filter = "all", dropZoneRef, storageLimit = 25, wsFiles,
+        className = "", isMember, actions, filterFile, filter = "all", dropZoneRef, 
+        storageLimit = 25, wsFiles, folders, activeFolder
     } = props;
 
     const handleShowUploadModal = () => {
@@ -76,6 +89,24 @@ const FileSidebar = (props) => {
                             Removed
                             <span className="small ml-auto">{wsFiles && wsFiles.trash > 0 ? wsFiles.trash : null}</span>
                         </Filter>
+                        {
+                            folders && folders.length > 0 &&
+                            <Filter className="d-flex align-items-center folder-list">
+                                <ul>
+                                {
+                                    folders.filter(f => f.parent_folder === null).map(f => {
+                                        let subFolders = folders.filter(sf => {
+                                            if (sf.parent_folder && sf.parent_folder.id === f.id) {
+                                                return true;
+                                            } else return false;
+                                        })
+                                        return <FolderList key={f.id} folder={f} subFolders={subFolders} activeFolder={activeFolder}/>
+                                    })
+                                }
+                                </ul>
+                            </Filter>
+                            
+                        }
                     </div>
                     {
                         typeof wsFiles !== "undefined" && wsFiles !== null &&
