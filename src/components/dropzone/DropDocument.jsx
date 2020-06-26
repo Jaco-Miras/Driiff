@@ -3,16 +3,20 @@ import Dropzone from "react-dropzone";
 import {toastr} from "react-redux-toastr";
 import "react-redux-toastr/lib/css/react-redux-toastr.min.css";
 import styled from "styled-components";
-import "./DropDocument.css";
+import {SvgIconFeather} from "../common";
+import "./DropDocument.scss";
 
 const Section = styled.section`
-    display: ${props => props.hide ? "none" : "block"};
-    ${"" /* @media only screen and (max-width: 992px){
- display: block;
- } */}
+    visibility: ${props => props.hide ? "hidden" : "visible"};
+    .reply-document-dropdown {
+        opacity: ${props => props.hide ? "0" : "1"};
+        transition: opacity 200ms ease;
+        background: rgba(255,255,255, 0.9);
+    }
 `;
 
-//const dropzoneRef = createRef();
+const Icon = styled(SvgIconFeather)`
+`;
 
 export const DropDocument = forwardRef((props, ref) => {
 
@@ -77,14 +81,20 @@ export const DropDocument = forwardRef((props, ref) => {
                          className={`reply-document-dropdown ${isDragActive ? "show-border" : "no-border"}`}>
 
                         <input {...getInputProps()} />
-                        <p>{placeholderText}</p>
+
+                        <div className="reply-dropzone">
+                            <Icon icon="upload-cloud"/>
+                            <p>{placeholderText}</p>
+                        </div>
                     </div>
                     {
                         !noX &&
-                        <span
+                        <button aria-label="close"
                             className="click-cancel-drop"
                             onClick={onCancel}
-                        ><i className="fa fa-times-circle fa-lg"/></span>
+                        >
+                        <span aria-hidden="true"><Icon icon="x"/></span>
+                        </button>
                     }
 
                 </Section>;

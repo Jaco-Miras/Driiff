@@ -1,8 +1,12 @@
 import React, {PureComponent} from "react";
-import {connect} from "react-redux";
 import {isSafari} from "react-device-detect";
+import {connect} from "react-redux";
 import {withRouter} from "react-router-dom";
 import {bindActionCreators} from "redux";
+import {localizeDate} from "../../helpers/momentFormatJS";
+import {pushBrowserNotification} from "../../helpers/pushHelper";
+import {replaceChar, stripHtml} from "../../helpers/stringFormatter";
+import {urlify} from "../../helpers/urlContentHelper";
 import {
     addToChannels,
     getChannel,
@@ -15,22 +19,22 @@ import {
     incomingUpdatedChannelDetail,
     incomingUpdatedChatMessage,
     setAllMessagesAsRead,
-    updateChannelMembersTitle,
     setChannel,
     setMemberTimestamp,
-    setSelectedChannel,
     unreadChannelReducer,
+    updateChannelMembersTitle,
 } from "../../redux/actions/chatActions";
-import {addFilesToChannel, 
-    deleteFilesFromChannel, 
-    incomingFolder,
+import {
+    addFilesToChannel,
+    deleteFilesFromChannel,
+    incomingDeletedFile,
     incomingDeletedFolder,
     incomingDeletedPostFile,
+    incomingEmptyTrash,
     incomingFile,
     incomingFiles,
-    incomingDeletedFile,
+    incomingFolder,
     incomingMovedFile,
-    incomingEmptyTrash,
 } from "../../redux/actions/fileActions";
 import {
     addUserToReducers,
@@ -42,35 +46,39 @@ import {
     setUnreadNotificationCounterEntries,
 } from "../../redux/actions/globalActions";
 import {
-    incomingPost,
-    incomingPostClap,
     incomingComment,
     incomingCommentClap,
+    incomingDeletedComment,
     incomingDeletedPost,
+    incomingPost,
+    incomingPostClap,
     incomingPostViewer,
     incomingUpdatedPost,
-    incomingDeletedComment
 } from "../../redux/actions/postActions";
 import {getOnlineUsers, getUser, incomingUpdatedUser} from "../../redux/actions/userAction";
 import {
     incomingMovedTopic,
+    incomingTimeline,
     incomingUpdatedWorkspaceFolder,
     incomingWorkspace,
     incomingWorkspaceFolder,
-    incomingTimeline
 } from "../../redux/actions/workspaceActions";
-import {localizeDate} from "../../helpers/momentFormatJS";
-import {pushBrowserNotification} from "../../helpers/pushHelper";
-import {updateFaviconState} from "../../helpers/slugHelper";
-import {replaceChar, stripHtml} from "../../helpers/stringFormatter";
-import {urlify} from "../../helpers/urlContentHelper";
-import moment from "moment";
 
 class SocketListeners extends PureComponent {
     constructor() {
         super();
     }
+
     componentDidMount() {
+
+        /**
+         * @todo Online users are determined every 5 seconds
+         * online user reducer should be updated every socket call
+         */
+        this.props.getOnlineUsers();
+        setInterval(() => {
+            this.props.getOnlineUsers();
+        }, 5000);
 
         this.props.addUserToReducers({
             id: this.props.user.id,
@@ -80,298 +88,298 @@ class SocketListeners extends PureComponent {
         });
 
         // new socket
-        window.Echo.private(`${localStorage.getItem("slug") === 'dev24admin' ? "dev" : localStorage.getItem("slug")}.Driff.User.${this.props.user.id}`)
-        .listen(".workspace-folder-notification", e => {
-            console.log(e, 'folder')
-            switch (e.SOCKET_TYPE) {
-                case "FOLDER_CREATE": {
-                    this.props.incomingFolder(e);
-                    break;
-                }
-                case "FOLDER_UPDATE": {
-                    this.props.incomingFolder(e);
-                    break;
-                }
-                case "FOLDER_DELETE": {
-                    this.props.incomingDeletedFolder(e);
-                    break;
-                }
-                default:
-                    return null;
-            }
-        })
-        .listen(".workspace-file-notification", e => {
-            console.log(e, 'file')
-            switch (e.SOCKET_TYPE) {
-                case "FILE_UPDATE": {
-                    this.props.incomingFile(e);
-                    break;
-                }
-                case "FILE_MOVE": {
-                    this.props.incomingMovedFile(e);
-                    break;
-                }
-                case "FILE_TRASH": {
-                    this.props.incomingDeletedFile(e);
-                    break;
-                }
-                case "FILE_EMPTY":{
-                    this.props.incomingEmptyTrash(e);
-                    break;
-                }
-                default:
-                    return null;
-            }
-        })
-        .listen(".workspace-timeline-notification", e => {
-            console.log(e, "timeline")
-            this.props.incomingTimeline(e);
-        })
-        .listen(".upload-bulk-private-workspace-files", e => {
-            console.log(e, 'files bulk')
-            this.props.incomingFiles(e);
-        })
-        .listen(".post-notification", e => {
-            console.log(e, "post-notif")
-            switch (e.SOCKET_TYPE) {
-                case "POST_CREATE": {
-                    if (e.show_at !== null && this.props.user.id === e.author.id) {
-                        this.props.incomingPost(e);
-                        // let show = e.show_at;
-                        // show = show.split("-")
-                        // show = {
-                        //     'year': show[0],
-                        //     'month': show[1],
-                        //     'date': show[2].substring(0,2)
-                        // }
-                        // let d = new Date();
-                        // let currentDate = {
-                        //     'year': d.getFullYear(),
-                        //     'month': d.getMonth() + 1,
-                        //     'date': d.getDate()
-                        // }
-                        // if (moment(show).dayOfYear() <= moment(currentDate).dayOfYear()) {
-                        //     this.props.incomingPost(e);
-                        // }
-                    }  else {
-                        this.props.incomingPost(e);
+        window.Echo.private(`${localStorage.getItem("slug") === "dev24admin" ? "dev" : localStorage.getItem("slug")}.Driff.User.${this.props.user.id}`)
+            .listen(".workspace-folder-notification", e => {
+                console.log(e, "folder");
+                switch (e.SOCKET_TYPE) {
+                    case "FOLDER_CREATE": {
+                        this.props.incomingFolder(e);
+                        break;
                     }
-                    if (e.workspace_ids && e.workspace_ids.length >= 1) {
-                    
-                        this.props.setGeneralChat({
-                            count: 1,
-                            entity_type: "WORKSPACE_POST",
-                        });
+                    case "FOLDER_UPDATE": {
+                        this.props.incomingFolder(e);
+                        break;
                     }
-                    break;
-                }
-                case "POST_UPDATE": {
-                    this.props.incomingUpdatedPost(e);
-                    break;
-                }
-                case "POST_DELETE": {
-                    this.props.incomingDeletedPost(e);
-                    break;
-                }
-                case "POST_COMMENT_UPDATE": {
-                    this.props.incomingComment(e);
-                    break;
-                }
-                case "POST_CLAP_TOGGLE": {
-                    this.props.incomingPostClap(e);
-                    break;
-                }
-
-                default:
-                    return null;
-            }
-        })
-        .listen(".post-comment-notification", e => {
-            console.log(e, "comment-notif")
-            
-            switch (e.SOCKET_TYPE) {
-                case "POST_COMMENT_CREATE": {
-                    this.props.incomingComment(e);
-                    if (e.workspaces && e.workspaces.length >= 1) {
-                        this.props.setGeneralChat({
-                            count: 1,
-                            entity_type: "WORKSPACE_POST",
-                        });
+                    case "FOLDER_DELETE": {
+                        this.props.incomingDeletedFolder(e);
+                        break;
                     }
-                    break;
+                    default:
+                        return null;
                 }
-                case "POST_COMMENT_DELETE": {
-                    this.props.incomingDeletedComment(e);
-                    break;
+            })
+            .listen(".workspace-file-notification", e => {
+                console.log(e, "file");
+                switch (e.SOCKET_TYPE) {
+                    case "FILE_UPDATE": {
+                        this.props.incomingFile(e);
+                        break;
+                    }
+                    case "FILE_MOVE": {
+                        this.props.incomingMovedFile(e);
+                        break;
+                    }
+                    case "FILE_TRASH": {
+                        this.props.incomingDeletedFile(e);
+                        break;
+                    }
+                    case "FILE_EMPTY": {
+                        this.props.incomingEmptyTrash(e);
+                        break;
+                    }
+                    default:
+                        return null;
                 }
-                case "POST_COMMENT_UPDATE": {
-                    this.props.incomingComment(e);
-                    break;
-                }
-                case "POST_COMMENT_CLAP_TOGGLE": {
-                    this.props.incomingCommentClap(e);
-                    break;
-                }
+            })
+            .listen(".workspace-timeline-notification", e => {
+                console.log(e, "timeline");
+                this.props.incomingTimeline(e);
+            })
+            .listen(".upload-bulk-private-workspace-files", e => {
+                console.log(e, "files bulk");
+                this.props.incomingFiles(e);
+            })
+            .listen(".post-notification", e => {
+                console.log(e, "post-notif");
+                switch (e.SOCKET_TYPE) {
+                    case "POST_CREATE": {
+                        if (e.show_at !== null && this.props.user.id === e.author.id) {
+                            this.props.incomingPost(e);
+                            // let show = e.show_at;
+                            // show = show.split("-")
+                            // show = {
+                            //     'year': show[0],
+                            //     'month': show[1],
+                            //     'date': show[2].substring(0,2)
+                            // }
+                            // let d = new Date();
+                            // let currentDate = {
+                            //     'year': d.getFullYear(),
+                            //     'month': d.getMonth() + 1,
+                            //     'date': d.getDate()
+                            // }
+                            // if (moment(show).dayOfYear() <= moment(currentDate).dayOfYear()) {
+                            //     this.props.incomingPost(e);
+                            // }
+                        } else {
+                            this.props.incomingPost(e);
+                        }
+                        if (e.workspace_ids && e.workspace_ids.length >= 1) {
 
-                default:
-                    return null;
-            }
-        })
-        .listen(".chat-notification", e => {
-            console.log(e, "chat-notification");
-            const {user, selectedChannel, isBrowserActive} = this.props;
+                            this.props.setGeneralChat({
+                                count: 1,
+                                entity_type: "WORKSPACE_POST",
+                            });
+                        }
+                        break;
+                    }
+                    case "POST_UPDATE": {
+                        this.props.incomingUpdatedPost(e);
+                        break;
+                    }
+                    case "POST_DELETE": {
+                        this.props.incomingDeletedPost(e);
+                        break;
+                    }
+                    case "POST_COMMENT_UPDATE": {
+                        this.props.incomingComment(e);
+                        break;
+                    }
+                    case "POST_CLAP_TOGGLE": {
+                        this.props.incomingPostClap(e);
+                        break;
+                    }
 
-            switch (e.SOCKET_TYPE) {
-                case "CHAT_CREATE": {
-                    //@to do add unfurl
-                    this.props.incomingChatMessage(e);
-                    delete e.SOCKET_TYPE
-                    delete e.socket
-                    if (
-                        (e.user.id !== user.id && selectedChannel && selectedChannel.id !== e.channel_id) 
-                        || (e.user.id !== user.id && !isBrowserActive)
-                    ) {
-                        if (isSafari) {
-                            pushBrowserNotification(`${e.user.first_name} ${e.reference_title ? `in #${e.reference_title}` : "in a direct message"}`,
+                    default:
+                        return null;
+                }
+            })
+            .listen(".post-comment-notification", e => {
+                console.log(e, "comment-notif");
+
+                switch (e.SOCKET_TYPE) {
+                    case "POST_COMMENT_CREATE": {
+                        this.props.incomingComment(e);
+                        if (e.workspaces && e.workspaces.length >= 1) {
+                            this.props.setGeneralChat({
+                                count: 1,
+                                entity_type: "WORKSPACE_POST",
+                            });
+                        }
+                        break;
+                    }
+                    case "POST_COMMENT_DELETE": {
+                        this.props.incomingDeletedComment(e);
+                        break;
+                    }
+                    case "POST_COMMENT_UPDATE": {
+                        this.props.incomingComment(e);
+                        break;
+                    }
+                    case "POST_COMMENT_CLAP_TOGGLE": {
+                        this.props.incomingCommentClap(e);
+                        break;
+                    }
+
+                    default:
+                        return null;
+                }
+            })
+            .listen(".chat-notification", e => {
+                console.log(e, "chat-notification");
+                const {user, selectedChannel, isBrowserActive} = this.props;
+
+                switch (e.SOCKET_TYPE) {
+                    case "CHAT_CREATE": {
+                        //@to do add unfurl
+                        this.props.incomingChatMessage(e);
+                        delete e.SOCKET_TYPE;
+                        delete e.socket;
+                        if (
+                            (e.user.id !== user.id && selectedChannel && selectedChannel.id !== e.channel_id)
+                            || (e.user.id !== user.id && !isBrowserActive)
+                        ) {
+                            if (isSafari) {
+                                pushBrowserNotification(`${e.user.first_name} ${e.reference_title ? `in #${e.reference_title}` : "in a direct message"}`,
                                     `${e.user.first_name}: ${stripHtml(e.body)}`,
                                     e.user.profile_image_link,
                                     null);
+                            }
                         }
-                    }
 
-                    // update the unread indicator
-                    if (e.workspace_id === undefined || e.workspace_id === null || e.workspace_id === 0) {
-                        let notificationCounterEntryPayload = {};
-                        if (e.entity_type === "CHAT_REMINDER_MESSAGE") {
-                            notificationCounterEntryPayload = {
-                                count: 1,
-                                entity_type: "CHAT_REMINDER_MESSAGE",
-                            };
+                        // update the unread indicator
+                        if (e.workspace_id === undefined || e.workspace_id === null || e.workspace_id === 0) {
+                            let notificationCounterEntryPayload = {};
+                            if (e.entity_type === "CHAT_REMINDER_MESSAGE") {
+                                notificationCounterEntryPayload = {
+                                    count: 1,
+                                    entity_type: "CHAT_REMINDER_MESSAGE",
+                                };
+                            } else {
+                                notificationCounterEntryPayload = {
+                                    count: 1,
+                                    entity_type: "CHAT_MESSAGE",
+                                };
+                            }
+                            this.props.setGeneralChat(notificationCounterEntryPayload);
                         } else {
-                            notificationCounterEntryPayload = {
+                            this.props.setGeneralChat({
                                 count: 1,
-                                entity_type: "CHAT_MESSAGE",
-                            };
+                                entity_type: "WORKSPACE_CHAT_MESSAGE",
+                            });
                         }
-                        this.props.setGeneralChat(notificationCounterEntryPayload);
-                    } else {
-                        this.props.setGeneralChat({
-                            count: 1,
-                            entity_type: "WORKSPACE_CHAT_MESSAGE",
-                        })
+
+                        break;
                     }
-                
-                    break;
-                }
-                case "CHAT_UPDATE": {
-                    this.props.incomingUpdatedChatMessage(e);
-                    break;
-                }
-                case "CHAT_DELETE": {
-                    //@change response and add the delete file reducer
-                    this.props.incomingDeletedChatMessage(e);
-                    break;
+                    case "CHAT_UPDATE": {
+                        this.props.incomingUpdatedChatMessage(e);
+                        break;
+                    }
+                    case "CHAT_DELETE": {
+                        //@change response and add the delete file reducer
+                        this.props.incomingDeletedChatMessage(e);
+                        break;
+                    }
+
+                    default:
+                        return null;
                 }
 
-                default:
-                    return null;
-            }
-            
-        })
+            });
 
-        window.Echo.private(`${localStorage.getItem("slug") === 'dev24admin' ? "dev" : localStorage.getItem("slug")}.App.Broadcast`)
-        .listen(".user-notification", e => {
-            console.log(e, "user notif")
-            switch (e.SOCKET_TYPE) {
-                case "USER_UPDATE": {
-                    this.props.incomingUpdatedUser(e);
-                    break;
-                }
-                default:
-                    return null;
-            }
-        })
-        .listen(".post-notification", e => {
-            console.log(e, "post notif broadcast")
-            switch (e.SOCKET_TYPE) {
-                case "POST_DELETE_ATTACHMENT": {
-                    this.props.incomingDeletedPostFile(e);
-                    break;
-                }
-                case "POST_COMMENT_DELETE_ATTACHMENT": {
-                    this.props.incomingDeletedPostFile(e);
-                    break;
-                }
-                default:
-                    return null;
-            }
-        })
-        .listen(".workspace-timeline-notification", e => {
-            console.log(e, "timeline")
-            this.props.incomingTimeline(e);
-        })
-        .listen(".upload-bulk-workspace-files", e => {
-            console.log(e, 'files bulk')
-            this.props.incomingFiles(e);
-        })
-        .listen(".workspace-file-notification", e => {
-            console.log(e, 'file')
-            switch (e.SOCKET_TYPE) {
-                case "FILE_UPDATE": {
-                    this.props.incomingFile(e);
-                    break;
-                }
-                case "FILE_MOVE": {
-                    this.props.incomingMovedFile(e);
-                    break;
-                }
-                case "FILE_TRASH": {
-                    this.props.incomingDeletedFile(e);
-                    break;
-                }
-                case "FILE_EMPTY":{
-                    this.props.incomingEmptyTrash(e);
-                    break;
-                }
-                default:
-                    return null;
-            }
-        })
-        .listen(".new-workspace", e => {
-            console.log(e, "new workspace");
-            if (e.topic !== undefined) {
-                this.props.incomingWorkspace(e);
-            } else {
-                this.props.incomingWorkspaceFolder({
-                    ...e.workspace,
-                    key_id: e.key_id,
-                    type: e.type,
-                });
-            }
-        })
-        .listen(".update-workspace", e => {
-            console.log(e, "update workspace");
-            this.props.incomingUpdatedWorkspaceFolder(e);
-            if (this.props.activeTopic && this.props.activeTopic.id === e.id &&
-                e.type === "WORKSPACE" && this.props.match.path === "/workspace") {
-                let currentPage = this.props.location.pathname;
-                currentPage = currentPage.split("/")[2];
-                if (e.workspace_id === 0) {
-                    //direct workspace
-                    if (e.original_workspace_id !== 0) {
-                        //now direct workspace url
-                        this.props.history.push(`/workspace/${currentPage}/${e.id}/${replaceChar(e.name)}`);
+        window.Echo.private(`${localStorage.getItem("slug") === "dev24admin" ? "dev" : localStorage.getItem("slug")}.App.Broadcast`)
+            .listen(".user-notification", e => {
+                console.log(e, "user notif");
+                switch (e.SOCKET_TYPE) {
+                    case "USER_UPDATE": {
+                        this.props.incomingUpdatedUser(e);
+                        break;
                     }
+                    default:
+                        return null;
+                }
+            })
+            .listen(".post-notification", e => {
+                console.log(e, "post notif broadcast");
+                switch (e.SOCKET_TYPE) {
+                    case "POST_DELETE_ATTACHMENT": {
+                        this.props.incomingDeletedPostFile(e);
+                        break;
+                    }
+                    case "POST_COMMENT_DELETE_ATTACHMENT": {
+                        this.props.incomingDeletedPostFile(e);
+                        break;
+                    }
+                    default:
+                        return null;
+                }
+            })
+            .listen(".workspace-timeline-notification", e => {
+                console.log(e, "timeline");
+                this.props.incomingTimeline(e);
+            })
+            .listen(".upload-bulk-workspace-files", e => {
+                console.log(e, "files bulk");
+                this.props.incomingFiles(e);
+            })
+            .listen(".workspace-file-notification", e => {
+                console.log(e, "file");
+                switch (e.SOCKET_TYPE) {
+                    case "FILE_UPDATE": {
+                        this.props.incomingFile(e);
+                        break;
+                    }
+                    case "FILE_MOVE": {
+                        this.props.incomingMovedFile(e);
+                        break;
+                    }
+                    case "FILE_TRASH": {
+                        this.props.incomingDeletedFile(e);
+                        break;
+                    }
+                    case "FILE_EMPTY": {
+                        this.props.incomingEmptyTrash(e);
+                        break;
+                    }
+                    default:
+                        return null;
+                }
+            })
+            .listen(".new-workspace", e => {
+                console.log(e, "new workspace");
+                if (e.topic !== undefined) {
+                    this.props.incomingWorkspace(e);
                 } else {
-                    //moved workspace to another folder
-                    if (e.original_workspace_id !== e.workspace_id) {
-                        this.props.history.push(`/workspace/${currentPage}/${e.workspace_id}/${replaceChar(e.current_workspace_folder_name)}/${e.id}/${replaceChar(e.name)}`);
+                    this.props.incomingWorkspaceFolder({
+                        ...e.workspace,
+                        key_id: e.key_id,
+                        type: e.type,
+                    });
+                }
+            })
+            .listen(".update-workspace", e => {
+                console.log(e, "update workspace");
+                this.props.incomingUpdatedWorkspaceFolder(e);
+                if (this.props.activeTopic && this.props.activeTopic.id === e.id &&
+                    e.type === "WORKSPACE" && this.props.match.path === "/workspace") {
+                    let currentPage = this.props.location.pathname;
+                    currentPage = currentPage.split("/")[2];
+                    if (e.workspace_id === 0) {
+                        //direct workspace
+                        if (e.original_workspace_id !== 0) {
+                            //now direct workspace url
+                            this.props.history.push(`/workspace/${currentPage}/${e.id}/${replaceChar(e.name)}`);
+                        }
+                    } else {
+                        //moved workspace to another folder
+                        if (e.original_workspace_id !== e.workspace_id) {
+                            this.props.history.push(`/workspace/${currentPage}/${e.workspace_id}/${replaceChar(e.current_workspace_folder_name)}/${e.id}/${replaceChar(e.name)}`);
+                        }
                     }
                 }
-            }
-        })
+            });
         // old / legacy channel
-        window.Echo.private(`${localStorage.getItem("slug") === 'dev24admin' ? "dev" : localStorage.getItem("slug")}.App.User.${this.props.user.id}`)
+        window.Echo.private(`${localStorage.getItem("slug") === "dev24admin" ? "dev" : localStorage.getItem("slug")}.App.User.${this.props.user.id}`)
             .listen(".new-lock-workspace", e => {
                 console.log(e, "new workspace lock");
                 if (e.topic !== undefined) {
@@ -389,7 +397,7 @@ class SocketListeners extends PureComponent {
                 this.props.incomingUpdatedWorkspaceFolder(e);
             })
             .listen(".users-online", e => {
-                //console.log(e, 'users-online');
+                console.log(e, "users-online");
                 this.props.currentOnlineUsers(e.current_users_online.map(u => {
                     return {
                         ...u,
@@ -398,7 +406,7 @@ class SocketListeners extends PureComponent {
                 }));
             })
             .listen(".post-view", e => {
-                console.log(e, 'post view');
+                console.log(e, "post view");
                 let payload = {
                     post_id: e.post_id,
                     viewer: e.user,
@@ -715,32 +723,33 @@ class SocketListeners extends PureComponent {
             })
             .listen(".updated-notification-counter", e => {
                 console.log(e, "updated counter");
-                
+
                 this.props.setUnreadNotificationCounterEntries(e.result);
-            
+
             })
             .notification((notification) => {
                 console.log(notification);
 
             });
     }
-    render () {
+
+    render() {
         return null;
     }
 }
 
 function mapStateToProps({
-    session: {user},
-    settings: {userSettings},
-    chat: {channels, selectedChannel},
-    global: {isBrowserActive}
-}) {
+                             session: {user},
+                             settings: {userSettings},
+                             chat: {channels, selectedChannel},
+                             global: {isBrowserActive},
+                         }) {
     return {
         user,
         settings: userSettings,
         channels,
         selectedChannel,
-        isBrowserActive
+        isBrowserActive,
     };
 }
 
@@ -794,7 +803,7 @@ function mapDispatchToProps(dispatch) {
         incomingDeletedPostFile: bindActionCreators(incomingDeletedPostFile, dispatch),
         incomingDeletedComment: bindActionCreators(incomingDeletedComment, dispatch),
         incomingUpdatedUser: bindActionCreators(incomingUpdatedUser, dispatch),
-        unreadChannelReducer: bindActionCreators(unreadChannelReducer, dispatch)
+        unreadChannelReducer: bindActionCreators(unreadChannelReducer, dispatch),
     };
 }
 
