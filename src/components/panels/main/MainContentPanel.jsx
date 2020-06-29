@@ -9,7 +9,7 @@ import {
     CompanyPostsPanel,
     CompanySettingsPanel,
 } from "../company";
-import {UserProfilePanel} from "../user";
+import {UserNotificationPanel, UserProfilePanel} from "../user";
 import {MainFooterPanel} from "./index";
 
 const Wrapper = styled.div`
@@ -29,6 +29,12 @@ const MainContentPanel = (props) => {
                     path={[
                         "/profile/:id/:name",
                         "/profile",
+                    ]}/>
+                <Route
+                    {...props}
+                    component={UserNotificationPanel}
+                    path={[
+                        "/notifications",
                     ]}/>
                 <Route
                     {...props}
