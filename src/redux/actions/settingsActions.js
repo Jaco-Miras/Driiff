@@ -43,6 +43,14 @@ export function setUserSettings(payload, callback) {
     );
 }
 
+export function setUserChatSetting(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "UPDATE_USER_CHAT_SETTING",
+        payload,
+        callback,
+    );
+}
+
 export function setUserGeneralSetting(payload, callback) {
     return SimpleDispatchActionToReducer(
         "UPDATE_USER_GENERAL_SETTING",

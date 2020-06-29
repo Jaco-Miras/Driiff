@@ -58,7 +58,7 @@ export default (state = INITIAL_STATE, action) => {
                 },
             };
         case "GET_USER_SUCCESS": {
-            const {CHAT_SETTINGS, DISABLE_SOUND, GENERAL_SETTINGS, ORDER_CHANNEL, id, ...userData} = action.data;
+            const {CHAT_SETTINGS, GENERAL_SETTINGS, ORDER_CHANNEL, id, ...userData} = action.data;
 
             let user = state.users[id];
             if (user) {
@@ -83,7 +83,7 @@ export default (state = INITIAL_STATE, action) => {
             };
         }
         case "UPDATE_USER_SUCCESS": {
-            const {CHAT_SETTINGS, DISABLE_SOUND, GENERAL_SETTINGS, ORDER_CHANNEL, id, ...userData} = action.data;
+            const {CHAT_SETTINGS, GENERAL_SETTINGS, ORDER_CHANNEL, id, ...userData} = action.data;
 
             return {
                 ...state,

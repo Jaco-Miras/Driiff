@@ -3,6 +3,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {
     getDriffSettings,
     getUserSettings,
+    setUserChatSetting,
     setUserGeneralSetting,
     updateUserSettings,
 } from "../../redux/actions/settingsActions";
@@ -16,11 +17,29 @@ const useSettings = () => {
     const {logout} = useUserLogout();
     const {driff: driffSettings, user: userSettings} = useSelector(state => state.settings);
 
+    const setChatSetting = useCallback((e) => {
+        dispatch(
+            setUserChatSetting(e, () => {
+                let payload = {
+                    chat_settings: {
+                        ...userSettings.CHAT_SETTINGS,
+                        ...e,
+                    },
+                    general_settings: {
+                        ...userSettings.GENERAL_SETTINGS,
+                    },
+                };
+                dispatch(
+                    updateUserSettings(payload),
+                );
+            }),
+        );
+    }, [dispatch, userSettings]);
+
     const setGeneralSetting = useCallback((e) => {
         dispatch(
             setUserGeneralSetting(e, () => {
                 let payload = {
-                    disable_sound: userSettings.DISABLE_SOUND,
                     chat_settings: {
                         ...userSettings.CHAT_SETTINGS,
                     },
@@ -63,6 +82,7 @@ const useSettings = () => {
         driffSettings,
         chatSettings: userSettings.CHAT_SETTINGS,
         generalSettings: userSettings.GENERAL_SETTINGS,
+        setChatSetting,
         setGeneralSetting,
     };
 };

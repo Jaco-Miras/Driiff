@@ -1,4 +1,6 @@
+import momentTZ from "moment-timezone";
 import React from "react";
+
 
 const INITIAL_STATE = {
     sessionUser: null,
@@ -7,8 +9,8 @@ const INITIAL_STATE = {
     },
     user: {
         isLoaded: false,
-        DISABLE_SOUND: "0",
         CHAT_SETTINGS: {
+            sound_enabled: true,
             open_topic_channels: [],
             order_channel: {
                 order_by: "channel_date_updated",
@@ -43,6 +45,7 @@ const INITIAL_STATE = {
             },
         },
         GENERAL_SETTINGS: {
+            timezone: momentTZ.tz.guess(),
             dark_mode: "0",
             language: null,
             active_topic: null,
@@ -124,6 +127,18 @@ export default (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 user: settings,
+            };
+        }
+        case "UPDATE_USER_CHAT_SETTING": {
+            return {
+                ...state,
+                user: {
+                    ...state.user,
+                    CHAT_SETTINGS: {
+                        ...state.user.CHAT_SETTINGS,
+                        ...action.data,
+                    },
+                },
             };
         }
         case "UPDATE_USER_GENERAL_SETTING": {
