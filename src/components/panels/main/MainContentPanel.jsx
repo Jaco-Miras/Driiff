@@ -27,6 +27,7 @@ const MainContentPanel = (props) => {
                     {...props}
                     component={UserProfilePanel}
                     path={[
+                        "/profile/:id/:name/:mode",
                         "/profile/:id/:name",
                         "/profile",
                     ]}/>

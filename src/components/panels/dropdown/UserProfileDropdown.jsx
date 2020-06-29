@@ -1,9 +1,8 @@
 import React, {useCallback, useRef} from "react";
 import {useHistory} from "react-router-dom";
 import styled from "styled-components";
-import {Avatar, SvgIconFeather} from "../../common";
-import {ProgressBar} from "../common";
 import {replaceChar} from "../../../helpers/stringFormatter";
+import {Avatar, SvgIconFeather} from "../../common";
 
 const Wrapper = styled.div`
     position: absolute;
@@ -27,7 +26,7 @@ const UserProfileDropdown = (props) => {
         e.preventDefault();
 
         refs.container.current.classList.remove("show");
-        history.push(`/profile/${user.id}/${replaceChar(user.name)}`);
+        history.push(`/profile/${user.id}/${replaceChar(user.name)}/edit`);
     }, [user]);
 
     const handleSignOut = useCallback((e) => {
@@ -35,16 +34,16 @@ const UserProfileDropdown = (props) => {
         history.push("/logout");
     }, []);
 
-    const handleRedirect = () => {
-        history.push(`/profile/${user.id}/${replaceChar(user.name)}`);
-    }
+    const handleProfile = () => {
+        history.push(`/profile/${user.id}/${replaceChar(user.name)}/view`);
+    };
 
     return (
         <Wrapper ref={refs.container} className={`user-profile-dropdown dropdown-menu dropdown-menu-big ${className}`}
                  x-placement="bottom-end">
             <div className="p-3 text-center">
-                <Avatar 
-                    name={user.name} 
+                <Avatar
+                    name={user.name}
                     imageLink={user.profile_image_link}
                     id={user.id}
                     partialName={user.partial_name}
@@ -56,24 +55,10 @@ const UserProfileDropdown = (props) => {
                         <SvgIconFeather icon="edit-2"/>
                     </span>
                 </h6>
-                <small>Balance: <strong>$105</strong></small>
             </div>
             <div className="dropdown-menu-body">
-                <div className="border-bottom p-4">
-                    <h6 className="text-uppercase font-size-11 d-flex justify-content-between">
-                        Storage
-                        <span>%5</span>
-                    </h6>
-                    <ProgressBar height={15} amount={5} limit={100}/>
-                </div>
                 <div className="list-group list-group-flush">
-                    <a className="list-group-item" onClick={handleRedirect}>Profile</a>
-                    <a href="#" className="list-group-item d-flex">
-                        Followers <span className="text-muted ml-auto">214</span>
-                    </a>
-                    <a href="#" className="list-group-item d-flex">
-                        Inbox <span className="text-muted ml-auto">18</span>
-                    </a>
+                    <span className="cursor-pointer list-group-item" onClick={handleProfile}>Profile</span>
                     <a href="#" className="list-group-item" data-sidebar-target="#settings">Billing</a>
                     <a href="#" className="list-group-item" data-sidebar-target="#settings">Need help?</a>
                     <a href="#" className="list-group-item text-danger" data-sidebar-target="#settings"

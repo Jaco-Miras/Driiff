@@ -1,8 +1,9 @@
 import React, {useCallback, useEffect, useRef, useState} from "react";
 import {useDispatch} from "react-redux";
+import {useHistory} from "react-router-dom";
 import {FormGroup, Input, InputGroup, InputGroupAddon, InputGroupText, Label} from "reactstrap";
 import styled from "styled-components";
-import {EmailRegex} from "../../../helpers/stringFormatter";
+import {EmailRegex, replaceChar} from "../../../helpers/stringFormatter";
 import {addToModals} from "../../../redux/actions/globalActions";
 import {Avatar, SvgIcon, SvgIconFeather} from "../../common";
 import {DropDocument} from "../../dropzone/DropDocument";
@@ -34,6 +35,14 @@ const Wrapper = styled.div`
             }
             &::placeholder {
                 font-size: 12px;
+            }
+        }
+
+        .col-label {
+            max-width: 130px;
+
+            @media only screen and (min-width: 1200px) {
+                max-width: 180px;
             }
         }
     }
@@ -76,6 +85,7 @@ const UserProfilePanel = (props) => {
 
     const {className = ""} = props;
 
+    const history = useHistory();
     const dispatch = useDispatch();
 
     const toaster = useToaster();
@@ -374,13 +384,29 @@ const UserProfilePanel = (props) => {
         }
     }, [props.match.params.id, users, setForm]);
 
+    useEffect(() => {
+        if (props.match.params.mode === "edit") {
+            if (form.id && loggedUser.id === form.id) {
+                history.push(`/profile/${form.id}/${replaceChar(form.name)}`);
+                setEditInformation(true);
+            }
+        }
+
+        if (props.match.params.mode === "view") {
+            if (form.id && loggedUser.id === form.id) {
+                history.push(`/profile/${form.id}/${replaceChar(form.name)}`);
+                setEditInformation(false);
+            }
+        }
+    }, [form, props.match.params.mode]);
+
     if (!form.id) {
         return <></>;
     }
     return (
         <Wrapper className={`user-profile-panel container-fluid h-100 ${className}`}>
             <div className="row row-user-profile-panel">
-                <div className="col-md-4">
+                <div className="col-12 col-lg-5 col-xl-4">
                     <div className="card">
                         <div className="card-body text-center" onDragOver={handleShowDropZone}>
                             {
@@ -478,8 +504,8 @@ const UserProfilePanel = (props) => {
                                 {
                                     user.first_name &&
                                     <div className="row mb-2">
-                                        <div className="col-6 text-muted">First Name:</div>
-                                        <div className="col-6">
+                                        <div className="col col-label text-muted">First Name:</div>
+                                        <div className="col col-form">
                                             {user.first_name}
                                         </div>
                                     </div>
@@ -487,8 +513,8 @@ const UserProfilePanel = (props) => {
                                 {
                                     user.middle_name &&
                                     <div className="row mb-2">
-                                        <div className="col-6 text-muted">Middle Name:</div>
-                                        <div className="col-6">
+                                        <div className="col col-label text-muted">Middle Name:</div>
+                                        <div className="col col-form">
                                             {user.middle_name}
                                         </div>
                                     </div>
@@ -496,30 +522,33 @@ const UserProfilePanel = (props) => {
                                 {
                                     user.last_name &&
                                     <div className="row mb-2">
-                                        <div className="col-6 text-muted">Last Name:</div>
-                                        <div className="col-6">
+                                        <div className="col col-label text-muted">Last Name:</div>
+                                        <div className="col col-form">
                                             {user.last_name}
                                         </div>
                                     </div>
                                 }
-                                <div className="row mb-2">
-                                    <div className="col-6 text-muted">Password</div>
-                                    <div className="col-6">
-                                        *****
+                                {
+                                    user.id === loggedUser.id &&
+                                    <div className="row mb-2">
+                                        <div className="col col-label text-muted">Password</div>
+                                        <div className="col col-form">
+                                            *****
+                                        </div>
                                     </div>
-                                </div>
+                                }
                                 {
                                     user.role &&
                                     <div className="row mb-2">
-                                        <div className="col-6 text-muted">Position:</div>
-                                        <div className="col-6">{user.role.name}</div>
+                                        <div className="col col-label text-muted">Position:</div>
+                                        <div className="col col-form">{user.role.name}</div>
                                     </div>
                                 }
                                 {
                                     user.place &&
                                     <div className="row mb-2">
-                                        <div className="col-6 text-muted">City:</div>
-                                        <div className="col-6">
+                                        <div className="col col-label text-muted">City:</div>
+                                        <div className="col col-form">
                                             {user.place}
                                         </div>
                                     </div>
@@ -527,22 +556,22 @@ const UserProfilePanel = (props) => {
                                 {
                                     user.address &&
                                     <div className="row mb-2">
-                                        <div className="col-6 text-muted">Address:</div>
-                                        <div className="col-6">{user.address}</div>
+                                        <div className="col col-label text-muted">Address:</div>
+                                        <div className="col col-form">{user.address}</div>
                                     </div>
                                 }
                                 {
                                     user.contact &&
                                     <div className="row mb-2">
-                                        <div className="col-6 text-muted">Phone:</div>
-                                        <div className="col-6">{user.contact}</div>
+                                        <div className="col col-label text-muted">Phone:</div>
+                                        <div className="col col-form">{user.contact}</div>
                                     </div>
                                 }
                                 {
                                     user.email &&
                                     <div className="row mb-2">
-                                        <div className="col-6 text-muted">Email:</div>
-                                        <div className="col-6 cursor-pointer"
+                                        <div className="col col-label text-muted">Email:</div>
+                                        <div className="col col-form cursor-pointer"
                                              onClick={handleEmailClick}>{user.email}</div>
                                     </div>
                                 }
@@ -559,8 +588,8 @@ const UserProfilePanel = (props) => {
                                     </div>
                                 </h6>
                                 <div className="row mb-2">
-                                    <div className="col-6 text-muted">First Name:</div>
-                                    <div className="col-6">
+                                    <div className="col col-label text-muted">First Name:</div>
+                                    <div className="col col-form">
                                         {
                                             readOnlyFields.includes("first_name") ?
                                             <Label>{user.first_name}</Label>
@@ -581,8 +610,8 @@ const UserProfilePanel = (props) => {
                                     </div>
                                 </div>
                                 <div className="row mb-2">
-                                    <div className="col-6 text-muted">Middle Name:</div>
-                                    <div className="col-6">
+                                    <div className="col col-label text-muted">Middle Name:</div>
+                                    <div className="col col-form">
                                         {
                                             readOnlyFields.includes("middle_name") ?
                                             <Label>{user.middle_name}</Label>
@@ -602,8 +631,8 @@ const UserProfilePanel = (props) => {
                                 </div>
 
                                 <div className="row mb-2">
-                                    <div className="col-6 text-muted">Last Name:</div>
-                                    <div className="col-6">
+                                    <div className="col col-label text-muted">Last Name:</div>
+                                    <div className="col col-form">
                                         {
                                             readOnlyFields.includes("last_name") ?
                                             <Label>{user.last_name}</Label>
@@ -622,8 +651,8 @@ const UserProfilePanel = (props) => {
                                     </div>
                                 </div>
                                 <div className="row mb-2">
-                                    <div className="col-6 text-muted">Password</div>
-                                    <div className="col-6">
+                                    <div className="col col-label text-muted">Password</div>
+                                    <div className="col col-form">
                                         {
                                             readOnlyFields.includes("password") ?
                                             <Label>*****</Label>
@@ -659,8 +688,8 @@ const UserProfilePanel = (props) => {
                                     </div>
                                 </div>
                                 <div className="row mb-2">
-                                    <div className="col-6 text-muted">City:</div>
-                                    <div className="col-6">
+                                    <div className="col col-label text-muted">City:</div>
+                                    <div className="col col-form">
                                         {
                                             readOnlyFields.includes("place") ?
                                             <Label>{user.place}</Label>
@@ -679,8 +708,8 @@ const UserProfilePanel = (props) => {
                                     </div>
                                 </div>
                                 <div className="row mb-2">
-                                    <div className="col-6 text-muted">Address:</div>
-                                    <div className="col-6">
+                                    <div className="col col-label text-muted">Address:</div>
+                                    <div className="col col-form">
                                         {
                                             readOnlyFields.includes("address") ?
                                             <Label>
@@ -701,8 +730,8 @@ const UserProfilePanel = (props) => {
                                     </div>
                                 </div>
                                 <div className="row mb-2">
-                                    <div className="col-6 text-muted">Contact:</div>
-                                    <div className="col-6">
+                                    <div className="col col-label text-muted">Contact:</div>
+                                    <div className="col col-form">
                                         {
                                             readOnlyFields.includes("contact") ?
                                             <Label>{user.contact}</Label>
@@ -722,8 +751,8 @@ const UserProfilePanel = (props) => {
                                     </div>
                                 </div>
                                 <div className="row mb-2">
-                                    <div className="col-6 text-muted">Email:</div>
-                                    <div className="col-6">
+                                    <div className="col col-label text-muted">Email:</div>
+                                    <div className="col col-form">
                                         {
                                             readOnlyFields.includes("email") ?
                                             <Label>{user.email}</Label>
@@ -746,11 +775,11 @@ const UserProfilePanel = (props) => {
                                 <div className="d-flex justify-content-between align-items-center mt-0">
                                     <div>&nbsp;</div>
                                     <div>
-                                        <span onClick={handleSave} className="btn btn-primary btn-sm mr-2">
+                                        <span onClick={handleSave} className="btn btn-primary mr-2">
                                             Save Changes
                                         </span>
-                                        <span onClick={toggleEditInformation} className="btn btn-outline-light btn-sm">
-                                            <SvgIconFeather className="mr-2" icon="x"/> Cancel
+                                        <span onClick={toggleEditInformation} className="btn btn-outline-light">
+                                            Cancel
                                         </span>
                                     </div>
                                 </div>

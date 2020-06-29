@@ -90,10 +90,13 @@ const TimestampDiv = styled.div`
     }
     span {
 
-        padding: 5px 10px;
+        padding: 4px 8px;
         border-radius: 5px;
         display: inline-block;
         font-size: 11px;
+        background: #ffffff;
+        border-radius: 8px;
+        margin: 0 4px;
     }
     &[stuck] {
         &:before, &:after {
