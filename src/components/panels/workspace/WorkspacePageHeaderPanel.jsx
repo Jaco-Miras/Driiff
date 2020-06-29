@@ -60,6 +60,21 @@ const WorkspacePageHeaderPanel = (props) => {
                 <div className="container-fluid d-sm-flex justify-content-between">
                     <Navbar className="navbar-nav">
                         <li className="nav-item">
+                            <MainNavLink isSub={true} to={`/workspace/chat${pathname}`}>
+                                Chat
+                                {
+                                    workspace !== null &&
+                                    (
+                                        (workspace.type === "TOPIC" && workspace.unread_chats !== 0) ||
+                                        (workspace.type === "WORKSPACE" && workspace.topic_detail.unread_chats !== 0)
+                                    ) &&
+                                    <div className="ml-2 badge badge-danger">
+                                        {workspace.type === "TOPIC" ? workspace.unread_chats : workspace.topic_detail.unread_chats}
+                                    </div>
+                                }
+                            </MainNavLink>
+                        </li>
+                        <li className="nav-item">
                             <MainNavLink isSub={true} to={`/workspace/dashboard${pathname}`}>Dashboard</MainNavLink>
                         </li>
                         <li className="nav-item">
@@ -73,21 +88,6 @@ const WorkspacePageHeaderPanel = (props) => {
                                     ) &&
                                     <div className="ml-2 badge badge-danger">
                                         {workspace.type === "TOPIC" ? workspace.unread_posts : workspace.topic_detail.unread_posts}
-                                    </div>
-                                }
-                            </MainNavLink>
-                        </li>
-                        <li className="nav-item">
-                            <MainNavLink isSub={true} to={`/workspace/chat${pathname}`}>
-                                Chat
-                                {
-                                    workspace !== null &&
-                                    (
-                                        (workspace.type === "TOPIC" && workspace.unread_chats !== 0) ||
-                                        (workspace.type === "WORKSPACE" && workspace.topic_detail.unread_chats !== 0)
-                                    ) &&
-                                    <div className="ml-2 badge badge-danger">
-                                        {workspace.type === "TOPIC" ? workspace.unread_chats : workspace.topic_detail.unread_chats}
                                     </div>
                                 }
                             </MainNavLink>
