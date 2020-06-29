@@ -52,3 +52,22 @@ export function readAllNotification(payload) {
         data: payload,
     });
 }
+
+export function deleteAllNotification(payload) {
+    return apiCall({
+        method: "DELETE",
+        url: `/v2/notification-counter-all-delete`,
+    });
+}
+
+/**
+ * @param {Object} payload
+ * @param {number} payload.id
+ * @returns {Promise<*>}
+ */
+export function deleteNotification(payload) {
+    return apiCall({
+        method: "DELETE",
+        url: `/v2/notification-counter/${payload.id}`,
+    });
+}

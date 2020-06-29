@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import {useHistory} from "react-router-dom";
 import {NotificationLists} from "../../list/notification/item";
 import {useNotifications, useNotificationActions} from "../../hooks";
 
@@ -9,12 +10,16 @@ const Wrapper = styled.div`
 const NotificationDropdown = (props) => {
 
     const {className = ""} = props;
-
+    const history = useHistory();
     const actions = useNotificationActions();
     const {notifications, unreadCount} = useNotifications(actions);
 
     const markAllRead = () => {
         actions.readAll({});
+    };
+
+    const viewAll = () => {
+        history.push(`/notifications`);
     };
 
     return (
@@ -29,12 +34,13 @@ const NotificationDropdown = (props) => {
                     }
                 </div>
                 <div>
-                    <NotificationLists notifications={notifications} actions={actions}/>
+                    <NotificationLists notifications={notifications} actions={actions} history={history}/>
                 </div>
                 <div className="p-2 text-right">
                     <ul className="list-inline small">
-                        <li className="list-inline-item">
-                            <a onClick={markAllRead}>Mark All Read</a>
+                        <li className="list-inline-item d-flex">
+                            <a onClick={viewAll}>View all</a>
+                            <a className="ml-auto" onClick={markAllRead}>Mark all read</a>
                         </li>
                     </ul>
                 </div>
