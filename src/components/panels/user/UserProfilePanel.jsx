@@ -37,6 +37,14 @@ const Wrapper = styled.div`
                 font-size: 12px;
             }
         }
+        
+        .col-label {
+            max-width: 130px;
+            
+            @media only screen and (min-width: 1200px) {
+                max-width: 180px;
+            }
+        }
     }
 
     .close {
@@ -398,7 +406,7 @@ const UserProfilePanel = (props) => {
     return (
         <Wrapper className={`user-profile-panel container-fluid h-100 ${className}`}>
             <div className="row row-user-profile-panel">
-                <div className="col-md-4">
+                <div className="col-12 col-lg-5 col-xl-4">
                     <div className="card">
                         <div className="card-body text-center" onDragOver={handleShowDropZone}>
                             {
@@ -496,8 +504,8 @@ const UserProfilePanel = (props) => {
                                 {
                                     user.first_name &&
                                     <div className="row mb-2">
-                                        <div className="col-6 text-muted">First Name:</div>
-                                        <div className="col-6">
+                                        <div className="col col-label text-muted">First Name:</div>
+                                        <div className="col col-form">
                                             {user.first_name}
                                         </div>
                                     </div>
@@ -505,8 +513,8 @@ const UserProfilePanel = (props) => {
                                 {
                                     user.middle_name &&
                                     <div className="row mb-2">
-                                        <div className="col-6 text-muted">Middle Name:</div>
-                                        <div className="col-6">
+                                        <div className="col col-label text-muted">Middle Name:</div>
+                                        <div className="col col-form">
                                             {user.middle_name}
                                         </div>
                                     </div>
@@ -514,8 +522,8 @@ const UserProfilePanel = (props) => {
                                 {
                                     user.last_name &&
                                     <div className="row mb-2">
-                                        <div className="col-6 text-muted">Last Name:</div>
-                                        <div className="col-6">
+                                        <div className="col col-label text-muted">Last Name:</div>
+                                        <div className="col col-form">
                                             {user.last_name}
                                         </div>
                                     </div>
@@ -523,8 +531,8 @@ const UserProfilePanel = (props) => {
                                 {
                                     user.id === loggedUser.id &&
                                     <div className="row mb-2">
-                                        <div className="col-6 text-muted">Password</div>
-                                        <div className="col-6">
+                                        <div className="col col-label text-muted">Password</div>
+                                        <div className="col col-form">
                                             *****
                                         </div>
                                     </div>
@@ -532,15 +540,15 @@ const UserProfilePanel = (props) => {
                                 {
                                     user.role &&
                                     <div className="row mb-2">
-                                        <div className="col-6 text-muted">Position:</div>
-                                        <div className="col-6">{user.role.name}</div>
+                                        <div className="col col-label text-muted">Position:</div>
+                                        <div className="col col-form">{user.role.name}</div>
                                     </div>
                                 }
                                 {
                                     user.place &&
                                     <div className="row mb-2">
-                                        <div className="col-6 text-muted">City:</div>
-                                        <div className="col-6">
+                                        <div className="col col-label text-muted">City:</div>
+                                        <div className="col col-form">
                                             {user.place}
                                         </div>
                                     </div>
@@ -548,22 +556,22 @@ const UserProfilePanel = (props) => {
                                 {
                                     user.address &&
                                     <div className="row mb-2">
-                                        <div className="col-6 text-muted">Address:</div>
-                                        <div className="col-6">{user.address}</div>
+                                        <div className="col col-label text-muted">Address:</div>
+                                        <div className="col col-form">{user.address}</div>
                                     </div>
                                 }
                                 {
                                     user.contact &&
                                     <div className="row mb-2">
-                                        <div className="col-6 text-muted">Phone:</div>
-                                        <div className="col-6">{user.contact}</div>
+                                        <div className="col col-label text-muted">Phone:</div>
+                                        <div className="col col-form">{user.contact}</div>
                                     </div>
                                 }
                                 {
                                     user.email &&
                                     <div className="row mb-2">
-                                        <div className="col-6 text-muted">Email:</div>
-                                        <div className="col-6 cursor-pointer"
+                                        <div className="col col-label text-muted">Email:</div>
+                                        <div className="col col-form cursor-pointer"
                                              onClick={handleEmailClick}>{user.email}</div>
                                     </div>
                                 }
@@ -580,8 +588,8 @@ const UserProfilePanel = (props) => {
                                     </div>
                                 </h6>
                                 <div className="row mb-2">
-                                    <div className="col-6 text-muted">First Name:</div>
-                                    <div className="col-6">
+                                    <div className="col col-label text-muted">First Name:</div>
+                                    <div className="col col-form">
                                         {
                                             readOnlyFields.includes("first_name") ?
                                             <Label>{user.first_name}</Label>
@@ -602,8 +610,8 @@ const UserProfilePanel = (props) => {
                                     </div>
                                 </div>
                                 <div className="row mb-2">
-                                    <div className="col-6 text-muted">Middle Name:</div>
-                                    <div className="col-6">
+                                    <div className="col col-label text-muted">Middle Name:</div>
+                                    <div className="col col-form">
                                         {
                                             readOnlyFields.includes("middle_name") ?
                                             <Label>{user.middle_name}</Label>
@@ -623,8 +631,8 @@ const UserProfilePanel = (props) => {
                                 </div>
 
                                 <div className="row mb-2">
-                                    <div className="col-6 text-muted">Last Name:</div>
-                                    <div className="col-6">
+                                    <div className="col col-label text-muted">Last Name:</div>
+                                    <div className="col col-form">
                                         {
                                             readOnlyFields.includes("last_name") ?
                                             <Label>{user.last_name}</Label>
@@ -643,8 +651,8 @@ const UserProfilePanel = (props) => {
                                     </div>
                                 </div>
                                 <div className="row mb-2">
-                                    <div className="col-6 text-muted">Password</div>
-                                    <div className="col-6">
+                                    <div className="col col-label text-muted">Password</div>
+                                    <div className="col col-form">
                                         {
                                             readOnlyFields.includes("password") ?
                                             <Label>*****</Label>
@@ -680,8 +688,8 @@ const UserProfilePanel = (props) => {
                                     </div>
                                 </div>
                                 <div className="row mb-2">
-                                    <div className="col-6 text-muted">City:</div>
-                                    <div className="col-6">
+                                    <div className="col col-label text-muted">City:</div>
+                                    <div className="col col-form">
                                         {
                                             readOnlyFields.includes("place") ?
                                             <Label>{user.place}</Label>
@@ -700,8 +708,8 @@ const UserProfilePanel = (props) => {
                                     </div>
                                 </div>
                                 <div className="row mb-2">
-                                    <div className="col-6 text-muted">Address:</div>
-                                    <div className="col-6">
+                                    <div className="col col-label text-muted">Address:</div>
+                                    <div className="col col-form">
                                         {
                                             readOnlyFields.includes("address") ?
                                             <Label>
@@ -722,8 +730,8 @@ const UserProfilePanel = (props) => {
                                     </div>
                                 </div>
                                 <div className="row mb-2">
-                                    <div className="col-6 text-muted">Contact:</div>
-                                    <div className="col-6">
+                                    <div className="col col-label text-muted">Contact:</div>
+                                    <div className="col col-form">
                                         {
                                             readOnlyFields.includes("contact") ?
                                             <Label>{user.contact}</Label>
@@ -743,8 +751,8 @@ const UserProfilePanel = (props) => {
                                     </div>
                                 </div>
                                 <div className="row mb-2">
-                                    <div className="col-6 text-muted">Email:</div>
-                                    <div className="col-6">
+                                    <div className="col col-label text-muted">Email:</div>
+                                    <div className="col col-form">
                                         {
                                             readOnlyFields.includes("email") ?
                                             <Label>{user.email}</Label>
