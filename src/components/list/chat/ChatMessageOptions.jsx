@@ -21,10 +21,10 @@ const ChatMessageOptions = props => {
     const handleRemoveReply = () => {
         let payload = {
             type: "confirmation",
-            headerText: "Delete chat",
-            submitText: "Delete",
+            headerText: "Remove chat",
+            submitText: "Remove",
             cancelText: "Cancel",
-            bodyText: "Are you sure you want to delete this chat?",
+            bodyText: "Are you sure you want to remove this chat?",
             actions: {
                 onSubmit: handleDeleteReply,
             },

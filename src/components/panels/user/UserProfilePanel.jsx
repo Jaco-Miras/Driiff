@@ -37,10 +37,10 @@ const Wrapper = styled.div`
                 font-size: 12px;
             }
         }
-        
+
         .col-label {
             max-width: 130px;
-            
+
             @media only screen and (min-width: 1200px) {
                 max-width: 180px;
             }
@@ -775,11 +775,11 @@ const UserProfilePanel = (props) => {
                                 <div className="d-flex justify-content-between align-items-center mt-0">
                                     <div>&nbsp;</div>
                                     <div>
-                                        <span onClick={handleSave} className="btn btn-primary btn-sm mr-2">
+                                        <span onClick={handleSave} className="btn btn-primary mr-2">
                                             Save Changes
                                         </span>
-                                        <span onClick={toggleEditInformation} className="btn btn-outline-light btn-sm">
-                                            <SvgIconFeather className="mr-2" icon="x"/> Cancel
+                                        <span onClick={toggleEditInformation} className="btn btn-outline-light">
+                                            Cancel
                                         </span>
                                     </div>
                                 </div>

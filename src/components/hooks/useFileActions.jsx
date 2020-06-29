@@ -332,10 +332,10 @@ const useFileActions = (params = null) => {
         };
         let payload = {
             type: "confirmation",
-            headerText: "Delete trash",
-            submitText: "Delete",
+            headerText: "Empty trash",
+            submitText: "Empty",
             cancelText: "Cancel",
-            bodyText: "Are you sure you want to delete all trash files?",
+            bodyText: "Are you sure you want to empty the trash?",
             actions: {
                 onSubmit: handleDeleteTrash,
             },
