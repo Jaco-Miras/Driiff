@@ -13,6 +13,7 @@ import SocketListeners from "../components/socket/socketListeners";
 import {getFiles} from "../redux/actions/fileActions";
 import {getAllRecipients, getConnectedSlugs} from "../redux/actions/globalActions";
 import {getMentions} from "../redux/actions/userAction";
+import {getNotifications} from "../redux/actions/notificationActions";
 
 const MainContent = styled.div`
 `;
@@ -29,6 +30,7 @@ const MainLayout = (props) => {
     const dispatch = useDispatch();
 
     const files = useSelector(state => state.files.files);
+    const notifications = useSelector(state => state.notifications.notifications);
 
     useEffect(() => {
         document.body.classList.remove("form-membership");
@@ -38,7 +40,9 @@ const MainLayout = (props) => {
         if (Object.keys(files).length === 0) {
             dispatch(getFiles({sort: "desc"}));
         }
-
+        if (Object.keys(notifications).length === 0) {
+            dispatch(getNotifications({skip: 0, limit: 100}));
+        }
         //eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
