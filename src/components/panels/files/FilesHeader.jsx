@@ -109,7 +109,7 @@ const FilesHeader = (props) => {
                         </li>
                     }
                     {
-                        Object.keys(folders).length >= 1 &&
+                        isMember === true && Object.keys(folders).length >= 1 &&
                         <li className="list-inline-item mb-0">
                             <ButtonDropdown dropdown={folderDropDown}/>
                         </li>
