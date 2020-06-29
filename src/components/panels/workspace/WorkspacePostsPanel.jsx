@@ -1,6 +1,6 @@
 import React, {useCallback, useEffect} from "react";
 import {useSelector} from "react-redux";
-import {useParams, useHistory} from "react-router-dom";
+import {useHistory, useParams} from "react-router-dom";
 import styled from "styled-components";
 import {SvgEmptyState} from "../../common";
 import {useIsMember, usePosts} from "../../hooks";
@@ -8,6 +8,10 @@ import {PostDetail, PostFilterSearchPanel, PostItemPanel, PostSidebar} from "../
 
 const Wrapper = styled.div`
     text-align: left;
+    
+    .app-lists {
+        overflow: visible !important;
+    }
 
     .app-block {
         overflow: inherit;
