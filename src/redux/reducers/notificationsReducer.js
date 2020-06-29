@@ -51,6 +51,20 @@ export default (state = INITIAL_STATE, action) => {
                 notifications: updatedNotifications
             }
         }
+        case "REMOVE_NOTIFICATION_REDUCER": {
+            let updatedNotifications = {...state.notifications};
+            delete updatedNotifications[action.data.id]
+            return {
+                ...state,
+                notifications: updatedNotifications
+            }
+        }
+        case "REMOVE_ALL_NOTIFICATION_REDUCER": {
+            return {
+                ...state,
+                notifications: {}
+            }
+        }
         default:
             return state;
     }

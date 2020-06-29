@@ -134,6 +134,8 @@ export {
 } from "./driff";
 
 export {
+    deleteNotification,
+    deleteAllNotification,
     getNotifications,
     patchNotification,
     readAllNotification,

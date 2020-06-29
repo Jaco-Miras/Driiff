@@ -1,6 +1,5 @@
 import React from "react";
 import styled from "styled-components";
-import {useHistory} from "react-router-dom";
 import {Avatar} from "../../../common";
 import {localizeChatChannelDate} from "../../../../helpers/momentFormatJS";
 import {stripHtml} from "../../../../helpers/stringFormatter";
@@ -17,8 +16,7 @@ const Wrapper = styled.li`
 
 export const NotificationListItem = props => {
 
-    const { notification, actions } = props;
-    const history = useHistory();
+    const { notification, actions, history } = props;
 
     const handleRedirect = e => {
         e.preventDefault();
@@ -34,6 +32,12 @@ export const NotificationListItem = props => {
         }
     };
 
+    const handleRemove = e => {
+        e.preventDefault();
+        e.stopPropagation();
+        actions.remove({id: notification.id});
+    }
+
     const notifDisplay = () => {
         switch (notification.type) {
             case "POST_CREATE": {
@@ -41,16 +45,6 @@ export const NotificationListItem = props => {
                     <div className="flex-grow-1" onClick={handleRedirect}>
                         <p className="mb-0 line-height-20 d-flex justify-content-between">
                             sends you a post
-                            {
-                                notification.is_read === 0 ?
-                                <i title="" data-toggle="tooltip" onClick={handleReadUnread}
-                                    className="hide-show-toggler-item fa fa-circle-o font-size-11"
-                                    data-original-title="Mark as read"></i>
-                                :
-                                <i title="" data-toggle="tooltip" onClick={handleReadUnread}
-                                    className="hide-show-toggler-item fa fa-check font-size-11"
-                                    data-original-title="Mark as unread"></i>
-                            }
                         </p>
                         <p>
                             {notification.data.title}
@@ -64,16 +58,6 @@ export const NotificationListItem = props => {
                     <div className="flex-grow-1" onClick={handleRedirect}>
                         <p className="mb-0 line-height-20 d-flex justify-content-between">
                             made a comment in {notification.data.title}
-                            {
-                                notification.is_read === 0 ?
-                                <i title="" data-toggle="tooltip" onClick={handleReadUnread}
-                                    className="hide-show-toggler-item fa fa-circle-o font-size-11"
-                                    data-original-title="Mark as read"></i>
-                                :
-                                <i title="" data-toggle="tooltip" onClick={handleReadUnread}
-                                    className="hide-show-toggler-item fa fa-check font-size-11"
-                                    data-original-title="Mark as unread"></i>
-                            }
                         </p>
                         <p>
                             {stripHtml(notification.data.comment_body)}
@@ -87,16 +71,6 @@ export const NotificationListItem = props => {
                     <div className="flex-grow-1" onClick={handleRedirect}>
                         <p className="mb-0 line-height-20 d-flex justify-content-between">
                             mentioned you in {notification.data.title}
-                            {
-                                notification.is_read === 0 ?
-                                <i title="" data-toggle="tooltip" onClick={handleReadUnread}
-                                    className="hide-show-toggler-item fa fa-circle-o font-size-11"
-                                    data-original-title="Mark as read"></i>
-                                :
-                                <i title="" data-toggle="tooltip" onClick={handleReadUnread}
-                                    className="hide-show-toggler-item fa fa-check font-size-11"
-                                    data-original-title="Mark as unread"></i>
-                            }
                         </p>
                         <p>
                             {stripHtml(notification.data.comment_body)}
@@ -120,6 +94,21 @@ export const NotificationListItem = props => {
                     />
                 </div>
                 {notifDisplay()}
+                <div>
+                {
+                    notification.is_read === 0 ?
+                    <i title="" data-toggle="tooltip" onClick={handleReadUnread}
+                        className="hide-show-toggler-item fa fa-circle-o font-size-11"
+                        data-original-title="Mark as read"></i>
+                    :
+                    <i title="" data-toggle="tooltip" onClick={handleReadUnread}
+                        className="hide-show-toggler-item fa fa-check font-size-11"
+                        data-original-title="Mark as unread"></i>
+                }
+                    {/* <i title="" data-toggle="tooltip" onClick={handleRemove}
+                        className="hide-show-toggler-item fa fa-times font-size-11"
+                        data-original-title="Remove"></i> */}
+                </div>
             </a>
         </Wrapper>
     )

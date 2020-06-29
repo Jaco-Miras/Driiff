@@ -1,5 +1,7 @@
 import dispatchActionToReducer, {SimpleDispatchActionToReducer} from "../actionDispatcher";
 import {
+    deleteNotification as deleteNotificationService,
+    deleteAllNotification as deleteAllNotificationService,
     getNotifications as getNotificationsService,
     patchNotification as patchNotificationService,
     readAllNotification as readAllNotificationService,
@@ -65,6 +67,42 @@ export function readNotificationReducer(payload, callback) {
 export function unreadNotificationReducer(payload, callback) {
     return SimpleDispatchActionToReducer(
         "UNREAD_NOTIFICATION_REDUCER",
+        payload,
+        callback,
+    );
+}
+
+export function deleteNotification(payload, callback) {
+    return dispatchActionToReducer(
+        deleteNotificationService(payload),
+        "DELETE_NOTIFICATION_START",
+        "DELETE_NOTIFICATION_SUCCESS",
+        "DELETE_NOTIFICATION_FAIL",
+        callback,
+    );
+}
+
+export function deleteAllNotification(payload, callback) {
+    return dispatchActionToReducer(
+        deleteAllNotificationService(payload),
+        "DELETE_ALL_NOTIFICATION_START",
+        "DELETE_ALL_NOTIFICATION_SUCCESS",
+        "DELETE_ALL_NOTIFICATION_FAIL",
+        callback,
+    );
+}
+
+export function removeNotificationReducer(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "REMOVE_NOTIFICATION_REDUCER",
+        payload,
+        callback,
+    );
+}
+
+export function removeAllNotificationReducer(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "REMOVE_ALL_NOTIFICATION_REDUCER",
         payload,
         callback,
     );
