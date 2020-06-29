@@ -8,30 +8,29 @@ const Wrapper = styled(MoreOptions)`
         position: absolute;
         font-size: .835rem;
         width: 150px;
-
-        &.orientation-left {
-            right: calc(100% - 10px);
-        }
+        
         &.orientation-top {
-            top: 100% !important;
+            top: calc(100% - 25px);
             bottom: auto;
         }
         &.orientation-bottom {
-            top: 100%;
+            top: calc(100% - 25px);
+            bottom: auto;
         }
-        &.orientation-top {
-            bottom: 20px;
+        &.orientation-left {
+            right: calc(100% + 5px);
+            left: auto;
         }
         &.orientation-right {
-            right: calc(100% - 10px) !important;
-            left: auto;
+            left: calc(100% + 25px);
+            right: auto;
         }
     }
 `;
 
 const FileOptions = props => {
 
-    const {className = "", file, scrollRef, actions, isMember} = props;
+    const {className = "", file, scrollRef = null, actions, isMember} = props;
     const toaster = useToaster();
 
     //const [showMoreOptions, setShowMoreOptions] = useState(false);
