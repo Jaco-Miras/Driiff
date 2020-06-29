@@ -6,11 +6,12 @@ import styled from "styled-components";
 import {replaceChar} from "../../helpers/stringFormatter";
 import {setPendingUploadFilesToWorkspace} from "../../redux/actions/fileActions";
 import {clearModal} from "../../redux/actions/globalActions";
-import {fetchTimeline, updateWorkspace} from "../../redux/actions/workspaceActions";
+import {fetchTimeline, updateWorkspace, createWorkspace} from "../../redux/actions/workspaceActions";
 import {FileAttachments} from "../common";
 import {DropDocument} from "../dropzone/DropDocument";
 import {CheckBox, DescriptionInput, FolderSelect, InputFeedback, PeopleSelect} from "../forms";
 import {ModalHeaderSection} from "./index";
+import {useToaster} from "../hooks";
 
 const WrapperDiv = styled(InputGroup)`
     display: flex;
@@ -106,6 +107,7 @@ const CreateEditWorkspaceModal = (props) => {
 
     const history = useHistory();
     const dispatch = useDispatch();
+    const toaster = useToaster();
     const [modal, setModal] = useState(true);
     const user = useSelector(state => state.session.user);
     const users = useSelector(state => state.users.mentions);
@@ -362,51 +364,50 @@ const CreateEditWorkspaceModal = (props) => {
             };
             dispatch(updateWorkspace(payload, cb));
         } else {
-            /*dispatch(
+            dispatch(
              createWorkspace(payload, (err, res) => {
-             if (err) {
-             console.log(err);
-             setLoading(false);
-             toaster.notify(
-             <span>Workspace creation failed.<br/>Please try again.</span>,
-             {position: "bottom-left"});
-             }
+                if (err) {
+                    console.log(err);
+                    setLoading(false);
+                    toaster.warning(
+                        <span>Workspace creation failed.<br/>Please try again.</span>,
+                    {position: "bottom-left"});
+                }
 
-             if (res) {
-             if (attachedFiles.length) {
-             let formData = new FormData();
-             for (const i in attachedFiles) {
-             formData.append("files[" + i + "]", attachedFiles[i].rawFile);
-             }
+                if (res) {
+                    if (attachedFiles.length) {
+                        let formData = new FormData();
+                        for (const i in attachedFiles) {
+                            formData.append("files[" + i + "]", attachedFiles[i].rawFile);
+                        }
 
-             dispatch(
-             setPendingUploadFilesToWorkspace({
-             is_primary: 1,
-             topic_id: res.data.id,
-             files: formData,
-             }),
-             );
-             }
-             //redirect url
-             if (form.selectedFolder) {
-             history.push(`/workspace/dashboard/${form.selectedFolder.value}/${replaceChar(form.selectedFolder.label)}/${res.data.id}/${replaceChar(form.name)}`);
-             } else {
-             history.push(`/workspace/dashboard/${res.data.id}/${replaceChar(form.name)}`);
-             }
+                        dispatch(
+                            setPendingUploadFilesToWorkspace({
+                                is_primary: 1,
+                                topic_id: res.data.id,
+                                files: formData,
+                            }),
+                        );
+                    }
+                    //redirect url
+                    if (form.selectedFolder) {
+                        history.push(`/workspace/dashboard/${form.selectedFolder.value}/${replaceChar(form.selectedFolder.label)}/${res.data.id}/${replaceChar(form.name)}`);
+                    } else {
+                        history.push(`/workspace/dashboard/${res.data.id}/${replaceChar(form.name)}`);
+                    }
 
-             toaster.notify(
-             <span><b>{form.name}</b> workspace is created
-             {
-             form.selectedFolder !== null &&
-             <> <b>{form.selectedFolder.label}</b> under directory</>
-             }.
-             </span>,
-             {position: "bottom-left"});
-             toggle();
-             }
-             }));*/
+                    toaster.success(
+                        <span><b>{form.name}</b> workspace is created
+                        {
+                            form.selectedFolder !== null &&
+                            <> <b>{form.selectedFolder.label}</b> under directory</>
+                        }.
+                        </span>,
+                    {position: "bottom-left"});
+                }
+            })
+            );
         }
-
         toggle();
     };
 
