@@ -34,10 +34,16 @@ const ChatBubbleContainer = styled.div`
         background: none;
         padding: 0;
     `}
-    &:focus {
-        -webkit-box-shadow: 0 0 0 1px ${props => (props.isAuthor ? props.theme.self.chat_bubble_focus_border_color : props.theme.others.chat_bubble_focus_border_color)};
-        -moz-box-shadow: 0 0 0 1px ${props => (props.isAuthor ? props.theme.self.chat_bubble_focus_border_color : props.theme.others.chat_bubble_focus_border_color)};
-        box-shadow: 0 0 0 1px ${props => (props.isAuthor ? props.theme.self.chat_bubble_focus_border_color : props.theme.others.chat_bubble_focus_border_color)};
+
+    &:after {
+        content: ${props => (props.showAvatar && props.hideBg === false) && "''"};
+        border: 10px solid #0000;
+        position: absolute;
+        top: 8px;
+        z-index: 1;
+        ${props => props.isAuthor ? "right: -20px" : "left: -20px"};
+        border-left-color: ${props => (props.isAuthor ? props.theme.self.chat_bubble_background_color : '#0000' )};
+        border-right-color: ${props => (!props.isAuthor ? props.theme.others.chat_bubble_background_color : '#0000' )};
     }
 
     a:not([href]):not([tabindex]) {
@@ -81,7 +87,7 @@ const ChatBubbleContainer = styled.div`
 
 
     span.reply-date{
-        color: #a7abc3;
+        color: ${props => (props.showAvatar && props.hideBg === false) ? "#a7abc3" : '#0000' };
         font-style: italic;
         font-size: 11px;
         position: absolute;
@@ -91,6 +97,7 @@ const ChatBubbleContainer = styled.div`
         height: 100%;
         align-items: center;
         white-space: nowrap;
+
     }
     // * {
     //     word-break: break-all;
@@ -158,6 +165,7 @@ const ChatBubbleContainer = styled.div`
         display: inline-block;
         background-size: contain;
     }
+
 `;
 
 const QuoteContainer = styled.div`
@@ -193,7 +201,7 @@ const QuoteContainer = styled.div`
     position: absolute;
     top: ${props => ((props.showAvatar && !props.isAuthor) ? "6px" : "8px")};;
 
-    z-index: 1;
+    z-index: 12;
     ${props => !props.isAuthor ? "left: -19px" : "right: -20px"};
 }
 

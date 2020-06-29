@@ -14105,6 +14105,7 @@ body.form-membership .form-wrapper hr {
 
 .chat-block .chat-content {
   padding-left: 1.5rem;
+
   display: -webkit-box;
   display: -webkit-flex;
   display: -moz-box;
@@ -14129,7 +14130,7 @@ body.form-membership .form-wrapper hr {
 }
 
 .chat-block .chat-content .messages {
-  padding: 1.5rem 0;
+  position: relative;
   display: -webkit-box;
   display: -webkit-flex;
   display: -moz-box;
@@ -14265,6 +14266,7 @@ body.form-membership .form-wrapper hr {
 }
 
 .chat-block .chat-content .chat-footer {
+  margin-top: 20px;
   padding-top: 1.5rem;
 }
 

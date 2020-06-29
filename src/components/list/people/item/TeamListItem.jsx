@@ -40,6 +40,8 @@ const TeamListItem = (props) => {
         history.push(`/profile/${member.id}/${member.name}`);
     };
 
+    console.log(member);
+
     return (
         <Wrapper className={`team-list-item list-group-item d-flex align-items-center p-l-r-0 justify-content-between ${className}`}>
             <div class="d-flex align-items-center">
