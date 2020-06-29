@@ -19,6 +19,7 @@
     "logrocket": "^1.0.7",
     "md5": "^2.2.1",
     "moment": "^2.25.3",
+    "moment-timezone": "^0.5.31",
     "node-sass": "^4.14.1",
     "push.js": "^1.0.12",
     "quill-mention": "^2.2.5",
@@ -56,7 +57,7 @@
     "toasted-notes": "^3.2.0"
   },
   "scripts": {
-    "start-dev": "PORT=3006 env-cmd -e dev react-scripts start",
+    "start-dev": "env-cmd -e dev react-scripts start",
     "dev": "PORT=3006 env-cmd -e dev react-scripts start",
     "build-dev": "env-cmd -e dev react-scripts build",
     "start-prod": "env-cmd -e prod react-scripts start",

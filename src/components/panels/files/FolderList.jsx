@@ -1,5 +1,4 @@
 import React, {useEffect, useRef, useState} from "react";
-import {useDispatch} from "react-redux";
 import {useHistory, useRouteMatch} from "react-router-dom";
 import styled from "styled-components";
 import {replaceChar} from "../../../helpers/stringFormatter";
@@ -63,8 +62,7 @@ const FolderList = props => {
     const {className = "", folder, subFolders, activeFolder} = props;
 
     const history = useHistory();
-    const route = useRouteMatch();
-    const {params, path, url} = route;
+    const {params, path, url} = useRouteMatch();
     const ref = {
         container: useRef(null),
         arrow: useRef(null),

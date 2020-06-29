@@ -8,50 +8,49 @@ import {Avatar, SvgIcon, SvgIconFeather} from "../../common";
 import {DropDocument} from "../../dropzone/DropDocument";
 import InputFeedback from "../../forms/InputFeedback";
 import {useToaster, useUserActions, useUsers} from "../../hooks";
-import ProfileSettings from "../settings/ProfileSettings";
 
-const Wrapper = styled.div`    
-    overflow: auto;  
+const Wrapper = styled.div`
+    overflow: auto;
     &::-webkit-scrollbar {
         display: none;
     }
     -ms-overflow-style: none;
     scrollbar-width: none;
-    
+
     .row-user-profile-panel {
         justify-content: center;
-        
+
         .avatar {
             width: 68px;
-            height: 68px;            
+            height: 68px;
         }
-        
+
         input.designation {
-            &::-webkit-input-placeholder {                
+            &::-webkit-input-placeholder {
                 font-size: 12px;
-            }            
-            &:-ms-input-placeholder {                
+            }
+            &:-ms-input-placeholder {
                 font-size: 12px;
-            }            
+            }
             &::placeholder {
                 font-size: 12px;
             }
         }
     }
-    
+
     .close {
         border-radius: 100%;
         padding: 2px;
     }
-    
+
     label {
         padding: 5px 10px;
         border-radius: 6px;
         width: 100%;
     }
-    
+
     .btn-toggle {
-        &:hover {            
+        &:hover {
             .input-group-text {
                 border: 1px solid #e1e1e1;
                 background: #fff;
@@ -747,7 +746,7 @@ const UserProfilePanel = (props) => {
                                 <div className="d-flex justify-content-between align-items-center mt-0">
                                     <div>&nbsp;</div>
                                     <div>
-                                        <span onClick={handleSave} className="btn btn btn-outline-primary btn-sm mr-2">
+                                        <span onClick={handleSave} className="btn btn-primary btn-sm mr-2">
                                             Save Changes
                                         </span>
                                         <span onClick={toggleEditInformation} className="btn btn-outline-light btn-sm">
@@ -759,10 +758,6 @@ const UserProfilePanel = (props) => {
                         }
                     </div>
                 </div>
-                {
-                    loggedUser.id === user.id &&
-                    <ProfileSettings className="col-md-4"/>
-                }
             </div>
         </Wrapper>);
 };

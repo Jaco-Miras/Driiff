@@ -72,15 +72,15 @@ const ChatList = styled.li`
 `;
 const TimestampDiv = styled.div`
     z-index: 10;
-    position: sticky;
-    top: 0;
     display: flex;
     justify-content: center;
     align-items: center;
     position: relative;
     padding: 0 20px;
     color: #a7abc3;
-    margin: 20px 0;
+    padding: 20px 0;
+    position: sticky;
+    top: -2px;
     &:before, &:after {
         content: '';
         display: block;
@@ -94,6 +94,11 @@ const TimestampDiv = styled.div`
         border-radius: 5px;
         display: inline-block;
         font-size: 11px;
+    }
+    &[stuck] {
+        &:before, &:after {
+            display: none;
+        }
     }
 `;
 const ChatBubbleContainer = styled.div`
@@ -179,7 +184,7 @@ const MessageOptions = styled(ChatMessageOptions)`
     flex: 1;
     margin: 5px;
     max-width: 25px;
-    
+
     .more-options-tooltip {
         &.orientation-bottom {
             top: calc(100% - 35px);
@@ -187,7 +192,7 @@ const MessageOptions = styled(ChatMessageOptions)`
 
         &.orientation-top {
         }
-        
+
         &.orientation-right {
             left: calc(100% + 10px);
         }
@@ -533,6 +538,14 @@ class ChatMessages extends React.PureComponent {
                 }
             }
         }
+
+        // intersectionRatio not working propperly
+        const observer = new IntersectionObserver(
+            ([e]) => e.target.toggleAttribute('stuck', e.intersectionRatio < 1),
+            {threshold: [1],  root: null,  rootMargin: '20px',}
+          );
+
+        document.querySelectorAll('.timestamp-container').forEach(element => observer.observe(element));
     }
 
     handleResendMessage = payload => {

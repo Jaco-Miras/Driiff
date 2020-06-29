@@ -168,6 +168,8 @@ const CreateWorkspaceFolderModal = props => {
             ...prevState,
             name: e.target.value.trim(),
         }));
+
+        validateName();
     }, [valid.name, setValid, setForm]);
 
     const handleNameBlur = useCallback(() => {

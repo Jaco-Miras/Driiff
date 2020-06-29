@@ -235,34 +235,35 @@ const useFileActions = (params = null) => {
 
     const favorite = useCallback((file, callback) => {
         const cb = (err, res) => {
-            if (err) return;
-            let payload = {
-                file_id: file.id,
-                topic_id: params.workspaceId,
-                is_favorite: !file.is_favorite,
-            };
-            if (params.hasOwnProperty("fileFolderId")) {
-                payload = {
-                    ...payload,
-                    folder_id: params.fileFolderId,
-                };
+            if (err) {
+                toaster.error(<div>System failed to mark the
+                        file <b>{file.search}</b> {!file.is_favorite ? "as favorite" : "unfavorite"}</div>,
+                    {position: "bottom-left"});
+
+                return;
             }
 
-            dispatch(
-                addRemoveFavorite(payload, (err, res) => {
-                    if (err) {
-                        toaster.error(<div>System failed to mark the
-                                file <b>{file.search}</b> {!file.is_favorite ? "as favorite" : "unfavorite"}</div>,
-                            {position: "bottom-left"});
-                    }
-                    if (res) {
+            if (res) {
+                let payload = {
+                    file_id: file.id,
+                    topic_id: params.workspaceId,
+                    is_favorite: !file.is_favorite,
+                };
+                if (params.hasOwnProperty("fileFolderId")) {
+                    payload = {
+                        ...payload,
+                        folder_id: params.fileFolderId,
+                    };
+                }
+
+                dispatch(
+                    addRemoveFavorite(payload, () => {
                         toaster.success(<>You have
                                 marked <b>{file.search}</b> {!file.is_favorite ? "as favorite" : "unfavorite"}</>,
                             {position: "bottom-left"});
-                    }
-                    callback(err, res);
-                }),
-            );
+                    }),
+                );
+            }
         };
         dispatch(
             favoriteFile({
