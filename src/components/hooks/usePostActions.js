@@ -1,19 +1,34 @@
-import {useCallback} from "react";
+import React, {useCallback} from "react";
 import {useDispatch} from "react-redux";
-import {useLocation, useHistory, useParams} from "react-router-dom";
-import toaster from "toasted-notes";
-import {addToModals, deleteDraft} from "../../redux/actions/globalActions";
+import {useHistory, useLocation, useParams} from "react-router-dom";
 import {copyTextToClipboard} from "../../helpers/commonFunctions";
 import {getBaseUrl} from "../../helpers/slugHelper";
 import {replaceChar} from "../../helpers/stringFormatter";
+import {addToModals, deleteDraft} from "../../redux/actions/globalActions";
 import {
-    postFavorite, postArchive, postFollow, postMarkDone,
-    postToggleRead, removePost, postUnfollow, deletePost,
-    starPostReducer, markPostReducer, putPost, postCreate,
-    postClap, fetchRecentPosts, fetchTagCounter, fetchPosts,
-    addToWorkspacePosts, postVisit, archiveReducer, markReadUnreadReducer,
-    postMarkRead, mustReadReducer
+    archiveReducer,
+    deletePost,
+    fetchPosts,
+    fetchRecentPosts,
+    fetchTagCounter,
+    markPostReducer,
+    markReadUnreadReducer,
+    mustReadReducer,
+    postArchive,
+    postClap,
+    postCreate,
+    postFavorite,
+    postFollow,
+    postMarkDone,
+    postMarkRead,
+    postToggleRead,
+    postUnfollow,
+    postVisit,
+    putPost,
+    removePost,
+    starPostReducer,
 } from "../../redux/actions/postActions";
+import {useToaster} from "./index";
 
 const usePostActions = () => {
 
@@ -21,22 +36,30 @@ const usePostActions = () => {
     const location = useLocation();
     const history = useHistory();
     const params = useParams();
+    const toaster = useToaster();
 
     const starPost = useCallback((post) => {
         if (post.type === "draft_post") return;
         let topic_id = parseInt(params.workspaceId);
         dispatch(
-            postFavorite({type: "post", type_id: post.id}, (err,res) => {
-                if (err) return;
-                //@to do
-                // if err then reverse the action/data in the reducer
-            })
+            postFavorite({type: "post", type_id: post.id}, (err, res) => {
+                //@todo reverse the action/data in the reducer
+                if (err) {
+                    toaster.error(<>Action failed!</>,
+                        {position: "bottom-left"});
+                }
+
+                if (res) {
+                    toaster.success(<>You mark <b>{post.title}</b> as starred</>,
+                        {position: "bottom-left"});
+                }
+            }),
         );
         dispatch(
             starPostReducer({
                 post_id: post.id,
-                topic_id
-            })
+                topic_id,
+            }),
         );
     }, [dispatch, params]);
 
@@ -44,17 +67,24 @@ const usePostActions = () => {
         if (post.type === "draft_post") return;
         let topic_id = parseInt(params.workspaceId);
         dispatch(
-            postMarkDone({post_id: post.id}, (err,res) => {
-                if (err) return;
-                //@to do
-                // if err then reverse the action/data in the reducer
-            })
+            postMarkDone({post_id: post.id}, (err, res) => {
+                //@todo reverse the action/data in the reducer
+                if (err) {
+                    toaster.error(<>Action failed!</>,
+                        {position: "bottom-left"});
+                }
+
+                if (res) {
+                    toaster.success(<>You marked <b>{post.name} as done</b></>,
+                        {position: "bottom-left"});
+                }
+            }),
         );
         dispatch(
             markPostReducer({
                 post_id: post.id,
-                topic_id
-            })
+                topic_id,
+            }),
         );
     }, [dispatch, params]);
 
@@ -64,7 +94,7 @@ const usePostActions = () => {
                 type: "workspace_post_create_edit",
                 mode: "create",
                 item: {
-                    draft: post
+                    draft: post,
                 },
             };
 
@@ -73,9 +103,9 @@ const usePostActions = () => {
             );
         } else {
             if (path) {
-                history.push(path+`/post/${post.id}/${replaceChar(post.title)}`)
+                history.push(path + `/post/${post.id}/${replaceChar(post.title)}`);
             } else {
-                history.push(location.pathname+`/post/${post.id}/${replaceChar(post.title)}`)
+                history.push(location.pathname + `/post/${post.id}/${replaceChar(post.title)}`);
             }
         }
     }, [dispatch, history, location]);
@@ -86,15 +116,25 @@ const usePostActions = () => {
                 dispatch(
                     deleteDraft({
                         draft_id: post.draft_id,
-                        type: post.type
-                    })
-                )
+                        type: post.type,
+                    }),
+                );
                 dispatch(
                     removePost({
                         post_id: post.id,
-                        topic_id: parseInt(params.workspaceId)
-                    })
-                )
+                        topic_id: parseInt(params.workspaceId),
+                    }, (err, res) => {
+                        if (err) {
+                            toaster.success(<>Action failed.</>,
+                                {position: "bottom-left"});
+                            return;
+                        }
+
+                        if (res) {
+                            toaster.success(<><b>{post.title}</b> is removed.</>, {position: "bottom-left"});
+                        }
+                    }),
+                );
             };
 
             let payload = {
@@ -118,19 +158,34 @@ const usePostActions = () => {
                         post_id: post.id,
                         is_archived: post.is_archived === 1 ? 0 : 1,
                     }, (err, res) => {
-                        if (err) return;
-                        dispatch(
-                            archiveReducer({
-                                post_id: post.id,
-                                topic_id: parseInt(params.workspaceId),
-                                is_archived: post.is_archived === 1 ? 0 : 1,
-                            })
-                        )
-                        if (params.hasOwnProperty("postId")) {
-                            history.goBack();
+                        if (err) {
+                            toaster.success(<>Action failed.</>,
+                                {position: "bottom-left"});
+                            return;
                         }
-                    })
-                )
+
+                        if (res) {
+                            if (!post.is_archived) {
+                                toaster.success(<><b>{post.title}</b> is archived.</>,
+                                    {position: "bottom-left"});
+                            } else {
+                                toaster.success(<><b>{post.title}</b> is restored.</>,
+                                    {position: "bottom-left"});
+                            }
+
+                            dispatch(
+                                archiveReducer({
+                                    post_id: post.id,
+                                    topic_id: parseInt(params.workspaceId),
+                                    is_archived: post.is_archived === 1 ? 0 : 1,
+                                }),
+                            );
+                            if (params.hasOwnProperty("postId")) {
+                                history.goBack();
+                            }
+                        }
+                    }),
+                );
             };
 
             let payload = {
@@ -154,16 +209,25 @@ const usePostActions = () => {
         let payload = {
             post_id: post.id,
             unread: 0,
-            topic_id: params.workspaceId
+            topic_id: params.workspaceId,
         };
-        let cb = (err,res) => {
-            if (err) return;
-            dispatch(
-                markReadUnreadReducer(payload)
-            );
+        let cb = (err, res) => {
+            if (err) {
+                toaster.success(<>Action failed.</>,
+                    {position: "bottom-left"});
+                return;
+            }
+
+            if (res) {
+                toaster.success(<>You marked <b>{post.title}</b> as read.</>,
+                    {position: "bottom-left"});
+                dispatch(
+                    markReadUnreadReducer(payload),
+                );
+            }
         };
         dispatch(
-            postToggleRead(payload, cb)
+            postToggleRead(payload, cb),
         );
     }, [dispatch, params]);
 
@@ -171,16 +235,25 @@ const usePostActions = () => {
         let payload = {
             post_id: post.id,
             unread: 1,
-            topic_id: params.workspaceId
+            topic_id: params.workspaceId,
         };
-        let cb = (err,res) => {
-            if (err) return;
-            dispatch(
-                markReadUnreadReducer(payload)
-            );
+        let cb = (err, res) => {
+            if (err) {
+                toaster.success(<>Action failed.</>,
+                    {position: "bottom-left"});
+                return;
+            }
+
+            if (res) {
+                toaster.success(<>You marked <b>{post.title}</b> as unread.</>,
+                    {position: "bottom-left"});
+                dispatch(
+                    markReadUnreadReducer(payload),
+                );
+            }
         };
         dispatch(
-            postToggleRead(payload, cb)
+            postToggleRead(payload, cb),
         );
     }, [dispatch, params]);
 
@@ -193,11 +266,11 @@ const usePostActions = () => {
         let payload = {
             type: "snooze_post",
             post: post,
-            topic_id: params.workspaceId
+            topic_id: params.workspaceId,
         };
 
         dispatch(
-            addToModals(payload)
+            addToModals(payload),
         );
     }, [dispatch, params]);
 
@@ -205,20 +278,20 @@ const usePostActions = () => {
         if (post.is_followed) {
             //When: The user is following/recipient of the post - and not the creator.
             dispatch(
-                postUnfollow({post_id: post.id}, (err,res) => {
+                postUnfollow({post_id: post.id}, (err, res) => {
                     if (err) return;
                     let notification = `You’ve stopped to follow ${post.title}`;
                     toaster.notify(notification, {position: "bottom-left"});
-                })
+                }),
             );
         } else {
             //When: The user not following the post and the post is in an open topic.
             dispatch(
-                postFollow({post_id: post.id}, (err,res) => {
+                postFollow({post_id: post.id}, (err, res) => {
                     if (err) return;
                     let notification = `You’ve started to follow ${post.title}`;
                     toaster.notify(notification, {position: "bottom-left"});
-                })
+                }),
             );
         }
     }, [dispatch]);
@@ -233,14 +306,14 @@ const usePostActions = () => {
                     dispatch(
                         removePost({
                             post_id: post.id,
-                            topic_id: parseInt(params.workspaceId)
-                        })
-                    )
+                            topic_id: parseInt(params.workspaceId),
+                        }),
+                    );
                     if (params.hasOwnProperty("postId")) {
                         history.goBack();
                     }
-                })
-            )
+                }),
+            );
         };
 
         let payload = {
@@ -268,22 +341,22 @@ const usePostActions = () => {
             payload = {
                 ...payload,
                 item: {
-                    post: post
+                    post: post,
                 },
                 action: {
-                    update: update
-                }
-            }
+                    update: update,
+                },
+            };
         } else {
             payload = {
                 ...payload,
                 item: {
-                    post: post
+                    post: post,
                 },
                 action: {
-                    create: create
-                }
-            }
+                    create: create,
+                },
+            };
         }
 
         dispatch(
@@ -293,31 +366,31 @@ const usePostActions = () => {
 
     const create = useCallback((payload) => {
         dispatch(
-            postCreate(payload)
+            postCreate(payload),
         );
     }, [dispatch]);
 
     const update = useCallback((payload) => {
         dispatch(
-            putPost(payload)
+            putPost(payload),
         );
     }, [dispatch]);
 
     const clap = useCallback((payload) => {
         dispatch(
-            postClap(payload)
+            postClap(payload),
         );
     }, [dispatch]);
 
     const getRecentPosts = useCallback((id, callback) => {
         dispatch(
-            fetchRecentPosts({topic_id: id})
-        )
+            fetchRecentPosts({topic_id: id}),
+        );
     }, [dispatch]);
 
     const getTagsCount = useCallback((id, callback) => {
         dispatch(
-            fetchTagCounter({topic_id: id})
+            fetchTagCounter({topic_id: id}),
         );
     }, [dispatch]);
 
@@ -338,14 +411,14 @@ const usePostActions = () => {
             post_id: post.id,
             personalized_for_id: null,
             mark_as_read: 1,
-        }
-        let cb = (err,res) => {
+        };
+        let cb = (err, res) => {
             if (err) return;
             dispatch(
                 mustReadReducer({
                     post_id: post.id,
-                    topic_id: params.workspaceId
-                })
+                    topic_id: params.workspaceId,
+                }),
             );
         };
         dispatch(
@@ -371,8 +444,8 @@ const usePostActions = () => {
         getTagsCount,
         getPosts,
         visit,
-        markReadRequirement
-    }
+        markReadRequirement,
+    };
 };
 
 export default usePostActions;

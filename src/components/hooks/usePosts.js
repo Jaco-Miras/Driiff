@@ -95,7 +95,7 @@ const usePosts = () => {
                     } else if (filter === "archive") {
                         return p.is_archived === 1;
                     } else if (filter === "all") {
-                        return true;
+                        return !p.is_archived;
                     }
                 } else {
                     return true;
