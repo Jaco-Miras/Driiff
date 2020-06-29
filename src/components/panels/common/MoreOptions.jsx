@@ -1,7 +1,7 @@
 import React, {useRef, useState} from "react";
 import styled from "styled-components";
 import {SvgIconFeather} from "../../common";
-import {useDebounce, useOutsideClick, useTooltipOrientation} from "../../hooks";
+import {useTooltipOrientation} from "../../hooks";
 
 const Wrapper = styled.div`
   display: inline-flex;
@@ -83,6 +83,8 @@ const MoreOptions = props => {
         scrollRef: scrollRef,
     };
 
+    let timeout = null;
+
     const [showMoreOptions, setShowMoreOptions] = useState(false);
 
     const {orientation} = useTooltipOrientation(refs.container, refs.options, scrollRef, showMoreOptions);
@@ -94,18 +96,20 @@ const MoreOptions = props => {
     };
 
     const handleMouseLeave = () => {
-        setShowMoreOptions(false);
+        timeout = setTimeout(() => {
+            setShowMoreOptions(false);
+        }, 1000);
     };
 
-    const handeleMouseLeaveDebounce = useDebounce(handleMouseLeave, 500);
-    useOutsideClick(refs.options, handleMouseLeave, showMoreOptions);
+    const handleMouseEnter = () => {
+        clearTimeout(timeout);
+    };
 
     return <Wrapper
         className={`more-options ${className}`}
         onClick={handleClick}
         ref={refs.container}
-        onMouseEnter={handeleMouseLeaveDebounce.reset}
-        onMouseLeave={handeleMouseLeaveDebounce.apply}
+        onMouseEnter={handleMouseEnter}
         {...rest}>
         <SvgIconFeather
             data-event="touchstart focus mouseover" data-event-off="mouseout" data-tip="Message options"
@@ -117,6 +121,8 @@ const MoreOptions = props => {
                 width={width}
                 hide={orientation.vertical === null || orientation.horizontal === null}
                 className={`more-options-tooltip orientation-${orientation.vertical} orientation-${orientation.horizontal}`}
+                onMouseLeave={handleMouseLeave}
+                onMouseEnter={handleMouseEnter}
             >
                 {children}
             </MoreTooltip>
