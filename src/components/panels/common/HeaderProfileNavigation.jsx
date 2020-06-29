@@ -1,14 +1,22 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import styled from "styled-components";
 import {toggleLoading} from "../../../redux/actions/globalActions";
 import {Avatar, SvgIconFeather} from "../../common";
 import Flag from "../../common/Flag";
-import {useSettings, useTranslation} from "../../hooks";
+import {useOutsideClick, useSettings, useTranslation} from "../../hooks";
 import {NotificationDropDown} from "../dropdown";
 import UserProfileDropDown from "../dropdown/UserProfileDropdown";
 
 const Wrapper = styled.ul`
+    @media (max-width: 1200px) {
+        display: flex !important;
+        left: auto !important;
+        right: 0 !important;
+        top: 0 !important;
+        height: 70px;
+    }
+    
     > li {
         position: relative;
 
@@ -56,12 +64,17 @@ const HomeProfileNavigation = (props) => {
 
     const {className = ""} = props;
 
+    const dispatch = useDispatch();
+
     const {generalSettings: {dark_mode, language}, setGeneralSetting} = useSettings();
     const {_t, setLocale} = useTranslation();
 
-    const dispatch = useDispatch();
-
     const user = useSelector(state => state.session.user);
+    const [currentPopUp, setCurrentPopUp] = useState(null);
+
+    const refs = {
+        container: useRef(null),
+    };
 
     const languageOptions = {
         "en": _t("LANGUAGE.ENGLISH", "English"),
@@ -89,6 +102,9 @@ const HomeProfileNavigation = (props) => {
         hideActiveDropDown(e);
 
         const targetDropDown = e.currentTarget.parentElement.querySelector(".dropdown-menu");
+        setCurrentPopUp({
+            current: targetDropDown,
+        });
         if (targetDropDown) {
             targetDropDown.classList.toggle("show");
         }
@@ -119,8 +135,20 @@ const HomeProfileNavigation = (props) => {
         }
     }, [dark_mode]);
 
+    const hidePopUp = () => {
+        const shownDropDown = refs.container.current.querySelector("ul .dropdown-menu.show");
+        if (shownDropDown) {
+            shownDropDown.classList.remove("show");
+            setCurrentPopUp(null);
+        }
+    };
+
+    useOutsideClick(currentPopUp, hidePopUp, currentPopUp !== null);
+
     return (
-        <Wrapper className={`header-profile-navigation navbar-nav${className}`}>
+        <Wrapper
+            ref={refs.container}
+            className={`header-profile-navigation navbar-nav ${className}`}>
             <li className="nav-item dropdown">
                 <a href="/" className="nav-link dropdown-toggle" data-toggle="dropdown" onClick={toggleDropdown}>
                     <Flag countryAbbr={language} className="mr-2" width="18"/>
@@ -151,7 +179,7 @@ const HomeProfileNavigation = (props) => {
             </li>
             <li className="nav-item dropdown">
 
-            <a href="/" className="nav-link profile-button" data-toggle="dropdown" title={user.name}
+                <a href="/" className="nav-link profile-button" data-toggle="dropdown" title={user.name}
                    onClick={toggleDropdown}>
                     <div className="avatar-overlay"/>
                     <Avatar name={user.name} imageLink={user.profile_image_link} noDefaultClick={true}/>

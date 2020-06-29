@@ -10,6 +10,10 @@ const Wrapper = styled.div`
     top: 0px;
     right: 0px;
     transform: translate3d(5px, 59px, 0px);
+    
+    .list-group-item {
+        color: #828282;
+    }
 `;
 
 const UserProfileDropdown = (props) => {
@@ -22,25 +26,26 @@ const UserProfileDropdown = (props) => {
         container: useRef(null),
     };
 
-    const handleEditProfile = useCallback((e) => {
-        e.preventDefault();
-
+    const handleEditProfile = useCallback(() => {
         refs.container.current.classList.remove("show");
         history.push(`/profile/${user.id}/${replaceChar(user.name)}/edit`);
     }, [user]);
 
-    const handleSignOut = useCallback((e) => {
-        e.preventDefault();
+    const handleSignOut = useCallback(() => {
+        refs.container.current.classList.remove("show");
         history.push("/logout");
     }, []);
 
-    const handleProfile = () => {
+    const handleProfile = useCallback(() => {
+        refs.container.current.classList.remove("show");
         history.push(`/profile/${user.id}/${replaceChar(user.name)}/view`);
-    };
+    }, []);
 
     return (
-        <Wrapper ref={refs.container} className={`user-profile-dropdown dropdown-menu dropdown-menu-big ${className}`}
-                 x-placement="bottom-end">
+        <Wrapper
+            ref={refs.container}
+            className={`user-profile-dropdown dropdown-menu dropdown-menu-big ${className}`}
+            x-placement="bottom-end">
             <div className="p-3 text-center">
                 <Avatar
                     name={user.name}
@@ -59,10 +64,10 @@ const UserProfileDropdown = (props) => {
             <div className="dropdown-menu-body">
                 <div className="list-group list-group-flush">
                     <span className="cursor-pointer list-group-item" onClick={handleProfile}>Profile</span>
-                    <a href="#" className="list-group-item" data-sidebar-target="#settings">Billing</a>
-                    <a href="#" className="list-group-item" data-sidebar-target="#settings">Need help?</a>
-                    <a href="#" className="list-group-item text-danger" data-sidebar-target="#settings"
-                       onClick={handleSignOut}>Sign Out!</a>
+                    <span className="cursor-pointer list-group-item">Billing</span>
+                    <span className="cursor-pointer list-group-item">Need help?</span>
+                    <span className="cursor-pointer list-group-item text-danger"
+                          onClick={handleSignOut}>Sign Out!</span>
                 </div>
             </div>
         </Wrapper>

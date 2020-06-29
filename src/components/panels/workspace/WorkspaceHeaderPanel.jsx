@@ -158,7 +158,6 @@ const WorspaceHeaderPanel = () => {
                     }
                 </NavBar>
             </div>
-
             <div>
                 <HeaderProfileNavigation />
             </div>
