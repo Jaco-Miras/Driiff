@@ -1,4 +1,4 @@
-import React, {forwardRef, useEffect, useRef, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import styled from "styled-components";
 import {localizeDate} from "../../helpers/momentFormatJS";
@@ -138,8 +138,9 @@ const FileWrapper = styled.figure`
 `;
 
 
-const FileViewer = forwardRef((props, ref) => {
-    const {fileIndex, className = ""} = props;
+const FileViewer = props => {
+
+    const {className = ""} = props;
 
     const fileRef = useRef();
     const dispatch = useDispatch();
@@ -160,9 +161,14 @@ const FileViewer = forwardRef((props, ref) => {
                 }
             });
         }
+
         if (Object.keys(workspaceFiles).length && workspaceFiles.hasOwnProperty(viewFiles.workspace_id)) {
-            setFiles(Object.values(workspaceFiles[viewFiles.workspace_id].files));
-            Object.values(workspaceFiles[viewFiles.workspace_id].files).forEach((file, index) => {
+            let files = Object.values(workspaceFiles[viewFiles.workspace_id].files);
+            if (viewFiles.hasOwnProperty("files")) {
+                files = viewFiles.files;
+            }
+            setFiles(files);
+            files.forEach((file, index) => {
                 if (file.id === viewFiles.file_id) {
                     setActiveIndex(index);
                 }
@@ -174,7 +180,7 @@ const FileViewer = forwardRef((props, ref) => {
 
     let refFiles = {};
 
-    const showNextFile = e => {
+    const showNextFile = () => {
         if (files[activeIndex].type.toLowerCase() === "video") {
             refFiles[activeIndex].pause();
         }
@@ -186,12 +192,12 @@ const FileViewer = forwardRef((props, ref) => {
             setActiveIndex(activeIndex + 1);
     };
 
-    const showPreviousFile = e => {
+    const showPreviousFile = () => {
         if (files[activeIndex].type.toLowerCase() === "video") {
             refFiles[activeIndex].pause();
         }
 
-        let filesLength = files.length;
+        const filesLength = files.length;
         if (activeIndex === 0)
             setActiveIndex(filesLength - 1);
         else
@@ -205,7 +211,7 @@ const FileViewer = forwardRef((props, ref) => {
     useOutsideClick(fileRef, handleCloseFileViewer, true);
 
     useEffect(() => {
-        if (files.length && activeIndex) {
+        if (files.length && activeIndex !== null) {
             let nodes = document.querySelectorAll(".fileviewer-container .file-item");
             for (let i = 0; i < nodes.length; i++) {
                 nodes[i].classList.add("d-none");
@@ -271,11 +277,11 @@ const FileViewer = forwardRef((props, ref) => {
                         data-index={index}
                         data-attempt={0}
                         ref={e => refFiles[index] = e}
-                        controls playsInline type='video/mp4'
+                        controls playsInline
                         key={index} style={style} className={`file d-none`} autoPlay={false}
                         onLoadStart={handleVideoOnLoad}
                         onError={handleVideoOnError}
-                        src={file.view_link}></video>
+                        src={file.view_link}/>
                 </div>;
             case "image":
                 return <div key={index} data-index={index} className={`file-item mfp-img`}>
@@ -295,7 +301,7 @@ const FileViewer = forwardRef((props, ref) => {
                         key={index} style={style}
                         className={`iframe file`}
                         src={file.view_link}
-                        frameBorder="0"></iframe>
+                        frameBorder="0"/>
                 </div>;
             default:
                 return <div key={index} data-index={index} className={`file-item mfp-img`}>
@@ -344,7 +350,7 @@ const FileViewer = forwardRef((props, ref) => {
                             }
                             <figcaption>
                                 <div className="mfp-bottom-bar">
-                                    <div className="mfp-title"></div>
+                                    <div className="mfp-title"/>
                                     <div className="mfp-counter">{`${activeIndex + 1} of ${files.length}`}</div>
                                 </div>
                             </figcaption>
@@ -356,15 +362,15 @@ const FileViewer = forwardRef((props, ref) => {
                     show={files.length > 1}
                     onClick={e => showPreviousFile(e)}
                     title="Previous (Left arrow key)" type="button"
-                    className="mfp-arrow mfp-arrow-left mfp-prevent-close"></ArrowButton>
+                    className="mfp-arrow mfp-arrow-left mfp-prevent-close"/>
                 <ArrowButton
                     show={files.length > 1}
                     onClick={e => showNextFile(e)}
                     title="Next (Right arrow key)" type="button"
-                    className="mfp-arrow mfp-arrow-right mfp-prevent-close"></ArrowButton>
+                    className="mfp-arrow mfp-arrow-right mfp-prevent-close"/>
             </div>
         </PreviewContainer>
     </FileViewerContainer>;
-});
+};
 
 export default React.memo(FileViewer);

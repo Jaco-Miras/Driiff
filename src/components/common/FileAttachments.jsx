@@ -2,10 +2,10 @@ import React, {useRef, useState} from "react";
 import {useDispatch} from "react-redux";
 import {useParams} from "react-router-dom";
 import styled from "styled-components";
+import {deletePostFile, setViewFiles} from "../../redux/actions/fileActions";
+import {addToModals} from "../../redux/actions/globalActions";
 import {useOutsideClick, useTooltipOrientation} from "../hooks";
 import {SvgIconFeather} from "./index";
-import {setViewFiles, deletePostFile} from "../../redux/actions/fileActions";
-import {addToModals} from "../../redux/actions/globalActions";
 
 const Wrapper = styled.div`
     position: relative;
@@ -118,9 +118,9 @@ const AttachmentIcon = styled(SvgIconFeather)`
 
 const FileAttachments = props => {
 
-    const { 
-        className = "", attachedFiles, handleRemoveFile, scrollRef = null, 
-        type = "modal", workspace = null, post = null, comment = null
+    const {
+        className = "", attachedFiles, handleRemoveFile, scrollRef = null,
+        type = "modal", comment = null,
     } = props;
     const dispatch = useDispatch();
     const params = useParams();
@@ -188,6 +188,13 @@ const FileAttachments = props => {
                     workspace_id: params.workspaceId,
                     file_id: attachedFiles[index].id,
                 };
+
+                if (params.hasOwnProperty("postId")) {
+                    payload = {
+                        ...payload,
+                        files: attachedFiles,
+                    };
+                }
                 dispatch(
                     setViewFiles(payload),
                 );

@@ -1,4 +1,4 @@
-import React, {useRef, useState, useEffect} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {useDispatch} from "react-redux";
 //import {useHistory} from "react-router-dom";
 import styled from "styled-components";
@@ -64,9 +64,13 @@ const Counters = styled.div`
 const PostFiles = styled(FileAttachments)`
     li {
         display: inline-block;
-
-        &:not(:first-child) {
-            margin-left: 0.5rem;
+        
+        &:not(:last-child) {
+            margin-right: 1rem;
+        }
+        
+        .feather-paperclip {
+            margin-right: 0.5rem;
         }
     }
 `;
