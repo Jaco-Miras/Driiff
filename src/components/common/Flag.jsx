@@ -23,6 +23,9 @@ const Flag = (props) => {
         case "nl":
             source = require("../../assets/media/image/flags/195-netherlands.png");
             break;
+        case "de":
+            source = require("../../assets/media/image/flags/066-germany.png");
+            break;
         default:
             source = require("../../assets/media/image/flags/195-netherlands.png");
     }

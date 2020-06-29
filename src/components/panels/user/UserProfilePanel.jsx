@@ -8,7 +8,6 @@ import {Avatar, SvgIcon, SvgIconFeather} from "../../common";
 import {DropDocument} from "../../dropzone/DropDocument";
 import InputFeedback from "../../forms/InputFeedback";
 import {useToaster, useUserActions, useUsers} from "../../hooks";
-import ProfileSettings from "../settings/ProfileSettings";
 
 const Wrapper = styled.div`
     overflow: auto;
@@ -759,10 +758,6 @@ const UserProfilePanel = (props) => {
                         }
                     </div>
                 </div>
-                {
-                    loggedUser.id === user.id &&
-                    <ProfileSettings className="col-md-4"/>
-                }
             </div>
         </Wrapper>);
 };
