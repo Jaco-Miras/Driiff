@@ -3,7 +3,7 @@ import styled from "styled-components";
 import {NotificationListItem} from "./index";
 
 const Wrapper = styled.ul`
-    overflow: hidden;
+    overflow: auto;
 `;
 
 const NotificationLists = props => {
