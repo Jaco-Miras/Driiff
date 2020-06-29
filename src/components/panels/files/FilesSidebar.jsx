@@ -17,10 +17,12 @@ const Filter = styled.span`
         color: #7a1b8b;
     `}
     &.folder-list {
+        border-bottom: 1px solid rgba(0, 0, 0, 0.125);
         > ul {
             list-style: none;
             padding: 0.75rem 1.5rem;
             width: 100%;
+            margin: 0;
             
             li {
                 margin-bottom: 10px;
@@ -72,23 +74,6 @@ const FileSidebar = (props) => {
                             All Files
                             <span className="small ml-auto">{wsFiles && wsFiles.count > 0 ? wsFiles.count : null}</span>
                         </Filter>
-                        <Filter onClick={filterFile} data-filter="recent" active={filter === "recent"}
-                                className="list-group-item d-flex align-items-center">
-                            <Icon className="mr-2" icon="monitor"/>
-                            Recently edited
-                        </Filter>
-                        <Filter onClick={filterFile} data-filter="important" active={filter === "important"}
-                                className="list-group-item d-flex align-items-center">
-                            <Icon className="mr-2" icon="star"/>
-                            Important
-                            <span className="small ml-auto">{wsFiles && wsFiles.stars > 0 ? wsFiles.stars : null}</span>
-                        </Filter>
-                        <Filter onClick={filterFile} data-filter="removed" active={filter === "removed"}
-                                className="list-group-item d-flex align-items-center">
-                            <Icon className="mr-2" icon="trash"/>
-                            Removed
-                            <span className="small ml-auto">{wsFiles && wsFiles.trash > 0 ? wsFiles.trash : null}</span>
-                        </Filter>
                         {
                             folders && folders.length > 0 && isMember === true &&
                             <Filter className="d-flex align-items-center folder-list">
@@ -107,6 +92,23 @@ const FileSidebar = (props) => {
                             </Filter>
                             
                         }
+                        <Filter onClick={filterFile} data-filter="recent" active={filter === "recent"}
+                                className="list-group-item d-flex align-items-center">
+                            <Icon className="mr-2" icon="monitor"/>
+                            Recently edited
+                        </Filter>
+                        <Filter onClick={filterFile} data-filter="important" active={filter === "important"}
+                                className="list-group-item d-flex align-items-center">
+                            <Icon className="mr-2" icon="star"/>
+                            Important
+                            <span className="small ml-auto">{wsFiles && wsFiles.stars > 0 ? wsFiles.stars : null}</span>
+                        </Filter>
+                        <Filter onClick={filterFile} data-filter="removed" active={filter === "removed"}
+                                className="list-group-item d-flex align-items-center">
+                            <Icon className="mr-2" icon="trash"/>
+                            Removed
+                            <span className="small ml-auto">{wsFiles && wsFiles.trash > 0 ? wsFiles.trash : null}</span>
+                        </Filter>
                     </div>
                     {
                         typeof wsFiles !== "undefined" && wsFiles !== null &&
