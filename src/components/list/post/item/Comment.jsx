@@ -7,6 +7,22 @@ import {SubComments} from "./index";
 
 const Wrapper = styled.li`
     margin-bottom: 1rem;
+    
+    .files {
+        margin-bottom: 1rem;
+        
+        li {
+            display: inline-block;
+            
+            &:not(:last-child) {
+                margin-right: 1rem;
+            }
+            
+            .feather-paperclip {
+                margin-right: 0.5rem;
+            }
+        }
+    }
 `;
 
 const InputWrapper = styled.li`

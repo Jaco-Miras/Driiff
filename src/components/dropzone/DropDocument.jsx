@@ -1,9 +1,9 @@
 import React, {forwardRef, useCallback} from "react";
 import Dropzone from "react-dropzone";
-import {toastr} from "react-redux-toastr";
 import "react-redux-toastr/lib/css/react-redux-toastr.min.css";
 import styled from "styled-components";
 import {SvgIconFeather} from "../common";
+import {useToaster} from "../hooks";
 import "./DropDocument.scss";
 
 const Section = styled.section`
@@ -26,16 +26,28 @@ export const DropDocument = forwardRef((props, ref) => {
         acceptType = "",
     } = props;
 
-    const cbOnDrop = useCallback(({acceptedFiles, rejectedFiles}) => {
+    const toastr = useToaster();
 
+    const cbOnDrop = useCallback(({acceptedFiles, rejectedFiles}) => {
         let toastrOption = {
+            position: "bottom-left",
             timeOut: 8000,
             icon: "error",
         };
 
+        for (let i = 0; i < acceptedFiles.length; i++) {
+            let file = acceptedFiles[i];
+            if (file.size === 0) {
+                toastr.error(<span>File <b>{file.name}</b> upload failed!<br/>Empty file detected.</span>,
+                    toastrOption);
+                delete acceptedFiles[i];
+            }
+        }
+
         for (let i = 0; i < rejectedFiles.length; i++) {
             let file = rejectedFiles[i];
-            toastr.error(`File ${file.name} upload failed!`, "Tip: Zip it and try again.", toastrOption);
+            toastr.error(<span>File <b>{file.name}</b> upload failed!<br/><b>Tip:</b> Zip it and try again.</span>,
+                toastrOption);
         }
 
         onDrop({acceptedFiles});
