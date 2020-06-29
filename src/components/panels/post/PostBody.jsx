@@ -18,15 +18,9 @@ const Icon = styled(SvgIconFeather)`
     cursor: hand;
 `;
 
-const MarkAsReadBtn = styled.button`
-    background: #fff;
-    border-radius: 5px;
-    margin-right: 10px;
-`;
-
 const PostBody = props => {
 
-    const {post, postActions, isAuthor} = props;
+    const {post, postActions} = props;
 
     const [star, setStar] = useState(post.is_favourite);
 
@@ -65,10 +59,7 @@ const PostBody = props => {
                         //     </div>
                         // </div>
                     }
-                    {
-                        (post.is_must_reply === 1 || post.is_read_only === 1 || !post.is_read_requirement) &&
-                        <PostBadge post={post}/>
-                    }
+                    <PostBadge post={post} isBadgePill={true}/>
                     {
                         post.files.length > 0 &&
                         <Icon className="mr-2" icon="paperclip"/>
