@@ -84,10 +84,10 @@ const useCommentActions = props => {
 
         let payload = {
             type: "confirmation",
-            headerText: "Delete post comment?",
-            submitText: "Delete",
+            headerText: "Remove post comment?",
+            submitText: "Remove",
             cancelText: "Cancel",
-            bodyText: "Are you sure you want to delete this comment?",
+            bodyText: "Are you sure you want to remove this comment?",
             actions: {
                 onSubmit: onConfirm,
             },

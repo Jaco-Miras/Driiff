@@ -10,45 +10,45 @@ import {SvgIconFeather} from "./index";
 const Wrapper = styled.div`
     position: relative;
     transition: all 0.3;
-    
+
     ul {
         padding:0;
-    
-        li {        
+
+        li {
             list-style: none;
             position: relative;
             cursor: pointer;
-            cursor: hand;            
+            cursor: hand;
         }
-        
-        &.files {            
-            
+
+        &.files {
+
             li {
                 padding-right: 16px;
-                
+
                 &:hover {
                     color: #972c86;
-                    
+
                     svg.feather-trash-2 {
                         color: #505050;
                     }
                 }
-                
+
                 svg {
                     &.feather-trash-2 {
                         position: absolute;
-                        margin-left: 5px;                        
+                        margin-left: 5px;
                         width: 11px;
                         top: -1px;
                         right: 0;
-                        
-                        &:hover {   
+
+                        &:hover {
                             color: #972c86;
                         }
-                    }                    
+                    }
                }
             }
-        }        
+        }
     }
 `;
 
@@ -60,9 +60,9 @@ const Tooltip = styled.span`
     padding: 10px 10px 5px;
     border: 1px solid #e1e1e1;
     border-radius: 8px;
-    
-    &.orientation-top {        
-        top: ${props => props.offsetTop - (props.clientHeight + 20)}px;        
+
+    &.orientation-top {
+        top: ${props => props.offsetTop - (props.clientHeight + 20)}px;
     }
     &.orientation-bottom {
         top: ${props => props.offsetTop};
@@ -75,7 +75,7 @@ const Tooltip = styled.span`
         left: 30px;
         right: auto;
     }
-    
+
     .fa {
         font-size: 42px;
     }
@@ -87,7 +87,7 @@ const Tooltip = styled.span`
         border-radius: 8px;
     }
     .file-name {
-        display: block;                            
+        display: block;
     }
     .file-delete {
         margin-top: 10px;
@@ -95,11 +95,11 @@ const Tooltip = styled.span`
         cursor: hand;
         display: inline-block;
         font-weight: bold;
-        
+
         &:hover {
             color: #f44;
         }
-        
+
         svg {
             width: 11px;
             height: 11px;
@@ -228,21 +228,21 @@ const FileAttachments = props => {
                 };
                 let payload = {
                     type: "confirmation",
-                    headerText: "Delete file",
+                    headerText: "Remove file",
                     submitText: "Remove",
                     cancelText: "Cancel",
-                    bodyText: "Are you sure you want to delete this file?",
+                    bodyText: "Are you sure you want to remove this file?",
                     actions: {
                         onSubmit: handleDeleteFile,
                     },
                 };
-        
+
                 dispatch(
                     addToModals(payload),
                 );
             }
         }
-        
+
     };
 
     const handleMouseLeave = () => {
