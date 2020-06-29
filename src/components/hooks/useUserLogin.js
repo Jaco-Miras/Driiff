@@ -94,7 +94,7 @@ export const useUserLogin = (props) => {
 
                     if (res) {
                         storeLoginToken(res.data);
-                        history.push(getFrontEndAuthUrl(res.data, "/dashboard"));
+                        history.push(getFrontEndAuthUrl(res.data, "/workspace/dashboard"));
                     }
                 }),
             );
