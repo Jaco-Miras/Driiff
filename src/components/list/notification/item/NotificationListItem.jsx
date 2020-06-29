@@ -82,6 +82,29 @@ export const NotificationListItem = props => {
                     </div>
                 )
             }
+            case "POST_MENTION": {
+                return (
+                    <div className="flex-grow-1" onClick={handleRedirect}>
+                        <p className="mb-0 line-height-20 d-flex justify-content-between">
+                            mentioned you in {notification.data.title}
+                            {
+                                notification.is_read === 0 ?
+                                <i title="" data-toggle="tooltip" onClick={handleReadUnread}
+                                    className="hide-show-toggler-item fa fa-circle-o font-size-11"
+                                    data-original-title="Mark as read"></i>
+                                :
+                                <i title="" data-toggle="tooltip" onClick={handleReadUnread}
+                                    className="hide-show-toggler-item fa fa-check font-size-11"
+                                    data-original-title="Mark as unread"></i>
+                            }
+                        </p>
+                        <p>
+                            {stripHtml(notification.data.comment_body)}
+                        </p>
+                        <span className="text-muted small">{localizeChatChannelDate(notification.created_at.timestamp)}</span>
+                    </div>
+                )
+            }
             default:
                 return null;
         }
