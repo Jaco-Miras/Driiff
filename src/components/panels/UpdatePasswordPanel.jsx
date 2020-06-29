@@ -75,7 +75,7 @@ const UpdatePasswordPanel = (props) => {
         });
     };
 
-    const _validateForm = (e) => {
+    const _validateForm = () => {
         setFormMessage({error: "", success: ""});
 
         let valid = true;
@@ -133,7 +133,7 @@ const UpdatePasswordPanel = (props) => {
                                           (typeof props.location.state !== "undefined")
                                           && (typeof props.location.state.from !== "undefined")
                                           && (props.location.state.from !== "/logout")
-                                      ) ? props.location.state.from.pathname + props.location.state.from.search : "/dashboard";
+                                      ) ? props.location.state.from.pathname + props.location.state.from.search : "/workspace/dashboard";
                     storeLoginToken(res.data);
                     processBackendLogin(res.data, returnUrl);
                 }
@@ -176,7 +176,7 @@ const UpdatePasswordPanel = (props) => {
             <ul className="list-inline">
                 <li className="list-inline-item">
                     <a href="/" onClick={handleGoogleLogIn} className="btn btn-floating btn-google">
-                        <i className="fa fa-google"></i>
+                        <i className="fa fa-google"/>
                     </a>
                 </li>
             </ul>
