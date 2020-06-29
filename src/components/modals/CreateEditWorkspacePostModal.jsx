@@ -1,21 +1,22 @@
 import moment from "moment";
 import React, {useCallback, useEffect, useRef, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {Input, InputGroup, Label, Modal, ModalBody, ModalHeader, ModalFooter, Button} from "reactstrap";
+import {Button, Input, InputGroup, Label, Modal, ModalBody, ModalFooter, ModalHeader} from "reactstrap";
 import styled from "styled-components";
 import {clearModal, deleteDraft, saveDraft, updateDraft} from "../../redux/actions/globalActions";
 import {postCreate, putPost} from "../../redux/actions/postActions";
+import {uploadDocument} from "../../redux/services/global";
 import {DatePicker, FileAttachments, SvgIconFeather} from "../common";
 import {DropDocument} from "../dropzone/DropDocument";
 import {CheckBox, DescriptionInput, FolderSelect, PeopleSelect} from "../forms";
-import {useGetWorkspaceAndUserOptions, useQuillModules} from "../hooks";
+import {useGetWorkspaceAndUserOptions} from "../hooks";
 import {ModalHeaderSection} from "./index";
-import {uploadDocument} from "../../redux/services/global";
 
 const WrapperDiv = styled(InputGroup)`
     display: flex;
-    align-items: center;
+    align-items: baseline;
     margin: 20px 0;
+    
     label {
         white-space: nowrap;
         margin: 0 20px 0 0;
@@ -37,9 +38,9 @@ const WrapperDiv = styled(InputGroup)`
         margin-right: -130px;
     }
     &.schedule-post {
-        ${'' /* margin-left: 130px; */}
+        ${"" /* margin-left: 130px; */}
         width: 100%;
-        ${'' /* margin-right: -130px; */}
+        ${"" /* margin-right: -130px; */}
         label {
             margin: 0 20px 0 0;
         }
@@ -66,7 +67,7 @@ const WrapperDiv = styled(InputGroup)`
         }
     }
     &.file-attachment-wrapper {
-        margin-top: 30px;
+        margin-top: 0;
         margin-bottom: 20px;
     }
     .file-attachments {
@@ -120,7 +121,7 @@ const SelectPeople = styled(PeopleSelect)`
 `;
 
 const CheckBoxGroup = styled.div`
-    ${'' /* display: flex; */}
+    ${"" /* display: flex; */}
     overflow: hidden;
     transition: all .3s ease;
     width: 100%;
@@ -282,7 +283,7 @@ const CreateEditWorkspacePostModal = props => {
                 is_must_read: form.must_read ? 1 : 0,
                 is_must_reply: form.must_reply ? 1 : 0,
                 is_read_only: form.no_reply ? 1 : 0,
-                created_at: {timestamp: timestamp}
+                created_at: {timestamp: timestamp},
             };
             if (draftId) {
                 payload = {
@@ -308,7 +309,7 @@ const CreateEditWorkspacePostModal = props => {
             must_reply: form.reply_required ? 1 : 0,
             read_only: form.no_reply ? 1 : 0,
             workspace_ids: form.selectedWorkspaces.filter(ws => ws.type === "FOLDER").map(ws => ws.value),
-            show_at: form.show_at ? moment(form.show_at, "YYYY-MM-DD").format("YYYY-MM-DD") : form.end_at ? moment(new Date()).add(1,'day').format("YYYY-MM-DD") : null,
+            show_at: form.show_at ? moment(form.show_at, "YYYY-MM-DD").format("YYYY-MM-DD") : form.end_at ? moment(new Date()).add(1, "day").format("YYYY-MM-DD") : null,
             end_at: form.end_at ? moment(form.end_at, "YYYY-MM-DD").format("YYYY-MM-DD") : null,
             tag_ids: [],
             file_ids: [],
@@ -325,7 +326,7 @@ const CreateEditWorkspacePostModal = props => {
             payload = {
                 ...payload,
                 id: item.post.id,
-                file_ids: uploadedFiles.map(f => f.id)
+                file_ids: uploadedFiles.map(f => f.id),
             };
             if (attachedFiles.length) {
                 uploadFiles(payload, "edit");
@@ -383,8 +384,6 @@ const CreateEditWorkspacePostModal = props => {
         setShowMoreOptions(!showMoreOptions);
     };
 
-    const [modules] = useQuillModules("workspace");
-
     useEffect(() => {
         if (activeTopic !== null && item.hasOwnProperty("draft")) {
             setForm(item.draft.form);
@@ -428,13 +427,13 @@ const CreateEditWorkspacePostModal = props => {
                         label: u.name,
                     };
                 }),
-                file_ids: item.post.files.map(f => f.id)
+                file_ids: item.post.files.map(f => f.id),
             });
             setUploadedFiles(item.post.files.map(f => {
                 return {
                     ...f,
-                    rawFile: f
-                }
+                    rawFile: f,
+                };
             }));
         }
 
@@ -475,10 +474,6 @@ const CreateEditWorkspacePostModal = props => {
 
     const handleHideDropzone = () => {
         setShowDropzone(false);
-    };
-
-    const handleShowDropzone = () => {
-        setShowDropzone(true);
     };
 
     const dropAction = (acceptedFiles) => {
@@ -538,14 +533,14 @@ const CreateEditWorkspacePostModal = props => {
             if (type === "edit") {
                 payload = {
                     ...payload,
-                    file_ids: [...result.map(res => res.data.id), ...payload.file_ids]
-                }
+                    file_ids: [...result.map(res => res.data.id), ...payload.file_ids],
+                };
                 dispatch(putPost(payload));
             } else {
                 payload = {
                     ...payload,
-                    file_ids: result.map(res => res.data.id)
-                }
+                    file_ids: result.map(res => res.data.id),
+                };
                 dispatch(postCreate(payload));
             }
         });
@@ -566,7 +561,7 @@ const CreateEditWorkspacePostModal = props => {
             <ModalBody>
                 <Modal isOpen={nestedModal} toggle={toggleNested} onClosed={closeAll ? toggle : undefined} centered>
                     <ModalHeader>Save as draft</ModalHeader>
-                        <ModalBody>Not sure about the content? Save it as a draft.</ModalBody>
+                    <ModalBody>Not sure about the content? Save it as a draft.</ModalBody>
                     <ModalFooter>
                         <Button color="primary" onClick={() => toggleAll(true)}>Save</Button>
                         <Button color="secondary" onClick={toggleAll}>Discard</Button>
@@ -609,26 +604,21 @@ const CreateEditWorkspacePostModal = props => {
                         onChange={handleSelectUser}
                     />
                 </WrapperDiv>
-                <WrapperDiv>
-                    {/* <Label for="firstMessage">Description</Label> */}
-                    <DescriptionInput
-                        showFileButton={true}
-                        onChange={handleQuillChange}
-                        onOpenFileDialog={handleOpenFileDialog}
-                        defaultValue={mode === "edit" ? item.post.body : ""}
-                        mode={mode}
-                    />
-                    {/* <StyledQuillEditor
-                     className="group-chat-input"
-                     modules={modules}
-                     ref={formRef.reactQuillRef}
-                     onChange={handleQuillChange}
-                     /> */}
-                </WrapperDiv>
+                <DescriptionInput
+                    required
+                    showFileButton={true}
+                    onChange={handleQuillChange}
+                    onOpenFileDialog={handleOpenFileDialog}
+                    defaultValue={mode === "edit" ? item.post.body : ""}
+                    mode={mode}
+                    /*valid={valid.description}
+                     feedback={feedback.description}*/
+                />
                 {
                     (attachedFiles.length > 0 || uploadedFiles.length > 0) &&
                     <WrapperDiv className="file-attachment-wrapper">
-                        <FileAttachments attachedFiles={[...attachedFiles, ...uploadedFiles]} handleRemoveFile={handleRemoveFile}/>
+                        <FileAttachments attachedFiles={[...attachedFiles, ...uploadedFiles]}
+                                         handleRemoveFile={handleRemoveFile}/>
                     </WrapperDiv>
                 }
                 <WrapperDiv className="more-option">
@@ -643,38 +633,37 @@ const CreateEditWorkspacePostModal = props => {
                             <CheckBox name="must_read" checked={form.must_read} onClick={toggleCheck} type="danger">Must
                                 read</CheckBox>
                             <CheckBox name="reply_required" checked={form.reply_required} onClick={toggleCheck}
-                                    type="warning">Reply required</CheckBox>
+                                      type="warning">Reply required</CheckBox>
                             <CheckBox name="no_reply" checked={form.no_reply} onClick={toggleCheck} type="info">No
                                 replies</CheckBox>
                         </div>
 
                         <WrapperDiv className="schedule-post">
-                                <Label>Schedule post</Label>
-                                <SvgIconFeather className="mr-2" width={18} icon="calendar"/>
-                                <StyledDatePicker
-                                    className="mr-2 start-date"
-                                    onChange={handleSelectStartDate}
-                                    value={form.show_at}
-                                    minDate={new Date(new Date().setDate(new Date().getDate() + 1))}
-                                />
-                                <StyledDatePicker
-                                    className="end-date"
-                                    onChange={handleSelectEndDate}
-                                    value={form.end_at}
-                                    minDate={new Date(new Date().setDate(new Date().getDate() + 1))}
-                                />
+                            <Label>Schedule post</Label>
+                            <SvgIconFeather className="mr-2" width={18} icon="calendar"/>
+                            <StyledDatePicker
+                                className="mr-2 start-date"
+                                onChange={handleSelectStartDate}
+                                value={form.show_at}
+                                minDate={new Date(new Date().setDate(new Date().getDate() + 1))}
+                            />
+                            <StyledDatePicker
+                                className="end-date"
+                                onChange={handleSelectEndDate}
+                                value={form.end_at}
+                                minDate={new Date(new Date().setDate(new Date().getDate() + 1))}
+                            />
                         </WrapperDiv>
 
                     </CheckBoxGroup>
-
 
 
                 </WrapperDiv>
                 <WrapperDiv>
                     <button
                         className="btn btn-primary"
-                        disabled={form.selectedUsers.length === 0 || form.title === "" || 
-                                    form.textOnly.trim() === "" || form.selectedWorkspaces.length === 0}
+                        disabled={form.selectedUsers.length === 0 || form.title === "" ||
+                        form.textOnly.trim() === "" || form.selectedWorkspaces.length === 0}
                         onClick={handleConfirm}>
                         {mode === "edit" ? "Update post" : "Create post"}
                     </button>

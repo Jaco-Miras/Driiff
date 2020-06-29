@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from "react";
 import styled from "styled-components";
-import toaster from "toasted-notes";
 import {SvgEmptyState, SvgIconFeather} from "../../common";
 import {DropDocument} from "../../dropzone/DropDocument";
+import {useToaster} from "../../hooks";
 import {FileListItem} from "../../list/file/item";
 import {MoreOptions} from "../common";
 import {ImportantFiles, PopularFiles, RecentEditedFile, RemoveFiles} from "./index";
@@ -63,6 +63,7 @@ const FilesBody = (props) => {
         handleAddEditFolder, actions, params, folder, fileIds, history,
     } = props;
 
+    const toaster = useToaster();
     const scrollRef = document.querySelector(".app-content-body");
 
     const [showDropZone, setShowDropZone] = useState(false);
@@ -112,8 +113,11 @@ const FilesBody = (props) => {
         if (folder) {
             let cb = (err, res) => {
                 if (err) return;
-                let pathname = history.location.pathname.split("/folder/")[0];
-                history.push(pathname);
+
+                if (res) {
+                    let pathname = history.location.pathname.split("/folder/")[0];
+                    history.push(pathname);
+                }
             };
             actions.removeFolder(folder, params.workspaceId, cb);
         }
@@ -131,7 +135,7 @@ const FilesBody = (props) => {
 
     useEffect(() => {
         if (showDropZone && !isMember) {
-            toaster.notify(`You are not a member of this workspace.`,
+            toaster.warning(`You are not a member of this workspace.`,
                 {position: "bottom-left"});
         }
     }, [showDropZone]);
@@ -167,47 +171,90 @@ const FilesBody = (props) => {
                         {
                             filter === "" &&
                             <>
-                                <h6 className="font-size-11 text-uppercase mb-4">{folder ? folder.search : "All files"}</h6>
-                                <div className="row">
-                                    {
-                                        wsFiles &&
-                                        fileIds.map(f => {
-                                            return (
-                                                <FileListItem
-                                                    key={f}
-                                                    isMember={isMember}
-                                                    scrollRef={scrollRef} actions={actions}
-                                                    className="col-xl-3 col-lg-4 col-md-6 col-sm-12"
-                                                    file={wsFiles.files[f]}/>
-                                            );
-                                        })
-                                    }
-                                </div>
                                 {
-                                    wsFiles && wsFiles.popular_files.length > 0 && folder === null &&
-                                    <PopularFiles search={search} scrollRef={scrollRef} wsFiles={wsFiles}
-                                                  actions={actions}/>
-                                }
-                                {
-                                    wsFiles && wsFiles.recently_edited.length > 0 && folder === null &&
-                                    <RecentEditedFile search={search} scrollRef={scrollRef} wsFiles={wsFiles}
-                                                      actions={actions}/>
-                                }
-
-                                {
-                                    wsFiles &&
-                                    (wsFiles.popular_files.length === 0 && wsFiles.recently_edited.length === 0) &&
-                                    fileIds.length === 0 &&
-                                    <EmptyState>
-                                        <SvgEmptyState icon={4} height={282}/>
+                                    typeof params.fileFolderId !== "undefined" ?
+                                    <>
                                         {
-                                            isMember &&
-                                            <button className="btn btn-outline-primary btn-block"
-                                                    onClick={handleShowUploadModal}>
-                                                Upload files
-                                            </button>
+                                            folder ?
+                                            <>
+                                                <h6 className="font-size-11 text-uppercase mb-4">{folder.search}</h6>
+                                                <div className="row">
+                                                    {
+                                                        wsFiles &&
+                                                        fileIds.map(f => {
+                                                            return (
+                                                                <FileListItem
+                                                                    key={f}
+                                                                    isMember={isMember}
+                                                                    scrollRef={scrollRef} actions={actions}
+                                                                    className="col-xl-3 col-lg-4 col-md-6 col-sm-12"
+                                                                    file={wsFiles.files[f]}/>
+                                                            );
+                                                        })
+                                                    }
+                                                </div>
+                                                {
+                                                    wsFiles && fileIds.length === 0 &&
+                                                    <EmptyState>
+                                                        <SvgEmptyState icon={4} height={282}/>
+                                                        {
+                                                            isMember &&
+                                                            <button className="btn btn-outline-primary btn-block"
+                                                                    onClick={handleShowUploadModal}>
+                                                                Upload files
+                                                            </button>
+                                                        }
+                                                    </EmptyState>
+                                                }
+                                            </>
+                                                   :
+                                            <></>
                                         }
-                                    </EmptyState>
+                                    </>
+                                                                               :
+                                    <>
+                                        <h6 className="font-size-11 text-uppercase mb-4">All files</h6>
+                                        <div className="row">
+                                            {
+                                                wsFiles &&
+                                                fileIds.map(f => {
+                                                    return (
+                                                        <FileListItem
+                                                            key={f}
+                                                            isMember={isMember}
+                                                            scrollRef={scrollRef} actions={actions}
+                                                            className="col-xl-3 col-lg-4 col-md-6 col-sm-12"
+                                                            file={wsFiles.files[f]}/>
+                                                    );
+                                                })
+                                            }
+                                        </div>
+                                        {
+                                            wsFiles && wsFiles.popular_files.length > 0 &&
+                                            <PopularFiles search={search} scrollRef={scrollRef} wsFiles={wsFiles}
+                                                          actions={actions}/>
+                                        }
+                                        {
+                                            wsFiles && wsFiles.recently_edited.length > 0 &&
+                                            <RecentEditedFile search={search} scrollRef={scrollRef} wsFiles={wsFiles}
+                                                              actions={actions}/>
+                                        }
+                                        {
+                                            wsFiles &&
+                                            (wsFiles.popular_files.length === 0 && wsFiles.recently_edited.length === 0) &&
+                                            fileIds.length === 0 &&
+                                            <EmptyState>
+                                                <SvgEmptyState icon={4} height={282}/>
+                                                {
+                                                    isMember &&
+                                                    <button className="btn btn-outline-primary btn-block"
+                                                            onClick={handleShowUploadModal}>
+                                                        Upload files
+                                                    </button>
+                                                }
+                                            </EmptyState>
+                                        }
+                                    </>
                                 }
                             </>
                         }

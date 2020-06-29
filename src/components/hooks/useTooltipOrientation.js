@@ -1,7 +1,9 @@
 import lodash from "lodash";
 import {useCallback, useEffect, useState} from "react";
 
-export const useTooltipOrientation = (mainRef, tooltipRef, scrollEl = null, when) => {
+export const useTooltipOrientation = (mainRef, tooltipRef, scrollEl = null, when, offset = {}) => {
+
+    const {vertical: verticalOffset = 0, horizontal: horizontalOffset = 0} = offset;
 
     const [orientation, setOrientation] = useState({
         vertical: null,
@@ -16,12 +18,13 @@ export const useTooltipOrientation = (mainRef, tooltipRef, scrollEl = null, when
         const elPos = mainRef.current.getBoundingClientRect();
 
         let benchMark = window.innerHeight / 2;
-        let adjust = 0;
+        let adjust = verticalOffset;
         if (scrollEl) {
             adjust = scrollEl.parentElement.getBoundingClientRect().y;
             benchMark = scrollEl.parentElement.clientHeight / 2;
         }
 
+        adjust += verticalOffset;
         if ((elPos.y - adjust) < benchMark) {
             return "bottom";
         } else {
@@ -43,6 +46,7 @@ export const useTooltipOrientation = (mainRef, tooltipRef, scrollEl = null, when
             benchMark = scrollEl.parentElement.clientWidth / 2;
         }
 
+        adjust += horizontalOffset;
         if ((elPos.x - adjust) < benchMark) {
             return "right";
         } else {
@@ -55,7 +59,7 @@ export const useTooltipOrientation = (mainRef, tooltipRef, scrollEl = null, when
             setOrientation({
                 vertical: verticalOrientation(),
                 horizontal: horizontalOrientation(),
-                clientHeight: tooltipRef.current.clientHeight
+                clientHeight: tooltipRef.current.clientHeight,
             });
         }, 200);
 
@@ -74,6 +78,6 @@ export const useTooltipOrientation = (mainRef, tooltipRef, scrollEl = null, when
     }, [when, scrollEl, horizontalOrientation, verticalOrientation]);
 
     return {
-        orientation
+        orientation,
     };
 };

@@ -1,6 +1,5 @@
 import React, {useCallback, useRef} from "react";
 import {useDispatch} from "react-redux";
-import toaster from "toasted-notes";
 import {copyTextToClipboard} from "../../helpers/commonFunctions";
 import {
     addFileSearchResults,
@@ -25,13 +24,17 @@ import {
     uploadWorkspaceFiles,
 } from "../../redux/actions/fileActions";
 import {addToModals} from "../../redux/actions/globalActions";
+import {useToaster} from "./index";
 
 const useFileActions = (params = null) => {
 
     const dispatch = useDispatch();
-    const fileName = useRef("");
-    const getFileIcon = (mimeType = "") => {
+    const toaster = useToaster();
 
+    const fileName = useRef("");
+
+
+    const getFileIcon = (mimeType = "") => {
         if (mimeType) {
             if (mimeType.includes("image")) {
                 return <i className="fa fa-file-image-o text-instagram"/>;
@@ -56,12 +59,12 @@ const useFileActions = (params = null) => {
         } else {
             return <i className="fa fa-file-text-o text-warning"/>;
         }
-        
+
     };
 
     const getFiles = useCallback((payload, callback) => {
         dispatch(
-            getWorkspaceFiles(payload, callback)
+            getWorkspaceFiles(payload, callback),
         );
     }, [dispatch]);
 
@@ -109,13 +112,13 @@ const useFileActions = (params = null) => {
 
     const updateFolder = useCallback((payload, callback) => {
         dispatch(
-            putFolder(payload, callback)
+            putFolder(payload, callback),
         );
     }, [dispatch]);
 
     const uploadFiles = useCallback((payload, callback) => {
         dispatch(
-            uploadWorkspaceFiles(payload)
+            uploadWorkspaceFiles(payload, callback),
         );
     }, [dispatch]);
 
@@ -124,8 +127,8 @@ const useFileActions = (params = null) => {
             dispatch(
                 deleteFolder({
                     id: folder.id,
-                    topic_id: topic_id
-                }, callback)
+                    topic_id: topic_id,
+                }, callback),
             );
         };
         let payload = {
@@ -133,7 +136,7 @@ const useFileActions = (params = null) => {
             headerText: "Remove folder for everyone?",
             submitText: "Remove",
             cancelText: "Cancel",
-            bodyText: "This folder will be moved to the recycle bin and will be permanently deleted after thirty days.",
+            bodyText: "This folder will be moved to the recycle bin and will be permanently deleted after thirty (30) days.",
             actions: {
                 onSubmit: handleDeleteFolder,
             },
@@ -158,7 +161,7 @@ const useFileActions = (params = null) => {
                     callback(err, res);
                 }),
             );
-        }
+        };
         let payload = {
             type: "confirmation",
             headerText: "Remove file",
@@ -182,11 +185,21 @@ const useFileActions = (params = null) => {
                     id: file.id,
                     name: fileName.current,
                     topic_id: params.workspaceId,
-                }, () => {
-                    toaster.notify(<span>You renamed <b>{file.search}</b> to {fileName.current}.</span>,
-                        {position: "bottom-left"});
-                })
-            )
+                }, (err, res) => {
+                    if (err) {
+                        toaster.error(
+                            <span>System failed to rename the <b>{file.search}</b> to {fileName.current}.</span>,
+                            {position: "bottom-left"});
+                    }
+
+                    if (res) {
+                        toaster.success(<span>You renamed <b>{file.search}</b> to {fileName.current}.</span>,
+                            {position: "bottom-left"});
+                    }
+
+                    callback(err, res);
+                }),
+            );
         };
 
         const handleFileNameClose = () => {
@@ -220,14 +233,14 @@ const useFileActions = (params = null) => {
 
     }, [dispatch]);
 
-    const favorite = useCallback((file) => {
-        const cb = (err,res) => {
+    const favorite = useCallback((file, callback) => {
+        const cb = (err, res) => {
             if (err) return;
             let payload = {
                 file_id: file.id,
                 topic_id: params.workspaceId,
                 is_favorite: !file.is_favorite,
-            }
+            };
             if (params.hasOwnProperty("fileFolderId")) {
                 payload = {
                     ...payload,
@@ -235,18 +248,27 @@ const useFileActions = (params = null) => {
                 };
             }
 
-            toaster.notify(`You marked ${file.search} ${!file.is_favorite ? "as favorite" : "unfavorite"}`,
-                {position: "bottom-left"});
-
             dispatch(
-                addRemoveFavorite(payload),
+                addRemoveFavorite(payload, (err, res) => {
+                    if (err) {
+                        toaster.error(<div>System failed to mark the
+                                file <b>{file.search}</b> {!file.is_favorite ? "as favorite" : "unfavorite"}</div>,
+                            {position: "bottom-left"});
+                    }
+                    if (res) {
+                        toaster.success(<>You have
+                                marked <b>{file.search}</b> {!file.is_favorite ? "as favorite" : "unfavorite"}</>,
+                            {position: "bottom-left"});
+                    }
+                    callback(err, res);
+                }),
             );
-        }
+        };
         dispatch(
             favoriteFile({
                 type_id: file.id,
-                type: "file"
-            }, cb)
+                type: "file",
+            }, cb),
         );
     }, [dispatch, params]);
 
@@ -262,22 +284,22 @@ const useFileActions = (params = null) => {
             file_id: file.id,
         };
         dispatch(
-            setViewFiles(payload),
+            setViewFiles(payload, callback),
         );
     }, [dispatch, params]);
 
     const search = useCallback((searchValue) => {
         let payload = {
             topic_id: params.workspaceId,
-            search: searchValue
+            search: searchValue,
         };
-        const cb = (err,res) => {
+        const cb = (err, res) => {
             if (err) return;
             dispatch(
                 addFileSearchResults({
                     ...payload,
-                    search_results: res.data.files
-                })
+                    search_results: res.data.files,
+                }),
             );
         };
         dispatch(
@@ -303,8 +325,8 @@ const useFileActions = (params = null) => {
         const handleDeleteTrash = () => {
             dispatch(
                 deleteTrash({
-                    topic_id: params.workspaceId
-                })
+                    topic_id: params.workspaceId,
+                }),
             );
         };
         let payload = {
@@ -335,8 +357,8 @@ const useFileActions = (params = null) => {
         if (params.hasOwnProperty("fileFolderId")) {
             payload = {
                 ...payload,
-                folder_id: params.fileFolderId
-            }
+                folder_id: params.fileFolderId,
+            };
         }
 
         dispatch(
@@ -346,7 +368,7 @@ const useFileActions = (params = null) => {
 
     const download = useCallback((file) => {
         const handleDownloadFile = () => {
-            window.open(file.download_link)
+            window.open(file.download_link);
         };
         let payload = {
             type: "confirmation",
@@ -414,6 +436,7 @@ const useFileActions = (params = null) => {
         uploadFiles,
         viewFiles,
         getFileSizeUnit,
+        getPrimaryFiles,
     };
 };
 

@@ -2,38 +2,43 @@ import {Picker} from "emoji-mart";
 import "emoji-mart/css/emoji-mart.css";
 import React from "react";
 import styled from "styled-components";
-import {useOutsideClick} from "../hooks";
 
 const Wrapper = styled.div`
+    ${props => props.hide && `display: none;`}
     position: absolute;
-    bottom: ${props => props.orientation === "top" ? "75px" : null};
-    right: 5px;
-    top: ${props => props.orientation === "bottom" ? "75px" : null};
     z-index: 9999;
     background-color: #fff;
+
+    &.orientation-top {
+        bottom: -10px;
+    }
+    &.orientation-bottom {
+        top: calc(100% - 25px);
+        bottom: auto;
+    }
+    &.orientation-left {
+        right: calc(100% + 5px);
+        left: auto;
+    }
+    &.orientation-right {
+        left: calc(100% + 25px);
+        right: auto;
+    }
 `;
 const PickerEmoji = React.forwardRef((props, ref) => {
 
-    const {className = "", handleShowEmojiPicker} = props;
-    const handleOnMouseLeave = () => {
-        if (props.onMouseLeave) {
-            props.onMouseLeave();
-        }
-    };
-
-    useOutsideClick(ref, handleShowEmojiPicker, true);
+    const {className = "", orientation, onSelectEmoji, ...otherProps} = props;
 
     return (
         <Wrapper
             ref={ref}
-            orientation={props.orientation}
-            className={className}
-            onMouseLeave={handleOnMouseLeave}
-        >
+            hide={orientation.vertical === null || orientation.horizontal === null}
+            className={`picker-emoji orientation-${orientation.vertical} orientation-${orientation.horizontal} ${className}`}
+            {...otherProps}>
             <Picker
                 title="Emoji"
                 set='apple'
-                onSelect={props.onSelectEmoji}
+                onSelect={onSelectEmoji}
                 theme='light'
                 //autoFocus
                 //showPreview={false}
