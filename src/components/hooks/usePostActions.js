@@ -7,7 +7,7 @@ import {copyTextToClipboard} from "../../helpers/commonFunctions";
 import {getBaseUrl} from "../../helpers/slugHelper";
 import {replaceChar} from "../../helpers/stringFormatter";
 import {
-    postFavorite, postArchive, postFollow, postMarkDone, 
+    postFavorite, postArchive, postFollow, postMarkDone,
     postToggleRead, removePost, postUnfollow, deletePost,
     starPostReducer, markPostReducer, putPost, postCreate,
     postClap, fetchRecentPosts, fetchTagCounter, fetchPosts,
@@ -99,10 +99,10 @@ const usePostActions = () => {
 
             let payload = {
                 type: "confirmation",
-                headerText: "Delete post draft?",
-                submitText: "Delete",
+                headerText: "Remove post draft?",
+                submitText: "Remove",
                 cancelText: "Cancel",
-                bodyText: "Are you sure you want to delete this post draft?",
+                bodyText: "Are you sure you want to remove this post draft?",
                 actions: {
                     onSubmit: onConfirm,
                 },
@@ -245,10 +245,10 @@ const usePostActions = () => {
 
         let payload = {
             type: "confirmation",
-            headerText: "Delete post?",
-            submitText: "Delete",
+            headerText: "Remove post?",
+            submitText: "Remove",
             cancelText: "Cancel",
-            bodyText: "Are you sure you want to delete this post?",
+            bodyText: "Are you sure you want to remove this post?",
             actions: {
                 onSubmit: onConfirm,
             },
