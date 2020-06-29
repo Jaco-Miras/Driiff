@@ -1,8 +1,9 @@
 import React, {useCallback, useEffect, useRef, useState} from "react";
 import {useDispatch} from "react-redux";
+import {useHistory} from "react-router-dom";
 import {FormGroup, Input, InputGroup, InputGroupAddon, InputGroupText, Label} from "reactstrap";
 import styled from "styled-components";
-import {EmailRegex} from "../../../helpers/stringFormatter";
+import {EmailRegex, replaceChar} from "../../../helpers/stringFormatter";
 import {addToModals} from "../../../redux/actions/globalActions";
 import {Avatar, SvgIcon, SvgIconFeather} from "../../common";
 import {DropDocument} from "../../dropzone/DropDocument";
@@ -76,6 +77,7 @@ const UserProfilePanel = (props) => {
 
     const {className = ""} = props;
 
+    const history = useHistory();
     const dispatch = useDispatch();
 
     const toaster = useToaster();
@@ -374,6 +376,22 @@ const UserProfilePanel = (props) => {
         }
     }, [props.match.params.id, users, setForm]);
 
+    useEffect(() => {
+        if (props.match.params.mode === "edit") {
+            if (form.id && loggedUser.id === form.id) {
+                history.push(`/profile/${form.id}/${replaceChar(form.name)}`);
+                setEditInformation(true);
+            }
+        }
+
+        if (props.match.params.mode === "view") {
+            if (form.id && loggedUser.id === form.id) {
+                history.push(`/profile/${form.id}/${replaceChar(form.name)}`);
+                setEditInformation(false);
+            }
+        }
+    }, [form, props.match.params.mode]);
+
     if (!form.id) {
         return <></>;
     }
@@ -502,12 +520,15 @@ const UserProfilePanel = (props) => {
                                         </div>
                                     </div>
                                 }
-                                <div className="row mb-2">
-                                    <div className="col-6 text-muted">Password</div>
-                                    <div className="col-6">
-                                        *****
+                                {
+                                    user.id === loggedUser.id &&
+                                    <div className="row mb-2">
+                                        <div className="col-6 text-muted">Password</div>
+                                        <div className="col-6">
+                                            *****
+                                        </div>
                                     </div>
-                                </div>
+                                }
                                 {
                                     user.role &&
                                     <div className="row mb-2">
