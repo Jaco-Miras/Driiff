@@ -56,7 +56,7 @@ const MainNavigationTabPanel = (props) => {
     const {lastVisitedChannel} = useSelector(state => state.chat);
     const unreadCounter = useSelector(state => state.global.unreadCounter);
 
-    const [workspacePath, setWorkpacePath] = useState("/workspace/dashboard");
+    const [workspacePath, setWorkpacePath] = useState("/workspace/chat");
 
     const handleIconClick = (e) => {
         e.preventDefault();

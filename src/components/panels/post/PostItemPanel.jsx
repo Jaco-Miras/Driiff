@@ -109,7 +109,7 @@ const PostItemPanel = (props) => {
                         <span>{post.title}</span>
                         {
                             post.unread_count !== 0 &&
-                            <div className="ml-2 badge badge-primary">{post.unread_count}</div>
+                            <div className="ml-2 badge badge-primary badge-pill">{post.unread_count}</div>
                         }
                     </div>
                     <div className="pl-3 d-flex align-items-center">

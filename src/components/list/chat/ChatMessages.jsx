@@ -179,68 +179,19 @@ const MessageOptions = styled(ChatMessageOptions)`
     flex: 1;
     margin: 5px;
     max-width: 25px;
+    
     .more-options-tooltip {
         &.orientation-bottom {
-            bottom: auto;
-            top: 24px;
-            @media (max-width: 575.99px) {
-                top: 20px;
-            }
-            &.hOrientation-right {
-                ${props => !props.isAuthor ? "left: -10px" : "left: -180px;"};
-                top: 24px;
-            }
-            &.hOrientation-left {
-                right: -5px;
-                left: auto;
-
-                &:before {
-                    left: 90%;
-                }
-                &:after {
-                    left: 90%;
-                }
-            }
-
-            @media (max-width: 1399.99px) {
-                &.hOrientation-right {
-                    left: -10px;
-                    top: 24px;
-                }
-
-                &.hOrientation-left {
-                    right: -5px;
-                    left: auto;
-                }
-            }
-
-            @media (max-width: 575.99px) {
-                &.hOrientation-left {
-                    right: 200px;
-                }
-            }
+            top: calc(100% - 35px);
         }
 
         &.orientation-top {
-            @media (max-width: 575.99px) {
-                bottom: 110%;
-                top: auto;
-            }
-
-            &.hOrientation-right {
-                left: -5px;
-                @media (max-width: 575.99px) {
-                    top: auto;
-                    bottom: 120%;
-                    right: auto;
-                    left: 0;
-                }
-            }
-
-            &.hOrientation-left {
-                right: -5px;
-                left: auto;
-            }
+        }
+        
+        &.orientation-right {
+            left: calc(100% + 10px);
+        }
+        &.orientation-left {
         }
     }
 `;
@@ -360,6 +311,7 @@ class ChatMessages extends React.PureComponent {
         };
 
         this.scrollComponent = React.createRef();
+        this.infiniteScroll = React.createRef();
         //this.chatBottomRef = React.createRef();
     }
 
@@ -643,10 +595,10 @@ class ChatMessages extends React.PureComponent {
                 if (this.props.selectedChannel.last_reply && this.props.selectedChannel.last_reply.user) {
                     if (this.props.selectedChannel.last_reply.user.id === this.props.user.id) {
                         //own user message
-                        return !(this.props.user.id === m.id)
+                        return !(this.props.user.id === m.id);
                     } else {
                         // other user message
-                        return !(this.props.selectedChannel.last_reply.user.id === m.id)
+                        return !(this.props.selectedChannel.last_reply.user.id === m.id);
                     }
                 } else {
                     return false;
@@ -693,6 +645,7 @@ class ChatMessages extends React.PureComponent {
                 <ChatLoader className={"initial-load"}><Loader/></ChatLoader>
             }
             <InfiniteScroll
+                ref={this.infiniteScroll}
                 className={"infinite-scroll"}
                 id='infinite-scroll-chat-replies'
             >
@@ -804,7 +757,8 @@ class ChatMessages extends React.PureComponent {
                                                     showTimestamp={showTimestamp}
                                                 >
                                                     {
-                                                        reply.user && showMessageLine && !this.props.bottomRefVisible && <ChatNewMessagesLine/>
+                                                        reply.user && showMessageLine && !this.props.bottomRefVisible &&
+                                                        <ChatNewMessagesLine/>
                                                     }
                                                     {
                                                         reply.user &&
@@ -841,7 +795,7 @@ class ChatMessages extends React.PureComponent {
                                                                         {
                                                                             <ChatReactionButton
                                                                                 isAuthor={isAuthor}
-                                                                                scrollRef={this.props.innerRef}
+                                                                                scrollRef={this.infiniteScroll.current}
                                                                                 reply={reply}
                                                                             />
                                                                         }
@@ -924,7 +878,7 @@ class ChatMessages extends React.PureComponent {
                                                                         {
                                                                             <ChatReactionButton
                                                                                 isAuthor={isAuthor}
-                                                                                scrollRef={this.props.innerRef}
+                                                                                scrollRef={this.infiniteScroll.current}
                                                                                 reply={reply}
                                                                             />
                                                                         }

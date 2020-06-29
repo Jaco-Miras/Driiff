@@ -73,22 +73,20 @@ const ChatMessageOptions = props => {
     };
 
     return (
-        <>
-            <MoreOptions className={className} scrollRef={scrollEl}>
-                <div onClick={handleSetReminder}>Remind me about this</div>
-                {
-                    isAuthor && replyData.hasOwnProperty("is_transferred") && !replyData.is_transferred &&
-                    <div onClick={handleEditReply}>Edit</div>
-                }
-                <div onClick={handleQuoteReply}>Quote</div>
-                {
-                    isAuthor &&
-                    <div onClick={handleRemoveReply}>Remove</div>
-                }
-                <div onClick={handleCopyLink}>Copy message link</div>
-                <div onClick={handleForwardMessage}>Forward</div>
-            </MoreOptions>
-        </>
+        <MoreOptions className={className} scrollRef={scrollEl}>
+            <div onClick={handleSetReminder}>Remind me about this</div>
+            {
+                isAuthor && replyData.hasOwnProperty("is_transferred") && !replyData.is_transferred &&
+                <div onClick={handleEditReply}>Edit</div>
+            }
+            <div onClick={handleQuoteReply}>Quote</div>
+            {
+                isAuthor &&
+                <div onClick={handleRemoveReply}>Remove</div>
+            }
+            <div onClick={handleCopyLink}>Copy message link</div>
+            <div onClick={handleForwardMessage}>Forward</div>
+        </MoreOptions>
     );
 };
 

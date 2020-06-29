@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, {useRef, useState} from "react";
 import styled from "styled-components";
 import {PickerEmoji, SvgIconFeather} from "../../common";
 import {useTooltipOrientation} from "../../hooks";
@@ -21,11 +21,46 @@ const StyledEmojiButton = styled(SvgIconFeather)`
     }
 `;
 const StyledPickerEmoji = styled(PickerEmoji)`
-    opacity: ${props => props.display === true ? "1" : "0"};
-    bottom: ${props => props.orientation === "top" ? "35px" : null};
-    top: ${props => props.orientation === "bottom" ? "35px" : null};
-    left: ${props => props.hOrientation === "left" ? "unset" : "0"};
-    right: ${props => props.hOrientation === "left" ? "5px" : "unset"};
+    &.orientation-top {
+        bottom: 25px;
+    }
+    &.orientation-bottom {
+        top: calc(100% + 5px);        
+    }
+    &.orientation-left {
+        right: calc(100% - 25px);
+        left: auto;
+    }
+    &.orientation-right {
+        left: calc(100% - 25px);
+        right: auto;
+    }
+        
+    @media (max-width: 576px) {
+        position: fixed;
+        justify-content: center;
+        display: flex;
+    
+        &.orientation-top {
+            bottom: 100px;
+        }
+        &.orientation-bottom {
+            top: auto;
+            bottom: 100px;
+        }
+        &.orientation-left {
+            right: 0;
+            left: 0;
+        }
+        &.orientation-right {
+            left: 0;
+            right: 0;
+        }
+    }
+    
+    .emoji-mart-bar {
+        display: none;
+    }
     
     li {        
         &:before {
@@ -43,14 +78,17 @@ const StyledPickerEmoji = styled(PickerEmoji)`
 
 const ChatReactionButton = props => {
 
-    const {isAuthor, reply, scrollRef = null} = props;
+    const {reply, scrollRef = null} = props;
+    let timeout = null;
 
     const chatMessageAction = useChatMessageActions();
 
-    const pickerRef = useRef();
-    const chatOptionsRef = useRef();
+    const refs = {
+        container: useRef(null),
+        picker: useRef(null),
+    };
+
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
-    const [displayEmojiPicker, setDisplayEmojiPicker] = useState(false);
 
     const handleShowEmojiPicker = () => setShowEmojiPicker(!showEmojiPicker);
 
@@ -59,27 +97,21 @@ const ChatReactionButton = props => {
         chatMessageAction.react(reply.id, e.id);
     };
 
+    const handlePickerMouseEnter = () => {
+        clearTimeout(timeout);
+    };
+
     const handlePickerMouseLeave = () => {
-        setTimeout(() => {
+        timeout = setTimeout(() => {
             setShowEmojiPicker(false);
         }, 1000);
     };
 
-    useEffect(() => {
-        if (showEmojiPicker) {
-            setTimeout(() => {
-                setDisplayEmojiPicker(true);
-            });
-        } else {
-            setDisplayEmojiPicker(false);
-        }
-    }, [showEmojiPicker]);
-
-    const orientation = useTooltipOrientation(chatOptionsRef, pickerRef, scrollRef, showEmojiPicker, 0);
+    const {orientation} = useTooltipOrientation(refs.container, refs.picker, scrollRef, showEmojiPicker);
 
     return (
         <ChatReactionButtonContainer
-            ref={chatOptionsRef}
+            ref={refs.container}
         >
             <StyledEmojiButton
                 icon="smile"
@@ -89,15 +121,13 @@ const ChatReactionButton = props => {
             {
                 showEmojiPicker &&
                 <StyledPickerEmoji
-                    display={displayEmojiPicker}
+                    ref={refs.picker}
+                    onMouseEnter={handlePickerMouseEnter}
                     onMouseLeave={handlePickerMouseLeave}
-                    isAuthor={isAuthor}
                     className={"chat-reaction-picker"}
-                    ref={pickerRef}
-                    orientation={orientation.vertical}
-                    hOrientation={orientation.horizontal}
+                    orientation={orientation}
                     onSelectEmoji={handleSelectEmoji}
-                    handleShowEmojiPicker={handleShowEmojiPicker}
+                    show={showEmojiPicker}
                 />
             }
         </ChatReactionButtonContainer>

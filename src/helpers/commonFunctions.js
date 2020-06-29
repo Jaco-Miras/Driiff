@@ -166,13 +166,15 @@ function fallbackCopyTextToClipboard(text) {
     document.body.removeChild(textArea);
 }
 
-export const copyTextToClipboard = (text, notification = `Copied file link to clipboard.`) => {
+export const copyTextToClipboard = (text, notification = `Link copied to the clipboard.`) => {
     if (!navigator.clipboard) {
         fallbackCopyTextToClipboard(text);
         return;
     }
     navigator.clipboard.writeText(text).then(() => {
-        toaster.notify(notification, {position: "bottom-left"});
+        toaster.notify(() => <div style={{position: "initial"}} id="toast-container">
+            <div className="toast-info">{notification}</div>
+        </div>, {position: "bottom-left"});
     }, err => {
         console.error("Async: Could not copy text: ", err);
     });

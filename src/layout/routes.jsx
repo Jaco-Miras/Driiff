@@ -55,13 +55,13 @@ export const AppRoute = ({children, ...props}) => {
                 <Route
                     {...props}
                     component={MainLayout}
-                    path={["/workspace"]}>
+                    path={["/workspace/:page"]}>
                     {children}
                 </Route>
                 <Redirect
                     from="*"
                     to={{
-                        pathname: "/chat",
+                        pathname: "/workspace/chat",
                         state: {from: props.location},
                     }}
                 />

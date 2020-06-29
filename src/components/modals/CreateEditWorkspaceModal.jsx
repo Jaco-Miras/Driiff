@@ -3,11 +3,10 @@ import {useDispatch, useSelector} from "react-redux";
 import {useHistory} from "react-router-dom";
 import {Input, InputGroup, Label, Modal, ModalBody} from "reactstrap";
 import styled from "styled-components";
-import toaster from "toasted-notes";
 import {replaceChar} from "../../helpers/stringFormatter";
 import {setPendingUploadFilesToWorkspace} from "../../redux/actions/fileActions";
 import {clearModal} from "../../redux/actions/globalActions";
-import {createWorkspace, fetchTimeline, updateWorkspace} from "../../redux/actions/workspaceActions";
+import {fetchTimeline, updateWorkspace} from "../../redux/actions/workspaceActions";
 import {FileAttachments} from "../common";
 import {DropDocument} from "../dropzone/DropDocument";
 import {CheckBox, DescriptionInput, FolderSelect, InputFeedback, PeopleSelect} from "../forms";
@@ -15,7 +14,7 @@ import {ModalHeaderSection} from "./index";
 
 const WrapperDiv = styled(InputGroup)`
     display: flex;
-    align-items: center;
+    align-items: baseline;
     margin-bottom: 20px;
 
     > .form-control:not(:first-child) {
@@ -62,6 +61,7 @@ const WrapperDiv = styled(InputGroup)`
     &.file-attachment-wrapper {
         margin-top: 30px;
         margin-bottom: -20px;
+        
     }
     &.action-wrapper {
         margin-top: 40px;
@@ -100,25 +100,6 @@ const SelectPeople = styled(PeopleSelect)`
     }
 `;
 
-const ActiveTabName = styled.span`
-    color: #505050;
-    font-size: 10px;
-    font-weight: 400;
-    margin-left: 13px;
-
-    &::before{
-        content: '';
-        display: inline-block;
-        width: 4px;
-        height: 4px;
-        -moz-border-radius: 7.5px;
-        -webkit-border-radius: 7.5px;
-        border-radius: 7.5px;
-        background-color: #B8B8B8;
-        margin-right: 9px;
-    }
-`;
-
 const CreateEditWorkspaceModal = (props) => {
 
     const {type, mode, item = null} = props.data;
@@ -149,11 +130,13 @@ const CreateEditWorkspaceModal = (props) => {
     const [loading, setLoading] = useState(false);
     const [valid, setValid] = useState({
         name: null,
+        description: null,
         has_folder: null,
         team: null,
     });
     const [feedback, setFeedback] = useState({
         name: "",
+        description: "",
         folder: "",
         team: "",
     });
@@ -182,7 +165,13 @@ const CreateEditWorkspaceModal = (props) => {
                 }
             }))
             ||
-            Object.values(workspaces).some(w => w.name.toLowerCase() === form.name.toLowerCase())) {
+            Object.values(workspaces).some(w => {
+                if (mode === "edit") {
+                    return w.id === item.id ? false : w.name.toLowerCase() === form.name.toLowerCase();
+                } else {
+                    return w.name.toLowerCase() === form.name.toLowerCase();
+                }
+            })) {
             setFeedback(prevState => {
                 return {...prevState, name: "Workspace name already exists."};
             });
@@ -267,7 +256,6 @@ const CreateEditWorkspaceModal = (props) => {
 
     const handleNameChange = e => {
         e.persist();
-        _validateName();
         setForm(prevState => ({
             ...prevState, name: e.target.value.trim(),
         }));
@@ -287,6 +275,9 @@ const CreateEditWorkspaceModal = (props) => {
     };
 
     const handleConfirm = () => {
+        if (Object.values(valid).filter(v => !v).length)
+            return;
+
         setLoading(true);
         let payload = {
             name: form.name,
@@ -305,8 +296,10 @@ const CreateEditWorkspaceModal = (props) => {
         if (mode === "edit") {
             const removed_members = item.members.filter(m => {
                 for (const i in form.selectedUsers) {
-                    if (form.selectedUsers[i].id === m.id) {
-                        return false;
+                    if (form.selectedUsers.hasOwnProperty(i)) {
+                        if (form.selectedUsers[i].id === m.id) {
+                            return false;
+                        }
                     }
                 }
                 return true;
@@ -314,8 +307,10 @@ const CreateEditWorkspaceModal = (props) => {
 
             const added_members = form.selectedUsers.filter(u => {
                 for (const i in item.members) {
-                    if (item.members[i].id === u.id) {
-                        return false;
+                    if (item.members.hasOwnProperty(i)) {
+                        if (item.members[i].id === u.id) {
+                            return false;
+                        }
                     }
                 }
                 return true;
@@ -338,9 +333,9 @@ const CreateEditWorkspaceModal = (props) => {
                         title: form.name === item.title ? "" : form.name,
                         added_members: added_members,
                         removed_members: removed_members,
-                    })}`
+                    })}`,
             };
-            const cb = (err,res) => {
+            const cb = (err, res) => {
                 if (err) return;
                 if (attachedFiles.length) {
                     let formData = new FormData();
@@ -362,54 +357,54 @@ const CreateEditWorkspaceModal = (props) => {
                     history.push(`/workspace/dashboard/${res.data.id}/${replaceChar(form.name)}`);
                 }
                 dispatch(
-                    fetchTimeline({topic_id: item.id})
+                    fetchTimeline({topic_id: item.id}),
                 );
-            }
+            };
             dispatch(updateWorkspace(payload, cb));
         } else {
-            dispatch(
-                createWorkspace(payload, (err, res) => {
-                    if (err) {
-                        console.log(err);
-                        setLoading(false);
-                        toaster.notify(
-                            <span>Workspace creation failed.<br/>Please try again.</span>,
-                            {position: "bottom-left"});
-                    }
+            /*dispatch(
+             createWorkspace(payload, (err, res) => {
+             if (err) {
+             console.log(err);
+             setLoading(false);
+             toaster.notify(
+             <span>Workspace creation failed.<br/>Please try again.</span>,
+             {position: "bottom-left"});
+             }
 
-                    if (res) {
-                        if (attachedFiles.length) {
-                            let formData = new FormData();
-                            for (const i in attachedFiles) {
-                                formData.append("files[" + i + "]", attachedFiles[i].rawFile);
-                            }
+             if (res) {
+             if (attachedFiles.length) {
+             let formData = new FormData();
+             for (const i in attachedFiles) {
+             formData.append("files[" + i + "]", attachedFiles[i].rawFile);
+             }
 
-                            dispatch(
-                                setPendingUploadFilesToWorkspace({
-                                    is_primary: 1,
-                                    topic_id: res.data.id,
-                                    files: formData,
-                                }),
-                            );
-                        }
-                        //redirect url
-                        if (form.selectedFolder) {
-                            history.push(`/workspace/dashboard/${form.selectedFolder.value}/${replaceChar(form.selectedFolder.label)}/${res.data.id}/${replaceChar(form.name)}`);
-                        } else {
-                            history.push(`/workspace/dashboard/${res.data.id}/${replaceChar(form.name)}`);
-                        }
+             dispatch(
+             setPendingUploadFilesToWorkspace({
+             is_primary: 1,
+             topic_id: res.data.id,
+             files: formData,
+             }),
+             );
+             }
+             //redirect url
+             if (form.selectedFolder) {
+             history.push(`/workspace/dashboard/${form.selectedFolder.value}/${replaceChar(form.selectedFolder.label)}/${res.data.id}/${replaceChar(form.name)}`);
+             } else {
+             history.push(`/workspace/dashboard/${res.data.id}/${replaceChar(form.name)}`);
+             }
 
-                        toaster.notify(
-                            <span><b>{form.name}</b> workspace is created
-                                {
-                                    form.selectedFolder !== null &&
-                                    <> <b>{form.selectedFolder.label}</b> under directory</>
-                                }.
-                            </span>,
-                            {position: "bottom-left"});
-                        toggle();
-                    }
-                }));
+             toaster.notify(
+             <span><b>{form.name}</b> workspace is created
+             {
+             form.selectedFolder !== null &&
+             <> <b>{form.selectedFolder.label}</b> under directory</>
+             }.
+             </span>,
+             {position: "bottom-left"});
+             toggle();
+             }
+             }));*/
         }
 
         toggle();
@@ -422,7 +417,20 @@ const CreateEditWorkspaceModal = (props) => {
             description: content,
             textOnly: textOnly,
         }));
-    }, [setForm]);
+
+        if (textOnly.trim() === "") {
+            setFeedback(prevState => ({
+                ...prevState, description: "Description is required.",
+            }));
+            setValid(prevState => ({
+                ...prevState, description: false,
+            }));
+        } else {
+            setValid(prevState => ({
+                ...prevState, description: true,
+            }));
+        }
+    }, [setForm, setFeedback, setValid]);
 
     const handleOpenFileDialog = () => {
         if (formRef.dropzoneRef.current) {
@@ -500,7 +508,7 @@ const CreateEditWorkspaceModal = (props) => {
                         name: m.name,
                         id: m.id,
                         first_name: m.first_name,
-                        profile_image_link: m.profile_image_link
+                        profile_image_link: m.profile_image_link,
                     };
                 });
             }
@@ -566,9 +574,7 @@ const CreateEditWorkspaceModal = (props) => {
     return (
         <Modal isOpen={modal} toggle={toggle} centered size={"md"} autoFocus={false}>
             <ModalHeaderSection toggle={toggle}>
-                {mode === "edit" ? "Edit " + activeTabName + " workspace" : "Create new " + activeTabName +  " workspace"}
-
-                {/* <ActiveTabName className="intern-extern">{activeTabName}</ActiveTabName> */}
+                {mode === "edit" ? "Edit " + activeTabName + " workspace" : "Create new " + activeTabName + " workspace"}
             </ModalHeaderSection>
             <ModalBody onDragOver={handleShowDropzone}>
                 <DropDocument
@@ -627,16 +633,20 @@ const CreateEditWorkspaceModal = (props) => {
                     <InputFeedback valid={valid.user}>{feedback.user}</InputFeedback>
                 </WrapperDiv>
                 <DescriptionInput
+                    required
                     showFileButton={true}
                     onChange={handleQuillChange}
                     onOpenFileDialog={handleOpenFileDialog}
                     defaultValue={mode === "edit" && item ? item.description : ""}
                     mode={mode}
+                    valid={valid.description}
+                    feedback={feedback.description}
                 />
                 {
                     (attachedFiles.length > 0 || uploadedFiles.length > 0) &&
                     <WrapperDiv className="file-attachment-wrapper">
-                        <FileAttachments attachedFiles={[...attachedFiles, ...uploadedFiles]} handleRemoveFile={handleRemoveFile}/>
+                        <FileAttachments attachedFiles={[...attachedFiles, ...uploadedFiles]}
+                                         handleRemoveFile={handleRemoveFile}/>
                     </WrapperDiv>
                 }
                 <WrapperDiv className="action-wrapper">
@@ -646,7 +656,6 @@ const CreateEditWorkspaceModal = (props) => {
                         checked={form.is_private} onClick={toggleCheck}>Lock workspace</CheckBox>
                     <button
                         className="btn btn-primary"
-                        disabled={Object.values(valid).filter(v => !v).length}
                         onClick={handleConfirm}>
                         {
                             loading &&
