@@ -30,7 +30,7 @@ const Wrapper = styled(MoreOptions)`
 
 const FileOptions = props => {
 
-    const {className = "", file, scrollRef = null, actions, isMember} = props;
+    const {className = "", file, scrollRef = null, actions, isMember, forceDelete} = props;
     const toaster = useToaster();
 
     //const [showMoreOptions, setShowMoreOptions] = useState(false);
@@ -71,7 +71,7 @@ const FileOptions = props => {
 
     const handleDelete = () => {
         if (isMember) {
-            actions.removeFile(file);
+            actions.removeFile(file, forceDelete);
         } else {
             toaster.warning(`You are not a member of this workspace.`,
                 {position: "bottom-left"});

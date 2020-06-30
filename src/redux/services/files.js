@@ -229,6 +229,9 @@ export function postFavorite(payload) {
  */
 export function deleteFile(payload) {
     let url = `/v2/workspace-files/${payload.file_id}?topic_id=${payload.topic_id}`;
+    if (payload.force_delete) {
+        url += `&force_delete=1`
+    }
     return apiCall({
         method: "DELETE",
         url: url,

@@ -404,3 +404,11 @@ export function incomingDeletedPostFile(payload, callback) {
         callback,
     );
 }
+
+export function incomingRemovedFile(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "INCOMING_REMOVED_FILE",
+        payload,
+        callback,
+    );
+}

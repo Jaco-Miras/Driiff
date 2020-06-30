@@ -553,6 +553,19 @@ export default (state = INITIAL_STATE, action) => {
                 return state;
             }
         }
+        case "INCOMING_REMOVED_FILE": {
+            let newWorkspaceFiles = {...state.workspaceFiles};
+            if (newWorkspaceFiles.hasOwnProperty(action.data.topic_id)) {
+                delete newWorkspaceFiles[action.data.topic_id].trash_files[action.data.file_id];
+                newWorkspaceFiles[action.data.topic_id].trash =  newWorkspaceFiles[action.data.topic_id].trash - 1;
+                return {
+                    ...state,
+                    workspaceFiles: newWorkspaceFiles
+                }
+            } else {
+                return state;
+            }
+        }
         case "ADD_REMOVE_FAVORITE": {
             let newWorkspaceFiles = {...state.workspaceFiles};
             newWorkspaceFiles[action.data.topic_id].files[action.data.file_id].is_favorite = action.data.is_favorite;

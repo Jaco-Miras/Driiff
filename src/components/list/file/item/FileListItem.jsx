@@ -27,7 +27,7 @@ const Star = styled(SvgIconFeather)`
 
 const FileListItem = (props) => {
 
-    const {className = "", file, actions, isMember} = props;
+    const {className = "", file, actions, isMember, forceDelete = false} = props;
 
     const fileSizeUnit = actions.getFileSizeUnit(file.hasOwnProperty("size") && typeof file.size === "number" ? file.size : 0);
 
@@ -40,7 +40,7 @@ const FileListItem = (props) => {
                         <Star icon="star"/>
                     }
                     {actions.getFileIcon(file.mime_type)}
-                    <FileOptions file={file} actions={actions} isMember={isMember}/>
+                    <FileOptions file={file} actions={actions} isMember={isMember} forceDelete={forceDelete}/>
                 </div>
                 <div className="p-2 small">
                     <div>{file.name ? file.name : file.search}</div>

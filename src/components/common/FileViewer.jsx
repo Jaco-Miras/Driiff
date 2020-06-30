@@ -305,9 +305,10 @@ const FileViewer = props => {
                 </div>;
             default:
                 return <div key={index} data-index={index} className={`file-item mfp-img`}>
-                    <FileIcon ref={e => refFiles[index] = e}
+                    <p>Cannot preview this type of file</p>
+                    {/* <FileIcon ref={e => refFiles[index] = e}
                               key={index} style={style} iconLeft={`documents`}
-                              onClick={e => handleDownloadFile(e, file)}>{file.type.toLowerCase()}</FileIcon>
+                              onClick={e => handleDownloadFile(e, file)}>{file.type.toLowerCase()}</FileIcon> */}
                 </div>;
         }
     };

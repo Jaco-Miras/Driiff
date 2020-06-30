@@ -147,18 +147,24 @@ const useFileActions = (params = null) => {
         );
     }, [dispatch]);
 
-    const removeFile = useCallback((file, callback = () => {}) => {
+    const removeFile = useCallback((file, force_delete = false) => {
         const handleDeleteFile = () => {
+            let payload = {
+                file_id: file.id,
+                link_id: file.link_id,
+                link_type: file.link_type,
+                topic_id: params.workspaceId,
+            }
+            if (force_delete) {
+                payload = {
+                    ...payload,
+                    force_delete: 1
+                }
+            }
             dispatch(
-                deleteFile({
-                    file_id: file.id,
-                    link_id: file.link_id,
-                    link_type: file.link_type,
-                    topic_id: params.workspaceId,
-                }, (err, res) => {
+                deleteFile(payload, (err, res) => {
                     toaster.notify(`You have removed ${file.search}.`,
                         {position: "bottom-left"});
-                    callback(err, res);
                 }),
             );
         };

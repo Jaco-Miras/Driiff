@@ -170,7 +170,9 @@ const FilesBody = (props) => {
                                 <h6 className="font-size-11 text-uppercase mb-4">Folders</h6>
                             : null
                         }
-                        <div className="row">
+                        {
+                            filter !== "removed" &&
+                            <div className="row">
                             {
                                 params.hasOwnProperty("fileFolderId") ?
                                 subFolders.map(f => {
@@ -189,7 +191,8 @@ const FilesBody = (props) => {
                                         history={history}/>;
                                 })
                             }
-                        </div>
+                            </div>
+                        }
                         {
                             filter === "removed" &&
                             wsFiles && wsFiles.hasOwnProperty("trash_files") && Object.keys(wsFiles.trash_files).length > 0 &&
@@ -330,7 +333,7 @@ const FilesBody = (props) => {
                             filter === "removed" &&
                             <>
                                 <RemoveFiles search={search} scrollRef={scrollRef} wsFiles={wsFiles}
-                                             actions={actions}/>
+                                             actions={actions} isMember={isMember}/>
                                 {
                                     !(wsFiles && wsFiles.hasOwnProperty("trash_files") && Object.keys(wsFiles.trash_files).length > 0) &&
                                     <EmptyState>
