@@ -66,14 +66,14 @@ import {
 } from "../../redux/actions/workspaceActions";
 
 class SocketListeners extends PureComponent {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
     }
 
     componentDidMount() {
 
         /**
-         * @todo Online users are determined every 5 seconds
+         * @todo Online users are determined every 30 seconds
          * online user reducer should be updated every socket call
          */
         this.props.getOnlineUsers();
@@ -233,6 +233,10 @@ class SocketListeners extends PureComponent {
             .listen(".chat-notification", e => {
                 console.log(e, "chat-notification");
                 const {user, selectedChannel, isBrowserActive} = this.props;
+
+                if (e.user.id !== user.id) {
+                    this.props.soundPlay();
+                }
 
                 switch (e.SOCKET_TYPE) {
                     case "CHAT_CREATE": {
