@@ -108,7 +108,7 @@ const WorkspaceList = props => {
         //set the selected topic
         if (workspace.selected) return;
 
-        history.push(`/workspace/${route.params.page}/${workspace.id}/${replaceChar(workspace.name)}`);
+        history.push(`/workspace/chat/${workspace.id}/${replaceChar(workspace.name)}`);
     };
 
     const handleShowTopics = (e) => {

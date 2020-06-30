@@ -12,7 +12,7 @@ import {todayOrYesterdayDate} from "../../../helpers/momentFormatJS";
 import quillHelper from "../../../helpers/quillHelper";
 import {getEmojiRegexPattern, stripGif} from "../../../helpers/stringFormatter";
 import {ImageTextLink, SvgIconFeather, SvgImage} from "../../common";
-import {useSettings, useTranslation} from "../../hooks";
+import {useSettings} from "../../hooks";
 import useChatMessageActions from "../../hooks/useChatMessageActions";
 import MessageFiles from "./Files/MessageFiles";
 import Unfurl from "./Unfurl/Unfurl";
@@ -693,7 +693,7 @@ const ChatBubble = (props) => {
     let replyBody = quillHelper.parseEmoji(reply.body);
     if (reply.is_deleted) {
         //replyBody = _t(reply.body, "The chat message has been deleted");
-        replyBody = "The chat message has been deleted";
+        replyBody = "The chat message has been removed";
     } else {
         if (reply.created_at.timestamp !== reply.updated_at.timestamp) {
             replyBody = `${replyBody}<span class='edited-message'>(edited)</span>`;
