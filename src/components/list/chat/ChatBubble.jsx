@@ -539,7 +539,7 @@ const ChatBubble = (props) => {
     };
 
     const handleRemoveReply = () => {
-        let newBody = reply.original_body.replace("You asked me to remind you ", "OK! I’ve deleted the reminder ");
+        let newBody = reply.original_body.replace("You asked me to remind you ", "OK! I’ve removed the reminder ");
 
         const channelName = newBody.replace(newBody.substr(0, newBody.search(" in ") + 4, newBody), "");
         newBody = newBody.replace(` in ${channelName}`, ` in <a class="push" data-href="/chat/${reply.quote.channel_code}">#${channelName}</a>`);

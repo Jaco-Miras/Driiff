@@ -26,9 +26,9 @@ import {
     incomingUpdatedChannelDetail,
     incomingUpdatedChatMessage,
     setAllMessagesAsRead,
-    updateChannelMembersTitle,
     setChannel,
     setMemberTimestamp,
+    updateChannelMembersTitle,
 } from "../../redux/actions/chatActions";
 import {addFilesToChannel, deleteFilesFromChannel} from "../../redux/actions/fileActions";
 import {
@@ -671,7 +671,7 @@ class Socket extends PureComponent {
 
                     const link = `/chat/${e.channel_code}/${e.code}`;
                     e.message = e.message.replace("this message", `<a class="push" data-href="${link}">this message</a>`);
-                    e.message = `${e.message}<br/> <span class="action"><a class="btn btn-complete btn-action">Mark as Complete</a> <a class="btn btn-delete btn-action"">Delete</a></span>`;
+                    e.message = `${e.message}<br/> <span class="action"><a class="btn btn-complete btn-action">Mark as Complete</a> <a class="btn btn-delete btn-action"">Remove</a></span>`;
                 }
 
                 let urlArray = [...new Set(urlify(e.message))];
