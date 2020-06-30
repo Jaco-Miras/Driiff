@@ -8,7 +8,7 @@ import ChannelTitle from "./ChannelTitle";
 import ChatDateIcons from "./ChatDateIcons";
 import ReplyPreview from "./ReplyPreview";
 
-const Wrapper = styled.span`
+const Wrapper = styled.li`
     cursor: pointer;
     cursor: hand;
     position: relative;

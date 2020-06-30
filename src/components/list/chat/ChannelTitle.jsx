@@ -12,9 +12,9 @@ const ChannelTitle = props => {
 
     return (
         <ChannelTitleContainer className={`mb-1 ${className}`} channel={channel}>
-            {props.channel.title}
+            {channel.title}
         </ChannelTitleContainer>
     );
 };
 
-export default ChannelTitle;
+export default React.memo(ChannelTitle);
