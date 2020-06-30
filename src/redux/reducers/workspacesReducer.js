@@ -1010,7 +1010,6 @@ export default (state = INITIAL_STATE, action) => {
             }
         }
         case "READ_CHANNEL_REDUCER": {
-            console.log(action.data)
             let updatedWorkspaces = {...state.workspaces};
             if (Object.keys(updatedWorkspaces).length > 0) {
                 if (updatedWorkspaces.hasOwnProperty(action.data.id)) {

@@ -120,9 +120,9 @@ const ChatContentPanel = (props) => {
             {selectedChannel !== null ? 
                 <ChatMessages selectedChannel={selectedChannel} 
                     chatMessageActions={chatMessageActions} 
-                    bottomRef={bottomRef}
+                    //bottomRef={bottomRef}
                     onBottomRefVisible={handleBottomRefChange}
-                    bottomRefVisible={bottomRefVisible}
+                    //bottomRefVisible={bottomRefVisible}
                 /> 
                 : <ChatMessagesPlaceholder/>}
             <ChatFooterPanel onShowFileDialog={handleOpenFileDialog} dropAction={dropAction}/>

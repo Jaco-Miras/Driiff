@@ -328,7 +328,7 @@ export default function (state = INITIAL_STATE, action) {
         case "INCOMING_CHAT_MESSAGE": {
             let haveReference = false;
             if (state.selectedChannel && state.selectedChannel.id === action.data.channel_id) {
-                haveReference = state.selectedChannel.replies.some(r => r.reference_id === action.data.reference_id);
+                if (action.data.reference_id) haveReference = state.selectedChannel.replies.some(r => r.reference_id === action.data.reference_id);
             }
             let channel = null;
             if (Object.keys(state.channels).length > 0 && state.channels.hasOwnProperty(action.data.channel_id)) {

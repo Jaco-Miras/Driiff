@@ -519,7 +519,7 @@ class ChatMessages extends React.PureComponent {
             if (selectedChannel.replies.length) {
 
                 let hasUnreadMessage = selectedChannel.replies.filter(r => r.is_read === false).length > 0;
-                if (this.props.bottomRefVisible && hasUnreadMessage && this.props.isBrowserActive && selectedChannel.is_read === 1) {
+                if (this.state.bottomRefInView && hasUnreadMessage && this.props.isBrowserActive && selectedChannel.is_read === 1) {
                     this.props.chatMessageActions.channelActions.markAsRead(selectedChannel);
                 }
 
@@ -527,7 +527,7 @@ class ChatMessages extends React.PureComponent {
                     this.loadReplies();
                 }
 
-                if (this.props.bottomRefVisible && (selectedChannel.replies.length - prevProps.selectedChannel.replies.length === 1)) {
+                if (this.state.bottomRefInView && (selectedChannel.replies.length - prevProps.selectedChannel.replies.length === 1)) {
                     if (this.chatBottomRef && this.chatBottomRef.current) {
                         this.chatBottomRef.current.scrollIntoView(false);
                     } else {
@@ -577,6 +577,7 @@ class ChatMessages extends React.PureComponent {
 
     handleBottomRefChange = (inView, entry) => {
         //console.log(inView, 'on change')
+        this.setState({bottomRefInView: inView});
         this.props.onBottomRefVisible(inView);
     };
 
@@ -776,7 +777,7 @@ class ChatMessages extends React.PureComponent {
                                                     showTimestamp={showTimestamp}
                                                 >
                                                     {
-                                                        reply.user && showMessageLine && !this.props.bottomRefVisible &&
+                                                        reply.user && showMessageLine && !this.state.bottomRefInView &&
                                                         <ChatNewMessagesLine/>
                                                     }
                                                     {
@@ -931,11 +932,11 @@ class ChatMessages extends React.PureComponent {
                                             })
                                     }
                                     {
-                                        //groupedMessages.length >= 1 && i === (groupedMessages.length - 1) &&
+                                        groupedMessages.length >= 1 && i === (groupedMessages.length - 1) &&
                                         <InView as="div"
                                                 onChange={(inView, entry) => this.handleBottomRefChange(inView, entry)}>
                                                         <span className='intersection-bottom-ref'
-                                                              ref={this.chatBottomRef}></span>
+                                                              ref={this.chatBottomRef}>bot</span>
                                         </InView>
                                     }
                                 </div>
