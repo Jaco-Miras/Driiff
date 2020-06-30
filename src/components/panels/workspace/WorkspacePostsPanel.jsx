@@ -59,7 +59,7 @@ const WorkspacePostsPanel = (props) => {
 
     const isMember = useIsMember(workspace && workspace.member_ids.length ? workspace.member_ids : []);
 
-    const {actions, posts, filter, tag, sort, post, user, search, count} = usePosts();
+    const {actions, posts, filter, tag, sort, post, user, search, count, counters} = usePosts();
 
     const handleShowWorkspacePostModal = () => {
         actions.showModal("create");
@@ -85,7 +85,7 @@ const WorkspacePostsPanel = (props) => {
         <Wrapper className={`container-fluid h-100 fadeIn ${className}`}>
             <div className="row app-block">
                 <PostSidebar isMember={isMember} workspace={workspace} filter={filter} tag={tag}
-                             postActions={actions} count={count} onGoBack={handleGoback}/>
+                             postActions={actions} count={count} counters={counters} onGoBack={handleGoback}/>
                 <div className="col-md-9 app-content">
                     <div className="app-content-overlay"/>
                     <PostFilterSearchPanel activeSort={sort} workspace={workspace}/>

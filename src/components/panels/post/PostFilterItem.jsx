@@ -22,7 +22,7 @@ const Wrapper = styled.div`
 
 const PostFilterItem = props => {
 
-    const {className = "", workspace, filter = "all", onGoBack} = props;
+    const {className = "", workspace, filter = "all", onGoBack, counters} = props;
 
     const dispatch = useDispatch();
 
@@ -43,6 +43,7 @@ const PostFilterItem = props => {
                 data-value="all" onClick={handleClickFilter}>
                 <SvgIconFeather className="mr-2" icon="book-open"/>
                 All
+                <span className="small ml-auto">{counters.all > 0 && counters.all}</span>
             </span>
             <span
                 className={`list-group-item d-flex align-items-center ${filter && filter === "my_posts" ? "active" : ""}`}
@@ -50,18 +51,21 @@ const PostFilterItem = props => {
                 onClick={handleClickFilter}>
                 <SvgIconFeather className="mr-2" icon="send"/>
                 My posts
+                <span className="small ml-auto">{counters.my_posts > 0 && counters.my_posts}</span>
             </span>
             <span className={`list-group-item d-flex align-items-center ${filter && filter === "star" ? "active" : ""}`}
                   data-value="star"
                   onClick={handleClickFilter}>
                 <SvgIconFeather className="mr-2" icon="star"/>
                 Starred
+                <span className="small ml-auto">{counters.starred > 0 && counters.starred}</span>
             </span>
             <span className={`list-group-item d-flex align-items-center ${filter && filter === "archive" ? "active" : ""}`}
                   data-value="archive"
                   onClick={handleClickFilter}>
                 <SvgIconFeather className="mr-2" icon="archive"/>
                 Archived
+                <span className="small ml-auto">{counters.archived > 0 && counters.archived}</span>
             </span>
             <span
                 className={`list-group-item d-flex align-items-center ${filter && filter === "draft" ? "active" : ""}`}
@@ -69,6 +73,7 @@ const PostFilterItem = props => {
                 onClick={handleClickFilter}>
                 <SvgIconFeather className="mr-2" icon="edit-3"/>
                 Drafts
+                <span className="small ml-auto">{counters.drafts > 0 && counters.drafts}</span>
             </span>
         </Wrapper>
     );

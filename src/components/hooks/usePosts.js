@@ -79,6 +79,14 @@ const usePosts = () => {
         let count = wsPosts[params.workspaceId].count;
         let post = null;
         
+        let counters = {
+            all: Object.values(posts).length,
+            my_posts: Object.values(posts).filter(p => p.author && p.author.id === user.id).length,
+            starred: Object.values(posts).filter(p => p.is_favourite).length,
+            archived: Object.values(posts).filter(p => p.is_archived).length,
+            drafts: Object.values(posts).filter(p => p.type === "draft_post").length
+        }
+        
         if (posts.hasOwnProperty(params.postId)) {
             post = {...posts[params.postId]};
         }
@@ -141,6 +149,7 @@ const usePosts = () => {
                 user, 
                 recentPosts: rPosts, 
                 count,
+                counters
             };
         } else {
             let filteredPosts = Object.values(wsPosts[params.workspaceId].posts);
@@ -172,7 +181,8 @@ const usePosts = () => {
                 search,
                 user,
                 recentPosts: rPosts,
-                count
+                count,
+                counters
             };
         }
     } else {
@@ -190,6 +200,13 @@ const usePosts = () => {
                 is_must_reply: 0,
                 is_must_read: 0,
                 is_read_only: 0,
+            },
+            counters: {
+                all: 0,
+                my_posts: 0,
+                starred: 0,
+                archived: 0,
+                drafts: 0
             }
         };
     }

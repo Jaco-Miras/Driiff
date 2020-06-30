@@ -37,7 +37,7 @@ const PostSnoozeModal = props => {
     const [customTimeValue, setCustomTimeValue] = useState(minD);
     const [showDateTimePicker, setShowDateTimePicker] = useState(null);
     const [validDate, setValidDate] = useState(true);
-
+    console.log(customTimeValue)
     const [modal, setModal] = useState(true);
     const toggle = () => {
         setModal(!modal);
@@ -71,6 +71,15 @@ const PostSnoozeModal = props => {
 
     const handleSnooze = (e) => {
         
+        if (setTimeValue === "pick_data") {
+            const date = new Date();
+            if (customTimeValue > date) {
+                setValidDate(true);
+            } else {
+                setValidDate(false);
+                return
+            }
+        }
         let payload = {
             post_id: post.id,
             set_time: setTimeValue === "pick_data" ? moment.utc(new Date(customTimeValue)).format("YYYY-MM-DD HH:mm:ss") : setTimeValue,
