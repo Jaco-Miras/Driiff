@@ -1,4 +1,5 @@
 import React from "react";
+import Tooltip from "react-tooltip-lite";
 import styled from "styled-components";
 import {localizeChatChannelDate} from "../../../../helpers/momentFormatJS";
 import {replaceChar} from "../../../../helpers/stringFormatter";
@@ -18,30 +19,6 @@ const Wrapper = styled.li`
         white-space: nowrap;
         line-height: 1.1;
     }
-    .info-tip {
-        position: relative;
-        
-        &:hover {
-            span {
-                opacity: 1;
-            }
-        }        
-        
-        span {
-            opacity: 0;
-            text-align: center;
-            position: absolute;            
-            top: -30px;
-            background: rgba(0,0,0,0.65);
-            color: #fff;
-            padding: 0.5rem;
-            border-radius: 25px;
-            font-size: 10px;            
-            width: 95px;
-            right: -20px;
-            pointer-events: none;            
-        }
-    }    
     .list-group-item {
         border: none;
     }
@@ -128,6 +105,16 @@ export const NotificationListItem = props => {
                 return null;
         }
     };
+
+    const toggleTooltip = () => {
+        let tooltips = document.querySelectorAll("span.react-tooltip-lite");
+
+        tooltips.forEach((tooltip) => {
+            tooltip.parentElement.classList.toggle("tooltip-active");
+        });
+
+    };
+
     return (
         <Wrapper>
             <span className="list-group-item d-flex hide-show-toggler">
@@ -142,16 +129,17 @@ export const NotificationListItem = props => {
                 <div style={{minWidth: "10px"}}>
                 {
                     notification.is_read === 0 ?
-                    <i onClick={handleReadUnread}
-                       className="info-tip hide-show-toggler-item fa fa-circle-o font-size-11">
-                        <span>Mark as read</span>
-                    </i>
+                    <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Mark as read">
+                        <i onClick={handleReadUnread}
+                           className="hide-show-toggler-item fa fa-circle-o font-size-11"/>
+                    </Tooltip>
                                                :
-                    <i onClick={handleReadUnread}
-                       className="info-tip hide-show-toggler-item fa fa-check font-size-11">
-                        <span>Mark as unread</span>
-                    </i>
+                    <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Mark as unread">
+                        <i onClick={handleReadUnread}
+                           className="hide-show-toggler-item fa fa-check font-size-11"/>
+                    </Tooltip>
                 }
+
                 </div>
             </span>
         </Wrapper>
