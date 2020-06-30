@@ -59,7 +59,7 @@ const FolderOptions = props => {
             className={`file-options ${className}`}
             moreButton="more-vertical"
             folder={folder} scrollRef={scrollRef}>
-            <div onClick={handleViewDetail}>View Details</div>
+            {/* <div onClick={handleViewDetail}>View Details</div> */}
             <div onClick={handleRename}>Rename</div>
             <div onClick={handleDelete}>Remove</div>
         </Wrapper>
