@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import {Avatar} from "../../../common";
 import {localizeChatChannelDate} from "../../../../helpers/momentFormatJS";
-import {stripHtml} from "../../../../helpers/stringFormatter";
+import {stripHtml, replaceChar} from "../../../../helpers/stringFormatter";
 
 const Wrapper = styled.li`
     cursor: pointer;
@@ -20,6 +20,17 @@ export const NotificationListItem = props => {
 
     const handleRedirect = e => {
         e.preventDefault();
+        if (notification.is_read === 0) {
+            actions.read({id: notification.id});
+        }
+        if (notification.data.workspaces) {
+            let workspace = notification.data.workspaces[0]
+            if (workspace.workspace_name) {
+                history.push(`/workspace/posts/${workspace.workspace_id}/${replaceChar(workspace.workspace_name)}/${workspace.topic_id}/${replaceChar(workspace.topic_name)}/post/${notification.data.post_id}/${replaceChar(notification.data.title)}`)
+            } else {
+                history.push(`/workspace/posts/${workspace.topic_id}/${replaceChar(workspace.topic_name)}/post/${notification.data.post_id}/${replaceChar(notification.data.title)}`);
+            }
+        }
     };
 
     const handleReadUnread = e => {
