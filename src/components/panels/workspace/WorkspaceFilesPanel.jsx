@@ -22,7 +22,7 @@ const WorkspaceFilesPanel = (props) => {
     const dispatch = useDispatch();
     const history = useHistory();
     const {_t} = useTranslation();
-    const {params, wsFiles, actions, topic, fileIds, folders, folder} = useFiles();
+    const {params, wsFiles, actions, topic, fileIds, folders, folder, subFolders} = useFiles();
 
     const [filter, setFilter] = useState("");
     const [search, setSearch] = useState("");
@@ -172,7 +172,7 @@ const WorkspaceFilesPanel = (props) => {
                         wsFiles={wsFiles} handleAddEditFolder={handleAddEditFolder} folders={folders}/>
                     <FilesBody
                         dropZoneRef={refs.dropZone} filter={filter} search={search} folders={folders} folder={folder}
-                        fileIds={fileIds} isMember={isMember}
+                        fileIds={fileIds} isMember={isMember} subFolders={subFolders}
                         history={history} actions={actions} params={params} wsFiles={wsFiles}
                         handleAddEditFolder={handleAddEditFolder}/>
                 </div>

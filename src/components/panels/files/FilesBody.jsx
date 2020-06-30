@@ -61,6 +61,7 @@ const FilesBody = (props) => {
     const {
         className = "", dropZoneRef, filter, search, wsFiles, isMember,
         handleAddEditFolder, actions, params, folders, folder, fileIds, history,
+        subFolders
     } = props;
 
     const toaster = useToaster();
@@ -163,14 +164,29 @@ const FilesBody = (props) => {
                                 <div onClick={handleRemoveFolder}>Remove folder</div>
                             </MoreButton>
                         }
-                        <h6 className="font-size-11 text-uppercase mb-4">Folders</h6>
+                        {
+                            (params.hasOwnProperty("fileFolderId") && subFolders.length > 0) ||
+                            (!params.hasOwnProperty("fileFolderId") && folders.length > 0) ?
+                                <h6 className="font-size-11 text-uppercase mb-4">Folders</h6>
+                            : null
+                        }
                         <div className="row">
                             {
+                                params.hasOwnProperty("fileFolderId") ?
+                                subFolders.map(f => {
+                                    return <FolderListItem
+                                        key={f.id}
+                                        className="col-xl-3 col-lg-4 col-md-6 col-sm-12"
+                                        folder={f}
+                                        history={history}/>;
+                                })
+                                :
                                 folders.map(f => {
                                     return <FolderListItem
                                         key={f.id}
                                         className="col-xl-3 col-lg-4 col-md-6 col-sm-12"
-                                        folder={f}/>;
+                                        folder={f}
+                                        history={history}/>;
                                 })
                             }
                         </div>
