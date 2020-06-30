@@ -338,7 +338,8 @@ export default function (state = INITIAL_STATE, action) {
                     is_hidden: 0,
                     replies: haveReference ? channel.replies.map(r => {
                                                if (r.id === action.data.reference_id) {
-                                                   return action.data;
+                                                   r.id = action.data.id;
+                                                   return r;
                                                } else {
                                                    return r;
                                                }
@@ -360,7 +361,8 @@ export default function (state = INITIAL_STATE, action) {
                         last_reply: action.data,
                         replies: haveReference ? state.selectedChannel.replies.map(r => {
                                                    if (r.id === action.data.reference_id) {
-                                                       return action.data;
+                                                       r.id = action.data.id;
+                                                       return r;
                                                    } else {
                                                        return r;
                                                    }

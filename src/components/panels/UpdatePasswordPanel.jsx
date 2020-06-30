@@ -133,7 +133,7 @@ const UpdatePasswordPanel = (props) => {
                                           (typeof props.location.state !== "undefined")
                                           && (typeof props.location.state.from !== "undefined")
                                           && (props.location.state.from !== "/logout")
-                                      ) ? props.location.state.from.pathname + props.location.state.from.search : "/workspace/dashboard";
+                                      ) ? props.location.state.from.pathname + props.location.state.from.search : "/workspace/chat";
                     storeLoginToken(res.data);
                     processBackendLogin(res.data, returnUrl);
                 }

@@ -1,16 +1,16 @@
-import {useEffect, useState, useCallback} from "react";
+import {useCallback, useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {useHistory, useParams, useRouteMatch} from "react-router-dom";
 import {replaceChar} from "../../helpers/stringFormatter";
 import {
     addToChannels,
+    clearSelectedChannel,
     getChannel,
     restoreLastVisitedChannel,
     setSelectedChannel,
-    clearSelectedChannel
 } from "../../redux/actions/chatActions";
-import {getWorkspaces, setActiveTab, setActiveTopic} from "../../redux/actions/workspaceActions";
 import {getDrafts} from "../../redux/actions/globalActions";
+import {getWorkspaces, setActiveTab, setActiveTopic} from "../../redux/actions/workspaceActions";
 import {useSettings} from "./index";
 
 const useSetWorkspace = () => {
@@ -163,8 +163,8 @@ const useSetWorkspace = () => {
 
     useEffect(() => {
         //console.log(params)
-        if (activeTopic && match.url === "/workspace/dashboard") {
-            let path = `/workspace/dashboard/`;
+        if (activeTopic && match.url === "/workspace/chat") {
+            let path = `/workspace/chat/`;
             //let path = `/workspace/dashboard/${activeTopic.is_external === 0 ? "internal" : "external"}/`;
             if (activeTopic.workspace_id !== undefined) {
                 path += `${activeTopic.workspace_id}/${replaceChar(activeTopic.workspace_name)}/${activeTopic.id}/${replaceChar(activeTopic.name)}/`;

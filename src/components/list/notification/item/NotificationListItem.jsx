@@ -1,11 +1,28 @@
 import React from "react";
 import styled from "styled-components";
-import {Avatar} from "../../../common";
 import {localizeChatChannelDate} from "../../../../helpers/momentFormatJS";
-import {stripHtml, replaceChar} from "../../../../helpers/stringFormatter";
+import {replaceChar} from "../../../../helpers/stringFormatter";
+import {Avatar} from "../../../common";
 
 const Wrapper = styled.li`
     cursor: pointer;
+    
+    .notification-container {
+        max-width: calc(100% - 60px);
+    }
+    .notification-title {
+        overflow: hidden;
+        display: block !important;
+        text-overflow: ellipsis;
+        width: calc(100% - 10px);
+        white-space: nowrap;
+        line-height: 1.1;
+    }
+    
+    .list-group-item {
+        border: none;
+    }
+    
     .avatar {
         margin-right: 1rem;
     }
@@ -47,56 +64,50 @@ export const NotificationListItem = props => {
         e.preventDefault();
         e.stopPropagation();
         actions.remove({id: notification.id});
-    }
+    };
 
     const notifDisplay = () => {
         switch (notification.type) {
             case "POST_CREATE": {
                 return (
-                    <div className="flex-grow-1" onClick={handleRedirect}>
-                        <p className="mb-0 line-height-20 d-flex justify-content-between">
-                            sends you a post
+                    <div className="notification-container flex-grow-1" onClick={handleRedirect}>
+                        <p className="notification-title text-link">
+                            shared a post
                         </p>
-                        <p>
-                            {notification.data.title}
-                        </p>
-                        <span className="text-muted small">{localizeChatChannelDate(notification.created_at.timestamp)}</span>
+                        <span
+                            className="text-muted small">{localizeChatChannelDate(notification.created_at.timestamp)}</span>
                     </div>
-                )
+                );
             }
             case "POST_COMMENT": {
                 return (
-                    <div className="flex-grow-1" onClick={handleRedirect}>
-                        <p className="mb-0 line-height-20 d-flex justify-content-between">
+                    <div className="notification-container flex-grow-1" onClick={handleRedirect}>
+                        <p className="notification-title text-link">
                             made a comment in {notification.data.title}
                         </p>
-                        <p>
-                            {stripHtml(notification.data.comment_body)}
-                        </p>
-                        <span className="text-muted small">{localizeChatChannelDate(notification.created_at.timestamp)}</span>
+                        <span
+                            className="text-muted small">{localizeChatChannelDate(notification.created_at.timestamp)}</span>
                     </div>
-                )
+                );
             }
             case "POST_MENTION": {
                 return (
-                    <div className="flex-grow-1" onClick={handleRedirect}>
-                        <p className="mb-0 line-height-20 d-flex justify-content-between">
+                    <div className="notification-container flex-grow-1" onClick={handleRedirect}>
+                        <p className="notification-title text-link">
                             mentioned you in {notification.data.title}
                         </p>
-                        <p>
-                            {stripHtml(notification.data.comment_body)}
-                        </p>
-                        <span className="text-muted small">{localizeChatChannelDate(notification.created_at.timestamp)}</span>
+                        <span
+                            className="text-muted small">{localizeChatChannelDate(notification.created_at.timestamp)}</span>
                     </div>
-                )
+                );
             }
             default:
                 return null;
         }
-    }
+    };
     return (
         <Wrapper>
-            <a className="list-group-item d-flex hide-show-toggler">
+            <span className="list-group-item d-flex hide-show-toggler">
                 <div>
                     <Avatar
                         id={notification.author.id}
@@ -105,24 +116,21 @@ export const NotificationListItem = props => {
                     />
                 </div>
                 {notifDisplay()}
-                <div>
+                <div style={{minWidth: "10px"}}>
                 {
                     notification.is_read === 0 ?
                     <i title="" data-toggle="tooltip" onClick={handleReadUnread}
-                        className="hide-show-toggler-item fa fa-circle-o font-size-11"
-                        data-original-title="Mark as read"></i>
-                    :
+                       className="hide-show-toggler-item fa fa-circle-o font-size-11"
+                       data-original-title="Mark as read"/>
+                                               :
                     <i title="" data-toggle="tooltip" onClick={handleReadUnread}
-                        className="hide-show-toggler-item fa fa-check font-size-11"
-                        data-original-title="Mark as unread"></i>
+                       className="hide-show-toggler-item fa fa-check font-size-11"
+                       data-original-title="Mark as unread"/>
                 }
-                    {/* <i title="" data-toggle="tooltip" onClick={handleRemove}
-                        className="hide-show-toggler-item fa fa-times font-size-11"
-                        data-original-title="Remove"></i> */}
                 </div>
-            </a>
+            </span>
         </Wrapper>
-    )
+    );
 };
 
 export default NotificationListItem;

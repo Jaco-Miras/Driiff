@@ -84,9 +84,9 @@ const MainNavigationTabPanel = (props) => {
         if (active_topic) {
             const {workspace, topic} = active_topic;
             if (workspace) {
-                setWorkpacePath(`/workspace/dashboard/${workspace.id}/${replaceChar(workspace.name)}/${topic.id}/${replaceChar(topic.name)}`);
+                setWorkpacePath(`/workspace/chat/${workspace.id}/${replaceChar(workspace.name)}/${topic.id}/${replaceChar(topic.name)}`);
             } else {
-                setWorkpacePath(`/workspace/dashboard/${topic.id}/${replaceChar(topic.name)}`);
+                setWorkpacePath(`/workspace/chat/${topic.id}/${replaceChar(topic.name)}`);
             }
         }
     }, [active_topic]);
