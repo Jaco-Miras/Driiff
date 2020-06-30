@@ -1,8 +1,8 @@
 import React from "react";
-import styled from "styled-components";
 import {useRouteMatch} from "react-router-dom";
-import {FolderOptions} from "../../../panels/files";
+import styled from "styled-components";
 import {replaceChar} from "../../../../helpers/stringFormatter";
+import {FolderOptions} from "../../../panels/files";
 
 const Wrapper = styled.div`
     .card {
@@ -36,10 +36,10 @@ const FolderListItem = (props) => {
     };
 
     return (
-        <Wrapper className={`file-list-item ${className}`} onClick={handleRedirect}>
+        <Wrapper className={`file-list-item cursor-pointer ${className}`} onClick={handleRedirect}>
             <div className="card  app-file-list">
                 <div className="app-file-icon">
-                    <i className="fa fa-folder-o text-instagram cursor-pointer"/>
+                    <i className="fa fa-folder-o text-instagram"/>
                     <FolderOptions folder={folder} actions={actions} isMember={isMember}/>
                 </div>
                 <div className="p-2 small">

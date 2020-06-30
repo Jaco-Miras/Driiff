@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useCallback} from "react";
 import styled from "styled-components";
 import {SvgIconFeather} from "../../../common";
 import {FileOptions} from "../../../panels/files";
@@ -31,8 +31,12 @@ const FileListItem = (props) => {
 
     const fileSizeUnit = actions.getFileSizeUnit(file.hasOwnProperty("size") && typeof file.size === "number" ? file.size : 0);
 
+    const handleFileView = useCallback(() => {
+        actions.viewFiles(file);
+    }, [file]);
+
     return (
-        <Wrapper className={`file-list-item ${className}`}>
+        <Wrapper className={`file-list-item cursor-pointer ${className}`} onClick={handleFileView}>
             <div className="card  app-file-list">
                 <div className="app-file-icon">
                     {
