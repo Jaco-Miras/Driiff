@@ -3,6 +3,9 @@ import styled from "styled-components";
 import ProfileSettings from "../settings/ProfileSettings";
 
 const Wrapper = styled.div`
+    .row-settings {
+        justify-content: center;
+    }
 `;
 
 const CompanySettingsPanel = (props) => {
@@ -12,7 +15,7 @@ const CompanySettingsPanel = (props) => {
     return (
         <Wrapper className={`container-fluid h-100 ${className}`}>
             <div className="row row-settings">
-                <div className="col-md-4">
+                <div className="col-12 col-md-7 col-xl-5">
                     <ProfileSettings/>
                 </div>
             </div>

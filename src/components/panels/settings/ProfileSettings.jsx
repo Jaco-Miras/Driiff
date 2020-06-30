@@ -1,22 +1,73 @@
 import momentTZ from "moment-timezone";
 import React, {useCallback} from "react";
+import {useSelector} from "react-redux";
 import Select from "react-select";
 import {CustomInput} from "reactstrap";
 import styled from "styled-components";
-import {getBaseUrl} from "../../../helpers/slugHelper";
 import {SvgIconFeather} from "../../common";
 import Flag from "../../common/Flag";
 import {useSettings, useTranslation} from "../../hooks";
+import {getDriffName} from "../../hooks/useDriff";
 
 const Wrapper = styled.div`
     .card {
         overflow: visible;
+    }
+    
+    .custom-switch {
+        padding: 0;
+        min-height: 34px;
+        justify-content: left;
+        align-items: center;
+        display: flex;
+
+        
+        .custom-control-label::after{
+            right: 4px;
+            left: auto;
+            width: 1.25rem;
+            height: 1.25rem;
+            border-radius: 100%;            
+            top: 2px;            
+        }
+        
+        input[type="checkbox"]:checked + .custom-control-label::after {
+            right: -22px;
+        }
+
+        .custom-control-label::before {
+            right: -2.35rem;
+            left: auto;
+            width: 4rem;
+            height: 1.5rem;
+            border-radius: 25px;
+            top: 0;
+        }
+        
+        input {
+            cursor: pointer;
+        }
+        label {
+            cursor: pointer;
+            width: calc(100% - 40px);
+            min-height: 25px;
+            display: flex;
+            align-item: center;
+            
+            span {
+                display: block;
+                width: calc(100% - 35px);
+                line-height: 1;
+            }
+        }
     }
 `;
 
 const ProfileSettings = (props) => {
 
     const {className = ""} = props;
+
+    const {user: loggedUser} = useSelector(state => state.session);
 
     const {
         generalSettings: {language, timezone},
@@ -83,7 +134,7 @@ const ProfileSettings = (props) => {
     }, []);
 
     const handleSystemSettingsClick = () => {
-        window.open(`${getBaseUrl()}/admin`, "Admin");
+        window.open(`https://${getDriffName()}.driff.io/admin`, "Admin");
     };
 
     if (!isLoaded)
@@ -91,26 +142,30 @@ const ProfileSettings = (props) => {
 
     return (
         <Wrapper className={`profile-settings ${className}`}>
-            <div className="card">
-                <div className="card-body">
-                    <h6 className="card-title d-flex justify-content-between align-items-center mb-0">System
-                        Settings <SvgIconFeather className="cursor-pointer" icon="settings"
-                                                 onClick={handleSystemSettingsClick}/></h6>
+            {
+                loggedUser.role.name === "owner" &&
+                <div className="card">
+                    <div className="card-body">
+                        <h6 className="card-title d-flex justify-content-between align-items-center mb-0">System
+                            Settings <SvgIconFeather
+                                className="cursor-pointer" icon="settings"
+                                onClick={handleSystemSettingsClick}/></h6>
+                    </div>
                 </div>
-            </div>
+            }
             <div className="card">
                 <div className="card-body">
                     <h6 className="card-title d-flex justify-content-between align-items-center">Chat Settings</h6>
                     <div className="row mb-2">
-                        <div className="col-6 text-muted">Play a sound when receiving a new chat message</div>
-                        <div className="col-6">
+                        <div className="col-12">
                             <CustomInput
-                                className="cursor-pointer"
+                                className="cursor-pointer text-muted"
                                 checked={sound_enabled}
                                 type="switch"
                                 id="chat_sound_enabled"
                                 name="sound_enabled"
                                 onChange={handleChatSwitchToggle}
+                                label={<span>Play a sound when receiving a new chat message</span>}
                             />
                         </div>
                     </div>
