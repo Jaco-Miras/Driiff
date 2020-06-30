@@ -182,7 +182,16 @@ export default (state = INITIAL_STATE, action) => {
                             member_ids: action.data.member_ids,
                             members: action.data.members,
                             type: action.data.type,
-                            key_id: action.data.key_id
+                            key_id: action.data.key_id,
+                            is_lock: workspace.private,
+                            unread_count: workspace.unread_chats + workspace.unread_posts,
+                            topic_detail: {
+                                ...workspace,
+                                channel: workspace.channel,
+                                member_ids: action.data.member_ids,
+                                members: action.data.members,
+                                description: action.data.description,
+                            }
                         }
                         delete workspace.workspace_id;
                         delete workspace.workspace_name;

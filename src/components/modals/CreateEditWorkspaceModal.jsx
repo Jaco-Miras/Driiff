@@ -202,7 +202,6 @@ const CreateEditWorkspaceModal = (props) => {
     const toggleCheck = (e) => {
         const name = e.target.dataset.name;
         const checked = !form[name];
-
         setForm(prevState => {
             return {...prevState, [name]: checked};
         });
@@ -288,12 +287,6 @@ const CreateEditWorkspaceModal = (props) => {
             member_ids: form.selectedUsers.map(u => u.id),
             is_lock: form.is_private ? 1 : 0,
         };
-        if (form.selectedFolder) {
-            payload = {
-                ...payload,
-                workspace_id: form.selectedFolder.value,
-            };
-        }
 
         if (mode === "edit") {
             const removed_members = item.members.filter(m => {
@@ -320,7 +313,7 @@ const CreateEditWorkspaceModal = (props) => {
 
             payload = {
                 ...payload,
-                workspace_id: form.selectedFolder ? form.selectedFolder.value : 0,
+                workspace_id: form.selectedFolder && form.has_folder ? form.selectedFolder.value : 0,
                 topic_id: item.id,
                 remove_member_ids: removed_members,
                 new_member_ids: added_members,
