@@ -86,8 +86,8 @@ const WorkspaceFilesPanel = (props) => {
             if (params.hasOwnProperty("fileFolderId")) {
                 payload = {
                     ...payload,
-                    folder_id: params.fileFolderId
-                }
+                    folder_id: params.fileFolderId,
+                };
             }
             actions.createFolder(payload, cb);
         }
@@ -171,7 +171,7 @@ const WorkspaceFilesPanel = (props) => {
                         onSearch={handleSearch} onSearchChange={handleSearchChange} onEnter={handleEnter}
                         wsFiles={wsFiles} handleAddEditFolder={handleAddEditFolder} folders={folders}/>
                     <FilesBody
-                        dropZoneRef={refs.dropZone} filter={filter} search={search} folder={folder}
+                        dropZoneRef={refs.dropZone} filter={filter} search={search} folders={folders} folder={folder}
                         fileIds={fileIds} isMember={isMember}
                         history={history} actions={actions} params={params} wsFiles={wsFiles}
                         handleAddEditFolder={handleAddEditFolder}/>
