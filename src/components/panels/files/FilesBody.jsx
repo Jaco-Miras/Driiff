@@ -3,7 +3,7 @@ import styled from "styled-components";
 import {SvgEmptyState, SvgIconFeather} from "../../common";
 import {DropDocument} from "../../dropzone/DropDocument";
 import {useToaster} from "../../hooks";
-import {FileListItem} from "../../list/file/item";
+import {FileListItem, FolderListItem} from "../../list/file/item";
 import {MoreOptions} from "../common";
 import {ImportantFiles, PopularFiles, RecentEditedFile, RemoveFiles} from "./index";
 
@@ -60,7 +60,7 @@ const FilesBody = (props) => {
 
     const {
         className = "", dropZoneRef, filter, search, wsFiles, isMember,
-        handleAddEditFolder, actions, params, folder, fileIds, history,
+        handleAddEditFolder, actions, params, folders, folder, fileIds, history,
     } = props;
 
     const toaster = useToaster();
@@ -163,6 +163,17 @@ const FilesBody = (props) => {
                                 <div onClick={handleRemoveFolder}>Remove folder</div>
                             </MoreButton>
                         }
+                        <h6 className="font-size-11 text-uppercase mb-4">Folders</h6>
+                        <div className="row">
+                            {
+                                folders.map(f => {
+                                    return <FolderListItem
+                                        key={f.id}
+                                        className="col-xl-3 col-lg-4 col-md-6 col-sm-12"
+                                        folder={f}/>;
+                                })
+                            }
+                        </div>
                         {
                             filter === "removed" &&
                             wsFiles && wsFiles.hasOwnProperty("trash_files") && Object.keys(wsFiles.trash_files).length > 0 &&
