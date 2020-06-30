@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import {localizeChatChannelDate} from "../../../../helpers/momentFormatJS";
+import {replaceChar} from "../../../../helpers/stringFormatter";
 import {Avatar} from "../../../common";
 
 const Wrapper = styled.li`
@@ -124,7 +125,7 @@ export const NotificationListItem = props => {
                                                :
                     <i title="" data-toggle="tooltip" onClick={handleReadUnread}
                        className="hide-show-toggler-item fa fa-check font-size-11"
-                       data-original-title="Mark as unread"></i>
+                       data-original-title="Mark as unread"/>
                 }
                 </div>
             </span>
