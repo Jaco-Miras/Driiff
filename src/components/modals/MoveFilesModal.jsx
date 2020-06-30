@@ -92,12 +92,12 @@ const MoveFilesModal = (props) => {
             </ModalBody>
             <ModalFooter>
                 <button
-                    type="button" className="btn btn-secondary" data-dismiss="modal"
-                    onClick={handleClose}>Cancel
-                </button>
-                <button
                     type="button" className="btn btn-primary"
                     onClick={handleConfirm}>Move
+                </button>
+                <button
+                    type="button" className="btn btn-secondary" data-dismiss="modal"
+                    onClick={handleClose}>Cancel
                 </button>
             </ModalFooter>
         </Wrapper>
