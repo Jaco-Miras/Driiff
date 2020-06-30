@@ -4,13 +4,18 @@ import {NotificationListItem} from "./index";
 
 const Wrapper = styled.ul`
     overflow: auto;
+    
+    &.list-group {
+        max-height: none !important;
+    } 
 `;
 
 const NotificationLists = props => {
 
-    const { notifications, actions, history } = props;
+    const {notifications, actions, history} = props;
 
-    if (Object.keys(notifications).length === 0) return null;
+    if (Object.keys(notifications).length === 0)
+        return null;
 
     return (
         <Wrapper className={`list-group list-group-flush`}>
