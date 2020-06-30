@@ -48,12 +48,12 @@ const useSetWorkspace = () => {
         dispatch(getDrafts());
         return () => {
             dispatch(clearSelectedChannel());
-        }
+        };
     }, []);
 
     useEffect(() => {
         if (!init && !workspacesLoaded) {
-            setInit(true)
+            setInit(true);
             dispatch(
                 getWorkspaces({is_external: 0}, (err, res) => {
                     if (err) return;
@@ -102,7 +102,7 @@ const useSetWorkspace = () => {
                 }),
             );
         } else if (init && !exInit && !externalWorkspacesLoaded) {
-            setExInit(true)
+            setExInit(true);
             dispatch(
                 getWorkspaces({is_external: 1}),
             );
@@ -139,7 +139,7 @@ const useSetWorkspace = () => {
                 } else {
                     if (topic.channel && topic.channel.channel_loaded === undefined) {
                         getAndSetChannel(topic.channel.code);
-                    }   
+                    }
                 }
             }
         }
@@ -240,6 +240,10 @@ const useSetWorkspace = () => {
             }
         }
     }, [activeTopic, match, params]);
+
+    return {
+        getAndSetChannel,
+    };
 };
 
 export default useSetWorkspace;

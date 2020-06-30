@@ -65,12 +65,23 @@ const ChatSidebarPanel = (props) => {
                               onClick={handleTabChange} role="tab" aria-controls="pills-contact"
                               aria-selected="false">Contacts</span>
                     </li>
+                    <li className="nav-item">
+                        <span className="nav-link" id="pills-workspace-tab" data-toggle="pill"
+                              onClick={handleTabChange} role="tab" aria-controls="pills-workspace-internal"
+                              aria-selected="false">Workspace - Internal</span>
+                    </li>
+                    <li className="nav-item">
+                        <span className="nav-link" id="pills-workspace-tab" data-toggle="pill"
+                              onClick={handleTabChange} role="tab" aria-controls="pills-workspace-external"
+                              aria-selected="false">Workspace - External</span>
+                    </li>
                 </ul>
             </div>
-            <ChatSideBarContentPanel pill={tabPill} search={search}
-                                     channels={channels}
-                                     userChannels={userChannels}
-                                     selectedChannel={selectedChannel}/>
+            <ChatSideBarContentPanel
+                pill={tabPill} search={search}
+                channels={channels}
+                userChannels={userChannels}
+                selectedChannel={selectedChannel}/>
         </Wrapper>
     );
 };

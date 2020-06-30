@@ -3,8 +3,10 @@ import {useDispatch} from "react-redux";
 import styled from "styled-components";
 import {addToModals} from "../../../redux/actions/globalActions";
 import {SvgIconFeather} from "../../common";
+import {useSetWorkspace, useSortWorkspaces} from "../../hooks";
 import ChannelsSidebar from "../../list/chat/ChannelsSidebar";
 import ChatContactsList from "../../list/chat/ChatContactsList";
+import {WorkspaceChatList} from "../../workspace";
 
 const Wrapper = styled.div`
     overflow: auto !important;
@@ -45,6 +47,8 @@ const ChatSidebarContentPanel = (props) => {
     const {className = "", pill = "pills-home", search, channels, userChannels, selectedChannel} = props;
 
     const dispatch = useDispatch();
+    const {getAndSetChannel} = useSetWorkspace();
+    const sortedWorkspaces = useSortWorkspaces();
 
     const handleOpenGropupChatModal = () => {
         let payload = {
@@ -72,16 +76,65 @@ const ChatSidebarContentPanel = (props) => {
                             <span>New group chat</span>
                         </NewGroupButton>
                     </div>
-                    <ChannelsSidebar search={search}
-                                     channels={channels} selectedChannel={selectedChannel}/>
+                    <ChannelsSidebar
+                        search={search}
+                        channels={channels} selectedChannel={selectedChannel}/>
                 </div>
                 <div className={`tab-panel fade ${pill === "pills-contact" && "show active"}`} id="pills-contact"
                      role="tabpanel"
                      aria-labelledby="pills-contact-tab">
-                    <ChatContactsList search={search}
-                                      channels={channels}
-                                      userChannels={userChannels}
-                                      selectedChannel={selectedChannel}/>
+                    <ChatContactsList
+                        search={search}
+                        channels={channels}
+                        userChannels={userChannels}
+                        selectedChannel={selectedChannel}/>
+                </div>
+                <div
+                    className={`tab-panel workspace-chat-list fade ${pill === "pills-workspace-internal" && "show active"}`}
+                    id="pills-workspace-internal"
+                    role="tabpanel"
+                    aria-labelledby="pills-workspace-tab">
+                    <ul className="list-group list-group-flush">
+                        {
+                            sortedWorkspaces
+                                .filter(ws => {
+                                    if (!!ws.is_external)
+                                        return false;
+
+                                    return true;
+                                })
+                                .map(ws => {
+                                    return <WorkspaceChatList
+                                        selectedChannel={selectedChannel}
+                                        setChannel={getAndSetChannel}
+                                        key={ws.key_id}
+                                        workspace={ws}/>;
+                                })
+                        }
+                    </ul>
+                </div>
+                <div
+                    className={`tab-panel workspace-chat-list fade ${pill === "pills-workspace-external" && "show active"}`}
+                    id="pills-workspace-external"
+                    role="tabpanel"
+                    aria-labelledby="pills-workspace-tab">
+                    <ul className="list-group list-group-flush">
+                        {
+                            sortedWorkspaces
+                                .filter(ws => {
+                                    if (!ws.is_external)
+                                        return false;
+
+                                    return true;
+                                })
+                                .map(ws => {
+                                    return <WorkspaceChatList
+                                        selectedChannel={selectedChannel}
+                                        setChannel={getAndSetChannel}
+                                        key={ws.key_id} workspace={ws}/>;
+                                })
+                        }
+                    </ul>
                 </div>
             </div>
         </Wrapper>
