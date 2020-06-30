@@ -15,6 +15,7 @@ import {
     putChannelUpdate,
     putMarkReadChannel,
     putMarkUnreadChannel,
+    readChannelReducer,
     renameChannelKey,
     setChannel,
     setChannelHistoricalPosition,
@@ -458,8 +459,15 @@ const useChannelActions = () => {
      */
     const markAsRead = useCallback((
         channel,
-        callback = () => {},
     ) => {
+        let callback = (err,res) => {
+            if (err) return;
+            if (channel.type === "TOPIC") {
+                dispatch(
+                    readChannelReducer({id: channel.entity_id, count: channel.replies.filter(r => !r.is_read).length})
+                )
+            }
+        }
         dispatch(
             putMarkReadChannel({
                 channel_id: channel.id,

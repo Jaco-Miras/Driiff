@@ -978,6 +978,65 @@ export default (state = INITIAL_STATE, action) => {
                 //workspacePosts: newWorkspacePosts
             }
         }
+        case "INCOMING_CHAT_MESSAGE": {
+            if (!action.data.is_read) {
+                let updatedWorkspaces = {...state.workspaces};
+                if (Object.keys(updatedWorkspaces).length > 0) {
+                    if (updatedWorkspaces.hasOwnProperty(action.data.workspace_id)) {
+                        updatedWorkspaces[action.data.workspace_id].topic_detail.unread_chats = updatedWorkspaces[action.data.workspace_id].topic_detail.unread_chats + 1;
+                        updatedWorkspaces[action.data.workspace_id].unread_count = updatedWorkspaces[action.data.workspace_id].unread_count + 1;
+                        return {
+                            ...state,
+                            workspaces: updatedWorkspaces
+                        }
+                    } else {
+                        Object.values(updatedWorkspaces).forEach(ws => {
+                            if (ws.hasOwnProperty("topics") && ws.topics.hasOwnProperty(action.data.workspace_id)) {
+                                updatedWorkspaces[ws.id].unread_count = updatedWorkspaces[ws.id].unread_count + 1;
+                                updatedWorkspaces[ws.id].topics[action.data.workspace_id].unread_chats = updatedWorkspaces[ws.id].topics[action.data.workspace_id].unread_chats + 1;
+                                return;
+                            }
+                        })
+                        return {
+                            ...state,
+                            workspaces: updatedWorkspaces
+                        }
+                    }
+                } else {
+                    return state;
+                }
+            } else {
+                return state
+            }
+        }
+        case "READ_CHANNEL_REDUCER": {
+            console.log(action.data)
+            let updatedWorkspaces = {...state.workspaces};
+            if (Object.keys(updatedWorkspaces).length > 0) {
+                if (updatedWorkspaces.hasOwnProperty(action.data.id)) {
+                    updatedWorkspaces[action.data.id].topic_detail.unread_chats = 0;
+                    updatedWorkspaces[action.data.id].unread_count = updatedWorkspaces[action.data.id].unread_count - action.data.count;
+                    return {
+                        ...state,
+                        workspaces: updatedWorkspaces
+                    }
+                } else {
+                    Object.values(updatedWorkspaces).forEach(ws => {
+                        if (ws.hasOwnProperty("topics") && ws.topics.hasOwnProperty(action.data.id)) {
+                            updatedWorkspaces[ws.id].topics[action.data.id].unread_chats = 0;
+                            updatedWorkspaces[ws.id].unread_count = updatedWorkspaces[ws.id].unread_count - action.data.count;
+                            return;
+                        }
+                    })
+                    return {
+                        ...state,
+                        workspaces: updatedWorkspaces
+                    }
+                }
+            } else {
+                return state;
+            }
+        }
         default:
             return state;
     }

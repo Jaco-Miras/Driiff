@@ -464,3 +464,11 @@ export function unreadChannelReducer(payload, callback) {
         callback,
     );
 }
+
+export function readChannelReducer(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "READ_CHANNEL_REDUCER",
+        payload,
+        callback,
+    );
+}

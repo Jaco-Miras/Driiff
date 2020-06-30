@@ -2,7 +2,7 @@ import React from "react";
 import {isMobile} from "react-device-detect";
 import {useDispatch} from "react-redux";
 import styled from "styled-components";
-import {putMarkReadChannel, setAllMessagesAsRead} from "../../../redux/actions/chatActions";
+import {putMarkReadChannel, setAllMessagesAsRead, readChannelReducer} from "../../../redux/actions/chatActions";
 
 const ChatMarkAsReadDiv = styled.div`
     cursor: pointer;
@@ -29,8 +29,15 @@ const ChatMarkAsRead = props => {
     const dispatch = useDispatch();
 
     const handleMarkMessageAsRead = (e) => {
-
-        dispatch(putMarkReadChannel({channel_id: channel.id}));
+        let callback = (err,res) => {
+            if (err) return;
+            if (channel.type === "TOPIC") {
+                dispatch(
+                    readChannelReducer({id: channel.entity_id, count: channel.replies.filter(r => !r.is_read).length})
+                )
+            }
+        }
+        dispatch(putMarkReadChannel({channel_id: channel.id}, callback));
         dispatch(setAllMessagesAsRead({channel_id: channel.id}));
     };
 

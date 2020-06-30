@@ -34,6 +34,10 @@ const ChatContentPanel = (props) => {
         dropZoneRef: useRef(),
     };
 
+    const handleBottomRefChange = (inView) => {
+        setBottomRefVisible(inView)
+    };
+
     const handleOpenFileDialog = () => {
         if (refs.dropZoneRef.current) {
             refs.dropZoneRef.current.open();
@@ -117,7 +121,7 @@ const ChatContentPanel = (props) => {
                 <ChatMessages selectedChannel={selectedChannel} 
                     chatMessageActions={chatMessageActions} 
                     bottomRef={bottomRef}
-                    onBottomRefVisible={setBottomRefVisible}
+                    onBottomRefVisible={handleBottomRefChange}
                     bottomRefVisible={bottomRefVisible}
                 /> 
                 : <ChatMessagesPlaceholder/>}
