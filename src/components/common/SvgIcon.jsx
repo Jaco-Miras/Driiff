@@ -37,6 +37,11 @@ export const SvgIconFeather = React.memo(React.forwardRef((props, ref) => {
                 <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
             </>;
             break;
+        case "check":
+            content = <>
+                <polyline points="20 6 9 17 4 12" />
+            </>;
+            break;
         case "chevron-down":
             content = <>
                 <polyline points="6 9 12 15 18 9"/>

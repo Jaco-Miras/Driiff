@@ -136,7 +136,7 @@ const useFileActions = (params = null) => {
             headerText: "Remove folder for everyone?",
             submitText: "Remove",
             cancelText: "Cancel",
-            bodyText: "This folder will be moved to the recycle bin and will be permanently deleted after thirty (30) days.",
+            bodyText: "This folder will be moved to the recycle bin and will be permanently removed after thirty (30) days.",
             actions: {
                 onSubmit: handleDeleteFolder,
             },

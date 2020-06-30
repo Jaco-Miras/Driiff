@@ -1,22 +1,24 @@
-import {useCallback} from "react";
+import React, {useCallback} from "react";
 import {useDispatch} from "react-redux";
 import {
-    deleteNotification,
     deleteAllNotification,
+    deleteNotification,
     getNotifications,
     patchNotification,
-    readNotificationReducer,
     readAllNotification,
     readAllNotificationReducer,
-    removeNotificationReducer,
+    readNotificationReducer,
     removeAllNotificationReducer,
+    removeNotificationReducer,
     unreadNotification,
     unreadNotificationReducer,
 } from "../../redux/actions/notificationActions";
+import {useToaster} from "./index";
 
 const useNotificationActions = props => {
 
     const dispatch = useDispatch();
+    const toaster = useToaster();
 
     const get = useCallback((payload, callback) => {
         dispatch(
@@ -25,60 +27,68 @@ const useNotificationActions = props => {
     }, [dispatch]);
 
     const read = useCallback((payload) => {
-        let callback = (err,res) => {
+        let callback = (err, res) => {
             if (err) return;
             dispatch(
-                readNotificationReducer(payload)
+                readNotificationReducer(payload),
             );
-        }
+        };
         dispatch(
             patchNotification(payload, callback),
         );
     }, [dispatch]);
 
     const readAll = useCallback((payload) => {
-        let callback = (err,res) => {
-            if (err) return;
-            dispatch(
-                readAllNotificationReducer()
-            );
-        }
+        let callback = (err, res) => {
+            if (err) {
+                toaster.error(<>Action failed</>,
+                    {position: "bottom-left"});
+                return;
+            }
+            if (res) {
+                dispatch(
+                    readAllNotificationReducer(),
+                );
+                toaster.success(<>You marked all notifications read</>,
+                    {position: "bottom-left"});
+            }
+        };
         dispatch(
             readAllNotification(payload, callback),
         );
     }, [dispatch]);
 
     const unread = useCallback((payload) => {
-        let callback = (err,res) => {
+        let callback = (err, res) => {
             if (err) return;
             dispatch(
-                unreadNotificationReducer(payload)
+                unreadNotificationReducer(payload),
             );
-        }
+        };
         dispatch(
             unreadNotification(payload, callback),
         );
     }, [dispatch]);
 
     const remove = useCallback((payload) => {
-        let callback = (err,res) => {
+        let callback = (err, res) => {
             if (err) return;
             dispatch(
-                removeNotificationReducer(payload)
+                removeNotificationReducer(payload),
             );
-        }
+        };
         dispatch(
             deleteNotification(payload, callback),
         );
     }, [dispatch]);
 
     const removeAll = useCallback(() => {
-        let callback = (err,res) => {
+        let callback = (err, res) => {
             if (err) return;
             dispatch(
-                removeAllNotificationReducer()
+                removeAllNotificationReducer(),
             );
-        }
+        };
         dispatch(
             deleteAllNotification({}, callback),
         );
@@ -91,7 +101,7 @@ const useNotificationActions = props => {
         remove,
         removeAll,
         unread,
-    }
+    };
 };
 
 export default useNotificationActions;
