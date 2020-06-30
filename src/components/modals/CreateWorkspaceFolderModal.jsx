@@ -195,13 +195,11 @@ const CreateWorkspaceFolderModal = props => {
                     if(err) {
                         console.log(err);
                         toaster.notify(
-                            <span>Folder update failed.<br/>Please try again.</span>,
-                            {position: "bottom-left"});
+                            <span>Folder update failed.<br/>Please try again.</span>);
                     }
                     if(res) {
                         toaster.notify(
-                            <span><b>{form.name}</b> folder is updated</span>,
-                            {position: "bottom-left"});
+                            <span><b>{form.name}</b> folder is updated</span>);
                         toggle();
                     }
                 }),
@@ -212,13 +210,11 @@ const CreateWorkspaceFolderModal = props => {
                     if(err) {
                         console.log(err);
                         toaster.notify(
-                            <span>Folder creation failed.<br/>Please try again.</span>,
-                            {position: "bottom-left"});
+                            <span>Folder creation failed.<br/>Please try again.</span>);
                     }
                     if(res) {
                         toaster.notify(
-                            <span><b>{form.name}</b> folder is created</span>,
-                            {position: "bottom-left"});
+                            <span><b>{form.name}</b> folder is created</span>);
                         toggle();
                     }
                 }),

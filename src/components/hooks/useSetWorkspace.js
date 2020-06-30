@@ -65,11 +65,13 @@ const useSetWorkspace = () => {
 
                             if (ws.type === "FOLDER" && ws.topics.length) {
                                 for (const i in ws.topics) {
-                                    const t = ws.topics[i];
-                                    if (t.id === parseInt(params.workspaceId)) {
-                                        wsfolder = ws;
-                                        topic = t;
-                                        break;
+                                    if (ws.topics.hasOwnProperty(i)) {
+                                        const t = ws.topics[i];
+                                        if (t.id === parseInt(params.workspaceId)) {
+                                            wsfolder = ws;
+                                            topic = t;
+                                            break;
+                                        }
                                     }
                                 }
                             } else {
@@ -109,7 +111,6 @@ const useSetWorkspace = () => {
         if (workspacesLoaded && activeTopic === null && activeTopicSettings !== null) {
             //set the active topic
             let topic = null;
-            let channel_id = null;
             if (params.folderId !== undefined && workspaces.hasOwnProperty(params.folderId)) {
                 topic = workspaces[params.folderId].topics[params.workspaceId];
             } else if (workspaces.hasOwnProperty(params.workspaceId) && params.workspaceId) {
@@ -136,7 +137,7 @@ const useSetWorkspace = () => {
                         getAndSetChannel(topic.topic_detail.channel.code);
                     }
                 } else {
-                    if (topic.channel.channel_loaded === undefined) {
+                    if (topic.channel && topic.channel.channel_loaded === undefined) {
                         getAndSetChannel(topic.channel.code);
                     }   
                 }
@@ -171,7 +172,9 @@ const useSetWorkspace = () => {
                 dispatch(restoreLastVisitedChannel({channel_id: activeTopic.channel.id}));
             } else {
                 path += `${activeTopic.id}/${replaceChar(activeTopic.name)}`;
-                dispatch(restoreLastVisitedChannel({channel_id: activeTopic.topic_detail.channel.id}));
+
+                if (activeTopic.topic_detail)
+                    dispatch(restoreLastVisitedChannel({channel_id: activeTopic.topic_detail.channel.id}));
             }
             history.push(path);
         } else if (activeTopic && params.hasOwnProperty("workspaceId")) {
@@ -211,7 +214,7 @@ const useSetWorkspace = () => {
             else if (params.workspaceId !== undefined && parseInt(params.workspaceId) === activeTopic.id) {
                 if (params.hasOwnProperty("folderId")) {
                     let workspace = {...workspaces[params.folderId].topics[params.workspaceId]};
-                    if (workspace.hasOwnProperty("id")) {
+                    if (workspace.hasOwnProperty("id") && workspace.channel) {
                         if (workspace.channel.channel_loaded === undefined) {
                             getAndSetChannel(workspace.channel.code);
                         } else {
@@ -223,7 +226,7 @@ const useSetWorkspace = () => {
                     }
                 } else {
                     let workspace = {...workspaces[params.workspaceId]};
-                    if (workspace.hasOwnProperty("id")) {
+                    if (workspace.hasOwnProperty("id") && workspace.topic_detail) {
                         if (workspace.channel_loaded === undefined) {
                             getAndSetChannel(workspace.topic_detail.channel.code);
                         } else {

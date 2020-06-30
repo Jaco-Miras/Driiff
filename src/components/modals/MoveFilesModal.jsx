@@ -60,13 +60,11 @@ const MoveFilesModal = (props) => {
         if (selectedFolder) {
             let cb = (err, res) => {
                 if (err) {
-                    toaster.success(<div>Failed to move <b>{file.search}</b> to ${selectedFolder.label} folder</div>,
-                        {position: "bottom-left"});
+                    toaster.success(<div>Failed to move <b>{file.search}</b> to ${selectedFolder.label} folder</div>);
 
                     return;
                 }
-                toaster.success(<div><b>{file.search}</b> has been moved to ${selectedFolder.label} folder</div>,
-                    {position: "bottom-left"});
+                toaster.success(<div><b>{file.search}</b> has been moved to ${selectedFolder.label} folder</div>);
             };
 
             dispatch(
@@ -94,12 +92,12 @@ const MoveFilesModal = (props) => {
             </ModalBody>
             <ModalFooter>
                 <button
-                    type="button" className="btn btn-secondary" data-dismiss="modal"
-                    onClick={handleClose}>Cancel
-                </button>
-                <button
                     type="button" className="btn btn-primary"
                     onClick={handleConfirm}>Move
+                </button>
+                <button
+                    type="button" className="btn btn-secondary" data-dismiss="modal"
+                    onClick={handleClose}>Cancel
                 </button>
             </ModalFooter>
         </Wrapper>

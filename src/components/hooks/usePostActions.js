@@ -45,13 +45,11 @@ const usePostActions = () => {
             postFavorite({type: "post", type_id: post.id}, (err, res) => {
                 //@todo reverse the action/data in the reducer
                 if (err) {
-                    toaster.error(<>Action failed!</>,
-                        {position: "bottom-left"});
+                    toaster.error(<>Action failed!</>);
                 }
 
                 if (res) {
-                    toaster.success(<>You mark <b>{post.title}</b> as starred</>,
-                        {position: "bottom-left"});
+                    toaster.success(<>You mark <b>{post.title}</b> as starred</>);
                 }
             }),
         );
@@ -70,13 +68,11 @@ const usePostActions = () => {
             postMarkDone({post_id: post.id}, (err, res) => {
                 //@todo reverse the action/data in the reducer
                 if (err) {
-                    toaster.error(<>Action failed!</>,
-                        {position: "bottom-left"});
+                    toaster.error(<>Action failed!</>);
                 }
 
                 if (res) {
-                    toaster.success(<>You marked <b>{post.name} as done</b></>,
-                        {position: "bottom-left"});
+                    toaster.success(<>You marked <b>{post.name} as done</b></>);
                 }
             }),
         );
@@ -125,13 +121,12 @@ const usePostActions = () => {
                         topic_id: parseInt(params.workspaceId),
                     }, (err, res) => {
                         if (err) {
-                            toaster.success(<>Action failed.</>,
-                                {position: "bottom-left"});
+                            toaster.success(<>Action failed.</>);
                             return;
                         }
 
                         if (res) {
-                            toaster.success(<><b>{post.title}</b> is removed.</>, {position: "bottom-left"});
+                            toaster.success(<><b>{post.title}</b> is removed.</>);
                         }
                     }),
                 );
@@ -159,18 +154,15 @@ const usePostActions = () => {
                         is_archived: post.is_archived === 1 ? 0 : 1,
                     }, (err, res) => {
                         if (err) {
-                            toaster.success(<>Action failed.</>,
-                                {position: "bottom-left"});
+                            toaster.success(<>Action failed.</>);
                             return;
                         }
 
                         if (res) {
                             if (!post.is_archived) {
-                                toaster.success(<><b>{post.title}</b> is archived.</>,
-                                    {position: "bottom-left"});
+                                toaster.success(<><b>{post.title}</b> is archived.</>);
                             } else {
-                                toaster.success(<><b>{post.title}</b> is restored.</>,
-                                    {position: "bottom-left"});
+                                toaster.success(<><b>{post.title}</b> is restored.</>);
                             }
 
                             dispatch(
@@ -213,14 +205,12 @@ const usePostActions = () => {
         };
         let cb = (err, res) => {
             if (err) {
-                toaster.success(<>Action failed.</>,
-                    {position: "bottom-left"});
+                toaster.success(<>Action failed.</>);
                 return;
             }
 
             if (res) {
-                toaster.success(<>You marked <b>{post.title}</b> as read.</>,
-                    {position: "bottom-left"});
+                toaster.success(<>You marked <b>{post.title}</b> as read.</>);
                 dispatch(
                     markReadUnreadReducer(payload),
                 );
@@ -239,14 +229,12 @@ const usePostActions = () => {
         };
         let cb = (err, res) => {
             if (err) {
-                toaster.success(<>Action failed.</>,
-                    {position: "bottom-left"});
+                toaster.success(<>Action failed.</>);
                 return;
             }
 
             if (res) {
-                toaster.success(<>You marked <b>{post.title}</b> as unread.</>,
-                    {position: "bottom-left"});
+                toaster.success(<>You marked <b>{post.title}</b> as unread.</>);
                 dispatch(
                     markReadUnreadReducer(payload),
                 );
@@ -281,7 +269,7 @@ const usePostActions = () => {
                 postUnfollow({post_id: post.id}, (err, res) => {
                     if (err) return;
                     let notification = `You’ve stopped to follow ${post.title}`;
-                    toaster.notify(notification, {position: "bottom-left"});
+                    toaster.notify(notification);
                 }),
             );
         } else {
@@ -290,7 +278,7 @@ const usePostActions = () => {
                 postFollow({post_id: post.id}, (err, res) => {
                     if (err) return;
                     let notification = `You’ve started to follow ${post.title}`;
-                    toaster.notify(notification, {position: "bottom-left"});
+                    toaster.notify(notification);
                 }),
             );
         }

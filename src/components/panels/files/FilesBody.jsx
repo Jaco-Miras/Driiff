@@ -136,8 +136,7 @@ const FilesBody = (props) => {
 
     useEffect(() => {
         if (showDropZone && !isMember) {
-            toaster.warning(`You are not a member of this workspace.`,
-                {position: "bottom-left"});
+            toaster.warning(`You are not a member of this workspace.`);
         }
     }, [showDropZone]);
 

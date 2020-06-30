@@ -1,4 +1,5 @@
 import React from "react";
+import Tooltip from "react-tooltip-lite";
 import styled from "styled-components";
 import {localizeChatChannelDate} from "../../../../helpers/momentFormatJS";
 import {replaceChar} from "../../../../helpers/stringFormatter";
@@ -18,7 +19,6 @@ const Wrapper = styled.li`
         white-space: nowrap;
         line-height: 1.1;
     }
-    
     .list-group-item {
         border: none;
     }
@@ -33,7 +33,7 @@ const Wrapper = styled.li`
 
 export const NotificationListItem = props => {
 
-    const { notification, actions, history } = props;
+    const {notification, actions, history} = props;
 
     const handleRedirect = e => {
         e.preventDefault();
@@ -41,9 +41,9 @@ export const NotificationListItem = props => {
             actions.read({id: notification.id});
         }
         if (notification.data.workspaces) {
-            let workspace = notification.data.workspaces[0]
+            let workspace = notification.data.workspaces[0];
             if (workspace.workspace_name) {
-                history.push(`/workspace/posts/${workspace.workspace_id}/${replaceChar(workspace.workspace_name)}/${workspace.topic_id}/${replaceChar(workspace.topic_name)}/post/${notification.data.post_id}/${replaceChar(notification.data.title)}`)
+                history.push(`/workspace/posts/${workspace.workspace_id}/${replaceChar(workspace.workspace_name)}/${workspace.topic_id}/${replaceChar(workspace.topic_name)}/post/${notification.data.post_id}/${replaceChar(notification.data.title)}`);
             } else {
                 history.push(`/workspace/posts/${workspace.topic_id}/${replaceChar(workspace.topic_name)}/post/${notification.data.post_id}/${replaceChar(notification.data.title)}`);
             }
@@ -105,6 +105,16 @@ export const NotificationListItem = props => {
                 return null;
         }
     };
+
+    const toggleTooltip = () => {
+        let tooltips = document.querySelectorAll("span.react-tooltip-lite");
+
+        tooltips.forEach((tooltip) => {
+            tooltip.parentElement.classList.toggle("tooltip-active");
+        });
+
+    };
+
     return (
         <Wrapper>
             <span className="list-group-item d-flex hide-show-toggler">
@@ -119,14 +129,17 @@ export const NotificationListItem = props => {
                 <div style={{minWidth: "10px"}}>
                 {
                     notification.is_read === 0 ?
-                    <i title="" data-toggle="tooltip" onClick={handleReadUnread}
-                       className="hide-show-toggler-item fa fa-circle-o font-size-11"
-                       data-original-title="Mark as read"/>
+                    <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Mark as read">
+                        <i onClick={handleReadUnread}
+                           className="hide-show-toggler-item fa fa-circle-o font-size-11"/>
+                    </Tooltip>
                                                :
-                    <i title="" data-toggle="tooltip" onClick={handleReadUnread}
-                       className="hide-show-toggler-item fa fa-check font-size-11"
-                       data-original-title="Mark as unread"/>
+                    <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Mark as unread">
+                        <i onClick={handleReadUnread}
+                           className="hide-show-toggler-item fa fa-check font-size-11"/>
+                    </Tooltip>
                 }
+
                 </div>
             </span>
         </Wrapper>

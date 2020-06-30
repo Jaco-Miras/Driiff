@@ -4,12 +4,12 @@ import DateTimePicker from "react-datetime-picker";
 import {useDispatch} from "react-redux";
 import {Button, Modal, ModalBody, ModalFooter} from "reactstrap";
 import styled from "styled-components";
+import {clearModal} from "../../redux/actions/globalActions";
 //import toaster from "toasted-notes";
 import {postSnooze, removePost} from "../../redux/actions/postActions";
-import {clearModal} from "../../redux/actions/globalActions";
 import RadioInput from "../forms/RadioInput";
-import {ModalHeaderSection} from "./index";
 import {useToaster} from "../hooks";
+import {ModalHeaderSection} from "./index";
 
 
 const InputContainer = styled.div`
@@ -130,8 +130,7 @@ const PostSnoozeModal = props => {
                         break;
                 }
 
-                toaster.success(`You snoozed this ${post.title} ${messageTime}`,
-                    {position: "bottom-left"});
+                toaster.success(`You snoozed this ${post.title} ${messageTime}`);
             }),
         );
     };

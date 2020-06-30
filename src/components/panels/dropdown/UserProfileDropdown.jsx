@@ -41,6 +41,11 @@ const UserProfileDropdown = (props) => {
         history.push(`/profile/${user.id}/${replaceChar(user.name)}/view`);
     }, []);
 
+    const handleSettings = useCallback(() => {
+        refs.container.current.classList.remove("show");
+        history.push(`/settings`);
+    }, []);
+
     return (
         <Wrapper
             ref={refs.container}
@@ -64,6 +69,7 @@ const UserProfileDropdown = (props) => {
             <div className="dropdown-menu-body">
                 <div className="list-group list-group-flush">
                     <span className="cursor-pointer list-group-item" onClick={handleProfile}>Profile</span>
+                    <span className="cursor-pointer list-group-item" onClick={handleSettings}>Settings</span>
                     <span className="cursor-pointer list-group-item">Billing</span>
                     <span className="cursor-pointer list-group-item">Need help?</span>
                     <span className="cursor-pointer list-group-item text-danger"

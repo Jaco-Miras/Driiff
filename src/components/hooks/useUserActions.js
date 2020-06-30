@@ -83,16 +83,14 @@ const useUserActions = () => {
         dispatch(
             putUser(payload, (err, res) => {
                 if (err) {
-                    toaster.error(`Saving profile information failed.`,
-                        {position: "bottom-left"});
+                    toaster.error(`Saving profile information failed.`);
                 }
 
                 if (res) {
                     if (loggedUser.id === res.data.id) {
                         sessionService.saveUser({...res.data});
                     }
-                    toaster.success(`Profile information saved.`,
-                        {position: "bottom-left"});
+                    toaster.success(`Profile information saved.`);
                 }
 
                 callback(err, res);

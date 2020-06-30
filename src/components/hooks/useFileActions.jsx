@@ -163,8 +163,7 @@ const useFileActions = (params = null) => {
             }
             dispatch(
                 deleteFile(payload, (err, res) => {
-                    toaster.notify(`You have removed ${file.search}.`,
-                        {position: "bottom-left"});
+                    toaster.notify(`You have removed ${file.search}.`);
                 }),
             );
         };
@@ -194,13 +193,11 @@ const useFileActions = (params = null) => {
                 }, (err, res) => {
                     if (err) {
                         toaster.error(
-                            <span>System failed to rename the <b>{file.search}</b> to {fileName.current}.</span>,
-                            {position: "bottom-left"});
+                            <span>System failed to rename the <b>{file.search}</b> to {fileName.current}.</span>);
                     }
 
                     if (res) {
-                        toaster.success(<span>You renamed <b>{file.search}</b> to {fileName.current}.</span>,
-                            {position: "bottom-left"});
+                        toaster.success(<span>You renamed <b>{file.search}</b> to {fileName.current}.</span>);
                     }
 
                     callback(err, res);
@@ -243,8 +240,7 @@ const useFileActions = (params = null) => {
         const cb = (err, res) => {
             if (err) {
                 toaster.error(<div>System failed to mark the
-                        file <b>{file.search}</b> {!file.is_favorite ? "as favorite" : "unfavorite"}</div>,
-                    {position: "bottom-left"});
+                    file <b>{file.search}</b> {!file.is_favorite ? "as favorite" : "unfavorite"}</div>);
 
                 return;
             }
@@ -265,8 +261,7 @@ const useFileActions = (params = null) => {
                 dispatch(
                     addRemoveFavorite(payload, () => {
                         toaster.success(<>You have
-                                marked <b>{file.search}</b> {!file.is_favorite ? "as favorite" : "unfavorite"}</>,
-                            {position: "bottom-left"});
+                            marked <b>{file.search}</b> {!file.is_favorite ? "as favorite" : "unfavorite"}</>);
                     }),
                 );
             }

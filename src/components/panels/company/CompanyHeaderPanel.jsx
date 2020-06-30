@@ -54,7 +54,7 @@ const CompanyHeaderPanel = () => {
         const body = document.body;
         body.classList.add("navigation-toggle-one");
 
-        if (["people", "workspace", "post"].includes(match.params.page)) {
+        if (["people", "workspace", "post", "notifications"].includes(match.params.page)) {
             body.classList.remove("stretch-layout");
         } else {
             body.classList.add("stretch-layout");
