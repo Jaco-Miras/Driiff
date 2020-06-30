@@ -41,16 +41,14 @@ const useNotificationActions = props => {
     const readAll = useCallback((payload) => {
         let callback = (err, res) => {
             if (err) {
-                toaster.error(<>Action failed</>,
-                    {position: "bottom-left"});
+                toaster.error(<>Action failed</>);
                 return;
             }
             if (res) {
                 dispatch(
                     readAllNotificationReducer(),
                 );
-                toaster.success(<>You marked all notifications read</>,
-                    {position: "bottom-left"});
+                toaster.success(<>You marked all notifications read</>);
             }
         };
         dispatch(

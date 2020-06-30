@@ -6,12 +6,12 @@ import styled from "styled-components";
 import {replaceChar} from "../../helpers/stringFormatter";
 import {setPendingUploadFilesToWorkspace} from "../../redux/actions/fileActions";
 import {clearModal} from "../../redux/actions/globalActions";
-import {fetchTimeline, updateWorkspace, createWorkspace} from "../../redux/actions/workspaceActions";
+import {createWorkspace, fetchTimeline, updateWorkspace} from "../../redux/actions/workspaceActions";
 import {FileAttachments} from "../common";
 import {DropDocument} from "../dropzone/DropDocument";
 import {CheckBox, DescriptionInput, FolderSelect, InputFeedback, PeopleSelect} from "../forms";
-import {ModalHeaderSection} from "./index";
 import {useToaster} from "../hooks";
+import {ModalHeaderSection} from "./index";
 
 const WrapperDiv = styled(InputGroup)`
     display: flex;
@@ -370,8 +370,7 @@ const CreateEditWorkspaceModal = (props) => {
                     console.log(err);
                     setLoading(false);
                     toaster.warning(
-                        <span>Workspace creation failed.<br/>Please try again.</span>,
-                    {position: "bottom-left"});
+                        <span>Workspace creation failed.<br/>Please try again.</span>);
                 }
 
                 if (res) {
@@ -398,12 +397,11 @@ const CreateEditWorkspaceModal = (props) => {
 
                     toaster.success(
                         <span><b>{form.name}</b> workspace is created
-                        {
-                            form.selectedFolder !== null &&
-                            <> <b>{form.selectedFolder.label}</b> under directory</>
-                        }.
-                        </span>,
-                    {position: "bottom-left"});
+                            {
+                                form.selectedFolder !== null &&
+                                <> <b>{form.selectedFolder.label}</b> under directory</>
+                            }.
+                        </span>);
                 }
             })
             );

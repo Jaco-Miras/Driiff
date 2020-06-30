@@ -113,8 +113,7 @@ const ChatReminderModal = props => {
                     messageAuthor = message.user.name;
                 }
 
-                toaster.notify(`I will remind you about this message ("${div.innerText} from ${messageAuthor} in ${messageTime}")`,
-                    {position: "bottom-left"});
+                toaster.notify(`I will remind you about this message ("${div.innerText} from ${messageAuthor} in ${messageTime}")`);
             }),
         );
     };

@@ -286,8 +286,7 @@ const UserProfilePanel = (props) => {
 
     const handleSave = useCallback(() => {
         if (Object.values(formUpdate.valid).find(v => v === false) === false) {
-            toaster.error(`Some fields require your attention.`,
-                {position: "bottom-left"});
+            toaster.error(`Some fields require your attention.`);
         } else if (Object.values(formUpdate.valid).find(v => v === true) === true) {
             if (form.profile_image_link !== user.profile_image_link) {
                 updateProfileImage(form, formUpdate.feedbackText.profile_image_link, (err, res) => {
@@ -303,8 +302,7 @@ const UserProfilePanel = (props) => {
                 });
             }
         } else {
-            toaster.info(`Nothing was updated.`,
-                {position: "bottom-left"});
+            toaster.info(`Nothing was updated.`);
             setEditInformation(false);
         }
     }, [form, formUpdate, update, setEditInformation]);
@@ -343,17 +341,14 @@ const UserProfilePanel = (props) => {
             },
         }));
         setEditInformation(true);
-        toaster.info(<>Click the <b>Save Changes</b> button to update your profile image.</>,
-            {position: "bottom-left"});
+        toaster.info(<>Click the <b>Save Changes</b> button to update your profile image.</>);
     }, []);
 
     const dropAction = useCallback((uploadedFiles) => {
         if (uploadedFiles.length === 0) {
-            toaster.error("File type not allowed. Please use an image file.",
-                {position: "bottom-left"});
+            toaster.error("File type not allowed. Please use an image file.");
         } else if (uploadedFiles.length > 1) {
-            toaster.warning("Multiple files detected. First selected image will be used.",
-                {position: "bottom-left"});
+            toaster.warning("Multiple files detected. First selected image will be used.");
         }
 
         let modal = {

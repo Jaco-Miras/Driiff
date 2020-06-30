@@ -40,8 +40,7 @@ const FolderOptions = props => {
         if (isMember) {
             actions.renameFile(folder);
         } else {
-            toaster.warning(`You are not a member of this workspace.`,
-                {position: "bottom-left"});
+            toaster.warning(`You are not a member of this workspace.`);
         }
     };
 
@@ -49,8 +48,7 @@ const FolderOptions = props => {
         if (isMember) {
             actions.removeFile(folder);
         } else {
-            toaster.warning(`You are not a member of this workspace.`,
-                {position: "bottom-left"});
+            toaster.warning(`You are not a member of this workspace.`);
         }
     };
 

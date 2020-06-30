@@ -158,7 +158,7 @@ function fallbackCopyTextToClipboard(text) {
 
     try {
         var successful = document.execCommand("copy");
-        if (successful) toaster.notify(`Copied task link`, {position: "bottom-left"});
+        if (successful) toaster.notify(`Copied task link`);
     }
     catch (err) {
         console.error("Fallback: Oops, unable to copy", err);
@@ -174,7 +174,7 @@ export const copyTextToClipboard = (text, notification = `Link copied to the cli
     navigator.clipboard.writeText(text).then(() => {
         toaster.notify(() => <div style={{position: "initial"}} id="toast-container">
             <div className="toast-info">{notification}</div>
-        </div>, {position: "bottom-left"});
+        </div>);
     }, err => {
         console.error("Async: Could not copy text: ", err);
     });

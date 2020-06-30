@@ -30,7 +30,6 @@ export const DropDocument = forwardRef((props, ref) => {
 
     const cbOnDrop = useCallback(({acceptedFiles, rejectedFiles}) => {
         let toastrOption = {
-            position: "bottom-left",
             timeOut: 8000,
             icon: "error",
         };
