@@ -4,7 +4,6 @@ import {InView} from "react-intersection-observer";
 import {connect} from "react-redux";
 import {withRouter} from "react-router-dom";
 import styled from "styled-components";
-import {localizeChatTimestamp, localizeDate} from "../../../helpers/momentFormatJS";
 import {Avatar, Loader} from "../../common";
 import NoReply from "../../common/NoReply";
 import ChatBubble from "./ChatBubble";
@@ -689,7 +688,7 @@ class ChatMessages extends React.PureComponent {
                                 <div key={gm.key}>
                                     <TimestampDiv className="timestamp-container">
                                         {
-                                            <span>{localizeChatTimestamp(gm.replies[0].created_at.timestamp, "ddd, MMM DD, YYYY")}</span>
+                                            <span>Test {this.props.timeFormat.localizeChatTimestamp(gm.replies[0].created_at.timestamp, "ddd, MMM DD, YYYY")}</span>
                                         }
                                     </TimestampDiv>
 
@@ -715,8 +714,8 @@ class ChatMessages extends React.PureComponent {
                                                         }
                                                         if (
                                                             k !== 0 &&
-                                                            localizeDate(e[k - 1].created_at.timestamp, "D") !==
-                                                            localizeDate(reply.created_at.timestamp, "D")
+                                                            this.props.timeFormat.localizeDate(e[k - 1].created_at.timestamp, "D") !==
+                                                            this.props.timeFormat.localizeDate(reply.created_at.timestamp, "D")
                                                         ) {
                                                             showTimestamp = true;
                                                             showAvatar = true;

@@ -1,14 +1,13 @@
 import React, {useRef, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
+import Tooltip from "react-tooltip-lite";
 import styled from "styled-components";
-import {localizeChatTimestamp} from "../../../helpers/momentFormatJS";
 import {onClickSendButton} from "../../../redux/actions/chatActions";
 import {joinWorkspace, joinWorkspaceReducer} from "../../../redux/actions/workspaceActions";
 import {CommonPicker, SvgIconFeather} from "../../common";
 import ChatInput from "../../forms/ChatInput";
-import {useIsMember} from "../../hooks";
+import {useIsMember, useTimeFormat} from "../../hooks";
 import ChatQuote from "../../list/chat/ChatQuote";
-import Tooltip from 'react-tooltip-lite';
 
 const Wrapper = styled.div`
     position: relative;
@@ -121,6 +120,7 @@ const PickerContainer = styled(CommonPicker)`
 const ChatFooterPanel = (props) => {
 
     const {className = "", onShowFileDialog, dropAction} = props;
+    const {localizeChatTimestamp} = useTimeFormat();
 
     const dispatch = useDispatch();
     const ref = {

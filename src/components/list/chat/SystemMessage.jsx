@@ -2,8 +2,8 @@ import React, {forwardRef, useEffect, useState} from "react";
 import {renderToString} from "react-dom/server";
 import {useSelector} from "react-redux";
 import styled from "styled-components";
-import {localizeDate} from "../../../helpers/momentFormatJS";
 import {SvgIconFeather} from "../../common";
+import {useTimeFormat} from "../../hooks";
 
 const SystemMessageContainer = styled.span`
     display: block;
@@ -29,6 +29,9 @@ const ChatTimeStamp = styled.div`
 const SystemMessage = forwardRef((props, ref) => {
 
     const {reply, selectedChannel, chatName} = props;
+
+    const {localizeTime} = useTimeFormat();
+
     const [body, setBody] = useState(reply.body);
 
     const user = useSelector(state => state.session.user);
@@ -309,7 +312,7 @@ const SystemMessage = forwardRef((props, ref) => {
             className='chat-timestamp'
             isAuthor={false}>
             <span className="reply-date created">
-                {reply.created_at.diff_for_humans ? "sending..." : localizeDate(reply.created_at.timestamp, "HH:mm")}
+                {reply.created_at.diff_for_humans ? "sending..." : localizeTime(reply.created_at.timestamp)}
             </span>
         </ChatTimeStamp>
     </SystemMessageContainer>;

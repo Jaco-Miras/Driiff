@@ -1,7 +1,7 @@
 import React, {useCallback} from "react";
 import styled from "styled-components";
-import {localizeChatChannelDate} from "../../../helpers/momentFormatJS";
 import {SvgIconFeather} from "../../common";
+import {useTimeFormat} from "../../hooks";
 
 const Wrapper = styled.div`
     display: ${props => props.optionsVisible ? "none" : "initial"};
@@ -13,7 +13,7 @@ const ActionContainer = styled.div`
     flex-direction: row-reverse;
 `;
 const Icon = styled(SvgIconFeather)`
-    ${'' /* filter: brightness(0) saturate(100%) invert(43%) sepia(19%) saturate(0%) hue-rotate(214deg) brightness(87%) contrast(86%); */}
+    ${"" /* filter: brightness(0) saturate(100%) invert(43%) sepia(19%) saturate(0%) hue-rotate(214deg) brightness(87%) contrast(86%); */}
     position: relative;
     top: -3px;
     right: 0;
@@ -30,7 +30,10 @@ const Badge = styled.span`
 `;
 
 const ChatDateIcons = props => {
+
     const {channel, optionsVisible} = props;
+    const {localizeChatChannelDate} = useTimeFormat();
+
     const handleNotificationBadges = useCallback(() => {
         if (channel.is_read === 0) {
             return <Badge className={`badge badge-primary badge-pill ml-auto unread`}>0</Badge>;
@@ -49,8 +52,8 @@ const ChatDateIcons = props => {
             <span className={`small text-muted`}>
                 {
                     channel.last_reply
-                        ? localizeChatChannelDate(channel.last_reply.created_at.timestamp)
-                        : ""
+                    ? localizeChatChannelDate(channel.last_reply.created_at.timestamp)
+                    : ""
                 }
             </span>
             <ActionContainer>

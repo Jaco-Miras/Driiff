@@ -3,7 +3,6 @@ import {isSafari} from "react-device-detect";
 import {connect} from "react-redux";
 import {withRouter} from "react-router-dom";
 import {bindActionCreators} from "redux";
-import {localizeDate} from "../../helpers/momentFormatJS";
 import {pushBrowserNotification} from "../../helpers/pushHelper";
 import {replaceChar, stripHtml} from "../../helpers/stringFormatter";
 import {urlify} from "../../helpers/urlContentHelper";
@@ -66,6 +65,7 @@ import {
 } from "../../redux/actions/workspaceActions";
 
 class SocketListeners extends PureComponent {
+
     constructor(props) {
         super(props);
     }
@@ -243,7 +243,7 @@ class SocketListeners extends PureComponent {
                         //@to do add unfurl
                         if (this.props.user.id !== e.user.id) {
                             delete e.reference_id;
-                            e.g_date = localizeDate(e.created_at.timestamp, "YYYY-MM-DD")
+                            e.g_date = this.props.localizeDate(e.created_at.timestamp);
                         }
                         this.props.incomingChatMessage(e);
                         delete e.SOCKET_TYPE;
@@ -477,7 +477,7 @@ class SocketListeners extends PureComponent {
                     ...e,
                     message: {
                         ...e.message,
-                        g_date: localizeDate(e.message.created_at.timestamp, "YYYY-MM-DD"),
+                        g_date: this.props.localizeDate(e.message.created_at.timestamp),
                         user: null,
                         is_read: true,
                         files: [],
@@ -603,7 +603,7 @@ class SocketListeners extends PureComponent {
                         unfurls: [],
                         is_read: false,
                         channel_id: e.channel_id,
-                        g_date: localizeDate(e.message_data.created_at.timestamp, "YYYY-MM-DD"),
+                        g_date: this.props.localizeDate(e.message_data.created_at.timestamp),
                         code: e.code,
                     },
                     unfurls: [],
@@ -676,7 +676,7 @@ class SocketListeners extends PureComponent {
                         unfurls: [],
                         is_read: false,
                         channel_id: e.channel_id,
-                        g_date: localizeDate(e.created_at.timestamp, "YYYY-MM-DD"),
+                        g_date: this.props.localizeDate(e.created_at.timestamp),
                         code: e.code,
                     },
                     unfurls: [],

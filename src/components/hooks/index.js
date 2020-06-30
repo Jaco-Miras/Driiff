@@ -39,3 +39,4 @@ export {default as useFileActions} from "./useFileActions";
 export {default as useToaster} from "./useToaster";
 export {default as useNotifications} from "./useNotifications";
 export {default as useNotificationActions} from "./useNotificationActions";
+export {default as useTimeFormat} from "./useTimeFormat";

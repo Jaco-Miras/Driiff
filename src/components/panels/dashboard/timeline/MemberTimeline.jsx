@@ -1,8 +1,8 @@
 import React from "react";
 import {useSelector} from "react-redux";
 import styled from "styled-components";
-import {todayOrYesterdayDate} from "../../../../helpers/momentFormatJS";
 import {Avatar} from "../../../common";
+import {useTimeFormat} from "../../../hooks";
 
 const Wrapper = styled.div`
     font-weight: bold;
@@ -23,6 +23,7 @@ const Wrapper = styled.div`
 const MemberTimeline = (props) => {
 
     const {className = "", data} = props;
+    const {todayOrYesterdayDate} = useTimeFormat();
 
     const user = useSelector(state => state.session.user);
     const recipients = useSelector(state => state.global.recipients.filter(r => r.type === "USER"));

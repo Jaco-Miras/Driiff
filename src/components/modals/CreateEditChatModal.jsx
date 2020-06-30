@@ -4,12 +4,11 @@ import {useDispatch, useSelector} from "react-redux";
 import {useHistory} from "react-router-dom";
 import {Input, InputGroup, Label, Modal, ModalBody} from "reactstrap";
 import styled from "styled-components";
-import {localizeDate} from "../../helpers/momentFormatJS";
 import {addToChannels, setSelectedChannel} from "../../redux/actions/chatActions";
 import {clearModal} from "../../redux/actions/globalActions";
 import {PeopleSelect} from "../forms";
 import QuillEditor from "../forms/QuillEditor";
-import {useChannelActions, useQuillModules} from "../hooks";
+import {useChannelActions, useQuillModules, useTimeFormat} from "../hooks";
 import {ModalHeaderSection} from "./index";
 
 const WrapperDiv = styled(InputGroup)`
@@ -90,6 +89,7 @@ const CreateEditChatModal = props => {
     const reactQuillRef = useRef();
     const dispatch = useDispatch();
     const history = useHistory();
+    const {localizeDate} = useTimeFormat();
     const [modal, setModal] = useState(true);
     const users = useSelector(state => state.users.mentions);
     const channel = useSelector(state => state.chat.selectedChannel);
@@ -199,7 +199,7 @@ const CreateEditChatModal = props => {
                 is_transferred: false,
                 is_read: true,
                 channel_id: placeholderId,
-                g_date: localizeDate(timestamp, "YYYY-MM-DD"),
+                g_date: localizeDate(timestamp),
                 created_at: {
                     timestamp: timestamp,
                 },

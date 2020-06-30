@@ -2,7 +2,14 @@ import React, {useEffect, useRef} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {Route, Switch} from "react-router-dom";
 import styled from "styled-components";
-import {useSettings, useSocketConnection, useToaster, useUserLogout, useVisibilityChange} from "../components/hooks";
+import {
+    useSettings,
+    useSocketConnection,
+    useTimeFormat,
+    useToaster,
+    useUserLogout,
+    useVisibilityChange,
+} from "../components/hooks";
 import useFilesUpload from "../components/hooks/useFilesUpload";
 import {ModalPanel} from "../components/panels";
 import {MainContentPanel, MainHeaderPanel, MainNavigationPanel} from "../components/panels/main";
@@ -34,6 +41,7 @@ const MainLayout = (props) => {
 
     const user = useSelector(state => state.session.user);
     const toaster = useToaster();
+    const {localizeDate} = useTimeFormat();
 
     const refs = {
         audio: useRef(null),
@@ -114,7 +122,7 @@ const MainLayout = (props) => {
              } */}
             {
                 user.id !== undefined && window.Echo !== undefined &&
-                <SocketListeners toaster={toaster} soundPlay={handleSoundPlay}/>
+                <SocketListeners localizeDate={localizeDate} toaster={toaster} soundPlay={handleSoundPlay}/>
             }
         </>
     );

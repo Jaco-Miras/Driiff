@@ -50,6 +50,8 @@ const INITIAL_STATE = {
             language: null,
             active_topic: null,
             workspace_open_folder: {},
+            date_format: "DD-MM-YYYY",
+            time_format: "HH:mm",
         },
     },
     isLoaded: false,

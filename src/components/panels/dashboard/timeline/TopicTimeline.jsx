@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import {todayOrYesterdayDate} from "../../../../helpers/momentFormatJS";
 import {Avatar} from "../../../common";
+import {useTimeFormat} from "../../../hooks";
 
 const Wrapper = styled.div`
     .action-text {
@@ -23,6 +23,7 @@ const Wrapper = styled.div`
 const TopicTimeline = (props) => {
 
     const {className = "", data} = props;
+    const {todayOrYesterdayDate} = useTimeFormat();
 
     return (
         <Wrapper className={`topic-timeline timeline-item ${className}`}>

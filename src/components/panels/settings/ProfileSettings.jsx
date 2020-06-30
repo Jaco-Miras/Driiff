@@ -70,7 +70,7 @@ const ProfileSettings = (props) => {
     const {user: loggedUser} = useSelector(state => state.session);
 
     const {
-        generalSettings: {language, timezone},
+        generalSettings: {language, timezone, date_format, time_format},
         chatSettings: {order_channel, sound_enabled},
         userSettings: isLoaded,
         setChatSetting,
@@ -108,6 +108,33 @@ const ProfileSettings = (props) => {
         };
     });
 
+    const DateFormatOptions = [
+        {
+            value: "DD-MM-YYYY",
+            label: "DD-MM-YYYY",
+        },
+        {
+            value: "YYYY-MM-DD",
+            label: "YYYY-MM-DD",
+        },
+        {
+            value: "MM-DD-YYYY",
+            label: "MM-DD-YYYY",
+        },
+    ];
+
+    const TimeFormatOptions = [
+        {
+            value: "hh:mm A",
+            label: "AM/PM",
+        },
+        {
+            value: "HH:mm",
+            label: "24-hour format",
+        },
+    ];
+
+
     const handleLanguageChange = (e) => {
         setLocale(e.value);
     };
@@ -131,6 +158,14 @@ const ProfileSettings = (props) => {
 
     const handleTimezoneChange = useCallback((e) => {
         setGeneralSetting({timezone: e.value});
+    }, []);
+
+    const handleDateFormatChange = useCallback((e) => {
+        setGeneralSetting({date_format: e.value});
+    }, []);
+
+    const handleTimeFormatChange = useCallback((e) => {
+        setGeneralSetting({time_format: e.value});
     }, []);
 
     const handleSystemSettingsClick = () => {
@@ -170,8 +205,8 @@ const ProfileSettings = (props) => {
                         </div>
                     </div>
                     <div className="row mb-2">
-                        <div className="col-6 text-muted">Sort channel by</div>
-                        <div className="col-6">
+                        <div className="col-5 text-muted">Sort channel by</div>
+                        <div className="col-7">
                             <Select value={channelSortOptions.find(o => o.value === order_channel.order_by)}
                                     onChange={handleSortChannelChange} options={channelSortOptions}/>
                         </div>
@@ -184,22 +219,38 @@ const ProfileSettings = (props) => {
                     <h6 className="card-title d-flex justify-content-between align-items-center">Localization</h6>
 
                     <div className="row mb-2">
-                        <div className="col-6 text-muted">Language</div>
-                        <div className="col-6">
+                        <div className="col-5 text-muted">Language</div>
+                        <div className="col-7">
                             <Select
                                 value={languageOptions.find(o => o.value === language)}
                                 onChange={handleLanguageChange}
                                 options={languageOptions}/>
                         </div>
                     </div>
-
                     <div className="row mb-2">
-                        <div className="col-6 text-muted">Timezone</div>
-                        <div className="col-6">
+                        <div className="col-5 text-muted">Timezone</div>
+                        <div className="col-7">
                             <Select
                                 value={TimezoneOptions.find(o => o.value === timezone)}
                                 onChange={handleTimezoneChange}
                                 options={TimezoneOptions}/>
+                        </div>
+                    </div>
+                    <div className="row mb-2">
+                        <div className="col-5 text-muted">Date and Time Format</div>
+                        <div className="col-7 justify-content-center align-items-center">
+                            <div className="row">
+                                <Select
+                                    className="col-6"
+                                    value={DateFormatOptions.find(o => o.value === date_format)}
+                                    onChange={handleDateFormatChange}
+                                    options={DateFormatOptions}/>
+                                <Select
+                                    className="col-6"
+                                    value={TimeFormatOptions.find(o => o.value === time_format)}
+                                    onChange={handleTimeFormatChange}
+                                    options={TimeFormatOptions}/>
+                            </div>
                         </div>
                     </div>
                 </div>

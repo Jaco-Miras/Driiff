@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import {todayOrYesterdayDate} from "../../../../helpers/momentFormatJS";
 import {Avatar} from "../../../common";
+import {useTimeFormat} from "../../../hooks";
 
 const Wrapper = styled.div`
 `;
@@ -9,6 +9,7 @@ const Wrapper = styled.div`
 const WorkspaceTimeline = (props) => {
 
     const {className = "", workspace} = props;
+    const {todayOrYesterdayDate} = useTimeFormat();
 
     return (
         <Wrapper className={`timeline-item ${className}`}>

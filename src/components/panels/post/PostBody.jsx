@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import styled from "styled-components";
-import {localizeDate} from "../../../helpers/momentFormatJS";
 import {AvatarGroup, SvgIconFeather} from "../../common";
+import {useTimeFormat} from "../../hooks";
 import {PostBadge} from "./index";
 
 const Wrapper = styled.div`
@@ -23,6 +23,7 @@ const PostBody = props => {
     const {post, postActions} = props;
 
     const [star, setStar] = useState(post.is_favourite);
+    const {localizeDate} = useTimeFormat();
 
     const handleStarPost = () => {
         postActions.starPost(post);

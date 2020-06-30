@@ -2,9 +2,9 @@ import React from "react";
 import {useDispatch} from "react-redux";
 import {useRouteMatch} from "react-router-dom";
 import styled from "styled-components";
-import {todayOrYesterdayDate} from "../../../../helpers/momentFormatJS";
 import {setViewFiles} from "../../../../redux/actions/fileActions";
 import {Avatar} from "../../../common";
+import {useTimeFormat} from "../../../hooks";
 import useFileActions from "../../../hooks/useFileActions";
 
 const Wrapper = styled.div`
@@ -35,6 +35,7 @@ const AttachFileTimeline = (props) => {
 
     const dispatch = useDispatch();
     const fileHandler = useFileActions();
+    const {todayOrYesterdayDate} = useTimeFormat();
 
     const handleFilePreview = () => {
         console.log(data, params);

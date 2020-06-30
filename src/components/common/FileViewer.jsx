@@ -1,11 +1,10 @@
 import React, {useEffect, useRef, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import styled from "styled-components";
-import {localizeDate} from "../../helpers/momentFormatJS";
 import {getAPIUrl} from "../../helpers/slugHelper";
 import {setViewFiles} from "../../redux/actions/fileActions";
 import "../../vendors/lightbox/magnific-popup.css";
-import {useOutsideClick} from "../hooks";
+import {useOutsideClick, useTimeFormat} from "../hooks";
 import ImageTextLink from "./ImageTextLink";
 import {SvgIconFeather} from "./SvgIcon";
 
@@ -147,6 +146,7 @@ const FileViewer = props => {
     const channelFiles = useSelector(state => state.files.channelFiles);
     const viewFiles = useSelector(state => state.files.viewFiles);
     const workspaceFiles = useSelector(state => state.files.workspaceFiles);
+    const {localizeDate} = useTimeFormat();
 
     const [activeIndex, setActiveIndex] = useState(null);
     const [files, setFiles] = useState([]);

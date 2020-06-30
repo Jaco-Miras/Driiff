@@ -1,9 +1,9 @@
 import React from "react";
 import Tooltip from "react-tooltip-lite";
 import styled from "styled-components";
-import {localizeChatChannelDate} from "../../../../helpers/momentFormatJS";
 import {replaceChar} from "../../../../helpers/stringFormatter";
 import {Avatar} from "../../../common";
+import {useTimeFormat} from "../../../hooks";
 
 const Wrapper = styled.li`
     cursor: pointer;
@@ -34,6 +34,8 @@ const Wrapper = styled.li`
 export const NotificationListItem = props => {
 
     const {notification, actions, history} = props;
+    const {localizeChatChannelDate} = useTimeFormat();
+
 
     const handleRedirect = e => {
         e.preventDefault();

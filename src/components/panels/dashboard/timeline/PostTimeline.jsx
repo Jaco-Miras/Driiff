@@ -1,8 +1,8 @@
 import React from "react";
 import {useHistory, useRouteMatch} from "react-router-dom";
 import styled from "styled-components";
-import {todayOrYesterdayDate} from "../../../../helpers/momentFormatJS";
 import {Avatar, FileAttachments} from "../../../common";
+import {useTimeFormat} from "../../../hooks";
 
 const Wrapper = styled.div`
     .title {
@@ -35,6 +35,7 @@ const PostTimeline = (props) => {
     const {className = "", data} = props;
     const history = useHistory();
     const {params} = useRouteMatch();
+    const {todayOrYesterdayDate} = useTimeFormat();
 
     const handleLinkClick = (e) => {
         e.preventDefault();

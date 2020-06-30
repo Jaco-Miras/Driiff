@@ -1,6 +1,5 @@
 // import {uniqBy} from "lodash";
 import {getCurrentTimestamp} from "../../helpers/dateFormatter";
-import {localizeDate} from "../../helpers/momentFormatJS";
 
 /** Initial State  */
 const INITIAL_STATE = {
@@ -192,12 +191,12 @@ export default function (state = INITIAL_STATE, action) {
                         } else return m;
                     }),
                     replies: action.data.member_id === state.user.id ? channel.replies.map(r => {
-                                return {
-                                    ...r,
-                                    is_read: true
-                                }
-                            }) 
-                            : channel.replies
+                                                                         return {
+                                                                             ...r,
+                                                                             is_read: true,
+                                                                         };
+                                                                     })
+                                                                     : channel.replies,
                 };
             }
             return {
@@ -209,8 +208,8 @@ export default function (state = INITIAL_STATE, action) {
                     }
                                            : state.channels,
                 selectedChannel: state.selectedChannel && state.selectedChannel.id === parseInt(action.data.channel_id) ?
-                    channel
-                                                                                                              : state.selectedChannel,
+                                 channel
+                                                                                                                        : state.selectedChannel,
             };
         }
         case "ADD_TO_CHANNELS": {
@@ -248,7 +247,7 @@ export default function (state = INITIAL_STATE, action) {
                         ...r,
                         is_read: true,
                         channel_id: action.data.channel_id,
-                        g_date: localizeDate(r.created_at.timestamp, "YYYY-MM-DD"),
+                        //g_date: localizeDate(r.created_at.timestamp, "YYYY-MM-DD"),
                     };
                 }), ...channel.replies],
                 read_only: action.data.read_only,
@@ -870,21 +869,21 @@ export default function (state = INITIAL_STATE, action) {
                     ...updatedChannels,
                     [action.data.channel_id]: {
                         ...updatedChannels[action.data.channel_id],
-                        is_read: 0
-                    }
-                }
-                
+                        is_read: 0,
+                    },
+                };
+
             }
             return {
                 ...state,
                 channels: updatedChannels,
-                selectedChannel: state.selectedChannel && state.selectedChannel.id == action.data.channel_id ? 
-                                {
-                                    ...state.selectedChannel,
-                                    is_read: 0
-                                }
-                                : state.selectedChannel
-            }
+                selectedChannel: state.selectedChannel && state.selectedChannel.id == action.data.channel_id ?
+                    {
+                        ...state.selectedChannel,
+                        is_read: 0,
+                    }
+                                                                                                             : state.selectedChannel,
+            };
         }
         default:
             return state;

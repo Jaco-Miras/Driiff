@@ -8,11 +8,10 @@ import {useSelector} from "react-redux";
 import {useHistory} from "react-router-dom";
 import Skeleton from "react-skeleton-loader";
 import styled from "styled-components";
-import {todayOrYesterdayDate} from "../../../helpers/momentFormatJS";
 import quillHelper from "../../../helpers/quillHelper";
 import {getEmojiRegexPattern, stripGif} from "../../../helpers/stringFormatter";
 import {ImageTextLink, SvgIconFeather, SvgImage} from "../../common";
-import {useSettings} from "../../hooks";
+import {useSettings, useTimeFormat} from "../../hooks";
 import useChatMessageActions from "../../hooks/useChatMessageActions";
 import MessageFiles from "./Files/MessageFiles";
 import Unfurl from "./Unfurl/Unfurl";
@@ -42,8 +41,8 @@ const ChatBubbleContainer = styled.div`
         top: 8px;
         z-index: 1;
         ${props => props.isAuthor ? "right: -20px" : "left: -20px"};
-        border-left-color: ${props => (props.isAuthor ? props.theme.self.chat_bubble_background_color : '#0000' )};
-        border-right-color: ${props => (!props.isAuthor ? props.theme.others.chat_bubble_background_color : '#0000' )};
+        border-left-color: ${props => (props.isAuthor ? props.theme.self.chat_bubble_background_color : "#0000")};
+        border-right-color: ${props => (!props.isAuthor ? props.theme.others.chat_bubble_background_color : "#0000")};
     }
 
     a:not([href]):not([tabindex]) {
@@ -87,7 +86,7 @@ const ChatBubbleContainer = styled.div`
 
 
     span.reply-date{
-        color: ${props => (props.showAvatar && props.hideBg === false) ? "#a7abc3" : '#0000' };
+        color: ${props => (props.showAvatar && props.hideBg === false) ? "#a7abc3" : "#0000"};
         font-style: italic;
         font-size: 11px;
         position: absolute;
@@ -509,6 +508,7 @@ const ForwardedSpan = styled.span`
 `;
 
 const ChatBubble = (props) => {
+
     const {
         reply,
         showAvatar,
@@ -521,6 +521,7 @@ const ChatBubble = (props) => {
     //const {_t} = useTranslation();
 
     const chatMessageActions = useChatMessageActions();
+    const {todayOrYesterdayDate} = useTimeFormat();
 
     const history = useHistory();
 
@@ -868,14 +869,13 @@ const ChatBubble = (props) => {
     const hasMessage = reply.body !== "<span></span>";
 
 
-
     return <ChatBubbleContainer
         ref={refComponent}
         tabIndex={reply.id}
         className={`chat-bubble ql-editor`}
         showAvatar={showAvatar}
         isAuthor={isAuthor}
-        hideBg={isEmoticonOnly || showGifPlayer || (hasFiles && replyBody === "<span></span>") || (hasFiles && replyBody === "") }
+        hideBg={isEmoticonOnly || showGifPlayer || (hasFiles && replyBody === "<span></span>") || (hasFiles && replyBody === "")}
         theme={chatSettings.chat_message_theme}>
         {
             <>

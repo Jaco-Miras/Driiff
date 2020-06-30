@@ -1,8 +1,8 @@
 import React, {useCallback} from "react";
 import styled from "styled-components";
-import {localizeChatChannelDate} from "../../../../helpers/momentFormatJS";
 import {replaceChar, stripHtml} from "../../../../helpers/stringFormatter";
 import {Avatar} from "../../../common";
+import {useTimeFormat} from "../../../hooks";
 
 const Wrapper = styled.div`
     .avatar {
@@ -41,6 +41,7 @@ const Wrapper = styled.div`
 export const NotificationTimelineItem = props => {
 
     const {notification, actions, history} = props;
+    const {localizeChatChannelDate} = useTimeFormat();
 
     const handleRedirect = e => {
         e.preventDefault();

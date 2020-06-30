@@ -3,7 +3,7 @@ import {useDispatch} from "react-redux";
 import styled from "styled-components";
 import {addToModals} from "../../../redux/actions/globalActions";
 import {DropDocument} from "../../dropzone/DropDocument";
-import {useCountUnreadReplies, useFocusInput} from "../../hooks";
+import {useCountUnreadReplies, useFocusInput, useTimeFormat} from "../../hooks";
 import useChatMessageActions from "../../hooks/useChatMessageActions";
 import ChatMessages from "../../list/chat/ChatMessages";
 import ChatUnreadFloatBar from "../../list/chat/ChatUnreadFloatBar";
@@ -24,6 +24,7 @@ const ChatContentPanel = (props) => {
 
     const dispatch = useDispatch();
     const chatMessageActions = useChatMessageActions();
+    const timeFormat = useTimeFormat();
 
     const bottomRef = useRef();
     const [showDropZone, setshowDropZone] = useState(false);
@@ -117,14 +118,16 @@ const ChatContentPanel = (props) => {
             />
             <ChatHeaderPanel channel={selectedChannel}/>
             {selectedChannel !== null && unreadCount > 0 && !bottomRefVisible && <ChatUnreadFloatBar channel={selectedChannel}/>}
-            {selectedChannel !== null ? 
-                <ChatMessages selectedChannel={selectedChannel} 
-                    chatMessageActions={chatMessageActions} 
-                    //bottomRef={bottomRef}
-                    onBottomRefVisible={handleBottomRefChange}
-                    //bottomRefVisible={bottomRefVisible}
-                /> 
-                : <ChatMessagesPlaceholder/>}
+            {selectedChannel !== null ?
+             <ChatMessages
+                 selectedChannel={selectedChannel}
+                 chatMessageActions={chatMessageActions}
+                 timeFormat={timeFormat}
+                 //bottomRef={bottomRef}
+                 onBottomRefVisible={handleBottomRefChange}
+                 //bottomRefVisible={bottomRefVisible}
+             />
+                                      : <ChatMessagesPlaceholder/>}
             <ChatFooterPanel onShowFileDialog={handleOpenFileDialog} dropAction={dropAction}/>
         </Wrapper>
     );

@@ -1,7 +1,7 @@
 import React, {useCallback} from "react";
 import styled from "styled-components";
-import {localizeChatChannelDate} from "../../../helpers/momentFormatJS";
 import {SvgIconFeather} from "../../common";
+import {useTimeFormat} from "../../hooks";
 
 const Wrapper = styled.div`
     display: ${props => props.optionsVisible ? "none" : "initial"};
@@ -32,6 +32,7 @@ const Badge = styled.span`
 const WorkspaceChatDateIcons = props => {
 
     const {workspace, optionsVisible} = props;
+    const {localizeChatChannelDate} = useTimeFormat();
 
     const handleNotificationBadges = useCallback(() => {
         if (workspace.is_read === 0) {

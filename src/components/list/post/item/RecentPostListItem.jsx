@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import {localizeChatTimestamp} from "../../../../helpers/momentFormatJS";
 import {CheckBox} from "../../../forms";
+import {useTimeFormat} from "../../../hooks";
 
 const Wrapper = styled.li`
     cursor: pointer;
@@ -31,8 +31,10 @@ const RecentPostListItem = (props) => {
         className = "",
         post,
         postActions,
-        onOpenPost
+        onOpenPost,
     } = props;
+
+    const {localizeChatTimestamp} = useTimeFormat();
 
     const toggleCheck = (e) => {
         e.stopPropagation();
@@ -40,7 +42,7 @@ const RecentPostListItem = (props) => {
     };
 
     const handleOpenPost = e => {
-        onOpenPost(post)
+        onOpenPost(post);
     };
 
     return (

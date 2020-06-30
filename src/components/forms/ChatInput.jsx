@@ -1,7 +1,6 @@
 import React, {useEffect, useRef, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import styled from "styled-components";
-import {localizeDate} from "../../helpers/momentFormatJS";
 import {
     addChatMessage,
     addQuote,
@@ -16,7 +15,7 @@ import {
 import {deleteDraft} from "../../redux/actions/globalActions";
 import {SvgIconFeather} from "../common";
 import BodyMention from "../common/BodyMention";
-import {useDraft, useQuillInput, useQuillModules, useSaveInput, useSelectQuote} from "../hooks";
+import {useDraft, useQuillInput, useQuillModules, useSaveInput, useSelectQuote, useTimeFormat} from "../hooks";
 import QuillEditor from "./QuillEditor";
 
 const Wrapper = styled.div`
@@ -101,6 +100,7 @@ const ChatInput = props => {
     const {selectedEmoji, onClearEmoji, selectedGif, onClearGif, dropAction} = props;
     const dispatch = useDispatch();
     const reactQuillRef = useRef();
+    const {localizeDate} = useTimeFormat();
     const selectedChannel = useSelector(state => state.chat.selectedChannel);
     const slugs = useSelector(state => state.global.slugs);
     const user = useSelector(state => state.session.user);
