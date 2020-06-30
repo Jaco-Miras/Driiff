@@ -62,12 +62,32 @@ const MainLayout = (props) => {
 
     const handleSoundPlay = () => {
         if (sound_enabled && refs.audio.current) {
-            refs.audio.current.play();
+            const promiseAudioPlay = refs.audio.current.play();
+
+            if (promiseAudioPlay !== undefined) {
+                promiseAudioPlay.then(() => {
+                    // Start whatever you need to do only after playback
+                    // has begun.
+                }).catch(error => {
+                    /**
+                     * @todo need a fallback in case autoplay is not allowed
+                     **/
+                    if (error.name === "NotAllowedError") {
+                    } else {
+                    }
+                });
+            }
         }
     };
 
     return (
         <>
+            <AudioStyle ref={refs.audio} controls>
+                <source src={require("../assets/audio/appointed.ogg")} type="audio/ogg"/>
+                <source src={require("../assets/audio/appointed.mp3")} type="audio/mpeg"/>
+                <source src={require("../assets/audio/appointed.m4r")} type="audio/m4r"/>
+                Your browser does not support the audio element.
+            </AudioStyle>
             <MainHeaderPanel/>
             <MainContent id="main">
                 <Route
@@ -87,12 +107,6 @@ const MainLayout = (props) => {
             </MainContent>
             <ModalPanel/>
             <MobileOverlay/>
-            <AudioStyle ref={refs.audio} controls>
-                <source src={require("../assets/audio/appointed.ogg")} type="audio/ogg"/>
-                <source src={require("../assets/audio/appointed.mp3")} type="audio/mpeg"/>
-                <source src={require("../assets/audio/appointed.m4r")} type="audio/m4r"/>
-                Your browser does not support the audio element.
-            </AudioStyle>
             {/* {
              user.id !== undefined &&
              <Socket/>
