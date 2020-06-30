@@ -21,6 +21,7 @@ const useSettings = () => {
         dispatch(
             setUserChatSetting(e, () => {
                 let payload = {
+                    disable_sound: "0",
                     chat_settings: {
                         ...userSettings.CHAT_SETTINGS,
                         ...e,
@@ -40,6 +41,7 @@ const useSettings = () => {
         dispatch(
             setUserGeneralSetting(e, () => {
                 let payload = {
+                    disable_sound: "0",
                     chat_settings: {
                         ...userSettings.CHAT_SETTINGS,
                     },
