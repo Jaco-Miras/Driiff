@@ -6,7 +6,7 @@ const Wrapper = styled.ul`
     overflow: auto;
     
     &.list-group {
-        max-height: none !important;
+        max-height: 390px !important;
     } 
 `;
 

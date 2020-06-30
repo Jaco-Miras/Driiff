@@ -20,6 +20,7 @@ const MainContent = styled.div`
 `;
 
 const AudioStyle = styled.audio`
+    display: none;
     opacity: 0;
     visibility: hidden;    
 `;
