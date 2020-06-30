@@ -211,7 +211,7 @@ const useSetWorkspace = () => {
             else if (params.workspaceId !== undefined && parseInt(params.workspaceId) === activeTopic.id) {
                 if (params.hasOwnProperty("folderId")) {
                     let workspace = {...workspaces[params.folderId].topics[params.workspaceId]};
-                    if (workspace.hasOwnProperty("id")) {
+                    if (workspace.hasOwnProperty("id") && workspace.channel) {
                         if (workspace.channel.channel_loaded === undefined) {
                             getAndSetChannel(workspace.channel.code);
                         } else {
