@@ -210,7 +210,7 @@ const usePostActions = () => {
             }
             payload = {
                 ...payload,
-                folderId: params.folderId
+                folderId: params.hasOwnProperty("folderId") ? params.folderId : null
             }
 
             if (res) {
@@ -238,7 +238,7 @@ const usePostActions = () => {
             }
             payload = {
                 ...payload,
-                folderId: params.folderId
+                folderId: params.hasOwnProperty("folderId") ? params.folderId : null
             }
 
             if (res) {

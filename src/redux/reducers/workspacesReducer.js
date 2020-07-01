@@ -899,14 +899,42 @@ export default (state = INITIAL_STATE, action) => {
         }
         case "MARK_READ_UNREAD_REDUCER": {
             let newWorkspacePosts = {...state.workspacePosts};
+            let updatedWorkspaces = {...state.workspaces};
+            let updatedTopic = {...state.activeTopic}
             newWorkspacePosts[action.data.topic_id].posts[action.data.post_id].is_unread = action.data.unread;
             if (action.data.unread === 0) {
                 newWorkspacePosts[action.data.topic_id].posts[action.data.post_id].unread_count = action.data.unread;
                 newWorkspacePosts[action.data.topic_id].posts[action.data.post_id].is_updated = true;
+                if (action.data.folderId) {
+                    updatedWorkspaces[action.data.folderId].unread_count = updatedWorkspaces[action.data.folderId].unread_count - 1;
+                    updatedWorkspaces[action.data.folderId].topics[action.data.topic_id].unread_posts =  updatedWorkspaces[action.data.folderId].topics[action.data.topic_id].unread_posts - 1;
+                    if (updatedTopic.id == action.data.topic_id) {
+                        updatedTopic.unread_posts = updatedTopic.unread_posts - 1;
+                    }
+                } else {
+                    updatedWorkspaces[action.data.topic_id].unread_count = updatedWorkspaces[action.data.topic_id].unread_count - 1;
+                    if (updatedTopic.id == action.data.topic_id) {
+                        updatedTopic.topic_detail.unread_posts = updatedTopic.topic_detail.unread_posts - 1;
+                    }
+                }
+            } else {
+                if (action.data.folderId) {
+                    updatedWorkspaces[action.data.folderId].unread_count = updatedWorkspaces[action.data.folderId].unread_count + 1;
+                    updatedWorkspaces[action.data.folderId].topics[action.data.topic_id].unread_posts =  updatedWorkspaces[action.data.folderId].topics[action.data.topic_id].unread_posts + 1;
+                    if (updatedTopic.id == action.data.topic_id) {
+                        updatedTopic.unread_posts = updatedTopic.unread_posts + 1;
+                    }
+                } else {
+                    updatedWorkspaces[action.data.topic_id].unread_count = updatedWorkspaces[action.data.topic_id].unread_count + 1;
+                    if (updatedTopic.id == action.data.topic_id) {
+                        updatedTopic.topic_detail.unread_posts = updatedTopic.topic_detail.unread_posts + 1;
+                    }
+                }
             }
             return {
                 ...state,
-                workspacePosts: newWorkspacePosts
+                workspacePosts: newWorkspacePosts,
+                activeTopic: updatedTopic
             }
         }
         case "MUST_READ_REDUCER": {
