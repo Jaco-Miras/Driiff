@@ -30,15 +30,15 @@ const Wrapper = styled(MoreOptions)`
 
 const FolderOptions = props => {
 
-    const {className = "", folder, scrollRef = null, actions, isMember} = props;
+    const {className = "", folder, scrollRef = null, actions, isMember, history, params, handleAddEditFolder} = props;
     const toaster = useToaster();
 
-    const handleViewDetail = () => {
-    };
+    // const handleViewDetail = () => {
+    // };
 
     const handleRename = () => {
         if (isMember) {
-            actions.renameFile(folder);
+            handleAddEditFolder(folder, "edit");
         } else {
             toaster.warning(`You are not a member of this workspace.`);
         }
@@ -46,7 +46,15 @@ const FolderOptions = props => {
 
     const handleDelete = () => {
         if (isMember) {
-            actions.removeFile(folder);
+            let cb = (err, res) => {
+                if (err) return;
+    
+                if (res) {
+                    let pathname = history.location.pathname.split("/folder/")[0];
+                    history.push(pathname);
+                }
+            };
+            actions.removeFolder(folder, params.workspaceId, cb);
         } else {
             toaster.warning(`You are not a member of this workspace.`);
         }

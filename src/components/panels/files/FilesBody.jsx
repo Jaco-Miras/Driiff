@@ -125,7 +125,7 @@ const FilesBody = (props) => {
     };
 
     const handleEditFolder = () => {
-        handleAddEditFolder("update");
+        handleAddEditFolder(folder, "update");
     };
 
     useEffect(() => {
@@ -164,8 +164,8 @@ const FilesBody = (props) => {
                             </MoreButton>
                         }
                         {
-                            (params.hasOwnProperty("fileFolderId") && subFolders.length > 0) ||
-                            (!params.hasOwnProperty("fileFolderId") && folders.length > 0) ?
+                            (params.hasOwnProperty("fileFolderId") && subFolders.filter(f => !f.is_archived).length > 0) ||
+                            (!params.hasOwnProperty("fileFolderId") && folders.filter(f => !f.is_archived).length > 0) ?
                                 <h6 className="font-size-11 text-uppercase mb-4">Folders</h6>
                             : null
                         }
@@ -174,20 +174,28 @@ const FilesBody = (props) => {
                             <div className="row">
                             {
                                 params.hasOwnProperty("fileFolderId") ?
-                                subFolders.map(f => {
+                                subFolders.filter(f => !f.is_archived).map(f => {
                                     return <FolderListItem
                                         key={f.id}
+                                        actions={actions}
                                         className="col-xl-3 col-lg-4 col-md-6 col-sm-12"
                                         folder={f}
-                                        history={history}/>;
+                                        history={history}
+                                        isMember={isMember}
+                                        params={params}
+                                        handleAddEditFolder={handleAddEditFolder}/>;
                                 })
                                 :
-                                folders.map(f => {
+                                folders.filter(f => !f.is_archived).map(f => {
                                     return <FolderListItem
                                         key={f.id}
+                                        actions={actions}
                                         className="col-xl-3 col-lg-4 col-md-6 col-sm-12"
                                         folder={f}
-                                        history={history}/>;
+                                        history={history}
+                                        isMember={isMember}
+                                        params={params}
+                                        handleAddEditFolder={handleAddEditFolder}/>;
                                 })
                             }
                             </div>
@@ -332,12 +340,49 @@ const FilesBody = (props) => {
                             filter === "removed" &&
                             <>
                                 <RemoveFiles search={search} scrollRef={scrollRef} wsFiles={wsFiles}
-                                             actions={actions} isMember={isMember}/>
+                                             actions={actions} isMember={isMember} folder={folder}/>
+                                <div className="row">
                                 {
-                                    !(wsFiles && wsFiles.hasOwnProperty("trash_files") && Object.keys(wsFiles.trash_files).length > 0) &&
-                                    <EmptyState>
-                                        <SvgEmptyState icon={4} height={282}/>
-                                    </EmptyState>
+                                    !folder && 
+                                    folders.filter(f => f.is_archived).map(f => {
+                                        return <FolderListItem
+                                            key={f.id}
+                                            actions={actions}
+                                            className="col-xl-3 col-lg-4 col-md-6 col-sm-12"
+                                            folder={f}
+                                            history={history}
+                                            isMember={isMember}
+                                            params={params}
+                                            handleAddEditFolder={handleAddEditFolder}/>;
+                                    })
+                                }
+                                </div>
+                                {
+                                    folder &&
+                                    <>
+                                    <h6 className="font-size-11 text-uppercase mb-4">{folder.search}</h6>
+                                    <div className="row">
+                                        {
+                                            wsFiles &&
+                                            fileIds.map(f => {
+                                                return (
+                                                    <FileListItem
+                                                        key={f}
+                                                        isMember={isMember}
+                                                        scrollRef={scrollRef} actions={actions}
+                                                        className="col-xl-3 col-lg-4 col-md-6 col-sm-12"
+                                                        file={wsFiles.files[f]}/>
+                                                );
+                                            })
+                                        }
+                                    </div>
+                                    </>
+                                }
+                                {
+                                    // !(wsFiles && wsFiles.hasOwnProperty("trash_files") && Object.keys(wsFiles.trash_files).length > 0) &&
+                                    // <EmptyState>
+                                    //     <SvgEmptyState icon={4} height={282}/>
+                                    // </EmptyState>
                                 }
                             </>
                         }
