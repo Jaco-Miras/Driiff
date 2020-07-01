@@ -8,6 +8,7 @@ import {
     getChannels,
     getGlobalRecipients,
     getLastVisitedChannel,
+    getWorkspaceChannels,
     postChannelMembers,
     postCreateChannel,
     postSearchExistingChannels,
@@ -583,6 +584,15 @@ const useChannelActions = () => {
         );
     }, [dispatch, fetchByCode, saveLastVisited]);
 
+    const fetchWorkspaceChannels = useCallback((
+        {skip = 0, limit = 20, ...res},
+        callback = () => {}) => {
+
+        dispatch(
+            getWorkspaceChannels({})
+        );
+    }, [dispatch]);
+
     return {
         create,
         createByUserChannel,
@@ -593,6 +603,7 @@ const useChannelActions = () => {
         fetchDrafts,
         fetchMembersById,
         fetchLastVisited,
+        fetchWorkspaceChannels,
         saveHistoricalPosition,
         saveLastVisited,
         select,

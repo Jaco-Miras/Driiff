@@ -7,6 +7,7 @@ import {
     getChannelMembers as getChannelMembersService,
     getChannels as getChannelsService,
     getChatMessages as getChatMessagesService,
+    getWorkspaceChannels as getWorkspaceChannelsService,
     getGlobalRecipients as getGlobalRecipientsService,
     getLastVisitedChannel as getLastVisitedChannelService,
     postChannelMembers as postChannelMembersService,
@@ -469,6 +470,16 @@ export function readChannelReducer(payload, callback) {
     return SimpleDispatchActionToReducer(
         "READ_CHANNEL_REDUCER",
         payload,
+        callback,
+    );
+}
+
+export function getWorkspaceChannels(payload, callback) {
+    return dispatchActionToReducer(
+        getWorkspaceChannelsService(payload),
+        "GET_WORKSPACE_CHANNELS_START",
+        "GET_WORKSPACE_CHANNELS_SUCCESS",
+        "GET_WORKSPACE_CHANNELS_FAIL",
         callback,
     );
 }

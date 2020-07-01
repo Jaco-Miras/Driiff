@@ -19,9 +19,9 @@ const ChatHeader = styled.h4`
 `;
 
 const ChannelsSidebar = props => {
-    const {className, search, channels, selectedChannel} = props;
-
-    const [sortedChannels] = useSortChannels(channels, search);
+    const {className, search, channels, selectedChannel, workspace} = props;
+    
+    const [sortedChannels] = useSortChannels(channels, search, {}, workspace);
 
     return (
         <ChannelsSidebarContainer className={`chat-lists ${className}`}>

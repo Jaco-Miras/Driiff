@@ -89,7 +89,7 @@ export default function (state = INITIAL_STATE, action) {
                 selectedChannel: selectedChannel,
             };
         case "GET_CHANNELS_SUCCESS": {
-            let channels = state.channels;
+            let channels = {...state.channels};
             action.data.results.filter(r => {
                 return !(state.selectedChannel && state.selectedChannel.id === r.id);
             }).forEach((r) => {
@@ -107,6 +107,26 @@ export default function (state = INITIAL_STATE, action) {
                 ...state,
                 channels: channels,
                 channelsLoaded: true,
+            };
+        }
+        case "GET_WORKSPACE_CHANNELS_SUCCESS": {
+            let channels = {...state.channels};
+            action.data.filter(r => {
+                return !(state.selectedChannel && state.selectedChannel.id === r.id);
+            }).forEach((r) => {
+                channels[r.id] = {
+                    ...channels[r.id],
+                    ...r,
+                    hasMore: true,
+                    skip: 0,
+                    replies: [],
+                    selected: false,
+                };
+            });
+
+            return {
+                ...state,
+                channels: channels,
             };
         }
         case "GET_CHANNEL_SUCCESS": {

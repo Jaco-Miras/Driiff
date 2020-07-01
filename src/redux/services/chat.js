@@ -233,3 +233,11 @@ export function getChannelMembers(payload) {
         url: url,
     });
 }
+
+export function getWorkspaceChannels(payload) {
+
+    return apiCall({
+        method: "GET",
+        url: `/v2/workspace-channels`,
+    });
+}

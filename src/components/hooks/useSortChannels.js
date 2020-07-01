@@ -2,7 +2,7 @@ import {useSelector} from "react-redux";
 import {useSettings} from "./index";
 
 
-const useSortChannels = (channels, search, options = {}) => {
+const useSortChannels = (channels, search, options = {}, workspace) => {
 
     const user = useSelector(state => state.session.user);
     const {chatSettings: settings} = useSettings();
@@ -18,8 +18,14 @@ const useSortChannels = (channels, search, options = {}) => {
         }
 
     };
-
-    let results = Object.values(channels).filter(c => c.type !== "TOPIC")
+    
+    let results = Object.values(channels).filter(f => {
+        if (workspace) {
+            return f.type === "TOPIC"
+        } else {
+            return f.type !== "TOPIC"
+        }
+    })
         //.concat(this.props.startNewChannels)
         .filter(channel => {
             if (typeof channel.add_user === "undefined")

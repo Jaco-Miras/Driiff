@@ -3,10 +3,10 @@ import {useDispatch} from "react-redux";
 import styled from "styled-components";
 import {addToModals} from "../../../redux/actions/globalActions";
 import {SvgIconFeather} from "../../common";
-import {useSetWorkspace, useSortWorkspaces} from "../../hooks";
+//import {useSetWorkspace, useSortWorkspaces} from "../../hooks";
 import ChannelsSidebar from "../../list/chat/ChannelsSidebar";
 import ChatContactsList from "../../list/chat/ChatContactsList";
-import {WorkspaceChatList} from "../../workspace";
+//import {WorkspaceChatList} from "../../workspace";
 
 const Wrapper = styled.div`
     overflow: auto !important;
@@ -47,8 +47,8 @@ const ChatSidebarContentPanel = (props) => {
     const {className = "", pill = "pills-home", search, channels, userChannels, selectedChannel} = props;
 
     const dispatch = useDispatch();
-    const {getAndSetChannel} = useSetWorkspace();
-    const sortedWorkspaces = useSortWorkspaces();
+    // const {getAndSetChannel} = useSetWorkspace();
+    // const sortedWorkspaces = useSortWorkspaces();
 
     const handleOpenGropupChatModal = () => {
         let payload = {
@@ -77,7 +77,7 @@ const ChatSidebarContentPanel = (props) => {
                         </NewGroupButton>
                     </div>
                     <ChannelsSidebar
-                        search={search}
+                        search={search} workspace={false}
                         channels={channels} selectedChannel={selectedChannel}/>
                 </div>
                 <div className={`tab-panel fade ${pill === "pills-contact" && "show active"}`} id="pills-contact"
@@ -94,26 +94,11 @@ const ChatSidebarContentPanel = (props) => {
                     id="pills-workspace-internal"
                     role="tabpanel"
                     aria-labelledby="pills-workspace-tab">
-                    <ul className="list-group list-group-flush">
-                        {
-                            sortedWorkspaces
-                                .filter(ws => {
-                                    if (!!ws.is_external)
-                                        return false;
-
-                                    return true;
-                                })
-                                .map(ws => {
-                                    return <WorkspaceChatList
-                                        selectedChannel={selectedChannel}
-                                        setChannel={getAndSetChannel}
-                                        key={ws.key_id}
-                                        workspace={ws}/>;
-                                })
-                        }
-                    </ul>
+                    <ChannelsSidebar
+                        search={search} workspace={true}
+                        channels={channels} selectedChannel={selectedChannel}/>   
                 </div>
-                <div
+                {/* <div
                     className={`tab-panel workspace-chat-list fade ${pill === "pills-workspace-external" && "show active"}`}
                     id="pills-workspace-external"
                     role="tabpanel"
@@ -135,7 +120,7 @@ const ChatSidebarContentPanel = (props) => {
                                 })
                         }
                     </ul>
-                </div>
+                </div> */}
             </div>
         </Wrapper>
     );

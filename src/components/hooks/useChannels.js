@@ -31,6 +31,8 @@ const useChannels = () => {
                 limit: 20,
                 filter: "archived",
             });
+
+            actions.fetchWorkspaceChannels({});
         }
 
         //eslint-disable-next-line react-hooks/exhaustive-deps
