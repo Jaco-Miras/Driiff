@@ -139,11 +139,11 @@ const useTimeFormat = () => {
         const hours = moment().diff(moment(utc), "hours");
 
         if (hours < 24) {
-            return "1" + moment().calendar().substring(0, moment().calendar().indexOf(" ")) + ", " + local.format(time_format);
+            return moment().calendar().substring(0, moment().calendar().indexOf(" ")) + ", " + local.format(time_format);
         } else if (hours < 48) {
-            return "2" + moment().subtract(1, "days").calendar().substring(0, moment().subtract(1, "days").calendar().indexOf(" ")) + ", " + local.format(time_format);
+            return moment().subtract(1, "days").calendar().substring(0, moment().subtract(1, "days").calendar().indexOf(" ")) + ", " + local.format(time_format);
         } else {
-            return "3" + local.format(`dddd[,] ${time_format}`);
+            return local.format(`dddd[,] ${time_format}`);
         }
     };
 

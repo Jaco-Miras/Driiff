@@ -77,7 +77,7 @@ const ChannelIcon = props => {
                 <Icon icon="user"/>
             }
             {
-                channel.members.length > 2 && channel.type === "DIRECT" &&
+                (channel.members.length > 2 && channel.type === "DIRECT") || (channel.type === "TOPIC") &&
                 <span>{handleInitials(channel.title).substring(0, 3)}</span>
             }
         </Wrapper>
