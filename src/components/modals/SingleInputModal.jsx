@@ -63,14 +63,22 @@ const SingleInputModal = (props) => {
         toggle();
     };
 
+    const inputRef = useRef();
+
+    const onOpened = () => {
+        if (inputRef && inputRef.current) {
+            inputRef.current.focus();
+        }
+    }
+
     return (
-        <Wrapper ref={refs.main} isOpen={true} toggle={toggle} centered
+        <Wrapper ref={refs.main} isOpen={true} toggle={toggle} centered onOpened={onOpened}
                  className={`single-input-modal ${className}`} {...otherProps}>
             <ModalHeaderSection toggle={toggle}>{title}</ModalHeaderSection>
             <ModalBody>
                 <WrapperDiv>
                     <Input
-                        innerRef={handleInputRef}
+                        innerRef={inputRef}
                         autoFocus
                         defaultValue={defaultValue}
                         onChange={onChange}

@@ -86,6 +86,7 @@ const CreateEditChatModal = props => {
      */
     const {type, mode} = props.data;
 
+    const inputRef = useRef();
     const reactQuillRef = useRef();
     const dispatch = useDispatch();
     const history = useHistory();
@@ -386,9 +387,15 @@ const CreateEditChatModal = props => {
         }
     }, [inputValue, selectedUsers, chatExists, searching]);
 
+    const onOpened = () => {
+        if (inputRef && inputRef.current) {
+            inputRef.current.focus();
+        }
+    };
+
     return (
 
-        <Modal isOpen={modal} toggle={toggle} centered size={"md"}>
+        <Modal isOpen={modal} toggle={toggle} centered size={"md"} onOpened={onOpened}>
             <ModalHeaderSection toggle={toggle}>{mode === "edit" ? "Edit chat" : "New group chat"}</ModalHeaderSection>
             <ModalBody>
                 <WrapperDiv>
@@ -397,6 +404,7 @@ const CreateEditChatModal = props => {
                            defaultValue={mode === "edit" ? channel.title : ""}
                            onChange={handleInputChange}
                            valid={valid}
+                           innerRef={inputRef}
                     />
                 </WrapperDiv>
                 <WrapperDiv>
