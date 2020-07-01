@@ -59,8 +59,10 @@ const Wrapper = styled.li`
         transition: opacity 0.3s ease;
         svg {
             margin-left: 4px;
-            fill: #ffc107;
-            color: #ffc107;
+            &.feather-star {
+                fill: #ffc107;
+                color: #ffc107;
+            }
         }
         .badge {
             position: absolute;
