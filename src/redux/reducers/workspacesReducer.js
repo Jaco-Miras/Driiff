@@ -902,6 +902,7 @@ export default (state = INITIAL_STATE, action) => {
             newWorkspacePosts[action.data.topic_id].posts[action.data.post_id].is_unread = action.data.unread;
             if (action.data.unread === 0) {
                 newWorkspacePosts[action.data.topic_id].posts[action.data.post_id].unread_count = action.data.unread;
+                newWorkspacePosts[action.data.topic_id].posts[action.data.post_id].is_updated = true;
             }
             return {
                 ...state,

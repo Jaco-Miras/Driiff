@@ -208,6 +208,10 @@ const usePostActions = () => {
                 toaster.success(<>Action failed.</>);
                 return;
             }
+            payload = {
+                ...payload,
+                folderId: params.folderId
+            }
 
             if (res) {
                 toaster.success(<>You marked <b>{post.title}</b> as read.</>);
@@ -231,6 +235,10 @@ const usePostActions = () => {
             if (err) {
                 toaster.success(<>Action failed.</>);
                 return;
+            }
+            payload = {
+                ...payload,
+                folderId: params.folderId
             }
 
             if (res) {
