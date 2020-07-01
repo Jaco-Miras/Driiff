@@ -189,7 +189,7 @@ const PostDetail = props => {
                 personalized_for_id: null
             });
         }
-        if (post.is_unread === 1 || post.unread_count > 0) {
+        if (post.is_unread === 1 || post.unread_count > 0 || !post.is_updated) {
             postActions.markAsRead(post);
         }
     }, []);
