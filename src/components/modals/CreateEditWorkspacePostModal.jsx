@@ -175,6 +175,7 @@ const CreateEditWorkspacePostModal = props => {
 
     const {type, mode, item = {}} = props.data;
 
+    const inputRef = useRef();
     const dispatch = useDispatch();
     const [modal, setModal] = useState(true);
     const user = useSelector(state => state.session.user);
@@ -552,9 +553,15 @@ const CreateEditWorkspacePostModal = props => {
 
     const [wsOptions, userOptions] = useGetWorkspaceAndUserOptions(form.selectedWorkspaces, activeTopic);
 
+    const onOpened = () => {
+        if (inputRef && inputRef.current) {
+            inputRef.current.focus();
+        }
+    };
+
     return (
 
-        <Modal isOpen={modal} toggle={toggle} centered size={"md"} autoFocus={false}>
+        <Modal isOpen={modal} toggle={toggle} centered size={"md"} onOpened={onOpened}>
             <ModalHeaderSection toggle={toggle}>
                 {mode === "edit" ? "Edit post" : "Create new post"}
             </ModalHeaderSection>
@@ -564,7 +571,7 @@ const CreateEditWorkspacePostModal = props => {
                     <ModalBody>Not sure about the content? Save it as a draft.</ModalBody>
                     <ModalFooter>
                         <Button color="primary" onClick={() => toggleAll(true)}>Save</Button>
-                        <Button color="secondary" onClick={toggleAll}>Discard</Button>
+                        <Button color="secondary" onClick={() => toggleAll(false)}>Discard</Button>
                     </ModalFooter>
                 </Modal>
                 <DropDocument
@@ -583,7 +590,7 @@ const CreateEditWorkspacePostModal = props => {
                            defaultValue={mode === "edit" ? "" : ""}
                            value={form.title}
                            onChange={handleNameChange}
-                           autoFocus
+                           innerRef={inputRef}
                     />
                 </WrapperDiv>
                 <WrapperDiv>
