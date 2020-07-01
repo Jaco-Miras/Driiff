@@ -19,11 +19,13 @@ const useSortChannels = (channels, search, options = {}, workspace) => {
 
     };
     
-    let results = Object.values(channels).filter(f => {
+    let results = Object.values(channels).filter(c => {
         if (workspace) {
-            return f.type === "TOPIC"
+            const checkForId = id => id === user.id;
+            let isMember = c.members.map(m => m.id).some(checkForId);
+            return c.type === "TOPIC" && isMember;
         } else {
-            return f.type !== "TOPIC"
+            return c.type !== "TOPIC";
         }
     })
         //.concat(this.props.startNewChannels)

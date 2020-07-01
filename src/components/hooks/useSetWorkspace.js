@@ -184,6 +184,8 @@ const useSetWorkspace = () => {
                         if (channels.hasOwnProperty(workspace.channel.id)) {
                             let channel = {...channels[workspace.channel.id]};
                             dispatch(setSelectedChannel(channel));
+                        } else {
+                            getAndSetChannel(workspace.channel.code);
                         }
                     }
                 } else {
@@ -193,6 +195,8 @@ const useSetWorkspace = () => {
                         if (channels.hasOwnProperty(workspace.topic_detail.channel.id)) {
                             let channel = {...channels[workspace.topic_detail.channel.id]};
                             dispatch(setSelectedChannel(channel));
+                        } else {
+                            getAndSetChannel(workspace.topic_detail.channel.code);
                         }
                     }
                 }
@@ -205,6 +209,8 @@ const useSetWorkspace = () => {
                         if (channels.hasOwnProperty(workspace.channel.id)) {
                             let channel = {...channels[workspace.channel.id]};
                             dispatch(setSelectedChannel(channel));
+                        } else {
+                            getAndSetChannel(workspace.channel.code);
                         }
                     }
                 } else {
@@ -213,6 +219,8 @@ const useSetWorkspace = () => {
                         if (channels.hasOwnProperty(workspace.topic_detail.channel.id)) {
                             let channel = {...channels[workspace.topic_detail.channel.id]};
                             dispatch(setSelectedChannel(channel));
+                        } else {
+                            getAndSetChannel(workspace.topic_detail.channel.code);
                         }
                     }
                 }
