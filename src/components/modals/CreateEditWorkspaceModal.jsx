@@ -62,7 +62,7 @@ const WrapperDiv = styled(InputGroup)`
     &.file-attachment-wrapper {
         margin-top: 30px;
         margin-bottom: -20px;
-        
+
     }
     &.action-wrapper {
         margin-top: 40px;
@@ -564,6 +564,15 @@ const CreateEditWorkspaceModal = (props) => {
         _validateName();
     }, [form.has_folder, form.selectedFolder]);
 
+    const focusInput = (e) => {
+        if(e) {
+            setTimeout(() => {
+                console.log(e)
+                e.focus();
+            }, 300);
+        }
+    };
+
     return (
         <Modal isOpen={modal} toggle={toggle} centered size={"md"} autoFocus={false}>
             <ModalHeaderSection toggle={toggle}>
@@ -591,7 +600,8 @@ const CreateEditWorkspaceModal = (props) => {
                         onBlur={handleNameBlur}
                         valid={valid.name}
                         invalid={valid.name !== null && !valid.name}
-                        autoFocus
+                        ref={focusInput}
+                        autoFocus={true}
                     />
                     <InputFeedback valid={valid.name}>{feedback.name}</InputFeedback>
                 </WrapperDiv>
