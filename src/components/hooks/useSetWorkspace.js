@@ -56,7 +56,7 @@ const useSetWorkspace = () => {
         if (!init && !workspacesLoaded) {
             setInit(true);
             dispatch(
-                getWorkspaceChannels({})
+                getWorkspaceChannels({skip: 0, limit: 100})
             );
             dispatch(
                 getWorkspaces({is_external: 0}, (err, res) => {

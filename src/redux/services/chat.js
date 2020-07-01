@@ -238,6 +238,6 @@ export function getWorkspaceChannels(payload) {
 
     return apiCall({
         method: "GET",
-        url: `/v2/workspace-channels`,
+        url: `/v2/workspace-channels?${objToUrlParams(payload)}`,
     });
 }

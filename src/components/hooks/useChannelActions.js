@@ -589,7 +589,7 @@ const useChannelActions = () => {
         callback = () => {}) => {
 
         dispatch(
-            getWorkspaceChannels({})
+            getWorkspaceChannels({skip: 0, limit: 100})
         );
     }, [dispatch]);
 
