@@ -67,7 +67,7 @@ const DashboardTeam = (props) => {
     const handleShowWorkspaceModal = () => {
         let payload = {
             type: "workspace_create_edit",
-            mode: "create",
+            mode: "edit",
         };
 
         dispatch(
