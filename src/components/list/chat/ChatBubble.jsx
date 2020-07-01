@@ -20,7 +20,6 @@ const ChatBubbleContainer = styled.div`
     position: relative;
     display: inline-flex;
     flex-flow: column;
-    //flex-flow: ${props => props.isAuthor ? "row-reverse" : "row"};
     padding: 7px 15px;
     border-radius: 8px;
     background: ${props => (props.isAuthor ? props.theme.self.chat_bubble_background_color : props.theme.others.chat_bubble_background_color)};
@@ -29,6 +28,7 @@ const ChatBubbleContainer = styled.div`
     color: ${props => (props.isAuthor ? props.theme.self.chat_bubble_text_color : props.theme.others.chat_bubble_text_color)};
     font-size: .835rem;
     overflow: visible;
+    min-height: 40px;
     ${props => (props.hideBg === true && !props.isEmoticonOnly) && `
         background: none;
         padding: 0;
@@ -43,6 +43,7 @@ const ChatBubbleContainer = styled.div`
         ${props => props.isAuthor ? "right: -20px" : "left: -20px"};
         border-left-color: ${props => (props.isAuthor ? props.theme.self.chat_bubble_background_color : "#0000")};
         border-right-color: ${props => (!props.isAuthor ? props.theme.others.chat_bubble_background_color : "#0000")};
+        height: 5px;
     }
 
     a:not([href]):not([tabindex]) {
@@ -202,6 +203,7 @@ const QuoteContainer = styled.div`
 
     z-index: 12;
     ${props => !props.isAuthor ? "left: -19px" : "right: -20px"};
+    height: 5px;
 }
 
 `;
