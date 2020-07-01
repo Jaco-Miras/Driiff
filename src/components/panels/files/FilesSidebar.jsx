@@ -100,7 +100,7 @@ const FileSidebar = (props) => {
                         <Filter onClick={filterFile} data-filter="important" active={filter === "important"}
                                 className="list-group-item d-flex align-items-center">
                             <Icon className="mr-2" icon="star"/>
-                            Important
+                            Favorite
                             <span className="small ml-auto">{wsFiles && wsFiles.stars > 0 ? wsFiles.stars : null}</span>
                         </Filter>
                         <Filter onClick={filterFile} data-filter="removed" active={filter === "removed"}
