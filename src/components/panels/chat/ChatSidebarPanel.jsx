@@ -68,13 +68,13 @@ const ChatSidebarPanel = (props) => {
                     <li className="nav-item">
                         <span className="nav-link" id="pills-workspace-tab" data-toggle="pill"
                               onClick={handleTabChange} role="tab" aria-controls="pills-workspace-internal"
-                              aria-selected="false">Workspace - Internal</span>
+                              aria-selected="false">Workspace chats</span>
                     </li>
-                    <li className="nav-item">
+                    {/* <li className="nav-item">
                         <span className="nav-link" id="pills-workspace-tab" data-toggle="pill"
                               onClick={handleTabChange} role="tab" aria-controls="pills-workspace-external"
                               aria-selected="false">Workspace - External</span>
-                    </li>
+                    </li> */}
                 </ul>
             </div>
             <ChatSideBarContentPanel

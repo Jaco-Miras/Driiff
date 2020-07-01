@@ -644,14 +644,35 @@ class ChatMessages extends React.PureComponent {
         let groupedMessages = [];
 
         if (selectedChannel.replies && selectedChannel.replies.length) {
-            groupedMessages = Object.entries(groupBy(selectedChannel.replies, "g_date")).map(entries => {
+            groupedMessages = Object.entries(
+                groupBy(
+                    selectedChannel.replies.map(r => {
+                        if (r.hasOwnProperty("g_date")) {
+                            return r
+                        } else {
+                            return {
+                                ...r,
+                                g_date: this.props.timeFormat.localizeDate(r.created_at.timestamp, "YYYY-MM-DD")
+                            }
+                        }
+                    })
+                , "g_date")
+            ).map(entries => {
                 return {
                     key: entries[0],
                     replies: entries[1],
                 };
             }).sort((a, b) => a.key.localeCompare(b.key));
-        }
 
+            // groupedMessages = Object.entries(groupBy(selectedChannel.replies, "g_date")).map(entries => {
+            //     return {
+            //         key: entries[0],
+            //         replies: entries[1],
+            //     };
+            // }).sort((a, b) => a.key.localeCompare(b.key));
+            // console.log(groupedMessages, gMessages)
+        }
+       
         return <ChatReplyContainer
             ref={this.scrollComponent}
             id={`component-chat-thread`}

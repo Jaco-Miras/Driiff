@@ -161,7 +161,7 @@ const WorkspaceNavigationMenuBodyPanel = (props) => {
     return (
         <>
             <Wrapper className={`navigation-menu-body ${className}`}>
-                <div tabIndex="3">
+                <div>
                     <h4>Workspaces</h4>
                     <ul className="nav nav-tabs" id="pills-tab" role="tablist">
                         <li className="nav-item" onClick={e => handleSelectTab(e, "intern")}>

@@ -68,48 +68,6 @@ const WorkspaceFilesPanel = (props) => {
 
     const folderName = useRef("");
 
-    const handleCreateFolder = () => {
-        if (topic) {
-            let cb = (err, res) => {
-                if (err) return;
-                if (params.hasOwnProperty("fileFolderId")) {
-                    let pathname = history.location.pathname.split("/folder/")[0];
-                    history.push(pathname + `/folder/${res.data.folder.id}/${replaceChar(res.data.folder.search)}`);
-                } else {
-                    history.push(history.location.pathname + `/folder/${res.data.folder.id}/${replaceChar(res.data.folder.search)}`);
-                }
-            };
-            let payload = {
-                topic_id: topic.id,
-                name: folderName.current,
-            };
-            if (params.hasOwnProperty("fileFolderId")) {
-                payload = {
-                    ...payload,
-                    folder_id: params.fileFolderId,
-                };
-            }
-            actions.createFolder(payload, cb);
-        }
-    };
-
-    const handleUpdateFolder = () => {
-        if (topic) {
-            let cb = (err, res) => {
-                if (err) return;
-                if (params.hasOwnProperty("fileFolderId")) {
-                    let pathname = history.location.pathname.split("/folder/")[0];
-                    history.push(pathname + `/folder/${res.data.folder.id}/${replaceChar(res.data.folder.search)}`);
-                }
-            };
-            actions.updateFolder({
-                id: params.fileFolderId,
-                topic_id: topic.id,
-                name: folderName.current,
-            }, cb);
-        }
-    };
-
     const handleFolderClose = () => {
         folderName.current = "";
     };
@@ -118,7 +76,49 @@ const WorkspaceFilesPanel = (props) => {
         folderName.current = e.target.value.trim();
     };
 
-    const handleAddEditFolder = (mode = "add") => {
+    const handleAddEditFolder = (f, mode = "add") => {
+        const handleCreateFolder = () => {
+            if (topic) {
+                let cb = (err, res) => {
+                    if (err) return;
+                    if (params.hasOwnProperty("fileFolderId")) {
+                        let pathname = history.location.pathname.split("/folder/")[0];
+                        history.push(pathname + `/folder/${res.data.folder.id}/${replaceChar(res.data.folder.search)}`);
+                    } else {
+                        history.push(history.location.pathname + `/folder/${res.data.folder.id}/${replaceChar(res.data.folder.search)}`);
+                    }
+                };
+                let payload = {
+                    topic_id: topic.id,
+                    name: folderName.current,
+                };
+                if (params.hasOwnProperty("fileFolderId")) {
+                    payload = {
+                        ...payload,
+                        folder_id: params.fileFolderId,
+                    };
+                }
+                actions.createFolder(payload, cb);
+            }
+        };
+    
+        const handleUpdateFolder = () => {
+            if (topic) {
+                let cb = (err, res) => {
+                    if (err) return;
+                    if (params.hasOwnProperty("fileFolderId")) {
+                        let pathname = history.location.pathname.split("/folder/")[0];
+                        history.push(pathname + `/folder/${res.data.folder.id}/${replaceChar(res.data.folder.search)}`);
+                    }
+                };
+                actions.updateFolder({
+                    id: f.id,
+                    topic_id: topic.id,
+                    name: folderName.current,
+                }, cb);
+            }
+        };
+
         let payload = {
             type: "single_input",
             defaultValue: "",
@@ -133,10 +133,10 @@ const WorkspaceFilesPanel = (props) => {
                 onPrimaryAction: handleCreateFolder,
             };
         } else {
-            folderName.current = folder.search;
+            folderName.current = f.search;
             payload = {
                 ...payload,
-                defaultValue: folder.search,
+                defaultValue: f.search,
                 title: dictionary.updateFolder,
                 labelPrimaryAction: dictionary.update,
                 onPrimaryAction: handleUpdateFolder,

@@ -26,7 +26,7 @@ const Wrapper = styled.div`
 
 const FolderListItem = (props) => {
 
-    const {className = "", folder, actions, isMember, history} = props;
+    const {className = "", folder, actions, isMember, history, params, handleAddEditFolder} = props;
 
     const {path, url} = useRouteMatch();
 
@@ -47,7 +47,13 @@ const FolderListItem = (props) => {
             <div className="card  app-file-list">
                 <div className="app-file-icon">
                     <i className="fa fa-folder-o text-instagram"/>
-                    <FolderOptions folder={folder} actions={actions} isMember={isMember}/>
+                    <FolderOptions 
+                        folder={folder} 
+                        actions={actions} 
+                        isMember={isMember}
+                        history={history}
+                        params={params}
+                        handleAddEditFolder={handleAddEditFolder}/>
                 </div>
                 <div className="p-2 small">
                     <ToolTip content={folder.search}>

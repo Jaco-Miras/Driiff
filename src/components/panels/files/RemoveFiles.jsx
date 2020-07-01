@@ -7,7 +7,7 @@ const Wrapper = styled.div`
 
 const RemoveFiles = (props) => {
 
-    const {className = "", actions, wsFiles, isMember} = props;
+    const {className = "", actions, wsFiles, isMember, folder} = props;
 
     // const files = [{
     //     id: 1,
@@ -27,7 +27,13 @@ const RemoveFiles = (props) => {
             <div className="row">
                 {
                     wsFiles && Object.values(wsFiles.trash_files).length > 0 &&
-                    Object.values(wsFiles.trash_files).map(f => {
+                    Object.values(wsFiles.trash_files).filter(f => {
+                        if (folder) {
+                            return folder.id === f.folder_id;
+                        } else {
+                            return f.folder_id === null;
+                        }
+                    }).map(f => {
                         return (
                             <FileListItem key={f.id} isMember={isMember}
                                         forceDelete={true}

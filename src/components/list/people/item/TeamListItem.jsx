@@ -5,9 +5,18 @@ import {Avatar} from "../../../common";
 import {MoreOptions} from "../../../panels/common";
 
 const Wrapper = styled.li`
+    padding: 16px 0 !important;
     &:hover {
         .more-options {
             display: flex;
+        }
+    }
+    .card-title {
+        position: relative;
+        .feather-edit {
+            right: 0;
+            width: 16px;
+            position: absolute;
         }
     }
 
@@ -18,11 +27,14 @@ const Wrapper = styled.li`
     .avatar {
         cursor: pointer;
         cursor: hand;
+        height: 2.5rem;
+        width: 2.5rem;
     }
 
     .profile-name {
         cursor: pointer;
         cursor: hand;
+        margin-bottom: 4px;
     }
 
     > .more-options svg {
@@ -40,20 +52,20 @@ const TeamListItem = (props) => {
         history.push(`/profile/${member.id}/${member.name}`);
     };
 
-    console.log(member);
+    console.log(member)
 
     return (
         <Wrapper className={`team-list-item list-group-item d-flex align-items-center p-l-r-0 justify-content-between ${className}`}>
-            <div class="d-flex align-items-center">
-                <div>
-                    <Avatar className="mr-2" id={member.id} name={member.name} imageLink={member.profile_image_link}
+            <div class="d-flex align-items-center ">
+                <div className="pr-3">
+                    <Avatar id={member.id} name={member.name} imageLink={member.profile_image_link}
                             partialName={member.partial_name}/>
                 </div>
                 <div>
-                    <h6 className="profile-name m-b-0" onClick={handleClickName}>{member.name}</h6>
+                    <h6 className="profile-name" onClick={handleClickName}>{member.name}</h6>
                     {
-                        member.role &&
-                        <small className="text-muted">{member.role.name}</small>
+                        member.designation &&
+                        <small className="text-muted">{member.designation}</small>
                     }
                 </div>
             </div>

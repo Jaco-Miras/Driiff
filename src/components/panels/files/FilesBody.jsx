@@ -125,7 +125,7 @@ const FilesBody = (props) => {
     };
 
     const handleEditFolder = () => {
-        handleAddEditFolder("update");
+        handleAddEditFolder(folder, "update");
     };
 
     useEffect(() => {
@@ -164,6 +164,37 @@ const FilesBody = (props) => {
                             </MoreButton>
                         }
                         {
+                            filter !== "removed" &&
+                            <div className="row">
+                            {
+                                params.hasOwnProperty("fileFolderId") ?
+                                subFolders.filter(f => !f.is_archived).map(f => {
+                                    return <FolderListItem
+                                        key={f.id}
+                                        actions={actions}
+                                        className="col-xl-3 col-lg-4 col-md-6 col-sm-12"
+                                        folder={f}
+                                        history={history}
+                                        isMember={isMember}
+                                        params={params}
+                                        handleAddEditFolder={handleAddEditFolder}/>;
+                                })
+                                :
+                                folders.filter(f => !f.is_archived).map(f => {
+                                    return <FolderListItem
+                                        key={f.id}
+                                        actions={actions}
+                                        className="col-xl-3 col-lg-4 col-md-6 col-sm-12"
+                                        folder={f}
+                                        history={history}
+                                        isMember={isMember}
+                                        params={params}
+                                        handleAddEditFolder={handleAddEditFolder}/>;
+                                })
+                            }
+                            </div>
+                        }
+                        {
                             filter === "removed" &&
                             wsFiles && wsFiles.hasOwnProperty("trash_files") && Object.keys(wsFiles.trash_files).length > 0 &&
                             <SvgIconFeather icon="trash" onClick={actions.removeTrashFiles}/>
@@ -172,33 +203,10 @@ const FilesBody = (props) => {
                             filter === "" &&
                             <>
                                 {
-                                    ((params.hasOwnProperty("fileFolderId") && subFolders.length > 0) ||
-                                        (!params.hasOwnProperty("fileFolderId") && folders.length > 0)) ?
+                                    (params.hasOwnProperty("fileFolderId") && subFolders.filter(f => !f.is_archived).length > 0) ||
+                                    (!params.hasOwnProperty("fileFolderId") && folders.filter(f => !f.is_archived).length > 0) ?
                                     <h6 className="font-size-11 text-uppercase mb-4">Folders</h6>
-                                                                                                        :
-                                    <></>
-                                }
-                                {
-                                    <div className="row">
-                                        {
-                                            params.hasOwnProperty("fileFolderId") ?
-                                            subFolders.map(f => {
-                                                return <FolderListItem
-                                                    key={f.id}
-                                                    className="col-xl-3 col-lg-4 col-md-6 col-sm-12"
-                                                    folder={f}
-                                                    history={history}/>;
-                                            })
-                                                                                  :
-                                            folders.map(f => {
-                                                return <FolderListItem
-                                                    key={f.id}
-                                                    className="col-xl-3 col-lg-4 col-md-6 col-sm-12"
-                                                    folder={f}
-                                                    history={history}/>;
-                                            })
-                                        }
-                                    </div>
+                                                                                                                               : null
                                 }
                                 {
                                     typeof params.fileFolderId !== "undefined" ?

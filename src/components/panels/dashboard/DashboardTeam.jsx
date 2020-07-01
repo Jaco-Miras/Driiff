@@ -1,6 +1,9 @@
 import React, {useCallback, useState} from "react";
 import styled from "styled-components";
 import {TeamListItem} from "../../list/people/item";
+import {addToModals} from "../../../redux/actions/globalActions";
+import {useDispatch} from "react-redux";
+import {SvgIconFeather} from "../../common";
 
 const Wrapper = styled.div`
     .feather-edit {
@@ -10,11 +13,14 @@ const Wrapper = styled.div`
 
     .card-title {
         position: relative;
-
-        .feather-edit {
+        .feather-plus {
             right: 0;
             width: 16px;
             position: absolute;
+            cursor: pointer;
+            &:hover {
+                color: #7a1b8b;
+            }
         }
     }
 
@@ -56,13 +62,29 @@ const DashboardTeam = (props) => {
         //eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
+    const dispatch = useDispatch();
+
+    const handleShowWorkspaceModal = () => {
+        let payload = {
+            type: "workspace_create_edit",
+            mode: "edit",
+        };
+
+        dispatch(
+            addToModals(payload),
+        );
+    };
+
     if (!workspace)
         return <></>;
 
     return (
         <Wrapper className={`dashboard-team card ${className}`}>
             <div ref={assignRef} className="card-body">
-                <h5 className="card-title">Team</h5>
+                <h5 className="card-title">Team <SvgIconFeather onClick={handleShowWorkspaceModal} icon="plus"/></h5>
+
+
+
                 <ul className="list-group list-group-flush">
                     {
                         workspace.members.map(member => {
