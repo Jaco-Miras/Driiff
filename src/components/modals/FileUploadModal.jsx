@@ -181,7 +181,7 @@ const FileUploadModal = props => {
                     setTimeout(() => {
                         dispatch(postChatMessage(payload));
                     }, 300);
-                    
+
                     setUploadedFiles([]);
                     dispatch(saveInputData({sent: true}));
                     dispatch(clearModal({type: type}));
@@ -269,6 +269,22 @@ const FileUploadModal = props => {
         setTextOnly(editor.getText(content));
     };
 
+
+    const [init, setInit] = useState(false);
+
+    const refCallback = (e) => {
+        reactQuillRef.current = e;
+        setInit(true);
+    }
+
+    useEffect(()=> {
+        if(init === true && reactQuillRef.current) {
+            setTimeout(() => {
+                reactQuillRef.current.focus();
+            }, 300);
+        }
+    }, [init]);
+
     const [modules] = useQuillModules("chat_upload");
 
     return (
@@ -278,7 +294,7 @@ const FileUploadModal = props => {
                 <StyledQuillEditor
                     className={"chat-input"}
                     modules={modules}
-                    ref={reactQuillRef}
+                    ref={refCallback}
                     placeholder={`Add message. Type @ to mention someone.`}
                     readOnly={uploading}
                     onChange={handleQuillChange}
