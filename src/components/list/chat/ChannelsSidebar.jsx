@@ -68,6 +68,17 @@ const ChannelsSidebar = props => {
                         );
                     })
                 }
+                {
+                    workspace === true && sortedChannels.length === 0 ?
+                    <li>
+                        <h4>Nothing to see here!</h4>
+                    </li>
+                                                                      :
+                    sortedChannels.length === 0 && search !== "" &&
+                        <li>
+                            <h4>No matching chats found.</h4>
+                        </li>
+                }
             </Channels>
         </ChannelsSidebarContainer>
     );
