@@ -6,6 +6,7 @@ import {
     addToChannels,
     clearSelectedChannel,
     getChannel,
+    getWorkspaceChannels,
     restoreLastVisitedChannel,
     setSelectedChannel,
 } from "../../redux/actions/chatActions";
@@ -54,6 +55,9 @@ const useSetWorkspace = () => {
     useEffect(() => {
         if (!init && !workspacesLoaded) {
             setInit(true);
+            dispatch(
+                getWorkspaceChannels({})
+            );
             dispatch(
                 getWorkspaces({is_external: 0}, (err, res) => {
                     if (err) return;
@@ -132,15 +136,6 @@ const useSetWorkspace = () => {
                     setActiveTab(topic.is_external === 0 ? "intern" : "extern"),
                 );
                 dispatch(setActiveTopic(topic));
-                if (topic.type === "WORKSPACE") {
-                    if (topic.channel_loaded === undefined) {
-                        getAndSetChannel(topic.topic_detail.channel.code);
-                    }
-                } else {
-                    if (topic.channel && topic.channel.channel_loaded === undefined) {
-                        getAndSetChannel(topic.channel.code);
-                    }
-                }
             }
         }
     }, [externalWorkspacesLoaded, workspacesLoaded, activeTopic, dispatch, params, workspaces, init, exInit]);
@@ -186,26 +181,18 @@ const useSetWorkspace = () => {
                     let workspace = {...workspaces[params.folderId].topics[params.workspaceId]};
                     if (workspace.hasOwnProperty("id")) {
                         dispatch(setActiveTopic(workspace));
-                        if (workspace.channel.channel_loaded === undefined) {
-                            getAndSetChannel(workspace.channel.code);
-                        } else {
-                            if (channels.hasOwnProperty(workspace.channel.id)) {
-                                let channel = {...channels[workspace.channel.id]};
-                                dispatch(setSelectedChannel(channel));
-                            }
+                        if (channels.hasOwnProperty(workspace.channel.id)) {
+                            let channel = {...channels[workspace.channel.id]};
+                            dispatch(setSelectedChannel(channel));
                         }
                     }
                 } else {
                     let workspace = {...workspaces[params.workspaceId]};
                     if (workspace.hasOwnProperty("id")) {
                         dispatch(setActiveTopic(workspace));
-                        if (workspace.channel_loaded === undefined) {
-                            getAndSetChannel(workspace.topic_detail.channel.code);
-                        } else {
-                            if (channels.hasOwnProperty(workspace.topic_detail.channel.id)) {
-                                let channel = {...channels[workspace.topic_detail.channel.id]};
-                                dispatch(setSelectedChannel(channel));
-                            }
+                        if (channels.hasOwnProperty(workspace.topic_detail.channel.id)) {
+                            let channel = {...channels[workspace.topic_detail.channel.id]};
+                            dispatch(setSelectedChannel(channel));
                         }
                     }
                 }
@@ -215,25 +202,17 @@ const useSetWorkspace = () => {
                 if (params.hasOwnProperty("folderId")) {
                     let workspace = {...workspaces[params.folderId].topics[params.workspaceId]};
                     if (workspace.hasOwnProperty("id") && workspace.channel) {
-                        if (workspace.channel.channel_loaded === undefined) {
-                            getAndSetChannel(workspace.channel.code);
-                        } else {
-                            if (channels.hasOwnProperty(workspace.channel.id)) {
-                                let channel = {...channels[workspace.channel.id]};
-                                dispatch(setSelectedChannel(channel));
-                            }
+                        if (channels.hasOwnProperty(workspace.channel.id)) {
+                            let channel = {...channels[workspace.channel.id]};
+                            dispatch(setSelectedChannel(channel));
                         }
                     }
                 } else {
                     let workspace = {...workspaces[params.workspaceId]};
                     if (workspace.hasOwnProperty("id") && workspace.topic_detail) {
-                        if (workspace.channel_loaded === undefined) {
-                            getAndSetChannel(workspace.topic_detail.channel.code);
-                        } else {
-                            if (channels.hasOwnProperty(workspace.topic_detail.channel.id)) {
-                                let channel = {...channels[workspace.topic_detail.channel.id]};
-                                dispatch(setSelectedChannel(channel));
-                            }
+                        if (channels.hasOwnProperty(workspace.topic_detail.channel.id)) {
+                            let channel = {...channels[workspace.topic_detail.channel.id]};
+                            dispatch(setSelectedChannel(channel));
                         }
                     }
                 }

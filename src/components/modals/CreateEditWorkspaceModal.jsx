@@ -286,6 +286,7 @@ const CreateEditWorkspaceModal = (props) => {
             is_external: activeTab === "extern" ? 1 : 0,
             member_ids: form.selectedUsers.map(u => u.id),
             is_lock: form.is_private ? 1 : 0,
+            workspace_id: form.selectedFolder && form.has_folder ? form.selectedFolder.value : 0,
         };
 
         if (mode === "edit") {
