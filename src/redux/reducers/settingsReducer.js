@@ -47,7 +47,7 @@ const INITIAL_STATE = {
         GENERAL_SETTINGS: {
             timezone: momentTZ.tz.guess(),
             dark_mode: "0",
-            language: null,
+            language: "nl",
             active_topic: null,
             workspace_open_folder: {},
             date_format: "DD-MM-YYYY",
@@ -116,6 +116,7 @@ export default (state = INITIAL_STATE, action) => {
                             settings[key] = {
                                 ...settings[key],
                                 ...value,
+                                language: value.language === null ? "nl" : value.language,
                             };
                             break;
                         }

@@ -14,4 +14,5 @@ export {default as CommonPicker} from "./CommonPicker";
 export {default as FileAttachments} from "./FileAttachments";
 export {default as AvatarGroup} from "./AvatarGroup";
 export {default as ButtonDropdown} from "./ButtonDropdown";
-export {default as DatePicker} from "./DatePicker"
+export {default as DatePicker} from "./DatePicker";
+export {default as ToolTip} from "./ToolTip";

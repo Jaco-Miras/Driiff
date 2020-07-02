@@ -152,7 +152,7 @@ const HomeProfileNavigation = (props) => {
             <li className="nav-item dropdown">
                 <a href="/" className="nav-link dropdown-toggle" data-toggle="dropdown" onClick={toggleDropdown}>
                     <Flag countryAbbr={language} className="mr-2" width="18"/>
-                    {languageOptions[language]} {_t("SAMPLE", "sample")}
+                    {languageOptions[language]}
                 </a>
                 <div className="dropdown-menu">
                     <a href="/" className="dropdown-item" onClick={handleSelectLanguage} data-lang="en">

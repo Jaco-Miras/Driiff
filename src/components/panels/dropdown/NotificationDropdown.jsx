@@ -16,7 +16,8 @@ const Wrapper = styled.div`
     }
 
     .notification-title-wrapper {
-        background: rgba(0, 0, 0, 0) url(${require("../../../assets/media/image/notification-header.jpg")}) repeat scroll 0% 0%;        
+        background: #7a1b8b;
+        color: #fff;        
     }
 `;
 

@@ -5,7 +5,6 @@ import {replaceChar} from "../../../helpers/stringFormatter";
 import {SvgIconFeather} from "../../common";
 
 const Wrapper = styled.li`
-
     cursor: pointer;
     cursor: hand;
     position: relative;
@@ -18,8 +17,21 @@ const Wrapper = styled.li`
         :hover {
             color: #7a1b8b;
         }
-        i {
-            margin-left: 10px;
+    }
+    
+    .sub-menu-arrow {
+        display: inline-block;
+        transition: all 0.3s;
+        width: 15px;        
+        font-size: 8.8px;
+        transform: rotate(-540deg);
+        
+        &.ti-minus {        
+            margin-left: 6px;
+        }
+        
+        &.rotate-in {
+            transform: rotate(0deg);
         }
     }
 
@@ -103,10 +115,10 @@ const FolderList = props => {
 
     useEffect(() => {
         if (activeFolder) {
-            if (activeFolder.id == folder.id) {
+            if (activeFolder.id === folder.id) {
                 setActive(true);
             } else {
-                if (activeFolder.parent_folder && activeFolder.parent_folder.id == folder.id) {
+                if (activeFolder.parent_folder && activeFolder.parent_folder.id === folder.id) {
                     setActive(true);
                     setShowFolders(true);
                 } else {
@@ -119,29 +131,29 @@ const FolderList = props => {
     }, [params, setActive, activeFolder]);
 
     return (
-        <Wrapper ref={ref.container} className={`folder-list fadeIn ${className} worskpace-list`}
+        <Wrapper ref={ref.container} className={`folder-list fadeIn ${className}`}
                  selected={active}>
-            <a className={`${true && "active"}`} onClick={handleSelectFolder}>
-                    {folder.search}
-                    {
-                        subFolders.length > 0 &&
-                        <i className={`sub-menu-arrow ti-angle-up ${showFolders ? "ti-minus rotate-in" : "ti-plus"}`}/>
-                    }
-                </a>
+            <a className="active" onClick={handleSelectFolder}>
+                {folder.search}
+                {
+                    subFolders.length > 0 &&
+                    <i className={`sub-menu-arrow ti-angle-up ${showFolders ? "ti-minus rotate-in" : "ti-plus"}`}/>
+                }
+            </a>
             {
                 subFolders.length > 0 &&
                 <FolderNav ref={ref.nav} maxHeight={maxHeight}
-                          className={showFolders ? "enter-active" : "leave-active"}>
-                        {
-                            subFolders.map(f => {
-                            return <SubFolderList key={f.id} 
-                                selected={params.hasOwnProperty("fileFolderId") && params.fileFolderId == f.id}
-                                onClick={() => handleSelectSubFolder(f)}>
-                                        <Icon icon={"circle"}/>
-                                        {f.search}
-                                    </SubFolderList>
-                            })
-                        }
+                           className={showFolders ? "enter-active" : "leave-active"}>
+                    {
+                        subFolders.map(f => {
+                            return <SubFolderList key={f.id}
+                                                  selected={params.hasOwnProperty("fileFolderId") && params.fileFolderId === f.id}
+                                                  onClick={() => handleSelectSubFolder(f)}>
+                                <Icon icon={"circle"}/>
+                                {f.search}
+                            </SubFolderList>;
+                        })
+                    }
                 </FolderNav>
             }
         </Wrapper>

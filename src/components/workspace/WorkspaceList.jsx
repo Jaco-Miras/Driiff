@@ -1,6 +1,6 @@
 import React, {useEffect, useRef, useState} from "react";
 import {useDispatch} from "react-redux";
-import {useHistory, useRouteMatch} from "react-router-dom";
+import {useHistory} from "react-router-dom";
 import {Badge} from "reactstrap";
 import styled from "styled-components";
 import {replaceChar} from "../../helpers/stringFormatter";
@@ -79,7 +79,6 @@ const WorkspaceList = props => {
 
     const dispatch = useDispatch();
     const history = useHistory();
-    const route = useRouteMatch();
     const ref = {
         container: useRef(null),
         arrow: useRef(null),
@@ -147,7 +146,7 @@ const WorkspaceList = props => {
     }, [showTopics, workspace.id, workspace.selected, maxHeight, workspace_open_folder]);
 
     return (
-        <Wrapper ref={ref.container} className={`worskpace-list fadeIn ${className}`}
+        <Wrapper ref={ref.container} className={`workspace-list fadeIn ${className}`}
                  selected={workspace.selected}
                  show={show}>
             <a className={`${workspace.selected && "active"}`} href="/"

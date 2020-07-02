@@ -75,12 +75,12 @@ const FileSidebar = (props) => {
                             <span className="small ml-auto">{wsFiles && wsFiles.count > 0 ? wsFiles.count : null}</span>
                         </Filter>
                         {
-                            folders && folders.length > 0 && isMember === true &&
+                            folders && folders.filter(f => !f.is_archived).length > 0 && isMember === true &&
                             <Filter className="d-flex align-items-center folder-list">
                                 <ul>
                                 {
-                                    folders.filter(f => f.parent_folder === null).map(f => {
-                                        let subFolders = folders.filter(sf => {
+                                    folders.filter(f => !f.is_archived).filter(f => f.parent_folder === null).map(f => {
+                                        let subFolders = folders.filter(f => !f.is_archived).filter(sf => {
                                             if (sf.parent_folder && sf.parent_folder.id === f.id) {
                                                 return true;
                                             } else return false;
@@ -100,7 +100,7 @@ const FileSidebar = (props) => {
                         <Filter onClick={filterFile} data-filter="important" active={filter === "important"}
                                 className="list-group-item d-flex align-items-center">
                             <Icon className="mr-2" icon="star"/>
-                            Important
+                            Favorite
                             <span className="small ml-auto">{wsFiles && wsFiles.stars > 0 ? wsFiles.stars : null}</span>
                         </Filter>
                         <Filter onClick={filterFile} data-filter="removed" active={filter === "removed"}

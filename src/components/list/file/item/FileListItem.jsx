@@ -1,6 +1,6 @@
 import React, {useCallback} from "react";
 import styled from "styled-components";
-import {SvgIconFeather} from "../../../common";
+import {SvgIconFeather, ToolTip} from "../../../common";
 import {FileOptions} from "../../../panels/files";
 
 const Wrapper = styled.div`
@@ -12,6 +12,12 @@ const Wrapper = styled.div`
             top: 10px;
             right: 5px;
             width: 16px;
+        }
+        
+        .file-name {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
     }
 `;
@@ -47,7 +53,9 @@ const FileListItem = (props) => {
                     <FileOptions file={file} actions={actions} isMember={isMember} forceDelete={forceDelete}/>
                 </div>
                 <div className="p-2 small">
-                    <div>{file.name ? file.name : file.search}</div>
+                    <ToolTip content={file.name ? file.name : file.search}>
+                        <div className="file-name">{file.name ? file.name : file.search}</div>
+                    </ToolTip>
                     <div
                         className="text-muted">{(fileSizeUnit.size).toString().match(/^-?\d+(?:\.\d{0,2})?/)[0]}{fileSizeUnit.unit}</div>
                 </div>

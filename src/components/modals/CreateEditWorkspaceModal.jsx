@@ -62,7 +62,7 @@ const WrapperDiv = styled(InputGroup)`
     &.file-attachment-wrapper {
         margin-top: 30px;
         margin-bottom: -20px;
-        
+
     }
     &.action-wrapper {
         margin-top: 40px;
@@ -145,6 +145,7 @@ const CreateEditWorkspaceModal = (props) => {
     const formRef = {
         dropzoneRef: useRef(),
     };
+    const inputRef = useRef();
 
     const _validateName = useCallback(() => {
         if (form.name === "") {
@@ -564,8 +565,14 @@ const CreateEditWorkspaceModal = (props) => {
         _validateName();
     }, [form.has_folder, form.selectedFolder]);
 
+    const onOpened = () => {
+        if (inputRef && inputRef.current) {
+            inputRef.current.focus();
+        }
+    };
+
     return (
-        <Modal isOpen={modal} toggle={toggle} centered size={"md"} autoFocus={false}>
+        <Modal isOpen={modal} toggle={toggle} centered size={"md"} onOpened={onOpened}>
             <ModalHeaderSection toggle={toggle}>
                 {mode === "edit" ? "Edit " + activeTabName + " workspace" : "Create new " + activeTabName + " workspace"}
             </ModalHeaderSection>
@@ -591,7 +598,7 @@ const CreateEditWorkspaceModal = (props) => {
                         onBlur={handleNameBlur}
                         valid={valid.name}
                         invalid={valid.name !== null && !valid.name}
-                        autoFocus
+                        innerRef={inputRef}
                     />
                     <InputFeedback valid={valid.name}>{feedback.name}</InputFeedback>
                 </WrapperDiv>

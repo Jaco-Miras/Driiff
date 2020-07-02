@@ -66,7 +66,7 @@ const FilesHeader = (props) => {
     const folderDropDown = {
         label: "Folders",
         items: wsFiles && Object.values(folders).length ? 
-            Object.values(folders).map(f => {
+            Object.values(folders).filter(f => !f.is_archived).map(f => {
                 return {
                     value: f.id,
                     label: f.search,
@@ -109,7 +109,7 @@ const FilesHeader = (props) => {
                         </li>
                     }
                     {
-                        isMember === true && Object.keys(folders).length >= 1 &&
+                        isMember === true && Object.values(folders).filter(f => !f.is_archived).length >= 1 &&
                         <li className="list-inline-item mb-0">
                             <ButtonDropdown dropdown={folderDropDown}/>
                         </li>

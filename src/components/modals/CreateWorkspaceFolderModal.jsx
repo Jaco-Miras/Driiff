@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from "react";
+import React, {useCallback, useEffect, useRef, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {Input, InputGroup, Label, Modal, ModalBody} from "reactstrap";
 import styled from "styled-components";
@@ -61,6 +61,7 @@ const CreateWorkspaceFolderModal = props => {
 
     const {type, mode, item = null} = props.data;
 
+    const inputRef = useRef();
     const dispatch = useDispatch();
     const workspaces = useSelector(state => state.workspaces.workspaces);
     const activeTab = useSelector(state => state.workspaces.activeTab);
@@ -239,8 +240,14 @@ const CreateWorkspaceFolderModal = props => {
         }
     }, [activeTab, setActiveTabName]);
 
+    const onOpened = () => {
+        if (inputRef && inputRef.current) {
+            inputRef.current.focus();
+        }
+    };
+
     return (
-        <Modal isOpen={modal} toggle={toggle} centered size={"md"} autoFocus={false}>
+        <Modal isOpen={modal} toggle={toggle} centered size={"md"} onOpened={onOpened}>
             <ModalHeaderSection toggle={toggle} className={"workspace-folder-header"}>
                 {mode === "edit" ? "Edit " + activeTabName + " folder" : "Create new " + activeTabName +  " folder"}
                 {/* <ActiveTabName className="intern-extern">{activeTabName}</ActiveTabName> */}
@@ -255,7 +262,7 @@ const CreateWorkspaceFolderModal = props => {
                         onBlur={handleNameBlur}
                         valid={valid.name}
                         invalid={valid.name !== null && !valid.name}
-                        autoFocus
+                        innerRef={inputRef}
                     />
                     <InputFeedback valid={valid.name}>{feedback.name}</InputFeedback>
                 </WrapperDiv>
