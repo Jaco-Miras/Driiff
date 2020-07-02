@@ -147,26 +147,31 @@ export default (state = INITIAL_STATE, action) => {
                     //direct workspace
                     if (action.data.original_workspace_id === 0) {
                         // still direct workspace
-                        workspace = {...state.workspaces[action.data.id]};
-                        workspace = {
-                            ...workspace,
-                            name: action.data.name,
-                            member_ids: action.data.member_ids,
-                            members: action.data.members,
-                            description: action.data.description,
-                        }
-                        return {
-                            ...state,
-                            workspaces: {
-                                ...state.workspaces,
-                                [action.data.id]: workspace
-                            },
-                            activeTopic: state.activeTopic && state.activeTopic.id === action.data.id ?
-                                {
-                                    ...state.activeTopic,
-                                    ...workspace
-                                }
-                            : state.activeTopic
+                        if (!state.workspaces.hasOwnProperty(action.data.id)) {
+                            //new member - add workspace here
+                            return state;
+                        } else {
+                            workspace = {...state.workspaces[action.data.id]};
+                            workspace = {
+                                ...workspace,
+                                name: action.data.name,
+                                member_ids: action.data.member_ids,
+                                members: action.data.members,
+                                description: action.data.description,
+                            }
+                            return {
+                                ...state,
+                                workspaces: {
+                                    ...state.workspaces,
+                                    [action.data.id]: workspace
+                                },
+                                activeTopic: state.activeTopic && state.activeTopic.id === action.data.id ?
+                                    {
+                                        ...state.activeTopic,
+                                        ...workspace
+                                    }
+                                : state.activeTopic
+                            }
                         }
                     } else {
                         //make workspace as direct

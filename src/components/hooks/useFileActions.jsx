@@ -401,7 +401,7 @@ const useFileActions = (params = null) => {
         );
     }, [dispatch, params]);
 
-    const getFileSizeUnit = useCallback((size) => {
+    const getFileSizeUnit = (size) => {
         if (size) {
             if (size < 1e+6) {
                 return {
@@ -425,7 +425,7 @@ const useFileActions = (params = null) => {
                 unit: "KB",
             };
         }
-    });
+    };
 
     return {
         clearSearch,
