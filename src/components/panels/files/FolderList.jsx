@@ -71,7 +71,7 @@ const Icon = styled(SvgIconFeather)`
 
 const FolderList = props => {
 
-    const {className = "", folder, subFolders, activeFolder} = props;
+    const {className = "", folder, subFolders, activeFolder, clearFilter} = props;
 
     const history = useHistory();
     const {params, path, url} = useRouteMatch();
@@ -86,6 +86,7 @@ const FolderList = props => {
     const [active, setActive] = useState(false);
 
     const handleSelectFolder = () => {
+        clearFilter();
         if (path === "/workspace/files/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName" ||
             path === "/workspace/files/:folderId/:folderName/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName") {
             let pathname = url.split("/folder/")[0]
@@ -97,6 +98,7 @@ const FolderList = props => {
     };
 
     const handleSelectSubFolder = f => {
+        clearFilter();
         if (path === "/workspace/files/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName" ||
             path === "/workspace/files/:folderId/:folderName/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName") {
             let pathname = url.split("/folder/")[0]
