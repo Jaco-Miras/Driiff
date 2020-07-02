@@ -412,3 +412,11 @@ export function incomingRemovedFile(payload, callback) {
         callback,
     );
 }
+
+export function incomingRemovedFolder(payload, callback) {
+    return SimpleDispatchActionToReducer(
+        "INCOMING_REMOVED_FOLDER",
+        payload,
+        callback,
+    );
+}

@@ -197,7 +197,10 @@ export function uploadWorkspaceFiles(payload) {
  * @returns {Promise<*>}
  */
 export function deleteFolder(payload) {
-    let url = `/v2/workspace-folders/${payload.id}`;
+    let url = `/v2/workspace-folders/${payload.id}?topic_id=${payload.topic_id}`;
+    if (payload.force_delete) {
+        url += `&force_delete=1`
+    }
     return apiCall({
         method: "DELETE",
         url: url,
