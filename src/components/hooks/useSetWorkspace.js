@@ -27,23 +27,28 @@ const useSetWorkspace = () => {
     const channels = useSelector(state => state.chat.channels);
     const [init, setInit] = useState(false);
     const [exInit, setExInit] = useState(false);
+    const [fetchingChannel, setFetchingChannel] = useState(false);
 
     const getAndSetChannel = useCallback((code) => {
-        dispatch(
-            getChannel({code}, (err, res) => {
-                if (err) return;
-                let channel = {
-                    ...res.data,
-                    hasMore: true,
-                    skip: 0,
-                    replies: [],
-                    selected: true,
-                };
-                dispatch(addToChannels(channel));
-                dispatch(setSelectedChannel(channel));
-            }),
-        );
-    }, []);
+        if (!fetchingChannel) {
+            setFetchingChannel(true);
+            dispatch(
+                getChannel({code}, (err, res) => {
+                    setFetchingChannel(false);
+                    if (err) return;
+                    let channel = {
+                        ...res.data,
+                        hasMore: true,
+                        skip: 0,
+                        replies: [],
+                        selected: true,
+                    };
+                    dispatch(addToChannels(channel));
+                    dispatch(setSelectedChannel(channel));
+                }),
+            );
+        }
+    }, [dispatch, fetchingChannel, setFetchingChannel]);
 
     useEffect(() => {
         dispatch(getDrafts());
