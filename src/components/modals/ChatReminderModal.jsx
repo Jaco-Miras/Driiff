@@ -4,11 +4,11 @@ import DateTimePicker from "react-datetime-picker";
 import {useDispatch, useSelector} from "react-redux";
 import {Button, Modal, ModalBody, ModalFooter} from "reactstrap";
 import styled from "styled-components";
-import toaster from "toasted-notes";
 import {formatHoursAMPM, formatMonthsOrdinalDay, formatWeeekDayName} from "../../helpers/dateFormatter";
 import {postChatReminder} from "../../redux/actions/chatActions";
 import {clearModal} from "../../redux/actions/globalActions";
 import RadioInput from "../forms/RadioInput";
+import {useToaster} from "../hooks";
 import {ModalHeaderSection} from "./index";
 
 
@@ -30,6 +30,7 @@ const ChatReminderModal = props => {
 
     const dispatch = useDispatch();
     const user = useSelector(state => state.session.user);
+    const toaster = useToaster();
 
     const [setTimeValue, setSetTimeValue] = useState(`20m`);
     const [customTimeValue, setCustomTimeValue] = useState(new Date());
@@ -53,12 +54,12 @@ const ChatReminderModal = props => {
         //setSetTimeValue(formatDateISO8601(e));
     };
 
-    const handleSelectPickDateTime = (e) => {
+    const handleSelectPickDateTime = () => {
         setSetTimeValue("pick_data");
         setShowDateTimePicker(true);
     };
 
-    const handleSnooze = (e) => {
+    const handleSnooze = () => {
 
         let payload = {
             message_id: message.id,
@@ -66,7 +67,7 @@ const ChatReminderModal = props => {
         };
 
         dispatch(
-            postChatReminder(payload, (err, res) => {
+            postChatReminder(payload, () => {
                 toggle();
                 let messageAuthor = "You";
                 let messageTime = "";
@@ -113,7 +114,8 @@ const ChatReminderModal = props => {
                     messageAuthor = message.user.name;
                 }
 
-                toaster.notify(`I will remind you about this message ("${div.innerText} from ${messageAuthor} in ${messageTime}")`);
+                toaster.success(<>I will remind you about this message
+                    ("<b>{div.innerText}</b> from {messageAuthor} in {messageTime}")</>);
             }),
         );
     };

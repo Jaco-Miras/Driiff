@@ -2,10 +2,10 @@ import React, {useCallback, useEffect, useRef, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {Input, InputGroup, Label, Modal, ModalBody} from "reactstrap";
 import styled from "styled-components";
-import toaster from "toasted-notes";
 import {clearModal} from "../../redux/actions/globalActions";
 import {createWorkspace, updateWorkspace} from "../../redux/actions/workspaceActions";
 import {CheckBox, DescriptionInput, InputFeedback} from "../forms";
+import {useToaster} from "../hooks";
 import {ModalHeaderSection} from "./index";
 
 const WrapperDiv = styled(InputGroup)`
@@ -38,29 +38,11 @@ const WrapperDiv = styled(InputGroup)`
     }
 `;
 
-const ActiveTabName = styled.span`
-    color: #505050;
-    font-size: 10px;
-    font-weight: 400;
-    margin-left: 13px;
-
-    &::before{
-        content: '';
-        display: inline-block;
-        width: 4px;
-        height: 4px;
-        -moz-border-radius: 7.5px;
-        -webkit-border-radius: 7.5px;
-        border-radius: 7.5px;
-        background-color: #B8B8B8;
-        margin-right: 9px;
-    }
-`;
-
 const CreateWorkspaceFolderModal = props => {
 
     const {type, mode, item = null} = props.data;
 
+    const toaster = useToaster();
     const inputRef = useRef();
     const dispatch = useDispatch();
     const workspaces = useSelector(state => state.workspaces.workspaces);
@@ -195,11 +177,11 @@ const CreateWorkspaceFolderModal = props => {
                 updateWorkspace(payload, (err, res) => {
                     if(err) {
                         console.log(err);
-                        toaster.notify(
+                        toaster.error(
                             <span>Folder update failed.<br/>Please try again.</span>);
                     }
                     if(res) {
-                        toaster.notify(
+                        toaster.success(
                             <span><b>{form.name}</b> folder is updated</span>);
                         toggle();
                     }
@@ -210,11 +192,11 @@ const CreateWorkspaceFolderModal = props => {
                 createWorkspace(payload, (err, res) => {
                     if(err) {
                         console.log(err);
-                        toaster.notify(
+                        toaster.error(
                             <span>Folder creation failed.<br/>Please try again.</span>);
                     }
                     if(res) {
-                        toaster.notify(
+                        toaster.success(
                             <span><b>{form.name}</b> folder is created</span>);
                         toggle();
                     }
