@@ -68,8 +68,6 @@ const DashboardTeam = (props) => {
             <div ref={assignRef} className="card-body">
                 <h5 className="card-title">Team <SvgIconFeather onClick={onEditClick} icon="plus"/></h5>
 
-
-
                 <ul className="list-group list-group-flush">
                     {
                         workspace.members.map(member => {
