@@ -6,9 +6,7 @@ import {useTimeFormat} from "../../../hooks";
 
 const Wrapper = styled.div`
     .title {
-        color: #828282;
         font-weight: normal;
-
         .post-title {
             cursor: pointer;
             cursor: hand;
@@ -45,8 +43,8 @@ const PostTimeline = (props) => {
     return (
         <Wrapper className={`post-timeline timeline-item ${className}`}>
             <div>
-                <Avatar className="mr-3" 
-                    name={data.user.name} 
+                <Avatar className="mr-3"
+                    name={data.user.name}
                     imageLink={data.user.profile_image_link}
                     id={data.user.id}
                 />

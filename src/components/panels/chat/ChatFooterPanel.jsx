@@ -180,16 +180,12 @@ const ChatFooterPanel = (props) => {
 
     const isMember = useIsMember(selectedChannel && selectedChannel.members.length ? selectedChannel.members.map(m => m.id) : []);
 
-
     const toggleTooltip = () => {
         let tooltips = document.querySelectorAll('span.react-tooltip-lite');
-
         tooltips.forEach((tooltip) => {
             tooltip.parentElement.classList.toggle('tooltip-active');
         });
-
     };
-
 
     return (
         <Wrapper className={`chat-footer border-top ${className}`}>

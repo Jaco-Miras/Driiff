@@ -5,8 +5,6 @@ import {useTimeFormat} from "../../../hooks";
 
 const Wrapper = styled.div`
     .action-text {
-        color: #828282;
-
         .joined {
             color: #00c851
         }
@@ -30,8 +28,8 @@ const TopicTimeline = (props) => {
             <div>
                 {
                     data.user &&
-                    <Avatar className="mr-3" 
-                        name={data.user.name} 
+                    <Avatar className="mr-3"
+                        name={data.user.name}
                         imageLink={data.user.profile_image_link}
                         id={data.user.id}
                     />
