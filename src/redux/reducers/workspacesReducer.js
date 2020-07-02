@@ -180,31 +180,36 @@ export default (state = INITIAL_STATE, action) => {
                         workspace = {...newWorkspaces[action.data.original_workspace_id].topics[action.data.id]};
                         delete newWorkspaces[action.data.original_workspace_id].topics[action.data.id]
 
-                        workspace = {
-                            ...workspace,
-                            name: action.data.name,
-                            description: action.data.description,
-                            member_ids: action.data.member_ids,
-                            members: action.data.members,
-                            type: action.data.type,
-                            key_id: action.data.key_id,
-                            is_lock: workspace.private,
-                            unread_count: workspace.unread_chats + workspace.unread_posts,
-                            topic_detail: {
+                        if (workspace.hasOwnProperty("id")) {
+                            workspace = {
                                 ...workspace,
-                                channel: workspace.channel,
+                                name: action.data.name,
+                                description: action.data.description,
                                 member_ids: action.data.member_ids,
                                 members: action.data.members,
-                                description: action.data.description,
+                                type: action.data.type,
+                                key_id: action.data.key_id,
+                                is_lock: workspace.private,
+                                unread_count: workspace.unread_chats + workspace.unread_posts,
+                                topic_detail: {
+                                    ...workspace,
+                                    channel: workspace.channel,
+                                    member_ids: action.data.member_ids,
+                                    members: action.data.members,
+                                    description: action.data.description,
+                                }
                             }
+                            delete workspace.workspace_id;
+                            delete workspace.workspace_name;
+                            delete workspace.workspace_descripiton;
+                            newWorkspaces = {
+                                ...newWorkspaces,
+                                [action.data.id]: workspace
+                            }
+                        } else {
+
                         }
-                        delete workspace.workspace_id;
-                        delete workspace.workspace_name;
-                        delete workspace.workspace_descripiton;
-                        newWorkspaces = {
-                            ...newWorkspaces,
-                            [action.data.id]: workspace
-                        }
+
                         return {
                             ...state,
                             workspaces: newWorkspaces,
@@ -222,23 +227,28 @@ export default (state = INITIAL_STATE, action) => {
                         //no change on folder workspace
                         let newWorkspaces = {...state.workspaces};
                         workspace = {...newWorkspaces[action.data.original_workspace_id].topics[action.data.id]};
-                        workspace = {
-                            ...workspace,
-                            name: action.data.name,
-                            description: action.data.description,
-                            member_ids: action.data.member_ids,
-                            members: action.data.members,
-                        }
-                        newWorkspaces = {
-                            ...newWorkspaces,
-                            [action.data.workspace_id]: {
-                                ...newWorkspaces[action.data.workspace_id],
-                                topics: {
-                                    ...newWorkspaces[action.data.workspace_id].topics,
-                                    [action.data.id]: workspace
+                        if (workspace.hasOwnProperty("id")) {
+                            workspace = {
+                                ...workspace,
+                                name: action.data.name,
+                                description: action.data.description,
+                                member_ids: action.data.member_ids,
+                                members: action.data.members,
+                            }
+                            newWorkspaces = {
+                                ...newWorkspaces,
+                                [action.data.workspace_id]: {
+                                    ...newWorkspaces[action.data.workspace_id],
+                                    topics: {
+                                        ...newWorkspaces[action.data.workspace_id].topics,
+                                        [action.data.id]: workspace
+                                    }
                                 }
                             }
+                        } else {
+
                         }
+
                         return {
                             ...state,
                             workspaces: newWorkspaces,
@@ -263,26 +273,31 @@ export default (state = INITIAL_STATE, action) => {
                             delete newWorkspaces[action.data.original_workspace_id].topics[action.data.id]
                         }
                         
-                        workspace = {
-                            ...workspace,
-                            name: action.data.name,
-                            description: action.data.description,
-                            member_ids: action.data.member_ids,
-                            members: action.data.members,
-                            workspace_id: action.data.workspace_id,
-                            workspace_descripiton: workspaceFolder.description,
-                            workspace_name: workspaceFolder.name
-                        }
-                        newWorkspaces = {
-                            ...newWorkspaces,
-                            [action.data.workspace_id]: {
-                                ...newWorkspaces[action.data.workspace_id],
-                                topics: {
-                                    ...newWorkspaces[action.data.workspace_id].topics,
-                                    [action.data.id]: workspace
+                        if (workspace.hasOwnProperty("id")) {
+                            workspace = {
+                                ...workspace,
+                                name: action.data.name,
+                                description: action.data.description,
+                                member_ids: action.data.member_ids,
+                                members: action.data.members,
+                                workspace_id: action.data.workspace_id,
+                                workspace_descripiton: workspaceFolder.description,
+                                workspace_name: workspaceFolder.name
+                            }
+                            newWorkspaces = {
+                                ...newWorkspaces,
+                                [action.data.workspace_id]: {
+                                    ...newWorkspaces[action.data.workspace_id],
+                                    topics: {
+                                        ...newWorkspaces[action.data.workspace_id].topics,
+                                        [action.data.id]: workspace
+                                    }
                                 }
                             }
+                        } else {
+
                         }
+                        
                         return {
                             ...state,
                             workspaces: newWorkspaces,
@@ -351,12 +366,14 @@ export default (state = INITIAL_STATE, action) => {
                     }
                 } else {
                     //last active is direct workspace
-                    newWorkspaces = {
-                        ...newWorkspaces,
-                        [state.activeTopic.id]: {
-                            ...newWorkspaces[state.activeTopic.id],
-                            selected: false,
-                            channel_loaded: true,
+                    if (newWorkspaces.hasOwnProperty(state.activeTopic.id)) {
+                        newWorkspaces = {
+                            ...newWorkspaces,
+                            [state.activeTopic.id]: {
+                                ...newWorkspaces[state.activeTopic.id],
+                                selected: false,
+                                channel_loaded: true,
+                            }
                         }
                     }
                 }
