@@ -248,7 +248,7 @@ class SocketListeners extends PureComponent {
                         //@to do add unfurl
                         if (this.props.user.id !== e.user.id) {
                             delete e.reference_id;
-                            e.g_date = this.props.localizeDate(e.created_at.timestamp);
+                            e.g_date = this.props.localizeDate(e.created_at.timestamp, "YYYY-MM-DD");
                         }
                         this.props.incomingChatMessage(e);
                         delete e.SOCKET_TYPE;
