@@ -369,17 +369,17 @@ class SocketListeners extends PureComponent {
             })
             .listen(".new-workspace", e => {
                 console.log(e, "new workspace");
-                this.props.getChannel({code: e.channel.code}, (err,res) => {
-                    if (err) return;
-                    let channel = {
-                        ...res.data,
-                        hasMore: true,
-                        skip: 0,
-                        replies: [],
-                        selected: true,
-                    };
-                    this.props.addToChannels(channel);
-                })
+                // this.props.getChannel({code: e.channel.code}, (err,res) => {
+                //     if (err) return;
+                //     let channel = {
+                //         ...res.data,
+                //         hasMore: true,
+                //         skip: 0,
+                //         replies: [],
+                //         selected: true,
+                //     };
+                //     this.props.addToChannels(channel);
+                // })
                 if (e.topic !== undefined) {
                     this.props.incomingWorkspace(e);
                 } else {
