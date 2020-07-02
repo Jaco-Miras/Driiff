@@ -125,8 +125,8 @@ const PostItemPanel = (props) => {
             {
                 post.type !== "draft_post" &&
                 <MoreOptions className="ml-2" item={post} width={170} moreButton={`more-vertical`}>
-                    <div onClick={() => markAsRead(post)}>Mark as read</div>
-                    <div onClick={() => markAsUnread(post)}>Mark as unread</div>
+                    <div onClick={() => markAsRead(post, true)}>Mark as read</div>
+                    <div onClick={() => markAsUnread(post, true)}>Mark as unread</div>
                     <div onClick={() => sharePost(post)}>Share</div>
                     <div onClick={() => snoozePost(post)}>Snooze</div>
                     {

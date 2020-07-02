@@ -197,7 +197,7 @@ const usePostActions = () => {
         }
     }, [dispatch, params, history]);
 
-    const markAsRead = useCallback((post) => {
+    const markAsRead = useCallback((post, showToaster = false) => {
         let payload = {
             post_id: post.id,
             unread: 0,
@@ -214,7 +214,8 @@ const usePostActions = () => {
             }
 
             if (res) {
-                toaster.success(<>You marked <b>{post.title}</b> as read.</>);
+                if (showToaster) toaster.success(<>You marked <b>{post.title}</b> as read.</>);
+                
                 dispatch(
                     markReadUnreadReducer(payload),
                 );
@@ -225,7 +226,7 @@ const usePostActions = () => {
         );
     }, [dispatch, params]);
 
-    const markAsUnread = useCallback((post) => {
+    const markAsUnread = useCallback((post, showToaster = false) => {
         let payload = {
             post_id: post.id,
             unread: 1,
@@ -242,7 +243,8 @@ const usePostActions = () => {
             }
 
             if (res) {
-                toaster.success(<>You marked <b>{post.title}</b> as unread.</>);
+                if (showToaster) toaster.success(<>You marked <b>{post.title}</b> as unread.</>);
+
                 dispatch(
                     markReadUnreadReducer(payload),
                 );
