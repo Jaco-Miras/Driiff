@@ -124,14 +124,21 @@ const useFileActions = (params = null) => {
 
     const removeFolder = useCallback((folder, topic_id, callback) => {
         const handleDeleteFolder = () => {
+            let payload = {
+                id: folder.id,
+                topic_id: topic_id,
+            }
+            if (folder.is_archived) {
+                payload = {
+                    ...payload,
+                    force_delete: 1
+                }
+            }
             dispatch(
-                deleteFolder({
-                    id: folder.id,
-                    topic_id: topic_id,
-                }, callback),
+                deleteFolder(payload, callback),
             );
         };
-        let payload = {
+        let modal = {
             type: "confirmation",
             headerText: "Remove folder for everyone?",
             submitText: "Remove",
@@ -141,9 +148,15 @@ const useFileActions = (params = null) => {
                 onSubmit: handleDeleteFolder,
             },
         };
+        if (folder.is_archived) {
+            modal = {
+                ...modal,
+                bodyText: "This folder will be removed permanently.",
+            }
+        }
 
         dispatch(
-            addToModals(payload),
+            addToModals(modal),
         );
     }, [dispatch]);
 
