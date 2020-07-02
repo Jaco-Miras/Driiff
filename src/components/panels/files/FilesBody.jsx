@@ -372,7 +372,7 @@ const FilesBody = (props) => {
                                     }
                                 </div>
                                 <RemoveFiles search={search} scrollRef={scrollRef} wsFiles={wsFiles}
-                                             actions={actions} isMember={isMember} params={params}/>
+                                             actions={actions} isMember={isMember} params={params} folder={folder}/>
                                 {
                                     !(wsFiles && wsFiles.hasOwnProperty("trash_files") && Object.keys(wsFiles.trash_files).length > 0) &&
                                     <EmptyState>

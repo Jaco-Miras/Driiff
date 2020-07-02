@@ -9,18 +9,6 @@ const RemoveFiles = (props) => {
 
     const {className = "", actions, wsFiles, isMember, folder, params} = props;
 
-    // const files = [{
-    //     id: 1,
-    //     name: "deleted file 1",
-    //     size: "2Mb",
-    //     mimeType: "image",
-    // }, {
-    //     id: 2,
-    //     name: "deleted file 2",
-    //     size: "1Mb",
-    //     mimeType: "video",
-    // }];
-
     return (
         <Wrapper className={`remove-files ${className}`}>
             <h6 className="font-size-11 text-uppercase mb-4">Removed</h6>

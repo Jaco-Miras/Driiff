@@ -39,7 +39,7 @@ const FileSidebar = (props) => {
 
     const {
         className = "", isMember, actions, filterFile, filter = "all", dropZoneRef, 
-        storageLimit = 25, wsFiles, folders, activeFolder
+        storageLimit = 25, wsFiles, folders, activeFolder, clearFilter
     } = props;
 
     const handleShowUploadModal = () => {
@@ -85,7 +85,8 @@ const FileSidebar = (props) => {
                                                 return true;
                                             } else return false;
                                         })
-                                        return <FolderList key={f.id} folder={f} subFolders={subFolders} activeFolder={activeFolder}/>
+                                        return <FolderList key={f.id} clearFilter={clearFilter}
+                                                            folder={f} subFolders={subFolders} activeFolder={activeFolder}/>
                                     })
                                 }
                                 </ul>
