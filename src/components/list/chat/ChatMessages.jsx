@@ -709,7 +709,7 @@ class ChatMessages extends React.PureComponent {
                                 <div key={gm.key}>
                                     <TimestampDiv className="timestamp-container">
                                         {
-                                            <span>Test {this.props.timeFormat.localizeChatTimestamp(gm.replies[0].created_at.timestamp, "ddd, MMM DD, YYYY")}</span>
+                                            <span>{this.props.timeFormat.localizeChatTimestamp(gm.replies[0].created_at.timestamp, "ddd, MMM DD, YYYY")}</span>
                                         }
                                     </TimestampDiv>
 
