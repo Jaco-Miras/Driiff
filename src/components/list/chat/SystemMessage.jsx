@@ -305,7 +305,7 @@ const SystemMessage = forwardRef((props, ref) => {
 
     return <SystemMessageContainer>
         <SystemMessageContent
-            ref={ref}
+            ref={ref} id={`bot-${reply.id}`}
             dangerouslySetInnerHTML={{__html: body}}>
         </SystemMessageContent>
         <ChatTimeStamp

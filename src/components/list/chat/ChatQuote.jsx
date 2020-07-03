@@ -66,7 +66,7 @@ const ChatQuote = props => {
                 <span className={`quote-author-name`}
                       dangerouslySetInnerHTML={{__html: quote.user ? quote.user.name : ""}}></span>
                 <span className={`quote-message`}
-                      dangerouslySetInnerHTML={{__html: quote.body ? quoteBody.split("</p>")[0] : ""}}
+                      dangerouslySetInnerHTML={{__html: quote.body ? quoteBody : ""}}
                 ></span>
                 <span className={`quote-clear-container`}
                       onClick={handleClearQuote}>

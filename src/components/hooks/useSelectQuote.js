@@ -86,7 +86,8 @@ const useSelectQuote = props => {
                 } else {
                     if (selectedQuote.body.includes("CHANNEL_UPDATE")) {
                         // system messages
-                        selectedQuoteBody = selectedQuote.body;
+                        selectedQuoteBody = document.getElementById(`bot-${selectedQuote.id}`).outerHTML;
+                        //selectedQuoteBody = selectedQuote.body;
                     } else {
                         selectedQuoteBody = selectedQuote.body;
                     }
