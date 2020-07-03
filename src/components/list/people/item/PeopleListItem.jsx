@@ -29,6 +29,7 @@ const PeopleListItem = (props) => {
 
     const {
         className = "",
+        loggedUser,
         onNameClick = null,
         onChatClick = null,
         user,
@@ -67,7 +68,7 @@ const PeopleListItem = (props) => {
                                 </span>
                             </div>
                             {
-                                onChatClick !== null &&
+                                onChatClick !== null && loggedUser.id !== user.id &&
                                 <div className="text-right ml-auto">
                                     <SvgIconFeather onClick={handleOnChatClick} icon="message-circle"/>
                                 </div>
