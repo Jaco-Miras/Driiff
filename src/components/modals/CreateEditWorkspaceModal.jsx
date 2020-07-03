@@ -15,7 +15,7 @@ import {ModalHeaderSection} from "./index";
 
 const WrapperDiv = styled(InputGroup)`
     display: flex;
-    align-items: baseline;
+    align-items: center;
     margin-bottom: 20px;
 
     > .form-control:not(:first-child) {
@@ -613,6 +613,7 @@ const CreateEditWorkspaceModal = (props) => {
                     <WrapperDiv>
                         <Label for="people">Folder</Label>
                         <SelectFolder
+
                             options={folderOptions}
                             value={form.selectedFolder}
                             onChange={handleSelectFolder}

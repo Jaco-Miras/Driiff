@@ -15,9 +15,9 @@ const Navbar = styled.ul`
         display: inline-block;
         width: 15%;
         text-align: center;
-
         &:last-child {
-            text-align: right;
+            display: inline-flex !important;
+            justify-content: flex-end;
         }
     }
     .badge {

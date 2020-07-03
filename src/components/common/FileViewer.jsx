@@ -18,11 +18,34 @@ const FileViewerContainer = styled.div`
     pointer-events: auto;
     align-items: center;
     justify-content: space-evenly;
-    font-size: 2.5em;
+    font-size: 2.5rem;
     color: #fff;
-
     .fas{
         cursor: pointer;
+    }
+    .cannot-preview {
+        min-width: 40vw;
+        min-height: 40vh;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        color: #cccccc;
+        text-align: center;
+        p {
+            font-size: 1.1rem;
+            line-height: 1.4rem;
+            margin: 2rem 0 1.5rem 0;
+        }
+        svg {
+            width: 48px;
+            height: 48px;
+        }
+    }
+    .iframe.file {
+        min-width: 80vw;
+        min-height: 80vh;
     }
 `;
 
@@ -49,6 +72,13 @@ const DownloadIcon = styled(SvgIconFeather)`
     top: -3px;
     margin-right: 5px;
 `;
+
+const Eye = styled(SvgIconFeather)`
+    ${'' /* position: relative;
+    top: -3px;
+    margin-right: 5px; */}
+`;
+
 
 const FileNameContainer = styled.p`
     display: block;
@@ -304,11 +334,17 @@ const FileViewer = props => {
                         frameBorder="0"/>
                 </div>;
             default:
-                return <div key={index} data-index={index} className={`file-item mfp-img`}>
-                    <p>Cannot preview this type of file</p>
+                return <div key={index} data-index={index} className={`file-item mfp-img cannot-preview`}>
+
+
+                    <Eye icon={`eye-off`}/>
+
+
+                    <p>We can't preview this file type. <br />Try downloading the file to view it.</p>
                     {/* <FileIcon ref={e => refFiles[index] = e}
                               key={index} style={style} iconLeft={`documents`}
                               onClick={e => handleDownloadFile(e, file)}>{file.type.toLowerCase()}</FileIcon> */}
+                    <button className="btn btn-primary" onClick={e => handleDownloadFile(e, file)}>Download {file.search}</button>
                 </div>;
         }
     };
