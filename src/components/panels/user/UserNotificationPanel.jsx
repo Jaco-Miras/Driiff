@@ -37,7 +37,9 @@ const UserNotificationPanel = (props) => {
                             </h6>
                             <div className="timeline">
                                 {
-                                    Object.values(notifications).map(n => {
+                                    Object.values(notifications)
+                                    .sort((a,b) => b.created_at.timestamp - a.created_at.timestamp)
+                                    .map(n => {
                                         return <NotificationTimelineItem
                                             key={n.id} notification={n} actions={actions}
                                             history={history}/>;
