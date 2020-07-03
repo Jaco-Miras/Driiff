@@ -8,7 +8,7 @@ import {moveFile} from "../../redux/actions/fileActions";
 import {clearModal} from "../../redux/actions/globalActions";
 import {useToaster} from "../hooks";
 import {ModalHeaderSection} from "./index";
-
+import {selectTheme} from "../../helpers/selectTheme";
 
 const Wrapper = styled(Modal)`
 `;
@@ -90,7 +90,7 @@ const MoveFilesModal = (props) => {
             <ModalHeaderSection toggle={toggle}>Move file</ModalHeaderSection>
             <ModalBody>
                 <div>{file.search}</div>
-                <Select options={options} onChange={handleSelectFolder}/>
+                <Select styles={selectTheme} options={options} onChange={handleSelectFolder}/>
             </ModalBody>
             <ModalFooter>
                 <button

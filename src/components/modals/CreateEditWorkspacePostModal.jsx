@@ -14,9 +14,9 @@ import {ModalHeaderSection} from "./index";
 
 const WrapperDiv = styled(InputGroup)`
     display: flex;
-    align-items: baseline;
+    align-items: center;
     margin: 20px 0;
-    
+
     label {
         white-space: nowrap;
         margin: 0 20px 0 0;
