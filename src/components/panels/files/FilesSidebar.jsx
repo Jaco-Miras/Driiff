@@ -39,7 +39,7 @@ const FileSidebar = (props) => {
 
     const {
         className = "", isMember, actions, filterFile, filter = "all", dropZoneRef, 
-        storageLimit = 25, wsFiles, folders, activeFolder, clearFilter
+        storageLimit = 25, wsFiles, folders, activeFolder, clearFilter, params
     } = props;
 
     const handleShowUploadModal = () => {
@@ -75,18 +75,15 @@ const FileSidebar = (props) => {
                             <span className="small ml-auto">{wsFiles && wsFiles.count > 0 ? wsFiles.count : null}</span>
                         </Filter>
                         {
-                            folders && folders.filter(f => !f.is_archived).length > 0 && isMember === true &&
+                            folders && Object.values(folders).filter(f => !f.is_archived).length > 0 && isMember === true &&
                             <Filter className="d-flex align-items-center folder-list">
                                 <ul>
                                 {
-                                    folders.filter(f => !f.is_archived).filter(f => f.parent_folder === null).map(f => {
-                                        let subFolders = folders.filter(f => !f.is_archived).filter(sf => {
-                                            if (sf.parent_folder && sf.parent_folder.id === f.id) {
-                                                return true;
-                                            } else return false;
-                                        })
-                                        return <FolderList key={f.id} clearFilter={clearFilter}
-                                                            folder={f} subFolders={subFolders} activeFolder={activeFolder}/>
+                                    Object.values(folders).filter(f => {
+                                        return !f.is_archived && f.parent_folder === null
+                                    }).map(f => {
+                                        return <FolderList key={f.id} clearFilter={clearFilter} folders={folders} params={params}
+                                                            folder={f} activeFolder={activeFolder}/>
                                     })
                                 }
                                 </ul>

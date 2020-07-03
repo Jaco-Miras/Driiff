@@ -1,11 +1,12 @@
 import React, {useRef, useState} from "react";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {useParams} from "react-router-dom";
 import styled from "styled-components";
 import {deletePostFile, setViewFiles} from "../../redux/actions/fileActions";
 import {addToModals} from "../../redux/actions/globalActions";
 import {useOutsideClick, useTooltipOrientation} from "../hooks";
 import {SvgIconFeather} from "./index";
+
 
 const Wrapper = styled.div`
     position: relative;
@@ -125,6 +126,7 @@ const FileAttachments = props => {
     const dispatch = useDispatch();
     const params = useParams();
     const [filePreview, setFilePreview] = useState(null);
+    const {user: loggedUser} = useSelector(state => state.session);
 
     const refs = {
         main: useRef(null),
@@ -265,9 +267,12 @@ const FileAttachments = props => {
                             data-target-index={i} key={i}
                             onClick={handleClick}
                             title={f.search ? f.search : f.name}><AttachmentIcon icon="paperclip"/>{f.search ? f.search : f.name}
-                            <SvgIconFeather
-                                data-file-id={f.id}
-                                onClick={handleDelete} icon="trash-2"/>
+                            {
+                                loggedUser.id === f.uploader.id &&
+                                    <SvgIconFeather
+                                    data-file-id={f.id}
+                                    onClick={handleDelete} icon="trash-2"/>
+                            }
                         </li>;
                     })
                 }

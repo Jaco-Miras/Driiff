@@ -160,7 +160,7 @@ const WorkspaceFilesPanel = (props) => {
             <div className="row app-block">
                 <FilesSidebar
                     actions={actions}
-                    isMember={isMember} clearFilter={clearFilter}
+                    isMember={isMember} clearFilter={clearFilter} params={params}
                     dropZoneRef={refs.dropZone} className="col-md-3" filterFile={handleFilterFile}
                     filter={filter} wsFiles={wsFiles} folders={folders} activeFolder={folder}/>
                 <div className="col-md-9 app-content mb-4">

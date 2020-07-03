@@ -411,6 +411,11 @@ export default (state = INITIAL_STATE, action) => {
             if (newWorkspaceFiles.hasOwnProperty(action.data.topic_id)) {
                 if (newWorkspaceFiles[action.data.topic_id].hasOwnProperty("folders")) {
                     newWorkspaceFiles[action.data.topic_id].folders[action.data.folder.id].is_archived = true;
+                    newWorkspaceFiles[action.data.topic_id].folders[action.data.folder.id].files.forEach(f => {
+                        newWorkspaceFiles[action.data.topic_id].trash_files[f] = newWorkspaceFiles[action.data.topic_id].files[f];
+                        delete newWorkspaceFiles[action.data.topic_id].files[f];
+                    })
+                    newWorkspaceFiles[action.data.topic_id].trash = newWorkspaceFiles[action.data.topic_id].folders[action.data.folder.id].files.length + newWorkspaceFiles[action.data.topic_id].trash;
                    return {
                        ...state,
                        workspaceFiles: newWorkspaceFiles

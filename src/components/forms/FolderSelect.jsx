@@ -2,34 +2,46 @@ import React, {forwardRef} from "react";
 import Select, {components} from "react-select";
 import styled from "styled-components";
 import {SvgIconFeather} from "../common";
+import {selectTheme} from "../../helpers/selectTheme";
 
 const SelectOption = styled.div`
     display: flex;
     flex-flow: row;
-    align-items: center;
-    padding-left: 5px;
-    :hover{
-        background: #DEEBFF;
+    transition: background 0.15s ease;
+    svg {
+        transition: none;
+    }
+    &:hover{
+        background: #8C3B9B;
+        svg {
+            color: #ffffff;
+        }
     }
 `;
 
 const Icon = styled(SvgIconFeather)`
-    min-width: 2rem;
-    min-height: 2rem;
-    margin: 5px;
+    min-width: 1.75rem;
+    min-height: 1.75rem;
+    margin: -2px 10px 0 0;
     border: none;
 `;
 
 const Option = props => {
+
+
     return (
-        <SelectOption>
+        <SelectOption >
+            <components.Option {...props}>
             {
                 props.data &&
-                <Icon
-                    icon="folder"
-                />
+                <>
+                    <Icon
+                        icon="folder"
+                    />
+                    {props.children}
+                </>
             }
-            <components.Option {...props}></components.Option>
+            </components.Option>
         </SelectOption>
     );
 };
@@ -55,7 +67,7 @@ const FolderSelect = forwardRef((props, ref) => {
     return <Select
         ref={ref}
         className={`react-select-container ${className}`}
-        classNamePrefix={"react-select"}
+        styles={selectTheme}
         isMulti={isMulti}
         isClearable={isClearable}
         components={components}

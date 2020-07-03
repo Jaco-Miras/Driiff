@@ -6,6 +6,7 @@ import styled from "styled-components";
 import {replaceChar} from "../../../helpers/stringFormatter";
 import {getUnreadNotificationCounterEntries, setNavMode} from "../../../redux/actions/globalActions";
 import {NavLink, SvgIcon, SvgIconFeather} from "../../common";
+import Tooltip from "react-tooltip-lite";
 
 const Wrapper = styled.div`
     li {
@@ -80,6 +81,13 @@ const MainNavigationTabPanel = (props) => {
         //eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
+    const toggleTooltip = () => {
+        let tooltips = document.querySelectorAll('span.react-tooltip-lite');
+        tooltips.forEach((tooltip) => {
+            tooltip.parentElement.classList.toggle('tooltip-active');
+        });
+    };
+
     useEffect(() => {
         if (active_topic) {
             const {workspace, topic} = active_topic;
@@ -131,7 +139,10 @@ const MainNavigationTabPanel = (props) => {
                 <ul>
                     <li>
                         <NavIconContainer to="/settings">
-                            <NavIcon icon={`settings`}/>
+
+                            <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Settings">
+                                <NavIcon icon={`settings`}/>
+                            </Tooltip>
                         </NavIconContainer>
                     </li>
                     <li>

@@ -6,6 +6,8 @@ const Wrapper = styled.div`
     .avatar {
         cursor: pointer;
         cursor: hand;
+        height: 2.5rem!important;
+        width: 2.5rem!important;
     }
     .user-name {
         cursor: pointer;

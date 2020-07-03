@@ -29,6 +29,9 @@ const Wrapper = styled.li`
         cursor: hand;
         height: 2.5rem;
         width: 2.5rem;
+        ${'' /* > div {
+
+        } */}
     }
 
     .profile-name {
