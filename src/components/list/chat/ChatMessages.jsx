@@ -828,6 +828,8 @@ class ChatMessages extends React.PureComponent {
                                                             >
 
                                                                 <ChatBubble
+                                                                    recipients={this.props.recipients}
+                                                                    user={this.props.user}
                                                                     reply={reply}
                                                                     showAvatar={showAvatar}
                                                                     selectedChannel={this.props.selectedChannel}
@@ -980,7 +982,7 @@ class ChatMessages extends React.PureComponent {
 
 function mapStateToProps(state) {
     const {
-        global: {isBrowserActive, slugs},
+        global: {isBrowserActive, recipients, slugs},
         session: {user},
         users: {onlineUsers},
         chat: {historicalPositions},
@@ -993,6 +995,7 @@ function mapStateToProps(state) {
         onlineUsers,
         isBrowserActive,
         historicalPositions,
+        recipients
     };
 }
 
