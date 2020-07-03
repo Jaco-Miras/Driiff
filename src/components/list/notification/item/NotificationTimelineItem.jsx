@@ -74,7 +74,9 @@ export const NotificationTimelineItem = props => {
         actions.remove({id: notification.id});
     };
 
-    const handleAuthorNameClick = useCallback(() => {
+    const handleAuthorNameClick = useCallback((e) => {
+        e.preventDefault();
+        e.stopPropagation();
         history.push(`/profile/${notification.author.id}/${replaceChar(notification.author.name)}`);
     }, [notification.author]);
 
