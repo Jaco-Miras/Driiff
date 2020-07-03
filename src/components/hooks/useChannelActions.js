@@ -460,8 +460,10 @@ const useChannelActions = () => {
      */
     const markAsRead = useCallback((
         channel,
+        callback
     ) => {
-        let callback = (err,res) => {
+        let cb = (err,res) => {
+            if (callback) callback();
             if (err) return;
             if (channel.type === "TOPIC") {
                 dispatch(
@@ -473,7 +475,7 @@ const useChannelActions = () => {
             putMarkReadChannel({
                 channel_id: channel.id,
                 ...getSharedPayload(channel),
-            }, callback),
+            }, cb),
         );
     }, [dispatch]);
 
