@@ -194,13 +194,23 @@ const ChatInput = props => {
         };
 
         if (quote) {
-            payload.quote = {
-                id: quote.id,
-                body: quote.body,
-                user_id: quote.user.id,
-                user: quote.user,
-                files: quote.files,
-            };
+            if (quote.user) {
+                payload.quote = {
+                    id: quote.id,
+                    body: quote.body,
+                    user_id: quote.user.id,
+                    user: quote.user,
+                    files: quote.files,
+                };
+            } else {
+                payload.quote = {
+                    id: quote.id,
+                    body: quote.body,
+                    user_id: null,
+                    user: null,
+                    files: quote.files,
+                };
+            }
         }
 
         let obj = {

@@ -715,8 +715,7 @@ const ChatBubble = (props) => {
     }
 
     let replyQuoteBody = "";
-    let replyQuoteAuthor = "You";
-    let quoteAuthor;
+    let replyQuoteAuthor = "";
     if (reply.quote) {
         let div = document.createElement("div");
         div.innerHTML = reply.quote.body;
@@ -793,15 +792,10 @@ const ChatBubble = (props) => {
 
         replyQuoteBody += quillHelper.parseEmoji(reply.quote.body);
         if (reply.quote.user) {
-            replyQuoteAuthor = reply.quote.user.name;
-        } else {
-            if (user.id !== reply.quote.user_id) {
-                quoteAuthor = recipients.filter(
-                    r => r.type === "USER" && r.type_id === reply.quote.user_id,
-                )[0];
-                if (quoteAuthor) {
-                    replyQuoteAuthor = quoteAuthor.name;
-                }
+            if (user.id !== reply.quote.user.id){
+                replyQuoteAuthor = reply.quote.user.name;
+            } else {
+                replyQuoteAuthor = "You";
             }
         }
     }
@@ -894,7 +888,7 @@ const ChatBubble = (props) => {
                     <ChatContent showAvatar={showAvatar} isAuthor={isAuthor} isEmoticonOnly={isEmoticonOnly}
                                  className={`chat-content animated slower ${highlightedText ? "is-highlighted" : ""}`}>
                         {
-                            reply.quote && reply.quote.body && (reply.is_deleted === 0) &&
+                            reply.quote && reply.quote.body && (reply.is_deleted === 0 || reply.is_deleted === false) &&
                             (reply.quote.user_id !== undefined || reply.quote.user !== undefined) &&
                             <QuoteContainer
                                 showAvatar={showAvatar}
