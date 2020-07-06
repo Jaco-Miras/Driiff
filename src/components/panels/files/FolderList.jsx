@@ -71,7 +71,7 @@ const Icon = styled(SvgIconFeather)`
 
 const FolderList = props => {
 
-    const {className = "", folder, subFolders, activeFolder} = props;
+    const {className = "", folder, folders, activeFolder, clearFilter} = props;
 
     const history = useHistory();
     const {params, path, url} = useRouteMatch();
@@ -86,6 +86,7 @@ const FolderList = props => {
     const [active, setActive] = useState(false);
 
     const handleSelectFolder = () => {
+        clearFilter();
         if (path === "/workspace/files/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName" ||
             path === "/workspace/files/:folderId/:folderName/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName") {
             let pathname = url.split("/folder/")[0]
@@ -97,6 +98,7 @@ const FolderList = props => {
     };
 
     const handleSelectSubFolder = f => {
+        clearFilter();
         if (path === "/workspace/files/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName" ||
             path === "/workspace/files/:folderId/:folderName/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName") {
             let pathname = url.split("/folder/")[0]
@@ -108,7 +110,6 @@ const FolderList = props => {
 
     useEffect(() => {
         if (ref.nav.current !== null) {
-            console.log(ref.nav.current.offsetHeight)
             setMaxHeight(ref.nav.current.scrollHeight);
         }
     }, [ref.nav, maxHeight]);
@@ -136,18 +137,24 @@ const FolderList = props => {
             <a className="active" onClick={handleSelectFolder}>
                 {folder.search}
                 {
-                    subFolders.length > 0 &&
+                    Object.values(folders).filter(f => {
+                        return !f.is_archived && f.parent_folder && f.parent_folder.id === folder.id
+                    }).length > 0 &&
                     <i className={`sub-menu-arrow ti-angle-up ${showFolders ? "ti-minus rotate-in" : "ti-plus"}`}/>
                 }
             </a>
             {
-                subFolders.length > 0 &&
+                Object.values(folders).filter(f => {
+                    return !f.is_archived && f.parent_folder && f.parent_folder.id === folder.id
+                }).length > 0 &&
                 <FolderNav ref={ref.nav} maxHeight={maxHeight}
                            className={showFolders ? "enter-active" : "leave-active"}>
                     {
-                        subFolders.map(f => {
+                        Object.values(folders).filter(f => {
+                            return !f.is_archived && f.parent_folder && f.parent_folder.id === folder.id
+                        }).map(f => {
                             return <SubFolderList key={f.id}
-                                                  selected={params.hasOwnProperty("fileFolderId") && params.fileFolderId === f.id}
+                                                  selected={activeFolder && activeFolder.id === f.id}
                                                   onClick={() => handleSelectSubFolder(f)}>
                                 <Icon icon={"circle"}/>
                                 {f.search}

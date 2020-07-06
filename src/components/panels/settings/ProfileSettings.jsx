@@ -6,44 +6,46 @@ import {CustomInput} from "reactstrap";
 import styled from "styled-components";
 import {SvgIconFeather} from "../../common";
 import Flag from "../../common/Flag";
-import {useSettings, useToaster, useTranslation} from "../../hooks";
+import {useSettings, useTranslation} from "../../hooks";
 import {getDriffName} from "../../hooks/useDriff";
+import {selectTheme} from "../../../helpers/selectTheme";
+import {useToaster} from "../../hooks";
+
 
 const Wrapper = styled.div`
     .card {
         overflow: visible;
     }
-    
+
     .custom-switch {
         padding: 0;
         min-height: 34px;
         justify-content: left;
         align-items: center;
         display: flex;
-
-        
+        min-height: 38px;
         .custom-control-label::after{
-            right: 4px;
+            right: -11px;
             left: auto;
             width: 1.25rem;
             height: 1.25rem;
-            border-radius: 100%;            
-            top: 2px;            
+            border-radius: 100%;
+            top: 2px;
         }
-        
+
         input[type="checkbox"]:checked + .custom-control-label::after {
-            right: -22px;
+            right: -23px;
         }
 
         .custom-control-label::before {
             right: -2.35rem;
             left: auto;
-            width: 4rem;
+            width: 3rem;
             height: 1.5rem;
-            border-radius: 25px;
+            border-radius: 48px;
             top: 0;
         }
-        
+
         input {
             cursor: pointer;
         }
@@ -53,11 +55,13 @@ const Wrapper = styled.div`
             min-height: 25px;
             display: flex;
             align-item: center;
-            
+
             span {
+                display: flex;
+                align-item: center;
+
                 display: block;
                 width: calc(100% - 35px);
-                line-height: 1;
             }
         }
     }
@@ -68,6 +72,7 @@ const ProfileSettings = (props) => {
     const {className = ""} = props;
 
     const toaster = useToaster();
+
     const {user: loggedUser} = useSelector(state => state.session);
 
     const {
@@ -138,6 +143,7 @@ const ProfileSettings = (props) => {
 
     const handleLanguageChange = (e) => {
         setLocale(e.value);
+        toaster.success(<span>You have succesfully updated language</span>);
     };
 
     const handleChatSwitchToggle = useCallback((e) => {
@@ -146,6 +152,7 @@ const ProfileSettings = (props) => {
         setChatSetting({
             [name]: checked,
         });
+        toaster.success(<span>You have succesfully updated chat sound notifications</span>);
     }, [setChatSetting]);
 
     const handleSortChannelChange = (e) => {
@@ -159,14 +166,17 @@ const ProfileSettings = (props) => {
 
     const handleTimezoneChange = useCallback((e) => {
         setGeneralSetting({timezone: e.value});
+        toaster.success(<span>You have succesfully updated Timezone</span>);
     }, []);
 
     const handleDateFormatChange = useCallback((e) => {
         setGeneralSetting({date_format: e.value});
+        toaster.success(<span>You have succesfully updated Date format</span>);
     }, []);
 
     const handleTimeFormatChange = useCallback((e) => {
         setGeneralSetting({time_format: e.value});
+        toaster.success(<span>You have succesfully updated Time format</span>);
     }, []);
 
     const handleSystemSettingsClick = () => {
@@ -208,7 +218,8 @@ const ProfileSettings = (props) => {
                     <div className="row mb-2">
                         <div className="col-5 text-muted">Sort channel by</div>
                         <div className="col-7">
-                            <Select value={channelSortOptions.find(o => o.value === order_channel.order_by)}
+
+                            <Select styles={selectTheme} value={channelSortOptions.find(o => o.value === order_channel.order_by)}
                                     onChange={handleSortChannelChange} options={channelSortOptions}/>
                         </div>
                     </div>
@@ -223,6 +234,7 @@ const ProfileSettings = (props) => {
                         <div className="col-5 text-muted">Language</div>
                         <div className="col-7">
                             <Select
+                                styles={selectTheme}
                                 value={languageOptions.find(o => o.value === language)}
                                 onChange={handleLanguageChange}
                                 options={languageOptions}/>
@@ -232,6 +244,7 @@ const ProfileSettings = (props) => {
                         <div className="col-5 text-muted">Timezone</div>
                         <div className="col-7">
                             <Select
+                                styles={selectTheme}
                                 value={TimezoneOptions.find(o => o.value === timezone)}
                                 onChange={handleTimezoneChange}
                                 options={TimezoneOptions}/>
@@ -242,11 +255,13 @@ const ProfileSettings = (props) => {
                         <div className="col-7 justify-content-center align-items-center">
                             <div className="row">
                                 <Select
+                                    styles={selectTheme}
                                     className="col-6"
                                     value={DateFormatOptions.find(o => o.value === date_format)}
                                     onChange={handleDateFormatChange}
                                     options={DateFormatOptions}/>
                                 <Select
+                                    styles={selectTheme}
                                     className="col-6"
                                     value={TimeFormatOptions.find(o => o.value === time_format)}
                                     onChange={handleTimeFormatChange}

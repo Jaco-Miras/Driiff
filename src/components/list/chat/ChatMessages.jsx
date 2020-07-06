@@ -315,6 +315,7 @@ class ChatMessages extends React.PureComponent {
             bottomRefInView: false,
             messageRefInView: false,
             fetchingReplies: false,
+            markingAsRead: false,
         };
 
         this.scrollComponent = React.createRef();
@@ -424,14 +425,18 @@ class ChatMessages extends React.PureComponent {
     };
 
     handleReadChannel = () => {
-        const {
-            selectedChannel,
-            chatMessageActions: {
-                channelActions,
-            },
-        } = this.props;
-
-        channelActions.markAsRead(selectedChannel);
+        this.setState({markingAsRead: true});
+        if (!this.state.markingAsRead) {
+            let cb = () => this.setState({markingAsRead: false})
+            const {
+                selectedChannel,
+                chatMessageActions: {
+                    channelActions,
+                },
+            } = this.props;
+    
+            channelActions.markAsRead(selectedChannel, cb);
+        }
     };
 
     componentDidMount() {
@@ -519,7 +524,7 @@ class ChatMessages extends React.PureComponent {
 
                 let hasUnreadMessage = selectedChannel.replies.filter(r => r.is_read === false).length > 0;
                 if (this.state.bottomRefInView && hasUnreadMessage && this.props.isBrowserActive && selectedChannel.is_read === 1) {
-                    this.props.chatMessageActions.channelActions.markAsRead(selectedChannel);
+                    this.handleReadChannel();
                 }
 
                 if (this.state.messageRefInView || this.state.loadMoreInView) {
@@ -823,6 +828,8 @@ class ChatMessages extends React.PureComponent {
                                                             >
 
                                                                 <ChatBubble
+                                                                    recipients={this.props.recipients}
+                                                                    user={this.props.user}
                                                                     reply={reply}
                                                                     showAvatar={showAvatar}
                                                                     selectedChannel={this.props.selectedChannel}
@@ -975,7 +982,7 @@ class ChatMessages extends React.PureComponent {
 
 function mapStateToProps(state) {
     const {
-        global: {isBrowserActive, slugs},
+        global: {isBrowserActive, recipients, slugs},
         session: {user},
         users: {onlineUsers},
         chat: {historicalPositions},
@@ -988,6 +995,7 @@ function mapStateToProps(state) {
         onlineUsers,
         isBrowserActive,
         historicalPositions,
+        recipients
     };
 }
 

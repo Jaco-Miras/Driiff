@@ -518,6 +518,8 @@ const ChatBubble = (props) => {
         showGifPlayer,
         isAuthor,
         addMessageRef,
+        user,
+        recipients
     } = props;
 
     //const {_t} = useTranslation();
@@ -532,8 +534,8 @@ const ChatBubble = (props) => {
         threshold: 1,
     });
     const {chatSettings} = useSettings();
-    const recipients = useSelector(state => state.global.recipients);
-    const user = useSelector(state => state.session.user);
+    // const recipients = useSelector(state => state.global.recipients);
+    // const user = useSelector(state => state.session.user);
     const refComponent = useRef();
 
 
@@ -715,8 +717,7 @@ const ChatBubble = (props) => {
     }
 
     let replyQuoteBody = "";
-    let replyQuoteAuthor = "You";
-    let quoteAuthor;
+    let replyQuoteAuthor = "";
     if (reply.quote) {
         let div = document.createElement("div");
         div.innerHTML = reply.quote.body;
@@ -793,15 +794,10 @@ const ChatBubble = (props) => {
 
         replyQuoteBody += quillHelper.parseEmoji(reply.quote.body);
         if (reply.quote.user) {
-            replyQuoteAuthor = reply.quote.user.name;
-        } else {
-            if (user.id !== reply.quote.user_id) {
-                quoteAuthor = recipients.filter(
-                    r => r.type === "USER" && r.type_id === reply.quote.user_id,
-                )[0];
-                if (quoteAuthor) {
-                    replyQuoteAuthor = quoteAuthor.name;
-                }
+            if (user.id !== reply.quote.user.id){
+                replyQuoteAuthor = reply.quote.user.name;
+            } else {
+                replyQuoteAuthor = "You";
             }
         }
     }
@@ -867,6 +863,99 @@ const ChatBubble = (props) => {
         }
     }
 
+    if (replyQuoteBody.includes("CHANNEL_UPDATE::")) {
+        const data = JSON.parse(reply.quote.body.replace("CHANNEL_UPDATE::", ""));
+
+        let author = recipients.find(r => r.type_id === data.author.id);
+        if (author) {
+            if (data.author.id === user.id) {
+                author.name = "You";
+            }
+        } else {
+            author = {
+                name: "Someone",
+            };
+        }
+
+        let newBody = "";
+        if (data.title !== "") {
+            newBody = <><SvgIconFeather width={16} icon="edit-3"/> {author.name} renamed this chat
+                to <b>#{data.title}</b><br/></>;
+        }
+
+        if (data.added_members.length >= 1) {
+            const am = recipients.filter(r => data.added_members.includes(r.type_id) && r.type_id !== user.id)
+                .map(r => r.name);
+
+            if (data.added_members.includes(user.id) && data.author.id === user.id) {
+                if (newBody === "") {
+                    newBody = <><b>{author.name}</b> joined </>;
+                } else {
+                    newBody = <>{newBody} and joined</>;
+                }
+
+                if (am.length !== 0) {
+                    newBody = <>{newBody} and added <b>{am.join(", ")}</b><br/></>;
+                }
+            } else {
+                if (newBody === "") {
+                    newBody = <>{author.name} added </>;
+                } else {
+                    newBody = <>{newBody} and added</>;
+                }
+
+                if (data.added_members.includes(user.id)) {
+                    if (am.length !== 0) {
+                        newBody = <>{newBody} <b>You and </b></>;
+                    } else {
+                        newBody = <>{newBody} <b>You</b></>;
+                    }
+                }
+
+                if (am.length !== 0) {
+                    newBody = <>{newBody} <b>{am.join(", ")}</b><br/></>;
+                }
+            }
+        }
+
+        if (data.removed_members.length >= 1) {
+            const rm = recipients.filter(r => data.removed_members.includes(r.type_id) && r.type_id !== user.id)
+                .map(r => r.name);
+
+            if (data.removed_members.includes(user.id) && data.author.id === user.id) {
+                if (newBody === "") {
+                    newBody = <><b>{author.name}</b> left </>;
+                } else {
+                    newBody = <>{newBody} and left</>;
+                }
+
+                if (rm.length !== 0) {
+                    newBody = <>{newBody} and removed <b>{rm.join(", ")}</b><br/></>;
+                }
+            } else {
+                if (newBody === "") {
+                    newBody = <>{author.name} removed </>;
+                } else {
+                    newBody = <>{newBody} and removed</>;
+                }
+
+                if (data.removed_members.includes(user.id)) {
+                    if (rm.length !== 0) {
+                        newBody = <>{newBody} <b>You and </b></>;
+                    } else {
+                        newBody = <>{newBody} <b>You</b></>;
+                    }
+                }
+
+                if (rm.length !== 0) {
+                    newBody = <>{newBody} <b>{rm.join(", ")}</b><br/></>;
+                }
+            }
+        }
+
+        replyQuoteBody = renderToString(newBody)
+    }
+
     const hasFiles = reply.files.length > 0;
     const hasMessage = reply.body !== "<span></span>";
 
@@ -894,7 +983,7 @@ const ChatBubble = (props) => {
                     <ChatContent showAvatar={showAvatar} isAuthor={isAuthor} isEmoticonOnly={isEmoticonOnly}
                                  className={`chat-content animated slower ${highlightedText ? "is-highlighted" : ""}`}>
                         {
-                            reply.quote && reply.quote.body && (reply.is_deleted === 0) &&
+                            reply.quote && reply.quote.body && (reply.is_deleted === 0 || reply.is_deleted === false) &&
                             (reply.quote.user_id !== undefined || reply.quote.user !== undefined) &&
                             <QuoteContainer
                                 showAvatar={showAvatar}

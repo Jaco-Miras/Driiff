@@ -5,6 +5,7 @@ import styled from "styled-components";
 import SearchForm from "../../forms/SearchForm";
 import {useFocusInput, useUserChannels} from "../../hooks";
 import {PeopleListItem} from "../../list/people/item";
+import {replaceChar} from "../../../helpers/stringFormatter";
 
 const Wrapper = styled.div`
     overflow: auto;
@@ -24,7 +25,7 @@ const WorkspacePeoplePanel = (props) => {
 
     const {className = ""} = props;
 
-    const {users, userChannels, selectUserChannel} = useUserChannels();
+    const {users, userChannels, selectUserChannel, loggedUser} = useUserChannels();
 
     const history = useHistory();
 
@@ -41,7 +42,7 @@ const WorkspacePeoplePanel = (props) => {
     };
 
     const handleUserNameClick = useCallback((user) => {
-        history.push(`/profile/${user.id}/${user.name}`);
+        history.push(`/profile/${user.id}/${replaceChar(user.name)}`);
     }, [history]);
 
     const handleUserChat = useCallback((user) => {
@@ -63,6 +64,9 @@ const WorkspacePeoplePanel = (props) => {
             },
         )
         .filter(user => {
+
+            if (loggedUser.id === user.id)
+                return true;
 
             if (!userChannels.hasOwnProperty(user.id))
                 return false;
@@ -103,6 +107,7 @@ const WorkspacePeoplePanel = (props) => {
                             userSort.map((user) => {
                                 return <PeopleListItem
                                     key={user.id}
+                                    loggedUser={loggedUser}
                                     user={user} onNameClick={handleUserNameClick}
                                     onChatClick={activeTab === "intern" && handleUserChat}/>;
                             })

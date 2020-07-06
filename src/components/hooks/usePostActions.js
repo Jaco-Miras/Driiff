@@ -210,7 +210,8 @@ const usePostActions = () => {
             }
             payload = {
                 ...payload,
-                folderId: params.hasOwnProperty("folderId") ? params.folderId : null
+                folderId: params.hasOwnProperty("folderId") ? params.folderId : null,
+                count: post.unread_count === 0 ? 1 : post.unread_count
             }
 
             if (res) {

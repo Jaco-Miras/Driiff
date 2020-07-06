@@ -928,15 +928,15 @@ export default (state = INITIAL_STATE, action) => {
                 newWorkspacePosts[action.data.topic_id].posts[action.data.post_id].unread_count = action.data.unread;
                 newWorkspacePosts[action.data.topic_id].posts[action.data.post_id].is_updated = true;
                 if (action.data.folderId) {
-                    updatedWorkspaces[action.data.folderId].unread_count = updatedWorkspaces[action.data.folderId].unread_count - 1;
-                    updatedWorkspaces[action.data.folderId].topics[action.data.topic_id].unread_posts =  updatedWorkspaces[action.data.folderId].topics[action.data.topic_id].unread_posts - 1;
+                    updatedWorkspaces[action.data.folderId].unread_count = updatedWorkspaces[action.data.folderId].unread_count - action.data.count;
+                    updatedWorkspaces[action.data.folderId].topics[action.data.topic_id].unread_posts =  updatedWorkspaces[action.data.folderId].topics[action.data.topic_id].unread_posts - action.data.count;
                     if (updatedTopic.id == action.data.topic_id) {
-                        updatedTopic.unread_posts = updatedTopic.unread_posts - 1;
+                        updatedTopic.unread_posts = updatedTopic.unread_posts - action.data.count;
                     }
                 } else {
-                    updatedWorkspaces[action.data.topic_id].unread_count = updatedWorkspaces[action.data.topic_id].unread_count - 1;
+                    updatedWorkspaces[action.data.topic_id].unread_count = updatedWorkspaces[action.data.topic_id].unread_count -  action.data.count;
                     if (updatedTopic.id == action.data.topic_id) {
-                        updatedTopic.topic_detail.unread_posts = updatedTopic.topic_detail.unread_posts - 1;
+                        updatedTopic.topic_detail.unread_posts = updatedTopic.topic_detail.unread_posts - action.data.count;
                     }
                 }
             } else {

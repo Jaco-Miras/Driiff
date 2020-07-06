@@ -4,10 +4,10 @@ import {useDispatch, useSelector} from "react-redux";
 import {useOutsideClick, useIsMember} from "../hooks";
 import {SvgIconFeather} from "../common";
 import {addToModals} from "../../redux/actions/globalActions";
+import Tooltip from "react-tooltip-lite";
 
 const SettingsLinkList = styled.li`
     position: relative;
-
     > a:after{
         display: none;
     }
@@ -47,6 +47,13 @@ const SettingsLink = () => {
     const toggle = useCallback(() => {
         setShow(!show)
     }, [show]);
+
+    const toggleTooltip = () => {
+        let tooltips = document.querySelectorAll('span.react-tooltip-lite');
+        tooltips.forEach((tooltip) => {
+            tooltip.parentElement.classList.toggle('tooltip-active');
+        });
+    };
 
     const handleToggle = () => {
         if (topic && topic.hasOwnProperty("workspace_id")) {
@@ -90,18 +97,22 @@ const SettingsLink = () => {
 
     return (
         <SettingsLinkList className="nav-item" ref={wrapperRef}>
-            <span className={`dropdown-toggle ${show ? "show" : ""}`}
-                data-toggle="dropdown"
-                onClick={handleToggle}>
-                <SvgIconFeather icon="settings"/>
-            </span>
-            <div className={`dropdown-menu ${show ? "show" : ""}`}>
-                <span className="dropdown-item" data-name="folder" onClick={handleDropdownItemClick}>
-                    Folder settings
+            <div>
+                <span className={`dropdown-toggle ${show ? "show" : ""}`}
+                    data-toggle="dropdown"
+                    onClick={handleToggle}>
+                    <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Workspace settings">
+                        <SvgIconFeather icon="settings"/>
+                    </Tooltip>
                 </span>
-                <span className="dropdown-item" data-name="workspace" onClick={handleDropdownItemClick}>
-                    Workspace settings
-                </span>
+                <div className={`dropdown-menu ${show ? "show" : ""}`}>
+                    <span className="dropdown-item" data-name="folder" onClick={handleDropdownItemClick}>
+                        Folder settings
+                    </span>
+                    <span className="dropdown-item" data-name="workspace" onClick={handleDropdownItemClick}>
+                        Workspace settings
+                    </span>
+                </div>
             </div>
         </SettingsLinkList>
     )

@@ -29,6 +29,7 @@ import {useToaster} from "./index";
 const useFileActions = (params = null) => {
 
     const dispatch = useDispatch();
+
     const toaster = useToaster();
 
     const fileName = useRef("");

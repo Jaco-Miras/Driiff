@@ -2,38 +2,47 @@ import React, {forwardRef} from "react";
 import Select, {components} from "react-select";
 import styled from "styled-components";
 import {Avatar} from "../common";
+import {selectTheme} from "../../helpers/selectTheme";
 
 const SelectOption = styled.div`
     display: flex;
-    flex-flow: row;
     align-items: center;
-    padding-left: 5px;
-    :hover{
+    &:hover{
         background: #DEEBFF;
+    }
+    > div {
+        display: flex;
+        align-items: center;
     }
 `;
 
 const StyledAvatar = styled(Avatar)`
-    min-width: 2rem;
-    min-height: 2rem;
-    margin: 5px;
+    min-width: 1.75rem;
+    min-height: 1.75rem;
+    ${'' /* margin: 5px; */}
+    margin: -2px 10px 0 0;
     border: none;
+    color: #505050 !important;
 `;
 
 const Option = props => {
     return (
         <SelectOption>
+            <components.Option {...props}>
             {
                 props.data &&
-                <StyledAvatar
-                    className="react-select-avatar"
-                    key={props.data.id}
-                    imageLink={props.data.profile_image_link}
-                    name={props.data.name}
-                    partialName={props.data.partial_name}
-                />
+                <>
+                    <StyledAvatar
+                        className="react-select-avatar"
+                        key={props.data.id}
+                        imageLink={props.data.profile_image_link}
+                        name={props.data.name}
+                        partialName={props.data.partial_name}
+                    />
+                    {props.children}
+                </>
             }
-            <components.Option {...props}></components.Option>
+            </components.Option>
         </SelectOption>
     );
 };
@@ -64,7 +73,7 @@ const PeopleSelect = forwardRef((props, ref) => {
     return <Select
         ref={ref}
         className={`react-select-container ${className}`}
-        classNamePrefix={"react-select"}
+        styles={selectTheme}
         isMulti={isMulti}
         isClearable={isClearable}
         components={{Option, MultiValueContainer}}

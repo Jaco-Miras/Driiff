@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {useHistory, useRouteMatch} from "react-router-dom";
+//import {useHistory, useRouteMatch} from "react-router-dom";
 import Select from "react-select";
 import {Modal, ModalBody, ModalFooter} from "reactstrap";
 import styled from "styled-components";
@@ -8,7 +8,7 @@ import {moveFile} from "../../redux/actions/fileActions";
 import {clearModal} from "../../redux/actions/globalActions";
 import {useToaster} from "../hooks";
 import {ModalHeaderSection} from "./index";
-
+import {selectTheme} from "../../helpers/selectTheme";
 
 const Wrapper = styled(Modal)`
 `;
@@ -24,9 +24,9 @@ const MoveFilesModal = (props) => {
         ...otherProps
     } = props;
 
-    const history = useHistory();
+    //const history = useHistory();
     const dispatch = useDispatch();
-    const {path, url} = useRouteMatch();
+    //const {path, url} = useRouteMatch();
     const toaster = useToaster();
 
     const workspaceFiles = useSelector(state => state.files.workspaceFiles);
@@ -35,8 +35,10 @@ const MoveFilesModal = (props) => {
     let options = Object.values(workspaceFiles[topic_id].folders).filter(f => {
         if (folder_id) {
             if (f.id == folder_id) return false;
-            else return true;
-        } else return true;
+            else return !f.is_archived;
+        } else {
+            return !f.is_archived;
+        }
     })
         .map(f => {
             return {
@@ -88,7 +90,7 @@ const MoveFilesModal = (props) => {
             <ModalHeaderSection toggle={toggle}>Move file</ModalHeaderSection>
             <ModalBody>
                 <div>{file.search}</div>
-                <Select options={options} onChange={handleSelectFolder}/>
+                <Select styles={selectTheme} options={options} onChange={handleSelectFolder}/>
             </ModalBody>
             <ModalFooter>
                 <button

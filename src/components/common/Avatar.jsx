@@ -8,21 +8,22 @@ import defaultIcon from "../../assets/icon/user/avatar/l/no_outline.png";
 import botIcon from "../../assets/img/gripp-bot.png";
 import {SvgIconFeather} from "./SvgIcon";
 import {replaceChar} from "../../helpers/stringFormatter";
+import Tooltip from "react-tooltip-lite";
 
 const Wrapper = styled.div`
     position: relative;
     cursor: pointer;
-    
-    .react-skeleton-load {        
-        display: flex;    
-        margin: auto;        
+
+    .react-skeleton-load {
+        display: flex;
+        margin: auto;
         text-align: center;
         width: 100% !important;
         height: 100% !important;
         object-fit: cover;
         align-items: center;
         justify-content: center;
-    }    
+    }
 `;
 
 const Image = styled.img`
@@ -31,7 +32,7 @@ const Image = styled.img`
 
 const Initials = styled.span`
     background-color: #fff;
-    display: flex;    
+    display: flex;
     margin: auto;
     height: 20px;
     text-align: center;
@@ -65,6 +66,13 @@ const Avatar = (props) => {
     const [isLoaded, setIsLoaded] = useState(false);
     const [showInitials, setShowInitials] = useState(false);
 
+    const toggleTooltip = () => {
+        let tooltips = document.querySelectorAll('span.react-tooltip-lite');
+        tooltips.forEach((tooltip) => {
+            tooltip.parentElement.classList.toggle('tooltip-active');
+        });
+    };
+
     const handleImageLoad = () => {
         setIsLoaded(true);
     };
@@ -94,7 +102,7 @@ const Avatar = (props) => {
     // const hasWhiteSpace = (s) => {
     //     return /\s/g.test(s);
     // };
-      
+
     const handleInitials = title => {
 
         if (typeof title === "undefined") return "";
@@ -129,26 +137,28 @@ const Avatar = (props) => {
                 borderRadius="50%" widthRandomness={0}
                 heightRandomness={0}/>
         }
-        {
-            showInitials ?
-            <Initials className="rounded-circle">{handleInitials(name)}</Initials>
-                         :
-            <>
-                {
-                    type === "GROUP" ?
-                    <SvgIconFeather icon="users"/>
-                                     :
-                    <Image
-                        show={isLoaded}
-                        className="rounded-circle"
-                        onLoad={handleImageLoad}
-                        onError={handleImageError}
-                        src={type === "DEPARTMENT" ? departmentIcon : imageLink !== null && !isAnonymous ? name === "Gripp Offerte Bot" ? botIcon : imageLink : defaultIcon}
-                        alt={name}
-                    />
-                }
-            </>
-        }
+        <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={name}>
+            {
+                showInitials ?
+                <Initials className="rounded-circle">{handleInitials(name)}</Initials>
+                            :
+                <>
+                    {
+                        type === "GROUP" ?
+                        <SvgIconFeather icon="users"/>
+                            :
+                        <Image
+                            show={isLoaded}
+                            className="rounded-circle"
+                            onLoad={handleImageLoad}
+                            onError={handleImageError}
+                            src={type === "DEPARTMENT" ? departmentIcon : imageLink !== null && !isAnonymous ? name === "Gripp Offerte Bot" ? botIcon : imageLink : defaultIcon}
+                            alt={name}
+                        />
+                    }
+                </>
+            }
+        </Tooltip>
         {children}
     </Wrapper>;
 };

@@ -172,8 +172,8 @@ const FilesBody = (props) => {
                             filter === "" &&
                             <>
                                 {
-                                    (params.hasOwnProperty("fileFolderId") && subFolders.filter(f => !f.is_archived).length > 0) ||
-                                    (!params.hasOwnProperty("fileFolderId") && folders.filter(f => !f.is_archived).length > 0) ?
+                                    (params.hasOwnProperty("fileFolderId") && Object.values(subFolders).filter(f => !f.is_archived).length > 0) ||
+                                    (!params.hasOwnProperty("fileFolderId") && Object.values(folders).filter(f => !f.is_archived).length > 0) ?
                                     <h6 className="font-size-11 text-uppercase mb-4">Folders</h6>
                                                                                                                                :
                                     <></>
@@ -194,7 +194,9 @@ const FilesBody = (props) => {
                                                     handleAddEditFolder={handleAddEditFolder}/>;
                                             })
                                                                                   :
-                                            folders.filter(f => !f.is_archived).map(f => {
+                                            Object.values(folders).filter(f => { 
+                                                return f.parent_folder === null && !f.is_archived})
+                                                .map(f => {
                                                 return <FolderListItem
                                                     key={f.id}
                                                     actions={actions}
@@ -219,14 +221,17 @@ const FilesBody = (props) => {
                                                     {
                                                         wsFiles &&
                                                         fileIds.map(f => {
-                                                            return (
-                                                                <FileListItem
-                                                                    key={f}
-                                                                    isMember={isMember}
-                                                                    scrollRef={scrollRef} actions={actions}
-                                                                    className="col-xl-3 col-lg-4 col-md-6 col-sm-12"
-                                                                    file={wsFiles.files[f]}/>
-                                                            );
+                                                            if (wsFiles.files.hasOwnProperty(f)) {
+                                                                return (
+                                                                    <FileListItem
+                                                                        key={f}
+                                                                        isMember={isMember}
+                                                                        scrollRef={scrollRef} actions={actions}
+                                                                        className="col-xl-3 col-lg-4 col-md-6 col-sm-12"
+                                                                        file={wsFiles.files[f]}/>
+                                                                );
+                                                            }
+                                                            else return null
                                                         })
                                                     }
                                                 </div>
@@ -255,14 +260,17 @@ const FilesBody = (props) => {
                                             {
                                                 wsFiles &&
                                                 fileIds.map(f => {
-                                                    return (
-                                                        <FileListItem
-                                                            key={f}
-                                                            isMember={isMember}
-                                                            scrollRef={scrollRef} actions={actions}
-                                                            className="col-xl-3 col-lg-4 col-md-6 col-sm-12"
-                                                            file={wsFiles.files[f]}/>
-                                                    );
+                                                    if (wsFiles.files.hasOwnProperty(f)) {
+                                                        return (
+                                                            <FileListItem
+                                                                key={f}
+                                                                isMember={isMember}
+                                                                scrollRef={scrollRef} actions={actions}
+                                                                className="col-xl-3 col-lg-4 col-md-6 col-sm-12"
+                                                                file={wsFiles.files[f]}/>
+                                                        );
+                                                    }
+                                                    else return null
                                                 })
                                             }
                                         </div>
@@ -340,7 +348,7 @@ const FilesBody = (props) => {
                             filter === "removed" &&
                             <>
                                 {
-                                    folders.filter(f => f.is_archived).length > 0 &&
+                                    Object.values(folders).filter(f => f.is_archived).length > 0 &&
                                     <h6 className="font-size-11 text-uppercase mb-4">Folders</h6>
                                 }
                                 <div className="row">
@@ -358,7 +366,7 @@ const FilesBody = (props) => {
                                                 handleAddEditFolder={handleAddEditFolder}/>;
                                         })
                                                                                 :
-                                        folders.filter(f => f.is_archived).map(f => {
+                                        Object.values(folders).filter(f => f.is_archived).map(f => {
                                             return <FolderListItem
                                                 key={f.id}
                                                 actions={actions}
@@ -372,7 +380,7 @@ const FilesBody = (props) => {
                                     }
                                 </div>
                                 <RemoveFiles search={search} scrollRef={scrollRef} wsFiles={wsFiles}
-                                             actions={actions} isMember={isMember} params={params}/>
+                                             actions={actions} isMember={isMember} params={params} folder={folder}/>
                                 {
                                     !(wsFiles && wsFiles.hasOwnProperty("trash_files") && Object.keys(wsFiles.trash_files).length > 0) &&
                                     <EmptyState>
