@@ -6,7 +6,7 @@ import {CustomInput} from "reactstrap";
 import styled from "styled-components";
 import {SvgIconFeather} from "../../common";
 import Flag from "../../common/Flag";
-import {useSettings, useTranslation} from "../../hooks";
+import {useSettings, useToaster, useTranslation} from "../../hooks";
 import {getDriffName} from "../../hooks/useDriff";
 
 const Wrapper = styled.div`
@@ -67,6 +67,7 @@ const ProfileSettings = (props) => {
 
     const {className = ""} = props;
 
+    const toaster = useToaster();
     const {user: loggedUser} = useSelector(state => state.session);
 
     const {

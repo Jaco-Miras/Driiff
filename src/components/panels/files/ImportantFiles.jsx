@@ -11,7 +11,7 @@ const ImportantFiles = (props) => {
 
     return (
         <Wrapper className={`important-files ${className}`}>
-            <h6 className="font-size-11 text-uppercase mb-4">Important</h6>
+            <h6 className="font-size-11 text-uppercase mb-4">Favorite</h6>
             <div className="row">
                 {
                     wsFiles && wsFiles.favorite_files.length > 0 &&

@@ -218,8 +218,12 @@ const CreateEditWorkspacePostModal = props => {
     const toggleAll = (saveDraft = false) => {
         setNestedModal(!nestedModal);
         setCloseAll(true);
-        if (saveDraft && mode !== "edit") {
+        if (saveDraft) {
             handleSaveDraft();
+        } else if (draftId) {
+            dispatch(deleteDraft({
+                draft_id: draftId
+            }));
         }
         setModal(!modal);
         dispatch(
@@ -440,11 +444,6 @@ const CreateEditWorkspacePostModal = props => {
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
-
-    useEffect(() => {
-        console.log(formRef.more_options);
-    }, []);
-
 
     useEffect(() => {
         if (formRef.more_options.current !== null && maxHeight === null && draftId === null) {

@@ -11,16 +11,14 @@ const Bar = styled.div`
 
 const ProgressBar = (props) => {
 
-    const {className = "", height = 10, amount = 0, limit = 100} = props;
+    const {className = "", barClassName = "progress-bar-striped", height = 10, amount = 0, limit = 100} = props;
 
     const progress = amount / limit * 100;
 
     return (
         <Wrapper className={`progress ${className}`} height={height}>
-            <Bar className="progress-bar progress-bar-striped" role="progressbar"
-                 progress={progress}
-                 aria-valuenow="10" aria-valuemin="0"
-                 aria-valuemax="100"/>
+            <Bar className={`progress-bar ${barClassName}`} role="progressbar"
+                 progress={progress}/>
         </Wrapper>
     );
 };

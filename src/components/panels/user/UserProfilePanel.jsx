@@ -465,7 +465,7 @@ const UserProfilePanel = (props) => {
                                                                                            :
                                 <p className="text-muted small">{user.designation}</p>
                             }
-                            {
+                            {/*{
                                 isLoggedUser &&
                                 <>
                                     {
@@ -479,7 +479,7 @@ const UserProfilePanel = (props) => {
                                         </span>
                                     }
                                 </>
-                            }
+                            }*/}
                         </div>
                     </div>
 
@@ -575,12 +575,12 @@ const UserProfilePanel = (props) => {
                             <div className="card-body">
                                 <h6 className="card-title d-flex justify-content-between align-items-center">
                                     Information
-                                    <div>
+                                    {/*<div>
                                         <span onClick={toggleEditInformation}
                                               className="close btn btn-outline-light btn-sm">
                                             <SvgIconFeather icon="x"/>
                                         </span>
-                                    </div>
+                                    </div>*/}
                                 </h6>
                                 <div className="row mb-2">
                                     <div className="col col-label text-muted">First Name:</div>
