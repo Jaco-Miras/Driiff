@@ -810,7 +810,6 @@ class SocketListeners extends PureComponent {
     }
 
     render() {
-        console.log(this.props)
         return null;
     }
 }
