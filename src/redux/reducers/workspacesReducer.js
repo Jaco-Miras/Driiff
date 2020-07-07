@@ -743,10 +743,27 @@ export default (state = INITIAL_STATE, action) => {
         case "INCOMING_COMMENT": {
             let newPostComments = {...state.postComments};
             let newWorkspacePosts = {...state.workspacePosts};
+            let updatedWorkspaces = {...state.workspaces};
             if (action.data.workspaces.length && action.data.SOCKET_TYPE === "POST_COMMENT_CREATE") {
                 action.data.workspaces.forEach(ws => {
                     if (newWorkspacePosts.hasOwnProperty(ws.topic_id) && newWorkspacePosts[ws.topic_id].posts.hasOwnProperty(action.data.post_id)) {
                         newWorkspacePosts[ws.topic_id].posts[action.data.post_id].reply_count = newWorkspacePosts[ws.topic_id].posts[action.data.post_id].reply_count + 1;
+                        if (action.data.author.id !== state.user.id) {
+                            newWorkspacePosts[ws.topic_id].posts[action.data.post_id].unread_count = newWorkspacePosts[ws.topic_id].posts[action.data.post_id].unread_count + 1;
+                        }
+                    }
+                    if (action.data.author.id !== state.user.id) {
+                        if (ws.workspace_id !== 0) {
+                            if (updatedWorkspaces.hasOwnProperty(ws.workspace_id) && updatedWorkspaces[ws.workspace_id].topics.hasOwnProperty(ws.topic_id)) {
+                                updatedWorkspaces[ws.workspace_id].unread_count = updatedWorkspaces[ws.workspace_id].unread_count + 1;
+                                updatedWorkspaces[ws.workspace_id].topics[ws.topic_id].unread_posts = updatedWorkspaces[ws.workspace_id].topics[ws.topic_id].unread_posts + 1;
+                            }
+                        } else {
+                            if (updatedWorkspaces.hasOwnProperty(ws.topic_id)) {
+                                updatedWorkspaces[ws.topic_id].unread_count = updatedWorkspaces[ws.topic_id].unread_count + 1;
+                                updatedWorkspaces[ws.topic_id].topic_detail.unread_posts = updatedWorkspaces[ws.topic_id].topic_detail.unread_posts + 1;
+                            }
+                        }
                     }
                 })
             }
@@ -770,7 +787,8 @@ export default (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 postComments: newPostComments,
-                workspacePosts: newWorkspacePosts
+                workspacePosts: newWorkspacePosts,
+                workspaces: updatedWorkspaces
             }
         }
         case "ADD_PRIMARY_FILES": {
