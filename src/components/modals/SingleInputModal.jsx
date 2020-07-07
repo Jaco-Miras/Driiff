@@ -1,9 +1,9 @@
-import React, {useCallback, useEffect, useRef, useState} from "react";
+import React, {useRef, useState} from "react";
 import {useDispatch} from "react-redux";
 import {FormGroup, Input, Modal, ModalBody, ModalFooter} from "reactstrap";
 import styled from "styled-components";
 import {clearModal} from "../../redux/actions/globalActions";
-import {useFocusInput} from "../hooks";
+//import {useFocusInput} from "../hooks";
 import {ModalHeaderSection} from "./index";
 
 
@@ -19,7 +19,7 @@ const SingleInputModal = (props) => {
         className = "",
         title,
         type,
-        defaultValue,
+        defaultValue = "",
         onPrimaryAction,
         onChange,
         onClose = () => {},
@@ -28,12 +28,13 @@ const SingleInputModal = (props) => {
         ...otherProps
     } = props;
 
-    const [focus, setFocus] = useState(null);
     const dispatch = useDispatch();
     const refs = {
         main: useRef(null),
         name: useRef(null),
     };
+
+    const [inputValue, setInputValue] = useState(defaultValue);
 
     const toggle = () => {
         dispatch(
@@ -46,17 +47,10 @@ const SingleInputModal = (props) => {
         toggle();
     };
 
-    const handleInputRef = useCallback((e) => {
-        setFocus(e);
-    }, []);
-
-    useEffect(() => {
-        if (focus) {
-            focus.focus();
-        }
-    }, [focus]);
-
-    useFocusInput(focus);
+    const handleInputChange = e => {
+        setInputValue(e.target.value);
+        onChange(e);
+    }
 
     const handleConfirm = () => {
         onPrimaryAction();
@@ -81,12 +75,12 @@ const SingleInputModal = (props) => {
                         innerRef={inputRef}
                         autoFocus
                         defaultValue={defaultValue}
-                        onChange={onChange}
+                        onChange={handleInputChange}
                     />
                 </WrapperDiv>
             </ModalBody>
             <ModalFooter>
-                <button
+                <button disabled={inputValue.trim() === ""}
                     type="button" className="btn btn-primary"
                     onClick={handleConfirm}>{labelPrimaryAction}</button>
                 <button
