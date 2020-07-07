@@ -1,4 +1,5 @@
 export {default as Avatar} from "./Avatar";
+export {default as PlusRecipients} from "./PlusRecipients";
 export {default as BadgeIcon} from "./BadgeIcon";
 export {default as Blank} from "./Blank";
 export {default as Icon} from "./Icon";

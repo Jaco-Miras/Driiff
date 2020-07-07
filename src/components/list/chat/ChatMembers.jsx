@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import {Avatar} from "../../common";
+import {PlusRecipients} from "../../common";
 import {useIsUserTyping} from "../../hooks";
 
 const ChatMembersContainer = styled.div`
@@ -13,27 +14,36 @@ const StyledAvatar = styled(Avatar)`
 `;
 
 const ChatMembers = props => {
-
     const {page = "chat", members} = props;
     const [usersTyping] = useIsUserTyping();
+
+    const firstFiveMembers = members.slice(0, 5);
+    const afterFiveMembers = members.slice(5);
+
     console.log(page, members)
     return (
         <ChatMembersContainer className={`pr-3 d-flex`}>
-
             {
                 page === "chat" ?
-                    members.map((m, i) => {
-                        return (
-                            <StyledAvatar
-                                id={m.id}
-                                firstUser={i === 0}
-                                className="chat-members"
-                                key={m.name}
-                                name={m.name}
-                                imageLink={m.profile_image_link}
-                            />
-                        );
-                    })
+                (
+                    [
+                        firstFiveMembers.map((m, i) => {
+                            return (
+                                <StyledAvatar
+                                    id={m.id}
+                                    firstUser={i === 0}
+                                    className="chat-members"
+                                    key={m.name}
+                                    name={m.name}
+                                    imageLink={m.profile_image_link}
+                                />
+                            );
+                        }),
+
+                        afterFiveMembers.length != null && afterFiveMembers[0] &&
+                        <PlusRecipients recipients={afterFiveMembers}></PlusRecipients>
+                    ]
+                )
                 : page === "workspace" && usersTyping.length ?
                     usersTyping.map((m, i) => {
                         return (
