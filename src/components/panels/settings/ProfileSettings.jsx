@@ -143,7 +143,7 @@ const ProfileSettings = (props) => {
 
     const handleLanguageChange = (e) => {
         setLocale(e.value);
-        toaster.success(<span>You have succesfully updated language</span>);
+        toaster.success(<span>You have succesfully updated Language</span>);
     };
 
     const handleChatSwitchToggle = useCallback((e) => {
@@ -162,6 +162,7 @@ const ProfileSettings = (props) => {
                 sort_by: e.value === "channel_date_updated" ? "DESC" : "ASC",
             },
         });
+        toaster.success(<span>You have succesfully sort channel</span>);
     };
 
     const handleTimezoneChange = useCallback((e) => {
