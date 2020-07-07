@@ -257,9 +257,9 @@ const usePostActions = () => {
     }, [dispatch, params]);
 
     const sharePost = useCallback((post) => {
-        let link = `${getBaseUrl()}${location.pathname}/post/${post.id}`;
+        let link = `${getBaseUrl()}${location.pathname}/post/${post.id}/${replaceChar(post.title)}`;
         copyTextToClipboard(link);
-    }, [dispatch]);
+    }, [dispatch, location, getBaseUrl]);
 
     const snoozePost = useCallback((post) => {
         let payload = {
