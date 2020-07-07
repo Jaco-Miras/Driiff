@@ -610,24 +610,25 @@ const ChatBubble = (props) => {
 
     const handleQuoteClick = () => {
         if (reply.quote.channel_id) {
-            let sc = props.activeChatChannels.filter(ac => ac.id === reply.quote.channel_id)[0];
-            if (sc) {
-                chatMessageActions.channelActions.select(sc);
-            }
+            // re check this if still needed
+            // let sc = props.activeChatChannels.filter(ac => ac.id === reply.quote.channel_id)[0];
+            // if (sc) {
+            //     chatMessageActions.channelActions.select(sc);
+            // }
 
-            setTimeout(() => {
-                let el = document.querySelector(`.chat-list-item-${reply.quote.id}`);
-                if (el) {
-                    el.scrollIntoView({
-                        behavior: "smooth",
-                        block: "center",
-                        inline: "center",
-                    });
-                    let bubble = el.querySelector(".chat-bubble");
-                    bubble.focus();
-                    //bubble.classList.add('focus');
-                }
-            }, 3000);
+            // setTimeout(() => {
+            //     let el = document.querySelector(`.chat-list-item-${reply.quote.id}`);
+            //     if (el) {
+            //         el.scrollIntoView({
+            //             behavior: "smooth",
+            //             block: "center",
+            //             inline: "center",
+            //         });
+            //         let bubble = el.querySelector(".chat-bubble");
+            //         bubble.focus();
+            //         //bubble.classList.add('focus');
+            //     }
+            // }, 3000);
         } else {
             let el = document.querySelector(`.chat-list-item-${reply.quote.id}`);
             if (el) {
@@ -636,9 +637,9 @@ const ChatBubble = (props) => {
                     block: "center",
                     inline: "center",
                 });
-                let bubble = el.querySelector(".chat-bubble");
-                bubble.focus();
-                //bubble.classList.add('focus');
+                //let bubble = el.querySelector(".chat-bubble");
+                //bubble.focus();
+                // bubble.classList.add('focus');
             }
         }
     };

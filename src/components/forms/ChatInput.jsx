@@ -232,7 +232,7 @@ const ChatInput = props => {
             reactions: [],
             id: reference_id,
             reference_id: reference_id,
-            quote: quote,
+            quote: quote ? payload.quote : null,
             unfurls: [],
             g_date: localizeDate(timestamp, "YYYY-MM-DD"),
         };
