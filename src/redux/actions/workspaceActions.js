@@ -7,6 +7,7 @@ import {
     fetchMembers as fetchMembersService,
     fetchTimeline as fetchTimelineService,
     getPostStatusCount as getPostStatusCountService,
+    getWorkspace as getWorkspaceService,
     getWorkspacePostDetail as getWorkspacePostDetailService,
     getWorkspacePosts as getWorkspacePostsService,
     getWorkspaces as getWorkspacesService,
@@ -250,6 +251,16 @@ export function incomingTimeline(payload, callback) {
     return SimpleDispatchActionToReducer(
         "INCOMING_TIMELINE",
         payload,
+        callback,
+    );
+}
+
+export function getWorkspace(payload, callback) {
+    return dispatchActionToReducer(
+        getWorkspaceService(payload),
+        "GET_WORKSPACE_START",
+        "GET_WORKSPACE_SUCCESS",
+        "GET_WORKSPACE_FAIL",
         callback,
     );
 }

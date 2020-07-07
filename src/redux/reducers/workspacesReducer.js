@@ -1096,6 +1096,24 @@ export default (state = INITIAL_STATE, action) => {
                 return state;
             }
         }
+        case "GET_WORKSPACE_SUCCESS": {
+            let updatedWorkspaces = {...state.workspaces};
+            if (Object.keys(updatedWorkspaces).length > 0) {
+                if (updatedWorkspaces.hasOwnProperty(action.data.topic_id)) {
+                    return state;
+                } else {
+                    updatedWorkspaces[action.data.topic_id] = {
+                        ...action.data.workspace_data
+                    }
+                    return {
+                        ...state,
+                        workspaces: updatedWorkspaces
+                    }
+                }
+            } else {
+                return state;
+            }
+        }
         default:
             return state;
     }

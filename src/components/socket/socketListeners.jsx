@@ -20,6 +20,7 @@ import {
     setAllMessagesAsRead,
     setChannel,
     setMemberTimestamp,
+    setSelectedChannel,
     unreadChannelReducer,
     updateChannelMembersTitle,
 } from "../../redux/actions/chatActions";
@@ -63,6 +64,7 @@ import {
     incomingUpdatedWorkspaceFolder,
     incomingWorkspace,
     incomingWorkspaceFolder,
+    getWorkspace
 } from "../../redux/actions/workspaceActions";
 
 class SocketListeners extends PureComponent {
@@ -369,17 +371,6 @@ class SocketListeners extends PureComponent {
             })
             .listen(".new-workspace", e => {
                 console.log(e, "new workspace");
-                // this.props.getChannel({code: e.channel.code}, (err,res) => {
-                //     if (err) return;
-                //     let channel = {
-                //         ...res.data,
-                //         hasMore: true,
-                //         skip: 0,
-                //         replies: [],
-                //         selected: true,
-                //     };
-                //     this.props.addToChannels(channel);
-                // })
                 if (e.topic !== undefined) {
                     this.props.incomingWorkspace(e);
                 } else {
@@ -393,6 +384,27 @@ class SocketListeners extends PureComponent {
             .listen(".update-workspace", e => {
                 console.log(e, "update workspace");
                 this.props.incomingUpdatedWorkspaceFolder(e);
+                if (e.new_member_ids.length > 0) {
+                    const isMember = e.new_member_ids.some(id => id === this.props.user.id);
+                    if (isMember) {
+                        this.props.getWorkspace({topic_id: e.id});
+                    }
+                }
+                if (e.remove_member_ids.length > 0 && this.props.selectedChannel) {
+                    if (this.props.selectedChannel.id === e.system_message.channel_id) {
+                        //redirect to first channel
+                        let wsChannels = Object.values(this.props.channels).filter(c => {
+                            const checkForId = id => id === this.props.user.id;
+                            let isMember = c.members.map(m => m.id).some(checkForId);
+                            return c.type === "TOPIC" && isMember && c.is_hidden === 0;
+                        })
+                        if (wsChannels.length > 0 && this.props.location.pathname === `/chat/${this.props.selectedChannel.code}`) {
+                            let channel = wsChannels[0]
+                            this.props.setSelectedChannel(channel);
+                            this.props.history.push(`/chat/${channel.code}`);
+                        }
+                    }
+                }
                 if (this.props.activeTopic && this.props.activeTopic.id === e.id &&
                     e.type === "WORKSPACE" && this.props.match.path === "/workspace") {
                     let currentPage = this.props.location.pathname;
@@ -439,6 +451,44 @@ class SocketListeners extends PureComponent {
             .listen(".update-lock-workspace", e => {
                 console.log(e, "update lock workspace");
                 this.props.incomingUpdatedWorkspaceFolder(e);
+                if (e.new_member_ids.length > 0) {
+                    const isMember = e.new_member_ids.some(id => id === this.props.user.id);
+                    if (isMember) {
+                        this.props.getWorkspace({topic_id: e.id});
+                    }
+                }
+                if (e.remove_member_ids.length > 0 && this.props.selectedChannel) {
+                    if (this.props.selectedChannel.id === e.system_message.channel_id) {
+                        //redirect to first channel
+                        let wsChannels = Object.values(this.props.channels).filter(c => {
+                            const checkForId = id => id === this.props.user.id;
+                            let isMember = c.members.map(m => m.id).some(checkForId);
+                            return c.type === "TOPIC" && isMember && c.is_hidden === 0;
+                        })
+                        if (wsChannels.length > 0 && this.props.location.pathname === `/chat/${this.props.selectedChannel.code}`) {
+                            let channel = wsChannels[0]
+                            this.props.setSelectedChannel(channel);
+                            this.props.history.push(`/chat/${channel.code}`);
+                        }
+                    }
+                }
+                if (this.props.activeTopic && this.props.activeTopic.id === e.id &&
+                    e.type === "WORKSPACE" && this.props.match.path === "/workspace") {
+                    let currentPage = this.props.location.pathname;
+                    currentPage = currentPage.split("/")[2];
+                    if (e.workspace_id === 0) {
+                        //direct workspace
+                        if (e.original_workspace_id !== 0) {
+                            //now direct workspace url
+                            this.props.history.push(`/workspace/${currentPage}/${e.id}/${replaceChar(e.name)}`);
+                        }
+                    } else {
+                        //moved workspace to another folder
+                        if (e.original_workspace_id !== e.workspace_id) {
+                            this.props.history.push(`/workspace/${currentPage}/${e.workspace_id}/${replaceChar(e.current_workspace_folder_name)}/${e.id}/${replaceChar(e.name)}`);
+                        }
+                    }
+                }
             })
             .listen(".users-online", e => {
                 console.log(e, "users-online");
@@ -745,20 +795,6 @@ class SocketListeners extends PureComponent {
                         };
                         this.props.addToChannels(channel);
                     });
-                } else {
-                    // this.props.getChannel({code: e.channel_data.code}, (err, res) => {
-                    //     if (err) return;
-                    //     let channel = {
-                    //         ...res.data,
-                    //         selected: true,
-                    //         replies: [],
-                    //         skip: 0,
-                    //         hasMore: true,
-                    //     };
-                    //     this.props.addToChannels(channel);
-                    //     this.props.setSelectedChannel(channel);
-                    //     this.props.history.push(`/chat/${channel.code}`);
-                    // });
                 }
             })
             .listen(".chat-message-react", e => {
@@ -771,21 +807,19 @@ class SocketListeners extends PureComponent {
                 this.props.setUnreadNotificationCounterEntries(e.result);
 
             })
-            .notification((notification) => {
-                console.log(notification);
-
-            });
     }
 
     render() {
+        console.log(this.props)
         return null;
     }
 }
 
 function mapStateToProps({
-                             session: {user},
+                            session: {user},
                              settings: {userSettings},
                              chat: {channels, selectedChannel},
+                             workspaces: {workspaces},
                              global: {isBrowserActive},
                          }) {
     return {
@@ -794,6 +828,7 @@ function mapStateToProps({
         channels,
         selectedChannel,
         isBrowserActive,
+        workspaces
     };
 }
 
@@ -850,6 +885,8 @@ function mapDispatchToProps(dispatch) {
         unreadChannelReducer: bindActionCreators(unreadChannelReducer, dispatch),
         incomingRemovedFile: bindActionCreators(incomingRemovedFile, dispatch),
         incomingRemovedFolder: bindActionCreators(incomingRemovedFolder, dispatch),
+        getWorkspace: bindActionCreators(getWorkspace, dispatch),
+        setSelectedChannel: bindActionCreators(setSelectedChannel, dispatch)
     };
 }
 
