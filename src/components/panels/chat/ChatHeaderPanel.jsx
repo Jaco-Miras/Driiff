@@ -100,21 +100,21 @@ const ChatHeaderPanel = (props) => {
                 {
                     page === "chat" &&
                     <>
-                        <ChatMembers/>
+                        <ChatMembers members={channel.members}/>
                         <ChatTitleTyping/>
                     </>
                 }
                 {
                     page === "workspace" &&
                     <>
-                        <ChatMembers page={"workspace"}/>
+                        <ChatMembers members={channel.members} page={"workspace"}/>
                         <ChatTitleTyping page={"workspace"}/>
                     </>
                 }
                 <div className="ml-auto">
                     {
                         page === "workspace" &&
-                        <ChatMembers/>
+                        <ChatMembers members={channel.members}/>
                     }
                     <ul className="nav align-items-center">
                         {

@@ -1,5 +1,4 @@
 import React from "react";
-import {useSelector} from "react-redux";
 import styled from "styled-components";
 import {Avatar} from "../../common";
 import {useIsUserTyping} from "../../hooks";
@@ -15,16 +14,15 @@ const StyledAvatar = styled(Avatar)`
 
 const ChatMembers = props => {
 
-    const {page = "chat"} = props;
-    const chatChannel = useSelector(state => state.chat.selectedChannel);
+    const {page = "chat", members} = props;
     const [usersTyping] = useIsUserTyping();
-
+    console.log(page, members)
     return (
         <ChatMembersContainer className={`pr-3 d-flex`}>
 
             {
                 page === "chat" ?
-                    chatChannel.members.map((m, i) => {
+                    members.map((m, i) => {
                         return (
                             <StyledAvatar
                                 id={m.id}

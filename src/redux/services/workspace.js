@@ -246,3 +246,17 @@ export function fetchWorkspaceTagCounters(payload) {
         data: payload,
     });
 }
+
+/**
+ * @param {Object} payload
+ * @param {number} payload.topic_id
+ * @returns {Promise<*>}
+ */
+export function getWorkspace(payload) {
+    let url = `/v2/workspace/${payload.topic_id}`;
+    return apiCall({
+        method: "GET",
+        url: url,
+        data: payload,
+    });
+}

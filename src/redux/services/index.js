@@ -120,6 +120,7 @@ export {
     fetchMembers,
     fetchTimeline,
     getPostStatusCount,
+    getWorkspace,
     getWorkspacePostDetail,
     getWorkspaceTopics,
     getWorkspaces,
