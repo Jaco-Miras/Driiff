@@ -31,7 +31,8 @@ export default (state = INITIAL_STATE, action) => {
             })
             return {
                 ...state,
-                notifications: updatedNotifications
+                notifications: updatedNotifications,
+                unreadCount: 0
             }
         }
         case "READ_NOTIFICATION_REDUCER": {
@@ -48,7 +49,8 @@ export default (state = INITIAL_STATE, action) => {
             updatedNotifications[action.data.id].is_read = 0;
             return {
                 ...state,
-                notifications: updatedNotifications
+                notifications: updatedNotifications,
+                unreadCount: state.unreadCount + 1
             }
         }
         case "REMOVE_NOTIFICATION_REDUCER": {
