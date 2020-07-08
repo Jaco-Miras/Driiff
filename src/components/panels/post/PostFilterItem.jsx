@@ -22,16 +22,24 @@ const Wrapper = styled.div`
 
 const PostFilterItem = props => {
 
-    const {className = "", workspace, filter = "all", onGoBack, counters} = props;
+    const {className = "", workspace, filter = "all", onGoBack, counters, tag} = props;
 
     const dispatch = useDispatch();
 
     const handleClickFilter = e => {
+        let payload = {
+            topic_id: workspace.id,
+            filter: e.target.dataset.value,
+            tag: tag
+        }
+        if (e.target.dataset.value === "draft" || e.target.dataset.value === "archive") {
+            payload = {
+                ...payload,
+                tag: null
+            }
+        }
         dispatch(
-            updateWorkspacePostFilterSort({
-                topic_id: workspace.id,
-                filter: e.target.dataset.value,
-            }),
+            updateWorkspacePostFilterSort(payload),
         );
         onGoBack();
     };

@@ -495,8 +495,9 @@ export default (state = INITIAL_STATE, action) => {
                             : action.data.filter : state.workspacePosts[action.data.topic_id].filter,
                         sort: action.data.sort ? action.data.sort === state.workspacePosts[action.data.topic_id].sort ? state.workspacePosts[action.data.topic_id].sort
                             : action.data.sort : state.workspacePosts[action.data.topic_id].sort,
-                        tag: action.data.filter ? null : action.data.tag ? action.data.tag === state.workspacePosts[action.data.topic_id].tag ? null 
-                            : action.data.tag : state.workspacePosts[action.data.topic_id].tag
+                        tag: action.data.tag
+                        // tag: action.data.tag ? action.data.tag === state.workspacePosts[action.data.topic_id].tag ? null 
+                        //     : action.data.tag : state.workspacePosts[action.data.topic_id].tag
                     }
                 }
             }

@@ -15,11 +15,18 @@ const PostFilterTag = props => {
     const dispatch = useDispatch();
 
     const handleClickFilter = e => {
+        let payload = {
+            topic_id: workspace.id,
+            tag: e.target.dataset.value,
+        }
+        if (tag === e.target.dataset.value) {
+            payload = {
+                ...payload,
+                tag: null
+            }
+        }
         dispatch(
-            updateWorkspacePostFilterSort({
-                topic_id: workspace.id,
-                tag: e.target.dataset.value,
-            }),
+            updateWorkspacePostFilterSort(payload),
         );
         onGoBack();
     };
