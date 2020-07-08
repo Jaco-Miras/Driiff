@@ -13,19 +13,18 @@ import {
     putMarkReminderComplete,
     setEditChatMessage,
 } from "../../redux/actions/chatActions";
+import {useToaster} from "./index";
 import useChannelActions from "./useChannelActions";
 
-/**
- * @returns {{channelActions: {fetchMembersById: (...args: any[]) => any, saveHistoricalPosition: (...args: any[]) => any, unArchive: (...args: any[]) => any, fetchNoChannelUsers: (...args: any[]) => any, createByUserChannel: (...args: any[]) => any, select: (...args: any[]) => any, update, unMute, markAsRead, searchExisting, pin, fetchLastVisited: (...args: any[]) => any, create: (...args: any[]) => any, fetchByCode: (...args: any[]) => any, unPin, fetchAll: (...args: any[]) => any, saveLastVisited: (...args: any[]) => any, archive: (...args: any[]) => any, mute, unHide, updateName, hide, addMembers, deleteMembers, fetch: (...args: any[]) => any, fetchDrafts: (...args: any[]) => any, markAsUnRead}, setQuote: setQuote, edit: (...args: any[]) => any, setEdit: setEdit, forward: (...args: any[]) => any, fetch: (...args: any[]) => any, create: (...args: any[]) => any, react: (...args: any[]) => any, clipboardLink: (...args: any[]) => any, remove: (...args: any[]) => any, remind: (...args: any[]) => any, markComplete: (...args: any[]) => any}}
- */
 const useChatMessageActions = () => {
 
     const sharedSlugs = useSelector(state => state.global.slugs);
 
     const dispatch = useDispatch();
+    const toaster = useToaster();
 
     const getSharedPayload = useCallback((channel) => {
-        
+
         if (channel && channel.is_shared && sharedSlugs.length) {
             let slug = sharedSlugs.filter(s => s.slug_name === channel.slug_owner)[0];
             return {
@@ -266,7 +265,7 @@ const useChatMessageActions = () => {
     const clipboardLink = useCallback((
         channel,
         message) => {
-        copyTextToClipboard(`${getBaseUrl()}/chat/${channel.code}/${message.code}`);
+        copyTextToClipboard(toaster, `${getBaseUrl()}/chat/${channel.code}/${message.code}`);
     }, []);
 
     return {

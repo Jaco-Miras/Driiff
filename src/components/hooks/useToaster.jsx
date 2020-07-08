@@ -1,44 +1,38 @@
 import React, {useCallback, useEffect, useRef, useState} from "react";
 import styled from "styled-components";
 import toaster from "toasted-notes";
-import {ProgressBar} from "../panels/common";
 
 const Wrapper = styled.div`
     position: initial !important;
     padding-bottom: 10px;    
 `;
 
-const ProgressBarStyle = styled(ProgressBar)`
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    left: 0;
-    width: 100%;
-    border-radius: 0 0 10px 10px;
+const ProgressBarStyle = styled.div`    
+    width: ${props => props.width >= 0 ? props.width : 0}%;
+    transition: all 0.2s;
 `;
 
 const useToaster = () => {
 
-    const DurationLineAmount = () => {
-    };
-
     const DurationLine = (props) => {
 
-        const {className, duration} = props;
+        const {duration} = props;
         const interval = useRef();
         const [amount, setAmount] = useState(duration);
 
         useEffect(() => {
             interval.current = setInterval(() => {
-                setAmount(state => state - 500);
-            }, 500);
+                setAmount(state => state - 100);
+            }, 100);
         }, []);
 
-        if (amount <= 0) {
+        if (amount <= -100) {
             clearInterval(interval.current);
         }
 
-        return <ProgressBarStyle className={className} barClassName={`${className} progress-bar-striped`} amount={amount} limit={duration} height={8}/>;
+        const progress = amount / duration * 100;
+
+        return <ProgressBarStyle className="toast-progress" width={progress}/>;
     };
 
     const success = useCallback((text, options = {}) => {
@@ -47,8 +41,8 @@ const useToaster = () => {
         }
         toaster.notify(() => <Wrapper id="toast-container">
             <div className="toast-success">
-                {text}
-                <DurationLine className="bg-success" duration={options.duration}/>
+                <DurationLine duration={options.duration}/>
+                <div className="toast-message">{text}</div>
             </div>
         </Wrapper>, options);
     }, []);
@@ -59,8 +53,8 @@ const useToaster = () => {
         }
         toaster.notify(() => <Wrapper id="toast-container">
             <div className="toast-error">
-                {text}
-                <DurationLine className="bg-error" duration={options.duration}/>
+                <DurationLine duration={options.duration}/>
+                <div className="toast-message">{text}</div>
             </div>
         </Wrapper>, options);
     }, []);
@@ -71,8 +65,8 @@ const useToaster = () => {
         }
         toaster.notify(() => <Wrapper id="toast-container">
             <div className="toast-info">
-                {text}
-                <DurationLine className="bg-info" duration={options.duration}/>
+                <DurationLine duration={options.duration}/>
+                <div className="toast-message">{text}</div>
             </div>
         </Wrapper>, options);
     }, []);
@@ -83,8 +77,8 @@ const useToaster = () => {
         }
         toaster.notify(() => <Wrapper id="toast-container">
             <div className="toast-warning">
-                {text}
-                <DurationLine className="bg-warning" duration={options.duration}/>
+                <DurationLine duration={options.duration}/>
+                <div className="toast-message">{text}</div>
             </div>
         </Wrapper>, options);
     }, []);
