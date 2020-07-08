@@ -704,21 +704,33 @@ export default (state = INITIAL_STATE, action) => {
         }
         case "INCOMING_POST": {
             let newWorkspacePosts = {...state.workspacePosts};
-            action.data.recipient_ids.forEach(id => {
-                if (newWorkspacePosts.hasOwnProperty(id)) {
-                    newWorkspacePosts[id].posts[action.data.id] = action.data;
-                    if (newWorkspacePosts[id].posts[action.data.id].is_must_read === 1) {
-                        newWorkspacePosts[id].count.is_must_read = newWorkspacePosts[id].count.is_must_read + 1;
-                    } else if (newWorkspacePosts[id].posts[action.data.id].is_must_reply === 1) {
-                        newWorkspacePosts[id].count.is_must_reply = newWorkspacePosts[id].count.is_must_reply + 1;
-                    } else if (newWorkspacePosts[id].posts[action.data.id].is_read_only === 1) {
-                        newWorkspacePosts[id].count.is_read_only = newWorkspacePosts[id].count.is_read_only + 1;
+            let updatedWorkspaces = {...state.workspaces};
+
+            action.data.workspaces.forEach(ws => {
+                if (newWorkspacePosts.hasOwnProperty(ws.topic_id)) {
+                    newWorkspacePosts[ws.topic_id].posts[action.data.id] = action.data;
+                    if (newWorkspacePosts[ws.topic_id].posts[action.data.id].is_must_read === 1) {
+                        newWorkspacePosts[ws.topic_id].count.is_must_read = newWorkspacePosts[ws.topic_id].count.is_must_read + 1;
+                    } else if (newWorkspacePosts[ws.topic_id].posts[action.data.id].is_must_reply === 1) {
+                        newWorkspacePosts[ws.topic_id].count.is_must_reply = newWorkspacePosts[ws.topic_id].count.is_must_reply + 1;
+                    } else if (newWorkspacePosts[ws.topic_id].posts[action.data.id].is_read_only === 1) {
+                        newWorkspacePosts[ws.topic_id].count.is_read_only = newWorkspacePosts[ws.topic_id].count.is_read_only + 1;
+                    }
+                }
+                if (action.data.author.id !== state.user.id) {
+                    if (ws.workspace_id !== 0 && updatedWorkspaces.hasOwnProperty(ws.workspace_id)) {
+                        updatedWorkspaces[ws.workspace_id].unread_count = updatedWorkspaces[ws.workspace_id].unread_count + 1;
+                        updatedWorkspaces[ws.workspace_id].topics[ws.topic_id].unread_posts = updatedWorkspaces[ws.workspace_id].topics[ws.topic_id].unread_posts + 1;
+                    } else if (ws.workspace_id === 0 && updatedWorkspaces.hasOwnProperty(ws.topic_id)) {
+                        updatedWorkspaces[ws.topic_id].unread_count = updatedWorkspaces[ws.topic_id].unread_count + 1;
+                        updatedWorkspaces[ws.topic_id].topic_detail.unread_posts = updatedWorkspaces[ws.topic_id].topic_detail.unread_posts + 1;
                     }
                 }
             })
             return {
                 ...state,
-                workspacePosts: newWorkspacePosts
+                workspacePosts: newWorkspacePosts,
+                workspaces: updatedWorkspaces
             }
         }
         case "INCOMING_UPDATED_POST": {

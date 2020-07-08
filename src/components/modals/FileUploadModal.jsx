@@ -2,7 +2,7 @@ import React, {useEffect, useRef, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {Button, Modal, ModalBody, ModalFooter} from "reactstrap";
 import styled from "styled-components";
-import {SvgIcon} from "../common";
+import {SvgIcon, SvgIconFeather} from "../common";
 import {postChatMessage} from "../../redux/actions/chatActions";
 import {clearModal, saveInputData} from "../../redux/actions/globalActions";
 import {uploadDocument} from "../../redux/services/global";
@@ -51,25 +51,28 @@ const FilesPreviewContainer = styled.div`
         margin: 0;
         padding: 0;
         border: 1px solid #ddd;
-        padding: 10px;
-        display: flex;
+        padding: 10px  0;
         align-items: center;
         justify-content: ${props => props.hasOneFile ? "center" : "flex-start"};
+        display: flex;
         overflow-x: auto;
+        &::-webkit-scrollbar {
+            display: none
+        }
     }
     li{
         list-style: none;
-        margin: 0 10px;
-        height: 160px;
-        width: 200px;
-        border: 1px solid #ddd;
+        padding: 0 10px;
         border-radius: 8px;
         position: relative;
+
         img{
-            height: 100%;
-            width: 100%;
+            width: auto;
+            height: 160px;
+            border: 1px solid #ddd;
             object-fit: cover;
             border-radius: inherit;
+
         }
         span{
             position: absolute;
@@ -83,12 +86,46 @@ const FilesPreviewContainer = styled.div`
             cursor: pointer;
         }
         .app-file-list {
-            min-height: 158px;
-            border: 0;
+            ${'' /* min-height: 158px; */}
+            height: 158px;
+            width: 158px;
+            margin-bottom: 0px;
+        }
+        &:first-of-type {
+            padding-left: 15px;
+        }
+        &:last-of-type {
+            padding-right: 15px;
+        }
+        .remove-upload {
+            background: rgba(0,0,0, 0.8);
+            color: #ffffff;
+            border-radius: 50%;
+            position: absolute;
+            height: 20px;
+            width: 20px;
+            display: ${props => !props.hasOneFile ? "flex" : "none"};
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            border: 2px solid #fff;
+            top: -8px;
+            right: 2px;
+            &:hover {
+                background: rgba(0,0,0, 1);
+            }
+            svg {
+                width: 12px;
+                height: 12px;
+            }
         }
     }
     li:hover span{
         display: ${props => props.hasOneFile ? "none" : "block"};
+    }
+    &:after {
+        content: '';
+        width: 100px;
     }
 `;
 
@@ -331,10 +368,9 @@ const FilesPreview = props => {
                     files.map((file, i) => {
                         return (
                             <li key={i}>
-                                <button className="close" aria-label="close"
-                                        onClick={e => handleRemoveFile(file)}>
-                                    <span aria-hidden="true">x</span>
-                                </button>
+                                <div class="remove-upload" aria-label="close" onClick={e => handleRemoveFile(file)}>
+                                    <SvgIconFeather icon="x" />
+                                </div>
                                 {
                                     file.type === "IMAGE" && <img alt="file" src={file.src}/>
                                 }
