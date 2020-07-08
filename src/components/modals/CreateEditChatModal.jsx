@@ -53,12 +53,14 @@ const SelectPeople = styled(PeopleSelect)`
         border-color: #7a1b8b !important;
         box-shadow: none;
     }
+    @media all and (max-width: 480px) {
+        width: 100%;
+    }
 `;
 
 const StyledQuillEditor = styled(QuillEditor)`
     flex: 1 0 0;
     width: 1%;
-
     &.group-chat-input {
         border: 1px solid #afb8bd;
         border-radius: 5px;
@@ -76,6 +78,9 @@ const StyledQuillEditor = styled(QuillEditor)`
     }
     .ql-editor {
         padding: 5px;
+    }
+    @media all and (max-width: 480px) {
+        width: 100%;
     }
 `;
 

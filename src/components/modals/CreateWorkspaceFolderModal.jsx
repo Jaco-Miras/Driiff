@@ -25,6 +25,9 @@ const WrapperDiv = styled(InputGroup)`
 
     .input-feedback {
         margin-left: 130px;
+        @media all and (max-width: 480px) {
+            margin-left: 0;
+        }
     }
 
     button {

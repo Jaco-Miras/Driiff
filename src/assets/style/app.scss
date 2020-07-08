@@ -20837,7 +20837,7 @@ body.dark.small-navigation .navigation-menu-body ul li.navigation-divider:after 
     padding-left: 24px !important;
     padding-right: 24px !important;
   }
-  .list-group-flush {
+  .chat-lists .list-group-flush {
     padding-left: 24px !important;
     padding-right: 24px !important;
   }
@@ -20873,6 +20873,37 @@ body.dark.small-navigation .navigation-menu-body ul li.navigation-divider:after 
     padding: 0.875rem 0 0.875rem 0;
   }
 }
+@media all and (max-width: 480px) {
+  .modal-dialog-centered {
+    align-items: stretch;
+  }
+  .modal-dialog {
+    margin: 0;
+    height: 100%;
+  }
+  .modal-content {
+    border-radius: 0 !important;
+  }
+  .modal-body {
+    flex: inherit;
+  }
+  .input-group {
+    display: block !important;
+    label {
+      display: block !important;
+      margin-bottom: 8px !important;
+    }
+    input {
+      width: 100% !important;
+    }
+  }
+  .ql-toolbar {
+    bottom: -25px !important;
+  }
+  .description-wrapper {
+    padding-bottom: 14px;
+  }
+}
 
 #root {
   height: 100vh;
@@ -20901,7 +20932,7 @@ body.dark.small-navigation .navigation-menu-body ul li.navigation-divider:after 
   top: 0;
   height: 100%;
   padding-top: 114px;
-  overflow: scroll;
+  overflow-y: scroll;
 }
 .chat-block {
   animation: fadeIn 0.15s linear;

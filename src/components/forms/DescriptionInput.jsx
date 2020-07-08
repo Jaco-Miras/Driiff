@@ -7,7 +7,7 @@ import {InputFeedback} from "./index";
 import QuillEditor from "./QuillEditor";
 
 const WrapperDiv = styled(InputGroup)`
-    display: flex;    
+    display: flex;
     align-items: baseline;
     margin: 20px 0;
     position: relative;
@@ -27,7 +27,7 @@ const WrapperDiv = styled(InputGroup)`
     }
     .description-wrapper {
         margin-bottom: 25px;
-    
+
         &.is-invalid {
             border-color: #dc3545;
             padding-right: calc(1.5em + 0.75rem);
@@ -35,7 +35,7 @@ const WrapperDiv = styled(InputGroup)`
             background-repeat: no-repeat;
             background-position: right 0.5rem top 0.5rem;
             background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
-            
+
             .action-wrapper {
                 margin-right: -32px;
             }
@@ -47,14 +47,14 @@ const WrapperDiv = styled(InputGroup)`
             background-repeat: no-repeat;
             background-position: right 0.5rem top 0.5rem;
             background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
-            
+
             .action-wrapper {
                 margin-right: -32px;
             }
         }
     }
     .invalid-feedback {
-        display: block;        
+        display: block;
         top: 55px;
         position: relative;
         left: 0px;
@@ -62,10 +62,7 @@ const WrapperDiv = styled(InputGroup)`
 `;
 
 const StyledQuillEditor = styled(QuillEditor)`
-    // flex: 1 0 0;
-    // width: 1%;
     height: 80px;
-
     &.description-input {
         max-height: 130px;
         overflow: auto;
@@ -120,6 +117,9 @@ const DescriptionInputWrapper = styled.div`
     width: 1%;
     border: 1px solid #afb8bd;
     border-radius: 5px;
+    @media all and (max-width: 480px) {
+        width: 100%;
+    }
 `;
 
 const Buttons = styled.div`

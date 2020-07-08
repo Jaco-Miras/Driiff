@@ -6,7 +6,7 @@ import {useTimeFormat} from "../../../hooks";
 const Wrapper = styled.li`
     cursor: pointer;
     cursor: hand;
-        
+
     .done {
         text-decoration: line-through;
         color: #00c851;
@@ -23,6 +23,13 @@ const Wrapper = styled.li`
         cursor: pointer;
         cursor: hand;
     }
+    .recent-post-timestamp {
+        @media only screen and (max-width: 480px) {
+            display: none !important;
+        }
+    }
+
+
 `;
 
 const RecentPostListItem = (props) => {
@@ -56,7 +63,7 @@ const RecentPostListItem = (props) => {
                     <div
                         className={`app-list-title ${post.is_mark_done ? "done" : ""} text-truncate`}>{post.title}</div>
                     <div
-                        className={`pl-3 d-flex align-items-center ${post.is_mark_done ? "done" : ""}`}>
+                        className={`pl-3 d-flex recent-post-timestamp align-items-center ${post.is_mark_done ? "done" : ""}`}>
                         {localizeChatTimestamp(post.created_at.timestamp)}
                     </div>
                 </div>

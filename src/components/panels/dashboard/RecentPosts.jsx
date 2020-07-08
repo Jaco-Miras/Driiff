@@ -56,6 +56,9 @@ const Wrapper = styled.div`
             color: #7a1b8b;
         }
     }
+    li .custom-control {
+        padding-left: 14px;
+    }
 `;
 
 const RecentPosts = (props) => {
