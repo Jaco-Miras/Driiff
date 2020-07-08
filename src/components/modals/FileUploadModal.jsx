@@ -56,9 +56,6 @@ const FilesPreviewContainer = styled.div`
         justify-content: ${props => props.hasOneFile ? "center" : "flex-start"};
         display: flex;
         overflow-x: auto;
-        &::-webkit-scrollbar {
-            display: none
-        }
     }
     li{
         list-style: none;

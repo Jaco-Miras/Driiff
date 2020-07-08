@@ -91,6 +91,9 @@ const WrapperDiv = styled(InputGroup)`
 const SelectWorkspace = styled(FolderSelect)`
     flex: 1 0 0;
     width: 1%;
+    @media all and (max-width: 480px) {
+        width: 100%;
+    }
 `;
 
 const SelectPeople = styled(PeopleSelect)`
@@ -117,6 +120,9 @@ const SelectPeople = styled(PeopleSelect)`
     .react-select__control--is-focused {
         border-color: #7a1b8b !important;
         box-shadow: none;
+    }
+    @media all and (max-width: 480px) {
+        width: 100%;
     }
 `;
 
