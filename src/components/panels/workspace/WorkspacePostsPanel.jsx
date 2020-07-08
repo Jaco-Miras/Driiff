@@ -88,7 +88,7 @@ const WorkspacePostsPanel = (props) => {
                              postActions={actions} count={count} counters={counters} onGoBack={handleGoback}/>
                 <div className="col-md-9 app-content">
                     <div className="app-content-overlay"/>
-                    <PostFilterSearchPanel activeSort={sort} workspace={workspace}/>
+                    <PostFilterSearchPanel activeSort={sort} workspace={workspace} search={search}/>
                     {/* <div className="card card-body app-content-body mb-4"> */}
                         {
                             posts.length === 0 ?

@@ -18,7 +18,7 @@ const Wrapper = styled.div`
 
 const PostFilterSearchPanel = props => {
 
-    const {className = "", activeSort = null, workspace} = props;
+    const {className = "", activeSort = null, workspace, search} = props;
 
     const dispatch = useDispatch();
 
@@ -66,7 +66,7 @@ const PostFilterSearchPanel = props => {
                 </ul>
             </div>
             <div className="action-right">
-                <PostSearch/>
+                <PostSearch search={search}/>
             </div>
         </Wrapper>
     )
