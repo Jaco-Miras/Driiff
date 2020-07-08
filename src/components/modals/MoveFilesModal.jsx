@@ -66,7 +66,7 @@ const MoveFilesModal = (props) => {
 
                     return;
                 }
-                toaster.success(<div><b>{file.search}</b> has been moved to ${selectedFolder.label} folder</div>);
+                toaster.success(<div><b>{file.search}</b> has been moved to {selectedFolder.label} folder</div>);
             };
 
             dispatch(
