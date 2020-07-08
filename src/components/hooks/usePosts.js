@@ -92,6 +92,21 @@ const usePosts = () => {
         }
         if (filter || tag) {
             let filteredPosts = Object.values(posts).filter(p => {
+                if (tag) {
+                    if (tag === "is_must_reply") {
+                        return p.is_must_reply === 1;
+                    } else if (tag === "is_must_read") {
+                        return p.is_must_read === 1;
+                    } else if (tag === "is_read_only") {
+                        return p.is_read_only === 1;
+                    } else {
+                        return true;
+                    }
+                } else {
+                    return true;
+                }
+                
+            }).filter(p => {
                 if (filter) {
                     if (filter === "my_posts") {
                         if (p.hasOwnProperty("author")) return p.author.id === user.id;
@@ -103,21 +118,11 @@ const usePosts = () => {
                     } else if (filter === "archive") {
                         return p.is_archived === 1;
                     } else if (filter === "all") {
-                        return !p.is_archived;
-                    }
-                } else {
-                    return true;
-                }
-            }).filter(p => {
-                if (tag) {
-                    if (tag === "is_must_reply") {
-                        return p.is_must_reply === 1;
-                    } else if (tag === "is_must_read") {
-                        return p.is_must_read === 1;
-                    } else if (tag === "is_read_only") {
-                        return p.is_read_only === 1;
-                    } else {
-                        return true;
+                        if (tag) {
+                            return true
+                        } else {
+                            return !p.is_archived;
+                        }
                     }
                 } else {
                     return true;
