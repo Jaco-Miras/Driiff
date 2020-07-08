@@ -30,7 +30,7 @@ const PostSidebar = props => {
                             </button>
                         </div>
                     }
-                    <PostFilterItem workspace={workspace} filter={filter} onGoBack={onGoBack} counters={counters}/>
+                    <PostFilterItem workspace={workspace} filter={filter} tag={tag} onGoBack={onGoBack} counters={counters}/>
                     <div className="card-body">
                         <h6 className="mb-0">Category</h6>
                     </div>
