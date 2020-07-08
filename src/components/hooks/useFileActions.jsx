@@ -334,7 +334,7 @@ const useFileActions = (params = null) => {
     }, [dispatch, params]);
 
     const copyLink = useCallback(link => {
-        copyTextToClipboard(link);
+        copyTextToClipboard(toaster, link);
     }, []);
 
     const removeTrashFiles = useCallback(() => {

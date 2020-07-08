@@ -4,7 +4,6 @@ import md5 from "md5";
 import React from "react";
 import {browserName, isMobile, mobileModel, mobileVendor, osName, osVersion} from "react-device-detect";
 import ReactDOM from "react-dom";
-import toaster from "toasted-notes";
 
 export const checkObjInArray = (obj, list) => {
     for (let i = 0, l = list.length; i < l; i++) {
@@ -136,7 +135,7 @@ export const getClientWidth = () => {
         || document.body.clientWidth;
 };
 
-function fallbackCopyTextToClipboard(text) {
+function fallbackCopyTextToClipboard(toaster, text, notification) {
     let textArea = document.createElement("textarea");
     textArea.style.position = "fixed";
     textArea.style.top = 0;
@@ -158,24 +157,25 @@ function fallbackCopyTextToClipboard(text) {
 
     try {
         var successful = document.execCommand("copy");
-        if (successful) toaster.notify(`Copied task link`);
+        if (successful)
+            toaster.notify(notification);
     }
     catch (err) {
+        toaster.error(<>Oops, unable to copy <b>{text}</b></>);
         console.error("Fallback: Oops, unable to copy", err);
     }
     document.body.removeChild(textArea);
 }
 
-export const copyTextToClipboard = (text, notification = `Link copied to the clipboard.`) => {
+export const copyTextToClipboard = (toaster, text, notification = `Link copied to the clipboard.`) => {
     if (!navigator.clipboard) {
-        fallbackCopyTextToClipboard(text);
+        fallbackCopyTextToClipboard(toaster, text, notification);
         return;
     }
     navigator.clipboard.writeText(text).then(() => {
-        toaster.notify(() => <div style={{position: "initial"}} id="toast-container">
-            <div className="toast-info">{notification}</div>
-        </div>);
+        toaster.notify(notification);
     }, err => {
+        toaster.error(<>Oops, unable to copy <b>{text}</b></>);
         console.error("Async: Could not copy text: ", err);
     });
 };
