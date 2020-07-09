@@ -30,4 +30,4 @@ blocks:
       jobs:
         - name: Build react
           commands:
-            - env-cmd -e dev react-scripts build
+            - yarn build-dev
