@@ -157,7 +157,7 @@ const FilesBody = (props) => {
                     typeof wsFiles !== "undefined" &&
                     <>
                         {
-                            folder && isMember &&
+                            folder && isMember && filter !== "removed" &&
                             <MoreButton moreButton="settings">
                                 <div onClick={handleEditFolder}>Edit folder</div>
                                 <div onClick={handleRemoveFolder}>Remove folder</div>
@@ -348,7 +348,8 @@ const FilesBody = (props) => {
                             filter === "removed" &&
                             <>
                                 {
-                                    Object.values(folders).filter(f => f.is_archived).length > 0 &&
+                                    folder ?<h6 className="font-size-11 text-uppercase mb-4">{folder.search}</h6>
+                                    : Object.values(folders).filter(f => f.is_archived).length > 0 &&
                                     <h6 className="font-size-11 text-uppercase mb-4">Folders</h6>
                                 }
                                 <div className="row">
