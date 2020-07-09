@@ -3,6 +3,7 @@ import {useHistory, useRouteMatch} from "react-router-dom";
 import styled from "styled-components";
 import {replaceChar} from "../../../helpers/stringFormatter";
 import {SvgIconFeather} from "../../common";
+import SubFolderList from "./SubFolderList";
 
 const Wrapper = styled.li`
     cursor: pointer;
@@ -10,7 +11,7 @@ const Wrapper = styled.li`
     position: relative;
     width: 100%;
 
-    a {
+    > a {
         position: relative;
         font-weight: ${props => props.selected ? "bold" : "normal"};
         color: ${props => props.selected ? "#7a1b8b !important" : "#64625C"};
@@ -37,6 +38,7 @@ const Wrapper = styled.li`
 
     > ul {
         padding: 0;
+        margin-left: 5px;
     }
 `;
 
@@ -47,21 +49,14 @@ const FolderNav = styled.ul`
     transition: all .3s ease;
     list-style: none;
 
-    &.enter-active {
-        max-height: ${props => props.maxHeight}px;
-        margin: 4px 0 8px 2px;
-    }
+    // &.enter-active {
+    //     max-height: ${props => props.maxHeight}px;
+    //     margin: 4px 0 8px 2px;
+    // }
 
-    &.leave-active {
-        max-height: 0px;
-    }
-`;
-
-const SubFolderList = styled.li`
-    color: ${props => props.selected ? "#7a1b8b !important" : "#64625C"};
-    :hover {
-        color: #7a1b8b;
-    }
+    // &.leave-active {
+    //     max-height: 0px;
+    // }
 `;
 
 const Icon = styled(SvgIconFeather)`
@@ -115,26 +110,31 @@ const FolderList = props => {
     }, [ref.nav, maxHeight]);
 
     useEffect(() => {
+        // if (activeFolder) {
+        //     if (activeFolder.id === folder.id) {
+        //         setActive(true);
+        //     } else {
+        //         if (activeFolder.parent_folder && activeFolder.parent_folder.id === folder.id) {
+        //             setActive(true);
+        //             setShowFolders(true);
+        //         } else {
+        //             setActive(false);
+        //         }
+        //     }
+        // } else {
+        //     setActive(false);
+        // }
         if (activeFolder) {
-            if (activeFolder.id === folder.id) {
-                setActive(true);
-            } else {
-                if (activeFolder.parent_folder && activeFolder.parent_folder.id === folder.id) {
-                    setActive(true);
-                    setShowFolders(true);
-                } else {
-                    setActive(false);
-                }
+            if (activeFolder.parent_folder && activeFolder.parent_folder.id === folder.id) {
+                setShowFolders(true);
             }
-        } else {
-            setActive(false);
         }
     }, [params, setActive, activeFolder]);
-
+    
     return (
         <Wrapper ref={ref.container} className={`folder-list fadeIn ${className}`}
-                 selected={active}>
-            <a className="active" onClick={handleSelectFolder}>
+                 selected={activeFolder ? activeFolder.id == folder.id : false}>
+            <a onClick={handleSelectFolder}>
                 {folder.search}
                 {
                     Object.values(folders).filter(f => {
@@ -150,16 +150,14 @@ const FolderList = props => {
                 <FolderNav ref={ref.nav} maxHeight={maxHeight}
                            className={showFolders ? "enter-active" : "leave-active"}>
                     {
+                        showFolders &&
                         Object.values(folders).filter(f => {
                             return !f.is_archived && f.parent_folder && f.parent_folder.id === folder.id
                         }).map(f => {
-                            return <SubFolderList key={f.id}
-                                                  selected={activeFolder && activeFolder.id === f.id}
-                                                  onClick={() => handleSelectSubFolder(f)}>
-                                <Icon icon={"circle"}/>
-                                {f.search}
-                            </SubFolderList>;
+                            return <SubFolderList key={f.id} clearFilter={clearFilter} params={params} folderHeight={maxHeight}
+                                                activeFolder={activeFolder} folders={folders} folder={f}/>
                         })
+                        
                     }
                 </FolderNav>
             }
