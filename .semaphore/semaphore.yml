@@ -11,9 +11,20 @@ blocks:
         - name: Checkout Github
           commands:
             - checkout
+    dependencies: []
   - name: Install Yarn dependencies
     task:
       jobs:
         - name: Yarn install all dependencies
           commands:
             - yarn install
+    dependencies:
+      - Pull latest code
+  - name: Build Development
+    dependencies:
+      - Install Yarn dependencies
+    task:
+      jobs:
+        - name: Build react
+          commands:
+            - env-cmd -e dev react-scripts build
