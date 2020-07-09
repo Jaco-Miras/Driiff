@@ -5,12 +5,21 @@ agent:
     type: e1-standard-2
     os_image: ubuntu1804
 blocks:
-  - name: 'Block #1'
+  - name: Pull latest code
     task:
       jobs:
-        - name: 'Job #1'
+        - name: Checkout Github
           commands:
             - checkout
         - name: 'Job #2'
           commands:
-            - yarn env-cmd -e dev react-scripts start
+            - yarn add env-cmd
+        - name: 'Job #3'
+          commands:
+            - 'yarn env-cmd -e dev react-scripts start '
+  - name: Install Yarn dependencies
+    task:
+      jobs:
+        - name: Yarn install all dependencies
+          commands:
+            - yarn install
