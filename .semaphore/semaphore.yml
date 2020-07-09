@@ -11,12 +11,6 @@ blocks:
         - name: Checkout Github
           commands:
             - checkout
-        - name: 'Job #2'
-          commands:
-            - yarn add env-cmd
-        - name: 'Job #3'
-          commands:
-            - 'yarn env-cmd -e dev react-scripts start '
   - name: Install Yarn dependencies
     task:
       jobs:
