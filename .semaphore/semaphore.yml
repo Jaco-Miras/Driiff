@@ -1,0 +1,33 @@
+version: v1.0
+name: Initial Pipeline
+agent:
+  machine:
+    type: e1-standard-2
+    os_image: ubuntu1804
+blocks:
+  - name: Pull latest code
+    task:
+      jobs:
+        - name: Checkout Github
+          commands:
+            - checkout
+    dependencies: []
+  - name: Install Yarn dependencies
+    task:
+      jobs:
+        - name: Yarn install all dependencies
+          commands:
+            - yarn install
+        - name: Install env-cmd
+          commands:
+            - yarn add env-cmd
+    dependencies:
+      - Pull latest code
+  - name: Build Development
+    dependencies:
+      - Install Yarn dependencies
+    task:
+      jobs:
+        - name: Build react
+          commands:
+            - yarn build-dev

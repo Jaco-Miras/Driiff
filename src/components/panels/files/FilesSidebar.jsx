@@ -25,7 +25,7 @@ const Filter = styled.span`
             margin: 0;
             
             li {
-                margin-bottom: 10px;
+                margin-bottom: 5px;
             }
         }
     }
