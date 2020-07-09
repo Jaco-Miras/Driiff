@@ -27,7 +27,7 @@ export default (state = INITIAL_STATE, action) => {
                 let topics = {};
                 if (ws.topics !== undefined && ws.topics.length > 0) {
                     ws.topics.forEach(t => {
-                        topics[t.id] = { 
+                        topics[t.id] = {
                             ...t,
                             selected: false,
                             is_external: ws.is_external,
@@ -110,7 +110,7 @@ export default (state = INITIAL_STATE, action) => {
                         }
                     }
                 }
-                
+
                 return {
                     ...state,
                     workspaces: newWorkspaces
@@ -139,7 +139,7 @@ export default (state = INITIAL_STATE, action) => {
                             workspace_name: action.data.name,
                             workspace_description: action.data.description,
                         }
-                    : state.activeTopic
+                        : state.activeTopic
                 }
             } else if (state.workspacesLoaded && action.data.type === "WORKSPACE") {
                 let workspace = null;
@@ -158,6 +158,7 @@ export default (state = INITIAL_STATE, action) => {
                                 member_ids: action.data.member_ids,
                                 members: action.data.members,
                                 description: action.data.description,
+                                updated_at: action.data.updated_at
                             }
                             return {
                                 ...state,
@@ -170,7 +171,7 @@ export default (state = INITIAL_STATE, action) => {
                                         ...state.activeTopic,
                                         ...workspace
                                     }
-                                : state.activeTopic
+                                    : state.activeTopic
                             }
                         }
                     } else {
@@ -197,7 +198,8 @@ export default (state = INITIAL_STATE, action) => {
                                     member_ids: action.data.member_ids,
                                     members: action.data.members,
                                     description: action.data.description,
-                                }
+                                },
+                                updated_at: action.data.updated_at
                             }
                             delete workspace.workspace_id;
                             delete workspace.workspace_name;
@@ -217,7 +219,7 @@ export default (state = INITIAL_STATE, action) => {
                                 {
                                     ...workspace
                                 }
-                            : state.activeTopic
+                                : state.activeTopic
                         }
                     }
                 } else {
@@ -234,19 +236,19 @@ export default (state = INITIAL_STATE, action) => {
                                 description: action.data.description,
                                 member_ids: action.data.member_ids,
                                 members: action.data.members,
+                                updated_at: action.data.updated_at
                             }
                             newWorkspaces = {
                                 ...newWorkspaces,
                                 [action.data.workspace_id]: {
                                     ...newWorkspaces[action.data.workspace_id],
+                                    updated_at: action.data.updated_at,
                                     topics: {
                                         ...newWorkspaces[action.data.workspace_id].topics,
                                         [action.data.id]: workspace
                                     }
                                 }
                             }
-                        } else {
-
                         }
 
                         return {
@@ -257,14 +259,14 @@ export default (state = INITIAL_STATE, action) => {
                                     ...state.activeTopic,
                                     ...workspace
                                 }
-                            : state.activeTopic
+                                : state.activeTopic
                         }
                     } else {
                         //moved workspace to another folder
                         // delete original workspace
                         let newWorkspaces = {...state.workspaces};
                         let workspaceFolder = {...newWorkspaces[action.data.workspace_id]}
-                        
+
                         if (action.data.original_workspace_id === 0) {
                             workspace = {...newWorkspaces[action.data.id]};
                             delete newWorkspaces[action.data.id]
@@ -272,7 +274,7 @@ export default (state = INITIAL_STATE, action) => {
                             workspace = {...newWorkspaces[action.data.original_workspace_id].topics[action.data.id]};
                             delete newWorkspaces[action.data.original_workspace_id].topics[action.data.id]
                         }
-                        
+
                         if (workspace.hasOwnProperty("id")) {
                             workspace = {
                                 ...workspace,
@@ -282,7 +284,8 @@ export default (state = INITIAL_STATE, action) => {
                                 members: action.data.members,
                                 workspace_id: action.data.workspace_id,
                                 workspace_descripiton: workspaceFolder.description,
-                                workspace_name: workspaceFolder.name
+                                workspace_name: workspaceFolder.name,
+                                updated_at: action.data.updated_at
                             }
                             newWorkspaces = {
                                 ...newWorkspaces,
@@ -297,7 +300,7 @@ export default (state = INITIAL_STATE, action) => {
                         } else {
 
                         }
-                        
+
                         return {
                             ...state,
                             workspaces: newWorkspaces,
@@ -306,7 +309,7 @@ export default (state = INITIAL_STATE, action) => {
                                     ...state.activeTopic,
                                     ...workspace
                                 }
-                            : state.activeTopic
+                                : state.activeTopic
                         }
                     }
                 }
@@ -332,7 +335,7 @@ export default (state = INITIAL_STATE, action) => {
                 //     ...newWorkspaces,
                 //     [action.data.workspace_id]: workspace
                 // }
-                
+
                 // return {
                 //     ...state,
                 //     workspaces: newWorkspaces
@@ -407,7 +410,7 @@ export default (state = INITIAL_STATE, action) => {
                     }
                 }
             }
-            
+
             return {
                 ...state,
                 workspaces: newWorkspaces,
@@ -439,7 +442,7 @@ export default (state = INITIAL_STATE, action) => {
             if (state.drafts.length) {
                 state.drafts.forEach(d => {
                     if (d.data.type === "draft_post" && action.data.topic_id === d.data.topic_id) {
-                        postDrafts.push({...d.data,...d.data.form, draft_id: d.id})
+                        postDrafts.push({...d.data, ...d.data.form, draft_id: d.id})
                     }
                 })
             }
@@ -490,9 +493,9 @@ export default (state = INITIAL_STATE, action) => {
                     ...state.workspacePosts,
                     [action.data.topic_id]: {
                         ...state.workspacePosts[action.data.topic_id],
-                        filter: action.data.filter ? 
+                        filter: action.data.filter ?
                             action.data.filter === state.workspacePosts[action.data.topic_id].filter ? state.workspacePosts[action.data.topic_id].filter
-                            : action.data.filter : state.workspacePosts[action.data.topic_id].filter,
+                                : action.data.filter : state.workspacePosts[action.data.topic_id].filter,
                         sort: action.data.sort ? action.data.sort === state.workspacePosts[action.data.topic_id].sort ? state.workspacePosts[action.data.topic_id].sort
                             : action.data.sort : state.workspacePosts[action.data.topic_id].sort,
                         tag: action.data.tag
@@ -513,7 +516,7 @@ export default (state = INITIAL_STATE, action) => {
             }
             let newWorkspaces = {...state.workspaces};
             let topic = null;
-            if (newWorkspaces.hasOwnProperty(action.data.topic_id)){
+            if (newWorkspaces.hasOwnProperty(action.data.topic_id)) {
                 topic = {...newWorkspaces[action.data.topic_id]};
                 topic = {
                     ...topic,
@@ -529,7 +532,7 @@ export default (state = INITIAL_STATE, action) => {
                     [action.data.topic_id]: topic
                 };
             } else {
-                if (state.activeTopic.id === action.data.topic_id && 
+                if (state.activeTopic.id === action.data.topic_id &&
                     (state.activeTopic.workspace_id !== undefined || state.activeTopic.workspace_id !== 0)) {
                     topic = {...newWorkspaces[state.activeTopic.workspace_id].topics[state.activeTopic.id]};
                     topic = {
@@ -562,8 +565,8 @@ export default (state = INITIAL_STATE, action) => {
                 return {
                     ...state,
                     workspaces: newWorkspaces,
-                    activeTopic: state.activeTopic.id === action.data.topic_id 
-                        ? topic  
+                    activeTopic: state.activeTopic.id === action.data.topic_id
+                        ? topic
                         : state.activeTopic
                 }
             } else {
@@ -615,7 +618,7 @@ export default (state = INITIAL_STATE, action) => {
             let comments = {};
             if (action.data.messages.length) {
                 action.data.messages.forEach(c => {
-                    comments[c.id] = { 
+                    comments[c.id] = {
                         ...c,
                         replies: convertArrayToObject(c.replies, "id"),
                         skip: c.replies.length,
@@ -814,7 +817,7 @@ export default (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 workspaces: newWorkspaces,
-                activeTopic: state.activeTopic.id === action.data.id ? 
+                activeTopic: state.activeTopic.id === action.data.id ?
                     {
                         ...state.activeTopic,
                         primary_files: action.data.files
@@ -836,7 +839,7 @@ export default (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 workspaces: newWorkspaces,
-                activeTopic: state.activeTopic.id === action.data.topic_id ? 
+                activeTopic: state.activeTopic.id === action.data.topic_id ?
                     {
                         ...state.activeTopic,
                         primary_files: state.activeTopic.hasOwnProperty("primary_files") ? [...state.activeTopic.primary_files, ...action.data.files] : action.data.files
@@ -861,13 +864,13 @@ export default (state = INITIAL_STATE, action) => {
             let newPostComments = {...state.postComments};
             if (newPostComments.hasOwnProperty(action.data.post_id)) {
                 if (action.data.parent_message_id) {
-                    newPostComments[action.data.post_id].comments[action.data.parent_message_id].replies[action.data.message_id].clap_count = action.data.clap_count === 0 ? 
+                    newPostComments[action.data.post_id].comments[action.data.parent_message_id].replies[action.data.message_id].clap_count = action.data.clap_count === 0 ?
                         newPostComments[action.data.post_id].comments[action.data.parent_message_id].replies[action.data.message_id].clap_count - 1 : newPostComments[action.data.post_id].comments[action.data.parent_message_id].replies[action.data.message_id].clap_count + 1;
-                        newPostComments[action.data.post_id].comments[action.data.parent_message_id].replies[action.data.message_id].user_clap_count = action.data.clap_count;
+                    newPostComments[action.data.post_id].comments[action.data.parent_message_id].replies[action.data.message_id].user_clap_count = action.data.clap_count;
                 } else {
-                    newPostComments[action.data.post_id].comments[action.data.message_id].clap_count = action.data.clap_count === 0 ? 
+                    newPostComments[action.data.post_id].comments[action.data.message_id].clap_count = action.data.clap_count === 0 ?
                         newPostComments[action.data.post_id].comments[action.data.message_id].clap_count - 1 : newPostComments[action.data.post_id].comments[action.data.message_id].clap_count + 1;
-                        newPostComments[action.data.post_id].comments[action.data.message_id].user_clap_count = action.data.clap_count;
+                    newPostComments[action.data.post_id].comments[action.data.message_id].user_clap_count = action.data.clap_count;
                 }
                 return {
                     ...state,
@@ -900,7 +903,7 @@ export default (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 workspaces: newWorkspaces,
-                activeTopic: state.activeTopic && state.activeTopic.id === action.data.id ? 
+                activeTopic: state.activeTopic && state.activeTopic.id === action.data.id ?
                     {
                         ...state.activeTopic,
                         members: action.data.members
@@ -960,26 +963,26 @@ export default (state = INITIAL_STATE, action) => {
                 newWorkspacePosts[action.data.topic_id].posts[action.data.post_id].is_updated = true;
                 if (action.data.folderId) {
                     updatedWorkspaces[action.data.folderId].unread_count = updatedWorkspaces[action.data.folderId].unread_count - action.data.count;
-                    updatedWorkspaces[action.data.folderId].topics[action.data.topic_id].unread_posts =  updatedWorkspaces[action.data.folderId].topics[action.data.topic_id].unread_posts - action.data.count;
-                    if (updatedTopic.id == action.data.topic_id) {
+                    updatedWorkspaces[action.data.folderId].topics[action.data.topic_id].unread_posts = updatedWorkspaces[action.data.folderId].topics[action.data.topic_id].unread_posts - action.data.count;
+                    if (updatedTopic.id === action.data.topic_id) {
                         updatedTopic.unread_posts = updatedTopic.unread_posts - action.data.count;
                     }
                 } else {
-                    updatedWorkspaces[action.data.topic_id].unread_count = updatedWorkspaces[action.data.topic_id].unread_count -  action.data.count;
-                    if (updatedTopic.id == action.data.topic_id) {
+                    updatedWorkspaces[action.data.topic_id].unread_count = updatedWorkspaces[action.data.topic_id].unread_count - action.data.count;
+                    if (updatedTopic.id === action.data.topic_id) {
                         updatedTopic.topic_detail.unread_posts = updatedTopic.topic_detail.unread_posts - action.data.count;
                     }
                 }
             } else {
                 if (action.data.folderId) {
                     updatedWorkspaces[action.data.folderId].unread_count = updatedWorkspaces[action.data.folderId].unread_count + 1;
-                    updatedWorkspaces[action.data.folderId].topics[action.data.topic_id].unread_posts =  updatedWorkspaces[action.data.folderId].topics[action.data.topic_id].unread_posts + 1;
-                    if (updatedTopic.id == action.data.topic_id) {
+                    updatedWorkspaces[action.data.folderId].topics[action.data.topic_id].unread_posts = updatedWorkspaces[action.data.folderId].topics[action.data.topic_id].unread_posts + 1;
+                    if (updatedTopic.id === action.data.topic_id) {
                         updatedTopic.unread_posts = updatedTopic.unread_posts + 1;
                     }
                 } else {
                     updatedWorkspaces[action.data.topic_id].unread_count = updatedWorkspaces[action.data.topic_id].unread_count + 1;
-                    if (updatedTopic.id == action.data.topic_id) {
+                    if (updatedTopic.id === action.data.topic_id) {
                         updatedTopic.topic_detail.unread_posts = updatedTopic.topic_detail.unread_posts + 1;
                     }
                 }
@@ -1025,11 +1028,11 @@ export default (state = INITIAL_STATE, action) => {
                             Object.values(newPostComments[action.data.post_id].comments).forEach(c => {
                                 if (c.id === action.data.message_id) {
                                     newPostComments[action.data.post_id].comments[action.data.message_id].files = newPostComments[action.data.post_id].comments[action.data.message_id].files.filter(f => f.id !== action.data.file_id);
-                                    return
+
                                 } else {
                                     if (c.replies.hasOwnProperty(action.data.message_id)) {
                                         newPostComments[action.data.post_id].comments[c.id].replies[action.data.message_id].files = newPostComments[action.data.post_id].comments[c.id].replies[action.data.message_id].files.filter(f => f.id !== action.data.file_id);
-                                        return;
+
                                     }
                                 }
                             })
@@ -1085,7 +1088,7 @@ export default (state = INITIAL_STATE, action) => {
                             if (ws.hasOwnProperty("topics") && ws.topics.hasOwnProperty(action.data.workspace_id)) {
                                 updatedWorkspaces[ws.id].unread_count = updatedWorkspaces[ws.id].unread_count + 1;
                                 updatedWorkspaces[ws.id].topics[action.data.workspace_id].unread_chats = updatedWorkspaces[ws.id].topics[action.data.workspace_id].unread_chats + 1;
-                                return;
+
                             }
                         })
                         return {
@@ -1115,7 +1118,7 @@ export default (state = INITIAL_STATE, action) => {
                         if (ws.hasOwnProperty("topics") && ws.topics.hasOwnProperty(action.data.id)) {
                             updatedWorkspaces[ws.id].topics[action.data.id].unread_chats = 0;
                             updatedWorkspaces[ws.id].unread_count = updatedWorkspaces[ws.id].unread_count - action.data.count;
-                            return;
+
                         }
                     })
                     return {

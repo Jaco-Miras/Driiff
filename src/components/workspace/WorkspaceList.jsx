@@ -175,9 +175,18 @@ const WorkspaceList = props => {
                 <TopicNav ref={ref.nav} maxHeight={maxHeight}
                           className={showTopics === null ? "" : showTopics ? "enter-active" : "leave-active"}>
                     {
-                        Object.keys(workspace.topics).length > 0 && Object.values(workspace.topics).map(topic => {
-                            return <TopicList key={topic.id} topic={topic}/>;
-                        })
+                        Object.keys(workspace.topics).length > 0 &&
+                        Object.values(workspace.topics)
+                            .sort((a, b) => {
+                                let compare = b.updated_at.timestamp - a.updated_at.timestamp;
+                                if (compare !== 0)
+                                    return compare;
+
+                                return a.name.localeCompare(b.name);
+                            })
+                            .map(topic => {
+                                return <TopicList key={topic.id} topic={topic}/>;
+                            })
                     }
                     <li className="nav-action" onClick={handleShowWorkspaceModal}>
                         <SvgIconFeather icon="plus"/> New workspace
