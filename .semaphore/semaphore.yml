@@ -13,4 +13,4 @@ blocks:
             - checkout
         - name: 'Job #2'
           commands:
-            - env-cmd -e dev react-scripts start
+            - yarn env-cmd -e dev react-scripts start
