@@ -18,6 +18,9 @@ blocks:
         - name: Yarn install all dependencies
           commands:
             - yarn install
+        - name: Install env-cmd
+          commands:
+            - yarn add env-cmd
     dependencies:
       - Pull latest code
   - name: Build Development
