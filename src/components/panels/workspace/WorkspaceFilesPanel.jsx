@@ -6,6 +6,7 @@ import {replaceChar} from "../../../helpers/stringFormatter";
 import {addToModals} from "../../../redux/actions/globalActions";
 import {useFiles, useTranslation} from "../../hooks";
 import {FilesBody, FilesHeader, FilesSidebar} from "../files";
+import { useEffect } from "react";
 
 
 const Wrapper = styled.div`
@@ -151,6 +152,12 @@ const WorkspaceFilesPanel = (props) => {
     const clearFilter = useCallback(() => {
         setFilter("");
     }, [setFilter]);
+
+    useEffect(() => {
+        if (folder && folder.is_archived && filter !== "removed") {
+            setFilter("removed");
+        }
+    }, [folder, filter, setFilter]);
 
     if (!wsFiles)
         return <></>;
