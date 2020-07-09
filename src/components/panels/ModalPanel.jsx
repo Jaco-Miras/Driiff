@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import {useSelector} from "react-redux";
 import styled from "styled-components";
 import FileViewer from "../common/FileViewer";
@@ -23,8 +23,18 @@ const ModalPanelContainer = styled.div`
 
 const ModalPanel = () => {
 
+    const [scrollTop, setScrollTop] = useState(0);
     const modals = useSelector(state => state.global.modals);
     const viewFiles = useSelector(state => state.files.viewFiles);
+
+    useEffect(() => {
+        if (Object.keys(modals).length > 0) {
+            setScrollTop(document.documentElement.scrollTop);
+        } else {
+            window.scrollTo(0, scrollTop);
+            setScrollTop(0);
+        }
+    }, [modals]);
 
     if (Object.keys(modals).length > 0) {
         return (

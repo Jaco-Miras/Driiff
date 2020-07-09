@@ -125,7 +125,7 @@ const WorkspaceNavigationMenuBodyPanel = (props) => {
     const {className = ""} = props;
     const dispatch = useDispatch();
 
-    const workspaces = useSelector(state => state.workspaces.workspaces);
+    // const workspaces = useSelector(state => state.workspaces.workspaces);
     // const workspacesLoaded = useSelector(state => state.workspaces.workspacesLoaded);
     // const activeTopic = useSelector(state => state.workspaces.activeTopic);
     const activeTab = useSelector(state => state.workspaces.activeTab);

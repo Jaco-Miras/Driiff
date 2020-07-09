@@ -56,8 +56,9 @@ const TeamListItem = (props) => {
     };
 
     return (
-        <Wrapper className={`team-list-item list-group-item d-flex align-items-center p-l-r-0 justify-content-between ${className}`}>
-            <div class="d-flex align-items-center ">
+        <Wrapper
+            className={`team-list-item list-group-item d-flex align-items-center p-l-r-0 justify-content-between ${className}`}>
+            <div className="d-flex align-items-center ">
                 <div className="pr-3">
                     <Avatar id={member.id} name={member.name} imageLink={member.profile_image_link}
                             partialName={member.partial_name}/>

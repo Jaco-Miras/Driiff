@@ -2,13 +2,13 @@ import React, {useState} from "react";
 import {useSelector} from "react-redux";
 import {useHistory} from "react-router-dom";
 import Skeleton from "react-skeleton-loader";
+import Tooltip from "react-tooltip-lite";
 import styled from "styled-components";
 import departmentIcon from "../../assets/icon/teams/r/secundary.svg";
 import defaultIcon from "../../assets/icon/user/avatar/l/no_outline.png";
 import botIcon from "../../assets/img/gripp-bot.png";
-import {SvgIconFeather} from "./SvgIcon";
 import {replaceChar} from "../../helpers/stringFormatter";
-import Tooltip from "react-tooltip-lite";
+import {SvgIconFeather} from "./SvgIcon";
 
 const Wrapper = styled.div`
     position: relative;
@@ -48,7 +48,7 @@ const Avatar = (props) => {
         className = "",
         imageLink,
         id,
-        name,
+        name = "",
         children,
         partialName = null,
         isAnonymous = false,
@@ -67,9 +67,9 @@ const Avatar = (props) => {
     const [showInitials, setShowInitials] = useState(false);
 
     const toggleTooltip = () => {
-        let tooltips = document.querySelectorAll('span.react-tooltip-lite');
+        let tooltips = document.querySelectorAll("span.react-tooltip-lite");
         tooltips.forEach((tooltip) => {
-            tooltip.parentElement.classList.toggle('tooltip-active');
+            tooltip.parentElement.classList.toggle("tooltip-active");
         });
     };
 
@@ -107,7 +107,7 @@ const Avatar = (props) => {
 
         if (typeof title === "undefined") return "";
 
-        var result = ""
+        var result = "";
         var tokens = title.split(" ");
         for (var i = 0; i < tokens.length; i++) {
             result += tokens[i].substring(0, 1).toUpperCase();
@@ -141,12 +141,12 @@ const Avatar = (props) => {
             {
                 showInitials ?
                 <Initials className="rounded-circle">{handleInitials(name)}</Initials>
-                            :
+                             :
                 <>
                     {
                         type === "GROUP" ?
                         <SvgIconFeather icon="users"/>
-                            :
+                                         :
                         <Image
                             show={isLoaded}
                             className="rounded-circle"
