@@ -384,24 +384,26 @@ class SocketListeners extends PureComponent {
             .listen(".update-workspace", e => {
                 console.log(e, "update workspace");
                 this.props.incomingUpdatedWorkspaceFolder(e);
-                if (e.new_member_ids.length > 0) {
-                    const isMember = e.new_member_ids.some(id => id === this.props.user.id);
-                    if (isMember) {
-                        this.props.getWorkspace({topic_id: e.id});
+                if (e.type === "WORKSPACE") {
+                    if (e.new_member_ids.length > 0) {
+                        const isMember = e.new_member_ids.some(id => id === this.props.user.id);
+                        if (isMember) {
+                            this.props.getWorkspace({topic_id: e.id});
+                        }
                     }
-                }
-                if (e.remove_member_ids.length > 0 && this.props.selectedChannel) {
-                    if (this.props.selectedChannel.id === e.system_message.channel_id) {
-                        //redirect to first channel
-                        let wsChannels = Object.values(this.props.channels).filter(c => {
-                            const checkForId = id => id === this.props.user.id;
-                            let isMember = c.members.map(m => m.id).some(checkForId);
-                            return c.type === "TOPIC" && isMember && c.is_hidden === 0;
-                        })
-                        if (wsChannels.length > 0 && this.props.location.pathname === `/chat/${this.props.selectedChannel.code}`) {
-                            let channel = wsChannels[0]
-                            this.props.setSelectedChannel(channel);
-                            this.props.history.push(`/chat/${channel.code}`);
+                    if (e.remove_member_ids.length > 0 && this.props.selectedChannel) {
+                        if (this.props.selectedChannel.id === e.system_message.channel_id) {
+                            //redirect to first channel
+                            let wsChannels = Object.values(this.props.channels).filter(c => {
+                                const checkForId = id => id === this.props.user.id;
+                                let isMember = c.members.map(m => m.id).some(checkForId);
+                                return c.type === "TOPIC" && isMember && c.is_hidden === 0;
+                            })
+                            if (wsChannels.length > 0 && this.props.location.pathname === `/chat/${this.props.selectedChannel.code}`) {
+                                let channel = wsChannels[0]
+                                this.props.setSelectedChannel(channel);
+                                this.props.history.push(`/chat/${channel.code}`);
+                            }
                         }
                     }
                 }
@@ -451,24 +453,26 @@ class SocketListeners extends PureComponent {
             .listen(".update-lock-workspace", e => {
                 console.log(e, "update lock workspace");
                 this.props.incomingUpdatedWorkspaceFolder(e);
-                if (e.new_member_ids.length > 0) {
-                    const isMember = e.new_member_ids.some(id => id === this.props.user.id);
-                    if (isMember) {
-                        this.props.getWorkspace({topic_id: e.id});
+                if (e.type === "WORKSPACE") {
+                    if (e.new_member_ids.length > 0) {
+                        const isMember = e.new_member_ids.some(id => id === this.props.user.id);
+                        if (isMember) {
+                            this.props.getWorkspace({topic_id: e.id});
+                        }
                     }
-                }
-                if (e.remove_member_ids.length > 0 && this.props.selectedChannel) {
-                    if (this.props.selectedChannel.id === e.system_message.channel_id) {
-                        //redirect to first channel
-                        let wsChannels = Object.values(this.props.channels).filter(c => {
-                            const checkForId = id => id === this.props.user.id;
-                            let isMember = c.members.map(m => m.id).some(checkForId);
-                            return c.type === "TOPIC" && isMember && c.is_hidden === 0;
-                        })
-                        if (wsChannels.length > 0 && this.props.location.pathname === `/chat/${this.props.selectedChannel.code}`) {
-                            let channel = wsChannels[0]
-                            this.props.setSelectedChannel(channel);
-                            this.props.history.push(`/chat/${channel.code}`);
+                    if (e.remove_member_ids.length > 0 && this.props.selectedChannel) {
+                        if (this.props.selectedChannel.id === e.system_message.channel_id) {
+                            //redirect to first channel
+                            let wsChannels = Object.values(this.props.channels).filter(c => {
+                                const checkForId = id => id === this.props.user.id;
+                                let isMember = c.members.map(m => m.id).some(checkForId);
+                                return c.type === "TOPIC" && isMember && c.is_hidden === 0;
+                            })
+                            if (wsChannels.length > 0 && this.props.location.pathname === `/chat/${this.props.selectedChannel.code}`) {
+                                let channel = wsChannels[0]
+                                this.props.setSelectedChannel(channel);
+                                this.props.history.push(`/chat/${channel.code}`);
+                            }
                         }
                     }
                 }

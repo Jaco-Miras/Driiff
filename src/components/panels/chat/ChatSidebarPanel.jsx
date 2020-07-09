@@ -2,6 +2,7 @@ import React, {useCallback, useEffect, useRef, useState} from "react";
 import styled from "styled-components";
 import SearchForm from "../../forms/SearchForm";
 import {ChatSideBarContentPanel} from "./index";
+import {usePreviousValue} from "../../hooks";
 
 
 const Wrapper = styled.div`
@@ -23,6 +24,7 @@ const ChatSidebarPanel = (props) => {
 
     const [search, setSearch] = useState("");
     const [tabPill, setTabPill] = useState(activeTabPill);
+    const previousChannel = usePreviousValue(selectedChannel);
 
     const refs = {
         navTab: useRef(),
@@ -50,6 +52,20 @@ const ChatSidebarPanel = (props) => {
         }
     }, [activeTabPill]);
 
+    useEffect(() => {
+        if (previousChannel === null && selectedChannel !== null) {
+            if (selectedChannel.type === "TOPIC") {
+                setTabPill("pills-workspace-internal");
+                refs.navTab.current.querySelector(".nav-link.active").classList.remove("active");
+
+                let e = refs.navTab.current.querySelector(`.nav-link[aria-controls="pills-workspace-internal"]`);
+                if (e) {
+                    e.classList.add("active");
+                }
+            }
+        }
+    }, [selectedChannel, previousChannel, setTabPill]);
+    
     return (
         <Wrapper className={`chat-sidebar ${className}`}>
             <div className="chat-sidebar-header">
