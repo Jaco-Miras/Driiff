@@ -157,6 +157,8 @@ const WorkspaceNavigationMenuBodyPanel = (props) => {
 
     useSetWorkspace();
     const sortedWorkspaces = useSortWorkspaces();
+    const generalInternalWorkspaces = sortedWorkspaces.filter(ws => ws.type !== "FOLDER" && ws.is_external === 0)
+    const generalExternalWorkspaces = sortedWorkspaces.filter(ws => ws.type !== "FOLDER" && ws.is_external !== 0)
 
     return (
         <>
@@ -189,11 +191,37 @@ const WorkspaceNavigationMenuBodyPanel = (props) => {
                             <ul>
                                 {
                                     sortedWorkspaces
+                                        .filter(sws => sws.type === "FOLDER")
                                         .map(ws => {
                                             return <WorkspaceList
                                                 show={ws.is_external === (activeTab === "intern" ? 0 : 1)}
-                                                key={ws.key_id} workspace={ws}/>;
+                                                key={ws.key_id}
+                                                workspace={ws}/>;
                                         })
+                                }
+                                {
+                                    generalInternalWorkspaces.length > 0 &&
+                                    <WorkspaceList
+                                        show={activeTab === "intern"}
+                                        workspace={{
+                                            id: "general_internal",
+                                            selected: generalInternalWorkspaces.some(ws => ws.selected),
+                                            name: "General",
+                                            type: "GENERAL_FOLDER",
+                                            topics: generalInternalWorkspaces
+                                        }}/>
+                                }
+                                {
+                                    generalExternalWorkspaces.length > 0 &&
+                                    <WorkspaceList
+                                        show={activeTab !== "intern"}
+                                        workspace={{
+                                            id: "general_external",
+                                            selected: generalInternalWorkspaces.some(ws => ws.selected),
+                                            name: "General",
+                                            type: "GENERAL_FOLDER",
+                                            topics: generalInternalWorkspaces
+                                        }}/>
                                 }
                             </ul>
                         </div>
