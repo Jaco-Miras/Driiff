@@ -304,7 +304,7 @@ const CreateEditChatModal = props => {
                 dispatch(
                     setSelectedChannel(payload)
                 );
-                history.push(`/chat/${channel.code}`);
+                history.push(`/chat/${res.data.code}`);
             };
             channelActions.create(payload, createCallback);
         }
