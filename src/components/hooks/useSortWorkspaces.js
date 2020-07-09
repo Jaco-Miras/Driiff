@@ -13,9 +13,9 @@ const useSortWorkspaces = () => {
                 return 1;
         }
 
-        let compare = b.updated_at.timestamp - a.updated_at.timestamp;
+        /*let compare = b.updated_at.timestamp - a.updated_at.timestamp;
         if (compare !== 0)
-            return compare;
+            return compare;*/
 
         return a.name.localeCompare(b.name);
     })

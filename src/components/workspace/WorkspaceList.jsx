@@ -113,7 +113,7 @@ const WorkspaceList = props => {
     const handleShowTopics = (e) => {
         e.preventDefault();
 
-        if (workspace.type === "FOLDER") {
+        if (["FOLDER", "GENERAL_FOLDER"].includes(workspace.type)) {
             if (!showTopics) {
                 setGeneralSetting({
                     workspace_open_folder: {
@@ -157,7 +157,7 @@ const WorkspaceList = props => {
                 }
                 {workspace.name}
                 {
-                    workspace.type === "FOLDER" &&
+                    ["FOLDER", "GENERAL_FOLDER"].includes(workspace.type) &&
                     <i ref={ref.arrow}
                        className={`sub-menu-arrow ti-angle-up ${showTopics ? "ti-minus rotate-in" : "ti-plus"}`}/>
                 }
@@ -178,9 +178,32 @@ const WorkspaceList = props => {
                         Object.keys(workspace.topics).length > 0 &&
                         Object.values(workspace.topics)
                             .sort((a, b) => {
-                                let compare = b.updated_at.timestamp - a.updated_at.timestamp;
+                                /*let compare = b.updated_at.timestamp - a.updated_at.timestamp;
                                 if (compare !== 0)
-                                    return compare;
+                                    return compare;*/
+
+                                return a.name.localeCompare(b.name);
+                            })
+                            .map(topic => {
+                                return <TopicList key={topic.id} topic={topic}/>;
+                            })
+                    }
+                    <li className="nav-action" onClick={handleShowWorkspaceModal}>
+                        <SvgIconFeather icon="plus"/> New workspace
+                    </li>
+                </TopicNav>
+            }
+            {
+                workspace.type === "GENERAL_FOLDER" &&
+                <TopicNav ref={ref.nav} maxHeight={maxHeight}
+                          className={showTopics === null ? "" : showTopics ? "enter-active" : "leave-active"}>
+                    {
+                        workspace.topics.length > 0 &&
+                        workspace.topics
+                            .sort((a, b) => {
+                                /*let compare = b.updated_at.timestamp - a.updated_at.timestamp;
+                                if (compare !== 0)
+                                    return compare;*/
 
                                 return a.name.localeCompare(b.name);
                             })

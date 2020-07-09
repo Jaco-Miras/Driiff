@@ -1,5 +1,4 @@
 import React from "react";
-import {useDispatch} from "react-redux";
 import {useHistory, useRouteMatch} from "react-router-dom";
 import {Badge} from "reactstrap";
 import styled from "styled-components";
@@ -20,7 +19,6 @@ const TopicList = props => {
 
     const {className = "", topic} = props;
 
-    const dispatch = useDispatch();
     const history = useHistory();
     const route = useRouteMatch();
 
@@ -36,11 +34,25 @@ const TopicList = props => {
                 } else {
                     history.push(`/workspace/${route.params.page}/${topic.workspace_id}/${replaceChar(topic.workspace_name)}/${topic.id}/${replaceChar(topic.name)}`);
                 }
+            } else {
+                if (topic.selected)
+                    return;
+
+                history.push(`/workspace/chat/${topic.id}/${replaceChar(topic.name)}`);
             }
         }
     };
 
-    const unread_count = topic.unread_chats + topic.unread_posts;
+    if (typeof topic.unread_chats === "undefined")
+        topic.unread_chats = 0;
+
+    if (typeof topic.unread_posts === "undefined")
+        topic.unread_posts = 0;
+
+    if (typeof topic.unread_count === "undefined")
+        topic.unread_count = 0;
+
+    const unread_count = topic.unread_chats + topic.unread_posts + topic.unread_count;
 
     return (
         <TopicListWrapper
@@ -59,4 +71,4 @@ const TopicList = props => {
     );
 };
 
-export default TopicList;
+export default React.memo(TopicList);
