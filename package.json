@@ -68,8 +68,6 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "eslint": "eslint src/*.js src/layout/*.jsx src/helpers/*.js src/components/**/*.js src/components/**/*.jsx src/components/**/**/*.js src/components/**/**/*.jsx src/components/**/**/**/*.js src/components/**/**/**/*.jsx src/redux/**/*.js"
-
-
   },
   "eslintConfig": {
     "extends": "react-app"

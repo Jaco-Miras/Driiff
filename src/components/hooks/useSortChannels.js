@@ -12,7 +12,11 @@ const useSortChannels = (channels, search, options = {}, workspace) => {
     const getChannelTitle = (ac) => {
         if (ac.type === "DIRECT" && ac.members.length === 2) {
             let m = ac.members.filter(m => m.id !== user.id)[0];
-            return m.first_name;
+            if (m.hasOwnProperty("first_name")) {
+                return m.first_name
+            } else {
+                return m.name
+            }
         } else {
             return ac.title;
         }

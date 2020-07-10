@@ -364,6 +364,7 @@ export default function (state = INITIAL_STATE, action) {
                                                    r.id = action.data.id;
                                                    return r;
                                                } else {
+                                                   r.is_read = true;
                                                    return r;
                                                }
                                            })
@@ -387,6 +388,7 @@ export default function (state = INITIAL_STATE, action) {
                                                        r.id = action.data.id;
                                                        return r;
                                                    } else {
+                                                        r.is_read = true;
                                                        return r;
                                                    }
                                                })
