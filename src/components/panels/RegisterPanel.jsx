@@ -56,7 +56,7 @@ const RegisterPanel = () => {
             <button className="btn btn-primary btn-block" onClick={handleRegister}>Register</button>
             <hr/>
             <p className="text-muted">Already have an account?</p>
-            <Link className={`btn btn-outline-light btn-sm`} to="/login">Sign in!</Link>
+            <Link className={"btn btn-outline-light btn-sm"} to="/login">Sign in!</Link>
         </Wrapper>
     );
 };

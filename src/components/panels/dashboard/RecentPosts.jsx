@@ -78,18 +78,18 @@ const RecentPosts = (props) => {
     }, []);
 
     const handleOpenPost = (post) => {
-        postActions.openPost(post, match.url.replace("/workspace/dashboard/", "/workspace/posts/"))
+        postActions.openPost(post, match.url.replace("/workspace/dashboard/", "/workspace/posts/"));
     };
 
     const handleRefetchPosts = () => {
         if (match.params.hasOwnProperty("workspaceId")) {
-            postActions.getRecentPosts(match.params.workspaceId)
+            postActions.getRecentPosts(match.params.workspaceId);
         }
     };
 
     useEffect(() => {
         if (match.params.hasOwnProperty("workspaceId")) {
-            postActions.getRecentPosts(match.params.workspaceId)
+            postActions.getRecentPosts(match.params.workspaceId);
         }
     }, [match.params.workspaceId]);
 

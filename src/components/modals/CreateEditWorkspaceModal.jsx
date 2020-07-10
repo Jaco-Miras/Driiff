@@ -549,8 +549,6 @@ const CreateEditWorkspaceModal = (props) => {
                 name: null,
             }));
         }
-
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {

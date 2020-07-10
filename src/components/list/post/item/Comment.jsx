@@ -124,9 +124,9 @@ const Comment = props => {
             id: comment.id,
             reaction: "clap",
             counter: comment.user_clap_count === 0 ? 1 : 0,
-        }
+        };
         commentActions.clap(payload);
-    }
+    };
 
     return (
         <>
@@ -144,7 +144,7 @@ const Comment = props => {
                         </div>
                         {
                             post.is_read_only !== 1 &&
-                            <MoreOptions scrollRef={refs.body.current} moreButton={`more-vertical`}>
+                            <MoreOptions scrollRef={refs.body.current} moreButton={"more-vertical"}>
                                 {
                                     user.id === comment.author.id &&
                                     <div onClick={() => commentActions.setToEdit(comment)}>
@@ -181,7 +181,7 @@ const Comment = props => {
                         </>
                     }
                     <div className="d-flex align-items-center justify-content-start">
-                        <Icon className={comment.user_clap_count ? 'mr-2 comment-reaction clap-true' : 'mr-2 comment-reaction clap-false'}  icon="heart" onClick={handleReaction}/>
+                        <Icon className={comment.user_clap_count ? "mr-2 comment-reaction clap-true" : "mr-2 comment-reaction clap-false"}  icon="heart" onClick={handleReaction}/>
                         {comment.clap_count > 0 ? comment.clap_count : null}
                         {
                             post.is_read_only !== 1 &&

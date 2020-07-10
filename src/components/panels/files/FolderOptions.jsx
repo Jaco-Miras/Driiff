@@ -40,7 +40,7 @@ const FolderOptions = props => {
         if (isMember) {
             handleAddEditFolder(folder, "edit");
         } else {
-            toaster.warning(`You are not a member of this workspace.`);
+            toaster.warning("You are not a member of this workspace.");
         }
     };
 
@@ -56,7 +56,7 @@ const FolderOptions = props => {
             };
             actions.removeFolder(folder, params.workspaceId, cb);
         } else {
-            toaster.warning(`You are not a member of this workspace.`);
+            toaster.warning("You are not a member of this workspace.");
         }
     };
 

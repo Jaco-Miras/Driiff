@@ -59,7 +59,7 @@ export default (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 parentId: action.data
-            }
+            };
         }
         case "FETCH_RECENT_POSTS_SUCCESS": {
             return {
@@ -70,7 +70,7 @@ export default (state = INITIAL_STATE, action) => {
                         posts: convertArrayToObject(action.data.posts, "id")
                     }
                 }
-            }
+            };
         }
         case "MARK_POST_REDUCER": {
             return {
@@ -87,7 +87,7 @@ export default (state = INITIAL_STATE, action) => {
                         }
                     }
                 }
-            }
+            };
         }
         case "ADD_TO_WORKSPACE_POSTS": {
             let convertedPosts = convertArrayToObject(action.data.posts, "id");
@@ -95,9 +95,9 @@ export default (state = INITIAL_STATE, action) => {
             if (state.drafts.length) {
                 state.drafts.forEach(d => {
                     if (d.data.type === "draft_post" && action.data.topic_id === d.data.topic_id) {
-                        postDrafts.push({...d.data,...d.data.form, draft_id: d.id})
+                        postDrafts.push({...d.data,...d.data.form, draft_id: d.id});
                     }
-                })
+                });
             }
             if (postDrafts.length) {
                 postDrafts = convertArrayToObject(postDrafts, "id");
@@ -109,24 +109,24 @@ export default (state = INITIAL_STATE, action) => {
                     ...convertedPosts,
                     ...postDrafts,
                 },
-            }
+            };
         }
         case "GET_DRAFTS_SUCCESS": {
             return {
                 ...state,
                 drafts: action.data
-            }
+            };
         }
         case "INCOMING_POST_VIEWER": {
             if (state.posts.hasOwnProperty[action.data.post_id]) {
                 let updatedPosts = {...state.posts};
-                updatedPosts[action.data.post_id].view_user_ids = [...updatedPosts[action.data.post_id].view_user_ids, action.data.viewer.id]
+                updatedPosts[action.data.post_id].view_user_ids = [...updatedPosts[action.data.post_id].view_user_ids, action.data.viewer.id];
                 return {
                     ...state,
                     posts: updatedPosts
-                }
+                };
             } else {
-                return state
+                return state;
             }
         }
         case "ARCHIVE_REDUCER": {
@@ -135,7 +135,7 @@ export default (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 posts: updatedPosts
-            }
+            };
         }
         // case "MARK_READ_UNREAD_REDUCER": {
         //     let newPosts = {...state.posts};
@@ -159,4 +159,4 @@ export default (state = INITIAL_STATE, action) => {
         default:
             return state;
     }
-} 
+}; 

@@ -10,7 +10,7 @@ import {useSettings} from "../hooks";
 import TopicList from "./TopicList";
 
 const Wrapper = styled.li`
-    ${props => !props.show && `display: none;`}
+    ${props => !props.show && "display: none;"}
     cursor: pointer;
     cursor: hand;
     position: relative;

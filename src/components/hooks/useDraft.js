@@ -69,8 +69,6 @@ const useDraft = (callback, type, text, textOnly, draftId) => {
         dispatch(getChannelDrafts());
         handleLoadDraft();
         return () => handleSaveDraft();
-
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {

@@ -8,7 +8,7 @@ import ChannelTitle from "../list/chat/ChannelTitle";
 import ReplyPreview from "../list/chat/ReplyPreview";
 import {WorkspaceChannelOptions, WorkspaceChatDateIcons} from "./channel";
 
-const Wrapper = styled.li`    
+const Wrapper = styled.li`
     cursor: pointer;
     cursor: hand;
     position: relative;
@@ -19,7 +19,6 @@ const Wrapper = styled.li`
         opacity: 0;
         z-index: -1;
     }
-
     &:hover {
         .more-options {
             opacity: 1;
@@ -72,7 +71,6 @@ const Wrapper = styled.li`
         height: 25px;
         position: relative;
         right: 0;
-        ${"" /* border: 1px solid #dee2e6; */}
         fill: currentColor;
         padding: 3px;
         top: 2px;
@@ -81,7 +79,7 @@ const Wrapper = styled.li`
 
 const Initials = styled.span`
     background-color: #fff;
-    display: flex;    
+    display: flex;
     margin: auto;
     height: 20px;
     text-align: center;
@@ -204,7 +202,7 @@ const WorkspaceChatList = props => {
                             <Initials className="rounded-circle">{handleInitials(workspace.name)}</Initials>
                         </div>
                     </div>
-                    <ChannelTitlePreview className={`flex-grow-1`}>
+                    <ChannelTitlePreview className={"flex-grow-1"}>
                         <ChannelTitle channel={workspace}/>
                         <ReplyPreview channel={workspace}/>
                     </ChannelTitlePreview>

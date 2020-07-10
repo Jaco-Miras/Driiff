@@ -73,8 +73,6 @@ const ChatReactions = props => {
 
     useEffect(() => {
         setGroupedReactions(groupReactions());
-
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {

@@ -18,12 +18,12 @@ const PostFilterTag = props => {
         let payload = {
             topic_id: workspace.id,
             tag: e.target.dataset.value,
-        }
+        };
         if (tag === e.target.dataset.value) {
             payload = {
                 ...payload,
                 tag: null
-            }
+            };
         }
         dispatch(
             updateWorkspacePostFilterSort(payload),

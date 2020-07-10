@@ -138,8 +138,6 @@ export default function usePushNotifications() {
                 //setLoading(false);
             });
         }
-
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     //if the push notifications are supported, registers the service worker
     //this effect runs only the first render
@@ -156,8 +154,6 @@ export default function usePushNotifications() {
             setLoading(false);
         };
         getExistingSubscription();
-
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     //Retrieve if there is any push notification subscription for the registered service worker
     // this use effect runs only in the first render

@@ -7,7 +7,7 @@ const useNotifications = props => {
     return {
         notifications,
         unreadCount
-    }
+    };
 };
 
 export default useNotifications;

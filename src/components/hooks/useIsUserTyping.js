@@ -20,9 +20,9 @@ const useIsUserTyping = props => {
 
     const handleSetUserTyping = (e) => {
         if (channel.id === e.channel_id) {
-            clearTimeout(timerRef.current)
+            clearTimeout(timerRef.current);
             timerRef.current = setTimeout(() => {
-                console.log("clear", usersTyping)
+                console.log("clear", usersTyping);
                 setUsersTyping([]);
             }, 3000);
             
@@ -49,9 +49,9 @@ const useIsUserTyping = props => {
         if (channel.is_shared) {
             if (window[channel.slug_owner]) {
                 if (leaveId) {
-                    window[channel.slug_owner].leave(channel.slug_owner + `.App.Channel.` + leaveId);
+                    window[channel.slug_owner].leave(channel.slug_owner + ".App.Channel." + leaveId);
                 }
-                window[channel.slug_owner].private(channel.slug_owner + `.App.Channel.` + channel.id)
+                window[channel.slug_owner].private(channel.slug_owner + ".App.Channel." + channel.id)
                     .listenForWhisper("typing", e => {
                         handleSetUserTyping(e);
                     });
@@ -59,9 +59,9 @@ const useIsUserTyping = props => {
         } else {
             if (window.Echo) {
                 if (leaveId) {
-                    window.Echo.leave(localStorage.getItem("slug") + `.App.Channel.` + leaveId);
+                    window.Echo.leave(localStorage.getItem("slug") + ".App.Channel." + leaveId);
                 }
-                window.Echo.private(localStorage.getItem("slug") + `.App.Channel.` + channel.id)
+                window.Echo.private(localStorage.getItem("slug") + ".App.Channel." + channel.id)
                     .listenForWhisper("typing", e => {
                         handleSetUserTyping(e);
                     });
@@ -89,9 +89,9 @@ const useIsUserTyping = props => {
         if (usersTyping.length > 3) {
             userNames += "and others";
         }
-        return [usersTyping, userNames]
+        return [usersTyping, userNames];
     } else {
-        return [usersTyping, null]
+        return [usersTyping, null];
     }
 };
 

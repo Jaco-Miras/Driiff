@@ -30,8 +30,6 @@ const useOutsideClick = (ref, callback, when) => {
                 document.removeEventListener("keydown", escapeHandler);
             };
         }
-
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [when]);
 };
 

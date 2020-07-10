@@ -83,14 +83,14 @@ const useUserActions = () => {
         dispatch(
             putUser(payload, (err, res) => {
                 if (err) {
-                    toaster.error(`Saving profile information failed.`);
+                    toaster.error("Saving profile information failed.");
                 }
 
                 if (res) {
                     if (loggedUser.id === res.data.id) {
                         sessionService.saveUser({...res.data});
                     }
-                    toaster.success(`Profile information saved.`);
+                    toaster.success("Profile information saved.");
                 }
 
                 callback(err, res);
@@ -143,7 +143,7 @@ const useUserActions = () => {
         dispatch(
             postUploadProfileImage(payload, (err, res) => {
                 if (err) {
-                    toaster.error(`Profile image upload failed.`);
+                    toaster.error("Profile image upload failed.");
                     callback(err);
                 }
 

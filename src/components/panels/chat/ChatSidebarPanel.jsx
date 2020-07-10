@@ -58,7 +58,7 @@ const ChatSidebarPanel = (props) => {
                 setTabPill("pills-workspace-internal");
                 refs.navTab.current.querySelector(".nav-link.active").classList.remove("active");
 
-                let e = refs.navTab.current.querySelector(`.nav-link[aria-controls="pills-workspace-internal"]`);
+                let e = refs.navTab.current.querySelector(".nav-link[aria-controls=\"pills-workspace-internal\"]");
                 if (e) {
                     e.classList.add("active");
                 }

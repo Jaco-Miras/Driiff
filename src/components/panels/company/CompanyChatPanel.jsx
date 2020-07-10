@@ -63,12 +63,12 @@ const CompanyChatPanel = (props) => {
         <Wrapper className={`company-chat-panel container-fluid h-100 ${className}`}>
             <div className="row no-gutters chat-block">
                 <ChatSidebarPanel
-                    className={`col-lg-4 border-right`}
+                    className={"col-lg-4 border-right"}
                     channels={channels}
                     userChannels={userChannels}
                     selectedChannel={selectedChannel}/>
                 <ChatContentPanel
-                    className={`col-lg-8`}
+                    className={"col-lg-8"}
                     selectedChannel={selectedChannel}/>
             </div>
         </Wrapper>

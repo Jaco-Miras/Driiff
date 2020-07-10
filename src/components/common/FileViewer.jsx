@@ -74,9 +74,6 @@ const DownloadIcon = styled(SvgIconFeather)`
 `;
 
 const Eye = styled(SvgIconFeather)`
-    ${'' /* position: relative;
-    top: -3px;
-    margin-right: 5px; */}
 `;
 
 
@@ -204,8 +201,6 @@ const FileViewer = props => {
                 }
             });
         }
-
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     let refFiles = {};
@@ -258,7 +253,7 @@ const FileViewer = props => {
     };
 
     const handleImageOnLoad = (e) => {
-        e.currentTarget.classList.remove(`d-none`);
+        e.currentTarget.classList.remove("d-none");
         e.currentTarget.removeAttribute("height");
     };
 
@@ -271,13 +266,13 @@ const FileViewer = props => {
             e.currentTarget.dataset.attempt = 2;
             e.currentTarget.src = `${e.currentTarget.src}&timestamp=${new Date().getTime()}`;
         } else {
-            e.currentTarget.classList.add(`img-error`);
+            e.currentTarget.classList.add("img-error");
             e.currentTarget.src = require("../../assets/icon/limitations/l/text.svg");
         }
     };
 
     const handleVideoOnLoad = (e) => {
-        e.currentTarget.classList.remove(`d-none`);
+        e.currentTarget.classList.remove("d-none");
         e.currentTarget.removeAttribute("height");
     };
 
@@ -300,44 +295,44 @@ const FileViewer = props => {
 
         switch (file.type.toLowerCase()) {
             case "video":
-                return <div key={index} data-index={index} className={`file-item mfp-img`}>
-                    <img className={`d-none`} src={require("../../assets/icon/limitations/l/text.svg")}
-                         alt={`File not found.`}/>
+                return <div key={index} data-index={index} className={"file-item mfp-img"}>
+                    <img className={"d-none"} src={require("../../assets/icon/limitations/l/text.svg")}
+                         alt={"File not found."}/>
                     <video
                         data-index={index}
                         data-attempt={0}
                         ref={e => refFiles[index] = e}
                         controls playsInline
-                        key={index} style={style} className={`file d-none`} autoPlay={false}
+                        key={index} style={style} className={"file d-none"} autoPlay={false}
                         onLoadStart={handleVideoOnLoad}
                         onError={handleVideoOnError}
                         src={file.view_link}/>
                 </div>;
             case "image":
-                return <div key={index} data-index={index} className={`file-item mfp-img`}>
+                return <div key={index} data-index={index} className={"file-item mfp-img"}>
                     <img
                         data-index={index}
                         data-attempt={0}
                         onLoad={handleImageOnLoad}
                         onError={handleImageOnError}
                         ref={e => refFiles[index] = e}
-                        key={index} style={style} className={`file d-none`} src={file.view_link} alt='file preview'/>
+                        key={index} style={style} className={"file d-none"} src={file.view_link} alt='file preview'/>
                 </div>;
             case "pdf":
-                return <div key={index} data-index={index} className={`file-item mfp-img`}>
+                return <div key={index} data-index={index} className={"file-item mfp-img"}>
                     <iframe
                         ref={e => refFiles[index] = e}
                         title={file.name}
                         key={index} style={style}
-                        className={`iframe file`}
+                        className={"iframe file"}
                         src={file.view_link}
                         frameBorder="0"/>
                 </div>;
             default:
-                return <div key={index} data-index={index} className={`file-item mfp-img cannot-preview`}>
+                return <div key={index} data-index={index} className={"file-item mfp-img cannot-preview"}>
 
 
-                    <Eye icon={`eye-off`}/>
+                    <Eye icon={"eye-off"}/>
 
 
                     <p>We can't preview this file type. <br />Try downloading the file to view it.</p>
@@ -366,8 +361,8 @@ const FileViewer = props => {
             className='iframe-img-container'>
             <FileNameContainer>
                 <FileName onClick={e => handleDownloadFile(e, file)} href={file.download_link} download={file.filename}
-                          target={`_blank`}>
-                    <DownloadIcon icon={`download`}/> {file.filename ? file.filename : file.name}
+                          target={"_blank"}>
+                    <DownloadIcon icon={"download"}/> {file.filename ? file.filename : file.name}
                 </FileName>
             </FileNameContainer>
             {

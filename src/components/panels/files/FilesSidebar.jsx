@@ -80,10 +80,10 @@ const FileSidebar = (props) => {
                                 <ul>
                                 {
                                     Object.values(folders).filter(f => {
-                                        return !f.is_archived && f.parent_folder === null
+                                        return !f.is_archived && f.parent_folder === null;
                                     }).map(f => {
                                         return <FolderList key={f.id} clearFilter={clearFilter} folders={folders} params={params}
-                                                            folder={f} activeFolder={activeFolder}/>
+                                                            folder={f} activeFolder={activeFolder}/>;
                                     })
                                 }
                                 </ul>

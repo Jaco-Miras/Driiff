@@ -17,7 +17,7 @@ const ChatUnreadCounterMessage = props => {
 
     return (
         <ChatUnreadCounterMessageDiv
-            className={`unread-counter-message`}
+            className={"unread-counter-message"}
         >
             You have {count} new message/s
         </ChatUnreadCounterMessageDiv>

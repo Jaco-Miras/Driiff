@@ -25,7 +25,7 @@ const ChannelsSidebar = props => {
 
     return (
         <ChannelsSidebarContainer className={`chat-lists ${className}`}>
-            <Channels className={`list-group list-group-flush`}>
+            <Channels className={"list-group list-group-flush"}>
                 {
                     sortedChannels.map((channel, k, arr) => {
                         let chatHeader = "";

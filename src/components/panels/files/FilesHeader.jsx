@@ -72,7 +72,7 @@ const FilesHeader = (props) => {
                     label: f.search,
                     //label: <>Video <span className="text-muted">21</span></>,
                     onClick: handleClickFolder
-                }
+                };
             })
             : []
     };

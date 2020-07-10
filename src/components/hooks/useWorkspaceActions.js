@@ -21,13 +21,13 @@ const useWorkspaceActions = () => {
     const getDetail = useCallback((id, callback) => {
         dispatch(
             fetchDetail({topic_id: id}, callback)
-        )
+        );
     }, [dispatch]);
 
     const getPrimaryFiles = useCallback((id, callback) => {
         dispatch(
             fetchPrimaryFiles({topic_id: id}, callback)
-        )
+        );
     }, [dispatch]);
 
     const addPrimaryFilesToWorkspace = useCallback((files) => {
@@ -39,20 +39,20 @@ const useWorkspaceActions = () => {
     const getMembers = useCallback((id, callback) => {
         dispatch(
             fetchMembers({topic_id: id}, callback)
-        )
+        );
     }, [dispatch]);
 
     const getTimeline = useCallback((id, callback) => {
         dispatch(
             fetchTimeline({topic_id: id}, callback)
-        )
+        );
     }, [dispatch]);
 
     const showModal = useCallback((topic, mode, type = "workspace") => {
         let payload = {
             mode: mode,
             item: topic
-        }
+        };
         if (type === "folder") {
             payload = {
                 ...payload,
@@ -77,7 +77,7 @@ const useWorkspaceActions = () => {
         getPrimaryFiles,
         getTimeline,
         showModal,
-    }
+    };
 };
 
 export default useWorkspaceActions;

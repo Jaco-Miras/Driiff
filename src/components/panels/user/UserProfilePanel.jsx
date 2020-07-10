@@ -198,7 +198,7 @@ const UserProfilePanel = (props) => {
                         },
                         feedbackText: {
                             ...prevState.feedbackText,
-                            [name]: `Email is required`,
+                            [name]: "Email is required",
                         },
                     }));
 
@@ -215,7 +215,7 @@ const UserProfilePanel = (props) => {
                         },
                         feedbackText: {
                             ...prevState.feedbackText,
-                            [name]: `Invalid email format`,
+                            [name]: "Invalid email format",
                         },
                     }));
 
@@ -235,7 +235,7 @@ const UserProfilePanel = (props) => {
                                     },
                                     feedbackText: {
                                         ...prevState.feedbackText,
-                                        [name]: `Email is already taken`,
+                                        [name]: "Email is already taken",
                                     },
                                 }));
                             } else {
@@ -268,7 +268,7 @@ const UserProfilePanel = (props) => {
                     },
                     feedbackText: {
                         ...prevState.feedbackText,
-                        [name]: value.trim() === "" ? `Field is required.` : "",
+                        [name]: value.trim() === "" ? "Field is required." : "",
                     },
                 }));
             } else {
@@ -286,7 +286,7 @@ const UserProfilePanel = (props) => {
 
     const handleSave = useCallback(() => {
         if (Object.values(formUpdate.valid).find(v => v === false) === false) {
-            toaster.error(`Some fields require your attention.`);
+            toaster.error("Some fields require your attention.");
         } else if (Object.values(formUpdate.valid).find(v => v === true) === true) {
             if (form.profile_image_link !== user.profile_image_link) {
                 updateProfileImage(form, formUpdate.feedbackText.profile_image_link, (err, res) => {
@@ -302,7 +302,7 @@ const UserProfilePanel = (props) => {
                 });
             }
         } else {
-            toaster.info(`Nothing was updated.`);
+            toaster.info("Nothing was updated.");
             setEditInformation(false);
         }
     }, [form, formUpdate, update, setEditInformation]);
@@ -658,7 +658,7 @@ const UserProfilePanel = (props) => {
                                                     to
                                                     change your password.</Label>
                                                 <FormGroup
-                                                    className={`form-group-password mb-0 ${!!passwordUpdate ? "" : "d-none"}`}>
+                                                    className={`form-group-password mb-0 ${passwordUpdate ? "" : "d-none"}`}>
                                                     <InputGroup>
                                                         <Input
                                                             className={getValidClass(formUpdate.valid.password)}

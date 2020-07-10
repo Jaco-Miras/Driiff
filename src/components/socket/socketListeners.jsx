@@ -398,9 +398,9 @@ class SocketListeners extends PureComponent {
                                 const checkForId = id => id === this.props.user.id;
                                 let isMember = c.members.map(m => m.id).some(checkForId);
                                 return c.type === "TOPIC" && isMember && c.is_hidden === 0;
-                            })
+                            });
                             if (wsChannels.length > 0 && this.props.location.pathname === `/chat/${this.props.selectedChannel.code}`) {
-                                let channel = wsChannels[0]
+                                let channel = wsChannels[0];
                                 this.props.setSelectedChannel(channel);
                                 this.props.history.push(`/chat/${channel.code}`);
                             }
@@ -439,7 +439,7 @@ class SocketListeners extends PureComponent {
                         selected: true,
                     };
                     this.props.addToChannels(channel);
-                })
+                });
                 if (e.topic !== undefined) {
                     this.props.incomingWorkspace(e);
                 } else {
@@ -467,9 +467,9 @@ class SocketListeners extends PureComponent {
                                 const checkForId = id => id === this.props.user.id;
                                 let isMember = c.members.map(m => m.id).some(checkForId);
                                 return c.type === "TOPIC" && isMember && c.is_hidden === 0;
-                            })
+                            });
                             if (wsChannels.length > 0 && this.props.location.pathname === `/chat/${this.props.selectedChannel.code}`) {
-                                let channel = wsChannels[0]
+                                let channel = wsChannels[0];
                                 this.props.setSelectedChannel(channel);
                                 this.props.history.push(`/chat/${channel.code}`);
                             }
@@ -647,7 +647,7 @@ class SocketListeners extends PureComponent {
 
                             if (isSafari) {
                                 if (e.message_from === 0) {
-                                    pushBrowserNotification(`Personal BOT`,
+                                    pushBrowserNotification("Personal BOT",
                                         `${stripHtml(e.message)}`,
                                         e.message_from.profile_image_link,
                                         null);
@@ -810,7 +810,7 @@ class SocketListeners extends PureComponent {
 
                 this.props.setUnreadNotificationCounterEntries(e.result);
 
-            })
+            });
     }
 
     render() {

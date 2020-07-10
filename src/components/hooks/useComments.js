@@ -11,7 +11,7 @@ const useComments = (post, commentActions, workspace) => {
     if (post) {
         if (postComments.hasOwnProperty(post.id)) {
             let comments = {...postComments[post.id]};
-            return comments.comments
+            return comments.comments;
         } else {
             if (!fetchingComments) {
                 setFetchingComments(true);
@@ -20,25 +20,25 @@ const useComments = (post, commentActions, workspace) => {
                     url
                 };
                 let cb = (err,res) => {
-                    setFetchingComments(false)
+                    setFetchingComments(false);
                     if (err) return;
                     let files = res.data.messages.map(m => {
                         if (m.replies.length) {
-                            return m.replies.map(r => r.files)
+                            return m.replies.map(r => r.files);
                         } else {
-                            return m.files
+                            return m.files;
                         }
-                    })
+                    });
                     if (files.length) {
                         files = files.flat(2);
                     }
-                }
+                };
                 commentActions.fetchPostComments(payload, cb);
-                return null
-            } else return null
+                return null;
+            } else return null;
         }
     } else {
-        return null
+        return null;
     }
 };
 

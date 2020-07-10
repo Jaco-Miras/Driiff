@@ -59,8 +59,6 @@ const Unfurl = props => {
                 setFromDriff(true);
             }
         }
-
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return unfurlData.filter(link => {
@@ -73,20 +71,20 @@ const Unfurl = props => {
         //let item_description = (item.data.code) ? item.data.code : item.data.description;
         if (item.data.title === "PRIVATE CONTENT" || item.data.title === "NOT AUTHORIZED") return null;
         else return (
-            <blockquote className={`blockquote component-un-furl`} key={key}>
+            <blockquote className={"blockquote component-un-furl"} key={key}>
                 <div className={`media media-${item.data.type}`}>
                     {
                         // (item.data.image && !item.data.code) && !fromDriff ?
                         //     <img className={`item-image`} src={item.data.image}
                         //          title={item.data.title} alt={item.data.title}/> : ''
                     }
-                    <div className={`media-wrapper`}>
-                        <div className={`media-header`}>
+                    <div className={"media-wrapper"}>
+                        <div className={"media-header"}>
                             {
                                 !fromDriff &&
                                 <p>
-                                    <img alt='provider' className={`provider-icon`} src={item.data.provider_icon}/>
-                                    <a className={`provider-name`} href={item.data.provider_url}
+                                    <img alt='provider' className={"provider-icon"} src={item.data.provider_icon}/>
+                                    <a className={"provider-name"} href={item.data.provider_url}
                                        title={item.data.provider_name}
                                        target="_blank" rel="noopener noreferrer">{item.data.provider_name}</a>
                                     {
@@ -97,14 +95,14 @@ const Unfurl = props => {
                             }
                         </div>
                         <div className="media-body">
-                            <h6 className={`item-title`}>
+                            <h6 className={"item-title"}>
                                 <a href={item.data.url}
                                    title={item.data.title}
                                    target="_blank"
                                    rel="noopener noreferrer">{item.data.title}
                                 </a>
                             </h6>
-                            <div className={`description`}
+                            <div className={"description"}
                                  dangerouslySetInnerHTML={{__html: item.data.description}}/>
                         </div>
                         {

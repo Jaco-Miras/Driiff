@@ -74,7 +74,6 @@ const Wrapper = styled.li`
         height: 25px;
         position: relative;
         right: 0;
-        ${"" /* border: 1px solid #dee2e6; */}
         fill: currentColor;
         padding: 3px;
         top: 2px;
@@ -122,7 +121,7 @@ const ChannelList = props => {
             optionsVisible={optionsVisible} selected={selectedChannel !== null && channel.id === selectedChannel.id}
             onClick={handleSelectChannel}>
             <ChannelIcon channel={channel}/>
-            <ChannelTitlePreview className={`flex-grow-1`}>
+            <ChannelTitlePreview className={"flex-grow-1"}>
                 <ChannelTitle channel={channel}/>
                 <ReplyPreview channel={channel}/>
             </ChannelTitlePreview>

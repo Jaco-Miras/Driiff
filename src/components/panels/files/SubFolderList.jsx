@@ -5,7 +5,7 @@ const SubFolderList = props => {
     const {className = "", folder, folders, activeFolder, clearFilter, params} = props;
     
     return <FolderList clearFilter={clearFilter} folders={folders} params={params}
-                        folder={folder} activeFolder={activeFolder}/>
+                        folder={folder} activeFolder={activeFolder}/>;
 };
 
 export default SubFolderList;

@@ -39,8 +39,8 @@ const useFiles = () => {
                 let payload = {
                     topic_id: activeTopic.id,
                     folder_id: parseInt(params.fileFolderId)
-                }
-                fileActions.getFiles(payload, cb)
+                };
+                fileActions.getFiles(payload, cb);
             }
         }
     }, [fetchingFiles, activeTopic, workspaceFiles, params]);
@@ -48,11 +48,11 @@ const useFiles = () => {
     if (Object.values(workspaceFiles).length && workspaceFiles.hasOwnProperty(params.workspaceId)) {
         if (params.hasOwnProperty("fileFolderId") && 
         workspaceFiles[activeTopic.id].folders.hasOwnProperty(params.fileFolderId) &&
-        workspaceFiles[activeTopic.id].folders[params.fileFolderId].hasOwnProperty('files')) {
+        workspaceFiles[activeTopic.id].folders[params.fileFolderId].hasOwnProperty("files")) {
 
-            let fileIds = Object.values(workspaceFiles[activeTopic.id].folders[params.fileFolderId].files).sort((a,b) => { return b > a ? 1 : -1});
+            let fileIds = Object.values(workspaceFiles[activeTopic.id].folders[params.fileFolderId].files).sort((a,b) => { return b > a ? 1 : -1;});
             if (workspaceFiles[activeTopic.id].hasOwnProperty("search_results") && workspaceFiles[activeTopic.id].search_results.length > 0) {
-                fileIds = workspaceFiles[activeTopic.id].search_results.sort((a,b) => { return b > a ? 1 : -1});;
+                fileIds = workspaceFiles[activeTopic.id].search_results.sort((a,b) => { return b > a ? 1 : -1;});
             }
             return {
                 params,
@@ -65,9 +65,9 @@ const useFiles = () => {
                 folder:  workspaceFiles[activeTopic.id].folders[params.fileFolderId],
             };
         } else {
-            let fileIds = Object.values(workspaceFiles[activeTopic.id].files).map(f => f.id).sort((a,b) => { return b > a ? 1 : -1});;
+            let fileIds = Object.values(workspaceFiles[activeTopic.id].files).map(f => f.id).sort((a,b) => { return b > a ? 1 : -1;});
             if (workspaceFiles[activeTopic.id].hasOwnProperty("search_results") && workspaceFiles[activeTopic.id].search_results.length > 0) {
-                fileIds = workspaceFiles[activeTopic.id].search_results.sort((a,b) => { return b > a ? 1 : -1});;
+                fileIds = workspaceFiles[activeTopic.id].search_results.sort((a,b) => { return b > a ? 1 : -1;});
             }
             return {
                 params,
@@ -90,7 +90,7 @@ const useFiles = () => {
             folders: {},
             subFolders: [],
             folder: null,
-        }
+        };
     }
 
 };

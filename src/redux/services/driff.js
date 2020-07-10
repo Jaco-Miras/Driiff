@@ -22,7 +22,7 @@ import {apiNoTokenCall} from "./service";
 export function postRegisterDriff(data) {
     return apiNoTokenCall({
         method: "POST",
-        url: `/register`,
+        url: "/register",
         register: true,
         data: data,
     });

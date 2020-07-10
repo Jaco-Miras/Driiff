@@ -44,11 +44,9 @@ const ChatReplyContainer = styled.div`
     display: inline-block;
     width: auto;
     height: auto;
-    ${"" /* color: #ffffff; */}
     padding: 0;
   }
   .mention.is-author {
-    ${"" /* color: #7A1B8B; */}
     background: transparent;
     padding: 0;
   }
@@ -153,11 +151,6 @@ const ChatActionsContainer = styled.div`
     transition: opacity 0.3s ease;
 `;
 const SystemChatActionsContainer = styled.div`
-    ${"" /* display: flex;
- flex-direction: row;
- flex-wrap: wrap;
- ${props => (props.isAuthor ? "margin-right: 10px" : "margin-left: 10px")}; */}
-
     display: flex;
     flex-flow: ${props => (props.isAuthor ? "row-reverse" : "row")};
     flex-wrap: wrap;
@@ -250,8 +243,6 @@ const SystemMessageContainer = styled.div`
     text-align: left;
     min-width: 100px;
     max-width: 100%;
-    ${"" /* font-weight: 100; */}
-    ${"" /* font-size: 15px; */}
     padding: 7px 15px;
     line-height: 1.5rem;
     float: left;
@@ -427,14 +418,14 @@ class ChatMessages extends React.PureComponent {
     handleReadChannel = () => {
         this.setState({markingAsRead: true});
         if (!this.state.markingAsRead) {
-            let cb = () => this.setState({markingAsRead: false})
+            let cb = () => this.setState({markingAsRead: false});
             const {
                 selectedChannel,
                 chatMessageActions: {
                     channelActions,
                 },
             } = this.props;
-    
+
             channelActions.markAsRead(selectedChannel, cb);
         }
     };
@@ -548,11 +539,11 @@ class ChatMessages extends React.PureComponent {
 
         // intersectionRatio not working propperly
         const observer = new IntersectionObserver(
-            ([e]) => e.target.toggleAttribute('stuck', e.intersectionRatio < 1),
-            {threshold: [1],  root: null,  rootMargin: '20px',}
+            ([e]) => e.target.toggleAttribute("stuck", e.intersectionRatio < 1),
+            {threshold: [1],  root: null,  rootMargin: "20px",}
           );
 
-        document.querySelectorAll('.timestamp-container').forEach(element => observer.observe(element));
+        document.querySelectorAll(".timestamp-container").forEach(element => observer.observe(element));
     }
 
     handleResendMessage = payload => {
@@ -653,12 +644,12 @@ class ChatMessages extends React.PureComponent {
                 groupBy(
                     selectedChannel.replies.map(r => {
                         if (r.hasOwnProperty("g_date")) {
-                            return r
+                            return r;
                         } else {
                             return {
                                 ...r,
                                 g_date: this.props.timeFormat.localizeDate(r.created_at.timestamp, "YYYY-MM-DD")
-                            }
+                            };
                         }
                     })
                 , "g_date")
@@ -677,10 +668,10 @@ class ChatMessages extends React.PureComponent {
             // }).sort((a, b) => a.key.localeCompare(b.key));
             // console.log(groupedMessages, gMessages)
         }
-       
+
         return <ChatReplyContainer
             ref={this.scrollComponent}
-            id={`component-chat-thread`}
+            id={"component-chat-thread"}
             className={`component-chat-thread messages ${this.props.className}`}
             tabIndex="2"
             data-init={1}
@@ -824,7 +815,7 @@ class ChatMessages extends React.PureComponent {
                                                             <ChatBubbleQuoteDiv
                                                                 //className={`chat-bubble-quote-div ${animation ? isAuthor ? "animated fadeInRightBig" : "animated fadeInLeftBig" : ""}`}
                                                                 isAuthor={isAuthor}
-                                                                className={`chat-bubble-quote-div`}
+                                                                className={"chat-bubble-quote-div"}
                                                             >
 
                                                                 <ChatBubble
@@ -898,7 +889,7 @@ class ChatMessages extends React.PureComponent {
 
                                                             <ChatBubbleQuoteDiv
                                                                 //className={`chat-bubble-quote-div ${animation ? isAuthor ? "animated fadeInRightBig" : "animated fadeInLeftBig" : ""}`}
-                                                                className={`chat-bubble-quote-div`}
+                                                                className={"chat-bubble-quote-div"}
                                                             >
                                                                 <SystemMessageContainer isAuthor={false}>
                                                                     <SystemMessage

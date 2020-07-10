@@ -46,7 +46,7 @@ const MemberTimeline = (props) => {
             let author = recipients.filter(r => r.type_id === message.author.id && message.added_members.includes(r.type_id))[0];
             if (author) {
                 if (author.type_id === user.id) {
-                    return `You joined.`;
+                    return "You joined.";
                 } else {
                     return `${author.name} has joined`;
                 }
@@ -64,7 +64,7 @@ const MemberTimeline = (props) => {
             let author = recipients.filter(r => r.type_id === message.author.id && message.removed_members.includes(r.type_id))[0];
             if (author) {
                 if (author.left === user.id) {
-                    return `You left.`;
+                    return "You left.";
                 } else {
                     return `${author.name} has left`;
                 }

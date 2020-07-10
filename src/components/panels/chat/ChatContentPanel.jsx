@@ -36,7 +36,7 @@ const ChatContentPanel = (props) => {
     };
 
     const handleBottomRefChange = (inView) => {
-        setBottomRefVisible(inView)
+        setBottomRefVisible(inView);
     };
 
     const handleOpenFileDialog = () => {

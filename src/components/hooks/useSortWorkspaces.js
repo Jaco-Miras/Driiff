@@ -18,7 +18,7 @@ const useSortWorkspaces = () => {
             return compare;*/
 
         return a.name.localeCompare(b.name);
-    })
+    });
 };
 
 export default useSortWorkspaces;

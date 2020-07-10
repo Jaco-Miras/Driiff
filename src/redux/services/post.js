@@ -7,7 +7,7 @@ import {apiCall} from "./index";
  * @returns {Promise<*>}
  */
 export function postFavorite(payload) {
-    let url = `/v1/favourites`;
+    let url = "/v1/favourites";
     return apiCall({
         method: "POST",
         url: url,
@@ -21,7 +21,7 @@ export function postFavorite(payload) {
  * @returns {Promise<*>}
  */
 export function postMarkDone(payload) {
-    let url = `/v1/mark-done`;
+    let url = "/v1/mark-done";
 
     return apiCall({
         method: "PATCH",
@@ -38,7 +38,7 @@ export function postMarkDone(payload) {
  * @returns {Promise<*>}
  */
 export function postArchive(payload) {
-    let url = `/v2/post-toggle-archived`;
+    let url = "/v2/post-toggle-archived";
 
     return apiCall({
         method: "POST",
@@ -55,7 +55,7 @@ export function postArchive(payload) {
  * @returns {Promise<*>}
  */
 export function postToggleRead(payload) {
-    let url = `/v2/post-toggle-unread`;
+    let url = "/v2/post-toggle-unread";
 
     return apiCall({
         method: "POST",
@@ -100,7 +100,7 @@ export function postUnfollow(payload) {
  * @returns {Promise<*>}
  */
 export function postSnooze(payload) {
-    let url = `/v1/snooze-post`;
+    let url = "/v1/snooze-post";
     return apiCall({
         method: "POST",
         url,
@@ -121,7 +121,7 @@ export function postSnooze(payload) {
  * @returns {Promise<*>}
  */
 export function postCreate(payload) {
-    let url = `/v1/posts`;
+    let url = "/v1/posts";
     return apiCall({
         method: "POST",
         url: url,
@@ -141,7 +141,7 @@ export function postCreate(payload) {
  * @returns {Promise<*>}
  */
 export function postComment(payload) {
-    let url = "/v1/messages"
+    let url = "/v1/messages";
     return apiCall({
         method: "POST",
         url: url,
@@ -215,7 +215,7 @@ export function putPost(payload) {
  * @returns {Promise<*>}
  */
 export function postClap(payload) {
-    let url = `/v1/post-clap`;
+    let url = "/v1/post-clap";
     return apiCall({
         method: "POST",
         url: url,
@@ -300,7 +300,7 @@ export function fetchPosts(payload) {
  * @returns {Promise<*>}
  */
 export function postVisit(payload) {
-    let url = `/v1/post-viewed`;
+    let url = "/v1/post-viewed";
     return apiCall({
         method: "POST",
         url: url,
@@ -317,7 +317,7 @@ export function postVisit(payload) {
  */
 
 export function postMarkRead(payload) {
-    let url = `/v1/post-mark-as-read`;
+    let url = "/v1/post-mark-as-read";
     return apiCall({
         method: "POST",
         url: url,

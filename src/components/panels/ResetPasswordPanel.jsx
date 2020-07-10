@@ -101,7 +101,7 @@ const ResetPasswordPanel = () => {
                 if (err) {
                     setFormMessage({
                         ...formMessage,
-                        error: `Invalid email.`,
+                        error: "Invalid email.",
                     });
                 }
                 if (res) {
@@ -123,9 +123,9 @@ const ResetPasswordPanel = () => {
             <button className="btn btn-primary btn-block" onClick={handleSubmit}>Submit</button>
             <hr/>
             <p className="text-muted">Take a different action.</p>
-            <Link className={`btn btn-sm btn-outline-light mr-1-1`} to="/register">Register now!</Link>
+            <Link className={"btn btn-sm btn-outline-light mr-1-1"} to="/register">Register now!</Link>
             or
-            <Link className={`btn btn-sm btn-outline-light ml-1`} to="/login">Login!</Link>
+            <Link className={"btn btn-sm btn-outline-light ml-1"} to="/login">Login!</Link>
         </Wrapper>
     );
 };

@@ -1,6 +1,6 @@
 import React, {useState} from "react";
-import styled from "styled-components"
-import UserListPopUp from './UserListPopUp';
+import styled from "styled-components";
+import UserListPopUp from "./UserListPopUp";
 
 const PlusRecipientsDiv = styled.div`
     display: inline-block;
@@ -33,7 +33,7 @@ const StyledUserListPopUp = styled(UserListPopUp)`
 `;
 
 const PlusRecipients = props => {
-    const {className = '', recipients} = props;
+    const {className = "", recipients} = props;
     const [showUsersPopUp, setShowUsersPopUp] = useState(false);
     const handleShowSeenUsers = () => setShowUsersPopUp(!showUsersPopUp);
 
@@ -48,7 +48,7 @@ const PlusRecipients = props => {
                 />
             }
         </PlusRecipientsDiv>
-    )
+    );
 };
 
 export default React.memo(PlusRecipients);

@@ -25,11 +25,11 @@ const useVisibilityChange = props => {
             if (document[hidden]) {
                 dispatch(
                     setBrowserTabStatus({status: false})
-                )
+                );
             } else {
                 dispatch(
                     setBrowserTabStatus({status: true})
-                )
+                );
             }
         };
 

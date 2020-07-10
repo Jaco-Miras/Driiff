@@ -33,7 +33,7 @@ const RedirectPanel = (props) => {
     return (
         <Wrapper className="redirect-panel form-wrapper">
             <div id="logo">
-                <SvgIcon icon={`driff-logo`} width="110" height="80"/>
+                <SvgIcon icon={"driff-logo"} width="110" height="80"/>
             </div>
 
             <h5>Invalid driff name detected.</h5>

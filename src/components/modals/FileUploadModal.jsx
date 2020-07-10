@@ -83,7 +83,6 @@ const FilesPreviewContainer = styled.div`
             cursor: pointer;
         }
         .app-file-list {
-            ${'' /* min-height: 158px; */}
             height: 158px;
             width: 158px;
             margin-bottom: 0px;
@@ -127,12 +126,6 @@ const FilesPreviewContainer = styled.div`
 `;
 
 const DocDiv = styled.div`
-    ${'' /* height: 100%;
-    width: 100%;
-    display: flex;
-    padding: 10px;
-    align-items: flex-start; */}
-
 `;
 
 const FileUploadModal = props => {
@@ -242,7 +235,7 @@ const FileUploadModal = props => {
                 reference_id: require("shortid").generate(),
                 personalized_for_id: null,
                 parent_id: parentId,
-            }
+            };
             setUploadedFiles([]);
             dispatch(postComment(payload));
             dispatch(setParentIdForUpload(null));
@@ -309,7 +302,7 @@ const FileUploadModal = props => {
     const refCallback = (e) => {
         reactQuillRef.current = e;
         setInit(true);
-    }
+    };
 
     useEffect(()=> {
         if(init === true && reactQuillRef.current) {
@@ -329,7 +322,7 @@ const FileUploadModal = props => {
                     className={"chat-input"}
                     modules={modules}
                     ref={refCallback}
-                    placeholder={`Add message. Type @ to mention someone.`}
+                    placeholder={"Add message. Type @ to mention someone."}
                     readOnly={uploading}
                     onChange={handleQuillChange}
                 />
@@ -374,7 +367,7 @@ const FilesPreview = props => {
                                 {
                                     file.type !== "IMAGE" && <DocDiv className="card app-file-list">
                                         <div class="app-file-icon">
-                                            <SvgIcon icon={`document`} width="28" height="32"/>
+                                            <SvgIcon icon={"document"} width="28" height="32"/>
                                         </div>
                                         <div class="p-2 small">
                                             {file.name}

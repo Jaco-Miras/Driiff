@@ -45,13 +45,13 @@ const SettingsLink = () => {
     const topic = useSelector(state => state.workspaces.activeTopic);
     const [show, setShow] = useState(false);
     const toggle = useCallback(() => {
-        setShow(!show)
+        setShow(!show);
     }, [show]);
 
     const toggleTooltip = () => {
-        let tooltips = document.querySelectorAll('span.react-tooltip-lite');
+        let tooltips = document.querySelectorAll("span.react-tooltip-lite");
         tooltips.forEach((tooltip) => {
-            tooltip.parentElement.classList.toggle('tooltip-active');
+            tooltip.parentElement.classList.toggle("tooltip-active");
         });
     };
 
@@ -64,14 +64,14 @@ const SettingsLink = () => {
     };
 
     const handleDropdownItemClick = e => {
-        handleOpenWorkspace(e.target.dataset.name)
+        handleOpenWorkspace(e.target.dataset.name);
     };
 
     const handleOpenWorkspace = (type) => {
         let payload = {
             mode: "edit",
             item: topic
-        }
+        };
         if (type === "folder") {
             payload = {
                 ...payload,
@@ -115,7 +115,7 @@ const SettingsLink = () => {
                 </div>
             </div>
         </SettingsLinkList>
-    )
+    );
 };
 
 export default React.memo(SettingsLink);

@@ -2,7 +2,7 @@ import {getTranslationAPIUrl} from "../../helpers/slugHelper";
 import {apiCall, apiNoTokenCall} from "./index";
 
 export function getConnectedSlugs(payload) {
-    let url = `/v2/connected-slugs`;
+    let url = "/v2/connected-slugs";
     return apiCall({
         method: "GET",
         url: url,
@@ -13,15 +13,15 @@ export function getConnectedSlugs(payload) {
 export function getAllRecipients(payload) {
     return apiCall({
         method: "GET",
-        url: `/v1/recipients?is_shared_topic=1`,
+        url: "/v1/recipients?is_shared_topic=1",
         data: payload
     });
 }
 
 export function generateUnfurl(payload) {
-    let url = `/v2/post-message-unfurl`;
+    let url = "/v2/post-message-unfurl";
     if (payload.type === "task") {
-        url = `/v2/task-comment-unfurl`;
+        url = "/v2/task-comment-unfurl";
     }
     return apiCall({
         method: "POST",
@@ -83,7 +83,7 @@ export function postTranslationObject(payload) {
 }
 
 export function subscribePushNotifications(payload) {
-    let url = `/v2/push-api-notification`;
+    let url = "/v2/push-api-notification";
     return apiCall({
         method: "POST",
         url: url,
@@ -101,7 +101,7 @@ export function getPushNotification(payload) {
 }
 
 export function getUnreadNotificationCounterEntries(payload) {
-    let url = `/v2/notification-counter-entries`;
+    let url = "/v2/notification-counter-entries";
     return apiCall({
         method: "GET",
         url: url,
@@ -112,6 +112,6 @@ export function getUnreadNotificationCounterEntries(payload) {
 export function getDrafts(payload) {
     return apiCall({
         method: "GET",
-        url: `/v1/drafts`,
+        url: "/v1/drafts",
     });
 }

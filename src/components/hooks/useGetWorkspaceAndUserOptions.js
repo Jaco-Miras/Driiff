@@ -41,10 +41,10 @@ const useGetWorkspaceAndUserOptions = (selectedWorkspaces, workspace) => {
                     if (Object.keys(ws.topics).length) {
                         return Object.values(ws.topics);
                     } else {
-                        return null
+                        return null;
                     }
                 } else {
-                    return null
+                    return null;
                 }
             }).flat().filter(ws => ws !== null);
 
@@ -90,12 +90,12 @@ const useGetWorkspaceAndUserOptions = (selectedWorkspaces, workspace) => {
                                     wsFound = true;
                                     return;
                                 }
-                            })
+                            });
                             return !wsFound;
                         } else {
                             return true;
                         }
-                    })
+                    });
                     setOptions(workspaceOptions);
                 } else {
                     setOptions(workspaceOptions);
@@ -108,7 +108,7 @@ const useGetWorkspaceAndUserOptions = (selectedWorkspaces, workspace) => {
         }
     }, [workspaces, selectedWorkspaces]);
 
-    return [options, userOptions]
+    return [options, userOptions];
     
 };
 

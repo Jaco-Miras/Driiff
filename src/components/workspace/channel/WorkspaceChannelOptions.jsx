@@ -111,24 +111,24 @@ const WorkspaceChannelOptions = props => {
     return <>
         <Wrapper channel={workspace} scrollRef={scrollEl}>
             <div onClick={handlePinButton}>
-                {workspace.is_pinned ? `Unfavorite` : `Favorite`}
+                {workspace.is_pinned ? "Unfavorite" : "Favorite"}
             </div>
             <div onClick={e => handleMarkAsUnreadSelected(e)}>
-                {(workspace.total_unread === 0 && workspace.is_read === 1) ? `Mark as unread` : `Mark as read`}
+                {(workspace.total_unread === 0 && workspace.is_read === 1) ? "Mark as unread" : "Mark as read"}
             </div>
             <div onClick={handleMuteChat}>
-                {workspace.is_muted ? `Unmute` : `Mute`}
+                {workspace.is_muted ? "Unmute" : "Mute"}
             </div>
             {
                 workspace.type !== "PERSONAL_BOT" &&
                 <div onClick={handleHideChat}>
-                    {workspace.is_hidden === 0 ? `Hide` : "Unhide"}
+                    {workspace.is_hidden === 0 ? "Hide" : "Unhide"}
                 </div>
             }
             {
                 (workspace.type !== "PERSONAL_BOT" || workspace.type !== "COMPANY") &&
                 <div onClick={handleShowArchiveConfirmation}>
-                    {workspace.is_archived === 0 ? `Archive` : "Unarchive"}
+                    {workspace.is_archived === 0 ? "Archive" : "Unarchive"}
                 </div>
             }
         </Wrapper>

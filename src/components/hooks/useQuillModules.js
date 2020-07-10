@@ -87,7 +87,7 @@ const useQuillModules = (mode, callback, mentionOrientation = "top", quillRef) =
                         metaKey: true,
                         handler: function (range, context) {
                                 if (osName.includes("Mac") && mode === "chat") {
-                                    quillRef.current.getEditor().insertEmbed(range.index + 1, 'block', true, 'user');
+                                    quillRef.current.getEditor().insertEmbed(range.index + 1, "block", true, "user");
                                     quillRef.current.getEditor().setSelection(range.index + 1, Quill.sources.SILENT);
                                 }
                         }
@@ -100,8 +100,6 @@ const useQuillModules = (mode, callback, mentionOrientation = "top", quillRef) =
 
     useEffect(() => {
         handleSetModule();
-
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {

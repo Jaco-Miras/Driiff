@@ -75,7 +75,7 @@ const ReplyPreview = props => {
 
             previewText =
                 renderToString(
-                    <TextIcon icon={`image-video`}/>,
+                    <TextIcon icon={"image-video"}/>,
                 ) + previewText;
         }
 
@@ -99,7 +99,7 @@ const ReplyPreview = props => {
 
             //system message
         } else {
-            previewText = `System message update...`;
+            previewText = "System message update...";
         }
 
         if (typeof channelDrafts[channel.id] !== "undefined") {
@@ -113,10 +113,10 @@ const ReplyPreview = props => {
     }
 
     return (
-        <Wrapper className={`small text-muted `}>
+        <Wrapper className={"small text-muted "}>
             <LastReplyBody
                 isUnread={channel.total_unread > 0}
-                className={`last-reply-body`}
+                className={"last-reply-body"}
                 dangerouslySetInnerHTML={{
                     __html: previewText,
                 }}
