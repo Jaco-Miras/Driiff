@@ -1,19 +1,20 @@
-import React, {useRef, useState} from "react";
-import {useDispatch} from "react-redux";
-import {Link} from "react-router-dom";
+import React, { useRef, useState } from "react";
+import { useDispatch } from "react-redux";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
-import {$_GET, getThisDeviceInfo} from "../../helpers/commonFunctions";
-import {EmailRegex} from "../../helpers/stringFormatter";
-import {toggleLoading} from "../../redux/actions/globalActions";
-import {userGoogleLogin, userLogin} from "../../redux/actions/userAction";
-import {CheckBox} from "../forms";
-import {processBackendLogin, storeLoginToken} from "../hooks";
-import {getDriffName} from "../hooks/useDriff";
+import { $_GET, getThisDeviceInfo } from "../../helpers/commonFunctions";
+import { EmailRegex } from "../../helpers/stringFormatter";
+import { toggleLoading } from "../../redux/actions/globalActions";
+import { userGoogleLogin, userLogin } from "../../redux/actions/userAction";
+import { CheckBox } from "../forms";
+import { processBackendLogin, storeLoginToken } from "../hooks";
+import { getDriffName } from "../hooks/useDriff";
 
 const Wrapper = styled.form`
-    margin: 50px auto;
-    max-width: 430px;
-    ${props => props.error !== "" &&
+  margin: 50px auto;
+  max-width: 430px;
+  ${(props) =>
+    props.error !== "" &&
     `&:before {
         content: "${props.error}";
         display: block;
@@ -24,7 +25,8 @@ const Wrapper = styled.form`
         margin-bottom: 0.5rem;
     }`}
 
-    ${props => props.success !== "" &&
+  ${(props) =>
+    props.success !== "" &&
     `&:before {
         content: "${props.success}";
         display: block;
@@ -37,7 +39,8 @@ const Wrapper = styled.form`
 `;
 
 const FormGroup = styled.div`
-    ${props => props.error !== "" &&
+  ${(props) =>
+    props.error !== "" &&
     `&:after {
         content: "${props.error}";
         display: block;
@@ -49,206 +52,198 @@ const FormGroup = styled.div`
 `;
 
 const LoginPanel = (props) => {
+  const dispatch = useDispatch();
 
-    const dispatch = useDispatch();
+  const ref = {
+    email: useRef(),
+    password: useRef(),
+  };
 
-    const ref = {
-        email: useRef(),
-        password: useRef(),
-    };
+  const [form, setForm] = useState({
+    email: "",
+    password: "",
+    remember_me: true,
+  });
 
-    const [form, setForm] = useState({
-        email: "",
-        password: "",
-        remember_me: true,
+  const [error, setError] = useState({
+    email: "",
+    password: "",
+  });
+
+  const [formMessage, setFormMessage] = useState({
+    error: "",
+    success: "",
+  });
+
+  const toggleCheck = (e) => {
+    setForm({
+      ...form,
+      [e.target.dataset.name]: !form[e.target.dataset.name],
     });
+  };
 
-    const [error, setError] = useState({
-        email: "",
-        password: "",
+  const handleInputChange = (e) => {
+    setForm({
+      ...form,
+      [e.target.name]: e.target.value.trim(),
     });
+  };
 
-    const [formMessage, setFormMessage] = useState({
-        error: "",
-        success: "",
-    });
+  const handleSignIn = (e) => {
+    e.preventDefault();
 
-    const toggleCheck = (e) => {
-        setForm({
-            ...form,
-            [e.target.dataset.name]: !form[e.target.dataset.name],
-        });
-    };
+    let valid = true;
+    let errorData = { email: "", password: "", form: "" };
 
-    const handleInputChange = (e) => {
-        setForm({
-            ...form,
-            [e.target.name]: e.target.value.trim(),
-        });
-    };
+    if (form.email === "") {
+      valid = false;
+      errorData = { ...errorData, email: "Email is required." };
+    } else if (!EmailRegex.test(form.email)) {
+      valid = false;
+      errorData = { ...errorData, email: "Email is not valid." };
+    }
 
-    const handleSignIn = (e) => {
-        e.preventDefault();
+    if (form.password === "") {
+      valid = false;
+      errorData = { ...errorData, password: "Password is required." };
+    }
 
-        let valid = true;
-        let errorData = {email: "", password: "", form: ""};
+    setError(errorData);
+    setFormMessage({ error: "", success: "" });
 
-        if (form.email === "") {
-            valid = false;
-            errorData = {...errorData, email: "Email is required."};
-        } else if (!EmailRegex.test(form.email)) {
-            valid = false;
-            errorData = {...errorData, email: "Email is not valid."};
+    if (valid !== true) {
+      if (errorData.email !== "") {
+        ref.email.current.focus();
+      } else if (errorData.password !== "") {
+        ref.password.current.focus();
+      }
+    } else {
+      const device = getThisDeviceInfo();
+      let payload = {
+        ...form,
+        serial: device.serial,
+        device: device.device,
+        browser: device.browser,
+      };
+
+      let acceptedParams = ["first_name", "slug", "free_account", "topic_id", "topic_name", "slug_from", "invited_by", "invited_by_id"];
+
+      for (let i = 0; i < acceptedParams.length; i++) {
+        let name = acceptedParams[i];
+        let value = $_GET(name) ? $_GET(name) : "";
+
+        if (value) {
+          payload = {
+            ...payload,
+            [name]: value,
+          };
         }
+      }
 
-        if (form.password === "") {
-            valid = false;
-            errorData = {...errorData, password: "Password is required."};
-        }
+      dispatch(toggleLoading(true));
 
-        setError(errorData);
-        setFormMessage({error: "", success: ""});
+      dispatch(
+        userLogin(payload, (err, res) => {
+          if (err) {
+            dispatch(toggleLoading(false));
 
-        if (valid !== true) {
-            if (errorData.email !== "") {
-                ref.email.current.focus();
-            } else if (errorData.password !== "") {
-                ref.password.current.focus();
+            setFormMessage({ ...formMessage, error: "Invalid email or password." });
+            ref.email.current.focus();
+          }
+
+          if (res) {
+            if (res.data.message && res.data.message === "need_verify_via_email") {
+              setFormMessage({
+                ...formMessage,
+                success: "Login successful! A code was sent to your email for further verification.",
+              });
+              let cb = {
+                key: new Date().getTime(),
+                type: "modal",
+                modal: "modal_login_verification",
+                title: "Two-step verification",
+                children: "",
+                dataSet: res.data,
+                callback: {
+                  handleVerify: this.loginCodeVerify,
+                  handleResend: this.loginCodeResend,
+                },
+              };
+              console.log(cb);
+              //openModalAction(cb);
+            } else {
+              setFormMessage({
+                ...formMessage,
+                success: "Login successful!",
+              });
+
+              const returnUrl =
+                typeof props.location.state !== "undefined" && typeof props.location.state.from !== "undefined" && props.location.state.from !== "/logout"
+                  ? props.location.state.from.pathname + props.location.state.from.search
+                  : "/workspace/chat";
+              storeLoginToken(res.data);
+              processBackendLogin(res.data, returnUrl);
             }
-        } else {
-            const device = getThisDeviceInfo();
-            let payload = {
-                ...form,
-                serial: device.serial,
-                device: device.device,
-                browser: device.browser,
-            };
+          }
+        })
+      );
+    }
+  };
 
-            let acceptedParams = [
-                "first_name",
-                "slug",
-                "free_account",
-                "topic_id",
-                "topic_name",
-                "slug_from",
-                "invited_by",
-                "invited_by_id"];
+  const handleGoogleLogIn = (e) => {
+    e.preventDefault();
 
-            for (let i = 0; i < acceptedParams.length; i++) {
-                let name = acceptedParams[i];
-                let value = $_GET(name) ? $_GET(name) : "";
-
-                if (value) {
-                    payload = {
-                        ...payload,
-                        [name]: value,
-                    };
-                }
-            }
-
-            dispatch(
-                toggleLoading(true),
-            );
-
-            dispatch(
-                userLogin(payload, (err, res) => {
-                    if (err) {
-                        dispatch(
-                            toggleLoading(false),
-                        );
-
-                        setFormMessage({...formMessage, error: "Invalid email or password."});
-                        ref.email.current.focus();
-                    }
-
-                    if (res) {
-                        if (res.data.message && res.data.message === "need_verify_via_email") {
-                            setFormMessage({
-                                ...formMessage,
-                                success: "Login successful! A code was sent to your email for further verification.",
-                            });
-                            let cb = {
-                                key: new Date().getTime(),
-                                type: "modal",
-                                modal: "modal_login_verification",
-                                title: "Two-step verification",
-                                children: "",
-                                dataSet: res.data,
-                                callback: {
-                                    handleVerify: this.loginCodeVerify,
-                                    handleResend: this.loginCodeResend,
-                                },
-                            };
-                            console.log(cb);
-                            //openModalAction(cb);
-                        } else {
-                            setFormMessage({
-                                ...formMessage,
-                                success: "Login successful!",
-                            });
-
-                            const returnUrl = (
-                                                  (typeof props.location.state !== "undefined")
-                                                  && (typeof props.location.state.from !== "undefined")
-                                                  && (props.location.state.from !== "/logout")
-                                              ) ? props.location.state.from.pathname + props.location.state.from.search : "/workspace/chat";
-                            storeLoginToken(res.data);
-                            processBackendLogin(res.data, returnUrl);
-                        }
-                    }
-                }),
-            );
+    dispatch(
+      userGoogleLogin(
+        {
+          driff: getDriffName(),
+        },
+        (err, res) => {
+          if (err) {
+            console.log(err);
+          }
+          if (res) {
+            setFormMessage({ ...formMessage, success: "Logging in Google..." });
+            window.location.href = res.data.google_url;
+          }
         }
-    };
-
-    const handleGoogleLogIn = (e) => {
-        e.preventDefault();
-
-        dispatch(
-            userGoogleLogin({
-                driff: getDriffName(),
-            }, (err, res) => {
-                if (err) {
-                    console.log(err);
-                }
-                if (res) {
-                    setFormMessage({...formMessage, success: "Logging in Google..."});
-                    window.location.href = res.data.google_url;
-                }
-            }),
-        );
-    };
-
-    return (
-        <Wrapper error={formMessage.error} success={formMessage.success} className="fadeIn">
-            <FormGroup className="form-group" error={error.email}>
-                <input ref={ref.email} onChange={handleInputChange} name="email" type="email" className="form-control"
-                       placeholder="Email" required autoFocus/>
-            </FormGroup>
-            <FormGroup className="form-group" error={error.password}>
-                <input ref={ref.password} onChange={handleInputChange} name="password" type="password"
-                       className="form-control"
-                       placeholder="Password" required/>
-            </FormGroup>
-            <div className="form-group d-flex justify-content-between">
-                <CheckBox name="remember_me" checked={form.remember_me} onClick={toggleCheck}>Remember me</CheckBox>
-                <Link to="/reset-password">Reset password</Link>
-            </div>
-            <button className="btn btn-primary btn-block" onClick={handleSignIn}>Sign in</button>
-            <hr/>
-            <p className="text-muted">Login with your social media account.</p>
-            <ul className="list-inline">
-                <li className="list-inline-item">
-                    <a href="/" onClick={handleGoogleLogIn} className="btn btn-floating btn-google">
-                        <i className="fa fa-google"/>
-                    </a>
-                </li>
-            </ul>
-            <hr/>
-            <p className="text-muted">Don't have an account?</p>
-            <Link className={"btn btn-outline-light btn-sm"} to="/register">Register now!</Link>
-        </Wrapper>
+      )
     );
+  };
+
+  return (
+    <Wrapper error={formMessage.error} success={formMessage.success} className="fadeIn">
+      <FormGroup className="form-group" error={error.email}>
+        <input ref={ref.email} onChange={handleInputChange} name="email" type="email" className="form-control" placeholder="Email" required autoFocus />
+      </FormGroup>
+      <FormGroup className="form-group" error={error.password}>
+        <input ref={ref.password} onChange={handleInputChange} name="password" type="password" className="form-control" placeholder="Password" required />
+      </FormGroup>
+      <div className="form-group d-flex justify-content-between">
+        <CheckBox name="remember_me" checked={form.remember_me} onClick={toggleCheck}>
+          Remember me
+        </CheckBox>
+        <Link to="/reset-password">Reset password</Link>
+      </div>
+      <button className="btn btn-primary btn-block" onClick={handleSignIn}>
+        Sign in
+      </button>
+      <hr />
+      <p className="text-muted">Login with your social media account.</p>
+      <ul className="list-inline">
+        <li className="list-inline-item">
+          <a href="/" onClick={handleGoogleLogIn} className="btn btn-floating btn-google">
+            <i className="fa fa-google" />
+          </a>
+        </li>
+      </ul>
+      <hr />
+      <p className="text-muted">Don't have an account?</p>
+      <Link className={"btn btn-outline-light btn-sm"} to="/register">
+        Register now!
+      </Link>
+    </Wrapper>
+  );
 };
 
 export default React.memo(LoginPanel);

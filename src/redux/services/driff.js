@@ -1,5 +1,5 @@
-import {getAPIUrl} from "../../helpers/slugHelper";
-import {apiNoTokenCall} from "./service";
+import { getAPIUrl } from "../../helpers/slugHelper";
+import { apiNoTokenCall } from "./service";
 
 /**
  * This function will call on the API to process driff registration
@@ -20,12 +20,12 @@ import {apiNoTokenCall} from "./service";
  * @returns {Promise<*>}
  */
 export function postRegisterDriff(data) {
-    return apiNoTokenCall({
-        method: "POST",
-        url: "/register",
-        register: true,
-        data: data,
-    });
+  return apiNoTokenCall({
+    method: "POST",
+    url: "/register",
+    register: true,
+    data: data,
+  });
 }
 
 /**
@@ -35,9 +35,8 @@ export function postRegisterDriff(data) {
  * @returns {Promise<*>}
  */
 export function patchCheckDriff(driffName) {
-    return apiNoTokenCall({
-        method: "PATCH",
-        actualUrl: `${getAPIUrl({noSlug: true})}/check-slug/?slug=${driffName}`,
-
-    });
+  return apiNoTokenCall({
+    method: "PATCH",
+    actualUrl: `${getAPIUrl({ noSlug: true })}/check-slug/?slug=${driffName}`,
+  });
 }

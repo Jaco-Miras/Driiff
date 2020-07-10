@@ -1,4 +1,4 @@
-import React, {forwardRef, useEffect, useState} from "react";
+import React, { forwardRef, useEffect, useState } from "react";
 import styled from "styled-components";
 import emptyStateImg1 from "../../assets/img/empty-states-img/empty_state_1.svg";
 import emptyStateImg2 from "../../assets/img/empty-states-img/empty_state_2.svg";
@@ -14,33 +14,28 @@ const NoReplyDiv = styled.div`
   bottom: 0;
   right: 0;
 
-  img  {
-    width: 100%;    
-    max-height: 40%;    
+  img {
+    width: 100%;
+    max-height: 40%;
     margin: auto;
   }
 `;
 
 const NoReply = forwardRef((props, ref) => {
+  const { className = "" } = props;
+  const emptyStateImgArr = [emptyStateImg1, emptyStateImg2, emptyStateImg3, emptyStateImg4];
+  const [emptyStateImg, setEmptyStateImg] = useState("");
 
-    const {className = ""} = props;
-    const emptyStateImgArr = [emptyStateImg1, emptyStateImg2, emptyStateImg3, emptyStateImg4];
-    const [emptyStateImg, setEmptyStateImg] = useState("");
+  useEffect(() => {
+    let img = emptyStateImgArr[Math.floor(Math.random() * emptyStateImgArr.length)];
+    setEmptyStateImg(img);
+  }, [emptyStateImgArr]);
 
-    useEffect(() => {
-        let img = emptyStateImgArr[Math.floor(Math.random() * emptyStateImgArr.length)];
-        setEmptyStateImg(img);
-    }, [emptyStateImgArr]);
-
-    return <NoReplyDiv
-        ref={ref}
-        className={`no-reply-container ${className}`}>
-        {
-            <img
-                src={emptyStateImg}
-                alt="#"/>
-        }
-    </NoReplyDiv>;
+  return (
+    <NoReplyDiv ref={ref} className={`no-reply-container ${className}`}>
+      {<img src={emptyStateImg} alt="#" />}
+    </NoReplyDiv>
+  );
 });
 
 export default React.memo(NoReply);

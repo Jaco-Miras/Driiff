@@ -3,8 +3,8 @@ import styled from "styled-components";
 
 const ChatUnreadMessageLineDiv = styled.div`
   &.hide {
-    visibility: hidden;        
-    opacity: 0;        
+    visibility: hidden;
+    opacity: 0;
   }
 `;
 const ChatUnreadMessageLine = styled.div`
@@ -86,17 +86,15 @@ const ChatUnreadMessageLine = styled.div`
   }
 `;
 
-const ChatUnreadLine = props => {
-    return (
-        <ChatUnreadMessageLineDiv
-            className={"unread-message-sepline"}
-        >
-            {
-                <ChatUnreadMessageLine>
-                    <span className="sepline">Unread Message/s</span>
-                </ChatUnreadMessageLine>
-            }
-        </ChatUnreadMessageLineDiv>
-    );
+const ChatUnreadLine = (props) => {
+  return (
+    <ChatUnreadMessageLineDiv className={"unread-message-sepline"}>
+      {
+        <ChatUnreadMessageLine>
+          <span className="sepline">Unread Message/s</span>
+        </ChatUnreadMessageLine>
+      }
+    </ChatUnreadMessageLineDiv>
+  );
 };
 export default ChatUnreadLine;

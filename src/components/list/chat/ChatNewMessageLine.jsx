@@ -3,8 +3,8 @@ import styled from "styled-components";
 
 const ChatNewMessageLineDiv = styled.div`
   &.hide {
-    visibility: hidden;        
-    opacity: 0;        
+    visibility: hidden;
+    opacity: 0;
   }
 `;
 const ChatNewMessageLine = styled.div`
@@ -86,15 +86,15 @@ const ChatNewMessageLine = styled.div`
   }
 `;
 
-const ChatNewMessagesLine = props => {
-    return (
-        <ChatNewMessageLineDiv className={"new-message-sepline"}>
-            {
-                <ChatNewMessageLine>
-                    <span className="sepline">New Message/s</span>
-                </ChatNewMessageLine>
-            }
-        </ChatNewMessageLineDiv>
-    );
+const ChatNewMessagesLine = (props) => {
+  return (
+    <ChatNewMessageLineDiv className={"new-message-sepline"}>
+      {
+        <ChatNewMessageLine>
+          <span className="sepline">New Message/s</span>
+        </ChatNewMessageLine>
+      }
+    </ChatNewMessageLineDiv>
+  );
 };
 export default ChatNewMessagesLine;

@@ -1,18 +1,14 @@
 import React from "react";
 import styled from "styled-components";
 
-const MobileOverlayContainer = styled.div`
-`;
+const MobileOverlayContainer = styled.div``;
 
 const MobileOverlay = () => {
+  const closeMobileModal = () => {
+    document.body.classList.remove("navigation-show");
+  };
 
-    const closeMobileModal = () => {
-        document.body.classList.remove("navigation-show");
-    };
-
-    return (
-        <MobileOverlayContainer className="overlay" onClick={closeMobileModal}/>
-    );
+  return <MobileOverlayContainer className="overlay" onClick={closeMobileModal} />;
 };
 
 export default React.memo(MobileOverlay);

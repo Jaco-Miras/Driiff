@@ -1,39 +1,33 @@
 import React from "react";
 import styled from "styled-components";
-import {Comment} from "../../list/post/item";
+import { Comment } from "../../list/post/item";
 
 const Wrapper = styled.div`
-    ul {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-        margin-left: auto;        
-    }
-    > ul {
-        width: 100%;
-    }
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    margin-left: auto;
+  }
+  > ul {
+    width: 100%;
+  }
 `;
 
-const PostComments = props => {
+const PostComments = (props) => {
+  const { className = "", comments, post, user, commentActions, onShowFileDialog, dropAction } = props;
 
-    const {className = "", comments, post, user, commentActions, onShowFileDialog, dropAction} = props;
-
-    return (
-        <Wrapper className={`post-comments card-body ${className}`}>
-            {
-                comments &&
-                <ul>
-                    {
-                        Object.values(comments).map(c => {
-                            return <Comment key={c.id} comment={c} post={post} user={user}
-                                            commentActions={commentActions} onShowFileDialog={onShowFileDialog}
-                                            dropAction={dropAction}/>;
-                        })
-                    }
-                </ul>
-            }
-        </Wrapper>
-    );
+  return (
+    <Wrapper className={`post-comments card-body ${className}`}>
+      {comments && (
+        <ul>
+          {Object.values(comments).map((c) => {
+            return <Comment key={c.id} comment={c} post={post} user={user} commentActions={commentActions} onShowFileDialog={onShowFileDialog} dropAction={dropAction} />;
+          })}
+        </ul>
+      )}
+    </Wrapper>
+  );
 };
 
 export default React.memo(PostComments);

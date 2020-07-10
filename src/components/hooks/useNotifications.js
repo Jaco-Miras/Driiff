@@ -1,13 +1,12 @@
-import {useSelector} from "react-redux";
+import { useSelector } from "react-redux";
 
-const useNotifications = props => {
+const useNotifications = (props) => {
+  const { notifications, unreadCount } = useSelector((state) => state.notifications);
 
-    const {notifications, unreadCount} = useSelector(state => state.notifications);
-    
-    return {
-        notifications,
-        unreadCount
-    };
+  return {
+    notifications,
+    unreadCount,
+  };
 };
 
 export default useNotifications;
