@@ -133,7 +133,11 @@ export default function (state = INITIAL_STATE, action) {
             let channel = state.channels[action.data.id];
 
             if (typeof channel === "undefined")
-                channel = action.data;
+                channel = {
+                    ...action.data,
+                    hasMore: true,
+                    skip: 0,
+                }
 
             return {
                 ...state,

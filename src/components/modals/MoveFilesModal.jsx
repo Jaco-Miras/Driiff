@@ -62,11 +62,11 @@ const MoveFilesModal = (props) => {
         if (selectedFolder) {
             let cb = (err, res) => {
                 if (err) {
-                    toaster.success(<div>Failed to move <b>{file.search}</b> to ${selectedFolder.label} folder</div>);
+                    toaster.success(<div>Failed to move <b>{file.search}</b> to folder {selectedFolder.label}</div>);
 
                     return;
                 }
-                toaster.success(<div><b>{file.search}</b> has been moved to {selectedFolder.label} folder</div>);
+                toaster.success(<div><b>{file.search}</b> has been moved to folder {selectedFolder.label}</div>);
             };
 
             dispatch(
