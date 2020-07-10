@@ -138,7 +138,7 @@ const ChatContactsList = props => {
                     <span>New group chat</span>
                 </NewGroupButton>
             </div>
-            <Contacts className={`list-group list-group-flush`}>
+            <Contacts className={"list-group list-group-flush"}>
                 {
                     sortedChannels.map((channel) => {
                         return (

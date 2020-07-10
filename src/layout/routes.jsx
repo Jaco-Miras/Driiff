@@ -21,7 +21,7 @@ export const AppRoute = ({children, ...props}) => {
         if (session.checked && session.authenticated) {
             fetchSettings();
         }
-    }, [session.checked, session.authenticated]);
+    }, [session.checked, session.authenticated, fetchSettings]);
 
     // if (!session.checked || !i18nLoaded || push.loading)
     if (!session.checked || !i18nLoaded)

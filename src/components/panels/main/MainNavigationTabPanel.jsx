@@ -11,13 +11,11 @@ import Tooltip from "react-tooltip-lite";
 const Wrapper = styled.div`
     li {
         position: relative;
-
         .badge {
             position: absolute;
             width: 6px;
             height: 6px;
             padding: 0;
-            ${'' /* top: -8px; */}
             background: rgba(255, 68, 68, 0.8);
             right: 22px;
             top: 16px;
@@ -82,9 +80,9 @@ const MainNavigationTabPanel = (props) => {
     }, []);
 
     const toggleTooltip = () => {
-        let tooltips = document.querySelectorAll('span.react-tooltip-lite');
+        let tooltips = document.querySelectorAll("span.react-tooltip-lite");
         tooltips.forEach((tooltip) => {
-            tooltip.parentElement.classList.toggle('tooltip-active');
+            tooltip.parentElement.classList.toggle("tooltip-active");
         });
     };
 
@@ -112,7 +110,7 @@ const MainNavigationTabPanel = (props) => {
                 <ul>
                     <li>
                         <NavIconContainer to={workspacePath}>
-                            <NavIcon icon={`command`}/>
+                            <NavIcon icon={"command"}/>
                             {
                                 (unreadCounter.workspace_chat_message + unreadCounter.workspace_post) >= 1 &&
                                 <Badge
@@ -125,7 +123,7 @@ const MainNavigationTabPanel = (props) => {
                             active={["dashboard", "posts", "chat", "files", "people"].includes(props.match.params.page)}
                             to={lastVisitedChannel !== null && lastVisitedChannel.hasOwnProperty("code") ?
                                 `/chat/${lastVisitedChannel.code}` : "/chat"}>
-                            <NavIcon icon={`message-circle`}/>
+                            <NavIcon icon={"message-circle"}/>
                             {
                                 unreadCounter.hasOwnProperty("chat_message") && unreadCounter.chat_message >= 1 &&
                                 <Badge
@@ -141,13 +139,13 @@ const MainNavigationTabPanel = (props) => {
                         <NavIconContainer to="/settings">
 
                             <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Settings">
-                                <NavIcon icon={`settings`}/>
+                                <NavIcon icon={"settings"}/>
                             </Tooltip>
                         </NavIconContainer>
                     </li>
                     <li>
                         <NavIconContainer to="/logout">
-                            <NavIcon icon={`log-out`}/>
+                            <NavIcon icon={"log-out"}/>
                         </NavIconContainer>
                     </li>
                 </ul>

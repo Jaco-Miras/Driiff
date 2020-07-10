@@ -48,7 +48,7 @@ export function unreadNotification(payload) {
 export function readAllNotification(payload) {
     return apiCall({
         method: "PUT",
-        url: `/v2/notification-counter-all-read`,
+        url: "/v2/notification-counter-all-read",
         data: payload,
     });
 }
@@ -56,7 +56,7 @@ export function readAllNotification(payload) {
 export function deleteAllNotification(payload) {
     return apiCall({
         method: "DELETE",
-        url: `/v2/notification-counter-all-delete`,
+        url: "/v2/notification-counter-all-delete",
     });
 }
 

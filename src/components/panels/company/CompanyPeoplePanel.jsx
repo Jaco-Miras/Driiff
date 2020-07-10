@@ -5,7 +5,7 @@ import SearchForm from "../../forms/SearchForm";
 import {useUserChannels} from "../../hooks";
 import {PeopleListItem} from "../../list/people/item";
 
-const Wrapper = styled.div`    
+const Wrapper = styled.div`
 `;
 
 const Search = styled(SearchForm)`
@@ -43,8 +43,6 @@ const CompanyPeoplePanel = (props) => {
 
     useEffect(() => {
         refs.search.current.focus();
-
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const userSort = Object.values(users)

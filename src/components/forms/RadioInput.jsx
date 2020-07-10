@@ -104,7 +104,7 @@ const RadioInput = forwardRef((props, ref) => {
                     <input name={name} value={value} ref={setRadioElement} type="radio" {...otherProps}/>
 
             }
-            <span className={`checkmark`}/>
+            <span className={"checkmark"}/>
             {children}
 
         </RadioInputContainer>

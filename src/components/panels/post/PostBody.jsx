@@ -75,7 +75,7 @@ const PostBody = props => {
                 <div dangerouslySetInnerHTML={{__html: post.body}}/>
             </div>
         </Wrapper>
-    )
+    );
 };
 
 export default React.memo(PostBody);

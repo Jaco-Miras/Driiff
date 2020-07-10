@@ -53,8 +53,6 @@ const WorkspacePeoplePanel = (props) => {
 
     useEffect(() => {
         refs.search.current.focus();
-
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const userSort = Object.values(users)

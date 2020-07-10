@@ -212,7 +212,7 @@ const usePostActions = () => {
                 ...payload,
                 folderId: params.hasOwnProperty("folderId") ? params.folderId : null,
                 count: post.unread_count === 0 ? 1 : post.unread_count
-            }
+            };
 
             if (res) {
                 if (showToaster) toaster.success(<>You marked <b>{post.title}</b> as read.</>);
@@ -241,7 +241,7 @@ const usePostActions = () => {
             payload = {
                 ...payload,
                 folderId: params.hasOwnProperty("folderId") ? params.folderId : null
-            }
+            };
 
             if (res) {
                 if (showToaster) toaster.success(<>You marked <b>{post.title}</b> as unread.</>);

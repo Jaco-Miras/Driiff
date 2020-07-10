@@ -14,7 +14,7 @@ const WorkspaceChatPanel = (props) => {
     return (
         <Wrapper className={`container-fluid workspace-chat ${className}`}>
             <div className="row no-gutters chat-block">
-                <ChatContentPanel className={`col-lg-12`} selectedChannel={selectedChannel}/>
+                <ChatContentPanel className={"col-lg-12"} selectedChannel={selectedChannel}/>
             </div>
         </Wrapper>
     );

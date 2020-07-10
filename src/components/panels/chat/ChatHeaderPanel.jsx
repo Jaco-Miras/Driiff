@@ -122,7 +122,7 @@ const ChatHeaderPanel = (props) => {
                             !channel.is_archived &&
                             <>
                                 <li className="mr-4 d-sm-inline d-none">
-                                    <IconButton icon={`edit-3`} onClick={handleShowChatEditModal}/>
+                                    <IconButton icon={"edit-3"} onClick={handleShowChatEditModal}/>
                                 </li>
                             </>
                         }
@@ -130,14 +130,14 @@ const ChatHeaderPanel = (props) => {
                             (["PERSONAL_BOT", "COMPANY", "TOPIC"].includes(channel.type) === false) &&
                             <>
                                 <li className="mr-4 d-sm-inline d-none"
-                                    title={channel.is_archived ? `Restore` : `Archive`}>
-                                    <IconButton icon={channel.is_archived ? `rotate-ccw` : `trash-2`}
+                                    title={channel.is_archived ? "Restore" : "Archive"}>
+                                    <IconButton icon={channel.is_archived ? "rotate-ccw" : "trash-2"}
                                                 onClick={handleShowArchiveConfirmation}/>
                                 </li>
                             </>
                         }
                         <li className="mobile-chat-close-btn" onClick={goBackChannelSelect}>
-                            <IconButton icon={`x`}/>
+                            <IconButton icon={"x"}/>
                         </li>
                     </ul>
                 </div>

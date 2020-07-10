@@ -2,7 +2,6 @@ import React from "react";
 import styled from "styled-components";
 
 const MobileOverlayContainer = styled.div`
-    ${'' /* z-index: 7; */}
 `;
 
 const MobileOverlay = () => {

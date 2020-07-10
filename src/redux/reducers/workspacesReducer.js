@@ -35,8 +35,8 @@ export default (state = INITIAL_STATE, action) => {
                             workspace_name: ws.name,
                             workspace_description: ws.description,
                             type: "TOPIC",
-                        }
-                    })
+                        };
+                    });
                 }
                 workspaces[ws.id] = {
                     ...workspaces[ws.id],
@@ -44,13 +44,13 @@ export default (state = INITIAL_STATE, action) => {
                     selected: false,
                     topics: topics
                 };
-            })
+            });
             return {
                 ...state,
                 workspaces: workspaces,
                 workspacesLoaded: !state.workspacesLoaded && action.data.is_external === 0 ? true : state.workspacesLoaded,
                 externalWorkspacesLoaded: !state.externalWorkspacesLoaded && action.data.is_external === 1 ? true : state.externalWorkspacesLoaded,
-            }
+            };
         }
         case "INCOMING_WORKSPACE_FOLDER": {
             if (state.workspacesLoaded) {
@@ -62,13 +62,13 @@ export default (state = INITIAL_STATE, action) => {
                         topics: {},
                         selected: false
                     }
-                }
+                };
                 return {
                     ...state,
                     workspaces: newWorkspaces
-                }
+                };
             } else {
-                return state
+                return state;
             }
         }
         case "INCOMING_WORKSPACE": {
@@ -94,7 +94,7 @@ export default (state = INITIAL_STATE, action) => {
                             },
                             selected: false
                         }
-                    }
+                    };
                 } else {
                     newWorkspaces = {
                         ...newWorkspaces,
@@ -108,13 +108,13 @@ export default (state = INITIAL_STATE, action) => {
                                 channel: action.data.channel
                             }
                         }
-                    }
+                    };
                 }
 
                 return {
                     ...state,
                     workspaces: newWorkspaces
-                }
+                };
             } else {
                 return state;
             }
@@ -126,7 +126,7 @@ export default (state = INITIAL_STATE, action) => {
                     ...workspace,
                     name: action.data.name,
                     description: action.data.description,
-                }
+                };
                 return {
                     ...state,
                     workspaces: {
@@ -140,7 +140,7 @@ export default (state = INITIAL_STATE, action) => {
                             workspace_description: action.data.description,
                         }
                         : state.activeTopic
-                }
+                };
             } else if (state.workspacesLoaded && action.data.type === "WORKSPACE") {
                 let workspace = null;
                 if (action.data.workspace_id === 0) {
@@ -159,7 +159,7 @@ export default (state = INITIAL_STATE, action) => {
                                 members: action.data.members,
                                 description: action.data.description,
                                 updated_at: action.data.updated_at
-                            }
+                            };
                             return {
                                 ...state,
                                 workspaces: {
@@ -172,14 +172,14 @@ export default (state = INITIAL_STATE, action) => {
                                         ...workspace
                                     }
                                     : state.activeTopic
-                            }
+                            };
                         }
                     } else {
                         //make workspace as direct
                         //delete the original workspace
                         let newWorkspaces = {...state.workspaces};
                         workspace = {...newWorkspaces[action.data.original_workspace_id].topics[action.data.id]};
-                        delete newWorkspaces[action.data.original_workspace_id].topics[action.data.id]
+                        delete newWorkspaces[action.data.original_workspace_id].topics[action.data.id];
 
                         if (workspace.hasOwnProperty("id")) {
                             workspace = {
@@ -200,14 +200,14 @@ export default (state = INITIAL_STATE, action) => {
                                     description: action.data.description,
                                 },
                                 updated_at: action.data.updated_at
-                            }
+                            };
                             delete workspace.workspace_id;
                             delete workspace.workspace_name;
                             delete workspace.workspace_descripiton;
                             newWorkspaces = {
                                 ...newWorkspaces,
                                 [action.data.id]: workspace
-                            }
+                            };
                         } else {
 
                         }
@@ -220,7 +220,7 @@ export default (state = INITIAL_STATE, action) => {
                                     ...workspace
                                 }
                                 : state.activeTopic
-                        }
+                        };
                     }
                 } else {
                     //workspace under folder
@@ -237,7 +237,7 @@ export default (state = INITIAL_STATE, action) => {
                                 member_ids: action.data.member_ids,
                                 members: action.data.members,
                                 updated_at: action.data.updated_at
-                            }
+                            };
                             newWorkspaces = {
                                 ...newWorkspaces,
                                 [action.data.workspace_id]: {
@@ -248,7 +248,7 @@ export default (state = INITIAL_STATE, action) => {
                                         [action.data.id]: workspace
                                     }
                                 }
-                            }
+                            };
                         }
 
                         return {
@@ -260,19 +260,19 @@ export default (state = INITIAL_STATE, action) => {
                                     ...workspace
                                 }
                                 : state.activeTopic
-                        }
+                        };
                     } else {
                         //moved workspace to another folder
                         // delete original workspace
                         let newWorkspaces = {...state.workspaces};
-                        let workspaceFolder = {...newWorkspaces[action.data.workspace_id]}
+                        let workspaceFolder = {...newWorkspaces[action.data.workspace_id]};
 
                         if (action.data.original_workspace_id === 0) {
                             workspace = {...newWorkspaces[action.data.id]};
-                            delete newWorkspaces[action.data.id]
+                            delete newWorkspaces[action.data.id];
                         } else {
                             workspace = {...newWorkspaces[action.data.original_workspace_id].topics[action.data.id]};
-                            delete newWorkspaces[action.data.original_workspace_id].topics[action.data.id]
+                            delete newWorkspaces[action.data.original_workspace_id].topics[action.data.id];
                         }
 
                         if (workspace.hasOwnProperty("id")) {
@@ -286,7 +286,7 @@ export default (state = INITIAL_STATE, action) => {
                                 workspace_descripiton: workspaceFolder.description,
                                 workspace_name: workspaceFolder.name,
                                 updated_at: action.data.updated_at
-                            }
+                            };
                             newWorkspaces = {
                                 ...newWorkspaces,
                                 [action.data.workspace_id]: {
@@ -296,7 +296,7 @@ export default (state = INITIAL_STATE, action) => {
                                         [action.data.id]: workspace
                                     }
                                 }
-                            }
+                            };
                         } else {
 
                         }
@@ -310,7 +310,7 @@ export default (state = INITIAL_STATE, action) => {
                                     ...workspace
                                 }
                                 : state.activeTopic
-                        }
+                        };
                     }
                 }
             } else {
@@ -340,7 +340,7 @@ export default (state = INITIAL_STATE, action) => {
                 //     ...state,
                 //     workspaces: newWorkspaces
                 // }
-                return state
+                return state;
             } else {
                 return state;
             }
@@ -366,7 +366,7 @@ export default (state = INITIAL_STATE, action) => {
                             },
                             selected: false
                         }
-                    }
+                    };
                 } else {
                     //last active is direct workspace
                     if (newWorkspaces.hasOwnProperty(state.activeTopic.id)) {
@@ -377,7 +377,7 @@ export default (state = INITIAL_STATE, action) => {
                                 selected: false,
                                 channel_loaded: true,
                             }
-                        }
+                        };
                     }
                 }
             }
@@ -399,7 +399,7 @@ export default (state = INITIAL_STATE, action) => {
                         },
                         selected: true
                     }
-                }
+                };
             } else {
                 newWorkspaces = {
                     ...newWorkspaces,
@@ -408,20 +408,20 @@ export default (state = INITIAL_STATE, action) => {
                         selected: true,
                         channel_loaded: true,
                     }
-                }
+                };
             }
 
             return {
                 ...state,
                 workspaces: newWorkspaces,
                 activeTopic: {...action.data, selected: true}
-            }
+            };
         }
         case "SET_ACTIVE_TAB": {
             return {
                 ...state,
                 activeTab: action.data
-            }
+            };
         }
         case "ADD_POST_SEARCH_RESULT": {
             return {
@@ -434,7 +434,7 @@ export default (state = INITIAL_STATE, action) => {
                         searchResults: action.data.search_result,
                     }
                 }
-            }
+            };
         }
         case "ADD_TO_WORKSPACE_POSTS": {
             let convertedPosts = convertArrayToObject(action.data.posts, "id");
@@ -442,9 +442,9 @@ export default (state = INITIAL_STATE, action) => {
             if (state.drafts.length) {
                 state.drafts.forEach(d => {
                     if (d.data.type === "draft_post" && action.data.topic_id === d.data.topic_id) {
-                        postDrafts.push({...d.data, ...d.data.form, draft_id: d.id})
+                        postDrafts.push({...d.data, ...d.data.form, draft_id: d.id});
                     }
-                })
+                });
             }
             if (postDrafts.length) {
                 postDrafts = convertArrayToObject(postDrafts, "id");
@@ -463,7 +463,7 @@ export default (state = INITIAL_STATE, action) => {
                             },
                         }
                     }
-                }
+                };
             } else {
                 return {
                     ...state,
@@ -483,7 +483,7 @@ export default (state = INITIAL_STATE, action) => {
                             post_ids: [...action.data.posts.map(p => p.id), ...state.drafts.map(d => d.data.id)]
                         }
                     }
-                }
+                };
             }
         }
         case "UPDATE_WORKSPACE_POST_FILTER_SORT": {
@@ -503,7 +503,7 @@ export default (state = INITIAL_STATE, action) => {
                         //     : action.data.tag : state.workspacePosts[action.data.topic_id].tag
                     }
                 }
-            }
+            };
         }
         case "JOIN_WORKSPACE_REDUCER": {
             let user = {
@@ -513,7 +513,7 @@ export default (state = INITIAL_STATE, action) => {
                 profile_image_link: action.data.user.profile_image_link,
                 partial_name: action.data.user.partial_name,
                 active: 1,
-            }
+            };
             let newWorkspaces = {...state.workspaces};
             let topic = null;
             if (newWorkspaces.hasOwnProperty(action.data.topic_id)) {
@@ -568,16 +568,16 @@ export default (state = INITIAL_STATE, action) => {
                     activeTopic: state.activeTopic.id === action.data.topic_id
                         ? topic
                         : state.activeTopic
-                }
+                };
             } else {
-                return state
+                return state;
             }
         }
         case "GET_DRAFTS_SUCCESS": {
             return {
                 ...state,
                 drafts: action.data
-            }
+            };
         }
         case "SAVE_DRAFT_SUCCESS": {
             if (action.data.data.draft_type === "draft_post") {
@@ -601,7 +601,7 @@ export default (state = INITIAL_STATE, action) => {
                             },
                         }
                     }
-                }
+                };
             } else {
                 return state;
             }
@@ -612,7 +612,7 @@ export default (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 workspacePosts: newWorkspacePosts
-            }
+            };
         }
         case "FETCH_COMMENTS_SUCCESS": {
             let comments = {};
@@ -624,8 +624,8 @@ export default (state = INITIAL_STATE, action) => {
                         skip: c.replies.length,
                         hasMore: c.replies.length === 10,
                         limit: 10
-                    }
-                })
+                    };
+                });
             }
             return {
                 ...state,
@@ -636,7 +636,7 @@ export default (state = INITIAL_STATE, action) => {
                         comments: comments
                     }
                 }
-            }
+            };
         }
         case "ADD_COMMENT": {
             let postComment = {...state.postComments[action.data.post_id]};
@@ -653,7 +653,7 @@ export default (state = INITIAL_STATE, action) => {
                             }
                         }
                     }
-                }
+                };
             } else {
                 postComment = {
                     ...postComment,
@@ -661,7 +661,7 @@ export default (state = INITIAL_STATE, action) => {
                         ...postComment.comments,
                         [action.data.id]: action.data
                     }
-                }
+                };
             }
             return {
                 ...state,
@@ -669,7 +669,7 @@ export default (state = INITIAL_STATE, action) => {
                     ...state.postComments,
                     [action.data.post_id]: postComment
                 }
-            }
+            };
         }
         case "STAR_POST_REDUCER": {
             return {
@@ -686,7 +686,7 @@ export default (state = INITIAL_STATE, action) => {
                         }
                     }
                 }
-            }
+            };
         }
         case "MARK_POST_REDUCER": {
             return {
@@ -703,7 +703,7 @@ export default (state = INITIAL_STATE, action) => {
                         }
                     }
                 }
-            }
+            };
         }
         case "INCOMING_POST": {
             let newWorkspacePosts = {...state.workspacePosts};
@@ -729,24 +729,24 @@ export default (state = INITIAL_STATE, action) => {
                         updatedWorkspaces[ws.topic_id].topic_detail.unread_posts = updatedWorkspaces[ws.topic_id].topic_detail.unread_posts + 1;
                     }
                 }
-            })
+            });
             return {
                 ...state,
                 workspacePosts: newWorkspacePosts,
                 workspaces: updatedWorkspaces
-            }
+            };
         }
         case "INCOMING_UPDATED_POST": {
             let newWorkspacePosts = {...state.workspacePosts};
             action.data.recipient_ids.forEach(id => {
                 if (newWorkspacePosts.hasOwnProperty(id)) {
-                    newWorkspacePosts[id].posts[action.data.id] = action.data
+                    newWorkspacePosts[id].posts[action.data.id] = action.data;
                 }
-            })
+            });
             return {
                 ...state,
                 workspacePosts: newWorkspacePosts
-            }
+            };
         }
         case "INCOMING_DELETED_POST": {
             let newWorkspacePosts = {...state.workspacePosts};
@@ -754,7 +754,7 @@ export default (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 workspacePosts: newWorkspacePosts
-            }
+            };
         }
         case "INCOMING_COMMENT": {
             let newPostComments = {...state.postComments};
@@ -781,7 +781,7 @@ export default (state = INITIAL_STATE, action) => {
                             }
                         }
                     }
-                })
+                });
             }
             if (newPostComments.hasOwnProperty(action.data.post_id)) {
                 if (action.data.reference_id) {
@@ -789,7 +789,7 @@ export default (state = INITIAL_STATE, action) => {
                         delete newPostComments[action.data.post_id].comments[action.data.parent_id].replies[action.data.reference_id];
                         newPostComments[action.data.post_id].comments[action.data.parent_id].replies[action.data.id] = action.data;
                     } else {
-                        delete newPostComments[action.data.post_id].comments[action.data.reference_id]
+                        delete newPostComments[action.data.post_id].comments[action.data.reference_id];
                         newPostComments[action.data.post_id].comments[action.data.id] = action.data;
                     }
                 } else {
@@ -805,7 +805,7 @@ export default (state = INITIAL_STATE, action) => {
                 postComments: newPostComments,
                 workspacePosts: newWorkspacePosts,
                 workspaces: updatedWorkspaces
-            }
+            };
         }
         case "ADD_PRIMARY_FILES": {
             let newWorkspaces = {...state.workspaces};
@@ -823,7 +823,7 @@ export default (state = INITIAL_STATE, action) => {
                         primary_files: action.data.files
                     }
                     : state.activeTopic
-            }
+            };
         }
         case "UPLOADING_WORKSPACE_FILES_SUCCESS": {
             let newWorkspaces = {...state.workspaces};
@@ -845,7 +845,7 @@ export default (state = INITIAL_STATE, action) => {
                         primary_files: state.activeTopic.hasOwnProperty("primary_files") ? [...state.activeTopic.primary_files, ...action.data.files] : action.data.files
                     }
                     : state.activeTopic
-            }
+            };
         }
         case "INCOMING_POST_CLAP": {
             let newWorkspacePosts = {...state.workspacePosts};
@@ -854,11 +854,11 @@ export default (state = INITIAL_STATE, action) => {
                     ws.posts[action.data.post_id].clap_count = action.data.clap_count === 0 ? ws.posts[action.data.post_id].clap_count - 1 : ws.posts[action.data.post_id].clap_count + 1;
                     ws.posts[action.data.post_id].user_clap_count = action.data.clap_count;
                 }
-            })
+            });
             return {
                 ...state,
                 workspacePosts: newWorkspacePosts
-            }
+            };
         }
         case "INCOMING_COMMENT_CLAP": {
             let newPostComments = {...state.postComments};
@@ -875,9 +875,9 @@ export default (state = INITIAL_STATE, action) => {
                 return {
                     ...state,
                     postComments: newPostComments
-                }
+                };
             } else {
-                return state
+                return state;
             }
         }
         case "FETCH_TIMELINE_SUCCESS": {
@@ -887,11 +887,11 @@ export default (state = INITIAL_STATE, action) => {
                 [action.data.topic_id]: {
                     timeline: convertArrayToObject(action.data.timeline, "id")
                 }
-            }
+            };
             return {
                 ...state,
                 workspaceTimeline: newWorkspaceTimeline
-            }
+            };
         }
         case "FETCH_WORKSPACE_MEMBERS_SUCCESS": {
             let newWorkspaces = {...state.workspaces};
@@ -909,7 +909,7 @@ export default (state = INITIAL_STATE, action) => {
                         members: action.data.members
                     }
                     : state.activeTopic
-            }
+            };
         }
         case "FETCH_TAG_COUNTER_SUCCESS": {
             return {
@@ -925,7 +925,7 @@ export default (state = INITIAL_STATE, action) => {
                         }
                     }
                 }
-            }
+            };
         }
         case "INCOMING_POST_VIEWER": {
             if (Object.keys(state.workspacePosts).length > 0) {
@@ -933,16 +933,16 @@ export default (state = INITIAL_STATE, action) => {
                 Object.keys(updatedWsPosts).forEach(ws => {
                     if (updatedWsPosts[ws].hasOwnProperty("posts")) {
                         if (updatedWsPosts[ws].posts.hasOwnProperty(action.data.post_id)) {
-                            updatedWsPosts[ws].posts[action.data.post_id].view_user_ids = [...updatedWsPosts[ws].posts[action.data.post_id].view_user_ids, action.data.viewer.id]
+                            updatedWsPosts[ws].posts[action.data.post_id].view_user_ids = [...updatedWsPosts[ws].posts[action.data.post_id].view_user_ids, action.data.viewer.id];
                         }
                     }
-                })
+                });
                 return {
                     ...state,
                     workspacePosts: updatedWsPosts
-                }
+                };
             } else {
-                return state
+                return state;
             }
         }
         case "ARCHIVE_REDUCER": {
@@ -951,12 +951,12 @@ export default (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 workspacePosts: newWorkspacePosts
-            }
+            };
         }
         case "MARK_READ_UNREAD_REDUCER": {
             let newWorkspacePosts = {...state.workspacePosts};
             let updatedWorkspaces = {...state.workspaces};
-            let updatedTopic = {...state.activeTopic}
+            let updatedTopic = {...state.activeTopic};
             newWorkspacePosts[action.data.topic_id].posts[action.data.post_id].is_unread = action.data.unread;
             if (action.data.unread === 0) {
                 newWorkspacePosts[action.data.topic_id].posts[action.data.post_id].unread_count = action.data.unread;
@@ -993,7 +993,7 @@ export default (state = INITIAL_STATE, action) => {
                 ...state,
                 workspacePosts: newWorkspacePosts,
                 activeTopic: updatedTopic
-            }
+            };
         }
         case "MUST_READ_REDUCER": {
             let newWorkspacePosts = {...state.workspacePosts};
@@ -1001,7 +1001,7 @@ export default (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 workspacePosts: newWorkspacePosts
-            }
+            };
         }
         case "INCOMING_TIMELINE": {
             let newTimeline = {...state.workspaceTimeline};
@@ -1010,7 +1010,7 @@ export default (state = INITIAL_STATE, action) => {
                 return {
                     ...state,
                     workspaceTimeline: newTimeline
-                }
+                };
             } else {
                 return state;
             }
@@ -1022,7 +1022,7 @@ export default (state = INITIAL_STATE, action) => {
                 action.data.connected_workspace.forEach(ws => {
                     if (newWorkspacePosts.hasOwnProperty(ws.topic_id) && newWorkspacePosts[ws.topic_id].hasOwnProperty("posts")) {
                         if (newWorkspacePosts[ws.topic_id].posts.hasOwnProperty(action.data.post_id)) {
-                            newWorkspacePosts[ws.topic_id].posts[action.data.post_id].files = newWorkspacePosts[ws.topic_id].posts[action.data.post_id].files.filter(f => f.id !== action.data.file_id)
+                            newWorkspacePosts[ws.topic_id].posts[action.data.post_id].files = newWorkspacePosts[ws.topic_id].posts[action.data.post_id].files.filter(f => f.id !== action.data.file_id);
                         }
                     }
                     if (action.data.message_id) {
@@ -1037,15 +1037,15 @@ export default (state = INITIAL_STATE, action) => {
 
                                     }
                                 }
-                            })
+                            });
                         }
                     }
-                })
+                });
                 return {
                     ...state,
                     workspacePosts: newWorkspacePosts,
                     postComments: newPostComments
-                }
+                };
             } else {
                 return state;
             }
@@ -1063,16 +1063,16 @@ export default (state = INITIAL_STATE, action) => {
             // }
             if (newPostComments.hasOwnProperty(action.data.post_id)) {
                 if (action.data.parent_id) {
-                    delete newPostComments[action.data.post_id].comments[action.data.parent_id].replies[action.data.message_id]
+                    delete newPostComments[action.data.post_id].comments[action.data.parent_id].replies[action.data.message_id];
                 } else {
-                    delete newPostComments[action.data.post_id].comments[action.data.message_id]
+                    delete newPostComments[action.data.post_id].comments[action.data.message_id];
                 }
             }
             return {
                 ...state,
                 postComments: newPostComments,
                 //workspacePosts: newWorkspacePosts
-            }
+            };
         }
         case "INCOMING_CHAT_MESSAGE": {
             if (!action.data.is_read) {
@@ -1101,7 +1101,7 @@ export default (state = INITIAL_STATE, action) => {
                         ...state,
                         workspaces: updatedWorkspaces,
                         activeTopic: updatedTopic
-                    }
+                    };
                 } else {
                     return state;
                 }
@@ -1131,7 +1131,7 @@ export default (state = INITIAL_STATE, action) => {
                         ...state,
                         workspaces: updatedWorkspaces,
                         activeTopic: updatedTopic
-                    }
+                    };
                 } else {
                     return state;
                 }
@@ -1163,7 +1163,7 @@ export default (state = INITIAL_STATE, action) => {
                     ...state,
                     workspaces: updatedWorkspaces,
                     activeTopic: updatedTopic
-                }
+                };
             } else {
                 return state;
             }
@@ -1176,11 +1176,11 @@ export default (state = INITIAL_STATE, action) => {
                 } else {
                     updatedWorkspaces[action.data.topic_id] = {
                         ...action.data.workspace_data
-                    }
+                    };
                     return {
                         ...state,
                         workspaces: updatedWorkspaces
-                    }
+                    };
                 }
             } else {
                 return state;
@@ -1189,4 +1189,4 @@ export default (state = INITIAL_STATE, action) => {
         default:
             return state;
     }
-} 
+}; 

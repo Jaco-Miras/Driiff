@@ -2,7 +2,7 @@ import {useCallback} from "react";
 import {useDispatch} from "react-redux";
 import { addComment, fetchComments, setEditComment, postComment, putComment,
         addCommentQuote, clearCommentQuote, postCommentClap, deleteComment
-} from "../../redux/actions/postActions"
+} from "../../redux/actions/postActions";
 import { addToModals } from "../../redux/actions/globalActions";
 
 const useCommentActions = props => {
@@ -12,43 +12,43 @@ const useCommentActions = props => {
     const fetchPostComments = useCallback((payload, callback) => {
         dispatch(
             fetchComments(payload, callback)
-        )
+        );
     }, [dispatch]);
 
     const setToEdit = useCallback((comment) => {
         dispatch(
             setEditComment(comment)
-        )
+        );
     }, [dispatch]);
 
     const add = useCallback((payload) => {
         dispatch(
             addComment(payload)
-        )
+        );
     }, [dispatch]);
 
     const create = useCallback((payload) => {
         dispatch(
             postComment(payload)
-        )
+        );
     }, [dispatch]);
 
     const edit = useCallback((payload) => {
         dispatch(
             putComment(payload)
-        )
+        );
     }, [dispatch]);
 
     const addQuote = useCallback((comment) => {
         dispatch(
             addCommentQuote(comment)
-        )
+        );
     }, [dispatch]);
 
     const clearQuote = useCallback((comment) => {
         dispatch(
             clearCommentQuote(comment)
-        )
+        );
     }, [dispatch]);
 
     const clap = useCallback((payload) => {
@@ -58,7 +58,7 @@ const useCommentActions = props => {
     }, [dispatch]);
 
     const remove = useCallback((comment) => {
-        console.log(comment)
+        console.log(comment);
         const onConfirm = () => {
             if (Object.keys(comment.replies).length > 0) {
                 let obj = {
@@ -74,7 +74,7 @@ const useCommentActions = props => {
                 };
                 dispatch(
                     putComment(obj)
-                )
+                );
             } else {
                 dispatch(
                     deleteComment({comment_id: comment.id})
@@ -108,7 +108,7 @@ const useCommentActions = props => {
         fetchPostComments,
         setToEdit,
         remove
-    }
+    };
 };
 
 export default useCommentActions;

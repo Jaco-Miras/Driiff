@@ -32,7 +32,7 @@ const ChatReminderModal = props => {
     const user = useSelector(state => state.session.user);
     const toaster = useToaster();
 
-    const [setTimeValue, setSetTimeValue] = useState(`20m`);
+    const [setTimeValue, setSetTimeValue] = useState("20m");
     const [customTimeValue, setCustomTimeValue] = useState(new Date());
     const [showDateTimePicker, setShowDateTimePicker] = useState(null);
 
@@ -91,7 +91,7 @@ const ChatReminderModal = props => {
                         break;
                     case "tomorrow":
                         today.setDate(today.getDate() + 1);
-                        messageTime = `at 9 AM tomorrow`;
+                        messageTime = "at 9 AM tomorrow";
                         break;
                     case "next_week":
                         today.setDate(today.getDate() + 7);
@@ -130,69 +130,69 @@ const ChatReminderModal = props => {
                     <RadioInput
                         readOnly
                         onClick={e => {
-                            handleSetReminder(e, `2m`);
+                            handleSetReminder(e, "2m");
                         }}
-                        checked={setTimeValue === `2m`}
-                        value={`2m`}
-                        name={`role`}>
+                        checked={setTimeValue === "2m"}
+                        value={"2m"}
+                        name={"role"}>
                         2 minutes
                     </RadioInput>
                     <RadioInput
                         readOnly
                         onClick={e => {
-                            handleSetReminder(e, `20m`);
+                            handleSetReminder(e, "20m");
                         }}
-                        checked={setTimeValue === `20m`}
-                        value={`20m`}
-                        name={`role`}>
+                        checked={setTimeValue === "20m"}
+                        value={"20m"}
+                        name={"role"}>
                         20 minutes
                     </RadioInput>
                     <RadioInput
                         readOnly
                         onClick={e => {
-                            handleSetReminder(e, `1h`);
+                            handleSetReminder(e, "1h");
                         }}
-                        checked={setTimeValue === `1h`}
-                        value={`1h`}
-                        name={`role`}>
+                        checked={setTimeValue === "1h"}
+                        value={"1h"}
+                        name={"role"}>
                         1 hour
                     </RadioInput>
                     <RadioInput
                         readOnly
                         onClick={e => {
-                            handleSetReminder(e, `3h`);
+                            handleSetReminder(e, "3h");
                         }}
-                        checked={setTimeValue === `3h`}
-                        value={`3h`}
-                        name={`role`}>
+                        checked={setTimeValue === "3h"}
+                        value={"3h"}
+                        name={"role"}>
                         3 hours
                     </RadioInput>
                     <RadioInput
                         readOnly
                         onClick={e => {
-                            handleSetReminder(e, `tomorrow`);
+                            handleSetReminder(e, "tomorrow");
                         }}
-                        checked={setTimeValue === `tomorrow`}
-                        value={`tomorrow`}
-                        name={`role`}>
+                        checked={setTimeValue === "tomorrow"}
+                        value={"tomorrow"}
+                        name={"role"}>
                         Tomorrow
                     </RadioInput>
                     <RadioInput
                         readOnly
                         onClick={e => {
-                            handleSetReminder(e, `next_week`);
+                            handleSetReminder(e, "next_week");
                         }}
-                        checked={setTimeValue === `next_week`}
-                        value={`next_week`}
-                        name={`role`}>
+                        checked={setTimeValue === "next_week"}
+                        value={"next_week"}
+                        name={"role"}>
                         Next Week
                     </RadioInput>
                     <RadioInput
                         readOnly
                         onClick={handleSelectPickDateTime}
-                        checked={setTimeValue === `pick_data`}
-                        value={`pick_data`}
-                        name={`role`}>
+                        checked={setTimeValue === "pick_data"}
+                        value={"pick_data"}
+                        name={"role"}>
                         Pick date and time
                     </RadioInput>
                     {

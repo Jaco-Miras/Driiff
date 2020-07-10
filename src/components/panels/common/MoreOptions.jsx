@@ -18,7 +18,7 @@ const Wrapper = styled.div`
   }
 `;
 const MoreTooltip = styled.div`
-    ${props => props.hide && `display: none;`}
+    ${props => props.hide && "display: none;"}
     z-index: 30;
     height: auto;
     position: absolute;
@@ -72,7 +72,7 @@ const MoreTooltip = styled.div`
 const MoreOptions = props => {
 
     const {
-        className = "", item, moreButton = `more-horizontal`, children = "More Options",
+        className = "", item, moreButton = "more-horizontal", children = "More Options",
         width = 200, scrollRef = null,
         ...rest
     } = props;

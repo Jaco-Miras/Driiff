@@ -84,10 +84,10 @@ const FolderList = props => {
         clearFilter();
         if (path === "/workspace/files/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName" ||
             path === "/workspace/files/:folderId/:folderName/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName") {
-            let pathname = url.split("/folder/")[0]
-            history.push(pathname+`/folder/${folder.id}/${replaceChar(folder.search)}`)
+            let pathname = url.split("/folder/")[0];
+            history.push(pathname+`/folder/${folder.id}/${replaceChar(folder.search)}`);
         } else {
-            history.push(history.location.pathname+`/folder/${folder.id}/${replaceChar(folder.search)}`)
+            history.push(history.location.pathname+`/folder/${folder.id}/${replaceChar(folder.search)}`);
         }
         setShowFolders(prevState => !prevState);
     };
@@ -96,10 +96,10 @@ const FolderList = props => {
         clearFilter();
         if (path === "/workspace/files/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName" ||
             path === "/workspace/files/:folderId/:folderName/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName") {
-            let pathname = url.split("/folder/")[0]
-            history.push(pathname+`/folder/${f.id}/${replaceChar(f.search)}`)
+            let pathname = url.split("/folder/")[0];
+            history.push(pathname+`/folder/${f.id}/${replaceChar(f.search)}`);
         } else {
-            history.push(history.location.pathname+`/folder/${f.id}/${replaceChar(f.search)}`)
+            history.push(history.location.pathname+`/folder/${f.id}/${replaceChar(f.search)}`);
         }
     };
 
@@ -138,24 +138,24 @@ const FolderList = props => {
                 {folder.search}
                 {
                     Object.values(folders).filter(f => {
-                        return !f.is_archived && f.parent_folder && f.parent_folder.id === folder.id
+                        return !f.is_archived && f.parent_folder && f.parent_folder.id === folder.id;
                     }).length > 0 &&
                     <i className={`sub-menu-arrow ti-angle-up ${showFolders ? "ti-minus rotate-in" : "ti-plus"}`}/>
                 }
             </a>
             {
                 Object.values(folders).filter(f => {
-                    return !f.is_archived && f.parent_folder && f.parent_folder.id === folder.id
+                    return !f.is_archived && f.parent_folder && f.parent_folder.id === folder.id;
                 }).length > 0 &&
                 <FolderNav ref={ref.nav} maxHeight={maxHeight}
                            className={showFolders ? "enter-active" : "leave-active"}>
                     {
                         showFolders &&
                         Object.values(folders).filter(f => {
-                            return !f.is_archived && f.parent_folder && f.parent_folder.id === folder.id
+                            return !f.is_archived && f.parent_folder && f.parent_folder.id === folder.id;
                         }).map(f => {
                             return <SubFolderList key={f.id} clearFilter={clearFilter} params={params} folderHeight={maxHeight}
-                                                activeFolder={activeFolder} folders={folders} folder={f}/>
+                                                activeFolder={activeFolder} folders={folders} folder={f}/>;
                         })
                         
                     }

@@ -31,7 +31,7 @@ export function login(payload) {
 export function logout(payload = {}) {
     return apiCall({
         method: "POST",
-        url: `/logout`,
+        url: "/logout",
     });
 }
 
@@ -157,14 +157,14 @@ export function trustDevice(payload = {}) {
 export function getMentions() {
     return apiCall({
         method: "GET",
-        url: `/v2/mention/users`,
+        url: "/v2/mention/users",
     });
 }
 
 export function getRecipients() {
     return apiCall({
         method: "GET",
-        url: `/recipients/v1`,
+        url: "/recipients/v1",
     });
 }
 
@@ -208,7 +208,7 @@ export function resetPassword(payload) {
  * @returns {Promise<*>}
  */
 export function updatePassword(payload) {
-    let url = `/password/reset`;
+    let url = "/password/reset";
 
     return apiNoTokenCall({
         method: "POST",
@@ -234,7 +234,7 @@ export function forgotSlug(email) {
  * @returns {Promise<*>}
  */
 export function forgotEmail(payload) {
-    let url = `/check-user`;
+    let url = "/check-user";
 
     return apiNoTokenCall({
         method: "POST",
@@ -288,7 +288,7 @@ export function searchRequest(payload) {
 }
 
 export function getRequests(payload) {
-    let url = `/requests`;
+    let url = "/requests";
     return apiCall({
         method: "GET",
         url,
@@ -342,7 +342,7 @@ export function getOwnProfile(payload = {}) {
 }
 
 export function getDefaultBanners(payload) {
-    let url = `/response/default/banners`;
+    let url = "/response/default/banners";
     return apiCall({
         method: "GET",
         url: url,
@@ -373,7 +373,7 @@ export function unarchiveUser(payload) {
 export function updateSettings(payload) {
     return apiCall({
         method: "PUT",
-        url: `/v2/user-settings`,
+        url: "/v2/user-settings",
         data: payload,
     });
 }
@@ -405,7 +405,7 @@ export function authenticateGoogleLogin(payload) {
 export function getOnlineUsers(payload) {
     return apiCall({
         method: "GET",
-        url: `/v2/users-online`,
+        url: "/v2/users-online",
         data: payload,
     });
 }

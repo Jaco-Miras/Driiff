@@ -468,9 +468,9 @@ const useChannelActions = () => {
             if (channel.type === "TOPIC") {
                 dispatch(
                     readChannelReducer({id: channel.entity_id, count: channel.replies.filter(r => !r.is_read).length})
-                )
+                );
             }
-        }
+        };
         dispatch(
             putMarkReadChannel({
                 channel_id: channel.id,

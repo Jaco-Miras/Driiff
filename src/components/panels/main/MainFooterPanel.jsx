@@ -11,8 +11,8 @@ const MainFooterPanel = (props) => {
 
     return (
         <Wrapper className={`${className}`}>
-            <div className={`container-fluid`}>
-                <div>&copy; {`2020`} Made with {`<3`} by Driff</div>
+            <div className={"container-fluid"}>
+                <div>&copy; {"2020"} Made with {"<3"} by Driff</div>
                 <div>
                     <nav className="nav">
                         <a href="https://themeforest.net/licenses/standard"

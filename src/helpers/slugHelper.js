@@ -127,7 +127,7 @@ export const imgAsLogin = () => {
     if (localStorage.getItem("atoken") && localStorage.getItem("slug")) {
         return <img
             style={{visibility: "hidden", display: "none"}}
-            alt={`login token`}
+            alt={"login token"}
             src={`${getAPIUrl({isDNS: true})}/auth-web/login?token=${localStorage.getItem("atoken")}`}
             height={1} width={1}/>;
     } else {
@@ -252,7 +252,7 @@ export const checkUpdate = () => {
     if (localStorage.getItem("driffVersion") !== driffData.version) {
         apiCall({
             method: "PATCH",
-            url: `/update-driff-version`,
+            url: "/update-driff-version",
             data: {
                 data: {
                     version: driffData.version,

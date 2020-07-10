@@ -4,7 +4,7 @@ import React from "react";
 import styled from "styled-components";
 
 const Wrapper = styled.div`
-    ${props => props.hide && `display: none;`}
+    ${props => props.hide && "display: none;"}
     position: absolute;
     z-index: 9999;
     background-color: #fff;

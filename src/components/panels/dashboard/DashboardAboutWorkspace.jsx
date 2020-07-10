@@ -1,13 +1,35 @@
-import React from "react";
+import React, {useCallback, useEffect, useRef, useState} from "react";
 import styled from "styled-components";
 import {FileAttachments, SvgIconFeather} from "../../common";
-import ShowMoreText from 'react-show-more-text';
 
 const Wrapper = styled.div`
     border-left: 5px solid #822492;
     text-align: left;
     border-top-left-radius: 4px;
     border-bottom-left-radius: 4px;
+    position: relative;
+    
+    .bg-overlay {
+        position: absolute;
+        z-index: 0;
+        top: 0;
+        left:0;
+        height: 100%;
+        width: 100%;    
+        transition: all 3s;
+        background: linear-gradient(0deg, rgba(122,27,139,1) 0%, rgba(231,213,234,0.25) 50%, rgba(255,255,255,0.5) 100%);
+        opacity: 0;
+        
+        &.hide {
+            opacity: 1;
+        }        
+    }
+    
+    .card-body {
+        position: relative;
+        z-index: 1;
+    }
+    
     .feather {
         cursor: pointer;
         &:hover {
@@ -30,7 +52,39 @@ const Wrapper = styled.div`
     }
 `;
 
+const DashboardDescriptionContainer = styled.div`
+    &.hide {
+        .btn-toggle-show {
+            display: block;
+            color: #fff;            
+        }
+    }
+    &.show {
+        .btn-toggle-show {
+            display: block;
+            color: #828282;
+        }
+    }
+    
+    .btn-toggle-show {
+        text-align: right;
+        display: none;
+    }    
+`;
+
 const DashboardDescription = styled.div`
+    transition: all 3s ease;
+    max-width: 700px;
+    min-height: 140px;
+    
+    &.hide {
+        max-height: 140px;
+    }
+    
+    &.show {
+        max-height: ${props => props.height}px;
+    }
+    
     img {
         max-width: 100%;
         max-height: 250px;
@@ -40,9 +94,50 @@ const DashboardDescription = styled.div`
 const DashboardAboutWorkspace = (props) => {
 
     const {className = "", onEditClick, workspace, isMember} = props;
+    const [showMore, setShowMore] = useState(null);
+    const [descriptionHeight, setDescriptionHeight] = useState(140);
+
+    const refs = {
+        description: useRef(null)
+    };
+
+    const refDescription = (e) => {
+        if (refs.description.current === null && e) {
+            refs.description.current = e;
+
+            if (e.clientHeight > 140) {
+                setDescriptionHeight(e.clientHeight);
+                setShowMore(false);
+            } else {
+                setShowMore(null);
+            }
+        }
+    };
+
+    const toggleShowMore = useCallback((e) => {
+        e.preventDefault();
+        setShowMore(state => !state);
+    }, [setShowMore]);
+
+    useEffect(() => {
+        if (refs.description.current) {
+            if (showMore) {
+                setTimeout(() => {
+                    refs.description.current.style.overflow = "";
+                }, [3000]);
+            } else {
+                refs.description.current.style.overflow = "hidden";
+            }
+        }
+    }, [showMore, refs.description.current]);
+
+    useEffect(() => {
+        refs.description.current = null;
+    }, [workspace]);
 
     return (
         <Wrapper className={`dashboard-about-workspace card ${className}`}>
+            <div className={`bg-overlay ${showMore === null ? "" : showMore === true ? "show" : "hide"}`}/>
             <div className="card-body">
                 <h5 className="card-title">About this workspace {
                     isMember === true &&
@@ -52,16 +147,20 @@ const DashboardAboutWorkspace = (props) => {
                 {
                     workspace &&
                     <>
-                        <ShowMoreText
-                        lines={6}
-                        more='Show more'
-                        less='Show less'
-                        anchorClass=''
-                        expanded={false}
-                        >
-                            <DashboardDescription dangerouslySetInnerHTML={{__html: workspace.description}}/>
-                        </ShowMoreText>
-
+                        <DashboardDescriptionContainer
+                            className={showMore === null ? "" : showMore === true ? "show" : "hide"}>
+                            <DashboardDescription
+                                ref={refDescription}
+                                height={descriptionHeight}
+                                className={`dashboard-description ${showMore === null ? "" : showMore === true ? "show" : "hide"}`}
+                                dangerouslySetInnerHTML={{__html: workspace.description}}/>
+                            {
+                                showMore !== null &&
+                                <div onClick={toggleShowMore} className="btn-toggle-show cursor-pointer mt-2">
+                                    {showMore ? "Show less" : "Show more"}
+                                </div>
+                            }
+                        </DashboardDescriptionContainer>
                     </>
                 }
                 {

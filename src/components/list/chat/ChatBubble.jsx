@@ -80,12 +80,6 @@ const ChatBubbleContainer = styled.div`
         max-width: 100%;
         max-height: 300px;
     }
-    // img {
-    //     max-width: 100%;
-    //     max-height: 300px;
-    // }
-
-
     span.reply-date{
         color: ${props => (props.showAvatar && props.hideBg === false) ? "#a7abc3" : "#0000"};
         font-style: italic;
@@ -99,9 +93,6 @@ const ChatBubbleContainer = styled.div`
         white-space: nowrap;
 
     }
-    // * {
-    //     word-break: break-all;
-    // }
     ol {
       text-align: left;
       position: relative;
@@ -132,13 +123,6 @@ const ChatBubbleContainer = styled.div`
         color: ${props => props.isAuthor ? "#ffffffe6" : "#AAB0C8"};
     }
     .mention {
-        ${"" /* // background-image: linear-gradient(105deg,#46598d, #4f99a6);
- &[data-value="All"] {
- background-image: linear-gradient(105deg,#972c86,#794997);
- }
- &.is-author {
- background-image: linear-gradient(105deg,#972c86,#794997);
- } */}
         font-weight: ${props => props.isAuthor ? "none" : "bold"};
         color: ${props => props.isAuthor ? "#ffffff" : "#7A1B8B"};
         &[data-value="All"],
@@ -170,17 +154,14 @@ const ChatBubbleContainer = styled.div`
 
 const QuoteContainer = styled.div`
   background: ${props => (props.isAuthor ? props.theme.self.chat_bubble_quote_background_color : props.theme.others.chat_bubble_quote_background_color)};
-  ${"" /* background: #8C3B9B; */}
   border-radius: 8px 8px 0 0;
   margin: -7px -15px 10px -15px;
   text-align: left;
   padding: 10px 10px 10px 20px;
-  ${"" /* overflow: hidden; */}
   position: relative;
   cursor: pointer;
   cursor: hand;
   max-width: ${props => props.hasFiles ? "210px" : "auto"};
-  ${"" /* color: rgba(255,255,255, 0.8); */}
   &:before {
     height: 70%;
     width: 5px;
@@ -188,7 +169,6 @@ const QuoteContainer = styled.div`
     background: #ffffffe6;
     position: absolute;
     ${props => ((!props.isEmoticonOnly) && "content: ''")};
-
     display: inline-block;
     float: left;
     left: 5px;
@@ -209,11 +189,6 @@ const QuoteContainer = styled.div`
 `;
 const QuoteAuthor = styled.div`
   font-weight: 600;
-  ${"" /* color: ${props => (props.isAuthor ? props.theme.self.chat_bubble_quote_text_color : props.theme.others.chat_bubble_quote_text_color )}; */}
-  ${"" /* color: red; */}
-
-  ${"" /* color: ${props => (props.isAuthor ? 'red' : 'blue' )}; */}
-
 `;
 const QuoteContent = styled.div`
 color: ${props => (props.isAuthor ? props.theme.self.chat_bubble_quote_text_color : props.theme.others.chat_bubble_quote_text_color)};
@@ -328,7 +303,6 @@ const ReplyContent = styled.span`
         text-decoration: underline;
         &:focus,
         &:hover {
-            ${"" /* color: ${props => (props.isAuthor ? props.theme.self.chat_bubble_hover_color : props.theme.others.chat_bubble_hover_color)}; */}
             color: ${props => (!props.isAuthor ? "#7a1b8b" : "#ffffff")};
         }
         &.btn {
@@ -667,8 +641,6 @@ const ChatBubble = (props) => {
             if (lnkChannelMessage)
                 lnkChannelMessage.removeEventListener("click", handleChannelMessageLink, true);
         };
-
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {
@@ -726,10 +698,10 @@ const ChatBubble = (props) => {
         for (let i = 0; i < images.length; i++) {
             replyQuoteBody += renderToString(
                 <StyledImageTextLink
-                    className={`image-quote`}
-                    target={`_blank`}
+                    className={"image-quote"}
+                    target={"_blank"}
                     href={images[0].getAttribute("src")}
-                    icon={`image-video`}
+                    icon={"image-video"}
                     isAuthor={isAuthor}
                 >
                     Photo
@@ -741,10 +713,10 @@ const ChatBubble = (props) => {
         for (let i = 0; i < videos.length; i++) {
             replyQuoteBody += renderToString(
                 <StyledImageTextLink
-                    className={`video-quote`}
-                    target={`_blank`}
+                    className={"video-quote"}
+                    target={"_blank"}
                     href={videos[0].getAttribute("player-source")}
-                    icon={`image-video`}
+                    icon={"image-video"}
                     isAuthor={isAuthor}
                 >
                     Video
@@ -756,10 +728,10 @@ const ChatBubble = (props) => {
                 if (file.type === "image") {
                     replyQuoteBody += renderToString(
                         <StyledImageTextLink
-                            className={`image-quote`}
-                            target={`_blank`}
+                            className={"image-quote"}
+                            target={"_blank"}
                             href={file.view_link}
-                            icon={`image-video`}
+                            icon={"image-video"}
                             isAuthor={isAuthor}
                         >
                             Photo
@@ -768,10 +740,10 @@ const ChatBubble = (props) => {
                 } else if (file.type === "video") {
                     replyQuoteBody += renderToString(
                         <StyledImageTextLink
-                            className={`video-quote`}
-                            target={`_blank`}
+                            className={"video-quote"}
+                            target={"_blank"}
                             href={file.view_link}
-                            icon={`image-video`}
+                            icon={"image-video"}
                             isAuthor={isAuthor}
                         >
                             Video
@@ -781,9 +753,9 @@ const ChatBubble = (props) => {
                     replyQuoteBody += renderToString(
                         <StyledImageTextLink
                             //className={`video-quote`}
-                            target={`_blank`}
+                            target={"_blank"}
                             href={file.view_link}
-                            icon={`documents`}
+                            icon={"documents"}
                             isAuthor={isAuthor}
                         >
                             {file.filename ? `${file.filename} ` : `${file.name} `}
@@ -954,7 +926,7 @@ const ChatBubble = (props) => {
             }
         }
 
-        replyQuoteBody = renderToString(newBody)
+        replyQuoteBody = renderToString(newBody);
     }
 
     const hasFiles = reply.files.length > 0;
@@ -964,7 +936,7 @@ const ChatBubble = (props) => {
     return <ChatBubbleContainer
         ref={refComponent}
         tabIndex={reply.id}
-        className={`chat-bubble ql-editor`}
+        className={"chat-bubble ql-editor"}
         showAvatar={showAvatar}
         isAuthor={isAuthor}
         hideBg={isEmoticonOnly || showGifPlayer || (hasFiles && replyBody === "<span></span>") || (hasFiles && replyBody === "")}
@@ -996,7 +968,7 @@ const ChatBubble = (props) => {
                                     reply.quote.user_id === user.id ?
                                     <QuoteAuthor
                                         theme={chatSettings.chat_message_theme}
-                                        isAuthor={true}>{`You`}</QuoteAuthor> :
+                                        isAuthor={true}>{"You"}</QuoteAuthor> :
                                     <QuoteAuthor
                                         theme={chatSettings.chat_message_theme}
                                         isAuthor={reply.quote.user_id === user.id}>{replyQuoteAuthor}</QuoteAuthor>
@@ -1013,7 +985,7 @@ const ChatBubble = (props) => {
                             <>
                                 {
                                     isBot === true &&
-                                    <GrippBotIcon icon={`gripp-bot`}/>
+                                    <GrippBotIcon icon={"gripp-bot"}/>
                                 }
                                 {/* @todo reply.message_from.name and reply.user.name issue
                                  <p className={"reply-author"}>{reply.message_from.name.replace("  ", " ")}</p>*/}
@@ -1048,7 +1020,7 @@ const ChatBubble = (props) => {
 
                                 return <GifPlayer
                                     key={index}
-                                    className={`gifPlayer`}
+                                    className={"gifPlayer"}
                                     gif={fetchImgURL(gifString)}
                                     autoplay={true}
                                 />;

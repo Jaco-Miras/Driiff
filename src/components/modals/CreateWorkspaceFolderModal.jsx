@@ -91,7 +91,7 @@ const CreateWorkspaceFolderModal = props => {
                     textOnly: folder.description,
                     is_private: folder.is_lock === 1,
                     workspace_id: folder.id,
-                })
+                });
             }
         }
     }, []);
@@ -175,7 +175,7 @@ const CreateWorkspaceFolderModal = props => {
                 ...payload,
                 workspace_id: form.workspace_id,
                 topic_id: form.workspace_id
-            }
+            };
             dispatch(
                 updateWorkspace(payload, (err, res) => {
                     if(err) {

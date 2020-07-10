@@ -34,10 +34,10 @@ const usePosts = () => {
                             files
                         }),
                     );
-                }
+                };
                 let payload = {
                     topic_id: parseInt(params.workspaceId)
-                }
+                };
                 actions.getPosts(payload, cb);
                 let filterCb = (err,res) => {
                     setFetchingPost(false);
@@ -54,11 +54,11 @@ const usePosts = () => {
                             files
                         }),
                     );
-                }
+                };
                 actions.getPosts({
                     filters: ["post", "archived"],
                     topic_id: parseInt(params.workspaceId)
-                }, filterCb)
+                }, filterCb);
             }
         }
     }, [params]);
@@ -85,7 +85,7 @@ const usePosts = () => {
             starred: Object.values(posts).filter(p => p.is_favourite).length,
             archived: Object.values(posts).filter(p => p.is_archived).length,
             drafts: Object.values(posts).filter(p => p.type === "draft_post").length
-        }
+        };
         
         if (posts.hasOwnProperty(params.postId)) {
             post = {...posts[params.postId]};
@@ -119,7 +119,7 @@ const usePosts = () => {
                         return p.is_archived === 1;
                     } else if (filter === "all") {
                         if (tag) {
-                            return true
+                            return true;
                         } else {
                             return !p.is_archived;
                         }

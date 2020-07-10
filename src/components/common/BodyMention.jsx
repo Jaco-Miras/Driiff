@@ -12,7 +12,6 @@ const BodyMentionDiv = styled.div`
         color: #7a1b8b;
     }
     button {
-        ${"" /* border-radius: 8px; */}
         margin-right: 10px;
     }
 `;
@@ -38,7 +37,7 @@ const BodyMention = props => {
     const handleDoNothing = () => {
         onDoNothing(mentionedUsers);
     };
-    let pText = `but they are not recipients of this post`;
+    let pText = "but they are not recipients of this post";
     let addText = "Add to post";
     if (type === "task") {
         pText = "but they are not asignees of this task";

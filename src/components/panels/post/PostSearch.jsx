@@ -47,8 +47,8 @@ const PostSearch = props => {
                         search: searchValue,
                         search_result: res.data.posts,
                     })
-                )
-                console.log(res, 'search result')
+                );
+                console.log(res, "search result");
             })
         );
     };
@@ -64,7 +64,7 @@ const PostSearch = props => {
                 </button>
             </div>
         </div>
-    )
+    );
 };
 
 export default React.memo(PostSearch);

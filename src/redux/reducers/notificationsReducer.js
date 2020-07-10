@@ -22,18 +22,18 @@ export default (state = INITIAL_STATE, action) => {
                     ...convertArrayToObject(action.data.notifications, "id"),
                 },
                 unreadCount: state.unreadCount + action.data.notifications.filter(n => n.is_read === 0).length
-            }
+            };
         }
         case "READ_ALL_NOTIFICATION_REDUCER": {
             let updatedNotifications = {...state.notifications};
             Object.values(updatedNotifications).forEach(n => {
-                updatedNotifications[n.id].is_read = 1
-            })
+                updatedNotifications[n.id].is_read = 1;
+            });
             return {
                 ...state,
                 notifications: updatedNotifications,
                 unreadCount: 0
-            }
+            };
         }
         case "READ_NOTIFICATION_REDUCER": {
             let updatedNotifications = {...state.notifications};
@@ -42,7 +42,7 @@ export default (state = INITIAL_STATE, action) => {
                 ...state,
                 notifications: updatedNotifications,
                 unreadCount: state.unreadCount - 1
-            }
+            };
         }
         case "UNREAD_NOTIFICATION_REDUCER": {
             let updatedNotifications = {...state.notifications};
@@ -51,21 +51,21 @@ export default (state = INITIAL_STATE, action) => {
                 ...state,
                 notifications: updatedNotifications,
                 unreadCount: state.unreadCount + 1
-            }
+            };
         }
         case "REMOVE_NOTIFICATION_REDUCER": {
             let updatedNotifications = {...state.notifications};
-            delete updatedNotifications[action.data.id]
+            delete updatedNotifications[action.data.id];
             return {
                 ...state,
                 notifications: updatedNotifications
-            }
+            };
         }
         case "REMOVE_ALL_NOTIFICATION_REDUCER": {
             return {
                 ...state,
                 notifications: {}
-            }
+            };
         }
         case "INCOMING_POST": {
             if (action.data.author.id !== state.user.id) {
@@ -85,13 +85,13 @@ export default (state = INITIAL_STATE, action) => {
                         workspaces: action.data.workspaces,
                         comment_body: null
                     }
-                }
+                };
                 return {
                     ...state,
                     notifications: {...state.notifications, [postNotification.id]: postNotification}
-                }
+                };
             } else {
-                return state
+                return state;
             }
         }
         case "INCOMING_COMMENT": {
@@ -112,16 +112,16 @@ export default (state = INITIAL_STATE, action) => {
                         workspaces: action.data.workspaces,
                         comment_body: action.data.body
                     }
-                }
+                };
                 return {
                     ...state,
                     notifications: {...state.notifications, [postNotification.id]: postNotification}
-                }
+                };
             } else {
-                return state
+                return state;
             }
         }
         default:
             return state;
     }
-} 
+}; 

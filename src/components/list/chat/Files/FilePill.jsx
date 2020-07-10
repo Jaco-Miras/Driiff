@@ -98,7 +98,7 @@ const FilePill = forwardRef((props, ref) => {
     };
 
     const handleImageOnLoad = (e) => {
-        e.currentTarget.classList.remove(`d-none`);
+        e.currentTarget.classList.remove("d-none");
         e.currentTarget.removeAttribute("height");
         refImageLoader.current.classList.add("d-none");
     };
@@ -112,13 +112,13 @@ const FilePill = forwardRef((props, ref) => {
             e.currentTarget.dataset.attempt = 2;
             e.currentTarget.src = `${e.currentTarget.src}&timestamp=${new Date().getTime()}`;
         } else {
-            e.currentTarget.classList.add(`img-error`);
+            e.currentTarget.classList.add("img-error");
             e.currentTarget.src = require("../../../../assets/icon/limitations/l/text.svg");
         }
     };
 
     const handleVideoOnLoad = (e) => {
-        e.currentTarget.classList.remove(`d-none`);
+        e.currentTarget.classList.remove("d-none");
         e.currentTarget.removeAttribute("height");
         refVideoLoader.current.classList.add("d-none");
     };
@@ -145,13 +145,13 @@ const FilePill = forwardRef((props, ref) => {
             file.type.toLowerCase() === "image" ?
             <>
                 <ImgLoader ref={refImageLoader}>
-                    <ImgLoaderDiv className={`img-loader`}/>
+                    <ImgLoaderDiv className={"img-loader"}/>
                 </ImgLoader>
                 <FileImage
                     ref={refImage}
                     bgImg={file.view_link}
                     data-attempt={0}
-                    className={`d-none`}
+                    className={"d-none"}
                     onLoad={handleImageOnLoad}
                     onError={handleImageOnError}
                     height={150}
@@ -163,7 +163,7 @@ const FilePill = forwardRef((props, ref) => {
                                                 : file.type.toLowerCase() === "video" ?
                                                   <>
                                                       <ImgLoader ref={refVideoLoader}>
-                                                          <ImgLoaderDiv className={`img-loader`}/>
+                                                          <ImgLoaderDiv className={"img-loader"}/>
                                                       </ImgLoader>
                                                       <FileVideoOverlay onClick={handleViewFile}/>
                                                       <FileVideo

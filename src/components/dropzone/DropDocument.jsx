@@ -22,7 +22,7 @@ export const DropDocument = forwardRef((props, ref) => {
 
     const {
         attachedFiles, onCancel, onDrop, noX = false, disableInput = false,
-        openOnLoad = false, placeholderText = `Drag 'n' drop your files here.`, hide, params = null,
+        openOnLoad = false, placeholderText = "Drag 'n' drop your files here.", hide, params = null,
         acceptType = "",
     } = props;
 
@@ -50,8 +50,6 @@ export const DropDocument = forwardRef((props, ref) => {
         }
 
         onDrop({acceptedFiles});
-
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [attachedFiles, params]);
 
     let accept = [

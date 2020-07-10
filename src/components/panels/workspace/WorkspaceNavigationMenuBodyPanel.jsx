@@ -157,8 +157,8 @@ const WorkspaceNavigationMenuBodyPanel = (props) => {
 
     useSetWorkspace();
     const sortedWorkspaces = useSortWorkspaces();
-    const generalInternalWorkspaces = sortedWorkspaces.filter(ws => ws.type !== "FOLDER" && ws.is_external === 0)
-    const generalExternalWorkspaces = sortedWorkspaces.filter(ws => ws.type !== "FOLDER" && ws.is_external !== 0)
+    const generalInternalWorkspaces = sortedWorkspaces.filter(ws => ws.type !== "FOLDER" && ws.is_external === 0);
+    const generalExternalWorkspaces = sortedWorkspaces.filter(ws => ws.type !== "FOLDER" && ws.is_external !== 0);
 
     return (
         <>
@@ -205,6 +205,7 @@ const WorkspaceNavigationMenuBodyPanel = (props) => {
                                         show={activeTab === "intern"}
                                         workspace={{
                                             id: "general_internal",
+                                            is_lock: 0,
                                             selected: generalInternalWorkspaces.some(ws => ws.selected),
                                             name: "General",
                                             type: "GENERAL_FOLDER",
@@ -217,6 +218,7 @@ const WorkspaceNavigationMenuBodyPanel = (props) => {
                                         show={activeTab !== "intern"}
                                         workspace={{
                                             id: "general_external",
+                                            is_lock: 0,
                                             selected: generalInternalWorkspaces.some(ws => ws.selected),
                                             name: "General",
                                             type: "GENERAL_FOLDER",

@@ -171,7 +171,7 @@ const LoginPanel = (props) => {
                                 key: new Date().getTime(),
                                 type: "modal",
                                 modal: "modal_login_verification",
-                                title: `Two-step verification`,
+                                title: "Two-step verification",
                                 children: "",
                                 dataSet: res.data,
                                 callback: {
@@ -246,7 +246,7 @@ const LoginPanel = (props) => {
             </ul>
             <hr/>
             <p className="text-muted">Don't have an account?</p>
-            <Link className={`btn btn-outline-light btn-sm`} to="/register">Register now!</Link>
+            <Link className={"btn btn-outline-light btn-sm"} to="/register">Register now!</Link>
         </Wrapper>
     );
 };

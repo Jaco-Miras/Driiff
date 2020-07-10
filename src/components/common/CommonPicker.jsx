@@ -103,7 +103,7 @@ const CommonPicker = React.forwardRef((props, ref) => {
                     onSelectGif={props.onSelectGif}
                     orientation={props.orientation}/>
             }
-            <div className={`block mt-2`}>
+            <div className={"block mt-2"}>
                 <SwitchButton onClick={togglePicker} className="btn btn-primary">
                     Switch to
                     {

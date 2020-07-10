@@ -43,7 +43,7 @@ const UserProfileDropdown = (props) => {
 
     const handleSettings = useCallback(() => {
         refs.container.current.classList.remove("show");
-        history.push(`/settings`);
+        history.push("/settings");
     }, []);
 
     return (

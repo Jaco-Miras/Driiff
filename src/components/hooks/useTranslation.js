@@ -36,10 +36,10 @@ export const useTranslation = () => {
             init = false;
             const lang = getBrowserLanguage();
 
-            if (localStorage.getItem(`i18n`)) {
+            if (localStorage.getItem("i18n")) {
                 dispatch(
                     addTranslationObject(
-                        JSON.parse(localStorage.getItem(`i18n`)),
+                        JSON.parse(localStorage.getItem("i18n")),
                     ),
                 );
             } else {
@@ -169,14 +169,14 @@ export const useTranslation = () => {
      * Save added text to local storage
      */
     useEffect(() => {
-        localStorage.setItem(`i18n`, JSON.stringify(i18n));
+        localStorage.setItem("i18n", JSON.stringify(i18n));
     }, [i18n]);
 
     /**
      * Save language change to local storage
      */
     useEffect(() => {
-        localStorage.setItem(`i18n_lang`, language);
+        localStorage.setItem("i18n_lang", language);
     }, [language]);
 
     return {

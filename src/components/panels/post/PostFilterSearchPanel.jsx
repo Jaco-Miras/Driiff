@@ -69,7 +69,7 @@ const PostFilterSearchPanel = props => {
                 <PostSearch search={search}/>
             </div>
         </Wrapper>
-    )
+    );
 };
 
 export default React.memo(PostFilterSearchPanel);

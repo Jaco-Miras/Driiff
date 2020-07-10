@@ -63,7 +63,7 @@ const FileOptions = props => {
         if (isMember) {
             actions.renameFile(file);
         } else {
-            toaster.warning(`You are not a member of this workspace.`);
+            toaster.warning("You are not a member of this workspace.");
         }
     };
 
@@ -71,7 +71,7 @@ const FileOptions = props => {
         if (isMember) {
             actions.removeFile(file, forceDelete);
         } else {
-            toaster.warning(`You are not a member of this workspace.`);
+            toaster.warning("You are not a member of this workspace.");
         }
     };
 

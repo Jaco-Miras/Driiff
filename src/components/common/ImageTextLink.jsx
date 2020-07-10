@@ -84,7 +84,7 @@ const ImageTextLink = forwardRef((props, ref) => {
         >
             {iconLeft && (
                 <SvgIcon
-                    className={`svg-icon-left`}
+                    className={"svg-icon-left"}
                     onClick={e => handleLeftIconClick(e)}
                     icon={iconLeft}
                     rotate={iconLeftRotate}
@@ -98,7 +98,7 @@ const ImageTextLink = forwardRef((props, ref) => {
             >
                 {(iconPosition === "right" || iconPosition === "both") && icon && (
                     <SvgIcon
-                        className={`svg-icon-right`}
+                        className={"svg-icon-right"}
                         icon={icon}
                         rotate={rotate}
                     />
@@ -106,7 +106,7 @@ const ImageTextLink = forwardRef((props, ref) => {
                 {children}
                 {(iconPosition === "left" || iconPosition === "both") && icon && (
                     <SvgIcon
-                        className={`svg-icon-left`}
+                        className={"svg-icon-left"}
                         icon={icon}
                         rotate={rotate}
                     />
@@ -114,7 +114,7 @@ const ImageTextLink = forwardRef((props, ref) => {
             </a>
             {iconRight && (
                 <SvgIcon
-                    className={`svg-icon-right`}
+                    className={"svg-icon-right"}
                     onClick={e => handleRightIconClick(e)}
                     icon={iconRight}
                     rotate={iconRightRotate}
