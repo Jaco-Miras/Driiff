@@ -1,184 +1,198 @@
-import {useCallback, useEffect} from "react";
-import {useDispatch, useSelector} from "react-redux";
-import {sessionService} from "redux-react-session";
-import {checkDriffUserEmail, getUser, getUsers, postUploadProfileImage, putUser} from "../../redux/actions/userAction";
-import {useToaster} from "./index";
+import { useCallback, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { sessionService } from "redux-react-session";
+import { checkDriffUserEmail, getUser, getUsers, postUploadProfileImage, putUser } from "../../redux/actions/userAction";
+import { useToaster } from "./index";
 
 let init = true;
 
 const useUserActions = () => {
+  const dispatch = useDispatch();
+  const toaster = useToaster();
 
-    const dispatch = useDispatch();
-    const toaster = useToaster();
+  const { getUserFilter } = useSelector((state) => state.users);
+  const { user: loggedUser } = useSelector((state) => state.session);
 
-    const {getUserFilter} = useSelector(state => state.users);
-    const {user: loggedUser} = useSelector(state => state.session);
-
-    const checkEmail = useCallback((email, callback = () => {}) => {
-        dispatch(
-            checkDriffUserEmail({
-                email: email,
-                driff: localStorage.getItem("slug"),
-            }, callback),
-        );
-    }, []);
-
-    const fetch = useCallback((
+  const checkEmail = useCallback((email, callback = () => {}) => {
+    dispatch(
+      checkDriffUserEmail(
         {
-            skip = 0,
-            limit = getUserFilter.limit,
-            ...res
+          email: email,
+          driff: localStorage.getItem("slug"),
         },
-        callback = () => {},
-    ) => {
-        dispatch(
-            getUsers({
-                ...res,
-                skip: skip,
-                limit: limit,
-            }, callback),
-        );
-    }, [dispatch, getUserFilter.limit]);
+        callback
+      )
+    );
+  }, []);
 
-    const fetchMore = useCallback(() => {
-        if (getUserFilter.hasMore) {
-            fetch(getUserFilter.skip, getUserFilter.limit);
-        }
-    }, [fetch, getUserFilter]);
+  const fetch = useCallback(
+    ({ skip = 0, limit = getUserFilter.limit, ...res }, callback = () => {}) => {
+      dispatch(
+        getUsers(
+          {
+            ...res,
+            skip: skip,
+            limit: limit,
+          },
+          callback
+        )
+      );
+    },
+    [dispatch, getUserFilter.limit]
+  );
 
-    const fetchById = useCallback((userId, callback = () => {}) => {
-        dispatch(
-            getUser({id: userId}, callback),
-        );
-    }, [dispatch]);
+  const fetchMore = useCallback(() => {
+    if (getUserFilter.hasMore) {
+      fetch(getUserFilter.skip, getUserFilter.limit);
+    }
+  }, [fetch, getUserFilter]);
 
-    const update = useCallback((user, callback = () => {}) => {
-        const allowed = ["id", "first_name", "last_name", "middle_name", "name", "password",
-            "role_id", "company", "designation", "skills", "email", "contact", "place", "address", "house_number",
-            "country", "zip_code", "birthday", "gender", "timezone", "language"];
+  const fetchById = useCallback(
+    (userId, callback = () => {}) => {
+      dispatch(getUser({ id: userId }, callback));
+    },
+    [dispatch]
+  );
 
-        let payload = {};
-        allowed.forEach(field => {
-            payload = {
-                ...payload,
-                [field]: user[field],
-            };
+  const update = useCallback(
+    (user, callback = () => {}) => {
+      const allowed = [
+        "id",
+        "first_name",
+        "last_name",
+        "middle_name",
+        "name",
+        "password",
+        "role_id",
+        "company",
+        "designation",
+        "skills",
+        "email",
+        "contact",
+        "place",
+        "address",
+        "house_number",
+        "country",
+        "zip_code",
+        "birthday",
+        "gender",
+        "timezone",
+        "language",
+      ];
 
-            if (field === "password") {
-                if (user[field]) {
-                    payload = {
-                        ...payload,
-                        type: 2,
-                    };
-                } else {
-                    payload = {
-                        ...payload,
-                        password: "",
-                        type: 0,
-                    };
-                }
-            }
-        });
-
-        dispatch(
-            putUser(payload, (err, res) => {
-                if (err) {
-                    toaster.error("Saving profile information failed.");
-                }
-
-                if (res) {
-                    if (loggedUser.id === res.data.id) {
-                        sessionService.saveUser({...res.data});
-                    }
-                    toaster.success("Profile information saved.");
-                }
-
-                callback(err, res);
-            }),
-        );
-    }, [dispatch]);
-
-    const getReadOnlyFields = useCallback((source) => {
-        switch (source) {
-            case "gripp":
-                return [
-                    "email",
-                    "designation",
-                    "house_number",
-                    "zip",
-                    "address",
-                    "place",
-                    "country",
-                    "birthday",
-                    "profile_image",
-                    "contact",
-                ];
-            default:
-                return [];
-        }
-    }, []);
-
-    const getRequiredFields = useCallback((source) => {
-        let required = ["first_name", "last_name", "password", "email"];
-
-        switch (source) {
-            case "gripp":
-                return required;
-            default:
-                return required;
-        }
-    }, []);
-
-    /**
-     * @param {Object} user
-     * @param {File} file
-     * @param {Object} callback
-     */
-    const updateProfileImage = useCallback((user, file, callback = () => {}) => {
-        const payload = {
-            id: user.id,
-            file: file,
+      let payload = {};
+      allowed.forEach((field) => {
+        payload = {
+          ...payload,
+          [field]: user[field],
         };
-        console.log(payload);
-        dispatch(
-            postUploadProfileImage(payload, (err, res) => {
-                if (err) {
-                    toaster.error("Profile image upload failed.");
-                    callback(err);
-                }
 
-                if (res) {
-                    user.profile_image_id = parseInt(res.data.profile_media_id);
-                    update(user, callback);
-                }
-            }),
-        );
-    }, []);
+        if (field === "password") {
+          if (user[field]) {
+            payload = {
+              ...payload,
+              type: 2,
+            };
+          } else {
+            payload = {
+              ...payload,
+              password: "",
+              type: 0,
+            };
+          }
+        }
+      });
 
-    useEffect(() => {
-        if (init) {
-            init = false;
+      dispatch(
+        putUser(payload, (err, res) => {
+          if (err) {
+            toaster.error("Saving profile information failed.");
+          }
 
-            fetch({}, (err) => {
-                if (err) {
-                    console.log(err);
-                }
-            });
+          if (res) {
+            if (loggedUser.id === res.data.id) {
+              sessionService.saveUser({ ...res.data });
+            }
+            toaster.success("Profile information saved.");
+          }
+
+          callback(err, res);
+        })
+      );
+    },
+    [dispatch]
+  );
+
+  const getReadOnlyFields = useCallback((source) => {
+    switch (source) {
+      case "gripp":
+        return ["email", "designation", "house_number", "zip", "address", "place", "country", "birthday", "profile_image", "contact"];
+      default:
+        return [];
+    }
+  }, []);
+
+  const getRequiredFields = useCallback((source) => {
+    let required = ["first_name", "last_name", "password", "email"];
+
+    switch (source) {
+      case "gripp":
+        return required;
+      default:
+        return required;
+    }
+  }, []);
+
+  /**
+   * @param {Object} user
+   * @param {File} file
+   * @param {Object} callback
+   */
+  const updateProfileImage = useCallback((user, file, callback = () => {}) => {
+    const payload = {
+      id: user.id,
+      file: file,
+    };
+    console.log(payload);
+    dispatch(
+      postUploadProfileImage(payload, (err, res) => {
+        if (err) {
+          toaster.error("Profile image upload failed.");
+          callback(err);
         }
 
-        //eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+        if (res) {
+          user.profile_image_id = parseInt(res.data.profile_media_id);
+          update(user, callback);
+        }
+      })
+    );
+  }, []);
 
-    return {
-        checkEmail,
-        fetch,
-        update,
-        updateProfileImage,
-        fetchById,
-        fetchMore,
-        getReadOnlyFields,
-        getRequiredFields,
-    };
+  useEffect(() => {
+    if (init) {
+      init = false;
+
+      fetch({}, (err) => {
+        if (err) {
+          console.log(err);
+        }
+      });
+    }
+
+    //eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  return {
+    checkEmail,
+    fetch,
+    update,
+    updateProfileImage,
+    fetchById,
+    fetchMore,
+    getReadOnlyFields,
+    getRequiredFields,
+  };
 };
 
 export default useUserActions;

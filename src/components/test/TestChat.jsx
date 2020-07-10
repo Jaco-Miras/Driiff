@@ -2,23 +2,21 @@ import React from "react";
 import styled from "styled-components";
 import useChannelActions from "../hooks/useChannelActions";
 
-const Wrapper = styled.div`
-`;
+const Wrapper = styled.div``;
 
 const TestChat = (props) => {
+  const { className = "" } = props;
 
-    const {className = ""} = props;
+  const channelActions = useChannelActions();
 
-    const channelActions = useChannelActions();
+  // channelActions.fetch({});
+  // channelActions.fetchAll({filter: "hidden"});
+  // channelActions.fetchLastVisited();
+  // channelActions.fetchNoChannelUsers();
+  // channelActions.fetchDrafts();
+  // channelActions.fetchMembersById(706);
 
-    // channelActions.fetch({});
-    // channelActions.fetchAll({filter: "hidden"});
-    // channelActions.fetchLastVisited();
-    // channelActions.fetchNoChannelUsers();
-    // channelActions.fetchDrafts();
-    // channelActions.fetchMembersById(706);
-
-    /*channelActions.fetchByCode("478ec8ce3fba2", (err, res) => {
+  /*channelActions.fetchByCode("478ec8ce3fba2", (err, res) => {
         let channel = res.data;
 
         //channelActions.select(channel)
@@ -41,10 +39,7 @@ const TestChat = (props) => {
         //channelActions.saveHistoricalPosition();
     });*/
 
-    return (
-        <Wrapper className={`${className}`}>
-        </Wrapper>
-    );
+  return <Wrapper className={`${className}`}></Wrapper>;
 };
 
 export default React.memo(TestChat);

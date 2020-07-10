@@ -1,4 +1,4 @@
-import React, {forwardRef} from "react";
+import React, { forwardRef } from "react";
 import styled from "styled-components";
 
 const iconArrow = require("../../assets/icon/arrow/back/r/white@2x.png");
@@ -67,176 +67,175 @@ const iconMenuFavorites = require("../../assets/icon/icon/menu-favourites/favour
 const iconNewChat = require("../../assets/icon/new-chat/inactive.svg");
 
 const Wrapper = styled.img`
-    transform: ${props => props.rotate ? `rotate(${props.rotate}deg)` : "rotate(0deg)"};
+  transform: ${(props) => (props.rotate ? `rotate(${props.rotate}deg)` : "rotate(0deg)")};
 `;
 
 const SvgImage = forwardRef((props, ref) => {
+  const { className = "", dataTip = "", rotate, icon, onClick, dataSet, ...rest } = props;
 
-    const {className = "", dataTip = "", rotate, icon, onClick, dataSet, ...rest} = props;
+  const handleOnClick = (e) => {
+    if (onClick) {
+      if (dataSet) {
+        onClick(e, dataSet);
+      } else {
+        onClick(e);
+      }
+    }
+  };
 
-    const handleOnClick = (e) => {
-        if (onClick) {
-            if (dataSet) {
-                onClick(e, dataSet);
-            } else {
-                onClick(e);
-            }
-        }
-    };
+  const getIconImageSource = (icon) => {
+    switch (icon) {
+      case "arrow":
+        return iconArrow;
+      case "arrow-down":
+        return iconArrowDown;
+      case "topics":
+      case "topic":
+        return iconTopic;
+      case "person":
+      case "people":
+        return iconPeople;
+      case "documents":
+        return iconDocuments;
+      case "tags":
+        return iconTags;
+      case "templates":
+        return iconTemplates;
+      case "requests":
+        return iconRequest;
+      case "tasks":
+        return iconTasks;
+      case "settings":
+        return iconSettings;
+      case "team":
+      case "departments":
+        return iconDepartments;
+      case "logo":
+        return iconLogo;
+      case "logo-transparent":
+        return iconLogoTransparent;
+      case "communications":
+        return iconLogoCommunications;
+      case "favorites":
+        return iconLogoFavorites;
+      case "notifications":
+        return iconLogoNotifications;
+      case "active-notification":
+        return iconLogoActiveNotifications;
+      case "arrow-transparent":
+        return iconArrowTransparent;
+      case "search":
+        return iconSearch;
+      case "close":
+        return iconClose;
+      case "poll":
+        return iconPoll;
+      case "recent":
+        return iconRecent;
+      case "more":
+        return iconMore;
+      case "owner":
+        return iconOwner;
+      case "enlarge":
+        return iconEnlarge;
+      case "closed-eye":
+        return iconClosedEye;
+      case "opened-eye":
+        return iconOpenedEye;
+      case "edit":
+        return iconEdit;
+      case "check":
+        return iconCheck;
+      case "clap":
+        return iconClap;
+      case "mention":
+        return iconMention;
+      case "post":
+        return iconPost;
+      case "multi-post":
+      case "multi_post":
+        return iconMultiPost;
+      case "tail-spin":
+        return iconTailSpin;
+      case "circle":
+        return iconCircle;
+      case "gripp-logo":
+        return iconGrippLogo;
+      case "chat":
+        return iconChat;
+      case "dock":
+        return iconDock;
+      case "expand":
+        return iconExpand;
+      case "clipboard":
+        return iconClipboard;
+      case "trash":
+        return iconTrash;
+      case "logout":
+        return iconLogout;
+      case "lock":
+        return iconLock;
+      case "unlock":
+        return iconUnlock;
+      case "more-menu":
+        return iconMoreMenu;
+      case "send":
+        return iconSend;
+      case "google-login":
+        return iconGoogleLogin;
+      case "download":
+        return iconDownload;
+      case "plus":
+        return iconPlus;
+      case "comment":
+        return iconComment;
+      case "quote":
+        return iconQuote;
+      case "heart-driff":
+        return logoHeartDriff;
+      case "prio-critical":
+        return iconPrioCritical;
+      case "prio-high":
+        return iconPrioHigh;
+      case "prio-medium":
+        return iconPrioMedium;
+      case "prio-low":
+        return iconPrioLow;
+      case "cross":
+        return iconCross;
+      case "personal-bot":
+        return iconPersonalBot;
+      case "share":
+        return iconShared;
+      case "gripp-bot":
+        return iconGrippBot;
+      case "heart-white":
+        return iconHeartWhite;
+      case "link":
+        return iconLink;
+      case "menu-favourites":
+        return iconMenuFavorites;
+      case "new-chat":
+        return iconNewChat;
+      default:
+        return icon;
+    }
+  };
 
-    const getIconImageSource = (icon) => {
-        switch (icon) {
-            case "arrow":
-                return iconArrow;
-            case "arrow-down":
-                return iconArrowDown;
-            case "topics":
-            case "topic":
-                return iconTopic;
-            case "person":
-            case "people":
-                return iconPeople;
-            case "documents":
-                return iconDocuments;
-            case "tags":
-                return iconTags;
-            case "templates":
-                return iconTemplates;
-            case "requests":
-                return iconRequest;
-            case "tasks":
-                return iconTasks;
-            case "settings":
-                return iconSettings;
-            case "team":
-            case "departments":
-                return iconDepartments;
-            case "logo":
-                return iconLogo;
-            case "logo-transparent":
-                return iconLogoTransparent;
-            case "communications":
-                return iconLogoCommunications;
-            case "favorites":
-                return iconLogoFavorites;
-            case "notifications":
-                return iconLogoNotifications;
-            case "active-notification":
-                return iconLogoActiveNotifications;
-            case "arrow-transparent":
-                return iconArrowTransparent;
-            case "search":
-                return iconSearch;
-            case "close":
-                return iconClose;
-            case "poll":
-                return iconPoll;
-            case "recent":
-                return iconRecent;
-            case "more":
-                return iconMore;
-            case "owner":
-                return iconOwner;
-            case "enlarge":
-                return iconEnlarge;
-            case "closed-eye":
-                return iconClosedEye;
-            case "opened-eye":
-                return iconOpenedEye;
-            case "edit":
-                return iconEdit;
-            case "check":
-                return iconCheck;
-            case "clap":
-                return iconClap;
-            case "mention":
-                return iconMention;
-            case "post":
-                return iconPost;
-            case "multi-post":
-            case "multi_post":
-                return iconMultiPost;
-            case "tail-spin":
-                return iconTailSpin;
-            case "circle":
-                return iconCircle;
-            case "gripp-logo":
-                return iconGrippLogo;
-            case "chat":
-                return iconChat;
-            case "dock":
-                return iconDock;
-            case "expand":
-                return iconExpand;
-            case "clipboard":
-                return iconClipboard;
-            case "trash":
-                return iconTrash;
-            case "logout":
-                return iconLogout;
-            case "lock":
-                return iconLock;
-            case "unlock":
-                return iconUnlock;
-            case "more-menu":
-                return iconMoreMenu;
-            case "send":
-                return iconSend;
-            case "google-login":
-                return iconGoogleLogin;
-            case "download":
-                return iconDownload;
-            case "plus":
-                return iconPlus;
-            case "comment":
-                return iconComment;
-            case "quote":
-                return iconQuote;
-            case "heart-driff":
-                return logoHeartDriff;
-            case "prio-critical":
-                return iconPrioCritical;
-            case "prio-high":
-                return iconPrioHigh;
-            case "prio-medium":
-                return iconPrioMedium;
-            case "prio-low":
-                return iconPrioLow;
-            case "cross":
-                return iconCross;
-            case "personal-bot":
-                return iconPersonalBot;
-            case "share":
-                return iconShared;
-            case "gripp-bot":
-                return iconGrippBot;
-            case "heart-white":
-                return iconHeartWhite;
-            case "link":
-                return iconLink;
-            case "menu-favourites":
-                return iconMenuFavorites;
-            case "new-chat":
-                return iconNewChat;
-            default:
-                return icon;
-        }
-    };
-
-    return (
-        <Wrapper
-            ref={ref}
-            alt={`${icon} icon`}
-            className={`icon-${icon} ${className}`}
-            src={getIconImageSource(icon)}
-            rotate={rotate}
-            onClick={e => handleOnClick(e)}
-            data-event="touchstart focus mouseover"
-            data-event-off="mouseout"
-            data-tip={dataTip}
-            {...rest}
-        />
-    );
+  return (
+    <Wrapper
+      ref={ref}
+      alt={`${icon} icon`}
+      className={`icon-${icon} ${className}`}
+      src={getIconImageSource(icon)}
+      rotate={rotate}
+      onClick={(e) => handleOnClick(e)}
+      data-event="touchstart focus mouseover"
+      data-event-off="mouseout"
+      data-tip={dataTip}
+      {...rest}
+    />
+  );
 });
 
 export default React.memo(SvgImage);

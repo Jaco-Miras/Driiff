@@ -1,19 +1,12 @@
 import React from "react";
 import styled from "styled-components";
 
-const Wrapper = styled.div`    
-`;
+const Wrapper = styled.div``;
 
 const InputFeedback = (props) => {
+  const { className = "", valid, children } = props;
 
-    const {className = "", valid, children} = props;
-
-    return (
-        <Wrapper className={`input-feedback ${valid ? "valid" : "invalid"}-feedback ${className}`}>
-            {children}
-        </Wrapper>
-    );
+  return <Wrapper className={`input-feedback ${valid ? "valid" : "invalid"}-feedback ${className}`}>{children}</Wrapper>;
 };
 
 export default React.memo(InputFeedback);
-

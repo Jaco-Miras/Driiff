@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import {Provider} from "react-redux";
-import {BrowserRouter} from "react-router-dom";
+import { Provider } from "react-redux";
+import { BrowserRouter } from "react-router-dom";
 
 import "toasted-notes/src/styles.css";
 
@@ -10,12 +10,12 @@ import "./assets/style/app.scss";
 import store from "./redux/store/configStore";
 //import * as serviceWorker from "./serviceWorker";
 
-const wrapApp = reduxStore => (
-    <Provider store={reduxStore}>
-        <BrowserRouter>
-            <App/>
-        </BrowserRouter>
-    </Provider>
+const wrapApp = (reduxStore) => (
+  <Provider store={reduxStore}>
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
+  </Provider>
 );
 
 ReactDOM.render(wrapApp(store), document.getElementById("root"));

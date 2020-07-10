@@ -1,6 +1,6 @@
 // import {objToUrlParams} from "../../helpers/commonFunctions";
 // import {getAPIUrl} from "../../helpers/slugHelper";
-import {apiCall} from "./service";
+import { apiCall } from "./service";
 
 /**
  * @param {Object} payload
@@ -8,12 +8,12 @@ import {apiCall} from "./service";
  * @returns {Promise<*>}
  */
 export function getWorkspaces(payload) {
-    let url = `/v2/workspace?is_external=${payload.is_external}`;
-    return apiCall({
-        method: "GET",
-        url: url,
-        data: payload,
-    });
+  let url = `/v2/workspace?is_external=${payload.is_external}`;
+  return apiCall({
+    method: "GET",
+    url: url,
+    data: payload,
+  });
 }
 
 /**
@@ -25,12 +25,12 @@ export function getWorkspaces(payload) {
  * @returns {Promise<*>}
  */
 export function createWorkspace(payload) {
-    let url = "/v2/workspace";
-    return apiCall({
-        method: "POST",
-        url: url,
-        data: payload,
-    });
+  let url = "/v2/workspace";
+  return apiCall({
+    method: "POST",
+    url: url,
+    data: payload,
+  });
 }
 
 /**
@@ -41,12 +41,12 @@ export function createWorkspace(payload) {
  * @returns {Promise<*>}
  */
 export function updateWorkspace(payload) {
-    let url = `/v2/workspace/${payload.topic_id}`;
-    return apiCall({
-        method: "PUT",
-        url: url,
-        data: payload,
-    });
+  let url = `/v2/workspace/${payload.topic_id}`;
+  return apiCall({
+    method: "PUT",
+    url: url,
+    data: payload,
+  });
 }
 
 /**
@@ -55,12 +55,12 @@ export function updateWorkspace(payload) {
  * @returns {Promise<*>}
  */
 export function deleteWorkspace(payload) {
-    let url = `/v2/workspace/${payload.workspace_id}`;
-    return apiCall({
-        method: "DELETE",
-        url: url,
-        data: payload,
-    });
+  let url = `/v2/workspace/${payload.workspace_id}`;
+  return apiCall({
+    method: "DELETE",
+    url: url,
+    data: payload,
+  });
 }
 
 /**
@@ -70,12 +70,12 @@ export function deleteWorkspace(payload) {
  * @returns {Promise<*>}
  */
 export function moveWorkspaceTopic(payload) {
-    let url = "/v2/move-topic-workspace";
-    return apiCall({
-        method: "PUT",
-        url: url,
-        data: payload,
-    });
+  let url = "/v2/move-topic-workspace";
+  return apiCall({
+    method: "PUT",
+    url: url,
+    data: payload,
+  });
 }
 
 /**
@@ -85,15 +85,15 @@ export function moveWorkspaceTopic(payload) {
  * @returns {Promise<*>}
  */
 export function getWorkspaceTopics(payload) {
-    let url = `/v2/workspace-topics?is_external=${payload.is_external}`;
-    if (payload.search !== undefined) {
-        url += `&search=${payload.search}`;
-    }
-    return apiCall({
-        method: "GET",
-        url: url,
-        data: payload,
-    });
+  let url = `/v2/workspace-topics?is_external=${payload.is_external}`;
+  if (payload.search !== undefined) {
+    url += `&search=${payload.search}`;
+  }
+  return apiCall({
+    method: "GET",
+    url: url,
+    data: payload,
+  });
 }
 
 /**
@@ -102,12 +102,12 @@ export function getWorkspaceTopics(payload) {
  * @returns {Promise<*>}
  */
 export function getWorkspacePostDetail(payload) {
-    let url = `/v1/posts/${payload.post_id}`;
-    return apiCall({
-        method: "GET",
-        url: url,
-        data: payload,
-    });
+  let url = `/v1/posts/${payload.post_id}`;
+  return apiCall({
+    method: "GET",
+    url: url,
+    data: payload,
+  });
 }
 
 /**
@@ -123,12 +123,12 @@ export function getWorkspacePostDetail(payload) {
  * @returns {Promise<*>}
  */
 export function createWorkspacePost(payload) {
-    let url = "/v1/posts";
-    return apiCall({
-        method: "POST",
-        url: url,
-        data: payload,
-    });
+  let url = "/v1/posts";
+  return apiCall({
+    method: "POST",
+    url: url,
+    data: payload,
+  });
 }
 
 /**
@@ -138,12 +138,12 @@ export function createWorkspacePost(payload) {
  * @returns {Promise<*>}
  */
 export function updatePostStatus(payload) {
-    let url = "/v2/posts/status";
-    return apiCall({
-        method: "PUT",
-        url: url,
-        data: payload,
-    });
+  let url = "/v2/posts/status";
+  return apiCall({
+    method: "PUT",
+    url: url,
+    data: payload,
+  });
 }
 
 /**
@@ -152,12 +152,12 @@ export function updatePostStatus(payload) {
  * @returns {Promise<*>}
  */
 export function fetchDetail(payload) {
-    let url = `/v2/workspace-dashboard-detail?topic_id=${payload.topic_id}`;
-    return apiCall({
-        method: "GET",
-        url: url,
-        data: payload,
-    });
+  let url = `/v2/workspace-dashboard-detail?topic_id=${payload.topic_id}`;
+  return apiCall({
+    method: "GET",
+    url: url,
+    data: payload,
+  });
 }
 
 /**
@@ -166,12 +166,12 @@ export function fetchDetail(payload) {
  * @returns {Promise<*>}
  */
 export function getPostStatusCount(payload) {
-    let url = `/v2/post-tags-entries?topic_id=${payload.topic_id}`;
-    return apiCall({
-        method: "GET",
-        url: url,
-        data: payload,
-    });
+  let url = `/v2/post-tags-entries?topic_id=${payload.topic_id}`;
+  return apiCall({
+    method: "GET",
+    url: url,
+    data: payload,
+  });
 }
 
 /**
@@ -181,12 +181,12 @@ export function getPostStatusCount(payload) {
  * @returns {Promise<*>}
  */
 export function joinWorkspace(payload) {
-    let url = "/v1/members";
-    return apiCall({
-        method: "POST",
-        url: url,
-        data: payload,
-    });
+  let url = "/v1/members";
+  return apiCall({
+    method: "POST",
+    url: url,
+    data: payload,
+  });
 }
 
 /**
@@ -195,12 +195,12 @@ export function joinWorkspace(payload) {
  * @returns {Promise<*>}
  */
 export function fetchPrimaryFiles(payload) {
-    let url = `/v2/workspace-primary-files?topic_id=${payload.topic_id}`;
-    return apiCall({
-        method: "GET",
-        url: url,
-        data: payload,
-    });
+  let url = `/v2/workspace-primary-files?topic_id=${payload.topic_id}`;
+  return apiCall({
+    method: "GET",
+    url: url,
+    data: payload,
+  });
 }
 
 /**
@@ -209,15 +209,13 @@ export function fetchPrimaryFiles(payload) {
  * @returns {Promise<*>}
  */
 export function fetchMembers(payload) {
-    let url = `/v2/workspace-dashboard-members?topic_id=${payload.topic_id}`;
-    return apiCall({
-        method: "GET",
-        url: url,
-        data: payload,
-    });
+  let url = `/v2/workspace-dashboard-members?topic_id=${payload.topic_id}`;
+  return apiCall({
+    method: "GET",
+    url: url,
+    data: payload,
+  });
 }
-
-
 
 /**
  * @param {Object} payload
@@ -225,26 +223,26 @@ export function fetchMembers(payload) {
  * @returns {Promise<*>}
  */
 export function fetchTimeline(payload) {
-    let url = `/v2/workspace-dashboard-timeline?topic_id=${payload.topic_id}`;
-    return apiCall({
-        method: "GET",
-        url: url,
-        data: payload,
-    });
+  let url = `/v2/workspace-dashboard-timeline?topic_id=${payload.topic_id}`;
+  return apiCall({
+    method: "GET",
+    url: url,
+    data: payload,
+  });
 }
 
 /**
  * @param {Object} payload
  * @param {number} payload.topic_id
- * @returns {Promise<*>} 
+ * @returns {Promise<*>}
  */
 export function fetchWorkspaceTagCounters(payload) {
-    let url = `/v2/post-tags-entries?topic_id=${payload.topic_id}`;
-    return apiCall({
-        method: "GET",
-        url: url,
-        data: payload,
-    });
+  let url = `/v2/post-tags-entries?topic_id=${payload.topic_id}`;
+  return apiCall({
+    method: "GET",
+    url: url,
+    data: payload,
+  });
 }
 
 /**
@@ -253,10 +251,10 @@ export function fetchWorkspaceTagCounters(payload) {
  * @returns {Promise<*>}
  */
 export function getWorkspace(payload) {
-    let url = `/v2/workspace/${payload.topic_id}`;
-    return apiCall({
-        method: "GET",
-        url: url,
-        data: payload,
-    });
+  let url = `/v2/workspace/${payload.topic_id}`;
+  return apiCall({
+    method: "GET",
+    url: url,
+    data: payload,
+  });
 }

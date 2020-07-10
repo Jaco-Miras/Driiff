@@ -1,5 +1,5 @@
 {
-  "extends": ["react-app", "eslint:recommended"],
+  "extends": ["react-app", "eslint:recommended", "plugin:prettier/recommended"],
   "rules": {
     "semi": ["error", "always"],
     "quotes": ["error", "double"],

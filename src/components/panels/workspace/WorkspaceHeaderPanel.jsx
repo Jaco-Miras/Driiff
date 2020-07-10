@@ -1,168 +1,164 @@
-import React, {useEffect} from "react";
-import {useDispatch, useSelector} from "react-redux";
-import {useRouteMatch} from "react-router-dom";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useRouteMatch } from "react-router-dom";
 import styled from "styled-components";
-import {addToModals} from "../../../redux/actions/globalActions";
-import {SvgIconFeather} from "../../common";
-import {HeaderProfileNavigation} from "../common";
+import { addToModals } from "../../../redux/actions/globalActions";
+import { SvgIconFeather } from "../../common";
+import { HeaderProfileNavigation } from "../common";
 
 const NavBar = styled.ul`
-    li {
-        justify-content: center;
-        align-items: center;
-    }
+  li {
+    justify-content: center;
+    align-items: center;
+  }
 `;
 
 const WorkspaceName = styled.h2`
-    margin-right: 1rem;
-    letter-spacing: 0;
-    margin-bottom: 0;
-    color: #64625C;
-    font-weight: 600;
-    font-size: 19px;
+  margin-right: 1rem;
+  letter-spacing: 0;
+  margin-bottom: 0;
+  color: #64625c;
+  font-weight: 600;
+  font-size: 19px;
 `;
 
 const SubWorkspaceName = styled.h3`
-    margin-right: 1rem;
-    letter-spacing: 0;
-    margin-bottom: 0;
-    color: #B8B8B8;
-    font-weight: normal;
-    font-size: 19px;
-    text-transform: lowercase;
+  margin-right: 1rem;
+  letter-spacing: 0;
+  margin-bottom: 0;
+  color: #b8b8b8;
+  font-weight: normal;
+  font-size: 19px;
+  text-transform: lowercase;
 
-    &:before {
-        content: '';
-        display: inline-block;
-        width: 4px;
-        height: 4px;
-        -moz-border-radius: 7.5px;
-        -webkit-border-radius: 7.5px;
-        border-radius: 7.5px;
-        background-color: #B8B8B8;
-        margin-right: 12px;
-        position: relative;
-        top: -4px;
-    }
+  &:before {
+    content: "";
+    display: inline-block;
+    width: 4px;
+    height: 4px;
+    -moz-border-radius: 7.5px;
+    -webkit-border-radius: 7.5px;
+    border-radius: 7.5px;
+    background-color: #b8b8b8;
+    margin-right: 12px;
+    position: relative;
+    top: -4px;
+  }
 `;
 
 const WorkspaceButton = styled.h3`
-    cursor: pointer;
-    cursor: hand;
+  cursor: pointer;
+  cursor: hand;
 
-    svg {
-        fill: #505050;
-        transform: rotate(90deg);
-    }
+  svg {
+    fill: #505050;
+    transform: rotate(90deg);
+  }
 `;
 
 const WorspaceHeaderPanel = () => {
+  const dispatch = useDispatch();
+  const match = useRouteMatch();
+  const activeTopic = useSelector((state) => state.workspaces.activeTopic);
 
-    const dispatch = useDispatch();
-    const match = useRouteMatch();
-    const activeTopic = useSelector(state => state.workspaces.activeTopic);
-
-    const handleShowWorkspaceModal = () => {
-        let payload = {
-            type: "workspace_create_edit",
-            mode: "create",
-        };
-
-        dispatch(
-            addToModals(payload),
-        );
+  const handleShowWorkspaceModal = () => {
+    let payload = {
+      type: "workspace_create_edit",
+      mode: "create",
     };
 
-    const handleMenuOpenMobile = (e) => {
-        e.preventDefault();
-        document.body.classList.add("navigation-show");
-    };
+    dispatch(addToModals(payload));
+  };
 
-    useEffect(() => {
-        const body = document.body;
-        body.classList.remove("navigation-toggle-one");
+  const handleMenuOpenMobile = (e) => {
+    e.preventDefault();
+    document.body.classList.add("navigation-show");
+  };
 
-        let pageName = "";
-        switch (match.params.page) {
-            case "posts": {
-                pageName = "Posts";
-                break;
-            }
-            case "chat": {
-                pageName = "Chat";
-                break;
-            }
-            case "files": {
-                pageName = "Files";
-                break;
-            }
-            case "people": {
-                pageName = "People";
-                break;
-            }
-            case "settings": {
-                pageName = "Settings";
-                break;
-            }
-            default: {
-                pageName = "Dashboard";
-            }
-        }
+  useEffect(() => {
+    const body = document.body;
+    body.classList.remove("navigation-toggle-one");
 
-        if (["Dashboard", "Posts", "Files", "People"].includes(pageName)) {
-            body.classList.remove("stretch-layout");
-        } else {
-            body.classList.add("stretch-layout");
-        }
+    let pageName = "";
+    switch (match.params.page) {
+      case "posts": {
+        pageName = "Posts";
+        break;
+      }
+      case "chat": {
+        pageName = "Chat";
+        break;
+      }
+      case "files": {
+        pageName = "Files";
+        break;
+      }
+      case "people": {
+        pageName = "People";
+        break;
+      }
+      case "settings": {
+        pageName = "Settings";
+        break;
+      }
+      default: {
+        pageName = "Dashboard";
+      }
+    }
 
-        document.title = `Driff - Workspace ${pageName}`;
-    }, [match.params.page, dispatch]);
+    if (["Dashboard", "Posts", "Files", "People"].includes(pageName)) {
+      body.classList.remove("stretch-layout");
+    } else {
+      body.classList.add("stretch-layout");
+    }
 
-    return (
-        <>
-            <div>
-                <NavBar className="navbar-nav">
-                    <li className="nav-item navigation-toggler mobile-toggler">
-                        <a href="/" className="nav-link" title="Show navigation" onClick={handleMenuOpenMobile}>
-                            <SvgIconFeather icon="menu"/>
-                        </a>
-                    </li>
-                    {
-                        activeTopic ?
-                        <>
-                            {
-                                typeof activeTopic.workspace_name === "undefined" ?
-                                <>
-                                    <li className="nav-item">
-                                        <WorkspaceName>{activeTopic.name}</WorkspaceName>
-                                    </li>
-                                </> : <>
+    document.title = `Driff - Workspace ${pageName}`;
+  }, [match.params.page, dispatch]);
 
-                                    <li className="nav-item">
-                                        <WorkspaceName>{activeTopic.workspace_name}</WorkspaceName>
-                                    </li>
-                                    <li className="nav-item">
-
-                                        <SubWorkspaceName>{activeTopic.name}</SubWorkspaceName>
-                                    </li>
-                                </>
-                            }
-                        </>
-                                    :
-                        <>
-                            <li className="nav-item">
-                                <WorkspaceButton onClick={handleShowWorkspaceModal}>New workspace <SvgIconFeather
-                                    icon="play"/></WorkspaceButton>
-                            </li>
-                        </>
-                    }
-                </NavBar>
-            </div>
-            <div>
-                <HeaderProfileNavigation />
-            </div>
-        </>
-    );
+  return (
+    <>
+      <div>
+        <NavBar className="navbar-nav">
+          <li className="nav-item navigation-toggler mobile-toggler">
+            <a href="/" className="nav-link" title="Show navigation" onClick={handleMenuOpenMobile}>
+              <SvgIconFeather icon="menu" />
+            </a>
+          </li>
+          {activeTopic ? (
+            <>
+              {typeof activeTopic.workspace_name === "undefined" ? (
+                <>
+                  <li className="nav-item">
+                    <WorkspaceName>{activeTopic.name}</WorkspaceName>
+                  </li>
+                </>
+              ) : (
+                <>
+                  <li className="nav-item">
+                    <WorkspaceName>{activeTopic.workspace_name}</WorkspaceName>
+                  </li>
+                  <li className="nav-item">
+                    <SubWorkspaceName>{activeTopic.name}</SubWorkspaceName>
+                  </li>
+                </>
+              )}
+            </>
+          ) : (
+            <>
+              <li className="nav-item">
+                <WorkspaceButton onClick={handleShowWorkspaceModal}>
+                  New workspace <SvgIconFeather icon="play" />
+                </WorkspaceButton>
+              </li>
+            </>
+          )}
+        </NavBar>
+      </div>
+      <div>
+        <HeaderProfileNavigation />
+      </div>
+    </>
+  );
 };
 
 export default React.memo(WorspaceHeaderPanel);

@@ -1,18 +1,10 @@
 import "quill-mention";
-import React, {forwardRef} from "react";
-import ReactQuill, {Quill} from "react-quill";
+import React, { forwardRef } from "react";
+import ReactQuill, { Quill } from "react-quill";
 import "react-quill/dist/quill.snow.css";
 
 const QuillEditor = forwardRef((props, ref) => {
-
-    return (
-        <ReactQuill
-            theme="snow"
-            {...props}
-            ref={ref}
-            placeholder="Schrijf een bericht..."
-        />
-    );
+  return <ReactQuill theme="snow" {...props} ref={ref} placeholder="Schrijf een bericht..." />;
 });
 export default QuillEditor;
 
@@ -24,20 +16,17 @@ const Clipboard = Quill.import("modules/clipboard");
 const Delta = Quill.import("delta");
 
 class QuillPlainClipboard extends Clipboard {
-    onPaste(e) {
-        e.preventDefault();
-        const range = this.quill.getSelection();
-        const text = e.clipboardData.getData("text/plain");
-        const delta = new Delta()
-            .retain(range.index)
-            .delete(range.length)
-            .insert(text);
-        const index = text.length + range.index;
-        const length = 0;
-        this.quill.updateContents(delta);
-        this.quill.setSelection(index, length);
-        this.quill.scrollIntoView();
-    }
+  onPaste(e) {
+    e.preventDefault();
+    const range = this.quill.getSelection();
+    const text = e.clipboardData.getData("text/plain");
+    const delta = new Delta().retain(range.index).delete(range.length).insert(text);
+    const index = text.length + range.index;
+    const length = 0;
+    this.quill.updateContents(delta);
+    this.quill.setSelection(index, length);
+    this.quill.scrollIntoView();
+  }
 }
 
 Quill.register("modules/clipboard", QuillPlainClipboard, true);
