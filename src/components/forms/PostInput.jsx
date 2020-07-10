@@ -27,7 +27,7 @@ const StyledQuillEditor = styled(QuillEditor)`
         // border-radius: 5px;
         max-height: 130px;
         position: static;
-        overflow: auto;  
+        overflow: auto;
         &::-webkit-scrollbar {
             display: none;
         }
@@ -201,7 +201,7 @@ const PostInput = props => {
                 user_clap_count: 0,
             };
 
-            commentActions.add(commentObj)
+            commentActions.add(commentObj);
         }
 
         if (editMode) {
@@ -211,15 +211,15 @@ const PostInput = props => {
                 parent_id: editMessage.parent_id,
                 reference_id: null
             };
-            commentActions.edit(payload)
+            commentActions.edit(payload);
             setEditMode(false);
             setEditMessage(null);
         } else {
-            commentActions.create(payload)
+            commentActions.create(payload);
         }
 
         if (quote) {
-            commentActions.clearQuote(commentId)
+            commentActions.clearQuote(commentId);
         }
         // if (draftId) {
         //     dispatch(deleteDraft({type: "channel", draft_id: draftId}));
@@ -328,15 +328,13 @@ const PostInput = props => {
             }
             if (files.length) {
                 dropAction(files);
-                dispatch(setParentIdForUpload(parentId))
+                dispatch(setParentIdForUpload(parentId));
             }
         };
 
         document.addEventListener("paste", handlePaste, false);
 
         return () => document.removeEventListener("paste", handlePaste, false);
-
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     //to be converted into hooks

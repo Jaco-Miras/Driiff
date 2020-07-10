@@ -89,7 +89,7 @@ const ChatUnreadMessageLine = styled.div`
 const ChatUnreadLine = props => {
     return (
         <ChatUnreadMessageLineDiv
-            className={`unread-message-sepline`}
+            className={"unread-message-sepline"}
         >
             {
                 <ChatUnreadMessageLine>

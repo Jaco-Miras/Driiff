@@ -23,7 +23,7 @@ const TimelinePanel = (props) => {
                 <div className="timeline">
                     {
                         timeline &&
-                        Object.values(timeline).sort((a,b) => { return b.item.created_at.timestamp > a.item.created_at.timestamp ? 1 : -1})
+                        Object.values(timeline).sort((a,b) => { return b.item.created_at.timestamp > a.item.created_at.timestamp ? 1 : -1;})
                         .map(t => {
                             switch (t.tag) {
                                 case "CHAT_BOT":
@@ -33,7 +33,7 @@ const TimelinePanel = (props) => {
                                 case "DOCUMENT":
                                     return <AttachFileTimeline key={t.id} data={t.item}/>;
                                 case "TOPIC": 
-                                    return <TopicTimeline key={t.id} data={t.item}/>
+                                    return <TopicTimeline key={t.id} data={t.item}/>;
                             }
                         })
                     }

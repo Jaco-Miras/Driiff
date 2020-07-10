@@ -212,7 +212,7 @@ export function setGeneralChat(payload, callback) {
         "UPDATE_GENERAL_CHAT_NOTIFICATION",
         payload,
         callback,
-    )
+    );
 }
 
 export function setUnreadNotificationCounterEntries(payload, callback) {

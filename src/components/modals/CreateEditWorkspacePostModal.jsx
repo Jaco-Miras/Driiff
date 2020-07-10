@@ -38,9 +38,7 @@ const WrapperDiv = styled(InputGroup)`
         margin-right: -130px;
     }
     &.schedule-post {
-        ${"" /* margin-left: 130px; */}
         width: 100%;
-        ${"" /* margin-right: -130px; */}
         label {
             margin: 0 20px 0 0;
         }
@@ -127,7 +125,6 @@ const SelectPeople = styled(PeopleSelect)`
 `;
 
 const CheckBoxGroup = styled.div`
-    ${"" /* display: flex; */}
     overflow: hidden;
     transition: all .3s ease;
     width: 100%;
@@ -447,8 +444,6 @@ const CreateEditWorkspacePostModal = props => {
                 };
             }));
         }
-
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {

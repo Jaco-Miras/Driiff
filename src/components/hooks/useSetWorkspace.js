@@ -165,7 +165,7 @@ const useSetWorkspace = () => {
     useEffect(() => {
         //console.log(params)
         if (activeTopic && match.url === "/workspace/chat") {
-            let path = `/workspace/chat/`;
+            let path = "/workspace/chat/";
             //let path = `/workspace/dashboard/${activeTopic.is_external === 0 ? "internal" : "external"}/`;
             if (activeTopic.workspace_id !== undefined) {
                 path += `${activeTopic.workspace_id}/${replaceChar(activeTopic.workspace_name)}/${activeTopic.id}/${replaceChar(activeTopic.name)}/`;

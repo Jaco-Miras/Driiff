@@ -3,11 +3,11 @@ import {apiCall} from "./index";
 
 export function getFiles(payload) {
     const {sort} = payload;
-    let url = `/v1/files`;
+    let url = "/v1/files";
     if (payload.sort) {
         url += `?sort=${sort}`;
     } else {
-        url += `?sort=desc`;
+        url += "?sort=desc";
     }
 
     return apiCall({
@@ -118,7 +118,7 @@ export function uploadWorkspaceFile(payload) {
  * @returns {Promise<*>}
  */
 export function restoreWorkspaceFile(payload) {
-    let url = `/v2/workspace-restore-file`;
+    let url = "/v2/workspace-restore-file";
     return apiCall({
         method: "PUT",
         url: url,
@@ -134,7 +134,7 @@ export function restoreWorkspaceFile(payload) {
  * @returns {Promise<*>}
  */
 export function deleteWorkspaceFile(payload) {
-    let url = `/v2/workspace-delete-files`;
+    let url = "/v2/workspace-delete-files";
     return apiCall({
         method: "DELETE",
         url: url,
@@ -149,7 +149,7 @@ export function deleteWorkspaceFile(payload) {
  * @returns {Promise<*>}
  */
 export function postFolder(payload) {
-    let url = `/v2/workspace-folders`;
+    let url = "/v2/workspace-folders";
     return apiCall({
         method: "POST",
         url: url,
@@ -181,7 +181,7 @@ export function putFolder(payload) {
 export function uploadWorkspaceFiles(payload) {
     let url = `/v2/workspace-bulk-files?topic_id=${payload.topic_id}&is_primary=0`;
     if (payload.folder_id) {
-        url += `&folder_id=${payload.folder_id}`
+        url += `&folder_id=${payload.folder_id}`;
     }
     return apiCall({
         method: "POST",
@@ -199,7 +199,7 @@ export function uploadWorkspaceFiles(payload) {
 export function deleteFolder(payload) {
     let url = `/v2/workspace-folders/${payload.id}?topic_id=${payload.topic_id}`;
     if (payload.force_delete) {
-        url += `&force_delete=1`
+        url += "&force_delete=1";
     }
     return apiCall({
         method: "DELETE",
@@ -215,7 +215,7 @@ export function deleteFolder(payload) {
  * @returns {Promise<*>}
  */
 export function postFavorite(payload) {
-    let url = `/v1/favourites`;
+    let url = "/v1/favourites";
     return apiCall({
         method: "POST",
         url: url,
@@ -233,7 +233,7 @@ export function postFavorite(payload) {
 export function deleteFile(payload) {
     let url = `/v2/workspace-files/${payload.file_id}?topic_id=${payload.topic_id}`;
     if (payload.force_delete) {
-        url += `&force_delete=1`
+        url += "&force_delete=1";
     }
     return apiCall({
         method: "DELETE",
@@ -280,7 +280,7 @@ export function deleteTrash(payload) {
  * @returns {Promise<*>}
  */
 export function moveFile(payload) {
-    let url = `/v2/workspace-file-move`;
+    let url = "/v2/workspace-file-move";
     return apiCall({
         method: "PUT",
         url: url,

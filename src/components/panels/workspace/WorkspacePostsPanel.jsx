@@ -67,14 +67,14 @@ const WorkspacePostsPanel = (props) => {
 
     const handleGoback = useCallback(() => {
         if (params.hasOwnProperty("postId")) {
-            let pathname = history.location.pathname.split("/post/")[0]
+            let pathname = history.location.pathname.split("/post/")[0];
             history.push(pathname);
         }
     }, [params, history]);
 
     useEffect(() => {
         if (params.hasOwnProperty("workspaceId")) {
-            actions.getRecentPosts(params.workspaceId)
+            actions.getRecentPosts(params.workspaceId);
         }
     }, [params.workspaceId]);
 

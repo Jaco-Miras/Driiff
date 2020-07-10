@@ -128,12 +128,12 @@ const useFileActions = (params = null) => {
             let payload = {
                 id: folder.id,
                 topic_id: topic_id,
-            }
+            };
             if (folder.is_archived) {
                 payload = {
                     ...payload,
                     force_delete: 1
-                }
+                };
             }
             dispatch(
                 deleteFolder(payload, callback),
@@ -153,7 +153,7 @@ const useFileActions = (params = null) => {
             modal = {
                 ...modal,
                 bodyText: "This folder will be removed permanently.",
-            }
+            };
         }
 
         dispatch(
@@ -168,12 +168,12 @@ const useFileActions = (params = null) => {
                 link_id: file.link_id,
                 link_type: file.link_type,
                 topic_id: params.workspaceId,
-            }
+            };
             if (force_delete) {
                 payload = {
                     ...payload,
                     force_delete: 1
-                }
+                };
             }
             dispatch(
                 deleteFile(payload, (err, res) => {

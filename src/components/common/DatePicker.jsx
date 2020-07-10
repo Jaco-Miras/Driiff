@@ -19,7 +19,7 @@ const DatePickerComponent = props => {
             yearPlaceholder={yearPlaceholder}
             {...props}
         />
-    )
+    );
 };
 
 export default DatePickerComponent;

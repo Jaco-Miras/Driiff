@@ -49,9 +49,9 @@ export const NotificationTimelineItem = props => {
             actions.read({id: notification.id});
         }
         if (notification.data.workspaces) {
-            let workspace = notification.data.workspaces[0]
+            let workspace = notification.data.workspaces[0];
             if (workspace.workspace_name) {
-                history.push(`/workspace/posts/${workspace.workspace_id}/${replaceChar(workspace.workspace_name)}/${workspace.topic_id}/${replaceChar(workspace.topic_name)}/post/${notification.data.post_id}/${replaceChar(notification.data.title)}`)
+                history.push(`/workspace/posts/${workspace.workspace_id}/${replaceChar(workspace.workspace_name)}/${workspace.topic_id}/${replaceChar(workspace.topic_name)}/post/${notification.data.post_id}/${replaceChar(notification.data.title)}`);
             } else {
                 history.push(`/workspace/posts/${workspace.topic_id}/${replaceChar(workspace.topic_name)}/post/${notification.data.post_id}/${replaceChar(notification.data.title)}`);
             }
@@ -87,7 +87,7 @@ export const NotificationTimelineItem = props => {
                     <>
                         <span onClick={handleAuthorNameClick}
                               className="author-name text-link">{notification.author.name}</span> shared a <span
-                        className={!!notification.is_read ? "text-link" : "text-primary font-weight-bold text-link"}>post</span>
+                        className={notification.is_read ? "text-link" : "text-primary font-weight-bold text-link"}>post</span>
                     </>
                 );
             }
@@ -96,7 +96,7 @@ export const NotificationTimelineItem = props => {
                     <>
                         <span onClick={handleAuthorNameClick}
                               className="author-name text-link">{notification.author.name}</span> made a <span
-                        className={!!notification.is_read ? "text-link" : "text-primary font-weight-bold text-link"}>comment</span> in <span
+                        className={notification.is_read ? "text-link" : "text-primary font-weight-bold text-link"}>comment</span> in <span
                         className="text-link">{notification.data.title}</span>
                     </>
                 );
@@ -106,7 +106,7 @@ export const NotificationTimelineItem = props => {
                     <>
                         <span onClick={handleAuthorNameClick}
                               className="author-name text-link">{notification.author.name}</span> <span
-                        className={!!notification.is_read ? "text-link" : "text-primary font-weight-bold text-link"}>mentioned</span> you
+                        className={notification.is_read ? "text-link" : "text-primary font-weight-bold text-link"}>mentioned</span> you
                         in <span className="text-link"
                                  onClick={handleRedirect}>{notification.data.title}</span>
                     </>

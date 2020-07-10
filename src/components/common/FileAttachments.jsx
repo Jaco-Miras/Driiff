@@ -54,7 +54,7 @@ const Wrapper = styled.div`
 `;
 
 const Tooltip = styled.span`
-    ${props => props.hide && `display: none;` }
+    ${props => props.hide && "display: none;" }
     position: absolute;
     z-index: 1000;
     background-color: #fff;
@@ -256,7 +256,7 @@ const FileAttachments = props => {
     const {orientation} = useTooltipOrientation(refs.main, refs.tooltip, scrollRef, filePreview !== null);
     useOutsideClick(refs.main, closePreview, filePreview !== null);
 
-    console.log(attachedFiles, params)
+    console.log(attachedFiles, params);
 
     return (
         <Wrapper ref={refs.main} className={`file-attachments ${className}`} onMouseLeave={handleMouseLeave}>

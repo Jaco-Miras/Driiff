@@ -32,13 +32,13 @@ const WorkspaceDashboardPanel = (props) => {
 
     return (
         <Wrapper className={`container-fluid fadeIn ${className}`}>
-            <div className={`row`}>
-                <div className={`col-md-6`}>
+            <div className={"row"}>
+                <div className={"col-md-6"}>
                     <DashboardAboutWorkspace isMember={isMember} workspace={workspace} onEditClick={handleEditClick}/>
                     <TimelinePanel timeline={timeline} actions={actions} params={params}/>
                 </div>
 
-                <div className={`col-md-6`}>
+                <div className={"col-md-6"}>
                     <DashboardTeam workspace={workspace} onEditClick={handleEditClick}/>
                     <RecentPosts posts={recentPosts}/>
                 </div>

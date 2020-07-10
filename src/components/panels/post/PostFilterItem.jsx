@@ -31,12 +31,12 @@ const PostFilterItem = props => {
             topic_id: workspace.id,
             filter: e.target.dataset.value,
             tag: tag
-        }
+        };
         if (e.target.dataset.value === "draft" || e.target.dataset.value === "archive") {
             payload = {
                 ...payload,
                 tag: null
-            }
+            };
         }
         dispatch(
             updateWorkspacePostFilterSort(payload),

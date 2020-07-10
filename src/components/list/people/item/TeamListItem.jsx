@@ -19,27 +19,20 @@ const Wrapper = styled.li`
             position: absolute;
         }
     }
-
     .more-options {
         display: none;
     }
-
     .avatar {
         cursor: pointer;
         cursor: hand;
         height: 2.5rem;
         width: 2.5rem;
-        ${'' /* > div {
-
-        } */}
     }
-
     .profile-name {
         cursor: pointer;
         cursor: hand;
         margin-bottom: 4px;
     }
-
     > .more-options svg {
         width: auto;
     }

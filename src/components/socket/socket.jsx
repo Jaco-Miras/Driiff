@@ -786,7 +786,7 @@ class Socket extends PureComponent {
 
                             if (isSafari) {
                                 if (e.message_from === 0) {
-                                    pushBrowserNotification(`Personal BOT`,
+                                    pushBrowserNotification("Personal BOT",
                                         `${stripHtml(e.message)}`,
                                         e.message_from.profile_image_link,
                                         null);

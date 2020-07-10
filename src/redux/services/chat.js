@@ -62,7 +62,7 @@ export function getChannel(payload) {
 }
 
 export function getLastVisitedChannel(payload) {
-    let url = `/v2/last-visit-channel`;
+    let url = "/v2/last-visit-channel";
     return apiCall({
         method: "GET",
         url: url,
@@ -87,7 +87,7 @@ export function getChatMessages(payload) {
 }
 
 export function postChatMessage(payload) {
-    let url = `/v2/post-channel-messages`;
+    let url = "/v2/post-channel-messages";
     return apiCall({
         method: "POST",
         url: url,
@@ -107,7 +107,7 @@ export function putChatMessage(payload) {
 }
 
 export function postChatReaction(payload) {
-    let url = `/v2/post-message-react`;
+    let url = "/v2/post-message-react";
     return apiCall({
         method: "POST",
         url: url,
@@ -132,7 +132,7 @@ export function deleteChatMessage(payload) {
  * @param {string} payload.set_time
  */
 export function postChatReminder(payload) {
-    let url = `/v2/set-reminder`;
+    let url = "/v2/set-reminder";
     return apiCall({
         method: "POST",
         url: url,
@@ -141,7 +141,7 @@ export function postChatReminder(payload) {
 }
 
 export function getChannelDrafts(payload) {
-    let url = `/v1/drafts?draft_type=channel`;
+    let url = "/v1/drafts?draft_type=channel";
     return apiCall({
         method: "GET",
         url: url,
@@ -168,7 +168,7 @@ export function getGlobalRecipients(payload) {
  * @returns {Promise<*>}
  */
 export function postCreateChannel(payload) {
-    let url = `/v2/chat-channel/create`;
+    let url = "/v2/chat-channel/create";
     return apiCall({
         method: "POST",
         url: url,
@@ -177,7 +177,7 @@ export function postCreateChannel(payload) {
 }
 
 export function putChannelUpdate(payload) {
-    let url = `/v2/chat-channel/update`;
+    let url = "/v2/chat-channel/update";
     return apiCall({
         method: "PUT",
         url: url,
@@ -186,7 +186,7 @@ export function putChannelUpdate(payload) {
 }
 
 export function postSearchExistingChannels(payload) {
-    let url = `/v2/search-post-channels`;
+    let url = "/v2/search-post-channels";
     return apiCall({
         method: "POST",
         url: url,
@@ -200,7 +200,7 @@ export function postSearchExistingChannels(payload) {
  * @returns {Promise<*>}
  */
 export function putMarkReminderComplete(payload) {
-    let url = `/v2/bot-marked-completed`;
+    let url = "/v2/bot-marked-completed";
     return apiCall({
         method: "PUT",
         url: url,
@@ -209,7 +209,7 @@ export function putMarkReminderComplete(payload) {
 }
 
 export function postChannelMembers(payload) {
-    let url = `/v2/post-channel-members`;
+    let url = "/v2/post-channel-members";
     return apiCall({
         method: "POST",
         url: url,
@@ -218,7 +218,7 @@ export function postChannelMembers(payload) {
 }
 
 export function deleteChannelMembers(payload) {
-    let url = `/v2/post-channel-members`;
+    let url = "/v2/post-channel-members";
     return apiCall({
         method: "DELETE",
         url: url,

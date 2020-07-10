@@ -50,7 +50,7 @@ const SingleInputModal = (props) => {
     const handleInputChange = e => {
         setInputValue(e.target.value);
         onChange(e);
-    }
+    };
 
     const handleConfirm = () => {
         onPrimaryAction();
@@ -63,7 +63,7 @@ const SingleInputModal = (props) => {
         if (inputRef && inputRef.current) {
             inputRef.current.focus();
         }
-    }
+    };
 
     return (
         <Wrapper ref={refs.main} isOpen={true} toggle={toggle} centered onOpened={onOpened}

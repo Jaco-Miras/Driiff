@@ -182,7 +182,7 @@ const UpdatePasswordPanel = (props) => {
             </ul>
             <hr/>
             <p className="text-muted">Don't have an account?</p>
-            <Link className={`btn btn-outline-light btn-sm`} to="/register">Register now!</Link>
+            <Link className={"btn btn-outline-light btn-sm"} to="/register">Register now!</Link>
         </Wrapper>
     );
 };

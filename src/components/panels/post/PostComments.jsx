@@ -33,7 +33,7 @@ const PostComments = props => {
                 </ul>
             }
         </Wrapper>
-    )
+    );
 };
 
 export default React.memo(PostComments);

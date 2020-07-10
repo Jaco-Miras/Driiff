@@ -75,7 +75,7 @@ const MessageFiles = forwardRef((props, ref) => {
         {
             files.length >= 1 && (type === "chat" && files.length === 1) === false &&
             <FileShowDiv onClick={handleToggleShowFile} show={showFiles}>
-                {files.length > 1 ? `${files.length} files` : `1 file`}
+                {files.length > 1 ? `${files.length} files` : "1 file"}
             </FileShowDiv>
         }
         <FilesContainer>

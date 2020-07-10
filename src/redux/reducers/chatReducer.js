@@ -137,7 +137,7 @@ export default function (state = INITIAL_STATE, action) {
                     ...action.data,
                     hasMore: true,
                     skip: 0,
-                }
+                };
 
             return {
                 ...state,
@@ -923,22 +923,22 @@ export default function (state = INITIAL_STATE, action) {
                                 ...m,
                                 bot_profile_image_link: null,
                                 last_visited_at: null
-                            }
-                        })
+                            };
+                        });
                         channel.members = [...channel.members, ...newMembers];
                     }
                     channel.title = action.data.name;
                     if (action.data.remove_member_ids.length) {
                         channel.members = channel.members.filter(m => {
                             const isMember = action.data.remove_member_ids.some(id => id === m.id);
-                            return !isMember
-                        })
+                            return !isMember;
+                        });
                     }
                     return {
                         ...state,
                         channels: updatedChannels,
                         selectedChannel: state.selectedChannel && state.selectedChannel.id === channel.id ? channel : state.selectedChannel
-                    }
+                    };
                 } else {
                     return state;
                 }

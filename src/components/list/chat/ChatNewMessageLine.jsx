@@ -88,7 +88,7 @@ const ChatNewMessageLine = styled.div`
 
 const ChatNewMessagesLine = props => {
     return (
-        <ChatNewMessageLineDiv className={`new-message-sepline`}>
+        <ChatNewMessageLineDiv className={"new-message-sepline"}>
             {
                 <ChatNewMessageLine>
                     <span className="sepline">New Message/s</span>

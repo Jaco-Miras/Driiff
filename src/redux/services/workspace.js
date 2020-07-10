@@ -25,7 +25,7 @@ export function getWorkspaces(payload) {
  * @returns {Promise<*>}
  */
 export function createWorkspace(payload) {
-    let url = `/v2/workspace`;
+    let url = "/v2/workspace";
     return apiCall({
         method: "POST",
         url: url,
@@ -70,7 +70,7 @@ export function deleteWorkspace(payload) {
  * @returns {Promise<*>}
  */
 export function moveWorkspaceTopic(payload) {
-    let url = `/v2/move-topic-workspace`;
+    let url = "/v2/move-topic-workspace";
     return apiCall({
         method: "PUT",
         url: url,
@@ -123,7 +123,7 @@ export function getWorkspacePostDetail(payload) {
  * @returns {Promise<*>}
  */
 export function createWorkspacePost(payload) {
-    let url = `/v1/posts`;
+    let url = "/v1/posts";
     return apiCall({
         method: "POST",
         url: url,
@@ -138,7 +138,7 @@ export function createWorkspacePost(payload) {
  * @returns {Promise<*>}
  */
 export function updatePostStatus(payload) {
-    let url = `/v2/posts/status`;
+    let url = "/v2/posts/status";
     return apiCall({
         method: "PUT",
         url: url,
@@ -181,7 +181,7 @@ export function getPostStatusCount(payload) {
  * @returns {Promise<*>}
  */
 export function joinWorkspace(payload) {
-    let url = `/v1/members`;
+    let url = "/v1/members";
     return apiCall({
         method: "POST",
         url: url,

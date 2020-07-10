@@ -136,7 +136,7 @@ const FilesBody = (props) => {
 
     useEffect(() => {
         if (showDropZone && !isMember) {
-            toaster.warning(`You are not a member of this workspace.`);
+            toaster.warning("You are not a member of this workspace.");
         }
     }, [showDropZone]);
 
@@ -195,7 +195,7 @@ const FilesBody = (props) => {
                                             })
                                                                                   :
                                             Object.values(folders).filter(f => { 
-                                                return f.parent_folder === null && !f.is_archived})
+                                                return f.parent_folder === null && !f.is_archived;})
                                                 .map(f => {
                                                 return <FolderListItem
                                                     key={f.id}
@@ -231,7 +231,7 @@ const FilesBody = (props) => {
                                                                         file={wsFiles.files[f]}/>
                                                                 );
                                                             }
-                                                            else return null
+                                                            else return null;
                                                         })
                                                     }
                                                 </div>
@@ -270,7 +270,7 @@ const FilesBody = (props) => {
                                                                 file={wsFiles.files[f]}/>
                                                         );
                                                     }
-                                                    else return null
+                                                    else return null;
                                                 })
                                             }
                                         </div>

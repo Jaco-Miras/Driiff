@@ -34,16 +34,16 @@ const ChatMarkAsRead = props => {
             if (channel.type === "TOPIC") {
                 dispatch(
                     readChannelReducer({id: channel.entity_id, count: channel.replies.filter(r => !r.is_read).length})
-                )
+                );
             }
-        }
+        };
         dispatch(putMarkReadChannel({channel_id: channel.id}, callback));
         dispatch(setAllMessagesAsRead({channel_id: channel.id}));
     };
 
     return (
         <ChatMarkAsReadDiv
-            className={`mark-read`}
+            className={"mark-read"}
             onClick={handleMarkMessageAsRead}
         >
             Mark as read

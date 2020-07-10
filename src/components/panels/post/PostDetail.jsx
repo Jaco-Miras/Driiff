@@ -22,21 +22,10 @@ const MainHeader = styled.div`
         align-items: center;
         margin: 0;
         padding: 0;
-        ${'' /* height: 33px; */}
-
         li {
             list-style: none;
-
             .post-title {
                 width: 100%;
-
-                span {
-                ${'' /* width: ${props => props.postTitleWidth}px;
-                display: block;
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis; */}
-                }
             }
         }
     }
@@ -64,11 +53,11 @@ const Counters = styled.div`
 const PostFiles = styled(FileAttachments)`
     li {
         display: inline-block;
-        
+
         &:not(:last-child) {
             margin-right: 1rem;
         }
-        
+
         .feather-paperclip {
             margin-right: 0.5rem;
         }

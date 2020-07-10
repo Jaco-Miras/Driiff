@@ -3,7 +3,7 @@ import {useSelector} from "react-redux";
 import styled from "styled-components";
 
 const Wrapper = styled.div`
-    ${props => props.isLoading === false ? `display: none; opacity: 0;` : `opacity: ${props.opacity};`};    
+    ${props => props.isLoading === false ? "display: none; opacity: 0;" : `opacity: ${props.opacity};`};    
 `;
 
 const PreLoader = forwardRef((props, ref) => {

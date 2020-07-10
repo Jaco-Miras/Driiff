@@ -6,13 +6,13 @@ import styled from "styled-components";
 const PickerContainer = styled.div`
     position: relative;
     background-color: #fff;
-    
+
     .selectDiv {
         border: 1px solid #cacaca;
         border-radius: 10px;
         padding: 10px;
     }
-    
+
     .selectInputDiv {
         margin: 15px 15px 20px;
         padding: .5em 1em;
@@ -24,7 +24,7 @@ const PickerContainer = styled.div`
         border: 1px solid #cacaca;
         border-radius: 10px;
     }
-    
+
     .attributionDiv {
         text-align: right;
         text-transform: uppercase;
@@ -67,8 +67,6 @@ const PickerGif = React.forwardRef((props, ref) => {
             document.removeEventListener("mousedown", handleOutsideClick, false);
             document.removeEventListener("keydown", handleEscapeKey, false);
         };
-
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const onEntrySelect = (entry) => {
@@ -83,13 +81,13 @@ const PickerGif = React.forwardRef((props, ref) => {
             orientation={props.orientation}>
             <GiphySelect
                 theme={{
-                    select: `selectDiv`,
-                    selectInput: `selectInputDiv`,
-                    attribution: `attributionDiv`,
+                    select: "selectDiv",
+                    selectInput: "selectInputDiv",
+                    attribution: "attributionDiv",
                 }}
                 onEntrySelect={onEntrySelect}
-                requestKey={`na6sHnThmVFEFGTlKXlEkM5qtpx8kYUu`}
-                placeholder={`Search GIFs Here..`}
+                requestKey={"na6sHnThmVFEFGTlKXlEkM5qtpx8kYUu"}
+                placeholder={"Search GIFs Here.."}
             />
         </PickerContainer>
     );

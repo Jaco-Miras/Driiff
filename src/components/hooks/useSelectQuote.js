@@ -30,29 +30,29 @@ const useSelectQuote = props => {
                     let images = div.getElementsByTagName("img");
                     for (let i = 0; i < images.length; i++) {
                         selectedQuoteBody += renderToString(<StyledImageTextLink
-                            className={`image-quote`}
-                            target={`_blank`}
+                            className={"image-quote"}
+                            target={"_blank"}
                             href={images[0].getAttribute("src")}
-                            icon={`image-video`}>Photo</StyledImageTextLink>);
+                            icon={"image-video"}>Photo</StyledImageTextLink>);
                     }
 
                     let videos = div.getElementsByTagName("video");
                     for (let i = 0; i < videos.length; i++) {
                         selectedQuoteBody += renderToString(<StyledImageTextLink
-                            className={`video-quote`}
-                            target={`_blank`}
+                            className={"video-quote"}
+                            target={"_blank"}
                             href={videos[0].getAttribute("player-source")}
-                            icon={`image-video`}>Video</StyledImageTextLink>);
+                            icon={"image-video"}>Video</StyledImageTextLink>);
                     }
                     if (selectedQuote.files) {
                         selectedQuote.files.forEach(file => {
                             if (file.type === "image") {
                                 selectedQuoteBody += renderToString(
                                     <StyledImageTextLink
-                                        className={`image-quote`}
-                                        target={`_blank`}
+                                        className={"image-quote"}
+                                        target={"_blank"}
                                         href={file.view_link}
-                                        icon={`image-video`}
+                                        icon={"image-video"}
                                     >
                                         Photo
                                     </StyledImageTextLink>,
@@ -60,10 +60,10 @@ const useSelectQuote = props => {
                             } else if (file.type === "video") {
                                 selectedQuoteBody += renderToString(
                                     <StyledImageTextLink
-                                        className={`video-quote`}
-                                        target={`_blank`}
+                                        className={"video-quote"}
+                                        target={"_blank"}
                                         href={file.view_link}
-                                        icon={`image-video`}
+                                        icon={"image-video"}
                                     >
                                         Video
                                     </StyledImageTextLink>,
@@ -72,9 +72,9 @@ const useSelectQuote = props => {
                                 selectedQuoteBody += renderToString(
                                     <StyledImageTextLink
                                         //className={`video-quote`}
-                                        target={`_blank`}
+                                        target={"_blank"}
                                         href={file.view_link}
-                                        icon={`download`}
+                                        icon={"download"}
                                     >
                                         {file.filename ? `${file.filename} ` : `${file.name} `}
                                     </StyledImageTextLink>,

@@ -20,9 +20,9 @@ const ChatMembers = props => {
     const firstFiveMembers = members.slice(0, 5);
     const afterFiveMembers = members.slice(5);
 
-    console.log(page, members)
+    console.log(page, members);
     return (
-        <ChatMembersContainer className={`pr-3 d-flex`}>
+        <ChatMembersContainer className={"pr-3 d-flex"}>
             {
                 page === "chat" ?
                 (

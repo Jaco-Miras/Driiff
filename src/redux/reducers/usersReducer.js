@@ -118,7 +118,7 @@ export default (state = INITIAL_STATE, action) => {
                     import_from: action.data.import_from,
                     place: action.data.place,
                     address: action.data.address
-                }
+                };
             }
             if (Object.keys(state.mentions).length) {
                 updatedMentions[action.data.id] = {
@@ -126,15 +126,15 @@ export default (state = INITIAL_STATE, action) => {
                     first_name: action.data.first_name,
                     name: action.data.name,
                     profile_image_link: action.data.profile_image_link,
-                }
+                };
             }
             return {
                 ...state,
                 users: updatedUsers,
                 mentions: updatedMentions
-            }
+            };
         }
         default:
             return state;
     }
-} 
+}; 

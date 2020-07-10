@@ -63,12 +63,12 @@ const ChatQuote = props => {
     if (quote) {
         return (
             <QuoteWrapper>
-                <span className={`quote-author-name`}
+                <span className={"quote-author-name"}
                       dangerouslySetInnerHTML={{__html: quote.user ? quote.user.name : ""}}></span>
-                <span className={`quote-message`}
+                <span className={"quote-message"}
                       dangerouslySetInnerHTML={{__html: quote.body ? quoteBody : ""}}
                 ></span>
-                <span className={`quote-clear-container`}
+                <span className={"quote-clear-container"}
                       onClick={handleClearQuote}>
                     <IconButton icon="x"/>
                 </span>

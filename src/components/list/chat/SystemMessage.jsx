@@ -23,7 +23,6 @@ const ChatTimeStamp = styled.div`
     height: 100%;
     align-items: center;
     white-space: nowrap;
-    ${"" /* display: none; */}
 `;
 
 const SystemMessage = forwardRef((props, ref) => {
@@ -167,8 +166,6 @@ const SystemMessage = forwardRef((props, ref) => {
 
             setBody(renderToString(newBody));
         }
-
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {

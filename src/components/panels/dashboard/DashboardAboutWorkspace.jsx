@@ -99,7 +99,7 @@ const DashboardAboutWorkspace = (props) => {
 
     const refs = {
         description: useRef(null)
-    }
+    };
 
     const refDescription = (e) => {
         if (refs.description.current === null && e) {
@@ -112,7 +112,7 @@ const DashboardAboutWorkspace = (props) => {
                 setShowMore(null);
             }
         }
-    }
+    };
 
     const toggleShowMore = useCallback((e) => {
         e.preventDefault();
@@ -133,11 +133,11 @@ const DashboardAboutWorkspace = (props) => {
 
     useEffect(() => {
         refs.description.current = null;
-    }, [workspace])
+    }, [workspace]);
 
     return (
         <Wrapper className={`dashboard-about-workspace card ${className}`}>
-            <div className={`bg-overlay ${showMore === null ? `` : showMore === true ? `show` : `hide`}`}/>
+            <div className={`bg-overlay ${showMore === null ? "" : showMore === true ? "show" : "hide"}`}/>
             <div className="card-body">
                 <h5 className="card-title">About this workspace {
                     isMember === true &&
@@ -148,16 +148,16 @@ const DashboardAboutWorkspace = (props) => {
                     workspace &&
                     <>
                         <DashboardDescriptionContainer
-                            className={showMore === null ? `` : showMore === true ? `show` : `hide`}>
+                            className={showMore === null ? "" : showMore === true ? "show" : "hide"}>
                             <DashboardDescription
                                 ref={refDescription}
                                 height={descriptionHeight}
-                                className={`dashboard-description ${showMore === null ? `` : showMore === true ? `show` : `hide`}`}
+                                className={`dashboard-description ${showMore === null ? "" : showMore === true ? "show" : "hide"}`}
                                 dangerouslySetInnerHTML={{__html: workspace.description}}/>
                             {
                                 showMore !== null &&
                                 <div onClick={toggleShowMore} className="btn-toggle-show cursor-pointer mt-2">
-                                    {showMore ? `Show less` : `Show more`}
+                                    {showMore ? "Show less" : "Show more"}
                                 </div>
                             }
                         </DashboardDescriptionContainer>

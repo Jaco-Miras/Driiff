@@ -118,24 +118,24 @@ const ChannelOptions = props => {
     return <>
         <Wrapper channel={channel} scrollRef={scrollEl}>
             <div onClick={handlePinButton}>
-                {channel.is_pinned ? `Unfavorite` : `Favorite`}
+                {channel.is_pinned ? "Unfavorite" : "Favorite"}
             </div>
             <div onClick={e => handleMarkAsUnreadSelected(e)}>
-                {(channel.total_unread === 0 && channel.is_read === 1) ? `Mark as unread` : `Mark as read`}
+                {(channel.total_unread === 0 && channel.is_read === 1) ? "Mark as unread" : "Mark as read"}
             </div>
             <div onClick={handleMuteChat}>
-                {channel.is_muted ? `Unmute` : `Mute`}
+                {channel.is_muted ? "Unmute" : "Mute"}
             </div>
             {
                 channel.type !== "PERSONAL_BOT" &&
                 <div onClick={handleHideChat}>
-                    {channel.is_hidden === 0 ? `Hide` : "Unhide"}
+                    {channel.is_hidden === 0 ? "Hide" : "Unhide"}
                 </div>
             }
             {
                 (channel.type !== "PERSONAL_BOT" || channel.type !== "COMPANY") &&
                 <div onClick={handleShowArchiveConfirmation}>
-                    {channel.is_archived === 0 ? `Archive` : "Unarchive"}
+                    {channel.is_archived === 0 ? "Archive" : "Unarchive"}
                 </div>
             }
         </Wrapper>

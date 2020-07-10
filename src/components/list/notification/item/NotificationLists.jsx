@@ -18,7 +18,7 @@ const NotificationLists = props => {
         return null;
 
     return (
-        <Wrapper className={`list-group list-group-flush`}>
+        <Wrapper className={"list-group list-group-flush"}>
             {
                 Object.values(notifications).filter(n => n.is_read === 0).length > 0 &&
                 <>
@@ -27,7 +27,7 @@ const NotificationLists = props => {
                     </li>
                     {
                         Object.values(notifications).filter(n => n.is_read === 0).map(n => {
-                            return <NotificationListItem key={n.id} notification={n} actions={actions} history={history}/>
+                            return <NotificationListItem key={n.id} notification={n} actions={actions} history={history}/>;
                         })
                     }
                 </>
@@ -41,13 +41,13 @@ const NotificationLists = props => {
                     </li>
                     {
                         Object.values(notifications).filter(n => n.is_read === 1).map(n => {
-                            return <NotificationListItem key={n.id} notification={n} actions={actions} history={history}/>
+                            return <NotificationListItem key={n.id} notification={n} actions={actions} history={history}/>;
                         })
                     }
                 </>
             }
         </Wrapper>
-    )
+    );
 };
 
 export default NotificationLists;

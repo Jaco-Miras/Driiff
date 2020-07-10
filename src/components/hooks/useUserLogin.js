@@ -64,7 +64,7 @@ export const useUserLogin = (props) => {
                                 id: new Date().getTime(),
                                 type: "modal",
                                 modal: "modal_dialog_yes_no",
-                                title: `Trust this device?`,
+                                title: "Trust this device?",
                                 children: "",
                                 callback: {
                                     handleYes: this.handleConfirmationDialogYes,

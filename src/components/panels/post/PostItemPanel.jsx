@@ -36,8 +36,6 @@ const Wrapper = styled.li`
     }
 
     .more-options {
-        ${'' /* display: none; */}
-
         svg {
             width: 16px;
         }
@@ -86,7 +84,7 @@ const PostItemPanel = (props) => {
         e.preventDefault();
         e.stopPropagation();
         archivePost(post);
-    }
+    };
 
     return (
         <Wrapper className={`list-group-item post-item-panel ${className}`} onClick={() => openPost(post)}>
@@ -124,7 +122,7 @@ const PostItemPanel = (props) => {
             </div>
             {
                 post.type !== "draft_post" &&
-                <MoreOptions className="ml-2" item={post} width={170} moreButton={`more-vertical`}>
+                <MoreOptions className="ml-2" item={post} width={170} moreButton={"more-vertical"}>
                     <div onClick={() => markAsRead(post, true)}>Mark as read</div>
                     <div onClick={() => markAsUnread(post, true)}>Mark as unread</div>
                     <div onClick={() => sharePost(post)}>Share</div>

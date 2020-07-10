@@ -62,7 +62,7 @@ const DriffRegisterPanel = (props) => {
     return (
         <Wrapper className={`driff-register-panel fadeIn form-wrapper ${className}`}>
             <div id="logo">
-                <SvgIcon icon={`driff-logo`} width="110" height="80"/>
+                <SvgIcon icon={"driff-logo"} width="110" height="80"/>
             </div>
 
             <h5>Your driff</h5>

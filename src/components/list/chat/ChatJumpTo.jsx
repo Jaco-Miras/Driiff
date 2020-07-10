@@ -24,7 +24,7 @@ const ChatJumpTo = props => {
 
     return (
         <ChatJumpToDiv
-            className={`jump-to`}
+            className={"jump-to"}
             onClick={handleJumpToButtonOnClick}
         >
             Jump

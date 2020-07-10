@@ -19,7 +19,6 @@ const SelectOption = styled.div`
 const StyledAvatar = styled(Avatar)`
     min-width: 1.75rem;
     min-height: 1.75rem;
-    ${'' /* margin: 5px; */}
     margin: -2px 10px 0 0;
     border: none;
     color: #505050 !important;
