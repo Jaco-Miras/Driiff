@@ -969,6 +969,7 @@ export default (state = INITIAL_STATE, action) => {
                     }
                 } else {
                     updatedWorkspaces[action.data.topic_id].unread_count = updatedWorkspaces[action.data.topic_id].unread_count - action.data.count;
+                    updatedWorkspaces[action.data.topic_id].topic_detail.unread_posts = updatedWorkspaces[action.data.topic_id].topic_detail.unread_posts - action.data.count;
                     if (updatedTopic.id === action.data.topic_id) {
                         updatedTopic.topic_detail.unread_posts = updatedTopic.topic_detail.unread_posts - action.data.count;
                     }
@@ -982,6 +983,7 @@ export default (state = INITIAL_STATE, action) => {
                     }
                 } else {
                     updatedWorkspaces[action.data.topic_id].unread_count = updatedWorkspaces[action.data.topic_id].unread_count + 1;
+                    updatedWorkspaces[action.data.topic_id].topic_detail.unread_posts = updatedWorkspaces[action.data.topic_id].topic_detail.unread_posts + 1;
                     if (updatedTopic.id === action.data.topic_id) {
                         updatedTopic.topic_detail.unread_posts = updatedTopic.topic_detail.unread_posts + 1;
                     }
@@ -1075,56 +1077,92 @@ export default (state = INITIAL_STATE, action) => {
         case "INCOMING_CHAT_MESSAGE": {
             if (!action.data.is_read) {
                 let updatedWorkspaces = {...state.workspaces};
+                let updatedTopic = {...state.activeTopic};
                 if (Object.keys(updatedWorkspaces).length > 0) {
                     if (updatedWorkspaces.hasOwnProperty(action.data.workspace_id)) {
                         updatedWorkspaces[action.data.workspace_id].topic_detail.unread_chats = updatedWorkspaces[action.data.workspace_id].topic_detail.unread_chats + 1;
                         updatedWorkspaces[action.data.workspace_id].unread_count = updatedWorkspaces[action.data.workspace_id].unread_count + 1;
-                        return {
-                            ...state,
-                            workspaces: updatedWorkspaces
+                        if (state.activeTopic && state.activeTopic.id === action.data.workspace_id) {
+                            updatedTopic.unread_count = updatedTopic.unread_count + 1
+                            updatedTopic.topic_detail.unread_chats = updatedTopic.topic_detail.unread_chats + 1
                         }
                     } else {
                         Object.values(updatedWorkspaces).forEach(ws => {
                             if (ws.hasOwnProperty("topics") && ws.topics.hasOwnProperty(action.data.workspace_id)) {
                                 updatedWorkspaces[ws.id].unread_count = updatedWorkspaces[ws.id].unread_count + 1;
                                 updatedWorkspaces[ws.id].topics[action.data.workspace_id].unread_chats = updatedWorkspaces[ws.id].topics[action.data.workspace_id].unread_chats + 1;
-
+                                if (state.activeTopic && state.activeTopic.id === action.data.workspace_id) {
+                                    updatedTopic.unread_chats = updatedTopic.unread_chats + 1
+                                }
                             }
                         })
-                        return {
-                            ...state,
-                            workspaces: updatedWorkspaces
-                        }
+                    }
+                    return {
+                        ...state,
+                        workspaces: updatedWorkspaces,
+                        activeTopic: updatedTopic
                     }
                 } else {
                     return state;
                 }
             } else {
-                return state
+                let updatedWorkspaces = {...state.workspaces};
+                let updatedTopic = {...state.activeTopic};
+                if (Object.keys(updatedWorkspaces).length > 0) {
+                    if (updatedWorkspaces.hasOwnProperty(action.data.workspace_id)) {
+                        updatedWorkspaces[action.data.workspace_id].topic_detail.unread_chats = 0
+                        updatedWorkspaces[action.data.workspace_id].unread_count = updatedWorkspaces[action.data.workspace_id].unread_count - updatedWorkspaces[action.data.workspace_id].topic_detail.unread_chats;
+                        if (state.activeTopic && state.activeTopic.id === action.data.workspace_id) {
+                            updatedTopic.unread_count = updatedTopic.unread_count - updatedTopic.topic_detail.unread_chats;
+                            updatedTopic.topic_detail.unread_chats = 0;
+                        }
+                    } else {
+                        Object.values(updatedWorkspaces).forEach(ws => {
+                            if (ws.hasOwnProperty("topics") && ws.topics.hasOwnProperty(action.data.workspace_id)) {
+                                updatedWorkspaces[ws.id].unread_count = updatedWorkspaces[ws.id].unread_count - updatedWorkspaces[ws.id].topics[action.data.workspace_id].unread_chats;
+                                updatedWorkspaces[ws.id].topics[action.data.workspace_id].unread_chats = 0;
+                                if (state.activeTopic && state.activeTopic.id === action.data.workspace_id) {
+                                    updatedTopic.unread_chats = 0;
+                                }
+                            }
+                        })
+                    }
+                    return {
+                        ...state,
+                        workspaces: updatedWorkspaces,
+                        activeTopic: updatedTopic
+                    }
+                } else {
+                    return state;
+                }
             }
         }
         case "READ_CHANNEL_REDUCER": {
             let updatedWorkspaces = {...state.workspaces};
+            let updatedTopic = {...state.activeTopic};
             if (Object.keys(updatedWorkspaces).length > 0) {
                 if (updatedWorkspaces.hasOwnProperty(action.data.id)) {
                     updatedWorkspaces[action.data.id].topic_detail.unread_chats = 0;
                     updatedWorkspaces[action.data.id].unread_count = updatedWorkspaces[action.data.id].unread_count - action.data.count;
-                    return {
-                        ...state,
-                        workspaces: updatedWorkspaces
+                    if (state.activeTopic && state.activeTopic.id === action.data.id) {
+                        updatedTopic.unread_count = updatedTopic.unread_count - action.data.count
+                        updatedTopic.topic_detail.unread_chats = 0
                     }
                 } else {
                     Object.values(updatedWorkspaces).forEach(ws => {
                         if (ws.hasOwnProperty("topics") && ws.topics.hasOwnProperty(action.data.id)) {
                             updatedWorkspaces[ws.id].topics[action.data.id].unread_chats = 0;
                             updatedWorkspaces[ws.id].unread_count = updatedWorkspaces[ws.id].unread_count - action.data.count;
-
+                            if (state.activeTopic && state.activeTopic.id === action.data.id) {
+                                updatedTopic.unread_chats = 0
+                            }
                         }
                     })
-                    return {
-                        ...state,
-                        workspaces: updatedWorkspaces
-                    }
+                }
+                return {
+                    ...state,
+                    workspaces: updatedWorkspaces,
+                    activeTopic: updatedTopic
                 }
             } else {
                 return state;

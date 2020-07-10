@@ -42,17 +42,13 @@ const TopicList = props => {
             }
         }
     };
-
-    if (typeof topic.unread_chats === "undefined")
-        topic.unread_chats = 0;
-
-    if (typeof topic.unread_posts === "undefined")
-        topic.unread_posts = 0;
-
-    if (typeof topic.unread_count === "undefined")
-        topic.unread_count = 0;
-
-    const unread_count = topic.unread_chats + topic.unread_posts + topic.unread_count;
+    
+    let unread_count = 0;
+    if (topic.type === "WORKSPACE") {
+        unread_count = topic.topic_detail.unread_chats + topic.topic_detail.unread_posts
+    } else {
+        unread_count  = topic.unread_chats + topic.unread_posts
+    }
 
     return (
         <TopicListWrapper
@@ -71,4 +67,4 @@ const TopicList = props => {
     );
 };
 
-export default React.memo(TopicList);
+export default TopicList;

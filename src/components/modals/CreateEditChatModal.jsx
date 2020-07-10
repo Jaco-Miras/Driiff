@@ -296,6 +296,7 @@ const CreateEditChatModal = props => {
                         },
                     }] : [],
                     selected: true,
+                    search: res.data.search
                 };
 
                 dispatch(
