@@ -1,3 +1,4 @@
 node_modules/*
-**/vendor/*.js
-**/assets/*.js
+public/*
+src/vendor/*.js
+src/assets/*.js
