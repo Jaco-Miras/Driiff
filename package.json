@@ -12,6 +12,7 @@
     "device-uuid": "^1.0.4",
     "emoji-mart": "^3.0.0",
     "env-cmd": "^10.1.0",
+    "eslint": "^6.6.0",
     "hex-to-css-filter": "^2.0.4",
     "highlight-words-core": "^1.2.2",
     "laravel-echo": "^1.7.0",
@@ -65,7 +66,10 @@
     "start": "env-cmd -e prod react-scripts start",
     "build": "env-cmd -e prod react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "eslint": "eslint src/*.js src/layout/*.jsx src/helpers/*.js src/components/**/*.js src/components/**/*.jsx src/components/**/**/*.js src/components/**/**/*.jsx src/components/**/**/**/*.js src/components/**/**/**/*.jsx src/redux/**/*.js"
+
+
   },
   "eslintConfig": {
     "extends": "react-app"
