@@ -471,6 +471,7 @@ export default (state = INITIAL_STATE, action) => {
     case "INCOMING_FILES": {
       let newWorkspaceFiles = { ...state.workspaceFiles };
       if (newWorkspaceFiles.hasOwnProperty(action.data.topic_id)) {
+        let add = (total, num) => total + num;
         if (newWorkspaceFiles[action.data.topic_id].hasOwnProperty("folders") && action.data.folder_id) {
           newWorkspaceFiles = {
             ...newWorkspaceFiles,
@@ -485,6 +486,7 @@ export default (state = INITIAL_STATE, action) => {
               },
               files: { ...convertArrayToObject(action.data.files, "id"), ...newWorkspaceFiles[action.data.topic_id].files },
               count: newWorkspaceFiles[action.data.topic_id].count + action.data.files.length,
+              storage: newWorkspaceFiles[action.data.topic_id].storage + action.data.files.map((f) => f.size).reduce(add),
             },
           };
         } else {
@@ -494,6 +496,7 @@ export default (state = INITIAL_STATE, action) => {
               ...newWorkspaceFiles[action.data.topic_id],
               files: { ...convertArrayToObject(action.data.files, "id"), ...newWorkspaceFiles[action.data.topic_id].files },
               count: newWorkspaceFiles[action.data.topic_id].count + action.data.files.length,
+              storage: newWorkspaceFiles[action.data.topic_id].storage + action.data.files.map((f) => f.size).reduce(add),
             },
           };
         }
