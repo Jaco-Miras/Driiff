@@ -1,4 +1,4 @@
-import React, { PureComponent } from "react";
+import React from "react";
 import { isSafari } from "react-device-detect";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
@@ -43,7 +43,7 @@ import { incomingComment, incomingCommentClap, incomingDeletedComment, incomingD
 import { getOnlineUsers, getUser, incomingUpdatedUser } from "../../redux/actions/userAction";
 import { incomingMovedTopic, incomingTimeline, incomingUpdatedWorkspaceFolder, incomingWorkspace, incomingWorkspaceFolder, getWorkspace } from "../../redux/actions/workspaceActions";
 
-class SocketListeners extends PureComponent {
+class SocketListeners extends React.PureComponent {
   constructor(props) {
     super(props);
   }
@@ -563,35 +563,6 @@ class SocketListeners extends PureComponent {
               }
             }
           );
-        }
-
-        if (e.reference_id === undefined || e.reference_id === null) {
-          //@todo together with service worker
-          //if incoming chat message is on selected channel and current url is not on chat page
-          // if (this.props.selectedChannel && this.props.selectedChannel.id === e.channel_id && this.props.match.path !== "/chat") {
-          //     if (e.id !== 0) {
-          //         this.props.addUnreadChatCount({channel_id: e.channel_id});
-          //     }
-          // }
-
-          if (e.id === 0 && e.is_muted) {
-          } else {
-            // if incoming chat is not on selected channel or if the window is not focused
-            if ((e.message_from.user_id !== this.props.user.id && this.props.selectedChannel && this.props.selectedChannel.id !== e.channel_id) || (e.message_from.user_id !== this.props.user.id && !this.state.focus)) {
-              if (isSafari) {
-                if (e.message_from === 0) {
-                  pushBrowserNotification("Personal BOT", `${stripHtml(e.message)}`, e.message_from.profile_image_link, null);
-                } else {
-                  pushBrowserNotification(
-                    `${e.message_from.first_name} ${e.reference_title ? `in #${e.reference_title}` : "in a direct message"}`,
-                    `${e.message_from.first_name}: ${stripHtml(e.message)}`,
-                    e.message_from.profile_image_link,
-                    null
-                  );
-                }
-              }
-            }
-          }
         }
       })
       .listen(".delete-post-channel-member", (e) => {
