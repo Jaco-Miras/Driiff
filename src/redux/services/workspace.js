@@ -1,6 +1,6 @@
-// import {objToUrlParams} from "../../helpers/commonFunctions";
 // import {getAPIUrl} from "../../helpers/slugHelper";
-import { apiCall } from "./service";
+import {apiCall} from "./service";
+import {objToUrlParams} from "../../helpers/commonFunctions";
 
 /**
  * @param {Object} payload
@@ -8,7 +8,7 @@ import { apiCall } from "./service";
  * @returns {Promise<*>}
  */
 export function getWorkspaces(payload) {
-  let url = `/v2/workspace?is_external=${payload.is_external}`;
+  let url = `/v2/workspace?${objToUrlParams(payload)}`;
   return apiCall({
     method: "GET",
     url: url,

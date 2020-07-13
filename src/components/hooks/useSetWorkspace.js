@@ -1,15 +1,22 @@
-import { useCallback, useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useHistory, useParams, useRouteMatch } from "react-router-dom";
-import { replaceChar } from "../../helpers/stringFormatter";
-import { addToChannels, clearSelectedChannel, getChannel, getWorkspaceChannels, restoreLastVisitedChannel, setSelectedChannel } from "../../redux/actions/chatActions";
-import { getDrafts } from "../../redux/actions/globalActions";
-import { getWorkspaces, setActiveTab, setActiveTopic } from "../../redux/actions/workspaceActions";
-import { useSettings } from "./index";
+import {useCallback, useEffect, useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
+import {useHistory, useParams, useRouteMatch} from "react-router-dom";
+import {replaceChar} from "../../helpers/stringFormatter";
+import {
+  addToChannels,
+  clearSelectedChannel,
+  getChannel,
+  getWorkspaceChannels,
+  restoreLastVisitedChannel,
+  setSelectedChannel
+} from "../../redux/actions/chatActions";
+import {getDrafts} from "../../redux/actions/globalActions";
+import {getWorkspaces, setActiveTab, setActiveTopic} from "../../redux/actions/workspaceActions";
+import {useSettings} from "./index";
 
 const useSetWorkspace = () => {
   const {
-    generalSettings: { active_topic: activeTopicSettings },
+    generalSettings: {active_topic: activeTopicSettings},
     setGeneralSetting,
   } = useSettings();
 
@@ -58,27 +65,28 @@ const useSetWorkspace = () => {
   useEffect(() => {
     if (!init && !workspacesLoaded) {
       setInit(true);
-      dispatch(getWorkspaceChannels({ skip: 0, limit: 100 }));
+      dispatch(getWorkspaceChannels({skip: 0, limit: 100}));
+      dispatch(getWorkspaces({is_external: 0, filter: "archived"}));
       dispatch(
-        getWorkspaces({ is_external: 0 }, (err, res) => {
-          if (err) return;
-          if (params.hasOwnProperty("workspaceId") && params.workspaceId !== undefined) {
-            let topic = null;
-            let wsfolder = null;
-            for (const i in res.data.workspaces) {
-              const ws = res.data.workspaces[i];
+          getWorkspaces({is_external: 0}, (err, res) => {
+            if (err) return;
+            if (params.hasOwnProperty("workspaceId") && params.workspaceId !== undefined) {
+              let topic = null;
+              let wsfolder = null;
+              for (const i in res.data.workspaces) {
+                const ws = res.data.workspaces[i];
 
-              if (ws.type === "FOLDER" && ws.topics.length) {
-                for (const i in ws.topics) {
-                  if (ws.topics.hasOwnProperty(i)) {
-                    const t = ws.topics[i];
-                    if (t.id === parseInt(params.workspaceId)) {
-                      wsfolder = ws;
-                      topic = t;
-                      break;
+                if (ws.type === "FOLDER" && ws.topics.length) {
+                  for (const i in ws.topics) {
+                    if (ws.topics.hasOwnProperty(i)) {
+                      const t = ws.topics[i];
+                      if (t.id === parseInt(params.workspaceId)) {
+                        wsfolder = ws;
+                        topic = t;
+                        break;
+                      }
                     }
                   }
-                }
               } else {
                 if (ws.id === parseInt(params.workspaceId)) {
                   topic = ws;

@@ -1,12 +1,12 @@
-import React, { useEffect, useRef, useState } from "react";
-import { useDispatch } from "react-redux";
-import { useHistory } from "react-router-dom";
-import { Badge } from "reactstrap";
+import React, {useEffect, useRef, useState} from "react";
+import {useDispatch} from "react-redux";
+import {useHistory} from "react-router-dom";
+import {Badge} from "reactstrap";
 import styled from "styled-components";
-import { replaceChar } from "../../helpers/stringFormatter";
-import { addToModals } from "../../redux/actions/globalActions";
-import { SvgIconFeather } from "../common";
-import { useSettings } from "../hooks";
+import {replaceChar} from "../../helpers/stringFormatter";
+import {addToModals} from "../../redux/actions/globalActions";
+import {SvgIconFeather} from "../common";
+import {useSettings} from "../hooks";
 import TopicList from "./TopicList";
 
 const Wrapper = styled.li`
@@ -14,11 +14,16 @@ const Wrapper = styled.li`
   cursor: pointer;
   cursor: hand;
   position: relative;
+    
+  a.archived-folder {
+    color: #bebebe !important;
+  }
 
   > a {
     position: relative;
     font-weight: ${(props) => (props.selected ? "bold" : "normal")};
     color: ${(props) => (props.selected ? "#7a1b8b !important" : "#64625C")};
+    
     .badge {
       padding: 3px 7px;
       position: absolute;
@@ -74,7 +79,10 @@ const TopicNav = styled.ul`
 `;
 
 const WorkspaceList = (props) => {
-  const { className = "", show = true, workspace } = props;
+  const {className = "", show = true, workspace} = props;
+  if (workspace.is_active === 0) {
+    console.log(workspace.topics);
+  }
 
   const dispatch = useDispatch();
   const history = useHistory();
@@ -112,7 +120,7 @@ const WorkspaceList = (props) => {
   const handleShowTopics = (e) => {
     e.preventDefault();
 
-    if (["FOLDER", "GENERAL_FOLDER"].includes(workspace.type)) {
+    if (["FOLDER", "GENERAL_FOLDER", "ARCHIVE_FOLDER"].includes(workspace.type)) {
       if (!showTopics) {
         setGeneralSetting({
           workspace_open_folder: {
@@ -145,18 +153,23 @@ const WorkspaceList = (props) => {
   }, [showTopics, workspace.id, workspace.selected, maxHeight, workspace_open_folder]);
 
   return (
-    <Wrapper ref={ref.container} className={`workspace-list fadeIn ${className}`} selected={workspace.selected} show={show}>
-      <a className={`${workspace.selected && "active"}`} href="/" onClick={handleShowTopics}>
-        {workspace.is_lock !== 0 && <LockIcon icon="lock" />}
-        {workspace.name}
-        {["FOLDER", "GENERAL_FOLDER"].includes(workspace.type) && <i ref={ref.arrow} className={`sub-menu-arrow ti-angle-up ${showTopics ? "ti-minus rotate-in" : "ti-plus"}`} />}
-        {workspace.unread_count > 0 && (
-          <Badge className={`${showTopics ? "leave-active" : "enter-active"}`} color="danger">
-            {workspace.unread_count}
-          </Badge>
-        )}
-      </a>
-      {workspace.type === "FOLDER" && (
+      <Wrapper ref={ref.container} className={`workspace-list fadeIn ${className}`} selected={workspace.selected}
+               show={show}>
+        <a className={`${workspace.selected ? "active" : ""} ${workspace.is_active === 0 ? "archived-folder" : ""}`}
+           href="/" onClick={handleShowTopics}>
+          {workspace.is_lock !== 0 && <LockIcon icon="lock"/>}
+          {workspace.is_active === 0 && <LockIcon icon="archive"/>}
+          {workspace.name}
+          {["FOLDER", "GENERAL_FOLDER", "ARCHIVE_FOLDER"].includes(workspace.type) &&
+          <i ref={ref.arrow}
+             className={`sub-menu-arrow ti-angle-up ${showTopics ? "ti-minus rotate-in" : "ti-plus"}`}/>}
+          {workspace.unread_count > 0 && (
+              <Badge className={`${showTopics ? "leave-active" : "enter-active"}`} color="danger">
+                {workspace.unread_count}
+              </Badge>
+          )}
+        </a>
+        {workspace.type === "FOLDER" && (
         <TopicNav ref={ref.nav} maxHeight={maxHeight} className={showTopics === null ? "" : showTopics ? "enter-active" : "leave-active"}>
           {Object.keys(workspace.topics).length > 0 &&
             Object.values(workspace.topics)
@@ -178,7 +191,7 @@ const WorkspaceList = (props) => {
       {workspace.type === "GENERAL_FOLDER" && (
         <TopicNav ref={ref.nav} maxHeight={maxHeight} className={showTopics === null ? "" : showTopics ? "enter-active" : "leave-active"}>
           {workspace.topics.length > 0 &&
-            workspace.topics
+          workspace.topics
               .sort((a, b) => {
                 /*let compare = b.updated_at.timestamp - a.updated_at.timestamp;
                                 if (compare !== 0)
@@ -187,14 +200,31 @@ const WorkspaceList = (props) => {
                 return a.name.localeCompare(b.name);
               })
               .map((topic) => {
-                return <TopicList key={topic.id} topic={topic} />;
+                return <TopicList key={topic.id} topic={topic}/>;
               })}
           <li className="nav-action" onClick={handleShowWorkspaceModal}>
-            <SvgIconFeather icon="plus" /> New workspace
+            <SvgIconFeather icon="plus"/> New workspace
           </li>
         </TopicNav>
       )}
-    </Wrapper>
+        {workspace.type === "ARCHIVE_FOLDER" && (
+            <TopicNav ref={ref.nav} maxHeight={maxHeight}
+                      className={showTopics === null ? "" : showTopics ? "enter-active" : "leave-active"}>
+              {workspace.topics.length > 0 &&
+              workspace.topics
+                  .sort((a, b) => {
+                    /*let compare = b.updated_at.timestamp - a.updated_at.timestamp;
+                                    if (compare !== 0)
+                                        return compare;*/
+
+                    return a.name.localeCompare(b.name);
+                  })
+                  .map((topic) => {
+                    return <TopicList key={topic.id} topic={topic}/>;
+                  })}
+            </TopicNav>
+        )}
+      </Wrapper>
   );
 };
 

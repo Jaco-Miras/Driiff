@@ -1,11 +1,11 @@
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import styled from "styled-components";
-import { addToModals } from "../../../redux/actions/globalActions";
-import { setActiveTab } from "../../../redux/actions/workspaceActions";
-import { SvgIconFeather } from "../../common";
-import { WorkspaceList } from "../../workspace";
-import { useSetWorkspace, useSortWorkspaces } from "../../hooks";
+import {addToModals} from "../../../redux/actions/globalActions";
+import {setActiveTab} from "../../../redux/actions/workspaceActions";
+import {SvgIconFeather} from "../../common";
+import {WorkspaceList} from "../../workspace";
+import {useSetWorkspace, useSortWorkspaces} from "../../hooks";
 
 const Wrapper = styled.div`
   &::-webkit-scrollbar {
@@ -121,106 +121,142 @@ const Wrapper = styled.div`
 `;
 
 const WorkspaceNavigationMenuBodyPanel = (props) => {
-  const { className = "" } = props;
-  const dispatch = useDispatch();
+    const {className = ""} = props;
+    const dispatch = useDispatch();
 
-  // const workspaces = useSelector(state => state.workspaces.workspaces);
-  // const workspacesLoaded = useSelector(state => state.workspaces.workspacesLoaded);
-  // const activeTopic = useSelector(state => state.workspaces.activeTopic);
-  const activeTab = useSelector((state) => state.workspaces.activeTab);
+    // const workspaces = useSelector(state => state.workspaces.workspaces);
+    // const workspacesLoaded = useSelector(state => state.workspaces.workspacesLoaded);
+    // const activeTopic = useSelector(state => state.workspaces.activeTopic);
+    const activeTab = useSelector((state) => state.workspaces.activeTab);
 
-  const handleShowFolderModal = () => {
-    let payload = {
-      type: "workspace_folder",
-      mode: "create",
-    };
-    dispatch(addToModals(payload));
-  };
-
-  const handleShowWorkspaceModal = () => {
-    let payload = {
-      type: "workspace_create_edit",
-      mode: "create",
+    const handleShowFolderModal = () => {
+        let payload = {
+            type: "workspace_folder",
+            mode: "create",
+        };
+        dispatch(addToModals(payload));
     };
 
-    dispatch(addToModals(payload));
-  };
+    const handleShowWorkspaceModal = () => {
+        let payload = {
+            type: "workspace_create_edit",
+            mode: "create",
+        };
 
-  const handleSelectTab = (e, tab) => {
-    dispatch(setActiveTab(tab));
-  };
+        dispatch(addToModals(payload));
+    };
 
-  useSetWorkspace();
-  const sortedWorkspaces = useSortWorkspaces();
-  const generalInternalWorkspaces = sortedWorkspaces.filter((ws) => ws.type !== "FOLDER" && ws.is_external === 0);
-  const generalExternalWorkspaces = sortedWorkspaces.filter((ws) => ws.type !== "FOLDER" && ws.is_external !== 0);
+    const handleSelectTab = (e, tab) => {
+        dispatch(setActiveTab(tab));
+    };
 
-  return (
-    <>
-      <Wrapper className={`navigation-menu-body ${className}`}>
-        <div>
-          <h4>Workspaces</h4>
-          <ul className="nav nav-tabs" id="pills-tab" role="tablist">
-            <li className="nav-item" onClick={(e) => handleSelectTab(e, "intern")}>
-              <span className={`nav-link ${activeTab === "intern" ? "active" : ""}`} data-toggle="pill" role="tab" aria-controls="pills-intern" aria-selected={activeTab === "intern" ? "true" : "false"}>
+    useSetWorkspace();
+    const sortedWorkspaces = useSortWorkspaces();
+    const generalInternalWorkspaces = sortedWorkspaces.filter((ws) => ws.type !== "FOLDER" && ws.is_external === 0 && ws.topic_detail.active === 1);
+    const generalExternalWorkspaces = sortedWorkspaces.filter((ws) => ws.type !== "FOLDER" && ws.is_external !== 0 && ws.topic_detail.active === 1);
+    const archiveInternalWorkspaces = sortedWorkspaces.filter((ws) => ws.type !== "FOLDER" && ws.is_external === 0 && ws.topic_detail.active === 0);
+    const archiveExternalWorkspaces = sortedWorkspaces.filter((ws) => ws.type !== "FOLDER" && ws.is_external !== 0 && ws.topic_detail.active === 0);
+
+    return (
+        <>
+            <Wrapper className={`navigation-menu-body ${className}`}>
+                <div>
+                    <h4>Workspaces</h4>
+                    <ul className="nav nav-tabs" id="pills-tab" role="tablist">
+                        <li className="nav-item" onClick={(e) => handleSelectTab(e, "intern")}>
+              <span className={`nav-link ${activeTab === "intern" ? "active" : ""}`} data-toggle="pill" role="tab"
+                    aria-controls="pills-intern" aria-selected={activeTab === "intern" ? "true" : "false"}>
                 Intern
               </span>
-            </li>
-            <li className="nav-item" onClick={(e) => handleSelectTab(e, "extern")}>
-              <span className={`nav-link ${activeTab === "extern" ? "active" : ""}`} data-toggle="pill" role="tab" aria-controls="pills-extern" aria-selected={activeTab === "intern" ? "true" : "false"}>
+                        </li>
+                        <li className="nav-item" onClick={(e) => handleSelectTab(e, "extern")}>
+              <span className={`nav-link ${activeTab === "extern" ? "active" : ""}`} data-toggle="pill" role="tab"
+                    aria-controls="pills-extern" aria-selected={activeTab === "intern" ? "true" : "false"}>
                 Extern
               </span>
-            </li>
-          </ul>
-          <div className="navigation-menu-group">
-            <div id="elements" className="open">
-              <ul>
-                <li className="navigation-divider" onClick={handleShowFolderModal}>
-                  <SvgIconFeather icon="plus" /> New folder
-                </li>
-                <li className="navigation-divider" onClick={handleShowWorkspaceModal}>
-                  <SvgIconFeather icon="plus" /> New workspace
-                </li>
-              </ul>
-              <ul>
-                {sortedWorkspaces
-                  .filter((sws) => sws.type === "FOLDER")
-                  .map((ws) => {
-                    return <WorkspaceList show={ws.is_external === (activeTab === "intern" ? 0 : 1)} key={ws.key_id} workspace={ws} />;
-                  })}
-                {generalInternalWorkspaces.length > 0 && (
-                  <WorkspaceList
-                    show={activeTab === "intern"}
-                    workspace={{
-                      id: "general_internal",
-                      is_lock: 0,
-                      selected: generalInternalWorkspaces.some((ws) => ws.selected),
-                      name: "General",
-                      type: "GENERAL_FOLDER",
-                      topics: generalInternalWorkspaces,
-                    }}
-                  />
-                )}
-                {generalExternalWorkspaces.length > 0 && (
-                  <WorkspaceList
-                    show={activeTab !== "intern"}
-                    workspace={{
-                      id: "general_external",
-                      is_lock: 0,
-                      selected: generalInternalWorkspaces.some((ws) => ws.selected),
-                      name: "General",
-                      type: "GENERAL_FOLDER",
-                      topics: generalInternalWorkspaces,
-                    }}
-                  />
-                )}
-              </ul>
-            </div>
-          </div>
-        </div>
-      </Wrapper>
-    </>
-  );
+                        </li>
+                    </ul>
+                    <div className="navigation-menu-group">
+                        <div id="elements" className="open">
+                            <ul>
+                                <li className="navigation-divider" onClick={handleShowFolderModal}>
+                                    <SvgIconFeather icon="plus"/> New folder
+                                </li>
+                                <li className="navigation-divider" onClick={handleShowWorkspaceModal}>
+                                    <SvgIconFeather icon="plus"/> New workspace
+                                </li>
+                            </ul>
+                            <ul>
+                                {sortedWorkspaces
+                                    .filter((sws) => sws.type === "FOLDER")
+                                    .map((ws) => {
+                                        return <WorkspaceList show={ws.is_external === (activeTab === "intern" ? 0 : 1)}
+                                                              key={ws.key_id} workspace={ws}/>;
+                                    })}
+                                {generalInternalWorkspaces.length > 0 && (
+                                    <WorkspaceList
+                                        show={activeTab === "intern"}
+                                        workspace={{
+                                            id: "general_internal",
+                                            is_lock: 0,
+                                            selected: generalInternalWorkspaces.some((ws) => ws.selected),
+                                            name: "General",
+                                            type: "GENERAL_FOLDER",
+                                            topics: generalInternalWorkspaces,
+                                        }}
+                                    />
+                                )}
+                                {generalExternalWorkspaces.length > 0 && (
+                                    <WorkspaceList
+                                        show={activeTab !== "intern"}
+                                        workspace={{
+                                            id: "general_external",
+                                            is_lock: 0,
+                                            selected: generalInternalWorkspaces.some((ws) => ws.selected),
+                                            name: "General",
+                                            type: "GENERAL_FOLDER",
+                                            topics: generalInternalWorkspaces,
+                                        }}
+                                    />
+                                )}
+                            </ul>
+
+                            <ul>
+                                {archiveInternalWorkspaces.length > 0 && (
+                                    <WorkspaceList
+                                        show={activeTab === "intern"}
+                                        workspace={{
+                                            id: "archive",
+                                            is_lock: 0,
+                                            is_active: 0,
+                                            selected: archiveInternalWorkspaces.some((ws) => ws.selected),
+                                            name: "Archived workspaces",
+                                            type: "ARCHIVE_FOLDER",
+                                            topics: archiveInternalWorkspaces,
+                                        }}
+                                    />
+                                )}
+                                {archiveExternalWorkspaces.length > 0 && (
+                                    <WorkspaceList
+                                        show={activeTab !== "intern"}
+                                        workspace={{
+                                            id: "archive",
+                                            is_lock: 0,
+                                            is_active: 0,
+                                            selected: archiveExternalWorkspaces.some((ws) => ws.selected),
+                                            name: "Archived workspaces",
+                                            type: "ARCHIVE_FOLDER",
+                                            topics: archiveExternalWorkspaces,
+                                        }}
+                                    />
+                                )}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </Wrapper>
+        </>
+    );
 };
 
 export default React.memo(WorkspaceNavigationMenuBodyPanel);
