@@ -497,6 +497,52 @@ export default (state = INITIAL_STATE, action) => {
             },
           };
         }
+        Object.values(newWorkspaceFiles[action.data.topic_id].files).map((f) => {
+          if (typeof f.id === "string") {
+            action.data.files.forEach((af) => {
+              if (af.size === f.size && af.search === f.search) {
+                delete newWorkspaceFiles[action.data.topic_id].files[f.id];
+              }
+            });
+          }
+        });
+        return {
+          ...state,
+          workspaceFiles: newWorkspaceFiles,
+        };
+      } else {
+        return state;
+      }
+    }
+    case "UPLOAD_FILES_REDUCER": {
+      let newWorkspaceFiles = { ...state.workspaceFiles };
+      if (newWorkspaceFiles.hasOwnProperty(action.data.topic_id)) {
+        if (newWorkspaceFiles[action.data.topic_id].hasOwnProperty("folders") && action.data.folder_id) {
+          newWorkspaceFiles = {
+            ...newWorkspaceFiles,
+            [action.data.topic_id]: {
+              ...newWorkspaceFiles[action.data.topic_id],
+              folders: {
+                ...newWorkspaceFiles[action.data.topic_id].folders,
+                [action.data.folder_id]: {
+                  ...newWorkspaceFiles[action.data.topic_id].folders[action.data.folder_id],
+                  files: [...newWorkspaceFiles[action.data.topic_id].folders[action.data.folder_id].files, ...action.data.files.map((f) => f.id)],
+                },
+              },
+              files: { ...convertArrayToObject(action.data.files, "id"), ...newWorkspaceFiles[action.data.topic_id].files },
+              count: newWorkspaceFiles[action.data.topic_id].count + action.data.files.length,
+            },
+          };
+        } else {
+          newWorkspaceFiles = {
+            ...newWorkspaceFiles,
+            [action.data.topic_id]: {
+              ...newWorkspaceFiles[action.data.topic_id],
+              files: { ...convertArrayToObject(action.data.files, "id"), ...newWorkspaceFiles[action.data.topic_id].files },
+              count: newWorkspaceFiles[action.data.topic_id].count + action.data.files.length,
+            },
+          };
+        }
         return {
           ...state,
           workspaceFiles: newWorkspaceFiles,

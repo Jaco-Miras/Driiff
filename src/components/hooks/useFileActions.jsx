@@ -21,6 +21,7 @@ import {
   putFile,
   putFolder,
   setViewFiles,
+  uploadFilesReducer,
   uploadWorkspaceFiles,
 } from "../../redux/actions/fileActions";
 import { addToModals } from "../../redux/actions/globalActions";
@@ -456,6 +457,13 @@ const useFileActions = (params = null) => {
     }
   };
 
+  const uploadingFiles = useCallback(
+    (payload) => {
+      dispatch(uploadFilesReducer(payload));
+    },
+    [dispatch]
+  );
+
   return {
     clearSearch,
     copyLink,
@@ -481,6 +489,7 @@ const useFileActions = (params = null) => {
     viewFiles,
     getFileSizeUnit,
     getPrimaryFiles,
+    uploadingFiles,
   };
 };
 

@@ -198,3 +198,7 @@ export function incomingRemovedFile(payload, callback) {
 export function incomingRemovedFolder(payload, callback) {
   return SimpleDispatchActionToReducer("INCOMING_REMOVED_FOLDER", payload, callback);
 }
+
+export function uploadFilesReducer(payload, callback) {
+  return SimpleDispatchActionToReducer("UPLOAD_FILES_REDUCER", payload, callback);
+}

@@ -233,7 +233,7 @@ const usePostActions = () => {
       let payload = {
         post_id: post.id,
         unread: 0,
-        topic_id: params.workspaceId,
+        topic_id: parseInt(params.workspaceId),
       };
       let cb = (err, res) => {
         if (err) {
@@ -242,7 +242,7 @@ const usePostActions = () => {
         }
         payload = {
           ...payload,
-          folderId: params.hasOwnProperty("folderId") ? params.folderId : null,
+          folderId: params.hasOwnProperty("folderId") ? parseInt(params.folderId) : null,
           count: post.unread_count === 0 ? 1 : post.unread_count,
         };
 

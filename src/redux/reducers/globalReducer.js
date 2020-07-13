@@ -117,8 +117,8 @@ export default (state = INITIAL_STATE, action) => {
     case "UPDATE_UNREAD_LIST_COUNTER": {
       let unreadCounter = state.unreadCounter;
 
-      for (const i in action.data) {
-        const item = action.data[i];
+      for (const i in action.data.result) {
+        const item = action.data.result[i];
         unreadCounter = {
           ...unreadCounter,
           [item.entity_type.toLowerCase()]: item.count,

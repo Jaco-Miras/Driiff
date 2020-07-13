@@ -487,37 +487,37 @@ class SocketListeners extends PureComponent {
       })
       .listen(".new-member", (e) => {
         console.log(e, "join member");
-        if (typeof e.user !== "undefined") {
-          let payload = {
-            group_id: e.group_id,
-            user_id: e.user.id,
-            type: "join",
-            mode: "member",
-            user: e.user,
-          };
-          // this.props.updateTopicMembersAction(payload);
-        }
+        // if (typeof e.user !== "undefined") {
+        //   let payload = {
+        //     group_id: e.group_id,
+        //     user_id: e.user.id,
+        //     type: "join",
+        //     mode: "member",
+        //     user: e.user,
+        //   };
+        //   // this.props.updateTopicMembersAction(payload);
+        // }
       })
       .listen(".new-topic-member", (e) => {
         console.log("new workspace member", e);
       })
       .listen(".left-member", (e) => {
         console.log(e, "left member");
-        if (e.user.id !== undefined) {
-          let payload = {
-            group_id: e.group_id,
-            user_id: e.user.id,
-            type: "remove",
-            mode: "member",
-            user: e.user,
-          };
-          //this.props.updateTopicMembersAction(payload);
-        }
+        // if (e.user.id !== undefined) {
+        //   let payload = {
+        //     group_id: e.group_id,
+        //     user_id: e.user.id,
+        //     type: "remove",
+        //     mode: "member",
+        //     user: e.user,
+        //   };
+        //   //this.props.updateTopicMembersAction(payload);
+        // }
       })
-      .listen(".unread-channel", (e) => {
-        console.log(e, "unread channel");
-        this.props.unreadChannelReducer(e);
-      })
+      // .listen(".unread-channel", (e) => {
+      //   console.log(e, "unread channel");
+      //   this.props.unreadChannelReducer(e);
+      // })
       .listen(".update-channel-name", (e) => {
         console.log(e, "updated channel name");
         let data = {
@@ -542,35 +542,6 @@ class SocketListeners extends PureComponent {
       })
       .listen(".chat-notification", (e) => {
         console.log(e);
-
-        let notificationCounterEntryPayload = {};
-        // check the workspace_id on the notification socket response
-        if (e.workspace_id === undefined || e.workspace_id === null || e.workspace_id === 0) {
-          if (e.entity_type === "REMINDER_MESSAGE") {
-            notificationCounterEntryPayload = {
-              count: 1,
-              entity_type: "REMINDER_MESSAGE",
-            };
-          } else {
-            notificationCounterEntryPayload = {
-              count: 1,
-              entity_type: "CHAT_MESSAGE",
-            };
-          }
-
-          this.props.setGeneralChat(notificationCounterEntryPayload);
-        }
-
-        if (e.entity_type === "REMINDER_MESSAGE") {
-          e.message_original = e.message;
-
-          const channelName = e.message.replace(e.message.substr(0, e.message.search(" in ") + 4, e.message), "");
-          e.message = e.message.replace(` in ${channelName}`, ` in <a data-href="/chat/${e.channel_code}">#${channelName}</a>`);
-
-          const link = `/chat/${e.channel_code}/${e.code}`;
-          e.message = e.message.replace("this message", `<a class="push" data-href="${link}">this message</a>`);
-          e.message = `${e.message}<br/> <span class="action"><a class="btn btn-complete btn-action">Mark as Complete</a> <a class="btn btn-delete btn-action"">Remove</a></span>`;
-        }
 
         let urlArray = [...new Set(urlify(e.message))];
         if (urlArray.length) {
@@ -767,7 +738,7 @@ class SocketListeners extends PureComponent {
       .listen(".updated-notification-counter", (e) => {
         console.log(e, "updated counter");
 
-        this.props.setUnreadNotificationCounterEntries(e.result);
+        this.props.setUnreadNotificationCounterEntries(e);
       });
   }
 

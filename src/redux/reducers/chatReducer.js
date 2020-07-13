@@ -945,6 +945,25 @@ export default function (state = INITIAL_STATE, action) {
             : state.selectedChannel,
       };
     }
+    case "UPDATE_UNREAD_LIST_COUNTER": {
+      let updatedChannels = { ...state.channels };
+      let updatedChannel = { ...state.selectedChannel };
+      if (action.data.entity_group_type === "UNREAD_CHANNEL") {
+        if (updatedChannels.hasOwnProperty(action.data.entity_id)) {
+          updatedChannels[action.data.entity_id].is_read = 0;
+          if (state.selectedChannel && state.selectedChannel.id === action.data.entity_id) {
+            updatedChannel.is_read = 0;
+          }
+        }
+        return {
+          ...state,
+          channels: updatedChannels,
+          selectedChannel: updatedChannel,
+        };
+      } else {
+        return state;
+      }
+    }
     case "INCOMING_UPDATED_WORKSPACE_FOLDER": {
       if (Object.keys(state.channels).length && action.data.type === "WORKSPACE") {
         let updatedChannels = { ...state.channels };
