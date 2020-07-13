@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
-import { useHistory, useRouteMatch } from "react-router-dom";
+//import { useHistory, useRouteMatch } from "react-router-dom";
 import styled from "styled-components";
 import { addToModals } from "../../redux/actions/globalActions";
 import { useSettings, useToaster } from "../hooks";
@@ -101,8 +101,8 @@ const WorkspaceChatList = (props) => {
   let { className = "", selectedChannel = null, workspace, setChannel } = props;
 
   const dispatch = useDispatch();
-  const history = useHistory();
-  const route = useRouteMatch();
+  // const history = useHistory();
+  // const route = useRouteMatch();
   const toaster = useToaster();
 
   const ref = {
@@ -113,21 +113,20 @@ const WorkspaceChatList = (props) => {
 
   const {
     generalSettings: { workspace_open_folder },
-    setGeneralSetting,
   } = useSettings();
 
   const [showTopics, setShowTopics] = useState(null);
   const [maxHeight, setMaxHeight] = useState(null);
 
-  const handleShowWorkspaceModal = () => {
-    let payload = {
-      type: "workspace_create_edit",
-      mode: "create",
-      item: workspace,
-    };
+  // const handleShowWorkspaceModal = () => {
+  //   let payload = {
+  //     type: "workspace_create_edit",
+  //     mode: "create",
+  //     item: workspace,
+  //   };
 
-    dispatch(addToModals(payload));
-  };
+  //   dispatch(addToModals(payload));
+  // };
 
   const handleSelectWorkspace = () => {
     if (typeof workspace.topic_detail === "undefined") {

@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { useRouteMatch } from "react-router-dom";
 import styled from "styled-components";
 import { NavLink, SvgIconFeather } from "../../common";
@@ -37,10 +37,15 @@ const MainNavLink = styled(NavLink)`
   }
 `;
 
+const Badge = styled.div`
+  color: ${(props) => (props.unread ? "#f44" : "#fff")};
+`;
+
 const CompanyHeaderPanel = () => {
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
   const match = useRouteMatch();
 
+  const unreadCounter = useSelector((state) => state.global.unreadCounter);
   const { driffSettings } = useSettings();
 
   const handleMenuOpenMobile = (e) => {
@@ -106,7 +111,12 @@ const CompanyHeaderPanel = () => {
             <MainNavLink to="/posts">Posts</MainNavLink>
           </li>
           <li className="nav-item">
-            <MainNavLink to="/chat">Chat</MainNavLink>
+            <MainNavLink to="/chat">
+              Chat{" "}
+              <Badge className="ml-2 badge badge-danger" unread={unreadCounter.chat_message + unreadCounter.chat_reminder_message === 0 && unreadCounter.unread_channel > 0}>
+                {unreadCounter.chat_message + unreadCounter.chat_reminder_message > 0 ? unreadCounter.chat_message + unreadCounter.chat_reminder_message : unreadCounter.unread_channel > 0 ? unreadCounter.unread_channel : null}
+              </Badge>
+            </MainNavLink>
           </li>
           <li className="nav-item">
             <MainNavLink to="/files">Files</MainNavLink>
