@@ -714,6 +714,7 @@ export default (state = INITIAL_STATE, action) => {
     case "INCOMING_POST": {
       let newWorkspacePosts = { ...state.workspacePosts };
       let updatedWorkspaces = { ...state.workspaces };
+      let updatedTopic = { ...state.activeTopic };
 
       action.data.workspaces.forEach((ws) => {
         if (newWorkspacePosts.hasOwnProperty(ws.topic_id)) {
@@ -730,9 +731,15 @@ export default (state = INITIAL_STATE, action) => {
           if (ws.workspace_id !== 0 && updatedWorkspaces.hasOwnProperty(ws.workspace_id)) {
             updatedWorkspaces[ws.workspace_id].unread_count = updatedWorkspaces[ws.workspace_id].unread_count + 1;
             updatedWorkspaces[ws.workspace_id].topics[ws.topic_id].unread_posts = updatedWorkspaces[ws.workspace_id].topics[ws.topic_id].unread_posts + 1;
+            if (state.activeTopic.id === ws.topic_id) {
+              updatedTopic.unread_posts = updatedTopic.unread_posts + 1;
+            }
           } else if (ws.workspace_id === 0 && updatedWorkspaces.hasOwnProperty(ws.topic_id)) {
             updatedWorkspaces[ws.topic_id].unread_count = updatedWorkspaces[ws.topic_id].unread_count + 1;
             updatedWorkspaces[ws.topic_id].topic_detail.unread_posts = updatedWorkspaces[ws.topic_id].topic_detail.unread_posts + 1;
+            if (state.activeTopic.id === ws.topic_id) {
+              updatedTopic.topic_detail.unread_posts = updatedTopic.topic_detail.unread_posts + 1;
+            }
           }
         }
       });
@@ -740,6 +747,7 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         workspacePosts: newWorkspacePosts,
         workspaces: updatedWorkspaces,
+        activeTopic: updatedTopic,
       };
     }
     case "INCOMING_UPDATED_POST": {
@@ -766,6 +774,8 @@ export default (state = INITIAL_STATE, action) => {
       let newPostComments = { ...state.postComments };
       let newWorkspacePosts = { ...state.workspacePosts };
       let updatedWorkspaces = { ...state.workspaces };
+      let updatedTopic = { ...state.activeTopic };
+
       if (action.data.workspaces.length && action.data.SOCKET_TYPE === "POST_COMMENT_CREATE") {
         action.data.workspaces.forEach((ws) => {
           if (newWorkspacePosts.hasOwnProperty(ws.topic_id) && newWorkspacePosts[ws.topic_id].posts.hasOwnProperty(action.data.post_id)) {
@@ -779,11 +789,17 @@ export default (state = INITIAL_STATE, action) => {
               if (updatedWorkspaces.hasOwnProperty(ws.workspace_id) && updatedWorkspaces[ws.workspace_id].topics.hasOwnProperty(ws.topic_id)) {
                 updatedWorkspaces[ws.workspace_id].unread_count = updatedWorkspaces[ws.workspace_id].unread_count + 1;
                 updatedWorkspaces[ws.workspace_id].topics[ws.topic_id].unread_posts = updatedWorkspaces[ws.workspace_id].topics[ws.topic_id].unread_posts + 1;
+                if (state.activeTopic.id === ws.topic_id) {
+                  updatedTopic.unread_posts = updatedTopic.unread_posts + 1;
+                }
               }
             } else {
               if (updatedWorkspaces.hasOwnProperty(ws.topic_id)) {
                 updatedWorkspaces[ws.topic_id].unread_count = updatedWorkspaces[ws.topic_id].unread_count + 1;
                 updatedWorkspaces[ws.topic_id].topic_detail.unread_posts = updatedWorkspaces[ws.topic_id].topic_detail.unread_posts + 1;
+                if (state.activeTopic.id === ws.topic_id) {
+                  updatedTopic.topic_detail.unread_posts = updatedTopic.topic_detail.unread_posts + 1;
+                }
               }
             }
           }
@@ -811,6 +827,7 @@ export default (state = INITIAL_STATE, action) => {
         postComments: newPostComments,
         workspacePosts: newWorkspacePosts,
         workspaces: updatedWorkspaces,
+        activeTopic: updatedTopic,
       };
     }
     case "ADD_PRIMARY_FILES": {
