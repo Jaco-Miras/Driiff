@@ -1,8 +1,8 @@
-import React, { useCallback } from "react";
+import React, {useCallback} from "react";
 import styled from "styled-components";
-import { replaceChar, stripHtml } from "../../../../helpers/stringFormatter";
-import { Avatar } from "../../../common";
-import { useTimeFormat } from "../../../hooks";
+import {replaceChar, stripHtml} from "../../../../helpers/stringFormatter";
+import {Avatar} from "../../../common";
+import {useTimeFormat} from "../../../hooks";
 
 const Wrapper = styled.div`
   .avatar {
@@ -24,7 +24,14 @@ const Wrapper = styled.div`
     }
   }
 
-  .notification-body {
+  .notification-body-wrapper {
+    .border-left-active {
+        border-left: 5px solid #822492 !important;
+    }
+    i {
+        left: 40px;
+        position: relative;
+    }
     &:hover {
       i {
         opacity: 1;
@@ -69,11 +76,11 @@ export const NotificationTimelineItem = (props) => {
     }
   };
 
-  const handleRemove = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    actions.remove({ id: notification.id });
-  };
+    /*const handleRemove = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      actions.remove({ id: notification.id });
+    };*/
 
   const handleAuthorNameClick = useCallback(
     (e) => {
@@ -126,23 +133,28 @@ export const NotificationTimelineItem = (props) => {
 
   return (
     <Wrapper className="timeline-item">
-      <div>
-        <Avatar id={notification.author.id} name={notification.author.name} imageLink={notification.author.profile_image_link} />
-      </div>
-      <div>
-        <div onClick={handleRedirect}>
-          <h6 className="d-flex justify-content-between mb-4">
-            <span>{renderTitle()}</span>
-            <span className="text-muted font-weight-normal">{localizeChatChannelDate(notification.created_at.timestamp)}</span>
-          </h6>
-          <span>
-            <div className="notification-body mb-3 border p-3 border-radius-1 d-flex justify-content-between align-items-center">
+        <div>
+            <Avatar id={notification.author.id} name={notification.author.name}
+                    imageLink={notification.author.profile_image_link}/>
+        </div>
+        <div>
+            <div onClick={handleRedirect}>
+                <h6 className="d-flex justify-content-between mb-4">
+                    <span>{renderTitle()}</span>
+                    <span
+                        className="text-muted font-weight-normal">{localizeChatChannelDate(notification.created_at.timestamp)}</span>
+                </h6>
+                <span className="notification-body-wrapper">
+            <div
+                className={`notification-body mb-3 border p-3 border-radius-1 d-flex justify-content-between align-items-center mr-4 ${notification.is_read === 0 ? "border-left-active" : ""}`}>
               <div>{notification.type === "POST_CREATE" ? <>{notification.data.title}</> : <>{stripHtml(notification.data.comment_body)}</>}</div>
               <div>
                 {notification.is_read === 0 ? (
-                  <i title="Mark as read" data-toggle="tooltip" onClick={handleReadUnread} className="cursor-pointer fa fa-circle-o font-size-11" />
+                    <i title="Mark as read" data-toggle="tooltip" onClick={handleReadUnread}
+                       className="cursor-pointer fa fa-circle-o font-size-11"/>
                 ) : (
-                  <i title="Mark as unread" data-toggle="tooltip" onClick={handleReadUnread} className="cursor-pointer fa fa-check font-size-11" />
+                    <i title="Mark as unread" data-toggle="tooltip" onClick={handleReadUnread}
+                       className="cursor-pointer fa fa-check font-size-11"/>
                 )}
               </div>
             </div>
