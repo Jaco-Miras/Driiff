@@ -1,14 +1,14 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import { useDispatch } from "react-redux";
-import { useHistory } from "react-router-dom";
-import { FormGroup, Input, InputGroup, InputGroupAddon, InputGroupText, Label } from "reactstrap";
+import React, {useCallback, useEffect, useRef, useState} from "react";
+import {useDispatch} from "react-redux";
+import {useHistory} from "react-router-dom";
+import {FormGroup, Input, InputGroup, InputGroupAddon, InputGroupText, Label} from "reactstrap";
 import styled from "styled-components";
-import { EmailRegex, replaceChar } from "../../../helpers/stringFormatter";
-import { addToModals } from "../../../redux/actions/globalActions";
-import { Avatar, SvgIcon, SvgIconFeather } from "../../common";
-import { DropDocument } from "../../dropzone/DropDocument";
+import {EmailRegex, replaceChar} from "../../../helpers/stringFormatter";
+import {addToModals} from "../../../redux/actions/globalActions";
+import {Avatar, SvgIconFeather} from "../../common";
+import {DropDocument} from "../../dropzone/DropDocument";
 import InputFeedback from "../../forms/InputFeedback";
-import { useToaster, useUserActions, useUsers } from "../../hooks";
+import {useToaster, useUserActions, useUsers} from "../../hooks";
 
 const Wrapper = styled.div`
   overflow: auto;
@@ -406,28 +406,29 @@ const UserProfilePanel = (props) => {
             <div className="card-body text-center" onDragOver={handleShowDropZone}>
               {isLoggedUser && (
                 <DropDocument
-                  acceptType="imageOnly"
-                  hide={!showDropZone}
-                  ref={refs.dropZoneRef}
-                  onDragLeave={handleHideDropzone}
-                  onDrop={({ acceptedFiles }) => {
-                    dropAction(acceptedFiles);
-                  }}
-                  onCancel={handleHideDropzone}
+                    acceptType="imageOnly"
+                    hide={!showDropZone}
+                    ref={refs.dropZoneRef}
+                    onDragLeave={handleHideDropzone}
+                    onDrop={({acceptedFiles}) => {
+                      dropAction(acceptedFiles);
+                    }}
+                    onCancel={handleHideDropzone}
                 />
               )}
-              {user.import_from === "gripp" && <SvgIcon className={editInformation ? "mb-2" : "mb-4"} width={500} height={40} icon="gripp-logo" />}
-              {editInformation && user.import_from !== "driff" && (
-                <ImportWarning className="text-primary mb-3">
-                  The profile data is synchronized from an external source.
-                  <br />
-                  Some fields cannot be edited.
-                </ImportWarning>
+              {/*{user.import_from === "gripp" && <SvgIcon className={editInformation ? "mb-2" : "mb-4"} width={500} height={40} icon="gripp-logo" />}*/}
+              {editInformation && ["driff", "gripp"].includes(user.import_from) && (
+                  <ImportWarning className="text-primary mb-3">
+                    The profile data is synchronized from an external source.
+                    <br/>
+                    Some fields cannot be edited.
+                  </ImportWarning>
               )}
-              {<Avatar className="mb-2" imageLink={form.profile_image_link} name={form.name} id={form.id} onClick={handleAvatarClick} noDefaultClick={true} />}
+              {<Avatar className="mb-2" imageLink={form.profile_image_link} name={form.name} id={form.id}
+                       onClick={handleAvatarClick} noDefaultClick={true}/>}
               {editInformation ? (
-                <h5 className="mb-1">
-                  {form.first_name} {form.middle_name} {form.last_name}
+                  <h5 className="mb-1">
+                    {form.first_name} {form.middle_name} {form.last_name}
                 </h5>
               ) : (
                 <h5 className="mb-1">
