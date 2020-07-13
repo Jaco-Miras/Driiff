@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
+import { useSelector } from "react-redux";
 import { SvgEmptyState, SvgIconFeather } from "../../common";
 import { DropDocument } from "../../dropzone/DropDocument";
 import { useToaster } from "../../hooks";
@@ -62,6 +63,8 @@ const FilesBody = (props) => {
   const toaster = useToaster();
   const scrollRef = document.querySelector(".app-content-body");
 
+  const user = useSelector((state) => state.session.user);
+
   const [showDropZone, setShowDropZone] = useState(false);
 
   const handleShowUploadModal = () => {
@@ -82,10 +85,37 @@ const FilesBody = (props) => {
 
   const dropAction = (attachedFiles) => {
     setShowDropZone(false);
-
+    let timestamp = Math.floor(Date.now() / 1000);
+    let uploads = {
+      files: attachedFiles.map((f) => {
+        return {
+          created_at: {timestamp: timestamp},
+          download_link: null,
+          folder_id: folder ? folder.id : null,
+          id: require("shortid").generate(),
+          is_favorite: false,
+          link_id: null,
+          link_index_id: null,
+          link_type: "TOPIC",
+          mime_type: f.type,
+          search: f.name,
+          size: f.size,
+          type: f.type,
+          updated_at: {timestamp: timestamp},
+          user_id: user.id,
+          view_link: null,
+          uploading: true,
+        };
+      }),
+      folder_id: folder ? folder.id : null,
+      topic_id: parseInt(params.workspaceId),
+      workspace_id: params.hasOwnProperty("folderId") ? parseInt(params.fileFolderId) : null,
+    };
+    actions.uploadingFiles(uploads);
     let formData = new FormData();
     for (const i in attachedFiles) {
       if (attachedFiles.hasOwnProperty(i)) {
+        attachedFiles[i].ref_id = require("shortid").generate();
         formData.append("files[" + i + "]", attachedFiles[i]);
       }
     }
