@@ -487,37 +487,37 @@ class SocketListeners extends PureComponent {
       })
       .listen(".new-member", (e) => {
         console.log(e, "join member");
-        if (typeof e.user !== "undefined") {
-          let payload = {
-            group_id: e.group_id,
-            user_id: e.user.id,
-            type: "join",
-            mode: "member",
-            user: e.user,
-          };
-          // this.props.updateTopicMembersAction(payload);
-        }
+        // if (typeof e.user !== "undefined") {
+        //   let payload = {
+        //     group_id: e.group_id,
+        //     user_id: e.user.id,
+        //     type: "join",
+        //     mode: "member",
+        //     user: e.user,
+        //   };
+        //   // this.props.updateTopicMembersAction(payload);
+        // }
       })
       .listen(".new-topic-member", (e) => {
         console.log("new workspace member", e);
       })
       .listen(".left-member", (e) => {
         console.log(e, "left member");
-        if (e.user.id !== undefined) {
-          let payload = {
-            group_id: e.group_id,
-            user_id: e.user.id,
-            type: "remove",
-            mode: "member",
-            user: e.user,
-          };
-          //this.props.updateTopicMembersAction(payload);
-        }
+        // if (e.user.id !== undefined) {
+        //   let payload = {
+        //     group_id: e.group_id,
+        //     user_id: e.user.id,
+        //     type: "remove",
+        //     mode: "member",
+        //     user: e.user,
+        //   };
+        //   //this.props.updateTopicMembersAction(payload);
+        // }
       })
-      .listen(".unread-channel", (e) => {
-        console.log(e, "unread channel");
-        this.props.unreadChannelReducer(e);
-      })
+      // .listen(".unread-channel", (e) => {
+      //   console.log(e, "unread channel");
+      //   this.props.unreadChannelReducer(e);
+      // })
       .listen(".update-channel-name", (e) => {
         console.log(e, "updated channel name");
         let data = {
@@ -767,7 +767,7 @@ class SocketListeners extends PureComponent {
       .listen(".updated-notification-counter", (e) => {
         console.log(e, "updated counter");
 
-        this.props.setUnreadNotificationCounterEntries(e.result);
+        this.props.setUnreadNotificationCounterEntries(e);
       });
   }
 
