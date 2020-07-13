@@ -2,6 +2,7 @@ import React, { useCallback } from "react";
 import styled from "styled-components";
 import { SvgIconFeather, ToolTip } from "../../../common";
 import { FileOptions } from "../../../panels/files";
+import { ProgressBar } from "../../../panels/common";
 
 const Wrapper = styled.div`
   .card {
@@ -18,6 +19,21 @@ const Wrapper = styled.div`
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
+    }
+
+    .app-file-icon {
+      position: relative;
+
+      &.uploading {
+        background: #afb8bd;
+        opacity: .8;
+      }
+      .progress {
+        bottom: 10px;
+        position: absolute;
+        width: 90%;
+        left: 5%;
+      }
     }
   }
 `;
@@ -43,10 +59,11 @@ const FileListItem = (props) => {
   return (
     <Wrapper className={`file-list-item cursor-pointer ${className}`} onClick={handleFileView}>
       <div className="card  app-file-list">
-        <div className="app-file-icon">
+        <div className={typeof file.id === "string" ? "app-file-icon uploading" : "app-file-icon uploaded"}>
           {file.is_favorite === true && <Star icon="star" />}
           {actions.getFileIcon(file.mime_type)}
-          <FileOptions file={file} actions={actions} isMember={isMember} forceDelete={forceDelete} />
+          {typeof file.id === "number" && <FileOptions file={file} actions={actions} isMember={isMember} forceDelete={forceDelete} />}
+          {typeof file.id === "string" && <ProgressBar />}
         </div>
         <div className="p-2 small">
           <ToolTip content={file.name ? file.name : file.search}>
