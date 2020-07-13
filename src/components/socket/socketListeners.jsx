@@ -543,35 +543,6 @@ class SocketListeners extends PureComponent {
       .listen(".chat-notification", (e) => {
         console.log(e);
 
-        let notificationCounterEntryPayload = {};
-        // check the workspace_id on the notification socket response
-        if (e.workspace_id === undefined || e.workspace_id === null || e.workspace_id === 0) {
-          if (e.entity_type === "REMINDER_MESSAGE") {
-            notificationCounterEntryPayload = {
-              count: 1,
-              entity_type: "REMINDER_MESSAGE",
-            };
-          } else {
-            notificationCounterEntryPayload = {
-              count: 1,
-              entity_type: "CHAT_MESSAGE",
-            };
-          }
-
-          this.props.setGeneralChat(notificationCounterEntryPayload);
-        }
-
-        if (e.entity_type === "REMINDER_MESSAGE") {
-          e.message_original = e.message;
-
-          const channelName = e.message.replace(e.message.substr(0, e.message.search(" in ") + 4, e.message), "");
-          e.message = e.message.replace(` in ${channelName}`, ` in <a data-href="/chat/${e.channel_code}">#${channelName}</a>`);
-
-          const link = `/chat/${e.channel_code}/${e.code}`;
-          e.message = e.message.replace("this message", `<a class="push" data-href="${link}">this message</a>`);
-          e.message = `${e.message}<br/> <span class="action"><a class="btn btn-complete btn-action">Mark as Complete</a> <a class="btn btn-delete btn-action"">Remove</a></span>`;
-        }
-
         let urlArray = [...new Set(urlify(e.message))];
         if (urlArray.length) {
           this.props.generateUnfurl(
