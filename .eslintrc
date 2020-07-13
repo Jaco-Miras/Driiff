@@ -3,6 +3,7 @@
   "rules": {
     "semi": ["error", "always"],
     "quotes": ["error", "double"],
-    "react-hooks/exhaustive-deps": 0
+    "react-hooks/exhaustive-deps": 0,
+    "no-prototype-builtins": "off"
   }
 }
