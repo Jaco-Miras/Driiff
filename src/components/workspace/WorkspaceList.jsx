@@ -149,6 +149,12 @@ const WorkspaceList = (props) => {
     }
   }, [showTopics, workspace.id, workspace.selected, maxHeight, workspace_open_folder]);
 
+  useEffect(() => {
+    if (workspace.topics) {
+      setMaxHeight(null);
+    }
+  }, [workspace.topics])
+
   return (
       <Wrapper ref={ref.container} className={`workspace-list fadeIn ${className}`} selected={workspace.selected}
                show={show}>
@@ -169,16 +175,16 @@ const WorkspaceList = (props) => {
         {workspace.type === "FOLDER" && (
         <TopicNav ref={ref.nav} maxHeight={maxHeight} className={showTopics === null ? "" : showTopics ? "enter-active" : "leave-active"}>
           {Object.keys(workspace.topics).length > 0 &&
-            Object.values(workspace.topics)
+          Object.values(workspace.topics)
+              .filter(t => t.active === 1)
               .sort((a, b) => {
                 /*let compare = b.updated_at.timestamp - a.updated_at.timestamp;
                                 if (compare !== 0)
                                     return compare;*/
-
                 return a.name.localeCompare(b.name);
               })
               .map((topic) => {
-                return <TopicList key={topic.id} topic={topic} />;
+                return <TopicList key={topic.id} topic={topic}/>;
               })}
           <li className="nav-action" onClick={handleShowWorkspaceModal}>
             <SvgIconFeather icon="plus" /> New workspace

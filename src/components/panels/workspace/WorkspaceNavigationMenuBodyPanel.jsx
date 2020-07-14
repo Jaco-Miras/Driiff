@@ -154,12 +154,36 @@ const WorkspaceNavigationMenuBodyPanel = (props) => {
     const sortedWorkspaces = useSortWorkspaces();
     const generalInternalWorkspaces = sortedWorkspaces.filter((ws) => ws.type !== "FOLDER" && ws.is_external === 0 && ws.topic_detail.active === 1);
     const generalExternalWorkspaces = sortedWorkspaces.filter((ws) => ws.type !== "FOLDER" && ws.is_external !== 0 && ws.topic_detail.active === 1);
-    const archiveInternalWorkspacesFolder = sortedWorkspaces.filter((ws) => {
-        return ws.type === "FOLDER" && ws.is_external === 0 && Object.values(ws.topics).some(t => t.active === 0)
-    });
+
     //const archiveExternalWorkspacesFolder = sortedWorkspaces.filter((ws) => ws.type === "FOLDER" && ws.is_external !== 0 && ws.topics.some(t => t.active === 0));
-    const archiveInternalWorkspaces = sortedWorkspaces.filter((ws) => ws.type !== "FOLDER" && ws.is_external === 0 && ws.topic_detail.active === 0);
-    const archiveExternalWorkspaces = sortedWorkspaces.filter((ws) => ws.type !== "FOLDER" && ws.is_external !== 0 && ws.topic_detail.active === 0);
+    let archiveInternalWorkspaces = sortedWorkspaces.filter((ws) => ws.type !== "FOLDER" && ws.is_external === 0 && ws.topic_detail.active === 0);
+    sortedWorkspaces.filter((ws) => ws.type === "FOLDER" && ws.is_external === 0 && Object.values(ws.topics).some(t => t.active === 0))
+        .forEach(ws => {
+            for (const wsid in ws.topics) {
+                let topic = ws.topics[wsid];
+                if (topic.active === 0) {
+                    topic.topic_detail = {
+                        active: topic.active,
+                        channel: topic.channel,
+                    }
+                    archiveInternalWorkspaces.push(topic);
+                }
+            }
+        });
+    let archiveExternalWorkspaces = sortedWorkspaces.filter((ws) => ws.type !== "FOLDER" && ws.is_external !== 0 && ws.topic_detail.active === 0);
+    sortedWorkspaces.filter((ws) => ws.type === "FOLDER" && ws.is_external !== 0 && Object.values(ws.topics).some(t => t.active === 0))
+        .forEach(ws => {
+            for (const wsid in ws.topics) {
+                let topic = ws.topics[wsid];
+                if (topic.active === 0) {
+                    topic.topic_detail = {
+                        active: topic.active,
+                        channel: topic.channel,
+                    }
+                    archiveInternalWorkspaces.push(topic);
+                }
+            }
+        });
 
     return (
         <>
@@ -194,8 +218,9 @@ const WorkspaceNavigationMenuBodyPanel = (props) => {
                                 {sortedWorkspaces
                                     .filter((sws) => sws.type === "FOLDER")
                                     .map((ws) => {
-                                        return <WorkspaceList show={ws.is_external === (activeTab === "intern" ? 0 : 1)}
-                                                              key={ws.key_id} workspace={ws}/>;
+                                        return <WorkspaceList
+                                            show={ws.is_external === (activeTab === "intern" ? 0 : 1)}
+                                            key={ws.key_id} workspace={ws}/>;
                                     })}
                                 {generalInternalWorkspaces.length > 0 && (
                                     <WorkspaceList

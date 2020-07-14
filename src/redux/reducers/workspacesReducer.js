@@ -26,6 +26,10 @@ export default (state = INITIAL_STATE, action) => {
       let workspaces = { ...state.workspaces };
       action.data.workspaces.forEach((ws) => {
         let topics = {};
+        if (typeof workspaces[ws.id] !== "undefined" && typeof workspaces[ws.id].topics !== "undefined") {
+          topics = workspaces[ws.id].topics;
+        }
+
         if (ws.topics !== undefined && ws.topics.length > 0) {
           ws.topics.forEach((t) => {
             topics[t.id] = {
@@ -46,6 +50,7 @@ export default (state = INITIAL_STATE, action) => {
           topics: topics,
         };
       });
+
       return {
         ...state,
         workspaces: workspaces,
