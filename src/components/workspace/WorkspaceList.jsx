@@ -81,7 +81,7 @@ const TopicNav = styled.ul`
 const WorkspaceList = (props) => {
   const {className = "", show = true, workspace} = props;
   if (workspace.is_active === 0) {
-    console.log(workspace.topics);
+    //console.log(workspace.topics);
   }
 
   const dispatch = useDispatch();

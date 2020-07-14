@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { SvgIconFeather } from "../../common";
 import { ProgressBar } from "../common";
-import { FolderList } from "./index";
+import { FolderList, GoogleDrive } from "./index";
 
 const Wrapper = styled.div`
   text-align: left;
@@ -96,6 +96,7 @@ const FileSidebar = (props) => {
               Removed
               <span className="small ml-auto">{wsFiles && wsFiles.trash > 0 ? wsFiles.trash : null}</span>
             </Filter>
+            <GoogleDrive/>
           </div>
           {typeof wsFiles !== "undefined" && wsFiles !== null && (
             <div className="card-body">
