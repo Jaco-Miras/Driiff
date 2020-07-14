@@ -25,15 +25,17 @@ const CompanyName = styled.h2`
 `;
 
 const MainNavLink = styled(NavLink)`
-  padding: 10px 40px;
   border-radius: 8px;
   color: #828282;
-  margin: 0 0.2rem;
+  margin: 0 1rem;
   transition: color 200ms ease 0ms;
+  font-weight: 500;
+  border-radius: 0;
+  display: flex;
+  height: 35px;
   &.active {
-    transition: none;
-    background-color: #7a1b8b;
-    color: #fff;
+    border-bottom: 2px solid #5d5d5d;
+    color: #000000;
   }
 `;
 
@@ -55,7 +57,6 @@ const CompanyHeaderPanel = () => {
 
   useEffect(() => {
     const body = document.body;
-    body.classList.add("navigation-toggle-one");
 
     if (["people", "workspace", "post", "notifications"].includes(match.params.page)) {
       body.classList.remove("stretch-layout");

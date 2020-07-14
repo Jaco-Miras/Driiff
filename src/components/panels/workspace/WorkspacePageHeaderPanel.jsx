@@ -12,7 +12,6 @@ const Navbar = styled.ul`
 
   li {
     display: inline-block;
-    width: 15%;
     text-align: center;
     &:last-child {
       display: inline-flex !important;
@@ -24,17 +23,42 @@ const Navbar = styled.ul`
 `;
 
 const MainNavLink = styled(NavLink)`
-  padding: 10px 40px;
   border-radius: 8px;
-  color: #5d5d5d;
-  margin: 0 0.2rem;
+  color: #828282;
+  margin: 0 1rem;
   transition: color 200ms ease 0ms;
-  display: inline-flex;
+  font-weight: 500;
+  border-radius: 0;
+  display: flex;
+  height: 60px;
+  position: relative;
+  font-size: 14px;
   align-items: center;
   &.active {
-    transition: none;
-    background-color: #7a1b8b;
-    color: #fff;
+    ${"" /* border-bottom: 2px solid #000000; */}
+    color: #000000;
+    &:after {
+      content: "";
+      height: 2px;
+      width: 100%;
+      bottom: 0;
+      left: 0;
+      background: #000000;
+      position: absolute;
+    }
+  }
+  .badge {
+    background: green;
+    font-size: 0;
+    padding: 0;
+    margin: 0;
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: #f44c;
+    top: 20px;
+    right: -12px;
+    right: -8px;
   }
 `;
 
@@ -59,16 +83,16 @@ const WorkspacePageHeaderPanel = (props) => {
         <div className="container-fluid d-sm-flex justify-content-between">
           <Navbar className="navbar-nav">
             <li className="nav-item">
+              <MainNavLink isSub={true} to={`/workspace/dashboard${pathname}`}>
+                Dashboard
+              </MainNavLink>
+            </li>
+            <li className="nav-item">
               <MainNavLink isSub={true} to={`/workspace/chat${pathname}`}>
                 Chat
                 {workspace !== null && ((workspace.type === "TOPIC" && workspace.unread_chats !== 0) || (workspace.type === "WORKSPACE" && workspace.topic_detail.unread_chats !== 0)) && (
                   <div className="ml-2 badge badge-danger">{workspace.type === "TOPIC" ? workspace.unread_chats : workspace.topic_detail.unread_chats}</div>
                 )}
-              </MainNavLink>
-            </li>
-            <li className="nav-item">
-              <MainNavLink isSub={true} to={`/workspace/dashboard${pathname}`}>
-                Dashboard
               </MainNavLink>
             </li>
             <li className="nav-item">

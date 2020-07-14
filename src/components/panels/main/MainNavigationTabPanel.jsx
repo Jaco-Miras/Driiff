@@ -7,8 +7,38 @@ import { replaceChar } from "../../../helpers/stringFormatter";
 import { getUnreadNotificationCounterEntries, setNavMode } from "../../../redux/actions/globalActions";
 import { NavLink, SvgIcon, SvgIconFeather } from "../../common";
 import Tooltip from "react-tooltip-lite";
+// import { WorkspaceNavigationMenuBodyPanel } from "../workspace";
+import { useSetWorkspace, useSortWorkspaces } from "../../hooks";
+import { WorkspaceList } from "../../workspace";
+import { addToModals } from "../../../redux/actions/globalActions";
+import { setActiveTab } from "../../../redux/actions/workspaceActions";
 
 const Wrapper = styled.div`
+  .navigation-menu-tab-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 15px 0 30px 0;
+    .driff-logo {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      background-color: #fff3;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border: 1px solid #fff3;
+    }
+  }
+  .your-workspaces-title {
+    margin: 0 15px;
+    padding: 15px 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #ffffff;
+    border-top: 1px solid #fff3;
+  }
   li {
     position: relative;
     .badge {
@@ -17,32 +47,65 @@ const Wrapper = styled.div`
       height: 6px;
       padding: 0;
       background: rgba(255, 68, 68, 0.8);
-      right: 22px;
+      right: 7px;
       top: 16px;
       z-index: 9;
+    }
+  }
+  .navigation-menu-group {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    height: 70vh;
+    overflow: scroll;
+    margin: 0 15px;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+    ul li a {
+      justify-content: space-between;
+      height: 40px;
+      padding: 0 10px;
     }
   }
 `;
 
 const DriffLogo = styled(SvgIcon)`
-  width: 70px;
-  height: 30px;
+  width: 84px;
+  height: 36px;
   filter: brightness(0) saturate(100%) invert(1);
   cursor: pointer;
   cursor: hand;
+`;
+
+const FolderPlus = styled(SvgIconFeather)`
+  height: 14px;
+  width: 14px;
+  cursor: pointer;
 `;
 
 const NavIconContainer = styled(NavLink)`
   display: flex;
   color: #fff;
   height: 55px;
-  justify-content: center;
-  align-items: cente;
+  justify-content: flex-start;
+  align-items: center;
+  margin: 0 15px;
 `;
 
 const NavIcon = styled(SvgIconFeather)`
   cursor: pointer;
   cursor: hand;
+  margin: 0 8px 0 15px;
+`;
+
+const NavNewWorkspace = styled.button`
+  background: #fff3 !important;
+  ${"" /* border-color: #fff3 !important; */}
+  border: 0 !important;
+  margin: 15px;
+  width: calc(100% - 30px);
+  justify-content: center;
+  color: #ffffff !important;
 `;
 
 const MainNavigationTabPanel = (props) => {
@@ -90,11 +153,43 @@ const MainNavigationTabPanel = (props) => {
     }
   }, [active_topic]);
 
+  const activeTab = useSelector((state) => state.workspaces.activeTab);
+
+  const handleShowFolderModal = () => {
+    let payload = {
+      type: "workspace_folder",
+      mode: "create",
+    };
+    dispatch(addToModals(payload));
+  };
+
+  const handleShowWorkspaceModal = () => {
+    let payload = {
+      type: "workspace_create_edit",
+      mode: "create",
+    };
+
+    dispatch(addToModals(payload));
+  };
+
+  useSetWorkspace();
+  const sortedWorkspaces = useSortWorkspaces();
+  const generalInternalWorkspaces = sortedWorkspaces.filter((ws) => ws.type !== "FOLDER" && ws.is_external === 0 && ws.topic_detail.active === 1);
+  const generalExternalWorkspaces = sortedWorkspaces.filter((ws) => ws.type !== "FOLDER" && ws.is_external !== 0 && ws.topic_detail.active === 1);
+  const archiveInternalWorkspacesFolder = sortedWorkspaces.filter((ws) => {
+    return ws.type === "FOLDER" && ws.is_external === 0 && Object.values(ws.topics).some((t) => t.active === 0);
+  });
+  //const archiveExternalWorkspacesFolder = sortedWorkspaces.filter((ws) => ws.type === "FOLDER" && ws.is_external !== 0 && ws.topics.some(t => t.active === 0));
+  const archiveInternalWorkspaces = sortedWorkspaces.filter((ws) => ws.type !== "FOLDER" && ws.is_external === 0 && ws.topic_detail.active === 0);
+  const archiveExternalWorkspaces = sortedWorkspaces.filter((ws) => ws.type !== "FOLDER" && ws.is_external !== 0 && ws.topic_detail.active === 0);
+
   return (
     <Wrapper className={`navigation-menu-tab ${className}`}>
       <div>
         <div className="navigation-menu-tab-header" data-toggle="tooltip" title="Driff" data-placement="right" data-original-title="Driff">
-          <DriffLogo icon="driff-logo" data-link="/" onClick={handleIconClick} />
+          <div class="driff-logo">
+            <DriffLogo icon="driff-logo" data-link="/" onClick={handleIconClick} />
+          </div>
         </div>
       </div>
       <div className="flex-grow-1">
@@ -102,6 +197,7 @@ const MainNavigationTabPanel = (props) => {
           <li>
             <NavIconContainer to={workspacePath}>
               <NavIcon icon={"command"} />
+              Workspaces
               {unreadCounter.workspace_chat_message + unreadCounter.workspace_post >= 1 && <Badge data-count={unreadCounter.workspace_chat_message + unreadCounter.workspace_post}>&nbsp;</Badge>}
             </NavIconContainer>
           </li>
@@ -111,26 +207,90 @@ const MainNavigationTabPanel = (props) => {
               to={lastVisitedChannel !== null && lastVisitedChannel.hasOwnProperty("code") ? `/chat/${lastVisitedChannel.code}` : "/chat"}
             >
               <NavIcon icon={"message-circle"} />
+              Chats
               {(unreadCounter.chat_message >= 1 || unreadCounter.unread_channel > 0) && <Badge data-count={unreadCounter.chat_message}>&nbsp;</Badge>}
             </NavIconContainer>
           </li>
         </ul>
       </div>
+
+      <div className="your-workspaces-title">
+        Your workspaces
+        <FolderPlus onClick={handleShowFolderModal} icon="folder-plus" />
+      </div>
+      <div className="navigation-menu-group">
+        <div id="elements" className="open">
+          <ul>
+            {sortedWorkspaces
+              .filter((sws) => sws.type === "FOLDER")
+              .map((ws) => {
+                return <WorkspaceList show={ws.is_external === (activeTab === "intern" ? 0 : 1)} key={ws.key_id} workspace={ws} />;
+              })}
+            {generalInternalWorkspaces.length > 0 && (
+              <WorkspaceList
+                show={activeTab === "intern"}
+                workspace={{
+                  id: "general_internal",
+                  is_lock: 0,
+                  selected: generalInternalWorkspaces.some((ws) => ws.selected),
+                  name: "General",
+                  type: "GENERAL_FOLDER",
+                  topics: generalInternalWorkspaces,
+                }}
+              />
+            )}
+            {generalExternalWorkspaces.length > 0 && (
+              <WorkspaceList
+                show={activeTab !== "intern"}
+                workspace={{
+                  id: "general_external",
+                  is_lock: 0,
+                  selected: generalInternalWorkspaces.some((ws) => ws.selected),
+                  name: "General",
+                  type: "GENERAL_FOLDER",
+                  topics: generalInternalWorkspaces,
+                }}
+              />
+            )}
+          </ul>
+
+          <ul>
+            {archiveInternalWorkspaces.length > 0 && (
+              <WorkspaceList
+                show={activeTab === "intern"}
+                workspace={{
+                  id: "archive",
+                  is_lock: 0,
+                  is_active: 0,
+                  selected: archiveInternalWorkspaces.some((ws) => ws.selected),
+                  name: "Archived workspaces",
+                  type: "ARCHIVE_FOLDER",
+                  topics: archiveInternalWorkspaces,
+                }}
+              />
+            )}
+            {archiveExternalWorkspaces.length > 0 && (
+              <WorkspaceList
+                show={activeTab !== "intern"}
+                workspace={{
+                  id: "archive",
+                  is_lock: 0,
+                  is_active: 0,
+                  selected: archiveExternalWorkspaces.some((ws) => ws.selected),
+                  name: "Archived workspaces",
+                  type: "ARCHIVE_FOLDER",
+                  topics: archiveExternalWorkspaces,
+                }}
+              />
+            )}
+          </ul>
+        </div>
+      </div>
+
       <div>
-        <ul>
-          <li>
-            <NavIconContainer to="/settings">
-              <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Settings">
-                <NavIcon icon={"settings"} />
-              </Tooltip>
-            </NavIconContainer>
-          </li>
-          <li>
-            <NavIconContainer to="/logout">
-              <NavIcon icon={"log-out"} />
-            </NavIconContainer>
-          </li>
-        </ul>
+        <NavNewWorkspace onClick={handleShowWorkspaceModal} className="btn btn-outline-light" type="button">
+          Add new workspace
+        </NavNewWorkspace>
       </div>
     </Wrapper>
   );

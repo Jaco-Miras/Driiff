@@ -1,11 +1,11 @@
-import React, {useEffect, useRef, useState} from "react";
-import {useDispatch, useSelector} from "react-redux";
+import React, { useEffect, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
-import {toggleLoading} from "../../../redux/actions/globalActions";
-import {Avatar, SvgIconFeather} from "../../common";
+import { toggleLoading } from "../../../redux/actions/globalActions";
+import { Avatar, SvgIconFeather } from "../../common";
 import Flag from "../../common/Flag";
-import {useNotifications, useOutsideClick, useSettings, useTranslation} from "../../hooks";
-import {NotificationDropDown} from "../dropdown";
+import { useNotifications, useOutsideClick, useSettings, useTranslation } from "../../hooks";
+import { NotificationDropDown } from "../dropdown";
 import UserProfileDropDown from "../dropdown/UserProfileDropdown";
 
 const Wrapper = styled.ul`
@@ -63,9 +63,9 @@ const HomeProfileNavigation = (props) => {
 
   const dispatch = useDispatch();
 
-  const {notifications} = useNotifications();
+  const { notifications } = useNotifications();
   const {
-    generalSettings: {dark_mode, language},
+    generalSettings: { dark_mode, language },
     setGeneralSetting,
   } = useSettings();
   const { _t, setLocale } = useTranslation();
@@ -142,7 +142,7 @@ const HomeProfileNavigation = (props) => {
 
   return (
     <Wrapper ref={refs.container} className={`header-profile-navigation navbar-nav ${className}`}>
-      <li className="nav-item dropdown">
+      {/* <li className="nav-item dropdown">
         <a href="/" className="nav-link dropdown-toggle" data-toggle="dropdown" onClick={toggleDropdown}>
           <Flag countryAbbr={language} className="mr-2" width="18" />
           {languageOptions[language]}
@@ -157,19 +157,17 @@ const HomeProfileNavigation = (props) => {
             {languageOptions.nl}
           </a>
         </div>
-      </li>
+      </li> */}
       <li className="nav-item">
         <ThemeSwitch title="Light or Dark mode" onClick={setThemeButton}>
           <SvgIconFeather icon="moon" />
         </ThemeSwitch>
       </li>
       <li className="nav-item dropdown">
-        <a href="/"
-           className={`nav-link ${Object.values(notifications).filter((n) => n.is_read === 0).length > 0 ? "nav-link-notify" : ""}`}
-           title="Notifications" data-toggle="dropdown" onClick={toggleDropdown}>
-          <SvgIconFeather icon="bell"/>
+        <a href="/" className={`nav-link ${Object.values(notifications).filter((n) => n.is_read === 0).length > 0 ? "nav-link-notify" : ""}`} title="Notifications" data-toggle="dropdown" onClick={toggleDropdown}>
+          <SvgIconFeather icon="bell" />
         </a>
-        <NotificationDropDown/>
+        <NotificationDropDown />
       </li>
       <li className="nav-item dropdown">
         <a href="/" className="nav-link profile-button" data-toggle="dropdown" title={user.name} onClick={toggleDropdown}>

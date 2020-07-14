@@ -7,7 +7,21 @@ import { replaceChar } from "../../helpers/stringFormatter";
 
 const TopicListWrapper = styled.li`
   cursor: pointer;
-  color: ${(props) => (props.selected ? "#7a1b8b !important" : "#000")};
+  ${"" /* color: ${(props) => (props.selected ? "#7a1b8b !important" : "#ffffff")}; */}
+  color: #ffffff;
+  background-color: #fff3;
+  height: 40px;
+  width: 100%;
+  padding: 0 10px;
+  div {
+    position: relative;
+    height: 40px;
+    display: inline-flex;
+    align-items: center;
+    svg {
+      margin-left: 6px;
+    }
+  }
 `;
 
 const Icon = styled(SvgIconFeather)`
@@ -48,9 +62,11 @@ const TopicList = (props) => {
 
   return (
     <TopicListWrapper className={`topic-list ${className}`} onClick={handleSelectTopic} selected={topic.selected}>
-      <Icon icon={topic.private === 1 ? "lock" : "circle"} />
-      {topic.name}
-      {unread_count > 0 && <Badge color="danger">{unread_count}</Badge>}
+      <div>
+        {topic.name}
+        {topic.private === 1 && <Icon icon={"lock"} />}
+        {unread_count > 0 && <Badge color="danger">{unread_count}</Badge>}
+      </div>
     </TopicListWrapper>
   );
 };

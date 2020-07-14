@@ -1,25 +1,24 @@
 @import "../fonts/fonts.scss";
 
-$blue: #7A1B8B;
+$blue: #7a1b8b;
 $purple: $blue;
 $color-primary: #7a1b8b;
-$color-secondary: #8C3B9B;
+$color-secondary: #8c3b9b;
 
 @import "~bootstrap/scss/bootstrap.scss";
-
 
 .btn-outline-primary {
   border-color: $purple;
 }
 
 * {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   // -moz-osx-font-smoothing: grayscale;
   // -webkit-font-smoothing: antialiased;
 }
 
 body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   position: relative;
   background: #f1f2f7;
   font-size: 0.835rem;
@@ -30,7 +29,7 @@ body {
   line-height: 1.5rem;
 }
 .chat-input-wrapper {
-  transition: border-color 0.15s cubic-bezier(.275, .420, .000, 1.000), box-shadow 0.15s cubic-bezier(.275, .420, .000, 1.000);
+  transition: border-color 0.15s cubic-bezier(0.275, 0.42, 0, 1), box-shadow 0.15s cubic-bezier(0.275, 0.42, 0, 1);
 }
 .chat-input-wrapper:focus-within {
   border-color: rgba(122, 27, 139, 0.8) !important;
@@ -48,7 +47,6 @@ body.dark {
   }
 
   .chat-right {
-
   }
   .chat-sidebar-header {
     background: #313852;
@@ -58,14 +56,17 @@ body.dark {
     background: #313852;
   }
   .timestamp-container {
-    color: #9f9f9f  ;
-    &:before, &:after {
+    color: #9f9f9f;
+    &:before,
+    &:after {
       background-color: #454c66;
     }
   }
   .chat-footer {
-    .feather-smile, .feather-paperclip, .chat-input-wrapper {
-      border-color: #454c66!important;
+    .feather-smile,
+    .feather-paperclip,
+    .chat-input-wrapper {
+      border-color: #454c66 !important;
     }
   }
 }
@@ -76,12 +77,12 @@ body.dark {
 
 @keyframes bottom-fade {
   0% {
-      opacity: 0;
-      transform: translateY(15px);
+    opacity: 0;
+    transform: translateY(15px);
   }
   100% {
-      opacity: 1;
-      transform: translateY(0);
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
@@ -93,8 +94,6 @@ body.dark {
 .system-reply-list-item {
   margin: 36px 0 12px 0;
 }
-
-
 
 [class*=" ti-"],
 [class^="ti-"] {
@@ -1525,8 +1524,8 @@ body.dark {
   font-family: FontAwesome;
   src: url(../icons/font-awesome/fonts/fontawesome-webfont.eot?v=4.7.0);
   src: url(../icons/font-awesome/fonts/fontawesome-webfont.eot?#iefix&v=4.7.0) format("embedded-opentype"), url(../icons/font-awesome/fonts/fontawesome-webfont.woff2?v=4.7.0) format("woff2"),
-  url(../icons/font-awesome/fonts/fontawesome-webfont.woff?v=4.7.0) format("woff"), url(../icons/font-awesome/fonts/fontawesome-webfont.ttf?v=4.7.0) format("truetype"),
-  url(../icons/font-awesome/fonts/fontawesome-webfont.svg?v=4.7.0#fontawesomeregular) format("svg");
+    url(../icons/font-awesome/fonts/fontawesome-webfont.woff?v=4.7.0) format("woff"), url(../icons/font-awesome/fonts/fontawesome-webfont.ttf?v=4.7.0) format("truetype"),
+    url(../icons/font-awesome/fonts/fontawesome-webfont.svg?v=4.7.0#fontawesomeregular) format("svg");
   font-weight: 400;
   font-style: normal;
 }
@@ -4609,7 +4608,7 @@ body.dark {
   font-family: pe-icon-set-weather;
   src: url(../icons/weather/fonts/pe-icon-set-weather.eot?nlruav);
   src: url(../icons/weather/fonts/pe-icon-set-weather.eot?nlruav#iefix) format("embedded-opentype"), url(../icons/weather/fonts/pe-icon-set-weather.ttf?nlruav) format("truetype"),
-  url(../icons/weather/fonts/pe-icon-set-weather.woff?nlruav) format("woff"), url(../icons/weather/fonts/pe-icon-set-weather.svg?nlruav#pe-icon-set-weather) format("svg");
+    url(../icons/weather/fonts/pe-icon-set-weather.woff?nlruav) format("woff"), url(../icons/weather/fonts/pe-icon-set-weather.svg?nlruav#pe-icon-set-weather) format("svg");
   font-weight: 400;
   font-style: normal;
 }
@@ -9041,7 +9040,7 @@ body.dark {
   -webkit-border-radius: 50%;
   -moz-border-radius: 50%;
   border-radius: 50%;
-  border-top: 5px solid #7A1B8B;
+  border-top: 5px solid #7a1b8b;
   width: 50px;
   height: 50px;
   -webkit-animation: spin 0.5s linear infinite;
@@ -9729,9 +9728,9 @@ textarea {
 
 .page-header {
   margin: -1.9rem;
-  padding: 1rem 1.8rem;
+  padding: 0 1.8rem;
   margin-bottom: 30px;
-  height: 69px;
+  height: 60px;
   background-color: #fff;
   z-index: 3;
   -webkit-box-shadow: 0 3px 10px rgba(62, 85, 120, 0.07);
@@ -9742,11 +9741,12 @@ textarea {
   display: -moz-box;
   display: -ms-flexbox;
   display: flex;
-  -webkit-box-align: center;
-  -webkit-align-items: center;
-  -moz-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
+  // -webkit-box-align: center;
+  // -webkit-align-items: center;
+  // -moz-box-align: center;
+  // -ms-flex-align: center;
+  align-items: flex-end;
+  padding-left: 38px;
 }
 
 .page-header h1,
@@ -10376,7 +10376,6 @@ textarea {
 .colorpicker.colorpicker-hidden {
   display: none !important;
 }
-
 
 body.no-scroll {
   overflow: hidden;
@@ -15142,7 +15141,6 @@ button.toast-close-button {
   padding: 0;
 }
 
-
 #compose .ql-editor,
 .app-block .ql-editor {
   min-height: 70px;
@@ -15543,173 +15541,173 @@ body.stretch-layout.navigation-toggle-one .header {
   }
 
   .chat-block
-  .chat-sidebar
-  .chat-sidebar-content
-  .list-group
-  .header
-  form
-  .input-group
-  .input-group-append
-  body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
-  .navigation
-  .navigation-menu-body
-  ul
-  li.open
-  > button.btn
-  + ul
-  li.open
-  > .list-group-item.active,
+    .chat-sidebar
+    .chat-sidebar-content
+    .list-group
+    .header
+    form
+    .input-group
+    .input-group-append
+    body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
+    .navigation
+    .navigation-menu-body
+    ul
+    li.open
+    > button.btn
+    + ul
+    li.open
+    > .list-group-item.active,
   .chat-block
-  .chat-sidebar
-  .chat-sidebar-content
-  .list-group
-  body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
-  .navigation
-  .navigation-menu-body
-  ul
-  .header
-  form
-  .input-group
-  .input-group-append
-  li.open
-  > button.btn
-  + ul
-  li.open
-  > .list-group-item.active,
+    .chat-sidebar
+    .chat-sidebar-content
+    .list-group
+    body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
+    .navigation
+    .navigation-menu-body
+    ul
+    .header
+    form
+    .input-group
+    .input-group-append
+    li.open
+    > button.btn
+    + ul
+    li.open
+    > .list-group-item.active,
   .chat-block
-  .chat-sidebar
-  .chat-sidebar-content
-  .list-group
-  body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
-  .navigation
-  .navigation-menu-body
-  ul
-  li.open
-  > .list-group-item.active
-  + ul
-  .header
-  form
-  .input-group
-  .input-group-append
-  li.open
-  > button.btn,
+    .chat-sidebar
+    .chat-sidebar-content
+    .list-group
+    body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
+    .navigation
+    .navigation-menu-body
+    ul
+    li.open
+    > .list-group-item.active
+    + ul
+    .header
+    form
+    .input-group
+    .input-group-append
+    li.open
+    > button.btn,
   .chat-block
-  .chat-sidebar
-  .chat-sidebar-content
-  .list-group
-  body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
-  .navigation
-  .navigation-menu-body
-  ul
-  li.open
-  > .list-group-item.active
-  + ul
-  li.open
-  > .list-group-item.active,
+    .chat-sidebar
+    .chat-sidebar-content
+    .list-group
+    body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
+    .navigation
+    .navigation-menu-body
+    ul
+    li.open
+    > .list-group-item.active
+    + ul
+    li.open
+    > .list-group-item.active,
   .chat-block .chat-sidebar .chat-sidebar-content .list-group body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation) .navigation .navigation-menu-body ul li.open > .list-group-item.active + ul li.open > a,
   .chat-block .chat-sidebar .chat-sidebar-content .list-group body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation) .navigation .navigation-menu-body ul li.open > a + ul li.open > .list-group-item.active,
   .header
-  form
-  .input-group
-  .input-group-append
-  .chat-block
-  .chat-sidebar
-  .chat-sidebar-content
-  .list-group
-  body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
-  .navigation
-  .navigation-menu-body
-  ul
-  li.open
-  > .list-group-item.active
-  + ul
-  li.open
-  > button.btn,
+    form
+    .input-group
+    .input-group-append
+    .chat-block
+    .chat-sidebar
+    .chat-sidebar-content
+    .list-group
+    body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
+    .navigation
+    .navigation-menu-body
+    ul
+    li.open
+    > .list-group-item.active
+    + ul
+    li.open
+    > button.btn,
   .header
-  form
-  .input-group
-  .input-group-append
-  body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
-  .navigation
-  .navigation-menu-body
-  ul
-  .chat-block
-  .chat-sidebar
-  .chat-sidebar-content
-  .list-group
-  li.open
-  > .list-group-item.active
-  + ul
-  li.open
-  > button.btn,
+    form
+    .input-group
+    .input-group-append
+    body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
+    .navigation
+    .navigation-menu-body
+    ul
+    .chat-block
+    .chat-sidebar
+    .chat-sidebar-content
+    .list-group
+    li.open
+    > .list-group-item.active
+    + ul
+    li.open
+    > button.btn,
   .header form .input-group .input-group-append body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation) .navigation .navigation-menu-body ul li.open > a + ul li.open > button.btn,
   .header
-  form
-  .input-group
-  .input-group-append
-  body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
-  .navigation
-  .navigation-menu-body
-  ul
-  li.open
-  > button.btn
-  + ul
-  .chat-block
-  .chat-sidebar
-  .chat-sidebar-content
-  .list-group
-  li.open
-  > .list-group-item.active,
+    form
+    .input-group
+    .input-group-append
+    body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
+    .navigation
+    .navigation-menu-body
+    ul
+    li.open
+    > button.btn
+    + ul
+    .chat-block
+    .chat-sidebar
+    .chat-sidebar-content
+    .list-group
+    li.open
+    > .list-group-item.active,
   .header form .input-group .input-group-append body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation) .navigation .navigation-menu-body ul li.open > button.btn + ul li.open > a,
   .header form .input-group .input-group-append body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation) .navigation .navigation-menu-body ul li.open > button.btn + ul li.open > button.btn,
   body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
-  .navigation
-  .navigation-menu-body
-  ul
-  .chat-block
-  .chat-sidebar
-  .chat-sidebar-content
-  .list-group
-  li.open
-  > .list-group-item.active
-  + ul
-  .header
-  form
-  .input-group
-  .input-group-append
-  li.open
-  > button.btn,
+    .navigation
+    .navigation-menu-body
+    ul
+    .chat-block
+    .chat-sidebar
+    .chat-sidebar-content
+    .list-group
+    li.open
+    > .list-group-item.active
+    + ul
+    .header
+    form
+    .input-group
+    .input-group-append
+    li.open
+    > button.btn,
   body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
-  .navigation
-  .navigation-menu-body
-  ul
-  .chat-block
-  .chat-sidebar
-  .chat-sidebar-content
-  .list-group
-  li.open
-  > .list-group-item.active
-  + ul
-  li.open
-  > .list-group-item.active,
+    .navigation
+    .navigation-menu-body
+    ul
+    .chat-block
+    .chat-sidebar
+    .chat-sidebar-content
+    .list-group
+    li.open
+    > .list-group-item.active
+    + ul
+    li.open
+    > .list-group-item.active,
   body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation) .navigation .navigation-menu-body ul .chat-block .chat-sidebar .chat-sidebar-content .list-group li.open > .list-group-item.active + ul li.open > a,
   body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
-  .navigation
-  .navigation-menu-body
-  ul
-  .header
-  form
-  .input-group
-  .input-group-append
-  li.open
-  > button.btn
-  + ul
-  .chat-block
-  .chat-sidebar
-  .chat-sidebar-content
-  .list-group
-  li.open
-  > .list-group-item.active,
+    .navigation
+    .navigation-menu-body
+    ul
+    .header
+    form
+    .input-group
+    .input-group-append
+    li.open
+    > button.btn
+    + ul
+    .chat-block
+    .chat-sidebar
+    .chat-sidebar-content
+    .list-group
+    li.open
+    > .list-group-item.active,
   body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation) .navigation .navigation-menu-body ul .header form .input-group .input-group-append li.open > button.btn + ul li.open > a,
   body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation) .navigation .navigation-menu-body ul .header form .input-group .input-group-append li.open > button.btn + ul li.open > button.btn,
   body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation) .navigation .navigation-menu-body ul li.open > a + ul .chat-block .chat-sidebar .chat-sidebar-content .list-group li.open > .list-group-item.active,
@@ -15744,149 +15742,149 @@ body.stretch-layout.navigation-toggle-one .header {
   }
 
   .chat-block
-  .chat-sidebar
-  .chat-sidebar-content
-  .list-group
-  .header
-  form
-  .input-group
-  .input-group-append
-  body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
-  .navigation
-  .navigation-menu-body
-  > ul
-  > li
-  > button.btn
-  + ul
-  li
-  .list-group-item.active,
+    .chat-sidebar
+    .chat-sidebar-content
+    .list-group
+    .header
+    form
+    .input-group
+    .input-group-append
+    body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
+    .navigation
+    .navigation-menu-body
+    > ul
+    > li
+    > button.btn
+    + ul
+    li
+    .list-group-item.active,
   .chat-block
-  .chat-sidebar
-  .chat-sidebar-content
-  .list-group
-  body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
-  .navigation
-  .header
-  form
-  .input-group
-  .input-group-append
-  .navigation-menu-body
-  > ul
-  > li
-  > button.btn
-  + ul
-  li
-  .list-group-item.active,
+    .chat-sidebar
+    .chat-sidebar-content
+    .list-group
+    body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
+    .navigation
+    .header
+    form
+    .input-group
+    .input-group-append
+    .navigation-menu-body
+    > ul
+    > li
+    > button.btn
+    + ul
+    li
+    .list-group-item.active,
   .chat-block
-  .chat-sidebar
-  .chat-sidebar-content
-  .list-group
-  body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
-  .navigation
-  .navigation-menu-body
-  > ul
-  > li
-  > .list-group-item.active
-  + ul
-  li
-  .header
-  form
-  .input-group
-  .input-group-append
-  button.btn,
+    .chat-sidebar
+    .chat-sidebar-content
+    .list-group
+    body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
+    .navigation
+    .navigation-menu-body
+    > ul
+    > li
+    > .list-group-item.active
+    + ul
+    li
+    .header
+    form
+    .input-group
+    .input-group-append
+    button.btn,
   .chat-block .chat-sidebar .chat-sidebar-content .list-group body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation) .navigation .navigation-menu-body > ul > li > .list-group-item.active + ul li .list-group-item.active,
   .chat-block .chat-sidebar .chat-sidebar-content .list-group body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation) .navigation .navigation-menu-body > ul > li > .list-group-item.active + ul li a,
   .chat-block .chat-sidebar .chat-sidebar-content .list-group body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation) .navigation .navigation-menu-body > ul > li > a + ul li .list-group-item.active,
   .header
-  form
-  .input-group
-  .input-group-append
-  .chat-block
-  .chat-sidebar
-  .chat-sidebar-content
-  .list-group
-  body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
-  .navigation
-  .navigation-menu-body
-  > ul
-  > li
-  > .list-group-item.active
-  + ul
-  li
-  button.btn,
+    form
+    .input-group
+    .input-group-append
+    .chat-block
+    .chat-sidebar
+    .chat-sidebar-content
+    .list-group
+    body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
+    .navigation
+    .navigation-menu-body
+    > ul
+    > li
+    > .list-group-item.active
+    + ul
+    li
+    button.btn,
   .header
-  form
-  .input-group
-  .input-group-append
-  body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
-  .navigation
-  .chat-block
-  .chat-sidebar
-  .chat-sidebar-content
-  .list-group
-  .navigation-menu-body
-  > ul
-  > li
-  > .list-group-item.active
-  + ul
-  li
-  button.btn,
+    form
+    .input-group
+    .input-group-append
+    body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
+    .navigation
+    .chat-block
+    .chat-sidebar
+    .chat-sidebar-content
+    .list-group
+    .navigation-menu-body
+    > ul
+    > li
+    > .list-group-item.active
+    + ul
+    li
+    button.btn,
   .header form .input-group .input-group-append body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation) .navigation .navigation-menu-body > ul > li > a + ul li button.btn,
   .header
-  form
-  .input-group
-  .input-group-append
-  body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
-  .navigation
-  .navigation-menu-body
-  > ul
-  > li
-  > button.btn
-  + ul
-  li
-  .chat-block
-  .chat-sidebar
-  .chat-sidebar-content
-  .list-group
-  .list-group-item.active,
+    form
+    .input-group
+    .input-group-append
+    body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
+    .navigation
+    .navigation-menu-body
+    > ul
+    > li
+    > button.btn
+    + ul
+    li
+    .chat-block
+    .chat-sidebar
+    .chat-sidebar-content
+    .list-group
+    .list-group-item.active,
   .header form .input-group .input-group-append body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation) .navigation .navigation-menu-body > ul > li > button.btn + ul li a,
   .header form .input-group .input-group-append body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation) .navigation .navigation-menu-body > ul > li > button.btn + ul li button.btn,
   body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
-  .navigation
-  .chat-block
-  .chat-sidebar
-  .chat-sidebar-content
-  .list-group
-  .navigation-menu-body
-  > ul
-  > li
-  > .list-group-item.active
-  + ul
-  li
-  .header
-  form
-  .input-group
-  .input-group-append
-  button.btn,
+    .navigation
+    .chat-block
+    .chat-sidebar
+    .chat-sidebar-content
+    .list-group
+    .navigation-menu-body
+    > ul
+    > li
+    > .list-group-item.active
+    + ul
+    li
+    .header
+    form
+    .input-group
+    .input-group-append
+    button.btn,
   body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation) .navigation .chat-block .chat-sidebar .chat-sidebar-content .list-group .navigation-menu-body > ul > li > .list-group-item.active + ul li .list-group-item.active,
   body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation) .navigation .chat-block .chat-sidebar .chat-sidebar-content .list-group .navigation-menu-body > ul > li > .list-group-item.active + ul li a,
   body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
-  .navigation
-  .header
-  form
-  .input-group
-  .input-group-append
-  .navigation-menu-body
-  > ul
-  > li
-  > button.btn
-  + ul
-  li
-  .chat-block
-  .chat-sidebar
-  .chat-sidebar-content
-  .list-group
-  .list-group-item.active,
+    .navigation
+    .header
+    form
+    .input-group
+    .input-group-append
+    .navigation-menu-body
+    > ul
+    > li
+    > button.btn
+    + ul
+    li
+    .chat-block
+    .chat-sidebar
+    .chat-sidebar-content
+    .list-group
+    .list-group-item.active,
   body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation) .navigation .header form .input-group .input-group-append .navigation-menu-body > ul > li > button.btn + ul li a,
   body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation) .navigation .header form .input-group .input-group-append .navigation-menu-body > ul > li > button.btn + ul li button.btn,
   body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation) .navigation .navigation-menu-body > ul > li > a + ul li .chat-block .chat-sidebar .chat-sidebar-content .list-group .list-group-item.active,
@@ -15896,1109 +15894,1109 @@ body.stretch-layout.navigation-toggle-one .header {
   }
 
   .chat-block
-  .chat-sidebar
-  .chat-sidebar-content
-  .list-group
-  .header
-  form
-  .input-group
-  .input-group-append
-  body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
-  .navigation
-  .navigation-menu-body
-  > ul
-  > li
-  > a
-  + ul
-  li
-  button.btn
-  + ul
-  li
-  .list-group-item.active,
+    .chat-sidebar
+    .chat-sidebar-content
+    .list-group
+    .header
+    form
+    .input-group
+    .input-group-append
+    body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
+    .navigation
+    .navigation-menu-body
+    > ul
+    > li
+    > a
+    + ul
+    li
+    button.btn
+    + ul
+    li
+    .list-group-item.active,
   .chat-block
-  .chat-sidebar
-  .chat-sidebar-content
-  .list-group
-  .header
-  form
-  .input-group
-  .input-group-append
-  body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
-  .navigation
-  .navigation-menu-body
-  > ul
-  > li
-  > button.btn
-  + ul
-  li
-  .list-group-item.active
-  + ul
-  li
-  .list-group-item.active,
+    .chat-sidebar
+    .chat-sidebar-content
+    .list-group
+    .header
+    form
+    .input-group
+    .input-group-append
+    body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
+    .navigation
+    .navigation-menu-body
+    > ul
+    > li
+    > button.btn
+    + ul
+    li
+    .list-group-item.active
+    + ul
+    li
+    .list-group-item.active,
   .chat-block
-  .chat-sidebar
-  .chat-sidebar-content
-  .list-group
-  .header
-  form
-  .input-group
-  .input-group-append
-  body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
-  .navigation
-  .navigation-menu-body
-  > ul
-  > li
-  > button.btn
-  + ul
-  li
-  .list-group-item.active
-  + ul
-  li
-  a,
+    .chat-sidebar
+    .chat-sidebar-content
+    .list-group
+    .header
+    form
+    .input-group
+    .input-group-append
+    body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
+    .navigation
+    .navigation-menu-body
+    > ul
+    > li
+    > button.btn
+    + ul
+    li
+    .list-group-item.active
+    + ul
+    li
+    a,
   .chat-block
-  .chat-sidebar
-  .chat-sidebar-content
-  .list-group
-  .header
-  form
-  .input-group
-  .input-group-append
-  body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
-  .navigation
-  .navigation-menu-body
-  > ul
-  > li
-  > button.btn
-  + ul
-  li
-  .list-group-item.active
-  + ul
-  li
-  button.btn,
+    .chat-sidebar
+    .chat-sidebar-content
+    .list-group
+    .header
+    form
+    .input-group
+    .input-group-append
+    body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
+    .navigation
+    .navigation-menu-body
+    > ul
+    > li
+    > button.btn
+    + ul
+    li
+    .list-group-item.active
+    + ul
+    li
+    button.btn,
   .chat-block
-  .chat-sidebar
-  .chat-sidebar-content
-  .list-group
-  .header
-  form
-  .input-group
-  .input-group-append
-  body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
-  .navigation
-  .navigation-menu-body
-  > ul
-  > li
-  > button.btn
-  + ul
-  li
-  a
-  + ul
-  li
-  .list-group-item.active,
+    .chat-sidebar
+    .chat-sidebar-content
+    .list-group
+    .header
+    form
+    .input-group
+    .input-group-append
+    body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
+    .navigation
+    .navigation-menu-body
+    > ul
+    > li
+    > button.btn
+    + ul
+    li
+    a
+    + ul
+    li
+    .list-group-item.active,
   .chat-block
-  .chat-sidebar
-  .chat-sidebar-content
-  .list-group
-  .header
-  form
-  .input-group
-  .input-group-append
-  body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
-  .navigation
-  .navigation-menu-body
-  > ul
-  > li
-  > button.btn
-  + ul
-  li
-  button.btn
-  + ul
-  li
-  .list-group-item.active,
+    .chat-sidebar
+    .chat-sidebar-content
+    .list-group
+    .header
+    form
+    .input-group
+    .input-group-append
+    body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
+    .navigation
+    .navigation-menu-body
+    > ul
+    > li
+    > button.btn
+    + ul
+    li
+    button.btn
+    + ul
+    li
+    .list-group-item.active,
   .chat-block
-  .chat-sidebar
-  .chat-sidebar-content
-  .list-group
-  body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
-  .navigation
-  .header
-  form
-  .input-group
-  .input-group-append
-  .navigation-menu-body
-  > ul
-  > li
-  > button.btn
-  + ul
-  li
-  .list-group-item.active
-  + ul
-  li
-  .list-group-item.active,
+    .chat-sidebar
+    .chat-sidebar-content
+    .list-group
+    body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
+    .navigation
+    .header
+    form
+    .input-group
+    .input-group-append
+    .navigation-menu-body
+    > ul
+    > li
+    > button.btn
+    + ul
+    li
+    .list-group-item.active
+    + ul
+    li
+    .list-group-item.active,
   .chat-block
-  .chat-sidebar
-  .chat-sidebar-content
-  .list-group
-  body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
-  .navigation
-  .header
-  form
-  .input-group
-  .input-group-append
-  .navigation-menu-body
-  > ul
-  > li
-  > button.btn
-  + ul
-  li
-  .list-group-item.active
-  + ul
-  li
-  a,
+    .chat-sidebar
+    .chat-sidebar-content
+    .list-group
+    body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
+    .navigation
+    .header
+    form
+    .input-group
+    .input-group-append
+    .navigation-menu-body
+    > ul
+    > li
+    > button.btn
+    + ul
+    li
+    .list-group-item.active
+    + ul
+    li
+    a,
   .chat-block
-  .chat-sidebar
-  .chat-sidebar-content
-  .list-group
-  body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
-  .navigation
-  .header
-  form
-  .input-group
-  .input-group-append
-  .navigation-menu-body
-  > ul
-  > li
-  > button.btn
-  + ul
-  li
-  .list-group-item.active
-  + ul
-  li
-  button.btn,
+    .chat-sidebar
+    .chat-sidebar-content
+    .list-group
+    body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
+    .navigation
+    .header
+    form
+    .input-group
+    .input-group-append
+    .navigation-menu-body
+    > ul
+    > li
+    > button.btn
+    + ul
+    li
+    .list-group-item.active
+    + ul
+    li
+    button.btn,
   .chat-block
-  .chat-sidebar
-  .chat-sidebar-content
-  .list-group
-  body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
-  .navigation
-  .header
-  form
-  .input-group
-  .input-group-append
-  .navigation-menu-body
-  > ul
-  > li
-  > button.btn
-  + ul
-  li
-  a
-  + ul
-  li
-  .list-group-item.active,
+    .chat-sidebar
+    .chat-sidebar-content
+    .list-group
+    body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
+    .navigation
+    .header
+    form
+    .input-group
+    .input-group-append
+    .navigation-menu-body
+    > ul
+    > li
+    > button.btn
+    + ul
+    li
+    a
+    + ul
+    li
+    .list-group-item.active,
   .chat-block
-  .chat-sidebar
-  .chat-sidebar-content
-  .list-group
-  body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
-  .navigation
-  .header
-  form
-  .input-group
-  .input-group-append
-  .navigation-menu-body
-  > ul
-  > li
-  > button.btn
-  + ul
-  li
-  button.btn
-  + ul
-  li
-  .list-group-item.active,
+    .chat-sidebar
+    .chat-sidebar-content
+    .list-group
+    body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
+    .navigation
+    .header
+    form
+    .input-group
+    .input-group-append
+    .navigation-menu-body
+    > ul
+    > li
+    > button.btn
+    + ul
+    li
+    button.btn
+    + ul
+    li
+    .list-group-item.active,
   .chat-block
-  .chat-sidebar
-  .chat-sidebar-content
-  .list-group
-  body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
-  .navigation
-  .navigation-menu-body
-  > ul
-  > li
-  > .list-group-item.active
-  + ul
-  li
-  .header
-  form
-  .input-group
-  .input-group-append
-  button.btn
-  + ul
-  li
-  .list-group-item.active,
+    .chat-sidebar
+    .chat-sidebar-content
+    .list-group
+    body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
+    .navigation
+    .navigation-menu-body
+    > ul
+    > li
+    > .list-group-item.active
+    + ul
+    li
+    .header
+    form
+    .input-group
+    .input-group-append
+    button.btn
+    + ul
+    li
+    .list-group-item.active,
   .chat-block
-  .chat-sidebar
-  .chat-sidebar-content
-  .list-group
-  body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
-  .navigation
-  .navigation-menu-body
-  > ul
-  > li
-  > .list-group-item.active
-  + ul
-  li
-  .header
-  form
-  .input-group
-  .input-group-append
-  button.btn
-  + ul
-  li
-  a,
+    .chat-sidebar
+    .chat-sidebar-content
+    .list-group
+    body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
+    .navigation
+    .navigation-menu-body
+    > ul
+    > li
+    > .list-group-item.active
+    + ul
+    li
+    .header
+    form
+    .input-group
+    .input-group-append
+    button.btn
+    + ul
+    li
+    a,
   .chat-block
-  .chat-sidebar
-  .chat-sidebar-content
-  .list-group
-  body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
-  .navigation
-  .navigation-menu-body
-  > ul
-  > li
-  > .list-group-item.active
-  + ul
-  li
-  .header
-  form
-  .input-group
-  .input-group-append
-  button.btn
-  + ul
-  li
-  button.btn,
+    .chat-sidebar
+    .chat-sidebar-content
+    .list-group
+    body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
+    .navigation
+    .navigation-menu-body
+    > ul
+    > li
+    > .list-group-item.active
+    + ul
+    li
+    .header
+    form
+    .input-group
+    .input-group-append
+    button.btn
+    + ul
+    li
+    button.btn,
   .chat-block
-  .chat-sidebar
-  .chat-sidebar-content
-  .list-group
-  body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
-  .navigation
-  .navigation-menu-body
-  > ul
-  > li
-  > .list-group-item.active
-  + ul
-  li
-  .list-group-item.active
-  + ul
-  li
-  .header
-  form
-  .input-group
-  .input-group-append
-  button.btn,
+    .chat-sidebar
+    .chat-sidebar-content
+    .list-group
+    body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
+    .navigation
+    .navigation-menu-body
+    > ul
+    > li
+    > .list-group-item.active
+    + ul
+    li
+    .list-group-item.active
+    + ul
+    li
+    .header
+    form
+    .input-group
+    .input-group-append
+    button.btn,
   .chat-block
-  .chat-sidebar
-  .chat-sidebar-content
-  .list-group
-  body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
-  .navigation
-  .navigation-menu-body
-  > ul
-  > li
-  > .list-group-item.active
-  + ul
-  li
-  .list-group-item.active
-  + ul
-  li
-  .list-group-item.active,
+    .chat-sidebar
+    .chat-sidebar-content
+    .list-group
+    body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
+    .navigation
+    .navigation-menu-body
+    > ul
+    > li
+    > .list-group-item.active
+    + ul
+    li
+    .list-group-item.active
+    + ul
+    li
+    .list-group-item.active,
   .chat-block
-  .chat-sidebar
-  .chat-sidebar-content
-  .list-group
-  body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
-  .navigation
-  .navigation-menu-body
-  > ul
-  > li
-  > .list-group-item.active
-  + ul
-  li
-  .list-group-item.active
-  + ul
-  li
-  a,
+    .chat-sidebar
+    .chat-sidebar-content
+    .list-group
+    body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
+    .navigation
+    .navigation-menu-body
+    > ul
+    > li
+    > .list-group-item.active
+    + ul
+    li
+    .list-group-item.active
+    + ul
+    li
+    a,
   .chat-block
-  .chat-sidebar
-  .chat-sidebar-content
-  .list-group
-  body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
-  .navigation
-  .navigation-menu-body
-  > ul
-  > li
-  > .list-group-item.active
-  + ul
-  li
-  a
-  + ul
-  li
-  .header
-  form
-  .input-group
-  .input-group-append
-  button.btn,
+    .chat-sidebar
+    .chat-sidebar-content
+    .list-group
+    body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
+    .navigation
+    .navigation-menu-body
+    > ul
+    > li
+    > .list-group-item.active
+    + ul
+    li
+    a
+    + ul
+    li
+    .header
+    form
+    .input-group
+    .input-group-append
+    button.btn,
   .chat-block
-  .chat-sidebar
-  .chat-sidebar-content
-  .list-group
-  body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
-  .navigation
-  .navigation-menu-body
-  > ul
-  > li
-  > .list-group-item.active
-  + ul
-  li
-  a
-  + ul
-  li
-  .list-group-item.active,
+    .chat-sidebar
+    .chat-sidebar-content
+    .list-group
+    body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
+    .navigation
+    .navigation-menu-body
+    > ul
+    > li
+    > .list-group-item.active
+    + ul
+    li
+    a
+    + ul
+    li
+    .list-group-item.active,
   .chat-block .chat-sidebar .chat-sidebar-content .list-group body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation) .navigation .navigation-menu-body > ul > li > .list-group-item.active + ul li a + ul li a,
   .chat-block
-  .chat-sidebar
-  .chat-sidebar-content
-  .list-group
-  body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
-  .navigation
-  .navigation-menu-body
-  > ul
-  > li
-  > a
-  + ul
-  li
-  .header
-  form
-  .input-group
-  .input-group-append
-  button.btn
-  + ul
-  li
-  .list-group-item.active,
+    .chat-sidebar
+    .chat-sidebar-content
+    .list-group
+    body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
+    .navigation
+    .navigation-menu-body
+    > ul
+    > li
+    > a
+    + ul
+    li
+    .header
+    form
+    .input-group
+    .input-group-append
+    button.btn
+    + ul
+    li
+    .list-group-item.active,
   .chat-block
-  .chat-sidebar
-  .chat-sidebar-content
-  .list-group
-  body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
-  .navigation
-  .navigation-menu-body
-  > ul
-  > li
-  > a
-  + ul
-  li
-  .list-group-item.active
-  + ul
-  li
-  .header
-  form
-  .input-group
-  .input-group-append
-  button.btn,
+    .chat-sidebar
+    .chat-sidebar-content
+    .list-group
+    body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
+    .navigation
+    .navigation-menu-body
+    > ul
+    > li
+    > a
+    + ul
+    li
+    .list-group-item.active
+    + ul
+    li
+    .header
+    form
+    .input-group
+    .input-group-append
+    button.btn,
   .chat-block
-  .chat-sidebar
-  .chat-sidebar-content
-  .list-group
-  body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
-  .navigation
-  .navigation-menu-body
-  > ul
-  > li
-  > a
-  + ul
-  li
-  .list-group-item.active
-  + ul
-  li
-  .list-group-item.active,
+    .chat-sidebar
+    .chat-sidebar-content
+    .list-group
+    body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
+    .navigation
+    .navigation-menu-body
+    > ul
+    > li
+    > a
+    + ul
+    li
+    .list-group-item.active
+    + ul
+    li
+    .list-group-item.active,
   .chat-block .chat-sidebar .chat-sidebar-content .list-group body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation) .navigation .navigation-menu-body > ul > li > a + ul li .list-group-item.active + ul li a,
   .chat-block .chat-sidebar .chat-sidebar-content .list-group body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation) .navigation .navigation-menu-body > ul > li > a + ul li a + ul li .list-group-item.active,
   .header
-  form
-  .input-group
-  .input-group-append
-  .chat-block
-  .chat-sidebar
-  .chat-sidebar-content
-  .list-group
-  body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
-  .navigation
-  .navigation-menu-body
-  > ul
-  > li
-  > .list-group-item.active
-  + ul
-  li
-  .list-group-item.active
-  + ul
-  li
-  button.btn,
+    form
+    .input-group
+    .input-group-append
+    .chat-block
+    .chat-sidebar
+    .chat-sidebar-content
+    .list-group
+    body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
+    .navigation
+    .navigation-menu-body
+    > ul
+    > li
+    > .list-group-item.active
+    + ul
+    li
+    .list-group-item.active
+    + ul
+    li
+    button.btn,
   .header
-  form
-  .input-group
-  .input-group-append
-  .chat-block
-  .chat-sidebar
-  .chat-sidebar-content
-  .list-group
-  body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
-  .navigation
-  .navigation-menu-body
-  > ul
-  > li
-  > .list-group-item.active
-  + ul
-  li
-  a
-  + ul
-  li
-  button.btn,
+    form
+    .input-group
+    .input-group-append
+    .chat-block
+    .chat-sidebar
+    .chat-sidebar-content
+    .list-group
+    body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
+    .navigation
+    .navigation-menu-body
+    > ul
+    > li
+    > .list-group-item.active
+    + ul
+    li
+    a
+    + ul
+    li
+    button.btn,
   .header
-  form
-  .input-group
-  .input-group-append
-  .chat-block
-  .chat-sidebar
-  .chat-sidebar-content
-  .list-group
-  body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
-  .navigation
-  .navigation-menu-body
-  > ul
-  > li
-  > .list-group-item.active
-  + ul
-  li
-  button.btn
-  + ul
-  li
-  .list-group-item.active,
+    form
+    .input-group
+    .input-group-append
+    .chat-block
+    .chat-sidebar
+    .chat-sidebar-content
+    .list-group
+    body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
+    .navigation
+    .navigation-menu-body
+    > ul
+    > li
+    > .list-group-item.active
+    + ul
+    li
+    button.btn
+    + ul
+    li
+    .list-group-item.active,
   .header
-  form
-  .input-group
-  .input-group-append
-  .chat-block
-  .chat-sidebar
-  .chat-sidebar-content
-  .list-group
-  body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
-  .navigation
-  .navigation-menu-body
-  > ul
-  > li
-  > .list-group-item.active
-  + ul
-  li
-  button.btn
-  + ul
-  li
-  a,
+    form
+    .input-group
+    .input-group-append
+    .chat-block
+    .chat-sidebar
+    .chat-sidebar-content
+    .list-group
+    body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
+    .navigation
+    .navigation-menu-body
+    > ul
+    > li
+    > .list-group-item.active
+    + ul
+    li
+    button.btn
+    + ul
+    li
+    a,
   .header
-  form
-  .input-group
-  .input-group-append
-  .chat-block
-  .chat-sidebar
-  .chat-sidebar-content
-  .list-group
-  body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
-  .navigation
-  .navigation-menu-body
-  > ul
-  > li
-  > .list-group-item.active
-  + ul
-  li
-  button.btn
-  + ul
-  li
-  button.btn,
+    form
+    .input-group
+    .input-group-append
+    .chat-block
+    .chat-sidebar
+    .chat-sidebar-content
+    .list-group
+    body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
+    .navigation
+    .navigation-menu-body
+    > ul
+    > li
+    > .list-group-item.active
+    + ul
+    li
+    button.btn
+    + ul
+    li
+    button.btn,
   .header
-  form
-  .input-group
-  .input-group-append
-  .chat-block
-  .chat-sidebar
-  .chat-sidebar-content
-  .list-group
-  body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
-  .navigation
-  .navigation-menu-body
-  > ul
-  > li
-  > a
-  + ul
-  li
-  .list-group-item.active
-  + ul
-  li
-  button.btn,
+    form
+    .input-group
+    .input-group-append
+    .chat-block
+    .chat-sidebar
+    .chat-sidebar-content
+    .list-group
+    body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
+    .navigation
+    .navigation-menu-body
+    > ul
+    > li
+    > a
+    + ul
+    li
+    .list-group-item.active
+    + ul
+    li
+    button.btn,
   .header
-  form
-  .input-group
-  .input-group-append
-  body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
-  .navigation
-  .chat-block
-  .chat-sidebar
-  .chat-sidebar-content
-  .list-group
-  .navigation-menu-body
-  > ul
-  > li
-  > .list-group-item.active
-  + ul
-  li
-  .list-group-item.active
-  + ul
-  li
-  button.btn,
+    form
+    .input-group
+    .input-group-append
+    body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
+    .navigation
+    .chat-block
+    .chat-sidebar
+    .chat-sidebar-content
+    .list-group
+    .navigation-menu-body
+    > ul
+    > li
+    > .list-group-item.active
+    + ul
+    li
+    .list-group-item.active
+    + ul
+    li
+    button.btn,
   .header
-  form
-  .input-group
-  .input-group-append
-  body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
-  .navigation
-  .chat-block
-  .chat-sidebar
-  .chat-sidebar-content
-  .list-group
-  .navigation-menu-body
-  > ul
-  > li
-  > .list-group-item.active
-  + ul
-  li
-  a
-  + ul
-  li
-  button.btn,
+    form
+    .input-group
+    .input-group-append
+    body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
+    .navigation
+    .chat-block
+    .chat-sidebar
+    .chat-sidebar-content
+    .list-group
+    .navigation-menu-body
+    > ul
+    > li
+    > .list-group-item.active
+    + ul
+    li
+    a
+    + ul
+    li
+    button.btn,
   .header
-  form
-  .input-group
-  .input-group-append
-  body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
-  .navigation
-  .chat-block
-  .chat-sidebar
-  .chat-sidebar-content
-  .list-group
-  .navigation-menu-body
-  > ul
-  > li
-  > .list-group-item.active
-  + ul
-  li
-  button.btn
-  + ul
-  li
-  .list-group-item.active,
+    form
+    .input-group
+    .input-group-append
+    body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
+    .navigation
+    .chat-block
+    .chat-sidebar
+    .chat-sidebar-content
+    .list-group
+    .navigation-menu-body
+    > ul
+    > li
+    > .list-group-item.active
+    + ul
+    li
+    button.btn
+    + ul
+    li
+    .list-group-item.active,
   .header
-  form
-  .input-group
-  .input-group-append
-  body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
-  .navigation
-  .chat-block
-  .chat-sidebar
-  .chat-sidebar-content
-  .list-group
-  .navigation-menu-body
-  > ul
-  > li
-  > .list-group-item.active
-  + ul
-  li
-  button.btn
-  + ul
-  li
-  a,
+    form
+    .input-group
+    .input-group-append
+    body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
+    .navigation
+    .chat-block
+    .chat-sidebar
+    .chat-sidebar-content
+    .list-group
+    .navigation-menu-body
+    > ul
+    > li
+    > .list-group-item.active
+    + ul
+    li
+    button.btn
+    + ul
+    li
+    a,
   .header
-  form
-  .input-group
-  .input-group-append
-  body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
-  .navigation
-  .chat-block
-  .chat-sidebar
-  .chat-sidebar-content
-  .list-group
-  .navigation-menu-body
-  > ul
-  > li
-  > .list-group-item.active
-  + ul
-  li
-  button.btn
-  + ul
-  li
-  button.btn,
+    form
+    .input-group
+    .input-group-append
+    body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
+    .navigation
+    .chat-block
+    .chat-sidebar
+    .chat-sidebar-content
+    .list-group
+    .navigation-menu-body
+    > ul
+    > li
+    > .list-group-item.active
+    + ul
+    li
+    button.btn
+    + ul
+    li
+    button.btn,
   .header
-  form
-  .input-group
-  .input-group-append
-  body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
-  .navigation
-  .navigation-menu-body
-  > ul
-  > li
-  > a
-  + ul
-  li
-  .chat-block
-  .chat-sidebar
-  .chat-sidebar-content
-  .list-group
-  .list-group-item.active
-  + ul
-  li
-  button.btn,
+    form
+    .input-group
+    .input-group-append
+    body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
+    .navigation
+    .navigation-menu-body
+    > ul
+    > li
+    > a
+    + ul
+    li
+    .chat-block
+    .chat-sidebar
+    .chat-sidebar-content
+    .list-group
+    .list-group-item.active
+    + ul
+    li
+    button.btn,
   .header form .input-group .input-group-append body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation) .navigation .navigation-menu-body > ul > li > a + ul li a + ul li button.btn,
   .header
-  form
-  .input-group
-  .input-group-append
-  body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
-  .navigation
-  .navigation-menu-body
-  > ul
-  > li
-  > a
-  + ul
-  li
-  button.btn
-  + ul
-  li
-  .chat-block
-  .chat-sidebar
-  .chat-sidebar-content
-  .list-group
-  .list-group-item.active,
+    form
+    .input-group
+    .input-group-append
+    body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
+    .navigation
+    .navigation-menu-body
+    > ul
+    > li
+    > a
+    + ul
+    li
+    button.btn
+    + ul
+    li
+    .chat-block
+    .chat-sidebar
+    .chat-sidebar-content
+    .list-group
+    .list-group-item.active,
   .header form .input-group .input-group-append body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation) .navigation .navigation-menu-body > ul > li > a + ul li button.btn + ul li a,
   .header form .input-group .input-group-append body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation) .navigation .navigation-menu-body > ul > li > a + ul li button.btn + ul li button.btn,
   .header
-  form
-  .input-group
-  .input-group-append
-  body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
-  .navigation
-  .navigation-menu-body
-  > ul
-  > li
-  > button.btn
-  + ul
-  li
-  .chat-block
-  .chat-sidebar
-  .chat-sidebar-content
-  .list-group
-  .list-group-item.active
-  + ul
-  li
-  .list-group-item.active,
+    form
+    .input-group
+    .input-group-append
+    body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
+    .navigation
+    .navigation-menu-body
+    > ul
+    > li
+    > button.btn
+    + ul
+    li
+    .chat-block
+    .chat-sidebar
+    .chat-sidebar-content
+    .list-group
+    .list-group-item.active
+    + ul
+    li
+    .list-group-item.active,
   .header
-  form
-  .input-group
-  .input-group-append
-  body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
-  .navigation
-  .navigation-menu-body
-  > ul
-  > li
-  > button.btn
-  + ul
-  li
-  .chat-block
-  .chat-sidebar
-  .chat-sidebar-content
-  .list-group
-  .list-group-item.active
-  + ul
-  li
-  a,
+    form
+    .input-group
+    .input-group-append
+    body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
+    .navigation
+    .navigation-menu-body
+    > ul
+    > li
+    > button.btn
+    + ul
+    li
+    .chat-block
+    .chat-sidebar
+    .chat-sidebar-content
+    .list-group
+    .list-group-item.active
+    + ul
+    li
+    a,
   .header
-  form
-  .input-group
-  .input-group-append
-  body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
-  .navigation
-  .navigation-menu-body
-  > ul
-  > li
-  > button.btn
-  + ul
-  li
-  .chat-block
-  .chat-sidebar
-  .chat-sidebar-content
-  .list-group
-  .list-group-item.active
-  + ul
-  li
-  button.btn,
+    form
+    .input-group
+    .input-group-append
+    body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
+    .navigation
+    .navigation-menu-body
+    > ul
+    > li
+    > button.btn
+    + ul
+    li
+    .chat-block
+    .chat-sidebar
+    .chat-sidebar-content
+    .list-group
+    .list-group-item.active
+    + ul
+    li
+    button.btn,
   .header
-  form
-  .input-group
-  .input-group-append
-  body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
-  .navigation
-  .navigation-menu-body
-  > ul
-  > li
-  > button.btn
-  + ul
-  li
-  a
-  + ul
-  li
-  .chat-block
-  .chat-sidebar
-  .chat-sidebar-content
-  .list-group
-  .list-group-item.active,
+    form
+    .input-group
+    .input-group-append
+    body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
+    .navigation
+    .navigation-menu-body
+    > ul
+    > li
+    > button.btn
+    + ul
+    li
+    a
+    + ul
+    li
+    .chat-block
+    .chat-sidebar
+    .chat-sidebar-content
+    .list-group
+    .list-group-item.active,
   .header form .input-group .input-group-append body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation) .navigation .navigation-menu-body > ul > li > button.btn + ul li a + ul li a,
   .header form .input-group .input-group-append body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation) .navigation .navigation-menu-body > ul > li > button.btn + ul li a + ul li button.btn,
   .header
-  form
-  .input-group
-  .input-group-append
-  body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
-  .navigation
-  .navigation-menu-body
-  > ul
-  > li
-  > button.btn
-  + ul
-  li
-  button.btn
-  + ul
-  li
-  .chat-block
-  .chat-sidebar
-  .chat-sidebar-content
-  .list-group
-  .list-group-item.active,
+    form
+    .input-group
+    .input-group-append
+    body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
+    .navigation
+    .navigation-menu-body
+    > ul
+    > li
+    > button.btn
+    + ul
+    li
+    button.btn
+    + ul
+    li
+    .chat-block
+    .chat-sidebar
+    .chat-sidebar-content
+    .list-group
+    .list-group-item.active,
   .header form .input-group .input-group-append body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation) .navigation .navigation-menu-body > ul > li > button.btn + ul li button.btn + ul li a,
   .header form .input-group .input-group-append body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation) .navigation .navigation-menu-body > ul > li > button.btn + ul li button.btn + ul li button.btn,
   body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
-  .navigation
-  .chat-block
-  .chat-sidebar
-  .chat-sidebar-content
-  .list-group
-  .navigation-menu-body
-  > ul
-  > li
-  > .list-group-item.active
-  + ul
-  li
-  .header
-  form
-  .input-group
-  .input-group-append
-  button.btn
-  + ul
-  li
-  .list-group-item.active,
+    .navigation
+    .chat-block
+    .chat-sidebar
+    .chat-sidebar-content
+    .list-group
+    .navigation-menu-body
+    > ul
+    > li
+    > .list-group-item.active
+    + ul
+    li
+    .header
+    form
+    .input-group
+    .input-group-append
+    button.btn
+    + ul
+    li
+    .list-group-item.active,
   body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
-  .navigation
-  .chat-block
-  .chat-sidebar
-  .chat-sidebar-content
-  .list-group
-  .navigation-menu-body
-  > ul
-  > li
-  > .list-group-item.active
-  + ul
-  li
-  .header
-  form
-  .input-group
-  .input-group-append
-  button.btn
-  + ul
-  li
-  a,
+    .navigation
+    .chat-block
+    .chat-sidebar
+    .chat-sidebar-content
+    .list-group
+    .navigation-menu-body
+    > ul
+    > li
+    > .list-group-item.active
+    + ul
+    li
+    .header
+    form
+    .input-group
+    .input-group-append
+    button.btn
+    + ul
+    li
+    a,
   body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
-  .navigation
-  .chat-block
-  .chat-sidebar
-  .chat-sidebar-content
-  .list-group
-  .navigation-menu-body
-  > ul
-  > li
-  > .list-group-item.active
-  + ul
-  li
-  .header
-  form
-  .input-group
-  .input-group-append
-  button.btn
-  + ul
-  li
-  button.btn,
+    .navigation
+    .chat-block
+    .chat-sidebar
+    .chat-sidebar-content
+    .list-group
+    .navigation-menu-body
+    > ul
+    > li
+    > .list-group-item.active
+    + ul
+    li
+    .header
+    form
+    .input-group
+    .input-group-append
+    button.btn
+    + ul
+    li
+    button.btn,
   body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
-  .navigation
-  .chat-block
-  .chat-sidebar
-  .chat-sidebar-content
-  .list-group
-  .navigation-menu-body
-  > ul
-  > li
-  > .list-group-item.active
-  + ul
-  li
-  .list-group-item.active
-  + ul
-  li
-  .header
-  form
-  .input-group
-  .input-group-append
-  button.btn,
+    .navigation
+    .chat-block
+    .chat-sidebar
+    .chat-sidebar-content
+    .list-group
+    .navigation-menu-body
+    > ul
+    > li
+    > .list-group-item.active
+    + ul
+    li
+    .list-group-item.active
+    + ul
+    li
+    .header
+    form
+    .input-group
+    .input-group-append
+    button.btn,
   body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
-  .navigation
-  .chat-block
-  .chat-sidebar
-  .chat-sidebar-content
-  .list-group
-  .navigation-menu-body
-  > ul
-  > li
-  > .list-group-item.active
-  + ul
-  li
-  .list-group-item.active
-  + ul
-  li
-  .list-group-item.active,
+    .navigation
+    .chat-block
+    .chat-sidebar
+    .chat-sidebar-content
+    .list-group
+    .navigation-menu-body
+    > ul
+    > li
+    > .list-group-item.active
+    + ul
+    li
+    .list-group-item.active
+    + ul
+    li
+    .list-group-item.active,
   body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
-  .navigation
-  .chat-block
-  .chat-sidebar
-  .chat-sidebar-content
-  .list-group
-  .navigation-menu-body
-  > ul
-  > li
-  > .list-group-item.active
-  + ul
-  li
-  .list-group-item.active
-  + ul
-  li
-  a,
+    .navigation
+    .chat-block
+    .chat-sidebar
+    .chat-sidebar-content
+    .list-group
+    .navigation-menu-body
+    > ul
+    > li
+    > .list-group-item.active
+    + ul
+    li
+    .list-group-item.active
+    + ul
+    li
+    a,
   body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
-  .navigation
-  .chat-block
-  .chat-sidebar
-  .chat-sidebar-content
-  .list-group
-  .navigation-menu-body
-  > ul
-  > li
-  > .list-group-item.active
-  + ul
-  li
-  a
-  + ul
-  li
-  .header
-  form
-  .input-group
-  .input-group-append
-  button.btn,
+    .navigation
+    .chat-block
+    .chat-sidebar
+    .chat-sidebar-content
+    .list-group
+    .navigation-menu-body
+    > ul
+    > li
+    > .list-group-item.active
+    + ul
+    li
+    a
+    + ul
+    li
+    .header
+    form
+    .input-group
+    .input-group-append
+    button.btn,
   body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
-  .navigation
-  .chat-block
-  .chat-sidebar
-  .chat-sidebar-content
-  .list-group
-  .navigation-menu-body
-  > ul
-  > li
-  > .list-group-item.active
-  + ul
-  li
-  a
-  + ul
-  li
-  .list-group-item.active,
+    .navigation
+    .chat-block
+    .chat-sidebar
+    .chat-sidebar-content
+    .list-group
+    .navigation-menu-body
+    > ul
+    > li
+    > .list-group-item.active
+    + ul
+    li
+    a
+    + ul
+    li
+    .list-group-item.active,
   body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation) .navigation .chat-block .chat-sidebar .chat-sidebar-content .list-group .navigation-menu-body > ul > li > .list-group-item.active + ul li a + ul li a,
   body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
-  .navigation
-  .header
-  form
-  .input-group
-  .input-group-append
-  .navigation-menu-body
-  > ul
-  > li
-  > button.btn
-  + ul
-  li
-  .chat-block
-  .chat-sidebar
-  .chat-sidebar-content
-  .list-group
-  .list-group-item.active
-  + ul
-  li
-  .list-group-item.active,
+    .navigation
+    .header
+    form
+    .input-group
+    .input-group-append
+    .navigation-menu-body
+    > ul
+    > li
+    > button.btn
+    + ul
+    li
+    .chat-block
+    .chat-sidebar
+    .chat-sidebar-content
+    .list-group
+    .list-group-item.active
+    + ul
+    li
+    .list-group-item.active,
   body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
-  .navigation
-  .header
-  form
-  .input-group
-  .input-group-append
-  .navigation-menu-body
-  > ul
-  > li
-  > button.btn
-  + ul
-  li
-  .chat-block
-  .chat-sidebar
-  .chat-sidebar-content
-  .list-group
-  .list-group-item.active
-  + ul
-  li
-  a,
+    .navigation
+    .header
+    form
+    .input-group
+    .input-group-append
+    .navigation-menu-body
+    > ul
+    > li
+    > button.btn
+    + ul
+    li
+    .chat-block
+    .chat-sidebar
+    .chat-sidebar-content
+    .list-group
+    .list-group-item.active
+    + ul
+    li
+    a,
   body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
-  .navigation
-  .header
-  form
-  .input-group
-  .input-group-append
-  .navigation-menu-body
-  > ul
-  > li
-  > button.btn
-  + ul
-  li
-  .chat-block
-  .chat-sidebar
-  .chat-sidebar-content
-  .list-group
-  .list-group-item.active
-  + ul
-  li
-  button.btn,
+    .navigation
+    .header
+    form
+    .input-group
+    .input-group-append
+    .navigation-menu-body
+    > ul
+    > li
+    > button.btn
+    + ul
+    li
+    .chat-block
+    .chat-sidebar
+    .chat-sidebar-content
+    .list-group
+    .list-group-item.active
+    + ul
+    li
+    button.btn,
   body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
-  .navigation
-  .header
-  form
-  .input-group
-  .input-group-append
-  .navigation-menu-body
-  > ul
-  > li
-  > button.btn
-  + ul
-  li
-  a
-  + ul
-  li
-  .chat-block
-  .chat-sidebar
-  .chat-sidebar-content
-  .list-group
-  .list-group-item.active,
+    .navigation
+    .header
+    form
+    .input-group
+    .input-group-append
+    .navigation-menu-body
+    > ul
+    > li
+    > button.btn
+    + ul
+    li
+    a
+    + ul
+    li
+    .chat-block
+    .chat-sidebar
+    .chat-sidebar-content
+    .list-group
+    .list-group-item.active,
   body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation) .navigation .header form .input-group .input-group-append .navigation-menu-body > ul > li > button.btn + ul li a + ul li a,
   body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation) .navigation .header form .input-group .input-group-append .navigation-menu-body > ul > li > button.btn + ul li a + ul li button.btn,
   body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
-  .navigation
-  .header
-  form
-  .input-group
-  .input-group-append
-  .navigation-menu-body
-  > ul
-  > li
-  > button.btn
-  + ul
-  li
-  button.btn
-  + ul
-  li
-  .chat-block
-  .chat-sidebar
-  .chat-sidebar-content
-  .list-group
-  .list-group-item.active,
+    .navigation
+    .header
+    form
+    .input-group
+    .input-group-append
+    .navigation-menu-body
+    > ul
+    > li
+    > button.btn
+    + ul
+    li
+    button.btn
+    + ul
+    li
+    .chat-block
+    .chat-sidebar
+    .chat-sidebar-content
+    .list-group
+    .list-group-item.active,
   body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation) .navigation .header form .input-group .input-group-append .navigation-menu-body > ul > li > button.btn + ul li button.btn + ul li a,
   body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation) .navigation .header form .input-group .input-group-append .navigation-menu-body > ul > li > button.btn + ul li button.btn + ul li button.btn,
   body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
-  .navigation
-  .navigation-menu-body
-  > ul
-  > li
-  > a
-  + ul
-  li
-  .chat-block
-  .chat-sidebar
-  .chat-sidebar-content
-  .list-group
-  .list-group-item.active
-  + ul
-  li
-  .header
-  form
-  .input-group
-  .input-group-append
-  button.btn,
+    .navigation
+    .navigation-menu-body
+    > ul
+    > li
+    > a
+    + ul
+    li
+    .chat-block
+    .chat-sidebar
+    .chat-sidebar-content
+    .list-group
+    .list-group-item.active
+    + ul
+    li
+    .header
+    form
+    .input-group
+    .input-group-append
+    button.btn,
   body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
-  .navigation
-  .navigation-menu-body
-  > ul
-  > li
-  > a
-  + ul
-  li
-  .chat-block
-  .chat-sidebar
-  .chat-sidebar-content
-  .list-group
-  .list-group-item.active
-  + ul
-  li
-  .list-group-item.active,
+    .navigation
+    .navigation-menu-body
+    > ul
+    > li
+    > a
+    + ul
+    li
+    .chat-block
+    .chat-sidebar
+    .chat-sidebar-content
+    .list-group
+    .list-group-item.active
+    + ul
+    li
+    .list-group-item.active,
   body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation) .navigation .navigation-menu-body > ul > li > a + ul li .chat-block .chat-sidebar .chat-sidebar-content .list-group .list-group-item.active + ul li a,
   body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation)
-  .navigation
-  .navigation-menu-body
-  > ul
-  > li
-  > a
-  + ul
-  li
-  .header
-  form
-  .input-group
-  .input-group-append
-  button.btn
-  + ul
-  li
-  .chat-block
-  .chat-sidebar
-  .chat-sidebar-content
-  .list-group
-  .list-group-item.active,
+    .navigation
+    .navigation-menu-body
+    > ul
+    > li
+    > a
+    + ul
+    li
+    .header
+    form
+    .input-group
+    .input-group-append
+    button.btn
+    + ul
+    li
+    .chat-block
+    .chat-sidebar
+    .chat-sidebar-content
+    .list-group
+    .list-group-item.active,
   body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation) .navigation .navigation-menu-body > ul > li > a + ul li .header form .input-group .input-group-append button.btn + ul li a,
   body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation) .navigation .navigation-menu-body > ul > li > a + ul li .header form .input-group .input-group-append button.btn + ul li button.btn,
   body.small-navigation:not(.hidden-navigation):not(.horizontal-navigation) .navigation .navigation-menu-body > ul > li > a + ul li a + ul li .chat-block .chat-sidebar .chat-sidebar-content .list-group .list-group-item.active,
@@ -18333,7 +18331,7 @@ small {
 
 .navigation .navigation-menu-tab {
   background-color: #7a1b8b;
-  width: 75px;
+  width: 300px;
   display: -webkit-box;
   display: -webkit-flex;
   display: -moz-box;
@@ -18346,26 +18344,6 @@ small {
   -moz-box-direction: normal;
   -ms-flex-direction: column;
   flex-direction: column;
-  padding-bottom: 10px;
-}
-
-.navigation .navigation-menu-tab .navigation-menu-tab-header {
-  height: 70px;
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -moz-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-align: center;
-  -webkit-align-items: center;
-  -moz-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
-  -webkit-box-pack: center;
-  -webkit-justify-content: center;
-  -moz-box-pack: center;
-  -ms-flex-pack: center;
-  justify-content: center;
 }
 
 .navigation .navigation-menu-tab .avatar {
@@ -18384,11 +18362,11 @@ small {
   display: -ms-flexbox;
   display: flex;
   height: 55px;
-  -webkit-box-pack: center;
-  -webkit-justify-content: center;
-  -moz-box-pack: center;
-  -ms-flex-pack: center;
-  justify-content: center;
+  // -webkit-box-pack: center;
+  // -webkit-justify-content: center;
+  // -moz-box-pack: center;
+  // -ms-flex-pack: center;
+  // justify-content: center;
   -webkit-box-align: center;
   -webkit-align-items: center;
   -moz-box-align: center;
@@ -18411,8 +18389,8 @@ small {
 .navigation .navigation-menu-tab ul li .header form .input-group .input-group-append button.active.btn:after,
 .navigation .navigation-menu-tab ul li a.active:after {
   content: "";
-  right: 15px;
-  left: 15px;
+  right: 0px;
+  left: 0px;
   top: 10px;
   bottom: 10px;
   -webkit-border-radius: 0.5rem;
@@ -19797,7 +19775,6 @@ body.dark .ql-editor.ql-blank::before {
   color: #c7c7c7;
 }
 
-
 body.dark .ql-fill,
 body.dark .ql-snow .ql-stroke {
   stroke: #c7c7c7;
@@ -20737,10 +20714,10 @@ body.dark.small-navigation .navigation-menu-body ul li.navigation-divider:after 
   -o-transform: rotate(0);
   -ms-transform: rotate(0);
   transform: rotate(0);
-  -webkit-transition: 0.5s cubic-bezier(.275, .420, .000, 1.000);
-  -moz-transition: 0.5s cubic-bezier(.275, .420, .000, 1.000);
-  -o-transition: 0.5s cubic-bezier(.275, .420, .000, 1.000);
-  transition: 0.5s cubic-bezier(.275, .420, .000, 1.000);
+  -webkit-transition: 0.5s cubic-bezier(0.275, 0.42, 0, 1);
+  -moz-transition: 0.5s cubic-bezier(0.275, 0.42, 0, 1);
+  -o-transition: 0.5s cubic-bezier(0.275, 0.42, 0, 1);
+  transition: 0.5s cubic-bezier(0.275, 0.42, 0, 1);
   cursor: pointer;
 }
 
@@ -20760,10 +20737,10 @@ body.dark.small-navigation .navigation-menu-body ul li.navigation-divider:after 
   -o-transform: rotate(0);
   -ms-transform: rotate(0);
   transform: rotate(0);
-  -webkit-transition: 0.25s cubic-bezier(.275, .420, .000, 1.000);
-  -moz-transition: 0.25s cubic-bezier(.275, .420, .000, 1.000);
-  -o-transition: 0.25s cubic-bezier(.275, .420, .000, 1.000);
-  transition: 0.25s cubic-bezier(.275, .420, .000, 1.000);
+  -webkit-transition: 0.25s cubic-bezier(0.275, 0.42, 0, 1);
+  -moz-transition: 0.25s cubic-bezier(0.275, 0.42, 0, 1);
+  -o-transition: 0.25s cubic-bezier(0.275, 0.42, 0, 1);
+  transition: 0.25s cubic-bezier(0.275, 0.42, 0, 1);
 }
 
 #nav-icon1 span:nth-child(1) {
@@ -20811,7 +20788,7 @@ body.dark.small-navigation .navigation-menu-body ul li.navigation-divider:after 
 }
 
 .fadeIn {
-  animation: fadeIn 0.3s cubic-bezier(.275, .420, .000, 1.000);
+  animation: fadeIn 0.3s cubic-bezier(0.275, 0.42, 0, 1);
 }
 
 .overlay {
@@ -20820,14 +20797,14 @@ body.dark.small-navigation .navigation-menu-body ul li.navigation-divider:after 
 
 @media all and (max-width: 992px) {
   .chat-sidebar {
-      position: absolute;
-      background: green;
-      left: -100%;
-      transition: left 0.3s cubic-bezier(.275, .420, .000, 1.000);
-      padding-left: 24px !important;
-      padding-right: 24px !important;
-      background: #ffffff;
-      z-index: 3;
+    position: absolute;
+    background: green;
+    left: -100%;
+    transition: left 0.3s cubic-bezier(0.275, 0.42, 0, 1);
+    padding-left: 24px !important;
+    padding-right: 24px !important;
+    background: #ffffff;
+    z-index: 3;
   }
   .chat-block .chat-sidebar .chat-sidebar-header {
     padding-left: 24px !important;
@@ -20939,9 +20916,9 @@ body.dark.small-navigation .navigation-menu-body ul li.navigation-divider:after 
 }
 .chat-contact-list-item {
   .text-right.ml-auto svg {
-      height: 20px;
-      color: #bebebe;
-      transition: color 200ms ease 0ms;
+    height: 20px;
+    color: #bebebe;
+    transition: color 200ms ease 0ms;
   }
   &:hover {
     .text-right.ml-auto svg {
@@ -20950,7 +20927,7 @@ body.dark.small-navigation .navigation-menu-body ul li.navigation-divider:after 
   }
 }
 .main-content {
-  animation: fadeIn 0.3s cubic-bezier(.275, .420, .000, 1.000);
+  animation: fadeIn 0.3s cubic-bezier(0.275, 0.42, 0, 1);
 }
 
 .workspace-chat {
@@ -20974,7 +20951,7 @@ body.dark.small-navigation .navigation-menu-body ul li.navigation-divider:after 
 }
 
 .fadeBottom {
-  animation: fadeBottom 0.15s cubic-bezier(.275, .420, .000, 1.000);
+  animation: fadeBottom 0.15s cubic-bezier(0.275, 0.42, 0, 1);
 }
 @keyframes fadeBottom {
   0% {
@@ -20991,10 +20968,10 @@ body.dark.small-navigation .navigation-menu-body ul li.navigation-divider:after 
 }
 
 .react-tooltip-lite {
-  font-size: .835rem!important;
+  font-size: 0.835rem !important;
   background: #000000b3;
-  padding: .25rem .5rem !important;
-  border-radius: .25rem !important;
+  padding: 0.25rem 0.5rem !important;
+  border-radius: 0.25rem !important;
   text-align: center;
   color: #fff;
   opacity: 0;

@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import moment from "moment-timezone";
 import { useSettings } from "./index.js";
 

@@ -1,12 +1,12 @@
-import React, {useEffect, useRef, useState} from "react";
-import {useDispatch} from "react-redux";
-import {useHistory} from "react-router-dom";
-import {Badge} from "reactstrap";
+import React, { useEffect, useRef, useState } from "react";
+import { useDispatch } from "react-redux";
+import { useHistory } from "react-router-dom";
+import { Badge } from "reactstrap";
 import styled from "styled-components";
-import {replaceChar} from "../../helpers/stringFormatter";
-import {addToModals} from "../../redux/actions/globalActions";
-import {SvgIconFeather} from "../common";
-import {useSettings} from "../hooks";
+import { replaceChar } from "../../helpers/stringFormatter";
+import { addToModals } from "../../redux/actions/globalActions";
+import { SvgIconFeather } from "../common";
+import { useSettings } from "../hooks";
 import TopicList from "./TopicList";
 
 const Wrapper = styled.li`
@@ -14,7 +14,7 @@ const Wrapper = styled.li`
   cursor: pointer;
   cursor: hand;
   position: relative;
-    
+
   a.archived-folder {
     color: #bebebe !important;
   }
@@ -22,8 +22,8 @@ const Wrapper = styled.li`
   > a {
     position: relative;
     font-weight: ${(props) => (props.selected ? "bold" : "normal")};
-    color: ${(props) => (props.selected ? "#7a1b8b !important" : "#64625C")};
-    
+    ${"" /* color: ${(props) => (props.selected ? "#7a1b8b !important" : "#64625C")}; */}
+
     .badge {
       padding: 3px 7px;
       position: absolute;
@@ -47,11 +47,28 @@ const Wrapper = styled.li`
   ul {
     li {
       .badge {
-        padding: 3px 7px;
         position: absolute;
-        right: -40px;
-        top: 0;
+        width: 6px;
+        height: 6px;
+        top: 7px;
+        right: -12px;
+        border-radius: 50%;
+        background: #f44;
+        font-size: 0;
       }
+    }
+  }
+  .nav-action {
+    background-color: #fff3;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    color: #ffffff;
+    padding: 0 10px;
+    svg {
+      margin-right: 4px;
+      width: 13px;
+      height: 13px;
     }
   }
 `;
@@ -70,7 +87,7 @@ const TopicNav = styled.ul`
 
   &.enter-active {
     max-height: ${(props) => props.maxHeight}px;
-    margin: 4px 0 8px 2px;
+    ${"" /* margin: 4px 0 8px 2px; */}
   }
 
   &.leave-active {
@@ -79,7 +96,7 @@ const TopicNav = styled.ul`
 `;
 
 const WorkspaceList = (props) => {
-  const {className = "", show = true, workspace} = props;
+  const { className = "", show = true, workspace } = props;
 
   const dispatch = useDispatch();
   const history = useHistory();
@@ -153,30 +170,31 @@ const WorkspaceList = (props) => {
     if (workspace.topics) {
       setMaxHeight(null);
     }
-  }, [workspace.topics])
+  }, [workspace.topics]);
 
   return (
-      <Wrapper ref={ref.container} className={`workspace-list fadeIn ${className}`} selected={workspace.selected}
-               show={show}>
-        <a className={`${workspace.selected ? "active" : ""} ${workspace.is_active === 0 ? "archived-folder" : ""}`}
-           href="/" onClick={handleShowTopics}>
-          {workspace.is_lock !== 0 && <LockIcon icon="lock"/>}
-          {workspace.is_active === 0 && <LockIcon icon="archive"/>}
+    <Wrapper ref={ref.container} className={`workspace-list fadeIn ${className}`} selected={workspace.selected} show={show}>
+      <a className={`${workspace.selected ? "active" : ""} ${workspace.is_active === 0 ? "archived-folder" : ""}`} href="/" onClick={handleShowTopics}>
+        <div>
           {workspace.name}
-          {["FOLDER", "GENERAL_FOLDER", "ARCHIVE_FOLDER"].includes(workspace.type) &&
-          <i ref={ref.arrow}
-             className={`sub-menu-arrow ti-angle-up ${showTopics ? "ti-minus rotate-in" : "ti-plus"}`}/>}
+
+          {workspace.is_lock !== 0 && <LockIcon icon="lock" />}
+          {workspace.is_active === 0 && <LockIcon icon="archive" />}
+
           {workspace.unread_count > 0 && (
-              <Badge className={`${showTopics ? "leave-active" : "enter-active"}`} color="danger">
-                {workspace.unread_count}
-              </Badge>
+            <Badge className={`${showTopics ? "leave-active" : "enter-active"}`} color="danger">
+              {workspace.unread_count}
+            </Badge>
           )}
-        </a>
-        {workspace.type === "FOLDER" && (
+        </div>
+
+        {["FOLDER", "GENERAL_FOLDER", "ARCHIVE_FOLDER"].includes(workspace.type) && <i ref={ref.arrow} className={`sub-menu-arrow ti-angle-up ${showTopics ? "ti-minus rotate-in" : "ti-plus"}`} />}
+      </a>
+      {workspace.type === "FOLDER" && (
         <TopicNav ref={ref.nav} maxHeight={maxHeight} className={showTopics === null ? "" : showTopics ? "enter-active" : "leave-active"}>
           {Object.keys(workspace.topics).length > 0 &&
-          Object.values(workspace.topics)
-              .filter(t => t.active === 1)
+            Object.values(workspace.topics)
+              .filter((t) => t.active === 1)
               .sort((a, b) => {
                 /*let compare = b.updated_at.timestamp - a.updated_at.timestamp;
                                 if (compare !== 0)
@@ -184,7 +202,7 @@ const WorkspaceList = (props) => {
                 return a.name.localeCompare(b.name);
               })
               .map((topic) => {
-                return <TopicList key={topic.id} topic={topic}/>;
+                return <TopicList key={topic.id} topic={topic} />;
               })}
           <li className="nav-action" onClick={handleShowWorkspaceModal}>
             <SvgIconFeather icon="plus" /> New workspace
@@ -194,7 +212,7 @@ const WorkspaceList = (props) => {
       {workspace.type === "GENERAL_FOLDER" && (
         <TopicNav ref={ref.nav} maxHeight={maxHeight} className={showTopics === null ? "" : showTopics ? "enter-active" : "leave-active"}>
           {workspace.topics.length > 0 &&
-          workspace.topics
+            workspace.topics
               .sort((a, b) => {
                 /*let compare = b.updated_at.timestamp - a.updated_at.timestamp;
                                 if (compare !== 0)
@@ -203,31 +221,30 @@ const WorkspaceList = (props) => {
                 return a.name.localeCompare(b.name);
               })
               .map((topic) => {
-                return <TopicList key={topic.id} topic={topic}/>;
+                return <TopicList key={topic.id} topic={topic} />;
               })}
           <li className="nav-action" onClick={handleShowWorkspaceModal}>
-            <SvgIconFeather icon="plus"/> New workspace
+            <SvgIconFeather icon="plus" /> New workspace
           </li>
         </TopicNav>
       )}
-        {workspace.type === "ARCHIVE_FOLDER" && (
-            <TopicNav ref={ref.nav} maxHeight={maxHeight}
-                      className={showTopics === null ? "" : showTopics ? "enter-active" : "leave-active"}>
-              {workspace.topics.length > 0 &&
-              workspace.topics
-                  .sort((a, b) => {
-                    /*let compare = b.updated_at.timestamp - a.updated_at.timestamp;
+      {workspace.type === "ARCHIVE_FOLDER" && (
+        <TopicNav ref={ref.nav} maxHeight={maxHeight} className={showTopics === null ? "" : showTopics ? "enter-active" : "leave-active"}>
+          {workspace.topics.length > 0 &&
+            workspace.topics
+              .sort((a, b) => {
+                /*let compare = b.updated_at.timestamp - a.updated_at.timestamp;
                                     if (compare !== 0)
                                         return compare;*/
 
-                    return a.name.localeCompare(b.name);
-                  })
-                  .map((topic) => {
-                    return <TopicList key={topic.id} topic={topic}/>;
-                  })}
-            </TopicNav>
-        )}
-      </Wrapper>
+                return a.name.localeCompare(b.name);
+              })
+              .map((topic) => {
+                return <TopicList key={topic.id} topic={topic} />;
+              })}
+        </TopicNav>
+      )}
+    </Wrapper>
   );
 };
 

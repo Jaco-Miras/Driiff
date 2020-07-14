@@ -30,20 +30,6 @@ const SubWorkspaceName = styled.h3`
   font-weight: normal;
   font-size: 19px;
   text-transform: lowercase;
-
-  &:before {
-    content: "";
-    display: inline-block;
-    width: 4px;
-    height: 4px;
-    -moz-border-radius: 7.5px;
-    -webkit-border-radius: 7.5px;
-    border-radius: 7.5px;
-    background-color: #b8b8b8;
-    margin-right: 12px;
-    position: relative;
-    top: -4px;
-  }
 `;
 
 const WorkspaceButton = styled.h3`
@@ -77,7 +63,6 @@ const WorspaceHeaderPanel = () => {
 
   useEffect(() => {
     const body = document.body;
-    body.classList.remove("navigation-toggle-one");
 
     let pageName = "";
     switch (match.params.page) {
@@ -130,6 +115,7 @@ const WorspaceHeaderPanel = () => {
                 <>
                   <li className="nav-item">
                     <WorkspaceName>{activeTopic.name}</WorkspaceName>
+                    <SvgIconFeather icon="chevron-right" />
                   </li>
                 </>
               ) : (
