@@ -189,16 +189,18 @@ const FilesBody = (props) => {
             {filter === "removed" && wsFiles && wsFiles.hasOwnProperty("trash_files") && Object.keys(wsFiles.trash_files).length > 0 && <SvgIconFeather icon="trash" onClick={actions.removeTrashFiles} />}
             {filter === "" && (
               <>
+                {typeof params.fileFolderId === "undefined" && (
+                    <h6 className="font-size-11 text-uppercase mb-4">All files</h6>)}
                 {(params.hasOwnProperty("fileFolderId") && Object.values(subFolders).filter((f) => !f.is_archived).length > 0) ||
                 (!params.hasOwnProperty("fileFolderId") && Object.values(folders).filter((f) => !f.is_archived).length > 0) ? (
-                  <h6 className="font-size-11 text-uppercase mb-4">Folders</h6>
+                    <h6 className="font-size-11 text-uppercase mb-4">Folders</h6>
                 ) : (
-                  <></>
+                    <></>
                 )}
                 {
                   <div className="row">
                     {params.hasOwnProperty("fileFolderId")
-                      ? subFolders
+                        ? subFolders
                           .filter((f) => !f.is_archived)
                           .map((f) => {
                             return <FolderListItem key={f.id} actions={actions} className="col-xl-3 col-lg-4 col-md-6 col-sm-12" folder={f} history={history} isMember={isMember} params={params} handleAddEditFolder={handleAddEditFolder} />;
@@ -242,7 +244,6 @@ const FilesBody = (props) => {
                   </>
                 ) : (
                   <>
-                    <h6 className="font-size-11 text-uppercase mb-4">All files</h6>
                     <div className="row">
                       {wsFiles &&
                         fileIds.map((f) => {
