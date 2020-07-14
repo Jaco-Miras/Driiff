@@ -96,6 +96,7 @@ const WorkspaceList = (props) => {
 
   const [showTopics, setShowTopics] = useState(null);
   const [maxHeight, setMaxHeight] = useState(null);
+  const [prevTopics, setPrevTopics] = useState(null);
 
   const handleShowWorkspaceModal = () => {
     let payload = {
@@ -150,10 +151,13 @@ const WorkspaceList = (props) => {
   }, [showTopics, workspace.id, workspace.selected, maxHeight, workspace_open_folder]);
 
   useEffect(() => {
-    if (workspace.topics) {
-      setMaxHeight(null);
+    if (prevTopics !== workspace.topics) {
+      if (prevTopics !== null) {
+        setMaxHeight(null);
+      }
+      setPrevTopics(workspace.topics);
     }
-  }, [workspace.topics])
+  }, [workspace.topics]);
 
   return (
       <Wrapper ref={ref.container} className={`workspace-list fadeIn ${className}`} selected={workspace.selected}
