@@ -1,9 +1,9 @@
 import React from "react";
 import Tooltip from "react-tooltip-lite";
 import styled from "styled-components";
-import { replaceChar } from "../../../../helpers/stringFormatter";
-import { Avatar } from "../../../common";
-import { useTimeFormat } from "../../../hooks";
+import {replaceChar} from "../../../../helpers/stringFormatter";
+import {Avatar} from "../../../common";
+import {useTimeFormat} from "../../../hooks";
 
 const Wrapper = styled.li`
   cursor: pointer;
@@ -62,36 +62,39 @@ export const NotificationListItem = (props) => {
     }
   };
 
-  const handleRemove = (e) => {
+  /*const handleRemove = (e) => {
     e.preventDefault();
     e.stopPropagation();
     actions.remove({ id: notification.id });
-  };
+  };*/
 
   const notifDisplay = () => {
     switch (notification.type) {
       case "POST_CREATE": {
         return (
-          <div className="notification-container flex-grow-1" onClick={handleRedirect}>
-            <p className="notification-title text-link">shared a post</p>
-            <span className="text-muted small">{localizeChatChannelDate(notification.created_at.timestamp)}</span>
-          </div>
+            <div className="notification-container flex-grow-1" onClick={handleRedirect}>
+              <span>{notification.author.name}</span>
+              <p className="notification-title text-link">Shared a post</p>
+              <span className="text-muted small">{localizeChatChannelDate(notification.created_at.timestamp)}</span>
+            </div>
         );
       }
       case "POST_COMMENT": {
         return (
-          <div className="notification-container flex-grow-1" onClick={handleRedirect}>
-            <p className="notification-title text-link">made a comment in {notification.data.title}</p>
-            <span className="text-muted small">{localizeChatChannelDate(notification.created_at.timestamp)}</span>
-          </div>
+            <div className="notification-container flex-grow-1" onClick={handleRedirect}>
+              <span>{notification.author.name}</span>
+              <p className="notification-title text-link">Made a comment in {notification.data.title}</p>
+              <span className="text-muted small">{localizeChatChannelDate(notification.created_at.timestamp)}</span>
+            </div>
         );
       }
       case "POST_MENTION": {
         return (
-          <div className="notification-container flex-grow-1" onClick={handleRedirect}>
-            <p className="notification-title text-link">mentioned you in {notification.data.title}</p>
-            <span className="text-muted small">{localizeChatChannelDate(notification.created_at.timestamp)}</span>
-          </div>
+            <div className="notification-container flex-grow-1" onClick={handleRedirect}>
+              <span>{notification.author.name}</span>
+              <p className="notification-title text-link">Mentioned you in {notification.data.title}</p>
+              <span className="text-muted small">{localizeChatChannelDate(notification.created_at.timestamp)}</span>
+            </div>
         );
       }
       default:

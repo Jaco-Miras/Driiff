@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, {useEffect, useState} from "react";
 import styled from "styled-components";
-import { useSelector } from "react-redux";
-import { SvgEmptyState, SvgIconFeather } from "../../common";
-import { DropDocument } from "../../dropzone/DropDocument";
-import { useToaster } from "../../hooks";
-import { FileListItem, FolderListItem } from "../../list/file/item";
-import { MoreOptions } from "../common";
-import { ImportantFiles, PopularFiles, RecentEditedFile, RemoveFiles } from "./index";
+import {useSelector} from "react-redux";
+import {SvgEmptyState, SvgIconFeather} from "../../common";
+import {DropDocument} from "../../dropzone/DropDocument";
+import {useToaster} from "../../hooks";
+import {FileListItem, FolderListItem} from "../../list/file/item";
+import {MoreOptions} from "../common";
+import {ImportantFiles, PopularFiles, RecentEditedFile, RemoveFiles} from "./index";
 
 const Wrapper = styled.div`
   .card-body {
@@ -298,28 +298,24 @@ const FilesBody = (props) => {
               </>
             )}
             {filter === "removed" && (
-              <>
-                {folder ? <h6 className="font-size-11 text-uppercase mb-4">{folder.search}</h6> : Object.values(folders).filter((f) => f.is_archived).length > 0 && <h6 className="font-size-11 text-uppercase mb-4">Folders</h6>}
-                <div className="row">
-                  {params.hasOwnProperty("fileFolderId")
-                    ? subFolders
-                        .filter((f) => f.is_archived)
-                        .map((f) => {
-                          return <FolderListItem key={f.id} actions={actions} className="col-xl-3 col-lg-4 col-md-6 col-sm-12" folder={f} history={history} isMember={isMember} params={params} handleAddEditFolder={handleAddEditFolder} />;
-                        })
-                    : Object.values(folders)
-                        .filter((f) => f.is_archived)
-                        .map((f) => {
-                          return <FolderListItem key={f.id} actions={actions} className="col-xl-3 col-lg-4 col-md-6 col-sm-12" folder={f} history={history} isMember={isMember} params={params} handleAddEditFolder={handleAddEditFolder} />;
-                        })}
-                </div>
-                <RemoveFiles search={search} scrollRef={scrollRef} wsFiles={wsFiles} actions={actions} isMember={isMember} params={params} folder={folder} />
-                {!(wsFiles && wsFiles.hasOwnProperty("trash_files") && Object.keys(wsFiles.trash_files).length > 0) && (
-                  <EmptyState>
-                    <SvgEmptyState icon={4} height={282} />
-                  </EmptyState>
-                )}
-              </>
+                <>
+                  <RemoveFiles
+                      scrollRef={scrollRef}
+                      search={search}
+                      wsFiles={wsFiles}
+                      actions={actions}
+                      isMember={isMember}
+                      params={params}
+                      folders={folders}
+                      subFolders={subFolders}
+                      handleAddEditFolder={handleAddEditFolder}
+                      folder={folder}/>
+                  {!(wsFiles && wsFiles.hasOwnProperty("trash_files") && Object.keys(wsFiles.trash_files).length > 0) && (
+                      <EmptyState>
+                        <SvgEmptyState icon={4} height={282}/>
+                      </EmptyState>
+                  )}
+                </>
             )}
           </>
         )}

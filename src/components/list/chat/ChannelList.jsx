@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useHistory } from "react-router-dom";
+import React, {useState} from "react";
+import {useHistory} from "react-router-dom";
 import styled from "styled-components";
 import useChannelActions from "../../hooks/useChannelActions";
 import ChannelIcon from "./ChannelIcon";
@@ -88,48 +88,51 @@ const Timestamp = styled.div`
 `;
 
 const ChannelList = (props) => {
-  const channelActions = useChannelActions();
+    const channelActions = useChannelActions();
 
-  const history = useHistory();
+    const history = useHistory();
 
-  const { className = "", channel, selectedChannel } = props;
+    const {className = "", channel, selectedChannel, isWorkspace = false} = props;
 
-  const [optionsVisible, setOptionsVisible] = useState(false);
+    const [optionsVisible, setOptionsVisible] = useState(false);
 
-  const toggleOptions = () => {
-    setOptionsVisible(!optionsVisible);
-  };
+    const toggleOptions = () => {
+        setOptionsVisible(!optionsVisible);
+    };
 
-  const handleSelectChannel = () => {
-    if (selectedChannel !== null) {
-      const scrollComponent = document.getElementById("component-chat-thread");
-      if (scrollComponent) {
-        channelActions.saveHistoricalPosition(selectedChannel.id, scrollComponent);
-      }
-    }
+    const handleSelectChannel = () => {
+        if (selectedChannel !== null) {
+            const scrollComponent = document.getElementById("component-chat-thread");
+            if (scrollComponent) {
+                channelActions.saveHistoricalPosition(selectedChannel.id, scrollComponent);
+            }
+        }
 
-    channelActions.select({ ...channel, selected: true });
-    history.push(`/chat/${channel.code}`);
-  };
+        channelActions.select({...channel, selected: true});
+        history.push(`/chat/${channel.code}`);
+    };
 
-  return (
-    <Wrapper
-      className={`list-group-item d-flex align-items-center link-1 pl-0 pr-0 pb-3 pt-3 ${className}`}
-      optionsVisible={optionsVisible}
-      selected={selectedChannel !== null && channel.id === selectedChannel.id}
-      onClick={handleSelectChannel}
-    >
-      <ChannelIcon channel={channel} />
-      <ChannelTitlePreview className={"flex-grow-1"}>
-        <ChannelTitle channel={channel} />
-        <ReplyPreview channel={channel} />
-      </ChannelTitlePreview>
-      <Timestamp className="text-right ml-auto">
-        <ChatDateIcons className={"chat-date-icons"} channel={channel} optionsVisible={optionsVisible} />
-        <ChannelOptions selectedChannel={selectedChannel} channel={channel} onShowOptions={toggleOptions} />
-      </Timestamp>
-    </Wrapper>
-  );
+    return (
+        <Wrapper
+            className={`list-group-item d-flex align-items-center link-1 pl-0 pr-0 pb-3 pt-3 ${className}`}
+            optionsVisible={optionsVisible}
+            selected={selectedChannel !== null && channel.id === selectedChannel.id}
+            onClick={handleSelectChannel}
+        >
+            <ChannelIcon channel={channel}/>
+            <ChannelTitlePreview className={"flex-grow-1"}>
+                <ChannelTitle channel={channel}/>
+                <ReplyPreview channel={channel}/>
+            </ChannelTitlePreview>
+            <Timestamp className="text-right ml-auto">
+                <ChatDateIcons className={"chat-date-icons"} channel={channel} optionsVisible={optionsVisible}/>
+                {
+                    !isWorkspace &&
+                    <ChannelOptions selectedChannel={selectedChannel} channel={channel} onShowOptions={toggleOptions}/>
+                }
+            </Timestamp>
+        </Wrapper>
+    );
 };
 
 export default ChannelList;

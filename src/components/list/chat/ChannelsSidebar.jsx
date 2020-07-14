@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { useSortChannels } from "../../hooks";
+import {useSortChannels} from "../../hooks";
 import ChannelList from "./ChannelList";
 
 const ChannelsSidebarContainer = styled.div``;
@@ -61,7 +61,7 @@ const ChannelsSidebar = (props) => {
           return (
             <React.Fragment key={channel.id}>
               {search !== "" && chatHeader !== "" && <ChatHeader>{chatHeader}</ChatHeader>}
-              <ChannelList channel={channel} selectedChannel={selectedChannel} />
+                <ChannelList channel={channel} selectedChannel={selectedChannel} isWorkspace={workspace}/>
             </React.Fragment>
           );
         })}

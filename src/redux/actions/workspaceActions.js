@@ -3,13 +3,12 @@ import {
   createWorkspace as createWorkspaceService,
   deleteWorkspace as deleteWorkspaceService,
   fetchDetail as fetchDetailService,
-  fetchPrimaryFiles as fetchPrimaryFilesService,
   fetchMembers as fetchMembersService,
+  fetchPrimaryFiles as fetchPrimaryFilesService,
   fetchTimeline as fetchTimelineService,
   getPostStatusCount as getPostStatusCountService,
   getWorkspace as getWorkspaceService,
   getWorkspacePostDetail as getWorkspacePostDetailService,
-  getWorkspacePosts as getWorkspacePostsService,
   getWorkspaces as getWorkspacesService,
   getWorkspaceTopics as getWorkspaceTopicsService,
   joinWorkspace as joinWorkspaceService,
@@ -124,4 +123,16 @@ export function incomingTimeline(payload, callback) {
 
 export function getWorkspace(payload, callback) {
   return dispatchActionToReducer(getWorkspaceService(payload), "GET_WORKSPACE_START", "GET_WORKSPACE_SUCCESS", "GET_WORKSPACE_FAIL", callback);
+}
+
+export function updateWorkspaceCounter(payload, callback) {
+  return SimpleDispatchActionToReducer("UPDATE_WORKSPACE_COUNTER", payload, callback);
+}
+
+export function incomingArchivedWorkspaceChannel(payload, callback) {
+  return SimpleDispatchActionToReducer("ARCHIVE_REDUCER", payload, callback);
+}
+
+export function incomingUnArchivedWorkspaceChannel(payload, callback) {
+  return SimpleDispatchActionToReducer("UNARCHIVE_REDUCER", payload, callback);
 }

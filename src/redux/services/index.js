@@ -73,6 +73,7 @@ export {
 export {
   deleteComment,
   deletePost,
+  fetchPost,
   fetchPosts,
   fetchComments,
   fetchRecentPosts,

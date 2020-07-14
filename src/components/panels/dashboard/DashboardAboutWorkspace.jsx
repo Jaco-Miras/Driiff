@@ -1,6 +1,6 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, {useCallback, useEffect, useRef, useState} from "react";
 import styled from "styled-components";
-import { FileAttachments, SvgIconFeather } from "../../common";
+import {FileAttachments, SvgIconFeather} from "../../common";
 
 const Wrapper = styled.div`
   border-left: 5px solid #822492;
@@ -16,8 +16,8 @@ const Wrapper = styled.div`
     left: 0;
     height: 100%;
     width: 100%;
-    transition: all 3s;
-    background: linear-gradient(0deg, rgba(122, 27, 139, 1) 0%, rgba(231, 213, 234, 0.25) 50%, rgba(255, 255, 255, 0.5) 100%);
+    transition: all 0.3s ease;
+    background: linear-gradient(0deg, rgba(252, 252, 252, 1) 0%, rgba(231, 213, 234, 0.25) 50%, rgba(255, 255, 255, 0.5) 100%);
     opacity: 0;
 
     &.hide {
@@ -56,7 +56,7 @@ const DashboardDescriptionContainer = styled.div`
   &.hide {
     .btn-toggle-show {
       display: block;
-      color: #fff;
+      color: #828282;
     }
   }
   &.show {
@@ -73,7 +73,7 @@ const DashboardDescriptionContainer = styled.div`
 `;
 
 const DashboardDescription = styled.div`
-  transition: all 3s ease;
+  transition: all 0.3s ease;
   max-width: 700px;
   min-height: 140px;
 
@@ -92,7 +92,9 @@ const DashboardDescription = styled.div`
 `;
 
 const DashboardAboutWorkspace = (props) => {
-  const { className = "", onEditClick, workspace, isMember } = props;
+  const {className = "", onEditClick, workspace, isMember} = props;
+
+  const [prevWorkspaceDescription, setPrevWorkspaceDescription] = useState("");
   const [showMore, setShowMore] = useState(null);
   const [descriptionHeight, setDescriptionHeight] = useState(140);
 
@@ -123,18 +125,22 @@ const DashboardAboutWorkspace = (props) => {
 
   useEffect(() => {
     if (refs.description.current) {
-      if (showMore) {
+      if (showMore === true) {
         setTimeout(() => {
           refs.description.current.style.overflow = "";
-        }, [3000]);
-      } else {
+        }, [300]);
+      } else if (showMore === false) {
         refs.description.current.style.overflow = "hidden";
       }
     }
   }, [showMore, refs.description.current]);
 
   useEffect(() => {
-    refs.description.current = null;
+    if (workspace && prevWorkspaceDescription !== workspace.description) {
+      setPrevWorkspaceDescription(workspace.description);
+      setShowMore(null);
+      refs.description.current = null;
+    }
   }, [workspace]);
 
   return (

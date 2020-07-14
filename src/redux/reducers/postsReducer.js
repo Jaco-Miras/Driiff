@@ -1,4 +1,4 @@
-import { convertArrayToObject } from "../../helpers/arrayHelper";
+import {convertArrayToObject} from "../../helpers/arrayHelper";
 
 const INITIAL_STATE = {
   user: null,
@@ -119,7 +119,7 @@ export default (state = INITIAL_STATE, action) => {
     }
     case "INCOMING_POST_VIEWER": {
       if (state.posts.hasOwnProperty[action.data.post_id]) {
-        let updatedPosts = { ...state.posts };
+        let updatedPosts = {...state.posts};
         updatedPosts[action.data.post_id].view_user_ids = [...updatedPosts[action.data.post_id].view_user_ids, action.data.viewer.id];
         return {
           ...state,
@@ -129,18 +129,18 @@ export default (state = INITIAL_STATE, action) => {
         return state;
       }
     }
-    case "ARCHIVE_REDUCER": {
-      let updatedPosts = { ...state.posts };
+    case "ARCHIVE_POST_REDUCER": {
+      let updatedPosts = {...state.posts};
       updatedPosts[action.data.post_id].is_archived = action.data.is_archived;
       return {
         ...state,
         posts: updatedPosts,
       };
     }
-    // case "MARK_READ_UNREAD_REDUCER": {
-    //     let newPosts = {...state.posts};
-    //     newPosts[action.data.post_id].is_unread = action.data.unread;
-    //     if (action.data.unread === 0) {
+      // case "MARK_READ_UNREAD_REDUCER": {
+      //     let newPosts = {...state.posts};
+      //     newPosts[action.data.post_id].is_unread = action.data.unread;
+      //     if (action.data.unread === 0) {
     //         newPosts[action.data.post_id].unread_count = action.data.unread;
     //     }
     //     return {

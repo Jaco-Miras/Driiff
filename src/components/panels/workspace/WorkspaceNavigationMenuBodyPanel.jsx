@@ -154,6 +154,10 @@ const WorkspaceNavigationMenuBodyPanel = (props) => {
     const sortedWorkspaces = useSortWorkspaces();
     const generalInternalWorkspaces = sortedWorkspaces.filter((ws) => ws.type !== "FOLDER" && ws.is_external === 0 && ws.topic_detail.active === 1);
     const generalExternalWorkspaces = sortedWorkspaces.filter((ws) => ws.type !== "FOLDER" && ws.is_external !== 0 && ws.topic_detail.active === 1);
+    const archiveInternalWorkspacesFolder = sortedWorkspaces.filter((ws) => {
+        return ws.type === "FOLDER" && ws.is_external === 0 && Object.values(ws.topics).some(t => t.active === 0)
+    });
+    //const archiveExternalWorkspacesFolder = sortedWorkspaces.filter((ws) => ws.type === "FOLDER" && ws.is_external !== 0 && ws.topics.some(t => t.active === 0));
     const archiveInternalWorkspaces = sortedWorkspaces.filter((ws) => ws.type !== "FOLDER" && ws.is_external === 0 && ws.topic_detail.active === 0);
     const archiveExternalWorkspaces = sortedWorkspaces.filter((ws) => ws.type !== "FOLDER" && ws.is_external !== 0 && ws.topic_detail.active === 0);
 

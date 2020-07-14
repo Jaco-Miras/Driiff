@@ -2,6 +2,7 @@ import dispatchActionToReducer, { SimpleDispatchActionToReducer } from "../actio
 import {
   deleteComment as deleteCommentService,
   deletePost as deletePostService,
+  fetchPost as fetchPostService,
   fetchPosts as fetchPostsService,
   fetchComments as fetchCommentsService,
   fetchRecentPosts as fetchRecentPostsService,
@@ -164,7 +165,7 @@ export function incomingPostViewer(payload, callback) {
 }
 
 export function archiveReducer(payload, callback) {
-  return SimpleDispatchActionToReducer("ARCHIVE_REDUCER", payload, callback);
+    return SimpleDispatchActionToReducer("ARCHIVE_POST_REDUCER", payload, callback);
 }
 
 export function markReadUnreadReducer(payload, callback) {
@@ -185,4 +186,8 @@ export function deleteComment(payload, callback) {
 
 export function incomingDeletedComment(payload, callback) {
   return SimpleDispatchActionToReducer("INCOMING_DELETED_COMMENT", payload, callback);
+}
+
+export function fetchPost(payload, callback) {
+  return dispatchActionToReducer(fetchPostService(payload), "GET_POST_START", "GET_POST_SUCCESS", "GET_POST_FAIL", callback);
 }
