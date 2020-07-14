@@ -125,7 +125,7 @@ const SelectPeople = styled(PeopleSelect)`
 
 const CheckBoxGroup = styled.div`
   overflow: hidden;
-  transition: all 0.3s ease;
+  transition: all 0.3s ease !important;
   width: 100%;
 
   &.enter-active {

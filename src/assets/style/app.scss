@@ -18361,7 +18361,7 @@ small {
   display: -moz-box;
   display: -ms-flexbox;
   display: flex;
-  height: 55px;
+  // height: 55px;
   // -webkit-box-pack: center;
   // -webkit-justify-content: center;
   // -moz-box-pack: center;
@@ -18383,23 +18383,23 @@ small {
   color: #fff;
 }
 
-.chat-block .chat-sidebar .chat-sidebar-content .list-group .navigation .navigation-menu-tab ul li .active.list-group-item:after,
-.header form .input-group .input-group-append .navigation .navigation-menu-tab ul li button.active.btn:after,
-.navigation .navigation-menu-tab ul li .chat-block .chat-sidebar .chat-sidebar-content .list-group .active.list-group-item:after,
-.navigation .navigation-menu-tab ul li .header form .input-group .input-group-append button.active.btn:after,
-.navigation .navigation-menu-tab ul li a.active:after {
-  content: "";
-  right: 0px;
-  left: 0px;
-  top: 10px;
-  bottom: 10px;
-  -webkit-border-radius: 0.5rem;
-  -moz-border-radius: 0.5rem;
-  border-radius: 0.5rem;
-  display: block;
-  background: rgba(255, 255, 255, 0.2);
-  position: absolute;
-}
+// .chat-block .chat-sidebar .chat-sidebar-content .list-group .navigation .navigation-menu-tab ul li .active.list-group-item:after,
+// .header form .input-group .input-group-append .navigation .navigation-menu-tab ul li button.active.btn:after,
+// .navigation .navigation-menu-tab ul li .chat-block .chat-sidebar .chat-sidebar-content .list-group .active.list-group-item:after,
+// .navigation .navigation-menu-tab ul li .header form .input-group .input-group-append button.active.btn:after,
+// .navigation .navigation-menu-tab ul li a.active:after {
+//   content: "";
+//   right: 0px;
+//   left: 0px;
+//   top: 10px;
+//   bottom: 10px;
+//   -webkit-border-radius: 0.5rem;
+//   -moz-border-radius: 0.5rem;
+//   border-radius: 0.5rem;
+//   display: block;
+//   background: rgba(255, 255, 255, 0.2);
+//   position: absolute;
+// }
 
 .chat-block .chat-sidebar .chat-sidebar-content .list-group .navigation .navigation-menu-tab ul li .list-group-item.active:hover,
 .header form .input-group .input-group-append .navigation .navigation-menu-tab ul li button.btn:hover,
@@ -18593,12 +18593,18 @@ small {
   transition: transform 0.5s, -webkit-transform 0.5s, -moz-transform 0.5s, -o-transform 0.5s;
   transition: transform 0.5s, -webkit-transform 0.5s, -moz-transform 0.5s, -o-transform 0.5s;
 }
+.sub-menu-arrow {
+  margin-left: auto;
+  font-size: 0.55rem;
+  transition: transform 0.5s;
+}
 
 .chat-block .chat-sidebar .chat-sidebar-content .list-group .navigation .navigation-menu-body ul li > .list-group-item.active .sub-menu-arrow.rotate-in,
 .header form .input-group .input-group-append .navigation .navigation-menu-body ul li > button.btn .sub-menu-arrow.rotate-in,
 .navigation .navigation-menu-body ul .chat-block .chat-sidebar .chat-sidebar-content .list-group li > .list-group-item.active .sub-menu-arrow.rotate-in,
 .navigation .navigation-menu-body ul .header form .input-group .input-group-append li > button.btn .sub-menu-arrow.rotate-in,
-.navigation .navigation-menu-body ul li > a .sub-menu-arrow.rotate-in {
+.navigation .navigation-menu-body ul li > a .sub-menu-arrow.rotate-in,
+.rotate-in {
   -webkit-transform: rotate(540deg);
   -moz-transform: rotate(540deg);
   -ms-transform: rotate(540deg);
@@ -20983,4 +20989,10 @@ body.dark.small-navigation .navigation-menu-body ul li.navigation-divider:after 
 }
 .tooltip-active span {
   opacity: 1;
+}
+.folder-open {
+  margin-bottom: 15px;
+}
+.folder-open a {
+  background-color: #fff2;
 }

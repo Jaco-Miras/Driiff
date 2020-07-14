@@ -47,15 +47,15 @@ const Wrapper = styled.div`
       height: 6px;
       padding: 0;
       background: rgba(255, 68, 68, 0.8);
-      right: 7px;
-      top: 16px;
+      right: -12px;
+      top: -1px;
       z-index: 9;
     }
   }
   .navigation-menu-group {
     -ms-overflow-style: none;
     scrollbar-width: none;
-    height: 70vh;
+    height: 74vh;
     overflow: scroll;
     margin: 0 15px;
     &::-webkit-scrollbar {
@@ -86,10 +86,18 @@ const FolderPlus = styled(SvgIconFeather)`
 const NavIconContainer = styled(NavLink)`
   display: flex;
   color: #fff;
-  height: 55px;
+  height: 40px;
   justify-content: flex-start;
   align-items: center;
   margin: 0 15px;
+  border-radius: 8px;
+  &.active {
+    background: #fff2;
+  }
+  div {
+    display: inline-block;
+    position: relative;
+  }
 `;
 
 const NavIcon = styled(SvgIconFeather)`
@@ -197,8 +205,10 @@ const MainNavigationTabPanel = (props) => {
           <li>
             <NavIconContainer to={workspacePath}>
               <NavIcon icon={"command"} />
-              Workspaces
-              {unreadCounter.workspace_chat_message + unreadCounter.workspace_post >= 1 && <Badge data-count={unreadCounter.workspace_chat_message + unreadCounter.workspace_post}>&nbsp;</Badge>}
+              <div>
+                Workspaces
+                {unreadCounter.workspace_chat_message + unreadCounter.workspace_post >= 1 && <Badge data-count={unreadCounter.workspace_chat_message + unreadCounter.workspace_post}>&nbsp;</Badge>}
+              </div>
             </NavIconContainer>
           </li>
           <li>
@@ -207,8 +217,10 @@ const MainNavigationTabPanel = (props) => {
               to={lastVisitedChannel !== null && lastVisitedChannel.hasOwnProperty("code") ? `/chat/${lastVisitedChannel.code}` : "/chat"}
             >
               <NavIcon icon={"message-circle"} />
-              Chats
-              {(unreadCounter.chat_message >= 1 || unreadCounter.unread_channel > 0) && <Badge data-count={unreadCounter.chat_message}>&nbsp;</Badge>}
+              <div>
+                Chats
+                {(unreadCounter.chat_message >= 1 || unreadCounter.unread_channel > 0) && <Badge data-count={unreadCounter.chat_message}>&nbsp;</Badge>}
+              </div>
             </NavIconContainer>
           </li>
         </ul>

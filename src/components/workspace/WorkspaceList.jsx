@@ -14,32 +14,40 @@ const Wrapper = styled.li`
   cursor: pointer;
   cursor: hand;
   position: relative;
-
+  transition: all 0.3s ease;
   a.archived-folder {
-    color: #bebebe !important;
+    ${'' /* color: #bebebe !important; */}
   }
 
   > a {
     position: relative;
     font-weight: ${(props) => (props.selected ? "bold" : "normal")};
-    ${"" /* color: ${(props) => (props.selected ? "#7a1b8b !important" : "#64625C")}; */}
+    ${'' /* background: ${(props) => (props.selected ? "#7a1b8b !important" : "#64625C")}; */}
+    div {
+      position: relative;
+      height: 40px;
+      display: inline-flex;
+      align-items: center;
+      .badge {
+        position: absolute;
+        width: 6px;
+        height: 6px;
+        top: 7px;
+        right: -12px;
+        border-radius: 50%;
+        background: #f44;
+        font-size: 0;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        opacity: 1;
+        &.enter-active {
+          transform: translate(0, 0);
+        }
 
-    .badge {
-      padding: 3px 7px;
-      position: absolute;
-      right: 25px;
-      overflow: hidden;
-      transition: all 0.3s ease;
-      top: 12px;
-      opacity: 1;
-
-      &.enter-active {
-        transform: translate(0, 0);
-      }
-
-      &.leave-active {
-        opacity: 0;
-        transform: translate(0, 100%);
+        &.leave-active {
+          opacity: 0;
+          transform: translate(0, 100%);
+        }
       }
     }
   }
@@ -59,7 +67,8 @@ const Wrapper = styled.li`
     }
   }
   .nav-action {
-    background-color: #fff3;
+    ${"" /* background-color: #fff3; */}
+    background-color: #fff2;
     height: 40px;
     display: flex;
     align-items: center;
@@ -74,24 +83,23 @@ const Wrapper = styled.li`
 `;
 
 const LockIcon = styled(SvgIconFeather)`
-  position: absolute;
-  width: 12px;
-  left: 12px;
-  top: 8px;
+  height: 12px !important;
+  width: 12px !important;
+  cursor: pointer;
+  margin-left: 4px;
+  color: #fff8;
 `;
 
 const TopicNav = styled.ul`
-  display: block !important;
   overflow: hidden;
   transition: all 0.3s ease;
+  display: block !important;
 
   &.enter-active {
-    max-height: ${(props) => props.maxHeight}px;
-    ${"" /* margin: 4px 0 8px 2px; */}
+    max-height: ${(props) => props.maxHeight + 40}px !important;
   }
-
   &.leave-active {
-    max-height: 0px;
+    max-height: 0;
   }
 `;
 
@@ -113,6 +121,7 @@ const WorkspaceList = (props) => {
 
   const [showTopics, setShowTopics] = useState(null);
   const [maxHeight, setMaxHeight] = useState(null);
+  const [prevTopics, setPrevTopics] = useState(null);
 
   const handleShowWorkspaceModal = () => {
     let payload = {
@@ -167,14 +176,17 @@ const WorkspaceList = (props) => {
   }, [showTopics, workspace.id, workspace.selected, maxHeight, workspace_open_folder]);
 
   useEffect(() => {
-    if (workspace.topics) {
-      setMaxHeight(null);
+    if (prevTopics !== workspace.topics) {
+      if (prevTopics !== null) {
+        setMaxHeight(null);
+      }
+      setPrevTopics(workspace.topics);
     }
   }, [workspace.topics]);
 
   return (
-    <Wrapper ref={ref.container} className={`workspace-list fadeIn ${className}`} selected={workspace.selected} show={show}>
-      <a className={`${workspace.selected ? "active" : ""} ${workspace.is_active === 0 ? "archived-folder" : ""}`} href="/" onClick={handleShowTopics}>
+    <Wrapper ref={ref.container} className={`workspace-list fadeIn ${className} ${showTopics && "folder-open"}`} selected={workspace.selected} show={show}>
+      <a className={`${workspace.selected ? "" : ""} ${workspace.is_active === 0 ? "archived-folder" : ""}`} href="/" onClick={handleShowTopics}>
         <div>
           {workspace.name}
 
