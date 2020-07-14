@@ -54,7 +54,7 @@ const MoveFilesModal = (props) => {
         if (err) {
           toaster.success(
             <div>
-              Failed to move <b>{file.search}</b> to folder {selectedFolder.label}
+              Failed to move <b>{file.search}</b> to folder <strong>{selectedFolder.label}</strong>
             </div>
           );
 
@@ -62,7 +62,7 @@ const MoveFilesModal = (props) => {
         }
         toaster.success(
           <div>
-            <b>{file.search}</b> has been moved to folder {selectedFolder.label}
+            <strong>{file.search}</strong> has been moved to folder <strong>{selectedFolder.label}</strong>
           </div>
         );
       };
