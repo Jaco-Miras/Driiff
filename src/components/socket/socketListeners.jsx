@@ -39,9 +39,9 @@ import {
   incomingRemovedFolder,
 } from "../../redux/actions/fileActions";
 import { addUserToReducers, generateUnfurl, generateUnfurlReducer, getConnectedSlugs, setBrowserTabStatus, setGeneralChat, setUnreadNotificationCounterEntries } from "../../redux/actions/globalActions";
-import { incomingComment, incomingCommentClap, incomingDeletedComment, incomingDeletedPost, incomingPost, incomingPostClap, incomingPostViewer, incomingUpdatedPost } from "../../redux/actions/postActions";
+import { fetchPost, incomingComment, incomingCommentClap, incomingDeletedComment, incomingDeletedPost, incomingPost, incomingPostClap, incomingPostViewer, incomingUpdatedPost } from "../../redux/actions/postActions";
 import { getOnlineUsers, getUser, incomingUpdatedUser } from "../../redux/actions/userAction";
-import { incomingMovedTopic, incomingTimeline, incomingUpdatedWorkspaceFolder, incomingWorkspace, incomingWorkspaceFolder, getWorkspace } from "../../redux/actions/workspaceActions";
+import { incomingMovedTopic, incomingTimeline, incomingUpdatedWorkspaceFolder, incomingWorkspace, incomingWorkspaceFolder, getWorkspace, updateWorkspaceCounter } from "../../redux/actions/workspaceActions";
 
 class SocketListeners extends React.PureComponent {
   constructor(props) {
@@ -189,6 +189,24 @@ class SocketListeners extends React.PureComponent {
               this.props.setGeneralChat({
                 count: 1,
                 entity_type: "WORKSPACE_POST",
+              });
+            }
+            if (e.author.id !== this.props.user.id) {
+              e.workspaces.forEach((ws) => {
+                this.props.fetchPost({ post_id: e.post_id }, (err, res) => {
+                  if (err) return;
+                  console.log(res);
+                  if (!res.data.is_updated && res.data.unread_count === 1) {
+                    //no changes
+                  } else {
+                    //plus 1
+                    this.props.updateWorkspaceCounter({
+                      folder_id: ws.workspace_id,
+                      topic_id: ws.topic_id,
+                      unread_posts: 1,
+                    });
+                  }
+                });
               });
             }
             break;
@@ -718,7 +736,13 @@ class SocketListeners extends React.PureComponent {
   }
 }
 
-function mapStateToProps({ session: { user }, settings: { userSettings }, chat: { channels, selectedChannel }, workspaces: { workspaces }, global: { isBrowserActive } }) {
+function mapStateToProps({ 
+  session: { user }, 
+  settings: { userSettings }, 
+  chat: { channels, selectedChannel }, 
+  workspaces: { workspaces, workspacePosts }, 
+  global: { isBrowserActive } 
+}) {
   return {
     user,
     settings: userSettings,
@@ -726,6 +750,7 @@ function mapStateToProps({ session: { user }, settings: { userSettings }, chat: 
     selectedChannel,
     isBrowserActive,
     workspaces,
+    workspacePosts,
   };
 }
 
@@ -784,6 +809,8 @@ function mapDispatchToProps(dispatch) {
     incomingRemovedFolder: bindActionCreators(incomingRemovedFolder, dispatch),
     getWorkspace: bindActionCreators(getWorkspace, dispatch),
     setSelectedChannel: bindActionCreators(setSelectedChannel, dispatch),
+    fetchPost: bindActionCreators(fetchPost, dispatch),
+    updateWorkspaceCounter: bindActionCreators(updateWorkspaceCounter, dispatch),
   };
 }
 
