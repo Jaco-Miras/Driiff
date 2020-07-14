@@ -17,7 +17,7 @@ const Wrapper = styled.div`
     height: 100%;
     width: 100%;
     transition: all 0.3s ease;
-    background: linear-gradient(0deg, rgba(252, 252, 252, 1) 0%, rgba(231, 213, 234, 0.25) 50%, rgba(255, 255, 255, 0.5) 100%);
+    background: linear-gradient(0deg, rgba(252, 252, 252, 1) 0%, rgba(252, 252, 252, 0.25) 50%, rgba(255, 255, 255, 0.5) 100%);
     opacity: 0;
 
     &.hide {
