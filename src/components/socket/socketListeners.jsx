@@ -1,11 +1,11 @@
 import React from "react";
-import { isSafari } from "react-device-detect";
-import { connect } from "react-redux";
-import { withRouter } from "react-router-dom";
-import { bindActionCreators } from "redux";
-import { pushBrowserNotification } from "../../helpers/pushHelper";
-import { replaceChar, stripHtml } from "../../helpers/stringFormatter";
-import { urlify } from "../../helpers/urlContentHelper";
+import {isSafari} from "react-device-detect";
+import {connect} from "react-redux";
+import {withRouter} from "react-router-dom";
+import {bindActionCreators} from "redux";
+import {pushBrowserNotification} from "../../helpers/pushHelper";
+import {replaceChar, stripHtml} from "../../helpers/stringFormatter";
+import {urlify} from "../../helpers/urlContentHelper";
 import {
   addToChannels,
   getChannel,
@@ -38,10 +38,36 @@ import {
   incomingRemovedFile,
   incomingRemovedFolder,
 } from "../../redux/actions/fileActions";
-import { addUserToReducers, generateUnfurl, generateUnfurlReducer, getConnectedSlugs, setBrowserTabStatus, setGeneralChat, setUnreadNotificationCounterEntries } from "../../redux/actions/globalActions";
-import { incomingComment, incomingCommentClap, incomingDeletedComment, incomingDeletedPost, incomingPost, incomingPostClap, incomingPostViewer, incomingUpdatedPost } from "../../redux/actions/postActions";
-import { getOnlineUsers, getUser, incomingUpdatedUser } from "../../redux/actions/userAction";
-import { incomingMovedTopic, incomingTimeline, incomingUpdatedWorkspaceFolder, incomingWorkspace, incomingWorkspaceFolder, getWorkspace } from "../../redux/actions/workspaceActions";
+import {
+  addUserToReducers,
+  generateUnfurl,
+  generateUnfurlReducer,
+  getConnectedSlugs,
+  setBrowserTabStatus,
+  setGeneralChat,
+  setUnreadNotificationCounterEntries
+} from "../../redux/actions/globalActions";
+import {
+  incomingComment,
+  incomingCommentClap,
+  incomingDeletedComment,
+  incomingDeletedPost,
+  incomingPost,
+  incomingPostClap,
+  incomingPostViewer,
+  incomingUpdatedPost
+} from "../../redux/actions/postActions";
+import {getOnlineUsers, getUser, incomingUpdatedUser} from "../../redux/actions/userAction";
+import {
+  getWorkspace,
+  incomingArchivedWorkspaceChannel,
+  incomingMovedTopic,
+  incomingTimeline,
+  incomingUnArchivedWorkspaceChannel,
+  incomingUpdatedWorkspaceFolder,
+  incomingWorkspace,
+  incomingWorkspaceFolder
+} from "../../redux/actions/workspaceActions";
 
 class SocketListeners extends React.PureComponent {
   constructor(props) {
@@ -685,6 +711,14 @@ class SocketListeners extends React.PureComponent {
       .listen(".archived-chat-channel", (e) => {
         console.log(e, "archived chat");
         this.props.incomingArchivedChannel(e.channel_data);
+
+        if (typeof e.channel_data.topic_detail !== "undefined") {
+          if (e.channel_data.status === "UNARCHIVED") {
+            this.props.incomingUnArchivedWorkspaceChannel(e.channel_data.topic_detail)
+          } else {
+            this.props.incomingArchivedWorkspaceChannel(e.channel_data.topic_detail)
+          }
+        }
       })
       .listen(".new-chat-channel", (e) => {
         console.log(e, "chat channel");
@@ -748,6 +782,8 @@ function mapDispatchToProps(dispatch) {
     generateUnfurlReducer: bindActionCreators(generateUnfurlReducer, dispatch),
     setChannel: bindActionCreators(setChannel, dispatch),
     incomingArchivedChannel: bindActionCreators(incomingArchivedChannel, dispatch),
+    incomingArchivedWorkspaceChannel: bindActionCreators(incomingArchivedWorkspaceChannel, dispatch),
+    incomingUnArchivedWorkspaceChannel: bindActionCreators(incomingUnArchivedWorkspaceChannel, dispatch),
     incomingChatMessageReaction: bindActionCreators(incomingChatMessageReaction, dispatch),
     incomingUpdatedChatMessage: bindActionCreators(incomingUpdatedChatMessage, dispatch),
     incomingDeletedChatMessage: bindActionCreators(incomingDeletedChatMessage, dispatch),

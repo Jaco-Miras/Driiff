@@ -1,26 +1,26 @@
-import dispatchActionToReducer, { SimpleDispatchActionToReducer } from "../actionDispatcher";
+import dispatchActionToReducer, {SimpleDispatchActionToReducer} from "../actionDispatcher";
 import {
-  deleteComment as deleteCommentService,
-  deletePost as deletePostService,
-  fetchPosts as fetchPostsService,
-  fetchComments as fetchCommentsService,
-  fetchRecentPosts as fetchRecentPostsService,
-  fetchTagCounter as fetchTagCounterService,
-  postArchive as postArchiveService,
-  postClap as postClapService,
-  postCreate as postCreateService,
-  postComment as postCommentService,
-  postCommentClap as postCommentClapService,
-  postFavorite as postFavoriteService,
-  postFollow as postFollowService,
-  postMarkDone as postMarkDoneService,
-  postMarkRead as postMarkReadService,
-  postSnooze as postSnoozeService,
-  postToggleRead as postToggleReadService,
-  postUnfollow as postUnfollowService,
-  postVisit as postVisitService,
-  putComment as putCommentService,
-  putPost as putPostService,
+    deleteComment as deleteCommentService,
+    deletePost as deletePostService,
+    fetchComments as fetchCommentsService,
+    fetchPosts as fetchPostsService,
+    fetchRecentPosts as fetchRecentPostsService,
+    fetchTagCounter as fetchTagCounterService,
+    postArchive as postArchiveService,
+    postClap as postClapService,
+    postComment as postCommentService,
+    postCommentClap as postCommentClapService,
+    postCreate as postCreateService,
+    postFavorite as postFavoriteService,
+    postFollow as postFollowService,
+    postMarkDone as postMarkDoneService,
+    postMarkRead as postMarkReadService,
+    postSnooze as postSnoozeService,
+    postToggleRead as postToggleReadService,
+    postUnfollow as postUnfollowService,
+    postVisit as postVisitService,
+    putComment as putCommentService,
+    putPost as putPostService,
 } from "../services";
 
 export function postFavorite(payload, callback) {
@@ -164,7 +164,7 @@ export function incomingPostViewer(payload, callback) {
 }
 
 export function archiveReducer(payload, callback) {
-  return SimpleDispatchActionToReducer("ARCHIVE_REDUCER", payload, callback);
+    return SimpleDispatchActionToReducer("ARCHIVE_POST_REDUCER", payload, callback);
 }
 
 export function markReadUnreadReducer(payload, callback) {

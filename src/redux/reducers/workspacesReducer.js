@@ -1,5 +1,5 @@
 /* eslint-disable no-prototype-builtins */
-import { convertArrayToObject } from "../../helpers/arrayHelper";
+import {convertArrayToObject} from "../../helpers/arrayHelper";
 
 const INITIAL_STATE = {
   user: {},
@@ -993,18 +993,42 @@ export default (state = INITIAL_STATE, action) => {
         return state;
       }
     }
-    case "ARCHIVE_REDUCER": {
-      let newWorkspacePosts = { ...state.workspacePosts };
+    case "ARCHIVE_POST_REDUCER": {
+      let newWorkspacePosts = {...state.workspacePosts};
       newWorkspacePosts[action.data.topic_id].posts[action.data.post_id].is_archived = action.data.is_archived;
       return {
         ...state,
         workspacePosts: newWorkspacePosts,
       };
     }
+    case "ARCHIVE_REDUCER": {
+      let workspaces = {...state.workspaces};
+      if (action.data.workspace_id) {
+        workspaces[action.data.workspace_id].topics[action.data.id].active = 0;
+      } else {
+        workspaces[action.data.id].topic_detail.active = 0;
+      }
+      return {
+        ...state,
+        workspaces: workspaces,
+      };
+    }
+    case "UNARCHIVE_REDUCER": {
+      let workspaces = {...state.workspaces};
+      if (action.data.workspace_id) {
+        workspaces[action.data.workspace_id].topics[action.data.id].active = 1;
+      } else {
+        workspaces[action.data.id].topic_detail.active = 1;
+      }
+      return {
+        ...state,
+        workspaces: workspaces,
+      };
+    }
     case "MARK_READ_UNREAD_REDUCER": {
-      let newWorkspacePosts = { ...state.workspacePosts };
-      let updatedWorkspaces = { ...state.workspaces };
-      let updatedTopic = { ...state.activeTopic };
+      let newWorkspacePosts = {...state.workspacePosts};
+      let updatedWorkspaces = {...state.workspaces};
+      let updatedTopic = {...state.activeTopic};
       newWorkspacePosts[action.data.topic_id].posts[action.data.post_id].is_unread = action.data.unread;
       if (action.data.unread === 0) {
         newWorkspacePosts[action.data.topic_id].posts[action.data.post_id].unread_count = action.data.unread;

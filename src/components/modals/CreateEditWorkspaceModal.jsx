@@ -548,6 +548,7 @@ const CreateEditWorkspaceModal = (props) => {
     };
 
     const handleArchive = useCallback(() => {
+
         let payload = {
             id: item.topic_detail.channel.id,
             is_archived: item.topic_detail.active === 1 ? 1 : 0,
@@ -555,6 +556,10 @@ const CreateEditWorkspaceModal = (props) => {
             is_pinned: 0,
             is_shared: item.is_external
         };
+
+        if (payload.is_archived === 0) {
+            payload.push_unarchived = 1;
+        }
 
         dispatch(putChannel(payload));
         toaster.success(
