@@ -773,56 +773,56 @@ export default (state = INITIAL_STATE, action) => {
       let newWorkspacePosts = { ...state.workspacePosts };
       let updatedWorkspaces = { ...state.workspaces };
       let updatedTopic = { ...state.activeTopic };
-      let post = null;
+      //let post = null;
 
       if (action.data.workspaces.length && action.data.SOCKET_TYPE === "POST_COMMENT_CREATE") {
         action.data.workspaces.forEach((ws) => {
           if (newWorkspacePosts.hasOwnProperty(ws.topic_id) && newWorkspacePosts[ws.topic_id].posts.hasOwnProperty(action.data.post_id)) {
-            post = newWorkspacePosts[ws.topic_id].posts[action.data.post_id];
+            //post = newWorkspacePosts[ws.topic_id].posts[action.data.post_id];
             newWorkspacePosts[ws.topic_id].posts[action.data.post_id].reply_count = newWorkspacePosts[ws.topic_id].posts[action.data.post_id].reply_count + 1;
             if (action.data.author.id !== state.user.id) {
               newWorkspacePosts[ws.topic_id].posts[action.data.post_id].unread_count = newWorkspacePosts[ws.topic_id].posts[action.data.post_id].unread_count + 1;
             }
           }
-          if (action.data.author.id !== state.user.id) {
-            if (ws.workspace_id !== 0) {
-              if (updatedWorkspaces.hasOwnProperty(ws.workspace_id) && updatedWorkspaces[ws.workspace_id].topics.hasOwnProperty(ws.topic_id)) {
-                if (post) {
-                  if (!post.is_updated && post.unread_count > 1) {
-                    updatedWorkspaces[ws.workspace_id].unread_count = updatedWorkspaces[ws.workspace_id].unread_count + 1;
-                    updatedWorkspaces[ws.workspace_id].topics[ws.topic_id].unread_posts = updatedWorkspaces[ws.workspace_id].topics[ws.topic_id].unread_posts + 1;
-                    if (state.activeTopic.id === ws.topic_id) {
-                      updatedTopic.unread_posts = updatedTopic.unread_posts + 1;
-                    }
-                  }
-                } else {
-                  updatedWorkspaces[ws.workspace_id].unread_count = updatedWorkspaces[ws.workspace_id].unread_count + 1;
-                  updatedWorkspaces[ws.workspace_id].topics[ws.topic_id].unread_posts = updatedWorkspaces[ws.workspace_id].topics[ws.topic_id].unread_posts + 1;
-                  if (state.activeTopic.id === ws.topic_id) {
-                    updatedTopic.unread_posts = updatedTopic.unread_posts + 1;
-                  }
-                }
-              }
-            } else {
-              if (updatedWorkspaces.hasOwnProperty(ws.topic_id)) {
-                if (post) {
-                  if (!post.is_updated && post.unread_count > 1) {
-                    updatedWorkspaces[ws.topic_id].unread_count = updatedWorkspaces[ws.topic_id].unread_count + 1;
-                    updatedWorkspaces[ws.topic_id].topic_detail.unread_posts = updatedWorkspaces[ws.topic_id].topic_detail.unread_posts + 1;
-                    if (state.activeTopic.id === ws.topic_id) {
-                      updatedTopic.topic_detail.unread_posts = updatedTopic.topic_detail.unread_posts + 1;
-                    }
-                  }
-                } else {
-                  updatedWorkspaces[ws.topic_id].unread_count = updatedWorkspaces[ws.topic_id].unread_count + 1;
-                  updatedWorkspaces[ws.topic_id].topic_detail.unread_posts = updatedWorkspaces[ws.topic_id].topic_detail.unread_posts + 1;
-                  if (state.activeTopic.id === ws.topic_id) {
-                    updatedTopic.topic_detail.unread_posts = updatedTopic.topic_detail.unread_posts + 1;
-                  }
-                }
-              }
-            }
-          }
+          // if (action.data.author.id !== state.user.id) {
+          //   if (ws.workspace_id !== 0) {
+          //     if (updatedWorkspaces.hasOwnProperty(ws.workspace_id) && updatedWorkspaces[ws.workspace_id].topics.hasOwnProperty(ws.topic_id)) {
+          //       if (post) {
+          //         if (!post.is_updated && post.unread_count > 1) {
+          //           updatedWorkspaces[ws.workspace_id].unread_count = updatedWorkspaces[ws.workspace_id].unread_count + 1;
+          //           updatedWorkspaces[ws.workspace_id].topics[ws.topic_id].unread_posts = updatedWorkspaces[ws.workspace_id].topics[ws.topic_id].unread_posts + 1;
+          //           if (state.activeTopic.id === ws.topic_id) {
+          //             updatedTopic.unread_posts = updatedTopic.unread_posts + 1;
+          //           }
+          //         }
+          //       } else {
+          //         updatedWorkspaces[ws.workspace_id].unread_count = updatedWorkspaces[ws.workspace_id].unread_count + 1;
+          //         updatedWorkspaces[ws.workspace_id].topics[ws.topic_id].unread_posts = updatedWorkspaces[ws.workspace_id].topics[ws.topic_id].unread_posts + 1;
+          //         if (state.activeTopic.id === ws.topic_id) {
+          //           updatedTopic.unread_posts = updatedTopic.unread_posts + 1;
+          //         }
+          //       }
+          //     }
+          //   } else {
+          //     if (updatedWorkspaces.hasOwnProperty(ws.topic_id)) {
+          //       if (post) {
+          //         if (!post.is_updated && post.unread_count > 1) {
+          //           updatedWorkspaces[ws.topic_id].unread_count = updatedWorkspaces[ws.topic_id].unread_count + 1;
+          //           updatedWorkspaces[ws.topic_id].topic_detail.unread_posts = updatedWorkspaces[ws.topic_id].topic_detail.unread_posts + 1;
+          //           if (state.activeTopic.id === ws.topic_id) {
+          //             updatedTopic.topic_detail.unread_posts = updatedTopic.topic_detail.unread_posts + 1;
+          //           }
+          //         }
+          //       } else {
+          //         updatedWorkspaces[ws.topic_id].unread_count = updatedWorkspaces[ws.topic_id].unread_count + 1;
+          //         updatedWorkspaces[ws.topic_id].topic_detail.unread_posts = updatedWorkspaces[ws.topic_id].topic_detail.unread_posts + 1;
+          //         if (state.activeTopic.id === ws.topic_id) {
+          //           updatedTopic.topic_detail.unread_posts = updatedTopic.topic_detail.unread_posts + 1;
+          //         }
+          //       }
+          //     }
+          //   }
+          // }
         });
       }
       if (newPostComments.hasOwnProperty(action.data.post_id)) {
@@ -1254,6 +1254,34 @@ export default (state = INITIAL_STATE, action) => {
             workspaces: updatedWorkspaces,
           };
         }
+      } else {
+        return state;
+      }
+    }
+    case "UPDATE_WORKSPACE_COUNTER": {
+      let updatedWorkspaces = { ...state.workspaces };
+      let updatedTopic = { ...state.activeTopic };
+      if (Object.keys(updatedWorkspaces).length > 0) {
+        if (action.data.folder_id) {
+          updatedWorkspaces[action.data.folder_id].unread_count = updatedWorkspaces[action.data.folder_id].unread_count + action.data.unread_posts;
+          updatedWorkspaces[action.data.folder_id].topics[action.data.topic_id].unread_posts = updatedWorkspaces[action.data.folder_id].topics[action.data.topic_id].unread_posts + action.data.unread_posts;
+        } else {
+          updatedWorkspaces[action.data.topic_id].unread_count = updatedWorkspaces[action.data.topic_id].unread_count + action.data.unread_posts;
+          updatedWorkspaces[action.data.topic_id].topic_detail.unread_posts = updatedWorkspaces[action.data.topic_id].topic_detail.unread_posts + action.data.unread_posts;
+        }
+        if (state.activeTopic && state.activeTopic.id === action.data.topic_id) {
+          if (state.activeTopic.type === "TOPIC") {
+            updatedTopic.unread_posts = updatedTopic.unread_posts + action.data.unread_posts;
+          } else {
+            updatedTopic.unread_count = updatedTopic.unread_count + action.data.unread_posts;
+            updatedTopic.topic_detail.unread_posts = updatedTopic.topic_detail.unread_posts + action.data.unread_posts;
+          }
+        }
+        return {
+          ...state,
+          workspaces: updatedWorkspaces,
+          activeTopic: updatedTopic,
+        };
       } else {
         return state;
       }

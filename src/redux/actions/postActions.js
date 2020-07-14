@@ -1,26 +1,27 @@
-import dispatchActionToReducer, {SimpleDispatchActionToReducer} from "../actionDispatcher";
+import dispatchActionToReducer, { SimpleDispatchActionToReducer } from "../actionDispatcher";
 import {
-    deleteComment as deleteCommentService,
-    deletePost as deletePostService,
-    fetchComments as fetchCommentsService,
-    fetchPosts as fetchPostsService,
-    fetchRecentPosts as fetchRecentPostsService,
-    fetchTagCounter as fetchTagCounterService,
-    postArchive as postArchiveService,
-    postClap as postClapService,
-    postComment as postCommentService,
-    postCommentClap as postCommentClapService,
-    postCreate as postCreateService,
-    postFavorite as postFavoriteService,
-    postFollow as postFollowService,
-    postMarkDone as postMarkDoneService,
-    postMarkRead as postMarkReadService,
-    postSnooze as postSnoozeService,
-    postToggleRead as postToggleReadService,
-    postUnfollow as postUnfollowService,
-    postVisit as postVisitService,
-    putComment as putCommentService,
-    putPost as putPostService,
+  deleteComment as deleteCommentService,
+  deletePost as deletePostService,
+  fetchPost as fetchPostService,
+  fetchPosts as fetchPostsService,
+  fetchComments as fetchCommentsService,
+  fetchRecentPosts as fetchRecentPostsService,
+  fetchTagCounter as fetchTagCounterService,
+  postArchive as postArchiveService,
+  postClap as postClapService,
+  postCreate as postCreateService,
+  postComment as postCommentService,
+  postCommentClap as postCommentClapService,
+  postFavorite as postFavoriteService,
+  postFollow as postFollowService,
+  postMarkDone as postMarkDoneService,
+  postMarkRead as postMarkReadService,
+  postSnooze as postSnoozeService,
+  postToggleRead as postToggleReadService,
+  postUnfollow as postUnfollowService,
+  postVisit as postVisitService,
+  putComment as putCommentService,
+  putPost as putPostService,
 } from "../services";
 
 export function postFavorite(payload, callback) {
@@ -185,4 +186,8 @@ export function deleteComment(payload, callback) {
 
 export function incomingDeletedComment(payload, callback) {
   return SimpleDispatchActionToReducer("INCOMING_DELETED_COMMENT", payload, callback);
+}
+
+export function fetchPost(payload, callback) {
+  return dispatchActionToReducer(fetchPostService(payload), "GET_POST_START", "GET_POST_SUCCESS", "GET_POST_FAIL", callback);
 }

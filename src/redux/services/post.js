@@ -335,3 +335,16 @@ export function deleteComment(payload) {
     url,
   });
 }
+
+/**
+ * @param {Object} payload
+ * @param {number} payload.post_id
+ * @returns {Promise<*>}
+ */
+export function fetchPost(payload) {
+  return apiCall({
+    method: "GET",
+    url: `/v1/posts/${payload.post_id}`,
+    data: payload,
+  });
+}

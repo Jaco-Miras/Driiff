@@ -1,11 +1,11 @@
 import React from "react";
-import {isSafari} from "react-device-detect";
-import {connect} from "react-redux";
-import {withRouter} from "react-router-dom";
-import {bindActionCreators} from "redux";
-import {pushBrowserNotification} from "../../helpers/pushHelper";
-import {replaceChar, stripHtml} from "../../helpers/stringFormatter";
-import {urlify} from "../../helpers/urlContentHelper";
+import { isSafari } from "react-device-detect";
+import { connect } from "react-redux";
+import { withRouter } from "react-router-dom";
+import { bindActionCreators } from "redux";
+import { pushBrowserNotification } from "../../helpers/pushHelper";
+import { replaceChar, stripHtml } from "../../helpers/stringFormatter";
+import { urlify } from "../../helpers/urlContentHelper";
 import {
   addToChannels,
   getChannel,
@@ -38,6 +38,10 @@ import {
   incomingRemovedFile,
   incomingRemovedFolder,
 } from "../../redux/actions/fileActions";
+import { addUserToReducers, generateUnfurl, generateUnfurlReducer, getConnectedSlugs, setBrowserTabStatus, setGeneralChat, setUnreadNotificationCounterEntries } from "../../redux/actions/globalActions";
+import { fetchPost, incomingComment, incomingCommentClap, incomingDeletedComment, incomingDeletedPost, incomingPost, incomingPostClap, incomingPostViewer, incomingUpdatedPost } from "../../redux/actions/postActions";
+import { getOnlineUsers, getUser, incomingUpdatedUser } from "../../redux/actions/userAction";
+import { incomingMovedTopic, incomingTimeline, incomingUpdatedWorkspaceFolder, incomingWorkspace, incomingWorkspaceFolder, getWorkspace, updateWorkspaceCounter } from "../../redux/actions/workspaceActions";
 import {
   addUserToReducers,
   generateUnfurl,
@@ -752,7 +756,13 @@ class SocketListeners extends React.PureComponent {
   }
 }
 
-function mapStateToProps({ session: { user }, settings: { userSettings }, chat: { channels, selectedChannel }, workspaces: { workspaces }, global: { isBrowserActive } }) {
+function mapStateToProps({
+  session: { user },
+  settings: { userSettings },
+  chat: { channels, selectedChannel },
+  workspaces: { workspaces, workspacePosts },
+  global: { isBrowserActive }
+}) {
   return {
     user,
     settings: userSettings,
@@ -760,6 +770,7 @@ function mapStateToProps({ session: { user }, settings: { userSettings }, chat: 
     selectedChannel,
     isBrowserActive,
     workspaces,
+    workspacePosts,
   };
 }
 
@@ -782,8 +793,6 @@ function mapDispatchToProps(dispatch) {
     generateUnfurlReducer: bindActionCreators(generateUnfurlReducer, dispatch),
     setChannel: bindActionCreators(setChannel, dispatch),
     incomingArchivedChannel: bindActionCreators(incomingArchivedChannel, dispatch),
-    incomingArchivedWorkspaceChannel: bindActionCreators(incomingArchivedWorkspaceChannel, dispatch),
-    incomingUnArchivedWorkspaceChannel: bindActionCreators(incomingUnArchivedWorkspaceChannel, dispatch),
     incomingChatMessageReaction: bindActionCreators(incomingChatMessageReaction, dispatch),
     incomingUpdatedChatMessage: bindActionCreators(incomingUpdatedChatMessage, dispatch),
     incomingDeletedChatMessage: bindActionCreators(incomingDeletedChatMessage, dispatch),
