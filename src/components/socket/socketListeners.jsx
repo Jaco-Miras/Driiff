@@ -48,6 +48,7 @@ import {
     setUnreadNotificationCounterEntries
 } from "../../redux/actions/globalActions";
 import {
+    fetchPost,
     incomingComment,
     incomingCommentClap,
     incomingDeletedComment,
@@ -66,7 +67,8 @@ import {
     incomingUnArchivedWorkspaceChannel,
     incomingUpdatedWorkspaceFolder,
     incomingWorkspace,
-    incomingWorkspaceFolder
+    incomingWorkspaceFolder,
+    updateWorkspaceCounter
 } from "../../redux/actions/workspaceActions";
 
 class SocketListeners extends React.PureComponent {
@@ -212,10 +214,28 @@ class SocketListeners extends React.PureComponent {
                     case "POST_COMMENT_CREATE": {
                         this.props.incomingComment(e);
                         if (e.workspaces && e.workspaces.length >= 1) {
-                            this.props.setGeneralChat({
-                                count: 1,
-                                entity_type: "WORKSPACE_POST",
+                          this.props.setGeneralChat({
+                            count: 1,
+                            entity_type: "WORKSPACE_POST",
+                          });
+                        }
+                        if (e.author.id !== this.props.user.id) {
+                          e.workspaces.forEach((ws) => {
+                            this.props.fetchPost({ post_id: e.post_id }, (err, res) => {
+                              if (err) return;
+                              console.log(res);
+                              if (!res.data.is_updated && res.data.unread_count === 1) {
+                                //no changes
+                              } else {
+                                //plus 1
+                                this.props.updateWorkspaceCounter({
+                                  folder_id: ws.workspace_id,
+                                  topic_id: ws.topic_id,
+                                  unread_posts: 1,
+                                });
+                              }
                             });
+                          });
                         }
                         break;
                     }
@@ -827,6 +847,8 @@ function mapDispatchToProps(dispatch) {
         setSelectedChannel: bindActionCreators(setSelectedChannel, dispatch),
         incomingArchivedWorkspaceChannel: bindActionCreators(incomingArchivedWorkspaceChannel, dispatch),
         incomingUnArchivedWorkspaceChannel: bindActionCreators(incomingUnArchivedWorkspaceChannel, dispatch),
+        updateWorkspaceCounter: bindActionCreators(updateWorkspaceCounter, dispatch),
+        fetchPost: bindActionCreators(fetchPost, dispatch),
     };
 }
 

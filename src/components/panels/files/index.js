@@ -8,3 +8,4 @@ export { default as RemoveFiles } from "./RemoveFiles";
 export { default as FileOptions } from "./FileOptions";
 export { default as FolderOptions } from "./FolderOptions";
 export { default as FolderList } from "./FolderList";
+export { default as GoogleDrive } from "./GoogleDrive";
