@@ -108,6 +108,12 @@ class SocketListeners extends React.PureComponent {
                     }
                     case "FOLDER_DELETE": {
                         this.props.incomingDeletedFolder(e);
+                        if (this.props.match.url === "/workspace/files") {
+                            if (this.props.location.pathname.includes(e.folder.id) && this.props.location.pathname.includes(e.topic_id)) {
+                                let pathname = this.props.location.pathname.split("/folder/")[0];
+                                this.props.history.push(pathname);
+                            }
+                        }
                         break;
                     }
                     case "FOLDER_FORCE_DELETE": {

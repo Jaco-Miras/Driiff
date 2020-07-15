@@ -391,7 +391,11 @@ export default (state = INITIAL_STATE, action) => {
               ...newWorkspaceFiles[action.data.topic_id],
               folders: {
                 ...newWorkspaceFiles[action.data.topic_id].folders,
-                [action.data.folder.id]: action.data.folder,
+                [action.data.folder.id]: {
+                  ...action.data.folder,
+                  loaded: true,
+                  files: []
+                }
               },
             },
           };
@@ -473,22 +477,28 @@ export default (state = INITIAL_STATE, action) => {
       if (newWorkspaceFiles.hasOwnProperty(action.data.topic_id)) {
         let add = (total, num) => total + num;
         if (newWorkspaceFiles[action.data.topic_id].hasOwnProperty("folders") && action.data.folder_id) {
-          newWorkspaceFiles = {
-            ...newWorkspaceFiles,
-            [action.data.topic_id]: {
-              ...newWorkspaceFiles[action.data.topic_id],
-              folders: {
-                ...newWorkspaceFiles[action.data.topic_id].folders,
-                [action.data.folder_id]: {
-                  ...newWorkspaceFiles[action.data.topic_id].folders[action.data.folder_id],
-                  files: [...newWorkspaceFiles[action.data.topic_id].folders[action.data.folder_id].files, ...action.data.files.map((f) => f.id)],
-                },
-              },
-              files: { ...convertArrayToObject(action.data.files, "id"), ...newWorkspaceFiles[action.data.topic_id].files },
-              count: newWorkspaceFiles[action.data.topic_id].count + action.data.files.length,
-              storage: newWorkspaceFiles[action.data.topic_id].storage + action.data.files.map((f) => f.size).reduce(add),
-            },
-          };
+          if (newWorkspaceFiles[action.data.topic_id].folders.hasOwnProperty(action.data.folder_id)) {
+            newWorkspaceFiles[action.data.topic_id].folders[action.data.folder_id].files = [...newWorkspaceFiles[action.data.topic_id].folders[action.data.folder_id].files, ...action.data.files.map((f) => f.id)];
+            newWorkspaceFiles[action.data.topic_id].files = { ...convertArrayToObject(action.data.files, "id"), ...newWorkspaceFiles[action.data.topic_id].files };
+            newWorkspaceFiles[action.data.topic_id].count = newWorkspaceFiles[action.data.topic_id].count + action.data.files.length;
+            newWorkspaceFiles[action.data.topic_id].storage = newWorkspaceFiles[action.data.topic_id].storage + action.data.files.map((f) => f.size).reduce(add);
+          }
+          // newWorkspaceFiles = {
+          //   ...newWorkspaceFiles,
+          //   [action.data.topic_id]: {
+          //     ...newWorkspaceFiles[action.data.topic_id],
+          //     folders: {
+          //       ...newWorkspaceFiles[action.data.topic_id].folders,
+          //       [action.data.folder_id]: {
+          //         ...newWorkspaceFiles[action.data.topic_id].folders[action.data.folder_id],
+          //         files: [...newWorkspaceFiles[action.data.topic_id].folders[action.data.folder_id].files, ...action.data.files.map((f) => f.id)],
+          //       },
+          //     },
+          //     files: { ...convertArrayToObject(action.data.files, "id"), ...newWorkspaceFiles[action.data.topic_id].files },
+          //     count: newWorkspaceFiles[action.data.topic_id].count + action.data.files.length,
+          //     storage: newWorkspaceFiles[action.data.topic_id].storage + action.data.files.map((f) => f.size).reduce(add),
+          //   },
+          // };
         } else {
           newWorkspaceFiles = {
             ...newWorkspaceFiles,
