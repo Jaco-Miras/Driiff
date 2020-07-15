@@ -507,6 +507,7 @@ const CreateEditWorkspacePostModal = (props) => {
           status: false,
           src: URL.createObjectURL(file),
           name: file.name ? file.name : file.path,
+          uploader: user,
         });
       } else if (file.type === "video/mp4") {
         selectedFiles.push({
@@ -517,6 +518,7 @@ const CreateEditWorkspacePostModal = (props) => {
           status: false,
           src: URL.createObjectURL(file),
           name: file.name ? file.name : file.path,
+          uploader: user,
         });
       } else {
         selectedFiles.push({
@@ -527,6 +529,7 @@ const CreateEditWorkspacePostModal = (props) => {
           status: false,
           src: URL.createObjectURL(file),
           name: file.name ? file.name : file.path,
+          uploader: user,
         });
       }
     });
@@ -561,12 +564,10 @@ const CreateEditWorkspacePostModal = (props) => {
     });
   }
 
-  const handleRemoveFile = useCallback(
-    (fileId) => {
-      setAttachedFiles((prevState) => prevState.filter((f) => f.id !== fileId));
-    },
-    [setAttachedFiles]
-  );
+  const handleRemoveFile = (fileId) => {
+    setUploadedFiles((prevState) => prevState.filter((f) => f.id !== parseInt(fileId)));
+    setAttachedFiles((prevState) => prevState.filter((f) => f.id !== parseInt(fileId)));
+  }
 
   const [wsOptions, userOptions] = useGetWorkspaceAndUserOptions(form.selectedWorkspaces, activeTopic);
 
