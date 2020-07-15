@@ -51,7 +51,13 @@ const useSortChannels = (channels, search, options = {}, workspace) => {
           return channel.is_hidden === 0 && channel.is_archived === 0 && channel.add_user === 0 && channel.add_open_topic === 0;
         }
       } else {
-        return channel.search.toLowerCase().indexOf(search.toLowerCase()) > -1;
+        if (channel.search.toLowerCase().search(search.toLowerCase()) !== -1) {
+          return true;
+        } else if (channel.title.toLowerCase().search(search.toLowerCase()) !== -1) {
+          return true;
+        } else {
+          return false;
+        }
       }
     })
     .sort((a, b) => {
