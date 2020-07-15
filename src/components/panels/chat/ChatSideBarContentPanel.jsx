@@ -45,8 +45,6 @@ const ChatSidebarContentPanel = (props) => {
   const { className = "", pill = "pills-home", search, channels, userChannels, selectedChannel } = props;
 
   const dispatch = useDispatch();
-  // const {getAndSetChannel} = useSetWorkspace();
-  // const sortedWorkspaces = useSortWorkspaces();
 
   const handleOpenGropupChatModal = () => {
     let payload = {
@@ -77,29 +75,6 @@ const ChatSidebarContentPanel = (props) => {
         <div className={`tab-panel workspace-chat-list fade ${pill === "pills-workspace-internal" && "show active"}`} id="pills-workspace-internal" role="tabpanel" aria-labelledby="pills-workspace-tab">
           <ChannelsSidebar search={search} workspace={true} channels={channels} selectedChannel={selectedChannel} />
         </div>
-        {/* <div
-                    className={`tab-panel workspace-chat-list fade ${pill === "pills-workspace-external" && "show active"}`}
-                    id="pills-workspace-external"
-                    role="tabpanel"
-                    aria-labelledby="pills-workspace-tab">
-                    <ul className="list-group list-group-flush">
-                        {
-                            sortedWorkspaces
-                                .filter(ws => {
-                                    if (!ws.is_external)
-                                        return false;
-
-                                    return true;
-                                })
-                                .map(ws => {
-                                    return <WorkspaceChatList
-                                        selectedChannel={selectedChannel}
-                                        setChannel={getAndSetChannel}
-                                        key={ws.key_id} workspace={ws}/>;
-                                })
-                        }
-                    </ul>
-                </div> */}
       </div>
     </Wrapper>
   );
