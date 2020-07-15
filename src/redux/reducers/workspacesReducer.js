@@ -876,14 +876,20 @@ export default (state = INITIAL_STATE, action) => {
     }
     case "UPLOADING_WORKSPACE_FILES_SUCCESS": {
       let newWorkspaces = { ...state.workspaces };
+      let files = action.data.files.map(f => {
+        return {
+          ...f,
+          uploader: state.user
+        };
+      })
       if (action.data.workspace_id) {
         if (newWorkspaces[action.data.workspace_id].topics[action.data.topic_id].hasOwnProperty("primary_files")) {
-          newWorkspaces[action.data.workspace_id].topics[action.data.topic_id].primary_files = [...newWorkspaces[action.data.workspace_id].topics[action.data.topic_id].primary_files, ...action.data.files];
+          newWorkspaces[action.data.workspace_id].topics[action.data.topic_id].primary_files = [...newWorkspaces[action.data.workspace_id].topics[action.data.topic_id].primary_files, ...files];
         } else {
-          newWorkspaces[action.data.workspace_id].topics[action.data.topic_id].primary_files = action.data.files;
+          newWorkspaces[action.data.workspace_id].topics[action.data.topic_id].primary_files = files;
         }
       } else {
-        newWorkspaces[action.data.topic_id].primary_files = action.data.files;
+        newWorkspaces[action.data.topic_id].primary_files = files;
       }
       return {
         ...state,
@@ -892,7 +898,7 @@ export default (state = INITIAL_STATE, action) => {
           state.activeTopic.id === action.data.topic_id
             ? {
                 ...state.activeTopic,
-                primary_files: state.activeTopic.hasOwnProperty("primary_files") ? [...state.activeTopic.primary_files, ...action.data.files] : action.data.files,
+                primary_files: state.activeTopic.hasOwnProperty("primary_files") ? [...state.activeTopic.primary_files, ...files] : files,
               }
             : state.activeTopic,
       };

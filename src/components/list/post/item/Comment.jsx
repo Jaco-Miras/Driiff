@@ -7,6 +7,41 @@ import {SubComments} from "./index";
 
 const Wrapper = styled.li`
   margin-bottom: 1rem;
+  
+  .quote {
+    quotes: "“" "”";
+    border-radius: 6px;
+    margin: 2rem auto 0.5rem;
+    width: 90%;    
+    position: relative;
+    padding: 1rem;
+    
+    > * {
+      margin-bottom: 0;      
+    }
+  }
+  
+  .quote:before {
+    font-size: 32px;
+    content: open-quote;
+    position: absolute;
+    top: -1rem;
+    left: -1rem;
+  }
+  
+  .quote:after {
+    font-size: 32px;
+    content: close-quote;
+    position: absolute;
+    top: -1rem;
+    right: -1rem;
+  }
+  
+  .quote-author {
+    font-style: italic;
+    margin-left: auto;
+    margin-right: 5%;
+  }
 
   .files {
     margin-bottom: 1rem;
@@ -132,7 +167,11 @@ const Comment = (props) => {
         <Wrapper ref={refs.main} className={`comment card border fadeBottom ${className}`}>
           {
             comment.quote &&
-            <div dangerouslySetInnerHTML={{__html: comment.quote.body}}/>
+            <>
+              <div className="quote border" dangerouslySetInnerHTML={{__html: comment.quote.body}}/>
+              <div className="quote-author">- {comment.quote.user.name}</div>
+            </>
+
           }
           <CommentWrapper ref={refs.body} className="card-body" type={type}>
             <CommentHeader className="d-flex">

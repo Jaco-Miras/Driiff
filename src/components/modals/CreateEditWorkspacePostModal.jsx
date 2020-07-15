@@ -497,13 +497,14 @@ const CreateEditWorkspacePostModal = (props) => {
     acceptedFiles.forEach((file) => {
       var bodyFormData = new FormData();
       bodyFormData.append("file", file);
-      let shortFileId = require("shortid").generate();
+      let timestamp = Math.floor(Date.now());
+      //let shortFileId = require("shortid").generate();
       if (file.type === "image/jpeg" || file.type === "image/png" || file.type === "image/gif" || file.type === "image/webp") {
         selectedFiles.push({
           rawFile: file,
           bodyFormData: bodyFormData,
           type: "IMAGE",
-          id: shortFileId,
+          id: timestamp,
           status: false,
           src: URL.createObjectURL(file),
           name: file.name ? file.name : file.path,
@@ -514,7 +515,7 @@ const CreateEditWorkspacePostModal = (props) => {
           rawFile: file,
           bodyFormData: bodyFormData,
           type: "VIDEO",
-          id: shortFileId,
+          id: timestamp,
           status: false,
           src: URL.createObjectURL(file),
           name: file.name ? file.name : file.path,
@@ -525,7 +526,7 @@ const CreateEditWorkspacePostModal = (props) => {
           rawFile: file,
           bodyFormData: bodyFormData,
           type: "DOC",
-          id: shortFileId,
+          id: timestamp,
           status: false,
           src: URL.createObjectURL(file),
           name: file.name ? file.name : file.path,
