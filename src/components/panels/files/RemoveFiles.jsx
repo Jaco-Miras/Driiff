@@ -56,9 +56,13 @@ const RemoveFiles = (props) => {
                     : wsFiles &&
                     Object.values(wsFiles.trash_files).length > 0 &&
                     Object.values(wsFiles.trash_files).map((f) => {
-                        return <FileListItem key={f.id} isMember={isMember} forceDelete={true}
+                        if (typeof f !== "undefined") {
+                            return <FileListItem key={f.id} isMember={isMember} forceDelete={true}
                                              className="col-xl-3 col-lg-4 col-md-6 col-sm-12" file={f}
                                              actions={actions}/>;
+                        } else {
+                            return null;
+                        }
                     })}
             </div>
         </Wrapper>
