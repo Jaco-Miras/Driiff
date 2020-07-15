@@ -21,7 +21,7 @@ body {
   font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   position: relative;
   background: #f1f2f7;
-  font-size: 0.835rem;
+  font-size: 14px;
   color: #505050;
 }
 
@@ -18330,7 +18330,7 @@ small {
 }
 
 .navigation .navigation-menu-tab {
-  background-color: #7a1b8b;
+  background-color: #151b26;
   width: 300px;
   display: -webkit-box;
   display: -webkit-flex;
@@ -18355,7 +18355,7 @@ small {
 .navigation .navigation-menu-tab ul li .chat-block .chat-sidebar .chat-sidebar-content .list-group .list-group-item.active,
 .navigation .navigation-menu-tab ul li .header form .input-group .input-group-append button.btn,
 .navigation .navigation-menu-tab ul li a {
-  color: #fff;
+  color: #cbd4db;
   display: -webkit-box;
   display: -webkit-flex;
   display: -moz-box;
@@ -20994,5 +20994,13 @@ body.dark.small-navigation .navigation-menu-body ul li.navigation-divider:after 
   margin-bottom: 15px;
 }
 .folder-open a {
-  background-color: #fff2;
+  background-color: #ffffff14;
+  &:hover {
+    color: #ffffff;
+  }
+}
+.folder-open > a {
+  border-bottom: 1px solid #ffffff20;
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
 }

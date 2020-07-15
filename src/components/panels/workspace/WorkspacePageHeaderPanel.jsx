@@ -43,7 +43,7 @@ const MainNavLink = styled(NavLink)`
       width: 100%;
       bottom: 0;
       left: 0;
-      background: #000000;
+      background: #7a1b8b;
       position: absolute;
     }
   }
@@ -55,7 +55,7 @@ const MainNavLink = styled(NavLink)`
     position: absolute;
     width: 6px;
     height: 6px;
-    background: #f44c;
+    background: #28a745;
     top: 20px;
     right: -12px;
     right: -8px;
@@ -113,7 +113,6 @@ const WorkspacePageHeaderPanel = (props) => {
                 People
               </MainNavLink>
             </li>
-            <SettingsLink />
           </Navbar>
         </div>
       </Wrapper>

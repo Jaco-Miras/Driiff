@@ -7,12 +7,12 @@ import { replaceChar } from "../../helpers/stringFormatter";
 
 const TopicListWrapper = styled.li`
   cursor: pointer;
-  color: #ffffff;
-  ${(props) => (props.selected && "background: #fff3 !important")};
+  background: ${(props) => (props.selected ? "#fff3" : "#ffffff14")};
   height: 40px;
   width: 100%;
   padding: 0 10px;
-  background: #fff3;
+  font-weight: ${(props) => (props.selected ? "600" : "400")};
+  color: ${(props) => (props.selected ? "#ffffffEB" : "#cbd4db")};
   div {
     position: relative;
     height: 40px;
@@ -61,7 +61,7 @@ const TopicList = (props) => {
   }
 
   return (
-    <TopicListWrapper className={`topic-list topic.selected ${className}`} onClick={handleSelectTopic} selected={topic.selected}>
+    <TopicListWrapper className={`topic-list ${className}`} onClick={handleSelectTopic} selected={topic.selected}>
       <div>
         {topic.name}
         {topic.private === 1 && <Icon icon={"lock"} />}

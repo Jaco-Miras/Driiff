@@ -32,12 +32,15 @@ const Wrapper = styled.div`
   }
   .your-workspaces-title {
     margin: 0 15px;
-    padding: 15px 10px;
+    padding: 15px 10px 10px 10px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    color: #ffffff;
+    color: #fff9;
     border-top: 1px solid #fff3;
+    svg {
+      color: #ffffff;
+    }
   }
   li {
     position: relative;
@@ -46,7 +49,7 @@ const Wrapper = styled.div`
       width: 6px;
       height: 6px;
       padding: 0;
-      background: rgba(255, 68, 68, 0.8);
+      background: #28a745;
       right: -12px;
       top: -1px;
       z-index: 9;
@@ -83,16 +86,22 @@ const FolderPlus = styled(SvgIconFeather)`
   cursor: pointer;
 `;
 
+const CirclePlus = styled(SvgIconFeather)`
+  height: 14px;
+  width: 14px;
+  margin-right: 4px;
+`;
+
 const NavIconContainer = styled(NavLink)`
   display: flex;
   color: #fff;
   height: 40px;
   justify-content: flex-start;
   align-items: center;
-  margin: 0 15px;
+  margin: 0 15px 10px 15px;
   border-radius: 8px;
   &.active {
-    background: #fff2;
+    background: #ffffff14;
   }
   div {
     display: inline-block;
@@ -107,13 +116,24 @@ const NavIcon = styled(SvgIconFeather)`
 `;
 
 const NavNewWorkspace = styled.button`
-  background: #fff3 !important;
-  ${"" /* border-color: #fff3 !important; */}
+  background: #7a1b8bcc !important;
+  color: #ffffffcc;
   border: 0 !important;
   margin: 15px;
+  height: 40px;
   width: calc(100% - 30px);
   justify-content: center;
+  align-items: center;
   color: #ffffff !important;
+  ${"" /* border: 1px solid #fff3 !important; */}
+  div {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    ${"" /* filter: invert(1); */}
+    font-weight: 500;
+  }
 `;
 
 const MainNavigationTabPanel = (props) => {
@@ -200,7 +220,7 @@ const MainNavigationTabPanel = (props) => {
           </div>
         </div>
       </div>
-      <div className="flex-grow-1">
+      <div className="flex-grow-1 mb-3">
         <ul>
           <li>
             <NavIconContainer to={workspacePath}>
@@ -301,7 +321,10 @@ const MainNavigationTabPanel = (props) => {
 
       <div>
         <NavNewWorkspace onClick={handleShowWorkspaceModal} className="btn btn-outline-light" type="button">
-          Add new workspace
+          <div>
+            <CirclePlus icon="circle-plus" />
+            Add new workspace
+          </div>
         </NavNewWorkspace>
       </div>
     </Wrapper>

@@ -16,13 +16,11 @@ const Wrapper = styled.li`
   position: relative;
   transition: all 0.3s ease;
   a.archived-folder {
-    ${'' /* color: #bebebe !important; */}
+    ${"" /* color: #bebebe !important; */}
   }
-
   > a {
     position: relative;
-    font-weight: ${(props) => (props.selected ? "bold" : "normal")};
-    ${'' /* background: ${(props) => (props.selected ? "#7a1b8b !important" : "#64625C")}; */}
+    font-weight: ${(props) => (props.selected ? "600" : "400")};
     div {
       position: relative;
       height: 40px;
@@ -35,7 +33,7 @@ const Wrapper = styled.li`
         top: 7px;
         right: -12px;
         border-radius: 50%;
-        background: #f44;
+        background: #28a745;
         font-size: 0;
         overflow: hidden;
         transition: all 0.3s ease;
@@ -61,19 +59,21 @@ const Wrapper = styled.li`
         top: 7px;
         right: -12px;
         border-radius: 50%;
-        background: #f44;
+        background: #28a745;
         font-size: 0;
       }
     }
   }
   .nav-action {
     ${"" /* background-color: #fff3; */}
-    background-color: #fff2;
+    background-color: #ffffff14;
     height: 40px;
     display: flex;
     align-items: center;
-    color: #ffffff;
+    color: #cbd4db;
     padding: 0 10px;
+    border-bottom-left-radius: 3px;
+    border-bottom-right-radius: 3px;
     svg {
       margin-right: 4px;
       width: 13px;
@@ -96,7 +96,7 @@ const TopicNav = styled.ul`
   display: block !important;
 
   &.enter-active {
-    max-height: ${(props) => props.maxHeight + 40}px !important;
+    max-height: ${(props) => props.maxHeight}px !important;
   }
   &.leave-active {
     max-height: 0;

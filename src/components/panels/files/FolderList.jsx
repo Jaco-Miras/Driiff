@@ -26,7 +26,7 @@ const Wrapper = styled.li`
     width: 15px;
     font-size: 8.8px;
     transform: rotate(-540deg);
-
+    margin-right: 2px;
     &.ti-minus {
       margin-left: 6px;
     }
@@ -43,19 +43,17 @@ const Wrapper = styled.li`
 `;
 
 const FolderNav = styled.ul`
-    display: block !important;
-    overflow: hidden;
-    transition: all .3s ease;
-    list-style: none;
+  display: block !important;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  list-style: none;
 
-    // &.enter-active {
-    //     max-height: ${(props) => props.maxHeight}px;
-    //     margin: 4px 0 8px 2px;
-    // }
-
-    // &.leave-active {
-    //     max-height: 0px;
-    // }
+  &.enter-active {
+    max-height: ${(props) => props.maxHeight}px;
+  }
+  &.leave-active {
+    max-height: 0px;
+  }
 `;
 
 const Icon = styled(SvgIconFeather)`

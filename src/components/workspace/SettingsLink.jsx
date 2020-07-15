@@ -25,12 +25,11 @@ const SettingsLinkList = styled.li`
       }
     }
   }
-
   .dropdown-menu {
     position: absolute;
     top: 25px;
-    left: 25px;
-
+    left: 50%;
+    transform: translateX(-50%);
     > span {
       cursor: pointer;
       cursor: hand;
@@ -97,7 +96,7 @@ const SettingsLink = () => {
       <div>
         <span className={`dropdown-toggle ${show ? "show" : ""}`} data-toggle="dropdown" onClick={handleToggle}>
           <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Workspace settings">
-            <SvgIconFeather icon="settings" />
+            <SvgIconFeather icon="pencil" />
           </Tooltip>
         </span>
         <div className={`dropdown-menu ${show ? "show" : ""}`}>

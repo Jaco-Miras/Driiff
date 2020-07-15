@@ -45,9 +45,18 @@ export const SvgIconFeather = React.memo(
         );
         break;
       case "chevron-right":
+        strokeWidth = "2";
         content = (
           <>
             <polyline points="9 18 15 12 9 6" />
+          </>
+        );
+        break;
+      case "pencil":
+        strokeWidth = "2";
+        content = (
+          <>
+            <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
           </>
         );
         break;
@@ -58,15 +67,30 @@ export const SvgIconFeather = React.memo(
           </>
         );
         break;
+      case "circle-plus":
+        strokeWidth = "2";
+        content = (
+          <>
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="16"></line>
+            <line x1="8" y1="12" x2="16" y2="12"></line>
+          </>
+        );
+        break;
       case "lock":
         viewBox = "0 0 448 512";
         content = (
           <>
-            <path fill="currentColor" d="M400 224h-24v-72C376 68.2 307.8 0 224 0S72 68.2 72 152v72H48c-26.5 0-48 21.5-48 48v192c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V272c0-26.5-21.5-48-48-48zM264 392c0 22.1-17.9 40-40 40s-40-17.9-40-40v-48c0-22.1 17.9-40 40-40s40 17.9 40 40v48zm32-168H152v-72c0-39.7 32.3-72 72-72s72 32.3 72 72v72z" class=""></path>
+            <path
+              fill="currentColor"
+              d="M400 224h-24v-72C376 68.2 307.8 0 224 0S72 68.2 72 152v72H48c-26.5 0-48 21.5-48 48v192c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V272c0-26.5-21.5-48-48-48zM264 392c0 22.1-17.9 40-40 40s-40-17.9-40-40v-48c0-22.1 17.9-40 40-40s40 17.9 40 40v48zm32-168H152v-72c0-39.7 32.3-72 72-72s72 32.3 72 72v72z"
+              class=""
+            ></path>
           </>
         );
         break;
       case "user-plus":
+        strokeWidth = "2";
         content = (
           <>
             <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
@@ -378,6 +402,7 @@ export const SvgIconFeather = React.memo(
         );
         break;
       case "smile":
+        strokeWidth = "2";
         content = (
           <>
             <circle cx="12" cy="12" r="10" />
@@ -388,6 +413,7 @@ export const SvgIconFeather = React.memo(
         );
         break;
       case "paperclip":
+        strokeWidth = "2";
         content = (
           <>
             <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48" />
@@ -395,6 +421,7 @@ export const SvgIconFeather = React.memo(
         );
         break;
       case "send":
+        strokeWidth = "2";
         content = (
           <>
             <line x1="22" y1="2" x2="11" y2="13" />
