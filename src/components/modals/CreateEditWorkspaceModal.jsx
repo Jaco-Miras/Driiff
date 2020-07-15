@@ -751,10 +751,10 @@ const CreateEditWorkspaceModal = (props) => {
                             {
                                 item.topic_detail.active === 1 ?
                                     <span onClick={handleShowArchiveConfirmation}
-                                          className="btn-archive text-link mt-2 cursor-pointer">or archive this workspace</span>
+                                          className="btn-archive text-link mt-2 cursor-pointer">Archive this workspace</span>
                                     :
                                     <span onClick={handleShowArchiveConfirmation}
-                                          className="btn-archive text-link mt-2 cursor-pointer">or unarchive this workspace</span>
+                                          className="btn-archive text-link mt-2 cursor-pointer">Unarchive this workspace</span>
                             }
                         </>
                     }
