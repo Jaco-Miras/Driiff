@@ -1,12 +1,11 @@
-import React, { useCallback, useRef, useState } from "react";
-import { useDispatch } from "react-redux";
-import { useHistory } from "react-router-dom";
+import React, {useCallback, useEffect, useRef, useState} from "react";
+import {useDispatch} from "react-redux";
+import {useHistory} from "react-router-dom";
 import styled from "styled-components";
-import { replaceChar } from "../../../helpers/stringFormatter";
-import { addToModals } from "../../../redux/actions/globalActions";
-import { useFiles, useTranslation } from "../../hooks";
-import { FilesBody, FilesHeader, FilesSidebar } from "../files";
-import { useEffect } from "react";
+import {replaceChar} from "../../../helpers/stringFormatter";
+import {addToModals} from "../../../redux/actions/globalActions";
+import {useFiles, useTranslation} from "../../hooks";
+import {FilesBody, FilesHeader, FilesSidebar} from "../files";
 
 const Wrapper = styled.div`
   .app-sidebar-menu {
@@ -16,7 +15,7 @@ const Wrapper = styled.div`
 `;
 
 const WorkspaceFilesPanel = (props) => {
-  const { className = "", isMember } = props;
+  const {className = "", isMember} = props;
 
   const dispatch = useDispatch();
   const history = useHistory();
@@ -130,6 +129,7 @@ const WorkspaceFilesPanel = (props) => {
     let payload = {
       type: "single_input",
       defaultValue: "",
+      postInputLabel: folder === null ? "" : (<>The folder will be created instead <b>#{folder.search}</b></>),
       onChange: handleFolderNameChange,
       onClose: handleFolderClose,
     };

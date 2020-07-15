@@ -1,17 +1,20 @@
-import React, { useRef, useState } from "react";
-import { useDispatch } from "react-redux";
-import { FormGroup, Input, Modal, ModalBody, ModalFooter } from "reactstrap";
+import React, {useRef, useState} from "react";
+import {useDispatch} from "react-redux";
+import {FormGroup, Input, Modal, ModalBody, ModalFooter} from "reactstrap";
 import styled from "styled-components";
-import { clearModal } from "../../redux/actions/globalActions";
+import {clearModal} from "../../redux/actions/globalActions";
 //import {useFocusInput} from "../hooks";
-import { ModalHeaderSection } from "./index";
+import {ModalHeaderSection} from "./index";
 
 const Wrapper = styled(Modal)``;
 
 const WrapperDiv = styled(FormGroup)``;
 
 const SingleInputModal = (props) => {
-  const { className = "", title, type, defaultValue = "", onPrimaryAction, onChange, onClose = () => {}, labelClose = "Close", labelPrimaryAction = "Save", ...otherProps } = props;
+  const {
+    className = "", title, type, defaultValue = "", postInputLabel = "", onPrimaryAction, onChange, onClose = () => {
+    }, labelClose = "Close", labelPrimaryAction = "Save", ...otherProps
+  } = props;
 
   const dispatch = useDispatch();
   const refs = {
@@ -54,6 +57,7 @@ const SingleInputModal = (props) => {
       <ModalBody>
         <WrapperDiv>
           <Input innerRef={inputRef} autoFocus defaultValue={defaultValue} onChange={handleInputChange} />
+          {postInputLabel}
         </WrapperDiv>
       </ModalBody>
       <ModalFooter>
