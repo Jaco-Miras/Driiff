@@ -1274,18 +1274,18 @@ export default (state = INITIAL_STATE, action) => {
       let updatedTopic = { ...state.activeTopic };
       if (Object.keys(updatedWorkspaces).length > 0) {
         if (action.data.folder_id) {
-          updatedWorkspaces[action.data.folder_id].unread_count = updatedWorkspaces[action.data.folder_id].unread_count + action.data.unread_posts;
-          updatedWorkspaces[action.data.folder_id].topics[action.data.topic_id].unread_posts = updatedWorkspaces[action.data.folder_id].topics[action.data.topic_id].unread_posts + action.data.unread_posts;
+          updatedWorkspaces[action.data.folder_id].unread_count = action.data.unread_count;
+          updatedWorkspaces[action.data.folder_id].topics[action.data.topic_id].unread_posts = action.data.unread_posts;
         } else {
-          updatedWorkspaces[action.data.topic_id].unread_count = updatedWorkspaces[action.data.topic_id].unread_count + action.data.unread_posts;
-          updatedWorkspaces[action.data.topic_id].topic_detail.unread_posts = updatedWorkspaces[action.data.topic_id].topic_detail.unread_posts + action.data.unread_posts;
+          updatedWorkspaces[action.data.topic_id].unread_count = action.data.unread_count;
+          updatedWorkspaces[action.data.topic_id].topic_detail.unread_posts = action.data.unread_posts;
         }
         if (state.activeTopic && state.activeTopic.id === action.data.topic_id) {
           if (state.activeTopic.type === "TOPIC") {
-            updatedTopic.unread_posts = updatedTopic.unread_posts + action.data.unread_posts;
+            updatedTopic.unread_posts = action.data.unread_posts;
           } else {
-            updatedTopic.unread_count = updatedTopic.unread_count + action.data.unread_posts;
-            updatedTopic.topic_detail.unread_posts = updatedTopic.topic_detail.unread_posts + action.data.unread_posts;
+            updatedTopic.unread_count = action.data.unread_count;
+            updatedTopic.topic_detail.unread_posts = action.data.unread_posts;
           }
         }
         return {
