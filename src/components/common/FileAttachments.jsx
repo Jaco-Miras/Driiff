@@ -130,9 +130,17 @@ const FileAttachments = (props) => {
   const renderFile = (f) => {
     switch (f.type) {
       case "IMAGE":
-        return <img className="file" src={f.src} alt={f.name} />;
+        if (f.hasOwnProperty("src")) {
+          return <img className="file" src={f.src} alt={f.name} />;
+        } else {
+          return <img className="file" src={f.view_link} alt={f.name} />;
+        }
       case "VIDEO":
-        return <video className="file" controls playsInline autoPlay={false} src={f.src} />;
+        if (f.hasOwnProperty("src")) {
+          return <video className="file" controls playsInline autoPlay={false} src={f.src} />;
+        } else {
+          return <video className="file" controls playsInline autoPlay={false} src={f.view_link} />;
+        }
       default:
         if (f.rawFile) {
           switch (f.rawFile.type) {
