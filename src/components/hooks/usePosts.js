@@ -122,7 +122,7 @@ const usePosts = () => {
               return p.is_archived === 1;
             } else if (filter === "all") {
               if (tag) {
-                return true;
+                return !p.is_archived && !p.hasOwnProperty("draft_type");
               } else {
                 return !p.is_archived;
               }
