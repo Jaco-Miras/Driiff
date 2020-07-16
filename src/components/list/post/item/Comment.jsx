@@ -169,7 +169,11 @@ const Comment = (props) => {
             comment.quote &&
             <>
               <div className="quote border" dangerouslySetInnerHTML={{__html: comment.quote.body}}/>
-              <div className="quote-author">- {comment.quote.user.name}</div>
+              {
+                comment.quote.user && (
+                    <div className="quote-author">- {comment.quote.user.name}</div>
+                )
+              }
             </>
 
           }
