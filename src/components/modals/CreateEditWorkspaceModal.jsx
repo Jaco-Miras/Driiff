@@ -482,33 +482,37 @@ const CreateEditWorkspaceModal = (props) => {
     const dropAction = (acceptedFiles) => {
         let selectedFiles = [];
         acceptedFiles.forEach((file) => {
-            let shortFileId = require("shortid").generate();
+            let timestamp = Math.floor(Date.now());
+            //let shortFileId = require("shortid").generate();
             if (file.type === "image/jpeg" || file.type === "image/png" || file.type === "image/gif" || file.type === "image/webp") {
                 selectedFiles.push({
                     rawFile: file,
                     type: "IMAGE",
-                    id: shortFileId,
+                    id: timestamp,
                     status: false,
                     src: URL.createObjectURL(file),
                     name: file.name ? file.name : file.path,
+                    uploader: user,
                 });
             } else if (file.type === "video/mp4") {
                 selectedFiles.push({
                     rawFile: file,
                     type: "VIDEO",
-                    id: shortFileId,
+                    id: timestamp,
                     status: false,
                     src: URL.createObjectURL(file),
                     name: file.name ? file.name : file.path,
+                    uploader: user,
                 });
             } else {
                 selectedFiles.push({
                     rawFile: file,
                     type: "DOC",
-                    id: shortFileId,
+                    id: timestamp,
                     status: false,
                     src: URL.createObjectURL(file),
                     name: file.name ? file.name : file.path,
+                    uploader: user,
                 });
             }
         });
@@ -516,12 +520,10 @@ const CreateEditWorkspaceModal = (props) => {
         handleHideDropzone();
     };
 
-    const handleRemoveFile = useCallback(
-        (fileId) => {
-            setAttachedFiles((prevState) => prevState.filter((f) => f.id !== fileId));
-        },
-        [setAttachedFiles]
-    );
+    const handleRemoveFile = (fileId) => {
+        setUploadedFiles((prevState) => prevState.filter((f) => f.id !== parseInt(fileId)));
+        setAttachedFiles((prevState) => prevState.filter((f) => f.id !== parseInt(fileId)));
+    }
 
     const handleShowArchiveConfirmation = () => {
         let payload = {
@@ -751,10 +753,10 @@ const CreateEditWorkspaceModal = (props) => {
                             {
                                 item.topic_detail.active === 1 ?
                                     <span onClick={handleShowArchiveConfirmation}
-                                          className="btn-archive text-link mt-2 cursor-pointer">or archive this workspace</span>
+                                          className="btn-archive text-link mt-2 cursor-pointer">Archive this workspace</span>
                                     :
                                     <span onClick={handleShowArchiveConfirmation}
-                                          className="btn-archive text-link mt-2 cursor-pointer">or unarchive this workspace</span>
+                                          className="btn-archive text-link mt-2 cursor-pointer">Unarchive this workspace</span>
                             }
                         </>
                     }

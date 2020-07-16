@@ -94,21 +94,21 @@ const usePosts = () => {
     }
     if (filter || tag) {
       let filteredPosts = Object.values(posts)
-        .filter((p) => {
-          if (tag) {
-            if (tag === "is_must_reply") {
-              return p.is_must_reply === 1;
-            } else if (tag === "is_must_read") {
-              return p.is_must_read === 1;
-            } else if (tag === "is_read_only") {
-              return p.is_read_only === 1;
-            } else {
-              return true;
-            }
-          } else {
-            return true;
-          }
-        })
+        // .filter((p) => {
+        //   if (tag) {
+        //     if (tag === "is_must_reply") {
+        //       return p.is_must_reply === 1;
+        //     } else if (tag === "is_must_read") {
+        //       return p.is_must_read === 1;
+        //     } else if (tag === "is_read_only") {
+        //       return p.is_read_only === 1;
+        //     } else {
+        //       return true;
+        //     }
+        //   } else {
+        //     return true;
+        //   }
+        // })
         .filter((p) => {
           if (filter) {
             if (filter === "my_posts") {
@@ -121,13 +121,19 @@ const usePosts = () => {
             } else if (filter === "archive") {
               return p.is_archived === 1;
             } else if (filter === "all") {
-              if (tag) {
-                return true;
-              } else {
-                return !p.is_archived;
-              }
+              return !p.is_archived;
             }
-          } else {
+          } else if (tag) {
+            if (tag === "is_must_reply") {
+              return p.is_must_reply === 1 && !p.is_archived && !p.hasOwnProperty("draft_type");
+            } else if (tag === "is_must_read") {
+              return p.is_must_read === 1 && !p.is_archived && !p.hasOwnProperty("draft_type");
+            } else if (tag === "is_read_only") {
+              return p.is_read_only === 1 && !p.is_archived && !p.hasOwnProperty("draft_type");
+            } else {
+              return true;
+            }
+          }else {
             return true;
           }
         })

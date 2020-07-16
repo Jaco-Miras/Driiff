@@ -499,15 +499,9 @@ export default (state = INITIAL_STATE, action) => {
           ...state.workspacePosts,
           [action.data.topic_id]: {
             ...state.workspacePosts[action.data.topic_id],
-            filter: action.data.filter
-              ? action.data.filter === state.workspacePosts[action.data.topic_id].filter
-                ? state.workspacePosts[action.data.topic_id].filter
-                : action.data.filter
-              : state.workspacePosts[action.data.topic_id].filter,
+            filter: action.data.filter,
             sort: action.data.sort ? (action.data.sort === state.workspacePosts[action.data.topic_id].sort ? state.workspacePosts[action.data.topic_id].sort : action.data.sort) : state.workspacePosts[action.data.topic_id].sort,
             tag: action.data.tag,
-            // tag: action.data.tag ? action.data.tag === state.workspacePosts[action.data.topic_id].tag ? null
-            //     : action.data.tag : state.workspacePosts[action.data.topic_id].tag
           },
         },
       };
@@ -876,14 +870,20 @@ export default (state = INITIAL_STATE, action) => {
     }
     case "UPLOADING_WORKSPACE_FILES_SUCCESS": {
       let newWorkspaces = { ...state.workspaces };
+      let files = action.data.files.map(f => {
+        return {
+          ...f,
+          uploader: state.user
+        };
+      })
       if (action.data.workspace_id) {
         if (newWorkspaces[action.data.workspace_id].topics[action.data.topic_id].hasOwnProperty("primary_files")) {
-          newWorkspaces[action.data.workspace_id].topics[action.data.topic_id].primary_files = [...newWorkspaces[action.data.workspace_id].topics[action.data.topic_id].primary_files, ...action.data.files];
+          newWorkspaces[action.data.workspace_id].topics[action.data.topic_id].primary_files = [...newWorkspaces[action.data.workspace_id].topics[action.data.topic_id].primary_files, ...files];
         } else {
-          newWorkspaces[action.data.workspace_id].topics[action.data.topic_id].primary_files = action.data.files;
+          newWorkspaces[action.data.workspace_id].topics[action.data.topic_id].primary_files = files;
         }
       } else {
-        newWorkspaces[action.data.topic_id].primary_files = action.data.files;
+        newWorkspaces[action.data.topic_id].primary_files = files;
       }
       return {
         ...state,
@@ -892,7 +892,7 @@ export default (state = INITIAL_STATE, action) => {
           state.activeTopic.id === action.data.topic_id
             ? {
                 ...state.activeTopic,
-                primary_files: state.activeTopic.hasOwnProperty("primary_files") ? [...state.activeTopic.primary_files, ...action.data.files] : action.data.files,
+                primary_files: state.activeTopic.hasOwnProperty("primary_files") ? [...state.activeTopic.primary_files, ...files] : files,
               }
             : state.activeTopic,
       };
@@ -1268,18 +1268,18 @@ export default (state = INITIAL_STATE, action) => {
       let updatedTopic = { ...state.activeTopic };
       if (Object.keys(updatedWorkspaces).length > 0) {
         if (action.data.folder_id) {
-          updatedWorkspaces[action.data.folder_id].unread_count = updatedWorkspaces[action.data.folder_id].unread_count + action.data.unread_posts;
-          updatedWorkspaces[action.data.folder_id].topics[action.data.topic_id].unread_posts = updatedWorkspaces[action.data.folder_id].topics[action.data.topic_id].unread_posts + action.data.unread_posts;
+          updatedWorkspaces[action.data.folder_id].unread_count = action.data.unread_count;
+          updatedWorkspaces[action.data.folder_id].topics[action.data.topic_id].unread_posts = action.data.unread_posts;
         } else {
-          updatedWorkspaces[action.data.topic_id].unread_count = updatedWorkspaces[action.data.topic_id].unread_count + action.data.unread_posts;
-          updatedWorkspaces[action.data.topic_id].topic_detail.unread_posts = updatedWorkspaces[action.data.topic_id].topic_detail.unread_posts + action.data.unread_posts;
+          updatedWorkspaces[action.data.topic_id].unread_count = action.data.unread_count;
+          updatedWorkspaces[action.data.topic_id].topic_detail.unread_posts = action.data.unread_posts;
         }
         if (state.activeTopic && state.activeTopic.id === action.data.topic_id) {
           if (state.activeTopic.type === "TOPIC") {
-            updatedTopic.unread_posts = updatedTopic.unread_posts + action.data.unread_posts;
+            updatedTopic.unread_posts = action.data.unread_posts;
           } else {
-            updatedTopic.unread_count = updatedTopic.unread_count + action.data.unread_posts;
-            updatedTopic.topic_detail.unread_posts = updatedTopic.topic_detail.unread_posts + action.data.unread_posts;
+            updatedTopic.unread_count = action.data.unread_count;
+            updatedTopic.topic_detail.unread_posts = action.data.unread_posts;
           }
         }
         return {

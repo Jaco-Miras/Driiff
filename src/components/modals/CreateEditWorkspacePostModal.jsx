@@ -497,36 +497,40 @@ const CreateEditWorkspacePostModal = (props) => {
     acceptedFiles.forEach((file) => {
       var bodyFormData = new FormData();
       bodyFormData.append("file", file);
-      let shortFileId = require("shortid").generate();
+      let timestamp = Math.floor(Date.now());
+      //let shortFileId = require("shortid").generate();
       if (file.type === "image/jpeg" || file.type === "image/png" || file.type === "image/gif" || file.type === "image/webp") {
         selectedFiles.push({
           rawFile: file,
           bodyFormData: bodyFormData,
           type: "IMAGE",
-          id: shortFileId,
+          id: timestamp,
           status: false,
           src: URL.createObjectURL(file),
           name: file.name ? file.name : file.path,
+          uploader: user,
         });
       } else if (file.type === "video/mp4") {
         selectedFiles.push({
           rawFile: file,
           bodyFormData: bodyFormData,
           type: "VIDEO",
-          id: shortFileId,
+          id: timestamp,
           status: false,
           src: URL.createObjectURL(file),
           name: file.name ? file.name : file.path,
+          uploader: user,
         });
       } else {
         selectedFiles.push({
           rawFile: file,
           bodyFormData: bodyFormData,
           type: "DOC",
-          id: shortFileId,
+          id: timestamp,
           status: false,
           src: URL.createObjectURL(file),
           name: file.name ? file.name : file.path,
+          uploader: user,
         });
       }
     });
@@ -561,12 +565,10 @@ const CreateEditWorkspacePostModal = (props) => {
     });
   }
 
-  const handleRemoveFile = useCallback(
-    (fileId) => {
-      setAttachedFiles((prevState) => prevState.filter((f) => f.id !== fileId));
-    },
-    [setAttachedFiles]
-  );
+  const handleRemoveFile = (fileId) => {
+    setUploadedFiles((prevState) => prevState.filter((f) => f.id !== parseInt(fileId)));
+    setAttachedFiles((prevState) => prevState.filter((f) => f.id !== parseInt(fileId)));
+  }
 
   const [wsOptions, userOptions] = useGetWorkspaceAndUserOptions(form.selectedWorkspaces, activeTopic);
 

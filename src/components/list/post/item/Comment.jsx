@@ -1,12 +1,47 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, {useCallback, useEffect, useRef, useState} from "react";
 import styled from "styled-components";
-import { Avatar, FileAttachments, SvgIconFeather } from "../../../common";
-import { MoreOptions } from "../../../panels/common";
-import { PostDetailFooter } from "../../../panels/post/index";
-import { SubComments } from "./index";
+import {Avatar, FileAttachments, SvgIconFeather} from "../../../common";
+import {MoreOptions} from "../../../panels/common";
+import {PostDetailFooter} from "../../../panels/post/index";
+import {SubComments} from "./index";
 
 const Wrapper = styled.li`
   margin-bottom: 1rem;
+  
+  .quote {
+    quotes: "“" "”";
+    border-radius: 6px;
+    margin: 2rem auto 0.5rem;
+    width: 90%;    
+    position: relative;
+    padding: 1rem;
+    
+    > * {
+      margin-bottom: 0;      
+    }
+  }
+  
+  .quote:before {
+    font-size: 32px;
+    content: open-quote;
+    position: absolute;
+    top: -1rem;
+    left: -1rem;
+  }
+  
+  .quote:after {
+    font-size: 32px;
+    content: close-quote;
+    position: absolute;
+    top: -1rem;
+    right: -1rem;
+  }
+  
+  .quote-author {
+    font-style: italic;
+    margin-left: auto;
+    margin-right: 5%;
+  }
 
   .files {
     margin-bottom: 1rem;
@@ -62,7 +97,7 @@ const Icon = styled(SvgIconFeather)`
 `;
 
 const Comment = (props) => {
-  const { className = "", comment, post, type = "main", user, commentActions, parentId, onShowFileDialog, dropAction, parentShowInput = null } = props;
+  const {className = "", comment, post, type = "main", user, commentActions, parentId, onShowFileDialog, dropAction, parentShowInput = null} = props;
   const refs = {
     input: useRef(null),
     body: useRef(null),
@@ -72,15 +107,15 @@ const Comment = (props) => {
   const [userMention, setUserMention] = useState(null);
 
   const handleShowInput = useCallback(
-    (commentId = null) => {
-      if (parentShowInput) {
-        parentShowInput(commentId);
-      } else {
-        setShowInput(typeof commentId !== "number" ? comment.id : commentId);
-      }
-      inputFocus();
-    },
-    [setShowInput]
+      (commentId = null) => {
+        if (parentShowInput) {
+          parentShowInput(commentId);
+        } else {
+          setShowInput(typeof commentId !== "number" ? comment.id : commentId);
+        }
+        inputFocus();
+      },
+      [setShowInput]
   );
 
   const handleMentionUser = () => {
@@ -128,72 +163,88 @@ const Comment = (props) => {
   };
 
   return (
-    <>
-      <Wrapper ref={refs.main} className={`comment card border fadeBottom ${className}`}>
-        {comment.quote && <div>{comment.quote.body}</div>}
-        <CommentWrapper ref={refs.body} className="card-body" type={type}>
-          <CommentHeader className="d-flex">
-            <div>
-              <Avatar className="mr-2" id={comment.author.id} name={comment.author.name} imageLink={comment.author.profile_image_link} />
-              {comment.author.first_name}
-            </div>
-            {post.is_read_only !== 1 && (
-              <MoreOptions scrollRef={refs.body.current} moreButton={"more-vertical"}>
-                {user.id === comment.author.id && <div onClick={() => commentActions.setToEdit(comment)}>Edit reply</div>}
-                <div onClick={handleQuote}>Quote</div>
-                {user.id !== comment.author.id && <div onClick={handleMentionUser}>Mention user</div>}
-                {user.id === comment.author.id && <div onClick={() => commentActions.remove(comment)}>Remove reply</div>}
-              </MoreOptions>
-            )}
-          </CommentHeader>
-          <CommentBody className="mt-2 mb-3" dangerouslySetInnerHTML={{ __html: comment.body }} />
-          {comment.files.length >= 1 && (
+      <>
+        <Wrapper ref={refs.main} className={`comment card border fadeBottom ${className}`}>
+          {
+            comment.quote &&
             <>
-              <hr />
-              <h6>Files</h6>
-              <FileAttachments attachedFiles={comment.files} type="workspace" comment={comment} />
+              <div className="quote border" dangerouslySetInnerHTML={{__html: comment.quote.body}}/>
+              {
+                comment.quote.user && (
+                    <div className="quote-author">- {comment.quote.user.name}</div>
+                )
+              }
             </>
-          )}
-          <div className="d-flex align-items-center justify-content-start">
-            <Icon className={comment.user_clap_count ? "mr-2 comment-reaction clap-true" : "mr-2 comment-reaction clap-false"} icon="heart" onClick={handleReaction} />
-            {comment.clap_count > 0 ? comment.clap_count : null}
-            {post.is_read_only !== 1 && (
-              <Reply className="ml-3" onClick={handleShowInput}>
-                Comment
-              </Reply>
+
+          }
+          <CommentWrapper ref={refs.body} className="card-body" type={type}>
+            <CommentHeader className="d-flex">
+              <div>
+                <Avatar className="mr-2" id={comment.author.id} name={comment.author.name}
+                        imageLink={comment.author.profile_image_link}/>
+                {comment.author.first_name}
+              </div>
+              {post.is_read_only !== 1 && (
+                  <MoreOptions scrollRef={refs.body.current} moreButton={"more-vertical"}>
+                    {user.id === comment.author.id &&
+                    <div onClick={() => commentActions.setToEdit(comment)}>Edit reply</div>}
+                    <div onClick={handleQuote}>Quote</div>
+                    {user.id !== comment.author.id && <div onClick={handleMentionUser}>Mention user</div>}
+                    {user.id === comment.author.id &&
+                    <div onClick={() => commentActions.remove(comment)}>Remove reply</div>}
+                  </MoreOptions>
+              )}
+            </CommentHeader>
+            <CommentBody className="mt-2 mb-3" dangerouslySetInnerHTML={{__html: comment.body}}/>
+            {comment.files.length >= 1 && (
+                <>
+                  <hr/>
+                  <h6>Files</h6>
+                  <FileAttachments attachedFiles={comment.files} type="workspace" comment={comment}/>
+                </>
             )}
-          </div>
-        </CommentWrapper>
-      </Wrapper>
-      {type === "main" && Object.values(comment.replies).length > 0 && (
-        <SubComments
-          parentShowInput={handleShowInput}
-          comments={comment.replies}
-          post={post}
-          user={user}
-          commentActions={commentActions}
-          parentId={type === "main" ? comment.id : null}
-          onShowFileDialog={onShowFileDialog}
-          dropAction={dropAction}
-        />
-      )}
-      {showInput !== null && (
-        <InputWrapper className="card">
-          <CommentInput
-            innerRef={refs.input}
-            user={user}
-            commentId={showInput}
-            post={post}
-            parentId={type === "main" ? comment.id : parentId}
-            commentActions={commentActions}
-            userMention={userMention}
-            handleClearUserMention={handleClearUserMention}
-            onShowFileDialog={onShowFileDialog}
-            dropAction={dropAction}
-          />
-        </InputWrapper>
-      )}
-    </>
+            <div className="d-flex align-items-center justify-content-start">
+              <Icon
+                  className={comment.user_clap_count ? "mr-2 comment-reaction clap-true" : "mr-2 comment-reaction clap-false"}
+                  icon="heart" onClick={handleReaction}/>
+              {comment.clap_count > 0 ? comment.clap_count : null}
+              {post.is_read_only !== 1 && (
+                  <Reply className="ml-3" onClick={handleShowInput}>
+                    Comment
+                  </Reply>
+              )}
+            </div>
+          </CommentWrapper>
+        </Wrapper>
+        {type === "main" && Object.values(comment.replies).length > 0 && (
+            <SubComments
+                parentShowInput={handleShowInput}
+                comments={comment.replies}
+                post={post}
+                user={user}
+                commentActions={commentActions}
+                parentId={type === "main" ? comment.id : null}
+                onShowFileDialog={onShowFileDialog}
+                dropAction={dropAction}
+            />
+        )}
+        {showInput !== null && (
+            <InputWrapper className="card">
+              <CommentInput
+                  innerRef={refs.input}
+                  user={user}
+                  commentId={showInput}
+                  post={post}
+                  parentId={type === "main" ? comment.id : parentId}
+                  commentActions={commentActions}
+                  userMention={userMention}
+                  handleClearUserMention={handleClearUserMention}
+                  onShowFileDialog={onShowFileDialog}
+                  dropAction={dropAction}
+              />
+            </InputWrapper>
+        )}
+      </>
   );
 };
 

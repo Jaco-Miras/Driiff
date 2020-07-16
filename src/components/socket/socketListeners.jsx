@@ -108,6 +108,12 @@ class SocketListeners extends React.PureComponent {
                     }
                     case "FOLDER_DELETE": {
                         this.props.incomingDeletedFolder(e);
+                        if (this.props.match.url === "/workspace/files") {
+                            if (this.props.location.pathname.includes(e.folder.id) && this.props.location.pathname.includes(e.topic_id)) {
+                                let pathname = this.props.location.pathname.split("/folder/")[0];
+                                this.props.history.push(pathname);
+                            }
+                        }
                         break;
                     }
                     case "FOLDER_FORCE_DELETE": {
@@ -221,19 +227,15 @@ class SocketListeners extends React.PureComponent {
                         }
                         if (e.author.id !== this.props.user.id) {
                           e.workspaces.forEach((ws) => {
-                            this.props.fetchPost({ post_id: e.post_id }, (err, res) => {
-                              if (err) return;
-                              console.log(res);
-                              if (!res.data.is_updated && res.data.unread_count === 1) {
-                                //no changes
-                              } else {
-                                //plus 1
+                            this.props.getWorkspace({ topic_id: ws.topic_id }, (err, res) => {
+                                if (err) return;
                                 this.props.updateWorkspaceCounter({
-                                  folder_id: ws.workspace_id,
-                                  topic_id: ws.topic_id,
-                                  unread_posts: 1,
+                                    folder_id: ws.workspace_id,
+                                    topic_id: ws.topic_id,
+                                    unread_count: res.data.workspace_data.unread_count,
+                                    unread_posts: res.data.workspace_data.topic_detail.unread_posts,
+                                    unread_chats: res.data.workspace_data.topic_detail.unread_chats,
                                 });
-                              }
                             });
                           });
                         }

@@ -63,7 +63,7 @@ const FileListItem = (props) => {
           {file.is_favorite === true && <Star icon="star" />}
           {actions.getFileIcon(file.mime_type)}
           {typeof file.id === "number" && <FileOptions file={file} actions={actions} isMember={isMember} forceDelete={forceDelete} />}
-          {typeof file.id === "string" && <ProgressBar />}
+          {typeof file.id === "string" && <ProgressBar amount={100} barClassName={"progress-bar-striped progress-bar-animated"}/>}
         </div>
         <div className="p-2 small">
           <ToolTip content={file.name ? file.name : file.search}>
