@@ -28,6 +28,7 @@ import {
     addFilesToChannel,
     deleteFilesFromChannel,
     incomingDeletedFile,
+    incomingDeletedFiles,
     incomingDeletedFolder,
     incomingDeletedPostFile,
     incomingEmptyTrash,
@@ -145,6 +146,10 @@ class SocketListeners extends React.PureComponent {
                     }
                     case "FILE_DELETE": {
                         this.props.incomingRemovedFile(e);
+                        break;
+                    }
+                    case "FILE_BULK_TRASH": {
+                        this.props.incomingDeletedFiles(e);
                         break;
                     }
                     default:
@@ -377,6 +382,10 @@ class SocketListeners extends React.PureComponent {
                     }
                     case "FILE_DELETE": {
                         this.props.incomingRemovedFile(e);
+                        break;
+                    }
+                    case "FILE_BULK_TRASH": {
+                        this.props.incomingDeletedFiles(e);
                         break;
                     }
                     default:
@@ -851,6 +860,7 @@ function mapDispatchToProps(dispatch) {
         incomingUnArchivedWorkspaceChannel: bindActionCreators(incomingUnArchivedWorkspaceChannel, dispatch),
         updateWorkspaceCounter: bindActionCreators(updateWorkspaceCounter, dispatch),
         fetchPost: bindActionCreators(fetchPost, dispatch),
+        incomingDeletedFiles: bindActionCreators(incomingDeletedFiles, dispatch),
     };
 }
 

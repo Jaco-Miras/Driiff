@@ -303,3 +303,18 @@ export function deletePostFile(payload) {
     data: payload,
   });
 }
+
+/**
+ * @param {Object} payload
+ * @param {number} payload.topic_id
+ * @param {number} payload.is_primary
+ * @param {array} payload.file_ids
+ * @returns {Promise<*>}
+ */
+export function deleteWorkspaceFiles(payload) {
+  return apiCall({
+    method: "DELETE",
+    url: "/v2/workspace-bulk-files",
+    data: payload,
+  });
+}

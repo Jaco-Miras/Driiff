@@ -1291,6 +1291,37 @@ export default (state = INITIAL_STATE, action) => {
         return state;
       }
     }
+    case "INCOMING_DELETED_FILES": {
+      let updatedTopic = { ...state.activeTopic };
+      let updatedWorkspaces = { ...state.workspaces };
+      if (Object.values(state.workspaces).length) {
+        if (action.data.workspace_id && action.data.workspace_id !== 0) {
+          if (updatedWorkspaces[action.data.workspace_id].topics[action.data.topic_id].hasOwnProperty("primary_files")) {
+            updatedWorkspaces[action.data.workspace_id].topics[action.data.topic_id].primary_files = updatedWorkspaces[action.data.workspace_id].topics[action.data.topic_id].primary_files.filter((pf) => {
+              return !action.data.deleted_file_ids.some((df) => df === pf.id)
+            });
+          }
+        } else {
+          if (updatedWorkspaces[action.data.topic_id].hasOwnProperty("primary_files")) {
+            updatedWorkspaces[action.data.topic_id].primary_files = updatedWorkspaces[action.data.topic_id].primary_files.filter((pf) => {
+              return !action.data.deleted_file_ids.some((df) => df === pf.id)
+            });
+          }
+        }
+        if (state.activeTopic && state.activeTopic.id === action.data.topic_id && state.activeTopic.hasOwnProperty("primary_files")) {
+          updatedTopic.primary_files = updatedTopic.primary_files.filter((pf) => {
+            return !action.data.deleted_file_ids.some((df) => df === pf.id)
+          });
+        }
+        return {
+          ...state,
+          activeTopic: updatedTopic,
+          workspaces: updatedWorkspaces,
+        };
+      } else {
+        return state;
+      }
+    }
     default:
       return state;
   }
