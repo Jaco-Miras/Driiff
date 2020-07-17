@@ -633,6 +633,41 @@ export default (state = INITIAL_STATE, action) => {
         return state;
       }
     }
+    case "INCOMING_DELETED_FILES": {
+      let newWorkspaceFiles = { ...state.workspaceFiles };
+      if (newWorkspaceFiles.hasOwnProperty(action.data.topic_id)) {
+        newWorkspaceFiles[action.data.topic_id].count =newWorkspaceFiles[action.data.topic_id].count - action.data.deleted_file_ids.length;
+        newWorkspaceFiles[action.data.topic_id].trash = newWorkspaceFiles[action.data.topic_id].trash + action.data.deleted_file_ids.length;
+        let deletedFiles = Object.values(newWorkspaceFiles[action.data.topic_id].files).filter((f) => {
+          return action.data.deleted_file_ids.some((df) => df === f.id);
+        });
+        newWorkspaceFiles[action.data.topic_id].trash_files = { ...convertArrayToObject(deletedFiles, "id"), ...newWorkspaceFiles[action.data.topic_id].trash_files };
+        action.data.deleted_file_ids.map((df) => {
+          delete newWorkspaceFiles[action.data.topic_id].files[df];
+        });
+        
+        if (newWorkspaceFiles[action.data.topic_id].hasOwnProperty("folders")) {
+          Object.values(newWorkspaceFiles[action.data.topic_id].folders).forEach((f) => {
+            if (f.hasOwnProperty("files") && newWorkspaceFiles[action.data.topic_id].folders[f.id].files.length) {
+              newWorkspaceFiles[action.data.topic_id].folders[f.id].files = newWorkspaceFiles[action.data.topic_id].folders[f.id].files.filter((id) => {
+                return !action.data.deleted_file_ids.some((df) => df === id)
+              });
+            } else return;
+          });
+          return {
+            ...state,
+            workspaceFiles: newWorkspaceFiles,
+          };
+        } else {
+          return {
+            ...state,
+            workspaceFiles: newWorkspaceFiles,
+          };
+        }
+      } else {
+        return state;
+      }
+    }
     case "INCOMING_REMOVED_FILE": {
       let newWorkspaceFiles = { ...state.workspaceFiles };
       if (newWorkspaceFiles.hasOwnProperty(action.data.topic_id)) {

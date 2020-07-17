@@ -116,7 +116,7 @@ const AttachmentIcon = styled(SvgIconFeather)`
 `;
 
 const FileAttachments = (props) => {
-  const { className = "", attachedFiles, handleRemoveFile, scrollRef = null, type = "modal", comment = null } = props;
+  const { className = "", attachedFiles, handleRemoveFile, scrollRef = null, type = "modal", comment = null, showDelete = true } = props;
   const dispatch = useDispatch();
   const params = useParams();
   const [filePreview, setFilePreview] = useState(null);
@@ -258,7 +258,7 @@ const FileAttachments = (props) => {
             <li data-target-index={i} key={i} onClick={handleClick} title={f.search ? f.search : f.name}>
               <AttachmentIcon icon="paperclip" />
               {f.search ? f.search : f.name}
-              {loggedUser.id === f.uploader.id && <SvgIconFeather data-file-id={f.id} onClick={handleDelete} icon="trash-2" />}
+              {((type === "modal") || (loggedUser.id === f.uploader.id && showDelete)) && <SvgIconFeather data-file-id={f.id} onClick={handleDelete} icon="trash-2" />}
             </li>
           );
         })}

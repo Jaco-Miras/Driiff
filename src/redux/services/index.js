@@ -68,6 +68,7 @@ export {
   deleteTrash,
   moveFile,
   deletePostFile,
+  deleteWorkspaceFiles,
 } from "./files";
 
 export {

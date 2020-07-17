@@ -4,7 +4,7 @@ import {useHistory} from "react-router-dom";
 import {Input, InputGroup, Label, Modal, ModalBody} from "reactstrap";
 import styled from "styled-components";
 import {replaceChar} from "../../helpers/stringFormatter";
-import {setPendingUploadFilesToWorkspace} from "../../redux/actions/fileActions";
+import {setPendingUploadFilesToWorkspace, deleteWorkspaceFiles} from "../../redux/actions/fileActions";
 import {addToModals, clearModal} from "../../redux/actions/globalActions";
 import {createWorkspace, fetchTimeline, updateWorkspace} from "../../redux/actions/workspaceActions";
 import {FileAttachments} from "../common";
@@ -298,6 +298,25 @@ const CreateEditWorkspaceModal = (props) => {
     const handleNameBlur = () => {
         _validateName();
     };
+    
+    const handleDeleteFileAttachements = () => {
+        let removed_file_ids = [];
+        if (item.primary_files.length) {
+            removed_file_ids = item.primary_files.filter((pf) => {
+                return !uploadedFiles.some((f) => f.id === pf.id);
+            })
+        }
+        if (removed_file_ids.length) {
+            let payload = {
+                topic_id: item.id,
+                is_primary: 1,
+                file_ids: removed_file_ids.map((f) => f.id)
+            };
+            dispatch(
+                deleteWorkspaceFiles(payload)
+            );
+        }
+    };
 
     const handleConfirm = () => {
         if (Object.values(valid).filter((v) => !v).length) return;
@@ -359,6 +378,7 @@ const CreateEditWorkspaceModal = (props) => {
             };
             const cb = (err, res) => {
                 if (err) return;
+                handleDeleteFileAttachements();
                 if (attachedFiles.length) {
                     let formData = new FormData();
                     for (const i in attachedFiles) {
@@ -523,7 +543,7 @@ const CreateEditWorkspaceModal = (props) => {
     const handleRemoveFile = (fileId) => {
         setUploadedFiles((prevState) => prevState.filter((f) => f.id !== parseInt(fileId)));
         setAttachedFiles((prevState) => prevState.filter((f) => f.id !== parseInt(fileId)));
-    }
+    };
 
     const handleShowArchiveConfirmation = () => {
         let payload = {
@@ -582,7 +602,7 @@ const CreateEditWorkspaceModal = (props) => {
         );
         toggle();
     }, []);
-
+    
     useEffect(() => {
         let currentUser = null;
         if (Object.values(users).length) {
