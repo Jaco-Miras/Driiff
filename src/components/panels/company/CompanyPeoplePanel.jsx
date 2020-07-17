@@ -1,9 +1,9 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import { useHistory } from "react-router-dom";
+import React, {useCallback, useEffect, useRef, useState} from "react";
+import {useHistory} from "react-router-dom";
 import styled from "styled-components";
 import SearchForm from "../../forms/SearchForm";
-import { useUserChannels } from "../../hooks";
-import { PeopleListItem } from "../../list/people/item";
+import {useUserChannels} from "../../hooks";
+import {PeopleListItem} from "../../list/people/item";
 
 const Wrapper = styled.div``;
 
@@ -13,9 +13,9 @@ const Search = styled(SearchForm)`
 `;
 
 const CompanyPeoplePanel = (props) => {
-  const { className = "" } = props;
+  const {className = ""} = props;
 
-  const { users, userChannels, selectUserChannel } = useUserChannels();
+  const {users, loggedUser, userChannels, selectUserChannel} = useUserChannels();
 
   const history = useHistory();
 
@@ -72,7 +72,8 @@ const CompanyPeoplePanel = (props) => {
           <Search ref={refs.search} placeholder="People search" onChange={handleSearchChange} autoFocus />
           <div className="row">
             {userSort.map((user) => {
-              return <PeopleListItem key={user.id} user={user} onNameClick={handleUserNameClick} onChatClick={handleUserChat} />;
+              return <PeopleListItem loggedUser={loggedUser} key={user.id} user={user} onNameClick={handleUserNameClick}
+                                     onChatClick={handleUserChat}/>;
             })}
           </div>
         </div>
