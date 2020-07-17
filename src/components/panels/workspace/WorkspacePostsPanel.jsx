@@ -87,7 +87,7 @@ const WorkspacePostsPanel = (props) => {
           <div className="app-content-overlay" />
           <PostFilterSearchPanel activeSort={sort} workspace={workspace} search={search} />
           {/* <div className="card card-body app-content-body mb-4"> */}
-          {posts.length === 0 ? (
+          {posts.length === 0 && search === null ? (
             <div className="card card-body app-content-body mb-4">
               <EmptyState>
                 <SvgEmptyState icon={3} height={252} />
