@@ -479,37 +479,9 @@ export default (state = INITIAL_STATE, action) => {
         if (newWorkspaceFiles[action.data.topic_id].hasOwnProperty("folders") && action.data.folder_id) {
           if (newWorkspaceFiles[action.data.topic_id].folders.hasOwnProperty(action.data.folder_id)) {
             newWorkspaceFiles[action.data.topic_id].folders[action.data.folder_id].files = [...newWorkspaceFiles[action.data.topic_id].folders[action.data.folder_id].files, ...action.data.files.map((f) => f.id)];
-            newWorkspaceFiles[action.data.topic_id].files = { ...convertArrayToObject(action.data.files, "id"), ...newWorkspaceFiles[action.data.topic_id].files };
-            newWorkspaceFiles[action.data.topic_id].count = newWorkspaceFiles[action.data.topic_id].count + action.data.files.length;
-            newWorkspaceFiles[action.data.topic_id].storage = newWorkspaceFiles[action.data.topic_id].storage + action.data.files.map((f) => f.size).reduce(add);
           }
-          // newWorkspaceFiles = {
-          //   ...newWorkspaceFiles,
-          //   [action.data.topic_id]: {
-          //     ...newWorkspaceFiles[action.data.topic_id],
-          //     folders: {
-          //       ...newWorkspaceFiles[action.data.topic_id].folders,
-          //       [action.data.folder_id]: {
-          //         ...newWorkspaceFiles[action.data.topic_id].folders[action.data.folder_id],
-          //         files: [...newWorkspaceFiles[action.data.topic_id].folders[action.data.folder_id].files, ...action.data.files.map((f) => f.id)],
-          //       },
-          //     },
-          //     files: { ...convertArrayToObject(action.data.files, "id"), ...newWorkspaceFiles[action.data.topic_id].files },
-          //     count: newWorkspaceFiles[action.data.topic_id].count + action.data.files.length,
-          //     storage: newWorkspaceFiles[action.data.topic_id].storage + action.data.files.map((f) => f.size).reduce(add),
-          //   },
-          // };
-        } else {
-          newWorkspaceFiles = {
-            ...newWorkspaceFiles,
-            [action.data.topic_id]: {
-              ...newWorkspaceFiles[action.data.topic_id],
-              files: { ...convertArrayToObject(action.data.files, "id"), ...newWorkspaceFiles[action.data.topic_id].files },
-              count: newWorkspaceFiles[action.data.topic_id].count + action.data.files.length,
-              storage: newWorkspaceFiles[action.data.topic_id].storage + action.data.files.map((f) => f.size).reduce(add),
-            },
-          };
         }
+        newWorkspaceFiles[action.data.topic_id].files = { ...convertArrayToObject(action.data.files, "id"), ...newWorkspaceFiles[action.data.topic_id].files };
         Object.values(newWorkspaceFiles[action.data.topic_id].files).map((f) => {
           if (typeof f.id === "string") {
             action.data.files.forEach((af) => {
@@ -519,6 +491,8 @@ export default (state = INITIAL_STATE, action) => {
             });
           }
         });
+        newWorkspaceFiles[action.data.topic_id].count = Object.keys(newWorkspaceFiles[action.data.topic_id].files).length;
+        newWorkspaceFiles[action.data.topic_id].storage = Object.values(newWorkspaceFiles[action.data.topic_id].files).map((f) => f.size).reduce(add);
         return {
           ...state,
           workspaceFiles: newWorkspaceFiles,
@@ -531,31 +505,9 @@ export default (state = INITIAL_STATE, action) => {
       let newWorkspaceFiles = { ...state.workspaceFiles };
       if (newWorkspaceFiles.hasOwnProperty(action.data.topic_id)) {
         if (newWorkspaceFiles[action.data.topic_id].hasOwnProperty("folders") && action.data.folder_id) {
-          newWorkspaceFiles = {
-            ...newWorkspaceFiles,
-            [action.data.topic_id]: {
-              ...newWorkspaceFiles[action.data.topic_id],
-              folders: {
-                ...newWorkspaceFiles[action.data.topic_id].folders,
-                [action.data.folder_id]: {
-                  ...newWorkspaceFiles[action.data.topic_id].folders[action.data.folder_id],
-                  files: [...newWorkspaceFiles[action.data.topic_id].folders[action.data.folder_id].files, ...action.data.files.map((f) => f.id)],
-                },
-              },
-              files: { ...convertArrayToObject(action.data.files, "id"), ...newWorkspaceFiles[action.data.topic_id].files },
-              count: newWorkspaceFiles[action.data.topic_id].count + action.data.files.length,
-            },
-          };
-        } else {
-          newWorkspaceFiles = {
-            ...newWorkspaceFiles,
-            [action.data.topic_id]: {
-              ...newWorkspaceFiles[action.data.topic_id],
-              files: { ...convertArrayToObject(action.data.files, "id"), ...newWorkspaceFiles[action.data.topic_id].files },
-              count: newWorkspaceFiles[action.data.topic_id].count + action.data.files.length,
-            },
-          };
+          newWorkspaceFiles[action.data.topic_id].folders[action.data.folder_id].files = [...newWorkspaceFiles[action.data.topic_id].folders[action.data.folder_id].files, ...action.data.files.map((f) => f.id)];
         }
+        newWorkspaceFiles[action.data.topic_id].files = { ...convertArrayToObject(action.data.files, "id"), ...newWorkspaceFiles[action.data.topic_id].files };
         return {
           ...state,
           workspaceFiles: newWorkspaceFiles,
