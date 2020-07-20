@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { Avatar, SvgIconFeather } from "../../../common";
+import { Avatar, SvgIconFeather, Badge } from "../../../common";
 
 const Wrapper = styled.div`
   .avatar {
@@ -47,7 +47,7 @@ const PeopleListItem = (props) => {
               </div>
               <div>
                 <h6 className="user-name mb-1 " onClick={handleOnNameClick}>
-                  {user.name}
+                  {user.name} <Badge label={"External"}/>
                 </h6>
                 <span className="small text-muted">{user.role !== null && <>{user.role.display_name}</>}</span>
               </div>
