@@ -3,7 +3,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {useHistory} from "react-router-dom";
 import {Input, InputGroup, Label, Modal, ModalBody} from "reactstrap";
 import styled from "styled-components";
-import {replaceChar} from "../../helpers/stringFormatter";
+import {replaceChar, EmailRegex} from "../../helpers/stringFormatter";
 import {setPendingUploadFilesToWorkspace, deleteWorkspaceFiles} from "../../redux/actions/fileActions";
 import {addToModals, clearModal} from "../../redux/actions/globalActions";
 import {createWorkspace, fetchTimeline, updateWorkspace} from "../../redux/actions/workspaceActions";
@@ -128,6 +128,9 @@ const CreateEditWorkspaceModal = (props) => {
     const workspaces = useSelector((state) => state.workspaces.workspaces);
     const activeTab = useSelector((state) => state.workspaces.activeTab);
     const [activeTabName, setActiveTabName] = useState("Internal");
+    const [userOptions, setUserOptions] = useState([]);
+    const [inputValue, setInputValue] = useState("");
+    const [invitedEmails, setInvitedEmails] = useState([]);
     const [form, setForm] = useState({
         is_private: false,
         has_folder: item !== null,
@@ -225,14 +228,6 @@ const CreateEditWorkspaceModal = (props) => {
             return {...prevState, [name]: checked};
         });
     };
-
-    const userOptions = Object.values(users).map((u) => {
-        return {
-            ...u,
-            value: u.id,
-            label: u.name,
-        };
-    });
 
     const folderOptions = Object.values(workspaces)
         .filter((ws) => ws.type === "FOLDER")
@@ -686,12 +681,47 @@ const CreateEditWorkspaceModal = (props) => {
         _validateName();
     }, [form.has_folder, form.selectedFolder]);
 
+    useEffect(() => {
+        const userOptions = Object.values(users).map((u) => {
+            return {
+                ...u,
+                value: u.id,
+                label: u.name,
+            };
+        });
+        setUserOptions(userOptions);
+    }, []);
+
     const onOpened = () => {
         if (inputRef && inputRef.current) {
             inputRef.current.focus();
         }
     };
 
+    const handleKeyDown = (e) => {
+        if (e.key === "Enter") {
+            //validate email - if email is valid then add to useroptions
+            if (EmailRegex.test(inputValue)) {
+                setInvitedEmails((prevState) => [...prevState, inputValue]);
+                setForm((prevState) => ({
+                    ...prevState,
+                    selectedUsers: [ ...prevState.selectedUsers, {
+                        id: require("shortid").generate(),
+                        label: inputValue,
+                        value: inputValue,
+                        name: inputValue,
+                        first_name: inputValue
+                    }],
+                }));
+                setInputValue("");
+            }
+        }
+    };
+    
+    const handleInputChange = (e) => {
+        setInputValue(e);
+    }
+    
     return (
         <Modal isOpen={modal} toggle={toggle} centered size={"md"} onOpened={onOpened}>
             <ModalHeaderSection
@@ -737,8 +767,8 @@ const CreateEditWorkspaceModal = (props) => {
                 )}
                 <WrapperDiv>
                     <Label for="people">Team</Label>
-                    <SelectPeople valid={valid.team} options={userOptions} value={form.selectedUsers}
-                                  onChange={handleSelectUser}/>
+                    <SelectPeople valid={valid.team} options={userOptions} value={form.selectedUsers} inputValue={inputValue}
+                                  onChange={handleSelectUser} onKeyDown={handleKeyDown} onInputChange={handleInputChange}/>
                     <InputFeedback valid={valid.user}>{feedback.user}</InputFeedback>
                 </WrapperDiv>
                 <DescriptionInput
