@@ -32,7 +32,7 @@ const ChatDateIcons = (props) => {
   const { channel, optionsVisible } = props;
   const { localizeChatChannelDate } = useTimeFormat();
 
-  const handleNotificationBadges = useCallback(() => {
+  const handleNotificationBadges = () => {
     if (channel.is_read === 0) {
       return <Badge className={"badge badge-primary badge-pill ml-auto unread"}>0</Badge>;
     } else {
@@ -42,7 +42,7 @@ const ChatDateIcons = (props) => {
         return null;
       }
     }
-  }, [channel]);
+  };
 
   return (
     <Wrapper className="chat-timestamp" optionsVisible={optionsVisible}>
