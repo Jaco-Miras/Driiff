@@ -1,10 +1,11 @@
-import React, { useCallback } from "react";
+import React from "react";
 import styled from "styled-components";
 import { SvgIconFeather } from "../../common";
 import { useTimeFormat } from "../../hooks";
 
 const Wrapper = styled.div`
-  display: ${(props) => (props.optionsVisible ? "none" : "initial")};
+  //display: ${(props) => (props.optionsVisible ? "none" : "initial")};
+  display: initial;
 `;
 const ActionContainer = styled.div`
   position: relative;
@@ -29,24 +30,17 @@ const Badge = styled.span`
 `;
 
 const ChatDateIcons = (props) => {
-  const { channel, optionsVisible } = props;
+  const { channel } = props;
   const { localizeChatChannelDate } = useTimeFormat();
-
-  const handleNotificationBadges = () => {
-    if (channel.is_read === 0) {
-      return <Badge className={"badge badge-primary badge-pill ml-auto unread"}>0</Badge>;
-    } else {
-      if (channel.total_unread > 0) {
-        return <Badge className="badge badge-primary badge-pill ml-auto">{channel.total_unread}</Badge>;
-      } else {
-        return null;
-      }
-    }
-  };
-
+  
   return (
-    <Wrapper className="chat-timestamp" optionsVisible={optionsVisible}>
-      {handleNotificationBadges()}
+    <Wrapper className="chat-timestamp">
+      {
+        (channel.is_read === 0 || channel.total_unread > 0) && 
+        <Badge className={`badge badge-primary badge-pill ml-auto ${channel.is_read === 0 && channel.total_unread === 0 ? "unread" : ""}`}>
+          {channel.total_unread > 0 ? channel.total_unread : channel.is_read === 0 ? "0" : null}
+        </Badge>
+      }
       <span className={"small text-muted"}>{channel.last_reply ? localizeChatChannelDate(channel.last_reply.created_at.timestamp) : ""}</span>
       <ActionContainer>
         {!!channel.is_pinned && <Icon icon="star" />}
@@ -56,4 +50,4 @@ const ChatDateIcons = (props) => {
   );
 };
 
-export default ChatDateIcons;
+export default React.memo(ChatDateIcons);
