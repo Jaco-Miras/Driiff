@@ -175,7 +175,7 @@ const MainNavigationTabPanel = (props) => {
       const { workspace, topic } = active_topic;
       if (workspace) {
         setWorkpacePath(`/workspace/chat/${workspace.id}/${replaceChar(workspace.name)}/${topic.id}/${replaceChar(topic.name)}`);
-      } else if (topic && typeof topic === "object") {
+      } else if (topic && topic.hasOwnProperty("id") && topic.id !== undefined) {
         setWorkpacePath(`/workspace/chat/${topic.id}/${replaceChar(topic.name)}`);
       }
     }
