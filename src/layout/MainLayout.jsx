@@ -31,6 +31,7 @@ const MainLayout = (props) => {
   useSocketConnection();
 
   const user = useSelector((state) => state.session.user);
+  const socketMounted = useSelector((state) => state.global.socketMounted);
   const toaster = useToaster();
   const { localizeDate } = useTimeFormat();
 
@@ -104,7 +105,7 @@ const MainLayout = (props) => {
              user.id !== undefined &&
              <Socket/>
              } */}
-      {user.id !== undefined && window.Echo !== undefined && <SocketListeners localizeDate={localizeDate} toaster={toaster} soundPlay={handleSoundPlay} />}
+      {user.id !== undefined && window.Echo !== undefined && !socketMounted && <SocketListeners localizeDate={localizeDate} toaster={toaster} soundPlay={handleSoundPlay} />}
     </>
   );
 };

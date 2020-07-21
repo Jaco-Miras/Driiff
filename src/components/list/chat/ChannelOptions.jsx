@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { useDispatch } from "react-redux";
 import styled from "styled-components";
 import { addToModals } from "../../../redux/actions/globalActions";
@@ -25,8 +25,6 @@ const ChannelOptions = (props) => {
   const dispatch = useDispatch();
 
   const channelActions = useChannelActions();
-
-  const [showMoreOptions, setShowMoreOptions] = useState(false);
 
   const scrollEl = document.getElementById("pills-contact");
 
@@ -104,12 +102,6 @@ const ChannelOptions = (props) => {
     } else {
       channelActions.markAsRead(channel);
     }
-
-    handleShowMoreOptions();
-  };
-  const handleShowMoreOptions = () => {
-    setShowMoreOptions(!showMoreOptions);
-    props.onShowOptions();
   };
 
   return (

@@ -102,6 +102,7 @@ const useSetWorkspace = () => {
                                 workspace_id: wsfolder.id,
                                 workspace_name: wsfolder.name,
                                 workspace_description: wsfolder.description,
+                                type: "TOPIC",
                                 topic_detail: {
                                     active: topic.active,
                                     channel: topic.channel,
@@ -189,7 +190,7 @@ const useSetWorkspace = () => {
             } else {
                 path += `${activeTopic.id}/${replaceChar(activeTopic.name)}`;
 
-                if (activeTopic.topic_detail) dispatch(restoreLastVisitedChannel({channel_id: activeTopic.topic_detail.channel.id}));
+                if (activeTopic.topic_detail && activeTopic.topic_detail.channel) dispatch(restoreLastVisitedChannel({channel_id: activeTopic.topic_detail.channel.id}));
             }
             history.push(path);
         } else if (activeTopic && params.hasOwnProperty("workspaceId")) {
