@@ -1,8 +1,8 @@
-import React, { useEffect } from "react";
-import { useSelector } from "react-redux";
-import { useRouteMatch } from "react-router-dom";
+import React, {useEffect} from "react";
+import {useSelector} from "react-redux";
+import {useRouteMatch} from "react-router-dom";
 import styled from "styled-components";
-import { NavLink, SvgIconFeather } from "../../common";
+import {NavLink, SvgIconFeather} from "../../common";
 import useSettings from "../../hooks/useSettings";
 import HomeProfileNavigation from "../common/HeaderProfileNavigation";
 
@@ -33,14 +33,28 @@ const MainNavLink = styled(NavLink)`
   border-radius: 0;
   display: flex;
   height: 35px;
+  position: relative;
   &.active {
     border-bottom: 2px solid #5d5d5d;
     color: #000000;
+  }
+  .badge {
+    background: green;
+    font-size: 0;
+    padding: 0;
+    margin: 0;
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: #28a745;
+    top: 1px;
+    right: -9px;
   }
 `;
 
 const Badge = styled.div`
   color: ${(props) => (props.unread ? "#f44" : "#fff")};
+  height: 22px;
 `;
 
 const CompanyHeaderPanel = () => {
@@ -114,7 +128,8 @@ const CompanyHeaderPanel = () => {
           <li className="nav-item">
             <MainNavLink to="/chat">
               Chat{" "}
-              <Badge className="ml-2 badge badge-danger" unread={unreadCounter.chat_message + unreadCounter.chat_reminder_message === 0 && unreadCounter.unread_channel > 0}>
+              <Badge className="ml-2 badge badge-pill badge-danger"
+                     unread={unreadCounter.chat_message + unreadCounter.chat_reminder_message === 0 && unreadCounter.unread_channel > 0}>
                 {unreadCounter.chat_message + unreadCounter.chat_reminder_message > 0 ? unreadCounter.chat_message + unreadCounter.chat_reminder_message : unreadCounter.unread_channel > 0 ? unreadCounter.unread_channel : null}
               </Badge>
             </MainNavLink>

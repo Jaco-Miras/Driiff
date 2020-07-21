@@ -169,7 +169,7 @@ const DashboardAboutWorkspace = (props) => {
           <>
             <hr />
             <span>File attachments:</span>
-            <FileAttachments attachedFiles={workspace.primary_files} workspace={workspace} type="workspace" />
+            <FileAttachments attachedFiles={workspace.primary_files} workspace={workspace} type="workspace" showDelete={false}/>
           </>
         )}
       </div>

@@ -3,8 +3,8 @@ import {useDispatch, useSelector} from "react-redux";
 import {useHistory} from "react-router-dom";
 import {Input, InputGroup, Label, Modal, ModalBody} from "reactstrap";
 import styled from "styled-components";
-import {replaceChar} from "../../helpers/stringFormatter";
-import {setPendingUploadFilesToWorkspace} from "../../redux/actions/fileActions";
+import {replaceChar, EmailRegex} from "../../helpers/stringFormatter";
+import {setPendingUploadFilesToWorkspace, deleteWorkspaceFiles} from "../../redux/actions/fileActions";
 import {addToModals, clearModal} from "../../redux/actions/globalActions";
 import {createWorkspace, fetchTimeline, updateWorkspace} from "../../redux/actions/workspaceActions";
 import {FileAttachments} from "../common";
@@ -128,6 +128,9 @@ const CreateEditWorkspaceModal = (props) => {
     const workspaces = useSelector((state) => state.workspaces.workspaces);
     const activeTab = useSelector((state) => state.workspaces.activeTab);
     const [activeTabName, setActiveTabName] = useState("Internal");
+    const [userOptions, setUserOptions] = useState([]);
+    const [inputValue, setInputValue] = useState("");
+    const [invitedEmails, setInvitedEmails] = useState([]);
     const [form, setForm] = useState({
         is_private: false,
         has_folder: item !== null,
@@ -179,7 +182,7 @@ const CreateEditWorkspaceModal = (props) => {
 
         if (
             (form.has_folder &&
-                form.selectedFolder !== null &&
+                form.selectedFolder !== null && workspaces.hasOwnProperty(form.selectedFolder.value) &&
                 Object.values(workspaces[form.selectedFolder.value].topics).some((t) => {
                     if (mode === "edit") {
                         return t.id === item.id ? false : t.name.toLowerCase() === form.name.toLowerCase();
@@ -225,14 +228,6 @@ const CreateEditWorkspaceModal = (props) => {
             return {...prevState, [name]: checked};
         });
     };
-
-    const userOptions = Object.values(users).map((u) => {
-        return {
-            ...u,
-            value: u.id,
-            label: u.name,
-        };
-    });
 
     const folderOptions = Object.values(workspaces)
         .filter((ws) => ws.type === "FOLDER")
@@ -298,6 +293,25 @@ const CreateEditWorkspaceModal = (props) => {
     const handleNameBlur = () => {
         _validateName();
     };
+    
+    const handleDeleteFileAttachements = () => {
+        let removed_file_ids = [];
+        if (item.primary_files.length) {
+            removed_file_ids = item.primary_files.filter((pf) => {
+                return !uploadedFiles.some((f) => f.id === pf.id);
+            })
+        }
+        if (removed_file_ids.length) {
+            let payload = {
+                topic_id: item.id,
+                is_primary: 1,
+                file_ids: removed_file_ids.map((f) => f.id)
+            };
+            dispatch(
+                deleteWorkspaceFiles(payload)
+            );
+        }
+    };
 
     const handleConfirm = () => {
         if (Object.values(valid).filter((v) => !v).length) return;
@@ -306,11 +320,27 @@ const CreateEditWorkspaceModal = (props) => {
         let payload = {
             name: form.name,
             description: form.description,
-            is_external: activeTab === "extern" ? 1 : 0,
-            member_ids: form.selectedUsers.map((u) => u.id),
+            // is_external: activeTab === "extern" ? 1 : 0,
+            member_ids: form.selectedUsers.filter((u) => typeof u.id === "number").map((u) => u.id),
             is_lock: form.is_private ? 1 : 0,
-            workspace_id: form.selectedFolder && form.has_folder ? form.selectedFolder.value : 0,
+            workspace_id: form.selectedFolder && typeof form.selectedFolder.value === "number" && form.has_folder ? form.selectedFolder.value : 0,
         };
+
+        if (invitedEmails.length) {
+            if (mode === "edit") {
+                payload = {
+                    ...payload,
+                    new_external_emails: invitedEmails,
+                    is_external: 1
+                }
+            } else {
+                payload = {
+                    ...payload,
+                    external_emails: invitedEmails,
+                    is_external: 1
+                }
+            }
+        }
 
         if (mode === "edit") {
             const removed_members = item.members
@@ -359,6 +389,7 @@ const CreateEditWorkspaceModal = (props) => {
             };
             const cb = (err, res) => {
                 if (err) return;
+                handleDeleteFileAttachements();
                 if (attachedFiles.length) {
                     let formData = new FormData();
                     for (const i in attachedFiles) {
@@ -373,7 +404,7 @@ const CreateEditWorkspaceModal = (props) => {
                         })
                     );
                 }
-                if (form.selectedFolder) {
+                if (form.selectedFolder && typeof form.selectedFolder.value === "number") {
                     history.push(`/workspace/dashboard/${form.selectedFolder.value}/${replaceChar(form.selectedFolder.label)}/${res.data.id}/${replaceChar(form.name)}`);
                 } else {
                     history.push(`/workspace/dashboard/${res.data.id}/${replaceChar(form.name)}`);
@@ -382,6 +413,7 @@ const CreateEditWorkspaceModal = (props) => {
             };
             dispatch(updateWorkspace(payload, cb));
         } else {
+            console.log(payload, form)
             dispatch(
                 createWorkspace(payload, (err, res) => {
                     if (err) {
@@ -412,7 +444,7 @@ const CreateEditWorkspaceModal = (props) => {
                             );
                         }
                         //redirect url
-                        if (form.selectedFolder) {
+                        if (form.selectedFolder && typeof form.selectedFolder.value === "number") {
                             history.push(`/workspace/dashboard/${form.selectedFolder.value}/${replaceChar(form.selectedFolder.label)}/${res.data.id}/${replaceChar(form.name)}`);
                         } else {
                             history.push(`/workspace/dashboard/${res.data.id}/${replaceChar(form.name)}`);
@@ -523,7 +555,7 @@ const CreateEditWorkspaceModal = (props) => {
     const handleRemoveFile = (fileId) => {
         setUploadedFiles((prevState) => prevState.filter((f) => f.id !== parseInt(fileId)));
         setAttachedFiles((prevState) => prevState.filter((f) => f.id !== parseInt(fileId)));
-    }
+    };
 
     const handleShowArchiveConfirmation = () => {
         let payload = {
@@ -582,7 +614,7 @@ const CreateEditWorkspaceModal = (props) => {
         );
         toggle();
     }, []);
-
+    
     useEffect(() => {
         let currentUser = null;
         if (Object.values(users).length) {
@@ -666,12 +698,47 @@ const CreateEditWorkspaceModal = (props) => {
         _validateName();
     }, [form.has_folder, form.selectedFolder]);
 
+    useEffect(() => {
+        const userOptions = Object.values(users).map((u) => {
+            return {
+                ...u,
+                value: u.id,
+                label: u.name,
+            };
+        });
+        setUserOptions(userOptions);
+    }, []);
+
     const onOpened = () => {
         if (inputRef && inputRef.current) {
             inputRef.current.focus();
         }
     };
 
+    const handleKeyDown = (e) => {
+        if (e.key === "Enter") {
+            //validate email - if email is valid then add to useroptions
+            if (EmailRegex.test(inputValue)) {
+                setInvitedEmails((prevState) => [...prevState, inputValue]);
+                setForm((prevState) => ({
+                    ...prevState,
+                    selectedUsers: [ ...prevState.selectedUsers, {
+                        id: require("shortid").generate(),
+                        label: inputValue,
+                        value: inputValue,
+                        name: inputValue,
+                        first_name: inputValue
+                    }],
+                }));
+                setInputValue("");
+            }
+        }
+    };
+    
+    const handleInputChange = (e) => {
+        setInputValue(e);
+    }
+    
     return (
         <Modal isOpen={modal} toggle={toggle} centered size={"md"} onOpened={onOpened}>
             <ModalHeaderSection
@@ -717,8 +784,8 @@ const CreateEditWorkspaceModal = (props) => {
                 )}
                 <WrapperDiv>
                     <Label for="people">Team</Label>
-                    <SelectPeople valid={valid.team} options={userOptions} value={form.selectedUsers}
-                                  onChange={handleSelectUser}/>
+                    <SelectPeople valid={valid.team} options={userOptions} value={form.selectedUsers} inputValue={inputValue}
+                                  onChange={handleSelectUser} onKeyDown={handleKeyDown} onInputChange={handleInputChange}/>
                     <InputFeedback valid={valid.user}>{feedback.user}</InputFeedback>
                 </WrapperDiv>
                 <DescriptionInput

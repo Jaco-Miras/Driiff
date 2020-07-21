@@ -10,6 +10,7 @@ const INITIAL_STATE = {
   navMode: 2,
   dataFromInput: null,
   unreadCounter: {},
+  socketMounted: false
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -72,6 +73,7 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         user: action.data,
+        socketMounted: true
       };
     }
     case "GET_TRANSLATION_OBJECT_SUCCESS": {

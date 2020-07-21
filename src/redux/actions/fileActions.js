@@ -4,6 +4,7 @@ import {
   deleteFolder as deleteFolderService,
   deletePostFile as deletePostFileService,
   deleteWorkspaceFile as deleteWorkspaceFileService,
+  deleteWorkspaceFiles as deleteWorkspaceFilesService,
   deleteTrash as deleteTrashService,
   getChannelFiles as getChannelFilesService,
   getFiles as getFilesService,
@@ -201,4 +202,12 @@ export function incomingRemovedFolder(payload, callback) {
 
 export function uploadFilesReducer(payload, callback) {
   return SimpleDispatchActionToReducer("UPLOAD_FILES_REDUCER", payload, callback);
+}
+
+export function deleteWorkspaceFiles(payload, callback) {
+  return dispatchActionToReducer(deleteWorkspaceFilesService(payload), "DELETE_WORKSPACE_FILES_START", "DELETE_WORKSPACE_FILES_SUCCESS", "DELETE_WORKSPACE_FILES_FAIL", callback);
+}
+
+export function incomingDeletedFiles(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_DELETED_FILES", payload, callback);
 }

@@ -44,18 +44,20 @@ const TeamListItem = (props) => {
   const history = useHistory();
 
   const handleClickName = () => {
-    history.push(`/profile/${member.id}/${member.name}`);
+    if (member.has_accepted) {
+      history.push(`/profile/${member.id}/${member.name}`);
+    }
   };
 
   return (
     <Wrapper className={`team-list-item list-group-item d-flex align-items-center p-l-r-0 justify-content-between ${className}`}>
       <div className="d-flex align-items-center ">
         <div className="pr-3">
-          <Avatar id={member.id} name={member.name} imageLink={member.profile_image_link} partialName={member.partial_name} />
+          <Avatar id={member.id} name={member.name} imageLink={member.profile_image_link} partialName={member.partial_name} noDefaultClick={!member.has_accepted}/>
         </div>
         <div>
           <h6 className="profile-name" onClick={handleClickName}>
-            {member.name}
+            {member.has_accepted ? member.name : member.email}
           </h6>
           {member.designation && <small className="text-muted">{member.designation}</small>}
         </div>

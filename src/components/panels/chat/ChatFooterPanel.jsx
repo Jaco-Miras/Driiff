@@ -188,9 +188,9 @@ const ChatFooterPanel = (props) => {
   };
 
   if (selectedChannel) {
-    console.log("nay");
-    console.log(selectedChannel.id);
-    console.log(selectedChannel.entity_id);
+    // console.log("nay");
+    // console.log(selectedChannel.id);
+    // console.log(selectedChannel.entity_id);
   }
 
   return (

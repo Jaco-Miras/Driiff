@@ -98,6 +98,11 @@ const WorkspacePeoplePanel = (props) => {
         <div className="card-body">
           <Search ref={refs.search} placeholder="People search" onChange={handleSearchChange} autoFocus />
           <div className="row">
+            {
+              activeTopic && activeTopic.members.filter((member) => !member.has_accepted).map((member) => {
+                return <PeopleListItem key={member.id} loggedUser={loggedUser} user={member}/>;
+              })
+            }
             {userSort.map((user) => {
               return <PeopleListItem key={user.id} loggedUser={loggedUser} user={user} onNameClick={handleUserNameClick} onChatClick={activeTab === "intern" && handleUserChat} />;
             })}

@@ -49,7 +49,6 @@ const PostSearch = (props) => {
               search_result: res.data.posts,
             })
           );
-          console.log(res, "search result");
         }
       )
     );

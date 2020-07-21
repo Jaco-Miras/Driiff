@@ -12,7 +12,7 @@ const QuoteWrapper = styled.div`
   position: relative;
   width: 100%;
   border-left: 2px solid #972c86;
-  margin-left: 30px;
+  margin-left: 2.25rem;
   margin-bottom: 10px;
 
   .quote-author-name,

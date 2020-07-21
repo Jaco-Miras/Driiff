@@ -64,10 +64,10 @@ const UserNotificationPanel = (props) => {
                     <h6 className="card-title d-flex justify-content-between align-items-center">
                       <div>Old Notifications</div>
                       <div>
-                    <span className="cursor-pointer" onClick={actions.readAll}>
+                    {/* <span className="cursor-pointer" onClick={actions.readAll}>
                       <i className="hide-show-toggler-item fa fa-check font-size-16 mr-2"/>
                       Mark all as unread
-                    </span>
+                    </span> */}
                       </div>
                     </h6>
                     <div className="timeline">
