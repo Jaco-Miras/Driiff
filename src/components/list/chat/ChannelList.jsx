@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React from "react";
 import {useHistory} from "react-router-dom";
 import styled from "styled-components";
 import useChannelActions from "../../hooks/useChannelActions";
@@ -94,12 +94,6 @@ const ChannelList = (props) => {
 
     const {className = "", channel, selectedChannel, isWorkspace = false} = props;
 
-    const [optionsVisible, setOptionsVisible] = useState(false);
-
-    const toggleOptions = () => {
-        setOptionsVisible(!optionsVisible);
-    };
-
     const handleSelectChannel = () => {
         if (selectedChannel !== null) {
             const scrollComponent = document.getElementById("component-chat-thread");
@@ -115,7 +109,6 @@ const ChannelList = (props) => {
     return (
         <Wrapper
             className={`list-group-item d-flex align-items-center link-1 pl-0 pr-0 pb-3 pt-3 ${className}`}
-            optionsVisible={optionsVisible}
             selected={selectedChannel !== null && channel.id === selectedChannel.id}
             onClick={handleSelectChannel}
         >
@@ -125,10 +118,10 @@ const ChannelList = (props) => {
                 <ReplyPreview channel={channel}/>
             </ChannelTitlePreview>
             <Timestamp className="text-right ml-auto">
-                <ChatDateIcons className={"chat-date-icons"} channel={channel} optionsVisible={optionsVisible}/>
+                <ChatDateIcons className={"chat-date-icons"} channel={channel} isRead={channel.is_read}/>
                 {
                     !isWorkspace &&
-                    <ChannelOptions selectedChannel={selectedChannel} channel={channel} onShowOptions={toggleOptions}/>
+                    <ChannelOptions selectedChannel={selectedChannel} channel={channel}/>
                 }
             </Timestamp>
         </Wrapper>

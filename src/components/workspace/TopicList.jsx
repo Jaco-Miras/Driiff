@@ -37,20 +37,31 @@ const TopicList = (props) => {
 
   const handleSelectTopic = () => {
     if (topic.selected) return;
-    if (topic.is_external === 1) {
-    } else {
-      if (topic.workspace_id !== undefined) {
-        if (typeof topic.workspace_name === "undefined") {
-          history.push(`/workspace/${route.params.page}/${topic.id}/${replaceChar(topic.name)}`);
-        } else {
-          history.push(`/workspace/${route.params.page}/${topic.workspace_id}/${replaceChar(topic.workspace_name)}/${topic.id}/${replaceChar(topic.name)}`);
-        }
+    if (topic.workspace_id !== undefined) {
+      if (typeof topic.workspace_name === "undefined") {
+        history.push(`/workspace/${route.params.page}/${topic.id}/${replaceChar(topic.name)}`);
       } else {
-        if (topic.selected) return;
-
-        history.push(`/workspace/chat/${topic.id}/${replaceChar(topic.name)}`);
+        history.push(`/workspace/${route.params.page}/${topic.workspace_id}/${replaceChar(topic.workspace_name)}/${topic.id}/${replaceChar(topic.name)}`);
       }
+    } else {
+      if (topic.selected) return;
+
+      history.push(`/workspace/chat/${topic.id}/${replaceChar(topic.name)}`);
     }
+    // if (topic.is_external === 1) {
+    // } else {
+    //   if (topic.workspace_id !== undefined) {
+    //     if (typeof topic.workspace_name === "undefined") {
+    //       history.push(`/workspace/${route.params.page}/${topic.id}/${replaceChar(topic.name)}`);
+    //     } else {
+    //       history.push(`/workspace/${route.params.page}/${topic.workspace_id}/${replaceChar(topic.workspace_name)}/${topic.id}/${replaceChar(topic.name)}`);
+    //     }
+    //   } else {
+    //     if (topic.selected) return;
+
+    //     history.push(`/workspace/chat/${topic.id}/${replaceChar(topic.name)}`);
+    //   }
+    // }
   };
 
   let unread_count = 0;

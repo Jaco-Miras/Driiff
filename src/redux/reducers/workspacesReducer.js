@@ -355,66 +355,86 @@ export default (state = INITIAL_STATE, action) => {
       let newWorkspaces = { ...state.workspaces };
       if (state.activeTopic) {
         if (state.activeTopic.workspace_id !== undefined) {
-          newWorkspaces = {
-            ...newWorkspaces,
-            [state.activeTopic.workspace_id]: {
-              ...newWorkspaces[state.activeTopic.workspace_id],
-              topics: {
-                ...newWorkspaces[state.activeTopic.workspace_id].topics,
-                [state.activeTopic.id]: {
-                  ...state.activeTopic,
-                  selected: false,
-                  channel: {
-                    ...state.activeTopic.channel,
-                    channel_loaded: true,
-                  },
-                },
-              },
-              selected: false,
-            },
-          };
+          newWorkspaces[state.activeTopic.workspace_id].topics[state.activeTopic.id].selected = false;
+          newWorkspaces[state.activeTopic.workspace_id].topics[state.activeTopic.id].channel.channel_loaded = true;
+          newWorkspaces[state.activeTopic.workspace_id].selected = false;
+          // newWorkspaces = {
+          //   ...newWorkspaces,
+          //   [state.activeTopic.workspace_id]: {
+          //     ...newWorkspaces[state.activeTopic.workspace_id],
+          //     topics: {
+          //       ...newWorkspaces[state.activeTopic.workspace_id].topics,
+          //       [state.activeTopic.id]: {
+          //         ...state.activeTopic,
+          //         selected: false,
+          //         channel: {
+          //           ...state.activeTopic.channel,
+          //           channel_loaded: true,
+          //         },
+          //       },
+          //     },
+          //     selected: false,
+          //   },
+          // };
         } else {
           //last active is direct workspace
           if (newWorkspaces.hasOwnProperty(state.activeTopic.id)) {
-            newWorkspaces = {
-              ...newWorkspaces,
-              [state.activeTopic.id]: {
-                ...newWorkspaces[state.activeTopic.id],
-                selected: false,
-                channel_loaded: true,
-              },
-            };
+            newWorkspaces[state.activeTopic.id].selected = false;
+            newWorkspaces[state.activeTopic.id].channel_loaded = true;
+            // newWorkspaces = {
+            //   ...newWorkspaces,
+            //   [state.activeTopic.id]: {
+            //     ...newWorkspaces[state.activeTopic.id],
+            //     selected: false,
+            //     channel_loaded: true,
+            //   },
+            // };
           }
         }
       }
       if (action.data.workspace_id !== undefined) {
-        newWorkspaces = {
-          ...newWorkspaces,
-          [action.data.workspace_id]: {
-            ...newWorkspaces[action.data.workspace_id],
-            topics: {
-              ...newWorkspaces[action.data.workspace_id].topics,
-              [action.data.id]: {
-                ...action.data,
-                selected: true,
-                channel: {
-                  ...action.data.channel,
-                  channel_loaded: true,
-                },
-              },
-            },
-            selected: true,
-          },
-        };
-      } else {
-        newWorkspaces = {
-          ...newWorkspaces,
-          [action.data.id]: {
-            ...newWorkspaces[action.data.id],
-            selected: true,
+        [action.data.workspace_id].selected = true;
+        newWorkspaces[action.data.workspace_id].topics[action.data.id] = {
+          ...newWorkspaces[action.data.workspace_id].topics[action.data.id],
+          ...action.data,
+          selected: true,
+          type: "TOPIC",
+          channel: {
+            ...newWorkspaces[action.data.workspace_id].topics[action.data.id].channel,
+            ...action.data.channel,
             channel_loaded: true,
           },
         };
+
+        // newWorkspaces = {
+        //   ...newWorkspaces,
+        //   [action.data.workspace_id]: {
+        //     ...newWorkspaces[action.data.workspace_id],
+        //     topics: {
+        //       ...newWorkspaces[action.data.workspace_id].topics,
+        //       [action.data.id]: {
+        //         ...action.data,
+        //         selected: true,
+        //         channel: {
+        //           ...action.data.channel,
+        //           channel_loaded: true,
+        //         },
+        //       },
+        //     },
+        //     selected: true,
+        //   },
+        // };
+      } else {
+        newWorkspaces[action.data.id].selected = true;
+        newWorkspaces[action.data.id].channel_loaded = true;
+        // newWorkspaces = {
+        //   ...newWorkspaces,
+        //   [action.data.id]: {
+        //     ...newWorkspaces[action.data.id],
+        //     selected: true,
+        //     channel_loaded: true,
+        //   },
+        // };
       }
 
       return {
@@ -771,7 +791,7 @@ export default (state = INITIAL_STATE, action) => {
       let newPostComments = { ...state.postComments };
       let newWorkspacePosts = { ...state.workspacePosts };
       let updatedWorkspaces = { ...state.workspaces };
-      let updatedTopic = { ...state.activeTopic };
+      //let updatedTopic = { ...state.activeTopic };
       //let post = null;
 
       if (action.data.workspaces.length && action.data.SOCKET_TYPE === "POST_COMMENT_CREATE") {
@@ -846,7 +866,6 @@ export default (state = INITIAL_STATE, action) => {
         postComments: newPostComments,
         workspacePosts: newWorkspacePosts,
         workspaces: updatedWorkspaces,
-        activeTopic: updatedTopic,
       };
     }
     case "ADD_PRIMARY_FILES": {
@@ -1045,11 +1064,11 @@ export default (state = INITIAL_STATE, action) => {
             updatedTopic.unread_posts = updatedTopic.unread_posts - action.data.count;
           }
         } else {
+          if (updatedTopic.id === action.data.topic_id) {
+            //updatedTopic.topic_detail.unread_posts = updatedTopic.topic_detail.unread_posts - action.data.count;
+          }
           updatedWorkspaces[action.data.topic_id].unread_count = updatedWorkspaces[action.data.topic_id].unread_count - action.data.count;
           updatedWorkspaces[action.data.topic_id].topic_detail.unread_posts = updatedWorkspaces[action.data.topic_id].topic_detail.unread_posts - action.data.count;
-          if (updatedTopic.id === action.data.topic_id) {
-            updatedTopic.topic_detail.unread_posts = updatedTopic.topic_detail.unread_posts - action.data.count;
-          }
         }
       } else {
         if (action.data.folderId) {

@@ -183,7 +183,6 @@ const WorkspaceList = (props) => {
       setPrevTopics(workspace.topics);
     }
   }, [workspace.topics]);
-
   return (
     <Wrapper ref={ref.container} className={`workspace-list fadeIn ${className} ${showTopics && "folder-open"}`} selected={workspace.selected} show={show}>
       <a className={`${workspace.selected ? "" : ""} ${workspace.is_active === 0 ? "archived-folder" : ""}`} href="/" onClick={handleShowTopics}>
@@ -233,7 +232,7 @@ const WorkspaceList = (props) => {
                 return a.name.localeCompare(b.name);
               })
               .map((topic) => {
-                return <TopicList key={topic.id} topic={topic} />;
+                return <TopicList key={topic.key_id} topic={topic} />;
               })}
           <li className="nav-action" onClick={handleShowWorkspaceModal}>
             <SvgIconFeather icon="plus" /> New workspace
