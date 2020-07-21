@@ -48,19 +48,19 @@ const MainNavLink = styled(NavLink)`
     }
   }
   /* green dot*/
-  // .badge {
-  //   background: green;
-  //   font-size: 0;
-  //   padding: 0;
-  //   margin: 0;
-  //   position: absolute;
-  //   width: 6px;
-  //   height: 6px;
-  //   background: #28a745;
-  //   top: 20px;
-  //   right: -12px;
-  //   right: -8px;
-  // }
+  .badge {
+    background: green;
+    font-size: 0;
+    padding: 0;
+    margin: 0;
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: #28a745;
+    top: 20px;
+    right: -12px;
+    right: -8px;
+  }
 `;
 
 const WorkspacePageHeaderPanel = (props) => {
