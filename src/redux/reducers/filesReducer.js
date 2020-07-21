@@ -492,7 +492,7 @@ export default (state = INITIAL_STATE, action) => {
           }
         });
         newWorkspaceFiles[action.data.topic_id].count = Object.keys(newWorkspaceFiles[action.data.topic_id].files).length;
-        newWorkspaceFiles[action.data.topic_id].storage = Object.values(newWorkspaceFiles[action.data.topic_id].files).map((f) => f.size).reduce(add);
+        newWorkspaceFiles[action.data.topic_id].storage = Object.values(newWorkspaceFiles[action.data.topic_id].files).filter((f) => typeof f.size === "number").map((f) => f.size).reduce(add);
         return {
           ...state,
           workspaceFiles: newWorkspaceFiles,
