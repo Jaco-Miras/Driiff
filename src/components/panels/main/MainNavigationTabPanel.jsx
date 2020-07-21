@@ -202,14 +202,15 @@ const MainNavigationTabPanel = (props) => {
 
   useSetWorkspace();
   const sortedWorkspaces = useSortWorkspaces();
-  const generalInternalWorkspaces = sortedWorkspaces.filter((ws) => ws.type !== "FOLDER" && ws.is_external === 0 && ws.topic_detail.active === 1);
-  const generalExternalWorkspaces = sortedWorkspaces.filter((ws) => ws.type !== "FOLDER" && ws.is_external !== 0 && ws.topic_detail.active === 1);
-  const archiveInternalWorkspacesFolder = sortedWorkspaces.filter((ws) => {
-    return ws.type === "FOLDER" && ws.is_external === 0 && Object.values(ws.topics).some((t) => t.active === 0);
-  });
+  const generalWorkspaces = sortedWorkspaces.filter((ws) => ws.type !== "FOLDER" && ws.topic_detail.active === 1);
+
+  // const generalExternalWorkspaces = sortedWorkspaces.filter((ws) => ws.type !== "FOLDER" && ws.is_external !== 0 && ws.topic_detail.active === 1);
+  // const archiveInternalWorkspacesFolder = sortedWorkspaces.filter((ws) => {
+  //   return ws.type === "FOLDER" && ws.is_external === 0 && Object.values(ws.topics).some((t) => t.active === 0);
+  // });
   //const archiveExternalWorkspacesFolder = sortedWorkspaces.filter((ws) => ws.type === "FOLDER" && ws.is_external !== 0 && ws.topics.some(t => t.active === 0));
   const archiveInternalWorkspaces = sortedWorkspaces.filter((ws) => ws.type !== "FOLDER" && ws.is_external === 0 && ws.topic_detail.active === 0);
-  const archiveExternalWorkspaces = sortedWorkspaces.filter((ws) => ws.type !== "FOLDER" && ws.is_external !== 0 && ws.topic_detail.active === 0);
+  //const archiveExternalWorkspaces = sortedWorkspaces.filter((ws) => ws.type !== "FOLDER" && ws.is_external !== 0 && ws.topic_detail.active === 0);
 
   return (
     <Wrapper className={`navigation-menu-tab ${className}`}>
@@ -256,22 +257,22 @@ const MainNavigationTabPanel = (props) => {
             {sortedWorkspaces
               .filter((sws) => sws.type === "FOLDER")
               .map((ws) => {
-                return <WorkspaceList show={ws.is_external === (activeTab === "intern" ? 0 : 1)} key={ws.key_id} workspace={ws} />;
+                return <WorkspaceList show={true} key={ws.key_id} workspace={ws} />;
               })}
-            {generalInternalWorkspaces.length > 0 && (
+            {generalWorkspaces.length > 0 && (
               <WorkspaceList
-                show={activeTab === "intern"}
+                show={true}
                 workspace={{
                   id: "general_internal",
                   is_lock: 0,
-                  selected: generalInternalWorkspaces.some((ws) => ws.selected),
+                  selected: generalWorkspaces.some((ws) => ws.selected),
                   name: "General",
                   type: "GENERAL_FOLDER",
-                  topics: generalInternalWorkspaces,
+                  topics: generalWorkspaces,
                 }}
               />
             )}
-            {generalExternalWorkspaces.length > 0 && (
+            {/* {generalExternalWorkspaces.length > 0 && (
               <WorkspaceList
                 show={activeTab !== "intern"}
                 workspace={{
@@ -283,13 +284,13 @@ const MainNavigationTabPanel = (props) => {
                   topics: generalInternalWorkspaces,
                 }}
               />
-            )}
+            )} */}
           </ul>
 
           <ul>
             {archiveInternalWorkspaces.length > 0 && (
               <WorkspaceList
-                show={activeTab === "intern"}
+                show={true}
                 workspace={{
                   id: "archive",
                   is_lock: 0,
@@ -301,7 +302,7 @@ const MainNavigationTabPanel = (props) => {
                 }}
               />
             )}
-            {archiveExternalWorkspaces.length > 0 && (
+            {/* {archiveExternalWorkspaces.length > 0 && (
               <WorkspaceList
                 show={activeTab !== "intern"}
                 workspace={{
@@ -314,7 +315,7 @@ const MainNavigationTabPanel = (props) => {
                   topics: archiveExternalWorkspaces,
                 }}
               />
-            )}
+            )} */}
           </ul>
         </div>
       </div>
