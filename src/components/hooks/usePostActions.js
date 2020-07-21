@@ -235,6 +235,7 @@ const usePostActions = () => {
         unread: 0,
         topic_id: parseInt(params.workspaceId),
       };
+      let count = post.unread_count;
       let cb = (err, res) => {
         if (err) {
           toaster.success(<>Action failed.</>);
@@ -243,9 +244,8 @@ const usePostActions = () => {
         payload = {
           ...payload,
           folderId: params.hasOwnProperty("folderId") ? parseInt(params.folderId) : null,
-          count: post.unread_count === 0 ? 1 : post.unread_count,
+          count: count === 0 ? 1 : count,
         };
-
         if (res) {
           if (showToaster)
             toaster.success(

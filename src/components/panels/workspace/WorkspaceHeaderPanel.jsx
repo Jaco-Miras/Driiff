@@ -183,8 +183,8 @@ const WorspaceHeaderPanel = () => {
   }, [match.params.page, dispatch]);
 
   if (activeTopic) {
-    console.log("yay");
-    console.log(activeTopic);
+    // console.log("yay");
+    // console.log(activeTopic);
   }
 
   return (

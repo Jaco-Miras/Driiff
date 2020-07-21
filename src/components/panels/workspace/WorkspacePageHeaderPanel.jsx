@@ -47,19 +47,20 @@ const MainNavLink = styled(NavLink)`
       position: absolute;
     }
   }
-  .badge {
-    background: green;
-    font-size: 0;
-    padding: 0;
-    margin: 0;
-    position: absolute;
-    width: 6px;
-    height: 6px;
-    background: #28a745;
-    top: 20px;
-    right: -12px;
-    right: -8px;
-  }
+  /* green dot*/
+  // .badge {
+  //   background: green;
+  //   font-size: 0;
+  //   padding: 0;
+  //   margin: 0;
+  //   position: absolute;
+  //   width: 6px;
+  //   height: 6px;
+  //   background: #28a745;
+  //   top: 20px;
+  //   right: -12px;
+  //   right: -8px;
+  // }
 `;
 
 const WorkspacePageHeaderPanel = (props) => {
@@ -91,7 +92,7 @@ const WorkspacePageHeaderPanel = (props) => {
               <MainNavLink isSub={true} to={`/workspace/chat${pathname}`}>
                 Chat
                 {workspace !== null && ((workspace.type === "TOPIC" && workspace.unread_chats > 0) || (workspace.type === "WORKSPACE" && workspace.topic_detail.unread_chats > 0)) && (
-                  <div className="ml-2 badge badge-danger">{workspace.type === "TOPIC" ? workspace.unread_chats : workspace.topic_detail.unread_chats}</div>
+                  <div className="ml-2 badge badge-pill badge-danger">{workspace.type === "TOPIC" ? workspace.unread_chats : workspace.topic_detail.unread_chats}</div>
                 )}
               </MainNavLink>
             </li>
@@ -99,7 +100,7 @@ const WorkspacePageHeaderPanel = (props) => {
               <MainNavLink isSub={true} to={`/workspace/posts${pathname}`}>
                 Posts
                 {workspace !== null && ((workspace.type === "TOPIC" && workspace.unread_posts > 0) || (workspace.type === "WORKSPACE" && workspace.topic_detail.unread_posts > 0)) && (
-                  <div className="ml-2 badge badge-danger">{workspace.type === "TOPIC" ? workspace.unread_posts : workspace.topic_detail.unread_posts}</div>
+                  <div className="ml-2 badge badge-pill badge-danger">{workspace.type === "TOPIC" ? workspace.unread_posts : workspace.topic_detail.unread_posts}</div>
                 )}
               </MainNavLink>
             </li>
