@@ -8,39 +8,26 @@ import {SubComments} from "./index";
 const Wrapper = styled.li`
   margin-bottom: 1rem;
   
-  .quote {
-    quotes: "“" "”";
+  .quote {    
     border-radius: 6px;
-    margin: 2rem auto 0.5rem;
-    width: 90%;    
+    margin: 0 auto 0.5rem;
+    width: 95%;    
     position: relative;
     padding: 1rem;
+    
+    &.border-side {
+      border-left: 5px solid #822492;
+    }
     
     > * {
       margin-bottom: 0;      
     }
   }
-  
-  .quote:before {
-    font-size: 32px;
-    content: open-quote;
-    position: absolute;
-    top: -1rem;
-    left: -1rem;
-  }
-  
-  .quote:after {
-    font-size: 32px;
-    content: close-quote;
-    position: absolute;
-    top: -1rem;
-    right: -1rem;
-  }
-  
+    
   .quote-author {
+    margin-top: 2rem;
     font-style: italic;
-    margin-left: auto;
-    margin-right: 5%;
+    margin-left: 2.5%;
   }
 
   .files {
@@ -168,12 +155,12 @@ const Comment = (props) => {
           {
             comment.quote &&
             <>
-              <div className="quote border" dangerouslySetInnerHTML={{__html: comment.quote.body}}/>
               {
                 comment.quote.user && (
-                    <div className="quote-author">- {comment.quote.user.name}</div>
+                    <div className="quote-author">{comment.quote.user.name}</div>
                 )
               }
+              <div className="quote border border-side" dangerouslySetInnerHTML={{__html: comment.quote.body}}/>
             </>
 
           }
