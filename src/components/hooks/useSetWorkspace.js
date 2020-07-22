@@ -121,7 +121,58 @@ const useSetWorkspace = () => {
             );
         } else if (init && !exInit && !externalWorkspacesLoaded) {
             setExInit(true);
-            dispatch(getWorkspaces({is_external: 1}));
+            dispatch(
+                getWorkspaces({is_external: 1}, (err, res) => {
+                    if (err) return;
+                    if (params.hasOwnProperty("workspaceId") && params.workspaceId !== undefined) {
+                        let topic = null;
+                        let wsfolder = null;
+                        for (const i in res.data.workspaces) {
+                            const ws = res.data.workspaces[i];
+
+                            if (ws.type === "FOLDER" && ws.topics.length) {
+                                for (const i in ws.topics) {
+                                    if (ws.topics.hasOwnProperty(i)) {
+                                        const t = ws.topics[i];
+                                        if (t.id === parseInt(params.workspaceId)) {
+                                            wsfolder = ws;
+                                            topic = t;
+                                            break;
+                                        }
+                                    }
+                                }
+                            } else {
+                                if (ws.id === parseInt(params.workspaceId)) {
+                                    topic = ws;
+                                    break;
+                                }
+                            }
+                        }
+                        if (topic && wsfolder) {
+                            topic = {
+                                ...topic,
+                                selected: true,
+                                is_external: wsfolder.is_external,
+                                workspace_id: wsfolder.id,
+                                workspace_name: wsfolder.name,
+                                workspace_description: wsfolder.description,
+                                type: "TOPIC",
+                                topic_detail: {
+                                    active: topic.active,
+                                    channel: topic.channel,
+                                },
+                            };
+                            dispatch(setActiveTopic(topic));
+                        } else if (topic && wsfolder === null) {
+                            topic = {
+                                ...topic,
+                                selected: true,
+                            };
+                            dispatch(setActiveTopic(topic));
+                        }
+                    }
+                })
+            );
         }
 
         if (workspacesLoaded && activeTopic === null && activeTopicSettings !== null) {

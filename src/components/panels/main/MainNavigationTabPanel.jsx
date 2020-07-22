@@ -137,7 +137,7 @@ const NavNewWorkspace = styled.button`
 `;
 
 const MainNavigationTabPanel = (props) => {
-  const { className = "" } = props;
+  const { className = "", isExternal } = props;
   const history = useHistory();
   const dispatch = useDispatch();
 
@@ -232,18 +232,21 @@ const MainNavigationTabPanel = (props) => {
               </div>
             </NavIconContainer>
           </li>
-          <li>
-            <NavIconContainer
-              active={["dashboard", "posts", "chat", "files", "people"].includes(props.match.params.page)}
-              to={lastVisitedChannel !== null && lastVisitedChannel.hasOwnProperty("code") ? `/chat/${lastVisitedChannel.code}` : "/chat"}
-            >
-              <NavIcon icon={"message-circle"} />
-              <div>
-                Chats
-                {(unreadCounter.chat_message >= 1 || unreadCounter.unread_channel > 0) && <Badge data-count={unreadCounter.chat_message}>&nbsp;</Badge>}
-              </div>
-            </NavIconContainer>
-          </li>
+          {
+            !isExternal && 
+            <li>
+              <NavIconContainer
+                active={["dashboard", "posts", "chat", "files", "people"].includes(props.match.params.page)}
+                to={lastVisitedChannel !== null && lastVisitedChannel.hasOwnProperty("code") ? `/chat/${lastVisitedChannel.code}` : "/chat"}
+              >
+                <NavIcon icon={"message-circle"} />
+                <div>
+                  Chats
+                  {(unreadCounter.chat_message >= 1 || unreadCounter.unread_channel > 0) && <Badge data-count={unreadCounter.chat_message}>&nbsp;</Badge>}
+                </div>
+              </NavIconContainer>
+            </li>
+          }
         </ul>
       </div>
 
@@ -319,15 +322,17 @@ const MainNavigationTabPanel = (props) => {
           </ul>
         </div>
       </div>
-
-      <div>
-        <NavNewWorkspace onClick={handleShowWorkspaceModal} className="btn btn-outline-light" type="button">
-          <div>
-            <CirclePlus icon="circle-plus" />
-            Add new workspace
-          </div>
-        </NavNewWorkspace>
-      </div>
+      {
+        !isExternal &&
+        <div>
+          <NavNewWorkspace onClick={handleShowWorkspaceModal} className="btn btn-outline-light" type="button">
+            <div>
+              <CirclePlus icon="circle-plus" />
+              Add new workspace
+            </div>
+          </NavNewWorkspace>
+        </div>
+      }
     </Wrapper>
   );
 };
