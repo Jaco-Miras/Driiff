@@ -4,7 +4,7 @@ import { Redirect, Route, Switch } from "react-router-dom";
 import styled from "styled-components";
 import { addToModals } from "../../../redux/actions/globalActions";
 import { SvgEmptyState } from "../../common";
-import { useIsMember, useWorkspace } from "../../hooks";
+import { useIsMember, useWorkspace, useUsers } from "../../hooks";
 import { WorkspaceChatPanel, WorkspaceDashboardPanel, WorkspaceFilesPanel, WorkspacePageHeaderPanel, WorkspacePeoplePanel, WorkspacePostsPanel, WorkspaceSettingsPanel } from "../workspace";
 
 const Wrapper = styled.div`
@@ -35,6 +35,7 @@ const WorkspaceContentPanel = (props) => {
 
   const dispatch = useDispatch();
 
+  useUsers();
   const { workspaces, workspacesLoaded, workspace } = useWorkspace();
   const isMember = useIsMember(workspace && workspace.member_ids.length ? workspace.member_ids : []);
 
