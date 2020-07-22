@@ -82,6 +82,7 @@ const FileSidebar = (props) => {
                 </ul>
               </Filter>
             )}
+            <GoogleDrive/>
             <Filter onClick={filterFile} data-filter="recent" active={filter === "recent"} className="list-group-item d-flex align-items-center">
               <Icon className="mr-2" icon="monitor" />
               Recently edited
@@ -96,7 +97,6 @@ const FileSidebar = (props) => {
               Removed
               <span className="small ml-auto">{wsFiles && wsFiles.trash > 0 ? wsFiles.trash : null}</span>
             </Filter>
-            <GoogleDrive/>
           </div>
           {typeof wsFiles !== "undefined" && wsFiles !== null && (
             <div className="card-body">

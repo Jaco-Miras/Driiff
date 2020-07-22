@@ -3,7 +3,7 @@ import { osName } from "react-device-detect";
 import { useSelector } from "react-redux";
 import { Quill } from "react-quill";
 
-const useQuillModules = (mode, callback, mentionOrientation = "top", quillRef) => {
+const useQuillModules = (mode, callback, mentionOrientation = "top", quillRef, members = []) => {
   const [modules, setModules] = useState({});
   const [mentionValues, setMentionValues] = useState([]);
   // const [mentionOpen, setMentionOpen] = useState(false)
@@ -27,17 +27,35 @@ const useQuillModules = (mode, callback, mentionOrientation = "top", quillRef) =
       name: "All users in this channel",
       class: "all-pic",
     };
-    const newAtValues = [
-      ...Object.entries(userMentions).map(([id, user], index) => {
-        return Object.assign({}, user, {
-          value: user.first_name,
-          id: user.id,
-          type_id: user.id,
-          class: "user-pic",
-        });
-      }),
-      all,
-    ];
+
+    let newAtValues = [];
+    
+    if (members.length) {
+      newAtValues = [
+        ...members.map((user)=> {
+          return Object.assign({}, user, {
+            value: user.first_name,
+            id: user.id,
+            type_id: user.id,
+            class: "user-pic",
+          });
+        }),
+        all,
+      ];
+    } else {
+      newAtValues = [
+        ...Object.entries(userMentions).map(([id, user], index) => {
+          return Object.assign({}, user, {
+            value: user.first_name,
+            id: user.id,
+            type_id: user.id,
+            class: "user-pic",
+          });
+        }),
+        all,
+      ];
+    }
+    
     setMentionValues(newAtValues);
     const modules = {
       mention: {

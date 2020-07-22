@@ -70,14 +70,12 @@ const WorkspaceContentPanel = (props) => {
           />
           <Switch>
             <Route
-              {...props}
               render={(props) => <WorkspaceDashboardPanel {...props} workspace={workspace} isMember={isMember} />}
               path={["/workspace/dashboard/:folderId/:folderName/:workspaceId/:workspaceName", "/workspace/dashboard/:workspaceId/:workspaceName", "/workspace/dashboard"]}
             />
             <Route
               exact={true}
-              {...props}
-              component={WorkspacePostsPanel}
+              render={() => <WorkspacePostsPanel {...props} workspace={workspace} isMember={isMember}/>}
               path={[
                 "/workspace/posts/:folderId/:folderName/:workspaceId/:workspaceName/post/:postId/:postTitle",
                 "/workspace/posts/:folderId/:folderName/:workspaceId/:workspaceName",
@@ -86,7 +84,8 @@ const WorkspaceContentPanel = (props) => {
                 "/workspace/posts",
               ]}
             />
-            <Route {...props} component={WorkspaceChatPanel} path={["/workspace/chat/:folderId/:folderName/:workspaceId/:workspaceName", "/workspace/chat/:workspaceId/:workspaceName", "/workspace/chat"]} />
+            <Route render={() => <WorkspaceChatPanel {...props} workspace={workspace}/>} 
+              path={["/workspace/chat/:folderId/:folderName/:workspaceId/:workspaceName", "/workspace/chat/:workspaceId/:workspaceName", "/workspace/chat"]} />
             <Route
               exact={true}
               {...props}

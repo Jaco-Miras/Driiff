@@ -1,15 +1,15 @@
 import lodash from "lodash";
-import React, { useEffect, useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useHistory } from "react-router-dom";
-import { Input, InputGroup, Label, Modal, ModalBody } from "reactstrap";
+import React, {useEffect, useRef, useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
+import {useHistory} from "react-router-dom";
+import {Input, InputGroup, Label, Modal, ModalBody} from "reactstrap";
 import styled from "styled-components";
-import { addToChannels, setSelectedChannel } from "../../redux/actions/chatActions";
-import { clearModal } from "../../redux/actions/globalActions";
-import { PeopleSelect } from "../forms";
+import {addToChannels, setSelectedChannel} from "../../redux/actions/chatActions";
+import {clearModal} from "../../redux/actions/globalActions";
+import {PeopleSelect} from "../forms";
 import QuillEditor from "../forms/QuillEditor";
-import { useChannelActions, useQuillModules, useTimeFormat } from "../hooks";
-import { ModalHeaderSection } from "./index";
+import {useChannelActions, useQuillModules, useTimeFormat} from "../hooks";
+import {ModalHeaderSection} from "./index";
 
 const WrapperDiv = styled(InputGroup)`
   display: flex;
@@ -399,27 +399,29 @@ const CreateEditChatModal = (props) => {
   };
 
   return (
-    <Modal isOpen={modal} toggle={toggle} centered size={"md"} onOpened={onOpened}>
-      <ModalHeaderSection toggle={toggle}>{mode === "edit" ? "Edit chat" : "New group chat"}</ModalHeaderSection>
-      <ModalBody>
-        <WrapperDiv>
-          <Label for="chat">Chat title</Label>
-          <Input style={{ borderRadius: "5px" }} defaultValue={mode === "edit" ? channel.title : ""} onChange={handleInputChange} valid={valid} innerRef={inputRef} />
-        </WrapperDiv>
-        <WrapperDiv>
-          <Label for="people">People</Label>
-          <SelectPeople options={options} value={selectedUsers} onChange={handleSelect} />
-        </WrapperDiv>
-        {mode === "new" && (
+      <Modal isOpen={modal} toggle={toggle} size={"lg"} onOpened={onOpened} centered>
+        <ModalHeaderSection toggle={toggle}>{mode === "edit" ? "Edit chat" : "New group chat"}</ModalHeaderSection>
+        <ModalBody>
           <WrapperDiv>
-            <Label for="firstMessage">First message</Label>
-            <StyledQuillEditor className="group-chat-input" modules={modules} ref={reactQuillRef} onChange={handleQuillChange} />
+            <Label for="chat">Chat title</Label>
+            <Input style={{borderRadius: "5px"}} defaultValue={mode === "edit" ? channel.title : ""}
+                   onChange={handleInputChange} valid={valid} innerRef={inputRef}/>
           </WrapperDiv>
-        )}
-        <WrapperDiv>
-          <button className="btn btn-primary" disabled={searching || !valid} onClick={handleConfirm}>
-            {mode === "edit" ? "Update chat" : "Create chat"}
-          </button>
+          <WrapperDiv>
+            <Label for="people">People</Label>
+            <SelectPeople options={options} value={selectedUsers} onChange={handleSelect}/>
+          </WrapperDiv>
+          {mode === "new" && (
+              <WrapperDiv>
+                <Label for="firstMessage">First message</Label>
+                <StyledQuillEditor className="group-chat-input" modules={modules} ref={reactQuillRef}
+                                   onChange={handleQuillChange}/>
+              </WrapperDiv>
+          )}
+          <WrapperDiv>
+            <button className="btn btn-primary" disabled={searching || !valid} onClick={handleConfirm}>
+              {mode === "edit" ? "Update chat" : "Create chat"}
+            </button>
         </WrapperDiv>
       </ModalBody>
     </Modal>

@@ -629,8 +629,30 @@ export default (state = INITIAL_STATE, action) => {
         return state;
       }
     }
+    case "DELETE_DRAFT": {
+      const draft = state.drafts.find(d => d.id === action.data.draft_id);
+
+      let posts = state.workspacePosts[action.data.topic_id].posts;
+      delete posts[draft.data.timestamp];
+
+      if (action.data.draft_type === "draft_post") {
+        return {
+          ...state,
+          drafts: [...state.drafts.filter(d => d.id !== action.data.draft_id)],
+          workspacePosts: {
+            ...state.workspacePosts,
+            [action.data.topic_id]: {
+              ...state.workspacePosts[action.data.topic_id],
+              posts: posts,
+            },
+          },
+        };
+      } else {
+        return state;
+      }
+    }
     case "REMOVE_POST": {
-      let newWorkspacePosts = { ...state.workspacePosts };
+      let newWorkspacePosts = {...state.workspacePosts};
       delete state.workspacePosts[action.data.topic_id].posts[action.data.post_id];
       return {
         ...state,

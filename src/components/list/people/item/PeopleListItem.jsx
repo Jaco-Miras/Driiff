@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { Avatar, SvgIconFeather } from "../../../common";
+import { Avatar, SvgIconFeather, Badge } from "../../../common";
 
 const Wrapper = styled.div`
   .avatar {
@@ -46,12 +46,22 @@ const PeopleListItem = (props) => {
                 <Avatar id={user.id} name={user.name} onClick={handleOnNameClick} noDefaultClick={true} imageLink={user.profile_image_link} />
               </div>
               <div>
-                <h6 className="user-name mb-1 " onClick={handleOnNameClick}>
-                  {user.name}
-                </h6>
-                <span className="small text-muted">{user.role !== null && <>{user.role.display_name}</>}</span>
+                {
+                  user.hasOwnProperty("has_accepted") && !user.has_accepted ? (
+                    <h6 className="user-name mb-1 ">
+                      {user.email} <Badge label={"Invited"}/>
+                    </h6>
+                  )
+                  :
+                  <h6 className="user-name mb-1 " onClick={handleOnNameClick}>
+                    {user.name} {user.type === "external" && <Badge label={"External"}/>}
+                  </h6>
+                }
+                {
+                  user.role && <span className="small text-muted">{user.role !== null && <>{user.role.display_name}</>}</span>
+                }
               </div>
-              {onChatClick !== null && loggedUser.id !== user.id && (
+              {onChatClick !== null && loggedUser.id !== user.id && loggedUser.type !== "external" && user.type !== "external" && (
                 <div className="text-right ml-auto">
                   <SvgIconFeather onClick={handleOnChatClick} icon="message-circle" />
                 </div>

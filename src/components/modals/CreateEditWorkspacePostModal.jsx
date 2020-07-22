@@ -1,16 +1,16 @@
 import moment from "moment";
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { Button, Input, InputGroup, Label, Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
+import React, {useCallback, useEffect, useRef, useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
+import {Button, Input, InputGroup, Label, Modal, ModalBody, ModalFooter, ModalHeader} from "reactstrap";
 import styled from "styled-components";
-import { clearModal, deleteDraft, saveDraft, updateDraft } from "../../redux/actions/globalActions";
-import { postCreate, putPost } from "../../redux/actions/postActions";
-import { uploadDocument } from "../../redux/services/global";
-import { DatePicker, FileAttachments, SvgIconFeather } from "../common";
-import { DropDocument } from "../dropzone/DropDocument";
-import { CheckBox, DescriptionInput, FolderSelect, PeopleSelect } from "../forms";
-import { useGetWorkspaceAndUserOptions } from "../hooks";
-import { ModalHeaderSection } from "./index";
+import {clearModal, deleteDraft, deleteDraftReducer, saveDraft, updateDraft} from "../../redux/actions/globalActions";
+import {postCreate, putPost} from "../../redux/actions/postActions";
+import {uploadDocument} from "../../redux/services/global";
+import {DatePicker, FileAttachments, SvgIconFeather} from "../common";
+import {DropDocument} from "../dropzone/DropDocument";
+import {CheckBox, DescriptionInput, FolderSelect, PeopleSelect} from "../forms";
+import {useGetWorkspaceAndUserOptions, useToaster} from "../hooks";
+import {ModalHeaderSection} from "./index";
 
 const WrapperDiv = styled(InputGroup)`
   display: flex;
@@ -170,502 +170,640 @@ const MoreOption = styled.div`
   }
 `;
 
+const StyledDescriptionInput = styled(DescriptionInput)`
+    height: ${props => props.height}px;
+`;
+
 const StyledDatePicker = styled(DatePicker)``;
 
 const CreateEditWorkspacePostModal = (props) => {
-  const { type, mode, item = {} } = props.data;
+    const {type, mode, item = {}} = props.data;
 
-  const inputRef = useRef();
-  const dispatch = useDispatch();
-  const [modal, setModal] = useState(true);
-  const user = useSelector((state) => state.session.user);
-  const activeTopic = useSelector((state) => state.workspaces.activeTopic);
-  const [showMoreOptions, setShowMoreOptions] = useState(null);
-  const [maxHeight, setMaxHeight] = useState(null);
-  const [draftId, setDraftId] = useState(null);
-  const [showDropzone, setShowDropzone] = useState(false);
-  const [attachedFiles, setAttachedFiles] = useState([]);
-  const [uploadedFiles, setUploadedFiles] = useState([]);
-  const [form, setForm] = useState({
-    must_read: false,
-    reply_required: false,
-    no_reply: false,
-    is_private: false,
-    has_folder: false,
-    title: "",
-    selectedUsers: [],
-    selectedWorkspaces: [],
-    body: "",
-    textOnly: "",
-    show_at: null,
-    end_at: null,
-  });
-  const formRef = {
-    reactQuillRef: useRef(null),
-    more_options: useRef(null),
-    dropzone: useRef(null),
-    arrow: useRef(null),
-  };
-
-  const [nestedModal, setNestedModal] = useState(false);
-  const [closeAll, setCloseAll] = useState(false);
-
-  const toggleNested = () => {
-    setNestedModal(!nestedModal);
-    setCloseAll(false);
-  };
-
-  const toggleAll = (saveDraft = false) => {
-    setNestedModal(!nestedModal);
-    setCloseAll(true);
-    if (saveDraft) {
-      handleSaveDraft();
-    } else if (draftId) {
-      dispatch(
-        deleteDraft({
-          draft_id: draftId,
-        })
-      );
-    }
-    setModal(!modal);
-    dispatch(clearModal({ type: type }));
-  };
-
-  const toggle = () => {
-    toggleNested();
-  };
-
-  const handleSelectUser = (e) => {
-    if (e === null) {
-      setForm({
-        ...form,
+    const inputRef = useRef();
+    const dispatch = useDispatch();
+    const toaster = useToaster();
+    const [modal, setModal] = useState(true);
+    const user = useSelector((state) => state.session.user);
+    const activeTopic = useSelector((state) => state.workspaces.activeTopic);
+    const [showMoreOptions, setShowMoreOptions] = useState(null);
+    const [maxHeight, setMaxHeight] = useState(null);
+    const [draftId, setDraftId] = useState(null);
+    const [showDropzone, setShowDropzone] = useState(false);
+    const [attachedFiles, setAttachedFiles] = useState([]);
+    const [uploadedFiles, setUploadedFiles] = useState([]);
+    const [form, setForm] = useState({
+        must_read: false,
+        reply_required: false,
+        no_reply: false,
+        is_private: false,
+        has_folder: false,
+        title: "",
         selectedUsers: [],
-      });
-    } else {
-      setForm({
-        ...form,
-        selectedUsers: e,
-      });
-    }
-  };
-
-  const handleSelectWorkspace = (e) => {
-    if (e === null) {
-      setForm({
-        ...form,
         selectedWorkspaces: [],
-      });
-    } else {
-      setForm({
-        ...form,
-        selectedWorkspaces: e,
-      });
-    }
-  };
-
-  const handleNameChange = (e) => {
-    setForm({
-      ...form,
-      title: e.target.value,
+        body: "",
+        textOnly: "",
+        show_at: null,
+        end_at: null,
     });
-  };
-
-  const handleSaveDraft = () => {
-    if (!(form.title === "" && form.body === "" && !form.selectedUsers.length)) {
-      let timestamp = Math.floor(Date.now() / 1000);
-      let payload = {
-        type: "draft_post",
-        form: {
-          ...form,
-          must_read: form.must_read ? 1 : 0,
-          must_reply: form.reply_required ? 1 : 0,
-          read_only: form.no_reply ? 1 : 0,
-          users_responsible: form.selectedUsers,
-        },
-        timestamp: timestamp,
-        topic_id: activeTopic.id,
-        id: timestamp,
-        is_must_read: form.must_read ? 1 : 0,
-        is_must_reply: form.must_reply ? 1 : 0,
-        is_read_only: form.no_reply ? 1 : 0,
-        created_at: { timestamp: timestamp },
-      };
-      if (draftId) {
-        payload = {
-          ...payload,
-          draft_id: draftId,
-        };
-        dispatch(updateDraft(payload));
-      } else {
-        dispatch(saveDraft(payload));
-      }
-    }
-  };
-
-  const handleConfirm = () => {
-    let payload = {
-      title: form.title,
-      body: form.body,
-      responsible_ids: form.selectedUsers.map((u) => u.value),
-      type: "post",
-      personal: 0,
-      recipient_ids: form.selectedWorkspaces.filter((ws) => ws.type !== "FOLDER").map((ws) => ws.value),
-      must_read: form.must_read ? 1 : 0,
-      must_reply: form.reply_required ? 1 : 0,
-      read_only: form.no_reply ? 1 : 0,
-      workspace_ids: form.selectedWorkspaces.filter((ws) => ws.type === "FOLDER").map((ws) => ws.value),
-      show_at: form.show_at ? moment(form.show_at, "YYYY-MM-DD").format("YYYY-MM-DD") : form.end_at ? moment(new Date()).add(1, "day").format("YYYY-MM-DD") : null,
-      end_at: form.end_at ? moment(form.end_at, "YYYY-MM-DD").format("YYYY-MM-DD") : null,
-      tag_ids: [],
-      file_ids: [],
+    const formRef = {
+        reactQuillRef: useRef(null),
+        more_options: useRef(null),
+        dropzone: useRef(null),
+        arrow: useRef(null),
     };
-    if (draftId) {
-      dispatch(
-        deleteDraft({
-          type: "draft_post",
-          draft_id: draftId,
-        })
-      );
-    }
-    if (mode === "edit") {
-      payload = {
-        ...payload,
-        id: item.post.id,
-        file_ids: uploadedFiles.map((f) => f.id),
-      };
-      if (attachedFiles.length) {
-        uploadFiles(payload, "edit");
-      } else {
-        dispatch(putPost(payload));
-      }
-    } else {
-      if (attachedFiles.length) {
-        uploadFiles(payload, "create");
-      } else {
-        dispatch(postCreate(payload));
-      }
-    }
-    toggleAll(false);
-  };
 
-  const handleQuillChange = (content, delta, source, editor) => {
-    const textOnly = editor.getText(content);
-    setForm({
-      ...form,
-      body: content,
-      textOnly: textOnly,
-    });
-  };
+    const [nestedModal, setNestedModal] = useState(false);
+    const [closeAll, setCloseAll] = useState(false);
 
-  const toggleCheck = useCallback(
-    (e) => {
-      const name = e.target.dataset.name;
-      switch (name) {
-        case "no_reply": {
-          setForm((prevState) => ({
-            ...prevState,
-            [name]: !prevState[name],
-            reply_required: !prevState[name] === true ? false : prevState["reply_required"],
-          }));
-          break;
+    const toggleNested = () => {
+        setNestedModal(!nestedModal);
+        setCloseAll(false);
+    };
+
+    const toggleAll = (saveDraft = false) => {
+        setNestedModal(!nestedModal);
+        setCloseAll(true);
+        if (saveDraft) {
+            handleSaveDraft();
+        } else if (draftId) {
+            dispatch(
+                deleteDraft({
+                    type: "draft_post",
+                    draft_id: draftId,
+                }, (err, res) => {
+                    dispatch(
+                        deleteDraftReducer({
+                            topic_id: activeTopic.id,
+                            draft_type: "draft_post",
+                            draft_id: draftId,
+                        }, (err, res) => {
+                            toaster.success(<>Draft <b>{form.title}</b> successfully removed.</>);
+                        })
+                    );
+                })
+            );
         }
-        case "reply_required": {
-          setForm((prevState) => ({
-            ...prevState,
-            [name]: !prevState[name],
-            no_reply: !prevState[name] === true ? false : prevState["no_reply"],
-          }));
-          break;
+        setModal(!modal);
+        dispatch(clearModal({type: type}));
+    };
+
+    const toggle = () => {
+        if (mode === "edit") {
+            const post = item.post;
+
+            if (form.title !== post.title) {
+                toggleNested();
+                return;
+            }
+
+            if (form.body !== post.body) {
+                toggleNested();
+                return;
+            }
+
+            if (form.end_at !== post.end_at) {
+                toggleNested();
+                return;
+            }
+
+            if (form.is_private !== post.is_personal) {
+                toggleNested();
+                return;
+            }
+
+            if (form.must_read !== post.is_must_read) {
+                toggleNested();
+                return;
+            }
+
+            if (form.no_reply !== post.is_must_reply) {
+                toggleNested();
+                return;
+            }
+
+            if (form.reply_required !== post.is_must_reply) {
+                toggleNested();
+                return;
+            }
+
+            if (form.show_at !== post.show_at) {
+                toggleNested();
+                return;
+            }
+
+            if (activeTopic) {
+                if (form.selectedUsers.filter((u) => u.value !== user.id).length || form.selectedWorkspaces.filter((u) => u.value !== activeTopic.id).length) {
+                    toggleNested();
+                    return;
+                }
+            }
+        } else {
+            if (form.title !== "") {
+                toggleNested();
+                return;
+            }
+
+            if (form.body !== "<div><br></div>") {
+                toggleNested();
+                return;
+            }
+
+            if (form.end_at !== null) {
+                toggleNested();
+                return;
+            }
+
+            if (form.has_folder !== false) {
+                toggleNested();
+                return;
+            }
+
+            if (form.is_private !== false) {
+                toggleNested();
+                return;
+            }
+
+            if (form.must_read !== false) {
+                toggleNested();
+                return;
+            }
+
+            if (form.no_reply !== false) {
+                toggleNested();
+                return;
+            }
+
+            if (form.reply_required !== false) {
+                toggleNested();
+                return;
+            }
+
+            if (form.show_at !== null) {
+                toggleNested();
+                return;
+            }
+
+            if (activeTopic) {
+                if (form.selectedUsers.filter((u) => u.value !== user.id).length || form.selectedWorkspaces.filter((u) => u.value !== activeTopic.id).length) {
+                    toggleNested();
+                    return;
+                }
+            }
         }
-        default: {
-          setForm((prevState) => ({
-            ...prevState,
-            [name]: !prevState[name],
-          }));
+
+        toggleAll(false);
+    };
+
+    const handleSelectUser = (e) => {
+        if (e === null) {
+            setForm({
+                ...form,
+                selectedUsers: [],
+            });
+        } else {
+            setForm({
+                ...form,
+                selectedUsers: e,
+            });
         }
-      }
-    },
-    [setForm]
-  );
+    };
 
-  const toggleMoreOptions = () => {
-    setShowMoreOptions(!showMoreOptions);
-  };
+    const handleSelectWorkspace = (e) => {
+        if (e === null) {
+            setForm({
+                ...form,
+                selectedWorkspaces: [],
+            });
+        } else {
+            setForm({
+                ...form,
+                selectedWorkspaces: e,
+            });
+        }
+    };
 
-  useEffect(() => {
-    if (activeTopic !== null && item.hasOwnProperty("draft")) {
-      setForm(item.draft.form);
-      setDraftId(item.draft.draft_id);
-    } else if (activeTopic !== null && mode !== "edit") {
-      setForm({
-        ...form,
-        selectedWorkspaces: [
-          {
-            ...activeTopic,
-            value: activeTopic.id,
-            label: activeTopic.name,
-          },
-        ],
-        selectedUsers: [
-          {
-            id: user.id,
-            value: user.id,
-            label: user.name,
-            name: user.name,
-            first_name: user.first_name,
-            profile_image_link: user.profile_image_link,
-          },
-        ],
-      });
-    } else if (mode === "edit" && item.hasOwnProperty("post")) {
-      setForm({
-        ...form,
-        body: item.post.body,
-        textOnly: item.post.body,
-        title: item.post.title,
-        hast_folder: activeTopic.hasOwnProperty("workspace_id"),
-        no_reply: item.post.is_read_only,
-        must_read: item.post.is_must_read,
-        reply_required: item.post.is_must_reply,
-        selectedWorkspaces: [
-          {
-            ...activeTopic,
-            value: activeTopic.id,
-            label: activeTopic.name,
-          },
-        ],
-        selectedUsers: item.post.users_responsible.map((u) => {
-          return {
-            ...u,
-            value: u.id,
-            label: u.name,
-          };
-        }),
-        file_ids: item.post.files.map((f) => f.id),
-      });
-      setUploadedFiles(
-        item.post.files.map((f) => {
-          return {
-            ...f,
-            rawFile: f,
-          };
-        })
-      );
-    }
-  }, []);
-
-  useEffect(() => {
-    if (formRef.more_options.current !== null && maxHeight === null && draftId === null) {
-      setMaxHeight(formRef.more_options.current.offsetHeight);
-      setShowMoreOptions(!!(item.post !== null && (item.post.is_read_only || item.post.is_must_read || item.post.is_must_reply)));
-    }
-  }, [formRef, setMaxHeight]);
-
-  const handleSelectStartDate = useCallback(
-    (value) => {
-      setForm((f) => ({
-        ...f,
-        show_at: value,
-      }));
-    },
-    [setForm]
-  );
-
-  const handleSelectEndDate = useCallback(
-    (value) => {
-      setForm((f) => ({
-        ...f,
-        end_at: value,
-      }));
-    },
-    [setForm]
-  );
-
-  const handleOpenFileDialog = () => {
-    if (formRef.dropzone.current) {
-      formRef.dropzone.current.open();
-    }
-  };
-
-  const handleHideDropzone = () => {
-    setShowDropzone(false);
-  };
-
-  const dropAction = (acceptedFiles) => {
-    let selectedFiles = [];
-
-    acceptedFiles.forEach((file) => {
-      var bodyFormData = new FormData();
-      bodyFormData.append("file", file);
-      let timestamp = Math.floor(Date.now());
-      //let shortFileId = require("shortid").generate();
-      if (file.type === "image/jpeg" || file.type === "image/png" || file.type === "image/gif" || file.type === "image/webp") {
-        selectedFiles.push({
-          rawFile: file,
-          bodyFormData: bodyFormData,
-          type: "IMAGE",
-          id: timestamp,
-          status: false,
-          src: URL.createObjectURL(file),
-          name: file.name ? file.name : file.path,
-          uploader: user,
+    const handleNameChange = (e) => {
+        setForm({
+            ...form,
+            title: e.target.value,
         });
-      } else if (file.type === "video/mp4") {
-        selectedFiles.push({
-          rawFile: file,
-          bodyFormData: bodyFormData,
-          type: "VIDEO",
-          id: timestamp,
-          status: false,
-          src: URL.createObjectURL(file),
-          name: file.name ? file.name : file.path,
-          uploader: user,
-        });
-      } else {
-        selectedFiles.push({
-          rawFile: file,
-          bodyFormData: bodyFormData,
-          type: "DOC",
-          id: timestamp,
-          status: false,
-          src: URL.createObjectURL(file),
-          name: file.name ? file.name : file.path,
-          uploader: user,
-        });
-      }
-    });
-    setAttachedFiles((prevState) => [...prevState, ...selectedFiles]);
-    handleHideDropzone();
-  };
+    };
 
-  async function uploadFiles(payload, type = "create") {
-    await Promise.all(
-      attachedFiles.map((file) =>
-        uploadDocument({
-          user_id: user.id,
-          file: file.bodyFormData,
-          file_type: "private",
-          folder_id: null,
-        })
-      )
-    ).then((result) => {
-      if (type === "edit") {
-        payload = {
-          ...payload,
-          file_ids: [...result.map((res) => res.data.id), ...payload.file_ids],
+    const handleSaveDraft = () => {
+        if (!(form.title === "" && form.body === "" && !form.selectedUsers.length)) {
+            let timestamp = Math.floor(Date.now() / 1000);
+            let payload = {
+                type: "draft_post",
+                form: {
+                    ...form,
+                    must_read: form.must_read ? 1 : 0,
+                    must_reply: form.reply_required ? 1 : 0,
+                    read_only: form.no_reply ? 1 : 0,
+                    users_responsible: form.selectedUsers,
+                },
+                timestamp: timestamp,
+                topic_id: activeTopic.id,
+                id: timestamp,
+                is_must_read: form.must_read ? 1 : 0,
+                is_must_reply: form.must_reply ? 1 : 0,
+                is_read_only: form.no_reply ? 1 : 0,
+                created_at: {timestamp: timestamp},
+            };
+            if (draftId) {
+                payload = {
+                    ...payload,
+                    draft_id: draftId,
+                };
+                dispatch(updateDraft(payload));
+            } else {
+                dispatch(saveDraft(payload));
+            }
+        }
+    };
+
+    const handleConfirm = () => {
+        let payload = {
+            title: form.title,
+            body: form.body,
+            responsible_ids: form.selectedUsers.map((u) => u.value),
+            type: "post",
+            personal: 0,
+            recipient_ids: form.selectedWorkspaces.filter((ws) => ws.type !== "FOLDER").map((ws) => ws.value),
+            must_read: form.must_read ? 1 : 0,
+            must_reply: form.reply_required ? 1 : 0,
+            read_only: form.no_reply ? 1 : 0,
+            workspace_ids: form.selectedWorkspaces.filter((ws) => ws.type === "FOLDER").map((ws) => ws.value),
+            show_at: form.show_at ? moment(form.show_at, "YYYY-MM-DD").format("YYYY-MM-DD") : form.end_at ? moment(new Date()).add(1, "day").format("YYYY-MM-DD") : null,
+            end_at: form.end_at ? moment(form.end_at, "YYYY-MM-DD").format("YYYY-MM-DD") : null,
+            tag_ids: [],
+            file_ids: [],
         };
-        dispatch(putPost(payload));
-      } else {
-        payload = {
-          ...payload,
-          file_ids: result.map((res) => res.data.id),
-        };
-        dispatch(postCreate(payload));
-      }
-    });
-  }
+        if (draftId) {
+            dispatch(
+                deleteDraft({
+                    type: "draft_post",
+                    draft_id: draftId,
+                })
+            );
+            dispatch(
+                deleteDraft({
+                    type: "draft_post",
+                    draft_id: draftId,
+                })
+            )
+        }
+        if (mode === "edit") {
+            payload = {
+                ...payload,
+                id: item.post.id,
+                file_ids: uploadedFiles.map((f) => f.id),
+            };
+            if (attachedFiles.length) {
+                uploadFiles(payload, "edit");
+            } else {
+                dispatch(putPost(payload));
+            }
+        } else {
+            if (attachedFiles.length) {
+                uploadFiles(payload, "create");
+            } else {
+                dispatch(postCreate(payload));
+            }
+        }
+        toggleAll(false);
+    };
 
-  const handleRemoveFile = (fileId) => {
-    setUploadedFiles((prevState) => prevState.filter((f) => f.id !== parseInt(fileId)));
-    setAttachedFiles((prevState) => prevState.filter((f) => f.id !== parseInt(fileId)));
-  }
+    const handleQuillChange = (content, delta, source, editor) => {
+        const textOnly = editor.getText(content);
+        setForm({
+            ...form,
+            body: content,
+            textOnly: textOnly,
+        });
+    };
 
-  const [wsOptions, userOptions] = useGetWorkspaceAndUserOptions(form.selectedWorkspaces, activeTopic);
+    const toggleCheck = useCallback(
+        (e) => {
+            const name = e.target.dataset.name;
+            switch (name) {
+                case "no_reply": {
+                    setForm((prevState) => ({
+                        ...prevState,
+                        [name]: !prevState[name],
+                        reply_required: !prevState[name] === true ? false : prevState["reply_required"],
+                    }));
+                    break;
+                }
+                case "reply_required": {
+                    setForm((prevState) => ({
+                        ...prevState,
+                        [name]: !prevState[name],
+                        no_reply: !prevState[name] === true ? false : prevState["no_reply"],
+                    }));
+                    break;
+                }
+                default: {
+                    setForm((prevState) => ({
+                        ...prevState,
+                        [name]: !prevState[name],
+                    }));
+                }
+            }
+        },
+        [setForm]
+    );
 
-  const onOpened = () => {
-    if (inputRef && inputRef.current) {
-      inputRef.current.focus();
+    const toggleMoreOptions = () => {
+        setShowMoreOptions(!showMoreOptions);
+    };
+
+    useEffect(() => {
+        if (activeTopic !== null && item.hasOwnProperty("draft")) {
+            setForm(item.draft.form);
+            setDraftId(item.draft.draft_id);
+        } else if (activeTopic !== null && mode !== "edit") {
+            setForm({
+                ...form,
+                selectedWorkspaces: [
+                    {
+                        ...activeTopic,
+                        value: activeTopic.id,
+                        label: activeTopic.name,
+                    },
+                ],
+                selectedUsers: [
+                    {
+                        id: user.id,
+                        value: user.id,
+                        label: user.name,
+                        name: user.name,
+                        first_name: user.first_name,
+                        profile_image_link: user.profile_image_link,
+                    },
+                ],
+            });
+        } else if (mode === "edit" && item.hasOwnProperty("post")) {
+            setForm({
+                ...form,
+                body: item.post.body,
+                textOnly: item.post.body,
+                title: item.post.title,
+                hast_folder: activeTopic.hasOwnProperty("workspace_id"),
+                no_reply: item.post.is_read_only,
+                must_read: item.post.is_must_read,
+                reply_required: item.post.is_must_reply,
+                selectedWorkspaces: [
+                    {
+                        ...activeTopic,
+                        value: activeTopic.id,
+                        label: activeTopic.name,
+                    },
+                ],
+                selectedUsers: item.post.users_responsible.map((u) => {
+                    return {
+                        ...u,
+                        value: u.id,
+                        label: u.name,
+                    };
+                }),
+                file_ids: item.post.files.map((f) => f.id),
+            });
+            setUploadedFiles(
+                item.post.files.map((f) => {
+                    return {
+                        ...f,
+                        rawFile: f,
+                    };
+                })
+            );
+        }
+    }, []);
+
+    useEffect(() => {
+        if (formRef.more_options.current !== null && maxHeight === null && draftId === null) {
+            setMaxHeight(formRef.more_options.current.offsetHeight);
+            setShowMoreOptions(!!(item.post !== null && (item.post.is_read_only || item.post.is_must_read || item.post.is_must_reply)));
+        }
+    }, [formRef, setMaxHeight]);
+
+    const handleSelectStartDate = useCallback(
+        (value) => {
+            setForm((f) => ({
+                ...f,
+                show_at: value,
+            }));
+        },
+        [setForm]
+    );
+
+    const handleSelectEndDate = useCallback(
+        (value) => {
+            setForm((f) => ({
+                ...f,
+                end_at: value,
+            }));
+        },
+        [setForm]
+    );
+
+    const handleOpenFileDialog = () => {
+        if (formRef.dropzone.current) {
+            formRef.dropzone.current.open();
+        }
+    };
+
+    const handleHideDropzone = () => {
+        setShowDropzone(false);
+    };
+
+    const dropAction = (acceptedFiles) => {
+        let selectedFiles = [];
+
+        acceptedFiles.forEach((file) => {
+            var bodyFormData = new FormData();
+            bodyFormData.append("file", file);
+            let timestamp = Math.floor(Date.now());
+            //let shortFileId = require("shortid").generate();
+            if (file.type === "image/jpeg" || file.type === "image/png" || file.type === "image/gif" || file.type === "image/webp") {
+                selectedFiles.push({
+                    rawFile: file,
+                    bodyFormData: bodyFormData,
+                    type: "IMAGE",
+                    id: timestamp,
+                    status: false,
+                    src: URL.createObjectURL(file),
+                    name: file.name ? file.name : file.path,
+                    uploader: user,
+                });
+            } else if (file.type === "video/mp4") {
+                selectedFiles.push({
+                    rawFile: file,
+                    bodyFormData: bodyFormData,
+                    type: "VIDEO",
+                    id: timestamp,
+                    status: false,
+                    src: URL.createObjectURL(file),
+                    name: file.name ? file.name : file.path,
+                    uploader: user,
+                });
+            } else {
+                selectedFiles.push({
+                    rawFile: file,
+                    bodyFormData: bodyFormData,
+                    type: "DOC",
+                    id: timestamp,
+                    status: false,
+                    src: URL.createObjectURL(file),
+                    name: file.name ? file.name : file.path,
+                    uploader: user,
+                });
+            }
+        });
+        setAttachedFiles((prevState) => [...prevState, ...selectedFiles]);
+        handleHideDropzone();
+    };
+
+    async function uploadFiles(payload, type = "create") {
+        await Promise.all(
+            attachedFiles.map((file) =>
+                uploadDocument({
+                    user_id: user.id,
+                    file: file.bodyFormData,
+                    file_type: "private",
+                    folder_id: null,
+                })
+            )
+        ).then((result) => {
+            if (type === "edit") {
+                payload = {
+                    ...payload,
+                    file_ids: [...result.map((res) => res.data.id), ...payload.file_ids],
+                };
+                dispatch(putPost(payload));
+            } else {
+                payload = {
+                    ...payload,
+                    file_ids: result.map((res) => res.data.id),
+                };
+                dispatch(postCreate(payload));
+            }
+        });
     }
-  };
 
-  return (
-    <Modal isOpen={modal} toggle={toggle} centered size={"md"} onOpened={onOpened}>
-      <ModalHeaderSection toggle={toggle}>{mode === "edit" ? "Edit post" : "Create new post"}</ModalHeaderSection>
-      <ModalBody>
-        <Modal isOpen={nestedModal} toggle={toggleNested} onClosed={closeAll ? toggle : undefined} centered>
-          <ModalHeader>Save as draft</ModalHeader>
-          <ModalBody>Not sure about the content? Save it as a draft.</ModalBody>
-          <ModalFooter>
-            <Button color="primary" onClick={() => toggleAll(true)}>
-              Save
-            </Button>
-            <Button color="secondary" onClick={() => toggleAll(false)}>
-              Discard
-            </Button>
-          </ModalFooter>
+    const handleRemoveFile = (fileId) => {
+        setUploadedFiles((prevState) => prevState.filter((f) => f.id !== parseInt(fileId)));
+        setAttachedFiles((prevState) => prevState.filter((f) => f.id !== parseInt(fileId)));
+    }
+
+    const [wsOptions, userOptions] = useGetWorkspaceAndUserOptions(form.selectedWorkspaces, activeTopic);
+
+    const onOpened = () => {
+        if (inputRef && inputRef.current) {
+            inputRef.current.focus();
+        }
+    };
+
+    return (
+        <Modal isOpen={modal} toggle={toggle} centered size={"lg"} onOpened={onOpened}>
+            <ModalHeaderSection toggle={toggle}>{mode === "edit" ? "Edit post" : "Create new post"}</ModalHeaderSection>
+            <ModalBody>
+                <Modal isOpen={nestedModal} toggle={toggleNested} onClosed={closeAll ? toggle : undefined} centered>
+                    <ModalHeader>Save as draft</ModalHeader>
+                    <ModalBody>Not sure about the content? Save it as a draft.</ModalBody>
+                    <ModalFooter>
+                        <Button color="primary" onClick={() => toggleAll(true)}>
+                            Save
+                        </Button>
+                        <Button color="secondary" onClick={() => toggleAll(false)}>
+                            Discard
+                        </Button>
+                    </ModalFooter>
+                </Modal>
+                <DropDocument
+                    hide={!showDropzone}
+                    ref={formRef.dropzone}
+                    onDragLeave={handleHideDropzone}
+                    onDrop={({acceptedFiles}) => {
+                        dropAction(acceptedFiles);
+                    }}
+                    onCancel={handleHideDropzone}
+                    attachedFiles={attachedFiles}
+                />
+                <WrapperDiv>
+                    <Label for="post-title">Post title</Label>
+                    <Input style={{borderRadius: "5px"}} defaultValue={mode === "edit" ? "" : ""} value={form.title}
+                           onChange={handleNameChange} innerRef={inputRef}/>
+                </WrapperDiv>
+                <WrapperDiv>
+                    <Label for="workspace">Workspace</Label>
+                    <SelectWorkspace options={wsOptions} value={form.selectedWorkspaces}
+                                     onChange={handleSelectWorkspace} isMulti={true} isClearable={true}/>
+                </WrapperDiv>
+                <WrapperDiv>
+                    <Label for="responsible">Responsible</Label>
+                    <SelectPeople options={userOptions} value={form.selectedUsers} onChange={handleSelectUser}/>
+                </WrapperDiv>
+                <StyledDescriptionInput
+                    height={window.innerHeight - 660}
+                    showFileButton={true}
+                    onChange={handleQuillChange}
+                    onOpenFileDialog={handleOpenFileDialog}
+                    defaultValue={item.hasOwnProperty("draft") ? form.body : mode === "edit" ? item.post.body : ""}
+                    mode={mode}
+                    members={activeTopic ? activeTopic.members : []}
+                    required
+                    /*valid={valid.description}
+                               feedback={feedback.description}*/
+                />
+                {(attachedFiles.length > 0 || uploadedFiles.length > 0) && (
+                    <WrapperDiv className="file-attachment-wrapper">
+                        <FileAttachments attachedFiles={[...attachedFiles, ...uploadedFiles]}
+                                         handleRemoveFile={handleRemoveFile}/>
+                    </WrapperDiv>
+                )}
+                <WrapperDiv className="more-option">
+                    <MoreOption onClick={toggleMoreOptions}>
+                        More options
+                        <SvgIconFeather icon="chevron-down"
+                                        className={`sub-menu-arrow ti-angle-up ${showMoreOptions ? "ti-minus rotate-in" : " ti-plus"}`}/>
+                    </MoreOption>
+
+                    <CheckBoxGroup ref={formRef.more_options} maxHeight={maxHeight}
+                                   className={showMoreOptions === null ? "" : showMoreOptions ? "enter-active" : "leave-active"}>
+                        <div className="d-flex">
+                            <CheckBox name="must_read" checked={form.must_read} onClick={toggleCheck} type="danger">
+                                Must read
+                            </CheckBox>
+                            <CheckBox name="reply_required" checked={form.reply_required} onClick={toggleCheck}
+                                      type="warning">
+                                Reply required
+                            </CheckBox>
+                            <CheckBox name="no_reply" checked={form.no_reply} onClick={toggleCheck} type="info">
+                                No replies
+                            </CheckBox>
+                        </div>
+
+                        <WrapperDiv className="schedule-post">
+                            <Label>Schedule post</Label>
+                            <SvgIconFeather className="mr-2" width={18} icon="calendar"/>
+                            <StyledDatePicker className="mr-2 start-date" onChange={handleSelectStartDate}
+                                              value={form.show_at}
+                                              minDate={new Date(new Date().setDate(new Date().getDate() + 1))}/>
+                            <StyledDatePicker className="end-date" onChange={handleSelectEndDate} value={form.end_at}
+                                              minDate={new Date(new Date().setDate(new Date().getDate() + 1))}/>
+                        </WrapperDiv>
+                    </CheckBoxGroup>
+                </WrapperDiv>
+                <WrapperDiv>
+                    <button className="btn btn-primary"
+                            disabled={form.selectedUsers.length === 0 || form.title === "" || form.textOnly.trim() === "" || form.selectedWorkspaces.length === 0}
+                            onClick={handleConfirm}>
+                        {mode === "edit" ? "Update post" : "Create post"}
+                    </button>
+                </WrapperDiv>
+            </ModalBody>
         </Modal>
-        <DropDocument
-          hide={!showDropzone}
-          ref={formRef.dropzone}
-          onDragLeave={handleHideDropzone}
-          onDrop={({ acceptedFiles }) => {
-            dropAction(acceptedFiles);
-          }}
-          onCancel={handleHideDropzone}
-          attachedFiles={attachedFiles}
-        />
-        <WrapperDiv>
-          <Label for="post-title">Post title</Label>
-          <Input style={{ borderRadius: "5px" }} defaultValue={mode === "edit" ? "" : ""} value={form.title} onChange={handleNameChange} innerRef={inputRef} />
-        </WrapperDiv>
-        <WrapperDiv>
-          <Label for="workspace">Workspace</Label>
-          <SelectWorkspace options={wsOptions} value={form.selectedWorkspaces} onChange={handleSelectWorkspace} isMulti={true} isClearable={true} />
-        </WrapperDiv>
-        <WrapperDiv>
-          <Label for="responsible">Responsible</Label>
-          <SelectPeople options={userOptions} value={form.selectedUsers} onChange={handleSelectUser} />
-        </WrapperDiv>
-        <DescriptionInput
-          required
-          showFileButton={true}
-          onChange={handleQuillChange}
-          onOpenFileDialog={handleOpenFileDialog}
-          defaultValue={mode === "edit" ? item.post.body : ""}
-          mode={mode}
-          /*valid={valid.description}
-                     feedback={feedback.description}*/
-        />
-        {(attachedFiles.length > 0 || uploadedFiles.length > 0) && (
-          <WrapperDiv className="file-attachment-wrapper">
-            <FileAttachments attachedFiles={[...attachedFiles, ...uploadedFiles]} handleRemoveFile={handleRemoveFile} />
-          </WrapperDiv>
-        )}
-        <WrapperDiv className="more-option">
-          <MoreOption onClick={toggleMoreOptions}>
-            More options
-            <SvgIconFeather icon="chevron-down" className={`sub-menu-arrow ti-angle-up ${showMoreOptions ? "ti-minus rotate-in" : " ti-plus"}`} />
-          </MoreOption>
-
-          <CheckBoxGroup ref={formRef.more_options} maxHeight={maxHeight} className={showMoreOptions === null ? "" : showMoreOptions ? "enter-active" : "leave-active"}>
-            <div className="d-flex">
-              <CheckBox name="must_read" checked={form.must_read} onClick={toggleCheck} type="danger">
-                Must read
-              </CheckBox>
-              <CheckBox name="reply_required" checked={form.reply_required} onClick={toggleCheck} type="warning">
-                Reply required
-              </CheckBox>
-              <CheckBox name="no_reply" checked={form.no_reply} onClick={toggleCheck} type="info">
-                No replies
-              </CheckBox>
-            </div>
-
-            <WrapperDiv className="schedule-post">
-              <Label>Schedule post</Label>
-              <SvgIconFeather className="mr-2" width={18} icon="calendar" />
-              <StyledDatePicker className="mr-2 start-date" onChange={handleSelectStartDate} value={form.show_at} minDate={new Date(new Date().setDate(new Date().getDate() + 1))} />
-              <StyledDatePicker className="end-date" onChange={handleSelectEndDate} value={form.end_at} minDate={new Date(new Date().setDate(new Date().getDate() + 1))} />
-            </WrapperDiv>
-          </CheckBoxGroup>
-        </WrapperDiv>
-        <WrapperDiv>
-          <button className="btn btn-primary" disabled={form.selectedUsers.length === 0 || form.title === "" || form.textOnly.trim() === "" || form.selectedWorkspaces.length === 0} onClick={handleConfirm}>
-            {mode === "edit" ? "Update post" : "Create post"}
-          </button>
-        </WrapperDiv>
-      </ModalBody>
-    </Modal>
-  );
+    );
 };
 
 export default CreateEditWorkspacePostModal;

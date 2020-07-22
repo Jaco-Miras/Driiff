@@ -1,4 +1,4 @@
-import dispatchActionToReducer, { SimpleDispatchActionToReducer } from "../actionDispatcher";
+import dispatchActionToReducer, {SimpleDispatchActionToReducer} from "../actionDispatcher";
 import {
   deleteDraft as deleteDraftService,
   generateUnfurl as generateUnfurlService,
@@ -7,11 +7,11 @@ import {
   getDrafts as getDraftsService,
   getPushNotification as getPushNotificationService,
   getTranslationObject as getTranslationObjectService,
+  getUnreadNotificationCounterEntries as getUnreadNotificationCounterEntriesService,
   saveDraft as saveDraftService,
   subscribePushNotifications as subscribePushNotificationsService,
   updateDraft as updateDraftService,
   uploadDocument as uploadDocumentService,
-  getUnreadNotificationCounterEntries as getUnreadNotificationCounterEntriesService,
 } from "../services";
 
 export function setBrowserTabStatus(payload, callback) {
@@ -60,6 +60,10 @@ export function updateDraft(payload, callback) {
 
 export function deleteDraft(payload, callback) {
   return dispatchActionToReducer(deleteDraftService(payload), "DELETE_DRAFT_START", "DELETE_DRAFT_SUCCESS", "DELETE_DRAFT_FAILURE", callback);
+}
+
+export function deleteDraftReducer(payload, callback) {
+  return SimpleDispatchActionToReducer("DELETE_DRAFT", payload, callback);
 }
 
 export function uploadDocument(payload, callback) {

@@ -6,12 +6,11 @@ import styled from "styled-components";
 import { replaceChar } from "../../../helpers/stringFormatter";
 import { getUnreadNotificationCounterEntries, setNavMode } from "../../../redux/actions/globalActions";
 import { NavLink, SvgIcon, SvgIconFeather } from "../../common";
-import Tooltip from "react-tooltip-lite";
+//import Tooltip from "react-tooltip-lite";
 // import { WorkspaceNavigationMenuBodyPanel } from "../workspace";
 import { useSetWorkspace, useSortWorkspaces } from "../../hooks";
-import { WorkspaceList } from "../../workspace";
+import { WorkspaceList, ExternalWorkspaceList } from "../../workspace";
 import { addToModals } from "../../../redux/actions/globalActions";
-import { setActiveTab } from "../../../redux/actions/workspaceActions";
 
 const Wrapper = styled.div`
   .navigation-menu-tab-header {
@@ -137,7 +136,7 @@ const NavNewWorkspace = styled.button`
 `;
 
 const MainNavigationTabPanel = (props) => {
-  const { className = "" } = props;
+  const { className = "", isExternal } = props;
   const history = useHistory();
   const dispatch = useDispatch();
 
@@ -203,14 +202,7 @@ const MainNavigationTabPanel = (props) => {
   useSetWorkspace();
   const sortedWorkspaces = useSortWorkspaces();
   const generalWorkspaces = sortedWorkspaces.filter((ws) => ws.type !== "FOLDER" && ws.topic_detail.active === 1);
-
-  // const generalExternalWorkspaces = sortedWorkspaces.filter((ws) => ws.type !== "FOLDER" && ws.is_external !== 0 && ws.topic_detail.active === 1);
-  // const archiveInternalWorkspacesFolder = sortedWorkspaces.filter((ws) => {
-  //   return ws.type === "FOLDER" && ws.is_external === 0 && Object.values(ws.topics).some((t) => t.active === 0);
-  // });
-  //const archiveExternalWorkspacesFolder = sortedWorkspaces.filter((ws) => ws.type === "FOLDER" && ws.is_external !== 0 && ws.topics.some(t => t.active === 0));
   const archiveInternalWorkspaces = sortedWorkspaces.filter((ws) => ws.type !== "FOLDER" && ws.is_external === 0 && ws.topic_detail.active === 0);
-  //const archiveExternalWorkspaces = sortedWorkspaces.filter((ws) => ws.type !== "FOLDER" && ws.is_external !== 0 && ws.topic_detail.active === 0);
 
   return (
     <Wrapper className={`navigation-menu-tab ${className}`}>
@@ -232,34 +224,38 @@ const MainNavigationTabPanel = (props) => {
               </div>
             </NavIconContainer>
           </li>
-          <li>
-            <NavIconContainer
-              active={["dashboard", "posts", "chat", "files", "people"].includes(props.match.params.page)}
-              to={lastVisitedChannel !== null && lastVisitedChannel.hasOwnProperty("code") ? `/chat/${lastVisitedChannel.code}` : "/chat"}
-            >
-              <NavIcon icon={"message-circle"} />
-              <div>
-                Chats
-                {(unreadCounter.chat_message >= 1 || unreadCounter.unread_channel > 0) && <Badge data-count={unreadCounter.chat_message}>&nbsp;</Badge>}
-              </div>
-            </NavIconContainer>
-          </li>
+          {
+            !isExternal && 
+            <li>
+              <NavIconContainer
+                active={["dashboard", "posts", "chat", "files", "people"].includes(props.match.params.page)}
+                to={lastVisitedChannel !== null && lastVisitedChannel.hasOwnProperty("code") ? `/chat/${lastVisitedChannel.code}` : "/chat"}
+              >
+                <NavIcon icon={"message-circle"} />
+                <div>
+                  Chats
+                  {(unreadCounter.chat_message >= 1 || unreadCounter.unread_channel > 0) && <Badge data-count={unreadCounter.chat_message}>&nbsp;</Badge>}
+                </div>
+              </NavIconContainer>
+            </li>
+          }
         </ul>
       </div>
 
       <div className="your-workspaces-title">
         Your workspaces
-        <FolderPlus onClick={handleShowFolderModal} icon="folder-plus" />
+        {!isExternal && <FolderPlus onClick={handleShowFolderModal} icon="folder-plus" />}
       </div>
       <div className="navigation-menu-group">
         <div id="elements" className="open">
           <ul>
-            {sortedWorkspaces
+            {!isExternal && sortedWorkspaces
               .filter((sws) => sws.type === "FOLDER")
               .map((ws) => {
                 return <WorkspaceList show={true} key={ws.key_id} workspace={ws} />;
-              })}
-            {generalWorkspaces.length > 0 && (
+              })
+            }
+            {!isExternal && generalWorkspaces.length > 0 && (
               <WorkspaceList
                 show={true}
                 workspace={{
@@ -272,19 +268,13 @@ const MainNavigationTabPanel = (props) => {
                 }}
               />
             )}
-            {/* {generalExternalWorkspaces.length > 0 && (
-              <WorkspaceList
-                show={activeTab !== "intern"}
-                workspace={{
-                  id: "general_external",
-                  is_lock: 0,
-                  selected: generalInternalWorkspaces.some((ws) => ws.selected),
-                  name: "General",
-                  type: "GENERAL_FOLDER",
-                  topics: generalInternalWorkspaces,
-                }}
-              />
-            )} */}
+            {
+              isExternal && generalWorkspaces.length > 0 && (
+                generalWorkspaces.map((ws) => {
+                  return <ExternalWorkspaceList key={ws.key_id} workspace={ws}/>
+                })
+              )
+            }
           </ul>
 
           <ul>
@@ -302,32 +292,20 @@ const MainNavigationTabPanel = (props) => {
                 }}
               />
             )}
-            {/* {archiveExternalWorkspaces.length > 0 && (
-              <WorkspaceList
-                show={activeTab !== "intern"}
-                workspace={{
-                  id: "archive",
-                  is_lock: 0,
-                  is_active: 0,
-                  selected: archiveExternalWorkspaces.some((ws) => ws.selected),
-                  name: "Archived workspaces",
-                  type: "ARCHIVE_FOLDER",
-                  topics: archiveExternalWorkspaces,
-                }}
-              />
-            )} */}
           </ul>
         </div>
       </div>
-
-      <div>
-        <NavNewWorkspace onClick={handleShowWorkspaceModal} className="btn btn-outline-light" type="button">
-          <div>
-            <CirclePlus icon="circle-plus" />
-            Add new workspace
-          </div>
-        </NavNewWorkspace>
-      </div>
+      {
+        !isExternal &&
+        <div>
+          <NavNewWorkspace onClick={handleShowWorkspaceModal} className="btn btn-outline-light" type="button">
+            <div>
+              <CirclePlus icon="circle-plus" />
+              Add new workspace
+            </div>
+          </NavNewWorkspace>
+        </div>
+      }
     </Wrapper>
   );
 };

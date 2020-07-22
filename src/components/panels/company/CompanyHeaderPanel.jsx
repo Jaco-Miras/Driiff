@@ -33,9 +33,22 @@ const MainNavLink = styled(NavLink)`
   border-radius: 0;
   display: flex;
   height: 35px;
+  position: relative;
   &.active {
     border-bottom: 2px solid #5d5d5d;
     color: #000000;
+  }
+  .badge {
+    background: green;
+    font-size: 0;
+    padding: 0;
+    margin: 0;
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: #28a745;
+    top: 1px;
+    right: -9px;
   }
 `;
 

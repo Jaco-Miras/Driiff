@@ -1,12 +1,12 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { Input, InputGroup, Label, Modal, ModalBody } from "reactstrap";
+import React, {useCallback, useEffect, useRef, useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
+import {Input, InputGroup, Label, Modal, ModalBody} from "reactstrap";
 import styled from "styled-components";
-import { clearModal } from "../../redux/actions/globalActions";
-import { createWorkspace, updateWorkspace } from "../../redux/actions/workspaceActions";
-import { CheckBox, DescriptionInput, InputFeedback } from "../forms";
-import { useToaster } from "../hooks";
-import { ModalHeaderSection } from "./index";
+import {clearModal} from "../../redux/actions/globalActions";
+import {createWorkspace, updateWorkspace} from "../../redux/actions/workspaceActions";
+import {CheckBox, DescriptionInput, InputFeedback} from "../forms";
+import {useToaster} from "../hooks";
+import {ModalHeaderSection} from "./index";
 
 const WrapperDiv = styled(InputGroup)`
   display: flex;
@@ -41,8 +41,12 @@ const WrapperDiv = styled(InputGroup)`
   }
 `;
 
+const StyledDescriptionInput = styled(DescriptionInput)`
+    height: ${props => props.height}px;
+`;
+
 const CreateWorkspaceFolderModal = (props) => {
-  const { type, mode, item = null } = props.data;
+  const {type, mode, item = null} = props.data;
 
   const toaster = useToaster();
   const inputRef = useRef();
@@ -253,29 +257,36 @@ const CreateWorkspaceFolderModal = (props) => {
   };
 
   return (
-    <Modal isOpen={modal} toggle={toggle} centered size={"md"} onOpened={onOpened}>
-      <ModalHeaderSection toggle={toggle} className={"workspace-folder-header"}>
-        {mode === "edit" ? "Edit " + activeTabName + " folder" : "Create new " + activeTabName + " folder"}
-        {/* <ActiveTabName className="intern-extern">{activeTabName}</ActiveTabName> */}
-      </ModalHeaderSection>
-      <ModalBody>
-        <WrapperDiv>
-          <Label for="folder">Folder name</Label>
-          <Input defaultValue={mode === "edit" ? item.workspace_name : ""} onChange={handleNameChange} onBlur={handleNameBlur} valid={valid.name} invalid={valid.name !== null && !valid.name} innerRef={inputRef} />
-          <InputFeedback valid={valid.name}>{feedback.name}</InputFeedback>
-        </WrapperDiv>
-        <DescriptionInput onChange={handleQuillChange} defaultValue={mode === "edit" && item ? item.workspace_description : ""} mode={mode} />
-        <WrapperDiv style={{ marginTop: "40px" }}>
-          <Label />
-          <CheckBox name="is_private" checked={form.is_private} onClick={toggleCheck}>
-            Lock workspace
-          </CheckBox>
-          <button className="btn btn-primary" disabled={valid.name === null || valid.name === false} onClick={handleConfirm}>
-            {mode === "edit" ? "Update workspace" : "Create folder"}
-          </button>
-        </WrapperDiv>
-      </ModalBody>
-    </Modal>
+      <Modal isOpen={modal} toggle={toggle} size={"lg"} onOpened={onOpened} centered>
+        <ModalHeaderSection toggle={toggle} className={"workspace-folder-header"}>
+          {mode === "edit" ? "Edit " + activeTabName + " folder" : "Create new " + activeTabName + " folder"}
+          {/* <ActiveTabName className="intern-extern">{activeTabName}</ActiveTabName> */}
+        </ModalHeaderSection>
+        <ModalBody>
+          <WrapperDiv>
+            <Label for="folder">Folder name</Label>
+            <Input defaultValue={mode === "edit" ? item.workspace_name : ""} onChange={handleNameChange}
+                   onBlur={handleNameBlur} valid={valid.name} invalid={valid.name !== null && !valid.name}
+                   innerRef={inputRef}/>
+            <InputFeedback valid={valid.name}>{feedback.name}</InputFeedback>
+          </WrapperDiv>
+          <StyledDescriptionInput
+              height={window.innerHeight - 660}
+              onChange={handleQuillChange}
+              defaultValue={mode === "edit" && item ? item.workspace_description : ""}
+              mode={mode}/>
+          <WrapperDiv style={{marginTop: "40px"}}>
+            <Label/>
+            <CheckBox name="is_private" checked={form.is_private} onClick={toggleCheck}>
+              Lock workspace
+            </CheckBox>
+            <button className="btn btn-primary" disabled={valid.name === null || valid.name === false}
+                    onClick={handleConfirm}>
+              {mode === "edit" ? "Update workspace" : "Create folder"}
+            </button>
+          </WrapperDiv>
+        </ModalBody>
+      </Modal>
   );
 };
 
