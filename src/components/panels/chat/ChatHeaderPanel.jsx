@@ -93,18 +93,18 @@ const ChatHeaderPanel = (props) => {
       <div className="d-flex align-items-center">
         {page === "chat" && (
           <>
-            <ChatMembers members={channel.members} />
+            <ChatMembers members={channel.members.filter((m) => m.name !== "")} />
             <ChatTitleTyping />
           </>
         )}
         {page === "workspace" && (
           <>
-            <ChatMembers members={channel.members} page={"workspace"} />
+            <ChatMembers members={channel.members.filter((m) => m.name !== "")} page={"workspace"} />
             <ChatTitleTyping page={"workspace"} />
           </>
         )}
         <div className="ml-auto">
-          {page === "workspace" && <ChatMembers members={channel.members} />}
+          {page === "workspace" && <ChatMembers members={channel.members.filter((m) => m.name !== "")} />}
           <ul className="nav align-items-center">
             {["DIRECT", "PERSONAL_BOT", "COMPANY", "TOPIC"].includes(channel.type) === false && !channel.is_archived && (
               <>

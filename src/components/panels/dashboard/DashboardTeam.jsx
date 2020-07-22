@@ -69,7 +69,7 @@ const DashboardTeam = (props) => {
         </h5>
 
         <ul className="list-group list-group-flush">
-          {workspace.members.map((member) => {
+          {workspace.members.filter((m) => m.active === 1).map((member) => {
             return <TeamListItem key={member.id} member={member} parentRef={scrollRef} onEditClick={onEditClick} />;
           })}
         </ul>
