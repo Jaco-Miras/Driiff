@@ -61,7 +61,7 @@ const PeopleListItem = (props) => {
                   user.role && <span className="small text-muted">{user.role !== null && <>{user.role.display_name}</>}</span>
                 }
               </div>
-              {onChatClick !== null && loggedUser.id !== user.id && (
+              {onChatClick !== null && loggedUser.id !== user.id && loggedUser.type !== "external" && user.type !== "external" && (
                 <div className="text-right ml-auto">
                   <SvgIconFeather onClick={handleOnChatClick} icon="message-circle" />
                 </div>

@@ -82,7 +82,7 @@ const MainLayout = (props) => {
       }
     }
   };
-
+  const isExternal = user.type === "external";
   return (
     <>
       <AudioStyle ref={refs.audio} controls>
@@ -93,10 +93,10 @@ const MainLayout = (props) => {
       </AudioStyle>
       <MainHeaderPanel />
       <MainContent id="main">
-        <Route {...props} component={MainNavigationPanel} path={["/:page"]} />
+        <Route render={(props) => <MainNavigationPanel isExternal={isExternal} {...props}/>} path={["/:page"]} />
         <Switch>
           <Route {...props} component={WorkspaceContentPanel} path={["/workspace"]} />
-          <Route {...props} component={MainContentPanel} path={["/:page"]} />
+          <Route render={(props)=> <MainContentPanel {...props} isExternal={isExternal}/>} path={["/:page"]} />
         </Switch>
       </MainContent>
       <ModalPanel />

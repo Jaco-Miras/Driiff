@@ -10,18 +10,18 @@ const Wrapper = styled.div`
 `;
 
 const MainContentPanel = (props) => {
-  const { className = "" } = props;
+  const { className = "", isExternal } = props;
 
   return (
     <Wrapper className={`main-content ${className}`} isOnWorkspace={props.match.params.page === "workspace"}>
       <Switch>
         <Route {...props} component={UserProfilePanel} path={["/profile/:id/:name/:mode", "/profile/:id/:name", "/profile"]} />
         <Route {...props} component={UserNotificationPanel} path={["/notifications"]} />
-        <Route {...props} component={CompanyDashboardPanel} path={["/dashboard"]} />
-        <Route {...props} component={CompanyPostsPanel} path={["/posts"]} />
-        <Route {...props} component={CompanyChatPanel} path={["/chat/:code?"]} />
-        <Route {...props} component={CompanyFilesPanel} path={["/files"]} />
-        <Route {...props} component={CompanyPeoplePanel} path={["/people"]} />
+        { !isExternal && <Route {...props} component={CompanyDashboardPanel} path={["/dashboard"]} /> }
+        { !isExternal && <Route {...props} component={CompanyPostsPanel} path={["/posts"]} /> }
+        { !isExternal && <Route {...props} component={CompanyChatPanel} path={["/chat/:code?"]} /> }
+        { !isExternal && <Route {...props} component={CompanyFilesPanel} path={["/files"]} /> }
+        { !isExternal && <Route {...props} component={CompanyPeoplePanel} path={["/people"]} /> }
         <Route {...props} component={CompanySettingsPanel} path={["/settings"]} />
         <Redirect
           from="*"
