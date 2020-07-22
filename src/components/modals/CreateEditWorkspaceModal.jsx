@@ -118,6 +118,7 @@ const SelectPeople = styled(PeopleSelect)`
 
 const StyledDescriptionInput = styled(DescriptionInput)`
     height: ${props => props.height}px;
+    max-height: 300px;
 `;
 
 const CreateEditWorkspaceModal = (props) => {
