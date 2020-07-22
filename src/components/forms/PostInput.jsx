@@ -90,7 +90,9 @@ const CloseButton = styled(SvgIconFeather)`
 
 /***  Commented out code are to be visited/refactored ***/
 const PostInput = (props) => {
-  const { selectedEmoji, onClearEmoji, selectedGif, onClearGif, dropAction, sent, handleClearSent, post, parentId, commentActions, userMention, handleClearUserMention, commentId } = props;
+  const { selectedEmoji, onClearEmoji, selectedGif, onClearGif, dropAction, sent, handleClearSent, 
+          post, parentId, commentActions, userMention, handleClearUserMention, commentId, members 
+  } = props;
   const dispatch = useDispatch();
   const reactQuillRef = useRef();
   const selectedChannel = useSelector((state) => state.chat.selectedChannel);
@@ -433,7 +435,7 @@ const PostInput = (props) => {
   useQuillInput(handleClearQuillInput, reactQuillRef);
   // useDraft(loadDraftCallback, "channel", text, textOnly, draftId);
 
-  const [modules] = useQuillModules("post_comment", handleSubmit);
+  const [modules] = useQuillModules("post_comment", handleSubmit, "top", reactQuillRef, members);
 
   return (
     <Wrapper className="chat-input-wrapper">

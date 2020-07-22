@@ -95,6 +95,7 @@ const ChatContentPanel = (props) => {
       type: "file_upload",
       droppedFiles: attachedFiles,
       mode: "chat",
+      members: selectedChannel ? selectedChannel.members : []
     };
 
     dispatch(addToModals(modal));

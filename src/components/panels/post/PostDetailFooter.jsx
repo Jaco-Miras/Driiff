@@ -5,7 +5,7 @@ import styled from "styled-components";
 import { joinWorkspace } from "../../../redux/actions/workspaceActions";
 import { Avatar, CommonPicker, SvgIconFeather } from "../../common";
 import PostInput from "../../forms/PostInput";
-import { useIsMember } from "../../hooks";
+//import { useIsMember } from "../../hooks";
 import { CommentQuote } from "../../list/post/item";
 
 const Wrapper = styled.div`
@@ -113,7 +113,10 @@ const FileNames = styled.div`
 `;
 
 const PostDetailFooter = (props) => {
-  const { className = "", onShowFileDialog, dropAction, post, parentId = null, commentActions, userMention = null, handleClearUserMention = null, commentId = null, innerRef = null } = props;
+  const { className = "", onShowFileDialog, dropAction, post, parentId = null, commentActions, 
+          userMention = null, handleClearUserMention = null, commentId = null, innerRef = null,
+          workspace, isMember
+  } = props;
 
   const dispatch = useDispatch();
   const ref = {
@@ -124,7 +127,7 @@ const PostDetailFooter = (props) => {
   const [selectedGif, setSelectedGif] = useState(null);
   const [sent, setSent] = useState(false);
 
-  const topic = useSelector((state) => state.workspaces.activeTopic);
+  //const topic = useSelector((state) => state.workspaces.activeTopic);
   const user = useSelector((state) => state.session.user);
   const editPostComment = useSelector((state) => state.posts.editPostComment);
 
@@ -161,7 +164,7 @@ const PostDetailFooter = (props) => {
     dispatch(
       joinWorkspace(
         {
-          group_id: topic.id,
+          group_id: workspace.id,
           user_id: user.id,
         },
         (err, res) => {
@@ -177,8 +180,7 @@ const PostDetailFooter = (props) => {
       )
     );
   };
-
-  const isMember = useIsMember(topic && topic.members.length ? topic.members.map((m) => m.id) : []);
+  //const isMember = useIsMember(topic && topic.members.length ? topic.members.map((m) => m.id) : []);
 
   return (
     <Wrapper className={`post-detail-footer card-body ${className}`}>
@@ -214,6 +216,7 @@ const PostDetailFooter = (props) => {
                     selectedEmoji={selectedEmoji}
                     onClearEmoji={onClearEmoji}
                     dropAction={dropAction}
+                    members={workspace ? workspace.members : []}
                   />
                 </ChatInputContainer>
                 <div className="chat-footer-buttons d-flex">
@@ -229,9 +232,9 @@ const PostDetailFooter = (props) => {
           <Dflex></Dflex>
         </>
       )}
-      {isMember === false && topic !== null && (
+      {isMember === false && workspace !== null && (
         <Dflex className="channel-viewing">
-          <div className="channel-name">You are viewing #{topic.name}</div>
+          <div className="channel-name">You are viewing #{workspace.name}</div>
           <div className="channel-action">
             <button onClick={handleJoinWorkspace}>Join workspace</button>
           </div>

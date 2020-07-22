@@ -133,7 +133,7 @@ const PickerContainer = styled(PickerEmoji)`
 `;
 
 const DescriptionInput = (props) => {
-  const {onChange, showFileButton = false, onOpenFileDialog, defaultValue = "", mode = "", valid = null, feedback = "", height = 80, ...otherProps} = props;
+  const {onChange, showFileButton = false, onOpenFileDialog, defaultValue = "", mode = "", valid = null, feedback = "", height = 80, members = [], ...otherProps} = props;
 
   const reactQuillRef = useRef();
   const pickerRef = useRef();
@@ -160,7 +160,7 @@ const DescriptionInput = (props) => {
     }
   }, []);*/
 
-  const [modules] = useQuillModules("description");
+  const [modules] = useQuillModules("description", () => {}, "top", reactQuillRef, members);
 
   return (
     <WrapperDiv>

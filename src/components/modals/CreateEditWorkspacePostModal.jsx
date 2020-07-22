@@ -750,6 +750,7 @@ const CreateEditWorkspacePostModal = (props) => {
                     onOpenFileDialog={handleOpenFileDialog}
                     defaultValue={item.hasOwnProperty("draft") ? form.body : mode === "edit" ? item.post.body : ""}
                     mode={mode}
+                    members={activeTopic ? activeTopic.members : []}
                     required
                     /*valid={valid.description}
                                feedback={feedback.description}*/

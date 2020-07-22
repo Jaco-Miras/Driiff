@@ -79,7 +79,7 @@ const MarkAsRead = styled.div`
 `;
 
 const PostDetail = (props) => {
-  const { post, postActions, user, onGoBack, workspace } = props;
+  const { post, postActions, user, onGoBack, workspace, isMember } = props;
   const dispatch = useDispatch();
 
   const [showDropZone, setshowDropZone] = useState(false);
@@ -154,6 +154,7 @@ const PostDetail = (props) => {
       droppedFiles: attachedFiles,
       mode: "post",
       post: post,
+      members: workspace ? workspace.members : []
     };
 
     dispatch(addToModals(modal));
@@ -263,7 +264,7 @@ const PostDetail = (props) => {
         )}
         <PostComments comments={comments} post={post} user={user} commentActions={commentActions} onShowFileDialog={handleOpenFileDialog} dropAction={dropAction} />
         <hr className="m-0" />
-        <PostDetailFooter post={post} commentActions={commentActions} onShowFileDialog={handleOpenFileDialog} dropAction={dropAction} />
+        <PostDetailFooter post={post} commentActions={commentActions} onShowFileDialog={handleOpenFileDialog} dropAction={dropAction} workspace={workspace} isMember={isMember} />
       </MainBody>
     </>
   );
