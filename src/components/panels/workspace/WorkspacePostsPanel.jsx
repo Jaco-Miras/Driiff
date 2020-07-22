@@ -1,9 +1,9 @@
 import React, { useCallback, useEffect } from "react";
-import { useSelector } from "react-redux";
+//import { useSelector } from "react-redux";
 import { useHistory, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { SvgEmptyState } from "../../common";
-import { useIsMember, usePosts } from "../../hooks";
+import { usePosts } from "../../hooks";
 import { PostDetail, PostFilterSearchPanel, PostItemPanel, PostSidebar } from "../post";
 
 const Wrapper = styled.div`
@@ -49,14 +49,14 @@ const EmptyState = styled.div`
 `;
 
 const WorkspacePostsPanel = (props) => {
-  const { className = "" } = props;
+  const { className = "", workspace, isMember } = props;
 
   const params = useParams();
   const history = useHistory();
+  
+  // const workspace = useSelector((state) => state.workspaces.activeTopic);
 
-  const workspace = useSelector((state) => state.workspaces.activeTopic);
-
-  const isMember = useIsMember(workspace && workspace.member_ids.length ? workspace.member_ids : []);
+  // const isMember = useIsMember(workspace && workspace.member_ids.length ? workspace.member_ids : []);
 
   const { actions, posts, filter, tag, sort, post, user, search, count, counters } = usePosts();
 
@@ -103,7 +103,7 @@ const WorkspacePostsPanel = (props) => {
               {post ? (
                 <div className="card card-body app-content-body mb-4">
                   <PostDetailWrapper className="fadeBottom">
-                    <PostDetail post={post} postActions={actions} user={user} history={history} onGoBack={handleGoback} workspace={workspace} />
+                    <PostDetail post={post} postActions={actions} user={user} history={history} onGoBack={handleGoback} workspace={workspace} isMember={isMember} />
                   </PostDetailWrapper>
                 </div>
               ) : (

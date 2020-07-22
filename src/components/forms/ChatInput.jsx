@@ -507,7 +507,7 @@ const ChatInput = (props) => {
   useQuillInput(handleClearQuillInput, reactQuillRef);
   useDraft(loadDraftCallback, "channel", text, textOnly, draftId);
 
-  const [modules] = useQuillModules("chat", handleSubmit, "top", reactQuillRef);
+  const [modules] = useQuillModules("chat", handleSubmit, "top", reactQuillRef, user.type === "external" ? selectedChannel.members : []);
 
   return (
     <Wrapper className="chat-input-wrapper">

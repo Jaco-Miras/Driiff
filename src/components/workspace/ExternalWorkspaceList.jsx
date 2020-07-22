@@ -1,0 +1,124 @@
+import React, { useRef } from "react";
+import { useHistory } from "react-router-dom";
+import { Badge } from "reactstrap";
+import styled from "styled-components";
+import { replaceChar } from "../../helpers/stringFormatter";
+import { SvgIconFeather } from "../common";
+
+const Wrapper = styled.li`
+  ${(props) => !props.show && "display: none;"}
+  cursor: pointer;
+  cursor: hand;
+  position: relative;
+  transition: all 0.3s ease;
+  a.archived-folder {
+    ${"" /* color: #bebebe !important; */}
+  }
+  > a {
+    position: relative;
+    font-weight: ${(props) => (props.selected ? "600" : "400")};
+    div {
+      position: relative;
+      height: 40px;
+      display: inline-flex;
+      align-items: center;
+      .badge {
+        position: absolute;
+        width: 6px;
+        height: 6px;
+        top: 7px;
+        right: -12px;
+        border-radius: 50%;
+        background: #28a745;
+        font-size: 0;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        opacity: 1;
+        &.enter-active {
+          transform: translate(0, 0);
+        }
+
+        &.leave-active {
+          opacity: 0;
+          transform: translate(0, 100%);
+        }
+      }
+    }
+  }
+
+  ul {
+    li {
+      .badge {
+        position: absolute;
+        width: 6px;
+        height: 6px;
+        top: 7px;
+        right: -12px;
+        border-radius: 50%;
+        background: #28a745;
+        font-size: 0;
+      }
+    }
+  }
+  .nav-action {
+    ${"" /* background-color: #fff3; */}
+    background-color: #ffffff14;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    color: #cbd4db;
+    padding: 0 10px;
+    border-bottom-left-radius: 3px;
+    border-bottom-right-radius: 3px;
+    svg {
+      margin-right: 4px;
+      width: 13px;
+      height: 13px;
+    }
+  }
+`;
+
+const LockIcon = styled(SvgIconFeather)`
+  height: 12px !important;
+  width: 12px !important;
+  cursor: pointer;
+  margin-left: 4px;
+  color: #fff8;
+`;
+
+const ExternalWorkspaceList = (props) => {
+  const { className = "", show = true, workspace } = props;
+
+//   const dispatch = useDispatch();
+  const history = useHistory();
+  const ref = {
+    container: useRef(null),
+  };
+
+  const handleSelectWorkspace = () => {
+    //set the selected topic
+    if (workspace.selected) return;
+    history.push(`/workspace/chat/${workspace.id}/${replaceChar(workspace.name)}`);
+  };
+ 
+  return (
+    <Wrapper ref={ref.container} className={`workspace-list fadeIn ${className}`} selected={workspace.selected} show={show}>
+      <a onClick={handleSelectWorkspace}>
+        <div>
+          {workspace.name}
+
+          {workspace.is_lock !== 0 && <LockIcon icon="lock" />}
+          {workspace.is_active === 0 && <LockIcon icon="archive" />}
+
+          {workspace.unread_count > 0 && (
+            <Badge color="danger">
+              {workspace.unread_count}
+            </Badge>
+          )}
+        </div>
+      </a>
+    </Wrapper>
+  );
+};
+
+export default ExternalWorkspaceList;

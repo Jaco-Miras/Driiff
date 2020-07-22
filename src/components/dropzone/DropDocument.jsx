@@ -22,8 +22,7 @@ export const DropDocument = forwardRef((props, ref) => {
 
   const toastr = useToaster();
 
-  const cbOnDrop = useCallback(
-    ({ acceptedFiles, rejectedFiles }) => {
+  const cbOnDrop = ({ acceptedFiles, rejectedFiles }) => {
       let toastrOption = {
         timeOut: 8000,
         icon: "error",
@@ -57,9 +56,7 @@ export const DropDocument = forwardRef((props, ref) => {
       }
 
       onDrop({ acceptedFiles });
-    },
-    [attachedFiles, params]
-  );
+    }
 
   let accept = [
     "image/ai",

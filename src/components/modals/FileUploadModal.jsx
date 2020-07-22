@@ -128,7 +128,7 @@ const FilesPreviewContainer = styled.div`
 const DocDiv = styled.div``;
 
 const FileUploadModal = (props) => {
-    const {type, mode, droppedFiles, post = null} = props.data;
+    const {type, mode, droppedFiles, post = null, members = []} = props.data;
 
     const dispatch = useDispatch();
     const reactQuillRef = useRef();
@@ -308,7 +308,7 @@ const FileUploadModal = (props) => {
         }
     }, [init]);
 
-    const [modules] = useQuillModules("chat_upload");
+    const [modules] = useQuillModules("chat_upload", () => {}, "top", reactQuillRef, members);
 
     return (
         <Modal isOpen={modal} toggle={toggle} size={"lg"} centered>
