@@ -6,13 +6,13 @@ import { SvgIconFeather } from "../../common";
 import { useSelectQuote } from "../../hooks";
 
 const QuoteWrapper = styled.div`
-  padding: 0 10px 10px;
+  padding: 0 10px 10px 7px;
   display: block;
   text-align: left;
   position: relative;
   width: 100%;
   border-left: 2px solid #972c86;
-  margin-left: 2.25rem;
+  margin-left: 3rem;
   margin-bottom: 10px;
 
   .quote-author-name,
@@ -31,7 +31,8 @@ const QuoteWrapper = styled.div`
   .quote-clear-container {
     position: absolute;
     left: -35px;
-    top: calc(50% - 10px);
+    top: 12px;
+    //top: calc(50% - 10px);
     background-color: #fff;
     cursor: pointer;
     cursor: hand;
