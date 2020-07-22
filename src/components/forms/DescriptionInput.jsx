@@ -1,9 +1,9 @@
-import React, { useEffect, useRef, useState } from "react";
-import { InputGroup, Label } from "reactstrap";
+import React, {useRef, useState} from "react";
+import {InputGroup, Label} from "reactstrap";
 import styled from "styled-components";
-import { PickerEmoji, SvgIconFeather } from "../common";
-import { useQuillModules } from "../hooks";
-import { InputFeedback } from "./index";
+import {PickerEmoji, SvgIconFeather} from "../common";
+import {useQuillModules} from "../hooks";
+import {InputFeedback} from "./index";
 import QuillEditor from "./QuillEditor";
 
 const WrapperDiv = styled(InputGroup)`
@@ -62,9 +62,9 @@ const WrapperDiv = styled(InputGroup)`
 `;
 
 const StyledQuillEditor = styled(QuillEditor)`
-  height: 80px;
-  &.description-input {
-    max-height: 130px;
+  height: ${props => props.height}px;
+  
+  &.description-input {    
     overflow: auto;
     overflow-x: hidden;
     position: static;
@@ -133,7 +133,7 @@ const PickerContainer = styled(PickerEmoji)`
 `;
 
 const DescriptionInput = (props) => {
-  const { onChange, showFileButton = false, onOpenFileDialog, defaultValue = "", mode = "", valid = null, feedback = "", ...otherProps } = props;
+  const {onChange, showFileButton = false, onOpenFileDialog, defaultValue = "", mode = "", valid = null, feedback = "", height = 80, ...otherProps} = props;
 
   const reactQuillRef = useRef();
   const pickerRef = useRef();
@@ -152,24 +152,26 @@ const DescriptionInput = (props) => {
     editor.setSelection(cursorPosition + 2);
   };
 
-  useEffect(() => {
+  /*useEffect(() => {
     if (mode === "edit" && defaultValue) {
       const editor = reactQuillRef.current.getEditor();
       editor.clipboard.dangerouslyPasteHTML(0, defaultValue);
       reactQuillRef.current.blur();
     }
-  }, []);
+  }, []);*/
 
   const [modules] = useQuillModules("description");
 
   return (
     <WrapperDiv>
       <Label for="firstMessage">Description</Label>
-      <DescriptionInputWrapper className={`description-wrapper ${valid === null ? "" : valid ? "is-valid" : "is-invalid"}`}>
-        <StyledQuillEditor className="description-input" modules={modules} ref={reactQuillRef} onChange={onChange} {...otherProps} />
+      <DescriptionInputWrapper
+          className={`description-wrapper ${valid === null ? "" : valid ? "is-valid" : "is-invalid"}`}>
+        <StyledQuillEditor className="description-input" modules={modules} ref={reactQuillRef} onChange={onChange}
+                           height={80} defaultValue={defaultValue} {...otherProps} />
         <Buttons className="action-wrapper">
-          <IconButton onClick={handleShowEmojiPicker} icon="smile" />
-          {showFileButton && <IconButton onClick={onOpenFileDialog} icon="paperclip" />}
+          <IconButton onClick={handleShowEmojiPicker} icon="smile"/>
+          {showFileButton && <IconButton onClick={onOpenFileDialog} icon="paperclip"/>}
         </Buttons>
         <InputFeedback valid={valid}>{feedback}</InputFeedback>
       </DescriptionInputWrapper>

@@ -1,13 +1,13 @@
-import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { Modal, ModalFooter } from "reactstrap";
+import React, {useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
+import {Modal, ModalFooter} from "reactstrap";
 import styled from "styled-components";
-import { postChatMessage, setSelectedChannel } from "../../redux/actions/chatActions";
-import { clearModal } from "../../redux/actions/globalActions";
-import { SvgIconFeather } from "../common";
+import {postChatMessage, setSelectedChannel} from "../../redux/actions/chatActions";
+import {clearModal} from "../../redux/actions/globalActions";
+import {SvgIconFeather} from "../common";
 import SearchForm from "../forms/SearchForm";
 import ChannelIcon from "../list/chat/ChannelIcon";
-import { ModalHeaderSection } from "./index";
+import {ModalHeaderSection} from "./index";
 
 const IconButton = styled(SvgIconFeather)`
   cursor: pointer;
@@ -145,27 +145,28 @@ const ChatForwardModal = (props) => {
   });
 
   return (
-    <Modal isOpen={modal} toggle={toggle} centered className="chat-forward-modal">
-      <ModalHeaderSection toggle={toggle}>Transfer the message to</ModalHeaderSection>
-      <PopUpBody>
-        <Search onChange={handleInputChange} onClick={handleSearch} placeholder="Channel search" />
-        <ChannelsContainer>
-          <label>Recent channels</label>
-          {Object.keys(channels).length > 0 && (
-            <ul>
-              {filteredChannels.map((channel) => {
-                return (
-                  <StlyedList key={channel.id} onClick={() => handleChosenChannel(channel)} chosen={chosenChannel && chosenChannel.id === channel.id}>
-                    <StyledChannelIcon className={"message-forward-popup"} channel={channel} />
-                    {channel.title}
-                  </StlyedList>
-                );
-              })}
-            </ul>
-          )}
-        </ChannelsContainer>
-      </PopUpBody>
-      {chosenChannel && (
+      <Modal isOpen={modal} toggle={toggle} size={"lg"} className="chat-forward-modal" centered>
+        <ModalHeaderSection toggle={toggle}>Transfer the message to</ModalHeaderSection>
+        <PopUpBody>
+          <Search onChange={handleInputChange} onClick={handleSearch} placeholder="Channel search"/>
+          <ChannelsContainer>
+            <label>Recent channels</label>
+            {Object.keys(channels).length > 0 && (
+                <ul>
+                  {filteredChannels.map((channel) => {
+                    return (
+                        <StlyedList key={channel.id} onClick={() => handleChosenChannel(channel)}
+                                    chosen={chosenChannel && chosenChannel.id === channel.id}>
+                          <StyledChannelIcon className={"message-forward-popup"} channel={channel}/>
+                          {channel.title}
+                        </StlyedList>
+                    );
+                  })}
+                </ul>
+            )}
+          </ChannelsContainer>
+        </PopUpBody>
+        {chosenChannel && (
         <StyledModalFooter>
           <span className="chosen-channel-title">{chosenChannel ? chosenChannel.title : null}</span>
           <IconButton onClick={handleForwardMessage} icon="send" className={"bg-primary"} />

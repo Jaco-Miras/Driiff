@@ -3,8 +3,8 @@ import {useDispatch, useSelector} from "react-redux";
 import {useHistory} from "react-router-dom";
 import {Input, InputGroup, Label, Modal, ModalBody} from "reactstrap";
 import styled from "styled-components";
-import {replaceChar, EmailRegex} from "../../helpers/stringFormatter";
-import {setPendingUploadFilesToWorkspace, deleteWorkspaceFiles} from "../../redux/actions/fileActions";
+import {EmailRegex, replaceChar} from "../../helpers/stringFormatter";
+import {deleteWorkspaceFiles, setPendingUploadFilesToWorkspace} from "../../redux/actions/fileActions";
 import {addToModals, clearModal} from "../../redux/actions/globalActions";
 import {createWorkspace, fetchTimeline, updateWorkspace} from "../../redux/actions/workspaceActions";
 import {FileAttachments} from "../common";
@@ -116,6 +116,10 @@ const SelectPeople = styled(PeopleSelect)`
   }
 `;
 
+const StyledDescriptionInput = styled(DescriptionInput)`
+    height: ${props => props.height}px;
+`;
+
 const CreateEditWorkspaceModal = (props) => {
     const {type, mode, item = null} = props.data;
 
@@ -162,10 +166,11 @@ const CreateEditWorkspaceModal = (props) => {
         folder: "",
         team: "",
     });
-    const formRef = {
-        dropzoneRef: useRef(),
-    };
-    const inputRef = useRef();
+    const refs = {
+        container: useRef(null),
+        workspace_name: useRef(null),
+        dropZone: useRef(null)
+    }
 
     const _validateName = useCallback(() => {
         if (form.name === "") {
@@ -293,7 +298,7 @@ const CreateEditWorkspaceModal = (props) => {
     const handleNameBlur = () => {
         _validateName();
     };
-    
+
     const handleDeleteFileAttachements = () => {
         let removed_file_ids = [];
         if (item.primary_files.length) {
@@ -498,8 +503,8 @@ const CreateEditWorkspaceModal = (props) => {
     );
 
     const handleOpenFileDialog = () => {
-        if (formRef.dropzoneRef.current) {
-            formRef.dropzoneRef.current.open();
+        if (refs.dropZone.current) {
+            refs.dropZone.current.open();
         }
     };
 
@@ -614,7 +619,7 @@ const CreateEditWorkspaceModal = (props) => {
         );
         toggle();
     }, []);
-    
+
     useEffect(() => {
         let currentUser = null;
         if (Object.values(users).length) {
@@ -710,8 +715,8 @@ const CreateEditWorkspaceModal = (props) => {
     }, []);
 
     const onOpened = () => {
-        if (inputRef && inputRef.current) {
-            inputRef.current.focus();
+        if (refs.workspace_name && refs.workspace_name.current) {
+            refs.workspace_name.current.focus();
         }
     };
 
@@ -722,7 +727,7 @@ const CreateEditWorkspaceModal = (props) => {
                 setInvitedEmails((prevState) => [...prevState, inputValue]);
                 setForm((prevState) => ({
                     ...prevState,
-                    selectedUsers: [ ...prevState.selectedUsers, {
+                    selectedUsers: [...prevState.selectedUsers, {
                         id: require("shortid").generate(),
                         label: inputValue,
                         value: inputValue,
@@ -734,19 +739,19 @@ const CreateEditWorkspaceModal = (props) => {
             }
         }
     };
-    
+
     const handleInputChange = (e) => {
         setInputValue(e);
     }
-    
+
     return (
-        <Modal isOpen={modal} toggle={toggle} centered size={"md"} onOpened={onOpened}>
+        <Modal innerRef={refs.container} isOpen={modal} toggle={toggle} centered size="lg" onOpened={onOpened}>
             <ModalHeaderSection
                 toggle={toggle}>{mode === "edit" ? "Edit " + activeTabName + " workspace" : "Create new " + activeTabName + " workspace"}</ModalHeaderSection>
             <ModalBody onDragOver={handleShowDropzone}>
                 <DropDocument
                     hide={!showDropzone}
-                    ref={formRef.dropzoneRef}
+                    ref={refs.dropZone}
                     onDragLeave={handleHideDropzone}
                     onDrop={({acceptedFiles}) => {
                         dropAction(acceptedFiles);
@@ -764,7 +769,7 @@ const CreateEditWorkspaceModal = (props) => {
                         onBlur={handleNameBlur}
                         valid={valid.name}
                         invalid={valid.name !== null && !valid.name}
-                        innerRef={inputRef}
+                        innerRef={refs.workspace_name}
                     />
                     <InputFeedback valid={valid.name}>{feedback.name}</InputFeedback>
                 </WrapperDiv>
@@ -784,11 +789,15 @@ const CreateEditWorkspaceModal = (props) => {
                 )}
                 <WrapperDiv>
                     <Label for="people">Team</Label>
-                    <SelectPeople valid={valid.team} options={userOptions} value={form.selectedUsers} inputValue={inputValue}
-                                  onChange={handleSelectUser} onKeyDown={handleKeyDown} onInputChange={handleInputChange}/>
+                    <SelectPeople
+                        valid={valid.team} options={userOptions} value={form.selectedUsers}
+                        inputValue={inputValue}
+                        onChange={handleSelectUser} onKeyDown={handleKeyDown}
+                        onInputChange={handleInputChange}/>
                     <InputFeedback valid={valid.user}>{feedback.user}</InputFeedback>
                 </WrapperDiv>
-                <DescriptionInput
+                <StyledDescriptionInput
+                    height={window.innerHeight - 660}
                     required
                     showFileButton={true}
                     onChange={handleQuillChange}
