@@ -38,7 +38,7 @@ const GoogleDrive = (props) => {
   };
   return (
     <Wrapper className={"dropdown"} onClick={toggle}>
-      <SvgIconFeather className="mr-2" icon="gdrive" viewBox="0 0 512 512" height="20" width="15" fill="#000" opacity=".8"/> Google drive
+      <SvgIconFeather className="mr-2" icon="gdrive" viewBox="0 0 512 512" height="20" width="15" fill="#000" opacity=".8"/> Google Drive
       <div className={`dropdown-menu ${show ? "show" : ""}`}>
         {localStorage.getItem("gdrive") === null ? (
           <GooglePicker
