@@ -129,7 +129,7 @@ const CreateEditWorkspaceModal = (props) => {
     const toaster = useToaster();
     const [modal, setModal] = useState(true);
     const user = useSelector((state) => state.session.user);
-    const users = useSelector((state) => state.users.mentions);
+    const users = useSelector((state) => state.users.users);
     const workspaces = useSelector((state) => state.workspaces.workspaces);
     const activeTab = useSelector((state) => state.workspaces.activeTab);
     const [activeTabName, setActiveTabName] = useState("Internal");
@@ -713,7 +713,7 @@ const CreateEditWorkspaceModal = (props) => {
             };
         });
         setUserOptions(userOptions);
-    }, []);
+    }, [Object.values(users).length]);
 
     const onOpened = () => {
         if (refs.workspace_name && refs.workspace_name.current) {
@@ -725,17 +725,29 @@ const CreateEditWorkspaceModal = (props) => {
         if (e.key === "Enter") {
             //validate email - if email is valid then add to useroptions
             if (EmailRegex.test(inputValue)) {
-                setInvitedEmails((prevState) => [...prevState, inputValue]);
-                setForm((prevState) => ({
-                    ...prevState,
-                    selectedUsers: [...prevState.selectedUsers, {
-                        id: require("shortid").generate(),
-                        label: inputValue,
-                        value: inputValue,
-                        name: inputValue,
-                        first_name: inputValue
-                    }],
-                }));
+                const userExists = userOptions.some((uo) => uo.email === inputValue);
+
+                if (userExists) {
+                    let userOption = userOptions.filter((uo) => uo.email === inputValue)
+                    if (userOption.length && !form.selectedUsers.some((user) => user.email === inputValue)) {
+                        setForm((prevState) => ({
+                            ...prevState,
+                            selectedUsers: [...prevState.selectedUsers, userOption[0]],
+                        }));
+                    }
+                } else {
+                    setInvitedEmails((prevState) => [...prevState, inputValue]);
+                    setForm((prevState) => ({
+                        ...prevState,
+                        selectedUsers: [...prevState.selectedUsers, {
+                            id: require("shortid").generate(),
+                            label: inputValue,
+                            value: inputValue,
+                            name: inputValue,
+                            first_name: inputValue
+                        }],
+                    }));
+                }
                 setInputValue("");
             }
         }
@@ -743,7 +755,14 @@ const CreateEditWorkspaceModal = (props) => {
 
     const handleInputChange = (e) => {
         setInputValue(e);
-    }
+    };
+
+    const filterOptions = (candidate, input) => {
+        if (input) {
+            return candidate.label.toLowerCase().search(input.toLowerCase()) !== -1 || candidate.data.email.toLowerCase().search(input.toLowerCase()) !== -1;
+        }
+        return true;
+    };
 
     return (
         <Modal innerRef={refs.container} isOpen={modal} toggle={toggle} centered size="lg" onOpened={onOpened}>
@@ -793,8 +812,12 @@ const CreateEditWorkspaceModal = (props) => {
                     <SelectPeople
                         valid={valid.team} options={userOptions} value={form.selectedUsers}
                         inputValue={inputValue}
-                        onChange={handleSelectUser} onKeyDown={handleKeyDown}
-                        onInputChange={handleInputChange}/>
+                        onChange={handleSelectUser} 
+                        onKeyDown={handleKeyDown}
+                        onInputChange={handleInputChange}
+                        filterOption={filterOptions}
+                        isSearchable
+                    />
                     <InputFeedback valid={valid.user}>{feedback.user}</InputFeedback>
                 </WrapperDiv>
                 <StyledDescriptionInput

@@ -4,7 +4,7 @@ import { Redirect, Route, Switch } from "react-router-dom";
 import styled from "styled-components";
 import { addToModals } from "../../../redux/actions/globalActions";
 import { SvgEmptyState } from "../../common";
-import { useIsMember, useWorkspace } from "../../hooks";
+import { useIsMember, useWorkspace, useUsers } from "../../hooks";
 import { WorkspaceChatPanel, WorkspaceDashboardPanel, WorkspaceFilesPanel, WorkspacePageHeaderPanel, WorkspacePeoplePanel, WorkspacePostsPanel, WorkspaceSettingsPanel } from "../workspace";
 
 const Wrapper = styled.div`
@@ -35,6 +35,7 @@ const WorkspaceContentPanel = (props) => {
 
   const dispatch = useDispatch();
 
+  useUsers();
   const { workspaces, workspacesLoaded, workspace } = useWorkspace();
   const isMember = useIsMember(workspace && workspace.member_ids.length ? workspace.member_ids : []);
 
@@ -69,14 +70,12 @@ const WorkspaceContentPanel = (props) => {
           />
           <Switch>
             <Route
-              {...props}
               render={(props) => <WorkspaceDashboardPanel {...props} workspace={workspace} isMember={isMember} />}
               path={["/workspace/dashboard/:folderId/:folderName/:workspaceId/:workspaceName", "/workspace/dashboard/:workspaceId/:workspaceName", "/workspace/dashboard"]}
             />
             <Route
               exact={true}
-              {...props}
-              component={WorkspacePostsPanel}
+              render={() => <WorkspacePostsPanel {...props} workspace={workspace} isMember={isMember}/>}
               path={[
                 "/workspace/posts/:folderId/:folderName/:workspaceId/:workspaceName/post/:postId/:postTitle",
                 "/workspace/posts/:folderId/:folderName/:workspaceId/:workspaceName",
@@ -85,7 +84,8 @@ const WorkspaceContentPanel = (props) => {
                 "/workspace/posts",
               ]}
             />
-            <Route {...props} component={WorkspaceChatPanel} path={["/workspace/chat/:folderId/:folderName/:workspaceId/:workspaceName", "/workspace/chat/:workspaceId/:workspaceName", "/workspace/chat"]} />
+            <Route render={() => <WorkspaceChatPanel {...props} workspace={workspace}/>} 
+              path={["/workspace/chat/:folderId/:folderName/:workspaceId/:workspaceName", "/workspace/chat/:workspaceId/:workspaceName", "/workspace/chat"]} />
             <Route
               exact={true}
               {...props}

@@ -11,7 +11,7 @@ const MainNavigationPanel = (props) => {
 
   return (
     <Wrapper className={`navigation ${className}`}>
-      <Route {...props} component={MainNavigationTabPanel} path={["/:page"]} />
+      <Route render={() => <MainNavigationTabPanel {...props}/>} path={["/:page"]} />
       <Route
         exact={true}
         {...props}
