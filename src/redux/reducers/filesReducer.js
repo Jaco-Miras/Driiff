@@ -237,15 +237,15 @@ export default (state = INITIAL_STATE, action) => {
       let newWorkspaceFiles = {...state.workspaceFiles};
       if (newWorkspaceFiles.hasOwnProperty(action.data.topic_id)) {
 
-        let files = [];
-        action.data.attachments.forEach(attachment => {
-          files.push({
+        let gFiles = action.data.attachments.map((attachment) => {
+          return {
             created_at: {
               timestamp: attachment.payload.lastEditedUtc
             },
             download_link: attachment.payload.embedUrl,
             folder_id: null,
-            id: attachment.payload.id,
+            id: attachment.id,
+            payload_id: attachment.payload.id,
             is_favorite: false,
             link_id: action.data.topic_id,
             link_index_id: 0,
@@ -254,41 +254,41 @@ export default (state = INITIAL_STATE, action) => {
             search: attachment.payload.name,
             size: attachment.payload.sizeBytes,
             type: attachment.payload.type,
-          })
+          }
         });
 
-        newWorkspaceFiles = {
-          [action.data.topic_id]: {
-            ...newWorkspaceFiles[action.data.topic_id],
-            files: {...convertArrayToObject(files, "id"), ...newWorkspaceFiles[action.data.topic_id].files},
-            loaded: true,
-          },
-        };
-        console.log(newWorkspaceFiles)
-      } else {
-        newWorkspaceFiles = {
-          ...newWorkspaceFiles,
-          [action.data.topic_id]: {
-            files: convertArrayToObject(action.data.files, "id"),
-            folders: {},
-            storage: 0,
-            count: 0,
-            stars: 0,
-            trash: 0,
-            popular_files: [],
-            recently_edited: [],
-            favorite_files: [],
-            trash_files: {},
-            search_results: [],
-            search_value: "",
-            loaded: true,
-          },
-        };
+        newWorkspaceFiles[action.data.topic_id].files = {...newWorkspaceFiles[action.data.topic_id].files, ...convertArrayToObject(gFiles, "id")};
       }
 
       return {
         ...state,
-        //workspaceFiles: newWorkspaceFiles,
+        workspaceFiles: newWorkspaceFiles,
+      };
+    }
+    case "POST_GOOGLE_ATTACHMENTS_SUCCESS": {
+      let newWorkspaceFiles = {...state.workspaceFiles};
+      if (newWorkspaceFiles.hasOwnProperty(action.data.link_id)) {
+        let file = {
+          created_at: action.data.created_at,
+          user_id: action.data.user_id,
+          folder_id: null,
+          download_link: action.data.payload.embedUrl,
+          id: action.data.id,
+          payload_id: action.data.payload.id,
+          is_favorite: false,
+          link_id: parseInt(action.data.link_id),
+          link_index_id: 0,
+          link_type: "TOPIC",
+          mime_type: action.data.payload.mimeType,
+          search: action.data.payload.name,
+          size: action.data.payload.sizeBytes,
+          type: action.data.payload.type,
+        };
+        newWorkspaceFiles[action.data.link_id].files[action.data.id] = file;
+      }
+      return {
+        ...state,
+        workspaceFiles: newWorkspaceFiles,
       };
     }
     case "GET_WORKSPACE_FILE_DETAILS_SUCCESS": {
