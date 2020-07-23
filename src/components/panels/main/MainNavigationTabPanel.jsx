@@ -202,7 +202,23 @@ const MainNavigationTabPanel = (props) => {
   useSetWorkspace();
   const sortedWorkspaces = useSortWorkspaces();
   const generalWorkspaces = sortedWorkspaces.filter((ws) => ws.type !== "FOLDER" && ws.topic_detail.active === 1);
-  const archiveInternalWorkspaces = sortedWorkspaces.filter((ws) => ws.type !== "FOLDER" && ws.is_external === 0 && ws.topic_detail.active === 0);
+  const archiveInternalWorkspaces = sortedWorkspaces.filter((ws) => {
+    if (ws.type !== "FOLDER" && ws.topic_detail.active === 0) {
+      return true;
+    } else if (ws.type === "FOLDER") {
+      if (Object.values(ws.topics).length) {
+        return Object.values(ws.topics).some((t) => t.active === 0);
+      } else {
+        return false;
+      }
+    }
+  }).map((ws) => {
+    if (ws.type === "FOLDER") {
+      return Object.values(ws.topics).filter((t) => t.active === 0);
+    } else {
+      return ws;
+    }
+  }).flat();
 
   return (
     <Wrapper className={`navigation-menu-tab ${className}`}>

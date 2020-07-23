@@ -386,7 +386,7 @@ const CreateEditWorkspaceModal = (props) => {
                 workspace_id: form.selectedFolder && form.has_folder ? form.selectedFolder.value : 0,
                 topic_id: item.id,
                 remove_member_ids: removed_members,
-                new_member_ids: added_members,
+                new_member_ids: added_members.filter((u) => typeof u === "number"),
                 system_message: `CHANNEL_UPDATE::${JSON.stringify({
                     author: {
                         id: user.id,
@@ -395,7 +395,7 @@ const CreateEditWorkspaceModal = (props) => {
                         profile_image_link: user.profile_image_link,
                     },
                     title: form.name === item.title ? "" : form.name,
-                    added_members: added_members,
+                    added_members: added_members.filter((u) => typeof u === "number"),
                     removed_members: removed_members,
                 })}`,
             };

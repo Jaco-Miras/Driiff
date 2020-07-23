@@ -262,7 +262,7 @@ const PostDetail = (props) => {
             <hr className="m-0" />
           </>
         )}
-        <PostComments comments={comments} post={post} user={user} commentActions={commentActions} onShowFileDialog={handleOpenFileDialog} dropAction={dropAction} />
+        <PostComments comments={comments} post={post} user={user} commentActions={commentActions} onShowFileDialog={handleOpenFileDialog} dropAction={dropAction} workspace={workspace} isMember={isMember}/>
         <hr className="m-0" />
         <PostDetailFooter post={post} commentActions={commentActions} onShowFileDialog={handleOpenFileDialog} dropAction={dropAction} workspace={workspace} isMember={isMember} />
       </MainBody>

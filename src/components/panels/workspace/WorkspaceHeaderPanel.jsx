@@ -203,6 +203,9 @@ const WorspaceHeaderPanel = () => {
                   <li className="nav-item">
                     <WorkspaceName>{activeTopic.name}</WorkspaceName>
                   </li>
+                  <li>
+                    <SettingsLink />
+                  </li>
                 </>
               ) : (
                 <>
