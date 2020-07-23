@@ -70,10 +70,16 @@ const WrapperDiv = styled(InputGroup)`
   &.action-wrapper {
     margin-top: 40px;
     
-    .btn-archive {
-      display: flex;
-      margin-left: auto;
-      text-decoration: underline;
+    .action-archive-wrapper {
+        display: flex;
+        width: 100%;
+            
+        .btn-archive {
+          display: flex;
+          margin-left: auto;
+          text-decoration: underline;
+          color: #a7abc3;
+        }
     }
   }
 `;
@@ -849,7 +855,7 @@ const CreateEditWorkspaceModal = (props) => {
                     </button>
                     {
                         mode === "edit" &&
-                        <>
+                        <div className="action-archive-wrapper">
                             {
                                 item.topic_detail.active === 1 ?
                                     <span onClick={handleShowArchiveConfirmation}
@@ -858,7 +864,7 @@ const CreateEditWorkspaceModal = (props) => {
                                     <span onClick={handleShowArchiveConfirmation}
                                           className="btn-archive text-link mt-2 cursor-pointer">Unarchive this workspace</span>
                             }
-                        </>
+                        </div>
                     }
                 </WrapperDiv>
             </ModalBody>

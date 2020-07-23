@@ -191,12 +191,6 @@ const FilesBody = (props) => {
               <>
                 {typeof params.fileFolderId === "undefined" && (
                     <h6 className="font-size-11 text-uppercase mb-4">All files</h6>)}
-                {(params.hasOwnProperty("fileFolderId") && Object.values(subFolders).filter((f) => !f.is_archived).length > 0) ||
-                (!params.hasOwnProperty("fileFolderId") && Object.values(folders).filter((f) => !f.is_archived).length > 0) ? (
-                    <h6 className="font-size-11 text-uppercase mb-4">Folders</h6>
-                ) : (
-                    <></>
-                )}
                 {
                   <div className="row">
                     {params.hasOwnProperty("fileFolderId")

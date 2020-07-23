@@ -14,9 +14,7 @@ const RemoveFiles = (props) => {
         <Wrapper className={`remove-files ${className}`}>
             <h6 className="font-size-11 text-uppercase mb-4">Removed</h6>
 
-            {folder ?
-                <h6 className="font-size-11 text-uppercase mb-4">{folder.search}</h6> : Object.values(folders).filter((f) => f.is_archived).length > 0 &&
-                <h6 className="font-size-11 text-uppercase mb-4">Folders</h6>}
+            {folder && <h6 className="font-size-11 text-uppercase mb-4">{folder.search}</h6>}
             <div className="row">
                 {params.hasOwnProperty("fileFolderId")
                     ? subFolders

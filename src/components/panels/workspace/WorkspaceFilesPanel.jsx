@@ -14,13 +14,17 @@ const Wrapper = styled.div`
   }
 `;
 
+const CreateFolderLabel = styled.div`
+  padding-top: 10px;
+`;
+
 const WorkspaceFilesPanel = (props) => {
   const {className = "", isMember} = props;
 
   const dispatch = useDispatch();
   const history = useHistory();
-  const { _t } = useTranslation();
-  const { params, wsFiles, actions, topic, fileIds, folders, folder, subFolders } = useFiles();
+  const {_t} = useTranslation();
+  const {params, wsFiles, actions, topic, fileIds, folders, folder, subFolders} = useFiles();
 
   const [filter, setFilter] = useState("");
   const [search, setSearch] = useState("");
@@ -129,7 +133,8 @@ const WorkspaceFilesPanel = (props) => {
     let payload = {
       type: "single_input",
       defaultValue: "",
-      postInputLabel: folder === null ? "" : (<>The folder will be created instead <b>#{folder.search}</b></>),
+      postInputLabel: folder === null ? "" : (
+          <CreateFolderLabel>The folder will be created inside <b>#{folder.search}</b></CreateFolderLabel>),
       onChange: handleFolderNameChange,
       onClose: handleFolderClose,
     };
