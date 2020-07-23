@@ -124,6 +124,7 @@ const SelectPeople = styled(PeopleSelect)`
 
 const StyledDescriptionInput = styled(DescriptionInput)`
     height: ${props => props.height}px;
+    max-height: 300px;
 `;
 
 const CreateEditWorkspaceModal = (props) => {
@@ -331,7 +332,7 @@ const CreateEditWorkspaceModal = (props) => {
         let payload = {
             name: form.name,
             description: form.description,
-            // is_external: activeTab === "extern" ? 1 : 0,
+            is_external: 0,
             member_ids: form.selectedUsers.filter((u) => typeof u.id === "number").map((u) => u.id),
             is_lock: form.is_private ? 1 : 0,
             workspace_id: form.selectedFolder && typeof form.selectedFolder.value === "number" && form.has_folder ? form.selectedFolder.value : 0,

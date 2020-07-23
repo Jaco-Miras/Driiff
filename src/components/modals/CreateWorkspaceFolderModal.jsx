@@ -43,6 +43,7 @@ const WrapperDiv = styled(InputGroup)`
 
 const StyledDescriptionInput = styled(DescriptionInput)`
     height: ${props => props.height}px;
+    max-height: 300px;
 `;
 
 const CreateWorkspaceFolderModal = (props) => {

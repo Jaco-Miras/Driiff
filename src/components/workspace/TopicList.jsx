@@ -1,9 +1,9 @@
 import React from "react";
-import { useHistory, useRouteMatch } from "react-router-dom";
-import { Badge } from "reactstrap";
+import {useHistory, useRouteMatch} from "react-router-dom";
+import {Badge} from "reactstrap";
 import styled from "styled-components";
-import { SvgIconFeather } from "../common";
-import { replaceChar } from "../../helpers/stringFormatter";
+import {SvgIconFeather} from "../common";
+import {replaceChar} from "../../helpers/stringFormatter";
 
 const TopicListWrapper = styled.li`
   cursor: pointer;
@@ -34,9 +34,12 @@ const TopicList = (props) => {
 
   const history = useHistory();
   const route = useRouteMatch();
+  const onWorkspace = route.url.startsWith("/workspace");
 
   const handleSelectTopic = () => {
-    if (topic.selected) return;
+    if (topic.selected && onWorkspace)
+      return;
+
     if (topic.workspace_id !== undefined) {
       if (typeof topic.workspace_name === "undefined") {
         history.push(`/workspace/${route.params.page}/${topic.id}/${replaceChar(topic.name)}`);
@@ -44,7 +47,8 @@ const TopicList = (props) => {
         history.push(`/workspace/${route.params.page}/${topic.workspace_id}/${replaceChar(topic.workspace_name)}/${topic.id}/${replaceChar(topic.name)}`);
       }
     } else {
-      if (topic.selected) return;
+      if (topic.selected && onWorkspace)
+        return;
 
       history.push(`/workspace/chat/${topic.id}/${replaceChar(topic.name)}`);
     }
@@ -72,13 +76,14 @@ const TopicList = (props) => {
   }
 
   return (
-    <TopicListWrapper className={`topic-list ${className}`} onClick={handleSelectTopic} selected={topic.selected}>
-      <div>
-        {topic.name}
-        {topic.private === 1 && <Icon icon={"lock"} />}
-        {unread_count > 0 && <Badge color="danger">{unread_count}</Badge>}
-      </div>
-    </TopicListWrapper>
+      <TopicListWrapper className={`topic-list ${className}`} onClick={handleSelectTopic}
+                        selected={topic.selected && onWorkspace}>
+        <div>
+          {topic.name}
+          {topic.private === 1 && <Icon icon={"lock"}/>}
+          {unread_count > 0 && <Badge color="danger">{unread_count}</Badge>}
+        </div>
+      </TopicListWrapper>
   );
 };
 

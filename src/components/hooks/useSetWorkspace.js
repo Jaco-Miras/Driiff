@@ -184,14 +184,18 @@ const useSetWorkspace = () => {
                 topic = workspaces[params.workspaceId];
                 //set active topic from settings
             } else {
-                //disable temporarily
-                // if (activeTopicSettings.workspace !== null && workspaces.hasOwnProperty(activeTopicSettings.workspace.id) && workspaces[activeTopicSettings.workspace.id].topics.hasOwnProperty(activeTopicSettings.workspace.id)) {
-                //     topic = workspaces[activeTopicSettings.workspace.id].topics[activeTopicSettings.topic.id];
-                //     history.push(`${route.path}/${workspaces[activeTopicSettings.workspace.id].id}/${workspaces[activeTopicSettings.workspace.id].name}/${topic.id}/${topic.name}`);
-                // } else if (workspaces.hasOwnProperty(activeTopicSettings.topic.id)) {
-                //     topic = workspaces[activeTopicSettings.topic.id];
-                //     history.push(`${route.path}/${topic.id}/${topic.name}`);
-                // }
+                let toPush = "";
+                if (activeTopicSettings.workspace !== null && workspaces.hasOwnProperty(activeTopicSettings.workspace.id) && workspaces[activeTopicSettings.workspace.id].topics.hasOwnProperty(activeTopicSettings.workspace.id)) {
+                    topic = workspaces[activeTopicSettings.workspace.id].topics[activeTopicSettings.topic.id];
+                    toPush = `${route.path}/${workspaces[activeTopicSettings.workspace.id].id}/${workspaces[activeTopicSettings.workspace.id].name}/${topic.id}/${topic.name}`;
+                } else if (workspaces.hasOwnProperty(activeTopicSettings.topic.id)) {
+                    topic = workspaces[activeTopicSettings.topic.id];
+                    toPush = `${route.path}/${topic.id}/${topic.name}`;
+                }
+
+                if (toPush !== "" && match.url.startsWith("/workspace/chat")) {
+                    history.push(toPush);
+                }
             }
 
             if (topic) {
@@ -199,7 +203,7 @@ const useSetWorkspace = () => {
                     topic = {
                         ...topic,
                         topic_detail: {
-                            active: topic.active,
+                            active: typeof topic.active === "undefined" ? 1 : topic.active,
                             channel: topic.channel,
                         },
                     }
