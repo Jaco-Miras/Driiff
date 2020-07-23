@@ -1,13 +1,14 @@
-import React, { useCallback, useRef, useState } from "react";
+import React, {useCallback, useRef, useState} from "react";
 import styled from "styled-components";
-import { useDispatch, useSelector } from "react-redux";
-import { useOutsideClick, useIsMember } from "../hooks";
-import { SvgIconFeather } from "../common";
-import { addToModals } from "../../redux/actions/globalActions";
+import {useDispatch, useSelector} from "react-redux";
+import {useIsMember, useOutsideClick} from "../hooks";
+import {SvgIconFeather} from "../common";
+import {addToModals} from "../../redux/actions/globalActions";
 import Tooltip from "react-tooltip-lite";
 
 const SettingsLinkList = styled.li`
   position: relative;
+  
   > a:after {
     display: none;
   }
@@ -37,7 +38,16 @@ const SettingsLinkList = styled.li`
   }
 `;
 
-const SettingsLink = () => {
+const StyledTooltip = styled(Tooltip)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const SettingsLink = (props) => {
+
+  const {className = ""} = props;
+
   const wrapperRef = useRef();
   const dispatch = useDispatch();
   const topic = useSelector((state) => state.workspaces.activeTopic);
@@ -92,21 +102,21 @@ const SettingsLink = () => {
   if (!isMember) return null;
 
   return (
-    <SettingsLinkList className="nav-item" ref={wrapperRef}>
-      <div>
+      <SettingsLinkList className={`nav-item ${className}`} ref={wrapperRef}>
+        <div>
         <span className={`dropdown-toggle ${show ? "show" : ""}`} data-toggle="dropdown" onClick={handleToggle}>
-          <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Workspace settings">
-            <SvgIconFeather icon="pencil" />
-          </Tooltip>
+          <StyledTooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Workspace settings">
+            <SvgIconFeather icon="pencil"/>
+          </StyledTooltip>
         </span>
-        <div className={`dropdown-menu ${show ? "show" : ""}`}>
+          <div className={`dropdown-menu ${show ? "show" : ""}`}>
           <span className="dropdown-item" data-name="folder" onClick={handleDropdownItemClick}>
             Folder settings
           </span>
-          <span className="dropdown-item" data-name="workspace" onClick={handleDropdownItemClick}>
+            <span className="dropdown-item" data-name="workspace" onClick={handleDropdownItemClick}>
             Workspace settings
           </span>
-        </div>
+          </div>
       </div>
     </SettingsLinkList>
   );
