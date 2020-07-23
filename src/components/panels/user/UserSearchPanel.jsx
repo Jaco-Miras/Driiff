@@ -1,5 +1,4 @@
-import React from "react";
-//import { useHistory } from "react-router-dom";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { MainSearch, SearchTabs, TabContents } from "../../list/search";
 //import { SvgEmptyState } from "../../common";
@@ -19,9 +18,16 @@ const Wrapper = styled.div`
 const UserSearchPanel = (props) => {
   const { className = "" } = props;
 
-  //const history = useHistory();
   const actions = useSearchActions();
   const { count, results, value } = useSearch();
+
+  const [activeTab, setActiveTab] = useState(null);
+
+  const handleSelectTab = (e) => {
+    if (e.currentTarget.dataset.value !== activeTab) {
+      setActiveTab(e.currentTarget.dataset.value)
+    }
+  };
 
   return (
     <Wrapper className={`user-search-panel container-fluid h-100 ${className}`}>
@@ -37,8 +43,8 @@ const UserSearchPanel = (props) => {
                   {count} results found for: <span className="text-primary">“{value}”</span>
                 </h4>
               }
-              <SearchTabs/>
-              <TabContents results={results}/>
+              <SearchTabs activeTab={activeTab} onSelectTab={handleSelectTab}/>
+              <TabContents activeTab={activeTab} results={results}/>
               <nav className="mt-3">
                 <ul className="pagination justify-content-center">
                   <li className="page-item disabled">
