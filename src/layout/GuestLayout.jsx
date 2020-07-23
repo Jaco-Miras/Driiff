@@ -28,8 +28,11 @@ const GuestLayout = (props) => {
 
     useEffect(() => {
         switch (location.pathname) {
+            case "/request-form":
+                setTitle("Accept invitation");
+                break;
             case "/reset-password":
-                setTitle("Reset Password");
+                setTitle("Reset password");
                 break;
             case "/register":
                 setTitle("Create account");
