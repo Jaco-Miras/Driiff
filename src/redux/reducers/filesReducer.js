@@ -265,31 +265,82 @@ export default (state = INITIAL_STATE, action) => {
         workspaceFiles: newWorkspaceFiles,
       };
     }
-    case "POST_GOOGLE_ATTACHMENTS_SUCCESS": {
+    case "GET_WORKSPACE_GOOGLE_FOLDER_ATTACHMENTS_SUCCESS": {
+     
       let newWorkspaceFiles = {...state.workspaceFiles};
-      if (newWorkspaceFiles.hasOwnProperty(action.data.link_id)) {
-        let file = {
-          created_at: action.data.created_at,
-          user_id: action.data.user_id,
-          folder_id: null,
-          download_link: action.data.payload.embedUrl,
-          id: action.data.id,
-          payload_id: action.data.payload.id,
-          is_favorite: false,
-          link_id: parseInt(action.data.link_id),
-          link_index_id: 0,
-          link_type: "TOPIC",
-          mime_type: action.data.payload.mimeType,
-          search: action.data.payload.name,
-          size: action.data.payload.sizeBytes,
-          type: action.data.payload.type,
-        };
-        newWorkspaceFiles[action.data.link_id].files[action.data.id] = file;
+      if (newWorkspaceFiles.hasOwnProperty(action.data.topic_id)) {
+        if (newWorkspaceFiles[action.data.topic_id].hasOwnProperty("folders")) {
+          action.data.attachments.map((a) => {
+            console.log(a)
+            newWorkspaceFiles[a.link_id].folders[a.id] = {
+              id: a.id,
+              is_archived: false,
+              parent_folder: null,
+              search: a.payload.name,
+              payload: a.payload,
+              created_at: { timestamp: a.payload.lastEditedUtc },
+              updated_at: { timestamp: a.payload.lastEditedUtc },
+              files: []
+            }
+          })
+        }
       }
+
       return {
         ...state,
         workspaceFiles: newWorkspaceFiles,
       };
+    }
+    case "INCOMING_GOOGLE_FILE": {
+      let updatedWorkspaceFiles = {...state.workspaceFiles};
+      if (updatedWorkspaceFiles.hasOwnProperty(action.data.link_id)) {
+        if (updatedWorkspaceFiles[action.data.link_id].hasOwnProperty("folders")) {
+          let file = {
+            created_at: action.data.created_at,
+            user_id: action.data.user_id,
+            folder_id: null,
+            download_link: action.data.payload.embedUrl,
+            id: action.data.id,
+            payload_id: action.data.payload.id,
+            is_favorite: false,
+            link_id: parseInt(action.data.link_id),
+            link_index_id: 0,
+            link_type: "TOPIC",
+            mime_type: action.data.payload.mimeType,
+            search: action.data.payload.name,
+            size: action.data.payload.sizeBytes,
+            type: action.data.payload.type,
+            payload: action.data.payload
+          };
+          updatedWorkspaceFiles[action.data.link_id].files[action.data.id] = file;
+        }
+      }
+      return {
+        ...state,
+        workspaceFiles: updatedWorkspaceFiles
+      }
+    }
+    case "INCOMING_GOOGLE_FOLDER": {
+      let updatedWorkspaceFiles = {...state.workspaceFiles};
+      if (updatedWorkspaceFiles.hasOwnProperty(action.data.link_id)) {
+        if (updatedWorkspaceFiles[action.data.link_id].hasOwnProperty("folders")) {
+          let folder = {
+            id: action.data.id,
+            is_archived: false,
+            parent_folder: null,
+            search: action.data.payload.name,
+            payload: action.data.payload,
+            created_at: action.data.created_at,
+            updated_at: action.data.updated_at,
+            files: []
+          };
+          updatedWorkspaceFiles[action.data.link_id].folders[action.data.id] = folder;
+        }
+      }
+      return {
+        ...state,
+        workspaceFiles: updatedWorkspaceFiles
+      }
     }
     case "GET_WORKSPACE_FILE_DETAILS_SUCCESS": {
       let newWorkspaceFiles = {...state.workspaceFiles};

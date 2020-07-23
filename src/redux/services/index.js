@@ -70,7 +70,8 @@ export {
   deletePostFile,
   deleteWorkspaceFiles,
   postGoogleAttachments,
-  getWorkspaceGoogleFileAttachments
+  getWorkspaceGoogleFileAttachments,
+  getWorkspaceGoogleFolderAttachments,
 } from "./files";
 
 export {

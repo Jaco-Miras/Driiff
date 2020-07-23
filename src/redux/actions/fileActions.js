@@ -13,6 +13,7 @@ import {
   getWorkspaceFilesDetail as getWorkspaceFilesDetailService,
   getWorkspaceFolders as getWorkspaceFoldersService,
   getWorkspaceGoogleFileAttachments as getWorkspaceGoogleFileAttachmentsService,
+  getWorkspaceGoogleFolderAttachments as getWorkspaceGoogleFolderAttachmentsService,
   getWorkspacePopularFiles as getWorkspacePopularFilesService,
   getWorkspacePrimaryFiles as getWorkspacePrimaryFilesService,
   getWorkspaceRecentlyEditedFiles as getWorkspaceRecentlyEditedFilesService,
@@ -220,4 +221,16 @@ export function postGoogleAttachments(payload, callback) {
 
 export function getWorkspaceGoogleFileAttachments(payload, callback) {
   return dispatchActionToReducer(getWorkspaceGoogleFileAttachmentsService(payload), "GET_WORKSPACE_GOOGLE_FILE_ATTACHMENTS_START", "GET_WORKSPACE_GOOGLE_FILE_ATTACHMENTS_SUCCESS", "GET_WORKSPACE_GOOGLE_FILE_ATTACHMENTS_FAIL", callback);
+}
+
+export function getWorkspaceGoogleFolderAttachments(payload, callback) {
+  return dispatchActionToReducer(getWorkspaceGoogleFolderAttachmentsService(payload), "GET_WORKSPACE_GOOGLE_FOLDER_ATTACHMENTS_START", "GET_WORKSPACE_GOOGLE_FOLDER_ATTACHMENTS_SUCCESS", "GET_WORKSPACE_GOOGLE_FOLDER_ATTACHMENTS_FAIL", callback);
+}
+
+export function incomingGoogleFile(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_GOOGLE_FILE", payload, callback);
+}
+
+export function incomingGoogleFolder(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_GOOGLE_FOLDER", payload, callback);
 }

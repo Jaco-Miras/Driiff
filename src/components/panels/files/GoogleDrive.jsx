@@ -76,20 +76,35 @@ const GoogleDrive = (props) => {
                         >
                             <div className="dropdown-item">Attach a file</div>
                         </GooglePicker>
-                        {/*<GooglePicker
+                        <GooglePicker
                             clientId={process.env.REACT_APP_google_client_id}
                             developerKey={isLocalhost ? process.env.REACT_APP_google_dev_key_local : process.env.REACT_APP_google_dev_key}
                             scope={["https://www.googleapis.com/auth/drive.file"]}
-                            onChange={(data) => onChange(data)}
+                            onChange={(data) => console.log("on change:", data)}
                             onAuthenticate={(token) => handleAuthenticate(token)}
                             onAuthFailed={(data) => console.log("on auth failed:", data)}
                             multiselect={true}
                             navHidden={true}
                             authImmediate={localStorage.getItem("gdrive") === null ? false : true}
                             viewId={"FOLDERS"}
-                        >
+                            createPicker={(google, oauthToken) => {
+                                const googleViewId = google.picker.ViewId.FOLDERS;
+                                const docsView = new google.picker.DocsView(googleViewId).setIncludeFolders(true).setMimeTypes("application/vnd.google-apps.folder").setSelectFolderEnabled(true);
+
+                                const picker = new window.google.picker.PickerBuilder()
+                                .addView(docsView)
+                                .setOAuthToken(oauthToken)
+                                .setDeveloperKey(isLocalhost ? process.env.REACT_APP_google_dev_key_local : process.env.REACT_APP_google_dev_key)
+                                .setCallback((data) => {
+                                    onChange(data);
+                                    console.log("Custom picker is ready!", data);
+                                });
+
+                                picker.build().setVisible(true);
+                            }}
+                            >
                             <div className="dropdown-item">Attach a folder</div>
-                        </GooglePicker>*/}
+                            </GooglePicker>
                     </>
                 )}
             </div>
