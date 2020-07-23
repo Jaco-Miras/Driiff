@@ -1,13 +1,12 @@
-import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useRouteMatch } from "react-router-dom";
+import React, {useEffect} from "react";
+import {useDispatch, useSelector} from "react-redux";
+import {useRouteMatch} from "react-router-dom";
 import styled from "styled-components";
-import { addToModals } from "../../../redux/actions/globalActions";
-import { SvgIconFeather } from "../../common";
-import { HeaderProfileNavigation } from "../common";
-import { Avatar } from "../../common";
-import { SettingsLink } from "../../workspace";
-import { joinWorkspace, joinWorkspaceReducer } from "../../../redux/actions/workspaceActions";
+import {addToModals} from "../../../redux/actions/globalActions";
+import {Avatar, SvgIconFeather} from "../../common";
+import {HeaderProfileNavigation} from "../common";
+import {SettingsLink} from "../../workspace";
+import {joinWorkspace, joinWorkspaceReducer} from "../../../redux/actions/workspaceActions";
 
 const NavBarLeft = styled.div`
   width: 100%;
@@ -199,14 +198,20 @@ const WorspaceHeaderPanel = () => {
           {activeTopic ? (
             <>
               {typeof activeTopic.workspace_name === "undefined" ? (
-                <>
-                  <li className="nav-item">
-                    <WorkspaceName>{activeTopic.name}</WorkspaceName>
-                  </li>
-                  <li>
-                    <SettingsLink />
-                  </li>
-                </>
+                  <>
+                    <li className="nav-item">
+                      <WorkspaceName>General</WorkspaceName>
+                    </li>
+                    <li>
+                      <SvgIconFeather icon="chevron-right"/>
+                    </li>
+                    <li className="nav-item">
+                      <SubWorkspaceName>{activeTopic.name}</SubWorkspaceName>
+                    </li>
+                    <li>
+                      <SettingsLink className="ml-1"/>
+                    </li>
+                  </>
               ) : (
                 <>
                   <li className="nav-item">
@@ -219,19 +224,20 @@ const WorspaceHeaderPanel = () => {
                     <SubWorkspaceName>{activeTopic.name}</SubWorkspaceName>
                   </li>
                   <li>
-                    <SettingsLink />
+                    <SettingsLink className="ml-1"/>
                   </li>
-                  <li class="nav-item-last">
+                  <li className="nav-item-last">
                     {activeTopic.members.map((m, i) => {
-                      return <StyledAvatar id={m.id} firstUser={i === 0} className="workspace-members" key={m.name} name={m.name} imageLink={m.profile_image_link} />;
+                      return <StyledAvatar id={m.id} firstUser={i === 0} className="workspace-members" key={m.name}
+                                           name={m.name} imageLink={m.profile_image_link}/>;
                     })}
                     {activeTopic.member_ids.includes(user.id) ? (
-                      <button onClick={handleEditWorkspace} className="btn btn-primary">
-                        <SvgIconFeather icon="user-plus" />
-                        Invite
-                      </button>
+                        <button onClick={handleEditWorkspace} className="btn btn-primary">
+                          <SvgIconFeather icon="user-plus"/>
+                          Invite
+                        </button>
                     ) : (
-                      <button onClick={handleJoinWorkspace} className="btn btn-primary">
+                        <button onClick={handleJoinWorkspace} className="btn btn-primary">
                         <SvgIconFeather icon="user-plus" />
                         Join
                       </button>
@@ -244,7 +250,7 @@ const WorspaceHeaderPanel = () => {
             <>
               <li className="nav-item">
                 <WorkspaceButton onClick={handleShowWorkspaceModal}>
-                  New workspace <SvgIconFeather icon="circle-plus" />
+                  New workspace <SvgIconFeather className="ml-2" icon="circle-plus"/>
                 </WorkspaceButton>
               </li>
             </>
