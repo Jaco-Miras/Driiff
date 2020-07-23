@@ -1,12 +1,12 @@
-import React, { useEffect, useRef, useState } from "react";
-import { useDispatch } from "react-redux";
-import { useHistory } from "react-router-dom";
-import { Badge } from "reactstrap";
+import React, {useEffect, useRef, useState} from "react";
+import {useDispatch} from "react-redux";
+import {useHistory} from "react-router-dom";
+import {Badge} from "reactstrap";
 import styled from "styled-components";
-import { replaceChar } from "../../helpers/stringFormatter";
-import { addToModals } from "../../redux/actions/globalActions";
-import { SvgIconFeather } from "../common";
-import { useSettings } from "../hooks";
+import {replaceChar} from "../../helpers/stringFormatter";
+import {addToModals} from "../../redux/actions/globalActions";
+import {SvgIconFeather} from "../common";
+import {useSettings} from "../hooks";
 import TopicList from "./TopicList";
 
 const Wrapper = styled.li`
@@ -165,7 +165,9 @@ const WorkspaceList = (props) => {
 
   useEffect(() => {
     if (ref.nav.current !== null) {
-      setMaxHeight(ref.nav.current.offsetHeight);
+      let maxHeight = window.innerHeight * 5;
+      maxHeight = maxHeight < ref.nav.current.offsetHeight ? ref.nav.current.offsetHeight : maxHeight;
+      setMaxHeight(maxHeight);
     }
   }, [ref.nav, maxHeight]);
 
