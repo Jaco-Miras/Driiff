@@ -15,6 +15,7 @@ import {
     getWorkspaceFilesDetail,
     getWorkspaceFolders,
     getWorkspaceGoogleFileAttachments,
+    getWorkspaceGoogleFolderAttachments,
     getWorkspacePopularFiles,
     getWorkspacePrimaryFiles,
     getWorkspaceRecentlyEditedFiles,
@@ -87,6 +88,17 @@ const useFileActions = (params = null) => {
         [dispatch]
     );
 
+    const getGoogleDriveFolders = useCallback(
+        (id, callback) => {
+            dispatch(
+                getWorkspaceGoogleFolderAttachments({
+                    workspace_id: id
+                }, callback)
+            )
+        },
+        [dispatch]
+    );
+
     const getFilesDetail = useCallback(
         (id, callback) => {
             dispatch(getWorkspaceFilesDetail({topic_id: id}, callback));
@@ -149,13 +161,13 @@ const useFileActions = (params = null) => {
                 postGoogleAttachments({
                     link_id: workspaceId,
                     link_type: "topic",
-                    attachment_type: "FILE",
+                    attachment_type: payload.type === "folder" ? "FOLDER" : "FILE",
                     payload: payload
                 }, callback)
             )
         },
         [dispatch]
-    )
+    );
 
     const removeFolder = useCallback(
         (folder, topic_id, callback) => {
@@ -519,6 +531,7 @@ const useFileActions = (params = null) => {
         getFileSizeUnit,
         getPrimaryFiles,
         getGoogleDriveFiles,
+        getGoogleDriveFolders,
         uploadWorkspaceGoogleDriveFile,
         uploadingFiles,
     };
