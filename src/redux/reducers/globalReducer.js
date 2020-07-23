@@ -1,3 +1,5 @@
+import { convertArrayToObject } from "../../helpers/arrayHelper";
+
 const INITIAL_STATE = {
   user: null,
   i18n: null,
@@ -10,7 +12,10 @@ const INITIAL_STATE = {
   navMode: 2,
   dataFromInput: null,
   unreadCounter: {},
-  socketMounted: false
+  socketMounted: false,
+  searchValue: "",
+  searchResults: {},
+  searchCount: 0,
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -130,6 +135,20 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         unreadCounter: unreadCounter,
       };
+    }
+    case "SEARCH_SUCCESS": {
+      return {
+        ...state,
+        searchResults: action.data.result.length ? convertArrayToObject(action.data.result, "id")
+                      : {},
+        searchCount: action.data.total_result
+      }
+    }
+    case "SAVE_SEARCH_INPUT": {
+      return {
+        ...state,
+        searchValue: action.data.value
+      }
     }
     default:
       return state;

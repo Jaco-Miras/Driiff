@@ -184,13 +184,14 @@ const useSetWorkspace = () => {
                 topic = workspaces[params.workspaceId];
                 //set active topic from settings
             } else {
-                if (activeTopicSettings.workspace !== null && workspaces.hasOwnProperty(activeTopicSettings.workspace.id) && workspaces[activeTopicSettings.workspace.id].topics.hasOwnProperty(activeTopicSettings.workspace.id)) {
-                    topic = workspaces[activeTopicSettings.workspace.id].topics[activeTopicSettings.topic.id];
-                    history.push(`${route.path}/${workspaces[activeTopicSettings.workspace.id].id}/${workspaces[activeTopicSettings.workspace.id].name}/${topic.id}/${topic.name}`);
-                } else if (workspaces.hasOwnProperty(activeTopicSettings.topic.id)) {
-                    topic = workspaces[activeTopicSettings.topic.id];
-                    history.push(`${route.path}/${topic.id}/${topic.name}`);
-                }
+                //disable temporarily
+                // if (activeTopicSettings.workspace !== null && workspaces.hasOwnProperty(activeTopicSettings.workspace.id) && workspaces[activeTopicSettings.workspace.id].topics.hasOwnProperty(activeTopicSettings.workspace.id)) {
+                //     topic = workspaces[activeTopicSettings.workspace.id].topics[activeTopicSettings.topic.id];
+                //     history.push(`${route.path}/${workspaces[activeTopicSettings.workspace.id].id}/${workspaces[activeTopicSettings.workspace.id].name}/${topic.id}/${topic.name}`);
+                // } else if (workspaces.hasOwnProperty(activeTopicSettings.topic.id)) {
+                //     topic = workspaces[activeTopicSettings.topic.id];
+                //     history.push(`${route.path}/${topic.id}/${topic.name}`);
+                // }
             }
 
             if (topic) {
