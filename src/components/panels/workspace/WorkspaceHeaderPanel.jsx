@@ -7,6 +7,7 @@ import {Avatar, SvgIconFeather} from "../../common";
 import {HeaderProfileNavigation} from "../common";
 import {SettingsLink} from "../../workspace";
 import {joinWorkspace, joinWorkspaceReducer} from "../../../redux/actions/workspaceActions";
+import {useToaster} from "../../hooks";
 
 const NavBarLeft = styled.div`
   width: 100%;
@@ -92,6 +93,7 @@ const WorkspaceButton = styled.h3`
 `;
 
 const WorspaceHeaderPanel = () => {
+  const toaster = useToaster();
   const dispatch = useDispatch();
   const match = useRouteMatch();
   const activeTopic = useSelector((state) => state.workspaces.activeTopic);
@@ -119,18 +121,20 @@ const WorspaceHeaderPanel = () => {
   const handleJoinWorkspace = () => {
     dispatch(
       joinWorkspace(
-        {
-          group_id: activeTopic.channel.id,
-          user_id: user.id,
-        },
-        (err, res) => {
-          if (err) return;
-          dispatch(
-            joinWorkspaceReducer({
-              channel_id: activeTopic.channel.id,
-              topic_id: activeTopic.id,
-              user: user,
-            })
+          {
+            group_id: activeTopic.id,
+            user_id: user.id,
+          },
+          (err, res) => {
+            if (err) return;
+            dispatch(
+                joinWorkspaceReducer({
+                  channel_id: activeTopic.channel.id,
+                  topic_id: activeTopic.id,
+                  user: user,
+                }, () => {
+                  toaster.success(<>You have joined <b>#${activeTopic.name}</b></>);
+                })
           );
         }
       )
