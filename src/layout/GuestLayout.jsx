@@ -1,55 +1,63 @@
-import React, { useEffect, useState } from "react";
-import { Route, Switch, useLocation, withRouter } from "react-router-dom";
+import React, {useEffect, useState} from "react";
+import {Route, Switch, useLocation, withRouter} from "react-router-dom";
 import styled from "styled-components";
-import { SvgIcon } from "../components/common";
-import { useUserLogin } from "../components/hooks";
-import { LoginPanel, RegisterPanel, ResetPasswordPanel, UpdatePasswordPanel } from "../components/panels";
+import {SvgIcon} from "../components/common";
+import {useUserLogin} from "../components/hooks";
+import {
+    ExternalRegisterPanel,
+    LoginPanel,
+    RegisterPanel,
+    ResetPasswordPanel,
+    UpdatePasswordPanel
+} from "../components/panels";
 
 const Wrapper = styled.div``;
 
 const GuestLayout = (props) => {
-  useUserLogin(props);
 
-  const location = useLocation();
-  const [title, setTitle] = useState("Sign in");
+    useUserLogin(props);
 
-  useEffect(() => {
-    document.querySelector("body").classList.add("form-membership");
+    const location = useLocation();
+    const [title, setTitle] = useState("Sign in");
 
-    //eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    useEffect(() => {
+        document.querySelector("body").classList.add("form-membership");
 
-  useEffect(() => {
-    switch (location.pathname) {
-      case "/reset-password":
-        setTitle("Reset Password");
-        break;
-      case "/register":
-        setTitle("Create account");
-        break;
-      default:
-        if (location.pathname.indexOf("/authenticate/") === 0) setTitle("Authentication");
-        else if (location.pathname.indexOf("/resetpassword/") === 0) setTitle("Update Password");
-        else setTitle("Sign in");
-    }
-  }, [location]);
+        //eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
-  return (
-    <Wrapper className="form-wrapper fadeIn">
-      <div id="logo">
-        <SvgIcon icon={"driff-logo"} width="110" height="80" />
-      </div>
+    useEffect(() => {
+        switch (location.pathname) {
+            case "/reset-password":
+                setTitle("Reset Password");
+                break;
+            case "/register":
+                setTitle("Create account");
+                break;
+            default:
+                if (location.pathname.indexOf("/authenticate/") === 0) setTitle("Authentication");
+                else if (location.pathname.indexOf("/resetpassword/") === 0) setTitle("Update Password");
+                else setTitle("Sign in");
+        }
+    }, [location]);
 
-      <h5>{title}</h5>
+    return (
+        <Wrapper className="form-wrapper fadeIn">
+            <div id="logo">
+                <SvgIcon icon={"driff-logo"} width="110" height="80"/>
+            </div>
 
-      <Switch>
-        <Route path={"/login"} component={LoginPanel} />
-        <Route path={"/resetpassword/:token/:email"} component={UpdatePasswordPanel} exact />
-        <Route path={"/reset-password"} component={ResetPasswordPanel} />
-        <Route path={"/register"} component={RegisterPanel} />
-      </Switch>
-    </Wrapper>
-  );
+            <h5>{title}</h5>
+
+            <Switch>
+                <Route path={"/login"} component={LoginPanel}/>
+                <Route path={"/resetpassword/:token/:email"} component={UpdatePasswordPanel} exact/>
+                <Route path={"/reset-password"} component={ResetPasswordPanel}/>
+                <Route path={"/register"} component={RegisterPanel}/>
+                <Route path={"/request-form"} component={ExternalRegisterPanel}/>
+            </Switch>
+        </Wrapper>
+    );
 };
 
 export default withRouter(GuestLayout);
