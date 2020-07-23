@@ -65,23 +65,23 @@ const WorkspacePeoplePanel = (props) => {
       return a.name.localeCompare(b.name);
     })
     .filter((user) => {
-      if (loggedUser.id === user.id) return true;
-
-      if (!userChannels.hasOwnProperty(user.id)) return false;
-
       if (user.active !== 1) return false;
 
       if (activeTopic) {
-        if (activeTopic.workspace_id) {
-          if (!workspaces[activeTopic.workspace_id].member_ids.includes(user.id)) {
-            return false;
-          }
-        } else {
-          if (!workspaces[activeTopic.id].member_ids.includes(user.id)) {
-            return false;
-          }
-        }
+        return activeTopic.members.some((m) => m.id === user.id);
       }
+      if (!userChannels.hasOwnProperty(user.id)) return false;
+      // if (activeTopic) {
+      //   if (activeTopic.workspace_id) {
+      //     if (!workspaces[activeTopic.workspace_id].member_ids.includes(user.id)) {
+      //       return false;
+      //     }
+      //   } else {
+      //     if (!workspaces[activeTopic.id].member_ids.includes(user.id)) {
+      //       return false;
+      //     }
+      //   }
+      // }
 
       if (search !== "") {
         return user.name.toLowerCase().indexOf(search.toLowerCase()) > -1;

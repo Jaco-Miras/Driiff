@@ -2,7 +2,7 @@ import React from "react";
 import { Redirect, Route, Switch } from "react-router-dom";
 import styled from "styled-components";
 import { CompanyChatPanel, CompanyDashboardPanel, CompanyFilesPanel, CompanyPeoplePanel, CompanyPostsPanel, CompanySettingsPanel } from "../company";
-import { UserNotificationPanel, UserProfilePanel } from "../user";
+import { UserNotificationPanel, UserProfilePanel, UserSearchPanel } from "../user";
 import { MainFooterPanel } from "./index";
 
 const Wrapper = styled.div`
@@ -17,6 +17,7 @@ const MainContentPanel = (props) => {
       <Switch>
         <Route {...props} component={UserProfilePanel} path={["/profile/:id/:name/:mode", "/profile/:id/:name", "/profile"]} />
         <Route {...props} component={UserNotificationPanel} path={["/notifications"]} />
+        <Route {...props} component={UserSearchPanel} path={["/search"]} />
         { !isExternal && <Route {...props} component={CompanyDashboardPanel} path={["/dashboard"]} /> }
         { !isExternal && <Route {...props} component={CompanyPostsPanel} path={["/posts"]} /> }
         { !isExternal && <Route {...props} component={CompanyChatPanel} path={["/chat/:code?"]} /> }

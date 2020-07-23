@@ -84,7 +84,7 @@ const Icon = styled(SvgIconFeather)`
 `;
 
 const Comment = (props) => {
-  const {className = "", comment, post, type = "main", user, commentActions, parentId, onShowFileDialog, dropAction, parentShowInput = null} = props;
+  const {className = "", comment, post, type = "main", user, commentActions, parentId, onShowFileDialog, dropAction, parentShowInput = null, workspace, isMember } = props;
   const refs = {
     input: useRef(null),
     body: useRef(null),
@@ -213,6 +213,7 @@ const Comment = (props) => {
                 parentId={type === "main" ? comment.id : null}
                 onShowFileDialog={onShowFileDialog}
                 dropAction={dropAction}
+                workspace={workspace} isMember={isMember}
             />
         )}
         {showInput !== null && (
@@ -228,6 +229,7 @@ const Comment = (props) => {
                   handleClearUserMention={handleClearUserMention}
                   onShowFileDialog={onShowFileDialog}
                   dropAction={dropAction}
+                  workspace={workspace} isMember={isMember}
               />
             </InputWrapper>
         )}

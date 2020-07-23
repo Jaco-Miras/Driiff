@@ -117,3 +117,5 @@ export {
 export { postRegisterDriff, patchCheckDriff } from "./driff";
 
 export { deleteNotification, deleteAllNotification, getNotifications, patchNotification, readAllNotification, unreadNotification } from "./notification";
+
+export { globalSearch } from "./search";

@@ -40,3 +40,5 @@ export { default as useToaster } from "./useToaster";
 export { default as useNotifications } from "./useNotifications";
 export { default as useNotificationActions } from "./useNotificationActions";
 export { default as useTimeFormat } from "./useTimeFormat";
+export { default as useSearchActions } from "./useSearchActions";
+export { default as useSearch } from "./useSearch";
