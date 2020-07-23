@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
-import { useFileActions } from "../hooks";
+import {useEffect, useState} from "react";
+import {useSelector} from "react-redux";
+import {useParams} from "react-router-dom";
+import {useFileActions} from "../hooks";
 
 const useFiles = () => {
   const params = useParams();
@@ -15,7 +15,8 @@ const useFiles = () => {
     if ((!fetchingFiles && activeTopic && !workspaceFiles.hasOwnProperty(activeTopic.id)) || (!fetchingFiles && activeTopic && workspaceFiles.hasOwnProperty(activeTopic.id) && !workspaceFiles[activeTopic.id].hasOwnProperty("loaded"))) {
       const cb = (err, res) => {
         setFetchingFiles(false);
-        fileActions.getFolders({ topic_id: activeTopic.id });
+        fileActions.getGoogleDriveFiles(activeTopic.id);
+        fileActions.getFolders({topic_id: activeTopic.id});
         fileActions.getFilesDetail(activeTopic.id);
         fileActions.getFavoriteFiles(activeTopic.id);
         fileActions.getPopularFiles(activeTopic.id);

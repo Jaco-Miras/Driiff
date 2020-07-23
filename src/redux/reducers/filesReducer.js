@@ -1,4 +1,4 @@
-import { convertArrayToObject } from "../../helpers/arrayHelper";
+import {convertArrayToObject} from "../../helpers/arrayHelper";
 
 const INITIAL_STATE = {
   user: null,
@@ -233,8 +233,66 @@ export default (state = INITIAL_STATE, action) => {
         workspaceFiles: newWorkspaceFiles,
       };
     }
+    case "GET_WORKSPACE_GOOGLE_FILE_ATTACHMENTS_SUCCESS": {
+      let newWorkspaceFiles = {...state.workspaceFiles};
+      if (newWorkspaceFiles.hasOwnProperty(action.data.topic_id)) {
+
+        let files = [];
+        action.data.attachments.forEach(attachment => {
+          files.push({
+            created_at: {
+              timestamp: attachment.payload.lastEditedUtc
+            },
+            download_link: attachment.payload.embedUrl,
+            folder_id: null,
+            id: attachment.payload.id,
+            is_favorite: false,
+            link_id: action.data.topic_id,
+            link_index_id: 0,
+            link_type: "TOPIC",
+            mime_type: attachment.payload.mimeType,
+            search: attachment.payload.name,
+            size: attachment.payload.sizeBytes,
+            type: attachment.payload.type,
+          })
+        });
+
+        newWorkspaceFiles = {
+          [action.data.topic_id]: {
+            ...newWorkspaceFiles[action.data.topic_id],
+            files: {...convertArrayToObject(files, "id"), ...newWorkspaceFiles[action.data.topic_id].files},
+            loaded: true,
+          },
+        };
+        console.log(newWorkspaceFiles)
+      } else {
+        newWorkspaceFiles = {
+          ...newWorkspaceFiles,
+          [action.data.topic_id]: {
+            files: convertArrayToObject(action.data.files, "id"),
+            folders: {},
+            storage: 0,
+            count: 0,
+            stars: 0,
+            trash: 0,
+            popular_files: [],
+            recently_edited: [],
+            favorite_files: [],
+            trash_files: {},
+            search_results: [],
+            search_value: "",
+            loaded: true,
+          },
+        };
+      }
+
+      return {
+        ...state,
+        //workspaceFiles: newWorkspaceFiles,
+      };
+    }
     case "GET_WORKSPACE_FILE_DETAILS_SUCCESS": {
-      let newWorkspaceFiles = { ...state.workspaceFiles };
+      let newWorkspaceFiles = {...state.workspaceFiles};
       if (newWorkspaceFiles.hasOwnProperty(action.data.topic_id)) {
         newWorkspaceFiles = {
           [action.data.topic_id]: {

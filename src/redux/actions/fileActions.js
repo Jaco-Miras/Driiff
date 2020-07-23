@@ -1,28 +1,30 @@
-import dispatchActionToReducer, { SimpleDispatchActionToReducer } from "../actionDispatcher";
+import dispatchActionToReducer, {SimpleDispatchActionToReducer} from "../actionDispatcher";
 import {
   deleteFile as deleteFileService,
   deleteFolder as deleteFolderService,
   deletePostFile as deletePostFileService,
+  deleteTrash as deleteTrashService,
   deleteWorkspaceFile as deleteWorkspaceFileService,
   deleteWorkspaceFiles as deleteWorkspaceFilesService,
-  deleteTrash as deleteTrashService,
   getChannelFiles as getChannelFilesService,
   getFiles as getFilesService,
   getWorkspaceFavoriteFiles as getWorkspaceFavoriteFilesService,
   getWorkspaceFiles as getWorkspaceFilesService,
   getWorkspaceFilesDetail as getWorkspaceFilesDetailService,
   getWorkspaceFolders as getWorkspaceFoldersService,
+  getWorkspaceGoogleFileAttachments as getWorkspaceGoogleFileAttachmentsService,
   getWorkspacePopularFiles as getWorkspacePopularFilesService,
   getWorkspacePrimaryFiles as getWorkspacePrimaryFilesService,
   getWorkspaceRecentlyEditedFiles as getWorkspaceRecentlyEditedFilesService,
   getWorkspaceTrashFiles as getWorkspaceTrashFilesService,
   moveFile as moveFileService,
   patchWorkspaceFileViewed as patchWorkspaceFileViewedService,
-  postFolder as postFolderService,
-  putFolder as putFolderService,
-  putFile as putFileService,
   postFavorite as postFavoriteService,
+  postFolder as postFolderService,
+  postGoogleAttachments as postGoogleAttachmentsService,
   postWorkspaceFiles as postWorkspaceFilesService,
+  putFile as putFileService,
+  putFolder as putFolderService,
   restoreWorkspaceFile as restoreWorkspaceFileService,
   uploadWorkspaceFile as uploadWorkspaceFileService,
   uploadWorkspaceFiles as uploadWorkspaceFilesService,
@@ -210,4 +212,12 @@ export function deleteWorkspaceFiles(payload, callback) {
 
 export function incomingDeletedFiles(payload, callback) {
   return SimpleDispatchActionToReducer("INCOMING_DELETED_FILES", payload, callback);
+}
+
+export function postGoogleAttachments(payload, callback) {
+  return dispatchActionToReducer(postGoogleAttachmentsService(payload), "POST_GOOGLE_ATTACHMENTS_START", "POST_GOOGLE_ATTACHMENTS_SUCCESS", "POST_GOOGLE_ATTACHMENTS_FAIL", callback);
+}
+
+export function getWorkspaceGoogleFileAttachments(payload, callback) {
+  return dispatchActionToReducer(getWorkspaceGoogleFileAttachmentsService(payload), "GET_WORKSPACE_GOOGLE_FILE_ATTACHMENTS_START", "GET_WORKSPACE_GOOGLE_FILE_ATTACHMENTS_SUCCESS", "GET_WORKSPACE_GOOGLE_FILE_ATTACHMENTS_FAIL", callback);
 }

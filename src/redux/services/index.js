@@ -69,6 +69,8 @@ export {
   moveFile,
   deletePostFile,
   deleteWorkspaceFiles,
+  postGoogleAttachments,
+  getWorkspaceGoogleFileAttachments
 } from "./files";
 
 export {

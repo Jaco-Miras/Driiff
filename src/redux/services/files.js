@@ -1,8 +1,8 @@
-import { objToUrlParams } from "../../helpers/commonFunctions";
-import { apiCall } from "./index";
+import {objToUrlParams} from "../../helpers/commonFunctions";
+import {apiCall} from "./index";
 
 export function getFiles(payload) {
-  const { sort } = payload;
+  const {sort} = payload;
   let url = "/v1/files";
   if (payload.sort) {
     url += `?sort=${sort}`;
@@ -315,6 +315,22 @@ export function deleteWorkspaceFiles(payload) {
   return apiCall({
     method: "DELETE",
     url: "/v2/workspace-bulk-files",
+    data: payload,
+  });
+}
+
+export function postGoogleAttachments(payload) {
+  return apiCall({
+    method: "POST",
+    url: `/v2/google-attachments?test_case=${payload.link_id}`,
+    data: payload,
+  });
+}
+
+export function getWorkspaceGoogleFileAttachments(payload) {
+  return apiCall({
+    method: "GET",
+    url: `/v2/workspace-google-attachments?topic_id=${payload.workspace_id}&attachment_type=FILE`,
     data: payload,
   });
 }
