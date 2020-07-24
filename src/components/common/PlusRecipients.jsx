@@ -43,7 +43,7 @@ const PlusRecipients = (props) => {
         <span>+</span>
         {recipients.length}
       </TotalPeopleCircle>
-      {showUsersPopUp && <StyledUserListPopUp className={"peopleee-list"} users={recipients} />}
+      {showUsersPopUp && <StyledUserListPopUp className={"people-list"} users={recipients} />}
     </PlusRecipientsDiv>
   );
 };
