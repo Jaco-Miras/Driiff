@@ -2,6 +2,7 @@ import React, { useRef } from "react";
 import styled from "styled-components";
 import { Avatar } from "../common";
 import { useOutsideClick } from "../hooks";
+import {useHistory} from "react-router-dom";
 
 const UserListPopUpContainer = styled.div`
   ul {
@@ -10,7 +11,6 @@ const UserListPopUpContainer = styled.div`
     box-shadow: 0 0 3px 0 rgba(26, 26, 26, 0.4), 0 1px 3px 0 rgba(0, 0, 0, 0.1);
     z-index: 5;
     overflow: auto;
-
     background-color: #ffffff;
     color: #4d4d4d;
     border-radius: 8px;
@@ -18,6 +18,7 @@ const UserListPopUpContainer = styled.div`
     cursor: pointer;
     box-shadow: 0 5px 10px -1px rgba(0, 0, 0, 0.15);
     border-top: 1px solid #eeeeee;
+    max-height: 260px;
   }
   li {
     white-space: nowrap;
@@ -59,9 +60,16 @@ const UserListPopUpContainer = styled.div`
 const UserListPopUp = (props) => {
   const { users, className, onShowList } = props;
   const listRef = useRef();
+  const history = useHistory();
+
   const handleShowList = () => {
     if (onShowList) onShowList();
   };
+
+  const handleOnNameClick = (e, user) => {
+    history.push(`/profile/${user.id}/${user.name}`);
+  };
+
   useOutsideClick(listRef, handleShowList, true);
   return (
     <UserListPopUpContainer className={className} ref={listRef}>
@@ -69,8 +77,8 @@ const UserListPopUp = (props) => {
         {users.map((u, k) => {
           return (
             <li key={k}>
-              <Avatar size={"xs"} imageLink={u.profile_image_link} userId={u.id} name={u.name} partialName={u.partial_name} noDefaultClick={true} />
-              <span>{u.name}</span>
+              <Avatar size={"xs"} imageLink={u.profile_image_link} userId={u.id} name={u.name} partialName={u.partial_name} noDefaultClick={true} onClick={(e) => handleOnNameClick(e, u)}/>
+              <span onClick={(e) => handleOnNameClick(e, u)}>{u.name}</span>
             </li>
           );
         })}

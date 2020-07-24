@@ -12776,6 +12776,7 @@ a.btn:hover[href="#previous"] {
   opacity: 0;
   height: 0;
   display: block !important;
+  max-height: 220px;
   -webkit-transition: margin-top 0.3s, opacity 0.3s;
   -o-transition: margin-top 0.3s, opacity 0.3s;
   -moz-transition: margin-top 0.3s, opacity 0.3s;
@@ -12784,7 +12785,7 @@ a.btn:hover[href="#previous"] {
 }
 
 .dropdown-menu ul.list-group {
-  max-height: 300px;
+  max-height: 260px;
 }
 
 .dropdown-menu.show {
