@@ -1,12 +1,12 @@
-import React, { useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React, {useRef, useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
 import Tooltip from "react-tooltip-lite";
 import styled from "styled-components";
-import { onClickSendButton } from "../../../redux/actions/chatActions";
-import { joinWorkspace, joinWorkspaceReducer } from "../../../redux/actions/workspaceActions";
-import { CommonPicker, SvgIconFeather } from "../../common";
+import {onClickSendButton} from "../../../redux/actions/chatActions";
+import {joinWorkspace, joinWorkspaceReducer} from "../../../redux/actions/workspaceActions";
+import {CommonPicker, SvgIconFeather} from "../../common";
 import ChatInput from "../../forms/ChatInput";
-import { useIsMember, useTimeFormat } from "../../hooks";
+import {useIsMember, useTimeFormat, useToaster} from "../../hooks";
 import ChatQuote from "../../list/chat/ChatQuote";
 
 const Wrapper = styled.div`
@@ -122,6 +122,7 @@ const ChatFooterPanel = (props) => {
   const { localizeChatTimestamp } = useTimeFormat();
 
   const dispatch = useDispatch();
+  const toaster = useToaster();
   const ref = {
     picker: useRef(),
   };
@@ -167,12 +168,13 @@ const ChatFooterPanel = (props) => {
         (err, res) => {
           if (err) return;
           dispatch(
-            joinWorkspaceReducer({
-              channel_id: selectedChannel.id,
-              topic_id: selectedChannel.entity_id,
-              user: user,
-            })
+              joinWorkspaceReducer({
+                channel_id: selectedChannel.id,
+                topic_id: selectedChannel.entity_id,
+                user: user,
+              })
           );
+          toaster.success(<>You have joined <b>#${selectedChannel.title}</b></>);
         }
       )
     );

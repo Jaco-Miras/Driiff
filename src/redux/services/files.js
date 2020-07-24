@@ -334,3 +334,11 @@ export function getWorkspaceGoogleFileAttachments(payload) {
     data: payload,
   });
 }
+
+export function getWorkspaceGoogleFolderAttachments(payload) {
+  return apiCall({
+    method: "GET",
+    url: `/v2/workspace-google-attachments?topic_id=${payload.workspace_id}&attachment_type=FOLDER`,
+    data: payload,
+  });
+}

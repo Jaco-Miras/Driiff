@@ -32,6 +32,8 @@ import {
     incomingDeletedFolder,
     incomingDeletedPostFile,
     incomingEmptyTrash,
+    incomingGoogleFile,
+    incomingGoogleFolder,
     incomingFile,
     incomingFiles,
     incomingFolder,
@@ -71,6 +73,7 @@ import {
     incomingWorkspaceFolder,
     updateWorkspaceCounter
 } from "../../redux/actions/workspaceActions";
+import { FileAttachments } from "../common";
 
 class SocketListeners extends React.PureComponent {
     constructor(props) {
@@ -96,6 +99,21 @@ class SocketListeners extends React.PureComponent {
 
         // new socket
         window.Echo.private(`${localStorage.getItem("slug") === "dev24admin" ? "dev" : localStorage.getItem("slug")}.Driff.User.${this.props.user.id}`)
+            .listen(".google-attachment-notification", (e) => {
+                console.log("google attachment", e)
+                switch (e.SOCKET_TYPE) {
+                    case "GOOGLE_ATTACHMENT_CREATE": {
+                        if (e.attachment_type === "GOOGLE_DRIVE_FILE") {
+                            this.props.incomingGoogleFile(e);
+                        } else if (e.attachment_type === "GOOGLE_DRIVE_FOLDER") {
+                            this.props.incomingGoogleFolder(e);
+                        }
+                        break;
+                    }
+                    default:
+                        return null;
+                }
+            })
             .listen(".workspace-folder-notification", (e) => {
                 console.log(e, "folder");
                 switch (e.SOCKET_TYPE) {
@@ -327,6 +345,21 @@ class SocketListeners extends React.PureComponent {
             });
 
         window.Echo.private(`${localStorage.getItem("slug") === "dev24admin" ? "dev" : localStorage.getItem("slug")}.App.Broadcast`)
+            .listen(".google-attachment-notification", (e) => {
+                console.log("google attachment", e)
+                switch (e.SOCKET_TYPE) {
+                    case "GOOGLE_ATTACHMENT_CREATE": {
+                        if (e.attachment_type === "GOOGLE_DRIVE_FILE") {
+                            this.props.incomingGoogleFile(e);
+                        } else if (e.attachment_type === "GOOGLE_DRIVE_FOLDER") {
+                            this.props.incomingGoogleFolder(e);
+                        }
+                        break;
+                    }
+                    default:
+                        return null;
+                }
+            })
             .listen(".user-notification", (e) => {
                 console.log(e, "user notif");
                 switch (e.SOCKET_TYPE) {
@@ -861,6 +894,8 @@ function mapDispatchToProps(dispatch) {
         updateWorkspaceCounter: bindActionCreators(updateWorkspaceCounter, dispatch),
         fetchPost: bindActionCreators(fetchPost, dispatch),
         incomingDeletedFiles: bindActionCreators(incomingDeletedFiles, dispatch),
+        incomingGoogleFile: bindActionCreators(incomingGoogleFile, dispatch),
+        incomingGoogleFolder: bindActionCreators(incomingGoogleFolder, dispatch)
     };
 }
 

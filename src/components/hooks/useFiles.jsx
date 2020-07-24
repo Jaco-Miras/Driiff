@@ -15,13 +15,14 @@ const useFiles = () => {
     if ((!fetchingFiles && activeTopic && !workspaceFiles.hasOwnProperty(activeTopic.id)) || (!fetchingFiles && activeTopic && workspaceFiles.hasOwnProperty(activeTopic.id) && !workspaceFiles[activeTopic.id].hasOwnProperty("loaded"))) {
       const cb = (err, res) => {
         setFetchingFiles(false);
-        fileActions.getGoogleDriveFiles(activeTopic.id);
         fileActions.getFolders({topic_id: activeTopic.id});
         fileActions.getFilesDetail(activeTopic.id);
         fileActions.getFavoriteFiles(activeTopic.id);
         fileActions.getPopularFiles(activeTopic.id);
         fileActions.getEditedFiles(activeTopic.id);
         fileActions.getTrashFiles(activeTopic.id);
+        fileActions.getGoogleDriveFiles(activeTopic.id);
+        fileActions.getGoogleDriveFolders(activeTopic.id);
       };
       setFetchingFiles(true);
       fileActions.getFiles({ topic_id: activeTopic.id }, cb);
