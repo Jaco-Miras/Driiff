@@ -1,5 +1,14 @@
 export { default as MainSearch } from "./MainSearch";
 export { default as SearchTabs } from "./SearchTabs";
 export { default as TabContents } from "./TabContents";
+export { default as ChannelTabResults } from "./ChannelTabResults";
+export { default as ChannelSearchItem } from "./ChannelSearchItem";
 export { default as ChatTabResults } from "./ChatTabResults";
+export { default as PeopleSearchItem } from "./PeopleSearchItem";
 export { default as PeopleTabResults } from "./PeopleTabResults";
+export { default as FilesTabResults } from "./FilesTabResults";
+export { default as PostsTabResults } from "./PostsTabResults";
+export { default as PostSearchItem } from "./PostSearchItem";
+export { default as SearchPagination } from "./SearchPagination";
+export { default as WorkspaceTabResults } from "./WorkspaceTabResults";
+export { default as WorkspaceSearchItem } from "./WorkspaceSearchItem";
