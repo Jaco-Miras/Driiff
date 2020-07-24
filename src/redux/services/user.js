@@ -1,6 +1,6 @@
-import { objToUrlParams } from "../../helpers/commonFunctions";
-import { getAPIUrl } from "../../helpers/slugHelper";
-import { apiCall, apiNoTokenCall } from "./service";
+import {objToUrlParams} from "../../helpers/commonFunctions";
+import {getAPIUrl} from "../../helpers/slugHelper";
+import {apiCall, apiNoTokenCall} from "./service";
 
 /**
  * This function will call on the API to process the data whether it will be for two-step-authentication or not
@@ -426,5 +426,23 @@ export function postUploadProfileImage(payload) {
     data: {
       file: payload.file,
     },
+  });
+}
+
+export function postExternalUserData(payload = {}) {
+  let url = `/v2/external-user-data`;
+  return apiNoTokenCall({
+    method: "POST",
+    url: url,
+    data: payload
+  });
+}
+
+export function putExternalUserUpdate(payload = {}) {
+  let url = `/v2/external-user-update`;
+  return apiNoTokenCall({
+    method: "PUT",
+    url: url,
+    data: payload
   });
 }

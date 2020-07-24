@@ -1,4 +1,4 @@
-export { apiCall, apiNoTokenCall } from "./service";
+export {apiCall, apiNoTokenCall} from "./service";
 export {
   getGlobalRecipients,
   getChannels,
@@ -24,9 +24,25 @@ export {
   deleteChatMessage,
 } from "./chat";
 
-export { getDriffSettings, getUserSettings, updateUserSettings } from "./settings";
+export {getDriffSettings, getUserSettings, updateUserSettings} from "./settings";
 
-export { login, logout, googleLogin, getOnlineUsers, getMentions, getUser, authenticateGoogleLogin, resetPassword, updatePassword, checkDriffUserEmail, getUsers, putUser, postUploadProfileImage } from "./user";
+export {
+  login,
+  logout,
+  googleLogin,
+  getOnlineUsers,
+  getMentions,
+  getUser,
+  authenticateGoogleLogin,
+  resetPassword,
+  updatePassword,
+  checkDriffUserEmail,
+  getUsers,
+  putUser,
+  postUploadProfileImage,
+  postExternalUserData,
+  putExternalUserUpdate
+} from "./user";
 
 export {
   deleteDraft,
@@ -116,8 +132,15 @@ export {
   updateWorkspace,
 } from "./workspace";
 
-export { postRegisterDriff, patchCheckDriff } from "./driff";
+export {postRegisterDriff, patchCheckDriff} from "./driff";
 
-export { deleteNotification, deleteAllNotification, getNotifications, patchNotification, readAllNotification, unreadNotification } from "./notification";
+export {
+  deleteNotification,
+  deleteAllNotification,
+  getNotifications,
+  patchNotification,
+  readAllNotification,
+  unreadNotification
+} from "./notification";
 
-export { globalSearch } from "./search";
+export {globalSearch} from "./search";

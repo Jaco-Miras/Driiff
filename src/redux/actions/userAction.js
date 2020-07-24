@@ -1,4 +1,4 @@
-import dispatchActionToReducer, { SimpleDispatchActionToReducer } from "../actionDispatcher";
+import dispatchActionToReducer, {SimpleDispatchActionToReducer} from "../actionDispatcher";
 import {
   authenticateGoogleLogin as authenticateGoogleLoginService,
   checkDriffUserEmail as checkDriffUserEmailService,
@@ -9,10 +9,12 @@ import {
   googleLogin as googleLoginService,
   login as loginService,
   logout as logoutService,
+  postExternalUserData as postExternalUserDataService,
   postUploadProfileImage as postUploadProfileImageService,
+  putExternalUserUpdate as putExternalUserUpdateService,
   putUser as putUserService,
   resetPassword as resetPasswordService,
-  updatePassword as updatePasswordService,
+  updatePassword as updatePasswordService
 } from "../services";
 
 export const userLogin = (payload, callback) => {
@@ -69,4 +71,12 @@ export function postUploadProfileImage(payload, callback) {
 
 export function incomingUpdatedUser(payload, callback) {
   return SimpleDispatchActionToReducer("INCOMING_UPDATED_USER", payload, callback);
+}
+
+export function postExternalUserData(payload, callback) {
+  return dispatchActionToReducer(postExternalUserDataService(payload), "POST_EXTERNAL_USER_DATA_START", "POST_EXTERNAL_USER_DATA_SUCCESS", "POST_EXTERNAL_USER_DATA_FAILURE", callback);
+}
+
+export function putExternalUserUpdate(payload, callback) {
+  return dispatchActionToReducer(putExternalUserUpdateService(payload), "PUT_EXTERNALUSER_UPDATE_START", "PUT_EXTERNALUSER_UPDATE_SUCCESS", "PUT_EXTERNALUSER_UPDATE_FAILURE", callback);
 }
