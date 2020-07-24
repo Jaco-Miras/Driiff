@@ -1,4 +1,5 @@
 import { convertArrayToObject } from "../../helpers/arrayHelper";
+import { groupBy } from "lodash";
 
 const INITIAL_STATE = {
   user: null,
@@ -16,6 +17,8 @@ const INITIAL_STATE = {
   searchValue: "",
   searchResults: {},
   searchCount: 0,
+  searching: false,
+  tabs: {}
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -137,17 +140,27 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "SEARCH_SUCCESS": {
+      let tabs = {};
+      if (action.data.result.length) {
+        tabs = groupBy(action.data.result, "type");
+      }
       return {
         ...state,
         searchResults: action.data.result.length ? convertArrayToObject(action.data.result, "id")
                       : {},
-        searchCount: action.data.total_result
+        searchCount: action.data.total_result,
+        searching: false,
+        tabs: tabs
       }
     }
     case "SAVE_SEARCH_INPUT": {
       return {
         ...state,
-        searchValue: action.data.value
+        searchValue: action.data.value,
+        searchCount: 0,
+        searchResults: {},
+        searching: action.data.value !== "",
+        tabs: action.data.value === "" ? {} : state.tabs
       }
     }
     default:
