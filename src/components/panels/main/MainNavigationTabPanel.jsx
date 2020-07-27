@@ -1,16 +1,15 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useHistory } from "react-router-dom";
-import { Badge } from "reactstrap";
+import React, {useEffect, useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
+import {useHistory} from "react-router-dom";
+import {Badge} from "reactstrap";
 import styled from "styled-components";
-import { replaceChar } from "../../../helpers/stringFormatter";
-import { getUnreadNotificationCounterEntries, setNavMode } from "../../../redux/actions/globalActions";
-import { NavLink, SvgIcon, SvgIconFeather } from "../../common";
+import {replaceChar} from "../../../helpers/stringFormatter";
+import {addToModals, getUnreadNotificationCounterEntries, setNavMode} from "../../../redux/actions/globalActions";
+import {NavLink, SvgIcon, SvgIconFeather} from "../../common";
 //import Tooltip from "react-tooltip-lite";
 // import { WorkspaceNavigationMenuBodyPanel } from "../workspace";
-import { useSetWorkspace, useSortWorkspaces } from "../../hooks";
-import { WorkspaceList, ExternalWorkspaceList } from "../../workspace";
-import { addToModals } from "../../../redux/actions/globalActions";
+import {useSetWorkspace, useSortWorkspaces} from "../../hooks";
+import {ExternalWorkspaceList, WorkspaceList} from "../../workspace";
 
 const Wrapper = styled.div`
   .navigation-menu-tab-header {
@@ -223,20 +222,22 @@ const MainNavigationTabPanel = (props) => {
   return (
     <Wrapper className={`navigation-menu-tab ${className}`}>
       <div>
-        <div className="navigation-menu-tab-header" data-toggle="tooltip" title="Driff" data-placement="right" data-original-title="Driff">
+        <div className="navigation-menu-tab-header" data-toggle="tooltip" title="Driff" data-placement="right"
+             data-original-title="Driff">
           <div class="driff-logo">
-            <DriffLogo icon="driff-logo" data-link="/" onClick={handleIconClick} />
+            <DriffLogo icon="driff-logo" data-link="/" onClick={handleIconClick}/>
           </div>
         </div>
       </div>
-      <div className="flex-grow-1 mb-3">
+      <div className="flex mb-3">
         <ul>
           <li>
             <NavIconContainer to={workspacePath}>
-              <NavIcon icon={"command"} />
+              <NavIcon icon={"command"}/>
               <div>
                 Workspaces
-                {unreadCounter.workspace_chat_message + unreadCounter.workspace_post >= 1 && <Badge data-count={unreadCounter.workspace_chat_message + unreadCounter.workspace_post}>&nbsp;</Badge>}
+                {unreadCounter.workspace_chat_message + unreadCounter.workspace_post >= 1 &&
+                <Badge data-count={unreadCounter.workspace_chat_message + unreadCounter.workspace_post}>&nbsp;</Badge>}
               </div>
             </NavIconContainer>
           </li>
