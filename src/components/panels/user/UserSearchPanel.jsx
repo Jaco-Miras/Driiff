@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { MainSearch, SearchTabs, TabContents } from "../../list/search";
+import { MainSearch, SearchTabs, SearchPagination, TabContents } from "../../list/search";
 //import { SvgEmptyState } from "../../common";
 import { useSearch, useSearchActions } from "../../hooks";
 import { SvgIconFeather } from "../../common";
@@ -19,7 +19,7 @@ const UserSearchPanel = (props) => {
   const { className = "" } = props;
 
   const actions = useSearchActions();
-  const { count, results, value } = useSearch();
+  const { count, results, searching, tabs, value } = useSearch();
 
   const [activeTab, setActiveTab] = useState(null);
 
@@ -29,6 +29,19 @@ const UserSearchPanel = (props) => {
     }
   };
 
+  useEffect(() => {
+    if (Object.keys(tabs).length) {
+      let tab = Object.keys(tabs)[0];
+      if (tab === "DOCUMENT") {
+        setActiveTab("files");
+      } else {
+        setActiveTab(tab.toLowerCase());
+      }
+    } else {
+      setActiveTab(null);
+    }
+  }, [value, setActiveTab, tabs]);
+  console.log(activeTab)
   return (
     <Wrapper className={`user-search-panel container-fluid h-100 ${className}`}>
       <div className="row">
@@ -40,40 +53,19 @@ const UserSearchPanel = (props) => {
                 value !== "" && 
                 <h4 className="mb-5">
                   <SvgIconFeather icon="search" />
-                  {count} results found for: <span className="text-primary">“{value}”</span>
+                  {
+                    searching && <span>Searching<span className="text-primary">“{value}”</span></span>
+                  }
+                  {
+                    !searching && <span>{count} results found for: <span className="text-primary">“{value}”</span></span>
+                  }
                 </h4>
               }
-              <SearchTabs activeTab={activeTab} onSelectTab={handleSelectTab}/>
-              <TabContents activeTab={activeTab} results={results}/>
-              <nav className="mt-3">
-                <ul className="pagination justify-content-center">
-                  <li className="page-item disabled">
-                    <a className="page-link" href="#" tabIndex="-1" aria-disabled="true">
-                      Previous
-                    </a>
-                  </li>
-                  <li className="page-item active">
-                    <a className="page-link" href="#">
-                      1
-                    </a>
-                  </li>
-                  <li className="page-item">
-                    <a className="page-link" href="#">
-                      2
-                    </a>
-                  </li>
-                  <li className="page-item">
-                    <a className="page-link" href="#">
-                      3
-                    </a>
-                  </li>
-                  <li className="page-item">
-                    <a className="page-link" href="#">
-                      Next
-                    </a>
-                  </li>
-                </ul>
-              </nav>
+              <SearchTabs activeTab={activeTab} onSelectTab={handleSelectTab} tabs={tabs}/>
+              <TabContents activeTab={activeTab} results={results} tabs={tabs}/>
+              {
+                count > 0 && <SearchPagination/>
+              }
             </div>
           </div>
         </div>
