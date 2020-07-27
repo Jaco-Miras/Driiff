@@ -7,6 +7,7 @@ export { default as ChatTabResults } from "./ChatTabResults";
 export { default as PeopleSearchItem } from "./PeopleSearchItem";
 export { default as PeopleTabResults } from "./PeopleTabResults";
 export { default as FilesTabResults } from "./FilesTabResults";
+export { default as FileSearchItem } from "./FileSearchItem";
 export { default as PostsTabResults } from "./PostsTabResults";
 export { default as PostSearchItem } from "./PostSearchItem";
 export { default as SearchPagination } from "./SearchPagination";

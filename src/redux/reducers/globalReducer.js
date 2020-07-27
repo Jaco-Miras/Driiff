@@ -1,5 +1,5 @@
 import { convertArrayToObject } from "../../helpers/arrayHelper";
-import { groupBy } from "lodash";
+//import { groupBy } from "lodash";
 
 const INITIAL_STATE = {
   user: null,
@@ -141,9 +141,20 @@ export default (state = INITIAL_STATE, action) => {
     }
     case "SEARCH_SUCCESS": {
       let tabs = {};
-      if (action.data.result.length) {
-        tabs = groupBy(action.data.result, "type");
-      }
+      // if (action.data.result.length) {
+      //   //tabs = groupBy(action.data.result, "type");
+      // }
+      let keys = [...new Set(action.data.result.map((r) => r.type))];
+      keys.map((k) => {
+        let items = action.data.result.filter((r) => r.type === k);
+        tabs[k] = {
+          count: items.length,
+          page: 1,
+          items: items,
+          maxPage: Math.ceil(items.length / 10)
+        }
+      })
+  
       return {
         ...state,
         searchResults: action.data.result.length ? convertArrayToObject(action.data.result, "id")
