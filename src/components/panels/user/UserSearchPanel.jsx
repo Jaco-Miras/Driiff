@@ -41,7 +41,7 @@ const UserSearchPanel = (props) => {
       setActiveTab(null);
     }
   }, [value, setActiveTab, tabs]);
-  console.log(activeTab)
+
   return (
     <Wrapper className={`user-search-panel container-fluid h-100 ${className}`}>
       <div className="row">
@@ -61,10 +61,13 @@ const UserSearchPanel = (props) => {
                   }
                 </h4>
               }
+              {
+                count > 0 && <SearchPagination activeTab={activeTab} tabs={tabs}/>
+              }
               <SearchTabs activeTab={activeTab} onSelectTab={handleSelectTab} tabs={tabs}/>
               <TabContents activeTab={activeTab} results={results} tabs={tabs}/>
               {
-                count > 0 && <SearchPagination/>
+                count > 0 && <SearchPagination activeTab={activeTab} tabs={tabs}/>
               }
             </div>
           </div>
