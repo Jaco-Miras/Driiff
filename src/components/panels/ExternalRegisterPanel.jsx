@@ -1,18 +1,36 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, {useCallback, useEffect, useRef, useState} from "react";
 import styled from "styled-components";
-import {$_GET} from "../../helpers/commonFunctions";
-import {Input} from "reactstrap";
+import {Input, InputGroup, InputGroupAddon, InputGroupText} from "reactstrap";
 import {useToaster, useUserActions} from "../hooks";
 import {useHistory} from "react-router-dom";
+import {SvgIconFeather} from "../common";
+import {InputFeedback} from "../forms";
+import {EmailRegex} from "../../helpers/stringFormatter";
+import {$_GET} from "../../helpers/commonFunctions";
 
-const Wrapper = styled.form``;
+const Wrapper = styled.form`
+`;
+
+const FormGroup = styled.div`
+    .form-control {
+        margin-bottom: 0 !important;
+    }
+    .invalid-feedback {
+        text-align: left;
+    }
+    .input-group-text {
+      height: 36px;
+    }
+`;
 
 const ExternalRegisterPanel = (props) => {
 
     const history = useHistory();
     const userAction = useUserActions();
     const toaster = useToaster();
+    const [init, setInit] = useState(true);
     const [loading, setLoading] = useState(false);
+    const [passwordVisibility, setPasswordVisibility] = useState(false);
 
     const refs = {
         first_name: useRef(),
@@ -27,6 +45,11 @@ const ExternalRegisterPanel = (props) => {
         password: "",
     });
 
+    const [formResponse, setFormResponse] = useState({
+        valid: {},
+        message: {},
+    });
+
     const handleInputChange = (e) => {
         setForm({
             ...form,
@@ -36,20 +59,67 @@ const ExternalRegisterPanel = (props) => {
 
     const validateForm = () => {
         let valid = true;
+        let errorData = {email: "", password: "", form: ""};
+
+        if (form.email === "") {
+            valid = false;
+            errorData = {...errorData, email: "Email is required."};
+        } else if (!EmailRegex.test(form.email)) {
+            valid = false;
+            errorData = {...errorData, email: "Invalid email format."};
+        }
+
+        if (form.first_name === "") {
+            valid = false;
+            errorData = {...errorData, first_name: "First name is required."};
+        }
+
+        if (form.last_name === "") {
+            valid = false;
+            errorData = {...errorData, last_name: "Last name is required."};
+        }
+
+        if (form.password === "") {
+            valid = false;
+            errorData = {...errorData, password: "Password is required."};
+        }
+
+        setFormResponse({
+            valid: {
+                first_name: errorData.first_name === "",
+                last_name: errorData.last_name === "",
+                email: errorData.email === "",
+                password: errorData.password === "",
+            },
+            message: {
+                first_name: errorData.first_name,
+                last_name: errorData.last_name,
+                email: errorData.email,
+                password: errorData.password
+            },
+        });
 
         return valid;
     }
 
+    const resetFormResponse = () => {
+        setFormResponse({
+            valid: {},
+            message: {}
+        });
+    }
+
     const handleAccept = (e) => {
         e.preventDefault();
+        resetFormResponse();
+
         if (loading) {
             return;
         }
         setLoading(true);
+        validateForm();
 
         userAction.updateExternalUser(form, (err, res) => {
-            console.log(err);
-
             if (res) {
                 toaster.success(`Login successful!`);
 
@@ -63,9 +133,11 @@ const ExternalRegisterPanel = (props) => {
         });
     };
 
-    useEffect(() => {
-        refs.first_name.current.focus();
+    const togglePasswordVisibility = useCallback(() => {
+        setPasswordVisibility(prevState => !prevState);
+    }, [setPasswordVisibility]);
 
+    useEffect(() => {
         userAction.fetchStateCode($_GET("state_code"), (err, res) => {
             if (err) {
                 history.push(`/login`);
@@ -73,7 +145,7 @@ const ExternalRegisterPanel = (props) => {
 
             if (res) {
                 if (res.data.auth_login) {
-                    toaster.success(`Login successful!`);
+                    toaster.success(`Activation successful!`);
 
                     const returnUrl =
                         typeof props.location.state !== "undefined" && typeof props.location.state.from !== "undefined" && props.location.state.from !== "/logout"
@@ -88,6 +160,9 @@ const ExternalRegisterPanel = (props) => {
                         topic_id: res.data.topic.id,
                         email: res.data.user.email
                     }))
+                    setInit(false);
+
+                    refs.first_name.current.focus();
                 }
             }
         })
@@ -95,32 +170,64 @@ const ExternalRegisterPanel = (props) => {
         //eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
+    if (init)
+        return <></>;
+
     return (
         <Wrapper>
-            <div className="form-group">
-                <input ref={refs.first_name} onChange={handleInputChange} name="first_name" type="text"
-                       className="form-control" placeholder="First name" required="" autoFocus/>
-            </div>
-            <div className="form-group">
-                <input onChange={handleInputChange} name="middle_name" type="text" className="form-control"
+            <FormGroup className="form-group">
+                <Input
+                    ref={refs.first_name} onChange={handleInputChange} name="first_name" type="text"
+                    className="form-control" placeholder="First name"
+                    valid={typeof formResponse.valid.first_name === "undefined" ? null : formResponse.valid.first_name}
+                    invalid={typeof formResponse.valid.first_name === "undefined" ? null : !formResponse.valid.first_name}
+                    required autoFocus/>
+                <InputFeedback valid={formResponse.valid.first_name}>{formResponse.message.first_name}</InputFeedback>
+            </FormGroup>
+            <FormGroup className="form-group">
+                <Input onChange={handleInputChange} name="middle_name" type="text" className="form-control"
                        placeholder="Middle name"/>
-            </div>
-            <div className="form-group">
-                <input onChange={handleInputChange} name="last_name" type="text" className="form-control"
-                       placeholder="Last name" required/>
-            </div>
-            <div className="form-group">
+            </FormGroup>
+            <FormGroup className="form-group">
+                <Input
+                    onChange={handleInputChange} name="last_name" type="text" className="form-control"
+                    placeholder="Last name"
+                    valid={typeof formResponse.valid.last_name === "undefined" ? null : formResponse.valid.last_name}
+                    invalid={typeof formResponse.valid.last_name === "undefined" ? null : !formResponse.valid.last_name}
+                    required/>
+                <InputFeedback valid={formResponse.valid.last_name}>{formResponse.message.last_name}</InputFeedback>
+            </FormGroup>
+            <FormGroup className="form-group">
                 <Input
                     value={form.email}
                     onChange={handleInputChange} name="email" type="email" className="form-control"
-                    placeholder="Email" required=""/>
-            </div>
-            <div className="form-group">
-                <Input
-                    defaultValue={""}
-                    onChange={handleInputChange} name="password" type="password" className="form-control"
-                    placeholder="Password" required=""/>
-            </div>
+                    placeholder="Email"
+                    valid={typeof formResponse.valid.email === "undefined" ? null : formResponse.valid.email}
+                    invalid={typeof formResponse.valid.email === "undefined" ? null : !formResponse.valid.email}
+                    required/>
+                <InputFeedback valid={formResponse.valid.email}>{formResponse.message.email}</InputFeedback>
+            </FormGroup>
+            <FormGroup className="form-group">
+                <InputGroup>
+                    <Input
+                        innerRef={refs.password}
+                        name="password"
+                        onChange={handleInputChange}
+                        placeholder="Password"
+                        required
+                        defaultValue=""
+                        type={passwordVisibility ? "text" : "password"}
+                        valid={typeof formResponse.valid.password === "undefined" ? null : formResponse.valid.password}
+                        invalid={typeof formResponse.valid.password === "undefined" ? null : !formResponse.valid.password}
+                    />
+                    <InputGroupAddon className="btn-toggle" addonType="append">
+                        <InputGroupText className="btn" onClick={togglePasswordVisibility}>
+                            <SvgIconFeather icon={passwordVisibility ? "eye-off" : "eye"}/>
+                        </InputGroupText>
+                    </InputGroupAddon>
+                    <InputFeedback valid={formResponse.valid.password}>{formResponse.message.password}</InputFeedback>
+                </InputGroup>
+            </FormGroup>
             <button className="btn btn-primary btn-block" onClick={handleAccept}>
                 Accept
             </button>
