@@ -57,6 +57,13 @@ const EmptyState = styled.div`
   }
 `;
 
+const EmptyStateLabel = styled.div`
+  padding: 10px;
+  p {
+    margin: 0;
+  }
+`;
+
 const FilesBody = (props) => {
   const { className = "", dropZoneRef, filter, search, wsFiles, isMember, handleAddEditFolder, actions, params, folders, folder, fileIds, history, subFolders } = props;
 
@@ -283,11 +290,10 @@ const FilesBody = (props) => {
                 {!(wsFiles && wsFiles.hasOwnProperty("favorite_files") && wsFiles.favorite_files.length > 0) && (
                   <EmptyState>
                     <SvgEmptyState icon={4} height={282} />
-                    {isMember && (
-                      <button className="btn btn-outline-primary btn-block" onClick={handleShowUploadModal}>
-                        Upload files
-                      </button>
-                    )}
+                    <EmptyStateLabel>
+                      <p>No favorite files.</p>
+                      <p>Mark files as favorites that you want to easily find later.</p>
+                    </EmptyStateLabel>
                   </EmptyState>
                 )}
               </>
