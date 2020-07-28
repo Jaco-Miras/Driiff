@@ -131,7 +131,9 @@ const WorkspaceButton = styled.h3`
   }
 `;
 
-const WorspaceHeaderPanel = () => {
+const WorspaceHeaderPanel = (props) => {
+
+  const { isExternal } = props;
   const toaster = useToaster();
   const dispatch = useDispatch();
   const match = useRouteMatch();
@@ -246,7 +248,7 @@ const WorspaceHeaderPanel = () => {
                     <li className="nav-item">
                       <SubWorkspaceName>
                         {activeTopic.name}
-                        <SettingsLink/>
+                        { !isExternal && <SettingsLink/> }
                       </SubWorkspaceName>
                     </li>
                   </>
@@ -261,7 +263,7 @@ const WorspaceHeaderPanel = () => {
                   <li className="nav-item">
                     <SubWorkspaceName>
                       {activeTopic.name}
-                      <SettingsLink/>
+                      { !isExternal && <SettingsLink/> }
                     </SubWorkspaceName>
                   </li>
                   <li className="nav-item-last">

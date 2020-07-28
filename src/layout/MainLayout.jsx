@@ -91,7 +91,7 @@ const MainLayout = (props) => {
         <source src={require("../assets/audio/appointed.m4r")} type="audio/m4r" />
         Your browser does not support the audio element.
       </AudioStyle>
-      <MainHeaderPanel />
+      <MainHeaderPanel isExternal={isExternal}/>
       <MainContent id="main">
         <Route render={(props) => <MainNavigationPanel isExternal={isExternal} {...props}/>} path={["/:page"]} />
         <Switch>

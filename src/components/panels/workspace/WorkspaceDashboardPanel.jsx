@@ -18,7 +18,7 @@ const Wrapper = styled.div`
 `;
 
 const WorkspaceDashboardPanel = (props) => {
-  const { className = "", isMember, match } = props;
+  const { className = "", isExternal, isMember, match } = props;
 
   const { params } = match;
 
@@ -33,12 +33,12 @@ const WorkspaceDashboardPanel = (props) => {
     <Wrapper className={`container-fluid fadeIn ${className}`}>
       <div className={"row"}>
         <div className={"col-md-6"}>
-          <DashboardAboutWorkspace isMember={isMember} workspace={workspace} onEditClick={handleEditClick} />
+          <DashboardAboutWorkspace isMember={isMember} workspace={workspace} onEditClick={handleEditClick} isExternal={isExternal}/>
           <TimelinePanel timeline={timeline} actions={actions} params={params} />
         </div>
 
         <div className={"col-md-6"}>
-          <DashboardTeam workspace={workspace} onEditClick={handleEditClick} />
+          <DashboardTeam workspace={workspace} onEditClick={handleEditClick} isMember={isMember} isExternal={isExternal}/>
           <RecentPosts posts={recentPosts} />
         </div>
       </div>

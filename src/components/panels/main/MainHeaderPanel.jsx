@@ -7,13 +7,13 @@ import { WorkspaceHeaderPanel } from "../workspace";
 const Wrapper = styled.div``;
 
 const MainHeaderPanel = (props) => {
-  const { className = "" } = props;
-
+  const { className = "", isExternal } = props;
+  
   return (
     <Wrapper className={`header ${className}`}>
       <Switch>
-        <Route {...props} component={WorkspaceHeaderPanel} path={["/workspace/:page"]} />
-        <Route {...props} component={CompanyHeaderPanel} path={["/:page"]} />
+        <Route render={() => <WorkspaceHeaderPanel isExternal={isExternal} {...props}/>} path={["/workspace/:page"]} />
+        <Route render={() => <CompanyHeaderPanel isExternal={isExternal} {...props}/>} path={["/:page"]} />
       </Switch>
     </Wrapper>
   );
