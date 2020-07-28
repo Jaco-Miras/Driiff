@@ -31,7 +31,7 @@ const EmptyState = styled.div`
 `;
 
 const WorkspaceContentPanel = (props) => {
-  const { className = "" } = props;
+  const { className = "", isExternal } = props;
 
   const dispatch = useDispatch();
 
@@ -70,7 +70,7 @@ const WorkspaceContentPanel = (props) => {
           />
           <Switch>
             <Route
-              render={(props) => <WorkspaceDashboardPanel {...props} workspace={workspace} isMember={isMember} />}
+              render={() => <WorkspaceDashboardPanel {...props} workspace={workspace} isMember={isMember} />}
               path={["/workspace/dashboard/:folderId/:folderName/:workspaceId/:workspaceName", "/workspace/dashboard/:workspaceId/:workspaceName", "/workspace/dashboard"]}
             />
             <Route

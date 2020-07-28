@@ -48,7 +48,7 @@ const Wrapper = styled.div`
 `;
 
 const DashboardTeam = (props) => {
-  const { className = "", workspace, onEditClick } = props;
+  const { className = "", workspace, onEditClick, isExternal, isMember } = props;
   const [scrollRef, setScrollRef] = useState(null);
 
   const assignRef = useCallback((e) => {
@@ -58,19 +58,20 @@ const DashboardTeam = (props) => {
 
     //eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
+  const hideOptions = isMember && isExternal;
+  
   if (!workspace) return <></>;
 
   return (
     <Wrapper className={`dashboard-team card ${className}`}>
       <div ref={assignRef} className="card-body">
         <h5 className="card-title">
-          Team <SvgIconFeather onClick={onEditClick} icon="plus" />
+          Team {isMember === true && !isExternal && <SvgIconFeather onClick={onEditClick} icon="plus" />}
         </h5>
 
         <ul className="list-group list-group-flush">
           {workspace.members.filter((m) => m.active === 1).map((member) => {
-            return <TeamListItem key={member.id} member={member} parentRef={scrollRef} onEditClick={onEditClick} />;
+            return <TeamListItem key={member.id} member={member} parentRef={scrollRef} onEditClick={onEditClick} hideOptions={hideOptions}/>;
           })}
         </ul>
       </div>

@@ -39,7 +39,7 @@ const Wrapper = styled.li`
 `;
 
 const TeamListItem = (props) => {
-  const { className = "", member, parentRef, onEditClick } = props;
+  const { className = "", member, parentRef, onEditClick, hideOptions } = props;
 
   const history = useHistory();
 
@@ -62,10 +62,13 @@ const TeamListItem = (props) => {
           {member.designation && <small className="text-muted">{member.designation}</small>}
         </div>
       </div>
-      <MoreOptions moreButton="more-vertical" scrollRef={parentRef}>
-        <div>Role</div>
-        <div onClick={onEditClick}>Remove</div>
-      </MoreOptions>
+      {
+        !hideOptions && 
+        <MoreOptions moreButton="more-vertical" scrollRef={parentRef}>
+          <div>Role</div>
+          <div onClick={onEditClick}>Remove</div>
+        </MoreOptions>
+      }
     </Wrapper>
   );
 };
