@@ -3,6 +3,7 @@ import { useDispatch } from "react-redux";
 import {
     globalSearch,
     saveSearchInput,
+    updateTab,
 } from "../../redux/actions/searchActions";
 
 const useSearchActions = () => {
@@ -24,10 +25,19 @@ const useSearchActions = () => {
             );
         }, [dispatch]
     );
+    
+    const updateTabPage = useCallback(
+        (payload, callback) => {
+          dispatch(
+              updateTab(payload, callback)
+            );
+        }, [dispatch]
+    );
 
     return {
         search,
-        saveSearchValue
+        saveSearchValue,
+        updateTabPage
     }
 };
 

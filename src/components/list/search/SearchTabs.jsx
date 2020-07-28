@@ -25,7 +25,7 @@ const SearchTabs = (props) => {
             {
                 tabs.hasOwnProperty("DOCUMENT") && Object.keys(tabs.DOCUMENT).length > 0 &&
                 <li className="nav-item">
-                    <a className={`nav-link ${(activeTab === "files" || activeTab === null) && "active"}`} onClick={onSelectTab} data-toggle="tab" data-value="files" role="tab" aria-controls="articles" aria-selected="false">
+                    <a className={`nav-link ${(activeTab === "document" || activeTab === null) && "active"}`} onClick={onSelectTab} data-toggle="tab" data-value="document" role="tab" aria-controls="articles" aria-selected="false">
                     Files
                     </a>
                 </li>

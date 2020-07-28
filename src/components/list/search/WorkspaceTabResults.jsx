@@ -3,12 +3,12 @@ import { WorkspaceSearchItem } from "./index";
 
 const WorkspaceTabResults = (props) => {
 
-    const { workspaces } = props;
+    const { page, workspaces } = props;
 
     return (
         <ul className="list-group list-group-flush">
             {
-                Object.values(workspaces).map((w) => {
+                Object.values(workspaces).slice(page > 1 ? (page*10)-10 : 0, page*10).map((w) => {
                     return <WorkspaceSearchItem key={w.id} data={w.data}/>
                 })
             }

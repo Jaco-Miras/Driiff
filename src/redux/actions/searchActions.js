@@ -16,3 +16,7 @@ export function globalSearch(payload, callback) {
         callback
     );
 }
+
+export function updateTab(payload, callback) {
+    return SimpleDispatchActionToReducer("UPDATE_TAB", payload, callback);
+}
