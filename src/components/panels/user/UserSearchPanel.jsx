@@ -32,11 +32,7 @@ const UserSearchPanel = (props) => {
   useEffect(() => {
     if (Object.keys(tabs).length) {
       let tab = Object.keys(tabs)[0];
-      if (tab === "DOCUMENT") {
-        setActiveTab("files");
-      } else {
-        setActiveTab(tab.toLowerCase());
-      }
+      setActiveTab(tab.toLowerCase());
     } else {
       setActiveTab(null);
     }
@@ -62,12 +58,12 @@ const UserSearchPanel = (props) => {
                 </h4>
               }
               {
-                count > 0 && <SearchPagination activeTab={activeTab} tabs={tabs}/>
+                count > 0 && <SearchPagination activeTab={activeTab} tabs={tabs} actions={actions}/>
               }
               <SearchTabs activeTab={activeTab} onSelectTab={handleSelectTab} tabs={tabs}/>
               <TabContents activeTab={activeTab} results={results} tabs={tabs}/>
               {
-                count > 0 && <SearchPagination activeTab={activeTab} tabs={tabs}/>
+                count > 0 && <SearchPagination activeTab={activeTab} tabs={tabs} actions={actions}/>
               }
             </div>
           </div>

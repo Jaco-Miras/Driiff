@@ -174,6 +174,15 @@ export default (state = INITIAL_STATE, action) => {
         tabs: action.data.value === "" ? {} : state.tabs
       }
     }
+    case "UPDATE_TAB": {
+      return {
+        ...state,
+        tabs: {
+          ...state.tabs,
+          [action.data.key]: action.data
+        }
+      }
+    }
     default:
       return state;
   }

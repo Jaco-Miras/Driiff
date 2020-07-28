@@ -3,12 +3,12 @@ import { FileSearchItem } from "./index";
 
 const FilesTabResults = (props) => {
 
-    const { files } = props;
+    const { files, page } = props;
 
     return (
         <ul className="list-group list-group-flush">
             {
-                Object.values(files).map((f) => {
+                Object.values(files).slice(page > 1 ? (page*10)-10 : 0, page*10).map((f) => {
                     return <FileSearchItem key={f.data.id} file={f}/>
                 })
             }
