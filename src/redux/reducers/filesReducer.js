@@ -665,6 +665,7 @@ export default (state = INITIAL_STATE, action) => {
         newWorkspaceFiles = {
           [action.data.topic_id]: {
             ...newWorkspaceFiles[action.data.topic_id],
+            recently_edited: newWorkspaceFiles[action.data.topic_id].recently_edited.filter((id) => id !== parseInt(action.data.file_id)),
             trash_files: {
               ...newWorkspaceFiles[action.data.topic_id].trash_files,
               [file.id]: file,
