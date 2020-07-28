@@ -25,20 +25,17 @@ const PostFilterItem = (props) => {
   const dispatch = useDispatch();
 
   const handleClickFilter = (e) => {
-    if (e.target.dataset.value === filter) return;
-    let payload = {
-      topic_id: workspace.id,
-      filter: e.target.dataset.value,
-      tag: null,
-    };
-    // if (e.target.dataset.value === "draft" || e.target.dataset.value === "archive") {
-    //   payload = {
-    //     ...payload,
-    //     tag: null,
-    //   };
-    // }
-    dispatch(updateWorkspacePostFilterSort(payload));
-    onGoBack();
+    if (e.target.dataset.value === filter) {
+      onGoBack();
+    } else {
+      let payload = {
+        topic_id: workspace.id,
+        filter: e.target.dataset.value,
+        tag: null,
+      };
+      dispatch(updateWorkspacePostFilterSort(payload));
+      onGoBack();
+    }
   };
 
   return (
