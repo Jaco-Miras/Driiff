@@ -7,7 +7,12 @@ const Wrapper = styled.ul`
 
   &.list-group {
     max-height: 390px !important;
+    @media all and (max-width: 620px) {
+      max-height: 60vh !important;
+      max-height: calc(var(--vh, 1vh) * 100 - 196px) !important;
+    }
   }
+
 `;
 
 const NotificationLists = (props) => {

@@ -56,6 +56,9 @@ const ThemeSwitch = styled.span`
   svg {
     width: 18px;
   }
+  @media all and (max-width: 920px) {
+    display: none;
+  }
 `;
 
 const HomeProfileNavigation = (props) => {

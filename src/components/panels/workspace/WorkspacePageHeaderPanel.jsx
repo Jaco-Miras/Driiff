@@ -1,7 +1,6 @@
 import React from "react";
 import styled from "styled-components";
 import { NavLink } from "../../common";
-import { SettingsLink } from "../../workspace";
 
 const Wrapper = styled.div``;
 
@@ -9,7 +8,6 @@ const Navbar = styled.ul`
   display: block;
   width: 100%;
   margin-left: -30px;
-
   li {
     display: inline-block;
     text-align: center;
@@ -18,7 +16,11 @@ const Navbar = styled.ul`
       justify-content: flex-end;
     }
   }
-  .badge {
+  @media (max-width: 1200px) {
+    margin-left: -10px;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
   }
 `;
 
@@ -35,7 +37,6 @@ const MainNavLink = styled(NavLink)`
   font-size: 14px;
   align-items: center;
   &.active {
-    ${"" /* border-bottom: 2px solid #000000; */}
     color: #000000;
     &:after {
       content: "";

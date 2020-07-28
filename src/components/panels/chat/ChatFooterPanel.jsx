@@ -38,6 +38,9 @@ const ArchivedDiv = styled.div`
 const ChatInputContainer = styled.div`
   position: relative;
   max-width: calc(100% - 165px);
+  @media all and (max-width: 620px) {
+    max-width: calc(100% - 111px);
+  }
 `;
 
 const Icon = styled(SvgIconFeather)`
@@ -109,6 +112,20 @@ const Dflex = styled.div`
         font-weight: 600;
       }
     }
+  }
+  .feather-send {
+    margin-left: 0.5rem;
+    @media all and (max-width: 620px) {
+      margin-right: 0;
+    }
+  }
+  @media all and (max-width: 620px) {
+    .emojiButton {
+      display: none;
+    }
+    div:nth-child(4) { order: 1; }
+    div:nth-child(2) { order: 3; }
+    svg:nth-child(3) { order: 3; }
   }
 `;
 
@@ -212,18 +229,16 @@ const ChatFooterPanel = (props) => {
             </ArchivedDiv>
           ) : (
             <React.Fragment>
-              <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Emoji">
+              <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Emoji" className="emojiButton">
                 <IconButton onClick={handleShowEmojiPicker} icon="smile" />
               </Tooltip>
               <ChatInputContainer className="flex-grow-1">
                 <ChatInput selectedGif={selectedGif} onClearGif={onClearGif} selectedEmoji={selectedEmoji} onClearEmoji={onClearEmoji} dropAction={dropAction} />
               </ChatInputContainer>
-              <div className="chat-footer-buttons d-flex">
-                <IconButton onClick={handleSend} icon="send" />
-                <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Attach files">
-                  <IconButton onClick={onShowFileDialog} icon="paperclip" />
-                </Tooltip>
-              </div>
+              <IconButton onClick={handleSend} icon="send" />
+              <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Attach files">
+                <IconButton onClick={onShowFileDialog} icon="paperclip" />
+              </Tooltip>
             </React.Fragment>
           )}
           {showEmojiPicker === true && <PickerContainer handleSend={handleSend} handleShowEmojiPicker={handleShowEmojiPicker} onSelectEmoji={onSelectEmoji} onSelectGif={onSelectGif} orientation={"top"} ref={ref.picker} />}

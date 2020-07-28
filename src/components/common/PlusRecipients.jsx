@@ -8,6 +8,9 @@ const PlusRecipientsDiv = styled.div`
   width: 2.5rem;
   margin-left: -0.5rem;
   position: relative;
+  @media all and (max-width: 920px) {
+
+  }
 `;
 const TotalPeopleCircle = styled.span`
   display: flex;

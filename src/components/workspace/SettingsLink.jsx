@@ -6,9 +6,11 @@ import {SvgIconFeather} from "../common";
 import {addToModals} from "../../redux/actions/globalActions";
 import Tooltip from "react-tooltip-lite";
 
-const SettingsLinkList = styled.li`
+const SettingsLinkList = styled.div`
   position: relative;
-  
+
+  display: inline-block;
+  margin-left: 6px;
   > a:after {
     display: none;
   }

@@ -3,7 +3,11 @@ import styled from "styled-components";
 import { useUserChannels } from "../../hooks";
 import { ChatContentPanel, ChatSidebarPanel } from "../chat";
 
-const Wrapper = styled.div``;
+const Wrapper = styled.div`
+  @media all and (max-width: 1200px) {
+    padding: 1.875rem 15px 15px 15px
+  }
+`;
 
 const CompanyChatPanel = (props) => {
   const { className = "" } = props;

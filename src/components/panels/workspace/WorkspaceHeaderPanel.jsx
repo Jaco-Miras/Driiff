@@ -28,12 +28,22 @@ const NavBarLeft = styled.div`
       height: 16px;
     }
   }
+  @media (max-width: 992px) {
+    margin-right: 5px;
+    padding-right: 5px;
+  }
+  @media (max-width: 768px) {
+    .nav-item-folder, .nav-item-chevron {
+      display: none;
+    }
+  }
 `;
 
 const NavBar = styled.ul`
   display: flex;
   width: 100%;
   align-items: center;
+
   li {
     justify-content: center;
     align-items: center;
@@ -41,6 +51,11 @@ const NavBar = styled.ul`
       flex-grow: 1;
       display: flex;
       justify-content: flex-end;
+      .btn {
+        @media all and (max-width: 920px) {
+          display: none;
+        }
+      }
     }
     svg {
       color: #b8b8b8;
@@ -51,16 +66,28 @@ const NavBar = styled.ul`
       color: #64625c;
     }
   }
+  .nav-link {
+    padding: 0px !important;
+    background: transparent !important;
+    svg {
+      color: #000;
+      width: 24px !important;
+      height: 24px !important;
+    }
+
+  }
 `;
 
 const WorkspaceName = styled.h2`
-  ${"" /* margin-right: 0.5rem; */}
   letter-spacing: 0;
   margin-bottom: 0;
   color: #b8b8b8;
   font-weight: 500;
   font-size: 19px;
   margin-right: 2px;
+  @media all and (max-width: 620px) {
+    font-size: 16px;
+  }
 `;
 
 const SubWorkspaceName = styled.h3`
@@ -69,10 +96,11 @@ const SubWorkspaceName = styled.h3`
   color: #000000;
   font-weight: normal;
   font-size: 19px;
-  text-transform: lowercase;
-  margin-right: 6px;
   svg {
     color: #64625c;
+  }
+  @media all and (max-width: 620px) {
+    font-size: 16px;
   }
 `;
 
@@ -80,6 +108,9 @@ const StyledAvatar = styled(Avatar)`
   height: 2rem;
   width: 2rem;
   margin-left: ${(props) => (props.firstUser ? "0" : "-0.5rem")};
+  @media all and (max-width: 920px) {
+    margin-left: -1.5rem;
+  }
 `;
 
 const WorkspaceButton = styled.h3`
@@ -87,8 +118,16 @@ const WorkspaceButton = styled.h3`
   cursor: hand;
   display: flex;
   align-items: center;
+  margin-bottom: 0;
   svg {
     margin-left: 4px;
+    @media all and (max-width: 620px) {
+      width: 18px !important;
+      height: 18px !important;
+    }
+  }
+  @media all and (max-width: 620px) {
+    font-size: 16px;
   }
 `;
 
@@ -185,11 +224,6 @@ const WorspaceHeaderPanel = () => {
     document.title = `Driff - Workspace ${pageName}`;
   }, [match.params.page, dispatch]);
 
-  if (activeTopic) {
-    // console.log("yay");
-    // console.log(activeTopic);
-  }
-
   return (
     <>
       <NavBarLeft>
@@ -203,32 +237,32 @@ const WorspaceHeaderPanel = () => {
             <>
               {typeof activeTopic.workspace_name === "undefined" ? (
                   <>
-                    <li className="nav-item">
+                    <li className="nav-item nav-item-folder">
                       <WorkspaceName>General</WorkspaceName>
                     </li>
-                    <li>
+                    <li class="nav-item-chevron">
                       <SvgIconFeather icon="chevron-right"/>
                     </li>
                     <li className="nav-item">
-                      <SubWorkspaceName>{activeTopic.name}</SubWorkspaceName>
-                    </li>
-                    <li>
-                      <SettingsLink className="ml-1"/>
+                      <SubWorkspaceName>
+                        {activeTopic.name}
+                        <SettingsLink/>
+                      </SubWorkspaceName>
                     </li>
                   </>
               ) : (
                 <>
-                  <li className="nav-item">
+                  <li className="nav-item nav-item-folder">
                     <WorkspaceName>{activeTopic.workspace_name}</WorkspaceName>
                   </li>
-                  <li>
+                  <li class="nav-item-chevron">
                     <SvgIconFeather icon="chevron-right" />
                   </li>
                   <li className="nav-item">
-                    <SubWorkspaceName>{activeTopic.name}</SubWorkspaceName>
-                  </li>
-                  <li>
-                    <SettingsLink className="ml-1"/>
+                    <SubWorkspaceName>
+                      {activeTopic.name}
+                      <SettingsLink/>
+                    </SubWorkspaceName>
                   </li>
                   <li className="nav-item-last">
                     {activeTopic.members.map((m, i) => {

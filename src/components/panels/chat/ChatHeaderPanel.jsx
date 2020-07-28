@@ -11,6 +11,7 @@ import ChatTitleTyping from "../../list/chat/ChatTitleTyping";
 const Wrapper = styled.div`
   position: relative;
   z-index: 2;
+
 `;
 
 const IconButton = styled(SvgIconFeather)`
