@@ -198,6 +198,11 @@ const MainNavigationTabPanel = (props) => {
     dispatch(addToModals(payload));
   };
 
+  const closeLeftNav = () => {
+    document.body.classList.remove("navigation-show");
+  };
+
+
   useSetWorkspace();
   const sortedWorkspaces = useSortWorkspaces();
   const generalWorkspaces = sortedWorkspaces.filter((ws) => ws.type !== "FOLDER" && ws.topic_detail.active === 1);
@@ -231,8 +236,8 @@ const MainNavigationTabPanel = (props) => {
       </div>
       <div className="flex mb-3">
         <ul>
-          <li>
-            <NavIconContainer to={workspacePath}>
+          <li onClick={closeLeftNav}>
+            <NavIconContainer to={workspacePath} >
               <NavIcon icon={"command"}/>
               <div>
                 Workspaces
@@ -242,8 +247,8 @@ const MainNavigationTabPanel = (props) => {
             </NavIconContainer>
           </li>
           {
-            !isExternal && 
-            <li>
+            !isExternal &&
+            <li onClick={closeLeftNav}>
               <NavIconContainer
                 active={["dashboard", "posts", "chat", "files", "people"].includes(props.match.params.page)}
                 to={lastVisitedChannel !== null && lastVisitedChannel.hasOwnProperty("code") ? `/chat/${lastVisitedChannel.code}` : "/chat"}

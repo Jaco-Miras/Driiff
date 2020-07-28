@@ -37,6 +37,8 @@ const TopicList = (props) => {
   const onWorkspace = route.url.startsWith("/workspace");
 
   const handleSelectTopic = () => {
+    document.body.classList.remove("navigation-show");
+
     if (topic.selected && onWorkspace)
       return;
 

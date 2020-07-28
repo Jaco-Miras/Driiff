@@ -68,7 +68,7 @@ const DriffRegisterPanel = (props) => {
       <Form>
         <FormGroup className="form-group" error={error.name}>
           <InputGroup>
-            <Input ref={refs.name} onChange={handleInputChange} name="name" type="text" className="form-control" placeholder="driff" required autoFocus />
+            <Input ref={refs.name} onChange={handleInputChange} name="name" type="text" className="form-control" placeholder="driff" autocapitalize="none" required autoFocus />
             <InputGroupAddon addonType="append">
               <InputGroupText>.{REACT_APP_localDNSName}</InputGroupText>
             </InputGroupAddon>

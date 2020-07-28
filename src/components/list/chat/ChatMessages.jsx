@@ -239,6 +239,9 @@ const ChatBubbleQuoteDiv = styled.div`
         visibility: visible;
     }
   }
+  @media (max-width: 768px) {
+    max-width: calc(100% - 110px);
+  }
 `;
 const SystemMessageContainer = styled.div`
   position: relative;
