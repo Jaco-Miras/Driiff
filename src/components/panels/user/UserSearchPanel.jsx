@@ -30,13 +30,13 @@ const UserSearchPanel = (props) => {
   };
 
   useEffect(() => {
-    if (Object.keys(tabs).length) {
+    if (Object.keys(tabs).length && activeTab === null) {
       let tab = Object.keys(tabs)[0];
       setActiveTab(tab.toLowerCase());
-    } else {
+    } else if (Object.keys(tabs).length === 0 && activeTab !== null) {
       setActiveTab(null);
     }
-  }, [value, setActiveTab, tabs]);
+  }, [tabs, activeTab]);
 
   return (
     <Wrapper className={`user-search-panel container-fluid h-100 ${className}`}>
@@ -50,7 +50,7 @@ const UserSearchPanel = (props) => {
                 <h4 className="mb-5">
                   <SvgIconFeather icon="search" />
                   {
-                    searching && <span>Searching<span className="text-primary">“{value}”</span></span>
+                    searching && <span>Searching <span className="text-primary">“{value}”</span></span>
                   }
                   {
                     !searching && <span>{count} results found for: <span className="text-primary">“{value}”</span></span>
@@ -58,12 +58,12 @@ const UserSearchPanel = (props) => {
                 </h4>
               }
               {
-                count > 0 && <SearchPagination activeTab={activeTab} tabs={tabs} actions={actions}/>
+                count > 0 && <SearchPagination activeTab={activeTab} tabs={tabs} actions={actions} value={value}/>
               }
               <SearchTabs activeTab={activeTab} onSelectTab={handleSelectTab} tabs={tabs}/>
               <TabContents activeTab={activeTab} results={results} tabs={tabs}/>
               {
-                count > 0 && <SearchPagination activeTab={activeTab} tabs={tabs} actions={actions}/>
+                //count > 0 && <SearchPagination activeTab={activeTab} tabs={tabs} actions={actions} value={value}/>
               }
             </div>
           </div>

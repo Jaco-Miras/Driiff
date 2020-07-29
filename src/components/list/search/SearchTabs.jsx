@@ -23,6 +23,14 @@ const SearchTabs = (props) => {
                 </li>
             }
             {
+                tabs.hasOwnProperty("COMMENT") && Object.keys(tabs.COMMENT).length > 0 &&
+                <li className="nav-item">
+                    <a className={`nav-link ${(activeTab === "comment" || activeTab === null) && "active"}`} onClick={onSelectTab} data-toggle="tab" data-value="comment" role="tab" aria-controls="clasic" aria-selected="true">
+                    Comment
+                    </a>
+                </li>
+            }
+            {
                 tabs.hasOwnProperty("DOCUMENT") && Object.keys(tabs.DOCUMENT).length > 0 &&
                 <li className="nav-item">
                     <a className={`nav-link ${(activeTab === "document" || activeTab === null) && "active"}`} onClick={onSelectTab} data-toggle="tab" data-value="document" role="tab" aria-controls="articles" aria-selected="false">
