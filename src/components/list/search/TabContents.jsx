@@ -1,5 +1,5 @@
 import React from "react";
-import { ChannelTabResults, ChatTabResults, FilesTabResults, PeopleTabResults, PostsTabResults, WorkspaceTabResults } from "./index";
+import { ChannelTabResults, ChatTabResults, CommentTabResults, FilesTabResults, PeopleTabResults, PostsTabResults, WorkspaceTabResults } from "./index";
 
 const TabContents = (props) => {
 
@@ -8,10 +8,13 @@ const TabContents = (props) => {
     return (
         <div className="tab-content" id="myTabContent">
             <div className={`tab-pane fade ${(activeTab === null || activeTab === "chat") &&  "active show"}`} role="tabpanel">
-                { tabs.hasOwnProperty("CHAT") && <ChatTabResults chats={tabs.CHATS.items} page={tabs.CHAT.page}/> }
+                { tabs.hasOwnProperty("CHAT") && <ChatTabResults chats={tabs.CHAT.items} page={tabs.CHAT.page}/> }
             </div>
             <div className={`tab-pane fade ${(activeTab === null || activeTab === "channel") &&  "active show"}`} role="tabpanel">
                 { tabs.hasOwnProperty("CHANNEL") && <ChannelTabResults channels={tabs.CHANNEL.items} page={tabs.CHANNEL.page}/> }
+            </div>
+            <div className={`tab-pane fade ${(activeTab === null || activeTab === "comment") &&  "active show"}`} role="tabpanel">
+                { tabs.hasOwnProperty("COMMENT") && <CommentTabResults comments={tabs.COMMENT.items} page={tabs.COMMENT.page}/> }
             </div>
             <div className={`tab-pane fade ${(activeTab === null || activeTab === "document") && "active show"}`} role="tabpanel">
                 { tabs.hasOwnProperty("DOCUMENT") && <FilesTabResults files={tabs.DOCUMENT.items} page={tabs.DOCUMENT.page}/> }

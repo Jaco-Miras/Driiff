@@ -18,7 +18,7 @@ const MainSearch = (props) => {
       actions.search({
         search: inputValue,
         skip: 0,
-        limit: 100,
+        limit: 10,
       });
       actions.saveSearchValue({
         value: inputValue

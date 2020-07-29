@@ -140,21 +140,27 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "SEARCH_SUCCESS": {
-      let tabs = {};
-      // if (action.data.result.length) {
-      //   //tabs = groupBy(action.data.result, "type");
-      // }
-      let keys = [...new Set(action.data.result.map((r) => r.type))];
-      keys.map((k) => {
-        let items = action.data.result.filter((r) => r.type === k);
-        tabs[k] = {
-          count: items.length,
-          page: 1,
-          items: items,
-          maxPage: Math.ceil(items.length / 10)
+      let tabs = {...state.tabs};
+      if (action.data.hasOwnProperty("count_category")) {
+        let keys = [...new Set(action.data.result.map((r) => r.type))];
+        keys.sort((a,b) => a.localeCompare(b)).map((k) => {
+          let items = action.data.result.filter((r) => r.type === k);
+          tabs[k] = {
+            count: items.length,
+            total_count: action.data.count_category[k],
+            page: 1,
+            items: items,
+            maxPage: Math.ceil(action.data.count_category[k] / 10)
+          }
+        })
+      } else {
+        if (action.data.result.length) {
+          let category = action.data.result[0].type;
+          let items = action.data.result.filter((r) => r.type === category);
+          tabs[category].count = items.length + tabs[category].count
+          tabs[category].items = [...tabs[category].items, ...action.data.result]
         }
-      })
-  
+      }
       return {
         ...state,
         searchResults: action.data.result.length ? convertArrayToObject(action.data.result, "id")
