@@ -8,13 +8,34 @@ const Wrapper = styled.div`
   .nav-tabs {
     .nav-item {
       cursor: pointer;
-      cursor: hand;
+      @media (max-width: 480px) {
+        width: 100% !important;
+        border: 0 !important;
+        .nav-link {
+          border: 1px solid #ebebeb;
+          border-radius: 0.5rem;
+          background-color: #fafafa;
+          margin-bottom: 4px;
+          &.active {
+            background-color: #7a1b8b;
+            color: #ffffff;
+            border-color: #7a1b8b;
+          }
+        }
+      }
     }
+    @media (max-width: 480px) {
+      border: 0;
+    }
+
   }
 `;
 
 const Search = styled(SearchForm)`
   margin: 0 0 1.5rem !important;
+  @media (max-width: 480px) {
+    margin: 0 0 0.75rem !important;
+  }
 `;
 
 const ChatSidebarPanel = (props) => {

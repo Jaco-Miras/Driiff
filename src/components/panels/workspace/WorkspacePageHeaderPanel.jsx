@@ -62,6 +62,10 @@ const MainNavLink = styled(NavLink)`
     right: -12px;
     right: -8px;
   }
+  @media (max-width: 620px) {
+    height: 45px;
+    font-size: 0.835rem;
+  }
 `;
 
 const WorkspacePageHeaderPanel = (props) => {

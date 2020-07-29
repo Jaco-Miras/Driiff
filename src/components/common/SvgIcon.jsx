@@ -166,6 +166,7 @@ export const SvgIconFeather = React.memo(
         );
         break;
       case "menu":
+        strokeWidth = "2";
         content = (
           <>
             <line x1="3" y1="12" x2="21" y2="12" />

@@ -206,12 +206,6 @@ const ChatFooterPanel = (props) => {
     });
   };
 
-  if (selectedChannel) {
-    // console.log("nay");
-    // console.log(selectedChannel.id);
-    // console.log(selectedChannel.entity_id);
-  }
-
   return (
     <Wrapper className={`chat-footer border-top ${className}`}>
       {selectedChannel && selectedChannel.is_archived === 0 && (

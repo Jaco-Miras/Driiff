@@ -85,21 +85,30 @@ const TimestampDiv = styled.div`
     height: 1px;
     background-color: #e1e1e1;
     flex: 1;
+    @media (max-width: 620px) {
+      display: none;
+    }
   }
   span {
     padding: 4px 8px;
-    border-radius: 5px;
+    border-radius: 4px;
     display: inline-block;
     font-size: 11px;
     background: #ffffff;
     border-radius: 8px;
     margin: 0 4px;
+    @media (max-width: 620px) {
+      background: #F0F0F0;
+    }
   }
   &[stuck] {
     &:before,
     &:after {
       display: none;
     }
+  }
+  @media (max-width: 620px) {
+    padding: 12px 0;
   }
 `;
 const ChatBubbleContainer = styled.div`
@@ -114,6 +123,10 @@ const ChatBubbleContainer = styled.div`
     ${(props) => props.isAuthor === true && "position: relative; right: 15px;"};
     margin-top: ${(props) => props.showAvatar && "36px"};
     margin-top: ${(props) => props.showAvatar && props.isAuthor && "20px"};
+    @media (max-width: 620px) {
+      margin-top: ${(props) => props.showAvatar && "12px"};
+      margin-top: ${(props) => props.showAvatar && props.isAuthor && "8px"};
+    }
 
     ${(props) =>
       !props.isEmoticonOnly &&
@@ -198,6 +211,9 @@ const MessageOptions = styled(ChatMessageOptions)`
     }
     &.orientation-left {
     }
+  }
+  @media (max-width: 620px) {
+    margin-right: 0;
   }
 `;
 const ChatBubbleQuoteDiv = styled.div`

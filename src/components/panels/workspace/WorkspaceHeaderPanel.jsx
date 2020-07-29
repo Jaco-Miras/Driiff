@@ -70,7 +70,7 @@ const NavBar = styled.ul`
     padding: 0px !important;
     background: transparent !important;
     svg {
-      color: #000;
+      color: #7A1B8B;
       width: 24px !important;
       height: 24px !important;
     }

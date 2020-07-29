@@ -10,7 +10,6 @@ const NavBar = styled.ul`
   li {
     justify-content: center;
     align-items: center;
-
     h2 {
       letter-spacing: -0.5px;
       margin-bottom: 0;
