@@ -79,12 +79,19 @@ const FilePillContainer = styled.div`
     min-height: 150px;
     max-width: 200px;
     min-width: 200px;
+    @media (max-width: 380px) {
+      min-width: auto;
+      min-height: auto;
+    }
   }
 `;
 const DocFile = styled.div`
   .card {
     margin-bottom: 0;
     min-width: 180px;
+    @media (max-width: 380px) {
+      min-width: auto;
+    }
   }
   > img {
     width: 30px;
