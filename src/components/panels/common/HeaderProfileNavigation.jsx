@@ -3,9 +3,9 @@ import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import { toggleLoading } from "../../../redux/actions/globalActions";
 import { Avatar, SvgIconFeather } from "../../common";
-import Flag from "../../common/Flag";
+//import Flag from "../../common/Flag";
 import { useNotifications, useOutsideClick, useSettings, useTranslation } from "../../hooks";
-import { NotificationDropDown } from "../dropdown";
+import { NotificationDropDown, SearchDropDown } from "../dropdown";
 import UserProfileDropDown from "../dropdown/UserProfileDropdown";
 
 const Wrapper = styled.ul`
@@ -161,6 +161,12 @@ const HomeProfileNavigation = (props) => {
           </a>
         </div>
       </li> */}
+       <li class="nav-item dropdown">
+          <a href="#" class="nav-link" title="Search" data-toggle="dropdown" onClick={toggleDropdown}>
+            <SvgIconFeather icon="search" />
+          </a>
+          <SearchDropDown/>
+      </li>
       <li className="nav-item">
         <ThemeSwitch title="Light or Dark mode" onClick={setThemeButton}>
           <SvgIconFeather icon="moon" />

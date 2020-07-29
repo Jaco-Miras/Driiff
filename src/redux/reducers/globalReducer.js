@@ -163,7 +163,7 @@ export default (state = INITIAL_STATE, action) => {
       }
       return {
         ...state,
-        searchResults: action.data.result.length ? convertArrayToObject(action.data.result, "id")
+        searchResults: action.data.result.length ? {...state.searchResults, ...convertArrayToObject(action.data.result, "id")}
                       : {},
         searchCount: action.data.total_result,
         searching: false,
