@@ -9747,6 +9747,10 @@ textarea {
   // -ms-flex-align: center;
   align-items: flex-end;
   padding-left: 38px;
+  @media (max-width: 620px) {
+    height: 45px;
+    margin-bottom: 20px;
+  }
 }
 
 .page-header h1,
@@ -18086,6 +18090,9 @@ small {
   margin-left: 300px;
   border-bottom: 1px solid #ebebeb;
   padding: 0 1.8rem;
+  @media (max-width: 620px) {
+    height: 55px;
+  }
 }
 
 .header .avatar {
@@ -20303,6 +20310,7 @@ body.dark.small-navigation .navigation-menu-body ul li.navigation-divider:after 
     left: -300px;
     top: 0;
     bottom: 0;
+    opacity: 1;
     transition: left 0.3s cubic-bezier(.58,.3,.005,1);
     position: fixed !important;
   }
@@ -20803,7 +20811,7 @@ body.dark.small-navigation .navigation-menu-body ul li.navigation-divider:after 
   .chat-sidebar {
     position: absolute;
     background: green;
-    left: -100%;
+    left: calc(-100% + -24px);
     transition: left 0.3s cubic-bezier(0.275, 0.42, 0, 1);
     padding-left: 24px !important;
     padding-right: 24px !important;
@@ -20811,8 +20819,8 @@ body.dark.small-navigation .navigation-menu-body ul li.navigation-divider:after 
     z-index: 3;
   }
   .chat-block .chat-sidebar .chat-sidebar-header {
-    padding-left: 24px !important;
-    padding-right: 24px !important;
+    padding-left: 0px;
+    padding-right: 0px;
   }
   .recent-new-group-wrapper {
     padding-left: 24px !important;
@@ -20837,7 +20845,14 @@ body.dark.small-navigation .navigation-menu-body ul li.navigation-divider:after 
 .m-chat-channel-open {
   .chat-sidebar {
     left: -24px;
+    padding-right: 10px;
     border-right: 0 !important;
+  }
+  .chat-sidebar-header {
+    padding: 0 15px !important;
+  }
+  .tab-panel {
+    background: #fff;
   }
 }
 
@@ -20868,7 +20883,7 @@ body.dark.small-navigation .navigation-menu-body ul li.navigation-divider:after 
   .modal-body {
     flex: inherit;
   }
-  .input-group {
+  .modal-content .input-group {
     display: block !important;
     label {
       display: block !important;
@@ -20914,6 +20929,10 @@ body.dark.small-navigation .navigation-menu-body ul li.navigation-divider:after 
   height: 100%;
   padding-top: 114px;
   overflow-y: scroll;
+  @media (max-width: 620px) {
+    padding-top: 188px;
+  }
+
 }
 .chat-block {
   animation: fadeIn 0.15s linear;
@@ -20937,7 +20956,9 @@ body.dark.small-navigation .navigation-menu-body ul li.navigation-divider:after 
 .workspace-chat {
   height: calc(100vh - 177px);
   height: calc(var(--vh, 1vh) * 100 - 177px);
-
+  @media (max-width: 620px) {
+    height: calc(var(--vh, 1vh) * 100 - 135px);
+  }
 }
 .workspace-chat .chat-content {
   padding-left: 0 !important;

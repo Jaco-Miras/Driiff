@@ -7,12 +7,14 @@ const Wrapper = styled.div`
     font-size: 11px;
     background-color: #cccccc;
     color: #fff;
-    display: inline-block;
+    display: inline-flex;
     padding: 5px;
     border-radius: 100%;
     width: 30px;
     height: 30px;
     text-align: center;
+    align-items: center;
+    justify-content: center;
   }
   > svg {
     padding: 6px;
