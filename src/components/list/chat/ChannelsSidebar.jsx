@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { useSelector } from "react-redux";
 import {useSortChannels} from "../../hooks";
 import ChannelList from "./ChannelList";
 
@@ -21,6 +22,7 @@ const ChannelsSidebar = (props) => {
   const { className, search, channels, selectedChannel, workspace } = props;
 
   const [sortedChannels] = useSortChannels(channels, search, {}, workspace);
+  const channelDrafts = useSelector((state) => state.chat.channelDrafts);
 
   return (
     <ChannelsSidebarContainer className={`chat-lists ${className}`}>
@@ -61,7 +63,7 @@ const ChannelsSidebar = (props) => {
           return (
             <React.Fragment key={channel.id}>
               {search !== "" && chatHeader !== "" && <ChatHeader>{chatHeader}</ChatHeader>}
-                <ChannelList channel={channel} selectedChannel={selectedChannel} isWorkspace={workspace}/>
+                <ChannelList channel={channel} selectedChannel={selectedChannel} isWorkspace={workspace} channelDrafts={channelDrafts}/>
             </React.Fragment>
           );
         })}

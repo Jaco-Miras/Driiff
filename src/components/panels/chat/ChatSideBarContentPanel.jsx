@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import styled from "styled-components";
 import { addToModals } from "../../../redux/actions/globalActions";
@@ -7,6 +7,7 @@ import { SvgIconFeather } from "../../common";
 import ChannelsSidebar from "../../list/chat/ChannelsSidebar";
 import ChatContactsList from "../../list/chat/ChatContactsList";
 //import {WorkspaceChatList} from "../../workspace";
+import { getChannelDrafts } from "../../../redux/actions/chatActions";
 
 const Wrapper = styled.div`
   overflow: auto !important;
@@ -54,6 +55,10 @@ const ChatSidebarContentPanel = (props) => {
 
     dispatch(addToModals(payload));
   };
+
+  useEffect(() => {
+    dispatch(getChannelDrafts());
+  }, []);
 
   return (
     <Wrapper className={`chat-sidebar-content ${className}`} tabIndex="1">
