@@ -32,10 +32,10 @@ const TextIcon = styled(SvgIcon)`
 `;
 
 const ReplyPreview = (props) => {
-  const { channel } = props;
+  const { channel, drafts } = props;
   const settings = useSelector((state) => state.settings.user.CHAT_SETTINGS);
   const user = useSelector((state) => state.session.user);
-  const channelDrafts = useSelector((state) => state.chat.channelDrafts);
+  //const channelDrafts = useSelector((state) => state.chat.channelDrafts);
 
   const { _t } = useTranslation();
 
@@ -83,11 +83,11 @@ const ReplyPreview = (props) => {
       previewText = "System message update...";
     }
 
-    if (typeof channelDrafts[channel.id] !== "undefined") {
-      if (channelDrafts[channel.id].text && channelDrafts[channel.id].text !== "<div><br></div>") {
-        previewText = `DRAFT:&nbsp;${renderToString(<DraftContent dangerouslySetInnerHTML={{ __html: channelDrafts[channel.id].text.replace(/(<([^>]+)>)/gi, " ") }} />)}`;
-      } else if (channelDrafts[channel.id].reply_quote) {
-        previewText = `QUOTE:&nbsp;${channelDrafts[channel.id].reply_quote.body}&nbsp;~${channelDrafts[channel.id].reply_quote.user.name}`;
+    if (typeof drafts[channel.id] !== "undefined") {
+      if (drafts[channel.id].text && drafts[channel.id].text !== "<div><br></div>") {
+        previewText = `DRAFT:&nbsp;${renderToString(<DraftContent dangerouslySetInnerHTML={{ __html: drafts[channel.id].text.replace(/(<([^>]+)>)/gi, " ") }} />)}`;
+      } else if (drafts[channel.id].reply_quote) {
+        previewText = `QUOTE:&nbsp;${drafts[channel.id].reply_quote.body}&nbsp;~${drafts[channel.id].reply_quote.user.name}`;
       }
     }
   }
