@@ -70,14 +70,14 @@ const Wrapper = styled.li`
     height: 40px;
     display: flex;
     align-items: center;
-    color: #cbd4db;
+    color: #fff9;
     padding: 0 10px;
     border-bottom-left-radius: 3px;
     border-bottom-right-radius: 3px;
     svg {
-      margin-right: 4px;
-      width: 13px;
-      height: 13px;
+      margin-right: 6px;
+      width: 14px;
+      height: 14px;
     }
   }
 `;
@@ -218,7 +218,7 @@ const WorkspaceList = (props) => {
                 return <TopicList key={topic.id} topic={topic} />;
               })}
           <li className="nav-action" onClick={handleShowWorkspaceModal}>
-            <SvgIconFeather icon="plus" /> New workspace
+            <SvgIconFeather icon="circle-plus" /> New workspace
           </li>
         </TopicNav>
       )}

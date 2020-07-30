@@ -93,6 +93,9 @@ body.dark {
 }
 .system-reply-list-item {
   margin: 36px 0 12px 0;
+  @media (max-width: 620px) {
+    margin: 18px 0 12px 0;
+  }
 }
 
 [class*=" ti-"],
@@ -18276,6 +18279,10 @@ small {
   border-radius: 50%;
   top: 3px;
   background: #f44;
+  @media (max-width: 620px) {
+    top: 1px;
+    right: 1px;
+  }
 }
 
 .chat-block .chat-sidebar .chat-sidebar-content .list-group .header ul.navbar-nav li.nav-item .nav-link.list-group-item.active:focus,
@@ -18605,6 +18612,9 @@ small {
   margin-left: auto;
   font-size: 0.55rem;
   transition: transform 0.5s;
+  @media (max-width: 620px) {
+    font-weight: bold;
+  }
 }
 
 .chat-block .chat-sidebar .chat-sidebar-content .list-group .navigation .navigation-menu-body ul li > .list-group-item.active .sub-menu-arrow.rotate-in,
@@ -20819,8 +20829,8 @@ body.dark.small-navigation .navigation-menu-body ul li.navigation-divider:after 
     z-index: 3;
   }
   .chat-block .chat-sidebar .chat-sidebar-header {
-    padding-left: 0px;
-    padding-right: 0px;
+    padding-left: 24px;
+    padding-right: 24px;
   }
   .recent-new-group-wrapper {
     padding-left: 24px !important;
@@ -20842,17 +20852,17 @@ body.dark.small-navigation .navigation-menu-body ul li.navigation-divider:after 
   }
 }
 
-.m-chat-channel-open {
-  .chat-sidebar {
-    left: -24px;
-    padding-right: 10px;
-    border-right: 0 !important;
-  }
-  .chat-sidebar-header {
-    padding: 0 15px !important;
-  }
-  .tab-panel {
-    background: #fff;
+
+@media all and (max-width: 992px) {
+  .m-chat-channel-open {
+    .chat-sidebar {
+      left: -24px;
+      padding-right: 10px;
+      border-right: 0 !important;
+    }
+    .tab-panel {
+      background: #fff;
+    }
   }
 }
 
@@ -20868,6 +20878,7 @@ body.dark.small-navigation .navigation-menu-body ul li.navigation-divider:after 
   body.stretch-layout #main .main-content {
     // padding: 0.875rem 0 0.875rem 0;
   }
+
 }
 @media all and (max-width: 480px) {
   .modal-dialog-centered {
@@ -20899,6 +20910,9 @@ body.dark.small-navigation .navigation-menu-body ul li.navigation-divider:after 
   .description-wrapper {
     padding-bottom: 14px;
   }
+  .chat-sidebar-header {
+    padding: 0 15px !important;
+  }
 }
 
 #root {
@@ -20929,7 +20943,7 @@ body.dark.small-navigation .navigation-menu-body ul li.navigation-divider:after 
   height: 100%;
   padding-top: 114px;
   overflow-y: scroll;
-  @media (max-width: 620px) {
+  @media (max-width: 480px) {
     padding-top: 188px;
   }
 
@@ -21019,11 +21033,18 @@ body.dark.small-navigation .navigation-menu-body ul li.navigation-divider:after 
   &:hover {
     color: #ffffff;
   }
+
+  // @media (max-width: 620px) {
+  //   background-color: #461F4D;
+  // }
 }
 .folder-open > a {
   border-bottom: 1px solid #ffffff20;
   border-top-left-radius: 3px;
   border-top-right-radius: 3px;
+  // @media (max-width: 620px) {
+  //   background-color: #461F4D;
+  // }
 }
 .infinite-scroll ul {
   padding-left: 0;

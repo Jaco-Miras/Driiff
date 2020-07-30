@@ -27,6 +27,9 @@ const Wrapper = styled.div`
       align-items: center;
       border: 1px solid #fff3;
     }
+    @media (max-width: 620px) {
+      padding: 10px 0 20px 0;
+    }
   }
   .your-workspaces-title {
     margin: 0 15px;
@@ -38,6 +41,17 @@ const Wrapper = styled.div`
     border-top: 1px solid #fff3;
     svg {
       color: #ffffff;
+    }
+    @media (max-width: 620px) {
+      padding: 15px 2px 5px 2px;
+      font-size: 10px;
+      text-transform: uppercase;
+      svg {
+        margin-right: 3px;
+        stroke: #fff9;
+        width: 16px;
+        height: 16px;
+      }
     }
   }
   li {
@@ -66,6 +80,16 @@ const Wrapper = styled.div`
       justify-content: space-between;
       height: 40px;
       padding: 0 10px;
+      @media (max-width: 620px) {
+        color: #ffffff;
+        padding: 0 8px;
+      }
+    }
+  }
+  .navigation-menu-tab-header-options {
+    margin-bottom: 1rem;
+    @media (max-width: 620px) {
+      margin-bottom: 10px;
     }
   }
 `;
@@ -234,7 +258,7 @@ const MainNavigationTabPanel = (props) => {
           </div>
         </div>
       </div>
-      <div className="flex mb-3">
+      <div className="flex navigation-menu-tab-header-options">
         <ul>
           <li onClick={closeLeftNav}>
             <NavIconContainer to={workspacePath} >

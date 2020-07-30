@@ -30,7 +30,7 @@ const NavBarLeft = styled.div`
   }
   @media (max-width: 992px) {
     margin-right: 5px;
-    padding-right: 5px;
+    padding-right: 10px;
   }
   @media (max-width: 768px) {
     .nav-item-folder, .nav-item-chevron {
@@ -56,6 +56,16 @@ const NavBar = styled.ul`
           display: none;
         }
       }
+      .nav-item-avatars-wrap {
+        display: flex;
+        flex-direction: row-reverse;
+      }
+      .avatar-sm {
+        border: 2px solid #ffffff;
+      }
+      @media all and (max-width: 360px) {
+        display: none;
+      }
     }
     svg {
       color: #b8b8b8;
@@ -74,7 +84,6 @@ const NavBar = styled.ul`
       width: 24px !important;
       height: 24px !important;
     }
-
   }
 `;
 
@@ -267,10 +276,12 @@ const WorspaceHeaderPanel = (props) => {
                     </SubWorkspaceName>
                   </li>
                   <li className="nav-item-last">
-                    {activeTopic.members.map((m, i) => {
-                      return <StyledAvatar id={m.id} firstUser={i === 0} className="workspace-members" key={m.name}
-                                           name={m.name} imageLink={m.profile_image_link}/>;
-                    })}
+                    <div className="nav-item-avatars-wrap">
+                      {activeTopic.members.map((m, i) => {
+                        return <StyledAvatar id={m.id} firstUser={i === 0} className="workspace-members" key={m.name}
+                                            name={m.name} imageLink={m.profile_image_link}/>;
+                      })}
+                    </div>
                     {activeTopic.member_ids.includes(user.id) ? (
                         <button onClick={handleEditWorkspace} className="btn btn-primary">
                           <SvgIconFeather icon="user-plus"/>

@@ -22,6 +22,12 @@ const Navbar = styled.ul`
     justify-content: space-between;
     flex-direction: row;
   }
+  @media (max-width: 620px) {
+    margin-left: 0;
+    .nav-item a {
+      margin: 0;
+    }
+  }
 `;
 
 const MainNavLink = styled(NavLink)`

@@ -353,6 +353,7 @@ export const SvgIconFeather = React.memo(
         );
         break;
       case "search":
+        strokeWidth = "2";
         content = (
           <>
             <circle cx="11" cy="11" r="8" />

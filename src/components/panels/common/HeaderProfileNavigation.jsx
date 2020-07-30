@@ -19,7 +19,6 @@ const Wrapper = styled.ul`
 
   > li {
     position: relative;
-
     .nav-link {
       &.profile-button {
         position: relative;
@@ -35,8 +34,21 @@ const Wrapper = styled.ul`
           z-index: 0;
         }
       }
+      @media (max-width: 620px) {
+        svg {
+          stroke: #363636;
+          width: 16px !important;
+          height: 16px !important;
+        }
+        &:not(.profile-button) {
+          ${'' /* background: red; */}
+          margin: 0 4px;
+          &:first-of-type {
+            margin-right: 0;
+          }
+        }
+      }
     }
-
     .user-profile-dropdown {
       position: absolute;
       right: 0;

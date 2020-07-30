@@ -22,6 +22,9 @@ const TopicListWrapper = styled.li`
       margin-left: 6px;
     }
   }
+  @media (max-width: 620px) {
+    color: #ffffff;
+  }
 `;
 
 const Icon = styled(SvgIconFeather)`
@@ -39,6 +42,7 @@ const TopicList = (props) => {
   const handleSelectTopic = () => {
     document.body.classList.remove("navigation-show");
 
+
     if (topic.selected && onWorkspace)
       return;
 
@@ -54,6 +58,8 @@ const TopicList = (props) => {
 
       history.push(`/workspace/chat/${topic.id}/${replaceChar(topic.name)}`);
     }
+
+
     // if (topic.is_external === 1) {
     // } else {
     //   if (topic.workspace_id !== undefined) {
