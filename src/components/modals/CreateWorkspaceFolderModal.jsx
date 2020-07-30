@@ -5,7 +5,7 @@ import styled from "styled-components";
 import {clearModal} from "../../redux/actions/globalActions";
 import {createWorkspace, updateWorkspace} from "../../redux/actions/workspaceActions";
 import {CheckBox, DescriptionInput, InputFeedback} from "../forms";
-import {useToaster} from "../hooks";
+import {useToaster, useTranslation} from "../hooks";
 import {ModalHeaderSection} from "./index";
 
 const WrapperDiv = styled(InputGroup)`
@@ -49,6 +49,14 @@ const StyledDescriptionInput = styled(DescriptionInput)`
 const CreateWorkspaceFolderModal = (props) => {
   const {type, mode, item = null} = props.data;
 
+  const {_t} = useTranslation();
+  const dictionary = {
+      createWorkspaceFolder: _t("WORKSPACE.CREATE_WORKSPACE_FOLDER", "Create folder"),
+      updateWorkspaceFolder: _t("WORKSPACE.UPDATE_WORKSPACE_FOLDER", "Update folder"),
+      folderName: _t("FOLDER_NAME", "Folder name"),
+      lockWorkspace: _t("WORKSPACE.WORKSPACE_LOCK", "Lock workspace"),
+      description: _t("DESCRIPTION", "Description"),
+  };
   const toaster = useToaster();
   const inputRef = useRef();
   const dispatch = useDispatch();
@@ -265,7 +273,7 @@ const CreateWorkspaceFolderModal = (props) => {
         </ModalHeaderSection>
         <ModalBody>
           <WrapperDiv>
-            <Label for="folder">Folder name</Label>
+            <Label for="folder">{dictionary.folderName}</Label>
             <Input defaultValue={mode === "edit" ? item.workspace_name : ""} onChange={handleNameChange}
                    onBlur={handleNameBlur} valid={valid.name} invalid={valid.name !== null && !valid.name}
                    innerRef={inputRef}/>
@@ -279,11 +287,11 @@ const CreateWorkspaceFolderModal = (props) => {
           <WrapperDiv style={{marginTop: "40px"}}>
             <Label/>
             <CheckBox name="is_private" checked={form.is_private} onClick={toggleCheck}>
-              Lock workspace
+              {dictionary.lockWorkspace}
             </CheckBox>
             <button className="btn btn-primary" disabled={valid.name === null || valid.name === false}
                     onClick={handleConfirm}>
-              {mode === "edit" ? "Update workspace" : "Create folder"}
+              {mode === "edit" ? dictionary.updateWorkspaceFolder : dictionary.createWorkspaceFolder}
             </button>
           </WrapperDiv>
         </ModalBody>

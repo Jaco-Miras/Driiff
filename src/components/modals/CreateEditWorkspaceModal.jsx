@@ -136,7 +136,7 @@ const CreateEditWorkspaceModal = (props) => {
         create: _t("CREATE", "Create"),
         updateWorkspace: _t("WORKSPACE.UPDATE_WORKSPACE", "Update workspace"),
         update: _t("UPDATE", "Update"),
-        worskpaceName: _t("WORKSPACE.WORKSPACE_NAME", "Workspace name"),
+        workspaceName: _t("WORKSPACE.WORKSPACE_NAME", "Workspace name"),
         lockWorkspace: _t("WORKSPACE.WORKSPACE_LOCK", "Lock workspace"),
         archiveWorkspace: _t("WORKSPACE.WORKSPACE_ARCHIVE", "Archive this workspace"),
         unarchiveWorkspace: _t("WORKSPACE.WORKSPACE_UNARCHIVE", "Unarchive this workspace"),
@@ -800,7 +800,7 @@ const CreateEditWorkspaceModal = (props) => {
                     attachedFiles={attachedFiles}
                 />
                 <WrapperDiv>
-                    <Label for="chat">{dictionary.worskpaceName}</Label>
+                    <Label for="chat">{dictionary.workspaceName}</Label>
                     <Input
                         name="name"
                         defaultValue={mode === "edit" ? item.name : ""}
