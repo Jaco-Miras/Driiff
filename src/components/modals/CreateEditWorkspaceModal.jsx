@@ -136,7 +136,7 @@ const CreateEditWorkspaceModal = (props) => {
         create: _t("CREATE", "Create"),
         updateWorkspace: _t("WORKSPACE.UPDATE_WORKSPACE", "Update workspace"),
         update: _t("UPDATE", "Update"),
-        workspaceName: _t("WORKSPACE.WORKSPACE_NAME", "Workspace name"),
+        worskpaceName: _t("WORKSPACE.WORKSPACE_NAME", "Workspace name"),
         lockWorkspace: _t("WORKSPACE.WORKSPACE_LOCK", "Lock workspace"),
         archiveWorkspace: _t("WORKSPACE.WORKSPACE_ARCHIVE", "Archive this workspace"),
         unarchiveWorkspace: _t("WORKSPACE.WORKSPACE_UNARCHIVE", "Unarchive this workspace"),
@@ -800,7 +800,7 @@ const CreateEditWorkspaceModal = (props) => {
                     attachedFiles={attachedFiles}
                 />
                 <WrapperDiv>
-                    <Label for="chat">{dictionary.workspaceName}</Label>
+                    <Label for="chat">{dictionary.worskpaceName}</Label>
                     <Input
                         name="name"
                         defaultValue={mode === "edit" ? item.name : ""}
@@ -816,7 +816,7 @@ const CreateEditWorkspaceModal = (props) => {
                 <WrapperDiv>
                     <Label for="has_folder"/>
                     <CheckBox type="success" name="has_folder" checked={form.has_folder} onClick={toggleCheck}>
-                        Add to folder
+                        {dictionary.addToFolder}
                     </CheckBox>
                 </WrapperDiv>
                 {form.has_folder === true && (
@@ -860,12 +860,12 @@ const CreateEditWorkspaceModal = (props) => {
                 <WrapperDiv className="action-wrapper">
                     <Label/>
                     <CheckBox name="is_private" checked={form.is_private} onClick={toggleCheck}>
-                        Lock workspace
+                        {dictionary.lockWorkspace}
                     </CheckBox>
                     <button className="btn btn-primary" onClick={handleConfirm}>
                         {loading &&
                         <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"/>}
-                        {mode === "edit" ? "Update workspace" : "Create workspace"}
+                        {mode === "edit" ? dictionary.updateWorkspace : dictionary.createWorkspace}
                     </button>
                     {
                         mode === "edit" &&
@@ -873,10 +873,10 @@ const CreateEditWorkspaceModal = (props) => {
                             {
                                 item.topic_detail.active === 1 ?
                                     <span onClick={handleShowArchiveConfirmation}
-                                          className="btn-archive text-link mt-2 cursor-pointer">Archive this workspace</span>
+                                        className="btn-archive text-link mt-2 cursor-pointer">{dictionary.archiveWorkspace}</span>
                                     :
                                     <span onClick={handleShowArchiveConfirmation}
-                                          className="btn-archive text-link mt-2 cursor-pointer">Unarchive this workspace</span>
+                                            className="btn-archive text-link mt-2 cursor-pointer">{dictionary.unarchiveWorkspace}</span>
                             }
                         </div>
                     }

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 //import styled from "styled-components";
 import { SvgIconFeather } from "../../common";
 
@@ -34,6 +34,10 @@ const MainSearch = (props) => {
     }
     setInputValue(e.target.value)
   };
+
+  useEffect(() => {
+    setInputValue(value)
+  }, [value]);  
 
   return (
     <div className="card p-t-b-40" data-backround-image="assets/media/image/image1.jpg">
