@@ -69,7 +69,8 @@ const useDriff = () => {
   );
 
   useEffect(() => {
-    if (init) {
+    // disabled init temporarily
+    // if (init) {
       init = false;
 
       const driffName = getDriffName();
@@ -95,7 +96,7 @@ const useDriff = () => {
           }
         });
       }
-    }
+    //}
   }, []);
 
   return {
