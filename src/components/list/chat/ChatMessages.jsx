@@ -126,8 +126,9 @@ const ChatBubbleContainer = styled.div`
     @media (max-width: 620px) {
       margin-top: ${(props) => props.showAvatar && "12px"};
       margin-top: ${(props) => props.showAvatar && props.isAuthor && "8px"};
+      ${(props) => (!props.showAvatar && !props.isAuthor && !props.isBot) && "margin-left: 0"};
+      ${(props) => (props.isAuthor === true && !props.showAvatar) && "position: relative; right: 0px;"};
     }
-
     ${(props) =>
       !props.isEmoticonOnly &&
       `
@@ -257,6 +258,10 @@ const ChatBubbleQuoteDiv = styled.div`
   }
   @media (max-width: 768px) {
     max-width: calc(100% - 110px);
+  }
+
+  @media (max-width: 620px) {
+    ${(props) => (!props.showAvatar && !props.isAuthor) && "margin-left: 0"};
   }
 `;
 const SystemMessageContainer = styled.div`
@@ -790,6 +795,7 @@ class ChatMessages extends React.PureComponent {
                                   <ChatBubbleQuoteDiv
                                     //className={`chat-bubble-quote-div ${animation ? isAuthor ? "animated fadeInRightBig" : "animated fadeInLeftBig" : ""}`}
                                     isAuthor={isAuthor}
+                                    showAvatar={showAvatar}
                                     className={"chat-bubble-quote-div"}
                                   >
                                     <ChatBubble
@@ -827,6 +833,8 @@ class ChatMessages extends React.PureComponent {
                                 >
                                   <ChatBubbleQuoteDiv
                                     //className={`chat-bubble-quote-div ${animation ? isAuthor ? "animated fadeInRightBig" : "animated fadeInLeftBig" : ""}`}
+                                    isAuthor={isAuthor}
+                                    showAvatar={showAvatar}
                                     className={"chat-bubble-quote-div"}
                                   >
                                     <SystemMessageContainer isAuthor={false}>
