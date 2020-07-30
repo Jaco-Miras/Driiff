@@ -10,7 +10,7 @@ import {createWorkspace, fetchTimeline, updateWorkspace} from "../../redux/actio
 import {FileAttachments} from "../common";
 import {DropDocument} from "../dropzone/DropDocument";
 import {CheckBox, DescriptionInput, FolderSelect, InputFeedback, PeopleSelect} from "../forms";
-import {useToaster} from "../hooks";
+import {useToaster, useTranslation} from "../hooks";
 import {ModalHeaderSection} from "./index";
 import {putChannel} from "../../redux/actions/chatActions";
 
@@ -129,6 +129,20 @@ const StyledDescriptionInput = styled(DescriptionInput)`
 
 const CreateEditWorkspaceModal = (props) => {
     const {type, mode, item = null} = props.data;
+
+    const {_t} = useTranslation();
+    const dictionary = {
+        createWorkspace: _t("WORKSPACE.CREATE_WORKSPACE", "Create workspace"),
+        create: _t("CREATE", "Create"),
+        updateWorkspace: _t("WORKSPACE.UPDATE_WORKSPACE", "Update workspace"),
+        update: _t("UPDATE", "Update"),
+        workspaceName: _t("WORKSPACE.WORKSPACE_NAME", "Workspace name"),
+        lockWorkspace: _t("WORKSPACE.WORKSPACE_LOCK", "Lock workspace"),
+        archiveWorkspace: _t("WORKSPACE.WORKSPACE_ARCHIVE", "Archive this workspace"),
+        unarchiveWorkspace: _t("WORKSPACE.WORKSPACE_UNARCHIVE", "Unarchive this workspace"),
+        description: _t("DESCRIPTION", "Description"),
+        addToFolder: _t("ADD_TO_FOLDER", "Add to folder")
+    };
 
     const history = useHistory();
     const dispatch = useDispatch();
@@ -786,7 +800,7 @@ const CreateEditWorkspaceModal = (props) => {
                     attachedFiles={attachedFiles}
                 />
                 <WrapperDiv>
-                    <Label for="chat">Worskpace name</Label>
+                    <Label for="chat">{dictionary.workspaceName}</Label>
                     <Input
                         name="name"
                         defaultValue={mode === "edit" ? item.name : ""}
