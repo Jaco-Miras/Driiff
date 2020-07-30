@@ -7,11 +7,11 @@ const TabContents = (props) => {
     console.log(tabs)
     return (
         <div className="tab-content" id="myTabContent">
-            <div className={`tab-pane fade ${(activeTab === null || activeTab === "chat") &&  "active show"}`} role="tabpanel">
-                { tabs.hasOwnProperty("CHAT") && <ChatTabResults chats={tabs.CHAT.items} page={tabs.CHAT.page}/> }
-            </div>
             <div className={`tab-pane fade ${(activeTab === null || activeTab === "channel") &&  "active show"}`} role="tabpanel">
                 { tabs.hasOwnProperty("CHANNEL") && <ChannelTabResults channels={tabs.CHANNEL.items} page={tabs.CHANNEL.page}/> }
+            </div>
+            <div className={`tab-pane fade ${(activeTab === null || activeTab === "chat") &&  "active show"}`} role="tabpanel">
+                { tabs.hasOwnProperty("CHAT") && <ChatTabResults chats={tabs.CHAT.items} page={tabs.CHAT.page}/> }
             </div>
             <div className={`tab-pane fade ${(activeTab === null || activeTab === "comment") &&  "active show"}`} role="tabpanel">
                 { tabs.hasOwnProperty("COMMENT") && <CommentTabResults comments={tabs.COMMENT.items} page={tabs.COMMENT.page}/> }

@@ -22,12 +22,18 @@ const SearchPagination = (props) => {
     };
 
     const loadResults = (skip, limit) => {
+        let tab = activeTab;
+        if (activeTab === "workspace") {
+            tab = "topic";
+        } else if (activeTab === "people") {
+            tab = "user";
+        }
         setFetching(true);
         actions.search({
             search: value,
             skip: skip,
             limit: limit,
-            tag: activeTab
+            tag: tab,
         }, (err, res) => {
             setFetching(false);
         });
