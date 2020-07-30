@@ -22,7 +22,9 @@ const Wrapper = styled.div`
 `;
 
 const FilesHeader = (props) => {
-  const { className = "", isMember, dropZoneRef, onSearchChange, onSearch, onEnter, wsFiles, handleAddEditFolder, folders, history, params, clearFilter } = props;
+  const { className = "", isMember, dropZoneRef, onSearchChange, onSearch, onEnter, wsFiles, 
+          handleAddEditFolder, folders, history, params, clearFilter, dictionary 
+  } = props;
 
   const handleClickAdd = () => {
     if (dropZoneRef.current) {
@@ -45,25 +47,25 @@ const FilesHeader = (props) => {
   const addDropDown = {
     label: (
       <>
-        <SvgIconFeather className="mr-1" icon="plus" /> Add
+        <SvgIconFeather className="mr-1" icon="plus" /> {dictionary.add}
       </>
     ),
     items: [
       {
         value: "folder",
-        label: "Folder",
+        label: dictionary.folder,
         onClick: () => handleAddEditFolder("add"),
       },
       {
         value: "file",
-        label: "File",
+        label: dictionary.file,
         onClick: handleClickAdd,
       },
     ],
   };
 
   const folderDropDown = {
-    label: "Folders",
+    label: dictionary.folders,
     items:
       wsFiles && Object.values(folders).length
         ? Object.values(folders)
@@ -118,7 +120,7 @@ const FilesHeader = (props) => {
       </div>
       <div className="action-right">
         <div className="input-group">
-          <input type="text" onChange={onSearchChange} onKeyDown={onEnter} className="form-control" placeholder="Search file" aria-describedby="button-addon1" />
+          <input type="text" onChange={onSearchChange} onKeyDown={onEnter} className="form-control" placeholder={dictionary.searchInputPlaceholder} aria-describedby="button-addon1" />
           <div className="input-group-append">
             <button className="btn btn-outline-light" type="button" id="button-addon1" onClick={onSearch}>
               <SvgIconFeather icon="search" />

@@ -65,7 +65,8 @@ const EmptyStateLabel = styled.div`
 `;
 
 const FilesBody = (props) => {
-  const { className = "", dropZoneRef, filter, search, wsFiles, isMember, handleAddEditFolder, actions, params, folders, folder, fileIds, history, subFolders } = props;
+  const { className = "", dropZoneRef, filter, search, wsFiles, isMember, handleAddEditFolder, actions, 
+          params, folders, folder, fileIds, history, subFolders, dictionary } = props;
 
   const toaster = useToaster();
   const scrollRef = document.querySelector(".app-content-body");
@@ -189,15 +190,15 @@ const FilesBody = (props) => {
           <>
             {folder && isMember && filter !== "removed" && (
               <MoreButton moreButton="settings">
-                <div onClick={handleEditFolder}>Edit folder</div>
-                <div onClick={handleRemoveFolder}>Remove folder</div>
+                <div onClick={handleEditFolder}>{dictionary.editFolder}</div>
+                <div onClick={handleRemoveFolder}>{dictionary.removeFolder}</div>
               </MoreButton>
             )}
             {filter === "removed" && wsFiles && wsFiles.hasOwnProperty("trash_files") && Object.keys(wsFiles.trash_files).length > 0 && <SvgIconFeather icon="trash" onClick={actions.removeTrashFiles} />}
             {filter === "" && (
               <>
                 {typeof params.fileFolderId === "undefined" && (
-                    <h6 className="font-size-11 text-uppercase mb-4">All files</h6>)}
+                    <h6 className="font-size-11 text-uppercase mb-4">{dictionary.allFiles}</h6>)}
                 {
                   <div className="row">
                     {params.hasOwnProperty("fileFolderId")
@@ -233,7 +234,7 @@ const FilesBody = (props) => {
                             <SvgEmptyState icon={4} height={282} />
                             {isMember && (
                               <button className="btn btn-outline-primary btn-block" onClick={handleShowUploadModal}>
-                                Upload files
+                                {dictionary.uploadFiles}
                               </button>
                             )}
                           </EmptyState>
@@ -260,7 +261,7 @@ const FilesBody = (props) => {
                         <SvgEmptyState icon={4} height={282} />
                         {isMember && (
                           <button className="btn btn-outline-primary btn-block" onClick={handleShowUploadModal}>
-                            Upload files
+                            {dictionary.uploadFiles}
                           </button>
                         )}
                       </EmptyState>
@@ -277,7 +278,7 @@ const FilesBody = (props) => {
                     <SvgEmptyState icon={4} height={282} />
                     {isMember && (
                       <button className="btn btn-outline-primary btn-block" onClick={handleShowUploadModal}>
-                        Upload files
+                        {dictionary.uploadFiles}
                       </button>
                     )}
                   </EmptyState>

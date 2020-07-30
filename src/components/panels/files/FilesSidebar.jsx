@@ -3,7 +3,6 @@ import styled from "styled-components";
 import {SvgIconFeather} from "../../common";
 import {ProgressBar} from "../common";
 import {FolderList, GoogleDrive} from "./index";
-import {useDispatch} from "react-redux";
 
 const Wrapper = styled.div`
   text-align: left;
@@ -39,8 +38,8 @@ const Icon = styled(SvgIconFeather)`
 `;
 
 const FileSidebar = (props) => {
-    const {className = "", isMember, actions, filterFile, filter = "all", dropZoneRef, storageLimit = 25, wsFiles, folders, activeFolder, clearFilter, params} = props;
-    const dispatch = useDispatch();
+    const { className = "", isMember, actions, filterFile, filter = "all", dropZoneRef, storageLimit = 25, 
+            wsFiles, folders, activeFolder, clearFilter, params, dictionary } = props;
 
     const handleShowUploadModal = () => {
         if (dropZoneRef.current) {
@@ -65,7 +64,7 @@ const FileSidebar = (props) => {
                 {isMember === true && (
                     <div className="card-body">
                         <button className="btn btn-primary btn-block file-upload-btn" onClick={handleShowUploadModal}>
-                            Upload Files
+                            {dictionary.uploadFiles}
                         </button>
                         <form className="d-none" id="file-upload">
                             <input type="file" multiple=""/>
@@ -77,7 +76,7 @@ const FileSidebar = (props) => {
                         <Filter onClick={filterFile} data-filter="" active={filter === ""}
                                 className="list-group-item d-flex align-items-center">
                             <Icon className="mr-2" icon="folder"/>
-                            All Files
+                            {dictionary.allFiles}
                             <span className="small ml-auto">{wsFiles && wsFiles.count > 0 ? wsFiles.count : null}</span>
                         </Filter>
                         {folders && Object.values(folders).filter((f) => !f.is_archived).length > 0 && isMember === true && (
@@ -98,18 +97,18 @@ const FileSidebar = (props) => {
                         <Filter onClick={filterFile} data-filter="recent" active={filter === "recent"}
                                 className="list-group-item d-flex align-items-center">
                             <Icon className="mr-2" icon="monitor"/>
-                            Recently edited
+                            {dictionary.recentlyEdited}
                         </Filter>
                         <Filter onClick={filterFile} data-filter="important" active={filter === "important"}
                                 className="list-group-item d-flex align-items-center">
                             <Icon className="mr-2" icon="star"/>
-                            Favorite
+                            {dictionary.favorite}
                             <span className="small ml-auto">{wsFiles && wsFiles.stars > 0 ? wsFiles.stars : null}</span>
                         </Filter>
                         <Filter onClick={filterFile} data-filter="removed" active={filter === "removed"}
                                 className="list-group-item d-flex align-items-center">
                             <Icon className="mr-2" icon="trash"/>
-                            Removed
+                            {dictionary.removed}
                             <span className="small ml-auto">{wsFiles && wsFiles.trash > 0 ? wsFiles.trash : null}</span>
                         </Filter>
                     </div>
