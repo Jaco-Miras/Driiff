@@ -72,6 +72,18 @@ const WorkspaceFilesPanel = (props) => {
     create: _t("CREATE", "Create"),
     updateFolder: _t("UPDATE_FOLDER", "Update folder"),
     update: _t("UPDATE", "Update"),
+    editFolder: _t("EDIT_FOLDER", "Edit folder"),
+    removeFolder: _t("REMOVE_FOLDER", "Remove folder"),
+    add: _t("ADD", "Add"),
+    favorite: _t("FAVORITE", "Favorite"),
+    file: _t("FILE", "File"),
+    folder: _t("FOLDER", "Folder"),
+    folders: _t("FOLDERS", "Folders"),
+    allFiles: _t("FILES.ALL_FILES", "All files"),
+    recentlyEdited: _t("FILES.RECENTLY_EDITED", "Recently edited"),
+    removed: _t("FILES.REMOVED", "Removed"),
+    searchInputPlaceholder: _t("FILES.SEARCH_INPUT_PLACEHOLDER", "Search input"),
+    uploadFiles: _t("UPLOAD_FILES", "Upload files")
   };
 
   const folderName = useRef("");
@@ -186,6 +198,7 @@ const WorkspaceFilesPanel = (props) => {
           wsFiles={wsFiles}
           folders={folders}
           activeFolder={folder}
+          dictionary={dictionary}
         />
         <div className="col-md-9 app-content mb-4">
           <div className="app-content-overlay" />
@@ -201,6 +214,7 @@ const WorkspaceFilesPanel = (props) => {
             wsFiles={wsFiles}
             handleAddEditFolder={handleAddEditFolder}
             folders={folders}
+            dictionary={dictionary}
           />
           <FilesBody
             dropZoneRef={refs.dropZone}
@@ -216,6 +230,7 @@ const WorkspaceFilesPanel = (props) => {
             params={params}
             wsFiles={wsFiles}
             handleAddEditFolder={handleAddEditFolder}
+            dictionary={dictionary}
           />
         </div>
       </div>
