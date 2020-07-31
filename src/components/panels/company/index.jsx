@@ -5,3 +5,4 @@ export { default as CompanyHeaderPanel } from "./CompanyHeaderPanel";
 export { default as CompanyPeoplePanel } from "./CompanyPeoplePanel";
 export { default as CompanyPostsPanel } from "./CompanyPostsPanel";
 export { default as CompanySettingsPanel } from "./CompanySettingsPanel";
+export { default as CompanyPageHeaderPanel } from "./CompanyPageHeaderPanel";

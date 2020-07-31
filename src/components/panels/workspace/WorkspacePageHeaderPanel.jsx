@@ -65,8 +65,10 @@ const MainNavLink = styled(NavLink)`
     height: 6px;
     background: #28a745;
     top: 20px;
-    right: -12px;
     right: -8px;
+    @media (max-width: 620px) {
+      top: 12px;
+    }
   }
   @media (max-width: 620px) {
     height: 45px;

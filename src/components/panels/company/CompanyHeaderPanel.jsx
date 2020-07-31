@@ -4,56 +4,49 @@ import {useRouteMatch} from "react-router-dom";
 import styled from "styled-components";
 import {NavLink, SvgIconFeather} from "../../common";
 import useSettings from "../../hooks/useSettings";
-import HomeProfileNavigation from "../common/HeaderProfileNavigation";
+import {HeaderProfileNavigation} from "../common";
 
-const NavBar = styled.ul`
-  li {
-    justify-content: center;
-    align-items: center;
-    h2 {
-      letter-spacing: -0.5px;
-      margin-bottom: 0;
-      color: #82828a;
-      font-weight: 500;
+const NavBarLeft = styled.div`
+  width: 100%;
+  border-right: 1px solid #ebebeb;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  margin-right: 14px;
+  padding-right: 14px;
+  .nav-link {
+    padding: 0px !important;
+    background: transparent !important;
+    svg {
+      color: #7A1B8B;
+      width: 24px !important;
+      height: 24px !important;
     }
   }
 `;
 
-const CompanyName = styled.h2`
-  margin-right: 1rem;
-`;
-
-const MainNavLink = styled(NavLink)`
-  border-radius: 8px;
-  color: #828282;
-  margin: 0 1rem;
-  transition: color 200ms ease 0ms;
-  font-weight: 500;
-  border-radius: 0;
+const NavBar = styled.ul`
   display: flex;
-  height: 35px;
-  position: relative;
-  &.active {
-    border-bottom: 2px solid #5d5d5d;
-    color: #000000;
-  }
-  .badge {
-    background: green;
-    font-size: 0;
-    padding: 0;
-    margin: 0;
-    position: absolute;
-    width: 6px;
-    height: 6px;
-    background: #28a745;
-    top: 1px;
-    right: -9px;
+  width: 100%;
+  align-items: center;
+  li {
+    justify-content: center;
+    align-items: center;
   }
 `;
 
-const Badge = styled.div`
-  color: ${(props) => (props.unread ? "#f44" : "#fff")};
-  height: 22px;
+const CompanyName = styled.h2`
+  letter-spacing: 0;
+  margin-bottom: 0;
+  color: #000000;
+  font-weight: normal;
+  font-size: 19px;
+  svg {
+    color: #64625c;
+  }
+  @media all and (max-width: 620px) {
+    font-size: 16px;
+  }
 `;
 
 const CompanyHeaderPanel = () => {
@@ -108,42 +101,20 @@ const CompanyHeaderPanel = () => {
 
   return (
     <>
-      <div>
+      <NavBarLeft>
         <NavBar className="navbar-nav">
-          <li className="nav-item navigation-toggler mobile-toggler">
-            <a href="/" className="nav-link" title="Show navigation" onClick={handleMenuOpenMobile}>
-              <SvgIconFeather icon="menu" />
-            </a>
-          </li>
-          <li className="nav-item">
-            <CompanyName>{driffSettings.company_name}</CompanyName>
-          </li>
-          <li className="nav-item">
-            <MainNavLink to="/dashboard">Dashboard</MainNavLink>
-          </li>
-          <li className="nav-item">
-            <MainNavLink to="/posts">Posts</MainNavLink>
-          </li>
-          <li className="nav-item">
-            <MainNavLink to="/chat">
-              Chat{" "}
-              <Badge className="ml-2 badge badge-pill badge-danger"
-                     unread={unreadCounter.chat_message + unreadCounter.chat_reminder_message === 0 && unreadCounter.unread_channel > 0}>
-                {unreadCounter.chat_message + unreadCounter.chat_reminder_message > 0 ? unreadCounter.chat_message + unreadCounter.chat_reminder_message : unreadCounter.unread_channel > 0 ? unreadCounter.unread_channel : null}
-              </Badge>
-            </MainNavLink>
-          </li>
-          <li className="nav-item">
-            <MainNavLink to="/files">Files</MainNavLink>
-          </li>
-          <li className="nav-item">
-            <MainNavLink to="/people">People</MainNavLink>
-          </li>
+            <li className="nav-item navigation-toggler mobile-toggler">
+              <a href="/" className="nav-link" title="Show navigation" onClick={handleMenuOpenMobile}>
+                  <SvgIconFeather icon="menu" />
+              </a>
+            </li>
+            <li className="nav-item nav-item-folder">
+                <CompanyName>{driffSettings.company_name}</CompanyName>
+            </li>
         </NavBar>
-      </div>
-
+      </NavBarLeft>
       <div>
-        <HomeProfileNavigation />
+        <HeaderProfileNavigation />
       </div>
     </>
   );

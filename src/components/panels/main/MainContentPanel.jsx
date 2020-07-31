@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { CompanyChatPanel, CompanyDashboardPanel, CompanyFilesPanel, CompanyPeoplePanel, CompanyPostsPanel, CompanySettingsPanel } from "../company";
 import { UserNotificationPanel, UserProfilePanel, UserSearchPanel } from "../user";
 import { MainFooterPanel } from "./index";
+import { CompanyPageHeaderPanel } from  "../company";
 
 const Wrapper = styled.div`
   padding-bottom: ${(props) => (props.isOnWorkspace ? "0 !important" : "calc(1.875rem * 2)")};
@@ -14,6 +15,9 @@ const MainContentPanel = (props) => {
 
   return (
     <Wrapper className={`main-content ${className}`} isOnWorkspace={props.match.params.page === "workspace"}>
+
+      <CompanyPageHeaderPanel />
+
       <Switch>
         <Route {...props} component={UserProfilePanel} path={["/profile/:id/:name/:mode", "/profile/:id/:name", "/profile"]} />
         <Route {...props} component={UserNotificationPanel} path={["/notifications"]} />
@@ -32,7 +36,7 @@ const MainContentPanel = (props) => {
           }}
         />
       </Switch>
-      <MainFooterPanel />
+      {/* <MainFooterPanel /> */}
     </Wrapper>
   );
 };

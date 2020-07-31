@@ -43,7 +43,7 @@ const Wrapper = styled.div`
       color: #ffffff;
     }
     @media (max-width: 620px) {
-      padding: 15px 2px 5px 2px;
+      padding: 15px 2px 15px 2px;
       font-size: 10px;
       text-transform: uppercase;
       svg {

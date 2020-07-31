@@ -20967,13 +20967,14 @@ body.dark.small-navigation .navigation-menu-body ul li.navigation-divider:after 
   animation: fadeIn 0.3s cubic-bezier(0.275, 0.42, 0, 1);
 }
 
-.workspace-chat {
+.workspace-chat, .company-chat {
   height: calc(100vh - 177px);
   height: calc(var(--vh, 1vh) * 100 - 177px);
   @media (max-width: 620px) {
     height: calc(var(--vh, 1vh) * 100 - 135px);
   }
 }
+
 .workspace-chat .chat-content {
   padding-left: 0 !important;
 }

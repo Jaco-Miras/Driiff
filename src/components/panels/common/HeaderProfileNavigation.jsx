@@ -157,22 +157,6 @@ const HomeProfileNavigation = (props) => {
 
   return (
     <Wrapper ref={refs.container} className={`header-profile-navigation navbar-nav ${className}`}>
-      {/* <li className="nav-item dropdown">
-        <a href="/" className="nav-link dropdown-toggle" data-toggle="dropdown" onClick={toggleDropdown}>
-          <Flag countryAbbr={language} className="mr-2" width="18" />
-          {languageOptions[language]}
-        </a>
-        <div className="dropdown-menu">
-          <a href="/" className="dropdown-item" onClick={handleSelectLanguage} data-lang="en">
-            <Flag countryAbbr="uk" className="mr-2" width="18" />
-            {languageOptions.en}
-          </a>
-          <a href="/" className="dropdown-item" onClick={handleSelectLanguage} data-lang="nl">
-            <Flag countryAbbr="nl" className="mr-2" width="18" />
-            {languageOptions.nl}
-          </a>
-        </div>
-      </li> */}
        <li class="nav-item dropdown">
           <a href="#" class="nav-link" title="Search" data-toggle="dropdown" onClick={toggleDropdown}>
             <SvgIconFeather icon="search" />
