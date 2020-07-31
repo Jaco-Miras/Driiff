@@ -4,9 +4,9 @@ import { useUserChannels } from "../../hooks";
 import { ChatContentPanel, ChatSidebarPanel } from "../chat";
 
 const Wrapper = styled.div`
-  @media all and (max-width: 1200px) {
+  ${'' /* @media all and (max-width: 1200px) {
     padding: 1.875rem 15px 15px 15px
-  }
+  } */}
 
   @media all and (max-width: 1450px) and (min-width: 992px)  {
     .chat-sidebar-panel {
@@ -14,7 +14,7 @@ const Wrapper = styled.div`
       flex: none;
       min-width: 340px;
     }
-    .chat-content-panel {
+    .chat-content {
       flex: 0 0 calc(100% - 340px);
       max-width: calc(100% - 340px);
     }
@@ -73,7 +73,7 @@ const CompanyChatPanel = (props) => {
   }, [useLastVisitedChannel]);
 
   return (
-    <Wrapper className={`company-chat-panel container-fluid h-100 ${className}`}>
+    <Wrapper className={`company-chat container-fluid ${className}`}>
       <div className="row no-gutters chat-block">
         <ChatSidebarPanel className={"col-lg-4 chat-sidebar-panel border-right"} channels={channels} userChannels={userChannels} selectedChannel={selectedChannel} />
         <ChatContentPanel className={"col-lg-8 chat-content-panel"} selectedChannel={selectedChannel} />
