@@ -246,7 +246,7 @@ const WorspaceHeaderPanel = (props) => {
           </li>
           {activeTopic ? (
             <>
-              {typeof activeTopic.workspace_name === "undefined" ? (
+              {activeTopic.folder_id === null ? (
                   <>
                     <li className="nav-item nav-item-folder">
                       <WorkspaceName>General</WorkspaceName>
@@ -257,14 +257,14 @@ const WorspaceHeaderPanel = (props) => {
                     <li className="nav-item">
                       <SubWorkspaceName>
                         {activeTopic.name}
-                        { !isExternal && <SettingsLink/> }
                       </SubWorkspaceName>
                     </li>
+                    <li className="nav-item">{ !isExternal && <SettingsLink/> }</li>
                   </>
               ) : (
                 <>
                   <li className="nav-item nav-item-folder">
-                    <WorkspaceName>{activeTopic.workspace_name}</WorkspaceName>
+                    <WorkspaceName>{activeTopic.folder_name}</WorkspaceName>
                   </li>
                   <li class="nav-item-chevron">
                     <SvgIconFeather icon="chevron-right" />
@@ -272,9 +272,9 @@ const WorspaceHeaderPanel = (props) => {
                   <li className="nav-item">
                     <SubWorkspaceName>
                       {activeTopic.name}
-                      { !isExternal && <SettingsLink/> }
                     </SubWorkspaceName>
                   </li>
+                  <li className="nav-item">{ !isExternal && <SettingsLink/> }</li>
                   <li className="nav-item-last">
                     <div className="nav-item-avatars-wrap">
                       {activeTopic.members.map((m, i) => {

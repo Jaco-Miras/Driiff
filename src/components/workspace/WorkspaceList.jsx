@@ -104,14 +104,14 @@ const TopicNav = styled.ul`
 `;
 
 const WorkspaceList = (props) => {
-  const { className = "", show = true, workspace } = props;
+  const { className = "", actions, show = true, folder, workspace, workspaces } = props;
 
   const dispatch = useDispatch();
   const history = useHistory();
   const ref = {
-    container: useRef(null),
-    arrow: useRef(null),
-    nav: useRef(null),
+    container: useRef(),
+    arrow: useRef(),
+    nav: useRef(),
   };
 
   const {
@@ -120,47 +120,36 @@ const WorkspaceList = (props) => {
   } = useSettings();
 
   const [showTopics, setShowTopics] = useState(null);
-  const [maxHeight, setMaxHeight] = useState(null);
+  const [maxHeight, setMaxHeight] = useState(0);
+  const [selected, setSelected] = useState(false);
   const [prevTopics, setPrevTopics] = useState(null);
 
   const handleShowWorkspaceModal = () => {
     let payload = {
       type: "workspace_create_edit",
       mode: "create",
-      item: workspace,
+      item: folder,
     };
 
     dispatch(addToModals(payload));
   };
 
-  const handleSelectWorkspace = () => {
-    //set the selected topic
-    if (workspace.selected) return;
-
-    history.push(`/workspace/chat/${workspace.id}/${replaceChar(workspace.name)}`);
-  };
-
   const handleShowTopics = (e) => {
     e.preventDefault();
-
-    if (["FOLDER", "GENERAL_FOLDER", "ARCHIVE_FOLDER"].includes(workspace.type)) {
-      if (!showTopics) {
-        setGeneralSetting({
-          workspace_open_folder: {
-            ...workspace_open_folder,
-            [workspace.id]: workspace.id,
-          },
-        });
-      } else {
-        delete workspace_open_folder[workspace.id];
-        setGeneralSetting({
-          workspace_open_folder: workspace_open_folder,
-        });
-      }
-      setShowTopics((prevState) => !prevState);
+    if (!showTopics) {
+      setGeneralSetting({
+        workspace_open_folder: {
+          ...workspace_open_folder,
+          [folder.id]: folder.id,
+        },
+      });
     } else {
-      handleSelectWorkspace();
+      delete workspace_open_folder[folder.id];
+      setGeneralSetting({
+        workspace_open_folder: workspace_open_folder,
+      });
     }
+    setShowTopics((prevState) => !prevState);
   };
 
   useEffect(() => {
@@ -173,90 +162,54 @@ const WorkspaceList = (props) => {
 
   useEffect(() => {
     if (showTopics === null && maxHeight !== null) {
-      setShowTopics(workspace.selected || workspace_open_folder.hasOwnProperty(workspace.id));
+      setShowTopics(selected || workspace_open_folder.hasOwnProperty(folder.id));
     }
-  }, [showTopics, workspace.id, workspace.selected, maxHeight, workspace_open_folder]);
+  }, [showTopics, folder.id, selected, maxHeight, workspace_open_folder]);
 
   useEffect(() => {
-    if (prevTopics !== workspace.topics) {
-      if (prevTopics !== null) {
-        setMaxHeight(null);
-      }
-      setPrevTopics(workspace.topics);
+    if (workspaces.length && workspace !== null) {
+      setSelected(folder.workspace_ids.some((id) => id === workspace.id))
     }
-  }, [workspace.topics]);
+  }, [workspace, workspaces, folder.workspace_ids])
+  // useEffect(() => {
+  //   if (prevTopics !== workspace.topics) {
+  //     if (prevTopics !== null) {
+  //       setMaxHeight(null);
+  //     }
+  //     setPrevTopics(workspace.topics);
+  //   }
+  // }, [workspace.topics]);
+  
   return (
-    <Wrapper ref={ref.container} className={`workspace-list fadeIn ${className} ${showTopics && "folder-open"}`} selected={workspace.selected} show={show}>
-      <a className={`${workspace.selected ? "" : ""} ${workspace.is_active === 0 ? "archived-folder" : ""}`} href="/" onClick={handleShowTopics}>
+    
+    <Wrapper ref={ref.container} className={`workspace-list fadeIn ${className} ${showTopics && "folder-open"}`} selected={selected} show={show}>
+      <a className={`${folder.type === "ARCHIVE_FOLDER" ? "archived-folder" : ""}`} href="/" onClick={handleShowTopics}>
         <div>
-          {workspace.name}
+          {folder.name}
 
-          {workspace.is_lock !== 0 && <LockIcon icon="lock" />}
-          {workspace.is_active === 0 && <LockIcon icon="archive" />}
+          {folder.is_lock !== 0 && <LockIcon icon="lock" />}
+          {folder.type === "ARCHIVE_FOLDER" && <LockIcon icon="archive" />}
 
-          {workspace.unread_count > 0 && (
+          {folder.unread_count > 0 && (
             <Badge className={`${showTopics ? "leave-active" : "enter-active"}`} color="danger">
-              {workspace.unread_count}
+              {folder.unread_count}
             </Badge>
           )}
         </div>
 
-        {["FOLDER", "GENERAL_FOLDER", "ARCHIVE_FOLDER"].includes(workspace.type) && <i ref={ref.arrow} className={`sub-menu-arrow ti-angle-up ${showTopics ? "ti-minus rotate-in" : "ti-plus"}`} />}
+        <i ref={ref.arrow} className={`sub-menu-arrow ti-angle-up ${showTopics ? "ti-minus rotate-in" : "ti-plus"}`} />
       </a>
-      {workspace.type === "FOLDER" && (
-        <TopicNav ref={ref.nav} maxHeight={maxHeight} className={showTopics === null ? "" : showTopics ? "enter-active" : "leave-active"}>
-          {Object.keys(workspace.topics).length > 0 &&
-            Object.values(workspace.topics)
-              .filter((t) => t.active === 1)
-              .sort((a, b) => {
-                /*let compare = b.updated_at.timestamp - a.updated_at.timestamp;
-                                if (compare !== 0)
-                                    return compare;*/
-                return a.name.localeCompare(b.name);
-              })
-              .map((topic) => {
-                return <TopicList key={topic.id} topic={topic} />;
-              })}
-          <li className="nav-action" onClick={handleShowWorkspaceModal}>
-            <SvgIconFeather icon="circle-plus" /> New workspace
-          </li>
-        </TopicNav>
-      )}
-      {workspace.type === "GENERAL_FOLDER" && (
-        <TopicNav ref={ref.nav} maxHeight={maxHeight} className={showTopics === null ? "" : showTopics ? "enter-active" : "leave-active"}>
-          {workspace.topics.length > 0 &&
-            workspace.topics
-              .sort((a, b) => {
-                /*let compare = b.updated_at.timestamp - a.updated_at.timestamp;
-                                if (compare !== 0)
-                                    return compare;*/
-
-                return a.name.localeCompare(b.name);
-              })
-              .map((topic) => {
-                return <TopicList key={topic.key_id} topic={topic} />;
-              })}
-          <li className="nav-action" onClick={handleShowWorkspaceModal}>
-            <SvgIconFeather icon="plus" /> New workspace
-          </li>
-        </TopicNav>
-      )}
-      {workspace.type === "ARCHIVE_FOLDER" && (
-        <TopicNav ref={ref.nav} maxHeight={maxHeight} className={showTopics === null ? "" : showTopics ? "enter-active" : "leave-active"}>
-          {workspace.topics.length > 0 &&
-            workspace.topics
-              .sort((a, b) => {
-                /*let compare = b.updated_at.timestamp - a.updated_at.timestamp;
-                                    if (compare !== 0)
-                                        return compare;*/
-
-                return a.name.localeCompare(b.name);
-              })
-              .map((topic) => {
-                return <TopicList key={topic.id} topic={topic} />;
-              })}
-        </TopicNav>
-      )}
+      
+      <TopicNav ref={ref.nav} maxHeight={maxHeight} className={showTopics === null ? "" : showTopics ? "enter-active" : "leave-active"}>
+        {folder.workspace_ids.length > 0 && Object.keys(workspaces).length > 0 &&
+          workspaces.map((ws) => {
+            return <TopicList key={ws.id} topic={ws} selected={workspace && workspace.id === ws.id} actions={actions}/>;
+          })
+        }
+        <li className="nav-action" onClick={handleShowWorkspaceModal}>
+          <SvgIconFeather icon="circle-plus" /> New workspace
+        </li>
+      </TopicNav>
     </Wrapper>
   );
 };

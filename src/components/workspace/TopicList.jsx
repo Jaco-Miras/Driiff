@@ -33,7 +33,7 @@ const Icon = styled(SvgIconFeather)`
 `;
 
 const TopicList = (props) => {
-  const { className = "", topic } = props;
+  const { className = "", actions, selected, topic } = props;
 
   const history = useHistory();
   const route = useRouteMatch();
@@ -43,49 +43,18 @@ const TopicList = (props) => {
     document.body.classList.remove("navigation-show");
 
 
-    if (topic.selected && onWorkspace)
+    if (selected && onWorkspace)
       return;
 
-    if (topic.workspace_id !== undefined) {
-      if (typeof topic.workspace_name === "undefined") {
-        history.push(`/workspace/${route.params.page}/${topic.id}/${replaceChar(topic.name)}`);
-      } else {
-        history.push(`/workspace/${route.params.page}/${topic.workspace_id}/${replaceChar(topic.workspace_name)}/${topic.id}/${replaceChar(topic.name)}`);
-      }
-    } else {
-      if (topic.selected && onWorkspace)
-        return;
-
-      history.push(`/workspace/chat/${topic.id}/${replaceChar(topic.name)}`);
-    }
-
-
-    // if (topic.is_external === 1) {
-    // } else {
-    //   if (topic.workspace_id !== undefined) {
-    //     if (typeof topic.workspace_name === "undefined") {
-    //       history.push(`/workspace/${route.params.page}/${topic.id}/${replaceChar(topic.name)}`);
-    //     } else {
-    //       history.push(`/workspace/${route.params.page}/${topic.workspace_id}/${replaceChar(topic.workspace_name)}/${topic.id}/${replaceChar(topic.name)}`);
-    //     }
-    //   } else {
-    //     if (topic.selected) return;
-
-    //     history.push(`/workspace/chat/${topic.id}/${replaceChar(topic.name)}`);
-    //   }
-    // }
+    actions.selectWorkspace(topic);
+    actions.redirectTo(topic);
   };
 
-  let unread_count = 0;
-  if (topic.type === "WORKSPACE") {
-    unread_count = topic.topic_detail.unread_chats + topic.topic_detail.unread_posts;
-  } else {
-    unread_count = topic.unread_chats + topic.unread_posts;
-  }
+  let unread_count = topic.unread_chats + topic.unread_posts;
 
   return (
       <TopicListWrapper className={`topic-list ${className}`} onClick={handleSelectTopic}
-                        selected={topic.selected && onWorkspace}>
+                        selected={selected && onWorkspace}>
         <div>
           {topic.name}
           {topic.private === 1 && <Icon icon={"lock"}/>}

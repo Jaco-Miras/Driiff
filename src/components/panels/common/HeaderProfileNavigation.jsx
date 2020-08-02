@@ -157,8 +157,8 @@ const HomeProfileNavigation = (props) => {
 
   return (
     <Wrapper ref={refs.container} className={`header-profile-navigation navbar-nav ${className}`}>
-       <li class="nav-item dropdown">
-          <a href="#" class="nav-link" title="Search" data-toggle="dropdown" onClick={toggleDropdown}>
+       <li className="nav-item dropdown">
+          <a href="#" className="nav-link" title="Search" data-toggle="dropdown" onClick={toggleDropdown}>
             <SvgIconFeather icon="search" />
           </a>
           <SearchDropDown/>

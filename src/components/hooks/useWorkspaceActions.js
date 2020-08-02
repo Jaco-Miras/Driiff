@@ -1,15 +1,25 @@
 import { useCallback } from "react";
 import { useDispatch } from "react-redux";
+import { useHistory } from "react-router-dom";
 //import {useLocation, useHistory, useParams} from "react-router-dom";
 // import toaster from "toasted-notes";
 // import {copyTextToClipboard} from "../../helpers/commonFunctions";
 // import {getBaseUrl} from "../../helpers/slugHelper";
-// import {replaceChar} from "../../helpers/stringFormatter";
-import { addPrimaryFiles, fetchDetail, fetchMembers, fetchPrimaryFiles, fetchTimeline } from "../../redux/actions/workspaceActions";
+import {replaceChar} from "../../helpers/stringFormatter";
+import { addPrimaryFiles, fetchDetail, fetchMembers, fetchPrimaryFiles, fetchTimeline, 
+        getWorkspaces, setActiveTopic } from "../../redux/actions/workspaceActions";
 import { addToModals } from "../../redux/actions/globalActions";
+import {
+  addToChannels,
+  clearSelectedChannel,
+  getChannel,
+  getWorkspaceChannels,
+  setSelectedChannel
+} from "../../redux/actions/chatActions";
 
 const useWorkspaceActions = () => {
   const dispatch = useDispatch();
+  const history = useHistory();
 
   const getDetail = useCallback(
     (id, callback) => {
@@ -69,12 +79,86 @@ const useWorkspaceActions = () => {
     [dispatch]
   );
 
+  const fetchWorkspaceChannels = useCallback(
+    (payload, callback) => {
+      dispatch(getWorkspaceChannels(payload, callback));
+    },
+    [dispatch]
+  );
+
+  const fetchWorkspaces = useCallback(
+    (payload, callback) => {
+      dispatch(getWorkspaces(payload, callback));
+    },
+    [dispatch]
+  );
+  
+  const fetchChannel = useCallback(
+    (payload, callback) => {
+      dispatch(
+        getChannel(payload, (err, res) => {
+            callback();
+            if (err) return;
+            let channel = {
+                ...res.data,
+                hasMore: true,
+                skip: 0,
+                replies: [],
+                selected: true,
+            };
+            dispatch(addToChannels(channel));
+            // selectChannel(channel)
+        })
+      );
+    },
+    [dispatch]
+  );
+
+  const selectWorkspace = useCallback(
+    (workspace, callback) => {
+      dispatch(setActiveTopic(workspace, callback));
+    },
+    [dispatch]
+  );
+  
+  const selectChannel = useCallback(
+    (channel, callback) => {
+      dispatch(setSelectedChannel(channel, callback));
+    },
+    [dispatch]
+  );
+
+  const clearChannel = useCallback(
+    () => {
+      dispatch(clearSelectedChannel());
+    },
+    [dispatch]
+  );
+
+  const redirectTo = useCallback(
+    (workspace) => {
+      if (workspace.folder_id) {
+        history.push(`/workspace/chat/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`);
+      } else {
+        history.push(`/workspace/chat/${workspace.id}/${replaceChar(workspace.name)}`);
+      }
+    },
+    []
+  );
+
   return {
     addPrimaryFilesToWorkspace,
+    clearChannel,
+    fetchChannel,
+    fetchWorkspaceChannels,
+    fetchWorkspaces,
     getDetail,
     getMembers,
     getPrimaryFiles,
     getTimeline,
+    redirectTo,
+    selectChannel,
+    selectWorkspace,
     showModal,
   };
 };

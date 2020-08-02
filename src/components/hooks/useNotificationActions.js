@@ -13,6 +13,7 @@ import {
   unreadNotification,
   unreadNotificationReducer,
 } from "../../redux/actions/notificationActions";
+import { setActiveTopic } from "../../redux/actions/workspaceActions";
 import { useToaster } from "./index";
 
 const useNotificationActions = (props) => {
@@ -84,12 +85,20 @@ const useNotificationActions = (props) => {
     dispatch(deleteAllNotification({}, callback));
   }, [dispatch]);
 
+  const selectWorkspace = useCallback(
+    (workspace, callback) => {
+      dispatch(setActiveTopic(workspace, callback));
+    },
+    [dispatch]
+  );
+
   return {
     get,
     read,
     readAll,
     remove,
     removeAll,
+    selectWorkspace,
     unread,
   };
 };

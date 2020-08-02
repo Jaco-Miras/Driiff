@@ -53,6 +53,7 @@ const SettingsLink = (props) => {
   const wrapperRef = useRef();
   const dispatch = useDispatch();
   const topic = useSelector((state) => state.workspaces.activeTopic);
+  const folders = useSelector((state) => state.workspaces.folders);
   const [show, setShow] = useState(false);
   const toggle = useCallback(() => {
     setShow(!show);
@@ -66,9 +67,9 @@ const SettingsLink = (props) => {
   };
 
   const handleToggle = () => {
-    if (topic && topic.hasOwnProperty("workspace_id")) {
+    if (topic && topic.folder_id !== null) {
       toggle();
-    } else if (topic && topic.hasOwnProperty("type") && topic.type === "WORKSPACE") {
+    } else {
       handleOpenWorkspace("workspace");
     }
   };
@@ -86,6 +87,7 @@ const SettingsLink = (props) => {
       payload = {
         ...payload,
         type: "workspace_folder",
+        item: folders[topic.folder_id]
       };
     } else {
       payload = {

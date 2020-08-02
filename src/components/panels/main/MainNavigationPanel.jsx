@@ -1,7 +1,6 @@
 import React from "react";
 import { Route } from "react-router-dom";
 import styled from "styled-components";
-import { WorkspaceNavigationMenuBodyPanel } from "../workspace";
 import { MainNavigationTabPanel } from "./index";
 
 const Wrapper = styled.div``;
@@ -11,12 +10,7 @@ const MainNavigationPanel = (props) => {
 
   return (
     <Wrapper className={`navigation ${className}`}>
-      <Route render={() => <MainNavigationTabPanel {...props}/>} path={["/:page"]} />
-      <Route
-        exact={true}
-        {...props}
-        component={WorkspaceNavigationMenuBodyPanel}
-        path={[
+      <Route render={() => <MainNavigationTabPanel {...props}/>} path={[
           "/workspace/:page/:folderId/:folderName/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName",
           "/workspace/:page/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName",
           "/workspace/:page/:folderId/:folderName/:workspaceId/:workspaceName/post/:postId/:postTitle",
@@ -24,8 +18,9 @@ const MainNavigationPanel = (props) => {
           "/workspace/:page/:workspaceId/:workspaceName/post/:postId/:postTitle",
           "/workspace/:page/:workspaceId/:workspaceName",
           "/workspace/:page",
-        ]}
-      />
+          "/profile/:id/:name/:mode", "/profile/:id/:name", "/profile",
+          "/:page",
+        ]} />
     </Wrapper>
   );
 };

@@ -2,8 +2,7 @@ import { useEffect, useState, useCallback } from "react";
 import { useSelector } from "react-redux";
 
 const useGetWorkspaceAndUserOptions = (selectedWorkspaces, workspace) => {
-  const activeTab = useSelector((state) => state.workspaces.activeTab);
-  const workspaces = useSelector((state) => state.workspaces.workspaces);
+  const { workspaces, folders } = useSelector((state) => state.workspaces);
   const [options, setOptions] = useState([]);
   const [userOptions, setUserOptions] = useState([]);
 
@@ -29,29 +28,7 @@ const useGetWorkspaceAndUserOptions = (selectedWorkspaces, workspace) => {
 
   useEffect(() => {
     if (Object.values(workspaces).length) {
-      const wsTopics = Object.values(workspaces)
-        .filter((ws) => {
-          if (activeTab === "intern") {
-            return ws.is_external === 0;
-          } else {
-            return ws.is_external === 1;
-          }
-        })
-        .map((ws) => {
-          if (ws.type === "FOLDER") {
-            if (Object.keys(ws.topics).length) {
-              return Object.values(ws.topics);
-            } else {
-              return null;
-            }
-          } else {
-            return null;
-          }
-        })
-        .flat()
-        .filter((ws) => ws !== null);
-
-      let workspaceOptions = [...wsTopics, ...Object.values(workspaces)].map((ws) => {
+      let workspaceOptions = [...Object.values(folders),...Object.values(workspaces)].map((ws) => {
         return {
           ...ws,
           value: ws.id,
@@ -85,15 +62,8 @@ const useGetWorkspaceAndUserOptions = (selectedWorkspaces, workspace) => {
         if (selectedFolders.length) {
           // remove the ws topics under the selected folders
           workspaceOptions = workspaceOptions.filter((ws) => {
-            if (ws.hasOwnProperty("workspace_id")) {
-              let wsFound = false;
-              selectedFolders.forEach((f) => {
-                if (f.id === ws.workspace_id) {
-                  wsFound = true;
-                  return;
-                }
-              });
-              return !wsFound;
+            if (ws.type === "WORKSPACE") {
+              return !selectedFolders.some((f) => f.id === ws.folder_id);
             } else {
               return true;
             }
