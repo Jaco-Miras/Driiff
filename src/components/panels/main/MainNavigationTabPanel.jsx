@@ -69,7 +69,7 @@ const Wrapper = styled.div`
   .navigation-menu-group {
     -ms-overflow-style: none;
     scrollbar-width: none;
-    height: 74vh;
+    height: 78vh;
     overflow: scroll;
     margin: 0 15px;
     &::-webkit-scrollbar {
@@ -229,7 +229,7 @@ const MainNavigationTabPanel = (props) => {
   };
 
   const { actions, folders, sortedWorkspaces, workspaces, workspace } = useWorkspace(true);
-  
+
   return (
     <Wrapper className={`navigation-menu-tab ${className}`}>
       <div>

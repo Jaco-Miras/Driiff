@@ -8,13 +8,12 @@ import Tooltip from "react-tooltip-lite";
 
 const SettingsLinkList = styled.div`
   position: relative;
-
   display: inline-block;
   margin-left: 6px;
+  margin-right: 30px;
   > a:after {
     display: none;
   }
-
   .dropdown-toggle {
     cursor: pointer;
     cursor: hand;
@@ -37,6 +36,9 @@ const SettingsLinkList = styled.div`
       cursor: pointer;
       cursor: hand;
     }
+  }
+  @media all and (max-width: 400px) {
+    margin-right: 0;
   }
 `;
 

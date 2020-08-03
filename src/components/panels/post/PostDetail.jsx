@@ -205,7 +205,7 @@ const PostDetail = (props) => {
         </div>
         <div>
           {post.author.id !== user.id && !post.is_read_requirement && (
-            <MarkAsRead className="mr-3 d-sm-inline d-none">
+            <MarkAsRead className="d-sm-inline d-none">
               <button className="btn btn-primary btn-block" onClick={markRead}>
                 Mark as read
               </button>
@@ -262,8 +262,14 @@ const PostDetail = (props) => {
             <hr className="m-0" />
           </>
         )}
-        <PostComments comments={comments} post={post} user={user} commentActions={commentActions} onShowFileDialog={handleOpenFileDialog} dropAction={dropAction} workspace={workspace} isMember={isMember}/>
-        <hr className="m-0" />
+        {
+          post.comments > 0 && (
+            <>
+            <PostComments comments={comments} post={post} user={user} commentActions={commentActions} onShowFileDialog={handleOpenFileDialog} dropAction={dropAction} workspace={workspace} isMember={isMember}/>
+            <hr className="m-0" />
+            </>
+          )
+        }
         <PostDetailFooter post={post} commentActions={commentActions} onShowFileDialog={handleOpenFileDialog} dropAction={dropAction} workspace={workspace} isMember={isMember} />
       </MainBody>
     </>
