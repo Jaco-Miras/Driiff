@@ -29,6 +29,9 @@ const ChatBubbleContainer = styled.div`
   font-size: 0.835rem;
   overflow: visible;
   min-height: 40px;
+  @media (max-width: 620px) {
+    padding: 7px;
+  }
   ${(props) =>
     props.hideBg === true &&
     !props.isEmoticonOnly &&
@@ -207,8 +210,6 @@ const QuoteContent = styled.div`
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: pre-wrap;
-  word-wrap: break-word;
-
   a {
     color: ${(props) => (props.isAuthor ? "#ffffffe6" : "#8C3B9B")};
     overflow: hidden;

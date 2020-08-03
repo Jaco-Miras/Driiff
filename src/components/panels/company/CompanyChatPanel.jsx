@@ -4,21 +4,6 @@ import { useUserChannels } from "../../hooks";
 import { ChatContentPanel, ChatSidebarPanel } from "../chat";
 
 const Wrapper = styled.div`
-  ${'' /* @media all and (max-width: 1200px) {
-    padding: 1.875rem 15px 15px 15px
-  } */}
-
-  @media all and (max-width: 1450px) and (min-width: 992px)  {
-    .chat-sidebar-panel {
-      width: 340px;
-      flex: none;
-      min-width: 340px;
-    }
-    .chat-content {
-      flex: 0 0 calc(100% - 340px);
-      max-width: calc(100% - 340px);
-    }
-  }
 `;
 
 const CompanyChatPanel = (props) => {

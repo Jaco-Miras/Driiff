@@ -286,6 +286,9 @@ const SystemMessageContainer = styled.div`
       visibility: visible;
     }
   }
+  @media (max-width: 620px) {
+    padding: 7px;
+  }
 `;
 
 const FailedSpan = styled.span`
