@@ -65,7 +65,7 @@ const EmptyStateLabel = styled.div`
 `;
 
 const FilesBody = (props) => {
-  const { className = "", dropZoneRef, filter, search, wsFiles, isMember, handleAddEditFolder, actions, 
+  const { className = "", dropZoneRef, filter, search, wsFiles, isMember, handleAddEditFolder, actions,
           params, folders, folder, fileIds, history, subFolders, dictionary } = props;
 
   const toaster = useToaster();

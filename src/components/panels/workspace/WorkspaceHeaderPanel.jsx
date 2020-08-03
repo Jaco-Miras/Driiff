@@ -63,7 +63,7 @@ const NavBar = styled.ul`
       .avatar-sm {
         border: 2px solid #ffffff;
       }
-      @media all and (max-width: 360px) {
+      @media all and (max-width: 400px) {
         display: none;
       }
     }

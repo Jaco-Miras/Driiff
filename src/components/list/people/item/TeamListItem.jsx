@@ -6,11 +6,6 @@ import { MoreOptions } from "../../../panels/common";
 
 const Wrapper = styled.li`
   padding: 16px 0 !important;
-  &:hover {
-    .more-options {
-      display: flex;
-    }
-  }
   .card-title {
     position: relative;
     .feather-edit {
@@ -35,6 +30,12 @@ const Wrapper = styled.li`
   }
   > .more-options svg {
     width: auto;
+  }
+  .more-options-tooltip {
+    display: none;
+    &:hover {
+      display: block;
+    }
   }
 `;
 
@@ -63,7 +64,7 @@ const TeamListItem = (props) => {
         </div>
       </div>
       {
-        !hideOptions && 
+        !hideOptions &&
         <MoreOptions moreButton="more-vertical" scrollRef={parentRef}>
           <div>Role</div>
           <div onClick={onEditClick}>Remove</div>
