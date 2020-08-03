@@ -165,7 +165,7 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         searchResults: action.data.result.length ? {...state.searchResults, ...convertArrayToObject(action.data.result, "id")}
                       : {},
-        searchCount: action.data.total_result + state.searchCount,
+        searchCount: action.data.hasOwnProperty("count_category") ? action.data.total_result : state.searchCount,
         searching: false,
         tabs: tabs
       }
