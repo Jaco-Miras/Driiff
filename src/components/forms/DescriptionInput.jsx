@@ -27,7 +27,7 @@ const WrapperDiv = styled(InputGroup)`
   }
   .description-wrapper {
     margin-bottom: 25px;
-
+    min-height: 133px;
     &.is-invalid {
       border-color: #dc3545;
       padding-right: calc(1.5em + 0.75rem);
@@ -63,8 +63,8 @@ const WrapperDiv = styled(InputGroup)`
 
 const StyledQuillEditor = styled(QuillEditor)`
   height: ${props => props.height}px;
-  
-  &.description-input {    
+
+  &.description-input {
     overflow: auto;
     overflow-x: hidden;
     position: static;
