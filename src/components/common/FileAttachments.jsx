@@ -24,7 +24,6 @@ const Wrapper = styled.div`
     &.files {
       li {
         padding-right: 16px;
-
         &:hover {
           color: #972c86;
 
@@ -32,7 +31,12 @@ const Wrapper = styled.div`
             color: #505050;
           }
         }
-
+        @media all and (max-width: 460px) {
+          width: 100%;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
         svg {
           &.feather-trash-2 {
             position: absolute;
