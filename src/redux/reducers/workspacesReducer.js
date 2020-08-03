@@ -34,7 +34,6 @@ export default (state = INITIAL_STATE, action) => {
           if (updatedFolders.hasOwnProperty(ws.id)) {
             updatedFolders[ws.id].workspace_ids = [...updatedFolders[ws.id].workspace_ids, ...ws.topics.map((t) => t.id)];
           } else {
-            console.log(ws)
             updatedFolders[ws.id] = {
               ...ws,
               workspace_ids: ws.topics.map((t) => t.id)

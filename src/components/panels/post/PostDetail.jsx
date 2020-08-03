@@ -79,7 +79,7 @@ const MarkAsRead = styled.div`
 `;
 
 const PostDetail = (props) => {
-  const { post, postActions, user, onGoBack, workspace, isMember } = props;
+  const { post, postActions, user, onGoBack, workspace, isMember, dictionary } = props;
   const dispatch = useDispatch();
 
   const [showDropZone, setshowDropZone] = useState(false);
@@ -187,7 +187,6 @@ const PostDetail = (props) => {
     postActions.markReadRequirement(post);
   };
 
-  //console.log(post)
   return (
     <>
       <MainHeader className="card-header d-flex justify-content-between">
@@ -207,7 +206,7 @@ const PostDetail = (props) => {
           {post.author.id !== user.id && !post.is_read_requirement && (
             <MarkAsRead className="d-sm-inline d-none">
               <button className="btn btn-primary btn-block" onClick={markRead}>
-                Mark as read
+                {dictionary.markAsRead}
               </button>
             </MarkAsRead>
           )}
@@ -239,7 +238,7 @@ const PostDetail = (props) => {
           }}
           onCancel={handleHideDropzone}
         />
-        <PostBody post={post} postActions={postActions} isAuthor={post.author.id === user.id} />
+        <PostBody post={post} postActions={postActions} isAuthor={post.author.id === user.id} dictionary={dictionary}/>
         <hr className="m-0" />
         <Counters className="d-flex align-items-center">
           <div>
@@ -256,16 +255,16 @@ const PostDetail = (props) => {
         {post.files.length > 0 && (
           <>
             <div className="card-body">
-              <h6 className="mb-3 font-size-11 text-uppercase">Files</h6>
+              <h6 className="mb-3 font-size-11 text-uppercase">{dictionary.files}</h6>
               <PostFiles attachedFiles={post.files} type="workspace" post={post} />
             </div>
             <hr className="m-0" />
           </>
         )}
         {
-          post.comments > 0 && (
+          comments && Object.keys(comments).length > 0 && (
             <>
-            <PostComments comments={comments} post={post} user={user} commentActions={commentActions} onShowFileDialog={handleOpenFileDialog} dropAction={dropAction} workspace={workspace} isMember={isMember}/>
+            <PostComments comments={comments} post={post} user={user} commentActions={commentActions} onShowFileDialog={handleOpenFileDialog} dropAction={dropAction} workspace={workspace} isMember={isMember} dictionary={dictionary}/>
             <hr className="m-0" />
             </>
           )
