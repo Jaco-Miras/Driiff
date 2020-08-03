@@ -310,7 +310,7 @@ const MainNavigationTabPanel = (props) => {
             {
               isExternal && Object.keys(workspaces).length > 0 && (
                 Object.values(workspaces).map((ws) => {
-                  return <ExternalWorkspaceList key={ws.key_id} actions={actions} workspace={ws}/>
+                  return <ExternalWorkspaceList key={ws.key_id} actions={actions} workspace={ws} activeTopic={workspace}/>
                 })
               )
             }

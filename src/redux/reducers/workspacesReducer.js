@@ -183,7 +183,7 @@ export default (state = INITIAL_STATE, action) => {
     case "SET_ACTIVE_TOPIC": {
       return {
         ...state,
-        activeTopic: {...state.workspaces[action.data.id]}
+        activeTopic: action.data.hasOwnProperty("members") ? action.data : state.workspaces.hasOwnProperty(action.data.id) ? {...state.workspaces[action.data.id]} : state.activeTopic
       }
     }
     case "SET_SELECTED_CHANNEL": {
