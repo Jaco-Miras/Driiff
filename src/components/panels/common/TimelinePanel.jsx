@@ -5,7 +5,7 @@ import { AttachFileTimeline, MemberTimeline, PostTimeline, TopicTimeline } from 
 const Wrapper = styled.div``;
 
 const TimelinePanel = (props) => {
-  const { className = "", timeline, actions, params } = props;
+  const { className = "", timeline, actions, params, dictionary } = props;
 
   useEffect(() => {
     if (params.hasOwnProperty("workspaceId")) {
@@ -16,7 +16,7 @@ const TimelinePanel = (props) => {
   return (
     <Wrapper className={`timeline-panel card ${className}`}>
       <div className="card-body">
-        <h5 className="card-title">Timeline</h5>
+        <h5 className="card-title">{dictionary.timeline}</h5>
 
         <div className="timeline">
           {timeline &&

@@ -48,7 +48,7 @@ const Wrapper = styled.div`
 `;
 
 const DashboardTeam = (props) => {
-  const { className = "", workspace, onEditClick, isExternal, isMember } = props;
+  const { className = "", workspace, onEditClick, isExternal, isMember, dictionary } = props;
   const [scrollRef, setScrollRef] = useState(null);
 
   const assignRef = useCallback((e) => {
@@ -66,7 +66,7 @@ const DashboardTeam = (props) => {
     <Wrapper className={`dashboard-team card ${className}`}>
       <div ref={assignRef} className="card-body">
         <h5 className="card-title">
-          Team {isMember === true && !isExternal && <SvgIconFeather onClick={onEditClick} icon="plus" />}
+          {dictionary.team} {isMember === true && !isExternal && <SvgIconFeather onClick={onEditClick} icon="plus" />}
         </h5>
 
         <ul className="list-group list-group-flush">

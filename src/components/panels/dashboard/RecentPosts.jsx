@@ -61,7 +61,7 @@ const Wrapper = styled.div`
 `;
 
 const RecentPosts = (props) => {
-  const { className = "", posts } = props;
+  const { className = "", posts, dictionary } = props;
 
   const postActions = usePostActions();
   const match = useRouteMatch();
@@ -95,7 +95,7 @@ const RecentPosts = (props) => {
     <Wrapper className={`recent-posts card ${className}`}>
       <div ref={assignRef} className="card-body">
         <h5 className="card-title">
-          Recent posts <SvgIconFeather icon="refresh-ccw" onClick={handleRefetchPosts} />
+          {dictionary.recentPosts} <SvgIconFeather icon="refresh-ccw" onClick={handleRefetchPosts} />
         </h5>
         {posts && Object.keys(posts).length ? (
           <ul className="list-group list-group-flush">
@@ -106,7 +106,7 @@ const RecentPosts = (props) => {
               })}
           </ul>
         ) : (
-          <span className="medium text-muted">No recent posts.</span>
+          <span className="medium text-muted">{dictionary.noRecentPosts}</span>
         )}
       </div>
     </Wrapper>
