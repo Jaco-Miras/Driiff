@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { Avatar, SvgIconFeather, Badge } from "../../../common";
+import {Avatar, Badge, SvgIconFeather, ToolTip} from "../../../common";
 
 const Wrapper = styled.div`
   .avatar {
@@ -10,6 +10,7 @@ const Wrapper = styled.div`
     width: 2.5rem !important;
   }
   .user-name {
+    display: flex;
     cursor: pointer;
     cursor: hand;
   }
@@ -48,14 +49,20 @@ const PeopleListItem = (props) => {
               <div>
                 {
                   user.hasOwnProperty("has_accepted") && !user.has_accepted ? (
-                    <h6 className="user-name mb-1 ">
-                      {user.email} <Badge label={"Invited"}/>
-                    </h6>
+                      <h6 className="user-name mb-1 ">
+                        <ToolTip content={user.email}>
+                          <div className="mr-2">{user.email}</div>
+                        </ToolTip>
+                        <Badge label={"Invited"}/>
+                      </h6>
                   )
                   :
-                  <h6 className="user-name mb-1 " onClick={handleOnNameClick}>
-                    {user.name} {user.type === "external" && <Badge label={"External"}/>}
-                  </h6>
+                    <h6 className="user-name mb-1 " onClick={handleOnNameClick}>
+                      <ToolTip content={user.email}>
+                        <div className="mr-2">{user.name}</div>
+                      </ToolTip>
+                      {user.type === "external" && <Badge label={"External"}/>}
+                    </h6>
                 }
                 {
                   user.role && <span className="small text-muted">{user.role !== null && <>{user.role.display_name}</>}</span>
