@@ -87,7 +87,7 @@ const LockIcon = styled(SvgIconFeather)`
 `;
 
 const ExternalWorkspaceList = (props) => {
-  const { className = "", show = true, workspace } = props;
+  const { className = "", actions, show = true, workspace, activeTopic } = props;
 
 //   const dispatch = useDispatch();
   const history = useHistory();
@@ -97,8 +97,10 @@ const ExternalWorkspaceList = (props) => {
 
   const handleSelectWorkspace = () => {
     //set the selected topic
-    if (workspace.selected) return;
-    history.push(`/workspace/chat/${workspace.id}/${replaceChar(workspace.name)}`);
+    if (activeTopic.id === workspace.id) return;
+    actions.selectWorkspace(workspace);
+    actions.redirectTo(workspace);
+    //history.push(`/workspace/chat/${workspace.id}/${replaceChar(workspace.name)}`);
   };
  
   return (
