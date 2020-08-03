@@ -30,6 +30,11 @@ const UserSearchPanel = (props) => {
   };
 
   useEffect(() => {
+    document.getElementById("main").setAttribute("style", "overflow: auto");
+    return () => document.getElementById("main").removeAttribute("style");
+  }, []);
+
+  useEffect(() => {
     if (Object.keys(tabs).length && activeTab === null) {
       let tab = Object.keys(tabs)[0];
       setActiveTab(tab.toLowerCase());
