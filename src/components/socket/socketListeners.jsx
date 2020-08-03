@@ -753,7 +753,7 @@ class SocketListeners extends React.PureComponent {
                     code: e.code,
                 };
                 let payload = {
-                    user: data.author,
+                    user: {...data.author, active: 1, type: "internal", has_accepted: true},
                     channel_id: e.channel_id,
                     data: e,
                     message: message,

@@ -309,7 +309,8 @@ export default (state = INITIAL_STATE, action) => {
       }
       return {
         ...state,
-        workspaces: updatedWorkspaces
+        workspaces: updatedWorkspaces,
+        activeTopic: state.activeTopic && state.activeTopic.channel.id === action.data.channel_id ? {...state.activeTopic, members: [...state.activeTopic.members, action.data.user], member_ids: [...state.activeTopic.member_ids, action.data.user.id]} : state.activeTopic
       }
     }
     case "GET_DRAFTS_SUCCESS": {
