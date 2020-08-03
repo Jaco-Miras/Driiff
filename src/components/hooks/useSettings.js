@@ -1,14 +1,20 @@
-import { useCallback, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { getDriffSettings, getUserSettings, setUserChatSetting, setUserGeneralSetting, updateUserSettings } from "../../redux/actions/settingsActions";
-import { useUserLogout } from "./index";
+import {useCallback, useEffect} from "react";
+import {useDispatch, useSelector} from "react-redux";
+import {
+  getDriffSettings,
+  getUserSettings,
+  setUserChatSetting,
+  setUserGeneralSetting,
+  updateUserSettings
+} from "../../redux/actions/settingsActions";
+import {useUserActions} from "./index";
 
 let init = true;
 
 const useSettings = () => {
   const dispatch = useDispatch();
-  const { logout } = useUserLogout();
-  const { driff: driffSettings, user: userSettings } = useSelector((state) => state.settings);
+  const {logout} = useUserActions();
+  const {driff: driffSettings, user: userSettings} = useSelector((state) => state.settings);
 
   const setChatSetting = useCallback(
     (e) => {
