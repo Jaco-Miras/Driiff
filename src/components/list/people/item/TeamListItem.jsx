@@ -33,10 +33,15 @@ const Wrapper = styled.li`
   }
   .more-options-tooltip {
     display: none;
-    &:hover {
+    right: calc(100% + 5px);
+    left: auto;
+  }
+  &:hover {
+    .more-options-tooltip {
       display: block;
     }
   }
+
 `;
 
 const TeamListItem = (props) => {

@@ -34,6 +34,9 @@ body {
 .chat-input-wrapper:focus-within {
   border-color: rgba(122, 27, 139, 0.8) !important;
 }
+.icon-1, .icon-2, .icon-3, .icon-4 {
+  max-width: 100%;
+}
 
 body.dark {
   .chat-left {
