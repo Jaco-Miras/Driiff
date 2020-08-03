@@ -7,8 +7,7 @@ import {replaceChar} from "../../../helpers/stringFormatter";
 import {addToModals, getUnreadNotificationCounterEntries, setNavMode} from "../../../redux/actions/globalActions";
 import {NavLink, SvgIcon, SvgIconFeather} from "../../common";
 //import Tooltip from "react-tooltip-lite";
-// import { WorkspaceNavigationMenuBodyPanel } from "../workspace";
-import {useSetWorkspace, useSortWorkspaces} from "../../hooks";
+import {useWorkspace} from "../../hooks";
 import {ExternalWorkspaceList, WorkspaceList} from "../../workspace";
 
 const Wrapper = styled.div`
@@ -185,25 +184,24 @@ const MainNavigationTabPanel = (props) => {
     //eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const toggleTooltip = () => {
-    let tooltips = document.querySelectorAll("span.react-tooltip-lite");
-    tooltips.forEach((tooltip) => {
-      tooltip.parentElement.classList.toggle("tooltip-active");
-    });
-  };
+  // const toggleTooltip = () => {
+  //   let tooltips = document.querySelectorAll("span.react-tooltip-lite");
+  //   tooltips.forEach((tooltip) => {
+  //     tooltip.parentElement.classList.toggle("tooltip-active");
+  //   });
+  // };
 
   useEffect(() => {
-    if (active_topic) {
-      const { workspace, topic } = active_topic;
-      if (workspace) {
-        setWorkpacePath(`/workspace/chat/${workspace.id}/${replaceChar(workspace.name)}/${topic.id}/${replaceChar(topic.name)}`);
-      } else if (topic && topic.hasOwnProperty("id") && topic.id !== undefined) {
-        setWorkpacePath(`/workspace/chat/${topic.id}/${replaceChar(topic.name)}`);
+    if (active_topic && active_topic.hasOwnProperty("id")) {
+      if (active_topic.folder_id) {
+        setWorkpacePath(`/workspace/chat/${active_topic.folder_id}/${replaceChar(active_topic.folder_name)}/${active_topic.id}/${replaceChar(active_topic.name)}`);
+      } else {
+        setWorkpacePath(`/workspace/chat/${active_topic.id}/${replaceChar(active_topic.name)}`);
       }
     }
   }, [active_topic]);
 
-  const activeTab = useSelector((state) => state.workspaces.activeTab);
+  //const activeTab = useSelector((state) => state.workspaces.activeTab);
 
   const handleShowFolderModal = () => {
     let payload = {
@@ -226,28 +224,12 @@ const MainNavigationTabPanel = (props) => {
     document.body.classList.remove("navigation-show");
   };
 
+  const redirectToChat = () => {
+    closeLeftNav();
+  };
 
-  useSetWorkspace();
-  const sortedWorkspaces = useSortWorkspaces();
-  const generalWorkspaces = sortedWorkspaces.filter((ws) => ws.type !== "FOLDER" && ws.topic_detail.active === 1);
-  const archiveInternalWorkspaces = sortedWorkspaces.filter((ws) => {
-    if (ws.type !== "FOLDER" && ws.topic_detail.active === 0) {
-      return true;
-    } else if (ws.type === "FOLDER") {
-      if (Object.values(ws.topics).length) {
-        return Object.values(ws.topics).some((t) => t.active === 0);
-      } else {
-        return false;
-      }
-    }
-  }).map((ws) => {
-    if (ws.type === "FOLDER") {
-      return Object.values(ws.topics).filter((t) => t.active === 0);
-    } else {
-      return ws;
-    }
-  }).flat();
-
+  const { actions, folders, sortedWorkspaces, workspaces, workspace } = useWorkspace(true);
+  
   return (
     <Wrapper className={`navigation-menu-tab ${className}`}>
       <div>
@@ -295,46 +277,66 @@ const MainNavigationTabPanel = (props) => {
       <div className="navigation-menu-group">
         <div id="elements" className="open">
           <ul>
-            {!isExternal && sortedWorkspaces
-              .filter((sws) => sws.type === "FOLDER")
-              .map((ws) => {
-                return <WorkspaceList show={true} key={ws.key_id} workspace={ws} />;
+            {!isExternal && Object.values(folders).sort((a,b) => a.name.localeCompare(b.name))
+              .map((folder) => {
+                return <WorkspaceList key={folder.key_id} actions={actions} folder={folder} show={true} workspace={workspace} workspaces={sortedWorkspaces.filter((ws) => {
+                  return (ws.active === 1 && folder.workspace_ids.some((id) => id === ws.id));
+                })}/>;
               })
             }
-            {!isExternal && generalWorkspaces.length > 0 && (
+            {!isExternal && Object.values(workspaces).length > 0 && (
               <WorkspaceList
+                actions={actions}
                 show={true}
-                workspace={{
+                workspace={workspace}
+                workspaces={sortedWorkspaces.filter((ws) => { return (ws.active === 1 && ws.folder_id === null)})}
+                folder={{
                   id: "general_internal",
                   is_lock: 0,
-                  selected: generalWorkspaces.some((ws) => ws.selected),
+                  // selected: generalWorkspaces.some((ws) => ws.selected),
                   name: "General",
                   type: "GENERAL_FOLDER",
-                  topics: generalWorkspaces,
+                  workspace_ids: Object.values(workspaces).filter((ws) => {
+                    if (ws.folder_id === null && ws.active === 1) {
+                      return true;
+                    } else {
+                      return false;
+                    }
+                  }).map((ws) => ws.id),
+                  unread_count: 0
                 }}
-              />
-            )}
+              />)
+            }
             {
-              isExternal && generalWorkspaces.length > 0 && (
-                generalWorkspaces.map((ws) => {
-                  return <ExternalWorkspaceList key={ws.key_id} workspace={ws}/>
+              isExternal && Object.keys(workspaces).length > 0 && (
+                Object.values(workspaces).map((ws) => {
+                  return <ExternalWorkspaceList key={ws.key_id} actions={actions} workspace={ws}/>
                 })
               )
             }
           </ul>
 
           <ul>
-            {archiveInternalWorkspaces.length > 0 && (
+            {Object.values(workspaces).filter((ws) => ws.active === 0).length > 0 && (
               <WorkspaceList
+                actions={actions}
                 show={true}
-                workspace={{
+                workspace={workspace}
+                workspaces={sortedWorkspaces.filter((ws) => ws.active === 0)}
+                folder={{
                   id: "archive",
                   is_lock: 0,
                   is_active: 0,
-                  selected: archiveInternalWorkspaces.some((ws) => ws.selected),
                   name: "Archived workspaces",
                   type: "ARCHIVE_FOLDER",
-                  topics: archiveInternalWorkspaces,
+                  workspace_ids: Object.values(workspaces).filter((ws) => {
+                    if (ws.active === 0) {
+                      return true;
+                    } else {
+                      return false;
+                    }
+                  }).map((ws) => ws.id),
+                  unread_count: 0
                 }}
               />
             )}

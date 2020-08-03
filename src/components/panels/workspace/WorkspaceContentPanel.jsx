@@ -36,7 +36,7 @@ const WorkspaceContentPanel = (props) => {
   const dispatch = useDispatch();
 
   useUsers();
-  const { workspaces, workspacesLoaded, workspace } = useWorkspace();
+  const { actions, timeline, workspaces, workspacesLoaded, workspace } = useWorkspace();
   const isMember = useIsMember(workspace && workspace.member_ids.length ? workspace.member_ids : []);
 
   const handleShowWorkspaceModal = () => {
@@ -70,7 +70,7 @@ const WorkspaceContentPanel = (props) => {
           />
           <Switch>
             <Route
-              render={() => <WorkspaceDashboardPanel {...props} workspace={workspace} isMember={isMember} />}
+              render={() => <WorkspaceDashboardPanel {...props} workspace={workspace} isMember={isMember} actions={actions} timeline={timeline}/>}
               path={["/workspace/dashboard/:folderId/:folderName/:workspaceId/:workspaceName", "/workspace/dashboard/:workspaceId/:workspaceName", "/workspace/dashboard"]}
             />
             <Route

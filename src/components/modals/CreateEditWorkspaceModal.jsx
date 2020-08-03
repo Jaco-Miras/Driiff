@@ -6,7 +6,7 @@ import styled from "styled-components";
 import {EmailRegex, replaceChar} from "../../helpers/stringFormatter";
 import {deleteWorkspaceFiles, setPendingUploadFilesToWorkspace} from "../../redux/actions/fileActions";
 import {addToModals, clearModal} from "../../redux/actions/globalActions";
-import {createWorkspace, fetchTimeline, updateWorkspace} from "../../redux/actions/workspaceActions";
+import {createWorkspace, fetchTimeline, updateWorkspace, setActiveTopic} from "../../redux/actions/workspaceActions";
 import {FileAttachments} from "../common";
 import {DropDocument} from "../dropzone/DropDocument";
 import {CheckBox, DescriptionInput, FolderSelect, InputFeedback, PeopleSelect} from "../forms";
@@ -151,6 +151,7 @@ const CreateEditWorkspaceModal = (props) => {
     const user = useSelector((state) => state.session.user);
     const users = useSelector((state) => state.users.users);
     const workspaces = useSelector((state) => state.workspaces.workspaces);
+    const folders = useSelector((state) => state.workspaces.folders);
     const activeTab = useSelector((state) => state.workspaces.activeTab);
     const [activeTabName, setActiveTabName] = useState("Internal");
     const [userOptions, setUserOptions] = useState([]);
@@ -158,19 +159,23 @@ const CreateEditWorkspaceModal = (props) => {
     const [invitedEmails, setInvitedEmails] = useState([]);
     const [form, setForm] = useState({
         is_private: false,
-        has_folder: item !== null,
+        has_folder: item !== null && item.type === "WORKSPACE" && item.folder_id !== null,
         name: "",
         selectedUsers: [],
         selectedFolder:
             item === null
                 ? null
-                : {
+                : item.type === "FOLDER" ? {
                     value: item.id,
                     label: item.name,
-                },
+                } : item.folder_id ? {
+                    value: item.folder_id,
+                    label: item.folder_name,
+                } : null,
         description: "",
         textOnly: "",
     });
+
     const [showDropzone, setShowDropzone] = useState(false);
     const [attachedFiles, setAttachedFiles] = useState([]);
     const [uploadedFiles, setUploadedFiles] = useState([]);
@@ -206,17 +211,7 @@ const CreateEditWorkspaceModal = (props) => {
             return false;
         }
 
-        if (
-            (form.has_folder &&
-                form.selectedFolder !== null && workspaces.hasOwnProperty(form.selectedFolder.value) &&
-                Object.values(workspaces[form.selectedFolder.value].topics).some((t) => {
-                    if (mode === "edit") {
-                        return t.id === item.id ? false : t.name.toLowerCase() === form.name.toLowerCase();
-                    } else {
-                        return t.name.toLowerCase() === form.name.toLowerCase();
-                    }
-                })) ||
-            Object.values(workspaces).some((w) => {
+        if (Object.values(workspaces).some((w) => {
                 if (mode === "edit") {
                     return w.id === item.id ? false : w.name.toLowerCase() === form.name.toLowerCase();
                 } else {
@@ -255,12 +250,7 @@ const CreateEditWorkspaceModal = (props) => {
         });
     };
 
-    const folderOptions = Object.values(workspaces)
-        .filter((ws) => ws.type === "FOLDER")
-        .filter((ws) => {
-            if (activeTab === "extern") return ws.is_external === 1;
-            else return ws.is_external === 0;
-        })
+    const folderOptions = Object.values(folders)
         .map((ws) => {
             return {
                 value: ws.id,
@@ -469,12 +459,37 @@ const CreateEditWorkspaceModal = (props) => {
                                 })
                             );
                         }
+                        let newWorkspace = {
+                            id: res.data.id,
+                            name: res.data.topic.name,
+                            is_external: res.data.is_external,
+                            is_lock: res.data.is_lock,
+                            description: res.data.topic.description,
+                            unread_count: 0,
+                            type: "WORKSPACE",
+                            key_id: res.data.key_id,
+                            active: 1,
+                            unread_chats: 0,
+                            unread_posts: 0,
+                            folder_id: res.data.workspace ? res.data.workspace.id : null,
+                            folder_name: res.data.workspace ? res.data.workspace.name : null,
+                            member_ids: res.data.member_ids,
+                            members: res.data.members,
+                            channel: {
+                                code: res.data.channel.code,
+                                id: res.data.channel.id,
+                                loaded: false
+                            },
+                            created_at: res.data.topic.created_at,
+                            updated_at: res.data.topic.created_at,
+                        }
                         //redirect url
                         if (form.selectedFolder && typeof form.selectedFolder.value === "number") {
                             history.push(`/workspace/dashboard/${form.selectedFolder.value}/${replaceChar(form.selectedFolder.label)}/${res.data.id}/${replaceChar(form.name)}`);
                         } else {
                             history.push(`/workspace/dashboard/${res.data.id}/${replaceChar(form.name)}`);
                         }
+                        dispatch(setActiveTopic(newWorkspace));
 
                         toaster.success(
                             <span>
@@ -595,7 +610,7 @@ const CreateEditWorkspaceModal = (props) => {
             },
         };
 
-        if (item.topic_detail.active === 0) {
+        if (item.active === 0) {
             payload = {
                 ...payload,
                 headerText: "Workspace Un-archive",
@@ -610,8 +625,8 @@ const CreateEditWorkspaceModal = (props) => {
     const handleArchive = useCallback(() => {
 
         let payload = {
-            id: item.topic_detail.channel.id,
-            is_archived: item.topic_detail.active === 1 ? 1 : 0,
+            id: item.channel.id,
+            is_archived: item.active === 1 ? 1 : 0,
             is_muted: 0,
             is_pinned: 0,
             is_shared: item.is_external
@@ -626,7 +641,7 @@ const CreateEditWorkspaceModal = (props) => {
             <span>
                 <b>{item.name}</b> workspace is
                 {
-                    item.topic_detail.active === 1 ?
+                    item.active === 1 ?
                         <> unarchived</> : <> archived</>
                 }
                 {form.selectedFolder !== null && (
@@ -667,13 +682,13 @@ const CreateEditWorkspaceModal = (props) => {
             }
             setForm({
                 ...form,
-                has_folder: item.workspace_id !== undefined,
+                has_folder: item !== null && item.type === "WORKSPACE" && item.folder_id !== null,
                 selectedUsers: members,
                 selectedFolder:
-                    item.workspace_id !== undefined
+                    item.folder_id
                         ? {
-                            value: item.workspace_id,
-                            label: item.workspace_name,
+                            value: item.folder_id,
+                            label: item.folder_name,
                         }
                         : null,
                 description: item.description,
@@ -871,7 +886,7 @@ const CreateEditWorkspaceModal = (props) => {
                         mode === "edit" &&
                         <div className="action-archive-wrapper">
                             {
-                                item.topic_detail.active === 1 ?
+                                item.active === 1 ?
                                     <span onClick={handleShowArchiveConfirmation}
                                         className="btn-archive text-link mt-2 cursor-pointer">{dictionary.archiveWorkspace}</span>
                                     :

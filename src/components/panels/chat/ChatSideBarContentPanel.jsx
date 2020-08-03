@@ -3,10 +3,8 @@ import { useDispatch } from "react-redux";
 import styled from "styled-components";
 import { addToModals } from "../../../redux/actions/globalActions";
 import { SvgIconFeather } from "../../common";
-//import {useSetWorkspace, useSortWorkspaces} from "../../hooks";
 import ChannelsSidebar from "../../list/chat/ChannelsSidebar";
 import ChatContactsList from "../../list/chat/ChatContactsList";
-//import {WorkspaceChatList} from "../../workspace";
 import { getChannelDrafts } from "../../../redux/actions/chatActions";
 
 const Wrapper = styled.div`

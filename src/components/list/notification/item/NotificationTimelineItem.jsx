@@ -56,6 +56,7 @@ export const NotificationTimelineItem = (props) => {
     }
     if (notification.data.workspaces) {
       let workspace = notification.data.workspaces[0];
+      actions.selectWorkspace({...workspace, id: workspace.topic_id});
       if (workspace.workspace_name) {
         history.push(
           `/workspace/posts/${workspace.workspace_id}/${replaceChar(workspace.workspace_name)}/${workspace.topic_id}/${replaceChar(workspace.topic_name)}/post/${notification.data.post_id}/${replaceChar(notification.data.title)}`

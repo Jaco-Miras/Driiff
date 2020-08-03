@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { usePosts, useWorkspace } from "../../hooks";
+import { usePosts } from "../../hooks";
 import TimelinePanel from "../common/TimelinePanel";
 import { DashboardAboutWorkspace, DashboardTeam, RecentPosts } from "../dashboard";
 
@@ -18,11 +18,10 @@ const Wrapper = styled.div`
 `;
 
 const WorkspaceDashboardPanel = (props) => {
-  const { className = "", isExternal, isMember, match } = props;
+  const { className = "", isExternal, isMember, match, actions, timeline, workspace } = props;
 
   const { params } = match;
 
-  const { workspace, actions, timeline } = useWorkspace();
   const { recentPosts } = usePosts();
 
   const handleEditClick = () => {

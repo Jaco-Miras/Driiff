@@ -115,6 +115,7 @@ export default function (state = INITIAL_STATE, action) {
     }
     case "GET_WORKSPACE_CHANNELS_SUCCESS": {
       let channels = { ...state.channels };
+      console.log(action.data)
       action.data
         .filter((r) => {
           return !(state.selectedChannel && state.selectedChannel.id === r.id);
@@ -200,6 +201,7 @@ export default function (state = INITIAL_STATE, action) {
         ...state,
         selectedChannel: channel,
         channels: updatedChannels,
+        lastVisitedChannel: channel.type !== "TOPIC" ? channel : state.lastVisitedChannel
       };
     }
     case "UPDATE_MEMBER_TIMESTAMP": {
@@ -886,7 +888,7 @@ export default function (state = INITIAL_STATE, action) {
     case "CLEAR_SELECTED_CHANNEL": {
       return {
         ...state,
-        selectedChannel: null,
+        selectedChannel: state.lastVisitedChannel ? {...state.channels[state.lastVisitedChannel.id]} : null
       };
     }
     case "JOIN_WORKSPACE_REDUCER": {

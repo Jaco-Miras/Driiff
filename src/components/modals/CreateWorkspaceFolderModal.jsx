@@ -60,7 +60,7 @@ const CreateWorkspaceFolderModal = (props) => {
   const toaster = useToaster();
   const inputRef = useRef();
   const dispatch = useDispatch();
-  const workspaces = useSelector((state) => state.workspaces.workspaces);
+  const folders = useSelector((state) => state.workspaces.folders);
   const activeTab = useSelector((state) => state.workspaces.activeTab);
   const [modal, setModal] = useState(true);
   const [activeTabName, setActiveTabName] = useState("Internal");
@@ -95,17 +95,15 @@ const CreateWorkspaceFolderModal = (props) => {
 
   useEffect(() => {
     if (mode === "edit") {
-      let folder = { ...workspaces[item.workspace_id] };
-      if (folder) {
-        setForm({
-          ...form,
-          name: folder.name,
-          description: folder.description,
-          textOnly: folder.description,
-          is_private: folder.is_lock === 1,
-          workspace_id: folder.id,
-        });
-      }
+      console.log(item)
+      setForm({
+        ...form,
+        name: item.name,
+        description: item.description,
+        textOnly: item.description,
+        is_private: item.is_lock === 1,
+        workspace_id: item.id,
+      });
     }
   }, []);
 
@@ -121,8 +119,8 @@ const CreateWorkspaceFolderModal = (props) => {
           ...feedback,
           name: "Please provide a folder name.",
         });
-      } else if (Object.values(workspaces).filter((w) => w.name.toLowerCase() === form.name.toLowerCase()).length) {
-        if (item.workspace_name !== form.name) {
+      } else if (Object.values(folders).filter((f) => f.name.toLowerCase() === form.name.toLowerCase()).length) {
+        if (item.name !== form.name) {
           setFeedback({
             ...feedback,
             name: "Folder name already exists.",
@@ -140,7 +138,7 @@ const CreateWorkspaceFolderModal = (props) => {
           ...feedback,
           name: "Please provide a folder name.",
         });
-      } else if (Object.values(workspaces).filter((w) => w.name.toLowerCase() === form.name.toLowerCase()).length) {
+      } else if (Object.values(folders).filter((f) => f.name.toLowerCase() === form.name.toLowerCase()).length) {
         setFeedback({
           ...feedback,
           name: "Folder name already exists.",
@@ -152,7 +150,7 @@ const CreateWorkspaceFolderModal = (props) => {
         });
       }
     }
-  }, [form.name, valid, setValid, feedback, setFeedback, workspaces]);
+  }, [form.name, valid, setValid, feedback, setFeedback, folders]);
 
   const handleNameChange = useCallback(
     (e) => {
@@ -274,7 +272,7 @@ const CreateWorkspaceFolderModal = (props) => {
         <ModalBody>
           <WrapperDiv>
             <Label for="folder">{dictionary.folderName}</Label>
-            <Input defaultValue={mode === "edit" ? item.workspace_name : ""} onChange={handleNameChange}
+            <Input defaultValue={mode === "edit" ? item.name : ""} onChange={handleNameChange}
                    onBlur={handleNameBlur} valid={valid.name} invalid={valid.name !== null && !valid.name}
                    innerRef={inputRef}/>
             <InputFeedback valid={valid.name}>{feedback.name}</InputFeedback>
@@ -282,7 +280,7 @@ const CreateWorkspaceFolderModal = (props) => {
           <StyledDescriptionInput
               height={window.innerHeight - 660}
               onChange={handleQuillChange}
-              defaultValue={mode === "edit" && item ? item.workspace_description : ""}
+              defaultValue={mode === "edit" && item ? item.description : ""}
               mode={mode}/>
           <WrapperDiv style={{marginTop: "40px"}}>
             <Label/>

@@ -12,6 +12,9 @@ const INITIAL_STATE = {
   postComments: {},
   drafts: [],
   workspaceTimeline: {},
+  workspace: {},
+  folders: {},
+  activeChannelId: null
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -23,424 +26,192 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "GET_WORKSPACES_SUCCESS": {
-      let workspaces = { ...state.workspaces };
+      let updatedWorkspaces = { ...state.workspaces };
+      let updatedFolders = { ...state.folders };
       action.data.workspaces.forEach((ws) => {
-        let topics = {};
-        if (typeof workspaces[ws.id] !== "undefined" && typeof workspaces[ws.id].topics !== "undefined") {
-          topics = workspaces[ws.id].topics;
-        }
 
-        if (ws.topics !== undefined && ws.topics.length > 0) {
+        if (ws.type === "FOLDER") {
+          if (updatedFolders.hasOwnProperty(ws.id)) {
+            updatedFolders[ws.id].workspace_ids = [...updatedFolders[ws.id].workspace_ids, ...ws.topics.map((t) => t.id)];
+          } else {
+            console.log(ws)
+            updatedFolders[ws.id] = {
+              ...ws,
+              workspace_ids: ws.topics.map((t) => t.id)
+            }
+          }
           ws.topics.forEach((t) => {
-            topics[t.id] = {
+            updatedWorkspaces[t.id] = {
               ...t,
-              selected: false,
-              is_external: ws.is_external,
-              workspace_id: ws.id,
-              workspace_name: ws.name,
-              workspace_description: ws.description,
-              type: "TOPIC",
-            };
-          });
+              channel: {...t.channel, loaded: false},
+              is_lock: t.private,
+              folder_id: ws.id,
+              folder_name: ws.name,
+              type: "WORKSPACE"
+            }
+          })
+          delete updatedFolders[ws.id].topics
+        } else if (ws.type === "WORKSPACE") {
+          updatedWorkspaces[ws.id] = {
+            ...ws,
+            active: ws.topic_detail.active,
+            channel: {...ws.topic_detail.channel, loaded: false},
+            unread_chats: ws.topic_detail.unread_chats,
+            unread_posts: ws.topic_detail.unread_posts,
+            folder_id: null,
+            folder_name: null,
+          }
+          delete updatedWorkspaces[ws.id].topic_detail
         }
-        workspaces[ws.id] = {
-          ...workspaces[ws.id],
-          ...ws,
-          selected: false,
-          topics: topics,
-        };
-      });
-
+      })
       return {
         ...state,
-        workspaces: workspaces,
+        workspaces: updatedWorkspaces,
         workspacesLoaded: !state.workspacesLoaded && action.data.is_external === 0 ? true : state.workspacesLoaded,
         externalWorkspacesLoaded: !state.externalWorkspacesLoaded && action.data.is_external === 1 ? true : state.externalWorkspacesLoaded,
+        folders: updatedFolders,
       };
     }
     case "INCOMING_WORKSPACE_FOLDER": {
+      let updatedFolders = { ...state.folders };
       if (state.workspacesLoaded) {
-        let newWorkspaces = { ...state.workspaces };
-        newWorkspaces = {
-          ...newWorkspaces,
-          [action.data.id]: {
-            ...action.data,
-            topics: {},
-            selected: false,
-          },
-        };
-        return {
-          ...state,
-          workspaces: newWorkspaces,
-        };
-      } else {
-        return state;
+        updatedFolders[action.data.id] = {
+          ...action.data,
+          unread_count: 0,
+          member_ids: [],
+          members: [],
+          workspace_ids: []
+        }
+      }
+      return {
+        ...state,
+        folders: updatedFolders
       }
     }
     case "INCOMING_WORKSPACE": {
+      let updatedWorkspaces = { ...state.workspaces };
+      let folders = { ...state.folders };
       if (state.workspacesLoaded) {
-        let newWorkspaces = { ...state.workspaces };
-        if (action.data.workspace) {
-          newWorkspaces = {
-            ...newWorkspaces,
-            [action.data.workspace.id]: {
-              ...newWorkspaces[action.data.workspace.id],
-              topics: {
-                ...newWorkspaces[action.data.workspace.id].topics,
-                [action.data.topic.id]: {
-                  ...action.data.topic,
-                  selected: false,
-                  unread_posts: 0,
-                  unread_chats: 0,
-                  private: action.data.topic.private ? 1 : 0,
-                  channel: action.data.channel,
-                  is_external: action.data.is_external,
-                  workspace_name: action.data.workspace.name,
-                },
-              },
-              selected: false,
-            },
-          };
-        } else {
-          newWorkspaces = {
-            ...newWorkspaces,
-            [action.data.id]: {
-              ...action.data,
-              name: action.data.topic.name,
-              description: action.data.topic.description,
-              selected: false,
-              topic_detail: {
-                ...action.data.topic,
-                channel: action.data.channel,
-              },
-            },
-          };
+        updatedWorkspaces[action.data.id] = {
+          id: action.data.id,
+          name: action.data.topic.name,
+          is_external: action.data.is_external,
+          is_lock: action.data.is_lock,
+          description: action.data.topic.description,
+          unread_count: 0,
+          type: "WORKSPACE",
+          key_id: action.data.key_id,
+          active: 1,
+          unread_chats: 0,
+          unread_posts: 0,
+          folder_id: action.data.workspace ? action.data.workspace.id : null,
+          folder_name: action.data.workspace ? action.data.workspace.name : null,
+          member_ids: action.data.member_ids,
+          members: action.data.members,
+          channel: {
+            code: action.data.channel.code,
+            id: action.data.channel.id,
+            loaded: false
+          },
+          created_at: action.data.topic.created_at,
+          updated_at: action.data.topic.created_at,
         }
-
-        return {
-          ...state,
-          workspaces: newWorkspaces,
-        };
-      } else {
-        return state;
+        if (action.data.workspace) {
+          folders[action.data.workspace.id].workspace_ids = [...folders[action.data.workspace.id].workspace_ids, action.data.id]
+        }
       }
+      return {
+        ...state,
+        workspaces: updatedWorkspaces,
+      };
     }
     case "INCOMING_UPDATED_WORKSPACE_FOLDER": {
-      if (state.workspacesLoaded && action.data.type === "FOLDER") {
-        let workspace = { ...state.workspaces[action.data.id] };
+      let updatedWorkspaces = { ...state.workspaces };
+      let updatedFolders = { ...state.folders };
+      let workspace = null;
+      if (state.workspacesLoaded && action.data.type === "WORKSPACE") {
+        workspace = { ...state.workspaces[action.data.id] };
         workspace = {
           ...workspace,
           name: action.data.name,
+          member_ids: action.data.member_ids,
+          members: action.data.members,
           description: action.data.description,
+          updated_at: action.data.updated_at,
+          folder_id: action.data.workspace_id === 0 ? null : action.data.workspace_id,
+          folder_name: action.data.workspace_id === 0 ? null : action.data.current_workspace_folder_name 
         };
-        return {
-          ...state,
-          workspaces: {
-            ...state.workspaces,
-            [action.data.id]: workspace,
-          },
-          activeTopic:
-            state.activeTopic && state.activeTopic.workspace_id !== undefined && state.activeTopic.workspace_id === action.data.id
-              ? {
-                  ...state.activeTopic,
-                  workspace_name: action.data.name,
-                  workspace_description: action.data.description,
-                }
-              : state.activeTopic,
-        };
-      } else if (state.workspacesLoaded && action.data.type === "WORKSPACE") {
-        let workspace = null;
-        if (action.data.workspace_id === 0) {
-          //direct workspace
-          if (action.data.original_workspace_id === 0) {
-            // still direct workspace
-            if (!state.workspaces.hasOwnProperty(action.data.id)) {
-              //new member - add workspace here
-              return state;
-            } else {
-              workspace = { ...state.workspaces[action.data.id] };
-              workspace = {
-                ...workspace,
-                name: action.data.name,
-                member_ids: action.data.member_ids,
-                members: action.data.members,
-                description: action.data.description,
-                updated_at: action.data.updated_at,
-              };
-              return {
-                ...state,
-                workspaces: {
-                  ...state.workspaces,
-                  [action.data.id]: workspace,
-                },
-                activeTopic:
-                  state.activeTopic && state.activeTopic.id === action.data.id
-                    ? {
-                        ...state.activeTopic,
-                        ...workspace,
-                      }
-                    : state.activeTopic,
-              };
+        updatedWorkspaces[workspace.id] = workspace;
+        if (action.data.workspace_id !== 0) {
+          if (action.data.original_workspace_id !== action.data.workspace_id) {
+            //different folder
+            updatedFolders[action.data.workspace_id].workspace_ids = [...updatedFolders[action.data.workspace_id].workspace_ids, action.data.id];
+            if (action.data.original_workspace_id !== 0) {
+              updatedFolders[action.data.original_workspace_id].workspace_ids = updatedFolders[action.data.original_workspace_id].workspace_ids.filter((id) => id !== action.data.id);
             }
-          } else {
-            //make workspace as direct
-            //delete the original workspace
-            let newWorkspaces = { ...state.workspaces };
-            workspace = { ...newWorkspaces[action.data.original_workspace_id].topics[action.data.id] };
-            delete newWorkspaces[action.data.original_workspace_id].topics[action.data.id];
-
-            if (workspace.hasOwnProperty("id")) {
-              workspace = {
-                ...workspace,
-                name: action.data.name,
-                description: action.data.description,
-                member_ids: action.data.member_ids,
-                members: action.data.members,
-                type: action.data.type,
-                key_id: action.data.key_id,
-                is_lock: workspace.private,
-                unread_count: workspace.unread_chats + workspace.unread_posts,
-                topic_detail: {
-                  ...workspace,
-                  channel: workspace.channel,
-                  member_ids: action.data.member_ids,
-                  members: action.data.members,
-                  description: action.data.description,
-                },
-                updated_at: action.data.updated_at,
-              };
-              delete workspace.workspace_id;
-              delete workspace.workspace_name;
-              delete workspace.workspace_descripiton;
-              newWorkspaces = {
-                ...newWorkspaces,
-                [action.data.id]: workspace,
-              };
-            }
-
-            return {
-              ...state,
-              workspaces: newWorkspaces,
-              activeTopic:
-                state.activeTopic && state.activeTopic.id === action.data.id
-                  ? {
-                      ...workspace,
-                    }
-                  : state.activeTopic,
-            };
           }
         } else {
-          //workspace under folder
-          let workspace = null;
-          if (action.data.original_workspace_id === action.data.workspace_id) {
-            //no change on folder workspace
-            let newWorkspaces = { ...state.workspaces };
-            workspace = { ...newWorkspaces[action.data.original_workspace_id].topics[action.data.id] };
-            if (workspace.hasOwnProperty("id")) {
-              workspace = {
-                ...workspace,
-                name: action.data.name,
-                description: action.data.description,
-                member_ids: action.data.member_ids,
-                members: action.data.members,
-                updated_at: action.data.updated_at,
-              };
-              newWorkspaces = {
-                ...newWorkspaces,
-                [action.data.workspace_id]: {
-                  ...newWorkspaces[action.data.workspace_id],
-                  updated_at: action.data.updated_at,
-                  topics: {
-                    ...newWorkspaces[action.data.workspace_id].topics,
-                    [action.data.id]: workspace,
-                  },
-                },
-              };
-            }
-
-            return {
-              ...state,
-              workspaces: newWorkspaces,
-              activeTopic:
-                state.activeTopic && state.activeTopic.workspace_id !== undefined && state.activeTopic.id === action.data.id
-                  ? {
-                      ...state.activeTopic,
-                      ...workspace,
-                    }
-                  : state.activeTopic,
-            };
-          } else {
-            //moved workspace to another folder
-            // delete original workspace
-            let newWorkspaces = { ...state.workspaces };
-            let workspaceFolder = { ...newWorkspaces[action.data.workspace_id] };
-
-            if (action.data.original_workspace_id === 0) {
-              workspace = { ...newWorkspaces[action.data.id] };
-              delete newWorkspaces[action.data.id];
-            } else {
-              workspace = { ...newWorkspaces[action.data.original_workspace_id].topics[action.data.id] };
-              delete newWorkspaces[action.data.original_workspace_id].topics[action.data.id];
-            }
-
-            if (workspace.hasOwnProperty("id")) {
-              workspace = {
-                ...workspace,
-                name: action.data.name,
-                description: action.data.description,
-                member_ids: action.data.member_ids,
-                members: action.data.members,
-                workspace_id: action.data.workspace_id,
-                workspace_descripiton: workspaceFolder.description,
-                workspace_name: workspaceFolder.name,
-                updated_at: action.data.updated_at,
-              };
-              newWorkspaces = {
-                ...newWorkspaces,
-                [action.data.workspace_id]: {
-                  ...newWorkspaces[action.data.workspace_id],
-                  topics: {
-                    ...newWorkspaces[action.data.workspace_id].topics,
-                    [action.data.id]: workspace,
-                  },
-                },
-              };
-            }
-            return {
-              ...state,
-              workspaces: newWorkspaces,
-              activeTopic:
-                state.activeTopic && state.activeTopic.workspace_id !== undefined && state.activeTopic.id === action.data.id
-                  ? {
-                      ...state.activeTopic,
-                      ...workspace,
-                    }
-                  : state.activeTopic,
-            };
+          if (action.data.original_workspace_id !== action.data.workspace_id) {
+            // to general folder
+            updatedFolders[action.data.original_workspace_id].workspace_ids = updatedFolders[action.data.original_workspace_id].workspace_ids.filter((id) => id !== action.data.id);
           }
         }
-      } else {
-        return state;
-      }
-    }
-    case "INCOMING_MOVED_TOPIC": {
-      // get the topic from the original workspace id and transfer to the new workspace id
-      if (state.workspacesLoaded) {
-        // let topic = {...state.workspaces[action.data.original_workspace_id].topics[action.data.topic.id]}
-        // let workspace = {...state.workspaces[action.data.workspace_id]}
-        // workspace = {
-        //     ...workspace,
-        //     topics: {
-        //         ...workspace.topics,
-        //         [action.data.topic.id]: topic
-        //     }
-        // }
-        // let newWorkspaces = {...state.workspaces}
-        // delete newWorkspaces[action.data.original_workspace_id].topics[action.data.topic.id]
-        // newWorkspaces = {
-        //     ...newWorkspaces,
-        //     [action.data.workspace_id]: workspace
-        // }
-
-        // return {
-        //     ...state,
-        //     workspaces: newWorkspaces
-        // }
-        return state;
-      } else {
-        return state;
+        return {
+          ...state,
+          activeTopic: state.activeTopic && state.activeTopic.id === workspace.id ? workspace : state.activeTopic,
+          workspaces: updatedWorkspaces
+        }
+      } else if (state.workspacesLoaded && action.data.type === "FOLDER") {
+        updatedFolders[action.data.id] = {
+          ...updatedFolders[action.data.id],
+          name: action.data.name,
+          description: action.data.description,
+          is_lock: action.data.is_lock,
+          updated_at: action.data.updated_at
+        }
+        updatedFolders[action.data.id].workspace_ids.forEach((id) => {
+          updatedWorkspaces[id].folder_name = action.data.name;
+        })
+        return {
+          ...state,
+          activeTopic: state.activeTopic && state.activeTopic.folder_id && state.activeTopic.folder_id === action.data.id ? {...state.activeTopic, folder_name: action.data.name} : state.activeTopic,
+          folders: updatedFolders,
+          workspaces: updatedWorkspaces
+        }
       }
     }
     case "SET_ACTIVE_TOPIC": {
-      let newWorkspaces = { ...state.workspaces };
-      if (state.activeTopic) {
-        if (state.activeTopic.workspace_id !== undefined) {
-          newWorkspaces[state.activeTopic.workspace_id].topics[state.activeTopic.id].selected = false;
-          newWorkspaces[state.activeTopic.workspace_id].topics[state.activeTopic.id].channel.channel_loaded = true;
-          newWorkspaces[state.activeTopic.workspace_id].selected = false;
-          // newWorkspaces = {
-          //   ...newWorkspaces,
-          //   [state.activeTopic.workspace_id]: {
-          //     ...newWorkspaces[state.activeTopic.workspace_id],
-          //     topics: {
-          //       ...newWorkspaces[state.activeTopic.workspace_id].topics,
-          //       [state.activeTopic.id]: {
-          //         ...state.activeTopic,
-          //         selected: false,
-          //         channel: {
-          //           ...state.activeTopic.channel,
-          //           channel_loaded: true,
-          //         },
-          //       },
-          //     },
-          //     selected: false,
-          //   },
-          // };
-        } else {
-          //last active is direct workspace
-          if (newWorkspaces.hasOwnProperty(state.activeTopic.id)) {
-            newWorkspaces[state.activeTopic.id].selected = false;
-            newWorkspaces[state.activeTopic.id].channel_loaded = true;
-            // newWorkspaces = {
-            //   ...newWorkspaces,
-            //   [state.activeTopic.id]: {
-            //     ...newWorkspaces[state.activeTopic.id],
-            //     selected: false,
-            //     channel_loaded: true,
-            //   },
-            // };
-          }
+      return {
+        ...state,
+        activeTopic: {...state.workspaces[action.data.id]}
+      }
+    }
+    case "SET_SELECTED_CHANNEL": {
+      let workspace = { ...state.activeTopic };
+      let workspaces = { ...state.workspaces };
+      if (action.data.type === "TOPIC") {
+        workspaces[workspace.id].channel.loaded = true;
+        workspace.channel.loaded = true;
+      }
+    
+      return {
+        ...state,
+        activeTopic: action.data.type === "TOPIC" ? workspace : state.activeTopic,
+        workspaces: workspaces,
+        activeChannelId: action.data.type === "TOPIC" ? action.data.id : state.activeChannelId
+      };
+    }
+    case "GET_WORKSPACE_CHANNELS_SUCCESS": {
+      let updatedWorkspaces = { ...state.workspaces };
+      action.data.forEach((c) => {
+        if (updatedWorkspaces.hasOwnProperty(c.entity_id)) {
+          updatedWorkspaces[c.entity_id].channel.loaded = true;
         }
-      }
-      if (action.data.workspace_id !== undefined) {
-        [action.data.workspace_id].selected = true;
-        newWorkspaces[action.data.workspace_id].topics[action.data.id] = {
-          ...newWorkspaces[action.data.workspace_id].topics[action.data.id],
-          ...action.data,
-          selected: true,
-          type: "TOPIC",
-          channel: {
-            ...newWorkspaces[action.data.workspace_id].topics[action.data.id].channel,
-            ...action.data.channel,
-            channel_loaded: true,
-          },
-        };
-
-        // newWorkspaces = {
-        //   ...newWorkspaces,
-        //   [action.data.workspace_id]: {
-        //     ...newWorkspaces[action.data.workspace_id],
-        //     topics: {
-        //       ...newWorkspaces[action.data.workspace_id].topics,
-        //       [action.data.id]: {
-        //         ...action.data,
-        //         selected: true,
-        //         channel: {
-        //           ...action.data.channel,
-        //           channel_loaded: true,
-        //         },
-        //       },
-        //     },
-        //     selected: true,
-        //   },
-        // };
-      } else {
-        newWorkspaces[action.data.id].selected = true;
-        newWorkspaces[action.data.id].channel_loaded = true;
-        // newWorkspaces = {
-        //   ...newWorkspaces,
-        //   [action.data.id]: {
-        //     ...newWorkspaces[action.data.id],
-        //     selected: true,
-        //     channel_loaded: true,
-        //   },
-        // };
-      }
+      })
 
       return {
         ...state,
-        workspaces: newWorkspaces,
-        activeTopic: { ...action.data, selected: true },
+        workspaces: updatedWorkspaces
       };
     }
     case "SET_ACTIVE_TAB": {
@@ -753,6 +524,7 @@ export default (state = INITIAL_STATE, action) => {
     case "INCOMING_POST": {
       let newWorkspacePosts = { ...state.workspacePosts };
       let updatedWorkspaces = { ...state.workspaces };
+      let updatedFolders = { ...state.folders };
       let updatedTopic = { ...state.activeTopic };
 
       action.data.workspaces.forEach((ws) => {
@@ -767,18 +539,12 @@ export default (state = INITIAL_STATE, action) => {
           }
         }
         if (action.data.author.id !== state.user.id) {
-          if (ws.workspace_id !== 0 && updatedWorkspaces.hasOwnProperty(ws.workspace_id)) {
-            updatedWorkspaces[ws.workspace_id].unread_count = updatedWorkspaces[ws.workspace_id].unread_count + 1;
-            updatedWorkspaces[ws.workspace_id].topics[ws.topic_id].unread_posts = updatedWorkspaces[ws.workspace_id].topics[ws.topic_id].unread_posts + 1;
-            if (state.activeTopic.id === ws.topic_id) {
-              updatedTopic.unread_posts = updatedTopic.unread_posts + 1;
-            }
-          } else if (ws.workspace_id === 0 && updatedWorkspaces.hasOwnProperty(ws.topic_id)) {
-            updatedWorkspaces[ws.topic_id].unread_count = updatedWorkspaces[ws.topic_id].unread_count + 1;
-            updatedWorkspaces[ws.topic_id].topic_detail.unread_posts = updatedWorkspaces[ws.topic_id].topic_detail.unread_posts + 1;
-            if (state.activeTopic.id === ws.topic_id) {
-              updatedTopic.topic_detail.unread_posts = updatedTopic.topic_detail.unread_posts + 1;
-            }
+          updatedWorkspaces[ws.topic_id].unread_posts = updatedWorkspaces[ws.topic_id].unread_posts + 1;
+          if (state.activeTopic.id === ws.topic_id) {
+            updatedTopic.unread_posts = updatedTopic.unread_posts + 1;
+          }
+          if (ws.workspace_id !== 0) {
+            updatedFolders[ws.workspace_id].unread_count = updatedFolders[ws.workspace_id].unread_count + 1;
           }
         }
       });
@@ -813,8 +579,6 @@ export default (state = INITIAL_STATE, action) => {
       let newPostComments = { ...state.postComments };
       let newWorkspacePosts = { ...state.workspacePosts };
       let updatedWorkspaces = { ...state.workspaces };
-      //let updatedTopic = { ...state.activeTopic };
-      //let post = null;
 
       if (action.data.workspaces.length && action.data.SOCKET_TYPE === "POST_COMMENT_CREATE") {
         action.data.workspaces.forEach((ws) => {
@@ -825,45 +589,6 @@ export default (state = INITIAL_STATE, action) => {
               newWorkspacePosts[ws.topic_id].posts[action.data.post_id].unread_count = newWorkspacePosts[ws.topic_id].posts[action.data.post_id].unread_count + 1;
             }
           }
-          // if (action.data.author.id !== state.user.id) {
-          //   if (ws.workspace_id !== 0) {
-          //     if (updatedWorkspaces.hasOwnProperty(ws.workspace_id) && updatedWorkspaces[ws.workspace_id].topics.hasOwnProperty(ws.topic_id)) {
-          //       if (post) {
-          //         if (!post.is_updated && post.unread_count > 1) {
-          //           updatedWorkspaces[ws.workspace_id].unread_count = updatedWorkspaces[ws.workspace_id].unread_count + 1;
-          //           updatedWorkspaces[ws.workspace_id].topics[ws.topic_id].unread_posts = updatedWorkspaces[ws.workspace_id].topics[ws.topic_id].unread_posts + 1;
-          //           if (state.activeTopic.id === ws.topic_id) {
-          //             updatedTopic.unread_posts = updatedTopic.unread_posts + 1;
-          //           }
-          //         }
-          //       } else {
-          //         updatedWorkspaces[ws.workspace_id].unread_count = updatedWorkspaces[ws.workspace_id].unread_count + 1;
-          //         updatedWorkspaces[ws.workspace_id].topics[ws.topic_id].unread_posts = updatedWorkspaces[ws.workspace_id].topics[ws.topic_id].unread_posts + 1;
-          //         if (state.activeTopic.id === ws.topic_id) {
-          //           updatedTopic.unread_posts = updatedTopic.unread_posts + 1;
-          //         }
-          //       }
-          //     }
-          //   } else {
-          //     if (updatedWorkspaces.hasOwnProperty(ws.topic_id)) {
-          //       if (post) {
-          //         if (!post.is_updated && post.unread_count > 1) {
-          //           updatedWorkspaces[ws.topic_id].unread_count = updatedWorkspaces[ws.topic_id].unread_count + 1;
-          //           updatedWorkspaces[ws.topic_id].topic_detail.unread_posts = updatedWorkspaces[ws.topic_id].topic_detail.unread_posts + 1;
-          //           if (state.activeTopic.id === ws.topic_id) {
-          //             updatedTopic.topic_detail.unread_posts = updatedTopic.topic_detail.unread_posts + 1;
-          //           }
-          //         }
-          //       } else {
-          //         updatedWorkspaces[ws.topic_id].unread_count = updatedWorkspaces[ws.topic_id].unread_count + 1;
-          //         updatedWorkspaces[ws.topic_id].topic_detail.unread_posts = updatedWorkspaces[ws.topic_id].topic_detail.unread_posts + 1;
-          //         if (state.activeTopic.id === ws.topic_id) {
-          //           updatedTopic.topic_detail.unread_posts = updatedTopic.topic_detail.unread_posts + 1;
-          //         }
-          //       }
-          //     }
-          //   }
-          // }
         });
       }
       if (newPostComments.hasOwnProperty(action.data.post_id)) {
@@ -988,11 +713,9 @@ export default (state = INITIAL_STATE, action) => {
     }
     case "FETCH_WORKSPACE_MEMBERS_SUCCESS": {
       let newWorkspaces = { ...state.workspaces };
-      if (action.data.workspace_id !== 0) {
-        newWorkspaces[action.data.workspace_id].topics[action.data.id].members = action.data.members;
-      } else {
-        newWorkspaces[action.data.id].members = action.data.members;
-      }
+      
+      newWorkspaces[action.data.id].members = action.data.members;
+      
       return {
         ...state,
         workspaces: newWorkspaces,
@@ -1049,11 +772,7 @@ export default (state = INITIAL_STATE, action) => {
     }
     case "ARCHIVE_REDUCER": {
       let workspaces = {...state.workspaces};
-      if (action.data.workspace_id) {
-        workspaces[action.data.workspace_id].topics[action.data.id].active = 0;
-      } else {
-        workspaces[action.data.id].topic_detail.active = 0;
-      }
+      workspaces[action.data.id].active = 0;
       return {
         ...state,
         workspaces: workspaces,
@@ -1061,11 +780,7 @@ export default (state = INITIAL_STATE, action) => {
     }
     case "UNARCHIVE_REDUCER": {
       let workspaces = {...state.workspaces};
-      if (action.data.workspace_id) {
-        workspaces[action.data.workspace_id].topics[action.data.id].active = 1;
-      } else {
-        workspaces[action.data.id].topic_detail.active = 1;
-      }
+      workspaces[action.data.id].active = 1;
       return {
         ...state,
         workspaces: workspaces,
@@ -1075,35 +790,34 @@ export default (state = INITIAL_STATE, action) => {
       let newWorkspacePosts = {...state.workspacePosts};
       let updatedWorkspaces = {...state.workspaces};
       let updatedTopic = {...state.activeTopic};
+      let updatedFolders = { ...state.folders };
       newWorkspacePosts[action.data.topic_id].posts[action.data.post_id].is_unread = action.data.unread;
       if (action.data.unread === 0) {
         newWorkspacePosts[action.data.topic_id].posts[action.data.post_id].unread_count = action.data.unread;
         newWorkspacePosts[action.data.topic_id].posts[action.data.post_id].is_updated = true;
         if (action.data.folderId) {
-          updatedWorkspaces[action.data.folderId].unread_count = updatedWorkspaces[action.data.folderId].unread_count - action.data.count;
-          updatedWorkspaces[action.data.folderId].topics[action.data.topic_id].unread_posts = updatedWorkspaces[action.data.folderId].topics[action.data.topic_id].unread_posts - action.data.count;
+          updatedFolders[action.data.folderId].unread_count = updatedFolders[action.data.folderId].unread_count - action.data.count;
+          updatedWorkspaces[action.data.topic_id].unread_posts = updatedWorkspaces[action.data.topic_id].unread_posts - action.data.count;
           if (updatedTopic.id === action.data.topic_id) {
             updatedTopic.unread_posts = updatedTopic.unread_posts - action.data.count;
           }
         } else {
           if (updatedTopic.id === action.data.topic_id) {
-            //updatedTopic.topic_detail.unread_posts = updatedTopic.topic_detail.unread_posts - action.data.count;
+            updatedTopic.unread_posts = updatedTopic.unread_posts - action.data.count;
           }
-          updatedWorkspaces[action.data.topic_id].unread_count = updatedWorkspaces[action.data.topic_id].unread_count - action.data.count;
-          updatedWorkspaces[action.data.topic_id].topic_detail.unread_posts = updatedWorkspaces[action.data.topic_id].topic_detail.unread_posts - action.data.count;
+          updatedWorkspaces[action.data.topic_id].unread_posts = updatedWorkspaces[action.data.topic_id].unread_posts - action.data.count;
         }
       } else {
         if (action.data.folderId) {
-          updatedWorkspaces[action.data.folderId].unread_count = updatedWorkspaces[action.data.folderId].unread_count + 1;
-          updatedWorkspaces[action.data.folderId].topics[action.data.topic_id].unread_posts = updatedWorkspaces[action.data.folderId].topics[action.data.topic_id].unread_posts + 1;
+          updatedFolders[action.data.folderId].unread_count = updatedFolders[action.data.folderId].unread_count + 1;
+          updatedWorkspaces[action.data.topic_id].unread_posts = updatedWorkspaces[action.data.topic_id].unread_posts + 1;
           if (updatedTopic.id === action.data.topic_id) {
             updatedTopic.unread_posts = updatedTopic.unread_posts + 1;
           }
         } else {
-          updatedWorkspaces[action.data.topic_id].unread_count = updatedWorkspaces[action.data.topic_id].unread_count + 1;
-          updatedWorkspaces[action.data.topic_id].topic_detail.unread_posts = updatedWorkspaces[action.data.topic_id].topic_detail.unread_posts + 1;
+          updatedWorkspaces[action.data.topic_id].unread_posts = updatedWorkspaces[action.data.topic_id].unread_posts + 1;
           if (updatedTopic.id === action.data.topic_id) {
-            updatedTopic.topic_detail.unread_posts = updatedTopic.topic_detail.unread_posts + 1;
+            updatedTopic.unread_posts = updatedTopic.unread_posts + 1;
           }
         }
       }
@@ -1198,23 +912,11 @@ export default (state = INITIAL_STATE, action) => {
         let updatedTopic = { ...state.activeTopic };
         if (Object.keys(updatedWorkspaces).length > 0) {
           if (updatedWorkspaces.hasOwnProperty(action.data.workspace_id)) {
-            updatedWorkspaces[action.data.workspace_id].topic_detail.unread_chats = updatedWorkspaces[action.data.workspace_id].topic_detail.unread_chats + 1;
-            updatedWorkspaces[action.data.workspace_id].unread_count = updatedWorkspaces[action.data.workspace_id].unread_count + 1;
+            updatedWorkspaces[action.data.workspace_id].unread_chats = updatedWorkspaces[action.data.workspace_id].unread_chats + 1;
             if (state.activeTopic && state.activeTopic.id === action.data.workspace_id) {
-              updatedTopic.unread_count = updatedTopic.unread_count + 1;
-              updatedTopic.topic_detail.unread_chats = updatedTopic.topic_detail.unread_chats + 1;
+              updatedTopic.unread_chats = updatedTopic.unread_chats + 1;
             }
-          } else {
-            Object.values(updatedWorkspaces).forEach((ws) => {
-              if (ws.hasOwnProperty("topics") && ws.topics.hasOwnProperty(action.data.workspace_id)) {
-                updatedWorkspaces[ws.id].unread_count = updatedWorkspaces[ws.id].unread_count + 1;
-                updatedWorkspaces[ws.id].topics[action.data.workspace_id].unread_chats = updatedWorkspaces[ws.id].topics[action.data.workspace_id].unread_chats + 1;
-                if (state.activeTopic && state.activeTopic.id === action.data.workspace_id) {
-                  updatedTopic.unread_chats = updatedTopic.unread_chats + 1;
-                }
-              }
-            });
-          }
+          } 
           return {
             ...state,
             workspaces: updatedWorkspaces,
@@ -1228,23 +930,11 @@ export default (state = INITIAL_STATE, action) => {
         let updatedTopic = { ...state.activeTopic };
         if (Object.keys(updatedWorkspaces).length > 0) {
           if (updatedWorkspaces.hasOwnProperty(action.data.workspace_id)) {
-            updatedWorkspaces[action.data.workspace_id].topic_detail.unread_chats = 0;
-            updatedWorkspaces[action.data.workspace_id].unread_count = updatedWorkspaces[action.data.workspace_id].unread_count - updatedWorkspaces[action.data.workspace_id].topic_detail.unread_chats;
+            updatedWorkspaces[action.data.workspace_id].unread_chats = 0;
             if (state.activeTopic && state.activeTopic.id === action.data.workspace_id) {
-              updatedTopic.unread_count = updatedTopic.unread_count - updatedTopic.topic_detail.unread_chats;
-              updatedTopic.topic_detail.unread_chats = 0;
+              updatedTopic.unread_chats = 0;
             }
-          } else {
-            Object.values(updatedWorkspaces).forEach((ws) => {
-              if (ws.hasOwnProperty("topics") && ws.topics.hasOwnProperty(action.data.workspace_id)) {
-                updatedWorkspaces[ws.id].unread_count = updatedWorkspaces[ws.id].unread_count - updatedWorkspaces[ws.id].topics[action.data.workspace_id].unread_chats;
-                updatedWorkspaces[ws.id].topics[action.data.workspace_id].unread_chats = 0;
-                if (state.activeTopic && state.activeTopic.id === action.data.workspace_id) {
-                  updatedTopic.unread_chats = 0;
-                }
-              }
-            });
-          }
+          } 
           return {
             ...state,
             workspaces: updatedWorkspaces,
@@ -1260,32 +950,19 @@ export default (state = INITIAL_STATE, action) => {
       let updatedTopic = { ...state.activeTopic };
       if (Object.keys(updatedWorkspaces).length > 0) {
         if (updatedWorkspaces.hasOwnProperty(action.data.id)) {
-          updatedWorkspaces[action.data.id].topic_detail.unread_chats = 0;
-          updatedWorkspaces[action.data.id].unread_count = updatedWorkspaces[action.data.id].unread_count - action.data.count;
+          updatedWorkspaces[action.data.id].unread_chats = 0;
           if (state.activeTopic && state.activeTopic.id === action.data.id) {
-            updatedTopic.unread_count = updatedTopic.unread_count - action.data.count;
-            updatedTopic.topic_detail.unread_chats = 0;
+            updatedTopic.unread_chats = 0;
           }
-        } else {
-          Object.values(updatedWorkspaces).forEach((ws) => {
-            if (ws.hasOwnProperty("topics") && ws.topics.hasOwnProperty(action.data.id)) {
-              updatedWorkspaces[ws.id].topics[action.data.id].unread_chats = 0;
-              updatedWorkspaces[ws.id].unread_count = updatedWorkspaces[ws.id].unread_count - action.data.count;
-              if (state.activeTopic && state.activeTopic.id === action.data.id) {
-                updatedTopic.unread_chats = 0;
-              }
-            }
-          });
         }
-        return {
-          ...state,
-          workspaces: updatedWorkspaces,
-          activeTopic: updatedTopic,
-        };
-      } else {
-        return state;
       }
+      return {
+        ...state,
+        workspaces: updatedWorkspaces,
+        activeTopic: updatedTopic,
+      };
     }
+    //recheck this
     case "GET_WORKSPACE_SUCCESS": {
       let updatedWorkspaces = { ...state.workspaces };
       if (Object.keys(updatedWorkspaces).length > 0) {
@@ -1308,29 +985,19 @@ export default (state = INITIAL_STATE, action) => {
       let updatedWorkspaces = { ...state.workspaces };
       let updatedTopic = { ...state.activeTopic };
       if (Object.keys(updatedWorkspaces).length > 0) {
+        updatedWorkspaces[action.data.topic_id].unread_posts = action.data.unread_posts;
         if (action.data.folder_id) {
           updatedWorkspaces[action.data.folder_id].unread_count = action.data.unread_count;
-          updatedWorkspaces[action.data.folder_id].topics[action.data.topic_id].unread_posts = action.data.unread_posts;
-        } else {
-          updatedWorkspaces[action.data.topic_id].unread_count = action.data.unread_count;
-          updatedWorkspaces[action.data.topic_id].topic_detail.unread_posts = action.data.unread_posts;
         }
         if (state.activeTopic && state.activeTopic.id === action.data.topic_id) {
-          if (state.activeTopic.type === "TOPIC") {
-            updatedTopic.unread_posts = action.data.unread_posts;
-          } else {
-            updatedTopic.unread_count = action.data.unread_count;
-            updatedTopic.topic_detail.unread_posts = action.data.unread_posts;
-          }
-        }
-        return {
-          ...state,
-          workspaces: updatedWorkspaces,
-          activeTopic: updatedTopic,
-        };
-      } else {
-        return state;
+          updatedTopic.unread_posts = action.data.unread_posts;
+        } 
       }
+      return {
+        ...state,
+        workspaces: updatedWorkspaces,
+        activeTopic: updatedTopic,
+      };
     }
     case "INCOMING_DELETED_FILES": {
       let updatedTopic = { ...state.activeTopic };
