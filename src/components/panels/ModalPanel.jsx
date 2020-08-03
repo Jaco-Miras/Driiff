@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import React, {useEffect, useState} from "react";
+import {useSelector} from "react-redux";
 import styled from "styled-components";
 import FileViewer from "../common/FileViewer";
 import {
@@ -12,6 +12,7 @@ import {
   CreateWorkspaceFolderModal,
   FileCropUploadModal,
   FileUploadModal,
+  InvitedUsersModal,
   MoveFilesModal,
   PostSnoozeModal,
   SingleInputModal,
@@ -51,15 +52,17 @@ const ModalPanel = () => {
             case "file_crop_upload":
               return <FileCropUploadModal key={modal.type} data={modal} />;
             case "chat_create_edit":
-              return <CreateEditChatModal key={modal.type} data={modal} />;
+              return <CreateEditChatModal key={modal.type} data={modal}/>;
             case "workspace_folder":
-              return <CreateWorkspaceFolderModal key={modal.type} data={modal} />;
+              return <CreateWorkspaceFolderModal key={modal.type} data={modal}/>;
             case "workspace_create_edit":
-              return <CreateEditWorkspaceModal key={modal.type} data={modal} />;
+              return <CreateEditWorkspaceModal key={modal.type} data={modal}/>;
             case "workspace_post_create_edit":
-              return <CreateEditWorkspacePostModal key={modal.type} data={modal} />;
+              return <CreateEditWorkspacePostModal key={modal.type} data={modal}/>;
             case "snooze_post":
-              return <PostSnoozeModal key={modal.type} data={modal} />;
+              return <PostSnoozeModal key={modal.type} data={modal}/>;
+            case "driff_invite_users":
+              return <InvitedUsersModal key={modal.type} data={modal}/>;
             case "single_input":
               return <SingleInputModal key={modal.type} {...modal} />;
             case "move_files":

@@ -1,11 +1,10 @@
 import React, { useCallback, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
-//import {localizeChatTimestamp} from "../../../helpers/momentFormatJS";
+import Tooltip from "react-tooltip-lite";
 import { joinWorkspace } from "../../../redux/actions/workspaceActions";
-import { Avatar, CommonPicker, SvgIconFeather } from "../../common";
+import { CommonPicker, SvgIconFeather } from "../../common";
 import PostInput from "../../forms/PostInput";
-//import { useIsMember } from "../../hooks";
 import { CommentQuote } from "../../list/post/item";
 
 const Wrapper = styled.div`
@@ -13,16 +12,15 @@ const Wrapper = styled.div`
   > div > svg:first-child {
     margin-left: 0 !important;
   }
-  .chat-footer-buttons svg:last-of-type {
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-  }
   flex: unset;
 `;
 
 const ChatInputContainer = styled.div`
   position: relative;
   max-width: calc(100% - 165px);
+  @media all and (max-width: 620px) {
+    max-width: calc(100% - 110px);
+  }
 `;
 
 const IconButton = styled(SvgIconFeather)`
@@ -60,7 +58,6 @@ const Dflex = styled.div`
     align-items: center;
     justify-content: center;
     padding: 20px 0;
-
     > div {
       flex: 0 1 100%;
     }
@@ -91,6 +88,28 @@ const Dflex = styled.div`
       }
     }
   }
+  svg.feather-send {
+    margin-left: 8px;
+  }
+  svg.feather-paperclip {
+    margin-left: 0;
+    margin-right: 0;
+  }
+  @media all and (max-width: 620px) {
+    .emojiButton {
+      display: none;
+    }
+    div:nth-child(4) {
+      order: 1;
+      margin-right: 8px;
+    }
+    div:nth-child(2) { order: 3; }
+    svg:nth-child(3) { order: 3; }
+    svg.feather-send { {
+      margin-right: 0;
+    }
+
+  }
 `;
 
 const NoReply = styled.div`
@@ -113,7 +132,7 @@ const FileNames = styled.div`
 `;
 
 const PostDetailFooter = (props) => {
-  const { className = "", onShowFileDialog, dropAction, post, parentId = null, commentActions, 
+  const { className = "", onShowFileDialog, dropAction, post, parentId = null, commentActions,
           userMention = null, handleClearUserMention = null, commentId = null, innerRef = null,
           workspace, isMember
   } = props;
@@ -169,10 +188,17 @@ const PostDetailFooter = (props) => {
         },
         (err, res) => {
           if (err) return;
-          
+
         }
       )
     );
+  };
+
+  const toggleTooltip = () => {
+    let tooltips = document.querySelectorAll("span.react-tooltip-lite");
+    tooltips.forEach((tooltip) => {
+      tooltip.parentElement.classList.toggle("tooltip-active");
+    });
   };
   //const isMember = useIsMember(topic && topic.members.length ? topic.members.map((m) => m.id) : []);
 
@@ -192,9 +218,9 @@ const PostDetailFooter = (props) => {
               </NoReply>
             ) : (
               <React.Fragment>
-                <div>
-                  <Avatar className="mr-2" name={user.name} imageLink={user.profile_image_link} />
-                </div>
+              <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Emoji" className="emojiButton">
+                <IconButton onClick={handleShowEmojiPicker} icon="smile" />
+              </Tooltip>
                 <ChatInputContainer ref={innerRef} className="flex-grow-1">
                   <PostInput
                     handleClearSent={handleClearSent}
@@ -213,11 +239,10 @@ const PostDetailFooter = (props) => {
                     members={workspace ? workspace.members : []}
                   />
                 </ChatInputContainer>
-                <div className="chat-footer-buttons d-flex">
-                  <IconButton onClick={handleSend} icon="send" />
-                  <IconButton onClick={() => onShowFileDialog(parentId)} icon="paperclip" />
-                  <IconButton onClick={handleShowEmojiPicker} icon="smile" />
-                </div>
+                <IconButton onClick={handleSend} icon="send" />
+                <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Attach files">
+                  <IconButton onClick={onShowFileDialog} icon="paperclip" />
+                </Tooltip>
               </React.Fragment>
             )}
             {showEmojiPicker === true && <PickerContainer handleShowEmojiPicker={handleShowEmojiPicker} onSelectEmoji={onSelectEmoji} onSelectGif={onSelectGif} orientation={"top"} ref={ref.picker} />}

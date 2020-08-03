@@ -2,9 +2,12 @@ import {useCallback} from "react";
 import {useDispatch} from "react-redux";
 import {patchCheckDriff, postRegisterDriff} from "../../redux/actions/driffAction";
 import {isIPAddress} from "../../helpers/commonFunctions";
+import {useToaster} from "./index";
 
 const useDriffActions = () => {
+
   const dispatch = useDispatch();
+  const toaster = useToaster();
 
   /**
    * @param {string} driffName
@@ -91,17 +94,25 @@ const useDriffActions = () => {
    * @param {string} payload.invited_by
    * @param {number} payload.invited_by_id
    */
-  const register = useCallback(
+  const create = useCallback(
     (payload, callback = () => {
     }) => {
-      dispatch(postRegisterDriff(payload, callback));
+      dispatch(postRegisterDriff(payload, (err, res) => {
+        if (err) {
+          toaster.success("Something went wrong!");
+        }
+
+        if (res) {
+          toaster.success("Driff successfully created.");
+        }
+      }));
     },
     [dispatch]
   );
 
   return {
     check,
-    register,
+    create,
     getBaseUrl,
     getName,
     getByHostname,

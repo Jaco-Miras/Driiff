@@ -56,20 +56,22 @@ const SearchPagination = (props) => {
         }
     }, [tabs, activeTab, fetching]);
     
-    if ((activeTab && tabs[activeTab.toUpperCase()].maxPage <= 1) || activeTab === null) return null;
     
+    if ((activeTab && tabs[activeTab.toUpperCase()].maxPage <= 1) || activeTab === null) return null;
+    let page = tabs[activeTab.toUpperCase()].page;
+    let maxPage = tabs[activeTab.toUpperCase()].maxPage;
     return (
         <nav className="mt-3">
             <ul className="pagination justify-content-center">
-                <li className={`page-item ${tabs[activeTab.toUpperCase()].page === 1 && "disabled"}`}>
-                <a className="page-link" href="#" tabIndex="-1" aria-disabled="true" onClick={() => handleSetPage(tabs[activeTab.toUpperCase()].page-1)}>
+                <li className={`page-item ${page === 1 && "disabled"}`}>
+                <a className="page-link" href="#" tabIndex="-1" aria-disabled="true" onClick={() => handleSetPage(page-1)}>
                     Previous
                 </a>
                 </li>
                 {
-                    pages.map((p) => {
+                    pages.slice(page > 5 ? page - 5 : 0, page > 5 ? page + 5 : 10).map((p) => {
                         return (
-                            <li key={p} className={`page-item ${tabs[activeTab.toUpperCase()].page === p && "active"}`}>
+                            <li key={p} className={`page-item ${page === p && "active"}`}>
                                 <a className="page-link" href="#" onClick={() => handleSetPage(p)}>
                                     {p}
                                 </a>
@@ -77,8 +79,8 @@ const SearchPagination = (props) => {
                         )
                     })
                 }
-                <li className={`page-item ${tabs[activeTab.toUpperCase()].page === tabs[activeTab.toUpperCase()].maxPage && "disabled"}`}>
-                <a className="page-link" href="#" onClick={() => handleSetPage(tabs[activeTab.toUpperCase()].page+1)}>
+                <li className={`page-item ${page === maxPage && "disabled"}`}>
+                <a className="page-link" href="#" onClick={() => handleSetPage(page+1)}>
                     Next
                 </a>
                 </li>
