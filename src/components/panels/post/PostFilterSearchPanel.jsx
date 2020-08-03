@@ -17,7 +17,7 @@ const Wrapper = styled.div`
 `;
 
 const PostFilterSearchPanel = (props) => {
-  const { className = "", activeSort = null, workspace, search } = props;
+  const { className = "", activeSort = null, workspace, search, dictionary } = props;
 
   const dispatch = useDispatch();
 
@@ -31,21 +31,21 @@ const PostFilterSearchPanel = (props) => {
   };
 
   const sortDropdown = {
-    label: "Sort by",
+    label: dictionary.sortBy,
     items: [
       {
         value: "favorite",
-        label: "Starred / Favorite",
+        label: dictionary.starredFavorite,
         onClick: handleClickSort,
       },
       {
         value: "recent",
-        label: "Recent",
+        label: dictionary.recent,
         onClick: handleClickSort,
       },
       {
         value: "unread",
-        label: "Unread",
+        label: dictionary.unread,
         onClick: handleClickSort,
       },
     ],
@@ -64,7 +64,7 @@ const PostFilterSearchPanel = (props) => {
         </ul>
       </div>
       <div className="action-right">
-        <PostSearch search={search} />
+        <PostSearch search={search} placeholder={dictionary.searchPost}/>
       </div>
     </Wrapper>
   );

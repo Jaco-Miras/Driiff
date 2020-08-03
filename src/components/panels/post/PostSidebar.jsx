@@ -10,7 +10,7 @@ const Wrapper = styled.div`
 `;
 
 const PostSidebar = (props) => {
-  const { workspace, isMember, filter, tag, count, counters, postActions, onGoBack } = props;
+  const { workspace, isMember, filter, tag, count, counters, postActions, onGoBack, dictionary } = props;
 
   const handleShowWorkspacePostModal = () => {
     postActions.showModal("create");
@@ -23,15 +23,15 @@ const PostSidebar = (props) => {
           {isMember && (
             <div className="card-body">
               <button className="btn btn-primary btn-block" onClick={handleShowWorkspacePostModal}>
-                Create new post
+                {dictionary.createNewPost}
               </button>
             </div>
           )}
-          <PostFilterItem workspace={workspace} filter={filter} tag={tag} onGoBack={onGoBack} counters={counters} />
+          <PostFilterItem workspace={workspace} filter={filter} tag={tag} onGoBack={onGoBack} counters={counters} dictionary={dictionary}/>
           <div className="card-body">
-            <h6 className="mb-0">Category</h6>
+            <h6 className="mb-0">{dictionary.category}</h6>
           </div>
-          <PostFilterTag count={count} workspace={workspace} tag={tag} onGoBack={onGoBack} />
+          <PostFilterTag count={count} workspace={workspace} tag={tag} onGoBack={onGoBack} dictionary={dictionary}/>
         </div>
       </div>
     </Wrapper>
