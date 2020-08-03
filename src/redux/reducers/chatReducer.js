@@ -892,37 +892,25 @@ export default function (state = INITIAL_STATE, action) {
       };
     }
     case "JOIN_WORKSPACE_REDUCER": {
-      let user = {
-        id: action.data.user.id,
-        name: action.data.user.name,
-        first_name: action.data.user.first_name,
-        profile_image_link: action.data.user.profile_image_link,
-        partial_name: action.data.user.partial_name,
-        last_visited_at: {
-          timestamp: Math.floor(Date.now() / 1000),
-        },
-      };
       let updatedChannels = { ...state.channels };
-      let channel = { ...updatedChannels[action.data.channel_id] };
-      channel = {
-        ...channel,
-        members: [...channel.members, user],
-      };
-      updatedChannels = {
-        ...updatedChannels,
-        [action.data.channel_id]: channel,
-      };
+      let updatedChannel = { ...state.selectedChannel };
+      if (Object.keys(updatedChannels).length && updatedChannels.hasOwnProperty(action.data.channel_id)) {
+        let channel = {
+          ...updatedChannels[action.data.channel_id],
+          members: [...updatedChannels[action.data.channel_id].members, action.data.user],
+          replies: [...updatedChannels[action.data.channel_id].replies, action.data.message]
+        }
+        updatedChannels[action.data.channel_id].members = [...updatedChannels[action.data.channel_id].members, action.data.user];
+        updatedChannels[action.data.channel_id].replies = [...updatedChannels[action.data.channel_id].replies, action.data.message];
+        if (channel.id === updatedChannel.id) {
+          updatedChannel = channel;
+        }
+      }
       return {
         ...state,
-        selectedChannel:
-          state.selectedChannel.id === action.data.channel_id
-            ? {
-                ...state.selectedChannel,
-                members: [...state.selectedChannel.members, user],
-              }
-            : state.selectedChannel,
         channels: updatedChannels,
-      };
+        selectedChannel: updatedChannel
+      }
     }
     case "UNREAD_CHANNEL_REDUCER": {
       let updatedChannels = { ...state.channels };

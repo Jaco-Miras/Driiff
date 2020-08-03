@@ -172,20 +172,12 @@ const WorspaceHeaderPanel = (props) => {
     dispatch(
       joinWorkspace(
           {
-            group_id: activeTopic.id,
-            user_id: user.id,
+            channel_id: activeTopic.channel.id,
+            recipient_ids: [user.id]
           },
           (err, res) => {
             if (err) return;
-            dispatch(
-                joinWorkspaceReducer({
-                  channel_id: activeTopic.channel.id,
-                  topic_id: activeTopic.id,
-                  user: user,
-                }, () => {
-                  toaster.success(<>You have joined <b>#${activeTopic.name}</b></>);
-                })
-          );
+            toaster.success(<>You have joined <b>#${activeTopic.name}</b></>);
         }
       )
     );

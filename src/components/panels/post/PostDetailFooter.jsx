@@ -164,18 +164,12 @@ const PostDetailFooter = (props) => {
     dispatch(
       joinWorkspace(
         {
-          group_id: workspace.id,
-          user_id: user.id,
+          channel_id: workspace.channel.id,
+          recipient_ids: [user.id]
         },
         (err, res) => {
           if (err) return;
-          // dispatch(
-          //     joinWorkspaceReducer({
-          //         channel_id: selectedChannel.id,
-          //         topic_id: selectedChannel.entity_id,
-          //         user: user,
-          //     }),
-          // );
+          
         }
       )
     );

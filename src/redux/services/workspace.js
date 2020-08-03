@@ -178,10 +178,13 @@ export function getPostStatusCount(payload) {
  * @param {Object} payload
  * @param {number} payload.group_id
  * @param {number} payload.user_id
+ * @param {number} payload.channel_id
+ * @param {number} payload.recipient_ids
  * @returns {Promise<*>}
  */
 export function joinWorkspace(payload) {
-  let url = "/v1/members";
+  //let url = "/v1/members";
+  let url = "/v2/post-channel-members";
   return apiCall({
     method: "POST",
     url: url,
