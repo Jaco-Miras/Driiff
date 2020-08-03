@@ -14227,6 +14227,9 @@ body.form-membership .form-wrapper hr {
   border-radius: 0.5rem;
   position: relative;
   z-index: 2;
+  @media (max-width: 620px) {
+    padding: 7px;
+  }
 }
 
 .chat-block .chat-content .messages .message-item.me {
