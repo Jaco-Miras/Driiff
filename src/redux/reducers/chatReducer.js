@@ -115,7 +115,6 @@ export default function (state = INITIAL_STATE, action) {
     }
     case "GET_WORKSPACE_CHANNELS_SUCCESS": {
       let channels = { ...state.channels };
-      console.log(action.data)
       action.data
         .filter((r) => {
           return !(state.selectedChannel && state.selectedChannel.id === r.id);

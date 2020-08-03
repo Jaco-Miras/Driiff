@@ -15,14 +15,14 @@ const Wrapper = styled.div`
 `;
 
 const PostComments = (props) => {
-  const { className = "", comments, post, user, commentActions, onShowFileDialog, dropAction, workspace, isMember } = props;
+  const { className = "", comments, post, user, commentActions, onShowFileDialog, dropAction, workspace, isMember, dictionary } = props;
 
   return (
     <Wrapper className={`post-comments card-body ${className}`}>
       {comments && (
         <ul>
           {Object.values(comments).map((c) => {
-            return <Comment key={c.id} comment={c} post={post} user={user} commentActions={commentActions} onShowFileDialog={onShowFileDialog} dropAction={dropAction} workspace={workspace} isMember={isMember}/>;
+            return <Comment key={c.id} comment={c} post={post} user={user} commentActions={commentActions} onShowFileDialog={onShowFileDialog} dropAction={dropAction} workspace={workspace} isMember={isMember} dictionary={dictionary}/>;
           })}
         </ul>
       )}

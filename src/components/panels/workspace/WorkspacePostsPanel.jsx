@@ -101,7 +101,13 @@ const WorkspacePostsPanel = (props) => {
     share: _t("POST.SHARE", "Share"),
     snooze: _t("POST.SNOOZE", "Snooze"),
     follow: _t("POST.FOLLOW", "Follow"),
-    unFollow: _t("POST.UNFOLLOW", "UNFOLLOW")
+    unFollow: _t("POST.UNFOLLOW", "UNFOLLOW"),
+    files: _t("POST.FILES", "Files"),
+    comment: _t("POST.COMMENT", "Comment"),
+    editReply: _t("POST.EDIT_REPLY", "Edit reply"),
+    removeReply: _t("POST.REMOVE_REPLY", "Remove reply"),
+    quote: _t("POST.QUOTE", "Quote"),
+    mentionUser: _t("POST.MENTION_USER", "Mention user")
   };
 
   if (posts === null) return <></>;
@@ -130,7 +136,7 @@ const WorkspacePostsPanel = (props) => {
               {post ? (
                 <div className="card card-body app-content-body mb-4">
                   <PostDetailWrapper className="fadeBottom">
-                    <PostDetail post={post} postActions={actions} user={user} history={history} onGoBack={handleGoback} workspace={workspace} isMember={isMember} />
+                    <PostDetail post={post} postActions={actions} user={user} history={history} onGoBack={handleGoback} workspace={workspace} isMember={isMember} dictionary={dictionary}/>
                   </PostDetailWrapper>
                 </div>
               ) : (

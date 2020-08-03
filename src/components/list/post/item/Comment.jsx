@@ -84,7 +84,7 @@ const Icon = styled(SvgIconFeather)`
 `;
 
 const Comment = (props) => {
-  const {className = "", comment, post, type = "main", user, commentActions, parentId, onShowFileDialog, dropAction, parentShowInput = null, workspace, isMember } = props;
+  const {className = "", comment, post, type = "main", user, commentActions, parentId, onShowFileDialog, dropAction, parentShowInput = null, workspace, isMember, dictionary } = props;
   const refs = {
     input: useRef(null),
     body: useRef(null),
@@ -174,11 +174,11 @@ const Comment = (props) => {
               {post.is_read_only !== 1 && (
                   <MoreOptions scrollRef={refs.body.current} moreButton={"more-vertical"}>
                     {user.id === comment.author.id &&
-                    <div onClick={() => commentActions.setToEdit(comment)}>Edit reply</div>}
-                    <div onClick={handleQuote}>Quote</div>
-                    {user.id !== comment.author.id && <div onClick={handleMentionUser}>Mention user</div>}
+                    <div onClick={() => commentActions.setToEdit(comment)}>{dictionary.editReply}</div>}
+                    <div onClick={handleQuote}>{dictionary.quote}</div>
+                    {user.id !== comment.author.id && <div onClick={handleMentionUser}>{dictionary.mentionUser}</div>}
                     {user.id === comment.author.id &&
-                    <div onClick={() => commentActions.remove(comment)}>Remove reply</div>}
+                    <div onClick={() => commentActions.remove(comment)}>{dictionary.removeReply}</div>}
                   </MoreOptions>
               )}
             </CommentHeader>
@@ -186,7 +186,7 @@ const Comment = (props) => {
             {comment.files.length >= 1 && (
                 <>
                   <hr/>
-                  <h6>Files</h6>
+                  <h6>{dictionary.files}</h6>
                   <FileAttachments attachedFiles={comment.files} type="workspace" comment={comment}/>
                 </>
             )}
@@ -197,7 +197,7 @@ const Comment = (props) => {
               {comment.clap_count > 0 ? comment.clap_count : null}
               {post.is_read_only !== 1 && (
                   <Reply className="ml-3" onClick={handleShowInput}>
-                    Comment
+                    {dictionary.comment}
                   </Reply>
               )}
             </div>
@@ -214,6 +214,7 @@ const Comment = (props) => {
                 onShowFileDialog={onShowFileDialog}
                 dropAction={dropAction}
                 workspace={workspace} isMember={isMember}
+                dictionary={dictionary}
             />
         )}
         {showInput !== null && (
