@@ -41,7 +41,9 @@ export {
   putUser,
   postUploadProfileImage,
   postExternalUserData,
-  putExternalUserUpdate
+  putExternalUserUpdate,
+  postRequest,
+  postMagicLink
 } from "./user";
 
 export {

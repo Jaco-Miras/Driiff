@@ -1,17 +1,17 @@
-import React, { useEffect } from "react";
-import { Switch } from "react-router-dom";
+import React, {useEffect} from "react";
+import {Switch} from "react-router-dom";
 import ScrollToTop from "react-router-scroll-top";
 import styled from "styled-components";
-import { useDriff } from "./components/hooks";
-import { DriffRegisterPanel, PreLoader, RedirectPanel } from "./components/panels";
-import { AppRoute } from "./layout/routes";
+import {useDriff} from "./components/hooks";
+import {DriffRegisterPanel, ModalPanel, PreLoader, RedirectPanel} from "./components/panels";
+import {AppRoute} from "./layout/routes";
 
 const Wrapper = styled.div`
   min-height: 100%;
 `;
 
 function App() {
-  const { setDriff, checkDriffName, redirected, registeredDriff, getRedirect } = useDriff();
+  const {actions: driffActions, redirected, registeredDriff, setRegisteredDriff} = useDriff();
 
   useEffect(() => {
     const handleResize = () => {
@@ -33,13 +33,13 @@ function App() {
 
   return (
     <Wrapper className="App">
+      <PreLoader/>
       {redirected === true ? (
-        <RedirectPanel redirect={getRedirect} />
+        <RedirectPanel redirectTo={driffActions.getBaseUrl}/>
       ) : registeredDriff === null ? (
-        <DriffRegisterPanel setDriff={setDriff} checkDriffName={checkDriffName} />
+        <DriffRegisterPanel setRegisteredDriff={setRegisteredDriff}/>
       ) : (
         <>
-          <PreLoader />
           <Switch>
             <ScrollToTop>
               <AppRoute path="*" />
@@ -47,6 +47,7 @@ function App() {
           </Switch>
         </>
       )}
+      <ModalPanel/>
     </Wrapper>
   );
 }

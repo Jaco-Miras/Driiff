@@ -10,12 +10,18 @@ import {
   login as loginService,
   logout as logoutService,
   postExternalUserData as postExternalUserDataService,
+  postMagicLink as postMagicLinkService,
+  postRequest as postRequestService,
   postUploadProfileImage as postUploadProfileImageService,
   putExternalUserUpdate as putExternalUserUpdateService,
   putUser as putUserService,
   resetPassword as resetPasswordService,
-  updatePassword as updatePasswordService
+  updatePassword as updatePasswordService,
 } from "../services";
+
+export const postRequest = (payload, callback) => {
+  return dispatchActionToReducer(postRequestService(payload), "REQUEST_START", "REQUEST_SUCCESS", "REQUEST_FAILURE", callback);
+};
 
 export const userLogin = (payload, callback) => {
   return dispatchActionToReducer(loginService(payload), "LOGIN_START", "LOGIN_SUCCESS", "LOGIN_FAILURE", callback);
@@ -79,4 +85,8 @@ export function postExternalUserData(payload, callback) {
 
 export function putExternalUserUpdate(payload, callback) {
   return dispatchActionToReducer(putExternalUserUpdateService(payload), "PUT_EXTERNALUSER_UPDATE_START", "PUT_EXTERNALUSER_UPDATE_SUCCESS", "PUT_EXTERNALUSER_UPDATE_FAILURE", callback);
+}
+
+export function postMagicLink(payload, callback) {
+  return dispatchActionToReducer(postMagicLinkService(payload), "MAGIC_LINK_START", "MAGIC_LINK_SUCCESS", "MAGIC_LINK_FAILURE", callback);
 }

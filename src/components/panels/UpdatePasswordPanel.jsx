@@ -1,16 +1,16 @@
-import React, { useRef, useState } from "react";
-import { useDispatch } from "react-redux";
-import { Link, useHistory, useRouteMatch } from "react-router-dom";
+import React, {useRef, useState} from "react";
+import {useDispatch} from "react-redux";
+import {Link, useHistory, useRouteMatch} from "react-router-dom";
 import styled from "styled-components";
-import { toggleLoading } from "../../redux/actions/globalActions";
-import { updatePassword, userGoogleLogin } from "../../redux/actions/userAction";
-import { processBackendLogin, storeLoginToken } from "../hooks";
-import { getDriffName } from "../hooks/useDriff";
+import {toggleLoading} from "../../redux/actions/globalActions";
+import {updatePassword} from "../../redux/actions/userAction";
+import {useToaster, useUserActions} from "../hooks";
+import {FormInput, PasswordInput} from "../forms";
 
 const Wrapper = styled.form`
   ${(props) =>
-    props.error !== "" &&
-    `&:before {        
+  props.error !== "" &&
+  `&:before {        
         content: "${props.error}";
         display: block;
         color: red;
@@ -21,8 +21,8 @@ const Wrapper = styled.form`
     }`}
 
   ${(props) =>
-    props.success !== "" &&
-    `&:before {        
+  props.success !== "" &&
+  `&:before {        
         content: "${props.success}";
         display: block;
         color: #59a869;
@@ -35,8 +35,8 @@ const Wrapper = styled.form`
 
 const FormGroup = styled.div`
   ${(props) =>
-    props.error !== "" &&
-    `&:after {        
+  props.error !== "" &&
+  `&:after {        
         content: "${props.error}";
         display: block;
         color: red;
@@ -50,6 +50,8 @@ const UpdatePasswordPanel = (props) => {
   const history = useHistory();
   const dispatch = useDispatch();
   const match = useRouteMatch("/resetpassword/:token/:email");
+  const userActions = useUserActions();
+  const toaster = useToaster();
 
   const ref = {
     password: useRef(),
@@ -78,14 +80,14 @@ const UpdatePasswordPanel = (props) => {
   };
 
   const _validateForm = () => {
-    setFormMessage({ error: "", success: "" });
+    setFormMessage({error: "", success: ""});
 
     let valid = true;
-    let errorData = { password: "", form: "" };
+    let errorData = {password: "", form: ""};
 
     if (form.password === "") {
       valid = false;
-      errorData = { ...errorData, password: "Password is required." };
+      errorData = {...errorData, password: "Password is required."};
     }
 
     setError(errorData);
@@ -115,24 +117,20 @@ const UpdatePasswordPanel = (props) => {
 
           console.log(err);
 
-          setFormMessage({ ...formMessage, error: "Invalid or expired token." });
+          toaster.error(<>Invalid or expired token.</>);
           setTimeout(() => {
             history.push("/reset-password");
           }, 5000);
         }
 
         if (res) {
-          setFormMessage({
-            ...formMessage,
-            success: "Password is updated you are successfully logged in!",
-          });
+          toaster.error(<>Password is updated. You are being logged in!</>);
 
           const returnUrl =
             typeof props.location.state !== "undefined" && typeof props.location.state.from !== "undefined" && props.location.state.from !== "/logout"
               ? props.location.state.from.pathname + props.location.state.from.search
               : "/workspace/chat";
-          storeLoginToken(res.data);
-          processBackendLogin(res.data, returnUrl);
+          userActions.login(res.data, returnUrl);
         }
       })
     );
@@ -141,45 +139,27 @@ const UpdatePasswordPanel = (props) => {
   const handleGoogleLogIn = (e) => {
     e.preventDefault();
 
-    dispatch(
-      userGoogleLogin(
-        {
-          driff: getDriffName(),
-        },
-        (err, res) => {
-          if (err) {
-            console.log(err);
-          }
-          if (res) {
-            setFormMessage({ ...formMessage, success: "Logging in Google..." });
-            window.location.href = res.data.google_url;
-          }
-        }
-      )
-    );
+    userActions.googleLogin();
   };
 
   return (
-    <Wrapper error={formMessage.error} success={formMessage.success}>
-      <FormGroup className="form-group" error="">
-        <input onChange={handleInputChange} name="email" type="email" className="form-control" placeholder="Email" value={form.email} readOnly />
-      </FormGroup>
-      <FormGroup className="form-group" error={error.password}>
-        <input ref={ref.password} onChange={handleInputChange} name="password" type="password" className="form-control" placeholder="Password" required autoFocus />
-      </FormGroup>
+    <Wrapper>
+      <FormInput onChange={handleInputChange} name="email" type="email" placeholder="Email" value={form.email}
+                 readOnly/>
+      <PasswordInput ref={ref.password} onChange={handleInputChange}/>
       <button className="btn btn-primary btn-block" onClick={handleUpdatePassword}>
         Update password
       </button>
-      <hr />
+      <hr/>
       <p className="text-muted">Login with your social media account.</p>
       <ul className="list-inline">
         <li className="list-inline-item">
           <a href="/" onClick={handleGoogleLogIn} className="btn btn-floating btn-google">
-            <i className="fa fa-google" />
+            <i className="fa fa-google"/>
           </a>
         </li>
       </ul>
-      <hr />
+      <hr/>
       <p className="text-muted">Don't have an account?</p>
       <Link className={"btn btn-outline-light btn-sm"} to="/register">
         Register now!
