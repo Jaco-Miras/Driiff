@@ -8,6 +8,22 @@ import {SubComments} from "./index";
 const Wrapper = styled.li`
   margin-bottom: 1rem;
   
+  .mention {
+    font-weight: bold;
+    color: #7A1B8B;
+    &[data-value="All"],
+    &[data-id="${props => props.userId}"] {
+      font-weight: normal;
+      box-shadow: none;
+      padding: 0 4px;
+      border-radius: 8px;
+      text-decoration: underline;
+      display: inline-block;
+      width: auto;
+      height: auto;
+    }
+  }
+  
   .quote {    
     border-radius: 6px;
     margin: 0 auto 0.5rem;
@@ -151,13 +167,13 @@ const Comment = (props) => {
 
   return (
       <>
-        <Wrapper ref={refs.main} className={`comment card border fadeBottom ${className}`}>
+        <Wrapper ref={refs.main} className={`comment card border fadeBottom ${className}`} userId={user.id}>
           {
             comment.quote &&
             <>
               {
                 comment.quote.user && (
-                    <div className="quote-author">{comment.quote.user.name}</div>
+                  <div className="quote-author">{comment.quote.user.name}</div>
                 )
               }
               <div className="quote border border-side" dangerouslySetInnerHTML={{__html: comment.quote.body}}/>
@@ -166,7 +182,7 @@ const Comment = (props) => {
           }
           <CommentWrapper ref={refs.body} className="card-body" type={type}>
             <CommentHeader className="d-flex">
-              <div>
+              <div className="d-flex justify-content-center align-items-center">
                 <Avatar className="mr-2" id={comment.author.id} name={comment.author.name}
                         imageLink={comment.author.profile_image_link}/>
                 {comment.author.first_name}
