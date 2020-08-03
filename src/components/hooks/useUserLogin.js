@@ -1,40 +1,32 @@
-import { useEffect } from "react";
-import { useDispatch } from "react-redux";
-import { useHistory, useRouteMatch } from "react-router-dom";
-import { sessionService } from "redux-react-session";
-import { $_GET, getUrlParams } from "../../helpers/commonFunctions";
-import { getAPIUrl, getCurrentDriffUrl } from "../../helpers/slugHelper";
-import { authenticateGoogleLogin } from "../../redux/actions/userAction";
-
-export const storeLoginToken = (payload) => {
-  localStorage.setItem("userAuthToken", JSON.stringify(payload));
-  localStorage.setItem("token", payload.download_token);
-  localStorage.setItem("atoken", payload.auth_token);
-};
-
-export const getFrontEndAuthUrl = (payload, returnUrl = "") => {
-  if (returnUrl !== "") returnUrl = `/${btoa(returnUrl)}`;
-
-  return `/authenticate/${payload.access_token}${returnUrl}`;
-};
-
-export const processBackendLogin = (payload, returnUrl) => {
-  let redirectLink = `${getCurrentDriffUrl()}${getFrontEndAuthUrl(payload, returnUrl)}`;
-  window.location.href = `${getAPIUrl({ isDNS: true })}/auth-web/login?token=${payload.auth_token}&redirect_link=${redirectLink}`;
-};
+import React, {useEffect} from "react";
+import {useDispatch} from "react-redux";
+import {useHistory, useRouteMatch} from "react-router-dom";
+import {sessionService} from "redux-react-session";
+import {$_GET, getUrlParams} from "../../helpers/commonFunctions";
+import {authenticateGoogleLogin} from "../../redux/actions/userAction";
+import {useUserActions} from "./index";
 
 export const useUserLogin = (props) => {
+
   const dispatch = useDispatch();
   const history = useHistory();
   const authMatch = useRouteMatch("/authenticate/:token/:returnUrl?");
 
+  const userActions = useUserActions();
+
   useEffect(() => {
+    if (history.location.pathname === "/logged-out") {
+      userActions.logout();
+      history.push('/login');
+    }
+
     //authenticate user login from backend
     if (authMatch !== null) {
-      let userAuthToken = localStorage.getItem("userAuthToken");
-      let goTo = atob(authMatch.params.returnUrl);
 
-      if (userAuthToken) {
+      let userAuthToken = localStorage.getItem("userAuthToken");
+      let goTo = authMatch.params.returnUrl ? atob(authMatch.params.returnUrl) : "";
+
+      if (!props.authenticated && userAuthToken) {
         let dataSet = JSON.parse(userAuthToken);
 
         if (dataSet.access_token !== authMatch.params.token) {
@@ -77,7 +69,7 @@ export const useUserLogin = (props) => {
             if (authMatch.params.returnUrl) {
               history.push(goTo);
             }
-          });
+          })
       }
     }
 
@@ -89,8 +81,7 @@ export const useUserLogin = (props) => {
           console.log(err);
 
           if (res) {
-            storeLoginToken(res.data);
-            history.push(getFrontEndAuthUrl(res.data, "/workspace/chat"));
+            userActions.login(res.data, "/workspace/chat");
           }
         })
       );

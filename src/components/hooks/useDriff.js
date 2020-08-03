@@ -1,7 +1,6 @@
-import { useCallback, useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
-import { $_GET, isIPAddress } from "../../helpers/commonFunctions";
-import { patchCheckDriff } from "../../redux/actions/driffAction";
+import {useEffect, useState} from "react";
+import {$_GET, isIPAddress} from "../../helpers/commonFunctions";
+import useDriffActions from "./useDriffActions";
 
 let init = true;
 
@@ -36,76 +35,48 @@ export const getDriffName = () => {
 };
 
 const useDriff = () => {
-  const dispatch = useDispatch();
-  const [redirected, setRedirected] = useState(null);
-  const [registeredDriff, setRegisteredDriff] = useState(null);
-
-  const setDriff = useCallback(
-    (driffName) => {
-      localStorage.setItem("slug", driffName);
-      setRegisteredDriff(driffName);
-      setRedirected(false);
-    },
-    [setRedirected, setRegisteredDriff]
-  );
-
-  const getRedirect = () => {
-    if (isIPAddress(window.location.hostname)) {
-      return `${process.env.REACT_APP_apiProtocol}${window.location.hostname}`;
-    }
-
-    if (window.location.hostname === "localhost") {
-      return `${process.env.REACT_APP_apiProtocol}localhost`;
-    }
-
-    return `${process.env.REACT_APP_apiProtocol}${process.env.REACT_APP_localDNSName}`;
-  };
-
-  const checkDriffName = useCallback(
-    (driffName, callback) => {
-      dispatch(patchCheckDriff(driffName, callback));
-    },
-    [dispatch]
-  );
+  const actions = useDriffActions();
+  const [redirected, setRedirected] = useState(actions.getName);
+  const [registeredDriff, setRegisteredDriff] = useState(actions.getName);
 
   useEffect(() => {
-    // disabled init temporarily
-    // if (init) {
-      init = false;
 
-      const driffName = getDriffName();
+    if (!registeredDriff) {
+      const slug = actions.getByHostname();
 
-      if (driffName === null) {
-        setRedirected(false);
-      } else if (driffName === false) {
-        localStorage.removeItem("slug");
+      //invalid hostname
+      if (slug === false) {
         setRedirected(true);
-      } else {
-        checkDriffName(driffName, (err, res) => {
-          if (err) {
-            localStorage.removeItem("slug");
+
+        //not localhost or IP address
+      } else if (slug !== null) {
+        actions.check(slug, (err, res) => {
+          if (res && res.data.status) {
+            actions.storeName(slug, true);
+            setRegisteredDriff(slug);
+          } else {
+            actions.unStoreName();
             setRedirected(true);
           }
-          if (res) {
-            if (res.data.status) {
-              setDriff(driffName);
-            } else {
-              localStorage.removeItem("slug");
-              setRedirected(true);
-            }
-          }
         });
+      } else {
+        setRedirected(false);
       }
-    //}
+    } else {
+      actions.check(registeredDriff, (err, res) => {
+        if (!(res && res.data.status)) {
+          actions.unStoreName();
+          setRedirected(true);
+        }
+      });
+    }
   }, []);
 
   return {
-    setDriff,
-    checkDriffName,
+    actions,
     redirected,
     registeredDriff,
-    getRedirect,
-    getDriffName,
+    setRegisteredDriff
   };
 };
 

@@ -1,8 +1,9 @@
-import React, { useCallback, useRef } from "react";
-import { useHistory } from "react-router-dom";
+import React, {useCallback, useRef} from "react";
+import {useHistory} from "react-router-dom";
 import styled from "styled-components";
-import { replaceChar } from "../../../helpers/stringFormatter";
-import { Avatar, SvgIconFeather } from "../../common";
+import {replaceChar} from "../../../helpers/stringFormatter";
+import {Avatar, SvgIconFeather} from "../../common";
+import {useUserActions} from "../../hooks";
 
 const Wrapper = styled.div`
   position: absolute;
@@ -17,9 +18,10 @@ const Wrapper = styled.div`
 `;
 
 const UserProfileDropdown = (props) => {
-  const { className = "", user } = props;
+  const {className = "", user} = props;
 
   const history = useHistory();
+  const {processBackendLogout} = useUserActions();
 
   const refs = {
     container: useRef(null),
@@ -32,7 +34,7 @@ const UserProfileDropdown = (props) => {
 
   const handleSignOut = useCallback(() => {
     refs.container.current.classList.remove("show");
-    history.push("/logout");
+    processBackendLogout();
   }, []);
 
   const handleProfile = useCallback(() => {
@@ -46,13 +48,15 @@ const UserProfileDropdown = (props) => {
   }, []);
 
   return (
-    <Wrapper ref={refs.container} className={`user-profile-dropdown dropdown-menu dropdown-menu-big ${className}`} x-placement="bottom-end">
+    <Wrapper ref={refs.container} className={`user-profile-dropdown dropdown-menu dropdown-menu-big ${className}`}
+             x-placement="bottom-end">
       <div className="p-3 text-center">
-        <Avatar name={user.name} imageLink={user.profile_image_link} id={user.id} partialName={user.partial_name} />
+        <Avatar name={user.name} imageLink={user.profile_image_link} id={user.id} partialName={user.partial_name}/>
         <h6 className="d-flex align-items-center justify-content-center">
           {user.name}
-          <span className="btn btn-primary btn-sm ml-2" data-toggle="tooltip" title="" data-original-title="Edit profile" onClick={handleEditProfile}>
-            <SvgIconFeather icon="edit-2" />
+          <span className="btn btn-primary btn-sm ml-2" data-toggle="tooltip" title=""
+                data-original-title="Edit profile" onClick={handleEditProfile}>
+            <SvgIconFeather icon="edit-2"/>
           </span>
         </h6>
       </div>

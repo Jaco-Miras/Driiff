@@ -250,7 +250,7 @@ export function forgotEmail(payload) {
  * @returns {Promise<*>}
  */
 export function checkDriffUserEmail(payload) {
-  const { REACT_APP_apiProtocol, REACT_APP_apiBaseUrl } = process.env;
+  const {REACT_APP_apiProtocol, REACT_APP_apiBaseUrl} = process.env;
   let url = `${REACT_APP_apiProtocol}${payload.driff}.${REACT_APP_apiBaseUrl}/check-email`;
 
   return apiNoTokenCall({
@@ -260,7 +260,7 @@ export function checkDriffUserEmail(payload) {
   });
 }
 
-export function sendRequest(payload) {
+export function postRequest(payload) {
   return apiNoTokenCall({
     method: "POST",
     url: "/requests",
@@ -277,7 +277,7 @@ export function createSharedRequest(payload) {
 }
 
 export function searchRequest(payload) {
-  const { email } = payload;
+  const {email} = payload;
   let url = `/requests/search?email=${email}`;
 
   return apiNoTokenCall({
@@ -295,7 +295,7 @@ export function getRequests(payload) {
 }
 
 export function acceptRequest(payload) {
-  const { id } = payload;
+  const {id} = payload;
   let url = `/requests/${id}`;
   return apiCall({
     method: "PUT",
@@ -304,7 +304,7 @@ export function acceptRequest(payload) {
 }
 
 export function deleteRequest(payload) {
-  const { id } = payload;
+  const {id} = payload;
   let url = `/requests/${id}`;
   return apiCall({
     method: "DELETE",
@@ -313,7 +313,7 @@ export function deleteRequest(payload) {
 }
 
 export function updateProfileImage(payload) {
-  const { file, user_id } = payload;
+  const {file, user_id} = payload;
   let url = `/users/${user_id}/upload-profile-image`;
   return apiCall({
     method: "POST",
@@ -323,7 +323,7 @@ export function updateProfileImage(payload) {
 }
 
 export function updateCoverImage(payload) {
-  const { file, user_id } = payload;
+  const {file, user_id} = payload;
   let url = `/users/${user_id}/upload-cover-image`;
   return apiCall({
     method: "POST",
@@ -385,7 +385,7 @@ export function updateSettings(payload) {
 export function googleLogin(payload) {
   return apiNoTokenCall({
     method: "GET",
-    actualUrl: `${getAPIUrl({ noSlug: true })}/auth/google?slug=${payload.driff}`,
+    actualUrl: `${getAPIUrl({noSlug: true})}/auth/google?${objToUrlParams(payload)}`,
   });
 }
 
@@ -396,7 +396,7 @@ export function googleLogin(payload) {
 export function authenticateGoogleLogin(payload) {
   return apiNoTokenCall({
     method: "POST",
-    actualUrl: `${getAPIUrl({ noSlug: true })}/auth/google/user`,
+    actualUrl: `${getAPIUrl({noSlug: true})}/auth/google/user`,
     data: payload,
   });
 }
@@ -444,5 +444,13 @@ export function putExternalUserUpdate(payload = {}) {
     method: "PUT",
     url: url,
     data: payload
+  });
+}
+
+export function postMagicLink(payload) {
+  return apiNoTokenCall({
+    method: "POST",
+    url: `/magic-link`,
+    data: payload,
   });
 }
