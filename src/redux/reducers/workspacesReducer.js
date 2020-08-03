@@ -298,73 +298,18 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "JOIN_WORKSPACE_REDUCER": {
-      let user = {
-        id: action.data.user.id,
-        name: action.data.user.name,
-        first_name: action.data.user.first_name,
-        profile_image_link: action.data.user.profile_image_link,
-        partial_name: action.data.user.partial_name,
-        active: 1,
-      };
-      let newWorkspaces = { ...state.workspaces };
-      let topic = null;
-      if (newWorkspaces.hasOwnProperty(action.data.topic_id)) {
-        topic = { ...newWorkspaces[action.data.topic_id] };
-        topic = {
-          ...topic,
-          members: [
-            ...topic.members,
-            {
-              ...user,
-              type: topic.members[0].type,
-              slug: topic.members[0].slug,
-            },
-          ],
-          member_ids: [...topic.member_ids, user.id],
-        };
-        newWorkspaces = {
-          ...newWorkspaces,
-          [action.data.topic_id]: topic,
-        };
-      } else {
-        if (state.activeTopic.id === action.data.topic_id && (state.activeTopic.workspace_id !== undefined || state.activeTopic.workspace_id !== 0)) {
-          topic = { ...newWorkspaces[state.activeTopic.workspace_id].topics[state.activeTopic.id] };
-          topic = {
-            ...topic,
-            members: [
-              ...topic.members,
-              {
-                ...user,
-                type: topic.members[0].type,
-                slug: topic.members[0].slug,
-              },
-            ],
-            member_ids: [...topic.member_ids, user.id],
-          };
-          newWorkspaces = {
-            ...newWorkspaces,
-            [state.activeTopic.workspace_id]: {
-              ...newWorkspaces[state.activeTopic.workspace_id],
-              topics: {
-                ...newWorkspaces[state.activeTopic.workspace_id].topics,
-                [action.data.topic_id]: topic,
-              },
-            },
-          };
-        } else {
-          // let folders = Object.values(newWorkspaces).filter(ws => {
-          //     return ws.type === "FOLDER" && Object.keys(ws.topics).length > 0
-          // })
-        }
+      let updatedWorkspaces = { ...state.workspaces };
+      if (Object.keys(updatedWorkspaces).length) {
+        Object.values(updatedWorkspaces).forEach((ws) => {
+          if (ws.channel.id === action.data.channel_id) {
+            updatedWorkspaces[ws.id].members = [...updatedWorkspaces[ws.id].members, action.data.user];
+            updatedWorkspaces[ws.id].member_ids = [...updatedWorkspaces[ws.id].member_ids, action.data.user.id];
+          }
+        })
       }
-      if (topic) {
-        return {
-          ...state,
-          workspaces: newWorkspaces,
-          activeTopic: state.activeTopic.id === action.data.topic_id ? topic : state.activeTopic,
-        };
-      } else {
-        return state;
+      return {
+        ...state,
+        workspaces: updatedWorkspaces
       }
     }
     case "GET_DRAFTS_SUCCESS": {

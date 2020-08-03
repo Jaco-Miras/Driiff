@@ -3,7 +3,7 @@ import {useDispatch, useSelector} from "react-redux";
 import Tooltip from "react-tooltip-lite";
 import styled from "styled-components";
 import {onClickSendButton} from "../../../redux/actions/chatActions";
-import {joinWorkspace, joinWorkspaceReducer} from "../../../redux/actions/workspaceActions";
+import {joinWorkspace} from "../../../redux/actions/workspaceActions";
 import {CommonPicker, SvgIconFeather} from "../../common";
 import ChatInput from "../../forms/ChatInput";
 import {useIsMember, useTimeFormat, useToaster} from "../../hooks";
@@ -179,18 +179,11 @@ const ChatFooterPanel = (props) => {
     dispatch(
       joinWorkspace(
         {
-          group_id: selectedChannel.entity_id,
-          user_id: user.id,
+          channel_id: selectedChannel.id,
+          recipient_ids: [user.id]
         },
         (err, res) => {
           if (err) return;
-          dispatch(
-              joinWorkspaceReducer({
-                channel_id: selectedChannel.id,
-                topic_id: selectedChannel.entity_id,
-                user: user,
-              })
-          );
           toaster.success(<>You have joined <b>#${selectedChannel.title}</b></>);
         }
       )

@@ -71,6 +71,7 @@ import {
     incomingUpdatedWorkspaceFolder,
     incomingWorkspace,
     incomingWorkspaceFolder,
+    joinWorkspaceReducer,
     updateWorkspaceCounter
 } from "../../redux/actions/workspaceActions";
 import { FileAttachments } from "../common";
@@ -730,47 +731,34 @@ class SocketListeners extends React.PureComponent {
             })
             .listen(".new-added-member-chat", (e) => {
                 console.log("new chat member", e);
+                let data = JSON.parse(e.body.replace("CHANNEL_UPDATE::", ""));
                 let message = {
                     ...e,
                     is_deleted: 0,
                     reactions: [],
                     last_reply: null,
-                    reply: {
-                        body: e.body,
-                        created_at: e.created_at,
-                        updated_at: e.created_at,
-                        files: [],
-                        id: e.id,
-                        is_deleted: 0,
-                        quote: null,
-                        reactions: [],
-                        user: null,
-                        unfurls: [],
-                        is_read: false,
-                        channel_id: e.channel_id,
-                        g_date: this.props.localizeDate(e.created_at.timestamp),
-                        code: e.code,
-                    },
-                    unfurls: [],
-                    created_at: e.created_at,
-                    id: e.id,
-                    channel_id: e.channel_id,
                     body: e.body,
-                    user: null,
+                    created_at: e.created_at,
+                    updated_at: e.created_at,
                     files: [],
-                    quote: e.quote,
+                    id: e.id,
+                    is_deleted: 0,
+                    quote: null,
+                    reactions: [],
+                    user: null,
+                    unfurls: [],
+                    is_read: false,
+                    channel_id: e.channel_id,
+                    //g_date: this.props.localizeDate(e.created_at.timestamp),
+                    code: e.code,
                 };
-                this.props.incomingChatMessageFromOthers(message);
-                this.props.getChannel({channel_id: e.channel_id}, (err, res) => {
-                    console.log(res);
-                    if (err) return;
-                    let payload = {
-                        channel_id: e.channel_id,
-                        members: res.data.members,
-                        title: res.data.title,
-                    };
-                    this.props.updateChannelMembersTitle(payload);
-                });
+                let payload = {
+                    user: data.author,
+                    channel_id: e.channel_id,
+                    data: e,
+                    message: message,
+                }
+                this.props.joinWorkspaceReducer(payload);
             })
             .listen(".archived-chat-channel", (e) => {
                 console.log(e, "archived chat");
@@ -895,7 +883,8 @@ function mapDispatchToProps(dispatch) {
         fetchPost: bindActionCreators(fetchPost, dispatch),
         incomingDeletedFiles: bindActionCreators(incomingDeletedFiles, dispatch),
         incomingGoogleFile: bindActionCreators(incomingGoogleFile, dispatch),
-        incomingGoogleFolder: bindActionCreators(incomingGoogleFolder, dispatch)
+        incomingGoogleFolder: bindActionCreators(incomingGoogleFolder, dispatch),
+        joinWorkspaceReducer: bindActionCreators(joinWorkspaceReducer, dispatch)
     };
 }
 
