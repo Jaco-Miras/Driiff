@@ -54,12 +54,18 @@ const useWorkspace = (fetchOnMount = false) => {
         //fetch last visited workspace
         if (activeTopicSettings && workspaces.hasOwnProperty(activeTopicSettings.id)) {
           actions.selectWorkspace(workspaces[activeTopicSettings.id]);
-          //actions.redirectTo(workspaces[activeTopicSettings.id]);
+          if (url.startsWith("/workspace")) {
+            actions.redirectTo(workspaces[activeTopicSettings.id]);
+          }
+        } else if (url.startsWith("/workspace") && localStorage.getItem("fromRegister")) {
+          console.log('trigger')
+          actions.selectWorkspace(Object.values(workspaces)[0]);
+          actions.redirectTo(Object.values(workspaces)[0]);
+          localStorage.removeItem("fromRegister")
         }
       }
     }
-  }, [activeTopic, activeTopicSettings, params, workspaces, fetchOnMount]);
-
+  }, [activeTopic, activeTopicSettings, params, workspaces, url, fetchOnMount]);
   useEffect(() => {
     if (activeTopic && Object.keys(channels).length && fetchOnMount && url.startsWith("/workspace/")) {
       if (channels.hasOwnProperty(activeTopic.channel.id)) {

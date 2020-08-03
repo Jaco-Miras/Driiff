@@ -122,7 +122,7 @@ const ExternalRegisterPanel = (props) => {
         userAction.updateExternalUser(form, (err, res) => {
             if (res) {
                 toaster.success(`Login successful!`);
-
+                localStorage.setItem("fromRegister", true);
                 const returnUrl =
                     typeof props.location.state !== "undefined" && typeof props.location.state.from !== "undefined" && props.location.state.from !== "/logout"
                         ? props.location.state.from.pathname + props.location.state.from.search
