@@ -50,7 +50,7 @@ const DriffRegisterPanel = (props) => {
     e.persist();
     setForm(prevState => ({
       ...prevState,
-      [e.target.name]: e.target.value,
+      [e.target.name]: e.target.value.trim(),
     }));
   }, [setForm]);
 

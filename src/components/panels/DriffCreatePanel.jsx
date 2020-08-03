@@ -1,10 +1,11 @@
 import React, {useCallback, useEffect, useRef, useState} from "react";
 import styled from "styled-components";
 import {FormInput, InputFeedback, PasswordInput} from "../forms";
-import {useUserActions} from "../hooks";
 import {EmailRegex} from "../../helpers/stringFormatter";
 import {FormGroup, Input, InputGroup, InputGroupAddon, InputGroupText} from "reactstrap";
 import useDriffActions from "../hooks/useDriffActions";
+import {addToModals} from "../../redux/actions/globalActions";
+import {useDispatch} from "react-redux";
 
 const Wrapper = styled.form``;
 
@@ -22,15 +23,15 @@ const StyledFormGroup = styled(FormGroup)`
 
 const DriffCreatePanel = () => {
 
-  const {REACT_APP_localDNSName} = process.env;
+  const dispatch = useDispatch();
   const driffActions = useDriffActions();
+
+  const {REACT_APP_localDNSName} = process.env;
 
   const refs = {
     company_name: useRef(null),
     slug: useRef(null),
   };
-
-  const userActions = useUserActions();
 
   const [form, setForm] = useState({});
   const [invitationInput, setInvitationInput] = useState(null);
@@ -109,6 +110,21 @@ const DriffCreatePanel = () => {
     return !Object.values(valid).some(v => v === false);
   }
 
+  const handleSetUserInvitation = (e) => {
+    console.log(e);
+  }
+
+  const handleShowUserInvitation = (e) => {
+    e.preventDefault();
+
+    let payload = {
+      type: "driff_invite_users",
+      onPrimaryAction: handleSetUserInvitation
+    };
+
+    dispatch(addToModals(payload));
+  };
+
   const handleRegister = useCallback((e) => {
     e.preventDefault();
 
@@ -123,6 +139,8 @@ const DriffCreatePanel = () => {
               slug: `Driff is already taken.`
             }
           });
+        } else {
+          driffActions.create(form);
         }
       })
     }
@@ -162,6 +180,11 @@ const DriffCreatePanel = () => {
         feedback={formResponse.message.name} placeholder="Your name" innerRef={refs.name}/>
       <PasswordInput onChange={handleInputChange} isValid={formResponse.valid.password}
                      feedback={formResponse.message.password}/>
+
+
+      <button className={"btn btn-outline-light btn-sm"} onClick={handleShowUserInvitation}>
+        + Invite User
+      </button>
 
       <button className="btn btn-primary btn-block" onClick={handleRegister}>
         Register

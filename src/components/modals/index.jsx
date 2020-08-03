@@ -10,4 +10,5 @@ export { default as ModalHeaderSection } from "./ModalHeaderSection";
 export { default as PostSnoozeModal } from "./PostSnoozeModal";
 export { default as SingleInputModal } from "./SingleInputModal";
 export { default as MoveFilesModal } from "./MoveFilesModal";
-export { default as FileCropUploadModal } from "./FileCropUploadModal";
+export {default as FileCropUploadModal} from "./FileCropUploadModal";
+export {default as InvitedUsersModal} from "./InvitedUsersModal";
