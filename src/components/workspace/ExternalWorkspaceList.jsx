@@ -97,9 +97,9 @@ const ExternalWorkspaceList = (props) => {
 
   const handleSelectWorkspace = () => {
     //set the selected topic
-    if (activeTopic.id === workspace.id) return;
-    actions.selectWorkspace(workspace);
     actions.redirectTo(workspace);
+    if (activeTopic && activeTopic.id === workspace.id) return;
+    actions.selectWorkspace(workspace);
     //history.push(`/workspace/chat/${workspace.id}/${replaceChar(workspace.name)}`);
   };
  
