@@ -54,7 +54,8 @@ export const AppRoute = ({children, ...props}) => {
   ) : (
     <Switch>
       <Route {...props} component={GuestLayout}
-             path={["/driff-register", "/register", "/magic-link", "/resetpassword/:token/:email", "/reset-password", "/login", "/authenticate/:token/:returnUrl?", "/request-form"]}
+             path={["/driff-register", "/register", "/magic-link", "/resetpassword/:token/:email",
+               "/reset-password", "/login", "/authenticate/:token/:returnUrl?", "/request-form", "/magic-link/:token"]}
              exact>
         {children}
       </Route>

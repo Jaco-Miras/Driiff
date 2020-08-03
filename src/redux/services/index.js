@@ -43,7 +43,8 @@ export {
   postExternalUserData,
   putExternalUserUpdate,
   postRequest,
-  postMagicLink
+  postMagicLink,
+  putMagicLink
 } from "./user";
 
 export {

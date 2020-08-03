@@ -291,6 +291,7 @@ export function getRequests(payload) {
   return apiCall({
     method: "GET",
     url,
+    data: payload,
   });
 }
 
@@ -300,6 +301,7 @@ export function acceptRequest(payload) {
   return apiCall({
     method: "PUT",
     url,
+    data: payload,
   });
 }
 
@@ -345,6 +347,7 @@ export function getDefaultBanners(payload) {
   return apiCall({
     method: "GET",
     url: url,
+    data: payload,
   });
 }
 
@@ -450,6 +453,14 @@ export function putExternalUserUpdate(payload = {}) {
 export function postMagicLink(payload) {
   return apiNoTokenCall({
     method: "POST",
+    url: `/magic-link`,
+    data: payload,
+  });
+}
+
+export function putMagicLink(payload) {
+  return apiNoTokenCall({
+    method: "PUT",
     url: `/magic-link`,
     data: payload,
   });

@@ -11,6 +11,7 @@ export const useUserLogin = (props) => {
   const dispatch = useDispatch();
   const history = useHistory();
   const authMatch = useRouteMatch("/authenticate/:token/:returnUrl?");
+  const magicLinkMatch = useRouteMatch("/magic-link/:token");
 
   const userActions = useUserActions();
 
@@ -18,6 +19,15 @@ export const useUserLogin = (props) => {
     if (history.location.pathname === "/logged-out") {
       userActions.logout();
       history.push('/login');
+    }
+
+    //authenticate user login from magic link
+    if (magicLinkMatch !== null) {
+      userActions.checkMagicLink(magicLinkMatch.params.token, (err, res) => {
+        if (res) {
+          userActions.login(res.data, "/workspace/chat");
+        }
+      });
     }
 
     //authenticate user login from backend

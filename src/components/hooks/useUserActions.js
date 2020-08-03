@@ -10,6 +10,7 @@ import {
   postRequest,
   postUploadProfileImage,
   putExternalUserUpdate,
+  putMagicLink,
   putUser,
   resetPassword,
   userGoogleLogin,
@@ -120,6 +121,23 @@ const useUserActions = () => {
       )
     );
   }, []);
+
+  const checkMagicLink = useCallback((token, callback = () => {
+  }) => {
+    dispatch(
+      putMagicLink({
+          token: token
+        },
+        (err, res) => {
+          if (err) {
+            toaster.error(<>Token expired or not working.</>)
+          }
+          callback(err, res);
+        }
+      )
+    );
+  }, []);
+
 
   const fetch = useCallback(
     ({skip = 0, limit = getUserFilter.limit, ...res}, callback = () => {
@@ -309,7 +327,7 @@ const useUserActions = () => {
     window.location.href = `${getAPIUrl({isDNS: true})}/auth-web/logout?redirect_link=${redirectLink}`;
   }, []);
 
-  const logout = useCallback(() => {
+  const logout = useCallback((callback) => {
     dispatch(toggleLoading(true));
     dispatch(
       userLogout({}, (err, res) => {
@@ -325,6 +343,7 @@ const useUserActions = () => {
               toaster.success(`You are logged out`);
             }));
           });
+        callback(err, res);
       })
     );
   }, []);
@@ -373,6 +392,7 @@ const useUserActions = () => {
     requestPasswordReset,
     checkEmail,
     sendMagicLink,
+    checkMagicLink,
     fetch,
     fetchStateCode,
     update,

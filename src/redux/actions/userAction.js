@@ -14,6 +14,7 @@ import {
   postRequest as postRequestService,
   postUploadProfileImage as postUploadProfileImageService,
   putExternalUserUpdate as putExternalUserUpdateService,
+  putMagicLink as putMagicLinkService,
   putUser as putUserService,
   resetPassword as resetPasswordService,
   updatePassword as updatePasswordService,
@@ -88,5 +89,9 @@ export function putExternalUserUpdate(payload, callback) {
 }
 
 export function postMagicLink(payload, callback) {
-  return dispatchActionToReducer(postMagicLinkService(payload), "MAGIC_LINK_START", "MAGIC_LINK_SUCCESS", "MAGIC_LINK_FAILURE", callback);
+  return dispatchActionToReducer(postMagicLinkService(payload), "POST_MAGIC_LINK_START", "POST_MAGIC_LINK_SUCCESS", "POST_MAGIC_LINK_FAILURE", callback);
+}
+
+export function putMagicLink(payload, callback) {
+  return dispatchActionToReducer(putMagicLinkService(payload), "PUT_MAGIC_LINK_START", "PUT_MAGIC_LINK_SUCCESS", "PUT_MAGIC_LINK_FAILURE", callback);
 }
