@@ -3,7 +3,7 @@ import React, { useCallback, useEffect } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { SvgEmptyState } from "../../common";
-import { usePosts } from "../../hooks";
+import { usePosts, useTranslation } from "../../hooks";
 import { PostDetail, PostFilterSearchPanel, PostItemPanel, PostSidebar } from "../post";
 
 const Wrapper = styled.div`
@@ -77,15 +77,42 @@ const WorkspacePostsPanel = (props) => {
     }
   }, [params.workspaceId]);
 
+  const {_t} = useTranslation();
+
+  const dictionary = {
+    createNewPost: _t("POST.CREATE_NEW_POST", "Create new post"),
+    all: _t("POST.ALL", "All"),
+    myPosts: _t("POST.MY_POSTS", "My posts"),
+    starred: _t("POST.STARRED", "Starred"),
+    archived: _t("POST.ARCHIVED", "Archived"),
+    draft: _t("POST.DRAFT", "Draft"),
+    drafts: _t("POST.DRAFTS", "Drafts"),
+    category: _t("POST.CATEGORY", "Category"),
+    replyRequired: _t("POST.REPLY_REQUIRED", "Reply required"),
+    mustRead: _t("POST.MUST_READ", "Must read"),
+    noReplies: _t("POST.NO_REPLIES", "No replies"),
+    sortBy: _t("POST.SORT_BY", "Sort by"),
+    starredFavorite: _t("POST.STARRED_FAVORITE", "Starred / Favorite"),
+    recent: _t("POST.RECENT", "Recent"),
+    unread: _t("POST.UNREAD", "Unread"),
+    searchPost: _t("POST.SEARCH_POST", "Search post"),
+    markAsRead: _t("POST.MARK_AS_READ", "Mark as read"),
+    markAsUnread: _t("POST.MARK_AS_UNREAD", "Mark as unread"),
+    share: _t("POST.SHARE", "Share"),
+    snooze: _t("POST.SNOOZE", "Snooze"),
+    follow: _t("POST.FOLLOW", "Follow"),
+    unFollow: _t("POST.UNFOLLOW", "UNFOLLOW")
+  };
+
   if (posts === null) return <></>;
 
   return (
     <Wrapper className={`container-fluid h-100 fadeIn ${className}`}>
       <div className="row app-block">
-        <PostSidebar isMember={isMember} workspace={workspace} filter={filter} tag={tag} postActions={actions} count={count} counters={counters} onGoBack={handleGoback} />
+        <PostSidebar isMember={isMember} workspace={workspace} filter={filter} tag={tag} postActions={actions} count={count} counters={counters} onGoBack={handleGoback} dictionary={dictionary}/>
         <div className="col-md-9 app-content">
           <div className="app-content-overlay" />
-          <PostFilterSearchPanel activeSort={sort} workspace={workspace} search={search} />
+          <PostFilterSearchPanel activeSort={sort} workspace={workspace} search={search} dictionary={dictionary}/>
           {/* <div className="card card-body app-content-body mb-4"> */}
           {posts.length === 0 && search === null ? (
             <div className="card card-body app-content-body mb-4">
@@ -93,7 +120,7 @@ const WorkspacePostsPanel = (props) => {
                 <SvgEmptyState icon={3} height={252} />
                 {isMember && (
                   <button className="btn btn-outline-primary btn-block" onClick={handleShowWorkspacePostModal}>
-                    Create new post
+                    {dictionary.createNewPost}
                   </button>
                 )}
               </EmptyState>
@@ -123,7 +150,7 @@ const WorkspacePostsPanel = (props) => {
                     <ul className="list-group list-group-flush ui-sortable fadeIn">
                       {posts &&
                         posts.map((p) => {
-                          return <PostItemPanel key={p.id} post={p} postActions={actions} />;
+                          return <PostItemPanel key={p.id} post={p} postActions={actions} dictionary={dictionary}/>;
                         })}
                     </ul>
                   </div>

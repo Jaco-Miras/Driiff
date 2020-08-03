@@ -92,7 +92,7 @@ const DashboardDescription = styled.div`
 `;
 
 const DashboardAboutWorkspace = (props) => {
-  const {className = "", onEditClick, workspace, isMember, isExternal} = props;
+  const {className = "", onEditClick, workspace, isMember, isExternal, dictionary} = props;
 
   const [prevWorkspaceDescription, setPrevWorkspaceDescription] = useState("");
   const [showMore, setShowMore] = useState(null);
@@ -147,7 +147,7 @@ const DashboardAboutWorkspace = (props) => {
     <Wrapper className={`dashboard-about-workspace card ${className}`}>
       <div className={`bg-overlay ${showMore === null ? "" : showMore === true ? "show" : "hide"}`} />
       <div className="card-body">
-        <h5 className="card-title">About this workspace {isMember === true && !isExternal && <SvgIconFeather icon="edit" onClick={onEditClick} />}</h5>
+        <h5 className="card-title">{dictionary.aboutThisWorkspace} {isMember === true && !isExternal && <SvgIconFeather icon="edit" onClick={onEditClick} />}</h5>
         {workspace && (
           <>
             <DashboardDescriptionContainer className={showMore === null ? "" : showMore === true ? "show" : "hide"}>
@@ -168,7 +168,7 @@ const DashboardAboutWorkspace = (props) => {
         {workspace && workspace.primary_files && workspace.primary_files.length > 0 && (
           <>
             <hr />
-            <span>File attachments:</span>
+            <span>{dictionary.fileAttachments}:</span>
             <FileAttachments attachedFiles={workspace.primary_files} workspace={workspace} type="workspace" showDelete={false}/>
           </>
         )}

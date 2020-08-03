@@ -5,7 +5,7 @@ import { addPostSearchResult } from "../../../redux/actions/workspaceActions";
 import { fetchPosts } from "../../../redux/actions/postActions";
 
 const PostSearch = (props) => {
-  const { search } = props;
+  const { search, placeholder } = props;
   const dispatch = useDispatch();
   const params = useParams();
   const [searchValue, setSearchValue] = useState(search === null ? "" : search);
@@ -56,7 +56,7 @@ const PostSearch = (props) => {
 
   return (
     <div className="input-group">
-      <input type="text" className="form-control" placeholder="Post search" value={searchValue} aria-describedby="button-addon1" onKeyDown={handleEnter} onChange={handleInputChange} />
+      <input type="text" className="form-control" placeholder={placeholder} value={searchValue} aria-describedby="button-addon1" onKeyDown={handleEnter} onChange={handleInputChange} />
       <div className="input-group-append">
         <button className="btn btn-outline-light" type="button" id="button-addon1" onClick={handleSearch}>
           <i className="ti-search" />

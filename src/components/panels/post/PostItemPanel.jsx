@@ -53,7 +53,7 @@ const Icon = styled(SvgIconFeather)`
 
 const PostItemPanel = (props) => {
   const user = useSelector((state) => state.session.user);
-  const { className = "", post, postActions } = props;
+  const { className = "", post, postActions, dictionary } = props;
 
   const { starPost, markPost, openPost, archivePost, markAsRead, markAsUnread, sharePost, snoozePost, followPost } = postActions;
 
@@ -94,7 +94,7 @@ const PostItemPanel = (props) => {
             {post.unread_count !== 0 && <div className="ml-2 badge badge-primary badge-pill">{post.unread_count}</div>}
           </div>
           <div className="pl-3 d-flex align-items-center">
-            <PostBadge post={post} />
+            <PostBadge post={post} dictionary={dictionary}/>
             {post.users_responsible.length > 0 && <AvatarGroup users={post.users_responsible} />}
             <Icon icon="archive" onClick={handleArchivePost} />
           </div>
@@ -102,11 +102,11 @@ const PostItemPanel = (props) => {
       </div>
       {post.type !== "draft_post" && (
         <MoreOptions className="ml-2" item={post} width={170} moreButton={"more-vertical"}>
-          <div onClick={() => markAsRead(post, true)}>Mark as read</div>
-          <div onClick={() => markAsUnread(post, true)}>Mark as unread</div>
-          <div onClick={() => sharePost(post)}>Share</div>
-          <div onClick={() => snoozePost(post)}>Snooze</div>
-          {post.author.id !== user.id && <div onClick={() => followPost(post)}>{post.is_followed ? "Unfollow" : "Follow"}</div>}
+          <div onClick={() => markAsRead(post, true)}>{dictionary.markAsRead}</div>
+          <div onClick={() => markAsUnread(post, true)}>{dictionary.markAsUnread}</div>
+          <div onClick={() => sharePost(post)}>{dictionary.share}</div>
+          <div onClick={() => snoozePost(post)}>{dictionary.snooze}</div>
+          {post.author.id !== user.id && <div onClick={() => followPost(post)}>{post.is_followed ? dictionary.unFollow : dictionary.follow}</div>}
         </MoreOptions>
       )}
     </Wrapper>
