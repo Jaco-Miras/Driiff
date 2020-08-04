@@ -49,11 +49,10 @@ const useDraft = (callback, type, text, textOnly, draftId) => {
       };
       console.log(payload);
       dispatch(updateDraft(payload));
+      dispatch(addToChannelDraft(payload));
     } else {
       dispatch(saveDraft(payload));
-    }
-
-    dispatch(addToChannelDraft(payload));
+    }    
   };
 
   // useEffect(() => {

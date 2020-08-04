@@ -719,6 +719,19 @@ export default function (state = INITIAL_STATE, action) {
         chatQuotes: updatedQuotes,
       };
     }
+    case "SAVE_DRAFT_SUCCESS": {
+      let updatedDrafts = { ...state.channelDrafts };
+      if (action.data.data.draft_type === "channel") {
+        updatedDrafts[action.data.data.channel_id] = {
+          ...action.data.data,
+          draft_id: action.data.id
+        }
+      }
+      return {
+        ...state,
+        channelDrafts: updatedDrafts
+      };
+    }
     case "ADD_TO_CHANNEL_DRAFTS": {
       let updatedChannelDrafts = state.channelDrafts;
       if (Object.keys(state.channelDrafts).length > 0 && state.channelDrafts.hasOwnProperty(action.data.channel_id)) {

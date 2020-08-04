@@ -251,6 +251,7 @@ const ChatInput = (props) => {
     if (draftId) {
       dispatch(deleteDraft({ type: "channel", draft_id: draftId }));
       dispatch(clearChannelDraft({ channel_id: selectedChannel.id }));
+      setDraftId(null);
     }
     handleClearQuillInput();
   };
@@ -506,7 +507,6 @@ const ChatInput = (props) => {
   useSaveInput(handleClearQuillInput, text, textOnly, quillContents);
   useQuillInput(handleClearQuillInput, reactQuillRef);
   useDraft(loadDraftCallback, "channel", text, textOnly, draftId);
-
   const [modules] = useQuillModules("chat", handleSubmit, "top", reactQuillRef, user.type === "external" ? selectedChannel.members : []);
 
   return (
