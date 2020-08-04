@@ -206,7 +206,7 @@ export function resetPassword(payload) {
  * @param {string} payload.password
  * @returns {Promise<*>}
  */
-export function updatePassword(payload) {
+export function postPasswordReset(payload) {
   let url = "/password/reset";
 
   return apiNoTokenCall({

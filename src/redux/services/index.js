@@ -35,7 +35,7 @@ export {
   getUser,
   authenticateGoogleLogin,
   resetPassword,
-  updatePassword,
+  postPasswordReset,
   checkDriffUserEmail,
   getUsers,
   putUser,
