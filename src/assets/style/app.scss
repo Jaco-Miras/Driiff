@@ -21089,3 +21089,9 @@ body.dark.small-navigation .navigation-menu-body ul li.navigation-divider:after 
 .infinite-scroll ul {
   padding-left: 0;
 }
+
+@media (max-width: 480px) {
+  .modal {
+    background: #ffffff;
+  }
+}
