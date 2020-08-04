@@ -492,6 +492,15 @@ const ForwardedSpan = styled.span`
   }
 `;
 
+const ChatNameNotAuthorMobile = styled.span`
+  display: none;
+  @media (max-width: 620px) {
+    display: block;
+    font-size: 11px;
+    line-height: 1.2;
+  }
+`;
+
 const ChatBubble = (props) => {
   const { reply, showAvatar, selectedChannel, showGifPlayer, isAuthor, addMessageRef, user, recipients } = props;
 
@@ -985,6 +994,12 @@ const ChatBubble = (props) => {
                 </>
               )}
               {reply.files.length > 0 && !reply.is_deleted && <ChatMessageFiles hasMessage={hasMessage} isAuthor={isAuthor} theme={chatSettings.chat_message_theme} chatFiles={chatFiles} files={reply.files} reply={reply} type="chat" />}
+
+                {!isAuthor && showAvatar && (
+                  <>
+                    <ChatNameNotAuthorMobile className="chat-name-not-author-mobile">{ reply.user.name }</ChatNameNotAuthorMobile>
+                  </>
+                )}
               {
                 <ReplyContent
                   hasFiles={hasFiles}
