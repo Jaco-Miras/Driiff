@@ -12,15 +12,18 @@ const Wrapper = styled.li`
 
 const ChatSearchItem = (props) => {
 
-    const { data } = props;
+    const { data, redirect } = props;
     const { channel, message } = data;
-
+    const handleRedirect = () => {
+        redirect.toChat(channel, message)
+    };
+    if (message === null) return null;
     return (
         <Wrapper className="list-group-item p-l-0 p-r-0">
             <div>
                 <Avatar id={message.user.id} name={message.user.name} imageLink={message.user.profile_image_link}/>
             </div>
-            <div className="ml-2">
+            <div className="ml-2" onClick={handleRedirect}>
                 <p>{message.user.name}</p>
                 <p className="text-muted" dangerouslySetInnerHTML={{__html: message.body}}></p>
             </div>
