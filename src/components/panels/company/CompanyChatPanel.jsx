@@ -4,6 +4,36 @@ import { useUserChannels } from "../../hooks";
 import { ChatContentPanel, ChatSidebarPanel } from "../chat";
 
 const Wrapper = styled.div`
+  @media (max-width: 1450px) {
+    .chat-sidebar-panel {
+      flex: 0 0 40%;
+      max-width: 40%;
+    }
+    .chat-content-panel {
+      flex: 0 0 60%;
+      max-width: 60%;
+    }
+  }
+  @media (max-width: 1280px) {
+    .chat-sidebar-panel {
+      flex: 0 0 45%;
+      max-width: 45%;
+    }
+    .chat-content-panel {
+      flex: 0 0 55%;
+      max-width: 55%;
+    }
+  }
+  @media (max-width: 992px) {
+    .chat-sidebar-panel {
+      flex: unset;
+      max-width: 100%;
+    }
+    .chat-content-panel {
+      flex: unset;
+      max-width: 100%;
+    }
+  }
 `;
 
 const CompanyChatPanel = (props) => {
