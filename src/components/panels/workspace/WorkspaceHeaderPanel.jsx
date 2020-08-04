@@ -21,6 +21,8 @@ const NavBarLeft = styled.div`
     font-weight: 400;
     height: 32px;
     margin-left: 12px;
+    padding-top: 0;
+    padding-bottom: 0;
     svg {
       color: #ffffff;
       margin-right: 6px;
