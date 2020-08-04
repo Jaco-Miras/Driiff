@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { MainSearch, SearchTabs, SearchPagination, TabContents } from "../../list/search";
 //import { SvgEmptyState } from "../../common";
-import { useSearch, useSearchActions } from "../../hooks";
+import { useSearch, useSearchActions, useRedirect } from "../../hooks";
 import { SvgIconFeather } from "../../common";
 
 const Wrapper = styled.div`
@@ -18,6 +18,7 @@ const Wrapper = styled.div`
 const UserSearchPanel = (props) => {
   const { className = "" } = props;
 
+  const redirect = useRedirect();
   const actions = useSearchActions();
   const { count, results, searching, tabs, value } = useSearch();
 
@@ -66,7 +67,7 @@ const UserSearchPanel = (props) => {
                 count > 0 && <SearchPagination activeTab={activeTab} tabs={tabs} actions={actions} value={value}/>
               }
               <SearchTabs activeTab={activeTab} onSelectTab={handleSelectTab} tabs={tabs}/>
-              <TabContents activeTab={activeTab} results={results} tabs={tabs}/>
+              <TabContents activeTab={activeTab} results={results} tabs={tabs} redirect={redirect}/>
               {
                 //count > 0 && <SearchPagination activeTab={activeTab} tabs={tabs} actions={actions} value={value}/>
               }

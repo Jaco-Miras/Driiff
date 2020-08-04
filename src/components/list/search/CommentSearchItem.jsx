@@ -12,7 +12,7 @@ const Wrapper = styled.li`
 
 const CommentSearchItem = (props) => {
 
-    const { comment } = props;
+    const { comment, redirect } = props;
     const { data } = comment;
 
     return (
