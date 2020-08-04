@@ -26,7 +26,11 @@ const RecentEditedFile = (props) => {
         {wsFiles &&
           wsFiles.recently_edited.length > 0 &&
           wsFiles.recently_edited.map((id) => {
-            return <FileListItem key={id} className="col-xl-3 col-lg-4 col-md-6 col-sm-12" file={wsFiles.files[id]} actions={actions} />;
+            if (wsFiles.files.hasOwnProperty(id)) {
+              return <FileListItem key={id} className="col-xl-3 col-lg-4 col-md-6 col-sm-12" file={wsFiles.files[id]} actions={actions} />;
+            } else {
+              return null;
+            }
           })}
       </div>
     </Wrapper>
