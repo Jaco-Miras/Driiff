@@ -7,9 +7,11 @@ import {
   getUsers,
   postExternalUserData,
   postMagicLink,
+  postPasswordReset,
   postRequest,
   postUploadProfileImage,
   putExternalUserUpdate,
+  putMagicLink,
   putUser,
   resetPassword,
   userGoogleLogin,
@@ -120,6 +122,23 @@ const useUserActions = () => {
       )
     );
   }, []);
+
+  const checkMagicLink = useCallback((token, callback = () => {
+  }) => {
+    dispatch(
+      putMagicLink({
+          token: token
+        },
+        (err, res) => {
+          if (err) {
+            toaster.error(<>Token expired or not working.</>)
+          }
+          callback(err, res);
+        }
+      )
+    );
+  }, []);
+
 
   const fetch = useCallback(
     ({skip = 0, limit = getUserFilter.limit, ...res}, callback = () => {
@@ -291,14 +310,32 @@ const useUserActions = () => {
     )
   }, []);
 
-  const requestPasswordReset = useCallback((payload) => {
+  const updatePassword = useCallback((payload, callback) => {
     dispatch(
-      resetPassword(payload, (err, res) => {
+      postPasswordReset(payload, (err, res) => {
+        if (err) {
+          toaster.error(<>Invalid or expired token.</>);
+          callback(err, res);
+        }
+
+        if (res) {
+          toaster.error(<>Password is updated. You are being logged in!</>);
+          login(res.data);
+        }
+      })
+    );
+  }, []);
+
+  const requestPasswordReset = useCallback((email) => {
+    dispatch(
+      resetPassword({
+        email: email
+      }, (err, res) => {
         if (err) {
           toaster.error(`Email not found`);
         }
         if (res) {
-          toaster.success(<>Password reset link sent to <b>{payload.email}</b>. Please check.</>)
+          toaster.success(<>Password reset link sent to <b>{email}</b>. Please check.</>)
         }
       })
     );
@@ -309,7 +346,7 @@ const useUserActions = () => {
     window.location.href = `${getAPIUrl({isDNS: true})}/auth-web/logout?redirect_link=${redirectLink}`;
   }, []);
 
-  const logout = useCallback(() => {
+  const logout = useCallback((callback) => {
     dispatch(toggleLoading(true));
     dispatch(
       userLogout({}, (err, res) => {
@@ -325,6 +362,7 @@ const useUserActions = () => {
               toaster.success(`You are logged out`);
             }));
           });
+        callback(err, res);
       })
     );
   }, []);
@@ -373,11 +411,13 @@ const useUserActions = () => {
     requestPasswordReset,
     checkEmail,
     sendMagicLink,
+    checkMagicLink,
     fetch,
     fetchStateCode,
     update,
     updateProfileImage,
     updateExternalUser,
+    updatePassword,
     fetchById,
     fetchMore,
     getReadOnlyFields,

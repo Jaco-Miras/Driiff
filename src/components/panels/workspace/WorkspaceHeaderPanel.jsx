@@ -6,7 +6,7 @@ import {addToModals} from "../../../redux/actions/globalActions";
 import {Avatar, SvgIconFeather} from "../../common";
 import {HeaderProfileNavigation} from "../common";
 import {SettingsLink} from "../../workspace";
-import {joinWorkspace, joinWorkspaceReducer} from "../../../redux/actions/workspaceActions";
+import {joinWorkspace} from "../../../redux/actions/workspaceActions";
 import {useToaster} from "../../hooks";
 
 const NavBarLeft = styled.div`
@@ -243,7 +243,7 @@ const WorspaceHeaderPanel = (props) => {
                     <li className="nav-item nav-item-folder">
                       <WorkspaceName>General</WorkspaceName>
                     </li>
-                    <li class="nav-item-chevron">
+                    <li className="nav-item-chevron">
                       <SvgIconFeather icon="chevron-right"/>
                     </li>
                     <li className="nav-item">
@@ -258,36 +258,36 @@ const WorspaceHeaderPanel = (props) => {
                   <li className="nav-item nav-item-folder">
                     <WorkspaceName>{activeTopic.folder_name}</WorkspaceName>
                   </li>
-                  <li class="nav-item-chevron">
-                    <SvgIconFeather icon="chevron-right" />
+                  <li className="nav-item-chevron">
+                    <SvgIconFeather icon="chevron-right"/>
                   </li>
                   <li className="nav-item">
                     <SubWorkspaceName>
                       {activeTopic.name}
                     </SubWorkspaceName>
                   </li>
-                  <li className="nav-item">{ !isExternal && <SettingsLink/> }</li>
-                  <li className="nav-item-last">
-                    <div className="nav-item-avatars-wrap">
-                      {activeTopic.members.map((m, i) => {
-                        return <StyledAvatar id={m.id} firstUser={i === 0} className="workspace-members" key={m.name}
-                                            name={m.name} imageLink={m.profile_image_link}/>;
-                      })}
-                    </div>
-                    {activeTopic.member_ids.includes(user.id) ? (
-                        <button onClick={handleEditWorkspace} className="btn btn-primary">
-                          <SvgIconFeather icon="user-plus"/>
-                          Invite
-                        </button>
-                    ) : (
-                        <button onClick={handleJoinWorkspace} className="btn btn-primary">
-                        <SvgIconFeather icon="user-plus" />
-                        Join
-                      </button>
-                    )}
-                  </li>
+                  <li className="nav-item">{!isExternal && <SettingsLink/>}</li>
                 </>
               )}
+              <li className="nav-item-last">
+                <div className="nav-item-avatars-wrap">
+                  {activeTopic.members.map((m, i) => {
+                    return <StyledAvatar id={m.id} firstUser={i === 0} className="workspace-members" key={m.name}
+                                         name={m.name} imageLink={m.profile_image_link}/>;
+                  })}
+                </div>
+                {activeTopic.member_ids.includes(user.id) ? (
+                  <button onClick={handleEditWorkspace} className="btn btn-primary">
+                    <SvgIconFeather icon="user-plus"/>
+                    Invite
+                  </button>
+                ) : (
+                  <button onClick={handleJoinWorkspace} className="btn btn-primary">
+                    <SvgIconFeather icon="user-plus"/>
+                    Join
+                  </button>
+                )}
+              </li>
             </>
           ) : (
             <>

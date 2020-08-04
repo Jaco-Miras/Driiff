@@ -35,7 +35,7 @@ export {
   getUser,
   authenticateGoogleLogin,
   resetPassword,
-  updatePassword,
+  postPasswordReset,
   checkDriffUserEmail,
   getUsers,
   putUser,
@@ -43,7 +43,8 @@ export {
   postExternalUserData,
   putExternalUserUpdate,
   postRequest,
-  postMagicLink
+  postMagicLink,
+  putMagicLink
 } from "./user";
 
 export {
