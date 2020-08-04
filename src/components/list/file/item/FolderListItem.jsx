@@ -2,7 +2,7 @@ import React from "react";
 import { useRouteMatch } from "react-router-dom";
 import styled from "styled-components";
 import { replaceChar } from "../../../../helpers/stringFormatter";
-import { ToolTip } from "../../../common";
+import { SvgIconFeather, ToolTip } from "../../../common";
 import { FolderOptions } from "../../../panels/files";
 
 const Wrapper = styled.div`
@@ -24,6 +24,12 @@ const Wrapper = styled.div`
   }
 `;
 
+const Drive = styled(SvgIconFeather)`
+  position: absolute;
+  top: 10px;
+  left: 8px;
+`;
+
 const FolderListItem = (props) => {
   const { className = "", folder, actions, isMember, history, params, handleAddEditFolder } = props;
 
@@ -32,11 +38,15 @@ const FolderListItem = (props) => {
   const handleRedirect = (e) => {
     e.preventDefault();
 
-    if (path === "/workspace/files/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName" || path === "/workspace/files/:folderId/:folderName/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName") {
-      let pathname = url.split("/folder/")[0];
-      history.push(pathname + `/folder/${folder.id}/${replaceChar(folder.search)}`);
+    if (folder.hasOwnProperty("payload")) {
+      window.open(folder.payload.url, "_blank");
     } else {
-      history.push(history.location.pathname + `/folder/${folder.id}/${replaceChar(folder.search)}`);
+      if (path === "/workspace/files/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName" || path === "/workspace/files/:folderId/:folderName/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName") {
+        let pathname = url.split("/folder/")[0];
+        history.push(pathname + `/folder/${folder.id}/${replaceChar(folder.search)}`);
+      } else {
+        history.push(history.location.pathname + `/folder/${folder.id}/${replaceChar(folder.search)}`);
+      }
     }
   };
 
@@ -44,8 +54,9 @@ const FolderListItem = (props) => {
     <Wrapper className={`file-list-item cursor-pointer ${className}`} onClick={handleRedirect}>
       <div className="card  app-file-list">
         <div className="app-file-icon">
+          {folder.hasOwnProperty("payload") && <Drive icon="gdrive" viewBox="0 0 512 512" height="20" width="15" fill="#000" opacity=".8"/>}
           <i className="fa fa-folder-o text-instagram" />
-          <FolderOptions folder={folder} actions={actions} isMember={isMember} history={history} params={params} handleAddEditFolder={handleAddEditFolder} />
+          {!folder.hasOwnProperty("payload") && <FolderOptions folder={folder} actions={actions} isMember={isMember} history={history} params={params} handleAddEditFolder={handleAddEditFolder} />}
         </div>
         <div className="p-2 small">
           <ToolTip content={folder.search}>

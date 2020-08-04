@@ -77,14 +77,18 @@ const FolderList = (props) => {
   const [active, setActive] = useState(false);
 
   const handleSelectFolder = () => {
-    clearFilter();
-    if (path === "/workspace/files/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName" || path === "/workspace/files/:folderId/:folderName/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName") {
-      let pathname = url.split("/folder/")[0];
-      history.push(pathname + `/folder/${folder.id}/${replaceChar(folder.search)}`);
+    if (folder.hasOwnProperty("payload")) {
+      window.open(folder.payload.url, "_blank");
     } else {
-      history.push(history.location.pathname + `/folder/${folder.id}/${replaceChar(folder.search)}`);
+      clearFilter();
+      if (path === "/workspace/files/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName" || path === "/workspace/files/:folderId/:folderName/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName") {
+        let pathname = url.split("/folder/")[0];
+        history.push(pathname + `/folder/${folder.id}/${replaceChar(folder.search)}`);
+      } else {
+        history.push(history.location.pathname + `/folder/${folder.id}/${replaceChar(folder.search)}`);
+      }
+      setShowFolders((prevState) => !prevState);
     }
-    setShowFolders((prevState) => !prevState);
   };
 
   const handleSelectSubFolder = (f) => {
@@ -129,6 +133,7 @@ const FolderList = (props) => {
     <Wrapper ref={ref.container} className={`folder-list fadeIn ${className}`} selected={activeFolder ? activeFolder.id == folder.id : false}>
       <a onClick={handleSelectFolder}>
         {folder.search}
+        {folder.hasOwnProperty("payload") && <SvgIconFeather className={"ml-2"}icon="gdrive" viewBox="0 0 512 512" height="20" width="15" fill="#000" opacity=".8"/>}
         {Object.values(folders).filter((f) => {
           return !f.is_archived && f.parent_folder && f.parent_folder.id === folder.id;
         }).length > 0 && <i className={`sub-menu-arrow ti-angle-up ${showFolders ? "ti-minus rotate-in" : "ti-plus"}`} />}
