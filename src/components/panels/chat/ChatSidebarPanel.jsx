@@ -33,8 +33,31 @@ const Wrapper = styled.div`
 
 const Search = styled(SearchForm)`
   margin: 0 0 1.5rem !important;
+
+  .form-control {
+    border-radius: 8px !important;
+    padding-left: 40px;
+    transition: padding-left 0.4s cubic-bezier(0.275, 0.42, 0, 1);
+    &:focus {
+      padding-left: 12px;
+    }
+  }
+  .input-group-append {
+    position: absolute;
+    top: 2px;
+    left: 0;
+    button {
+      border: 0 !important;
+      padding: 10px 14px !important;
+      color: #AAAAAA;
+    }
+  }
+
   @media (max-width: 480px) {
     margin: 0 0 0.75rem !important;
+  }
+  &:placeholder {
+    color: #AAAAAA;
   }
 `;
 
@@ -91,8 +114,8 @@ const ChatSidebarPanel = (props) => {
   return (
     <Wrapper className={`chat-sidebar ${className}`}>
       <div className="chat-sidebar-header">
-        <Search onChange={onSearchChange} placeholder="Chat search" />
-        <ul ref={refs.navTab} className="nav nav-tabs" role="tabList">
+        <Search onChange={onSearchChange} className="chat-search" placeholder="Search contacts or chats" />
+        <ul ref={refs.navTab} className="nav nav-pills" role="tabList">
           <li className="nav-item">
             <span className="nav-link active" id="pills-home-tab" data-toggle="pill" onClick={handleTabChange} role="tab" aria-controls="pills-home" aria-selected="true">
               Chats
