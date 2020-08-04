@@ -793,6 +793,7 @@ export default (state = INITIAL_STATE, action) => {
         newWorkspaceFiles[action.data.topic_id].trash_files = {};
         newWorkspaceFiles[action.data.topic_id].trash = 0;
         newWorkspaceFiles[action.data.topic_id].storage = newWorkspaceFiles[action.data.topic_id].storage - totalSize;
+        newWorkspaceFiles[action.data.topic_id].folders = {};
         return {
           ...state,
           workspaceFiles: newWorkspaceFiles,
