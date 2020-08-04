@@ -50,6 +50,7 @@ const Search = styled(SearchForm)`
       border: 0 !important;
       padding: 10px 14px !important;
       color: #AAAAAA;
+      pointer-events: none;
     }
   }
 

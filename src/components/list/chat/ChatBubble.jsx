@@ -177,6 +177,9 @@ const QuoteContainer = styled.div`
     float: left;
     left: 5px;
     opacity: 0.8;
+    @media all and (max-width: 620px) {
+      display: none;
+    }
   }
   &:after {
     ${(props) => !props.isEmoticonOnly && "content: ''"};
@@ -184,14 +187,25 @@ const QuoteContainer = styled.div`
     ${(props) => (props.isAuthor ? "border-left-color: " + props.theme.self.chat_bubble_quote_background_color : "border-right-color: " + props.theme.others.chat_bubble_quote_background_color)};
     position: absolute;
     top: ${(props) => (props.showAvatar && !props.isAuthor ? "6px" : "8px")};
-
     z-index: 12;
     ${(props) => (!props.isAuthor ? "left: -19px" : "right: -20px")};
     height: 5px;
+    @media all and (max-width: 620px) {
+      display: none;
+    }
+  }
+  @media all and (max-width: 620px) {
+    margin: -7px -7px 10px -7px;
+    padding: 7px;
   }
 `;
 const QuoteAuthor = styled.div`
   font-weight: 600;
+  @media all and (max-width: 620px) {
+    font-size: 11px;
+    line-height: 1.2;
+    font-weight: normal;
+  }
 `;
 const QuoteContent = styled.div`
   color: ${(props) => (props.isAuthor ? props.theme.self.chat_bubble_quote_text_color : props.theme.others.chat_bubble_quote_text_color)};
