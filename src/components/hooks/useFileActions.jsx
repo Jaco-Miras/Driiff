@@ -2,30 +2,30 @@ import React, {useCallback, useRef} from "react";
 import {useDispatch} from "react-redux";
 import {copyTextToClipboard} from "../../helpers/commonFunctions";
 import {
-    addFileSearchResults,
-    addFolder,
-    addRemoveFavorite,
-    clearFileSearchResults,
-    deleteFile,
-    deleteFolder,
-    deleteTrash,
-    favoriteFile,
-    getWorkspaceFavoriteFiles,
-    getWorkspaceFiles,
-    getWorkspaceFilesDetail,
-    getWorkspaceFolders,
-    getWorkspaceGoogleFileAttachments,
-    getWorkspaceGoogleFolderAttachments,
-    getWorkspacePopularFiles,
-    getWorkspacePrimaryFiles,
-    getWorkspaceRecentlyEditedFiles,
-    getWorkspaceTrashFiles,
-    postGoogleAttachments,
-    putFile,
-    putFolder,
-    setViewFiles,
-    uploadFilesReducer,
-    uploadWorkspaceFiles,
+  addFileSearchResults,
+  addFolder,
+  addRemoveFavorite,
+  clearFileSearchResults,
+  deleteFile,
+  deleteFolder,
+  deleteTrash,
+  favoriteFile,
+  getWorkspaceFavoriteFiles,
+  getWorkspaceFiles,
+  getWorkspaceFilesDetail,
+  getWorkspaceFolders,
+  getWorkspaceGoogleFileAttachments,
+  getWorkspaceGoogleFolderAttachments,
+  getWorkspacePopularFiles,
+  getWorkspacePrimaryFiles,
+  getWorkspaceRecentlyEditedFiles,
+  getWorkspaceTrashFiles,
+  postGoogleAttachments,
+  putFile,
+  putFolder,
+  setViewFiles,
+  uploadFilesReducer,
+  uploadWorkspaceFiles,
 } from "../../redux/actions/fileActions";
 import {addToModals} from "../../redux/actions/globalActions";
 import {useToaster} from "./index";
@@ -367,11 +367,18 @@ const useFileActions = (params = null) => {
 
     const viewFiles = useCallback(
         (file, callback) => {
+          if (file.hasOwnProperty("payload_id")) {
+            let a = document.createElement('a');
+            a.href = file.download_link.replace("/preview", "/view");
+            a.target = "_blank";
+            a.click();
+          } else {
             let payload = {
-                workspace_id: params.workspaceId,
-                file_id: file.id,
+              workspace_id: params.workspaceId,
+              file_id: file.id,
             };
             dispatch(setViewFiles(payload, callback));
+          }
         },
         [dispatch, params]
     );
@@ -454,7 +461,17 @@ const useFileActions = (params = null) => {
     const download = useCallback(
         (file) => {
             const handleDownloadFile = () => {
-                window.open(file.download_link);
+              if (file.hasOwnProperty("payload_id")) {
+                let a = document.createElement('a');
+                a.href = `https://drive.google.com/u/0/uc?export=download&id=${file.payload_id}`;
+                a.target = "_blank";
+                a.click();
+              } else {
+                let a = document.createElement('a');
+                a.href = file.download_link;
+                a.target = "_blank";
+                a.click();
+              }
             };
             let payload = {
                 type: "confirmation",

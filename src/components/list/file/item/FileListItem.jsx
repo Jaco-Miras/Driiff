@@ -1,8 +1,8 @@
-import React, { useCallback } from "react";
+import React, {useCallback} from "react";
 import styled from "styled-components";
-import { SvgIconFeather, ToolTip } from "../../../common";
-import { FileOptions } from "../../../panels/files";
-import { ProgressBar } from "../../../panels/common";
+import {SvgIconFeather, ToolTip} from "../../../common";
+import {FileOptions} from "../../../panels/files";
+import {ProgressBar} from "../../../panels/common";
 
 const Wrapper = styled.div`
   .card {
@@ -67,7 +67,13 @@ const FileListItem = (props) => {
         </div>
         <div className="p-2 small">
           <ToolTip content={file.name ? file.name : file.search}>
-            <div className="file-name">{file.name ? file.name : file.search}</div>
+            <div className="file-name">
+              {
+                file.hasOwnProperty("payload_id") &&
+                <SvgIconFeather className={"mr-2"} icon="gdrive" viewBox="0 0 512 512" fill="#000" height="20"
+                                width="15" opacity=".8"/>
+              }
+              {file.name ? file.name : file.search}</div>
           </ToolTip>
           <div className="text-muted">
             {fileSizeUnit.size.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0]}
