@@ -71,11 +71,15 @@ const WrapperDiv = styled(InputGroup)`
     position: relative;
     max-width: 100%;
     margin-left: 128px;
-
+    @media all and (max-width: 480px) {
+        margin-left: 0;
+    }
     ul {
       margin-right: 128px;
       margin-bottom: 0;
-
+      @media all and (max-width: 480px) {
+        padding-right: 40px;
+      }
       li {
         white-space: nowrap;
         text-overflow: ellipsis;

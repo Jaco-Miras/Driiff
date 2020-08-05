@@ -28,6 +28,7 @@ const PostFilterTag = (props) => {
     }
     dispatch(updateWorkspacePostFilterSort(payload));
     onGoBack();
+    document.body.classList.remove("mobile-modal-open");
   };
 
   return (

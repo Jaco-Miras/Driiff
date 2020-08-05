@@ -11,9 +11,16 @@ const Wrapper = styled.div`
       border-bottom-right-radius: 0 !important;
       display: flex;
       flex-direction: column;
+      .card-body {
+        display: none;
+      }
       .create-new-post-wrapper {
         border-top: 1px solid #ebebeb;
+        display: block;
         order: 9;
+      }
+      .list-group-flush {
+        border-top: 1px solid #ebebeb;
       }
     }
   }

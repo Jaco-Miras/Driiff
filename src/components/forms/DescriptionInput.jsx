@@ -58,6 +58,14 @@ const WrapperDiv = styled(InputGroup)`
     top: 55px;
     position: relative;
     left: 0px;
+    @media (max-width: 620px) {
+      position: absolute;
+      right: 0;
+      bottom: -20px;
+      left: auto;
+      top: auto;
+      text-align: right;
+    }
   }
 `;
 
@@ -124,7 +132,8 @@ const DescriptionInputWrapper = styled.div`
 
 const Buttons = styled.div`
   padding: 5px;
-  float: right;
+  display: flex;
+  justify-content: flex-end;
 `;
 
 const PickerContainer = styled(PickerEmoji)`
