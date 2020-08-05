@@ -142,15 +142,17 @@ export default (state = INITIAL_STATE, action) => {
     case "SEARCH_SUCCESS": {
       let tabs = {...state.tabs};
       if (action.data.hasOwnProperty("count_category")) {
-        let keys = [...new Set(action.data.result.map((r) => r.type))];
+        let keys = Object.keys(action.data.count_category);
         keys.sort((a,b) => a.localeCompare(b)).map((k) => {
           let items = action.data.result.filter((r) => r.type === k);
-          tabs[k] = {
-            count: items.length,
-            total_count: action.data.count_category[k],
-            page: 1,
-            items: items,
-            maxPage: Math.ceil(action.data.count_category[k] / 10)
+          if (action.data.count_category[k] > 0) {
+            tabs[k] = {
+              count: items.length,
+              total_count: action.data.count_category[k],
+              page: 1,
+              items: items,
+              maxPage: Math.ceil(action.data.count_category[k] / 10)
+            }
           }
         })
       } else {

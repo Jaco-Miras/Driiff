@@ -793,6 +793,11 @@ export default (state = INITIAL_STATE, action) => {
         newWorkspaceFiles[action.data.topic_id].trash_files = {};
         newWorkspaceFiles[action.data.topic_id].trash = 0;
         newWorkspaceFiles[action.data.topic_id].storage = newWorkspaceFiles[action.data.topic_id].storage - totalSize;
+        Object.values(newWorkspaceFiles[action.data.topic_id].folders).forEach((f) => {
+          if (f.is_archived){
+            delete newWorkspaceFiles[action.data.topic_id].folders[f.id];
+          }
+        });
         return {
           ...state,
           workspaceFiles: newWorkspaceFiles,

@@ -50,7 +50,11 @@ const SearchPagination = (props) => {
         if (activeTab && !fetching) {
             let page = tabs[activeTab.toUpperCase()].page;
             let count = tabs[activeTab.toUpperCase()].count;
-            if (page === 1 && count < 10 && tabs[activeTab.toUpperCase()].total_count > 10) {
+            if (
+                (page === 1 && count < 10 && tabs[activeTab.toUpperCase()].total_count > 10)
+                ||
+                (page === 1 && count === 0)
+                ) {
                 loadResults(count, 10);
             }
         }

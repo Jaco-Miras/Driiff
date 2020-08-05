@@ -128,6 +128,7 @@ const ChatBubbleContainer = styled.div`
       margin-top: ${(props) => props.showAvatar && props.isAuthor && "8px"};
       ${(props) => (!props.showAvatar && !props.isAuthor && !props.isBot) && "margin-left: 0"};
       ${(props) => (props.isAuthor === true && !props.showAvatar) && "position: relative; right: 0px;"};
+      ${(props) => props.isAuthor === true && "position: relative; right: 0px;"};
     }
     ${(props) =>
       !props.isEmoticonOnly &&
@@ -262,6 +263,7 @@ const ChatBubbleQuoteDiv = styled.div`
 
   @media (max-width: 620px) {
     ${(props) => (!props.showAvatar && !props.isAuthor) && "margin-left: 0"};
+    ${(props) => !props.isAuthor === true && "margin-left: 0"};
   }
 `;
 const SystemMessageContainer = styled.div`
@@ -323,6 +325,9 @@ const StyledAvatar = styled(Avatar)`
   img {
     width: 21px !important;
     height: 21px !important;
+  }
+  @media (max-width: 620px) {
+    display: none;
   }
 `;
 

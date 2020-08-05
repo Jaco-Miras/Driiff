@@ -36,10 +36,14 @@ const FilesHeader = (props) => {
     clearFilter();
     if (wsFiles.folders.hasOwnProperty(e.target.dataset.value)) {
       let f = wsFiles.folders[e.target.dataset.value];
-      if (params.hasOwnProperty("fileFolderId")) {
-        history.push(history.location.pathname.split("/folder/")[0] + `/folder/${f.id}/${replaceChar(f.search)}`);
+      if (f.hasOwnProperty("payload")) {
+        window.open(f.payload.url, "_blank");
       } else {
-        history.push(history.location.pathname + `/folder/${f.id}/${replaceChar(f.search)}`);
+        if (params.hasOwnProperty("fileFolderId")) {
+          history.push(history.location.pathname.split("/folder/")[0] + `/folder/${f.id}/${replaceChar(f.search)}`);
+        } else {
+          history.push(history.location.pathname + `/folder/${f.id}/${replaceChar(f.search)}`);
+        }
       }
     }
   };

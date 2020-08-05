@@ -11,13 +11,13 @@ import {
   logout as logoutService,
   postExternalUserData as postExternalUserDataService,
   postMagicLink as postMagicLinkService,
+  postPasswordReset as postPasswordResetService,
   postRequest as postRequestService,
   postUploadProfileImage as postUploadProfileImageService,
   putExternalUserUpdate as putExternalUserUpdateService,
   putMagicLink as putMagicLinkService,
   putUser as putUserService,
   resetPassword as resetPasswordService,
-  updatePassword as updatePasswordService,
 } from "../services";
 
 export const postRequest = (payload, callback) => {
@@ -56,8 +56,8 @@ export function resetPassword(payload, callback) {
   return dispatchActionToReducer(resetPasswordService(payload), "RESET_PASSWORD_START", "RESET_PASSWORD_SUCCESS", "RESET_PASSWORD_FAILURE", callback);
 }
 
-export function updatePassword(payload, callback) {
-  return dispatchActionToReducer(updatePasswordService(payload), "RESET_PASSWORD_START", "RESET_PASSWORD_SUCCESS", "RESET_PASSWORD_FAILURE", callback);
+export function postPasswordReset(payload, callback) {
+  return dispatchActionToReducer(postPasswordResetService(payload), "RESET_PASSWORD_START", "RESET_PASSWORD_SUCCESS", "RESET_PASSWORD_FAILURE", callback);
 }
 
 export function checkDriffUserEmail(payload, callback) {

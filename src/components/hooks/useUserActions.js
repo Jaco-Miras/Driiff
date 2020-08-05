@@ -7,6 +7,7 @@ import {
   getUsers,
   postExternalUserData,
   postMagicLink,
+  postPasswordReset,
   postRequest,
   postUploadProfileImage,
   putExternalUserUpdate,
@@ -309,14 +310,32 @@ const useUserActions = () => {
     )
   }, []);
 
-  const requestPasswordReset = useCallback((payload) => {
+  const updatePassword = useCallback((payload, callback) => {
     dispatch(
-      resetPassword(payload, (err, res) => {
+      postPasswordReset(payload, (err, res) => {
+        if (err) {
+          toaster.error(<>Invalid or expired token.</>);
+          callback(err, res);
+        }
+
+        if (res) {
+          toaster.error(<>Password is updated. You are being logged in!</>);
+          login(res.data);
+        }
+      })
+    );
+  }, []);
+
+  const requestPasswordReset = useCallback((email) => {
+    dispatch(
+      resetPassword({
+        email: email
+      }, (err, res) => {
         if (err) {
           toaster.error(`Email not found`);
         }
         if (res) {
-          toaster.success(<>Password reset link sent to <b>{payload.email}</b>. Please check.</>)
+          toaster.success(<>Password reset link sent to <b>{email}</b>. Please check.</>)
         }
       })
     );
@@ -398,6 +417,7 @@ const useUserActions = () => {
     update,
     updateProfileImage,
     updateExternalUser,
+    updatePassword,
     fetchById,
     fetchMore,
     getReadOnlyFields,

@@ -23,6 +23,7 @@ const WorkspaceDashboardPanel = (props) => {
   const { params } = match;
   const {_t} = useTranslation();
   const { recentPosts } = usePosts();
+  const width = window.innerWidth;
 
   const handleEditClick = () => {
     actions.showModal(workspace, "edit", "workspace");
@@ -40,15 +41,28 @@ const WorkspaceDashboardPanel = (props) => {
   return (
     <Wrapper className={`container-fluid fadeIn ${className}`}>
       <div className={"row"}>
-        <div className={"col-md-6"}>
-          <DashboardAboutWorkspace isMember={isMember} workspace={workspace} onEditClick={handleEditClick} isExternal={isExternal} dictionary={dictionary}/>
-          <TimelinePanel timeline={timeline} actions={actions} params={params} dictionary={dictionary} />
-        </div>
+        {width > 620 ?
+          <>
+            <div className={"col-md-6"}>
+              <DashboardAboutWorkspace isMember={isMember} workspace={workspace} onEditClick={handleEditClick} isExternal={isExternal} dictionary={dictionary}/>
+              <TimelinePanel timeline={timeline} actions={actions} params={params} dictionary={dictionary} />
+            </div>
 
-        <div className={"col-md-6"}>
-          <DashboardTeam workspace={workspace} onEditClick={handleEditClick} isMember={isMember} isExternal={isExternal} dictionary={dictionary}/>
-          <RecentPosts posts={recentPosts} dictionary={dictionary}/>
-        </div>
+            <div className={"col-md-6"}>
+              <DashboardTeam workspace={workspace} onEditClick={handleEditClick} isMember={isMember} isExternal={isExternal} dictionary={dictionary}/>
+              <RecentPosts posts={recentPosts} dictionary={dictionary}/>
+            </div>
+          </>
+        :
+          <>
+            <div className={"col-md-12"}>
+              <DashboardAboutWorkspace isMember={isMember} workspace={workspace} onEditClick={handleEditClick} isExternal={isExternal} dictionary={dictionary}/>
+              <DashboardTeam workspace={workspace} onEditClick={handleEditClick} isMember={isMember} isExternal={isExternal} dictionary={dictionary}/>
+              <RecentPosts posts={recentPosts} dictionary={dictionary}/>
+              <TimelinePanel timeline={timeline} actions={actions} params={params} dictionary={dictionary} />
+            </div>
+          </>
+        }
       </div>
     </Wrapper>
   );
