@@ -3,82 +3,16 @@ import { FileSearchItem } from "./index";
 
 const FilesTabResults = (props) => {
 
-    const { files, page } = props;
+    const { files, page, redirect } = props;
 
     return (
         <ul className="list-group list-group-flush">
             {
                 Object.values(files).slice(page > 1 ? (page*10)-10 : 0, page*10).map((f) => {
-                    return <FileSearchItem key={f.data.id} file={f}/>
+                    return <FileSearchItem key={f.data.id} file={f.data} redirect={redirect}/>
                 })
             }
         </ul>
-        // <div className="row">
-        //     <div className="col-lg-4 col-md-6">
-        //         <div className="card border">
-        //         <img className="card-img-top" src="assets/media/image/photo1.jpg" alt="image" />
-        //         <div className="card-body">
-        //             <p className="card-text">Some quick example text to build on the card title and make up...</p>
-        //             <a href="#" className="text-uppercase font-size-11">
-        //             Read More
-        //             </a>
-        //         </div>
-        //         </div>
-        //     </div>
-        //     <div className="col-lg-4 col-md-6">
-        //         <div className="card border">
-        //         <img className="card-img-top" src="assets/media/image/photo2.jpg" alt="image" />
-        //         <div className="card-body">
-        //             <p className="card-text">Some quick example text to build on the card title and make up...</p>
-        //             <a href="#" className="text-uppercase font-size-11">
-        //             Read More
-        //             </a>
-        //         </div>
-        //         </div>
-        //     </div>
-        //     <div className="col-lg-4 col-md-6">
-        //         <div className="card border">
-        //         <img className="card-img-top" src="assets/media/image/photo3.jpg" alt="image" />
-        //         <div className="card-body">
-        //             <p className="card-text">Some quick example text to build on the card title and make up...</p>
-        //             <a href="#" className="text-uppercase font-size-11">
-        //             Read More
-        //             </a>
-        //         </div>
-        //         </div>
-        //     </div>
-        //     <div className="col-lg-4 col-md-6">
-        //         <div className="card border">
-        //         <img className="card-img-top" src="assets/media/image/photo4.jpg" alt="image" />
-        //         <div className="card-body">
-        //             <p className="card-text">Some quick example text to build on the card title and make up...</p>
-        //             <a href="#" className="text-uppercase font-size-11">
-        //             Read More
-        //             </a>
-        //         </div>
-        //         </div>
-        //     </div>
-        //     <div className="col-lg-4 col-md-6">
-        //         <div className="card border">
-        //         <img className="card-img-top" src="assets/media/image/photo5.jpg" alt="image" />
-        //         <div className="card-body">
-        //             <p className="card-text">Some quick example text to build on the card title and make up...</p>
-        //             <a href="#">READ MORE</a>
-        //         </div>
-        //         </div>
-        //     </div>
-        //     <div className="col-lg-4 col-md-6">
-        //         <div className="card border">
-        //         <img className="card-img-top" src="assets/media/image/photo6.jpg" alt="image" />
-        //         <div className="card-body">
-        //             <p className="card-text">Some quick example text to build on the card title and make up...</p>
-        //             <a href="#" className="text-uppercase font-size-11">
-        //             Read More
-        //             </a>
-        //         </div>
-        //         </div>
-        //     </div>
-        // </div>
     );
 };
 
