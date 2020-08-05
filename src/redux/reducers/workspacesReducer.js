@@ -128,7 +128,8 @@ export default (state = INITIAL_STATE, action) => {
       let updatedWorkspaces = { ...state.workspaces };
       let updatedFolders = { ...state.folders };
       let workspace = null;
-      if (state.workspacesLoaded && action.data.type === "WORKSPACE") {
+      if (state.workspacesLoaded && action.data.type === "WORKSPACE" && updatedWorkspaces.hasOwnProperty(action.data.id)) {
+        let updatedTopic = { ...state.activeTopic };
         workspace = { ...state.workspaces[action.data.id] };
         workspace = {
           ...workspace,
@@ -141,6 +142,17 @@ export default (state = INITIAL_STATE, action) => {
           folder_name: action.data.workspace_id === 0 ? null : action.data.current_workspace_folder_name 
         };
         updatedWorkspaces[workspace.id] = workspace;
+        if (state.activeTopic && state.activeTopic.id === workspace.id) {
+          updatedTopic = workspace;
+        }
+        if (!action.data.member_ids.some((id) => id === state.user.id)) {
+          if (workspace.is_lock === 1 || state.user.type === "external") {
+            delete updatedWorkspaces[workspace.id];
+            if (Object.values(updatedWorkspaces).length) {
+              updatedTopic = Object.values(updatedWorkspaces)[0];
+            }
+          }
+        }
         if (action.data.workspace_id !== 0) {
           if (action.data.original_workspace_id !== action.data.workspace_id) {
             //different folder
@@ -157,7 +169,7 @@ export default (state = INITIAL_STATE, action) => {
         }
         return {
           ...state,
-          activeTopic: state.activeTopic && state.activeTopic.id === workspace.id ? workspace : state.activeTopic,
+          activeTopic: updatedTopic,
           workspaces: updatedWorkspaces
         }
       } else if (state.workspacesLoaded && action.data.type === "FOLDER") {
@@ -177,6 +189,8 @@ export default (state = INITIAL_STATE, action) => {
           folders: updatedFolders,
           workspaces: updatedWorkspaces
         }
+      } else {
+        return state;
       }
     }
     case "SET_ACTIVE_TOPIC": {
@@ -186,17 +200,17 @@ export default (state = INITIAL_STATE, action) => {
       }
     }
     case "SET_SELECTED_CHANNEL": {
-      let workspace = { ...state.activeTopic };
-      let workspaces = { ...state.workspaces };
-      if (action.data.type === "TOPIC") {
-        workspaces[workspace.id].channel.loaded = true;
-        workspace.channel.loaded = true;
-      }
+      // let workspace = { ...state.activeTopic };
+      // let workspaces = { ...state.workspaces };
+      // if (action.data.type === "TOPIC") {
+      //   workspaces[workspace.id].channel.loaded = true;
+      //   workspace.channel.loaded = true;
+      // }
     
       return {
         ...state,
-        activeTopic: action.data.type === "TOPIC" ? workspace : state.activeTopic,
-        workspaces: workspaces,
+        // activeTopic: action.data.type === "TOPIC" ? workspace : state.activeTopic,
+        // workspaces: workspaces,
         activeChannelId: action.data.type === "TOPIC" ? action.data.id : state.activeChannelId
       };
     }
@@ -907,7 +921,6 @@ export default (state = INITIAL_STATE, action) => {
         activeTopic: updatedTopic,
       };
     }
-    //recheck this
     case "GET_WORKSPACE_SUCCESS": {
       let updatedWorkspaces = { ...state.workspaces };
       if (Object.keys(updatedWorkspaces).length > 0) {
@@ -916,7 +929,14 @@ export default (state = INITIAL_STATE, action) => {
         } else {
           updatedWorkspaces[action.data.topic_id] = {
             ...action.data.workspace_data,
+            active: action.data.workspace_data.topic_detail.active,
+            channel: action.data.workspace_data.topic_detail.channel,
+            unread_chats: action.data.workspace_data.topic_detail.unread_chats,
+            unread_count: action.data.workspace_data.topic_detail.unread_count,
+            folder_id: action.data.workspace_id && action.data.workspace_id !== 0 ? action.data.workspace_id : null,
+            folder_name: action.data.workspace_id && action.data.workspace_id !== 0 ? action.data.workspace_name : null,
           };
+          delete updatedWorkspaces[action.data.topic_id].topic_detail;
           return {
             ...state,
             workspaces: updatedWorkspaces,

@@ -2,7 +2,7 @@ import React, { useRef } from "react";
 import { useHistory } from "react-router-dom";
 import { Badge } from "reactstrap";
 import styled from "styled-components";
-import { replaceChar } from "../../helpers/stringFormatter";
+//import { replaceChar } from "../../helpers/stringFormatter";
 import { SvgIconFeather } from "../common";
 
 const Wrapper = styled.li`
@@ -90,7 +90,7 @@ const ExternalWorkspaceList = (props) => {
   const { className = "", actions, show = true, workspace, activeTopic } = props;
 
 //   const dispatch = useDispatch();
-  const history = useHistory();
+  // const history = useHistory();
   const ref = {
     container: useRef(null),
   };
@@ -104,7 +104,7 @@ const ExternalWorkspaceList = (props) => {
   };
  
   return (
-    <Wrapper ref={ref.container} className={`workspace-list fadeIn ${className}`} selected={workspace.selected} show={show}>
+    <Wrapper ref={ref.container} className={`workspace-list fadeIn ${className}`} selected={activeTopic && activeTopic.id === workspace.id} show={show}>
       <a onClick={handleSelectWorkspace}>
         <div>
           {workspace.name}
