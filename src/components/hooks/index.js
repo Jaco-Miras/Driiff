@@ -10,7 +10,6 @@ export { default as useDraft } from "./useDraft";
 export { default as useSaveInput } from "./useSaveInput";
 export { default as useIsUserTyping } from "./useIsUserTyping";
 export { default as useCountUnreadReplies } from "./useCountUnreadReplies";
-export { default as useSetWorkspace } from "./useSetWorkspace";
 export { default as useIsMember } from "./useIsMember";
 export { default as usePosts } from "./usePosts";
 export { default as useTranslation } from "./useTranslation";

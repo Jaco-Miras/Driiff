@@ -242,12 +242,17 @@ const WorspaceHeaderPanel = (props) => {
             <>
               {activeTopic.folder_id === null ? (
                   <>
-                    <li className="nav-item nav-item-folder">
-                      <WorkspaceName>General</WorkspaceName>
-                    </li>
-                    <li className="nav-item-chevron">
-                      <SvgIconFeather icon="chevron-right"/>
-                    </li>
+                    {
+                      !isExternal &&
+                      <>
+                        <li className="nav-item nav-item-folder">
+                          <WorkspaceName>General</WorkspaceName>
+                        </li>
+                        <li className="nav-item-chevron">
+                          <SvgIconFeather icon="chevron-right"/>
+                        </li>
+                      </>
+                    }
                     <li className="nav-item">
                       <SubWorkspaceName>
                         {activeTopic.name}
@@ -257,12 +262,17 @@ const WorspaceHeaderPanel = (props) => {
                   </>
               ) : (
                 <>
-                  <li className="nav-item nav-item-folder">
-                    <WorkspaceName>{activeTopic.folder_name}</WorkspaceName>
-                  </li>
-                  <li className="nav-item-chevron">
-                    <SvgIconFeather icon="chevron-right"/>
-                  </li>
+                  {
+                    !isExternal && 
+                    <>
+                      <li className="nav-item nav-item-folder">
+                        <WorkspaceName>{activeTopic.folder_name}</WorkspaceName>
+                      </li>
+                      <li className="nav-item-chevron">
+                        <SvgIconFeather icon="chevron-right"/>
+                      </li>
+                    </>
+                  }
                   <li className="nav-item">
                     <SubWorkspaceName>
                       {activeTopic.name}
@@ -278,17 +288,17 @@ const WorspaceHeaderPanel = (props) => {
                                          name={m.name} imageLink={m.profile_image_link}/>;
                   })}
                 </div>
-                {activeTopic.member_ids.includes(user.id) ? (
+                {activeTopic.member_ids.includes(user.id) && !isExternal ? (
                   <button onClick={handleEditWorkspace} className="btn btn-primary">
                     <SvgIconFeather icon="user-plus"/>
                     Invite
                   </button>
-                ) : (
+                ) : !isExternal ? (
                   <button onClick={handleJoinWorkspace} className="btn btn-primary">
                     <SvgIconFeather icon="user-plus"/>
                     Join
                   </button>
-                )}
+                ) : null }
               </li>
             </>
           ) : (

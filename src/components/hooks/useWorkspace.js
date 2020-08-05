@@ -66,6 +66,7 @@ const useWorkspace = (fetchOnMount = false) => {
       }
     }
   }, [activeTopic, activeTopicSettings, params, workspaces, url, fetchOnMount]);
+  
   useEffect(() => {
     if (activeTopic && Object.keys(channels).length && fetchOnMount && url.startsWith("/workspace/")) {
       if (channels.hasOwnProperty(activeTopic.channel.id)) {
