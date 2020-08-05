@@ -27,7 +27,7 @@ const Wrapper = styled.div`
 `;
 
 const PeopleListItem = (props) => {
-  const { className = "", loggedUser, onNameClick = null, onChatClick = null, user } = props;
+  const { className = "", loggedUser, onNameClick = null, onChatClick = null, user, dictionary } = props;
 
   const handleOnNameClick = () => {
     if (onNameClick) onNameClick(user);
@@ -53,7 +53,7 @@ const PeopleListItem = (props) => {
                         <ToolTip content={user.email}>
                           <div className="mr-2">{user.email}</div>
                         </ToolTip>
-                        <Badge label={"Invited"}/>
+                        <Badge label={dictionary.peopleInvited}/>
                       </h6>
                   )
                   :
@@ -61,7 +61,7 @@ const PeopleListItem = (props) => {
                       <ToolTip content={user.email}>
                         <div className="mr-2">{user.name}</div>
                       </ToolTip>
-                      {user.type === "external" && <Badge label={"External"}/>}
+                      {user.type === "external" && <Badge label={dictionary.peopleExternal}/>}
                     </h6>
                 }
                 {

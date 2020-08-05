@@ -94,6 +94,8 @@ const WorkspacePeoplePanel = (props) => {
 
   const dictionary = {
     searchPeoplePlaceholder: _t("PLACEHOLDER.SEARCH_PEOPLE", "Search people"),
+    peopleExternal: _t("PEOPLE.EXTERNAL", "External"),
+    peopleInvited: _t("PEOPLE.INVITED", "Invited")
   };
 
   useFocusInput(refs.search.current);
@@ -106,11 +108,11 @@ const WorkspacePeoplePanel = (props) => {
           <div className="row">
             {
               activeTopic && activeTopic.members.filter((member) => !member.has_accepted).map((member) => {
-                return <PeopleListItem key={member.id} loggedUser={loggedUser} user={member}/>;
+                return <PeopleListItem key={member.id} loggedUser={loggedUser} user={member} dictionary={dictionary}/>;
               })
             }
             {userSort.map((user) => {
-              return <PeopleListItem key={user.id} loggedUser={loggedUser} user={user} onNameClick={handleUserNameClick} onChatClick={activeTab === "intern" && handleUserChat} />;
+              return <PeopleListItem key={user.id} loggedUser={loggedUser} user={user} onNameClick={handleUserNameClick} onChatClick={activeTab === "intern" && handleUserChat} dictionary={dictionary}/>;
             })}
           </div>
         </div>
