@@ -1,16 +1,16 @@
-import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { useRouteMatch } from "react-router-dom";
-import { useWorkspaceActions, useSettings } from "../hooks";
+import {useEffect, useState} from "react";
+import {useSelector} from "react-redux";
+import {useRouteMatch} from "react-router-dom";
+import {useSettings, useWorkspaceActions} from "../hooks";
 
 const useWorkspace = (fetchOnMount = false) => {
-  
+
   const {
     generalSettings: {active_topic: activeTopicSettings},
     setGeneralSetting,
   } = useSettings();
   const route = useRouteMatch();
-  const { params, path, url } = route;
+  const {params, path, url} = route;
   const actions = useWorkspaceActions();
   const { activeChannelId, activeTopic, folders, workspaces, workspaceTimeline, workspacesLoaded } = useSelector((state) => state.workspaces);
   const channels = useSelector((state) => state.chat.channels);
@@ -102,13 +102,13 @@ const useWorkspace = (fetchOnMount = false) => {
   }, [fetchingPrimary, activeTopic, url, fetchOnMount]);
 
   let timeline = null;
-  if (Object.keys(workspaceTimeline).length && workspaceTimeline.hasOwnProperty(params.workspaceId)) {
-    timeline = workspaceTimeline[params.workspaceId].timeline;
+  if (Object.keys(workspaceTimeline).length && activeTopic) {
+    timeline = workspaceTimeline[activeTopic.id].timeline;
   }
 
   return {
     folders,
-    sortedWorkspaces: Object.values(workspaces).sort((a,b) => a.name.localeCompare(b.name)),
+    sortedWorkspaces: Object.values(workspaces).sort((a, b) => a.name.localeCompare(b.name)),
     workspaces,
     workspace: activeTopic,
     actions: actions,

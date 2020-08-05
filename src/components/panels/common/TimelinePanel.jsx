@@ -1,17 +1,17 @@
-import React, { useEffect } from "react";
+import React, {useEffect} from "react";
 import styled from "styled-components";
-import { AttachFileTimeline, MemberTimeline, PostTimeline, TopicTimeline } from "../dashboard/timeline";
+import {AttachFileTimeline, MemberTimeline, PostTimeline, TopicTimeline} from "../dashboard/timeline";
 
 const Wrapper = styled.div``;
 
 const TimelinePanel = (props) => {
-  const { className = "", timeline, actions, params, dictionary } = props;
+  const {className = "", timeline, actions, workspace, dictionary} = props;
 
   useEffect(() => {
-    if (params.hasOwnProperty("workspaceId")) {
-      actions.getTimeline(params.workspaceId);
+    if (workspace) {
+      actions.getTimeline(workspace.id);
     }
-  }, [params.workspaceId]);
+  }, [workspace]);
 
   return (
     <Wrapper className={`timeline-panel card ${className}`}>
@@ -29,7 +29,7 @@ const TimelinePanel = (props) => {
                   case "CHAT_BOT":
                     return <MemberTimeline key={t.id} data={t.item} />;
                   case "POST":
-                    return <PostTimeline key={t.id} data={t} data={t.item} />;
+                    return <PostTimeline key={t.id} data={t.item}/>;
                   case "DOCUMENT":
                     return <AttachFileTimeline key={t.id} data={t.item} />;
                   case "TOPIC":
