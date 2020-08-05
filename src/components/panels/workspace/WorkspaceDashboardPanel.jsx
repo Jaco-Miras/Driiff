@@ -1,8 +1,8 @@
 import React from "react";
 import styled from "styled-components";
-import { usePosts, useTranslation } from "../../hooks";
+import {usePosts, useTranslation} from "../../hooks";
 import TimelinePanel from "../common/TimelinePanel";
-import { DashboardAboutWorkspace, DashboardTeam, RecentPosts } from "../dashboard";
+import {DashboardAboutWorkspace, DashboardTeam, RecentPosts} from "../dashboard";
 
 const Wrapper = styled.div`
   overflow: auto !important;
@@ -44,8 +44,9 @@ const WorkspaceDashboardPanel = (props) => {
         {width > 620 ?
           <>
             <div className={"col-md-6"}>
-              <DashboardAboutWorkspace isMember={isMember} workspace={workspace} onEditClick={handleEditClick} isExternal={isExternal} dictionary={dictionary}/>
-              <TimelinePanel timeline={timeline} actions={actions} params={params} dictionary={dictionary} />
+              <DashboardAboutWorkspace isMember={isMember} workspace={workspace} onEditClick={handleEditClick}
+                                       isExternal={isExternal} dictionary={dictionary}/>
+              <TimelinePanel timeline={timeline} actions={actions} workspace={workspace} dictionary={dictionary}/>
             </div>
 
             <div className={"col-md-6"}>
