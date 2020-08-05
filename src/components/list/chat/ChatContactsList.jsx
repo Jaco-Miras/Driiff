@@ -44,7 +44,7 @@ const Contacts = styled.ul`
 `;
 
 const ChatContactsList = (props) => {
-  const { className = "", channels, selectedChannel, userChannels, search } = props;
+  const { className = "", channels, selectedChannel, userChannels, search, dictionary } = props;
 
   const dispatch = useDispatch();
   const history = useHistory();
@@ -131,10 +131,10 @@ const ChatContactsList = (props) => {
   return (
     <Wrapper className={`chat-lists ${className}`}>
       <div className="d-flex align-items-center channel-number-new-group-wrapper">
-        <p className="small mb-0">{sortedChannels.length} Contacts</p>
+        <p className="small mb-0">{sortedChannels.length} {dictionary.contacts}</p>
         <NewGroupButton className="small mb-0 text-right ml-auto" onClick={handleOpenGroupChatModal}>
           <SvgIconFeather width={14} height={14} icon="plus" />
-          <span>New group chat</span>
+          <span>{dictionary.newGroupChat}</span>
         </NewGroupButton>
       </div>
       <Contacts className={"list-group list-group-flush"}>
