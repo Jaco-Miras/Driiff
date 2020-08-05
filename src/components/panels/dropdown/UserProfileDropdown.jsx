@@ -1,9 +1,9 @@
-import React, {useCallback, useRef} from "react";
-import {useHistory} from "react-router-dom";
+import React, { useCallback, useRef } from "react";
+import { useHistory } from "react-router-dom";
 import styled from "styled-components";
-import {replaceChar} from "../../../helpers/stringFormatter";
-import {Avatar, SvgIconFeather} from "../../common";
-import {useUserActions} from "../../hooks";
+import { replaceChar } from "../../../helpers/stringFormatter";
+import { Avatar, SvgIconFeather } from "../../common";
+import { useUserActions, useTranslation } from "../../hooks";
 
 const Wrapper = styled.div`
   position: absolute;
@@ -18,10 +18,10 @@ const Wrapper = styled.div`
 `;
 
 const UserProfileDropdown = (props) => {
-  const {className = "", user} = props;
+  const { className = "", user } = props;
 
   const history = useHistory();
-  const {processBackendLogout} = useUserActions();
+  const { processBackendLogout } = useUserActions();
 
   const refs = {
     container: useRef(null),
@@ -40,12 +40,20 @@ const UserProfileDropdown = (props) => {
   const handleProfile = useCallback(() => {
     refs.container.current.classList.remove("show");
     history.push(`/profile/${user.id}/${replaceChar(user.name)}/view`);
-  }, []);
-
+  }, [user]);
+  
   const handleSettings = useCallback(() => {
     refs.container.current.classList.remove("show");
     history.push("/settings");
   }, []);
+
+  const { _t } = useTranslation();
+
+  const dictionary = {
+    profile: _t("PROFILE.PROFILE", "Profile"),
+    settings: _t("PROFILE.SETTINGS", "Settings"),
+    signOut: _t("PROFILE.SIGN_OUT", "Sign out!"),
+  };
 
   return (
     <Wrapper ref={refs.container} className={`user-profile-dropdown dropdown-menu dropdown-menu-big ${className}`}
@@ -63,15 +71,15 @@ const UserProfileDropdown = (props) => {
       <div className="dropdown-menu-body">
         <div className="list-group list-group-flush">
           <span className="cursor-pointer list-group-item" onClick={handleProfile}>
-            Profile
+            {dictionary.profile}
           </span>
           <span className="cursor-pointer list-group-item" onClick={handleSettings}>
-            Settings
+            {dictionary.settings}
           </span>
-          <span className="cursor-pointer list-group-item">Billing</span>
-          <span className="cursor-pointer list-group-item">Need help?</span>
+          {/* <span className="cursor-pointer list-group-item">Billing</span>
+          <span className="cursor-pointer list-group-item">Need help?</span> */}
           <span className="cursor-pointer list-group-item text-danger" onClick={handleSignOut}>
-            Sign Out!
+            {dictionary.signOut}
           </span>
         </div>
       </div>
