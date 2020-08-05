@@ -19,7 +19,7 @@ const ChatHeader = styled.h4`
 `;
 
 const ChannelsSidebar = (props) => {
-  const { className, search, channels, selectedChannel, workspace } = props;
+  const { className, search, channels, selectedChannel, workspace, dictionary } = props;
 
   const [sortedChannels] = useSortChannels(channels, search, {}, workspace);
   const channelDrafts = useSelector((state) => state.chat.channelDrafts);
@@ -30,35 +30,35 @@ const ChannelsSidebar = (props) => {
         {sortedChannels.map((channel, k, arr) => {
           let chatHeader = "";
           if (k !== 0 && arr[k - 1].is_pinned === 1 && channel.is_pinned === 0) {
-            chatHeader = "Recent";
+            chatHeader = dictionary.recent;
           } else if (k === 0 && channel.is_pinned === 1) {
-            chatHeader = "Favorite";
+            chatHeader = dictionary.favorite;
           } else if (k === 0 && channel.is_pinned === 0) {
-            chatHeader = "Recent";
+            chatHeader = dictionary.recent;
           }
 
           if (k !== 0 && arr[k - 1].is_hidden === 0 && channel.is_hidden === 1) {
-            chatHeader = "Hidden";
+            chatHeader = dictionary.hidden;
           } else if (k === 0 && channel.is_hidden === 1) {
-            chatHeader = "Hidden";
+            chatHeader = dictionary.hidden;
           }
 
           if (k !== 0 && arr[k - 1].add_user === 0 && channel.add_user === 1) {
-            chatHeader = "Start New";
+            chatHeader = dictionary.startNew;
           } else if (k === 0 && channel.add_user === 1) {
-            chatHeader = "Start New";
+            chatHeader = dictionary.startNew;
           }
 
           if (k !== 0 && arr[k - 1].add_open_topic === 0 && channel.add_open_topic === 1) {
-            chatHeader = "View Open Topics";
+            chatHeader = dictionary.viewOpenWorkspace;
           } else if (k === 0 && channel.add_open_topic === 1) {
-            chatHeader = "View Open Topics";
+            chatHeader = dictionary.viewOpenWorkspace;
           }
 
           if (k !== 0 && arr[k - 1].is_archived === 0 && channel.is_archived === 1) {
-            chatHeader = "Archived";
+            chatHeader = dictionary.archived;
           } else if (k === 0 && channel.is_archived === 1) {
-            chatHeader = "Archived";
+            chatHeader = dictionary.archived;
           }
           return (
             <React.Fragment key={channel.id}>
@@ -69,13 +69,13 @@ const ChannelsSidebar = (props) => {
         })}
         {workspace === true && sortedChannels.length === 0 ? (
           <li>
-            <h4>Nothing to see here!</h4>
+            <h4>{dictionary.nothingToSeeHere}</h4>
           </li>
         ) : (
           sortedChannels.length === 0 &&
           search !== "" && (
             <li>
-              <h4>No matching chats found.</h4>
+              <h4>{dictionary.noMatchingChats}</h4>
             </li>
           )
         )}

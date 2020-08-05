@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import SearchForm from "../../forms/SearchForm";
 import { ChatSideBarContentPanel } from "./index";
-import { usePreviousValue } from "../../hooks";
+import { usePreviousValue, useTranslation } from "../../hooks";
 
 const Wrapper = styled.div`
   .nav-tabs {
@@ -112,6 +112,25 @@ const ChatSidebarPanel = (props) => {
     }
   }, [selectedChannel, previousChannel, setTabPill]);
 
+  const {_t} = useTranslation();
+
+  const dictionary = {
+    chats: _t("CHAT.CHATS", "Chats"),
+    contacts: _t("CHAT.CONTACTS", "Contacts"),
+    workspaceChats: _t("CHAT.WORKSPACE_CHATS", "Workspace chats"),
+    recentChats: _t("CHAT.RECENT_CHATS", "Recent chats"),
+    newGroupChat: _t("CHAT.NEW_GROUP_CHAT", "New group chat"),
+    searchChatPlaceholder: _t("CHAT.SEARCH_CHAT_PLACEHOLDER", "Search contacts or chats"),
+    recent: _t("CHAT.RECENT", "Recent"),
+    favorite: _t("CHAT.FAVORITE", "Favorite"),
+    hidden: _t("CHAT.HIDDEN", "Hidden"),
+    startNew: _t("CHAT.START_NEW", "Start new"),
+    viewOpenWorkspace: _t("CHAT.VIEW_OPEN_WORKSPACE", "View open workspace"),
+    archived: _t("CHAT.ARCHIVED", "Archived"),
+    nothingToSeeHere: _t("CHAT.NOTHING_TO_SEE_HERE", "Nothing to see here!"),
+    noMatchingChats: _t("CHAT.NO_MATCHING_CHATS", "No matching chats found"),
+  };
+
   return (
     <Wrapper className={`chat-sidebar ${className}`}>
       <div className="chat-sidebar-header">
@@ -119,27 +138,22 @@ const ChatSidebarPanel = (props) => {
         <ul ref={refs.navTab} className="nav nav-pills" role="tabList">
           <li className="nav-item">
             <span className="nav-link active" id="pills-home-tab" data-toggle="pill" onClick={handleTabChange} role="tab" aria-controls="pills-home" aria-selected="true">
-              Chats
+              {dictionary.chats}
             </span>
           </li>
           <li className="nav-item">
             <span className="nav-link" id="pills-contact-tab" data-toggle="pill" onClick={handleTabChange} role="tab" aria-controls="pills-contact" aria-selected="false">
-              Contacts
+              {dictionary.contacts}
             </span>
           </li>
           <li className="nav-item">
             <span className="nav-link" id="pills-workspace-tab" data-toggle="pill" onClick={handleTabChange} role="tab" aria-controls="pills-workspace-internal" aria-selected="false">
-              Workspace chats
+              {dictionary.workspaceChats}
             </span>
           </li>
-          {/* <li className="nav-item">
-                        <span className="nav-link" id="pills-workspace-tab" data-toggle="pill"
-                              onClick={handleTabChange} role="tab" aria-controls="pills-workspace-external"
-                              aria-selected="false">Workspace - External</span>
-                    </li> */}
         </ul>
       </div>
-      <ChatSideBarContentPanel pill={tabPill} search={search} channels={channels} userChannels={userChannels} selectedChannel={selectedChannel} />
+      <ChatSideBarContentPanel pill={tabPill} search={search} channels={channels} userChannels={userChannels} selectedChannel={selectedChannel} dictionary={dictionary}/>
     </Wrapper>
   );
 };

@@ -41,7 +41,7 @@ const NewGroupButton = styled.div`
 `;
 
 const ChatSidebarContentPanel = (props) => {
-  const { className = "", pill = "pills-home", search, channels, userChannels, selectedChannel } = props;
+  const { className = "", pill = "pills-home", search, channels, userChannels, selectedChannel, dictionary } = props;
 
   const dispatch = useDispatch();
 
@@ -63,20 +63,20 @@ const ChatSidebarContentPanel = (props) => {
       <div className="tab-content pt-3" id="pills-tabContent">
         <div className={`tab-panel fade ${pill === "pills-home" && "show active"}`} id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
           <div className="d-flex align-items-center recent-new-group-wrapper">
-            <p className="small mb-0">Recent chats</p>
+            <p className="small mb-0">{dictionary.recentChats}</p>
 
             <NewGroupButton className="small mb-0 text-right ml-auto" onClick={handleOpenGropupChatModal}>
               <SvgIconFeather width={14} height={14} icon="plus" />
-              <span>New group chat</span>
+                <span>{dictionary.newGroupChat}</span>
             </NewGroupButton>
           </div>
-          <ChannelsSidebar search={search} workspace={false} channels={channels} selectedChannel={selectedChannel} />
+          <ChannelsSidebar search={search} workspace={false} channels={channels} selectedChannel={selectedChannel} dictionary={dictionary}/>
         </div>
         <div className={`tab-panel fade ${pill === "pills-contact" && "show active"}`} id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">
-          <ChatContactsList search={search} channels={channels} userChannels={userChannels} selectedChannel={selectedChannel} />
+          <ChatContactsList search={search} channels={channels} userChannels={userChannels} selectedChannel={selectedChannel} dictionary={dictionary}/>
         </div>
         <div className={`tab-panel workspace-chat-list fade ${pill === "pills-workspace-internal" && "show active"}`} id="pills-workspace-internal" role="tabpanel" aria-labelledby="pills-workspace-tab">
-          <ChannelsSidebar search={search} workspace={true} channels={channels} selectedChannel={selectedChannel} />
+          <ChannelsSidebar search={search} workspace={true} channels={channels} selectedChannel={selectedChannel} dictionary={dictionary}/>
         </div>
       </div>
     </Wrapper>
