@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import styled from "styled-components";
 import { addToModals } from "../../../redux/actions/globalActions";
 import { DropDocument } from "../../dropzone/DropDocument";
-import { useCountUnreadReplies, useFocusInput, useTimeFormat } from "../../hooks";
+import { useCountUnreadReplies, useFocusInput, useTimeFormat, useTranslation } from "../../hooks";
 import useChatMessageActions from "../../hooks/useChatMessageActions";
 import ChatMessages from "../../list/chat/ChatMessages";
 import ChatUnreadFloatBar from "../../list/chat/ChatUnreadFloatBar";
@@ -101,6 +101,17 @@ const ChatContentPanel = (props) => {
     dispatch(addToModals(modal));
   };
 
+  const {_t} = useTranslation();
+  
+  const dictionary = {
+    remindMe: _t("CHAT.REMIND_ME_ABOUT_THIS", "Remind me about this"),
+    quote: _t("CHAT.QUOTE", "Quote"),
+    copyMessageLink: _t("CHAT.COPY_MESSAGE_LINK", "Copy message link"),
+    forward: _t("CHAT.FORWARD", "Forward"),
+    edit: _t("CHAT.EDIT", "Edit"),
+    remove: _t("CHAT.REMOVE", "Remove")
+  };
+
   useFocusInput(document.querySelector(".chat-footer .ql-editor"));
 
   return (
@@ -121,9 +132,8 @@ const ChatContentPanel = (props) => {
           selectedChannel={selectedChannel}
           chatMessageActions={chatMessageActions}
           timeFormat={timeFormat}
-          //bottomRef={bottomRef}
           onBottomRefVisible={handleBottomRefChange}
-          //bottomRefVisible={bottomRefVisible}
+          dictionary={dictionary}
         />
       ) : (
         <ChatMessagesPlaceholder />
