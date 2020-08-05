@@ -22,8 +22,24 @@ const useRedirect = () => {
     );
 
     const toFiles= useCallback(
-        (payload, callback) => {
-            
+        (file) => {
+            console.log(file)
+            if (file.workspaces.length) {
+                let workspace = {
+                    id: file.workspaces[0].topic.id,
+                    name: file.workspaces[0].topic.name,
+                    folder_id: file.workspaces[0].workspace ? file.workspaces[0].workspace.id : null,
+                    folder_name: file.workspaces[0].workspace ? file.workspaces[0].workspace.name : null,
+                }
+                dispatch(setActiveTopic(workspace));
+                if (workspace.folder_id) {
+                    history.push(`/workspace/files/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`);
+                } else {
+                    history.push(`/workspace/files/${workspace.id}/${replaceChar(workspace.name)}`);
+                }
+            } else {
+                history.push("/files")
+            }
         }, []
     );
     
