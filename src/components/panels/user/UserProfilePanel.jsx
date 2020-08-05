@@ -8,7 +8,7 @@ import {addToModals} from "../../../redux/actions/globalActions";
 import {Avatar, SvgIconFeather} from "../../common";
 import {DropDocument} from "../../dropzone/DropDocument";
 import InputFeedback from "../../forms/InputFeedback";
-import {useToaster, useUserActions, useUsers} from "../../hooks";
+import {useToaster, useUserActions, useUsers, useTranslation} from "../../hooks";
 
 const Wrapper = styled.div`
   overflow: auto;
@@ -110,6 +110,25 @@ const UserProfilePanel = (props) => {
     dropZoneRef: useRef(null),
     first_name: useRef(null),
     password: useRef(null),
+  };
+
+  const { _t } = useTranslation();
+
+  const dictionary = {
+    information: _t("PROFILE.INFORMATION", "Information"),
+    firstName: _t("PROFILE.FIRST_NAME", "First Name:"),
+    middleName: _t("PROFILE.MIDDLE_NAME", "Middle Name:"),
+    lastName: _t("PROFILE.LAST_NAME", "Last Name:"),
+    password: _t("PROFILE.PASSWORD", "Password"),
+    position: _t("PROFILE.POSITION", "Position:"),
+    city: _t("PROFILE.CITY", "City:"),
+    address: _t("PROFILE.ADDRESS", "Adress:"),
+    phone: _t("PROFILE.Phone", "Phone:"),
+    email: _t("PROFILE.EMAIL", "Email:"),
+    edit: _t("BUTTON.EDIT", "Edit"),
+    saveChanges: _t("BUTTON.SAVE_CHANGES", "Save changes"),
+    cancel: _t("BUTTON.Cancel", "Cancel"),
+    clickToChangePassword: _t("PROFILE.CLICK_TO_CHANGE_PASSWORD", "Click to change your password"),
   };
 
   const getValidClass = useCallback((valid) => {
@@ -473,64 +492,64 @@ const UserProfilePanel = (props) => {
             {!editInformation ? (
               <div className="card-body">
                 <h6 className="card-title d-flex justify-content-between align-items-center">
-                  Information
+                  {dictionary.information}
                   {isLoggedUser && (
                     <span onClick={toggleEditInformation} className="btn btn-outline-light btn-sm">
-                      <SvgIconFeather className="mr-2" icon="edit-2" /> Edit
+                      <SvgIconFeather className="mr-2" icon="edit-2" /> {dictionary.edit}
                     </span>
                   )}
                 </h6>
                 {user.first_name && (
                   <div className="row mb-2">
-                    <div className="col col-label text-muted">First Name:</div>
+                    <div className="col col-label text-muted">{dictionary.firstName}</div>
                     <div className="col col-form">{user.first_name}</div>
                   </div>
                 )}
                 {user.middle_name && (
                   <div className="row mb-2">
-                    <div className="col col-label text-muted">Middle Name:</div>
+                    <div className="col col-label text-muted">{dictionary.middleName}</div>
                     <div className="col col-form">{user.middle_name}</div>
                   </div>
                 )}
                 {user.last_name && (
                   <div className="row mb-2">
-                    <div className="col col-label text-muted">Last Name:</div>
+                    <div className="col col-label text-muted">{dictionary.lastName}</div>
                     <div className="col col-form">{user.last_name}</div>
                   </div>
                 )}
                 {user.id === loggedUser.id && (
                   <div className="row mb-2">
-                    <div className="col col-label text-muted">Password</div>
+                    <div className="col col-label text-muted">{dictionary.password}</div>
                     <div className="col col-form">*****</div>
                   </div>
                 )}
                 {user.role && (
                   <div className="row mb-2">
-                    <div className="col col-label text-muted">Position:</div>
+                    <div className="col col-label text-muted">{dictionary.position}</div>
                     <div className="col col-form">{user.role.name}</div>
                   </div>
                 )}
                 {user.place && (
                   <div className="row mb-2">
-                    <div className="col col-label text-muted">City:</div>
+                    <div className="col col-label text-muted">{dictionary.city}</div>
                     <div className="col col-form">{user.place}</div>
                   </div>
                 )}
                 {user.address && (
                   <div className="row mb-2">
-                    <div className="col col-label text-muted">Address:</div>
+                    <div className="col col-label text-muted">{dictionary.address}</div>
                     <div className="col col-form">{user.address}</div>
                   </div>
                 )}
                 {user.contact && (
                   <div className="row mb-2">
-                    <div className="col col-label text-muted">Phone:</div>
+                    <div className="col col-label text-muted">{dictionary.phone}</div>
                     <div className="col col-form">{user.contact}</div>
                   </div>
                 )}
                 {user.email && (
                   <div className="row mb-2">
-                    <div className="col col-label text-muted">Email:</div>
+                    <div className="col col-label text-muted">{dictionary.email}</div>
                     <div className="col col-form cursor-pointer" onClick={handleEmailClick}>
                       {user.email}
                     </div>
@@ -549,7 +568,7 @@ const UserProfilePanel = (props) => {
                                     </div>*/}
                 </h6>
                 <div className="row mb-2">
-                  <div className="col col-label text-muted">First Name:</div>
+                  <div className="col col-label text-muted">{dictionary.firstName}</div>
                   <div className="col col-form">
                     {readOnlyFields.includes("first_name") ? (
                       <Label>{user.first_name}</Label>
@@ -562,7 +581,7 @@ const UserProfilePanel = (props) => {
                   </div>
                 </div>
                 <div className="row mb-2">
-                  <div className="col col-label text-muted">Middle Name:</div>
+                  <div className="col col-label text-muted">{dictionary.middleName}</div>
                   <div className="col col-form">
                     {readOnlyFields.includes("middle_name") ? (
                       <Label>{user.middle_name}</Label>
@@ -576,7 +595,7 @@ const UserProfilePanel = (props) => {
                 </div>
 
                 <div className="row mb-2">
-                  <div className="col col-label text-muted">Last Name:</div>
+                  <div className="col col-label text-muted">{dictionary.lastName}</div>
                   <div className="col col-form">
                     {readOnlyFields.includes("last_name") ? (
                       <Label>{user.last_name}</Label>
@@ -589,14 +608,14 @@ const UserProfilePanel = (props) => {
                   </div>
                 </div>
                 <div className="row mb-2">
-                  <div className="col col-label text-muted">Password</div>
+                  <div className="col col-label text-muted">{dictionary.password}</div>
                   <div className="col col-form">
                     {readOnlyFields.includes("password") ? (
                       <Label>*****</Label>
                     ) : (
                       <>
                         <Label onClick={togglePasswordUpdate} className={`cursor-pointer mb-0 ${!passwordUpdate ? "" : "d-none"}`}>
-                          Click to change your password.
+                          {dictionary.clickToChangePassword}
                         </Label>
                         <FormGroup className={`form-group-password mb-0 ${passwordUpdate ? "" : "d-none"}`}>
                           <InputGroup>
@@ -622,7 +641,7 @@ const UserProfilePanel = (props) => {
                   </div>
                 </div>
                 <div className="row mb-2">
-                  <div className="col col-label text-muted">City:</div>
+                  <div className="col col-label text-muted">{dictionary.city}</div>
                   <div className="col col-form">
                     {readOnlyFields.includes("place") ? (
                       <Label>{user.place}</Label>
@@ -635,7 +654,7 @@ const UserProfilePanel = (props) => {
                   </div>
                 </div>
                 <div className="row mb-2">
-                  <div className="col col-label text-muted">Address:</div>
+                  <div className="col col-label text-muted">{dictionary.address}</div>
                   <div className="col col-form">
                     {readOnlyFields.includes("address") ? (
                       <Label>{user.address}</Label>
@@ -648,7 +667,7 @@ const UserProfilePanel = (props) => {
                   </div>
                 </div>
                 <div className="row mb-2">
-                  <div className="col col-label text-muted">Contact:</div>
+                  <div className="col col-label text-muted">{dictionary.phone}</div>
                   <div className="col col-form">
                     {readOnlyFields.includes("contact") ? (
                       <Label>{user.contact}</Label>
@@ -661,7 +680,7 @@ const UserProfilePanel = (props) => {
                   </div>
                 </div>
                 <div className="row mb-2">
-                  <div className="col col-label text-muted">Email:</div>
+                  <div className="col col-label text-muted">{dictionary.email}</div>
                   <div className="col col-form">
                     {readOnlyFields.includes("email") ? (
                       <Label>{user.email}</Label>
@@ -678,10 +697,10 @@ const UserProfilePanel = (props) => {
                   <div>&nbsp;</div>
                   <div>
                     <span onClick={handleSave} className="btn btn-primary mr-2">
-                      Save Changes
+                      {dictionary.saveChanges}
                     </span>
                     <span onClick={toggleEditInformation} className="btn btn-outline-light">
-                      Cancel
+                      {dictionary.cancel}
                     </span>
                   </div>
                 </div>
