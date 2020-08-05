@@ -101,7 +101,7 @@ const useWorkspace = (fetchOnMount = false) => {
   }, [fetchingPrimary, activeTopic, url, fetchOnMount]);
 
   let timeline = null;
-  if (Object.keys(workspaceTimeline).length && activeTopic) {
+  if (Object.keys(workspaceTimeline).length && activeTopic && workspaceTimeline[activeTopic.id]) {
     timeline = workspaceTimeline[activeTopic.id].timeline;
   }
 
