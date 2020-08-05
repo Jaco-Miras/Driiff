@@ -2,7 +2,19 @@ import React, {useEffect} from "react";
 import styled from "styled-components";
 import {AttachFileTimeline, MemberTimeline, PostTimeline, TopicTimeline} from "../dashboard/timeline";
 
-const Wrapper = styled.div``;
+const Wrapper = styled.div`
+
+  @media (max-width: 620px) {
+    .timeline-item .d-flex.justify-content-between.mb-4 {
+      flex-direction: column;
+      .text-muted.font-weight-normal {
+        padding-top: 2px;
+        font-size: 12px;
+      }
+    }
+  }
+
+`;
 
 const TimelinePanel = (props) => {
   const {className = "", timeline, actions, workspace, dictionary} = props;
