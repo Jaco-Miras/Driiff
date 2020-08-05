@@ -12,7 +12,9 @@ import {
 } from "../components/hooks";
 import useFilesUpload from "../components/hooks/useFilesUpload";
 import {MainContentPanel, MainHeaderPanel, MainNavigationPanel} from "../components/panels/main";
+
 import MobileOverlay from "../components/panels/MobileOverlay";
+
 import {WorkspaceContentPanel} from "../components/panels/workspace";
 import SocketListeners from "../components/socket/socketListeners";
 //import Socket from "../components/socket/socket";
@@ -125,13 +127,21 @@ const MainLayout = (props) => {
           <Route render={(props) => <MainContentPanel {...props} isExternal={isExternal}/>} path={["/:page"]}/>
         </Switch>
       </MainContent>
+
       <MobileOverlay/>
+
+
+
+
+
       {/* {
              user.id !== undefined &&
              <Socket/>
              } */}
+
       {user.id !== undefined && window.Echo !== undefined && !socketMounted &&
       <SocketListeners localizeDate={localizeDate} toaster={toaster} soundPlay={handleSoundPlay}/>}
+
     </>
   );
 };

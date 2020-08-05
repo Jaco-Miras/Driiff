@@ -192,7 +192,7 @@ const WorkspaceFilesPanel = (props) => {
           clearFilter={clearFilter}
           params={params}
           dropZoneRef={refs.dropZone}
-          className="col-md-3"
+          className="col-lg-3"
           filterFile={handleFilterFile}
           filter={filter}
           wsFiles={wsFiles}

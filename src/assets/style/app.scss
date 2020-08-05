@@ -20443,29 +20443,6 @@ body.dark.small-navigation .navigation-menu-body ul li.navigation-divider:after 
     display: block;
   }
 
-  .app-block .app-sidebar-menu-button {
-    display: -webkit-inline-box;
-    display: -webkit-inline-flex;
-    display: -moz-inline-box;
-    display: -ms-inline-flexbox;
-    display: inline-flex;
-    margin-right: 1rem;
-  }
-
-  .app-block .app-sidebar {
-    display: none;
-    position: absolute;
-    left: 0;
-    z-index: 9;
-    -webkit-box-flex: 0;
-    -webkit-flex: 0 0 35%;
-    -moz-box-flex: 0;
-    -ms-flex: 0 0 35%;
-    flex: 0 0 35%;
-    max-width: 35%;
-    bottom: 0;
-  }
-
   .app-block .app-sidebar .app-sidebar-menu {
     overflow: auto;
   }
@@ -20549,6 +20526,15 @@ body.dark.small-navigation .navigation-menu-body ul li.navigation-divider:after 
 }
 
 @media (max-width: 768px) {
+  .app-block .app-sidebar-menu-button {
+    display: -webkit-inline-box;
+    display: -webkit-inline-flex;
+    display: -moz-inline-box;
+    display: -ms-inline-flexbox;
+    display: inline-flex;
+    margin-right: 1rem;
+  }
+
   body.form-membership .form-wrapper {
     width: 90%;
     margin: 30px auto;
@@ -21096,4 +21082,58 @@ body.dark.small-navigation .navigation-menu-body ul li.navigation-divider:after 
   .modal {
     background: #ffffff;
   }
+}
+
+.app-block .app-sidebar {
+  @media (max-width: 992px) {
+    width: 100%;
+    margin-bottom: 20px;
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+}
+
+
+.mobile-overlay {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .bottom-modal-mobile {
+    height: calc(var(--vh, 1vh) * 100) !important;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    position: fixed;
+    bottom: -100%;
+    z-index: 666;
+    .mobile-overlay {
+      position: absolute;
+      height: 100%;
+      width: 100%;
+      top: 0;
+      left: 0;
+      display: block;
+      z-index: -1;
+      background-color: rgba(0, 0, 0, 0);
+      transition: background-color 0.4s cubic-bezier(.58,.3,.005,1);
+    }
+    .bottom-modal-mobile_inner {
+      transform: translateY(100%);
+      will-change: transform;
+      transition: all 0.4s cubic-bezier(.58,.3,.005,1);
+    }
+  }
+  .mobile-modal-open {
+    .bottom-modal-mobile {
+      bottom: 0;
+      .mobile-overlay {
+        background-color: rgba(0, 0, 0, 0.25);
+      }
+      .bottom-modal-mobile_inner {
+        transform: translateY(0);
+      }
+    }
+  }
+
 }
