@@ -6,8 +6,23 @@ const Wrapper = styled.div`
   .app-sidebar-menu {
     overflow: hidden;
     outline: currentcolor none medium;
+    @media (max-width: 768px) {
+      border-bottom-left-radius: 0 !important;
+      border-bottom-right-radius: 0 !important;
+      display: flex;
+      flex-direction: column;
+      .create-new-post-wrapper {
+        border-top: 1px solid #ebebeb;
+        order: 9;
+      }
+    }
+  }
+  @media (max-width: 768px) {
+    margin-bottom: 0px !important;
   }
 `;
+
+const MobileOverlayFilter = styled.div``;
 
 const PostSidebar = (props) => {
   const { workspace, isMember, filter, tag, count, counters, postActions, onGoBack, dictionary } = props;
@@ -16,12 +31,17 @@ const PostSidebar = (props) => {
     postActions.showModal("create");
   };
 
+  const closeMobileModal = () => {
+      document.body.classList.remove("mobile-modal-open");
+  };
+
   return (
-    <Wrapper className="col-md-3 app-sidebar">
-      <div className="">
+    <Wrapper className="col-md-3 app-sidebar bottom-modal-mobile">
+      <MobileOverlayFilter className="mobile-overlay" onClick={closeMobileModal} />
+      <div className="bottom-modal-mobile_inner">
         <div className="app-sidebar-menu" tabIndex="2">
           {isMember && (
-            <div className="card-body">
+            <div className="card-body create-new-post-wrapper">
               <button className="btn btn-primary btn-block" onClick={handleShowWorkspacePostModal}>
                 {dictionary.createNewPost}
               </button>

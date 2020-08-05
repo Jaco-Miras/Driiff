@@ -6,7 +6,34 @@ import {FolderList, GoogleDrive} from "./index";
 
 const Wrapper = styled.div`
   text-align: left;
+    @media (max-width: 768px) {
+        .card {
+            margin-bottom: 0;
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
+            display: flex;
+            .card-body {
+                order: 2;
+            }
+            .app-sidebar-menu {
+                order: 1;
+                display: flex;
+                flex-direction: column;
+
+                .card-body {
+                    order: 1;
+                    border-bottom: 1px solid #ebebeb;
+                }
+                .list-group {
+                    order: 2;
+
+                }
+            }
+        }
+    }
 `;
+
+const MobileOverlayFilter = styled.div``;
 
 const Filter = styled.span`
   cursor: pointer;
@@ -38,7 +65,7 @@ const Icon = styled(SvgIconFeather)`
 `;
 
 const FileSidebar = (props) => {
-    const { className = "", isMember, actions, filterFile, filter = "all", dropZoneRef, storageLimit = 25, 
+    const { className = "", isMember, actions, filterFile, filter = "all", dropZoneRef, storageLimit = 25,
             wsFiles, folders, activeFolder, clearFilter, params, dictionary } = props;
 
     const handleShowUploadModal = () => {
@@ -58,9 +85,20 @@ const FileSidebar = (props) => {
         }
     }
 
+    // const closeMobileModal = () => {
+    //     document.body.classList.remove("mobile-modal-open");
+    // };
+
+    const closeMobileModal = () => {
+    // document.body.classList.remove("navigation-show");
+        document.body.classList.remove("mobile-modal-open");
+    };
+
+
     return (
-        <Wrapper className={`file-sidebar ${className}`}>
-            <div className="card">
+        <Wrapper className={`file-sidebar bottom-modal-mobile ${className}`}>
+            <MobileOverlayFilter className="mobile-overlay" onClick={closeMobileModal} />
+            <div className="card bottom-modal-mobile_inner">
                 {isMember === true && (
                     <div className="card-body">
                         <button className="btn btn-primary btn-block file-upload-btn" onClick={handleShowUploadModal}>
