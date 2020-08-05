@@ -26,9 +26,12 @@ const Wrapper = styled.div`
                 }
                 .list-group {
                     order: 2;
-
+                    border-bottom: 1px solid #ebebeb;
                 }
             }
+        }
+        .folder-list {
+            display: none !important;
         }
     }
 `;
@@ -90,7 +93,6 @@ const FileSidebar = (props) => {
     // };
 
     const closeMobileModal = () => {
-    // document.body.classList.remove("navigation-show");
         document.body.classList.remove("mobile-modal-open");
     };
 

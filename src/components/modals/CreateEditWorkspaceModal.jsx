@@ -51,11 +51,15 @@ const WrapperDiv = styled(InputGroup)`
     position: relative;
     max-width: 100%;
     margin-left: 128px;
-
+    @media all and (max-width: 480px) {
+        margin-left: 0;
+    }
     ul {
       margin-right: 128px;
       margin-bottom: 0;
-
+      @media all and (max-width: 480px) {
+        padding-right: 40px;
+      }
       li {
         white-space: nowrap;
         text-overflow: ellipsis;
@@ -69,11 +73,11 @@ const WrapperDiv = styled(InputGroup)`
   }
   &.action-wrapper {
     margin-top: 40px;
-    
+
     .action-archive-wrapper {
         display: flex;
         width: 100%;
-            
+
         .btn-archive {
           display: flex;
           margin-left: auto;
@@ -847,7 +851,7 @@ const CreateEditWorkspaceModal = (props) => {
                     <SelectPeople
                         valid={valid.team} options={userOptions} value={form.selectedUsers}
                         inputValue={inputValue}
-                        onChange={handleSelectUser} 
+                        onChange={handleSelectUser}
                         onKeyDown={handleKeyDown}
                         onInputChange={handleInputChange}
                         filterOption={filterOptions}
