@@ -16,7 +16,7 @@ const Wrapper = styled.ul`
 `;
 
 const NotificationLists = (props) => {
-  const { notifications, actions, history } = props;
+  const { notifications, actions, history, dictionary } = props;
 
   if (Object.keys(notifications).length === 0) return null;
 
@@ -24,13 +24,13 @@ const NotificationLists = (props) => {
       <Wrapper className={"list-group list-group-flush"}>
         {Object.values(notifications).length === 0 && (
             <li className="text-divider small pb-2 pl-3 pt-3">
-              <span>There are no notifications to show</span>
+              <span>{dictionary.noNotificationsToShow}</span>
             </li>
         )}
         {Object.values(notifications).filter((n) => n.is_read === 0).length > 0 && (
             <>
               <li className="text-divider small pb-2 pl-3 pt-3">
-                <span>New</span>
+                <span>{dictionary.new}</span>
               </li>
               {Object.values(notifications)
                   .filter((n) => n.is_read === 0)
@@ -42,7 +42,7 @@ const NotificationLists = (props) => {
       {Object.values(notifications).filter((n) => n.is_read === 1).length > 0 && (
         <>
           <li className="text-divider small pb-2 pl-3 pt-3">
-            <span>Old notifications</span>
+            <span>{dictionary.oldNotifications}</span>
           </li>
           {Object.values(notifications)
             .filter((n) => n.is_read === 1)
