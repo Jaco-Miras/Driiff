@@ -5,7 +5,6 @@ import { ButtonDropdown, SvgIconFeather } from "../../common";
 
 const Wrapper = styled.div`
   overflow: inherit !important;
-
   .action-left {
     ul {
       margin-bottom: 0;
@@ -18,12 +17,15 @@ const Wrapper = styled.div`
         }
       }
     }
+    .app-sidebar-menu-button {
+      margin-left: 8px;
+    }
   }
 `;
 
 const FilesHeader = (props) => {
-  const { className = "", isMember, dropZoneRef, onSearchChange, onSearch, onEnter, wsFiles, 
-          handleAddEditFolder, folders, history, params, clearFilter, dictionary 
+  const { className = "", isMember, dropZoneRef, onSearchChange, onSearch, onEnter, wsFiles,
+          handleAddEditFolder, folders, history, params, clearFilter, dictionary
   } = props;
 
   const handleClickAdd = () => {
@@ -85,26 +87,9 @@ const FilesHeader = (props) => {
         : [],
   };
 
-  // const orderByDropDown = {
-  //     label: "Order by",
-  //     items: [
-  //         {
-  //             value: "favorite",
-  //             label: "Starred",
-  //             onClick: handleClickOrderBy,
-  //         },
-  //         {
-  //             value: "recent",
-  //             label: "Recent",
-  //             onClick: handleClickOrderBy,
-  //         },
-  //         {
-  //             value: "unread",
-  //             label: "",
-  //             onClick: handleClickOrderBy,
-  //         },
-  //     ],
-  // };
+  const openMobileModal = () => {
+    document.body.classList.toggle("mobile-modal-open");
+  };
 
   return (
     <Wrapper className={`files-header app-action ${className}`}>
@@ -121,6 +106,9 @@ const FilesHeader = (props) => {
             </li>
           )}
         </ul>
+        <span class="app-sidebar-menu-button btn btn-outline-light" onClick={openMobileModal}>
+          <SvgIconFeather icon="menu" />
+        </span>
       </div>
       <div className="action-right">
         <div className="input-group">

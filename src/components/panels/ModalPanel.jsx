@@ -34,6 +34,7 @@ const ModalPanel = () => {
       window.scrollTo(0, scrollTop);
       setScrollTop(0);
     }
+    document.body.classList.remove("mobile-modal-open");
   }, [modals]);
 
   if (Object.keys(modals).length > 0) {

@@ -2,7 +2,8 @@ import React from "react";
 import { useDispatch } from "react-redux";
 import styled from "styled-components";
 import { updateWorkspacePostFilterSort } from "../../../redux/actions/workspaceActions";
-import { ButtonDropdown } from "../../common";
+import { ButtonDropdown, SvgIconFeather } from "../../common";
+
 // import {useCountRenders} from "../../hooks";
 import { PostSearch } from "./index";
 
@@ -12,6 +13,9 @@ const Wrapper = styled.div`
   .action-left {
     ul.list-inline {
       margin-bottom: 0;
+    }
+    .app-sidebar-menu-button {
+      margin-left: 8px;
     }
   }
 `;
@@ -51,6 +55,10 @@ const PostFilterSearchPanel = (props) => {
     ],
   };
 
+  const openMobileModal = () => {
+    document.body.classList.toggle("mobile-modal-open");
+  };
+
   return (
     <Wrapper className={`post-filter-search-panel app-action ${className}`}>
       <div className="action-left">
@@ -62,6 +70,9 @@ const PostFilterSearchPanel = (props) => {
             <ButtonDropdown value={activeSort} dropdown={sortDropdown} />
           </li>
         </ul>
+        <span class="app-sidebar-menu-button btn btn-outline-light" onClick={openMobileModal}>
+          <SvgIconFeather icon="menu" />
+        </span>
       </div>
       <div className="action-right">
         <PostSearch search={search} placeholder={dictionary.searchPost}/>
