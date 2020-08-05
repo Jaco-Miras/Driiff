@@ -47,47 +47,47 @@ const GoogleDrive = (props) => {
             <div className={`dropdown-menu ${show ? "show" : ""}`}>
                 {localStorage.getItem("gdrive") === null ? (
                     <GooglePicker
-                        clientId={process.env.REACT_APP_google_client_id}
-                        developerKey={isLocalhost ? process.env.REACT_APP_google_dev_key_local : process.env.REACT_APP_google_dev_key}
-                        scope={["https://www.googleapis.com/auth/drive.file"]}
-                        onChange={(data) => onChange(data)}
-                        onAuthenticate={(token) => handleAuthenticate(token)}
-                        onAuthFailed={(data) => console.log("on auth failed:", data)}
-                        multiselect={true}
-                        navHidden={true}
-                        authImmediate={false}
-                        viewId={"DOCS"}
+                      clientId={process.env.REACT_APP_google_client_id}
+                      developerKey={isLocalhost ? process.env.REACT_APP_google_dev_key_local : process.env.REACT_APP_google_dev_key}
+                      scope={["https://www.googleapis.com/auth/drive.file", "https://www.googleapis.com/auth/drive.metadata.readonly"]}
+                      onChange={(data) => onChange(data)}
+                      onAuthenticate={(token) => handleAuthenticate(token)}
+                      onAuthFailed={(data) => console.log("on auth failed:", data)}
+                      multiselect={true}
+                      navHidden={true}
+                      authImmediate={false}
+                      viewId={"DOCS"}
                     >
                         <div className="link-div">Link your google drive first</div>
                     </GooglePicker>
                 ) : (
                     <>
                         <GooglePicker
-                            clientId={process.env.REACT_APP_google_client_id}
-                            developerKey={isLocalhost ? process.env.REACT_APP_google_dev_key_local : process.env.REACT_APP_google_dev_key}
-                            scope={["https://www.googleapis.com/auth/drive.file"]}
-                            onChange={(data) => onChange(data)}
-                            onAuthenticate={(token) => handleAuthenticate(token)}
-                            onAuthFailed={(data) => console.log("on auth failed:", data)}
-                            multiselect={true}
-                            navHidden={true}
-                            authImmediate={localStorage.getItem("gdrive") === null ? false : true}
-                            viewId={"DOCS"}
+                          clientId={process.env.REACT_APP_google_client_id}
+                          developerKey={isLocalhost ? process.env.REACT_APP_google_dev_key_local : process.env.REACT_APP_google_dev_key}
+                          scope={["https://www.googleapis.com/auth/drive.file", "https://www.googleapis.com/auth/drive.metadata.readonly"]}
+                          onChange={(data) => onChange(data)}
+                          onAuthenticate={(token) => handleAuthenticate(token)}
+                          onAuthFailed={(data) => console.log("on auth failed:", data)}
+                          multiselect={true}
+                          navHidden={true}
+                          authImmediate={localStorage.getItem("gdrive") === null ? false : true}
+                          viewId={"DOCS"}
                         >
                             <div className="dropdown-item">Attach a file</div>
                         </GooglePicker>
                         <GooglePicker
-                            clientId={process.env.REACT_APP_google_client_id}
-                            developerKey={isLocalhost ? process.env.REACT_APP_google_dev_key_local : process.env.REACT_APP_google_dev_key}
-                            scope={["https://www.googleapis.com/auth/drive.file"]}
-                            onChange={(data) => console.log("on change:", data)}
-                            onAuthenticate={(token) => handleAuthenticate(token)}
-                            onAuthFailed={(data) => console.log("on auth failed:", data)}
-                            multiselect={true}
-                            navHidden={true}
-                            authImmediate={localStorage.getItem("gdrive") === null ? false : true}
-                            viewId={"FOLDERS"}
-                            createPicker={(google, oauthToken) => {
+                          clientId={process.env.REACT_APP_google_client_id}
+                          developerKey={isLocalhost ? process.env.REACT_APP_google_dev_key_local : process.env.REACT_APP_google_dev_key}
+                          scope={["https://www.googleapis.com/auth/drive.file", "https://www.googleapis.com/auth/drive.metadata.readonly"]}
+                          onChange={(data) => console.log("on change:", data)}
+                          onAuthenticate={(token) => handleAuthenticate(token)}
+                          onAuthFailed={(data) => console.log("on auth failed:", data)}
+                          multiselect={true}
+                          navHidden={true}
+                          authImmediate={localStorage.getItem("gdrive") === null ? false : true}
+                          viewId={"FOLDERS"}
+                          createPicker={(google, oauthToken) => {
                                 const googleViewId = google.picker.ViewId.FOLDERS;
                                 const docsView = new google.picker.DocsView(googleViewId).setIncludeFolders(true).setMimeTypes("application/vnd.google-apps.folder").setSelectFolderEnabled(true);
 

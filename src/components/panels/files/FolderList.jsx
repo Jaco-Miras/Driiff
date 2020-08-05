@@ -1,8 +1,8 @@
-import React, { useEffect, useRef, useState } from "react";
-import { useHistory, useRouteMatch } from "react-router-dom";
+import React, {useEffect, useRef, useState} from "react";
+import {useHistory, useRouteMatch} from "react-router-dom";
 import styled from "styled-components";
-import { replaceChar } from "../../../helpers/stringFormatter";
-import { SvgIconFeather } from "../../common";
+import {replaceChar} from "../../../helpers/stringFormatter";
+import {SvgIconFeather} from "../../common";
 import SubFolderList from "./SubFolderList";
 
 const Wrapper = styled.li`
@@ -133,10 +133,13 @@ const FolderList = (props) => {
     <Wrapper ref={ref.container} className={`folder-list fadeIn ${className}`} selected={activeFolder ? activeFolder.id == folder.id : false}>
       <a onClick={handleSelectFolder}>
         {folder.search}
-        {folder.hasOwnProperty("payload") && <SvgIconFeather className={"ml-2"}icon="gdrive" viewBox="0 0 512 512" height="20" width="15" fill="#000" opacity=".8"/>}
+        {folder.hasOwnProperty("payload") &&
+        <SvgIconFeather className={"ml-2"} icon="gdrive" viewBox="0 0 512 512" height="20" width="15" fill="#000"
+                        opacity=".8"/>}
         {Object.values(folders).filter((f) => {
           return !f.is_archived && f.parent_folder && f.parent_folder.id === folder.id;
-        }).length > 0 && <i className={`sub-menu-arrow ti-angle-up ${showFolders ? "ti-minus rotate-in" : "ti-plus"}`} />}
+        }).length > 0 &&
+        <i className={`sub-menu-arrow ti-angle-up ${showFolders ? "ti-minus rotate-in" : "ti-plus"}`}/>}
       </a>
       {Object.values(folders).filter((f) => {
         return !f.is_archived && f.parent_folder && f.parent_folder.id === folder.id;
