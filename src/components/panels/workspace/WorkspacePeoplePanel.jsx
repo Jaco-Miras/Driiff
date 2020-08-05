@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import SearchForm from "../../forms/SearchForm";
-import { useFocusInput, useUserChannels } from "../../hooks";
+import { useFocusInput, useUserChannels, useTranslation } from "../../hooks";
 import { PeopleListItem } from "../../list/people/item";
 import { replaceChar } from "../../../helpers/stringFormatter";
 
@@ -28,7 +28,7 @@ const WorkspacePeoplePanel = (props) => {
 
   const history = useHistory();
 
-  const { workspaces, activeTab, activeTopic } = useSelector((state) => state.workspaces);
+  const { activeTab, activeTopic } = useSelector((state) => state.workspaces);
 
   const [search, setSearch] = useState("");
 
@@ -89,6 +89,14 @@ const WorkspacePeoplePanel = (props) => {
 
       return true;
     });
+  
+  const {_t} = useTranslation();
+
+  const dictionary = {
+    searchPeoplePlaceholder: _t("PLACEHOLDER.SEARCH_PEOPLE", "Search people"),
+    peopleExternal: _t("PEOPLE.EXTERNAL", "External"),
+    peopleInvited: _t("PEOPLE.INVITED", "Invited")
+  };
 
   useFocusInput(refs.search.current);
 
@@ -96,15 +104,15 @@ const WorkspacePeoplePanel = (props) => {
     <Wrapper className={`workspace-people fadeIn container-fluid ${className}`}>
       <div className="card">
         <div className="card-body">
-          <Search ref={refs.search} placeholder="People search" onChange={handleSearchChange} autoFocus />
+          <Search ref={refs.search} placeholder={dictionary.searchPeoplePlaceholder} onChange={handleSearchChange} autoFocus />
           <div className="row">
             {
               activeTopic && activeTopic.members.filter((member) => !member.has_accepted).map((member) => {
-                return <PeopleListItem key={member.id} loggedUser={loggedUser} user={member}/>;
+                return <PeopleListItem key={member.id} loggedUser={loggedUser} user={member} dictionary={dictionary}/>;
               })
             }
             {userSort.map((user) => {
-              return <PeopleListItem key={user.id} loggedUser={loggedUser} user={user} onNameClick={handleUserNameClick} onChatClick={activeTab === "intern" && handleUserChat} />;
+              return <PeopleListItem key={user.id} loggedUser={loggedUser} user={user} onNameClick={handleUserNameClick} onChatClick={activeTab === "intern" && handleUserChat} dictionary={dictionary}/>;
             })}
           </div>
         </div>
