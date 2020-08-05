@@ -157,7 +157,6 @@ const CreateEditWorkspaceModal = (props) => {
     const workspaces = useSelector((state) => state.workspaces.workspaces);
     const folders = useSelector((state) => state.workspaces.folders);
     const activeTab = useSelector((state) => state.workspaces.activeTab);
-    const [activeTabName, setActiveTabName] = useState("Internal");
     const [userOptions, setUserOptions] = useState([]);
     const [inputValue, setInputValue] = useState("");
     const [invitedEmails, setInvitedEmails] = useState([]);
@@ -723,14 +722,6 @@ const CreateEditWorkspaceModal = (props) => {
     }, []);
 
     useEffect(() => {
-        if (activeTab !== "extern") {
-            setActiveTabName("internal");
-        } else {
-            setActiveTabName("external");
-        }
-    }, [activeTab]);
-
-    useEffect(() => {
         let folderValid = true;
         if (form.has_folder && form.selectedFolder === null) {
             folderValid = false;
@@ -806,7 +797,7 @@ const CreateEditWorkspaceModal = (props) => {
     return (
         <Modal innerRef={refs.container} isOpen={modal} toggle={toggle} centered size="lg" onOpened={onOpened}>
             <ModalHeaderSection
-                toggle={toggle}>{mode === "edit" ? "Edit " + activeTabName + " workspace" : "Create new " + activeTabName + " workspace"}</ModalHeaderSection>
+                toggle={toggle}>{mode === "edit" ? "Edit workspace" : "Create new workspace"}</ModalHeaderSection>
             <ModalBody onDragOver={handleShowDropzone}>
                 <DropDocument
                     hide={!showDropzone}
