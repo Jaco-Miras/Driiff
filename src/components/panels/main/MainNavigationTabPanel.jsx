@@ -1,14 +1,14 @@
-import React, {useEffect, useState} from "react";
-import {useDispatch, useSelector} from "react-redux";
-import {useHistory} from "react-router-dom";
-import {Badge} from "reactstrap";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
+import { Badge } from "reactstrap";
 import styled from "styled-components";
-import {replaceChar} from "../../../helpers/stringFormatter";
-import {addToModals, getUnreadNotificationCounterEntries, setNavMode} from "../../../redux/actions/globalActions";
-import {NavLink, SvgIcon, SvgIconFeather} from "../../common";
+import { replaceChar } from "../../../helpers/stringFormatter";
+import { addToModals, getUnreadNotificationCounterEntries, setNavMode } from "../../../redux/actions/globalActions";
+import { NavLink, SvgIcon, SvgIconFeather } from "../../common";
 //import Tooltip from "react-tooltip-lite";
-import {useWorkspace} from "../../hooks";
-import {ExternalWorkspaceList, WorkspaceList} from "../../workspace";
+import { useWorkspace, useTranslation } from "../../hooks";
+import { ExternalWorkspaceList, WorkspaceList } from "../../workspace";
 
 const Wrapper = styled.div`
   .navigation-menu-tab-header {
@@ -230,6 +230,18 @@ const MainNavigationTabPanel = (props) => {
 
   const { actions, folders, sortedWorkspaces, workspaces, workspace } = useWorkspace(true);
 
+  const { _t } = useTranslation();
+
+  const dictionary = {
+    workspaces: _t("SIDEBAR.WORKSPACES", "Workspaces"),
+    chats: _t("SIDEBAR.CHATS", "Chats"),
+    yourWorkspaces: _t("SIDEBAR.YOUR_WORKSPACES", "Your workspaces"),
+    newWorkspace: _t("SIDEBAR.NEW_WORKSPACE", "New workspace"),
+    addNewWorkspace: _t("SIDEBAR.ADD_NEW_WORKSPACES", "Add new workspace"),
+    generalFolder: _t("SIDEBAR.GENERAL_FOLDER", "General"),
+    archivedFolder: _t("SIDEBAR.ARCHIVED_FOLDER", "Archived workspaces")
+  };
+
   return (
     <Wrapper className={`navigation-menu-tab ${className}`}>
       <div>
@@ -246,7 +258,7 @@ const MainNavigationTabPanel = (props) => {
             <NavIconContainer to={workspacePath} >
               <NavIcon icon={"command"}/>
               <div>
-                Workspaces
+                {dictionary.workspaces}
                 {unreadCounter.workspace_chat_message + unreadCounter.workspace_post >= 1 &&
                 <Badge data-count={unreadCounter.workspace_chat_message + unreadCounter.workspace_post}>&nbsp;</Badge>}
               </div>
@@ -261,7 +273,7 @@ const MainNavigationTabPanel = (props) => {
               >
                 <NavIcon icon={"message-circle"} />
                 <div>
-                  Chats
+                  {dictionary.chats}
                   {(unreadCounter.chat_message >= 1 || unreadCounter.unread_channel > 0) && <Badge data-count={unreadCounter.chat_message}>&nbsp;</Badge>}
                 </div>
               </NavIconContainer>
@@ -271,7 +283,7 @@ const MainNavigationTabPanel = (props) => {
       </div>
 
       <div className="your-workspaces-title">
-        Your workspaces
+        {dictionary.yourWorkspaces}
         {!isExternal && <FolderPlus onClick={handleShowFolderModal} icon="folder-plus" />}
       </div>
       <div className="navigation-menu-group">
@@ -294,7 +306,7 @@ const MainNavigationTabPanel = (props) => {
                   id: "general_internal",
                   is_lock: 0,
                   // selected: generalWorkspaces.some((ws) => ws.selected),
-                  name: "General",
+                  name: dictionary.generalFolder,
                   type: "GENERAL_FOLDER",
                   workspace_ids: Object.values(workspaces).filter((ws) => {
                     if (ws.folder_id === null && ws.active === 1) {
@@ -327,7 +339,7 @@ const MainNavigationTabPanel = (props) => {
                   id: "archive",
                   is_lock: 0,
                   is_active: 0,
-                  name: "Archived workspaces",
+                  name: dictionary.archivedFolder,
                   type: "ARCHIVE_FOLDER",
                   workspace_ids: Object.values(workspaces).filter((ws) => {
                     if (ws.active === 0) {
@@ -349,7 +361,7 @@ const MainNavigationTabPanel = (props) => {
           <NavNewWorkspace onClick={handleShowWorkspaceModal} className="btn btn-outline-light" type="button">
             <div>
               <CirclePlus icon="circle-plus" />
-              Add new workspace
+              {dictionary.addNewWorkspace}
             </div>
           </NavNewWorkspace>
         </div>
