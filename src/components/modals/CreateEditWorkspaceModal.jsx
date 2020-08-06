@@ -137,15 +137,23 @@ const CreateEditWorkspaceModal = (props) => {
     const {_t} = useTranslation();
     const dictionary = {
         createWorkspace: _t("WORKSPACE.CREATE_WORKSPACE", "Create workspace"),
-        create: _t("CREATE", "Create"),
+        create: _t("BUTTON.CREATE", "Create"),
         updateWorkspace: _t("WORKSPACE.UPDATE_WORKSPACE", "Update workspace"),
-        update: _t("UPDATE", "Update"),
+        update: _t("BUTTON.UPDATE", "Update"),
         workspaceName: _t("WORKSPACE.WORKSPACE_NAME", "Workspace name"),
         lockWorkspace: _t("WORKSPACE.WORKSPACE_LOCK", "Lock workspace"),
-        archiveWorkspace: _t("WORKSPACE.WORKSPACE_ARCHIVE", "Archive this workspace"),
-        unarchiveWorkspace: _t("WORKSPACE.WORKSPACE_UNARCHIVE", "Unarchive this workspace"),
-        description: _t("DESCRIPTION", "Description"),
-        addToFolder: _t("ADD_TO_FOLDER", "Add to folder")
+        archiveThisWorkspace: _t("WORKSPACE.WORKSPACE_ARCHIVE", "Archive this workspace"),
+        unarchiveThisWorkspace: _t("WORKSPACE.WORKSPACE_UNARCHIVE", "Unarchive this workspace"),
+        description: _t("LABEL.DESCRIPTION", "Description"),
+        addToFolder: _t("CHECKBOX.ADD_TO_FOLDER", "Add to folder"),
+        folder: _t("LABEL.FOLDER", "Folder"),
+        team: _t("LABEL.TEAM", "Team"),
+        archiveWorkspace: _t("HEADER.ARCHIVE_WORKSPACE", "Archive workspace"),
+        archive: _t("BUTTON.ARCHIVE", "Archive"),
+        unarchiveWorkspace: _t("HEADER.UNARCHIVE_WORKSPACE", "Unarchive workspace"),
+        cancel: _t("BUTTON.CANCEL", "Cancel"),
+        archiveBodyText: _t("TEXT.ARCHIVE_CONFIRMATION", "Are you sure you want to archive this workspace?"),
+        unarchiveBodyText: _t("TEXT.UNARCHIVE_CONFIRMATION", "Are you sure you want to unarchive this workspace?"),
     };
 
     const history = useHistory();
@@ -604,21 +612,21 @@ const CreateEditWorkspaceModal = (props) => {
     const handleShowArchiveConfirmation = () => {
         let payload = {
             type: "confirmation",
-            headerText: "Archive workspace",
-            submitText: "Archive",
-            cancelText: "Cancel",
-            bodyText: "Are you sure you want to archive this workspace?",
+            headerText: dictionary.archiveWorkspace,
+            submitText: dictionary.archive,
+            cancelText: dictionary.cancel,
+            bodyText: dictionary.archiveBodyText,
             actions: {
                 onSubmit: handleArchive,
             },
         };
-
+    
         if (item.active === 0) {
             payload = {
                 ...payload,
-                headerText: "Workspace Un-archive",
-                submitText: "Unarchive",
-                bodyText: "Are you sure you want to un-archive this workspace?",
+                headerText: dictionary.unarchiveWorkspace,
+                submitText: dictionary.unarchiveWorkspace,
+                bodyText: dictionary.unarchiveBodyText,
             };
         }
 
@@ -797,7 +805,7 @@ const CreateEditWorkspaceModal = (props) => {
     return (
         <Modal innerRef={refs.container} isOpen={modal} toggle={toggle} centered size="lg" onOpened={onOpened}>
             <ModalHeaderSection
-                toggle={toggle}>{mode === "edit" ? "Edit workspace" : "Create new workspace"}</ModalHeaderSection>
+                toggle={toggle}>{mode === "edit" ? dictionary.updateWorkspace : dictionary.createWorkspace}</ModalHeaderSection>
             <ModalBody onDragOver={handleShowDropzone}>
                 <DropDocument
                     hide={!showDropzone}
@@ -831,14 +839,14 @@ const CreateEditWorkspaceModal = (props) => {
                 </WrapperDiv>
                 {form.has_folder === true && (
                     <WrapperDiv>
-                        <Label for="people">Folder</Label>
+                        <Label for="people">{dictionary.folder}</Label>
                         <SelectFolder options={folderOptions} value={form.selectedFolder} onChange={handleSelectFolder}
                                       isMulti={false} isClearable={true}/>
                         <InputFeedback valid={valid.has_folder}>{feedback.has_folder}</InputFeedback>
                     </WrapperDiv>
                 )}
                 <WrapperDiv>
-                    <Label for="people">Team</Label>
+                    <Label for="people">{dictionary.team}</Label>
                     <SelectPeople
                         valid={valid.team} options={userOptions} value={form.selectedUsers}
                         inputValue={inputValue}
@@ -883,10 +891,10 @@ const CreateEditWorkspaceModal = (props) => {
                             {
                                 item.active === 1 ?
                                     <span onClick={handleShowArchiveConfirmation}
-                                        className="btn-archive text-link mt-2 cursor-pointer">{dictionary.archiveWorkspace}</span>
+                                        className="btn-archive text-link mt-2 cursor-pointer">{dictionary.archiveThisWorkspace}</span>
                                     :
                                     <span onClick={handleShowArchiveConfirmation}
-                                            className="btn-archive text-link mt-2 cursor-pointer">{dictionary.unarchiveWorkspace}</span>
+                                            className="btn-archive text-link mt-2 cursor-pointer">{dictionary.unarchiveThisWorkspace}</span>
                             }
                         </div>
                     }
