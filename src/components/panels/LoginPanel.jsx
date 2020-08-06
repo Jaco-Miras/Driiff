@@ -6,7 +6,7 @@ import {$_GET, getThisDeviceInfo} from "../../helpers/commonFunctions";
 import {EmailRegex} from "../../helpers/stringFormatter";
 import {toggleLoading} from "../../redux/actions/globalActions";
 import {CheckBox, FormInput, PasswordInput} from "../forms";
-import {useUserActions} from "../hooks";
+import {useUserActions, useTranslation} from "../hooks";
 
 const Wrapper = styled.form`
   margin: 50px auto;
@@ -167,6 +167,17 @@ const LoginPanel = (props) => {
     }
   };
 
+  const {_t} = useTranslation();
+
+  const dictionary = {
+    rememberMe: _t("LOGIN.REMEMBER_ME", "Remember me"),
+    resetPassword: _t("LOGIN.RESET_PASSWORD", "Reset password"),
+    signIn: _t("LOGIN.SIGN_IN", "Sign in"),
+    loginSocialMedia: _t("LOGIN.SOCIAL_MEDIA_LOGIN", "Login with your social media account."),
+    noAccount: _t("LOGIN.NO_ACCOUNT", "Don't have an account?"),
+    registerNow: _t("LOGIN.REGISTER_NOW", "Register now!")
+  };
+
   return (
     <Wrapper className="fadeIn">
       <FormInput
@@ -178,15 +189,15 @@ const LoginPanel = (props) => {
         feedback={formResponse.message.password}/>
       <div className="form-group d-flex justify-content-between">
         <CheckBox name="remember_me" checked={form.remember_me} onClick={toggleCheck}>
-          Remember me
+          {dictionary.rememberMe}
         </CheckBox>
-        <Link to="/reset-password">Reset password</Link>
+        <Link to="/reset-password">{dictionary.resetPassword}</Link>
       </div>
       <button className="btn btn-primary btn-block" onClick={handleSignIn}>
-        Sign in
+        {dictionary.signIn}
       </button>
       <hr/>
-      <p className="text-muted">Login with your social media account.</p>
+      <p className="text-muted">{dictionary.loginSocialMedia}</p>
       <ul className="list-inline">
         <li className="list-inline-item">
           <span onClick={handleMagicLinkClick} className="btn btn-floating btn-magic-link">
@@ -200,9 +211,9 @@ const LoginPanel = (props) => {
         </li>
       </ul>
       <hr/>
-      <p className="text-muted">Don't have an account?</p>
+      <p className="text-muted">{dictionary.noAccount}</p>
       <Link className={"btn btn-outline-light btn-sm"} to="/register">
-        Register now!
+        {dictionary.registerNow}
       </Link>
     </Wrapper>
   );
