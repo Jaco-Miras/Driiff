@@ -8,6 +8,7 @@ import {SvgIconFeather} from "../common";
 import SearchForm from "../forms/SearchForm";
 import ChannelIcon from "../list/chat/ChannelIcon";
 import {ModalHeaderSection} from "./index";
+import { useTranslation } from "../hooks";
 
 const IconButton = styled(SvgIconFeather)`
   cursor: pointer;
@@ -144,13 +145,21 @@ const ChatForwardModal = (props) => {
     }
   });
 
+  const { _t } = useTranslation();
+
+  const dictionary = {
+    recentChannels: _t("CHAT.FORWARD.RECENT_CHANNELS", "Recent channels"),
+    transferMessageTo: _t("CHAT.FORWARD.TRANSFER_MESSAGE_TO", "Transfer the message to"),
+    searchChannelPlaceholder: _t("CHAT.FORWARD.SEARCH_CHANNEL_PLACEHOLDER", "Search channel")
+  };
+
   return (
       <Modal isOpen={modal} toggle={toggle} size={"lg"} className="chat-forward-modal" centered>
-        <ModalHeaderSection toggle={toggle}>Transfer the message to</ModalHeaderSection>
+        <ModalHeaderSection toggle={toggle}>{dictionary.transferMessageTo}</ModalHeaderSection>
         <PopUpBody>
-          <Search onChange={handleInputChange} onClick={handleSearch} placeholder="Channel search"/>
+          <Search onChange={handleInputChange} onClick={handleSearch} placeholder={dictionary.searchChannelPlaceholder}/>
           <ChannelsContainer>
-            <label>Recent channels</label>
+            <label>{dictionary.recentChannels}</label>
             {Object.keys(channels).length > 0 && (
                 <ul>
                   {filteredChannels.map((channel) => {
