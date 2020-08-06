@@ -88,14 +88,9 @@ const FileSidebar = (props) => {
         }
     }
 
-    // const closeMobileModal = () => {
-    //     document.body.classList.remove("mobile-modal-open");
-    // };
-
     const closeMobileModal = () => {
         document.body.classList.remove("mobile-modal-open");
     };
-
 
     return (
         <Wrapper className={`file-sidebar bottom-modal-mobile ${className}`}>

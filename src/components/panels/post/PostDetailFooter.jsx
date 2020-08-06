@@ -105,10 +105,9 @@ const Dflex = styled.div`
     }
     div:nth-child(2) { order: 3; }
     svg:nth-child(3) { order: 3; }
-    svg.feather-send { {
+    svg.feather-send {
       margin-right: 0;
     }
-
   }
 `;
 

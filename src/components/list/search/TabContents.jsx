@@ -4,9 +4,8 @@ import { ChannelTabResults, ChatTabResults, CommentTabResults, FilesTabResults, 
 const TabContents = (props) => {
 
     const { activeTab, tabs, redirect } = props;
-    console.log(tabs)
     return (
-        <div className="tab-content" id="myTabContent">
+        <div className="tab-content search-results" id="myTabContent">
             <div className={`tab-pane fade ${(activeTab === null || activeTab === "channel") &&  "active show"}`} role="tabpanel">
                 { tabs.hasOwnProperty("CHANNEL") && <ChannelTabResults channels={tabs.CHANNEL.items} page={tabs.CHANNEL.page} redirect={redirect}/> }
             </div>

@@ -14629,6 +14629,7 @@ body.form-membership .form-wrapper hr {
 }
 .nav.nav-pills .nav-item {
   border-bottom: 0 !important;
+  margin-bottom: 16px;
 }
 
 .nav-pills .nav-item .nav-link {
@@ -17774,6 +17775,7 @@ pre[class*="language-"] {
 
 .overlay.show {
   opacity: 1;
+  display: block;
 }
 
 .tooltip {
@@ -18138,9 +18140,13 @@ small {
   margin-left: 300px;
   border-bottom: 1px solid #ebebeb;
   padding: 0 1.8rem;
+  z-index: 1000;
   @media (max-width: 620px) {
     height: 55px;
   }
+}
+.navigation-show .header {
+  z-index: 1;
 }
 
 .header .avatar {
@@ -21141,5 +21147,16 @@ body.dark.small-navigation .navigation-menu-body ul li.navigation-divider:after 
         transform: translateY(0);
       }
     }
+  }
+}
+.search-results {
+  .list-group-item.p-l-0.p-r-0 {
+    cursor: pointer;
+  }
+}
+.files-breadcrumb h6 {
+  cursor: pointer;
+  &:last-of-type {
+    cursor: default;
   }
 }

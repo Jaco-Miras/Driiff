@@ -1,5 +1,7 @@
 import React, {useEffect, useState} from "react";
 import styled from "styled-components";
+import { useRouteMatch } from "react-router-dom";
+import { replaceChar } from "../../../helpers/stringFormatter";
 import {useSelector} from "react-redux";
 import {SvgEmptyState, SvgIconFeather} from "../../common";
 import {DropDocument} from "../../dropzone/DropDocument";
@@ -70,6 +72,8 @@ const FilesBody = (props) => {
 
   const toaster = useToaster();
   const scrollRef = document.querySelector(".app-content-body");
+
+  const { url } = useRouteMatch();
 
   const user = useSelector((state) => state.session.user);
 
@@ -161,6 +165,20 @@ const FilesBody = (props) => {
     handleAddEditFolder(folder, "update");
   };
 
+  const backToAllFiles = () => {
+    console.log('gotoallfiles')
+
+    let pathname = history.location.pathname.split("/folder/")[0];
+    history.push(pathname);
+  };
+
+  const backToFolder = (folder) => {
+    console.log('tofolder')
+
+    let pathname = url.split("/folder/")[0];
+    history.push(pathname + `/folder/${folder.id}/${replaceChar(folder.name)}`);
+  };
+
   useEffect(() => {
     if (showDropZone) {
       setShowDropZone(false);
@@ -195,15 +213,27 @@ const FilesBody = (props) => {
               </MoreButton>
             )}
             {
-              filter === "removed" && wsFiles 
-              && wsFiles.hasOwnProperty("trash_files") 
-              && (Object.keys(wsFiles.trash_files).length > 0 || Object.values(folders).filter((f) => f.is_archived).length > 0) 
+              filter === "removed" && wsFiles
+              && wsFiles.hasOwnProperty("trash_files")
+              && (Object.keys(wsFiles.trash_files).length > 0 || Object.values(folders).filter((f) => f.is_archived).length > 0)
               && <SvgIconFeather icon="trash" onClick={actions.removeTrashFiles} />
             }
             {filter === "" && (
               <>
-                {typeof params.fileFolderId === "undefined" && (
-                    <h6 className="font-size-11 text-uppercase mb-4">{dictionary.allFiles}</h6>)}
+                {
+                  typeof params.fileFolderId === "undefined" && (
+                    <h6 className="font-size-11 text-uppercase mb-4">{dictionary.allFiles}</h6>
+                  )}
+
+                {
+                  folder && folder.search && (
+                    <div className="files-breadcrumb d-flex">
+                      <h6 onClick={backToAllFiles} className="font-size-11 text-uppercase mb-4">{dictionary.allFiles} &gt;</h6>
+                      { folder.parent_folder && (<h6 onClick={() => backToFolder(folder.parent_folder)} className="font-size-11 text-uppercase mb-4">{folder.parent_folder.name} &gt;</h6>) }
+                      <h6 className="font-size-11 text-uppercase mb-4">{folder.search}</h6>
+                    </div>
+                )}
+
                 {
                   <div className="row">
                     {params.hasOwnProperty("fileFolderId")

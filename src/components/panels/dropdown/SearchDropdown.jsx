@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useHistory } from "react-router-dom"
 import styled from "styled-components";
 import { useSearch, useSearchActions } from "../../hooks";
@@ -6,7 +6,9 @@ import { SvgIconFeather } from "../../common";
 //import { ChatSearchItem, ChannelSearchItem, CommentSearchItem, FileSearchItem, PeopleSearchItem, PostSearchItem, WorkspaceSearchItem } from "../../list/search";
 
 const Wrapper = styled.div`
-    min-width: 360px;
+    @media (min-width: 400px) {
+        min-width: 360px;
+    }
 `;
 
 // const PopUpResultsContainer = styled.div`
@@ -24,10 +26,10 @@ const SearchDropdown = (props) => {
 
     const handleEnter = (e) => {
         if (e.key === "Enter") {
-        handleSearch();
+            handleSearch();
         }
     };
-    
+
     const handleSearch = () => {
         if (inputValue.trim() !== "") {
             dropdownRef.current.classList.remove("show");
@@ -39,9 +41,11 @@ const SearchDropdown = (props) => {
             actions.saveSearchValue({
                 value: inputValue
             });
+            document.querySelector(".overlay").classList.remove('show');
             history.push("/search");
         }
     };
+
 
     const handleSearchChange = (e) => {
         if (e.target.value.trim() === "" && value !== "") {
@@ -51,11 +55,11 @@ const SearchDropdown = (props) => {
         }
         setInputValue(e.target.value)
     };
-    
+
     return (
         <Wrapper className="dropdown-menu p-2 dropdown-menu-right" ref={dropdownRef}>
             <div className="input-group">
-            <input onChange={handleSearchChange} onKeyDown={handleEnter} type="text" className="form-control" placeholder="Search..." aria-describedby="button-addon1" autoFocus />
+            <input onChange={handleSearchChange} onKeyDown={handleEnter} type="text" className="form-control dropdown-search-input" placeholder="Search..." aria-describedby="button-addon1" autoFocus />
                 <div className="input-group-append">
                     <button className="btn btn-outline-light" type="button" onClick={handleSearch}>
                         <SvgIconFeather icon="search" />
@@ -67,11 +71,11 @@ const SearchDropdown = (props) => {
                     {
                         Object.values(results).map((r) => {
                             switch (r.type) {
-                                case "CHAT": 
+                                case "CHAT":
                                     return <ChatSearchItem key={r.id} data={r.data}/>
-                                case "CHANNEL": 
+                                case "CHANNEL":
                                     return <ChannelSearchItem key={r.id} data={r.data}/>
-                                case "COMMENT": 
+                                case "COMMENT":
                                     return <CommentSearchItem key={r.id} comment={r}/>
                                 case "DOCUMENT":
                                     return <FileSearchItem key={r.id} file={r}/>

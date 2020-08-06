@@ -52,7 +52,7 @@ const UserSearchPanel = (props) => {
             <div className="card-body">
               <MainSearch actions={actions} value={value}/>
               {
-                value !== "" && 
+                value !== "" &&
                 <h4 className="mb-5">
                   <SvgIconFeather icon="search" />
                   {
@@ -63,18 +63,20 @@ const UserSearchPanel = (props) => {
                   }
                 </h4>
               }
-              {
-                count > 0 && <SearchPagination activeTab={activeTab} tabs={tabs} actions={actions} value={value}/>
-              }
               <SearchTabs activeTab={activeTab} onSelectTab={handleSelectTab} tabs={tabs}/>
               <TabContents activeTab={activeTab} results={results} tabs={tabs} redirect={redirect}/>
               {
                 //count > 0 && <SearchPagination activeTab={activeTab} tabs={tabs} actions={actions} value={value}/>
               }
+              {
+                count > 0 && <SearchPagination activeTab={activeTab} tabs={tabs} actions={actions} value={value}/>
+              }
+
             </div>
           </div>
         </div>
       </div>
+
     </Wrapper>
   );
 };

@@ -12,7 +12,7 @@ const MainSearch = (props) => {
       handleSearch();
     }
   };
-  
+
   const handleSearch = () => {
     if (inputValue.trim() !== "") {
       actions.search({
@@ -37,13 +37,13 @@ const MainSearch = (props) => {
 
   useEffect(() => {
     setInputValue(value)
-  }, [value]);  
+  }, [value]);
 
   return (
     <div className="card p-t-b-40" data-backround-image="assets/media/image/image1.jpg">
       <div className="container">
         <div className="row d-flex justify-content-center">
-          <div className="col-md-6">
+          <div>
             <h2 className="mb-4 text-center">What do you want to find?</h2>
             <div className="input-group">
               <input onChange={handleSearchChange} onKeyDown={handleEnter} type="text" className="form-control" placeholder="Search..." aria-describedby="button-addon1" autoFocus value={inputValue} />
