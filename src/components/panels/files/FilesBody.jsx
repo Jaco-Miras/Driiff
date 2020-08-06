@@ -194,7 +194,12 @@ const FilesBody = (props) => {
                 <div onClick={handleRemoveFolder}>{dictionary.removeFolder}</div>
               </MoreButton>
             )}
-            {filter === "removed" && wsFiles && wsFiles.hasOwnProperty("trash_files") && Object.keys(wsFiles.trash_files).length > 0 && <SvgIconFeather icon="trash" onClick={actions.removeTrashFiles} />}
+            {
+              filter === "removed" && wsFiles 
+              && wsFiles.hasOwnProperty("trash_files") 
+              && (Object.keys(wsFiles.trash_files).length > 0 || Object.values(folders).filter((f) => f.is_archived).length > 0) 
+              && <SvgIconFeather icon="trash" onClick={actions.removeTrashFiles} />
+            }
             {filter === "" && (
               <>
                 {typeof params.fileFolderId === "undefined" && (
