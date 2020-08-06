@@ -5,7 +5,7 @@ const SearchTabs = (props) => {
     const { activeTab, onSelectTab, tabs } = props;
 
     return (
-        <ul className="nav nav-tabs mb-4" role="tablist">
+        <ul className="nav nav-pills mb-4" role="tablist">
             {
                 tabs.hasOwnProperty("CHANNEL") && Object.keys(tabs.CHANNEL).length > 0 &&
                 <li className="nav-item">

@@ -6,7 +6,6 @@ export { default as Icon } from "./Icon";
 export { default as ImageTextLink } from "./ImageTextLink";
 export { default as Loader } from "./Loader";
 export { default as NavLink } from "./NavLink";
-export { default as NoReply } from "./NoReply";
 export { default as PickerEmoji } from "./PickerEmoji";
 export * from "./SvgIcon";
 export { default as UserListPopUp } from "./UserListPopUp";

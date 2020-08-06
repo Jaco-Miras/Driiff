@@ -4,8 +4,7 @@ import { InView } from "react-intersection-observer";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import styled from "styled-components";
-import { Avatar, Loader } from "../../common";
-import NoReply from "../../common/NoReply";
+import { Avatar, Loader, SvgEmptyState } from "../../common";
 import ChatBubble from "./ChatBubble";
 import ChatMessageOptions from "./ChatMessageOptions";
 import ChatNewMessagesLine from "./ChatNewMessageLine";
@@ -328,6 +327,23 @@ const StyledAvatar = styled(Avatar)`
   }
   @media (max-width: 620px) {
     display: none;
+  }
+`;
+
+const EmptyState = styled.div`
+  display: flex;
+  -webkit-box-align: center;
+  align-items: center;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  bottom: 0px;
+  right: 0px;
+  svg {
+    max-width: 100%;
+    width: 100%;
+    max-height: 40%;
+    margin: auto;
   }
 `;
 
@@ -882,7 +898,7 @@ class ChatMessages extends React.PureComponent {
                   );
                 })
               : null}
-            {!this.state.initializing && !this.state.fetchingReplies && selectedChannel.replies && selectedChannel.replies.length < 1 && <NoReply />}
+            {!this.state.initializing && !this.state.fetchingReplies && selectedChannel.replies && selectedChannel.replies.length < 1 && <EmptyState className="no-reply-container"><SvgEmptyState icon={3} /></EmptyState>}
           </ul>
         </InfiniteScroll>
       </ChatReplyContainer>

@@ -124,16 +124,11 @@ const HomeProfileNavigation = (props) => {
     if (targetDropDown) {
       targetDropDown.classList.toggle("show");
     }
-  };
+    document.querySelector(".overlay").classList.add('show');
 
-  const handleSelectLanguage = (e) => {
-    e.preventDefault();
-    e.currentTarget.closest(".nav-item").querySelector(".dropdown-menu").classList.toggle("show");
-
-    dispatch(toggleLoading());
-    setLocale(e.target.dataset.lang, () => {
-      dispatch(toggleLoading());
-    });
+    if(e.currentTarget.title == 'Search') {
+      document.querySelector(".dropdown-menu-right .dropdown-search-input").focus();
+    }
   };
 
   useEffect(() => {
@@ -151,6 +146,7 @@ const HomeProfileNavigation = (props) => {
       shownDropDown.classList.remove("show");
       setCurrentPopUp(null);
     }
+    document.querySelector(".overlay").classList.remove('show');
   };
 
   useOutsideClick(currentPopUp, hidePopUp, currentPopUp !== null);
