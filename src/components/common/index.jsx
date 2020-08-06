@@ -17,4 +17,5 @@ export { default as AvatarGroup } from "./AvatarGroup";
 export { default as ButtonDropdown } from "./ButtonDropdown";
 export { default as DatePicker } from "./DatePicker";
 export { default as ToolTip } from "./ToolTip";
-export { default as Badge } from "./Badge";
+export {default as Badge} from "./Badge";
+export {default as GoogleDriveLink} from "./GoogleDriveLink";

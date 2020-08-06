@@ -1,17 +1,16 @@
-import { hexToCSSFilter } from "hex-to-css-filter";
-import React, { useEffect, useRef, useState } from "react";
-import { renderToString } from "react-dom/server";
+import {hexToCSSFilter} from "hex-to-css-filter";
+import React, {useEffect, useRef, useState} from "react";
+import {renderToString} from "react-dom/server";
 import GifPlayer from "react-gif-player";
 import "react-gif-player/src/GifPlayer.scss";
-import { useInView } from "react-intersection-observer";
-import { useSelector } from "react-redux";
-import { useHistory } from "react-router-dom";
+import {useInView} from "react-intersection-observer";
+import {useHistory} from "react-router-dom";
 import Skeleton from "react-skeleton-loader";
 import styled from "styled-components";
 import quillHelper from "../../../helpers/quillHelper";
-import { getEmojiRegexPattern, stripGif } from "../../../helpers/stringFormatter";
-import { ImageTextLink, SvgIconFeather, SvgImage } from "../../common";
-import { useSettings, useTimeFormat } from "../../hooks";
+import {getEmojiRegexPattern, stripGif} from "../../../helpers/stringFormatter";
+import {ImageTextLink, SvgIconFeather, SvgImage} from "../../common";
+import {useGoogleApis, useSettings, useTimeFormat} from "../../hooks";
 import useChatMessageActions from "../../hooks/useChatMessageActions";
 import MessageFiles from "./Files/MessageFiles";
 import Unfurl from "./Unfurl/Unfurl";
@@ -33,9 +32,9 @@ const ChatBubbleContainer = styled.div`
     padding: 7px;
   }
   ${(props) =>
-    props.hideBg === true &&
-    !props.isEmoticonOnly &&
-    `
+  props.hideBg === true &&
+  !props.isEmoticonOnly &&
+  `
         background: none;
         padding: 0;
     `}
@@ -300,10 +299,7 @@ const ChatMessageFiles = styled(MessageFiles)`
     }
   }
 
-  ${(props) =>
-    props.hasMessage &&
-    `
-    `}
+  ${(props) => props.hasMessage && ``}
 `;
 const ReplyContent = styled.span`
   max-width: ${(props) => (props.hasFiles ? "200px" : "auto")};
@@ -361,8 +357,8 @@ const ChatContentClap = styled.div`
 `;
 const ChatContent = styled.div`
     ${(props) =>
-      !props.isEmoticonOnly &&
-      `
+  !props.isEmoticonOnly &&
+  `
     &:before {
         ${(props) => props.showAvatar && "content: ''"};
         border: 10px solid transparent;
@@ -373,8 +369,8 @@ const ChatContent = styled.div`
         left: -20px;
         z-index: 1;
         ${(props) =>
-          props.isAuthor === true &&
-          `
+    props.isAuthor === true &&
+    `
             left: auto;
             right: -20px;
             border-left-color: #7A1B8B;
@@ -516,12 +512,12 @@ const ChatNameNotAuthorMobile = styled.span`
 `;
 
 const ChatBubble = (props) => {
-  const { reply, showAvatar, selectedChannel, showGifPlayer, isAuthor, addMessageRef, user, recipients } = props;
+  const {reply, showAvatar, selectedChannel, showGifPlayer, isAuthor, addMessageRef, user, recipients} = props;
 
   //const {_t} = useTranslation();
 
   const chatMessageActions = useChatMessageActions();
-  const { todayOrYesterdayDate } = useTimeFormat();
+  const {todayOrYesterdayDate} = useTimeFormat();
 
   const history = useHistory();
 
@@ -529,7 +525,7 @@ const ChatBubble = (props) => {
   const [loadRef, loadInView] = useInView({
     threshold: 1,
   });
-  const { chatSettings } = useSettings();
+  const {chatSettings} = useSettings();
   // const recipients = useSelector(state => state.global.recipients);
   // const user = useSelector(state => state.session.user);
   const refComponent = useRef();
@@ -710,7 +706,8 @@ const ChatBubble = (props) => {
     let images = div.getElementsByTagName("img");
     for (let i = 0; i < images.length; i++) {
       replyQuoteBody += renderToString(
-        <StyledImageTextLink className={"image-quote"} target={"_blank"} href={images[0].getAttribute("src")} icon={"image-video"} isAuthor={isAuthor}>
+        <StyledImageTextLink className={"image-quote"} target={"_blank"} href={images[0].getAttribute("src")}
+                             icon={"image-video"} isAuthor={isAuthor}>
           Photo
         </StyledImageTextLink>
       );
@@ -719,7 +716,8 @@ const ChatBubble = (props) => {
     let videos = div.getElementsByTagName("video");
     for (let i = 0; i < videos.length; i++) {
       replyQuoteBody += renderToString(
-        <StyledImageTextLink className={"video-quote"} target={"_blank"} href={videos[0].getAttribute("player-source")} icon={"image-video"} isAuthor={isAuthor}>
+        <StyledImageTextLink className={"video-quote"} target={"_blank"} href={videos[0].getAttribute("player-source")}
+                             icon={"image-video"} isAuthor={isAuthor}>
           Video
         </StyledImageTextLink>
       );
@@ -728,13 +726,15 @@ const ChatBubble = (props) => {
       reply.quote.files.forEach((file) => {
         if (file.type === "image") {
           replyQuoteBody += renderToString(
-            <StyledImageTextLink className={"image-quote"} target={"_blank"} href={file.view_link} icon={"image-video"} isAuthor={isAuthor}>
+            <StyledImageTextLink className={"image-quote"} target={"_blank"} href={file.view_link} icon={"image-video"}
+                                 isAuthor={isAuthor}>
               Photo
             </StyledImageTextLink>
           );
         } else if (file.type === "video") {
           replyQuoteBody += renderToString(
-            <StyledImageTextLink className={"video-quote"} target={"_blank"} href={file.view_link} icon={"image-video"} isAuthor={isAuthor}>
+            <StyledImageTextLink className={"video-quote"} target={"_blank"} href={file.view_link} icon={"image-video"}
+                                 isAuthor={isAuthor}>
               Video
             </StyledImageTextLink>
           );
@@ -842,8 +842,8 @@ const ChatBubble = (props) => {
     if (data.title !== "") {
       newBody = (
         <>
-          <SvgIconFeather width={16} icon="edit-3" /> {author.name} renamed this chat to <b>#{data.title}</b>
-          <br />
+          <SvgIconFeather width={16} icon="edit-3"/> {author.name} renamed this chat to <b>#{data.title}</b>
+          <br/>
         </>
       );
     }
@@ -866,7 +866,7 @@ const ChatBubble = (props) => {
           newBody = (
             <>
               {newBody} and added <b>{am.join(", ")}</b>
-              <br />
+              <br/>
             </>
           );
         }
@@ -897,7 +897,7 @@ const ChatBubble = (props) => {
           newBody = (
             <>
               {newBody} <b>{am.join(", ")}</b>
-              <br />
+              <br/>
             </>
           );
         }
@@ -922,7 +922,7 @@ const ChatBubble = (props) => {
           newBody = (
             <>
               {newBody} and removed <b>{rm.join(", ")}</b>
-              <br />
+              <br/>
             </>
           );
         }
@@ -953,7 +953,7 @@ const ChatBubble = (props) => {
           newBody = (
             <>
               {newBody} <b>{rm.join(", ")}</b>
-              <br />
+              <br/>
             </>
           );
         }
@@ -965,6 +965,18 @@ const ChatBubble = (props) => {
 
   const hasFiles = reply.files.length > 0;
   const hasMessage = reply.body !== "<span></span>";
+  const googleApis = useGoogleApis();
+
+  const handleContentRef = (e) => {
+    if (e) {
+      const googleLinks = e.querySelectorAll(`[data-google-link-retrieve="0"]`);
+      googleLinks.forEach(gl => {
+        let e = gl;
+        e.dataset.googleLinkRetrieve = 1;
+        googleApis.getFile(e, e.dataset.googleFileId);
+      })
+    }
+  }
 
   return (
     <ChatBubbleContainer
@@ -980,14 +992,16 @@ const ChatBubble = (props) => {
         <>
           {reply.is_transferred && (
             <ForwardedSpan className="small" isAuthor={isAuthor}>
-              <SvgIconFeather icon="corner-up-right" />
+              <SvgIconFeather icon="corner-up-right"/>
               Forwarded message
             </ForwardedSpan>
           )}
           <ChatContentClap ref={addMessageRef ? loadRef : null} className="chat-content-clap" isAuthor={isAuthor}>
-            <ChatContent showAvatar={showAvatar} isAuthor={isAuthor} isEmoticonOnly={isEmoticonOnly} className={`chat-content animated slower ${highlightedText ? "is-highlighted" : ""}`}>
+            <ChatContent showAvatar={showAvatar} isAuthor={isAuthor} isEmoticonOnly={isEmoticonOnly}
+                         className={`chat-content animated slower ${highlightedText ? "is-highlighted" : ""}`}>
               {reply.quote && reply.quote.body && (reply.is_deleted === 0 || reply.is_deleted === false) && (reply.quote.user_id !== undefined || reply.quote.user !== undefined) && (
-                <QuoteContainer showAvatar={showAvatar} isEmoticonOnly={isEmoticonOnly} hasFiles={hasFiles} theme={chatSettings.chat_message_theme} onClick={handleQuoteClick} isAuthor={isAuthor}>
+                <QuoteContainer showAvatar={showAvatar} isEmoticonOnly={isEmoticonOnly} hasFiles={hasFiles}
+                                theme={chatSettings.chat_message_theme} onClick={handleQuoteClick} isAuthor={isAuthor}>
                   {reply.quote.user_id === user.id ? (
                     <QuoteAuthor theme={chatSettings.chat_message_theme} isAuthor={true}>
                       {"You"}
@@ -997,47 +1011,57 @@ const ChatBubble = (props) => {
                       {replyQuoteAuthor}
                     </QuoteAuthor>
                   )}
-                  <QuoteContent theme={chatSettings.chat_message_theme} isAuthor={isAuthor} dangerouslySetInnerHTML={{ __html: replyQuoteBody.split("</p>")[0] }}></QuoteContent>
+                  <QuoteContent theme={chatSettings.chat_message_theme} isAuthor={isAuthor}
+                                dangerouslySetInnerHTML={{__html: replyQuoteBody.split("</p>")[0]}}></QuoteContent>
                 </QuoteContainer>
               )}
               {!isAuthor && showAvatar && (
                 <>
-                  {isBot === true && <GrippBotIcon icon={"gripp-bot"} />}
+                  {isBot === true && <GrippBotIcon icon={"gripp-bot"}/>}
                   {/* @todo reply.message_from.name and reply.user.name issue
                                  <p className={"reply-author"}>{reply.message_from.name.replace("  ", " ")}</p>*/}
                 </>
               )}
-              {reply.files.length > 0 && !reply.is_deleted && <ChatMessageFiles hasMessage={hasMessage} isAuthor={isAuthor} theme={chatSettings.chat_message_theme} chatFiles={chatFiles} files={reply.files} reply={reply} type="chat" />}
+              {reply.files.length > 0 && !reply.is_deleted &&
+              <ChatMessageFiles hasMessage={hasMessage} isAuthor={isAuthor} theme={chatSettings.chat_message_theme}
+                                chatFiles={chatFiles} files={reply.files} reply={reply} type="chat"/>}
 
-                {!isAuthor && showAvatar && (
-                  <>
-                    <ChatNameNotAuthorMobile className="chat-name-not-author-mobile">{ reply.user.name }</ChatNameNotAuthorMobile>
-                  </>
-                )}
+              {!isAuthor && showAvatar && (
+                <>
+                  <ChatNameNotAuthorMobile
+                    className="chat-name-not-author-mobile">{reply.user.name}</ChatNameNotAuthorMobile>
+                </>
+              )}
               {
                 <ReplyContent
+                  ref={handleContentRef}
                   hasFiles={hasFiles}
                   theme={chatSettings.chat_message_theme}
                   isAuthor={isAuthor}
                   className={`reply-content ${isEmoticonOnly ? "emoticon-body" : ""} ${reply.is_deleted ? "is-deleted" : ""}`}
-                  dangerouslySetInnerHTML={showGifPlayer ? { __html: stripGif(replyBody) } : { __html: replyBody }}
+                  dangerouslySetInnerHTML={showGifPlayer ? {__html: stripGif(replyBody)} : {__html: replyBody}}
                 />
               }
 
               {showGifPlayer &&
-                fetchGifCount(replyBody).map((gifLink, index) => {
-                  let gifString = gifLink.outerHTML;
+              fetchGifCount(replyBody).map((gifLink, index) => {
+                let gifString = gifLink.outerHTML;
 
-                  return <GifPlayer key={index} className={"gifPlayer"} gif={fetchImgURL(gifString)} autoplay={true} />;
-                })}
+                return <GifPlayer key={index} className={"gifPlayer"} gif={fetchImgURL(gifString)} autoplay={true}/>;
+              })}
               {(reply.unfurls && reply.unfurls.length && !reply.is_deleted && !showGifPlayer && !isBot) === true && (
-                <Unfurl unfurlData={reply.unfurls} isAuthor={isAuthor} deleteUnfurlAction={props.deleteUnfurlAction} removeUnfurl={props.removeUnfurl} channelId={props.channelId} messageId={reply.id} type={"chat"} />
+                <Unfurl unfurlData={reply.unfurls} isAuthor={isAuthor} deleteUnfurlAction={props.deleteUnfurlAction}
+                        removeUnfurl={props.removeUnfurl} channelId={props.channelId} messageId={reply.id}
+                        type={"chat"}/>
               )}
-              {reply.unfurl_loading !== undefined && reply.unfurl_loading && <Skeleton color="#dedede" borderRadius="10px" width="100%" height="150px" widthRandomness={0} heightRandomness={0} />}
+              {reply.unfurl_loading !== undefined && reply.unfurl_loading &&
+              <Skeleton color="#dedede" borderRadius="10px" width="100%" height="150px" widthRandomness={0}
+                        heightRandomness={0}/>}
             </ChatContent>
           </ChatContentClap>
           <ChatTimeStamp className="chat-timestamp" isAuthor={isAuthor}>
-            <span className="reply-date created">{reply.created_at.diff_for_humans ? "sending..." : todayOrYesterdayDate(reply.created_at.timestamp)}</span>
+            <span
+              className="reply-date created">{reply.created_at.diff_for_humans ? "sending..." : todayOrYesterdayDate(reply.created_at.timestamp)}</span>
           </ChatTimeStamp>
         </>
       }

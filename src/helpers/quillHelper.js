@@ -1,5 +1,8 @@
-import { parseEmojis, parseTaskUrl, textToLink } from "./stringFormatter";
-import { validURL } from "./urlContentHelper";
+import {parseEmojis, parseTaskUrl, textToLink} from "./stringFormatter";
+import {validURL} from "./urlContentHelper";
+import {GoogleDriveLink} from "../components/common";
+import React from "react";
+import {renderToString} from "react-dom/server";
 
 class quillHelper {
   static generate(body) {
@@ -58,8 +61,12 @@ class quillHelper {
         }
 
         if (editMode !== true && validURL(word) === true) {
-          let pattern = /^((http|https|ftp):\/\/)/;
-          if (!pattern.test(word)) {
+          const googleDriveFileUrlPattern = /^(https:\/\/drive\.google\.com\/)file\/d\/([^\/]+)\/.*$/;
+          const urlPattern = /^((http|https|ftp):\/\/)/;
+          if (googleDriveFileUrlPattern.test(word)) {
+
+            word = renderToString(<GoogleDriveLink link={word}/>);
+          } else if (!urlPattern.test(word)) {
             if (!(word.includes("href") || word.includes("src"))) {
               word = parseEmojis(textToLink(word));
             }
