@@ -6,7 +6,7 @@ import {$_GET, getThisDeviceInfo} from "../../helpers/commonFunctions";
 import {EmailRegex} from "../../helpers/stringFormatter";
 import {toggleLoading} from "../../redux/actions/globalActions";
 import {CheckBox, FormInput, PasswordInput} from "../forms";
-import {useUserActions, useTranslation} from "../hooks";
+import {useUserActions} from "../hooks";
 
 const Wrapper = styled.form`
   margin: 50px auto;
@@ -20,6 +20,7 @@ const Wrapper = styled.form`
 
 const LoginPanel = (props) => {
 
+  const { dictionary } = props;
   const history = useHistory();
   const dispatch = useDispatch();
 
@@ -63,17 +64,17 @@ const LoginPanel = (props) => {
 
     if (form.email === "") {
       valid.email = false;
-      message.email = "Email is required.";
+      message.email = dictionary.emailRequired;
     } else if (!EmailRegex.test(form.email)) {
       valid.email = false;
-      message.email = "Invalid email format.";
+      message.email = dictionary.invalidEmail;
     } else {
       valid.email = true;
     }
 
     if (form.password === "") {
       valid.password = false;
-      message.password = "Password is required.";
+      message.password = dictionary.passwordRequired;
     } else {
       valid.password = true;
     }
@@ -165,17 +166,6 @@ const LoginPanel = (props) => {
         refs.password.current.focus();
       }
     }
-  };
-
-  const {_t} = useTranslation();
-
-  const dictionary = {
-    rememberMe: _t("LOGIN.REMEMBER_ME", "Remember me"),
-    resetPassword: _t("LOGIN.RESET_PASSWORD", "Reset password"),
-    signIn: _t("LOGIN.SIGN_IN", "Sign in"),
-    loginSocialMedia: _t("LOGIN.SOCIAL_MEDIA_LOGIN", "Login with your social media account."),
-    noAccount: _t("LOGIN.NO_ACCOUNT", "Don't have an account?"),
-    registerNow: _t("LOGIN.REGISTER_NOW", "Register now!")
   };
 
   return (

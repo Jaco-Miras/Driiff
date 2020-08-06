@@ -8,6 +8,7 @@ import {FormInput, PasswordInput} from "../forms";
 const Wrapper = styled.form``;
 
 const UpdatePasswordPanel = (props) => {
+  const { dictionary } = props;
   const history = useHistory();
   const dispatch = useDispatch();
   const match = useRouteMatch("/resetpassword/:token/:email");
@@ -49,7 +50,7 @@ const UpdatePasswordPanel = (props) => {
 
     if (form.password === "") {
       valid = false;
-      errorData = {...errorData, password: "Password is required."};
+      errorData = {...errorData, password: dictionary.passwordRequired};
     }
 
     setError(errorData);
@@ -94,10 +95,10 @@ const UpdatePasswordPanel = (props) => {
         readOnly/>
       <PasswordInput ref={ref.password} onChange={handleInputChange}/>
       <button className="btn btn-primary btn-block" onClick={handleUpdatePassword}>
-        Update password
+        {dictionary.updatePassword}
       </button>
       <hr/>
-      <p className="text-muted">Login with your social media account.</p>
+      <p className="text-muted">{dictionary.loginSocialMedia}</p>
       <ul className="list-inline">
         <li className="list-inline-item">
           <span nClick={handleGoogleLogIn} className="btn btn-floating btn-google">
@@ -106,9 +107,9 @@ const UpdatePasswordPanel = (props) => {
         </li>
       </ul>
       <hr/>
-      <p className="text-muted">Don't have an account?</p>
+      <p className="text-muted">{dictionary.noAccount}</p>
       <Link className={"btn btn-outline-light btn-sm"} to="/register">
-        Register now!
+        {dictionary.registerNow}
       </Link>
     </Wrapper>
   );

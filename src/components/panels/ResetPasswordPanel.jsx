@@ -6,8 +6,9 @@ import {useUserActions} from "../hooks";
 
 const Wrapper = styled.form``;
 
-const ResetPasswordPanel = () => {
+const ResetPasswordPanel = (props) => {
 
+  const { dictionary } = props;
   const userActions = useUserActions();
 
   const [form, setForm] = useState({
@@ -37,10 +38,10 @@ const ResetPasswordPanel = () => {
 
     if (form.email === "") {
       valid = false;
-      setError({...error, email: "Email is required."});
+      setError({...error, email: dictionary.emailRequired});
     } else if (!EmailRegex.test(form.email)) {
       valid = false;
-      setError({...error, email: "Invalid email format."});
+      setError({...error, email: dictionary.invalidEmail});
     }
 
     return valid;
@@ -63,14 +64,14 @@ const ResetPasswordPanel = () => {
                required="" autoFocus/>
       </div>
       <button className="btn btn-primary btn-block" onClick={handleSubmit}>
-        Submit
+        {dictionary.submit}
       </button>
       <hr/>
-      <p className="text-muted">Take a different action.</p>
+      <p className="text-muted">{dictionary.takeADifferentAction}</p>
       <Link className={"btn btn-sm btn-outline-light mr-1-1"} to="/register">
-        Register now!
+        {dictionary.registerNow}
       </Link> or <Link className={"btn btn-sm btn-outline-light ml-1"} to="/login">
-      Login!
+        {dictionary.login}
     </Link>
     </Wrapper>
   );
