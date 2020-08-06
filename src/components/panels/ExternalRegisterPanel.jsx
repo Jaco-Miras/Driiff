@@ -25,6 +25,7 @@ const FormGroup = styled.div`
 
 const ExternalRegisterPanel = (props) => {
 
+    const { dictionary } = props;
     const history = useHistory();
     const userAction = useUserActions();
     const toaster = useToaster();
@@ -63,25 +64,25 @@ const ExternalRegisterPanel = (props) => {
 
         if (form.email === "") {
             valid = false;
-            errorData = {...errorData, email: "Email is required."};
+            errorData = {...errorData, email: dictionary.emailRequired};
         } else if (!EmailRegex.test(form.email)) {
             valid = false;
-            errorData = {...errorData, email: "Invalid email format."};
+            errorData = {...errorData, email: dictionary.invalidEmail};
         }
 
         if (form.first_name === "") {
             valid = false;
-            errorData = {...errorData, first_name: "First name is required."};
+            errorData = {...errorData, first_name: dictionary.firstNameRequired};
         }
 
         if (form.last_name === "") {
             valid = false;
-            errorData = {...errorData, last_name: "Last name is required."};
+            errorData = {...errorData, last_name: dictionary.lasttNameRequired};
         }
 
         if (form.password === "") {
             valid = false;
-            errorData = {...errorData, password: "Password is required."};
+            errorData = {...errorData, password: dictionary.passwordRequired};
         }
 
         setFormResponse({
@@ -177,7 +178,7 @@ const ExternalRegisterPanel = (props) => {
             <FormGroup className="form-group">
                 <Input
                     ref={refs.first_name} onChange={handleInputChange} name="first_name" type="text"
-                    className="form-control" placeholder="First name"
+                    className="form-control" placeholder={dictionary.firstName}
                     valid={typeof formResponse.valid.first_name === "undefined" ? null : formResponse.valid.first_name}
                     invalid={typeof formResponse.valid.first_name === "undefined" ? null : !formResponse.valid.first_name}
                     required autoFocus/>
@@ -185,12 +186,12 @@ const ExternalRegisterPanel = (props) => {
             </FormGroup>
             <FormGroup className="form-group">
                 <Input onChange={handleInputChange} name="middle_name" type="text" className="form-control"
-                       placeholder="Middle name"/>
+                       placeholder={dictionary.middleName}/>
             </FormGroup>
             <FormGroup className="form-group">
                 <Input
                     onChange={handleInputChange} name="last_name" type="text" className="form-control"
-                    placeholder="Last name"
+                    placeholder={dictionary.lastName}
                     valid={typeof formResponse.valid.last_name === "undefined" ? null : formResponse.valid.last_name}
                     invalid={typeof formResponse.valid.last_name === "undefined" ? null : !formResponse.valid.last_name}
                     required/>
@@ -212,7 +213,7 @@ const ExternalRegisterPanel = (props) => {
                         innerRef={refs.password}
                         name="password"
                         onChange={handleInputChange}
-                        placeholder="Password"
+                        placeholder={dictionary.password}
                         required
                         defaultValue=""
                         type={passwordVisibility ? "text" : "password"}
@@ -228,7 +229,7 @@ const ExternalRegisterPanel = (props) => {
                 </InputGroup>
             </FormGroup>
             <button className="btn btn-primary btn-block" onClick={handleAccept}>
-                Accept
+                {dictionary.accept}
             </button>
         </Wrapper>
     );

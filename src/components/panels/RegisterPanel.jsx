@@ -19,8 +19,9 @@ const FormGroup = styled.div`
     }
 `;
 
-const RegisterPanel = () => {
+const RegisterPanel = (props) => {
 
+  const { dictionary } = props;
   const refs = {
     firstname: useRef(),
   };
@@ -48,31 +49,31 @@ const RegisterPanel = () => {
 
     if (typeof form.firstname === "undefined" || form.firstname === "") {
       valid.firstname = false;
-      message.firstname = "First name is required.";
+      message.firstname = dictionary.firstNameRequired;
     } else {
       valid.firstname = true;
     }
 
     if (typeof form.lastname === "undefined" || form.lastname === "") {
       valid.lastname = false;
-      message.lastname = "Last name is required.";
+      message.lastname = dictionary.lastNameRequired;
     } else {
       valid.lastname = true;
     }
 
     if (typeof form.email === "undefined" || form.email === "") {
       valid.email = false;
-      message.email = "Email is required.";
+      message.email = dictionary.emailRequired;
     } else if (!EmailRegex.test(form.email)) {
       valid.email = false;
-      message.email = "Invalid email format.";
+      message.email = dictionary.invalidEmail;
     } else {
       valid.email = true;
     }
 
     if (typeof form.password === "undefined" || form.password === "") {
       valid.password = false;
-      message.password = "Password is required.";
+      message.password = dictionary.passwordRequired;
     } else {
       valid.password = true;
     }
@@ -102,22 +103,22 @@ const RegisterPanel = () => {
   return (
     <Wrapper>
       <FormInput onChange={handleInputChange} name="firstname" isValid={formResponse.valid.firstname}
-                 feedback={formResponse.message.lastname} placeholder="First name" innerRef={refs.firstname} autoFocus/>
+                 feedback={formResponse.message.lastname} placeholder={dictionary.firstName} innerRef={refs.firstname} autoFocus/>
       <FormInput onChange={handleInputChange} name="middlename" isValid={formResponse.valid.middlename}
-                 feedback={formResponse.message.middlename} placeholder="Middle name"/>
+                 feedback={formResponse.message.middlename} placeholder={dictionary.middleName}/>
       <FormInput onChange={handleInputChange} name="lastname" isValid={formResponse.valid.lastname}
-                 feedback={formResponse.message.lastname} placeholder="Last name"/>
+                 feedback={formResponse.message.lastname} placeholder={dictionary.lastName}/>
       <FormInput onChange={handleInputChange} name="email" isValid={formResponse.valid.email}
                  feedback={formResponse.message.email} placeholder="Email" type="email"/>
       <PasswordInput onChange={handleInputChange} isValid={formResponse.valid.password}
                      feedback={formResponse.message.password}/>
       <button className="btn btn-primary btn-block" onClick={handleRegister}>
-        Register
+        {dictionary.register}
       </button>
       <hr/>
-      <p className="text-muted">Already have an account?</p>
+      <p className="text-muted">{dictionary.haveAccount}</p>
       <Link className={"btn btn-outline-light btn-sm"} to="/login">
-        Sign in!
+        {dictionary.signIn}
       </Link>
     </Wrapper>
   );
