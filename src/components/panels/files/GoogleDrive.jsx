@@ -37,7 +37,7 @@ const GoogleDrive = (props) => {
     const handleAuthenticate = (token) => {
         console.log("oauth token:", token);
         if (localStorage.getItem("gdrive") === null) {
-            localStorage.setItem("gdrive", true);
+            localStorage.setItem("gdrive", token);
         }
     };
     return (
