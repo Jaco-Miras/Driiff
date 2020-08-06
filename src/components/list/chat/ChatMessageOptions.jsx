@@ -6,7 +6,7 @@ import useChatMessageActions from "../../hooks/useChatMessageActions";
 import { MoreOptions } from "../../panels/common";
 
 const ChatMessageOptions = (props) => {
-  const { isAuthor, replyData, className = "", selectedChannel } = props;
+  const { isAuthor, replyData, className = "", selectedChannel, dictionary } = props;
   const [showMoreOptions, setShowMoreOptions] = useState(false);
   const dispatch = useDispatch();
   const scrollEl = document.getElementById("infinite-scroll-chat-replies");
@@ -20,10 +20,10 @@ const ChatMessageOptions = (props) => {
   const handleRemoveReply = () => {
     let payload = {
       type: "confirmation",
-      headerText: "Remove chat",
-      submitText: "Remove",
-      cancelText: "Cancel",
-      bodyText: "Are you sure you want to remove this chat?",
+      headerText: dictionary.removeChat,
+      submitText: dictionary.remove,
+      cancelText: dictionary.cancel,
+      bodyText: dictionary.removeThisChat,
       actions: {
         onSubmit: handleDeleteReply,
       },
@@ -64,15 +64,15 @@ const ChatMessageOptions = (props) => {
 
     dispatch(addToModals(payload));
   };
-
+  /* dictionary initiated in ChatContentPanel.jsx */
   return (
     <MoreOptions className={className} scrollRef={scrollEl}>
-      <div onClick={handleSetReminder}>Remind me about this</div>
-      {isAuthor && replyData.hasOwnProperty("is_transferred") && !replyData.is_transferred && <div onClick={handleEditReply}>Edit</div>}
-      <div onClick={handleQuoteReply}>Quote</div>
-      {isAuthor && <div onClick={handleRemoveReply}>Remove</div>}
-      <div onClick={handleCopyLink}>Copy message link</div>
-      <div onClick={handleForwardMessage}>Forward</div>
+      <div onClick={handleSetReminder}>{dictionary.remindMe}</div>
+      {isAuthor && replyData.hasOwnProperty("is_transferred") && !replyData.is_transferred && <div onClick={handleEditReply}>{dictionary.edit}</div>}
+      <div onClick={handleQuoteReply}>{dictionary.quote}</div>
+      {isAuthor && <div onClick={handleRemoveReply}>{dictionary.remove}</div>}
+      <div onClick={handleCopyLink}>{dictionary.copyMessageLink}</div>
+      <div onClick={handleForwardMessage}>{dictionary.forward}</div>
     </MoreOptions>
   );
 };

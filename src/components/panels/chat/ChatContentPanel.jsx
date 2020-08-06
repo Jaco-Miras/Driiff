@@ -109,7 +109,10 @@ const ChatContentPanel = (props) => {
     copyMessageLink: _t("CHAT.COPY_MESSAGE_LINK", "Copy message link"),
     forward: _t("CHAT.FORWARD", "Forward"),
     edit: _t("CHAT.EDIT", "Edit"),
-    remove: _t("CHAT.REMOVE", "Remove")
+    remove: _t("CHAT.REMOVE", "Remove"),
+    removeChat: _t("MODAL.REMOVE_CHAT", "Remove chat"),
+    cancel: _t("MODAL.CANCEL", "Cancel"),
+    removeThisChat: _t("MODAL.REMOVE_THIS_CHAT", "Are you sure you want to remove this chat?")
   };
 
   useFocusInput(document.querySelector(".chat-footer .ql-editor"));
