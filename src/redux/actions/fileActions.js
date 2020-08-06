@@ -2,6 +2,7 @@ import dispatchActionToReducer, {SimpleDispatchActionToReducer} from "../actionD
 import {
   deleteFile as deleteFileService,
   deleteFolder as deleteFolderService,
+  deleteGoogleAttachment as deleteGoogleAttachmentService,
   deletePostFile as deletePostFileService,
   deleteTrash as deleteTrashService,
   deleteWorkspaceFile as deleteWorkspaceFileService,
@@ -233,4 +234,12 @@ export function incomingGoogleFile(payload, callback) {
 
 export function incomingGoogleFolder(payload, callback) {
   return SimpleDispatchActionToReducer("INCOMING_GOOGLE_FOLDER", payload, callback);
+}
+
+export function deleteGoogleAttachment(payload, callback) {
+  return dispatchActionToReducer(deleteGoogleAttachmentService(payload), "DELETE_GOOGLE_ATTACHMENTS_START", "DELETE_GOOGLE_ATTACHMENTS_SUCCESS", "DELETE_GOOGLE_ATTACHMENTS_FAIL", callback);
+}
+
+export function incomingDeletedGoogleFile(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_DELETED_GOOGLE_FILE", payload, callback);
 }

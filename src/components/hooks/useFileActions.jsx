@@ -8,6 +8,7 @@ import {
   clearFileSearchResults,
   deleteFile,
   deleteFolder,
+  deleteGoogleAttachment,
   deleteTrash,
   favoriteFile,
   getWorkspaceFavoriteFiles,
@@ -522,6 +523,78 @@ const useFileActions = (params = null) => {
         [dispatch]
     );
 
+    const unlinkGoogleAttachment = useCallback(
+        (file) => {
+            const handleDeleteFile = () => {
+                let payload = {
+                    link_id: file.link_id,
+                    link_type: file.link_type,
+                    attachment_type: file.attachment_type,
+                    attachment_id: file.id,
+                    payload : {
+                        id: file.payload_id,
+                        name: file.search,
+                        mime_type: file.mime_type
+                    }
+                };
+                dispatch(
+                    deleteGoogleAttachment(payload, (err, res) => {
+                        toaster.notify(`You have removed ${file.search}.`);
+                    })
+                );
+            };
+            let payload = {
+                type: "confirmation",
+                headerText: "Remove google attachment",
+                submitText: "Remove",
+                cancelText: "Cancel",
+                bodyText: "Are you sure you want to remove this file?",
+                actions: {
+                    onSubmit: handleDeleteFile,
+                },
+            };
+
+            dispatch(addToModals(payload));
+        },
+        [dispatch]
+    );
+    
+    const unlinkGoogleFolder = useCallback(
+        (folder) => {
+            const handleDeleteFolder = () => {
+                let payload = {
+                    link_id: folder.link_id,
+                    link_type: folder.link_type,
+                    attachment_type: folder.attachment_type,
+                    attachment_id: folder.id,
+                    payload : {
+                        id: folder.payload_id,
+                        name: folder.search,
+                        mime_type: folder.mime_type
+                    }
+                };
+                dispatch(
+                    deleteGoogleAttachment(payload, (err, res) => {
+                        toaster.notify(`You have removed ${folder.search}.`);
+                    })
+                );
+            };
+            let payload = {
+                type: "confirmation",
+                headerText: "Remove google folder",
+                submitText: "Remove",
+                cancelText: "Cancel",
+                bodyText: "Are you sure you want to remove this folder?",
+                actions: {
+                    onSubmit: handleDeleteFolder,
+                },
+            };
+
+            dispatch(addToModals(payload));
+        },
+        [dispatch]
+    );
+
     return {
         clearSearch,
         copyLink,
@@ -549,6 +622,8 @@ const useFileActions = (params = null) => {
         getPrimaryFiles,
         getGoogleDriveFiles,
         getGoogleDriveFolders,
+        unlinkGoogleAttachment,
+        unlinkGoogleFolder,
         uploadWorkspaceGoogleDriveFile,
         uploadingFiles,
     };
