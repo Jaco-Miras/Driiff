@@ -21,7 +21,11 @@ const useGoogleApis = () => {
   const updateSigninStatus = (isSignedIn, element, fileId) => {
     if (isSignedIn) {
       window.gapi.client.load('drive', 'v2', function () {
-        let file = window.gapi.client.drive.files.get({'fileId': fileId});
+        let file = window.gapi.client.drive.files.get({
+          fileId: fileId,
+          supportsAllDrives: true,
+          supportsTeamDrives: true
+        });
         file.execute(function (resp) {
           if (resp.error) {
             element.innerHTML = `Google drive file link.`
@@ -55,15 +59,15 @@ const useGoogleApis = () => {
       });
     });*/
 
-    window.gapi.load('client:auth2', () => {
+    window.gapi.load('client:auth2', async () => {
       window.gapi.client
         .init({
           clientId: CLIENT_ID,
           apiKey: API_KEY,
           scope: "https://www.googleapis.com/auth/drive.metadata.readonly"
         })
-        .then(() => {
-          const auth = window.gapi.auth2.getAuthInstance();
+        .then(async () => {
+          const auth = await window.gapi.auth2.getAuthInstance();
 
           //var accessToken = gapi.auth.getToken().access_token;
           /*var xhr = new XMLHttpRequest();

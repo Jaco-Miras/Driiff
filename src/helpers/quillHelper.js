@@ -61,7 +61,7 @@ class quillHelper {
         }
 
         if (editMode !== true && validURL(word) === true) {
-          const googleDriveFileUrlPattern = /^(https:\/\/drive\.google\.com\/)file\/d\/([^\/]+)\/.*$/;
+          const googleDriveFileUrlPattern = /^(https:\/\/(drive|docs)\.google\.com\/)(file|spreadsheets|document|presentation|forms)\/d\/([^\/]+)\/.*$/;
           const urlPattern = /^((http|https|ftp):\/\/)/;
           if (googleDriveFileUrlPattern.test(word)) {
 
