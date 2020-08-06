@@ -342,3 +342,19 @@ export function getWorkspaceGoogleFolderAttachments(payload) {
     data: payload,
   });
 }
+
+/**
+ * @param {Object} payload
+ * @param {number} attachment_id
+ * @param {number} link_id
+ * @param {string} link_type
+ * @param {string} attachment_type
+ * @returns {Promise<*>}
+ */
+export function deleteGoogleAttachment(payload) {
+  return apiCall({
+    method: "DELETE",
+    url: "/v2/google-attachments",
+    data: payload,
+  });
+}

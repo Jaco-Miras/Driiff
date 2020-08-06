@@ -17,6 +17,7 @@ const Wrapper = styled.form`
 
 const MagicLinkPanel = (props) => {
 
+  const { dictionary } = props;
   const pageLoader = usePageLoader();
   const userActions = useUserActions();
 
@@ -68,10 +69,10 @@ const MagicLinkPanel = (props) => {
 
     if (form.email === "") {
       valid.email = false;
-      message.email = "Email is required.";
+      message.email = dictionary.emailRequired;
     } else if (!EmailRegex.test(form.email)) {
       valid.email = false;
-      message.email = "Invalid email format.";
+      message.email = dictionary.invalidEmail;
     } else {
       valid.email = true;
     }
@@ -99,7 +100,7 @@ const MagicLinkPanel = (props) => {
                   email: false
                 },
                 message: {
-                  email: `Not allowed for external users.`
+                  email: dictionary.notAllowedForExternal
                 }
               });
             }
@@ -110,7 +111,7 @@ const MagicLinkPanel = (props) => {
               email: false
             },
             message: {
-              email: `Email not found.`
+              email: dictionary.emailNotFound
             }
           });
           pageLoader.hide();
@@ -127,14 +128,14 @@ const MagicLinkPanel = (props) => {
         autoFocus/>
       <div className="form-group d-flex justify-content-between">
         <CheckBox name="remember_me" checked={form.remember_me} onClick={toggleCheck}>
-          Remember me
+          {dictionary.rememberMe}
         </CheckBox>
       </div>
       <button className="btn btn-primary btn-block" onClick={handleSendMagicLink}>
-        Send link
+        {dictionary.sendLink}
       </button>
       <hr/>
-      <p className="text-muted">Login with your social media account.</p>
+      <p className="text-muted">{dictionary.loginSocialMedia}</p>
       <ul className="list-inline">
         <li className="list-inline-item">
           <span onClick={userActions.googleLogin} className="btn btn-floating btn-google">
@@ -143,11 +144,11 @@ const MagicLinkPanel = (props) => {
         </li>
       </ul>
       <hr/>
-      <p className="text-muted">Take a different action.</p>
+      <p className="text-muted">{dictionary.takeADifferentAction}</p>
       <Link className={"btn btn-outline-light btn-sm"} to="/register">
-        Register now!
+        {dictionary.registerNow}
       </Link> or <Link className={"btn btn-outline-light btn-sm"} to="/login">
-      Login!
+        {dictionary.login}
     </Link>
     </Wrapper>
   );

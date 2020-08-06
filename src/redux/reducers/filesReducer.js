@@ -254,6 +254,7 @@ export default (state = INITIAL_STATE, action) => {
             search: attachment.payload.name,
             size: attachment.payload.sizeBytes,
             type: attachment.payload.type,
+            attachment_type: attachment.attachment_type
           }
         });
 
@@ -280,7 +281,10 @@ export default (state = INITIAL_STATE, action) => {
               payload: a.payload,
               created_at: { timestamp: a.payload.lastEditedUtc },
               updated_at: { timestamp: a.payload.lastEditedUtc },
-              files: []
+              files: [],
+              link_type: a.link_type,
+              link_id: a.link_index_id,
+              attachment_type: a.attachment_type
             }
           })
         }
@@ -469,11 +473,17 @@ export default (state = INITIAL_STATE, action) => {
     }
     case "GET_WORKSPACE_FOLDER_SUCCESS": {
       let newWorkspaceFiles = { ...state.workspaceFiles };
+      let folders = action.data.folders.map((f) => {
+        return {
+          ...f,
+          files: []
+        }
+      })
       if (newWorkspaceFiles.hasOwnProperty(action.data.topic_id)) {
         newWorkspaceFiles = {
           [action.data.topic_id]: {
             ...newWorkspaceFiles[action.data.topic_id],
-            folders: convertArrayToObject(action.data.folders, "id"),
+            folders: {...convertArrayToObject(folders, "id"), ...newWorkspaceFiles[action.data.topic_id].folders}
           },
         };
       } else {
@@ -481,7 +491,7 @@ export default (state = INITIAL_STATE, action) => {
           ...newWorkspaceFiles,
           [action.data.topic_id]: {
             ...newWorkspaceFiles[action.data.topic_id],
-            folders: convertArrayToObject(action.data.folders, "id"),
+            folders: convertArrayToObject(folders, "id"),
           },
         };
       }
@@ -785,10 +795,13 @@ export default (state = INITIAL_STATE, action) => {
       let newWorkspaceFiles = { ...state.workspaceFiles };
       if (newWorkspaceFiles.hasOwnProperty(action.data.topic_id) && newWorkspaceFiles[action.data.topic_id].hasOwnProperty("trash_files")) {
         let add = (total, num) => total + num;
-        let totalSize = Object.values(state.workspaceFiles[action.data.topic_id].trash_files).filter((f) => typeof f !== "undefined")
-        .filter((f) => {
-          return action.data.deleted_file_ids.some((df) => df === f.id);
-        }).map((f) => f.size).reduce(add);
+        let totalSize = 0;
+        if (action.data.deleted_file_ids.length) {
+          totalSize = Object.values(state.workspaceFiles[action.data.topic_id].trash_files).filter((f) => typeof f !== "undefined")
+          .filter((f) => {
+            return action.data.deleted_file_ids.some((df) => df === f.id);
+          }).map((f) => f.size).reduce(add);
+        }
 
         newWorkspaceFiles[action.data.topic_id].trash_files = {};
         newWorkspaceFiles[action.data.topic_id].trash = 0;
@@ -887,6 +900,21 @@ export default (state = INITIAL_STATE, action) => {
       } else {
         return state;
       }
+    }
+    case "INCOMING_DELETED_GOOGLE_FILE": {
+      return state;
+      // let = { updatedWorkspaceFiles };
+      // if (updatedWorkspaceFiles.hasOwnProperty(action.data.topic_id)) {
+      //   if (type === "FILE") {
+      //     delete updatedWorkspaceFiles[action.data.topic_id].files[action.data.attachment_id]
+      //   } else if (type === "FOLDER") {
+      //     delete updatedWorkspaceFiles[action.data.topic_id].folders[action.data.attachment_id]
+      //   }
+      // }
+      // return {
+      //   ...state,
+      //   workspaceFiles: updatedWorkspaceFiles
+      // }
     }
     default:
       return state;

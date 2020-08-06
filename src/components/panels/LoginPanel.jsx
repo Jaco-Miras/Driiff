@@ -20,6 +20,7 @@ const Wrapper = styled.form`
 
 const LoginPanel = (props) => {
 
+  const { dictionary } = props;
   const history = useHistory();
   const dispatch = useDispatch();
 
@@ -63,17 +64,17 @@ const LoginPanel = (props) => {
 
     if (form.email === "") {
       valid.email = false;
-      message.email = "Email is required.";
+      message.email = dictionary.emailRequired;
     } else if (!EmailRegex.test(form.email)) {
       valid.email = false;
-      message.email = "Invalid email format.";
+      message.email = dictionary.invalidEmail;
     } else {
       valid.email = true;
     }
 
     if (form.password === "") {
       valid.password = false;
-      message.password = "Password is required.";
+      message.password = dictionary.passwordRequired;
     } else {
       valid.password = true;
     }
@@ -178,15 +179,15 @@ const LoginPanel = (props) => {
         feedback={formResponse.message.password}/>
       <div className="form-group d-flex justify-content-between">
         <CheckBox name="remember_me" checked={form.remember_me} onClick={toggleCheck}>
-          Remember me
+          {dictionary.rememberMe}
         </CheckBox>
-        <Link to="/reset-password">Reset password</Link>
+        <Link to="/reset-password">{dictionary.resetPassword}</Link>
       </div>
       <button className="btn btn-primary btn-block" onClick={handleSignIn}>
-        Sign in
+        {dictionary.signIn}
       </button>
       <hr/>
-      <p className="text-muted">Login with your social media account.</p>
+      <p className="text-muted">{dictionary.loginSocialMedia}</p>
       <ul className="list-inline">
         <li className="list-inline-item">
           <span onClick={handleMagicLinkClick} className="btn btn-floating btn-magic-link">
@@ -200,9 +201,9 @@ const LoginPanel = (props) => {
         </li>
       </ul>
       <hr/>
-      <p className="text-muted">Don't have an account?</p>
+      <p className="text-muted">{dictionary.noAccount}</p>
       <Link className={"btn btn-outline-light btn-sm"} to="/register">
-        Register now!
+        {dictionary.registerNow}
       </Link>
     </Wrapper>
   );

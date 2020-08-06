@@ -21,8 +21,9 @@ const StyledFormGroup = styled(FormGroup)`
     }
 `;
 
-const DriffCreatePanel = () => {
+const DriffCreatePanel = (props) => {
 
+  const { dictionary } = props;
   const dispatch = useDispatch();
   const driffActions = useDriffActions();
 
@@ -68,36 +69,36 @@ const DriffCreatePanel = () => {
 
     if (typeof form.company_name === "undefined" || form.company_name === "") {
       valid.company_name = false;
-      message.company_name = "Company name is required.";
+      message.company_name = dictionary.companyRequired;
     } else {
       valid.company_name = true;
     }
 
     if (typeof form.slug === "undefined" || form.slug === "") {
       valid.slug = false;
-      message.slug = "Driff is required.";
+      message.slug = dictionary.driffRequired;
     }
 
     if (typeof form.email === "undefined" || form.email === "") {
       valid.email = false;
-      message.email = "Email is required.";
+      message.email = dictionary.emailRequired;
     } else if (!EmailRegex.test(form.email)) {
       valid.email = false;
-      message.email = "Invalid email format.";
+      message.email = dictionary.invalidEmail;
     } else {
       valid.email = true;
     }
 
     if (typeof form.name === "undefined" || form.name === "") {
       valid.name = false;
-      message.name = "Last name is required.";
+      message.name = dictionary.lastNameRequired;
     } else {
       valid.name = true;
     }
 
     if (typeof form.password === "undefined" || form.password === "") {
       valid.password = false;
-      message.password = "Password is required.";
+      message.password = dictionary.passwordRequired;
     } else {
       valid.password = true;
     }
@@ -136,7 +137,7 @@ const DriffCreatePanel = () => {
               slug: false,
             },
             message: {
-              slug: `Driff is already taken.`
+              slug: dictionary.driffTaken
             }
           });
         } else {
@@ -157,7 +158,7 @@ const DriffCreatePanel = () => {
       <FormInput
         ref={refs.company_name}
         onChange={handleInputChange} name="company_name" isValid={formResponse.valid.company_name}
-        feedback={formResponse.message.company_name} placeholder="Company name" innerRef={refs.company_name} autoFocus/>
+        feedback={formResponse.message.company_name} placeholder={dictionary.companyName} innerRef={refs.company_name} autoFocus/>
       <StyledFormGroup>
         <InputGroup className="driff-name">
           <Input
@@ -174,20 +175,20 @@ const DriffCreatePanel = () => {
       </StyledFormGroup>
       <FormInput
         onChange={handleInputChange} name="email" isValid={formResponse.valid.email}
-        feedback={formResponse.message.email} placeholder="Your email" type="email"/>
+        feedback={formResponse.message.email} placeholder={dictionary.yourEmail} type="email"/>
       <FormInput
         onChange={handleInputChange} name="name" isValid={formResponse.valid.name}
-        feedback={formResponse.message.name} placeholder="Your name" innerRef={refs.name}/>
+        feedback={formResponse.message.name} placeholder={dictionary.yourName} innerRef={refs.name}/>
       <PasswordInput onChange={handleInputChange} isValid={formResponse.valid.password}
                      feedback={formResponse.message.password}/>
 
 
       <button className={"btn btn-outline-light btn-sm"} onClick={handleShowUserInvitation}>
-        + Invite User
+        + {dictionary.inviteUser}
       </button>
 
       <button className="btn btn-primary btn-block" onClick={handleRegister}>
-        Register
+        {dictionary.register}
       </button>
     </Wrapper>
   );

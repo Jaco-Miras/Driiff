@@ -91,6 +91,7 @@ export {
   postGoogleAttachments,
   getWorkspaceGoogleFileAttachments,
   getWorkspaceGoogleFolderAttachments,
+  deleteGoogleAttachment,
 } from "./files";
 
 export {
