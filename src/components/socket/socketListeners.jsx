@@ -27,6 +27,7 @@ import {
 import {
     addFilesToChannel,
     deleteFilesFromChannel,
+    incomingDeletedGoogleFile,
     incomingDeletedFile,
     incomingDeletedFiles,
     incomingDeletedFolder,
@@ -356,6 +357,10 @@ class SocketListeners extends React.PureComponent {
                         } else if (e.attachment_type === "GOOGLE_DRIVE_FOLDER") {
                             this.props.incomingGoogleFolder(e);
                         }
+                        break;
+                    }
+                    case "ATTACHMENT_DELETE": {
+                        this.props.incomingDeletedGoogleFile(e);
                         break;
                     }
                     default:
@@ -913,7 +918,8 @@ function mapDispatchToProps(dispatch) {
         incomingDeletedFiles: bindActionCreators(incomingDeletedFiles, dispatch),
         incomingGoogleFile: bindActionCreators(incomingGoogleFile, dispatch),
         incomingGoogleFolder: bindActionCreators(incomingGoogleFolder, dispatch),
-        joinWorkspaceReducer: bindActionCreators(joinWorkspaceReducer, dispatch)
+        joinWorkspaceReducer: bindActionCreators(joinWorkspaceReducer, dispatch),
+        incomingDeletedGoogleFile: bindActionCreators(incomingDeletedGoogleFile, dispatch)
     };
 }
 

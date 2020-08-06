@@ -45,15 +45,19 @@ const FolderOptions = (props) => {
 
   const handleDelete = () => {
     if (isMember) {
-      let cb = (err, res) => {
-        if (err) return;
-
-        if (res) {
-          let pathname = history.location.pathname.split("/folder/")[0];
-          history.push(pathname);
-        }
-      };
-      actions.removeFolder(folder, params.workspaceId, cb);
+      if (folder.hasOwnProperty("payload")) {
+        actions.unlinkGoogleFolder(folder);
+      } else {
+        let cb = (err, res) => {
+          if (err) return;
+  
+          if (res) {
+            let pathname = history.location.pathname.split("/folder/")[0];
+            history.push(pathname);
+          }
+        };
+        actions.removeFolder(folder, params.workspaceId, cb);
+      }
     } else {
       toaster.warning("You are not a member of this workspace.");
     }
@@ -62,7 +66,7 @@ const FolderOptions = (props) => {
   return (
     <Wrapper className={`file-options ${className}`} moreButton="more-vertical" folder={folder} scrollRef={scrollRef}>
       {/* <div onClick={handleViewDetail}>View Details</div> */}
-      <div onClick={handleRename}>Rename</div>
+      { !folder.hasOwnProperty("payload") && <div onClick={handleRename}>Rename</div> }
       <div onClick={handleDelete}>Remove</div>
     </Wrapper>
   );

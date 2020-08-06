@@ -56,7 +56,7 @@ const FolderListItem = (props) => {
         <div className="app-file-icon">
           {folder.hasOwnProperty("payload") && <Drive icon="gdrive" viewBox="0 0 512 512" height="20" width="15" fill="#000" opacity=".8"/>}
           <i className="fa fa-folder-o text-instagram" />
-          {!folder.hasOwnProperty("payload") && <FolderOptions folder={folder} actions={actions} isMember={isMember} history={history} params={params} handleAddEditFolder={handleAddEditFolder} />}
+          <FolderOptions folder={folder} actions={actions} isMember={isMember} history={history} params={params} handleAddEditFolder={handleAddEditFolder} />
         </div>
         <div className="p-2 small">
           <ToolTip content={folder.search}>

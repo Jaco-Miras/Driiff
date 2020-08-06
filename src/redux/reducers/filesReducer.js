@@ -254,6 +254,7 @@ export default (state = INITIAL_STATE, action) => {
             search: attachment.payload.name,
             size: attachment.payload.sizeBytes,
             type: attachment.payload.type,
+            attachment_type: attachment.attachment_type
           }
         });
 
@@ -280,7 +281,10 @@ export default (state = INITIAL_STATE, action) => {
               payload: a.payload,
               created_at: { timestamp: a.payload.lastEditedUtc },
               updated_at: { timestamp: a.payload.lastEditedUtc },
-              files: []
+              files: [],
+              link_type: a.link_type,
+              link_id: a.link_index_id,
+              attachment_type: a.attachment_type
             }
           })
         }
@@ -896,6 +900,21 @@ export default (state = INITIAL_STATE, action) => {
       } else {
         return state;
       }
+    }
+    case "INCOMING_DELETED_GOOGLE_FILE": {
+      return state;
+      // let = { updatedWorkspaceFiles };
+      // if (updatedWorkspaceFiles.hasOwnProperty(action.data.topic_id)) {
+      //   if (type === "FILE") {
+      //     delete updatedWorkspaceFiles[action.data.topic_id].files[action.data.attachment_id]
+      //   } else if (type === "FOLDER") {
+      //     delete updatedWorkspaceFiles[action.data.topic_id].folders[action.data.attachment_id]
+      //   }
+      // }
+      // return {
+      //   ...state,
+      //   workspaceFiles: updatedWorkspaceFiles
+      // }
     }
     default:
       return state;

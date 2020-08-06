@@ -72,7 +72,11 @@ const FileOptions = (props) => {
 
   const handleDelete = () => {
     if (isMember) {
-      actions.removeFile(file, forceDelete);
+      if (file.hasOwnProperty("payload_id")) {
+        actions.unlinkGoogleAttachment(file);
+      } else {
+        actions.removeFile(file, forceDelete);
+      }
     } else {
       toaster.warning("You are not a member of this workspace.");
     }
