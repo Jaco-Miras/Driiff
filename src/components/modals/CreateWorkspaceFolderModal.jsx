@@ -63,7 +63,6 @@ const CreateWorkspaceFolderModal = (props) => {
   const folders = useSelector((state) => state.workspaces.folders);
   const activeTab = useSelector((state) => state.workspaces.activeTab);
   const [modal, setModal] = useState(true);
-  const [activeTabName, setActiveTabName] = useState("Internal");
   const [form, setForm] = useState({
     is_private: false,
     name: "",
@@ -249,14 +248,6 @@ const CreateWorkspaceFolderModal = (props) => {
     [setForm]
   );
 
-  useEffect(() => {
-    if (activeTab !== "extern") {
-      setActiveTabName("internal");
-    } else {
-      setActiveTabName("external");
-    }
-  }, [activeTab, setActiveTabName]);
-
   const onOpened = () => {
     if (inputRef && inputRef.current) {
       inputRef.current.focus();
@@ -266,7 +257,7 @@ const CreateWorkspaceFolderModal = (props) => {
   return (
       <Modal isOpen={modal} toggle={toggle} size={"lg"} onOpened={onOpened} centered>
         <ModalHeaderSection toggle={toggle} className={"workspace-folder-header"}>
-          {mode === "edit" ? "Edit " + activeTabName + " folder" : "Create new " + activeTabName + " folder"}
+          {mode === "edit" ? "Edit  folder" : "Create new folder"}
           {/* <ActiveTabName className="intern-extern">{activeTabName}</ActiveTabName> */}
         </ModalHeaderSection>
         <ModalBody>

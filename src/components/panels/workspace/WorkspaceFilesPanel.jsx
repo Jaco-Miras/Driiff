@@ -39,6 +39,7 @@ const WorkspaceFilesPanel = (props) => {
       history.push(pathname);
     }
     setFilter(e.target.dataset.filter);
+    document.body.classList.remove("mobile-modal-open");
   };
 
   const handleSearchChange = useCallback(

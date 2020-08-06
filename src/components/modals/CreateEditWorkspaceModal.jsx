@@ -51,11 +51,15 @@ const WrapperDiv = styled(InputGroup)`
     position: relative;
     max-width: 100%;
     margin-left: 128px;
-
+    @media all and (max-width: 480px) {
+        margin-left: 0;
+    }
     ul {
       margin-right: 128px;
       margin-bottom: 0;
-
+      @media all and (max-width: 480px) {
+        padding-right: 40px;
+      }
       li {
         white-space: nowrap;
         text-overflow: ellipsis;
@@ -69,11 +73,11 @@ const WrapperDiv = styled(InputGroup)`
   }
   &.action-wrapper {
     margin-top: 40px;
-    
+
     .action-archive-wrapper {
         display: flex;
         width: 100%;
-            
+
         .btn-archive {
           display: flex;
           margin-left: auto;
@@ -153,7 +157,6 @@ const CreateEditWorkspaceModal = (props) => {
     const workspaces = useSelector((state) => state.workspaces.workspaces);
     const folders = useSelector((state) => state.workspaces.folders);
     const activeTab = useSelector((state) => state.workspaces.activeTab);
-    const [activeTabName, setActiveTabName] = useState("Internal");
     const [userOptions, setUserOptions] = useState([]);
     const [inputValue, setInputValue] = useState("");
     const [invitedEmails, setInvitedEmails] = useState([]);
@@ -719,14 +722,6 @@ const CreateEditWorkspaceModal = (props) => {
     }, []);
 
     useEffect(() => {
-        if (activeTab !== "extern") {
-            setActiveTabName("internal");
-        } else {
-            setActiveTabName("external");
-        }
-    }, [activeTab]);
-
-    useEffect(() => {
         let folderValid = true;
         if (form.has_folder && form.selectedFolder === null) {
             folderValid = false;
@@ -802,7 +797,7 @@ const CreateEditWorkspaceModal = (props) => {
     return (
         <Modal innerRef={refs.container} isOpen={modal} toggle={toggle} centered size="lg" onOpened={onOpened}>
             <ModalHeaderSection
-                toggle={toggle}>{mode === "edit" ? "Edit " + activeTabName + " workspace" : "Create new " + activeTabName + " workspace"}</ModalHeaderSection>
+                toggle={toggle}>{mode === "edit" ? "Edit workspace" : "Create new workspace"}</ModalHeaderSection>
             <ModalBody onDragOver={handleShowDropzone}>
                 <DropDocument
                     hide={!showDropzone}
@@ -847,7 +842,7 @@ const CreateEditWorkspaceModal = (props) => {
                     <SelectPeople
                         valid={valid.team} options={userOptions} value={form.selectedUsers}
                         inputValue={inputValue}
-                        onChange={handleSelectUser} 
+                        onChange={handleSelectUser}
                         onKeyDown={handleKeyDown}
                         onInputChange={handleInputChange}
                         filterOption={filterOptions}

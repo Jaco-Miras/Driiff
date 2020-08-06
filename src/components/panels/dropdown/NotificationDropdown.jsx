@@ -1,7 +1,7 @@
 import React, { useCallback, useRef } from "react";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
-import { useNotificationActions, useNotifications } from "../../hooks";
+import { useNotificationActions, useNotifications, useTranslation } from "../../hooks";
 import { NotificationLists } from "../../list/notification/item";
 
 const Wrapper = styled.div`
@@ -40,6 +40,18 @@ const NotificationDropdown = (props) => {
     history.push("/notifications");
   }, []);
 
+  const { _t } = useTranslation();
+
+  const dictionary = {
+    new: _t("NOTIFICATION.NEW", "New"),
+    notifications: _t("NOTIFICATION.NOTIFICATIONS", "Notifications"),
+    markAllAsRead: _t("NOTIFICATION.MARK_ALL_AS_READ", "Mark all as read"),
+    viewAll: _t("NOTIFICATION.VIEW_ALL", "View all"),
+    unreadNotifications: _t("NOTIFICATION.UNREAD_NOTIFICATIONS", "Unread notifications"),
+    oldNotifications: _t("NOTIFICATION.OLD_NOTIFICATIONS", "Old notifications"),
+    noNotificationsToShow: _t("NOTIFICATION.NO_NOTIFICATIONS_TO_SHOW", "There are no notifications to show."),
+  };
+
   return (
     <Wrapper
       ref={refs.container}
@@ -47,20 +59,20 @@ const NotificationDropdown = (props) => {
       styles="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(-252px, 38px, 0px);"
     >
       <div className="notification-title-wrapper p-4 text-center d-flex justify-content-between">
-        <h6 className="mb-0">Notifications</h6>
-        {unreadCount > 0 && <small className="font-size-11 opacity-7">{unreadCount} unread notifications</small>}
+        <h6 className="mb-0">{dictionary.notifications}</h6>
+        {unreadCount > 0 && <small className="font-size-11 opacity-7">{unreadCount} {dictionary.unreadNotifications}</small>}
       </div>
       <div>
-        <NotificationLists notifications={notifications} actions={actions} history={history} />
+        <NotificationLists notifications={notifications} actions={actions} history={history} dictionary={dictionary}/>
       </div>
       <div className="p-2 text-right">
         <ul className="list-inline small">
           <li className="list-inline-item d-flex">
             <span className="cursor-pointer text-link" onClick={viewAll}>
-              View all
+              {dictionary.viewAll}
             </span>
             <span className="cursor-pointer ml-auto text-link" onClick={markAllRead}>
-              Mark all read
+              {dictionary.markAllAsRead}
             </span>
           </li>
         </ul>

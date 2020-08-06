@@ -1,9 +1,9 @@
 import React from "react";
-import {useHistory} from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import styled from "styled-components";
-import {useNotificationActions, useNotifications} from "../../hooks";
-import {NotificationTimelineItem} from "../../list/notification/item";
-import {SvgEmptyState} from "../../common";
+import { useNotificationActions, useNotifications, useTranslation } from "../../hooks";
+import { NotificationTimelineItem } from "../../list/notification/item";
+import { SvgEmptyState } from "../../common";
 
 const Wrapper = styled.div`
   .empty-notification {
@@ -20,8 +20,15 @@ const UserNotificationPanel = (props) => {
 
   const history = useHistory();
   const actions = useNotificationActions();
-  const {notifications} = useNotifications();
+  const { notifications } = useNotifications();
+  const { _t } = useTranslation();
 
+  const dictionary = {
+    new: _t("NOTIFICATION.NEW", "New"),
+    markAllAsRead: _t("NOTIFICATION.MARK_ALL_AS_READ", "Mark all as read"),
+    oldNotifications: _t("NOTIFICATION.OLD_NOTIFICATIONS", "Old notifications"),
+    noNotificationsToShow: _t("NOTIFICATION.NO_NOTIFICATIONS_TO_SHOW", "There are no notifications to show."),
+  };
 
   const newNotifications = Object.values(notifications)
       .filter((n) => n.is_read === 0)
@@ -40,11 +47,11 @@ const UserNotificationPanel = (props) => {
                   <div className="card">
                     <div className="card-body">
                       <h6 className="card-title d-flex justify-content-between align-items-center">
-                        <div>New</div>
+                        <div>{dictionary.new}</div>
                         <div>
                     <span className="cursor-pointer" onClick={actions.readAll}>
                       <i className="hide-show-toggler-item fa fa-check font-size-16 mr-2"/>
-                      Mark all as read
+                      {dictionary.markAllAsRead}
                     </span>
                         </div>
                       </h6>
@@ -62,7 +69,7 @@ const UserNotificationPanel = (props) => {
                 <div className="card">
                   <div className="card-body">
                     <h6 className="card-title d-flex justify-content-between align-items-center">
-                      <div>Old Notifications</div>
+                      <div>{dictionary.oldNotifications}</div>
                       <div>
                     {/* <span className="cursor-pointer" onClick={actions.readAll}>
                       <i className="hide-show-toggler-item fa fa-check font-size-16 mr-2"/>
@@ -82,7 +89,7 @@ const UserNotificationPanel = (props) => {
             {
               newNotifications.length === 0 && oldNotifications.length === 0 &&
               <div className="card empty-notification">
-                <h4>There are no notifications to show.</h4>
+                <h4>{dictionary.noNotificationsToShow}</h4>
                 <div className="card-body d-flex justify-content-center align-items-center">
                   <SvgEmptyState icon={1} height={330}/>
                 </div>
