@@ -1,14 +1,14 @@
-import React, { useState } from "react";
-import { useSelector } from "react-redux";
-import { useHistory } from "react-router-dom";
+import React, {useState} from "react";
+import {useSelector} from "react-redux";
+import {useHistory} from "react-router-dom";
 import Skeleton from "react-skeleton-loader";
 import Tooltip from "react-tooltip-lite";
 import styled from "styled-components";
 import departmentIcon from "../../assets/icon/teams/r/secundary.svg";
 import defaultIcon from "../../assets/icon/user/avatar/l/no_outline.png";
 import botIcon from "../../assets/img/gripp-bot.png";
-import { replaceChar } from "../../helpers/stringFormatter";
-import { SvgIconFeather } from "./SvgIcon";
+import {replaceChar} from "../../helpers/stringFormatter";
+import {SvgIconFeather} from "./SvgIcon";
 
 const Wrapper = styled.div`
   position: relative;
@@ -44,7 +44,7 @@ const Initials = styled.span`
 `;
 
 const Avatar = (props) => {
-  const { className = "", imageLink, id, name = "", children, partialName = null, isAnonymous = false, type = "USER", userId, onClick = null, noDefaultClick = false, ...rest } = props;
+  const {className = "", imageLink, id, name = "", children, partialName = null, type = "USER", userId, onClick = null, noDefaultClick = false, ...rest} = props;
 
   const history = useHistory();
   const onlineUsers = useSelector((state) => state.users.onlineUsers);
@@ -115,20 +115,31 @@ const Avatar = (props) => {
     <Wrapper {...rest} className={`avatar avatar-sm ${isOnline ? "avatar-state-success" : ""} ${isLoaded ? "ico-avatar-loaded" : ""} ${showInitials ? "border" : ""} ${className}`} onClick={handleOnClick}>
       {isLoaded === false && <Skeleton borderRadius="50%" widthRandomness={0} heightRandomness={0} />}
       <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={name}>
-        {showInitials ? (
-          <Initials className="rounded-circle">{handleInitials(name)}</Initials>
-        ) : (
-          <>
-            {type === "GROUP" ? (
-              <SvgIconFeather icon="users" />
+        {
+          showInitials && name === "" ?
+            <Image
+              show={true}
+              className="rounded-circle"
+              onLoad={handleImageLoad}
+              onError={handleImageError}
+              src={defaultIcon}
+              alt={name}
+            />
+            :
+            showInitials && name !== "" ? (
+              <Initials className="rounded-circle">{handleInitials(name)}</Initials>
             ) : (
-              <Image
-                show={isLoaded}
-                className="rounded-circle"
-                onLoad={handleImageLoad}
-                onError={handleImageError}
-                src={type === "DEPARTMENT" ? departmentIcon : imageLink !== null && !isAnonymous ? (name === "Gripp Offerte Bot" ? botIcon : imageLink) : defaultIcon}
-                alt={name}
+              <>
+                {type === "GROUP" ? (
+                  <SvgIconFeather icon="users"/>
+                ) : (
+                  <Image
+                    show={isLoaded}
+                    className="rounded-circle"
+                    onLoad={handleImageLoad}
+                    onError={handleImageError}
+                    src={type === "DEPARTMENT" ? departmentIcon : imageLink !== null ? (name === "Gripp Offerte Bot" ? botIcon : imageLink) : defaultIcon}
+                    alt={name}
               />
             )}
           </>
