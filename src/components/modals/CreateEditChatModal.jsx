@@ -8,7 +8,7 @@ import {addToChannels, setSelectedChannel} from "../../redux/actions/chatActions
 import {clearModal} from "../../redux/actions/globalActions";
 import {PeopleSelect} from "../forms";
 import QuillEditor from "../forms/QuillEditor";
-import {useChannelActions, useQuillModules, useTimeFormat} from "../hooks";
+import {useChannelActions, useQuillModules, useTimeFormat, useTranslation} from "../hooks";
 import {ModalHeaderSection} from "./index";
 
 const WrapperDiv = styled(InputGroup)`
@@ -398,29 +398,40 @@ const CreateEditChatModal = (props) => {
     }
   };
 
+  const { _t } = useTranslation();
+  const dictionary = {
+    chatTitle: _t("MODAL.CHAT_TITLE", "Chat title"),
+    people: _t("MODAL.PEOPLE", "People"),
+    firstMessage: _t("MODAL.FIRST_MESSAGE", "First message"),
+    newGroupChat: _t("MODAL.NEW_GROUP_CHAT", "New group chat"),
+    editChat: _t("MODAL.EDIT_CHAT", "Edit chat"),
+    createChat: _t("MODAL.CREATE_CHAT", "Create chat"),
+    editChat: _t("MODAL.CREATE_CHAT", "Create chat"),
+  };
+
   return (
       <Modal isOpen={modal} toggle={toggle} size={"lg"} onOpened={onOpened} centered>
-        <ModalHeaderSection toggle={toggle}>{mode === "edit" ? "Edit chat" : "New group chat"}</ModalHeaderSection>
+        <ModalHeaderSection toggle={toggle}>{mode === "edit" ? dictionary.editChat : dictionary.newGroupChat}</ModalHeaderSection>
         <ModalBody>
           <WrapperDiv>
-            <Label for="chat">Chat title</Label>
+            <Label for="chat">{dictionary.chatTitle}</Label>
             <Input style={{borderRadius: "5px"}} defaultValue={mode === "edit" ? channel.title : ""}
                    onChange={handleInputChange} valid={valid} innerRef={inputRef}/>
           </WrapperDiv>
           <WrapperDiv>
-            <Label for="people">People</Label>
+            <Label for="people">{dictionary.people}</Label>
             <SelectPeople options={options} value={selectedUsers} onChange={handleSelect}/>
           </WrapperDiv>
           {mode === "new" && (
               <WrapperDiv>
-                <Label for="firstMessage">First message</Label>
+                <Label for="firstMessage">{dictionary.firstMessage}</Label>
                 <StyledQuillEditor className="group-chat-input" modules={modules} ref={reactQuillRef}
                                    onChange={handleQuillChange}/>
               </WrapperDiv>
           )}
           <WrapperDiv>
             <button className="btn btn-primary" disabled={searching || !valid} onClick={handleConfirm}>
-              {mode === "edit" ? "Update chat" : "Create chat"}
+              {mode === "edit" ? dictionary.updateChat : dictionary.createChat}
             </button>
         </WrapperDiv>
       </ModalBody>
