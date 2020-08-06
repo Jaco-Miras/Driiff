@@ -17,8 +17,8 @@ const GoogleDriveLink = (props) => {
   const ref = useRef(null);
   //const dispatch = useDispatch();
 
-  const googleDriveFileUrlPattern = /^(https:\/\/drive\.google\.com\/)file\/d\/([^\/]+)\/.*$/;
-  const fileId = link.match(googleDriveFileUrlPattern)[2];
+  const googleDriveFileUrlPattern = /^(https:\/\/(drive|docs)\.google\.com\/)(file|spreadsheets|document|presentation|forms)\/d\/([^\/]+)\/.*$/;
+  const fileId = link.match(googleDriveFileUrlPattern)[4];
 
   return (
     <Wrapper className={`google-drive dropdown ${className}`}>
