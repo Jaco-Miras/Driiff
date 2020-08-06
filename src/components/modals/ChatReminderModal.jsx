@@ -8,7 +8,7 @@ import { formatHoursAMPM, formatMonthsOrdinalDay, formatWeeekDayName } from "../
 import { postChatReminder } from "../../redux/actions/chatActions";
 import { clearModal } from "../../redux/actions/globalActions";
 import RadioInput from "../forms/RadioInput";
-import { useToaster } from "../hooks";
+import { useToaster, useTranslation } from "../hooks";
 import { ModalHeaderSection } from "./index";
 
 const InputContainer = styled.div`
@@ -26,6 +26,7 @@ const ChatReminderModal = (props) => {
    */
   const { type, message } = props.data;
 
+  const { _t } = useTranslation();
   const dispatch = useDispatch();
   const user = useSelector((state) => state.session.user);
   const toaster = useToaster();
@@ -33,8 +34,20 @@ const ChatReminderModal = (props) => {
   const [setTimeValue, setSetTimeValue] = useState("20m");
   const [customTimeValue, setCustomTimeValue] = useState(new Date());
   const [showDateTimePicker, setShowDateTimePicker] = useState(null);
-
   const [modal, setModal] = useState(true);
+
+  const dictionary = {
+    chatReminder: _t("REMINDER.CHAT_REMINDER", "Chat reminder"),
+    twentyMinutes: _t("REMINDER.TWENTY_MINUTES", "20 minutes"),
+    oneHour: _t("REMINDER.ONE_HOUR", "1 hour"),
+    threeHours: _t("REMINDER.THREE_HOURS", "3 hours"),
+    tomorrow: _t("REMINDER.TOMORROW", "Tomorrow"),
+    nextWeek: _t("REMINDER.NEXT_WEEK", "Next week"),
+    pickDateTime: _t("REMINDER.PICK_DATE_TIME", "Pick date and time"),
+    snooze: _t("REMINDER.SNOOZE", "Snooze"),
+    cancel: _t("REMINDER.CANCEL", "Cancel"),
+  };
+
   const toggle = () => {
     setModal(!modal);
     dispatch(clearModal({ type: type }));
@@ -119,7 +132,7 @@ const ChatReminderModal = (props) => {
 
   return (
     <Modal isOpen={modal} toggle={toggle} centered className="chat-forward-modal">
-      <ModalHeaderSection toggle={toggle}>Chat reminder</ModalHeaderSection>
+      <ModalHeaderSection toggle={toggle}>{dictionary.chatReminder}</ModalHeaderSection>
       <ModalBody>
         <InputContainer>
           <RadioInput
@@ -142,7 +155,7 @@ const ChatReminderModal = (props) => {
             value={"20m"}
             name={"role"}
           >
-            20 minutes
+            {dictionary.twentyMinutes}
           </RadioInput>
           <RadioInput
             readOnly
@@ -153,7 +166,7 @@ const ChatReminderModal = (props) => {
             value={"1h"}
             name={"role"}
           >
-            1 hour
+            {dictionary.oneHour}
           </RadioInput>
           <RadioInput
             readOnly
@@ -164,7 +177,7 @@ const ChatReminderModal = (props) => {
             value={"3h"}
             name={"role"}
           >
-            3 hours
+            {dictionary.threeHours}
           </RadioInput>
           <RadioInput
             readOnly
@@ -175,7 +188,7 @@ const ChatReminderModal = (props) => {
             value={"tomorrow"}
             name={"role"}
           >
-            Tomorrow
+            {dictionary.tomorrow}
           </RadioInput>
           <RadioInput
             readOnly
@@ -186,20 +199,20 @@ const ChatReminderModal = (props) => {
             value={"next_week"}
             name={"role"}
           >
-            Next Week
+            {dictionary.nextWeek}
           </RadioInput>
           <RadioInput readOnly onClick={handleSelectPickDateTime} checked={setTimeValue === "pick_data"} value={"pick_data"} name={"role"}>
-            Pick date and time
+            {dictionary.pickDateTime}
           </RadioInput>
           {showDateTimePicker && <DateTimePicker minDate={new Date()} onChange={handlePickDateTime} value={customTimeValue} disableClock={true} />}
         </InputContainer>
       </ModalBody>
       <ModalFooter>
         <Button color="primary" onClick={handleSnooze}>
-          Snooze
+          {dictionary.snooze}
         </Button>{" "}
         <Button outline color="secondary" onClick={toggle}>
-          Cancel
+          {dictionary.cancel}
         </Button>
       </ModalFooter>
     </Modal>
