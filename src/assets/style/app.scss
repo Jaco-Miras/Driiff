@@ -20935,6 +20935,16 @@ body.dark.small-navigation .navigation-menu-body ul li.navigation-divider:after 
       width: 100% !important;
     }
   }
+  .modal-content .schedule-post {
+    display: flex !important;
+    label {
+      display: inline-flex !important;
+      margin-bottom: 0 !important;
+    }
+    input {
+      width: auto !important;
+    }
+  }
   .ql-toolbar {
     bottom: -25px !important;
   }

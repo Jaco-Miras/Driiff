@@ -36,6 +36,10 @@ const WrapperDiv = styled(InputGroup)`
     margin-left: 130px;
     width: 100%;
     margin-right: -130px;
+    @media all and (max-width: 480px) {
+        margin-left: 0;
+        margin-right: 0;
+    }
   }
   &.schedule-post {
     width: 100%;
@@ -155,11 +159,12 @@ const MoreOption = styled.div`
   cursor: pointer;
   cursor: hand;
   margin-bottom: 5px;
-
   &:hover {
     color: #972c86;
   }
-
+  @media all and (max-width: 480px) {
+      margin-top: 40px;
+  }
   svg {
     transition: all 0.3s;
     width: 15px;
