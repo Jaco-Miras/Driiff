@@ -819,7 +819,7 @@ class ChatMessages extends React.PureComponent {
                                       <ChatActionsContainer isAuthor={isAuthor} className="chat-actions-container">
                                         {<ChatReactionButton isAuthor={isAuthor} scrollRef={this.infiniteScroll.current} reply={reply} />}
                                         {!isNaN(reply.id) && (reply.is_deleted === 0 || !reply.is_deleted) && (
-                                          <MessageOptions className={"chat-message-options"} selectedChannel={this.props.selectedChannel} isAuthor={isAuthor} replyData={reply} />
+                                          <MessageOptions dictionary={this.props.dictionary} className={"chat-message-options"} selectedChannel={this.props.selectedChannel} isAuthor={isAuthor} replyData={reply} />
                                         )}
                                       </ChatActionsContainer>
                                     </ChatBubble>
@@ -860,7 +860,7 @@ class ChatMessages extends React.PureComponent {
                                       <SystemChatActionsContainer isAuthor={isAuthor} className="chat-actions-container">
                                         {<ChatReactionButton isAuthor={isAuthor} scrollRef={this.infiniteScroll.current} reply={reply} />}
                                         {!isNaN(reply.id) && reply.is_deleted === 0 && (
-                                          <ChatMessageOptions dictionary={this.props.dictionary} scrollRef={this.scrollComponent} replyData={reply} className={"chat-message-options"} selectedChannel={this.props.selectedChannel} isAuthor={isAuthor} />
+                                          <MessageOptions dictionary={this.props.dictionary} scrollRef={this.scrollComponent} replyData={reply} className={"chat-message-options"} selectedChannel={this.props.selectedChannel} isAuthor={isAuthor} />
                                         )}
                                       </SystemChatActionsContainer>
                                     </SystemMessageContainer>
