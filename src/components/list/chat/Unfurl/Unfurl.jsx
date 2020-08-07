@@ -1,17 +1,24 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
+import { SvgIconFeather } from "../../../common";
 
 const ClosePreview = styled.span`
   position: absolute;
-  right: 0;
-  top: 0;
+  right: 5px;
+  top: 10px;
   z-index: 2;
-  i {
-    color: #ddd;
+  cursor: pointer;
+`;
+
+const Wrapper = styled.blockquote`
+  font-size: .835rem;
+  .media, .media div {
+    width: 100%;
   }
-  :hover i {
-    color: #676767;
-    cursor: pointer;
+  .description{
+    img {
+      display: none;
+    }
   }
 `;
 
@@ -38,14 +45,13 @@ const UnfurlPrio = (props) => {
 };
 
 const Unfurl = (props) => {
-  const { unfurlData, channelId = null, boardId = null, taskId = null, messageId, isAuthor, deleteUnfurlAction, removeUnfurl, type = "chat" } = props;
+  const { unfurlData, channelId = null, boardId = null, taskId = null, messageId, isAuthor, removeUnfurl, type = "chat" } = props;
   const [fromDriff, setFromDriff] = useState(false);
   const handleRemoveUnfurlData = (id) => {
-    deleteUnfurlAction({ unfurl_id: id, type: type });
     if (type === "task") {
-      removeUnfurl({ unfurl_id: id, board_id: boardId, task_id: taskId, message_id: messageId });
+      removeUnfurl({ unfurl_id: id, board_id: boardId, task_id: taskId, message_id: messageId, type: "task" });
     } else {
-      removeUnfurl({ unfurl_id: id, channel_id: channelId, message_id: messageId });
+      removeUnfurl({ unfurl_id: id, channel_id: channelId, message_id: messageId, type: "chat" });
     }
   };
 
@@ -79,7 +85,7 @@ const Unfurl = (props) => {
       if (item.data.title === "PRIVATE CONTENT" || item.data.title === "NOT AUTHORIZED") return null;
       else
         return (
-          <blockquote className={"blockquote component-un-furl"} key={key}>
+          <Wrapper className={"blockquote component-un-furl"} key={key}>
             <div className={`media media-${item.data.type}`}>
               {
                 // (item.data.image && !item.data.code) && !fromDriff ?
@@ -124,10 +130,10 @@ const Unfurl = (props) => {
             </div>
             {isAuthor && (
               <ClosePreview onClick={(e) => handleRemoveUnfurlData(item.id)}>
-                <i className="fas fa-times"></i>
+                <SvgIconFeather icon="x"/>
               </ClosePreview>
             )}
-          </blockquote>
+          </Wrapper>
         );
     });
 };

@@ -1005,6 +1005,31 @@ export default function (state = INITIAL_STATE, action) {
         return state;
       }
     }
+    case "REMOVE_UNFURL": {
+      let channels = { ...state.channels };
+      let channel = null;
+      if (action.data.type === "chat" && channels.hasOwnProperty(action.data.channel_id)) {
+        channel = {
+          ...channels[action.data.channel_id],
+          replies: channels[action.data.channel_id].replies.map((m) => {
+            if (m.id === action.data.message_id) {
+              return {
+                ...m,
+                unfurls: m.unfurls.filter((u) => u.id !== action.data.unfurl_id)
+              };
+            } else {
+              return m;
+            }
+          })
+        }
+        channels[action.data.channel_id] = channel;
+      }
+      return {
+        ...state,
+        channels: channels,
+        selectedChannel: state.selectedChannel && channel && channel.id === state.selectedChannel.id ? channel : state.selectedChannel
+      }
+    }
     default:
       return state;
   }

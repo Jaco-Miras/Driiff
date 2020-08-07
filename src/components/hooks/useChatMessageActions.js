@@ -5,6 +5,7 @@ import { getBaseUrl } from "../../helpers/slugHelper";
 import { addQuote, deleteChatMessage, getChatMessages, postChatMessage, postChatReaction, postChatReminder, putChatMessage, putMarkReminderComplete, setEditChatMessage } from "../../redux/actions/chatActions";
 import { useToaster } from "./index";
 import useChannelActions from "./useChannelActions";
+import { deleteUnfurl, removeUnfurlReducer } from "../../redux/actions/globalActions";
 
 const useChatMessageActions = () => {
   const sharedSlugs = useSelector((state) => state.global.slugs);
@@ -248,6 +249,24 @@ const useChatMessageActions = () => {
     copyTextToClipboard(toaster, `${getBaseUrl()}/chat/${channel.code}/${message.code}`);
   }, []);
 
+  /**
+   * @param {number} unfurl_id
+   * @param {number} channel_id
+   * @param {number} message_id
+   * @param {string} type
+   */
+  const removeUnfurl = useCallback(
+    (payload) => {
+      dispatch(
+        deleteUnfurl(payload)
+      );
+      dispatch(
+        removeUnfurlReducer(payload)
+      );
+    },
+    [dispatch]
+  );
+
   return {
     channelActions: useChannelActions(),
     fetch,
@@ -255,6 +274,7 @@ const useChatMessageActions = () => {
     edit,
     react,
     remove,
+    removeUnfurl,
     remind,
     markComplete,
     forward,
