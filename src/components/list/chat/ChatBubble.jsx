@@ -317,6 +317,23 @@ const ReplyContent = styled.span`
     &.gdrive-link {
       text-decoration: none;
       
+      .link {
+        @media (max-width: 1580px) {
+          max-width: 20vw;
+        }
+        @media (max-width: 1480px) {
+          max-width: 14vw;
+        }
+        @media (max-width: 1380px) {
+          max-width: 5vw;
+        }
+        @media (max-width: 992px) {
+          max-width: 350px;
+        }
+        @media (max-width: 822px) {
+          max-width: 20vw;
+        }
+      }
       .preview-text { 
         font-weight: bold;       
         color: ${(props) => (props.isAuthor ? "#FFF" : "#828282")};
