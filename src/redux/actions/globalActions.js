@@ -1,6 +1,7 @@
 import dispatchActionToReducer, {SimpleDispatchActionToReducer} from "../actionDispatcher";
 import {
   deleteDraft as deleteDraftService,
+  deleteUnfurl as deleteUnfurlService,
   generateUnfurl as generateUnfurlService,
   getAllRecipients as getAllRecipientsService,
   getConnectedSlugs as getConnectedSlugsService,
@@ -113,4 +114,12 @@ export function setUnreadNotificationCounterEntries(payload, callback) {
 
 export function getDrafts(payload, callback) {
   return dispatchActionToReducer(getDraftsService(payload), "GET_DRAFTS_START", "GET_DRAFTS_SUCCESS", "GET_DRAFTS_FAIL", callback);
+}
+
+export function deleteUnfurl(payload, callback) {
+  return dispatchActionToReducer(deleteUnfurlService(payload), "DELETE_UNFURL_START", "DELETE_UNFURL_SUCCESS", "DELETE_UNFURL_FAIL", callback);
+}
+
+export function removeUnfurlReducer(payload, callback) {
+  return SimpleDispatchActionToReducer("REMOVE_UNFURL", payload, callback);
 }

@@ -115,3 +115,16 @@ export function getDrafts(payload) {
     url: "/v1/drafts",
   });
 }
+
+export function deleteUnfurl(payload) {
+  let url = "";
+  if (payload.type === "task") {
+      url = `/v2/task-comment-unfurl/${payload.unfurl_id}`;
+  } else {
+      url = `/v2/post-message-unfurl/${payload.unfurl_id}`;
+  }
+  return apiCall({
+      method: "DELETE",
+      url: url,
+  });
+}

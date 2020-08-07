@@ -49,6 +49,7 @@ export {
 
 export {
   deleteDraft,
+  deleteUnfurl,
   getAllRecipients,
   getConnectedSlugs,
   getDrafts,

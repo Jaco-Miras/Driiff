@@ -831,6 +831,7 @@ class ChatMessages extends React.PureComponent {
                                       showGifPlayer={showGifPlayer}
                                       isAuthor={isAuthor}
                                       addMessageRef={this.getLoadRef(reply.id)}
+                                      removeUnfurl={this.props.chatMessageActions.removeUnfurl}
                                     >
                                       <ChatActionsContainer isAuthor={isAuthor} className="chat-actions-container">
                                         {<ChatReactionButton isAuthor={isAuthor} scrollRef={this.infiniteScroll.current} reply={reply} />}
@@ -869,8 +870,9 @@ class ChatMessages extends React.PureComponent {
                                           isAuthor={false}
                                           deleteChatUnfurlAction={this.props.deleteChatUnfurlAction}
                                           removeChatUnfurlAction={this.props.removeChatUnfurlAction}
-                                          channelId={this.props.channelId}
+                                          channelId={this.props.selectedChannel.id}
                                           replyId={reply.id}
+                                          removeUnfurl={this.props.chatMessageActions.removeUnfurl}
                                         />
                                       ) : null}
                                       <SystemChatActionsContainer isAuthor={isAuthor} className="chat-actions-container">
