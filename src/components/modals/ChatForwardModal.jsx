@@ -113,7 +113,7 @@ const ChatForwardModal = (props) => {
       file_ids: [],
       reference_id: require("shortid").generate(),
       reference_title: chosenChannel.title,
-      is_transferred: 1,
+      is_transferred: true,
     };
 
     chosenChannel.selected = true;
@@ -133,7 +133,7 @@ const ChatForwardModal = (props) => {
   };
 
   const filteredChannels = Object.values(channels).filter((c) => {
-    if (c.is_archived === 0) {
+    if (!c.is_archived) {
       if (inputValue.trim() !== "") {
         if (c.title.toLowerCase().includes(inputValue.toLowerCase())) return true;
         else return false;

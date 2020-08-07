@@ -174,7 +174,7 @@ const useChannelActions = () => {
     (channel, callback = () => {}) => {
       let payload = {
         id: channel.id,
-        is_archived: 1,
+        is_archived: true,
       };
 
       updateStatus(channel, payload, callback);
@@ -190,7 +190,7 @@ const useChannelActions = () => {
     (channel, callback = () => {}) => {
       let payload = {
         id: channel.id,
-        is_archived: 0,
+        is_archived: false,
         push_unarchived: 1,
       };
 
@@ -207,7 +207,7 @@ const useChannelActions = () => {
     (channel, callback = () => {}) => {
       let payload = {
         id: channel.id,
-        is_pinned: 1,
+        is_pinned: true,
       };
 
       updateStatus(channel, payload, callback);
@@ -223,7 +223,7 @@ const useChannelActions = () => {
     (channel, callback = () => {}) => {
       let payload = {
         id: channel.id,
-        is_pinned: 0,
+        is_pinned: false,
       };
 
       updateStatus(channel, payload, callback);
@@ -239,7 +239,7 @@ const useChannelActions = () => {
     (channel, callback = () => {}) => {
       let payload = {
         id: channel.id,
-        is_muted: 1,
+        is_muted: true,
       };
 
       updateStatus(channel, payload, callback);
@@ -255,7 +255,7 @@ const useChannelActions = () => {
     (channel, callback = () => {}) => {
       let payload = {
         id: channel.id,
-        is_muted: 0,
+        is_muted: false,
       };
 
       updateStatus(channel, payload, callback);
@@ -271,7 +271,7 @@ const useChannelActions = () => {
     (channel, callback = () => {}) => {
       let payload = {
         id: channel.id,
-        is_hidden: 1,
+        is_hidden: true,
       };
 
       updateStatus(channel, payload, callback);
@@ -287,7 +287,7 @@ const useChannelActions = () => {
     (channel, callback = () => {}) => {
       let payload = {
         id: channel.id,
-        is_hidden: 0,
+        is_hidden: false,
       };
 
       updateStatus(channel, payload, callback);
@@ -317,7 +317,7 @@ const useChannelActions = () => {
         });
 
         //if unarchived archived chat
-      } else if (channel.type === "DIRECT" && channel.members.length === 2 && channel.is_archived === 1) {
+      } else if (channel.type === "DIRECT" && channel.members.length === 2 && channel.is_archived) {
         unArchive(channel, (err, res) => {
           const channel = res.data;
           dispatch(

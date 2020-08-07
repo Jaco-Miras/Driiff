@@ -87,12 +87,12 @@ const useChatMessageActions = () => {
          user: user,
          original_body: text,
          is_read: true,
-         editable: 1,
+         editable: true,
          files: [],
-         is_archive: 0,
+         is_archive: false,
          is_completed: true,
          is_transferred: false,
-         is_deleted: 0,
+         is_deleted: false,
          created_at: {timestamp: timestamp},
          updated_at: {timestamp: timestamp},
          channel_id: selectedChannel.id,
@@ -208,7 +208,7 @@ const useChatMessageActions = () => {
       file_ids: [],
       reference_id: require("shortid").generate(),
       reference_title: channel.title,
-      is_transferred: 1,
+      is_transferred: true,
     };
 
     dispatch(postChatMessage(payload, callback));

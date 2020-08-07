@@ -637,13 +637,13 @@ const CreateEditWorkspaceModal = (props) => {
 
         let payload = {
             id: item.channel.id,
-            is_archived: item.active === 1 ? 1 : 0,
-            is_muted: 0,
-            is_pinned: 0,
+            is_archived: item.active === 1 ? true : false,
+            is_muted: false,
+            is_pinned: false,
             is_shared: item.is_external
         };
 
-        if (payload.is_archived === 0) {
+        if (!payload.is_archived) {
             payload.push_unarchived = 1;
         }
 

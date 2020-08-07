@@ -32,9 +32,9 @@ const useSortChannels = (channels, search, options = {}, workspace) => {
     })
     //.concat(this.props.startNewChannels)
     .filter((channel) => {
-      if (typeof channel.add_user === "undefined") channel.add_user = 0;
+      if (typeof channel.add_user === "undefined") channel.add_user = false;
 
-      if (typeof channel.add_open_topic === "undefined") channel.add_open_topic = 0;
+      if (typeof channel.add_open_topic === "undefined") channel.add_open_topic = false;
 
       if (options.type && options.type === "DIRECT") {
         if (!(channel.type === "DIRECT" || channel.type === "PERSON")) {
@@ -46,9 +46,9 @@ const useSortChannels = (channels, search, options = {}, workspace) => {
 
       if (search === "") {
         if (options.showHidden) {
-          return channel.is_archived === 0 && channel.add_open_topic === 0;
+          return !channel.is_archived && !channel.add_open_topic;
         } else {
-          return channel.is_hidden === 0 && channel.is_archived === 0 && channel.add_user === 0 && channel.add_open_topic === 0;
+          return !channel.is_hidden && !channel.is_archived && !channel.add_user && !channel.add_open_topic;
         }
       } else {
         if (channel.search.toLowerCase().search(search.toLowerCase()) !== -1) {
