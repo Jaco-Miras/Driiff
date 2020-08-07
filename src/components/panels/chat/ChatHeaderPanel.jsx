@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
-import { useRouteMatch } from "react-router-dom";
+import React, {useEffect, useState} from "react";
+import {useDispatch} from "react-redux";
+import {useRouteMatch} from "react-router-dom";
 import styled from "styled-components";
-import { addToModals } from "../../../redux/actions/globalActions";
-import { SvgIconFeather } from "../../common";
+import {addToModals} from "../../../redux/actions/globalActions";
+import {SvgIconFeather} from "../../common";
 import useChannelActions from "../../hooks/useChannelActions";
 import ChatMembers from "../../list/chat/ChatMembers";
 import ChatTitleTyping from "../../list/chat/ChatTitleTyping";
@@ -94,18 +94,18 @@ const ChatHeaderPanel = (props) => {
       <div className="d-flex align-items-center">
         {page === "chat" && (
           <>
-            <ChatMembers members={channel.members.filter((m) => m.name !== "")} />
-            <ChatTitleTyping />
+            <ChatMembers members={channel.members}/>
+            <ChatTitleTyping/>
           </>
         )}
         {page === "workspace" && (
           <>
-            <ChatMembers members={channel.members.filter((m) => m.name !== "")} page={"workspace"} />
-            <ChatTitleTyping page={"workspace"} />
+            <ChatMembers members={channel.members} page={"workspace"}/>
+            <ChatTitleTyping page={"workspace"}/>
           </>
         )}
         <div className="ml-auto">
-          {page === "workspace" && <ChatMembers members={channel.members.filter((m) => m.name !== "")} />}
+          {page === "workspace" && <ChatMembers members={channel.members}/>}
           <ul className="nav align-items-center">
             {["DIRECT", "PERSONAL_BOT", "COMPANY", "TOPIC"].includes(channel.type) === false && !channel.is_archived && (
               <>

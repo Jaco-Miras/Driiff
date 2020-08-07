@@ -284,8 +284,9 @@ const WorspaceHeaderPanel = (props) => {
               <li className="nav-item-last">
                 <div className="nav-item-avatars-wrap">
                   {activeTopic.members.map((m, i) => {
-                    return <StyledAvatar id={m.id} firstUser={i === 0} className="workspace-members" key={m.name}
-                                         name={m.name} imageLink={m.profile_image_link}/>;
+                    return <StyledAvatar id={m.id} firstUser={i === 0} className="workspace-members" key={m.id}
+                                         name={m.name ? m.name : m.email} imageLink={m.profile_image_link}
+                                         hasAccepted={m.has_accepted}/>;
                   })}
                 </div>
                 {activeTopic.member_ids.includes(user.id) && !isExternal ? (

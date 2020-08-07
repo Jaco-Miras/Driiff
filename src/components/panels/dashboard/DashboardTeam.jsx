@@ -1,7 +1,7 @@
-import React, { useCallback, useState } from "react";
+import React, {useCallback, useState} from "react";
 import styled from "styled-components";
-import { TeamListItem } from "../../list/people/item";
-import { SvgIconFeather } from "../../common";
+import {TeamListItem} from "../../list/people/item";
+import {SvgIconFeather} from "../../common";
 
 const Wrapper = styled.div`
   .feather-edit {
@@ -70,8 +70,9 @@ const DashboardTeam = (props) => {
         </h5>
 
         <ul className="list-group list-group-flush">
-          {workspace.members.filter((m) => m.active === 1).map((member) => {
-            return <TeamListItem key={member.id} member={member} parentRef={scrollRef} onEditClick={onEditClick} hideOptions={hideOptions}/>;
+          {workspace.members.filter((m) => m.active === 1 || !m.has_accepted).map((member) => {
+            return <TeamListItem key={member.id} member={member} parentRef={scrollRef} onEditClick={onEditClick}
+                                 hideOptions={hideOptions}/>;
           })}
         </ul>
       </div>
