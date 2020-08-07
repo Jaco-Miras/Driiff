@@ -98,7 +98,7 @@ const WorkspaceContentPanel = (props) => {
                 "/workspace/files",
               ]}
             />
-            <Route {...props} component={WorkspacePeoplePanel} path={["/workspace/people/:folderId/:folderName/:workspaceId/:workspaceName", "/workspace/people/:workspaceId/:workspaceName", "/workspace/people"]} />
+            <Route render={() => <WorkspacePeoplePanel {...props} workspace={workspace} isMember={isMember}/>} path={["/workspace/people/:folderId/:folderName/:workspaceId/:workspaceName", "/workspace/people/:workspaceId/:workspaceName", "/workspace/people"]} />
             <Route {...props} component={WorkspaceSettingsPanel} path={["/workspace/settings/:folderId/:folderName/:workspaceId/:workspaceName", "/workspace/settings/:workspaceId/:workspaceName", "/workspace/settings"]} />
             <Redirect
               from="*"
