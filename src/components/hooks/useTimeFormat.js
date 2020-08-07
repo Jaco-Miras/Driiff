@@ -147,7 +147,14 @@ const useTimeFormat = () => {
     }
   };
 
+  const fromNow = (timestamp) => {
+    var utc = moment(timestamp, "X").toDate();
+    var local = moment(utc).tz(timezone);
+    return local.fromNow();
+  };
+
   return {
+    fromNow,
     localizeDate,
     localizeTime,
     localizeChatChannelDate,
