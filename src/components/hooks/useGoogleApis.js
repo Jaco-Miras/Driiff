@@ -1,6 +1,9 @@
 import React from "react";
+import {useFileActions} from "./index";
 
 const useGoogleApis = () => {
+
+  const {addGoogleDriveFile} = useFileActions();
 
   const isLocalhost = Boolean(
     window.location.hostname === "localhost" ||
@@ -28,9 +31,19 @@ const useGoogleApis = () => {
         });
         file.execute(function (resp) {
           if (resp.error) {
-            element.innerHTML = `Google drive file link.`
+            addGoogleDriveFile({
+              file_id: fileId,
+              metadata: {
+                title: <span className="link">{element.href}</span>
+              }
+            });
+            element.innerHTML = <span className="link">{element.href}</span>;
             element.onclick = null;
           } else {
+            addGoogleDriveFile({
+              file_id: fileId,
+              metadata: resp
+            });
             element.innerHTML = resp.title;
             element.onclick = null;
           }
@@ -38,7 +51,6 @@ const useGoogleApis = () => {
 
       });
     } else {
-      element.innerHTML = `Google drive file link.`
       element.onclick = attachSignIn;
     }
   }

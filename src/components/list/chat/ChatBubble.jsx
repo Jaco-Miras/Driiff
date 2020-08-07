@@ -313,6 +313,16 @@ const ReplyContent = styled.span`
     color: ${(props) => (props.isAuthor ? props.theme.self.chat_bubble_link_color : props.theme.others.chat_bubble_link_color)};
     color: ${(props) => (!props.isAuthor ? "#7a1b8b" : "#ffffff99")};
     text-decoration: underline;
+    
+    &.gdrive-link {
+      text-decoration: none;
+      
+      .preview-text { 
+        font-weight: bold;       
+        color: ${(props) => (props.isAuthor ? "#FFF" : "#828282")};
+      }
+    }
+    
     &:focus,
     &:hover {
       color: ${(props) => (!props.isAuthor ? "#7a1b8b" : "#ffffff")};

@@ -243,3 +243,7 @@ export function deleteGoogleAttachment(payload, callback) {
 export function incomingDeletedGoogleFile(payload, callback) {
   return SimpleDispatchActionToReducer("INCOMING_DELETED_GOOGLE_FILE", payload, callback);
 }
+
+export function registerGoogleDriveFile(payload, callback) {
+  return SimpleDispatchActionToReducer("ADD_GOOGLE_DRIVE_FILE", payload, callback);
+}

@@ -9,6 +9,7 @@ const useFiles = () => {
 
   const activeTopic = useSelector((state) => state.workspaces.activeTopic);
   const workspaceFiles = useSelector((state) => state.files.workspaceFiles);
+  const googleDriveApiFiles = useSelector((state) => state.files.googleDriveApiFiles);
   const [fetchingFiles, setFetchingFiles] = useState(false);
 
   useEffect(() => {
@@ -95,6 +96,7 @@ const useFiles = () => {
       folders: {},
       subFolders: [],
       folder: null,
+      googleDriveApiFiles
     };
   }
 };

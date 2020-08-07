@@ -8,6 +8,7 @@ const INITIAL_STATE = {
   pendingWorkspaceFilesUpload: {},
   progressWorkspaceFilesUpload: {},
   workspaceFiles: {},
+  googleDriveApiFiles: {}
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -267,7 +268,7 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "GET_WORKSPACE_GOOGLE_FOLDER_ATTACHMENTS_SUCCESS": {
-     
+
       let newWorkspaceFiles = {...state.workspaceFiles};
       if (newWorkspaceFiles.hasOwnProperty(action.data.topic_id)) {
         if (newWorkspaceFiles[action.data.topic_id].hasOwnProperty("folders")) {
@@ -717,7 +718,7 @@ export default (state = INITIAL_STATE, action) => {
         action.data.deleted_file_ids.map((df) => {
           delete newWorkspaceFiles[action.data.topic_id].files[df];
         });
-        
+
         if (newWorkspaceFiles[action.data.topic_id].hasOwnProperty("folders")) {
           Object.values(newWorkspaceFiles[action.data.topic_id].folders).forEach((f) => {
             if (f.hasOwnProperty("files") && newWorkspaceFiles[action.data.topic_id].folders[f.id].files.length) {
@@ -798,9 +799,9 @@ export default (state = INITIAL_STATE, action) => {
         let totalSize = 0;
         if (action.data.deleted_file_ids.length) {
           totalSize = Object.values(state.workspaceFiles[action.data.topic_id].trash_files).filter((f) => typeof f !== "undefined")
-          .filter((f) => {
-            return action.data.deleted_file_ids.some((df) => df === f.id);
-          }).map((f) => f.size).reduce(add);
+            .filter((f) => {
+              return action.data.deleted_file_ids.some((df) => df === f.id);
+            }).map((f) => f.size).reduce(add);
         }
 
         newWorkspaceFiles[action.data.topic_id].trash_files = {};
@@ -899,6 +900,15 @@ export default (state = INITIAL_STATE, action) => {
         });
       } else {
         return state;
+      }
+    }
+    case "ADD_GOOGLE_DRIVE_FILE": {
+      return {
+        ...state,
+        googleDriveApiFiles: {
+          ...state.googleDriveApiFiles,
+          [action.data.file_id]: action.data.metadata
+        }
       }
     }
     case "INCOMING_DELETED_GOOGLE_FILE": {
