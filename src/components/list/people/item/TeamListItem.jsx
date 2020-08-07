@@ -1,8 +1,8 @@
 import React from "react";
-import { useHistory } from "react-router-dom";
+import {useHistory} from "react-router-dom";
 import styled from "styled-components";
-import { Avatar } from "../../../common";
-import { MoreOptions } from "../../../panels/common";
+import {Avatar, Badge} from "../../../common";
+import {MoreOptions} from "../../../panels/common";
 
 const Wrapper = styled.li`
   padding: 16px 0 !important;
@@ -59,11 +59,13 @@ const TeamListItem = (props) => {
     <Wrapper className={`team-list-item list-group-item d-flex align-items-center p-l-r-0 justify-content-between ${className}`}>
       <div className="d-flex align-items-center ">
         <div className="pr-3">
-          <Avatar id={member.id} name={member.name} imageLink={member.profile_image_link} partialName={member.partial_name} noDefaultClick={!member.has_accepted}/>
+          <Avatar id={member.id} name={member.name} imageLink={member.profile_image_link}
+                  partialName={member.partial_name} noDefaultClick={!member.has_accepted}
+                  hasAccepted={member.has_accepted}/>
         </div>
         <div>
           <h6 className="profile-name" onClick={handleClickName}>
-            {member.has_accepted ? member.name : member.email}
+            {member.has_accepted ? member.name : <>{member.email} <Badge label="Invited"/></>}
           </h6>
           {member.designation && <small className="text-muted">{member.designation}</small>}
         </div>

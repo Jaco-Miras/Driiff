@@ -1,7 +1,7 @@
-import React, { useRef } from "react";
+import React, {useRef} from "react";
 import styled from "styled-components";
-import { Avatar } from "../common";
-import { useOutsideClick } from "../hooks";
+import {Avatar} from "../common";
+import {useOutsideClick} from "../hooks";
 import {useHistory} from "react-router-dom";
 
 const UserListPopUpContainer = styled.div`
@@ -71,14 +71,17 @@ const UserListPopUp = (props) => {
   };
 
   useOutsideClick(listRef, handleShowList, true);
+
   return (
     <UserListPopUpContainer className={className} ref={listRef}>
       <ul>
         {users.map((u, k) => {
           return (
             <li key={k}>
-              <Avatar size={"xs"} imageLink={u.profile_image_link} userId={u.id} name={u.name} partialName={u.partial_name} noDefaultClick={true} onClick={(e) => handleOnNameClick(e, u)}/>
-              <span onClick={(e) => handleOnNameClick(e, u)}>{u.name}</span>
+              <Avatar size={"xs"} imageLink={u.profile_image_link} userId={u.id} name={u.name ? u.name : u.email}
+                      partialName={u.partial_name} hasAccepted={u.has_accepted} noDefaultClick={true}
+                      onClick={(e) => handleOnNameClick(e, u)}/>
+              <span onClick={(e) => handleOnNameClick(e, u)}>{u.name ? u.name : u.email}</span>
             </li>
           );
         })}

@@ -27,17 +27,17 @@ import {
 import {
     addFilesToChannel,
     deleteFilesFromChannel,
-    incomingDeletedGoogleFile,
     incomingDeletedFile,
     incomingDeletedFiles,
     incomingDeletedFolder,
+    incomingDeletedGoogleFile,
     incomingDeletedPostFile,
     incomingEmptyTrash,
-    incomingGoogleFile,
-    incomingGoogleFolder,
     incomingFile,
     incomingFiles,
     incomingFolder,
+    incomingGoogleFile,
+    incomingGoogleFolder,
     incomingMovedFile,
     incomingRemovedFile,
     incomingRemovedFolder,
@@ -75,7 +75,6 @@ import {
     joinWorkspaceReducer,
     updateWorkspaceCounter
 } from "../../redux/actions/workspaceActions";
-import { FileAttachments } from "../common";
 
 class SocketListeners extends React.PureComponent {
     constructor(props) {
@@ -776,9 +775,7 @@ class SocketListeners extends React.PureComponent {
                     updated_at: e.created_at,
                     files: [],
                     id: e.id,
-                    is_deleted: 0,
                     quote: null,
-                    reactions: [],
                     user: null,
                     unfurls: [],
                     is_read: false,

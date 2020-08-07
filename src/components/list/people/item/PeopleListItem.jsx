@@ -44,7 +44,8 @@ const PeopleListItem = (props) => {
           <div className="card-body">
             <div className="d-flex align-items-center">
               <div className="pr-3">
-                <Avatar id={user.id} name={user.name} onClick={handleOnNameClick} noDefaultClick={true}
+                <Avatar id={user.id} name={user.name ? user.name : user.email} hasAccepted={user.has_accepted}
+                        onClick={handleOnNameClick} noDefaultClick={true}
                         imageLink={user.profile_image_link ? user.profile_image_link : ""}/>
               </div>
               <div>
