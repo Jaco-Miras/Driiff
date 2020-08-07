@@ -18033,7 +18033,7 @@ small {
 [data-backround-image]:after {
   content: "";
   display: block;
-  background: rgba(255, 255, 255, 0.6);
+  background: #fafafa;
   position: absolute;
   right: 0;
   left: 0;
@@ -21138,6 +21138,9 @@ body.dark.small-navigation .navigation-menu-body ul li.navigation-divider:after 
   }
   .mobile-modal-open {
     overflow: hidden;
+    .header {
+      z-index: 0;
+    }
     .bottom-modal-mobile {
       bottom: 0;
       .mobile-overlay {
