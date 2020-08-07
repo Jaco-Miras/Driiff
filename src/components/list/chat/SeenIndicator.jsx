@@ -34,7 +34,7 @@ const StyledUserListPopUp = styled(UserListPopUp)`
     max-height: 250px;
 
     li {
-      display: block;
+      display: flex;
       text-align: left;
 
       > span {
