@@ -351,7 +351,7 @@ class SocketListeners extends React.PureComponent {
             .listen(".google-attachment-notification", (e) => {
                 console.log("google attachment", e)
                 switch (e.SOCKET_TYPE) {
-                    case "GOOGLE_ATTACHMENT_CREATE": {
+                    case "ATTACHMENT_CREATE": {
                         if (e.attachment_type === "GOOGLE_DRIVE_FILE") {
                             this.props.incomingGoogleFile(e);
                         } else if (e.attachment_type === "GOOGLE_DRIVE_FOLDER") {

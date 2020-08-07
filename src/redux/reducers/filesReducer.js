@@ -912,19 +912,24 @@ export default (state = INITIAL_STATE, action) => {
       }
     }
     case "INCOMING_DELETED_GOOGLE_FILE": {
-      return state;
-      // let = { updatedWorkspaceFiles };
-      // if (updatedWorkspaceFiles.hasOwnProperty(action.data.topic_id)) {
-      //   if (type === "FILE") {
-      //     delete updatedWorkspaceFiles[action.data.topic_id].files[action.data.attachment_id]
-      //   } else if (type === "FOLDER") {
-      //     delete updatedWorkspaceFiles[action.data.topic_id].folders[action.data.attachment_id]
-      //   }
-      // }
-      // return {
-      //   ...state,
-      //   workspaceFiles: updatedWorkspaceFiles
-      // }
+      let updatedWorkspaceFiles = { ...state.workspaceFiles };
+      let workspace = {
+        id: action.data.data_type.topic.id,
+        name: action.data.data_type.topic.name,
+        folder_id: action.data.data_type.workspace ? action.data.data_type.workspace.id : null,
+        folder_name: action.data.data_type.workspace ? action.data.data_type.workspace.name : null,
+      }
+      if (updatedWorkspaceFiles.hasOwnProperty(workspace.id)) {
+        if (updatedWorkspaceFiles[workspace.id].files.hasOwnProperty(action.data.attachment_id)) {
+          delete updatedWorkspaceFiles[workspace.id].files[action.data.attachment_id];
+        } else if (updatedWorkspaceFiles[workspace.id].folders.hasOwnProperty(action.data.attachment_id)) {
+          delete updatedWorkspaceFiles[workspace.id].folders[action.data.attachment_id];
+        }
+      }
+      return {
+        ...state,
+        workspaceFiles: updatedWorkspaceFiles
+      }
     }
     default:
       return state;

@@ -565,7 +565,7 @@ const useFileActions = (params = null) => {
       const handleDeleteFolder = () => {
         let payload = {
           link_id: folder.link_id,
-          link_type: folder.link_type,
+          link_type: "topic_drive",
           attachment_type: folder.attachment_type,
           attachment_id: folder.id,
           payload: {
