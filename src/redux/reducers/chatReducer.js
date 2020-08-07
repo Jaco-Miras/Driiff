@@ -44,7 +44,7 @@ export default function (state = INITIAL_STATE, action) {
         if (ac.type === "TOPIC") {
           ac.members = ac.channel_members;
           ac.replies = [];
-          ac.add_open_topic = 1;
+          ac.add_open_topic = true;
 
           if (ac.channel_code === null) {
             ac.recipient_ids = [ac.id];
@@ -60,9 +60,9 @@ export default function (state = INITIAL_STATE, action) {
           ...channels[ac.key_id],
           ...ac,
           id: ac.key_id,
-          is_pinned: 0,
-          is_hidden: 0,
-          is_archived: 0,
+          is_pinned: false,
+          is_hidden: false,
+          is_archived: false,
         };
       });
       return {
@@ -209,7 +209,7 @@ export default function (state = INITIAL_STATE, action) {
         channel = { ...state.channels[action.data.channel_id] };
         channel = {
           ...channel,
-          is_read: 1,
+          is_read: true,
           total_unread: state.user && state.user.id === action.data.member_id ? 0 : channel.total_unread,
           members: channel.members.map((m) => {
             if (m.id === action.data.member_id) {
@@ -370,7 +370,7 @@ export default function (state = INITIAL_STATE, action) {
         channel = { ...state.channels[action.data.channel_id] };
         channel = {
           ...channel,
-          is_hidden: 0,
+          is_hidden: false,
           replies: haveReference
             ? channel.replies.map((r) => {
                 if (r.id === action.data.reference_id) {
@@ -424,7 +424,7 @@ export default function (state = INITIAL_STATE, action) {
         channel = {
           ...channel,
           replies: [...channel.replies, action.data.reply],
-          is_hidden: 0,
+          is_hidden: false,
           last_reply: action.data.last_reply,
           total_unread: state.selectedChannel && state.selectedChannel.id === action.data.reply.channel_id ? channel.total_unread : channel.total_unread + 1,
         };
@@ -505,7 +505,7 @@ export default function (state = INITIAL_STATE, action) {
         channel = { ...state.channels[action.data.channel_id] };
         channel = {
           ...channel,
-          is_archived: action.data.status === "ARCHIVED" ? 1 : 0,
+          is_archived: action.data.status === "ARCHIVED" ? true : false,
         };
       }
       return {
@@ -521,7 +521,7 @@ export default function (state = INITIAL_STATE, action) {
           state.selectedChannel && state.selectedChannel.id === action.data.channel_id
             ? {
                 ...state.selectedChannel,
-                is_archived: action.data.status === "ARCHIVED" ? 1 : 0,
+                is_archived: action.data.status === "ARCHIVED" ? true : false,
               }
             : state.selectedChannel,
       };
@@ -648,7 +648,7 @@ export default function (state = INITIAL_STATE, action) {
             if (r.id === action.data.id) {
               return {
                 ...r,
-                is_deleted: 1,
+                is_deleted: true,
                 //body: "CHAT_MESSAGE_DELETED",
                 body: "The chat message has been deleted",
                 files: [],
@@ -931,7 +931,7 @@ export default function (state = INITIAL_STATE, action) {
           ...updatedChannels,
           [action.data.channel_id]: {
             ...updatedChannels[action.data.channel_id],
-            is_read: 0,
+            is_read: false,
           },
         };
       }
@@ -942,7 +942,7 @@ export default function (state = INITIAL_STATE, action) {
           state.selectedChannel && state.selectedChannel.id == action.data.channel_id
             ? {
                 ...state.selectedChannel,
-                is_read: 0,
+                is_read: false,
               }
             : state.selectedChannel,
       };
@@ -952,9 +952,9 @@ export default function (state = INITIAL_STATE, action) {
       let updatedChannel = { ...state.selectedChannel };
       if (action.data.entity_group_type === "UNREAD_CHANNEL") {
         if (updatedChannels.hasOwnProperty(action.data.entity_id)) {
-          updatedChannels[action.data.entity_id].is_read = 0;
+          updatedChannels[action.data.entity_id].is_read = false;
           if (state.selectedChannel && state.selectedChannel.id === action.data.entity_id) {
-            updatedChannel.is_read = 0;
+            updatedChannel.is_read = false;
           }
         }
         return {

@@ -63,7 +63,7 @@ const ChannelOptions = (props) => {
   };
 
   const handleArchiveChat = () => {
-    if (channel.is_archived === 1) {
+    if (channel.is_archived) {
       channelActions.unArchive(channel);
     } else {
       channelActions.archive(channel);
@@ -82,7 +82,7 @@ const ChannelOptions = (props) => {
       },
     };
 
-    if (channel.is_archived === 1) {
+    if (channel.is_archived) {
       payload = {
         ...payload,
         headerText: "Chat Un-archive",
@@ -97,7 +97,7 @@ const ChannelOptions = (props) => {
   const handleMarkAsUnreadSelected = (e) => {
     e.stopPropagation();
 
-    if (channel.total_unread === 0 && channel.is_read === 1) {
+    if (channel.total_unread === 0 && channel.is_read) {
       channelActions.markAsUnRead(channel);
     } else {
       channelActions.markAsRead(channel);
@@ -108,10 +108,10 @@ const ChannelOptions = (props) => {
     <>
       <Wrapper channel={channel} scrollRef={scrollEl}>
         <div onClick={handlePinButton}>{channel.is_pinned ? "Unfavorite" : "Favorite"}</div>
-        <div onClick={(e) => handleMarkAsUnreadSelected(e)}>{channel.total_unread === 0 && channel.is_read === 1 ? "Mark as unread" : "Mark as read"}</div>
+        <div onClick={(e) => handleMarkAsUnreadSelected(e)}>{channel.total_unread === 0 && channel.is_read ? "Mark as unread" : "Mark as read"}</div>
         <div onClick={handleMuteChat}>{channel.is_muted ? "Unmute" : "Mute"}</div>
-        {channel.type !== "PERSONAL_BOT" && <div onClick={handleHideChat}>{channel.is_hidden === 0 ? "Hide" : "Unhide"}</div>}
-        {(channel.type !== "PERSONAL_BOT" || channel.type !== "COMPANY") && <div onClick={handleShowArchiveConfirmation}>{channel.is_archived === 0 ? "Archive" : "Unarchive"}</div>}
+        {channel.type !== "PERSONAL_BOT" && <div onClick={handleHideChat}>{!channel.is_hidden ? "Hide" : "Unhide"}</div>}
+        {(channel.type !== "PERSONAL_BOT" || channel.type !== "COMPANY") && <div onClick={handleShowArchiveConfirmation}>{!channel.is_archived ? "Archive" : "Unarchive"}</div>}
       </Wrapper>
     </>
   );

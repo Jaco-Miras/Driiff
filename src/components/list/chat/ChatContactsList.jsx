@@ -96,7 +96,7 @@ const ChatContactsList = (props) => {
         return false;
       }
 
-      if (channel.members.length === 1 && channel.add_user !== 1) {
+      if (channel.members.length === 1 && channel.add_user !== true) {
         return false;
       }
 

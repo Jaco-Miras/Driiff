@@ -1026,7 +1026,7 @@ const ChatBubble = (props) => {
           <ChatContentClap ref={addMessageRef ? loadRef : null} className="chat-content-clap" isAuthor={isAuthor}>
             <ChatContent showAvatar={showAvatar} isAuthor={isAuthor} isEmoticonOnly={isEmoticonOnly}
                          className={`chat-content animated slower ${highlightedText ? "is-highlighted" : ""}`}>
-              {reply.quote && reply.quote.body && (reply.is_deleted === 0 || reply.is_deleted === false) && (reply.quote.user_id !== undefined || reply.quote.user !== undefined) && (
+              {reply.quote && reply.quote.body && !reply.is_deleted && (reply.quote.user_id !== undefined || reply.quote.user !== undefined) && (
                 <QuoteContainer showAvatar={showAvatar} isEmoticonOnly={isEmoticonOnly} hasFiles={hasFiles}
                                 theme={chatSettings.chat_message_theme} onClick={handleQuoteClick} isAuthor={isAuthor}>
                   {reply.quote.user_id === user.id ? (

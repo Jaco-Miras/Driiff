@@ -49,8 +49,8 @@ const WorkspaceChatDateIcons = (props) => {
       {handleNotificationBadges()}
       <span className={"small text-muted"}>{workspace.last_reply ? localizeChatChannelDate(workspace.last_reply.created_at.timestamp) : ""}</span>
       <ActionContainer>
-        {!!workspace.is_pinned && <Icon icon="star" />}
-        {!!workspace.is_muted && <Icon icon="volume-x" className={`${!!workspace.is_pinned && "mr-1"}`} />}
+        {workspace.is_pinned && <Icon icon="star" />}
+        {workspace.is_muted && <Icon icon="volume-x" className={`${workspace.is_pinned && "mr-1"}`} />}
       </ActionContainer>
     </Wrapper>
   );

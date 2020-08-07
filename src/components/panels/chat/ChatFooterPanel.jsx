@@ -201,14 +201,14 @@ const ChatFooterPanel = (props) => {
 
   return (
     <Wrapper className={`chat-footer border-top ${className}`}>
-      {selectedChannel && selectedChannel.is_archived === 0 && (
+      {selectedChannel && !selectedChannel.is_archived && (
         <Dflex className="d-flex pr-2 pl-2">
           <ChatQuote />
         </Dflex>
       )}
       {isMember && (
         <Dflex className="d-flex align-items-center">
-          {selectedChannel && selectedChannel.is_archived === 1 ? (
+          {selectedChannel && selectedChannel.is_archived ? (
             <ArchivedDiv>
               <h4>
                 <Icon icon="archive" /> This is an archived channel

@@ -484,7 +484,7 @@ class ChatMessages extends React.PureComponent {
 
     if (selectedChannel.skip === 0) this.loadReplies();
 
-    if (selectedChannel.is_read === 1) {
+    if (selectedChannel.is_read) {
       this.handleReadChannel();
     }
   }
@@ -834,7 +834,7 @@ class ChatMessages extends React.PureComponent {
                                     >
                                       <ChatActionsContainer isAuthor={isAuthor} className="chat-actions-container">
                                         {<ChatReactionButton isAuthor={isAuthor} scrollRef={this.infiniteScroll.current} reply={reply} />}
-                                        {!isNaN(reply.id) && (reply.is_deleted === 0 || !reply.is_deleted) && (
+                                        {!isNaN(reply.id) && !reply.is_deleted && (
                                           <MessageOptions dictionary={this.props.dictionary} className={"chat-message-options"} selectedChannel={this.props.selectedChannel} isAuthor={isAuthor} replyData={reply} />
                                         )}
                                       </ChatActionsContainer>
@@ -875,7 +875,7 @@ class ChatMessages extends React.PureComponent {
                                       ) : null}
                                       <SystemChatActionsContainer isAuthor={isAuthor} className="chat-actions-container">
                                         {<ChatReactionButton isAuthor={isAuthor} scrollRef={this.infiniteScroll.current} reply={reply} />}
-                                        {!isNaN(reply.id) && reply.is_deleted === 0 && (
+                                        {!isNaN(reply.id) && !reply.is_deleted && (
                                           <MessageOptions dictionary={this.props.dictionary} scrollRef={this.scrollComponent} replyData={reply} className={"chat-message-options"} selectedChannel={this.props.selectedChannel} isAuthor={isAuthor} />
                                         )}
                                       </SystemChatActionsContainer>

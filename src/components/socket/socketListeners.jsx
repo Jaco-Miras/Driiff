@@ -472,7 +472,7 @@ class SocketListeners extends React.PureComponent {
                                 let wsChannels = Object.values(this.props.channels).filter((c) => {
                                     const checkForId = (id) => id === this.props.user.id;
                                     let isMember = c.members.map((m) => m.id).some(checkForId);
-                                    return c.type === "TOPIC" && isMember && c.is_hidden === 0;
+                                    return c.type === "TOPIC" && isMember && !c.is_hidden;
                                 });
                                 if (wsChannels.length > 0 && this.props.location.pathname === `/chat/${this.props.selectedChannel.code}`) {
                                     let channel = wsChannels[0];
@@ -554,7 +554,7 @@ class SocketListeners extends React.PureComponent {
                                 let wsChannels = Object.values(this.props.channels).filter((c) => {
                                     const checkForId = (id) => id === this.props.user.id;
                                     let isMember = c.members.map((m) => m.id).some(checkForId);
-                                    return c.type === "TOPIC" && isMember && c.is_hidden === 0;
+                                    return c.type === "TOPIC" && isMember && !c.is_hidden;
                                 });
                                 if (wsChannels.length > 0 && this.props.location.pathname === `/chat/${this.props.selectedChannel.code}`) {
                                     let channel = wsChannels[0];
@@ -694,7 +694,7 @@ class SocketListeners extends React.PureComponent {
                 if (e.remove_member_ids[0] === this.props.user.id) return;
                 let message = {
                     ...e.message_data,
-                    is_deleted: 0,
+                    is_deleted: false,
                     reactions: [],
                     last_reply: null,
                     reply: {
@@ -703,7 +703,7 @@ class SocketListeners extends React.PureComponent {
                         updated_at: e.message_data.created_at,
                         files: [],
                         id: e.message_data.id,
-                        is_deleted: 0,
+                        is_deleted: false,
                         quote: null,
                         reactions: [],
                         user: null,
@@ -767,7 +767,7 @@ class SocketListeners extends React.PureComponent {
                 let data = JSON.parse(e.body.replace("CHANNEL_UPDATE::", ""));
                 let message = {
                     ...e,
-                    is_deleted: 0,
+                    is_deleted: false,
                     reactions: [],
                     last_reply: null,
                     body: e.body,
@@ -795,7 +795,7 @@ class SocketListeners extends React.PureComponent {
                 console.log(e, "archived chat");
                 this.props.incomingArchivedChannel(e.channel_data);
 
-                if (typeof e.channel_data.topic_detail !== "undefined") {
+                if (e.channel_data.topic_detail) {
                     if (e.channel_data.status === "UNARCHIVED") {
                         this.props.incomingUnArchivedWorkspaceChannel(e.channel_data.topic_detail)
                     } else {

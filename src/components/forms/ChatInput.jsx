@@ -208,12 +208,12 @@ const ChatInput = (props) => {
       user: user,
       original_body: text,
       is_read: true,
-      editable: 1,
+      editable: true,
       files: [],
-      is_archive: 0,
+      is_archive: false,
       is_completed: true,
       is_transferred: false,
-      is_deleted: 0,
+      is_deleted: false,
       created_at: { timestamp: timestamp },
       updated_at: { timestamp: timestamp },
       channel_id: selectedChannel.id,
@@ -365,9 +365,9 @@ const ChatInput = (props) => {
             .sort((a, b) => b.created_at.timestamp - a.created_at.timestamp)
             .filter((r) => {
               if (selectedChannel.is_shared && slugs.length) {
-                return slugs.filter((s) => s.slug_name === selectedChannel.slug_owner)[0].external_id && typeof r.id === "number" && r.is_deleted === 0;
+                return slugs.filter((s) => s.slug_name === selectedChannel.slug_owner)[0].external_id && typeof r.id === "number" && !r.is_deleted;
               } else {
-                return (r.is_deleted === 0 || !r.is_deleted) && r.user && r.user.id === user.id && typeof r.id === "number";
+                return !r.is_deleted && r.user && r.user.id === user.id && typeof r.id === "number";
               }
             })[0];
 

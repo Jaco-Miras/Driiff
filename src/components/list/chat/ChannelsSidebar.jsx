@@ -29,35 +29,35 @@ const ChannelsSidebar = (props) => {
       <Channels className={"list-group list-group-flush"}>
         {sortedChannels.map((channel, k, arr) => {
           let chatHeader = "";
-          if (k !== 0 && arr[k - 1].is_pinned === 1 && channel.is_pinned === 0) {
+          if (k !== 0 && arr[k - 1].is_pinned && !channel.is_pinned) {
             chatHeader = dictionary.recent;
-          } else if (k === 0 && channel.is_pinned === 1) {
+          } else if (k === 0 && channel.is_pinned) {
             chatHeader = dictionary.favorite;
-          } else if (k === 0 && channel.is_pinned === 0) {
+          } else if (k === 0 && !channel.is_pinned) {
             chatHeader = dictionary.recent;
           }
 
-          if (k !== 0 && arr[k - 1].is_hidden === 0 && channel.is_hidden === 1) {
+          if (k !== 0 && !arr[k - 1].is_hidden && channel.is_hidden) {
             chatHeader = dictionary.hidden;
-          } else if (k === 0 && channel.is_hidden === 1) {
+          } else if (k === 0 && channel.is_hidden) {
             chatHeader = dictionary.hidden;
           }
 
-          if (k !== 0 && arr[k - 1].add_user === 0 && channel.add_user === 1) {
+          if (k !== 0 && !arr[k - 1].add_user && channel.add_user) {
             chatHeader = dictionary.startNew;
-          } else if (k === 0 && channel.add_user === 1) {
+          } else if (k === 0 && channel.add_user) {
             chatHeader = dictionary.startNew;
           }
 
-          if (k !== 0 && arr[k - 1].add_open_topic === 0 && channel.add_open_topic === 1) {
+          if (k !== 0 && !arr[k - 1].add_open_topic && channel.add_open_topic) {
             chatHeader = dictionary.viewOpenWorkspace;
-          } else if (k === 0 && channel.add_open_topic === 1) {
+          } else if (k === 0 && channel.add_open_topic) {
             chatHeader = dictionary.viewOpenWorkspace;
           }
 
-          if (k !== 0 && arr[k - 1].is_archived === 0 && channel.is_archived === 1) {
+          if (k !== 0 && !arr[k - 1].is_archived && channel.is_archived) {
             chatHeader = dictionary.archived;
-          } else if (k === 0 && channel.is_archived === 1) {
+          } else if (k === 0 && channel.is_archived) {
             chatHeader = dictionary.archived;
           }
           return (
