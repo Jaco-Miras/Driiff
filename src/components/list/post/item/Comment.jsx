@@ -4,6 +4,7 @@ import {Avatar, FileAttachments, SvgIconFeather} from "../../../common";
 import {MoreOptions} from "../../../panels/common";
 import {PostDetailFooter} from "../../../panels/post/index";
 import {SubComments} from "./index";
+import {useTimeFormat} from "../../../hooks";
 
 const Wrapper = styled.li`
   margin-bottom: 1rem;
@@ -165,6 +166,8 @@ const Comment = (props) => {
     commentActions.clap(payload);
   };
 
+  const { fromNow } = useTimeFormat();
+
   return (
       <>
         <Wrapper ref={refs.main} className={`comment card border fadeBottom ${className}`} userId={user.id}>
@@ -185,7 +188,8 @@ const Comment = (props) => {
               <div className="d-flex justify-content-center align-items-center">
                 <Avatar className="mr-2" id={comment.author.id} name={comment.author.name}
                         imageLink={comment.author.profile_image_link}/>
-                {comment.author.first_name}
+                <span>{comment.author.first_name}</span>
+                <span className="text-muted ml-1">{fromNow(comment.created_at.timestamp)}</span>
               </div>
               {post.is_read_only !== 1 && (
                   <MoreOptions scrollRef={refs.body.current} moreButton={"more-vertical"}>
