@@ -212,6 +212,7 @@ const FilesBody = (props) => {
                 <div onClick={handleRemoveFolder}>{dictionary.removeFolder}</div>
               </MoreButton>
             )}
+
             {
               filter === "removed" && wsFiles
               && wsFiles.hasOwnProperty("trash_files")
@@ -233,6 +234,8 @@ const FilesBody = (props) => {
                       <h6 className="font-size-11 text-uppercase mb-4">{folder.search}</h6>
                     </div>
                 )}
+
+
 
                 {
                   <div className="row">
