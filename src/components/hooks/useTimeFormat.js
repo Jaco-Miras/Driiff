@@ -136,12 +136,21 @@ const useTimeFormat = () => {
   const todayOrYesterdayDate = (timestamp) => {
     const utc = moment(timestamp, "X").toDate();
     const local = moment(utc).tz(timezone);
-    const hours = moment().diff(moment(utc), "hours");
-
-    if (hours < 24) {
-      return moment().calendar().substring(0, moment().calendar().indexOf(" ")) + ", " + local.format(time_format);
-    } else if (hours < 48) {
-      return moment().subtract(1, "days").calendar().substring(0, moment().subtract(1, "days").calendar().indexOf(" ")) + ", " + local.format(time_format);
+    const today = moment().tz(timezone);
+    const yesterday = moment().tz(timezone).subtract(1, "day");
+    
+    //const hours = moment().diff(moment(utc), "hours");
+    // if (hours < 24) {
+    //   return moment().calendar().substring(0, moment().calendar().indexOf(" ")) + ", " + local.format(time_format);
+    // } else if (hours < 48) {
+    //   return moment().subtract(1, "days").calendar().substring(0, moment().subtract(1, "days").calendar().indexOf(" ")) + ", " + local.format(time_format);
+    // } else {
+    //   return local.format(`dddd[,] ${time_format}`);
+    // }
+    if (local.isSame(today, "day")) {
+      return local.format(`[Today] ${time_format}`);
+    } else if (local.isSame(yesterday, "day")) {
+      return local.format(`[Yesterday] ${time_format}`);
     } else {
       return local.format(`dddd[,] ${time_format}`);
     }
