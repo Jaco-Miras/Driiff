@@ -6,7 +6,7 @@ import styled from "styled-components";
 import {EmailRegex, replaceChar} from "../../helpers/stringFormatter";
 import {deleteWorkspaceFiles, setPendingUploadFilesToWorkspace} from "../../redux/actions/fileActions";
 import {addToModals, clearModal} from "../../redux/actions/globalActions";
-import {createWorkspace, fetchTimeline, updateWorkspace, setActiveTopic} from "../../redux/actions/workspaceActions";
+import {createWorkspace, fetchTimeline, setActiveTopic, updateWorkspace} from "../../redux/actions/workspaceActions";
 import {FileAttachments} from "../common";
 import {DropDocument} from "../dropzone/DropDocument";
 import {CheckBox, DescriptionInput, FolderSelect, InputFeedback, PeopleSelect} from "../forms";
@@ -406,6 +406,7 @@ const CreateEditWorkspaceModal = (props) => {
                     author: {
                         id: user.id,
                         name: user.name,
+                        first_name: user.first_name,
                         partial_name: user.partial_name,
                         profile_image_link: user.profile_image_link,
                     },
@@ -802,15 +803,18 @@ const CreateEditWorkspaceModal = (props) => {
         return true;
     };
 
+    console.log(userOptions);
+    console.log(form.selectedUsers);
+
     return (
-        <Modal innerRef={refs.container} isOpen={modal} toggle={toggle} centered size="lg" onOpened={onOpened}>
-            <ModalHeaderSection
-                toggle={toggle}>{mode === "edit" ? dictionary.updateWorkspace : dictionary.createWorkspace}</ModalHeaderSection>
-            <ModalBody onDragOver={handleShowDropzone}>
-                <DropDocument
-                    hide={!showDropzone}
-                    ref={refs.dropZone}
-                    onDragLeave={handleHideDropzone}
+      <Modal innerRef={refs.container} isOpen={modal} toggle={toggle} centered size="lg" onOpened={onOpened}>
+          <ModalHeaderSection
+            toggle={toggle}>{mode === "edit" ? dictionary.updateWorkspace : dictionary.createWorkspace}</ModalHeaderSection>
+          <ModalBody onDragOver={handleShowDropzone}>
+              <DropDocument
+                hide={!showDropzone}
+                ref={refs.dropZone}
+                onDragLeave={handleHideDropzone}
                     onDrop={({acceptedFiles}) => {
                         dropAction(acceptedFiles);
                     }}

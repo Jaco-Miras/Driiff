@@ -15,8 +15,8 @@ const StyledAvatar = styled(Avatar)`
 `;
 
 const MembersLists = (props) => {
+
   const { members } = props;
-  
 
   const firstFiveMembers = members.slice(0, 5);
   const afterFiveMembers = members.slice(5);
@@ -36,4 +36,4 @@ const MembersLists = (props) => {
   );
 };
 
-export default MembersLists;
+export default React.memo(MembersLists);

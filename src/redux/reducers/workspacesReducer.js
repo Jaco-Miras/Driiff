@@ -311,19 +311,24 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "JOIN_WORKSPACE_REDUCER": {
-      let updatedWorkspaces = { ...state.workspaces };
+      let updatedWorkspaces = {...state.workspaces};
+      let activeTopic = {};
       if (Object.keys(updatedWorkspaces).length) {
         Object.values(updatedWorkspaces).forEach((ws) => {
           if (ws.channel.id === action.data.channel_id) {
             updatedWorkspaces[ws.id].members = [...updatedWorkspaces[ws.id].members, action.data.user];
             updatedWorkspaces[ws.id].member_ids = [...updatedWorkspaces[ws.id].member_ids, action.data.user.id];
+            activeTopic = updatedWorkspaces[ws.id];
           }
         })
       }
       return {
         ...state,
         workspaces: updatedWorkspaces,
-        activeTopic: state.activeTopic && state.activeTopic.channel.id === action.data.channel_id ? {...state.activeTopic, members: [...state.activeTopic.members, action.data.user], member_ids: [...state.activeTopic.member_ids, action.data.user.id]} : state.activeTopic
+        activeTopic: state.activeTopic && state.activeTopic.channel.id === action.data.channel_id ? {
+          ...state.activeTopic,
+          activeTopic
+        } : state.activeTopic
       }
     }
     case "GET_DRAFTS_SUCCESS": {
