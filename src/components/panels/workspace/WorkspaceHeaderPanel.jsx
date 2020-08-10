@@ -8,6 +8,7 @@ import {HeaderProfileNavigation} from "../common";
 import {SettingsLink} from "../../workspace";
 import {joinWorkspace} from "../../../redux/actions/workspaceActions";
 import {useToaster} from "../../hooks";
+import {MemberLists} from "../../list/members";
 
 const NavBarLeft = styled.div`
   width: 100%;
@@ -47,7 +48,7 @@ const NavBar = styled.ul`
   align-items: center;
 
   li {
-    justify-content: center;
+    // justify-content: center;
     align-items: center;
     &.nav-item-last {
       flex-grow: 1;
@@ -283,11 +284,14 @@ const WorspaceHeaderPanel = (props) => {
               )}
               <li className="nav-item-last">
                 <div className="nav-item-avatars-wrap">
-                  {activeTopic.members.map((m, i) => {
+                  {
+                    <MemberLists members={activeTopic.members}/>
+                  }
+                  {/* {activeTopic.members.map((m, i) => {
                     return <StyledAvatar id={m.id} firstUser={i === 0} className="workspace-members" key={m.id}
                                          name={m.name ? m.name : m.email} imageLink={m.profile_image_link}
                                          hasAccepted={m.has_accepted}/>;
-                  })}
+                  })} */}
                 </div>
                 {activeTopic.member_ids.includes(user.id) && !isExternal ? (
                   <button onClick={handleEditWorkspace} className="btn btn-primary">

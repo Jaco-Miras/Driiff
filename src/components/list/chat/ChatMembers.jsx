@@ -6,8 +6,6 @@ import {useIsUserTyping} from "../../hooks";
 const ChatMembersContainer = styled.div``;
 
 const StyledAvatar = styled(Avatar)`
-  height: 2.5rem !important;
-  width: 2.5rem !important;
   margin-left: ${(props) => (props.firstUser ? "0" : "-0.5rem")};
 `;
 
