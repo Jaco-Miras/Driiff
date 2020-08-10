@@ -122,7 +122,7 @@ const NoReply = styled.div`
 `;
 
 const PickerContainer = styled(CommonPicker)`
-  right: 25px;
+  right: unset;
   bottom: 70px;
 `;
 
