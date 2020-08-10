@@ -13,6 +13,7 @@ import {
 } from "../components/panels";
 import {useUserLogin} from "../components/hooks/useUserLogin";
 import {useTranslation} from "../components/hooks";
+import useDriffActions from "../components/hooks/useDriffActions";
 
 const Wrapper = styled.div``;
 
@@ -21,6 +22,7 @@ const GuestLayout = (props) => {
   useUserLogin(props);
 
   const location = useLocation();
+  const driffActions = useDriffActions();
   const [title, setTitle] = useState("Sign in");
 
   useEffect(() => {
@@ -38,7 +40,7 @@ const GuestLayout = (props) => {
         setTitle("Driff registration");
         break;
       case "/request-form":
-        setTitle("Accept invitation");
+        setTitle(`Accept your invitation to ${driffActions.getName()}`);
         break;
       case "/reset-password":
         setTitle("Reset password");
@@ -69,7 +71,7 @@ const GuestLayout = (props) => {
     register: _t("REGISTER.REGISTER", "Register"),
     haveAccount: _t("REGISTER.HAVE_ACCOUNT", "Already have an account?"),
     password: _t("REGISTER.PASSWORD", "Password"),
-    fistName: _t("REGISTER.FIRST_NAME", "First name"),
+    firstName: _t("REGISTER.FIRST_NAME", "First name"),
     middleName: _t("REGISTER.MIDDLE_NAME", "Middle name"),
     lastName: _t("REGISTER.LAST_NAME", "Last name"),
     accept: _t("REGISTER.ACCEPT", "Accept"),
@@ -78,8 +80,8 @@ const GuestLayout = (props) => {
     yourEmail: _t("DRIFF.YOUR_EMAIL", "Your email"),
     yourName: _t("DRIFF.YOUR_NAME", "Your name"),
     sendLink: _t("MAGIC_LINK.SEND_LINK", "Send link"),
-    emailRequired: _t("FEEDBACK.EMAIL_REQUIRED",  "Email is required."),
-    passwordRequired: _t("FEEDBACK.PASSWORD_REQUIRED",  "Password is required."),
+    emailRequired: _t("FEEDBACK.EMAIL_REQUIRED", "Email is required."),
+    passwordRequired: _t("FEEDBACK.PASSWORD_REQUIRED", "Password is required."),
     invalidEmail: _t("FEEDBACK.INVALID_EMAIL", "Invalid email format"),
     firstNameRequired: _t("FEEDBACK.FIRST_NAME_REQUIRED", "First name is required."),
     lastNameRequired: _t("FEEDBACK.LAST_NAME_REQUIRED", "Last name is required."),

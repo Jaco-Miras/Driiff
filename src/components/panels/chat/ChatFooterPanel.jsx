@@ -184,7 +184,7 @@ const ChatFooterPanel = (props) => {
         },
         (err, res) => {
           if (err) return;
-          toaster.success(<>You have joined <b>#${selectedChannel.title}</b></>);
+          toaster.success(<>You have joined <b>#{selectedChannel.title}</b></>);
         }
       )
     );
