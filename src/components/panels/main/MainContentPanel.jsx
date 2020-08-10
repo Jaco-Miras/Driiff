@@ -11,12 +11,14 @@ const Wrapper = styled.div`
 `;
 
 const MainContentPanel = (props) => {
-  const { className = "", isExternal } = props;
+  const { className = "", isExternal, match } = props;
 
   return (
     <Wrapper className={`main-content ${className}`} isOnWorkspace={props.match.params.page === "workspace"}>
 
-      <CompanyPageHeaderPanel />
+      {
+        ["/dashboard", "/posts", "/chat", "/files", "/people"].includes(match.url) && <CompanyPageHeaderPanel />
+      }
 
       <Switch>
         <Route {...props} component={UserProfilePanel} path={["/profile/:id/:name/:mode", "/profile/:id/:name", "/profile"]} />
