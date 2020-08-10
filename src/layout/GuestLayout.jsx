@@ -13,6 +13,7 @@ import {
 } from "../components/panels";
 import {useUserLogin} from "../components/hooks/useUserLogin";
 import {useTranslation} from "../components/hooks";
+import useDriffActions from "../components/hooks/useDriffActions";
 
 const Wrapper = styled.div``;
 
@@ -21,6 +22,7 @@ const GuestLayout = (props) => {
   useUserLogin(props);
 
   const location = useLocation();
+  const driffActions = useDriffActions();
   const [title, setTitle] = useState("Sign in");
 
   useEffect(() => {
@@ -38,7 +40,7 @@ const GuestLayout = (props) => {
         setTitle("Driff registration");
         break;
       case "/request-form":
-        setTitle("Accept invitation");
+        setTitle(`Accept your invitation to ${driffActions.getName()}`);
         break;
       case "/reset-password":
         setTitle("Reset password");

@@ -8,6 +8,7 @@ import useDriffActions from "../hooks/useDriffActions";
 import {addToModals} from "../../redux/actions/globalActions";
 import {useDispatch} from "react-redux";
 import {Badge} from "../common";
+import ReactConfetti from "react-confetti";
 
 const Wrapper = styled.form``;
 
@@ -30,6 +31,7 @@ const DriffCreatePanel = (props) => {
   const dispatch = useDispatch();
   const driffActions = useDriffActions();
   const [loading, setLoading] = useState(false);
+  const [registered, setRegistered] = useState(false);
 
   const {REACT_APP_localDNSName} = process.env;
 
@@ -92,11 +94,11 @@ const DriffCreatePanel = (props) => {
       valid.email = true;
     }
 
-    if (typeof form.name === "undefined" || form.name === "") {
-      valid.name = false;
-      message.name = dictionary.lastNameRequired;
+    if (typeof form.user_name === "undefined" || form.user_name === "") {
+      valid.user_name = false;
+      message.user_name = dictionary.lastNameRequired;
     } else {
-      valid.name = true;
+      valid.user_name = true;
     }
 
     if (typeof form.password === "undefined" || form.password === "") {
@@ -155,7 +157,11 @@ const DriffCreatePanel = (props) => {
             }
           });
         } else {
-          driffActions.create(form);
+          driffActions.create(form, (err, res) => {
+            if (res) {
+              setRegistered(true);
+            }
+          });
         }
       })
     }
@@ -192,16 +198,18 @@ const DriffCreatePanel = (props) => {
         onChange={handleInputChange} name="email" isValid={formResponse.valid.email}
         feedback={formResponse.message.email} placeholder={dictionary.yourEmail} type="email"/>
       <FormInput
-        onChange={handleInputChange} name="name" isValid={formResponse.valid.name}
-        feedback={formResponse.message.name} placeholder={dictionary.yourName} innerRef={refs.name}/>
+        onChange={handleInputChange} name="user_name " isValid={formResponse.valid.user_name}
+        feedback={formResponse.message.user_name} placeholder={dictionary.yourName} innerRef={refs.user_name}/>
       <PasswordInput onChange={handleInputChange} isValid={formResponse.valid.password}
                      feedback={formResponse.message.password}/>
 
       <button className={"btn btn-outline-light btn-sm mb-4"} onClick={handleShowUserInvitation}>
-        + {dictionary.inviteUser}
+
         {
-          typeof form.invitations !== "undefined" &&
-          <Badge color="danger" label={form.invitations.length}/>
+          typeof form.invitations !== "undefined" ?
+            <>Invited users <Badge color="danger" label={form.invitations.length}/></>
+            :
+            <>+ {dictionary.inviteUser}</>
         }
       </button>
 
@@ -212,6 +220,10 @@ const DriffCreatePanel = (props) => {
       <button className="btn btn-outline-light btn-sm" onClick={handleDriff}>
         {dictionary.login}
       </button>
+      {
+        registered &&
+        <ReactConfetti/>
+      }
     </Wrapper>
   );
 };

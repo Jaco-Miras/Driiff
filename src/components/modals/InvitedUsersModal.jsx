@@ -7,6 +7,15 @@ import {useTranslation} from "../hooks";
 import {ModalHeaderSection} from "./index";
 import {SvgIconFeather} from "../common";
 import {EmailRegex} from "../../helpers/stringFormatter";
+import styled from "styled-components";
+
+const MoreMemberButton = styled.span`
+  cursor: pointer;
+  cursor: hand;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center; 
+`;
 
 const InvitedUsersModal = (props) => {
 
@@ -108,7 +117,7 @@ const InvitedUsersModal = (props) => {
   };
 
   useEffect(() => {
-    for (let i = invitationItems.length; i < 6; i++) {
+    for (let i = invitationItems.length; i < 3; i++) {
       setInvitationItems(prevState => ([
         ...prevState,
         {
@@ -160,10 +169,9 @@ const InvitedUsersModal = (props) => {
           }
           <tr>
             <td>
-              <span className="cursor-pointer d-flex justify-content-center align-items-center flex-start"
-                    onClick={handleAddItem}>
-                <SvgIconFeather icon="plus"/> <span>Add more member</span>
-              </span>
+              <MoreMemberButton onClick={handleAddItem}>
+                <SvgIconFeather icon="plus"/> <span>Add another</span>
+              </MoreMemberButton>
             </td>
           </tr>
         </table>
