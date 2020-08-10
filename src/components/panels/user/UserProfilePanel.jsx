@@ -8,7 +8,7 @@ import {addToModals} from "../../../redux/actions/globalActions";
 import {Avatar, SvgIconFeather} from "../../common";
 import {DropDocument} from "../../dropzone/DropDocument";
 import InputFeedback from "../../forms/InputFeedback";
-import {useToaster, useUserActions, useUsers, useTranslation} from "../../hooks";
+import {useToaster, useTranslation, useUserActions, useUsers} from "../../hooks";
 
 const Wrapper = styled.div`
   overflow: auto;
@@ -437,17 +437,18 @@ const UserProfilePanel = (props) => {
               )}
               {/*{user.import_from === "gripp" && <SvgIcon className={editInformation ? "mb-2" : "mb-4"} width={500} height={40} icon="gripp-logo" />}*/}
               {editInformation && ["driff", "gripp"].includes(user.import_from) && (
-                  <ImportWarning className="text-primary mb-3">
-                    The profile data is synchronized from an external source.
-                    <br/>
-                    Some fields cannot be edited.
-                  </ImportWarning>
+                <ImportWarning className="text-primary mb-3">
+                  The profile data is synchronized from an external source.
+                  <br/>
+                  Some fields cannot be edited.
+                </ImportWarning>
               )}
-              {<Avatar className="mb-2" imageLink={form.profile_image_link} name={form.name} id={form.id}
+              {<Avatar className="mb-2" imageLink={form.profile_image_link} name={form.name ? form.name : form.email}
+                       id={form.id}
                        onClick={handleAvatarClick} noDefaultClick={true}/>}
               {editInformation ? (
-                  <h5 className="mb-1">
-                    {form.first_name} {form.middle_name} {form.last_name}
+                <h5 className="mb-1">
+                  {form.first_name} {form.middle_name} {form.last_name}
                 </h5>
               ) : (
                 <h5 className="mb-1">

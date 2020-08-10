@@ -1,77 +1,105 @@
-import React, {useState} from "react";
+import React, {useCallback, useEffect, useRef, useState} from "react";
 import {Link} from "react-router-dom";
 import styled from "styled-components";
 import {EmailRegex} from "../../helpers/stringFormatter";
 import {useUserActions} from "../hooks";
+import {FormInput} from "../forms";
 
 const Wrapper = styled.form``;
 
 const ResetPasswordPanel = (props) => {
 
-  const { dictionary } = props;
+  const {dictionary} = props;
+
   const userActions = useUserActions();
+  const [loading, setLoading] = useState(false);
+
+  const refs = {
+    email: useRef(null),
+  };
 
   const [form, setForm] = useState({
     email: "",
   });
 
-  const [error, setError] = useState({
-    email: "",
+  const [formResponse, setFormResponse] = useState({
+    valid: {},
+    message: {},
   });
-
-  const [formMessage, setFormMessage] = useState({
-    error: "",
-    success: "",
-  });
-
-  const handleInputChange = (e) => {
-    setForm({
-      ...form,
-      [e.target.name]: e.target.value,
-    });
-  };
 
   const _validateForm = (e) => {
-    setFormMessage({error: "", success: ""});
-
-    let valid = true;
+    let valid = {};
+    let message = {};
 
     if (form.email === "") {
-      valid = false;
-      setError({...error, email: dictionary.emailRequired});
+      valid.email = false;
+      message.email = dictionary.emailRequired;
     } else if (!EmailRegex.test(form.email)) {
-      valid = false;
-      setError({...error, email: dictionary.invalidEmail});
+      valid.email = false;
+      message.email = dictionary.invalidEmail;
+    } else {
+      valid.email = true;
     }
 
-    return valid;
+    setFormResponse({
+      valid: valid,
+      message: message
+    });
+
+    return (!Object.values(valid).some(v => v === false));
   };
+
+  const handleInputChange = useCallback((e) => {
+    e.persist();
+    setForm(prevState => ({
+      ...prevState,
+      [e.target.name]: e.target.value.trim(),
+    }));
+  }, [setForm]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!_validateForm(e)) {
+    if (!_validateForm(e) || loading) {
       return false;
     }
 
-    userActions.requestPasswordReset(form.email);
+    setLoading(true);
+
+    userActions.requestPasswordReset(form.email, (err, res) => {
+      if (err) {
+        setFormResponse({
+          valid: {email: false},
+          message: {email: dictionary.emailNotFound}
+        });
+      }
+      setLoading(false);
+    });
   };
+
+  useEffect(() => {
+    refs.email.current.focus();
+  }, [])
 
   return (
     <Wrapper>
       <div className="form-group">
-        <input onChange={handleInputChange} name="email" type="email" className="form-control" placeholder="Email"
-               required="" autoFocus/>
+        <FormInput
+          innerRef={refs.email}
+          isValid={formResponse.valid.email} feedback={formResponse.message.email}
+          placeholder="Email"
+          onChange={handleInputChange} name="email" type="email" placeholder="Email"
+          required autoFocus/>
       </div>
       <button className="btn btn-primary btn-block" onClick={handleSubmit}>
-        {dictionary.submit}
+        {loading && <i className="fa fa-spin fa-spinner mr-2"/>} {dictionary.submit}
       </button>
       <hr/>
       <p className="text-muted">{dictionary.takeADifferentAction}</p>
       <Link className={"btn btn-sm btn-outline-light mr-1-1"} to="/register">
         {dictionary.registerNow}
       </Link> or <Link className={"btn btn-sm btn-outline-light ml-1"} to="/login">
-        {dictionary.login}
+      {dictionary.login}
     </Link>
     </Wrapper>
   );
