@@ -171,6 +171,7 @@ const CreateEditChatModal = (props) => {
           author: {
             id: user.id,
             name: user.name,
+            first_name: user.first_name,
             partial_name: user.partial_name,
             profile_image_link: user.profile_image_link,
           },
@@ -406,7 +407,6 @@ const CreateEditChatModal = (props) => {
     newGroupChat: _t("MODAL.NEW_GROUP_CHAT", "New group chat"),
     editChat: _t("MODAL.EDIT_CHAT", "Edit chat"),
     createChat: _t("MODAL.CREATE_CHAT", "Create chat"),
-    editChat: _t("MODAL.CREATE_CHAT", "Create chat"),
   };
 
   return (
