@@ -9,7 +9,7 @@ import {uploadDocument} from "../../redux/services/global";
 import {DatePicker, FileAttachments, SvgIconFeather} from "../common";
 import {DropDocument} from "../dropzone/DropDocument";
 import {CheckBox, DescriptionInput, FolderSelect, PeopleSelect} from "../forms";
-import {useGetWorkspaceAndUserOptions, useToaster} from "../hooks";
+import {useGetWorkspaceAndUserOptions, useToaster, useTranslation} from "../hooks";
 import {ModalHeaderSection} from "./index";
 
 const WrapperDiv = styled(InputGroup)`
@@ -224,6 +224,27 @@ const CreateEditWorkspacePostModal = (props) => {
 
     const [nestedModal, setNestedModal] = useState(false);
     const [closeAll, setCloseAll] = useState(false);
+
+    const {_t} = useTranslation();
+
+  const dictionary = {
+    createPost: _t("POST.CREATE_POST", "Create post"),
+    createNewPost: _t("POST.CREATE_NEW_POST", "Create new post"),
+    editPost: _t("POST.EDIT_POST", "Edit post"),
+    postTitle: _t("POST.TITLE", "Post title"),
+    workspace: _t("POST.WORKSPACE", "Workspace"),
+    responsible: _t("POST.WORKSPACE", "Responsible"),
+    description: _t("POST.DESCRIPTION", "Description"),
+    saveAsDraft: _t("POST.SAVE_AS_DRAFT", "Save as draft"),
+    moreOptions: _t("POST.MORE_OPTIONS", "More options"),
+    replyRequired: _t("POST.REPLY_REQUIRED", "Reply required"),
+    mustRead: _t("POST.MUST_READ", "Must read"),
+    noReplies: _t("POST.NO_REPLIES", "No replies"),
+    schedulePost: _t("POST.SCHEDULE", "Schedule post"),
+    save: _t("POST.SAVE", "Save"),
+    discard: _t("POST.DISCARD", "Discard"),
+    draftBody: _t("POST.DRAFT_BODY", "Not sure about the content? Save it as a draft."),
+  };
 
     const toggleNested = () => {
         setNestedModal(!nestedModal);
@@ -715,17 +736,17 @@ const CreateEditWorkspacePostModal = (props) => {
 
     return (
         <Modal isOpen={modal} toggle={toggle} centered size={"lg"} onOpened={onOpened}>
-            <ModalHeaderSection toggle={toggle}>{mode === "edit" ? "Edit post" : "Create new post"}</ModalHeaderSection>
+            <ModalHeaderSection toggle={toggle}>{mode === "edit" ? dictionary.editPost : dictionary.createNewPost}</ModalHeaderSection>
             <ModalBody>
                 <Modal isOpen={nestedModal} toggle={toggleNested} onClosed={closeAll ? toggle : undefined} centered>
-                    <ModalHeader>Save as draft</ModalHeader>
-                    <ModalBody>Not sure about the content? Save it as a draft.</ModalBody>
+                    <ModalHeader>{dictionary.saveAsDraft}</ModalHeader>
+                    <ModalBody>{dictionary.draftBody}</ModalBody>
                     <ModalFooter>
                         <Button color="primary" onClick={() => toggleAll(true)}>
-                            Save
+                            {dictionary.save}
                         </Button>
                         <Button color="secondary" onClick={() => toggleAll(false)}>
-                            Discard
+                            {dictionary.discard}
                         </Button>
                     </ModalFooter>
                 </Modal>
@@ -740,17 +761,17 @@ const CreateEditWorkspacePostModal = (props) => {
                     attachedFiles={attachedFiles}
                 />
                 <WrapperDiv>
-                    <Label for="post-title">Post title</Label>
+                    <Label for="post-title">{dictionary.postTitle}</Label>
                     <Input style={{borderRadius: "5px"}} defaultValue={mode === "edit" ? "" : ""} value={form.title}
                            onChange={handleNameChange} innerRef={inputRef}/>
                 </WrapperDiv>
                 <WrapperDiv>
-                    <Label for="workspace">Workspace</Label>
+                    <Label for="workspace">{dictionary.workspace}</Label>
                     <SelectWorkspace options={wsOptions} value={form.selectedWorkspaces}
                                      onChange={handleSelectWorkspace} isMulti={true} isClearable={true}/>
                 </WrapperDiv>
                 <WrapperDiv>
-                    <Label for="responsible">Responsible</Label>
+                    <Label for="responsible">{dictionary.responsible}</Label>
                     <SelectPeople options={userOptions} value={form.selectedUsers} onChange={handleSelectUser}/>
                 </WrapperDiv>
                 <StyledDescriptionInput
@@ -773,7 +794,7 @@ const CreateEditWorkspacePostModal = (props) => {
                 )}
                 <WrapperDiv className="more-option">
                     <MoreOption onClick={toggleMoreOptions}>
-                        More options
+                        {dictionary.moreOptions}
                         <SvgIconFeather icon="chevron-down"
                                         className={`sub-menu-arrow ti-angle-up ${showMoreOptions ? "ti-minus rotate-in" : " ti-plus"}`}/>
                     </MoreOption>
@@ -782,19 +803,19 @@ const CreateEditWorkspacePostModal = (props) => {
                                    className={showMoreOptions === null ? "" : showMoreOptions ? "enter-active" : "leave-active"}>
                         <div className="d-flex">
                             <CheckBox name="must_read" checked={form.must_read} onClick={toggleCheck} type="danger">
-                                Must read
+                                {dictionary.mustRead}
                             </CheckBox>
                             <CheckBox name="reply_required" checked={form.reply_required} onClick={toggleCheck}
                                       type="warning">
-                                Reply required
+                               {dictionary.replyRequired}
                             </CheckBox>
                             <CheckBox name="no_reply" checked={form.no_reply} onClick={toggleCheck} type="info">
-                                No replies
+                                {dictionary.noReplies}
                             </CheckBox>
                         </div>
 
                         <WrapperDiv className="schedule-post">
-                            <Label>Schedule post</Label>
+                            <Label>{dictionary.schedulePost}</Label>
                             <SvgIconFeather className="mr-2" width={18} icon="calendar"/>
                             <StyledDatePicker className="mr-2 start-date" onChange={handleSelectStartDate}
                                               value={form.show_at}
