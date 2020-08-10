@@ -4,8 +4,8 @@ import UserListPopUp from "./UserListPopUp";
 
 const PlusRecipientsDiv = styled.div`
   display: inline-block;
-  height: 2.5rem;
-  width: 2.5rem;
+  height: 2rem;
+  width: 2rem;
   margin-left: -0.5rem;
   position: relative;
   @media all and (max-width: 920px) {

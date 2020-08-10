@@ -7,6 +7,7 @@ import {SvgIconFeather} from "../../common";
 import useChannelActions from "../../hooks/useChannelActions";
 import ChatMembers from "../../list/chat/ChatMembers";
 import ChatTitleTyping from "../../list/chat/ChatTitleTyping";
+import { MemberLists } from "../../list/members";
 
 const Wrapper = styled.div`
   position: relative;
@@ -105,7 +106,7 @@ const ChatHeaderPanel = (props) => {
           </>
         )}
         <div className="ml-auto">
-          {page === "workspace" && <ChatMembers members={channel.members}/>}
+          {page === "workspace" && <MemberLists members={channel.members}/>}
           <ul className="nav align-items-center">
             {["DIRECT", "PERSONAL_BOT", "COMPANY", "TOPIC"].includes(channel.type) === false && !channel.is_archived && (
               <>
