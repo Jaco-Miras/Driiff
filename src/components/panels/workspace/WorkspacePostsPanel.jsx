@@ -101,7 +101,7 @@ const WorkspacePostsPanel = (props) => {
     share: _t("POST.SHARE", "Share"),
     snooze: _t("POST.SNOOZE", "Snooze"),
     follow: _t("POST.FOLLOW", "Follow"),
-    unFollow: _t("POST.UNFOLLOW", "UNFOLLOW"),
+    unFollow: _t("POST.UNFOLLOW", "Unfollow"),
     files: _t("POST.FILES", "Files"),
     comment: _t("POST.COMMENT", "Comment"),
     editReply: _t("POST.EDIT_REPLY", "Edit reply"),
