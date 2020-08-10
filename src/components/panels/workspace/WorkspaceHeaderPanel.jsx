@@ -179,7 +179,7 @@ const WorspaceHeaderPanel = (props) => {
           },
           (err, res) => {
             if (err) return;
-            toaster.success(<>You have joined <b>#${activeTopic.name}</b></>);
+            toaster.success(<>You have joined <b>#{activeTopic.name}</b></>);
         }
       )
     );
