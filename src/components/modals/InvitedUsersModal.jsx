@@ -1,51 +1,23 @@
 import React, {useCallback, useEffect, useState} from "react";
 import {useDispatch} from "react-redux";
-import {Button, InputGroup, Modal, ModalBody, ModalFooter} from "reactstrap";
-import styled from "styled-components";
+import {Button, Modal, ModalBody, ModalFooter} from "reactstrap";
 import {clearModal} from "../../redux/actions/globalActions";
 import {FormInput} from "../forms";
 import {useTranslation} from "../hooks";
 import {ModalHeaderSection} from "./index";
 import {SvgIconFeather} from "../common";
-
-const WrapperDiv = styled(InputGroup)`
-  display: flex;
-  align-items: center;
-  margin: 20px 0;
-
-  > .form-control:not(:first-child) {
-    border-radius: 5px;
-  }
-
-  label {
-    white-space: nowrap;
-    margin: 0 20px 0 0;
-    min-width: 109px;
-  }
-
-  .input-feedback {
-    margin-left: 130px;
-    @media all and (max-width: 480px) {
-      margin-left: 0;
-    }
-  }
-
-  button {
-    margin-left: auto;
-  }
-  .react-select-container {
-    width: 100%;
-  }
-  .react-select__multi-value__label {
-    align-self: center;
-  }
-`;
+import {EmailRegex} from "../../helpers/stringFormatter";
 
 const InvitedUsersModal = (props) => {
 
-  const {submitText = "Submit", cancelText = "Cancel", onPrimaryAction, mode, invitations = [], type} = props.data;
+  const {submitText = "Submit", cancelText = "Cancel", onPrimaryAction, invitations = [], type} = props.data;
 
   const [invitationItems, setInvitationItems] = useState(invitations);
+
+  const [formResponse, setFormResponse] = useState({
+    valid: {},
+    message: {},
+  });
 
   const {_t} = useTranslation();
   const dispatch = useDispatch();
@@ -63,6 +35,17 @@ const InvitedUsersModal = (props) => {
     setBinary(prevState => !prevState);
   }, [setInvitationItems, setBinary]);
 
+  const handleAddItem = useCallback((e) => {
+    setInvitationItems(prevState => {
+      prevState.push({
+        name: "",
+        email: "",
+      });
+      return prevState;
+    });
+    setBinary(prevState => !prevState);
+  }, []);
+
   const handleDeleteItem = useCallback((e) => {
     const id = e.currentTarget.dataset.id;
     setInvitationItems(prevState => {
@@ -77,9 +60,51 @@ const InvitedUsersModal = (props) => {
     dispatch(clearModal({type: type}));
   };
 
+  const _validateForm = () => {
+    let isValid = true;
+    let valid = {};
+    let message = {};
+    for (let i = 0; i < invitationItems.length; i++) {
+      if (invitationItems[i].name !== "" || invitationItems[i].email !== "") {
+        if (typeof valid[i] === "undefined") {
+          valid[i] = {};
+          message[i] = {};
+        }
+
+        if (invitationItems[i].name === "") {
+          valid[i].name = false
+          message[i].name = `Name is required.`
+          isValid = false;
+        } else {
+          valid[i].name = true;
+        }
+
+        if (invitationItems[i].email === "") {
+          valid[i].email = false
+          message[i].email = `Email is required.`
+          isValid = false;
+        } else if (!EmailRegex.test(invitationItems[i].email)) {
+          valid[i].email = false
+          message[i].email = `Email is invalid format.`
+          isValid = false;
+        } else {
+          valid[i].email = true;
+        }
+      }
+    }
+    setFormResponse({
+      valid: valid,
+      message: message
+    })
+
+    return isValid;
+  }
+
   const handleConfirm = () => {
-    onPrimaryAction();
-    toggle();
+    if (_validateForm()) {
+      onPrimaryAction(invitationItems.filter((v, i) => v.name !== "" && v.email !== ""));
+      toggle();
+    }
   };
 
   useEffect(() => {
@@ -94,10 +119,6 @@ const InvitedUsersModal = (props) => {
     }
   }, []);
 
-  useEffect(() => {
-    console.log(invitationItems);
-  }, [invitationItems])
-
   return (
     <Modal isOpen={modal} toggle={toggle} size={"lg"} centered>
       <ModalHeaderSection toggle={toggle} className={"invited-users-modal"}>
@@ -108,7 +129,9 @@ const InvitedUsersModal = (props) => {
           <tr>
             <th>Name</th>
             <th>Email</th>
-            <th>+</th>
+            <th>
+              <SvgIconFeather className="cursor-pointer" icon="circle-plus" onClick={handleAddItem}/>
+            </th>
           </tr>
           {
             invitationItems.map((item, key) => {
@@ -117,11 +140,15 @@ const InvitedUsersModal = (props) => {
                   <td>
                     <FormInput
                       data-id={key} placeholder="Name" name="name" value={item.name}
+                      isValid={formResponse.valid[key] ? formResponse.valid[key].name : null}
+                      feedback={formResponse.message[key] ? formResponse.message[key].name : null}
                       onChange={handleInputChange}/>
                   </td>
                   <td>
                     <FormInput
                       data-id={key} placeholder="Email" name="email" value={item.email} type="email"
+                      isValid={formResponse.valid[key] ? formResponse.valid[key].email : null}
+                      feedback={formResponse.message[key] ? formResponse.message[key].email : null}
                       onChange={handleInputChange}/>
                   </td>
                   <td>
@@ -131,6 +158,14 @@ const InvitedUsersModal = (props) => {
               )
             })
           }
+          <tr>
+            <td>
+              <span className="cursor-pointer d-flex justify-content-center align-items-center flex-start"
+                    onClick={handleAddItem}>
+                <SvgIconFeather icon="plus"/> <span>Add more member</span>
+              </span>
+            </td>
+          </tr>
         </table>
       </ModalBody>
       <ModalFooter>

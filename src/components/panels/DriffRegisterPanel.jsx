@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useRef, useState} from "react";
-import {withRouter} from "react-router-dom";
+import {useHistory, withRouter} from "react-router-dom";
 import {Form, FormGroup, Input, InputGroup, InputGroupAddon, InputGroupText} from "reactstrap";
 import styled from "styled-components";
 import {isIPAddress} from "../../helpers/commonFunctions";
@@ -32,6 +32,7 @@ const DriffRegisterPanel = (props) => {
   const {REACT_APP_localDNSName} = process.env;
   const pageLoader = usePageLoader();
   const driffActions = useDriffActions();
+  const history = useHistory();
 
   const [formResponse, setFormResponse] = useState({
     valid: {},
@@ -110,6 +111,10 @@ const DriffRegisterPanel = (props) => {
     });
   };
 
+  const handleRegisterClick = (e) => {
+    history.push('/driff-register')
+  }
+
   useEffect(() => {
     document.body.classList.add("form-membership");
     refs.name.current.focus();
@@ -139,6 +144,10 @@ const DriffRegisterPanel = (props) => {
         </FormGroup>
         <button className="btn btn-primary btn-block" onClick={handleContinue}>
           Continue
+        </button>
+        <hr/>
+        <button className="btn btn-outline-light btn-sm" onClick={handleRegisterClick}>
+          Register new driff
         </button>
       </Form>
     </Wrapper>

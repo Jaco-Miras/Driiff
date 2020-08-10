@@ -9,6 +9,7 @@ import {Avatar, SvgIconFeather} from "../../common";
 import {DropDocument} from "../../dropzone/DropDocument";
 import InputFeedback from "../../forms/InputFeedback";
 import {useToaster, useTranslation, useUserActions, useUsers} from "../../hooks";
+import {FormInput} from "../../forms";
 
 const Wrapper = styled.div`
   overflow: auto;
@@ -122,7 +123,7 @@ const UserProfilePanel = (props) => {
     password: _t("PROFILE.PASSWORD", "Password"),
     position: _t("PROFILE.POSITION", "Position:"),
     city: _t("PROFILE.CITY", "City:"),
-    address: _t("PROFILE.ADDRESS", "Adress:"),
+    address: _t("PROFILE.ADDRESS", "Address:"),
     phone: _t("PROFILE.Phone", "Phone:"),
     email: _t("PROFILE.EMAIL", "Email:"),
     edit: _t("BUTTON.EDIT", "Edit"),
@@ -457,16 +458,15 @@ const UserProfilePanel = (props) => {
               )}
               {editInformation && !readOnlyFields.includes("designation") ? (
                 <p className="text-muted small d-flex align-items-center mt-2">
-                  <Input
-                    style={{ maxWidth: "320px", margin: "auto" }}
+                  <FormInput
+                    style={{maxWidth: "320px", margin: "auto"}}
                     placeholder="Job Title eg. Manager, Team Leader, Designer"
                     className={`designation ${getValidClass(formUpdate.valid.designation)}`}
                     name="designation"
                     onChange={handleInputChange}
                     onBlur={handleInputBlur}
                     defaultValue={user.designation}
-                  />
-                  <InputFeedback valid={formUpdate.feedbackState.designation}>{formUpdate.feedbackText.designation}</InputFeedback>
+                    isValid={formUpdate.feedbackState.designation} valid={formUpdate.feedbackText.designation}/>
                 </p>
               ) : (
                 <p className="text-muted small">{user.designation}</p>
