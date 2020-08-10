@@ -116,7 +116,7 @@ const Avatar = (props) => {
       {isLoaded === false && <Skeleton borderRadius="50%" widthRandomness={0} heightRandomness={0} />}
       <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={name}>
         {
-          showInitials && !hasAccepted ?
+          showInitials && hasAccepted === false ?
             <Image
               show={true}
               className="rounded-circle"
