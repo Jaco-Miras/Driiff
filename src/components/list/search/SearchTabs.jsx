@@ -10,7 +10,7 @@ const SearchTabs = (props) => {
                 tabs.hasOwnProperty("CHANNEL") && Object.keys(tabs.CHANNEL).length > 0 &&
                 <li className="nav-item">
                     <a className={`nav-link ${(activeTab === "channel" || activeTab === null) && "active"}`} onClick={onSelectTab} data-toggle="tab" data-value="channel" role="tab" aria-controls="clasic" aria-selected="true">
-                    Channel
+                    Chat channel
                     </a>
                 </li>
             }
@@ -18,7 +18,7 @@ const SearchTabs = (props) => {
                 tabs.hasOwnProperty("CHAT") && Object.keys(tabs.CHAT).length > 0 &&
                 <li className="nav-item">
                     <a className={`nav-link ${(activeTab === "chat" || activeTab === null) && "active"}`} onClick={onSelectTab} data-toggle="tab" data-value="chat" role="tab" aria-controls="clasic" aria-selected="true">
-                    Chat
+                    Message
                     </a>
                 </li>
             }
