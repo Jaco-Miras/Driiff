@@ -312,7 +312,7 @@ export default (state = INITIAL_STATE, action) => {
     }
     case "JOIN_WORKSPACE_REDUCER": {
       let updatedWorkspaces = {...state.workspaces};
-      let activeTopic = {};
+      let activeTopic = null;
       if (Object.keys(updatedWorkspaces).length) {
         Object.values(updatedWorkspaces).forEach((ws) => {
           if (ws.channel.id === action.data.channel_id) {
@@ -325,10 +325,7 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         workspaces: updatedWorkspaces,
-        activeTopic: state.activeTopic && state.activeTopic.channel.id === action.data.channel_id ? {
-          ...state.activeTopic,
-          activeTopic
-        } : state.activeTopic
+        activeTopic: state.activeTopic && state.activeTopic.channel.id === action.data.channel_id && activeTopic ? activeTopic : state.activeTopic
       }
     }
     case "GET_DRAFTS_SUCCESS": {
@@ -998,6 +995,24 @@ export default (state = INITIAL_STATE, action) => {
         };
       } else {
         return state;
+      }
+    }
+    case "LEAVE_WORKSPACE": {
+      let updatedWorkspaces = { ...state.workspaces };
+      if (updatedWorkspaces.hasOwnProperty(action.data.workspace_id)) {
+        updatedWorkspaces[action.data.workspace_id].members = updatedWorkspaces[action.data.workspace_id].members.filter((m) => m.id !== state.user.id);
+        updatedWorkspaces[action.data.workspace_id].member_ids = updatedWorkspaces[action.data.workspace_id].member_ids.filter((id) => id !== state.user.id);
+      }
+      return  {
+        ...state,
+        workspaces: updatedWorkspaces,
+        activeTopic: state.activeTopic && state.activeTopic.id === action.data.workspace_id ? 
+        {
+          ...state.activeTopic,
+          members: state.activeTopic.members.filter((m) => m.id !== state.user.id),
+          member_ids: state.activeTopic.member_ids.filter((id) => id !== state.user.id)
+        } 
+        : state.activeTopic
       }
     }
     default:

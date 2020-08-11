@@ -139,25 +139,27 @@ const CreateEditChatModal = (props) => {
     if (mode === "edit") {
       const removed_members = channel.members
         .filter((m) => {
-          let userFound = false;
-          selectedUsers.forEach((u) => {
-            if (u.id === m.id) {
-              userFound = true;
-            }
-          });
-          return !userFound;
+          // let userFound = false;
+          // selectedUsers.forEach((u) => {
+          //   if (u.id === m.id) {
+          //     userFound = true;
+          //   }
+          // });
+          // return !userFound;
+          return !selectedUsers.some((u) => u.id === m.id);
         })
         .map((m) => m.id);
 
       const added_members = selectedUsers
         .filter((u) => {
-          let userFound = false;
-          channel.members.forEach((m) => {
-            if (m.id === u.id) {
-              userFound = true;
-            }
-          });
-          return !userFound;
+          // let userFound = false;
+          // channel.members.forEach((m) => {
+          //   if (m.id === u.id) {
+          //     userFound = true;
+          //   }
+          // });
+          // return !userFound;
+          return !channel.members.some((m) => m.id === u.id);
         })
         .map((m) => m.id);
 
