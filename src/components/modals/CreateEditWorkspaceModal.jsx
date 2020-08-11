@@ -460,6 +460,12 @@ const CreateEditWorkspaceModal = (props) => {
                     }
 
                     if (res) {
+                        //redirect url
+                        if (form.selectedFolder && typeof form.selectedFolder.value === "number") {
+                            history.push(`/workspace/dashboard/${form.selectedFolder.value}/${replaceChar(form.selectedFolder.label)}/${res.data.id}/${replaceChar(form.name)}`, { folder_id: form.selectedFolder.value, workspace_id: res.data.id});
+                        } else {
+                            history.push(`/workspace/dashboard/${res.data.id}/${replaceChar(form.name)}`, { folder_id: null, workspace_id: res.data.id});
+                        }
                         if (attachedFiles.length) {
                             let formData = new FormData();
                             for (const i in attachedFiles) {
@@ -498,12 +504,7 @@ const CreateEditWorkspaceModal = (props) => {
                             created_at: res.data.topic.created_at,
                             updated_at: res.data.topic.created_at,
                         }
-                        //redirect url
-                        if (form.selectedFolder && typeof form.selectedFolder.value === "number") {
-                            history.push(`/workspace/dashboard/${form.selectedFolder.value}/${replaceChar(form.selectedFolder.label)}/${res.data.id}/${replaceChar(form.name)}`);
-                        } else {
-                            history.push(`/workspace/dashboard/${res.data.id}/${replaceChar(form.name)}`);
-                        }
+                        
                         dispatch(setActiveTopic(newWorkspace));
 
                         toaster.success(
@@ -805,9 +806,6 @@ const CreateEditWorkspaceModal = (props) => {
         }
         return true;
     };
-
-    console.log(userOptions);
-    console.log(form.selectedUsers);
 
     return (
       <Modal innerRef={refs.container} isOpen={modal} toggle={toggle} centered size="lg" onOpened={onOpened}>
