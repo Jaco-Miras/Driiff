@@ -997,6 +997,24 @@ export default (state = INITIAL_STATE, action) => {
         return state;
       }
     }
+    case "LEAVE_WORKSPACE": {
+      let updatedWorkspaces = { ...state.workspaces };
+      if (updatedWorkspaces.hasOwnProperty(action.data.workspace_id)) {
+        updatedWorkspaces[action.data.workspace_id].members = updatedWorkspaces[action.data.workspace_id].members.filter((m) => m.id !== state.user.id);
+        updatedWorkspaces[action.data.workspace_id].member_ids = updatedWorkspaces[action.data.workspace_id].member_ids.filter((id) => id !== state.user.id);
+      }
+      return  {
+        ...state,
+        workspaces: updatedWorkspaces,
+        activeTopic: state.activeTopic && state.activeTopic.id === action.data.workspace_id ? 
+        {
+          ...state.activeTopic,
+          members: state.activeTopic.members.filter((m) => m.id !== state.user.id),
+          member_ids: state.activeTopic.member_ids.filter((id) => id !== state.user.id)
+        } 
+        : state.activeTopic
+      }
+    }
     default:
       return state;
   }

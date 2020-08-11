@@ -136,3 +136,7 @@ export function incomingArchivedWorkspaceChannel(payload, callback) {
 export function incomingUnArchivedWorkspaceChannel(payload, callback) {
   return SimpleDispatchActionToReducer("UNARCHIVE_REDUCER", payload, callback);
 }
+
+export function leaveWorkspace(payload, callback) {
+  return SimpleDispatchActionToReducer("LEAVE_WORKSPACE", payload, callback);
+}
