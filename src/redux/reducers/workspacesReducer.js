@@ -312,7 +312,7 @@ export default (state = INITIAL_STATE, action) => {
     }
     case "JOIN_WORKSPACE_REDUCER": {
       let updatedWorkspaces = {...state.workspaces};
-      let activeTopic = {};
+      let activeTopic = null;
       if (Object.keys(updatedWorkspaces).length) {
         Object.values(updatedWorkspaces).forEach((ws) => {
           if (ws.channel.id === action.data.channel_id) {
@@ -325,10 +325,7 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         workspaces: updatedWorkspaces,
-        activeTopic: state.activeTopic && state.activeTopic.channel.id === action.data.channel_id ? {
-          ...state.activeTopic,
-          activeTopic
-        } : state.activeTopic
+        activeTopic: state.activeTopic && state.activeTopic.channel.id === action.data.channel_id && activeTopic ? activeTopic : state.activeTopic
       }
     }
     case "GET_DRAFTS_SUCCESS": {

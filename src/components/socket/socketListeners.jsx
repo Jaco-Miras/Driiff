@@ -783,7 +783,7 @@ class SocketListeners extends React.PureComponent {
                     //g_date: this.props.localizeDate(e.created_at.timestamp),
                     code: e.code,
                 };
-                data.author.first_name = data.author.name;
+                // data.author.first_name = data.author.name;
                 let payload = {
                     user: {...data.author, active: 1, type: "internal", has_accepted: true},
                     channel_id: e.channel_id,
