@@ -109,13 +109,14 @@ const WorkspacePostsPanel = (props) => {
     quote: _t("POST.QUOTE", "Quote"),
     mentionUser: _t("POST.MENTION_USER", "Mention user")
   };
-
+  let disableOptions = false;
+  if (workspace && workspace.active === 0) disableOptions = true; 
   if (posts === null) return <></>;
 
   return (
     <Wrapper className={`container-fluid h-100 fadeIn ${className}`}>
       <div className="row app-block">
-        <PostSidebar isMember={isMember} workspace={workspace} filter={filter} tag={tag} postActions={actions} count={count} counters={counters} onGoBack={handleGoback} dictionary={dictionary}/>
+        <PostSidebar disableOptions={disableOptions} isMember={isMember} workspace={workspace} filter={filter} tag={tag} postActions={actions} count={count} counters={counters} onGoBack={handleGoback} dictionary={dictionary}/>
         <div className="col-md-9 app-content">
           <div className="app-content-overlay" />
           <PostFilterSearchPanel activeSort={sort} workspace={workspace} search={search} dictionary={dictionary}/>
@@ -136,7 +137,7 @@ const WorkspacePostsPanel = (props) => {
               {post ? (
                 <div className="card card-body app-content-body mb-4">
                   <PostDetailWrapper className="fadeBottom">
-                    <PostDetail post={post} postActions={actions} user={user} history={history} onGoBack={handleGoback} workspace={workspace} isMember={isMember} dictionary={dictionary}/>
+                    <PostDetail post={post} postActions={actions} user={user} history={history} onGoBack={handleGoback} workspace={workspace} isMember={isMember} dictionary={dictionary} disableOptions={disableOptions}/>
                   </PostDetailWrapper>
                 </div>
               ) : (
@@ -156,7 +157,7 @@ const WorkspacePostsPanel = (props) => {
                     <ul className="list-group list-group-flush ui-sortable fadeIn">
                       {posts &&
                         posts.map((p) => {
-                          return <PostItemPanel key={p.id} post={p} postActions={actions} dictionary={dictionary}/>;
+                          return <PostItemPanel key={p.id} post={p} postActions={actions} dictionary={dictionary} disableOptions={disableOptions}/>;
                         })}
                     </ul>
                   </div>

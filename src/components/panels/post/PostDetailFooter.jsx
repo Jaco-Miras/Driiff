@@ -130,10 +130,27 @@ const FileNames = styled.div`
   padding: 5px 45px;
 `;
 
+const ArchivedDiv = styled.div`
+  width: 100%;
+  text-align: center;
+  padding: 15px 10px;
+  h4 {
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    alignt-items: center;
+  }
+`;
+
+const Icon = styled(SvgIconFeather)`
+  margin-right: 6px;
+  width: 20px;
+`;
+
 const PostDetailFooter = (props) => {
   const { className = "", onShowFileDialog, dropAction, post, parentId = null, commentActions,
           userMention = null, handleClearUserMention = null, commentId = null, innerRef = null,
-          workspace, isMember
+          workspace, isMember, disableOptions
   } = props;
 
   const dispatch = useDispatch();
@@ -204,11 +221,19 @@ const PostDetailFooter = (props) => {
   return (
     <Wrapper className={`post-detail-footer card-body ${className}`}>
       {
+        disableOptions && 
+        <ArchivedDiv>
+          <h4>
+            <Icon icon="archive" /> This is an archived workspace
+          </h4>
+        </ArchivedDiv>
+      }
+      {
         <Dflex className="d-flex pr-2 pl-2">
           <CommentQuote commentActions={commentActions} commentId={commentId} />
         </Dflex>
       }
-      {isMember && (
+      {isMember && !disableOptions && (
         <>
           <Dflex className="d-flex align-items-center">
             {post.is_read_only === 1 ? (
@@ -250,7 +275,7 @@ const PostDetailFooter = (props) => {
           <Dflex></Dflex>
         </>
       )}
-      {isMember === false && workspace !== null && (
+      {isMember === false && workspace !== null && !disableOptions && (
         <Dflex className="channel-viewing">
           <div className="channel-name">You are viewing #{workspace.name}</div>
           <div className="channel-action">

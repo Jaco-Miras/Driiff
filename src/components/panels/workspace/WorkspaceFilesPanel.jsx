@@ -19,7 +19,7 @@ const CreateFolderLabel = styled.div`
 `;
 
 const WorkspaceFilesPanel = (props) => {
-  const {className = "", isMember} = props;
+  const {className = "", isMember, workspace} = props;
 
   const dispatch = useDispatch();
   const history = useHistory();
@@ -32,6 +32,9 @@ const WorkspaceFilesPanel = (props) => {
   const refs = {
     dropZone: useRef(null),
   };
+
+  let disableOptions = false;
+  if (workspace && workspace.active === 0) disableOptions = true; 
 
   const handleFilterFile = (e) => {
     if (params.hasOwnProperty("fileFolderId")) {
@@ -200,6 +203,7 @@ const WorkspaceFilesPanel = (props) => {
           folders={folders}
           activeFolder={folder}
           dictionary={dictionary}
+          disableOptions={disableOptions}
         />
         <div className="col-md-9 app-content mb-4">
           <div className="app-content-overlay" />
@@ -216,6 +220,7 @@ const WorkspaceFilesPanel = (props) => {
             handleAddEditFolder={handleAddEditFolder}
             folders={folders}
             dictionary={dictionary}
+            disableOptions={disableOptions}
           />
           <FilesBody
             dropZoneRef={refs.dropZone}
@@ -232,6 +237,7 @@ const WorkspaceFilesPanel = (props) => {
             wsFiles={wsFiles}
             handleAddEditFolder={handleAddEditFolder}
             dictionary={dictionary}
+            disableOptions={disableOptions}
           />
         </div>
       </div>

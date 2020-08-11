@@ -19,12 +19,13 @@ const Icon = styled(SvgIconFeather)`
 `;
 
 const PostBody = (props) => {
-  const { post, postActions, dictionary } = props;
+  const { post, postActions, dictionary, disableOptions } = props;
 
   const [star, setStar] = useState(post.is_favourite);
   const { localizeDate } = useTimeFormat();
 
   const handleStarPost = () => {
+    if (disableOptions) return;
     postActions.starPost(post);
     setStar(!star);
   };
@@ -57,7 +58,7 @@ const PostBody = (props) => {
           <PostBadge post={post} isBadgePill={true} dictionary={dictionary}/>
           {post.files.length > 0 && <Icon className="mr-2" icon="paperclip" />}
           <Icon className="mr-2" onClick={handleStarPost} icon="star" fill={star ? "#ffc107" : "none"} stroke={star ? "#ffc107" : "currentcolor"} />
-          <Icon className="mr-2" onClick={handleArchivePost} icon="archive" />
+          { !disableOptions && <Icon className="mr-2" onClick={handleArchivePost} icon="archive" /> }
           <span className="text-muted">{localizeDate(post.created_at.timestamp, "LT")}</span>
         </div>
       </div>

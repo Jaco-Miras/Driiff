@@ -5,7 +5,7 @@ import { FileListItem } from "../../list/file/item";
 const Wrapper = styled.div``;
 
 const PopularFiles = (props) => {
-  const { className = "", wsFiles, actions } = props;
+  const { className = "", wsFiles, actions, disableOptions } = props;
 
   // const files = [
   //     {
@@ -40,7 +40,7 @@ const PopularFiles = (props) => {
         {wsFiles &&
           wsFiles.popular_files.length > 0 &&
           wsFiles.popular_files.map((id) => {
-            return <FileListItem key={id} className="col-xl-3 col-lg-4 col-md-6 col-sm-12" file={wsFiles.files[id]} actions={actions} />;
+            return <FileListItem key={id} className="col-xl-3 col-lg-4 col-md-6 col-sm-12" file={wsFiles.files[id]} actions={actions} disableOptions={disableOptions}/>;
           })}
       </div>
     </Wrapper>

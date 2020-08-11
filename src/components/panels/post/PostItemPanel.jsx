@@ -53,19 +53,21 @@ const Icon = styled(SvgIconFeather)`
 
 const PostItemPanel = (props) => {
   const user = useSelector((state) => state.session.user);
-  const { className = "", post, postActions, dictionary } = props;
+  const { className = "", post, postActions, dictionary, disableOptions } = props;
 
   const { starPost, markPost, openPost, archivePost, markAsRead, markAsUnread, sharePost, snoozePost, followPost } = postActions;
 
   const handleMarkDone = (e) => {
     e.preventDefault();
     e.stopPropagation();
+    if (disableOptions) return;
     markPost(post);
   };
 
   const handleStarPost = (e) => {
     e.preventDefault();
     e.stopPropagation();
+    if (disableOptions) return;
     starPost(post);
   };
 
@@ -78,7 +80,7 @@ const PostItemPanel = (props) => {
   return (
     <Wrapper className={`list-group-item post-item-panel ${className}`} onClick={() => openPost(post)}>
       <div className="custom-control custom-checkbox custom-checkbox-success">
-        <CheckBox name="test" checked={post.is_mark_done} onClick={handleMarkDone} />
+        <CheckBox name="test" checked={post.is_mark_done} onClick={handleMarkDone} disabled={disableOptions}/>
       </div>
       <div>
         <Icon className="mr-2" icon="star" onClick={handleStarPost} stroke={post.is_favourite ? "#ffc107" : "currentcolor"} fill={post.is_favourite ? "#ffc107" : "none"} />
@@ -96,11 +98,11 @@ const PostItemPanel = (props) => {
           <div className="pl-3 d-flex align-items-center">
             <PostBadge post={post} dictionary={dictionary}/>
             {post.users_responsible.length > 0 && <AvatarGroup users={post.users_responsible} />}
-            <Icon icon="archive" onClick={handleArchivePost} />
+            { !disableOptions && <Icon icon="archive" onClick={handleArchivePost} /> }
           </div>
         </div>
       </div>
-      {post.type !== "draft_post" && (
+      {post.type !== "draft_post" && !disableOptions && (
         <MoreOptions className="ml-2" item={post} width={170} moreButton={"more-vertical"}>
           <div onClick={() => markAsRead(post, true)}>{dictionary.markAsRead}</div>
           <div onClick={() => markAsUnread(post, true)}>{dictionary.markAsUnread}</div>

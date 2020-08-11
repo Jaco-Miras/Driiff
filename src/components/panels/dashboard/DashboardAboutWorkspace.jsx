@@ -147,7 +147,7 @@ const DashboardAboutWorkspace = (props) => {
     <Wrapper className={`dashboard-about-workspace card ${className}`}>
       <div className={`bg-overlay ${showMore === null ? "" : showMore === true ? "show" : "hide"}`} />
       <div className="card-body">
-        <h5 className="card-title">{dictionary.aboutThisWorkspace} {isMember === true && !isExternal && <SvgIconFeather icon="edit" onClick={onEditClick} />}</h5>
+        <h5 className="card-title">{dictionary.aboutThisWorkspace} {isMember === true && !isExternal && workspace.active === 1 && <SvgIconFeather icon="edit" onClick={onEditClick} />}</h5>
         {workspace && (
           <>
             <DashboardDescriptionContainer className={showMore === null ? "" : showMore === true ? "show" : "hide"}>

@@ -7,6 +7,7 @@ const Wrapper = styled.div`
   cursor: pointer;
   padding: 0.75rem 1.5rem;
   border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+  opacity: ${props => props.disabled ? ".5" : "1"};
   .dropdown-menu {
     width: 90%;
     left: 5%;
@@ -27,10 +28,11 @@ const isLocalhost = Boolean(
 
 const GoogleDrive = (props) => {
 
-    const {className = "", onChange} = props;
+    const {className = "", onChange, disableOptions} = props;
 
     const [show, setShow] = useState(false);
     const toggle = () => {
+        if (disableOptions) return;
         setShow(!show);
     };
 
@@ -41,7 +43,7 @@ const GoogleDrive = (props) => {
         }
     };
     return (
-        <Wrapper className={`google-drive dropdown ${className}`} onClick={toggle}>
+        <Wrapper className={`google-drive dropdown ${className}`} onClick={toggle} disabled={disableOptions}>
             <SvgIconFeather className="mr-2" icon="gdrive" viewBox="0 0 512 512" height="20" width="15" fill="#000"
                             opacity=".8"/> Google Drive
             <div className={`dropdown-menu ${show ? "show" : ""}`}>

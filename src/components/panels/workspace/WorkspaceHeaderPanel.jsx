@@ -259,7 +259,7 @@ const WorspaceHeaderPanel = (props) => {
                         {activeTopic.name}
                       </SubWorkspaceName>
                     </li>
-                    <li className="nav-item">{ !isExternal && <SettingsLink/> }</li>
+                    <li className="nav-item">{ !isExternal && activeTopic.active === 1 && <SettingsLink/> }</li>
                   </>
               ) : (
                 <>
@@ -279,7 +279,7 @@ const WorspaceHeaderPanel = (props) => {
                       {activeTopic.name}
                     </SubWorkspaceName>
                   </li>
-                  <li className="nav-item">{!isExternal && <SettingsLink/>}</li>
+                  <li className="nav-item">{!isExternal && activeTopic.active === 1 && <SettingsLink/>}</li>
                 </>
               )}
               <li className="nav-item-last">
@@ -294,12 +294,12 @@ const WorspaceHeaderPanel = (props) => {
                   })} */}
                 </div>
                 {activeTopic.member_ids.includes(user.id) && !isExternal ? (
-                  <button onClick={handleEditWorkspace} className="btn btn-primary">
+                  <button onClick={handleEditWorkspace} className="btn btn-primary" disabled={activeTopic.active === 0}>
                     <SvgIconFeather icon="user-plus"/>
                     Invite
                   </button>
                 ) : !isExternal ? (
-                  <button onClick={handleJoinWorkspace} className="btn btn-primary">
+                  <button onClick={handleJoinWorkspace} className="btn btn-primary" disabled={activeTopic.active === 0}>
                     <SvgIconFeather icon="user-plus"/>
                     Join
                   </button>
