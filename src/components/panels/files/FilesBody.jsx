@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import styled from "styled-components";
-import { useRouteMatch } from "react-router-dom";
-import { replaceChar } from "../../../helpers/stringFormatter";
+import {useRouteMatch} from "react-router-dom";
+import {replaceChar} from "../../../helpers/stringFormatter";
 import {useSelector} from "react-redux";
 import {SvgEmptyState, SvgIconFeather} from "../../common";
 import {DropDocument} from "../../dropzone/DropDocument";
@@ -90,8 +90,10 @@ const FilesBody = (props) => {
   };
 
   const handleShowDropZone = () => {
-    if (!showDropZone) {
-      setShowDropZone(true);
+    if (filter !== "removed") {
+      if (!showDropZone) {
+        setShowDropZone(true);
+      }
     }
   };
 
