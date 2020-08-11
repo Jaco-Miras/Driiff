@@ -2,7 +2,7 @@
 
 # Staging enviorement
 
-[demo24.drevv.com](demo24.drevv.com)
+
 
 # Driff development
 
@@ -30,9 +30,12 @@ jessryll@makedevelopment.com
 devpassword
 ```
 
-## Test environment
+## Test and staging enviorment
 
-The test environment is located at [dev.drevv.com](https://dev.drevv.com/)
+[Test enviorment](https://dev24admin.drevv.com/login)
+[Staging enviorment](https://demo24.drevv.com/workspace/chat)
+
+
 
 ## Available Scripts
 

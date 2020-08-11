@@ -216,7 +216,7 @@ const FilesBody = (props) => {
                   )}
 
                   {folder && folder.search && (
-                    <FilesBreadcrumb folder={folder} history={history} dictionary={dictionary} folders={folders} />
+                    <FilesBreadcrumb folder={folder} history={history} dictionary={dictionary} folders={folders} workspaceID={params.workspaceId} />
                   )}
 
                 {
