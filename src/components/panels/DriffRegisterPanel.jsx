@@ -5,8 +5,7 @@ import styled from "styled-components";
 import {isIPAddress} from "../../helpers/commonFunctions";
 import {SvgIcon} from "../common";
 import {InputFeedback} from "../forms";
-import {usePageLoader} from "../hooks";
-import useDriffActions from "../hooks/useDriffActions";
+import {useDriffActions} from "../hooks";
 
 const Wrapper = styled.div`
   margin: 50px auto;
@@ -30,7 +29,6 @@ const Wrapper = styled.div`
 const DriffRegisterPanel = (props) => {
   const {className = "", setRegisteredDriff} = props;
   const {REACT_APP_localDNSName} = process.env;
-  const pageLoader = usePageLoader();
   const driffActions = useDriffActions();
   const history = useHistory();
   const [loading, setLoading] = useState(false);

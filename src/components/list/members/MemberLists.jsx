@@ -22,7 +22,7 @@ const MembersLists = (props) => {
   const afterFiveMembers = members.slice(5);
 
   return (
-    <MembersListContainer className={"pr-3 d-flex"}>
+    <MembersListContainer className={"d-flex"}>
       {
         firstFiveMembers.map((m, i) => {
             return <StyledAvatar id={m.id} firstUser={i === 0} className="chat-members" key={m.id}
@@ -31,7 +31,7 @@ const MembersLists = (props) => {
       }
       {
         afterFiveMembers.length != null && afterFiveMembers[0] && <PlusRecipients recipients={afterFiveMembers}></PlusRecipients>
-      }    
+      }
     </MembersListContainer>
   );
 };

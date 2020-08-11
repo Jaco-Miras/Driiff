@@ -23,41 +23,12 @@ const GuestLayout = (props) => {
 
   const location = useLocation();
   const driffActions = useDriffActions();
-  const [title, setTitle] = useState("Sign in");
-
-  useEffect(() => {
-    document.querySelector("body").classList.add("form-membership");
-
-    //eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
-    switch (location.pathname) {
-      case "/magic-link":
-        setTitle("Magic link");
-        break;
-      case "/driff-register":
-        setTitle("Driff registration");
-        break;
-      case "/request-form":
-        setTitle(`Accept your invitation to ${driffActions.getName()}`);
-        break;
-      case "/reset-password":
-        setTitle("Reset password");
-        break;
-      case "/register":
-        setTitle("Create account");
-        break;
-      default:
-        if (location.pathname.indexOf("/authenticate/") === 0) setTitle("Authentication");
-        else if (location.pathname.indexOf("/resetpassword/") === 0) setTitle("Update Password");
-        else setTitle("Sign in");
-    }
-  }, [location]);
-
   const {_t} = useTranslation();
 
+  const {setRegisteredDriff} = props;
+
   const dictionary = {
+    magicLink: _t("LOGIN.MAGIC_LINK", "Magic link"),
     rememberMe: _t("LOGIN.REMEMBER_ME", "Remember me"),
     resetPassword: _t("LOGIN.RESET_PASSWORD", "Reset password"),
     signIn: _t("LOGIN.SIGN_IN", "Sign in"),
@@ -75,6 +46,7 @@ const GuestLayout = (props) => {
     middleName: _t("REGISTER.MIDDLE_NAME", "Middle name"),
     lastName: _t("REGISTER.LAST_NAME", "Last name"),
     accept: _t("REGISTER.ACCEPT", "Accept"),
+    driffRegistration: _t("DRIFF.DRIFF_REGISTRATION", "Driff registration."),
     inviteUser: _t("DRIFF.INVITE", "Invite user"),
     companyName: _t("DRIFF.COMPANY_NAME", "Company name"),
     yourEmail: _t("DRIFF.YOUR_EMAIL", "Your email"),
@@ -83,6 +55,7 @@ const GuestLayout = (props) => {
     emailRequired: _t("FEEDBACK.EMAIL_REQUIRED", "Email is required."),
     passwordRequired: _t("FEEDBACK.PASSWORD_REQUIRED", "Password is required."),
     invalidEmail: _t("FEEDBACK.INVALID_EMAIL", "Invalid email format"),
+    yourNameRequired: _t("FEEDBACK.YOUR_NAME_REQUIRED", "Your name is required."),
     firstNameRequired: _t("FEEDBACK.FIRST_NAME_REQUIRED", "First name is required."),
     lastNameRequired: _t("FEEDBACK.LAST_NAME_REQUIRED", "Last name is required."),
     companyRequired: _t("FEEDBACK.COMPANY_REQUIRED", "Company name is required."),
@@ -90,7 +63,40 @@ const GuestLayout = (props) => {
     driffTaken: _t("FEEDBACK.DRIFF_TAKEN", "Driff is already taken"),
     emailNotFound: _t("FEEDBACK.EMAIL_NOT_FOUND", "Email not found."),
     notAllowedForExternal: _t("FEEDBACK.NOT_ALLOWED_FOR_EXTERNAL", "Not allowed for external users."),
+    thankYou: _t("FEEDBACK.THANK_YOU", "Thank you!"),
   };
+
+  const [title, setTitle] = useState(dictionary.signIn);
+
+  useEffect(() => {
+    document.querySelector("body").classList.add("form-membership");
+
+    //eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    switch (location.pathname) {
+      case "/magic-link":
+        setTitle(dictionary.magicLink);
+        break;
+      case "/driff-register":
+        setTitle(dictionary.driffRegistration);
+        break;
+      case "/request-form":
+        setTitle(`Accept your invitation to ${driffActions.getName()}`);
+        break;
+      case "/reset-password":
+        setTitle("Reset password");
+        break;
+      case "/register":
+        setTitle("Create account");
+        break;
+      default:
+        if (location.pathname.indexOf("/authenticate/") === 0) setTitle("Authentication");
+        else if (location.pathname.indexOf("/resetpassword/") === 0) setTitle("Update Password");
+        else setTitle("Sign in");
+    }
+  }, [location]);
 
   return (
     <Wrapper className="form-wrapper fadeIn">
@@ -98,7 +104,7 @@ const GuestLayout = (props) => {
         <SvgIcon icon={"driff-logo"} width="110" height="80"/>
       </div>
 
-      <h5>{title}</h5>
+      <h5 className="title">{title}</h5>
 
       <Switch>
         <Route path={"/login"} render={() => <LoginPanel dictionary={dictionary} {...props}/>}/>
@@ -107,7 +113,8 @@ const GuestLayout = (props) => {
         <Route path={"/reset-password"} render={() => <ResetPasswordPanel dictionary={dictionary} {...props}/>}/>
         <Route path={"/register"} render={() => <RegisterPanel dictionary={dictionary} {...props}/>}/>
         <Route path={"/request-form"} render={() => <ExternalRegisterPanel dictionary={dictionary} {...props}/>}/>
-        <Route path={"/driff-register"} render={() => <DriffCreatePanel dictionary={dictionary} {...props}/>}/>
+        <Route path={"/driff-register"} render={() => <DriffCreatePanel dictionary={dictionary}
+                                                                        setRegisteredDriff={setRegisteredDriff} {...props}/>}/>
       </Switch>
     </Wrapper>
   );

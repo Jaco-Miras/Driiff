@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, {useCallback, useEffect, useRef, useState} from "react";
 import styled from "styled-components";
 import {useToaster, useUserActions} from "../hooks";
 import {useHistory} from "react-router-dom";
@@ -47,68 +47,75 @@ const ExternalRegisterPanel = (props) => {
     message: {},
   });
 
-  const handleInputChange = (e) => {
-    setForm({
-      ...form,
+  const handleInputChange = useCallback((e) => {
+    e.persist();
+    setForm(prevState => ({
+      ...prevState,
       [e.target.name]: e.target.value,
-    });
-  };
+    }));
+
+    setFormResponse(prevState => ({
+      ...prevState,
+      valid: {
+        ...prevState.valid,
+        [e.target.name]: undefined
+      },
+      message: {
+        ...prevState.message,
+        [e.target.name]: undefined
+      },
+    }));
+  }, []);
 
   const _validateForm = () => {
-    let valid = true;
-    let errorData = {email: "", password: "", form: ""};
+    let valid = {};
+    let message = {};
 
     if (form.email === "") {
-      valid = false;
-      errorData = {...errorData, email: dictionary.emailRequired};
+      valid.email = false;
+      message.email = dictionary.emailRequired;
     } else if (!EmailRegex.test(form.email)) {
-      valid = false;
-      errorData = {...errorData, email: dictionary.invalidEmail};
+      valid.email = false;
+      message.email = dictionary.invalidEmail;
+    } else {
+      valid.email = true;
     }
 
     if (form.first_name === "") {
-      valid = false;
-      errorData = {...errorData, first_name: dictionary.firstNameRequired};
+      valid.first_name = false;
+      message.first_name = dictionary.firstNameRequired;
+    } else {
+      valid.first_name = true;
+    }
+
+    if (form.middle_name !== "") {
+      valid.middle_name = true;
     }
 
     if (form.last_name === "") {
-      valid = false;
-      errorData = {...errorData, last_name: dictionary.lasttNameRequired};
+      valid.last_name = false;
+      message.last_name = dictionary.lastNameRequired;
+    } else {
+      valid.last_name = true;
     }
 
     if (form.password === "") {
-      valid = false;
-      errorData = {...errorData, password: dictionary.passwordRequired};
+      valid.password = false;
+      message.password = dictionary.passwordRequired;
+    } else {
+      valid.password = true;
     }
 
     setFormResponse({
-      valid: {
-        first_name: errorData.first_name === "",
-        last_name: errorData.last_name === "",
-        email: errorData.email === "",
-        password: errorData.password === "",
-      },
-      message: {
-        first_name: errorData.first_name,
-        last_name: errorData.last_name,
-        email: errorData.email,
-        password: errorData.password
-      },
+      valid: valid,
+      message: message,
     });
 
-    return valid;
-  }
-
-  const resetFormResponse = () => {
-    setFormResponse({
-      valid: {},
-      message: {}
-    });
+    return !Object.values(valid).some(v => v === false);
   }
 
   const handleAccept = (e) => {
     e.preventDefault();
-    resetFormResponse();
 
     if (!_validateForm() || loading) {
       return;
@@ -174,14 +181,14 @@ const ExternalRegisterPanel = (props) => {
         <FormInput
           onChange={handleInputChange} name="middle_name" type="text"
           placeholder={dictionary.middleName}
-          isValid={formResponse.valid.middleName} feedback={formResponse.message.middleName}
+          isValid={formResponse.valid.middle_name} feedback={formResponse.message.middle_name}
         />
       </FormGroup>
       <FormGroup className="form-group">
         <FormInput
           onChange={handleInputChange} name="last_name" type="text"
           placeholder={dictionary.lastName}
-          isValid={formResponse.valid.lastName} feedback={formResponse.message.lastName}
+          isValid={formResponse.valid.last_name} feedback={formResponse.message.last_name}
         />
       </FormGroup>
       <FormGroup className="form-group text-left">
