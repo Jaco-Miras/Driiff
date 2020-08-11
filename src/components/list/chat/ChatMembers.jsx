@@ -22,7 +22,7 @@ const ChatMembers = (props) => {
         ? [
             firstFiveMembers.map((m, i) => {
               return <StyledAvatar id={m.id} firstUser={i === 0} className="chat-members" key={m.id}
-                                   name={m.name ? m.name : m.email} imageLink={m.profile_image_link}/>;
+                                   name={m.name ? m.name : m.email} imageLink={m.profile_image_link} hasAccepted={m.has_accepted}/>;
             }),
 
             afterFiveMembers.length != null && afterFiveMembers[0] && <PlusRecipients recipients={afterFiveMembers}></PlusRecipients>,
@@ -30,7 +30,7 @@ const ChatMembers = (props) => {
         : page === "workspace" && usersTyping.length
         ? usersTyping.map((m, i) => {
             return <StyledAvatar userId={m.id} firstUser={i === 0} className="chat-members" key={m.id}
-                                 name={m.name ? m.name : m.email} imageLink={m.profile_image_link}/>;
+                                 name={m.name ? m.name : m.email} imageLink={m.profile_image_link} hasAccepted={m.has_accepted}/>;
           })
         : null}
     </ChatMembersContainer>

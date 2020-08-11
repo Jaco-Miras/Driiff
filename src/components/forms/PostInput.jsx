@@ -73,6 +73,9 @@ const StyledQuillEditor = styled(QuillEditor)`
           background: #7a1b8b;
           color: #fff;
           cursor: pointer;
+          span.all-pic > img {
+            filter: brightness(0) saturate(100%) invert(1);
+          }
         }
       }
     }
