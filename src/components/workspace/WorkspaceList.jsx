@@ -104,10 +104,10 @@ const TopicNav = styled.ul`
 `;
 
 const WorkspaceList = (props) => {
-  const { className = "", actions, show = true, folder, workspace, workspaces } = props;
+  const { className = "", actions, show = true, folder, history, workspace, workspaces } = props;
 
   const dispatch = useDispatch();
-  const history = useHistory();
+  // const history = useHistory();
   const ref = {
     container: useRef(),
     arrow: useRef(),
@@ -122,7 +122,7 @@ const WorkspaceList = (props) => {
   const [showTopics, setShowTopics] = useState(null);
   const [maxHeight, setMaxHeight] = useState(0);
   const [selected, setSelected] = useState(false);
-  const [prevTopics, setPrevTopics] = useState(null);
+  const [triggerFocus, setTriggerFocus] = useState(null);
 
   const handleShowWorkspaceModal = () => {
     let payload = {
@@ -170,15 +170,24 @@ const WorkspaceList = (props) => {
     if (workspaces.length && workspace !== null) {
       setSelected(folder.workspace_ids.some((id) => id === workspace.id))
     }
-  }, [workspace, workspaces, folder.workspace_ids])
-  // useEffect(() => {
-  //   if (prevTopics !== workspace.topics) {
-  //     if (prevTopics !== null) {
-  //       setMaxHeight(null);
-  //     }
-  //     setPrevTopics(workspace.topics);
-  //   }
-  // }, [workspace.topics]);
+  }, [workspace, workspaces, folder.workspace_ids]);
+
+  const onShowTopics = (focusId) => {
+    if (showTopics === null || showTopics === false) {
+      setGeneralSetting({
+        workspace_open_folder: {
+          ...workspace_open_folder,
+          [folder.id]: folder.id,
+        },
+      });
+      setShowTopics((prevState) => !prevState);
+    }
+    setTriggerFocus(focusId);
+  };
+
+  const handleResetFocus = () => {
+    setTriggerFocus(null);
+  }
   
   return (
     
@@ -203,7 +212,7 @@ const WorkspaceList = (props) => {
       <TopicNav ref={ref.nav} maxHeight={maxHeight} className={showTopics === null ? "" : showTopics ? "enter-active" : "leave-active"}>
         {folder.workspace_ids.length > 0 && Object.keys(workspaces).length > 0 &&
           workspaces.map((ws) => {
-            return <TopicList key={ws.id} topic={ws} selected={workspace && workspace.id === ws.id} actions={actions}/>;
+            return <TopicList key={ws.id} topic={ws} onShowTopics={onShowTopics} onResetFocus={handleResetFocus} triggerFocus={triggerFocus} showTopics={showTopics} history={history} selected={workspace && workspace.id === ws.id} actions={actions}/>;
           })
         }
         <li className="nav-action" onClick={handleShowWorkspaceModal}>

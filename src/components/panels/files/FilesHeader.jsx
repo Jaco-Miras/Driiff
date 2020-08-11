@@ -25,7 +25,7 @@ const Wrapper = styled.div`
 
 const FilesHeader = (props) => {
   const { className = "", isMember, dropZoneRef, onSearchChange, onSearch, onEnter, wsFiles,
-          handleAddEditFolder, folders, history, params, clearFilter, dictionary
+          handleAddEditFolder, folders, history, params, clearFilter, dictionary, disableOptions
   } = props;
 
   const handleClickAdd = () => {
@@ -95,7 +95,7 @@ const FilesHeader = (props) => {
     <Wrapper className={`files-header app-action ${className}`}>
       <div className="action-left">
         <ul className="list-inline">
-          {isMember === true && (
+          {isMember === true && !disableOptions && (
             <li className="list-inline-item mb-0">
               <ButtonDropdown dropdown={addDropDown} />
             </li>

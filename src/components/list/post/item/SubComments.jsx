@@ -7,7 +7,8 @@ const Wrapper = styled.ul`
 `;
 
 const SubComments = (props) => {
-  const { className = "", comments, post, commentActions, parentId, user, onShowFileDialog, dropAction, parentShowInput, workspace, isMember, dictionary } = props;
+  const { className = "", comments, post, commentActions, parentId, user, onShowFileDialog, dropAction, 
+          parentShowInput, workspace, isMember, dictionary, disableOptions } = props;
 
   return (
     comments && (
@@ -29,6 +30,7 @@ const SubComments = (props) => {
               dropAction={dropAction}
               workspace={workspace} isMember={isMember}
               dictionary={dictionary}
+              disableOptions={disableOptions}
             />
           );
         })}

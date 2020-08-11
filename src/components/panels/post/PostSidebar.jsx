@@ -32,7 +32,7 @@ const Wrapper = styled.div`
 const MobileOverlayFilter = styled.div``;
 
 const PostSidebar = (props) => {
-  const { workspace, isMember, filter, tag, count, counters, postActions, onGoBack, dictionary } = props;
+  const { workspace, isMember, filter, tag, count, counters, postActions, onGoBack, dictionary, disableOptions } = props;
 
   const handleShowWorkspacePostModal = () => {
     postActions.showModal("create");
@@ -49,7 +49,7 @@ const PostSidebar = (props) => {
         <div className="app-sidebar-menu" tabIndex="2">
           {isMember && (
             <div className="card-body create-new-post-wrapper">
-              <button className="btn btn-primary btn-block" onClick={handleShowWorkspacePostModal}>
+              <button className="btn btn-primary btn-block" onClick={handleShowWorkspacePostModal} disabled={disableOptions}>
                 {dictionary.createNewPost}
               </button>
             </div>

@@ -29,7 +29,7 @@ const Wrapper = styled(MoreOptions)`
 `;
 
 const FileOptions = (props) => {
-  const { className = "", file, scrollRef = null, actions, isMember, forceDelete } = props;
+  const { className = "", file, scrollRef = null, actions, isMember, forceDelete, disableOptions } = props;
   const toaster = useToaster();
 
   //const [showMoreOptions, setShowMoreOptions] = useState(false);
@@ -90,7 +90,7 @@ const FileOptions = (props) => {
       <div onClick={handleDownload}>Download</div>
       <div onClick={handleMoveTo}>Move to</div>
       <div onClick={handleRename}>Rename</div>
-      <div onClick={handleDelete}>Remove</div>
+      { !disableOptions && <div onClick={handleDelete}>Remove</div> }
     </Wrapper>
   );
 };
