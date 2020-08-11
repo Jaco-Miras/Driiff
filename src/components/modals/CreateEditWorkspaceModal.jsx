@@ -6,7 +6,7 @@ import styled from "styled-components";
 import {EmailRegex, replaceChar} from "../../helpers/stringFormatter";
 import {deleteWorkspaceFiles, setPendingUploadFilesToWorkspace} from "../../redux/actions/fileActions";
 import {addToModals, clearModal} from "../../redux/actions/globalActions";
-import {createWorkspace, fetchTimeline, setActiveTopic, updateWorkspace} from "../../redux/actions/workspaceActions";
+import {createWorkspace, fetchTimeline, leaveWorkspace, setActiveTopic, updateWorkspace} from "../../redux/actions/workspaceActions";
 import {FileAttachments} from "../common";
 import {DropDocument} from "../dropzone/DropDocument";
 import {CheckBox, DescriptionInput, FolderSelect, InputFeedback, PeopleSelect} from "../forms";
@@ -440,6 +440,9 @@ const CreateEditWorkspaceModal = (props) => {
                 dispatch(fetchTimeline({topic_id: item.id}));
             };
             dispatch(updateWorkspace(payload, cb));
+            if (removed_members.some((id) => id === user.id)) {
+                dispatch(leaveWorkspace({workspace_id: item.id, channel_id: item.channel.id}));
+            }
         } else {
             console.log(payload, form)
             dispatch(
