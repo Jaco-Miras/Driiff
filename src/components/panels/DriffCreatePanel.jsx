@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useRef, useState} from "react";
-import {Link, useHistory} from "react-router-dom";
+import {useHistory} from "react-router-dom";
 import styled from "styled-components";
 import {FormInput, InputFeedback, PasswordInput} from "../forms";
 import {EmailRegex} from "../../helpers/stringFormatter";
@@ -166,7 +166,7 @@ const DriffCreatePanel = (props) => {
                 driffActions.storeName(form.slug, true);
                 setRegisteredDriff(form.slug);
               } else {
-                setLoginLink(`${process.env.REACT_APP_apiProtocol}${form.name}.${process.env.REACT_APP_localDNSName}/login`);
+                setLoginLink(`${REACT_APP_apiProtocol}${form.slug}.${REACT_APP_localDNSName}/login`);
               }
             }
           });
@@ -200,14 +200,14 @@ const DriffCreatePanel = (props) => {
         registered ? <>
 
             Your driff <b><a
-            href={`${REACT_APP_apiProtocol}${form.slug}.${REACT_APP_localDNSName}`}>{form.slug}.{REACT_APP_localDNSName}</a></b> is
+            href={loginLink}>{form.slug}.{REACT_APP_localDNSName}</a></b> is
             ready.
 
             <hr/>
 
-            <Link className={"btn btn-outline-light btn-sm"} to={loginLink}>
+            <a href={loginLink} className={"btn btn-outline-light btn-sm"}>
               {dictionary.signIn}
-            </Link>
+            </a>
             <ReactConfetti recycle={false}/>
           </> :
           <>
