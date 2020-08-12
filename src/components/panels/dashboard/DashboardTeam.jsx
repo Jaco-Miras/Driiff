@@ -58,15 +58,14 @@ const DashboardTeam = (props) => {
 
     //eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  const hideOptions = isMember && isExternal;
   
   if (!workspace) return <></>;
-
+  const hideOptions = (isMember && isExternal) || workspace.active === 0;
   return (
     <Wrapper className={`dashboard-team card ${className}`}>
       <div ref={assignRef} className="card-body">
         <h5 className="card-title">
-          {dictionary.team} {isMember === true && !isExternal && <SvgIconFeather onClick={onEditClick} icon="plus" />}
+          {dictionary.team} {isMember === true && !isExternal && workspace.active === 1 && <SvgIconFeather onClick={onEditClick} icon="plus" />}
         </h5>
 
         <ul className="list-group list-group-flush">

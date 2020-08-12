@@ -105,6 +105,7 @@ const useDriffActions = () => {
         if (res) {
           toaster.success("Driff successfully created.");
         }
+        callback(err, res);
       }));
     },
     [dispatch]

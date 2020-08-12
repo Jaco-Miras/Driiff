@@ -101,7 +101,9 @@ const Icon = styled(SvgIconFeather)`
 `;
 
 const Comment = (props) => {
-  const {className = "", comment, post, type = "main", user, commentActions, parentId, onShowFileDialog, dropAction, parentShowInput = null, workspace, isMember, dictionary } = props;
+  const { className = "", comment, post, type = "main", user, commentActions, parentId, onShowFileDialog, 
+          dropAction, parentShowInput = null, workspace, isMember, dictionary, disableOptions 
+        } = props;
   const refs = {
     input: useRef(null),
     body: useRef(null),
@@ -158,6 +160,7 @@ const Comment = (props) => {
   }, [inputFocus]);
 
   const handleReaction = () => {
+    if (disableOptions) return;
     let payload = {
       id: comment.id,
       reaction: "clap",
@@ -191,7 +194,7 @@ const Comment = (props) => {
                 <span>{comment.author.first_name}</span>
                 <span className="text-muted ml-1">{fromNow(comment.created_at.timestamp)}</span>
               </div>
-              {post.is_read_only !== 1 && (
+              {post.is_read_only !== 1 && !disableOptions && (
                   <MoreOptions scrollRef={refs.body.current} moreButton={"more-vertical"}>
                     {user.id === comment.author.id &&
                     <div onClick={() => commentActions.setToEdit(comment)}>{dictionary.editReply}</div>}
@@ -215,7 +218,7 @@ const Comment = (props) => {
                   className={comment.user_clap_count ? "mr-2 comment-reaction clap-true" : "mr-2 comment-reaction clap-false"}
                   icon="heart" onClick={handleReaction}/>
               {comment.clap_count > 0 ? comment.clap_count : null}
-              {post.is_read_only !== 1 && (
+              {post.is_read_only !== 1 && !disableOptions && (
                   <Reply className="ml-3" onClick={handleShowInput}>
                     {dictionary.comment}
                   </Reply>
@@ -235,6 +238,7 @@ const Comment = (props) => {
                 dropAction={dropAction}
                 workspace={workspace} isMember={isMember}
                 dictionary={dictionary}
+                disableOptions={disableOptions}
             />
         )}
         {showInput !== null && (
@@ -251,6 +255,7 @@ const Comment = (props) => {
                   onShowFileDialog={onShowFileDialog}
                   dropAction={dropAction}
                   workspace={workspace} isMember={isMember}
+                  disableOptions={disableOptions}
               />
             </InputWrapper>
         )}

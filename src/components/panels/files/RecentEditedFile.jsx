@@ -5,7 +5,7 @@ import { FileListItem } from "../../list/file/item";
 const Wrapper = styled.div``;
 
 const RecentEditedFile = (props) => {
-  const { className = "", wsFiles, actions } = props;
+  const { className = "", wsFiles, actions, disableOptions } = props;
 
   // const files = [{
   //     id: 1,
@@ -27,7 +27,7 @@ const RecentEditedFile = (props) => {
           wsFiles.recently_edited.length > 0 &&
           wsFiles.recently_edited.map((id) => {
             if (wsFiles.files.hasOwnProperty(id)) {
-              return <FileListItem key={id} className="col-xl-3 col-lg-4 col-md-6 col-sm-12" file={wsFiles.files[id]} actions={actions} />;
+              return <FileListItem key={id} className="col-xl-3 col-lg-4 col-md-6 col-sm-12" file={wsFiles.files[id]} actions={actions} disableOptions={disableOptions}/>;
             } else {
               return null;
             }

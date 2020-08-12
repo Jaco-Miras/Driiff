@@ -1,8 +1,8 @@
 import React from "react";
-import { useHistory, useRouteMatch } from "react-router-dom";
+import {useHistory, useRouteMatch} from "react-router-dom";
 import styled from "styled-components";
-import { Avatar, FileAttachments } from "../../../common";
-import { useTimeFormat } from "../../../hooks";
+import {Avatar, FileAttachments, SvgIconFeather} from "../../../common";
+import {useTimeFormat} from "../../../hooks";
 
 const Wrapper = styled.div`
   .title {
@@ -24,6 +24,22 @@ const Wrapper = styled.div`
     max-width: 100%;
   }
   .files {
+  }
+  .post-body {
+    max-height: 255px;
+    overflow: hidden;
+    position: relative;
+    
+    svg {
+      cursor:pointer;
+      cursor: hand;
+      position: absolute;
+      right: 6px;
+      color: #000;
+      bottom: 6px;
+      width: 16px;
+      height: 16px;
+    }
   }
 `;
 
@@ -55,8 +71,9 @@ const PostTimeline = (props) => {
         </h6>
         {data.body.replace(/<\/?[^>]+(>|$)/g, "") && (
           <span onClick={handleLinkClick}>
-            <div className="mb-3 border p-3 border-radius-1">
-              <div dangerouslySetInnerHTML={{ __html: data.body }} />
+            <div className="mb-3 border p-3 border-radius-1 post-body">
+              <SvgIconFeather icon="arrow-right"/>
+              <div dangerouslySetInnerHTML={{__html: data.body}}/>
             </div>
           </span>
         )}

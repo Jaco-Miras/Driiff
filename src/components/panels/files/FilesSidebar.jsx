@@ -69,7 +69,7 @@ const Icon = styled(SvgIconFeather)`
 
 const FileSidebar = (props) => {
     const { className = "", isMember, actions, filterFile, filter = "all", dropZoneRef, storageLimit = 25,
-            wsFiles, folders, activeFolder, clearFilter, params, dictionary } = props;
+            wsFiles, folders, activeFolder, clearFilter, params, dictionary, disableOptions } = props;
 
     const handleShowUploadModal = () => {
         if (dropZoneRef.current) {
@@ -98,7 +98,7 @@ const FileSidebar = (props) => {
             <div className="card bottom-modal-mobile_inner">
                 {isMember === true && (
                     <div className="card-body">
-                        <button className="btn btn-primary btn-block file-upload-btn" onClick={handleShowUploadModal}>
+                        <button className="btn btn-primary btn-block file-upload-btn" onClick={handleShowUploadModal} disabled={disableOptions}>
                             {dictionary.uploadFiles}
                         </button>
                         <form className="d-none" id="file-upload">
@@ -128,7 +128,7 @@ const FileSidebar = (props) => {
                                 </ul>
                             </Filter>
                         )}
-                        <GoogleDrive onChange={handleGoogleDriveSelect}/>
+                        <GoogleDrive onChange={handleGoogleDriveSelect} disableOptions={disableOptions}/>
                         <Filter onClick={filterFile} data-filter="recent" active={filter === "recent"}
                                 className="list-group-item d-flex align-items-center">
                             <Icon className="mr-2" icon="monitor"/>

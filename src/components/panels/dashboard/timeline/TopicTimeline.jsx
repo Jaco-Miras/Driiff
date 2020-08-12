@@ -20,7 +20,7 @@ const Wrapper = styled.div`
 
 const TopicTimeline = (props) => {
   const { className = "", data } = props;
-  const { todayOrYesterdayDate } = useTimeFormat();
+  const { fromNow } = useTimeFormat();
 
   return (
     <Wrapper className={`topic-timeline timeline-item ${className}`}>
@@ -30,7 +30,7 @@ const TopicTimeline = (props) => {
           <span className="action-text title font-weight-normal">
             {data.user.name} <strong>created {data.name} workspace</strong>
           </span>
-          <span className="text-muted font-weight-normal">{todayOrYesterdayDate(data.created_at.timestamp)}</span>
+          <span className="text-muted font-weight-normal">{fromNow(data.created_at.timestamp)}</span>
         </h6>
       </div>
     </Wrapper>

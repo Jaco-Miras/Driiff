@@ -8,6 +8,7 @@ import {HeaderProfileNavigation} from "../common";
 import {SettingsLink} from "../../workspace";
 import {joinWorkspace} from "../../../redux/actions/workspaceActions";
 import {useToaster} from "../../hooks";
+import {MemberLists} from "../../list/members";
 
 const NavBarLeft = styled.div`
   width: 100%;
@@ -47,7 +48,7 @@ const NavBar = styled.ul`
   align-items: center;
 
   li {
-    justify-content: center;
+    // justify-content: center;
     align-items: center;
     &.nav-item-last {
       flex-grow: 1;
@@ -179,7 +180,7 @@ const WorspaceHeaderPanel = (props) => {
           },
           (err, res) => {
             if (err) return;
-            toaster.success(<>You have joined <b>#${activeTopic.name}</b></>);
+            toaster.success(<>You have joined <b>#{activeTopic.name}</b></>);
         }
       )
     );
@@ -258,7 +259,7 @@ const WorspaceHeaderPanel = (props) => {
                         {activeTopic.name}
                       </SubWorkspaceName>
                     </li>
-                    <li className="nav-item">{ !isExternal && <SettingsLink/> }</li>
+                    <li className="nav-item">{ !isExternal && activeTopic.active === 1 && <SettingsLink/> }</li>
                   </>
               ) : (
                 <>
@@ -278,24 +279,27 @@ const WorspaceHeaderPanel = (props) => {
                       {activeTopic.name}
                     </SubWorkspaceName>
                   </li>
-                  <li className="nav-item">{!isExternal && <SettingsLink/>}</li>
+                  <li className="nav-item">{!isExternal && activeTopic.active === 1 && <SettingsLink/>}</li>
                 </>
               )}
               <li className="nav-item-last">
                 <div className="nav-item-avatars-wrap">
-                  {activeTopic.members.map((m, i) => {
+                  {
+                    <MemberLists members={activeTopic.members}/>
+                  }
+                  {/* {activeTopic.members.map((m, i) => {
                     return <StyledAvatar id={m.id} firstUser={i === 0} className="workspace-members" key={m.id}
                                          name={m.name ? m.name : m.email} imageLink={m.profile_image_link}
                                          hasAccepted={m.has_accepted}/>;
-                  })}
+                  })} */}
                 </div>
                 {activeTopic.member_ids.includes(user.id) && !isExternal ? (
-                  <button onClick={handleEditWorkspace} className="btn btn-primary">
+                  <button onClick={handleEditWorkspace} className="btn btn-primary" disabled={activeTopic.active === 0}>
                     <SvgIconFeather icon="user-plus"/>
                     Invite
                   </button>
                 ) : !isExternal ? (
-                  <button onClick={handleJoinWorkspace} className="btn btn-primary">
+                  <button onClick={handleJoinWorkspace} className="btn btn-primary" disabled={activeTopic.active === 0}>
                     <SvgIconFeather icon="user-plus"/>
                     Join
                   </button>

@@ -5,7 +5,7 @@ import Skeleton from "react-skeleton-loader";
 import Tooltip from "react-tooltip-lite";
 import styled from "styled-components";
 import departmentIcon from "../../assets/icon/teams/r/secundary.svg";
-import defaultIcon from "../../assets/icon/user/avatar/l/no_outline.png";
+import defaultIcon from "../../assets/icon/user/avatar/l/white_bg.png";
 import botIcon from "../../assets/img/gripp-bot.png";
 import {replaceChar} from "../../helpers/stringFormatter";
 import {SvgIconFeather} from "./SvgIcon";
@@ -116,7 +116,7 @@ const Avatar = (props) => {
       {isLoaded === false && <Skeleton borderRadius="50%" widthRandomness={0} heightRandomness={0} />}
       <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={name}>
         {
-          showInitials && !hasAccepted ?
+          showInitials && hasAccepted === false ?
             <Image
               show={true}
               className="rounded-circle"

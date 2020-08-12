@@ -1,9 +1,9 @@
-import React from "react";
-import {useHistory, useRouteMatch} from "react-router-dom";
-import {Badge} from "reactstrap";
+import React, { useEffect, useRef } from "react";
+import { useHistory, useRouteMatch } from "react-router-dom";
+import { Badge } from "reactstrap";
 import styled from "styled-components";
-import {SvgIconFeather} from "../common";
-import {replaceChar} from "../../helpers/stringFormatter";
+import { SvgIconFeather } from "../common";
+//import {replaceChar} from "../../helpers/stringFormatter";
 
 const TopicListWrapper = styled.li`
   cursor: pointer;
@@ -33,8 +33,9 @@ const Icon = styled(SvgIconFeather)`
 `;
 
 const TopicList = (props) => {
-  const { className = "", actions, selected, topic } = props;
+  const { className = "", actions, onResetFocus, onShowTopics, selected, showTopics, topic, triggerFocus } = props;
 
+  const workspaceRef = useRef();
   const history = useHistory();
   const route = useRouteMatch();
   const onWorkspace = route.url.startsWith("/workspace");
@@ -50,10 +51,28 @@ const TopicList = (props) => {
     actions.redirectTo(topic);
   };
 
+  useEffect(() => {
+    if (typeof history.location.state === "object") {
+      if (history.location.state && history.location.state.workspace_id === topic.id) {
+        onShowTopics(topic.id);
+        history.push(history.location.pathname, null);
+      }
+    }
+  }, [history.location.state]);
+
+  useEffect(() => {
+    if (triggerFocus && triggerFocus === topic.id && workspaceRef.current && showTopics) {
+      setTimeout(() => {
+        workspaceRef.current.scrollIntoView(true);
+      }, 1000)
+      onResetFocus();
+    }
+  }, [workspaceRef, showTopics, triggerFocus, topic]);
+
   let unread_count = topic.unread_chats + topic.unread_posts;
 
   return (
-      <TopicListWrapper className={`topic-list ${className}`} onClick={handleSelectTopic}
+      <TopicListWrapper ref={workspaceRef} className={`topic-list ${className}`} onClick={handleSelectTopic}
                         selected={selected && onWorkspace}>
         <div>
           {topic.name}

@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { osName } from "react-device-detect";
 import { useSelector } from "react-redux";
 import { Quill } from "react-quill";
+import defaultIcon from "../../assets/icon/user/avatar/l/white_bg.png";
 
 const useQuillModules = (mode, callback, mentionOrientation = "top", quillRef, members = []) => {
   const [modules, setModules] = useState({});
@@ -22,7 +23,7 @@ const useQuillModules = (mode, callback, mentionOrientation = "top", quillRef, m
   const handleSetModule = () => {
     const all = {
       id: require("shortid").generate(),
-      profile_image_link: require("../../assets/icon/teams/r/secundary.svg"),
+      profile_image_link: require("../../assets/img/svgs/workspace.svg"),
       value: "All",
       name: "All users in this channel",
       class: "all-pic",
@@ -49,7 +50,8 @@ const useQuillModules = (mode, callback, mentionOrientation = "top", quillRef, m
             value: user.first_name,
             id: user.id,
             type_id: user.id,
-            class: "user-pic",
+            class: "user-pic all-users",
+            profile_image_link: user.profile_image_link ? user.profile_image_link : defaultIcon
           });
         }),
         all,
@@ -85,6 +87,10 @@ const useQuillModules = (mode, callback, mentionOrientation = "top", quillRef, m
         renderItem: function (item, searchTerm) {
           let avatarStyling = "position: relative; width: 30px; height: 30px; min-width: 30px; min-height: 30px; border-radius: 50%; margin-right: 10px; z-index: 1; pointer-events: auto; border: none; overflow: hidden; cursor: pointer;";
           let avatarImgStyling = "width: 100%; height: 100%; position: absolute; left: 0; top: 0;";
+          if (typeof item.id === "string") {
+            avatarStyling = "position: relative; width: 24px; height: 24px; min-width: 24px; min-height: 24px; border-radius: 50%; margin-right: 10px; z-index: 1; pointer-events: auto; border: none; overflow: hidden; cursor: pointer;";
+          }
+          
           let listDisplay =
             "<span class=\"" +
             item.class +

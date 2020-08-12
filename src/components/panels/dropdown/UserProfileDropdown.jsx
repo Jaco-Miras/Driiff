@@ -29,21 +29,26 @@ const UserProfileDropdown = (props) => {
 
   const handleEditProfile = useCallback(() => {
     refs.container.current.classList.remove("show");
+    document.querySelector(".overlay").classList.remove('show');
     history.push(`/profile/${user.id}/${replaceChar(user.name)}/edit`);
+
   }, [user]);
 
   const handleSignOut = useCallback(() => {
     refs.container.current.classList.remove("show");
+    document.querySelector(".overlay").classList.remove('show');
     processBackendLogout();
   }, []);
 
   const handleProfile = useCallback(() => {
     refs.container.current.classList.remove("show");
+    document.querySelector(".overlay").classList.remove('show');
     history.push(`/profile/${user.id}/${replaceChar(user.name)}/view`);
   }, [user]);
-  
+
   const handleSettings = useCallback(() => {
     refs.container.current.classList.remove("show");
+    document.querySelector(".overlay").classList.remove('show');
     history.push("/settings");
   }, []);
 

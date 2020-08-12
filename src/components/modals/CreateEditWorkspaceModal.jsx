@@ -6,7 +6,13 @@ import styled from "styled-components";
 import {EmailRegex, replaceChar} from "../../helpers/stringFormatter";
 import {deleteWorkspaceFiles, setPendingUploadFilesToWorkspace} from "../../redux/actions/fileActions";
 import {addToModals, clearModal} from "../../redux/actions/globalActions";
-import {createWorkspace, fetchTimeline, updateWorkspace, setActiveTopic} from "../../redux/actions/workspaceActions";
+import {
+    createWorkspace,
+    fetchTimeline,
+    leaveWorkspace,
+    setActiveTopic,
+    updateWorkspace
+} from "../../redux/actions/workspaceActions";
 import {FileAttachments} from "../common";
 import {DropDocument} from "../dropzone/DropDocument";
 import {CheckBox, DescriptionInput, FolderSelect, InputFeedback, PeopleSelect} from "../forms";
@@ -406,6 +412,7 @@ const CreateEditWorkspaceModal = (props) => {
                     author: {
                         id: user.id,
                         name: user.name,
+                        first_name: user.first_name,
                         partial_name: user.partial_name,
                         profile_image_link: user.profile_image_link,
                     },
@@ -439,6 +446,9 @@ const CreateEditWorkspaceModal = (props) => {
                 dispatch(fetchTimeline({topic_id: item.id}));
             };
             dispatch(updateWorkspace(payload, cb));
+            if (removed_members.some((id) => id === user.id)) {
+                dispatch(leaveWorkspace({workspace_id: item.id, channel_id: item.channel.id}));
+            }
         } else {
             console.log(payload, form)
             dispatch(
@@ -456,6 +466,12 @@ const CreateEditWorkspaceModal = (props) => {
                     }
 
                     if (res) {
+                        //redirect url
+                        if (form.selectedFolder && typeof form.selectedFolder.value === "number") {
+                            history.push(`/workspace/dashboard/${form.selectedFolder.value}/${replaceChar(form.selectedFolder.label)}/${res.data.id}/${replaceChar(form.name)}`, { folder_id: form.selectedFolder.value, workspace_id: res.data.id});
+                        } else {
+                            history.push(`/workspace/dashboard/${res.data.id}/${replaceChar(form.name)}`, { folder_id: null, workspace_id: res.data.id});
+                        }
                         if (attachedFiles.length) {
                             let formData = new FormData();
                             for (const i in attachedFiles) {
@@ -494,12 +510,7 @@ const CreateEditWorkspaceModal = (props) => {
                             created_at: res.data.topic.created_at,
                             updated_at: res.data.topic.created_at,
                         }
-                        //redirect url
-                        if (form.selectedFolder && typeof form.selectedFolder.value === "number") {
-                            history.push(`/workspace/dashboard/${form.selectedFolder.value}/${replaceChar(form.selectedFolder.label)}/${res.data.id}/${replaceChar(form.name)}`);
-                        } else {
-                            history.push(`/workspace/dashboard/${res.data.id}/${replaceChar(form.name)}`);
-                        }
+                        
                         dispatch(setActiveTopic(newWorkspace));
 
                         toaster.success(
@@ -686,7 +697,7 @@ const CreateEditWorkspaceModal = (props) => {
                         label: m.name,
                         name: m.name,
                         id: m.id,
-                        first_name: m.first_name,
+                        first_name: m.first_name === "" ? m.email : m.first_name,
                         profile_image_link: m.profile_image_link,
                     };
                 });
@@ -803,14 +814,14 @@ const CreateEditWorkspaceModal = (props) => {
     };
 
     return (
-        <Modal innerRef={refs.container} isOpen={modal} toggle={toggle} centered size="lg" onOpened={onOpened}>
-            <ModalHeaderSection
-                toggle={toggle}>{mode === "edit" ? dictionary.updateWorkspace : dictionary.createWorkspace}</ModalHeaderSection>
-            <ModalBody onDragOver={handleShowDropzone}>
-                <DropDocument
-                    hide={!showDropzone}
-                    ref={refs.dropZone}
-                    onDragLeave={handleHideDropzone}
+      <Modal innerRef={refs.container} isOpen={modal} toggle={toggle} centered size="lg" onOpened={onOpened}>
+          <ModalHeaderSection
+            toggle={toggle}>{mode === "edit" ? dictionary.updateWorkspace : dictionary.createWorkspace}</ModalHeaderSection>
+          <ModalBody onDragOver={handleShowDropzone}>
+              <DropDocument
+                hide={!showDropzone}
+                ref={refs.dropZone}
+                onDragLeave={handleHideDropzone}
                     onDrop={({acceptedFiles}) => {
                         dropAction(acceptedFiles);
                     }}

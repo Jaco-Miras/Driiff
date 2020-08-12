@@ -39,6 +39,9 @@ const StyledQuillEditor = styled(QuillEditor)`
         &.selected {
           background: #7a1b8b;
           color: #fff;
+          span.all-pic > img {
+            filter: brightness(0) saturate(100%) invert(1);
+          }
         }
       }
     }

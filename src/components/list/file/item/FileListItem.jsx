@@ -48,7 +48,7 @@ const Star = styled(SvgIconFeather)`
 `;
 
 const FileListItem = (props) => {
-  const { className = "", file, actions, isMember, forceDelete = false } = props;
+  const { className = "", file, actions, isMember, forceDelete = false, disableOptions } = props;
 
   const fileSizeUnit = actions.getFileSizeUnit(file.hasOwnProperty("size") && typeof file.size === "number" ? file.size : 0);
 
@@ -62,7 +62,7 @@ const FileListItem = (props) => {
         <div className={typeof file.id === "string" ? "app-file-icon uploading" : "app-file-icon uploaded"}>
           {file.is_favorite === true && <Star icon="star" />}
           {actions.getFileIcon(file.mime_type)}
-          {typeof file.id === "number" && <FileOptions file={file} actions={actions} isMember={isMember} forceDelete={forceDelete} />}
+          {typeof file.id === "number" && <FileOptions file={file} actions={actions} isMember={isMember} forceDelete={forceDelete} disableOptions={disableOptions}/>}
           {typeof file.id === "string" && <ProgressBar amount={100} barClassName={"progress-bar-striped progress-bar-animated"}/>}
         </div>
         <div className="p-2 small">

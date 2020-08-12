@@ -10,7 +10,7 @@ const MainNavigationPanel = (props) => {
 
   return (
     <Wrapper className={`navigation ${className}`}>
-      <Route render={() => <MainNavigationTabPanel {...props}/>} path={[
+      <Route exact={true} render={() => <MainNavigationTabPanel {...props}/>} path={[
           "/workspace/:page/:folderId/:folderName/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName",
           "/workspace/:page/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName",
           "/workspace/:page/:folderId/:folderName/:workspaceId/:workspaceName/post/:postId/:postTitle",
@@ -19,6 +19,7 @@ const MainNavigationPanel = (props) => {
           "/workspace/:page/:workspaceId/:workspaceName",
           "/workspace/:page",
           "/profile/:id/:name/:mode", "/profile/:id/:name", "/profile",
+          "/chat/:code",
           "/:page",
         ]} />
     </Wrapper>

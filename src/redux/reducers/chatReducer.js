@@ -1030,6 +1030,22 @@ export default function (state = INITIAL_STATE, action) {
         selectedChannel: state.selectedChannel && channel && channel.id === state.selectedChannel.id ? channel : state.selectedChannel
       }
     }
+    case "LEAVE_WORKSPACE": {
+      let updatedChannels = { ...state.channels };
+      if (updatedChannels.hasOwnProperty(action.data.channel_id)) {
+        updatedChannels[action.data.channel_id].members = updatedChannels[action.data.channel_id].members.filter((m) => m.id !== state.user.id);
+      }
+      return {
+        ...state,
+        channels: updatedChannels,
+        selectedChannel: state.selectedChannel && state.selectedChannel.id === action.data.channel_id ? 
+        {
+          ...state.selectedChannel,
+          members: state.selectedChannel.members.filter((m) => m.id !== state.user.id)
+        }
+        : state.selectedChannel
+      }
+    }
     default:
       return state;
   }

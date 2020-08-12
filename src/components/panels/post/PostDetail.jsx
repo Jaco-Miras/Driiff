@@ -79,7 +79,7 @@ const MarkAsRead = styled.div`
 `;
 
 const PostDetail = (props) => {
-  const { post, postActions, user, onGoBack, workspace, isMember, dictionary } = props;
+  const { post, postActions, user, onGoBack, workspace, isMember, dictionary, disableOptions } = props;
   const dispatch = useDispatch();
 
   const [showDropZone, setshowDropZone] = useState(false);
@@ -205,12 +205,12 @@ const PostDetail = (props) => {
         <div>
           {post.author.id !== user.id && !post.is_read_requirement && (
             <MarkAsRead className="d-sm-inline d-none">
-              <button className="btn btn-primary btn-block" onClick={markRead}>
+              <button className="btn btn-primary btn-block" onClick={markRead} disabled={disableOptions}>
                 {dictionary.markAsRead}
               </button>
             </MarkAsRead>
           )}
-          {post.author.id === user.id && (
+          {post.author.id === user.id && !disableOptions && (
             <ul>
               <li>
                 <span data-toggle="modal" data-target="#editTaskModal">
@@ -238,7 +238,7 @@ const PostDetail = (props) => {
           }}
           onCancel={handleHideDropzone}
         />
-        <PostBody post={post} postActions={postActions} isAuthor={post.author.id === user.id} dictionary={dictionary}/>
+        <PostBody post={post} postActions={postActions} isAuthor={post.author.id === user.id} dictionary={dictionary} disableOptions={disableOptions}/>
         <hr className="m-0" />
         <Counters className="d-flex align-items-center">
           <div>
@@ -264,12 +264,22 @@ const PostDetail = (props) => {
         {
           comments && Object.keys(comments).length > 0 && (
             <>
-            <PostComments comments={comments} post={post} user={user} commentActions={commentActions} onShowFileDialog={handleOpenFileDialog} dropAction={dropAction} workspace={workspace} isMember={isMember} dictionary={dictionary}/>
+            <PostComments 
+              comments={comments} 
+              post={post} user={user} 
+              commentActions={commentActions} 
+              onShowFileDialog={handleOpenFileDialog} 
+              dropAction={dropAction} 
+              workspace={workspace} 
+              isMember={isMember} 
+              dictionary={dictionary}
+              disableOptions={disableOptions}
+            />
             <hr className="m-0" />
             </>
           )
         }
-        <PostDetailFooter post={post} commentActions={commentActions} onShowFileDialog={handleOpenFileDialog} dropAction={dropAction} workspace={workspace} isMember={isMember} />
+        <PostDetailFooter post={post} commentActions={commentActions} onShowFileDialog={handleOpenFileDialog} dropAction={dropAction} workspace={workspace} isMember={isMember} disableOptions={disableOptions}/>
       </MainBody>
     </>
   );

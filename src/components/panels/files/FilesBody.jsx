@@ -1,14 +1,12 @@
 import React, {useEffect, useState} from "react";
 import styled from "styled-components";
-import { useRouteMatch } from "react-router-dom";
-import { replaceChar } from "../../../helpers/stringFormatter";
 import {useSelector} from "react-redux";
 import {SvgEmptyState, SvgIconFeather} from "../../common";
 import {DropDocument} from "../../dropzone/DropDocument";
 import {useToaster} from "../../hooks";
 import {FileListItem, FolderListItem} from "../../list/file/item";
 import {MoreOptions} from "../common";
-import {ImportantFiles, PopularFiles, RecentEditedFile, RemoveFiles} from "./index";
+import {FilesBreadcrumb, ImportantFiles, PopularFiles, RecentEditedFile, RemoveFiles} from "./index";
 
 const Wrapper = styled.div`
   .card-body {
@@ -68,12 +66,10 @@ const EmptyStateLabel = styled.div`
 
 const FilesBody = (props) => {
   const { className = "", dropZoneRef, filter, search, wsFiles, isMember, handleAddEditFolder, actions,
-          params, folders, folder, fileIds, history, subFolders, dictionary } = props;
+          params, folders, folder, fileIds, history, subFolders, dictionary, disableOptions } = props;
 
   const toaster = useToaster();
   const scrollRef = document.querySelector(".app-content-body");
-
-  const { url } = useRouteMatch();
 
   const user = useSelector((state) => state.session.user);
 
@@ -90,8 +86,10 @@ const FilesBody = (props) => {
   };
 
   const handleShowDropZone = () => {
-    if (!showDropZone) {
-      setShowDropZone(true);
+    if (!["recent", "important", "removed"].includes(filter)) {
+      if (!showDropZone) {
+        setShowDropZone(true);
+      }
     }
   };
 
@@ -165,20 +163,6 @@ const FilesBody = (props) => {
     handleAddEditFolder(folder, "update");
   };
 
-  const backToAllFiles = () => {
-    console.log('gotoallfiles')
-
-    let pathname = history.location.pathname.split("/folder/")[0];
-    history.push(pathname);
-  };
-
-  const backToFolder = (folder) => {
-    console.log('tofolder')
-
-    let pathname = url.split("/folder/")[0];
-    history.push(pathname + `/folder/${folder.id}/${replaceChar(folder.name)}`);
-  };
-
   useEffect(() => {
     if (showDropZone) {
       setShowDropZone(false);
@@ -193,20 +177,23 @@ const FilesBody = (props) => {
 
   return (
     <Wrapper className={`files-body card app-content-body ${className}`} onDragOver={handleShowDropZone}>
-      <DropDocument
-        ref={dropZoneRef}
-        hide={!(showDropZone && isMember === true)}
-        onDragLeave={handleHideDropZone}
-        onDrop={({ acceptedFiles }) => {
-          dropAction(acceptedFiles);
-        }}
-        onCancel={handleHideDropZone}
-        params={params}
-      />
+      {
+        !disableOptions && 
+        <DropDocument
+          ref={dropZoneRef}
+          hide={!(showDropZone && isMember === true)}
+          onDragLeave={handleHideDropZone}
+          onDrop={({ acceptedFiles }) => {
+            dropAction(acceptedFiles);
+          }}
+          onCancel={handleHideDropZone}
+          params={params}
+        />
+      }
       <div className="card-body">
         {typeof wsFiles !== "undefined" && (
           <>
-            {folder && isMember && filter !== "removed" && (
+            {folder && isMember && filter !== "removed" && !disableOptions && (
               <MoreButton moreButton="settings">
                 <div onClick={handleEditFolder}>{dictionary.editFolder}</div>
                 <div onClick={handleRemoveFolder}>{dictionary.removeFolder}</div>
@@ -226,16 +213,9 @@ const FilesBody = (props) => {
                     <h6 className="font-size-11 text-uppercase mb-4">{dictionary.allFiles}</h6>
                   )}
 
-                {
-                  folder && folder.search && (
-                    <div className="files-breadcrumb d-flex">
-                      <h6 onClick={backToAllFiles} className="font-size-11 text-uppercase mb-4">{dictionary.allFiles} &gt;</h6>
-                      { folder.parent_folder && (<h6 onClick={() => backToFolder(folder.parent_folder)} className="font-size-11 text-uppercase mb-4">{folder.parent_folder.name} &gt;</h6>) }
-                      <h6 className="font-size-11 text-uppercase mb-4">{folder.search}</h6>
-                    </div>
-                )}
-
-
+                  {folder && folder.search && (
+                    <FilesBreadcrumb folder={folder} history={history} dictionary={dictionary} folders={folders} workspaceID={params.workspaceId} />
+                  )}
 
                 {
                   <div className="row">
@@ -243,14 +223,14 @@ const FilesBody = (props) => {
                         ? subFolders
                           .filter((f) => !f.is_archived)
                           .map((f) => {
-                            return <FolderListItem key={f.id} actions={actions} className="col-xl-3 col-lg-4 col-md-6 col-sm-12" folder={f} history={history} isMember={isMember} params={params} handleAddEditFolder={handleAddEditFolder} />;
+                            return <FolderListItem key={f.id} actions={actions} className="col-xl-3 col-lg-4 col-md-6 col-sm-12" disableOptions={disableOptions} folder={f} history={history} isMember={isMember} params={params} handleAddEditFolder={handleAddEditFolder} />;
                           })
                       : Object.values(folders)
                           .filter((f) => {
                             return f.parent_folder === null && !f.is_archived;
                           })
                           .map((f) => {
-                            return <FolderListItem key={f.id} actions={actions} className="col-xl-3 col-lg-4 col-md-6 col-sm-12" folder={f} history={history} isMember={isMember} params={params} handleAddEditFolder={handleAddEditFolder} />;
+                            return <FolderListItem key={f.id} actions={actions} className="col-xl-3 col-lg-4 col-md-6 col-sm-12" disableOptions={disableOptions} folder={f} history={history} isMember={isMember} params={params} handleAddEditFolder={handleAddEditFolder} />;
                           })}
                   </div>
                 }
@@ -263,7 +243,7 @@ const FilesBody = (props) => {
                           {wsFiles &&
                             fileIds.map((f) => {
                               if (wsFiles.files.hasOwnProperty(f)) {
-                                return <FileListItem key={f} isMember={isMember} scrollRef={scrollRef} actions={actions} className="col-xl-3 col-lg-4 col-md-6 col-sm-12" file={wsFiles.files[f]} />;
+                                return <FileListItem key={f} isMember={isMember} scrollRef={scrollRef} actions={actions} className="col-xl-3 col-lg-4 col-md-6 col-sm-12" file={wsFiles.files[f]} disableOptions={disableOptions}/>;
                               } else return null;
                             })}
                         </div>
@@ -271,7 +251,7 @@ const FilesBody = (props) => {
                           <EmptyState>
                             <SvgEmptyState icon={4} height={282} />
                             {isMember && (
-                              <button className="btn btn-outline-primary btn-block" onClick={handleShowUploadModal}>
+                              <button className="btn btn-outline-primary btn-block" onClick={handleShowUploadModal} disabled={disableOptions}>
                                 {dictionary.uploadFiles}
                               </button>
                             )}
@@ -288,17 +268,17 @@ const FilesBody = (props) => {
                       {wsFiles &&
                         fileIds.map((f) => {
                           if (wsFiles.files.hasOwnProperty(f)) {
-                            return <FileListItem key={f} isMember={isMember} scrollRef={scrollRef} actions={actions} className="col-xl-3 col-lg-4 col-md-6 col-sm-12" file={wsFiles.files[f]} />;
+                            return <FileListItem key={f} isMember={isMember} scrollRef={scrollRef} actions={actions} className="col-xl-3 col-lg-4 col-md-6 col-sm-12" file={wsFiles.files[f]} disableOptions={disableOptions}/>;
                           } else return null;
                         })}
                     </div>
-                    {wsFiles && wsFiles.popular_files.length > 0 && <PopularFiles search={search} scrollRef={scrollRef} wsFiles={wsFiles} actions={actions} />}
-                    {wsFiles && wsFiles.recently_edited.length > 0 && <RecentEditedFile search={search} scrollRef={scrollRef} wsFiles={wsFiles} actions={actions} />}
+                    {wsFiles && wsFiles.popular_files.length > 0 && <PopularFiles search={search} scrollRef={scrollRef} wsFiles={wsFiles} actions={actions} disableOptions={disableOptions}/>}
+                    {wsFiles && wsFiles.recently_edited.length > 0 && <RecentEditedFile search={search} scrollRef={scrollRef} wsFiles={wsFiles} actions={actions} disableOptions={disableOptions}/>}
                     {wsFiles && wsFiles.popular_files.length === 0 && wsFiles.recently_edited.length === 0 && fileIds.length === 0 && (
                       <EmptyState>
                         <SvgEmptyState icon={4} height={282} />
                         {isMember && (
-                          <button className="btn btn-outline-primary btn-block" onClick={handleShowUploadModal}>
+                          <button className="btn btn-outline-primary btn-block" onClick={handleShowUploadModal} disabled={disableOptions}>
                             {dictionary.uploadFiles}
                           </button>
                         )}
@@ -310,15 +290,10 @@ const FilesBody = (props) => {
             )}
             {filter === "recent" && (
               <>
-                <RecentEditedFile search={search} scrollRef={scrollRef} wsFiles={wsFiles} actions={actions} />
+                <RecentEditedFile search={search} scrollRef={scrollRef} wsFiles={wsFiles} actions={actions} disableOptions={disableOptions}/>
                 {!(wsFiles && wsFiles.recently_edited.length > 0) && (
                   <EmptyState>
                     <SvgEmptyState icon={4} height={282} />
-                    {isMember && (
-                      <button className="btn btn-outline-primary btn-block" onClick={handleShowUploadModal}>
-                        {dictionary.uploadFiles}
-                      </button>
-                    )}
                   </EmptyState>
                 )}
               </>
@@ -340,20 +315,23 @@ const FilesBody = (props) => {
             {filter === "removed" && (
                 <>
                   <RemoveFiles
-                      scrollRef={scrollRef}
-                      search={search}
-                      wsFiles={wsFiles}
-                      actions={actions}
-                      isMember={isMember}
-                      params={params}
-                      folders={folders}
-                      subFolders={subFolders}
-                      handleAddEditFolder={handleAddEditFolder}
-                      folder={folder}/>
-                  {!(wsFiles && wsFiles.hasOwnProperty("trash_files") && Object.keys(wsFiles.trash_files).length > 0) && (
-                      <EmptyState>
-                        <SvgEmptyState icon={4} height={282}/>
-                      </EmptyState>
+                    scrollRef={scrollRef}
+                    search={search}
+                    wsFiles={wsFiles}
+                    actions={actions}
+                    isMember={isMember}
+                    params={params}
+                    folders={folders}
+                    subFolders={subFolders}
+                    handleAddEditFolder={handleAddEditFolder}
+                    folder={folder}
+                    disableOptions={disableOptions}
+                  />
+                  {!(wsFiles && wsFiles.hasOwnProperty("trash_files") && Object.keys(wsFiles.trash_files).length > 0) &&
+                  !(Object.values(folders).some((f) => f.is_archived) || subFolders.some((f) => f.is_archived)) && (
+                    <EmptyState>
+                      <SvgEmptyState icon={4} height={282}/>
+                    </EmptyState>
                   )}
                 </>
             )}

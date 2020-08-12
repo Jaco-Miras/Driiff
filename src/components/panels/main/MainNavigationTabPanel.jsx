@@ -291,7 +291,7 @@ const MainNavigationTabPanel = (props) => {
           <ul>
             {!isExternal && Object.values(folders).sort((a,b) => a.name.localeCompare(b.name))
               .map((folder) => {
-                return <WorkspaceList key={folder.key_id} actions={actions} folder={folder} show={true} workspace={workspace} workspaces={sortedWorkspaces.filter((ws) => {
+                return <WorkspaceList key={folder.key_id} actions={actions} folder={folder} history={history} show={true} workspace={workspace} workspaces={sortedWorkspaces.filter((ws) => {
                   return (ws.active === 1 && folder.workspace_ids.some((id) => id === ws.id));
                 })}/>;
               })
@@ -299,6 +299,7 @@ const MainNavigationTabPanel = (props) => {
             {!isExternal && Object.values(workspaces).length > 0 && (
               <WorkspaceList
                 actions={actions}
+                history={history}
                 show={true}
                 workspace={workspace}
                 workspaces={sortedWorkspaces.filter((ws) => { return (ws.active === 1 && ws.folder_id === null)})}
@@ -332,6 +333,7 @@ const MainNavigationTabPanel = (props) => {
             {Object.values(workspaces).filter((ws) => ws.active === 0).length > 0 && (
               <WorkspaceList
                 actions={actions}
+                history={history}
                 show={true}
                 workspace={workspace}
                 workspaces={sortedWorkspaces.filter((ws) => ws.active === 0)}

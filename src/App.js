@@ -34,7 +34,9 @@ function App() {
       <PreLoader/>
       {
         location.pathname === "/driff-register" ?
-          <Route component={GuestLayout} path="/driff-register" exact/>
+          <Route
+            render={() => <GuestLayout setRegisteredDriff={setRegisteredDriff}/>} path="/driff-register"
+            exact/>
           :
           <>
             {

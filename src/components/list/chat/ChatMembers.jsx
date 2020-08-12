@@ -6,8 +6,6 @@ import {useIsUserTyping} from "../../hooks";
 const ChatMembersContainer = styled.div``;
 
 const StyledAvatar = styled(Avatar)`
-  height: 2.5rem !important;
-  width: 2.5rem !important;
   margin-left: ${(props) => (props.firstUser ? "0" : "-0.5rem")};
 `;
 
@@ -24,7 +22,7 @@ const ChatMembers = (props) => {
         ? [
             firstFiveMembers.map((m, i) => {
               return <StyledAvatar id={m.id} firstUser={i === 0} className="chat-members" key={m.id}
-                                   name={m.name ? m.name : m.email} imageLink={m.profile_image_link}/>;
+                                   name={m.name ? m.name : m.email} imageLink={m.profile_image_link} hasAccepted={m.has_accepted}/>;
             }),
 
             afterFiveMembers.length != null && afterFiveMembers[0] && <PlusRecipients recipients={afterFiveMembers}></PlusRecipients>,
@@ -32,7 +30,7 @@ const ChatMembers = (props) => {
         : page === "workspace" && usersTyping.length
         ? usersTyping.map((m, i) => {
             return <StyledAvatar userId={m.id} firstUser={i === 0} className="chat-members" key={m.id}
-                                 name={m.name ? m.name : m.email} imageLink={m.profile_image_link}/>;
+                                 name={m.name ? m.name : m.email} imageLink={m.profile_image_link} hasAccepted={m.has_accepted}/>;
           })
         : null}
     </ChatMembersContainer>

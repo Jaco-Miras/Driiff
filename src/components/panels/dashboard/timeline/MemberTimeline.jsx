@@ -1,8 +1,8 @@
 import React from "react";
-import { useSelector } from "react-redux";
+import {useSelector} from "react-redux";
 import styled from "styled-components";
-import { Avatar } from "../../../common";
-import { useTimeFormat } from "../../../hooks";
+import {Avatar} from "../../../common";
+import {useTimeFormat} from "../../../hooks";
 
 const Wrapper = styled.div`
     font-weight: bold;
@@ -62,7 +62,7 @@ const MemberTimeline = (props) => {
     if (left) {
       let author = recipients.filter((r) => r.type_id === message.author.id && message.removed_members.includes(r.type_id))[0];
       if (author) {
-        if (author.left === user.id) {
+        if (author.type_id === user.id) {
           return "You left.";
         } else {
           return `${author.name} has left`;

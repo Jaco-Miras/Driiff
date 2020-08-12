@@ -319,14 +319,14 @@ const useUserActions = () => {
         }
 
         if (res) {
-          toaster.error(<>Password is updated. You are being logged in!</>);
+          toaster.success(<>Password is successfully updated. You are being logged in!</>);
           login(res.data);
         }
       })
     );
   }, []);
 
-  const requestPasswordReset = useCallback((email) => {
+  const requestPasswordReset = useCallback((email, callback) => {
     dispatch(
       resetPassword({
         email: email
@@ -337,6 +337,7 @@ const useUserActions = () => {
         if (res) {
           toaster.success(<>Password reset link sent to <b>{email}</b>. Please check.</>)
         }
+        callback(err, res);
       })
     );
   }, []);

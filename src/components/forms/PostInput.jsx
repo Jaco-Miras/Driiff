@@ -1,14 +1,13 @@
-import React, { useEffect, useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React, {useEffect, useRef, useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
 import styled from "styled-components";
 // import {localizeDate} from "../../helpers/momentFormatJS";
-import { postChannelMembers, addQuote } from "../../redux/actions/chatActions";
-import { deleteDraft } from "../../redux/actions/globalActions";
-import { SvgIconFeather } from "../common";
+import {addQuote, postChannelMembers} from "../../redux/actions/chatActions";
+import {SvgIconFeather} from "../common";
 import BodyMention from "../common/BodyMention";
-import { useDraft, useQuillInput, useQuillModules, useSaveInput, useCommentQuote } from "../hooks";
+import {useCommentQuote, useQuillInput, useQuillModules, useSaveInput} from "../hooks";
 import QuillEditor from "./QuillEditor";
-import { setEditComment, setParentIdForUpload } from "../../redux/actions/postActions";
+import {setEditComment, setParentIdForUpload} from "../../redux/actions/postActions";
 
 const Wrapper = styled.div`
   border: 1px solid #dee2e6;
@@ -35,7 +34,9 @@ const StyledQuillEditor = styled(QuillEditor)`
     display: none;
   }
   .ql-editor {
-    padding: 5px 9px;
+    padding: 5px 9px;    
+    min-height: 30px;
+    ${props => props.editMode && `> div {width:calc(100% - 15px);}`}
     .mention {
       color: #7a1b8b;
     }
@@ -43,7 +44,6 @@ const StyledQuillEditor = styled(QuillEditor)`
       box-shadow: none;
       border-color: rgba(122, 27, 139, 0.8);
     }
-    min-height: 30px;
   }
   .ql-container {
     border: none;
@@ -73,6 +73,9 @@ const StyledQuillEditor = styled(QuillEditor)`
           background: #7a1b8b;
           color: #fff;
           cursor: pointer;
+          span.all-pic > img {
+            filter: brightness(0) saturate(100%) invert(1);
+          }
         }
       }
     }
@@ -80,8 +83,8 @@ const StyledQuillEditor = styled(QuillEditor)`
 `;
 
 const CloseButton = styled(SvgIconFeather)`
-  position: absolute;
-  top: 8px;
+  position: absolute;  
+  top: calc(50% - 12px);
   right: 5px;
   cursor: pointer;
   cursor: hand;
@@ -440,7 +443,8 @@ const PostInput = (props) => {
   return (
     <Wrapper className="chat-input-wrapper">
       {mentionedUserIds.length > 0 && <BodyMention onAddUsers={handleAddMentionedUsers} onDoNothing={handleIgnoreMentionedUsers} userIds={mentionedUserIds} type={"chat"} basedOnId={false} />}
-      <StyledQuillEditor className={"chat-input"} modules={modules} ref={reactQuillRef} onChange={handleQuillChange} />
+      <StyledQuillEditor className={"chat-input"} modules={modules} ref={reactQuillRef} onChange={handleQuillChange}
+                         editMode={editMode}/>
       {editMode && <CloseButton icon="x" onClick={handleEditReplyClose} />}
     </Wrapper>
   );

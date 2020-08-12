@@ -1,12 +1,11 @@
 import React, {useCallback, useEffect, useRef, useState} from "react";
-import {withRouter} from "react-router-dom";
+import {useHistory, withRouter} from "react-router-dom";
 import {Form, FormGroup, Input, InputGroup, InputGroupAddon, InputGroupText} from "reactstrap";
 import styled from "styled-components";
 import {isIPAddress} from "../../helpers/commonFunctions";
 import {SvgIcon} from "../common";
 import {InputFeedback} from "../forms";
-import {usePageLoader} from "../hooks";
-import useDriffActions from "../hooks/useDriffActions";
+import {useDriffActions} from "../hooks";
 
 const Wrapper = styled.div`
   margin: 50px auto;
@@ -30,8 +29,9 @@ const Wrapper = styled.div`
 const DriffRegisterPanel = (props) => {
   const {className = "", setRegisteredDriff} = props;
   const {REACT_APP_localDNSName} = process.env;
-  const pageLoader = usePageLoader();
   const driffActions = useDriffActions();
+  const history = useHistory();
+  const [loading, setLoading] = useState(false);
 
   const [formResponse, setFormResponse] = useState({
     valid: {},
@@ -52,6 +52,17 @@ const DriffRegisterPanel = (props) => {
       ...prevState,
       [e.target.name]: e.target.value.trim(),
     }));
+    setFormResponse(prevState => ({
+      ...prevState,
+      valid: {
+        ...prevState.valid,
+        [e.target.name]: undefined
+      },
+      message: {
+        ...prevState.message,
+        [e.target.name]: undefined
+      }
+    }))
   }, [setForm]);
 
   const _validate = () => {
@@ -74,22 +85,22 @@ const DriffRegisterPanel = (props) => {
   const handleContinue = (e) => {
     e.preventDefault();
 
-    if (pageLoader.isActive || !_validate())
+    if (loading || !_validate())
       return null;
 
-    pageLoader.show();
+    setLoading(true);
     driffActions.check(form.name, (err, res) => {
-      pageLoader.hide();
-
+      setLoading(false);
       if (err || !res.data.status) {
         setFormResponse({
           valid: {
             name: false
           },
           message: {
-            name: `Driff does not exists.`
+            name: <>Driff <b>{form.name}</b> does not exist.</>
           }
         })
+        refs.name.current.focus();
       }
 
       if (res && res.data.status) {
@@ -103,12 +114,17 @@ const DriffRegisterPanel = (props) => {
         if (isIPAddress(window.location.hostname) || window.location.hostname === "localhost") {
           driffActions.storeName(form.name, true);
           setRegisteredDriff(form.name);
+          history.push('/login');
         } else {
           window.location.href = `${process.env.REACT_APP_apiProtocol}${form.name}.${process.env.REACT_APP_localDNSName}`;
         }
       }
     });
   };
+
+  const handleRegisterClick = (e) => {
+    history.push('/driff-register')
+  }
 
   useEffect(() => {
     document.body.classList.add("form-membership");
@@ -138,7 +154,11 @@ const DriffRegisterPanel = (props) => {
           </InputGroup>
         </FormGroup>
         <button className="btn btn-primary btn-block" onClick={handleContinue}>
-          Continue
+          {loading && <i className="fa fa-spin fa-spinner mr-2"/>} Continue
+        </button>
+        <hr/>
+        <button className="btn btn-outline-light btn-sm" onClick={handleRegisterClick}>
+          Register new driff
         </button>
       </Form>
     </Wrapper>

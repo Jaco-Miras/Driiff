@@ -139,25 +139,27 @@ const CreateEditChatModal = (props) => {
     if (mode === "edit") {
       const removed_members = channel.members
         .filter((m) => {
-          let userFound = false;
-          selectedUsers.forEach((u) => {
-            if (u.id === m.id) {
-              userFound = true;
-            }
-          });
-          return !userFound;
+          // let userFound = false;
+          // selectedUsers.forEach((u) => {
+          //   if (u.id === m.id) {
+          //     userFound = true;
+          //   }
+          // });
+          // return !userFound;
+          return !selectedUsers.some((u) => u.id === m.id);
         })
         .map((m) => m.id);
 
       const added_members = selectedUsers
         .filter((u) => {
-          let userFound = false;
-          channel.members.forEach((m) => {
-            if (m.id === u.id) {
-              userFound = true;
-            }
-          });
-          return !userFound;
+          // let userFound = false;
+          // channel.members.forEach((m) => {
+          //   if (m.id === u.id) {
+          //     userFound = true;
+          //   }
+          // });
+          // return !userFound;
+          return !channel.members.some((m) => m.id === u.id);
         })
         .map((m) => m.id);
 
@@ -171,6 +173,7 @@ const CreateEditChatModal = (props) => {
           author: {
             id: user.id,
             name: user.name,
+            first_name: user.first_name,
             partial_name: user.partial_name,
             profile_image_link: user.profile_image_link,
           },
@@ -406,7 +409,6 @@ const CreateEditChatModal = (props) => {
     newGroupChat: _t("MODAL.NEW_GROUP_CHAT", "New group chat"),
     editChat: _t("MODAL.EDIT_CHAT", "Edit chat"),
     createChat: _t("MODAL.CREATE_CHAT", "Create chat"),
-    editChat: _t("MODAL.CREATE_CHAT", "Create chat"),
   };
 
   return (

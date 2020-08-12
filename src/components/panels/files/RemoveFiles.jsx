@@ -6,7 +6,7 @@ import {FileListItem, FolderListItem} from "../../list/file/item";
 const Wrapper = styled.div``;
 
 const RemoveFiles = (props) => {
-    const {className = "", actions, wsFiles, isMember, folders, subFolders, folder, params, handleAddEditFolder} = props;
+    const { className = "", actions, wsFiles, isMember, folders, subFolders, folder, params, handleAddEditFolder, disableOptions } = props;
 
     const history = useHistory();
 
@@ -23,7 +23,8 @@ const RemoveFiles = (props) => {
                             return <FolderListItem key={f.id} actions={actions}
                                                    className="col-xl-3 col-lg-4 col-md-6 col-sm-12" folder={f}
                                                    history={history} isMember={isMember} params={params}
-                                                   handleAddEditFolder={handleAddEditFolder}/>;
+                                                   handleAddEditFolder={handleAddEditFolder}
+                                                   disableOptions={disableOptions}/>;
                         })
                     : Object.values(folders)
                         .filter((f) => f.is_archived)
@@ -31,7 +32,8 @@ const RemoveFiles = (props) => {
                             return <FolderListItem key={f.id} actions={actions}
                                                    className="col-xl-3 col-lg-4 col-md-6 col-sm-12" folder={f}
                                                    history={history} isMember={isMember} params={params}
-                                                   handleAddEditFolder={handleAddEditFolder}/>;
+                                                   handleAddEditFolder={handleAddEditFolder}
+                                                   disableOptions={disableOptions}/>;
                         })}
             </div>
             <div className="row">
@@ -49,7 +51,7 @@ const RemoveFiles = (props) => {
                         .map((f) => {
                             return <FileListItem key={f.id} isMember={isMember} forceDelete={true}
                                                  className="col-xl-3 col-lg-4 col-md-6 col-sm-12" file={f}
-                                                 actions={actions}/>;
+                                                 actions={actions} disableOptions={disableOptions}/>;
                         })
                     : wsFiles &&
                     Object.values(wsFiles.trash_files).length > 0 &&
@@ -57,7 +59,7 @@ const RemoveFiles = (props) => {
                         if (typeof f !== "undefined") {
                             return <FileListItem key={f.id} isMember={isMember} forceDelete={true}
                                              className="col-xl-3 col-lg-4 col-md-6 col-sm-12" file={f}
-                                             actions={actions}/>;
+                                             actions={actions} disableOptions={disableOptions}/>;
                         } else {
                             return null;
                         }
