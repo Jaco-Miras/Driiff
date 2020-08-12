@@ -108,7 +108,7 @@ const useQuillModules = (mode, callback, mentionOrientation = "top", quillRef, m
           return listDisplay;
         },
       },
-      toolbar: ["bold", "italic", "underline", "link", "image"],
+      toolbar: ["bold", "italic", "link", "image"],
       keyboard: {
         bindings: {
           tab: false,
@@ -130,6 +130,13 @@ const useQuillModules = (mode, callback, mentionOrientation = "top", quillRef, m
               }
             },
           },
+          disableUnderline: {
+            key: 85,
+            ctrlKey: true,
+            handler: () => {
+              //do nothing
+            }
+          }
         },
       },
     };
@@ -150,7 +157,28 @@ const useQuillModules = (mode, callback, mentionOrientation = "top", quillRef, m
     mentionValues.length
   );
 
-  return [modules];
+  const formats = [
+    "background",
+    "bold",
+    "color",
+    "font",
+    "code",
+    "italic",
+    "link",
+    "size",
+    "strike",
+    "script",
+    "blockquote",
+    "header",
+    "indent",
+    "list",
+    "align",
+    "direction",
+    "image",
+    "video"
+  ];
+
+  return [modules, formats];
 };
 
 export default useQuillModules;

@@ -521,12 +521,11 @@ const ChatInput = (props) => {
   useSaveInput(handleClearQuillInput, text, textOnly, quillContents);
   useQuillInput(handleClearQuillInput, reactQuillRef);
   useDraft(loadDraftCallback, "channel", text, textOnly, draftId);
-  const [modules] = useQuillModules("chat", handleSubmit, "top", reactQuillRef, user.type === "external" ? selectedChannel.members : []);
-
+  const [modules, formats] = useQuillModules("chat", handleSubmit, "top", reactQuillRef, user.type === "external" ? selectedChannel.members : []);
   return (
     <Wrapper className="chat-input-wrapper">
       {mentionedUserIds.length > 0 && <BodyMention onAddUsers={handleAddMentionedUsers} onDoNothing={handleIgnoreMentionedUsers} userIds={mentionedUserIds} type={"chat"} basedOnId={false} />}
-      <StyledQuillEditor className={"chat-input"} modules={modules} ref={reactQuillRef} onChange={handleQuillChange}
+      <StyledQuillEditor className={"chat-input"} formats={formats} modules={modules} formats={formats} ref={reactQuillRef} onChange={handleQuillChange}
                          editMode={editMode}/>
       {editMode && <CloseButton icon="x" onClick={handleEditReplyClose} />}
     </Wrapper>

@@ -169,14 +169,14 @@ const DescriptionInput = (props) => {
     }
   }, []);*/
 
-  const [modules] = useQuillModules("description", () => {}, "top", reactQuillRef, members);
+  const [modules, formats] = useQuillModules("description", () => {}, "top", reactQuillRef, members);
 
   return (
     <WrapperDiv>
       <Label for="firstMessage">Description</Label>
       <DescriptionInputWrapper
           className={`description-wrapper ${valid === null ? "" : valid ? "is-valid" : "is-invalid"}`}>
-        <StyledQuillEditor className="description-input" modules={modules} ref={reactQuillRef} onChange={onChange}
+        <StyledQuillEditor className="description-input" formats={formats} modules={modules} ref={reactQuillRef} onChange={onChange}
                            height={80} defaultValue={defaultValue} {...otherProps} />
         <Buttons className="action-wrapper">
           <IconButton onClick={handleShowEmojiPicker} icon="smile"/>
