@@ -37,7 +37,7 @@ const useGoogleApis = () => {
                 title: <span className="link">{element.href}</span>
               }
             });
-            element.innerHTML = <span className="link">{element.href}</span>;
+            element.innerHTML = `<span class="link">${element.href}</span>`;
             element.onclick = null;
           } else {
             addGoogleDriveFile({
