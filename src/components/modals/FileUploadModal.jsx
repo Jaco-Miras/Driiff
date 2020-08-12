@@ -311,7 +311,7 @@ const FileUploadModal = (props) => {
         }
     }, [init]);
 
-    const [modules] = useQuillModules("chat_upload", () => {}, "top", reactQuillRef, members);
+    const [modules, formats] = useQuillModules("chat_upload", () => {}, "top", reactQuillRef, members);
 
     return (
         <Modal isOpen={modal} toggle={toggle} size={"lg"} centered>
@@ -320,6 +320,7 @@ const FileUploadModal = (props) => {
                 <StyledQuillEditor
                     ref={refCallback}
                     className={"chat-input"}
+                    formats={formats}
                     modules={modules}
                     placeholder={"Add message. Type @ to mention someone."}
                     readOnly={uploading}
