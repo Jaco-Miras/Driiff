@@ -1,13 +1,14 @@
-import React, {useRef, useState} from "react";
-import {useDispatch, useSelector} from "react-redux";
+import React, { useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import Tooltip from "react-tooltip-lite";
 import styled from "styled-components";
-import {onClickSendButton} from "../../../redux/actions/chatActions";
-import {joinWorkspace} from "../../../redux/actions/workspaceActions";
-import {CommonPicker, SvgIconFeather} from "../../common";
+import { onClickSendButton } from "../../../redux/actions/chatActions";
+import { joinWorkspace } from "../../../redux/actions/workspaceActions";
+import { CommonPicker, SvgIconFeather } from "../../common";
 import ChatInput from "../../forms/ChatInput";
-import {useIsMember, useTimeFormat, useToaster} from "../../hooks";
+import { useIsMember, useTimeFormat, useToaster } from "../../hooks";
 import ChatQuote from "../../list/chat/ChatQuote";
+import TypingIndicator from "../../list/chat/TypingIndicator";
 
 const Wrapper = styled.div`
   position: relative;
@@ -123,9 +124,15 @@ const Dflex = styled.div`
     .emojiButton {
       display: none;
     }
-    div:nth-child(4) { order: 1; }
-    div:nth-child(2) { order: 3; }
-    svg:nth-child(3) { order: 3; }
+    div:nth-child(4) {
+      order: 1;
+    }
+    div:nth-child(2) {
+      order: 3;
+    }
+    svg:nth-child(3) {
+      order: 3;
+    }
   }
 `;
 
@@ -180,11 +187,15 @@ const ChatFooterPanel = (props) => {
       joinWorkspace(
         {
           channel_id: selectedChannel.id,
-          recipient_ids: [user.id]
+          recipient_ids: [user.id],
         },
         (err, res) => {
           if (err) return;
-          toaster.success(<>You have joined <b>#{selectedChannel.title}</b></>);
+          toaster.success(
+            <>
+              You have joined <b>#{selectedChannel.title}</b>
+            </>
+          );
         }
       )
     );
@@ -201,6 +212,8 @@ const ChatFooterPanel = (props) => {
 
   return (
     <Wrapper className={`chat-footer border-top ${className}`}>
+      <TypingIndicator />
+
       {selectedChannel && !selectedChannel.is_archived && (
         <Dflex className="d-flex pr-2 pl-2">
           <ChatQuote />
