@@ -95,14 +95,14 @@ const ChatContentPanel = (props) => {
       type: "file_upload",
       droppedFiles: attachedFiles,
       mode: "chat",
-      members: selectedChannel ? selectedChannel.members : []
+      members: selectedChannel ? selectedChannel.members : [],
     };
 
     dispatch(addToModals(modal));
   };
 
-  const {_t} = useTranslation();
-  
+  const { _t } = useTranslation();
+
   const dictionary = {
     remindMe: _t("CHAT.REMIND_ME_ABOUT_THIS", "Remind me about this"),
     quote: _t("CHAT.QUOTE", "Quote"),
@@ -112,7 +112,7 @@ const ChatContentPanel = (props) => {
     remove: _t("CHAT.REMOVE", "Remove"),
     removeChat: _t("MODAL.REMOVE_CHAT", "Remove chat"),
     cancel: _t("MODAL.CANCEL", "Cancel"),
-    removeThisChat: _t("MODAL.REMOVE_THIS_CHAT", "Are you sure you want to remove this chat?")
+    removeThisChat: _t("MODAL.REMOVE_THIS_CHAT", "Are you sure you want to remove this chat?"),
   };
 
   useFocusInput(document.querySelector(".chat-footer .ql-editor"));
@@ -131,13 +131,7 @@ const ChatContentPanel = (props) => {
       <ChatHeaderPanel channel={selectedChannel} />
       {selectedChannel !== null && unreadCount > 0 && !bottomRefVisible && <ChatUnreadFloatBar channel={selectedChannel} />}
       {selectedChannel !== null ? (
-        <ChatMessages
-          selectedChannel={selectedChannel}
-          chatMessageActions={chatMessageActions}
-          timeFormat={timeFormat}
-          onBottomRefVisible={handleBottomRefChange}
-          dictionary={dictionary}
-        />
+        <ChatMessages selectedChannel={selectedChannel} chatMessageActions={chatMessageActions} timeFormat={timeFormat} onBottomRefVisible={handleBottomRefChange} dictionary={dictionary} />
       ) : (
         <ChatMessagesPlaceholder />
       )}
