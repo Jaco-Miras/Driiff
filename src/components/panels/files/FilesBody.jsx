@@ -1,14 +1,12 @@
 import React, {useEffect, useState} from "react";
 import styled from "styled-components";
-import {useRouteMatch} from "react-router-dom";
-import {replaceChar} from "../../../helpers/stringFormatter";
 import {useSelector} from "react-redux";
 import {SvgEmptyState, SvgIconFeather} from "../../common";
 import {DropDocument} from "../../dropzone/DropDocument";
 import {useToaster} from "../../hooks";
 import {FileListItem, FolderListItem} from "../../list/file/item";
 import {MoreOptions} from "../common";
-import {ImportantFiles, PopularFiles, RecentEditedFile, RemoveFiles, FilesBreadcrumb} from "./index";
+import {FilesBreadcrumb, ImportantFiles, PopularFiles, RecentEditedFile, RemoveFiles} from "./index";
 
 const Wrapper = styled.div`
   .card-body {
@@ -322,22 +320,23 @@ const FilesBody = (props) => {
             {filter === "removed" && (
                 <>
                   <RemoveFiles
-                      scrollRef={scrollRef}
-                      search={search}
-                      wsFiles={wsFiles}
-                      actions={actions}
-                      isMember={isMember}
-                      params={params}
-                      folders={folders}
-                      subFolders={subFolders}
-                      handleAddEditFolder={handleAddEditFolder}
-                      folder={folder}
-                      disableOptions={disableOptions}
+                    scrollRef={scrollRef}
+                    search={search}
+                    wsFiles={wsFiles}
+                    actions={actions}
+                    isMember={isMember}
+                    params={params}
+                    folders={folders}
+                    subFolders={subFolders}
+                    handleAddEditFolder={handleAddEditFolder}
+                    folder={folder}
+                    disableOptions={disableOptions}
                   />
-                  {!(wsFiles && wsFiles.hasOwnProperty("trash_files") && Object.keys(wsFiles.trash_files).length > 0) && (
-                      <EmptyState>
-                        <SvgEmptyState icon={4} height={282}/>
-                      </EmptyState>
+                  {!(wsFiles && wsFiles.hasOwnProperty("trash_files") && Object.keys(wsFiles.trash_files).length > 0) &&
+                  !(Object.values(folders).some((f) => f.is_archived) || subFolders.some((f) => f.is_archived)) && (
+                    <EmptyState>
+                      <SvgEmptyState icon={4} height={282}/>
+                    </EmptyState>
                   )}
                 </>
             )}
