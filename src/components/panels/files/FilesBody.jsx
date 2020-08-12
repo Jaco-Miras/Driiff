@@ -86,7 +86,7 @@ const FilesBody = (props) => {
   };
 
   const handleShowDropZone = () => {
-    if (filter !== "removed") {
+    if (!["recent", "important", "removed"].includes(filter)) {
       if (!showDropZone) {
         setShowDropZone(true);
       }
@@ -294,11 +294,6 @@ const FilesBody = (props) => {
                 {!(wsFiles && wsFiles.recently_edited.length > 0) && (
                   <EmptyState>
                     <SvgEmptyState icon={4} height={282} />
-                    {isMember && (
-                      <button className="btn btn-outline-primary btn-block" onClick={handleShowUploadModal} disabled={disableOptions}>
-                        {dictionary.uploadFiles}
-                      </button>
-                    )}
                   </EmptyState>
                 )}
               </>
