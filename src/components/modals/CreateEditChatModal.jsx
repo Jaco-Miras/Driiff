@@ -433,7 +433,7 @@ const CreateEditChatModal = (props) => {
           )}
           <WrapperDiv>
             <button className="btn btn-primary" disabled={searching || !valid} onClick={handleConfirm}>
-              {mode === "edit" ? dictionary.updateChat : dictionary.createChat}
+              {mode === "edit" ? dictionary.editChat : dictionary.createChat}
             </button>
         </WrapperDiv>
       </ModalBody>

@@ -190,22 +190,6 @@ class SocketListeners extends React.PureComponent {
                     case "POST_CREATE": {
                         if (e.show_at !== null && this.props.user.id === e.author.id) {
                             this.props.incomingPost(e);
-                            // let show = e.show_at;
-                            // show = show.split("-")
-                            // show = {
-                            //     'year': show[0],
-                            //     'month': show[1],
-                            //     'date': show[2].substring(0,2)
-                            // }
-                            // let d = new Date();
-                            // let currentDate = {
-                            //     'year': d.getFullYear(),
-                            //     'month': d.getMonth() + 1,
-                            //     'date': d.getDate()
-                            // }
-                            // if (moment(show).dayOfYear() <= moment(currentDate).dayOfYear()) {
-                            //     this.props.incomingPost(e);
-                            // }
                         } else {
                             this.props.incomingPost(e);
                         }
@@ -609,39 +593,6 @@ class SocketListeners extends React.PureComponent {
                 console.log(e, "move workspace private");
                 this.props.incomingMovedTopic(e);
             })
-            .listen(".new-member", (e) => {
-                console.log(e, "join member");
-                // if (typeof e.user !== "undefined") {
-                //   let payload = {
-                //     group_id: e.group_id,
-                //     user_id: e.user.id,
-                //     type: "join",
-                //     mode: "member",
-                //     user: e.user,
-                //   };
-                //   // this.props.updateTopicMembersAction(payload);
-                // }
-            })
-            .listen(".new-topic-member", (e) => {
-                console.log("new workspace member", e);
-            })
-            .listen(".left-member", (e) => {
-                console.log(e, "left member");
-                // if (e.user.id !== undefined) {
-                //   let payload = {
-                //     group_id: e.group_id,
-                //     user_id: e.user.id,
-                //     type: "remove",
-                //     mode: "member",
-                //     user: e.user,
-                //   };
-                //   //this.props.updateTopicMembersAction(payload);
-                // }
-            })
-            // .listen(".unread-channel", (e) => {
-            //   console.log(e, "unread channel");
-            //   this.props.unreadChannelReducer(e);
-            // })
             .listen(".update-channel-name", (e) => {
                 console.log(e, "updated channel name");
                 let data = {
@@ -687,79 +638,6 @@ class SocketListeners extends React.PureComponent {
                             }
                         }
                     );
-                }
-            })
-            .listen(".delete-post-channel-member", (e) => {
-                console.log(e, "delete chat member");
-                if (e.remove_member_ids[0] === this.props.user.id) return;
-                let message = {
-                    ...e.message_data,
-                    is_deleted: false,
-                    reactions: [],
-                    last_reply: null,
-                    reply: {
-                        body: e.message_data.body,
-                        created_at: e.message_data.created_at,
-                        updated_at: e.message_data.created_at,
-                        files: [],
-                        id: e.message_data.id,
-                        is_deleted: false,
-                        quote: null,
-                        reactions: [],
-                        user: null,
-                        unfurls: [],
-                        is_read: false,
-                        channel_id: e.channel_id,
-                        g_date: this.props.localizeDate(e.message_data.created_at.timestamp),
-                        code: e.code,
-                    },
-                    unfurls: [],
-                    created_at: e.message_data.created_at,
-                    id: e.id,
-                    channel_id: e.channel_id,
-                    body: e.message_data.body,
-                    user: null,
-                    files: [],
-                    quote: null,
-                };
-                this.props.incomingChatMessageFromOthers(message);
-                //get the chat channel details
-                if (this.props.activeChatChannels.length) {
-                    this.props.getChatChannelAction({channel_id: e.channel_id}, (err, res) => {
-                        console.log(res);
-                        if (err) return;
-                        // update chat members
-                        if (this.props.activeChatChannels.filter((ac) => ac.id === res.data.id).length) {
-                            let channel = this.props.activeChatChannels.filter((ac) => ac.id === res.data.id)[0];
-                            let updatedChannel = {
-                                ...channel,
-                                members: res.data.members,
-                                profile: res.data.members.length === 2 ? res.data.members.filter((m) => m.id !== this.props.user.id)[0] : null,
-                            };
-                            if (channel.type === "DIRECT") {
-                                let payload = {
-                                    //title: res.data.members.map(m => m.first_name).slice(0, 6).join(', '),
-                                    title: res.data.title,
-                                    id: channel.id,
-                                    is_pinned: channel.is_pinned,
-                                    is_archived: channel.is_archived,
-                                    is_muted: channel.is_muted,
-                                };
-                                this.props.updateChatChannelV2Action(payload, (err, res) => {
-                                    if (err) {
-                                        console.log(err, "error");
-                                    }
-                                });
-                                updatedChannel = {
-                                    ...updatedChannel,
-                                    //title: res.data.members.length === 2 ? res.data.members.filter(m => m.id !== this.props.user.id)[0].first_name : res.data.members.map(m => m.first_name).slice(0, 6).join(', ')
-                                };
-                                this.props.updateChannelAction(updatedChannel);
-                            } else {
-                                this.props.updateChannelAction(updatedChannel);
-                            }
-                        }
-                    });
                 }
             })
             .listen(".new-added-member-chat", (e) => {
@@ -825,7 +703,6 @@ class SocketListeners extends React.PureComponent {
             })
             .listen(".updated-notification-counter", (e) => {
                 console.log(e, "updated counter");
-
                 this.props.setUnreadNotificationCounterEntries(e);
             });
     }
