@@ -9,7 +9,7 @@ const Wrapper = styled.div`
     display: flex;
     align-items: center;
     .more-options-tooltip {
-        &.orientation-left {
+        &.orientation-top, &.orientation-bottom, &.orientation-left, &.orientation-right {
             left: 0;
             top: 26px;
         }
@@ -36,13 +36,6 @@ const UserProfileDropdown = (props) => {
     const backToFolder = (folder) => {
         let pathname = url.split("/folder/")[0];
         history.push(pathname + `/folder/${folder.id}/${replaceChar(folder.search)}`);
-
-        console.log(folder)
-        console.log(folder.id)
-        console.log(folder.search)
-        if(!folder.parent_folder) {
-            console.log('keep it')
-        }
     };
 
     return (
