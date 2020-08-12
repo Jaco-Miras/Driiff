@@ -8,6 +8,7 @@ import { replaceChar } from "../../../helpers/stringFormatter";
 const Wrapper = styled.div`
     display: flex;
     align-items: center;
+    max-width: 24px;
     .more-options-tooltip {
         &.orientation-top, &.orientation-bottom, &.orientation-left, &.orientation-right {
             left: 0;
