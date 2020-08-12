@@ -74,6 +74,7 @@ export {
   getWorkspaceFavoriteFiles,
   getWorkspaceRecentlyEditedFiles,
   getWorkspaceFolders,
+  getWorkspaceFoldersBreadcrumb,
   postWorkspaceFiles,
   patchWorkspaceFileViewed,
   postFolder,

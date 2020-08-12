@@ -82,6 +82,13 @@ export function getWorkspaceFolders(payload) {
   });
 }
 
+export function getWorkspaceFoldersBreadcrumb(payload) {
+  return apiCall({
+    method: "GET",
+    url: `/v2/workspace-folder-breadcrumbs?${objToUrlParams(payload)}`,
+  });
+}
+
 export function getWorkspaceFilesDetail(payload) {
   return apiCall({
     method: "GET",

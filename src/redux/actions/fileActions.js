@@ -13,6 +13,7 @@ import {
   getWorkspaceFiles as getWorkspaceFilesService,
   getWorkspaceFilesDetail as getWorkspaceFilesDetailService,
   getWorkspaceFolders as getWorkspaceFoldersService,
+  getWorkspaceFoldersBreadcrumb as getWorkspaceFoldersBreadcrumbService,
   getWorkspaceGoogleFileAttachments as getWorkspaceGoogleFileAttachmentsService,
   getWorkspaceGoogleFolderAttachments as getWorkspaceGoogleFolderAttachmentsService,
   getWorkspacePopularFiles as getWorkspacePopularFilesService,
@@ -90,6 +91,10 @@ export function getWorkspacePopularFiles(payload, callback) {
 
 export function getWorkspaceFolders(payload, callback) {
   return dispatchActionToReducer(getWorkspaceFoldersService(payload), "GET_WORKSPACE_FOLDER_START", "GET_WORKSPACE_FOLDER_SUCCESS", "GET_WORKSPACE_FOLDER_FAIL", callback);
+}
+
+export function getWorkspaceFoldersBreadcrumb(payload, callback) {
+  return dispatchActionToReducer(getWorkspaceFoldersBreadcrumbService(payload), "GET_WORKSPACE_FOLDERS_BREADCRUMB_START", "GET_WORKSPACE_FOLDERS_BREADCRUMB_SUCCESS", "GET_WORKSPACE_FOLDERS_BREADCRUMB_FAIL", callback);
 }
 
 export function getWorkspaceFilesDetail(payload, callback) {
