@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import {useSelector} from "react-redux";
 import {useRouteMatch} from "react-router-dom";
 import styled from "styled-components";
@@ -53,8 +53,10 @@ const CompanyHeaderPanel = () => {
   // const dispatch = useDispatch();
   const match = useRouteMatch();
 
-  const unreadCounter = useSelector((state) => state.global.unreadCounter);
-  const { driffSettings } = useSettings();
+  // const unreadCounter = useSelector((state) => state.global.unreadCounter);
+  // const { driffSettings } = useSettings();
+
+  const [pageName, setPageName] = useState("Dashboard");
 
   const handleMenuOpenMobile = (e) => {
     e.preventDefault();
@@ -70,33 +72,54 @@ const CompanyHeaderPanel = () => {
       body.classList.add("stretch-layout");
     }
 
-    let pageName = "";
+    let page = "";
     switch (match.params.page) {
       case "posts": {
-        pageName = "Posts";
+        page = "Posts";
+        setPageName(page);
         break;
       }
       case "chat": {
-        pageName = "Chat";
+        page = "Chat";
+        setPageName(page);
         break;
       }
       case "files": {
-        pageName = "Files";
+        page = "Files";
+        setPageName(page);
+        break;
+      }
+      case "notifications": {
+        page = "Notifications";
+        setPageName(page);
         break;
       }
       case "people": {
-        pageName = "People";
+        page = "People";
+        setPageName(page);
+        break;
+      }
+      case "profile": {
+        page = "Profile";
+        setPageName(page);
+        break;
+      }
+      case "search": {
+        page = "Search";
+        setPageName(page);
         break;
       }
       case "settings": {
-        pageName = "Settings";
+        page = "Settings";
+        setPageName(page);
         break;
       }
       default: {
-        pageName = "Dashboard";
+        page = "Dashboard";
+        setPageName(page);
       }
     }
-    document.title = `Driff - ${pageName}`;
+    document.title = `Driff - ${page}`;
   }, [match.params]);
 
   return (
@@ -109,7 +132,7 @@ const CompanyHeaderPanel = () => {
               </a>
             </li>
             <li className="nav-item nav-item-folder">
-                <CompanyName>{driffSettings.company_name}</CompanyName>
+                <CompanyName>{pageName}</CompanyName>
             </li>
         </NavBar>
       </NavBarLeft>
