@@ -6,7 +6,13 @@ import styled from "styled-components";
 import {EmailRegex, replaceChar} from "../../helpers/stringFormatter";
 import {deleteWorkspaceFiles, setPendingUploadFilesToWorkspace} from "../../redux/actions/fileActions";
 import {addToModals, clearModal} from "../../redux/actions/globalActions";
-import {createWorkspace, fetchTimeline, leaveWorkspace, setActiveTopic, updateWorkspace} from "../../redux/actions/workspaceActions";
+import {
+    createWorkspace,
+    fetchTimeline,
+    leaveWorkspace,
+    setActiveTopic,
+    updateWorkspace
+} from "../../redux/actions/workspaceActions";
 import {FileAttachments} from "../common";
 import {DropDocument} from "../dropzone/DropDocument";
 import {CheckBox, DescriptionInput, FolderSelect, InputFeedback, PeopleSelect} from "../forms";
@@ -691,7 +697,7 @@ const CreateEditWorkspaceModal = (props) => {
                         label: m.name,
                         name: m.name,
                         id: m.id,
-                        first_name: m.first_name,
+                        first_name: m.first_name === "" ? m.email : m.first_name,
                         profile_image_link: m.profile_image_link,
                     };
                 });
