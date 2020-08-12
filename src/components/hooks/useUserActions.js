@@ -378,17 +378,30 @@ const useUserActions = () => {
    */
   const register = useCallback((payload, callback = () => {
   }) => {
-    dispatch(
-      postRequest(payload, (err, res) => {
-        if (err) {
-
-        }
-        if (res) {
-          //"Slug request sent. Please wait for admin to cross-check. You'll recieve further notification on your email.",
-        }
-        callback(err, res);
-      })
-    )
+    checkEmail(payload.email, (err, res) => {
+      if (res && !res.data.status) {
+        dispatch(
+          postRequest(payload, (err, res) => {
+            if (err) {
+              toaster.error(`User registration failed.`);
+            }
+            if (res) {
+              toaster.success(`Slug request sent. Please wait for admin to cross-check. You'll recieve further notification on your email.`, {
+                duration: 10000
+              });
+            }
+            callback(err, res);
+          })
+        )
+      } else {
+        toaster.error(`Email ${payload.email} is already taken`);
+        callback({
+          field: {
+            email: <>{payload.email} is already taken.</>
+          }
+        });
+      }
+    });
   }, []);
 
   const displayWelcomeBanner = useCallback((user) => {
