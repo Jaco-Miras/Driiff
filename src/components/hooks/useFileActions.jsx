@@ -28,6 +28,7 @@ import {
   setViewFiles,
   uploadFilesReducer,
   uploadWorkspaceFiles,
+  getWorkspaceFoldersBreadcrumb,
 } from "../../redux/actions/fileActions";
 import {addToModals} from "../../redux/actions/globalActions";
 import {useToaster} from "./index";
@@ -142,6 +143,16 @@ const useFileActions = (params = null) => {
     },
     [dispatch]
   );
+
+
+  const getFoldersBreadcrumb = useCallback(
+    (payload, callback) => {
+      dispatch(getWorkspaceFoldersBreadcrumb(payload, callback));
+    },
+    [dispatch]
+  );
+
+
 
   const updateFolder = useCallback(
     (payload, callback) => {
@@ -615,6 +626,7 @@ const useFileActions = (params = null) => {
     getFiles,
     getFilesDetail,
     getFolders,
+    getFoldersBreadcrumb,
     getPopularFiles,
     getEditedFiles,
     getTrashFiles,

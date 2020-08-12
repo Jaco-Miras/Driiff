@@ -25,7 +25,7 @@ const UserProfileDropdown = (props) => {
 
     useEffect(() => {
         if(parentFolder) {
-            fileActions.getFolders({ folder_id: parentFolder.id, topic_id: workspaceID  }, (err, res) => {
+            fileActions.getFoldersBreadcrumb({ folder_id: parentFolder.id, topic_id: workspaceID  }, (err, res) => {
                 if(res) {
                     setFolders(res.data.folders)
                 }
