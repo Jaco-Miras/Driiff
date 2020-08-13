@@ -24,6 +24,7 @@ import {getAllRecipients, getConnectedSlugs} from "../redux/actions/globalAction
 import {getNotifications} from "../redux/actions/notificationActions";
 import {getMentions} from "../redux/actions/userAction";
 import {getAPIUrl, getCurrentDriffUrl} from "../helpers/slugHelper";
+import usePushNotification from "../components/webpush/usePushNotification";
 
 const MainContent = styled.div``;
 
@@ -37,7 +38,7 @@ const MainLayout = (props) => {
   useFilesUpload(props);
   useVisibilityChange();
   useSocketConnection();
-
+  usePushNotification();
   const {path} = useRouteMatch();
   const {logout: userLogout, displayWelcomeBanner} = useUserActions();
   const user = useSelector((state) => state.session.user);

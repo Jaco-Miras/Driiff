@@ -193,6 +193,7 @@ const ChatInput = (props) => {
       is_shared: selectedChannel.is_shared ? selectedChannel.entity_id : null,
       token: slugs.length && slugs.filter((s) => s.slug_name === selectedChannel.slug_owner).length ? slugs.filter((s) => s.slug_name === selectedChannel.slug_owner)[0].access_token : null,
       slug: slugs.length && slugs.filter((s) => s.slug_name === selectedChannel.slug_owner).length ? slugs.filter((s) => s.slug_name === selectedChannel.slug_owner)[0].slug_name : null,
+      test_case: "web_push"
     };
 
     if (quote) {

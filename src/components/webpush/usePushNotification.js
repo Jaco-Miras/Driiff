@@ -44,8 +44,6 @@ export default function usePushNotifications() {
       setLoading(false);
     });
   };
-  //
-  console.log(userConsent);
   /**
    * define a click handler that creates a push notification subscription.
    * Once the subscription is created, it uses the setUserSubscription hook
@@ -56,7 +54,7 @@ export default function usePushNotifications() {
     setSubsubscribing(true);
     createNotificationSubscription()
       .then(function (subscription) {
-        console.log(subscription);
+        //console.log(subscription);
         setUserSubscription(subscription);
         dispatch(
           subscribePushNotifications(subscription, (err, res) => {
@@ -68,7 +66,7 @@ export default function usePushNotifications() {
             }
             setSubsubscribing(false);
 
-            console.log(res, "subscribe response");
+            //console.log(res, "subscribe response");
             setPushServerSubscriptionId(res.data.id);
           })
         );
@@ -95,7 +93,7 @@ export default function usePushNotifications() {
           setError(err);
           return;
         }
-        console.log(res, "subscribe response");
+        //console.log(res, "subscribe response");
         setPushServerSubscriptionId(res.data.id);
       })
     );
@@ -109,7 +107,7 @@ export default function usePushNotifications() {
     setError(false);
     dispatch(
       getPushNotification({ sub_id: pushServerSubscriptionId }, (err, res) => {
-        console.log(res, "get notification");
+        //console.log(res, "get notification");
         setLoading(false);
         if (err) setError(err);
       })
@@ -118,7 +116,7 @@ export default function usePushNotifications() {
 
   useEffect(() => {
     if (pushNotificationSupported) {
-      console.log("register worker");
+      //console.log("register worker");
       setLoading(true);
       setError(false);
       registerServiceWorker().then(() => {
@@ -171,7 +169,7 @@ export default function usePushNotifications() {
       setSubsubscribing(true);
       createNotificationSubscription()
         .then(function (subscription) {
-          console.log(subscription);
+          //console.log(subscription);
           setUserSubscription(subscription);
           dispatch(
             subscribePushNotifications(subscription, (err, res) => {
@@ -182,7 +180,7 @@ export default function usePushNotifications() {
                 return;
               }
               setSubsubscribing(false);
-              console.log(res, "subscribe response");
+              //console.log(res, "subscribe response");
               setPushServerSubscriptionId(res.data.id);
             })
           );
