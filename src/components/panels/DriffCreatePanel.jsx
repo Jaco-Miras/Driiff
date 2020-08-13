@@ -7,11 +7,19 @@ import {FormGroup, Input, InputGroup, InputGroupAddon, InputGroupText} from "rea
 import useDriffActions from "../hooks/useDriffActions";
 import {addToModals} from "../../redux/actions/globalActions";
 import {useDispatch} from "react-redux";
-import {Badge} from "../common";
 import ReactConfetti from "react-confetti";
 import {isIPAddress} from "../../helpers/commonFunctions";
 
-const Wrapper = styled.form``;
+const Wrapper = styled.form`
+  .btn {
+    .badge {
+      position: relative;
+      right: auto;
+      top: 0px;
+      left: 0.5rem;
+    }
+  }
+`;
 
 const StyledFormGroup = styled(FormGroup)`
     .form-control {
@@ -244,7 +252,10 @@ const DriffCreatePanel = (props) => {
 
               {
                 typeof form.invitations !== "undefined" ?
-                  <>Invited users <Badge color="danger" label={form.invitations.length}/></>
+                  <>Invited users <div className={`mr-2 d-sm-inline d-none`}>
+                    <div className={"badge badge-light text-white"}>{form.invitations.length}</div>
+                  </div>
+                  </>
                   :
                   <>+ {dictionary.inviteUser}</>
               }
