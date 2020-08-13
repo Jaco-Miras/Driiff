@@ -6,6 +6,9 @@ import { joinWorkspace } from "../../../redux/actions/workspaceActions";
 import { CommonPicker, SvgIconFeather } from "../../common";
 import PostInput from "../../forms/PostInput";
 import { CommentQuote } from "../../list/post/item";
+import { useToaster, useTranslation } from "../../hooks";
+import { addToModals } from "../../../redux/actions/globalActions";
+import { putChannel } from "../../../redux/actions/chatActions";
 
 const Wrapper = styled.div`
   position: relative;
@@ -134,11 +137,11 @@ const ArchivedDiv = styled.div`
   width: 100%;
   text-align: center;
   padding: 15px 10px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
   h4 {
-    margin: 0;
-    display: flex;
-    justify-content: center;
-    alignt-items: center;
+    margin: 0 10px;
   }
 `;
 
@@ -210,6 +213,48 @@ const PostDetailFooter = (props) => {
     );
   };
 
+  const toaster = useToaster();
+  const {_t} = useTranslation();
+
+  const dictionary = {
+    unarchiveThisWorkspace: _t("WORKSPACE.WORKSPACE_UNARCHIVE", "Unarchive this workspace"),
+    unarchiveWorkspace: _t("HEADER.UNARCHIVE_WORKSPACE", "Unarchive workspace"),
+    cancel: _t("BUTTON.CANCEL", "Cancel"),
+    unarchiveBodyText: _t("TEXT.UNARCHIVE_CONFIRMATION", "Are you sure you want to unarchive this workspace?"),
+  };
+
+  const handleUnarchive = () => {
+    let payload = {
+        id: workspace.channel.id,
+        is_archived: false,
+        is_muted: false,
+        is_pinned: false,
+        push_unarchived: 1
+    };
+
+    dispatch(putChannel(payload));
+    toaster.success(
+        <span>
+          <b>{workspace.name} workspace is unarchived.</b>
+        </span>
+    );
+  };
+
+  const handleShowUnarchiveConfirmation = () => {
+    let payload = {
+      type: "confirmation",
+      cancelText: dictionary.cancel,
+      headerText: dictionary.unarchiveWorkspace,
+      submitText: dictionary.unarchiveWorkspace,
+      bodyText: dictionary.unarchiveBodyText,
+      actions: {
+          onSubmit: handleUnarchive,
+      },
+  };
+
+  dispatch(addToModals(payload));
+  };
+
   const toggleTooltip = () => {
     let tooltips = document.querySelectorAll("span.react-tooltip-lite");
     tooltips.forEach((tooltip) => {
@@ -223,9 +268,9 @@ const PostDetailFooter = (props) => {
       {
         disableOptions && 
         <ArchivedDiv>
-          <h4>
-            <Icon icon="archive" /> This is an archived workspace
-          </h4>
+          <Icon icon="archive" />
+          <h4>This is an archived workspace</h4>
+          <button className="btn btn-primary" onClick={handleShowUnarchiveConfirmation}>Un-archive workspace</button>
         </ArchivedDiv>
       }
       {

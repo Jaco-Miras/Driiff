@@ -526,6 +526,60 @@ export default function (state = INITIAL_STATE, action) {
             : state.selectedChannel,
       };
     }
+    case "ARCHIVE_REDUCER": {
+      let channel = null;
+      if (Object.keys(state.channels).length > 0 && state.channels.hasOwnProperty(action.data.channel_id)) {
+        channel = { ...state.channels[action.data.channel_id] };
+        channel = {
+          ...channel,
+          is_archived: action.data.status === "ARCHIVED" ? true : false,
+        };
+      }
+      return {
+        ...state,
+        channels:
+          channel !== null
+            ? {
+                ...state.channels,
+                [action.data.channel_id]: channel,
+              }
+            : state.channels,
+        selectedChannel:
+          state.selectedChannel && state.selectedChannel.id === action.data.channel_id
+            ? {
+                ...state.selectedChannel,
+                is_archived: action.data.status === "ARCHIVED" ? true : false,
+              }
+            : state.selectedChannel,
+      };
+    }
+    case "UNARCHIVE_REDUCER": {
+      let channel = null;
+      if (Object.keys(state.channels).length > 0 && state.channels.hasOwnProperty(action.data.channel_id)) {
+        channel = { ...state.channels[action.data.channel_id] };
+        channel = {
+          ...channel,
+          is_archived: action.data.status === "UNARCHIVED" ? false : true,
+        };
+      }
+      return {
+        ...state,
+        channels:
+          channel !== null
+            ? {
+                ...state.channels,
+                [action.data.channel_id]: channel,
+              }
+            : state.channels,
+        selectedChannel:
+          state.selectedChannel && state.selectedChannel.id === action.data.channel_id
+            ? {
+                ...state.selectedChannel,
+                is_archived: action.data.status === "UNARCHIVED" ? false : true,
+              }
+            : state.selectedChannel,
+      };
+    }
     case "INCOMING_CHAT_MESSAGE_REACTION": {
       let channel = null;
       if (Object.keys(state.channels).length > 0 && state.channels.hasOwnProperty(action.data.channel_id)) {

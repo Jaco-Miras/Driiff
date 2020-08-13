@@ -259,7 +259,13 @@ const WorspaceHeaderPanel = (props) => {
                         {activeTopic.name}
                       </SubWorkspaceName>
                     </li>
-                    <li className="nav-item">{ !isExternal && activeTopic.active === 1 && <SettingsLink/> }</li>
+                    {
+                      activeTopic.active === 0 && 
+                      <li className="nav-item">
+                        <div className={`badge badge-light text-white ml-1`}>Archived</div>
+                      </li>
+                    }
+                    <li className="nav-item">{ !isExternal && <SettingsLink/> }</li>
                   </>
               ) : (
                 <>
@@ -279,7 +285,13 @@ const WorspaceHeaderPanel = (props) => {
                       {activeTopic.name}
                     </SubWorkspaceName>
                   </li>
-                  <li className="nav-item">{!isExternal && activeTopic.active === 1 && <SettingsLink/>}</li>
+                  {
+                    activeTopic.active === 0 && 
+                    <li className="nav-item">
+                      <div className={`badge badge-light text-white ml-1`}>Archived</div>
+                    </li>
+                  }
+                  <li className="nav-item">{!isExternal && <SettingsLink/>}</li>
                 </>
               )}
               <li className="nav-item-last">
