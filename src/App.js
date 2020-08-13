@@ -6,6 +6,7 @@ import {useDriff} from "./components/hooks";
 import {DriffRegisterPanel, ModalPanel, PreLoader, RedirectPanel} from "./components/panels";
 import {AppRoute} from "./layout/routes";
 import GuestLayout from "./layout/GuestLayout";
+import DriffSelectPanel from "./components/panels/DriffSelectPanel";
 
 const Wrapper = styled.div`
   min-height: 100%;
@@ -33,29 +34,31 @@ function App() {
     <Wrapper className="App">
       <PreLoader/>
       {
-        location.pathname === "/driff-register" ?
-          <Route
-            render={() => <GuestLayout setRegisteredDriff={setRegisteredDriff}/>} path="/driff-register"
-            exact/>
-          :
-          <>
-            {
-              redirected === true ? (
-                  <RedirectPanel redirectTo={driffActions.getBaseUrl}/>
-                )
-                : registeredDriff === null ? (
-                  <DriffRegisterPanel setRegisteredDriff={setRegisteredDriff}/>
-                )
-                : (
-                  <>
-                    <Switch>
-                      <ScrollToTop>
-                        <AppRoute path="*"/>
-                      </ScrollToTop>
-                    </Switch>
-                  </>
-                )}
-          </>
+        location.pathname === "/driff" ?
+          <DriffRegisterPanel setRegisteredDriff={setRegisteredDriff}/> :
+          location.pathname === "/driff-register" ?
+            <Route
+              render={() => <GuestLayout setRegisteredDriff={setRegisteredDriff}/>} path="/driff-register"
+              exact/>
+            :
+            <>
+              {
+                redirected === true ? (
+                    <RedirectPanel redirectTo={driffActions.getBaseUrl}/>
+                  )
+                  : registeredDriff === null ? (
+                    <DriffSelectPanel/>
+                  )
+                  : (
+                    <>
+                      <Switch>
+                        <ScrollToTop>
+                          <AppRoute path="*"/>
+                        </ScrollToTop>
+                      </Switch>
+                    </>
+                  )}
+            </>
       }
       <ModalPanel/>
     </Wrapper>
