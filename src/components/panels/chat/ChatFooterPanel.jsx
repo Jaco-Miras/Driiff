@@ -2,13 +2,14 @@ import React, { useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Tooltip from "react-tooltip-lite";
 import styled from "styled-components";
-import { onClickSendButton } from "../../../redux/actions/chatActions";
+import { onClickSendButton, putChannel } from "../../../redux/actions/chatActions";
 import { joinWorkspace } from "../../../redux/actions/workspaceActions";
 import { CommonPicker, SvgIconFeather } from "../../common";
 import ChatInput from "../../forms/ChatInput";
-import { useIsMember, useTimeFormat, useToaster } from "../../hooks";
+import { useIsMember, useTimeFormat, useToaster, useTranslation } from "../../hooks";
 import ChatQuote from "../../list/chat/ChatQuote";
 import TypingIndicator from "../../list/chat/TypingIndicator";
+import { addToModals } from "../../../redux/actions/globalActions";
 
 const Wrapper = styled.div`
   position: relative;
@@ -28,11 +29,11 @@ const ArchivedDiv = styled.div`
   width: 100%;
   text-align: center;
   padding: 15px 10px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
   h4 {
-    margin: 0;
-    display: flex;
-    justify-content: center;
-    alignt-items: center;
+    margin: 0 10px;
   }
 `;
 
@@ -201,6 +202,47 @@ const ChatFooterPanel = (props) => {
     );
   };
 
+  const {_t} = useTranslation();
+
+  const dictionary = {
+    unarchiveThisWorkspace: _t("WORKSPACE.WORKSPACE_UNARCHIVE", "Unarchive this workspace"),
+    unarchiveWorkspace: _t("HEADER.UNARCHIVE_WORKSPACE", "Unarchive workspace"),
+    cancel: _t("BUTTON.CANCEL", "Cancel"),
+    unarchiveBodyText: _t("TEXT.UNARCHIVE_CONFIRMATION", "Are you sure you want to unarchive this workspace?"),
+  };
+
+  const handleUnarchive = () => {
+    let payload = {
+        id: selectedChannel.id,
+        is_archived: false,
+        is_muted: false,
+        is_pinned: false,
+        push_unarchived: 1
+    };
+
+    dispatch(putChannel(payload));
+    toaster.success(
+        <span>
+          <b>{selectedChannel.type === "TOPIC" ? `${selectedChannel.title} workspace is unarchived.` : `${selectedChannel.title} channel is unarchived.`}</b>
+        </span>
+    );
+  };
+
+  const handleShowUnarchiveConfirmation = () => {
+    let payload = {
+      type: "confirmation",
+      cancelText: dictionary.cancel,
+      headerText: dictionary.unarchiveWorkspace,
+      submitText: dictionary.unarchiveWorkspace,
+      bodyText: dictionary.unarchiveBodyText,
+      actions: {
+          onSubmit: handleUnarchive,
+      },
+  };
+
+  dispatch(addToModals(payload));
+  };
+
   const isMember = useIsMember(selectedChannel && selectedChannel.members.length ? selectedChannel.members.map((m) => m.id) : []);
 
   const toggleTooltip = () => {
@@ -223,9 +265,9 @@ const ChatFooterPanel = (props) => {
         <Dflex className="d-flex align-items-center">
           {selectedChannel && selectedChannel.is_archived ? (
             <ArchivedDiv>
-              <h4>
-                <Icon icon="archive" /> This is an archived channel
-              </h4>
+              <Icon icon="archive" />
+                <h4>{selectedChannel.type === "TOPIC" ? "This is an archived workspace" : "This is an archived channel"}</h4>
+              <button className="btn btn-primary" onClick={handleShowUnarchiveConfirmation}>{selectedChannel.type === "TOPIC"  ? "Un-archive workspace" : "Un-archive channel"}</button>
             </ArchivedDiv>
           ) : (
             <React.Fragment>

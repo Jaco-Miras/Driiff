@@ -667,14 +667,16 @@ class SocketListeners extends React.PureComponent {
             })
             .listen(".archived-chat-channel", (e) => {
                 console.log(e, "archived chat");
-                this.props.incomingArchivedChannel(e.channel_data);
+               
 
                 if (e.channel_data.topic_detail) {
                     if (e.channel_data.status === "UNARCHIVED") {
-                        this.props.incomingUnArchivedWorkspaceChannel(e.channel_data.topic_detail)
+                        this.props.incomingUnArchivedWorkspaceChannel(e.channel_data)
                     } else {
-                        this.props.incomingArchivedWorkspaceChannel(e.channel_data.topic_detail)
+                        this.props.incomingArchivedWorkspaceChannel(e.channel_data)
                     }
+                } else {
+                    this.props.incomingArchivedChannel(e.channel_data);
                 }
             })
             .listen(".new-chat-channel", (e) => {
