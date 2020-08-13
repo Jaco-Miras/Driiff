@@ -1,14 +1,20 @@
-import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
-import { getPushNotification, subscribePushNotifications } from "../../redux/actions/globalActions";
-import { askUserPermission, createNotificationSubscription, getUserSubscription, isPushNotificationSupported, registerServiceWorker } from "./pushFunctions";
+import {useEffect, useState} from "react";
+import {useDispatch} from "react-redux";
+import {getPushNotification, subscribePushNotifications} from "../../redux/actions/globalActions";
+import {
+  askUserPermission,
+  createNotificationSubscription,
+  getUserSubscription,
+  isPushNotificationSupported,
+  registerServiceWorker
+} from "./pushFunctions";
 //import all the function created to manage the push notifications
 
 const pushNotificationSupported = isPushNotificationSupported();
 //first thing to do: check if the push notifications are supported by the browser
 
-export default function usePushNotifications() {
-  const [userConsent, setSuserConsent] = useState(Notification.permission);
+export default function usePushNotification() {
+  const [userConsent, setSuserConsent] = useState(typeof Notification !== "undefined" ? Notification.permission : false);
   //to manage the user consent: Notification.permission is a JavaScript native function that return the current state of the permission
   //We initialize the userConsent with that value
   const [userSubscription, setUserSubscription] = useState(null);

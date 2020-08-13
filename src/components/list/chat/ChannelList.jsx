@@ -14,6 +14,7 @@ const Wrapper = styled.li`
   position: relative;
   ${(props) => props.selected && "padding-left: 14px !important"};
   transition: all 0.15s linear;
+  min-height: 72px;
   .more-options {
     position: relative;
     opacity: 0;
@@ -56,6 +57,7 @@ const Wrapper = styled.li`
     right: 0px;
     white-space: nowrap;
     transition: opacity 0.3s ease;
+    top: -2px;
     svg {
       margin-left: 4px;
       &.feather-star {
@@ -80,7 +82,7 @@ const Wrapper = styled.li`
 `;
 
 const ChannelTitlePreview = styled.div`
-  padding-right: 60px;
+  padding-right: 64px;
 `;
 
 const Timestamp = styled.div`
