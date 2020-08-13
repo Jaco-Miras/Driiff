@@ -17,8 +17,6 @@ import MobileOverlay from "../components/panels/MobileOverlay";
 
 import {WorkspaceContentPanel} from "../components/panels/workspace";
 import SocketListeners from "../components/socket/socketListeners";
-//import Socket from "../components/socket/socket";
-//import Socket from "../components/socket/socket";
 import {getFiles} from "../redux/actions/fileActions";
 import {getAllRecipients, getConnectedSlugs} from "../redux/actions/globalActions";
 import {getNotifications} from "../redux/actions/notificationActions";
@@ -130,10 +128,6 @@ const MainLayout = (props) => {
       </MainContent>
 
       <MobileOverlay/>
-
-
-
-
 
       {/* {
              user.id !== undefined &&

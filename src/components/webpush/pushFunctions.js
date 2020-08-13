@@ -64,13 +64,17 @@ async function createNotificationSubscription() {
  */
 function getUserSubscription() {
   //wait for service worker installation to be ready, and then
-  return navigator.serviceWorker.ready
-    .then(function (serviceWorker) {
-      return serviceWorker.pushManager.getSubscription();
-    })
-    .then(function (pushSubscription) {
-      return pushSubscription;
-    });
+  if (typeof navigator.serviceWorker === "undefined") {
+    return false;
+  } else {
+    return navigator.serviceWorker.ready
+      .then(function (serviceWorker) {
+        return serviceWorker.pushManager.getSubscription();
+      })
+      .then(function (pushSubscription) {
+        return pushSubscription;
+      });
+  }
 }
 
 export { isPushNotificationSupported, askUserPermission, registerServiceWorker, sendNotification, createNotificationSubscription, getUserSubscription };
