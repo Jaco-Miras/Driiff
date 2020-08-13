@@ -486,8 +486,7 @@ export default (state = INITIAL_STATE, action) => {
       let newWorkspacePosts = { ...state.workspacePosts };
       let updatedWorkspaces = { ...state.workspaces };
       let updatedFolders = { ...state.folders };
-      let updatedTopic = { ...state.activeTopic };
-
+      let addUnreadPost = false;
       action.data.workspaces.forEach((ws) => {
         if (newWorkspacePosts.hasOwnProperty(ws.topic_id)) {
           newWorkspacePosts[ws.topic_id].posts[action.data.id] = action.data;
@@ -501,8 +500,8 @@ export default (state = INITIAL_STATE, action) => {
         }
         if (action.data.author.id !== state.user.id) {
           updatedWorkspaces[ws.topic_id].unread_posts = updatedWorkspaces[ws.topic_id].unread_posts + 1;
-          if (state.activeTopic.id === ws.topic_id) {
-            updatedTopic.unread_posts = updatedTopic.unread_posts + 1;
+          if (state.activeTopic && state.activeTopic.id === ws.topic_id) {
+            addUnreadPost = true;
           }
           if (ws.workspace_id !== 0) {
             updatedFolders[ws.workspace_id].unread_count = updatedFolders[ws.workspace_id].unread_count + 1;
@@ -513,7 +512,7 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         workspacePosts: newWorkspacePosts,
         workspaces: updatedWorkspaces,
-        activeTopic: updatedTopic,
+        activeTopic: addUnreadPost ? { ...state.activeTopic, unread_posts: state.activeTopic.unread_posts + 1} : state.activeTopic
       };
     }
     case "INCOMING_UPDATED_POST": {

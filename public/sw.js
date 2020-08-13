@@ -1,15 +1,14 @@
 function receivePushNotification(event) {
     console.log("[Service Worker] Push Received.", event, event.data.json());
   
-    const { reference_title, message, message_from, id, slug, channel_code } = event.data.json();
-
+    const { reference_title, id, slug, channel_code, strip_body, user } = event.data.json();
     const options = {
-      data: slug ? `https://${slug}.driff.io/chat/${channel_code}` : `https://dev.drevv.com/chat/${channel_code}`,
-      body: message,
-      icon: message_from.profile_image_link,
+      data: `https://${slug}.drevv.com/chat/${channel_code}`,
+      body: strip_body,
+      icon: user.profile_image_link,
       vibrate: [200, 100, 200],
       tag: id,
-      image: message_from.profile_image_link,
+      image: user.profile_image_link,
       badge: "./favicon.ico",
       actions: [{ action: "Detail", title: "View", icon: "./favicon.ico" }]
     };

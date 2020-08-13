@@ -277,7 +277,28 @@ class SocketListeners extends React.PureComponent {
 
                 switch (e.SOCKET_TYPE) {
                     case "CHAT_CREATE": {
-                        //@to do add unfurl
+                        //unfurl link
+                        let urlArray = [...new Set(urlify(e.body))];
+                        if (urlArray.length) {
+                            this.props.generateUnfurl(
+                                {
+                                    type: "chat",
+                                    message_id: e.id,
+                                    link_url: urlArray[0],
+                                },
+                                (err, res) => {
+                                    if (res) {
+                                        this.props.generateUnfurlReducer({
+                                            unfurls: res.data.unfurls,
+                                            channel_id: e.channel_id,
+                                            message_id: e.id,
+                                        });
+                                    } else {
+                                        console.log(err);
+                                    }
+                                }
+                            );
+                        }
                         if (this.props.user.id !== e.user.id) {
                             delete e.reference_id;
                             e.g_date = this.props.localizeDate(e.created_at.timestamp, "YYYY-MM-DD");
@@ -614,31 +635,6 @@ class SocketListeners extends React.PureComponent {
             .listen(".member-update-timestamp", (e) => {
                 //console.log("seen member", e);
                 this.props.setMemberTimestamp(e);
-            })
-            .listen(".chat-notification", (e) => {
-                console.log(e);
-
-                let urlArray = [...new Set(urlify(e.message))];
-                if (urlArray.length) {
-                    this.props.generateUnfurl(
-                        {
-                            type: "chat",
-                            message_id: e.entity_id,
-                            link_url: urlArray[0],
-                        },
-                        (err, res) => {
-                            if (res) {
-                                this.props.generateUnfurlReducer({
-                                    unfurls: res.data.unfurls,
-                                    channel_id: e.channel_id,
-                                    message_id: e.entity_id,
-                                });
-                            } else {
-                                console.log(err);
-                            }
-                        }
-                    );
-                }
             })
             .listen(".new-added-member-chat", (e) => {
                 console.log("new chat member", e);
