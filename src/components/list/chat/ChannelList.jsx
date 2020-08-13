@@ -99,6 +99,8 @@ const ChannelList = (props) => {
     const {className = "", channel, selectedChannel, isWorkspace = false} = props;
 
     const handleSelectChannel = () => {
+        document.body.classList.add("m-chat-channel-closed");
+
         if (selectedChannel !== null) {
             const scrollComponent = document.getElementById("component-chat-thread");
             if (scrollComponent) {
