@@ -126,7 +126,7 @@ const WorkspacePostsPanel = (props) => {
               <EmptyState>
                 <SvgEmptyState icon={3} height={252} />
                 {isMember && (
-                  <button className="btn btn-outline-primary btn-block" onClick={handleShowWorkspacePostModal}>
+                  <button className="btn btn-outline-primary btn-block" onClick={handleShowWorkspacePostModal} disabled={disableOptions}>
                     {dictionary.createNewPost}
                   </button>
                 )}
