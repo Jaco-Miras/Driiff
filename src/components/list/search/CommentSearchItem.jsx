@@ -10,6 +10,21 @@ const Wrapper = styled.li`
     }
 `;
 
+const ResultContent = styled.div`
+    img {
+        max-height: 200px;
+        padding: 20px;
+        margin-top: 20px;
+        float: right;
+    }
+    p {
+        display: none;
+        &:nth-child(1), &:nth-child(2), &:nth-child(3), &:nth-child(4), &:nth-child(5) {
+            display: block;
+        }
+    }
+`;
+
 const CommentSearchItem = (props) => {
 
     const { comment, redirect } = props;
@@ -18,14 +33,14 @@ const CommentSearchItem = (props) => {
     return (
         <Wrapper className="list-group-item p-l-0 p-r-0">
             {
-                data !== null && 
+                data !== null &&
                 <>
                 <div>
                     <Avatar id={data.comment.author.id} name={data.comment.author.name} imageLink={data.comment.author.profile_image_link}/>
                 </div>
                 <div className="ml-2">
                     <p>{data.comment.author.name}</p>
-                    <p className="text-muted" dangerouslySetInnerHTML={{__html: data.comment.body}}></p>
+                    <ResultContent className="text-muted" dangerouslySetInnerHTML={{__html: data.comment.body}}></ResultContent>
                 </div>
                 </>
             }
