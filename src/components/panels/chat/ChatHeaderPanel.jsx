@@ -123,7 +123,7 @@ const ChatHeaderPanel = (props) => {
               </>
             )}
             <li className="mobile-chat-close-btn" onClick={goBackChannelSelect}>
-              <IconButton icon={"x"} />
+              <IconButton icon={"arrow-left"} />
             </li>
           </ul>
         </div>
