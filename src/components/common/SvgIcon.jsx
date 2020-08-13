@@ -109,6 +109,7 @@ export const SvgIconFeather = React.memo(
         );
         break;
       case "users":
+        strokeWidth = "2";
         content = (
           <>
             <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
@@ -178,6 +179,7 @@ export const SvgIconFeather = React.memo(
         );
         break;
       case "upload-cloud":
+        strokeWidth = "2";
         content = (
           <>
             <polyline points="16 16 12 12 8 16"/>
@@ -188,6 +190,7 @@ export const SvgIconFeather = React.memo(
         );
         break;
       case "monitor":
+        strokeWidth = "2";
         content = (
           <>
             <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
@@ -197,6 +200,7 @@ export const SvgIconFeather = React.memo(
         );
         break;
       case "corner-up-right":
+        strokeWidth = "2";
         content = (
           <>
             <polyline points="15 14 20 9 15 4"/>
@@ -205,6 +209,7 @@ export const SvgIconFeather = React.memo(
         );
         break;
       case "arrow-left":
+        strokeWidth = "2";
         content = (
           <>
             <line x1="19" y1="12" x2="5" y2="12"/>
@@ -213,6 +218,7 @@ export const SvgIconFeather = React.memo(
         );
         break;
       case "arrow-right":
+        strokeWidth = "2";
         content = (
           <>
             <line x1="5" y1="12" x2="19" y2="12"/>
@@ -221,6 +227,7 @@ export const SvgIconFeather = React.memo(
         );
         break;
       case "download":
+        strokeWidth = "2";
         content = (
           <>
             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
@@ -323,6 +330,7 @@ export const SvgIconFeather = React.memo(
         );
         break;
       case "trash":
+        strokeWidth = "2";
         content = (
           <>
             <polyline points="3 6 5 6 21 6"/>
@@ -341,6 +349,7 @@ export const SvgIconFeather = React.memo(
         );
         break;
       case "edit":
+        strokeWidth = "2";
         content = (
           <>
             <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>

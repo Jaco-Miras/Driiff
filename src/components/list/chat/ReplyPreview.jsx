@@ -18,6 +18,7 @@ const LastReplyBody = styled.div`
   min-width: 200px;
   text-overflow: ellipsis;
   max-height: 40px;
+  min-height: 24px;
   display: table-cell;
   white-space: nowrap;
   text-overflow: ellipsis;
