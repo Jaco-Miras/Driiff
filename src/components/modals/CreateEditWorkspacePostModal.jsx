@@ -468,7 +468,7 @@ const CreateEditWorkspacePostModal = (props) => {
             end_at: form.end_at ? moment(form.end_at, "YYYY-MM-DD").format("YYYY-MM-DD") : null,
             tag_ids: [],
             file_ids: [],
-            test_case: "web_push"
+            //test_case: "web_push"
         };
         if (draftId) {
             dispatch(
