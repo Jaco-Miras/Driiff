@@ -137,7 +137,7 @@ const NavIcon = styled(SvgIconFeather)`
 `;
 
 const NavNewWorkspace = styled.button`
-  background: #7a1b8bcc !important;
+  background: #fff3 !important;
   color: #ffffffcc;
   border: 0 !important;
   margin: 15px;
@@ -146,13 +146,11 @@ const NavNewWorkspace = styled.button`
   justify-content: center;
   align-items: center;
   color: #ffffff !important;
-  ${"" /* border: 1px solid #fff3 !important; */}
   div {
     position: relative;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    ${"" /* filter: invert(1); */}
     font-weight: 500;
   }
 `;

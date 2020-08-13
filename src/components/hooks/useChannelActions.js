@@ -301,8 +301,6 @@ const useChannelActions = () => {
    */
   const select = useCallback(
     (channel, callback = () => {}) => {
-      document.body.classList.remove("m-chat-channel-open");
-
       //if contact doesn't have a chat channel yet
       if (typeof channel === "undefined") {
         console.log(channel, "channel not found");

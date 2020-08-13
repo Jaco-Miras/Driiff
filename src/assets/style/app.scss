@@ -18399,7 +18399,7 @@ small {
 }
 
 .navigation .navigation-menu-tab {
-  background-color: #360c3e;
+  background-color: #4d075a;
   width: 300px;
   display: -webkit-box;
   display: -webkit-flex;
@@ -20894,14 +20894,19 @@ body.dark.small-navigation .navigation-menu-body ul li.navigation-divider:after 
 }
 
 @media all and (max-width: 992px) {
-  .m-chat-channel-open {
+  .chat-sidebar {
+    left: -24px;
+    padding-right: 10px;
+    border-right: 0 !important;
+  }
+  .tab-panel {
+    background: #fff;
+  }
+  .m-chat-channel-closed {
     .chat-sidebar {
-      left: -24px;
-      padding-right: 10px;
-      border-right: 0 !important;
-    }
-    .tab-panel {
-      background: #fff;
+      left: calc(-100% + -24px);
+      padding-left: 24px !important;
+      padding-right: 24px !important;
     }
   }
 }

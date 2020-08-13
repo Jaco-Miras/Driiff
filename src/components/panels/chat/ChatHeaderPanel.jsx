@@ -77,7 +77,7 @@ const ChatHeaderPanel = (props) => {
   };
 
   const goBackChannelSelect = () => {
-    document.body.classList.add("m-chat-channel-open");
+    document.body.classList.remove("m-chat-channel-closed");
   };
 
   useEffect(() => {
