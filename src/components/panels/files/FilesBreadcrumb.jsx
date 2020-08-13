@@ -51,6 +51,8 @@ const FilesBody = (props) => {
                 if(val.id === folder.parent_folder.id) {
                     if(val.parent_folder) {
                         setParentBreadcrumb(true);
+                    } else {
+                        setParentBreadcrumb(false);
                     }
                 }
             });

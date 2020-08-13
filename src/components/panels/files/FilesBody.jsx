@@ -266,19 +266,27 @@ const FilesBody = (props) => {
                   <>
                     <div className="row">
                       {wsFiles &&
-                        fileIds.map((f) => {
-                          if (wsFiles.files.hasOwnProperty(f)) {
-                            return <FileListItem key={f} isMember={isMember} scrollRef={scrollRef} actions={actions} className="col-xl-3 col-lg-4 col-md-6 col-sm-12" file={wsFiles.files[f]} disableOptions={disableOptions}/>;
-                          } else return null;
-                        })}
+                      fileIds.map((f) => {
+                        if (wsFiles.files.hasOwnProperty(f)) {
+                          return <FileListItem key={f} isMember={isMember} scrollRef={scrollRef} actions={actions}
+                                               className="col-xl-3 col-lg-4 col-md-6 col-sm-12" file={wsFiles.files[f]}
+                                               disableOptions={disableOptions}/>;
+                        } else return null;
+                      })}
                     </div>
-                    {wsFiles && wsFiles.popular_files.length > 0 && <PopularFiles search={search} scrollRef={scrollRef} wsFiles={wsFiles} actions={actions} disableOptions={disableOptions}/>}
-                    {wsFiles && wsFiles.recently_edited.length > 0 && <RecentEditedFile search={search} scrollRef={scrollRef} wsFiles={wsFiles} actions={actions} disableOptions={disableOptions}/>}
-                    {wsFiles && wsFiles.popular_files.length === 0 && wsFiles.recently_edited.length === 0 && fileIds.length === 0 && (
+                    {wsFiles && wsFiles.popular_files.length > 0 &&
+                    <PopularFiles search={search} scrollRef={scrollRef} wsFiles={wsFiles} actions={actions}
+                                  disableOptions={disableOptions}/>}
+                    {wsFiles && wsFiles.recently_edited.length > 0 &&
+                    <RecentEditedFile search={search} scrollRef={scrollRef} wsFiles={wsFiles} actions={actions}
+                                      disableOptions={disableOptions}/>}
+                    {wsFiles && wsFiles.popular_files.length === 0 && wsFiles.recently_edited.length === 0 && fileIds.length === 0 &&
+                    !(Object.values(folders).length === 0 || subFolders.length === 0) && (
                       <EmptyState>
-                        <SvgEmptyState icon={4} height={282} />
+                        <SvgEmptyState icon={4} height={282}/>
                         {isMember && (
-                          <button className="btn btn-outline-primary btn-block" onClick={handleShowUploadModal} disabled={disableOptions}>
+                          <button className="btn btn-outline-primary btn-block" onClick={handleShowUploadModal}
+                                  disabled={disableOptions}>
                             {dictionary.uploadFiles}
                           </button>
                         )}

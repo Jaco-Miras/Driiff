@@ -37,6 +37,7 @@ const NotificationDropdown = (props) => {
 
   const viewAll = useCallback(() => {
     refs.container.current.classList.remove("show");
+    document.querySelector(".overlay").classList.remove('show');
     history.push("/notifications");
   }, []);
 
