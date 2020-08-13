@@ -10,6 +10,8 @@ const Wrapper = styled.div`
       margin: 50px auto;
       max-width: 860px;
       width: 98%;
+      background-color: transparent;
+      box-shadow: 0;
       @media (max-width: 576px) {
         width: auto;
         margin: 0 20px;
@@ -35,6 +37,7 @@ const Wrapper = styled.div`
         padding: 60px 40px;
         border-top-right-radius: 4px;
         border-bottom-right-radius: 4px;
+        background: #ffffff;
         @media (max-width: 576px) {
           padding: 30px 20px;
           border-radius: 0;
@@ -49,7 +52,7 @@ const Wrapper = styled.div`
           font-size: 18px;
           height: 44px;
           font-weight: bold;
-          color: #360c3e;
+          color: #4d075a;
           &:hover {
             background-color: #7a1b8b;
             border-color: #7a1b8b;
@@ -63,7 +66,7 @@ const Wrapper = styled.div`
           border-top: 0;
         }
         &.col-set-up {
-          background-color: #360c3e;
+          background-color: #4d075a;
           border: 0;
           border-radius: 0;
           border-top-left-radius: 4px;
