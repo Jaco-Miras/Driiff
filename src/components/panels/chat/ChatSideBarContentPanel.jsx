@@ -75,7 +75,7 @@ const ChatSidebarContentPanel = (props) => {
         <div className={`tab-panel fade ${pill === "pills-contact" && "show active"}`} id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">
           <ChatContactsList search={search} channels={channels} userChannels={userChannels} selectedChannel={selectedChannel} dictionary={dictionary}/>
         </div>
-        <div className={`tab-panel workspace-chat-list fade ${pill === "pills-workspace-internal" && "show active"}`} id="pills-workspace-internal" role="tabpanel" aria-labelledby="pills-workspace-tab">
+        <div className={`tab-panel workspace-chat-list fade ${pill === "pills-workspace" && "show active"}`} id="pills-workspace" role="tabpanel" aria-labelledby="pills-workspace-tab">
           <ChannelsSidebar search={search} workspace={true} channels={channels} selectedChannel={selectedChannel} dictionary={dictionary}/>
         </div>
       </div>

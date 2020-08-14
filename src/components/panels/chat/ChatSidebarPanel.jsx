@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
+import { useSelector } from "react-redux";
 import styled from "styled-components";
 import SearchForm from "../../forms/SearchForm";
 import { ChatSideBarContentPanel } from "./index";
@@ -65,6 +66,7 @@ const Search = styled(SearchForm)`
 const ChatSidebarPanel = (props) => {
   const { className = "", activeTabPill = "pills-home", channels, userChannels, selectedChannel } = props;
 
+  const unreadCounter = useSelector(state => state.global.unreadCounter);
   const [search, setSearch] = useState("");
   const [tabPill, setTabPill] = useState(activeTabPill);
   const previousChannel = usePreviousValue(selectedChannel);
@@ -101,10 +103,10 @@ const ChatSidebarPanel = (props) => {
   useEffect(() => {
     if (previousChannel === null && selectedChannel !== null) {
       if (selectedChannel.type === "TOPIC") {
-        setTabPill("pills-workspace-internal");
+        setTabPill("pills-workspace");
         refs.navTab.current.querySelector(".nav-link.active").classList.remove("active");
 
-        let e = refs.navTab.current.querySelector(".nav-link[aria-controls=\"pills-workspace-internal\"]");
+        let e = refs.navTab.current.querySelector(".nav-link[aria-controls=\"pills-workspace\"]");
         if (e) {
           e.classList.add("active");
         }
@@ -138,7 +140,7 @@ const ChatSidebarPanel = (props) => {
         <ul ref={refs.navTab} className="nav nav-pills" role="tabList">
           <li className="nav-item">
             <span className="nav-link active" id="pills-home-tab" data-toggle="pill" onClick={handleTabChange} role="tab" aria-controls="pills-home" aria-selected="true">
-              {dictionary.chats}
+              {dictionary.chats}  {tabPill !== "pills-home" && (unreadCounter.chat_message > 0 || unreadCounter.unread_channel > 0) && <div className={`badge badge-primary badge-pill ${unreadCounter.chat_message > 0 ? "text-white" : "text-primary"}`}>{unreadCounter.chat_message > 0 ? unreadCounter.chat_message : unreadCounter.unread_channel}</div>}
             </span>
           </li>
           <li className="nav-item">
@@ -147,8 +149,8 @@ const ChatSidebarPanel = (props) => {
             </span>
           </li>
           <li className="nav-item">
-            <span className="nav-link" id="pills-workspace-tab" data-toggle="pill" onClick={handleTabChange} role="tab" aria-controls="pills-workspace-internal" aria-selected="false">
-              {dictionary.workspaceChats}
+            <span className="nav-link" id="pills-workspace-tab" data-toggle="pill" onClick={handleTabChange} role="tab" aria-controls="pills-workspace" aria-selected="false">
+              {dictionary.workspaceChats} {tabPill !== "pills-workspace" &&  unreadCounter.workspace_chat_message > 0 && <div className={"badge badge-primary text-white badge-pill"}>{unreadCounter.workspace_chat_message}</div>}
             </span>
           </li>
         </ul>
