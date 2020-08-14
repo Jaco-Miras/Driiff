@@ -38,6 +38,11 @@ const WorkspaceDashboardPanel = (props) => {
     fileAttachments: _t("FILE_ATTACHMENTS", "File attachments")
   };
 
+  let disableOptions = false;
+  if (workspace && workspace.active === 0) {
+    disableOptions = true;
+  }
+
   return (
     <Wrapper className={`container-fluid fadeIn ${className}`}>
       <div className={"row"}>
@@ -51,7 +56,7 @@ const WorkspaceDashboardPanel = (props) => {
 
             <div className={"col-md-6"}>
               <DashboardTeam workspace={workspace} onEditClick={handleEditClick} isMember={isMember} isExternal={isExternal} dictionary={dictionary}/>
-              <RecentPosts posts={recentPosts} dictionary={dictionary}/>
+              <RecentPosts posts={recentPosts} dictionary={dictionary} disableOptions={disableOptions}/>
             </div>
           </>
         :
@@ -59,7 +64,7 @@ const WorkspaceDashboardPanel = (props) => {
             <div className={"col-md-12"}>
               <DashboardAboutWorkspace isMember={isMember} workspace={workspace} onEditClick={handleEditClick} isExternal={isExternal} dictionary={dictionary}/>
               <DashboardTeam workspace={workspace} onEditClick={handleEditClick} isMember={isMember} isExternal={isExternal} dictionary={dictionary}/>
-              <RecentPosts posts={recentPosts} dictionary={dictionary}/>
+              <RecentPosts posts={recentPosts} dictionary={dictionary} disableOptions={disableOptions}/>
               <TimelinePanel timeline={timeline} actions={actions} params={params} dictionary={dictionary} />
             </div>
           </>
