@@ -188,6 +188,11 @@ class SocketListeners extends React.PureComponent {
                 console.log(e, "post-notif");
                 switch (e.SOCKET_TYPE) {
                     case "POST_CREATE": {
+                        if (this.props.user.id !== e.author.id) {
+                            if (isSafari) {
+                                pushBrowserNotification(`${e.author.first_name} shared a post`, e.title, e.author.profile_image_link, null);
+                            }
+                        }
                         if (e.show_at !== null && this.props.user.id === e.author.id) {
                             this.props.incomingPost(e);
                         } else {
@@ -235,6 +240,9 @@ class SocketListeners extends React.PureComponent {
                           });
                         }
                         if (e.author.id !== this.props.user.id) {
+                            if (isSafari) {
+                                pushBrowserNotification(`${e.author.first_name} replied in a post`, stripHtml(e.body), e.author.profile_image_link, null);
+                            }
                           e.workspaces.forEach((ws) => {
                             this.props.getWorkspace({ topic_id: ws.topic_id }, (err, res) => {
                                 if (err) return;
