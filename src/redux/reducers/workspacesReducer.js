@@ -14,7 +14,8 @@ const INITIAL_STATE = {
   workspaceTimeline: {},
   workspace: {},
   folders: {},
-  activeChannelId: null
+  activeChannelId: null,
+  workspaceToDelete: null
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -128,6 +129,7 @@ export default (state = INITIAL_STATE, action) => {
       let updatedWorkspaces = { ...state.workspaces };
       let updatedFolders = { ...state.folders };
       let workspace = null;
+      let workspaceToDelete = state.workspaceToDelete;
       if (state.workspacesLoaded && action.data.type === "WORKSPACE" && updatedWorkspaces.hasOwnProperty(action.data.id)) {
         let updatedTopic = { ...state.activeTopic };
         workspace = { ...state.workspaces[action.data.id] };
@@ -151,6 +153,12 @@ export default (state = INITIAL_STATE, action) => {
             if (Object.values(updatedWorkspaces).length) {
               updatedTopic = Object.values(updatedWorkspaces)[0];
             }
+          } else {
+            if (state.activeTopic.id === action.data.id) {
+              workspaceToDelete = action.data.id;
+            } else {
+              delete updatedWorkspaces[action.data.id];
+            }
           }
         }
         if (action.data.workspace_id !== 0) {
@@ -170,7 +178,8 @@ export default (state = INITIAL_STATE, action) => {
         return {
           ...state,
           activeTopic: updatedTopic,
-          workspaces: updatedWorkspaces
+          workspaces: updatedWorkspaces,
+          workspaceToDelete: workspaceToDelete
         }
       } else if (state.workspacesLoaded && action.data.type === "FOLDER") {
         updatedFolders[action.data.id] = {
@@ -194,8 +203,14 @@ export default (state = INITIAL_STATE, action) => {
       }
     }
     case "SET_ACTIVE_TOPIC": {
+      let updatedWorkspaces = { ...state.workspaces };
+      if (state.workspaceToDelete) {
+        delete updatedWorkspaces[state.workspaceToDelete];
+      }
       return {
         ...state,
+        workspaces: updatedWorkspaces,
+        workspaceToDelete: null,
         activeTopic: action.data.hasOwnProperty("members") ? action.data : state.workspaces.hasOwnProperty(action.data.id) ? {...state.workspaces[action.data.id]} : state.activeTopic
       }
     }
