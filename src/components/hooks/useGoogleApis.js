@@ -26,8 +26,8 @@ const useGoogleApis = () => {
       window.gapi.client.load('drive', 'v2', function () {
         let file = window.gapi.client.drive.files.get({
           fileId: fileId,
+          includePermissionsForView: 'published',
           supportsAllDrives: true,
-          supportsTeamDrives: true
         });
         file.execute(function (resp) {
           if (resp.error) {
