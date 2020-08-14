@@ -54,8 +54,10 @@ const ChatContactsList = (props) => {
   const user = useSelector((state) => state.session.user);
 
   const handleChannelClick = useCallback(
+
     (channel) => {
       channelAction.select(channel, (channel) => {
+        document.body.classList.add("m-chat-channel-closed");
         history.push(`/chat/${channel.code}`);
       });
     },

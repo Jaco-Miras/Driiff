@@ -232,7 +232,7 @@ const WorspaceHeaderPanel = (props) => {
 
   return (
     <>
-      <NavBarLeft>
+      <NavBarLeft className="navbar-left">
         <NavBar className="navbar-nav">
           <li className="nav-item navigation-toggler mobile-toggler">
             <a href="/" className="nav-link" title="Show navigation" onClick={handleMenuOpenMobile}>
@@ -255,12 +255,12 @@ const WorspaceHeaderPanel = (props) => {
                       </>
                     }
                     <li className="nav-item">
-                      <SubWorkspaceName>
+                      <SubWorkspaceName className="current-title">
                         {activeTopic.name}
                       </SubWorkspaceName>
                     </li>
                     {
-                      activeTopic.active === 0 && 
+                      activeTopic.active === 0 &&
                       <li className="nav-item">
                         <div className={`badge badge-light text-white ml-1`}>Archived</div>
                       </li>
@@ -270,10 +270,10 @@ const WorspaceHeaderPanel = (props) => {
               ) : (
                 <>
                   {
-                    !isExternal && 
+                    !isExternal &&
                     <>
                       <li className="nav-item nav-item-folder">
-                        <WorkspaceName>{activeTopic.folder_name}</WorkspaceName>
+                        <WorkspaceName >{activeTopic.folder_name}</WorkspaceName>
                       </li>
                       <li className="nav-item-chevron">
                         <SvgIconFeather icon="chevron-right"/>
@@ -281,12 +281,12 @@ const WorspaceHeaderPanel = (props) => {
                     </>
                   }
                   <li className="nav-item">
-                    <SubWorkspaceName>
+                    <SubWorkspaceName className="current-title">
                       {activeTopic.name}
                     </SubWorkspaceName>
                   </li>
                   {
-                    activeTopic.active === 0 && 
+                    activeTopic.active === 0 &&
                     <li className="nav-item">
                       <div className={`badge badge-light text-white ml-1`}>Archived</div>
                     </li>

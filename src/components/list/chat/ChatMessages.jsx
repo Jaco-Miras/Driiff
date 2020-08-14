@@ -862,7 +862,7 @@ class ChatMessages extends React.PureComponent {
                                     showAvatar={showAvatar}
                                     className={"chat-bubble-quote-div"}
                                   >
-                                    <SystemMessageContainer isAuthor={false}>
+                                    <SystemMessageContainer className="system-message" isAuthor={false}>
                                       <SystemMessage selectedChannel={this.props.selectedChannel} reply={reply} chatName={this.props.chatName} />
                                       {reply.unfurls.length ? (
                                         <ChatUnfurl
