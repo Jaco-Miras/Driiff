@@ -155,8 +155,8 @@ const DriffCreatePanel = (props) => {
     if (_validate() && !loading) {
       setLoading(true)
       driffActions.check(form.slug, (err, res) => {
-        setLoading(false);
         if (res.data.status) {
+          setLoading(false);
           setFormResponse({
             valid: {
               slug: false,
@@ -167,6 +167,7 @@ const DriffCreatePanel = (props) => {
           });
         } else {
           driffActions.create(form, (err, res) => {
+            setLoading(false);
             if (res) {
               setRegistered(true);
 
