@@ -11,7 +11,7 @@ const Wrapper = styled.div`
       max-width: 860px;
       width: 98%;
       background-color: transparent;
-      box-shadow: 0;
+      box-shadow: none;
       @media (max-width: 576px) {
         width: auto;
         margin: 0 20px;
@@ -19,11 +19,12 @@ const Wrapper = styled.div`
       }
       h2 {
         margin: 0 0 20px 0;
-        font-size: 32px;
+        font-size: 24px;
         text-align: left;
         min-height: 80px;
         color: #000000;
-        font-weight: 800;
+        font-weight: 700;
+        line-height: 1.4;
         @media (max-width: 576px) {
           font-size: 24px;
           min-height: auto;

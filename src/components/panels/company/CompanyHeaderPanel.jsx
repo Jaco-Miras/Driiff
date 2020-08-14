@@ -124,7 +124,7 @@ const CompanyHeaderPanel = () => {
 
   return (
     <>
-      <NavBarLeft>
+      <NavBarLeft className="navbar-left">
         <NavBar className="navbar-nav">
             <li className="nav-item navigation-toggler mobile-toggler">
               <a href="/" className="nav-link" title="Show navigation" onClick={handleMenuOpenMobile}>
@@ -132,7 +132,7 @@ const CompanyHeaderPanel = () => {
               </a>
             </li>
             <li className="nav-item nav-item-folder">
-                <CompanyName>{pageName}</CompanyName>
+                <CompanyName className="current-title">{pageName}</CompanyName>
             </li>
         </NavBar>
       </NavBarLeft>
