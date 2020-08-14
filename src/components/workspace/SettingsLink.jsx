@@ -176,7 +176,7 @@ const SettingsLink = (props) => {
               </>
               : 
               <span className="dropdown-item" data-name="unarchive" onClick={handleShowArchiveConfirmation}>
-                Un-archived workspace
+                Un-archive workspace
               </span>
             }
           </div>

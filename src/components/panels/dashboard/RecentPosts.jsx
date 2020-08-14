@@ -61,7 +61,7 @@ const Wrapper = styled.div`
 `;
 
 const RecentPosts = (props) => {
-  const { className = "", posts, dictionary } = props;
+  const { className = "", posts, dictionary, disableOptions } = props;
 
   const postActions = usePostActions();
   const match = useRouteMatch();
@@ -102,7 +102,7 @@ const RecentPosts = (props) => {
             {Object.values(posts)
               .sort((a, b) => (b.created_at.timestamp > a.created_at.timestamp ? 1 : -1))
               .map((post) => {
-                return <RecentPostListItem key={post.id} post={post} parentRef={scrollRef} postActions={postActions} onOpenPost={handleOpenPost} />;
+                return <RecentPostListItem key={post.id} post={post} parentRef={scrollRef} postActions={postActions} onOpenPost={handleOpenPost} disableOptions={disableOptions}/>;
               })}
           </ul>
         ) : (
