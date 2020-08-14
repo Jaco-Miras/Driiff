@@ -22,7 +22,7 @@ function receivePushNotification(event) {
           showNotification = true;
           notification_title = reference_title;
         } else if (SOCKET_TYPE === "POST_COMMENT_CREATE") {
-          notification_title = `${author.name} replied in`;
+          notification_title = `${author.name} replied in a post`;
           options = {
             ...options,
             body: body.replace(/(<([^>]+)>)/gi, ""),
