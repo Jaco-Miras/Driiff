@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { AvatarGroup, SvgIconFeather } from "../../common";
 import { useTimeFormat } from "../../hooks";
 import { PostBadge } from "./index";
+import GifPlayer from "react-gif-player";
+import {getGifLinks} from "../../../helpers/urlContentHelper";
 
 const Wrapper = styled.div`
   flex: unset;
@@ -23,6 +25,13 @@ const PostBody = (props) => {
 
   const [star, setStar] = useState(post.is_favourite);
   const { localizeDate } = useTimeFormat();
+  const [showGifPlayer, setShowGifPlayer] = useState(null);
+
+  useEffect(() => {
+    if (post.body.match(/\.(gif)/g) !== null) {
+      setShowGifPlayer(true);
+    }
+  }, []);
 
   const handleStarPost = () => {
     if (disableOptions) return;
@@ -65,6 +74,10 @@ const PostBody = (props) => {
       <div className="d-flex align-items-center">
         <div dangerouslySetInnerHTML={{ __html: post.body }} />
       </div>
+      {showGifPlayer &&
+        getGifLinks(post.body).map((gifLink, index) => {
+          return <GifPlayer key={index} className={"gifPlayer"} gif={gifLink} autoplay={true}/>;
+        })}
     </Wrapper>
   );
 };

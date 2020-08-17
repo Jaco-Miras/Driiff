@@ -39,7 +39,6 @@ export const urlify = (text) => {
     //console.log(url, 'no validation')
     if (validURL(url)) {
       urls.push(url);
-      //console.log(url, 'validation')
     }
   });
   //return urls.filter(u => !u.includes(REACT_APP_apiDNSName))
@@ -49,6 +48,18 @@ export const urlify = (text) => {
     return [];
   }
   //return urls.filter(u => !u.includes(REACT_APP_apiDNSName) && u.includes(REACT_APP_localDNSName));
+};
+
+export const getGifLinks = (content) => {
+  let urls = [];
+  var urlRegex = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#/%?=~_|!:,.;]*[-A-Z0-9+&@#/%=~_|])/gi;
+  content.replace(urlRegex, function (url) {
+    if (validURL(url)) {
+      //&& url.slice(url.length - 4) === ".gif"
+      urls.push(url);
+    }
+  });
+  return urls;
 };
 
 export const validURL = (string) => {
