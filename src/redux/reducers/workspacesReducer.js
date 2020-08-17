@@ -518,7 +518,7 @@ export default (state = INITIAL_STATE, action) => {
           if (state.activeTopic && state.activeTopic.id === ws.topic_id) {
             addUnreadPost = true;
           }
-          if (ws.workspace_id !== 0) {
+          if (ws.workspace_id !== null) {
             updatedFolders[ws.workspace_id].unread_count = updatedFolders[ws.workspace_id].unread_count + 1;
           }
         }

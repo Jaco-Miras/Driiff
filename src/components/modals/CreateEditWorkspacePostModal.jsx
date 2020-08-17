@@ -468,7 +468,9 @@ const CreateEditWorkspacePostModal = (props) => {
             end_at: form.end_at ? moment(form.end_at, "YYYY-MM-DD").format("YYYY-MM-DD") : null,
             tag_ids: [],
             file_ids: [],
-            //test_case: "web_push"
+            code_data: {
+                base_link: `${process.env.REACT_APP_apiProtocol}${localStorage.getItem("slug")}.${process.env.REACT_APP_localDNSName}`
+            }
         };
         if (draftId) {
             dispatch(
