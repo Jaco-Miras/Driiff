@@ -38,7 +38,12 @@ const StyledUserListPopUp = styled(UserListPopUp)`
 const PlusRecipients = (props) => {
   const { className = "", recipients } = props;
   const [showUsersPopUp, setShowUsersPopUp] = useState(false);
-  const handleShowSeenUsers = () => setShowUsersPopUp(!showUsersPopUp);
+  const handleShowSeenUsers = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setShowUsersPopUp(!showUsersPopUp);
+  };
+
 
   return (
     <PlusRecipientsDiv className={`plus-recipient-component ${className}`}>

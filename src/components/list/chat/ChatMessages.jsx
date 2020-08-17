@@ -583,7 +583,6 @@ class ChatMessages extends React.PureComponent {
   };
 
   handleEditReply = (reply) => {
-    alert("test");
     this.props.onEditReply(reply);
   };
 
