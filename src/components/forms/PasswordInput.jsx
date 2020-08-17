@@ -25,7 +25,7 @@ const Wrapper = styled.div`
 
 const PasswordInput = forwardRef((props, ref) => {
 
-  const {className = "", name = "password", placeholder = "Password", onChange, defaultValue = "", isValid = null, feedback = null} = props;
+  const {className = "", name = "password", placeholder = "Password", onChange, defaultValue = "", isValid = null, feedback = null, ...otherProps} = props;
 
   const [passwordVisibility, setPasswordVisibility] = useState(false);
 
@@ -45,6 +45,7 @@ const PasswordInput = forwardRef((props, ref) => {
           type={passwordVisibility ? "text" : "password"}
           valid={isValid}
           invalid={isValid === null ? isValid : !isValid}
+          {...otherProps}
           required
         />
         <InputGroupAddon className="btn-toggle" addonType="append">

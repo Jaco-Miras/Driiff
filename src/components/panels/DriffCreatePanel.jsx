@@ -134,6 +134,8 @@ const DriffCreatePanel = (props) => {
 
   const handleShowUserInvitation = (e) => {
     e.preventDefault();
+    if (loading)
+      return;
 
     let payload = {
       type: "driff_invite_users",
@@ -151,8 +153,10 @@ const DriffCreatePanel = (props) => {
 
   const handleRegister = useCallback((e) => {
     e.preventDefault();
+    if (loading)
+      return;
 
-    if (_validate() && !loading) {
+    if (_validate()) {
       setLoading(true)
       driffActions.check(form.slug, (err, res) => {
         if (res.data.status) {
@@ -225,6 +229,7 @@ const DriffCreatePanel = (props) => {
               onChange={handleInputChange} name="company_name" isValid={formResponse.valid.company_name}
               feedback={formResponse.message.company_name} placeholder={dictionary.companyName}
               innerRef={refs.company_name}
+              readOnly={loading}
               autoFocus/>
             <StyledFormGroup>
               <InputGroup className="driff-name">
@@ -233,6 +238,7 @@ const DriffCreatePanel = (props) => {
                   placeholder="driff" autocapitalize="none"
                   valid={formResponse.valid.slug}
                   invalid={typeof formResponse.valid.slug !== "undefined" ? !formResponse.valid.slug : formResponse.valid.slug}
+                  readOnly={loading}
                   required autoFocus/>
                 <InputGroupAddon addonType="append">
                   <InputGroupText>.{REACT_APP_localDNSName}</InputGroupText>
@@ -242,12 +248,14 @@ const DriffCreatePanel = (props) => {
             </StyledFormGroup>
             <FormInput
               onChange={handleInputChange} name="email" isValid={formResponse.valid.email}
-              feedback={formResponse.message.email} placeholder={dictionary.yourEmail} type="email"/>
+              feedback={formResponse.message.email} placeholder={dictionary.yourEmail} type="email" readOnly={loading}/>
             <FormInput
               onChange={handleInputChange} name="user_name" isValid={formResponse.valid.user_name}
-              feedback={formResponse.message.user_name} placeholder={dictionary.yourName} innerRef={refs.user_name}/>
-            <PasswordInput onChange={handleInputChange} isValid={formResponse.valid.password}
-                           feedback={formResponse.message.password}/>
+              feedback={formResponse.message.user_name} placeholder={dictionary.yourName} innerRef={refs.user_name}
+              readOnly={loading}/>
+            <PasswordInput
+              onChange={handleInputChange} isValid={formResponse.valid.password}
+              feedback={formResponse.message.password} readOnly={loading}/>
 
             <button className={"btn btn-outline-light btn-sm mb-4"} onClick={handleShowUserInvitation}>
 
