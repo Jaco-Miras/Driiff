@@ -1,10 +1,11 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
-import { AvatarGroup, SvgIconFeather } from "../../common";
+import { SvgIconFeather } from "../../common";
 import { CheckBox } from "../../forms";
 import { MoreOptions } from "../common";
 import { PostBadge } from "./index";
+import { MemberLists } from "../../list/members";
 
 const Wrapper = styled.li`
   &:first-of-type {
@@ -97,7 +98,7 @@ const PostItemPanel = (props) => {
           </div>
           <div className="pl-3 d-flex align-items-center">
             <PostBadge post={post} dictionary={dictionary}/>
-            {post.users_responsible.length > 0 && <AvatarGroup users={post.users_responsible} />}
+            {post.users_responsible.length > 0 && <MemberLists members={post.users_responsible} />}
             { !disableOptions && <Icon icon="archive" onClick={handleArchivePost} /> }
           </div>
         </div>

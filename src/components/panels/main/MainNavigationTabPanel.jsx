@@ -71,6 +71,7 @@ const Wrapper = styled.div`
     scrollbar-width: none;
     height: 78vh;
     overflow: scroll;
+    overscroll-behavior: contain;
     margin: 0 15px;
     &::-webkit-scrollbar {
       display: none;
