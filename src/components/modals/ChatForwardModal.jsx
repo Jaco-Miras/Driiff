@@ -1,5 +1,6 @@
 import React, {useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
+import {useHistory} from "react-router-dom";
 import {Modal, ModalFooter} from "reactstrap";
 import styled from "styled-components";
 import {postChatMessage, setSelectedChannel} from "../../redux/actions/chatActions";
@@ -87,6 +88,7 @@ const Search = styled(SearchForm)`
 const ChatForwardModal = (props) => {
   const { type, message } = props.data;
 
+  const history = useHistory();
   /**
    * @todo refactor
    */
@@ -100,29 +102,26 @@ const ChatForwardModal = (props) => {
     setModal(!modal);
     dispatch(clearModal({ type: type }));
   };
-
   const handleChosenChannel = (channel) => {
     setChosenChannel(channel);
   };
-
+  
   const handleForwardMessage = () => {
     let payload = {
       channel_id: chosenChannel.id,
       body: message.body,
       mention_ids: [],
-      file_ids: [],
+      file_ids: message.files.length ? message.files.map((f) => f.file_id) : [],
       reference_id: require("shortid").generate(),
       reference_title: chosenChannel.title,
       is_transferred: true,
     };
-
-    chosenChannel.selected = true;
-    dispatch(
-      postChatMessage(payload, () => {
-        chosenChannel.selected = true;
-        dispatch(setSelectedChannel(chosenChannel));
-      })
-    );
+    let cb = (err, res) => {
+      if (err) return;
+      dispatch(setSelectedChannel(chosenChannel));
+      history.push(`/chat/${chosenChannel.code}`)
+    };
+    dispatch(postChatMessage(payload, cb));
     toggle();
   };
 
