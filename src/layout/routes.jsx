@@ -1,6 +1,6 @@
 import React, {useEffect} from "react";
 import {useSelector} from "react-redux";
-import {Redirect, Route, Switch} from "react-router-dom";
+import {Redirect, Route, Switch, useHistory} from "react-router-dom";
 import {useSettings, useTranslation} from "../components/hooks";
 import {TestChat} from "../components/test";
 import TestFiles from "../components/test/TestFiles";
@@ -12,6 +12,7 @@ export const AppRoute = ({children, ...props}) => {
   useTranslation();
 
   // const push = usePushNotification();
+  const history = useHistory();
   const session = useSelector((state) => state.session);
   const i18nLoaded = useSelector((state) => state.global.i18nLoaded);
 
@@ -46,7 +47,7 @@ export const AppRoute = ({children, ...props}) => {
           path="*"
           to={{
             pathname: "/workspace/chat",
-            state: {from: props.location},
+            state: {from: history.location},
           }}
         />
       </Switch>
@@ -63,7 +64,7 @@ export const AppRoute = ({children, ...props}) => {
         from="*"
         to={{
           pathname: "/login",
-          state: {from: props.location},
+          state: {from: history.location},
         }}
       />
     </Switch>
