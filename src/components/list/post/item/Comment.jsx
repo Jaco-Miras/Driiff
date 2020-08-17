@@ -5,6 +5,9 @@ import {MoreOptions} from "../../../panels/common";
 import {PostDetailFooter} from "../../../panels/post/index";
 import {SubComments} from "./index";
 import {useTimeFormat} from "../../../hooks";
+import GifPlayer from "react-gif-player";
+import {stripGif} from "../../../../helpers/stringFormatter";
+import {getGifLinks} from "../../../../helpers/urlContentHelper";
 
 const Wrapper = styled.li`
   margin-bottom: 1rem;
@@ -111,6 +114,13 @@ const Comment = (props) => {
 
   const [showInput, setShowInput] = useState(null);
   const [userMention, setUserMention] = useState(null);
+  const [showGifPlayer, setShowGifPlayer] = useState(null);
+
+  useEffect(() => {
+    if (comment.body.match(/\.(gif)/g) !== null) {
+      setShowGifPlayer(true);
+    }
+  }, []);
 
   const handleShowInput = useCallback(
       (commentId = null) => {
@@ -205,7 +215,11 @@ const Comment = (props) => {
                   </MoreOptions>
               )}
             </CommentHeader>
-            <CommentBody className="mt-2 mb-3" dangerouslySetInnerHTML={{__html: comment.body}}/>
+            <CommentBody className="mt-2 mb-3" dangerouslySetInnerHTML={showGifPlayer ? {__html: stripGif(comment.body)} : {__html: comment.body}}/>
+            {showGifPlayer &&
+              getGifLinks(comment.body).map((gifLink, index) => {
+                return <GifPlayer key={index} className={"gifPlayer"} gif={gifLink} autoplay={true}/>;
+              })}
             {comment.files.length >= 1 && (
                 <>
                   <hr/>
