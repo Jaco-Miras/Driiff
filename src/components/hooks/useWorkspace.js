@@ -30,7 +30,7 @@ const useWorkspace = (fetchOnMount = false) => {
       actions.fetchWorkspaces({is_external: 0}, fetchCb);
       actions.fetchWorkspaces({is_external: 1});
       actions.fetchWorkspaces({is_external: 0, filter: "archived"});
-      actions.fetchWorkspaceChannels({skip: 0, limit: 10});
+      actions.fetchWorkspaceChannels({skip: 0, limit: 250});
     } else if (workspacesLoaded && activeTopic) {
       //restore the channel id
       if (channels.hasOwnProperty(activeTopic.channel.id) && path === "/workspace/:page") {
