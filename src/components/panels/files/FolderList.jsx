@@ -25,14 +25,16 @@ const Wrapper = styled.li`
     transition: all 0.3s;
     width: 15px;
     font-size: 8.8px;
-    transform: rotate(-540deg);
+    transform: rotate(0deg);
     margin-right: 2px;
+    margin-left: 10px;
+    
     &.ti-minus {
       margin-left: 6px;
     }
 
     &.rotate-in {
-      transform: rotate(0deg);
+      transform: rotate(-540deg);
     }
   }
 
@@ -49,7 +51,8 @@ const FolderNav = styled.ul`
   list-style: none;
 
   &.enter-active {
-    max-height: ${(props) => props.maxHeight}px;
+    max-height: 1000px;
+    //max-height: ${(props) => props.maxHeight}px;
   }
   &.leave-active {
     max-height: 0px;
@@ -105,7 +108,7 @@ const FolderList = (props) => {
     if (ref.nav.current !== null) {
       setMaxHeight(ref.nav.current.scrollHeight);
     }
-  }, [ref.nav, maxHeight]);
+  }, [ref.nav.current, maxHeight]);
 
   useEffect(() => {
     // if (activeFolder) {
