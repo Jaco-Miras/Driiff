@@ -1065,6 +1065,12 @@ export default (state = INITIAL_STATE, action) => {
           : state.activeTopic
       }
     }
+    case "SET_WORKSPACE_TO_DELETE": {
+      return {
+        ...state,
+        workspaceToDelete: action.data
+      }
+    }
     default:
       return state;
   }

@@ -2,7 +2,7 @@ import { useCallback } from "react";
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { replaceChar } from "../../helpers/stringFormatter";
-import { setActiveTopic } from "../../redux/actions/workspaceActions";
+import { setActiveTopic, getWorkspace, setWorkspaceToDelete } from "../../redux/actions/workspaceActions";
 
 const useRedirect = () => {
 
@@ -74,7 +74,26 @@ const useRedirect = () => {
         }, []
     );
 
+    const fetchWorkspaceAndRedirect = useCallback(
+        (workspace) => {
+            dispatch(
+                getWorkspace({topic_id: workspace.id}, (err, res) => {
+                    if (err) return;
+                    dispatch(setActiveTopic(workspace));
+                    dispatch(setWorkspaceToDelete(workspace.id));
+                })
+            );
+            
+            if (workspace.folder_id) {
+                history.push(`/workspace/chat/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`);
+            } else {
+                history.push(`/workspace/chat/${workspace.id}/${replaceChar(workspace.name)}`);
+            }
+        }, []
+    );
+
     return {
+        fetchWorkspaceAndRedirect,
         toChannel,
         toChat,
         toFiles,
