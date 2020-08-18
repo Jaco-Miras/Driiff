@@ -351,7 +351,7 @@ const useFileActions = (params = null) => {
               toaster.success(
                 <>
                   You have
-                  marked <b>{file.search}</b> {!file.is_favorite ? "as favorite" : "unfavorite"}
+                  marked <b>{file.search}</b> {file.is_favorite ? "as favorite" : "unfavorite"}
                 </>
               );
             })
