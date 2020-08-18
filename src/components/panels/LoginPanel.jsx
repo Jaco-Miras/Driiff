@@ -6,7 +6,7 @@ import {$_GET, getThisDeviceInfo} from "../../helpers/commonFunctions";
 import {EmailRegex} from "../../helpers/stringFormatter";
 import {toggleLoading} from "../../redux/actions/globalActions";
 import {CheckBox, FormInput, PasswordInput} from "../forms";
-import {useUserActions} from "../hooks";
+import {useSettings, useUserActions} from "../hooks";
 
 const Wrapper = styled.form`
   margin: 50px auto;
@@ -20,9 +20,10 @@ const Wrapper = styled.form`
 
 const LoginPanel = (props) => {
 
-  const { dictionary } = props;
+  const {dictionary} = props;
   const history = useHistory();
   const dispatch = useDispatch();
+  const {driffSettings} = useSettings();
 
   const userActions = useUserActions();
 
@@ -170,41 +171,62 @@ const LoginPanel = (props) => {
 
   return (
     <Wrapper className="fadeIn">
-      <FormInput
-        onChange={handleInputChange} name="email" isValid={formResponse.valid.email}
-        feedback={formResponse.message.email} placeholder="Email" innerRef={refs.email} type="email"
-        autoFocus/>
-      <PasswordInput
-        ref={refs.password} onChange={handleInputChange} isValid={formResponse.valid.password}
-        feedback={formResponse.message.password}/>
-      <div className="form-group d-flex justify-content-between">
-        <CheckBox name="remember_me" checked={form.remember_me} onClick={toggleCheck}>
-          {dictionary.rememberMe}
-        </CheckBox>
-        <Link to="/reset-password">{dictionary.resetPassword}</Link>
-      </div>
-      <button className="btn btn-primary btn-block" onClick={handleSignIn}>
-        {dictionary.signIn}
-      </button>
-      <hr/>
-      <p className="text-muted">{dictionary.loginSocialMedia}</p>
-      <ul className="list-inline">
-        <li className="list-inline-item">
+      {
+        driffSettings.settings.password_login &&
+        <>
+          <FormInput
+            onChange={handleInputChange} name="email" isValid={formResponse.valid.email}
+            feedback={formResponse.message.email} placeholder="Email" innerRef={refs.email} type="email"
+            autoFocus/>
+          <PasswordInput
+            ref={refs.password} onChange={handleInputChange} isValid={formResponse.valid.password}
+            feedback={formResponse.message.password}/>
+          <div className="form-group d-flex justify-content-between">
+            <CheckBox name="remember_me" checked={form.remember_me} onClick={toggleCheck}>
+              {dictionary.rememberMe}
+            </CheckBox>
+            <Link to="/reset-password">{dictionary.resetPassword}</Link>
+          </div>
+          <button className="btn btn-primary btn-block" onClick={handleSignIn}>
+            {dictionary.signIn}
+          </button>
+        </>
+      }
+      {
+        (driffSettings.settings.google_login || driffSettings.settings.magic_link) &&
+        <>
+          <hr/>
+          <p className="text-muted">{dictionary.loginSocialMedia}</p>
+          <ul className="list-inline">
+            {
+              driffSettings.settings.magic_link &&
+              <li className="list-inline-item">
           <span onClick={handleMagicLinkClick} className="btn btn-floating btn-magic-link">
             <i className="fa fa-magic"/>
           </span>
-        </li>
-        <li className="list-inline-item">
+              </li>
+            }
+            {
+              driffSettings.settings.google_login &&
+              <li className="list-inline-item">
           <span onClick={userActions.googleLogin} className="btn btn-floating btn-google">
             <i className="fa fa-google"/>
           </span>
-        </li>
-      </ul>
-      <hr/>
-      <p className="text-muted">{dictionary.noAccount}</p>
-      <Link className={"btn btn-outline-light btn-sm"} to="/register">
-        {dictionary.registerNow}
-      </Link>
+              </li>
+            }
+          </ul>
+        </>
+      }
+      {
+        driffSettings.settings.sign_up &&
+        <>
+          <hr/>
+          <p className="text-muted">{dictionary.noAccount}</p>
+          <Link className={"btn btn-outline-light btn-sm"} to="/register">
+            {dictionary.registerNow}
+          </Link>
+        </>
+      }
     </Wrapper>
   );
 };

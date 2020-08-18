@@ -5,6 +5,13 @@ const INITIAL_STATE = {
   sessionUser: null,
   driff: {
     company_name: "ZUID Creatives",
+    settings: {
+      maintenance_mode: false,
+      google_login: true,
+      magic_link: true,
+      password_login: true,
+      sign_up: true,
+    },
   },
   user: {
     isLoaded: false,
@@ -63,6 +70,26 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         sessionUser: action.data,
       };
+    }
+    case "GET_DRIFF_COMP_SETTINGS_SUCCESS": {
+      let settings = state.driff.settings;
+      action.data.settings.forEach(s => {
+        settings = {...settings, ...s}
+      });
+
+      Object.keys(settings).forEach(k => {
+        settings[k] = settings[k] === "1";
+      });
+
+      settings.maintenance_mode = !Object.values(settings).some(v => v === true);
+
+      return {
+        ...state,
+        driff: {
+          ...state.driff,
+          settings: settings
+        }
+      }
     }
     case "GET_DRIFF_SETTINGS_SUCCESS": {
       let driff = state.driff;

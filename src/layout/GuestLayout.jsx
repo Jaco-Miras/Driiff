@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Route, Switch, useLocation, withRouter} from "react-router-dom";
+import {Route, Switch, useHistory, useLocation, withRouter} from "react-router-dom";
 import styled from "styled-components";
 import {SvgIcon} from "../components/common";
 import {
@@ -12,7 +12,7 @@ import {
   UpdatePasswordPanel
 } from "../components/panels";
 import {useUserLogin} from "../components/hooks/useUserLogin";
-import {useTranslation} from "../components/hooks";
+import {useSettings, useTranslation} from "../components/hooks";
 import useDriffActions from "../components/hooks/useDriffActions";
 
 const Wrapper = styled.div``;
@@ -21,7 +21,9 @@ const GuestLayout = (props) => {
 
   useUserLogin(props);
 
+  const history = useHistory();
   const location = useLocation();
+  const {driffSettings} = useSettings();
   const driffActions = useDriffActions();
   const {_t} = useTranslation();
 
@@ -77,7 +79,11 @@ const GuestLayout = (props) => {
   useEffect(() => {
     switch (location.pathname) {
       case "/magic-link":
-        setTitle(dictionary.magicLink);
+        if (driffSettings.settings.magic_link) {
+          setTitle(dictionary.magicLink);
+        } else {
+          history.push("/login");
+        }
         break;
       case "/driff-register":
         setTitle(dictionary.driffRegistration);
@@ -86,10 +92,18 @@ const GuestLayout = (props) => {
         setTitle(`Accept your invitation to ${driffActions.getName()}`);
         break;
       case "/reset-password":
-        setTitle("Reset password");
+        if (driffSettings.settings.password_login) {
+          setTitle("Reset password");
+        } else {
+          history.push("/login");
+        }
         break;
       case "/register":
-        setTitle("Create account");
+        if (driffSettings.settings.sign_up) {
+          setTitle("Create account");
+        } else {
+          history.push("/login");
+        }
         break;
       default:
         if (location.pathname.indexOf("/authenticate/") === 0) setTitle("Authentication");
@@ -103,19 +117,28 @@ const GuestLayout = (props) => {
       <div id="logo">
         <SvgIcon icon={"driff-logo"} width="110" height="80"/>
       </div>
+      {
+        driffSettings.settings.maintenance_mode ?
+          <>
+            <h5 className="title">Maintenance Mode</h5>
+          </>
+          :
+          <>
+            <h5 className="title">{title}</h5>
 
-      <h5 className="title">{title}</h5>
-
-      <Switch>
-        <Route path={"/login"} render={() => <LoginPanel dictionary={dictionary} {...props}/>}/>
-        <Route path={"/magic-link"} render={() => <MagicLinkPanel dictionary={dictionary} {...props}/>}/>
-        <Route path={"/resetpassword/:token/:email"} render={() => <UpdatePasswordPanel dictionary={dictionary} {...props}/>} exact/>
-        <Route path={"/reset-password"} render={() => <ResetPasswordPanel dictionary={dictionary} {...props}/>}/>
-        <Route path={"/register"} render={() => <RegisterPanel dictionary={dictionary} {...props}/>}/>
-        <Route path={"/request-form"} render={() => <ExternalRegisterPanel dictionary={dictionary} {...props}/>}/>
-        <Route path={"/driff-register"} render={() => <DriffCreatePanel dictionary={dictionary}
-                                                                        setRegisteredDriff={setRegisteredDriff} {...props}/>}/>
-      </Switch>
+            <Switch>
+              <Route path={"/login"} render={() => <LoginPanel dictionary={dictionary} {...props}/>}/>
+              <Route path={"/magic-link"} render={() => <MagicLinkPanel dictionary={dictionary} {...props}/>}/>
+              <Route path={"/resetpassword/:token/:email"}
+                     render={() => <UpdatePasswordPanel dictionary={dictionary} {...props}/>} exact/>
+              <Route path={"/reset-password"} render={() => <ResetPasswordPanel dictionary={dictionary} {...props}/>}/>
+              <Route path={"/register"} render={() => <RegisterPanel dictionary={dictionary} {...props}/>}/>
+              <Route path={"/request-form"} render={() => <ExternalRegisterPanel dictionary={dictionary} {...props}/>}/>
+              <Route path={"/driff-register"} render={() => <DriffCreatePanel dictionary={dictionary}
+                                                                              setRegisteredDriff={setRegisteredDriff} {...props}/>}/>
+            </Switch>
+          </>
+      }
     </Wrapper>
   );
 };

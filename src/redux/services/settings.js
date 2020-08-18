@@ -1,4 +1,12 @@
-import { apiCall } from "./index";
+import {apiCall, apiNoTokenCall} from "./index";
+
+export function getDriffCompSettings(payload) {
+  return apiNoTokenCall({
+    method: "GET",
+    url: "/comp-settings",
+    data: payload,
+  });
+}
 
 export function getDriffSettings(payload) {
   return apiCall({

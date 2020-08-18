@@ -1,5 +1,14 @@
-import dispatchActionToReducer, { SimpleDispatchActionToReducer } from "../actionDispatcher";
-import { getDriffSettings as getDriffSettingsService, getUserSettings as getUserSettingsService, updateUserSettings as updateUserSettingsService } from "../services";
+import dispatchActionToReducer, {SimpleDispatchActionToReducer} from "../actionDispatcher";
+import {
+  getDriffCompSettings as getDriffCompSettingsService,
+  getDriffSettings as getDriffSettingsService,
+  getUserSettings as getUserSettingsService,
+  updateUserSettings as updateUserSettingsService
+} from "../services";
+
+export function getDriffCompSettings(payload, callback) {
+  return dispatchActionToReducer(getDriffCompSettingsService(payload), "GET_DRIFF_COMP_SETTINGS_START", "GET_DRIFF_COMP_SETTINGS_SUCCESS", "GET_DRIFF_COMP_SETTINGS_FAIL", callback);
+}
 
 export function getDriffSettings(payload, callback) {
   return dispatchActionToReducer(getDriffSettingsService(payload), "GET_DRIFF_SETTINGS_START", "GET_DRIFF_SETTINGS_SUCCESS", "GET_DRIFF_SETTINGS_FAIL", callback);

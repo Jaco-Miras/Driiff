@@ -1,6 +1,7 @@
 import {useCallback, useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {
+  getDriffCompSettings,
   getDriffSettings,
   getUserSettings,
   setUserChatSetting,
@@ -59,6 +60,10 @@ const useSettings = () => {
   );
 
   const fetch = useCallback(() => {
+    dispatch(
+      getDriffCompSettings({})
+    );
+
     dispatch(
       getDriffSettings({}, (err) => {
         if (err) {

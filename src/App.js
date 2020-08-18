@@ -2,7 +2,7 @@ import React, {useEffect} from "react";
 import {Route, Switch, useLocation} from "react-router-dom";
 import ScrollToTop from "react-router-scroll-top";
 import styled from "styled-components";
-import {useDriff} from "./components/hooks";
+import {useDriff, useSettings} from "./components/hooks";
 import {DriffRegisterPanel, ModalPanel, PreLoader, RedirectPanel} from "./components/panels";
 import {AppRoute} from "./layout/routes";
 import GuestLayout from "./layout/GuestLayout";
@@ -13,6 +13,7 @@ const Wrapper = styled.div`
 `;
 
 function App() {
+  const {driffSettings} = useSettings();
   const {actions: driffActions, redirected, registeredDriff, setRegisteredDriff} = useDriff();
   const location = useLocation();
 
@@ -29,6 +30,15 @@ function App() {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
+
+  //if there is no login possible. maintenance mode
+  if (driffSettings.settings.maintenance_mode) {
+    return (
+      <Wrapper className="App">
+        <GuestLayout setRegisteredDriff={setRegisteredDriff}/>
+      </Wrapper>
+    )
+  }
 
   return (
     <Wrapper className="App">
