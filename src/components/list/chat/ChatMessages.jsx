@@ -474,8 +474,10 @@ class ChatMessages extends React.PureComponent {
 
   loadMore = debounce(() => {
     const scrollEl = this.scrollComponent.current;
-    if (scrollEl.scrollTop < scrollEl.scrollHeight * .30) {
-      this.loadReplies();
+    if (scrollEl){
+      if (scrollEl.scrollTop < scrollEl.scrollHeight * .30) {
+        this.loadReplies();
+      }
     }
   }, 300);
 
