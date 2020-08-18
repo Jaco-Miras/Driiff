@@ -149,3 +149,7 @@ export function postWorkspaceRole(payload, callback) {
 export function incomingWorkspaceRole(payload, callback) {
   return SimpleDispatchActionToReducer("INCOMING_WORKSPACE_ROLE", payload, callback);
 }
+
+export function setWorkspaceToDelete(payload, callback) {
+  return SimpleDispatchActionToReducer("SET_WORKSPACE_TO_DELETE", payload, callback);
+}
