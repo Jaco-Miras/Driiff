@@ -78,7 +78,7 @@ export default (state = INITIAL_STATE, action) => {
       });
 
       Object.keys(settings).forEach(k => {
-        settings[k] = settings[k] === "1";
+        settings[k] = (settings[k] === "1" || settings[k] === true);
       });
 
       settings.maintenance_mode = !Object.values(settings).some(v => v === true);
