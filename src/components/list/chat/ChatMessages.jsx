@@ -1,4 +1,4 @@
-import { groupBy } from "lodash";
+import { groupBy, debounce } from "lodash";
 import React from "react";
 import { InView } from "react-intersection-observer";
 import { connect } from "react-redux";
@@ -410,6 +410,9 @@ class ChatMessages extends React.PureComponent {
   componentWillUnmount() {
     const scrollComponent = this.scrollComponent.current;
 
+    if (scrollComponent) {
+      scrollComponent.removeEventListener("scroll", this.loadMore);
+    }
     this.props.chatMessageActions.channelActions.saveHistoricalPosition(this.props.selectedChannel.id, scrollComponent);
     document.removeEventListener("keydown", this.handleEditOnArrowUp, false);
   }
@@ -469,11 +472,21 @@ class ChatMessages extends React.PureComponent {
     }
   };
 
+  loadMore = debounce(() => {
+    const scrollEl = this.scrollComponent.current;
+    if (scrollEl.scrollTop < scrollEl.scrollHeight * .30) {
+      this.loadReplies();
+    }
+  }, 300);
+
   componentDidMount() {
     const { selectedChannel, historicalPositions } = this.props;
 
     const scrollComponent = this.scrollComponent.current;
 
+    if (scrollComponent) {
+      scrollComponent.addEventListener("scroll", this.loadMore);
+    }
     if (historicalPositions.length) {
       historicalPositions.forEach((hp) => {
         if (hp.channel_id === selectedChannel.id && scrollComponent) {
