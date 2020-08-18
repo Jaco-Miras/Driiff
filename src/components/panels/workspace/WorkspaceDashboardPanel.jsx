@@ -55,7 +55,7 @@ const WorkspaceDashboardPanel = (props) => {
             </div>
 
             <div className={"col-md-6"}>
-              <DashboardTeam workspace={workspace} onEditClick={handleEditClick} isMember={isMember} isExternal={isExternal} dictionary={dictionary}/>
+              <DashboardTeam workspace={workspace} actions={actions} onEditClick={handleEditClick} isMember={isMember} isExternal={isExternal} dictionary={dictionary}/>
               <RecentPosts posts={recentPosts} dictionary={dictionary} disableOptions={disableOptions}/>
             </div>
           </>

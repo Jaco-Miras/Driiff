@@ -48,7 +48,7 @@ const Wrapper = styled.div`
 `;
 
 const DashboardTeam = (props) => {
-  const { className = "", workspace, onEditClick, isExternal, isMember, dictionary } = props;
+  const { className = "", workspace, onEditClick, isExternal, isMember, dictionary, actions } = props;
   const [scrollRef, setScrollRef] = useState(null);
 
   const assignRef = useCallback((e) => {
@@ -71,7 +71,7 @@ const DashboardTeam = (props) => {
         <ul className="list-group list-group-flush">
           {workspace.members.filter((m) => m.active === 1 || !m.has_accepted).map((member) => {
             return <TeamListItem key={member.id} member={member} parentRef={scrollRef} onEditClick={onEditClick}
-                                 hideOptions={hideOptions}/>;
+                                 hideOptions={hideOptions} actions={actions} workspace_id={workspace.id}/>;
           })}
         </ul>
       </div>

@@ -72,6 +72,7 @@ import {
     incomingUpdatedWorkspaceFolder,
     incomingWorkspace,
     incomingWorkspaceFolder,
+    incomingWorkspaceRole,
     joinWorkspaceReducer,
     updateWorkspaceCounter
 } from "../../redux/actions/workspaceActions";
@@ -101,6 +102,10 @@ class SocketListeners extends React.PureComponent {
 
         // new socket
         window.Echo.private(`${localStorage.getItem("slug") === "dev24admin" ? "dev" : localStorage.getItem("slug")}.Driff.User.${this.props.user.id}`)
+            .listen(".workspace-role-notification", (e) => {
+                console.log("workspace role", e);
+                this.props.incomingWorkspaceRole(e);
+            })
             .listen(".google-attachment-notification", (e) => {
                 console.log("google attachment", e)
                 switch (e.SOCKET_TYPE) {
@@ -360,6 +365,10 @@ class SocketListeners extends React.PureComponent {
             });
 
         window.Echo.private(`${localStorage.getItem("slug") === "dev24admin" ? "dev" : localStorage.getItem("slug")}.App.Broadcast`)
+            .listen(".workspace-role-notification", (e) => {
+                console.log("workspace role", e);
+                this.props.incomingWorkspaceRole(e);
+            })
             .listen(".google-attachment-notification", (e) => {
                 console.log("google attachment", e)
                 switch (e.SOCKET_TYPE) {
@@ -799,7 +808,8 @@ function mapDispatchToProps(dispatch) {
         incomingGoogleFile: bindActionCreators(incomingGoogleFile, dispatch),
         incomingGoogleFolder: bindActionCreators(incomingGoogleFolder, dispatch),
         joinWorkspaceReducer: bindActionCreators(joinWorkspaceReducer, dispatch),
-        incomingDeletedGoogleFile: bindActionCreators(incomingDeletedGoogleFile, dispatch)
+        incomingDeletedGoogleFile: bindActionCreators(incomingDeletedGoogleFile, dispatch),
+        incomingWorkspaceRole: bindActionCreators(incomingWorkspaceRole, dispatch),
     };
 }
 

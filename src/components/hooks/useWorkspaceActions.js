@@ -7,7 +7,7 @@ import { useHistory } from "react-router-dom";
 // import {getBaseUrl} from "../../helpers/slugHelper";
 import {replaceChar} from "../../helpers/stringFormatter";
 import { addPrimaryFiles, fetchDetail, fetchMembers, fetchPrimaryFiles, fetchTimeline, 
-        getWorkspaces, setActiveTopic } from "../../redux/actions/workspaceActions";
+        getWorkspaces, postWorkspaceRole, setActiveTopic } from "../../redux/actions/workspaceActions";
 import { addToModals } from "../../redux/actions/globalActions";
 import {
   addToChannels,
@@ -146,8 +146,16 @@ const useWorkspaceActions = () => {
     []
   );
 
+  const addRole = useCallback(
+    (payload, callback) => {
+      dispatch(postWorkspaceRole(payload, callback));
+    },
+    [dispatch]
+  );
+
   return {
     addPrimaryFilesToWorkspace,
+    addRole,
     clearChannel,
     fetchChannel,
     fetchWorkspaceChannels,

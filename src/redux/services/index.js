@@ -135,6 +135,7 @@ export {
   getWorkspaces,
   joinWorkspace,
   moveWorkspaceTopic,
+  postWorkspaceRole,
   updatePostStatus,
   updateWorkspace,
 } from "./workspace";
