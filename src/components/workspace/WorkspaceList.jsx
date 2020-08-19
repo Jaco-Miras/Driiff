@@ -48,6 +48,17 @@ const Wrapper = styled.li`
         }
       }
     }
+    .feather-pencil {
+      display: none;
+    }
+    :hover {
+      .sub-menu-arrow {
+        margin-left: 10px;
+      }
+      .feather-pencil {
+        display: block;
+      }
+    }
   }
 
   ul {
@@ -102,6 +113,15 @@ const TopicNav = styled.ul`
     max-height: 0;
   }
 `;
+
+const EditIcon = styled(SvgIconFeather)`
+  height: 12px !important;
+  width: 12px !important;
+  cursor: pointer;
+  margin-left: auto;
+  color: #fff8;
+`;
+
 
 const WorkspaceList = (props) => {
   const { className = "", actions, show = true, folder, history, workspace, workspaces } = props;
@@ -189,6 +209,18 @@ const WorkspaceList = (props) => {
     setTriggerFocus(null);
   }
   
+  const handleEditFolder = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    let payload = {
+      mode: "edit",
+      item: folder,
+      type: "workspace_folder",
+    };
+
+    dispatch(addToModals(payload));
+  };
+
   return (
     
     <Wrapper ref={ref.container} className={`workspace-list fadeIn ${className} ${showTopics && "folder-open"}`} selected={selected} show={show}>
@@ -205,7 +237,7 @@ const WorkspaceList = (props) => {
             </Badge>
           )}
         </div>
-
+          { folder.type === "FOLDER" && <EditIcon icon="pencil" onClick={handleEditFolder}/> }
         <i ref={ref.arrow} className={`sub-menu-arrow ti-angle-up ${showTopics ? "ti-minus rotate-in" : "ti-plus"}`} />
       </a>
       
