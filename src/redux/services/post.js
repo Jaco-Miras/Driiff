@@ -1,4 +1,4 @@
-import { apiCall } from "./index";
+import {apiCall} from "./index";
 
 /**
  * @param {Object} payload
@@ -131,6 +131,51 @@ export function postCreate(payload) {
 
 /**
  * @param {Object} payload
+ * @param {number} payload.tag_ids
+ * @param {string} payload.title
+ * @param {string} payload.body
+ * @param {string} payload.status
+ * @param {array} payload.recipient_ids
+ * @param {array} payload.workspace_ids
+ * @param {string} payload.type
+ * @param {number} payload.personal
+ * @returns {Promise<*>}
+ */
+export function postCompanyPosts(payload) {
+  let url = "/v2/company/posts";
+  return apiCall({
+    method: "POST",
+    url: url,
+    data: payload,
+  });
+}
+
+/**
+ * @param {Object} payload
+ * @param {number} payload.id
+ * @param {number} payload.tag_ids
+ * @param {string} payload.title
+ * @param {string} payload.body
+ * @param {string} payload.status
+ * @param {array} payload.recipient_ids
+ * @param {array} payload.workspace_ids
+ * @param {string} payload.type
+ * @param {number} payload.personal
+ * @returns {Promise<*>}
+ */
+export function putCompanyPosts(payload) {
+  let url = `/v2/company/posts/${payload.id}`;
+  return apiCall({
+    method: "PUT",
+    url: url,
+    data: payload,
+  });
+}
+
+//http://24.driff.local/api/?tag_ids[]=2&type=post&rating=neutral&must_read=1&must_reply=1&read_only=0&personal=1
+
+/**
+ * @param {Object} payload
  * @param {number} payload.body
  * @param {array} payload.file_ids
  * @param {array} payload.mention_ids
@@ -260,6 +305,32 @@ export function fetchRecentPosts(payload) {
  */
 export function fetchTagCounter(payload) {
   let url = `/v2/post-tags-entries?topic_id=${payload.topic_id}`;
+  return apiCall({
+    method: "GET",
+    url: url,
+    data: payload,
+  });
+}
+
+/**
+ * @param {Object} payload
+ * @param {number} payload.skip
+ * @param {number} payload.limit
+ * @param {string} payload.search
+ * @param {array}  payload.filters
+ * @returns {Promise<*>}
+ */
+export function getCompanyPosts(payload) {
+  const {skip = 0, limit = 100, search = "", filters = []} = payload;
+  let url = `/v2/company/posts?&skip=${skip}&limit=${limit}`;
+  if (search !== "") {
+    url += `&search=${search}`;
+  }
+  if (!!filters.length) {
+    filters.forEach((f, i) => {
+      url += `&filter[${i}]=${f}`;
+    })
+  }
   return apiCall({
     method: "GET",
     url: url,

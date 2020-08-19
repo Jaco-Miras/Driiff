@@ -43,3 +43,4 @@ export {default as usePageLoader} from "./usePageLoader";
 export {default as useRedirect} from "./useRedirect";
 export {default as useGoogleApis} from "./useGoogleApis";
 export {default as useDriffActions} from "./useDriffActions";
+export {default as useCompanyPosts} from "./useCompanyPosts";

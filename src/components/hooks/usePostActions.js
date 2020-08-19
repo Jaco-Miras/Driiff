@@ -1,21 +1,23 @@
-import React, { useCallback } from "react";
-import { useDispatch } from "react-redux";
-import { useHistory, useLocation, useParams } from "react-router-dom";
-import { copyTextToClipboard } from "../../helpers/commonFunctions";
-import { getBaseUrl } from "../../helpers/slugHelper";
-import { replaceChar } from "../../helpers/stringFormatter";
-import { addToModals, deleteDraft } from "../../redux/actions/globalActions";
+import React, {useCallback} from "react";
+import {useDispatch} from "react-redux";
+import {useHistory, useLocation, useParams} from "react-router-dom";
+import {copyTextToClipboard} from "../../helpers/commonFunctions";
+import {getBaseUrl} from "../../helpers/slugHelper";
+import {replaceChar} from "../../helpers/stringFormatter";
+import {addToModals, deleteDraft} from "../../redux/actions/globalActions";
 import {
   archiveReducer,
   deletePost,
   fetchPosts,
   fetchRecentPosts,
   fetchTagCounter,
+  getCompanyPosts,
   markPostReducer,
   markReadUnreadReducer,
   mustReadReducer,
   postArchive,
   postClap,
+  postCompanyPosts,
   postCreate,
   postFavorite,
   postFollow,
@@ -24,11 +26,13 @@ import {
   postToggleRead,
   postUnfollow,
   postVisit,
+  putCompanyPosts,
   putPost,
   removePost,
   starPostReducer,
+  updateCompanyPostFilterSort,
 } from "../../redux/actions/postActions";
-import { useToaster } from "./index";
+import {useToaster} from "./index";
 
 const usePostActions = () => {
   const dispatch = useDispatch();
@@ -40,9 +44,9 @@ const usePostActions = () => {
   const starPost = useCallback(
     (post) => {
       if (post.type === "draft_post") return;
-      let topic_id = parseInt(params.workspaceId);
+      let topic_id = typeof params.workspaceId !== "undefined" ? parseInt(params.workspaceId) : null;
       dispatch(
-        postFavorite({ type: "post", type_id: post.id }, (err, res) => {
+        postFavorite({type: "post", type_id: post.id}, (err, res) => {
           //@todo reverse the action/data in the reducer
           if (err) {
             toaster.error(<>Action failed!</>);
@@ -72,7 +76,7 @@ const usePostActions = () => {
       if (post.type === "draft_post") return;
       let topic_id = parseInt(params.workspaceId);
       dispatch(
-        postMarkDone({ post_id: post.id }, (err, res) => {
+        postMarkDone({post_id: post.id}, (err, res) => {
           //@todo reverse the action/data in the reducer
           if (err) {
             toaster.error(<>Action failed!</>);
@@ -111,7 +115,11 @@ const usePostActions = () => {
         dispatch(addToModals(payload));
       } else {
         if (path) {
-          history.push(path + `/post/${post.id}/${replaceChar(post.title)}`);
+          if (path === "/posts") {
+            history.push(path + `/${post.id}/${replaceChar(post.title)}`);
+          } else {
+            history.push(path + `/post/${post.id}/${replaceChar(post.title)}`);
+          }
         } else {
           history.push(location.pathname + `/post/${post.id}/${replaceChar(post.title)}`);
         }
@@ -321,7 +329,7 @@ const usePostActions = () => {
       if (post.is_followed) {
         //When: The user is following/recipient of the post - and not the creator.
         dispatch(
-          postUnfollow({ post_id: post.id }, (err, res) => {
+          postUnfollow({post_id: post.id}, (err, res) => {
             if (err) return;
             let notification = `You’ve stopped to follow ${post.title}`;
             toaster.notify(notification);
@@ -330,7 +338,7 @@ const usePostActions = () => {
       } else {
         //When: The user not following the post and the post is in an open topic.
         dispatch(
-          postFollow({ post_id: post.id }, (err, res) => {
+          postFollow({post_id: post.id}, (err, res) => {
             if (err) return;
             let notification = `You’ve started to follow ${post.title}`;
             toaster.notify(notification);
@@ -383,30 +391,60 @@ const usePostActions = () => {
 
   const showModal = useCallback(
     (mode = "create", post = null) => {
-      let payload = {
-        type: "workspace_post_create_edit",
-        mode: mode,
-      };
-      if (mode === "edit") {
-        payload = {
-          ...payload,
-          item: {
-            post: post,
-          },
-          action: {
-            update: update,
-          },
-        };
-      } else {
-        payload = {
-          ...payload,
-          item: {
-            post: post,
-          },
-          action: {
-            create: create,
-          },
-        };
+      let payload = {};
+
+      switch (mode) {
+        case "create_company": {
+          payload = {
+            type: "company_post_create_edit",
+            mode: "create",
+            item: {
+              post: post,
+            },
+            action: {
+              create: createCompany,
+            },
+          };
+          break;
+        }
+        case "edit_company": {
+          payload = {
+            type: "company_post_create_edit",
+            mode: "edit",
+            item: {
+              post: post,
+            },
+            action: {
+              update: updateCompany,
+            },
+          };
+          break;
+        }
+        case "edit": {
+          payload = {
+            type: "workspace_post_create_edit",
+            mode: mode,
+            item: {
+              post: post,
+            },
+            action: {
+              update: update,
+            },
+          };
+          break;
+        }
+        default: {
+          payload = {
+            type: "workspace_post_create_edit",
+            mode: mode,
+            item: {
+              post: post,
+            },
+            action: {
+              create: create,
+            },
+          };
+        }
       }
 
       dispatch(addToModals(payload));
@@ -421,9 +459,31 @@ const usePostActions = () => {
     [dispatch]
   );
 
+  const createCompany = useCallback(
+    (payload) => {
+      dispatch(postCompanyPosts(payload, (err, res) => {
+        if (res) {
+          toaster.success(<>You have successfully created a post.</>);
+        }
+      }));
+    },
+    [dispatch]
+  );
+
   const update = useCallback(
     (payload) => {
       dispatch(putPost(payload));
+    },
+    [dispatch]
+  );
+
+  const updateCompany = useCallback(
+    (payload) => {
+      dispatch(putCompanyPosts(payload), (err, res) => {
+        if (res) {
+          toaster.success(<>You have updated {payload.title} post.</>);
+        }
+      });
     },
     [dispatch]
   );
@@ -437,14 +497,28 @@ const usePostActions = () => {
 
   const getRecentPosts = useCallback(
     (id, callback) => {
-      dispatch(fetchRecentPosts({ topic_id: id }));
+      dispatch(fetchRecentPosts({topic_id: id}));
     },
     [dispatch]
   );
 
   const getTagsCount = useCallback(
     (id, callback) => {
-      dispatch(fetchTagCounter({ topic_id: id }));
+      dispatch(fetchTagCounter({topic_id: id}));
+    },
+    [dispatch]
+  );
+
+  const fetchCompanyPosts = useCallback(
+    (payload, callback) => {
+      dispatch(getCompanyPosts(payload, callback));
+    },
+    [dispatch]
+  );
+
+  const setCompanyFilterPosts = useCallback(
+    (payload, callback) => {
+      dispatch(updateCompanyPostFilterSort(payload, callback));
     },
     [dispatch]
   );
@@ -500,6 +574,8 @@ const usePostActions = () => {
     clap,
     getRecentPosts,
     getTagsCount,
+    fetchCompanyPosts,
+    setCompanyFilterPosts,
     getPosts,
     visit,
     markReadRequirement,

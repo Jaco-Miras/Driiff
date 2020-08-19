@@ -7,6 +7,7 @@ import {
   ChatReminderModal,
   ConfirmationModal,
   CreateEditChatModal,
+  CreateEditCompanyPostModal,
   CreateEditWorkspaceModal,
   CreateEditWorkspacePostModal,
   CreateWorkspaceFolderModal,
@@ -49,15 +50,17 @@ const ModalPanel = () => {
             case "reminder":
               return <ChatReminderModal key={modal.type} data={modal} />;
             case "file_upload":
-              return <FileUploadModal key={modal.type} data={modal} />;
+              return <FileUploadModal key={modal.type} data={modal}/>;
             case "file_crop_upload":
-              return <FileCropUploadModal key={modal.type} data={modal} />;
+              return <FileCropUploadModal key={modal.type} data={modal}/>;
             case "chat_create_edit":
               return <CreateEditChatModal key={modal.type} data={modal}/>;
             case "workspace_folder":
               return <CreateWorkspaceFolderModal key={modal.type} data={modal}/>;
             case "workspace_create_edit":
               return <CreateEditWorkspaceModal key={modal.type} data={modal}/>;
+            case "company_post_create_edit":
+              return <CreateEditCompanyPostModal key={modal.type} data={modal}/>;
             case "workspace_post_create_edit":
               return <CreateEditWorkspacePostModal key={modal.type} data={modal}/>;
             case "snooze_post":

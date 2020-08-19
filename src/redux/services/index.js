@@ -119,6 +119,9 @@ export {
   postVisit,
   putComment,
   putPost,
+  getCompanyPosts,
+  postCompanyPosts,
+  putCompanyPosts,
 } from "./post";
 
 export {

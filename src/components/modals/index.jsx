@@ -12,3 +12,4 @@ export { default as SingleInputModal } from "./SingleInputModal";
 export { default as MoveFilesModal } from "./MoveFilesModal";
 export {default as FileCropUploadModal} from "./FileCropUploadModal";
 export {default as InvitedUsersModal} from "./InvitedUsersModal";
+export {default as CreateEditCompanyPostModal} from "./CreateEditCompanyPostModal";

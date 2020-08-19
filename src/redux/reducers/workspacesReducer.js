@@ -464,6 +464,9 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "STAR_POST_REDUCER": {
+      if (!action.data.topic_id)
+        return {...state};
+
       return {
         ...state,
         workspacePosts: {

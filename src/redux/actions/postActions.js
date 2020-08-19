@@ -1,17 +1,19 @@
-import dispatchActionToReducer, { SimpleDispatchActionToReducer } from "../actionDispatcher";
+import dispatchActionToReducer, {SimpleDispatchActionToReducer} from "../actionDispatcher";
 import {
   deleteComment as deleteCommentService,
   deletePost as deletePostService,
+  fetchComments as fetchCommentsService,
   fetchPost as fetchPostService,
   fetchPosts as fetchPostsService,
-  fetchComments as fetchCommentsService,
   fetchRecentPosts as fetchRecentPostsService,
   fetchTagCounter as fetchTagCounterService,
+  getCompanyPosts as getCompanyPostsService,
   postArchive as postArchiveService,
   postClap as postClapService,
-  postCreate as postCreateService,
   postComment as postCommentService,
   postCommentClap as postCommentClapService,
+  postCompanyPosts as postCompanyPostsService,
+  postCreate as postCreateService,
   postFavorite as postFavoriteService,
   postFollow as postFollowService,
   postMarkDone as postMarkDoneService,
@@ -21,6 +23,7 @@ import {
   postUnfollow as postUnfollowService,
   postVisit as postVisitService,
   putComment as putCommentService,
+  putCompanyPosts as putCompanyPostsService,
   putPost as putPostService,
 } from "../services";
 
@@ -58,6 +61,14 @@ export function postSnooze(payload, callback) {
 
 export function postCreate(payload, callback) {
   return dispatchActionToReducer(postCreateService(payload), "POST_CREATE_START", "POST_CREATE_SUCCESS", "POST_CREATE_FAIL", callback);
+}
+
+export function postCompanyPosts(payload, callback) {
+  return dispatchActionToReducer(postCompanyPostsService(payload), "POST_COMPANY_POSTS_START", "POST_COMPANY_POSTS_SUCCESS", "POST_COMPANY_POSTS_FAIL", callback);
+}
+
+export function putCompanyPosts(payload, callback) {
+  return dispatchActionToReducer(putCompanyPostsService(payload), "PUT_COMPANY_POSTS_START", "PUT_COMPANY_POSTS_SUCCESS", "PUT_COMPANY_POSTS_FAIL", callback);
 }
 
 export function postComment(payload, callback) {
@@ -146,6 +157,14 @@ export function fetchRecentPosts(payload, callback) {
 
 export function fetchTagCounter(payload, callback) {
   return dispatchActionToReducer(fetchTagCounterService(payload), "FETCH_TAG_COUNTER_START", "FETCH_TAG_COUNTER_SUCCESS", "FETCH_TAG_COUNTER_FAIL", callback);
+}
+
+export function getCompanyPosts(payload, callback) {
+  return dispatchActionToReducer(getCompanyPostsService(payload), "GET_COMPANY_POSTS_START", "GET_COMPANY_POSTS_SUCCESS", "GET_COMPANY_POSTS_FAIL", callback);
+}
+
+export function updateCompanyPostFilterSort(payload, callback) {
+  return SimpleDispatchActionToReducer("UPDATE_COMPANY_POST_FILTER_SORT", payload, callback);
 }
 
 export function fetchPosts(payload, callback) {

@@ -2,6 +2,13 @@ import {convertArrayToObject} from "../../helpers/arrayHelper";
 
 const INITIAL_STATE = {
   user: null,
+  companyPosts: {
+    posts: {},
+    filter: null,
+    sort: {},
+    tag: {},
+    searchResults: []
+  },
   posts: {},
   drafts: [],
   totalPostsCount: 0,
@@ -27,9 +34,9 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "ADD_COMMENT_QUOTE": {
-      let updatedQuotes = { ...state.commentQuotes };
+      let updatedQuotes = {...state.commentQuotes};
       if (Object.keys(state.commentQuotes).length > 0 && state.commentQuotes.hasOwnProperty(action.data.id)) {
-        updatedQuotes = { ...state.commentQuotes };
+        updatedQuotes = {...state.commentQuotes};
         delete updatedQuotes[action.data.id];
         updatedQuotes = {
           ...updatedQuotes,
@@ -47,7 +54,7 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "CLEAR_COMMENT_QUOTE": {
-      let updatedQuotes = { ...state.commentQuotes };
+      let updatedQuotes = {...state.commentQuotes};
       delete updatedQuotes[action.data];
 
       return {
@@ -59,6 +66,80 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         parentId: action.data,
+      };
+    }
+    case "GET_COMPANY_POSTS_SUCCESS": {
+      let newPosts = {};
+      action.data.posts.forEach(p => {
+        if (state.companyPosts.posts[p.id]) {
+          newPosts[p.id] = {
+            ...state.companyPosts.posts[p.id],
+            p
+          };
+        } else {
+          newPosts[p.id] = p;
+        }
+      })
+
+      return {
+        ...state,
+        companyPosts: {
+          ...state.companyPosts,
+          posts: {
+            ...state.companyPosts.posts,
+            ...newPosts
+          }
+        }
+      }
+    }
+    case "INCOMING_POST": {
+      return {
+        ...state,
+        companyPosts: {
+          ...state.companyPosts,
+          posts: {
+            ...state.companyPosts.posts,
+            [action.data.id]: action.data
+          }
+        }
+      }
+    }
+    case "INCOMING_UPDATED_POST": {
+      return {
+        ...state,
+        companyPosts: {
+          ...state.companyPosts,
+          posts: {
+            ...state.companyPosts.posts,
+            [action.data.id]: action.data
+          }
+        }
+      }
+    }
+    case "UPDATE_COMPANY_POST_FILTER_SORT": {
+      return {
+        ...state,
+        companyPosts: {
+          ...state.companyPosts,
+          filter: action.data.filter,
+          sort: action.data.sort ? action.data.sort : state.companyPosts.sort,
+          tag: action.data.tag,
+        },
+      };
+    }
+    case "STAR_POST_REDUCER": {
+      return {
+        ...state,
+        companyPosts: {
+          ...state.companyPosts,
+          posts: {
+            ...state.companyPosts.posts,
+            [action.data.post_id]: {
+              ...state.companyPosts.posts[action.data.post_id],
+              is_favourite: !state.companyPosts.posts[action.data.post_id].is_favourite
+            }
+          }
+        }
       };
     }
     case "FETCH_RECENT_POSTS_SUCCESS": {
@@ -95,7 +176,7 @@ export default (state = INITIAL_STATE, action) => {
       if (state.drafts.length) {
         state.drafts.forEach((d) => {
           if (d.data.type === "draft_post" && action.data.topic_id === d.data.topic_id) {
-            postDrafts.push({ ...d.data, ...d.data.form, draft_id: d.id });
+            postDrafts.push({...d.data, ...d.data.form, draft_id: d.id});
           }
         });
       }
@@ -137,10 +218,10 @@ export default (state = INITIAL_STATE, action) => {
         posts: updatedPosts,
       };
     }
-      // case "MARK_READ_UNREAD_REDUCER": {
-      //     let newPosts = {...state.posts};
-      //     newPosts[action.data.post_id].is_unread = action.data.unread;
-      //     if (action.data.unread === 0) {
+    // case "MARK_READ_UNREAD_REDUCER": {
+    //     let newPosts = {...state.posts};
+    //     newPosts[action.data.post_id].is_unread = action.data.unread;
+    //     if (action.data.unread === 0) {
     //         newPosts[action.data.post_id].unread_count = action.data.unread;
     //     }
     //     return {
