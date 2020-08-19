@@ -986,7 +986,7 @@ const ChatBubble = (props) => {
     replyQuoteBody = renderToString(newBody);
   }
 
-  console.log(reply);
+  //console.log(reply);
 
   const hasFiles = reply.files.length > 0;
   const hasMessage = reply.body !== "<span></span>";

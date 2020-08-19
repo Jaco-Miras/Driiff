@@ -45,7 +45,7 @@ const Wrapper = styled.li`
 `;
 
 const TeamListItem = (props) => {
-  const { className = "", member, parentRef, onEditClick, hideOptions } = props;
+  const { className = "", member, parentRef, onEditClick, hideOptions, actions, workspace_id } = props;
 
   const history = useHistory();
 
@@ -55,8 +55,17 @@ const TeamListItem = (props) => {
     }
   };
 
+  const handleAddRole = (role) => {
+    let payload = {
+      topic_id: workspace_id,
+      user_id: member.id,
+      role
+    }
+    actions.addRole(payload);
+  };
+
   return (
-    <Wrapper className={`team-list-item list-group-item d-flex align-items-center p-l-r-0 justify-content-between ${className}`}>
+    <Wrapper className={`team-list-item list-group-item d-flex align-items-center p-l-r-0 ${className}`}>
       <div className="d-flex align-items-center ">
         <div className="pr-3">
           <Avatar id={member.id} name={member.name} imageLink={member.profile_image_link}
@@ -70,10 +79,15 @@ const TeamListItem = (props) => {
           {member.designation && <small className="text-muted">{member.designation}</small>}
         </div>
       </div>
+      <div className="ml-auto">
+        {member.workspace_role !== "" && 
+        <Badge badgeClassName={member.workspace_role === "TEAM_LEAD" ? "badge-success" : "badge-warning"} label={member.workspace_role === "TEAM_LEAD" ? "Team lead" : "Approver"}/>}
+      </div>
       {
         !hideOptions &&
         <MoreOptions moreButton="more-vertical" scrollRef={parentRef}>
-          <div>Role</div>
+          <div onClick={() => handleAddRole("team_lead")}>Assign as team lead</div>
+          <div onClick={() => handleAddRole("approver")}>Assign as approver</div>
           <div onClick={onEditClick}>Remove</div>
         </MoreOptions>
       }

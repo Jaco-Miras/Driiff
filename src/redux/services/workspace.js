@@ -261,3 +261,19 @@ export function getWorkspace(payload) {
     data: payload,
   });
 }
+
+/**
+ * @param {Object} payload
+ * @param {number} payload.topic_id
+ * @param {number} payload.user_id
+ * @param {string} payload.role
+ * @returns {Promise<*>}
+ */
+export function postWorkspaceRole(payload) {
+  let url = `/v2/workspace-role`;
+  return apiCall({
+    method: "POST",
+    url: url,
+    data: payload,
+  });
+}

@@ -13,6 +13,7 @@ import {
   getWorkspaceTopics as getWorkspaceTopicsService,
   joinWorkspace as joinWorkspaceService,
   moveWorkspaceTopic as moveWorkspaceTopicService,
+  postWorkspaceRole as postWorkspaceRoleService,
   updatePostStatus as updatePostStatusService,
   updateWorkspace as updateWorkspaceService,
 } from "../services";
@@ -139,4 +140,16 @@ export function incomingUnArchivedWorkspaceChannel(payload, callback) {
 
 export function leaveWorkspace(payload, callback) {
   return SimpleDispatchActionToReducer("LEAVE_WORKSPACE", payload, callback);
+}
+
+export function postWorkspaceRole(payload, callback) {
+  return dispatchActionToReducer(postWorkspaceRoleService(payload), "ADD_WORKSPACE_ROLE_START", "ADD_WORKSPACE_ROLE_SUCCESS", "ADD_WORKSPACE_ROLE_FAIL", callback);
+}
+
+export function incomingWorkspaceRole(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_WORKSPACE_ROLE", payload, callback);
+}
+
+export function setWorkspaceToDelete(payload, callback) {
+  return SimpleDispatchActionToReducer("SET_WORKSPACE_TO_DELETE", payload, callback);
 }

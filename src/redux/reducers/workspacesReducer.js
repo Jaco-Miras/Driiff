@@ -1034,6 +1034,46 @@ export default (state = INITIAL_STATE, action) => {
         : state.activeTopic
       }
     }
+    case "INCOMING_WORKSPACE_ROLE": {
+      let updatedWorkspaces = { ...state.workspaces };
+      if (updatedWorkspaces.hasOwnProperty(action.data.topic_id)) {
+        updatedWorkspaces[action.data.topic_id].members = updatedWorkspaces[action.data.topic_id].members.map((m) => {
+          if (m.id === action.data.user_id) {
+            return {
+              ...m,
+              workspace_role: action.data.role
+            };
+          } else {
+            return m;
+          }
+        });
+      }
+      return {
+        ...state,
+        workspaces: updatedWorkspaces,
+        activeTopic: state.activeTopic && state.activeTopic.id === action.data.topic_id ? 
+          {
+            ...state.activeTopic,
+            members: state.activeTopic.members.map((m) => {
+              if (m.id === action.data.user_id) {
+                return {
+                  ...m,
+                  workspace_role: action.data.role
+                };
+              } else {
+                return m;
+              }
+            })
+          }
+          : state.activeTopic
+      }
+    }
+    case "SET_WORKSPACE_TO_DELETE": {
+      return {
+        ...state,
+        workspaceToDelete: action.data
+      }
+    }
     default:
       return state;
   }
