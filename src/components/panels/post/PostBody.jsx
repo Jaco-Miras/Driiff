@@ -6,6 +6,7 @@ import { PostBadge } from "./index";
 import GifPlayer from "react-gif-player";
 import {getGifLinks} from "../../../helpers/urlContentHelper";
 import { MemberLists } from "../../list/members";
+import quillHelper from "../../../helpers/quillHelper";
 
 const Wrapper = styled.div`
   flex: unset;
@@ -73,7 +74,7 @@ const PostBody = (props) => {
         </div>
       </div>
       <div className="d-flex align-items-center">
-        <div dangerouslySetInnerHTML={{ __html: post.body }} />
+        <div dangerouslySetInnerHTML={{ __html: quillHelper.parseEmoji(post.body)}} />
       </div>
       {showGifPlayer &&
         getGifLinks(post.body).map((gifLink, index) => {
