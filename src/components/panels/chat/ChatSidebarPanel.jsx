@@ -70,7 +70,22 @@ const ChatSidebarPanel = (props) => {
   const [search, setSearch] = useState("");
   const [tabPill, setTabPill] = useState(activeTabPill);
   const previousChannel = usePreviousValue(selectedChannel);
-
+  
+  // let add = (total, num) => total + num;
+  // let unreadMessages = 0;
+  // let unreadWorkspaceMessages = 0;
+  // if (Object.keys(channels).length) {
+    
+  //   if (Object.values(channels).filter((c) => { return c.type !== "TOPIC" && typeof c.id === "number" }).length) {
+  //     unreadMessages = Object.values(channels).filter((c) => {
+  //       return c.type !== "TOPIC" && typeof c.id === "number";
+  //     }).map((c) => c.total_unread).reduce(add);
+  //   }
+  //   if (Object.values(channels).filter((c) => c.type === "TOPIC").length) {
+  //     unreadWorkspaceMessages = Object.values(channels).filter((c) => c.type === "TOPIC").map((c) => c.total_unread).reduce(add);
+  //   }
+  // }
+  
   const refs = {
     navTab: useRef(),
   };
