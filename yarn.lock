@@ -2682,9 +2682,9 @@ autoprefixer@^9.6.1:
     postcss-value-parser "^4.1.0"
 
 aws-sdk@2.x:
-  version "2.736.0"
-  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.736.0.tgz#7b9373d1a338288c5caeca01a6226efbade2e086"
-  integrity sha512-rDrLgxkiFX+9EksDx4Lc6qLA07Pf0xfqqXnM3CpLBL81aVOdmmXAiBPtz/KSgbcrR5Mxz38ah8x5RZ17stJQjw==
+  version "2.737.0"
+  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.737.0.tgz#48309776367cb45724c15a843061c569d3eb25fa"
+  integrity sha512-GQ4pplsIyiuFUwlFINhrw5lE9PrY5NIr/EDU5Me9mNGTW5pJXLVpK1ASwlReVhKAZisMUHFHLNvLcGRssR+drg==
   dependencies:
     buffer "4.9.2"
     events "1.1.1"
@@ -4700,9 +4700,9 @@ ee-first@1.1.1:
   integrity sha1-WQxhFWsK4vTwJVcyoViyZrxWsh0=
 
 electron-to-chromium@^1.3.378, electron-to-chromium@^1.3.523:
-  version "1.3.537"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.537.tgz#dfe595f5283d3113df897158810e40f6c2355283"
-  integrity sha512-v1jGX46P9vq1XvCBFJ7T7rHd2kMuSrCHnYvO0TqNoURYt7VoxCnqo5+W84s0jlnq0iQUPk5H2D01RfL4ENe2CA==
+  version "1.3.539"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.539.tgz#9952fb0bf3fb4295282e7df35f6e7a2a8b89d3fd"
+  integrity sha512-rM0LWDIstdqfaRUADZetNrL6+zd/0NBmavbMEhBXgc2u/CC1d1GaDyN5hho29fFvBiOVFwrSWZkzmNcZnCEDog==
 
 element-resize-detector@^1.1.9:
   version "1.2.1"
@@ -10485,9 +10485,9 @@ react-input-autosize@^2.2.2:
     prop-types "^15.5.8"
 
 react-intersection-observer@^8.26.2:
-  version "8.26.2"
-  resolved "https://registry.yarnpkg.com/react-intersection-observer/-/react-intersection-observer-8.26.2.tgz#0562ff0c06b2b10e809190c2fa9b6ded656e6e16"
-  integrity sha512-GmSjLNK+oV7kS+BHfrJSaA4wF61ELA33gizKHmN+tk59UT6/aW8kkqvlrFGPwxGoaIzLKS2evfG5fgkw5MIIsg==
+  version "8.27.0"
+  resolved "https://registry.yarnpkg.com/react-intersection-observer/-/react-intersection-observer-8.27.0.tgz#244bc182c83d3dd31c0c736f391d759936cd60b5"
+  integrity sha512-TNDFmniME08Giprdb2qemgpz0q4WM1k0SAFwaGQhLcxHF1YrWTnVB5nWd6mg90UpFeTSsofuA3Mz09vNImIx6g==
   dependencies:
     tiny-invariant "^1.1.0"
 

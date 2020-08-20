@@ -1,8 +1,8 @@
 import React from "react";
-import { getDriffName } from "../components/hooks/useDriff";
-import { driffData } from "../config/environment";
-import { apiCall } from "../redux/services";
-import { isIPAddress } from "./commonFunctions";
+import {getDriffName} from "../components/hooks/useDriff";
+import {driffData} from "../config/environment";
+import {apiCall} from "../redux/services";
+import {$_GET, isIPAddress} from "./commonFunctions";
 
 export const updateFaviconState = (isActive = false) => {
   let link = document.querySelectorAll("link[rel*='icon']");
@@ -193,16 +193,43 @@ export const getBaseUrl = (data = {}) => {
   }
 };
 
-export const isLoggedALlowed = () => {
-  const { REACT_APP_ENV } = process.env;
+export const initLogging = () => {
+  let logger = $_GET("logger");
+  if (logger) {
+    if (logger === "remove") {
+      localStorage.removeItem("logger");
+    } else {
+      localStorage.setItem("logger", logger);
+    }
+  }
+}
 
-  if (localStorage.getItem("logger") === "all" || localStorage.getItem("logger") === "reducer") {
+export const isConsoleLogAllowed = () => {
+  if (["all", "console"].includes(localStorage.getItem("logger"))) {
     return true;
   }
 
-  if (REACT_APP_ENV === "production") return false;
+  return (isIPAddress(window.location.hostname) || window.location.hostname === "localhost");
+}
 
-  return true;
+export const isLoggedAllowed = () => {
+  if (["all", "reducer", "axios"].includes(localStorage.getItem("logger"))) {
+    return true;
+  }
+
+  return (isIPAddress(window.location.hostname) || window.location.hostname === "localhost");
+};
+
+export const isTranslationLogged = () => {
+  if (localStorage.getItem("logger") === "translation-off") {
+    return false;
+  }
+
+  if (["all", "translation"].includes(localStorage.getItem("logger"))) {
+    return true;
+  }
+
+  return (isIPAddress(window.location.hostname) || window.location.hostname === "localhost");
 };
 
 export const processTabActive = () => {

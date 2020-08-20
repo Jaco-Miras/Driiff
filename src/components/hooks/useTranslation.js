@@ -1,8 +1,9 @@
-import { useCallback, useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { getHttpStatus } from "../../helpers/commonFunctions";
-import { addTranslationObject, getTranslationObject } from "../../redux/actions/globalActions";
-import { useDriff, useSettings } from "./index";
+import {useCallback, useEffect, useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
+import {getHttpStatus} from "../../helpers/commonFunctions";
+import {addTranslationObject, getTranslationObject} from "../../redux/actions/globalActions";
+import {useDriff, useSettings} from "./index";
+import {isTranslationLogged} from "../../helpers/slugHelper";
 
 let init = true;
 
@@ -12,7 +13,7 @@ let init = true;
 export const useTranslation = () => {
   const dispatch = useDispatch();
 
-  const { registeredDriff } = useDriff();
+  const {registeredDriff} = useDriff();
   const {
     generalSettings: { language },
     setGeneralSetting,
@@ -119,7 +120,11 @@ export const useTranslation = () => {
       }
     }
 
-    return translation;
+    if (isTranslationLogged()) {
+      return `** ${translation} **`;
+    } else {
+      return translation;
+    }
   });
 
   const _t = (code, default_value, replacement = null) => {
