@@ -10,8 +10,17 @@ const useCompanyPosts = () => {
   const params = useParams();
   const actions = usePostActions();
   const user = useSelector((state) => state.session.user);
-  const {posts, filter, tag, count, sort, search, searchResults} = useSelector((state) => state.posts.companyPosts);
+  const {limit, next_skip, has_more, posts, filter, tag, count, sort, search, searchResults} = useSelector((state) => state.posts.companyPosts);
   const [post, setPost] = useState(null);
+
+  const fetchMore = (callback) => {
+    if (has_more) {
+      actions.fetchCompanyPosts({
+        skip: next_skip,
+        limit: limit
+      }, callback)
+    }
+  }
 
   useEffect(() => {
     if (params.postId && posts[params.postId]) {
@@ -24,11 +33,12 @@ const useCompanyPosts = () => {
   useEffect(() => {
     if (!init) {
       init = true;
+      fetchMore();
 
-      actions.fetchCompanyPosts({
-        skip: 0,
-        limit: 100
-      })
+      actions.fetchCompanyPosts(
+        {
+          filters: ["post", "archived"],
+        });
     }
   }, []);
 
@@ -91,27 +101,38 @@ const useCompanyPosts = () => {
     filteredPosts = [];
   }
 
+  count.is_must_reply = Object.values(posts).filter((p) => {
+    return p.is_must_reply && p.is_must_reply === 1 && !p.is_archived && !p.hasOwnProperty("draft_type");
+  }).length;
+  count.is_must_read = Object.values(posts).filter((p) => {
+    return p.is_must_read && p.is_must_read === 1 && !p.is_archived && !p.hasOwnProperty("draft_type");
+  }).length;
+  count.is_read_only = Object.values(posts).filter((p) => {
+    return p.is_read_only === 1 && !p.is_archived && !p.hasOwnProperty("draft_type");
+  }).length;
+
+  let counters = {
+    all: Object.values(posts).length,
+    my_posts: Object.values(posts).filter((p) => p.author && p.author.id === user.id).length,
+    starred: Object.values(posts).filter((p) => p.is_favourite).length,
+    archived: Object.values(posts).filter((p) => p.is_archived).length,
+    drafts: Object.values(posts).filter((p) => p.type === "draft_post").length,
+  };
+
+  console.log(filter);
+
   return {
     actions,
+    fetchMore,
     posts: filteredPosts,
-    filter: null,
-    tag: null,
-    sort: null,
+    filter: filter,
+    tag: tag,
+    sort: sort,
     post: post,
-    search: null,
+    search: search,
     user,
-    count: {
-      is_must_reply: 0,
-      is_must_read: 0,
-      is_read_only: 0,
-    },
-    counters: {
-      all: 0,
-      my_posts: 0,
-      starred: 0,
-      archived: 0,
-      drafts: 0,
-    },
+    count: count,
+    counters: counters,
   };
 };
 

@@ -1,4 +1,4 @@
-import React, {useCallback} from "react";
+import React, {useCallback, useEffect, useRef, useState} from "react";
 import {useHistory, useParams} from "react-router-dom";
 import styled from "styled-components";
 import {SvgEmptyState} from "../../common";
@@ -12,10 +12,6 @@ import {
 
 const Wrapper = styled.div`
   text-align: left;
-
-  .app-lists {
-    overflow: visible !important;
-  }
 
   .app-block {
     overflow: inherit;
@@ -57,8 +53,13 @@ const CompanyPostsPanel = (props) => {
 
   const params = useParams();
   const history = useHistory();
+  const refs = {
+    posts: useRef(null),
+    btnLoadMore: useRef(null)
+  }
 
-  const {actions, posts, filter, tag, sort, post, user, search, count, counters} = useCompanyPosts();
+  const {actions, fetchMore, posts, filter, tag, sort, post, user, search, count, counters} = useCompanyPosts();
+  const [loading, setLoading] = useState(false);
 
   const handleShowWorkspacePostModal = () => {
     actions.showModal("create_company");
@@ -102,14 +103,56 @@ const CompanyPostsPanel = (props) => {
     quote: _t("POST.QUOTE", "Quote"),
     mentionUser: _t("POST.MENTION_USER", "Mention user")
   };
-  let disableOptions = false;
-  if (workspace && workspace.active === 0) disableOptions = true;
-  if (posts === null) return <></>;
+
+  /**
+   * @todo: must fill-out the entire screen with items
+   */
+  const initLoading = () => {
+    let el = refs.posts.current;
+    if (el.scrollHeight > el.querySelector(".list-group").scrollHeight) {
+      loadMore();
+    }
+  }
+
+  const loadMore = (callback = () => {
+  }) => {
+    if (!loading) {
+      setLoading(true);
+
+      fetchMore((err, res) => {
+        setLoading(false);
+        callback(err, res);
+      });
+    }
+  }
+
+  const handleScroll = (e) => {
+    if (e.target.dataset.loading === "false") {
+      if ((e.target.scrollTop + 500) >= e.target.scrollHeight - e.target.offsetHeight) {
+        if (refs.btnLoadMore.current)
+          refs.btnLoadMore.current.click();
+      }
+    }
+  }
+
+  useEffect(() => {
+    let el = refs.posts.current;
+    if (el && el.dataset.loaded === "0") {
+      initLoading();
+
+      el.dataset.loaded = "1";
+      refs.posts.current.addEventListener("scroll", handleScroll, false);
+    }
+  }, [refs.posts.current]);
+
+  if (posts === null)
+    return <></>;
 
   return (
     <Wrapper className={`container-fluid h-100 fadeIn ${className}`}>
+      <span className="d-none" ref={refs.btnLoadMore} onClick={loadMore}>Load more</span>
       <div className="row app-block">
-        <CompanyPostSidebar disableOptions={disableOptions} workspace={workspace} filter={filter} tag={tag}
+        <CompanyPostSidebar filter={filter} tag={tag}
                             postActions={actions} count={count} counters={counters} onGoBack={handleGoback}
                             dictionary={dictionary}/>
         <div className="col-md-9 app-content">
@@ -121,8 +164,7 @@ const CompanyPostsPanel = (props) => {
             <div className="card card-body app-content-body mb-4">
               <EmptyState>
                 <SvgEmptyState icon={3} height={252}/>
-                <button className="btn btn-outline-primary btn-block" onClick={handleShowWorkspacePostModal}
-                        disabled={disableOptions}>
+                <button className="btn btn-outline-primary btn-block" onClick={handleShowWorkspacePostModal}>
                   {dictionary.createNewPost}
                 </button>
               </EmptyState>
@@ -133,12 +175,12 @@ const CompanyPostsPanel = (props) => {
                 <div className="card card-body app-content-body mb-4">
                   <PostDetailWrapper className="fadeBottom">
                     <CompanyPostDetail post={post} postActions={actions} user={user} history={history}
-                                       onGoBack={handleGoback} dictionary={dictionary} disableOptions={disableOptions}/>
+                                       onGoBack={handleGoback} dictionary={dictionary}/>
                   </PostDetailWrapper>
                 </div>
               ) : (
                 <div className="card card-body app-content-body mb-4">
-                  <div className="app-lists" tabIndex="1">
+                  <div ref={refs.posts} className="app-lists" tabIndex="1" data-loaded="0" data-loading={loading}>
                     {search !== null && (
                       <>
                         {posts.length === 0 ? (
@@ -156,8 +198,8 @@ const CompanyPostsPanel = (props) => {
                     <ul className="list-group list-group-flush ui-sortable fadeIn">
                       {posts &&
                       posts.map((p) => {
-                        return <CompanyPostItemPanel key={p.id} post={p} postActions={actions} dictionary={dictionary}
-                                                     disableOptions={disableOptions}/>;
+                        return <CompanyPostItemPanel key={p.id} post={p} postActions={actions}
+                                                     dictionary={dictionary}/>;
                       })}
                     </ul>
                   </div>

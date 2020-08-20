@@ -484,6 +484,9 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "MARK_POST_REDUCER": {
+      if (isNaN(action.data.topic_id))
+        return state;
+
       return {
         ...state,
         workspacePosts: {
@@ -741,6 +744,9 @@ export default (state = INITIAL_STATE, action) => {
       }
     }
     case "ARCHIVE_POST_REDUCER": {
+      if (isNaN(action.data.topic_id))
+        return state;
+
       let newWorkspacePosts = {...state.workspacePosts};
       newWorkspacePosts[action.data.topic_id].posts[action.data.post_id].is_archived = action.data.is_archived;
       return {

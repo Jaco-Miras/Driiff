@@ -460,30 +460,40 @@ const usePostActions = () => {
   );
 
   const createCompany = useCallback(
-    (payload) => {
+    (payload, callback = () => {
+    }) => {
       dispatch(postCompanyPosts(payload, (err, res) => {
         if (res) {
           toaster.success(<>You have successfully created a post.</>);
         }
+        callback(err, res);
       }));
     },
     [dispatch]
   );
 
   const update = useCallback(
-    (payload) => {
-      dispatch(putPost(payload));
+    (payload, callback = () => {
+    }) => {
+      dispatch(putPost(payload, (err, res) => {
+        if (res) {
+          toaster.success(<>You have updated {payload.title} post.</>);
+        }
+        callback(err, res);
+      }));
     },
     [dispatch]
   );
 
   const updateCompany = useCallback(
-    (payload) => {
-      dispatch(putCompanyPosts(payload), (err, res) => {
+    (payload, callback = () => {
+    }) => {
+      dispatch(putCompanyPosts(payload, (err, res) => {
         if (res) {
           toaster.success(<>You have updated {payload.title} post.</>);
         }
-      });
+        callback(err, res);
+      }));
     },
     [dispatch]
   );
@@ -578,7 +588,7 @@ const usePostActions = () => {
     setCompanyFilterPosts,
     getPosts,
     visit,
-    markReadRequirement,
+    markReadRequirement
   };
 };
 

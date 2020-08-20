@@ -163,6 +163,10 @@ export function getCompanyPosts(payload, callback) {
   return dispatchActionToReducer(getCompanyPostsService(payload), "GET_COMPANY_POSTS_START", "GET_COMPANY_POSTS_SUCCESS", "GET_COMPANY_POSTS_FAIL", callback);
 }
 
+export function addCompanyPostSearchResult(payload, callback) {
+  return SimpleDispatchActionToReducer("ADD_COMPANY_POST_SEARCH_RESULT", payload, callback);
+}
+
 export function updateCompanyPostFilterSort(payload, callback) {
   return SimpleDispatchActionToReducer("UPDATE_COMPANY_POST_FILTER_SORT", payload, callback);
 }

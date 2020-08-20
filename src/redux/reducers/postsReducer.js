@@ -3,10 +3,17 @@ import {convertArrayToObject} from "../../helpers/arrayHelper";
 const INITIAL_STATE = {
   user: null,
   companyPosts: {
+    limit: 25,
+    prev_skip: 0,
+    next_skip: 0,
+    total_take: 0,
+    has_more: true,
     posts: {},
-    filter: null,
-    sort: {},
-    tag: {},
+    filter: "all",
+    sort: "recent",
+    tag: null,
+    count: {},
+    search: null,
     searchResults: []
   },
   posts: {},
@@ -85,6 +92,10 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         companyPosts: {
           ...state.companyPosts,
+          prev_skip: action.data.prev_skip,
+          next_skip: action.data.next_skip,
+          total_take: action.data.total_take,
+          has_more: action.data.total_take === (action.data.next_skip - action.data.prev_skip),
           posts: {
             ...state.companyPosts.posts,
             ...newPosts
@@ -116,7 +127,27 @@ export default (state = INITIAL_STATE, action) => {
         }
       }
     }
+    case "ADD_COMPANY_POST_SEARCH_RESULT": {
+      let boom = {
+        ...state,
+        companyPosts: {
+          ...state.companyPosts,
+          search: action.data.search,
+          searchResults: action.data.search_result,
+        }
+      };
+      console.log(boom.companyPosts)
+      return {
+        ...state,
+        companyPosts: {
+          ...state.companyPosts,
+          search: action.data.search,
+          searchResults: action.data.search_result,
+        }
+      }
+    }
     case "UPDATE_COMPANY_POST_FILTER_SORT": {
+      console.log(action.data);
       return {
         ...state,
         companyPosts: {
@@ -154,21 +185,34 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "MARK_POST_REDUCER": {
-      return {
-        ...state,
-        recentPosts: {
-          [action.data.topic_id]: {
-            ...state.recentPosts[action.data.topic_id],
-            posts: {
-              ...state.recentPosts[action.data.topic_id].posts,
-              [action.data.post_id]: {
-                ...state.recentPosts[action.data.topic_id].posts[action.data.post_id],
-                is_mark_done: !state.recentPosts[action.data.topic_id].posts[action.data.post_id].is_mark_done,
+      if (isNaN(action.data.topic_id)) {
+        return {
+          ...state,
+          companyPosts: {
+            ...state.companyPosts,
+            [action.data.post_id]: {
+              ...state.companyPosts[action.data.post_id],
+              is_mark_done: !state.companyPosts[action.data.post_id]
+            }
+          }
+        }
+      } else {
+        return {
+          ...state,
+          recentPosts: {
+            [action.data.topic_id]: {
+              ...state.recentPosts[action.data.topic_id],
+              posts: {
+                ...state.recentPosts[action.data.topic_id].posts,
+                [action.data.post_id]: {
+                  ...state.recentPosts[action.data.topic_id].posts[action.data.post_id],
+                  is_mark_done: !state.recentPosts[action.data.topic_id].posts[action.data.post_id].is_mark_done,
+                },
               },
             },
           },
-        },
-      };
+        };
+      }
     }
     case "ADD_TO_WORKSPACE_POSTS": {
       let convertedPosts = convertArrayToObject(action.data.posts, "id");
@@ -211,12 +255,28 @@ export default (state = INITIAL_STATE, action) => {
       }
     }
     case "ARCHIVE_POST_REDUCER": {
-      let updatedPosts = {...state.posts};
-      updatedPosts[action.data.post_id].is_archived = action.data.is_archived;
-      return {
-        ...state,
-        posts: updatedPosts,
-      };
+      if (!isNaN(action.data.topic_id)) {
+        let updatedPosts = {...state.posts};
+        updatedPosts[action.data.post_id].is_archived = action.data.is_archived;
+        return {
+          ...state,
+          posts: updatedPosts,
+        };
+      } else {
+        return {
+          ...state,
+          companyPosts: {
+            ...state.companyPosts,
+            posts: {
+              ...state.companyPosts.posts,
+              [action.data.post_id]: {
+                ...state.companyPosts.posts[action.data.post_id],
+                is_archived: action.data.is_archived
+              }
+            }
+          },
+        };
+      }
     }
     // case "MARK_READ_UNREAD_REDUCER": {
     //     let newPosts = {...state.posts};
