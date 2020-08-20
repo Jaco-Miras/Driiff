@@ -1,8 +1,8 @@
 import React from "react";
 import styled from "styled-components";
-import {usePosts, useTranslation} from "../../hooks";
+import {useCompanyPosts, useTranslation} from "../../hooks";
 import TimelinePanel from "../common/TimelinePanel";
-import {DashboardAboutWorkspace, DashboardTeam, RecentPosts} from "../dashboard";
+import {DashboardTeam, RecentPosts} from "../dashboard";
 
 const Wrapper = styled.div`
   overflow: auto !important;
@@ -22,7 +22,7 @@ const CompanyDashboardPanel = (props) => {
 
   const {params} = match;
   const {_t} = useTranslation();
-  const {recentPosts} = usePosts();
+  const {posts} = useCompanyPosts();
   const width = window.innerWidth;
 
   const handleEditClick = () => {
@@ -44,25 +44,21 @@ const CompanyDashboardPanel = (props) => {
         {width > 620 ?
           <>
             <div className={"col-md-6"}>
-              <DashboardAboutWorkspace isMember={isMember} workspace={workspace} onEditClick={handleEditClick}
-                                       isExternal={isExternal} dictionary={dictionary}/>
               <TimelinePanel timeline={timeline} actions={actions} workspace={workspace} dictionary={dictionary}/>
             </div>
 
             <div className={"col-md-6"}>
               <DashboardTeam workspace={workspace} onEditClick={handleEditClick} isMember={isMember}
                              isExternal={isExternal} dictionary={dictionary}/>
-              <RecentPosts posts={recentPosts} dictionary={dictionary}/>
+              <RecentPosts posts={posts} dictionary={dictionary}/>
             </div>
           </>
           :
           <>
             <div className={"col-md-12"}>
-              <DashboardAboutWorkspace isMember={isMember} workspace={workspace} onEditClick={handleEditClick}
-                                       isExternal={isExternal} dictionary={dictionary}/>
               <DashboardTeam workspace={workspace} onEditClick={handleEditClick} isMember={isMember}
                              isExternal={isExternal} dictionary={dictionary}/>
-              <RecentPosts posts={recentPosts} dictionary={dictionary}/>
+              <RecentPosts posts={posts} dictionary={dictionary}/>
               <TimelinePanel timeline={timeline} actions={actions} params={params} dictionary={dictionary}/>
             </div>
           </>
