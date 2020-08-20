@@ -1,14 +1,14 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useHistory } from "react-router-dom";
-import { Badge } from "reactstrap";
+import React, {useEffect, useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
+import {useHistory} from "react-router-dom";
+import {Badge} from "reactstrap";
 import styled from "styled-components";
-import { replaceChar } from "../../../helpers/stringFormatter";
-import { addToModals, getUnreadNotificationCounterEntries, setNavMode } from "../../../redux/actions/globalActions";
-import { NavLink, SvgIcon, SvgIconFeather } from "../../common";
+import {replaceChar} from "../../../helpers/stringFormatter";
+import {addToModals, getUnreadNotificationCounterEntries, setNavMode} from "../../../redux/actions/globalActions";
+import {NavLink, SvgIcon, SvgIconFeather} from "../../common";
 //import Tooltip from "react-tooltip-lite";
-import { useWorkspace, useTranslation } from "../../hooks";
-import { ExternalWorkspaceList, WorkspaceList } from "../../workspace";
+import {useTranslation, useWorkspace} from "../../hooks";
+import {ExternalWorkspaceList, WorkspaceList} from "../../workspace";
 
 const Wrapper = styled.div`
   .navigation-menu-tab-header {
@@ -246,7 +246,7 @@ const MainNavigationTabPanel = (props) => {
       <div>
         <div className="navigation-menu-tab-header" data-toggle="tooltip" title="Driff" data-placement="right"
              data-original-title="Driff">
-          <div class="driff-logo">
+          <div className="driff-logo">
             <DriffLogo icon="driff-logo" data-link="/" onClick={handleIconClick}/>
           </div>
         </div>

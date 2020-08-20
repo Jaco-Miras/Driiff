@@ -1,12 +1,17 @@
-import React, { useCallback, useRef, useState } from "react";
+import React, {useCallback, useRef, useState} from "react";
 import styled from "styled-components";
-import { useOutsideClick } from "../hooks";
+import {useOutsideClick} from "../hooks";
 
 const Wrapper = styled.div`
   position: relative;
 
   .dropdown-toggle {
     color: #212529 !important;
+    
+    .dark & {
+      color: #c7c7c7 !important;
+    }
+    
     &:after {
       margin-left: 10px;
     }

@@ -1,13 +1,14 @@
-import React, { useEffect, useRef, useState } from "react";
-import { useDispatch } from "react-redux";
-//import {useHistory} from "react-router-dom";
+import React, {useEffect, useRef, useState} from "react";
+import {useDispatch} from "react-redux";
+import {useHistory} from "react-router-dom";
 import styled from "styled-components";
-import { addToModals } from "../../../redux/actions/globalActions";
-import { setParentIdForUpload } from "../../../redux/actions/postActions";
-import { FileAttachments, SvgIconFeather } from "../../common";
-import { DropDocument } from "../../dropzone/DropDocument";
-import { useCommentActions, useComments } from "../../hooks";
-import { PostBody, PostComments, PostDetailFooter } from "./index";
+import {addToModals} from "../../../redux/actions/globalActions";
+import {setParentIdForUpload} from "../../../redux/actions/postActions";
+import {FileAttachments, SvgIconFeather, ToolTip} from "../../common";
+import {DropDocument} from "../../dropzone/DropDocument";
+import {useCommentActions, useComments} from "../../hooks";
+import {PostBody, PostComments, PostDetailFooter} from "./index";
+import {replaceChar} from "../../../helpers/stringFormatter";
 
 const MainHeader = styled.div`
   min-height: 70px;
@@ -28,6 +29,17 @@ const MainHeader = styled.div`
         width: 100%;
       }
     }
+  }
+  
+  .close {
+    .dark &{
+      color: #fff; 
+    }
+  }
+  
+  .author-name {
+    color: #a7abc3;
+    font-size: 14px;
   }
 `;
 
@@ -80,7 +92,9 @@ const MarkAsRead = styled.div`
 
 const PostDetail = (props) => {
   const { post, postActions, user, onGoBack, workspace, isMember, dictionary, disableOptions } = props;
+
   const dispatch = useDispatch();
+  const history = useHistory();
 
   const [showDropZone, setshowDropZone] = useState(false);
 
@@ -187,18 +201,25 @@ const PostDetail = (props) => {
     postActions.markReadRequirement(post);
   };
 
+  const handleAuthorClick = () => {
+    history.push(`/profile/${post.author.id}/${replaceChar(post.author.name)}`);
+  }
+
   return (
     <>
       <MainHeader className="card-header d-flex justify-content-between">
         <div>
           <ul>
             <li>
-              <Icon className="close mr-2" icon="arrow-left" onClick={handleClosePost} />
+              <Icon className="close mr-2" icon="arrow-left" onClick={handleClosePost}/>
             </li>
             <li>
               <h5 ref={refs.title} className="post-title mb-0">
                 <span>{post.title}</span>
               </h5>
+              <div className="author-name"><ToolTip content={post.author.name}>by <span onClick={handleAuthorClick}
+                                                                                        className="cursor-pointer">{post.author.first_name}</span></ToolTip>
+              </div>
             </li>
           </ul>
         </div>
