@@ -120,7 +120,7 @@ const CompanyPostInput = (props) => {
     let mention_ids = [];
     let haveGif = false;
     let reference_id = require("shortid").generate();
-    let allIds = selectedChannel.members.map((m) => m.id);
+    let allIds = post.users_responsible.map((m) => m.id);
 
     if (quillContents.ops && quillContents.ops.length > 0) {
       let mentionIds = quillContents.ops
