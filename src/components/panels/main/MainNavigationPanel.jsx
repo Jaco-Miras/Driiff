@@ -19,7 +19,7 @@ const MainNavigationPanel = (props) => {
         "/workspace/:page/:workspaceId/:workspaceName",
         "/workspace/:page",
         "/profile/:id/:name/:mode", "/profile/:id/:name", "/profile",
-        "/chat/:code",
+        "/chat/:code/:messageId", "/chat/:code",
         "/posts/:postId/:postTitle",
         "/:page",
       ]}/>
