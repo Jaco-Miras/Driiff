@@ -33,8 +33,9 @@ const MainContentPanel = (props) => {
         {!isExternal && <Route {...props} component={CompanyDashboardPanel} path={["/dashboard"]}/>}
         {!isExternal &&
         <Route {...props} component={CompanyPostsPanel} path={["/posts/:postId/:postTitle", "/posts"]}/>}
-        {!isExternal && <Route {...props} component={CompanyChatPanel} path={["/chat/:code?"]}/>}
-        { !isExternal && <Route {...props} component={CompanyFilesPanel} path={["/files"]} /> }
+        {!isExternal &&
+        <Route {...props} component={CompanyChatPanel} path={["/chat/:code/:messageId", "/chat/:code?"]}/>}
+        {!isExternal && <Route {...props} component={CompanyFilesPanel} path={["/files"]}/>}
         { !isExternal && <Route {...props} component={CompanyPeoplePanel} path={["/people"]} /> }
         <Route {...props} component={CompanySettingsPanel} path={["/settings"]} />
         <Redirect
