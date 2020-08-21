@@ -64,6 +64,14 @@ const TeamListItem = (props) => {
     actions.addRole(payload);
   };
 
+  const handleRemoveRole = () => {
+    let payload = {
+      topic_id: workspace_id,
+      user_id: member.id,
+    };
+    actions.deleteRole(payload);
+  };
+
   return (
     <Wrapper className={`team-list-item list-group-item d-flex align-items-center p-l-r-0 ${className}`}>
       <div className="d-flex align-items-center ">
@@ -86,8 +94,9 @@ const TeamListItem = (props) => {
       {
         !hideOptions &&
         <MoreOptions moreButton="more-vertical" scrollRef={parentRef}>
-          <div onClick={() => handleAddRole("team_lead")}>Assign as team lead</div>
-          <div onClick={() => handleAddRole("approver")}>Assign as approver</div>
+          { member.workspace_role !== "TEAM_LEAD"  && <div onClick={() => handleAddRole("team_lead")}>Assign as team lead</div> }
+          { member.workspace_role !== "APPROVER" && <div onClick={() => handleAddRole("approver")}>Assign as approver</div> }
+          { member.workspace_role !== "" && <div onClick={handleRemoveRole}>Revoke as {member.workspace_role === "TEAM_LEAD" ? "team lead" : "approver"}</div> }
           <div onClick={onEditClick}>Remove</div>
         </MoreOptions>
       }
