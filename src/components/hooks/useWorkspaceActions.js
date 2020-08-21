@@ -1,14 +1,22 @@
-import { useCallback } from "react";
-import { useDispatch } from "react-redux";
-import { useHistory } from "react-router-dom";
+import {useCallback} from "react";
+import {useDispatch} from "react-redux";
+import {useHistory} from "react-router-dom";
 //import {useLocation, useHistory, useParams} from "react-router-dom";
 // import toaster from "toasted-notes";
 // import {copyTextToClipboard} from "../../helpers/commonFunctions";
 // import {getBaseUrl} from "../../helpers/slugHelper";
 import {replaceChar} from "../../helpers/stringFormatter";
-import { addPrimaryFiles, fetchDetail, fetchMembers, fetchPrimaryFiles, fetchTimeline, 
-        getWorkspaces, postWorkspaceRole, setActiveTopic } from "../../redux/actions/workspaceActions";
-import { addToModals } from "../../redux/actions/globalActions";
+import {
+  addPrimaryFiles,
+  fetchDetail,
+  fetchMembers,
+  fetchPrimaryFiles,
+  fetchTimeline,
+  getWorkspaces,
+  postWorkspaceRole,
+  setActiveTopic
+} from "../../redux/actions/workspaceActions";
+import {addToModals} from "../../redux/actions/globalActions";
 import {
   addToChannels,
   clearSelectedChannel,
@@ -16,21 +24,23 @@ import {
   getWorkspaceChannels,
   setSelectedChannel
 } from "../../redux/actions/chatActions";
+import {useSettings} from "./index";
 
 const useWorkspaceActions = () => {
   const dispatch = useDispatch();
   const history = useHistory();
+  const {setGeneralSetting} = useSettings();
 
   const getDetail = useCallback(
     (id, callback) => {
-      dispatch(fetchDetail({ topic_id: id }, callback));
+      dispatch(fetchDetail({topic_id: id}, callback));
     },
     [dispatch]
   );
 
   const getPrimaryFiles = useCallback(
     (id, callback) => {
-      dispatch(fetchPrimaryFiles({ topic_id: id }, callback));
+      dispatch(fetchPrimaryFiles({topic_id: id}, callback));
     },
     [dispatch]
   );
@@ -44,14 +54,14 @@ const useWorkspaceActions = () => {
 
   const getMembers = useCallback(
     (id, callback) => {
-      dispatch(fetchMembers({ topic_id: id }, callback));
+      dispatch(fetchMembers({topic_id: id}, callback));
     },
     [dispatch]
   );
 
   const getTimeline = useCallback(
     (id, callback) => {
-      dispatch(fetchTimeline({ topic_id: id }, callback));
+      dispatch(fetchTimeline({topic_id: id}, callback));
     },
     [dispatch]
   );
@@ -92,22 +102,22 @@ const useWorkspaceActions = () => {
     },
     [dispatch]
   );
-  
+
   const fetchChannel = useCallback(
     (payload, callback) => {
       dispatch(
         getChannel(payload, (err, res) => {
-            callback();
-            if (err) return;
-            let channel = {
-                ...res.data,
-                hasMore: true,
-                skip: 0,
-                replies: [],
-                selected: true,
-            };
-            dispatch(addToChannels(channel));
-            // selectChannel(channel)
+          callback();
+          if (err) return;
+          let channel = {
+            ...res.data,
+            hasMore: true,
+            skip: 0,
+            replies: [],
+            selected: true,
+          };
+          dispatch(addToChannels(channel));
+          // selectChannel(channel)
         })
       );
     },
@@ -115,12 +125,18 @@ const useWorkspaceActions = () => {
   );
 
   const selectWorkspace = useCallback(
-    (workspace, callback) => {
-      dispatch(setActiveTopic(workspace, callback));
+    (workspace, callback = () => {
+    }) => {
+      dispatch(setActiveTopic(workspace, (err, res) => {
+        setGeneralSetting({
+          active_topic: workspace
+        })
+        callback(err, res)
+      }));
     },
     [dispatch]
   );
-  
+
   const selectChannel = useCallback(
     (channel, callback) => {
       dispatch(setSelectedChannel(channel, callback));

@@ -246,7 +246,8 @@ const useUserActions = () => {
   const getReadOnlyFields = useCallback((source) => {
     switch (source) {
       case "gripp":
-        return ["email", "designation", "house_number", "zip", "address", "place", "country", "birthday", "profile_image", "contact"];
+        return [];
+      //return ["email", "designation", "house_number", "zip", "address", "place", "country", "birthday", "profile_image", "contact"];
       default:
         return [];
     }

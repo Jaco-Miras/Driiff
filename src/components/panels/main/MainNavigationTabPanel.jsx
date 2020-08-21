@@ -157,20 +157,35 @@ const NavNewWorkspace = styled.button`
 `;
 
 const MainNavigationTabPanel = (props) => {
-  const { className = "", isExternal } = props;
+  const {className = "", isExternal} = props;
   const history = useHistory();
   const dispatch = useDispatch();
 
-  const { active_topic } = useSelector((state) => state.settings.user.GENERAL_SETTINGS);
-  const { lastVisitedChannel } = useSelector((state) => state.chat);
+  const {actions, folders, sortedWorkspaces, workspaces, workspace} = useWorkspace(true);
+
+  const {_t} = useTranslation();
+
+  const dictionary = {
+    workspaces: _t("SIDEBAR.WORKSPACES", "Workspaces"),
+    chats: _t("SIDEBAR.CHATS", "Chats"),
+    yourWorkspaces: _t("SIDEBAR.YOUR_WORKSPACES", "Your workspaces"),
+    newWorkspace: _t("SIDEBAR.NEW_WORKSPACE", "New workspace"),
+    addNewWorkspace: _t("SIDEBAR.ADD_NEW_WORKSPACES", "Add new workspace"),
+    generalFolder: _t("SIDEBAR.GENERAL_FOLDER", "General"),
+    archivedFolder: _t("SIDEBAR.ARCHIVED_FOLDER", "Archived workspaces")
+  };
+
+  const {active_topic} = useSelector((state) => state.settings.user.GENERAL_SETTINGS);
+  const {lastVisitedChannel} = useSelector((state) => state.chat);
   const unreadCounter = useSelector((state) => state.global.unreadCounter);
 
   const [workspacePath, setWorkpacePath] = useState("/workspace/chat");
+  const [defaultTopic, setDefaultTopic] = useState(null);
 
   const handleIconClick = (e) => {
     e.preventDefault();
     if (e.target.dataset.link) {
-      dispatch(setNavMode({ mode: 3 }));
+      dispatch(setNavMode({mode: 3}));
     } else {
       dispatch(setNavMode({ mode: 2 }));
     }
@@ -189,16 +204,6 @@ const MainNavigationTabPanel = (props) => {
   //     tooltip.parentElement.classList.toggle("tooltip-active");
   //   });
   // };
-
-  useEffect(() => {
-    if (active_topic && active_topic.hasOwnProperty("id")) {
-      if (active_topic.folder_id) {
-        setWorkpacePath(`/workspace/chat/${active_topic.folder_id}/${replaceChar(active_topic.folder_name)}/${active_topic.id}/${replaceChar(active_topic.name)}`);
-      } else {
-        setWorkpacePath(`/workspace/chat/${active_topic.id}/${replaceChar(active_topic.name)}`);
-      }
-    }
-  }, [active_topic]);
 
   //const activeTab = useSelector((state) => state.workspaces.activeTab);
 
@@ -223,23 +228,32 @@ const MainNavigationTabPanel = (props) => {
     document.body.classList.remove("navigation-show");
   };
 
-  const redirectToChat = () => {
-    closeLeftNav();
-  };
+  useEffect(() => {
+    if (defaultTopic) {
+      actions.selectWorkspace(defaultTopic);
+      actions.redirectTo(defaultTopic);
+    }
+  }, [defaultTopic]);
 
-  const { actions, folders, sortedWorkspaces, workspaces, workspace } = useWorkspace(true);
+  useEffect(() => {
+    const arrWorkspaces = Object.values(workspaces);
+    if (active_topic === null && arrWorkspaces.length && defaultTopic === null) {
+      const topic = arrWorkspaces
+        .sort((a, b) => (b.updated_at.timestamp > a.updated_at.timestamp ? 1 : -1))
+        .find(w => w.type === "WORKSPACE" && w.active === 1);
+      setDefaultTopic(topic);
+    }
+  }, [active_topic, defaultTopic, workspaces, setDefaultTopic])
 
-  const { _t } = useTranslation();
-
-  const dictionary = {
-    workspaces: _t("SIDEBAR.WORKSPACES", "Workspaces"),
-    chats: _t("SIDEBAR.CHATS", "Chats"),
-    yourWorkspaces: _t("SIDEBAR.YOUR_WORKSPACES", "Your workspaces"),
-    newWorkspace: _t("SIDEBAR.NEW_WORKSPACE", "New workspace"),
-    addNewWorkspace: _t("SIDEBAR.ADD_NEW_WORKSPACES", "Add new workspace"),
-    generalFolder: _t("SIDEBAR.GENERAL_FOLDER", "General"),
-    archivedFolder: _t("SIDEBAR.ARCHIVED_FOLDER", "Archived workspaces")
-  };
+  useEffect(() => {
+    if (active_topic && active_topic.hasOwnProperty("id")) {
+      if (active_topic.folder_id) {
+        setWorkpacePath(`/workspace/chat/${active_topic.folder_id}/${replaceChar(active_topic.folder_name)}/${active_topic.id}/${replaceChar(active_topic.name)}`);
+      } else {
+        setWorkpacePath(`/workspace/chat/${active_topic.id}/${replaceChar(active_topic.name)}`);
+      }
+    }
+  }, [active_topic]);
 
   return (
     <Wrapper className={`navigation-menu-tab ${className}`}>
@@ -309,11 +323,7 @@ const MainNavigationTabPanel = (props) => {
                   name: dictionary.generalFolder,
                   type: "GENERAL_FOLDER",
                   workspace_ids: Object.values(workspaces).filter((ws) => {
-                    if (ws.folder_id === null && ws.active === 1) {
-                      return true;
-                    } else {
-                      return false;
-                    }
+                    return ws.folder_id === null && ws.active === 1;
                   }).map((ws) => ws.id),
                   unread_count: 0
                 }}
@@ -343,11 +353,7 @@ const MainNavigationTabPanel = (props) => {
                   name: dictionary.archivedFolder,
                   type: "ARCHIVE_FOLDER",
                   workspace_ids: Object.values(workspaces).filter((ws) => {
-                    if (ws.active === 0) {
-                      return true;
-                    } else {
-                      return false;
-                    }
+                    return ws.active === 0;
                   }).map((ws) => ws.id),
                   unread_count: 0
                 }}
