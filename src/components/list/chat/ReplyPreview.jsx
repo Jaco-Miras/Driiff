@@ -4,7 +4,6 @@ import { useSelector } from "react-redux";
 import styled from "styled-components";
 import quillHelper from "../../../helpers/quillHelper";
 import { SvgIcon } from "../../common";
-import { useTranslation } from "../../hooks";
 
 const Wrapper = styled.span`
   display: table;
@@ -33,21 +32,17 @@ const TextIcon = styled(SvgIcon)`
 `;
 
 const ReplyPreview = (props) => {
-  const { channel, drafts } = props;
+  const { channel, drafts, dictionary } = props;
   const settings = useSelector((state) => state.settings.user.CHAT_SETTINGS);
   const user = useSelector((state) => state.session.user);
   //const channelDrafts = useSelector((state) => state.chat.channelDrafts);
-
-  const { _t } = useTranslation();
 
   let showPreviewIcon = false;
   let previewText = "";
   let lastReplyBody = "";
   if (channel.last_reply && settings.preview_message) {
     if (channel.last_reply.is_deleted) {
-      //translation error thus _tf is used tmp
-      lastReplyBody = _t(channel.last_reply.body, "The chat message has been removed.");
-      lastReplyBody = "<span class=\"is-deleted\">" + lastReplyBody + "</span>";
+      lastReplyBody = "<span class=\"is-deleted\">" + dictionary.messageRemoved + "</span>";
     } else {
       lastReplyBody = quillHelper.parseEmoji(channel.last_reply.body);
       lastReplyBody = renderToString(<LastReplyContent className="last-reply-content" dangerouslySetInnerHTML={{ __html: lastReplyBody }} />);

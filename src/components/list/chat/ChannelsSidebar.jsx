@@ -63,7 +63,7 @@ const ChannelsSidebar = (props) => {
           return (
             <React.Fragment key={channel.id}>
               {search !== "" && chatHeader !== "" && <ChatHeader>{chatHeader}</ChatHeader>}
-                <ChannelList channel={channel} selectedChannel={selectedChannel} isWorkspace={workspace} channelDrafts={channelDrafts}/>
+                <ChannelList channel={channel} selectedChannel={selectedChannel} isWorkspace={workspace} channelDrafts={channelDrafts} dictionary={dictionary}/>
             </React.Fragment>
           );
         })}

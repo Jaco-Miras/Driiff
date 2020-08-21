@@ -282,10 +282,6 @@ class SocketListeners extends React.PureComponent {
                 console.log(e, "chat-notification");
                 const {user, selectedChannel, isBrowserActive} = this.props;
 
-                if (e.user.id !== user.id && !e.is_muted) {
-                    this.props.soundPlay();
-                }
-
                 switch (e.SOCKET_TYPE) {
                     case "CHAT_CREATE": {
                         //unfurl link
@@ -309,6 +305,9 @@ class SocketListeners extends React.PureComponent {
                                     }
                                 }
                             );
+                        }
+                        if (e.user.id !== user.id && !e.is_muted) {
+                            this.props.soundPlay();
                         }
                         if (this.props.user.id !== e.user.id) {
                             delete e.reference_id;

@@ -91,7 +91,7 @@ const Timestamp = styled.div`
 
 const ChannelList = (props) => {
 
-    const { channelDrafts } = props;
+    const { channelDrafts, dictionary } = props;
     const channelActions = useChannelActions();
 
     const history = useHistory();
@@ -121,7 +121,7 @@ const ChannelList = (props) => {
             <ChannelIcon channel={channel}/>
             <ChannelTitlePreview className={"flex-grow-1"}>
                 <ChannelTitle channel={channel}/>
-                <ReplyPreview channel={channel} drafts={channelDrafts}/>
+                <ReplyPreview channel={channel} drafts={channelDrafts} dictionary={dictionary}/>
             </ChannelTitlePreview>
             <Timestamp className="text-right ml-auto">
                 <ChatDateIcons className={"chat-date-icons"} channel={channel} isRead={channel.is_read}/>

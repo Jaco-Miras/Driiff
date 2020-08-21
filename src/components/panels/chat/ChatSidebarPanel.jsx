@@ -146,6 +146,7 @@ const ChatSidebarPanel = (props) => {
     archived: _t("CHAT.ARCHIVED", "Archived"),
     nothingToSeeHere: _t("CHAT.NOTHING_TO_SEE_HERE", "Nothing to see here!"),
     noMatchingChats: _t("CHAT.NO_MATCHING_CHATS", "No matching chats found"),
+    messageRemoved: _t("CHAT.MESSAGE_REMOVED", "The chat message has been removed.")
   };
 
   return (
