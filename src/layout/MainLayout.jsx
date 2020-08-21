@@ -38,7 +38,7 @@ const MainLayout = (props) => {
   useSocketConnection();
   usePushNotification();
   const {path} = useRouteMatch();
-  const {logout: userLogout, displayWelcomeBanner} = useUserActions();
+  const {displayWelcomeBanner} = useUserActions();
   const user = useSelector((state) => state.session.user);
   const socketMounted = useSelector((state) => state.global.socketMounted);
   const toaster = useToaster();
@@ -106,7 +106,7 @@ const MainLayout = (props) => {
 
   useEffect(() => {
     if (user.id) {
-      displayWelcomeBanner(user)
+      displayWelcomeBanner()
     }
   }, [user]);
 
@@ -128,15 +128,8 @@ const MainLayout = (props) => {
       </MainContent>
 
       <MobileOverlay/>
-
-      {/* {
-             user.id !== undefined &&
-             <Socket/>
-             } */}
-
       {user.id !== undefined && window.Echo !== undefined && !socketMounted &&
       <SocketListeners localizeDate={localizeDate} toaster={toaster} soundPlay={handleSoundPlay}/>}
-
     </>
   );
 };

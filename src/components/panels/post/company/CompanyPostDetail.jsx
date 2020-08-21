@@ -1,13 +1,14 @@
 import React, {useEffect, useRef, useState} from "react";
 import {useDispatch} from "react-redux";
-//import {useHistory} from "react-router-dom";
+import {useHistory} from "react-router-dom";
 import styled from "styled-components";
 import {addToModals} from "../../../../redux/actions/globalActions";
 import {setParentIdForUpload} from "../../../../redux/actions/postActions";
-import {FileAttachments, SvgIconFeather} from "../../../common";
+import {FileAttachments, SvgIconFeather, ToolTip} from "../../../common";
 import {DropDocument} from "../../../dropzone/DropDocument";
 import {useCommentActions, useComments} from "../../../hooks";
 import {CompanyPostBody, CompanyPostComments, CompanyPostDetailFooter} from "./index";
+import {replaceChar} from "../../../../helpers/stringFormatter";
 
 const MainHeader = styled.div`
   min-height: 70px;
@@ -28,6 +29,17 @@ const MainHeader = styled.div`
         width: 100%;
       }
     }
+  }
+  
+  .close {
+    .dark &{
+      color: #fff; 
+    }
+  }
+  
+  .author-name {
+    color: #a7abc3;
+    font-size: 14px;
   }
 `;
 
@@ -79,10 +91,16 @@ const MarkAsRead = styled.div`
 `;
 
 const CompanyPostDetail = (props) => {
-  const {post, postActions, user, onGoBack, dictionary, disableOptions} = props;
+  const {post, postActions, user, onGoBack, dictionary} = props;
+
   const dispatch = useDispatch();
+  const history = useHistory();
 
   const [showDropZone, setshowDropZone] = useState(false);
+  const [react, setReact] = useState({
+    user_clap_count: post.user_clap_count,
+    clap_count: post.clap_count
+  })
 
   const handleClosePost = () => {
     onGoBack();
@@ -160,6 +178,11 @@ const CompanyPostDetail = (props) => {
   };
 
   const handleReaction = () => {
+    setReact(prevState => ({
+      user_clap_count: !!prevState.user_clap_count ? 0 : 1,
+      clap_count: !!prevState.user_clap_count ? prevState.clap_count - 1 : prevState.clap_count + 1,
+    }));
+
     let payload = {
       post_id: post.id,
       id: null,
@@ -186,6 +209,12 @@ const CompanyPostDetail = (props) => {
     postActions.markReadRequirement(post);
   };
 
+  const handleAuthorClick = () => {
+    history.push(`/profile/${post.author.id}/${replaceChar(post.author.name)}`);
+  }
+
+  const isMember = post.users_responsible.some(u => u.id === user.id);
+
   return (
     <>
       <MainHeader className="card-header d-flex justify-content-between">
@@ -198,18 +227,21 @@ const CompanyPostDetail = (props) => {
               <h5 ref={refs.title} className="post-title mb-0">
                 <span>{post.title}</span>
               </h5>
+              <div className="author-name"><ToolTip content={post.author.name}>by <span onClick={handleAuthorClick}
+                                                                                        className="cursor-pointer">{post.author.first_name}</span></ToolTip>
+              </div>
             </li>
           </ul>
         </div>
         <div>
           {post.author.id !== user.id && !post.is_read_requirement && (
             <MarkAsRead className="d-sm-inline d-none">
-              <button className="btn btn-primary btn-block" onClick={markRead} disabled={disableOptions}>
+              <button className="btn btn-primary btn-block" onClick={markRead}>
                 {dictionary.markAsRead}
               </button>
             </MarkAsRead>
           )}
-          {post.author.id === user.id && !disableOptions && (
+          {post.author.id === user.id && (
             <ul>
               <li>
                 <span data-toggle="modal" data-target="#editTaskModal">
@@ -240,15 +272,15 @@ const CompanyPostDetail = (props) => {
           }}
           onCancel={handleHideDropzone}
         />
-        <CompanyPostBody post={post} postActions={postActions} isAuthor={post.author.id === user.id}
-                         dictionary={dictionary}
-                         disableOptions={disableOptions}/>
+        <CompanyPostBody
+          post={post} postActions={postActions} isAuthor={post.author.id === user.id}
+          dictionary={dictionary}/>
         <hr className="m-0"/>
         <Counters className="d-flex align-items-center">
           <div>
-            <Icon className={post.user_clap_count ? "mr-2 post-reaction clap-true" : "mr-2 post-reaction clap-false"}
+            <Icon className={react.user_clap_count ? "mr-2 post-reaction clap-true" : "mr-2 post-reaction clap-false"}
                   icon="heart" onClick={handleReaction}/>
-            {post.clap_count}
+            {react.clap_count}
           </div>
           <div className="ml-auto text-muted">
             <Icon className="mr-2" icon="message-square"/>
@@ -276,15 +308,15 @@ const CompanyPostDetail = (props) => {
                 onShowFileDialog={handleOpenFileDialog}
                 dropAction={dropAction}
                 dictionary={dictionary}
-                disableOptions={disableOptions}
               />
               <hr className="m-0"/>
             </>
           )
         }
-        <CompanyPostDetailFooter post={post} commentActions={commentActions} onShowFileDialog={handleOpenFileDialog}
-                                 dropAction={dropAction}
-                                 disableOptions={disableOptions}/>
+        <CompanyPostDetailFooter
+          isMember={isMember}
+          post={post} commentActions={commentActions} onShowFileDialog={handleOpenFileDialog}
+          dropAction={dropAction}/>
       </MainBody>
     </>
   );

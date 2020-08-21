@@ -8,7 +8,7 @@ import GuestLayout from "./GuestLayout";
 import MainLayout from "./MainLayout";
 
 export const AppRoute = ({children, ...props}) => {
-  const {fetch: fetchSettings} = useSettings();
+  const {fetch: fetchSettings, userSettings} = useSettings();
   useTranslation();
 
   // const push = usePushNotification();
@@ -24,6 +24,8 @@ export const AppRoute = ({children, ...props}) => {
 
   // if (!session.checked || !i18nLoaded || push.loading)
   if (!session.checked || !i18nLoaded) return null;
+
+  if (session.authenticated && !userSettings.isLoaded) return null;
 
   return session.authenticated ? (
     <>

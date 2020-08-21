@@ -25,7 +25,6 @@ const CompanyPostFilterItem = (props) => {
 
   const handleClickFilter = useCallback((e) => {
     e.persist();
-
     if (e.target.dataset.value === filter) {
       onGoBack();
     } else {
@@ -38,7 +37,7 @@ const CompanyPostFilterItem = (props) => {
     }
     document.body.classList.remove("mobile-modal-open");
 
-  }, []);
+  }, [filter, onGoBack]);
 
   return (
     <Wrapper className={`post-filter-item list-group list-group-flush ${className}`}>

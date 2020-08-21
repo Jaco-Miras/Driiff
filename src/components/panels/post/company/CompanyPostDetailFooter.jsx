@@ -1,14 +1,11 @@
 import React, {useCallback, useRef, useState} from "react";
-import {useDispatch, useSelector} from "react-redux";
+import {useSelector} from "react-redux";
 import styled from "styled-components";
 import Tooltip from "react-tooltip-lite";
-import {joinWorkspace} from "../../../../redux/actions/workspaceActions";
 import {CommonPicker, SvgIconFeather} from "../../../common";
-import PostInput from "../../../forms/PostInput";
 import {CommentQuote} from "../../../list/post/item";
-import {useToaster, useTranslation} from "../../../hooks";
-import {addToModals} from "../../../../redux/actions/globalActions";
-import {putChannel} from "../../../../redux/actions/chatActions";
+import {useTranslation} from "../../../hooks";
+import {CompanyPostInput} from "../../../forms";
 
 const Wrapper = styled.div`
   position: relative;
@@ -133,31 +130,13 @@ const FileNames = styled.div`
   padding: 5px 45px;
 `;
 
-const ArchivedDiv = styled.div`
-  width: 100%;
-  text-align: center;
-  padding: 15px 10px;
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  h4 {
-    margin: 0 10px;
-  }
-`;
-
-const Icon = styled(SvgIconFeather)`
-  margin-right: 6px;
-  width: 20px;
-`;
-
 const CompanyPostDetailFooter = (props) => {
   const {
     className = "", onShowFileDialog, dropAction, post, parentId = null, commentActions,
     userMention = null, handleClearUserMention = null, commentId = null, innerRef = null,
-    workspace, isMember, disableOptions
+    isMember,
   } = props;
 
-  const dispatch = useDispatch();
   const ref = {
     picker: useRef(),
   };
@@ -199,62 +178,7 @@ const CompanyPostDetailFooter = (props) => {
     handleSend();
   };
 
-  const handleJoinWorkspace = () => {
-    dispatch(
-      joinWorkspace(
-        {
-          channel_id: workspace.channel.id,
-          recipient_ids: [user.id]
-        },
-        (err, res) => {
-          if (err) return;
-
-        }
-      )
-    );
-  };
-
-  const toaster = useToaster();
   const {_t} = useTranslation();
-
-  const dictionary = {
-    unarchiveThisWorkspace: _t("WORKSPACE.WORKSPACE_UNARCHIVE", "Unarchive this workspace"),
-    unarchiveWorkspace: _t("HEADER.UNARCHIVE_WORKSPACE", "Unarchive workspace"),
-    cancel: _t("BUTTON.CANCEL", "Cancel"),
-    unarchiveBodyText: _t("TEXT.UNARCHIVE_CONFIRMATION", "Are you sure you want to unarchive this workspace?"),
-  };
-
-  const handleUnarchive = () => {
-    let payload = {
-      id: workspace.channel.id,
-      is_archived: false,
-      is_muted: false,
-      is_pinned: false,
-      push_unarchived: 1
-    };
-
-    dispatch(putChannel(payload));
-    toaster.success(
-      <span>
-          <b>{workspace.name} workspace is unarchived.</b>
-        </span>
-    );
-  };
-
-  const handleShowUnarchiveConfirmation = () => {
-    let payload = {
-      type: "confirmation",
-      cancelText: dictionary.cancel,
-      headerText: dictionary.unarchiveWorkspace,
-      submitText: dictionary.unarchiveWorkspace,
-      bodyText: dictionary.unarchiveBodyText,
-      actions: {
-        onSubmit: handleUnarchive,
-      },
-    };
-
-    dispatch(addToModals(payload));
-  };
 
   const toggleTooltip = () => {
     let tooltips = document.querySelectorAll("span.react-tooltip-lite");
@@ -262,29 +186,21 @@ const CompanyPostDetailFooter = (props) => {
       tooltip.parentElement.classList.toggle("tooltip-active");
     });
   };
-  //const isMember = useIsMember(topic && topic.members.length ? topic.members.map((m) => m.id) : []);
+
 
   return (
     <Wrapper className={`post-detail-footer card-body ${className}`}>
-      {
-        disableOptions &&
-        <ArchivedDiv>
-          <Icon icon="archive"/>
-          <h4>This is an archived workspace</h4>
-          <button className="btn btn-primary" onClick={handleShowUnarchiveConfirmation}>Un-archive workspace</button>
-        </ArchivedDiv>
-      }
       {
         <Dflex className="d-flex pr-2 pl-2">
           <CommentQuote commentActions={commentActions} commentId={commentId}/>
         </Dflex>
       }
-      {isMember && !disableOptions && (
+      {isMember && (
         <>
           <Dflex className="d-flex align-items-center">
             {post.is_read_only === 1 ? (
               <NoReply className="d-flex align-items-center">
-                <div class="alert alert-warning">No reply allowed</div>
+                <div className="alert alert-warning">No reply allowed</div>
               </NoReply>
             ) : (
               <React.Fragment>
@@ -292,7 +208,7 @@ const CompanyPostDetailFooter = (props) => {
                   <IconButton onClick={handleShowEmojiPicker} icon="smile"/>
                 </Tooltip>
                 <ChatInputContainer ref={innerRef} className="flex-grow-1">
-                  <PostInput
+                  <CompanyPostInput
                     handleClearSent={handleClearSent}
                     sent={sent}
                     commentId={commentId}
@@ -306,7 +222,7 @@ const CompanyPostDetailFooter = (props) => {
                     selectedEmoji={selectedEmoji}
                     onClearEmoji={onClearEmoji}
                     dropAction={dropAction}
-                    members={workspace ? workspace.members : []}
+                    members={post.members}
                   />
                 </ChatInputContainer>
                 <IconButton onClick={handleSend} icon="send"/>
@@ -321,16 +237,8 @@ const CompanyPostDetailFooter = (props) => {
           </Dflex>
           {editPostComment && editPostComment.files.length > 0 &&
           <FileNames>{editPostComment.files.map((f) => f.name).join(", ")}</FileNames>}
-          <Dflex></Dflex>
+          <Dflex/>
         </>
-      )}
-      {isMember === false && workspace !== null && !disableOptions && (
-        <Dflex className="channel-viewing">
-          <div className="channel-name">You are viewing #{workspace.name}</div>
-          <div className="channel-action">
-            <button onClick={handleJoinWorkspace}>Join workspace</button>
-          </div>
-        </Dflex>
       )}
     </Wrapper>
   );

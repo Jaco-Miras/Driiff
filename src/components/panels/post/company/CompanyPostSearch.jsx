@@ -1,16 +1,11 @@
 import React, {useState} from "react";
 import {useDispatch} from "react-redux";
-import {useParams} from "react-router-dom";
-import {addPostSearchResult} from "../../../../redux/actions/workspaceActions";
-import {fetchPosts} from "../../../../redux/actions/postActions";
+import {addCompanyPostSearchResult, getCompanyPosts} from "../../../../redux/actions/postActions";
 
 const CompanyPostSearch = (props) => {
   const {search, placeholder} = props;
   const dispatch = useDispatch();
-  const params = useParams();
   const [searchValue, setSearchValue] = useState(search === null ? "" : search);
-
-  let topic_id = parseInt(params.workspaceId);
 
   const handleInputChange = (e) => {
     if (e.target.value.trim() === "" && searchValue !== "") handleClearSearchPosts();
@@ -19,8 +14,7 @@ const CompanyPostSearch = (props) => {
 
   const handleClearSearchPosts = () => {
     dispatch(
-      addPostSearchResult({
-        topic_id: topic_id,
+      addCompanyPostSearchResult({
         search: null,
         search_result: [],
       })
@@ -35,16 +29,14 @@ const CompanyPostSearch = (props) => {
 
   const handleSearch = () => {
     dispatch(
-      fetchPosts(
+      getCompanyPosts(
         {
-          topic_id: topic_id,
           search: searchValue,
         },
         (err, res) => {
           if (err) return;
           dispatch(
-            addPostSearchResult({
-              topic_id: topic_id,
+            addCompanyPostSearchResult({
               search: searchValue,
               search_result: res.data.posts,
             })

@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import { replaceChar } from "../../../helpers/stringFormatter";
-import { ButtonDropdown, SvgIconFeather } from "../../common";
+import {replaceChar} from "../../../helpers/stringFormatter";
+import {ButtonDropdown, SvgIconFeather} from "../../common";
 
 const Wrapper = styled.div`
   overflow: inherit !important;
@@ -97,17 +97,17 @@ const FilesHeader = (props) => {
         <ul className="list-inline">
           {isMember === true && !disableOptions && (
             <li className="list-inline-item mb-0">
-              <ButtonDropdown dropdown={addDropDown} />
+              <ButtonDropdown dropdown={addDropDown}/>
             </li>
           )}
           {isMember === true && Object.values(folders).filter((f) => !f.is_archived).length >= 1 && (
             <li className="list-inline-item mb-0">
-              <ButtonDropdown dropdown={folderDropDown} />
+              <ButtonDropdown dropdown={folderDropDown}/>
             </li>
           )}
         </ul>
-        <span class="app-sidebar-menu-button btn btn-outline-light" onClick={openMobileModal}>
-          <SvgIconFeather icon="menu" />
+        <span className="app-sidebar-menu-button btn btn-outline-light" onClick={openMobileModal}>
+          <SvgIconFeather icon="menu"/>
         </span>
       </div>
       <div className="action-right">

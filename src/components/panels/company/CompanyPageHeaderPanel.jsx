@@ -92,9 +92,8 @@ const CompanyPageHeaderPanel = (props) => {
             <li className="nav-item">
               <MainNavLink to="/chat">
                   Chat{" "}
-                  <div className="ml-2 badge badge-pill badge badge-danger"
-                          unread={unreadCounter.chat_message + unreadCounter.chat_reminder_message === 0 && unreadCounter.unread_channel > 0}>
-                  {unreadCounter.chat_message + unreadCounter.chat_reminder_message > 0 ? unreadCounter.chat_message + unreadCounter.chat_reminder_message : unreadCounter.unread_channel > 0 ? unreadCounter.unread_channel : null}
+                  <div className="ml-2 badge badge-pill badge badge-danger">
+                    {unreadCounter.chat_message + unreadCounter.chat_reminder_message > 0 ? unreadCounter.chat_message + unreadCounter.chat_reminder_message : unreadCounter.unread_channel > 0 ? unreadCounter.unread_channel : null}
                   </div>
               </MainNavLink>
             </li>

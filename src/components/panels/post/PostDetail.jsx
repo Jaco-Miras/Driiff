@@ -1,13 +1,14 @@
-import React, { useEffect, useRef, useState } from "react";
-import { useDispatch } from "react-redux";
-//import {useHistory} from "react-router-dom";
+import React, {useEffect, useRef, useState} from "react";
+import {useDispatch} from "react-redux";
+import {useHistory} from "react-router-dom";
 import styled from "styled-components";
-import { addToModals } from "../../../redux/actions/globalActions";
-import { setParentIdForUpload } from "../../../redux/actions/postActions";
-import { FileAttachments, SvgIconFeather } from "../../common";
-import { DropDocument } from "../../dropzone/DropDocument";
-import { useCommentActions, useComments } from "../../hooks";
-import { PostBody, PostComments, PostDetailFooter } from "./index";
+import {addToModals} from "../../../redux/actions/globalActions";
+import {setParentIdForUpload} from "../../../redux/actions/postActions";
+import {FileAttachments, SvgIconFeather, ToolTip} from "../../common";
+import {DropDocument} from "../../dropzone/DropDocument";
+import {useCommentActions, useComments} from "../../hooks";
+import {PostBody, PostComments, PostDetailFooter} from "./index";
+import {replaceChar} from "../../../helpers/stringFormatter";
 
 const MainHeader = styled.div`
   min-height: 70px;
@@ -28,6 +29,17 @@ const MainHeader = styled.div`
         width: 100%;
       }
     }
+  }
+  
+  .close {
+    .dark &{
+      color: #fff; 
+    }
+  }
+  
+  .author-name {
+    color: #a7abc3;
+    font-size: 14px;
   }
 `;
 
@@ -79,10 +91,16 @@ const MarkAsRead = styled.div`
 `;
 
 const PostDetail = (props) => {
-  const { post, postActions, user, onGoBack, workspace, isMember, dictionary, disableOptions } = props;
+  const {post, postActions, user, onGoBack, workspace, isMember, dictionary, disableOptions} = props;
+
   const dispatch = useDispatch();
+  const history = useHistory();
 
   const [showDropZone, setshowDropZone] = useState(false);
+  const [react, setReact] = useState({
+    user_clap_count: post.user_clap_count,
+    clap_count: post.clap_count
+  })
 
   const handleClosePost = () => {
     onGoBack();
@@ -161,6 +179,11 @@ const PostDetail = (props) => {
   };
 
   const handleReaction = () => {
+    setReact(prevState => ({
+      user_clap_count: !!prevState.user_clap_count ? 0 : 1,
+      clap_count: !!prevState.user_clap_count ? prevState.clap_count - 1 : prevState.clap_count + 1,
+    }));
+
     let payload = {
       post_id: post.id,
       id: null,
@@ -187,18 +210,25 @@ const PostDetail = (props) => {
     postActions.markReadRequirement(post);
   };
 
+  const handleAuthorClick = () => {
+    history.push(`/profile/${post.author.id}/${replaceChar(post.author.name)}`);
+  }
+
   return (
     <>
       <MainHeader className="card-header d-flex justify-content-between">
         <div>
           <ul>
             <li>
-              <Icon className="close mr-2" icon="arrow-left" onClick={handleClosePost} />
+              <Icon className="close mr-2" icon="arrow-left" onClick={handleClosePost}/>
             </li>
             <li>
               <h5 ref={refs.title} className="post-title mb-0">
                 <span>{post.title}</span>
               </h5>
+              <div className="author-name"><ToolTip content={post.author.name}>by <span onClick={handleAuthorClick}
+                                                                                        className="cursor-pointer">{post.author.first_name}</span></ToolTip>
+              </div>
             </li>
           </ul>
         </div>
@@ -214,14 +244,16 @@ const PostDetail = (props) => {
             <ul>
               <li>
                 <span data-toggle="modal" data-target="#editTaskModal">
-                  <a onClick={() => postActions.showModal("edit", post)} className="btn btn-outline-light ml-2" title="" data-toggle="tooltip" data-original-title="Edit Task">
-                    <Icon icon="edit-3" />
+                  <a onClick={() => postActions.showModal("edit", post)} className="btn btn-outline-light ml-2" title=""
+                     data-toggle="tooltip" data-original-title="Edit Task">
+                    <Icon icon="edit-3"/>
                   </a>
                 </span>
               </li>
               <li>
-                <a onClick={() => postActions.trash(post)} className="btn btn-outline-light ml-2" data-toggle="tooltip" title="" data-original-title="Delete Task">
-                  <Icon icon="trash" />
+                <a onClick={() => postActions.trash(post)} className="btn btn-outline-light ml-2" data-toggle="tooltip"
+                   title="" data-original-title="Delete Task">
+                  <Icon icon="trash"/>
                 </a>
               </li>
             </ul>
@@ -233,22 +265,24 @@ const PostDetail = (props) => {
           hide={!showDropZone}
           ref={refs.dropZoneRef}
           onDragLeave={handleHideDropzone}
-          onDrop={({ acceptedFiles }) => {
+          onDrop={({acceptedFiles}) => {
             dropAction(acceptedFiles);
           }}
           onCancel={handleHideDropzone}
         />
-        <PostBody post={post} postActions={postActions} isAuthor={post.author.id === user.id} dictionary={dictionary} disableOptions={disableOptions}/>
-        <hr className="m-0" />
+        <PostBody post={post} postActions={postActions} isAuthor={post.author.id === user.id} dictionary={dictionary}
+                  disableOptions={disableOptions}/>
+        <hr className="m-0"/>
         <Counters className="d-flex align-items-center">
           <div>
-            <Icon className={post.user_clap_count ? "mr-2 post-reaction clap-true" : "mr-2 post-reaction clap-false"} icon="heart" onClick={handleReaction} />
-            {post.clap_count}
+            <Icon className={react.user_clap_count ? "mr-2 post-reaction clap-true" : "mr-2 post-reaction clap-false"}
+                  icon="heart" onClick={handleReaction}/>
+            {react.clap_count}
           </div>
           <div className="ml-auto text-muted">
-            <Icon className="mr-2" icon="message-square" />
+            <Icon className="mr-2" icon="message-square"/>
             {post.reply_count}
-            <Icon className="ml-2 mr-2 seen-indicator" icon="eye" />
+            <Icon className="ml-2 mr-2 seen-indicator" icon="eye"/>
             {post.view_user_ids.length}
           </div>
         </Counters>
@@ -256,30 +290,32 @@ const PostDetail = (props) => {
           <>
             <div className="card-body">
               <h6 className="mb-3 font-size-11 text-uppercase">{dictionary.files}</h6>
-              <PostFiles attachedFiles={post.files} type="workspace" post={post} />
+              <PostFiles attachedFiles={post.files} type="workspace" post={post}/>
             </div>
-            <hr className="m-0" />
+            <hr className="m-0"/>
           </>
         )}
         {
           comments && Object.keys(comments).length > 0 && (
             <>
-            <PostComments 
-              comments={comments} 
-              post={post} user={user} 
-              commentActions={commentActions} 
-              onShowFileDialog={handleOpenFileDialog} 
-              dropAction={dropAction} 
-              workspace={workspace} 
-              isMember={isMember} 
-              dictionary={dictionary}
-              disableOptions={disableOptions}
-            />
-            <hr className="m-0" />
+              <PostComments
+                comments={comments}
+                post={post} user={user}
+                commentActions={commentActions}
+                onShowFileDialog={handleOpenFileDialog}
+                dropAction={dropAction}
+                workspace={workspace}
+                isMember={isMember}
+                dictionary={dictionary}
+                disableOptions={disableOptions}
+              />
+              <hr className="m-0"/>
             </>
           )
         }
-        <PostDetailFooter post={post} commentActions={commentActions} onShowFileDialog={handleOpenFileDialog} dropAction={dropAction} workspace={workspace} isMember={isMember} disableOptions={disableOptions}/>
+        <PostDetailFooter post={post} commentActions={commentActions} onShowFileDialog={handleOpenFileDialog}
+                          dropAction={dropAction} workspace={workspace} isMember={isMember}
+                          disableOptions={disableOptions}/>
       </MainBody>
     </>
   );

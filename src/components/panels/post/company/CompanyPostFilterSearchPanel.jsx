@@ -67,7 +67,7 @@ const CompanyPostFilterSearchPanel = (props) => {
             <ButtonDropdown value={activeSort} dropdown={sortDropdown}/>
           </li>
         </ul>
-        <span class="app-sidebar-menu-button btn btn-outline-light" onClick={openMobileModal}>
+        <span className="app-sidebar-menu-button btn btn-outline-light" onClick={openMobileModal}>
           <SvgIconFeather icon="menu"/>
         </span>
       </div>

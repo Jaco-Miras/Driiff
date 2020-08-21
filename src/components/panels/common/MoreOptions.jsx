@@ -1,7 +1,7 @@
-import React, { useRef, useState } from "react";
+import React, {useRef, useState} from "react";
 import styled from "styled-components";
-import { SvgIconFeather } from "../../common";
-import { useTooltipOrientation } from "../../hooks";
+import {SvgIconFeather} from "../../common";
+import {useTooltipOrientation} from "../../hooks";
 
 const Wrapper = styled.div`
   display: inline-flex;
@@ -32,6 +32,10 @@ const MoreTooltip = styled.div`
   cursor: pointer;
   box-shadow: 0 5px 10px -1px rgba(0, 0, 0, 0.15);
   border-top: 1px solid #eeeeee !important;
+  
+  .dark & {
+    color: #fff;
+  }
 
   &.orientation-top {
     bottom: -10px;

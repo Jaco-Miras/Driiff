@@ -1,10 +1,10 @@
-import React, { useCallback, useEffect } from "react";
+import React, {useCallback, useEffect} from "react";
 //import { useSelector } from "react-redux";
-import { useHistory, useParams } from "react-router-dom";
+import {useHistory, useParams} from "react-router-dom";
 import styled from "styled-components";
-import { SvgEmptyState } from "../../common";
-import { usePosts, useTranslation } from "../../hooks";
-import { PostDetail, PostFilterSearchPanel, PostItemPanel, PostSidebar } from "../post";
+import {SvgEmptyState} from "../../common";
+import {usePosts, useTranslation} from "../../hooks";
+import {PostDetail, PostFilterSearchPanel, PostItemPanel, PostSidebar} from "../post";
 
 const Wrapper = styled.div`
   text-align: left;
@@ -116,17 +116,23 @@ const WorkspacePostsPanel = (props) => {
   return (
     <Wrapper className={`container-fluid h-100 fadeIn ${className}`}>
       <div className="row app-block">
-        <PostSidebar disableOptions={disableOptions} isMember={isMember} workspace={workspace} filter={filter} tag={tag} postActions={actions} count={count} counters={counters} onGoBack={handleGoback} dictionary={dictionary}/>
+        <PostSidebar disableOptions={disableOptions} isMember={isMember} workspace={workspace} filter={filter} tag={tag}
+                     postActions={actions} count={count} counters={counters} onGoBack={handleGoback}
+                     dictionary={dictionary}/>
         <div className="col-md-9 app-content">
-          <div className="app-content-overlay" />
-          <PostFilterSearchPanel activeSort={sort} workspace={workspace} search={search} dictionary={dictionary}/>
+          <div className="app-content-overlay"/>
+          {
+            !post &&
+            <PostFilterSearchPanel activeSort={sort} workspace={workspace} search={search} dictionary={dictionary}/>
+          }
           {/* <div className="card card-body app-content-body mb-4"> */}
           {posts.length === 0 && search === null ? (
             <div className="card card-body app-content-body mb-4">
               <EmptyState>
-                <SvgEmptyState icon={3} height={252} />
+                <SvgEmptyState icon={3} height={252}/>
                 {isMember && (
-                  <button className="btn btn-outline-primary btn-block" onClick={handleShowWorkspacePostModal} disabled={disableOptions}>
+                  <button className="btn btn-outline-primary btn-block" onClick={handleShowWorkspacePostModal}
+                          disabled={disableOptions}>
                     {dictionary.createNewPost}
                   </button>
                 )}

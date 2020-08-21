@@ -1,5 +1,6 @@
 import momentTZ from "moment-timezone";
 import React from "react";
+import {$_GET} from "../../helpers/commonFunctions";
 
 const INITIAL_STATE = {
   sessionUser: null,
@@ -51,6 +52,7 @@ const INITIAL_STATE = {
       },
     },
     GENERAL_SETTINGS: {
+      is_new: true,
       timezone: momentTZ.tz.guess(),
       dark_mode: "0",
       language: "nl",
@@ -82,6 +84,10 @@ export default (state = INITIAL_STATE, action) => {
       });
 
       settings.maintenance_mode = !Object.values(settings).some(v => v === true);
+
+      if ($_GET("allow") === "password_login") {
+        settings.password_login = true;
+      }
 
       return {
         ...state,

@@ -460,44 +460,56 @@ const usePostActions = () => {
   );
 
   const createCompany = useCallback(
-    (payload) => {
+    (payload, callback = () => {
+    }) => {
       dispatch(postCompanyPosts(payload, (err, res) => {
         if (res) {
           toaster.success(<>You have successfully created a post.</>);
         }
+        callback(err, res);
       }));
     },
     [dispatch]
   );
 
   const update = useCallback(
-    (payload) => {
-      dispatch(putPost(payload));
+    (payload, callback = () => {
+    }) => {
+      dispatch(putPost(payload, (err, res) => {
+        if (res) {
+          toaster.success(<>You have updated {payload.title} post.</>);
+        }
+        callback(err, res);
+      }));
     },
     [dispatch]
   );
 
   const updateCompany = useCallback(
-    (payload) => {
-      dispatch(putCompanyPosts(payload), (err, res) => {
+    (payload, callback = () => {
+    }) => {
+      dispatch(putCompanyPosts(payload, (err, res) => {
         if (res) {
           toaster.success(<>You have updated {payload.title} post.</>);
         }
-      });
+        callback(err, res);
+      }));
     },
     [dispatch]
   );
 
   const clap = useCallback(
-    (payload) => {
-      dispatch(postClap(payload));
+    (payload, callback = () => {
+    }) => {
+      dispatch(postClap(payload, callback));
     },
     [dispatch]
   );
 
   const getRecentPosts = useCallback(
-    (id, callback) => {
-      dispatch(fetchRecentPosts({topic_id: id}));
+    (id, callback = () => {
+    }) => {
+      dispatch(fetchRecentPosts({topic_id: id}, callback));
     },
     [dispatch]
   );
@@ -578,7 +590,7 @@ const usePostActions = () => {
     setCompanyFilterPosts,
     getPosts,
     visit,
-    markReadRequirement,
+    markReadRequirement
   };
 };
 

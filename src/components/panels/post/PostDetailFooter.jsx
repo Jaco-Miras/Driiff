@@ -1,14 +1,14 @@
-import React, { useCallback, useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React, {useCallback, useRef, useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
 import styled from "styled-components";
 import Tooltip from "react-tooltip-lite";
-import { joinWorkspace } from "../../../redux/actions/workspaceActions";
-import { CommonPicker, SvgIconFeather } from "../../common";
+import {joinWorkspace} from "../../../redux/actions/workspaceActions";
+import {CommonPicker, SvgIconFeather} from "../../common";
 import PostInput from "../../forms/PostInput";
-import { CommentQuote } from "../../list/post/item";
-import { useToaster, useTranslation } from "../../hooks";
-import { addToModals } from "../../../redux/actions/globalActions";
-import { putChannel } from "../../../redux/actions/chatActions";
+import {CommentQuote} from "../../list/post/item";
+import {useToaster, useTranslation} from "../../hooks";
+import {addToModals} from "../../../redux/actions/globalActions";
+import {putChannel} from "../../../redux/actions/chatActions";
 
 const Wrapper = styled.div`
   position: relative;
@@ -283,7 +283,7 @@ const PostDetailFooter = (props) => {
           <Dflex className="d-flex align-items-center">
             {post.is_read_only === 1 ? (
               <NoReply className="d-flex align-items-center">
-                <div class="alert alert-warning">No reply allowed</div>
+                <div className="alert alert-warning">No reply allowed</div>
               </NoReply>
             ) : (
               <React.Fragment>

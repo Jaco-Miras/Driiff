@@ -23,6 +23,10 @@ body {
   background: #f1f2f7;
   font-size: 14px;
   color: #505050;
+
+  &.dark {
+    color: #fff;
+  }
 }
 
 .ql-editor {

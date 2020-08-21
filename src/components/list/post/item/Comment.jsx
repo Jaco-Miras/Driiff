@@ -104,9 +104,10 @@ const Icon = styled(SvgIconFeather)`
 `;
 
 const Comment = (props) => {
-  const { className = "", comment, post, type = "main", user, commentActions, parentId, onShowFileDialog, 
-          dropAction, parentShowInput = null, workspace, isMember, dictionary, disableOptions 
-        } = props;
+  const {
+    className = "", comment, post, type = "main", user, commentActions, parentId, onShowFileDialog,
+    dropAction, parentShowInput = null, workspace, isMember, dictionary, disableOptions
+  } = props;
   const refs = {
     input: useRef(null),
     body: useRef(null),
@@ -115,6 +116,10 @@ const Comment = (props) => {
   const [showInput, setShowInput] = useState(null);
   const [userMention, setUserMention] = useState(null);
   const [showGifPlayer, setShowGifPlayer] = useState(null);
+  const [react, setReact] = useState({
+    user_clap_count: comment.user_clap_count,
+    clap_count: comment.clap_count
+  })
 
   useEffect(() => {
     if (comment.body.match(/\.(gif)/g) !== null) {
@@ -123,15 +128,15 @@ const Comment = (props) => {
   }, []);
 
   const handleShowInput = useCallback(
-      (commentId = null) => {
-        if (parentShowInput) {
-          parentShowInput(commentId);
-        } else {
-          setShowInput(typeof commentId !== "number" ? comment.id : commentId);
-        }
-        inputFocus();
-      },
-      [setShowInput]
+    (commentId = null) => {
+      if (parentShowInput) {
+        parentShowInput(commentId);
+      } else {
+        setShowInput(typeof commentId !== "number" ? comment.id : commentId);
+      }
+      inputFocus();
+    },
+    [setShowInput]
   );
 
   const handleMentionUser = () => {
@@ -170,7 +175,14 @@ const Comment = (props) => {
   }, [inputFocus]);
 
   const handleReaction = () => {
-    if (disableOptions) return;
+    if (disableOptions)
+      return;
+
+    setReact(prevState => ({
+      user_clap_count: !!prevState.user_clap_count ? 0 : 1,
+      clap_count: !!prevState.user_clap_count ? prevState.clap_count - 1 : prevState.clap_count + 1,
+    }));
+
     let payload = {
       id: comment.id,
       reaction: "clap",
@@ -179,101 +191,102 @@ const Comment = (props) => {
     commentActions.clap(payload);
   };
 
-  const { fromNow } = useTimeFormat();
+  const {fromNow} = useTimeFormat();
 
   return (
-      <>
-        <Wrapper ref={refs.main} className={`comment card border fadeBottom ${className}`} userId={user.id}>
-          {
-            comment.quote &&
-            <>
-              {
-                comment.quote.user && (
-                  <div className="quote-author">{comment.quote.user.name}</div>
-                )
-              }
-              <div className="quote border border-side" dangerouslySetInnerHTML={{__html: comment.quote.body}}/>
-            </>
+    <>
+      <Wrapper ref={refs.main} className={`comment card border fadeBottom ${className}`} userId={user.id}>
+        {
+          comment.quote &&
+          <>
+            {
+              comment.quote.user && (
+                <div className="quote-author">{comment.quote.user.name}</div>
+              )
+            }
+            <div className="quote border border-side" dangerouslySetInnerHTML={{__html: comment.quote.body}}/>
+          </>
 
-          }
-          <CommentWrapper ref={refs.body} className="card-body" type={type}>
-            <CommentHeader className="d-flex">
-              <div className="d-flex justify-content-center align-items-center">
-                <Avatar className="mr-2" id={comment.author.id} name={comment.author.name}
-                        imageLink={comment.author.profile_image_link}/>
-                <span>{comment.author.first_name}</span>
-                <span className="text-muted ml-1">{fromNow(comment.created_at.timestamp)}</span>
-              </div>
-              {post.is_read_only !== 1 && !disableOptions && (
-                  <MoreOptions scrollRef={refs.body.current} moreButton={"more-vertical"}>
-                    {user.id === comment.author.id &&
-                    <div onClick={() => commentActions.setToEdit(comment)}>{dictionary.editReply}</div>}
-                    <div onClick={handleQuote}>{dictionary.quote}</div>
-                    {user.id !== comment.author.id && <div onClick={handleMentionUser}>{dictionary.mentionUser}</div>}
-                    {user.id === comment.author.id &&
-                    <div onClick={() => commentActions.remove(comment)}>{dictionary.removeReply}</div>}
-                  </MoreOptions>
-              )}
-            </CommentHeader>
-            <CommentBody className="mt-2 mb-3" dangerouslySetInnerHTML={showGifPlayer ? {__html: stripGif(comment.body)} : {__html: comment.body}}/>
-            {showGifPlayer &&
-              getGifLinks(comment.body).map((gifLink, index) => {
-                return <GifPlayer key={index} className={"gifPlayer"} gif={gifLink} autoplay={true}/>;
-              })}
-            {comment.files.length >= 1 && (
-                <>
-                  <hr/>
-                  <h6>{dictionary.files}</h6>
-                  <FileAttachments attachedFiles={comment.files} type="workspace" comment={comment}/>
-                </>
-            )}
-            <div className="d-flex align-items-center justify-content-start">
-              <Icon
-                  className={comment.user_clap_count ? "mr-2 comment-reaction clap-true" : "mr-2 comment-reaction clap-false"}
-                  icon="heart" onClick={handleReaction}/>
-              {comment.clap_count > 0 ? comment.clap_count : null}
-              {post.is_read_only !== 1 && !disableOptions && (
-                  <Reply className="ml-3" onClick={handleShowInput}>
-                    {dictionary.comment}
-                  </Reply>
-              )}
+        }
+        <CommentWrapper ref={refs.body} className="card-body" type={type}>
+          <CommentHeader className="d-flex">
+            <div className="d-flex justify-content-center align-items-center">
+              <Avatar className="mr-2" id={comment.author.id} name={comment.author.name}
+                      imageLink={comment.author.profile_image_link}/>
+              <span>{comment.author.first_name}</span>
+              <span className="text-muted ml-1">{fromNow(comment.created_at.timestamp)}</span>
             </div>
-          </CommentWrapper>
-        </Wrapper>
-        {type === "main" && Object.values(comment.replies).length > 0 && (
-            <SubComments
-                parentShowInput={handleShowInput}
-                comments={comment.replies}
-                post={post}
-                user={user}
-                commentActions={commentActions}
-                parentId={type === "main" ? comment.id : null}
-                onShowFileDialog={onShowFileDialog}
-                dropAction={dropAction}
-                workspace={workspace} isMember={isMember}
-                dictionary={dictionary}
-                disableOptions={disableOptions}
-            />
-        )}
-        {showInput !== null && (
-            <InputWrapper className="card">
-              <CommentInput
-                  innerRef={refs.input}
-                  user={user}
-                  commentId={showInput}
-                  post={post}
-                  parentId={type === "main" ? comment.id : parentId}
-                  commentActions={commentActions}
-                  userMention={userMention}
-                  handleClearUserMention={handleClearUserMention}
-                  onShowFileDialog={onShowFileDialog}
-                  dropAction={dropAction}
-                  workspace={workspace} isMember={isMember}
-                  disableOptions={disableOptions}
-              />
-            </InputWrapper>
-        )}
-      </>
+            {post.is_read_only !== 1 && !disableOptions && (
+              <MoreOptions scrollRef={refs.body.current} moreButton={"more-vertical"}>
+                {user.id === comment.author.id &&
+                <div onClick={() => commentActions.setToEdit(comment)}>{dictionary.editReply}</div>}
+                <div onClick={handleQuote}>{dictionary.quote}</div>
+                {user.id !== comment.author.id && <div onClick={handleMentionUser}>{dictionary.mentionUser}</div>}
+                {user.id === comment.author.id &&
+                <div onClick={() => commentActions.remove(comment)}>{dictionary.removeReply}</div>}
+              </MoreOptions>
+            )}
+          </CommentHeader>
+          <CommentBody className="mt-2 mb-3"
+                       dangerouslySetInnerHTML={showGifPlayer ? {__html: stripGif(comment.body)} : {__html: comment.body}}/>
+          {showGifPlayer &&
+          getGifLinks(comment.body).map((gifLink, index) => {
+            return <GifPlayer key={index} className={"gifPlayer"} gif={gifLink} autoplay={true}/>;
+          })}
+          {comment.files.length >= 1 && (
+            <>
+              <hr/>
+              <h6>{dictionary.files}</h6>
+              <FileAttachments attachedFiles={comment.files} type="workspace" comment={comment}/>
+            </>
+          )}
+          <div className="d-flex align-items-center justify-content-start">
+            <Icon
+              className={react.user_clap_count ? "mr-2 comment-reaction clap-true" : "mr-2 comment-reaction clap-false"}
+              icon="heart" onClick={handleReaction}/>
+            {react.clap_count > 0 ? react.clap_count : null}
+            {post.is_read_only !== 1 && !disableOptions && (
+              <Reply className="ml-3" onClick={handleShowInput}>
+                {dictionary.comment}
+              </Reply>
+            )}
+          </div>
+        </CommentWrapper>
+      </Wrapper>
+      {type === "main" && Object.values(comment.replies).length > 0 && (
+        <SubComments
+          parentShowInput={handleShowInput}
+          comments={comment.replies}
+          post={post}
+          user={user}
+          commentActions={commentActions}
+          parentId={type === "main" ? comment.id : null}
+          onShowFileDialog={onShowFileDialog}
+          dropAction={dropAction}
+          workspace={workspace} isMember={isMember}
+          dictionary={dictionary}
+          disableOptions={disableOptions}
+        />
+      )}
+      {showInput !== null && (
+        <InputWrapper className="card">
+          <CommentInput
+            innerRef={refs.input}
+            user={user}
+            commentId={showInput}
+            post={post}
+            parentId={type === "main" ? comment.id : parentId}
+            commentActions={commentActions}
+            userMention={userMention}
+            handleClearUserMention={handleClearUserMention}
+            onShowFileDialog={onShowFileDialog}
+            dropAction={dropAction}
+            workspace={workspace} isMember={isMember}
+            disableOptions={disableOptions}
+          />
+        </InputWrapper>
+      )}
+    </>
   );
 };
 
