@@ -623,23 +623,21 @@ export default (state = INITIAL_STATE, action) => {
           uploader: state.user
         };
       })
-      if (action.data.workspace_id) {
-        if (newWorkspaces[action.data.workspace_id].topics[action.data.topic_id].hasOwnProperty("primary_files")) {
-          newWorkspaces[action.data.workspace_id].topics[action.data.topic_id].primary_files = [...newWorkspaces[action.data.workspace_id].topics[action.data.topic_id].primary_files, ...files];
+      if (newWorkspaces.hasOwnProperty(action.data.topic_id)) {
+        if (newWorkspaces[action.data.topic_id].hasOwnProperty("primary_files")) {
+          newWorkspaces[action.data.topic_id].primary_files = [...new Set([...newWorkspaces[action.data.topic_id].primary_files, ...files])];
         } else {
-          newWorkspaces[action.data.workspace_id].topics[action.data.topic_id].primary_files = files;
+          newWorkspaces[action.data.topic_id].primary_files = files;
         }
-      } else {
-        newWorkspaces[action.data.topic_id].primary_files = files;
       }
       return {
         ...state,
         workspaces: newWorkspaces,
         activeTopic:
-          state.activeTopic.id === action.data.topic_id
+          state.activeTopic && state.activeTopic.id === action.data.topic_id
             ? {
                 ...state.activeTopic,
-                primary_files: state.activeTopic.hasOwnProperty("primary_files") ? [...state.activeTopic.primary_files, ...files] : files,
+                primary_files: state.activeTopic.hasOwnProperty("primary_files") ? [...new Set([...state.activeTopic.primary_files, ...files])] : files,
               }
             : state.activeTopic,
       };
@@ -998,35 +996,26 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "INCOMING_DELETED_FILES": {
-      let updatedTopic = { ...state.activeTopic };
       let updatedWorkspaces = { ...state.workspaces };
-      if (Object.values(state.workspaces).length) {
-        if (action.data.workspace_id && action.data.workspace_id !== 0) {
-          if (updatedWorkspaces[action.data.workspace_id].topics[action.data.topic_id].hasOwnProperty("primary_files")) {
-            updatedWorkspaces[action.data.workspace_id].topics[action.data.topic_id].primary_files = updatedWorkspaces[action.data.workspace_id].topics[action.data.topic_id].primary_files.filter((pf) => {
-              return !action.data.deleted_file_ids.some((df) => df === pf.id)
-            });
-          }
-        } else {
-          if (updatedWorkspaces[action.data.topic_id].hasOwnProperty("primary_files")) {
-            updatedWorkspaces[action.data.topic_id].primary_files = updatedWorkspaces[action.data.topic_id].primary_files.filter((pf) => {
-              return !action.data.deleted_file_ids.some((df) => df === pf.id)
-            });
-          }
-        }
-        if (state.activeTopic && state.activeTopic.id === action.data.topic_id && state.activeTopic.hasOwnProperty("primary_files")) {
-          updatedTopic.primary_files = updatedTopic.primary_files.filter((pf) => {
-            return !action.data.deleted_file_ids.some((df) => df === pf.id)
+      if (updatedWorkspaces.hasOwnProperty(action.data.topic_id) && action.data.is_primary === 1) {
+        if (updatedWorkspaces[action.data.topic_id].hasOwnProperty("primary_files")) {
+          updatedWorkspaces[action.data.topic_id].primary_files = updatedWorkspaces[action.data.topic_id].primary_files.filter((f) => {
+            return !action.data.deleted_file_ids.some((id) => id === f.id);
           });
-        }
-        return {
-          ...state,
-          activeTopic: updatedTopic,
-          workspaces: updatedWorkspaces,
-        };
-      } else {
-        return state;
+        } 
       }
+      return {
+        ...state,
+        activeTopic: state.activeTopic && state.activeTopic.id === action.data.topic_id ? 
+                      {
+                        ...state.activeTopic,
+                        primary_files: state.activeTopic.hasOwnProperty("primary_files") ? state.activeTopic.primary_files.filter((f) => {
+                                        return !action.data.deleted_file_ids.some((id) => id === f.id);
+                                      }) : [],
+                      }
+                      : state.activeTopic,
+        workspaces: updatedWorkspaces,
+      };
     }
     case "LEAVE_WORKSPACE": {
       let updatedWorkspaces = { ...state.workspaces };
