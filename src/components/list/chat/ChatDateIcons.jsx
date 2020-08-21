@@ -36,7 +36,7 @@ const ChatDateIcons = (props) => {
   return (
     <Wrapper className="chat-timestamp">
       {
-        (!channel.is_read && channel.total_unread > 0) &&
+        (!channel.is_read || channel.total_unread > 0) &&
         <Badge className={`badge badge-primary badge-pill ml-auto ${!channel.is_read && channel.total_unread === 0 ? "unread" : ""}`}>
           {channel.total_unread > 0 ? channel.total_unread : !channel.is_read ? "0" : null}
         </Badge>
