@@ -18,7 +18,7 @@ import {
   userLogin,
   userLogout
 } from "../../redux/actions/userAction";
-import {useToaster} from "./index";
+import {useDriffActions, useSettings, useToaster} from "./index";
 import {getAPIUrl, getCurrentDriffUrl} from "../../helpers/slugHelper";
 import {toggleLoading} from "../../redux/actions/globalActions";
 import {getDriffName} from "./useDriff";
@@ -27,6 +27,8 @@ import {isIPAddress} from "../../helpers/commonFunctions";
 const useUserActions = () => {
   const dispatch = useDispatch();
   const toaster = useToaster();
+  const driffActions = useDriffActions();
+  const {generalSettings: {is_new}, setGeneralSetting} = useSettings();
 
   const {getUserFilter} = useSelector((state) => state.users);
   const {user: loggedUser} = useSelector((state) => state.session);
@@ -272,7 +274,6 @@ const useUserActions = () => {
       id: user.id,
       file: file,
     };
-    console.log(payload);
     dispatch(
       postUploadProfileImage(payload, (err, res) => {
         if (err) {
@@ -404,16 +405,20 @@ const useUserActions = () => {
     });
   }, []);
 
-  const displayWelcomeBanner = useCallback((user) => {
+  const displayWelcomeBanner = useCallback(() => {
     if (!localStorage.getItem("welcomeBanner")) {
       localStorage.setItem("welcomeBanner", "init");
-      if (user.isNew) {
-        toaster.success(<>Welcome to driff, {user.first_name}</>)
+      const slugName = driffActions.getName();
+      if (is_new) {
+        toaster.success(<>Welcome to <b>{slugName}</b> driff, {loggedUser.first_name}</>)
+        setGeneralSetting({
+          is_new: false
+        })
       } else {
-        toaster.success(<>Welcome back, {user.first_name}</>)
+        toaster.success(<>Welcome back, {loggedUser.first_name}</>)
       }
     }
-  }, []);
+  }, [loggedUser, driffActions, is_new]);
 
   return {
     checkCredentials,

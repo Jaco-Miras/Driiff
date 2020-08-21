@@ -8,13 +8,12 @@ import {
   setUserGeneralSetting,
   updateUserSettings
 } from "../../redux/actions/settingsActions";
-import {useUserActions} from "./index";
 
 let init = true;
 
 const useSettings = () => {
+
   const dispatch = useDispatch();
-  const {logout} = useUserActions();
   const {driff: driffSettings, user: userSettings} = useSelector((state) => state.settings);
 
   const setChatSetting = useCallback(
@@ -65,11 +64,7 @@ const useSettings = () => {
     );
 
     dispatch(
-      getDriffSettings({}, (err) => {
-        if (err) {
-          logout();
-        }
-      })
+      getDriffSettings({})
     );
 
     dispatch(getUserSettings());

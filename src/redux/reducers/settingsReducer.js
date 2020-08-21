@@ -52,6 +52,7 @@ const INITIAL_STATE = {
       },
     },
     GENERAL_SETTINGS: {
+      is_new: true,
       timezone: momentTZ.tz.guess(),
       dark_mode: "0",
       language: "nl",
