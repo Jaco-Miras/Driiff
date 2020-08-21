@@ -292,3 +292,17 @@ export function deleteWorkspaceRole(payload) {
     data: payload,
   });
 }
+
+/**
+ * @param {Object} payload
+ * @param {number} payload.topic_id
+ * @returns {Promise<*>}
+ */
+export function deleteWorkspaceFolder(payload) {
+  let url = `/v2/workspace-folders/${payload.topic_id}`;
+  return apiCall({
+    method: "DELETE",
+    url: url,
+    data: payload,
+  });
+}

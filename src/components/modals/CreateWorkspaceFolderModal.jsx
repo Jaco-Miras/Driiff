@@ -2,8 +2,8 @@ import React, {useCallback, useEffect, useRef, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {Input, InputGroup, Label, Modal, ModalBody} from "reactstrap";
 import styled from "styled-components";
-import {clearModal} from "../../redux/actions/globalActions";
-import {createWorkspace, updateWorkspace} from "../../redux/actions/workspaceActions";
+import {clearModal, addToModals} from "../../redux/actions/globalActions";
+import {createWorkspace, deleteWorkspaceFolder, updateWorkspace} from "../../redux/actions/workspaceActions";
 import {CheckBox, DescriptionInput, InputFeedback} from "../forms";
 import {useToaster, useTranslation} from "../hooks";
 import {ModalHeaderSection} from "./index";
@@ -39,6 +39,21 @@ const WrapperDiv = styled(InputGroup)`
   .react-select__multi-value__label {
     align-self: center;
   }
+  &.action-wrapper {
+    margin-top: 40px;
+
+    .action-archive-wrapper {
+        display: flex;
+        width: 100%;
+
+        .btn-archive {
+          display: flex;
+          margin-left: auto;
+          text-decoration: underline;
+          color: #a7abc3;
+        }
+    }
+  }
 `;
 
 const StyledDescriptionInput = styled(DescriptionInput)`
@@ -53,9 +68,13 @@ const CreateWorkspaceFolderModal = (props) => {
   const dictionary = {
       createWorkspaceFolder: _t("WORKSPACE.CREATE_WORKSPACE_FOLDER", "Create folder"),
       updateWorkspaceFolder: _t("WORKSPACE.UPDATE_WORKSPACE_FOLDER", "Update folder"),
+      removeWorkspaceFolder: _t("WORKSPACE.DELETE_WORKSPACE_FOLDER", "Remove folder"),
       folderName: _t("FOLDER_NAME", "Folder name"),
       lockWorkspace: _t("WORKSPACE.WORKSPACE_LOCK", "Lock workspace"),
       description: _t("DESCRIPTION", "Description"),
+      remove: _t("WORKSPACE.REMOVE", "Remove"),
+      cancel: _t("WORKSPACE.CANCEL", "Cancel"),
+      removeFolderText: _t("WORKSPACE.REMOVE_FOLDER_TEXT", "Are you sure that you want to remove this folder?")
   };
   const toaster = useToaster();
   const inputRef = useRef();
@@ -236,17 +255,41 @@ const CreateWorkspaceFolderModal = (props) => {
     }
   }, [dispatch, toggle, activeTab, form.description, form.is_private, form.name, valid.name, setForm, mode]);
 
-  const handleQuillChange = useCallback(
-    (content, delta, source, editor) => {
-      const textOnly = editor.getText(content);
-      setForm((prevState) => ({
-        ...prevState,
-        description: content,
-        textOnly: textOnly,
-      }));
-    },
-    [setForm]
-  );
+  // const handleQuillChange = useCallback(
+  //   (content, delta, source, editor) => {
+  //     const textOnly = editor.getText(content);
+  //     setForm((prevState) => ({
+  //       ...prevState,
+  //       description: content,
+  //       textOnly: textOnly,
+  //     }));
+  //   },
+  //   [setForm]
+  // );
+
+  const handleRemoveFolder = () => {
+    // dispatch(
+    //   deleteWorkspaceFolder({
+    //     topic_id: item.id
+    //   })
+    // );
+    toggle();
+  };
+
+  const handleShowRemoveConfirmation = () => {
+    let payload = {
+        type: "confirmation",
+        headerText: dictionary.removeWorkspaceFolder,
+        submitText: dictionary.remove,
+        cancelText: dictionary.cancel,
+        bodyText: dictionary.removeFolderText,
+        actions: {
+            onSubmit: handleRemoveFolder,
+        },
+    };
+
+    dispatch(addToModals(payload));
+};
 
   const onOpened = () => {
     if (inputRef && inputRef.current) {
@@ -268,12 +311,12 @@ const CreateWorkspaceFolderModal = (props) => {
                    innerRef={inputRef}/>
             <InputFeedback valid={valid.name}>{feedback.name}</InputFeedback>
           </WrapperDiv>
-          <StyledDescriptionInput
+          {/* <StyledDescriptionInput
               height={window.innerHeight - 660}
               onChange={handleQuillChange}
               defaultValue={mode === "edit" && item ? item.description : ""}
-              mode={mode}/>
-          <WrapperDiv style={{marginTop: "40px"}}>
+              mode={mode}/> */}
+          <WrapperDiv className="action-wrapper" style={{marginTop: "40px"}}>
             <Label/>
             <CheckBox name="is_private" checked={form.is_private} onClick={toggleCheck}>
               {dictionary.lockWorkspace}
@@ -282,6 +325,14 @@ const CreateWorkspaceFolderModal = (props) => {
                     onClick={handleConfirm}>
               {mode === "edit" ? dictionary.updateWorkspaceFolder : dictionary.createWorkspaceFolder}
             </button>
+            {
+                mode === "edit" &&
+                <div className="action-archive-wrapper">
+                  <span onClick={handleShowRemoveConfirmation}
+                    className="btn-archive text-link mt-2 cursor-pointer">{dictionary.removeWorkspaceFolder}
+                  </span>
+                </div>
+            }
           </WrapperDiv>
         </ModalBody>
       </Modal>
