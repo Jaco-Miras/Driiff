@@ -8,6 +8,7 @@ import {useHistory} from "react-router-dom";
 import {replaceChar} from "../../helpers/stringFormatter";
 import {
   addPrimaryFiles,
+  deleteWorkspaceRole,
   fetchDetail,
   fetchMembers,
   fetchPrimaryFiles,
@@ -169,9 +170,17 @@ const useWorkspaceActions = () => {
     [dispatch]
   );
 
+  const deleteRole = useCallback(
+    (payload, callback) => {
+      dispatch(deleteWorkspaceRole(payload, callback));
+    },
+    [dispatch]
+  );
+
   return {
     addPrimaryFilesToWorkspace,
     addRole,
+    deleteRole,
     clearChannel,
     fetchChannel,
     fetchWorkspaceChannels,

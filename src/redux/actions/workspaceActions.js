@@ -2,6 +2,7 @@ import dispatchActionToReducer, { SimpleDispatchActionToReducer } from "../actio
 import {
   createWorkspace as createWorkspaceService,
   deleteWorkspace as deleteWorkspaceService,
+  deleteWorkspaceRole as deleteWorkspaceRoleService,
   fetchDetail as fetchDetailService,
   fetchMembers as fetchMembersService,
   fetchPrimaryFiles as fetchPrimaryFilesService,
@@ -152,4 +153,8 @@ export function incomingWorkspaceRole(payload, callback) {
 
 export function setWorkspaceToDelete(payload, callback) {
   return SimpleDispatchActionToReducer("SET_WORKSPACE_TO_DELETE", payload, callback);
+}
+
+export function deleteWorkspaceRole(payload, callback) {
+  return dispatchActionToReducer(deleteWorkspaceRoleService(payload), "DELETE_WORKSPACE_ROLE_START", "DELETE_WORKSPACE_ROLE_SUCCESS", "DELETE_WORKSPACE_ROLE_FAIL", callback);
 }

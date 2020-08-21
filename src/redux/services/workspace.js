@@ -277,3 +277,18 @@ export function postWorkspaceRole(payload) {
     data: payload,
   });
 }
+
+/**
+ * @param {Object} payload
+ * @param {number} payload.topic_id
+ * @param {number} payload.user_id
+ * @returns {Promise<*>}
+ */
+export function deleteWorkspaceRole(payload) {
+  let url = `/v2/workspace-role`;
+  return apiCall({
+    method: "DELETE",
+    url: url,
+    data: payload,
+  });
+}

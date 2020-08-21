@@ -127,6 +127,7 @@ export {
 export {
   createWorkspace,
   deleteWorkspace,
+  deleteWorkspaceRole,
   fetchDetail,
   fetchPrimaryFiles,
   fetchMembers,
