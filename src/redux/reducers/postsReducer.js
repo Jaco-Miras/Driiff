@@ -128,15 +128,6 @@ export default (state = INITIAL_STATE, action) => {
       }
     }
     case "ADD_COMPANY_POST_SEARCH_RESULT": {
-      let boom = {
-        ...state,
-        companyPosts: {
-          ...state.companyPosts,
-          search: action.data.search,
-          searchResults: action.data.search_result,
-        }
-      };
-      console.log(boom.companyPosts)
       return {
         ...state,
         companyPosts: {
@@ -177,6 +168,9 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "STAR_POST_REDUCER": {
+      if (typeof state.companyPosts.posts[action.data.post_id] === "undefined")
+        return state;
+
       return {
         ...state,
         companyPosts: {

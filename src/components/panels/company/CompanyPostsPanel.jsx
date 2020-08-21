@@ -157,9 +157,12 @@ const CompanyPostsPanel = (props) => {
                             dictionary={dictionary}/>
         <div className="col-md-9 app-content">
           <div className="app-content-overlay"/>
-          <CompanyPostFilterSearchPanel
-            activeSort={sort} search={search}
-            dictionary={dictionary}/>
+          {
+            !post &&
+            <CompanyPostFilterSearchPanel
+              activeSort={sort} search={search}
+              dictionary={dictionary}/>
+          }
           {/* <div className="card card-body app-content-body mb-4"> */}
           {posts.length === 0 && search === null ? (
             <div className="card card-body app-content-body mb-4">
