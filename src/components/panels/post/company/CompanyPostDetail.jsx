@@ -91,12 +91,16 @@ const MarkAsRead = styled.div`
 `;
 
 const CompanyPostDetail = (props) => {
-  const {post, postActions, user, onGoBack, dictionary, disableOptions} = props;
+  const {post, postActions, user, onGoBack, dictionary} = props;
 
   const dispatch = useDispatch();
   const history = useHistory();
 
   const [showDropZone, setshowDropZone] = useState(false);
+  const [react, setReact] = useState({
+    user_clap_count: post.user_clap_count,
+    clap_count: post.clap_count
+  })
 
   const handleClosePost = () => {
     onGoBack();
@@ -174,6 +178,11 @@ const CompanyPostDetail = (props) => {
   };
 
   const handleReaction = () => {
+    setReact(prevState => ({
+      user_clap_count: !!prevState.user_clap_count ? 0 : 1,
+      clap_count: !!prevState.user_clap_count ? prevState.clap_count - 1 : prevState.clap_count + 1,
+    }));
+
     let payload = {
       post_id: post.id,
       id: null,
@@ -204,6 +213,8 @@ const CompanyPostDetail = (props) => {
     history.push(`/profile/${post.author.id}/${replaceChar(post.author.name)}`);
   }
 
+  const isMember = post.users_responsible.some(u => u.id === user.id);
+
   return (
     <>
       <MainHeader className="card-header d-flex justify-content-between">
@@ -225,12 +236,12 @@ const CompanyPostDetail = (props) => {
         <div>
           {post.author.id !== user.id && !post.is_read_requirement && (
             <MarkAsRead className="d-sm-inline d-none">
-              <button className="btn btn-primary btn-block" onClick={markRead} disabled={disableOptions}>
+              <button className="btn btn-primary btn-block" onClick={markRead}>
                 {dictionary.markAsRead}
               </button>
             </MarkAsRead>
           )}
-          {post.author.id === user.id && !disableOptions && (
+          {post.author.id === user.id && (
             <ul>
               <li>
                 <span data-toggle="modal" data-target="#editTaskModal">
@@ -261,15 +272,15 @@ const CompanyPostDetail = (props) => {
           }}
           onCancel={handleHideDropzone}
         />
-        <CompanyPostBody post={post} postActions={postActions} isAuthor={post.author.id === user.id}
-                         dictionary={dictionary}
-                         disableOptions={disableOptions}/>
+        <CompanyPostBody
+          post={post} postActions={postActions} isAuthor={post.author.id === user.id}
+          dictionary={dictionary}/>
         <hr className="m-0"/>
         <Counters className="d-flex align-items-center">
           <div>
-            <Icon className={post.user_clap_count ? "mr-2 post-reaction clap-true" : "mr-2 post-reaction clap-false"}
+            <Icon className={react.user_clap_count ? "mr-2 post-reaction clap-true" : "mr-2 post-reaction clap-false"}
                   icon="heart" onClick={handleReaction}/>
-            {post.clap_count}
+            {react.clap_count}
           </div>
           <div className="ml-auto text-muted">
             <Icon className="mr-2" icon="message-square"/>
@@ -297,15 +308,15 @@ const CompanyPostDetail = (props) => {
                 onShowFileDialog={handleOpenFileDialog}
                 dropAction={dropAction}
                 dictionary={dictionary}
-                disableOptions={disableOptions}
               />
               <hr className="m-0"/>
             </>
           )
         }
-        <CompanyPostDetailFooter post={post} commentActions={commentActions} onShowFileDialog={handleOpenFileDialog}
-                                 dropAction={dropAction}
-                                 disableOptions={disableOptions}/>
+        <CompanyPostDetailFooter
+          isMember={isMember}
+          post={post} commentActions={commentActions} onShowFileDialog={handleOpenFileDialog}
+          dropAction={dropAction}/>
       </MainBody>
     </>
   );

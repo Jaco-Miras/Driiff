@@ -147,7 +147,6 @@ export default (state = INITIAL_STATE, action) => {
       }
     }
     case "UPDATE_COMPANY_POST_FILTER_SORT": {
-      console.log(action.data);
       return {
         ...state,
         companyPosts: {
@@ -155,6 +154,25 @@ export default (state = INITIAL_STATE, action) => {
           filter: action.data.filter,
           sort: action.data.sort ? action.data.sort : state.companyPosts.sort,
           tag: action.data.tag,
+        },
+      };
+    }
+    case "INCOMING_POST_CLAP": {
+      if (typeof state.companyPosts.posts[action.data.post_id] === "undefined")
+        return state;
+
+      return {
+        ...state,
+        companyPosts: {
+          ...state.companyPosts,
+          posts: {
+            ...state.companyPosts.posts,
+            [action.data.post_id]: {
+              ...state.companyPosts.posts[action.data.post_id],
+              clap_count: action.data.clap_count ? state.companyPosts.posts[action.data.post_id].clap_count + 1 : state.companyPosts.posts[action.data.post_id].clap_count - 1,
+              user_clap_count: action.data.clap_count
+            }
+          }
         },
       };
     }

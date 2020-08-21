@@ -756,11 +756,17 @@ export default (state = INITIAL_STATE, action) => {
     }
     case "ARCHIVE_REDUCER": {
       let workspaces = {...state.workspaces};
-      workspaces[action.data.topic_detail.id].active = 0;
+
+      if (workspaces[action.data.topic_detail.id])
+        workspaces[action.data.topic_detail.id].active = 0;
+
       return {
         ...state,
         workspaces: workspaces,
-        activeTopic: state.activeTopic && state.activeTopic.id === action.data.topic_detail.id ? { ...state.activeTopic, active: 0 } : state.activeTopic
+        activeTopic: state.activeTopic && state.activeTopic.id === action.data.topic_detail.id ? {
+          ...state.activeTopic,
+          active: 0
+        } : state.activeTopic
       };
     }
     case "UNARCHIVE_REDUCER": {

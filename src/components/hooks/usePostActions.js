@@ -499,15 +499,17 @@ const usePostActions = () => {
   );
 
   const clap = useCallback(
-    (payload) => {
-      dispatch(postClap(payload));
+    (payload, callback = () => {
+    }) => {
+      dispatch(postClap(payload, callback));
     },
     [dispatch]
   );
 
   const getRecentPosts = useCallback(
-    (id, callback) => {
-      dispatch(fetchRecentPosts({topic_id: id}));
+    (id, callback = () => {
+    }) => {
+      dispatch(fetchRecentPosts({topic_id: id}, callback));
     },
     [dispatch]
   );

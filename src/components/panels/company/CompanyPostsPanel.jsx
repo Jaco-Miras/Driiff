@@ -49,7 +49,7 @@ const EmptyState = styled.div`
 `;
 
 const CompanyPostsPanel = (props) => {
-  const {className = "", workspace} = props;
+  const {className = ""} = props;
 
   const params = useParams();
   const history = useHistory();
@@ -61,7 +61,7 @@ const CompanyPostsPanel = (props) => {
   const {actions, fetchMore, posts, filter, tag, sort, post, user, search, count, counters} = useCompanyPosts();
   const [loading, setLoading] = useState(false);
 
-  const handleShowWorkspacePostModal = () => {
+  const handleShowPostModal = () => {
     actions.showModal("create_company");
   };
 
@@ -157,14 +157,15 @@ const CompanyPostsPanel = (props) => {
                             dictionary={dictionary}/>
         <div className="col-md-9 app-content">
           <div className="app-content-overlay"/>
-          <CompanyPostFilterSearchPanel activeSort={sort} workspace={workspace} search={search}
-                                        dictionary={dictionary}/>
+          <CompanyPostFilterSearchPanel
+            activeSort={sort} search={search}
+            dictionary={dictionary}/>
           {/* <div className="card card-body app-content-body mb-4"> */}
           {posts.length === 0 && search === null ? (
             <div className="card card-body app-content-body mb-4">
               <EmptyState>
                 <SvgEmptyState icon={3} height={252}/>
-                <button className="btn btn-outline-primary btn-block" onClick={handleShowWorkspacePostModal}>
+                <button className="btn btn-outline-primary btn-block" onClick={handleShowPostModal}>
                   {dictionary.createNewPost}
                 </button>
               </EmptyState>
@@ -174,8 +175,9 @@ const CompanyPostsPanel = (props) => {
               {post ? (
                 <div className="card card-body app-content-body mb-4">
                   <PostDetailWrapper className="fadeBottom">
-                    <CompanyPostDetail post={post} postActions={actions} user={user} history={history}
-                                       onGoBack={handleGoback} dictionary={dictionary}/>
+                    <CompanyPostDetail
+                      post={post} postActions={actions} user={user} history={history}
+                      onGoBack={handleGoback} dictionary={dictionary}/>
                   </PostDetailWrapper>
                 </div>
               ) : (

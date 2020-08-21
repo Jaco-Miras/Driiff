@@ -1,15 +1,14 @@
-import React, { useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React, {useRef, useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
 import Tooltip from "react-tooltip-lite";
 import styled from "styled-components";
-import { onClickSendButton, putChannel } from "../../../redux/actions/chatActions";
-import { joinWorkspace } from "../../../redux/actions/workspaceActions";
-import { CommonPicker, SvgIconFeather } from "../../common";
+import {onClickSendButton, putChannel} from "../../../redux/actions/chatActions";
+import {joinWorkspace} from "../../../redux/actions/workspaceActions";
+import {CommonPicker, SvgIconFeather} from "../../common";
 import ChatInput from "../../forms/ChatInput";
-import { useIsMember, useTimeFormat, useToaster, useTranslation } from "../../hooks";
+import {useIsMember, useTimeFormat, useToaster, useTranslation} from "../../hooks";
 import ChatQuote from "../../list/chat/ChatQuote";
-import TypingIndicator from "../../list/chat/TypingIndicator";
-import { addToModals } from "../../../redux/actions/globalActions";
+import {addToModals} from "../../../redux/actions/globalActions";
 
 const Wrapper = styled.div`
   position: relative;
@@ -254,11 +253,10 @@ const ChatFooterPanel = (props) => {
 
   return (
     <Wrapper className={`chat-footer border-top ${className}`}>
-      <TypingIndicator />
-
+      {/*<TypingIndicator />*/}
       {selectedChannel && !selectedChannel.is_archived && (
         <Dflex className="d-flex pr-2 pl-2">
-          <ChatQuote />
+          <ChatQuote/>
         </Dflex>
       )}
       {isMember && (

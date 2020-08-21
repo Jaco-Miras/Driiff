@@ -194,9 +194,7 @@ class SocketListeners extends React.PureComponent {
                 switch (e.SOCKET_TYPE) {
                     case "POST_CREATE": {
                         if (this.props.user.id !== e.author.id) {
-                            if (isSafari) {
-                                pushBrowserNotification(`${e.author.first_name} shared a post`, e.title, e.author.profile_image_link, null);
-                            }
+                            pushBrowserNotification(`${e.author.first_name} shared a post`, e.title, e.author.profile_image_link, null);
                         }
                         if (e.show_at !== null && this.props.user.id === e.author.id) {
                             this.props.incomingPost(e);
@@ -284,7 +282,7 @@ class SocketListeners extends React.PureComponent {
                 console.log(e, "chat-notification");
                 const {user, selectedChannel, isBrowserActive} = this.props;
 
-                if (e.user.id !== user.id) {
+                if (e.user.id !== user.id && !e.is_muted) {
                     this.props.soundPlay();
                 }
 
@@ -320,7 +318,7 @@ class SocketListeners extends React.PureComponent {
                         delete e.SOCKET_TYPE;
                         delete e.socket;
                         if ((e.user.id !== user.id && selectedChannel && selectedChannel.id !== e.channel_id) || (e.user.id !== user.id && !isBrowserActive)) {
-                            if (isSafari) {
+                            if (!e.is_muted) {
                                 pushBrowserNotification(`${e.user.first_name} ${e.reference_title ? `in #${e.reference_title}` : "in a direct message"}`, `${e.user.first_name}: ${stripHtml(e.body)}`, e.user.profile_image_link, null);
                             }
                         }

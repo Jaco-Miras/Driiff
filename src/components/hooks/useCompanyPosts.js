@@ -119,8 +119,6 @@ const useCompanyPosts = () => {
     drafts: Object.values(posts).filter((p) => p.type === "draft_post").length,
   };
 
-  console.log(filter);
-
   return {
     actions,
     fetchMore,

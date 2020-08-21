@@ -10,3 +10,4 @@ export {default as InputFeedback} from "./InputFeedback";
 export {default as PostInput} from "./PostInput";
 export {default as FormInput} from "./FormInput";
 export {default as PasswordInput} from "./PasswordInput";
+export {default as CompanyPostInput} from "./CompanyPostInput";

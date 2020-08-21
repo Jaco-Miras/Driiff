@@ -194,6 +194,7 @@ const CreateEditCompanyPostModal = (props) => {
   const toaster = useToaster();
   const [modal, setModal] = useState(true);
   const user = useSelector((state) => state.session.user);
+  const users = useSelector((state) => state.users.mentions);
   const activeTopic = useSelector((state) => state.workspaces.activeTopic);
   const [showMoreOptions, setShowMoreOptions] = useState(null);
   const [maxHeight, setMaxHeight] = useState(null);
@@ -454,6 +455,11 @@ const CreateEditCompanyPostModal = (props) => {
   };
 
   const handleConfirm = () => {
+    if (loading)
+      return;
+
+    setLoading(true);
+
     let payload = {
       title: form.title,
       body: form.body,
@@ -478,12 +484,18 @@ const CreateEditCompanyPostModal = (props) => {
         deleteDraft({
           type: "draft_post",
           draft_id: draftId,
+        }, () => {
+          setLoading(false);
+          toggleAll(false);
         })
       );
       dispatch(
         deleteDraft({
           type: "draft_post",
           draft_id: draftId,
+        }, () => {
+          setLoading(false);
+          toggleAll(false);
         })
       )
     }
@@ -497,6 +509,7 @@ const CreateEditCompanyPostModal = (props) => {
         uploadFiles(payload, "edit");
       } else {
         action.update(payload, (err, res) => {
+          setLoading(false);
           if (res) {
             toggleAll(false);
           }
@@ -505,8 +518,10 @@ const CreateEditCompanyPostModal = (props) => {
     } else {
       if (attachedFiles.length) {
         uploadFiles(payload, "create");
+        setLoading(false);
       } else {
         action.create(payload, (err, res) => {
+          setLoading(false);
           if (res) {
             toggleAll(false);
           }
@@ -725,7 +740,14 @@ const CreateEditCompanyPostModal = (props) => {
     setAttachedFiles((prevState) => prevState.filter((f) => f.id !== parseInt(fileId)));
   }
 
-  const [wsOptions, userOptions] = useGetWorkspaceAndUserOptions(form.selectedWorkspaces, activeTopic);
+  const [wsOptions] = useGetWorkspaceAndUserOptions(form.selectedWorkspaces, activeTopic);
+  const userOptions = Object.values(users).map((u) => {
+    return {
+      ...u,
+      value: u.id,
+      label: u.name,
+    };
+  });
 
   const onOpened = () => {
     if (inputRef && inputRef.current) {

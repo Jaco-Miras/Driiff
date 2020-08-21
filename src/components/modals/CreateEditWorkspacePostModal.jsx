@@ -228,22 +228,22 @@ const CreateEditWorkspacePostModal = (props) => {
     const {_t} = useTranslation();
 
   const dictionary = {
-    createPost: _t("POST.CREATE_POST", "Create post"),
-    createNewPost: _t("POST.CREATE_NEW_POST", "Create new post"),
-    editPost: _t("POST.EDIT_POST", "Edit post"),
-    postTitle: _t("POST.TITLE", "Post title"),
-    workspace: _t("POST.WORKSPACE", "Workspace"),
-    responsible: _t("POST.WORKSPACE", "Responsible"),
-    description: _t("POST.DESCRIPTION", "Description"),
-    saveAsDraft: _t("POST.SAVE_AS_DRAFT", "Save as draft"),
-    moreOptions: _t("POST.MORE_OPTIONS", "More options"),
-    replyRequired: _t("POST.REPLY_REQUIRED", "Reply required"),
-    mustRead: _t("POST.MUST_READ", "Must read"),
-    noReplies: _t("POST.NO_REPLIES", "No replies"),
-    schedulePost: _t("POST.SCHEDULE", "Schedule post"),
-    save: _t("POST.SAVE", "Save"),
-    discard: _t("POST.DISCARD", "Discard"),
-    draftBody: _t("POST.DRAFT_BODY", "Not sure about the content? Save it as a draft."),
+      createPost: _t("POST.CREATE_POST", "Create post"),
+      createNewPost: _t("POST.CREATE_NEW_POST", "Create new post"),
+      editPost: _t("POST.EDIT_POST", "Edit post"),
+      postTitle: _t("POST.TITLE", "Post title"),
+      workspace: _t("POST.WORKSPACE", "Workspace"),
+      responsible: _t("POST.RESPONSIBLE", "Responsible"),
+      description: _t("POST.DESCRIPTION", "Description"),
+      saveAsDraft: _t("POST.SAVE_AS_DRAFT", "Save as draft"),
+      moreOptions: _t("POST.MORE_OPTIONS", "More options"),
+      replyRequired: _t("POST.REPLY_REQUIRED", "Reply required"),
+      mustRead: _t("POST.MUST_READ", "Must read"),
+      noReplies: _t("POST.NO_REPLIES", "No replies"),
+      schedulePost: _t("POST.SCHEDULE", "Schedule post"),
+      save: _t("POST.SAVE", "Save"),
+      discard: _t("POST.DISCARD", "Discard"),
+      draftBody: _t("POST.DRAFT_BODY", "Not sure about the content? Save it as a draft."),
   };
 
     const toggleNested = () => {
