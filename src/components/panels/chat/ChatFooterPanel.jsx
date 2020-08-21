@@ -9,6 +9,7 @@ import ChatInput from "../../forms/ChatInput";
 import {useIsMember, useTimeFormat, useToaster, useTranslation} from "../../hooks";
 import ChatQuote from "../../list/chat/ChatQuote";
 import {addToModals} from "../../../redux/actions/globalActions";
+import TypingIndicator from "../../list/chat/TypingIndicator";
 
 const Wrapper = styled.div`
   position: relative;
@@ -253,7 +254,7 @@ const ChatFooterPanel = (props) => {
 
   return (
     <Wrapper className={`chat-footer border-top ${className}`}>
-      {/*<TypingIndicator />*/}
+      <TypingIndicator/>
       {selectedChannel && !selectedChannel.is_archived && (
         <Dflex className="d-flex pr-2 pl-2">
           <ChatQuote/>
