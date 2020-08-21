@@ -427,7 +427,7 @@ const CreateEditChatModal = (props) => {
           {mode === "new" && (
               <WrapperDiv>
                 <Label for="firstMessage">{dictionary.firstMessage}</Label>
-                <StyledQuillEditor className="group-chat-input" formats={formats} modules={modules} ref={reactQuillRef}
+                <StyledQuillEditor className="group-chat-input"  modules={modules} ref={reactQuillRef}
                                    onChange={handleQuillChange}/>
               </WrapperDiv>
           )}

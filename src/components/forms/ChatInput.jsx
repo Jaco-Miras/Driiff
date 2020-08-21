@@ -526,7 +526,7 @@ const ChatInput = (props) => {
   return (
     <Wrapper className="chat-input-wrapper">
       {mentionedUserIds.length > 0 && <BodyMention onAddUsers={handleAddMentionedUsers} onDoNothing={handleIgnoreMentionedUsers} userIds={mentionedUserIds} type={"chat"} basedOnId={false} />}
-      <StyledQuillEditor className={"chat-input"} formats={formats} modules={modules} formats={formats} ref={reactQuillRef} onChange={handleQuillChange}
+      <StyledQuillEditor className={"chat-input"} modules={modules} ref={reactQuillRef} onChange={handleQuillChange}
                          editMode={editMode}/>
       {editMode && <CloseButton icon="x" onClick={handleEditReplyClose} />}
     </Wrapper>

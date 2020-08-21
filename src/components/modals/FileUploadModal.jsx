@@ -320,7 +320,7 @@ const FileUploadModal = (props) => {
                 <StyledQuillEditor
                     ref={refCallback}
                     className={"chat-input"}
-                    formats={formats}
+                    //formats={formats}
                     modules={modules}
                     placeholder={"Add message. Type @ to mention someone."}
                     readOnly={uploading}
