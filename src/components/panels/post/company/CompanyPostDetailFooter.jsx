@@ -227,7 +227,7 @@ const CompanyPostDetailFooter = (props) => {
                 </ChatInputContainer>
                 <IconButton onClick={handleSend} icon="send"/>
                 <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Attach files">
-                  <IconButton onClick={onShowFileDialog} icon="paperclip"/>
+                  <IconButton onClick={() => onShowFileDialog(parentId)} icon="paperclip"/>
                 </Tooltip>
               </React.Fragment>
             )}
