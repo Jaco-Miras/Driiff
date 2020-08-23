@@ -1,7 +1,7 @@
 import {useEffect, useState} from "react";
 import {useSelector} from "react-redux";
 import {useRouteMatch} from "react-router-dom";
-import {useSettings, useWorkspaceActions} from "../hooks";
+import {useSettings, useWorkspaceActions, useToaster} from "../hooks";
 
 const useWorkspace = (fetchOnMount = false) => {
 
@@ -9,14 +9,16 @@ const useWorkspace = (fetchOnMount = false) => {
     generalSettings: {active_topic: activeTopicSettings},
     setGeneralSetting,
   } = useSettings();
+  const toaster = useToaster();
   const route = useRouteMatch();
   const {params, path, url} = route;
   const actions = useWorkspaceActions();
-  const { activeChannelId, activeTopic, folders, workspaces, workspaceTimeline, workspacesLoaded } = useSelector((state) => state.workspaces);
+  const { activeChannelId, activeTopic, folders, workspaces, workspaceTimeline, workspacesLoaded, externalWorkspacesLoaded } = useSelector((state) => state.workspaces);
   const channels = useSelector((state) => state.chat.channels);
   const [fetchingPrimary, setFetchingPrimary] = useState(false);
   const [init, setInit] = useState(false);
   const [fetchingChannel, setFetchingChannel] = useState(false);
+  const [archivedWsLoaded, setArchivedWsLoaded] = useState(false);
 
   useEffect(() => {
     
@@ -29,7 +31,9 @@ const useWorkspace = (fetchOnMount = false) => {
       }
       actions.fetchWorkspaces({is_external: 0}, fetchCb);
       actions.fetchWorkspaces({is_external: 1});
-      actions.fetchWorkspaces({is_external: 0, filter: "archived"});
+      actions.fetchWorkspaces({is_external: 0, filter: "archived"}, () => {
+        setArchivedWsLoaded(true);
+      });
       actions.fetchWorkspaceChannels({skip: 0, limit: 250});
     } else if (workspacesLoaded && activeTopic) {
       //restore the channel id
@@ -49,6 +53,12 @@ const useWorkspace = (fetchOnMount = false) => {
         if (workspaces.hasOwnProperty(params.workspaceId)) {
           actions.selectWorkspace(workspaces[params.workspaceId]);
           setGeneralSetting({ active_topic: workspaces[params.workspaceId]});
+        } else {
+          if (externalWorkspacesLoaded && archivedWsLoaded && activeTopicSettings) {
+            toaster.warning("This workspace cannot be found or accessed.");
+            actions.selectWorkspace(activeTopicSettings);
+            actions.redirectTo(activeTopicSettings);
+          } 
         }
       } else {
         //fetch last visited workspace
@@ -65,7 +75,7 @@ const useWorkspace = (fetchOnMount = false) => {
         }
       }
     }
-  }, [activeTopic, activeTopicSettings, params, workspaces, url, fetchOnMount]);
+  }, [activeTopic, activeTopicSettings, params, workspaces, url, archivedWsLoaded, externalWorkspacesLoaded, fetchOnMount]);
   
   useEffect(() => {
     if (activeTopic && Object.keys(channels).length && fetchOnMount && url.startsWith("/workspace/")) {
