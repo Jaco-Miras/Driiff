@@ -9,7 +9,7 @@ import {SvgIconFeather} from "../common";
 import SearchForm from "../forms/SearchForm";
 import ChannelIcon from "../list/chat/ChannelIcon";
 import {ModalHeaderSection} from "./index";
-import { useTranslation } from "../hooks";
+import { useTranslation, useSortChannels } from "../hooks";
 
 const IconButton = styled(SvgIconFeather)`
   cursor: pointer;
@@ -131,7 +131,9 @@ const ChatForwardModal = (props) => {
     setInputValue(e.target.value);
   };
 
-  const filteredChannels = Object.values(channels).filter((c) => {
+  const [sortedChannels] = useSortChannels(channels, inputValue, {}, inputValue !== "" ? true : false);
+
+  const filteredChannels = sortedChannels.filter((c) => {
     if (!c.is_archived) {
       if (inputValue.trim() !== "") {
         if (c.title.toLowerCase().includes(inputValue.toLowerCase())) return true;
