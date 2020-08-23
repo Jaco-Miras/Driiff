@@ -454,6 +454,17 @@ class SocketListeners extends React.PureComponent {
                 console.log(e, "new workspace");
                 if (e.topic !== undefined) {
                     this.props.incomingWorkspace(e);
+                    this.props.getChannel({code: e.channel.code}, (err, res) => {
+                        if (err) return;
+                        let channel = {
+                            ...res.data,
+                            hasMore: true,
+                            skip: 0,
+                            replies: [],
+                            selected: true,
+                        };
+                        this.props.addToChannels(channel);
+                    });
                 } else {
                     this.props.incomingWorkspaceFolder({
                         ...e.workspace,
@@ -523,19 +534,20 @@ class SocketListeners extends React.PureComponent {
         window.Echo.private(`${localStorage.getItem("slug") === "dev24admin" ? "dev" : localStorage.getItem("slug")}.App.User.${this.props.user.id}`)
             .listen(".new-lock-workspace", (e) => {
                 console.log(e, "new workspace lock");
-                this.props.getChannel({code: e.channel.code}, (err, res) => {
-                    if (err) return;
-                    let channel = {
-                        ...res.data,
-                        hasMore: true,
-                        skip: 0,
-                        replies: [],
-                        selected: true,
-                    };
-                    this.props.addToChannels(channel);
-                });
+                
                 if (e.topic !== undefined) {
                     this.props.incomingWorkspace(e);
+                    this.props.getChannel({code: e.channel.code}, (err, res) => {
+                        if (err) return;
+                        let channel = {
+                            ...res.data,
+                            hasMore: true,
+                            skip: 0,
+                            replies: [],
+                            selected: true,
+                        };
+                        this.props.addToChannels(channel);
+                    });
                 } else {
                     this.props.incomingWorkspaceFolder({
                         ...e.workspace,
