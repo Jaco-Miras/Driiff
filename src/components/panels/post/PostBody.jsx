@@ -26,7 +26,7 @@ const PostBody = (props) => {
   const { post, postActions, dictionary, disableOptions } = props;
 
   const [star, setStar] = useState(post.is_favourite);
-  const { localizeDate } = useTimeFormat();
+  const { fromNow } = useTimeFormat();
   const [showGifPlayer, setShowGifPlayer] = useState(null);
 
   useEffect(() => {
@@ -70,7 +70,7 @@ const PostBody = (props) => {
           {post.files.length > 0 && <Icon className="mr-2" icon="paperclip" />}
           <Icon className="mr-2" onClick={handleStarPost} icon="star" fill={star ? "#ffc107" : "none"} stroke={star ? "#ffc107" : "currentcolor"} />
           { !disableOptions && <Icon className="mr-2" onClick={handleArchivePost} icon="archive" /> }
-          <span className="text-muted">{localizeDate(post.created_at.timestamp, "LT")}</span>
+          <span className="text-muted">{fromNow(post.created_at.timestamp)}</span>
         </div>
       </div>
       <div className="d-flex align-items-center">
