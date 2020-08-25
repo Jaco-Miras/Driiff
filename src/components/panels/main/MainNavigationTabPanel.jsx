@@ -4,11 +4,12 @@ import {useHistory} from "react-router-dom";
 import {Badge} from "reactstrap";
 import styled from "styled-components";
 import {replaceChar} from "../../../helpers/stringFormatter";
-import {addToModals, getUnreadNotificationCounterEntries, setNavMode} from "../../../redux/actions/globalActions";
+import {addToModals, getUnreadNotificationCounterEntries, setNavMode, getQuickLinks} from "../../../redux/actions/globalActions";
 import {NavLink, SvgIcon, SvgIconFeather} from "../../common";
 //import Tooltip from "react-tooltip-lite";
 import {useTranslation, useWorkspace} from "../../hooks";
 import {ExternalWorkspaceList, WorkspaceList} from "../../workspace";
+import {QuickLinks} from "../../list/links";
 
 const Wrapper = styled.div`
   .navigation-menu-tab-header {
@@ -177,7 +178,7 @@ const MainNavigationTabPanel = (props) => {
 
   const {active_topic} = useSelector((state) => state.settings.user.GENERAL_SETTINGS);
   const {lastVisitedChannel} = useSelector((state) => state.chat);
-  const unreadCounter = useSelector((state) => state.global.unreadCounter);
+  const {links, unreadCounter} = useSelector((state) => state.global);
 
   const [workspacePath, setWorkpacePath] = useState("/workspace/chat");
   const [defaultTopic, setDefaultTopic] = useState(null);
@@ -194,7 +195,7 @@ const MainNavigationTabPanel = (props) => {
 
   useEffect(() => {
     dispatch(getUnreadNotificationCounterEntries());
-
+    dispatch(getQuickLinks());
     //eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -291,6 +292,9 @@ const MainNavigationTabPanel = (props) => {
                 </div>
               </NavIconContainer>
             </li>
+          }
+          {
+            links.length > 0 &&  <QuickLinks links={links}/>
           }
         </ul>
       </div>
