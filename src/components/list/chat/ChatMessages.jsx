@@ -1,4 +1,4 @@
-import { groupBy, debounce } from "lodash";
+import { groupBy, throttle } from "lodash";
 import React from "react";
 import { InView } from "react-intersection-observer";
 import { connect } from "react-redux";
@@ -469,10 +469,10 @@ class ChatMessages extends React.PureComponent {
     }
   };
 
-  loadMore = debounce(() => {
+  loadMore = throttle(() => {
     const scrollEl = this.scrollComponent.current;
     if (scrollEl){
-      if (scrollEl.scrollTop < scrollEl.scrollHeight * .30) {
+      if (scrollEl.scrollTop < scrollEl.scrollHeight * .50) {
         this.loadReplies();
       }
     }
