@@ -163,3 +163,7 @@ export function deleteWorkspaceRole(payload, callback) {
 export function deleteWorkspaceFolder(payload, callback) {
   return dispatchActionToReducer(deleteWorkspaceFolderService(payload), "DELETE_WORKSPACE_FOLDER_START", "DELETE_WORKSPACE_FOLDER_SUCCESS", "DELETE_WORKSPACE_FOLDER_FAIL", callback);
 }
+
+export function incomingDeletedWorkspaceFolder(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_DELETED_WORKSPACE_FOLDER", payload, callback);
+}

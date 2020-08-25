@@ -268,11 +268,11 @@ const CreateWorkspaceFolderModal = (props) => {
   // );
 
   const handleRemoveFolder = () => {
-    // dispatch(
-    //   deleteWorkspaceFolder({
-    //     topic_id: item.id
-    //   })
-    // );
+    dispatch(
+      deleteWorkspaceFolder({
+        topic_id: item.id
+      })
+    );
     toggle();
   };
 

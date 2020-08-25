@@ -1069,6 +1069,24 @@ export default (state = INITIAL_STATE, action) => {
           : state.activeTopic
       }
     }
+    case "INCOMING_DELETED_WORKSPACE_FOLDER": {
+      let updatedFolders = { ...state.folders };
+      let updatedWorkspaces = { ...state.workspaces };
+      if (updatedFolders.hasOwnProperty(action.data.id)) {
+        Object.values(updatedWorkspaces).forEach((ws) => {
+          if (ws.folder_id && ws.folder_id === action.data.id) {
+            updatedWorkspaces[ws.id].folder_id = null;
+            updatedWorkspaces[ws.id].folder_name = null;
+          }
+        })
+        delete updatedFolders[action.data.id];
+      }
+      return {
+        ...state,
+        workspaces: updatedWorkspaces,
+        folders: updatedFolders
+      }
+    }
     case "SET_WORKSPACE_TO_DELETE": {
       return {
         ...state,

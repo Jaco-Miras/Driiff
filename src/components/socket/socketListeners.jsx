@@ -65,6 +65,7 @@ import {
 import {getOnlineUsers, getUser, incomingUpdatedUser} from "../../redux/actions/userAction";
 import {
     getWorkspace,
+    incomingDeletedWorkspaceFolder,
     incomingArchivedWorkspaceChannel,
     incomingMovedTopic,
     incomingTimeline,
@@ -362,6 +363,10 @@ class SocketListeners extends React.PureComponent {
             });
 
         window.Echo.private(`${localStorage.getItem("slug") === "dev24admin" ? "dev" : localStorage.getItem("slug")}.App.Broadcast`)
+            .listen(".delete-workspace", (e) => {
+                console.log("deleted folder", e)
+                this.props.incomingDeletedWorkspaceFolder(e);
+            })
             .listen(".workspace-role-notification", (e) => {
                 console.log("workspace role", e);
                 this.props.incomingWorkspaceRole(e);
@@ -819,6 +824,7 @@ function mapDispatchToProps(dispatch) {
         joinWorkspaceReducer: bindActionCreators(joinWorkspaceReducer, dispatch),
         incomingDeletedGoogleFile: bindActionCreators(incomingDeletedGoogleFile, dispatch),
         incomingWorkspaceRole: bindActionCreators(incomingWorkspaceRole, dispatch),
+        incomingDeletedWorkspaceFolder: bindActionCreators(incomingDeletedWorkspaceFolder, dispatch)
     };
 }
 
