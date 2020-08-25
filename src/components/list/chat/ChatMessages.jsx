@@ -358,7 +358,6 @@ class ChatMessages extends React.PureComponent {
       bottomRefInView: false,
       messageRefInView: false,
       fetchingReplies: false,
-      markingAsRead: false,
     };
 
     this.scrollComponent = React.createRef();
@@ -460,15 +459,13 @@ class ChatMessages extends React.PureComponent {
   };
 
   handleReadChannel = () => {
-    this.setState({ markingAsRead: true });
-    if (!this.state.markingAsRead) {
-      let cb = () => this.setState({ markingAsRead: false });
+    if (this.props.unreadCount > 0) {
       const {
         selectedChannel,
         chatMessageActions: { channelActions },
       } = this.props;
 
-      channelActions.markAsRead(selectedChannel, cb);
+      channelActions.markAsRead(selectedChannel);
     }
   };
 
@@ -610,7 +607,9 @@ class ChatMessages extends React.PureComponent {
   };
 
   handleBottomRefChange = (inView, entry) => {
-    //console.log(inView, 'on change')
+    if (inView) {
+      this.handleReadChannel();
+    }
     this.setState({ bottomRefInView: inView });
     this.props.onBottomRefVisible(inView);
   };

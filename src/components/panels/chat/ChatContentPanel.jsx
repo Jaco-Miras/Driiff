@@ -131,7 +131,7 @@ const ChatContentPanel = (props) => {
       <ChatHeaderPanel channel={selectedChannel} />
       {selectedChannel !== null && unreadCount > 0 && !bottomRefVisible && <ChatUnreadFloatBar channel={selectedChannel} />}
       {selectedChannel !== null ? (
-        <ChatMessages selectedChannel={selectedChannel} chatMessageActions={chatMessageActions} timeFormat={timeFormat} onBottomRefVisible={handleBottomRefChange} dictionary={dictionary} />
+        <ChatMessages selectedChannel={selectedChannel} chatMessageActions={chatMessageActions} timeFormat={timeFormat} onBottomRefVisible={handleBottomRefChange} dictionary={dictionary} unreadCount={unreadCount}/>
       ) : (
         <ChatMessagesPlaceholder />
       )}

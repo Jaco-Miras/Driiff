@@ -560,6 +560,7 @@ export default (state = INITIAL_STATE, action) => {
       let newPostComments = { ...state.postComments };
       let newWorkspacePosts = { ...state.workspacePosts };
       let updatedWorkspaces = { ...state.workspaces };
+      let updatedTopic = state.activeTopic ? { ...state.activeTopic } : null;
 
       if (action.data.workspaces.length && action.data.SOCKET_TYPE === "POST_COMMENT_CREATE") {
         action.data.workspaces.forEach((ws) => {
@@ -568,6 +569,12 @@ export default (state = INITIAL_STATE, action) => {
             newWorkspacePosts[ws.topic_id].posts[action.data.post_id].reply_count = newWorkspacePosts[ws.topic_id].posts[action.data.post_id].reply_count + 1;
             if (action.data.author.id !== state.user.id) {
               newWorkspacePosts[ws.topic_id].posts[action.data.post_id].unread_count = newWorkspacePosts[ws.topic_id].posts[action.data.post_id].unread_count + 1;
+              if (updatedWorkspaces.hasOwnProperty(ws.topic_id)) {
+                updatedWorkspaces[ws.topic_id].unread_posts = updatedWorkspaces[ws.topic_id].unread_posts + 1;
+              }
+              if (updatedTopic && updatedTopic.id === ws.topic_id) {
+                updatedTopic.unread_posts = updatedTopic.unread_posts + 1;
+              }
             }
           }
         });
@@ -594,6 +601,7 @@ export default (state = INITIAL_STATE, action) => {
         postComments: newPostComments,
         workspacePosts: newWorkspacePosts,
         workspaces: updatedWorkspaces,
+        activeTopic: updatedTopic
       };
     }
     case "ADD_PRIMARY_FILES": {
