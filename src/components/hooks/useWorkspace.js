@@ -55,7 +55,7 @@ const useWorkspace = (fetchOnMount = false) => {
           setGeneralSetting({ active_topic: workspaces[params.workspaceId]});
         } else {
           if (externalWorkspacesLoaded && archivedWsLoaded && activeTopicSettings) {
-            toaster.warning("This workspace cannot be found or accessed.");
+            //toaster.warning("This workspace cannot be found or accessed.");
             actions.selectWorkspace(activeTopicSettings);
             actions.redirectTo(activeTopicSettings);
           } 

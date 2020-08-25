@@ -283,7 +283,7 @@ const CreateEditWorkspaceModal = (props) => {
             }));
             setValid((prevState) => ({
                 ...prevState,
-                team: false,
+                team: mode === "edit" ? true : false,
             }));
         } else {
             setForm((prevState) => ({
