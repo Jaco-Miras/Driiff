@@ -132,9 +132,8 @@ export default (state = INITIAL_STATE, action) => {
       let workspaceToDelete = state.workspaceToDelete;
       if (state.workspacesLoaded && action.data.type === "WORKSPACE" && updatedWorkspaces.hasOwnProperty(action.data.id)) {
         let updatedTopic = { ...state.activeTopic };
-        workspace = { ...state.workspaces[action.data.id] };
         workspace = {
-          ...workspace,
+          ...state.workspaces[action.data.id],
           name: action.data.name,
           member_ids: action.data.member_ids,
           members: action.data.members,
