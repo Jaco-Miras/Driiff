@@ -1,12 +1,14 @@
 import React, {useCallback, useEffect, useRef, useState} from "react";
+import {useHistory} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import {Input, InputGroup, Label, Modal, ModalBody} from "reactstrap";
 import styled from "styled-components";
 import {clearModal, addToModals} from "../../redux/actions/globalActions";
 import {createWorkspace, deleteWorkspaceFolder, updateWorkspace} from "../../redux/actions/workspaceActions";
-import {CheckBox, DescriptionInput, InputFeedback} from "../forms";
+import {CheckBox, InputFeedback} from "../forms";
 import {useToaster, useTranslation} from "../hooks";
 import {ModalHeaderSection} from "./index";
+import {replaceChar} from "../../helpers/stringFormatter";
 
 const WrapperDiv = styled(InputGroup)`
   display: flex;
@@ -56,14 +58,15 @@ const WrapperDiv = styled(InputGroup)`
   }
 `;
 
-const StyledDescriptionInput = styled(DescriptionInput)`
-    height: ${props => props.height}px;
-    max-height: 300px;
-`;
+// const StyledDescriptionInput = styled(DescriptionInput)`
+//     height: ${props => props.height}px;
+//     max-height: 300px;
+// `;
 
 const CreateWorkspaceFolderModal = (props) => {
   const {type, mode, item = null} = props.data;
 
+  const history = useHistory();
   const {_t} = useTranslation();
   const dictionary = {
       createWorkspaceFolder: _t("WORKSPACE.CREATE_WORKSPACE_FOLDER", "Create folder"),
@@ -79,7 +82,7 @@ const CreateWorkspaceFolderModal = (props) => {
   const toaster = useToaster();
   const inputRef = useRef();
   const dispatch = useDispatch();
-  const folders = useSelector((state) => state.workspaces.folders);
+  const {activeTopic, folders} = useSelector((state) => state.workspaces);
   const activeTab = useSelector((state) => state.workspaces.activeTab);
   const [modal, setModal] = useState(true);
   const [form, setForm] = useState({
@@ -271,6 +274,11 @@ const CreateWorkspaceFolderModal = (props) => {
     dispatch(
       deleteWorkspaceFolder({
         topic_id: item.id
+      }, (err,res) => {
+        if (err) return;
+        if (activeTopic && activeTopic.folder_id === item.id) {
+          history.push(`/workspace/chat/${activeTopic.id}/${replaceChar(activeTopic.name)}`);
+        }
       })
     );
     toggle();
