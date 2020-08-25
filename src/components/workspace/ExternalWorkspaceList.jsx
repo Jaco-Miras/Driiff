@@ -1,8 +1,6 @@
 import React, { useRef } from "react";
-import { useHistory } from "react-router-dom";
 import { Badge } from "reactstrap";
 import styled from "styled-components";
-//import { replaceChar } from "../../helpers/stringFormatter";
 import { SvgIconFeather } from "../common";
 
 const Wrapper = styled.li`
@@ -89,8 +87,6 @@ const LockIcon = styled(SvgIconFeather)`
 const ExternalWorkspaceList = (props) => {
   const { className = "", actions, show = true, workspace, activeTopic } = props;
 
-//   const dispatch = useDispatch();
-  // const history = useHistory();
   const ref = {
     container: useRef(null),
   };
@@ -102,7 +98,9 @@ const ExternalWorkspaceList = (props) => {
     actions.selectWorkspace(workspace);
     //history.push(`/workspace/chat/${workspace.id}/${replaceChar(workspace.name)}`);
   };
- 
+
+  let unread_count = workspace.unread_chats + workspace.unread_posts;
+
   return (
     <Wrapper ref={ref.container} className={`workspace-list fadeIn ${className}`} selected={activeTopic && activeTopic.id === workspace.id} show={show}>
       <a onClick={handleSelectWorkspace}>
@@ -112,9 +110,9 @@ const ExternalWorkspaceList = (props) => {
           {workspace.is_lock !== 0 && <LockIcon icon="lock" />}
           {workspace.is_active === 0 && <LockIcon icon="archive" />}
 
-          {workspace.unread_count > 0 && (
+          {unread_count > 0 && (
             <Badge color="danger">
-              {workspace.unread_count}
+              {unread_count}
             </Badge>
           )}
         </div>
