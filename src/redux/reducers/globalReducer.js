@@ -18,7 +18,8 @@ const INITIAL_STATE = {
   searchResults: {},
   searchCount: 0,
   searching: false,
-  tabs: {}
+  tabs: {},
+  links: []
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -189,6 +190,12 @@ export default (state = INITIAL_STATE, action) => {
           ...state.tabs,
           [action.data.key]: action.data
         }
+      }
+    }
+    case "GET_QUICK_LINKS_SUCCESS": {
+      return {
+        ...state,
+        links: action.data
       }
     }
     default:

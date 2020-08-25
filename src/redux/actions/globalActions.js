@@ -7,6 +7,7 @@ import {
   getConnectedSlugs as getConnectedSlugsService,
   getDrafts as getDraftsService,
   getPushNotification as getPushNotificationService,
+  getQuickLinks as getQuickLinksService,
   getTranslationObject as getTranslationObjectService,
   getUnreadNotificationCounterEntries as getUnreadNotificationCounterEntriesService,
   saveDraft as saveDraftService,
@@ -122,4 +123,8 @@ export function deleteUnfurl(payload, callback) {
 
 export function removeUnfurlReducer(payload, callback) {
   return SimpleDispatchActionToReducer("REMOVE_UNFURL", payload, callback);
+}
+
+export function getQuickLinks(payload, callback) {
+  return dispatchActionToReducer(getQuickLinksService(payload), "GET_QUICK_LINKS_START", "GET_QUICK_LINKS_SUCCESS", "GET_QUICK_LINKS_FAIL", callback);
 }

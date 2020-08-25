@@ -128,3 +128,10 @@ export function deleteUnfurl(payload) {
       url: url,
   });
 }
+
+export function getQuickLinks(payload) {
+  return apiCall({
+    method: "GET",
+    url: "/v2/quick-link",
+  });
+}

@@ -54,6 +54,7 @@ export {
   getConnectedSlugs,
   getDrafts,
   getPushNotification,
+  getQuickLinks,
   getTranslationObject,
   generateUnfurl,
   saveDraft,
