@@ -80,7 +80,7 @@ const QuickLinks = (props) => {
         
       <a href="/" onClick={handleShowLinks}>
         <NavIcon icon="link" />
-        <div>Quick links</div>
+        <div>Shortcuts</div>
         <i ref={ref.arrow} className={`sub-menu-arrow ti-angle-up ${showLinks ? "ti-minus rotate-in" : "ti-plus"}`} />
       </a>
       

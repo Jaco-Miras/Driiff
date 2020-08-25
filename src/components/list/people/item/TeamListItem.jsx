@@ -97,7 +97,7 @@ const TeamListItem = (props) => {
           { member.workspace_role !== "" && member.workspace_role === "TEAM_LEAD" && <div onClick={handleRemoveRole}>Revoke as team lead</div> }
           { member.workspace_role !== "TEAM_LEAD"  && <div onClick={() => handleAddRole("team_lead")}>Assign as team lead</div> }
           { member.workspace_role !== "APPROVER" && <div onClick={() => handleAddRole("approver")}>Assign as approver</div> }
-          { member.workspace_role !== "" && member.workspace_role === "APPROVER" && <div onClick={handleRemoveRole}>Revoke as team approver</div> }
+          { member.workspace_role !== "" && member.workspace_role === "APPROVER" && <div onClick={handleRemoveRole}>Revoke as approver</div> }
           <div onClick={onEditClick}>Remove</div>
         </MoreOptions>
       }
