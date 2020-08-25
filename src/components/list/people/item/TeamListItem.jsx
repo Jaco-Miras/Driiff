@@ -94,9 +94,10 @@ const TeamListItem = (props) => {
       {
         !hideOptions &&
         <MoreOptions moreButton="more-vertical" scrollRef={parentRef}>
+          { member.workspace_role !== "" && member.workspace_role === "TEAM_LEAD" && <div onClick={handleRemoveRole}>Revoke as team lead</div> }
           { member.workspace_role !== "TEAM_LEAD"  && <div onClick={() => handleAddRole("team_lead")}>Assign as team lead</div> }
           { member.workspace_role !== "APPROVER" && <div onClick={() => handleAddRole("approver")}>Assign as approver</div> }
-          { member.workspace_role !== "" && <div onClick={handleRemoveRole}>Revoke as {member.workspace_role === "TEAM_LEAD" ? "team lead" : "approver"}</div> }
+          { member.workspace_role !== "" && member.workspace_role === "APPROVER" && <div onClick={handleRemoveRole}>Revoke as team approver</div> }
           <div onClick={onEditClick}>Remove</div>
         </MoreOptions>
       }
