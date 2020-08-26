@@ -177,6 +177,7 @@ const MainNavigationTabPanel = (props) => {
   };
 
   const {active_topic} = useSelector((state) => state.settings.user.GENERAL_SETTINGS);
+  const user = useSelector((state) => state.session.user);
   const {lastVisitedChannel} = useSelector((state) => state.chat);
   const {links, unreadCounter} = useSelector((state) => state.global);
 
@@ -294,7 +295,7 @@ const MainNavigationTabPanel = (props) => {
             </li>
           }
           {
-            links.length > 0 &&  <QuickLinks links={links}/>
+            links.length > 0 &&  <QuickLinks links={links} user={user}/>
           }
         </ul>
       </div>
