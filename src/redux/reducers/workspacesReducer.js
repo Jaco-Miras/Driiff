@@ -1100,6 +1100,42 @@ export default (state = INITIAL_STATE, action) => {
         workspaceToDelete: action.data
       }
     }
+    case "INCOMING_EXTERNAL_USER": {
+      let updatedWorkspaces = {...state.workspaces};
+      let updatedTopic = null;
+      if (updatedWorkspaces.hasOwnProperty(action.data.current_topic.id)) {
+        updatedWorkspaces[action.data.current_topic.id].members = updatedWorkspaces[action.data.current_topic.id].members.map((m) => {
+          if (m.id === action.data.current_user.id) {
+            return {
+              ...m,
+              ...action.data.current_user
+            }
+          } else {
+            return m;
+          }
+        });
+        if (state.activeTopic && state.activeTopic.id === action.data.current_topic.id) {
+          updatedTopic = {
+            ...state.activeTopic,
+            members: state.activeTopic.members.map((m) => {
+              if (m.id === action.data.current_user.id) {
+                return {
+                  ...m,
+                  ...action.data.current_user
+                }
+              } else {
+                return m;
+              }
+            })
+          }
+        }
+      }
+      return {
+        ...state,
+        workspaces: updatedWorkspaces,
+        activeTopic: updatedTopic
+      }
+    }
     default:
       return state;
   }

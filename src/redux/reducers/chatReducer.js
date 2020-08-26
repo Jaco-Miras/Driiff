@@ -1023,30 +1023,37 @@ export default function (state = INITIAL_STATE, action) {
     case "INCOMING_UPDATED_WORKSPACE_FOLDER": {
       if (Object.keys(state.channels).length && action.data.type === "WORKSPACE") {
         let updatedChannels = { ...state.channels };
-        if (updatedChannels.hasOwnProperty(action.data.system_message.channel_id)) {
-          let channel = updatedChannels[action.data.system_message.channel_id];
-          if (action.data.new_member_ids.length) {
-            let newMembers = action.data.members
-              .filter((m) => {
-                const isNewMember = action.data.new_member_ids.some((id) => id === m.id);
-                return isNewMember;
-              })
-              .map((m) => {
-                return {
-                  ...m,
-                  bot_profile_image_link: null,
-                  last_visited_at: null,
-                };
-              });
-            channel.members = [...channel.members, ...newMembers];
-          }
+        if (updatedChannels.hasOwnProperty(action.data.channel.id)) {
+          let channel = updatedChannels[action.data.channel.id];
+          // if (action.data.new_member_ids.length) {
+          //   let newMembers = action.data.members
+          //     .filter((m) => {
+          //       const isNewMember = action.data.new_member_ids.some((id) => id === m.id);
+          //       return isNewMember;
+          //     })
+          //     .map((m) => {
+          //       return {
+          //         ...m,
+          //         bot_profile_image_link: null,
+          //         last_visited_at: null,
+          //       };
+          //     });
+          //   channel.members = [...channel.members, ...newMembers];
+          // }
+          channel.members = action.data.members.map((m) => {
+            return {
+              ...m,
+              bot_profile_image_link: null,
+              last_visited_at: null,
+            }
+          })
           channel.title = action.data.name;
-          if (action.data.remove_member_ids.length) {
-            channel.members = channel.members.filter((m) => {
-              const isMember = action.data.remove_member_ids.some((id) => id === m.id);
-              return !isMember;
-            });
-          }
+          // if (action.data.remove_member_ids.length) {
+          //   channel.members = channel.members.filter((m) => {
+          //     const isMember = action.data.remove_member_ids.some((id) => id === m.id);
+          //     return !isMember;
+          //   });
+          // }
           return {
             ...state,
             channels: updatedChannels,
@@ -1098,6 +1105,31 @@ export default function (state = INITIAL_STATE, action) {
           members: state.selectedChannel.members.filter((m) => m.id !== state.user.id)
         }
         : state.selectedChannel
+      }
+    }
+    case "INCOMING_EXTERNAL_USER": {
+      let updatedChannel = state.selectedChannel ? { ...state.selectedChannel } : null;
+      let updatedChannels = { ...state.channels };
+      if (updatedChannel) {
+        updatedChannel = {
+          ...updatedChannel,
+          members: updatedChannel.members.map((m) => {
+            if (m.id === action.data.current_user.id) {
+              return {
+                ...m,
+                ...action.data.current_user
+              }
+            } else {
+              return m;
+            }
+          })
+        }
+        updatedChannels[updatedChannel.id] = updatedChannel;
+      }
+      return {
+        ...state,
+        selectedChannel: updatedChannel,
+        channels: updatedChannels
       }
     }
     default:
