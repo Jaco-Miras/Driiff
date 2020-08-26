@@ -10,6 +10,7 @@ import {useIsMember, useTimeFormat, useToaster, useTranslation} from "../../hook
 import ChatQuote from "../../list/chat/ChatQuote";
 import {addToModals} from "../../../redux/actions/globalActions";
 import TypingIndicator from "../../list/chat/TypingIndicator";
+import LockedLabel from "./LockedLabel";
 
 const Wrapper = styled.div`
   position: relative;
@@ -142,12 +143,6 @@ const PickerContainer = styled(CommonPicker)`
   bottom: 70px;
 `;
 
-const LockedLabel = styled.div`
-  font-weight: 500;
-  color: #9b9b9b;
-  padding: 10px;
-`;
-
 const ChatFooterPanel = (props) => {
   const { className = "", onShowFileDialog, dropAction } = props;
   const { localizeChatTimestamp } = useTimeFormat();
@@ -267,10 +262,7 @@ const ChatFooterPanel = (props) => {
           <ChatQuote/>
         </Dflex>
       )}
-      {
-        selectedChannel && selectedChannel.type === "TOPIC" && activeTopic && activeTopic.is_lock === 1 &&
-        <LockedLabel>You are in a locked workspace</LockedLabel>
-      }
+      <LockedLabel channel={selectedChannel}/>
       {isMember && (
         <Dflex className="d-flex align-items-center">
           {selectedChannel && selectedChannel.is_archived ? (
