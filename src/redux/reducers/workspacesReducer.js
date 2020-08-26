@@ -116,13 +116,14 @@ export default (state = INITIAL_STATE, action) => {
           created_at: action.data.topic.created_at,
           updated_at: action.data.topic.created_at,
         }
-        if (action.data.workspace) {
+        if (action.data.workspace && folders.hasOwnProperty(action.data.workspace.id)) {
           folders[action.data.workspace.id].workspace_ids = [...folders[action.data.workspace.id].workspace_ids, action.data.id]
         }
       }
       return {
         ...state,
         workspaces: updatedWorkspaces,
+        folders: folders
       };
     }
     case "INCOMING_UPDATED_WORKSPACE_FOLDER": {
