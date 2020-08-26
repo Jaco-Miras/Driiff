@@ -15,7 +15,8 @@ const INITIAL_STATE = {
   workspace: {},
   folders: {},
   activeChannelId: null,
-  workspaceToDelete: null
+  workspaceToDelete: null,
+  folderToDelete: null,
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -131,6 +132,7 @@ export default (state = INITIAL_STATE, action) => {
       let updatedFolders = { ...state.folders };
       let workspace = null;
       let workspaceToDelete = state.workspaceToDelete;
+      let folderToDelete = state.folderToDelete;
       if (state.workspacesLoaded && action.data.type === "WORKSPACE" && updatedWorkspaces.hasOwnProperty(action.data.id)) {
         let updatedTopic = { ...state.activeTopic };
         workspace = {
@@ -156,12 +158,46 @@ export default (state = INITIAL_STATE, action) => {
           } else {
             if (state.activeTopic.id === action.data.id) {
               workspaceToDelete = action.data.id;
+              //check if workspace is under a folder 
+              //then check if the user is a member in other workspace under the same folder
+              // if user is no longer a member then set the folderToDelete id
+              if (action.data.workspace_id !== 0 && updatedFolders.hasOwnProperty(action.data.workspace_id)) {
+                let isMember = false;
+                updatedFolders[action.data.workspace_id].workspace_ids.forEach((wsid) => {
+                  if (state.workspaces.hasOwnProperty(wsid) && action.data.id !== wsid) {
+                    if (state.workspaces[wsid].member_ids.some((id) => id === state.user.id)) {
+                      isMember = true;
+                      return;
+                    }
+                  }
+                });
+                if (!isMember) {
+                  folderToDelete = action.data.workspace_id;
+                }
+              }
             } else {
               delete updatedWorkspaces[action.data.id];
+              //check if workspace is under a folder 
+              //then check if the user is a member in other workspace under the same folder
+              // if user is no longer a member then delete the folder
+              if (action.data.workspace_id !== 0 && updatedFolders.hasOwnProperty(action.data.workspace_id)) {
+                let isMember = false;
+                updatedFolders[action.data.workspace_id].workspace_ids.forEach((wsid) => {
+                  if (state.workspaces.hasOwnProperty(wsid) && action.data.id !== wsid) {
+                    if (state.workspaces[wsid].member_ids.some((id) => id === state.user.id)) {
+                      isMember = true;
+                      return;
+                    }
+                  }
+                });
+                if (!isMember) {
+                  delete updatedFolders[action.data.workspace_id];
+                }
+              }
             }
           }
         }
-        if (action.data.workspace_id !== 0) {
+        if (action.data.workspace_id !== 0 && updatedFolders.hasOwnProperty(action.data.workspace_id)) {
           if (action.data.original_workspace_id !== action.data.workspace_id) {
             //different folder
             updatedFolders[action.data.workspace_id].workspace_ids = [...updatedFolders[action.data.workspace_id].workspace_ids, action.data.id];
@@ -178,8 +214,10 @@ export default (state = INITIAL_STATE, action) => {
         return {
           ...state,
           activeTopic: updatedTopic,
+          folders: updatedFolders,
           workspaces: updatedWorkspaces,
-          workspaceToDelete: workspaceToDelete
+          workspaceToDelete: workspaceToDelete,
+          folderToDelete: folderToDelete,
         }
       } else if (state.workspacesLoaded && action.data.type === "FOLDER") {
         updatedFolders[action.data.id] = {
@@ -204,13 +242,19 @@ export default (state = INITIAL_STATE, action) => {
     }
     case "SET_ACTIVE_TOPIC": {
       let updatedWorkspaces = { ...state.workspaces };
+      let updatedFolders = { ...state.folders };
       if (state.workspaceToDelete) {
         delete updatedWorkspaces[state.workspaceToDelete];
+      }
+      if (state.folderToDelete) {
+        delete updatedFolders[state.folderToDelete]
       }
       return {
         ...state,
         workspaces: updatedWorkspaces,
         workspaceToDelete: null,
+        folderToDelete: null,
+        folders: updatedFolders,
         activeTopic: action.data.hasOwnProperty("members") ? action.data : state.workspaces.hasOwnProperty(action.data.id) ? {...state.workspaces[action.data.id]} : state.activeTopic
       }
     }
