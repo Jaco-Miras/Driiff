@@ -20,7 +20,16 @@
     <script src="https://apis.google.com/js/api.js"></script>
   </head>
   <body class="">
-    <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root" class="fadeIn"></div>
+  <noscript>You need to enable JavaScript to run this app.</noscript>
+  <div class="fadeIn" id="root"></div>
+  <script>
+    window.onUsersnapCXLoad = function (api) {
+      api.init();
+    }
+    var script = document.createElement('script');
+    script.defer = 1;
+    script.src = 'https://widget.usersnap.com/global/load/6bee8bfd-daa4-40a6-8d80-726569a61b70?onload=onUsersnapCXLoad';
+    document.getElementsByTagName('head')[0].appendChild(script);
+  </script>
   </body>
 </html>
