@@ -62,7 +62,7 @@ import {
     incomingPostViewer,
     incomingUpdatedPost
 } from "../../redux/actions/postActions";
-import {getOnlineUsers, getUser, incomingUpdatedUser} from "../../redux/actions/userAction";
+import {getOnlineUsers, getUser, incomingUpdatedUser, incomingExternalUser} from "../../redux/actions/userAction";
 import {
     getWorkspace,
     incomingDeletedWorkspaceFolder,
@@ -389,6 +389,14 @@ class SocketListeners extends React.PureComponent {
                     default:
                         return null;
                 }
+            })
+            .listen(".user-activated", (e) => {
+                console.log(e, "new user");
+                
+            })
+            .listen(".external-user-notification", (e) => {
+                console.log(e, "new external user");
+                this.props.incomingExternalUser(e);
             })
             .listen(".user-notification", (e) => {
                 console.log(e, "user notif");
@@ -824,7 +832,8 @@ function mapDispatchToProps(dispatch) {
         joinWorkspaceReducer: bindActionCreators(joinWorkspaceReducer, dispatch),
         incomingDeletedGoogleFile: bindActionCreators(incomingDeletedGoogleFile, dispatch),
         incomingWorkspaceRole: bindActionCreators(incomingWorkspaceRole, dispatch),
-        incomingDeletedWorkspaceFolder: bindActionCreators(incomingDeletedWorkspaceFolder, dispatch)
+        incomingDeletedWorkspaceFolder: bindActionCreators(incomingDeletedWorkspaceFolder, dispatch),
+        incomingExternalUser: bindActionCreators(incomingExternalUser, dispatch)
     };
 }
 

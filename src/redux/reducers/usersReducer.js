@@ -134,6 +134,36 @@ export default (state = INITIAL_STATE, action) => {
         mentions: updatedMentions,
       };
     }
+    case "INCOMING_EXTERNAL_USER": {
+      let updatedUsers = { ...state.users };
+      let updatedMentions = { ...state.mentions };
+      if (Object.keys(state.users).length) {
+        updatedUsers[action.data.current_user.id] = {
+          ...action.data.current_user,
+          address: "",
+          role: null,
+          designation: "",
+          is_favourite: false,
+          place: "",
+          slug: null,
+          contact: "",
+          company: "",
+        };
+      }
+      if (Object.keys(state.mentions).length) {
+        updatedMentions[action.data.current_user.id] = {
+          id: action.data.current_user.id,
+          first_name: action.data.current_user.first_name,
+          name: action.data.current_user.name,
+          profile_image_link: action.data.current_user.profile_image_link,
+        };
+      }
+      return {
+        ...state,
+        users: updatedUsers,
+        mentions: updatedMentions,
+      };
+    }
     default:
       return state;
   }
