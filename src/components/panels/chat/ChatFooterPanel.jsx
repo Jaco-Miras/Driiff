@@ -260,6 +260,7 @@ const ChatFooterPanel = (props) => {
           <ChatQuote/>
         </Dflex>
       )}
+
       {isMember && (
         <Dflex className="d-flex align-items-center">
           {selectedChannel && selectedChannel.is_archived ? (

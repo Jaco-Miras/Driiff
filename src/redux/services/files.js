@@ -329,7 +329,7 @@ export function deleteWorkspaceFiles(payload) {
 export function postGoogleAttachments(payload) {
   return apiCall({
     method: "POST",
-    url: `/v2/google-attachments?test_case=${payload.link_id}`,
+    url: `/v2/google-attachments`,
     data: payload,
   });
 }
@@ -363,5 +363,137 @@ export function deleteGoogleAttachment(payload) {
     method: "DELETE",
     url: "/v2/google-attachments",
     data: payload,
+  });
+}
+
+export function getCompanyFiles(payload) {
+  return apiCall({
+    method: "GET",
+    url: `/v2/company/files?${objToUrlParams(payload)}`,
+  });
+}
+
+export function getCompanyFavoriteFiles(payload) {
+  return apiCall({
+    method: "GET",
+    url: `/v2/company/favorite-files?${objToUrlParams(payload)}`,
+  });
+}
+
+export function getCompanyRecentEditedFiles(payload) {
+  return apiCall({
+    method: "GET",
+    url: `/v2/company/recent-edited-files?${objToUrlParams(payload)}`,
+  });
+}
+
+export function getCompanyPopularFiles(payload) {
+  return apiCall({
+    method: "GET",
+    url: `/v2/company/popular-files?${objToUrlParams(payload)}`,
+  });
+}
+
+export function getCompanyTrashedFiles(payload) {
+  return apiCall({
+    method: "GET",
+    url: `/v2/company/trashed-files?${objToUrlParams(payload)}`,
+  });
+}
+
+export function postCompanyUploadFiles(payload) {
+  return apiCall({
+    method: "POST",
+    url: `/v2/company/upload-files`,
+    data: payload
+  });
+}
+
+export function postUploadBulkFiles(payload) {
+  return apiCall({
+    method: "POST",
+    url: `/v2/company/upload-bulk-files`,
+    data: payload
+  });
+}
+
+export function deleteCompanyFiles(payload) {
+  return apiCall({
+    method: "DELETE",
+    url: `/v2/company/files/${payload.id}`,
+    data: payload
+  });
+}
+
+export function putCompanyFiles(payload) {
+  return apiCall({
+    method: "PUT",
+    url: `/v2/company/files/${payload.id}`,
+    data: payload
+  });
+}
+
+export function putCompanyFolders(payload) {
+  return apiCall({
+    method: "PUT",
+    url: `/v2/company/folders/${payload.id}`,
+    data: payload
+  });
+}
+
+export function deleteCompanyDeleteAllTrashFiles(payload) {
+  return apiCall({
+    method: "DELETE",
+    url: `/v2/company/delete-all-trash-files?${objToUrlParams(payload)}`,
+  });
+}
+
+export function patchCompanyFileViewed(payload) {
+  return apiCall({
+    method: "PATCH",
+    url: `/v2/company/file-viewed?${objToUrlParams(payload)}`,
+  });
+}
+
+export function getCompanyFilesDetail(payload) {
+  return apiCall({
+    method: "GET",
+    url: `/v2/company/files-detail?${objToUrlParams(payload)}`,
+  });
+}
+
+/**
+ *
+ * @param payload
+ * @param payload.folder_id
+ * @returns {Promise<*>}
+ */
+export function getCompanyFolderBreadCrumbs(payload) {
+  return apiCall({
+    method: "GET",
+    url: `/v2/company/folder-breadcrumbs?${objToUrlParams(payload)}`,
+  });
+}
+
+export function getCompanyFolders(payload) {
+  return apiCall({
+    method: "GET",
+    url: `/v2/company/folders?${objToUrlParams(payload)}`,
+  });
+}
+
+export function postCompanyFolders(payload) {
+  return apiCall({
+    method: "POST",
+    url: `/v2/company/folders`,
+    data: payload
+  });
+}
+
+export function deleteCompanyFolders(payload) {
+  return apiCall({
+    method: "DELETE",
+    url: `/v2/company/folders/${payload.id}`,
+    data: payload
   });
 }

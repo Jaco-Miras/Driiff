@@ -270,6 +270,32 @@ export function postClap(payload) {
 
 /**
  * @param {Object} payload
+ * @param {number} payload.skip
+ * @param {number} payload.limit
+ * @param {string} payload.search
+ * @param {array}  payload.filters
+ * @returns {Promise<*>}
+ */
+export function getCompanyPosts(payload) {
+  const {skip = 0, limit = 100, search = "", filters = []} = payload;
+  let url = `/v2/company/posts?&skip=${skip}&limit=${limit}`;
+  if (search !== "") {
+    url += `&search=${search}`;
+  }
+  if (!!filters.length) {
+    filters.forEach((f, i) => {
+      url += `&filter[${i}]=${f}`;
+    })
+  }
+  return apiCall({
+    method: "GET",
+    url: url,
+    data: payload,
+  });
+}
+
+/**
+ * @param {Object} payload
  * @param {number} payload.id
  * @param {string} payload.reaction
  * @param {number} payload.counter
@@ -320,7 +346,8 @@ export function fetchTagCounter(payload) {
  * @param {array}  payload.filters
  * @returns {Promise<*>}
  */
-export function getCompanyPosts(payload) {
+
+/*export function getCompanyPosts(payload) {
   const {skip = 0, limit = 100, search = "", filters = []} = payload;
   let url = `/v2/company/posts?&skip=${skip}&limit=${limit}`;
   if (search !== "") {
@@ -336,7 +363,7 @@ export function getCompanyPosts(payload) {
     url: url,
     data: payload,
   });
-}
+}*/
 
 /**
  * @param {Object} payload

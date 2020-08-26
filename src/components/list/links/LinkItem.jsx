@@ -17,6 +17,10 @@ const LinkItemWrapper = styled.li`
     svg {
       margin-left: 6px;
     }
+    a {
+      display: block;
+      background-color: transparent;
+    }
   }
   @media (max-width: 620px) {
     color: #ffffff;
@@ -28,11 +32,11 @@ const LinkItem = (props) => {
   const { className = "", link } = props;
 
   return (
-      <LinkItemWrapper className={`topic-list ${className}`} onClick={() => window.open(link.link, "_blank")}>
-        <div>
-          {link.menu_name}
-        </div>
-      </LinkItemWrapper>
+    <LinkItemWrapper className={`topic-list ${className}`}>
+      <div>
+        <a href={link.link} target="_blank">{link.menu_name}</a>
+      </div>
+    </LinkItemWrapper>
   );
 };
 

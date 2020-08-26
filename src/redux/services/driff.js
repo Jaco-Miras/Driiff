@@ -1,5 +1,5 @@
-import { getAPIUrl } from "../../helpers/slugHelper";
-import { apiNoTokenCall } from "./service";
+import {getAPIUrl} from "../../helpers/slugHelper";
+import {apiCall, apiNoTokenCall} from "./service";
 
 /**
  * This function will call on the API to process driff registration
@@ -37,6 +37,27 @@ export function postRegisterDriff(data) {
 export function patchCheckDriff(driffName) {
   return apiNoTokenCall({
     method: "PATCH",
-    actualUrl: `${getAPIUrl({ noSlug: true })}/check-slug/?slug=${driffName}`,
+    actualUrl: `${getAPIUrl({noSlug: true})}/check-slug/?slug=${driffName}`,
+  });
+}
+
+export function getCompanyDashboardTimeline(payload) {
+  return apiCall({
+    method: "GET",
+    url: `/v2/company/dashboard-timeline`,
+  });
+}
+
+export function getCompanyDashboardRecentPosts(payload) {
+  return apiCall({
+    method: "GET",
+    url: `/v2/company/dashboard-recent-posts`,
+  });
+}
+
+export function getCompanyDashboardMembers(payload) {
+  return apiCall({
+    method: "GET",
+    url: `/v2/company/dashboard-members`,
   });
 }

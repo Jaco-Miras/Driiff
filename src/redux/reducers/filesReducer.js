@@ -8,7 +8,16 @@ const INITIAL_STATE = {
   pendingWorkspaceFilesUpload: {},
   progressWorkspaceFilesUpload: {},
   workspaceFiles: {},
-  googleDriveApiFiles: {}
+  googleDriveApiFiles: {},
+  companyFiles: {
+    isLoaded: false,
+    stars: 0,
+    trash: 0,
+    count: 0,
+    storage: 0,
+    files: {},
+    folders: {}
+  }
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -18,6 +27,23 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         user: action.data,
       };
+    }
+    case "GET_COMPANY_FILES_SUCCESS ": {
+      let newFiles = state.companyFiles.files;
+      action.data.files.forEach(f => {
+        newFiles = {
+          ...newFiles,
+          [f.id]: f
+        }
+      })
+      return {
+        ...state,
+        companyFiles: {
+          ...state.companyFiles,
+          isLoaded: true,
+          files: newFiles
+        }
+      }
     }
     case "GET_FILES_SUCCESS": {
       return {

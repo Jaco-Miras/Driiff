@@ -95,6 +95,23 @@ export {
   getWorkspaceGoogleFileAttachments,
   getWorkspaceGoogleFolderAttachments,
   deleteGoogleAttachment,
+  getCompanyFiles,
+  getCompanyFavoriteFiles,
+  getCompanyFilesDetail,
+  getCompanyFolderBreadCrumbs,
+  getCompanyFolders,
+  getCompanyPopularFiles,
+  getCompanyRecentEditedFiles,
+  getCompanyTrashedFiles,
+  postCompanyFolders,
+  postCompanyUploadFiles,
+  postUploadBulkFiles,
+  patchCompanyFileViewed,
+  putCompanyFiles,
+  putCompanyFolders,
+  deleteCompanyFiles,
+  deleteCompanyFolders,
+  deleteCompanyDeleteAllTrashFiles,
 } from "./files";
 
 export {

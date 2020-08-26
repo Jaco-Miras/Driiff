@@ -1,4 +1,4 @@
-import dispatchActionToReducer, { SimpleDispatchActionToReducer } from "../actionDispatcher";
+import dispatchActionToReducer, {SimpleDispatchActionToReducer} from "../actionDispatcher";
 import {
   createWorkspace as createWorkspaceService,
   deleteWorkspace as deleteWorkspaceService,

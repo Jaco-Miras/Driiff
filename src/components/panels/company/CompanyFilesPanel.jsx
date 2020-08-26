@@ -4,8 +4,8 @@ import {useHistory} from "react-router-dom";
 import styled from "styled-components";
 import {replaceChar} from "../../../helpers/stringFormatter";
 import {addToModals} from "../../../redux/actions/globalActions";
-import {useFiles, useTranslation} from "../../hooks";
-import {FilesBody, FilesHeader, FilesSidebar} from "../files";
+import {useCompanyFiles, useTranslation} from "../../hooks";
+import {CompanyFilesBody, CompanyFilesHeader, CompanyFilesSidebar} from "../files/company";
 
 const Wrapper = styled.div`
   .app-sidebar-menu {
@@ -24,7 +24,7 @@ const CompanyFilesPanel = (props) => {
   const dispatch = useDispatch();
   const history = useHistory();
   const {_t} = useTranslation();
-  const {params, wsFiles, actions, topic, fileIds, folders, folder, subFolders} = useFiles();
+  const {params, files, actions, fileIds, folders, folder, subFolders} = useCompanyFiles();
 
   const [filter, setFilter] = useState("");
   const [search, setSearch] = useState("");
@@ -102,48 +102,42 @@ const CompanyFilesPanel = (props) => {
 
   const handleAddEditFolder = (f, mode = "add") => {
     const handleCreateFolder = () => {
-      if (topic) {
-        let cb = (err, res) => {
-          if (err) return;
-          if (params.hasOwnProperty("fileFolderId")) {
-            let pathname = history.location.pathname.split("/folder/")[0];
-            history.push(pathname + `/folder/${res.data.folder.id}/${replaceChar(res.data.folder.search)}`);
-          } else {
-            history.push(history.location.pathname + `/folder/${res.data.folder.id}/${replaceChar(res.data.folder.search)}`);
-          }
-        };
-        let payload = {
-          topic_id: topic.id,
-          name: folderName.current,
-        };
+      let cb = (err, res) => {
+        if (err) return;
         if (params.hasOwnProperty("fileFolderId")) {
-          payload = {
-            ...payload,
-            folder_id: params.fileFolderId,
-          };
+          let pathname = history.location.pathname.split("/folder/")[0];
+          history.push(pathname + `/folder/${res.data.folder.id}/${replaceChar(res.data.folder.search)}`);
+        } else {
+          history.push(history.location.pathname + `/folder/${res.data.folder.id}/${replaceChar(res.data.folder.search)}`);
         }
-        actions.createFolder(payload, cb);
+      };
+      let payload = {
+        name: folderName.current,
+      };
+      if (params.hasOwnProperty("fileFolderId")) {
+        payload = {
+          ...payload,
+          folder_id: params.fileFolderId,
+        };
       }
+      actions.createCompanyFolders(payload, cb);
     };
 
     const handleUpdateFolder = () => {
-      if (topic) {
-        let cb = (err, res) => {
-          if (err) return;
-          if (params.hasOwnProperty("fileFolderId")) {
-            let pathname = history.location.pathname.split("/folder/")[0];
-            history.push(pathname + `/folder/${res.data.folder.id}/${replaceChar(res.data.folder.search)}`);
-          }
-        };
-        actions.updateFolder(
-          {
-            id: f.id,
-            topic_id: topic.id,
-            name: folderName.current,
-          },
-          cb
-        );
-      }
+      let cb = (err, res) => {
+        if (err) return;
+        if (params.hasOwnProperty("fileFolderId")) {
+          let pathname = history.location.pathname.split("/folder/")[0];
+          history.push(pathname + `/folder/${res.data.folder.id}/${replaceChar(res.data.folder.search)}`);
+        }
+      };
+      actions.updateCompanyFolders(
+        {
+          id: f.id,
+          name: folderName.current,
+        },
+        cb
+      );
     };
 
     let payload = {
@@ -185,12 +179,10 @@ const CompanyFilesPanel = (props) => {
     }
   }, [folder, filter, setFilter]);
 
-  if (!wsFiles) return <></>;
-
   return (
     <Wrapper className={`container-fluid h-100 fadeIn ${className}`}>
       <div className="row app-block">
-        <FilesSidebar
+        <CompanyFilesSidebar
           actions={actions}
           isMember={isMember}
           clearFilter={clearFilter}
@@ -199,7 +191,7 @@ const CompanyFilesPanel = (props) => {
           className="col-lg-3"
           filterFile={handleFilterFile}
           filter={filter}
-          wsFiles={wsFiles}
+          files={files}
           folders={folders}
           activeFolder={folder}
           dictionary={dictionary}
@@ -207,7 +199,7 @@ const CompanyFilesPanel = (props) => {
         />
         <div className="col-md-9 app-content mb-4">
           <div className="app-content-overlay"/>
-          <FilesHeader
+          <CompanyFilesHeader
             isMember={isMember}
             clearFilter={clearFilter}
             dropZoneRef={refs.dropZone}
@@ -216,13 +208,13 @@ const CompanyFilesPanel = (props) => {
             onSearch={handleSearch}
             onSearchChange={handleSearchChange}
             onEnter={handleEnter}
-            wsFiles={wsFiles}
+            files={files}
             handleAddEditFolder={handleAddEditFolder}
             folders={folders}
             dictionary={dictionary}
             disableOptions={disableOptions}
           />
-          <FilesBody
+          <CompanyFilesBody
             dropZoneRef={refs.dropZone}
             filter={filter}
             search={search}
@@ -234,7 +226,7 @@ const CompanyFilesPanel = (props) => {
             history={history}
             actions={actions}
             params={params}
-            wsFiles={wsFiles}
+            files={files}
             handleAddEditFolder={handleAddEditFolder}
             dictionary={dictionary}
             disableOptions={disableOptions}

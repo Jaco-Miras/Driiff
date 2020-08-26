@@ -1,5 +1,5 @@
 // import {uniqBy} from "lodash";
-import { getCurrentTimestamp } from "../../helpers/dateFormatter";
+import {getCurrentTimestamp} from "../../helpers/dateFormatter";
 
 /** Initial State  */
 const INITIAL_STATE = {
@@ -993,7 +993,7 @@ export default function (state = INITIAL_STATE, action) {
         ...state,
         channels: updatedChannels,
         selectedChannel:
-          state.selectedChannel && state.selectedChannel.id == action.data.channel_id
+          state.selectedChannel && state.selectedChannel.id === action.data.channel_id
             ? {
                 ...state.selectedChannel,
                 is_read: false,

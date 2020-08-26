@@ -6,29 +6,46 @@ import {
   addFolder,
   addRemoveFavorite,
   clearFileSearchResults,
+  deleteCompanyDeleteAllTrashFiles,
+  deleteCompanyFiles,
+  deleteCompanyFolders,
   deleteFile,
   deleteFolder,
   deleteGoogleAttachment,
   deleteTrash,
   favoriteFile,
+  getCompanyFavoriteFiles,
+  getCompanyFiles,
+  getCompanyFilesDetail,
+  getCompanyFolderBreadCrumbs,
+  getCompanyFolders,
+  getCompanyPopularFiles,
+  getCompanyRecentEditedFiles,
+  getCompanyTrashedFiles,
   getWorkspaceFavoriteFiles,
   getWorkspaceFiles,
   getWorkspaceFilesDetail,
   getWorkspaceFolders,
+  getWorkspaceFoldersBreadcrumb,
   getWorkspaceGoogleFileAttachments,
   getWorkspaceGoogleFolderAttachments,
   getWorkspacePopularFiles,
   getWorkspacePrimaryFiles,
   getWorkspaceRecentlyEditedFiles,
   getWorkspaceTrashFiles,
+  patchCompanyFileViewed,
+  postCompanyFolders,
+  postCompanyUploadFiles,
   postGoogleAttachments,
+  postUploadBulkFiles,
+  putCompanyFiles,
+  putCompanyFolders,
   putFile,
   putFolder,
   registerGoogleDriveFile,
   setViewFiles,
   uploadFilesReducer,
   uploadWorkspaceFiles,
-  getWorkspaceFoldersBreadcrumb,
 } from "../../redux/actions/fileActions";
 import {addToModals} from "../../redux/actions/globalActions";
 import {useToaster} from "./index";
@@ -65,6 +82,125 @@ const useFileActions = (params = null) => {
       return <i className="fa fa-file-text-o text-warning"/>;
     }
   };
+
+  const fetchCompanyFiles = useCallback(
+    (payload, callback) => {
+      dispatch(getCompanyFiles(payload, callback));
+    },
+    [dispatch]
+  );
+
+  const fetchCompanyFavoriteFiles = useCallback(
+    (payload, callback) => {
+      dispatch(getCompanyFavoriteFiles(payload, callback));
+    },
+    [dispatch]
+  );
+
+  const fetchCompanyFilesDetail = useCallback(
+    (payload, callback) => {
+      dispatch(getCompanyFilesDetail(payload, callback));
+    },
+    [dispatch]
+  );
+
+  const fetchCompanyFolderBreadCrumbs = useCallback(
+    (payload, callback) => {
+      dispatch(getCompanyFolderBreadCrumbs(payload, callback));
+    },
+    [dispatch]
+  );
+
+  const fetchCompanyFolders = useCallback(
+    (payload, callback) => {
+      dispatch(getCompanyFolders(payload, callback));
+    },
+    [dispatch]
+  );
+
+  const fetchCompanyPopularFiles = useCallback(
+    (payload, callback) => {
+      dispatch(getCompanyPopularFiles(payload, callback));
+    },
+    [dispatch]
+  );
+
+  const fetchCompanyRecentEditedFiles = useCallback(
+    (payload, callback) => {
+      dispatch(getCompanyRecentEditedFiles(payload, callback));
+    },
+    [dispatch]
+  );
+
+  const fetchCompanyTrashedFiles = useCallback(
+    (payload, callback) => {
+      dispatch(getCompanyTrashedFiles(payload, callback));
+    },
+    [dispatch]
+  );
+
+  const createCompanyFolders = useCallback(
+    (payload, callback) => {
+      dispatch(postCompanyFolders(payload, callback));
+    },
+    [dispatch]
+  );
+
+  const updateCompanyUploadFiles = useCallback(
+    (payload, callback) => {
+      dispatch(postCompanyUploadFiles(payload, callback));
+    },
+    [dispatch]
+  );
+
+  const updateUploadBulkFiles = useCallback(
+    (payload, callback) => {
+      dispatch(postUploadBulkFiles(payload, callback));
+    },
+    [dispatch]
+  );
+
+  const viewCompanyFile = useCallback(
+    (payload, callback) => {
+      dispatch(patchCompanyFileViewed(payload, callback));
+    },
+    [dispatch]
+  );
+
+  const updateCompanyFiles = useCallback(
+    (payload, callback) => {
+      dispatch(putCompanyFiles(payload, callback));
+    },
+    [dispatch]
+  );
+
+  const updateCompanyFolders = useCallback(
+    (payload, callback) => {
+      dispatch(putCompanyFolders(payload, callback));
+    },
+    [dispatch]
+  );
+
+  const deleteCompanyFile = useCallback(
+    (payload, callback) => {
+      dispatch(deleteCompanyFiles(payload, callback));
+    },
+    [dispatch]
+  );
+
+  const deleteCompanyFolder = useCallback(
+    (payload, callback) => {
+      dispatch(deleteCompanyFolders(payload, callback));
+    },
+    [dispatch]
+  );
+
+  const deleteCompanyTrashFiles = useCallback(
+    (payload, callback) => {
+      dispatch(deleteCompanyDeleteAllTrashFiles(payload, callback));
+    },
+    [dispatch]
+  );
 
   const getFiles = useCallback(
     (payload, callback) => {
@@ -647,6 +783,22 @@ const useFileActions = (params = null) => {
     unlinkGoogleFolder,
     uploadWorkspaceGoogleDriveFile,
     uploadingFiles,
+    fetchCompanyFiles,
+    fetchCompanyFavoriteFiles,
+    fetchCompanyFolderBreadCrumbs,
+    fetchCompanyFolders,
+    fetchCompanyPopularFiles,
+    fetchCompanyRecentEditedFiles,
+    fetchCompanyTrashedFiles,
+    createCompanyFolders,
+    updateCompanyUploadFiles,
+    updateUploadBulkFiles,
+    viewCompanyFile,
+    updateCompanyFiles,
+    updateCompanyFolders,
+    deleteCompanyFile,
+    deleteCompanyFolder,
+    deleteCompanyTrashFiles,
   };
 };
 

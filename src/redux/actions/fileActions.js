@@ -1,5 +1,8 @@
 import dispatchActionToReducer, {SimpleDispatchActionToReducer} from "../actionDispatcher";
 import {
+  deleteCompanyDeleteAllTrashFiles as deleteCompanyDeleteAllTrashFilesService,
+  deleteCompanyFiles as deleteCompanyFilesService,
+  deleteCompanyFolders as deleteCompanyFoldersService,
   deleteFile as deleteFileService,
   deleteFolder as deleteFolderService,
   deleteGoogleAttachment as deleteGoogleAttachmentService,
@@ -8,6 +11,14 @@ import {
   deleteWorkspaceFile as deleteWorkspaceFileService,
   deleteWorkspaceFiles as deleteWorkspaceFilesService,
   getChannelFiles as getChannelFilesService,
+  getCompanyFavoriteFiles as getCompanyFavoriteFilesService,
+  getCompanyFiles as getCompanyFilesService,
+  getCompanyFilesDetail as getCompanyFilesDetailService,
+  getCompanyFolderBreadCrumbs as getCompanyFolderBreadCrumbsService,
+  getCompanyFolders as getCompanyFoldersService,
+  getCompanyPopularFiles as getCompanyPopularFilesService,
+  getCompanyRecentEditedFiles as getCompanyRecentEditedFilesService,
+  getCompanyTrashedFiles as getCompanyTrashedFilesService,
   getFiles as getFilesService,
   getWorkspaceFavoriteFiles as getWorkspaceFavoriteFilesService,
   getWorkspaceFiles as getWorkspaceFilesService,
@@ -21,11 +32,17 @@ import {
   getWorkspaceRecentlyEditedFiles as getWorkspaceRecentlyEditedFilesService,
   getWorkspaceTrashFiles as getWorkspaceTrashFilesService,
   moveFile as moveFileService,
+  patchCompanyFileViewed as patchCompanyFileViewedService,
   patchWorkspaceFileViewed as patchWorkspaceFileViewedService,
+  postCompanyFolders as postCompanyFoldersService,
+  postCompanyUploadFiles as postCompanyUploadFilesService,
   postFavorite as postFavoriteService,
   postFolder as postFolderService,
   postGoogleAttachments as postGoogleAttachmentsService,
+  postUploadBulkFiles as postUploadBulkFilesService,
   postWorkspaceFiles as postWorkspaceFilesService,
+  putCompanyFiles as putCompanyFilesService,
+  putCompanyFolders as putCompanyFoldersService,
   putFile as putFileService,
   putFolder as putFolderService,
   restoreWorkspaceFile as restoreWorkspaceFileService,
@@ -251,4 +268,72 @@ export function incomingDeletedGoogleFile(payload, callback) {
 
 export function registerGoogleDriveFile(payload, callback) {
   return SimpleDispatchActionToReducer("ADD_GOOGLE_DRIVE_FILE", payload, callback);
+}
+
+export function getCompanyFiles(payload, callback) {
+  return dispatchActionToReducer(getCompanyFilesService(payload), "GET_COMPANY_FILES_START", "GET_COMPANY_FILES_SUCCESS", "GET_COMPANY_FILES_FAIL", callback);
+}
+
+export function getCompanyFavoriteFiles(payload, callback) {
+  return dispatchActionToReducer(getCompanyFavoriteFilesService(payload), "GET_COMPANY_FAVORITE_FILES_START", "GET_COMPANY_FAVORITE_FILES_SUCCESS", "GET_COMPANY_FAVORITE_FILES_FAIL", callback);
+}
+
+export function getCompanyFilesDetail(payload, callback) {
+  return dispatchActionToReducer(getCompanyFilesDetailService(payload), "GET_COMPANY_FILES_DETAIL_START", "GET_COMPANY_FILES_DETAIL_SUCCESS", "GET_COMPANY_FILES_DETAIL_FAIL", callback);
+}
+
+export function getCompanyFolderBreadCrumbs(payload, callback) {
+  return dispatchActionToReducer(getCompanyFolderBreadCrumbsService(payload), "GET_COMPANY_FOLDER_BREAD_CRUMBS_START", "GET_COMPANY_FOLDER_BREAD_CRUMBS_SUCCESS", "GET_COMPANY_FOLDER_BREAD_CRUMBS_FAIL", callback);
+}
+
+export function getCompanyFolders(payload, callback) {
+  return dispatchActionToReducer(getCompanyFoldersService(payload), "GET_COMPANY_FOLDERS_START", "GET_COMPANY_FOLDERS_SUCCESS", "GET_COMPANY_FOLDERS_FAIL", callback);
+}
+
+export function getCompanyPopularFiles(payload, callback) {
+  return dispatchActionToReducer(getCompanyPopularFilesService(payload), "GET_COMPANY_POPULAR_FILES_START", "GET_COMPANY_POPULAR_FILES_SUCCESS", "GET_COMPANY_POPULAR_FILES_FAIL", callback);
+}
+
+export function getCompanyRecentEditedFiles(payload, callback) {
+  return dispatchActionToReducer(getCompanyRecentEditedFilesService(payload), "GET_COMPANY_RECENT_EDITED_FILES_START", "GET_COMPANY_RECENT_EDITED_FILES_SUCCESS", "GET_COMPANY_RECENT_EDITED_FILES_FAIL", callback);
+}
+
+export function getCompanyTrashedFiles(payload, callback) {
+  return dispatchActionToReducer(getCompanyTrashedFilesService(payload), "GET_COMPANY_TRASHED_FILES_START", "GET_COMPANY_TRASHED_FILES_SUCCESS", "GET_COMPANY_TRASHED_FILES_FAIL", callback);
+}
+
+export function postCompanyFolders(payload, callback) {
+  return dispatchActionToReducer(postCompanyFoldersService(payload), "POST_COMPANY_FOLDERS_START", "POST_COMPANY_FOLDERS_SUCCESS", "POST_COMPANY_FOLDERS_FAIL", callback);
+}
+
+export function postCompanyUploadFiles(payload, callback) {
+  return dispatchActionToReducer(postCompanyUploadFilesService(payload), "POST_COMPANY_UPLOAD_FILES_START", "POST_COMPANY_UPLOAD_FILES_SUCCESS", "POST_COMPANY_UPLOAD_FILES_FAIL", callback);
+}
+
+export function postUploadBulkFiles(payload, callback) {
+  return dispatchActionToReducer(postUploadBulkFilesService(payload), "POST_UPLOAD_BULK_FILES_START", "POST_UPLOAD_BULK_FILES_SUCCESS", "POST_UPLOAD_BULK_FILES_FAIL", callback);
+}
+
+export function patchCompanyFileViewed(payload, callback) {
+  return dispatchActionToReducer(patchCompanyFileViewedService(payload), "PATCH_COMPANY_FILE_VIEWED_START", "PATCH_COMPANY_FILE_VIEWED_SUCCESS", "PATCH_COMPANY_FILE_VIEWED_FAIL", callback);
+}
+
+export function putCompanyFiles(payload, callback) {
+  return dispatchActionToReducer(putCompanyFilesService(payload), "PUT_COMPANY_FILES_START", "PUT_COMPANY_FILES_SUCCESS", "PUT_COMPANY_FILES_FAIL", callback);
+}
+
+export function putCompanyFolders(payload, callback) {
+  return dispatchActionToReducer(putCompanyFoldersService(payload), "PUT_COMPANY_FOLDERS_START", "PUT_COMPANY_FOLDERS_SUCCESS", "PUT_COMPANY_FOLDERS_FAIL", callback);
+}
+
+export function deleteCompanyFiles(payload, callback) {
+  return dispatchActionToReducer(deleteCompanyFilesService(payload), "DELETE_COMPANY_FILES_START", "DELETE_COMPANY_FILES_SUCCESS", "DELETE_COMPANY_FILES_FAIL", callback);
+}
+
+export function deleteCompanyFolders(payload, callback) {
+  return dispatchActionToReducer(deleteCompanyFoldersService(payload), "DELETE_COMPANY_FOLDERS_START", "DELETE_COMPANY_FOLDERS_SUCCESS", "DELETE_COMPANY_FOLDERS_FAIL", callback);
+}
+
+export function deleteCompanyDeleteAllTrashFiles(payload, callback) {
+  return dispatchActionToReducer(deleteCompanyDeleteAllTrashFilesService(payload), "DELETED_COMPANY_DELETE_START", "DELETED_COMPANY_DELETE_SUCCESS", "DELETED_COMPANY_DELETE_FAIL", callback);
 }
