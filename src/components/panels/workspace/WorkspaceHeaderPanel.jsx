@@ -111,6 +111,9 @@ const SubWorkspaceName = styled.h3`
   svg {
     color: #64625c;
   }
+  .feather-lock {
+    color: #000;
+  }
   @media all and (max-width: 620px) {
     font-size: 16px;
   }
@@ -143,13 +146,18 @@ const WorkspaceButton = styled.h3`
   }
 `;
 
+const LockIcon = styled(SvgIconFeather)`
+  height: 12px !important;
+  width: 12px !important;
+`;
+
 const WorspaceHeaderPanel = (props) => {
 
   const { isExternal } = props;
   const toaster = useToaster();
   const dispatch = useDispatch();
   const match = useRouteMatch();
-  const activeTopic = useSelector((state) => state.workspaces.activeTopic);
+  const { activeTopic, folders } = useSelector((state) => state.workspaces);
   const user = useSelector((state) => state.session.user);
 
   const handleShowWorkspaceModal = () => {
@@ -273,7 +281,7 @@ const WorspaceHeaderPanel = (props) => {
                     !isExternal &&
                     <>
                       <li className="nav-item nav-item-folder">
-                        <WorkspaceName >{activeTopic.folder_name}</WorkspaceName>
+                        <WorkspaceName >{activeTopic.folder_name} { folders[activeTopic.folder_id].is_lock === 1 && <LockIcon icon="lock"/> }</WorkspaceName>
                       </li>
                       <li className="nav-item-chevron">
                         <SvgIconFeather icon="chevron-right"/>
@@ -282,9 +290,15 @@ const WorspaceHeaderPanel = (props) => {
                   }
                   <li className="nav-item">
                     <SubWorkspaceName className="current-title">
-                      {activeTopic.name}
+                      {activeTopic.name} { activeTopic.is_lock === 1 && <LockIcon icon="lock" fill="#000"/> }
                     </SubWorkspaceName>
                   </li>
+                  {
+                    activeTopic.is_lock === 1 &&
+                    <li className="nav-item">
+                      <div className={`badge badge-light text-white ml-1`}>Locked</div>
+                    </li>
+                  }
                   {
                     activeTopic.active === 0 &&
                     <li className="nav-item">
