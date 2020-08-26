@@ -123,7 +123,7 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         workspaces: updatedWorkspaces,
-        folders: updatedFolders
+        folders: folders
       };
     }
     case "INCOMING_UPDATED_WORKSPACE_FOLDER": {
