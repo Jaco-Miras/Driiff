@@ -281,7 +281,7 @@ const WorspaceHeaderPanel = (props) => {
                     !isExternal &&
                     <>
                       <li className="nav-item nav-item-folder">
-                        <WorkspaceName >{activeTopic.folder_name} { folders[activeTopic.folder_id].is_lock === 1 && <LockIcon icon="lock"/> }</WorkspaceName>
+                        <WorkspaceName >{activeTopic.folder_name} { folders.hasOwnProperty(activeTopic.folder_id) && folders[activeTopic.folder_id].is_lock === 1 && <LockIcon icon="lock"/> }</WorkspaceName>
                       </li>
                       <li className="nav-item-chevron">
                         <SvgIconFeather icon="chevron-right"/>

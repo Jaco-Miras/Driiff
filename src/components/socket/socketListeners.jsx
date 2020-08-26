@@ -494,6 +494,7 @@ class SocketListeners extends React.PureComponent {
                         const isMember = e.new_member_ids.some((id) => id === this.props.user.id);
                         if (isMember) {
                             this.props.getWorkspace({topic_id: e.id});
+                            // get the folder if the workspace folder does not exists yet
                         }
                     }
                     if (e.remove_member_ids.length > 0) {
