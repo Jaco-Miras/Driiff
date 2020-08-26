@@ -730,6 +730,13 @@ const CreateEditWorkspaceModal = (props) => {
             setForm((prevState) => ({
                 ...prevState,
                 selectedUsers: currentUser ? [currentUser] : [],
+                selectedFolder: item === null
+                    ? null
+                    : {
+                        value: item.id,
+                        label: item.name,
+                    },
+                has_folder: item === null ? false : item.type === "FOLDER" 
             }));
 
             setValid((prevState) => ({
