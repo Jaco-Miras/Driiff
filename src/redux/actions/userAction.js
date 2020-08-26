@@ -95,3 +95,7 @@ export function postMagicLink(payload, callback) {
 export function putMagicLink(payload, callback) {
   return dispatchActionToReducer(putMagicLinkService(payload), "PUT_MAGIC_LINK_START", "PUT_MAGIC_LINK_SUCCESS", "PUT_MAGIC_LINK_FAILURE", callback);
 }
+
+export function incomingExternalUser(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_EXTERNAL_USER", payload, callback);
+}
