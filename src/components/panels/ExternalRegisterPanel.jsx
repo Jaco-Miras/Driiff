@@ -211,7 +211,8 @@ const ExternalRegisterPanel = (props) => {
         />
       </FormGroup>
       <button className="btn btn-primary btn-block mt-2" onClick={handleAccept}>
-        {loading && <i className="fa fa-spin fa-spinner mr-2"/>} {dictionary.accept}
+        {loading &&
+        <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"/>} {dictionary.accept}
       </button>
     </Wrapper>
   );

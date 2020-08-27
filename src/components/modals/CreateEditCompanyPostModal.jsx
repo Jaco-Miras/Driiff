@@ -851,7 +851,7 @@ const CreateEditCompanyPostModal = (props) => {
           <button className="btn btn-primary"
                   disabled={form.selectedUsers.length === 0 || form.title === "" || form.textOnly.trim() === ""}
                   onClick={handleConfirm}>
-            {loading && <i className="fa fa-spin fa-spinner mr-2"/>}
+            {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"/>}
             {mode === "edit" ? "Update post" : "Create post"}
           </button>
         </WrapperDiv>

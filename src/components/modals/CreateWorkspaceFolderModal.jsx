@@ -3,7 +3,7 @@ import {useHistory} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import {Input, InputGroup, Label, Modal, ModalBody} from "reactstrap";
 import styled from "styled-components";
-import {clearModal, addToModals} from "../../redux/actions/globalActions";
+import {addToModals, clearModal} from "../../redux/actions/globalActions";
 import {createWorkspace, deleteWorkspaceFolder, updateWorkspace} from "../../redux/actions/workspaceActions";
 import {CheckBox, InputFeedback} from "../forms";
 import {useToaster, useTranslation} from "../hooks";
@@ -85,6 +85,7 @@ const CreateWorkspaceFolderModal = (props) => {
   const {activeTopic, folders} = useSelector((state) => state.workspaces);
   const activeTab = useSelector((state) => state.workspaces.activeTab);
   const [modal, setModal] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
     is_private: false,
     name: "",
@@ -197,6 +198,11 @@ const CreateWorkspaceFolderModal = (props) => {
   }, [validateName]);
 
   const handleConfirm = useCallback(() => {
+    if (loading)
+      return;
+
+    setLoading(true);
+
     let payload = {
       name: form.name,
       description: form.description,
@@ -212,12 +218,14 @@ const CreateWorkspaceFolderModal = (props) => {
       };
       dispatch(
         updateWorkspace(payload, (err, res) => {
+          setLoading(false);
+
           if (err) {
             console.log(err);
             toaster.error(
               <span>
                 Folder update failed.
-                <br />
+                <br/>
                 Please try again.
               </span>
             );
@@ -235,12 +243,14 @@ const CreateWorkspaceFolderModal = (props) => {
     } else {
       dispatch(
         createWorkspace(payload, (err, res) => {
+          setLoading(false);
+
           if (err) {
             console.log(err);
             toaster.error(
               <span>
                 Folder creation failed.
-                <br />
+                <br/>
                 Please try again.
               </span>
             );
@@ -331,6 +341,7 @@ const CreateWorkspaceFolderModal = (props) => {
             </CheckBox>
             <button className="btn btn-primary" disabled={valid.name === null || valid.name === false}
                     onClick={handleConfirm}>
+              {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"/>}
               {mode === "edit" ? dictionary.updateWorkspaceFolder : dictionary.createWorkspaceFolder}
             </button>
             {

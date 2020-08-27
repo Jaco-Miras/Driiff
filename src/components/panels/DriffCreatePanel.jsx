@@ -125,11 +125,13 @@ const DriffCreatePanel = (props) => {
     return !Object.values(valid).some(v => v === false);
   }
 
-  const handleSetUserInvitation = (e) => {
+  const handleSetUserInvitation = (e, callback = () => {
+  }) => {
     setForm(prevState => ({
       ...prevState,
       invitations: e,
     }));
+    callback();
   }
 
   const handleShowUserInvitation = (e) => {
@@ -271,7 +273,8 @@ const DriffCreatePanel = (props) => {
             </button>
 
             <button className="btn btn-primary btn-block" onClick={handleRegister}>
-              {loading && <i className="fa fa-spin fa-spinner mr-2"/>} {dictionary.register}
+              {loading && <span className="spinner-border spinner-border-sm mr-2" role="status"
+                                aria-hidden="true"/>} {dictionary.register}
             </button>
             <hr/>
             <button className="btn btn-outline-light btn-sm" onClick={handleDriff}>

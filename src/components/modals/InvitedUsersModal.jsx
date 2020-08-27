@@ -31,6 +31,7 @@ const InvitedUsersModal = (props) => {
   const {_t} = useTranslation();
   const dispatch = useDispatch();
   const [modal, setModal] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [binary, setBinary] = useState(false);
 
   const handleInputChange = useCallback((e) => {
@@ -110,10 +111,15 @@ const InvitedUsersModal = (props) => {
   }
 
   const handleConfirm = () => {
-    if (_validateForm()) {
-      onPrimaryAction(invitationItems.filter((v, i) => v.name !== "" && v.email !== ""));
-      toggle();
-    }
+    if (!_validateForm() || loading)
+      return;
+
+    setLoading(true);
+
+    onPrimaryAction(invitationItems.filter((v, i) => v.name !== "" && v.email !== ""), () => {
+      setLoading(false);
+    });
+    toggle();
   };
 
   useEffect(() => {
@@ -178,6 +184,7 @@ const InvitedUsersModal = (props) => {
       </ModalBody>
       <ModalFooter>
         <Button color="primary" onClick={handleConfirm}>
+          {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"/>}
           {submitText}
         </Button>{" "}
         <Button outline color="secondary" onClick={toggle}>

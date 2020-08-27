@@ -141,7 +141,7 @@ const FileUploadModal = (props) => {
     const parentId = useSelector((state) => state.posts.parentId);
 
     const [modal, setModal] = useState(true);
-    const [uploading, setUploading] = useState(false);
+    const [loading, setLoading] = useState(false);
     const [files, setFiles] = useState(droppedFiles);
     const [uploadedFiles, setUploadedFiles] = useState([]);
     const [sending, setSending] = useState(false);
@@ -185,8 +185,8 @@ const FileUploadModal = (props) => {
     }
 
     const handleUpload = () => {
-        if (!uploading && !sending) {
-            setUploading(true);
+        if (!loading && !sending) {
+            setLoading(true);
             uploadFiles();
         }
     };
@@ -318,18 +318,18 @@ const FileUploadModal = (props) => {
             <ModalHeaderSection toggle={toggle}>File upload</ModalHeaderSection>
             <ModalBody>
                 <StyledQuillEditor
-                    ref={refCallback}
-                    className={"chat-input"}
-                    //formats={formats}
-                    modules={modules}
-                    placeholder={"Add message. Type @ to mention someone."}
-                    readOnly={uploading}
-                    onChange={handleQuillChange}/>
+                  ref={refCallback}
+                  className={"chat-input"}
+                  //formats={formats}
+                  modules={modules}
+                  placeholder={"Add message. Type @ to mention someone."}
+                  readOnly={loading}
+                  onChange={handleQuillChange}/>
                 <FilesPreview files={files} onRemoveFile={handleRemoveFile}/>
             </ModalBody>
             <ModalFooter>
                 <Button color="primary" onClick={handleUpload}>
-                    {uploading &&
+                    {loading &&
                     <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"/>}
                     Upload
                 </Button>{" "}
