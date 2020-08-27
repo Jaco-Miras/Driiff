@@ -13,8 +13,7 @@ import {
 import {NavLink, SvgIcon, SvgIconFeather} from "../../common";
 import {useTranslation, useWorkspace} from "../../hooks";
 import {ExternalWorkspaceList, WorkspaceList} from "../../workspace";
-import {QuickLinks} from "../../list/links";
-import PersonalLinks from "../../list/links/PersonalLinks";
+import {PersonalLinks, QuickLinks} from "../../list/links";
 
 const Wrapper = styled.div`
   .navigation-menu-tab-header {
@@ -303,7 +302,7 @@ const MainNavigationTabPanel = (props) => {
             </li>
           }
           {
-            links.length > 0 &&  <QuickLinks links={links} user={user}/>
+            links.length > 0 && <QuickLinks links={links} user={user} dictionary={dictionary}/>
           }
           <PersonalLinks dictionary={dictionary}/>
         </ul>
