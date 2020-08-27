@@ -13,12 +13,14 @@ const useWorkspace = (fetchOnMount = false) => {
   const route = useRouteMatch();
   const {params, path, url} = route;
   const actions = useWorkspaceActions();
-  const { activeChannelId, activeTopic, folders, workspaces, workspaceTimeline, workspacesLoaded, externalWorkspacesLoaded } = useSelector((state) => state.workspaces);
+  const { activeChannelId, activeTopic, folders, workspaces, workspaceTimeline, workspacesLoaded } = useSelector((state) => state.workspaces);
   const channels = useSelector((state) => state.chat.channels);
   const [fetchingPrimary, setFetchingPrimary] = useState(false);
   const [init, setInit] = useState(false);
   const [fetchingChannel, setFetchingChannel] = useState(false);
   const [archivedWsLoaded, setArchivedWsLoaded] = useState(false);
+  const [internalLoaded, setInternalLoaded] = useState(false);
+  const [externalLoaded, setExternalLoaded] = useState(false);
 
   useEffect(() => {
     
@@ -26,11 +28,12 @@ const useWorkspace = (fetchOnMount = false) => {
       setInit(true);
       let fetchCb = (err,res) => {
         setInit(false);
+        setInternalLoaded(true);
         if (err) return;
         //callback on get workspaces
       }
       actions.fetchWorkspaces({is_external: 0}, fetchCb);
-      actions.fetchWorkspaces({is_external: 1});
+      actions.fetchWorkspaces({is_external: 1}, () => setExternalLoaded(true));
       actions.fetchWorkspaces({is_external: 0, filter: "archived"}, () => {
         setArchivedWsLoaded(true);
       });
@@ -54,8 +57,9 @@ const useWorkspace = (fetchOnMount = false) => {
           actions.selectWorkspace(workspaces[params.workspaceId]);
           setGeneralSetting({ active_topic: workspaces[params.workspaceId]});
         } else {
-          if (externalWorkspacesLoaded && archivedWsLoaded && activeTopicSettings) {
-            //toaster.warning("This workspace cannot be found or accessed.");
+          if (archivedWsLoaded && internalLoaded && externalLoaded && activeTopicSettings) {
+            console.log("redirect");
+            toaster.warning("This workspace cannot be found or accessed.");
             actions.selectWorkspace(activeTopicSettings);
             actions.redirectTo(activeTopicSettings);
           } 
@@ -75,7 +79,7 @@ const useWorkspace = (fetchOnMount = false) => {
         }
       }
     }
-  }, [activeTopic, activeTopicSettings, params, workspaces, url, archivedWsLoaded, externalWorkspacesLoaded, fetchOnMount]);
+  }, [activeTopic, activeTopicSettings, params, workspaces, url, archivedWsLoaded, internalLoaded, externalLoaded, fetchOnMount]);
   
   useEffect(() => {
     if (activeTopic && Object.keys(channels).length && fetchOnMount && url.startsWith("/workspace/")) {
