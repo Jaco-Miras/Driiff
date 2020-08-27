@@ -1,12 +1,12 @@
-import React, { useEffect, useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React, {useEffect, useRef, useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
 import styled from "styled-components";
-import { getAPIUrl } from "../../helpers/slugHelper";
-import { setViewFiles } from "../../redux/actions/fileActions";
+import {getAPIUrl} from "../../helpers/slugHelper";
+import {setViewFiles} from "../../redux/actions/fileActions";
 import "../../vendors/lightbox/magnific-popup.css";
-import { useOutsideClick, useTimeFormat } from "../hooks";
+import {useOutsideClick, useTimeFormat} from "../hooks";
 import ImageTextLink from "./ImageTextLink";
-import { SvgIconFeather } from "./SvgIcon";
+import {SvgIconFeather} from "./SvgIcon";
 
 const FileViewerContainer = styled.div`
   position: fixed;
@@ -314,7 +314,9 @@ const FileViewer = (props) => {
       case "pdf":
         return (
           <div key={index} data-index={index} className={"file-item mfp-img"}>
-            <iframe ref={(e) => (refFiles[index] = e)} title={file.name} key={index} style={style} className={"iframe file"} src={file.view_link} frameBorder="0" />
+            <object data={file.view_link} width="600" height="400">
+              <embed src={file.view_link} width="600" height="400"/>
+            </object>
           </div>
         );
       default:

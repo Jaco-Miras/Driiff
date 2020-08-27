@@ -4,12 +4,16 @@ import {useHistory} from "react-router-dom";
 import {Badge} from "reactstrap";
 import styled from "styled-components";
 import {replaceChar} from "../../../helpers/stringFormatter";
-import {addToModals, getUnreadNotificationCounterEntries, setNavMode, getQuickLinks} from "../../../redux/actions/globalActions";
+import {
+  addToModals,
+  getQuickLinks,
+  getUnreadNotificationCounterEntries,
+  setNavMode
+} from "../../../redux/actions/globalActions";
 import {NavLink, SvgIcon, SvgIconFeather} from "../../common";
-//import Tooltip from "react-tooltip-lite";
 import {useTranslation, useWorkspace} from "../../hooks";
 import {ExternalWorkspaceList, WorkspaceList} from "../../workspace";
-import {QuickLinks} from "../../list/links";
+import {PersonalLinks, QuickLinks} from "../../list/links";
 
 const Wrapper = styled.div`
   .navigation-menu-tab-header {
@@ -173,7 +177,10 @@ const MainNavigationTabPanel = (props) => {
     newWorkspace: _t("SIDEBAR.NEW_WORKSPACE", "New workspace"),
     addNewWorkspace: _t("SIDEBAR.ADD_NEW_WORKSPACES", "Add new workspace"),
     generalFolder: _t("SIDEBAR.GENERAL_FOLDER", "General"),
-    archivedFolder: _t("SIDEBAR.ARCHIVED_FOLDER", "Archived workspaces")
+    archivedFolder: _t("SIDEBAR.ARCHIVED_FOLDER", "Archived workspaces"),
+    shortcuts: _t("SIDEBAR.SHORTCUTS", "Shortcuts"),
+    personalLinks: _t("SIDEBAR.PERSONAL_LINKS", "Personal links"),
+    addShortcut: _t("SIDEBAR.ADD_SHORTCUT", "Add shortcut"),
   };
 
   const {active_topic} = useSelector((state) => state.settings.user.GENERAL_SETTINGS);
@@ -295,8 +302,9 @@ const MainNavigationTabPanel = (props) => {
             </li>
           }
           {
-            links.length > 0 &&  <QuickLinks links={links} user={user}/>
+            links.length > 0 && <QuickLinks links={links} user={user} dictionary={dictionary}/>
           }
+          <PersonalLinks dictionary={dictionary}/>
         </ul>
       </div>
 

@@ -1,15 +1,14 @@
 import moment from "moment";
-import React, { useState } from "react";
+import React, {useState} from "react";
 import DateTimePicker from "react-datetime-picker";
-import { useDispatch } from "react-redux";
-import { Button, Modal, ModalBody, ModalFooter } from "reactstrap";
+import {useDispatch} from "react-redux";
+import {Button, Modal, ModalBody, ModalFooter} from "reactstrap";
 import styled from "styled-components";
-import { clearModal } from "../../redux/actions/globalActions";
-//import toaster from "toasted-notes";
-import { postSnooze, removePost } from "../../redux/actions/postActions";
+import {clearModal} from "../../redux/actions/globalActions";
+import {postSnooze, removePost} from "../../redux/actions/postActions";
 import RadioInput from "../forms/RadioInput";
-import { useToaster } from "../hooks";
-import { ModalHeaderSection } from "./index";
+import {useToaster} from "../hooks";
+import {ModalHeaderSection} from "./index";
 
 const InputContainer = styled.div`
   display: flex;
@@ -21,10 +20,9 @@ const InputContainer = styled.div`
 `;
 
 const PostSnoozeModal = (props) => {
-  const { type, post, topic_id } = props.data;
+  const {type, post, topic_id} = props.data;
 
   const dispatch = useDispatch();
-  //const user = useSelector(state => state.session.user);
   const toaster = useToaster();
 
   const minD = new Date();
@@ -35,11 +33,11 @@ const PostSnoozeModal = (props) => {
   const [customTimeValue, setCustomTimeValue] = useState(minD);
   const [showDateTimePicker, setShowDateTimePicker] = useState(null);
   const [validDate, setValidDate] = useState(true);
-  console.log(customTimeValue);
   const [modal, setModal] = useState(true);
+  const [loading, setLoading] = useState(false);
   const toggle = () => {
     setModal(!modal);
-    dispatch(clearModal({ type: type }));
+    dispatch(clearModal({type: type}));
   };
 
   const handleSetSnoozeTime = (e, setTime) => {
@@ -66,6 +64,11 @@ const PostSnoozeModal = (props) => {
   };
 
   const handleSnooze = (e) => {
+    if (loading)
+      return
+
+    setLoading(true);
+
     if (setTimeValue === "pick_data") {
       const date = new Date();
       if (customTimeValue > date) {
@@ -82,6 +85,7 @@ const PostSnoozeModal = (props) => {
 
     dispatch(
       postSnooze(payload, (err, res) => {
+        setLoading(false);
         toggle();
         if (err) return;
         dispatch(
@@ -201,15 +205,18 @@ const PostSnoozeModal = (props) => {
           >
             Next Week
           </RadioInput>
-          <RadioInput readOnly onClick={handleSelectPickDateTime} checked={setTimeValue === "pick_data"} value={"pick_data"} name={"role"}>
+          <RadioInput readOnly onClick={handleSelectPickDateTime} checked={setTimeValue === "pick_data"}
+                      value={"pick_data"} name={"role"}>
             Pick date and time
           </RadioInput>
-          {showDateTimePicker && <DateTimePicker minDate={minD} onChange={handlePickDateTime} value={customTimeValue} disableClock={true} />}
+          {showDateTimePicker &&
+          <DateTimePicker minDate={minD} onChange={handlePickDateTime} value={customTimeValue} disableClock={true}/>}
         </InputContainer>
         {validDate === false && <div>Date time is invalid. Please select new date time.</div>}
       </ModalBody>
       <ModalFooter>
         <Button disabled={!validDate} color="primary" onClick={handleSnooze}>
+          {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"/>}
           Snooze
         </Button>{" "}
         <Button outline color="secondary" onClick={toggle}>

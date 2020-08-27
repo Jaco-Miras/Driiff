@@ -7,18 +7,6 @@ import {EmailRegex} from "../../helpers/stringFormatter";
 
 const Wrapper = styled.form``;
 
-const FormGroup = styled.div`
-    .form-control {
-        margin-bottom: 0 !important;
-    }
-    .invalid-feedback {
-        text-align: left;
-    }
-    .input-group-text {
-      height: 36px;
-    }
-`;
-
 const RegisterPanel = (props) => {
 
   const { dictionary } = props;
@@ -144,7 +132,8 @@ const RegisterPanel = (props) => {
       <PasswordInput onChange={handleInputChange} isValid={formResponse.valid.password}
                      feedback={formResponse.message.password}/>
       <button className="btn btn-primary btn-block" onClick={handleRegister}>
-        {loading && <i className="fa fa-spin fa-spinner mr-2"/>} {dictionary.register}
+        {loading && <span className="spinner-border spinner-border-sm mr-2" role="status"
+                          aria-hidden="true"/>} {dictionary.register}
       </button>
       <hr/>
       <p className="text-muted">{dictionary.haveAccount}</p>

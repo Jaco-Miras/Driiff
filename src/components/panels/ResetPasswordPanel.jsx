@@ -92,7 +92,8 @@ const ResetPasswordPanel = (props) => {
           required autoFocus/>
       </div>
       <button className="btn btn-primary btn-block" onClick={handleSubmit}>
-        {loading && <i className="fa fa-spin fa-spinner mr-2"/>} {dictionary.submit}
+        {loading &&
+        <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"/>} {dictionary.submit}
       </button>
       <hr/>
       <p className="text-muted">{dictionary.takeADifferentAction}</p>

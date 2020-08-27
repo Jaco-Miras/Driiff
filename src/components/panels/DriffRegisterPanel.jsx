@@ -154,7 +154,8 @@ const DriffRegisterPanel = (props) => {
           </InputGroup>
         </FormGroup>
         <button className="btn btn-primary btn-block" onClick={handleContinue}>
-          {loading && <i className="fa fa-spin fa-spinner mr-2"/>} Continue
+          {loading &&
+          <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"/>} Continue
         </button>
         <hr/>
         <button className="btn btn-outline-light btn-sm" onClick={handleRegisterClick}>

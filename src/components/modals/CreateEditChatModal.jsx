@@ -88,13 +88,13 @@ const CreateEditChatModal = (props) => {
   /**
    * @todo refactor
    */
-  const { type, mode } = props.data;
+  const {type, mode} = props.data;
 
   const inputRef = useRef();
   const reactQuillRef = useRef();
   const dispatch = useDispatch();
   const history = useHistory();
-  const { localizeDate } = useTimeFormat();
+  const {localizeDate} = useTimeFormat();
   const [modal, setModal] = useState(true);
   const users = useSelector((state) => state.users.mentions);
   const channel = useSelector((state) => state.chat.selectedChannel);
@@ -107,12 +107,13 @@ const CreateEditChatModal = (props) => {
   const [valid, setValid] = useState(false);
   const [chatExists, setChatExists] = useState(false);
   const [searching, setSearching] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const channelActions = useChannelActions();
 
   const toggle = () => {
     setModal(!modal);
-    dispatch(clearModal({ type: type }));
+    dispatch(clearModal({type: type}));
   };
 
   const options = Object.values(users).map((u) => {
@@ -136,6 +137,11 @@ const CreateEditChatModal = (props) => {
   };
 
   const handleConfirm = () => {
+    if (loading)
+      return;
+
+    setLoading(true);
+
     if (mode === "edit") {
       const removed_members = channel.members
         .filter((m) => {
@@ -186,7 +192,9 @@ const CreateEditChatModal = (props) => {
       channel.members = selectedUsers;
       channel.title = inputValue;
 
-      channelActions.update(payload);
+      channelActions.update(payload, () => {
+        setLoading(false);
+      });
     } else {
       let placeholderId = require("shortid").generate();
       let timestamp = Math.round(+new Date() / 1000);
@@ -277,6 +285,8 @@ const CreateEditChatModal = (props) => {
 
       let old_channel = channel;
       const createCallback = (err, res) => {
+        setLoading(false);
+
         if (err) return;
         let payload = {
           ...channel,
@@ -290,18 +300,18 @@ const CreateEditChatModal = (props) => {
           replies:
             textOnly.trim().length !== 0
               ? [
-                  {
-                    ...message,
-                    id: res.data.last_reply.id,
-                    channel_id: res.data.channel.id,
-                    created_at: {
-                      timestamp: message.created_at.timestamp,
-                    },
-                    updated_at: {
-                      timestamp: message.created_at.timestamp,
-                    },
+                {
+                  ...message,
+                  id: res.data.last_reply.id,
+                  channel_id: res.data.channel.id,
+                  created_at: {
+                    timestamp: message.created_at.timestamp,
                   },
-                ]
+                  updated_at: {
+                    timestamp: message.created_at.timestamp,
+                  },
+                },
+              ]
               : [],
           selected: true,
           search: res.data.search,
@@ -401,7 +411,7 @@ const CreateEditChatModal = (props) => {
     }
   };
 
-  const { _t } = useTranslation();
+  const {_t} = useTranslation();
   const dictionary = {
     chatTitle: _t("MODAL.CHAT_TITLE", "Chat title"),
     people: _t("MODAL.PEOPLE", "People"),
@@ -412,29 +422,31 @@ const CreateEditChatModal = (props) => {
   };
 
   return (
-      <Modal isOpen={modal} toggle={toggle} size={"lg"} onOpened={onOpened} centered>
-        <ModalHeaderSection toggle={toggle}>{mode === "edit" ? dictionary.editChat : dictionary.newGroupChat}</ModalHeaderSection>
-        <ModalBody>
+    <Modal isOpen={modal} toggle={toggle} size={"lg"} onOpened={onOpened} centered>
+      <ModalHeaderSection
+        toggle={toggle}>{mode === "edit" ? dictionary.editChat : dictionary.newGroupChat}</ModalHeaderSection>
+      <ModalBody>
+        <WrapperDiv>
+          <Label for="chat">{dictionary.chatTitle}</Label>
+          <Input style={{borderRadius: "5px"}} defaultValue={mode === "edit" ? channel.title : ""}
+                 onChange={handleInputChange} valid={valid} innerRef={inputRef}/>
+        </WrapperDiv>
+        <WrapperDiv>
+          <Label for="people">{dictionary.people}</Label>
+          <SelectPeople options={options} value={selectedUsers} onChange={handleSelect}/>
+        </WrapperDiv>
+        {mode === "new" && (
           <WrapperDiv>
-            <Label for="chat">{dictionary.chatTitle}</Label>
-            <Input style={{borderRadius: "5px"}} defaultValue={mode === "edit" ? channel.title : ""}
-                   onChange={handleInputChange} valid={valid} innerRef={inputRef}/>
+            <Label for="firstMessage">{dictionary.firstMessage}</Label>
+            <StyledQuillEditor className="group-chat-input" modules={modules} ref={reactQuillRef}
+                               onChange={handleQuillChange}/>
           </WrapperDiv>
-          <WrapperDiv>
-            <Label for="people">{dictionary.people}</Label>
-            <SelectPeople options={options} value={selectedUsers} onChange={handleSelect}/>
-          </WrapperDiv>
-          {mode === "new" && (
-              <WrapperDiv>
-                <Label for="firstMessage">{dictionary.firstMessage}</Label>
-                <StyledQuillEditor className="group-chat-input"  modules={modules} ref={reactQuillRef}
-                                   onChange={handleQuillChange}/>
-              </WrapperDiv>
-          )}
-          <WrapperDiv>
-            <button className="btn btn-primary" disabled={searching || !valid} onClick={handleConfirm}>
-              {mode === "edit" ? dictionary.editChat : dictionary.createChat}
-            </button>
+        )}
+        <WrapperDiv>
+          <button className="btn btn-primary" disabled={searching || !valid} onClick={handleConfirm}>
+            {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"/>}
+            {mode === "edit" ? dictionary.editChat : dictionary.createChat}
+          </button>
         </WrapperDiv>
       </ModalBody>
     </Modal>

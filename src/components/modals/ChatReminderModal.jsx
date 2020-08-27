@@ -1,15 +1,15 @@
 import moment from "moment";
-import React, { useState } from "react";
+import React, {useState} from "react";
 import DateTimePicker from "react-datetime-picker";
-import { useDispatch, useSelector } from "react-redux";
-import { Button, Modal, ModalBody, ModalFooter } from "reactstrap";
+import {useDispatch, useSelector} from "react-redux";
+import {Button, Modal, ModalBody, ModalFooter} from "reactstrap";
 import styled from "styled-components";
-import { formatHoursAMPM, formatMonthsOrdinalDay, formatWeeekDayName } from "../../helpers/dateFormatter";
-import { postChatReminder } from "../../redux/actions/chatActions";
-import { clearModal } from "../../redux/actions/globalActions";
+import {formatHoursAMPM, formatMonthsOrdinalDay, formatWeeekDayName} from "../../helpers/dateFormatter";
+import {postChatReminder} from "../../redux/actions/chatActions";
+import {clearModal} from "../../redux/actions/globalActions";
 import RadioInput from "../forms/RadioInput";
-import { useToaster, useTranslation } from "../hooks";
-import { ModalHeaderSection } from "./index";
+import {useToaster, useTranslation} from "../hooks";
+import {ModalHeaderSection} from "./index";
 
 const InputContainer = styled.div`
   display: flex;
@@ -30,6 +30,7 @@ const ChatReminderModal = (props) => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.session.user);
   const toaster = useToaster();
+  const [loading, setLoading] = useState(false);
 
   const [setTimeValue, setSetTimeValue] = useState("20m");
   const [customTimeValue, setCustomTimeValue] = useState(new Date());
@@ -69,6 +70,11 @@ const ChatReminderModal = (props) => {
   };
 
   const handleSnooze = () => {
+    if (loading)
+      return;
+
+    setLoading(true);
+
     let payload = {
       message_id: message.id,
       set_time: setTimeValue === "pick_data" ? moment.utc(new Date(customTimeValue)).format("YYYY-MM-DD HH:mm:ss") : setTimeValue,
@@ -76,6 +82,7 @@ const ChatReminderModal = (props) => {
 
     dispatch(
       postChatReminder(payload, () => {
+        setLoading(false);
         toggle();
         let messageAuthor = "You";
         let messageTime = "";
@@ -209,6 +216,7 @@ const ChatReminderModal = (props) => {
       </ModalBody>
       <ModalFooter>
         <Button color="primary" onClick={handleSnooze}>
+          {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"/>}
           {dictionary.snooze}
         </Button>{" "}
         <Button outline color="secondary" onClick={toggle}>
