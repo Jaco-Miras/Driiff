@@ -306,3 +306,17 @@ export function deleteWorkspaceFolder(payload) {
     data: payload,
   });
 }
+
+/**
+ * @param {Object} payload
+ * @param {number} payload.folder_id
+ * @returns {Promise<*>}
+ */
+export function getWorkspaceFolder(payload) {
+  let url = `/v2/workspace/${payload.folder_id}?is_folder=1`;
+  return apiCall({
+    method: "GET",
+    url: url,
+    data: payload,
+  });
+}
