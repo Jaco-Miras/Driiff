@@ -14,6 +14,7 @@ import {NavLink, SvgIcon, SvgIconFeather} from "../../common";
 import {useTranslation, useWorkspace} from "../../hooks";
 import {ExternalWorkspaceList, WorkspaceList} from "../../workspace";
 import {PersonalLinks, QuickLinks} from "../../list/links";
+import Tooltip from "react-tooltip-lite";
 
 const Wrapper = styled.div`
   .navigation-menu-tab-header {
@@ -161,6 +162,12 @@ const NavNewWorkspace = styled.button`
   }
 `;
 
+const StyledTooltip = styled(Tooltip)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
 const MainNavigationTabPanel = (props) => {
   const {className = "", isExternal} = props;
   const history = useHistory();
@@ -207,12 +214,12 @@ const MainNavigationTabPanel = (props) => {
     //eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // const toggleTooltip = () => {
-  //   let tooltips = document.querySelectorAll("span.react-tooltip-lite");
-  //   tooltips.forEach((tooltip) => {
-  //     tooltip.parentElement.classList.toggle("tooltip-active");
-  //   });
-  // };
+  const toggleTooltip = () => {
+    let tooltips = document.querySelectorAll("span.react-tooltip-lite");
+    tooltips.forEach((tooltip) => {
+      tooltip.parentElement.classList.toggle("tooltip-active");
+    });
+  };
 
   //const activeTab = useSelector((state) => state.workspaces.activeTab);
 
@@ -310,7 +317,12 @@ const MainNavigationTabPanel = (props) => {
 
       <div className="your-workspaces-title">
         {dictionary.yourWorkspaces}
-        {!isExternal && <FolderPlus onClick={handleShowFolderModal} icon="folder-plus" />}
+        {
+          !isExternal && 
+          <StyledTooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="New folder">
+            <FolderPlus onClick={handleShowFolderModal} icon="folder-plus" />
+          </StyledTooltip>
+        }
       </div>
       <div className="navigation-menu-group">
         <div id="elements" className="open">
