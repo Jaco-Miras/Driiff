@@ -65,6 +65,7 @@ import {
 import {getOnlineUsers, getUser, incomingUpdatedUser, incomingExternalUser} from "../../redux/actions/userAction";
 import {
     getWorkspace,
+    getWorkspaceFolder,
     incomingDeletedWorkspaceFolder,
     incomingArchivedWorkspaceChannel,
     incomingMovedTopic,
@@ -466,7 +467,17 @@ class SocketListeners extends React.PureComponent {
             .listen(".new-workspace", (e) => {
                 console.log(e, "new workspace");
                 if (e.topic !== undefined) {
-                    this.props.incomingWorkspace(e);
+                    if (e.workspace) {
+                        if (!this.props.folders.hasOwnProperty(e.workspace.id)) {
+                            this.props.getWorkspaceFolder({folder_id: e.workspace.id}, (err,res) => {
+                                if (err) return;
+                                this.props.incomingWorkspace(e);
+                            });
+                        } 
+                    } else {
+                        this.props.incomingWorkspace(e);
+                    }
+                    
                     this.props.getChannel({code: e.channel.code}, (err, res) => {
                         if (err) return;
                         let channel = {
@@ -493,7 +504,14 @@ class SocketListeners extends React.PureComponent {
                     if (e.new_member_ids.length > 0) {
                         const isMember = e.new_member_ids.some((id) => id === this.props.user.id);
                         if (isMember) {
-                            this.props.getWorkspace({topic_id: e.id});
+                            if (e.workspace_id !== 0 && !this.props.folders.hasOwnProperty(e.workspace_id)) {
+                                this.props.getWorkspaceFolder({folder_id: e.workspace_id}, (err,res) => {
+                                    if (err) return;
+                                    this.props.getWorkspace({topic_id: e.id});
+                                });
+                            } else {
+                                this.props.getWorkspace({topic_id: e.id});
+                            }
                             // get the folder if the workspace folder does not exists yet
                         }
                     }
@@ -577,7 +595,15 @@ class SocketListeners extends React.PureComponent {
                     if (e.new_member_ids.length > 0) {
                         const isMember = e.new_member_ids.some((id) => id === this.props.user.id);
                         if (isMember) {
-                            this.props.getWorkspace({topic_id: e.id});
+                            if (e.workspace_id !== 0 && !this.props.folders.hasOwnProperty(e.workspace_id)) {
+                                this.props.getWorkspaceFolder({folder_id: e.workspace_id}, (err,res) => {
+                                    if (err) return;
+                                    this.props.getWorkspace({topic_id: e.id});
+                                });
+                            } else {
+                                this.props.getWorkspace({topic_id: e.id});
+                            }
+                            // get the folder if the workspace folder does not exists yet
                         }
                     }
                     if (e.remove_member_ids.length > 0) {
@@ -754,7 +780,7 @@ function mapStateToProps({
                              session: {user},
                              settings: {userSettings},
                              chat: {channels, selectedChannel},
-                             workspaces: {workspaces, workspacePosts},
+                             workspaces: {workspaces, workspacePosts, folders},
                              global: {isBrowserActive}
                          }) {
     return {
@@ -765,6 +791,7 @@ function mapStateToProps({
         isBrowserActive,
         workspaces,
         workspacePosts,
+        folders
     };
 }
 
@@ -834,7 +861,8 @@ function mapDispatchToProps(dispatch) {
         incomingDeletedGoogleFile: bindActionCreators(incomingDeletedGoogleFile, dispatch),
         incomingWorkspaceRole: bindActionCreators(incomingWorkspaceRole, dispatch),
         incomingDeletedWorkspaceFolder: bindActionCreators(incomingDeletedWorkspaceFolder, dispatch),
-        incomingExternalUser: bindActionCreators(incomingExternalUser, dispatch)
+        incomingExternalUser: bindActionCreators(incomingExternalUser, dispatch),
+        getWorkspaceFolder: bindActionCreators(getWorkspaceFolder, dispatch),
     };
 }
 

@@ -10,6 +10,7 @@ import {
   fetchTimeline as fetchTimelineService,
   getPostStatusCount as getPostStatusCountService,
   getWorkspace as getWorkspaceService,
+  getWorkspaceFolder as getWorkspaceFolderService,
   getWorkspacePostDetail as getWorkspacePostDetailService,
   getWorkspaces as getWorkspacesService,
   getWorkspaceTopics as getWorkspaceTopicsService,
@@ -166,4 +167,8 @@ export function deleteWorkspaceFolder(payload, callback) {
 
 export function incomingDeletedWorkspaceFolder(payload, callback) {
   return SimpleDispatchActionToReducer("INCOMING_DELETED_WORKSPACE_FOLDER", payload, callback);
+}
+
+export function getWorkspaceFolder(payload, callback) {
+  return dispatchActionToReducer(getWorkspaceFolderService(payload), "GET_FOLDER_START", "GET_FOLDER_SUCCESS", "GET_FOLDER_FAIL", callback);
 }

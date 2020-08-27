@@ -1029,6 +1029,17 @@ export default (state = INITIAL_STATE, action) => {
         return state;
       }
     }
+    case "GET_FOLDER_SUCCESS": {
+      let updatedFolders = { ...state.folders };
+      updatedFolders[action.data.workspace_id] = {
+        ...action.data.workspace_data,
+        workspace_ids: action.data.workspace_data.topics.map((t) => t.id)
+      }
+      return {
+        ...state,
+        folders: updatedFolders
+      }
+    }
     case "UPDATE_WORKSPACE_COUNTER": {
       let updatedWorkspaces = { ...state.workspaces };
       let updatedTopic = { ...state.activeTopic };
