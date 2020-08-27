@@ -20,7 +20,7 @@ import SocketListeners from "../components/socket/socketListeners";
 import {getFiles} from "../redux/actions/fileActions";
 import {getAllRecipients, getConnectedSlugs} from "../redux/actions/globalActions";
 import {getNotifications} from "../redux/actions/notificationActions";
-import {getMentions} from "../redux/actions/userAction";
+import {getMentions, getUsers} from "../redux/actions/userAction";
 import {getAPIUrl, getCurrentDriffUrl} from "../helpers/slugHelper";
 import usePushNotification from "../components/webpush/usePushNotification";
 
@@ -93,6 +93,7 @@ const MainLayout = (props) => {
     document.body.classList.remove("form-membership");
     dispatch(getAllRecipients());
     dispatch(getMentions());
+    dispatch(getUsers());
     dispatch(getConnectedSlugs());
     if (Object.keys(files).length === 0) {
       dispatch(getFiles({sort: "desc"}));

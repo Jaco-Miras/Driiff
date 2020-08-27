@@ -142,6 +142,7 @@ export default (state = INITIAL_STATE, action) => {
           members: action.data.members,
           description: action.data.description,
           updated_at: action.data.updated_at,
+          is_lock: action.data.private,
           folder_id: action.data.workspace_id === 0 ? null : action.data.workspace_id,
           folder_name: action.data.workspace_id === 0 ? null : action.data.current_workspace_folder_name 
         };

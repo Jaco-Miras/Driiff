@@ -40,7 +40,8 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "GET_USERS_SUCCESS":
-      let users = state.users;
+      console.log(action.data)
+      let users = {...state.users};
       action.data.users.forEach((item) => {
         users[item.id] = {
           ...users[item.id],

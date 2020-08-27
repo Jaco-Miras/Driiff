@@ -58,11 +58,6 @@ const WrapperDiv = styled(InputGroup)`
   }
 `;
 
-// const StyledDescriptionInput = styled(DescriptionInput)`
-//     height: ${props => props.height}px;
-//     max-height: 300px;
-// `;
-
 const CreateWorkspaceFolderModal = (props) => {
   const {type, mode, item = null} = props.data;
 
@@ -77,7 +72,10 @@ const CreateWorkspaceFolderModal = (props) => {
       description: _t("DESCRIPTION", "Description"),
       remove: _t("WORKSPACE.REMOVE", "Remove"),
       cancel: _t("WORKSPACE.CANCEL", "Cancel"),
-      removeFolderText: _t("WORKSPACE.REMOVE_FOLDER_TEXT", "Are you sure that you want to remove this folder?")
+      removeFolderText: _t("WORKSPACE.REMOVE_FOLDER_TEXT", "Are you sure that you want to remove this folder?"),
+      confirm: _t("WORKSPACE.CONFIRM", "Confirm"),
+      lockedFolder: _t("WORKSPACE.LOCKED_FOLDER", "Locked folder"),
+      lockedFolderText: _t("WORKSPACE.LOCKED_FOLDER_TEXT", "Only members can view and search this workspace."),
   };
   const toaster = useToaster();
   const inputRef = useRef();
@@ -201,8 +199,6 @@ const CreateWorkspaceFolderModal = (props) => {
     if (loading)
       return;
 
-    setLoading(true);
-
     let payload = {
       name: form.name,
       description: form.description,
@@ -210,75 +206,112 @@ const CreateWorkspaceFolderModal = (props) => {
       is_folder: 1,
       is_lock: form.is_private ? 1 : 0,
     };
+    
     if (mode === "edit") {
       payload = {
         ...payload,
         workspace_id: form.workspace_id,
         topic_id: form.workspace_id,
       };
-      dispatch(
-        updateWorkspace(payload, (err, res) => {
-          setLoading(false);
+      
+      const handleSubmit = () => {
+        setLoading(true);
+        dispatch(
+          updateWorkspace(payload, (err, res) => {
+            setLoading(false);
+  
+            if (err) {
+              console.log(err);
+              toaster.error(
+                <span>
+                  Folder update failed.
+                  <br/>
+                  Please try again.
+                </span>
+              );
+            }
+            if (res) {
+              toaster.success(
+                <span>
+                  <b>{form.name}</b> folder is updated
+                </span>
+              );
+              toggle();
+            }
+          })
+        );
+      };
+      const handleShowConfirmation = () => {
+        let confirmModal = {
+            type: "confirmation",
+            headerText: dictionary.lockedFolder,
+            submitText: dictionary.confirm,
+            cancelText: dictionary.cancel,
+            bodyText: dictionary.lockedFolderText,
+            actions: {
+                onSubmit: handleSubmit,
+            },
+        };
+    
+        dispatch(addToModals(confirmModal));
+      };
 
-          if (err) {
-            console.log(err);
-            toaster.error(
-              <span>
-                Folder update failed.
-                <br/>
-                Please try again.
-              </span>
-            );
-          }
-          if (res) {
-            toaster.success(
-              <span>
-                <b>{form.name}</b> folder is updated
-              </span>
-            );
-            toggle();
-          }
-        })
-      );
+      if (item.is_lock !== payload.is_lock && payload.is_lock === 1) {
+        handleShowConfirmation();
+      } else {
+        handleSubmit();
+      }
+      
     } else {
-      dispatch(
-        createWorkspace(payload, (err, res) => {
-          setLoading(false);
+      const handleSubmit = () => {
+        setLoading(true);
+        dispatch(
+          createWorkspace(payload, (err, res) => {
+            setLoading(false);
+  
+            if (err) {
+              console.log(err);
+              toaster.error(
+                <span>
+                  Folder creation failed.
+                  <br/>
+                  Please try again.
+                </span>
+              );
+            }
+            if (res) {
+              toaster.success(
+                <span>
+                  <b>{form.name}</b> folder is created
+                </span>
+              );
+              toggle();
+            }
+          })
+        );
+      };
+      const handleShowConfirmation = () => {
+        let confirmModal = {
+            type: "confirmation",
+            headerText: dictionary.lockedFolder,
+            submitText: dictionary.confirm,
+            cancelText: dictionary.cancel,
+            bodyText: dictionary.lockedFolderText,
+            actions: {
+                onSubmit: handleSubmit,
+            },
+        };
+    
+        dispatch(addToModals(confirmModal));
+      };
 
-          if (err) {
-            console.log(err);
-            toaster.error(
-              <span>
-                Folder creation failed.
-                <br/>
-                Please try again.
-              </span>
-            );
-          }
-          if (res) {
-            toaster.success(
-              <span>
-                <b>{form.name}</b> folder is created
-              </span>
-            );
-            toggle();
-          }
-        })
-      );
+      if (payload.is_lock === 1) {
+        handleShowConfirmation();
+      } else {
+        handleSubmit();
+      }
     }
   }, [dispatch, toggle, activeTab, form.description, form.is_private, form.name, valid.name, setForm, mode]);
-
-  // const handleQuillChange = useCallback(
-  //   (content, delta, source, editor) => {
-  //     const textOnly = editor.getText(content);
-  //     setForm((prevState) => ({
-  //       ...prevState,
-  //       description: content,
-  //       textOnly: textOnly,
-  //     }));
-  //   },
-  //   [setForm]
-  // );
 
   const handleRemoveFolder = () => {
     dispatch(
@@ -307,7 +340,7 @@ const CreateWorkspaceFolderModal = (props) => {
     };
 
     dispatch(addToModals(payload));
-};
+  };
 
   const onOpened = () => {
     if (inputRef && inputRef.current) {

@@ -160,6 +160,9 @@ const CreateEditWorkspaceModal = (props) => {
         cancel: _t("BUTTON.CANCEL", "Cancel"),
         archiveBodyText: _t("TEXT.ARCHIVE_CONFIRMATION", "Are you sure you want to archive this workspace?"),
         unarchiveBodyText: _t("TEXT.UNARCHIVE_CONFIRMATION", "Are you sure you want to unarchive this workspace?"),
+        confirm: _t("WORKSPACE.CONFIRM", "Confirm"),
+        lockedWorkspace: _t("WORKSPACE.LOCKED_WORKSPACE", "Locked workspace"),
+        lockedWorkspaceText: _t("WORKSPACE.LOCKED_WORKSPACE_TEXT", "Only members can view and search this workspace."),
     };
 
     const history = useHistory();
@@ -349,7 +352,6 @@ const CreateEditWorkspaceModal = (props) => {
     const handleConfirm = () => {
         if (Object.values(valid).filter((v) => !v).length) return;
 
-        setLoading(true);
         let payload = {
             name: form.name,
             description: form.description,
@@ -421,115 +423,166 @@ const CreateEditWorkspaceModal = (props) => {
                     removed_members: removed_members,
                 })}`,
             };
-            const cb = (err, res) => {
-                if (err) return;
-                handleDeleteFileAttachements();
-                if (attachedFiles.length) {
-                    let formData = new FormData();
-                    for (const i in attachedFiles) {
-                        formData.append("files[" + i + "]", attachedFiles[i].rawFile);
+            
+            const handleSubmit = () => {
+                setLoading(true);
+                toggle();
+                const cb = (err, res) => {
+                    if (err) return;
+                    handleDeleteFileAttachements();
+                    if (attachedFiles.length) {
+                        let formData = new FormData();
+                        for (const i in attachedFiles) {
+                            formData.append("files[" + i + "]", attachedFiles[i].rawFile);
+                        }
+    
+                        dispatch(
+                            setPendingUploadFilesToWorkspace({
+                                is_primary: 1,
+                                topic_id: res.data.id,
+                                files: formData,
+                            })
+                        );
                     }
-
-                    dispatch(
-                        setPendingUploadFilesToWorkspace({
-                            is_primary: 1,
-                            topic_id: res.data.id,
-                            files: formData,
-                        })
-                    );
+                    if (form.selectedFolder && typeof form.selectedFolder.value === "number") {
+                        history.push(`/workspace/dashboard/${form.selectedFolder.value}/${replaceChar(form.selectedFolder.label)}/${res.data.id}/${replaceChar(form.name)}`);
+                    } else {
+                        history.push(`/workspace/dashboard/${res.data.id}/${replaceChar(form.name)}`);
+                    }
+                    dispatch(fetchTimeline({topic_id: item.id}));
+                };
+    
+                dispatch(updateWorkspace(payload, cb));
+                if (removed_members.some((id) => id === user.id)) {
+                    dispatch(leaveWorkspace({workspace_id: item.id, channel_id: item.channel.id}));
                 }
-                if (form.selectedFolder && typeof form.selectedFolder.value === "number") {
-                    history.push(`/workspace/dashboard/${form.selectedFolder.value}/${replaceChar(form.selectedFolder.label)}/${res.data.id}/${replaceChar(form.name)}`);
-                } else {
-                    history.push(`/workspace/dashboard/${res.data.id}/${replaceChar(form.name)}`);
-                }
-                dispatch(fetchTimeline({topic_id: item.id}));
             };
-            dispatch(updateWorkspace(payload, cb));
-            if (removed_members.some((id) => id === user.id)) {
-                dispatch(leaveWorkspace({workspace_id: item.id, channel_id: item.channel.id}));
+
+            const handleShowConfirmation = () => {
+                let confirmModal = {
+                    type: "confirmation",
+                    headerText: dictionary.lockedWorkspace,
+                    submitText: dictionary.confirm,
+                    cancelText: dictionary.cancel,
+                    bodyText: dictionary.lockedWorkspaceText,
+                    actions: {
+                        onSubmit: handleSubmit,
+                    },
+                };
+            
+                dispatch(addToModals(confirmModal));
+            };
+
+            if (item.is_lock !== payload.is_lock && payload.is_lock === 1) {
+                handleShowConfirmation();
+              } else {
+                handleSubmit();
             }
+            
         } else {
             console.log(payload, form)
-            dispatch(
-                createWorkspace(payload, (err, res) => {
-                    if (err) {
-                        console.log(err);
-                        setLoading(false);
-                        toaster.warning(
-                            <span>
-                Workspace creation failed.
-                <br/>
-                Please try again.
-              </span>
-                        );
-                    }
+            const handleShowConfirmation = () => {
+                let confirmModal = {
+                    type: "confirmation",
+                    headerText: dictionary.lockedWorkspace,
+                    submitText: dictionary.confirm,
+                    cancelText: dictionary.cancel,
+                    bodyText: dictionary.lockedWorkspaceText,
+                    actions: {
+                        onSubmit: handleSubmit,
+                    },
+                };
+            
+                dispatch(addToModals(confirmModal));
+            };
 
-                    if (res) {
-                        //redirect url
-                        if (form.selectedFolder && typeof form.selectedFolder.value === "number") {
-                            history.push(`/workspace/dashboard/${form.selectedFolder.value}/${replaceChar(form.selectedFolder.label)}/${res.data.id}/${replaceChar(form.name)}`, { folder_id: form.selectedFolder.value, workspace_id: res.data.id});
-                        } else {
-                            history.push(`/workspace/dashboard/${res.data.id}/${replaceChar(form.name)}`, { folder_id: null, workspace_id: res.data.id});
-                        }
-                        if (attachedFiles.length) {
-                            let formData = new FormData();
-                            for (const i in attachedFiles) {
-                                formData.append("files[" + i + "]", attachedFiles[i].rawFile);
-                            }
-
-                            dispatch(
-                                setPendingUploadFilesToWorkspace({
-                                    is_primary: 1,
-                                    topic_id: res.data.id,
-                                    files: formData,
-                                })
+            const handleSubmit = () => {
+                setLoading(true);
+                toggle();
+                dispatch(
+                    createWorkspace(payload, (err, res) => {
+                        if (err) {
+                            console.log(err);
+                            setLoading(false);
+                            toaster.warning(
+                                <span>
+                    Workspace creation failed.
+                    <br/>
+                    Please try again.
+                  </span>
                             );
                         }
-                        let newWorkspace = {
-                            id: res.data.id,
-                            name: res.data.topic.name,
-                            is_external: res.data.is_external,
-                            is_lock: res.data.is_lock,
-                            description: res.data.topic.description,
-                            unread_count: 0,
-                            type: "WORKSPACE",
-                            key_id: res.data.key_id,
-                            active: 1,
-                            unread_chats: 0,
-                            unread_posts: 0,
-                            folder_id: res.data.workspace ? res.data.workspace.id : null,
-                            folder_name: res.data.workspace ? res.data.workspace.name : null,
-                            member_ids: res.data.member_ids,
-                            members: res.data.members,
-                            channel: {
-                                code: res.data.channel.code,
-                                id: res.data.channel.id,
-                                loaded: false
-                            },
-                            created_at: res.data.topic.created_at,
-                            updated_at: res.data.topic.created_at,
+    
+                        if (res) {
+                            //redirect url
+                            if (form.selectedFolder && typeof form.selectedFolder.value === "number") {
+                                history.push(`/workspace/dashboard/${form.selectedFolder.value}/${replaceChar(form.selectedFolder.label)}/${res.data.id}/${replaceChar(form.name)}`, { folder_id: form.selectedFolder.value, workspace_id: res.data.id});
+                            } else {
+                                history.push(`/workspace/dashboard/${res.data.id}/${replaceChar(form.name)}`, { folder_id: null, workspace_id: res.data.id});
+                            }
+                            if (attachedFiles.length) {
+                                let formData = new FormData();
+                                for (const i in attachedFiles) {
+                                    formData.append("files[" + i + "]", attachedFiles[i].rawFile);
+                                }
+    
+                                dispatch(
+                                    setPendingUploadFilesToWorkspace({
+                                        is_primary: 1,
+                                        topic_id: res.data.id,
+                                        files: formData,
+                                    })
+                                );
+                            }
+                            let newWorkspace = {
+                                id: res.data.id,
+                                name: res.data.topic.name,
+                                is_external: res.data.is_external,
+                                is_lock: res.data.is_lock,
+                                description: res.data.topic.description,
+                                unread_count: 0,
+                                type: "WORKSPACE",
+                                key_id: res.data.key_id,
+                                active: 1,
+                                unread_chats: 0,
+                                unread_posts: 0,
+                                folder_id: res.data.workspace ? res.data.workspace.id : null,
+                                folder_name: res.data.workspace ? res.data.workspace.name : null,
+                                member_ids: res.data.member_ids,
+                                members: res.data.members,
+                                channel: {
+                                    code: res.data.channel.code,
+                                    id: res.data.channel.id,
+                                    loaded: false
+                                },
+                                created_at: res.data.topic.created_at,
+                                updated_at: res.data.topic.created_at,
+                            }
+                            
+                            dispatch(setActiveTopic(newWorkspace));
+    
+                            toaster.success(
+                                <span>
+                    <b>{form.name}</b> workspace is created
+                                    {form.selectedFolder !== null && (
+                                        <>
+                                            {" "}
+                                            <b>{form.selectedFolder.label}</b> under directory
+                                        </>
+                                    )}
+                                    .
+                  </span>
+                            );
                         }
-                        
-                        dispatch(setActiveTopic(newWorkspace));
-
-                        toaster.success(
-                            <span>
-                <b>{form.name}</b> workspace is created
-                                {form.selectedFolder !== null && (
-                                    <>
-                                        {" "}
-                                        <b>{form.selectedFolder.label}</b> under directory
-                                    </>
-                                )}
-                                .
-              </span>
-                        );
-                    }
-                })
-            );
+                    })
+                );
+            };
+            if (payload.is_lock === 1) {
+                handleShowConfirmation();
+            } else {
+                handleSubmit();
+            }
         }
-        toggle();
     };
 
     const handleQuillChange = useCallback(
