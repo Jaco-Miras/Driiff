@@ -45,10 +45,7 @@ const LinkNav = styled.ul`
       display: flex;      
       width: 100%;
       align-items: center;
-      
-      &:not(".nav-action") {
-        justify-content: space-between;
-      }
+      justify-content: space-between;
       
       > div {
         display: flex;
@@ -159,7 +156,7 @@ const PersonalLinks = (props) => {
         }
         {
           generalSettings.personal_links.length < 5 &&
-          <li className="pt-2 nav-action cursor-pointer" onClick={handleAddItemClick}>
+          <li className="nav-action cursor-pointer" onClick={handleAddItemClick}>
             <div><SvgIconFeather icon="circle-plus" width={24} height={24}/> {dictionary.addShortcut}</div>
           </li>
         }
