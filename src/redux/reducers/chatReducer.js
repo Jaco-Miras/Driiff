@@ -963,10 +963,10 @@ export default function (state = INITIAL_STATE, action) {
       if (Object.keys(updatedChannels).length && updatedChannels.hasOwnProperty(action.data.channel_id)) {
         let channel = {
           ...updatedChannels[action.data.channel_id],
-          members: [...updatedChannels[action.data.channel_id].members, action.data.user],
+          members: [...updatedChannels[action.data.channel_id].members, ...action.data.users],
           replies: [...updatedChannels[action.data.channel_id].replies, action.data.message]
         }
-        updatedChannels[action.data.channel_id].members = [...updatedChannels[action.data.channel_id].members, action.data.user];
+        updatedChannels[action.data.channel_id].members = [...updatedChannels[action.data.channel_id].members, ...action.data.users];
         updatedChannels[action.data.channel_id].replies = [...updatedChannels[action.data.channel_id].replies, action.data.message];
         if (channel.id === updatedChannel.id) {
           updatedChannel = channel;
