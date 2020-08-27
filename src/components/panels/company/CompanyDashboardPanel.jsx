@@ -1,8 +1,8 @@
 import React from "react";
 import styled from "styled-components";
-import {useCompanyPosts, useTranslation} from "../../hooks";
-import TimelinePanel from "../common/TimelinePanel";
+import {useCompanyDashboard, useCompanyPosts, useTranslation} from "../../hooks";
 import {DashboardTeam, RecentPosts} from "../dashboard";
+import {CompanyTimelinePanel} from "../common";
 
 const Wrapper = styled.div`
   overflow: auto !important;
@@ -22,6 +22,14 @@ const CompanyDashboardPanel = (props) => {
 
   const {params} = match;
   const {_t} = useTranslation();
+  const {
+    timelineInit,
+    timelineItems,
+    recentPostsInit,
+    recentPostsItems,
+    membersInit,
+    membersItems
+  } = useCompanyDashboard();
   const {posts} = useCompanyPosts();
   const width = window.innerWidth;
 
@@ -44,22 +52,27 @@ const CompanyDashboardPanel = (props) => {
         {width > 620 ?
           <>
             <div className={"col-md-6"}>
-              <TimelinePanel timeline={timeline} actions={actions} workspace={workspace} dictionary={dictionary}/>
+              <CompanyTimelinePanel
+                init={timelineInit} timeline={timelineItems} actions={actions} workspace={workspace}
+                dictionary={dictionary}/>
             </div>
-
             <div className={"col-md-6"}>
-              <DashboardTeam workspace={workspace} onEditClick={handleEditClick} isMember={isMember}
-                             isExternal={isExternal} dictionary={dictionary}/>
-              <RecentPosts posts={posts} dictionary={dictionary}/>
+              <DashboardTeam
+                workspace={workspace} onEditClick={handleEditClick} isMember={isMember}
+                isExternal={isExternal} dictionary={dictionary}/>
+              <RecentPosts posts={recentPostsItems} dictionary={dictionary}/>
             </div>
           </>
           :
           <>
             <div className={"col-md-12"}>
-              <DashboardTeam workspace={workspace} onEditClick={handleEditClick} isMember={isMember}
-                             isExternal={isExternal} dictionary={dictionary}/>
+              <DashboardTeam
+                workspace={workspace} onEditClick={handleEditClick} isMember={isMember}
+                isExternal={isExternal} dictionary={dictionary}/>
               <RecentPosts posts={posts} dictionary={dictionary}/>
-              <TimelinePanel timeline={timeline} actions={actions} params={params} dictionary={dictionary}/>
+              <CompanyTimelinePanel
+                init={timelineInit}
+                timeline={timeline} actions={actions} params={params} dictionary={dictionary}/>
             </div>
           </>
         }
