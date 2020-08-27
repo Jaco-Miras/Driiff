@@ -376,8 +376,8 @@ export default (state = INITIAL_STATE, action) => {
       if (Object.keys(updatedWorkspaces).length) {
         Object.values(updatedWorkspaces).forEach((ws) => {
           if (ws.channel.id === action.data.channel_id) {
-            updatedWorkspaces[ws.id].members = [...updatedWorkspaces[ws.id].members, action.data.user];
-            updatedWorkspaces[ws.id].member_ids = [...updatedWorkspaces[ws.id].member_ids, action.data.user.id];
+            updatedWorkspaces[ws.id].members = [...updatedWorkspaces[ws.id].members, ...action.data.users];
+            updatedWorkspaces[ws.id].member_ids = [...updatedWorkspaces[ws.id].member_ids, ...action.data.users.map((u) => u.id)];
             activeTopic = updatedWorkspaces[ws.id];
           }
         })

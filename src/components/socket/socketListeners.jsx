@@ -704,32 +704,61 @@ class SocketListeners extends React.PureComponent {
             })
             .listen(".new-added-member-chat", (e) => {
                 console.log("new chat member", e);
-                let data = JSON.parse(e.body.replace("CHANNEL_UPDATE::", ""));
-                let message = {
-                    ...e,
-                    is_deleted: false,
-                    reactions: [],
-                    last_reply: null,
-                    body: e.body,
-                    created_at: e.created_at,
-                    updated_at: e.created_at,
-                    files: [],
-                    id: e.id,
-                    quote: null,
-                    user: null,
-                    unfurls: [],
-                    is_read: false,
-                    channel_id: e.channel_id,
-                    //g_date: this.props.localizeDate(e.created_at.timestamp),
-                    code: e.code,
-                };
-                let payload = {
-                    user: {...data.author, active: 1, type: "internal", has_accepted: true},
-                    channel_id: e.channel_id,
-                    data: e,
-                    message: message,
+                if (e.id) {
+                    let data = JSON.parse(e.body.replace("CHANNEL_UPDATE::", ""));
+                    let message = {
+                        ...e,
+                        is_deleted: false,
+                        reactions: [],
+                        last_reply: null,
+                        body: e.body,
+                        created_at: e.created_at,
+                        updated_at: e.created_at,
+                        files: [],
+                        id: e.id,
+                        quote: null,
+                        user: null,
+                        unfurls: [],
+                        is_read: false,
+                        channel_id: e.channel_id,
+                        //g_date: this.props.localizeDate(e.created_at.timestamp),
+                        code: e.code,
+                    };
+                    
+                    let newMembers = Object.values(this.props.mentions).filter((u) => {
+                        return data.added_members.some((id) => id === u.id);
+                    }).map((m) => {
+                        return {
+                            ...m,
+                            bot_profile_image_link: null,
+                            last_visited_at: null
+                        }
+                    });
+                    
+                    let payload = {
+                        users: newMembers,
+                        channel_id: e.channel_id,
+                        data: e,
+                        message: message,
+                    }
+                    
+                    if (!this.props.channels.hasOwnProperty(e.channel_id) && data.author.id !== this.props.user.id) {
+                        this.props.getChannel({code: e.code}, (err, res) => {
+                            if (err) return;
+                            let channel = {
+                                ...res.data,
+                                hasMore: true,
+                                skip: 0,
+                                replies: [],
+                                selected: true,
+                                is_archived: res.data.is_archived === 1
+                            };
+                            this.props.addToChannels(channel);
+                        });
+                    } else {
+                        this.props.joinWorkspaceReducer(payload);
+                    }
                 }
-                this.props.joinWorkspaceReducer(payload);
             })
             .listen(".archived-chat-channel", (e) => {
                 console.log(e, "archived chat");
@@ -781,7 +810,8 @@ function mapStateToProps({
                              settings: {userSettings},
                              chat: {channels, selectedChannel},
                              workspaces: {workspaces, workspacePosts, folders},
-                             global: {isBrowserActive}
+                             global: {isBrowserActive},
+                             users: {mentions}
                          }) {
     return {
         user,
@@ -791,7 +821,8 @@ function mapStateToProps({
         isBrowserActive,
         workspaces,
         workspacePosts,
-        folders
+        folders,
+        mentions
     };
 }
 

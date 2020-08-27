@@ -116,7 +116,7 @@ const CreateEditChatModal = (props) => {
     dispatch(clearModal({type: type}));
   };
 
-  const options = Object.values(users).map((u) => {
+  const options = Object.values(users).filter((u) => u.type === "internal").map((u) => {
     return {
       ...u,
       value: u.id,
