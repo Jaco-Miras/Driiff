@@ -1,18 +1,18 @@
-import React, { useState } from "react";
-import { useDispatch } from "react-redux";
-import { Button, Modal, ModalBody, ModalFooter } from "reactstrap";
-import { clearModal } from "../../redux/actions/globalActions";
-import { ModalHeaderSection } from "./index";
+import React, {useState} from "react";
+import {useDispatch} from "react-redux";
+import {Button, Modal, ModalBody, ModalFooter} from "reactstrap";
+import {clearModal} from "../../redux/actions/globalActions";
+import {ModalHeaderSection} from "./index";
 
 const ConfirmationModal = (props) => {
-  const { submitText, cancelText, headerText, bodyText, type } = props.data;
-  const { onSubmit } = props.data.actions;
+  const {submitText, cancelText, headerText, bodyText, type} = props.data;
+  const {onSubmit} = props.data.actions;
 
   const dispatch = useDispatch();
   const [modal, setModal] = useState(true);
   const toggle = () => {
     setModal(!modal);
-    dispatch(clearModal({ type: type }));
+    dispatch(clearModal({type: type}));
   };
   const handleConfirm = () => {
     toggle();
@@ -22,7 +22,7 @@ const ConfirmationModal = (props) => {
   return (
     <Modal isOpen={modal} toggle={toggle} centered>
       <ModalHeaderSection toggle={toggle}>{headerText}</ModalHeaderSection>
-      <ModalBody>{bodyText}</ModalBody>
+      <ModalBody _html dangerouslySetInnerHTML={{__html: bodyText}}/>
       <ModalFooter>
         <Button color="primary" onClick={handleConfirm}>
           {submitText}

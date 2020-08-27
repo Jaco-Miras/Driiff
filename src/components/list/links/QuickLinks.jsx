@@ -48,7 +48,7 @@ const NavIcon = styled(SvgIconFeather)`
 
 
 const QuickLinks = (props) => {
-  const { className = "", links } = props;
+  const {className = "", links, dictionary} = props;
 
   const ref = {
     container: useRef(),
@@ -77,11 +77,11 @@ const QuickLinks = (props) => {
   return (
     
     <Wrapper ref={ref.container} className={`fadeIn ${className} ${showLinks && "folder-open"}`} selected={showLinks}>
-        
+
       <a href="/" onClick={handleShowLinks}>
-        <NavIcon icon="link" />
-        <div>Shortcuts</div>
-        <i ref={ref.arrow} className={`sub-menu-arrow ti-angle-up ${showLinks ? "ti-minus rotate-in" : "ti-plus"}`} />
+        <NavIcon icon="link"/>
+        <div>{dictionary.shortcuts}</div>
+        <i ref={ref.arrow} className={`sub-menu-arrow ti-angle-up ${showLinks ? "ti-minus rotate-in" : "ti-plus"}`}/>
       </a>
       
       <LinkNav ref={ref.nav} maxHeight={maxHeight} className={showLinks ? "enter-active" : "leave-active"}>
