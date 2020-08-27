@@ -24,7 +24,7 @@ const ConfirmationModal = (props) => {
   return (
     <Modal isOpen={modal} toggle={toggle} centered>
       <ModalHeaderSection toggle={toggle}>{headerText}</ModalHeaderSection>
-      <ModalBody>{bodyText}</ModalBody>
+      <ModalBody _html dangerouslySetInnerHTML={{__html: bodyText}}/>
       <ModalFooter>
         <Button color="primary" onClick={handleConfirm}>
           {submitText}

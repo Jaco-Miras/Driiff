@@ -10,6 +10,7 @@ import {
   CreateEditCompanyPostModal,
   CreateEditWorkspaceModal,
   CreateEditWorkspacePostModal,
+  CreatePersonalLinksModal,
   CreateWorkspaceFolderModal,
   FileCropUploadModal,
   FileUploadModal,
@@ -71,6 +72,8 @@ const ModalPanel = () => {
               return <SingleInputModal key={modal.type} {...modal} />;
             case "move_files":
               return <MoveFilesModal key={modal.type} {...modal} />;
+            case "personal_link_create_edit":
+              return <CreatePersonalLinksModal key={modal.type} data={modal}/>
             default:
               return null;
           }

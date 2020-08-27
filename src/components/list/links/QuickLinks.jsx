@@ -21,18 +21,7 @@ const Wrapper = styled.li`
     border-radius: 8px 8px 0 0;
   }
   .sub-menu-arrow {
-    margin-right: 10px;
-  }
-  .feather-pencil {
-    display: none;
-  }
-  :hover {
-    .sub-menu-arrow {
-      margin-left: ${(props) => props.showEditIcon ? "10px" : "auto"};
-    }
-    .feather-pencil {
-      display: ${(props) => props.showEditIcon ? "block" : "none"};
-    }
+      margin-right: 10px;
   }
 `;
 
@@ -57,16 +46,9 @@ const NavIcon = styled(SvgIconFeather)`
   margin: 0 8px 0 15px;
 `;
 
-const EditIcon = styled(SvgIconFeather)`
-  height: 12px !important;
-  width: 12px !important;
-  cursor: pointer;
-  margin-left: auto;
-  color: #fff8;
-`;
 
 const QuickLinks = (props) => {
-  const { className = "", links, user } = props;
+  const {className = "", links, dictionary} = props;
 
   const ref = {
     container: useRef(),
@@ -91,19 +73,15 @@ const QuickLinks = (props) => {
     }
   }, [ref.nav, maxHeight]);
 
-  const handleEditLinks = () => {
-    window.open(`${process.env.REACT_APP_apiProtocol}${localStorage.getItem("slug")}.driff.io/admin/quick-links`, "_blank");
-  };
 
   return (
     
-    <Wrapper ref={ref.container} className={`fadeIn ${className} ${showLinks && "folder-open"}`} selected={showLinks} showEditIcon={user && (user.role.name === "admin" || user.role.name === "owner")}>
-        
+    <Wrapper ref={ref.container} className={`fadeIn ${className} ${showLinks && "folder-open"}`} selected={showLinks}>
+
       <a href="/" onClick={handleShowLinks}>
-        <NavIcon icon="link" />
-        <div>Shortcuts</div>
-        { user && (user.role.name === "admin" || user.role.name === "owner") && <EditIcon icon="pencil" onClick={handleEditLinks}/> }
-        <i ref={ref.arrow} className={`sub-menu-arrow ti-angle-up ${showLinks ? "ti-minus rotate-in" : "ti-plus"}`} />
+        <NavIcon icon="link"/>
+        <div>{dictionary.shortcuts}</div>
+        <i ref={ref.arrow} className={`sub-menu-arrow ti-angle-up ${showLinks ? "ti-minus rotate-in" : "ti-plus"}`}/>
       </a>
       
       <LinkNav ref={ref.nav} maxHeight={maxHeight} className={showLinks ? "enter-active" : "leave-active"}>
