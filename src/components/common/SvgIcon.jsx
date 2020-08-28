@@ -12,6 +12,22 @@ export const SvgIconFeather = React.memo(
     let content = "";
 
     switch (icon) {
+      case "compass": 
+        content = (
+          <>
+            <circle cx="12" cy="12" r="10"></circle>
+            <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon>
+          </>
+        );
+        break;
+      case "home":
+        content = (
+          <>
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+          </>
+        );
+        break;
       case "calendar":
         content = (
           <>

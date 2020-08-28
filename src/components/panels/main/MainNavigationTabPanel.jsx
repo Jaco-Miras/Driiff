@@ -178,6 +178,7 @@ const MainNavigationTabPanel = (props) => {
   const {_t} = useTranslation();
 
   const dictionary = {
+    allWorkspaces: _t("SIDEBAR.ALL_WORKSPACES", "All Workspaces"),
     workspaces: _t("SIDEBAR.WORKSPACES", "Workspaces"),
     chats: _t("SIDEBAR.CHATS", "Chats"),
     yourWorkspaces: _t("SIDEBAR.YOUR_WORKSPACES", "Your workspaces"),
@@ -191,6 +192,7 @@ const MainNavigationTabPanel = (props) => {
   };
 
   const {active_topic} = useSelector((state) => state.settings.user.GENERAL_SETTINGS);
+  const driff = useSelector((state) => state.settings.driff);
   const user = useSelector((state) => state.session.user);
   const {lastVisitedChannel} = useSelector((state) => state.chat);
   const {links, unreadCounter} = useSelector((state) => state.global);
@@ -285,9 +287,9 @@ const MainNavigationTabPanel = (props) => {
         <ul>
           <li onClick={closeLeftNav}>
             <NavIconContainer to={workspacePath} >
-              <NavIcon icon={"command"}/>
+              <NavIcon icon={"compass"}/>
               <div>
-                {dictionary.workspaces}
+                {dictionary.allWorkspaces}
                 {unreadCounter.workspace_chat_message + unreadCounter.workspace_post >= 1 &&
                 <Badge data-count={unreadCounter.workspace_chat_message + unreadCounter.workspace_post}>&nbsp;</Badge>}
               </div>
@@ -300,9 +302,9 @@ const MainNavigationTabPanel = (props) => {
                 active={["dashboard", "posts", "chat", "files", "people"].includes(props.match.params.page)}
                 to={lastVisitedChannel !== null && lastVisitedChannel.hasOwnProperty("code") ? `/chat/${lastVisitedChannel.code}` : "/chat"}
               >
-                <NavIcon icon={"message-circle"} />
+                <NavIcon icon={"home"} />
                 <div>
-                  {dictionary.chats}
+                  {driff.company_name}
                   {(unreadCounter.chat_message >= 1 || unreadCounter.unread_channel > 0) && <Badge data-count={unreadCounter.chat_message}>&nbsp;</Badge>}
                 </div>
               </NavIconContainer>
