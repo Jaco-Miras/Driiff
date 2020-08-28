@@ -1,3 +1,5 @@
+import {getCompanyDashboardMembers, getCompanyDashboardRecentPosts, getCompanyDashboardTimeline} from "./driff";
+
 export {apiCall, apiNoTokenCall} from "./service";
 export {
   getGlobalRecipients,
@@ -164,7 +166,13 @@ export {
   updateWorkspace,
 } from "./workspace";
 
-export {postRegisterDriff, patchCheckDriff} from "./driff";
+export {
+  postRegisterDriff,
+  patchCheckDriff,
+  getCompanyDashboardTimeline,
+  getCompanyDashboardRecentPosts,
+  getCompanyDashboardMembers,
+} from "./driff";
 
 export {
   deleteNotification,

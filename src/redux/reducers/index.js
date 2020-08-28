@@ -1,6 +1,7 @@
-import { combineReducers } from "redux";
-import { sessionReducer } from "redux-react-session";
+import {combineReducers} from "redux";
+import {sessionReducer} from "redux-react-session";
 import chat from "./chatReducer";
+import dashboard from "./dashboardReducer";
 import files from "./filesReducer";
 import global from "./globalReducer";
 import notifications from "./notificationsReducer";
@@ -13,6 +14,7 @@ import workspaces from "./workspacesReducer";
 const appReducer = combineReducers({
   session: sessionReducer,
   chat,
+  dashboard,
   files,
   global,
   notifications,
