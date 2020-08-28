@@ -6,10 +6,11 @@ import {useDriff, useSettings} from "./index";
 import {isTranslationLogged} from "../../helpers/slugHelper";
 
 let init = true;
+let cookieName = {
+  dict: "i18n.28082020",
+  lang: "i18n_lang.28082020"
+}
 
-/**
- * @returns {{_t: (function(*=, *=, *=): unknown), setLocale: (...args: any[]) => any}}
- */
 export const useTranslation = () => {
   const dispatch = useDispatch();
 
@@ -39,8 +40,8 @@ export const useTranslation = () => {
       init = false;
       const lang = getBrowserLanguage();
 
-      if (localStorage.getItem("i18n")) {
-        dispatch(addTranslationObject(JSON.parse(localStorage.getItem("i18n"))));
+      if (localStorage.getItem(cookieName.dict)) {
+        dispatch(addTranslationObject(JSON.parse(localStorage.getItem(cookieName.dict))));
       } else {
         setDictFile({
           lang: lang.exact,
@@ -176,14 +177,14 @@ export const useTranslation = () => {
    * Save added text to local storage
    */
   useEffect(() => {
-    localStorage.setItem("i18n", JSON.stringify(i18n));
+    localStorage.setItem(cookieName.dict, JSON.stringify(i18n));
   }, [i18n]);
 
   /**
    * Save language change to local storage
    */
   useEffect(() => {
-    localStorage.setItem("i18n_lang", language);
+    localStorage.setItem(cookieName.lang, language);
   }, [language]);
 
   return {
