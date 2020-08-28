@@ -104,6 +104,7 @@ export default function (state = INITIAL_STATE, action) {
             skip: 0,
             replies: [],
             selected: false,
+            isFetching: false,
           };
         });
 
@@ -127,6 +128,7 @@ export default function (state = INITIAL_STATE, action) {
             skip: 0,
             replies: [],
             selected: false,
+            isFetching: false,
           };
         });
 
@@ -143,6 +145,7 @@ export default function (state = INITIAL_STATE, action) {
           ...action.data,
           hasMore: true,
           skip: 0,
+          isFetching: false,
         };
 
       return {
@@ -287,6 +290,7 @@ export default function (state = INITIAL_STATE, action) {
         read_only: action.data.read_only,
         hasMore: action.data.results.length === 20,
         skip: channel.skip === 0 && channel.replies.length ? channel.replies.length + 20 : channel.skip + 20,
+        isFetching: false
       };
       return {
         ...state,
@@ -1130,6 +1134,17 @@ export default function (state = INITIAL_STATE, action) {
         ...state,
         selectedChannel: updatedChannel,
         channels: updatedChannels
+      }
+    }
+    case "SET_FETCHING_MESSAGES": {
+      let updatedChannels = { ...state.channels };
+      if (updatedChannels.hasOwnProperty(action.data.id)) {
+        updatedChannels[action.data.id].isFetching = action.data.status;
+      }
+      return {
+        ...state,
+        channels: updatedChannels,
+        selectedChannel: state.selectedChannel && state.selectedChannel.id === action.data.id ? { ...state.selectedChannel, isFetching: action.data.status } : state.selectedChannel
       }
     }
     default:

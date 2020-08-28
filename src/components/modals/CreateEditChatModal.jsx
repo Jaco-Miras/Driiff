@@ -240,6 +240,7 @@ const CreateEditChatModal = (props) => {
         inviter: null,
         hasMore: false,
         skip: 0,
+        isFetching: false,
         members: [...selectedUsers, user],
         replies: [message],
         created_at: {
