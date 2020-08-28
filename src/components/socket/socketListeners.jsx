@@ -743,7 +743,7 @@ class SocketListeners extends React.PureComponent {
                     }
                     
                     if (!this.props.channels.hasOwnProperty(e.channel_id) && data.author.id !== this.props.user.id) {
-                        this.props.getChannel({code: e.code}, (err, res) => {
+                        this.props.getChannel({code: e.channel_code}, (err, res) => {
                             if (err) return;
                             let channel = {
                                 ...res.data,
@@ -755,6 +755,16 @@ class SocketListeners extends React.PureComponent {
                             };
                             this.props.addToChannels(channel);
                         });
+                        if (e.workspace_data) {
+                            if (e.workspace_data.workspace && !this.props.folders.hasOwnProperty(e.workspace_data.workspace.id)) {
+                                this.props.getWorkspaceFolder({folder_id: e.workspace_data.workspace.id}, (err,res) => {
+                                    if (err) return;
+                                    this.props.getWorkspace({topic_id: e.workspace_data.topic.id});
+                                });
+                            } else {
+                                this.props.getWorkspace({topic_id: e.workspace_data.topic.id});
+                            }
+                        }
                     } else {
                         this.props.joinWorkspaceReducer(payload);
                     }
