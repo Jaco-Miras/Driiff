@@ -12,13 +12,7 @@ const useLoadChannel = () => {
   const {params, url} = route;
   
   useEffect(() => {
-
-    if (lastVisitedChannel) {
-        actions.select(channels[lastVisitedChannel.id]);
-        if (url === "/chat" && typeof params.code === "undefined") {
-            history.push(`/chat/${lastVisitedChannel.code}`);
-        }
-    } else if (typeof params.code === "undefined") {
+    const fetchLastVisited = () => {
         let cb = (callback,channel) => {
             actions.select({
                 ...channel.data,
@@ -31,9 +25,21 @@ const useLoadChannel = () => {
                 history.push(`/chat/${channel.data.code}`);
             }
         }
-        actions.fetchLastVisited(cb)
+        actions.fetchLastVisited(cb);
+    };
+
+    if (lastVisitedChannel) {
+        actions.select(channels[lastVisitedChannel.id]);
+        if (url === "/chat" && typeof params.code === "undefined") {
+            history.push(`/chat/${lastVisitedChannel.code}`);
+        }
+    } else if (typeof params.code === "undefined") {
+        fetchLastVisited();
     } else {
         actions.fetchByCode(params.code, (err, res) => {
+            if (err) {
+                fetchLastVisited();
+            }
             if (res) {
                 let channel = {
                     ...res.data,
