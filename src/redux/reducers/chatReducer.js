@@ -1029,6 +1029,19 @@ export default function (state = INITIAL_STATE, action) {
         let updatedChannels = { ...state.channels };
         if (updatedChannels.hasOwnProperty(action.data.channel.id)) {
           let channel = updatedChannels[action.data.channel.id];
+          if (action.data.system_message) {
+            let message = {
+              ...action.data.system_message,
+              created_at: action.data.updated_at,
+              editable: false,
+              is_read: true,
+              is_deleted: false,
+              files: [],
+              reactions: [],
+              unfurls: [],
+            }
+            updatedChannels[action.data.channel.id].replies = [...updatedChannels[action.data.channel.id].replies, message]
+          }
           // if (action.data.new_member_ids.length) {
           //   let newMembers = action.data.members
           //     .filter((m) => {
