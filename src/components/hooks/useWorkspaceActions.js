@@ -116,6 +116,7 @@ const useWorkspaceActions = () => {
             skip: 0,
             replies: [],
             selected: true,
+            isFetching: false,
           };
           dispatch(addToChannels(channel));
           // selectChannel(channel)

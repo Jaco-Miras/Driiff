@@ -234,3 +234,7 @@ export function readChannelReducer(payload, callback) {
 export function getWorkspaceChannels(payload, callback) {
   return dispatchActionToReducer(getWorkspaceChannelsService(payload), "GET_WORKSPACE_CHANNELS_START", "GET_WORKSPACE_CHANNELS_SUCCESS", "GET_WORKSPACE_CHANNELS_FAIL", callback);
 }
+
+export function setFetchingMessages(payload, callback) {
+  return SimpleDispatchActionToReducer("SET_FETCHING_MESSAGES", payload, callback);
+}

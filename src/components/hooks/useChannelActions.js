@@ -22,6 +22,7 @@ import {
   setChannelHistoricalPosition,
   setLastVisitedChannel,
   setSelectedChannel,
+  setFetchingMessages
 } from "../../redux/actions/chatActions";
 import { useSettings } from "./index";
 
@@ -102,6 +103,7 @@ const useChannelActions = () => {
               code: res.data.code,
               selected: true,
               hasMore: false,
+              isFetching: false,
               skip: 0,
               replies: [],
               created_at: {
@@ -609,6 +611,23 @@ const useChannelActions = () => {
     [dispatch]
   );
 
+  /**
+   * @param {Object} channel
+   * @param {Object} status
+   * @param {function} [callback]
+   */
+  const fetchingMessages = useCallback(
+    (channel, status) => {
+      let payload = {
+        id: channel.id,
+        status: status
+      };
+
+      dispatch(setFetchingMessages(payload));
+    },
+    [dispatch]
+  );
+
   return {
     create,
     createByUserChannel,
@@ -638,6 +657,7 @@ const useChannelActions = () => {
     addMembers,
     deleteMembers,
     update,
+    fetchingMessages,
   };
 };
 

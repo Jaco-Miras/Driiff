@@ -486,6 +486,7 @@ class SocketListeners extends React.PureComponent {
                             skip: 0,
                             replies: [],
                             selected: true,
+                            isFetching: false,
                         };
                         this.props.addToChannels(channel);
                     });
@@ -577,6 +578,7 @@ class SocketListeners extends React.PureComponent {
                             skip: 0,
                             replies: [],
                             selected: true,
+                            isFetching: false,
                         };
                         this.props.addToChannels(channel);
                     });
@@ -751,7 +753,8 @@ class SocketListeners extends React.PureComponent {
                                 skip: 0,
                                 replies: [],
                                 selected: true,
-                                is_archived: res.data.is_archived === 1
+                                is_archived: res.data.is_archived === 1,
+                                isFetching: false,
                             };
                             this.props.addToChannels(channel);
                         });
@@ -795,6 +798,7 @@ class SocketListeners extends React.PureComponent {
                             replies: [],
                             skip: 0,
                             hasMore: true,
+                            isFetching: false,
                         };
                         this.props.addToChannels(channel);
                     });

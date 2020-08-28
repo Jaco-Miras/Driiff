@@ -80,6 +80,7 @@ const MainNavLink = styled(NavLink)`
 const CompanyPageHeaderPanel = (props) => {
   const { className = "" } = props;
   const unreadCounter = useSelector((state) => state.global.unreadCounter);
+  const lastVisitedChannel = useSelector((state) => state.chat.lastVisitedChannel);
 
   return (
     <>
@@ -90,7 +91,7 @@ const CompanyPageHeaderPanel = (props) => {
               <MainNavLink to="/dashboard">Dashboard</MainNavLink>
             </li>
             <li className="nav-item">
-              <MainNavLink to="/chat">
+              <MainNavLink to={lastVisitedChannel !== null && lastVisitedChannel.hasOwnProperty("code") ? `/chat/${lastVisitedChannel.code}` : "/chat"}>
                   Chat{" "}
                   <div className="ml-2 badge badge-pill badge badge-danger">
                     {unreadCounter.chat_message + unreadCounter.chat_reminder_message > 0 ? unreadCounter.chat_message + unreadCounter.chat_reminder_message : unreadCounter.unread_channel > 0 ? unreadCounter.unread_channel : null}
