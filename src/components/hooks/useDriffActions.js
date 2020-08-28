@@ -1,6 +1,6 @@
 import {useCallback} from "react";
 import {useDispatch} from "react-redux";
-import {patchCheckDriff, postRegisterDriff} from "../../redux/actions/driffAction";
+import {patchCheckDriff, postRegisterDriff} from "../../redux/actions/driffActions";
 import {isIPAddress} from "../../helpers/commonFunctions";
 import {useToaster} from "./index";
 
