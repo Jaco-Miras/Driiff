@@ -1,11 +1,11 @@
 import React from "react";
-import { useDispatch } from "react-redux";
-import { useRouteMatch } from "react-router-dom";
+import {useDispatch} from "react-redux";
+import {useRouteMatch} from "react-router-dom";
 import styled from "styled-components";
-import { setViewFiles } from "../../../../redux/actions/fileActions";
-import { Avatar } from "../../../common";
-import { useTimeFormat } from "../../../hooks";
-import useFileActions from "../../../hooks/useFileActions";
+import {setViewFiles} from "../../../../../redux/actions/fileActions";
+import {Avatar} from "../../../../common";
+import {useTimeFormat} from "../../../../hooks";
+import useFileActions from "../../../../hooks/useFileActions";
 
 const Wrapper = styled.div`
   .timeline-file-icon {
@@ -28,13 +28,13 @@ const Wrapper = styled.div`
   }
 `;
 
-const AttachFileTimeline = (props) => {
-  const { className = "", data } = props;
-  const { params } = useRouteMatch();
+const CompanyAttachFileTimeline = (props) => {
+  const {className = "", data} = props;
+  const {params} = useRouteMatch();
 
   const dispatch = useDispatch();
   const fileHandler = useFileActions();
-  const { fromNow } = useTimeFormat();
+  const {fromNow} = useTimeFormat();
 
   const handleFilePreview = () => {
     console.log(data, params);
@@ -49,7 +49,7 @@ const AttachFileTimeline = (props) => {
   return (
     <Wrapper className={`attach-file-timeline timeline-item ${className}`}>
       <div>
-        <Avatar className="mr-3" name={data.user.name} imageLink={data.user.profile_image_link} id={data.user.id} />
+        <Avatar className="mr-3" name={data.user.name} imageLink={data.user.profile_image_link} id={data.user.id}/>
       </div>
       {
         <div>
@@ -73,4 +73,4 @@ const AttachFileTimeline = (props) => {
   );
 };
 
-export default React.memo(AttachFileTimeline);
+export default React.memo(CompanyAttachFileTimeline);

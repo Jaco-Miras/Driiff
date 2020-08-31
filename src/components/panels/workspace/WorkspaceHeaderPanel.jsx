@@ -111,8 +111,8 @@ const SubWorkspaceName = styled.h3`
   svg {
     color: #64625c;
   }
-  .feather-lock {
-    color: #000;
+  .feather-lock, .feather-share {
+    color: #64625c;
   }
   @media all and (max-width: 620px) {
     font-size: 16px;
@@ -146,9 +146,10 @@ const WorkspaceButton = styled.h3`
   }
 `;
 
-const LockIcon = styled(SvgIconFeather)`
-  height: 12px !important;
-  width: 12px !important;
+const Icon = styled(SvgIconFeather)`
+  height: 14px !important;
+  width: 14px !important;
+  margin-left: 5px;
 `;
 
 const WorspaceHeaderPanel = (props) => {
@@ -283,7 +284,10 @@ const WorspaceHeaderPanel = (props) => {
                     !isExternal &&
                     <>
                       <li className="nav-item nav-item-folder">
-                        <WorkspaceName >{activeTopic.folder_name} { folders.hasOwnProperty(activeTopic.folder_id) && folders[activeTopic.folder_id].is_lock === 1 && <LockIcon icon="lock"/> }</WorkspaceName>
+                        <WorkspaceName>
+                          {activeTopic.folder_name} 
+                          { folders.hasOwnProperty(activeTopic.folder_id) && folders[activeTopic.folder_id].is_lock === 1 && <Icon icon="lock"/> }
+                        </WorkspaceName>
                       </li>
                       <li className="nav-item-chevron">
                         <SvgIconFeather icon="chevron-right"/>
@@ -292,7 +296,9 @@ const WorspaceHeaderPanel = (props) => {
                   }
                   <li className="nav-item">
                     <SubWorkspaceName className="current-title">
-                      {activeTopic.name} { activeTopic.is_lock === 1 && <LockIcon icon="lock" fill="#000"/> }
+                      {activeTopic.name} 
+                      { activeTopic.is_lock === 1 && <Icon icon="lock"/> }
+                      { activeTopic.is_shared === 1 && <Icon icon="share" strokeWidth="3"/> }
                     </SubWorkspaceName>
                   </li>
                   {

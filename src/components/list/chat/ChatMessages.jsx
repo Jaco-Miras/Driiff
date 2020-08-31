@@ -418,43 +418,38 @@ class ChatMessages extends React.PureComponent {
 
   loadReplies = () => {
     const { selectedChannel, chatMessageActions } = this.props;
+    
+    if (!selectedChannel.isFetching && selectedChannel.hasMore) {
+      chatMessageActions.channelActions.fetchingMessages(selectedChannel, true);
+      let payload = {
+        skip: 0,
+        limit: 20,
+      };
 
-    if (!this.state.fetchingReplies) {
-      if (selectedChannel.hasMore) {
-        this.setState({ fetchingReplies: true });
-
-        let payload = {
-          skip: 0,
+      if (typeof selectedChannel.replies !== "undefined") {
+        payload = {
+          skip: selectedChannel.skip === 0 && selectedChannel.replies.length ? selectedChannel.replies.length : selectedChannel.skip,
           limit: 20,
         };
+      }
 
-        if (typeof selectedChannel.replies !== "undefined") {
-          payload = {
-            skip: selectedChannel.skip === 0 && selectedChannel.replies.length ? selectedChannel.replies.length : selectedChannel.skip,
-            limit: 20,
-          };
+      chatMessageActions.fetch(selectedChannel, payload, (err, res) => {
+        if (err) {
+          chatMessageActions.channelActions.fetchingMessages(selectedChannel, false);
+          return;
         }
 
-        chatMessageActions.fetch(selectedChannel, payload, (err, res) => {
-          setTimeout(() => {
-            this.setState({ fetchingReplies: false });
-          }, 500);
-          if (err) {
-            return;
+        if (selectedChannel.replies.length === 0 || selectedChannel.skip === 0) {
+          if (this.chatBottomRef.current) {
+            this.chatBottomRef.current.scrollIntoView(false);
+          } else {
+            let scrollC = document.querySelector(".intersection-bottom-ref");
+            if (scrollC) scrollC.scrollIntoView();
           }
+        }
 
-          if (selectedChannel.replies.length === 0 || selectedChannel.skip === 0) {
-            if (this.chatBottomRef.current) {
-              this.chatBottomRef.current.scrollIntoView(false);
-            } else {
-              let scrollC = document.querySelector(".intersection-bottom-ref");
-              if (scrollC) scrollC.scrollIntoView();
-            }
-          }
-
-          if (this.state.initializing === true) this.setState({ initializing: false });
-        });
-      }
+        if (this.state.initializing === true) this.setState({ initializing: false });
+      });
     }
   };
 
@@ -494,7 +489,7 @@ class ChatMessages extends React.PureComponent {
       });
     }
 
-    if (selectedChannel.skip === 0) this.loadReplies();
+    if (selectedChannel.hasMore) this.loadReplies();
 
     if (selectedChannel.is_read) {
       this.handleReadChannel();
@@ -535,7 +530,7 @@ class ChatMessages extends React.PureComponent {
 
     //change channel
     if (this.props.selectedChannel && prevProps.selectedChannel.id !== selectedChannel.id) {
-      if (selectedChannel.skip === 0) this.loadReplies();
+      if (selectedChannel.hasMore) this.loadReplies();
       this.handleReadChannel();
 
       if (historicalPositions.length) {
@@ -620,7 +615,7 @@ class ChatMessages extends React.PureComponent {
   getLoadRef = (id) => {
     const { selectedChannel } = this.props;
     let loadMoreRef = false;
-    if (selectedChannel.replies.length && !this.state.fetchingReplies) {
+    if (selectedChannel.replies.length && !selectedChannel.isFetching) {
       let sortedReplies = selectedChannel.replies.sort((a, b) => a.created_at.timestamp - b.created_at.timestamp);
       if (selectedChannel.replies.length && selectedChannel.replies.length > 10 && selectedChannel.replies.length <= 20) {
         if (id === sortedReplies[2].id) {
@@ -714,7 +709,7 @@ class ChatMessages extends React.PureComponent {
 
     return (
       <ChatReplyContainer ref={this.scrollComponent} id={"component-chat-thread"} className={`component-chat-thread messages ${this.props.className}`} tabIndex="2" data-init={1} data-channel-id={selectedChannel.id}>
-        {this.state.fetchingReplies && selectedChannel.hasMore && selectedChannel.replies.length === 0 && selectedChannel.skip === 0 && (
+        {selectedChannel.isFetching && selectedChannel.hasMore && selectedChannel.replies.length === 0 && selectedChannel.skip === 0 && (
           <ChatLoader className={"initial-load"}>
             <Loader />
           </ChatLoader>
@@ -726,7 +721,7 @@ class ChatMessages extends React.PureComponent {
             </InView>
           )}
           <ul>
-            {this.state.fetchingReplies && !(selectedChannel.hasMore && selectedChannel.replies.length === 0) && (
+            {selectedChannel.isFetching && !(selectedChannel.hasMore && selectedChannel.replies.length === 0) && (
               <ChatLoader>
                 <Loader />
               </ChatLoader>
@@ -913,7 +908,7 @@ class ChatMessages extends React.PureComponent {
                   );
                 })
               : null}
-            {!this.state.initializing && !this.state.fetchingReplies && selectedChannel.replies && selectedChannel.replies.length < 1 && <EmptyState className="no-reply-container"><SvgEmptyState icon={3} /></EmptyState>}
+            {!this.state.initializing && !selectedChannel.isFetching && selectedChannel.replies && selectedChannel.replies.length < 1 && <EmptyState className="no-reply-container"><SvgEmptyState icon={3} /></EmptyState>}
           </ul>
         </InfiniteScroll>
       </ChatReplyContainer>

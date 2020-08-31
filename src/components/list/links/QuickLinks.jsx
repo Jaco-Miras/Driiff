@@ -85,7 +85,6 @@ const QuickLinks = (props) => {
   useEffect(() => {
     if (ref.nav.current !== null) {
       let maxHeight = window.innerHeight * 5;
-      console.log(ref.nav.current)
       maxHeight = maxHeight < ref.nav.current.offsetHeight ? ref.nav.current.offsetHeight : maxHeight;
       setMaxHeight(maxHeight);
     }

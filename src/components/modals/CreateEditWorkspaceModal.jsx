@@ -8,7 +8,6 @@ import {deleteWorkspaceFiles, setPendingUploadFilesToWorkspace} from "../../redu
 import {addToModals, clearModal} from "../../redux/actions/globalActions";
 import {
     createWorkspace,
-    fetchTimeline,
     leaveWorkspace,
     setActiveTopic,
     updateWorkspace
@@ -173,7 +172,7 @@ const CreateEditWorkspaceModal = (props) => {
     const users = useSelector((state) => state.users.users);
     const workspaces = useSelector((state) => state.workspaces.workspaces);
     const folders = useSelector((state) => state.workspaces.folders);
-    const activeTab = useSelector((state) => state.workspaces.activeTab);
+    //const activeTab = useSelector((state) => state.workspaces.activeTab);
     const [userOptions, setUserOptions] = useState([]);
     const [inputValue, setInputValue] = useState("");
     const [invitedEmails, setInvitedEmails] = useState([]);
@@ -410,7 +409,9 @@ const CreateEditWorkspaceModal = (props) => {
                 topic_id: item.id,
                 remove_member_ids: removed_members,
                 new_member_ids: added_members.filter((u) => typeof u === "number"),
-                system_message: `CHANNEL_UPDATE::${JSON.stringify({
+            };
+            if ((payload.remove_member_ids.length || payload.new_member_ids.length) || (item.name !== form.name)) {
+                payload.system_message = `CHANNEL_UPDATE::${JSON.stringify({
                     author: {
                         id: user.id,
                         name: user.name,
@@ -421,8 +422,8 @@ const CreateEditWorkspaceModal = (props) => {
                     title: form.name === item.title ? "" : form.name,
                     added_members: added_members.filter((u) => typeof u === "number"),
                     removed_members: removed_members,
-                })}`,
-            };
+                })}`
+            }
             
             const handleSubmit = () => {
                 setLoading(true);
@@ -449,7 +450,6 @@ const CreateEditWorkspaceModal = (props) => {
                     } else {
                         history.push(`/workspace/dashboard/${res.data.id}/${replaceChar(form.name)}`);
                     }
-                    dispatch(fetchTimeline({topic_id: item.id}));
                 };
     
                 dispatch(updateWorkspace(payload, cb));

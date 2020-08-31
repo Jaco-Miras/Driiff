@@ -1,8 +1,8 @@
 import React from "react";
-import {useHistory, useRouteMatch} from "react-router-dom";
+import {useHistory} from "react-router-dom";
 import styled from "styled-components";
-import {Avatar, FileAttachments, SvgIconFeather} from "../../../common";
-import {useTimeFormat} from "../../../hooks";
+import {Avatar, FileAttachments, SvgIconFeather} from "../../../../common";
+import {useTimeFormat} from "../../../../hooks";
 
 const Wrapper = styled.div`
   .title {
@@ -43,21 +43,20 @@ const Wrapper = styled.div`
   }
 `;
 
-const PostTimeline = (props) => {
-  const { className = "", data } = props;
+const CompanyPostTimeline = (props) => {
+  const {className = "", data} = props;
   const history = useHistory();
-  const { params } = useRouteMatch();
-  const { fromNow } = useTimeFormat();
+  const {fromNow} = useTimeFormat();
 
   const handleLinkClick = (e) => {
     e.preventDefault();
-    history.push(`/workspace/posts/${params.workspaceId}/${params.workspaceName}/post/${data.id}/${data.title}`);
+    history.push(`/posts/${data.id}/${data.title}`);
   };
 
   return (
     <Wrapper className={`post-timeline timeline-item ${className}`}>
       <div>
-        <Avatar className="mr-3" name={data.user.name} imageLink={data.user.profile_image_link} id={data.user.id} />
+        <Avatar className="mr-3" name={data.user.name} imageLink={data.user.profile_image_link} id={data.user.id}/>
       </div>
       <div>
         <h6 className="d-flex justify-content-between mb-4">
@@ -80,7 +79,7 @@ const PostTimeline = (props) => {
         {data.files && data.files.length >= 1 && (
           <>
             File attachments:
-            <FileAttachments attachedFiles={data.files} />
+            <FileAttachments attachedFiles={data.files}/>
           </>
         )}
       </div>
@@ -88,4 +87,4 @@ const PostTimeline = (props) => {
   );
 };
 
-export default React.memo(PostTimeline);
+export default React.memo(CompanyPostTimeline);

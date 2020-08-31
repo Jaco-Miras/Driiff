@@ -1,8 +1,8 @@
 import React from "react";
 import {useSelector} from "react-redux";
 import styled from "styled-components";
-import {Avatar} from "../../../common";
-import {useTimeFormat} from "../../../hooks";
+import {Avatar} from "../../../../common";
+import {useTimeFormat} from "../../../../hooks";
 
 const Wrapper = styled.div`
     font-weight: bold;
@@ -20,9 +20,9 @@ const Wrapper = styled.div`
     }
 `;
 
-const MemberTimeline = (props) => {
-  const { className = "", data } = props;
-  const { fromNow } = useTimeFormat();
+const CompanyMemberTimeline = (props) => {
+  const {className = "", data} = props;
+  const {fromNow} = useTimeFormat();
 
   const user = useSelector((state) => state.session.user);
   const recipients = useSelector((state) => state.global.recipients.filter((r) => r.type === "USER"));
@@ -80,7 +80,8 @@ const MemberTimeline = (props) => {
 
   return (
     <Wrapper className={`member-timeline timeline-item ${className}`}>
-      <div>{<Avatar className="mr-3" name={message.author.name} imageLink={message.author.profile_image_link} id={message.author.id} />}</div>
+      <div>{<Avatar className="mr-3" name={message.author.name} imageLink={message.author.profile_image_link}
+                    id={message.author.id}/>}</div>
       <div>
         <h6 className="d-flex justify-content-between mb-4">
           <span className="title">
@@ -101,4 +102,4 @@ const MemberTimeline = (props) => {
   );
 };
 
-export default React.memo(MemberTimeline);
+export default React.memo(CompanyMemberTimeline);

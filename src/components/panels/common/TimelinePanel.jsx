@@ -1,6 +1,11 @@
 import React, {useEffect} from "react";
 import styled from "styled-components";
-import {AttachFileTimeline, MemberTimeline, PostTimeline, TopicTimeline} from "../dashboard/timeline";
+import {
+  CompanyAttachFileTimeline,
+  CompanyMemberTimeline,
+  CompanyPostTimeline,
+  CompanyTopicTimeline
+} from "../dashboard/timeline/company";
 
 const Wrapper = styled.div`
 
@@ -32,22 +37,22 @@ const TimelinePanel = (props) => {
 
         <div className="timeline">
           {timeline &&
-            Object.values(timeline)
-              .sort((a, b) => {
-                return b.item.created_at.timestamp > a.item.created_at.timestamp ? 1 : -1;
-              })
-              .map((t) => {
-                switch (t.tag) {
-                  case "CHAT_BOT":
-                    return <MemberTimeline key={t.id} data={t.item} />;
-                  case "POST":
-                    return <PostTimeline key={t.id} data={t.item}/>;
-                  case "DOCUMENT":
-                    return <AttachFileTimeline key={t.id} data={t.item} />;
-                  case "TOPIC":
-                    return <TopicTimeline key={t.id} data={t.item} />;
-                }
-              })}
+          Object.values(timeline)
+            .sort((a, b) => {
+              return b.item.created_at.timestamp > a.item.created_at.timestamp ? 1 : -1;
+            })
+            .map((t) => {
+              switch (t.tag) {
+                case "CHAT_BOT":
+                  return <CompanyMemberTimeline key={t.id} data={t.item}/>;
+                case "POST":
+                  return <CompanyPostTimeline key={t.id} data={t.item}/>;
+                case "DOCUMENT":
+                  return <CompanyAttachFileTimeline key={t.id} data={t.item}/>;
+                case "TOPIC":
+                  return <CompanyTopicTimeline key={t.id} data={t.item}/>;
+              }
+            })}
         </div>
       </div>
     </Wrapper>

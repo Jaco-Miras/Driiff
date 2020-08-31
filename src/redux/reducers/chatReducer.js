@@ -104,6 +104,7 @@ export default function (state = INITIAL_STATE, action) {
             skip: 0,
             replies: [],
             selected: false,
+            isFetching: false,
           };
         });
 
@@ -127,6 +128,7 @@ export default function (state = INITIAL_STATE, action) {
             skip: 0,
             replies: [],
             selected: false,
+            isFetching: false,
           };
         });
 
@@ -143,6 +145,7 @@ export default function (state = INITIAL_STATE, action) {
           ...action.data,
           hasMore: true,
           skip: 0,
+          isFetching: false,
         };
 
       return {
@@ -287,6 +290,7 @@ export default function (state = INITIAL_STATE, action) {
         read_only: action.data.read_only,
         hasMore: action.data.results.length === 20,
         skip: channel.skip === 0 && channel.replies.length ? channel.replies.length + 20 : channel.skip + 20,
+        isFetching: false
       };
       return {
         ...state,
@@ -963,10 +967,10 @@ export default function (state = INITIAL_STATE, action) {
       if (Object.keys(updatedChannels).length && updatedChannels.hasOwnProperty(action.data.channel_id)) {
         let channel = {
           ...updatedChannels[action.data.channel_id],
-          members: [...updatedChannels[action.data.channel_id].members, action.data.user],
+          members: [...updatedChannels[action.data.channel_id].members, ...action.data.users],
           replies: [...updatedChannels[action.data.channel_id].replies, action.data.message]
         }
-        updatedChannels[action.data.channel_id].members = [...updatedChannels[action.data.channel_id].members, action.data.user];
+        updatedChannels[action.data.channel_id].members = [...updatedChannels[action.data.channel_id].members, ...action.data.users];
         updatedChannels[action.data.channel_id].replies = [...updatedChannels[action.data.channel_id].replies, action.data.message];
         if (channel.id === updatedChannel.id) {
           updatedChannel = channel;
@@ -1025,6 +1029,19 @@ export default function (state = INITIAL_STATE, action) {
         let updatedChannels = { ...state.channels };
         if (updatedChannels.hasOwnProperty(action.data.channel.id)) {
           let channel = updatedChannels[action.data.channel.id];
+          if (action.data.system_message) {
+            let message = {
+              ...action.data.system_message,
+              created_at: action.data.updated_at,
+              editable: false,
+              is_read: true,
+              is_deleted: false,
+              files: [],
+              reactions: [],
+              unfurls: [],
+            }
+            updatedChannels[action.data.channel.id].replies = [...updatedChannels[action.data.channel.id].replies, message]
+          }
           // if (action.data.new_member_ids.length) {
           //   let newMembers = action.data.members
           //     .filter((m) => {
@@ -1130,6 +1147,17 @@ export default function (state = INITIAL_STATE, action) {
         ...state,
         selectedChannel: updatedChannel,
         channels: updatedChannels
+      }
+    }
+    case "SET_FETCHING_MESSAGES": {
+      let updatedChannels = { ...state.channels };
+      if (updatedChannels.hasOwnProperty(action.data.id)) {
+        updatedChannels[action.data.id].isFetching = action.data.status;
+      }
+      return {
+        ...state,
+        channels: updatedChannels,
+        selectedChannel: state.selectedChannel && state.selectedChannel.id === action.data.id ? { ...state.selectedChannel, isFetching: action.data.status } : state.selectedChannel
       }
     }
     default:

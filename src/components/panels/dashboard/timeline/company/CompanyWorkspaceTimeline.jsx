@@ -1,18 +1,18 @@
 import React from "react";
 import styled from "styled-components";
-import { Avatar } from "../../../common";
-import { useTimeFormat } from "../../../hooks";
+import {Avatar} from "../../../../common";
+import {useTimeFormat} from "../../../../hooks";
 
 const Wrapper = styled.div``;
 
-const WorkspaceTimeline = (props) => {
-  const { className = "", workspace } = props;
-  const { fromNow } = useTimeFormat();
+const CompanyWorkspaceTimeline = (props) => {
+  const {className = "", workspace} = props;
+  const {fromNow} = useTimeFormat();
 
   return (
     <Wrapper className={`timeline-item ${className}`}>
       <div>
-        <Avatar name={workspace.user.name} imageLink={workspace.user.profile_image_link} />
+        <Avatar name={workspace.user.name} imageLink={workspace.user.profile_image_link}/>
       </div>
       <div>
         <h6 className="d-flex justify-content-between mb-4">
@@ -29,4 +29,4 @@ const WorkspaceTimeline = (props) => {
   );
 };
 
-export default React.memo(WorkspaceTimeline);
+export default React.memo(CompanyWorkspaceTimeline);
