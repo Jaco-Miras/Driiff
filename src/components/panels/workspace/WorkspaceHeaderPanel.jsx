@@ -265,6 +265,8 @@ const WorspaceHeaderPanel = (props) => {
                     <li className="nav-item">
                       <SubWorkspaceName className="current-title">
                         {activeTopic.name}
+                        { activeTopic.is_lock === 1 && <Icon icon="lock"/> }
+                        { activeTopic.is_shared === 1 && <Icon icon="share" strokeWidth="3"/> }
                       </SubWorkspaceName>
                     </li>
                     {
@@ -350,4 +352,4 @@ const WorspaceHeaderPanel = (props) => {
   );
 };
 
-export default React.memo(WorspaceHeaderPanel);
+export default WorspaceHeaderPanel;
