@@ -1,11 +1,9 @@
-import React, { useEffect, useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React, {useEffect, useRef, useState} from "react";
 import styled from "styled-components";
-import { toggleLoading } from "../../../redux/actions/globalActions";
-import { Avatar, SvgIconFeather } from "../../common";
+import {Avatar, SvgIconFeather} from "../../common";
 //import Flag from "../../common/Flag";
-import { useNotifications, useOutsideClick, useSettings, useTranslation } from "../../hooks";
-import { NotificationDropDown, SearchDropDown } from "../dropdown";
+import {useNotifications, useOutsideClick, useSettings, useUsers} from "../../hooks";
+import {NotificationDropDown, SearchDropDown} from "../dropdown";
 import UserProfileDropDown from "../dropdown/UserProfileDropdown";
 
 const Wrapper = styled.ul`
@@ -74,27 +72,21 @@ const ThemeSwitch = styled.span`
 `;
 
 const HomeProfileNavigation = (props) => {
-  const { className = "" } = props;
 
-  const dispatch = useDispatch();
+  const {className = ""} = props;
 
-  const { notifications } = useNotifications();
+  const {users, loggedUser, actions: {fetchById}} = useUsers();
+  const {notifications} = useNotifications();
   const {
-    generalSettings: { dark_mode, language },
+    generalSettings: {dark_mode},
     setGeneralSetting,
   } = useSettings();
-  const { _t, setLocale } = useTranslation();
 
-  const user = useSelector((state) => state.session.user);
   const [currentPopUp, setCurrentPopUp] = useState(null);
+  const [form, setForm] = useState({});
 
   const refs = {
     container: useRef(null),
-  };
-
-  const languageOptions = {
-    en: _t("LANGUAGE.ENGLISH", "English"),
-    nl: _t("LANGUAGE.DUTCH", "Dutch"),
   };
 
   const setThemeButton = (e) => {
@@ -126,7 +118,7 @@ const HomeProfileNavigation = (props) => {
     }
     document.querySelector(".overlay").classList.add('show');
 
-    if(e.currentTarget.title == 'Search') {
+    if (e.currentTarget.title === 'Search') {
       document.querySelector(".dropdown-menu-right .dropdown-search-input").focus();
     }
   };
@@ -149,33 +141,50 @@ const HomeProfileNavigation = (props) => {
     document.querySelector(".overlay").classList.remove('show');
   };
 
+  useEffect(() => {
+    setForm(loggedUser);
+  }, [loggedUser.profile_image_link])
+
+  useEffect(() => {
+    const selectedUser = users[loggedUser.id] ? users[loggedUser.id] : {};
+    if (selectedUser.hasOwnProperty("loaded")) {
+      setForm(selectedUser);
+    } else {
+      fetchById(loggedUser.id);
+    }
+  }, []);
+
   useOutsideClick(currentPopUp, hidePopUp, currentPopUp !== null);
+
 
   return (
     <Wrapper ref={refs.container} className={`header-profile-navigation navbar-nav ${className}`}>
-       <li className="nav-item dropdown">
-          <a href="#" className="nav-link" title="Search" data-toggle="dropdown" onClick={toggleDropdown}>
-            <SvgIconFeather icon="search" />
-          </a>
-          <SearchDropDown/>
+      <li className="nav-item dropdown">
+        <a href="#" className="nav-link" title="Search" data-toggle="dropdown" onClick={toggleDropdown}>
+          <SvgIconFeather icon="search"/>
+        </a>
+        <SearchDropDown/>
       </li>
       <li className="nav-item">
         <ThemeSwitch title="Light or Dark mode" onClick={setThemeButton}>
-          <SvgIconFeather icon="moon" />
+          <SvgIconFeather icon="moon"/>
         </ThemeSwitch>
       </li>
       <li className="nav-item dropdown">
-        <a href="/" className={`nav-link ${Object.values(notifications).filter((n) => n.is_read === 0).length > 0 ? "nav-link-notify" : ""}`} title="Notifications" data-toggle="dropdown" onClick={toggleDropdown}>
-          <SvgIconFeather icon="bell" />
+        <a href="/"
+           className={`nav-link ${Object.values(notifications).filter((n) => n.is_read === 0).length > 0 ? "nav-link-notify" : ""}`}
+           title="Notifications" data-toggle="dropdown" onClick={toggleDropdown}>
+          <SvgIconFeather icon="bell"/>
         </a>
-        <NotificationDropDown />
+        <NotificationDropDown/>
       </li>
       <li className="nav-item dropdown">
-        <a href="/" className="nav-link profile-button" data-toggle="dropdown" title={user.name} onClick={toggleDropdown}>
-          <div className="avatar-overlay" />
-          <Avatar name={user.name} imageLink={user.profile_image_link} noDefaultClick={true} />
+        <a href="/" className="nav-link profile-button" data-toggle="dropdown" title={form.name}
+           onClick={toggleDropdown}>
+          <div className="avatar-overlay"/>
+          <Avatar name={form.name} imageLink={form.profile_image_link} noDefaultClick={true}/>
         </a>
-        <UserProfileDropDown user={user} />
+        <UserProfileDropDown user={loggedUser}/>
       </li>
     </Wrapper>
   );
