@@ -419,7 +419,7 @@ const CreateEditWorkspaceModal = (props) => {
                         partial_name: user.partial_name,
                         profile_image_link: user.profile_image_link,
                     },
-                    title: form.name === item.title ? "" : form.name,
+                    title: form.name === item.name ? "" : form.name,
                     added_members: added_members.filter((u) => typeof u === "number"),
                     removed_members: removed_members,
                 })}`

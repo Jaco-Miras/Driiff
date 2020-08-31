@@ -93,7 +93,7 @@ const SystemMessage = forwardRef((props, ref) => {
       if (data.title !== "") {
         newBody = (
           <>
-            <SvgIconFeather width={16} icon="edit-3" /> {author.name} renamed this chat to <b>#{data.title}</b>
+            <SvgIconFeather width={16} icon="edit-3" /> {author.name} renamed this {selectedChannel.type === "TOPIC" ? "workspace" : "chat"} to <b>#{data.title}</b>
             <br />
           </>
         );
@@ -273,7 +273,7 @@ const SystemMessage = forwardRef((props, ref) => {
       if (data.title !== "") {
         newBody = (
           <>
-            <SvgIconFeather width={16} icon="edit-3" /> {author.name} renamed this chat to <b>#{data.title}</b>
+            <SvgIconFeather width={16} icon="edit-3" /> {author.name} renamed this {selectedChannel.type === "TOPIC" ? "workspace" : "chat"} to <b>#{data.title}</b>
             <br />
           </>
         );
