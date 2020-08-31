@@ -46,7 +46,7 @@ const Wrapper = styled.div`
 const CompanyPostTimeline = (props) => {
   const {className = "", data} = props;
   const history = useHistory();
-  const {todayOrYesterdayDate} = useTimeFormat();
+  const {fromNow} = useTimeFormat();
 
   const handleLinkClick = (e) => {
     e.preventDefault();
@@ -66,7 +66,7 @@ const CompanyPostTimeline = (props) => {
               shared the post "{data.title}"
             </span>
           </span>
-          <span className="text-muted font-weight-normal">{todayOrYesterdayDate(data.created_at.timestamp)}</span>
+          <span className="text-muted font-weight-normal">{fromNow(data.created_at.timestamp)}</span>
         </h6>
         {data.body.replace(/<\/?[^>]+(>|$)/g, "") && (
           <span onClick={handleLinkClick}>

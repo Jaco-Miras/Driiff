@@ -34,7 +34,7 @@ const CompanyAttachFileTimeline = (props) => {
 
   const dispatch = useDispatch();
   const fileHandler = useFileActions();
-  const {todayOrYesterdayDate} = useTimeFormat();
+  const {fromNow} = useTimeFormat();
 
   const handleFilePreview = () => {
     console.log(data, params);
@@ -60,7 +60,7 @@ const CompanyAttachFileTimeline = (props) => {
                 attached a file
               </span>
             </span>
-            <span className="text-muted font-weight-normal">{todayOrYesterdayDate(data.created_at.timestamp)}</span>
+            <span className="text-muted font-weight-normal">{fromNow(data.created_at.timestamp)}</span>
           </h6>
           <div className="mb-3 border p-3 border-radius-1">
             <span onClick={handleFilePreview} className="timeline-file-icon">
