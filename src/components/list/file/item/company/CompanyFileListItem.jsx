@@ -1,8 +1,8 @@
-import React, {useCallback, useState} from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import styled from "styled-components";
-import {SvgIconFeather, ToolTip} from "../../../common";
-import {FileOptions} from "../../../panels/files";
-import {ProgressBar} from "../../../panels/common";
+import {SvgIconFeather, ToolTip} from "../../../../common";
+import {ProgressBar} from "../../../../panels/common";
+import {CompanyFileOptions} from "../../../../panels/files/company";
 
 const Wrapper = styled.div`
   .card {
@@ -47,11 +47,12 @@ const Star = styled(SvgIconFeather)`
   color: #ffc107;
 `;
 
-const FileListItem = (props) => {
-  const {className = "", file, actions, isMember, forceDelete = false, disableOptions} = props;
+const CompanyFileListItem = (props) => {
+  const {className = "", file, actions, forceDelete = false, disableOptions} = props;
 
   const fileSizeUnit = actions.getFileSizeUnit(file.hasOwnProperty("size") && typeof file.size === "number" ? file.size : 0);
   const [isFavorite, setIsFavorite] = useState(file.is_favorite);
+  const [fileName, setFileName] = useState(typeof file.name === "undefined" ? file.search : file.name);
 
   const handleFileView = useCallback(() => {
     actions.viewCompanyFiles(file);
@@ -62,6 +63,10 @@ const FileListItem = (props) => {
     actions.favorite(file);
   }, [file, setIsFavorite]);
 
+  useEffect(() => {
+    setFileName(typeof file.name === "undefined" ? file.search : file.name);
+  }, [file.name, file.search]);
+
   return (
     <Wrapper className={`file-list-item cursor-pointer ${className}`} onClick={handleFileView}>
       <div className="card  app-file-list">
@@ -69,21 +74,22 @@ const FileListItem = (props) => {
           {isFavorite === true && <Star icon="star"/>}
           {actions.getFileIcon(file.mime_type)}
           {typeof file.id === "number" &&
-          <FileOptions
-            file={file} actions={{...actions, favorite: handleFavorite}} isMember={isMember} forceDelete={forceDelete}
+          <CompanyFileOptions
+            file={file} actions={{...actions, favorite: handleFavorite}} forceDelete={forceDelete}
             disableOptions={disableOptions}/>}
           {typeof file.id === "string" &&
           <ProgressBar amount={100} barClassName={"progress-bar-striped progress-bar-animated"}/>}
         </div>
         <div className="p-2 small">
-          <ToolTip content={file.name ? file.name : file.search}>
+          <ToolTip content={fileName}>
             <div className="file-name">
               {
                 file.hasOwnProperty("payload_id") &&
-                <SvgIconFeather className={"mr-2"} icon="gdrive" viewBox="0 0 512 512" fill="#000" height="20"
-                                width="15" opacity=".8"/>
+                <SvgIconFeather
+                  className={"mr-2"} icon="gdrive" viewBox="0 0 512 512" fill="#000" height="20"
+                  width="15" opacity=".8"/>
               }
-              {file.name ? file.name : file.search}</div>
+              {fileName}</div>
           </ToolTip>
           <div className="text-muted">
             {fileSizeUnit.size.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0]}
@@ -95,4 +101,4 @@ const FileListItem = (props) => {
   );
 };
 
-export default React.memo(FileListItem);
+export default React.memo(CompanyFileListItem);

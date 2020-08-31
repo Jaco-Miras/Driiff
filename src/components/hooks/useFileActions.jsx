@@ -2,6 +2,7 @@ import React, {useCallback, useRef} from "react";
 import {useDispatch} from "react-redux";
 import {copyTextToClipboard} from "../../helpers/commonFunctions";
 import {
+  addCompanyFileSearchResults,
   addFileSearchResults,
   addFolder,
   addRemoveFavorite,
@@ -35,15 +36,16 @@ import {
   getWorkspaceTrashFiles,
   patchCompanyFileViewed,
   postCompanyFolders,
+  postCompanyUploadBulkFiles,
   postCompanyUploadFiles,
   postGoogleAttachments,
-  postUploadBulkFiles,
   putCompanyFiles,
   putCompanyFolders,
   putFile,
   putFolder,
   registerGoogleDriveFile,
   setViewFiles,
+  uploadCompanyFilesReducer,
   uploadFilesReducer,
   uploadWorkspaceFiles,
 } from "../../redux/actions/fileActions";
@@ -146,16 +148,16 @@ const useFileActions = (params = null) => {
     [dispatch]
   );
 
-  const updateCompanyUploadFiles = useCallback(
+  const uploadCompanyFiles = useCallback(
     (payload, callback) => {
       dispatch(postCompanyUploadFiles(payload, callback));
     },
     [dispatch]
   );
 
-  const updateUploadBulkFiles = useCallback(
+  const uploadCompanyBulkFiles = useCallback(
     (payload, callback) => {
-      dispatch(postUploadBulkFiles(payload, callback));
+      dispatch(postCompanyUploadBulkFiles(payload, callback));
     },
     [dispatch]
   );
@@ -181,23 +183,9 @@ const useFileActions = (params = null) => {
     [dispatch]
   );
 
-  const deleteCompanyFile = useCallback(
-    (payload, callback) => {
-      dispatch(deleteCompanyFiles(payload, callback));
-    },
-    [dispatch]
-  );
-
   const deleteCompanyFolder = useCallback(
     (payload, callback) => {
       dispatch(deleteCompanyFolders(payload, callback));
-    },
-    [dispatch]
-  );
-
-  const deleteCompanyTrashFiles = useCallback(
-    (payload, callback) => {
-      dispatch(deleteCompanyDeleteAllTrashFiles(payload, callback));
     },
     [dispatch]
   );
@@ -287,7 +275,6 @@ const useFileActions = (params = null) => {
     },
     [dispatch]
   );
-
 
 
   const updateFolder = useCallback(
@@ -392,6 +379,46 @@ const useFileActions = (params = null) => {
     [dispatch, params]
   );
 
+  const removeCompanyFile = useCallback(
+    (file, callback = () => {
+    }, options = {
+      force_delete: false
+    }) => {
+      const handleDeleteFile = () => {
+        let payload = {
+          file_id: file.id,
+          link_id: file.link_id,
+          link_type: file.link_type,
+        };
+        if (options.force_delete) {
+          payload = {
+            ...payload,
+            force_delete: 1,
+          };
+        }
+        dispatch(
+          deleteCompanyFiles(payload, (err, res) => {
+            toaster.notify(`You have removed ${file.search}.`);
+            callback(err, res);
+          })
+        )
+      };
+      let payload = {
+        type: "confirmation",
+        headerText: "Remove file",
+        submitText: "Remove",
+        cancelText: "Cancel",
+        bodyText: "Are you sure you want to remove this file?",
+        actions: {
+          onSubmit: handleDeleteFile,
+        },
+      };
+
+      dispatch(addToModals(payload));
+    },
+    [dispatch, params]
+  );
+
   const renameFile = useCallback(
     (file, callback) => {
       const handleUpdateFileName = () => {
@@ -423,6 +450,64 @@ const useFileActions = (params = null) => {
             }
           )
         );
+      };
+
+      const handleFileNameClose = () => {
+        fileName.current = "";
+      };
+
+      const handleFileNameChange = (e) => {
+        fileName.current = e.target.value.trim();
+      };
+
+      let filename = file.search.split(".").slice(0, -1).join(".");
+      if (filename === "") {
+        filename = file.search;
+      }
+      //let extension = f.search.split(".").slice(1, 2).join(".");
+
+      fileName.current = filename;
+      let payload = {
+        type: "single_input",
+        defaultValue: filename,
+        title: "Update filename",
+        labelPrimaryAction: "Update",
+        onPrimaryAction: handleUpdateFileName,
+        onChange: handleFileNameChange,
+        onClose: handleFileNameClose,
+      };
+
+      dispatch(addToModals(payload));
+    },
+    [dispatch]
+  );
+
+  const renameCompanyFile = useCallback(
+    (file, callback) => {
+
+      const handleUpdateFileName = () => {
+        updateCompanyFiles({
+          id: file.id,
+          name: fileName.current,
+        }, (err, res) => {
+          if (err) {
+            toaster.error(
+              <span>
+                    System failed to rename the <b>{file.search}</b> to {fileName.current}.
+                  </span>
+            );
+          }
+
+          if (res) {
+            toaster.success(
+              <span>
+                    You renamed <b>{file.search}</b> to {fileName.current}.
+                  </span>
+            );
+          }
+
+          callback(err, res);
+        })
       };
 
       const handleFileNameClose = () => {
@@ -532,6 +617,23 @@ const useFileActions = (params = null) => {
     [dispatch, params]
   );
 
+  const viewCompanyFiles = useCallback(
+    (file, callback) => {
+      if (file.hasOwnProperty("payload_id")) {
+        let a = document.createElement('a');
+        a.href = file.download_link.replace("/preview", "/view");
+        a.target = "_blank";
+        a.click();
+      } else {
+        let payload = {
+          file_id: file.id,
+        };
+        dispatch(setViewFiles(payload, callback));
+      }
+    },
+    [dispatch, params]
+  );
+
   const search = useCallback(
     (searchValue) => {
       let payload = {
@@ -548,6 +650,25 @@ const useFileActions = (params = null) => {
         );
       };
       dispatch(getWorkspaceFiles(payload, cb));
+    },
+    [dispatch, params]
+  );
+
+  const searchCompany = useCallback(
+    (searchValue) => {
+      let payload = {
+        search: searchValue,
+      };
+      const cb = (err, res) => {
+        if (err) return;
+        dispatch(
+          addCompanyFileSearchResults({
+            ...payload,
+            search_results: res.data.files,
+          })
+        );
+      };
+      fetchCompanyFiles(payload, cb)
     },
     [dispatch, params]
   );
@@ -570,6 +691,26 @@ const useFileActions = (params = null) => {
         deleteTrash({
           topic_id: params.workspaceId,
         })
+      );
+    };
+    let payload = {
+      type: "confirmation",
+      headerText: "Empty trash",
+      submitText: "Empty",
+      cancelText: "Cancel",
+      bodyText: "Are you sure you want to empty the trash?",
+      actions: {
+        onSubmit: handleDeleteTrash,
+      },
+    };
+
+    dispatch(addToModals(payload));
+  }, [dispatch, params]);
+
+  const removeAllCompanyTrashFiles = useCallback(() => {
+    const handleDeleteTrash = () => {
+      dispatch(
+        deleteCompanyDeleteAllTrashFiles({})
       );
     };
     let payload = {
@@ -667,6 +808,13 @@ const useFileActions = (params = null) => {
   const uploadingFiles = useCallback(
     (payload) => {
       dispatch(uploadFilesReducer(payload));
+    },
+    [dispatch]
+  );
+
+  const uploadingCompanyFiles = useCallback(
+    (payload) => {
+      dispatch(uploadCompanyFilesReducer(payload));
     },
     [dispatch]
   );
@@ -775,6 +923,7 @@ const useFileActions = (params = null) => {
     updateFolder,
     uploadFiles,
     viewFiles,
+    viewCompanyFiles,
     getFileSizeUnit,
     getPrimaryFiles,
     getGoogleDriveFiles,
@@ -785,20 +934,24 @@ const useFileActions = (params = null) => {
     uploadingFiles,
     fetchCompanyFiles,
     fetchCompanyFavoriteFiles,
+    fetchCompanyFilesDetail,
     fetchCompanyFolderBreadCrumbs,
     fetchCompanyFolders,
     fetchCompanyPopularFiles,
     fetchCompanyRecentEditedFiles,
     fetchCompanyTrashedFiles,
     createCompanyFolders,
-    updateCompanyUploadFiles,
-    updateUploadBulkFiles,
+    renameCompanyFile,
+    uploadingCompanyFiles,
+    uploadCompanyFiles,
+    uploadCompanyBulkFiles,
     viewCompanyFile,
     updateCompanyFiles,
     updateCompanyFolders,
-    deleteCompanyFile,
+    removeCompanyFile,
+    removeAllCompanyTrashFiles,
     deleteCompanyFolder,
-    deleteCompanyTrashFiles,
+    searchCompany
   };
 };
 

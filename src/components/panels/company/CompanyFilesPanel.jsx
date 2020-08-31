@@ -24,7 +24,7 @@ const CompanyFilesPanel = (props) => {
   const dispatch = useDispatch();
   const history = useHistory();
   const {_t} = useTranslation();
-  const {params, files, actions, fileIds, folders, folder, subFolders} = useCompanyFiles();
+  const {params, isLoaded, files, fileCount, actions, fileIds, folders, folder, subFolders} = useCompanyFiles();
 
   const [filter, setFilter] = useState("");
   const [search, setSearch] = useState("");
@@ -37,7 +37,7 @@ const CompanyFilesPanel = (props) => {
   if (workspace && workspace.active === 0) disableOptions = true;
 
   const handleFilterFile = (e) => {
-    if (params.hasOwnProperty("fileFolderId")) {
+    if (params.hasOwnProperty("folderId")) {
       let pathname = history.location.pathname.split("/folder/")[0];
       history.push(pathname);
     }
@@ -54,7 +54,7 @@ const CompanyFilesPanel = (props) => {
   );
 
   const handleSearch = () => {
-    actions.search(search);
+    actions.searchCompany(search);
   };
 
   const clearSearch = () => {
@@ -72,22 +72,23 @@ const CompanyFilesPanel = (props) => {
   );
 
   const dictionary = {
-    createFolder: _t("CREATE_FOLDER", "Create folder"),
-    create: _t("CREATE", "Create"),
-    updateFolder: _t("UPDATE_FOLDER", "Update folder"),
-    update: _t("UPDATE", "Update"),
-    editFolder: _t("EDIT_FOLDER", "Edit folder"),
-    removeFolder: _t("REMOVE_FOLDER", "Remove folder"),
-    add: _t("ADD", "Add"),
-    favorite: _t("FAVORITE", "Favorite"),
-    file: _t("FILE", "File"),
-    folder: _t("FOLDER", "Folder"),
-    folders: _t("FOLDERS", "Folders"),
+    createFolder: _t("FILE.CREATE_FOLDER", "Create folder"),
+    create: _t("FILE.CREATE", "Create"),
+    updateFolder: _t("FILE.UPDATE_FOLDER", "Update folder"),
+    update: _t("FILE.UPDATE", "Update"),
+    editFolder: _t("FILE.EDIT_FOLDER", "Edit folder"),
+    removeFolder: _t("FILE.REMOVE_FOLDER", "Remove folder"),
+    add: _t("FILE.ADD", "Add"),
+    favorite: _t("FILE.FAVORITE", "Favorite"),
+    favoriteTitle: _t("FILE.FAVORITE_TITLE", "Favorite"),
+    file: _t("FILE.FILE", "File"),
+    folder: _t("FILE.FOLDER", "Folder"),
+    folders: _t("FILE.FOLDERS", "Folders"),
     allFiles: _t("FILES.ALL_FILES", "All files"),
     recentlyEdited: _t("FILES.RECENTLY_EDITED", "Recently edited"),
     removed: _t("FILES.REMOVED", "Removed"),
     searchInputPlaceholder: _t("FILES.SEARCH_INPUT_PLACEHOLDER", "Search input"),
-    uploadFiles: _t("UPLOAD_FILES", "Upload files")
+    uploadFiles: _t("FILE.UPLOAD_FILES", "Upload files")
   };
 
   const folderName = useRef("");
@@ -104,7 +105,7 @@ const CompanyFilesPanel = (props) => {
     const handleCreateFolder = () => {
       let cb = (err, res) => {
         if (err) return;
-        if (params.hasOwnProperty("fileFolderId")) {
+        if (params.hasOwnProperty("folderId")) {
           let pathname = history.location.pathname.split("/folder/")[0];
           history.push(pathname + `/folder/${res.data.folder.id}/${replaceChar(res.data.folder.search)}`);
         } else {
@@ -114,10 +115,10 @@ const CompanyFilesPanel = (props) => {
       let payload = {
         name: folderName.current,
       };
-      if (params.hasOwnProperty("fileFolderId")) {
+      if (params.hasOwnProperty("folderId")) {
         payload = {
           ...payload,
-          folder_id: params.fileFolderId,
+          folder_id: params.folderId,
         };
       }
       actions.createCompanyFolders(payload, cb);
@@ -126,7 +127,7 @@ const CompanyFilesPanel = (props) => {
     const handleUpdateFolder = () => {
       let cb = (err, res) => {
         if (err) return;
-        if (params.hasOwnProperty("fileFolderId")) {
+        if (params.hasOwnProperty("folderId")) {
           let pathname = history.location.pathname.split("/folder/")[0];
           history.push(pathname + `/folder/${res.data.folder.id}/${replaceChar(res.data.folder.search)}`);
         }
@@ -183,6 +184,7 @@ const CompanyFilesPanel = (props) => {
     <Wrapper className={`container-fluid h-100 fadeIn ${className}`}>
       <div className="row app-block">
         <CompanyFilesSidebar
+          init={isLoaded}
           actions={actions}
           isMember={isMember}
           clearFilter={clearFilter}
@@ -191,7 +193,7 @@ const CompanyFilesPanel = (props) => {
           className="col-lg-3"
           filterFile={handleFilterFile}
           filter={filter}
-          files={files}
+          fileCount={fileCount}
           folders={folders}
           activeFolder={folder}
           dictionary={dictionary}
@@ -221,7 +223,6 @@ const CompanyFilesPanel = (props) => {
             folders={folders}
             folder={folder}
             fileIds={fileIds}
-            isMember={isMember}
             subFolders={subFolders}
             history={history}
             actions={actions}

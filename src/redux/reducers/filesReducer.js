@@ -10,13 +10,55 @@ const INITIAL_STATE = {
   workspaceFiles: {},
   googleDriveApiFiles: {},
   companyFiles: {
-    isLoaded: false,
-    stars: 0,
-    trash: 0,
-    count: 0,
-    storage: 0,
-    files: {},
-    folders: {}
+    init: false,
+    search_results: [],
+    search_value: "",
+    count: {
+      all: 0,
+      stars: 0,
+      trash: 0,
+      count: 0,
+      storage: 0,
+    },
+    has_more: true,
+    skip: 0,
+    limit: 100,
+    items: {},
+    favorite_files: {
+      init: false,
+      has_more: true,
+      skip: 0,
+      limit: 100,
+      items: []
+    },
+    popular_files: {
+      init: false,
+      has_more: true,
+      skip: 0,
+      limit: 100,
+      items: []
+    },
+    recently_edited: {
+      init: false,
+      has_more: true,
+      skip: 0,
+      limit: 100,
+      items: []
+    },
+    trash_files: {
+      init: false,
+      has_more: true,
+      skip: 0,
+      limit: 100,
+      items: []
+    }
+  },
+  companyFolders: {
+    init: false,
+    has_more: true,
+    skip: 0,
+    limit: 100,
+    items: {}
   }
 };
 
@@ -28,20 +70,254 @@ export default (state = INITIAL_STATE, action) => {
         user: action.data,
       };
     }
-    case "GET_COMPANY_FILES_SUCCESS ": {
-      let newFiles = state.companyFiles.files;
-      action.data.files.forEach(f => {
-        newFiles = {
-          ...newFiles,
-          [f.id]: f
-        }
-      })
+    case "ADD_COMPANY_FILE_SEARCH_RESULTS": {
       return {
         ...state,
         companyFiles: {
           ...state.companyFiles,
-          isLoaded: true,
-          files: newFiles
+          items: {
+            ...state.companyFiles.items,
+            ...convertArrayToObject(action.data.search_results, "id")
+          },
+          search_results: action.data.search_results.map((f) => f.id),
+          search_value: action.data.search,
+        }
+      }
+    }
+    case "POST_COMPANY_FOLDERS_SUCCESS": {
+      return {
+        ...state,
+        companyFolders: {
+          items: {
+            ...state.companyFolders.items,
+            [action.data.folder.id]: action.data.folder
+          }
+        }
+      }
+    }
+    case "UPLOAD_COMPANY_FILES_REDUCER": {
+      return {
+        ...state,
+        companyFiles: {
+          ...state.companyFiles,
+          init: true,
+          skip: state.companyFiles.skip + state.companyFiles.limit,
+          has_more: action.data.files.length === state.companyFiles.limit,
+          items: {
+            ...convertArrayToObject(action.data.files, "id"),
+            ...state.companyFiles.items,
+          },
+        }
+      }
+    }
+    case "PUT_COMPANY_FILES_SUCCESS": {
+      return {
+        ...state,
+        companyFiles: {
+          ...state.companyFiles,
+          items: {
+            ...state.companyFiles.items,
+            [action.data.file.id]: action.data.file
+          },
+        }
+      }
+    }
+    case "POST_COMPANY_UPLOAD_BULK_FILES_SUCCESS": {
+      let items = state.companyFiles.items;
+      let fileItems = Object.values(state.companyFiles.items).filter(f => f.uploading);
+
+      let storage = 0;
+      action.data.files.forEach(f => {
+        const i = fileItems.find(file => file.size === f.size && file.search === f.search);
+        delete items[i.id];
+        items[f.id] = f;
+        storage += f.size;
+      })
+
+      return {
+        ...state,
+        companyFiles: {
+          ...state.companyFiles,
+          items: items,
+          count: {
+            ...state.companyFiles.count,
+            all: state.companyFiles.count.all + action.data.files.length,
+            storage: state.companyFiles.count.storage + storage
+          }
+        }
+      }
+    }
+    case "GET_COMPANY_FILES_SUCCESS": {
+      let fileItems = state.companyFiles.items;
+      action.data.files.forEach(f => {
+        fileItems[f.id] = f;
+      })
+
+      let folderItem = state.companyFolders.items[action.data.file_id];
+      if (action.data.file_id !== null && folderItem) {
+        folderItem = {
+          ...folderItem,
+          init: true,
+          has_more: action.data.files.length === folderItem.limit,
+          skip: folderItem.skip + folderItem.limit,
+          files: action.data.files.map(f => f.id)
+        }
+      }
+
+      return {
+        ...state,
+        companyFiles: {
+          ...state.companyFiles,
+          init: true,
+          skip: state.companyFiles.skip + state.companyFiles.limit,
+          has_more: action.data.files.length === state.companyFiles.limit,
+          items: fileItems,
+        },
+        companyFolders: {
+          ...state.companyFolders,
+          items: {
+            ...state.companyFolders.items,
+            ...folderItem
+          }
+        }
+      }
+    }
+    case "GET_COMPANY_FOLDERS_SUCCESS": {
+      let items = state.companyFolders.items;
+      action.data.folders.forEach(f => {
+        items[f.id] = {
+          ...f,
+          init: false,
+          has_more: true,
+          skip: 0,
+          limit: 100,
+          files: []
+        };
+      });
+      return {
+        ...state,
+        companyFolders: {
+          ...state.companyFolders,
+          init: true,
+          skip: state.companyFolders.skip + state.companyFolders.limit,
+          has_more: action.data.folders.length === state.companyFolders.limit,
+          items: items,
+        }
+      }
+    }
+    case "GET_COMPANY_FILES_DETAIL_SUCCESS": {
+      return {
+        ...state,
+        companyFiles: {
+          ...state.companyFiles,
+          count: {
+            all: action.data.total_file_count,
+            storage: action.data.total_storage,
+            stars: action.data.total_file_stars,
+            trash: action.data.total_file_trash,
+          }
+        },
+      };
+    }
+    case "GET_COMPANY_FAVORITE_FILES_SUCCESS": {
+      let items = state.companyFiles.items;
+      action.data.files.forEach(f => {
+        items[f.id] = f;
+      })
+
+      let fileItems = state.companyFiles.favorite_files.items;
+      action.data.files.forEach(f => {
+        if (!fileItems.includes(f.id)) {
+          fileItems.push(f.id);
+        }
+      })
+
+      return {
+        ...state,
+        companyFiles: {
+          ...state.companyFiles,
+          items: items,
+          favorite_files: {
+            ...state.companyFiles.favorite_files,
+            has_more: action.data.files.length === state.companyFiles.favorite_files.limit,
+            skip: state.companyFiles.favorite_files.skip + state.companyFiles.favorite_files.limit,
+            items: fileItems,
+          }
+        }
+      }
+    }
+    case "GET_COMPANY_POPULAR_FILES_SUCCESS": {
+      let items = state.companyFiles.items;
+      action.data.files.forEach(f => {
+        items[f.id] = f;
+      })
+
+      let fileItems = state.companyFiles.popular_files.items;
+      action.data.files.forEach(f => {
+        if (!fileItems.includes(f.id)) {
+          fileItems.push(f.id);
+        }
+      })
+
+      return {
+        ...state,
+        companyFiles: {
+          ...state.companyFiles,
+          items: items,
+          popular_files: {
+            ...state.companyFiles.popular_files,
+            has_more: action.data.files.length === state.companyFiles.popular_files.limit,
+            skip: state.companyFiles.popular_files.skip + state.companyFiles.popular_files.limit,
+            items: fileItems
+          }
+        }
+      }
+    }
+    case "GET_COMPANY_RECENT_EDITED_FILES_SUCCESS": {
+      let items = state.companyFiles.items;
+      action.data.files.forEach(f => {
+        items[f.id] = f;
+      })
+
+      let fileItems = state.companyFiles.recently_edited.items;
+      action.data.files.forEach(f => {
+        if (!fileItems.includes(f.id)) {
+          fileItems.push(f.id);
+        }
+      })
+
+      return {
+        ...state,
+        companyFiles: {
+          ...state.companyFiles,
+          items: items,
+          recently_edited: {
+            ...state.companyFiles.trash_files,
+            has_more: action.data.files.length === state.companyFiles.recently_edited.limit,
+            skip: state.companyFiles.recently_edited.skip + state.companyFiles.recently_edited.limit,
+            items: fileItems
+          }
+        }
+      }
+    }
+    case "GET_COMPANY_TRASHED_FILES_SUCCESS": {
+      let fileItems = state.companyFiles.trash_files.items;
+      action.data.files.forEach(f => {
+        if (!fileItems.some(file => file.id === f.id)) {
+          fileItems.push(f);
+        }
+      })
+
+      return {
+        ...state,
+        companyFiles: {
+          ...state.companyFiles,
+          trash_files: {
+            ...state.companyFiles.trash_files,
+            has_more: action.data.files.length === state.companyFiles.trash_files.limit,
+            skip: state.companyFiles.trash_files.skip + state.companyFiles.trash_files.limit,
+            items: fileItems
+          }
         }
       }
     }
@@ -294,12 +570,10 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "GET_WORKSPACE_GOOGLE_FOLDER_ATTACHMENTS_SUCCESS": {
-
       let newWorkspaceFiles = {...state.workspaceFiles};
       if (newWorkspaceFiles.hasOwnProperty(action.data.topic_id)) {
         if (newWorkspaceFiles[action.data.topic_id].hasOwnProperty("folders")) {
           action.data.attachments.map((a) => {
-            console.log(a)
             newWorkspaceFiles[a.link_id].folders[a.id] = {
               id: a.id,
               is_archived: false,
@@ -781,20 +1055,56 @@ export default (state = INITIAL_STATE, action) => {
       }
     }
     case "ADD_REMOVE_FAVORITE": {
-      let newWorkspaceFiles = { ...state.workspaceFiles };
-      newWorkspaceFiles[action.data.topic_id].files[action.data.file_id].is_favorite = action.data.is_favorite;
-      newWorkspaceFiles = {
-        ...newWorkspaceFiles,
-        [action.data.topic_id]: {
-          ...newWorkspaceFiles[action.data.topic_id],
-          stars: action.data.is_favorite ? newWorkspaceFiles[action.data.topic_id].stars + 1 : newWorkspaceFiles[action.data.topic_id].stars - 1,
-          favorite_files: action.data.is_favorite ? [...newWorkspaceFiles[action.data.topic_id].favorite_files, action.data.file_id] : newWorkspaceFiles[action.data.topic_id].favorite_files.filter((id) => id != action.data.file_id),
-        },
-      };
-      return {
-        ...state,
-        workspaceFiles: newWorkspaceFiles,
-      };
+      if (action.data.topic_id) {
+        let newWorkspaceFiles = {...state.workspaceFiles};
+        newWorkspaceFiles[action.data.topic_id].files[action.data.file_id].is_favorite = action.data.is_favorite;
+        newWorkspaceFiles = {
+          ...newWorkspaceFiles,
+          [action.data.topic_id]: {
+            ...newWorkspaceFiles[action.data.topic_id],
+            stars: action.data.is_favorite ? newWorkspaceFiles[action.data.topic_id].stars + 1 : newWorkspaceFiles[action.data.topic_id].stars - 1,
+            favorite_files: action.data.is_favorite ? [...newWorkspaceFiles[action.data.topic_id].favorite_files, action.data.file_id] : newWorkspaceFiles[action.data.topic_id].favorite_files.filter((id) => id != action.data.file_id),
+          },
+        };
+        return {
+          ...state,
+          workspaceFiles: newWorkspaceFiles,
+        };
+      } else {
+        let items = state.companyFiles.items;
+
+        if (items[action.data.file_id]) {
+          items[action.data.file_id].is_favorite = action.data.is_favorite;
+        }
+
+        let favorite_files_items = state.companyFiles.favorite_files.items;
+        const index = favorite_files_items.findIndex(x => x.id === action.data.file_id);
+        if (index !== -1) {
+          if (action.data.is_favorite) {
+            favorite_files_items[index].is_favorite = action.data.is_favorite;
+          } else {
+            favorite_files_items.splice(index, 1);
+          }
+        } else if (action.data.is_favorite) {
+          favorite_files_items.push(items[action.data.file_id]);
+        }
+
+        return {
+          ...state,
+          companyFiles: {
+            ...state.companyFiles,
+            count: {
+              ...state.companyFiles.count,
+              stars: action.data.is_favorite ? state.companyFiles.count.stars + 1 : state.companyFiles.count.stars - 1
+            },
+            items: items,
+            favorite_files: {
+              ...state.companyFiles.favorite_files,
+              items: favorite_files_items
+            }
+          }
+        };
+      }
     }
     case "INCOMING_MOVED_FILE": {
       let newWorkspaceFiles = { ...state.workspaceFiles };

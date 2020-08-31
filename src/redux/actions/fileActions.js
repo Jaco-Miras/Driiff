@@ -35,11 +35,11 @@ import {
   patchCompanyFileViewed as patchCompanyFileViewedService,
   patchWorkspaceFileViewed as patchWorkspaceFileViewedService,
   postCompanyFolders as postCompanyFoldersService,
+  postCompanyUploadBulkFiles as postCompanyUploadBulkFilesService,
   postCompanyUploadFiles as postCompanyUploadFilesService,
   postFavorite as postFavoriteService,
   postFolder as postFolderService,
   postGoogleAttachments as postGoogleAttachmentsService,
-  postUploadBulkFiles as postUploadBulkFilesService,
   postWorkspaceFiles as postWorkspaceFilesService,
   putCompanyFiles as putCompanyFilesService,
   putCompanyFolders as putCompanyFoldersService,
@@ -310,8 +310,8 @@ export function postCompanyUploadFiles(payload, callback) {
   return dispatchActionToReducer(postCompanyUploadFilesService(payload), "POST_COMPANY_UPLOAD_FILES_START", "POST_COMPANY_UPLOAD_FILES_SUCCESS", "POST_COMPANY_UPLOAD_FILES_FAIL", callback);
 }
 
-export function postUploadBulkFiles(payload, callback) {
-  return dispatchActionToReducer(postUploadBulkFilesService(payload), "POST_UPLOAD_BULK_FILES_START", "POST_UPLOAD_BULK_FILES_SUCCESS", "POST_UPLOAD_BULK_FILES_FAIL", callback);
+export function postCompanyUploadBulkFiles(payload, callback) {
+  return dispatchActionToReducer(postCompanyUploadBulkFilesService(payload), "POST_COMPANY_UPLOAD_BULK_FILES_START", "POST_COMPANY_UPLOAD_BULK_FILES_SUCCESS", "POST_COMPANY_UPLOAD_UPLOAD_BULK_FILES_FAIL", callback);
 }
 
 export function patchCompanyFileViewed(payload, callback) {
@@ -336,4 +336,12 @@ export function deleteCompanyFolders(payload, callback) {
 
 export function deleteCompanyDeleteAllTrashFiles(payload, callback) {
   return dispatchActionToReducer(deleteCompanyDeleteAllTrashFilesService(payload), "DELETED_COMPANY_DELETE_START", "DELETED_COMPANY_DELETE_SUCCESS", "DELETED_COMPANY_DELETE_FAIL", callback);
+}
+
+export function uploadCompanyFilesReducer(payload, callback) {
+  return SimpleDispatchActionToReducer("UPLOAD_COMPANY_FILES_REDUCER", payload, callback);
+}
+
+export function addCompanyFileSearchResults(payload, callback) {
+  return SimpleDispatchActionToReducer("ADD_COMPANY_FILE_SEARCH_RESULTS", payload, callback);
 }

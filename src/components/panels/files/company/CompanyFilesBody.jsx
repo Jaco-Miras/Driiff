@@ -1,9 +1,8 @@
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import styled from "styled-components";
 import {useSelector} from "react-redux";
 import {SvgEmptyState, SvgIconFeather} from "../../../common";
 import {DropDocument} from "../../../dropzone/DropDocument";
-import {useToaster} from "../../../hooks";
 import {MoreOptions} from "../../common";
 import {
   CompanyFilesBreadcrumb,
@@ -12,7 +11,7 @@ import {
   CompanyRecentEditedFile,
   CompanyRemoveFiles,
 } from "./index";
-import {FileListItem, FolderListItem} from "../../../list/file/item";
+import {CompanyFileListItem, CompanyFolderListItem} from "../../../list/file/item/company";
 
 const Wrapper = styled.div`
   .card-body {
@@ -72,11 +71,10 @@ const EmptyStateLabel = styled.div`
 
 const CompanyFilesBody = (props) => {
   const {
-    className = "", dropZoneRef, filter, search, wsFiles, isMember, handleAddEditFolder, actions,
+    className = "", dropZoneRef, filter, search, files, handleAddEditFolder, actions,
     params, folders, folder, fileIds, history, subFolders, dictionary, disableOptions
   } = props;
 
-  const toaster = useToaster();
   const scrollRef = document.querySelector(".app-content-body");
 
   const user = useSelector((state) => state.session.user);
@@ -114,7 +112,7 @@ const CompanyFilesBody = (props) => {
           is_favorite: false,
           link_id: null,
           link_index_id: null,
-          link_type: "TOPIC",
+          link_type: "COMPANY",
           mime_type: f.type,
           search: f.name,
           size: f.size,
@@ -126,10 +124,9 @@ const CompanyFilesBody = (props) => {
         };
       }),
       folder_id: folder ? folder.id : null,
-      topic_id: parseInt(params.workspaceId),
-      workspace_id: params.hasOwnProperty("folderId") ? parseInt(params.fileFolderId) : null,
     };
-    actions.uploadingFiles(uploads);
+    actions.uploadingCompanyFiles(uploads);
+
     let formData = new FormData();
     for (const i in attachedFiles) {
       if (attachedFiles.hasOwnProperty(i)) {
@@ -140,17 +137,16 @@ const CompanyFilesBody = (props) => {
 
     let payload = {
       is_primary: 0,
-      topic_id: params.workspaceId,
       files: formData,
     };
-    if (params.fileFolderId) {
+    if (params.folderId) {
       payload = {
         ...payload,
-        folder_id: params.fileFolderId,
+        folder_id: params.folderId,
       };
     }
 
-    actions.uploadFiles(payload);
+    actions.uploadCompanyBulkFiles(payload);
   };
 
   const handleRemoveFolder = () => {
@@ -171,25 +167,13 @@ const CompanyFilesBody = (props) => {
     handleAddEditFolder(folder, "update");
   };
 
-  useEffect(() => {
-    if (showDropZone) {
-      setShowDropZone(false);
-    }
-  }, [wsFiles]);
-
-  useEffect(() => {
-    if (showDropZone && !isMember) {
-      toaster.warning("You are not a member of this workspace.");
-    }
-  }, [showDropZone]);
-
   return (
     <Wrapper className={`files-body card app-content-body ${className}`} onDragOver={handleShowDropZone}>
       {
         !disableOptions &&
         <DropDocument
           ref={dropZoneRef}
-          hide={!(showDropZone && isMember === true)}
+          hide={!(showDropZone)}
           onDragLeave={handleHideDropZone}
           onDrop={({acceptedFiles}) => {
             dropAction(acceptedFiles);
@@ -199,9 +183,9 @@ const CompanyFilesBody = (props) => {
         />
       }
       <div className="card-body">
-        {typeof wsFiles !== "undefined" && (
+        {typeof files !== "undefined" && (
           <>
-            {folder && isMember && filter !== "removed" && !disableOptions && (
+            {folder && filter !== "removed" && !disableOptions && (
               <MoreButton moreButton="settings">
                 <div onClick={handleEditFolder}>{dictionary.editFolder}</div>
                 <div onClick={handleRemoveFolder}>{dictionary.removeFolder}</div>
@@ -209,73 +193,72 @@ const CompanyFilesBody = (props) => {
             )}
 
             {
-              filter === "removed" && wsFiles
-              && wsFiles.hasOwnProperty("trash_files")
-              && (Object.keys(wsFiles.trash_files).length > 0 || Object.values(folders).filter((f) => f.is_archived).length > 0)
-              && <SvgIconFeather icon="trash" onClick={actions.removeTrashFiles}/>
+              filter === "removed" && files
+              && files.hasOwnProperty("trash_files")
+              && (Object.keys(files.trash_files).length > 0 || Object.values(folders).filter((f) => f.is_archived).length > 0)
+              && <SvgIconFeather icon="trash" onClick={actions.removeAllCompanyTrashFiles}/>
             }
             {filter === "" && (
               <>
                 {
-                  typeof params.fileFolderId === "undefined" && (
+                  typeof params.folderId === "undefined" && (
                     <h6 className="font-size-11 text-uppercase mb-4">{dictionary.allFiles}</h6>
                   )}
 
-                {folder && folder.search && (
-                  <CompanyFilesBreadcrumb folder={folder} history={history} dictionary={dictionary} folders={folders}
-                                          workspaceID={params.workspaceId}/>
+                {folder && (
+                  <CompanyFilesBreadcrumb folder={folder} history={history} dictionary={dictionary} folders={folders}/>
                 )}
 
                 {
                   <div className="row">
-                    {params.hasOwnProperty("fileFolderId")
+                    {params.hasOwnProperty("folderId")
                       ? subFolders
                         .filter((f) => !f.is_archived)
                         .map((f) => {
-                          return <FolderListItem key={f.id} actions={actions}
-                                                 className="col-xl-3 col-lg-4 col-md-6 col-sm-12"
-                                                 disableOptions={disableOptions} folder={f} history={history}
-                                                 isMember={isMember} params={params}
-                                                 handleAddEditFolder={handleAddEditFolder}/>;
+                          return <CompanyFolderListItem
+                            key={f.id} actions={actions}
+                            className="col-xl-3 col-lg-4 col-md-6 col-sm-12"
+                            disableOptions={disableOptions} folder={f} history={history}
+                            params={params}
+                            handleAddEditFolder={handleAddEditFolder}/>;
                         })
                       : Object.values(folders)
                         .filter((f) => {
                           return f.parent_folder === null && !f.is_archived;
                         })
                         .map((f) => {
-                          return <FolderListItem key={f.id} actions={actions}
-                                                 className="col-xl-3 col-lg-4 col-md-6 col-sm-12"
-                                                 disableOptions={disableOptions} folder={f} history={history}
-                                                 isMember={isMember} params={params}
-                                                 handleAddEditFolder={handleAddEditFolder}/>;
+                          return <CompanyFolderListItem
+                            key={f.id} actions={actions}
+                            className="col-xl-3 col-lg-4 col-md-6 col-sm-12"
+                            disableOptions={disableOptions} folder={f} history={history}
+                            params={params}
+                            handleAddEditFolder={handleAddEditFolder}/>;
                         })}
                   </div>
                 }
-                {typeof params.fileFolderId !== "undefined" ? (
+                {typeof params.folderId !== "undefined" ? (
                   <>
                     {folder ? (
                       <>
                         <h6 className="font-size-11 text-uppercase mb-4">{folder.search}</h6>
                         <div className="row">
-                          {wsFiles &&
+                          {files &&
                           fileIds.map((f) => {
-                            if (wsFiles.files.hasOwnProperty(f)) {
-                              return <FileListItem
-                                key={f} isMember={isMember} scrollRef={scrollRef} actions={actions}
+                            if (files.files.hasOwnProperty(f)) {
+                              return <CompanyFileListItem
+                                key={f} scrollRef={scrollRef} actions={actions}
                                 className="col-xl-3 col-lg-4 col-md-6 col-sm-12"
-                                file={wsFiles.files[f]} disableOptions={disableOptions}/>;
+                                file={files.files[f]} disableOptions={disableOptions}/>;
                             } else return null;
                           })}
                         </div>
-                        {wsFiles && fileIds.length === 0 && (
+                        {files && fileIds.length === 0 && (
                           <EmptyState>
                             <SvgEmptyState icon={4} height={282}/>
-                            {isMember && (
-                              <button className="btn btn-outline-primary btn-block" onClick={handleShowUploadModal}
-                                      disabled={disableOptions}>
-                                {dictionary.uploadFiles}
-                              </button>
-                            )}
+                            <button className="btn btn-outline-primary btn-block" onClick={handleShowUploadModal}
+                                    disabled={disableOptions}>
+                              {dictionary.uploadFiles}
+                            </button>
                           </EmptyState>
                         )}
                       </>
@@ -286,31 +269,37 @@ const CompanyFilesBody = (props) => {
                 ) : (
                   <>
                     <div className="row">
-                      {wsFiles &&
+                      {files &&
                       fileIds.map((f) => {
-                        if (wsFiles.files.hasOwnProperty(f)) {
-                          return <FileListItem key={f} isMember={isMember} scrollRef={scrollRef} actions={actions}
-                                               className="col-xl-3 col-lg-4 col-md-6 col-sm-12" file={wsFiles.files[f]}
-                                               disableOptions={disableOptions}/>;
+                        if (files.files.hasOwnProperty(f)) {
+                          return <CompanyFileListItem
+                            key={f} scrollRef={scrollRef} actions={actions}
+                            className="col-xl-3 col-lg-4 col-md-6 col-sm-12" file={files.files[f]}
+                            disableOptions={disableOptions}/>;
                         } else return null;
                       })}
                     </div>
-                    {wsFiles && wsFiles.popular_files.length > 0 &&
-                    <CompanyPopularFiles search={search} scrollRef={scrollRef} wsFiles={wsFiles} actions={actions}
-                                         disableOptions={disableOptions}/>}
-                    {wsFiles && wsFiles.recently_edited.length > 0 &&
-                    <CompanyRecentEditedFile search={search} scrollRef={scrollRef} wsFiles={wsFiles} actions={actions}
-                                             disableOptions={disableOptions}/>}
-                    {wsFiles && wsFiles.popular_files.length === 0 && wsFiles.recently_edited.length === 0 && fileIds.length === 0 &&
+                    {files && files.popular_files.length > 0 &&
+                    <CompanyPopularFiles
+                      search={search}
+                      scrollRef={scrollRef}
+                      files={Object.values(files.files).filter(f => files.popular_files.includes(f.id))}
+                      actions={actions}
+                      disableOptions={disableOptions}/>}
+                    {files && files.recently_edited.length > 0 &&
+                    <CompanyRecentEditedFile
+                      search={search} scrollRef={scrollRef}
+                      files={Object.values(files.files).filter(f => files.recently_edited.includes(f.id))}
+                      actions={actions}
+                      disableOptions={disableOptions}/>}
+                    {files && files.popular_files.length === 0 && files.recently_edited.length === 0 && fileIds.length === 0 &&
                     !(Object.values(folders).length === 0 || subFolders.length === 0) && (
                       <EmptyState>
                         <SvgEmptyState icon={4} height={282}/>
-                        {isMember && (
-                          <button className="btn btn-outline-primary btn-block" onClick={handleShowUploadModal}
-                                  disabled={disableOptions}>
-                            {dictionary.uploadFiles}
-                          </button>
-                        )}
+                        <button className="btn btn-outline-primary btn-block" onClick={handleShowUploadModal}
+                                disabled={disableOptions}>
+                          {dictionary.uploadFiles}
+                        </button>
                       </EmptyState>
                     )}
                   </>
@@ -319,9 +308,12 @@ const CompanyFilesBody = (props) => {
             )}
             {filter === "recent" && (
               <>
-                <CompanyRecentEditedFile search={search} scrollRef={scrollRef} wsFiles={wsFiles} actions={actions}
-                                         disableOptions={disableOptions}/>
-                {!(wsFiles && wsFiles.recently_edited.length > 0) && (
+                <CompanyRecentEditedFile
+                  search={search} scrollRef={scrollRef}
+                  files={Object.values(files.files).filter(f => files.recently_edited.includes(f.id))}
+                  actions={actions}
+                  disableOptions={disableOptions}/>
+                {!(files && files.recently_edited.length > 0) && (
                   <EmptyState>
                     <SvgEmptyState icon={4} height={282}/>
                   </EmptyState>
@@ -330,8 +322,11 @@ const CompanyFilesBody = (props) => {
             )}
             {filter === "important" && (
               <>
-                <CompanyImportantFiles search={search} scrollRef={scrollRef} wsFiles={wsFiles} actions={actions}/>
-                {!(wsFiles && wsFiles.hasOwnProperty("favorite_files") && wsFiles.favorite_files.length > 0) && (
+                <CompanyImportantFiles
+                  search={search} scrollRef={scrollRef}
+                  files={Object.values(files.files).filter(f => files.favorite_files.includes(f.id))}
+                  actions={actions} dictionary={dictionary}/>
+                {!(files && files.hasOwnProperty("favorite_files") && files.favorite_files.length > 0) && (
                   <EmptyState>
                     <SvgEmptyState icon={4} height={282}/>
                     <EmptyStateLabel>
@@ -347,9 +342,8 @@ const CompanyFilesBody = (props) => {
                 <CompanyRemoveFiles
                   scrollRef={scrollRef}
                   search={search}
-                  wsFiles={wsFiles}
+                  files={files.trash_files}
                   actions={actions}
-                  isMember={isMember}
                   params={params}
                   folders={folders}
                   subFolders={subFolders}
@@ -357,7 +351,7 @@ const CompanyFilesBody = (props) => {
                   folder={folder}
                   disableOptions={disableOptions}
                 />
-                {!(wsFiles && wsFiles.hasOwnProperty("trash_files") && Object.keys(wsFiles.trash_files).length > 0) &&
+                {!(files && files.hasOwnProperty("trash_files") && Object.keys(files.trash_files).length > 0) &&
                 !(Object.values(folders).some((f) => f.is_archived) || subFolders.some((f) => f.is_archived)) && (
                   <EmptyState>
                     <SvgEmptyState icon={4} height={282}/>

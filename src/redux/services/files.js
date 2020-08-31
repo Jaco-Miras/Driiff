@@ -409,18 +409,22 @@ export function postCompanyUploadFiles(payload) {
   });
 }
 
-export function postUploadBulkFiles(payload) {
+export function postCompanyUploadBulkFiles(payload) {
+  let url = `/v2/company/upload-bulk-files`;
+  if (payload.folder_id) {
+    url += `&folder_id=${payload.folder_id}`;
+  }
   return apiCall({
     method: "POST",
-    url: `/v2/company/upload-bulk-files`,
-    data: payload
+    url: url,
+    data: payload.files,
   });
 }
 
 export function deleteCompanyFiles(payload) {
   return apiCall({
     method: "DELETE",
-    url: `/v2/company/files/${payload.id}`,
+    url: `/v2/company/files/${payload.file_id}`,
     data: payload
   });
 }
@@ -455,7 +459,7 @@ export function patchCompanyFileViewed(payload) {
   });
 }
 
-export function getCompanyFilesDetail(payload) {
+export function getCompanyFilesDetail(payload = {}) {
   return apiCall({
     method: "GET",
     url: `/v2/company/files-detail?${objToUrlParams(payload)}`,

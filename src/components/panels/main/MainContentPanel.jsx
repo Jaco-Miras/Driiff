@@ -23,26 +23,29 @@ const MainContentPanel = (props) => {
     <Wrapper className={`main-content ${className}`} isOnWorkspace={props.match.params.page === "workspace"}>
 
       {
-        ["/dashboard", "/posts", "/chat", "/files", "/people"].includes(match.url) && <CompanyPageHeaderPanel />
+        ["/dashboard", "/posts", "/chat", "/files", "/people"].includes(match.url) &&
+        <CompanyPageHeaderPanel/>
       }
 
       <Switch>
-        <Route {...props} component={UserProfilePanel} path={["/profile/:id/:name/:mode", "/profile/:id/:name", "/profile"]} />
-        <Route {...props} component={UserNotificationPanel} path={["/notifications"]} />
-        <Route {...props} component={UserSearchPanel} path={["/search"]} />
+        <Route {...props} component={UserProfilePanel}
+               path={["/profile/:id/:name/:mode", "/profile/:id/:name", "/profile"]}/>
+        <Route {...props} component={UserNotificationPanel} path={["/notifications"]}/>
+        <Route {...props} component={UserSearchPanel} path={["/search"]}/>
         {!isExternal && <Route {...props} component={CompanyDashboardPanel} path={["/dashboard"]}/>}
         {!isExternal &&
         <Route {...props} component={CompanyPostsPanel} path={["/posts/:postId/:postTitle", "/posts"]}/>}
         {!isExternal &&
         <Route {...props} component={CompanyChatPanel} path={["/chat/:code/:messageId", "/chat/:code?"]}/>}
-        {!isExternal && <Route {...props} component={CompanyFilesPanel} path={["/files"]}/>}
-        { !isExternal && <Route {...props} component={CompanyPeoplePanel} path={["/people"]} /> }
-        <Route {...props} component={CompanySettingsPanel} path={["/settings"]} />
+        <Route {...props} render={(props) => <CompanyFilesPanel {...props}/>}
+               path={["/files/folder/:folderId/:folderName", "/files"]}/>
+        {!isExternal && <Route {...props} component={CompanyPeoplePanel} path={["/people"]}/>}
+        <Route {...props} component={CompanySettingsPanel} path={["/settings"]}/>
         <Redirect
           from="*"
           to={{
             pathname: "/workspace/chat",
-            state: { from: props.location },
+            state: {from: props.location},
           }}
         />
       </Switch>

@@ -107,7 +107,7 @@ export {
   getCompanyTrashedFiles,
   postCompanyFolders,
   postCompanyUploadFiles,
-  postUploadBulkFiles,
+  postCompanyUploadBulkFiles,
   patchCompanyFileViewed,
   putCompanyFiles,
   putCompanyFolders,

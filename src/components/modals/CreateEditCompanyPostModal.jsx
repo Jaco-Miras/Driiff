@@ -195,7 +195,6 @@ const CreateEditCompanyPostModal = (props) => {
   const [modal, setModal] = useState(true);
   const user = useSelector((state) => state.session.user);
   const users = useSelector((state) => state.users.mentions);
-  const activeTopic = useSelector((state) => state.workspaces.activeTopic);
   const company = useSelector((state) => state.global.recipients).find(r => r.main_department === true);
   const [showMoreOptions, setShowMoreOptions] = useState(null);
   const [maxHeight, setMaxHeight] = useState(null);
@@ -267,7 +266,6 @@ const CreateEditCompanyPostModal = (props) => {
         }, (err, res) => {
           dispatch(
             deleteDraftReducer({
-              topic_id: activeTopic.id,
               draft_type: "draft_post",
               draft_id: draftId,
             }, (err, res) => {
@@ -324,13 +322,6 @@ const CreateEditCompanyPostModal = (props) => {
         toggleNested();
         return;
       }
-
-      if (activeTopic) {
-        if (form.selectedUsers.filter((u) => u.value !== user.id).length || form.selectedWorkspaces.filter((u) => u.value !== activeTopic.id).length) {
-          toggleNested();
-          return;
-        }
-      }
     } else {
       if (form.title !== "") {
         toggleNested();
@@ -375,13 +366,6 @@ const CreateEditCompanyPostModal = (props) => {
       if (form.show_at !== null) {
         toggleNested();
         return;
-      }
-
-      if (activeTopic) {
-        if (form.selectedUsers.filter((u) => u.value !== user.id).length || form.selectedWorkspaces.filter((u) => u.value !== activeTopic.id).length) {
-          toggleNested();
-          return;
-        }
       }
     }
 
@@ -447,7 +431,6 @@ const CreateEditCompanyPostModal = (props) => {
           users_responsible: form.selectedUsers,
         },
         timestamp: timestamp,
-        topic_id: activeTopic.id,
         id: timestamp,
         is_must_read: form.must_read ? 1 : 0,
         is_must_reply: form.must_reply ? 1 : 0,
@@ -601,10 +584,10 @@ const CreateEditCompanyPostModal = (props) => {
   };
 
   useEffect(() => {
-    if (activeTopic !== null && item.hasOwnProperty("draft")) {
+    if (item.hasOwnProperty("draft")) {
       setForm(item.draft.form);
       setDraftId(item.draft.draft_id);
-    } else if (activeTopic !== null && mode !== "edit") {
+    } else if (mode !== "edit") {
       setForm({
         ...form,
         selectedWorkspaces: [{
@@ -630,7 +613,7 @@ const CreateEditCompanyPostModal = (props) => {
         body: item.post.body,
         textOnly: item.post.body,
         title: item.post.title,
-        hast_folder: activeTopic.hasOwnProperty("workspace_id"),
+        has_folder: true,
         no_reply: item.post.is_read_only,
         must_read: item.post.is_must_read,
         reply_required: item.post.is_must_reply,
@@ -787,7 +770,7 @@ const CreateEditCompanyPostModal = (props) => {
     setAttachedFiles((prevState) => prevState.filter((f) => f.id !== parseInt(fileId)));
   }
 
-  const [wsOptions] = useGetWorkspaceAndUserOptions(form.selectedWorkspaces, activeTopic);
+  const [wsOptions] = useGetWorkspaceAndUserOptions(form.selectedWorkspaces);
   const userOptions = Object.values(users).map((u) => {
     return {
       ...u,
@@ -836,8 +819,9 @@ const CreateEditCompanyPostModal = (props) => {
         </WrapperDiv>
         <WrapperDiv>
           <Label for="workspace">{dictionary.workspace}</Label>
-          <SelectWorkspace options={wsOptions} value={form.selectedWorkspaces}
-                           onChange={handleSelectWorkspace} isMulti={true} isClearable={true}/>
+          <SelectWorkspace
+            options={wsOptions} value={form.selectedWorkspaces}
+            onChange={handleSelectWorkspace} isMulti={true} isClearable={true}/>
         </WrapperDiv>
         <WrapperDiv>
           <Label for="responsible">{dictionary.responsible}</Label>
@@ -850,7 +834,7 @@ const CreateEditCompanyPostModal = (props) => {
           onOpenFileDialog={handleOpenFileDialog}
           defaultValue={item.hasOwnProperty("draft") ? form.body : mode === "edit" ? item.post.body : ""}
           mode={mode}
-          members={activeTopic ? activeTopic.members : []}
+          members={[]}
           required
           /*valid={valid.description}
                      feedback={feedback.description}*/
