@@ -271,6 +271,12 @@ const WorspaceHeaderPanel = (props) => {
                       </SubWorkspaceName>
                     </li>
                     {
+                      activeTopic.is_lock === 1 &&
+                      <li className="nav-item">
+                        <div className={`badge badge-light text-white ml-1`}>Locked</div>
+                      </li>
+                    }
+                    {
                       activeTopic.active === 0 &&
                       <li className="nav-item">
                         <div className={`badge badge-light text-white ml-1`}>Archived</div>
