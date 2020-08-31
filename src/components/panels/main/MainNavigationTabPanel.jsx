@@ -179,6 +179,7 @@ const MainNavigationTabPanel = (props) => {
 
   const dictionary = {
     allWorkspaces: _t("SIDEBAR.ALL_WORKSPACES", "All Workspaces"),
+    workspace: _t("SIDEBAR.WORKSPACE", "Workspace"),
     workspaces: _t("SIDEBAR.WORKSPACES", "Workspaces"),
     chats: _t("SIDEBAR.CHATS", "Chats"),
     yourWorkspaces: _t("SIDEBAR.YOUR_WORKSPACES", "Your workspaces"),
@@ -289,7 +290,7 @@ const MainNavigationTabPanel = (props) => {
             <NavIconContainer to={workspacePath} >
               <NavIcon icon={"compass"}/>
               <div>
-                {dictionary.allWorkspaces}
+                {dictionary.workspace}
                 {unreadCounter.workspace_chat_message + unreadCounter.workspace_post >= 1 &&
                 <Badge data-count={unreadCounter.workspace_chat_message + unreadCounter.workspace_post}>&nbsp;</Badge>}
               </div>
