@@ -196,6 +196,7 @@ const CreateEditCompanyPostModal = (props) => {
   const user = useSelector((state) => state.session.user);
   const users = useSelector((state) => state.users.mentions);
   const activeTopic = useSelector((state) => state.workspaces.activeTopic);
+  const company = useSelector((state) => state.global.recipients).find(r => r.main_department === true);
   const [showMoreOptions, setShowMoreOptions] = useState(null);
   const [maxHeight, setMaxHeight] = useState(null);
   const [draftId, setDraftId] = useState(null);
@@ -405,9 +406,20 @@ const CreateEditCompanyPostModal = (props) => {
     if (e === null) {
       setForm({
         ...form,
-        selectedWorkspaces: [],
+        selectedWorkspaces: [{
+          ...company,
+          value: company.id,
+          label: company.name
+        }],
       });
     } else {
+      if (!e.some(ws => ws.id === company.id)) {
+        e.unshift({
+          ...company,
+          value: company.id,
+          label: company.name
+        })
+      }
       setForm({
         ...form,
         selectedWorkspaces: e,
@@ -508,24 +520,38 @@ const CreateEditCompanyPostModal = (props) => {
       if (attachedFiles.length) {
         uploadFiles(payload, "edit");
       } else {
-        action.update(payload, (err, res) => {
-          setLoading(false);
-          if (res) {
+        if (form.selectedWorkspaces.length > 1) {
+          dispatch(putPost(payload, () => {
+            setLoading(false);
             toggleAll(false);
-          }
-        });
+          }));
+        } else {
+          action.update(payload, (err, res) => {
+            setLoading(false);
+            if (res) {
+              toggleAll(false);
+            }
+          });
+        }
       }
     } else {
       if (attachedFiles.length) {
         uploadFiles(payload, "create");
         setLoading(false);
       } else {
-        action.create(payload, (err, res) => {
-          setLoading(false);
-          if (res) {
+        if (form.selectedWorkspaces.length > 1) {
+          dispatch(postCreate(payload, () => {
+            setLoading(false);
             toggleAll(false);
-          }
-        });
+          }));
+        } else {
+          action.create(payload, (err, res) => {
+            setLoading(false);
+            if (res) {
+              toggleAll(false);
+            }
+          });
+        }
       }
     }
   };
@@ -581,7 +607,12 @@ const CreateEditCompanyPostModal = (props) => {
     } else if (activeTopic !== null && mode !== "edit") {
       setForm({
         ...form,
-        selectedWorkspaces: [],
+        selectedWorkspaces: [{
+          ...company,
+          icon: "home",
+          value: company.id,
+          label: company.name,
+        }],
         selectedUsers: [
           {
             id: user.id,
@@ -603,7 +634,15 @@ const CreateEditCompanyPostModal = (props) => {
         no_reply: item.post.is_read_only,
         must_read: item.post.is_must_read,
         reply_required: item.post.is_must_reply,
-        selectedWorkspaces: [],
+        selectedWorkspaces: [
+          ...item.post.recipients.map(r => {
+            return {
+              ...r,
+              value: r.id,
+              label: r.name,
+            }
+          }),
+        ],
         selectedUsers: item.post.users_responsible.map((u) => {
           return {
             ...u,

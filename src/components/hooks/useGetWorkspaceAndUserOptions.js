@@ -1,8 +1,9 @@
-import { useEffect, useState, useCallback } from "react";
-import { useSelector } from "react-redux";
+import {useCallback, useEffect, useState} from "react";
+import {useSelector} from "react-redux";
 
-const useGetWorkspaceAndUserOptions = (selectedWorkspaces, workspace) => {
-  const { workspaces, folders } = useSelector((state) => state.workspaces);
+const useGetWorkspaceAndUserOptions = (selectedWorkspaces, workspace = null) => {
+  const {recipients} = useSelector((state) => state.global);
+  const {workspaces, folders} = useSelector((state) => state.workspaces);
   const [options, setOptions] = useState([]);
   const [userOptions, setUserOptions] = useState([]);
 
@@ -28,12 +29,20 @@ const useGetWorkspaceAndUserOptions = (selectedWorkspaces, workspace) => {
 
   useEffect(() => {
     if (Object.values(workspaces).length) {
-      let workspaceOptions = [...Object.values(folders),...Object.values(workspaces)].map((ws) => {
+      let workspaceOptions = [...Object.values(folders), ...Object.values(workspaces)].map((ws) => {
         return {
           ...ws,
           value: ws.id,
           label: ws.name,
         };
+      });
+
+      const company = recipients.find(r => r.main_department === true);
+      workspaceOptions.unshift({
+        ...company,
+        icon: "home",
+        value: company.id,
+        label: company.name
       });
 
       if (selectedWorkspaces.length) {
