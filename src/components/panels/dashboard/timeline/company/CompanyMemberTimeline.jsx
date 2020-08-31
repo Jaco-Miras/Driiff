@@ -22,7 +22,7 @@ const Wrapper = styled.div`
 
 const CompanyMemberTimeline = (props) => {
   const {className = "", data} = props;
-  const {todayOrYesterdayDate} = useTimeFormat();
+  const {fromNow} = useTimeFormat();
 
   const user = useSelector((state) => state.session.user);
   const recipients = useSelector((state) => state.global.recipients.filter((r) => r.type === "USER"));
@@ -87,7 +87,7 @@ const CompanyMemberTimeline = (props) => {
           <span className="title">
             {message.author.name} {renderTitle()}
           </span>
-          <span className="text-muted font-weight-normal">{todayOrYesterdayDate(data.created_at.timestamp)}</span>
+          <span className="text-muted font-weight-normal">{fromNow(data.created_at.timestamp)}</span>
         </h6>
         {message.added_members.length || message.removed_members.length ? (
           <div className="mb-3 border p-3 border-radius-1">

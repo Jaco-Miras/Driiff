@@ -8,7 +8,6 @@ import {deleteWorkspaceFiles, setPendingUploadFilesToWorkspace} from "../../redu
 import {addToModals, clearModal} from "../../redux/actions/globalActions";
 import {
     createWorkspace,
-    fetchTimeline,
     leaveWorkspace,
     setActiveTopic,
     updateWorkspace
@@ -451,7 +450,6 @@ const CreateEditWorkspaceModal = (props) => {
                     } else {
                         history.push(`/workspace/dashboard/${res.data.id}/${replaceChar(form.name)}`);
                     }
-                    dispatch(fetchTimeline({topic_id: item.id}));
                 };
     
                 dispatch(updateWorkspace(payload, cb));

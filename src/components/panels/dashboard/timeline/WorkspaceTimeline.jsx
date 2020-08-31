@@ -7,7 +7,7 @@ const Wrapper = styled.div``;
 
 const WorkspaceTimeline = (props) => {
   const { className = "", workspace } = props;
-  const { todayOrYesterdayDate } = useTimeFormat();
+  const { fromNow } = useTimeFormat();
 
   return (
     <Wrapper className={`timeline-item ${className}`}>
@@ -19,7 +19,7 @@ const WorkspaceTimeline = (props) => {
           <span>
             {workspace.user.name} <a href="#">shared a post</a>
           </span>
-          <span className="text-muted font-weight-normal">{todayOrYesterdayDate(workspace.created_at.timestamp)}</span>
+          <span className="text-muted font-weight-normal">{fromNow(workspace.created_at.timestamp)}</span>
         </h6>
         <a href="#">
           <div className="mb-3 border p-3 border-radius-1">{workspace.body}</div>
