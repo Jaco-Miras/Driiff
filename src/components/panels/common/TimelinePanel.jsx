@@ -26,7 +26,7 @@ const TimelinePanel = (props) => {
 
   useEffect(() => {
     if (workspace) {
-      actions.getTimeline(workspace.id);
+      actions.getTimeline({topic_id: workspace.id, skip:0, limit: 10});
     }
   }, [workspace]);
 

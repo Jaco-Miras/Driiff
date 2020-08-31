@@ -732,12 +732,18 @@ export default (state = INITIAL_STATE, action) => {
     }
     case "FETCH_TIMELINE_SUCCESS": {
       let newWorkspaceTimeline = { ...state.workspaceTimeline };
-      newWorkspaceTimeline = {
-        ...newWorkspaceTimeline,
-        [action.data.topic_id]: {
-          timeline: convertArrayToObject(action.data.timeline, "id"),
-        },
-      };
+      if (newWorkspaceTimeline.hasOwnProperty(action.data.topic_id)) {
+        newWorkspaceTimeline[action.data.topic_id] = {
+          ...newWorkspaceTimeline[action.data.topic_id],
+          hasMore: action.data.timeline.length === 10,
+          timeline: {...newWorkspaceTimeline[action.data.topic_id].timeline, ...convertArrayToObject(action.data.timeline, "id")}
+        }
+      } else {
+        newWorkspaceTimeline[action.data.topic_id] = {
+          hasMore: action.data.timeline.length === 10,
+          timeline: convertArrayToObject(action.data.timeline, "id")
+        }
+      }
       return {
         ...state,
         workspaceTimeline: newWorkspaceTimeline,

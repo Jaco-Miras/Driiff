@@ -61,8 +61,8 @@ const useWorkspaceActions = () => {
   );
 
   const getTimeline = useCallback(
-    (id, callback) => {
-      dispatch(fetchTimeline({topic_id: id}, callback));
+    (payload, callback) => {
+      dispatch(fetchTimeline(payload, callback));
     },
     [dispatch]
   );

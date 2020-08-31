@@ -226,7 +226,7 @@ export function fetchMembers(payload) {
  * @returns {Promise<*>}
  */
 export function fetchTimeline(payload) {
-  let url = `/v2/workspace-dashboard-timeline?topic_id=${payload.topic_id}`;
+  let url = `/v2/workspace-dashboard-timeline?${objToUrlParams(payload)}`;
   return apiCall({
     method: "GET",
     url: url,
