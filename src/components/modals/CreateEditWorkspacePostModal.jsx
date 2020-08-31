@@ -759,8 +759,6 @@ const CreateEditWorkspacePostModal = (props) => {
     }
   };
 
-  console.log(form,item)
-
   return (
     <Modal isOpen={modal} toggle={toggle} centered size={"lg"} onOpened={onOpened}>
       <ModalHeaderSection
