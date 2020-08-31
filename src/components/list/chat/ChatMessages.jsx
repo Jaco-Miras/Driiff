@@ -118,7 +118,7 @@ const ChatBubbleContainer = styled.div`
     justify-content: flex-end;
     flex-flow: column;
     flex-flow: ${(props) => (props.isAuthor ? "row" : "row-reverse")};
-    margin-left: ${(props) => ((!props.isAuthor && !props.showAvatar) || (!props.isAuthor && props.showAvatar && props.isBot) ? "22px" : "0")};
+    margin-left: ${(props) => ((!props.isAuthor && !props.showAvatar) ? "22px" : "0")};
     ${(props) => props.isAuthor === true && "position: relative; right: 15px;"};
     margin-top: ${(props) => props.showAvatar && "36px"};
     margin-top: ${(props) => props.showAvatar && props.isAuthor && "20px"};
@@ -854,7 +854,7 @@ class ChatMessages extends React.PureComponent {
                                     )}
                                   </ChatBubbleQuoteDiv>
 
-                                  {!isAuthor && showAvatar && !isBot && <StyledAvatar isForwardedMessage={reply.is_transferred} id={reply.user.id} imageLink={reply.user.profile_image_link} name={reply.user.name} />}
+                                  {!isAuthor && showAvatar && <StyledAvatar isForwardedMessage={reply.is_transferred} id={reply.user.id} imageLink={reply.user.profile_image_link} name={reply.user.name} isBot={isBot}/>}
                                 </ChatBubbleContainer>
                               )}
                               {reply.user === null && (

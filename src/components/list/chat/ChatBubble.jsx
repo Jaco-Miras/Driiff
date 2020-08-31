@@ -1037,13 +1037,15 @@ const ChatBubble = (props) => {
                   <QuoteContent theme={chatSettings.chat_message_theme} isAuthor={isAuthor} dangerouslySetInnerHTML={{ __html: replyQuoteBody.split("</p>")[0] }}></QuoteContent>
                 </QuoteContainer>
               )}
-              {!isAuthor && showAvatar && (
-                <>
-                  {isBot === true && <GrippBotIcon icon={"gripp-bot"} />}
-                  {/* @todo reply.message_from.name and reply.user.name issue
-                                 <p className={"reply-author"}>{reply.message_from.name.replace("  ", " ")}</p>*/}
-                </>
-              )}
+              {
+              // !isAuthor && showAvatar && (
+              //   <>
+              //     {isBot === true && <GrippBotIcon icon={"gripp-bot"} />}
+              //     {/* @todo reply.message_from.name and reply.user.name issue
+              //                    <p className={"reply-author"}>{reply.message_from.name.replace("  ", " ")}</p>*/}
+              //   </>
+              // )
+              }
               {reply.files.length > 0 && !reply.is_deleted && <ChatMessageFiles hasMessage={hasMessage} isAuthor={isAuthor} theme={chatSettings.chat_message_theme} chatFiles={chatFiles} files={reply.files} reply={reply} type="chat" />}
 
               {!isAuthor && showAvatar && (
