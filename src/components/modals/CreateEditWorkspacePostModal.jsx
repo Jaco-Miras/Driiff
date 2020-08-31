@@ -615,7 +615,15 @@ const CreateEditWorkspacePostModal = (props) => {
           };
         }),
         file_ids: item.post.files.map((f) => f.id),
+        show_at: item.post.show_at,
+        end_at: item.post.end_at
       });
+      if ((item.post.end_at !== null || item.post.show_at !== null) || (item.post.is_read_only || item.post.is_must_read || item.post.is_must_reply)) {
+        if (formRef.more_options.current !== null) {
+          setMaxHeight(formRef.more_options.current.offsetHeight);
+        }
+        setShowMoreOptions(true);
+      }
       setUploadedFiles(
         item.post.files.map((f) => {
           return {
@@ -750,6 +758,8 @@ const CreateEditWorkspacePostModal = (props) => {
       inputRef.current.focus();
     }
   };
+
+  console.log(form,item)
 
   return (
     <Modal isOpen={modal} toggle={toggle} centered size={"lg"} onOpened={onOpened}>
