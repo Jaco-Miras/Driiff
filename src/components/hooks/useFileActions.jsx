@@ -359,7 +359,7 @@ const useFileActions = (params = null) => {
         }
         dispatch(
           deleteFile(payload, (err, res) => {
-            toaster.notify(`You have removed ${file.search}.`);
+            toaster.info(`You have removed ${file.search}.`);
           })
         );
       };
@@ -398,7 +398,7 @@ const useFileActions = (params = null) => {
         }
         dispatch(
           deleteCompanyFiles(payload, (err, res) => {
-            toaster.notify(`You have removed ${file.search}.`);
+            toaster.info(`You have removed ${file.search}.`);
             callback(err, res);
           })
         )
@@ -835,7 +835,7 @@ const useFileActions = (params = null) => {
         };
         dispatch(
           deleteGoogleAttachment(payload, (err, res) => {
-            toaster.notify(`You have removed ${file.search}.`);
+            toaster.info(`You have removed ${file.search}.`);
           })
         );
       };
@@ -871,7 +871,7 @@ const useFileActions = (params = null) => {
         };
         dispatch(
           deleteGoogleAttachment(payload, (err, res) => {
-            toaster.notify(`You have removed ${folder.search}.`);
+            toaster.info(`You have removed ${folder.search}.`);
           })
         );
       };

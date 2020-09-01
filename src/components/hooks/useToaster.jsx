@@ -1,111 +1,74 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback } from "react";
 import styled from "styled-components";
-import toaster from "toasted-notes";
+import { toast } from "react-toastify";
+import { SvgIconFeather } from "../common";
 
 const Wrapper = styled.div`
-  position: initial !important;
-  padding-bottom: 10px;
+  display: flex;
+  align-items: center;
 `;
 
-const ProgressBarStyle = styled.div`
-  width: ${(props) => (props.width >= 0 ? props.width : 0)}%;
-  transition: all 0.2s;
+const Icon = styled(SvgIconFeather)`
+  margin-right: 10px;
+`;
+
+const TextWrapper = styled.div`
 `;
 
 const useToaster = () => {
-  const DurationLine = (props) => {
-    const { duration } = props;
-    const interval = useRef();
-    const [amount, setAmount] = useState(duration);
-
-    useEffect(() => {
-      interval.current = setInterval(() => {
-        setAmount((state) => state - 100);
-      }, 100);
-    }, []);
-
-    if (amount <= -100) {
-      clearInterval(interval.current);
-    }
-
-    const progress = (amount / duration) * 100;
-
-    return <ProgressBarStyle className="toast-progress" width={progress} />;
-  };
 
   const success = useCallback((text, options = {}) => {
-    if (!options.hasOwnProperty("duration")) {
-      options.duration = 2000;
-    }
-    toaster.notify(
-      () => (
-        <Wrapper id="toast-container">
-          <div className="toast-success">
-            <DurationLine duration={options.duration} />
-            <div className="toast-message">{text}</div>
-          </div>
-        </Wrapper>
-      ),
-      options
-    );
+    toast.success(
+      <Wrapper>
+        <Icon icon="check" strokeWidth="2"/>
+        <TextWrapper>
+          {text}
+        </TextWrapper>
+      </Wrapper>
+    , options);
   }, []);
 
   const error = useCallback((text, options = {}) => {
-    if (!options.hasOwnProperty("duration")) {
-      options.duration = 2000;
-    }
-    toaster.notify(
-      () => (
-        <Wrapper id="toast-container">
-          <div className="toast-error">
-            <DurationLine duration={options.duration} />
-            <div className="toast-message">{text}</div>
-          </div>
-        </Wrapper>
-      ),
-      options
-    );
+    toast.error(
+      <Wrapper>
+        <Icon icon="alert-x" strokeWidth="2"/>
+        <TextWrapper>
+          {text}
+        </TextWrapper>
+      </Wrapper>
+    , options);
   }, []);
 
   const info = useCallback((text, options = {}) => {
-    if (!options.hasOwnProperty("duration")) {
-      options.duration = 2000;
-    }
-    toaster.notify(
-      () => (
-        <Wrapper id="toast-container">
-          <div className="toast-info">
-            <DurationLine duration={options.duration} />
-            <div className="toast-message">{text}</div>
-          </div>
-        </Wrapper>
-      ),
-      options
-    );
+    toast.info(
+      <Wrapper>
+        <Icon icon="info" strokeWidth="2"/>
+        <TextWrapper>
+          {text}
+        </TextWrapper>
+      </Wrapper>
+    , options);
   }, []);
 
   const warning = useCallback((text, options = {}) => {
-    if (!options.hasOwnProperty("duration")) {
-      options.duration = 2000;
-    }
-    toaster.notify(
-      () => (
-        <Wrapper id="toast-container">
-          <div className="toast-warning">
-            <DurationLine duration={options.duration} />
-            <div className="toast-message">{text}</div>
-          </div>
-        </Wrapper>
-      ),
-      options
-    );
+    toast.warn(
+      <Wrapper>
+        <Icon icon="warning" strokeWidth="2"/>
+        <TextWrapper>
+          {text}
+        </TextWrapper>
+      </Wrapper>
+    , options);
   }, []);
 
   const notify = useCallback((text, options = {}) => {
-    if (!options.hasOwnProperty("duration")) {
-      options.duration = 2000;
-    }
-    info(text, options);
+    toast(
+      <Wrapper>
+        <TextWrapper>
+          {text}
+        </TextWrapper>
+      </Wrapper>
+    , options);
   }, []);
 
   return {

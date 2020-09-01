@@ -7,9 +7,14 @@ import {DriffRegisterPanel, ModalPanel, PreLoader, RedirectPanel} from "./compon
 import {AppRoute} from "./layout/routes";
 import GuestLayout from "./layout/GuestLayout";
 import DriffSelectPanel from "./components/panels/DriffSelectPanel";
+import { ToastContainer, Slide } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 const Wrapper = styled.div`
   min-height: 100%;
+  .Toastify__toast {
+    border-radius: 8px;
+  }
 `;
 
 function App() {
@@ -42,6 +47,12 @@ function App() {
 
   return (
     <Wrapper className="App">
+      <ToastContainer 
+        transition={Slide} 
+        position={"top-center"} 
+        autoClose={2000}
+        pauseOnHover={false}
+      />
       <PreLoader/>
       {
         location.pathname === "/driff" ?
