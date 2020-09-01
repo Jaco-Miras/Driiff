@@ -21289,6 +21289,9 @@ body.dark.small-navigation .navigation-menu-body ul li.navigation-divider:after 
     transform: scale(1.05);
   }
 }
-
-
-
+.current-title {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
