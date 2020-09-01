@@ -291,7 +291,7 @@ const WorspaceHeaderPanel = (props) => {
                       <li className="nav-item nav-item-folder">
                         <WorkspaceName>
                           {activeTopic.folder_name} 
-                          { folders.hasOwnProperty(activeTopic.folder_id) && folders[activeTopic.folder_id].is_lock === 1 && <Icon icon="lock"/> }
+                          { folders.hasOwnProperty(activeTopic.folder_id) && folders[activeTopic.folder_id].is_lock === 1 && <Icon icon="lock" strokeWidth="2"/> }
                         </WorkspaceName>
                       </li>
                       <li className="nav-item-chevron">

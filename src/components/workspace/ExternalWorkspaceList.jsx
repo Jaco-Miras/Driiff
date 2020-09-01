@@ -107,7 +107,7 @@ const ExternalWorkspaceList = (props) => {
         <div>
           {workspace.name}
 
-          {workspace.is_lock !== 0 && <LockIcon icon="lock" />}
+          {workspace.is_lock !== 0 && <LockIcon icon="lock" strokeWidth="2"/>}
           {workspace.is_active === 0 && <LockIcon icon="archive" />}
 
           {unread_count > 0 && (
