@@ -20,6 +20,7 @@ const FileViewerContainer = styled.div`
   justify-content: space-evenly;
   font-size: 2.5rem;
   color: #fff;
+  z-index: 9999;
   .fas {
     cursor: pointer;
   }
