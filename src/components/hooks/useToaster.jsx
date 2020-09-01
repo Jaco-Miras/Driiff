@@ -10,9 +10,11 @@ const Wrapper = styled.div`
 
 const Icon = styled(SvgIconFeather)`
   margin-right: 10px;
+  min-width: 24px;
 `;
 
 const TextWrapper = styled.div`
+  word-break: break-word;
 `;
 
 const useToaster = () => {
