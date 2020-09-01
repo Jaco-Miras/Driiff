@@ -1,7 +1,7 @@
 import React from "react";
 import {useHistory} from "react-router-dom";
 import styled from "styled-components";
-import {FileListItem, FolderListItem} from "../../../list/file/item";
+import {CompanyFileListItem, CompanyFolderListItem} from "../../../list/file/item/company";
 
 const Wrapper = styled.div``;
 
@@ -20,7 +20,7 @@ const CompanyRemoveFiles = (props) => {
           ? subFolders
             .filter((f) => f.is_archived)
             .map((f) => {
-              return <FolderListItem
+              return <CompanyFolderListItem
                 key={f.id} actions={actions}
                 className="col-xl-3 col-lg-4 col-md-6 col-sm-12" folder={f}
                 history={history} params={params}
@@ -30,7 +30,7 @@ const CompanyRemoveFiles = (props) => {
           : Object.values(folders)
             .filter((f) => f.is_archived)
             .map((f) => {
-              return <FolderListItem
+              return <CompanyFolderListItem
                 key={f.id} actions={actions}
                 className="col-xl-3 col-lg-4 col-md-6 col-sm-12" folder={f}
                 history={history} params={params}
@@ -51,7 +51,7 @@ const CompanyRemoveFiles = (props) => {
               }
             })
             .map((f) => {
-              return <FileListItem
+              return <CompanyFileListItem
                 key={f.id} forceDelete={true}
                 className="col-xl-3 col-lg-4 col-md-6 col-sm-12" file={f}
                 actions={actions} disableOptions={disableOptions}/>;
@@ -60,7 +60,7 @@ const CompanyRemoveFiles = (props) => {
           Object.values(files).length > 0 &&
           Object.values(files).map((f) => {
             if (typeof f !== "undefined") {
-              return <FileListItem
+              return <CompanyFileListItem
                 key={f.id} forceDelete={true}
                 className="col-xl-3 col-lg-4 col-md-6 col-sm-12" file={f}
                 actions={actions} disableOptions={disableOptions}/>;

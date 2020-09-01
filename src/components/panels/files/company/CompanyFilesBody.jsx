@@ -101,14 +101,25 @@ const CompanyFilesBody = (props) => {
 
   const dropAction = (attachedFiles) => {
     setShowDropZone(false);
-    let timestamp = Math.floor(Date.now() / 1000);
+
+    const timestamp = Math.floor(Date.now() / 1000);
+
+    let formData = new FormData();
+    for (let i in attachedFiles) {
+      if (attachedFiles.hasOwnProperty(i)) {
+        attachedFiles[i].reference_id = require("shortid").generate();
+        formData.append("files[" + i + "]", attachedFiles[i]);
+      }
+    }
+
     let uploads = {
       files: attachedFiles.map((f) => {
         return {
           created_at: {timestamp: timestamp},
           download_link: null,
           folder_id: folder ? folder.id : null,
-          id: require("shortid").generate(),
+          id: f.reference_id,
+          reference_id: f.reference_id,
           is_favorite: false,
           link_id: null,
           link_index_id: null,
@@ -126,14 +137,6 @@ const CompanyFilesBody = (props) => {
       folder_id: folder ? folder.id : null,
     };
     actions.uploadingCompanyFiles(uploads);
-
-    let formData = new FormData();
-    for (const i in attachedFiles) {
-      if (attachedFiles.hasOwnProperty(i)) {
-        attachedFiles[i].ref_id = require("shortid").generate();
-        formData.append("files[" + i + "]", attachedFiles[i]);
-      }
-    }
 
     let payload = {
       is_primary: 0,

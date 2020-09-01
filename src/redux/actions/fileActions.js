@@ -43,8 +43,10 @@ import {
   postWorkspaceFiles as postWorkspaceFilesService,
   putCompanyFiles as putCompanyFilesService,
   putCompanyFolders as putCompanyFoldersService,
+  putCompanyRestoreFile as putCompanyRestoreFileService,
   putFile as putFileService,
   putFolder as putFolderService,
+  putWorkspaceRestoreFile as putWorkspaceRestoreFileService,
   restoreWorkspaceFile as restoreWorkspaceFileService,
   uploadWorkspaceFile as uploadWorkspaceFileService,
   uploadWorkspaceFiles as uploadWorkspaceFilesService,
@@ -344,4 +346,60 @@ export function uploadCompanyFilesReducer(payload, callback) {
 
 export function addCompanyFileSearchResults(payload, callback) {
   return SimpleDispatchActionToReducer("ADD_COMPANY_FILE_SEARCH_RESULTS", payload, callback);
+}
+
+export function incomingCompanyFolder(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_COMPANY_FOLDER", payload, callback);
+}
+
+export function incomingCompanyDeletedFolder(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_COMPANY_DELETED_FOLDER", payload, callback);
+}
+
+export function incomingCompanyFile(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_COMPANY_FILE", payload, callback);
+}
+
+export function incomingCompanyFiles(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_COMPANY_FILES", payload, callback);
+}
+
+export function incomingCompanyDeletedFile(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_DELETED_FILE", payload, callback);
+}
+
+export function incomingCompanyMovedFile(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_COMPANY_MOVED_FILE", payload, callback);
+}
+
+export function incomingCompanyEmptyTrash(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_COMPANY_EMPTY_TRASH", payload, callback);
+}
+
+export function incomingRemovedCompanyFile(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_REMOVED_COMPANY_FILE", payload, callback);
+}
+
+export function incomingCompanyRestoreFile(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_COMPANY_RESTORE_FILE", payload, callback);
+}
+
+export function incomingRemovedCompanyFolder(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_REMOVED_COMPANY_FOLDER", payload, callback);
+}
+
+export function incomingCompanyDeletedFiles(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_COMPANY_DELETED_FILES", payload, callback);
+}
+
+export function incomingCompanyUpdatedFile(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_COMPANY_UPDATED_FILE", payload, callback);
+}
+
+export function putWorkspaceRestoreFile(payload, callback) {
+  return dispatchActionToReducer(putWorkspaceRestoreFileService(payload), "PUT_WORKSPACE_RESTORE_FILE_START", "PUT_WORKSPACE_RESTORE_FILE_SUCCESS", "PUT_WORKSPACE_RESTORE_FILE_FAIL", callback);
+}
+
+export function putCompanyRestoreFile(payload, callback) {
+  return dispatchActionToReducer(putCompanyRestoreFileService(payload), "PUT_COMPANY_RESTORE_FILE_START", "PUT_COMPANY_RESTORE_FILE_SUCCESS", "PUT_COMPANY_RESTORE_FILE_FAIL", callback);
 }

@@ -114,6 +114,8 @@ export {
   deleteCompanyFiles,
   deleteCompanyFolders,
   deleteCompanyDeleteAllTrashFiles,
+  putCompanyRestoreFile,
+  putWorkspaceRestoreFile,
 } from "./files";
 
 export {
