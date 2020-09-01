@@ -149,6 +149,15 @@ export function deleteWorkspaceFile(payload) {
   });
 }
 
+export function putWorkspaceRestoreFile(payload) {
+  let url = "/v2/workspace-restore-file";
+  return apiCall({
+    method: "PUT",
+    url: url,
+    data: payload,
+  });
+}
+
 /**
  * @param {Object} payload
  * @param {number} payload.topic_id
@@ -425,6 +434,14 @@ export function deleteCompanyFiles(payload) {
   return apiCall({
     method: "DELETE",
     url: `/v2/company/files/${payload.file_id}`,
+    data: payload
+  });
+}
+
+export function putCompanyRestoreFile(payload) {
+  return apiCall({
+    method: "PUT",
+    url: `/v2/company/restore-file`,
     data: payload
   });
 }

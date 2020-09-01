@@ -41,8 +41,10 @@ import {
   postGoogleAttachments,
   putCompanyFiles,
   putCompanyFolders,
+  putCompanyRestoreFile,
   putFile,
   putFolder,
+  putWorkspaceRestoreFile,
   registerGoogleDriveFile,
   setViewFiles,
   uploadCompanyFilesReducer,
@@ -342,6 +344,42 @@ const useFileActions = (params = null) => {
     [dispatch]
   );
 
+  const removeCompanyFolder = useCallback(
+    (folder, callback) => {
+      const handleDeleteFolder = () => {
+        let payload = {
+          id: folder.id,
+        };
+        if (folder.is_archived) {
+          payload = {
+            ...payload,
+            force_delete: 1,
+          };
+        }
+        dispatch(deleteCompanyFolders(payload, callback));
+      };
+      let modal = {
+        type: "confirmation",
+        headerText: "Remove folder for everyone?",
+        submitText: "Remove",
+        cancelText: "Cancel",
+        bodyText: "This folder will be moved to the recycle bin and will be permanently removed after thirty (30) days.",
+        actions: {
+          onSubmit: handleDeleteFolder,
+        },
+      };
+      if (folder.is_archived) {
+        modal = {
+          ...modal,
+          bodyText: "This folder will be removed permanently.",
+        };
+      }
+
+      dispatch(addToModals(modal));
+    },
+    [dispatch]
+  );
+
   const removeFile = useCallback(
     (file, force_delete = false) => {
       const handleDeleteFile = () => {
@@ -396,6 +434,7 @@ const useFileActions = (params = null) => {
             force_delete: 1,
           };
         }
+
         dispatch(
           deleteCompanyFiles(payload, (err, res) => {
             toaster.notify(`You have removed ${file.search}.`);
@@ -486,9 +525,14 @@ const useFileActions = (params = null) => {
     (file, callback) => {
 
       const handleUpdateFileName = () => {
+        let name = fileName.current;
+        let oname = file.search.split('.');
+        if (oname.length >= 2) {
+          name = `${name}.${oname.pop()}`;
+        }
         updateCompanyFiles({
           id: file.id,
-          name: fileName.current,
+          name: name,
         }, (err, res) => {
           if (err) {
             toaster.error(
@@ -898,6 +942,22 @@ const useFileActions = (params = null) => {
     [dispatch]
   );
 
+  const restoreWorkspaceFile = useCallback(
+    (payload, callback = () => {
+    }) => {
+      dispatch(putWorkspaceRestoreFile(payload, callback));
+    },
+    [dispatch]
+  );
+
+  const restoreCompanyFile = useCallback(
+    (payload, callback = () => {
+    }) => {
+      dispatch(putCompanyRestoreFile(payload, callback));
+    },
+    [dispatch]
+  );
+
   return {
     addGoogleDriveFile,
     clearSearch,
@@ -950,8 +1010,11 @@ const useFileActions = (params = null) => {
     updateCompanyFolders,
     removeCompanyFile,
     removeAllCompanyTrashFiles,
+    removeCompanyFolder,
     deleteCompanyFolder,
-    searchCompany
+    searchCompany,
+    restoreWorkspaceFile,
+    restoreCompanyFile
   };
 };
 

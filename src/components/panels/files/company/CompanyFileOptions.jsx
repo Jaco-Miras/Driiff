@@ -54,6 +54,10 @@ const CompanyFileOptions = (props) => {
     actions.renameCompanyFile(file);
   };
 
+  const handleRestore = () => {
+    actions.restoreCompanyFile(file);
+  }
+
   const handleDelete = () => {
     if (file.hasOwnProperty("payload_id")) {
       actions.unlinkGoogleAttachment(file);
@@ -74,6 +78,10 @@ const CompanyFileOptions = (props) => {
       <div onClick={handleMoveTo}>Move to</div>
       <div onClick={handleRename}>Rename</div>
       {!disableOptions && <div onClick={handleDelete}>Remove</div>}
+      {
+        forceDelete &&
+        <div onClick={handleRestore}>Restore</div>
+      }
     </Wrapper>
   );
 };
