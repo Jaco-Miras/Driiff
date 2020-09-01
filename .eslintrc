@@ -6,7 +6,5 @@
     "react-hooks/exhaustive-deps": 0,
     "no-unused-vars": "warn",
     "no-prototype-builtins": "off"
-
-    "no-prototype-builtins": "warn"
   }
 }
