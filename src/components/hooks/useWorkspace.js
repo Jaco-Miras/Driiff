@@ -18,7 +18,7 @@ const useWorkspace = (fetchOnMount = false) => {
   const [fetchingPrimary, setFetchingPrimary] = useState(false);
   const [init, setInit] = useState(false);
   const [fetchingChannel, setFetchingChannel] = useState(false);
-  const [archivedWsLoaded, setArchivedWsLoaded] = useState(false);
+  //const [archivedWsLoaded, setArchivedWsLoaded] = useState(false);
   const [internalLoaded, setInternalLoaded] = useState(false);
   const [externalLoaded, setExternalLoaded] = useState(false);
 
@@ -34,9 +34,9 @@ const useWorkspace = (fetchOnMount = false) => {
       }
       actions.fetchWorkspaces({is_external: 0}, fetchCb);
       actions.fetchWorkspaces({is_external: 1}, () => setExternalLoaded(true));
-      actions.fetchWorkspaces({is_external: 0, filter: "archived"}, () => {
-        setArchivedWsLoaded(true);
-      });
+      // actions.fetchWorkspaces({is_external: 0, filter: "archived"}, () => {
+      //   setArchivedWsLoaded(true);
+      // });
       actions.fetchWorkspaceChannels({skip: 0, limit: 250});
     } else if (workspacesLoaded && activeTopic) {
       //restore the channel id
@@ -57,7 +57,7 @@ const useWorkspace = (fetchOnMount = false) => {
           actions.selectWorkspace(workspaces[params.workspaceId]);
           setGeneralSetting({ active_topic: workspaces[params.workspaceId]});
         } else {
-          if (archivedWsLoaded && internalLoaded && externalLoaded && activeTopicSettings) {
+          if (internalLoaded && externalLoaded && activeTopicSettings) {
             toaster.warning("This workspace cannot be found or accessed.");
             actions.selectWorkspace(activeTopicSettings);
             actions.redirectTo(activeTopicSettings);
@@ -78,7 +78,7 @@ const useWorkspace = (fetchOnMount = false) => {
         }
       }
     }
-  }, [activeTopic, activeTopicSettings, params, workspaces, url, archivedWsLoaded, internalLoaded, externalLoaded, fetchOnMount]);
+  }, [activeTopic, activeTopicSettings, params, workspaces, url, internalLoaded, externalLoaded, fetchOnMount]);
   
   useEffect(() => {
     if (activeTopic && Object.keys(channels).length && fetchOnMount && url.startsWith("/workspace/")) {

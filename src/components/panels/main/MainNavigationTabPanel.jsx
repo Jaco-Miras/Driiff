@@ -185,6 +185,7 @@ const MainNavigationTabPanel = (props) => {
     yourWorkspaces: _t("SIDEBAR.YOUR_WORKSPACES", "Your workspaces"),
     newWorkspace: _t("SIDEBAR.NEW_WORKSPACE", "New workspace"),
     addNewWorkspace: _t("SIDEBAR.ADD_NEW_WORKSPACES", "Add new workspace"),
+    workspacesFolder: _t("SIDEBAR.WORKSPACES_FOLDER", "Workspaces"),
     generalFolder: _t("SIDEBAR.GENERAL_FOLDER", "General"),
     archivedFolder: _t("SIDEBAR.ARCHIVED_FOLDER", "Archived workspaces"),
     shortcuts: _t("SIDEBAR.SHORTCUTS", "Shortcuts"),
@@ -348,7 +349,7 @@ const MainNavigationTabPanel = (props) => {
                   id: "general_internal",
                   is_lock: 0,
                   // selected: generalWorkspaces.some((ws) => ws.selected),
-                  name: dictionary.generalFolder,
+                  name: dictionary.workspacesFolder,
                   type: "GENERAL_FOLDER",
                   workspace_ids: Object.values(workspaces).filter((ws) => {
                     return ws.folder_id === null && ws.active === 1;
@@ -367,7 +368,7 @@ const MainNavigationTabPanel = (props) => {
           </ul>
 
           <ul>
-            {Object.values(workspaces).filter((ws) => ws.active === 0).length > 0 && (
+            {/* {Object.values(workspaces).filter((ws) => ws.active === 0).length > 0 && (
               <WorkspaceList
                 actions={actions}
                 history={history}
@@ -386,7 +387,7 @@ const MainNavigationTabPanel = (props) => {
                   unread_count: 0
                 }}
               />
-            )}
+            )} */}
           </ul>
         </div>
       </div>
