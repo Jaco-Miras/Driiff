@@ -155,7 +155,7 @@ function fallbackCopyTextToClipboard(toaster, text, notification) {
 
   try {
     var successful = document.execCommand("copy");
-    if (successful) toaster.notify(notification);
+    if (successful) toaster.info(notification);
   } catch (err) {
     toaster.error(
       <>
@@ -174,7 +174,7 @@ export const copyTextToClipboard = (toaster, text, notification = "Link copied t
   }
   navigator.clipboard.writeText(text).then(
     () => {
-      toaster.notify(notification);
+      toaster.info(notification);
     },
     (err) => {
       toaster.error(
