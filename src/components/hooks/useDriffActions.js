@@ -99,7 +99,7 @@ const useDriffActions = () => {
     }) => {
       dispatch(postRegisterDriff(payload, (err, res) => {
         if (err) {
-          toaster.success("Something went wrong!");
+          toaster.error("Something went wrong!");
         }
 
         if (res) {
