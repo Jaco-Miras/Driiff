@@ -7,6 +7,7 @@ import {selectTheme} from "../../helpers/selectTheme";
 const SelectOption = styled.div`
   display: flex;
   flex-flow: row;
+  align-items: center;
   transition: background 0.15s ease;
   svg {
     transition: none;

@@ -12,7 +12,7 @@ import {
     setActiveTopic,
     updateWorkspace
 } from "../../redux/actions/workspaceActions";
-import {FileAttachments} from "../common";
+import {FileAttachments, SvgIconFeather} from "../common";
 import {DropDocument} from "../dropzone/DropDocument";
 import {CheckBox, DescriptionInput, FolderSelect, InputFeedback, PeopleSelect} from "../forms";
 import {useToaster, useTranslation} from "../hooks";
@@ -134,6 +134,11 @@ const SelectPeople = styled(PeopleSelect)`
 const StyledDescriptionInput = styled(DescriptionInput)`
     height: ${props => props.height}px;
     max-height: 300px;
+`;
+
+const LockIcon = styled(SvgIconFeather)`
+  width: 1rem;
+  height: 1rem;
 `;
 
 const CreateEditWorkspaceModal = (props) => {
@@ -270,10 +275,11 @@ const CreateEditWorkspaceModal = (props) => {
     };
 
     const folderOptions = Object.values(folders)
+        .sort((a,b) => a.name.localeCompare(b.name))
         .map((ws) => {
             return {
                 value: ws.id,
-                label: ws.name,
+                label: <>{ws.name} { ws.is_lock === 1 && <LockIcon icon="lock" strokeWidth="2"/> }</>,
             };
         });
 
