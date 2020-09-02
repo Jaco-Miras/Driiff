@@ -454,6 +454,14 @@ export function putCompanyFiles(payload) {
   });
 }
 
+export function putCompanyFileMove(payload) {
+  return apiCall({
+    method: "PUT",
+    url: `/v2/company/file-move/?${objToUrlParams(payload)}`,
+    data: payload
+  });
+}
+
 export function putCompanyFolders(payload) {
   return apiCall({
     method: "PUT",

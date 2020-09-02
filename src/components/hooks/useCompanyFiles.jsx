@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import {useCallback, useEffect, useState} from "react";
 import {useSelector} from "react-redux";
 import {useParams} from "react-router-dom";
 import {useFileActions} from "../hooks";
@@ -20,6 +20,7 @@ const useFiles = () => {
   const [folder, setFolder] = useState(null);
   const [fetchingFolders, setFetchingFolders] = useState(false);
   const [fetchingFiles, setFetchingFiles] = useState(false);
+  const [fetchingFolderFiles, setFetchingFolderFiles] = useState(false);
   const [fetchingRecentlyEditedFiles, setFetchingRecentlyEditedFiles] = useState(false);
   const [fetchingFavoriteFiles, setFetchingFavoriteFiles] = useState(false);
   const [fetchingPopularFiles, setFetchingPopularFiles] = useState(false);
@@ -49,22 +50,24 @@ const useFiles = () => {
     }
   }
 
-  const loadMoreFolderFiles = (folderId) => {
-    if (typeof folders[folderId] === "undefined" || fetchingFiles)
+  const loadMoreFolderFiles = useCallback(() => {
+
+    if (!folder || fetchingFolderFiles)
       return;
 
-    const folder = folders[folderId];
+    setFetchingFolderFiles(true);
 
-    if (!fetchingFiles && folder.has_more) {
+    if (folder.has_more) {
       setFetchingFiles(true);
       fileActions.fetchCompanyFiles({
         skip: folder.skip,
-        limit: folder.limit
+        limit: folder.limit,
+        folder_id: folder.id
       }, () => {
-        setFetchingFiles(false);
+        setFetchingFolderFiles(false);
       })
     }
-  }
+  }, [folder, setFetchingFolderFiles])
 
   const loadMoreRecentEditedFiles = () => {
     if (!fetchingRecentlyEditedFiles && hasMoreRecentlyEdited) {
@@ -143,19 +146,26 @@ const useFiles = () => {
   }, []);
 
   useEffect(() => {
-    if (params.folderId) {
+    if (params.folderId && !folder) {
       fileActions.fetchCompanyFolderBreadCrumbs({
         folder_id: params.folderId
-      })
-      loadMoreFolderFiles(params.folderId);
+      });
 
       if (typeof folders[params.folderId] !== "undefined") {
         setFolder(folders[params.folderId])
       }
-    } else {
+    } else if (!params.folderId) {
       setFolder(null);
     }
-  }, [params.folderId, folders])
+  });
+
+  useEffect(() => {
+    if (folder) {
+      if (!folder.init) {
+        loadMoreFolderFiles();
+      }
+    }
+  }, [folder]);
 
   let fileIds = [];
 
@@ -169,6 +179,7 @@ const useFiles = () => {
     });
   } else {
     fileIds = Object.values(files)
+      .filter((f) => f.folder_id === null)
       .map((f) => f.id)
       .sort((a, b) => {
         return b > a ? 1 : -1;

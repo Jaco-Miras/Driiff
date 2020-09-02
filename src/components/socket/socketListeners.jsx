@@ -35,8 +35,10 @@ import {
   incomingCompanyFiles,
   incomingCompanyFolder,
   incomingCompanyMovedFile,
+  incomingCompanyMoveFile,
   incomingCompanyRestoreFile,
   incomingCompanyUpdatedFile,
+  incomingCompanyUpdatedFolder,
   incomingDeletedFile,
   incomingDeletedFiles,
   incomingDeletedFolder,
@@ -379,6 +381,18 @@ class SocketListeners extends React.PureComponent {
       .listen(".company-file-notification", (e) => {
         console.log(e, "company file");
         switch (e.SOCKET_TYPE) {
+          case "FILE_EMPTY": {
+            this.props.incomingCompanyEmptyTrash(e);
+            break;
+          }
+          case "UPLOAD_BULK": {
+            this.props.incomingCompanyFiles(e);
+            break;
+          }
+          case "FILE_MOVE": {
+            this.props.incomingCompanyMoveFile(e);
+            break;
+          }
           case "FILE_RESTORE": {
             this.props.incomingCompanyRestoreFile(e);
             break;
@@ -399,7 +413,15 @@ class SocketListeners extends React.PureComponent {
         console.log(e, "company folder");
         switch (e.SOCKET_TYPE) {
           case "FOLDER_CREATE": {
-            this.props.incomingFolder(e);
+            this.props.incomingCompanyFolder(e);
+            break;
+          }
+          case "FOLDER_UPDATE": {
+            this.props.incomingCompanyUpdatedFolder(e);
+            break;
+          }
+          case "FOLDER_DELETE": {
+            this.props.incomingCompanyDeletedFolder(e);
             break;
           }
           default:
@@ -926,6 +948,7 @@ function mapDispatchToProps(dispatch) {
     incomingMovedFile: bindActionCreators(incomingMovedFile, dispatch),
     incomingEmptyTrash: bindActionCreators(incomingEmptyTrash, dispatch),
     incomingCompanyFolder: bindActionCreators(incomingCompanyFolder, dispatch),
+    incomingCompanyUpdatedFolder: bindActionCreators(incomingCompanyUpdatedFolder, dispatch),
     incomingCompanyDeletedFolder: bindActionCreators(incomingCompanyDeletedFolder, dispatch),
     incomingCompanyFile: bindActionCreators(incomingCompanyFile, dispatch),
     incomingCompanyFiles: bindActionCreators(incomingCompanyFiles, dispatch),
@@ -933,6 +956,7 @@ function mapDispatchToProps(dispatch) {
     incomingCompanyMovedFile: bindActionCreators(incomingCompanyMovedFile, dispatch),
     incomingCompanyEmptyTrash: bindActionCreators(incomingCompanyEmptyTrash, dispatch),
     incomingCompanyRemovedFile: bindActionCreators(incomingRemovedCompanyFile, dispatch),
+    incomingCompanyMoveFile: bindActionCreators(incomingCompanyMoveFile, dispatch),
     incomingCompanyRestoreFile: bindActionCreators(incomingCompanyRestoreFile, dispatch),
     incomingCompanyRemovedFolder: bindActionCreators(incomingRemovedCompanyFolder, dispatch),
     incomingCompanyDeletedFiles: bindActionCreators(incomingCompanyDeletedFiles, dispatch),

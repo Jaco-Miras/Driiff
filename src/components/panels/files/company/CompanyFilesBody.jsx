@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import styled from "styled-components";
 import {useSelector} from "react-redux";
 import {SvgEmptyState, SvgIconFeather} from "../../../common";
@@ -14,16 +14,26 @@ import {
 import {CompanyFileListItem, CompanyFolderListItem} from "../../../list/file/item/company";
 
 const Wrapper = styled.div`
-  .card-body {
-    position: relative;
-    overflow: visible !important;
-    padding-bottom: 12px;
-    min-height: 100px;
+  
+  body & {
+    &.files-body.card {
+      margin-bottom: 1rem;
+    }
+  }
+    
+  .app-lists {
+    overflow: auto;
     &::-webkit-scrollbar {
       display: none;
     }
     -ms-overflow-style: none;
     scrollbar-width: none;
+  }
+  
+  .card-body {
+    position: relative;
+    padding-bottom: 12px;
+    
     .recent-new-group-wrapper {
       padding-right: 24px;
     }
@@ -72,12 +82,18 @@ const EmptyStateLabel = styled.div`
 const CompanyFilesBody = (props) => {
   const {
     className = "", dropZoneRef, filter, search, files, handleAddEditFolder, actions,
-    params, folders, folder, fileIds, history, subFolders, dictionary, disableOptions
+    params, folders, folder, fileIds, history, subFolders, dictionary, disableOptions,
+    loadMore, isLoaded
   } = props;
 
   const scrollRef = document.querySelector(".app-content-body");
 
   const user = useSelector((state) => state.session.user);
+
+  const refs = {
+    files: useRef(null),
+    btnLoadMore: useRef(null),
+  }
 
   const [showDropZone, setShowDropZone] = useState(false);
 
@@ -107,7 +123,7 @@ const CompanyFilesBody = (props) => {
     let formData = new FormData();
     for (let i in attachedFiles) {
       if (attachedFiles.hasOwnProperty(i)) {
-        attachedFiles[i].reference_id = require("shortid").generate();
+        attachedFiles[i].reference_id = `__${i}` + require("shortid").generate();
         formData.append("files[" + i + "]", attachedFiles[i]);
       }
     }
@@ -162,7 +178,7 @@ const CompanyFilesBody = (props) => {
           history.push(pathname);
         }
       };
-      actions.removeFolder(folder, params.workspaceId, cb);
+      actions.removeFolder(folder, cb);
     }
   };
 
@@ -170,8 +186,39 @@ const CompanyFilesBody = (props) => {
     handleAddEditFolder(folder, "update");
   };
 
+  /**
+   * @todo: must fill-out the entire screen with items
+   */
+  const initLoading = () => {
+    let el = refs.files.current;
+    loadMore.files();
+  }
+
+  const handleScroll = (e) => {
+    if (e.target.dataset.loading === "false") {
+      if ((e.target.scrollTop + 500) >= e.target.scrollHeight - e.target.offsetHeight) {
+        if (refs.btnLoadMore.current)
+          refs.btnLoadMore.current.click();
+      }
+    }
+  }
+
+  useEffect(() => {
+    if (!refs.files.current)
+      return;
+
+    let el = refs.files.current;
+    if (el && el.dataset.loaded === "0") {
+      initLoading();
+
+      el.dataset.loaded = "1";
+      refs.files.current.addEventListener("scroll", handleScroll, false);
+    }
+  }, [refs.files.current]);
+
   return (
     <Wrapper className={`files-body card app-content-body ${className}`} onDragOver={handleShowDropZone}>
+      <span className="d-none" ref={refs.btnLoadMore} onClick={loadMore.files}>Load more</span>
       {
         !disableOptions &&
         <DropDocument
@@ -185,7 +232,7 @@ const CompanyFilesBody = (props) => {
           params={params}
         />
       }
-      <div className="card-body">
+      <div ref={refs.files} className="card-body app-lists" data-loaded={0}>
         {typeof files !== "undefined" && (
           <>
             {folder && filter !== "removed" && !disableOptions && (
@@ -295,8 +342,8 @@ const CompanyFilesBody = (props) => {
                       files={Object.values(files.files).filter(f => files.recently_edited.includes(f.id))}
                       actions={actions}
                       disableOptions={disableOptions}/>}
-                    {files && files.popular_files.length === 0 && files.recently_edited.length === 0 && fileIds.length === 0 &&
-                    !(Object.values(folders).length === 0 || subFolders.length === 0) && (
+                    {isLoaded && files.popular_files.length === 0 && files.recently_edited.length === 0 && fileIds.length === 0 &&
+                    Object.values(folders).filter(f => f.is_archived !== true).length === 0 && subFolders.length === 0 && (
                       <EmptyState>
                         <SvgEmptyState icon={4} height={282}/>
                         <button className="btn btn-outline-primary btn-block" onClick={handleShowUploadModal}
@@ -305,6 +352,10 @@ const CompanyFilesBody = (props) => {
                         </button>
                       </EmptyState>
                     )}
+                    {
+                      !isLoaded &&
+                      <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"/>
+                    }
                   </>
                 )}
               </>
