@@ -23,6 +23,15 @@ const Wrapper = styled.div`
 
   .app-content-body {
     position: relative;
+    
+    .app-lists {    
+      overflow: auto;
+      &::-webkit-scrollbar {
+        display: none;
+      }
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
   }
 `;
 

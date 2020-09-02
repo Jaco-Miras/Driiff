@@ -31,7 +31,7 @@ const CompanyFileOptions = (props) => {
   const {className = "", file, scrollRef = null, actions, forceDelete, disableOptions} = props;
 
   const handleViewDetail = () => {
-    actions.viewFiles(file);
+    actions.viewCompanyFiles(file);
   };
 
   const handleFavorite = () => {
@@ -47,7 +47,7 @@ const CompanyFileOptions = (props) => {
   };
 
   const handleMoveTo = () => {
-    actions.moveFile(file);
+    actions.moveCompanyFile(file);
   };
 
   const handleRename = () => {
