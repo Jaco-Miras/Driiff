@@ -36,7 +36,9 @@ const useGetWorkspaceAndUserOptions = (selectedWorkspaces, workspace = null) => 
 
   useEffect(() => {
     if (Object.values(workspaces).length) {
-      let workspaceOptions = [...Object.values(folders), ...Object.values(workspaces)].map((ws) => {
+      let workspaceOptions = [...Object.values(folders), ...Object.values(workspaces)]
+        .sort((a,b) => a.name.localeCompare(b.name))
+        .map((ws) => {
         return {
           ...ws,
           value: ws.id,
