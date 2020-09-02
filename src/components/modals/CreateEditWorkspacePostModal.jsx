@@ -855,7 +855,7 @@ const CreateEditWorkspacePostModal = (props) => {
         </WrapperDiv>
         <WrapperDiv>
           <button className="btn btn-primary"
-                  disabled={form.selectedUsers.length === 0 || form.title === "" || form.textOnly.trim() === "" || form.selectedWorkspaces.length === 0}
+                  disabled={form.selectedUsers.length === 0 || form.title === "" || form.selectedWorkspaces.length === 0}
                   onClick={handleConfirm}>
             {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"/>}
             {mode === "edit" ? "Update post" : "Create post"}

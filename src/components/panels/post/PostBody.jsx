@@ -27,13 +27,13 @@ const PostBody = (props) => {
 
   const [star, setStar] = useState(post.is_favourite);
   const { fromNow } = useTimeFormat();
-  const [showGifPlayer, setShowGifPlayer] = useState(null);
+  // const [showGifPlayer, setShowGifPlayer] = useState(null);
 
-  useEffect(() => {
-    if (post.body.match(/\.(gif)/g) !== null) {
-      setShowGifPlayer(true);
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (post.body.match(/\.(gif)/g) !== null) {
+  //     setShowGifPlayer(true);
+  //   }
+  // }, []);
 
   const handleStarPost = () => {
     if (disableOptions) return;
@@ -76,10 +76,10 @@ const PostBody = (props) => {
       <div className="d-flex align-items-center">
         <div dangerouslySetInnerHTML={{ __html: quillHelper.parseEmoji(post.body)}} />
       </div>
-      {showGifPlayer &&
+      {/* {showGifPlayer &&
         getGifLinks(post.body).map((gifLink, index) => {
           return <GifPlayer key={index} className={"gifPlayer"} gif={gifLink} autoplay={true}/>;
-        })}
+        })} */}
     </Wrapper>
   );
 };
