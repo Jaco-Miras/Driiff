@@ -9,12 +9,15 @@ const Wrapper = styled.li`
   cursor: hand;
   position: relative;
   transition: all 0.3s ease;
+  background: ${(props) => (props.selected ? "#ffffff14" : "transparent")};
+  border-radius: 8px;
   a.archived-folder {
     ${"" /* color: #bebebe !important; */}
   }
   > a {
     position: relative;
     font-weight: ${(props) => (props.selected ? "600" : "400")};
+
     div {
       position: relative;
       height: 40px;
@@ -102,7 +105,7 @@ const ExternalWorkspaceList = (props) => {
   let unread_count = workspace.unread_chats + workspace.unread_posts;
 
   return (
-    <Wrapper ref={ref.container} className={`workspace-list fadeIn ${className}`} selected={activeTopic && activeTopic.id === workspace.id} show={show}>
+    <Wrapper ref={ref.container} className={`workspace-list workspace-list-external fadeIn ${className}`} selected={activeTopic && activeTopic.id === workspace.id} show={show}>
       <a onClick={handleSelectWorkspace}>
         <div>
           {workspace.name}
