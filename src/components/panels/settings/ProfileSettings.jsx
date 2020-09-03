@@ -1,14 +1,14 @@
 import momentTZ from "moment-timezone";
-import React, {useCallback} from "react";
-import {useSelector} from "react-redux";
+import React, { useCallback } from "react";
+import { useSelector } from "react-redux";
 import Select from "react-select";
-import {CustomInput} from "reactstrap";
+import { CustomInput } from "reactstrap";
 import styled from "styled-components";
-import {SvgIconFeather} from "../../common";
+import { SvgIconFeather } from "../../common";
 import Flag from "../../common/Flag";
-import {useSettings, useToaster, useTranslation} from "../../hooks";
-import {getDriffName} from "../../hooks/useDriff";
-import {selectTheme} from "../../../helpers/selectTheme";
+import { useSettings, useToaster, useTranslation } from "../../hooks";
+import { getDriffName } from "../../hooks/useDriff";
+import { selectTheme } from "../../../helpers/selectTheme";
 
 const Wrapper = styled.div`
   .card {
@@ -73,14 +73,14 @@ const ProfileSettings = (props) => {
   const { user: loggedUser } = useSelector((state) => state.session);
 
   const {
-    generalSettings: {language, timezone, date_format, time_format},
-    chatSettings: {order_channel, sound_enabled, preview_message},
+    generalSettings: { language, timezone, date_format, time_format, dark_mode },
+    chatSettings: { order_channel, sound_enabled, preview_message },
     userSettings: isLoaded,
     setChatSetting,
     setGeneralSetting,
   } = useSettings();
 
-  const {_t, setLocale} = useTranslation();
+  const { _t, setLocale } = useTranslation();
   const dictionary = {
     chatSettingsTitle: _t("SETTINGS.CHAT_TITLE", "Chat Settings"),
     soundLabel: _t("SETTINGS.SOUND_LABEL", "Play a sound when receiving a new chat message"),
@@ -98,11 +98,11 @@ const ProfileSettings = (props) => {
   const channelSortOptions = [
     {
       value: "channel_date_updated",
-      label: dictionary.sortChannelRecentActivityValue
+      label: dictionary.sortChannelRecentActivityValue,
     },
     {
       value: "channel_name",
-      label: dictionary.sortChannelNameValue
+      label: dictionary.sortChannelNameValue,
     },
   ];
 
@@ -177,9 +177,22 @@ const ProfileSettings = (props) => {
   const handleChatSwitchToggle = useCallback(
     (e) => {
       e.persist();
-      const {name, checked, dataset} = e.target;
+      const { name, checked, dataset } = e.target;
       setChatSetting({
         [name]: checked,
+      });
+      toaster.success(<span>{dataset.successMessage}</span>);
+    },
+    [setChatSetting]
+  );
+
+  const handleGeneralSwitchToggle = useCallback(
+    (e) => {
+      e.persist();
+      const { name, checked, dataset } = e.target;
+
+      setGeneralSetting({
+        dark_mode: dark_mode === "0" ? "1" : "0",
       });
       toaster.success(<span>{dataset.successMessage}</span>);
     },
@@ -197,17 +210,17 @@ const ProfileSettings = (props) => {
   };
 
   const handleTimezoneChange = useCallback((e) => {
-    setGeneralSetting({timezone: e.value});
+    setGeneralSetting({ timezone: e.value });
     toaster.success(<span>You have successfully updated Timezone</span>);
   }, []);
 
   const handleDateFormatChange = useCallback((e) => {
-    setGeneralSetting({date_format: e.value});
+    setGeneralSetting({ date_format: e.value });
     toaster.success(<span>You have successfully updated Date format</span>);
   }, []);
 
   const handleTimeFormatChange = useCallback((e) => {
-    setGeneralSetting({time_format: e.value});
+    setGeneralSetting({ time_format: e.value });
     toaster.success(<span>You have successfully updated Time format</span>);
   }, []);
 
@@ -230,8 +243,7 @@ const ProfileSettings = (props) => {
       )}
       <div className="card">
         <div className="card-body">
-          <h6
-            className="card-title d-flex justify-content-between align-items-center">{dictionary.chatSettingsTitle}</h6>
+          <h6 className="card-title d-flex justify-content-between align-items-center">{dictionary.chatSettingsTitle}</h6>
           <div className="row mb-2">
             <div className="col-12">
               <CustomInput
@@ -263,8 +275,7 @@ const ProfileSettings = (props) => {
           <div className="row mb-2">
             <div className="col-5 text-muted">{dictionary.sortChannelLabel}</div>
             <div className="col-7">
-              <Select styles={selectTheme} value={channelSortOptions.find((o) => o.value === order_channel.order_by)}
-                      onChange={handleSortChannelChange} options={channelSortOptions}/>
+              <Select styles={selectTheme} value={channelSortOptions.find((o) => o.value === order_channel.order_by)} onChange={handleSortChannelChange} options={channelSortOptions} />
             </div>
           </div>
         </div>
@@ -272,34 +283,48 @@ const ProfileSettings = (props) => {
 
       <div className="card">
         <div className="card-body">
-          <h6
-            className="card-title d-flex justify-content-between align-items-center">{dictionary.localizationSettingsTitle}</h6>
+          <h6 className="card-title d-flex justify-content-between align-items-center">{dictionary.localizationSettingsTitle}</h6>
 
           <div className="row mb-2">
             <div className="col-5 text-muted">{dictionary.languageLabel}</div>
             <div className="col-7">
-              <Select styles={selectTheme} value={languageOptions.find((o) => o.value === language)}
-                      onChange={handleLanguageChange} options={languageOptions}/>
+              <Select styles={selectTheme} value={languageOptions.find((o) => o.value === language)} onChange={handleLanguageChange} options={languageOptions} />
             </div>
           </div>
           <div className="row mb-2">
             <div className="col-5 text-muted">{dictionary.timezoneLabel}</div>
             <div className="col-7">
-              <Select styles={selectTheme} value={TimezoneOptions.find((o) => o.value === timezone)}
-                      onChange={handleTimezoneChange} options={TimezoneOptions}/>
+              <Select styles={selectTheme} value={TimezoneOptions.find((o) => o.value === timezone)} onChange={handleTimezoneChange} options={TimezoneOptions} />
             </div>
           </div>
           <div className="row mb-2">
             <div className="col-5 text-muted">{dictionary.dateTimeFormatLabel}</div>
             <div className="col-7 justify-content-center align-items-center">
               <div className="row">
-                <Select styles={selectTheme} className="col-6"
-                        value={DateFormatOptions.find((o) => o.value === date_format)} onChange={handleDateFormatChange}
-                        options={DateFormatOptions}/>
-                <Select styles={selectTheme} className="col-6"
-                        value={TimeFormatOptions.find((o) => o.value === time_format)} onChange={handleTimeFormatChange}
-                        options={TimeFormatOptions}/>
+                <Select styles={selectTheme} className="col-6" value={DateFormatOptions.find((o) => o.value === date_format)} onChange={handleDateFormatChange} options={DateFormatOptions} />
+                <Select styles={selectTheme} className="col-6" value={TimeFormatOptions.find((o) => o.value === time_format)} onChange={handleTimeFormatChange} options={TimeFormatOptions} />
               </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="card">
+        <div className="card-body">
+          <h6 className="card-title d-flex justify-content-between align-items-center">Extra settings</h6>
+
+          <div className="row mb-2">
+            <div className="col-12 text-muted">
+              <CustomInput
+                className="cursor-pointer text-muted"
+                checked={dark_mode === "1"}
+                type="switch"
+                id="dark_mode"
+                name="dark_mode"
+                data-success-message={`${dark_mode ? "Dark mode is now enabled" : "Dark mode is now disabled"}`}
+                onChange={handleGeneralSwitchToggle}
+                label={<span>Dark mode</span>}
+              />
             </div>
           </div>
         </div>
