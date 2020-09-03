@@ -53,6 +53,12 @@ export default (state = INITIAL_STATE, action) => {
           })
           delete updatedFolders[ws.id].topics
         } else if (ws.type === "WORKSPACE") {
+          ws.members = ws.members.map(m => {
+            return {
+              contact: "",
+              ...m
+            }
+          });
           updatedWorkspaces[ws.id] = {
             ...ws,
             active: ws.topic_detail.active,

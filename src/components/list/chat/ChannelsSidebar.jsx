@@ -59,10 +59,10 @@ const ChannelsSidebar = (props) => {
             } else {
               if (channel.type === "PERSONAL_BOT") {
                 chatHeader = dictionary.personalBot;
-              } else if (channel.type === "DIRECT") {
-                chatHeader = dictionary.contacts;
               } else if (channel.add_user) {
                 chatHeader = dictionary.startNew;
+              } else if (channel.type === "DIRECT") {
+                chatHeader = dictionary.contacts;
               } else if (channel.is_pinned) {
                 chatHeader = dictionary.pinned;
               } else if (channel.is_hidden) {
