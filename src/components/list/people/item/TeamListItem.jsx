@@ -72,6 +72,9 @@ const TeamListItem = (props) => {
     actions.deleteRole(payload);
   };
 
+  console.log('miauw')
+  console.log(member)
+
   return (
     <Wrapper className={`team-list-item list-group-item d-flex align-items-center p-l-r-0 ${className}`}>
       <div className="d-flex align-items-center ">
@@ -88,8 +91,12 @@ const TeamListItem = (props) => {
         </div>
       </div>
       <div className="ml-auto">
-        {member.workspace_role !== "" && 
-        <Badge badgeClassName={member.workspace_role === "TEAM_LEAD" ? "badge-success" : "badge-warning"} label={member.workspace_role === "TEAM_LEAD" ? "Team lead" : "Approver"}/>}
+        {member.workspace_role !== "" &&
+          <Badge badgeClassName={member.workspace_role === "TEAM_LEAD" ? "badge-success" : "badge-warning"} label={member.workspace_role === "TEAM_LEAD" ? "Team lead" : "Approver"}/>
+        }
+        {member.type == "external" &&
+          <Badge badgeClassName="badge-info" label="External"/>
+        }
       </div>
       {
         !hideOptions &&
