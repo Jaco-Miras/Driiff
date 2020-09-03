@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import { useToaster } from "../../hooks";
-import { MoreOptions } from "../../panels/common";
+import {useToaster} from "../../hooks";
+import {MoreOptions} from "../../panels/common";
 
 const Wrapper = styled(MoreOptions)`
   .more-options-tooltip {
@@ -70,6 +70,10 @@ const FileOptions = (props) => {
     }
   };
 
+  const handleRestore = () => {
+    actions.restoreWorkspaceFile(file);
+  }
+
   const handleDelete = () => {
     if (isMember) {
       if (file.hasOwnProperty("payload_id")) {
@@ -90,7 +94,11 @@ const FileOptions = (props) => {
       <div onClick={handleDownload}>Download</div>
       <div onClick={handleMoveTo}>Move to</div>
       <div onClick={handleRename}>Rename</div>
-      { !disableOptions && <div onClick={handleDelete}>Remove</div> }
+      {
+        forceDelete &&
+        <div onClick={handleRestore}>Restore</div>
+      }
+      {!disableOptions && <div onClick={handleDelete}>Remove</div>}
     </Wrapper>
   );
 };

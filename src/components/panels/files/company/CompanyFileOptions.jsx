@@ -77,11 +77,11 @@ const CompanyFileOptions = (props) => {
       <div onClick={handleDownload}>Download</div>
       <div onClick={handleMoveTo}>Move to</div>
       <div onClick={handleRename}>Rename</div>
-      {!disableOptions && <div onClick={handleDelete}>Remove</div>}
       {
         forceDelete &&
         <div onClick={handleRestore}>Restore</div>
       }
+      {!disableOptions && <div onClick={handleDelete}>Remove</div>}
     </Wrapper>
   );
 };

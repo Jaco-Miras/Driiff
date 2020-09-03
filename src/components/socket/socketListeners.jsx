@@ -55,6 +55,7 @@ import {
   incomingRemovedCompanyFolder,
   incomingRemovedFile,
   incomingRemovedFolder,
+  incomingRestoreFile,
 } from "../../redux/actions/fileActions";
 import {
   addUserToReducers,
@@ -167,8 +168,12 @@ class SocketListeners extends React.PureComponent {
         }
       })
       .listen(".workspace-file-notification", (e) => {
-        console.log(e, "file");
+        console.log(e, "file", "line 170");
         switch (e.SOCKET_TYPE) {
+          case "FILE_RESTORE": {
+            this.props.incomingRestoreFile(e);
+            break;
+          }
           case "FILE_UPDATE": {
             this.props.incomingFile(e);
             break;
@@ -498,8 +503,12 @@ class SocketListeners extends React.PureComponent {
         this.props.incomingFiles(e);
       })
       .listen(".workspace-file-notification", (e) => {
-        console.log(e, "file");
+        console.log(e, "file", "line 506");
         switch (e.SOCKET_TYPE) {
+          case "FILE_RESTORE": {
+            this.props.incomingRestoreFile(e);
+            break;
+          }
           case "FILE_UPDATE": {
             this.props.incomingFile(e);
             break;
@@ -946,6 +955,7 @@ function mapDispatchToProps(dispatch) {
     incomingFiles: bindActionCreators(incomingFiles, dispatch),
     incomingDeletedFile: bindActionCreators(incomingDeletedFile, dispatch),
     incomingMovedFile: bindActionCreators(incomingMovedFile, dispatch),
+    incomingRestoreFile: bindActionCreators(incomingRestoreFile, dispatch),
     incomingEmptyTrash: bindActionCreators(incomingEmptyTrash, dispatch),
     incomingCompanyFolder: bindActionCreators(incomingCompanyFolder, dispatch),
     incomingCompanyUpdatedFolder: bindActionCreators(incomingCompanyUpdatedFolder, dispatch),

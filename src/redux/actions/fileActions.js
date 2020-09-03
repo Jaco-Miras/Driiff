@@ -209,6 +209,10 @@ export function incomingMovedFile(payload, callback) {
   return SimpleDispatchActionToReducer("INCOMING_MOVED_FILE", payload, callback);
 }
 
+export function incomingRestoreFile(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_RESTORE_FILE", payload, callback);
+}
+
 export function incomingEmptyTrash(payload, callback) {
   return SimpleDispatchActionToReducer("INCOMING_EMPTY_TRASH", payload, callback);
 }

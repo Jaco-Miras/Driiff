@@ -998,7 +998,10 @@ const useFileActions = (params = null) => {
   const restoreWorkspaceFile = useCallback(
     (payload, callback = () => {
     }) => {
-      dispatch(putWorkspaceRestoreFile(payload, callback));
+      dispatch(putWorkspaceRestoreFile({
+        ...payload,
+        topic_id: params.workspaceId,
+      }, callback));
     },
     [dispatch]
   );

@@ -235,6 +235,18 @@ export default (state = INITIAL_STATE, action) => {
             storage: state.companyFiles.count.storage - deletedItem.size
           },
           items: items,
+          favorite_files: {
+            ...state.companyFiles.favorite_files,
+            items: state.companyFiles.favorite_files.filter(id => id !== deletedItem.id),
+          },
+          popular_files: {
+            ...state.companyFiles.popular_files,
+            items: state.companyFiles.popular_files.filter(id => id !== deletedItem.id),
+          },
+          recently_edited: {
+            ...state.companyFiles.recently_edited,
+            items: state.companyFiles.recently_edited.filter(id => id !== deletedItem.id),
+          },
           trash_files: {
             ...state.companyFiles.trash_files,
             items: {
@@ -1178,41 +1190,34 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "INCOMING_DELETED_FILE": {
-      let newWorkspaceFiles = {...state.workspaceFiles};
-      if (newWorkspaceFiles.hasOwnProperty(action.data.topic_id)) {
-        let file = {...newWorkspaceFiles[action.data.topic_id].files[action.data.file_id]};
-        newWorkspaceFiles = {
-          [action.data.topic_id]: {
-            ...newWorkspaceFiles[action.data.topic_id],
-            recently_edited: newWorkspaceFiles[action.data.topic_id].recently_edited.filter((id) => id !== parseInt(action.data.file_id)),
-            trash_files: {
-              ...newWorkspaceFiles[action.data.topic_id].trash_files,
-              [file.id]: file,
-            },
-            count: newWorkspaceFiles[action.data.topic_id].count - 1,
-            trash: newWorkspaceFiles[action.data.topic_id].trash + 1,
-          },
-        };
-        delete newWorkspaceFiles[action.data.topic_id].files[action.data.file_id];
-        if (newWorkspaceFiles[action.data.topic_id].hasOwnProperty("folders")) {
-          Object.values(newWorkspaceFiles[action.data.topic_id].folders).forEach((f) => {
-            if (f.hasOwnProperty("files") && newWorkspaceFiles[action.data.topic_id].folders[f.id].files.length) {
-              newWorkspaceFiles[action.data.topic_id].folders[f.id].files = newWorkspaceFiles[action.data.topic_id].folders[f.id].files.filter((id) => id !== action.data.file_id);
-            } else {
-            }
-          });
-          return {
-            ...state,
-            workspaceFiles: newWorkspaceFiles,
-          };
-        } else {
-          return {
-            ...state,
-            workspaceFiles: newWorkspaceFiles,
-          };
-        }
-      } else {
+      if (typeof state.workspaceFiles[action.data.topic_id] === "undefined"
+        && typeof state.workspaceFiles[action.data.topic_id].files[action.data.file_id])
         return state;
+
+      let items = state.workspaceFiles[action.data.topic_id];
+      let file = items.files[action.data.file_id];
+
+      items.storage -= file.size;
+      items.count -= 1;
+      items.trash += 1;
+      items.trash_files[action.data.file_id] = file;
+      items.recently_edited.filter(id => id !== file.id);
+
+      if (file.folder_id && items.folders[file.folder_id]) {
+        let index = items.folders[file.folder_id].files.findIndex(file.id);
+        if (index !== -1) {
+          items.folders[file.folder_id].files.splice(index, 1);
+        }
+      }
+
+      delete items.files[file.id];
+
+      return {
+        ...state,
+        workspaceFiles: {
+          ...state.workspaceFiles,
+          [action.data.topic_id]: items
+        }
       }
     }
     case "INCOMING_DELETED_FILES": {
@@ -1314,6 +1319,39 @@ export default (state = INITIAL_STATE, action) => {
             }
           }
         };
+      }
+    }
+    case "INCOMING_RESTORE_FILE": {
+
+      if (typeof state.workspaceFiles[action.data.topic.id] === "undefined")
+        return state;
+
+      let items = state.workspaceFiles[action.data.topic.id];
+
+      if (items.trash_files[action.data.file.id]) {
+        items.files[action.data.file.id] = action.data.file;
+        delete items.trash_files[action.data.file.id];
+      }
+
+      if (action.data.folder && items.folders[action.data.folder.id] && !items.folders[action.data.folder.id].files.includes(action.data.file.id)) {
+        items.folders[action.data.folder.id].files.push(action.data.file.id);
+      }
+
+      if (action.data.file.is_favorite && !items.favorite_files.includes(action.data.file.id)) {
+        items.favorite_files.push(action.data.file.id);
+        items.stars += 1;
+      }
+
+      items.trash -= 1;
+      items.count += 1;
+      items.storage += action.data.file.size;
+
+      return {
+        ...state,
+        workspaceFiles: {
+          ...state.workspaceFiles,
+          [action.data.topic.id]: items
+        }
       }
     }
     case "INCOMING_MOVED_FILE": {
