@@ -41,6 +41,7 @@ import {
   postFolder as postFolderService,
   postGoogleAttachments as postGoogleAttachmentsService,
   postWorkspaceFiles as postWorkspaceFilesService,
+  putCompanyFileMove as putCompanyFileMoveService,
   putCompanyFiles as putCompanyFilesService,
   putCompanyFolders as putCompanyFoldersService,
   putCompanyRestoreFile as putCompanyRestoreFileService,
@@ -49,7 +50,7 @@ import {
   putWorkspaceRestoreFile as putWorkspaceRestoreFileService,
   restoreWorkspaceFile as restoreWorkspaceFileService,
   uploadWorkspaceFile as uploadWorkspaceFileService,
-  uploadWorkspaceFiles as uploadWorkspaceFilesService,
+  uploadWorkspaceFiles as uploadWorkspaceFilesService
 } from "../services";
 
 export function getFiles(payload, callback) {
@@ -208,6 +209,10 @@ export function incomingMovedFile(payload, callback) {
   return SimpleDispatchActionToReducer("INCOMING_MOVED_FILE", payload, callback);
 }
 
+export function incomingRestoreFile(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_RESTORE_FILE", payload, callback);
+}
+
 export function incomingEmptyTrash(payload, callback) {
   return SimpleDispatchActionToReducer("INCOMING_EMPTY_TRASH", payload, callback);
 }
@@ -352,6 +357,10 @@ export function incomingCompanyFolder(payload, callback) {
   return SimpleDispatchActionToReducer("INCOMING_COMPANY_FOLDER", payload, callback);
 }
 
+export function incomingCompanyUpdatedFolder(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_COMPANY_UPDATED_FOLDER", payload, callback);
+}
+
 export function incomingCompanyDeletedFolder(payload, callback) {
   return SimpleDispatchActionToReducer("INCOMING_COMPANY_DELETED_FOLDER", payload, callback);
 }
@@ -380,6 +389,10 @@ export function incomingRemovedCompanyFile(payload, callback) {
   return SimpleDispatchActionToReducer("INCOMING_REMOVED_COMPANY_FILE", payload, callback);
 }
 
+export function incomingCompanyMoveFile(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_COMPANY_MOVE_FILE", payload, callback);
+}
+
 export function incomingCompanyRestoreFile(payload, callback) {
   return SimpleDispatchActionToReducer("INCOMING_COMPANY_RESTORE_FILE", payload, callback);
 }
@@ -402,4 +415,8 @@ export function putWorkspaceRestoreFile(payload, callback) {
 
 export function putCompanyRestoreFile(payload, callback) {
   return dispatchActionToReducer(putCompanyRestoreFileService(payload), "PUT_COMPANY_RESTORE_FILE_START", "PUT_COMPANY_RESTORE_FILE_SUCCESS", "PUT_COMPANY_RESTORE_FILE_FAIL", callback);
+}
+
+export function putCompanyFileMove(payload, callback) {
+  return dispatchActionToReducer(putCompanyFileMoveService(payload), "PUT_COMPANY_FILE_MOVE_START", "PUT_COMPANY_FILE_MOVE_SUCCESS", "PUT_COMPANY_FILE_MOVE_FAIL", callback);
 }

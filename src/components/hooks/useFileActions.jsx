@@ -39,6 +39,7 @@ import {
   postCompanyUploadBulkFiles,
   postCompanyUploadFiles,
   postGoogleAttachments,
+  putCompanyFileMove,
   putCompanyFiles,
   putCompanyFolders,
   putCompanyRestoreFile,
@@ -792,6 +793,58 @@ const useFileActions = (params = null) => {
     [dispatch, params]
   );
 
+  const moveCompanyFile = useCallback(
+    (file) => {
+      const handleMoveFile = (payload, callback = () => {
+      }, options = {}) => {
+        dispatch(
+          putCompanyFileMove(payload, (err, res) => {
+            if (err) {
+              toaster.error(
+                <div>
+                  Failed to move <b>{file.search}</b> to folder <strong>{options.selectedFolder}</strong>
+                </div>
+              );
+            }
+            if (res) {
+              toaster.success(
+                <div>
+                  <strong>{file.search}</strong> has been moved to folder <strong>{options.selectedFolder}</strong>
+                </div>
+              );
+            }
+            callback(err, res);
+          })
+        )
+      };
+
+      let payload = {
+        type: "move_company_files",
+        dictionary: {
+          headerText: "Move files",
+          submitText: "Move",
+          cancelText: "Cancel",
+          bodyText: file.search,
+        },
+        file: file,
+        folder_id: null,
+        actions: {
+          onSubmit: handleMoveFile,
+        },
+      };
+
+      if (params.hasOwnProperty("folderId")) {
+        payload = {
+          ...payload,
+          folder_id: params.folderId,
+        };
+      }
+
+      dispatch(addToModals(payload));
+    },
+    [dispatch, params]
+  );
+
   const download = useCallback(
     (file) => {
       const handleDownloadFile = () => {
@@ -945,7 +998,10 @@ const useFileActions = (params = null) => {
   const restoreWorkspaceFile = useCallback(
     (payload, callback = () => {
     }) => {
-      dispatch(putWorkspaceRestoreFile(payload, callback));
+      dispatch(putWorkspaceRestoreFile({
+        ...payload,
+        topic_id: params.workspaceId,
+      }, callback));
     },
     [dispatch]
   );
@@ -1002,6 +1058,7 @@ const useFileActions = (params = null) => {
     fetchCompanyTrashedFiles,
     createCompanyFolders,
     renameCompanyFile,
+    moveCompanyFile,
     uploadingCompanyFiles,
     uploadCompanyFiles,
     uploadCompanyBulkFiles,

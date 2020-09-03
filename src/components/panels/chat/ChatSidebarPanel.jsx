@@ -1,9 +1,9 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import { useSelector } from "react-redux";
+import React, {useCallback, useEffect, useRef, useState} from "react";
+import {useSelector} from "react-redux";
 import styled from "styled-components";
 import SearchForm from "../../forms/SearchForm";
-import { ChatSideBarContentPanel } from "./index";
-import { usePreviousValue, useTranslation } from "../../hooks";
+import {ChatSideBarContentPanel} from "./index";
+import {usePreviousValue, useTranslation} from "../../hooks";
 
 const Wrapper = styled.div`
   .nav-tabs {
@@ -58,7 +58,7 @@ const Search = styled(SearchForm)`
   @media (max-width: 480px) {
     margin: 0 0 0.75rem !important;
   }
-  &:placeholder {
+  &::placeholder {
     color: #AAAAAA;
   }
 `;
@@ -141,12 +141,14 @@ const ChatSidebarPanel = (props) => {
     recent: _t("CHAT.RECENT", "Recent"),
     favorite: _t("CHAT.FAVORITE", "Favorite"),
     hidden: _t("CHAT.HIDDEN", "Hidden"),
+    pinned: _t("CHAT.PINNED", "Pinned"),
     startNew: _t("CHAT.START_NEW", "Start new"),
     viewOpenWorkspace: _t("CHAT.VIEW_OPEN_WORKSPACE", "View open workspace"),
     archived: _t("CHAT.ARCHIVED", "Archived"),
     nothingToSeeHere: _t("CHAT.NOTHING_TO_SEE_HERE", "Nothing to see here!"),
     noMatchingChats: _t("CHAT.NO_MATCHING_CHATS", "No matching chats found"),
-    messageRemoved: _t("CHAT.MESSAGE_REMOVED", "The chat message has been removed.")
+    messageRemoved: _t("CHAT.MESSAGE_REMOVED", "The chat message has been removed."),
+    personalBot: _t("CHAT.PERSONAL_BOT", "Personal bot")
   };
 
   return (

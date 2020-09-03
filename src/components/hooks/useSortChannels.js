@@ -1,9 +1,9 @@
-import { useSelector } from "react-redux";
-import { useSettings } from "./index";
+import {useSelector} from "react-redux";
+import {useSettings} from "./index";
 
 const useSortChannels = (channels, search, options = {}, workspace) => {
   const user = useSelector((state) => state.session.user);
-  const { chatSettings: settings } = useSettings();
+  const {chatSettings: settings} = useSettings();
 
   const channelDrafts = useSelector((state) => state.chat.channelDrafts);
 
@@ -51,13 +51,7 @@ const useSortChannels = (channels, search, options = {}, workspace) => {
           return !channel.is_hidden && !channel.is_archived && !channel.add_user && !channel.add_open_topic;
         }
       } else {
-        if (channel.search.toLowerCase().search(search.toLowerCase()) !== -1) {
-          return true;
-        } else if (channel.title.toLowerCase().search(search.toLowerCase()) !== -1) {
-          return true;
-        } else {
-          return false;
-        }
+        return (channel.search.toLowerCase().search(search.toLowerCase()) !== -1 || channel.title.toLowerCase().search(search.toLowerCase()) !== -1)
       }
     })
     .sort((a, b) => {
@@ -72,6 +66,19 @@ const useSortChannels = (channels, search, options = {}, workspace) => {
         return 1;
       }
 
+      //direct users first
+      if (!(a.type === "DIRECT" && b.type === "DIRECT")) {
+        if (a.type === "DIRECT")
+          return -1;
+
+        if (b.type === "DIRECT")
+          return 1;
+      }
+
+      //add to user
+      compare = b.add_user - a.add_user;
+      if (compare !== 0) return compare;
+
       //pinned
       compare = b.is_pinned - a.is_pinned;
       if (compare !== 0) return compare;
@@ -82,10 +89,6 @@ const useSortChannels = (channels, search, options = {}, workspace) => {
 
       //hidden
       compare = b.is_hidden - a.is_hidden;
-      if (compare !== 0) return compare;
-
-      //add to user
-      compare = b.add_user - a.add_user;
       if (compare !== 0) return compare;
 
       //view topic

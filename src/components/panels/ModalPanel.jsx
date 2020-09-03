@@ -5,6 +5,7 @@ import FileViewer from "../common/FileViewer";
 import {
   ChatForwardModal,
   ChatReminderModal,
+  CompanyMoveFilesModal,
   ConfirmationModal,
   CreateEditChatModal,
   CreateEditCompanyPostModal,
@@ -72,6 +73,8 @@ const ModalPanel = () => {
               return <SingleInputModal key={modal.type} {...modal} />;
             case "move_files":
               return <MoveFilesModal key={modal.type} {...modal} />;
+            case "move_company_files":
+              return <CompanyMoveFilesModal key={modal.type} data={modal}/>;
             case "personal_link_create_edit":
               return <CreatePersonalLinksModal key={modal.type} data={modal}/>
             default:

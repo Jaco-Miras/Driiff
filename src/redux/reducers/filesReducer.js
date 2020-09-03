@@ -69,6 +69,85 @@ export default (state = INITIAL_STATE, action) => {
         user: action.data,
       };
     }
+    case "INCOMING_COMPANY_FOLDER": {
+      return {
+        ...state,
+        companyFolders: {
+          ...state.companyFolders,
+          items: {
+            ...state.companyFolders.items,
+            [action.data.folder.id]: {
+              ...action.data.folder,
+              files: [],
+              has_more: true,
+              init: false,
+              skip: 100,
+              limit: 100,
+            }
+          }
+        }
+      }
+    }
+    case "INCOMING_COMPANY_UPDATED_FOLDER": {
+      let folderItems = state.companyFolders.items;
+
+      if (folderItems[action.data.folder.id])
+        folderItems[action.data.folder.id] = {
+          ...folderItems[action.data.folder.id],
+          ...action.data.folder
+        };
+
+      return {
+        ...state,
+        companyFolders: {
+          ...state.companyFolders,
+          items: folderItems
+        }
+      }
+    }
+    case "INCOMING_COMPANY_DELETED_FOLDER": {
+      let folderItems = state.companyFolders.items;
+
+      if (folderItems[action.data.folder.id])
+        folderItems[action.data.folder.id].is_archived = true;
+
+      return {
+        ...state,
+        companyFolders: {
+          ...state.companyFolders,
+          items: folderItems
+        }
+      }
+    }
+    case "INCOMING_COMPANY_MOVE_FILE": {
+      let folderItems = state.companyFolders.items;
+      if (folderItems[action.data.folder_id]) {
+        folderItems[action.data.folder_id].files.push(action.data.file_id)
+      } else {
+        folderItems[action.data.folder_id] = {
+          init: false,
+          skip: 0,
+          limit: 100,
+          files: [action.data.file_id]
+        }
+      }
+
+      if (action.data.original_folder_id && folderItems[action.data.original_folder_id]) {
+        const index = folderItems[action.data.original_folder_id].files.indexOf(action.data.folder_id);
+        if (index > -1) {
+          folderItems[action.data.original_folder_id].files.splice(index, 1);
+        }
+      }
+
+      return {
+        ...state,
+        companyFolders: {
+          ...state.companyFolders,
+          items: folderItems
+        }
+      }
+    }
+    case "COMPANY_FILE_UPDATE":
     case "INCOMING_COMPANY_UPDATED_FILE": {
       let items = state.companyFiles.items;
       if (items[action.data.file.id]) {
@@ -101,6 +180,7 @@ export default (state = INITIAL_STATE, action) => {
             all: state.companyFiles.count.all + 1,
             stars: action.data.file.is_favorite ? (state.companyFiles.count.stars + 1) : state.companyFiles.count.stars,
             trash: state.companyFiles.count.trash - 1,
+            storage: state.companyFiles.count.storage + action.data.file.size,
           },
           items: {
             ...state.companyFiles.items,
@@ -117,6 +197,26 @@ export default (state = INITIAL_STATE, action) => {
       let items = state.companyFiles.items;
 
       if (typeof items[action.data.file_id] === "undefined") {
+        if (typeof state.companyFiles.trash_files.items[action.data.file_id] !== "undefined") {
+          items = state.companyFiles.trash_files.items;
+          delete items[action.data.file_id];
+
+          return {
+            ...state,
+            companyFiles: {
+              ...state.companyFiles,
+              count: {
+                ...state.companyFiles.count,
+                trash: state.companyFiles.count.trash - 1,
+              },
+              trash_files: {
+                ...state.companyFiles.trash_files,
+                items: items,
+              }
+            }
+          }
+        }
+
         return state;
       }
 
@@ -132,8 +232,21 @@ export default (state = INITIAL_STATE, action) => {
             all: state.companyFiles.count.all - 1,
             stars: deletedItem.is_favorite ? (state.companyFiles.count.stars - 1) : state.companyFiles.count.stars,
             trash: state.companyFiles.count.trash + 1,
+            storage: state.companyFiles.count.storage - deletedItem.size
           },
           items: items,
+          favorite_files: {
+            ...state.companyFiles.favorite_files,
+            items: state.companyFiles.favorite_files.filter(id => id !== deletedItem.id),
+          },
+          popular_files: {
+            ...state.companyFiles.popular_files,
+            items: state.companyFiles.popular_files.filter(id => id !== deletedItem.id),
+          },
+          recently_edited: {
+            ...state.companyFiles.recently_edited,
+            items: state.companyFiles.recently_edited.filter(id => id !== deletedItem.id),
+          },
           trash_files: {
             ...state.companyFiles.trash_files,
             items: {
@@ -141,6 +254,59 @@ export default (state = INITIAL_STATE, action) => {
               [action.data.file_id]: deletedItem
             }
           }
+        }
+      }
+    }
+    case "INCOMING_COMPANY_EMPTY_TRASH": {
+      let files = state.companyFiles.items;
+      let trashItems = state.companyFiles.trash_files.items;
+      let count = 0;
+      let storage = 0;
+      let stars = 0;
+      let trash = 0;
+      action.data.deleted_file_ids.forEach(id => {
+        if (files[id]) {
+          count += 1;
+          storage += files[id].size;
+
+          if (files[id].is_favorite) {
+            stars += 1;
+          }
+          delete files[id];
+        }
+
+        if (trashItems[id]) {
+          trash += 1;
+          delete trashItems[id];
+        }
+      })
+
+      let folders = state.companyFolders.items;
+      action.data.deleted_folder_ids.forEach(id => {
+        if (folders[id])
+          delete folders[id];
+      });
+
+      return {
+        ...state,
+        companyFiles: {
+          ...state.companyFiles,
+          count: {
+            ...state.companyFiles.count,
+            all: state.companyFiles.count.all - count,
+            stars: state.companyFiles.count.stars - stars,
+            trash: state.companyFiles.count.trash - trash,
+            storage: state.companyFiles.count.trash - storage,
+          },
+          items: files,
+          trash_files: {
+            ...state.companyFiles.trash_files,
+            items: trashItems
+          }
+        },
+        companyFolders: {
+          ...state.companyFolders,
+          items: folders
         }
       }
     }
@@ -155,17 +321,6 @@ export default (state = INITIAL_STATE, action) => {
           },
           search_results: action.data.search_results.map((f) => f.id),
           search_value: action.data.search,
-        }
-      }
-    }
-    case "POST_COMPANY_FOLDERS_SUCCESS": {
-      return {
-        ...state,
-        companyFolders: {
-          items: {
-            ...state.companyFolders.items,
-            [action.data.folder.id]: action.data.folder
-          }
         }
       }
     }
@@ -184,19 +339,7 @@ export default (state = INITIAL_STATE, action) => {
         }
       }
     }
-    case "COMPANY_FILE_UPDATE": {
-      return {
-        ...state,
-        companyFiles: {
-          ...state.companyFiles,
-          items: {
-            ...state.companyFiles.items,
-            [action.data.file.id]: action.data.file
-          },
-        }
-      }
-    }
-    case "POST_COMPANY_UPLOAD_BULK_FILES_SUCCESS": {
+    case "INCOMING_COMPANY_FILES": {
       let items = state.companyFiles.items;
       let fileItems = Object.values(state.companyFiles.items).filter(f => f.uploading);
 
@@ -223,18 +366,26 @@ export default (state = INITIAL_STATE, action) => {
     }
     case "GET_COMPANY_FILES_SUCCESS": {
       let fileItems = state.companyFiles.items;
+      let folderItems = state.companyFolders.items;
+
       action.data.files.forEach(f => {
         fileItems[f.id] = f;
+
+        if (f.folder_id) {
+          if (folderItems[f.folder_id]) {
+            if (!folderItems[f.folder_id].files.includes(f.id)) {
+              folderItems[f.folder_id].files.push(f.id);
+            }
+          }
+        }
       })
 
-      let folderItem = state.companyFolders.items[action.data.file_id];
-      if (action.data.file_id !== null && folderItem) {
-        folderItem = {
-          ...folderItem,
-          init: true,
-          has_more: action.data.files.length === folderItem.limit,
-          skip: folderItem.skip + folderItem.limit,
-          files: action.data.files.map(f => f.id)
+      if (action.data.folder_id && folderItems[action.data.folder_id]) {
+        folderItems[action.data.folder_id] = {
+          ...folderItems[action.data.folder_id],
+          init: false,
+          has_more: action.data.files.length === folderItems[action.data.folder_id].limit,
+          skip: folderItems[action.data.folder_id].skip + folderItems[action.data.folder_id].limit,
         }
       }
 
@@ -249,10 +400,7 @@ export default (state = INITIAL_STATE, action) => {
         },
         companyFolders: {
           ...state.companyFolders,
-          items: {
-            ...state.companyFolders.items,
-            ...folderItem
-          }
+          items: folderItems
         }
       }
     }
@@ -574,7 +722,7 @@ export default (state = INITIAL_STATE, action) => {
       if (newWorkspaceFiles.hasOwnProperty(action.data.topic_id)) {
         if (action.data.folder_id && newWorkspaceFiles[action.data.topic_id].folders.hasOwnProperty(action.data.folder_id)) {
           newWorkspaceFiles[action.data.topic_id].folders[action.data.folder_id].loaded = true;
-          newWorkspaceFiles[action.data.topic_id].folders[action.data.folder_id].files = action.data.files.filter((f) => f.folder_id == action.data.folder_id).map((f) => f.id);
+          newWorkspaceFiles[action.data.topic_id].folders[action.data.folder_id].files = action.data.files.filter((f) => f.folder_id === action.data.folder_id).map((f) => f.id);
         }
         newWorkspaceFiles = {
           [action.data.topic_id]: {
@@ -1042,41 +1190,34 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "INCOMING_DELETED_FILE": {
-      let newWorkspaceFiles = {...state.workspaceFiles};
-      if (newWorkspaceFiles.hasOwnProperty(action.data.topic_id)) {
-        let file = {...newWorkspaceFiles[action.data.topic_id].files[action.data.file_id]};
-        newWorkspaceFiles = {
-          [action.data.topic_id]: {
-            ...newWorkspaceFiles[action.data.topic_id],
-            recently_edited: newWorkspaceFiles[action.data.topic_id].recently_edited.filter((id) => id !== parseInt(action.data.file_id)),
-            trash_files: {
-              ...newWorkspaceFiles[action.data.topic_id].trash_files,
-              [file.id]: file,
-            },
-            count: newWorkspaceFiles[action.data.topic_id].count - 1,
-            trash: newWorkspaceFiles[action.data.topic_id].trash + 1,
-          },
-        };
-        delete newWorkspaceFiles[action.data.topic_id].files[action.data.file_id];
-        if (newWorkspaceFiles[action.data.topic_id].hasOwnProperty("folders")) {
-          Object.values(newWorkspaceFiles[action.data.topic_id].folders).forEach((f) => {
-            if (f.hasOwnProperty("files") && newWorkspaceFiles[action.data.topic_id].folders[f.id].files.length) {
-              newWorkspaceFiles[action.data.topic_id].folders[f.id].files = newWorkspaceFiles[action.data.topic_id].folders[f.id].files.filter((id) => id != action.data.file_id);
-            } else {
-            }
-          });
-          return {
-            ...state,
-            workspaceFiles: newWorkspaceFiles,
-          };
-        } else {
-          return {
-            ...state,
-            workspaceFiles: newWorkspaceFiles,
-          };
-        }
-      } else {
+      if (typeof state.workspaceFiles[action.data.topic_id] === "undefined"
+        && typeof state.workspaceFiles[action.data.topic_id].files[action.data.file_id])
         return state;
+
+      let items = state.workspaceFiles[action.data.topic_id];
+      let file = items.files[action.data.file_id];
+
+      items.storage -= file.size;
+      items.count -= 1;
+      items.trash += 1;
+      items.trash_files[action.data.file_id] = file;
+      items.recently_edited.filter(id => id !== file.id);
+
+      if (file.folder_id && items.folders[file.folder_id]) {
+        let index = items.folders[file.folder_id].files.findIndex(file.id);
+        if (index !== -1) {
+          items.folders[file.folder_id].files.splice(index, 1);
+        }
+      }
+
+      delete items.files[file.id];
+
+      return {
+        ...state,
+        workspaceFiles: {
+          ...state.workspaceFiles,
+          [action.data.topic_id]: items
+        }
       }
     }
     case "INCOMING_DELETED_FILES": {
@@ -1137,7 +1278,7 @@ export default (state = INITIAL_STATE, action) => {
           [action.data.topic_id]: {
             ...newWorkspaceFiles[action.data.topic_id],
             stars: action.data.is_favorite ? newWorkspaceFiles[action.data.topic_id].stars + 1 : newWorkspaceFiles[action.data.topic_id].stars - 1,
-            favorite_files: action.data.is_favorite ? [...newWorkspaceFiles[action.data.topic_id].favorite_files, action.data.file_id] : newWorkspaceFiles[action.data.topic_id].favorite_files.filter((id) => id != action.data.file_id),
+            favorite_files: action.data.is_favorite ? [...newWorkspaceFiles[action.data.topic_id].favorite_files, action.data.file_id] : newWorkspaceFiles[action.data.topic_id].favorite_files.filter((id) => id !== action.data.file_id),
           },
         };
         return {
@@ -1178,6 +1319,39 @@ export default (state = INITIAL_STATE, action) => {
             }
           }
         };
+      }
+    }
+    case "INCOMING_RESTORE_FILE": {
+
+      if (typeof state.workspaceFiles[action.data.topic.id] === "undefined")
+        return state;
+
+      let items = state.workspaceFiles[action.data.topic.id];
+
+      if (items.trash_files[action.data.file.id]) {
+        items.files[action.data.file.id] = action.data.file;
+        delete items.trash_files[action.data.file.id];
+      }
+
+      if (action.data.folder && items.folders[action.data.folder.id] && !items.folders[action.data.folder.id].files.includes(action.data.file.id)) {
+        items.folders[action.data.folder.id].files.push(action.data.file.id);
+      }
+
+      if (action.data.file.is_favorite && !items.favorite_files.includes(action.data.file.id)) {
+        items.favorite_files.push(action.data.file.id);
+        items.stars += 1;
+      }
+
+      items.trash -= 1;
+      items.count += 1;
+      items.storage += action.data.file.size;
+
+      return {
+        ...state,
+        workspaceFiles: {
+          ...state.workspaceFiles,
+          [action.data.topic.id]: items
+        }
       }
     }
     case "INCOMING_MOVED_FILE": {
@@ -1311,6 +1485,8 @@ export default (state = INITIAL_STATE, action) => {
       } else {
         return state;
       }
+
+      return state;
     }
     case "ADD_GOOGLE_DRIVE_FILE": {
       return {

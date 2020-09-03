@@ -35,8 +35,10 @@ import {
   incomingCompanyFiles,
   incomingCompanyFolder,
   incomingCompanyMovedFile,
+  incomingCompanyMoveFile,
   incomingCompanyRestoreFile,
   incomingCompanyUpdatedFile,
+  incomingCompanyUpdatedFolder,
   incomingDeletedFile,
   incomingDeletedFiles,
   incomingDeletedFolder,
@@ -53,6 +55,7 @@ import {
   incomingRemovedCompanyFolder,
   incomingRemovedFile,
   incomingRemovedFolder,
+  incomingRestoreFile,
 } from "../../redux/actions/fileActions";
 import {
   addUserToReducers,
@@ -165,8 +168,12 @@ class SocketListeners extends Component {
         }
       })
       .listen(".workspace-file-notification", (e) => {
-        console.log(e, "file");
+        console.log(e, "file", "line 170");
         switch (e.SOCKET_TYPE) {
+          case "FILE_RESTORE": {
+            this.props.incomingRestoreFile(e);
+            break;
+          }
           case "FILE_UPDATE": {
             this.props.incomingFile(e);
             break;
@@ -379,6 +386,18 @@ class SocketListeners extends Component {
       .listen(".company-file-notification", (e) => {
         console.log(e, "company file");
         switch (e.SOCKET_TYPE) {
+          case "FILE_EMPTY": {
+            this.props.incomingCompanyEmptyTrash(e);
+            break;
+          }
+          case "UPLOAD_BULK": {
+            this.props.incomingCompanyFiles(e);
+            break;
+          }
+          case "FILE_MOVE": {
+            this.props.incomingCompanyMoveFile(e);
+            break;
+          }
           case "FILE_RESTORE": {
             this.props.incomingCompanyRestoreFile(e);
             break;
@@ -399,7 +418,15 @@ class SocketListeners extends Component {
         console.log(e, "company folder");
         switch (e.SOCKET_TYPE) {
           case "FOLDER_CREATE": {
-            this.props.incomingFolder(e);
+            this.props.incomingCompanyFolder(e);
+            break;
+          }
+          case "FOLDER_UPDATE": {
+            this.props.incomingCompanyUpdatedFolder(e);
+            break;
+          }
+          case "FOLDER_DELETE": {
+            this.props.incomingCompanyDeletedFolder(e);
             break;
           }
           default:
@@ -476,8 +503,12 @@ class SocketListeners extends Component {
         this.props.incomingFiles(e);
       })
       .listen(".workspace-file-notification", (e) => {
-        console.log(e, "file");
+        console.log(e, "file", "line 506");
         switch (e.SOCKET_TYPE) {
+          case "FILE_RESTORE": {
+            this.props.incomingRestoreFile(e);
+            break;
+          }
           case "FILE_UPDATE": {
             this.props.incomingFile(e);
             break;
@@ -967,8 +998,10 @@ function mapDispatchToProps(dispatch) {
     incomingFiles: bindActionCreators(incomingFiles, dispatch),
     incomingDeletedFile: bindActionCreators(incomingDeletedFile, dispatch),
     incomingMovedFile: bindActionCreators(incomingMovedFile, dispatch),
+    incomingRestoreFile: bindActionCreators(incomingRestoreFile, dispatch),
     incomingEmptyTrash: bindActionCreators(incomingEmptyTrash, dispatch),
     incomingCompanyFolder: bindActionCreators(incomingCompanyFolder, dispatch),
+    incomingCompanyUpdatedFolder: bindActionCreators(incomingCompanyUpdatedFolder, dispatch),
     incomingCompanyDeletedFolder: bindActionCreators(incomingCompanyDeletedFolder, dispatch),
     incomingCompanyFile: bindActionCreators(incomingCompanyFile, dispatch),
     incomingCompanyFiles: bindActionCreators(incomingCompanyFiles, dispatch),
@@ -976,6 +1009,7 @@ function mapDispatchToProps(dispatch) {
     incomingCompanyMovedFile: bindActionCreators(incomingCompanyMovedFile, dispatch),
     incomingCompanyEmptyTrash: bindActionCreators(incomingCompanyEmptyTrash, dispatch),
     incomingCompanyRemovedFile: bindActionCreators(incomingRemovedCompanyFile, dispatch),
+    incomingCompanyMoveFile: bindActionCreators(incomingCompanyMoveFile, dispatch),
     incomingCompanyRestoreFile: bindActionCreators(incomingCompanyRestoreFile, dispatch),
     incomingCompanyRemovedFolder: bindActionCreators(incomingRemovedCompanyFolder, dispatch),
     incomingCompanyDeletedFiles: bindActionCreators(incomingCompanyDeletedFiles, dispatch),

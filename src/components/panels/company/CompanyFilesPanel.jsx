@@ -24,7 +24,7 @@ const CompanyFilesPanel = (props) => {
   const dispatch = useDispatch();
   const history = useHistory();
   const {_t} = useTranslation();
-  const {params, isLoaded, files, fileCount, actions, fileIds, folders, folder, subFolders} = useCompanyFiles();
+  const {params, isLoaded, files, fileCount, actions, fileIds, folders, folder, subFolders, loadMore} = useCompanyFiles();
 
   const [filter, setFilter] = useState("");
   const [search, setSearch] = useState("");
@@ -136,6 +136,7 @@ const CompanyFilesPanel = (props) => {
         {
           id: f.id,
           name: folderName.current,
+          is_archived: true
         },
         cb
       );
@@ -218,6 +219,8 @@ const CompanyFilesPanel = (props) => {
           />
           <CompanyFilesBody
             dropZoneRef={refs.dropZone}
+            isLoaded={isLoaded}
+            loadMore={loadMore}
             filter={filter}
             search={search}
             folders={folders}

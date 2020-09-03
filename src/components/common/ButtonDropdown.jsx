@@ -40,7 +40,6 @@ const ButtonDropdown = (props) => {
 
   const toggle = useCallback(() => {
     setShow(!show);
-
   }, [show]);
 
   useOutsideClick(wrapperRef, toggle, show);

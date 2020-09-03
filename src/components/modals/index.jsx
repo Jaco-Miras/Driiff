@@ -14,3 +14,4 @@ export {default as FileCropUploadModal} from "./FileCropUploadModal";
 export {default as InvitedUsersModal} from "./InvitedUsersModal";
 export {default as CreateEditCompanyPostModal} from "./CreateEditCompanyPostModal";
 export {default as CreatePersonalLinksModal} from "./CreatePersonalLinksModal";
+export {default as CompanyMoveFilesModal} from "./CompanyMoveFilesModal";
