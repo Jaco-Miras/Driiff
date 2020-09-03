@@ -35,19 +35,22 @@ import {
   patchCompanyFileViewed as patchCompanyFileViewedService,
   patchWorkspaceFileViewed as patchWorkspaceFileViewedService,
   postCompanyFolders as postCompanyFoldersService,
+  postCompanyUploadBulkFiles as postCompanyUploadBulkFilesService,
   postCompanyUploadFiles as postCompanyUploadFilesService,
   postFavorite as postFavoriteService,
   postFolder as postFolderService,
   postGoogleAttachments as postGoogleAttachmentsService,
-  postUploadBulkFiles as postUploadBulkFilesService,
   postWorkspaceFiles as postWorkspaceFilesService,
+  putCompanyFileMove as putCompanyFileMoveService,
   putCompanyFiles as putCompanyFilesService,
   putCompanyFolders as putCompanyFoldersService,
+  putCompanyRestoreFile as putCompanyRestoreFileService,
   putFile as putFileService,
   putFolder as putFolderService,
+  putWorkspaceRestoreFile as putWorkspaceRestoreFileService,
   restoreWorkspaceFile as restoreWorkspaceFileService,
   uploadWorkspaceFile as uploadWorkspaceFileService,
-  uploadWorkspaceFiles as uploadWorkspaceFilesService,
+  uploadWorkspaceFiles as uploadWorkspaceFilesService
 } from "../services";
 
 export function getFiles(payload, callback) {
@@ -206,6 +209,10 @@ export function incomingMovedFile(payload, callback) {
   return SimpleDispatchActionToReducer("INCOMING_MOVED_FILE", payload, callback);
 }
 
+export function incomingRestoreFile(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_RESTORE_FILE", payload, callback);
+}
+
 export function incomingEmptyTrash(payload, callback) {
   return SimpleDispatchActionToReducer("INCOMING_EMPTY_TRASH", payload, callback);
 }
@@ -310,8 +317,8 @@ export function postCompanyUploadFiles(payload, callback) {
   return dispatchActionToReducer(postCompanyUploadFilesService(payload), "POST_COMPANY_UPLOAD_FILES_START", "POST_COMPANY_UPLOAD_FILES_SUCCESS", "POST_COMPANY_UPLOAD_FILES_FAIL", callback);
 }
 
-export function postUploadBulkFiles(payload, callback) {
-  return dispatchActionToReducer(postUploadBulkFilesService(payload), "POST_UPLOAD_BULK_FILES_START", "POST_UPLOAD_BULK_FILES_SUCCESS", "POST_UPLOAD_BULK_FILES_FAIL", callback);
+export function postCompanyUploadBulkFiles(payload, callback) {
+  return dispatchActionToReducer(postCompanyUploadBulkFilesService(payload), "POST_COMPANY_UPLOAD_BULK_FILES_START", "POST_COMPANY_UPLOAD_BULK_FILES_SUCCESS", "POST_COMPANY_UPLOAD_UPLOAD_BULK_FILES_FAIL", callback);
 }
 
 export function patchCompanyFileViewed(payload, callback) {
@@ -336,4 +343,80 @@ export function deleteCompanyFolders(payload, callback) {
 
 export function deleteCompanyDeleteAllTrashFiles(payload, callback) {
   return dispatchActionToReducer(deleteCompanyDeleteAllTrashFilesService(payload), "DELETED_COMPANY_DELETE_START", "DELETED_COMPANY_DELETE_SUCCESS", "DELETED_COMPANY_DELETE_FAIL", callback);
+}
+
+export function uploadCompanyFilesReducer(payload, callback) {
+  return SimpleDispatchActionToReducer("UPLOAD_COMPANY_FILES_REDUCER", payload, callback);
+}
+
+export function addCompanyFileSearchResults(payload, callback) {
+  return SimpleDispatchActionToReducer("ADD_COMPANY_FILE_SEARCH_RESULTS", payload, callback);
+}
+
+export function incomingCompanyFolder(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_COMPANY_FOLDER", payload, callback);
+}
+
+export function incomingCompanyUpdatedFolder(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_COMPANY_UPDATED_FOLDER", payload, callback);
+}
+
+export function incomingCompanyDeletedFolder(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_COMPANY_DELETED_FOLDER", payload, callback);
+}
+
+export function incomingCompanyFile(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_COMPANY_FILE", payload, callback);
+}
+
+export function incomingCompanyFiles(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_COMPANY_FILES", payload, callback);
+}
+
+export function incomingCompanyDeletedFile(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_DELETED_FILE", payload, callback);
+}
+
+export function incomingCompanyMovedFile(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_COMPANY_MOVED_FILE", payload, callback);
+}
+
+export function incomingCompanyEmptyTrash(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_COMPANY_EMPTY_TRASH", payload, callback);
+}
+
+export function incomingRemovedCompanyFile(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_REMOVED_COMPANY_FILE", payload, callback);
+}
+
+export function incomingCompanyMoveFile(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_COMPANY_MOVE_FILE", payload, callback);
+}
+
+export function incomingCompanyRestoreFile(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_COMPANY_RESTORE_FILE", payload, callback);
+}
+
+export function incomingRemovedCompanyFolder(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_REMOVED_COMPANY_FOLDER", payload, callback);
+}
+
+export function incomingCompanyDeletedFiles(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_COMPANY_DELETED_FILES", payload, callback);
+}
+
+export function incomingCompanyUpdatedFile(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_COMPANY_UPDATED_FILE", payload, callback);
+}
+
+export function putWorkspaceRestoreFile(payload, callback) {
+  return dispatchActionToReducer(putWorkspaceRestoreFileService(payload), "PUT_WORKSPACE_RESTORE_FILE_START", "PUT_WORKSPACE_RESTORE_FILE_SUCCESS", "PUT_WORKSPACE_RESTORE_FILE_FAIL", callback);
+}
+
+export function putCompanyRestoreFile(payload, callback) {
+  return dispatchActionToReducer(putCompanyRestoreFileService(payload), "PUT_COMPANY_RESTORE_FILE_START", "PUT_COMPANY_RESTORE_FILE_SUCCESS", "PUT_COMPANY_RESTORE_FILE_FAIL", callback);
+}
+
+export function putCompanyFileMove(payload, callback) {
+  return dispatchActionToReducer(putCompanyFileMoveService(payload), "PUT_COMPANY_FILE_MOVE_START", "PUT_COMPANY_FILE_MOVE_SUCCESS", "PUT_COMPANY_FILE_MOVE_FAIL", callback);
 }

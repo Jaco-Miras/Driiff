@@ -116,14 +116,18 @@ export default (state = INITIAL_STATE, action) => {
       }
     }
     case "INCOMING_UPDATED_POST": {
+      let posts = state.companyPosts.posts;
+      if (posts[action.data.id] && action.data.has_all_department === false) {
+        delete posts[action.data.id];
+      } else {
+        posts[action.data.id] = action.data;
+      }
+
       return {
         ...state,
         companyPosts: {
           ...state.companyPosts,
-          posts: {
-            ...state.companyPosts.posts,
-            [action.data.id]: action.data
-          }
+          posts: posts
         }
       }
     }

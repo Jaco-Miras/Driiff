@@ -18,7 +18,7 @@ const useWorkspace = (fetchOnMount = false) => {
   const [fetchingPrimary, setFetchingPrimary] = useState(false);
   const [init, setInit] = useState(false);
   const [fetchingChannel, setFetchingChannel] = useState(false);
-  const [archivedWsLoaded, setArchivedWsLoaded] = useState(false);
+  //const [archivedWsLoaded, setArchivedWsLoaded] = useState(false);
   const [internalLoaded, setInternalLoaded] = useState(false);
   const [externalLoaded, setExternalLoaded] = useState(false);
 
@@ -34,13 +34,13 @@ const useWorkspace = (fetchOnMount = false) => {
       }
       actions.fetchWorkspaces({is_external: 0}, fetchCb);
       actions.fetchWorkspaces({is_external: 1}, () => setExternalLoaded(true));
-      actions.fetchWorkspaces({is_external: 0, filter: "archived"}, () => {
-        setArchivedWsLoaded(true);
-      });
+      // actions.fetchWorkspaces({is_external: 0, filter: "archived"}, () => {
+      //   setArchivedWsLoaded(true);
+      // });
       actions.fetchWorkspaceChannels({skip: 0, limit: 250});
     } else if (workspacesLoaded && activeTopic) {
       //restore the channel id
-      if (channels.hasOwnProperty(activeTopic.channel.id) && path === "/workspace/:page") {
+      if (channels.hasOwnProperty(activeTopic.channel.id) && url.startsWith("/workspace")) {
         actions.selectChannel(channels[activeTopic.channel.id]);
       }
     }
@@ -57,11 +57,20 @@ const useWorkspace = (fetchOnMount = false) => {
           actions.selectWorkspace(workspaces[params.workspaceId]);
           setGeneralSetting({ active_topic: workspaces[params.workspaceId]});
         } else {
-          if (archivedWsLoaded && internalLoaded && externalLoaded && activeTopicSettings) {
-            console.log("redirect");
+          if (internalLoaded && externalLoaded && activeTopicSettings) {
             toaster.warning("This workspace cannot be found or accessed.");
-            actions.selectWorkspace(activeTopicSettings);
-            actions.redirectTo(activeTopicSettings);
+            if (parseInt(params.workspaceId) === activeTopicSettings.id) {
+              let sortedWorkspaces = Object.values(workspaces).filter((ws) => {
+                return ws.folder_id === null;
+              }).sort((a,b) => a.name.localeCompare(b.name));
+              if (sortedWorkspaces.length) {
+                actions.selectWorkspace(sortedWorkspaces[0]);
+                actions.redirectTo(sortedWorkspaces[0]);
+              }
+            } else {
+              actions.selectWorkspace(activeTopicSettings);
+              actions.redirectTo(activeTopicSettings);
+            }
           } 
         }
       } else {
@@ -79,10 +88,10 @@ const useWorkspace = (fetchOnMount = false) => {
         }
       }
     }
-  }, [activeTopic, activeTopicSettings, params, workspaces, url, archivedWsLoaded, internalLoaded, externalLoaded, fetchOnMount]);
+  }, [activeTopic, activeTopicSettings, params, workspaces, url, internalLoaded, externalLoaded, fetchOnMount]);
   
   useEffect(() => {
-    if (activeTopic && Object.keys(channels).length && fetchOnMount && url.startsWith("/workspace/")) {
+    if (activeTopic && Object.keys(channels).length && fetchOnMount && url.startsWith("/workspace")) {
       if (channels.hasOwnProperty(activeTopic.channel.id)) {
         if ((activeChannelId && activeChannelId !== activeTopic.channel.id) || activeChannelId === null) {
           actions.selectChannel(channels[activeTopic.channel.id]);

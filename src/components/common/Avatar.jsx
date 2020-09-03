@@ -44,7 +44,7 @@ const Initials = styled.span`
 `;
 
 const Avatar = (props) => {
-  const {className = "", imageLink, id, name = "", children, partialName = null, type = "USER", userId, onClick = null, noDefaultClick = false, hasAccepted = null, ...rest} = props;
+  const {className = "", imageLink, id, name = "", children, partialName = null, type = "USER", userId, onClick = null, noDefaultClick = false, hasAccepted = null, isBot = false, ...rest} = props;
 
   const history = useHistory();
   const onlineUsers = useSelector((state) => state.users.onlineUsers);
@@ -116,7 +116,16 @@ const Avatar = (props) => {
       {isLoaded === false && <Skeleton borderRadius="50%" widthRandomness={0} heightRandomness={0} />}
       <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={name}>
         {
-          showInitials && hasAccepted === false ?
+          isBot ?
+            <Image
+                show={isLoaded}
+                className="rounded-circle"
+                onLoad={handleImageLoad}
+                onError={handleImageError}
+                src={botIcon}
+                alt={name}
+              />
+          : showInitials && hasAccepted === false ?
             <Image
               show={true}
               className="rounded-circle"
@@ -140,7 +149,7 @@ const Avatar = (props) => {
                     onError={handleImageError}
                     src={type === "DEPARTMENT" ? departmentIcon : imageLink !== null ? (name === "Gripp Offerte Bot" ? botIcon : imageLink) : defaultIcon}
                     alt={name}
-              />
+                  />
             )}
           </>
         )}

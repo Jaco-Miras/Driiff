@@ -17,13 +17,18 @@ $color-secondary: #8c3b9b;
   // -webkit-font-smoothing: antialiased;
 }
 
+html {
+  overflow: hidden;
+  height: 100%;
+}
 body {
   font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   position: relative;
   background: #f1f2f7;
   font-size: 14px;
   color: #505050;
-
+  height: 100%;
+  overflow: auto;
   &.dark {
     color: #fff;
   }
@@ -21283,4 +21288,10 @@ body.dark.small-navigation .navigation-menu-body ul li.navigation-divider:after 
   50% {
     transform: scale(1.05);
   }
+}
+.current-title {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }

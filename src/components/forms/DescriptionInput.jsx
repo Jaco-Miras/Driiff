@@ -1,7 +1,7 @@
 import React, {useRef, useState} from "react";
 import {InputGroup, Label} from "reactstrap";
 import styled from "styled-components";
-import {PickerEmoji, SvgIconFeather} from "../common";
+import {PickerEmoji, SvgIconFeather, CommonPicker} from "../common";
 import {useQuillModules} from "../hooks";
 import {InputFeedback} from "./index";
 import QuillEditor from "./QuillEditor";
@@ -136,9 +136,11 @@ const Buttons = styled.div`
   justify-content: flex-end;
 `;
 
-const PickerContainer = styled(PickerEmoji)`
-  right: 0;
-  bottom: 120px;
+const PickerContainer = styled(CommonPicker)`
+  right: 15px;
+  .block {
+    text-align: end;
+  }
 `;
 
 const DescriptionInput = (props) => {
@@ -161,6 +163,16 @@ const DescriptionInput = (props) => {
     editor.setSelection(cursorPosition + 2);
   };
 
+  const onSelectGif = (e) => {
+    // setSelectedGif(e);
+    console.log(e)
+    const editor = reactQuillRef.current.getEditor();
+    reactQuillRef.current.focus();
+    const cursorPosition = editor.getSelection().index;
+    editor.insertEmbed(cursorPosition, "image", e.images.downsized.url);
+    editor.setSelection(cursorPosition + 5);
+  };
+  
   /*useEffect(() => {
     if (mode === "edit" && defaultValue) {
       const editor = reactQuillRef.current.getEditor();
@@ -184,7 +196,7 @@ const DescriptionInput = (props) => {
         </Buttons>
         <InputFeedback valid={valid}>{feedback}</InputFeedback>
       </DescriptionInputWrapper>
-      {showEmojiPicker === true && <PickerContainer handleShowEmojiPicker={handleShowEmojiPicker} onSelectEmoji={onSelectEmoji} orientation={"top"} ref={pickerRef} />}
+      {showEmojiPicker === true && <PickerContainer handleShowEmojiPicker={handleShowEmojiPicker} onSelectEmoji={onSelectEmoji} onSelectGif={onSelectGif} orientation={"top"} ref={pickerRef} />}
     </WrapperDiv>
   );
 };

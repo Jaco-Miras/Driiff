@@ -195,7 +195,7 @@ const CreateEditCompanyPostModal = (props) => {
   const [modal, setModal] = useState(true);
   const user = useSelector((state) => state.session.user);
   const users = useSelector((state) => state.users.mentions);
-  const activeTopic = useSelector((state) => state.workspaces.activeTopic);
+  const company = useSelector((state) => state.global.recipients).find(r => r.main_department === true);
   const [showMoreOptions, setShowMoreOptions] = useState(null);
   const [maxHeight, setMaxHeight] = useState(null);
   const [draftId, setDraftId] = useState(null);
@@ -266,7 +266,6 @@ const CreateEditCompanyPostModal = (props) => {
         }, (err, res) => {
           dispatch(
             deleteDraftReducer({
-              topic_id: activeTopic.id,
               draft_type: "draft_post",
               draft_id: draftId,
             }, (err, res) => {
@@ -323,13 +322,6 @@ const CreateEditCompanyPostModal = (props) => {
         toggleNested();
         return;
       }
-
-      if (activeTopic) {
-        if (form.selectedUsers.filter((u) => u.value !== user.id).length || form.selectedWorkspaces.filter((u) => u.value !== activeTopic.id).length) {
-          toggleNested();
-          return;
-        }
-      }
     } else {
       if (form.title !== "") {
         toggleNested();
@@ -375,13 +367,6 @@ const CreateEditCompanyPostModal = (props) => {
         toggleNested();
         return;
       }
-
-      if (activeTopic) {
-        if (form.selectedUsers.filter((u) => u.value !== user.id).length || form.selectedWorkspaces.filter((u) => u.value !== activeTopic.id).length) {
-          toggleNested();
-          return;
-        }
-      }
     }
 
     toggleAll(false);
@@ -405,9 +390,20 @@ const CreateEditCompanyPostModal = (props) => {
     if (e === null) {
       setForm({
         ...form,
-        selectedWorkspaces: [],
+        selectedWorkspaces: [{
+          ...company,
+          value: company.id,
+          label: company.name
+        }],
       });
     } else {
+      if (!e.some(ws => ws.id === company.id)) {
+        e.unshift({
+          ...company,
+          value: company.id,
+          label: company.name
+        })
+      }
       setForm({
         ...form,
         selectedWorkspaces: e,
@@ -435,7 +431,6 @@ const CreateEditCompanyPostModal = (props) => {
           users_responsible: form.selectedUsers,
         },
         timestamp: timestamp,
-        topic_id: activeTopic.id,
         id: timestamp,
         is_must_read: form.must_read ? 1 : 0,
         is_must_reply: form.must_reply ? 1 : 0,
@@ -508,24 +503,38 @@ const CreateEditCompanyPostModal = (props) => {
       if (attachedFiles.length) {
         uploadFiles(payload, "edit");
       } else {
-        action.update(payload, (err, res) => {
-          setLoading(false);
-          if (res) {
+        if (form.selectedWorkspaces.length > 1) {
+          dispatch(putPost(payload, () => {
+            setLoading(false);
             toggleAll(false);
-          }
-        });
+          }));
+        } else {
+          action.update(payload, (err, res) => {
+            setLoading(false);
+            if (res) {
+              toggleAll(false);
+            }
+          });
+        }
       }
     } else {
       if (attachedFiles.length) {
         uploadFiles(payload, "create");
         setLoading(false);
       } else {
-        action.create(payload, (err, res) => {
-          setLoading(false);
-          if (res) {
+        if (form.selectedWorkspaces.length > 1) {
+          dispatch(postCreate(payload, () => {
+            setLoading(false);
             toggleAll(false);
-          }
-        });
+          }));
+        } else {
+          action.create(payload, (err, res) => {
+            setLoading(false);
+            if (res) {
+              toggleAll(false);
+            }
+          });
+        }
       }
     }
   };
@@ -575,13 +584,18 @@ const CreateEditCompanyPostModal = (props) => {
   };
 
   useEffect(() => {
-    if (activeTopic !== null && item.hasOwnProperty("draft")) {
+    if (item.hasOwnProperty("draft")) {
       setForm(item.draft.form);
       setDraftId(item.draft.draft_id);
-    } else if (activeTopic !== null && mode !== "edit") {
+    } else if (mode !== "edit") {
       setForm({
         ...form,
-        selectedWorkspaces: [],
+        selectedWorkspaces: [{
+          ...company,
+          icon: "home",
+          value: company.id,
+          label: company.name,
+        }],
         selectedUsers: [
           {
             id: user.id,
@@ -599,11 +613,19 @@ const CreateEditCompanyPostModal = (props) => {
         body: item.post.body,
         textOnly: item.post.body,
         title: item.post.title,
-        hast_folder: activeTopic.hasOwnProperty("workspace_id"),
+        has_folder: true,
         no_reply: item.post.is_read_only,
         must_read: item.post.is_must_read,
         reply_required: item.post.is_must_reply,
-        selectedWorkspaces: [],
+        selectedWorkspaces: [
+          ...item.post.recipients.map(r => {
+            return {
+              ...r,
+              value: r.id,
+              label: r.name,
+            }
+          }),
+        ],
         selectedUsers: item.post.users_responsible.map((u) => {
           return {
             ...u,
@@ -748,7 +770,7 @@ const CreateEditCompanyPostModal = (props) => {
     setAttachedFiles((prevState) => prevState.filter((f) => f.id !== parseInt(fileId)));
   }
 
-  const [wsOptions] = useGetWorkspaceAndUserOptions(form.selectedWorkspaces, activeTopic);
+  const [wsOptions] = useGetWorkspaceAndUserOptions(form.selectedWorkspaces);
   const userOptions = Object.values(users).map((u) => {
     return {
       ...u,
@@ -797,8 +819,9 @@ const CreateEditCompanyPostModal = (props) => {
         </WrapperDiv>
         <WrapperDiv>
           <Label for="workspace">{dictionary.workspace}</Label>
-          <SelectWorkspace options={wsOptions} value={form.selectedWorkspaces}
-                           onChange={handleSelectWorkspace} isMulti={true} isClearable={true}/>
+          <SelectWorkspace
+            options={wsOptions} value={form.selectedWorkspaces}
+            onChange={handleSelectWorkspace} isMulti={true} isClearable={true}/>
         </WrapperDiv>
         <WrapperDiv>
           <Label for="responsible">{dictionary.responsible}</Label>
@@ -811,7 +834,7 @@ const CreateEditCompanyPostModal = (props) => {
           onOpenFileDialog={handleOpenFileDialog}
           defaultValue={item.hasOwnProperty("draft") ? form.body : mode === "edit" ? item.post.body : ""}
           mode={mode}
-          members={activeTopic ? activeTopic.members : []}
+          members={[]}
           required
           /*valid={valid.description}
                      feedback={feedback.description}*/

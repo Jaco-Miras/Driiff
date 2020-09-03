@@ -20,6 +20,7 @@ const FileViewerContainer = styled.div`
   justify-content: space-evenly;
   font-size: 2.5rem;
   color: #fff;
+  z-index: 9999;
   .fas {
     cursor: pointer;
   }
@@ -169,7 +170,8 @@ const FileViewer = (props) => {
   const channelFiles = useSelector((state) => state.files.channelFiles);
   const viewFiles = useSelector((state) => state.files.viewFiles);
   const workspaceFiles = useSelector((state) => state.files.workspaceFiles);
-  const { localizeDate } = useTimeFormat();
+  const companyFiles = useSelector((state) => state.files.companyFiles.items);
+  const {localizeDate} = useTimeFormat();
 
   const [activeIndex, setActiveIndex] = useState(null);
   const [files, setFiles] = useState([]);
@@ -195,6 +197,12 @@ const FileViewer = (props) => {
           setActiveIndex(index);
         }
       });
+    }
+
+    let files = Object.values(companyFiles);
+    if (files.length && !Object.keys(viewFiles).some(k => ["channel_id", "workspace_id"].includes(k))) {
+      setFiles(files);
+      setActiveIndex(files.findIndex(f => f.id === viewFiles.file_id));
     }
   }, []);
 

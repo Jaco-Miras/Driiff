@@ -8,7 +8,8 @@ import {
   useTimeFormat,
   useToaster,
   useUserActions,
-  useVisibilityChange
+  useVisibilityChange,
+  useWorkspaceActions
 } from "../components/hooks";
 import useFilesUpload from "../components/hooks/useFilesUpload";
 import {MainContentPanel, MainHeaderPanel, MainNavigationPanel} from "../components/panels/main";
@@ -40,10 +41,10 @@ const MainLayout = (props) => {
   const {path} = useRouteMatch();
   const {displayWelcomeBanner} = useUserActions();
   const user = useSelector((state) => state.session.user);
-  const socketMounted = useSelector((state) => state.global.socketMounted);
+  //const socketMounted = useSelector((state) => state.global.socketMounted);
   const toaster = useToaster();
   const {localizeDate} = useTimeFormat();
-
+  const workspaceActions = useWorkspaceActions();
   const refs = {
     audio: useRef(null),
   };
@@ -129,8 +130,8 @@ const MainLayout = (props) => {
       </MainContent>
 
       <MobileOverlay/>
-      {user.id !== undefined && window.Echo !== undefined && !socketMounted &&
-      <SocketListeners localizeDate={localizeDate} toaster={toaster} soundPlay={handleSoundPlay}/>}
+      {user.id !== undefined && window.Echo !== undefined &&
+      <SocketListeners localizeDate={localizeDate} toaster={toaster} soundPlay={handleSoundPlay} workspaceActions={workspaceActions}/>}
     </>
   );
 };

@@ -7,8 +7,19 @@ import {isTranslationLogged} from "../../helpers/slugHelper";
 
 let init = true;
 let cookieName = {
-  dict: "i18n.28082020",
-  lang: "i18n_lang.28082020"
+  dict: "i18n",
+  lang: "i18n_lang",
+  name: "i18n_ver",
+  ver: "01092020",
+}
+
+localStorage.removeItem("i18n.28082020");
+localStorage.removeItem("i18n_lang.28082020");
+
+if (localStorage.getItem(cookieName.name) !== cookieName.ver) {
+  localStorage.removeItem(cookieName.dict);
+  localStorage.removeItem(cookieName.lang);
+  localStorage.setItem(cookieName.name, cookieName.ver);
 }
 
 export const useTranslation = () => {
@@ -16,14 +27,14 @@ export const useTranslation = () => {
 
   const {registeredDriff} = useDriff();
   const {
-    generalSettings: { language },
+    generalSettings: {language},
     setGeneralSetting,
   } = useSettings();
 
   const i18n = useSelector((state) => state.global.i18n);
 
   const [dictFile, setDictFile] = useState({});
-  const { REACT_APP_dictionary_file } = process.env;
+  const {REACT_APP_dictionary_file} = process.env;
   const dictionaryFile = REACT_APP_dictionary_file.replace("{{driffName}}", registeredDriff);
 
   const getBrowserLanguage = useCallback(() => {

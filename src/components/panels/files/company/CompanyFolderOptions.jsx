@@ -1,6 +1,5 @@
 import React from "react";
 import styled from "styled-components";
-import {useToaster} from "../../../hooks";
 import {MoreOptions} from "../../../panels/common";
 
 const Wrapper = styled(MoreOptions)`
@@ -29,37 +28,27 @@ const Wrapper = styled(MoreOptions)`
 `;
 
 const CompanyFolderOptions = (props) => {
-  const {className = "", folder, scrollRef = null, actions, isMember, history, params, handleAddEditFolder} = props;
-  const toaster = useToaster();
 
-  // const handleViewDetail = () => {
-  // };
+  const {className = "", folder, scrollRef = null, actions, history, handleAddEditFolder} = props;
 
   const handleRename = () => {
-    if (isMember) {
-      handleAddEditFolder(folder, "edit");
-    } else {
-      toaster.warning("You are not a member of this workspace.");
-    }
+    handleAddEditFolder(folder, "edit");
   };
 
   const handleDelete = () => {
-    if (isMember) {
-      if (folder.hasOwnProperty("payload")) {
-        actions.unlinkGoogleFolder(folder);
-      } else {
-        let cb = (err, res) => {
-          if (err) return;
 
-          if (res) {
-            let pathname = history.location.pathname.split("/folder/")[0];
-            history.push(pathname);
-          }
-        };
-        actions.removeFolder(folder, params.workspaceId, cb);
-      }
+    if (folder.hasOwnProperty("payload")) {
+      actions.unlinkGoogleFolder(folder);
     } else {
-      toaster.warning("You are not a member of this workspace.");
+      let cb = (err, res) => {
+        if (err) return;
+
+        if (res) {
+          let pathname = history.location.pathname.split("/folder/")[0];
+          history.push(pathname);
+        }
+      };
+      actions.removeCompanyFolder(folder, cb);
     }
   };
 

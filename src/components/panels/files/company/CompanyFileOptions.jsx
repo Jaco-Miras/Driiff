@@ -1,6 +1,5 @@
 import React from "react";
 import styled from "styled-components";
-import {useToaster} from "../../../hooks";
 import {MoreOptions} from "../../../panels/common";
 
 const Wrapper = styled(MoreOptions)`
@@ -29,13 +28,10 @@ const Wrapper = styled(MoreOptions)`
 `;
 
 const CompanyFileOptions = (props) => {
-  const {className = "", file, scrollRef = null, actions, isMember, forceDelete, disableOptions} = props;
-  const toaster = useToaster();
-
-  //const [showMoreOptions, setShowMoreOptions] = useState(false);
+  const {className = "", file, scrollRef = null, actions, forceDelete, disableOptions} = props;
 
   const handleViewDetail = () => {
-    actions.viewFiles(file);
+    actions.viewCompanyFiles(file);
   };
 
   const handleFavorite = () => {
@@ -51,34 +47,25 @@ const CompanyFileOptions = (props) => {
   };
 
   const handleMoveTo = () => {
-    if (isMember) {
-      actions.moveFile(file);
-    } else {
-      toaster.warning(
-        <>
-          You are <b>not</b> a member of this workspace.
-        </>
-      );
-    }
+    actions.moveCompanyFile(file);
   };
 
   const handleRename = () => {
-    if (isMember) {
-      actions.renameFile(file);
-    } else {
-      toaster.warning("You are not a member of this workspace.");
-    }
+    actions.renameCompanyFile(file);
   };
 
+  const handleRestore = () => {
+    actions.restoreCompanyFile(file);
+  }
+
   const handleDelete = () => {
-    if (isMember) {
-      if (file.hasOwnProperty("payload_id")) {
-        actions.unlinkGoogleAttachment(file);
-      } else {
-        actions.removeFile(file, forceDelete);
-      }
+    if (file.hasOwnProperty("payload_id")) {
+      actions.unlinkGoogleAttachment(file);
     } else {
-      toaster.warning("You are not a member of this workspace.");
+      actions.removeCompanyFile(file, () => {
+      }, {
+        forceDelete: forceDelete
+      });
     }
   };
 
@@ -90,6 +77,10 @@ const CompanyFileOptions = (props) => {
       <div onClick={handleDownload}>Download</div>
       <div onClick={handleMoveTo}>Move to</div>
       <div onClick={handleRename}>Rename</div>
+      {
+        forceDelete &&
+        <div onClick={handleRestore}>Restore</div>
+      }
       {!disableOptions && <div onClick={handleDelete}>Remove</div>}
     </Wrapper>
   );

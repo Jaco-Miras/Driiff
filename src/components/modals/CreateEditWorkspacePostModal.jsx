@@ -596,16 +596,18 @@ const CreateEditWorkspacePostModal = (props) => {
         body: item.post.body,
         textOnly: item.post.body,
         title: item.post.title,
-        hast_folder: activeTopic.hasOwnProperty("workspace_id"),
+        has_folder: activeTopic.hasOwnProperty("workspace_id"),
         no_reply: item.post.is_read_only,
         must_read: item.post.is_must_read,
         reply_required: item.post.is_must_reply,
         selectedWorkspaces: [
-          {
-            ...activeTopic,
-            value: activeTopic.id,
-            label: activeTopic.name,
-          },
+          ...item.post.recipients.map(r => {
+            return {
+              ...r,
+              value: r.id,
+              label: r.name,
+            }
+          }),
         ],
         selectedUsers: item.post.users_responsible.map((u) => {
           return {
@@ -788,7 +790,7 @@ const CreateEditWorkspacePostModal = (props) => {
         />
         <WrapperDiv>
           <Label for="post-title">{dictionary.postTitle}</Label>
-          <Input style={{borderRadius: "5px"}} defaultValue={mode === "edit" ? "" : ""} value={form.title}
+          <Input style={{borderRadius: "5px"}} defaultValue={mode === "edit" ? form.title : ""}
                  onChange={handleNameChange} innerRef={inputRef}/>
         </WrapperDiv>
         <WrapperDiv>
@@ -853,7 +855,7 @@ const CreateEditWorkspacePostModal = (props) => {
         </WrapperDiv>
         <WrapperDiv>
           <button className="btn btn-primary"
-                  disabled={form.selectedUsers.length === 0 || form.title === "" || form.textOnly.trim() === "" || form.selectedWorkspaces.length === 0}
+                  disabled={form.selectedUsers.length === 0 || form.title === "" || form.selectedWorkspaces.length === 0}
                   onClick={handleConfirm}>
             {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"/>}
             {mode === "edit" ? "Update post" : "Create post"}

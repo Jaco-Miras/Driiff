@@ -1,12 +1,13 @@
-import React, { forwardRef } from "react";
-import Select, { components } from "react-select";
+import React, {forwardRef} from "react";
+import Select, {components} from "react-select";
 import styled from "styled-components";
-import { SvgIconFeather } from "../common";
-import { selectTheme } from "../../helpers/selectTheme";
+import {SvgIconFeather} from "../common";
+import {selectTheme} from "../../helpers/selectTheme";
 
 const SelectOption = styled.div`
   display: flex;
   flex-flow: row;
+  align-items: center;
   transition: background 0.15s ease;
   svg {
     transition: none;
@@ -32,7 +33,7 @@ const Option = (props) => {
       <components.Option {...props}>
         {props.data && (
           <>
-            <Icon icon="folder" />
+            <Icon icon={props.data.icon ? props.data.icon : "folder"}/>
             {props.children}
           </>
         )}

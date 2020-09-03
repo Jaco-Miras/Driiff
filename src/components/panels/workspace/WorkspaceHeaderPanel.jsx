@@ -266,8 +266,15 @@ const WorspaceHeaderPanel = (props) => {
                     <li className="nav-item">
                       <SubWorkspaceName className="current-title">
                         {activeTopic.name}
+                        { activeTopic.is_shared === 1 && <Icon icon="share" strokeWidth="3"/> }
                       </SubWorkspaceName>
                     </li>
+                    {
+                      activeTopic.is_lock === 1 &&
+                      <li className="nav-item">
+                        <div className={`badge badge-light text-white ml-1`}>Locked</div>
+                      </li>
+                    }
                     {
                       activeTopic.active === 0 &&
                       <li className="nav-item">
@@ -284,7 +291,7 @@ const WorspaceHeaderPanel = (props) => {
                       <li className="nav-item nav-item-folder">
                         <WorkspaceName>
                           {activeTopic.folder_name} 
-                          { folders.hasOwnProperty(activeTopic.folder_id) && folders[activeTopic.folder_id].is_lock === 1 && <Icon icon="lock"/> }
+                          { folders.hasOwnProperty(activeTopic.folder_id) && folders[activeTopic.folder_id].is_lock === 1 && <Icon icon="lock" strokeWidth="2"/> }
                         </WorkspaceName>
                       </li>
                       <li className="nav-item-chevron">
@@ -295,7 +302,6 @@ const WorspaceHeaderPanel = (props) => {
                   <li className="nav-item">
                     <SubWorkspaceName className="current-title">
                       {activeTopic.name} 
-                      { activeTopic.is_lock === 1 && <Icon icon="lock"/> }
                       { activeTopic.is_shared === 1 && <Icon icon="share" strokeWidth="3"/> }
                     </SubWorkspaceName>
                   </li>
@@ -356,4 +362,4 @@ const WorspaceHeaderPanel = (props) => {
   );
 };
 
-export default React.memo(WorspaceHeaderPanel);
+export default WorspaceHeaderPanel;

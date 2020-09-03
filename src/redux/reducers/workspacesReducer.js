@@ -53,6 +53,12 @@ export default (state = INITIAL_STATE, action) => {
           })
           delete updatedFolders[ws.id].topics
         } else if (ws.type === "WORKSPACE") {
+          ws.members = ws.members.map(m => {
+            return {
+              contact: "",
+              ...m
+            }
+          });
           updatedWorkspaces[ws.id] = {
             ...ws,
             active: ws.topic_detail.active,
@@ -91,7 +97,7 @@ export default (state = INITIAL_STATE, action) => {
     }
     case "INCOMING_WORKSPACE": {
       let updatedWorkspaces = { ...state.workspaces };
-      let folders = { ...state.folders };
+      let updatedFolders = { ...state.folders };
       if (state.workspacesLoaded) {
         updatedWorkspaces[action.data.id] = {
           id: action.data.id,
@@ -116,15 +122,16 @@ export default (state = INITIAL_STATE, action) => {
           },
           created_at: action.data.topic.created_at,
           updated_at: action.data.topic.created_at,
+          primary_files: []
         }
-        if (action.data.workspace && folders.hasOwnProperty(action.data.workspace.id)) {
-          folders[action.data.workspace.id].workspace_ids = [...folders[action.data.workspace.id].workspace_ids, action.data.id]
+        if (action.data.workspace !== null && updatedFolders[action.data.workspace.id]) {
+          updatedFolders[action.data.workspace.id].workspace_ids = [...updatedFolders[action.data.workspace.id].workspace_ids, action.data.id]
         }
       }
       return {
         ...state,
         workspaces: updatedWorkspaces,
-        folders: folders
+        folders: updatedFolders
       };
     }
     case "INCOMING_UPDATED_WORKSPACE_FOLDER": {
@@ -156,6 +163,20 @@ export default (state = INITIAL_STATE, action) => {
             if (Object.values(updatedWorkspaces).length) {
               updatedTopic = Object.values(updatedWorkspaces)[0];
             }
+            if (action.data.workspace_id !== 0 && updatedFolders.hasOwnProperty(action.data.workspace_id)) {
+              let isMember = false;
+                updatedFolders[action.data.workspace_id].workspace_ids.filter((id) => id !== action.data.id).forEach((wsid) => {
+                  if (state.workspaces.hasOwnProperty(wsid) && action.data.id !== wsid) {
+                    if (state.workspaces[wsid].member_ids.some((id) => id === state.user.id)) {
+                      isMember = true;
+                      return;
+                    }
+                  }
+                });
+                if (!isMember) {
+                  delete updatedFolders[action.data.workspace_id];
+                }
+            }
           } else {
             if (state.activeTopic.id === action.data.id) {
               workspaceToDelete = action.data.id;
@@ -164,7 +185,7 @@ export default (state = INITIAL_STATE, action) => {
               // if user is no longer a member then set the folderToDelete id
               if (action.data.workspace_id !== 0 && updatedFolders.hasOwnProperty(action.data.workspace_id)) {
                 let isMember = false;
-                updatedFolders[action.data.workspace_id].workspace_ids.forEach((wsid) => {
+                updatedFolders[action.data.workspace_id].workspace_ids.filter((id) => id !== action.data.id).forEach((wsid) => {
                   if (state.workspaces.hasOwnProperty(wsid) && action.data.id !== wsid) {
                     if (state.workspaces[wsid].member_ids.some((id) => id === state.user.id)) {
                       isMember = true;
@@ -221,16 +242,18 @@ export default (state = INITIAL_STATE, action) => {
           folderToDelete: folderToDelete,
         }
       } else if (state.workspacesLoaded && action.data.type === "FOLDER") {
-        updatedFolders[action.data.id] = {
-          ...updatedFolders[action.data.id],
-          name: action.data.name,
-          description: action.data.description,
-          is_lock: action.data.is_lock,
-          updated_at: action.data.updated_at
+        if (updatedFolders[action.data.id]) {
+          updatedFolders[action.data.id] = {
+            ...updatedFolders[action.data.id],
+            name: action.data.name,
+            description: action.data.description,
+            is_lock: action.data.is_lock,
+            updated_at: action.data.updated_at
+          }
+          updatedFolders[action.data.id].workspace_ids.forEach((id) => {
+            updatedWorkspaces[id].folder_name = action.data.name;
+          })
         }
-        updatedFolders[action.data.id].workspace_ids.forEach((id) => {
-          updatedWorkspaces[id].folder_name = action.data.name;
-        })
         return {
           ...state,
           activeTopic: state.activeTopic && state.activeTopic.folder_id && state.activeTopic.folder_id === action.data.id ? {...state.activeTopic, folder_name: action.data.name} : state.activeTopic,
@@ -813,12 +836,21 @@ export default (state = INITIAL_STATE, action) => {
     }
     case "ARCHIVE_REDUCER": {
       let workspaces = {...state.workspaces};
+      let updatedFolders = { ...state.folders };
 
-      if (workspaces[action.data.topic_detail.id])
+      if (workspaces[action.data.topic_detail.id]) {
         workspaces[action.data.topic_detail.id].active = 0;
+      }
+
+      if (action.data.topic_detail.workspace_id && action.data.topic_detail.workspace_id !== 0) {
+        if (updatedFolders[action.data.topic_detail.workspace_id]) {
+          updatedFolders[action.data.topic_detail.workspace_id].workspace_ids = updatedFolders[action.data.topic_detail.workspace_id].workspace_ids.filter((id) => id !== action.data.topic_detail.id);
+        }
+      }
 
       return {
         ...state,
+        folders: updatedFolders,
         workspaces: workspaces,
         activeTopic: state.activeTopic && state.activeTopic.id === action.data.topic_detail.id ? {
           ...state.activeTopic,
@@ -828,7 +860,9 @@ export default (state = INITIAL_STATE, action) => {
     }
     case "UNARCHIVE_REDUCER": {
       let workspaces = {...state.workspaces};
-      workspaces[action.data.topic_detail.id].active = 1;
+      if (workspaces.hasOwnProperty(action.data.topic_detail.id)) {
+        workspaces[action.data.topic_detail.id].active = 1;
+      }
       return {
         ...state,
         workspaces: workspaces,
@@ -1013,6 +1047,7 @@ export default (state = INITIAL_STATE, action) => {
     }
     case "GET_WORKSPACE_SUCCESS": {
       let updatedWorkspaces = { ...state.workspaces };
+      let updatedFolders = { ...state.folders };
       if (Object.keys(updatedWorkspaces).length > 0) {
         if (updatedWorkspaces.hasOwnProperty(action.data.topic_id)) {
           return state;
@@ -1027,9 +1062,14 @@ export default (state = INITIAL_STATE, action) => {
             folder_name: action.data.workspace_id && action.data.workspace_id !== 0 ? action.data.workspace_name : null,
           };
           delete updatedWorkspaces[action.data.topic_id].topic_detail;
+
+          if (action.data.workspace_id && action.data.workspace_id !== 0 && updatedFolders[action.data.workspace_id]) {
+            updatedFolders[action.data.workspace_id].workspace_ids = [...updatedFolders[action.data.workspace_id].workspace_ids, action.data.topic_id];
+          }
           return {
             ...state,
             workspaces: updatedWorkspaces,
+            folders: updatedFolders
           };
         }
       } else {
@@ -1142,17 +1182,23 @@ export default (state = INITIAL_STATE, action) => {
     case "INCOMING_DELETED_WORKSPACE_FOLDER": {
       let updatedFolders = { ...state.folders };
       let updatedWorkspaces = { ...state.workspaces };
+      let updatedTopic = state.activeTopic ? {...state.activeTopic} : null;
       if (updatedFolders.hasOwnProperty(action.data.id)) {
         Object.values(updatedWorkspaces).forEach((ws) => {
           if (ws.folder_id && ws.folder_id === action.data.id) {
             updatedWorkspaces[ws.id].folder_id = null;
             updatedWorkspaces[ws.id].folder_name = null;
+            if (updatedTopic && updatedTopic.id === ws.id) {
+              updatedTopic.folder_id = null;
+              updatedTopic.folder_name = null;
+            }
           }
         })
         delete updatedFolders[action.data.id];
       }
       return {
         ...state,
+        activeTopic: updatedTopic,
         workspaces: updatedWorkspaces,
         folders: updatedFolders
       }
