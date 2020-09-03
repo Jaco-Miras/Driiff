@@ -40,7 +40,7 @@ const useWorkspace = (fetchOnMount = false) => {
       actions.fetchWorkspaceChannels({skip: 0, limit: 250});
     } else if (workspacesLoaded && activeTopic) {
       //restore the channel id
-      if (channels.hasOwnProperty(activeTopic.channel.id) && path === "/workspace/:page") {
+      if (channels.hasOwnProperty(activeTopic.channel.id) && url.startsWith("/workspace")) {
         actions.selectChannel(channels[activeTopic.channel.id]);
       }
     }
@@ -91,7 +91,7 @@ const useWorkspace = (fetchOnMount = false) => {
   }, [activeTopic, activeTopicSettings, params, workspaces, url, internalLoaded, externalLoaded, fetchOnMount]);
   
   useEffect(() => {
-    if (activeTopic && Object.keys(channels).length && fetchOnMount && url.startsWith("/workspace/")) {
+    if (activeTopic && Object.keys(channels).length && fetchOnMount && url.startsWith("/workspace")) {
       if (channels.hasOwnProperty(activeTopic.channel.id)) {
         if ((activeChannelId && activeChannelId !== activeTopic.channel.id) || activeChannelId === null) {
           actions.selectChannel(channels[activeTopic.channel.id]);
