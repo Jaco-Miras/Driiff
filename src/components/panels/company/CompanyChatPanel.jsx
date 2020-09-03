@@ -44,7 +44,7 @@ const CompanyChatPanel = (props) => {
   useLoadChannel();
 
   return (
-    <Wrapper className={`company-chat container-fluid ${className}`}>
+    <Wrapper className={`company-chat ${className}`}>
       <div className="row no-gutters chat-block">
         <ChatSidebarPanel className={"col-lg-4 chat-sidebar-panel border-right"} channels={channels} userChannels={userChannels} selectedChannel={selectedChannel} />
         <ChatContentPanel className={"col-lg-8 chat-content-panel"} selectedChannel={selectedChannel} />

@@ -38,7 +38,7 @@ const MainNavLink = styled(NavLink)`
   font-weight: 500;
   border-radius: 0;
   display: flex;
-  height: 60px;
+  height: 50px;
   position: relative;
   font-size: 14px;
   align-items: center;
@@ -64,8 +64,8 @@ const MainNavLink = styled(NavLink)`
     width: 6px;
     height: 6px;
     background: #28a745;
-    top: 20px;
-    right: -8px;
+    top: 16px;
+    right: -10px;
     @media (max-width: 620px) {
       top: 12px;
     }
@@ -104,17 +104,13 @@ const WorkspacePageHeaderPanel = (props) => {
             <li className="nav-item">
               <MainNavLink isSub={true} to={`/workspace/chat${pathname}`}>
                 Chat
-                {workspace !== null && workspace.unread_chats > 0 && (
-                  <div className="ml-2 badge badge-pill badge-danger">{workspace.unread_chats}</div>
-                )}
+                {workspace !== null && workspace.unread_chats > 0 && <div className="ml-2 badge badge-pill badge-danger">{workspace.unread_chats}</div>}
               </MainNavLink>
             </li>
             <li className="nav-item">
               <MainNavLink isSub={true} to={`/workspace/posts${pathname}`}>
                 Posts
-                {workspace !== null && workspace.unread_posts > 0 && (
-                  <div className="ml-2 badge badge-pill badge-danger">{workspace.unread_posts}</div>
-                )}
+                {workspace !== null && workspace.unread_posts > 0 && <div className="ml-2 badge badge-pill badge-danger">{workspace.unread_posts}</div>}
               </MainNavLink>
             </li>
             <li className="nav-item">
