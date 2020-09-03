@@ -59,8 +59,18 @@ const useWorkspace = (fetchOnMount = false) => {
         } else {
           if (internalLoaded && externalLoaded && activeTopicSettings) {
             toaster.warning("This workspace cannot be found or accessed.");
-            actions.selectWorkspace(activeTopicSettings);
-            actions.redirectTo(activeTopicSettings);
+            if (parseInt(params.workspaceId) === activeTopicSettings.id) {
+              let sortedWorkspaces = Object.values(workspaces).filter((ws) => {
+                return ws.folder_id === null;
+              }).sort((a,b) => a.name.localeCompare(b.name));
+              if (sortedWorkspaces.length) {
+                actions.selectWorkspace(sortedWorkspaces[0]);
+                actions.redirectTo(sortedWorkspaces[0]);
+              }
+            } else {
+              actions.selectWorkspace(activeTopicSettings);
+              actions.redirectTo(activeTopicSettings);
+            }
           } 
         }
       } else {
