@@ -21,6 +21,7 @@ const MainNavigationPanel = (props) => {
         "/profile/:id/:name/:mode", "/profile/:id/:name", "/profile",
         "/chat/:code/:messageId", "/chat/:code",
         "/posts/:postId/:postTitle",
+        "/files/folder/:folderId/:folderName",
         "/:page",
       ]}/>
     </Wrapper>

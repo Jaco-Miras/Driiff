@@ -75,7 +75,7 @@ const TopicList = (props) => {
                         selected={selected && onWorkspace}>
         <div>
           {topic.name}
-          {topic.is_lock === 1 && <Icon icon={"lock"}/>}
+          {topic.is_lock === 1 && <Icon icon={"lock"} strokeWidth="2"/>}
           {topic.is_shared === 1 && <Icon icon={"share"} strokeWidth="3"/>}
           {unread_count > 0 && <Badge color="danger">{unread_count}</Badge>}
         </div>

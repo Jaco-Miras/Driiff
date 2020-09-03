@@ -59,11 +59,6 @@ const FolderNav = styled.ul`
   }
 `;
 
-const Icon = styled(SvgIconFeather)`
-  margin-right: 10px;
-  width: 10px;
-`;
-
 const CompanyFolderList = (props) => {
   const {className = "", folder, folders, activeFolder, clearFilter} = props;
 
@@ -77,24 +72,23 @@ const CompanyFolderList = (props) => {
 
   const [showFolders, setShowFolders] = useState(null);
   const [maxHeight, setMaxHeight] = useState(null);
-  const [active, setActive] = useState(false);
 
   const handleSelectFolder = () => {
     if (folder.hasOwnProperty("payload")) {
       window.open(folder.payload.url, "_blank");
     } else {
       clearFilter();
-      if (path === "/workspace/files/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName" || path === "/workspace/files/:folderId/:folderName/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName") {
+      if (path === "/files/folder/:folderId/:folderName") {
         let pathname = url.split("/folder/")[0];
         history.push(pathname + `/folder/${folder.id}/${replaceChar(folder.search)}`);
       } else {
-        history.push(history.location.pathname + `/folder/${folder.id}/${replaceChar(folder.search)}`);
+        history.push(`/files/folder/${folder.id}/${replaceChar(folder.search)}`);
       }
       setShowFolders((prevState) => !prevState);
     }
   };
 
-  const handleSelectSubFolder = (f) => {
+  /*const handleSelectSubFolder = (f) => {
     clearFilter();
     if (path === "/workspace/files/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName" || path === "/workspace/files/:folderId/:folderName/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName") {
       let pathname = url.split("/folder/")[0];
@@ -102,7 +96,7 @@ const CompanyFolderList = (props) => {
     } else {
       history.push(history.location.pathname + `/folder/${f.id}/${replaceChar(f.search)}`);
     }
-  };
+  };*/
 
   useEffect(() => {
     if (ref.nav.current !== null) {
@@ -130,11 +124,11 @@ const CompanyFolderList = (props) => {
         setShowFolders(true);
       }
     }
-  }, [params, setActive, activeFolder]);
+  }, [params, activeFolder]);
 
   return (
     <Wrapper ref={ref.container} className={`folder-list fadeIn ${className}`}
-             selected={activeFolder ? activeFolder.id == folder.id : false}>
+             selected={activeFolder ? activeFolder.id === folder.id : false}>
       <a onClick={handleSelectFolder}>
         {folder.search}
         {folder.hasOwnProperty("payload") &&

@@ -72,7 +72,13 @@ const PeopleListItem = (props) => {
               </div>
               {onChatClick !== null && loggedUser.id !== user.id && loggedUser.type !== "external" && user.type !== "external" && (
                 <div className="text-right ml-auto">
-                  <SvgIconFeather onClick={handleOnChatClick} icon="message-circle" />
+                  {
+                    user.contact !== "" &&
+                    <a href={`tel:${user.contact.replace(/ /g, "").replace(/-/g, "")}`}><SvgIconFeather className="mr-2"
+                                                                                                        icon="phone"/>
+                    </a>
+                  }
+                  <SvgIconFeather onClick={handleOnChatClick} icon="message-circle"/>
                 </div>
               )}
             </div>

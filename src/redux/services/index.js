@@ -107,13 +107,16 @@ export {
   getCompanyTrashedFiles,
   postCompanyFolders,
   postCompanyUploadFiles,
-  postUploadBulkFiles,
+  postCompanyUploadBulkFiles,
   patchCompanyFileViewed,
   putCompanyFiles,
   putCompanyFolders,
   deleteCompanyFiles,
   deleteCompanyFolders,
   deleteCompanyDeleteAllTrashFiles,
+  putCompanyRestoreFile,
+  putWorkspaceRestoreFile,
+  putCompanyFileMove,
 } from "./files";
 
 export {

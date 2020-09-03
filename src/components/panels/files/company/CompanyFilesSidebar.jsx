@@ -70,8 +70,8 @@ const Icon = styled(SvgIconFeather)`
 
 const CompanyFileSidebar = (props) => {
   const {
-    className = "", isMember, actions, filterFile, filter = "all", dropZoneRef, storageLimit = 25,
-    files, folders, activeFolder, clearFilter, params, dictionary, disableOptions
+    className = "", actions, filterFile, filter = "all", dropZoneRef, storageLimit = 25,
+    fileCount, folders, activeFolder, clearFilter, params, dictionary, disableOptions
   } = props;
 
   const handleShowUploadModal = () => {
@@ -80,8 +80,8 @@ const CompanyFileSidebar = (props) => {
     }
   };
 
-  const fileSizeUnit = actions.getFileSizeUnit(files.storage);
-  const storageAmount = files.storage === 0 ? 0 : files.storage < 1e9 / 10 ? 1e9 / 10 : files.storage;
+  const fileSizeUnit = actions.getFileSizeUnit(fileCount.storage);
+  const storageAmount = fileCount.storage === 0 ? 0 : fileCount.storage < 1e9 / 10 ? 1e9 / 10 : fileCount.storage;
 
   const handleGoogleDriveSelect = (data) => {
     if (data.action === "picked") {
@@ -99,26 +99,24 @@ const CompanyFileSidebar = (props) => {
     <Wrapper className={`file-sidebar bottom-modal-mobile ${className}`}>
       <MobileOverlayFilter className="mobile-overlay" onClick={closeMobileModal}/>
       <div className="card bottom-modal-mobile_inner">
-        {isMember === true && (
-          <div className="card-body">
-            <button className="btn btn-primary btn-block file-upload-btn" onClick={handleShowUploadModal}
-                    disabled={disableOptions}>
-              {dictionary.uploadFiles}
-            </button>
-            <form className="d-none" id="file-upload">
-              <input type="file" multiple=""/>
-            </form>
-          </div>
-        )}
+        <div className="card-body">
+          <button className="btn btn-primary btn-block file-upload-btn" onClick={handleShowUploadModal}
+                  disabled={disableOptions}>
+            {dictionary.uploadFiles}
+          </button>
+          <form className="d-none" id="file-upload">
+            <input type="file" multiple=""/>
+          </form>
+        </div>
         <div className="app-sidebar-menu" tabIndex="1">
           <div className="list-group list-group-flush">
             <Filter onClick={filterFile} data-filter="" active={filter === ""}
                     className="list-group-item d-flex align-items-center">
               <Icon className="mr-2" icon="folder"/>
               {dictionary.allFiles}
-              <span className="small ml-auto">{files && files.count > 0 ? files.count : null}</span>
+              <span className="small ml-auto">{fileCount.all > 0 ? fileCount.all : null}</span>
             </Filter>
-            {folders && Object.values(folders).filter((f) => !f.is_archived).length > 0 && isMember === true && (
+            {folders && Object.values(folders).filter((f) => !f.is_archived).length > 0 && (
               <Filter className="d-flex align-items-center folder-list">
                 <ul>
                   {Object.values(folders)
@@ -126,8 +124,9 @@ const CompanyFileSidebar = (props) => {
                       return !f.is_archived && f.parent_folder === null;
                     })
                     .map((f) => {
-                      return <CompanyFolderList key={f.id} clearFilter={clearFilter} folders={folders}
-                                                params={params} folder={f} activeFolder={activeFolder}/>;
+                      return <CompanyFolderList
+                        key={f.id} clearFilter={clearFilter} folders={folders}
+                        params={params} folder={f} activeFolder={activeFolder}/>;
                     })}
                 </ul>
               </Filter>
@@ -142,32 +141,30 @@ const CompanyFileSidebar = (props) => {
                     className="list-group-item d-flex align-items-center">
               <Icon className="mr-2" icon="star"/>
               {dictionary.favorite}
-              <span className="small ml-auto">{files && files.stars > 0 ? files.stars : null}</span>
+              <span className="small ml-auto">{fileCount.stars > 0 ? fileCount.stars : null}</span>
             </Filter>
             <Filter onClick={filterFile} data-filter="removed" active={filter === "removed"}
                     className="list-group-item d-flex align-items-center">
               <Icon className="mr-2" icon="trash"/>
               {dictionary.removed}
-              <span className="small ml-auto">{files && files.trash > 0 ? files.trash : null}</span>
+              <span className="small ml-auto">{fileCount.trash > 0 ? fileCount.trash : null}</span>
             </Filter>
           </div>
-          {typeof files !== "undefined" && files !== null && (
-            <div className="card-body">
-              <h6 className="mb-4">Storage Status</h6>
-              <div className="d-flex align-items-center">
-                <div className="mr-3">
-                  <SvgIconFeather icon="database"/>
-                </div>
-                <div className="flex-grow-1">
-                  <ProgressBar amount={storageAmount} limit={storageLimit * 1e9}/>
-                  <div className="line-height-12 small text-muted mt-2">
-                    {fileSizeUnit.size.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0]}
-                    {fileSizeUnit.unit} used of {storageLimit}GB
-                  </div>
+          <div className="card-body">
+            <h6 className="mb-4">Storage Status</h6>
+            <div className="d-flex align-items-center">
+              <div className="mr-3">
+                <SvgIconFeather icon="database"/>
+              </div>
+              <div className="flex-grow-1">
+                <ProgressBar amount={storageAmount} limit={storageLimit * 1e9}/>
+                <div className="line-height-12 small text-muted mt-2">
+                  {fileSizeUnit.size.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0]}
+                  {fileSizeUnit.unit} used of {storageLimit}GB
                 </div>
               </div>
             </div>
-          )}
+          </div>
         </div>
       </div>
     </Wrapper>

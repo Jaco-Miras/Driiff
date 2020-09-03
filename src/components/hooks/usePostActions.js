@@ -332,7 +332,7 @@ const usePostActions = () => {
           postUnfollow({post_id: post.id}, (err, res) => {
             if (err) return;
             let notification = `You’ve stopped to follow ${post.title}`;
-            toaster.notify(notification);
+            toaster.info(notification);
           })
         );
       } else {
@@ -341,7 +341,7 @@ const usePostActions = () => {
           postFollow({post_id: post.id}, (err, res) => {
             if (err) return;
             let notification = `You’ve started to follow ${post.title}`;
-            toaster.notify(notification);
+            toaster.info(notification);
           })
         );
       }

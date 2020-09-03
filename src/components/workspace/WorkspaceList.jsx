@@ -228,7 +228,7 @@ const WorkspaceList = (props) => {
         <div>
           {folder.name}
 
-          {folder.is_lock !== 0 && <LockIcon icon="lock" />}
+          {folder.is_lock !== 0 && <LockIcon icon="lock" strokeWidth="2"/>}
           {folder.type === "ARCHIVE_FOLDER" && <LockIcon icon="archive" />}
 
           {folder.unread_count > 0 && (

@@ -25,7 +25,7 @@ const Wrapper = styled.div`
 
 const CompanyFilesHeader = (props) => {
   const {
-    className = "", isMember, dropZoneRef, onSearchChange, onSearch, onEnter, wsFiles,
+    className = "", dropZoneRef, onSearchChange, onSearch, onEnter,
     handleAddEditFolder, folders, history, params, clearFilter, dictionary
   } = props;
 
@@ -37,15 +37,15 @@ const CompanyFilesHeader = (props) => {
 
   const handleClickFolder = (e) => {
     clearFilter();
-    if (wsFiles.folders.hasOwnProperty(e.target.dataset.value)) {
-      let f = wsFiles.folders[e.target.dataset.value];
+    if (folders.hasOwnProperty(e.target.dataset.value)) {
+      let f = folders[e.target.dataset.value];
       if (f.hasOwnProperty("payload")) {
         window.open(f.payload.url, "_blank");
       } else {
-        if (params.hasOwnProperty("fileFolderId")) {
+        if (params.hasOwnProperty("folderId")) {
           history.push(history.location.pathname.split("/folder/")[0] + `/folder/${f.id}/${replaceChar(f.search)}`);
         } else {
-          history.push(history.location.pathname + `/folder/${f.id}/${replaceChar(f.search)}`);
+          history.push(`/files/folder/${f.id}/${replaceChar(f.search)}`);
         }
       }
     }
@@ -73,19 +73,16 @@ const CompanyFilesHeader = (props) => {
 
   const folderDropDown = {
     label: dictionary.folders,
-    items:
-      wsFiles && Object.values(folders).length
-        ? Object.values(folders)
-          .filter((f) => !f.is_archived)
-          .map((f) => {
-            return {
-              value: f.id,
-              label: f.search,
-              //label: <>Video <span className="text-muted">21</span></>,
-              onClick: handleClickFolder,
-            };
-          })
-        : [],
+    items: Object.values(folders)
+      .filter((f) => !f.is_archived)
+      .map((f) => {
+        return {
+          value: f.id,
+          label: f.search,
+          //label: <>Video <span className="text-muted">21</span></>,
+          onClick: handleClickFolder,
+        };
+      }),
   };
 
   const openMobileModal = () => {
