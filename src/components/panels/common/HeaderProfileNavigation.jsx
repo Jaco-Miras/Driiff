@@ -1,9 +1,9 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
-import {Avatar, SvgIconFeather} from "../../common";
+import { Avatar, SvgIconFeather } from "../../common";
 //import Flag from "../../common/Flag";
-import {useNotifications, useOutsideClick, useSettings, useUsers} from "../../hooks";
-import {NotificationDropDown, SearchDropDown} from "../dropdown";
+import { useNotifications, useOutsideClick, useSettings, useUsers } from "../../hooks";
+import { NotificationDropDown, SearchDropDown } from "../dropdown";
 import UserProfileDropDown from "../dropdown/UserProfileDropdown";
 
 const Wrapper = styled.ul`
@@ -39,7 +39,7 @@ const Wrapper = styled.ul`
           height: 16px !important;
         }
         &:not(.profile-button) {
-          ${'' /* background: red; */}
+          ${"" /* background: red; */}
           margin: 0 4px;
           &:first-of-type {
             margin-right: 0;
@@ -72,13 +72,16 @@ const ThemeSwitch = styled.span`
 `;
 
 const HomeProfileNavigation = (props) => {
+  const { className = "" } = props;
 
-  const {className = ""} = props;
-
-  const {users, loggedUser, actions: {fetchById}} = useUsers();
-  const {notifications} = useNotifications();
   const {
-    generalSettings: {dark_mode},
+    users,
+    loggedUser,
+    actions: { fetchById },
+  } = useUsers();
+  const { notifications } = useNotifications();
+  const {
+    generalSettings: { dark_mode },
     setGeneralSetting,
   } = useSettings();
 
@@ -116,9 +119,9 @@ const HomeProfileNavigation = (props) => {
     if (targetDropDown) {
       targetDropDown.classList.toggle("show");
     }
-    document.querySelector(".overlay").classList.add('show');
+    document.querySelector(".overlay").classList.add("show");
 
-    if (e.currentTarget.title === 'Search') {
+    if (e.currentTarget.title === "Search") {
       document.querySelector(".dropdown-menu-right .dropdown-search-input").focus();
     }
   };
@@ -138,12 +141,12 @@ const HomeProfileNavigation = (props) => {
       shownDropDown.classList.remove("show");
       setCurrentPopUp(null);
     }
-    document.querySelector(".overlay").classList.remove('show');
+    document.querySelector(".overlay").classList.remove("show");
   };
 
   useEffect(() => {
     setForm(loggedUser);
-  }, [loggedUser.profile_image_link])
+  }, [loggedUser.profile_image_link]);
 
   useEffect(() => {
     const selectedUser = users[loggedUser.id] ? users[loggedUser.id] : {};
@@ -156,35 +159,31 @@ const HomeProfileNavigation = (props) => {
 
   useOutsideClick(currentPopUp, hidePopUp, currentPopUp !== null);
 
-
   return (
     <Wrapper ref={refs.container} className={`header-profile-navigation navbar-nav ${className}`}>
       <li className="nav-item dropdown">
         <a href="#" className="nav-link" title="Search" data-toggle="dropdown" onClick={toggleDropdown}>
-          <SvgIconFeather icon="search"/>
+          <SvgIconFeather icon="search" />
         </a>
-        <SearchDropDown/>
+        <SearchDropDown />
       </li>
       <li className="nav-item">
         <ThemeSwitch title="Light or Dark mode" onClick={setThemeButton}>
-          <SvgIconFeather icon="moon"/>
+          <SvgIconFeather icon="moon" />
         </ThemeSwitch>
       </li>
       <li className="nav-item dropdown">
-        <a href="/"
-           className={`nav-link ${Object.values(notifications).filter((n) => n.is_read === 0).length > 0 ? "nav-link-notify" : ""}`}
-           title="Notifications" data-toggle="dropdown" onClick={toggleDropdown}>
-          <SvgIconFeather icon="bell"/>
+        <a href="/" className={`nav-link ${Object.values(notifications).filter((n) => n.is_read === 0).length > 0 ? "nav-link-notify" : ""}`} title="Notifications" data-toggle="dropdown" onClick={toggleDropdown}>
+          <SvgIconFeather icon="bell" />
         </a>
-        <NotificationDropDown/>
+        <NotificationDropDown />
       </li>
       <li className="nav-item dropdown">
-        <a href="/" className="nav-link profile-button" data-toggle="dropdown" title={form.name}
-           onClick={toggleDropdown}>
-          <div className="avatar-overlay"/>
-          <Avatar name={form.name} imageLink={form.profile_image_link} noDefaultClick={true}/>
+        <a href="/" className="nav-link profile-button" data-toggle="dropdown" title={form.name} onClick={toggleDropdown}>
+          <div className="avatar-overlay" />
+          <Avatar name={form.name} imageLink={form.profile_image_link} noDefaultClick={true} />
         </a>
-        <UserProfileDropDown user={loggedUser}/>
+        <UserProfileDropDown user={loggedUser} />
       </li>
     </Wrapper>
   );
