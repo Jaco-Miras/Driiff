@@ -540,12 +540,14 @@ class SocketListeners extends Component {
       .listen(".new-workspace", (e) => {
         console.log(e, "new workspace");
         if (e.topic !== undefined) {
-          if (e.workspace) {
+          if (e.workspace !== null) {
             if (!this.props.folders.hasOwnProperty(e.workspace.id)) {
               this.props.getWorkspaceFolder({folder_id: e.workspace.id}, (err, res) => {
                 if (err) return;
                 this.props.incomingWorkspace(e);
               });
+            } else {
+              this.props.incomingWorkspace(e);
             }
           } else {
             this.props.incomingWorkspace(e);
@@ -642,7 +644,19 @@ class SocketListeners extends Component {
         console.log(e, "new workspace lock");
 
         if (e.topic !== undefined) {
-          this.props.incomingWorkspace(e);
+          if (e.workspace !== null) {
+            if (!this.props.folders.hasOwnProperty(e.workspace.id)) {
+              this.props.getWorkspaceFolder({folder_id: e.workspace.id}, (err, res) => {
+                if (err) return;
+                this.props.incomingWorkspace(e);
+              });
+            } else {
+              this.props.incomingWorkspace(e);
+            }
+          } else {
+            this.props.incomingWorkspace(e);
+          }
+
           this.props.getChannel({code: e.channel.code}, (err, res) => {
             if (err) return;
             let channel = {
