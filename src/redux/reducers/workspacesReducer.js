@@ -807,12 +807,21 @@ export default (state = INITIAL_STATE, action) => {
     }
     case "ARCHIVE_REDUCER": {
       let workspaces = {...state.workspaces};
+      let updatedFolders = { ...state.folders };
 
-      if (workspaces[action.data.topic_detail.id])
+      if (workspaces[action.data.topic_detail.id]) {
         workspaces[action.data.topic_detail.id].active = 0;
+      }
+
+      if (action.data.topic_detail.workspace_id && action.data.topic_detail.workspace_id !== 0) {
+        if (updatedFolders[action.data.topic_detail.workspace_id]) {
+          updatedFolders[action.data.topic_detail.workspace_id].workspace_ids = updatedFolders[action.data.topic_detail.workspace_id].workspace_ids.filter((id) => id !== action.data.topic_detail.id);
+        }
+      }
 
       return {
         ...state,
+        folders: updatedFolders,
         workspaces: workspaces,
         activeTopic: state.activeTopic && state.activeTopic.id === action.data.topic_detail.id ? {
           ...state.activeTopic,
@@ -822,7 +831,9 @@ export default (state = INITIAL_STATE, action) => {
     }
     case "UNARCHIVE_REDUCER": {
       let workspaces = {...state.workspaces};
-      workspaces[action.data.topic_detail.id].active = 1;
+      if (workspaces.hasOwnProperty(action.data.topic_detail.id)) {
+        workspaces[action.data.topic_detail.id].active = 1;
+      }
       return {
         ...state,
         workspaces: workspaces,
@@ -1007,6 +1018,7 @@ export default (state = INITIAL_STATE, action) => {
     }
     case "GET_WORKSPACE_SUCCESS": {
       let updatedWorkspaces = { ...state.workspaces };
+      let updatedFolders = { ...state.folders };
       if (Object.keys(updatedWorkspaces).length > 0) {
         if (updatedWorkspaces.hasOwnProperty(action.data.topic_id)) {
           return state;
@@ -1021,9 +1033,14 @@ export default (state = INITIAL_STATE, action) => {
             folder_name: action.data.workspace_id && action.data.workspace_id !== 0 ? action.data.workspace_name : null,
           };
           delete updatedWorkspaces[action.data.topic_id].topic_detail;
+
+          if (action.data.workspace_id && action.data.workspace_id !== 0 && updatedFolders[action.data.workspace_id]) {
+            updatedFolders[action.data.workspace_id].workspace_ids = [...updatedFolders[action.data.workspace_id].workspace_ids, action.data.topic_id];
+          }
           return {
             ...state,
             workspaces: updatedWorkspaces,
+            folders: updatedFolders
           };
         }
       } else {
