@@ -109,16 +109,16 @@ const WorkspacePeoplePanel = (props) => {
             <Search ref={refs.search} placeholder={dictionary.searchPeoplePlaceholder} onChange={handleSearchChange}
                     autoFocus/>
             <div>
-              <button className="btn btn-primary" onClick={handleEditWorkspace}><SvgIconFeather className="mr-2"
-                                                                                                icon="user-plus"/> Manage
-                People
+              <button className="btn btn-primary" onClick={handleEditWorkspace}>
+                <SvgIconFeather className="mr-2" icon="user-plus"/> Manage People
               </button>
             </div>
           </div>
           <div className="row">
             {userSort.map((user) => {
-              return <PeopleListItem key={user.id} loggedUser={loggedUser} user={user} onNameClick={handleUserNameClick}
-                                     onChatClick={handleUserChat} dictionary={dictionary}/>;
+              return <PeopleListItem
+                key={user.id} loggedUser={loggedUser} user={user} onNameClick={handleUserNameClick}
+                onChatClick={handleUserChat} dictionary={dictionary}/>;
             })}
           </div>
         </div>
