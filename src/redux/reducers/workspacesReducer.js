@@ -163,6 +163,20 @@ export default (state = INITIAL_STATE, action) => {
             if (Object.values(updatedWorkspaces).length) {
               updatedTopic = Object.values(updatedWorkspaces)[0];
             }
+            if (action.data.workspace_id !== 0 && updatedFolders.hasOwnProperty(action.data.workspace_id)) {
+              let isMember = false;
+                updatedFolders[action.data.workspace_id].workspace_ids.filter((id) => id !== action.data.id).forEach((wsid) => {
+                  if (state.workspaces.hasOwnProperty(wsid) && action.data.id !== wsid) {
+                    if (state.workspaces[wsid].member_ids.some((id) => id === state.user.id)) {
+                      isMember = true;
+                      return;
+                    }
+                  }
+                });
+                if (!isMember) {
+                  delete updatedFolders[action.data.workspace_id];
+                }
+            }
           } else {
             if (state.activeTopic.id === action.data.id) {
               workspaceToDelete = action.data.id;
@@ -171,7 +185,7 @@ export default (state = INITIAL_STATE, action) => {
               // if user is no longer a member then set the folderToDelete id
               if (action.data.workspace_id !== 0 && updatedFolders.hasOwnProperty(action.data.workspace_id)) {
                 let isMember = false;
-                updatedFolders[action.data.workspace_id].workspace_ids.forEach((wsid) => {
+                updatedFolders[action.data.workspace_id].workspace_ids.filter((id) => id !== action.data.id).forEach((wsid) => {
                   if (state.workspaces.hasOwnProperty(wsid) && action.data.id !== wsid) {
                     if (state.workspaces[wsid].member_ids.some((id) => id === state.user.id)) {
                       isMember = true;
