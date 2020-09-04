@@ -72,8 +72,8 @@ const TeamListItem = (props) => {
     actions.deleteRole(payload);
   };
 
-  console.log('miauw')
-  console.log(member)
+  // console.log('miauw')
+  // console.log(member)
 
   return (
     <Wrapper className={`team-list-item list-group-item d-flex align-items-center p-l-r-0 ${className}`}>

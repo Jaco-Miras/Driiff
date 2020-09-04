@@ -18,7 +18,7 @@ const Wrapper = styled.div`
 `;
 
 const WorkspaceDashboardPanel = (props) => {
-  const { className = "", isExternal, isMember, match, actions, timeline, workspace } = props;
+  const { className = "", isExternal, isMember, match, actions, workspaceTimeline, workspace } = props;
 
   const { params } = match;
   const {_t} = useTranslation();
@@ -51,7 +51,7 @@ const WorkspaceDashboardPanel = (props) => {
             <div className={"col-md-6"}>
               <DashboardAboutWorkspace isMember={isMember} workspace={workspace} onEditClick={handleEditClick}
                                        isExternal={isExternal} dictionary={dictionary}/>
-              <TimelinePanel timeline={timeline} actions={actions} workspace={workspace} dictionary={dictionary}/>
+              <TimelinePanel workspaceTimeline={workspaceTimeline} actions={actions} workspace={workspace} dictionary={dictionary}/>
             </div>
 
             <div className={"col-md-6"}>
@@ -65,7 +65,7 @@ const WorkspaceDashboardPanel = (props) => {
               <DashboardAboutWorkspace isMember={isMember} workspace={workspace} onEditClick={handleEditClick} isExternal={isExternal} dictionary={dictionary}/>
               <DashboardTeam workspace={workspace} onEditClick={handleEditClick} isMember={isMember} isExternal={isExternal} dictionary={dictionary}/>
               <RecentPosts posts={recentPosts} dictionary={dictionary} disableOptions={disableOptions}/>
-              <TimelinePanel timeline={timeline} actions={actions} params={params} dictionary={dictionary} />
+              <TimelinePanel workspaceTimeline={workspaceTimeline} actions={actions} params={params} dictionary={dictionary} />
             </div>
           </>
         }

@@ -70,7 +70,7 @@ const WorkspaceContentPanel = (props) => {
           />
           <Switch>
             <Route
-              render={() => <WorkspaceDashboardPanel {...props} workspace={workspace} isMember={isMember} actions={actions} timeline={timeline}/>}
+              render={() => <WorkspaceDashboardPanel {...props} workspace={workspace} isMember={isMember} actions={actions} workspaceTimeline={timeline}/>}
               path={["/workspace/dashboard/:folderId/:folderName/:workspaceId/:workspaceName", "/workspace/dashboard/:workspaceId/:workspaceName", "/workspace/dashboard"]}
             />
             <Route
