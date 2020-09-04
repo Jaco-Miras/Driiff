@@ -42,9 +42,7 @@ const TopicList = (props) => {
   const handleSelectTopic = () => {
     document.body.classList.remove("navigation-show");
 
-
-    if (selected && onWorkspace)
-      return;
+    if (selected && onWorkspace) return;
 
     actions.selectWorkspace(topic);
     actions.redirectTo(topic);
@@ -63,7 +61,7 @@ const TopicList = (props) => {
     if (triggerFocus && triggerFocus === topic.id && workspaceRef.current && showTopics) {
       setTimeout(() => {
         workspaceRef.current.scrollIntoView(true);
-      }, 1000)
+      }, 1000);
       onResetFocus();
     }
   }, [workspaceRef, showTopics, triggerFocus, topic]);
@@ -71,15 +69,14 @@ const TopicList = (props) => {
   let unread_count = topic.unread_chats + topic.unread_posts;
 
   return (
-      <TopicListWrapper ref={workspaceRef} className={`topic-list ${className}`} onClick={handleSelectTopic}
-                        selected={selected && onWorkspace}>
-        <div>
-          {topic.name}
-          {topic.is_lock === 1 && <Icon icon={"lock"} strokeWidth="2"/>}
-          {topic.is_shared === 1 && <Icon icon={"share"} strokeWidth="3"/>}
-          {unread_count > 0 && <Badge color="danger">{unread_count}</Badge>}
-        </div>
-      </TopicListWrapper>
+    <TopicListWrapper ref={workspaceRef} className={`topic-list ${className}`} onClick={handleSelectTopic} selected={selected && onWorkspace}>
+      <div>
+        {topic.name}
+        {topic.is_lock === 1 && <Icon icon={"lock"} strokeWidth="2" />}
+        {topic.is_shared === 1 && <Icon icon={"share"} strokeWidth="3" />}
+        {unread_count > 0 && <Badge color="danger">{unread_count}</Badge>}
+      </div>
+    </TopicListWrapper>
   );
 };
 

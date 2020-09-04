@@ -1,14 +1,14 @@
-import React, {useEffect} from "react";
-import {useDispatch, useSelector} from "react-redux";
-import {useRouteMatch} from "react-router-dom";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useRouteMatch } from "react-router-dom";
 import styled from "styled-components";
-import {addToModals} from "../../../redux/actions/globalActions";
-import {Avatar, SvgIconFeather} from "../../common";
-import {HeaderProfileNavigation} from "../common";
-import {SettingsLink} from "../../workspace";
-import {joinWorkspace} from "../../../redux/actions/workspaceActions";
-import {useToaster} from "../../hooks";
-import {MemberLists} from "../../list/members";
+import { addToModals } from "../../../redux/actions/globalActions";
+import { Avatar, SvgIconFeather } from "../../common";
+import { HeaderProfileNavigation } from "../common";
+import { SettingsLink } from "../../workspace";
+import { joinWorkspace } from "../../../redux/actions/workspaceActions";
+import { useToaster } from "../../hooks";
+import { MemberLists } from "../../list/members";
 
 const NavBarLeft = styled.div`
   width: 100%;
@@ -36,7 +36,8 @@ const NavBarLeft = styled.div`
     padding-right: 10px;
   }
   @media (max-width: 768px) {
-    .nav-item-folder, .nav-item-chevron {
+    .nav-item-folder,
+    .nav-item-chevron {
       display: none;
     }
   }
@@ -83,7 +84,7 @@ const NavBar = styled.ul`
     padding: 0px !important;
     background: transparent !important;
     svg {
-      color: #7A1B8B;
+      color: #7a1b8b;
       width: 24px !important;
       height: 24px !important;
     }
@@ -111,7 +112,8 @@ const SubWorkspaceName = styled.h3`
   svg {
     color: #64625c;
   }
-  .feather-lock, .feather-share {
+  .feather-lock,
+  .feather-share {
     color: #64625c;
   }
   @media all and (max-width: 620px) {
@@ -153,12 +155,12 @@ const Icon = styled(SvgIconFeather)`
 `;
 
 const WorspaceHeaderPanel = (props) => {
-
   const { isExternal } = props;
   const toaster = useToaster();
   const dispatch = useDispatch();
   const match = useRouteMatch();
   const { activeTopic, folders } = useSelector((state) => state.workspaces);
+  const driff = useSelector((state) => state.settings.driff);
   const user = useSelector((state) => state.session.user);
 
   const handleShowWorkspaceModal = () => {
@@ -183,13 +185,17 @@ const WorspaceHeaderPanel = (props) => {
   const handleJoinWorkspace = () => {
     dispatch(
       joinWorkspace(
-          {
-            channel_id: activeTopic.channel.id,
-            recipient_ids: [user.id]
-          },
-          (err, res) => {
-            if (err) return;
-            toaster.success(<>You have joined <b>#{activeTopic.name}</b></>);
+        {
+          channel_id: activeTopic.channel.id,
+          recipient_ids: [user.id],
+        },
+        (err, res) => {
+          if (err) return;
+          toaster.success(
+            <>
+              You have joined <b>#{activeTopic.name}</b>
+            </>
+          );
         }
       )
     );
@@ -236,8 +242,13 @@ const WorspaceHeaderPanel = (props) => {
       body.classList.add("stretch-layout");
     }
 
-    document.title = `Driff - Workspace ${pageName}`;
-  }, [match.params.page, dispatch]);
+    console.log("get this");
+    // console.log(activeTopic.name);
+
+    if (activeTopic) {
+      document.title = `${pageName} ‹ ${activeTopic.name} — ${driff.company_name} @ Driff`;
+    }
+  }, [match.params.page, dispatch, activeTopic]);
 
   return (
     <>
@@ -251,80 +262,72 @@ const WorspaceHeaderPanel = (props) => {
           {activeTopic ? (
             <>
               {activeTopic.folder_id === null ? (
-                  <>
-                    {
-                      !isExternal &&
-                      <>
-                        <li className="nav-item nav-item-folder">
-                          <WorkspaceName>General</WorkspaceName>
-                        </li>
-                        <li className="nav-item-chevron">
-                          <SvgIconFeather icon="chevron-right"/>
-                        </li>
-                      </>
-                    }
+                <>
+                  {!isExternal && (
+                    <>
+                      <li className="nav-item nav-item-folder">
+                        <WorkspaceName>General</WorkspaceName>
+                      </li>
+                      <li className="nav-item-chevron">
+                        <SvgIconFeather icon="chevron-right" />
+                      </li>
+                    </>
+                  )}
+                  <li className="nav-item">
+                    <SubWorkspaceName className="current-title">
+                      {activeTopic.name}
+                      {activeTopic.is_shared === 1 && <Icon icon="share" strokeWidth="3" />}
+                    </SubWorkspaceName>
+                  </li>
+                  {activeTopic.is_lock === 1 && (
                     <li className="nav-item">
-                      <SubWorkspaceName className="current-title">
-                        {activeTopic.name}
-                        { activeTopic.is_shared === 1 && <Icon icon="share" strokeWidth="3"/> }
-                      </SubWorkspaceName>
+                      <div className={`badge badge-light text-white ml-1`}>Locked</div>
                     </li>
-                    {
-                      activeTopic.is_lock === 1 &&
-                      <li className="nav-item">
-                        <div className={`badge badge-light text-white ml-1`}>Locked</div>
-                      </li>
-                    }
-                    {
-                      activeTopic.active === 0 &&
-                      <li className="nav-item">
-                        <div className={`badge badge-light text-white ml-1`}>Archived</div>
-                      </li>
-                    }
-                    <li className="nav-item">{ !isExternal && <SettingsLink/> }</li>
-                  </>
+                  )}
+                  {activeTopic.active === 0 && (
+                    <li className="nav-item">
+                      <div className={`badge badge-light text-white ml-1`}>Archived</div>
+                    </li>
+                  )}
+                  <li className="nav-item">{!isExternal && <SettingsLink />}</li>
+                </>
               ) : (
                 <>
-                  {
-                    !isExternal &&
+                  {!isExternal && (
                     <>
                       <li className="nav-item nav-item-folder">
                         <WorkspaceName>
                           {activeTopic.folder_name}
-                          { folders.hasOwnProperty(activeTopic.folder_id) && folders[activeTopic.folder_id].is_lock === 1 && <Icon icon="lock" strokeWidth="2"/> }
+                          {folders.hasOwnProperty(activeTopic.folder_id) && folders[activeTopic.folder_id].is_lock === 1 && <Icon icon="lock" strokeWidth="2" />}
                         </WorkspaceName>
                       </li>
                       <li className="nav-item-chevron">
-                        <SvgIconFeather icon="chevron-right"/>
+                        <SvgIconFeather icon="chevron-right" />
                       </li>
                     </>
-                  }
+                  )}
                   <li className="nav-item">
                     <SubWorkspaceName className="current-title">
                       {activeTopic.name}
-                      { activeTopic.is_shared === 1 && <Icon icon="share" strokeWidth="3"/> }
+                      {activeTopic.is_shared === 1 && <Icon icon="share" strokeWidth="3" />}
                     </SubWorkspaceName>
                   </li>
-                  {
-                    activeTopic.is_lock === 1 &&
+                  {activeTopic.is_lock === 1 && (
                     <li className="nav-item">
                       <div className={`badge badge-light text-white ml-1`}>Locked</div>
                     </li>
-                  }
-                  {
-                    activeTopic.active === 0 &&
+                  )}
+                  {activeTopic.active === 0 && (
                     <li className="nav-item">
                       <div className={`badge badge-light text-white ml-1`}>Archived</div>
                     </li>
-                  }
-                  <li className="nav-item">{!isExternal && <SettingsLink/>}</li>
+                  )}
+                  <li className="nav-item">{!isExternal && <SettingsLink />}</li>
                 </>
               )}
               <li className="nav-item-last">
                 <div className="nav-item-avatars-wrap">
-                  {
-                    <MemberLists members={activeTopic.members}/>
-                  }
+                  {<MemberLists members={activeTopic.members} />}
                   {/* {activeTopic.members.map((m, i) => {
                     return <StyledAvatar id={m.id} firstUser={i === 0} className="workspace-members" key={m.id}
                                          name={m.name ? m.name : m.email} imageLink={m.profile_image_link}
@@ -333,22 +336,22 @@ const WorspaceHeaderPanel = (props) => {
                 </div>
                 {activeTopic.member_ids.includes(user.id) && !isExternal ? (
                   <button onClick={handleEditWorkspace} className="btn btn-primary" disabled={activeTopic.active === 0}>
-                    <SvgIconFeather icon="user-plus"/>
+                    <SvgIconFeather icon="user-plus" />
                     Invite
                   </button>
                 ) : !isExternal ? (
                   <button onClick={handleJoinWorkspace} className="btn btn-primary" disabled={activeTopic.active === 0}>
-                    <SvgIconFeather icon="user-plus"/>
+                    <SvgIconFeather icon="user-plus" />
                     Join
                   </button>
-                ) : null }
+                ) : null}
               </li>
             </>
           ) : (
             <>
               <li className="nav-item">
                 <WorkspaceButton onClick={handleShowWorkspaceModal}>
-                  New workspace <SvgIconFeather className="ml-2" icon="circle-plus"/>
+                  New workspace <SvgIconFeather className="ml-2" icon="circle-plus" />
                 </WorkspaceButton>
               </li>
             </>

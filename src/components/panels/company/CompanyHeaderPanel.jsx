@@ -1,10 +1,10 @@
-import React, {useEffect, useState} from "react";
-import {useSelector} from "react-redux";
-import {useRouteMatch} from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { useRouteMatch } from "react-router-dom";
 import styled from "styled-components";
-import {NavLink, SvgIconFeather} from "../../common";
+import { NavLink, SvgIconFeather } from "../../common";
 import useSettings from "../../hooks/useSettings";
-import {HeaderProfileNavigation} from "../common";
+import { HeaderProfileNavigation } from "../common";
 
 const NavBarLeft = styled.div`
   width: 100%;
@@ -18,7 +18,7 @@ const NavBarLeft = styled.div`
     padding: 0px !important;
     background: transparent !important;
     svg {
-      color: #7A1B8B;
+      color: #7a1b8b;
       width: 24px !important;
       height: 24px !important;
     }
@@ -57,6 +57,7 @@ const CompanyHeaderPanel = () => {
   // const { driffSettings } = useSettings();
 
   const [pageName, setPageName] = useState("Dashboard");
+  const driff = useSelector((state) => state.settings.driff);
 
   const handleMenuOpenMobile = (e) => {
     e.preventDefault();
@@ -119,21 +120,22 @@ const CompanyHeaderPanel = () => {
         setPageName(page);
       }
     }
-    document.title = `Driff - ${page}`;
+
+    document.title = `${pageName} ‹ ${driff.company_name} @ Driff`;
   }, [match.params]);
 
   return (
     <>
       <NavBarLeft className="navbar-left">
         <NavBar className="navbar-nav">
-            <li className="nav-item navigation-toggler mobile-toggler">
-              <a href="/" className="nav-link" title="Show navigation" onClick={handleMenuOpenMobile}>
-                  <SvgIconFeather icon="menu" />
-              </a>
-            </li>
-            <li className="nav-item nav-item-folder">
-                <CompanyName className="current-title">{pageName}</CompanyName>
-            </li>
+          <li className="nav-item navigation-toggler mobile-toggler">
+            <a href="/" className="nav-link" title="Show navigation" onClick={handleMenuOpenMobile}>
+              <SvgIconFeather icon="menu" />
+            </a>
+          </li>
+          <li className="nav-item nav-item-folder">
+            <CompanyName className="current-title">{pageName}</CompanyName>
+          </li>
         </NavBar>
       </NavBarLeft>
       <div>
