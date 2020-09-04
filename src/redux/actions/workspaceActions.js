@@ -172,3 +172,7 @@ export function incomingDeletedWorkspaceFolder(payload, callback) {
 export function getWorkspaceFolder(payload, callback) {
   return dispatchActionToReducer(getWorkspaceFolderService(payload), "GET_FOLDER_START", "GET_FOLDER_SUCCESS", "GET_FOLDER_FAIL", callback);
 }
+
+export function updateWorkspaceTimelinePage(payload, callback) {
+  return SimpleDispatchActionToReducer("UPDATE_WORKSPACE_TIMELINE_PAGE", payload, callback);
+}
