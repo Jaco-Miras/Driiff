@@ -192,7 +192,7 @@ const ProfileSettings = (props) => {
       const { name, checked, dataset } = e.target;
 
       setGeneralSetting({
-        dark_mode: dark_mode === "0" ? "1" : "0",
+        [name]: dark_mode === "0" ? "1" : "0",
       });
       toaster.success(<span>{dataset.successMessage}</span>);
     },
