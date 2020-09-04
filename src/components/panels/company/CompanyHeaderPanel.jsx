@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useRouteMatch } from "react-router-dom";
 import styled from "styled-components";
 import { NavLink, SvgIconFeather } from "../../common";
@@ -56,6 +56,7 @@ const CompanyHeaderPanel = () => {
   // const unreadCounter = useSelector((state) => state.global.unreadCounter);
   // const { driffSettings } = useSettings();
 
+  const dispatch = useDispatch();
   const [pageName, setPageName] = useState("Dashboard");
   const driff = useSelector((state) => state.settings.driff);
 
@@ -107,6 +108,7 @@ const CompanyHeaderPanel = () => {
       }
       case "search": {
         page = "Search";
+        console.log("lets go!");
         setPageName(page);
         break;
       }
@@ -117,12 +119,13 @@ const CompanyHeaderPanel = () => {
       }
       default: {
         page = "Dashboard";
+        console.log("dont");
         setPageName(page);
       }
     }
 
     document.title = `${pageName} ‹ ${driff.company_name} @ Driff`;
-  }, [match.params]);
+  }, [match.params.page, dispatch, pageName]);
 
   return (
     <>
