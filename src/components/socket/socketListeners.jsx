@@ -814,13 +814,15 @@ class SocketListeners extends Component {
             code: e.code,
           };
 
-          let newMembers = Object.values(this.props.mentions).filter((u) => {
+          let newMembers = Object.values(this.props.users).filter((u) => {
             return data.added_members.some((id) => id === u.id);
           }).map((m) => {
             return {
               ...m,
               bot_profile_image_link: null,
-              last_visited_at: null
+              last_visited_at: null,
+              active: 1,
+              workspace_role: ""
             }
           });
 
@@ -953,10 +955,11 @@ function mapStateToProps({
                            chat: {channels, selectedChannel},
                            workspaces: {workspaces, workspacePosts, folders, activeTopic, workspacesLoaded},
                            global: {isBrowserActive},
-                           users: {mentions}
+                           users: {mentions, users}
                          }) {
   return {
     user,
+    users,
     settings: userSettings,
     channels,
     selectedChannel,
