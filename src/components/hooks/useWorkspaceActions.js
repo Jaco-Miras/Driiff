@@ -15,7 +15,8 @@ import {
   fetchTimeline,
   getWorkspaces,
   postWorkspaceRole,
-  setActiveTopic
+  setActiveTopic,
+  updateWorkspaceTimelinePage
 } from "../../redux/actions/workspaceActions";
 import {addToModals} from "../../redux/actions/globalActions";
 import {
@@ -178,6 +179,13 @@ const useWorkspaceActions = () => {
     [dispatch]
   );
 
+  const updateTimelinePage = useCallback(
+    (payload) => {
+      dispatch(updateWorkspaceTimelinePage(payload));
+    },
+    [dispatch]
+  );
+
   return {
     addPrimaryFilesToWorkspace,
     addRole,
@@ -194,6 +202,7 @@ const useWorkspaceActions = () => {
     selectChannel,
     selectWorkspace,
     showModal,
+    updateTimelinePage
   };
 };
 

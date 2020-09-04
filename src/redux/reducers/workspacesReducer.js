@@ -758,13 +758,18 @@ export default (state = INITIAL_STATE, action) => {
       if (newWorkspaceTimeline.hasOwnProperty(action.data.topic_id)) {
         newWorkspaceTimeline[action.data.topic_id] = {
           ...newWorkspaceTimeline[action.data.topic_id],
-          hasMore: action.data.timeline.length === 10,
-          timeline: {...newWorkspaceTimeline[action.data.topic_id].timeline, ...convertArrayToObject(action.data.timeline, "id")}
+          hasMore: Object.keys(newWorkspaceTimeline[action.data.topic_id].timeline).length + action.data.timeline.length === action.data.total_count,
+          timeline: {...newWorkspaceTimeline[action.data.topic_id].timeline, ...convertArrayToObject(action.data.timeline, "id")},
+          total_items: action.data.total_count,
+          maxPage: Math.ceil(action.data.total_count / 10)
         }
       } else {
         newWorkspaceTimeline[action.data.topic_id] = {
-          hasMore: action.data.timeline.length === 10,
-          timeline: convertArrayToObject(action.data.timeline, "id")
+          hasMore: action.data.total_count > 10,
+          timeline: convertArrayToObject(action.data.timeline, "id"),
+          total_items: action.data.total_count,
+          page: 1,
+          maxPage: Math.ceil(action.data.total_count / 10)
         }
       }
       return {
@@ -922,6 +927,7 @@ export default (state = INITIAL_STATE, action) => {
       let newTimeline = { ...state.workspaceTimeline };
       if (newTimeline.hasOwnProperty(action.data.workspace_data.topic_id)) {
         newTimeline[action.data.workspace_data.topic_id].timeline[action.data.timeline_data.id] = action.data.timeline_data;
+        newTimeline[action.data.workspace_data.topic_id].total_items = newTimeline[action.data.workspace_data.topic_id].total_items + 1;
         return {
           ...state,
           workspaceTimeline: newTimeline,
@@ -1243,6 +1249,14 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         workspaces: updatedWorkspaces,
         activeTopic: updatedTopic
+      }
+    }
+    case "UPDATE_WORKSPACE_TIMELINE_PAGE": {
+      let workspaceTimeline = { ...state.workspaceTimeline };
+      workspaceTimeline[action.data.id].page = action.data.page;
+      return {
+        ...state,
+        workspaceTimeline: workspaceTimeline
       }
     }
     default:

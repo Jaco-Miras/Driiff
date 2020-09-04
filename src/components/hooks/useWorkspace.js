@@ -126,7 +126,7 @@ const useWorkspace = (fetchOnMount = false) => {
 
   let timeline = null;
   if (Object.keys(workspaceTimeline).length && activeTopic && workspaceTimeline[activeTopic.id]) {
-    timeline = workspaceTimeline[activeTopic.id].timeline;
+    timeline = workspaceTimeline[activeTopic.id]
   }
 
   return {

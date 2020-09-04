@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import styled from "styled-components";
 import {
   CompanyAttachFileTimeline,
@@ -6,6 +6,7 @@ import {
   CompanyPostTimeline,
   CompanyTopicTimeline
 } from "../dashboard/timeline/company";
+import TimelinePagination from "../dashboard/timeline/TimelinePagination"
 
 const Wrapper = styled.div`
 
@@ -22,13 +23,23 @@ const Wrapper = styled.div`
 `;
 
 const TimelinePanel = (props) => {
-  const {className = "", timeline, actions, workspace, dictionary} = props;
+  const {className = "", workspaceTimeline, actions, workspace, dictionary} = props;
+
+  const [fetching, setFetching] = useState(false);
 
   useEffect(() => {
-    if (workspace) {
-      actions.getTimeline({topic_id: workspace.id, skip:0, limit: 10});
+    if (!workspaceTimeline && workspace && !fetching) {
+      setFetching(true);
+      actions.getTimeline(
+        {topic_id: workspace.id, skip:0, limit: 10},
+        () => { 
+          setFetching(false);
+        }
+      );
     }
-  }, [workspace]);
+  }, [workspaceTimeline, workspace, fetching]);
+
+
 
   return (
     <Wrapper className={`timeline-panel card ${className}`}>
@@ -36,11 +47,12 @@ const TimelinePanel = (props) => {
         <h5 className="card-title">{dictionary.timeline}</h5>
 
         <div className="timeline">
-          {timeline &&
-          Object.values(timeline)
+          {workspaceTimeline &&
+          Object.values(workspaceTimeline.timeline)
             .sort((a, b) => {
               return b.item.created_at.timestamp > a.item.created_at.timestamp ? 1 : -1;
             })
+            .slice(workspaceTimeline.page > 1 ? (workspaceTimeline.page*10)-10 : 0, workspaceTimeline.page*10)
             .map((t) => {
               switch (t.tag) {
                 case "CHAT_BOT":
@@ -55,6 +67,9 @@ const TimelinePanel = (props) => {
             })}
         </div>
       </div>
+      {
+        workspaceTimeline && workspaceTimeline.total_items > 10 && <TimelinePagination workspaceTimeline={workspaceTimeline} actions={actions} workspace={workspace}/>
+      }
     </Wrapper>
   );
 };
