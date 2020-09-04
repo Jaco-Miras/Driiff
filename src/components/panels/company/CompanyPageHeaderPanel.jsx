@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import {NavLink} from "../../common";
-import {useSelector} from "react-redux";
+import { NavLink } from "../../common";
+import { useSelector } from "react-redux";
 
 const Wrapper = styled.div``;
 
@@ -39,7 +39,7 @@ const MainNavLink = styled(NavLink)`
   font-weight: 500;
   border-radius: 0;
   display: flex;
-  height: 60px;
+  height: 50px;
   position: relative;
   font-size: 14px;
   align-items: center;
@@ -65,8 +65,8 @@ const MainNavLink = styled(NavLink)`
     width: 6px;
     height: 6px;
     background: #28a745;
-    top: 20px;
-    right: -8px;
+    top: 16px;
+    right: -10px;
     @media (max-width: 620px) {
       top: 12px;
     }
@@ -92,10 +92,10 @@ const CompanyPageHeaderPanel = (props) => {
             </li>
             <li className="nav-item">
               <MainNavLink to={lastVisitedChannel !== null && lastVisitedChannel.hasOwnProperty("code") ? `/chat/${lastVisitedChannel.code}` : "/chat"}>
-                  Chat{" "}
-                  <div className="ml-2 badge badge-pill badge badge-danger">
-                    {unreadCounter.chat_message + unreadCounter.chat_reminder_message > 0 ? unreadCounter.chat_message + unreadCounter.chat_reminder_message : unreadCounter.unread_channel > 0 ? unreadCounter.unread_channel : null}
-                  </div>
+                Chat{" "}
+                <div className="ml-2 badge badge-pill badge badge-danger">
+                  {unreadCounter.chat_message + unreadCounter.chat_reminder_message > 0 ? unreadCounter.chat_message + unreadCounter.chat_reminder_message : unreadCounter.unread_channel > 0 ? unreadCounter.unread_channel : null}
+                </div>
               </MainNavLink>
             </li>
             <li className="nav-item">
