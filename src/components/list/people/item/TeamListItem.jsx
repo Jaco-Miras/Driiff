@@ -91,7 +91,7 @@ const TeamListItem = (props) => {
         </div>
       </div>
       <div className="ml-auto">
-        {member.workspace_role !== "" &&
+        {member.workspace_role && member.workspace_role !== "" &&
           <Badge badgeClassName={member.workspace_role === "TEAM_LEAD" ? "badge-success" : "badge-warning"} label={member.workspace_role === "TEAM_LEAD" ? "Team lead" : "Approver"}/>
         }
         {member.type == "external" &&
