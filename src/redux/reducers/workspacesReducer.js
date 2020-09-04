@@ -2,6 +2,7 @@
 import {convertArrayToObject} from "../../helpers/arrayHelper";
 
 const INITIAL_STATE = {
+  updater: false,
   user: {},
   workspaces: {},
   activeTopic: null,
@@ -27,9 +28,40 @@ export default (state = INITIAL_STATE, action) => {
         user: action.data,
       };
     }
+    case "INCOMING_UPDATED_USER": {
+      let workspaces = {...state.workspaces};
+      let activeTopic = {...state.activeTopic};
+
+      const index = activeTopic.members.map(m => m.id).indexOf(action.data.id);
+      if (index !== -1) {
+        Object.keys(activeTopic.members[index]).forEach(attr => {
+          const value = action.data[attr];
+          if (activeTopic.members[index].hasOwnProperty(attr)) {
+            activeTopic.members[index][attr] = value;
+          }
+        })
+      }
+
+      Object.values(workspaces).forEach(ws => {
+        const index = workspaces[ws.id].members.map(m => m.id).indexOf(action.data.id);
+        if (index !== -1) {
+          Object.keys(workspaces[ws.id].members[index]).forEach(attr => {
+            const value = action.data[attr];
+            if (workspaces[ws.id].members[index].hasOwnProperty(attr)) {
+              workspaces[ws.id].members[index][attr] = value;
+            }
+          })
+        }
+      })
+      return {
+        ...state,
+        updater: !state.updater,
+        workspaces: workspaces
+      }
+    }
     case "GET_WORKSPACES_SUCCESS": {
-      let updatedWorkspaces = { ...state.workspaces };
-      let updatedFolders = { ...state.folders };
+      let updatedWorkspaces = {...state.workspaces};
+      let updatedFolders = {...state.folders};
       action.data.workspaces.forEach((ws) => {
 
         if (ws.type === "FOLDER") {
@@ -53,12 +85,6 @@ export default (state = INITIAL_STATE, action) => {
           })
           delete updatedFolders[ws.id].topics
         } else if (ws.type === "WORKSPACE") {
-          ws.members = ws.members.map(m => {
-            return {
-              contact: "",
-              ...m
-            }
-          });
           updatedWorkspaces[ws.id] = {
             ...ws,
             active: ws.topic_detail.active,

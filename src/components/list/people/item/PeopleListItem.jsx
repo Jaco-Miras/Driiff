@@ -5,18 +5,15 @@ import {Avatar, Badge, SvgIconFeather, ToolTip} from "../../../common";
 const Wrapper = styled.div`
   .avatar {
     cursor: pointer;
-    cursor: hand;
     height: 2.5rem !important;
     width: 2.5rem !important;
   }
   .user-name {
     display: flex;
     cursor: pointer;
-    cursor: hand;
   }
   .feather-message-circle {
     cursor: pointer;
-    cursor: hand;
     &:hover {
       color: #7a1b8b;
     }
@@ -27,7 +24,7 @@ const Wrapper = styled.div`
 `;
 
 const PeopleListItem = (props) => {
-  const { className = "", loggedUser, onNameClick = null, onChatClick = null, user, dictionary } = props;
+  const {className = "", loggedUser, onNameClick = null, onChatClick = null, user, dictionary} = props;
 
   const handleOnNameClick = () => {
     if (onNameClick) onNameClick(user);
@@ -67,15 +64,15 @@ const PeopleListItem = (props) => {
                     </h6>
                 }
                 {
-                  user.role && <span className="small text-muted">{user.role !== null && <>{user.role.display_name}</>}</span>
+                  user.role && <span className="small text-muted">{user.role.display_name}</span>
                 }
               </div>
               {onChatClick !== null && loggedUser.id !== user.id && loggedUser.type !== "external" && user.type !== "external" && (
                 <div className="text-right ml-auto">
                   {
                     user.contact !== "" &&
-                    <a href={`tel:${user.contact.replace(/ /g, "").replace(/-/g, "")}`}><SvgIconFeather className="mr-2"
-                                                                                                        icon="phone"/>
+                    <a href={`tel:${user.contact.replace(/ /g, "").replace(/-/g, "")}`}>
+                      <SvgIconFeather className="mr-2" icon="phone"/>
                     </a>
                   }
                   <SvgIconFeather onClick={handleOnChatClick} icon="message-circle"/>
