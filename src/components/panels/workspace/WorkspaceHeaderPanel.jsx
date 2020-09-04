@@ -66,7 +66,7 @@ const NavBar = styled.ul`
       .avatar-sm {
         border: 2px solid #ffffff;
       }
-      @media all and (max-width: 400px) {
+      @media all and (max-width: 440px) {
         display: none;
       }
     }
@@ -290,7 +290,7 @@ const WorspaceHeaderPanel = (props) => {
                     <>
                       <li className="nav-item nav-item-folder">
                         <WorkspaceName>
-                          {activeTopic.folder_name} 
+                          {activeTopic.folder_name}
                           { folders.hasOwnProperty(activeTopic.folder_id) && folders[activeTopic.folder_id].is_lock === 1 && <Icon icon="lock" strokeWidth="2"/> }
                         </WorkspaceName>
                       </li>
@@ -301,7 +301,7 @@ const WorspaceHeaderPanel = (props) => {
                   }
                   <li className="nav-item">
                     <SubWorkspaceName className="current-title">
-                      {activeTopic.name} 
+                      {activeTopic.name}
                       { activeTopic.is_shared === 1 && <Icon icon="share" strokeWidth="3"/> }
                     </SubWorkspaceName>
                   </li>
