@@ -458,9 +458,21 @@ const CreateEditWorkspaceModal = (props) => {
                     }
                 };
     
-                dispatch(updateWorkspace(payload, cb));
-                if (removed_members.some((id) => id === user.id)) {
-                    dispatch(leaveWorkspace({workspace_id: item.id, channel_id: item.channel.id}));
+                if (item.members.length === 1 && form.selectedUsers.length === 0 && item.is_lock === 1) {
+                    let archivePayload = {
+                        id: item.channel.id,
+                        is_archived: true,
+                        is_muted: false,
+                        is_pinned: false,
+                        is_shared: item.is_external
+                    };
+                    dispatch(putChannel(archivePayload));
+                    toggle();
+                } else {
+                    if (removed_members.some((id) => id === user.id)) {
+                        dispatch(leaveWorkspace({workspace_id: item.id, channel_id: item.channel.id}));
+                    }
+                    dispatch(updateWorkspace(payload, cb));
                 }
             };
 
@@ -478,7 +490,6 @@ const CreateEditWorkspaceModal = (props) => {
             
                 dispatch(addToModals(confirmModal));
             };
-
             if (item.is_lock !== payload.is_lock && payload.is_lock === 1) {
                 handleShowConfirmation();
               } else {
