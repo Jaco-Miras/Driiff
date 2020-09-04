@@ -421,7 +421,7 @@ export function postCompanyUploadFiles(payload) {
 export function postCompanyUploadBulkFiles(payload) {
   let url = `/v2/company/upload-bulk-files`;
   if (payload.folder_id) {
-    url += `&folder_id=${payload.folder_id}`;
+    url += `?folder_id=${payload.folder_id}`;
   }
   return apiCall({
     method: "POST",
