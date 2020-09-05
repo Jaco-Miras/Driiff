@@ -182,7 +182,7 @@ const ChatFooterPanel = (props) => {
 
   const onClearGif = () => {
     setSelectedGif(null);
-    handleSend();
+    //handleSend();
   };
 
   const handleJoinWorkspace = () => {

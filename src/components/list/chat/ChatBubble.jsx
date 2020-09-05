@@ -453,7 +453,7 @@ const ChatContent = styled.div`
         position: relative;
         left: 0;
         overflow: hidden;
-        height: 250px;
+        //height: 250px;
         cursor: pointer;
         .gifPlayer {
             border-radius: 8px;
@@ -549,6 +549,7 @@ const ChatBubble = (props) => {
   const history = useHistory();
 
   const [chatFiles, setChatFiles] = useState([]);
+  const [gifOnly, setGifOnly] = useState(false);
   const [loadRef, loadInView] = useInView({
     threshold: 1,
   });
@@ -1000,6 +1001,15 @@ const ChatBubble = (props) => {
         e.dataset.googleLinkRetrieve = 1;
         googleApis.getFile(e, e.dataset.googleFileId);
       });
+      if (showGifPlayer) {
+        let hasText = false;
+        Array.from(e.children).forEach((el) => {
+          if (el.innerHTML !== "") {
+            hasText = true;
+          }
+        })
+        setGifOnly(!hasText);
+      }
     }
   };
 
@@ -1010,7 +1020,7 @@ const ChatBubble = (props) => {
       className={"chat-bubble ql-editor"}
       showAvatar={showAvatar}
       isAuthor={isAuthor}
-      hideBg={isEmoticonOnly || showGifPlayer || (hasFiles && replyBody === "<span></span>") || (hasFiles && replyBody === "")}
+      hideBg={isEmoticonOnly || gifOnly || (hasFiles && replyBody === "<span></span>") || (hasFiles && replyBody === "")}
       theme={chatSettings.chat_message_theme}
     >
       {
