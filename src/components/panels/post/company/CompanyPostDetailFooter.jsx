@@ -175,7 +175,7 @@ const CompanyPostDetailFooter = (props) => {
 
   const onClearGif = () => {
     setSelectedGif(null);
-    handleSend();
+    //handleSend();
   };
 
   const {_t} = useTranslation();

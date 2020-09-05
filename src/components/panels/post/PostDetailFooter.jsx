@@ -195,7 +195,7 @@ const PostDetailFooter = (props) => {
 
   const onClearGif = () => {
     setSelectedGif(null);
-    handleSend();
+    //handleSend();
   };
 
   const handleJoinWorkspace = () => {
