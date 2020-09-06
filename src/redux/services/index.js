@@ -157,6 +157,7 @@ export {
   fetchMembers,
   fetchTimeline,
   getPostStatusCount,
+  getAllWorkspace,
   getWorkspace,
   getWorkspaceFolder,
   getWorkspacePostDetail,

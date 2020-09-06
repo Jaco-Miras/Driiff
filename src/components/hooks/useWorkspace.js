@@ -75,16 +75,18 @@ const useWorkspace = (fetchOnMount = false) => {
         }
       } else {
         //fetch last visited workspace
-        if (activeTopicSettings && workspaces.hasOwnProperty(activeTopicSettings.id)) {
-          actions.selectWorkspace(workspaces[activeTopicSettings.id]);
-          if (url.startsWith("/workspace")) {
-            actions.redirectTo(workspaces[activeTopicSettings.id]);
+        if (params.page !== "search") {
+          if (activeTopicSettings && workspaces.hasOwnProperty(activeTopicSettings.id)) {
+            actions.selectWorkspace(workspaces[activeTopicSettings.id]);
+            if (url.startsWith("/workspace")) {
+              actions.redirectTo(workspaces[activeTopicSettings.id]);
+            }
+          } else if (url.startsWith("/workspace") && localStorage.getItem("fromRegister")) {
+            console.log('trigger')
+            actions.selectWorkspace(Object.values(workspaces)[0]);
+            actions.redirectTo(Object.values(workspaces)[0]);
+            localStorage.removeItem("fromRegister")
           }
-        } else if (url.startsWith("/workspace") && localStorage.getItem("fromRegister")) {
-          console.log('trigger')
-          actions.selectWorkspace(Object.values(workspaces)[0]);
-          actions.redirectTo(Object.values(workspaces)[0]);
-          localStorage.removeItem("fromRegister")
         }
       }
     }

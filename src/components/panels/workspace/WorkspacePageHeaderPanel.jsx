@@ -79,55 +79,59 @@ const MainNavLink = styled(NavLink)`
 const WorkspacePageHeaderPanel = (props) => {
   const { className = "", workspace } = props;
 
-  let pathname = props.match.url;
-  if (props.match.path === "/workspace/:page/:workspaceId/:workspaceName/post/:postId/:postTitle" || props.match.path === "/workspace/:page/:folderId/:folderName/:workspaceId/:workspaceName/post/:postId/:postTitle") {
-    pathname = pathname.split("/post/")[0].replace(`/workspace/${props.match.params.page}`, "");
-  } else if (
-    props.match.path === "/workspace/:page/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName" ||
-    props.match.path === "/workspace/:page/:folderId/:folderName/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName"
-  ) {
-    pathname = pathname.split("/folder/")[0].replace(`/workspace/${props.match.params.page}`, "");
+  if (props.match.params.page === "search") {
+    return null;
   } else {
-    pathname = pathname.replace(`/workspace/${props.match.params.page}`, "");
-  }
+    let pathname = props.match.url;
+    if (props.match.path === "/workspace/:page/:workspaceId/:workspaceName/post/:postId/:postTitle" || props.match.path === "/workspace/:page/:folderId/:folderName/:workspaceId/:workspaceName/post/:postId/:postTitle") {
+      pathname = pathname.split("/post/")[0].replace(`/workspace/${props.match.params.page}`, "");
+    } else if (
+      props.match.path === "/workspace/:page/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName" ||
+      props.match.path === "/workspace/:page/:folderId/:folderName/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName"
+    ) {
+      pathname = pathname.split("/folder/")[0].replace(`/workspace/${props.match.params.page}`, "");
+    } else {
+      pathname = pathname.replace(`/workspace/${props.match.params.page}`, "");
+    }
 
-  return (
-    <>
-      <Wrapper className={`page-header ${className}`}>
-        <div className="container-fluid d-sm-flex justify-content-between">
-          <Navbar className="navbar-nav">
-            <li className="nav-item">
-              <MainNavLink isSub={true} to={`/workspace/dashboard${pathname}`}>
-                Dashboard
-              </MainNavLink>
-            </li>
-            <li className="nav-item">
-              <MainNavLink isSub={true} to={`/workspace/chat${pathname}`}>
-                Chat
-                {workspace !== null && workspace.unread_chats > 0 && <div className="ml-2 badge badge-pill badge-danger">{workspace.unread_chats}</div>}
-              </MainNavLink>
-            </li>
-            <li className="nav-item">
-              <MainNavLink isSub={true} to={`/workspace/posts${pathname}`}>
-                Posts
-                {workspace !== null && workspace.unread_posts > 0 && <div className="ml-2 badge badge-pill badge-danger">{workspace.unread_posts}</div>}
-              </MainNavLink>
-            </li>
-            <li className="nav-item">
-              <MainNavLink isSub={true} to={`/workspace/files${pathname}`}>
-                Files
-              </MainNavLink>
-            </li>
-            <li className="nav-item">
-              <MainNavLink isSub={true} to={`/workspace/people${pathname}`}>
-                People
-              </MainNavLink>
-            </li>
-          </Navbar>
-        </div>
-      </Wrapper>
-    </>
-  );
+    return (
+      <>
+        <Wrapper className={`page-header ${className}`}>
+          <div className="container-fluid d-sm-flex justify-content-between">
+            <Navbar className="navbar-nav">
+              <li className="nav-item">
+                <MainNavLink isSub={true} to={`/workspace/dashboard${pathname}`}>
+                  Dashboard
+                </MainNavLink>
+              </li>
+              <li className="nav-item">
+                <MainNavLink isSub={true} to={`/workspace/chat${pathname}`}>
+                  Chat
+                  {workspace !== null && workspace.unread_chats > 0 && <div className="ml-2 badge badge-pill badge-danger">{workspace.unread_chats}</div>}
+                </MainNavLink>
+              </li>
+              <li className="nav-item">
+                <MainNavLink isSub={true} to={`/workspace/posts${pathname}`}>
+                  Posts
+                  {workspace !== null && workspace.unread_posts > 0 && <div className="ml-2 badge badge-pill badge-danger">{workspace.unread_posts}</div>}
+                </MainNavLink>
+              </li>
+              <li className="nav-item">
+                <MainNavLink isSub={true} to={`/workspace/files${pathname}`}>
+                  Files
+                </MainNavLink>
+              </li>
+              <li className="nav-item">
+                <MainNavLink isSub={true} to={`/workspace/people${pathname}`}>
+                  People
+                </MainNavLink>
+              </li>
+            </Navbar>
+          </div>
+        </Wrapper>
+      </>
+    );
+  }
 };
 
 export default React.memo(WorkspacePageHeaderPanel);

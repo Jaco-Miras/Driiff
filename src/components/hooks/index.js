@@ -48,3 +48,4 @@ export {default as useCompanyFiles} from "./useCompanyFiles";
 export {default as useDashboardActions} from "./useDashboardActions";
 export {default as useCompanyDashboard} from "./useCompanyDashboard";
 export {default as useLoadChannel} from "./useLoadChannel";
+export {default as useWorkspaceSearchActions} from "./useWorkspaceSearchActions";
