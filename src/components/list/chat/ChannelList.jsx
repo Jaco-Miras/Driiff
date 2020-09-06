@@ -96,7 +96,7 @@ const ChannelList = (props) => {
 
     const history = useHistory();
 
-    const {className = "", channel, selectedChannel, isWorkspace = false} = props;
+    const {className = "", channel, selectedChannel} = props;
 
     const handleSelectChannel = () => {
         document.body.classList.add("m-chat-channel-closed");
@@ -128,7 +128,7 @@ const ChannelList = (props) => {
             <Timestamp className="text-right ml-auto">
                 <ChatDateIcons className={"chat-date-icons"} channel={channel} isRead={channel.is_read}/>
                 {
-                    !isWorkspace &&
+                    channel.type !== "TOPIC" &&
                     <ChannelOptions selectedChannel={selectedChannel} channel={channel}/>
                 }
             </Timestamp>

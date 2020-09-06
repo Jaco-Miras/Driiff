@@ -1,11 +1,11 @@
-import React, { useEffect } from "react";
-import { useDispatch } from "react-redux";
+import React, {useEffect} from "react";
+import {useDispatch} from "react-redux";
 import styled from "styled-components";
-import { addToModals } from "../../../redux/actions/globalActions";
-import { SvgIconFeather } from "../../common";
+import {addToModals} from "../../../redux/actions/globalActions";
+import {SvgIconFeather} from "../../common";
 import ChannelsSidebar from "../../list/chat/ChannelsSidebar";
 import ChatContactsList from "../../list/chat/ChatContactsList";
-import { getChannelDrafts } from "../../../redux/actions/chatActions";
+import {getChannelDrafts} from "../../../redux/actions/chatActions";
 
 const Wrapper = styled.div`
   overflow: auto !important;
@@ -66,11 +66,12 @@ const ChatSidebarContentPanel = (props) => {
             <p className="small mb-0">{dictionary.recentChats}</p>
 
             <NewGroupButton className="small mb-0 text-right ml-auto" onClick={handleOpenGropupChatModal}>
-              <SvgIconFeather width={14} height={14} icon="plus" />
-                <span>{dictionary.newGroupChat}</span>
+              <SvgIconFeather width={14} height={14} icon="plus"/>
+              <span>{dictionary.newGroupChat}</span>
             </NewGroupButton>
           </div>
-          <ChannelsSidebar search={search} workspace={false} channels={channels} selectedChannel={selectedChannel} dictionary={dictionary}/>
+          <ChannelsSidebar search={search} workspace={null} channels={channels} selectedChannel={selectedChannel}
+                           dictionary={dictionary}/>
         </div>
         <div className={`tab-panel fade ${pill === "pills-contact" && "show active"}`} id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">
           <ChatContactsList search={search} channels={channels} userChannels={userChannels} selectedChannel={selectedChannel} dictionary={dictionary}/>

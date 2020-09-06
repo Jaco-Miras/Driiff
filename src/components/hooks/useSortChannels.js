@@ -27,14 +27,25 @@ const useSortChannels = (channels, search, options = {}, workspace) => {
         let isMember = c.members.map((m) => m.id).some(checkForId);
         return c.type === "TOPIC" && isMember;
       } else {
-        return c.type !== "TOPIC";
+        if (search === "" || search.length <= 2) {
+          return c.type !== "TOPIC";
+        } else {
+          return true;
+        }
       }
     })
     //.concat(this.props.startNewChannels)
     .filter((channel) => {
-      if (typeof channel.add_user === "undefined") channel.add_user = false;
+      if (typeof channel.add_user === "undefined")
+        channel.add_user = false;
 
-      if (typeof channel.add_open_topic === "undefined") channel.add_open_topic = false;
+      if (typeof channel.add_open_topic === "undefined") {
+        if (!channel.members.some(c => c.id === user.id)) {
+          channel.add_open_topic = true;
+        } else {
+          channel.add_open_topic = false;
+        }
+      }
 
       if (options.type && options.type === "DIRECT") {
         if (!(channel.type === "DIRECT" || channel.type === "PERSON")) {
@@ -81,8 +92,12 @@ const useSortChannels = (channels, search, options = {}, workspace) => {
         return 1;
 
       //add to user
-      compare = (a.add_user + a.add_open_topic) - (b.add_user + b.add_open_topic);
-      if (compare !== 0) return compare;
+      if ((a.add_user || a.add_open_topic) && !(b.add_user || b.add_open_topic)) {
+        return 1;
+      }
+      if ((b.add_user || b.add_open_topic) && !(a.add_user || a.add_open_topic)) {
+        return -1;
+      }
 
       //pinned
       compare = b.is_pinned - a.is_pinned;
