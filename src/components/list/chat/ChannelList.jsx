@@ -7,10 +7,10 @@ import ChannelOptions from "./ChannelOptions";
 import ChannelTitle from "./ChannelTitle";
 import ChatDateIcons from "./ChatDateIcons";
 import ReplyPreview from "./ReplyPreview";
+import {Badge} from "../../common";
 
 const Wrapper = styled.li`
   cursor: pointer;
-  cursor: hand;
   position: relative;
   ${(props) => props.selected && "padding-left: 14px !important"};
   transition: all 0.15s linear;
@@ -54,7 +54,7 @@ const Wrapper = styled.li`
 
   .chat-timestamp {
     position: absolute;
-    right: 0px;
+    right: 0;
     white-space: nowrap;
     transition: opacity 0.3s ease;
     top: -2px;
@@ -122,6 +122,8 @@ const ChannelList = (props) => {
             <ChannelTitlePreview className={"flex-grow-1"}>
                 <ChannelTitle channel={channel}/>
                 <ReplyPreview channel={channel} drafts={channelDrafts} dictionary={dictionary}/>
+                {!!channel.is_archived && <><Badge badgeClassName="bg-warning-bright" label="Archived"/></>}
+                {channel.is_hidden && <><Badge label="Hidden"/></>}
             </ChannelTitlePreview>
             <Timestamp className="text-right ml-auto">
                 <ChatDateIcons className={"chat-date-icons"} channel={channel} isRead={channel.is_read}/>
