@@ -61,10 +61,10 @@ const CompanyFileOptions = (props) => {
     actions.restoreCompanyFile(file, (err, res) => {
       if (res) {
         if (file.folder_id && typeof folders[file.folder_id] !== "undefined") {
-          toaster.success(<>Item <b>{file.search}</b> is restored on {folders[file.folder_id].search} folder.</>);
+          toaster.success(<>Item <b>{file.search}</b> is restored to #{folders[file.folder_id].search} folder.</>);
         } else {
-          toaster.success(<>Item <span className="text-uppercase font-weight-bold">{file.search}</span> is
-            restored.</>);
+          toaster.success(<>Item <span className="font-weight-bold">{file.search}</span> is restored to #All Files
+            folder.</>);
         }
       }
     }, {

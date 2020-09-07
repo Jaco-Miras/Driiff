@@ -146,13 +146,14 @@ const useFiles = () => {
   }, []);
 
   useEffect(() => {
-    if (params.folderId && !folder) {
-      fileActions.fetchCompanyFolderBreadCrumbs({
-        folder_id: params.folderId
-      });
-
+    if (params.folderId && (folder === null || folder.id !== params.folderId)) {
       if (typeof folders[params.folderId] !== "undefined") {
+        fileActions.fetchCompanyFolderBreadCrumbs({
+          folder_id: params.folderId
+        });
         setFolder(folders[params.folderId])
+      } else {
+        setFolder(null);
       }
     } else if (!params.folderId) {
       setFolder(null);
@@ -201,7 +202,7 @@ const useFiles = () => {
     topic: activeTopic,
     fileIds: fileIds,
     folders: folders,
-    subFolders: [],
+    subFolders: folder ? folder.subFolders : [],
     folder: folder,
     googleDriveApiFiles,
     loadMore: {
