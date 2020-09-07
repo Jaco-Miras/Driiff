@@ -898,7 +898,7 @@ class SocketListeners extends Component {
                   }
                 } else {
                   //set the workspace to the first workspace of the general folder
-                  let workspaces = this.props.workspaces.filter((ws) => {
+                  let workspaces = Object.values(this.props.workspaces).filter((ws) => {
                     return ws.folder_id === null;
                   }).sort((a,b) => a.name.localeCompare(b.name))
 
@@ -908,7 +908,7 @@ class SocketListeners extends Component {
                 }
               } else {
                 //set the workspace to the first workspace of the general folder
-                let workspaces = this.props.workspaces.filter((ws) => {
+                let workspaces = Object.values(this.props.workspaces).filter((ws) => {
                   return ws.folder_id === null;
                 }).sort((a,b) => a.name.localeCompare(b.name))
 
