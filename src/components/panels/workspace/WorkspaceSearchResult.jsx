@@ -1,10 +1,22 @@
 import React from "react";
 import styled from "styled-components";
+import {stripHtml} from "../../../helpers/stringFormatter";
 
 const Wrapper = styled.li`
     > div {
         margin-bottom: 5px;
     }
+`;
+
+const DescriptionWrapper = styled.div`
+    display: flex;
+`;
+
+const Description = styled.div`
+    width: 100%;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden; 
 `;
 
 const WorkspaceSearchResult = (props) => {
@@ -35,14 +47,13 @@ const WorkspaceSearchResult = (props) => {
                 { topic.is_archive && <span className={`badge badge-light text-white ml-1`}>Archived</span> }
                 { !topic.is_archive && !topic.is_locked && <span className={`badge badge-light text-white ml-1`}>Open</span> }
             </div>
-            <div>Members: {}</div>
+            <div>Members: {item.members.length}</div>
             <div>
                 Folder: {workspace ? workspace.name : "Workspaces"}
             </div>
-            <div>
-                Description:
-                {/* <p className="text-muted">workspace description here</p> */}
-            </div>
+            <DescriptionWrapper>
+                <Description>Description: {stripHtml(topic.description)}</Description>
+            </DescriptionWrapper>
         </Wrapper>
     );
 };
