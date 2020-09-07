@@ -112,12 +112,6 @@ const useSortChannels = (channels, search, options = {}, workspace) => {
           return 1;
       }
 
-      //hidden and archived
-      if (search.length > 2) {
-        compare = (b.is_hidden + b.is_archived) - (a.is_hidden + b.is_archived);
-        if (compare !== 0) return compare;
-      }
-
       if (settings.order_channel.order_by === "channel_date_updated") {
         if (settings.order_channel.sort_by === "DESC") {
           if (typeof channelDrafts[b.id] !== "undefined" && typeof channelDrafts[a.id] !== "undefined") {
@@ -156,11 +150,16 @@ const useSortChannels = (channels, search, options = {}, workspace) => {
         }
       }
 
-
       if (settings.order_channel.order_by === "channel_name" && settings.order_channel.sort_by === "DESC") {
         return bTitle.localeCompare(aTitle);
       } else {
         return aTitle.localeCompare(bTitle);
+      }
+
+      //hidden and archived
+      if (search.length > 2) {
+        compare = (b.is_hidden + b.is_archived) - (a.is_hidden + b.is_archived);
+        if (compare !== 0) return compare;
       }
     });
   return [results];
