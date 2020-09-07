@@ -19,13 +19,11 @@ const Wrapper = styled.li`
   }
   .avatar {
     cursor: pointer;
-    cursor: hand;
     height: 2.5rem;
     width: 2.5rem;
   }
   .profile-name {
     cursor: pointer;
-    cursor: hand;
     margin-bottom: 4px;
   }
   > .more-options svg {
@@ -92,10 +90,12 @@ const TeamListItem = (props) => {
       </div>
       <div className="ml-auto">
         {member.workspace_role && member.workspace_role !== "" &&
-          <Badge badgeClassName={member.workspace_role === "TEAM_LEAD" ? "badge-success" : "badge-warning"} label={member.workspace_role === "TEAM_LEAD" ? "Team lead" : "Approver"}/>
+        <Badge
+          badgeClassName={member.workspace_role === "TEAM_LEAD" ? "badge-success text-white" : "badge-warning text-white"}
+          label={member.workspace_role === "TEAM_LEAD" ? "Team lead" : "Approver"}/>
         }
-        {member.type == "external" &&
-          <Badge badgeClassName="badge-info" label="External"/>
+        {member.type === "external" &&
+        <Badge badgeClassName="badge-info text-white" label="External"/>
         }
       </div>
       {
