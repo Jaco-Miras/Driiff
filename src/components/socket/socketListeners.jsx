@@ -878,14 +878,12 @@ class SocketListeners extends Component {
           if (e.channel_data.status === "UNARCHIVED") {
             this.props.incomingUnArchivedWorkspaceChannel(e.channel_data)
           } else {
-            this.props.incomingArchivedWorkspaceChannel(e.channel_data);
-            console.log(this.props.activeTopic, (this.props.activeTopic && this.props.activeTopic.id === e.channel_data.topic_detail.id))
             if (this.props.activeTopic && this.props.activeTopic.id === e.channel_data.topic_detail.id) {
               let workspace = null;
               if (e.channel_data.topic_detail.workspace_id !== null || e.channel_data.topic_detail.workspace_id !== 0) {
                 // set the workspace to the first workspace of the folder
                 // get the workspaces under the folder
-                if (this.props.folders[e.channel_data.topic_detail.workspace_id].workspace_ids.length > 1) {
+                if (this.props.folders.hasOwnProperty(e.channel_data.topic_detail.workspace_id) && this.props.folders[e.channel_data.topic_detail.workspace_id].workspace_ids.length > 1) {
 
                   let otherWorkspaces = Object.values(this.props.workspaces).filter((ws) => {
                     return this.props.folders[e.channel_data.topic_detail.workspace_id].workspace_ids.some((id) => id === ws.id);
@@ -922,6 +920,7 @@ class SocketListeners extends Component {
                 this.props.workspaceActions.redirectTo(workspace);
               }
             }
+            this.props.incomingArchivedWorkspaceChannel(e.channel_data);
           }
         } else {
           this.props.incomingArchivedChannel(e.channel_data);
