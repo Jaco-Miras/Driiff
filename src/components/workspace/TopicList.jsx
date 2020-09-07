@@ -37,6 +37,7 @@ const TopicList = (props) => {
   const workspaceRef = useRef();
   const history = useHistory();
   const route = useRouteMatch();
+  const {params} = route;
   const onWorkspace = route.url.startsWith("/workspace");
 
   const handleSelectTopic = () => {
@@ -69,7 +70,7 @@ const TopicList = (props) => {
   let unread_count = topic.unread_chats + topic.unread_posts;
 
   return (
-    <TopicListWrapper ref={workspaceRef} className={`topic-list ${className}`} onClick={handleSelectTopic} selected={selected}>
+    <TopicListWrapper ref={workspaceRef} className={`topic-list ${className}`} onClick={handleSelectTopic} selected={selected && onWorkspace && params.page !== "search"}>
       <div>
         {topic.name}
         {topic.is_lock === 1 && <Icon icon={"lock"} strokeWidth="2" />}
