@@ -89,7 +89,7 @@ const WorkspaceSearchPanel = (props) => {
                         </h4>
                     }
                     {
-                        results.length > 0 && <WorkspaceSearchResults page={page} results={results} redirect={redirect}/>
+                        results.length > 0 && <WorkspaceSearchResults actions={actions} page={page} results={results} redirect={redirect}/>
                     }
                     
                     {

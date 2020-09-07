@@ -16,7 +16,8 @@ import {
   getWorkspaces,
   postWorkspaceRole,
   setActiveTopic,
-  updateWorkspaceTimelinePage
+  updateWorkspaceTimelinePage,
+  joinWorkspace
 } from "../../redux/actions/workspaceActions";
 import {addToModals} from "../../redux/actions/globalActions";
 import {
@@ -186,6 +187,14 @@ const useWorkspaceActions = () => {
     [dispatch]
   );
 
+  const join = useCallback(
+    (payload, callback) => {
+      dispatch(
+        joinWorkspace(payload, callback)
+      );
+    },
+  [dispatch]);
+
   return {
     addPrimaryFilesToWorkspace,
     addRole,
@@ -198,6 +207,7 @@ const useWorkspaceActions = () => {
     getMembers,
     getPrimaryFiles,
     getTimeline,
+    join,
     redirectTo,
     selectChannel,
     selectWorkspace,

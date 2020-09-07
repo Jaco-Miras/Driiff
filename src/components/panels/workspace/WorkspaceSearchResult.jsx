@@ -36,7 +36,7 @@ const JoinButton = styled.button`
 
 const WorkspaceSearchResult = (props) => {
 
-    const { item, redirect, workspaces } = props;
+    const { onJoinWorkspace, item, redirect, workspaces } = props;
     const { topic, workspace } = item;
     const isMember = useIsMember(item.members.map((m) => m.id));
     const handleRedirect = () => {
@@ -54,6 +54,7 @@ const WorkspaceSearchResult = (props) => {
     };
     const handleJoinWorkspace = (e) => {
         e.stopPropagation();
+        onJoinWorkspace(item);
     };
 
     return (

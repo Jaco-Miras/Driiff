@@ -77,8 +77,7 @@ const SystemMessage = forwardRef((props, ref) => {
       }
     } else if (reply.body.includes("CHANNEL_UPDATE::")) {
       const data = JSON.parse(reply.body.replace("CHANNEL_UPDATE::", ""));
-
-      let author = recipients.find((r) => r.type_id === data.author.id);
+      let author = recipients.find((r) => data.author && r.type_id === data.author.id);
       if (author) {
         if (data.author.id === user.id) {
           author.name = "You";
@@ -258,7 +257,7 @@ const SystemMessage = forwardRef((props, ref) => {
     } else if (reply.body.includes("CHANNEL_UPDATE::")) {
       const data = JSON.parse(reply.body.replace("CHANNEL_UPDATE::", ""));
 
-      let author = recipients.find((r) => r.type_id === data.author.id);
+      let author = recipients.find((r) => data.author && r.type_id === data.author.id);
       if (author) {
         if (data.author.id === user.id) {
           author.name = "You";

@@ -194,7 +194,6 @@ const MainNavigationTabPanel = (props) => {
   const { lastVisitedChannel } = useSelector((state) => state.chat);
   const { links, unreadCounter } = useSelector((state) => state.global);
 
-  const [workspacePath, setWorkpacePath] = useState("/workspace/chat");
   const [defaultTopic, setDefaultTopic] = useState(null);
 
   const handleIconClick = (e) => {
@@ -258,15 +257,15 @@ const MainNavigationTabPanel = (props) => {
     }
   }, [active_topic, defaultTopic, workspaces, setDefaultTopic]);
 
-  useEffect(() => {
-    if (active_topic && active_topic.hasOwnProperty("id")) {
-      if (active_topic.folder_id) {
-        setWorkpacePath(`/workspace/chat/${active_topic.folder_id}/${replaceChar(active_topic.folder_name)}/${active_topic.id}/${replaceChar(active_topic.name)}`);
-      } else {
-        setWorkpacePath(`/workspace/chat/${active_topic.id}/${replaceChar(active_topic.name)}`);
-      }
-    }
-  }, [active_topic]);
+  // useEffect(() => {
+  //   if (active_topic && active_topic.hasOwnProperty("id")) {
+  //     if (active_topic.folder_id) {
+  //       setWorkpacePath(`/workspace/chat/${active_topic.folder_id}/${replaceChar(active_topic.folder_name)}/${active_topic.id}/${replaceChar(active_topic.name)}`);
+  //     } else {
+  //       setWorkpacePath(`/workspace/chat/${active_topic.id}/${replaceChar(active_topic.name)}`);
+  //     }
+  //   }
+  // }, [active_topic]);
 
   return (
     <Wrapper className={`navigation-menu-tab ${className}`}>
@@ -280,7 +279,7 @@ const MainNavigationTabPanel = (props) => {
       <div className="flex navigation-menu-tab-header-options">
         <ul>
           <li onClick={closeLeftNav}>
-            <NavIconContainer to={workspacePath}>
+            <NavIconContainer to={"/workspace/search"}>
               <NavIcon icon={"compass"} />
               <div>
                 {dictionary.workspace}
