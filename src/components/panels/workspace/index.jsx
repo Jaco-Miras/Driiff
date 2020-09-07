@@ -7,3 +7,7 @@ export { default as WorkspacePageHeaderPanel } from "./WorkspacePageHeaderPanel"
 export { default as WorkspacePeoplePanel } from "./WorkspacePeoplePanel";
 export { default as WorkspacePostsPanel } from "./WorkspacePostsPanel";
 export { default as WorkspaceSettingsPanel } from "./WorkspaceSettingsPanel";
+export { default as WorkspaceSearchPanel } from "./WorkspaceSearchPanel";
+export { default as WorkspaceSearchResults } from "./WorkspaceSearchResults";
+export { default as WorkspaceSearchResult } from "./WorkspaceSearchResult";
+export { default as WorkspaceSearch } from "./WorkspaceSearch";

@@ -259,7 +259,14 @@ const WorspaceHeaderPanel = (props) => {
               <SvgIconFeather icon="menu" />
             </a>
           </li>
-          {activeTopic ? (
+          
+          {
+          match.params.page === "search" ?
+          <li className="nav-item nav-item-folder">
+            <WorkspaceName>Search workspace</WorkspaceName>
+          </li>
+          :
+            activeTopic ? (
             <>
               {activeTopic.folder_id === null ? (
                 <>

@@ -10,24 +10,24 @@ const useLoadChannel = () => {
   const route = useRouteMatch();
   const history = useHistory();
   const {params, url} = route;
-  
-  useEffect(() => {
-    const fetchLastVisited = () => {
-        let cb = (callback,channel) => {
-            actions.select({
-                ...channel.data,
-                hasMore: true,
-                skip: 0,
-                selected: false,
-                isFetching: false,
-            });
-            if (url === "/chat") {
-                history.push(`/chat/${channel.data.code}`);
-            }
+
+  const fetchLastVisited = () => {
+    let cb = (callback,channel) => {
+        actions.select({
+            ...channel.data,
+            hasMore: true,
+            skip: 0,
+            selected: false,
+            isFetching: false,
+        });
+        if (history.location.pathname.startsWith("/chat")) {
+            history.push(`/chat/${channel.data.code}`);
         }
+    }
         actions.fetchLastVisited(cb);
     };
 
+  useEffect(() => {
     if (lastVisitedChannel) {
         actions.select(channels[lastVisitedChannel.id]);
         if (url === "/chat" && typeof params.code === "undefined") {

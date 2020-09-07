@@ -8,6 +8,7 @@ import {
   fetchMembers as fetchMembersService,
   fetchPrimaryFiles as fetchPrimaryFilesService,
   fetchTimeline as fetchTimelineService,
+  getAllWorkspace as getAllWorkspaceService,
   getPostStatusCount as getPostStatusCountService,
   getWorkspace as getWorkspaceService,
   getWorkspaceFolder as getWorkspaceFolderService,
@@ -175,4 +176,12 @@ export function getWorkspaceFolder(payload, callback) {
 
 export function updateWorkspaceTimelinePage(payload, callback) {
   return SimpleDispatchActionToReducer("UPDATE_WORKSPACE_TIMELINE_PAGE", payload, callback);
+}
+
+export function getAllWorkspace(payload, callback) {
+  return dispatchActionToReducer(getAllWorkspaceService(payload), "GET_ALL_WORKSPACE_START", "GET_ALL_WORKSPACE_SUCCESS", "GET_ALL_WORKSPACE_FAIL", callback);
+}
+
+export function updateWorkspaceSearch(payload, callback) {
+  return SimpleDispatchActionToReducer("UPDATE_WORKSPACE_SEARCH", payload, callback);
 }

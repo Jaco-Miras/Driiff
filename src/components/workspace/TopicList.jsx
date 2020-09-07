@@ -69,7 +69,7 @@ const TopicList = (props) => {
   let unread_count = topic.unread_chats + topic.unread_posts;
 
   return (
-    <TopicListWrapper ref={workspaceRef} className={`topic-list ${className}`} onClick={handleSelectTopic} selected={selected && onWorkspace}>
+    <TopicListWrapper ref={workspaceRef} className={`topic-list ${className}`} onClick={handleSelectTopic} selected={selected}>
       <div>
         {topic.name}
         {topic.is_lock === 1 && <Icon icon={"lock"} strokeWidth="2" />}

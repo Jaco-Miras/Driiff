@@ -5,7 +5,7 @@ import styled from "styled-components";
 import { addToModals } from "../../../redux/actions/globalActions";
 import { SvgEmptyState } from "../../common";
 import { useIsMember, useWorkspace, useUsers } from "../../hooks";
-import { WorkspaceChatPanel, WorkspaceDashboardPanel, WorkspaceFilesPanel, WorkspacePageHeaderPanel, WorkspacePeoplePanel, WorkspacePostsPanel, WorkspaceSettingsPanel } from "../workspace";
+import { WorkspaceChatPanel, WorkspaceDashboardPanel, WorkspaceFilesPanel, WorkspacePageHeaderPanel, WorkspacePeoplePanel, WorkspacePostsPanel, WorkspaceSettingsPanel, WorkspaceSearchPanel } from "../workspace";
 
 const Wrapper = styled.div`
   position: relative;
@@ -69,6 +69,7 @@ const WorkspaceContentPanel = (props) => {
             ]}
           />
           <Switch>
+            <Route render={(props) => <WorkspaceSearchPanel isExternal={isExternal} {...props}/>} path={["/workspace/search"]}/>
             <Route
               render={() => <WorkspaceDashboardPanel {...props} workspace={workspace} isMember={isMember} actions={actions} workspaceTimeline={timeline}/>}
               path={["/workspace/dashboard/:folderId/:folderName/:workspaceId/:workspaceName", "/workspace/dashboard/:workspaceId/:workspaceName", "/workspace/dashboard"]}
@@ -103,7 +104,7 @@ const WorkspaceContentPanel = (props) => {
             <Redirect
               from="*"
               to={{
-                pathname: "/workspace/chat",
+                pathname: "/workspace",
                 state: { from: props.location },
               }}
             />

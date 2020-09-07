@@ -320,3 +320,10 @@ export function getWorkspaceFolder(payload) {
     data: payload,
   });
 }
+
+export function getAllWorkspace(payload) {
+  return apiCall({
+    method: "GET",
+    url: `/v2/search-workspace?${objToUrlParams(payload)}`,
+  });
+}
