@@ -63,7 +63,8 @@ const CompanyFileOptions = (props) => {
         if (file.folder_id && typeof folders[file.folder_id] !== "undefined") {
           toaster.success(<>Item <b>{file.search}</b> is restored on {folders[file.folder_id].search} folder.</>);
         } else {
-          toaster.success(<>Item <b>{file.search}</b> is restored.</>);
+          toaster.success(<>Item <span className="text-uppercase font-weight-bold">{file.search}</span> is
+            restored.</>);
         }
       }
     }, {
