@@ -1,10 +1,18 @@
 import React from "react";
 import styled from "styled-components";
 import {stripHtml} from "../../../helpers/stringFormatter";
+import {SvgIconFeather} from "../../common";
+import {useIsMember} from "../../hooks";
 
 const Wrapper = styled.li`
+    position: relative;
     > div {
         margin-bottom: 5px;
+    }
+    :hover {
+        button {
+            display: block;
+        }
     }
 `;
 
@@ -19,10 +27,18 @@ const Description = styled.div`
     overflow: hidden; 
 `;
 
+const JoinButton = styled.button`
+    position: absolute;
+    top: 55px;
+    right: 10px;
+    display: none;
+`;
+
 const WorkspaceSearchResult = (props) => {
 
     const { item, redirect, workspaces } = props;
     const { topic, workspace } = item;
+    const isMember = useIsMember(item.members.map((m) => m.id));
     const handleRedirect = () => {
         let payload = {
             id: topic.id,
@@ -36,6 +52,10 @@ const WorkspaceSearchResult = (props) => {
             redirect.fetchWorkspaceAndRedirect(payload);
         }
     };
+    const handleJoinWorkspace = (e) => {
+        e.stopPropagation();
+    };
+
     return (
         <Wrapper className="list-group-item p-l-0 p-r-0" onClick={handleRedirect}>
             <div>
@@ -54,6 +74,13 @@ const WorkspaceSearchResult = (props) => {
             <DescriptionWrapper>
                 <Description>Description: {stripHtml(topic.description)}</Description>
             </DescriptionWrapper>
+            {
+                !isMember &&
+                <JoinButton onClick={handleJoinWorkspace} className="btn btn-primary join-button">
+                    <SvgIconFeather icon="user-plus" />
+                    Join
+                </JoinButton>
+            }
         </Wrapper>
     );
 };
