@@ -1,8 +1,8 @@
 import React from "react";
-import {useHistory} from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import styled from "styled-components";
-import {Avatar, Badge} from "../../../common";
-import {MoreOptions} from "../../../panels/common";
+import { Avatar, Badge } from "../../../common";
+import { MoreOptions } from "../../../panels/common";
 
 const Wrapper = styled.li`
   padding: 16px 0 !important;
@@ -39,11 +39,10 @@ const Wrapper = styled.li`
       display: block;
     }
   }
-
 `;
 
 const TeamListItem = (props) => {
-  const { className = "", member, parentRef, onEditClick, hideOptions, actions, workspace_id } = props;
+  const { className = "", member, parentRef, onEditClick, hideOptions, actions, workspace_id, dictionary } = props;
 
   const history = useHistory();
 
@@ -57,8 +56,8 @@ const TeamListItem = (props) => {
     let payload = {
       topic_id: workspace_id,
       user_id: member.id,
-      role
-    }
+      role,
+    };
     actions.addRole(payload);
   };
 
@@ -70,44 +69,40 @@ const TeamListItem = (props) => {
     actions.deleteRole(payload);
   };
 
-  // console.log('miauw')
-  // console.log(member)
-
   return (
     <Wrapper className={`team-list-item list-group-item d-flex align-items-center p-l-r-0 ${className}`}>
       <div className="d-flex align-items-center ">
         <div className="pr-3">
-          <Avatar id={member.id} name={member.name} imageLink={member.profile_image_link}
-                  partialName={member.partial_name} noDefaultClick={!member.has_accepted}
-                  hasAccepted={member.has_accepted}/>
+          <Avatar id={member.id} name={member.name} imageLink={member.profile_image_link} partialName={member.partial_name} noDefaultClick={!member.has_accepted} hasAccepted={member.has_accepted} />
         </div>
         <div>
           <h6 className="profile-name" onClick={handleClickName}>
-            {member.has_accepted ? member.name : <>{member.email} <Badge label="Invited"/></>}
+            {member.has_accepted ? (
+              member.name
+            ) : (
+              <>
+                {member.email} <Badge label={dictionary.peopleInvited} />
+              </>
+            )}
           </h6>
           {member.designation && <small className="text-muted">{member.designation}</small>}
         </div>
       </div>
       <div className="ml-auto">
-        {member.workspace_role && member.workspace_role !== "" &&
-        <Badge
-          badgeClassName={member.workspace_role === "TEAM_LEAD" ? "badge-success text-white" : "badge-warning text-white"}
-          label={member.workspace_role === "TEAM_LEAD" ? "Team lead" : "Approver"}/>
-        }
-        {member.type === "external" &&
-        <Badge badgeClassName="badge-info text-white" label="External"/>
-        }
+        {member.workspace_role && member.workspace_role !== "" && (
+          <Badge badgeClassName={member.workspace_role === "TEAM_LEAD" ? "badge-success text-white" : "badge-warning text-white"} label={member.workspace_role === "TEAM_LEAD" ? "Team lead" : "Approver"} />
+        )}
+        {member.type === "external" && <Badge badgeClassName="badge-info text-white" label={dictionary.peopleExternal} />}
       </div>
-      {
-        !hideOptions &&
+      {!hideOptions && (
         <MoreOptions moreButton="more-vertical" scrollRef={parentRef}>
-          { member.workspace_role !== "" && member.workspace_role === "TEAM_LEAD" && <div onClick={handleRemoveRole}>Revoke as team lead</div> }
-          { member.workspace_role !== "TEAM_LEAD"  && <div onClick={() => handleAddRole("team_lead")}>Assign as team lead</div> }
-          { member.workspace_role !== "APPROVER" && <div onClick={() => handleAddRole("approver")}>Assign as approver</div> }
-          { member.workspace_role !== "" && member.workspace_role === "APPROVER" && <div onClick={handleRemoveRole}>Revoke as approver</div> }
+          {member.workspace_role !== "" && member.workspace_role === "TEAM_LEAD" && <div onClick={handleRemoveRole}>Revoke as team lead</div>}
+          {member.workspace_role !== "TEAM_LEAD" && <div onClick={() => handleAddRole("team_lead")}>Assign as team lead</div>}
+          {member.workspace_role !== "APPROVER" && <div onClick={() => handleAddRole("approver")}>Assign as approver</div>}
+          {member.workspace_role !== "" && member.workspace_role === "APPROVER" && <div onClick={handleRemoveRole}>Revoke as approver</div>}
           <div onClick={onEditClick}>Remove</div>
         </MoreOptions>
-      }
+      )}
     </Wrapper>
   );
 };
