@@ -242,11 +242,12 @@ const WorspaceHeaderPanel = (props) => {
       body.classList.add("stretch-layout");
     }
 
-    console.log("get this");
-    // console.log(activeTopic.name);
-
     if (activeTopic) {
-      document.title = `${pageName} ‹ ${activeTopic.name} — ${driff.company_name} @ Driff`;
+      if (activeTopic.unread_chats >= 1 || activeTopic.unread_posts > 0) {
+        document.title = `${pageName} ‹ * ${activeTopic.name} — ${driff.company_name} @ Driff`;
+      } else {
+        document.title = `${pageName} ‹ ${activeTopic.name} — ${driff.company_name} @ Driff`;
+      }
     }
   }, [match.params.page, dispatch, activeTopic]);
 
@@ -259,14 +260,12 @@ const WorspaceHeaderPanel = (props) => {
               <SvgIconFeather icon="menu" />
             </a>
           </li>
-          
-          {
-          match.params.page === "search" ?
-          <li className="nav-item nav-item-folder">
-            <WorkspaceName>Search workspace</WorkspaceName>
-          </li>
-          :
-            activeTopic ? (
+
+          {match.params.page === "search" ? (
+            <li className="nav-item nav-item-folder">
+              <WorkspaceName>Search workspace</WorkspaceName>
+            </li>
+          ) : activeTopic ? (
             <>
               {activeTopic.folder_id === null ? (
                 <>

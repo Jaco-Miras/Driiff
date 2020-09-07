@@ -41,7 +41,8 @@ const CompanyFolderOptions = (props) => {
   const handleRestore = () => {
     actions.restoreCompanyFolder(folder, (err, res) => {
       if (res) {
-        toaster.success(<>Folder {folder.search} is restored.</>)
+        toaster.success(<>Folder <span className="text-uppercase font-weight-bold">{folder.search}</span> is
+          restored.</>)
       }
     }, {
       message: false
