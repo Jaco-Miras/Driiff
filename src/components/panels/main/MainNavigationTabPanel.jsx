@@ -279,10 +279,13 @@ const MainNavigationTabPanel = (props) => {
       <div className="flex navigation-menu-tab-header-options">
         <ul>
           <li onClick={closeLeftNav}>
-            <NavIconContainer to={"/workspace/search"}>
+            <NavIconContainer 
+              to={"/workspace/search"}
+              active={["/workspace/search"].includes(props.location.pathname)}
+            >
               <NavIcon icon={"compass"} />
               <div>
-                {dictionary.workspace}
+                {dictionary.allWorkspaces}
                 {unreadCounter.workspace_chat_message + unreadCounter.workspace_post >= 1 && <Badge data-count={unreadCounter.workspace_chat_message + unreadCounter.workspace_post}>&nbsp;</Badge>}
               </div>
             </NavIconContainer>
