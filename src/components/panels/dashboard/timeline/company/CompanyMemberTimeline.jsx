@@ -26,6 +26,7 @@ const CompanyMemberTimeline = (props) => {
 
   const user = useSelector((state) => state.session.user);
   const recipients = useSelector((state) => state.global.recipients.filter((r) => r.type === "USER"));
+  const users = useSelector((state) => state.users.users);
 
   let message = null;
   if (data.body.includes("CHANNEL_UPDATE")) {
@@ -33,7 +34,7 @@ const CompanyMemberTimeline = (props) => {
   }
 
   const renderTitle = () => {
-    if (message.title !== "") {
+    if (message.title && message.title !== "") {
       return `Updated workspace to ${message.title}`;
     }
     if (message.added_members.length !== 0 || message.removed_members.length) {
@@ -42,18 +43,27 @@ const CompanyMemberTimeline = (props) => {
 
   const renderAddedMembers = (joined = false) => {
     if (joined) {
-      let author = recipients.filter((r) => r.type_id === message.author.id && message.added_members.includes(r.type_id))[0];
-      if (author) {
-        if (author.type_id === user.id) {
-          return "You joined.";
-        } else {
-          return `${author.name} has joined`;
+      if (message.accepted_members && message.accepted_members.length) {
+        let author = users[message.accepted_members[0]];
+        return `${author.name} has joined`;
+      } else {
+        let author = recipients.filter((r) => r.type_id === message.author.id && message.added_members.includes(r.type_id))[0];
+        if (author) {
+          if (author.type_id === user.id) {
+            return "You joined.";
+          } else {
+            return `${author.name} has joined`;
+          }
         }
       }
     } else {
-      let members = recipients.filter((r) => message.added_members.includes(r.type_id) && r.type_id !== message.author.id).map((r) => r.name);
-      if (members.length) {
-        return members.join(", ") + " is added.";
+      if (message.accepted_members && message.accepted_members.length) {
+
+      } else {
+        let members = recipients.filter((r) => message.added_members.includes(r.type_id) && r.type_id !== message.author.id).map((r) => r.name);
+        if (members.length) {
+          return members.join(", ") + " is added.";
+        }
       }
     }
   };
@@ -80,12 +90,18 @@ const CompanyMemberTimeline = (props) => {
 
   return (
     <Wrapper className={`member-timeline timeline-item ${className}`}>
-      <div>{<Avatar className="mr-3" name={message.author.name} imageLink={message.author.profile_image_link}
-                    id={message.author.id}/>}</div>
+      <div>
+        {
+          message.author ?
+          <Avatar className="mr-3" name={message.author.name} imageLink={message.author.profile_image_link}
+                    id={message.author.id}/>
+          : <Avatar className="mr-3" imageLink={null} isBot={true}/>
+          }
+      </div>
       <div>
         <h6 className="d-flex justify-content-between mb-4">
           <span className="title">
-            {message.author.name} {renderTitle()}
+            {message.author && message.author.name} {renderTitle()}
           </span>
           <span className="text-muted font-weight-normal">{fromNow(data.created_at.timestamp)}</span>
         </h6>

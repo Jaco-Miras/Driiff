@@ -1,19 +1,14 @@
-import React, {useEffect, useState} from "react";
-import {useDispatch, useSelector} from "react-redux";
-import {useHistory} from "react-router-dom";
-import {Badge} from "reactstrap";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
+import { Badge } from "reactstrap";
 import styled from "styled-components";
-import {replaceChar} from "../../../helpers/stringFormatter";
-import {
-  addToModals,
-  getQuickLinks,
-  getUnreadNotificationCounterEntries,
-  setNavMode
-} from "../../../redux/actions/globalActions";
-import {NavLink, SvgIcon, SvgIconFeather} from "../../common";
-import {useTranslation, useWorkspace} from "../../hooks";
-import {ExternalWorkspaceList, WorkspaceList} from "../../workspace";
-import {PersonalLinks, QuickLinks} from "../../list/links";
+import { replaceChar } from "../../../helpers/stringFormatter";
+import { addToModals, getQuickLinks, getUnreadNotificationCounterEntries, setNavMode } from "../../../redux/actions/globalActions";
+import { NavLink, SvgIcon, SvgIconFeather } from "../../common";
+import { useTranslation, useWorkspace } from "../../hooks";
+import { ExternalWorkspaceList, WorkspaceList } from "../../workspace";
+import { PersonalLinks, QuickLinks } from "../../list/links";
 import Tooltip from "react-tooltip-lite";
 
 const Wrapper = styled.div`
@@ -169,13 +164,13 @@ const StyledTooltip = styled(Tooltip)`
 `;
 
 const MainNavigationTabPanel = (props) => {
-  const {className = "", isExternal} = props;
+  const { className = "", isExternal } = props;
   const history = useHistory();
   const dispatch = useDispatch();
 
-  const {actions, folders, sortedWorkspaces, workspaces, workspace} = useWorkspace(true);
+  const { actions, folders, sortedWorkspaces, workspaces, workspace } = useWorkspace(true);
 
-  const {_t} = useTranslation();
+  const { _t } = useTranslation();
 
   const dictionary = {
     allWorkspaces: _t("SIDEBAR.ALL_WORKSPACES", "All Workspaces"),
@@ -193,11 +188,11 @@ const MainNavigationTabPanel = (props) => {
     addShortcut: _t("SIDEBAR.ADD_SHORTCUT", "Add shortcut"),
   };
 
-  const {active_topic} = useSelector((state) => state.settings.user.GENERAL_SETTINGS);
+  const { active_topic } = useSelector((state) => state.settings.user.GENERAL_SETTINGS);
   const driff = useSelector((state) => state.settings.driff);
   const user = useSelector((state) => state.session.user);
-  const {lastVisitedChannel} = useSelector((state) => state.chat);
-  const {links, unreadCounter} = useSelector((state) => state.global);
+  const { lastVisitedChannel } = useSelector((state) => state.chat);
+  const { links, unreadCounter } = useSelector((state) => state.global);
 
   const [workspacePath, setWorkpacePath] = useState("/workspace/chat");
   const [defaultTopic, setDefaultTopic] = useState(null);
@@ -205,7 +200,7 @@ const MainNavigationTabPanel = (props) => {
   const handleIconClick = (e) => {
     e.preventDefault();
     if (e.target.dataset.link) {
-      dispatch(setNavMode({mode: 3}));
+      dispatch(setNavMode({ mode: 3 }));
     } else {
       dispatch(setNavMode({ mode: 2 }));
     }
@@ -258,12 +253,10 @@ const MainNavigationTabPanel = (props) => {
   useEffect(() => {
     const arrWorkspaces = Object.values(workspaces);
     if (active_topic === null && arrWorkspaces.length && defaultTopic === null) {
-      const topic = arrWorkspaces
-        .sort((a, b) => (b.updated_at.timestamp > a.updated_at.timestamp ? 1 : -1))
-        .find(w => w.type === "WORKSPACE" && w.active === 1);
+      const topic = arrWorkspaces.sort((a, b) => (b.updated_at.timestamp > a.updated_at.timestamp ? 1 : -1)).find((w) => w.type === "WORKSPACE" && w.active === 1);
       setDefaultTopic(topic);
     }
-  }, [active_topic, defaultTopic, workspaces, setDefaultTopic])
+  }, [active_topic, defaultTopic, workspaces, setDefaultTopic]);
 
   useEffect(() => {
     if (active_topic && active_topic.hasOwnProperty("id")) {
@@ -278,27 +271,24 @@ const MainNavigationTabPanel = (props) => {
   return (
     <Wrapper className={`navigation-menu-tab ${className}`}>
       <div>
-        <div className="navigation-menu-tab-header" data-toggle="tooltip" title="Driff" data-placement="right"
-             data-original-title="Driff">
+        <div className="navigation-menu-tab-header" data-toggle="tooltip" title="Driff" data-placement="right" data-original-title="Driff">
           <div className="driff-logo">
-            <DriffLogo icon="driff-logo" data-link="/" onClick={handleIconClick}/>
+            <DriffLogo icon="driff-logo" data-link="/" onClick={handleIconClick} />
           </div>
         </div>
       </div>
       <div className="flex navigation-menu-tab-header-options">
         <ul>
           <li onClick={closeLeftNav}>
-            <NavIconContainer to={"/workspace/search"} >
-              <NavIcon icon={"compass"}/>
+            <NavIconContainer to={workspacePath}>
+              <NavIcon icon={"compass"} />
               <div>
                 {dictionary.workspace}
-                {unreadCounter.workspace_chat_message + unreadCounter.workspace_post >= 1 &&
-                <Badge data-count={unreadCounter.workspace_chat_message + unreadCounter.workspace_post}>&nbsp;</Badge>}
+                {unreadCounter.workspace_chat_message + unreadCounter.workspace_post >= 1 && <Badge data-count={unreadCounter.workspace_chat_message + unreadCounter.workspace_post}>&nbsp;</Badge>}
               </div>
             </NavIconContainer>
           </li>
-          {
-            !isExternal &&
+          {!isExternal && (
             <li onClick={closeLeftNav}>
               <NavIconContainer
                 active={["dashboard", "posts", "chat", "files", "people"].includes(props.match.params.page)}
@@ -311,60 +301,70 @@ const MainNavigationTabPanel = (props) => {
                 </div>
               </NavIconContainer>
             </li>
-          }
-          {
-            links.length > 0 && <QuickLinks links={links} user={user} dictionary={dictionary}/>
-          }
-          <PersonalLinks dictionary={dictionary}/>
+          )}
+          {links.length > 0 && <QuickLinks links={links} user={user} dictionary={dictionary} />}
+          <PersonalLinks dictionary={dictionary} />
         </ul>
       </div>
 
       <div className="your-workspaces-title">
         {dictionary.yourWorkspaces}
-        {
-          !isExternal && 
+        {!isExternal && (
           <StyledTooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="New folder">
             <FolderPlus onClick={handleShowFolderModal} icon="folder-plus" />
           </StyledTooltip>
-        }
+        )}
       </div>
       <div className="navigation-menu-group">
         <div id="elements" className="open">
           <ul>
-            {!isExternal && Object.values(folders).sort((a,b) => a.name.localeCompare(b.name))
-              .map((folder) => {
-                return <WorkspaceList key={folder.key_id} actions={actions} folder={folder} history={history} show={true} workspace={workspace} workspaces={sortedWorkspaces.filter((ws) => {
-                  return (ws.active === 1 && folder.workspace_ids.some((id) => id === ws.id));
-                })}/>;
-              })
-            }
+            {!isExternal &&
+              Object.values(folders)
+                .sort((a, b) => a.name.localeCompare(b.name))
+                .map((folder) => {
+                  return (
+                    <WorkspaceList
+                      key={folder.key_id}
+                      actions={actions}
+                      folder={folder}
+                      history={history}
+                      show={true}
+                      workspace={workspace}
+                      workspaces={sortedWorkspaces.filter((ws) => {
+                        return ws.active === 1 && folder.workspace_ids.some((id) => id === ws.id);
+                      })}
+                    />
+                  );
+                })}
             {!isExternal && Object.values(workspaces).length > 0 && (
               <WorkspaceList
                 actions={actions}
                 history={history}
                 show={true}
                 workspace={workspace}
-                workspaces={sortedWorkspaces.filter((ws) => { return (ws.active === 1 && ws.folder_id === null)})}
+                workspaces={sortedWorkspaces.filter((ws) => {
+                  return ws.active === 1 && ws.folder_id === null;
+                })}
                 folder={{
                   id: "general_internal",
                   is_lock: 0,
                   // selected: generalWorkspaces.some((ws) => ws.selected),
                   name: dictionary.workspacesFolder,
                   type: "GENERAL_FOLDER",
-                  workspace_ids: Object.values(workspaces).filter((ws) => {
-                    return ws.folder_id === null && ws.active === 1;
-                  }).map((ws) => ws.id),
-                  unread_count: 0
+                  workspace_ids: Object.values(workspaces)
+                    .filter((ws) => {
+                      return ws.folder_id === null && ws.active === 1;
+                    })
+                    .map((ws) => ws.id),
+                  unread_count: 0,
                 }}
-              />)
-            }
-            {
-              isExternal && Object.keys(workspaces).length > 0 && (
-                Object.values(workspaces).map((ws) => {
-                  return <ExternalWorkspaceList key={ws.key_id} actions={actions} workspace={ws} activeTopic={workspace}/>
-                })
-              )
-            }
+              />
+            )}
+            {isExternal &&
+              Object.keys(workspaces).length > 0 &&
+              Object.values(workspaces).map((ws) => {
+                return <ExternalWorkspaceList key={ws.key_id} actions={actions} workspace={ws} activeTopic={workspace} />;
+              })}
           </ul>
 
           <ul>
@@ -391,8 +391,7 @@ const MainNavigationTabPanel = (props) => {
           </ul>
         </div>
       </div>
-      {
-        !isExternal &&
+      {!isExternal && (
         <div>
           <NavNewWorkspace onClick={handleShowWorkspaceModal} className="btn btn-outline-light" type="button">
             <div>
@@ -401,7 +400,7 @@ const MainNavigationTabPanel = (props) => {
             </div>
           </NavNewWorkspace>
         </div>
-      }
+      )}
     </Wrapper>
   );
 };
