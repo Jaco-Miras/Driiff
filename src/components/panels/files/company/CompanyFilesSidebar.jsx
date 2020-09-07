@@ -41,7 +41,6 @@ const MobileOverlayFilter = styled.div``;
 
 const Filter = styled.span`
   cursor: pointer;
-  cursor: hand;
 
   ${(props) =>
   props.active &&
