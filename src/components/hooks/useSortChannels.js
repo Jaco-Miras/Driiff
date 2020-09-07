@@ -21,30 +21,14 @@ const useSortChannels = (channels, search, options = {}, workspace) => {
   };
 
   let results = Object.values(channels)
-    .filter((c) => {
-      if (workspace) {
-        const checkForId = (id) => id === user.id;
-        let isMember = c.members.map((m) => m.id).some(checkForId);
-        return c.type === "TOPIC" && isMember;
-      } else {
-        if (search === "" || search.length <= 2) {
-          return c.type !== "TOPIC";
-        } else {
-          return true;
-        }
-      }
-    })
-    //.concat(this.props.startNewChannels)
     .filter((channel) => {
+      let isMember = channel.members.some(m => m.id === user.id);
+
       if (typeof channel.add_user === "undefined")
         channel.add_user = false;
 
       if (typeof channel.add_open_topic === "undefined") {
-        if (!channel.members.some(c => c.id === user.id)) {
-          channel.add_open_topic = true;
-        } else {
-          channel.add_open_topic = false;
-        }
+        channel.add_open_topic = !isMember;
       }
 
       if (options.type && options.type === "DIRECT") {
@@ -55,15 +39,24 @@ const useSortChannels = (channels, search, options = {}, workspace) => {
         }
       }
 
-      if (search === "") {
-        //return true;
-
-        if (options.showHidden) {
-          return !channel.is_archived && !channel.add_open_topic;
-        } else {
-          return !channel.is_hidden && !channel.is_archived && !channel.add_user && !channel.add_open_topic;
+      if (workspace) {
+        if (!(channel.type === "TOPIC" && isMember)) {
+          return false;
         }
+      }
+
+      if (workspace === null && search.length <= 2) {
+        if (channel.type === "TOPIC") {
+          return false;
+        }
+      }
+
+      if (search === "") {
+        return !(channel.is_hidden || channel.is_archived === true || channel.add_user || channel.add_open_topic);
       } else {
+        if (channel.type === "DIRECT" && channel.members.length === 2) {
+          return channel.members.filter(m => m.id !== user.id).some(m => m.name.toLowerCase().search(search.toLowerCase()) !== -1)
+        }
         return (channel.search.toLowerCase().search(search.toLowerCase()) !== -1 || channel.title.toLowerCase().search(search.toLowerCase()) !== -1)
       }
     })
@@ -112,6 +105,15 @@ const useSortChannels = (channels, search, options = {}, workspace) => {
           return 1;
       }
 
+      //hidden and archived
+      if (search.length > 2) {
+        if ((b.is_hidden || b.is_archived === true) && !(a.is_hidden || b.is_archived === true))
+          return -1;
+
+        if ((a.is_hidden || a.is_archived === true) && !(b.is_hidden || b.is_archived === true))
+          return 1;
+      }
+
       if (settings.order_channel.order_by === "channel_date_updated") {
         if (settings.order_channel.sort_by === "DESC") {
           if (typeof channelDrafts[b.id] !== "undefined" && typeof channelDrafts[a.id] !== "undefined") {
@@ -132,7 +134,6 @@ const useSortChannels = (channels, search, options = {}, workspace) => {
             return 1;
           }
         }
-
         //Uncomment for Last Reply sorting
         if (a.last_reply && !b.last_reply) {
           return settings.order_channel.sort_by === "DESC" ? -1 : 1;
@@ -154,12 +155,6 @@ const useSortChannels = (channels, search, options = {}, workspace) => {
         return bTitle.localeCompare(aTitle);
       } else {
         return aTitle.localeCompare(bTitle);
-      }
-
-      //hidden and archived
-      if (search.length > 2) {
-        compare = (b.is_hidden + b.is_archived) - (a.is_hidden + b.is_archived);
-        if (compare !== 0) return compare;
       }
     });
   return [results];
