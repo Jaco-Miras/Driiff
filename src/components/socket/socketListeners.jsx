@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, {Component} from "react";
 import {isSafari} from "react-device-detect";
 import {connect} from "react-redux";
 import {withRouter} from "react-router-dom";
@@ -37,6 +37,7 @@ import {
   incomingCompanyMovedFile,
   incomingCompanyMoveFile,
   incomingCompanyRestoreFile,
+  incomingCompanyRestoreFolder,
   incomingCompanyUpdatedFile,
   incomingCompanyUpdatedFolder,
   incomingDeletedFile,
@@ -56,6 +57,7 @@ import {
   incomingRemovedFile,
   incomingRemovedFolder,
   incomingRestoreFile,
+  incomingRestoreFolder,
 } from "../../redux/actions/fileActions";
 import {
   addUserToReducers,
@@ -157,6 +159,10 @@ class SocketListeners extends Component {
                 this.props.history.push(pathname);
               }
             }
+            break;
+          }
+          case "FOLDER_RESTORE": {
+            this.props.incomingRestoreFolder(e);
             break;
           }
           case "FOLDER_FORCE_DELETE": {
@@ -427,6 +433,10 @@ class SocketListeners extends Component {
           }
           case "FOLDER_DELETE": {
             this.props.incomingCompanyDeletedFolder(e);
+            break;
+          }
+          case "FOLDER_RESTORE": {
+            this.props.incomingCompanyRestoreFolder(e);
             break;
           }
           default:
@@ -1016,6 +1026,7 @@ function mapDispatchToProps(dispatch) {
     incomingDeletedFile: bindActionCreators(incomingDeletedFile, dispatch),
     incomingMovedFile: bindActionCreators(incomingMovedFile, dispatch),
     incomingRestoreFile: bindActionCreators(incomingRestoreFile, dispatch),
+    incomingRestoreFolder: bindActionCreators(incomingRestoreFolder, dispatch),
     incomingEmptyTrash: bindActionCreators(incomingEmptyTrash, dispatch),
     incomingCompanyFolder: bindActionCreators(incomingCompanyFolder, dispatch),
     incomingCompanyUpdatedFolder: bindActionCreators(incomingCompanyUpdatedFolder, dispatch),
@@ -1028,6 +1039,7 @@ function mapDispatchToProps(dispatch) {
     incomingCompanyRemovedFile: bindActionCreators(incomingRemovedCompanyFile, dispatch),
     incomingCompanyMoveFile: bindActionCreators(incomingCompanyMoveFile, dispatch),
     incomingCompanyRestoreFile: bindActionCreators(incomingCompanyRestoreFile, dispatch),
+    incomingCompanyRestoreFolder: bindActionCreators(incomingCompanyRestoreFolder, dispatch),
     incomingCompanyRemovedFolder: bindActionCreators(incomingRemovedCompanyFolder, dispatch),
     incomingCompanyDeletedFiles: bindActionCreators(incomingCompanyDeletedFiles, dispatch),
     incomingCompanyUpdatedFile: bindActionCreators(incomingCompanyUpdatedFile, dispatch),

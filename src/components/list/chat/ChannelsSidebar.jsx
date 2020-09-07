@@ -35,52 +35,27 @@ const ChannelsSidebar = (props) => {
               let a = arr[k - 1];
               let b = channel;
 
-              if (a.type === "DIRECT" && b.type === "DIRECT") {
-                if (!a.add_user && b.add_user) {
-                  chatHeader = dictionary.startNew;
-                } else if (a.add_user && !b.add_user) {
-                  chatHeader = dictionary.contacts;
-                }
-              } else if (!a.add_user && b.add_user) {
-                chatHeader = dictionary.startNew;
-              } else if (a.type !== "DIRECT" && b.type === "DIRECT") {
+              if (a.type === "PERSONAL_BOT" && b.type !== "PERSONAL_BOT") {
+                chatHeader = dictionary.chats;
+              } else if (!(a.add_user || a.add_open_topic) && (b.add_user || b.add_open_topic)) {
                 chatHeader = dictionary.contacts;
-              } else if (!a.is_pinned && b.is_pinned) {
-                chatHeader = dictionary.pinned;
-              } else if ((a.type === "DIRECT" || a.is_pinned) && !b.is_pinned) {
-                chatHeader = dictionary.recent;
-              } else if (!a.is_hidden && b.is_hidden) {
-                chatHeader = dictionary.hidden;
-              } else if (!a.add_open_topic && b.add_open_topic) {
-                chatHeader = dictionary.viewOpenWorkspace;
-              } else if (!a.is_archived && b.is_archived) {
-                chatHeader = dictionary.archived;
               }
             } else {
               if (channel.type === "PERSONAL_BOT") {
                 chatHeader = dictionary.personalBot;
-              } else if (channel.add_user) {
-                chatHeader = dictionary.startNew;
-              } else if (channel.type === "DIRECT") {
+              } else if (channel.add_user || channel.add_open_topic) {
                 chatHeader = dictionary.contacts;
-              } else if (channel.is_pinned) {
-                chatHeader = dictionary.pinned;
-              } else if (channel.is_hidden) {
-                chatHeader = dictionary.hidden;
-              } else if (channel.add_open_topic) {
-                chatHeader = dictionary.viewOpenWorkspace;
-              } else if (channel.is_archived) {
-                chatHeader = dictionary.archived;
               } else {
-                chatHeader = dictionary.recent;
+                chatHeader = dictionary.chats;
               }
             }
 
             return (
               <React.Fragment key={channel.id}>
                 {search !== "" && chatHeader !== "" && <ChatHeader>{chatHeader}</ChatHeader>}
-                <ChannelList channel={channel} selectedChannel={selectedChannel} isWorkspace={workspace}
-                             channelDrafts={channelDrafts} dictionary={dictionary}/>
+                <ChannelList
+                  channel={channel} selectedChannel={selectedChannel}
+                  channelDrafts={channelDrafts} dictionary={dictionary}/>
               </React.Fragment>
             );
           })}

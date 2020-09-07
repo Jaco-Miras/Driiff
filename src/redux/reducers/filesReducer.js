@@ -111,8 +111,28 @@ export default (state = INITIAL_STATE, action) => {
       if (folderItems[action.data.folder.id])
         folderItems[action.data.folder.id].is_archived = true;
 
+      action.data.connected_folder_ids.forEach(id => {
+        if (typeof folderItems[id] !== "undefined") {
+          folderItems[id].is_archived = true;
+        }
+      })
+
+      let companyFiles = state.companyFiles;
+      action.data.connected_file_ids.forEach(id => {
+        if (typeof companyFiles.items[id] !== "undefined") {
+          companyFiles.count = {
+            all: companyFiles.count.all - 1,
+            stars: companyFiles.count.stars - (companyFiles.items[id].is_favorite ? 1 : 0),
+            trash: companyFiles.count.trash + 1,
+            storage: companyFiles.count.storage - companyFiles.items[id].size
+          }
+          companyFiles.trash_files.items[id] = companyFiles.items[id];
+        }
+      })
+
       return {
         ...state,
+        companyFiles: companyFiles,
         companyFolders: {
           ...state.companyFolders,
           items: folderItems
@@ -159,6 +179,56 @@ export default (state = INITIAL_STATE, action) => {
         companyFiles: {
           ...state.companyFiles,
           items: items
+        }
+      }
+    }
+    case "INCOMING_COMPANY_RESTORE_FOLDER": {
+      let folderItems = state.companyFolders.items;
+
+      action.data.connected_folder_ids.forEach(id => {
+        if (typeof folderItems[id] !== "undefined") {
+          folderItems[id].is_archived = false;
+        }
+      })
+
+      let items = state.companyFiles.trash_files.items;
+      let fileItems = state.companyFiles.items;
+      let count = 0;
+      let stars = 0;
+      let storage = 0;
+      action.data.connected_file_ids.forEach(id => {
+        if (typeof items[id] !== "undefined") {
+          count += 1;
+          stars += items[id].is_favorite ? 1 : 0;
+          storage += items[id].size;
+          fileItems[id] = items[id];
+          delete items[id];
+        }
+      });
+
+      return {
+        ...state,
+        companyFiles: {
+          ...state.companyFiles,
+          count: {
+            ...state.companyFiles.count,
+            all: state.companyFiles.count.all + count,
+            stars: state.companyFiles.count.stars + stars,
+            trash: state.companyFiles.count.trash - count,
+            storage: state.companyFiles.count.storage + storage,
+          },
+          items: {
+            ...state.companyFiles.items,
+            items: fileItems
+          },
+          trash_files: {
+            ...state.companyFiles.trash_files,
+            items: items
+          }
+        },
+        companyFolders: {
+          ...state.companyFolders,
+          items: folderItems
         }
       }
     }
@@ -237,15 +307,15 @@ export default (state = INITIAL_STATE, action) => {
           items: items,
           favorite_files: {
             ...state.companyFiles.favorite_files,
-            items: state.companyFiles.favorite_files.filter(id => id !== deletedItem.id),
+            items: state.companyFiles.favorite_files.items.filter(id => id !== deletedItem.id),
           },
           popular_files: {
             ...state.companyFiles.popular_files,
-            items: state.companyFiles.popular_files.filter(id => id !== deletedItem.id),
+            items: state.companyFiles.popular_files.items.filter(id => id !== deletedItem.id),
           },
           recently_edited: {
             ...state.companyFiles.recently_edited,
-            items: state.companyFiles.recently_edited.filter(id => id !== deletedItem.id),
+            items: state.companyFiles.recently_edited.items.filter(id => id !== deletedItem.id),
           },
           trash_files: {
             ...state.companyFiles.trash_files,
@@ -325,51 +395,74 @@ export default (state = INITIAL_STATE, action) => {
       }
     }
     case "UPLOAD_COMPANY_FILES_REDUCER": {
-      return {
-        ...state,
-        companyFiles: {
-          ...state.companyFiles,
-          init: true,
-          skip: state.companyFiles.skip + state.companyFiles.limit,
-          has_more: action.data.files.length === state.companyFiles.limit,
-          items: {
-            ...convertArrayToObject(action.data.files, "id"),
-            ...state.companyFiles.items,
-          },
-        }
-      }
-    }
-    case "INCOMING_COMPANY_FILES": {
-      let items = state.companyFiles.items;
-      let fileItems = Object.values(state.companyFiles.items).filter(f => f.uploading);
+      let companyFolders = state.companyFolders;
 
-      let storage = 0;
+      let items = state.companyFiles.items;
       action.data.files.forEach(f => {
-        const i = fileItems.find(file => file.size === f.size && file.search === f.search);
-        delete items[i.id];
         items[f.id] = f;
-        storage += f.size;
+
+        if (action.data.folder_id
+          && typeof companyFolders.items[action.data.folder_id] !== "undefined"
+          && !companyFolders.items[action.data.folder_id].files.includes(f.id)) {
+          companyFolders.items[action.data.folder_id].files.push(f.id);
+        }
       })
 
       return {
         ...state,
         companyFiles: {
           ...state.companyFiles,
-          items: items,
-          count: {
-            ...state.companyFiles.count,
-            all: state.companyFiles.count.all + action.data.files.length,
-            storage: state.companyFiles.count.storage + storage
+          items: items
+        },
+        companyFolders: companyFolders
+      }
+    }
+    case "INCOMING_COMPANY_FILES": {
+      let companyFolders = state.companyFolders;
+      let companyFiles = state.companyFiles;
+
+      let uploadedItems = Object.values(companyFiles.items).filter(f => f.uploading);
+      action.data.files.forEach(f => {
+        const i = uploadedItems.find(file => file.size === f.size && file.search === f.search);
+
+        if (typeof companyFiles.items[i.id] !== "undefined") {
+          delete companyFiles.items[i.id];
+
+          const ix = companyFolders.items[f.folder_id].files.findIndex(id => id === i.id);
+          if (ix !== -1) {
+            companyFolders.items[f.folder_id].files.splice(ix, 1);
           }
         }
+        companyFiles.items[f.id] = f;
+        companyFiles.count.all += 1;
+        companyFiles.count.storage += f.size;
+        companyFiles.count.stars += f.is_favorite ? 1 : 0;
+
+        if (typeof companyFolders.items[f.folder_id] !== "undefined"
+          && !companyFolders.items[f.folder_id].files.includes(f.id)) {
+
+          companyFolders.items[f.folder_id].files.push(f.id);
+        }
+      })
+
+      return {
+        ...state,
+        companyFiles: companyFiles,
+        companyFolders: companyFolders
       }
     }
     case "GET_COMPANY_FILES_SUCCESS": {
-      let fileItems = state.companyFiles.items;
+      let companyFiles = state.companyFiles;
       let folderItems = state.companyFolders.items;
 
       action.data.files.forEach(f => {
-        fileItems[f.id] = f;
+        if (typeof companyFiles.items[f.id] === "undefined") {
+          companyFiles.count.all += 1;
+          companyFiles.count.stars += (f.is_favorite) ? 1 : 0;
+          companyFiles.count.storage += f.size;
+        }
+
+        companyFiles.items[f.id] = f;
 
         if (f.folder_id) {
           if (folderItems[f.folder_id]) {
@@ -380,7 +473,7 @@ export default (state = INITIAL_STATE, action) => {
         }
       })
 
-      if (action.data.folder_id && folderItems[action.data.folder_id]) {
+      if (action.data.folder_id && typeof folderItems[action.data.folder_id] !== "undefined") {
         folderItems[action.data.folder_id] = {
           ...folderItems[action.data.folder_id],
           init: false,
@@ -393,10 +486,10 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         companyFiles: {
           ...state.companyFiles,
+          ...companyFiles,
           init: true,
           skip: state.companyFiles.skip + state.companyFiles.limit,
           has_more: action.data.files.length === state.companyFiles.limit,
-          items: fileItems,
         },
         companyFolders: {
           ...state.companyFolders,
@@ -1191,7 +1284,7 @@ export default (state = INITIAL_STATE, action) => {
     }
     case "INCOMING_DELETED_FILE": {
       if (typeof state.workspaceFiles[action.data.topic_id] === "undefined"
-        && typeof state.workspaceFiles[action.data.topic_id].files[action.data.file_id])
+        || typeof state.workspaceFiles[action.data.topic_id].files[action.data.file_id] === "undefined")
         return state;
 
       let items = state.workspaceFiles[action.data.topic_id];
@@ -1204,7 +1297,7 @@ export default (state = INITIAL_STATE, action) => {
       items.recently_edited.filter(id => id !== file.id);
 
       if (file.folder_id && items.folders[file.folder_id]) {
-        let index = items.folders[file.folder_id].files.findIndex(file.id);
+        let index = items.folders[file.folder_id].files.findIndex(f => f.id === file.id);
         if (index !== -1) {
           items.folders[file.folder_id].files.splice(index, 1);
         }
@@ -1258,16 +1351,17 @@ export default (state = INITIAL_STATE, action) => {
     }
     case "INCOMING_REMOVED_FILE": {
       let newWorkspaceFiles = {...state.workspaceFiles};
-      if (newWorkspaceFiles.hasOwnProperty(action.data.topic_id)) {
-        delete newWorkspaceFiles[action.data.topic_id].trash_files[action.data.file_id];
-        newWorkspaceFiles[action.data.topic_id].trash = newWorkspaceFiles[action.data.topic_id].trash - 1;
-        return {
-          ...state,
-          workspaceFiles: newWorkspaceFiles,
-        };
-      } else {
+
+      if (typeof newWorkspaceFiles[action.data.topic_id] === "undefined")
         return state;
-      }
+
+      delete newWorkspaceFiles[action.data.topic_id].trash_files[action.data.file_id];
+      newWorkspaceFiles[action.data.topic_id].trash -= 1;
+
+      return {
+        ...state,
+        workspaceFiles: newWorkspaceFiles,
+      };
     }
     case "ADD_REMOVE_FAVORITE": {
       if (action.data.topic_id) {
@@ -1319,6 +1413,40 @@ export default (state = INITIAL_STATE, action) => {
             }
           }
         };
+      }
+    }
+    case "INCOMING_RESTORE_FOLDER": {
+      if (typeof state.workspaceFiles[action.data.topic_id] === "undefined")
+        return state;
+
+      let items = state.workspaceFiles[action.data.topic_id];
+
+      action.data.connected_folder_ids.forEach(id => {
+        items.folders[id].is_archived = false;
+      })
+
+      action.data.connected_file_ids.forEach(id => {
+        if (items.trash_files[id]) {
+          items.files[id] = items.trash_files[id];
+          items.count.count += 1;
+          items.count.trash -= 1;
+          items.count.storage += items.trash_files[id].size;
+
+          if (items.trash_files[id].is_favorite && !items.favorite_files.includes(id)) {
+            items.count.stars += 1;
+            items.favorite_files.push(id);
+          }
+
+          delete items.trash_files[id];
+        }
+      })
+
+      return {
+        ...state,
+        workspaceFiles: {
+          ...state.workspaceFiles,
+          [action.data.topic_id]: items
+        }
       }
     }
     case "INCOMING_RESTORE_FILE": {

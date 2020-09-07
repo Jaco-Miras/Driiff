@@ -54,7 +54,6 @@ const MoreButton = styled(MoreOptions)`
     right: 10px;
     top: 10px;
     width: 18px;
-}
 `;
 
 const EmptyState = styled.div`
@@ -123,7 +122,7 @@ const CompanyFilesBody = (props) => {
     let formData = new FormData();
     for (let i in attachedFiles) {
       if (attachedFiles.hasOwnProperty(i)) {
-        attachedFiles[i].reference_id = `__${i}` + require("shortid").generate();
+        attachedFiles[i].reference_id = require("shortid").generate();
         formData.append("files[" + i + "]", attachedFiles[i]);
       }
     }
@@ -190,7 +189,6 @@ const CompanyFilesBody = (props) => {
    * @todo: must fill-out the entire screen with items
    */
   const initLoading = () => {
-    let el = refs.files.current;
     loadMore.files();
   }
 
@@ -297,6 +295,7 @@ const CompanyFilesBody = (props) => {
                             if (files.files.hasOwnProperty(f)) {
                               return <CompanyFileListItem
                                 key={f} scrollRef={scrollRef} actions={actions}
+                                folders={folders}
                                 className="col-xl-3 col-lg-4 col-md-6 col-sm-12"
                                 file={files.files[f]} disableOptions={disableOptions}/>;
                             } else return null;
@@ -324,6 +323,7 @@ const CompanyFilesBody = (props) => {
                         if (files.files.hasOwnProperty(f)) {
                           return <CompanyFileListItem
                             key={f} scrollRef={scrollRef} actions={actions}
+                            folders={folders}
                             className="col-xl-3 col-lg-4 col-md-6 col-sm-12" file={files.files[f]}
                             disableOptions={disableOptions}/>;
                         } else return null;

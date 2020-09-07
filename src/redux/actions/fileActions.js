@@ -45,9 +45,11 @@ import {
   putCompanyFiles as putCompanyFilesService,
   putCompanyFolders as putCompanyFoldersService,
   putCompanyRestoreFile as putCompanyRestoreFileService,
+  putCompanyRestoreFolder as putCompanyRestoreFolderService,
   putFile as putFileService,
   putFolder as putFolderService,
   putWorkspaceRestoreFile as putWorkspaceRestoreFileService,
+  putWorkspaceRestoreFolder as putWorkspaceRestoreFolderService,
   restoreWorkspaceFile as restoreWorkspaceFileService,
   uploadWorkspaceFile as uploadWorkspaceFileService,
   uploadWorkspaceFiles as uploadWorkspaceFilesService
@@ -211,6 +213,10 @@ export function incomingMovedFile(payload, callback) {
 
 export function incomingRestoreFile(payload, callback) {
   return SimpleDispatchActionToReducer("INCOMING_RESTORE_FILE", payload, callback);
+}
+
+export function incomingRestoreFolder(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_RESTORE_FOLDER", payload, callback);
 }
 
 export function incomingEmptyTrash(payload, callback) {
@@ -397,6 +403,10 @@ export function incomingCompanyRestoreFile(payload, callback) {
   return SimpleDispatchActionToReducer("INCOMING_COMPANY_RESTORE_FILE", payload, callback);
 }
 
+export function incomingCompanyRestoreFolder(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_COMPANY_RESTORE_FOLDER", payload, callback);
+}
+
 export function incomingRemovedCompanyFolder(payload, callback) {
   return SimpleDispatchActionToReducer("INCOMING_REMOVED_COMPANY_FOLDER", payload, callback);
 }
@@ -415,6 +425,14 @@ export function putWorkspaceRestoreFile(payload, callback) {
 
 export function putCompanyRestoreFile(payload, callback) {
   return dispatchActionToReducer(putCompanyRestoreFileService(payload), "PUT_COMPANY_RESTORE_FILE_START", "PUT_COMPANY_RESTORE_FILE_SUCCESS", "PUT_COMPANY_RESTORE_FILE_FAIL", callback);
+}
+
+export function putWorkspaceRestoreFolder(payload, callback) {
+  return dispatchActionToReducer(putWorkspaceRestoreFolderService(payload), "PUT_WORKSPACE_RESTORE_FOLDER_START", "PUT_WORKSPACE_RESTORE_FOLDER_SUCCESS", "PUT_WORKSPACE_RESTORE_FOLDER_FAIL", callback);
+}
+
+export function putCompanyRestoreFolder(payload, callback) {
+  return dispatchActionToReducer(putCompanyRestoreFolderService(payload), "PUT_COMPANY_RESTORE_FOLDER_START", "PUT_COMPANY_RESTORE_FOLDER_SUCCESS", "PUT_COMPANY_RESTORE_FOLDER_FAIL", callback);
 }
 
 export function putCompanyFileMove(payload, callback) {

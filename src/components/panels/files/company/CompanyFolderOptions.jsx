@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import {MoreOptions} from "../../../panels/common";
+import {useToaster} from "../../../hooks";
 
 const Wrapper = styled(MoreOptions)`
   .more-options-tooltip {
@@ -31,9 +32,21 @@ const CompanyFolderOptions = (props) => {
 
   const {className = "", folder, scrollRef = null, actions, history, handleAddEditFolder} = props;
 
+  const toaster = useToaster();
+
   const handleRename = () => {
     handleAddEditFolder(folder, "edit");
   };
+
+  const handleRestore = () => {
+    actions.restoreCompanyFolder(folder, (err, res) => {
+      if (res) {
+        toaster.success(<>Folder {folder.search} is restored.</>)
+      }
+    }, {
+      message: false
+    });
+  }
 
   const handleDelete = () => {
 
@@ -56,6 +69,7 @@ const CompanyFolderOptions = (props) => {
     <Wrapper className={`file-options ${className}`} moreButton="more-vertical" folder={folder} scrollRef={scrollRef}>
       {/* <div onClick={handleViewDetail}>View Details</div> */}
       {!folder.hasOwnProperty("payload") && <div onClick={handleRename}>Rename</div>}
+      {folder.is_archived && <div onClick={handleRestore}>Restore</div>}
       <div onClick={handleDelete}>Remove</div>
     </Wrapper>
   );

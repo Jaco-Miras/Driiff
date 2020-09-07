@@ -117,6 +117,8 @@ export {
   putCompanyRestoreFile,
   putWorkspaceRestoreFile,
   putCompanyFileMove,
+  putWorkspaceRestoreFolder,
+  putCompanyRestoreFolder,
 } from "./files";
 
 export {

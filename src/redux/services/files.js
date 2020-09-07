@@ -158,6 +158,15 @@ export function putWorkspaceRestoreFile(payload) {
   });
 }
 
+export function putWorkspaceRestoreFolder(payload) {
+  let url = "/v2/workspace-restore-folder";
+  return apiCall({
+    method: "PUT",
+    url: url,
+    data: payload,
+  });
+}
+
 /**
  * @param {Object} payload
  * @param {number} payload.topic_id
@@ -442,6 +451,14 @@ export function putCompanyRestoreFile(payload) {
   return apiCall({
     method: "PUT",
     url: `/v2/company/restore-file`,
+    data: payload
+  });
+}
+
+export function putCompanyRestoreFolder(payload) {
+  return apiCall({
+    method: "PUT",
+    url: `/v2/company/restore-folder`,
     data: payload
   });
 }

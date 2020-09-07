@@ -27,14 +27,25 @@ const useSortChannels = (channels, search, options = {}, workspace) => {
         let isMember = c.members.map((m) => m.id).some(checkForId);
         return c.type === "TOPIC" && isMember;
       } else {
-        return c.type !== "TOPIC";
+        if (search === "" || search.length <= 2) {
+          return c.type !== "TOPIC";
+        } else {
+          return true;
+        }
       }
     })
     //.concat(this.props.startNewChannels)
     .filter((channel) => {
-      if (typeof channel.add_user === "undefined") channel.add_user = false;
+      if (typeof channel.add_user === "undefined")
+        channel.add_user = false;
 
-      if (typeof channel.add_open_topic === "undefined") channel.add_open_topic = false;
+      if (typeof channel.add_open_topic === "undefined") {
+        if (!channel.members.some(c => c.id === user.id)) {
+          channel.add_open_topic = true;
+        } else {
+          channel.add_open_topic = false;
+        }
+      }
 
       if (options.type && options.type === "DIRECT") {
         if (!(channel.type === "DIRECT" || channel.type === "PERSON")) {
@@ -45,6 +56,8 @@ const useSortChannels = (channels, search, options = {}, workspace) => {
       }
 
       if (search === "") {
+        //return true;
+
         if (options.showHidden) {
           return !channel.is_archived && !channel.add_open_topic;
         } else {
@@ -56,15 +69,39 @@ const useSortChannels = (channels, search, options = {}, workspace) => {
     })
     .sort((a, b) => {
       let compare = 0;
+      const aTitle = getChannelTitle(a);
+      const bTitle = getChannelTitle(b);
 
-      //personal bot with unread message
-      if (a.type === "PERSONAL_BOT" && (a.total_unread >= 1 || a.total_mark_incomplete >= 1) && b.type !== "PERSONAL_BOT") {
+      if (a.type === "PERSONAL_BOT" && b.type !== "PERSONAL_BOT") {
         return -1;
       }
 
-      if (b.type === "PERSONAL_BOT" && (b.total_unread >= 1 || b.total_mark_incomplete >= 1) && a.type !== "PERSONAL_BOT") {
+      if (b.type === "PERSONAL_BOT" && a.type !== "PERSONAL_BOT") {
         return 1;
       }
+
+      //personal bot with unread message
+      if (b.type === "PERSONAL_BOT" && a.type === "PERSONAL_BOT") {
+        return ((b.total_unread >= 1 || b.total_mark_incomplete >= 1)) ? 1 : -1;
+      }
+
+      if (aTitle.toLowerCase() === search.toLowerCase())
+        return -1;
+
+      if (bTitle.toLowerCase() === search.toLowerCase())
+        return 1;
+
+      //add to user
+      if ((a.add_user || a.add_open_topic) && !(b.add_user || b.add_open_topic)) {
+        return 1;
+      }
+      if ((b.add_user || b.add_open_topic) && !(a.add_user || a.add_open_topic)) {
+        return -1;
+      }
+
+      //pinned
+      compare = b.is_pinned - a.is_pinned;
+      if (compare !== 0) return compare;
 
       //direct users first
       if (!(a.type === "DIRECT" && b.type === "DIRECT")) {
@@ -74,30 +111,6 @@ const useSortChannels = (channels, search, options = {}, workspace) => {
         if (b.type === "DIRECT")
           return 1;
       }
-
-      //add to user
-      compare = b.add_user - a.add_user;
-      if (compare !== 0) return compare;
-
-      //pinned
-      compare = b.is_pinned - a.is_pinned;
-      if (compare !== 0) return compare;
-
-      //recent
-      compare = a.is_hidden + a.add_user + a.add_open_topic + a.is_archived - (b.is_hidden + b.add_user + b.add_open_topic + b.is_archived);
-      if (compare !== 0) return compare;
-
-      //hidden
-      compare = b.is_hidden - a.is_hidden;
-      if (compare !== 0) return compare;
-
-      //view topic
-      compare = b.add_open_topic - a.add_open_topic;
-      if (compare !== 0) return compare;
-
-      //archived
-      compare = b.is_archived - a.is_archived;
-      if (compare !== 0) return compare;
 
       if (settings.order_channel.order_by === "channel_date_updated") {
         if (settings.order_channel.sort_by === "DESC") {
@@ -137,13 +150,16 @@ const useSortChannels = (channels, search, options = {}, workspace) => {
         }
       }
 
-      let aTitle = getChannelTitle(a);
-      let bTitle = getChannelTitle(b);
-
       if (settings.order_channel.order_by === "channel_name" && settings.order_channel.sort_by === "DESC") {
         return bTitle.localeCompare(aTitle);
       } else {
         return aTitle.localeCompare(bTitle);
+      }
+
+      //hidden and archived
+      if (search.length > 2) {
+        compare = (b.is_hidden + b.is_archived) - (a.is_hidden + b.is_archived);
+        if (compare !== 0) return compare;
       }
     });
   return [results];

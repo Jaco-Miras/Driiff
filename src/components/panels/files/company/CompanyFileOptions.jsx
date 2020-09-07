@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import {MoreOptions} from "../../../panels/common";
+import {useToaster} from "../../../hooks";
 
 const Wrapper = styled(MoreOptions)`
   .more-options-tooltip {
@@ -28,7 +29,9 @@ const Wrapper = styled(MoreOptions)`
 `;
 
 const CompanyFileOptions = (props) => {
-  const {className = "", file, scrollRef = null, actions, forceDelete, disableOptions} = props;
+  const {className = "", folders, file, scrollRef = null, actions, forceDelete, disableOptions} = props;
+
+  const toaster = useToaster();
 
   const handleViewDetail = () => {
     actions.viewCompanyFiles(file);
@@ -55,7 +58,17 @@ const CompanyFileOptions = (props) => {
   };
 
   const handleRestore = () => {
-    actions.restoreCompanyFile(file);
+    actions.restoreCompanyFile(file, (err, res) => {
+      if (res) {
+        if (file.folder_id && typeof folders[file.folder_id] !== "undefined") {
+          toaster.success(<>Item <b>{file.search}</b> is restored on {folders[file.folder_id].search} folder.</>);
+        } else {
+          toaster.success(<>Item <b>{file.search}</b> is restored.</>);
+        }
+      }
+    }, {
+      message: false
+    });
   }
 
   const handleDelete = () => {
