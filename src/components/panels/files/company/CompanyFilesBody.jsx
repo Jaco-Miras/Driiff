@@ -122,7 +122,7 @@ const CompanyFilesBody = (props) => {
     let formData = new FormData();
     for (let i in attachedFiles) {
       if (attachedFiles.hasOwnProperty(i)) {
-        attachedFiles[i].reference_id = `__${i}` + require("shortid").generate();
+        attachedFiles[i].reference_id = require("shortid").generate();
         formData.append("files[" + i + "]", attachedFiles[i]);
       }
     }
