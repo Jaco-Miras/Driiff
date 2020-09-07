@@ -100,14 +100,16 @@ const ChatBubbleContainer = styled.div`
   ol {
     text-align: left;
     position: relative;
-    padding-inline-start: 15px;
+    padding-inline-start: 0;
+    li {
+      margin-left: 0;
+    }
   }
   ul {
     li {
       text-align: left;
       position: relative;
-      margin-left: 10px;
-
+      margin-left: 0;
       :before {
         content: "";
         position: absolute;
@@ -117,7 +119,7 @@ const ChatBubbleContainer = styled.div`
         width: 5px;
         height: 5px;
         display: block;
-        background: #000;
+        background: currentColor;
         border-radius: 50%;
       }
     }
