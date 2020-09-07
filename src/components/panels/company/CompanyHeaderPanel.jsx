@@ -53,7 +53,7 @@ const CompanyHeaderPanel = () => {
   // const dispatch = useDispatch();
   const match = useRouteMatch();
 
-  // const unreadCounter = useSelector((state) => state.global.unreadCounter);
+  const unreadCounter = useSelector((state) => state.global.unreadCounter);
   // const { driffSettings } = useSettings();
 
   const dispatch = useDispatch();
@@ -124,7 +124,11 @@ const CompanyHeaderPanel = () => {
       }
     }
 
-    document.title = `${pageName} ‹ ${driff.company_name} @ Driff`;
+    if (unreadCounter.chat_message >= 1 || unreadCounter.unread_channel > 0) {
+      document.title = `${pageName} ‹ * ${driff.company_name} @ Driff`;
+    } else {
+      document.title = `${pageName} ‹ ${driff.company_name} @ Driff`;
+    }
   }, [match.params.page, dispatch, pageName]);
 
   return (
