@@ -1,7 +1,7 @@
 import React, {useCallback, useEffect, useState} from "react";
 import {useSelector} from "react-redux";
 import styled from "styled-components";
-import { SvgIconFeather } from "../common";
+import {SvgIconFeather} from "../common";
 
 const LockIcon = styled(SvgIconFeather)`
   width: 1rem;
@@ -19,6 +19,7 @@ const useGetWorkspaceAndUserOptions = (selectedWorkspaces, workspace = null) => 
       let members = [];
       if (workspace.members && workspace.members.length) {
         members = workspace.members.map((m) => {
+          m.name = m.name === "" ? m.email : m.name;
           return {
             ...m,
             value: m.id,
@@ -67,6 +68,7 @@ const useGetWorkspaceAndUserOptions = (selectedWorkspaces, workspace = null) => 
 
         if (uniqueMembers.length) {
           uniqueMembers = uniqueMembers.map((u) => {
+            u.name = u.name === "" ? u.email : u.name;
             return {
               ...u,
               value: u.id,
