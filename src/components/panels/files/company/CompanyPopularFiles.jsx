@@ -6,7 +6,7 @@ const Wrapper = styled.div``;
 
 const CompanyPopularFiles = (props) => {
 
-  const {className = "", files, actions, disableOptions} = props;
+  const {className = "", folders, files, actions, disableOptions} = props;
 
   return (
     <Wrapper className={`popular-files ${className}`}>
@@ -16,7 +16,9 @@ const CompanyPopularFiles = (props) => {
           return <CompanyFileListItem
             key={f.id}
             className="col-xl-3 col-lg-4 col-md-6 col-sm-12" file={f}
-            actions={actions} disableOptions={disableOptions}/>;
+            actions={actions}
+            folders={folders}
+            disableOptions={disableOptions}/>;
         })}
       </div>
     </Wrapper>

@@ -48,7 +48,7 @@ const Star = styled(SvgIconFeather)`
 `;
 
 const CompanyFileListItem = (props) => {
-  const {className = "", file, actions, forceDelete = false, disableOptions} = props;
+  const {className = "", folders, file, actions, forceDelete = false, disableOptions} = props;
 
   const fileSizeUnit = actions.getFileSizeUnit(file.hasOwnProperty("size") && typeof file.size === "number" ? file.size : 0);
   const [isFavorite, setIsFavorite] = useState(file.is_favorite);
@@ -75,7 +75,8 @@ const CompanyFileListItem = (props) => {
           {actions.getFileIcon(file.mime_type)}
           {typeof file.id === "number" &&
           <CompanyFileOptions
-            file={file} actions={{...actions, favorite: handleFavorite}} forceDelete={forceDelete}
+            file={file} folders={folders}
+            actions={{...actions, favorite: handleFavorite}} forceDelete={forceDelete}
             disableOptions={disableOptions}/>}
           {typeof file.id === "string" &&
           <ProgressBar amount={100} barClassName={"progress-bar-striped progress-bar-animated"}/>}

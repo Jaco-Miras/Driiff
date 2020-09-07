@@ -6,7 +6,7 @@ const Wrapper = styled.div``;
 
 const CompanyImportantFiles = (props) => {
 
-  const {className = "", files, actions, dictionary} = props;
+  const {className = "", folders, files, actions, dictionary} = props;
 
   return (
     <Wrapper className={`important-files ${className}`}>
@@ -17,6 +17,7 @@ const CompanyImportantFiles = (props) => {
           files.map(file => {
             return <FileListItem
               key={file.id} className="col-xl-3 col-lg-4 col-md-6 col-sm-12" file={file}
+              folders={folders}
               actions={actions}/>;
           })}
       </div>

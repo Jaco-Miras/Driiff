@@ -29,7 +29,7 @@ const Wrapper = styled(MoreOptions)`
 `;
 
 const FileOptions = (props) => {
-  const { className = "", file, scrollRef = null, actions, isMember, forceDelete, disableOptions } = props;
+  const {className = "", folders, file, scrollRef = null, actions, isMember, forceDelete, disableOptions} = props;
   const toaster = useToaster();
 
   //const [showMoreOptions, setShowMoreOptions] = useState(false);
@@ -71,7 +71,17 @@ const FileOptions = (props) => {
   };
 
   const handleRestore = () => {
-    actions.restoreWorkspaceFile(file);
+    actions.restoreWorkspaceFile(file, (err, res) => {
+      if (res) {
+        if (file.folder_id && typeof folders[file.folder_id] !== "undefined") {
+          toaster.success(<>Item <b>{file.search}</b> is restored on {folders[file.folder_id].search} folder.</>);
+        } else {
+          toaster.success(<>Item <b>{file.search}</b> is restored.</>);
+        }
+      }
+    }, {
+      message: false
+    });
   }
 
   const handleDelete = () => {

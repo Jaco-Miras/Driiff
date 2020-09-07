@@ -43,9 +43,11 @@ import {
   putCompanyFiles,
   putCompanyFolders,
   putCompanyRestoreFile,
+  putCompanyRestoreFolder,
   putFile,
   putFolder,
   putWorkspaceRestoreFile,
+  putWorkspaceRestoreFolder,
   registerGoogleDriveFile,
   setViewFiles,
   uploadCompanyFilesReducer,
@@ -1008,8 +1010,39 @@ const useFileActions = (params = null) => {
 
   const restoreCompanyFile = useCallback(
     (payload, callback = () => {
+    }, options = {
+      notification: true
     }) => {
-      dispatch(putCompanyRestoreFile(payload, callback));
+      dispatch(putCompanyRestoreFile(payload, (err, res) => {
+        if (res) {
+          if (options.notification)
+            toaster.success(`Item ${payload.search} is restored.`);
+        }
+        callback(err, res);
+      }));
+    },
+    [dispatch]
+  );
+
+  const restoreWorkspaceFolder = useCallback(
+    (payload, callback = () => {
+    }) => {
+      dispatch(putWorkspaceRestoreFolder({
+        ...payload,
+        topic_id: params.workspaceId,
+        folder_id: payload.id,
+      }, callback));
+    },
+    [dispatch]
+  );
+
+  const restoreCompanyFolder = useCallback(
+    (payload, callback = () => {
+    }) => {
+      dispatch(putCompanyRestoreFolder({
+        ...payload,
+        folder_id: payload.id
+      }, callback));
     },
     [dispatch]
   );
@@ -1071,7 +1104,9 @@ const useFileActions = (params = null) => {
     deleteCompanyFolder,
     searchCompany,
     restoreWorkspaceFile,
-    restoreCompanyFile
+    restoreCompanyFile,
+    restoreWorkspaceFolder,
+    restoreCompanyFolder,
   };
 };
 

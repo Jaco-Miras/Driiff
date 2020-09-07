@@ -32,6 +32,7 @@ const CompanyRemoveFiles = (props) => {
             .map((f) => {
               return <CompanyFolderListItem
                 key={f.id} actions={actions}
+                folders={folders}
                 className="col-xl-3 col-lg-4 col-md-6 col-sm-12" folder={f}
                 history={history} params={params}
                 handleAddEditFolder={handleAddEditFolder}
@@ -54,7 +55,9 @@ const CompanyRemoveFiles = (props) => {
               return <CompanyFileListItem
                 key={f.id} forceDelete={true}
                 className="col-xl-3 col-lg-4 col-md-6 col-sm-12" file={f}
-                actions={actions} disableOptions={disableOptions}/>;
+                actions={actions}
+                folders={folders}
+                disableOptions={disableOptions}/>;
             })
           : files &&
           Object.values(files).length > 0 &&
@@ -63,6 +66,7 @@ const CompanyRemoveFiles = (props) => {
               return <CompanyFileListItem
                 key={f.id} forceDelete={true}
                 className="col-xl-3 col-lg-4 col-md-6 col-sm-12" file={f}
+                folders={folders}
                 actions={actions} disableOptions={disableOptions}/>;
             } else {
               return null;

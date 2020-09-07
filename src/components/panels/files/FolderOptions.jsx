@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import { useToaster } from "../../hooks";
-import { MoreOptions } from "../../panels/common";
+import {useToaster} from "../../hooks";
+import {MoreOptions} from "../../panels/common";
 
 const Wrapper = styled(MoreOptions)`
   .more-options-tooltip {
@@ -29,7 +29,7 @@ const Wrapper = styled(MoreOptions)`
 `;
 
 const FolderOptions = (props) => {
-  const { className = "", folder, scrollRef = null, actions, isMember, history, params, handleAddEditFolder } = props;
+  const {className = "", folder, scrollRef = null, actions, isMember, history, params, handleAddEditFolder} = props;
   const toaster = useToaster();
 
   // const handleViewDetail = () => {
@@ -50,7 +50,7 @@ const FolderOptions = (props) => {
       } else {
         let cb = (err, res) => {
           if (err) return;
-  
+
           if (res) {
             let pathname = history.location.pathname.split("/folder/")[0];
             history.push(pathname);
@@ -63,10 +63,21 @@ const FolderOptions = (props) => {
     }
   };
 
+  const handleRestore = () => {
+    actions.restoreWorkspaceFolder(folder, (err, res) => {
+      if (res) {
+        toaster.success(<>Folder <b>{folder.search}</b> is restored.</>);
+      }
+    }, {
+      message: false
+    });
+  }
+
   return (
     <Wrapper className={`file-options ${className}`} moreButton="more-vertical" folder={folder} scrollRef={scrollRef}>
       {/* <div onClick={handleViewDetail}>View Details</div> */}
-      { !folder.hasOwnProperty("payload") && <div onClick={handleRename}>Rename</div> }
+      {!folder.hasOwnProperty("payload") && <div onClick={handleRename}>Rename</div>}
+      {folder.is_archived && <div onClick={handleRestore}>Restore</div>}
       <div onClick={handleDelete}>Remove</div>
     </Wrapper>
   );
