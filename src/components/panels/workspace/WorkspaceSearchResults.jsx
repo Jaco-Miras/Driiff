@@ -50,7 +50,7 @@ const WorkspaceSearchResults = (props) => {
             <div className={`tab-pane fade active show`} role="tabpanel">
                 <ul className="list-group list-group-flush">
                     {
-                        results.slice(page > 1 ? (page*25)-25 : 0, page*25).map((item) => {
+                        results.sort((a, b) => a.topic.name.localeCompare(b.topic.name)).slice(page > 1 ? (page*25)-25 : 0, page*25).map((item) => {
                             return <WorkspaceSearchResult key={item.topic.id} onJoinWorkspace={onJoinWorkspace} item={item} redirect={redirect} workspaces={workspaces}/>
                         })
                     }

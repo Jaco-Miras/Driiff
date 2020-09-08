@@ -11,7 +11,7 @@ const Wrapper = styled.div`
 const WorkspaceSearch = (props) => {
 
   const { actions, search } = props;
-  const { value, searching, results } = search;
+  const { count, maxPage, page, value, searching, results } = search;
   const [inputValue, setInputValue] = useState(value);
 
   const handleEnter = (e) => {
@@ -30,7 +30,10 @@ const WorkspaceSearch = (props) => {
         ...search,
         value: inputValue,
         searching: true,
-        results: value === inputValue ? results : []
+        results: value === inputValue ? results : [],
+        maxPage: value !== inputValue ? 1 : maxPage,
+        page: value !== inputValue ? 1 : page,
+        count: value !== inputValue ? 1 : count
     });
   };
 
