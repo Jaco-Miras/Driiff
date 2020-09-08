@@ -27,14 +27,15 @@ const LinkItemWrapper = styled.li`
   }
 `;
 
-
 const LinkItem = (props) => {
   const { className = "", link } = props;
 
   return (
     <LinkItemWrapper className={`topic-list ${className}`}>
       <div>
-        <a href={link.link} target="_blank">{link.menu_name}</a>
+        <a href={link.link} target="_blank">
+          {link.menu_name}
+        </a>
       </div>
     </LinkItemWrapper>
   );
