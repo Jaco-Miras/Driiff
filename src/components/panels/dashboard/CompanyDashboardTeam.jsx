@@ -1,12 +1,11 @@
-import React, { useCallback, useState } from "react";
+import React, {useCallback, useState} from "react";
 import styled from "styled-components";
-import { TeamListItem } from "../../list/people/item";
-import { SvgIconFeather } from "../../common";
+import {TeamListItem} from "../../list/people/item";
+import {useUsers} from "../../hooks";
 
 const Wrapper = styled.div`
   .feather-edit {
     cursor: pointer;
-    cursor: hand;
   }
 
   .card-title {
@@ -47,9 +46,10 @@ const Wrapper = styled.div`
   }
 `;
 
-const DashboardTeam = (props) => {
-  const { className = "", workspace, onEditClick, isExternal, isMember, dictionary, actions } = props;
+const CompanyDashboardTeam = (props) => {
+  const {className = "", onEditClick, dictionary, actions} = props;
   const [scrollRef, setScrollRef] = useState(null);
+  const {users} = useUsers();
 
   const assignRef = useCallback((e) => {
     if (scrollRef === null) {
@@ -59,20 +59,32 @@ const DashboardTeam = (props) => {
     //eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  if (!workspace) return <></>;
-  const hideOptions = (isMember && isExternal) || workspace.active === 0;
   return (
     <Wrapper className={`dashboard-team card ${className}`}>
       <div ref={assignRef} className="card-body">
         <h5 className="card-title">
-          {dictionary.team} {isMember === true && !isExternal && workspace.active === 1 && <SvgIconFeather onClick={onEditClick} icon="plus" />}
+          {dictionary.team}
         </h5>
-
         <ul className="list-group list-group-flush">
-          {workspace.members
-            .filter((m) => m.active === 1 || !m.has_accepted)
+          {Object.values(users)
+            .filter((m) => m.active === 1
+              && m.type === "internal"
+              && !["gripp_project_bot",
+                "gripp_account_activation",
+                "gripp_offerte_bot",
+                "gripp_invoice_bot",
+                "gripp_police_bot"].includes(m.email))
+            .sort((a, b) => a.name.localeCompare(b.name))
             .map((member) => {
-              return <TeamListItem key={member.id} member={member} parentRef={scrollRef} onEditClick={onEditClick} hideOptions={hideOptions} actions={actions} workspace_id={workspace.id} dictionary={dictionary} />;
+              console.log(member)
+              return <TeamListItem
+                key={member.id}
+                member={member}
+                hideOptions={true}
+                parentRef={scrollRef}
+                onEditClick={onEditClick}
+                actions={actions}
+                dictionary={dictionary}/>;
             })}
         </ul>
       </div>
@@ -80,4 +92,4 @@ const DashboardTeam = (props) => {
   );
 };
 
-export default React.memo(DashboardTeam);
+export default React.memo(CompanyDashboardTeam);

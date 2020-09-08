@@ -20,11 +20,9 @@ const Wrapper = styled.div`
   }
   .file-summary {
     cursor: pointer;
-    cursor: hand;
   }
   .timeline-file-icon {
     cursor: pointer;
-    cursor: hand;
   }
 `;
 
@@ -37,7 +35,6 @@ const CompanyAttachFileTimeline = (props) => {
   const {fromNow} = useTimeFormat();
 
   const handleFilePreview = () => {
-    console.log(data, params);
     dispatch(
       setViewFiles({
         workspace_id: params.workspaceId,

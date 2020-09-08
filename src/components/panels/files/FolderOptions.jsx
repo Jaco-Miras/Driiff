@@ -64,9 +64,16 @@ const FolderOptions = (props) => {
   };
 
   const handleRestore = () => {
+    console.log(folder);
     actions.restoreWorkspaceFolder(folder, (err, res) => {
       if (res) {
-        toaster.success(<>Folder <b>{folder.search}</b> is restored.</>);
+        if (folder.parent_folder) {
+          toaster.success(<>Folder <span className="font-weight-bold">{folder.search}</span> is restored to
+            #${folder.parent_folder} folder.</>)
+        } else {
+          toaster.success(<>Folder <span className="font-weight-bold">{folder.search}</span> is restored to #All Files
+            folder.</>)
+        }
       }
     }, {
       message: false

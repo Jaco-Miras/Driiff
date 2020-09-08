@@ -1,6 +1,11 @@
-import React, {useEffect} from "react";
+import React from "react";
 import styled from "styled-components";
-import {AttachFileTimeline, MemberTimeline, PostTimeline, TopicTimeline} from "../dashboard/timeline";
+import {
+  CompanyAttachFileTimeline,
+  CompanyMemberTimeline,
+  CompanyPostTimeline,
+  CompanyTopicTimeline
+} from "../dashboard/timeline/company";
 
 const Wrapper = styled.div`
 
@@ -17,13 +22,7 @@ const Wrapper = styled.div`
 `;
 
 const CompanyTimelinePanel = (props) => {
-  const {className = "", init, timeline, actions, workspace, dictionary} = props;
-
-  useEffect(() => {
-    if (workspace) {
-      actions.getTimeline(workspace.id);
-    }
-  }, [workspace]);
+  const {className = "", init, timeline, dictionary} = props;
 
   return (
     <Wrapper className={`timeline-panel card ${className}`}>
@@ -44,13 +43,13 @@ const CompanyTimelinePanel = (props) => {
                   .map((t) => {
                     switch (t.tag) {
                       case "CHAT_BOT":
-                        return <MemberTimeline key={t.id} data={t.item}/>;
+                        return <CompanyMemberTimeline key={t.id} data={t.item}/>;
                       case "POST":
-                        return <PostTimeline key={t.id} data={t.item}/>;
+                        return <CompanyPostTimeline key={t.id} data={t.item}/>;
                       case "DOCUMENT":
-                        return <AttachFileTimeline key={t.id} data={t.item}/>;
+                        return <CompanyAttachFileTimeline key={t.id} data={t.item}/>;
                       case "TOPIC":
-                        return <TopicTimeline key={t.id} data={t.item}/>;
+                        return <CompanyTopicTimeline key={t.id} data={t.item}/>;
                     }
                   })}
               </>

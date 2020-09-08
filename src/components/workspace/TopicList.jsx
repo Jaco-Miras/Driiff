@@ -3,7 +3,7 @@ import { useHistory, useRouteMatch } from "react-router-dom";
 import { Badge } from "reactstrap";
 import styled from "styled-components";
 import { SvgIconFeather } from "../common";
-//import {replaceChar} from "../../helpers/stringFormatter";
+import { replaceChar } from "../../helpers/stringFormatter";
 
 const TopicListWrapper = styled.li`
   cursor: pointer;
@@ -13,11 +13,12 @@ const TopicListWrapper = styled.li`
   padding: 0 10px;
   font-weight: ${(props) => (props.selected ? "600" : "400")};
   color: ${(props) => (props.selected ? "#ffffffEB" : "#cbd4db")};
-  div {
-    position: relative;
-    height: 40px;
-    display: inline-flex;
-    align-items: center;
+  a {
+    position: relative !important;
+    height: 40px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 0 !important;
     svg {
       margin-left: 6px;
     }
@@ -28,7 +29,7 @@ const TopicListWrapper = styled.li`
 `;
 
 const Icon = styled(SvgIconFeather)`
-  width: 12px;
+  width: 12px !important;
 `;
 
 const TopicList = (props) => {
@@ -37,6 +38,7 @@ const TopicList = (props) => {
   const workspaceRef = useRef();
   const history = useHistory();
   const route = useRouteMatch();
+  const { params } = route;
   const onWorkspace = route.url.startsWith("/workspace");
 
   const handleSelectTopic = () => {
@@ -69,13 +71,13 @@ const TopicList = (props) => {
   let unread_count = topic.unread_chats + topic.unread_posts;
 
   return (
-    <TopicListWrapper ref={workspaceRef} className={`topic-list ${className}`} onClick={handleSelectTopic} selected={selected}>
-      <div>
+    <TopicListWrapper ref={workspaceRef} className={`topic-list ${className}`} onClick={handleSelectTopic} selected={selected && onWorkspace && params.page !== "search"}>
+      <a href={topic.folder_id ? `/workspace/chat/${topic.folder_id}/${replaceChar(topic.folder_name)}/${topic.id}/${replaceChar(topic.name)}` : `/workspace/chat/${topic.id}/${replaceChar(topic.name)}`} onClick={(e) => e.preventDefault(e)}>
         {topic.name}
         {topic.is_lock === 1 && <Icon icon={"lock"} strokeWidth="2" />}
         {topic.is_shared === 1 && <Icon icon={"share"} strokeWidth="3" />}
         {unread_count > 0 && <Badge color="danger">{unread_count}</Badge>}
-      </div>
+      </a>
     </TopicListWrapper>
   );
 };

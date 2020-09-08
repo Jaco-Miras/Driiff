@@ -9,7 +9,7 @@ import {uploadDocument} from "../../redux/services/global";
 import QuillEditor from "../forms/QuillEditor";
 import {useQuillModules} from "../hooks";
 import {ModalHeaderSection} from "./index";
-import {postComment, setParentIdForUpload} from "../../redux/actions/postActions";
+import {postComment, putComment, setParentIdForUpload, setEditComment} from "../../redux/actions/postActions";
 
 const StyledQuillEditor = styled(QuillEditor)`
   .ql-editor {
@@ -138,7 +138,7 @@ const FileUploadModal = (props) => {
     const selectedChannel = useSelector((state) => state.chat.selectedChannel);
     const user = useSelector((state) => state.session.user);
     const savedInput = useSelector((state) => state.global.dataFromInput);
-    const parentId = useSelector((state) => state.posts.parentId);
+    const {parentId, editPostComment} = useSelector((state) => state.posts);
 
     const [modal, setModal] = useState(true);
     const [loading, setLoading] = useState(false);
@@ -159,6 +159,20 @@ const FileUploadModal = (props) => {
         }
     }, [savedInput]);
 
+    useEffect(() => {
+        if (mode === "post" && editPostComment) {
+            setFiles(
+                [...editPostComment.files.map((f) => {
+                    return {
+                        ...f,
+                        src: f.view_link
+                    }
+                }), 
+                ...droppedFiles]
+            );
+        }
+    }, []);
+
     const toggle = () => {
         setModal(!modal);
         dispatch(clearModal({type: type}));
@@ -170,18 +184,24 @@ const FileUploadModal = (props) => {
     };
 
     async function uploadFiles() {
-        await Promise.all(
-            files.map((file) =>
-                uploadDocument({
-                    user_id: user.id,
-                    file: file.bodyFormData,
-                    file_type: "private",
-                    folder_id: null,
-                })
-            )
-        ).then((result) => {
-            setUploadedFiles(result.map((res) => res.data));
-        });
+        if (files.filter((f) => typeof f.id === "string").length) {
+            await Promise.all(
+                files.filter((f) => {
+                    return typeof f.id === "string";
+                }).map((file) =>
+                    uploadDocument({
+                        user_id: user.id,
+                        file: file.bodyFormData,
+                        file_type: "private",
+                        folder_id: null,
+                    })
+                )
+            ).then((result) => {
+                setUploadedFiles([...files.filter((f) => typeof f.id !== "string"), ...result.map((res) => res.data)]);
+            });
+        } else {
+            setUploadedFiles(files);
+        }   
     }
 
     const handleUpload = () => {
@@ -237,9 +257,21 @@ const FileUploadModal = (props) => {
                 parent_id: parentId,
             };
             setUploadedFiles([]);
-            dispatch(postComment(payload));
             dispatch(setParentIdForUpload(null));
             dispatch(saveInputData({sent: true}));
+            if (editPostComment) {
+                payload = {
+                    ...payload,
+                    id: editPostComment.id,
+                    file_ids: [...uploadedFiles.map((f) => f.id), ...files.filter((f) => typeof f.id !== "string")],
+                    parent_id: editPostComment.parent_id,
+                    reference_id: null,
+                };
+                dispatch(putComment(payload));
+                dispatch(setEditComment(null));
+            } else {
+                dispatch(postComment(payload));
+            }
             dispatch(clearModal({type: type}));
         }
     };

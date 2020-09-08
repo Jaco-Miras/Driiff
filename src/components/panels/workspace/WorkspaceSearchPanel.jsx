@@ -24,27 +24,22 @@ const WorkspaceSearchPanel = (props) => {
     const search = useSelector((state) => state.workspaces.search);
     const { count, maxPage, page, results, searching, value } = search;
 
-    //const [activeTab, setActiveTab] = useState(null);
-
-
     useEffect(() => {
-    document.getElementById("main").setAttribute("style", "overflow: auto");
-    return () => document.getElementById("main").removeAttribute("style");
+        document.getElementById("main").setAttribute("style", "overflow: auto");
+        
+        if (value === "") {
+            actions.search({
+                search: "",
+                skip: 0,
+                limit: 25,
+            });
+            actions.updateSearch({
+                ...search,
+                searching: true,
+            });
+        } 
+        return () => document.getElementById("main").removeAttribute("style");
     }, []);
-
-    //   useEffect(() => {
-    //     if (Object.keys(tabs).length && activeTab === null) {
-    //       let tab = Object.keys(tabs)[0];
-    //       setActiveTab(tab.toLowerCase());
-    //     } else if (Object.keys(tabs).length === 0 && activeTab !== null) {
-    //       setActiveTab(null);
-    //     }
-    //   }, [tabs, activeTab]);
-    //   const handleSelectTab = (e) => {
-    //     if (e.currentTarget.dataset.value !== activeTab) {
-    //       setActiveTab(e.currentTarget.dataset.value)
-    //     }
-    //   };
 
     const handlePageClick = (e) => {
         let selectedPage = e.selected + 1;
@@ -54,11 +49,13 @@ const WorkspaceSearchPanel = (props) => {
                 page: selectedPage
             });
         } else {
-            actions.search({
-                search: value,
-                skip: results.length,
-                limit: 25,
-            });
+            if (results.length < selectedPage*25) {
+                actions.search({
+                    search: value,
+                    skip: results.length,
+                    limit: (selectedPage*25) - results.length,
+                });
+            }
             actions.updateSearch({
                 ...search,
                 value: value,
@@ -76,7 +73,7 @@ const WorkspaceSearchPanel = (props) => {
                 <div className="card-body">
                 <WorkspaceSearch actions={actions} search={search}/>
                     {
-                        value !== "" &&
+                        value !== "" ?
                         <h4 className="mb-5">
                         <SvgIconFeather icon="search" />
                         {
@@ -86,9 +83,15 @@ const WorkspaceSearchPanel = (props) => {
                             !searching && <span>{count} results found for: <span className="text-primary">“{value}”</span></span>
                         }
                         </h4>
+                        :
+                        <h4 className="mb-5">
+                        {
+                            results.length > 0 && <span>{count} workspaces</span>
+                        }
+                        </h4>
                     }
                     {
-                        results.length > 0 && <WorkspaceSearchResults page={page} results={results} redirect={redirect}/>
+                        results.length > 0 && <WorkspaceSearchResults actions={actions} page={page} results={results} redirect={redirect}/>
                     }
                     
                     {

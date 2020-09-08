@@ -963,7 +963,7 @@ export default function (state = INITIAL_STATE, action) {
     }
     case "JOIN_WORKSPACE_REDUCER": {
       let updatedChannels = { ...state.channels };
-      let updatedChannel = { ...state.selectedChannel };
+      let updatedChannel = state.selectedChannel ? { ...state.selectedChannel } : null;
       if (Object.keys(updatedChannels).length && updatedChannels.hasOwnProperty(action.data.channel_id)) {
         let channel = {
           ...updatedChannels[action.data.channel_id],
@@ -972,7 +972,7 @@ export default function (state = INITIAL_STATE, action) {
         }
         updatedChannels[action.data.channel_id].members = [...updatedChannels[action.data.channel_id].members, ...action.data.users];
         updatedChannels[action.data.channel_id].replies = [...updatedChannels[action.data.channel_id].replies, action.data.message];
-        if (channel.id === updatedChannel.id) {
+        if (updatedChannel && channel.id === updatedChannel.id) {
           updatedChannel = channel;
         }
       }

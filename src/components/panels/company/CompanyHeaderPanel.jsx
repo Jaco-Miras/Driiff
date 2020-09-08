@@ -68,7 +68,7 @@ const CompanyHeaderPanel = () => {
   useEffect(() => {
     const body = document.body;
 
-    if (["people", "workspace", "post", "notifications"].includes(match.params.page)) {
+    if (["people", "workspace", "post", "notifications", "settings"].includes(match.params.page)) {
       body.classList.remove("stretch-layout");
     } else {
       body.classList.add("stretch-layout");

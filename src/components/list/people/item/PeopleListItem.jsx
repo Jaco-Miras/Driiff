@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import {Avatar, Badge, SvgIconFeather, ToolTip} from "../../../common";
+import { Avatar, Badge, SvgIconFeather, ToolTip } from "../../../common";
 
 const Wrapper = styled.div`
   .avatar {
@@ -24,7 +24,7 @@ const Wrapper = styled.div`
 `;
 
 const PeopleListItem = (props) => {
-  const {className = "", loggedUser, onNameClick = null, onChatClick = null, user, dictionary} = props;
+  const { className = "", loggedUser, onNameClick = null, onChatClick = null, user, dictionary } = props;
 
   const handleOnNameClick = () => {
     if (onNameClick) onNameClick(user);
@@ -41,41 +41,34 @@ const PeopleListItem = (props) => {
           <div className="card-body">
             <div className="d-flex align-items-center">
               <div className="pr-3">
-                <Avatar id={user.id} name={user.name ? user.name : user.email} hasAccepted={user.has_accepted}
-                        onClick={handleOnNameClick} noDefaultClick={true}
-                        imageLink={user.profile_image_link ? user.profile_image_link : ""}/>
+                <Avatar id={user.id} name={user.name ? user.name : user.email} hasAccepted={user.has_accepted} onClick={handleOnNameClick} noDefaultClick={true} imageLink={user.profile_image_link ? user.profile_image_link : ""} />
               </div>
               <div>
-                {
-                  user.hasOwnProperty("has_accepted") && !user.has_accepted ? (
-                      <h6 className="user-name mb-1 ">
-                        <ToolTip content={user.email}>
-                          <div className="mr-2">{user.email}</div>
-                        </ToolTip>
-                        <Badge label={dictionary.peopleInvited}/>
-                      </h6>
-                  )
-                  :
-                    <h6 className="user-name mb-1 " onClick={handleOnNameClick}>
-                      <ToolTip content={user.email}>
-                        <div className="mr-2">{user.name}</div>
-                      </ToolTip>
-                      {user.type === "external" && <Badge label={dictionary.peopleExternal}/>}
-                    </h6>
-                }
-                {
-                  user.role && <span className="small text-muted">{user.role.display_name}</span>
-                }
+                {user.hasOwnProperty("has_accepted") && !user.has_accepted ? (
+                  <h6 className="user-name mb-1 ">
+                    <ToolTip content={user.email}>
+                      <div className="mr-2">{user.email}</div>
+                    </ToolTip>
+                    <Badge label={dictionary.peopleInvited} badgeClassName="badge badge-info text-white" />
+                  </h6>
+                ) : (
+                  <h6 className="user-name mb-1 " onClick={handleOnNameClick}>
+                    <ToolTip content={user.email}>
+                      <div className="mr-2">{user.name}</div>
+                    </ToolTip>
+                    {user.type === "external" && <Badge label={dictionary.peopleExternal} badgeClassName="badge badge-info text-white" />}
+                  </h6>
+                )}
+                {user.role && <span className="small text-muted">{user.role.display_name}</span>}
               </div>
               {onChatClick !== null && loggedUser.id !== user.id && loggedUser.type !== "external" && user.type !== "external" && (
                 <div className="text-right ml-auto">
-                  {
-                    user.contact !== "" &&
+                  {user.contact !== "" && (
                     <a href={`tel:${user.contact.replace(/ /g, "").replace(/-/g, "")}`}>
-                      <SvgIconFeather className="mr-2" icon="phone"/>
+                      <SvgIconFeather className="mr-2" icon="phone" />
                     </a>
-                  }
-                  <SvgIconFeather onClick={handleOnChatClick} icon="message-circle"/>
+                  )}
+                  <SvgIconFeather onClick={handleOnChatClick} icon="message-circle" />
                 </div>
               )}
             </div>

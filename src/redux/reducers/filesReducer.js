@@ -425,7 +425,7 @@ export default (state = INITIAL_STATE, action) => {
       action.data.files.forEach(f => {
         const i = uploadedItems.find(file => file.size === f.size && file.search === f.search);
 
-        if (typeof companyFiles.items[i.id] !== "undefined") {
+        if (i && typeof companyFiles.items[i.id] !== "undefined") {
           delete companyFiles.items[i.id];
 
           const ix = companyFolders.items[f.folder_id].files.findIndex(id => id === i.id);
@@ -497,6 +497,30 @@ export default (state = INITIAL_STATE, action) => {
         }
       }
     }
+    /*case "GET_COMPANY_FOLDER_BREAD_CRUMBS_SUCCESS": {
+      if (typeof state.companyFolders.items[action.data.parent_folder.id] === "undefined")
+        return state;
+
+      let items = state.companyFolders.items[action.data.parent_folder.id];
+
+      action.data.folders
+        .forEach(f => {
+          if (!items.subFolders.some(sf => sf.id === f.id)) {
+            items.subFolders.push(f);
+          }
+        })
+
+      return {
+        ...state,
+        companyFolders: {
+          ...state.companyFolders,
+          items: {
+            ...state.companyFolders.items,
+            [action.data.parent_folder.id]: items
+          },
+        }
+      }
+    }*/
     case "GET_COMPANY_FOLDERS_SUCCESS": {
       let items = state.companyFolders.items;
       action.data.folders.forEach(f => {
@@ -506,9 +530,17 @@ export default (state = INITIAL_STATE, action) => {
           has_more: true,
           skip: 0,
           limit: 100,
-          files: []
+          files: [],
+          subFolders: []
         };
+
+        if (f.parent_folder && typeof items[f.parent_folder.id] !== "undefined") {
+          if (!items[f.parent_folder.id].subFolders.some(sf => sf.id === f.id)) {
+            items[f.parent_folder.id].subFolders.push(f);
+          }
+        }
       });
+
       return {
         ...state,
         companyFolders: {
