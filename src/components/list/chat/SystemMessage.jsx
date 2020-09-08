@@ -102,7 +102,7 @@ const SystemMessage = forwardRef((props, ref) => {
       if (data.added_members.includes(user.id) && data.added_members.length >= 1) {
         const am = recipients.filter((r) => data.added_members.includes(r.type_id) && r.type_id !== user.id).map((r) => r.name);
 
-        if (data.author.id === user.id) {
+        if (data.author && data.author.id === user.id) {
           if (newBody === "") {
             newBody = (
               <>
@@ -282,7 +282,7 @@ const SystemMessage = forwardRef((props, ref) => {
       if (data.added_members.length >= 1) {
         const am = recipients.filter((r) => data.added_members.includes(r.type_id) && r.type_id !== user.id).map((r) => r.name);
 
-        if (data.added_members.includes(user.id) && data.author.id === user.id) {
+        if (data.added_members.includes(user.id) && data.author && data.author.id === user.id) {
           if (newBody === "") {
             newBody = (
               <>
@@ -338,7 +338,7 @@ const SystemMessage = forwardRef((props, ref) => {
       if (data.removed_members.length >= 1) {
         const rm = recipients.filter((r) => data.removed_members.includes(r.type_id) && r.type_id !== user.id).map((r) => r.name);
 
-        if (data.removed_members.includes(user.id) && data.author.id === user.id) {
+        if (data.removed_members.includes(user.id) && data.author && data.author.id === user.id) {
           if (newBody === "") {
             newBody = (
               <>
