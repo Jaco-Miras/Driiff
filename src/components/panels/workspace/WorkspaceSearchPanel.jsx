@@ -49,11 +49,13 @@ const WorkspaceSearchPanel = (props) => {
                 page: selectedPage
             });
         } else {
-            actions.search({
-                search: value,
-                skip: results.length,
-                limit: 25,
-            });
+            if (results.length < selectedPage*25) {
+                actions.search({
+                    search: value,
+                    skip: results.length,
+                    limit: (selectedPage*25) - results.length,
+                });
+            }
             actions.updateSearch({
                 ...search,
                 value: value,
