@@ -28,7 +28,7 @@ const TopicListWrapper = styled.li`
 `;
 
 const Icon = styled(SvgIconFeather)`
-  width: 12px;
+  width: 12px !important;
 `;
 
 const TopicList = (props) => {
