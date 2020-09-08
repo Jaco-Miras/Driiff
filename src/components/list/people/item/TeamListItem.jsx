@@ -77,13 +77,7 @@ const TeamListItem = (props) => {
         </div>
         <div>
           <h6 className="profile-name" onClick={handleClickName}>
-            {member.has_accepted ? (
-              member.name
-            ) : (
-              <>
-                {member.email} <Badge label={dictionary.peopleInvited} />
-              </>
-            )}
+            {member.has_accepted ? member.name : member.email}
           </h6>
           {member.designation && <small className="text-muted">{member.designation}</small>}
         </div>
@@ -92,7 +86,7 @@ const TeamListItem = (props) => {
         {member.workspace_role && member.workspace_role !== "" && (
           <Badge badgeClassName={member.workspace_role === "TEAM_LEAD" ? "badge-success text-white" : "badge-warning text-white"} label={member.workspace_role === "TEAM_LEAD" ? "Team lead" : "Approver"} />
         )}
-        {member.type === "external" && <Badge badgeClassName="badge-info text-white" label={dictionary.peopleExternal} />}
+        {member.type === "external" && <Badge badgeClassName="badge-info text-white" label={member.has_accepted ? dictionary.peopleExternal : dictionary.peopleInvited} />}
       </div>
       {!hideOptions && (
         <MoreOptions moreButton="more-vertical" scrollRef={parentRef}>
