@@ -208,7 +208,7 @@ const WorkspaceList = (props) => {
   const handleResetFocus = () => {
     setTriggerFocus(null);
   }
-  
+
   const handleEditFolder = (e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -222,9 +222,9 @@ const WorkspaceList = (props) => {
   };
 
   return (
-    
+
     <Wrapper ref={ref.container} className={`workspace-list fadeIn ${className} ${showTopics && "folder-open"}`} selected={selected} show={show}>
-      <a className={`${folder.type === "ARCHIVE_FOLDER" ? "archived-folder" : ""}`} href="/" onClick={handleShowTopics}>
+      <a className={`${folder.type === "ARCHIVE_FOLDER" ? "archived-folder" : ""}`} onClick={handleShowTopics}>
         <div>
           {folder.name}
 
@@ -240,7 +240,7 @@ const WorkspaceList = (props) => {
           { folder.type === "FOLDER" && <EditIcon icon="pencil" onClick={handleEditFolder}/> }
         <i ref={ref.arrow} className={`sub-menu-arrow ti-angle-up ${showTopics ? "ti-minus rotate-in" : "ti-plus"}`} />
       </a>
-      
+
       <TopicNav ref={ref.nav} maxHeight={maxHeight} className={showTopics === null ? "" : showTopics ? "enter-active" : "leave-active"}>
         {folder.workspace_ids.length > 0 && Object.keys(workspaces).length > 0 &&
           workspaces.map((ws) => {
