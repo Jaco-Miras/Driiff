@@ -279,10 +279,7 @@ const MainNavigationTabPanel = (props) => {
       <div className="flex navigation-menu-tab-header-options">
         <ul>
           <li onClick={closeLeftNav}>
-            <NavIconContainer 
-              to={"/workspace/search"}
-              active={["/workspace/search"].includes(props.location.pathname)}
-            >
+            <NavIconContainer to={"/workspace/search"} active={["/workspace/search"].includes(props.location.pathname)}>
               <NavIcon icon={"compass"} />
               <div>
                 {dictionary.allWorkspaces}

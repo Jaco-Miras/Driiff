@@ -13,11 +13,12 @@ const TopicListWrapper = styled.li`
   padding: 0 10px;
   font-weight: ${(props) => (props.selected ? "600" : "400")};
   color: ${(props) => (props.selected ? "#ffffffEB" : "#cbd4db")};
-  div {
-    position: relative;
-    height: 40px;
-    display: inline-flex;
-    align-items: center;
+  a {
+    position: relative !important;
+    height: 40px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 0 !important;
     svg {
       margin-left: 6px;
     }
