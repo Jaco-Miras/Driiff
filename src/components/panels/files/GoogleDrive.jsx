@@ -18,14 +18,6 @@ const Wrapper = styled.div`
   }
 `;
 
-const isLocalhost = Boolean(
-    window.location.hostname === "localhost" ||
-    // [::1] is the IPv6 localhost address.
-    window.location.hostname === "[::1]" ||
-    // 127.0.0.0/8 are considered localhost for IPv4.
-    window.location.hostname.match(/^127(?:\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}$/)
-);
-
 const GoogleDrive = (props) => {
 
     const {className = "", onChange, disableOptions} = props;
@@ -42,6 +34,7 @@ const GoogleDrive = (props) => {
             localStorage.setItem("gdrive", token);
         }
     };
+
     return (
         <Wrapper className={`google-drive dropdown ${className}`} onClick={toggle} disabled={disableOptions}>
             <SvgIconFeather className="mr-2" icon="gdrive" viewBox="0 0 512 512" height="20" width="15" fill="#000"
@@ -50,7 +43,7 @@ const GoogleDrive = (props) => {
                 {localStorage.getItem("gdrive") === null ? (
                     <GooglePicker
                       clientId={process.env.REACT_APP_google_client_id}
-                      developerKey={isLocalhost ? process.env.REACT_APP_google_dev_key_local : process.env.REACT_APP_google_dev_key}
+                      developerKey={process.env.REACT_APP_google_key}
                       scope={["https://www.googleapis.com/auth/drive.file", "https://www.googleapis.com/auth/drive.metadata.readonly"]}
                       onChange={(data) => onChange(data)}
                       onAuthenticate={(token) => handleAuthenticate(token)}
@@ -66,7 +59,7 @@ const GoogleDrive = (props) => {
                     <>
                         <GooglePicker
                           clientId={process.env.REACT_APP_google_client_id}
-                          developerKey={isLocalhost ? process.env.REACT_APP_google_dev_key_local : process.env.REACT_APP_google_dev_key}
+                          developerKey={process.env.REACT_APP_google_key}
                           scope={["https://www.googleapis.com/auth/drive.file", "https://www.googleapis.com/auth/drive.metadata.readonly"]}
                           onChange={(data) => onChange(data)}
                           onAuthenticate={(token) => handleAuthenticate(token)}
@@ -80,7 +73,7 @@ const GoogleDrive = (props) => {
                         </GooglePicker>
                         <GooglePicker
                           clientId={process.env.REACT_APP_google_client_id}
-                          developerKey={isLocalhost ? process.env.REACT_APP_google_dev_key_local : process.env.REACT_APP_google_dev_key}
+                          developerKey={process.env.REACT_APP_google_key}
                           scope={["https://www.googleapis.com/auth/drive.file", "https://www.googleapis.com/auth/drive.metadata.readonly"]}
                           onChange={(data) => console.log("on change:", data)}
                           onAuthenticate={(token) => handleAuthenticate(token)}
@@ -93,10 +86,11 @@ const GoogleDrive = (props) => {
                                 const googleViewId = google.picker.ViewId.FOLDERS;
                                 const docsView = new google.picker.DocsView(googleViewId).setIncludeFolders(true).setMimeTypes("application/vnd.google-apps.folder").setSelectFolderEnabled(true);
 
+                              console.log(process.env.REACT_APP_google_key)
                                 const picker = new window.google.picker.PickerBuilder()
-                                .addView(docsView)
-                                .setOAuthToken(oauthToken)
-                                .setDeveloperKey(isLocalhost ? process.env.REACT_APP_google_dev_key_local : process.env.REACT_APP_google_dev_key)
+                                  .addView(docsView)
+                                  .setOAuthToken(oauthToken)
+                                  .setDeveloperKey(process.env.REACT_APP_google_key)
                                 .setCallback((data) => {
                                     onChange(data);
                                     console.log("Custom picker is ready!", data);

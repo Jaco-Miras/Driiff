@@ -425,7 +425,7 @@ export default (state = INITIAL_STATE, action) => {
       action.data.files.forEach(f => {
         const i = uploadedItems.find(file => file.size === f.size && file.search === f.search);
 
-        if (typeof companyFiles.items[i.id] !== "undefined") {
+        if (i && typeof companyFiles.items[i.id] !== "undefined") {
           delete companyFiles.items[i.id];
 
           const ix = companyFolders.items[f.folder_id].files.findIndex(id => id === i.id);
