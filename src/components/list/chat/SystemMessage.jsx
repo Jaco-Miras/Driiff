@@ -79,7 +79,7 @@ const SystemMessage = forwardRef((props, ref) => {
       const data = JSON.parse(reply.body.replace("CHANNEL_UPDATE::", ""));
       let author = recipients.find((r) => data.author && r.type_id === data.author.id);
       if (author) {
-        if (data.author.id === user.id) {
+        if (data.author && data.author.id === user.id) {
           author.name = "You";
         }
       } else {
@@ -157,7 +157,7 @@ const SystemMessage = forwardRef((props, ref) => {
       if (data.removed_members.length >= 1) {
         const rm = recipients.filter((r) => data.removed_members.includes(r.type_id) && r.type_id !== user.id).map((r) => r.name);
 
-        if (data.removed_members.includes(user.id) && data.author.id === user.id) {
+        if (data.removed_members.includes(user.id) && data.author && data.author.id === user.id) {
           if (newBody === "") {
             newBody = (
               <>
