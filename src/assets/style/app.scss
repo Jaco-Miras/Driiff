@@ -21209,7 +21209,7 @@ body.dark.small-navigation .navigation-menu-body ul li.navigation-divider:after 
 .folder-open {
   margin-bottom: 15px;
 }
-.folder-open a {
+.folder-open > a {
   background-color: #ffffff14;
   &:hover {
     color: #ffffff;
