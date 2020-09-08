@@ -12,13 +12,30 @@ const WorkspaceSearchResults = (props) => {
 
     const toaster = useToaster();
 
+    const handleRedirect = (item) => {
+        let payload = {
+            id: item.topic.id,
+            name: item.topic.name,
+            folder_id: item.workspace ? item.workspace.id : null,
+            folder_name: item.workspace ? item.workspace.name : null
+        }
+        if (workspaces.hasOwnProperty(item.topic.id)) {
+            console.log('to workspace', item);
+            redirect.toWorkspace(payload);
+        } else {
+            console.log('fetch workspace', item);
+            redirect.fetchWorkspaceAndRedirect(payload);
+        }
+    };
+
     const onJoinWorkspace = (item) => {
         let payload = {
-            channel_id: item.topic.channel_id,
+            channel_id: item.channel.id,
             recipient_ids: [user.id],
         };
         let cb = (err, res) => {
             if (err) return;
+            handleRedirect(item);
             toaster.success(
                 <>
                 You have joined <b>#{item.topic.name}</b>
@@ -34,7 +51,7 @@ const WorkspaceSearchResults = (props) => {
                 <ul className="list-group list-group-flush">
                     {
                         results.slice(page > 1 ? (page*25)-25 : 0, page*25).map((item) => {
-                            return <WorkspaceSearchResult onJoinWorkspace={onJoinWorkspace} item={item} redirect={redirect} workspaces={workspaces}/>
+                            return <WorkspaceSearchResult key={item.topic.id} onJoinWorkspace={onJoinWorkspace} item={item} redirect={redirect} workspaces={workspaces}/>
                         })
                     }
                 </ul>

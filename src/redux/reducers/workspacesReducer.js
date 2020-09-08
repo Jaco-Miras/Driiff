@@ -193,6 +193,7 @@ export default (state = INITIAL_STATE, action) => {
       let workspace = null;
       let workspaceToDelete = state.workspaceToDelete;
       let folderToDelete = state.folderToDelete;
+      let updatedSearch = {...state.search};
       if (state.workspacesLoaded && action.data.type === "WORKSPACE" && updatedWorkspaces.hasOwnProperty(action.data.id)) {
         let updatedTopic = { ...state.activeTopic };
         workspace = {
@@ -286,6 +287,27 @@ export default (state = INITIAL_STATE, action) => {
             updatedFolders[action.data.original_workspace_id].workspace_ids = updatedFolders[action.data.original_workspace_id].workspace_ids.filter((id) => id !== action.data.id);
           }
         }
+        if (updatedSearch.results.length) {
+          updatedSearch.results = updatedSearch.results.map((item) => {
+            if (item.topic.id === action.data.id) {
+              return {
+                ...item,
+                members: action.data.members,
+                topic: {
+                  ...item.topic,
+                  name: action.data.name,
+                  description: action.data.description,
+                  is_locked: action.data.private === 1
+                },
+                workspace: action.data.workspace_id === 0 ? 
+                  null 
+                  : {id: action.data.workspace_id, name: action.data.current_workspace_folder_name}
+              }
+            } else {
+              return item;
+            }
+          })
+        }
         return {
           ...state,
           activeTopic: updatedTopic,
@@ -293,6 +315,7 @@ export default (state = INITIAL_STATE, action) => {
           workspaces: updatedWorkspaces,
           workspaceToDelete: workspaceToDelete,
           folderToDelete: folderToDelete,
+          search: updatedSearch
         }
       } else if (state.workspacesLoaded && action.data.type === "FOLDER") {
         if (updatedFolders[action.data.id]) {
@@ -448,6 +471,7 @@ export default (state = INITIAL_STATE, action) => {
     }
     case "JOIN_WORKSPACE_REDUCER": {
       let updatedWorkspaces = {...state.workspaces};
+      let updatedSearch = {...state.search};
       let activeTopic = null;
       if (Object.keys(updatedWorkspaces).length) {
         Object.values(updatedWorkspaces).forEach((ws) => {
@@ -458,10 +482,23 @@ export default (state = INITIAL_STATE, action) => {
           }
         })
       }
+      if (updatedSearch.results.length) {
+        updatedSearch.results = updatedSearch.results.map((item) => {
+          if (item.channel.id === action.data.channel_id) {
+            return {
+              ...item,
+              members: [...item.members, ...action.data.users]
+            }
+          } else {
+            return item;
+          }
+        })
+      }
       return {
         ...state,
         workspaces: updatedWorkspaces,
-        activeTopic: state.activeTopic && state.activeTopic.channel.id === action.data.channel_id && activeTopic ? activeTopic : state.activeTopic
+        activeTopic: state.activeTopic && state.activeTopic.channel.id === action.data.channel_id && activeTopic ? activeTopic : state.activeTopic,
+        search: updatedSearch
       }
     }
     case "GET_DRAFTS_SUCCESS": {
@@ -895,6 +932,7 @@ export default (state = INITIAL_STATE, action) => {
     case "ARCHIVE_REDUCER": {
       let workspaces = {...state.workspaces};
       let updatedFolders = { ...state.folders };
+      let updatedSearch = {...state.search};
 
       if (workspaces[action.data.topic_detail.id]) {
         workspaces[action.data.topic_detail.id].active = 0;
@@ -906,6 +944,19 @@ export default (state = INITIAL_STATE, action) => {
         }
       }
 
+      if (updatedSearch.results.length) {
+        updatedSearch.results = updatedSearch.results.map((item) => {
+          if (item.topic.id === action.data.topic_detail.id) {
+            return {
+              ...item,
+              is_archive: true
+            }
+          } else {
+            return item;
+          }
+        })
+      }
+
       return {
         ...state,
         folders: updatedFolders,
@@ -913,13 +964,27 @@ export default (state = INITIAL_STATE, action) => {
         activeTopic: state.activeTopic && state.activeTopic.id === action.data.topic_detail.id ? {
           ...state.activeTopic,
           active: 0
-        } : state.activeTopic
+        } : state.activeTopic,
+        search: updatedSearch
       };
     }
     case "UNARCHIVE_REDUCER": {
       let workspaces = {...state.workspaces};
+      let updatedSearch = {...state.search};
       if (workspaces.hasOwnProperty(action.data.topic_detail.id)) {
         workspaces[action.data.topic_detail.id].active = 1;
+      }
+      if (updatedSearch.results.length) {
+        updatedSearch.results = updatedSearch.results.map((item) => {
+          if (item.topic.id === action.data.topic_detail.id) {
+            return {
+              ...item,
+              is_archive: false
+            }
+          } else {
+            return item;
+          }
+        })
       }
       return {
         ...state,

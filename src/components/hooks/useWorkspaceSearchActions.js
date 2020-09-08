@@ -2,6 +2,7 @@ import { useCallback } from "react";
 import { useDispatch } from "react-redux";
 import {
     getAllWorkspace,
+    joinWorkspace,
     updateWorkspaceSearch,
 } from "../../redux/actions/workspaceActions";
 
@@ -25,7 +26,16 @@ const useWorkspaceSearchActions = () => {
         }, [dispatch]
     );
 
+    const join = useCallback(
+        (payload, callback) => {
+          dispatch(
+            joinWorkspace(payload, callback)
+          );
+        },
+    [dispatch]);
+
     return {
+        join,
         search,
         updateSearch
     }
