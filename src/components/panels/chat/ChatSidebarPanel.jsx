@@ -1,9 +1,9 @@
-import React, {useCallback, useEffect, useRef, useState} from "react";
-import {useSelector} from "react-redux";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { useSelector } from "react-redux";
 import styled from "styled-components";
 import SearchForm from "../../forms/SearchForm";
-import {ChatSideBarContentPanel} from "./index";
-import {usePreviousValue, useTranslation} from "../../hooks";
+import { ChatSideBarContentPanel } from "./index";
+import { usePreviousValue, useTranslation } from "../../hooks";
 
 const Wrapper = styled.div`
   .nav-tabs {
@@ -28,7 +28,6 @@ const Wrapper = styled.div`
     @media (max-width: 480px) {
       border: 0;
     }
-
   }
 `;
 
@@ -50,7 +49,7 @@ const Search = styled(SearchForm)`
     button {
       border: 0 !important;
       padding: 10px 14px !important;
-      color: #AAAAAA;
+      color: #aaaaaa;
       pointer-events: none;
     }
   }
@@ -59,23 +58,23 @@ const Search = styled(SearchForm)`
     margin: 0 0 0.75rem !important;
   }
   &::placeholder {
-    color: #AAAAAA;
+    color: #aaaaaa;
   }
 `;
 
 const ChatSidebarPanel = (props) => {
   const { className = "", activeTabPill = "pills-home", channels, userChannels, selectedChannel } = props;
 
-  const unreadCounter = useSelector(state => state.global.unreadCounter);
+  const unreadCounter = useSelector((state) => state.global.unreadCounter);
   const [search, setSearch] = useState("");
   const [tabPill, setTabPill] = useState(activeTabPill);
   const previousChannel = usePreviousValue(selectedChannel);
-  
+
   // let add = (total, num) => total + num;
   // let unreadMessages = 0;
   // let unreadWorkspaceMessages = 0;
   // if (Object.keys(channels).length) {
-    
+
   //   if (Object.values(channels).filter((c) => { return c.type !== "TOPIC" && typeof c.id === "number" }).length) {
   //     unreadMessages = Object.values(channels).filter((c) => {
   //       return c.type !== "TOPIC" && typeof c.id === "number";
@@ -85,7 +84,7 @@ const ChatSidebarPanel = (props) => {
   //     unreadWorkspaceMessages = Object.values(channels).filter((c) => c.type === "TOPIC").map((c) => c.total_unread).reduce(add);
   //   }
   // }
-  
+
   const refs = {
     navTab: useRef(),
   };
@@ -121,7 +120,7 @@ const ChatSidebarPanel = (props) => {
         setTabPill("pills-workspace");
         refs.navTab.current.querySelector(".nav-link.active").classList.remove("active");
 
-        let e = refs.navTab.current.querySelector(".nav-link[aria-controls=\"pills-workspace\"]");
+        let e = refs.navTab.current.querySelector('.nav-link[aria-controls="pills-workspace"]');
         if (e) {
           e.classList.add("active");
         }
@@ -129,7 +128,7 @@ const ChatSidebarPanel = (props) => {
     }
   }, [selectedChannel, previousChannel, setTabPill]);
 
-  const {_t} = useTranslation();
+  const { _t } = useTranslation();
 
   const dictionary = {
     chats: _t("CHAT.CHATS", "Chats"),
@@ -148,7 +147,7 @@ const ChatSidebarPanel = (props) => {
     nothingToSeeHere: _t("CHAT.NOTHING_TO_SEE_HERE", "Nothing to see here!"),
     noMatchingChats: _t("CHAT.NO_MATCHING_CHATS", "No matching chats found"),
     messageRemoved: _t("CHAT.MESSAGE_REMOVED", "The chat message has been removed."),
-    personalBot: _t("CHAT.PERSONAL_BOT", "Personal bot")
+    personalBot: _t("CHAT.PERSONAL_BOT", "Personal bot"),
   };
 
   return (
@@ -158,7 +157,10 @@ const ChatSidebarPanel = (props) => {
         <ul ref={refs.navTab} className="nav nav-pills" role="tabList">
           <li className="nav-item">
             <span className="nav-link active" id="pills-home-tab" data-toggle="pill" onClick={handleTabChange} role="tab" aria-controls="pills-home" aria-selected="true">
-              {dictionary.chats}  {tabPill !== "pills-home" && (unreadCounter.chat_message > 0 || unreadCounter.unread_channel > 0) && <div className={`badge badge-primary badge-pill ${unreadCounter.chat_message > 0 ? "text-white" : "text-primary"}`}>{unreadCounter.chat_message > 0 ? unreadCounter.chat_message : unreadCounter.unread_channel}</div>}
+              {dictionary.chats}{" "}
+              {tabPill !== "pills-home" && (unreadCounter.chat_message > 0 || unreadCounter.unread_channel > 0) && (
+                <div className={`badge badge-primary badge-pill ${unreadCounter.chat_message > 0 ? "text-white" : "text-primary"}`}>{unreadCounter.chat_message > 0 ? unreadCounter.chat_message : unreadCounter.unread_channel}</div>
+              )}
             </span>
           </li>
           <li className="nav-item">
@@ -168,12 +170,12 @@ const ChatSidebarPanel = (props) => {
           </li>
           <li className="nav-item">
             <span className="nav-link" id="pills-workspace-tab" data-toggle="pill" onClick={handleTabChange} role="tab" aria-controls="pills-workspace" aria-selected="false">
-              {dictionary.workspaceChats} {tabPill !== "pills-workspace" &&  unreadCounter.workspace_chat_message > 0 && <div className={"badge badge-primary text-white badge-pill"}>{unreadCounter.workspace_chat_message}</div>}
+              {dictionary.workspaceChats} {tabPill !== "pills-workspace" && unreadCounter.workspace_chat_message > 0 && <div className={"badge badge-primary text-white badge-pill"}>{unreadCounter.workspace_chat_message}</div>}
             </span>
           </li>
         </ul>
       </div>
-      <ChatSideBarContentPanel pill={tabPill} search={search} channels={channels} userChannels={userChannels} selectedChannel={selectedChannel} dictionary={dictionary}/>
+      <ChatSideBarContentPanel pill={tabPill} search={search} channels={channels} userChannels={userChannels} selectedChannel={selectedChannel} dictionary={dictionary} />
     </Wrapper>
   );
 };
