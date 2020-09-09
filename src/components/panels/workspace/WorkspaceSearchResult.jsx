@@ -6,32 +6,18 @@ import {useIsMember} from "../../hooks";
 
 const Wrapper = styled.li`
     position: relative;
-    > div {
-        margin-bottom: 5px;
-    }
+    display: flex;
+    align-items: center;
     :hover {
         button {
-            display: block;
+            display: inline-flex;
         }
     }
 `;
 
-const DescriptionWrapper = styled.div`
-    display: flex;
-`;
-
-const Description = styled.div`
-    width: 100%;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden; 
-`;
-
 const JoinButton = styled.button`
-    position: absolute;
-    top: 55px;
-    right: 10px;
-    display: none;
+   margin-left: auto;
+   display: none;
 `;
 
 const WorkspaceSearchResult = (props) => {
@@ -57,29 +43,35 @@ const WorkspaceSearchResult = (props) => {
         onJoinWorkspace(item);
     };
 
+    const handleLeaveWorkspace = (e) => {
+
+    };
+
     return (
         <Wrapper className="list-group-item p-l-0 p-r-0" onClick={handleRedirect}>
-            <div>
-                <h5>{topic.name}</h5>
+            <div className="workspace-search-detail">
+                <div className="workspace-title-status">
+                    <h5>{topic.name}</h5>
+                    { topic.is_locked && <span className={`badge badge-light text-white ml-1`}>Locked</span> }
+                    { topic.is_archive && <span className={`badge badge-light text-white ml-1`}>Archived</span> }
+                    { !topic.is_archive && !topic.is_locked && <span className={`badge badge-light text-white ml-1`}>Open</span> }
+                </div>
+                <ul className="workspace-detail-lists">
+                    { isMember && <li className="text-success"><SvgIconFeather icon="check"/>Joined</li> }
+                    <li>{item.members.length} {item.members.length === 1 ? "member" : "members"}</li>
+                    <li>{workspace ? workspace.name : "Workspaces"}</li>
+                    <li>{stripHtml(topic.description)}</li>
+                </ul>
             </div>
-            <div>
-                Status: 
-                { topic.is_locked && <span className={`badge badge-light text-white ml-1`}>Locked</span> }
-                { topic.is_archive && <span className={`badge badge-light text-white ml-1`}>Archived</span> }
-                { !topic.is_archive && !topic.is_locked && <span className={`badge badge-light text-white ml-1`}>Open</span> }
-            </div>
-            <div>Members: {item.members.length}</div>
-            <div>
-                Folder: {workspace ? workspace.name : "Workspaces"}
-            </div>
-            <DescriptionWrapper>
-                <Description>Description: {stripHtml(topic.description)}</Description>
-            </DescriptionWrapper>
             {
-                !isMember &&
+                !isMember ?
                 <JoinButton onClick={handleJoinWorkspace} className="btn btn-primary join-button">
                     <SvgIconFeather icon="user-plus" />
                     Join
+                </JoinButton>
+                :
+                <JoinButton onClick={handleLeaveWorkspace} className="btn btn-primary join-button">
+                    Leave
                 </JoinButton>
             }
         </Wrapper>

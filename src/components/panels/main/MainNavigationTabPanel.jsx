@@ -242,8 +242,6 @@ const MainNavigationTabPanel = (props) => {
     });
   };
 
-  //const activeTab = useSelector((state) => state.workspaces.activeTab);
-
   const handleShowFolderModal = () => {
     let payload = {
       type: "workspace_folder",
@@ -280,16 +278,6 @@ const MainNavigationTabPanel = (props) => {
     }
   }, [active_topic, defaultTopic, workspaces, setDefaultTopic]);
 
-  // useEffect(() => {
-  //   if (active_topic && active_topic.hasOwnProperty("id")) {
-  //     if (active_topic.folder_id) {
-  //       setWorkpacePath(`/workspace/chat/${active_topic.folder_id}/${replaceChar(active_topic.folder_name)}/${active_topic.id}/${replaceChar(active_topic.name)}`);
-  //     } else {
-  //       setWorkpacePath(`/workspace/chat/${active_topic.id}/${replaceChar(active_topic.name)}`);
-  //     }
-  //   }
-  // }, [active_topic]);
-
   return (
     <Wrapper className={`navigation-menu-tab ${className}`}>
       <div>
@@ -307,8 +295,6 @@ const MainNavigationTabPanel = (props) => {
               <NavIcon icon={"compass"}/>
               <div>
                 {dictionary.allWorkspaces}
-                {unreadCounter.workspace_chat_message + unreadCounter.workspace_post >= 1 &&
-                <Badge data-count={unreadCounter.workspace_chat_message + unreadCounter.workspace_post}>&nbsp;</Badge>}
               </div>
             </NavIconContainer>
           </li>
@@ -399,34 +385,12 @@ const MainNavigationTabPanel = (props) => {
                     />
                   )}
                   {isExternal &&
-                  Object.keys(workspaces).length > 0 &&
-                  Object.values(workspaces).map((ws) => {
-                    return <ExternalWorkspaceList key={ws.key_id} actions={actions} workspace={ws}
+                    Object.keys(workspaces).length > 0 &&
+                    Object.values(workspaces).map((ws) => {
+                      return <ExternalWorkspaceList key={ws.key_id} actions={actions} workspace={ws}
                                                   activeTopic={workspace}/>;
                   })}
                 </ul>
-                {/*<ul>
-            {Object.values(workspaces).filter((ws) => ws.active === 0).length > 0 && (
-              <WorkspaceList
-                actions={actions}
-                history={history}
-                show={true}
-                workspace={workspace}
-                workspaces={sortedWorkspaces.filter((ws) => ws.active === 0)}
-                folder={{
-                  id: "archive",
-                  is_lock: 0,
-                  is_active: 0,
-                  name: dictionary.archivedFolder,
-                  type: "ARCHIVE_FOLDER",
-                  workspace_ids: Object.values(workspaces).filter((ws) => {
-                    return ws.active === 0;
-                  }).map((ws) => ws.id),
-                  unread_count: 0
-                }}
-              />
-            )}
-          </ul>*/}
               </>
           }
         </div>

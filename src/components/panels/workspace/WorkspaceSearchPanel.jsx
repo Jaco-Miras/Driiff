@@ -32,6 +32,22 @@ const WorkspaceSearchPanel = (props) => {
                 search: "",
                 skip: 0,
                 limit: 25,
+            }, 
+            (err,res) => {
+                if (err) {
+                    actions.updateSearch({
+                        ...search,
+                        searching: false,
+                    });
+                } else {
+                    actions.updateSearch({
+                        ...search,
+                        searching: false,
+                        count: res.data.total_count,
+                        results: res.data.workspaces,
+                        maxPage: Math.ceil(res.data.total_count / 25),
+                    });
+                }
             });
             actions.updateSearch({
                 ...search,
@@ -54,6 +70,22 @@ const WorkspaceSearchPanel = (props) => {
                     search: value,
                     skip: results.length,
                     limit: (selectedPage*25) - results.length,
+                }, (err, res) => {
+                    if (err) {
+                        actions.updateSearch({
+                            ...search,
+                            searching: false,
+                        });
+                    } else {
+                        actions.updateSearch({
+                            ...search,
+                            searching: false,
+                            count: res.data.total_count,
+                            results: [...res.data.workspaces, ...results],
+                            maxPage: Math.ceil(res.data.total_count / 25),
+                            page: selectedPage
+                        });
+                    }
                 });
             }
             actions.updateSearch({
