@@ -1,4 +1,5 @@
 /* eslint-disable no-prototype-builtins */
+import {uniqBy} from "lodash";
 import {convertArrayToObject} from "../../helpers/arrayHelper";
 
 const INITIAL_STATE = {
@@ -31,18 +32,18 @@ const INITIAL_STATE = {
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
 
-    case "GET_ALL_WORKSPACE_SUCCESS": {
-      return {
-        ...state,
-        search: {
-          ...state.search,
-          count: action.data.total_count,
-          searching: false,
-          results: [...action.data.workspaces, ...state.search.results],
-          maxPage: Math.ceil(action.data.total_count / 25)
-        }
-      }
-    }
+    // case "GET_ALL_WORKSPACE_SUCCESS": {
+    //   return {
+    //     ...state,
+    //     search: {
+    //       ...state.search,
+    //       count: action.data.total_count,
+    //       searching: false,
+    //       results: [...new Set([...action.data.workspaces, ...state.search.results])],
+    //       maxPage: Math.ceil(action.data.total_count / 25)
+    //     }
+    //   }
+    // }
     case "UPDATE_WORKSPACE_SEARCH": {
       return {
         ...state,
@@ -232,7 +233,7 @@ export default (state = INITIAL_STATE, action) => {
                 }
             }
           } else {
-            if (state.activeTopic.id === action.data.id) {
+            if (state.activeTopic && state.activeTopic.id === action.data.id) {
               workspaceToDelete = action.data.id;
               //check if workspace is under a folder 
               //then check if the user is a member in other workspace under the same folder

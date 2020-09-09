@@ -11,7 +11,7 @@ const Wrapper = styled.div`
 const WorkspaceSearch = (props) => {
 
   const { actions, search } = props;
-  const { count, maxPage, page, value, searching, results } = search;
+  const { value, searching} = search;
   const [inputValue, setInputValue] = useState(value);
 
   const handleEnter = (e) => {
@@ -25,15 +25,28 @@ const WorkspaceSearch = (props) => {
         search: inputValue,
         skip: 0,
         limit: 25,
+    }, (err, res) => {
+      if (err) {
+        actions.updateSearch({
+            ...search,
+            searching: false,
+        });
+      } else {
+          actions.updateSearch({
+              ...search,
+              value: inputValue,
+              searching: false,
+              count: res.data.total_count,
+              results: res.data.workspaces,
+              maxPage: Math.ceil(res.data.total_count / 25),
+              page: 1
+          });
+      }
     });
     actions.updateSearch({
         ...search,
         value: inputValue,
         searching: true,
-        results: value === inputValue ? results : [],
-        maxPage: value !== inputValue ? 1 : maxPage,
-        page: value !== inputValue ? 1 : page,
-        count: value !== inputValue ? 1 : count
     });
   };
 

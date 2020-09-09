@@ -21288,6 +21288,37 @@ body.dark.small-navigation .navigation-menu-body ul li.navigation-divider:after 
 .search-results {
   .list-group-item.p-l-0.p-r-0 {
     cursor: pointer;
+    .workspace-search-detail {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      flex-flow: column nowrap;
+      overflow: hidden;
+      padding-right: 10px;
+      .workspace-title-status {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        h5 {
+            margin: 0;
+        }
+      }
+      .workspace-detail-lists {
+        list-style: none;
+        padding: 0;
+        width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        li {
+            display: inline;
+        }
+        > li:not(:last-child)::after {
+            content: "\00b7";
+            margin: 0 5px;
+        }
+    }
+    }
   }
 }
 .files-breadcrumb h6 {
