@@ -1,7 +1,7 @@
 import React, {useCallback, useState} from "react";
 import styled from "styled-components";
 import {TeamListItem} from "../../list/people/item";
-import {SvgEmptyState, SvgIconFeather} from "../../common";
+import {SvgIconFeather} from "../../common";
 
 const Wrapper = styled.div`
   .feather-edit {
@@ -76,7 +76,7 @@ const DashboardTeam = (props) => {
         </h5>
 
         {members.length === 0 ?
-          <EmptyState><SvgEmptyState icon={3} height={252}/></EmptyState>
+          <>There are no team members for this workspace.</>
           :
           <ul className="list-group list-group-flush">
             {members.map((member) => {
