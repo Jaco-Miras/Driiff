@@ -290,14 +290,6 @@ const MainNavigationTabPanel = (props) => {
       </div>
       <div className="flex navigation-menu-tab-header-options">
         <ul>
-          <li onClick={closeLeftNav}>
-            <NavIconContainer to={"/workspace/search"} active={["/workspace/search"].includes(props.location.pathname)}>
-              <NavIcon icon={"compass"}/>
-              <div>
-                {dictionary.allWorkspaces}
-              </div>
-            </NavIconContainer>
-          </li>
           {!isExternal && (
             <li onClick={closeLeftNav}>
               <NavIconContainer
@@ -313,6 +305,14 @@ const MainNavigationTabPanel = (props) => {
               </NavIconContainer>
             </li>
           )}
+          <li onClick={closeLeftNav}>
+            <NavIconContainer to={"/workspace/search"} active={["/workspace/search"].includes(props.location.pathname)}>
+              <NavIcon icon={"compass"}/>
+              <div>
+                {dictionary.allWorkspaces}
+              </div>
+            </NavIconContainer>
+          </li>
           {links.length > 0 && <QuickLinks links={links} user={user} dictionary={dictionary}/>}
           <PersonalLinks dictionary={dictionary}/>
         </ul>
