@@ -76,7 +76,7 @@ const DashboardTeam = (props) => {
         </h5>
 
         {members.length === 0 ?
-          <>There are no team members for this workspace.</>
+          <>{dictionary.emptyTeam}</>
           :
           <ul className="list-group list-group-flush">
             {members.map((member) => {

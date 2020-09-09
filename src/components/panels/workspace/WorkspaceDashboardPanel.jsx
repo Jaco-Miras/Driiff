@@ -38,6 +38,7 @@ const WorkspaceDashboardPanel = (props) => {
     fileAttachments: _t("FILE_ATTACHMENTS", "File attachments"),
     peopleExternal: _t("PEOPLE.EXTERNAL", "External"),
     peopleInvited: _t("PEOPLE.INVITED", "Invited"),
+    emptyTeam: _t("DASHBOARD.EMPTY_TEAM", "There are no team members for this workspace.")
   };
 
   let disableOptions = false;
