@@ -1,9 +1,9 @@
-import React, {useCallback, useEffect, useRef, useState} from "react";
-import {useHistory} from "react-router-dom";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import SearchForm from "../../forms/SearchForm";
-import {useUserChannels, useTranslation} from "../../hooks";
-import {PeopleListItem} from "../../list/people/item";
+import { useUserChannels, useTranslation } from "../../hooks";
+import { PeopleListItem } from "../../list/people/item";
 
 const Wrapper = styled.div``;
 
@@ -13,9 +13,9 @@ const Search = styled(SearchForm)`
 `;
 
 const CompanyPeoplePanel = (props) => {
-  const {className = ""} = props;
+  const { className = "" } = props;
 
-  const {users, loggedUser, userChannels, selectUserChannel} = useUserChannels();
+  const { users, loggedUser, userChannels, selectUserChannel } = useUserChannels();
 
   const history = useHistory();
 
@@ -65,23 +65,22 @@ const CompanyPeoplePanel = (props) => {
       return true;
     });
 
-  const {_t} = useTranslation();
+  const { _t } = useTranslation();
 
   const dictionary = {
     searchPeoplePlaceholder: _t("PLACEHOLDER.SEARCH_PEOPLE", "Search people"),
     peopleExternal: _t("PEOPLE.EXTERNAL", "External"),
-    peopleInvited: _t("PEOPLE.INVITED", "Invited")
+    peopleInvited: _t("PEOPLE.INVITED", "Invited"),
   };
 
   return (
     <Wrapper className={`workspace-people container-fluid h-100 ${className}`}>
       <div className="card">
         <div className="card-body">
-          <Search ref={refs.search} placeholder="People search" onChange={handleSearchChange} autoFocus />
+          <Search ref={refs.search} value={search} placeholder="People search" onChange={handleSearchChange} autoFocus />
           <div className="row">
             {userSort.map((user) => {
-              return <PeopleListItem loggedUser={loggedUser} key={user.id} user={user} onNameClick={handleUserNameClick}
-                                     onChatClick={handleUserChat} dictionary={dictionary}/>;
+              return <PeopleListItem loggedUser={loggedUser} key={user.id} user={user} onNameClick={handleUserNameClick} onChatClick={handleUserChat} dictionary={dictionary} />;
             })}
           </div>
         </div>

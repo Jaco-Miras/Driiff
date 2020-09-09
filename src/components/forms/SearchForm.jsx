@@ -27,8 +27,6 @@ const Icon = styled(SvgIconFeather)``;
 
 const SearchForm = forwardRef((props, ref) => {
   const { className = "", onChange, onClick, placeholder = "Search", value = "", onClickEmpty, closeButton = false } = props;
-
-  // const ref = useRef();
   const inputGroup = useRef();
 
   useEffect(() => {
