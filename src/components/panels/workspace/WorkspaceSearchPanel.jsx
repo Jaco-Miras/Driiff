@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
 import { WorkspaceSearch, WorkspaceSearchResults } from "./index";
@@ -22,6 +22,7 @@ const WorkspaceSearchPanel = (props) => {
     const redirect = useRedirect();
     const actions = useWorkspaceSearchActions();
     const search = useSelector((state) => state.workspaces.search);
+    const user = useSelector((state) => state.session.user);
     const { count, maxPage, page, results, searching, value } = search;
 
     useEffect(() => {
@@ -123,7 +124,7 @@ const WorkspaceSearchPanel = (props) => {
                         </h4>
                     }
                     {
-                        results.length > 0 && <WorkspaceSearchResults actions={actions} page={page} results={results} redirect={redirect}/>
+                        results.length > 0 && <WorkspaceSearchResults user={user} actions={actions} page={page} results={results} redirect={redirect}/>
                     }
                     
                     {

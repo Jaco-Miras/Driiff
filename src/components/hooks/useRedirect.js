@@ -81,14 +81,13 @@ const useRedirect = () => {
                     if (err) return;
                     dispatch(setActiveTopic(workspace));
                     dispatch(setWorkspaceToDelete(workspace.id));
+                    if (workspace.folder_id) {
+                        history.push(`/workspace/chat/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`);
+                    } else {
+                        history.push(`/workspace/chat/${workspace.id}/${replaceChar(workspace.name)}`);
+                    }
                 })
             );
-            
-            if (workspace.folder_id) {
-                history.push(`/workspace/chat/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`);
-            } else {
-                history.push(`/workspace/chat/${workspace.id}/${replaceChar(workspace.name)}`);
-            }
         }, []
     );
 

@@ -196,7 +196,7 @@ export default (state = INITIAL_STATE, action) => {
       let folderToDelete = state.folderToDelete;
       let updatedSearch = {...state.search};
       if (state.workspacesLoaded && action.data.type === "WORKSPACE" && updatedWorkspaces.hasOwnProperty(action.data.id)) {
-        let updatedTopic = { ...state.activeTopic };
+        let updatedTopic = state.activeTopic ? { ...state.activeTopic } : null;
         workspace = {
           ...state.workspaces[action.data.id],
           name: action.data.name,
@@ -216,7 +216,11 @@ export default (state = INITIAL_STATE, action) => {
           if (workspace.is_lock === 1 || state.user.type === "external") {
             delete updatedWorkspaces[workspace.id];
             if (Object.values(updatedWorkspaces).length) {
-              updatedTopic = Object.values(updatedWorkspaces)[0];
+              if (Object.values(updatedWorkspaces)[0].id === action.data.id) {
+                updatedTopic = Object.values(updatedWorkspaces)[1];
+              } else {
+                updatedTopic = Object.values(updatedWorkspaces)[0];
+              }
             }
             if (action.data.workspace_id !== 0 && updatedFolders.hasOwnProperty(action.data.workspace_id)) {
               let isMember = false;
@@ -1115,9 +1119,9 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "INCOMING_CHAT_MESSAGE": {
+      let updatedTopic = state.activeTopic ? { ...state.activeTopic } : null;
       if (!action.data.is_read) {
         let updatedWorkspaces = { ...state.workspaces };
-        let updatedTopic = { ...state.activeTopic };
         if (Object.keys(updatedWorkspaces).length > 0) {
           if (updatedWorkspaces.hasOwnProperty(action.data.workspace_id)) {
             updatedWorkspaces[action.data.workspace_id].unread_chats = updatedWorkspaces[action.data.workspace_id].unread_chats + 1;
@@ -1135,7 +1139,6 @@ export default (state = INITIAL_STATE, action) => {
         }
       } else {
         let updatedWorkspaces = { ...state.workspaces };
-        let updatedTopic = { ...state.activeTopic };
         if (Object.keys(updatedWorkspaces).length > 0) {
           if (updatedWorkspaces.hasOwnProperty(action.data.workspace_id)) {
             updatedWorkspaces[action.data.workspace_id].unread_chats = 0;
