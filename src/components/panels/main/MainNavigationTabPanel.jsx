@@ -1,14 +1,18 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useHistory } from "react-router-dom";
-import { Badge } from "reactstrap";
+import React, {useEffect, useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
+import {useHistory} from "react-router-dom";
+import {Badge} from "reactstrap";
 import styled from "styled-components";
-import { replaceChar } from "../../../helpers/stringFormatter";
-import { addToModals, getQuickLinks, getUnreadNotificationCounterEntries, setNavMode } from "../../../redux/actions/globalActions";
-import { NavLink, SvgIcon, SvgIconFeather } from "../../common";
-import { useTranslation, useWorkspace } from "../../hooks";
-import { ExternalWorkspaceList, WorkspaceList } from "../../workspace";
-import { PersonalLinks, QuickLinks } from "../../list/links";
+import {
+  addToModals,
+  getQuickLinks,
+  getUnreadNotificationCounterEntries,
+  setNavMode
+} from "../../../redux/actions/globalActions";
+import {NavLink, SvgEmptyState, SvgIcon, SvgIconFeather} from "../../common";
+import {useTranslation, useWorkspace} from "../../hooks";
+import {ExternalWorkspaceList, WorkspaceList} from "../../workspace";
+import {PersonalLinks, QuickLinks} from "../../list/links";
 import Tooltip from "react-tooltip-lite";
 
 const Wrapper = styled.div`
@@ -100,7 +104,6 @@ const DriffLogo = styled(SvgIcon)`
   height: 36px;
   filter: brightness(0) saturate(100%) invert(1);
   cursor: pointer;
-  cursor: hand;
 `;
 
 const FolderPlus = styled(SvgIconFeather)`
@@ -134,7 +137,6 @@ const NavIconContainer = styled(NavLink)`
 
 const NavIcon = styled(SvgIconFeather)`
   cursor: pointer;
-  cursor: hand;
   margin: 0 8px 0 15px;
 `;
 
@@ -148,6 +150,7 @@ const NavNewWorkspace = styled.button`
   justify-content: center;
   align-items: center;
   color: #ffffff !important;
+  
   div {
     position: relative;
     display: inline-flex;
@@ -163,14 +166,34 @@ const StyledTooltip = styled(Tooltip)`
   justify-content: center;
 `;
 
+const EmptyState = styled.div`  
+  display: flex;
+  align-items: start;
+  justify-content: center;
+  text-align: center;
+  color: #fff;
+  
+  svg {
+    display: block;
+    margin: 1rem auto;
+
+    circle {
+      fill: transparent;
+    }
+  }
+  button {  
+    text-transform: uppercase;
+  }
+`;
+
 const MainNavigationTabPanel = (props) => {
-  const { className = "", isExternal } = props;
+  const {className = "", isExternal} = props;
   const history = useHistory();
   const dispatch = useDispatch();
 
-  const { actions, folders, sortedWorkspaces, workspaces, workspace } = useWorkspace(true);
+  const {actions, folders, sortedWorkspaces, workspaces, workspace, workspacesLoaded} = useWorkspace(true);
 
-  const { _t } = useTranslation();
+  const {_t} = useTranslation();
 
   const dictionary = {
     allWorkspaces: _t("SIDEBAR.ALL_WORKSPACES", "All Workspaces"),
@@ -188,20 +211,20 @@ const MainNavigationTabPanel = (props) => {
     addShortcut: _t("SIDEBAR.ADD_SHORTCUT", "Add shortcut"),
   };
 
-  const { active_topic } = useSelector((state) => state.settings.user.GENERAL_SETTINGS);
+  const {active_topic} = useSelector((state) => state.settings.user.GENERAL_SETTINGS);
   const driff = useSelector((state) => state.settings.driff);
   const user = useSelector((state) => state.session.user);
-  const { lastVisitedChannel } = useSelector((state) => state.chat);
-  const { links, unreadCounter } = useSelector((state) => state.global);
+  const {lastVisitedChannel} = useSelector((state) => state.chat);
+  const {links, unreadCounter} = useSelector((state) => state.global);
 
   const [defaultTopic, setDefaultTopic] = useState(null);
 
   const handleIconClick = (e) => {
     e.preventDefault();
     if (e.target.dataset.link) {
-      dispatch(setNavMode({ mode: 3 }));
+      dispatch(setNavMode({mode: 3}));
     } else {
-      dispatch(setNavMode({ mode: 2 }));
+      dispatch(setNavMode({mode: 2}));
     }
     history.push(e.target.dataset.link);
   };
@@ -270,9 +293,10 @@ const MainNavigationTabPanel = (props) => {
   return (
     <Wrapper className={`navigation-menu-tab ${className}`}>
       <div>
-        <div className="navigation-menu-tab-header" data-toggle="tooltip" title="Driff" data-placement="right" data-original-title="Driff">
+        <div className="navigation-menu-tab-header" data-toggle="tooltip" title="Driff" data-placement="right"
+             data-original-title="Driff">
           <div className="driff-logo">
-            <DriffLogo icon="driff-logo" data-link="/" onClick={handleIconClick} />
+            <DriffLogo icon="driff-logo" data-link="/" onClick={handleIconClick}/>
           </div>
         </div>
       </div>
@@ -280,10 +304,11 @@ const MainNavigationTabPanel = (props) => {
         <ul>
           <li onClick={closeLeftNav}>
             <NavIconContainer to={"/workspace/search"} active={["/workspace/search"].includes(props.location.pathname)}>
-              <NavIcon icon={"compass"} />
+              <NavIcon icon={"compass"}/>
               <div>
                 {dictionary.allWorkspaces}
-                {unreadCounter.workspace_chat_message + unreadCounter.workspace_post >= 1 && <Badge data-count={unreadCounter.workspace_chat_message + unreadCounter.workspace_post}>&nbsp;</Badge>}
+                {unreadCounter.workspace_chat_message + unreadCounter.workspace_post >= 1 &&
+                <Badge data-count={unreadCounter.workspace_chat_message + unreadCounter.workspace_post}>&nbsp;</Badge>}
               </div>
             </NavIconContainer>
           </li>
@@ -293,16 +318,17 @@ const MainNavigationTabPanel = (props) => {
                 active={["dashboard", "posts", "chat", "files", "people"].includes(props.match.params.page)}
                 to={lastVisitedChannel !== null && lastVisitedChannel.hasOwnProperty("code") ? `/chat/${lastVisitedChannel.code}` : "/chat"}
               >
-                <NavIcon icon={"home"} />
+                <NavIcon icon={"home"}/>
                 <div>
                   {driff.company_name}
-                  {(unreadCounter.chat_message >= 1 || unreadCounter.unread_channel > 0) && <Badge data-count={unreadCounter.chat_message}>&nbsp;</Badge>}
+                  {(unreadCounter.chat_message >= 1 || unreadCounter.unread_channel > 0) &&
+                  <Badge data-count={unreadCounter.chat_message}>&nbsp;</Badge>}
                 </div>
               </NavIconContainer>
             </li>
           )}
-          {links.length > 0 && <QuickLinks links={links} user={user} dictionary={dictionary} />}
-          <PersonalLinks dictionary={dictionary} />
+          {links.length > 0 && <QuickLinks links={links} user={user} dictionary={dictionary}/>}
+          <PersonalLinks dictionary={dictionary}/>
         </ul>
       </div>
 
@@ -310,64 +336,77 @@ const MainNavigationTabPanel = (props) => {
         {dictionary.yourWorkspaces}
         {!isExternal && (
           <StyledTooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="New folder">
-            <FolderPlus onClick={handleShowFolderModal} icon="folder-plus" />
+            <FolderPlus onClick={handleShowFolderModal} icon="folder-plus"/>
           </StyledTooltip>
         )}
       </div>
       <div className="navigation-menu-group">
         <div id="elements" className="open">
-          <ul>
-            {!isExternal &&
-              Object.values(folders)
-                .sort((a, b) => a.name.localeCompare(b.name))
-                .map((folder) => {
-                  return (
+          {
+            workspacesLoaded && Object.values(folders).length === 0 && Object.values(workspaces).length === 0 ?
+              <EmptyState>
+                <div>
+                  <SvgEmptyState height={200} icon={2}/>
+                  <h5>Start by adding a new workspace down there!</h5>
+                  <button className="btn btn-primary mt-2" onClick={handleShowWorkspaceModal}>
+                    Create workspace
+                  </button>
+                </div>
+              </EmptyState>
+              :
+              <>
+                <ul>
+                  {!isExternal &&
+                  Object.values(folders)
+                    .sort((a, b) => a.name.localeCompare(b.name))
+                    .map((folder) => {
+                      return (
+                        <WorkspaceList
+                          key={folder.key_id}
+                          actions={actions}
+                          folder={folder}
+                          history={history}
+                          show={true}
+                          workspace={workspace}
+                          workspaces={sortedWorkspaces.filter((ws) => {
+                            return ws.active === 1 && folder.workspace_ids.some((id) => id === ws.id);
+                          })}
+                        />
+                      );
+                    })}
+                  {!isExternal && Object.values(workspaces).length > 0 && (
                     <WorkspaceList
-                      key={folder.key_id}
                       actions={actions}
-                      folder={folder}
                       history={history}
                       show={true}
                       workspace={workspace}
                       workspaces={sortedWorkspaces.filter((ws) => {
-                        return ws.active === 1 && folder.workspace_ids.some((id) => id === ws.id);
+                        return ws.active === 1 && ws.folder_id === null;
                       })}
+                      folder={{
+                        id: "general_internal",
+                        is_lock: 0,
+                        // selected: generalWorkspaces.some((ws) => ws.selected),
+                        name: dictionary.workspacesFolder,
+                        type: "GENERAL_FOLDER",
+                        workspace_ids: Object.values(workspaces)
+                          .filter((ws) => {
+                            return ws.folder_id === null && ws.active === 1;
+                          })
+                          .map((ws) => ws.id),
+                        unread_count: 0,
+                      }}
                     />
-                  );
-                })}
-            {!isExternal && Object.values(workspaces).length > 0 && (
-              <WorkspaceList
-                actions={actions}
-                history={history}
-                show={true}
-                workspace={workspace}
-                workspaces={sortedWorkspaces.filter((ws) => {
-                  return ws.active === 1 && ws.folder_id === null;
-                })}
-                folder={{
-                  id: "general_internal",
-                  is_lock: 0,
-                  // selected: generalWorkspaces.some((ws) => ws.selected),
-                  name: dictionary.workspacesFolder,
-                  type: "GENERAL_FOLDER",
-                  workspace_ids: Object.values(workspaces)
-                    .filter((ws) => {
-                      return ws.folder_id === null && ws.active === 1;
-                    })
-                    .map((ws) => ws.id),
-                  unread_count: 0,
-                }}
-              />
-            )}
-            {isExternal &&
-              Object.keys(workspaces).length > 0 &&
-              Object.values(workspaces).map((ws) => {
-                return <ExternalWorkspaceList key={ws.key_id} actions={actions} workspace={ws} activeTopic={workspace} />;
-              })}
-          </ul>
-
-          <ul>
-            {/* {Object.values(workspaces).filter((ws) => ws.active === 0).length > 0 && (
+                  )}
+                  {isExternal &&
+                  Object.keys(workspaces).length > 0 &&
+                  Object.values(workspaces).map((ws) => {
+                    return <ExternalWorkspaceList key={ws.key_id} actions={actions} workspace={ws}
+                                                  activeTopic={workspace}/>;
+                  })}
+                </ul>
+                {/*<ul>
+            {Object.values(workspaces).filter((ws) => ws.active === 0).length > 0 && (
               <WorkspaceList
                 actions={actions}
                 history={history}
@@ -386,15 +425,17 @@ const MainNavigationTabPanel = (props) => {
                   unread_count: 0
                 }}
               />
-            )} */}
-          </ul>
+            )}
+          </ul>*/}
+              </>
+          }
         </div>
       </div>
-      {!isExternal && (
+      {!isExternal && !(Object.values(folders).length === 0 && Object.values(workspaces).length === 0) && (
         <div>
           <NavNewWorkspace onClick={handleShowWorkspaceModal} className="btn btn-outline-light" type="button">
             <div>
-              <CirclePlus icon="circle-plus" />
+              <CirclePlus icon="circle-plus"/>
               {dictionary.addNewWorkspace}
             </div>
           </NavNewWorkspace>
