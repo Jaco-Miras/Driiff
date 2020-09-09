@@ -8,6 +8,10 @@ const Wrapper = styled.div`
     }
 `;
 
+const CloseIcon = styled(SvgIconFeather)`
+  stroke-width: 2px;
+`;
+
 const WorkspaceSearch = (props) => {
 
   const { actions, search } = props;
@@ -50,18 +54,47 @@ const WorkspaceSearch = (props) => {
     });
   };
 
+  const handleClearSearch = () => {
+    actions.updateSearch({
+      results: [],
+      searching: true,
+      value: "",
+      page: 1,
+      maxPage: 1,
+      count: 0,
+    });
+    actions.search({
+      search: "",
+      skip: 0,
+      limit: 25,
+    }, 
+    (err,res) => {
+        if (err) {
+            actions.updateSearch({
+                ...search,
+                searching: false,
+                value: ""
+            });
+        } else {
+            actions.updateSearch({
+                ...search,
+                value: "",
+                searching: false,
+                count: res.data.total_count,
+                results: res.data.workspaces,
+                maxPage: Math.ceil(res.data.total_count / 25),
+            });
+        }
+    });
+    setInputValue("");
+  };
+
   const handleSearchChange = (e) => {
     if (e.target.value.trim() === "" && value !== "") {
-      actions.updateSearch({
-        results: [],
-        searching: false,
-        value: "",
-        page: 1,
-        maxPage: 1,
-        count: 0,
-      });
+      handleClearSearch();
+    } else {
+      setInputValue(e.target.value);
     }
-    setInputValue(e.target.value)
   };
 
   useEffect(() => {
@@ -76,6 +109,12 @@ const WorkspaceSearch = (props) => {
             <div className="input-group">
               <input onChange={handleSearchChange} onKeyDown={handleEnter} type="text" className="form-control" placeholder="Search..." aria-describedby="button-addon1" autoFocus value={inputValue} />
               <div className="input-group-append">
+                {
+                  inputValue.trim() !== "" &&
+                  <button className="btn btn-outline-light" type="button" onClick={handleClearSearch}>
+                    <CloseIcon icon="x"/>
+                  </button>
+                }
                 <button className="btn btn-outline-light" type="button" onClick={handleSearch}>
                   <SvgIconFeather icon="search" />
                 </button>
