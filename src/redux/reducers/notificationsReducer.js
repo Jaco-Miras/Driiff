@@ -1,4 +1,4 @@
-import { convertArrayToObject } from "../../helpers/arrayHelper";
+import {convertArrayToObject} from "../../helpers/arrayHelper";
 
 const INITIAL_STATE = {
   user: null,
@@ -25,7 +25,7 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "READ_ALL_NOTIFICATION_REDUCER": {
-      let updatedNotifications = { ...state.notifications };
+      let updatedNotifications = {...state.notifications};
       Object.values(updatedNotifications).forEach((n) => {
         updatedNotifications[n.id].is_read = 1;
       });
@@ -36,7 +36,7 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "READ_NOTIFICATION_REDUCER": {
-      let updatedNotifications = { ...state.notifications };
+      let updatedNotifications = {...state.notifications};
       updatedNotifications[action.data.id].is_read = 1;
       return {
         ...state,
@@ -45,7 +45,7 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "UNREAD_NOTIFICATION_REDUCER": {
-      let updatedNotifications = { ...state.notifications };
+      let updatedNotifications = {...state.notifications};
       updatedNotifications[action.data.id].is_read = 0;
       return {
         ...state,
@@ -54,7 +54,7 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "REMOVE_NOTIFICATION_REDUCER": {
-      let updatedNotifications = { ...state.notifications };
+      let updatedNotifications = {...state.notifications};
       delete updatedNotifications[action.data.id];
       return {
         ...state,
@@ -88,38 +88,39 @@ export default (state = INITIAL_STATE, action) => {
         };
         return {
           ...state,
-          notifications: { ...state.notifications, [postNotification.id]: postNotification },
+          notifications: {...state.notifications, [postNotification.id]: postNotification},
         };
       } else {
         return state;
       }
     }
     case "INCOMING_COMMENT": {
-      if (action.data.author.id !== state.user.id) {
-        let postNotification = {
-          id: action.data.notification.id,
-          type: action.data.notification.type,
-          is_read: 0,
-          created_at: action.data.created_at,
-          author: action.data.author,
-          data: {
-            post_id: action.data.post_id,
-            type: "TOPIC_POST",
-            must_read: 0,
-            must_reply: 0,
-            personalized_for_id: action.data.personalized_for_id,
-            title: action.data.post_title,
-            workspaces: action.data.workspaces,
-            comment_body: action.data.body,
-          },
-        };
-        return {
-          ...state,
-          notifications: { ...state.notifications, [postNotification.id]: postNotification },
-        };
-      } else {
+      if (action.data.notification === null
+        || action.data.author.id === state.user.id)
         return state;
-      }
+
+      let postNotification = {
+        id: action.data.notification.id,
+        type: action.data.notification.type,
+        is_read: 0,
+        created_at: action.data.created_at,
+        author: action.data.author,
+        data: {
+          post_id: action.data.post_id,
+          type: "TOPIC_POST",
+          must_read: 0,
+          must_reply: 0,
+          personalized_for_id: action.data.personalized_for_id,
+          title: action.data.post_title,
+          workspaces: action.data.workspaces,
+          comment_body: action.data.body,
+        },
+      };
+
+      return {
+        ...state,
+        notifications: {...state.notifications, [postNotification.id]: postNotification},
+      };
     }
     default:
       return state;
