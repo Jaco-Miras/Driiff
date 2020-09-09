@@ -86,14 +86,19 @@ const CompanyFileOptions = (props) => {
   return (
     <Wrapper className={`file-options ${className}`} moreButton="more-vertical" file={file} scrollRef={scrollRef}>
       <div onClick={handleViewDetail}>View Details</div>
-      <div onClick={handleFavorite}>{file.is_favorite ? "Unfavorite" : "Favorite"}</div>
-      <div onClick={handleShare}>Share</div>
       <div onClick={handleDownload}>Download</div>
-      <div onClick={handleMoveTo}>Move to</div>
-      <div onClick={handleRename}>Rename</div>
       {
-        forceDelete &&
-        <div onClick={handleRestore}>Restore</div>
+        forceDelete ?
+          <>
+            <div onClick={handleRestore}>Restore</div>
+          </>
+          :
+          <>
+            <div onClick={handleShare}>Share</div>
+            <div onClick={handleFavorite}>{file.is_favorite ? "Unfavorite" : "Favorite"}</div>
+            <div onClick={handleMoveTo}>Move to</div>
+            <div onClick={handleRename}>Rename</div>
+          </>
       }
       {!disableOptions && <div onClick={handleDelete}>Remove</div>}
     </Wrapper>

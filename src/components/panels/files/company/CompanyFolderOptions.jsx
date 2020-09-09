@@ -55,7 +55,6 @@ const CompanyFolderOptions = (props) => {
   }
 
   const handleDelete = () => {
-
     if (folder.hasOwnProperty("payload")) {
       actions.unlinkGoogleFolder(folder);
     } else {
@@ -65,6 +64,8 @@ const CompanyFolderOptions = (props) => {
         if (res) {
           let pathname = history.location.pathname.split("/folder/")[0];
           history.push(pathname);
+
+          toaster.info(<>You have removed <b>{folder.search}</b>.</>);
         }
       };
       actions.removeCompanyFolder(folder, cb);
@@ -73,8 +74,7 @@ const CompanyFolderOptions = (props) => {
 
   return (
     <Wrapper className={`file-options ${className}`} moreButton="more-vertical" folder={folder} scrollRef={scrollRef}>
-      {/* <div onClick={handleViewDetail}>View Details</div> */}
-      {!folder.hasOwnProperty("payload") && <div onClick={handleRename}>Rename</div>}
+      {(!folder.hasOwnProperty("payload")) && !folder.is_archived && <div onClick={handleRename}>Rename</div>}
       {folder.is_archived && <div onClick={handleRestore}>Restore</div>}
       <div onClick={handleDelete}>Remove</div>
     </Wrapper>
