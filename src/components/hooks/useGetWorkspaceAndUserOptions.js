@@ -19,6 +19,7 @@ const useGetWorkspaceAndUserOptions = (selectedWorkspaces, workspace = null) => 
       let members = [];
       if (workspace.members && workspace.members.length) {
         members = workspace.members.map((m) => {
+          m.first_name = m.first_name === "" ? m.email : m.first_name;
           m.name = m.name === "" ? m.email : m.name;
           return {
             ...m,
@@ -68,6 +69,7 @@ const useGetWorkspaceAndUserOptions = (selectedWorkspaces, workspace = null) => 
 
         if (uniqueMembers.length) {
           uniqueMembers = uniqueMembers.map((u) => {
+            u.first_name = u.first_name === "" ? u.email : u.first_name;
             u.name = u.name === "" ? u.email : u.name;
             return {
               ...u,

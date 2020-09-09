@@ -157,7 +157,6 @@ const CheckBoxGroup = styled.div`
 
 const MoreOption = styled.div`
   cursor: pointer;
-  cursor: hand;
   margin-bottom: 5px;
   &:hover {
     color: #972c86;
