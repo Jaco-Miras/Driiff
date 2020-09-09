@@ -25,18 +25,17 @@ const Wrapper = styled.form`
 `;
 const Icon = styled(SvgIconFeather)``;
 
-const SearchForm = forwardRef((props) => {
+const SearchForm = forwardRef((props, ref) => {
   const { className = "", onChange, onClick, placeholder = "Search", value = "", onClickEmpty, closeButton = false } = props;
 
-  const ref = useRef();
+  // const ref = useRef();
   const inputGroup = useRef();
 
   useEffect(() => {
-    console.log(ref.current.value);
-    if (ref.current.value !== "") {
+    if (value !== "") {
       inputGroup.current.classList.add("not-empty");
     }
-    if (ref.current.value === "") {
+    if (value === "") {
       inputGroup.current.classList.remove("not-empty");
     }
   }, [onChange]);
