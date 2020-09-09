@@ -1176,25 +1176,43 @@ export default (state = INITIAL_STATE, action) => {
       }
     }
     case "INCOMING_DELETED_FOLDER": {
-      let newWorkspaceFiles = {...state.workspaceFiles};
-      if (newWorkspaceFiles.hasOwnProperty(action.data.topic_id)) {
-        if (newWorkspaceFiles[action.data.topic_id].hasOwnProperty("folders")) {
-          newWorkspaceFiles[action.data.topic_id].folders[action.data.folder.id].is_archived = true;
-          newWorkspaceFiles[action.data.topic_id].folders[action.data.folder.id].files.forEach((f) => {
-            newWorkspaceFiles[action.data.topic_id].trash_files[f] = newWorkspaceFiles[action.data.topic_id].files[f];
-            delete newWorkspaceFiles[action.data.topic_id].files[f];
-          });
-          newWorkspaceFiles[action.data.topic_id].trash = newWorkspaceFiles[action.data.topic_id].folders[action.data.folder.id].files.length + newWorkspaceFiles[action.data.topic_id].trash;
-          return {
-            ...state,
-            workspaceFiles: newWorkspaceFiles,
-          };
-        } else {
-          return state;
-        }
-      } else {
+      if (typeof state.workspaceFiles[action.data.topic_id] === "undefined"
+        && typeof state.workspaceFiles[action.data.topic_id].folders[action.data.folder.id]) {
         return state;
       }
+
+      let newWorkspaceFiles = {...state.workspaceFiles};
+
+      action.data.connected_folder_ids.forEach(id => {
+        if (typeof newWorkspaceFiles[action.data.topic_id].folders[id] !== "undefined") {
+          newWorkspaceFiles[action.data.topic_id].folders[id].is_archived = true;
+        }
+      })
+
+      action.data.connected_file_ids.forEach(id => {
+        if (typeof newWorkspaceFiles[action.data.topic_id].files[id] !== "undefined") {
+          newWorkspaceFiles[action.data.topic_id].trash_files[id] = newWorkspaceFiles[action.data.topic_id].files[id];
+
+          newWorkspaceFiles[action.data.topic_id].count -= 1;
+          newWorkspaceFiles[action.data.topic_id].trash += 1;
+
+          if (newWorkspaceFiles[action.data.topic_id].files[id].is_favorite) {
+            newWorkspaceFiles[action.data.topic_id].stars -= 1;
+
+            const ix = newWorkspaceFiles[action.data.topic_id].favorite_files.indexOf(id);
+            if (ix !== -1) {
+              newWorkspaceFiles[action.data.topic_id].favorite_files.splice(ix, 1);
+            }
+          }
+
+          delete newWorkspaceFiles[action.data.topic_id].files[id];
+        }
+      })
+
+      return {
+        ...state,
+        workspaceFiles: newWorkspaceFiles,
+      };
     }
     case "INCOMING_REMOVED_FOLDER": {
       let newWorkspaceFiles = {...state.workspaceFiles};
@@ -1460,12 +1478,12 @@ export default (state = INITIAL_STATE, action) => {
       action.data.connected_file_ids.forEach(id => {
         if (items.trash_files[id]) {
           items.files[id] = items.trash_files[id];
-          items.count.count += 1;
-          items.count.trash -= 1;
-          items.count.storage += items.trash_files[id].size;
+          items.count += 1;
+          items.trash -= 1;
+          items.storage += items.trash_files[id].size;
 
           if (items.trash_files[id].is_favorite && !items.favorite_files.includes(id)) {
-            items.count.stars += 1;
+            items.stars += 1;
             items.favorite_files.push(id);
           }
 
