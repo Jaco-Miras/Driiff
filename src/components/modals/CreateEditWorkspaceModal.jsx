@@ -1,23 +1,18 @@
-import React, {useCallback, useEffect, useRef, useState} from "react";
-import {useDispatch, useSelector} from "react-redux";
-import {useHistory} from "react-router-dom";
-import {Input, InputGroup, Label, Modal, ModalBody} from "reactstrap";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
+import { Input, InputGroup, Label, Modal, ModalBody } from "reactstrap";
 import styled from "styled-components";
-import {EmailRegex, replaceChar} from "../../helpers/stringFormatter";
-import {deleteWorkspaceFiles, setPendingUploadFilesToWorkspace} from "../../redux/actions/fileActions";
-import {addToModals, clearModal} from "../../redux/actions/globalActions";
-import {
-    createWorkspace,
-    leaveWorkspace,
-    setActiveTopic,
-    updateWorkspace
-} from "../../redux/actions/workspaceActions";
-import {FileAttachments, SvgIconFeather} from "../common";
-import {DropDocument} from "../dropzone/DropDocument";
-import {CheckBox, DescriptionInput, FolderSelect, InputFeedback, PeopleSelect} from "../forms";
-import {useToaster, useTranslation} from "../hooks";
-import {ModalHeaderSection} from "./index";
-import {putChannel} from "../../redux/actions/chatActions";
+import { EmailRegex, replaceChar } from "../../helpers/stringFormatter";
+import { deleteWorkspaceFiles, setPendingUploadFilesToWorkspace } from "../../redux/actions/fileActions";
+import { addToModals, clearModal } from "../../redux/actions/globalActions";
+import { createWorkspace, leaveWorkspace, setActiveTopic, updateWorkspace } from "../../redux/actions/workspaceActions";
+import { FileAttachments, SvgIconFeather } from "../common";
+import { DropDocument } from "../dropzone/DropDocument";
+import { CheckBox, DescriptionInput, FolderSelect, InputFeedback, PeopleSelect } from "../forms";
+import { useToaster, useTranslation } from "../hooks";
+import { ModalHeaderSection } from "./index";
+import { putChannel } from "../../redux/actions/chatActions";
 
 const WrapperDiv = styled(InputGroup)`
   display: flex;
@@ -57,7 +52,7 @@ const WrapperDiv = styled(InputGroup)`
     max-width: 100%;
     margin-left: 128px;
     @media all and (max-width: 480px) {
-        margin-left: 0;
+      margin-left: 0;
     }
     ul {
       margin-right: 128px;
@@ -80,15 +75,15 @@ const WrapperDiv = styled(InputGroup)`
     margin-top: 40px;
 
     .action-archive-wrapper {
-        display: flex;
-        width: 100%;
+      display: flex;
+      width: 100%;
 
-        .btn-archive {
-          display: flex;
-          margin-left: auto;
-          text-decoration: underline;
-          color: #a7abc3;
-        }
+      .btn-archive {
+        display: flex;
+        margin-left: auto;
+        text-decoration: underline;
+        color: #a7abc3;
+      }
     }
   }
 `;
@@ -132,8 +127,8 @@ const SelectPeople = styled(PeopleSelect)`
 `;
 
 const StyledDescriptionInput = styled(DescriptionInput)`
-    height: ${props => props.height}px;
-    max-height: 300px;
+  height: ${(props) => props.height}px;
+  max-height: 300px;
 `;
 
 const LockIcon = styled(SvgIconFeather)`
@@ -142,854 +137,857 @@ const LockIcon = styled(SvgIconFeather)`
 `;
 
 const CreateEditWorkspaceModal = (props) => {
-    const {type, mode, item = null} = props.data;
+  const { type, mode, item = null } = props.data;
 
-    const {_t} = useTranslation();
-    const dictionary = {
-        createWorkspace: _t("WORKSPACE.CREATE_WORKSPACE", "Create workspace"),
-        create: _t("BUTTON.CREATE", "Create"),
-        updateWorkspace: _t("WORKSPACE.UPDATE_WORKSPACE", "Update workspace"),
-        update: _t("BUTTON.UPDATE", "Update"),
-        workspaceName: _t("WORKSPACE.WORKSPACE_NAME", "Workspace name"),
-        lockWorkspace: _t("WORKSPACE.WORKSPACE_LOCK", "Lock workspace"),
-        archiveThisWorkspace: _t("WORKSPACE.WORKSPACE_ARCHIVE", "Archive this workspace"),
-        unarchiveThisWorkspace: _t("WORKSPACE.WORKSPACE_UNARCHIVE", "Unarchive this workspace"),
-        description: _t("LABEL.DESCRIPTION", "Description"),
-        addToFolder: _t("CHECKBOX.ADD_TO_FOLDER", "Add to folder"),
-        folder: _t("LABEL.FOLDER", "Folder"),
-        team: _t("LABEL.TEAM", "Team"),
-        archiveWorkspace: _t("HEADER.ARCHIVE_WORKSPACE", "Archive workspace"),
-        archive: _t("BUTTON.ARCHIVE", "Archive"),
-        unarchiveWorkspace: _t("HEADER.UNARCHIVE_WORKSPACE", "Unarchive workspace"),
-        cancel: _t("BUTTON.CANCEL", "Cancel"),
-        archiveBodyText: _t("TEXT.ARCHIVE_CONFIRMATION", "Are you sure you want to archive this workspace?"),
-        unarchiveBodyText: _t("TEXT.UNARCHIVE_CONFIRMATION", "Are you sure you want to unarchive this workspace?"),
-        confirm: _t("WORKSPACE.CONFIRM", "Confirm"),
-        lockedWorkspace: _t("WORKSPACE.LOCKED_WORKSPACE", "Locked workspace"),
-        lockedWorkspaceText: _t("WORKSPACE.LOCKED_WORKSPACE_TEXT", "Only members can view and search this workspace."),
-    };
+  const { _t } = useTranslation();
+  const dictionary = {
+    createWorkspace: _t("WORKSPACE.CREATE_WORKSPACE", "Create workspace"),
+    create: _t("BUTTON.CREATE", "Create"),
+    updateWorkspace: _t("WORKSPACE.UPDATE_WORKSPACE", "Update workspace"),
+    update: _t("BUTTON.UPDATE", "Update"),
+    workspaceName: _t("WORKSPACE.WORKSPACE_NAME", "Workspace name"),
+    lockWorkspace: _t("WORKSPACE.WORKSPACE_LOCK", "Private workspace"),
+    archiveThisWorkspace: _t("WORKSPACE.WORKSPACE_ARCHIVE", "Archive this workspace"),
+    unarchiveThisWorkspace: _t("WORKSPACE.WORKSPACE_UNARCHIVE", "Unarchive this workspace"),
+    description: _t("LABEL.DESCRIPTION", "Description"),
+    addToFolder: _t("CHECKBOX.ADD_TO_FOLDER", "Add to folder"),
+    folder: _t("LABEL.FOLDER", "Folder"),
+    team: _t("LABEL.TEAM", "Team"),
+    archiveWorkspace: _t("HEADER.ARCHIVE_WORKSPACE", "Archive workspace"),
+    archive: _t("BUTTON.ARCHIVE", "Archive"),
+    unarchiveWorkspace: _t("HEADER.UNARCHIVE_WORKSPACE", "Unarchive workspace"),
+    cancel: _t("BUTTON.CANCEL", "Cancel"),
+    archiveBodyText: _t("TEXT.ARCHIVE_CONFIRMATION", "Are you sure you want to archive this workspace?"),
+    unarchiveBodyText: _t("TEXT.UNARCHIVE_CONFIRMATION", "Are you sure you want to unarchive this workspace?"),
+    confirm: _t("WORKSPACE.CONFIRM", "Confirm"),
+    lockedWorkspace: _t("WORKSPACE.LOCKED_WORKSPACE", "Locked workspace"),
+    lockedWorkspaceText: _t("WORKSPACE.LOCKED_WORKSPACE_TEXT", "Only members can view and search this workspace."),
+  };
 
-    const history = useHistory();
-    const dispatch = useDispatch();
-    const toaster = useToaster();
-    const [modal, setModal] = useState(true);
-    const user = useSelector((state) => state.session.user);
-    const users = useSelector((state) => state.users.users);
-    const workspaces = useSelector((state) => state.workspaces.workspaces);
-    const folders = useSelector((state) => state.workspaces.folders);
-    //const activeTab = useSelector((state) => state.workspaces.activeTab);
-    const [userOptions, setUserOptions] = useState([]);
-    const [inputValue, setInputValue] = useState("");
-    const [invitedEmails, setInvitedEmails] = useState([]);
-    const [form, setForm] = useState({
-        is_private: false,
-        has_folder: item !== null && item.type === "WORKSPACE" && item.folder_id !== null,
-        name: "",
-        selectedUsers: [],
-        selectedFolder:
-            item === null
-                ? null
-                : item.type === "FOLDER" ? {
-                    value: item.id,
-                    label: item.name,
-                } : item.folder_id ? {
-                    value: item.folder_id,
-                    label: item.folder_name,
-                } : null,
-        description: "",
-        textOnly: "",
-    });
+  const history = useHistory();
+  const dispatch = useDispatch();
+  const toaster = useToaster();
+  const [modal, setModal] = useState(true);
+  const user = useSelector((state) => state.session.user);
+  const users = useSelector((state) => state.users.users);
+  const workspaces = useSelector((state) => state.workspaces.workspaces);
+  const folders = useSelector((state) => state.workspaces.folders);
+  //const activeTab = useSelector((state) => state.workspaces.activeTab);
+  const [userOptions, setUserOptions] = useState([]);
+  const [inputValue, setInputValue] = useState("");
+  const [invitedEmails, setInvitedEmails] = useState([]);
+  const [form, setForm] = useState({
+    is_private: false,
+    has_folder: item !== null && item.type === "WORKSPACE" && item.folder_id !== null,
+    name: "",
+    selectedUsers: [],
+    selectedFolder:
+      item === null
+        ? null
+        : item.type === "FOLDER"
+        ? {
+            value: item.id,
+            label: item.name,
+          }
+        : item.folder_id
+        ? {
+            value: item.folder_id,
+            label: item.folder_name,
+          }
+        : null,
+    description: "",
+    textOnly: "",
+  });
 
-    const [showDropzone, setShowDropzone] = useState(false);
-    const [attachedFiles, setAttachedFiles] = useState([]);
-    const [uploadedFiles, setUploadedFiles] = useState([]);
-    const [loading, setLoading] = useState(false);
-    const [valid, setValid] = useState({
-        name: null,
-        description: null,
-        has_folder: null,
-        team: null,
-    });
-    const [feedback, setFeedback] = useState({
-        name: "",
-        description: "",
-        folder: "",
-        team: "",
-    });
-    const refs = {
-        container: useRef(null),
-        workspace_name: useRef(null),
-        dropZone: useRef(null)
+  const [showDropzone, setShowDropzone] = useState(false);
+  const [attachedFiles, setAttachedFiles] = useState([]);
+  const [uploadedFiles, setUploadedFiles] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [valid, setValid] = useState({
+    name: null,
+    description: null,
+    has_folder: null,
+    team: null,
+  });
+  const [feedback, setFeedback] = useState({
+    name: "",
+    description: "",
+    folder: "",
+    team: "",
+  });
+  const refs = {
+    container: useRef(null),
+    workspace_name: useRef(null),
+    dropZone: useRef(null),
+  };
+
+  const _validateName = useCallback(() => {
+    if (form.name === "") {
+      setFeedback((prevState) => ({
+        ...prevState,
+        name: "Workspace name is required.",
+      }));
+      setValid((prevState) => ({
+        ...prevState,
+        name: false,
+      }));
+      return false;
     }
 
-    const _validateName = useCallback(() => {
-        if (form.name === "") {
-            setFeedback((prevState) => ({
-                ...prevState,
-                name: "Workspace name is required.",
-            }));
-            setValid((prevState) => ({
-                ...prevState,
-                name: false,
-            }));
-            return false;
-        }
-
-        if (Object.values(workspaces).some((w) => {
-                if (mode === "edit") {
-                    return w.id === item.id ? false : w.name.toLowerCase() === form.name.toLowerCase();
-                } else {
-                    return w.name.toLowerCase() === form.name.toLowerCase();
-                }
-            })
-        ) {
-            setFeedback((prevState) => {
-                return {...prevState, name: "Workspace name already exists."};
-            });
-            setValid((prevState) => {
-                return {...prevState, name: true};
-            });
-            return true;
-        }
-
-        setFeedback((prevState) => {
-            return {...prevState, name: ""};
-        });
-
-        setValid((prevState) => {
-            return {...prevState, name: true};
-        });
-    }, [form.name, form.has_folder, form.selectedFolder, workspaces, setValid, setFeedback]);
-
-    const toggle = () => {
-        setModal(!modal);
-        dispatch(clearModal({type: type}));
-    };
-
-    const toggleCheck = (e) => {
-        const name = e.target.dataset.name;
-        const checked = !form[name];
-        setForm((prevState) => {
-            return {...prevState, [name]: checked};
-        });
-    };
-
-    const folderOptions = Object.values(folders)
-        .sort((a,b) => a.name.localeCompare(b.name))
-        .map((ws) => {
-            return {
-                value: ws.id,
-                label: <>{ws.name} { ws.is_lock === 1 && <LockIcon icon="lock" strokeWidth="2"/> }</>,
-            };
-        });
-
-    const handleSelectUser = (e) => {
-        if (e === null) {
-            setForm((prevState) => ({
-                ...prevState,
-                selectedUsers: [],
-            }));
-            setValid((prevState) => ({
-                ...prevState,
-                team: mode === "edit" ? true : false,
-            }));
-        } else {
-            setForm((prevState) => ({
-                ...prevState,
-                selectedUsers: e,
-            }));
-            setValid((prevState) => ({
-                ...prevState,
-                team: true,
-            }));
-        }
-    };
-
-    const handleSelectFolder = (e) => {
-        setForm((prevState) => ({
-            ...prevState,
-            selectedFolder: e,
-        }));
-    };
-
-    const handleNameChange = (e) => {
-        e.persist();
-        setForm((prevState) => ({
-            ...prevState,
-            name: e.target.value.trim(),
-        }));
-    };
-
-    const handleNameFocus = () => {
-        setFeedback((prevState) => ({
-            ...prevState,
-            name: "",
-        }));
-        setValid((prevState) => ({
-            ...prevState,
-            name: null,
-        }));
-    };
-
-    const handleNameBlur = () => {
-        _validateName();
-    };
-
-    const handleDeleteFileAttachements = () => {
-        let removed_file_ids = [];
-        if (item.primary_files.length) {
-            removed_file_ids = item.primary_files.filter((pf) => {
-                return !uploadedFiles.some((f) => f.id === pf.id);
-            })
-        }
-        if (removed_file_ids.length) {
-            let payload = {
-                topic_id: item.id,
-                is_primary: 1,
-                file_ids: removed_file_ids.map((f) => f.id)
-            };
-            dispatch(
-                deleteWorkspaceFiles(payload)
-            );
-        }
-    };
-
-    const handleConfirm = () => {
-        if (Object.values(valid).filter((v) => !v).length) return;
-
-        let payload = {
-            name: form.name,
-            description: form.description,
-            is_external: 0,
-            member_ids: form.selectedUsers.filter((u) => typeof u.id === "number").map((u) => u.id),
-            is_lock: form.is_private ? 1 : 0,
-            workspace_id: form.selectedFolder && typeof form.selectedFolder.value === "number" && form.has_folder ? form.selectedFolder.value : 0,
-        };
-
-        if (invitedEmails.length) {
-            if (mode === "edit") {
-                payload = {
-                    ...payload,
-                    new_external_emails: invitedEmails,
-                    is_external: 1
-                }
-            } else {
-                payload = {
-                    ...payload,
-                    external_emails: invitedEmails,
-                    is_external: 1
-                }
-            }
-        }
-
+    if (
+      Object.values(workspaces).some((w) => {
         if (mode === "edit") {
-            const removed_members = item.members
-                .filter((m) => {
-                    for (const i in form.selectedUsers) {
-                        if (form.selectedUsers.hasOwnProperty(i)) {
-                            if (form.selectedUsers[i].id === m.id) {
-                                return false;
-                            }
-                        }
-                    }
-                    return true;
-                })
-                .map((m) => m.id);
-
-            const added_members = form.selectedUsers
-                .filter((u) => {
-                    for (const i in item.members) {
-                        if (item.members.hasOwnProperty(i)) {
-                            if (item.members[i].id === u.id) {
-                                return false;
-                            }
-                        }
-                    }
-                    return true;
-                })
-                .map((m) => m.id);
-
-            payload = {
-                ...payload,
-                workspace_id: form.selectedFolder && form.has_folder ? form.selectedFolder.value : 0,
-                topic_id: item.id,
-                remove_member_ids: removed_members,
-                new_member_ids: added_members.filter((u) => typeof u === "number"),
-            };
-            if ((payload.remove_member_ids.length || payload.new_member_ids.length) || (item.name !== form.name)) {
-                payload.system_message = `CHANNEL_UPDATE::${JSON.stringify({
-                    author: {
-                        id: user.id,
-                        name: user.name,
-                        first_name: user.first_name,
-                        partial_name: user.partial_name,
-                        profile_image_link: user.profile_image_link,
-                    },
-                    title: form.name === item.name ? "" : form.name,
-                    added_members: added_members.filter((u) => typeof u === "number"),
-                    removed_members: removed_members,
-                })}`
-            }
-            
-            const handleSubmit = () => {
-                setLoading(true);
-                toggle();
-                const cb = (err, res) => {
-                    if (err) return;
-                    handleDeleteFileAttachements();
-                    if (attachedFiles.length) {
-                        let formData = new FormData();
-                        for (const i in attachedFiles) {
-                            formData.append("files[" + i + "]", attachedFiles[i].rawFile);
-                        }
-    
-                        dispatch(
-                            setPendingUploadFilesToWorkspace({
-                                is_primary: 1,
-                                topic_id: res.data.id,
-                                files: formData,
-                            })
-                        );
-                    }
-                    if (form.selectedFolder && typeof form.selectedFolder.value === "number") {
-                        history.push(`/workspace/dashboard/${form.selectedFolder.value}/${replaceChar(form.selectedFolder.label)}/${res.data.id}/${replaceChar(form.name)}`);
-                    } else {
-                        history.push(`/workspace/dashboard/${res.data.id}/${replaceChar(form.name)}`);
-                    }
-                };
-    
-                if (item.members.length === 1 && form.selectedUsers.length === 0 && item.is_lock === 1) {
-                    let archivePayload = {
-                        id: item.channel.id,
-                        is_archived: true,
-                        is_muted: false,
-                        is_pinned: false,
-                        is_shared: item.is_external
-                    };
-                    dispatch(putChannel(archivePayload));
-                    toggle();
-                } else {
-                    if (removed_members.some((id) => id === user.id)) {
-                        dispatch(leaveWorkspace({workspace_id: item.id, channel_id: item.channel.id}));
-                    }
-                    dispatch(updateWorkspace(payload, cb));
-                }
-            };
-
-            const handleShowConfirmation = () => {
-                let confirmModal = {
-                    type: "confirmation",
-                    headerText: dictionary.lockedWorkspace,
-                    submitText: dictionary.confirm,
-                    cancelText: dictionary.cancel,
-                    bodyText: dictionary.lockedWorkspaceText,
-                    actions: {
-                        onSubmit: handleSubmit,
-                    },
-                };
-            
-                dispatch(addToModals(confirmModal));
-            };
-            if (item.is_lock !== payload.is_lock && payload.is_lock === 1) {
-                handleShowConfirmation();
-              } else {
-                handleSubmit();
-            }
-            
+          return w.id === item.id ? false : w.name.toLowerCase() === form.name.toLowerCase();
         } else {
-            console.log(payload, form)
-            const handleShowConfirmation = () => {
-                let confirmModal = {
-                    type: "confirmation",
-                    headerText: dictionary.lockedWorkspace,
-                    submitText: dictionary.confirm,
-                    cancelText: dictionary.cancel,
-                    bodyText: dictionary.lockedWorkspaceText,
-                    actions: {
-                        onSubmit: handleSubmit,
-                    },
-                };
-            
-                dispatch(addToModals(confirmModal));
-            };
-
-            const handleSubmit = () => {
-                setLoading(true);
-                toggle();
-                dispatch(
-                    createWorkspace(payload, (err, res) => {
-                        if (err) {
-                            console.log(err);
-                            setLoading(false);
-                            toaster.warning(
-                                <span>
-                    Workspace creation failed.
-                    <br/>
-                    Please try again.
-                  </span>
-                            );
-                        }
-    
-                        if (res) {
-                            //redirect url
-                            if (form.selectedFolder && typeof form.selectedFolder.value === "number") {
-                                history.push(`/workspace/dashboard/${form.selectedFolder.value}/${replaceChar(form.selectedFolder.label)}/${res.data.id}/${replaceChar(form.name)}`, { folder_id: form.selectedFolder.value, workspace_id: res.data.id});
-                            } else {
-                                history.push(`/workspace/dashboard/${res.data.id}/${replaceChar(form.name)}`, { folder_id: null, workspace_id: res.data.id});
-                            }
-                            if (attachedFiles.length) {
-                                let formData = new FormData();
-                                for (const i in attachedFiles) {
-                                    formData.append("files[" + i + "]", attachedFiles[i].rawFile);
-                                }
-    
-                                dispatch(
-                                    setPendingUploadFilesToWorkspace({
-                                        is_primary: 1,
-                                        topic_id: res.data.id,
-                                        files: formData,
-                                    })
-                                );
-                            }
-                            let newWorkspace = {
-                                id: res.data.id,
-                                name: res.data.topic.name,
-                                is_external: res.data.is_external,
-                                is_lock: res.data.is_lock,
-                                description: res.data.topic.description,
-                                unread_count: 0,
-                                type: "WORKSPACE",
-                                key_id: res.data.key_id,
-                                active: 1,
-                                unread_chats: 0,
-                                unread_posts: 0,
-                                folder_id: res.data.workspace ? res.data.workspace.id : null,
-                                folder_name: res.data.workspace ? res.data.workspace.name : null,
-                                member_ids: res.data.member_ids,
-                                members: res.data.members,
-                                channel: {
-                                    code: res.data.channel.code,
-                                    id: res.data.channel.id,
-                                    loaded: false
-                                },
-                                created_at: res.data.topic.created_at,
-                                updated_at: res.data.topic.created_at,
-                            }
-                            
-                            dispatch(setActiveTopic(newWorkspace));
-    
-                            toaster.success(
-                                <span>
-                    <b>{form.name}</b> workspace is created
-                                    {form.selectedFolder !== null && (
-                                        <>
-                                            {" "}
-                                            <b>{form.selectedFolder.label}</b> under directory
-                                        </>
-                                    )}
-                                    .
-                  </span>
-                            );
-                        }
-                    })
-                );
-            };
-            if (payload.is_lock === 1) {
-                handleShowConfirmation();
-            } else {
-                handleSubmit();
-            }
+          return w.name.toLowerCase() === form.name.toLowerCase();
         }
+      })
+    ) {
+      setFeedback((prevState) => {
+        return { ...prevState, name: "Workspace name already exists." };
+      });
+      setValid((prevState) => {
+        return { ...prevState, name: true };
+      });
+      return true;
+    }
+
+    setFeedback((prevState) => {
+      return { ...prevState, name: "" };
+    });
+
+    setValid((prevState) => {
+      return { ...prevState, name: true };
+    });
+  }, [form.name, form.has_folder, form.selectedFolder, workspaces, setValid, setFeedback]);
+
+  const toggle = () => {
+    setModal(!modal);
+    dispatch(clearModal({ type: type }));
+  };
+
+  const toggleCheck = (e) => {
+    const name = e.target.dataset.name;
+    const checked = !form[name];
+    setForm((prevState) => {
+      return { ...prevState, [name]: checked };
+    });
+  };
+
+  const folderOptions = Object.values(folders)
+    .sort((a, b) => a.name.localeCompare(b.name))
+    .map((ws) => {
+      return {
+        value: ws.id,
+        label: (
+          <>
+            {ws.name} {ws.is_lock === 1 && <LockIcon icon="lock" strokeWidth="2" />}
+          </>
+        ),
+      };
+    });
+
+  const handleSelectUser = (e) => {
+    if (e === null) {
+      setForm((prevState) => ({
+        ...prevState,
+        selectedUsers: [],
+      }));
+      setValid((prevState) => ({
+        ...prevState,
+        team: mode === "edit" ? true : false,
+      }));
+    } else {
+      setForm((prevState) => ({
+        ...prevState,
+        selectedUsers: e,
+      }));
+      setValid((prevState) => ({
+        ...prevState,
+        team: true,
+      }));
+    }
+  };
+
+  const handleSelectFolder = (e) => {
+    setForm((prevState) => ({
+      ...prevState,
+      selectedFolder: e,
+    }));
+  };
+
+  const handleNameChange = (e) => {
+    e.persist();
+    setForm((prevState) => ({
+      ...prevState,
+      name: e.target.value.trim(),
+    }));
+  };
+
+  const handleNameFocus = () => {
+    setFeedback((prevState) => ({
+      ...prevState,
+      name: "",
+    }));
+    setValid((prevState) => ({
+      ...prevState,
+      name: null,
+    }));
+  };
+
+  const handleNameBlur = () => {
+    _validateName();
+  };
+
+  const handleDeleteFileAttachements = () => {
+    let removed_file_ids = [];
+    if (item.primary_files.length) {
+      removed_file_ids = item.primary_files.filter((pf) => {
+        return !uploadedFiles.some((f) => f.id === pf.id);
+      });
+    }
+    if (removed_file_ids.length) {
+      let payload = {
+        topic_id: item.id,
+        is_primary: 1,
+        file_ids: removed_file_ids.map((f) => f.id),
+      };
+      dispatch(deleteWorkspaceFiles(payload));
+    }
+  };
+
+  const handleConfirm = () => {
+    if (Object.values(valid).filter((v) => !v).length) return;
+
+    let payload = {
+      name: form.name,
+      description: form.description,
+      is_external: 0,
+      member_ids: form.selectedUsers.filter((u) => typeof u.id === "number").map((u) => u.id),
+      is_lock: form.is_private ? 1 : 0,
+      workspace_id: form.selectedFolder && typeof form.selectedFolder.value === "number" && form.has_folder ? form.selectedFolder.value : 0,
     };
 
-    const handleQuillChange = useCallback(
-        (content, delta, source, editor) => {
-            const textOnly = editor.getText(content);
-            setForm((prevState) => ({
-                ...prevState,
-                description: content,
-                textOnly: textOnly,
-            }));
-
-            if (textOnly.trim() === "") {
-                setFeedback((prevState) => ({
-                    ...prevState,
-                    description: "Description is required.",
-                }));
-                setValid((prevState) => ({
-                    ...prevState,
-                    description: false,
-                }));
-            } else {
-                setValid((prevState) => ({
-                    ...prevState,
-                    description: true,
-                }));
-            }
-        },
-        [setForm, setFeedback, setValid]
-    );
-
-    const handleOpenFileDialog = () => {
-        if (refs.dropZone.current) {
-            refs.dropZone.current.open();
-        }
-    };
-
-    const handleHideDropzone = () => {
-        setShowDropzone(false);
-    };
-
-    const handleShowDropzone = () => {
-        setShowDropzone(true);
-    };
-
-    const dropAction = (acceptedFiles) => {
-        let selectedFiles = [];
-        acceptedFiles.forEach((file) => {
-            let timestamp = Math.floor(Date.now());
-            //let shortFileId = require("shortid").generate();
-            if (file.type === "image/jpeg" || file.type === "image/png" || file.type === "image/gif" || file.type === "image/webp") {
-                selectedFiles.push({
-                    rawFile: file,
-                    type: "IMAGE",
-                    id: timestamp,
-                    status: false,
-                    src: URL.createObjectURL(file),
-                    name: file.name ? file.name : file.path,
-                    uploader: user,
-                });
-            } else if (file.type === "video/mp4") {
-                selectedFiles.push({
-                    rawFile: file,
-                    type: "VIDEO",
-                    id: timestamp,
-                    status: false,
-                    src: URL.createObjectURL(file),
-                    name: file.name ? file.name : file.path,
-                    uploader: user,
-                });
-            } else {
-                selectedFiles.push({
-                    rawFile: file,
-                    type: "DOC",
-                    id: timestamp,
-                    status: false,
-                    src: URL.createObjectURL(file),
-                    name: file.name ? file.name : file.path,
-                    uploader: user,
-                });
-            }
-        });
-        setAttachedFiles((prevState) => [...prevState, ...selectedFiles]);
-        handleHideDropzone();
-    };
-
-    const handleRemoveFile = (fileId) => {
-        setUploadedFiles((prevState) => prevState.filter((f) => f.id !== parseInt(fileId)));
-        setAttachedFiles((prevState) => prevState.filter((f) => f.id !== parseInt(fileId)));
-    };
-
-    const handleShowArchiveConfirmation = () => {
-        let payload = {
-            type: "confirmation",
-            headerText: dictionary.archiveWorkspace,
-            submitText: dictionary.archive,
-            cancelText: dictionary.cancel,
-            bodyText: dictionary.archiveBodyText,
-            actions: {
-                onSubmit: handleArchive,
-            },
+    if (invitedEmails.length) {
+      if (mode === "edit") {
+        payload = {
+          ...payload,
+          new_external_emails: invitedEmails,
+          is_external: 1,
         };
-    
-        if (item.active === 0) {
-            payload = {
-                ...payload,
-                headerText: dictionary.unarchiveWorkspace,
-                submitText: dictionary.unarchiveWorkspace,
-                bodyText: dictionary.unarchiveBodyText,
-            };
-        }
+      } else {
+        payload = {
+          ...payload,
+          external_emails: invitedEmails,
+          is_external: 1,
+        };
+      }
+    }
 
-        dispatch(addToModals(payload));
-    };
+    if (mode === "edit") {
+      const removed_members = item.members
+        .filter((m) => {
+          for (const i in form.selectedUsers) {
+            if (form.selectedUsers.hasOwnProperty(i)) {
+              if (form.selectedUsers[i].id === m.id) {
+                return false;
+              }
+            }
+          }
+          return true;
+        })
+        .map((m) => m.id);
 
-    const handleArchive = useCallback(() => {
+      const added_members = form.selectedUsers
+        .filter((u) => {
+          for (const i in item.members) {
+            if (item.members.hasOwnProperty(i)) {
+              if (item.members[i].id === u.id) {
+                return false;
+              }
+            }
+          }
+          return true;
+        })
+        .map((m) => m.id);
 
-        let payload = {
+      payload = {
+        ...payload,
+        workspace_id: form.selectedFolder && form.has_folder ? form.selectedFolder.value : 0,
+        topic_id: item.id,
+        remove_member_ids: removed_members,
+        new_member_ids: added_members.filter((u) => typeof u === "number"),
+      };
+      if (payload.remove_member_ids.length || payload.new_member_ids.length || item.name !== form.name) {
+        payload.system_message = `CHANNEL_UPDATE::${JSON.stringify({
+          author: {
+            id: user.id,
+            name: user.name,
+            first_name: user.first_name,
+            partial_name: user.partial_name,
+            profile_image_link: user.profile_image_link,
+          },
+          title: form.name === item.name ? "" : form.name,
+          added_members: added_members.filter((u) => typeof u === "number"),
+          removed_members: removed_members,
+        })}`;
+      }
+
+      const handleSubmit = () => {
+        setLoading(true);
+        toggle();
+        const cb = (err, res) => {
+          if (err) return;
+          handleDeleteFileAttachements();
+          if (attachedFiles.length) {
+            let formData = new FormData();
+            for (const i in attachedFiles) {
+              formData.append("files[" + i + "]", attachedFiles[i].rawFile);
+            }
+
+            dispatch(
+              setPendingUploadFilesToWorkspace({
+                is_primary: 1,
+                topic_id: res.data.id,
+                files: formData,
+              })
+            );
+          }
+          if (form.selectedFolder && typeof form.selectedFolder.value === "number") {
+            history.push(`/workspace/dashboard/${form.selectedFolder.value}/${replaceChar(form.selectedFolder.label)}/${res.data.id}/${replaceChar(form.name)}`);
+          } else {
+            history.push(`/workspace/dashboard/${res.data.id}/${replaceChar(form.name)}`);
+          }
+        };
+
+        if (item.members.length === 1 && form.selectedUsers.length === 0 && item.is_lock === 1) {
+          let archivePayload = {
             id: item.channel.id,
-            is_archived: item.active === 1 ? true : false,
+            is_archived: true,
             is_muted: false,
             is_pinned: false,
-            is_shared: item.is_external
+            is_shared: item.is_external,
+          };
+          dispatch(putChannel(archivePayload));
+          toggle();
+        } else {
+          if (removed_members.some((id) => id === user.id)) {
+            dispatch(leaveWorkspace({ workspace_id: item.id, channel_id: item.channel.id }));
+          }
+          dispatch(updateWorkspace(payload, cb));
+        }
+      };
+
+      const handleShowConfirmation = () => {
+        let confirmModal = {
+          type: "confirmation",
+          headerText: dictionary.lockedWorkspace,
+          submitText: dictionary.confirm,
+          cancelText: dictionary.cancel,
+          bodyText: dictionary.lockedWorkspaceText,
+          actions: {
+            onSubmit: handleSubmit,
+          },
         };
 
-        if (!payload.is_archived) {
-            payload.push_unarchived = 1;
-        }
+        dispatch(addToModals(confirmModal));
+      };
+      if (item.is_lock !== payload.is_lock && payload.is_lock === 1) {
+        handleShowConfirmation();
+      } else {
+        handleSubmit();
+      }
+    } else {
+      console.log(payload, form);
+      const handleShowConfirmation = () => {
+        let confirmModal = {
+          type: "confirmation",
+          headerText: dictionary.lockedWorkspace,
+          submitText: dictionary.confirm,
+          cancelText: dictionary.cancel,
+          bodyText: dictionary.lockedWorkspaceText,
+          actions: {
+            onSubmit: handleSubmit,
+          },
+        };
 
-        dispatch(putChannel(payload));
-        toaster.success(
-            <span>
-                <b>{item.name}</b> workspace is
-                {
-                    item.active === 1 ?
-                        <> unarchived</> : <> archived</>
-                }
-                {form.selectedFolder !== null && (
-                    <>
-                        {" "}
-                        <b>{form.selectedFolder.label}</b> under directory
-                    </>
-                )}
-                .
-              </span>
-        );
+        dispatch(addToModals(confirmModal));
+      };
+
+      const handleSubmit = () => {
+        setLoading(true);
         toggle();
-    }, []);
-
-    useEffect(() => {
-        let currentUser = null;
-        if (Object.values(users).length) {
-            currentUser = {
-                ...users[user.id],
-                value: user.id,
-                label: user.name,
-            };
-        }
-        if (mode === "edit") {
-            let members = [];
-            let is_private = item.type !== undefined && item.type === "WORKSPACE" ? item.is_lock === 1 : item.private === 1;
-            if (item.members.length) {
-                members = item.members.map((m) => {
-                    return {
-                        value: m.id,
-                        label: m.name,
-                        name: m.name,
-                        id: m.id,
-                        first_name: m.first_name === "" ? m.email : m.first_name,
-                        profile_image_link: m.profile_image_link,
-                    };
-                });
+        dispatch(
+          createWorkspace(payload, (err, res) => {
+            if (err) {
+              console.log(err);
+              setLoading(false);
+              toaster.warning(
+                <span>
+                  Workspace creation failed.
+                  <br />
+                  Please try again.
+                </span>
+              );
             }
-            setForm({
-                ...form,
-                has_folder: item !== null && item.type === "WORKSPACE" && item.folder_id !== null,
-                selectedUsers: members,
-                selectedFolder:
-                    item.folder_id
-                        ? {
-                            value: item.folder_id,
-                            label: item.folder_name,
-                        }
-                        : null,
-                description: item.description,
-                textOnly: item.description,
-                name: item.name,
-                is_private: is_private,
-            });
-            setValid({
-                name: true,
-                folder: true,
-                team: true,
-            });
-            if (item.hasOwnProperty("primary_files")) {
-                setUploadedFiles(item.primary_files);
-            }
-        } else {
-            setForm((prevState) => ({
-                ...prevState,
-                selectedUsers: currentUser ? [currentUser] : [],
-                selectedFolder: item === null
-                    ? null
-                    : {
-                        value: item.id,
-                        label: item.name,
-                    },
-                has_folder: item === null ? false : item.type === "FOLDER" 
-            }));
 
-            setValid((prevState) => ({
-                ...prevState,
-                team: currentUser ? true : null,
-                name: null,
-            }));
-        }
-    }, []);
-
-    useEffect(() => {
-        let folderValid = true;
-        if (form.has_folder && form.selectedFolder === null) {
-            folderValid = false;
-        }
-        setValid((prevState) => ({
-            ...prevState,
-            has_folder: folderValid,
-        }));
-
-        _validateName();
-    }, [form.has_folder, form.selectedFolder]);
-
-    useEffect(() => {
-        const userOptions = Object.values(users).map((u) => {
-            return {
-                ...u,
-                value: u.id,
-                label: u.name,
-            };
-        });
-        setUserOptions(userOptions);
-    }, [Object.values(users).length]);
-
-    const onOpened = () => {
-        if (refs.workspace_name && refs.workspace_name.current) {
-            refs.workspace_name.current.focus();
-        }
-    };
-
-    const handleKeyDown = (e) => {
-        if (e.key === "Enter") {
-            //validate email - if email is valid then add to useroptions
-            if (EmailRegex.test(inputValue)) {
-                const userExists = userOptions.some((uo) => uo.email === inputValue);
-
-                if (userExists) {
-                    let userOption = userOptions.filter((uo) => uo.email === inputValue)
-                    if (userOption.length && !form.selectedUsers.some((user) => user.email === inputValue)) {
-                        setForm((prevState) => ({
-                            ...prevState,
-                            selectedUsers: [...prevState.selectedUsers, userOption[0]],
-                        }));
-                    }
-                } else {
-                    setInvitedEmails((prevState) => [...prevState, inputValue]);
-                    setForm((prevState) => ({
-                        ...prevState,
-                        selectedUsers: [...prevState.selectedUsers, {
-                            id: require("shortid").generate(),
-                            label: inputValue,
-                            value: inputValue,
-                            name: inputValue,
-                            first_name: inputValue
-                        }],
-                    }));
+            if (res) {
+              //redirect url
+              if (form.selectedFolder && typeof form.selectedFolder.value === "number") {
+                history.push(`/workspace/dashboard/${form.selectedFolder.value}/${replaceChar(form.selectedFolder.label)}/${res.data.id}/${replaceChar(form.name)}`, { folder_id: form.selectedFolder.value, workspace_id: res.data.id });
+              } else {
+                history.push(`/workspace/dashboard/${res.data.id}/${replaceChar(form.name)}`, { folder_id: null, workspace_id: res.data.id });
+              }
+              if (attachedFiles.length) {
+                let formData = new FormData();
+                for (const i in attachedFiles) {
+                  formData.append("files[" + i + "]", attachedFiles[i].rawFile);
                 }
-                setInputValue("");
+
+                dispatch(
+                  setPendingUploadFilesToWorkspace({
+                    is_primary: 1,
+                    topic_id: res.data.id,
+                    files: formData,
+                  })
+                );
+              }
+              let newWorkspace = {
+                id: res.data.id,
+                name: res.data.topic.name,
+                is_external: res.data.is_external,
+                is_lock: res.data.is_lock,
+                description: res.data.topic.description,
+                unread_count: 0,
+                type: "WORKSPACE",
+                key_id: res.data.key_id,
+                active: 1,
+                unread_chats: 0,
+                unread_posts: 0,
+                folder_id: res.data.workspace ? res.data.workspace.id : null,
+                folder_name: res.data.workspace ? res.data.workspace.name : null,
+                member_ids: res.data.member_ids,
+                members: res.data.members,
+                channel: {
+                  code: res.data.channel.code,
+                  id: res.data.channel.id,
+                  loaded: false,
+                },
+                created_at: res.data.topic.created_at,
+                updated_at: res.data.topic.created_at,
+              };
+
+              dispatch(setActiveTopic(newWorkspace));
+
+              toaster.success(
+                <span>
+                  <b>{form.name}</b> workspace is created
+                  {form.selectedFolder !== null && (
+                    <>
+                      {" "}
+                      <b>{form.selectedFolder.label}</b> under directory
+                    </>
+                  )}
+                  .
+                </span>
+              );
             }
-        }
+          })
+        );
+      };
+      if (payload.is_lock === 1) {
+        handleShowConfirmation();
+      } else {
+        handleSubmit();
+      }
+    }
+  };
+
+  const handleQuillChange = useCallback(
+    (content, delta, source, editor) => {
+      const textOnly = editor.getText(content);
+      setForm((prevState) => ({
+        ...prevState,
+        description: content,
+        textOnly: textOnly,
+      }));
+
+      if (textOnly.trim() === "") {
+        setFeedback((prevState) => ({
+          ...prevState,
+          description: "Description is required.",
+        }));
+        setValid((prevState) => ({
+          ...prevState,
+          description: false,
+        }));
+      } else {
+        setValid((prevState) => ({
+          ...prevState,
+          description: true,
+        }));
+      }
+    },
+    [setForm, setFeedback, setValid]
+  );
+
+  const handleOpenFileDialog = () => {
+    if (refs.dropZone.current) {
+      refs.dropZone.current.open();
+    }
+  };
+
+  const handleHideDropzone = () => {
+    setShowDropzone(false);
+  };
+
+  const handleShowDropzone = () => {
+    setShowDropzone(true);
+  };
+
+  const dropAction = (acceptedFiles) => {
+    let selectedFiles = [];
+    acceptedFiles.forEach((file) => {
+      let timestamp = Math.floor(Date.now());
+      //let shortFileId = require("shortid").generate();
+      if (file.type === "image/jpeg" || file.type === "image/png" || file.type === "image/gif" || file.type === "image/webp") {
+        selectedFiles.push({
+          rawFile: file,
+          type: "IMAGE",
+          id: timestamp,
+          status: false,
+          src: URL.createObjectURL(file),
+          name: file.name ? file.name : file.path,
+          uploader: user,
+        });
+      } else if (file.type === "video/mp4") {
+        selectedFiles.push({
+          rawFile: file,
+          type: "VIDEO",
+          id: timestamp,
+          status: false,
+          src: URL.createObjectURL(file),
+          name: file.name ? file.name : file.path,
+          uploader: user,
+        });
+      } else {
+        selectedFiles.push({
+          rawFile: file,
+          type: "DOC",
+          id: timestamp,
+          status: false,
+          src: URL.createObjectURL(file),
+          name: file.name ? file.name : file.path,
+          uploader: user,
+        });
+      }
+    });
+    setAttachedFiles((prevState) => [...prevState, ...selectedFiles]);
+    handleHideDropzone();
+  };
+
+  const handleRemoveFile = (fileId) => {
+    setUploadedFiles((prevState) => prevState.filter((f) => f.id !== parseInt(fileId)));
+    setAttachedFiles((prevState) => prevState.filter((f) => f.id !== parseInt(fileId)));
+  };
+
+  const handleShowArchiveConfirmation = () => {
+    let payload = {
+      type: "confirmation",
+      headerText: dictionary.archiveWorkspace,
+      submitText: dictionary.archive,
+      cancelText: dictionary.cancel,
+      bodyText: dictionary.archiveBodyText,
+      actions: {
+        onSubmit: handleArchive,
+      },
     };
 
-    const handleInputChange = (e) => {
-        setInputValue(e);
+    if (item.active === 0) {
+      payload = {
+        ...payload,
+        headerText: dictionary.unarchiveWorkspace,
+        submitText: dictionary.unarchiveWorkspace,
+        bodyText: dictionary.unarchiveBodyText,
+      };
+    }
+
+    dispatch(addToModals(payload));
+  };
+
+  const handleArchive = useCallback(() => {
+    let payload = {
+      id: item.channel.id,
+      is_archived: item.active === 1 ? true : false,
+      is_muted: false,
+      is_pinned: false,
+      is_shared: item.is_external,
     };
 
-    const filterOptions = (candidate, input) => {
-        if (input) {
-            return candidate.label.toLowerCase().search(input.toLowerCase()) !== -1 || candidate.data.email.toLowerCase().search(input.toLowerCase()) !== -1;
-        }
-        return true;
-    };
+    if (!payload.is_archived) {
+      payload.push_unarchived = 1;
+    }
 
-    return (
-      <Modal innerRef={refs.container} isOpen={modal} toggle={toggle} centered size="lg" onOpened={onOpened}>
-          <ModalHeaderSection
-            toggle={toggle}>{mode === "edit" ? dictionary.updateWorkspace : dictionary.createWorkspace}</ModalHeaderSection>
-          <ModalBody onDragOver={handleShowDropzone}>
-              <DropDocument
-                hide={!showDropzone}
-                ref={refs.dropZone}
-                onDragLeave={handleHideDropzone}
-                    onDrop={({acceptedFiles}) => {
-                        dropAction(acceptedFiles);
-                    }}
-                    onCancel={handleHideDropzone}
-                    attachedFiles={attachedFiles}
-                />
-                <WrapperDiv>
-                    <Label for="chat">{dictionary.workspaceName}</Label>
-                    <Input
-                        name="name"
-                        defaultValue={mode === "edit" ? item.name : ""}
-                        onFocus={handleNameFocus}
-                        onChange={handleNameChange}
-                        onBlur={handleNameBlur}
-                        valid={valid.name}
-                        invalid={valid.name !== null && !valid.name}
-                        innerRef={refs.workspace_name}
-                    />
-                    <InputFeedback valid={valid.name}>{feedback.name}</InputFeedback>
-                </WrapperDiv>
-                <WrapperDiv>
-                    <Label for="has_folder"/>
-                    <CheckBox type="success" name="has_folder" checked={form.has_folder} onClick={toggleCheck}>
-                        {dictionary.addToFolder}
-                    </CheckBox>
-                </WrapperDiv>
-                {form.has_folder === true && (
-                    <WrapperDiv>
-                        <Label for="people">{dictionary.folder}</Label>
-                        <SelectFolder options={folderOptions} value={form.selectedFolder} onChange={handleSelectFolder}
-                                      isMulti={false} isClearable={true}/>
-                        <InputFeedback valid={valid.has_folder}>{feedback.has_folder}</InputFeedback>
-                    </WrapperDiv>
-                )}
-                <WrapperDiv>
-                    <Label for="people">{dictionary.team}</Label>
-                    <SelectPeople
-                        valid={valid.team} options={userOptions} value={form.selectedUsers}
-                        inputValue={inputValue}
-                        onChange={handleSelectUser}
-                        onKeyDown={handleKeyDown}
-                        onInputChange={handleInputChange}
-                        filterOption={filterOptions}
-                        isSearchable
-                    />
-                    <InputFeedback valid={valid.user}>{feedback.user}</InputFeedback>
-                </WrapperDiv>
-                <StyledDescriptionInput
-                    height={window.innerHeight - 660}
-                    required
-                    showFileButton={true}
-                    onChange={handleQuillChange}
-                    onOpenFileDialog={handleOpenFileDialog}
-                    defaultValue={mode === "edit" && item ? item.description : ""}
-                    mode={mode}
-                    valid={valid.description}
-                    feedback={feedback.description}
-                />
-                {(attachedFiles.length > 0 || uploadedFiles.length > 0) && (
-                    <WrapperDiv className="file-attachment-wrapper">
-                        <FileAttachments attachedFiles={[...attachedFiles, ...uploadedFiles]}
-                                         handleRemoveFile={handleRemoveFile}/>
-                    </WrapperDiv>
-                )}
-                <WrapperDiv className="action-wrapper">
-                    <Label/>
-                    <CheckBox name="is_private" checked={form.is_private} onClick={toggleCheck}>
-                        {dictionary.lockWorkspace}
-                    </CheckBox>
-                    <button className="btn btn-primary" onClick={handleConfirm}>
-                        {loading &&
-                        <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"/>}
-                        {mode === "edit" ? dictionary.updateWorkspace : dictionary.createWorkspace}
-                    </button>
-                    {
-                        mode === "edit" &&
-                        <div className="action-archive-wrapper">
-                            {
-                                item.active === 1 ?
-                                    <span onClick={handleShowArchiveConfirmation}
-                                        className="btn-archive text-link mt-2 cursor-pointer">{dictionary.archiveThisWorkspace}</span>
-                                    :
-                                    <span onClick={handleShowArchiveConfirmation}
-                                            className="btn-archive text-link mt-2 cursor-pointer">{dictionary.unarchiveThisWorkspace}</span>
-                            }
-                        </div>
-                    }
-                </WrapperDiv>
-            </ModalBody>
-        </Modal>
+    dispatch(putChannel(payload));
+    toaster.success(
+      <span>
+        <b>{item.name}</b> workspace is
+        {item.active === 1 ? <> unarchived</> : <> archived</>}
+        {form.selectedFolder !== null && (
+          <>
+            {" "}
+            <b>{form.selectedFolder.label}</b> under directory
+          </>
+        )}
+        .
+      </span>
     );
+    toggle();
+  }, []);
+
+  useEffect(() => {
+    let currentUser = null;
+    if (Object.values(users).length) {
+      currentUser = {
+        ...users[user.id],
+        value: user.id,
+        label: user.name,
+      };
+    }
+    if (mode === "edit") {
+      let members = [];
+      let is_private = item.type !== undefined && item.type === "WORKSPACE" ? item.is_lock === 1 : item.private === 1;
+      if (item.members.length) {
+        members = item.members.map((m) => {
+          return {
+            value: m.id,
+            label: m.name,
+            name: m.name,
+            id: m.id,
+            first_name: m.first_name === "" ? m.email : m.first_name,
+            profile_image_link: m.profile_image_link,
+          };
+        });
+      }
+      setForm({
+        ...form,
+        has_folder: item !== null && item.type === "WORKSPACE" && item.folder_id !== null,
+        selectedUsers: members,
+        selectedFolder: item.folder_id
+          ? {
+              value: item.folder_id,
+              label: item.folder_name,
+            }
+          : null,
+        description: item.description,
+        textOnly: item.description,
+        name: item.name,
+        is_private: is_private,
+      });
+      setValid({
+        name: true,
+        folder: true,
+        team: true,
+      });
+      if (item.hasOwnProperty("primary_files")) {
+        setUploadedFiles(item.primary_files);
+      }
+    } else {
+      setForm((prevState) => ({
+        ...prevState,
+        selectedUsers: currentUser ? [currentUser] : [],
+        selectedFolder:
+          item === null
+            ? null
+            : {
+                value: item.id,
+                label: item.name,
+              },
+        has_folder: item === null ? false : item.type === "FOLDER",
+      }));
+
+      setValid((prevState) => ({
+        ...prevState,
+        team: currentUser ? true : null,
+        name: null,
+      }));
+    }
+  }, []);
+
+  useEffect(() => {
+    let folderValid = true;
+    if (form.has_folder && form.selectedFolder === null) {
+      folderValid = false;
+    }
+    setValid((prevState) => ({
+      ...prevState,
+      has_folder: folderValid,
+    }));
+
+    _validateName();
+  }, [form.has_folder, form.selectedFolder]);
+
+  useEffect(() => {
+    const userOptions = Object.values(users).map((u) => {
+      return {
+        ...u,
+        value: u.id,
+        label: u.name,
+      };
+    });
+    setUserOptions(userOptions);
+  }, [Object.values(users).length]);
+
+  const onOpened = () => {
+    if (refs.workspace_name && refs.workspace_name.current) {
+      refs.workspace_name.current.focus();
+    }
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      //validate email - if email is valid then add to useroptions
+      if (EmailRegex.test(inputValue)) {
+        const userExists = userOptions.some((uo) => uo.email === inputValue);
+
+        if (userExists) {
+          let userOption = userOptions.filter((uo) => uo.email === inputValue);
+          if (userOption.length && !form.selectedUsers.some((user) => user.email === inputValue)) {
+            setForm((prevState) => ({
+              ...prevState,
+              selectedUsers: [...prevState.selectedUsers, userOption[0]],
+            }));
+          }
+        } else {
+          setInvitedEmails((prevState) => [...prevState, inputValue]);
+          setForm((prevState) => ({
+            ...prevState,
+            selectedUsers: [
+              ...prevState.selectedUsers,
+              {
+                id: require("shortid").generate(),
+                label: inputValue,
+                value: inputValue,
+                name: inputValue,
+                first_name: inputValue,
+              },
+            ],
+          }));
+        }
+        setInputValue("");
+      }
+    }
+  };
+
+  const handleInputChange = (e) => {
+    setInputValue(e);
+  };
+
+  const filterOptions = (candidate, input) => {
+    if (input) {
+      return candidate.label.toLowerCase().search(input.toLowerCase()) !== -1 || candidate.data.email.toLowerCase().search(input.toLowerCase()) !== -1;
+    }
+    return true;
+  };
+
+  return (
+    <Modal innerRef={refs.container} isOpen={modal} toggle={toggle} centered size="lg" onOpened={onOpened}>
+      <ModalHeaderSection toggle={toggle}>{mode === "edit" ? dictionary.updateWorkspace : dictionary.createWorkspace}</ModalHeaderSection>
+      <ModalBody onDragOver={handleShowDropzone}>
+        <DropDocument
+          hide={!showDropzone}
+          ref={refs.dropZone}
+          onDragLeave={handleHideDropzone}
+          onDrop={({ acceptedFiles }) => {
+            dropAction(acceptedFiles);
+          }}
+          onCancel={handleHideDropzone}
+          attachedFiles={attachedFiles}
+        />
+        <WrapperDiv>
+          <Label for="chat">{dictionary.workspaceName}</Label>
+          <Input
+            name="name"
+            defaultValue={mode === "edit" ? item.name : ""}
+            onFocus={handleNameFocus}
+            onChange={handleNameChange}
+            onBlur={handleNameBlur}
+            valid={valid.name}
+            invalid={valid.name !== null && !valid.name}
+            innerRef={refs.workspace_name}
+          />
+          <InputFeedback valid={valid.name}>{feedback.name}</InputFeedback>
+        </WrapperDiv>
+        <WrapperDiv>
+          <Label for="has_folder" />
+          <CheckBox type="success" name="has_folder" checked={form.has_folder} onClick={toggleCheck}>
+            {dictionary.addToFolder}
+          </CheckBox>
+        </WrapperDiv>
+        {form.has_folder === true && (
+          <WrapperDiv>
+            <Label for="people">{dictionary.folder}</Label>
+            <SelectFolder options={folderOptions} value={form.selectedFolder} onChange={handleSelectFolder} isMulti={false} isClearable={true} />
+            <InputFeedback valid={valid.has_folder}>{feedback.has_folder}</InputFeedback>
+          </WrapperDiv>
+        )}
+        <WrapperDiv>
+          <Label for="people">{dictionary.team}</Label>
+          <SelectPeople
+            valid={valid.team}
+            options={userOptions}
+            value={form.selectedUsers}
+            inputValue={inputValue}
+            onChange={handleSelectUser}
+            onKeyDown={handleKeyDown}
+            onInputChange={handleInputChange}
+            filterOption={filterOptions}
+            isSearchable
+          />
+          <InputFeedback valid={valid.user}>{feedback.user}</InputFeedback>
+        </WrapperDiv>
+        <StyledDescriptionInput
+          height={window.innerHeight - 660}
+          required
+          showFileButton={true}
+          onChange={handleQuillChange}
+          onOpenFileDialog={handleOpenFileDialog}
+          defaultValue={mode === "edit" && item ? item.description : ""}
+          mode={mode}
+          valid={valid.description}
+          feedback={feedback.description}
+        />
+        {(attachedFiles.length > 0 || uploadedFiles.length > 0) && (
+          <WrapperDiv className="file-attachment-wrapper">
+            <FileAttachments attachedFiles={[...attachedFiles, ...uploadedFiles]} handleRemoveFile={handleRemoveFile} />
+          </WrapperDiv>
+        )}
+        <WrapperDiv className="action-wrapper">
+          <Label />
+          <CheckBox name="is_private" checked={form.is_private} onClick={toggleCheck}>
+            {dictionary.lockWorkspace}
+          </CheckBox>
+          <button className="btn btn-primary" onClick={handleConfirm}>
+            {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />}
+            {mode === "edit" ? dictionary.updateWorkspace : dictionary.createWorkspace}
+          </button>
+          {mode === "edit" && (
+            <div className="action-archive-wrapper">
+              {item.active === 1 ? (
+                <span onClick={handleShowArchiveConfirmation} className="btn-archive text-link mt-2 cursor-pointer">
+                  {dictionary.archiveThisWorkspace}
+                </span>
+              ) : (
+                <span onClick={handleShowArchiveConfirmation} className="btn-archive text-link mt-2 cursor-pointer">
+                  {dictionary.unarchiveThisWorkspace}
+                </span>
+              )}
+            </div>
+          )}
+        </WrapperDiv>
+      </ModalBody>
+    </Modal>
+  );
 };
 
 export default React.memo(CreateEditWorkspaceModal);

@@ -110,18 +110,6 @@ const ChatBubbleContainer = styled.div`
       text-align: left;
       position: relative;
       margin-left: 0;
-      :before {
-        content: "";
-        position: absolute;
-        left: 2em;
-        top: 10px;
-        bottom: 0;
-        width: 5px;
-        height: 5px;
-        display: block;
-        background: currentColor;
-        border-radius: 50%;
-      }
     }
   }
   span.is-deleted {
@@ -385,9 +373,9 @@ const ChatContentClap = styled.div`
   }
 `;
 const ChatContent = styled.div`
-    ${(props) =>
-      !props.isEmoticonOnly &&
-      `
+  ${(props) =>
+    !props.isEmoticonOnly &&
+    `
     &:before {
         ${(props) => props.showAvatar && "content: ''"};
         border: 10px solid transparent;
@@ -410,91 +398,91 @@ const ChatContent = styled.div`
     }
     `}
 
-    .reply-author {
-        // padding: ${(props) => (props.isAuthor ? "0 10px 0 40px" : "0 40px 0 10px")};
-        ${(props) => (props.isAuthor ? "margin-left: 30px" : "margin-right: 30px")};
-    }
-    .reply-content {
-        clear: both;
-        width: 100%;
-        display: block;
-        // ${(props) => (props.isAuthor ? "margin-left: 30px" : "margin-right: 30px")};
+  .reply-author {
+    // padding: ${(props) => (props.isAuthor ? "0 10px 0 40px" : "0 40px 0 10px")};
+    ${(props) => (props.isAuthor ? "margin-left: 30px" : "margin-right: 30px")};
+  }
+  .reply-content {
+    clear: both;
+    width: 100%;
+    display: block;
+    // ${(props) => (props.isAuthor ? "margin-left: 30px" : "margin-right: 30px")};
 
-        p {
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: pre-wrap;
-            word-wrap: break-word;
+    p {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: pre-wrap;
+      word-wrap: break-word;
 
-            a {
-                color: ${(props) => (props.isAuthor ? "#ff4444" : "#ff4444")};
-                overflow: hidden;
-                white-space: nowrap;
-                text-overflow: ellipsis;
-
-                @media only screen and (max-width: 1024px) {
-                    white-space: normal;
-                    word-break: break-word;
-
-                    &:hover {
-                        word-break: unset;
-                    }
-                }
-
-                &:hover {
-                    overflow: unset;
-                    white-space: unset;
-                    text-overflow: unset;
-                    word-break: break-word;
-                }
-            }
-        }
-    }
-    .gif_player {
-        clear: both;
-        position: relative;
-        left: 0;
+      a {
+        color: ${(props) => (props.isAuthor ? "#ff4444" : "#ff4444")};
         overflow: hidden;
-        //height: 250px;
-        cursor: pointer;
-        .gifPlayer {
-            border-radius: 8px;
-            max-height: 250px;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+
+        @media only screen and (max-width: 1024px) {
+          white-space: normal;
+          word-break: break-word;
+
+          &:hover {
+            word-break: unset;
+          }
         }
-        .play_button {
-            height: 60px;
-            width: 60px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+
+        &:hover {
+          overflow: unset;
+          white-space: unset;
+          text-overflow: unset;
+          word-break: break-word;
         }
+      }
     }
+  }
+  .gif_player {
+    clear: both;
+    position: relative;
+    left: 0;
+    overflow: hidden;
+    //height: 250px;
+    cursor: pointer;
+    .gifPlayer {
+      border-radius: 8px;
+      max-height: 250px;
+    }
+    .play_button {
+      height: 60px;
+      width: 60px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  }
 `;
 
 const ChatTimeStamp = styled.div`
-    // position: absolute;
-    // left: ${(props) => (props.isAuthor ? "5px" : "unset")};
-    // right: ${(props) => (props.isAuthor ? "unset" : "5px")};
-    color: #676767;
+  // position: absolute;
+  // left: ${(props) => (props.isAuthor ? "5px" : "unset")};
+  // right: ${(props) => (props.isAuthor ? "unset" : "5px")};
+  color: #676767;
   display: flex;
   flex-flow: ${(props) => (props.isAuthor ? "row" : "row-reverse")};
-  .reply-date{
+  .reply-date {
     margin: ${(props) => (props.isAuthor ? "0 10px 0 0" : "0 0 0 10px")};
   }
-  .reply-date.updated{
+  .reply-date.updated {
     // -webkit-transition: all 0.2s ease-in-out;
     // -o-transition: all 0.2s ease-in-out;
     // transition: all 0.2s ease-in-out;
-    >span:last-child{
-        display: none;
+    > span:last-child {
+      display: none;
     }
   }
-  .reply-date.updated:hover{
-    >span:first-child{
-        display: none;
+  .reply-date.updated:hover {
+    > span:first-child {
+      display: none;
     }
-    >span:last-child{
-        display: block;
+    > span:last-child {
+      display: block;
     }
   }
 `;
@@ -1009,7 +997,7 @@ const ChatBubble = (props) => {
           if (el.innerHTML !== "") {
             hasText = true;
           }
-        })
+        });
         setGifOnly(!hasText);
       }
     }
@@ -1050,13 +1038,13 @@ const ChatBubble = (props) => {
                 </QuoteContainer>
               )}
               {
-              // !isAuthor && showAvatar && (
-              //   <>
-              //     {isBot === true && <GrippBotIcon icon={"gripp-bot"} />}
-              //     {/* @todo reply.message_from.name and reply.user.name issue
-              //                    <p className={"reply-author"}>{reply.message_from.name.replace("  ", " ")}</p>*/}
-              //   </>
-              // )
+                // !isAuthor && showAvatar && (
+                //   <>
+                //     {isBot === true && <GrippBotIcon icon={"gripp-bot"} />}
+                //     {/* @todo reply.message_from.name and reply.user.name issue
+                //                    <p className={"reply-author"}>{reply.message_from.name.replace("  ", " ")}</p>*/}
+                //   </>
+                // )
               }
               {reply.files.length > 0 && !reply.is_deleted && <ChatMessageFiles hasMessage={hasMessage} isAuthor={isAuthor} theme={chatSettings.chat_message_theme} chatFiles={chatFiles} files={reply.files} reply={reply} type="chat" />}
 

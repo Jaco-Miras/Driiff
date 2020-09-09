@@ -1,8 +1,10 @@
-import React, {forwardRef} from "react";
-import Select, {components} from "react-select";
+import React, { forwardRef } from "react";
+import Select, { components } from "react-select";
 import styled from "styled-components";
-import {SvgIconFeather} from "../common";
-import {selectTheme} from "../../helpers/selectTheme";
+import { SvgIconFeather } from "../common";
+import { lightTheme, darkTheme } from "../../helpers/selectTheme";
+import { generalSettings } from "react-select";
+import { useSettings } from "../hooks";
 
 const SelectOption = styled.div`
   display: flex;
@@ -13,7 +15,7 @@ const SelectOption = styled.div`
     transition: none;
   }
   &:hover {
-    background: #8c3b9b;
+    background: #25282c;
     svg {
       color: #ffffff;
     }
@@ -33,7 +35,7 @@ const Option = (props) => {
       <components.Option {...props}>
         {props.data && (
           <>
-            <Icon icon={props.data.icon ? props.data.icon : "folder"}/>
+            <Icon icon={props.data.icon ? props.data.icon : "folder"} />
             {props.children}
           </>
         )}
@@ -49,13 +51,21 @@ const MultiValueContainer = ({ children, selectProps, ...props }) => {
 const FolderSelect = forwardRef((props, ref) => {
   const { className = "", isMulti = false, isClearable = false, ...otherProps } = props;
 
+  const {
+    generalSettings: { dark_mode },
+  } = useSettings();
+
   let components = { Option };
 
   if (isMulti) {
     components = { Option, MultiValueContainer };
   }
 
-  return <Select ref={ref} className={`react-select-container ${className}`} styles={selectTheme} isMulti={isMulti} isClearable={isClearable} components={components} {...otherProps} />;
+  console.log(dark_mode);
+
+  // console.log(darkmode);
+
+  return <Select ref={ref} className={`react-select-container ${className}`} styles={dark_mode === "0" ? lightTheme : darkTheme} isMulti={isMulti} isClearable={isClearable} components={components} {...otherProps} />;
 });
 
 export default FolderSelect;
