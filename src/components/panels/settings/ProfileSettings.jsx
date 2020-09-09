@@ -8,7 +8,7 @@ import { SvgIconFeather } from "../../common";
 import Flag from "../../common/Flag";
 import { useSettings, useToaster, useTranslation } from "../../hooks";
 import { getDriffName } from "../../hooks/useDriff";
-import { selectTheme } from "../../../helpers/selectTheme";
+import { darkTheme, lightTheme } from "../../../helpers/selectTheme";
 
 const Wrapper = styled.div`
   .card {
@@ -275,7 +275,7 @@ const ProfileSettings = (props) => {
           <div className="row mb-2">
             <div className="col-5 text-muted">{dictionary.sortChannelLabel}</div>
             <div className="col-7">
-              <Select styles={selectTheme} value={channelSortOptions.find((o) => o.value === order_channel.order_by)} onChange={handleSortChannelChange} options={channelSortOptions} />
+              <Select styles={dark_mode === "0" ? lightTheme : darkTheme} value={channelSortOptions.find((o) => o.value === order_channel.order_by)} onChange={handleSortChannelChange} options={channelSortOptions} />
             </div>
           </div>
         </div>
@@ -288,21 +288,21 @@ const ProfileSettings = (props) => {
           <div className="row mb-2">
             <div className="col-5 text-muted">{dictionary.languageLabel}</div>
             <div className="col-7">
-              <Select styles={selectTheme} value={languageOptions.find((o) => o.value === language)} onChange={handleLanguageChange} options={languageOptions} />
+              <Select styles={dark_mode === "0" ? lightTheme : darkTheme} value={languageOptions.find((o) => o.value === language)} onChange={handleLanguageChange} options={languageOptions} />
             </div>
           </div>
           <div className="row mb-2">
             <div className="col-5 text-muted">{dictionary.timezoneLabel}</div>
             <div className="col-7">
-              <Select styles={selectTheme} value={TimezoneOptions.find((o) => o.value === timezone)} onChange={handleTimezoneChange} options={TimezoneOptions} />
+              <Select styles={dark_mode === "0" ? lightTheme : darkTheme} value={TimezoneOptions.find((o) => o.value === timezone)} onChange={handleTimezoneChange} options={TimezoneOptions} />
             </div>
           </div>
           <div className="row mb-2">
             <div className="col-5 text-muted">{dictionary.dateTimeFormatLabel}</div>
             <div className="col-7 justify-content-center align-items-center">
               <div className="row">
-                <Select styles={selectTheme} className="col-6" value={DateFormatOptions.find((o) => o.value === date_format)} onChange={handleDateFormatChange} options={DateFormatOptions} />
-                <Select styles={selectTheme} className="col-6" value={TimeFormatOptions.find((o) => o.value === time_format)} onChange={handleTimeFormatChange} options={TimeFormatOptions} />
+                <Select styles={dark_mode === "0" ? lightTheme : darkTheme} className="col-6" value={DateFormatOptions.find((o) => o.value === date_format)} onChange={handleDateFormatChange} options={DateFormatOptions} />
+                <Select styles={dark_mode === "0" ? lightTheme : darkTheme} className="col-6" value={TimeFormatOptions.find((o) => o.value === time_format)} onChange={handleTimeFormatChange} options={TimeFormatOptions} />
               </div>
             </div>
           </div>
