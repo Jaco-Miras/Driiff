@@ -1,5 +1,6 @@
 import React, {useCallback, useEffect, useRef, useState} from "react";
 import styled from "styled-components";
+import { useHistory } from "react-router-dom";
 import {Avatar, FileAttachments, SvgIconFeather} from "../../../common";
 import {MoreOptions} from "../../../panels/common";
 import {PostDetailFooter} from "../../../panels/post/index";
@@ -111,8 +112,10 @@ const Comment = (props) => {
   const refs = {
     input: useRef(null),
     body: useRef(null),
+    main: useRef(null)
   };
 
+  const history = useHistory();
   const [showInput, setShowInput] = useState(null);
   const [userMention, setUserMention] = useState(null);
   const [showGifPlayer, setShowGifPlayer] = useState(null);
@@ -122,8 +125,23 @@ const Comment = (props) => {
   })
 
   useEffect(() => {
+    if (typeof history.location.state === "object") {
+      if (history.location.state && history.location.state.focusOnMessage === comment.id && refs.body.current) {
+        refs.body.current.scrollIntoView();
+        refs.main.current.classList.add("bounceIn");
+        history.push(history.location.pathname, null);
+      }
+    }
+  }, [history.location.state]);
+
+  
+
+  useEffect(() => {
     if (comment.body.match(/\.(gif)/g) !== null) {
       setShowGifPlayer(true);
+    }
+    return () => {
+      history.push(history.location.pathname, null);
     }
   }, []);
 
@@ -195,7 +213,7 @@ const Comment = (props) => {
 
   return (
     <>
-      <Wrapper ref={refs.main} className={`comment card border fadeBottom ${className}`} userId={user.id}>
+      <Wrapper ref={refs.main} className={`comment card border fadeBottom ${className} animated`} userId={user.id}>
         {
           comment.quote &&
           <>

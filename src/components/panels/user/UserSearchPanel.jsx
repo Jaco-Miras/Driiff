@@ -44,13 +44,15 @@ const UserSearchPanel = (props) => {
     }
   }, [tabs, activeTab]);
 
+  const clearTab = () => setActiveTab(null);
+
   return (
     <Wrapper className={`user-search-panel container-fluid h-100 ${className}`}>
       <div className="row">
         <div className="col-md-12">
           <div className="card">
             <div className="card-body">
-              <MainSearch actions={actions} value={value}/>
+              <MainSearch actions={actions} value={value} clearTab={clearTab}/>
               {
                 value !== "" &&
                 <h4 className="mb-5">
@@ -65,9 +67,6 @@ const UserSearchPanel = (props) => {
               }
               <SearchTabs activeTab={activeTab} onSelectTab={handleSelectTab} tabs={tabs}/>
               <TabContents activeTab={activeTab} results={results} tabs={tabs} redirect={redirect}/>
-              {
-                //count > 0 && <SearchPagination activeTab={activeTab} tabs={tabs} actions={actions} value={value}/>
-              }
               {
                 count > 0 && <SearchPagination activeTab={activeTab} tabs={tabs} actions={actions} value={value}/>
               }

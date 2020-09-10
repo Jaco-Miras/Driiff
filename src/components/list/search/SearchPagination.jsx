@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
+import ReactPaginate from "react-paginate";
 
 const SearchPagination = (props) => {
 
     const { actions, activeTab, tabs, value } = props;
 
-    const [pages, setPages] = useState([]);
     const [fetching, setFetching] = useState(false);
 
-    const handleSetPage = (p) => {
+    const handleSetPage = (e) => {
+        let p = e.selected + 1;
         let items = tabs[activeTab.toUpperCase()].items.slice(p > 1 ? (p*10)-10 : 0, p*10);
         let count = tabs[activeTab.toUpperCase()].count;
         if (items.length !== 10) {
@@ -38,13 +39,6 @@ const SearchPagination = (props) => {
             setFetching(false);
         });
       };
-    
-    useEffect(() => {
-        if (activeTab && tabs[activeTab.toUpperCase()].maxPage > 1) {
-            setPages(Array.from(Array(tabs[activeTab.toUpperCase()].maxPage), (_, i) => i + 1));
-        }
-    }, [activeTab]);
-    
 
     useEffect(() => {
         if (activeTab && !fetching) {
@@ -66,29 +60,27 @@ const SearchPagination = (props) => {
     let maxPage = tabs[activeTab.toUpperCase()].maxPage;
     return (
         <nav className="mt-3">
-            <ul className="pagination justify-content-center">
-                <li className={`page-item ${page === 1 && "disabled"}`}>
-                <a className="page-link" href="#" tabIndex="-1" aria-disabled="true" onClick={() => handleSetPage(page-1)}>
-                    Previous
-                </a>
-                </li>
-                {
-                    pages.slice(page > 5 ? page - 5 : 0, page > 5 ? page + 5 : 10).map((p) => {
-                        return (
-                            <li key={p} className={`page-item ${page === p && "active"}`}>
-                                <a className="page-link" href="#" onClick={() => handleSetPage(p)}>
-                                    {p}
-                                </a>
-                            </li>
-                        )
-                    })
-                }
-                <li className={`page-item ${page === maxPage && "disabled"}`}>
-                <a className="page-link" href="#" onClick={() => handleSetPage(page+1)}>
-                    Next
-                </a>
-                </li>
-            </ul>
+            <ReactPaginate
+                forcePage={page-1}
+                previousLabel={'previous'}
+                nextLabel={'next'}
+                breakLabel={'...'}
+                breakClassName={'break-me page-item'}
+                breakLinkClassName={"page-link"}
+                pageCount={maxPage}
+                marginPagesDisplayed={2}
+                pageRangeDisplayed={5}
+                onPageChange={handleSetPage}
+                containerClassName={'pagination justify-content-center'}
+                subContainerClassName={'pages pagination'}
+                activeClassName={'active'}
+                pageClassName={"page-item"}
+                pageLinkClassName={"page-link"}
+                previousClassName={"page-item"}
+                previousLinkClassName={"page-link"}
+                nextClassName={"page-item"}
+                nextLinkClassName={"page-link"}
+            />
         </nav>
     );
 };
