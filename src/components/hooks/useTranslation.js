@@ -193,12 +193,17 @@ export const useTranslation = () => {
   }) => {
     let vocabulary = [];
     let bodyText = `You are about to add the following words to the dictionary files, continue?`;
+    bodyText += `<table>`;
     Object.keys(i18n).forEach(k => {
-      bodyText += `${k} : ${i18n[k]} <br/>`;
+      bodyText += `<tr>`;
+      bodyText += `<td>${k}</td>`;
+      bodyText += `<td>${i18n[k]}</td>`;
+      bodyText += `</tr>`;
       vocabulary.push({
         [k]: i18n[k]
       })
     })
+    bodyText += `</table>`;
 
     const cb = () => {
       dispatch(

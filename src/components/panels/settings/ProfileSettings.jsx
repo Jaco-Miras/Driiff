@@ -1,14 +1,14 @@
 import momentTZ from "moment-timezone";
-import React, { useCallback } from "react";
-import { useSelector } from "react-redux";
+import React, {useCallback} from "react";
+import {useSelector} from "react-redux";
 import Select from "react-select";
-import { CustomInput } from "reactstrap";
+import {CustomInput} from "reactstrap";
 import styled from "styled-components";
-import { SvgIconFeather } from "../../common";
+import {SvgIconFeather} from "../../common";
 import Flag from "../../common/Flag";
-import { useSettings, useToaster, useTranslation } from "../../hooks";
-import { getDriffName } from "../../hooks/useDriff";
-import { darkTheme, lightTheme } from "../../../helpers/selectTheme";
+import {useSettings, useToaster, useTranslation} from "../../hooks";
+import {getDriffName} from "../../hooks/useDriff";
+import {darkTheme, lightTheme} from "../../../helpers/selectTheme";
 
 const Wrapper = styled.div`
   .card {
@@ -317,11 +317,24 @@ const ProfileSettings = (props) => {
             <div className="col-5 text-muted">{dictionary.dateTimeFormatLabel}</div>
             <div className="col-7 justify-content-center align-items-center">
               <div className="row">
-                <Select styles={dark_mode === "0" ? lightTheme : darkTheme} className="col-6" value={DateFormatOptions.find((o) => o.value === date_format)} onChange={handleDateFormatChange} options={DateFormatOptions} />
-                <Select styles={dark_mode === "0" ? lightTheme : darkTheme} className="col-6" value={TimeFormatOptions.find((o) => o.value === time_format)} onChange={handleTimeFormatChange} options={TimeFormatOptions} />
+                <Select styles={dark_mode === "0" ? lightTheme : darkTheme} className="col-6"
+                        value={DateFormatOptions.find((o) => o.value === date_format)} onChange={handleDateFormatChange}
+                        options={DateFormatOptions}/>
+                <Select styles={dark_mode === "0" ? lightTheme : darkTheme} className="col-6"
+                        value={TimeFormatOptions.find((o) => o.value === time_format)} onChange={handleTimeFormatChange}
+                        options={TimeFormatOptions}/>
               </div>
             </div>
           </div>
+          {
+            ["owner", 'admin'].includes(loggedUser.role.name) &&
+            <div className="row mb-2 mt-4">
+              <div className="col-12 text-right">
+                <button className="btn btn-primary" onClick={handleUpdateTranslationClick}>Update translation
+                </button>
+              </div>
+            </div>
+          }
         </div>
       </div>
 
