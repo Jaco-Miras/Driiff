@@ -1176,9 +1176,7 @@ export default (state = INITIAL_STATE, action) => {
       }
     }
     case "INCOMING_DELETED_FOLDER": {
-      if (typeof state.workspaceFiles[action.data.topic_id] === "undefined"
-        && state.workspaceFiles[action.data.topic_id].folders
-        && typeof state.workspaceFiles[action.data.topic_id].folders[action.data.folder.id] === "undefined") {
+      if (typeof state.workspaceFiles[action.data.topic_id] === "undefined") {
         return state;
       }
 
