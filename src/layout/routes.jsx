@@ -48,7 +48,7 @@ export const AppRoute = ({children, ...props}) => {
         <Redirect
           path="*"
           to={{
-            pathname: "/workspace/chat",
+            pathname: "/chat",
             state: {from: history.location},
           }}
         />

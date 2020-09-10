@@ -1,8 +1,8 @@
-import React, {useEffect} from "react";
-import {Link, withRouter} from "react-router-dom";
-import {Form} from "reactstrap";
+import React, { useEffect } from "react";
+import { Link, withRouter } from "react-router-dom";
+import { Form } from "reactstrap";
 import styled from "styled-components";
-import {SvgIcon} from "../common";
+import { SvgIcon } from "../common";
 
 const Wrapper = styled.div`
   body & {
@@ -57,6 +57,7 @@ const Wrapper = styled.div`
           &:hover {
             background-color: #7a1b8b;
             border-color: #7a1b8b;
+            color: #ffffff;
           }
         }
         border: 1px solid #ddd;
@@ -104,24 +105,23 @@ const Wrapper = styled.div`
         border-radius: 0 6px 6px 0;
       }
       .invalid-feedback {
-          text-align: left;
+        text-align: left;
       }
     }
   }
 `;
 
 const DriffSelectPanel = (props) => {
-  const {className = ""} = props;
+  const { className = "" } = props;
 
   useEffect(() => {
     document.body.classList.add("form-membership");
-
   }, []);
 
   return (
     <Wrapper className={`driff-register-panel fadeIn form-wrapper ${className}`}>
       <div id="logo">
-        <SvgIcon icon={"driff-logo"} width="110" height="80"/>
+        <SvgIcon icon={"driff-logo"} width="110" height="80" />
       </div>
       <Form className="row">
         <div className="col-12 col-sm-6 col-set-up">

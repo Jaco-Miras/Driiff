@@ -61,7 +61,7 @@ const ThemeSwitch = styled.span`
   padding: 10px 0px;
   cursor: pointer;
   &:hover {
-    color: #000000;
+    color: #ececec;
   }
   svg {
     width: 18px;
@@ -168,9 +168,12 @@ const HomeProfileNavigation = (props) => {
         <SearchDropDown />
       </li>
       <li className="nav-item">
-        <ThemeSwitch title="Light or Dark mode" onClick={setThemeButton}>
+        <ThemeSwitch className="feather-sun" title="Light or Dark mode" onClick={setThemeButton}>
+          <SvgIconFeather icon="sun" />
+          </ThemeSwitch>
+          <ThemeSwitch className="feather-moon" title="Light or Dark mode" onClick={setThemeButton}>
           <SvgIconFeather icon="moon" />
-        </ThemeSwitch>
+          </ThemeSwitch>
       </li>
       <li className="nav-item dropdown">
         <a href="/" className={`nav-link ${Object.values(notifications).filter((n) => n.is_read === 0).length > 0 ? "nav-link-notify" : ""}`} title="Notifications" data-toggle="dropdown" onClick={toggleDropdown}>

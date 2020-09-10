@@ -180,7 +180,7 @@ export default (state = INITIAL_STATE, action) => {
         searchCount: 0,
         searchResults: {},
         searching: action.data.value !== "",
-        tabs: action.data.value === "" ? {} : state.tabs
+        tabs: {}
       }
     }
     case "UPDATE_TAB": {

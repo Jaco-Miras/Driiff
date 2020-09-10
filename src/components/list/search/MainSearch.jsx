@@ -4,7 +4,7 @@ import { SvgIconFeather } from "../../common";
 
 const MainSearch = (props) => {
 
-  const { actions, value } = props;
+  const { actions, clearTab, value } = props;
   const [inputValue, setInputValue] = useState(value);
 
   const handleEnter = (e) => {
@@ -15,6 +15,7 @@ const MainSearch = (props) => {
 
   const handleSearch = () => {
     if (inputValue.trim() !== "") {
+      clearTab();
       actions.search({
         search: inputValue,
         skip: 0,
@@ -28,6 +29,7 @@ const MainSearch = (props) => {
 
   const handleSearchChange = (e) => {
     if (e.target.value.trim() === "" && value !== "") {
+      clearTab();
       actions.saveSearchValue({
         value: ""
       });

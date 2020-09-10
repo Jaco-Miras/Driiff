@@ -20,9 +20,15 @@ const JoinButton = styled.button`
    display: none;
 `;
 
+const CheckIcon = styled(SvgIconFeather)`
+    width: 1rem;
+    height: 1rem;
+    stroke-width: 2px;
+`;
+
 const WorkspaceSearchResult = (props) => {
 
-    const { onJoinWorkspace, item, redirect, workspaces } = props;
+    const { onJoinWorkspace, onLeaveWorkspace, item, redirect, workspaces } = props;
     const { topic, workspace } = item;
     const isMember = useIsMember(item.members.map((m) => m.id));
     const handleRedirect = () => {
@@ -44,7 +50,8 @@ const WorkspaceSearchResult = (props) => {
     };
 
     const handleLeaveWorkspace = (e) => {
-
+        e.stopPropagation();
+        onLeaveWorkspace(item);
     };
 
     return (
@@ -57,7 +64,7 @@ const WorkspaceSearchResult = (props) => {
                     { !topic.is_archive && !topic.is_locked && <span className={`badge badge-light text-white ml-1`}>Open</span> }
                 </div>
                 <ul className="workspace-detail-lists">
-                    { isMember && <li className="text-success"><SvgIconFeather icon="check"/>Joined</li> }
+                    { isMember && <li className="text-success"><CheckIcon icon="check"/>Joined</li> }
                     <li>{item.members.length} {item.members.length === 1 ? "member" : "members"}</li>
                     <li>{workspace ? workspace.name : "Workspaces"}</li>
                     <li>{stripHtml(topic.description)}</li>

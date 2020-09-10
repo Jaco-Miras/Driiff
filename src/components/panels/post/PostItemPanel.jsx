@@ -81,7 +81,7 @@ const PostItemPanel = (props) => {
   return (
     <Wrapper className={`list-group-item post-item-panel ${className}`} onClick={() => openPost(post)}>
       <div className="custom-control custom-checkbox custom-checkbox-success">
-        <CheckBox name="test" checked={post.is_mark_done} onClick={handleMarkDone} disabled={disableOptions}/>
+        <CheckBox name="test" checked={post.is_mark_done} onClick={handleMarkDone} disabled={disableOptions} />
       </div>
       <div>
         <Icon className="mr-2" icon="star" onClick={handleStarPost} stroke={post.is_favourite ? "#ffc107" : "currentcolor"} fill={post.is_favourite ? "#ffc107" : "none"} />
@@ -97,9 +97,9 @@ const PostItemPanel = (props) => {
             {post.unread_count !== 0 && <div className="ml-2 badge badge-primary badge-pill">{post.unread_count}</div>}
           </div>
           <div className="pl-3 d-flex align-items-center">
-            <PostBadge post={post} dictionary={dictionary}/>
+            <PostBadge post={post} dictionary={dictionary} />
             {post.users_responsible.length > 0 && <MemberLists members={post.users_responsible} />}
-            { !disableOptions && <Icon icon="archive" onClick={handleArchivePost} /> }
+            {!disableOptions && <Icon icon="archive" onClick={handleArchivePost} />}
           </div>
         </div>
       </div>

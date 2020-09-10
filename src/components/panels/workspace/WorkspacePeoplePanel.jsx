@@ -1,13 +1,13 @@
-import React, {useCallback, useEffect, useRef, useState} from "react";
-import {useHistory} from "react-router-dom";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import SearchForm from "../../forms/SearchForm";
-import {useFocusInput, useTranslation, useUserChannels} from "../../hooks";
-import {PeopleListItem} from "../../list/people/item";
-import {replaceChar} from "../../../helpers/stringFormatter";
-import {SvgIconFeather} from "../../common";
-import {addToModals} from "../../../redux/actions/globalActions";
-import {useDispatch, useSelector} from "react-redux";
+import { useFocusInput, useTranslation, useUserChannels } from "../../hooks";
+import { PeopleListItem } from "../../list/people/item";
+import { replaceChar } from "../../../helpers/stringFormatter";
+import { SvgIconFeather } from "../../common";
+import { addToModals } from "../../../redux/actions/globalActions";
+import { useDispatch, useSelector } from "react-redux";
 
 const Wrapper = styled.div`
   overflow: auto;
@@ -16,24 +16,24 @@ const Wrapper = styled.div`
   }
   -ms-overflow-style: none;
   scrollbar-width: none;
-  
+
   .people-header {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 1rem;  
+    margin-bottom: 1rem;
   }
 `;
 
 const Search = styled(SearchForm)`
-  max-width: 350px;  
+  max-width: 350px;
 `;
 
 const WorkspacePeoplePanel = (props) => {
-  const {className = "", workspace} = props;
+  const { className = "", workspace } = props;
 
   const dispatch = useDispatch();
-  const {selectUserChannel, loggedUser} = useUserChannels();
-  const {activeTopic} = useSelector((state) => state.workspaces);
+  const { selectUserChannel, loggedUser } = useUserChannels();
+  const { activeTopic } = useSelector((state) => state.workspaces);
 
   const history = useHistory();
 
@@ -71,15 +71,17 @@ const WorkspacePeoplePanel = (props) => {
   if (workspace) {
     members = workspace.members;
   }
-  const userSort = members.filter((m) => {
-    if (search !== "") {
-      return m.name.toLowerCase().indexOf(search.toLowerCase()) > -1;
-    } else {
-      return true;
-    }
-  }).sort((a, b) => {
-    return a.name.localeCompare(b.name);
-  })
+  const userSort = members
+    .filter((m) => {
+      if (search !== "") {
+        return m.name.toLowerCase().indexOf(search.toLowerCase()) > -1;
+      } else {
+        return true;
+      }
+    })
+    .sort((a, b) => {
+      return a.name.localeCompare(b.name);
+    });
 
   const handleEditWorkspace = () => {
     let payload = {
@@ -91,12 +93,12 @@ const WorkspacePeoplePanel = (props) => {
     dispatch(addToModals(payload));
   };
 
-  const {_t} = useTranslation();
+  const { _t } = useTranslation();
 
   const dictionary = {
     searchPeoplePlaceholder: _t("PLACEHOLDER.SEARCH_PEOPLE", "Search people"),
     peopleExternal: _t("PEOPLE.EXTERNAL", "External"),
-    peopleInvited: _t("PEOPLE.INVITED", "Invited")
+    peopleInvited: _t("PEOPLE.INVITED", "Invited"),
   };
 
   useFocusInput(refs.search.current);
@@ -106,19 +108,16 @@ const WorkspacePeoplePanel = (props) => {
       <div className="card">
         <div className="card-body">
           <div className="people-header">
-            <Search ref={refs.search} placeholder={dictionary.searchPeoplePlaceholder} onChange={handleSearchChange}
-                    autoFocus/>
+            <Search ref={refs.search} value={search} placeholder={dictionary.searchPeoplePlaceholder} onChange={handleSearchChange} autoFocus />
             <div>
               <button className="btn btn-primary" onClick={handleEditWorkspace}>
-                <SvgIconFeather className="mr-2" icon="user-plus"/> Manage People
+                <SvgIconFeather className="mr-2" icon="user-plus" /> Manage People
               </button>
             </div>
           </div>
           <div className="row">
             {userSort.map((user) => {
-              return <PeopleListItem
-                key={user.id} loggedUser={loggedUser} user={user} onNameClick={handleUserNameClick}
-                onChatClick={handleUserChat} dictionary={dictionary}/>;
+              return <PeopleListItem key={user.id} loggedUser={loggedUser} user={user} onNameClick={handleUserNameClick} onChatClick={handleUserChat} dictionary={dictionary} />;
             })}
           </div>
         </div>
