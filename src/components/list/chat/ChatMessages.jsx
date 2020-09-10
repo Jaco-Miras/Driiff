@@ -409,14 +409,15 @@ class ChatMessages extends React.PureComponent {
   componentWillUnmount() {
     const scrollComponent = this.scrollComponent.current;
 
-    if (scrollComponent) {
-      scrollComponent.removeEventListener("scroll", this.loadMore);
-    }
+    // if (scrollComponent) {
+    //   scrollComponent.removeEventListener("scroll", this.loadMore);
+    // }
     this.props.chatMessageActions.channelActions.saveHistoricalPosition(this.props.selectedChannel.id, scrollComponent);
     document.removeEventListener("keydown", this.handleEditOnArrowUp, false);
   }
 
   loadReplies = () => {
+    console.log("load more")
     const { selectedChannel, chatMessageActions } = this.props;
     
     if (!selectedChannel.isFetching && selectedChannel.hasMore) {
@@ -464,23 +465,23 @@ class ChatMessages extends React.PureComponent {
     }
   };
 
-  loadMore = throttle(() => {
-    const scrollEl = this.scrollComponent.current;
-    if (scrollEl){
-      if (scrollEl.scrollTop < scrollEl.scrollHeight * .50) {
-        this.loadReplies();
-      }
-    }
-  }, 300);
+  // loadMore = throttle(() => {
+  //   const scrollEl = this.scrollComponent.current;
+  //   if (scrollEl){
+  //     if (scrollEl.scrollTop < scrollEl.scrollHeight * .50) {
+  //       this.loadReplies();
+  //     }
+  //   }
+  // }, 300);
 
   componentDidMount() {
     const { selectedChannel, historicalPositions } = this.props;
 
     const scrollComponent = this.scrollComponent.current;
 
-    if (scrollComponent) {
-      scrollComponent.addEventListener("scroll", this.loadMore);
-    }
+    // if (scrollComponent) {
+    //   scrollComponent.addEventListener("scroll", this.loadMore);
+    // }
     if (historicalPositions.length) {
       historicalPositions.forEach((hp) => {
         if (hp.channel_id === selectedChannel.id && scrollComponent) {
@@ -554,7 +555,11 @@ class ChatMessages extends React.PureComponent {
         }
 
         if (this.state.messageRefInView || this.state.loadMoreInView) {
-          this.loadReplies();
+          if (scrollComponent){
+            if (scrollComponent.scrollTop < scrollComponent.scrollHeight * .50) {
+              this.loadReplies();
+            }
+          }
         }
 
         if (this.state.bottomRefInView && selectedChannel.replies.length - prevProps.selectedChannel.replies.length === 1) {
@@ -610,29 +615,15 @@ class ChatMessages extends React.PureComponent {
   };
 
   handleMessageRefChange = (inView, entry, id) => {
-    this.setState({ messageRefInView: inView });
-  };
-  getLoadRef = (id) => {
-    const { selectedChannel } = this.props;
-    let loadMoreRef = false;
-    if (selectedChannel.replies.length && !selectedChannel.isFetching) {
-      let sortedReplies = selectedChannel.replies.sort((a, b) => a.created_at.timestamp - b.created_at.timestamp);
-      if (selectedChannel.replies.length && selectedChannel.replies.length > 10 && selectedChannel.replies.length <= 20) {
-        if (id === sortedReplies[2].id) {
-          loadMoreRef = true;
+    const scrollComponent = this.scrollComponent.current;
+    if (inView) {
+      if (scrollComponent){
+        if (scrollComponent.scrollTop < scrollComponent.scrollHeight * .50) {
+          this.loadReplies();
         }
-      } else if (selectedChannel.replies.length && selectedChannel.replies.length > 30) {
-        if (id === sortedReplies[12].id) {
-          loadMoreRef = true;
-        }
-        // if (selectedChannel.replies.length > 40){
-        //     if (id === sortedReplies[20].id){
-        //         loadMoreRef = true
-        //     }
-        // }
       }
     }
-    return loadMoreRef;
+    //this.setState({ messageRefInView: inView });
   };
 
   handleShowSeenUsers = () => this.setState({ showSeenUsers: !this.state.showSeenUsers });
@@ -667,7 +658,25 @@ class ChatMessages extends React.PureComponent {
       });
   };
 
+  getLoadRef = (id) => {
+    const {selectedChannel} = this.props;
+    let loadMoreRef = false;
+    const isEqual = (reply) => reply.id === id;
+    if (selectedChannel.replies.length && !selectedChannel.isFetching) {
+      let sortedReplies = selectedChannel.replies.sort((a, b) => b.created_at.timestamp - a.created_at.timestamp);
+        let index = sortedReplies.findIndex(isEqual);
+        // console.log(index, message.body)
+        if (index > 10) {
+          if (index % 4 === 0) {
+            loadMoreRef = true;
+          }
+        }
+    }
+    return loadMoreRef;
+  };
+
   render() {
+    
     const { selectedChannel } = this.props;
 
     let lastReplyUserId = 0;
@@ -839,6 +848,7 @@ class ChatMessages extends React.PureComponent {
                                       showGifPlayer={showGifPlayer}
                                       isAuthor={isAuthor}
                                       addMessageRef={this.getLoadRef(reply.id)}
+                                      handleMessageRefChange={this.handleMessageRefChange}
                                       removeUnfurl={this.props.chatMessageActions.removeUnfurl}
                                     >
                                       <ChatActionsContainer isAuthor={isAuthor} className="chat-actions-container">
@@ -871,7 +881,12 @@ class ChatMessages extends React.PureComponent {
                                     className={"chat-bubble-quote-div"}
                                   >
                                     <SystemMessageContainer className="system-message" isAuthor={false}>
-                                      <SystemMessage selectedChannel={this.props.selectedChannel} reply={reply} chatName={this.props.chatName} />
+                                      <SystemMessage 
+                                        selectedChannel={this.props.selectedChannel} 
+                                        reply={reply} 
+                                        chatName={this.props.chatName} 
+                                        addMessageRef={this.getLoadRef(reply.id)}
+                                        handleMessageRefChange={this.handleMessageRefChange}/>
                                       {reply.unfurls.length ? (
                                         <ChatUnfurl
                                           unfurlData={reply.unfurls}
