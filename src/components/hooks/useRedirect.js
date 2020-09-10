@@ -50,15 +50,17 @@ const useRedirect = () => {
     );
 
     const toPost = useCallback(
-        (payload) => {
+        (payload, locationState = null) => {
             const { post, workspace } = payload;
             if (workspace) {
                 dispatch(setActiveTopic(workspace));
                 if (workspace.folder_id) {
-                    history.push(`/workspace/posts/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}/post/${post.id}/${replaceChar(post.title)}`);
+                    history.push(`/workspace/posts/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}/post/${post.id}/${replaceChar(post.title)}`, locationState);
                 } else {
-                    history.push(`/workspace/posts/${workspace.id}/${replaceChar(workspace.name)}/post/${post.id}/${replaceChar(post.title)}`);
+                    history.push(`/workspace/posts/${workspace.id}/${replaceChar(workspace.name)}/post/${post.id}/${replaceChar(post.title)}`, locationState);
                 }
+            } else {
+                history.push(`/posts/${post.id}/${replaceChar(post.title)}`, locationState)
             }
         }, []
     );

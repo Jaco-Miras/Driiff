@@ -30,8 +30,23 @@ const CommentSearchItem = (props) => {
     const { comment, redirect } = props;
     const { data } = comment;
 
+    const handleRedirect = () => {
+        if (data === null) return;
+        if (data.workspaces.length) {
+            let workspace = {
+                id: data.workspaces[0].topic.id,
+                name: data.workspaces[0].topic.name,
+                folder_id: data.workspaces[0].workspace ? data.workspaces[0].workspace.id : null,
+                folder_name: data.workspaces[0].workspace ? data.workspaces[0].workspace.name : null
+            }
+            redirect.toPost({workspace: workspace, post: data.post}, {focusOnMessage: data.comment.id});
+        } else {
+            redirect.toPost({workspace: null, post: data.post}, {focusOnMessage: data.comment.id});
+        }
+    };
+
     return (
-        <Wrapper className="list-group-item p-l-0 p-r-0">
+        <Wrapper className="list-group-item p-l-0 p-r-0" onClick={handleRedirect}>
             {
                 data !== null &&
                 <>
