@@ -64,6 +64,7 @@ export {
   updateDraft,
   uploadDocument,
   getUnreadNotificationCounterEntries,
+  postGenerateTranslationRaw,
 } from "./global";
 
 export {

@@ -10,6 +10,7 @@ import {
   getQuickLinks as getQuickLinksService,
   getTranslationObject as getTranslationObjectService,
   getUnreadNotificationCounterEntries as getUnreadNotificationCounterEntriesService,
+  postGenerateTranslationRaw as postGenerateTranslationRawService,
   saveDraft as saveDraftService,
   subscribePushNotifications as subscribePushNotificationsService,
   updateDraft as updateDraftService,
@@ -92,7 +93,9 @@ export function getTranslationObject(payload, callback) {
   return dispatchActionToReducer(getTranslationObjectService(payload), "GET_TRANSLATION_OBJECT_START", "GET_TRANSLATION_OBJECT_SUCCESS", "GET_TRANSLATION_OBJECT_FAIL", callback);
 }
 
-export function postTranslationObject() {}
+export function postGenerateTranslationRaw(payload, callback) {
+  return dispatchActionToReducer(postGenerateTranslationRawService(payload), "POST_GENERATE_TRANSLATION_RAW_START", "POST_GENERATE_TRANSLATION_RAW_SUCCESS", "POST_GENERATE_TRANSLATION_RAW_FAIL", callback);
+}
 
 export const getPushNotification = (payload, callback) => {
   return dispatchActionToReducer(getPushNotificationService(payload), "GET_PUSH_NOTIFICATION_START", "GET_PUSH_NOTIFICATION_SUCCESS", "GET_PUSH_NOTIFICATION_FAILURE", callback);

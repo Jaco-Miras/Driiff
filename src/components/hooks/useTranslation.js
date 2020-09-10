@@ -1,7 +1,12 @@
 import {useCallback, useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {getHttpStatus} from "../../helpers/commonFunctions";
-import {addTranslationObject, getTranslationObject} from "../../redux/actions/globalActions";
+import {
+  addToModals,
+  addTranslationObject,
+  getTranslationObject,
+  postGenerateTranslationRaw
+} from "../../redux/actions/globalActions";
 import {useDriff, useSettings} from "./index";
 import {isTranslationLogged} from "../../helpers/slugHelper";
 
@@ -184,6 +189,38 @@ export const useTranslation = () => {
     }
   }, []);
 
+  const uploadTranslationToServer = useCallback((callback = () => {
+  }) => {
+    let vocabulary = [];
+    let bodyText = `You are about to add the following words to the dictionary files, continue?`;
+    Object.keys(i18n).forEach(k => {
+      bodyText += `${k} : ${i18n[k]} <br/>`;
+      vocabulary.push({
+        [k]: i18n[k]
+      })
+    })
+
+    const cb = () => {
+      dispatch(
+        postGenerateTranslationRaw(vocabulary, callback)
+      )
+    }
+
+    let payload = {
+      type: "confirmation",
+      headerText: "Translation - Add",
+      submitText: "Add",
+      cancelText: "Cancel",
+      bodyText: bodyText,
+      size: "lg",
+      actions: {
+        onSubmit: cb,
+      },
+    };
+
+    dispatch(addToModals(payload));
+  }, [i18n])
+
   /**
    * Save added text to local storage
    */
@@ -201,6 +238,7 @@ export const useTranslation = () => {
   return {
     _t,
     setLocale,
+    uploadTranslationToServer
   };
 };
 

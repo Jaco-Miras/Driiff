@@ -1,14 +1,14 @@
 import momentTZ from "moment-timezone";
-import React, { useCallback } from "react";
-import { useSelector } from "react-redux";
+import React, {useCallback} from "react";
+import {useSelector} from "react-redux";
 import Select from "react-select";
-import { CustomInput } from "reactstrap";
+import {CustomInput} from "reactstrap";
 import styled from "styled-components";
-import { SvgIconFeather } from "../../common";
+import {SvgIconFeather} from "../../common";
 import Flag from "../../common/Flag";
-import { useSettings, useToaster, useTranslation } from "../../hooks";
-import { getDriffName } from "../../hooks/useDriff";
-import { selectTheme } from "../../../helpers/selectTheme";
+import {useSettings, useToaster, useTranslation} from "../../hooks";
+import {getDriffName} from "../../hooks/useDriff";
+import {selectTheme} from "../../../helpers/selectTheme";
 
 const Wrapper = styled.div`
   .card {
@@ -17,7 +17,6 @@ const Wrapper = styled.div`
 
   .custom-switch {
     padding: 0;
-    min-height: 34px;
     justify-content: left;
     align-items: center;
     display: flex;
@@ -52,12 +51,9 @@ const Wrapper = styled.div`
       width: calc(100% - 40px);
       min-height: 25px;
       display: flex;
-      align-item: center;
+      align-items: center;
 
       span {
-        display: flex;
-        align-item: center;
-
         display: block;
         width: calc(100% - 35px);
       }
@@ -80,7 +76,7 @@ const ProfileSettings = (props) => {
     setGeneralSetting,
   } = useSettings();
 
-  const { _t, setLocale } = useTranslation();
+  const {_t, setLocale, uploadTranslationToServer} = useTranslation();
   const dictionary = {
     chatSettingsTitle: _t("SETTINGS.CHAT_TITLE", "Chat Settings"),
     soundLabel: _t("SETTINGS.SOUND_LABEL", "Play a sound when receiving a new chat message"),
@@ -189,7 +185,7 @@ const ProfileSettings = (props) => {
   const handleGeneralSwitchToggle = useCallback(
     (e) => {
       e.persist();
-      const { name, checked, dataset } = e.target;
+      const {name, dataset} = e.target;
 
       setGeneralSetting({
         [name]: dark_mode === "0" ? "1" : "0",
@@ -225,110 +221,156 @@ const ProfileSettings = (props) => {
   }, []);
 
   const handleSystemSettingsClick = () => {
-    window.open(`https://${getDriffName()}.driff.io/admin`, "Admin");
+    let a = document.createElement('a');
+    a.href = `https://${getDriffName()}.driff.io/admin`;
+    a.target = "_blank";
+    a.click();
   };
 
-  if (!isLoaded) return <></>;
+  const handleUpdateTranslationClick = () => {
+    uploadTranslationToServer(() => {
+      let a = document.createElement('a');
+      a.href = `https://${getDriffName()}.driff.io/admin/translations`;
+      a.target = "_blank";
+      a.click();
+
+      setTimeout(() => {
+        let a = document.createElement('a');
+        a.href = `https://driff.io/admin/translations`;
+        a.target = "_blank";
+        a.click();
+      }, 1000);
+    })
+  }
 
   return (
     <Wrapper className={`profile-settings ${className}`}>
-      {loggedUser.role.name === "owner" && (
-        <div className="card">
-          <div className="card-body">
-            <h6 className="card-title d-flex justify-content-between align-items-center mb-0">
-              System Settings <SvgIconFeather className="cursor-pointer" icon="settings" onClick={handleSystemSettingsClick} />
-            </h6>
-          </div>
-        </div>
-      )}
-      <div className="card">
-        <div className="card-body">
-          <h6 className="card-title d-flex justify-content-between align-items-center">{dictionary.chatSettingsTitle}</h6>
-          <div className="row mb-2">
-            <div className="col-12">
-              <CustomInput
-                className="cursor-pointer text-muted"
-                checked={sound_enabled}
-                type="switch"
-                id="chat_sound_enabled"
-                name="sound_enabled"
-                onChange={handleChatSwitchToggle}
-                data-success-message={`${sound_enabled ? "Chats are now muted!" : "Chat sound is enabled!"}`}
-                label={<span>{dictionary.soundLabel}</span>}
-              />
-            </div>
-          </div>
-          <div className="row mb-3">
-            <div className="col-12">
-              <CustomInput
-                className="cursor-pointer text-muted"
-                checked={preview_message}
-                type="switch"
-                id="chat_preview_message"
-                name="preview_message"
-                onChange={handleChatSwitchToggle}
-                data-success-message={`You have turn ${preview_message ? "OFF" : "ON"} preview in chat messages!`}
-                label={<span>{dictionary.previewMessageLabel}</span>}
-              />
-            </div>
-          </div>
-          <div className="row mb-2">
-            <div className="col-5 text-muted">{dictionary.sortChannelLabel}</div>
-            <div className="col-7">
-              <Select styles={selectTheme} value={channelSortOptions.find((o) => o.value === order_channel.order_by)} onChange={handleSortChannelChange} options={channelSortOptions} />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="card">
-        <div className="card-body">
-          <h6 className="card-title d-flex justify-content-between align-items-center">{dictionary.localizationSettingsTitle}</h6>
-
-          <div className="row mb-2">
-            <div className="col-5 text-muted">{dictionary.languageLabel}</div>
-            <div className="col-7">
-              <Select styles={selectTheme} value={languageOptions.find((o) => o.value === language)} onChange={handleLanguageChange} options={languageOptions} />
-            </div>
-          </div>
-          <div className="row mb-2">
-            <div className="col-5 text-muted">{dictionary.timezoneLabel}</div>
-            <div className="col-7">
-              <Select styles={selectTheme} value={TimezoneOptions.find((o) => o.value === timezone)} onChange={handleTimezoneChange} options={TimezoneOptions} />
-            </div>
-          </div>
-          <div className="row mb-2">
-            <div className="col-5 text-muted">{dictionary.dateTimeFormatLabel}</div>
-            <div className="col-7 justify-content-center align-items-center">
-              <div className="row">
-                <Select styles={selectTheme} className="col-6" value={DateFormatOptions.find((o) => o.value === date_format)} onChange={handleDateFormatChange} options={DateFormatOptions} />
-                <Select styles={selectTheme} className="col-6" value={TimeFormatOptions.find((o) => o.value === time_format)} onChange={handleTimeFormatChange} options={TimeFormatOptions} />
+      {
+        isLoaded ?
+          <>
+            {loggedUser.role.name === "owner" && (
+              <div className="card">
+                <div className="card-body">
+                  <h6 className="card-title d-flex justify-content-between align-items-center mb-0">
+                    System Settings <SvgIconFeather className="cursor-pointer" icon="settings"
+                                                    onClick={handleSystemSettingsClick}/>
+                  </h6>
+                </div>
+              </div>
+            )}
+            <div className="card">
+              <div className="card-body">
+                <h6
+                  className="card-title d-flex justify-content-between align-items-center">{dictionary.chatSettingsTitle}</h6>
+                <div className="row mb-2">
+                  <div className="col-12">
+                    <CustomInput
+                      className="cursor-pointer text-muted"
+                      checked={sound_enabled}
+                      type="switch"
+                      id="chat_sound_enabled"
+                      name="sound_enabled"
+                      onChange={handleChatSwitchToggle}
+                      data-success-message={`${sound_enabled ? "Chats are now muted!" : "Chat sound is enabled!"}`}
+                      label={<span>{dictionary.soundLabel}</span>}
+                    />
+                  </div>
+                </div>
+                <div className="row mb-3">
+                  <div className="col-12">
+                    <CustomInput
+                      className="cursor-pointer text-muted"
+                      checked={preview_message}
+                      type="switch"
+                      id="chat_preview_message"
+                      name="preview_message"
+                      onChange={handleChatSwitchToggle}
+                      data-success-message={`You have turn ${preview_message ? "OFF" : "ON"} preview in chat messages!`}
+                      label={<span>{dictionary.previewMessageLabel}</span>}
+                    />
+                  </div>
+                </div>
+                <div className="row mb-2">
+                  <div className="col-5 text-muted">{dictionary.sortChannelLabel}</div>
+                  <div className="col-7">
+                    <Select styles={selectTheme}
+                            value={channelSortOptions.find((o) => o.value === order_channel.order_by)}
+                            onChange={handleSortChannelChange} options={channelSortOptions}/>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-        </div>
-      </div>
 
-      <div className="card">
-        <div className="card-body">
-          <h6 className="card-title d-flex justify-content-between align-items-center">Extra settings</h6>
+            <div className="card">
+              <div className="card-body">
+                <h6
+                  className="card-title d-flex justify-content-between align-items-center">{dictionary.localizationSettingsTitle}</h6>
 
-          <div className="row mb-2">
-            <div className="col-12 text-muted">
-              <CustomInput
-                className="cursor-pointer text-muted"
-                checked={dark_mode === "1"}
-                type="switch"
-                id="dark_mode"
-                name="dark_mode"
-                data-success-message={`${dark_mode ? "Dark mode is now enabled" : "Dark mode is now disabled"}`}
-                onChange={handleGeneralSwitchToggle}
-                label={<span>Dark mode</span>}
-              />
+                <div className="row mb-2">
+                  <div className="col-5 text-muted">{dictionary.languageLabel}</div>
+                  <div className="col-7">
+                    <Select styles={selectTheme} value={languageOptions.find((o) => o.value === language)}
+                            onChange={handleLanguageChange} options={languageOptions}/>
+                  </div>
+                </div>
+                <div className="row mb-2">
+                  <div className="col-5 text-muted">{dictionary.timezoneLabel}</div>
+                  <div className="col-7">
+                    <Select styles={selectTheme} value={TimezoneOptions.find((o) => o.value === timezone)}
+                            onChange={handleTimezoneChange} options={TimezoneOptions}/>
+                  </div>
+                </div>
+                <div className="row mb-4">
+                  <div className="col-5 text-muted">{dictionary.dateTimeFormatLabel}</div>
+                  <div className="col-7 justify-content-center align-items-center">
+                    <div className="row">
+                      <Select styles={selectTheme} className="col-6"
+                              value={DateFormatOptions.find((o) => o.value === date_format)}
+                              onChange={handleDateFormatChange}
+                              options={DateFormatOptions}/>
+                      <Select styles={selectTheme} className="col-6"
+                              value={TimeFormatOptions.find((o) => o.value === time_format)}
+                              onChange={handleTimeFormatChange}
+                              options={TimeFormatOptions}/>
+                    </div>
+                  </div>
+                </div>
+                {
+                  ["owner", 'admin'].includes(loggedUser.role.name) &&
+                  <div className="row mb-2">
+                    <div className="col-12 text-right">
+                      <button className="btn btn-primary" onClick={handleUpdateTranslationClick}>Update translation
+                      </button>
+                    </div>
+                  </div>
+                }
+              </div>
             </div>
-          </div>
-        </div>
-      </div>
+
+            <div className="card">
+              <div className="card-body">
+                <h6 className="card-title d-flex justify-content-between align-items-center">Extra settings</h6>
+
+                <div className="row mb-2">
+                  <div className="col-12 text-muted">
+                    <CustomInput
+                      className="cursor-pointer text-muted"
+                      checked={dark_mode === "1"}
+                      type="switch"
+                      id="dark_mode"
+                      name="dark_mode"
+                      data-success-message={`${dark_mode ? "Dark mode is now enabled" : "Dark mode is now disabled"}`}
+                      onChange={handleGeneralSwitchToggle}
+                      label={<span>Dark mode</span>}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </>
+          :
+          <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"/>
+      }
     </Wrapper>
   );
 };
