@@ -1,5 +1,5 @@
-import { getTranslationAPIUrl } from "../../helpers/slugHelper";
-import { apiCall, apiNoTokenCall } from "./index";
+import {getTranslationAPIUrl} from "../../helpers/slugHelper";
+import {apiCall, apiNoTokenCall} from "./index";
 
 export function getConnectedSlugs(payload) {
   let url = "/v2/connected-slugs";
@@ -72,9 +72,13 @@ export function getTranslationObject(payload) {
   });
 }
 
-export function postTranslationObject(payload) {
+/**
+ * @param Array payload
+ * @returns {Promise<*>}
+ */
+export function postGenerateTranslationRaw(payload) {
   return apiNoTokenCall({
-    method: "GET",
+    method: "POST",
     actualUrl: `${getTranslationAPIUrl()}/generate-translation-raw`,
     data: {
       raws: payload,

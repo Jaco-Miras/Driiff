@@ -1,9 +1,27 @@
 import React, { useState, useEffect } from "react";
-//import styled from "styled-components";
+import styled from "styled-components";
 import { SvgIconFeather } from "../../common";
 
-const MainSearch = (props) => {
+const Wrapper = styled.div`
+  .btn-cross {
+    position: absolute;
+    top: 0;
+    right: 45px;
+    border: 0;
+    background: transparent;
+    padding: 0;
+    height: 100%;
+    width: 36px;
+    border-radius: 4px;
+    z-index: 9;
+    svg {
+      width: 16px;
+      color: #495057;
+    }
+  }
+`;
 
+const MainSearch = (props) => {
   const { actions, clearTab, value } = props;
   const [inputValue, setInputValue] = useState(value);
 
@@ -22,33 +40,51 @@ const MainSearch = (props) => {
         limit: 10,
       });
       actions.saveSearchValue({
-        value: inputValue
+        value: inputValue,
       });
     }
+  };
+
+  const emptySearch = () => {
+    setInputValue("");
+    clearTab();
+    actions.search({
+      search: "",
+      skip: 0,
+      limit: 10,
+    });
+    actions.saveSearchValue({
+      value: "",
+    });
   };
 
   const handleSearchChange = (e) => {
     if (e.target.value.trim() === "" && value !== "") {
       clearTab();
       actions.saveSearchValue({
-        value: ""
+        value: "",
       });
     }
-    setInputValue(e.target.value)
+    setInputValue(e.target.value);
   };
 
   useEffect(() => {
-    setInputValue(value)
+    setInputValue(value);
   }, [value]);
 
   return (
-    <div className="card p-t-b-40" data-backround-image="assets/media/image/image1.jpg">
+    <Wrapper className="card p-t-b-40" data-backround-image="assets/media/image/image1.jpg">
       <div className="container">
         <div className="row d-flex justify-content-center">
           <div>
             <h2 className="mb-4 text-center">What do you want to find?</h2>
             <div className="input-group">
               <input onChange={handleSearchChange} onKeyDown={handleEnter} type="text" className="form-control" placeholder="Search..." aria-describedby="button-addon1" autoFocus value={inputValue} />
+              {inputValue.trim() !== "" && (
+                <button onClick={emptySearch} className="btn-cross" type="button">
+                  <SvgIconFeather icon="x" />
+                </button>
+              )}
               <div className="input-group-append">
                 <button className="btn btn-outline-light" type="button" onClick={handleSearch}>
                   <SvgIconFeather icon="search" />
@@ -58,7 +94,7 @@ const MainSearch = (props) => {
           </div>
         </div>
       </div>
-    </div>
+    </Wrapper>
   );
 };
 

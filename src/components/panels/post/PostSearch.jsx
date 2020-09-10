@@ -1,8 +1,29 @@
 import React, { useState } from "react";
+import styled from "styled-components";
 import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 import { addPostSearchResult } from "../../../redux/actions/workspaceActions";
 import { fetchPosts } from "../../../redux/actions/postActions";
+import { SvgIconFeather } from "../../common";
+
+const Wrapper = styled.div`
+  .btn-cross {
+    position: absolute;
+    top: 0;
+    right: 45px;
+    border: 0;
+    background: transparent;
+    padding: 0;
+    height: 100%;
+    width: 36px;
+    border-radius: 4px;
+    z-index: 9;
+    svg {
+      width: 16px;
+      color: #495057;
+    }
+  }
+`;
 
 const PostSearch = (props) => {
   const { search, placeholder } = props;
@@ -18,6 +39,7 @@ const PostSearch = (props) => {
   };
 
   const handleClearSearchPosts = () => {
+    setSearchValue("");
     dispatch(
       addPostSearchResult({
         topic_id: topic_id,
@@ -55,14 +77,19 @@ const PostSearch = (props) => {
   };
 
   return (
-    <div className="input-group">
+    <Wrapper className="input-group">
       <input type="text" className="form-control" placeholder={placeholder} value={searchValue} aria-describedby="button-addon1" onKeyDown={handleEnter} onChange={handleInputChange} />
       <div className="input-group-append">
+        {searchValue.trim() !== "" && (
+          <button onClick={handleClearSearchPosts} className="btn-cross" type="button">
+            <SvgIconFeather icon="x" />
+          </button>
+        )}
         <button className="btn btn-outline-light" type="button" id="button-addon1" onClick={handleSearch}>
           <i className="ti-search" />
         </button>
       </div>
-    </div>
+    </Wrapper>
   );
 };
 

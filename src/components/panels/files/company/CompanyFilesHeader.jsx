@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import {replaceChar} from "../../../../helpers/stringFormatter";
-import {ButtonDropdown, SvgIconFeather} from "../../../common";
+import { replaceChar } from "../../../../helpers/stringFormatter";
+import { ButtonDropdown, SvgIconFeather } from "../../../common";
 
 const Wrapper = styled.div`
   overflow: inherit !important;
@@ -21,13 +21,26 @@ const Wrapper = styled.div`
       margin-left: 8px;
     }
   }
+  .btn-cross {
+    position: absolute;
+    top: 0;
+    right: 45px;
+    border: 0;
+    background: transparent;
+    padding: 0;
+    height: 100%;
+    width: 36px;
+    border-radius: 4px;
+    z-index: 9;
+    svg {
+      width: 16px;
+      color: #495057;
+    }
+  }
 `;
 
 const CompanyFilesHeader = (props) => {
-  const {
-    className = "", dropZoneRef, onSearchChange, onSearch, onEnter,
-    handleAddEditFolder, folders, history, params, clearFilter, dictionary
-  } = props;
+  const { className = "", dropZoneRef, onSearchChange, onSearch, onEnter, handleAddEditFolder, folders, history, params, clearFilter, dictionary, onClickEmpty, value } = props;
 
   const handleClickAdd = () => {
     if (dropZoneRef.current) {
@@ -54,7 +67,7 @@ const CompanyFilesHeader = (props) => {
   const addDropDown = {
     label: (
       <>
-        <SvgIconFeather className="mr-1" icon="plus"/> {dictionary.add}
+        <SvgIconFeather className="mr-1" icon="plus" /> {dictionary.add}
       </>
     ),
     items: [
@@ -94,23 +107,27 @@ const CompanyFilesHeader = (props) => {
       <div className="action-left">
         <ul className="list-inline">
           <li className="list-inline-item mb-0">
-            <ButtonDropdown dropdown={addDropDown}/>
+            <ButtonDropdown dropdown={addDropDown} />
           </li>
           <li className="list-inline-item mb-0">
-            <ButtonDropdown dropdown={folderDropDown}/>
+            <ButtonDropdown dropdown={folderDropDown} />
           </li>
         </ul>
         <span className="app-sidebar-menu-button btn btn-outline-light" onClick={openMobileModal}>
-          <SvgIconFeather icon="menu"/>
+          <SvgIconFeather icon="menu" />
         </span>
       </div>
       <div className="action-right">
         <div className="input-group">
-          <input type="text" onChange={onSearchChange} onKeyDown={onEnter} className="form-control"
-                 placeholder={dictionary.searchInputPlaceholder} aria-describedby="button-addon1"/>
+          <input type="text" onChange={onSearchChange} value={value} onKeyDown={onEnter} className="form-control" placeholder={dictionary.searchInputPlaceholder} aria-describedby="button-addon1" />
+          {value.trim() !== "" && (
+            <button onClick={onClickEmpty} className="btn-cross" type="button">
+              <SvgIconFeather icon="x" />
+            </button>
+          )}
           <div className="input-group-append">
             <button className="btn btn-outline-light" type="button" id="button-addon1" onClick={onSearch}>
-              <SvgIconFeather icon="search"/>
+              <SvgIconFeather icon="search" />
             </button>
           </div>
         </div>

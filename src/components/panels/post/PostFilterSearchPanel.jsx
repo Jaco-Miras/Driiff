@@ -1,11 +1,11 @@
 import React from "react";
-import {useDispatch} from "react-redux";
+import { useDispatch } from "react-redux";
 import styled from "styled-components";
-import {updateWorkspacePostFilterSort} from "../../../redux/actions/workspaceActions";
-import {ButtonDropdown, SvgIconFeather} from "../../common";
+import { updateWorkspacePostFilterSort } from "../../../redux/actions/workspaceActions";
+import { ButtonDropdown, SvgIconFeather } from "../../common";
 
 // import {useCountRenders} from "../../hooks";
-import {PostSearch} from "./index";
+import { PostSearch } from "./index";
 
 const Wrapper = styled.div`
   overflow: unset !important;
@@ -67,15 +67,15 @@ const PostFilterSearchPanel = (props) => {
                      <ButtonDropdown dropdown={filterDropdown}/>
                      </li> */}
           <li className="list-inline-item mb-0">
-            <ButtonDropdown value={activeSort} dropdown={sortDropdown}/>
+            <ButtonDropdown value={activeSort} dropdown={sortDropdown} />
           </li>
         </ul>
         <span className="app-sidebar-menu-button btn btn-outline-light" onClick={openMobileModal}>
-          <SvgIconFeather icon="menu"/>
+          <SvgIconFeather icon="menu" />
         </span>
       </div>
       <div className="action-right">
-        <PostSearch search={search} placeholder={dictionary.searchPost}/>
+        <PostSearch search={search} placeholder={dictionary.searchPost} />
       </div>
     </Wrapper>
   );

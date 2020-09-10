@@ -5,7 +5,7 @@ import {clearModal} from "../../redux/actions/globalActions";
 import {ModalHeaderSection} from "./index";
 
 const ConfirmationModal = (props) => {
-  const {submitText, cancelText, headerText, bodyText, type} = props.data;
+  const {submitText, cancelText, headerText, bodyText, type, size = "m"} = props.data;
   const {onSubmit} = props.data.actions;
 
   const dispatch = useDispatch();
@@ -22,7 +22,7 @@ const ConfirmationModal = (props) => {
   };
 
   return (
-    <Modal isOpen={modal} toggle={toggle} centered>
+    <Modal isOpen={modal} toggle={toggle} size={size} centered>
       <ModalHeaderSection toggle={toggle}>{headerText}</ModalHeaderSection>
       <ModalBody dangerouslySetInnerHTML={{__html: bodyText}}/>
       <ModalFooter>

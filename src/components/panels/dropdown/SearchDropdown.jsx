@@ -1,14 +1,30 @@
 import React, { useEffect, useState, useRef } from "react";
-import { useHistory } from "react-router-dom"
+import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import { useSearch, useSearchActions } from "../../hooks";
 import { SvgIconFeather } from "../../common";
 //import { ChatSearchItem, ChannelSearchItem, CommentSearchItem, FileSearchItem, PeopleSearchItem, PostSearchItem, WorkspaceSearchItem } from "../../list/search";
 
 const Wrapper = styled.div`
-    @media (min-width: 400px) {
-        min-width: 360px;
+  @media (min-width: 400px) {
+    min-width: 360px;
+  }
+  .btn-cross {
+    position: absolute;
+    top: 0;
+    right: 45px;
+    border: 0;
+    background: transparent;
+    padding: 0;
+    height: 100%;
+    width: 36px;
+    border-radius: 4px;
+    z-index: 9;
+    svg {
+      width: 16px;
+      color: #495057;
     }
+  }
 `;
 
 // const PopUpResultsContainer = styled.div`
@@ -17,56 +33,71 @@ const Wrapper = styled.div`
 // `;
 
 const SearchDropdown = (props) => {
+  const dropdownRef = useRef();
+  const actions = useSearchActions();
+  const { value } = useSearch();
+  const history = useHistory();
+  const [inputValue, setInputValue] = useState(value);
 
-    const dropdownRef = useRef();
-    const actions = useSearchActions();
-    const { value } = useSearch();
-    const history = useHistory();
-    const [inputValue, setInputValue] = useState(value);
+  const handleEnter = (e) => {
+    if (e.key === "Enter") {
+      handleSearch();
+    }
+  };
 
-    const handleEnter = (e) => {
-        if (e.key === "Enter") {
-            handleSearch();
-        }
-    };
+  const handleSearch = () => {
+    if (inputValue.trim() !== "") {
+      dropdownRef.current.classList.remove("show");
+      actions.search({
+        search: inputValue,
+        skip: 0,
+        limit: 10,
+      });
+      actions.saveSearchValue({
+        value: inputValue,
+      });
+      document.querySelector(".overlay").classList.remove("show");
+      history.push("/search");
+    }
+  };
 
-    const handleSearch = () => {
-        if (inputValue.trim() !== "") {
-            dropdownRef.current.classList.remove("show");
-            actions.search({
-                search: inputValue,
-                skip: 0,
-                limit: 10,
-            });
-            actions.saveSearchValue({
-                value: inputValue
-            });
-            document.querySelector(".overlay").classList.remove('show');
-            history.push("/search");
-        }
-    };
+  const emptySearch = () => {
+    setInputValue("");
+    actions.search({
+      search: "",
+      skip: 0,
+      limit: 10,
+    });
+    actions.saveSearchValue({
+      value: "",
+    });
+  };
 
+  const handleSearchChange = (e) => {
+    if (e.target.value.trim() === "" && value !== "") {
+      actions.saveSearchValue({
+        value: "",
+      });
+    }
+    setInputValue(e.target.value);
+  };
 
-    const handleSearchChange = (e) => {
-        if (e.target.value.trim() === "" && value !== "") {
-        actions.saveSearchValue({
-            value: ""
-        });
-        }
-        setInputValue(e.target.value)
-    };
-
-    return (
-        <Wrapper className="dropdown-menu p-2 dropdown-menu-right" ref={dropdownRef}>
-            <div className="input-group">
-            <input onChange={handleSearchChange} onKeyDown={handleEnter} type="text" className="form-control dropdown-search-input" placeholder="Search..." aria-describedby="button-addon1" autoFocus />
-                <div className="input-group-append">
-                    <button className="btn btn-outline-light" type="button" onClick={handleSearch}>
-                        <SvgIconFeather icon="search" />
-                    </button>
-                </div>
-            </div>
-            {/* <PopUpResultsContainer>
+  return (
+    <Wrapper className="dropdown-menu p-2 dropdown-menu-right" ref={dropdownRef}>
+      <div className="input-group">
+        <input onChange={handleSearchChange} onKeyDown={handleEnter} value={inputValue} type="text" className="form-control dropdown-search-input" placeholder="Search..." aria-describedby="button-addon1" autoFocus />
+        {inputValue.trim() !== "" && (
+          <button onClick={emptySearch} className="btn-cross" type="button">
+            <SvgIconFeather icon="x" />
+          </button>
+        )}
+        <div className="input-group-append">
+          <button className="btn btn-outline-light" type="button" onClick={handleSearch}>
+            <SvgIconFeather icon="search" />
+          </button>
+        </div>
+      </div>
+      {/* <PopUpResultsContainer>
                 <ul className="list-group list-group-flush">
                     {
                         Object.values(results).map((r) => {
@@ -92,8 +123,8 @@ const SearchDropdown = (props) => {
                     }
                 </ul>
             </PopUpResultsContainer> */}
-        </Wrapper>
-    );
+    </Wrapper>
+  );
 };
 
 export default SearchDropdown;

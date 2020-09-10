@@ -1,11 +1,11 @@
-import React, {useCallback, useEffect, useRef, useState} from "react";
-import {useDispatch} from "react-redux";
-import {useHistory} from "react-router-dom";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { useDispatch } from "react-redux";
+import { useHistory } from "react-router-dom";
 import styled from "styled-components";
-import {replaceChar} from "../../../helpers/stringFormatter";
-import {addToModals} from "../../../redux/actions/globalActions";
-import {useCompanyFiles, useTranslation} from "../../hooks";
-import {CompanyFilesBody, CompanyFilesHeader, CompanyFilesSidebar} from "../files/company";
+import { replaceChar } from "../../../helpers/stringFormatter";
+import { addToModals } from "../../../redux/actions/globalActions";
+import { useCompanyFiles, useTranslation } from "../../hooks";
+import { CompanyFilesBody, CompanyFilesHeader, CompanyFilesSidebar } from "../files/company";
 
 const Wrapper = styled.div`
   .app-sidebar-menu {
@@ -19,12 +19,12 @@ const CreateFolderLabel = styled.div`
 `;
 
 const CompanyFilesPanel = (props) => {
-  const {className = "", isMember, workspace} = props;
+  const { className = "", isMember, workspace } = props;
 
   const dispatch = useDispatch();
   const history = useHistory();
-  const {_t} = useTranslation();
-  const {params, isLoaded, files, fileCount, actions, fileIds, folders, folder, subFolders, loadMore} = useCompanyFiles();
+  const { _t } = useTranslation();
+  const { params, isLoaded, files, fileCount, actions, fileIds, folders, folder, subFolders, loadMore } = useCompanyFiles();
 
   const [filter, setFilter] = useState("");
   const [search, setSearch] = useState("");
@@ -88,7 +88,7 @@ const CompanyFilesPanel = (props) => {
     recentlyEdited: _t("FILES.RECENTLY_EDITED", "Recently edited"),
     removed: _t("FILES.REMOVED", "Removed"),
     searchInputPlaceholder: _t("FILES.SEARCH_INPUT_PLACEHOLDER", "Search input"),
-    uploadFiles: _t("FILE.UPLOAD_FILES", "Upload files")
+    uploadFiles: _t("FILE.UPLOAD_FILES", "Upload files"),
   };
 
   const folderName = useRef("");
@@ -136,7 +136,7 @@ const CompanyFilesPanel = (props) => {
         {
           id: f.id,
           name: folderName.current,
-          is_archived: true
+          is_archived: true,
         },
         cb
       );
@@ -145,8 +145,14 @@ const CompanyFilesPanel = (props) => {
     let payload = {
       type: "single_input",
       defaultValue: "",
-      postInputLabel: folder === null ? "" : (
-        <CreateFolderLabel>The folder will be created inside <b>#{folder.search}</b></CreateFolderLabel>),
+      postInputLabel:
+        folder === null ? (
+          ""
+        ) : (
+          <CreateFolderLabel>
+            The folder will be created inside <b>#{folder.search}</b>
+          </CreateFolderLabel>
+        ),
       onChange: handleFolderNameChange,
       onClose: handleFolderClose,
     };
@@ -201,7 +207,7 @@ const CompanyFilesPanel = (props) => {
           disableOptions={disableOptions}
         />
         <div className="col-md-9 app-content mb-4">
-          <div className="app-content-overlay"/>
+          <div className="app-content-overlay" />
           <CompanyFilesHeader
             isMember={isMember}
             clearFilter={clearFilter}
@@ -216,6 +222,8 @@ const CompanyFilesPanel = (props) => {
             folders={folders}
             dictionary={dictionary}
             disableOptions={disableOptions}
+            onClickEmpty={clearSearch}
+            value={search}
           />
           <CompanyFilesBody
             dropZoneRef={refs.dropZone}

@@ -284,17 +284,13 @@ export const checkUpdate = () => {
 };
 
 export const getTranslationAPIUrl = () => {
-  const { REACT_APP_translation_api_base_url } = process.env;
+  const driffName = getDriffName();
+  const {REACT_APP_translation_api_base_url} = process.env;
 
   let url = "";
   if (typeof REACT_APP_translation_api_base_url !== "undefined") {
-    url = REACT_APP_translation_api_base_url;
+    url = REACT_APP_translation_api_base_url.replace("{{driffName}}", driffName);
   }
-
-  /**
-   * @todo
-   * add condition for driff API
-   */
 
   return url;
 };

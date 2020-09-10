@@ -1,14 +1,14 @@
 import momentTZ from "moment-timezone";
-import React, { useCallback } from "react";
-import { useSelector } from "react-redux";
+import React, {useCallback} from "react";
+import {useSelector} from "react-redux";
 import Select from "react-select";
-import { CustomInput } from "reactstrap";
+import {CustomInput} from "reactstrap";
 import styled from "styled-components";
-import { SvgIconFeather } from "../../common";
+import {SvgIconFeather} from "../../common";
 import Flag from "../../common/Flag";
-import { useSettings, useToaster, useTranslation } from "../../hooks";
-import { getDriffName } from "../../hooks/useDriff";
-import { darkTheme, lightTheme } from "../../../helpers/selectTheme";
+import {useSettings, useToaster, useTranslation} from "../../hooks";
+import {getDriffName} from "../../hooks/useDriff";
+import {darkTheme, lightTheme} from "../../../helpers/selectTheme";
 
 const Wrapper = styled.div`
   .card {
@@ -17,7 +17,6 @@ const Wrapper = styled.div`
 
   .custom-switch {
     padding: 0;
-    min-height: 34px;
     justify-content: left;
     align-items: center;
     display: flex;
@@ -52,12 +51,9 @@ const Wrapper = styled.div`
       width: calc(100% - 40px);
       min-height: 25px;
       display: flex;
-      align-item: center;
+      align-items: center;
 
       span {
-        display: flex;
-        align-item: center;
-
         display: block;
         width: calc(100% - 35px);
       }
@@ -80,7 +76,7 @@ const ProfileSettings = (props) => {
     setGeneralSetting,
   } = useSettings();
 
-  const { _t, setLocale } = useTranslation();
+  const {_t, setLocale, uploadTranslationToServer} = useTranslation();
   const dictionary = {
     chatSettingsTitle: _t("SETTINGS.CHAT_TITLE", "Chat Settings"),
     soundLabel: _t("SETTINGS.SOUND_LABEL", "Play a sound when receiving a new chat message"),
@@ -189,7 +185,7 @@ const ProfileSettings = (props) => {
   const handleGeneralSwitchToggle = useCallback(
     (e) => {
       e.persist();
-      const { name, checked, dataset } = e.target;
+      const {name, dataset} = e.target;
 
       setGeneralSetting({
         [name]: dark_mode === "0" ? "1" : "0",
@@ -225,13 +221,33 @@ const ProfileSettings = (props) => {
   }, []);
 
   const handleSystemSettingsClick = () => {
-    window.open(`https://${getDriffName()}.driff.io/admin`, "Admin");
+    let a = document.createElement('a');
+    a.href = `https://${getDriffName()}.driff.io/admin`;
+    a.target = "_blank";
+    a.click();
   };
 
-  if (!isLoaded) return <></>;
+  const handleUpdateTranslationClick = () => {
+    uploadTranslationToServer(() => {
+      let a = document.createElement('a');
+      a.href = `https://${getDriffName()}.driff.io/admin/translations`;
+      a.target = "_blank";
+      a.click();
+
+      setTimeout(() => {
+        let a = document.createElement('a');
+        a.href = `https://driff.io/admin/translations`;
+        a.target = "_blank";
+        a.click();
+      }, 1000);
+    })
+  }
 
   return (
     <Wrapper className={`profile-settings ${className}`}>
+      {
+        isLoaded ?
+          <>
       {loggedUser.role.name === "owner" && (
         <div className="card">
           <div className="card-body">
@@ -301,11 +317,24 @@ const ProfileSettings = (props) => {
             <div className="col-5 text-muted">{dictionary.dateTimeFormatLabel}</div>
             <div className="col-7 justify-content-center align-items-center">
               <div className="row">
-                <Select styles={dark_mode === "0" ? lightTheme : darkTheme} className="col-6" value={DateFormatOptions.find((o) => o.value === date_format)} onChange={handleDateFormatChange} options={DateFormatOptions} />
-                <Select styles={dark_mode === "0" ? lightTheme : darkTheme} className="col-6" value={TimeFormatOptions.find((o) => o.value === time_format)} onChange={handleTimeFormatChange} options={TimeFormatOptions} />
+                <Select styles={dark_mode === "0" ? lightTheme : darkTheme} className="col-6"
+                        value={DateFormatOptions.find((o) => o.value === date_format)} onChange={handleDateFormatChange}
+                        options={DateFormatOptions}/>
+                <Select styles={dark_mode === "0" ? lightTheme : darkTheme} className="col-6"
+                        value={TimeFormatOptions.find((o) => o.value === time_format)} onChange={handleTimeFormatChange}
+                        options={TimeFormatOptions}/>
               </div>
             </div>
           </div>
+          {
+            ["owner", 'admin'].includes(loggedUser.role.name) &&
+            <div className="row mb-2 mt-4">
+              <div className="col-12 text-right">
+                <button className="btn btn-primary" onClick={handleUpdateTranslationClick}>Update translation
+                </button>
+              </div>
+            </div>
+          }
         </div>
       </div>
 
@@ -329,6 +358,10 @@ const ProfileSettings = (props) => {
           </div>
         </div>
       </div>
+      </>
+      :
+      <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"/>
+      }
     </Wrapper>
   );
 };
