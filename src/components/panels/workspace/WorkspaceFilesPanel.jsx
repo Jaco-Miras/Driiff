@@ -1,11 +1,11 @@
-import React, {useCallback, useEffect, useRef, useState} from "react";
-import {useDispatch} from "react-redux";
-import {useHistory} from "react-router-dom";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { useDispatch } from "react-redux";
+import { useHistory } from "react-router-dom";
 import styled from "styled-components";
-import {replaceChar} from "../../../helpers/stringFormatter";
-import {addToModals} from "../../../redux/actions/globalActions";
-import {useFiles, useTranslation} from "../../hooks";
-import {FilesBody, FilesHeader, FilesSidebar} from "../files";
+import { replaceChar } from "../../../helpers/stringFormatter";
+import { addToModals } from "../../../redux/actions/globalActions";
+import { useFiles, useTranslation } from "../../hooks";
+import { FilesBody, FilesHeader, FilesSidebar } from "../files";
 
 const Wrapper = styled.div`
   .app-sidebar-menu {
@@ -19,12 +19,12 @@ const CreateFolderLabel = styled.div`
 `;
 
 const WorkspaceFilesPanel = (props) => {
-  const {className = "", isMember, workspace} = props;
+  const { className = "", isMember, workspace } = props;
 
   const dispatch = useDispatch();
   const history = useHistory();
-  const {_t} = useTranslation();
-  const {params, wsFiles, actions, topic, fileIds, folders, folder, subFolders} = useFiles();
+  const { _t } = useTranslation();
+  const { params, wsFiles, actions, topic, fileIds, folders, folder, subFolders } = useFiles();
 
   const [filter, setFilter] = useState("");
   const [search, setSearch] = useState("");
@@ -87,7 +87,7 @@ const WorkspaceFilesPanel = (props) => {
     recentlyEdited: _t("FILES.RECENTLY_EDITED", "Recently edited"),
     removed: _t("FILES.REMOVED", "Removed"),
     searchInputPlaceholder: _t("FILES.SEARCH_INPUT_PLACEHOLDER", "Search input"),
-    uploadFiles: _t("UPLOAD_FILES", "Upload files")
+    uploadFiles: _t("UPLOAD_FILES", "Upload files"),
   };
 
   const folderName = useRef("");
@@ -149,8 +149,14 @@ const WorkspaceFilesPanel = (props) => {
     let payload = {
       type: "single_input",
       defaultValue: "",
-      postInputLabel: folder === null ? "" : (
-        <CreateFolderLabel>The folder will be created inside <b>#{folder.search}</b></CreateFolderLabel>),
+      postInputLabel:
+        folder === null ? (
+          ""
+        ) : (
+          <CreateFolderLabel>
+            The folder will be created inside <b>#{folder.search}</b>
+          </CreateFolderLabel>
+        ),
       onChange: handleFolderNameChange,
       onClose: handleFolderClose,
     };
@@ -188,63 +194,64 @@ const WorkspaceFilesPanel = (props) => {
   return (
     <Wrapper className={`container-fluid h-100 fadeIn ${className}`}>
       <div className="row app-block">
-        {
-          (typeof wsFiles === "undefined" || wsFiles === null) ?
-            <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"/>
-            :
-            <>
-              <FilesSidebar
-                actions={actions}
+        {typeof wsFiles === "undefined" || wsFiles === null ? (
+          <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />
+        ) : (
+          <>
+            <FilesSidebar
+              actions={actions}
+              isMember={isMember}
+              clearFilter={clearFilter}
+              params={params}
+              dropZoneRef={refs.dropZone}
+              className="col-lg-3"
+              filterFile={handleFilterFile}
+              filter={filter}
+              wsFiles={wsFiles}
+              folders={folders}
+              activeFolder={folder}
+              dictionary={dictionary}
+              disableOptions={disableOptions}
+            />
+            <div className="col-md-9 app-content mb-4">
+              <div className="app-content-overlay" />
+              <FilesHeader
                 isMember={isMember}
                 clearFilter={clearFilter}
-                params={params}
                 dropZoneRef={refs.dropZone}
-                className="col-lg-3"
-                filterFile={handleFilterFile}
-                filter={filter}
+                history={history}
+                params={params}
+                onSearch={handleSearch}
+                onSearchChange={handleSearchChange}
+                onEnter={handleEnter}
                 wsFiles={wsFiles}
+                handleAddEditFolder={handleAddEditFolder}
                 folders={folders}
-                activeFolder={folder}
+                dictionary={dictionary}
+                disableOptions={disableOptions}
+                onClickEmpty={clearSearch}
+                value={search}
+              />
+              <FilesBody
+                dropZoneRef={refs.dropZone}
+                filter={filter}
+                search={search}
+                folders={folders}
+                folder={folder}
+                fileIds={fileIds}
+                isMember={isMember}
+                subFolders={subFolders}
+                history={history}
+                actions={actions}
+                params={params}
+                wsFiles={wsFiles}
+                handleAddEditFolder={handleAddEditFolder}
                 dictionary={dictionary}
                 disableOptions={disableOptions}
               />
-              <div className="col-md-9 app-content mb-4">
-                <div className="app-content-overlay"/>
-                <FilesHeader
-                  isMember={isMember}
-                  clearFilter={clearFilter}
-                  dropZoneRef={refs.dropZone}
-                  history={history}
-                  params={params}
-                  onSearch={handleSearch}
-                  onSearchChange={handleSearchChange}
-                  onEnter={handleEnter}
-                  wsFiles={wsFiles}
-                  handleAddEditFolder={handleAddEditFolder}
-                  folders={folders}
-                  dictionary={dictionary}
-                  disableOptions={disableOptions}
-                />
-                <FilesBody
-                  dropZoneRef={refs.dropZone}
-                  filter={filter}
-                  search={search}
-                  folders={folders}
-                  folder={folder}
-                  fileIds={fileIds}
-                  isMember={isMember}
-                  subFolders={subFolders}
-                  history={history}
-                  actions={actions}
-                  params={params}
-                  wsFiles={wsFiles}
-                  handleAddEditFolder={handleAddEditFolder}
-                  dictionary={dictionary}
-                  disableOptions={disableOptions}
-                />
-              </div>
-            </>
-        }
+            </div>
+          </>
+        )}
       </div>
     </Wrapper>
   );

@@ -48,7 +48,9 @@ const Search = styled(SearchForm)`
   .not-empty .input-group-append {
     display: none;
   }
-
+  .btn-cross {
+    right: 0 !important;
+  }
   .input-group-append {
     position: absolute;
     top: 2px;
@@ -100,7 +102,7 @@ const ChatSidebarPanel = (props) => {
     setSearch(e.target.value);
   };
 
-  const emptyInput = () => {
+  const emptySearchInput = () => {
     setSearch("");
   };
 
@@ -164,7 +166,7 @@ const ChatSidebarPanel = (props) => {
   return (
     <Wrapper className={`chat-sidebar ${className}`}>
       <div className="chat-sidebar-header">
-        <Search onChange={onSearchChange} value={search} onClickEmpty={emptyInput} closeButton="true" className="chat-search" placeholder="Search contacts or chats" />
+        <Search onChange={onSearchChange} value={search} onClickEmpty={emptySearchInput} closeButton="true" className="chat-search" placeholder="Search contacts or chats" />
         <ul ref={refs.navTab} className="nav nav-pills" role="tabList">
           <li className="nav-item">
             <span className="nav-link active" id="pills-home-tab" data-toggle="pill" onClick={handleTabChange} role="tab" aria-controls="pills-home" aria-selected="true">

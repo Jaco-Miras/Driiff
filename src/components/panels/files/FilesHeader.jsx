@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import {replaceChar} from "../../../helpers/stringFormatter";
-import {ButtonDropdown, SvgIconFeather} from "../../common";
+import { replaceChar } from "../../../helpers/stringFormatter";
+import { ButtonDropdown, SvgIconFeather } from "../../common";
 
 const Wrapper = styled.div`
   overflow: inherit !important;
@@ -21,12 +21,26 @@ const Wrapper = styled.div`
       margin-left: 8px;
     }
   }
+  .btn-cross {
+    position: absolute;
+    top: 0;
+    right: 45px;
+    border: 0;
+    background: transparent;
+    padding: 0;
+    height: 100%;
+    width: 36px;
+    border-radius: 4px;
+    z-index: 9;
+    svg {
+      width: 16px;
+      color: #495057;
+    }
+  }
 `;
 
 const FilesHeader = (props) => {
-  const { className = "", isMember, dropZoneRef, onSearchChange, onSearch, onEnter, wsFiles,
-          handleAddEditFolder, folders, history, params, clearFilter, dictionary, disableOptions
-  } = props;
+  const { className = "", isMember, dropZoneRef, onSearchChange, onSearch, onEnter, wsFiles, handleAddEditFolder, folders, history, params, clearFilter, dictionary, disableOptions, onClickEmpty, value } = props;
 
   const handleClickAdd = () => {
     if (dropZoneRef.current) {
@@ -97,22 +111,27 @@ const FilesHeader = (props) => {
         <ul className="list-inline">
           {isMember === true && !disableOptions && (
             <li className="list-inline-item mb-0">
-              <ButtonDropdown dropdown={addDropDown}/>
+              <ButtonDropdown dropdown={addDropDown} />
             </li>
           )}
           {isMember === true && Object.values(folders).filter((f) => !f.is_archived).length >= 1 && (
             <li className="list-inline-item mb-0">
-              <ButtonDropdown dropdown={folderDropDown}/>
+              <ButtonDropdown dropdown={folderDropDown} />
             </li>
           )}
         </ul>
         <span className="app-sidebar-menu-button btn btn-outline-light" onClick={openMobileModal}>
-          <SvgIconFeather icon="menu"/>
+          <SvgIconFeather icon="menu" />
         </span>
       </div>
       <div className="action-right">
         <div className="input-group">
-          <input type="text" onChange={onSearchChange} onKeyDown={onEnter} className="form-control" placeholder={dictionary.searchInputPlaceholder} aria-describedby="button-addon1" />
+          <input type="text" onChange={onSearchChange} onKeyDown={onEnter} value={value} className="form-control" placeholder={dictionary.searchInputPlaceholder} aria-describedby="button-addon1" />
+          {value.trim() !== "" && (
+            <button onClick={onClickEmpty} className="btn-cross" type="button">
+              <SvgIconFeather icon="x" />
+            </button>
+          )}
           <div className="input-group-append">
             <button className="btn btn-outline-light" type="button" id="button-addon1" onClick={onSearch}>
               <SvgIconFeather icon="search" />

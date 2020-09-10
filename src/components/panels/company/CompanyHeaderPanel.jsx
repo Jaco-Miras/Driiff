@@ -108,7 +108,6 @@ const CompanyHeaderPanel = () => {
       }
       case "search": {
         page = "Search";
-        console.log("lets go!");
         setPageName(page);
         break;
       }

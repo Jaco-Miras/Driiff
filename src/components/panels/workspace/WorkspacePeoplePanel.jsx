@@ -47,6 +47,10 @@ const WorkspacePeoplePanel = (props) => {
     setSearch(e.target.value);
   };
 
+  const emptySearchInput = () => {
+    setSearch("");
+  };
+
   const handleUserNameClick = useCallback(
     (user) => {
       history.push(`/profile/${user.id}/${replaceChar(user.name)}`);
@@ -108,7 +112,7 @@ const WorkspacePeoplePanel = (props) => {
       <div className="card">
         <div className="card-body">
           <div className="people-header">
-            <Search ref={refs.search} value={search} placeholder={dictionary.searchPeoplePlaceholder} onChange={handleSearchChange} autoFocus />
+            <Search ref={refs.search} value={search} closeButton="true" onClickEmpty={emptySearchInput} placeholder={dictionary.searchPeoplePlaceholder} onChange={handleSearchChange} autoFocus />
             <div>
               <button className="btn btn-primary" onClick={handleEditWorkspace}>
                 <SvgIconFeather className="mr-2" icon="user-plus" /> Manage People

@@ -29,6 +29,10 @@ const CompanyPeoplePanel = (props) => {
     setSearch(e.target.value);
   };
 
+  const emptySearchInput = () => {
+    setSearch("");
+  };
+
   const handleUserNameClick = useCallback(
     (user) => {
       history.push(`/profile/${user.id}/${user.name}`);
@@ -77,7 +81,7 @@ const CompanyPeoplePanel = (props) => {
     <Wrapper className={`workspace-people container-fluid h-100 ${className}`}>
       <div className="card">
         <div className="card-body">
-          <Search ref={refs.search} value={search} placeholder="People search" onChange={handleSearchChange} autoFocus />
+          <Search ref={refs.search} value={search} closeButton="true" onClickEmpty={emptySearchInput} placeholder="People search" onChange={handleSearchChange} autoFocus />
           <div className="row">
             {userSort.map((user) => {
               return <PeopleListItem loggedUser={loggedUser} key={user.id} user={user} onNameClick={handleUserNameClick} onChatClick={handleUserChat} dictionary={dictionary} />;

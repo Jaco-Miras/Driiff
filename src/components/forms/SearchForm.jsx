@@ -5,7 +5,7 @@ import { SvgIconFeather } from "../common";
 const Wrapper = styled.form`
   .btn-cross {
     position: absolute;
-    right: 0;
+    right: 45px;
     opacity: 0;
     border: 0;
     background: transparent;
