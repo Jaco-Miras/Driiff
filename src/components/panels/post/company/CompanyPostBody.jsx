@@ -22,7 +22,7 @@ const CompanyPostBody = (props) => {
   const {post, postActions, dictionary, disableOptions} = props;
 
   const [star, setStar] = useState(post.is_favourite);
-  const {localizeDate} = useTimeFormat();
+  const {fromNow} = useTimeFormat();
 
   const handleStarPost = () => {
     if (disableOptions) return;
@@ -61,7 +61,7 @@ const CompanyPostBody = (props) => {
           <Icon className="mr-2" onClick={handleStarPost} icon="star" fill={star ? "#ffc107" : "none"}
                 stroke={star ? "#ffc107" : "currentcolor"}/>
           {!disableOptions && <Icon className="mr-2" onClick={handleArchivePost} icon="archive"/>}
-          <span className="text-muted">{localizeDate(post.created_at.timestamp, "LT")}</span>
+          <span className="text-muted">{fromNow(post.created_at.timestamp)}</span>
         </div>
       </div>
       <div className="d-flex align-items-center">
