@@ -791,7 +791,7 @@ const CreateEditCompanyPostModal = (props) => {
         toggle={toggle}>{mode === "edit" ? dictionary.editPost : dictionary.createNewPost}</ModalHeaderSection>
       <ModalBody>
         <Modal isOpen={nestedModal} toggle={toggleNested} onClosed={closeAll ? toggle : undefined} centered>
-          <ModalHeader>{dictionary.saveAsDraft}</ModalHeader>
+          <ModalHeaderSection toggle={toggleNested}>{dictionary.saveAsDraft}</ModalHeaderSection>
           <ModalBody>{dictionary.draftBody}</ModalBody>
           <ModalFooter>
             <Button color="primary" onClick={() => toggleAll(true)}>
