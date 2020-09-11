@@ -667,7 +667,7 @@ class ChatMessages extends React.PureComponent {
         let index = sortedReplies.findIndex(isEqual);
         // console.log(index, message.body)
         if (index > 10) {
-          if (index % 4 === 0) {
+          if (index % 3 === 0) {
             loadMoreRef = true;
           }
         }
