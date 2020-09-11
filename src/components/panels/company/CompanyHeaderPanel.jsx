@@ -5,33 +5,40 @@ import styled from "styled-components";
 import { NavLink, SvgIconFeather } from "../../common";
 import useSettings from "../../hooks/useSettings";
 import { HeaderProfileNavigation } from "../common";
+import { CompanyPageHeaderPanel } from "../company";
 
-const NavBarLeft = styled.div`
-  width: 100%;
-  border-right: 1px solid #ebebeb;
-  height: 100%;
+const Wrapper = styled.div`
   display: flex;
   align-items: center;
-  margin-right: 14px;
-  padding-right: 14px;
-  .nav-link {
-    padding: 0px !important;
-    background: transparent !important;
-    svg {
-      color: #7a1b8b;
-      width: 24px !important;
-      height: 24px !important;
+  justify-content: space-between;
+  height: 100%;
+  width: 100%;
+  .navbar-left {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    padding-right: 15px;
+  }
+  .navbar-nav {
+    height: 100%;
+    width: 100%;
+    .navbar-wrap {
+      height: 100%;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      .navbar-top {
+        margin-top: 8px;
+        display: flex;
+        flex-grow: 1;
+        align-items: center;
+      }
     }
   }
-`;
-
-const NavBar = styled.ul`
-  display: flex;
-  width: 100%;
-  align-items: center;
-  li {
-    justify-content: center;
-    align-items: center;
+  svg.feather-menu {
+    color: #7a1b8b !important;
   }
 `;
 
@@ -40,7 +47,7 @@ const CompanyName = styled.h2`
   margin-bottom: 0;
   color: #000000;
   font-weight: normal;
-  font-size: 19px;
+  font-size: 20px;
   svg {
     color: #64625c;
   }
@@ -118,7 +125,6 @@ const CompanyHeaderPanel = () => {
       }
       default: {
         page = "Dashboard";
-        console.log("dont");
         setPageName(page);
       }
     }
@@ -131,23 +137,33 @@ const CompanyHeaderPanel = () => {
   }, [match.params.page, dispatch, pageName]);
 
   return (
-    <>
-      <NavBarLeft className="navbar-left">
-        <NavBar className="navbar-nav">
-          <li className="nav-item navigation-toggler mobile-toggler">
-            <a href="/" className="nav-link" title="Show navigation" onClick={handleMenuOpenMobile}>
-              <SvgIconFeather icon="menu" />
-            </a>
-          </li>
-          <li className="nav-item nav-item-folder">
-            <CompanyName className="current-title">{pageName}</CompanyName>
-          </li>
-        </NavBar>
-      </NavBarLeft>
-      <div>
+    <Wrapper>
+      <div className="navbar-left">
+        <div className="navbar-nav">
+          <div className="navbar-wrap">
+            <div className="navbar-top">
+              <li className="nav-item navigation-toggler mobile-toggler">
+                <a href="/" className="nav-link" title="Show navigation" onClick={handleMenuOpenMobile}>
+                  <SvgIconFeather icon="menu" />
+                </a>
+              </li>
+              <li className="nav-item nav-item-folder">
+                <CompanyName className="current-title">{pageName}</CompanyName>
+              </li>
+            </div>
+
+            <div className="navbar-bottom">
+              <div className="navbar-main">
+                <CompanyPageHeaderPanel />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="navbar-right">
         <HeaderProfileNavigation />
       </div>
-    </>
+    </Wrapper>
   );
 };
 

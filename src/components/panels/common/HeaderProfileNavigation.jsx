@@ -1,30 +1,33 @@
 import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { Avatar, SvgIconFeather } from "../../common";
-//import Flag from "../../common/Flag";
 import { useNotifications, useOutsideClick, useSettings, useUsers } from "../../hooks";
 import { NotificationDropDown, SearchDropDown } from "../dropdown";
 import UserProfileDropDown from "../dropdown/UserProfileDropdown";
 
 const Wrapper = styled.ul`
+  border-left: 1px solid #f1f1f1;
+  padding-left: 5px;
   @media (max-width: 1200px) {
     display: flex !important;
     left: auto !important;
     right: 0 !important;
     top: 0 !important;
-    height: 70px;
+    height: 45px;
   }
-
   > li {
     position: relative;
     .nav-link {
+      max-height: 45px;
+      padding: 10px 10px !important;
       &.profile-button {
         position: relative;
-
+        padding: 0 !important;
+        margin-left: 10px;
         .avatar-overlay {
           position: absolute;
-          width: 100%;
-          height: 100%;
+          width: 45px;
+          height: 45px;
           z-index: 1;
         }
         .avatar {
@@ -39,11 +42,15 @@ const Wrapper = styled.ul`
           height: 16px !important;
         }
         &:not(.profile-button) {
-          ${"" /* background: red; */}
           margin: 0 4px;
           &:first-of-type {
             margin-right: 0;
           }
+        }
+      }
+      @media all and (max-width: 920px) {
+        &.dark-mode-switch {
+          display: none !important;
         }
       }
     }
@@ -53,21 +60,6 @@ const Wrapper = styled.ul`
       left: auto;
       top: -10px;
     }
-  }
-`;
-
-const ThemeSwitch = styled.span`
-  color: #828282;
-  padding: 10px 0px;
-  cursor: pointer;
-  &:hover {
-    color: #ececec;
-  }
-  svg {
-    width: 18px;
-  }
-  @media all and (max-width: 920px) {
-    display: none;
   }
 `;
 
@@ -162,24 +154,22 @@ const HomeProfileNavigation = (props) => {
   return (
     <Wrapper ref={refs.container} className={`header-profile-navigation navbar-nav ${className}`}>
       <li className="nav-item dropdown">
-        <a href="#" className="nav-link" title="Search" data-toggle="dropdown" onClick={toggleDropdown}>
+        <a href="/" className="nav-link" title="Search" data-toggle="dropdown" onClick={toggleDropdown}>
           <SvgIconFeather icon="search" />
         </a>
         <SearchDropDown />
-      </li>
-      <li className="nav-item">
-        <ThemeSwitch className="feather-sun" title="Light or Dark mode" onClick={setThemeButton}>
-          <SvgIconFeather icon="sun" />
-          </ThemeSwitch>
-          <ThemeSwitch className="feather-moon" title="Light or Dark mode" onClick={setThemeButton}>
-          <SvgIconFeather icon="moon" />
-          </ThemeSwitch>
       </li>
       <li className="nav-item dropdown">
         <a href="/" className={`nav-link ${Object.values(notifications).filter((n) => n.is_read === 0).length > 0 ? "nav-link-notify" : ""}`} title="Notifications" data-toggle="dropdown" onClick={toggleDropdown}>
           <SvgIconFeather icon="bell" />
         </a>
         <NotificationDropDown />
+      </li>
+      <li className="nav-item">
+        <a href="/" className={`nav-link dark-mode-switch`} onClick={setThemeButton}>
+          <SvgIconFeather icon="sun" />
+          <SvgIconFeather icon="moon" />
+        </a>
       </li>
       <li className="nav-item dropdown">
         <a href="/" className="nav-link profile-button" data-toggle="dropdown" title={form.name} onClick={toggleDropdown}>
