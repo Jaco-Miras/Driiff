@@ -1,9 +1,9 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import { useHistory } from "react-router-dom";
+import React, {useCallback, useEffect, useRef, useState} from "react";
+import {useHistory} from "react-router-dom";
 import styled from "styled-components";
 import SearchForm from "../../forms/SearchForm";
-import { useUserChannels, useTranslation } from "../../hooks";
-import { PeopleListItem } from "../../list/people/item";
+import {useTranslation, useUserChannels} from "../../hooks";
+import {PeopleListItem} from "../../list/people/item";
 
 const Wrapper = styled.div``;
 
@@ -13,7 +13,7 @@ const Search = styled(SearchForm)`
 `;
 
 const CompanyPeoplePanel = (props) => {
-  const { className = "" } = props;
+  const {className = ""} = props;
 
   const { users, loggedUser, userChannels, selectUserChannel } = useUserChannels();
 
@@ -58,9 +58,14 @@ const CompanyPeoplePanel = (props) => {
       return a.name.localeCompare(b.name);
     })
     .filter((user) => {
-      if (!userChannels.hasOwnProperty(user.id)) return false;
+      if (!userChannels.hasOwnProperty(user.id))
+        return false;
 
-      if (user.active !== 1) return false;
+      if (user.type !== "internal")
+        return false;
+
+      if (user.active !== 1)
+        return false;
 
       if (search !== "") {
         return user.name.toLowerCase().indexOf(search.toLowerCase()) > -1;

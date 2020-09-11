@@ -11,6 +11,7 @@ import {
   CompanySettingsPanel
 } from "../company";
 import {UserNotificationPanel, UserProfilePanel, UserSearchPanel} from "../user";
+import {SystemPeoplePanel} from "../system";
 
 const Wrapper = styled.div`
   padding-bottom: ${(props) => (props.isOnWorkspace ? "0 !important" : "calc(1.875rem * 2)")};
@@ -40,6 +41,7 @@ const MainContentPanel = (props) => {
         <Route {...props} render={(props) => <CompanyFilesPanel {...props}/>}
                path={["/files/folder/:folderId/:folderName", "/files"]}/>
         {!isExternal && <Route {...props} component={CompanyPeoplePanel} path={["/people"]}/>}
+        {!isExternal && <Route {...props} component={SystemPeoplePanel} path={["/system/people"]}/>}
         <Route {...props} component={CompanySettingsPanel} path={["/settings"]}/>
         <Redirect
           from="*"

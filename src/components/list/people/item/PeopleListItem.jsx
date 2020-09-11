@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { Avatar, Badge, SvgIconFeather, ToolTip } from "../../../common";
+import {Avatar, Badge, SvgIconFeather, ToolTip} from "../../../common";
 
 const Wrapper = styled.div`
   .avatar {
@@ -56,7 +56,9 @@ const PeopleListItem = (props) => {
                     <ToolTip content={user.email}>
                       <div className="mr-2">{user.name}</div>
                     </ToolTip>
-                    {user.type === "external" && <Badge label={dictionary.peopleExternal} badgeClassName="badge badge-info text-white" />}
+                    {user.type === "external" &&
+                    <Badge label={dictionary.peopleExternal} badgeClassName="badge badge-info text-white"/>}
+                    {user.active !== 1 && <Badge label="Inactive" badgeClassName="badge badge-light text-white"/>}
                   </h6>
                 )}
                 {user.role && <span className="small text-muted">{user.role.display_name}</span>}

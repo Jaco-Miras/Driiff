@@ -1,7 +1,7 @@
 import React from "react";
-import { Route } from "react-router-dom";
+import {Route} from "react-router-dom";
 import styled from "styled-components";
-import { MainNavigationTabPanel } from "./index";
+import {MainNavigationTabPanel} from "./index";
 
 const Wrapper = styled.div``;
 
@@ -28,6 +28,7 @@ const MainNavigationPanel = (props) => {
           "/chat/:code",
           "/posts/:postId/:postTitle",
           "/files/folder/:folderId/:folderName",
+          "/system/people",
           "/:page",
         ]}
       />

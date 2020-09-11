@@ -225,6 +225,7 @@ const MainNavigationTabPanel = (props) => {
 
   const dictionary = {
     allWorkspaces: _t("SIDEBAR.ALL_WORKSPACES", "All Workspaces"),
+    people: _t("SIDEBAR.PEOPLE", "People"),
     workspace: _t("SIDEBAR.WORKSPACE", "Workspace"),
     workspaces: _t("SIDEBAR.WORKSPACES", "Workspaces"),
     chats: _t("SIDEBAR.CHATS", "Chats"),
@@ -260,12 +261,6 @@ const MainNavigationTabPanel = (props) => {
     }
     history.push(e.target.dataset.link);
   };
-
-  useEffect(() => {
-    dispatch(getUnreadNotificationCounterEntries());
-    dispatch(getQuickLinks());
-    //eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   const toggleTooltip = () => {
     let tooltips = document.querySelectorAll("span.react-tooltip-lite");
@@ -324,6 +319,12 @@ const MainNavigationTabPanel = (props) => {
       }
     }
   }
+
+  useEffect(() => {
+    dispatch(getUnreadNotificationCounterEntries());
+    dispatch(getQuickLinks());
+    //eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     if (defaultTopic) {
@@ -391,6 +392,17 @@ const MainNavigationTabPanel = (props) => {
               }
             </li>
           )}
+          {
+            user.type === "internal" &&
+            <li>
+              <NavIconContainer to={"/system/people"} active={["/system/people"].includes(props.location.pathname)}>
+                <NavIcon icon={"user"}/>
+                <div>
+                  {dictionary.people}
+                </div>
+              </NavIconContainer>
+            </li>
+          }
           <li onClick={closeLeftNav}>
             <NavIconContainer to={"/workspace/search"} active={["/workspace/search"].includes(props.location.pathname)}>
               <NavIcon icon={"compass"}/>
