@@ -85,6 +85,7 @@ const HomeProfileNavigation = (props) => {
   };
 
   const setThemeButton = (e) => {
+    e.preventDefault();
     hideActiveDropDown(e);
     setGeneralSetting({
       dark_mode: dark_mode === "0" ? "1" : "0",
