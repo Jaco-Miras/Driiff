@@ -60,7 +60,8 @@ const INITIAL_STATE = {
       workspace_open_folder: {},
       date_format: "DD-MM-YYYY",
       time_format: "HH:mm",
-      personal_links: []
+      personal_links: [],
+      notifications_on: true,
     },
   },
   isLoaded: false,
