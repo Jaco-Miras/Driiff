@@ -27,7 +27,8 @@ const ChatBubbleContainer = styled.div`
   color: ${(props) => (props.isAuthor ? props.theme.self.chat_bubble_text_color : props.theme.others.chat_bubble_text_color)};
   font-size: 0.835rem;
   overflow: visible;
-  min-height: 40px;
+  //min-height: 40px;
+  min-height: ${(props) => (props.hasGif ? "150px" : "40px")};
   @media (max-width: 620px) {
     padding: 7px;
   }
@@ -444,6 +445,7 @@ const ChatContent = styled.div`
     left: 0;
     overflow: hidden;
     //height: 250px;
+    min-height: 150px;
     cursor: pointer;
     .gifPlayer {
       border-radius: 8px;
@@ -1012,6 +1014,7 @@ const ChatBubble = (props) => {
       isAuthor={isAuthor}
       hideBg={isEmoticonOnly || gifOnly || (hasFiles && replyBody === "<span></span>") || (hasFiles && replyBody === "")}
       theme={chatSettings.chat_message_theme}
+      hasGif={showGifPlayer}
     >
       {
         <>

@@ -1,9 +1,11 @@
 import React, { useEffect, useRef } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import { Badge } from "reactstrap";
 import styled from "styled-components";
 import { SvgIconFeather } from "../common";
 import { replaceChar } from "../../helpers/stringFormatter";
+import { setChannelHistoricalPosition } from "../../redux/actions/chatActions";
 
 const TopicListWrapper = styled.li`
   cursor: pointer;
@@ -35,6 +37,8 @@ const Icon = styled(SvgIconFeather)`
 const TopicList = (props) => {
   const { className = "", actions, onResetFocus, onShowTopics, selected, showTopics, topic, triggerFocus } = props;
 
+  const dispatch = useDispatch();
+  const selectedChannel = useSelector((state) => state.chat.selectedChannel);
   const workspaceRef = useRef();
   const history = useHistory();
   const route = useRouteMatch();
@@ -44,6 +48,18 @@ const TopicList = (props) => {
   const handleSelectTopic = () => {
     document.body.classList.remove("navigation-show");
 
+    if (selectedChannel) {
+      const scrollComponent = document.getElementById("component-chat-thread");
+        if (scrollComponent) {
+          console.log(scrollComponent.scrollHeight - scrollComponent.scrollTop, 'save this scroll')
+            dispatch(
+              setChannelHistoricalPosition({
+                channel_id: selectedChannel.id,
+                scrollPosition: scrollComponent.scrollHeight - scrollComponent.scrollTop,
+              })
+            );
+        }
+    }
     if (selected && onWorkspace) return;
 
     actions.selectWorkspace(topic);

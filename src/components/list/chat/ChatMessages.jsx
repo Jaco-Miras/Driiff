@@ -412,6 +412,7 @@ class ChatMessages extends React.PureComponent {
     // if (scrollComponent) {
     //   scrollComponent.removeEventListener("scroll", this.loadMore);
     // }
+    console.log('save historical position')
     this.props.chatMessageActions.channelActions.saveHistoricalPosition(this.props.selectedChannel.id, scrollComponent);
     document.removeEventListener("keydown", this.handleEditOnArrowUp, false);
   }
@@ -419,8 +420,9 @@ class ChatMessages extends React.PureComponent {
   loadReplies = () => {
     console.log("load more")
     const { selectedChannel, chatMessageActions } = this.props;
-    
+    const scrollComponent = this.scrollComponent.current;
     if (!selectedChannel.isFetching && selectedChannel.hasMore) {
+      console.log("load more trigger")
       chatMessageActions.channelActions.fetchingMessages(selectedChannel, true);
       let payload = {
         skip: 0,
@@ -433,7 +435,9 @@ class ChatMessages extends React.PureComponent {
           limit: 20,
         };
       }
-
+      if (selectedChannel.skip === 0) {
+        scrollComponent.scrollTop = scrollComponent.scrollHeight;
+      }
       chatMessageActions.fetch(selectedChannel, payload, (err, res) => {
         if (err) {
           chatMessageActions.channelActions.fetchingMessages(selectedChannel, false);
@@ -442,7 +446,15 @@ class ChatMessages extends React.PureComponent {
 
         if (selectedChannel.replies.length === 0 || selectedChannel.skip === 0) {
           if (this.chatBottomRef.current) {
-            this.chatBottomRef.current.scrollIntoView(false);
+            scrollComponent.scrollTop = scrollComponent.scrollHeight;
+            let initialScrollHeight = scrollComponent.scrollHeight;
+            console.log('initial load', scrollComponent.scrollHeight)
+            setTimeout(() => {
+              if (initialScrollHeight <  scrollComponent.scrollHeight) {
+                scrollComponent.scrollTop = scrollComponent.scrollHeight;
+              }
+            }, 1000)
+            //this.chatBottomRef.current.scrollIntoView(false);
           } else {
             let scrollC = document.querySelector(".intersection-bottom-ref");
             if (scrollC) scrollC.scrollIntoView();
@@ -531,12 +543,13 @@ class ChatMessages extends React.PureComponent {
 
     //change channel
     if (this.props.selectedChannel && prevProps.selectedChannel.id !== selectedChannel.id) {
-      if (selectedChannel.hasMore) this.loadReplies();
+      if (selectedChannel.hasMore && selectedChannel.skip === 0) this.loadReplies();
       this.handleReadChannel();
 
       if (historicalPositions.length) {
         historicalPositions.forEach((hp) => {
           if (hp.channel_id === selectedChannel.id && scrollComponent) {
+            console.log("scroll to this", scrollComponent.scrollHeight - hp.scrollPosition, hp.scrollPosition)
             scrollComponent.scrollTop = scrollComponent.scrollHeight - hp.scrollPosition;
           }
         });
@@ -676,7 +689,7 @@ class ChatMessages extends React.PureComponent {
   };
 
   render() {
-    
+
     const { selectedChannel } = this.props;
 
     let lastReplyUserId = 0;

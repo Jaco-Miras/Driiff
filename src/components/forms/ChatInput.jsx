@@ -27,7 +27,7 @@ const StyledQuillEditor = styled(QuillEditor)`
   &.chat-input {
     // border: 1px solid #afb8bd;
     // border-radius: 5px;
-    max-height: 130px;
+    max-height: 180px;
     position: static;
     overflow: auto;
     &::-webkit-scrollbar {
@@ -269,6 +269,7 @@ const ChatInput = (props) => {
       setDraftId(null);
     }
     handleClearQuillInput();
+    props.onSendCallback();
   };
 
   const handleClearQuillInput = () => {
