@@ -95,6 +95,7 @@ import {
   joinWorkspaceReducer,
   updateWorkspaceCounter
 } from "../../redux/actions/workspaceActions";
+import {incomingUpdateCompanyName} from "../../redux/actions/settingsActions";
 
 class SocketListeners extends Component {
   constructor(props) {
@@ -389,6 +390,15 @@ class SocketListeners extends Component {
       });
 
     window.Echo.private(`${localStorage.getItem("slug") === "dev24admin" ? "dev" : localStorage.getItem("slug")}.App.Broadcast`)
+      .listen(".company-notification", (e) => {
+        console.log(e, "company-notification");
+        switch (e.SOCKET_TYPE) {
+          case "UPDATE_COMPANY_NAME": {
+            this.props.incomingUpdateCompanyName(e);
+            break;
+          }
+        }
+      })
       .listen(".company-file-notification", (e) => {
         console.log(e, "company file");
         switch (e.SOCKET_TYPE) {
@@ -1066,6 +1076,7 @@ function mapDispatchToProps(dispatch) {
     incomingDeletedWorkspaceFolder: bindActionCreators(incomingDeletedWorkspaceFolder, dispatch),
     incomingExternalUser: bindActionCreators(incomingExternalUser, dispatch),
     getWorkspaceFolder: bindActionCreators(getWorkspaceFolder, dispatch),
+    incomingUpdateCompanyName: bindActionCreators(incomingUpdateCompanyName, dispatch),
   };
 }
 

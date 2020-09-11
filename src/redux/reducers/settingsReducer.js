@@ -68,6 +68,15 @@ const INITIAL_STATE = {
 
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
+    case "INCOMING_UPDATE_COMPANY_NAME": {
+      return {
+        ...state,
+        driff: {
+          ...state.driff,
+          company_name: action.data.company_name
+        }
+      }
+    }
     case "ADD_USER_TO_REDUCERS": {
       return {
         ...state,

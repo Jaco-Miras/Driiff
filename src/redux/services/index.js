@@ -26,7 +26,13 @@ export {
   deleteChatMessage,
 } from "./chat";
 
-export {getDriffSettings, getUserSettings, updateUserSettings, getDriffCompSettings} from "./settings";
+export {
+  getDriffSettings,
+  getUserSettings,
+  updateUserSettings,
+  getDriffCompSettings,
+  putCompanyUpdateName,
+} from "./settings";
 
 export {
   login,

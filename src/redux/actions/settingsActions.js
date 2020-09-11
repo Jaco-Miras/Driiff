@@ -3,7 +3,8 @@ import {
   getDriffCompSettings as getDriffCompSettingsService,
   getDriffSettings as getDriffSettingsService,
   getUserSettings as getUserSettingsService,
-  updateUserSettings as updateUserSettingsService
+  putCompanyUpdateName as putCompanyUpdateNameService,
+  updateUserSettings as updateUserSettingsService,
 } from "../services";
 
 export function getDriffCompSettings(payload, callback) {
@@ -32,4 +33,12 @@ export function setUserChatSetting(payload, callback) {
 
 export function setUserGeneralSetting(payload, callback) {
   return SimpleDispatchActionToReducer("UPDATE_USER_GENERAL_SETTING", payload, callback);
+}
+
+export function putCompanyUpdateName(payload, callback) {
+  return dispatchActionToReducer(putCompanyUpdateNameService(payload), "PUT_COMPANY_UPDATE_NAME_START", "PUT_COMPANY_UPDATE_NAME_SUCCESS", "PUT_COMPANY_UPDATE_NAME_FAIL", callback);
+}
+
+export function incomingUpdateCompanyName(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_UPDATE_COMPANY_NAME", payload, callback);
 }

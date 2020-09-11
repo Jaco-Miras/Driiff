@@ -31,3 +31,11 @@ export function updateUserSettings(payload) {
     data: payload,
   });
 }
+
+export function putCompanyUpdateName(payload) {
+  return apiCall({
+    method: "PUT",
+    url: "/v2/company/update-name",
+    data: payload
+  });
+}

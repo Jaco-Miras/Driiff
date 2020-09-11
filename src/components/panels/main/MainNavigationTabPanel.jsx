@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {useHistory} from "react-router-dom";
 import {Badge} from "reactstrap";
@@ -10,7 +10,7 @@ import {
   setNavMode
 } from "../../../redux/actions/globalActions";
 import {NavLink, SvgEmptyState, SvgIcon, SvgIconFeather} from "../../common";
-import {useTranslation, useWorkspace} from "../../hooks";
+import {useSettings, useTranslation, useWorkspace} from "../../hooks";
 import {ExternalWorkspaceList, WorkspaceList} from "../../workspace";
 import {PersonalLinks, QuickLinks} from "../../list/links";
 import Tooltip from "react-tooltip-lite";
@@ -34,6 +34,34 @@ const Wrapper = styled.div`
     @media (max-width: 620px) {
       padding: 10px 0 20px 0;
     }
+  }
+  .driff-company-name {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    
+    a {
+      width: 75%;
+    
+      input {
+        width: 95%;
+        background-color: #fff;
+        border: none;
+        color: #000;
+        border-radius: 6px;
+        padding-left: 6px;
+      }
+    }
+    
+    svg {
+      &.action {
+        cursor: pointer;
+        width: 14px;
+        color: #fff;
+        right: 22px;
+        position: relative;      
+      }    
+    }  
   }
   .your-workspaces-title {
     margin: 0 15px;
@@ -142,7 +170,6 @@ const NavIcon = styled(SvgIconFeather)`
 
 const NavNewWorkspace = styled.button`
   background: #fff3 !important;
-  color: #ffffffcc;
   border: 0 !important;
   margin: 15px;
   height: 40px;
@@ -192,6 +219,7 @@ const MainNavigationTabPanel = (props) => {
   const dispatch = useDispatch();
 
   const {actions, folders, sortedWorkspaces, workspaces, workspace, workspacesLoaded} = useWorkspace(true);
+  const {updateCompanyName, driffSettings, generalSettings} = useSettings();
 
   const {_t} = useTranslation();
 
@@ -211,13 +239,17 @@ const MainNavigationTabPanel = (props) => {
     addShortcut: _t("SIDEBAR.ADD_SHORTCUT", "Add shortcut"),
   };
 
-  const {active_topic} = useSelector((state) => state.settings.user.GENERAL_SETTINGS);
-  const driff = useSelector((state) => state.settings.driff);
   const user = useSelector((state) => state.session.user);
   const {lastVisitedChannel} = useSelector((state) => state.chat);
   const {links, unreadCounter} = useSelector((state) => state.global);
 
+  const [editCompany, setEditCompany] = useState(false);
+  const [companyName, setCompanyName] = useState(driffSettings.company_name);
   const [defaultTopic, setDefaultTopic] = useState(null);
+
+  const refs = {
+    companyName: useRef(null)
+  }
 
   const handleIconClick = (e) => {
     e.preventDefault();
@@ -263,6 +295,36 @@ const MainNavigationTabPanel = (props) => {
     document.body.classList.remove("navigation-show");
   };
 
+  const handleCompanyNameChange = (e) => {
+    setCompanyName(e.target.value);
+  };
+
+  const toggleEditCompany = () => {
+    setEditCompany(prevState => {
+      let newState = !prevState;
+
+      if (!newState && driffSettings.company_name !== companyName)
+        updateCompanyName({
+          company_name: companyName
+        })
+
+      return newState
+    });
+  }
+
+  const handleCompanyNameKeyDown = (e) => {
+    switch (e.keyCode) {
+      case 13: {
+        toggleEditCompany();
+        break;
+      }
+      case 27: {
+        toggleEditCompany();
+        break;
+      }
+    }
+  }
+
   useEffect(() => {
     if (defaultTopic) {
       actions.selectWorkspace(defaultTopic);
@@ -272,11 +334,17 @@ const MainNavigationTabPanel = (props) => {
 
   useEffect(() => {
     const arrWorkspaces = Object.values(workspaces);
-    if (active_topic === null && arrWorkspaces.length && defaultTopic === null) {
+    if (generalSettings.active_topic === null && arrWorkspaces.length && defaultTopic === null) {
       const topic = arrWorkspaces.sort((a, b) => (b.updated_at.timestamp > a.updated_at.timestamp ? 1 : -1)).find((w) => w.type === "WORKSPACE" && w.active === 1);
       setDefaultTopic(topic);
     }
-  }, [active_topic, defaultTopic, workspaces, setDefaultTopic]);
+  }, [generalSettings.active_topic, defaultTopic, workspaces, setDefaultTopic]);
+
+  useEffect(() => {
+    if (refs.companyName.current) {
+      refs.companyName.current.select();
+    }
+  }, [editCompany]);
 
   return (
     <Wrapper className={`navigation-menu-tab ${className}`}>
@@ -291,18 +359,36 @@ const MainNavigationTabPanel = (props) => {
       <div className="flex navigation-menu-tab-header-options">
         <ul>
           {!isExternal && (
-            <li onClick={closeLeftNav}>
+            <li onClick={closeLeftNav} className="driff-company-name">
               <NavIconContainer
                 active={["dashboard", "posts", "chat", "files", "people"].includes(props.match.params.page)}
                 to={lastVisitedChannel !== null && lastVisitedChannel.hasOwnProperty("code") ? `/chat/${lastVisitedChannel.code}` : "/chat"}
               >
                 <NavIcon icon={"home"}/>
                 <div>
-                  {driff.company_name}
+                  {
+                    editCompany ?
+                      <input ref={refs.companyName} defaultValue={driffSettings.company_name}
+                             onChange={handleCompanyNameChange} onKeyDown={handleCompanyNameKeyDown} name="company-name"
+                             autoFocus={true}/>
+                      :
+                      <>{driffSettings.company_name}</>
+                  }
                   {(unreadCounter.chat_message >= 1 || unreadCounter.unread_channel > 0) &&
                   <Badge data-count={unreadCounter.chat_message}>&nbsp;</Badge>}
                 </div>
               </NavIconContainer>
+              {
+                user.role.name === "owner" &&
+                <>
+                  {
+                    editCompany ?
+                      <SvgIconFeather className="action" onClick={toggleEditCompany} icon="save"/>
+                      :
+                      <SvgIconFeather className="action" onClick={toggleEditCompany} icon="pencil"/>
+                  }
+                </>
+              }
             </li>
           )}
           <li onClick={closeLeftNav}>

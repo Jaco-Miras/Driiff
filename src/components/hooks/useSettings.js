@@ -4,6 +4,7 @@ import {
   getDriffCompSettings,
   getDriffSettings,
   getUserSettings,
+  putCompanyUpdateName,
   setUserChatSetting,
   setUserGeneralSetting,
   updateUserSettings
@@ -170,6 +171,22 @@ const useSettings = () => {
     [dispatch]
   );
 
+  const updateCompanyName = (payload, callback = () => {
+  }) => {
+    if (driffSettings.company_name === payload.company_name) {
+      toaster.success(`No update made.`);
+    } else {
+      dispatch(
+        putCompanyUpdateName(payload, (err, res) => {
+          if (res) {
+            toaster.success(`You have updated the company name to ${payload.company_name}`);
+          }
+          callback(err, res);
+        })
+      )
+    }
+  }
+
   useEffect(() => {
     if (init) {
       init = false;
@@ -179,6 +196,7 @@ const useSettings = () => {
 
   return {
     fetch,
+    updateCompanyName,
     userSettings,
     driffSettings,
     chatSettings: userSettings.CHAT_SETTINGS,
