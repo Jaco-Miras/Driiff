@@ -52,6 +52,7 @@ const WorkspaceSearch = (props) => {
   const handleSearch = () => {
     actions.search(
       {
+        search: inputValue,
         skip: 0,
         limit: 25,
       },
