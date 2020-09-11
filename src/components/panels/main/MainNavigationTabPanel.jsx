@@ -380,7 +380,7 @@ const MainNavigationTabPanel = (props) => {
                 </div>
               </NavIconContainer>
               {
-                user.role.name === "owner" &&
+                ["owner", "admin"].includes(user.role.name) &&
                 <>
                   {
                     editCompany ?
