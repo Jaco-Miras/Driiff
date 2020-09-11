@@ -1,5 +1,5 @@
-import { useCallback } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import {useCallback} from "react";
+import {useDispatch, useSelector} from "react-redux";
 import {
   deleteChannelMembers,
   getChannel,
@@ -20,11 +20,11 @@ import {
   renameChannelKey,
   setChannel,
   setChannelHistoricalPosition,
+  setFetchingMessages,
   setLastVisitedChannel,
-  setSelectedChannel,
-  setFetchingMessages
+  setSelectedChannel
 } from "../../redux/actions/chatActions";
-import { useSettings } from "./index";
+import {useSettings} from "./index";
 
 const useChannelActions = () => {
   const { chatSettings } = useSettings();
@@ -384,14 +384,13 @@ const useChannelActions = () => {
             console.log(err);
           }
 
-          if (res.data.results.length === limit) {
+          if (res && res.data.results.length === limit) {
             fetchAll({
               ...payload,
               skip: payload.skip + limit,
             });
-          } else {
-            callback(err, res);
           }
+          callback(err, res);
         })
       );
     },
@@ -590,14 +589,22 @@ const useChannelActions = () => {
     (callback = () => {}) => {
       dispatch(
         getLastVisitedChannel({}, (err, res) => {
-          fetchByCode(res.data.code, (err, res) => {
-            const channel = res.data;
-            saveLastVisited(res.data, () => {
-              callback(null, {
-                data: channel,
-              });
+          if (res) {
+            fetchByCode(res.data.code, (err, res) => {
+              if (res) {
+                const channel = res.data;
+                saveLastVisited(res.data, () => {
+                  callback(null, {
+                    data: channel,
+                  });
+                });
+              } else {
+                callback(err, null)
+              }
             });
-          });
+          } else {
+            callback(err, null)
+          }
         })
       );
     },
