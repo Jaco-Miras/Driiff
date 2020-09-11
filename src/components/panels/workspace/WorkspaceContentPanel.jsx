@@ -10,6 +10,7 @@ import { WorkspaceChatPanel, WorkspaceDashboardPanel, WorkspaceFilesPanel, Works
 const Wrapper = styled.div`
   position: relative;
   padding-bottom: 0 !important;
+  overflow: hidden;
 `;
 
 const EmptyState = styled.div`
