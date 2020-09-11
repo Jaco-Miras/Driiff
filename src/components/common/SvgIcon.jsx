@@ -7,7 +7,7 @@ const Svg = styled.svg`
 
 export const SvgIconFeather = React.memo(
   React.forwardRef((props, ref) => {
-    let {className = "", width = 24, height = 24, viewBox = "0 0 24 24", fill = "none", stroke = "currentColor", strokeWidth = "1", strokeLinecap = "round", strokeLinejoin = "round", icon, ...rest} = props;
+    let { className = "", width = 24, height = 24, viewBox = "0 0 24 24", fill = "none", stroke = "currentColor", strokeWidth = "1", strokeLinecap = "round", strokeLinejoin = "round", icon, ...rest } = props;
 
     let content = "";
 
@@ -15,8 +15,7 @@ export const SvgIconFeather = React.memo(
       case "phone":
         content = (
           <>
-            <path
-              d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
           </>
         );
         break;
@@ -24,15 +23,15 @@ export const SvgIconFeather = React.memo(
         strokeWidth = "2";
         content = (
           <>
-         <circle cx="12" cy="12" r="5"></circle>
-         <line x1="12" y1="1" x2="12" y2="3"></line>
-         <line x1="12" y1="21" x2="12" y2="23"></line>
-         <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-         <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-         <line x1="1" y1="12" x2="3" y2="12"></line>
-         <line x1="21" y1="12" x2="23" y2="12"></line>
-         <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-         <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
           </>
         );
         break;
@@ -55,32 +54,32 @@ export const SvgIconFeather = React.memo(
       case "calendar":
         content = (
           <>
-            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
-            <line x1="16" y1="2" x2="16" y2="6"/>
-            <line x1="8" y1="2" x2="8" y2="6"/>
-            <line x1="3" y1="10" x2="21" y2="10"/>
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+            <line x1="16" y1="2" x2="16" y2="6" />
+            <line x1="8" y1="2" x2="8" y2="6" />
+            <line x1="3" y1="10" x2="21" y2="10" />
           </>
         );
         break;
       case "book-open":
         content = (
           <>
-            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
-            <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+            <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
           </>
         );
         break;
       case "check":
         content = (
           <>
-            <polyline points="20 6 9 17 4 12"/>
+            <polyline points="20 6 9 17 4 12" />
           </>
         );
         break;
       case "chevron-down":
         content = (
           <>
-            <polyline points="6 9 12 15 18 9"/>
+            <polyline points="6 9 12 15 18 9" />
           </>
         );
         break;
@@ -88,7 +87,7 @@ export const SvgIconFeather = React.memo(
         strokeWidth = "2";
         content = (
           <>
-            <polyline points="9 18 15 12 9 6"/>
+            <polyline points="9 18 15 12 9 6" />
           </>
         );
         break;
@@ -103,7 +102,7 @@ export const SvgIconFeather = React.memo(
       case "circle":
         content = (
           <>
-            <circle cx="12" cy="12" r="10"/>
+            <circle cx="12" cy="12" r="10" />
           </>
         );
         break;
@@ -129,7 +128,8 @@ export const SvgIconFeather = React.memo(
         // );
         content = (
           <>
-            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
           </>
         );
         break;
@@ -137,18 +137,18 @@ export const SvgIconFeather = React.memo(
         strokeWidth = "2";
         content = (
           <>
-            <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-            <circle cx="8.5" cy="7" r="4"/>
-            <line x1="20" y1="8" x2="20" y2="14"/>
-            <line x1="23" y1="11" x2="17" y2="11"/>
+            <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+            <circle cx="8.5" cy="7" r="4" />
+            <line x1="20" y1="8" x2="20" y2="14" />
+            <line x1="23" y1="11" x2="17" y2="11" />
           </>
         );
         break;
       case "user":
         content = (
           <>
-            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-            <circle cx="12" cy="7" r="4"/>
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+            <circle cx="12" cy="7" r="4" />
           </>
         );
         break;
@@ -156,59 +156,58 @@ export const SvgIconFeather = React.memo(
         strokeWidth = "2";
         content = (
           <>
-            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-            <circle cx="9" cy="7" r="4"/>
-            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+            <circle cx="9" cy="7" r="4" />
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
           </>
         );
         break;
       case "eye":
         content = (
           <>
-            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-            <circle cx="12" cy="12" r="3"/>
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+            <circle cx="12" cy="12" r="3" />
           </>
         );
         break;
       case "eye-off":
         content = (
           <>
-            <path
-              d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
-            <line x1="1" y1="1" x2="23" y2="23"/>
+            <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
+            <line x1="1" y1="1" x2="23" y2="23" />
           </>
         );
         break;
       case "star":
+        strokeWidth = "2";
         content = (
           <>
-            <polygon
-              points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
           </>
         );
         break;
       case "volume-x":
         content = (
           <>
-            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
-            <line x1="23" y1="9" x2="17" y2="15"/>
-            <line x1="17" y1="9" x2="23" y2="15"/>
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+            <line x1="23" y1="9" x2="17" y2="15" />
+            <line x1="17" y1="9" x2="23" y2="15" />
           </>
         );
         break;
       case "volume-2":
         content = (
           <>
-            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
-            <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/>
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07" />
           </>
         );
         break;
       case "volume":
         content = (
           <>
-            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
           </>
         );
         break;
@@ -216,9 +215,9 @@ export const SvgIconFeather = React.memo(
         strokeWidth = "2";
         content = (
           <>
-            <line x1="3" y1="12" x2="21" y2="12"/>
-            <line x1="3" y1="6" x2="21" y2="6"/>
-            <line x1="3" y1="18" x2="21" y2="18"/>
+            <line x1="3" y1="12" x2="21" y2="12" />
+            <line x1="3" y1="6" x2="21" y2="6" />
+            <line x1="3" y1="18" x2="21" y2="18" />
           </>
         );
         break;
@@ -226,10 +225,10 @@ export const SvgIconFeather = React.memo(
         strokeWidth = "2";
         content = (
           <>
-            <polyline points="16 16 12 12 8 16"/>
-            <line x1="12" y1="12" x2="12" y2="21"/>
-            <path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/>
-            <polyline points="16 16 12 12 8 16"/>
+            <polyline points="16 16 12 12 8 16" />
+            <line x1="12" y1="12" x2="12" y2="21" />
+            <path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3" />
+            <polyline points="16 16 12 12 8 16" />
           </>
         );
         break;
@@ -237,9 +236,9 @@ export const SvgIconFeather = React.memo(
         strokeWidth = "2";
         content = (
           <>
-            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
-            <line x1="8" y1="21" x2="16" y2="21"/>
-            <line x1="12" y1="17" x2="12" y2="21"/>
+            <rect x="2" y="3" width="20" height="14" rx="2" ry="2" />
+            <line x1="8" y1="21" x2="16" y2="21" />
+            <line x1="12" y1="17" x2="12" y2="21" />
           </>
         );
         break;
@@ -247,8 +246,8 @@ export const SvgIconFeather = React.memo(
         strokeWidth = "2";
         content = (
           <>
-            <polyline points="15 14 20 9 15 4"/>
-            <path d="M4 20v-7a4 4 0 0 1 4-4h12"/>
+            <polyline points="15 14 20 9 15 4" />
+            <path d="M4 20v-7a4 4 0 0 1 4-4h12" />
           </>
         );
         break;
@@ -256,8 +255,8 @@ export const SvgIconFeather = React.memo(
         strokeWidth = "2";
         content = (
           <>
-            <line x1="19" y1="12" x2="5" y2="12"/>
-            <polyline points="12 19 5 12 12 5"/>
+            <line x1="19" y1="12" x2="5" y2="12" />
+            <polyline points="12 19 5 12 12 5" />
           </>
         );
         break;
@@ -265,8 +264,8 @@ export const SvgIconFeather = React.memo(
         strokeWidth = "2";
         content = (
           <>
-            <line x1="5" y1="12" x2="19" y2="12"/>
-            <polyline points="12 5 19 12 12 19"/>
+            <line x1="5" y1="12" x2="19" y2="12" />
+            <polyline points="12 5 19 12 12 19" />
           </>
         );
         break;
@@ -274,102 +273,101 @@ export const SvgIconFeather = React.memo(
         strokeWidth = "2";
         content = (
           <>
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-            <polyline points="7 10 12 15 17 10"/>
-            <line x1="12" y1="15" x2="12" y2="3"/>
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <polyline points="7 10 12 15 17 10" />
+            <line x1="12" y1="15" x2="12" y2="3" />
           </>
         );
         break;
       case "start":
         content = (
           <>
-            <polygon
-              points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
           </>
         );
         break;
       case "mail":
         content = (
           <>
-            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-            <polyline points="22,6 12,13 2,6"/>
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+            <polyline points="22,6 12,13 2,6" />
           </>
         );
         break;
       case "database":
         content = (
           <>
-            <ellipse cx="12" cy="5" rx="9" ry="3"/>
-            <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/>
-            <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/>
+            <ellipse cx="12" cy="5" rx="9" ry="3" />
+            <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3" />
+            <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5" />
           </>
         );
         break;
       case "rotate-ccw":
         content = (
           <>
-            <polyline points="1 4 1 10 7 10"/>
-            <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/>
+            <polyline points="1 4 1 10 7 10" />
+            <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10" />
           </>
         );
         break;
       case "refresh-ccw":
         content = (
           <>
-            <polyline points="1 4 1 10 7 10"/>
-            <polyline points="23 20 23 14 17 14"/>
-            <path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"/>
+            <polyline points="1 4 1 10 7 10" />
+            <polyline points="23 20 23 14 17 14" />
+            <path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15" />
           </>
         );
         break;
       case "refresh-cw":
         content = (
           <>
-            <polyline points="23 4 23 10 17 10"/>
-            <polyline points="1 20 1 14 7 14"/>
-            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+            <polyline points="23 4 23 10 17 10" />
+            <polyline points="1 20 1 14 7 14" />
+            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
           </>
         );
         break;
       case "share":
         content = (
           <>
-            <circle cx="18" cy="5" r="3"/>
-            <circle cx="6" cy="12" r="3"/>
-            <circle cx="18" cy="19" r="3"/>
-            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
-            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+            <circle cx="18" cy="5" r="3" />
+            <circle cx="6" cy="12" r="3" />
+            <circle cx="18" cy="19" r="3" />
+            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
           </>
         );
         break;
       case "link":
         content = (
           <>
-            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
-            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
           </>
         );
         break;
       case "play":
         content = (
           <>
-            <polygon points="5 3 19 12 5 21 5 3"/>
+            <polygon points="5 3 19 12 5 21 5 3" />
           </>
         );
         break;
       case "plus":
         content = (
           <>
-            <line x1="12" y1="5" x2="12" y2="19"/>
-            <line x1="5" y1="12" x2="19" y2="12"/>
+            <line x1="12" y1="5" x2="12" y2="19" />
+            <line x1="5" y1="12" x2="19" y2="12" />
           </>
         );
         break;
       case "x":
         content = (
           <>
-            <line x1="18" y1="6" x2="6" y2="18"/>
-            <line x1="6" y1="6" x2="18" y2="18"/>
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
           </>
         );
         break;
@@ -377,18 +375,18 @@ export const SvgIconFeather = React.memo(
         strokeWidth = "2";
         content = (
           <>
-            <polyline points="3 6 5 6 21 6"/>
-            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+            <polyline points="3 6 5 6 21 6" />
+            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
           </>
         );
         break;
       case "trash-2":
         content = (
           <>
-            <polyline points="3 6 5 6 21 6"/>
-            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
-            <line x1="10" y1="11" x2="10" y2="17"/>
-            <line x1="14" y1="11" x2="14" y2="17"/>
+            <polyline points="3 6 5 6 21 6" />
+            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+            <line x1="10" y1="11" x2="10" y2="17" />
+            <line x1="14" y1="11" x2="14" y2="17" />
           </>
         );
         break;
@@ -396,23 +394,23 @@ export const SvgIconFeather = React.memo(
         strokeWidth = "2";
         content = (
           <>
-            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
           </>
         );
         break;
       case "edit-2":
         content = (
           <>
-            <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/>
+            <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" />
           </>
         );
         break;
       case "edit-3":
         content = (
           <>
-            <path d="M12 20h9"/>
-            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+            <path d="M12 20h9" />
+            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
           </>
         );
         break;
@@ -420,8 +418,8 @@ export const SvgIconFeather = React.memo(
         strokeWidth = "2";
         content = (
           <>
-            <circle cx="11" cy="11" r="8"/>
-            <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            <circle cx="11" cy="11" r="8" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
           </>
         );
 
@@ -429,43 +427,41 @@ export const SvgIconFeather = React.memo(
       case "image":
         content = (
           <>
-            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-            <circle cx="8.5" cy="8.5" r="1.5"/>
-            <polyline points="21 15 16 10 5 21"/>
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+            <circle cx="8.5" cy="8.5" r="1.5" />
+            <polyline points="21 15 16 10 5 21" />
           </>
         );
         break;
       case "heart":
         content = (
           <>
-            <path
-              d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
           </>
         );
         break;
       case "video":
         content = (
           <>
-            <polygon points="23 7 16 12 23 17 23 7"/>
-            <rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
+            <polygon points="23 7 16 12 23 17 23 7" />
+            <rect x="1" y="5" width="15" height="14" rx="2" ry="2" />
           </>
         );
         break;
       case "video-off":
         content = (
           <>
-            <path
-              d="M16 16v1a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h2m5.66 0H14a2 2 0 0 1 2 2v3.34l1 1L23 7v10"/>
-            <line x1="1" y1="1" x2="23" y2="23"/>
+            <path d="M16 16v1a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h2m5.66 0H14a2 2 0 0 1 2 2v3.34l1 1L23 7v10" />
+            <line x1="1" y1="1" x2="23" y2="23" />
           </>
         );
         break;
       case "save":
         content = (
           <>
-            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
-            <polyline points="17 21 17 13 7 13 7 21"/>
-            <polyline points="7 3 7 8 15 8"/>
+            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />
+            <polyline points="17 21 17 13 7 13 7 21" />
+            <polyline points="7 3 7 8 15 8" />
           </>
         );
         break;
@@ -473,10 +469,10 @@ export const SvgIconFeather = React.memo(
         strokeWidth = "2";
         content = (
           <>
-            <circle cx="12" cy="12" r="10"/>
-            <path d="M8 14s1.5 2 4 2 4-2 4-2"/>
-            <line x1="9" y1="9" x2="9.01" y2="9"/>
-            <line x1="15" y1="9" x2="15.01" y2="9"/>
+            <circle cx="12" cy="12" r="10" />
+            <path d="M8 14s1.5 2 4 2 4-2 4-2" />
+            <line x1="9" y1="9" x2="9.01" y2="9" />
+            <line x1="15" y1="9" x2="15.01" y2="9" />
           </>
         );
         break;
@@ -484,8 +480,7 @@ export const SvgIconFeather = React.memo(
         strokeWidth = "2";
         content = (
           <>
-            <path
-              d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/>
+            <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48" />
           </>
         );
         break;
@@ -493,15 +488,15 @@ export const SvgIconFeather = React.memo(
         strokeWidth = "2";
         content = (
           <>
-            <line x1="22" y1="2" x2="11" y2="13"/>
-            <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+            <line x1="22" y1="2" x2="11" y2="13" />
+            <polygon points="22 2 15 22 11 13 2 9 22 2" />
           </>
         );
         break;
       case "folder":
         content = (
           <>
-            <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+            <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
           </>
         );
         break;
@@ -518,8 +513,8 @@ export const SvgIconFeather = React.memo(
       case "file":
         content = (
           <>
-            <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/>
-            <polyline points="13 2 13 9 20 9"/>
+            <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z" />
+            <polyline points="13 2 13 9 20 9" />
           </>
         );
         break;
@@ -527,7 +522,7 @@ export const SvgIconFeather = React.memo(
         strokeWidth = "2";
         content = (
           <>
-            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
           </>
         );
         break;
@@ -535,118 +530,118 @@ export const SvgIconFeather = React.memo(
         strokeWidth = "2";
         content = (
           <>
-            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
-            <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+            <path d="M13.73 21a2 2 0 0 1-3.46 0" />
           </>
         );
         break;
       case "bar-chart-2":
         content = (
           <>
-            <line x1="18" y1="20" x2="18" y2="10"/>
-            <line x1="12" y1="20" x2="12" y2="4"/>
-            <line x1="6" y1="20" x2="6" y2="14"/>
+            <line x1="18" y1="20" x2="18" y2="10" />
+            <line x1="12" y1="20" x2="12" y2="4" />
+            <line x1="6" y1="20" x2="6" y2="14" />
           </>
         );
         break;
       case "command":
         content = (
           <>
-            <path
-              d="M18 3a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3H6a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3V6a3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3h12a3 3 0 0 0 3-3 3 3 0 0 0-3-3z"/>
+            <path d="M18 3a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3H6a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3V6a3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3h12a3 3 0 0 0 3-3 3 3 0 0 0-3-3z" />
           </>
         );
         break;
       case "message-square":
         content = (
           <>
-            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
           </>
         );
         break;
       case "message-circle":
         content = (
           <>
-            <path
-              d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
+            <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
           </>
         );
         break;
       case "settings":
         content = (
           <>
-            <circle cx="12" cy="12" r="3"/>
-            <path
-              d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+            <circle cx="12" cy="12" r="3" />
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
           </>
         );
         break;
       case "log-out":
         content = (
           <>
-            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-            <polyline points="16 17 21 12 16 7"/>
-            <line x1="21" y1="12" x2="9" y2="12"/>
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+            <polyline points="16 17 21 12 16 7" />
+            <line x1="21" y1="12" x2="9" y2="12" />
           </>
         );
         break;
       case "more-horizontal":
         content = (
           <>
-            <circle cx="12" cy="12" r="1"/>
-            <circle cx="19" cy="12" r="1"/>
-            <circle cx="5" cy="12" r="1"/>
+            <circle cx="12" cy="12" r="1" />
+            <circle cx="19" cy="12" r="1" />
+            <circle cx="5" cy="12" r="1" />
           </>
         );
         break;
       case "more-vertical":
         content = (
           <>
-            <circle cx="12" cy="12" r="1"/>
-            <circle cx="12" cy="5" r="1"/>
-            <circle cx="12" cy="19" r="1"/>
+            <circle cx="12" cy="12" r="1" />
+            <circle cx="12" cy="5" r="1" />
+            <circle cx="12" cy="19" r="1" />
           </>
         );
         break;
       case "archive":
         content = (
           <>
-            <polyline points="21 8 21 21 3 21 3 8"/>
-            <rect x="1" y="3" width="22" height="5"/>
-            <line x1="10" y1="12" x2="14" y2="12"/>
+            <polyline points="21 8 21 21 3 21 3 8" />
+            <rect x="1" y="3" width="22" height="5" />
+            <line x1="10" y1="12" x2="14" y2="12" />
           </>
         );
         break;
       case "gdrive":
         content = (
           <>
-            <path
-              d="m323.303 31h-133.799c-5.361 0-10.313 2.856-12.993 7.5s-2.681 10.356 0 15l143.042 247.5h168.726l-151.998-262.515c-2.68-4.629-7.632-7.485-12.978-7.485z"/>
-            <path
-              d="m154.034 75.947-152.011 262.538c-2.622 4.512-2.695 10.049-.22 14.648l64.805 120c2.578 4.775 7.544 7.793 12.979 7.866h.22c5.347 0 10.313-2.856 12.993-7.5l145.494-251.757z"/>
-            <path
-              d="m509.88 338.31c-2.695-4.526-7.588-7.31-12.876-7.31h-286.41l-86.678 150h308.284c5.508 0 10.576-3.018 13.198-7.866l64.805-120c2.504-4.658 2.387-10.283-.323-14.824z"/>
+            <path d="m323.303 31h-133.799c-5.361 0-10.313 2.856-12.993 7.5s-2.681 10.356 0 15l143.042 247.5h168.726l-151.998-262.515c-2.68-4.629-7.632-7.485-12.978-7.485z" />
+            <path d="m154.034 75.947-152.011 262.538c-2.622 4.512-2.695 10.049-.22 14.648l64.805 120c2.578 4.775 7.544 7.793 12.979 7.866h.22c5.347 0 10.313-2.856 12.993-7.5l145.494-251.757z" />
+            <path d="m509.88 338.31c-2.695-4.526-7.588-7.31-12.876-7.31h-286.41l-86.678 150h308.284c5.508 0 10.576-3.018 13.198-7.866l64.805-120c2.504-4.658 2.387-10.283-.323-14.824z" />
           </>
         );
         break;
       case "info":
         content = (
           <>
-            <circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line>
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="16" x2="12" y2="12"></line>
+            <line x1="12" y1="8" x2="12.01" y2="8"></line>
           </>
         );
         break;
       case "warning":
         content = (
           <>
-            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line>
+            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+            <line x1="12" y1="9" x2="12" y2="13"></line>
+            <line x1="12" y1="17" x2="12.01" y2="17"></line>
           </>
         );
         break;
       case "alert-x":
         content = (
           <>
-            <polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"></polygon><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line>
+            <polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"></polygon>
+            <line x1="15" y1="9" x2="9" y2="15"></line>
+            <line x1="9" y1="9" x2="15" y2="15"></line>
           </>
         );
         break;
@@ -677,10 +672,9 @@ export const SvgIconFeather = React.memo(
 
 export const SvgIcon = React.memo(
   React.forwardRef((props, ref) => {
-    const {className = "", width = 24, height = 24, fill = "none", stroke = "currentColor", strokeWidth = "1", strokeLinecap = "round", strokeLinejoin = "round", icon, ...rest} = props;
+    const { className = "", width = 24, height = 24, fill = "none", stroke = "currentColor", strokeWidth = "1", strokeLinecap = "round", strokeLinejoin = "round", icon, ...rest } = props;
 
-    if (icon === "gripp-logo") return <img alt="gripp logo" className={`icon-${icon} ${className}`} width={width}
-                                           height={height} src={require("../../assets/icon/gripp-logo.svg")}/>;
+    if (icon === "gripp-logo") return <img alt="gripp logo" className={`icon-${icon} ${className}`} width={width} height={height} src={require("../../assets/icon/gripp-logo.svg")} />;
 
     let content = "";
     let viewBox = "";
@@ -692,9 +686,9 @@ export const SvgIcon = React.memo(
           <>
             <defs>
               <linearGradient x1="0%" y1="7.77940102%" x2="100%" y2="92.220599%" id="linearGradient-1">
-                <stop stopColor="#972C86" offset="0%"/>
-                <stop stopColor="#794997" offset="40%"/>
-                <stop stopColor="#007180" offset="100%"/>
+                <stop stopColor="#972C86" offset="0%" />
+                <stop stopColor="#794997" offset="40%" />
+                <stop stopColor="#007180" offset="100%" />
               </linearGradient>
             </defs>
             <g id="_icon/archive/l/active" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
@@ -714,14 +708,13 @@ export const SvgIcon = React.memo(
           <>
             <defs>
               <linearGradient x1="-1.11022302e-14%" y1="1.72254642e-14%" x2="100%" y2="100%" id="linearGradient-1">
-                <stop stopColor="#972C86" offset="0%"/>
-                <stop stopColor="#794997" offset="40%"/>
-                <stop stopColor="#007180" offset="100%"/>
+                <stop stopColor="#972C86" offset="0%" />
+                <stop stopColor="#794997" offset="40%" />
+                <stop stopColor="#007180" offset="100%" />
               </linearGradient>
             </defs>
             <g id="E---Notifications" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
-              <g id="E1---01a-Notifications---Overview" transform="translate(-42.000000, -1381.000000)"
-                 fill="url(#linearGradient-1)" fillRule="nonzero">
+              <g id="E1---01a-Notifications---Overview" transform="translate(-42.000000, -1381.000000)" fill="url(#linearGradient-1)" fillRule="nonzero">
                 <g id="Group-13" transform="translate(20.000000, 1364.000000)">
                   <g id="Group-24-Copy-3" transform="translate(11.000000, 0.000000)">
                     <g id="_icon/reply/l/active" transform="translate(8.000000, 9.000000)">
@@ -763,16 +756,14 @@ export const SvgIcon = React.memo(
         viewBox = "0 0 24 24";
         content = (
           <>
-            <g id="_icon/pin/r/secundary" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd"
-               strokeLinecap="round" strokeLinejoin="round">
+            <g id="_icon/pin/r/secundary" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" strokeLinecap="round" strokeLinejoin="round">
               <path
                 d="M15.7692308,8.70635677 C18.2871227,9.7169252 20,11.7084386 20,14 L4,14 C4,11.7084386 5.71287732,9.7169252 8.23076923,8.70635677 L8.23076923,2 L15.7692308,2 L15.7692308,8.70635677 Z"
                 id="Combined-Shape"
                 stroke="#972C86"
                 strokeWidth="2"
               />
-              <path d="M10.5,17.4019238 L13.5,22.5980762" id="Line-2" stroke="#972C86" strokeWidth="2"
-                    transform="translate(12.000000, 20.000000) rotate(30.000000) translate(-12.000000, -20.000000)"/>
+              <path d="M10.5,17.4019238 L13.5,22.5980762" id="Line-2" stroke="#972C86" strokeWidth="2" transform="translate(12.000000, 20.000000) rotate(30.000000) translate(-12.000000, -20.000000)" />
             </g>
           </>
         );
@@ -781,9 +772,8 @@ export const SvgIcon = React.memo(
         viewBox = "0 0 24 24";
         content = (
           <>
-            <path
-              d="M6.092 15H5a1 1 0 0 1-1-1v-4a1 1 0 0 1 1-1h4l5.293-5.293A1 1 0 0 1 16 4.414V6.5m0 5.5v7.558a1 1 0 0 1-1.713.701l-4.04-4.104"/>
-            <path d="M6 19.818L21 7"/>
+            <path d="M6.092 15H5a1 1 0 0 1-1-1v-4a1 1 0 0 1 1-1h4l5.293-5.293A1 1 0 0 1 16 4.414V6.5m0 5.5v7.558a1 1 0 0 1-1.713.701l-4.04-4.104" />
+            <path d="M6 19.818L21 7" />
           </>
         );
         break;
@@ -793,9 +783,9 @@ export const SvgIcon = React.memo(
           <>
             <defs>
               <linearGradient x1="0%" y1="0%" x2="100%" y2="100%" id="linearGradient-1">
-                <stop stopColor="#972C86" offset="0%"/>
-                <stop stopColor="#794997" offset="40%"/>
-                <stop stopColor="#007180" offset="100%"/>
+                <stop stopColor="#972C86" offset="0%" />
+                <stop stopColor="#794997" offset="40%" />
+                <stop stopColor="#007180" offset="100%" />
               </linearGradient>
             </defs>
             <g id="Symbols,-Styles-&amp;-Typography" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
@@ -836,7 +826,7 @@ export const SvgIcon = React.memo(
 
 export const SvgEmptyState = React.memo(
   React.forwardRef((props, ref) => {
-    const {className = "", width = '', height = '', fill = "none", stroke = "", strokeWidth = "", strokeLinecap = "", strokeLinejoin = "", title = "", subTitle = "", icon, ...rest} = props;
+    const { className = "", width = "", height = "", fill = "none", stroke = "", strokeWidth = "", strokeLinecap = "", strokeLinejoin = "", title = "", subTitle = "", icon, ...rest } = props;
 
     let iconSet = icon;
     let content = "";
@@ -851,103 +841,99 @@ export const SvgEmptyState = React.memo(
           <>
             <g transform="translate(-358 -223)">
               <g transform="translate(358 414)" opacity="0.346">
-                <path
-                  d="M.121-123.043C4.174-68.048,221.6,38.1,261.962-13.992s1.559-149.85-83.029-174.883S-3.931-178.038.121-123.043Z"
-                  transform="translate(278) rotate(180)" fill="#f2f2f2" fillRule="evenodd"/>
-                <path
-                  d="M244.079,158.351c3.4-46.641,185.885-136.662,219.762-92.485s25.3,137.1-45.692,158.329S240.678,204.992,244.079,158.351Z"
-                  fill="#dde3e9" fillRule="evenodd"/>
+                <path d="M.121-123.043C4.174-68.048,221.6,38.1,261.962-13.992s1.559-149.85-83.029-174.883S-3.931-178.038.121-123.043Z" transform="translate(278) rotate(180)" fill="#f2f2f2" fillRule="evenodd" />
+                <path d="M244.079,158.351c3.4-46.641,185.885-136.662,219.762-92.485s25.3,137.1-45.692,158.329S240.678,204.992,244.079,158.351Z" fill="#dde3e9" fillRule="evenodd" />
               </g>
               <g transform="translate(387 223)">
                 <g transform="translate(15)">
-                  <rect width="324" height="283" rx="8" fill="#f2f2f2"/>
-                  <path d="M8,0H316a8,8,0,0,1,8,8V22H0V8A8,8,0,0,1,8,0Z" fill="#c5cfd6" fillRule="evenodd"/>
+                  <rect width="324" height="283" rx="8" fill="#f2f2f2" />
+                  <path d="M8,0H316a8,8,0,0,1,8,8V22H0V8A8,8,0,0,1,8,0Z" fill="#c5cfd6" fillRule="evenodd" />
                   <g transform="translate(9 10)">
-                    <circle cx="4" cy="4" r="4" fill="#f2f2f2"/>
-                    <circle cx="4" cy="4" r="4" transform="translate(12)" fill="#f2f2f2"/>
-                    <circle cx="4" cy="4" r="4" transform="translate(24)" fill="#f2f2f2"/>
+                    <circle cx="4" cy="4" r="4" fill="#f2f2f2" />
+                    <circle cx="4" cy="4" r="4" transform="translate(12)" fill="#f2f2f2" />
+                    <circle cx="4" cy="4" r="4" transform="translate(24)" fill="#f2f2f2" />
                   </g>
                   <g transform="translate(16 43)">
                     <g transform="translate(222 89)">
-                      <rect width="70" height="135" rx="8" fill="#fff"/>
+                      <rect width="70" height="135" rx="8" fill="#fff" />
                       <g transform="translate(18 18)">
-                        <rect width="34" height="17.284" rx="4" fill="#dde3e9"/>
-                        <rect width="34" height="16.619" rx="4" transform="translate(0 22.602)" fill="#cca8d2"/>
-                        <rect width="34" height="16.619" rx="4" transform="translate(0 44.54)" fill="#dde3e9"/>
-                        <rect width="34" height="16.619" rx="4" transform="translate(0 88.415)" fill="#dde3e9"/>
-                        <rect width="34" height="16.619" rx="4" transform="translate(0 66.477)" fill="#c5cfd6"/>
+                        <rect width="34" height="17.284" rx="4" fill="#dde3e9" />
+                        <rect width="34" height="16.619" rx="4" transform="translate(0 22.602)" fill="#cca8d2" />
+                        <rect width="34" height="16.619" rx="4" transform="translate(0 44.54)" fill="#dde3e9" />
+                        <rect width="34" height="16.619" rx="4" transform="translate(0 88.415)" fill="#dde3e9" />
+                        <rect width="34" height="16.619" rx="4" transform="translate(0 66.477)" fill="#c5cfd6" />
                       </g>
                     </g>
                     <g transform="translate(222)">
-                      <rect width="70" height="64.113" rx="8" fill="#fff"/>
+                      <rect width="70" height="64.113" rx="8" fill="#fff" />
                       <g transform="translate(10 11.873)">
-                        <circle cx="16" cy="16" r="16" transform="translate(9)" fill="#dde3e9"/>
-                        <rect width="50" height="6" rx="3" transform="translate(0 36)" fill="#dde3e9"/>
-                        <rect width="34" height="6" rx="3" transform="translate(8 46)" fill="#dde3e9"/>
+                        <circle cx="16" cy="16" r="16" transform="translate(9)" fill="#dde3e9" />
+                        <rect width="50" height="6" rx="3" transform="translate(0 36)" fill="#dde3e9" />
+                        <rect width="34" height="6" rx="3" transform="translate(8 46)" fill="#dde3e9" />
                       </g>
                     </g>
-                    <rect width="214" height="37.201" rx="4" fill="#fff"/>
+                    <rect width="214" height="37.201" rx="4" fill="#fff" />
                     <g transform="translate(9 11.16)">
-                      <rect width="156" height="5.58" rx="2.79" fill="#dde3e9"/>
-                      <rect width="104.712" height="5.58" rx="2.79" transform="translate(0 9.3)" fill="#dde3e9"/>
+                      <rect width="156" height="5.58" rx="2.79" fill="#dde3e9" />
+                      <rect width="104.712" height="5.58" rx="2.79" transform="translate(0 9.3)" fill="#dde3e9" />
                     </g>
                     <g transform="translate(184.13 11.601)">
-                      <circle cx="7" cy="7" r="7" fill="#dde3e9"/>
-                      <circle cx="3" cy="3" r="3" transform="translate(4 4)" fill="#f2f2f2"/>
+                      <circle cx="7" cy="7" r="7" fill="#dde3e9" />
+                      <circle cx="3" cy="3" r="3" transform="translate(4 4)" fill="#f2f2f2" />
                     </g>
                     <g transform="translate(0 43.534)">
-                      <rect width="214" height="30.869" rx="4" fill="#fff"/>
+                      <rect width="214" height="30.869" rx="4" fill="#fff" />
                       <g transform="translate(9 9.261)">
-                        <rect width="156" height="4.63" rx="2.315" fill="#dde3e9"/>
-                        <rect width="104.712" height="4.63" rx="2.315" transform="translate(0 7.717)" fill="#dde3e9"/>
+                        <rect width="156" height="4.63" rx="2.315" fill="#dde3e9" />
+                        <rect width="104.712" height="4.63" rx="2.315" transform="translate(0 7.717)" fill="#dde3e9" />
                       </g>
                       <g transform="translate(184.13 8.435)">
-                        <circle cx="7" cy="7" r="7" fill="#dde3e9"/>
-                        <circle cx="3" cy="3" r="3" transform="translate(4 4)" fill="#f2f2f2"/>
+                        <circle cx="7" cy="7" r="7" fill="#dde3e9" />
+                        <circle cx="3" cy="3" r="3" transform="translate(4 4)" fill="#f2f2f2" />
                       </g>
                     </g>
                     <g transform="translate(0 80.735)">
-                      <rect width="214" height="30.869" rx="4" fill="#fff"/>
+                      <rect width="214" height="30.869" rx="4" fill="#fff" />
                       <g transform="translate(9 9.261)">
-                        <rect width="156" height="4.63" rx="2.315" fill="#dde3e9"/>
-                        <rect width="104.712" height="4.63" rx="2.315" transform="translate(0 7.717)" fill="#dde3e9"/>
+                        <rect width="156" height="4.63" rx="2.315" fill="#dde3e9" />
+                        <rect width="104.712" height="4.63" rx="2.315" transform="translate(0 7.717)" fill="#dde3e9" />
                       </g>
                       <g transform="translate(184.13 8.435)">
-                        <circle cx="7" cy="7" r="7" fill="#dde3e9"/>
-                        <circle cx="3" cy="3" r="3" transform="translate(4 4)" fill="#afb9c5"/>
+                        <circle cx="7" cy="7" r="7" fill="#dde3e9" />
+                        <circle cx="3" cy="3" r="3" transform="translate(4 4)" fill="#afb9c5" />
                       </g>
                     </g>
                     <g transform="translate(0 192.339)">
-                      <rect width="214" height="30.869" rx="4" fill="#fff"/>
+                      <rect width="214" height="30.869" rx="4" fill="#fff" />
                       <g transform="translate(9 9.261)">
-                        <rect width="156" height="4.63" rx="2.315" fill="#dde3e9"/>
-                        <rect width="104.712" height="4.63" rx="2.315" transform="translate(0 7.717)" fill="#dde3e9"/>
+                        <rect width="156" height="4.63" rx="2.315" fill="#dde3e9" />
+                        <rect width="104.712" height="4.63" rx="2.315" transform="translate(0 7.717)" fill="#dde3e9" />
                       </g>
                       <g transform="translate(184.13 8.435)">
-                        <circle cx="7" cy="7" r="7" fill="#dde3e9"/>
-                        <circle cx="3" cy="3" r="3" transform="translate(4 4)" fill="#f2f2f2"/>
+                        <circle cx="7" cy="7" r="7" fill="#dde3e9" />
+                        <circle cx="3" cy="3" r="3" transform="translate(4 4)" fill="#f2f2f2" />
                       </g>
                     </g>
                     <g transform="translate(0 155.138)">
-                      <rect width="214" height="30.869" rx="4" fill="#fff"/>
+                      <rect width="214" height="30.869" rx="4" fill="#fff" />
                       <g transform="translate(9 9.261)">
-                        <rect width="156" height="4.63" rx="2.315" fill="#dde3e9"/>
-                        <rect width="104.712" height="4.63" rx="2.315" transform="translate(0 7.717)" fill="#dde3e9"/>
+                        <rect width="156" height="4.63" rx="2.315" fill="#dde3e9" />
+                        <rect width="104.712" height="4.63" rx="2.315" transform="translate(0 7.717)" fill="#dde3e9" />
                       </g>
                       <g transform="translate(184.13 8.435)">
-                        <circle cx="7" cy="7" r="7" fill="#dde3e9"/>
-                        <circle cx="3" cy="3" r="3" transform="translate(4 4)" fill="#f2f2f2"/>
+                        <circle cx="7" cy="7" r="7" fill="#dde3e9" />
+                        <circle cx="3" cy="3" r="3" transform="translate(4 4)" fill="#f2f2f2" />
                       </g>
                     </g>
                     <g transform="translate(0 117.936)">
-                      <rect width="214" height="30.869" rx="4" fill="#fff"/>
+                      <rect width="214" height="30.869" rx="4" fill="#fff" />
                       <g transform="translate(9 9.261)">
-                        <rect width="156" height="4.63" rx="2.315" fill="#dde3e9"/>
-                        <rect width="104.712" height="4.63" rx="2.315" transform="translate(0 7.717)" fill="#dde3e9"/>
+                        <rect width="156" height="4.63" rx="2.315" fill="#dde3e9" />
+                        <rect width="104.712" height="4.63" rx="2.315" transform="translate(0 7.717)" fill="#dde3e9" />
                       </g>
                       <g transform="translate(184.13 8.435)">
-                        <circle cx="7" cy="7" r="7" fill="#dde3e9"/>
-                        <circle cx="3" cy="3" r="3" transform="translate(4 4)" fill="#f2f2f2"/>
+                        <circle cx="7" cy="7" r="7" fill="#dde3e9" />
+                        <circle cx="3" cy="3" r="3" transform="translate(4 4)" fill="#f2f2f2" />
                       </g>
                     </g>
                   </g>
@@ -958,119 +944,133 @@ export const SvgEmptyState = React.memo(
                       <g transform="translate(38.515 22.058)">
                         <path
                           d="M27.205,6.5c4.133,7.685,3.642,27.18-1.7,28.554-2.13.548-6.668-.794-11.287-3.571l2.9,20.461H0l5.893-27.4C2.606,20.692.382,15.976.754,10.691,1.825-4.536,23.072-1.186,27.205,6.5Z"
-                          fill="#b28b67" fillRule="evenodd"/>
+                          fill="#b28b67"
+                          fillRule="evenodd"
+                        />
                       </g>
                       <path
                         d="M58.959,20.186A22.392,22.392,0,0,0,51.8,19.4a12.264,12.264,0,0,0,.872-6.213,18.9,18.9,0,0,0-2.02-5.617,7.682,7.682,0,0,0-1.494-2.323,5.107,5.107,0,0,0-2.418-1.3,6.484,6.484,0,0,0-2.785,0c-.4.085-.768.27-1.165.372s-.6-.149-.9-.4a5.1,5.1,0,0,0-2.654-1.027,6.859,6.859,0,0,0-3.02.361A5.913,5.913,0,0,0,33.7,4.858a4.207,4.207,0,0,0-.754,1.152c-.073.175-.085.279-.26.343s-.351.061-.518.118a6.517,6.517,0,0,0-3.75,3.391,10.728,10.728,0,0,0-.59,4.417c.057,1.841,1.724,6.646,3.282,8.4a10.478,10.478,0,0,0,5.41,3.048,15.43,15.43,0,0,0-2.827,5.259A25.684,25.684,0,0,0,32.4,37.374a20.8,20.8,0,0,0,.321,6.3,6.826,6.826,0,0,0,3.059,4.444,14.628,14.628,0,0,0,2.355,1.1A15.528,15.528,0,0,0,40.558,50a4.877,4.877,0,0,0,4.608-.983,8.634,8.634,0,0,0,1.239-1.57c.115-.2.184-.328.045-.522a3.738,3.738,0,0,0-.652-.592,6.127,6.127,0,0,1-2.173-4.06c-.194-1.667.255-3.818,1.879-4.545,2-.9,4.213.133,6,1.093a9.781,9.781,0,0,1,4.751-6.291c2.7-1.353,5.792-1.512,8.564-2.673a5.111,5.111,0,0,0,1.99-1.263,2.566,2.566,0,0,0,.572-.933,1.508,1.508,0,0,0-.4-1.172C65.793,24.636,61.3,20.9,58.959,20.186Z"
-                        fill="#191847" fillRule="evenodd"/>
+                        fill="#191847"
+                        fillRule="evenodd"
+                      />
                     </g>
                     <g transform="translate(0 137.187)">
-                      <path d="M92.3,0l52.758,87.842,39.553,74.263h8.519L126.858,0Z" fill="#915b3c"
-                            fillRule="evenodd"/>
+                      <path d="M92.3,0l52.758,87.842,39.553,74.263h8.519L126.858,0Z" fill="#915b3c" fillRule="evenodd" />
                       <g transform="translate(177.5 140.715)">
                         <path
                           d="M1.66,18.4A13.363,13.363,0,0,0,.7,22.474,34.889,34.889,0,0,0,1.34,28H41.1q1.55-5.088-1.789-5.493t-5.548-.733l-18.206-8.06a1,1,0,0,0-1.319.51l-.009.021-1.072,2.582h0a12.746,12.746,0,0,1-5.024,1.432,10.389,10.389,0,0,1-3.8-1.023h0A2,2,0,0,0,1.7,18.287Q1.681,18.344,1.66,18.4Z"
-                          fill="#e4e4e4" fillRule="evenodd"/>
+                          fill="#e4e4e4"
+                          fillRule="evenodd"
+                        />
                       </g>
-                      <path
-                        d="M173.626,150.214l16.429-4.95q-10.8-32.147-26.467-70.753T129.93,0h-46.4a725.656,725.656,0,0,0,42.4,82.538A558.652,558.652,0,0,0,173.626,150.214Z"
-                        fill="#571563" fillRule="evenodd"/>
-                      <path
-                        d="M88.833,0C83.853,30.868,74.25,70.306,73.343,71.524Q72.437,72.741,8.087,93.3l1.84,7.482Q86.665,89.756,90.8,83.673C94.926,77.59,115.551,29.531,123.54,0Z"
-                        fill="#915b3c" fillRule="evenodd"/>
-                      <path
-                        d="M23.167,86.834l3.241,12.05q57.4,5.013,70.335-7.245T126.237,0H81.989Q71.5,65,70.262,67.731T23.167,86.834Z"
-                        fill="#7a1b8b" fillRule="evenodd"/>
+                      <path d="M173.626,150.214l16.429-4.95q-10.8-32.147-26.467-70.753T129.93,0h-46.4a725.656,725.656,0,0,0,42.4,82.538A558.652,558.652,0,0,0,173.626,150.214Z" fill="#571563" fillRule="evenodd" />
+                      <path d="M88.833,0C83.853,30.868,74.25,70.306,73.343,71.524Q72.437,72.741,8.087,93.3l1.84,7.482Q86.665,89.756,90.8,83.673C94.926,77.59,115.551,29.531,123.54,0Z" fill="#915b3c" fillRule="evenodd" />
+                      <path d="M23.167,86.834l3.241,12.05q57.4,5.013,70.335-7.245T126.237,0H81.989Q71.5,65,70.262,67.731T23.167,86.834Z" fill="#7a1b8b" fillRule="evenodd" />
                       <g transform="translate(27.562 85.114) rotate(80)">
                         <path
                           d="M1.66,18.4A13.363,13.363,0,0,0,.7,22.474,34.889,34.889,0,0,0,1.34,28H41.1q1.55-5.088-1.789-5.493t-5.548-.733l-18.206-8.06a1,1,0,0,0-1.319.51l-.009.021-1.072,2.582h0a12.746,12.746,0,0,1-5.024,1.432,10.389,10.389,0,0,1-3.8-1.023h0A2,2,0,0,0,1.7,18.287Q1.681,18.344,1.66,18.4Z"
-                          fill="#e4e4e4" fillRule="evenodd"/>
+                          fill="#e4e4e4"
+                          fillRule="evenodd"
+                        />
                       </g>
                     </g>
                     <g transform="translate(3.93 77.259) rotate(-8)">
                       <path
                         d="M48.322,52.553l15.568.058q-25.606,57.212-26.7,59.911c-1.645,4.048,1.836,10.213,3.325,13.526-4.849,2.154-4.332-5.824-10.448-3-5.583,2.579-9.83,7.252-16.28,3.3-.793-.486-1.662-2.315.438-3.745,5.231-3.561,12.769-9.794,13.787-11.846q2.083-4.2,20.313-58.206ZM180.36,39.046c-3.145,2.6-6.336,5.483-5.776,6.873s3.485.872,3.97,3.009q.485,2.137-14.241.694l-22.776,8.966L136.5,46.1l28.07-3.8a61.441,61.441,0,0,1,15.5-6.3C181.394,35.964,183.505,36.443,180.36,39.046Z"
-                        fill="#997659" fillRule="evenodd"/>
+                        fill="#997659"
+                        fillRule="evenodd"
+                      />
                       <path
                         d="M87.805,6.848l12.213-.259c5.341,26.6,23.114,42.144,59.082,33.209l7.872,34.169c-33.7,7.356-64.784-3.578-74.12-39.729C90.434,24.88,88.317,15.106,87.805,6.848Z"
-                        transform="translate(4.09 -10.945) rotate(5)" fill="#cca8d2" fillRule="evenodd"/>
-                      <path
-                        d="M84.941,0l.009.011,18.468,4.2c0,31.184,9.892,51.207,15.131,74.068l.177.78H68.85c-.7,8.012-1.134,16.248-1.359,24.706H30.145Q42.839,36.7,83.731,0h1.21Z"
-                        fill="#c5cfd6" fillRule="evenodd"/>
-                      <path d="M76.719,34.066q-1.928,29.479,2.268,44.993H68.85a241.428,241.428,0,0,1,7.785-44.7Z"
-                            fill="rgba(0,0,0,0.1)" fillRule="evenodd"/>
+                        transform="translate(4.09 -10.945) rotate(5)"
+                        fill="#cca8d2"
+                        fillRule="evenodd"
+                      />
+                      <path d="M84.941,0l.009.011,18.468,4.2c0,31.184,9.892,51.207,15.131,74.068l.177.78H68.85c-.7,8.012-1.134,16.248-1.359,24.706H30.145Q42.839,36.7,83.731,0h1.21Z" fill="#c5cfd6" fillRule="evenodd" />
+                      <path d="M76.719,34.066q-1.928,29.479,2.268,44.993H68.85a241.428,241.428,0,0,1,7.785-44.7Z" fill="rgba(0,0,0,0.1)" fillRule="evenodd" />
                     </g>
                   </g>
                   <g transform="translate(73.688 -0.631) rotate(-7)">
                     <g transform="translate(38.515 -22.058)">
                       <path
                         d="M27.205-6.5c4.133-7.685,3.642-27.18-1.7-28.554-2.13-.548-6.668.794-11.287,3.571l2.9-20.461H0l5.893,27.4C2.606-20.693.382-15.976.754-10.691,1.825,4.536,23.072,1.186,27.205-6.5Z"
-                        fill="#b28b67" fillRule="evenodd"/>
+                        fill="#b28b67"
+                        fillRule="evenodd"
+                      />
                     </g>
                     <path
                       d="M55.963-19.7c-2.256.369-8.331.623-9.451.623-.716,0-1.492-.163-1.916.493-.347.537-.22,1.445-.324,2.068-.12.724-.291,1.439-.464,2.151a21.843,21.843,0,0,1-2.277,5.77A17.762,17.762,0,0,1,33.106-.984,27.117,27.117,0,0,1,20.313.771C15.722.4,11.566-1.112,7.231-2.535A27.48,27.48,0,0,0-5.548-3.762C-9.9-3.1-13.19-.741-16.862,1.493a21.115,21.115,0,0,1-12.5,3.439A24.1,24.1,0,0,1-40.761.619,18.57,18.57,0,0,1-48.113-7.7c-1.608-3.89-1.607-8.16,1.038-11.6,3.833-4.983,10.95-6.272,16.871-6.144a32.3,32.3,0,0,1,10.021,1.832c4.312,1.513,8.038,4.078,12.072,6.158a31.458,31.458,0,0,0,5.9,2.356c1.99.561,3.951.818,5.753-.382a27.184,27.184,0,0,1,5.8-3.31,18.731,18.731,0,0,1,6.537-1.171c4.337.033,8.612,1.382,12.824,2.284,3.435.736,7.11,1.47,10.612.762,1.461-.3,3.6-.905,4.123-2.42C34.552-20.939,31.063-31.9,33.568-39.944c1.352-4.342,9.476-9.419,12.635-7.136,2,1.446.786,3.345,0,4.6-1.506,2.4-2.021,5.484.765,7.155,2.4,1.441,4.93-1.981,4.978-1.978.661.052,6.368,3.272,10.3,7.972,3.88-.229,4.468,2.323,3.542,4.41S59.081-20.21,55.963-19.7Z"
-                      fill="#191847" fillRule="evenodd"/>
+                      fill="#191847"
+                      fillRule="evenodd"
+                    />
                   </g>
                   <g transform="translate(0 -137.985)">
                     <path
                       d="M147.082,6.97C133.562-4.06,138.9-101,138-102.223q-.6-.812-64.354-13.723l1.85-7.506q74.6,3.565,78.934,9.1,6.21,7.927,15.218,88.773Z"
-                      transform="matrix(0.574, 0.819, -0.819, 0.574, 4.164, -124.48)" fill="#b28b67"
-                      fillRule="evenodd"/>
+                      transform="matrix(0.574, 0.819, -0.819, 0.574, 4.164, -124.48)"
+                      fill="#b28b67"
+                      fillRule="evenodd"
+                    />
                     <path
                       d="M147.082,6.97C133.562-4.06,138.9-101,138-102.223q-.6-.812-64.354-13.723l1.85-7.506q74.6,3.565,78.934,9.1,6.21,7.927,15.218,88.773Z"
-                      transform="matrix(0.574, 0.819, -0.819, 0.574, 4.164, -124.48)" fill="rgba(0,0,0,0.1)"
-                      fillRule="evenodd"/>
+                      transform="matrix(0.574, 0.819, -0.819, 0.574, 4.164, -124.48)"
+                      fill="rgba(0,0,0,0.1)"
+                      fillRule="evenodd"
+                    />
                     <path
                       d="M80.832-108.06l3.256-12.089c37.082-4.334,61.513.9,70.1,9.074q8.587,8.178,15.258,88.532L145.309,11.928c-32.188-24.291-12.822-104.05-13.642-105.872S111.3-97.172,80.832-108.06Z"
-                      transform="matrix(0.574, 0.819, -0.819, 0.574, 8.398, -125.914)" fill="#2f3676"
-                      fillRule="evenodd"/>
+                      transform="matrix(0.574, 0.819, -0.819, 0.574, 8.398, -125.914)"
+                      fill="#2f3676"
+                      fillRule="evenodd"
+                    />
                     <g transform="translate(143.09 -111.732) rotate(-20)">
                       <path
                         d="M1.66-18.4A13.363,13.363,0,0,1,.7-22.474,34.889,34.889,0,0,1,1.34-28H41.1q1.55,5.088-1.789,5.493t-5.548.733l-18.206,8.06a1,1,0,0,1-1.319-.51l-.009-.021-1.072-2.582h0a12.746,12.746,0,0,0-5.024-1.432,10.389,10.389,0,0,0-3.8,1.023h0A2,2,0,0,1,1.7-18.287Q1.681-18.344,1.66-18.4Z"
-                        fill="#e4e4e4" fillRule="evenodd"/>
+                        fill="#e4e4e4"
+                        fillRule="evenodd"
+                      />
                     </g>
-                    <path d="M92.3,0,55.56-87.842,19.451-162.106H27.97L121.178,0Z" fill="#b28b67" fillRule="evenodd"/>
+                    <path d="M92.3,0,55.56-87.842,19.451-162.106H27.97L121.178,0Z" fill="#b28b67" fillRule="evenodd" />
                     <g transform="translate(17.04 -140.715)">
                       <path
                         d="M1.66-18.4A13.363,13.363,0,0,1,.7-22.474,34.889,34.889,0,0,1,1.34-28H41.1q1.55,5.088-1.789,5.493t-5.548.733l-18.206,8.06a1,1,0,0,1-1.319-.51l-.009-.021-1.072-2.582h0a12.746,12.746,0,0,0-5.024-1.432,10.389,10.389,0,0,0-3.8,1.023h0A2,2,0,0,1,1.7-18.287Q1.681-18.344,1.66-18.4Z"
-                        fill="#e4e4e4" fillRule="evenodd"/>
+                        fill="#e4e4e4"
+                        fillRule="evenodd"
+                      />
                     </g>
-                    <path
-                      d="M22.712-146.678l18.93-3.536C56.279-128.783,117.534-40.908,124.25,0H82.107C59.679-29.572,36.664-124.893,22.712-146.678Z"
-                      fill="#5c63ab" fillRule="evenodd"/>
+                    <path d="M22.712-146.678l18.93-3.536C56.279-128.783,117.534-40.908,124.25,0H82.107C59.679-29.572,36.664-124.893,22.712-146.678Z" fill="#5c63ab" fillRule="evenodd" />
                   </g>
                   <g transform="translate(24.357 -53.066) rotate(-7)">
                     <path
                       d="M36.619-57.883l14.568-2.87q-21.976-40.664-23.571-43.1c-2.392-3.66-.16-10.367.664-13.9-5.172-1.2-3.132,6.534-9.677,4.92-5.974-1.473-11.039-5.253-16.61-.155-.685.627-1.186,2.586,1.149,3.591,5.817,2.5,14.412,7.191,15.806,9.011Q21.8-96.667,36.619-57.883Zm144.093,21.7c-2.291-3.322-4.55-6.918-3.634-8.082s3.567.121,4.614-1.772q1.047-1.893-13.408-4.529L148.992-65.252l-8.226,10.463,25.761,11.233A60.987,60.987,0,0,0,179.6-33.376C180.856-32.978,183-32.858,180.713-36.18Z"
-                      fill="#b28b67" fillRule="evenodd"/>
+                      fill="#b28b67"
+                      fillRule="evenodd"
+                    />
                     <path
                       d="M87.667-6.995,93.7-5.416c14.463-11.68,22.607-42.07,31.854-45.378,8.743-3.127,20.33,1.653,34.05,7.939l5.179-9.242c-11.658-14.948-38.049-29.024-49.744-23.329C96.341-66.322,88.909-28.612,87.667-6.995Z"
-                      transform="translate(4.06 10.845) rotate(-5)" fill="#571563" fillRule="evenodd"/>
-                    <path
-                      d="M63.985-80.471h54.4c2.486,0,2.017,3.564,1.658,5.362C115.891-54.356,99.7-31.985,99.7-2.443L84.013,0C71.035-20.724,66.547-46.239,63.985-80.471Z"
-                      fill="#dde3e9" fillRule="evenodd"/>
-                    <path
-                      d="M85.833,0h3.38q21.128-71.51,11.649-95.294H51.9a176.356,176.356,0,0,0,6.662,35.84Q41.927-89.248,30.6-102.353l-11.4,2.217Q30.212-32.3,83,0Z"
-                      fill="#7a1b8b" fillRule="evenodd"/>
+                      transform="translate(4.06 10.845) rotate(-5)"
+                      fill="#571563"
+                      fillRule="evenodd"
+                    />
+                    <path d="M63.985-80.471h54.4c2.486,0,2.017,3.564,1.658,5.362C115.891-54.356,99.7-31.985,99.7-2.443L84.013,0C71.035-20.724,66.547-46.239,63.985-80.471Z" fill="#dde3e9" fillRule="evenodd" />
+                    <path d="M85.833,0h3.38q21.128-71.51,11.649-95.294H51.9a176.356,176.356,0,0,0,6.662,35.84Q41.927-89.248,30.6-102.353l-11.4,2.217Q30.212-32.3,83,0Z" fill="#7a1b8b" fillRule="evenodd" />
                   </g>
                 </g>
                 <g transform="translate(124.465 120.816) rotate(-14)">
-                  <path d="M50.828,54.607l-.007.016s.007-.025.007-.016" fill="#c5cfd6" fillRule="evenodd"/>
-                  <path d="M50.823,54.614a.043.043,0,0,0,0,.005c0-.005.009-.02,0-.005" fill="#c5cfd6"
-                        fillRule="evenodd"/>
-                  <path d="M50.858,54.53c-.007.02-.016.039-.024.059l.012-.028c-.1.26-.038.091.012-.031" fill="#c5cfd6"
-                        fillRule="evenodd"/>
-                  <path d="M50.836,54.59l-.012.028c-.029.056.012-.028.012-.028" fill="#c5cfd6" fillRule="evenodd"/>
-                  <path d="M50.825,54.614Z" fill="#c5cfd6" fillRule="evenodd"/>
-                  <path d="M50.824,54.615v0" fill="#c5cfd6" fillRule="evenodd"/>
-                  <path d="M50.819,54.622c-.006.012.028-.046,0,0" fill="#c5cfd6" fillRule="evenodd"/>
-                  <path d="M50.824,54.615l0,0,0,0" fill="#c5cfd6" fillRule="evenodd"/>
-                  <rect width="100" height="66" rx="4" transform="translate(0.575 0.818)" fill="#571563"/>
+                  <path d="M50.828,54.607l-.007.016s.007-.025.007-.016" fill="#c5cfd6" fillRule="evenodd" />
+                  <path d="M50.823,54.614a.043.043,0,0,0,0,.005c0-.005.009-.02,0-.005" fill="#c5cfd6" fillRule="evenodd" />
+                  <path d="M50.858,54.53c-.007.02-.016.039-.024.059l.012-.028c-.1.26-.038.091.012-.031" fill="#c5cfd6" fillRule="evenodd" />
+                  <path d="M50.836,54.59l-.012.028c-.029.056.012-.028.012-.028" fill="#c5cfd6" fillRule="evenodd" />
+                  <path d="M50.825,54.614Z" fill="#c5cfd6" fillRule="evenodd" />
+                  <path d="M50.824,54.615v0" fill="#c5cfd6" fillRule="evenodd" />
+                  <path d="M50.819,54.622c-.006.012.028-.046,0,0" fill="#c5cfd6" fillRule="evenodd" />
+                  <path d="M50.824,54.615l0,0,0,0" fill="#c5cfd6" fillRule="evenodd" />
+                  <rect width="100" height="66" rx="4" transform="translate(0.575 0.818)" fill="#571563" />
                   <g transform="translate(9.058 20.093)">
-                    <path d="M29.312,0,.471,47H58.152Z" fill="rgba(0,0,0,0.2)" fillRule="evenodd"/>
-                    <path d="M59.047,12.589,33.551,47H84.544Z" fill="rgba(0,0,0,0.2)" fillRule="evenodd"/>
+                    <path d="M29.312,0,.471,47H58.152Z" fill="rgba(0,0,0,0.2)" fillRule="evenodd" />
+                    <path d="M59.047,12.589,33.551,47H84.544Z" fill="rgba(0,0,0,0.2)" fillRule="evenodd" />
                   </g>
-                  <circle cx="9.5" cy="9.5" r="9.5" transform="translate(69.517 14.142)" fill="#fff"/>
+                  <circle cx="9.5" cy="9.5" r="9.5" transform="translate(69.517 14.142)" fill="#fff" />
                 </g>
               </g>
             </g>
@@ -1085,90 +1085,112 @@ export const SvgEmptyState = React.memo(
               <g transform="translate(512 209)" opacity="0.5">
                 <path
                   d="M1.908,2.672C.335,4.243.946,9.824.913,11.89c-.051,3.216.149,6.4.418,9.606.18,2.145,1.2,22.618,4.021,21.045,1.593-.886.594-6.808.591-8.681-.006-4.164-.18-8.319-.457-12.474A109.174,109.174,0,0,1,5.215,9.851c.036-.943.919-11.412-3.307-7.179"
-                  fill="#ddc8e1" fillRule="evenodd"/>
+                  fill="#ddc8e1"
+                  fillRule="evenodd"
+                />
                 <path
                   d="M70.409.149C56.9.256,43.388.923,29.881,1.331c-6.5.2-12.995.446-19.487.807-2.212.123-6.957-.585-8.8.593C-2.5,5.348,4.1,5.96,5.859,5.9,32.59,4.927,59.329,3.65,86.082,3.59c13.124-.029,26.241.344,39.365.261,5.017-.032,10.573-2.193,11.84,3.646,1.43,6.59-.213,13.927-.66,20.548a116.174,116.174,0,0,0,.007,13.166c.128,2.829-.2,6.018.3,8.794.481,2.674,2.4,4.277,4.166,1.282,1.053-1.79.529-6.209.6-8.282.094-2.792.006-5.584.006-8.377,0-6.817.962-13.607.834-20.422-.082-4.395-.315-12.362-5.858-13.418-6.1-1.163-13.607.006-19.853-.065C101.344.546,85.892.028,70.409.149"
-                  fill="#ddc8e1" fillRule="evenodd"/>
+                  fill="#ddc8e1"
+                  fillRule="evenodd"
+                />
                 <path
                   d="M33.174,42.786q-7.643,0-15.287.115c-4.37.072-11.24-.839-15.308.725C-.2,44.7-.944,47.8,2.58,48.633c3.843.9,9.636-.573,13.657-.644,20.164-.356,40.522-.82,60.658.455,18.868,1.195,38.1,2.353,56.994,1.092,1.59-.106,9.7-.429,6-3.468-2.158-1.774-10.907-.607-13.712-.692-9.894-.3-19.8-.365-29.69-.74C86.722,44.265,77,43.168,67.238,42.9c-11.345-.316-22.716-.11-34.065-.11"
-                  fill="#ddc8e1" fillRule="evenodd"/>
+                  fill="#ddc8e1"
+                  fillRule="evenodd"
+                />
                 <path
                   d="M28.075,13.8c7.942.347,15.8,11.865,7.764,17.431-7.539,5.223-21.667-.5-17.475-10.629-.6,1.464.762-1.591.779-1.611a21.789,21.789,0,0,1,3.211-2.719,12.686,12.686,0,0,1,3.651-2.2c.89-.279.75.77,2.07-.267M24.207,9.65C20.49,11.1,18.794,12.738,16.239,15.7c-1.768,2.05-4.021,3.129-4,5.9,0,.613.792,1.287.928,1.878.188.816-.03,1.862.119,2.729C14.824,35.156,25.5,38.174,33.317,36.484c6.808-1.472,11.9-8.007,10.323-15.114C42.052,14.216,31.444,6.819,24.207,9.65"
-                  fill="#ddc8e1" fillRule="evenodd"/>
-                <path d="M20.9,22.143c0,3.219,5.085,3.219,5.085,0,0-3.183-5.085-3.319-5.085,0" fill="#ddc8e1"
-                      fillRule="evenodd"/>
-                <path d="M27.258,21.491c0,2.558,4.041,2.558,4.041,0,0-2.529-4.041-2.637-4.041,0" fill="#ddc8e1"
-                      fillRule="evenodd"/>
-                <path
-                  d="M28.51,26.767c-1.294.5-2.935-.534-4,.146-1.881,1.2,0,2.294,1.013,2.778,4.54,2.179,5.348-3.829,2.984-2.924"
-                  fill="#ddc8e1" fillRule="evenodd"/>
+                  fill="#ddc8e1"
+                  fillRule="evenodd"
+                />
+                <path d="M20.9,22.143c0,3.219,5.085,3.219,5.085,0,0-3.183-5.085-3.319-5.085,0" fill="#ddc8e1" fillRule="evenodd" />
+                <path d="M27.258,21.491c0,2.558,4.041,2.558,4.041,0,0-2.529-4.041-2.637-4.041,0" fill="#ddc8e1" fillRule="evenodd" />
+                <path d="M28.51,26.767c-1.294.5-2.935-.534-4,.146-1.881,1.2,0,2.294,1.013,2.778,4.54,2.179,5.348-3.829,2.984-2.924" fill="#ddc8e1" fillRule="evenodd" />
                 <path
                   d="M97.85,19.632h0m-19.772-2.89c-3.4.767-6.267,3.941-9.959,3.516-2.829-.325-4.745-3.056-7.538-3.452-3.573-.508-13.3,7.643-8.185,9.041,2.983.816,4.638-4.635,7.273-4.925,2.085-.229,4.92,2.327,7.08,2.691,4.03.679,6.8-1.541,10.335-2.972,3.844-1.556,6.032-.155,9.375,1.574,2.639,1.365,5.124,2.253,8.144,1.69,2.834-.528,6.394-3.442,9.247-3.143,2.794.293,4.788,3.209,7.662,3.479,1.185.111,2.949.515,2.749-1.313-.159-1.464-1.793-1.216-2.814-1.748-2.628-1.368-5.086-3.792-8.257-3.585-2.386.156-4.557,1.832-6.756,2.634-7.2,2.626-11.248-5.081-18.356-3.487"
-                  fill="#ddc8e1" fillRule="evenodd"/>
+                  fill="#ddc8e1"
+                  fillRule="evenodd"
+                />
                 <path
                   d="M84.092,63.111c-13.889.127-27.824.334-41.674,1.447-3.283.264-36.81,3.429-36.747,3.657.118.422,4.43,1.066,4.4,1.166q-.436-1.081-1.993-.895c31.8,0,63.494-2.847,95.334-2.335,8,.128,16.03.075,24.025.327,2,.063,6.941,1.494,8.509.592,4.114-2.365-3.36-2.638-4.6-2.738-15.669-1.253-31.546-1.379-47.259-1.222"
-                  fill="#69a1ac" fillRule="evenodd"/>
+                  fill="#69a1ac"
+                  fillRule="evenodd"
+                />
                 <path
                   d="M1.556,69.859c-2.076,2.082-.164,9.571-.083,12.385.118,4.069.021,8.168.378,12.226a82.7,82.7,0,0,0,2.256,14.074c.67,2.478,3.022,6.416,3.953,1.914.665-3.216-.345-7.482-.7-10.759a126.813,126.813,0,0,1-.6-13.112c-.016-3.838-.09-7.691-.4-11.517-.163-1.986-1.163-8.832-4.8-5.212"
-                  fill="#69a1ac" fillRule="evenodd"/>
+                  fill="#69a1ac"
+                  fillRule="evenodd"
+                />
                 <path
                   d="M53.794,108c-9.856.169-19.733.4-29.572,1.017-4.033.253-8.062.629-12.08,1.055-.82.087-9.895.455-5.84,3.8,1.83,1.512,9.359-.578,11.846-.8,4.182-.367,8.364-.6,12.558-.782,9.718-.413,19.467-.777,29.195-.608,17.766.308,35.419.446,53.19.05,2.525-.056,22.306.472,22.978-2.155.541-2.117-6.533-1.146-7.822-1.107-4.732.141-9.464.108-14.2.084-20.051-.1-40.219-.9-60.255-.561"
-                  fill="#69a1ac" fillRule="evenodd"/>
+                  fill="#69a1ac"
+                  fillRule="evenodd"
+                />
                 <path
                   d="M132.719,66.347c.313,8.775,1.807,17.54,2.285,26.342.218,4.024.475,8.043.672,12.068.064,1.3-.46,4.427,1.076,5.174,2.106,1.024,2.39-1.04,2.784-2.436,1.139-4.033.369-9.271.265-13.414-.1-4.011-.107-8.03-.4-12.034-.3-4.091-1.127-8.1-1.509-12.18-.162-1.724.4-4.593-1.427-5.663a2.509,2.509,0,0,0-3.744,2.142"
-                  fill="#69a1ac" fillRule="evenodd"/>
+                  fill="#69a1ac"
+                  fillRule="evenodd"
+                />
                 <path
                   d="M35.845,80.944l.112.087-.112-.087m-8.376-2.6c3.123.892,5.688.56,8.672,2.833,2.473,1.885,5.01,4.643,5.831,7.692,1.9,7.043-4.53,10.9-10.554,10.978-6.17.077-15.3-1.354-14.986-9.262.242-6.076,4.679-12,11.037-12.241m.22-3.98c-8.1.4-14.632,9.5-14.562,17.154.085,9.279,10.6,11.669,18.067,11.734,8.429.072,16.835-5.748,14.576-15.227-1.81-7.595-10.292-14.066-18.081-13.661"
-                  fill="#69a1ac" fillRule="evenodd"/>
-                <path d="M19.542,86.822c0,2.587,4.088,2.587,4.088,0,0-2.558-4.088-2.668-4.088,0" fill="#69a1ac"
-                      fillRule="evenodd"/>
-                <path d="M28.117,85.687c0,2.608,4.121,2.608,4.121,0,0-2.578-4.121-2.689-4.121,0" fill="#69a1ac"
-                      fillRule="evenodd"/>
-                <path
-                  d="M23.39,91.589c-2.661,2.657,6.687,7.314,8.891,3.618,1.811-3.035-2.132-2.029-3.529-2.193-1.519-.179-4.122-2.661-5.362-1.425"
-                  fill="#69a1ac" fillRule="evenodd"/>
+                  fill="#69a1ac"
+                  fillRule="evenodd"
+                />
+                <path d="M19.542,86.822c0,2.587,4.088,2.587,4.088,0,0-2.558-4.088-2.668-4.088,0" fill="#69a1ac" fillRule="evenodd" />
+                <path d="M28.117,85.687c0,2.608,4.121,2.608,4.121,0,0-2.578-4.121-2.689-4.121,0" fill="#69a1ac" fillRule="evenodd" />
+                <path d="M23.39,91.589c-2.661,2.657,6.687,7.314,8.891,3.618,1.811-3.035-2.132-2.029-3.529-2.193-1.519-.179-4.122-2.661-5.362-1.425" fill="#69a1ac" fillRule="evenodd" />
                 <path
                   d="M98.124,85.74h0m-35.1-4.325c-2.694.505-11.536,3.488-11.655,6.685-.218,5.81,8.441-.141,10.322-.905,5.108-2.076,7.792,2.159,12.923,2.382,4.457.194,8.554-3.62,12.753-3.169,4.4.472,6.514,5.152,11.592,2.667,2.686-1.314,2.619-3.34-.4-3.531-1.823-.115-3.075.638-4.975-.146-2.972-1.226-4.169-3.222-7.725-2.9-2.684.239-5.109,1.752-7.729,2.337-6,1.34-9.325-4.5-15.108-3.415"
-                  fill="#69a1ac" fillRule="evenodd"/>
+                  fill="#69a1ac"
+                  fillRule="evenodd"
+                />
                 <path
                   d="M118.818,88.263h0m.68-2.419c.03.013.233.295,0,0M116.409,84h0m.067-.023c.6.358,5.414,3.651,1.917,4.426-1.775.394-3.244-3.179-1.917-4.426m-1.594-3.648c-7.713,3.517.587,16.1,6.64,10.989,2.547-2.152,2.882-6.5.4-8.742-1.485-1.343-5.029-3.167-7.045-2.246"
-                  fill="#69a1ac" fillRule="evenodd"/>
+                  fill="#69a1ac"
+                  fillRule="evenodd"
+                />
                 <path
                   d="M42.477,129.921c-9.625,0-19.334-.2-28.945.371-1.618.1-7.78-.212-8.613,1.479-1.525,3.093,4.816,1.557,5.737,1.465,19.138-1.916,39.129-.814,58.33-.267,15.7.446,31.323.724,47.008,1.533q6.184.319,12.362.7c1.343.081,4.722.971,5.005-1.174.262-1.985-3.954-1.537-5.007-1.592q-12.562-.661-25.116-1.374c-20.152-1.136-40.576-1.141-60.761-1.137"
-                  fill="#ddc8e1" fillRule="evenodd"/>
+                  fill="#ddc8e1"
+                  fillRule="evenodd"
+                />
                 <path
                   d="M4.609,133.36c-1.8,1.787-.955,8.611-1.005,10.866-.088,3.945-.274,7.886-.357,11.83-.087,4.122.034,8.263.278,12.378.1,1.728,1.521,10.08,3.754,5.3,1-2.136-.024-8.085-.009-10.505.027-4.4.265-8.791.484-13.189.188-3.781.2-7.566.361-11.348.052-1.206.195-9.044-3.5-5.333"
-                  fill="#ddc8e1" fillRule="evenodd"/>
+                  fill="#ddc8e1"
+                  fillRule="evenodd"
+                />
                 <path
                   d="M134.98,168.6c-9.367.96-18.883.506-28.286,1.215-8.1.611-16.2.861-24.323,1.033-18.4.388-36.824.767-55.167,2.3-4.18.349-8.356.72-12.547.907-2.1.094-10.893-.86-11.548,1.349-1.116,3.764,8.291,2.274,10.32,2.215,4.462-.129,8.9-.451,13.352-.79,18.7-1.425,37.478-1.851,56.221-2.443,10.194-.322,20.317-1.068,30.488-1.746,5.07-.338,10.153-.349,15.222-.677,1.326-.086,6.021.083,6.975-.984.656-.733.821-2.522-.708-2.379"
-                  fill="#ddc8e1" fillRule="evenodd"/>
+                  fill="#ddc8e1"
+                  fillRule="evenodd"
+                />
                 <path
                   d="M131.8,134c.321,8.983.829,17.957,1.132,26.94.091,2.7-.725,7.542.78,9.924,2.418,3.83,4.306-.223,4.749-2.61,1.4-7.533-.1-15.855-.5-23.434-.149-2.892.749-9.327-.648-11.915-1.331-2.465-5.636-2.218-5.517,1.1"
-                  fill="#ddc8e1" fillRule="evenodd"/>
+                  fill="#ddc8e1"
+                  fillRule="evenodd"
+                />
                 <path
                   d="M116.079,146.793c3.588.972,4.113,8.774.064,9.351-6.027.859-3.391-7.743-.064-9.351m-1.005-3.1c-1.095-.034-3.621-.336-4.3.555-.565.746.006,2.319-.06,3.029-.237,2.538-2.3,4-1.378,7a7.321,7.321,0,0,0,4.347,4.652c10.785,3.728,10.654-17.111,1.387-15.236"
-                  fill="#ddc8e1" fillRule="evenodd"/>
+                  fill="#ddc8e1"
+                  fillRule="evenodd"
+                />
                 <path
                   d="M17.7,145.091l-.08.1.08-.1m8.471-4.507-.127-1.083c5.848,2.76,10.5,7.9,8.559,14.787-1.482,5.258-6.834,7.123-11.821,5.825-5.52-1.437-8.158-5.988-6.67-11.575.687-2.578,2.8-6.042,5.521-6.871,1.269-.386,4.075.6,4.537-1.083M22.753,138.4a8.344,8.344,0,0,0-4.126,1.559,6.738,6.738,0,0,1,4.126-1.559m.042-3.4c-3.654.112-6.048,2.324-8.216,4.98-.68.834-2.98,3.045-2.7,4.168.225.888.814,2.187,2.055,1.2-6.5,12.95,10.288,24,20.535,14.99,9.563-8.4.075-25.729-11.68-25.335"
-                  fill="#ddc8e1" fillRule="evenodd"/>
-                <path d="M19.476,147.035a1.339,1.339,0,0,0,2.677,0,1.339,1.339,0,0,0-2.677,0" fill="#ddc8e1"
-                      fillRule="evenodd"/>
-                <path d="M24.044,147.329a1.361,1.361,0,0,0,2.72,0,1.361,1.361,0,0,0-2.72,0" fill="#ddc8e1"
-                      fillRule="evenodd"/>
-                <path
-                  d="M26.117,153.484c-1.273.1-5.931-.329-6.748.786-1.366,1.863.814,1.927,1.885,2.129.965.181,5.159.079,5.75-.778.522-.757.4-2.246-.887-2.136"
-                  fill="#ddc8e1" fillRule="evenodd"/>
+                  fill="#ddc8e1"
+                  fillRule="evenodd"
+                />
+                <path d="M19.476,147.035a1.339,1.339,0,0,0,2.677,0,1.339,1.339,0,0,0-2.677,0" fill="#ddc8e1" fillRule="evenodd" />
+                <path d="M24.044,147.329a1.361,1.361,0,0,0,2.72,0,1.361,1.361,0,0,0-2.72,0" fill="#ddc8e1" fillRule="evenodd" />
+                <path d="M26.117,153.484c-1.273.1-5.931-.329-6.748.786-1.366,1.863.814,1.927,1.885,2.129.965.181,5.159.079,5.75-.778.522-.757.4-2.246-.887-2.136" fill="#ddc8e1" fillRule="evenodd" />
                 <path
                   d="M82.241,148.653h0m-17.6-1.287c-2.867.211-5.3,1.86-8.038,2.518-2.926.7-4.193-.59-6.854-1.436a6.47,6.47,0,0,0-6.962,1.358c-1.261,1.071-4.026,3.537-3.238,5.44,1.8,4.355,5.888-2.731,7.809-3.06,3-.514,5.662,2.106,9.118,1.356,3.131-.679,5.909-2.829,9.18-2.852,2.735-.019,5.312,1.477,8.012,1.839,4.121.553,6.828-.91,10.638-2,3.3-.942,5.621.3,8.728,1.345,1.42.477,6.159,2.213,5.287-.934-.247-.889-6.492-2.479-7.46-2.785-3.414-1.079-5.577-.658-8.829.582a13.379,13.379,0,0,1-7.9.969c-3.2-.627-6.118-2.6-9.488-2.344"
-                  fill="#ddc8e1" fillRule="evenodd"/>
+                  fill="#ddc8e1"
+                  fillRule="evenodd"
+                />
               </g>
               <g transform="translate(358 414)" opacity="0.346">
-                <path
-                  d="M.121-123.043C4.174-68.048,221.6,38.1,261.962-13.992s1.559-149.85-83.029-174.883S-3.931-178.038.121-123.043Z"
-                  transform="translate(278) rotate(180)" fill="#f2f2f2" fillRule="evenodd"/>
-                <path
-                  d="M244.079,158.351c3.4-46.641,185.885-136.662,219.762-92.485s25.3,137.1-45.692,158.329S240.678,204.992,244.079,158.351Z"
-                  fill="#dde3e9" fillRule="evenodd"/>
+                <path d="M.121-123.043C4.174-68.048,221.6,38.1,261.962-13.992s1.559-149.85-83.029-174.883S-3.931-178.038.121-123.043Z" transform="translate(278) rotate(180)" fill="#f2f2f2" fillRule="evenodd" />
+                <path d="M244.079,158.351c3.4-46.641,185.885-136.662,219.762-92.485s25.3,137.1-45.692,158.329S240.678,204.992,244.079,158.351Z" fill="#dde3e9" fillRule="evenodd" />
               </g>
               <g transform="translate(381 314)">
                 <g transform="translate(425) rotate(180)">
@@ -1177,100 +1199,116 @@ export const SvgEmptyState = React.memo(
                       <g transform="translate(38.515 22.058)">
                         <path
                           d="M27.205,6.5c4.133,7.685,3.642,27.18-1.7,28.554-2.13.548-6.668-.794-11.287-3.571l2.9,20.461H0l5.893-27.4C2.606,20.692.382,15.976.754,10.691,1.825-4.536,23.072-1.186,27.205,6.5Z"
-                          fill="#b28b67" fillRule="evenodd"/>
+                          fill="#b28b67"
+                          fillRule="evenodd"
+                        />
                       </g>
                       <path
                         d="M58.959,20.186A22.392,22.392,0,0,0,51.8,19.4a12.264,12.264,0,0,0,.872-6.213,18.9,18.9,0,0,0-2.02-5.617,7.682,7.682,0,0,0-1.494-2.323,5.107,5.107,0,0,0-2.418-1.3,6.484,6.484,0,0,0-2.785,0c-.4.085-.768.27-1.165.372s-.6-.149-.9-.4a5.1,5.1,0,0,0-2.654-1.027,6.859,6.859,0,0,0-3.02.361A5.913,5.913,0,0,0,33.7,4.858a4.207,4.207,0,0,0-.754,1.152c-.073.175-.085.279-.26.343s-.351.061-.518.118a6.517,6.517,0,0,0-3.75,3.391,10.728,10.728,0,0,0-.59,4.417c.057,1.841,1.724,6.646,3.282,8.4a10.478,10.478,0,0,0,5.41,3.048,15.43,15.43,0,0,0-2.827,5.259A25.684,25.684,0,0,0,32.4,37.374a20.8,20.8,0,0,0,.321,6.3,6.826,6.826,0,0,0,3.059,4.444,14.628,14.628,0,0,0,2.355,1.1A15.528,15.528,0,0,0,40.558,50a4.877,4.877,0,0,0,4.608-.983,8.634,8.634,0,0,0,1.239-1.57c.115-.2.184-.328.045-.522a3.738,3.738,0,0,0-.652-.592,6.127,6.127,0,0,1-2.173-4.06c-.194-1.667.255-3.818,1.879-4.545,2-.9,4.213.133,6,1.093a9.781,9.781,0,0,1,4.751-6.291c2.7-1.353,5.792-1.512,8.564-2.673a5.111,5.111,0,0,0,1.99-1.263,2.566,2.566,0,0,0,.572-.933,1.508,1.508,0,0,0-.4-1.172C65.793,24.636,61.3,20.9,58.959,20.186Z"
-                        fill="#191847" fillRule="evenodd"/>
+                        fill="#191847"
+                        fillRule="evenodd"
+                      />
                     </g>
                     <g transform="translate(0 137.187)">
-                      <path d="M92.3,0l52.758,87.842,39.553,74.263h8.519L126.858,0Z" fill="#915b3c"
-                            fillRule="evenodd"/>
+                      <path d="M92.3,0l52.758,87.842,39.553,74.263h8.519L126.858,0Z" fill="#915b3c" fillRule="evenodd" />
                       <g transform="translate(177.5 140.715)">
                         <path
                           d="M1.66,18.4A13.363,13.363,0,0,0,.7,22.474,34.889,34.889,0,0,0,1.34,28H41.1q1.55-5.088-1.789-5.493t-5.548-.733l-18.206-8.06a1,1,0,0,0-1.319.51l-.009.021-1.072,2.582h0a12.746,12.746,0,0,1-5.024,1.432,10.389,10.389,0,0,1-3.8-1.023h0A2,2,0,0,0,1.7,18.287Q1.681,18.344,1.66,18.4Z"
-                          fill="#e4e4e4" fillRule="evenodd"/>
+                          fill="#e4e4e4"
+                          fillRule="evenodd"
+                        />
                       </g>
-                      <path
-                        d="M173.626,150.214l16.429-4.95q-10.8-32.147-26.467-70.753T129.93,0h-46.4a725.656,725.656,0,0,0,42.4,82.538A558.652,558.652,0,0,0,173.626,150.214Z"
-                        fill="#571563" fillRule="evenodd"/>
-                      <path
-                        d="M88.833,0C83.853,30.868,74.25,70.306,73.343,71.524Q72.437,72.741,8.087,93.3l1.84,7.482Q86.665,89.756,90.8,83.673C94.926,77.59,115.551,29.531,123.54,0Z"
-                        fill="#915b3c" fillRule="evenodd"/>
-                      <path
-                        d="M23.167,86.834l3.241,12.05q57.4,5.013,70.335-7.245T126.237,0H81.989Q71.5,65,70.262,67.731T23.167,86.834Z"
-                        fill="#7a1b8b" fillRule="evenodd"/>
+                      <path d="M173.626,150.214l16.429-4.95q-10.8-32.147-26.467-70.753T129.93,0h-46.4a725.656,725.656,0,0,0,42.4,82.538A558.652,558.652,0,0,0,173.626,150.214Z" fill="#571563" fillRule="evenodd" />
+                      <path d="M88.833,0C83.853,30.868,74.25,70.306,73.343,71.524Q72.437,72.741,8.087,93.3l1.84,7.482Q86.665,89.756,90.8,83.673C94.926,77.59,115.551,29.531,123.54,0Z" fill="#915b3c" fillRule="evenodd" />
+                      <path d="M23.167,86.834l3.241,12.05q57.4,5.013,70.335-7.245T126.237,0H81.989Q71.5,65,70.262,67.731T23.167,86.834Z" fill="#7a1b8b" fillRule="evenodd" />
                       <g transform="translate(27.562 85.114) rotate(80)">
                         <path
                           d="M1.66,18.4A13.363,13.363,0,0,0,.7,22.474,34.889,34.889,0,0,0,1.34,28H41.1q1.55-5.088-1.789-5.493t-5.548-.733l-18.206-8.06a1,1,0,0,0-1.319.51l-.009.021-1.072,2.582h0a12.746,12.746,0,0,1-5.024,1.432,10.389,10.389,0,0,1-3.8-1.023h0A2,2,0,0,0,1.7,18.287Q1.681,18.344,1.66,18.4Z"
-                          fill="#e4e4e4" fillRule="evenodd"/>
+                          fill="#e4e4e4"
+                          fillRule="evenodd"
+                        />
                       </g>
                     </g>
                     <g transform="translate(3.93 77.259) rotate(-8)">
                       <path
                         d="M48.322,52.553l15.568.058q-25.606,57.212-26.7,59.911c-1.645,4.048,1.836,10.213,3.325,13.526-4.849,2.154-4.332-5.824-10.448-3-5.583,2.579-9.83,7.252-16.28,3.3-.793-.486-1.662-2.315.438-3.745,5.231-3.561,12.769-9.794,13.787-11.846q2.083-4.2,20.313-58.206ZM180.36,39.046c-3.145,2.6-6.336,5.483-5.776,6.873s3.485.872,3.97,3.009q.485,2.137-14.241.694l-22.776,8.966L136.5,46.1l28.07-3.8a61.441,61.441,0,0,1,15.5-6.3C181.394,35.964,183.505,36.443,180.36,39.046Z"
-                        fill="#997659" fillRule="evenodd"/>
+                        fill="#997659"
+                        fillRule="evenodd"
+                      />
                       <path
                         d="M87.805,6.848l12.213-.259c5.341,26.6,23.114,42.144,59.082,33.209l7.872,34.169c-33.7,7.356-64.784-3.578-74.12-39.729C90.434,24.88,88.317,15.106,87.805,6.848Z"
-                        transform="translate(4.09 -10.945) rotate(5)" fill="#cca8d2" fillRule="evenodd"/>
-                      <path
-                        d="M84.941,0l.009.011,18.468,4.2c0,31.184,9.892,51.207,15.131,74.068l.177.78H68.85c-.7,8.012-1.134,16.248-1.359,24.706H30.145Q42.839,36.7,83.731,0h1.21Z"
-                        fill="#c5cfd6" fillRule="evenodd"/>
-                      <path d="M76.719,34.066q-1.928,29.479,2.268,44.993H68.85a241.428,241.428,0,0,1,7.785-44.7Z"
-                            fill="rgba(0,0,0,0.1)" fillRule="evenodd"/>
+                        transform="translate(4.09 -10.945) rotate(5)"
+                        fill="#cca8d2"
+                        fillRule="evenodd"
+                      />
+                      <path d="M84.941,0l.009.011,18.468,4.2c0,31.184,9.892,51.207,15.131,74.068l.177.78H68.85c-.7,8.012-1.134,16.248-1.359,24.706H30.145Q42.839,36.7,83.731,0h1.21Z" fill="#c5cfd6" fillRule="evenodd" />
+                      <path d="M76.719,34.066q-1.928,29.479,2.268,44.993H68.85a241.428,241.428,0,0,1,7.785-44.7Z" fill="rgba(0,0,0,0.1)" fillRule="evenodd" />
                     </g>
                   </g>
                   <g transform="translate(73.688 -0.631) rotate(-7)">
                     <g transform="translate(38.515 -22.058)">
                       <path
                         d="M27.205-6.5c4.133-7.685,3.642-27.18-1.7-28.554-2.13-.548-6.668.794-11.287,3.571l2.9-20.461H0l5.893,27.4C2.606-20.693.382-15.976.754-10.691,1.825,4.536,23.072,1.186,27.205-6.5Z"
-                        fill="#b28b67" fillRule="evenodd"/>
+                        fill="#b28b67"
+                        fillRule="evenodd"
+                      />
                     </g>
                     <path
                       d="M55.963-19.7c-2.256.369-8.331.623-9.451.623-.716,0-1.492-.163-1.916.493-.347.537-.22,1.445-.324,2.068-.12.724-.291,1.439-.464,2.151a21.843,21.843,0,0,1-2.277,5.77A17.762,17.762,0,0,1,33.106-.984,27.117,27.117,0,0,1,20.313.771C15.722.4,11.566-1.112,7.231-2.535A27.48,27.48,0,0,0-5.548-3.762C-9.9-3.1-13.19-.741-16.862,1.493a21.115,21.115,0,0,1-12.5,3.439A24.1,24.1,0,0,1-40.761.619,18.57,18.57,0,0,1-48.113-7.7c-1.608-3.89-1.607-8.16,1.038-11.6,3.833-4.983,10.95-6.272,16.871-6.144a32.3,32.3,0,0,1,10.021,1.832c4.312,1.513,8.038,4.078,12.072,6.158a31.458,31.458,0,0,0,5.9,2.356c1.99.561,3.951.818,5.753-.382a27.184,27.184,0,0,1,5.8-3.31,18.731,18.731,0,0,1,6.537-1.171c4.337.033,8.612,1.382,12.824,2.284,3.435.736,7.11,1.47,10.612.762,1.461-.3,3.6-.905,4.123-2.42C34.552-20.939,31.063-31.9,33.568-39.944c1.352-4.342,9.476-9.419,12.635-7.136,2,1.446.786,3.345,0,4.6-1.506,2.4-2.021,5.484.765,7.155,2.4,1.441,4.93-1.981,4.978-1.978.661.052,6.368,3.272,10.3,7.972,3.88-.229,4.468,2.323,3.542,4.41S59.081-20.21,55.963-19.7Z"
-                      fill="#191847" fillRule="evenodd"/>
+                      fill="#191847"
+                      fillRule="evenodd"
+                    />
                   </g>
                   <g transform="translate(0 -137.985)">
                     <path
                       d="M147.082,6.97C133.562-4.06,138.9-101,138-102.223q-.6-.812-64.354-13.723l1.85-7.506q74.6,3.565,78.934,9.1,6.21,7.927,15.218,88.773Z"
-                      transform="matrix(0.574, 0.819, -0.819, 0.574, 4.164, -124.48)" fill="#b28b67"
-                      fillRule="evenodd"/>
+                      transform="matrix(0.574, 0.819, -0.819, 0.574, 4.164, -124.48)"
+                      fill="#b28b67"
+                      fillRule="evenodd"
+                    />
                     <path
                       d="M147.082,6.97C133.562-4.06,138.9-101,138-102.223q-.6-.812-64.354-13.723l1.85-7.506q74.6,3.565,78.934,9.1,6.21,7.927,15.218,88.773Z"
-                      transform="matrix(0.574, 0.819, -0.819, 0.574, 4.164, -124.48)" fill="rgba(0,0,0,0.1)"
-                      fillRule="evenodd"/>
+                      transform="matrix(0.574, 0.819, -0.819, 0.574, 4.164, -124.48)"
+                      fill="rgba(0,0,0,0.1)"
+                      fillRule="evenodd"
+                    />
                     <path
                       d="M80.832-108.06l3.256-12.089c37.082-4.334,61.513.9,70.1,9.074q8.587,8.178,15.258,88.532L145.309,11.928c-32.188-24.291-12.822-104.05-13.642-105.872S111.3-97.172,80.832-108.06Z"
-                      transform="matrix(0.574, 0.819, -0.819, 0.574, 8.398, -125.914)" fill="#2f3676"
-                      fillRule="evenodd"/>
+                      transform="matrix(0.574, 0.819, -0.819, 0.574, 8.398, -125.914)"
+                      fill="#2f3676"
+                      fillRule="evenodd"
+                    />
                     <g transform="translate(143.09 -111.732) rotate(-20)">
                       <path
                         d="M1.66-18.4A13.363,13.363,0,0,1,.7-22.474,34.889,34.889,0,0,1,1.34-28H41.1q1.55,5.088-1.789,5.493t-5.548.733l-18.206,8.06a1,1,0,0,1-1.319-.51l-.009-.021-1.072-2.582h0a12.746,12.746,0,0,0-5.024-1.432,10.389,10.389,0,0,0-3.8,1.023h0A2,2,0,0,1,1.7-18.287Q1.681-18.344,1.66-18.4Z"
-                        fill="#e4e4e4" fillRule="evenodd"/>
+                        fill="#e4e4e4"
+                        fillRule="evenodd"
+                      />
                     </g>
-                    <path d="M92.3,0,55.56-87.842,19.451-162.106H27.97L121.178,0Z" fill="#b28b67" fillRule="evenodd"/>
+                    <path d="M92.3,0,55.56-87.842,19.451-162.106H27.97L121.178,0Z" fill="#b28b67" fillRule="evenodd" />
                     <g transform="translate(17.04 -140.715)">
                       <path
                         d="M1.66-18.4A13.363,13.363,0,0,1,.7-22.474,34.889,34.889,0,0,1,1.34-28H41.1q1.55,5.088-1.789,5.493t-5.548.733l-18.206,8.06a1,1,0,0,1-1.319-.51l-.009-.021-1.072-2.582h0a12.746,12.746,0,0,0-5.024-1.432,10.389,10.389,0,0,0-3.8,1.023h0A2,2,0,0,1,1.7-18.287Q1.681-18.344,1.66-18.4Z"
-                        fill="#e4e4e4" fillRule="evenodd"/>
+                        fill="#e4e4e4"
+                        fillRule="evenodd"
+                      />
                     </g>
-                    <path
-                      d="M22.712-146.678l18.93-3.536C56.279-128.783,117.534-40.908,124.25,0H82.107C59.679-29.572,36.664-124.893,22.712-146.678Z"
-                      fill="#5c63ab" fillRule="evenodd"/>
+                    <path d="M22.712-146.678l18.93-3.536C56.279-128.783,117.534-40.908,124.25,0H82.107C59.679-29.572,36.664-124.893,22.712-146.678Z" fill="#5c63ab" fillRule="evenodd" />
                   </g>
                   <g transform="translate(24.357 -53.066) rotate(-7)">
                     <path
                       d="M36.619-57.883l14.568-2.87q-21.976-40.664-23.571-43.1c-2.392-3.66-.16-10.367.664-13.9-5.172-1.2-3.132,6.534-9.677,4.92-5.974-1.473-11.039-5.253-16.61-.155-.685.627-1.186,2.586,1.149,3.591,5.817,2.5,14.412,7.191,15.806,9.011Q21.8-96.667,36.619-57.883Zm144.093,21.7c-2.291-3.322-4.55-6.918-3.634-8.082s3.567.121,4.614-1.772q1.047-1.893-13.408-4.529L148.992-65.252l-8.226,10.463,25.761,11.233A60.987,60.987,0,0,0,179.6-33.376C180.856-32.978,183-32.858,180.713-36.18Z"
-                      fill="#b28b67" fillRule="evenodd"/>
+                      fill="#b28b67"
+                      fillRule="evenodd"
+                    />
                     <path
                       d="M87.667-6.995,93.7-5.416c14.463-11.68,22.607-42.07,31.854-45.378,8.743-3.127,20.33,1.653,34.05,7.939l5.179-9.242c-11.658-14.948-38.049-29.024-49.744-23.329C96.341-66.322,88.909-28.612,87.667-6.995Z"
-                      transform="translate(4.06 10.845) rotate(-5)" fill="#571563" fillRule="evenodd"/>
-                    <path
-                      d="M63.985-80.471h54.4c2.486,0,2.017,3.564,1.658,5.362C115.891-54.356,99.7-31.985,99.7-2.443L84.013,0C71.035-20.724,66.547-46.239,63.985-80.471Z"
-                      fill="#dde3e9" fillRule="evenodd"/>
-                    <path
-                      d="M85.833,0h3.38q21.128-71.51,11.649-95.294H51.9a176.356,176.356,0,0,0,6.662,35.84Q41.927-89.248,30.6-102.353l-11.4,2.217Q30.212-32.3,83,0Z"
-                      fill="#7a1b8b" fillRule="evenodd"/>
+                      transform="translate(4.06 10.845) rotate(-5)"
+                      fill="#571563"
+                      fillRule="evenodd"
+                    />
+                    <path d="M63.985-80.471h54.4c2.486,0,2.017,3.564,1.658,5.362C115.891-54.356,99.7-31.985,99.7-2.443L84.013,0C71.035-20.724,66.547-46.239,63.985-80.471Z" fill="#dde3e9" fillRule="evenodd" />
+                    <path d="M85.833,0h3.38q21.128-71.51,11.649-95.294H51.9a176.356,176.356,0,0,0,6.662,35.84Q41.927-89.248,30.6-102.353l-11.4,2.217Q30.212-32.3,83,0Z" fill="#7a1b8b" fillRule="evenodd" />
                   </g>
                 </g>
               </g>
@@ -1285,94 +1323,106 @@ export const SvgEmptyState = React.memo(
             <g transform="translate(-397.936 -271)">
               <g transform="translate(499 271)">
                 <g transform="translate(86 90)">
-                  <rect width="225" height="47" rx="4" fill="#fff"/>
+                  <rect width="225" height="47" rx="4" fill="#fff" />
                   <g transform="translate(9 14.1)">
-                    <rect width="167" height="7.05" rx="3" fill="#dde3e9"/>
-                    <rect width="112.096" height="7.05" rx="3" transform="translate(0 11.75)" fill="#dde3e9"/>
+                    <rect width="167" height="7.05" rx="3" fill="#dde3e9" />
+                    <rect width="112.096" height="7.05" rx="3" transform="translate(0 11.75)" fill="#dde3e9" />
                   </g>
                   <g transform="translate(193.954 16.5)">
-                    <circle cx="7" cy="7" r="7" fill="#dde3e9"/>
-                    <circle cx="3" cy="3" r="3" transform="translate(4 4)" fill="#f2f2f2"/>
+                    <circle cx="7" cy="7" r="7" fill="#dde3e9" />
+                    <circle cx="3" cy="3" r="3" transform="translate(4 4)" fill="#f2f2f2" />
                   </g>
                 </g>
                 <g transform="translate(225 46) rotate(180)">
-                  <rect width="225" height="39" rx="4" transform="translate(0 -39)" fill="#fff"/>
+                  <rect width="225" height="39" rx="4" transform="translate(0 -39)" fill="#fff" />
                   <g transform="translate(9 -11.7)">
-                    <rect width="167" height="5.85" rx="2.925" transform="translate(0 -5.85)" fill="#dde3e9"/>
-                    <rect width="112.096" height="5.85" rx="2.925" transform="translate(0 -15.6)" fill="#dde3e9"/>
+                    <rect width="167" height="5.85" rx="2.925" transform="translate(0 -5.85)" fill="#dde3e9" />
+                    <rect width="112.096" height="5.85" rx="2.925" transform="translate(0 -15.6)" fill="#dde3e9" />
                   </g>
                   <g transform="translate(193.954 -12.5)">
-                    <circle cx="7" cy="7" r="7" transform="translate(0 -14)" fill="#dde3e9"/>
-                    <circle cx="3" cy="3" r="3" transform="translate(4 -10)" fill="#f2f2f2"/>
+                    <circle cx="7" cy="7" r="7" transform="translate(0 -14)" fill="#dde3e9" />
+                    <circle cx="3" cy="3" r="3" transform="translate(4 -10)" fill="#f2f2f2" />
                   </g>
                 </g>
                 <g transform="translate(86)">
-                  <rect width="225" height="39" rx="4" fill="#fff"/>
+                  <rect width="225" height="39" rx="4" fill="#fff" />
                   <g transform="translate(9 11.7)">
-                    <rect width="167" height="5.85" rx="2.925" fill="#dde3e9"/>
-                    <rect width="112.096" height="5.85" rx="2.925" transform="translate(0 9.75)" fill="#dde3e9"/>
+                    <rect width="167" height="5.85" rx="2.925" fill="#dde3e9" />
+                    <rect width="112.096" height="5.85" rx="2.925" transform="translate(0 9.75)" fill="#dde3e9" />
                   </g>
                   <g transform="translate(193.954 12.5)">
-                    <circle cx="7" cy="7" r="7" fill="#dde3e9"/>
-                    <circle cx="3" cy="3" r="3" transform="translate(4 4)" fill="#f2f2f2"/>
+                    <circle cx="7" cy="7" r="7" fill="#dde3e9" />
+                    <circle cx="3" cy="3" r="3" transform="translate(4 4)" fill="#f2f2f2" />
                   </g>
                 </g>
               </g>
               <g transform="translate(390 366)">
-                <ellipse cx="99.89" cy="99.802" rx="99.89" ry="99.802" transform="translate(33.626 47.431)"
-                         fill="#cca8d2"/>
+                <ellipse cx="99.89" cy="99.802" rx="99.89" ry="99.802" transform="translate(33.626 47.431)" fill="#cca8d2" />
                 <g transform="translate(-15.824 -15.81)">
                   <g transform="translate(81.18)">
                     <g transform="translate(53.46 30.69)">
                       <path
                         d="M37.762,9.043C43.5,19.736,42.817,46.86,35.4,48.771c-2.957.762-9.256-1.105-15.668-4.97L23.76,72.27H0L8.179,34.144C3.617,28.79.53,22.228,1.046,14.875,2.533-6.311,32.025-1.651,37.762,9.043Z"
-                        fill="#b28b67" fillRule="evenodd"/>
+                        fill="#b28b67"
+                        fillRule="evenodd"
+                      />
                     </g>
                     <path
                       d="M59.814,69.6c-2.982-13.267-11.478-22.311-10.18-28.241a8.994,8.994,0,0,1,6.916-7.375q2.906-11.756,18.745-10C91.134,25.744,100.8,32.321,96.626,46.8c-3.838,0-8.47-1.388-14.877.99Q78.7,48.917,77.388,54.8H74.493q-4.215-6.987-8.311-5.135t-1.862,9L62.894,69.6Z"
-                      fill="#191847" fillRule="evenodd"/>
+                      fill="#191847"
+                      fillRule="evenodd"
+                    />
                   </g>
                   <g transform="translate(0 184.691)">
                     <path
                       d="M205.075-9.724c-18.849,15.378-11.4,150.547-12.655,152.246q-.838,1.133-89.722,19.127l2.58,10.466q104-4.963,110.051-12.683,8.657-11.052,21.208-123.775Z"
-                      transform="matrix(0.574, -0.819, 0.819, 0.574, 5.817, 173.565)" fill="#b28b67"
-                      fillRule="evenodd"/>
+                      transform="matrix(0.574, -0.819, 0.819, 0.574, 5.817, 173.565)"
+                      fill="#b28b67"
+                      fillRule="evenodd"
+                    />
                     <path
                       d="M205.075-9.724c-18.849,15.378-11.4,150.547-12.655,152.246q-.838,1.133-89.722,19.127l2.58,10.466q104-4.963,110.051-12.683,8.657-11.052,21.208-123.775Z"
-                      transform="matrix(0.574, -0.819, 0.819, 0.574, 5.817, 173.565)" fill="rgba(0,0,0,0.1)"
-                      fillRule="evenodd"/>
+                      transform="matrix(0.574, -0.819, 0.819, 0.574, 5.817, 173.565)"
+                      fill="rgba(0,0,0,0.1)"
+                      fillRule="evenodd"
+                    />
                     <path
                       d="M112.72,150.654l4.54,16.857c51.7,6.047,85.763-1.243,97.734-12.645q11.971-11.4,21.265-123.438L202.6-16.638C157.729,17.228,184.739,128.437,183.6,130.978S155.2,135.476,112.72,150.654Z"
-                      transform="matrix(0.574, -0.819, 0.819, 0.574, 11.72, 175.566)" fill="#2f3676"
-                      fillRule="evenodd"/>
+                      transform="matrix(0.574, -0.819, 0.819, 0.574, 11.72, 175.566)"
+                      fill="#2f3676"
+                      fillRule="evenodd"
+                    />
                     <g transform="matrix(0.94, 0.342, -0.342, 0.94, 199.519, 155.769)">
                       <path
                         d="M2.648,24.528A20.278,20.278,0,0,0,.99,30.99a47.27,47.27,0,0,0,.892,7.62H57.72q2.177-7.016-2.513-7.575t-7.791-1.01L21.45,18.738a.99.99,0,0,0-1.3.513l0,.009L18.477,23.2h0a18.157,18.157,0,0,1-7.055,1.975A16.342,16.342,0,0,1,5.306,23.43h0a1.98,1.98,0,0,0-2.616,1Q2.667,24.477,2.648,24.528Z"
-                        fill="#e4e4e4" fillRule="evenodd"/>
+                        fill="#e4e4e4"
+                        fillRule="evenodd"
+                      />
                     </g>
-                    <path d="M128.7,0,77.471,122.466,27.122,226H39L168.967,0Z" fill="#b28b67" fillRule="evenodd"/>
+                    <path d="M128.7,0,77.471,122.466,27.122,226H39L168.967,0Z" fill="#b28b67" fillRule="evenodd" />
                     <g transform="translate(23.76 196.179)">
                       <path
                         d="M2.648,24.528A20.278,20.278,0,0,0,.99,30.99a47.27,47.27,0,0,0,.892,7.62H57.72q2.177-7.016-2.513-7.575t-7.791-1.01L21.45,18.738a.99.99,0,0,0-1.3.513l0,.009L18.477,23.2h0a18.157,18.157,0,0,1-7.055,1.975A16.342,16.342,0,0,1,5.306,23.43h0a1.98,1.98,0,0,0-2.616,1Q2.667,24.477,2.648,24.528Z"
-                        fill="#e4e4e4" fillRule="evenodd"/>
+                        fill="#e4e4e4"
+                        fillRule="evenodd"
+                      />
                     </g>
-                    <path
-                      d="M31.669,204.492l26.4,4.929C78.473,179.543,163.885,57.032,173.25,0H114.488C83.214,41.228,51.123,174.119,31.669,204.492Z"
-                      fill="#5c63ab" fillRule="evenodd"/>
+                    <path d="M31.669,204.492l26.4,4.929C78.473,179.543,163.885,57.032,173.25,0H114.488C83.214,41.228,51.123,174.119,31.669,204.492Z" fill="#5c63ab" fillRule="evenodd" />
                   </g>
                   <g transform="translate(21.78 80.988)">
                     <path
                       d="M50.993,81.18,71.28,85.205q-30.6,57.032-32.823,60.454c-3.331,5.133-.223,14.54.925,19.494-7.2,1.676-4.362-9.164-13.476-6.9-8.319,2.066-15.373,7.368-23.13.217-.954-.879-1.652-3.627,1.6-5.036,8.1-3.511,20.069-10.086,22.01-12.638Q30.356,135.575,50.993,81.18ZM251.646,50.743c-3.19,4.659-6.335,9.7-5.061,11.336s4.967-.169,6.425,2.486q1.459,2.655-18.67,6.352l-26.866,20.6L196.02,76.841l35.872-15.754a85,85,0,0,1,18.2-14.278C251.846,46.252,254.836,46.084,251.646,50.743Z"
-                      fill="#b28b67" fillRule="evenodd"/>
+                      fill="#b28b67"
+                      fillRule="evenodd"
+                    />
                     <path
                       d="M122.047,9.778l8.4-2.209c20.151,16.393,31.519,59.02,44.4,63.667,12.178,4.394,28.31-2.3,47.412-11.1l7.22,12.965c-16.222,20.953-52.962,40.67-69.254,32.674C134.178,92.988,123.8,40.1,122.047,9.778Z"
-                      transform="translate(5.687 -15.1) rotate(5)" fill="#571563" fillRule="evenodd"/>
-                    <path
-                      d="M89.1,112.86h75.746c3.461,0,2.809-5,2.309-7.52C161.38,76.234,138.839,44.858,138.839,3.426L116.99,0C98.918,29.065,92.669,64.85,89.1,112.86Z"
-                      fill="#dde3e9" fillRule="evenodd"/>
-                    <path
-                      d="M119.524,0h4.707q29.422,100.292,16.222,133.65H72.27c1.079-16.272,4.538-33.481,9.275-50.26q-23.162,41.781-38.938,60.16L26.73,140.44Q42.071,45.3,115.581,0Z"
-                      fill="#7a1b8b" fillRule="evenodd"/>
+                      transform="translate(5.687 -15.1) rotate(5)"
+                      fill="#571563"
+                      fillRule="evenodd"
+                    />
+                    <path d="M89.1,112.86h75.746c3.461,0,2.809-5,2.309-7.52C161.38,76.234,138.839,44.858,138.839,3.426L116.99,0C98.918,29.065,92.669,64.85,89.1,112.86Z" fill="#dde3e9" fillRule="evenodd" />
+                    <path d="M119.524,0h4.707q29.422,100.292,16.222,133.65H72.27c1.079-16.272,4.538-33.481,9.275-50.26q-23.162,41.781-38.938,60.16L26.73,140.44Q42.071,45.3,115.581,0Z" fill="#7a1b8b" fillRule="evenodd" />
                   </g>
                 </g>
               </g>
@@ -1386,136 +1436,142 @@ export const SvgEmptyState = React.memo(
           <>
             <g transform="translate(-328 -277)">
               <g transform="translate(328 280)" opacity="0.346">
-                <path
-                  d="M.218-189.873C7.506-105.008,398.558,58.791,471.155-21.592s2.8-231.24-149.333-269.871S-7.07-274.738.218-189.873Z"
-                  transform="translate(500) rotate(180)" fill="#f2f2f2" fillRule="evenodd"/>
-                <path
-                  d="M166.125,255C171.49,195.106,459.341,79.51,512.779,136.238S552.692,312.285,440.7,339.547,160.76,314.887,166.125,255Z"
-                  fill="#dde3e9" fillRule="evenodd"/>
+                <path d="M.218-189.873C7.506-105.008,398.558,58.791,471.155-21.592s2.8-231.24-149.333-269.871S-7.07-274.738.218-189.873Z" transform="translate(500) rotate(180)" fill="#f2f2f2" fillRule="evenodd" />
+                <path d="M166.125,255C171.49,195.106,459.341,79.51,512.779,136.238S552.692,312.285,440.7,339.547,160.76,314.887,166.125,255Z" fill="#dde3e9" fillRule="evenodd" />
               </g>
               <g transform="translate(556 277)">
-                <path d="M48.007,51.986c0,.01-.008.02-.014.032.006-.01.014-.05.014-.032" fill="#c5cfd6"
-                      fillRule="evenodd"/>
-                <path d="M48,52a.087.087,0,0,0,0,.01c0-.01.018-.04,0-.01" fill="#c5cfd6" fillRule="evenodd"/>
-                <path d="M48.067,51.832c-.014.04-.032.078-.048.118.008-.02.016-.036.024-.056-.208.52-.076.182.024-.062"
-                      fill="#c5cfd6" fillRule="evenodd"/>
-                <path d="M48.022,51.953,48,52.009c-.058.112.024-.056.024-.056" fill="#c5cfd6" fillRule="evenodd"/>
-                <path d="M48,52h0v0Z" fill="#c5cfd6" fillRule="evenodd"/>
-                <path d="M48,52s0,0,0,0,0,0,0,0" fill="#c5cfd6" fillRule="evenodd"/>
-                <path d="M47.99,52.016c-.012.024.056-.092,0,0" fill="#c5cfd6" fillRule="evenodd"/>
-                <path d="M48,52l0,0s0,0,0,0" fill="#c5cfd6" fillRule="evenodd"/>
-                <rect width="95" height="63" rx="4" fill="#dde3e9"/>
+                <path d="M48.007,51.986c0,.01-.008.02-.014.032.006-.01.014-.05.014-.032" fill="#c5cfd6" fillRule="evenodd" />
+                <path d="M48,52a.087.087,0,0,0,0,.01c0-.01.018-.04,0-.01" fill="#c5cfd6" fillRule="evenodd" />
+                <path d="M48.067,51.832c-.014.04-.032.078-.048.118.008-.02.016-.036.024-.056-.208.52-.076.182.024-.062" fill="#c5cfd6" fillRule="evenodd" />
+                <path d="M48.022,51.953,48,52.009c-.058.112.024-.056.024-.056" fill="#c5cfd6" fillRule="evenodd" />
+                <path d="M48,52h0v0Z" fill="#c5cfd6" fillRule="evenodd" />
+                <path d="M48,52s0,0,0,0,0,0,0,0" fill="#c5cfd6" fillRule="evenodd" />
+                <path d="M47.99,52.016c-.012.024.056-.092,0,0" fill="#c5cfd6" fillRule="evenodd" />
+                <path d="M48,52l0,0s0,0,0,0" fill="#c5cfd6" fillRule="evenodd" />
+                <rect width="95" height="63" rx="4" fill="#dde3e9" />
                 <g transform="translate(8 18)">
-                  <path d="M28,0,0,45H56Z" fill="#cca8d2" fillRule="evenodd"/>
-                  <path d="M55.5,12,31,45H80Z" fill="#c5cfd6" fillRule="evenodd"/>
+                  <path d="M28,0,0,45H56Z" fill="#cca8d2" fillRule="evenodd" />
+                  <path d="M55.5,12,31,45H80Z" fill="#c5cfd6" fillRule="evenodd" />
                 </g>
-                <circle cx="9" cy="9" r="9" transform="translate(65 12)" fill="#fff"/>
+                <circle cx="9" cy="9" r="9" transform="translate(65 12)" fill="#fff" />
               </g>
               <g transform="translate(688 277)">
-                <path d="M48.007,51.986c0,.01-.008.02-.014.032.006-.01.014-.05.014-.032" fill="#c5cfd6"
-                      fillRule="evenodd"/>
-                <path d="M48,52a.087.087,0,0,0,0,.01c0-.01.018-.04,0-.01" fill="#c5cfd6" fillRule="evenodd"/>
-                <path d="M48.067,51.832c-.014.04-.032.078-.048.118.008-.02.016-.036.024-.056-.208.52-.076.182.024-.062"
-                      fill="#c5cfd6" fillRule="evenodd"/>
-                <path d="M48.022,51.953,48,52.009c-.058.112.024-.056.024-.056" fill="#c5cfd6" fillRule="evenodd"/>
-                <path d="M48,52h0v0Z" fill="#c5cfd6" fillRule="evenodd"/>
-                <path d="M48,52s0,0,0,0,0,0,0,0" fill="#c5cfd6" fillRule="evenodd"/>
-                <path d="M47.99,52.016c-.012.024.056-.092,0,0" fill="#c5cfd6" fillRule="evenodd"/>
-                <path d="M48,52l0,0s0,0,0,0" fill="#c5cfd6" fillRule="evenodd"/>
-                <rect width="95" height="63" rx="4" fill="#dde3e9"/>
+                <path d="M48.007,51.986c0,.01-.008.02-.014.032.006-.01.014-.05.014-.032" fill="#c5cfd6" fillRule="evenodd" />
+                <path d="M48,52a.087.087,0,0,0,0,.01c0-.01.018-.04,0-.01" fill="#c5cfd6" fillRule="evenodd" />
+                <path d="M48.067,51.832c-.014.04-.032.078-.048.118.008-.02.016-.036.024-.056-.208.52-.076.182.024-.062" fill="#c5cfd6" fillRule="evenodd" />
+                <path d="M48.022,51.953,48,52.009c-.058.112.024-.056.024-.056" fill="#c5cfd6" fillRule="evenodd" />
+                <path d="M48,52h0v0Z" fill="#c5cfd6" fillRule="evenodd" />
+                <path d="M48,52s0,0,0,0,0,0,0,0" fill="#c5cfd6" fillRule="evenodd" />
+                <path d="M47.99,52.016c-.012.024.056-.092,0,0" fill="#c5cfd6" fillRule="evenodd" />
+                <path d="M48,52l0,0s0,0,0,0" fill="#c5cfd6" fillRule="evenodd" />
+                <rect width="95" height="63" rx="4" fill="#dde3e9" />
                 <g transform="translate(8 18)">
-                  <path d="M28,0,0,45H56Z" fill="#cca8d2" fillRule="evenodd"/>
-                  <path d="M55.5,12,31,45H80Z" fill="#c5cfd6" fillRule="evenodd"/>
+                  <path d="M28,0,0,45H56Z" fill="#cca8d2" fillRule="evenodd" />
+                  <path d="M55.5,12,31,45H80Z" fill="#c5cfd6" fillRule="evenodd" />
                 </g>
-                <circle cx="9" cy="9" r="9" transform="translate(65 12)" fill="#fff"/>
+                <circle cx="9" cy="9" r="9" transform="translate(65 12)" fill="#fff" />
               </g>
               <g transform="translate(688 374)">
-                <path d="M48.007,51.986c0,.01-.008.02-.014.032.006-.01.014-.05.014-.032" fill="#c5cfd6"
-                      fillRule="evenodd"/>
-                <path d="M48,52a.087.087,0,0,0,0,.01c0-.01.018-.04,0-.01" fill="#c5cfd6" fillRule="evenodd"/>
-                <path d="M48.067,51.832c-.014.04-.032.078-.048.118.008-.02.016-.036.024-.056-.208.52-.076.182.024-.062"
-                      fill="#c5cfd6" fillRule="evenodd"/>
-                <path d="M48.022,51.953,48,52.009c-.058.112.024-.056.024-.056" fill="#c5cfd6" fillRule="evenodd"/>
-                <path d="M48,52h0v0Z" fill="#c5cfd6" fillRule="evenodd"/>
-                <path d="M48,52s0,0,0,0,0,0,0,0" fill="#c5cfd6" fillRule="evenodd"/>
-                <path d="M47.99,52.016c-.012.024.056-.092,0,0" fill="#c5cfd6" fillRule="evenodd"/>
-                <path d="M48,52l0,0s0,0,0,0" fill="#c5cfd6" fillRule="evenodd"/>
-                <rect width="95" height="63" rx="4" fill="#dde3e9"/>
+                <path d="M48.007,51.986c0,.01-.008.02-.014.032.006-.01.014-.05.014-.032" fill="#c5cfd6" fillRule="evenodd" />
+                <path d="M48,52a.087.087,0,0,0,0,.01c0-.01.018-.04,0-.01" fill="#c5cfd6" fillRule="evenodd" />
+                <path d="M48.067,51.832c-.014.04-.032.078-.048.118.008-.02.016-.036.024-.056-.208.52-.076.182.024-.062" fill="#c5cfd6" fillRule="evenodd" />
+                <path d="M48.022,51.953,48,52.009c-.058.112.024-.056.024-.056" fill="#c5cfd6" fillRule="evenodd" />
+                <path d="M48,52h0v0Z" fill="#c5cfd6" fillRule="evenodd" />
+                <path d="M48,52s0,0,0,0,0,0,0,0" fill="#c5cfd6" fillRule="evenodd" />
+                <path d="M47.99,52.016c-.012.024.056-.092,0,0" fill="#c5cfd6" fillRule="evenodd" />
+                <path d="M48,52l0,0s0,0,0,0" fill="#c5cfd6" fillRule="evenodd" />
+                <rect width="95" height="63" rx="4" fill="#dde3e9" />
                 <g transform="translate(8 18)">
-                  <path d="M28,0,0,45H56Z" fill="#cca8d2" fillRule="evenodd"/>
-                  <path d="M55.5,12,31,45H80Z" fill="#c5cfd6" fillRule="evenodd"/>
+                  <path d="M28,0,0,45H56Z" fill="#cca8d2" fillRule="evenodd" />
+                  <path d="M55.5,12,31,45H80Z" fill="#c5cfd6" fillRule="evenodd" />
                 </g>
-                <circle cx="9" cy="9" r="9" transform="translate(65 12)" fill="#fff"/>
+                <circle cx="9" cy="9" r="9" transform="translate(65 12)" fill="#fff" />
               </g>
               <g transform="translate(556 374)">
-                <path d="M48.007,51.986c0,.01-.008.02-.014.032.006-.01.014-.05.014-.032" fill="#c5cfd6"
-                      fillRule="evenodd"/>
-                <path d="M48,52a.087.087,0,0,0,0,.01c0-.01.018-.04,0-.01" fill="#c5cfd6" fillRule="evenodd"/>
-                <path d="M48.067,51.832c-.014.04-.032.078-.048.118.008-.02.016-.036.024-.056-.208.52-.076.182.024-.062"
-                      fill="#c5cfd6" fillRule="evenodd"/>
-                <path d="M48.022,51.953,48,52.009c-.058.112.024-.056.024-.056" fill="#c5cfd6" fillRule="evenodd"/>
-                <path d="M48,52h0v0Z" fill="#c5cfd6" fillRule="evenodd"/>
-                <path d="M48,52s0,0,0,0,0,0,0,0" fill="#c5cfd6" fillRule="evenodd"/>
-                <path d="M47.99,52.016c-.012.024.056-.092,0,0" fill="#c5cfd6" fillRule="evenodd"/>
-                <path d="M48,52l0,0s0,0,0,0" fill="#c5cfd6" fillRule="evenodd"/>
-                <rect width="95" height="63" rx="4" fill="#dde3e9"/>
+                <path d="M48.007,51.986c0,.01-.008.02-.014.032.006-.01.014-.05.014-.032" fill="#c5cfd6" fillRule="evenodd" />
+                <path d="M48,52a.087.087,0,0,0,0,.01c0-.01.018-.04,0-.01" fill="#c5cfd6" fillRule="evenodd" />
+                <path d="M48.067,51.832c-.014.04-.032.078-.048.118.008-.02.016-.036.024-.056-.208.52-.076.182.024-.062" fill="#c5cfd6" fillRule="evenodd" />
+                <path d="M48.022,51.953,48,52.009c-.058.112.024-.056.024-.056" fill="#c5cfd6" fillRule="evenodd" />
+                <path d="M48,52h0v0Z" fill="#c5cfd6" fillRule="evenodd" />
+                <path d="M48,52s0,0,0,0,0,0,0,0" fill="#c5cfd6" fillRule="evenodd" />
+                <path d="M47.99,52.016c-.012.024.056-.092,0,0" fill="#c5cfd6" fillRule="evenodd" />
+                <path d="M48,52l0,0s0,0,0,0" fill="#c5cfd6" fillRule="evenodd" />
+                <rect width="95" height="63" rx="4" fill="#dde3e9" />
                 <g transform="translate(8 18)">
-                  <path d="M28,0,0,45H56Z" fill="#cca8d2" fillRule="evenodd"/>
-                  <path d="M55.5,12,31,45H80Z" fill="#c5cfd6" fillRule="evenodd"/>
+                  <path d="M28,0,0,45H56Z" fill="#cca8d2" fillRule="evenodd" />
+                  <path d="M55.5,12,31,45H80Z" fill="#c5cfd6" fillRule="evenodd" />
                 </g>
-                <circle cx="9" cy="9" r="9" transform="translate(65 12)" fill="#fff"/>
+                <circle cx="9" cy="9" r="9" transform="translate(65 12)" fill="#fff" />
               </g>
               <g transform="translate(347 262)">
                 <g transform="translate(66)">
                   <g transform="translate(43.625 25.145)">
                     <path
                       d="M30.815,7.409C35.5,16.17,34.94,38.394,28.89,39.96c-2.413.624-7.553-.905-12.785-4.071l3.284,23.325H0L6.674,27.976C2.952,23.589.433,18.212.854,12.188,2.067-5.171,26.134-1.352,30.815,7.409Z"
-                      fill="#b28b67" fillRule="evenodd"/>
+                      fill="#b28b67"
+                      fillRule="evenodd"
+                    />
                   </g>
                   <path
                     d="M45.914,32.888C50.335,14.65,75.35,25.973,80.163,22.9c1.052,6.621-2.341,11.96-14.271,10.929-2.633,1.476-4.506,4.246-6.761,7.879a4.8,4.8,0,0,0-1.772-.336,4.871,4.871,0,0,0-3.387,8.348c-1.121,1.588-2.378,3.249-3.819,4.963-5.37-3.235-9.365-12.656-4.256-21.758Z"
-                    fill="#191847" fillRule="evenodd"/>
+                    fill="#191847"
+                    fillRule="evenodd"
+                  />
                 </g>
                 <g transform="translate(0 152)">
                   <path
                     d="M167.879-7.871c-15.458,12.606-9.49,123.24-10.521,124.632q-.688.928-73.526,15.746l2.1,8.564q85.212-4.167,90.174-10.492,7.1-9.056,17.5-101.336Z"
-                    transform="matrix(0.574, -0.819, 0.819, 0.574, 4.598, 142.033)" fill="#b28b67" fillRule="evenodd"/>
+                    transform="matrix(0.574, -0.819, 0.819, 0.574, 4.598, 142.033)"
+                    fill="#b28b67"
+                    fillRule="evenodd"
+                  />
                   <path
                     d="M167.879-7.871c-15.458,12.606-9.49,123.24-10.521,124.632q-.688.928-73.526,15.746l2.1,8.564q85.212-4.167,90.174-10.492,7.1-9.056,17.5-101.336Z"
-                    transform="matrix(0.574, -0.819, 0.819, 0.574, 4.598, 142.033)" fill="rgba(0,0,0,0.1)"
-                    fillRule="evenodd"/>
+                    transform="matrix(0.574, -0.819, 0.819, 0.574, 4.598, 142.033)"
+                    fill="rgba(0,0,0,0.1)"
+                    fillRule="evenodd"
+                  />
                   <path
                     d="M92.028,123.5l3.7,13.793c42.352,4.9,70.264-1.1,80.083-10.448q9.819-9.345,17.545-101.06L165.835-13.524c-36.8,27.766-14.782,118.767-15.722,120.848S126.842,111.035,92.028,123.5Z"
-                    transform="matrix(0.574, -0.819, 0.819, 0.574, 9.439, 143.65)" fill="#2f3676" fillRule="evenodd"/>
+                    transform="matrix(0.574, -0.819, 0.819, 0.574, 9.439, 143.65)"
+                    fill="#2f3676"
+                    fillRule="evenodd"
+                  />
                   <g transform="matrix(0.94, 0.342, -0.342, 0.94, 163.189, 127.749)">
                     <path
                       d="M1.949,20.7A15.68,15.68,0,0,0,.8,25.511a39.684,39.684,0,0,0,.72,6.273H46.553q1.755-5.775-2.027-6.236t-6.284-.832l-20.7-9.185a1.043,1.043,0,0,0-1.376.53l-.01.024L14.9,19.1h0a14.414,14.414,0,0,1-5.69,1.626A12.059,12.059,0,0,1,4.745,19.5h0A2.086,2.086,0,0,0,2,20.572Q1.972,20.634,1.949,20.7Z"
-                      fill="#e4e4e4" fillRule="evenodd"/>
+                      fill="#e4e4e4"
+                      fillRule="evenodd"
+                    />
                   </g>
-                  <path d="M105.256,0l-41.9,100.419-41.178,84.9H31.9L138.188,0Z" fill="#b28b67" fillRule="evenodd"/>
+                  <path d="M105.256,0l-41.9,100.419-41.178,84.9H31.9L138.188,0Z" fill="#b28b67" fillRule="evenodd" />
                   <g transform="translate(19.432 160.861)">
                     <path
                       d="M1.949,20.7A15.68,15.68,0,0,0,.8,25.511a39.684,39.684,0,0,0,.72,6.273H46.553q1.755-5.775-2.027-6.236t-6.284-.832l-20.7-9.185a1.043,1.043,0,0,0-1.376.53l-.01.024L14.9,19.1h0a14.414,14.414,0,0,1-5.69,1.626A12.059,12.059,0,0,1,4.745,19.5h0A2.086,2.086,0,0,0,2,20.572Q1.972,20.634,1.949,20.7Z"
-                      fill="#e4e4e4" fillRule="evenodd"/>
+                      fill="#e4e4e4"
+                      fillRule="evenodd"
+                    />
                   </g>
-                  <path
-                    d="M25.9,167.678l21.587,4.042C64.178,147.22,134.032,46.764,141.691,0H93.632C68.056,33.806,41.81,142.773,25.9,167.678Z"
-                    fill="#5c63ab" fillRule="evenodd"/>
+                  <path d="M25.9,167.678l21.587,4.042C64.178,147.22,134.032,46.764,141.691,0H93.632C68.056,33.806,41.81,142.773,25.9,167.678Z" fill="#5c63ab" fillRule="evenodd" />
                 </g>
                 <g transform="translate(18 67)">
                   <path
                     d="M152.091,55.858l25.791,18.916a69.471,69.471,0,0,1,17.532,7.037c1.109,1.009,2.448,3.052-2.149,2.7l-.614-.046c-4.407-.319-8.864-.4-9.47,1.094-.634,1.566,2.148,3.44.866,5.553q-1.282,2.113-12.117-10.6L146.39,69.935Zm50.4-69.569c-3.049,3.455-6.1,7.226-5.231,8.675s4.043.357,4.961,2.651Q203.137-.089,186.452.9L162.624,14.91,154.8,1.89,185.446-7.3a69.441,69.441,0,0,1,16.178-9.75C203.1-17.326,205.538-17.165,202.489-13.71Z"
-                    fill="#b28b67" fillRule="evenodd"/>
+                    fill="#b28b67"
+                    fillRule="evenodd"
+                  />
                   <path
                     d="M102.684,12.647C123.02,34.277,147.827,48.389,181.662,60.9l-7.519,15.013c-34.913-3.278-53.577-5.9-68.2-27.565C102.269,42.913,95.708,24.2,91.777,14.484Z"
-                    transform="matrix(0.966, 0.259, -0.259, 0.966, 16.119, -33.877)" fill="#6c147c"
-                    fillRule="evenodd"/>
-                  <path
-                    d="M72.768,92.064h62.257Q113.872,27.626,113.414,3.611c-.016-.816-1.525-2.254-2.192-2.066Q103.9,3.611,95.546,0C80.787,23.709,75.683,52.9,72.768,92.064Z"
-                    fill="#f2f2f2" fillRule="evenodd"/>
+                    transform="matrix(0.966, 0.259, -0.259, 0.966, 16.119, -33.877)"
+                    fill="#6c147c"
+                    fillRule="evenodd"
+                  />
+                  <path d="M72.768,92.064h62.257Q113.872,27.626,113.414,3.611c-.016-.816-1.525-2.254-2.192-2.066Q103.9,3.611,95.546,0C80.787,23.709,75.683,52.9,72.768,92.064Z" fill="#f2f2f2" fillRule="evenodd" />
                   <path
                     d="M181.05-7.268l3.3,16.453C159.109,25.4,133.554,37.956,111.162,36.172c9.724,41.659,9.276,75.763-12.191,75.763h-33.2C60.5,76.545,74.36,27.477,87.206,2.727A4.379,4.379,0,0,1,91.2,0h9.646l.013.038C118.7.184,147.658,3.439,181.05-7.268Z"
-                    fill="#7a1b8b" fillRule="evenodd"/>
+                    fill="#7a1b8b"
+                    fillRule="evenodd"
+                  />
                 </g>
               </g>
             </g>

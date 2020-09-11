@@ -115,7 +115,7 @@ const ChatReactionButton = (props) => {
   const { orientation } = useTooltipOrientation(refs.container, refs.picker, scrollRef, showEmojiPicker);
 
   return (
-    <ChatReactionButtonContainer ref={refs.container}>
+    <ChatReactionButtonContainer class="emoji-button-div" ref={refs.container}>
       <StyledEmojiButton icon="smile" active={showEmojiPicker} onClick={handleShowEmojiPicker} />
       {showEmojiPicker && (
         <StyledPickerEmoji

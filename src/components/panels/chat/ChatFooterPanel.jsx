@@ -1,14 +1,14 @@
-import React, {useRef, useState} from "react";
-import {useDispatch, useSelector} from "react-redux";
+import React, { useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import Tooltip from "react-tooltip-lite";
 import styled from "styled-components";
-import {onClickSendButton, putChannel} from "../../../redux/actions/chatActions";
-import {joinWorkspace} from "../../../redux/actions/workspaceActions";
-import {CommonPicker, SvgIconFeather} from "../../common";
+import { onClickSendButton, putChannel } from "../../../redux/actions/chatActions";
+import { joinWorkspace } from "../../../redux/actions/workspaceActions";
+import { CommonPicker, SvgIconFeather } from "../../common";
 import ChatInput from "../../forms/ChatInput";
-import {useIsMember, useTimeFormat, useToaster, useTranslation} from "../../hooks";
+import { useIsMember, useTimeFormat, useToaster, useTranslation } from "../../hooks";
 import ChatQuote from "../../list/chat/ChatQuote";
-import {addToModals} from "../../../redux/actions/globalActions";
+import { addToModals } from "../../../redux/actions/globalActions";
 import TypingIndicator from "../../list/chat/TypingIndicator";
 import LockedLabel from "./LockedLabel";
 
@@ -62,6 +62,9 @@ const IconButton = styled(SvgIconFeather)`
   padding: 10px 0;
   border-radius: 8px;
   transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  &.dark {
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  }
   &:hover {
     background: #afb8bd;
     color: #ffffff;
@@ -204,7 +207,7 @@ const ChatFooterPanel = (props) => {
     );
   };
 
-  const {_t} = useTranslation();
+  const { _t } = useTranslation();
 
   const dictionary = {
     unarchiveThisWorkspace: _t("WORKSPACE.WORKSPACE_UNARCHIVE", "Unarchive this workspace"),
@@ -215,18 +218,18 @@ const ChatFooterPanel = (props) => {
 
   const handleUnarchive = () => {
     let payload = {
-        id: selectedChannel.id,
-        is_archived: false,
-        is_muted: false,
-        is_pinned: false,
-        push_unarchived: 1
+      id: selectedChannel.id,
+      is_archived: false,
+      is_muted: false,
+      is_pinned: false,
+      push_unarchived: 1,
     };
 
     dispatch(putChannel(payload));
     toaster.success(
-        <span>
-          <b>{selectedChannel.type === "TOPIC" ? `${selectedChannel.title} workspace is unarchived.` : `${selectedChannel.title} channel is unarchived.`}</b>
-        </span>
+      <span>
+        <b>{selectedChannel.type === "TOPIC" ? `${selectedChannel.title} workspace is unarchived.` : `${selectedChannel.title} channel is unarchived.`}</b>
+      </span>
     );
   };
 
@@ -238,11 +241,11 @@ const ChatFooterPanel = (props) => {
       submitText: dictionary.unarchiveWorkspace,
       bodyText: dictionary.unarchiveBodyText,
       actions: {
-          onSubmit: handleUnarchive,
+        onSubmit: handleUnarchive,
       },
-  };
+    };
 
-  dispatch(addToModals(payload));
+    dispatch(addToModals(payload));
   };
 
   const isMember = useIsMember(selectedChannel && selectedChannel.members.length ? selectedChannel.members.map((m) => m.id) : []);
@@ -256,20 +259,22 @@ const ChatFooterPanel = (props) => {
 
   return (
     <Wrapper className={`chat-footer border-top ${className}`}>
-      <TypingIndicator/>
+      <TypingIndicator />
       {selectedChannel && !selectedChannel.is_archived && (
         <Dflex className="d-flex pr-2 pl-2">
-          <ChatQuote/>
+          <ChatQuote />
         </Dflex>
       )}
-      <LockedLabel channel={selectedChannel}/>
+      <LockedLabel channel={selectedChannel} />
       {isMember && (
         <Dflex className="d-flex align-items-center">
           {selectedChannel && selectedChannel.is_archived ? (
             <ArchivedDiv>
               <Icon icon="archive" />
-                <h4>{selectedChannel.type === "TOPIC" ? "This is an archived workspace" : "This is an archived channel"}</h4>
-              <button className="btn btn-primary" onClick={handleShowUnarchiveConfirmation}>{selectedChannel.type === "TOPIC"  ? "Un-archive workspace" : "Un-archive channel"}</button>
+              <h4>{selectedChannel.type === "TOPIC" ? "This is an archived workspace" : "This is an archived channel"}</h4>
+              <button className="btn btn-primary" onClick={handleShowUnarchiveConfirmation}>
+                {selectedChannel.type === "TOPIC" ? "Un-archive workspace" : "Un-archive channel"}
+              </button>
             </ArchivedDiv>
           ) : (
             <React.Fragment>
