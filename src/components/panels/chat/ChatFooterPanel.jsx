@@ -247,6 +247,10 @@ const ChatFooterPanel = (props) => {
 
     dispatch(addToModals(payload));
   };
+  
+  const onSendCallback = () => {
+    setShowEmojiPicker(false);
+  }
 
   const isMember = useIsMember(selectedChannel && selectedChannel.members.length ? selectedChannel.members.map((m) => m.id) : []);
 
@@ -282,7 +286,7 @@ const ChatFooterPanel = (props) => {
                 <IconButton onClick={handleShowEmojiPicker} icon="smile" />
               </Tooltip>
               <ChatInputContainer className="flex-grow-1">
-                <ChatInput selectedGif={selectedGif} onClearGif={onClearGif} selectedEmoji={selectedEmoji} onClearEmoji={onClearEmoji} dropAction={dropAction} />
+                <ChatInput selectedGif={selectedGif} onSendCallback={onSendCallback} onClearGif={onClearGif} selectedEmoji={selectedEmoji} onClearEmoji={onClearEmoji} dropAction={dropAction} />
               </ChatInputContainer>
               <IconButton onClick={handleSend} icon="send" />
               <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Attach files">
