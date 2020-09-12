@@ -114,6 +114,7 @@ export default (state = INITIAL_STATE, action) => {
           title: action.data.post_title,
           workspaces: action.data.workspaces,
           comment_body: action.data.body,
+          comment_id: action.data.id
         },
       };
 
