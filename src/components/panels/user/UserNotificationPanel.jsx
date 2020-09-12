@@ -1,7 +1,7 @@
 import React from "react";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
-import { useNotificationActions, useNotifications, useTranslation } from "../../hooks";
+import { useNotificationActions, useNotifications, useRedirect, useTranslation } from "../../hooks";
 import { NotificationTimelineItem } from "../../list/notification/item";
 import { SvgEmptyState } from "../../common";
 
@@ -22,6 +22,7 @@ const UserNotificationPanel = (props) => {
   const actions = useNotificationActions();
   const { notifications } = useNotifications();
   const { _t } = useTranslation();
+  const redirect = useRedirect();
 
   const dictionary = {
     new: _t("NOTIFICATION.NEW", "New"),
@@ -58,7 +59,7 @@ const UserNotificationPanel = (props) => {
                       <div className="timeline">
                         {newNotifications.map((n) => {
                           return <NotificationTimelineItem key={n.id} notification={n} actions={actions}
-                                                           history={history}/>;
+                                                           history={history} redirect={redirect}/>;
                         })}
                       </div>
                     </div>
@@ -80,7 +81,7 @@ const UserNotificationPanel = (props) => {
                     <div className="timeline">
                       {oldNotifications.map((n) => {
                         return <NotificationTimelineItem key={n.id} notification={n} actions={actions}
-                                                         history={history}/>;
+                                                         history={history} redirect={redirect}/>;
                       })}
                     </div>
                   </div>

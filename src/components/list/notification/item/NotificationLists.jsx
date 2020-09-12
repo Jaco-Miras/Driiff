@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import {NotificationListItem} from "./index";
+import {useRedirect} from "../../../hooks";
 
 const Wrapper = styled.ul`
   overflow: auto;
@@ -16,7 +17,8 @@ const Wrapper = styled.ul`
 `;
 
 const NotificationLists = (props) => {
-  const { notifications, actions, history, dictionary } = props;
+  const { notifications, actions, history, dictionary, removeOverlay } = props;
+  const redirect = useRedirect();
 
   if (Object.keys(notifications).length === 0) return null;
 
@@ -35,7 +37,7 @@ const NotificationLists = (props) => {
               {Object.values(notifications)
                   .filter((n) => n.is_read === 0)
                   .map((n) => {
-                    return <NotificationListItem key={n.id} notification={n} actions={actions} history={history}/>;
+                    return <NotificationListItem key={n.id} notification={n} actions={actions} history={history} redirect={redirect} removeOverlay={removeOverlay}/>;
                   })}
         </>
       )}
@@ -47,7 +49,7 @@ const NotificationLists = (props) => {
           {Object.values(notifications)
             .filter((n) => n.is_read === 1)
             .map((n) => {
-              return <NotificationListItem key={n.id} notification={n} actions={actions} history={history} />;
+              return <NotificationListItem key={n.id} notification={n} actions={actions} history={history} redirect={redirect} removeOverlay={removeOverlay}/>;
             })}
         </>
       )}
