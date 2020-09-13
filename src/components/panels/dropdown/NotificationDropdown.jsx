@@ -35,9 +35,13 @@ const NotificationDropdown = (props) => {
     actions.readAll({});
   };
 
-  const viewAll = useCallback(() => {
+  const removeOverlay = () => {
     refs.container.current.classList.remove("show");
     document.querySelector(".overlay").classList.remove('show');
+  };
+
+  const viewAll = useCallback(() => {
+    removeOverlay();
     history.push("/notifications");
   }, []);
 
@@ -64,7 +68,7 @@ const NotificationDropdown = (props) => {
         {unreadCount > 0 && <small className="font-size-11 opacity-7">{unreadCount} {dictionary.unreadNotifications}</small>}
       </div>
       <div>
-        <NotificationLists notifications={notifications} actions={actions} history={history} dictionary={dictionary}/>
+        <NotificationLists notifications={notifications} actions={actions} history={history} dictionary={dictionary} removeOverlay={removeOverlay}/>
       </div>
       <div className="p-2 text-right">
         <ul className="list-inline small">

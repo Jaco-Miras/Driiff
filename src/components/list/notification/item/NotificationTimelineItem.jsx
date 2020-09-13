@@ -46,25 +46,32 @@ const Wrapper = styled.div`
 `;
 
 export const NotificationTimelineItem = (props) => {
-  const { notification, actions, history } = props;
-  const { localizeChatChannelDate } = useTimeFormat();
+  const { notification, actions, history, redirect } = props;
+  const { fromNow } = useTimeFormat();
 
   const handleRedirect = (e) => {
     e.preventDefault();
     if (notification.is_read === 0) {
       actions.read({ id: notification.id });
     }
-    if (notification.data.workspaces) {
-      let workspace = notification.data.workspaces[0];
-      actions.selectWorkspace({...workspace, id: workspace.topic_id});
-      if (workspace.workspace_name) {
-        history.push(
-          `/workspace/posts/${workspace.workspace_id}/${replaceChar(workspace.workspace_name)}/${workspace.topic_id}/${replaceChar(workspace.topic_name)}/post/${notification.data.post_id}/${replaceChar(notification.data.title)}`
-        );
-      } else {
-        history.push(`/workspace/posts/${workspace.topic_id}/${replaceChar(workspace.topic_name)}/post/${notification.data.post_id}/${replaceChar(notification.data.title)}`);
+    let post = { id: notification.data.post_id, title: notification.data.title};
+    let workspace = null;
+    let focusOnMessage = null;
+    if (notification.data.workspaces && notification.data.workspaces.length) {
+      workspace = notification.data.workspaces[0];
+      workspace = {
+        id: workspace.topic_id,
+        name: workspace.topic_name,
+        folder_id: workspace.workspace_id ? workspace.workspace_id : null,
+        folder_name: workspace.workspace_name ? workspace.workspace_name : null,
+      };
+    }
+    if (notification.type === "POST_COMMENT" || notification.type === "POST_MENTION") {
+      if (notification.data.comment_id) {
+        focusOnMessage = {focusOnMessage: notification.data.comment_id};
       }
     }
+    redirect.toPost({ workspace, post}, focusOnMessage);
   };
 
   const handleReadUnread = (e) => {
@@ -143,7 +150,7 @@ export const NotificationTimelineItem = (props) => {
                 <h6 className="d-flex justify-content-between mb-4">
                     <span>{renderTitle()}</span>
                     <span
-                        className="text-muted font-weight-normal">{localizeChatChannelDate(notification.created_at.timestamp)}</span>
+                        className="text-muted font-weight-normal">{fromNow(notification.created_at.timestamp)}</span>
                 </h6>
                 <span className="notification-body-wrapper">
             <div
