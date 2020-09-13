@@ -4,6 +4,7 @@ const INITIAL_STATE = {
   user: null,
   notifications: {},
   unreadCount: 0,
+  hasSubscribed: true
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -122,6 +123,12 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         notifications: {...state.notifications, [postNotification.id]: postNotification},
       };
+    }
+    case "SET_PUSH_NOTIFICATION": {
+      return {
+        ...state,
+        hasSubscribed: action.data
+      }
     }
     default:
       return state;

@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {getPushNotification, subscribePushNotifications} from "../../redux/actions/globalActions";
 import {
   askUserPermission,
@@ -8,6 +8,7 @@ import {
   isPushNotificationSupported,
   registerServiceWorker
 } from "./pushFunctions";
+import {setPushNotification} from "../../redux/actions/notificationActions";
 //import all the function created to manage the push notifications
 
 const pushNotificationSupported = isPushNotificationSupported();
@@ -30,6 +31,7 @@ export default function usePushNotification() {
 
   const dispatch = useDispatch();
 
+  const hasSubscribed = useSelector((state) => state.notifications.hasSubscribed);
   /**
    * define a click handler that asks the user permission,
    * it uses the setSuserConsent state, to set the consent of the user
@@ -64,6 +66,7 @@ export default function usePushNotification() {
         setUserSubscription(subscription);
         dispatch(
           subscribePushNotifications(subscription, (err, res) => {
+            console.log('subscribed', res)
             if (err) {
               setSubsubscribing(false);
               setLoading(false);
@@ -153,6 +156,11 @@ export default function usePushNotification() {
     const getExistingSubscription = async () => {
       const existingSubscription = await getUserSubscription();
       console.log(existingSubscription, "existing subscription");
+      if (existingSubscription) {
+        dispatch(setPushNotification(true));
+      } else {
+        dispatch(setPushNotification(false));
+      }
       setUserSubscription(existingSubscription);
       setFetchingSubscription(false);
       setLoading(false);
@@ -162,48 +170,34 @@ export default function usePushNotification() {
   //Retrieve if there is any push notification subscription for the registered service worker
   // this use effect runs only in the first render
 
-  useEffect(() => {
-    //console.log(subscribing, fetchingSubscription);
-
-    /**
+  
+  /**
      * define a click handler that creates a push notification subscription.
      * Once the subscription is created, it uses the setUserSubscription hook
      */
-    const onClickSubscribeToPushNotification = () => {
-      setLoading(true);
-      setError(false);
-      setSubsubscribing(true);
-      createNotificationSubscription()
-        .then(function (subscription) {
-          //console.log(subscription);
-          setUserSubscription(subscription);
-          dispatch(
-            subscribePushNotifications(subscription, (err, res) => {
-              if (err) {
-                setSubsubscribing(false);
-                setLoading(false);
-                setError(err);
-                return;
-              }
-              setSubsubscribing(false);
-              //console.log(res, "subscribe response");
-              setPushServerSubscriptionId(res.data.id);
-            })
-          );
-          setLoading(false);
-        })
-        .catch((err) => {
-          console.error("Couldn't create the notification subscription", "name:", err.name, "message:", err.message, "code:", err.code);
-          setError(err);
-          setLoading(false);
-        });
-    };
+  
+  
+  useEffect(() => {
+    //console.log(subscribing, fetchingSubscription);
 
     if (userSubscription === null && subscribing === null && fetchingSubscription === false) {
       onClickSubscribeToPushNotification();
     }
   }, [userSubscription, subscribing, fetchingSubscription, dispatch]);
 
+  useEffect(() => {
+    console.log(pushNotificationSupported, hasSubscribed)
+    if (pushNotificationSupported && hasSubscribed === null) {
+      console.log('trigger resubscribe')
+      registerServiceWorker().then(() => {
+        if (userConsent === "granted") {
+          console.log('resubscribed')
+          dispatch(setPushNotification(true));
+          onClickSubscribeToPushNotification();
+        }
+      });
+    }
+  }, [hasSubscribed, userConsent]);
   /**
    * returns all the stuff needed by a Component
    */
