@@ -25,57 +25,53 @@ function receivePushNotification(event) {
       const replaceChar = (name, char = "-") => {
         return name.toLowerCase().replace(/\s|\//g, char);
       };
+
+       if (SOCKET_TYPE === "POST_COMMENT_CREATE") {
+        const { base_link, push_title, post_id, post_title } = code_data;
+        notification_title = push_title;
+        let link = "";
+        if (workspaces.length) {
+          if (workspaces[0].workspace_id){
+            link = `/workspace/posts/${workspaces[0].workspace_id}/${replaceChar(workspaces[0].workspace_name)}/${workspaces[0].topic_id}/${replaceChar(workspaces[0].topic_name)}/post/${post_id}/${replaceChar(post_title)}`;
+          } else {
+            link = `/workspace/posts/${workspaces[0].topic_id}/${replaceChar(workspaces[0].topic_name)}/post/${post_id}/${replaceChar(post_title)}`;
+          }
+        } else {
+          link = `/posts/${post_id}/${replaceChar(post_title)}`;
+        }
+        options = {
+          ...options,
+          data: `${base_link}${link}`,
+          body: body.replace(/(<([^>]+)>)/gi, ""),
+          image: author.profile_image_link,
+          icon: author.profile_image_link,
+        }
+      } else if (SOCKET_TYPE === "POST_CREATE") {
+        const { base_link } = code_data;
+        notification_title = `${author.name} shared a post`;
+        let link = "";
+        if (workspaces.length) {
+          if (workspaces[0].workspace_id){
+            link = `/workspace/posts/${workspaces[0].workspace_id}/${replaceChar(workspaces[0].workspace_name)}/${workspaces[0].topic_id}/${replaceChar(workspaces[0].topic_name)}/post/${id}/${replaceChar(title)}`;
+          } else {
+            link = `/workspace/posts/${workspaces[0].topic_id}/${replaceChar(workspaces[0].topic_name)}/post/${id}/${replaceChar(title)}`;
+          }
+        } else {
+          link = `/posts/${id}/${replaceChar(title)}`;
+        }
+        options = {
+          ...options,
+          body: title,
+          data: `${base_link}${link}`,
+          image: author.profile_image_link,
+          icon: author.profile_image_link,
+        }
+      } 
+
       self.clients.matchAll({includeUncontrolled: true}).then(clients => {
         for (const client of clients) {
           const clientUrl = new URL(client.url);
           if (SOCKET_TYPE === "CHAT_CREATE" && clientUrl.pathname === `/chat/${channel_code}`) {
-            notification_title = reference_title;
-            options = {
-              ...options,
-              image: user.profile_image_link,
-              icon: user.profile_image_link,
-            }
-          } else if (SOCKET_TYPE === "POST_COMMENT_CREATE") {
-            const { base_link, push_title, post_id, post_title } = code_data;
-            notification_title = push_title;
-            let link = "";
-            if (workspaces.length) {
-              if (workspaces[0].workspace_id){
-                link = `/workspace/posts/${workspaces[0].workspace_id}/${replaceChar(workspaces[0].workspace_name)}/${workspaces[0].topic_id}/${replaceChar(workspaces[0].topic_name)}/post/${post_id}/${replaceChar(post_title)}`;
-              } else {
-                link = `/workspace/posts/${workspaces[0].topic_id}/${replaceChar(workspaces[0].topic_name)}/post/${post_id}/${replaceChar(post_title)}`;
-              }
-            } else {
-              link = `/posts/${post_id}/${replaceChar(post_title)}`;
-            }
-            options = {
-              ...options,
-              data: `${base_link}${link}`,
-              body: body.replace(/(<([^>]+)>)/gi, ""),
-              image: author.profile_image_link,
-              icon: author.profile_image_link,
-            }
-          } else if (SOCKET_TYPE === "POST_CREATE") {
-            const { base_link } = code_data;
-            notification_title = `${author.name} shared a post`;
-            let link = "";
-            if (workspaces.length) {
-              if (workspaces[0].workspace_id){
-                link = `/workspace/posts/${workspaces[0].workspace_id}/${replaceChar(workspaces[0].workspace_name)}/${workspaces[0].topic_id}/${replaceChar(workspaces[0].topic_name)}/post/${id}/${replaceChar(title)}`;
-              } else {
-                link = `/workspace/posts/${workspaces[0].topic_id}/${replaceChar(workspaces[0].topic_name)}/post/${id}/${replaceChar(title)}`;
-              }
-            } else {
-              link = `/posts/${id}/${replaceChar(title)}`;
-            }
-            options = {
-              ...options,
-              body: title,
-              data: `${base_link}${link}`,
-              image: author.profile_image_link,
-              icon: author.profile_image_link,
-            }
-          } else {
             showNotification = false;
           }
           if (client.visibilityState !== 'visible') {
@@ -90,31 +86,6 @@ function receivePushNotification(event) {
   }
   
   self.addEventListener("push", receivePushNotification);
-  // self.addEventListener('notificationclick', function(event) {
-  //   console.log("[Service Worker] Notification click Received.", event.notification.data, event.notification, clients);
-  //   let matchingClient = false;
-  //   self.clients.matchAll().then(clients => {
-  //     for (const client of clients) {
-  //       const clientUrl = new URL(client.url);
-  //       const originUrl = new URL(event.notification.data);
-  //       console.log('client for loop', client,  clientUrl.hostname === originUrl.hostname, clientUrl.hostname, originUrl.hostname)
-  //         if (clientUrl.hostname === originUrl.hostname) {
-  //           matchingClient = true;
-  //         } 
-  //     }
-  //     if (matchingClient) {
-  //       client.navigate(event.notification.data);
-  //       client.focus();
-  //       console.log("focus", event.notification.data)
-  //     } else {
-  //       console.log("open", event.notification.data)    
-  //       // there are no visible windows. Open one.
-  //       self.clients.openWindow(event.notification.data);
-  //       event.notification.close();
-  //     }
-  //   })
-  // });
-
   self.addEventListener('notificationclick', event => {
     console.log("[Service Worker] Notification click Received.", event.notification.data);
     event.waitUntil(async function() {
