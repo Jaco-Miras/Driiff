@@ -1,14 +1,14 @@
-import React, {useState} from "react";
-import {useSelector} from "react-redux";
-import {useHistory} from "react-router-dom";
+import React, { useState } from "react";
+import { useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
 import Skeleton from "react-skeleton-loader";
 import Tooltip from "react-tooltip-lite";
 import styled from "styled-components";
 import departmentIcon from "../../assets/icon/teams/r/secundary.svg";
 import defaultIcon from "../../assets/icon/user/avatar/l/white_bg.png";
 import botIcon from "../../assets/img/gripp-bot.png";
-import {replaceChar} from "../../helpers/stringFormatter";
-import {SvgIconFeather} from "./SvgIcon";
+import { replaceChar } from "../../helpers/stringFormatter";
+import { SvgIconFeather } from "./SvgIcon";
 
 const Wrapper = styled.div`
   position: relative;
@@ -31,7 +31,9 @@ const Image = styled.img`
 `;
 
 const Initials = styled.span`
-  background-color: #fff;
+  color: #fff;
+  background: ${(props) => (props.avatarColor ? props.avatarColor : "white")};
+
   display: flex;
   margin: auto;
   height: 20px;
@@ -44,7 +46,7 @@ const Initials = styled.span`
 `;
 
 const Avatar = (props) => {
-  const {className = "", imageLink, id, name = "", children, partialName = null, type = "USER", userId, onClick = null, noDefaultClick = false, hasAccepted = null, isBot = false, ...rest} = props;
+  const { className = "", imageLink, id, colorCode = "", name = "", children, partialName = null, type = "USER", userId, onClick = null, noDefaultClick = false, hasAccepted = null, isBot = false, ...rest } = props;
 
   const history = useHistory();
   const onlineUsers = useSelector((state) => state.users.onlineUsers);
@@ -58,6 +60,21 @@ const Avatar = (props) => {
     tooltips.forEach((tooltip) => {
       tooltip.parentElement.classList.toggle("tooltip-active");
     });
+  };
+
+  const avatarColor = (name) => {
+    if (typeof name === "undefined") return "";
+    let h = "";
+    let s = 50;
+    let l = 40;
+
+    var hash = 0;
+    for (var i = 0; i < name.length; i++) {
+      hash = name.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    h = hash % 360;
+
+    return `hsl(${h}, ${s}%, ${l}%)`;
   };
 
   const handleImageLoad = () => {
@@ -115,41 +132,27 @@ const Avatar = (props) => {
     <Wrapper {...rest} className={`avatar avatar-sm ${isOnline ? "avatar-state-success" : ""} ${isLoaded ? "ico-avatar-loaded" : ""} ${showInitials ? "border" : ""} ${className}`} onClick={handleOnClick}>
       {isLoaded === false && <Skeleton borderRadius="50%" widthRandomness={0} heightRandomness={0} />}
       <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={name}>
-        {
-          isBot ?
-            <Image
+        {isBot ? (
+          <Image show={isLoaded} className="rounded-circle" onLoad={handleImageLoad} onError={handleImageError} src={botIcon} alt={name} />
+        ) : showInitials && hasAccepted === false ? (
+          <Image show={true} className="rounded-circle" onLoad={handleImageLoad} onError={handleImageError} src={defaultIcon} alt={name} />
+        ) : showInitials && name !== "" ? (
+          <Initials className="rounded-circle" avatarColor={avatarColor(name)}>
+            {handleInitials(name)}
+          </Initials>
+        ) : (
+          <>
+            {type === "GROUP" ? (
+              <SvgIconFeather icon="users" />
+            ) : (
+              <Image
                 show={isLoaded}
                 className="rounded-circle"
                 onLoad={handleImageLoad}
                 onError={handleImageError}
-                src={botIcon}
+                src={type === "DEPARTMENT" ? departmentIcon : imageLink !== null ? (name === "Gripp Offerte Bot" ? botIcon : imageLink) : defaultIcon}
                 alt={name}
               />
-          : showInitials && hasAccepted === false ?
-            <Image
-              show={true}
-              className="rounded-circle"
-              onLoad={handleImageLoad}
-              onError={handleImageError}
-              src={defaultIcon}
-              alt={name}
-            />
-            :
-            showInitials && name !== "" ? (
-              <Initials className="rounded-circle">{handleInitials(name)}</Initials>
-            ) : (
-              <>
-                {type === "GROUP" ? (
-                  <SvgIconFeather icon="users"/>
-                ) : (
-                  <Image
-                    show={isLoaded}
-                    className="rounded-circle"
-                    onLoad={handleImageLoad}
-                    onError={handleImageError}
-                    src={type === "DEPARTMENT" ? departmentIcon : imageLink !== null ? (name === "Gripp Offerte Bot" ? botIcon : imageLink) : defaultIcon}
-                    alt={name}
-                  />
             )}
           </>
         )}
