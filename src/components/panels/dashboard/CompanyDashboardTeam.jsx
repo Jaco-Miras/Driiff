@@ -76,7 +76,6 @@ const CompanyDashboardTeam = (props) => {
                 "gripp_police_bot"].includes(m.email))
             .sort((a, b) => a.name.localeCompare(b.name))
             .map((member) => {
-              console.log(member)
               return <TeamListItem
                 key={member.id}
                 member={member}
