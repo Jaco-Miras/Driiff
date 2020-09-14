@@ -44,6 +44,8 @@ const CompanyMemberTimeline = (props) => {
       if (data.body.includes("NEW_ACCOUNT_ACTIVATED")) {
         return `${data.body.replace(`NEW_ACCOUNT_ACTIVATED `, "")} is added to the company`;
       }
+
+      return data.body;
     }
   };
 
