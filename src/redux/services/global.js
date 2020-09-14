@@ -139,3 +139,10 @@ export function getQuickLinks(payload) {
     url: "/v2/quick-link",
   });
 }
+
+export function deletePushSubscription(payload) {
+  return apiCall({
+    method: "DELETE",
+    url: `/v2/push-api-notification?delete_all_subscription=${payload.user_id}`,
+  });
+}
