@@ -71,6 +71,7 @@ export {
   uploadDocument,
   getUnreadNotificationCounterEntries,
   postGenerateTranslationRaw,
+  deletePushSubscription
 } from "./global";
 
 export {
