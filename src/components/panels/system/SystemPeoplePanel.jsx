@@ -32,7 +32,7 @@ const Search = styled(SearchForm)`
 const SystemPeoplePanel = (props) => {
   const {className = ""} = props;
 
-  const {users, loggedUser, userChannels, selectUserChannel} = useUserChannels();
+  const {users, userActions, loggedUser, userChannels, selectUserChannel} = useUserChannels();
 
   const history = useHistory();
   const dispatch = useDispatch();
@@ -95,8 +95,49 @@ const SystemPeoplePanel = (props) => {
   const handleInviteUsers = () => {
     let payload = {
       type: "driff_invite_users",
+      hasLastName: true,
       invitations: [],
-      onPrimaryAction: () => {
+      onPrimaryAction: (invitedUsers, callback, options) => {
+        let processed = 0;
+        invitedUsers.forEach((u, i) => {
+          if (Object.values(users).some(user => user.email === u.email)) {
+            userActions.inviteAsInternalUsers({
+              "email": u.email,
+              "first_name": u.first_name,
+              "last_name": u.last_name,
+            }, (err, res) => {
+              if (err) {
+                toaster.error(`Something went wrong with ${u.first_name} ${u.last_name}`);
+                options.deleteItemByIndex(options.invitationItems.findIndex(i => i.email === u.email));
+              }
+              if (res) {
+                processed += 1;
+                options.deleteItemByIndex(options.invitationItems.findIndex(i => i.email === u.email));
+                toaster.success(`You have invited ${u.first_name} ${u.last_name}`);
+              }
+
+              //last iteration
+              if (i === (invitedUsers.length - 1)) {
+                if (processed === invitedUsers.length) {
+                  options.closeModal();
+                }
+
+                callback();
+              }
+            })
+          } else {
+            toaster.error(<>Email <b>{u.email}</b> is already taken!</>);
+
+            //last iteration
+            if (i === (invitedUsers.length - 1)) {
+              if (processed === invitedUsers.length) {
+                options.closeModal();
+              }
+
+              callback();
+            }
+          }
+        })
       },
     };
 
@@ -110,7 +151,9 @@ const SystemPeoplePanel = (props) => {
       const newState = !prevState;
 
       if (newState) {
-        toaster.success('test');
+        toaster.success('Showing inactive members');
+      } else {
+        toaster.success('Showing active members only');
       }
 
       return newState;

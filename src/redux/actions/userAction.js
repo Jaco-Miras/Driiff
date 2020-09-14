@@ -10,6 +10,7 @@ import {
   login as loginService,
   logout as logoutService,
   postExternalUserData as postExternalUserDataService,
+  postInternalRequestForm as postInternalRequestFormService,
   postMagicLink as postMagicLinkService,
   postPasswordReset as postPasswordResetService,
   postRequest as postRequestService,
@@ -98,4 +99,12 @@ export function putMagicLink(payload, callback) {
 
 export function incomingExternalUser(payload, callback) {
   return SimpleDispatchActionToReducer("INCOMING_EXTERNAL_USER", payload, callback);
+}
+
+export function postInternalRequestForm(payload, callback) {
+  return dispatchActionToReducer(postInternalRequestFormService(payload), "PUT_MAGIC_LINK_START", "PUT_MAGIC_LINK_SUCCESS", "PUT_MAGIC_LINK_FAILURE", callback);
+}
+
+export function incomingInternalUser(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_INTERNAL_USER", payload, callback);
 }

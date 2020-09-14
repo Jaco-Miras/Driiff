@@ -1,14 +1,14 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import { useHistory } from "react-router-dom";
+import React, {useCallback, useEffect, useRef, useState} from "react";
+import {useHistory} from "react-router-dom";
 import styled from "styled-components";
-import { FormInput, InputFeedback, PasswordInput } from "../forms";
-import { EmailRegex } from "../../helpers/stringFormatter";
-import { FormGroup, Input, InputGroup, InputGroupAddon, InputGroupText } from "reactstrap";
+import {FormInput, InputFeedback, PasswordInput} from "../forms";
+import {EmailRegex} from "../../helpers/stringFormatter";
+import {FormGroup, Input, InputGroup, InputGroupAddon, InputGroupText} from "reactstrap";
 import useDriffActions from "../hooks/useDriffActions";
-import { addToModals } from "../../redux/actions/globalActions";
-import { useDispatch } from "react-redux";
+import {addToModals} from "../../redux/actions/globalActions";
+import {useDispatch} from "react-redux";
 import ReactConfetti from "react-confetti";
-import { isIPAddress } from "../../helpers/commonFunctions";
+import {isIPAddress} from "../../helpers/commonFunctions";
 
 const Wrapper = styled.form`
   .btn {
@@ -127,12 +127,14 @@ const DriffCreatePanel = (props) => {
     return !Object.values(valid).some((v) => v === false);
   };
 
-  const handleSetUserInvitation = (e, callback = () => {}) => {
+  const handleSetUserInvitation = (e, callback = () => {
+  }, options) => {
     setForm((prevState) => ({
       ...prevState,
       invitations: e,
     }));
     callback();
+    options.closeModal();
   };
 
   const handleShowUserInvitation = (e) => {

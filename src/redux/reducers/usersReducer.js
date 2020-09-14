@@ -13,6 +13,26 @@ const INITIAL_STATE = {
 
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
+    case "INCOMING_INTERNAL_USER": {
+      let user = {
+        contact: "",
+        active: 1,
+        ...action.data
+      };
+      delete user["SOCKET_TYPE"];
+
+      return {
+        ...state,
+        users: {
+          ...state.users,
+          [user.id]: user
+        },
+        mentions: {
+          ...state.mentions,
+          [user.id]: user
+        }
+      }
+    }
     case "ADD_USER_TO_REDUCERS": {
       return {
         ...state,

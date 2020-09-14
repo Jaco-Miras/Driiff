@@ -52,7 +52,8 @@ export {
   putExternalUserUpdate,
   postRequest,
   postMagicLink,
-  putMagicLink
+  putMagicLink,
+  postInternalRequestForm
 } from "./user";
 
 export {

@@ -465,3 +465,18 @@ export function putMagicLink(payload) {
     data: payload,
   });
 }
+
+/**
+ * @param {Object} payload
+ * @param {string} payload.email
+ * @param {string} payload.first_name
+ * @param {string} payload.last_name
+ * @returns {Promise<* | void>}
+ */
+export function postInternalRequestForm(payload) {
+  return apiCall({
+    method: "POST",
+    url: `/v2/internal-request-form`,
+    data: payload,
+  });
+}

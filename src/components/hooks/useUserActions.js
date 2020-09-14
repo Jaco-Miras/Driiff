@@ -6,6 +6,7 @@ import {
   getUser,
   getUsers,
   postExternalUserData,
+  postInternalRequestForm,
   postMagicLink,
   postPasswordReset,
   postRequest,
@@ -421,6 +422,12 @@ const useUserActions = () => {
     }
   }, [loggedUser, driffActions, is_new]);
 
+  const inviteAsInternalUsers = useCallback((payload, callback) => {
+    dispatch(
+      postInternalRequestForm(payload, callback)
+    )
+  })
+
   return {
     checkCredentials,
     login,
@@ -444,7 +451,8 @@ const useUserActions = () => {
     getRequiredFields,
     processBackendLogout,
     logout,
-    displayWelcomeBanner
+    displayWelcomeBanner,
+    inviteAsInternalUsers
   };
 };
 
