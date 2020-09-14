@@ -116,6 +116,7 @@ function receivePushNotification(event) {
   // });
 
   self.addEventListener('notificationclick', event => {
+    console.log("[Service Worker] Notification click Received.", event.notification.data);
     event.waitUntil(async function() {
       const allClients = await clients.matchAll({
         includeUncontrolled: true
