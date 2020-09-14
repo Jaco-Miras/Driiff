@@ -90,27 +90,56 @@ function receivePushNotification(event) {
   }
   
   self.addEventListener("push", receivePushNotification);
-  self.addEventListener('notificationclick', function(event) {
-    console.log("[Service Worker] Notification click Received.", event.notification.data, event.notification, clients);
-    let matchingClient = false;
-    self.clients.matchAll().then(clients => {
-      for (const client of clients) {
+  // self.addEventListener('notificationclick', function(event) {
+  //   console.log("[Service Worker] Notification click Received.", event.notification.data, event.notification, clients);
+  //   let matchingClient = false;
+  //   self.clients.matchAll().then(clients => {
+  //     for (const client of clients) {
+  //       const clientUrl = new URL(client.url);
+  //       const originUrl = new URL(event.notification.data);
+  //       console.log('client for loop', client,  clientUrl.hostname === originUrl.hostname, clientUrl.hostname, originUrl.hostname)
+  //         if (clientUrl.hostname === originUrl.hostname) {
+  //           matchingClient = true;
+  //         } 
+  //     }
+  //     if (matchingClient) {
+  //       client.navigate(event.notification.data);
+  //       client.focus();
+  //       console.log("focus", event.notification.data)
+  //     } else {
+  //       console.log("open", event.notification.data)    
+  //       // there are no visible windows. Open one.
+  //       self.clients.openWindow(event.notification.data);
+  //       event.notification.close();
+  //     }
+  //   })
+  // });
+
+  self.addEventListener('notificationclick', event => {
+    event.waitUntil(async function() {
+      const allClients = await clients.matchAll({
+        includeUncontrolled: true
+      });
+  
+      let matchingClient = false;
+  
+      for (const client of allClients) {
         const clientUrl = new URL(client.url);
         const originUrl = new URL(event.notification.data);
         console.log('client for loop', client,  clientUrl.hostname === originUrl.hostname, clientUrl.hostname, originUrl.hostname)
-          if (clientUrl.hostname === originUrl.hostname) {
-            matchingClient = true;
-          } 
+        if (clientUrl.hostname === originUrl.hostname) {
+          console.log("focus", event.notification.data)
+          client.navigate(event.notification.data);
+          client.focus();
+          matchingClient = true;
+          break;
+        } 
       }
-      if (matchingClient) {
-        client.navigate(event.notification.data);
-        client.focus();
-        console.log("focus", event.notification.data)
-      } else {
-        console.log("open", event.notification.data)    
-        // there are no visible windows. Open one.
-        self.clients.openWindow(event.notification.data);
+  
+      if (!matchingClient) {
+        console.log("open", event.notification.data)   
+        clients.openWindow(event.notification.data);
         event.notification.close();
       }
-    })
+    }());
   });
