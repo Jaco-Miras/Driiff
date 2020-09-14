@@ -32,7 +32,7 @@ const Search = styled(SearchForm)`
 const SystemPeoplePanel = (props) => {
   const {className = ""} = props;
 
-  const {users, userActions, loggedUser, userChannels, selectUserChannel} = useUserChannels();
+  const {users, userActions, loggedUser, selectUserChannel} = useUserChannels();
 
   const history = useHistory();
   const dispatch = useDispatch();
@@ -73,7 +73,12 @@ const SystemPeoplePanel = (props) => {
       return a.name.localeCompare(b.name);
     })
     .filter((user) => {
-      if (!userChannels.hasOwnProperty(user.id)) return false;
+      if (["gripp_project_bot",
+        "gripp_account_activation",
+        "gripp_offerte_bot",
+        "gripp_invoice_bot",
+        "gripp_police_bot",
+        "driff_webhook_bot"].includes(user.email)) return false;
 
       if (!showInactive && user.active !== 1) return false;
 
