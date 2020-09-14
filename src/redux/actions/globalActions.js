@@ -2,6 +2,7 @@ import dispatchActionToReducer, {SimpleDispatchActionToReducer} from "../actionD
 import {
   deleteDraft as deleteDraftService,
   deleteUnfurl as deleteUnfurlService,
+  deletePushSubscription as deletePushSubscriptionService,
   generateUnfurl as generateUnfurlService,
   getAllRecipients as getAllRecipientsService,
   getConnectedSlugs as getConnectedSlugsService,
@@ -130,4 +131,8 @@ export function removeUnfurlReducer(payload, callback) {
 
 export function getQuickLinks(payload, callback) {
   return dispatchActionToReducer(getQuickLinksService(payload), "GET_QUICK_LINKS_START", "GET_QUICK_LINKS_SUCCESS", "GET_QUICK_LINKS_FAIL", callback);
+}
+
+export function deletePushSubscription(payload, callback) {
+  return dispatchActionToReducer(deletePushSubscriptionService(payload), "DELETE_PUSH_SUBSCRIPTION_START", "DELETE_PUSH_SUBSCRIPTION_SUCCESS", "DELETE_PUSH_SUBSCRIPTION_FAILURE", callback);
 }

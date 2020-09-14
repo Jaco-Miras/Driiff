@@ -1,6 +1,6 @@
 import momentTZ from "moment-timezone";
 import React, {useCallback} from "react";
-import {useSelector} from "react-redux";
+import {useSelector, useDispatch} from "react-redux";
 import Select from "react-select";
 import {CustomInput} from "reactstrap";
 import styled from "styled-components";
@@ -9,6 +9,7 @@ import Flag from "../../common/Flag";
 import {useSettings, useToaster, useTranslation} from "../../hooks";
 import {getDriffName} from "../../hooks/useDriff";
 import {darkTheme, lightTheme} from "../../../helpers/selectTheme";
+import {deletePushSubscription} from "../../../redux/actions/globalActions";
 
 const Wrapper = styled.div`
   .card {
@@ -64,6 +65,7 @@ const Wrapper = styled.div`
 const ProfileSettings = (props) => {
   const { className = "" } = props;
 
+  const dispatch = useDispatch();
   const toaster = useToaster();
 
   const { user: loggedUser } = useSelector((state) => state.session);
@@ -214,6 +216,7 @@ const ProfileSettings = (props) => {
         }
         unregister();
         setPushSubscription(false);
+        dispatch(deletePushSubscription({user_id: loggedUser.id}));
       } else {
         setPushSubscription(null);
       }
