@@ -40,6 +40,14 @@ const Wrapper = styled.div`
     justify-content: space-between;
     align-items: center;
     
+    &:hover {
+      svg {
+        &.action {          
+          opacity: 1;        
+        }
+      }
+    }
+    
     a {
       width: 75%;
     
@@ -53,13 +61,15 @@ const Wrapper = styled.div`
       }
     }
     
-    svg {
-      &.action {
+    svg {      
+      &.action {      
+        opacity: 0;
         cursor: pointer;
         width: 14px;
         color: #fff;
         right: 22px;
-        position: relative;      
+        position: relative;        
+        transition: all 0.5s ease;      
       }    
     }  
   }
