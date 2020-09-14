@@ -12,7 +12,7 @@ function receivePushNotification(event) {
     };
     let notification_title = reference_title;
     //Get URL objects for each client's location.
-    let showNotification = false;
+    let showNotification = true;
     if (SOCKET_TYPE === "CHAT_DELETE") {
       self.registration.getNotifications({tag: id}).then(notifications => {
         notifications.forEach(notification => {
@@ -29,7 +29,6 @@ function receivePushNotification(event) {
         for (const client of clients) {
           const clientUrl = new URL(client.url);
           if (SOCKET_TYPE === "CHAT_CREATE" && clientUrl.pathname === `/chat/${channel_code}`) {
-            showNotification = true;
             notification_title = reference_title;
             options = {
               ...options,
@@ -62,9 +61,9 @@ function receivePushNotification(event) {
             let link = "";
             if (workspaces.length) {
               if (workspaces[0].workspace_id){
-                link = `/workspace/posts/${workspaces[0].workspace_id}/${replaceChar(workspaces[0].workspace_name)}/${workspaces[0].topic_id}/${replaceChar(workspaces[0].topic_name)}/post/${post_id}/${replaceChar(post_title)}`;
+                link = `/workspace/posts/${workspaces[0].workspace_id}/${replaceChar(workspaces[0].workspace_name)}/${workspaces[0].topic_id}/${replaceChar(workspaces[0].topic_name)}/post/${id}/${replaceChar(title)}`;
               } else {
-                link = `/workspace/posts/${workspaces[0].topic_id}/${replaceChar(workspaces[0].topic_name)}/post/${post_id}/${replaceChar(post_title)}`;
+                link = `/workspace/posts/${workspaces[0].topic_id}/${replaceChar(workspaces[0].topic_name)}/post/${id}/${replaceChar(title)}`;
               }
             } else {
               link = `/posts/${id}/${replaceChar(title)}`;
@@ -76,6 +75,8 @@ function receivePushNotification(event) {
               image: author.profile_image_link,
               icon: author.profile_image_link,
             }
+          } else {
+            showNotification = false;
           }
           if (client.visibilityState !== 'visible') {
             showNotification = true
@@ -88,12 +89,58 @@ function receivePushNotification(event) {
     }
   }
   
-  function openPushNotification(event) {
-    console.log("[Service Worker] Notification click Received.", event.notification.data, event.notification);
-    
-    event.notification.close();
-    event.waitUntil(clients.openWindow(event.notification.data));
-  }
-  
   self.addEventListener("push", receivePushNotification);
-  self.addEventListener("notificationclick", openPushNotification);
+  // self.addEventListener('notificationclick', function(event) {
+  //   console.log("[Service Worker] Notification click Received.", event.notification.data, event.notification, clients);
+  //   let matchingClient = false;
+  //   self.clients.matchAll().then(clients => {
+  //     for (const client of clients) {
+  //       const clientUrl = new URL(client.url);
+  //       const originUrl = new URL(event.notification.data);
+  //       console.log('client for loop', client,  clientUrl.hostname === originUrl.hostname, clientUrl.hostname, originUrl.hostname)
+  //         if (clientUrl.hostname === originUrl.hostname) {
+  //           matchingClient = true;
+  //         } 
+  //     }
+  //     if (matchingClient) {
+  //       client.navigate(event.notification.data);
+  //       client.focus();
+  //       console.log("focus", event.notification.data)
+  //     } else {
+  //       console.log("open", event.notification.data)    
+  //       // there are no visible windows. Open one.
+  //       self.clients.openWindow(event.notification.data);
+  //       event.notification.close();
+  //     }
+  //   })
+  // });
+
+  self.addEventListener('notificationclick', event => {
+    console.log("[Service Worker] Notification click Received.", event.notification.data);
+    event.waitUntil(async function() {
+      const allClients = await clients.matchAll({
+        includeUncontrolled: true
+      });
+  
+      let matchingClient = false;
+  
+      for (const client of allClients) {
+        const clientUrl = new URL(client.url);
+        const originUrl = new URL(event.notification.data);
+        console.log('client for loop', client,  clientUrl.hostname === originUrl.hostname, clientUrl.hostname, originUrl.hostname)
+        if (clientUrl.hostname === originUrl.hostname) {
+          console.log("focus", event.notification.data)
+          client.navigate(event.notification.data);
+          client.focus();
+          matchingClient = true;
+          break;
+        } 
+      }
+  
+      if (!matchingClient) {
+        console.log("open", event.notification.data)   
+        clients.openWindow(event.notification.data);
+        event.notification.close();
+      }
+    }());
+  });
