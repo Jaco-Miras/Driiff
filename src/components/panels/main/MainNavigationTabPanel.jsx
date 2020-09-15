@@ -37,8 +37,16 @@ const Wrapper = styled.div`
   }
   .driff-company-name {
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    position: relative;
+    
+    &.active {
+      svg {
+        &.action {          
+          opacity: 1;        
+        }
+      }
+    }
     
     &:hover {
       svg {
@@ -49,10 +57,10 @@ const Wrapper = styled.div`
     }
     
     a {
-      width: 75%;
-    
+      width: 100%;
+      
       input {
-        width: 95%;
+        width: calc(100% - 28px);
         background-color: #fff;
         border: none;
         color: #000;
@@ -67,8 +75,9 @@ const Wrapper = styled.div`
         cursor: pointer;
         width: 14px;
         color: #fff;
+        top: 8px;
         right: 22px;
-        position: relative;        
+        position: absolute;        
         transition: all 0.5s ease;      
       }    
     }  
@@ -170,6 +179,32 @@ const NavIconContainer = styled(NavLink)`
   div {
     display: inline-block;
     position: relative;
+  }
+`;
+const NavInputContainer = styled.div`
+  display: flex;
+  color: #fff;
+  height: 40px;
+  justify-content: flex-start;
+  align-items: center;
+  margin: 0 15px 10px 15px;
+  border-radius: 8px;
+  width: 100%;  
+  
+  &.active {
+    background: #ffffff14;
+  }
+  div {
+    display: inline-block;
+    position: relative;
+  }
+  input {
+    width: calc(100% - 75px);
+    background-color: #fff;
+    border: none;
+    color: #000;
+    border-radius: 6px;
+    padding-left: 6px;
   }
 `;
 
@@ -370,25 +405,28 @@ const MainNavigationTabPanel = (props) => {
       <div className="flex navigation-menu-tab-header-options">
         <ul>
           {!isExternal && (
-            <li onClick={closeLeftNav} className="driff-company-name">
-              <NavIconContainer
-                active={["dashboard", "posts", "chat", "files", "people"].includes(props.match.params.page)}
-                to={lastVisitedChannel !== null && lastVisitedChannel.hasOwnProperty("code") ? `/chat/${lastVisitedChannel.code}` : "/chat"}
-              >
-                <NavIcon icon={"home"}/>
-                <div>
-                  {
-                    editCompany ?
-                      <input ref={refs.companyName} defaultValue={driffSettings.company_name}
-                             onChange={handleCompanyNameChange} onKeyDown={handleCompanyNameKeyDown} name="company-name"
-                             autoFocus={true}/>
-                      :
-                      <>{driffSettings.company_name}</>
-                  }
-                  {(unreadCounter.chat_message >= 1 || unreadCounter.unread_channel > 0) &&
-                  <Badge data-count={unreadCounter.chat_message}>&nbsp;</Badge>}
-                </div>
-              </NavIconContainer>
+            <li onClick={closeLeftNav} className={`driff-company-name ${editCompany ? "active" : ""}`}>
+              {
+                editCompany ?
+                  <NavInputContainer className="active">
+                    <NavIcon icon={"home"}/>
+                    <input ref={refs.companyName} defaultValue={driffSettings.company_name}
+                           onChange={handleCompanyNameChange} onKeyDown={handleCompanyNameKeyDown} name="company-name"
+                           autoFocus={true}/>
+                  </NavInputContainer>
+                  :
+                  <NavIconContainer
+                    active={["dashboard", "posts", "chat", "files", "people"].includes(props.match.params.page)}
+                    to={lastVisitedChannel !== null && lastVisitedChannel.hasOwnProperty("code") ? `/chat/${lastVisitedChannel.code}` : "/chat"}
+                  >
+                    <NavIcon icon={"home"}/>
+                    {driffSettings.company_name}
+                    <div>
+                      {(unreadCounter.chat_message >= 1 || unreadCounter.unread_channel > 0) &&
+                      <Badge data-count={unreadCounter.chat_message}>&nbsp;</Badge>}
+                    </div>
+                  </NavIconContainer>
+              }
               {
                 user.role && ["owner", "admin"].includes(user.role.name) &&
                 <>
@@ -493,10 +531,11 @@ const MainNavigationTabPanel = (props) => {
                     />
                   )}
                   {isExternal &&
-                    Object.keys(workspaces).length > 0 &&
-                    Object.values(workspaces).map((ws) => {
-                      return <ExternalWorkspaceList key={ws.key_id} actions={actions} workspace={ws}
-                                                  activeTopic={workspace}/>;
+                  Object.keys(workspaces).length > 0 &&
+                  Object.values(workspaces).map((ws) => {
+                    return <ExternalWorkspaceList
+                      key={ws.key_id} actions={actions} workspace={ws}
+                      activeTopic={workspace}/>;
                   })}
                 </ul>
               </>
