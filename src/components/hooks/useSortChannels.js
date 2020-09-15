@@ -51,7 +51,10 @@ const useSortChannels = (channels, search, options = {}, workspace) => {
         if (channel.type === "DIRECT" && channel.members.length === 2) {
           return channel.members.filter(m => m.id !== user.id).some(m => m.name.toLowerCase().search(search.toLowerCase()) !== -1)
         }
-        return (channel.search.toLowerCase().search(search.toLowerCase()) !== -1 || channel.title.toLowerCase().search(search.toLowerCase()) !== -1)
+
+        return (channel.search.toLowerCase().search(search.toLowerCase()) !== -1
+          || channel.title.toLowerCase().search(search.toLowerCase()) !== -1
+          || channel.members.filter(m => m.id !== user.id).some(m => m.name.toLowerCase().search(search.toLowerCase()) !== -1))
       }
     })
     .sort((a, b) => {

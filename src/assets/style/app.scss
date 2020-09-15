@@ -351,6 +351,8 @@ body.dark {
   .more-options-tooltip {
     background-color: #25282c;
     border-color: #25282c !important;
+
+    > div.active,
     > div:hover {
       color: #c7c7c7;
       background: #111417;

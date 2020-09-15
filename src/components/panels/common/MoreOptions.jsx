@@ -9,7 +9,6 @@ const Wrapper = styled.div`
 
   svg {
     cursor: pointer;
-    cursor: hand;
     width: 100%;
 
     &:hover {
@@ -18,18 +17,16 @@ const Wrapper = styled.div`
   }
 `;
 const MoreTooltip = styled.div`
-  ${(props) => props.hide && "display: none;"}
+  ${(props) => props.hide && "display: none"};
   z-index: 30;
   height: auto;
   position: absolute;
   cursor: pointer;
-  width: ${(props) => props.width}px;
-  height: auto;
+  width: ${(props) => props.width}px;  
   background-color: #ffffff;
   color: #4d4d4d;
   border-radius: 8px;
-  padding: 8px 0px;
-  cursor: pointer;
+  padding: 8px 0;
   box-shadow: 0 5px 10px -1px rgba(0, 0, 0, 0.15);
   border-top: 1px solid #eeeeee !important;
   
@@ -61,6 +58,8 @@ const MoreTooltip = styled.div`
     text-align: left;
     padding: 4px 24px;
     cursor: pointer;
+    
+    &.active,
     &:hover {
       background-color: #f0f0f0;
       color: #7a1b8b;

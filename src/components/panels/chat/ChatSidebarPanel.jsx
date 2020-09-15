@@ -126,14 +126,21 @@ const ChatSidebarPanel = (props) => {
     setSearch("");
   };
 
+  const handleResetFilter = () => {
+    setTabPill("pills-home");
+  }
+
   const handleTabChange = useCallback(
     (e) => {
-      setTabPill(e.target.getAttribute("aria-controls"));
+      if (tabPill === e.target.getAttribute("aria-controls"))
+        handleResetFilter();
+      else
+        setTabPill(e.target.getAttribute("aria-controls"));
     },
-    [setTabPill, refs.navTab.current]
+    [setTabPill, tabPill]
   );
 
-  const { _t } = useTranslation();
+  const {_t} = useTranslation();
 
   const dictionary = {
     chats: _t("CHAT.CHATS", "Chats"),
@@ -213,8 +220,9 @@ const ChatSidebarPanel = (props) => {
           }
         </div>
       </div>
-      <ChatSideBarContentPanel pill={tabPill} search={search} channels={channels} userChannels={userChannels}
-                               selectedChannel={selectedChannel} dictionary={dictionary}/>
+      <ChatSideBarContentPanel
+        pill={tabPill} search={search} channels={channels} userChannels={userChannels}
+        selectedChannel={selectedChannel} dictionary={dictionary} resetFilter={handleResetFilter}/>
     </Wrapper>
   );
 };
