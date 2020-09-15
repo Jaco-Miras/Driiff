@@ -4,7 +4,7 @@ import ReactQuill, { Quill } from "react-quill";
 import "react-quill/dist/quill.snow.css";
 
 const QuillEditor = forwardRef((props, ref) => {
-  return <ReactQuill theme="snow" {...props} ref={ref} placeholder="Schrijf een bericht..." />;
+  return <ReactQuill theme="snow" {...props} ref={ref} placeholder="Write great things here..." />;
 });
 export default QuillEditor;
 
