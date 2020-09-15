@@ -39,18 +39,18 @@ const Wrapper = styled.div`
     display: flex;
     justify-content: space-between;
     align-items: center;
-    
+
     &:hover {
       svg {
-        &.action {          
-          opacity: 1;        
+        &.action {
+          opacity: 1;
         }
       }
     }
-    
+
     a {
       width: 75%;
-    
+
       input {
         width: 95%;
         background-color: #fff;
@@ -60,18 +60,18 @@ const Wrapper = styled.div`
         padding-left: 6px;
       }
     }
-    
-    svg {      
-      &.action {      
+
+    svg {
+      &.action {
         opacity: 0;
         cursor: pointer;
         width: 14px;
         color: #fff;
         right: 22px;
-        position: relative;        
-        transition: all 0.5s ease;      
-      }    
-    }  
+        position: relative;
+        transition: all 0.5s ease;
+      }
+    }
   }
   .your-workspaces-title {
     margin: 0 15px;
@@ -187,7 +187,7 @@ const NavNewWorkspace = styled.button`
   justify-content: center;
   align-items: center;
   color: #ffffff !important;
-  
+
   div {
     position: relative;
     display: inline-flex;
@@ -203,13 +203,13 @@ const StyledTooltip = styled(Tooltip)`
   justify-content: center;
 `;
 
-const EmptyState = styled.div`  
+const EmptyState = styled.div`
   display: flex;
   align-items: start;
   justify-content: center;
   text-align: center;
   color: #fff;
-  
+
   svg {
     display: block;
     margin: 1rem auto;
@@ -218,7 +218,7 @@ const EmptyState = styled.div`
       fill: transparent;
     }
   }
-  button {  
+  button {
     text-transform: uppercase;
   }
 `;

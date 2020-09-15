@@ -8,7 +8,7 @@ const Wrapper = styled.div``;
 const Navbar = styled.ul`
   display: block;
   width: 100%;
-  margin-left: -30px;
+  margin-left: -15px;
   li {
     display: inline-block;
     text-align: center;
@@ -64,30 +64,28 @@ const CompanyPageHeaderPanel = (props) => {
   return (
     <>
       <Wrapper className={`${className}`}>
-        <div className="container-fluid d-sm-flex justify-content-between">
-          <Navbar className="navbar-nav">
-            <li className="nav-item">
-              <MainNavLink to="/dashboard">Dashboard</MainNavLink>
-            </li>
-            <li className="nav-item">
-              <MainNavLink to={lastVisitedChannel !== null && lastVisitedChannel.hasOwnProperty("code") ? `/chat/${lastVisitedChannel.code}` : "/chat"}>
-                Chat{" "}
-                <div className="ml-2 badge badge-pill badge badge-danger">
-                  {unreadCounter.chat_message + unreadCounter.chat_reminder_message > 0 ? unreadCounter.chat_message + unreadCounter.chat_reminder_message : unreadCounter.unread_channel > 0 ? unreadCounter.unread_channel : null}
-                </div>
-              </MainNavLink>
-            </li>
-            <li className="nav-item">
-              <MainNavLink to="/posts">Posts</MainNavLink>
-            </li>
-            <li className="nav-item">
-              <MainNavLink to="/files">Files</MainNavLink>
-            </li>
-            <li className="nav-item">
-              <MainNavLink to="/people">People</MainNavLink>
-            </li>
-          </Navbar>
-        </div>
+        <Navbar className="navbar-nav">
+          <li className="nav-item">
+            <MainNavLink to="/dashboard">Dashboard</MainNavLink>
+          </li>
+          <li className="nav-item">
+            <MainNavLink to={lastVisitedChannel !== null && lastVisitedChannel.hasOwnProperty("code") ? `/chat/${lastVisitedChannel.code}` : "/chat"}>
+              Chat{" "}
+              <div className="ml-2 badge badge-pill badge badge-danger">
+                {unreadCounter.chat_message + unreadCounter.chat_reminder_message > 0 ? unreadCounter.chat_message + unreadCounter.chat_reminder_message : unreadCounter.unread_channel > 0 ? unreadCounter.unread_channel : null}
+              </div>
+            </MainNavLink>
+          </li>
+          <li className="nav-item">
+            <MainNavLink to="/posts">Posts</MainNavLink>
+          </li>
+          <li className="nav-item">
+            <MainNavLink to="/files">Files</MainNavLink>
+          </li>
+          <li className="nav-item">
+            <MainNavLink to="/people">People</MainNavLink>
+          </li>
+        </Navbar>
       </Wrapper>
     </>
   );

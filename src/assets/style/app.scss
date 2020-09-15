@@ -153,8 +153,8 @@ body.dark {
     color: #8c8e90;
   }
 
-  .header-profile-navigation {
-    border-left: 1px solid $dm-border-color-2;
+  .navbar-nav .nav-item-last {
+    border-right: 1px solid $dm-border-color-2 !important;
   }
 
   .emoji-button-div {
@@ -17743,7 +17743,7 @@ body.stretch-layout.navigation-toggle-one .header {
     padding-bottom: -webkit-calc(1.875rem * 2);
     padding-bottom: -moz-calc(1.875rem * 2);
     padding-bottom: calc(1.875rem * 2);
-    padding-bottom: 0;;
+    padding-bottom: 0;
   }
 
   body.sticky-footer #main footer,
