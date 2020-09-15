@@ -4,6 +4,7 @@ import styled from "styled-components";
 import ChannelsSidebar from "../../list/chat/ChannelsSidebar";
 import ChatContactsList from "../../list/chat/ChatContactsList";
 import {getChannelDrafts} from "../../../redux/actions/chatActions";
+import {SvgIconFeather} from "../../common";
 
 const Wrapper = styled.div`
   overflow: auto !important;
@@ -15,11 +16,17 @@ const Wrapper = styled.div`
   .recent-new-group-wrapper {
     padding-right: 24px;
   }
+  
+  .badge-filter {
+    justify-content: center;
+    align-items: center;
+    display: inline-flex;
+  }
 `;
 
 const ChatSidebarContentPanel = (props) => {
 
-  const {className = "", pill = "pills-home", search, channels, userChannels, selectedChannel, dictionary} = props;
+  const {className = "", pill = "pills-home", search, channels, userChannels, selectedChannel, dictionary, resetFilter} = props;
 
   const dispatch = useDispatch();
 
@@ -38,12 +45,18 @@ const ChatSidebarContentPanel = (props) => {
         </div>
         <div className={`tab-panel fade ${pill === "pills-contact" && "show active"}`} id="pills-contact"
              role="tabpanel" aria-labelledby="pills-contact-tab">
+          <div className="badge-filter badge badge badge-info text-white cursor-pointer mb-2" onClick={resetFilter}>
+            <SvgIconFeather className="mr-1" icon="x" width={11} height={11} onClick={resetFilter}/> Direct chats
+          </div>
           <ChatContactsList
             search={search} channels={channels} userChannels={userChannels}
             selectedChannel={selectedChannel} dictionary={dictionary}/>
         </div>
         <div className={`tab-panel workspace-chat-list fade ${pill === "pills-workspace" && "show active"}`}
              id="pills-workspace" role="tabpanel" aria-labelledby="pills-workspace-tab">
+          <div className="badge-filter badge badge badge-info text-white cursor-pointer mb-2" onClick={resetFilter}>
+            <SvgIconFeather className="mr-1" icon="x" width={11} height={11} onClick={resetFilter}/> Workspace chats
+          </div>
           <ChannelsSidebar
             search={search} workspace={true} channels={channels} selectedChannel={selectedChannel}
             dictionary={dictionary}/>
