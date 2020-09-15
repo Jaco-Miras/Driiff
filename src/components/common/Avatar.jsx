@@ -31,7 +31,7 @@ const Image = styled.img`
 `;
 
 const Initials = styled.span`
-  color: #fff;
+  color: #fff !important;
   background: ${(props) => (props.avatarColor ? props.avatarColor : "white")};
 
   display: flex;
@@ -46,7 +46,7 @@ const Initials = styled.span`
 `;
 
 const Avatar = (props) => {
-  const { className = "", imageLink, id, colorCode = "", name = "", children, partialName = null, type = "USER", userId, onClick = null, noDefaultClick = false, hasAccepted = null, isBot = false, ...rest } = props;
+  const { className = "", imageLink, id, name = "", children, partialName = null, type = "USER", userId, onClick = null, noDefaultClick = false, hasAccepted = null, isBot = false, ...rest } = props;
 
   const history = useHistory();
   const onlineUsers = useSelector((state) => state.users.onlineUsers);
@@ -54,6 +54,7 @@ const Avatar = (props) => {
 
   const [isLoaded, setIsLoaded] = useState(false);
   const [showInitials, setShowInitials] = useState(false);
+  const [isError, setError] = useState(false);
 
   const toggleTooltip = () => {
     let tooltips = document.querySelectorAll("span.react-tooltip-lite");
@@ -99,6 +100,7 @@ const Avatar = (props) => {
   const handleImageError = () => {
     setIsLoaded(true);
     setShowInitials(true);
+    // setError(true);
   };
 
   // const hasWhiteSpace = (s) => {
@@ -129,7 +131,7 @@ const Avatar = (props) => {
   };
 
   return (
-    <Wrapper {...rest} className={`avatar avatar-sm ${isOnline ? "avatar-state-success" : ""} ${isLoaded ? "ico-avatar-loaded" : ""} ${showInitials ? "border" : ""} ${className}`} onClick={handleOnClick}>
+    <Wrapper {...rest} className={`avatar avatar-sm ${isOnline ? "avatar-state-success" : ""} ${isLoaded ? "ico-avatar-loaded" : ""} ${className}`} onClick={handleOnClick}>
       {isLoaded === false && <Skeleton borderRadius="50%" widthRandomness={0} heightRandomness={0} />}
       <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={name}>
         {isBot ? (
