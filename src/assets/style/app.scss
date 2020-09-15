@@ -63,6 +63,88 @@ body.dark {
   // #191c20 // mid / tobar chat
   // #ffffff14 // borders of #fff3
 
+  .people-list {
+    background-color: none;
+    color: $dm-text-color;
+  }
+
+  .people-list span {
+    color: $dm-text-color;
+  }
+
+  .people-list ul {
+    background-color: $dm-bg !important;
+    border: none;
+  }
+
+  .action-text {
+    color: $dm-text-color;
+  }
+
+  .quote-container {
+    background-color: #111417;
+    color: $dm-text-color;
+  }
+
+  .quote-content {
+    color: $dm-text-color !important;
+  }
+
+  .total-people-circle {
+    border: none;
+    background-color: #25282c;
+  }
+
+  .feather-user {
+    background-color: #2b2e32;
+  }
+
+  .feather-users {
+    background-color: #2b2e32;
+  }
+
+  .avatar-container .btn {
+    background-color: #242629 !important;
+  }
+
+  .ql-tooltip {
+    background-color: $dm-bg-2;
+    border: 1px solid $dm-border-color-2 !important;
+    color: $dm-text-color;
+    box-shadow: none;
+  }
+
+  .ql-snow .ql-tooltip.ql-editing input[type="text"] {
+    color: $dm-text-color;
+    background-color: $dm-bg;
+    border: 1px solid $dm-border-color-2 !important;
+  }
+
+  .post-title {
+    color: $dm-text-color !important;
+  }
+
+  .title {
+    color: $dm-text-color;
+  }
+
+  .timeline-file-icon {
+    color: $dm-text-color;
+  }
+
+  .quote-clear-container {
+    background-color: #fff0;
+  }
+
+  .driff-company-name input {
+    background-color: #111417 !important;
+    color: $dm-text-color !important;
+  }
+
+  .btn-cross svg {
+    color: #8c8e90;
+  }
+
   .header-profile-navigation {
     border-left: 1px solid $dm-border-color-2;
   }
@@ -121,7 +203,7 @@ body.dark {
   }
 
   .channel-viewing {
-    background-color: $dm-bg !important;
+    background-color: $dm-bg-2 !important;
   }
 
   .post-item-panel:hover {
@@ -18388,7 +18470,6 @@ small {
   display: block;
   text-align: center;
   margin-bottom: 1.5rem;
-  background-color: red;
   color: #000;
   width: 50%;
 }
@@ -20293,7 +20374,7 @@ body.dark .page-link {
 }
 
 body.dark .page-item.disabled .page-link {
-  background-color: rgba(255, 255, 255, 0.05);
+  background-color: $dm-bg-2;
   border-color: rgba(240, 240, 240, 0.12);
   color: rgba(255, 255, 255, 0.5) !important;
 }

@@ -5,7 +5,7 @@ import { Avatar, SvgIconFeather } from "../../common";
 const Wrapper = styled.div`
   > span {
     font-size: 11px;
-    background-color: #cccccc;
+    background-color: ${(props) => (props.iconColor ? props.iconColor : "#fff")};
     color: #fff;
     display: inline-flex;
     padding: 5px;
@@ -20,15 +20,36 @@ const Wrapper = styled.div`
     padding: 6px;
     background-color: #eeeeee;
     border-radius: 50%;
+    &:dark {
+      background-color: ${(props) => (props.iconColor ? props.iconColor : props.iconColor)};
+    }
   }
 `;
 
-const StyledAvatar = styled(Avatar)``;
+const StyledAvatar = styled(Avatar)`
+  ${"" /* background-color: ${(props) => (props.iconColor ? props.iconColor : "#fff")}; */}
+`;
+
 const Icon = styled(SvgIconFeather)`
   color: #7a1b8b !important;
   height: 30px;
   width: 30px;
 `;
+
+const iconColor = (name) => {
+  if (typeof name === "undefined") return "";
+  let h = "";
+  let s = 50;
+  let l = 40;
+
+  var hash = 0;
+  for (var i = 0; i < name.length; i++) {
+    hash = name.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  h = hash % 360;
+  return `hsl(${h}, ${s}%, ${l}%)`;
+};
+
 const handleInitials = (title) => {
   var result = "";
   var tokens = title.split(" ");
@@ -40,9 +61,8 @@ const handleInitials = (title) => {
 
 const ChannelIcon = (props) => {
   const { className = "", channel } = props;
-
   return (
-    <Wrapper className={`pr-3 ${className}`} type={channel.type}>
+    <Wrapper className={`pr-3 ${className}`} type={channel.type} iconColor={iconColor(channel.title)}>
       {channel.profile && channel.members.length >= 1 && channel.type === "DIRECT" && (
         <StyledAvatar
           type={channel.type}

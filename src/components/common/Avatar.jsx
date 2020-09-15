@@ -46,7 +46,7 @@ const Initials = styled.span`
 `;
 
 const Avatar = (props) => {
-  const { className = "", imageLink, id, colorCode = "", name = "", children, partialName = null, type = "USER", userId, onClick = null, noDefaultClick = false, hasAccepted = null, isBot = false, ...rest } = props;
+  const { className = "", imageLink, id, name = "", children, partialName = null, type = "USER", userId, onClick = null, noDefaultClick = false, hasAccepted = null, isBot = false, ...rest } = props;
 
   const history = useHistory();
   const onlineUsers = useSelector((state) => state.users.onlineUsers);

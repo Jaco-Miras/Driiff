@@ -145,6 +145,7 @@ export const SvgIconFeather = React.memo(
         );
         break;
       case "user":
+        strokeWidth = "2";
         content = (
           <>
             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
