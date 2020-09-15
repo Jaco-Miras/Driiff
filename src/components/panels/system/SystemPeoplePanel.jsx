@@ -98,9 +98,13 @@ const SystemPeoplePanel = (props) => {
       hasLastName: true,
       invitations: [],
       onPrimaryAction: (invitedUsers, callback, options) => {
+        if (invitedUsers.length === 0) {
+          options.closeModal();
+        }
+
         let processed = 0;
         invitedUsers.forEach((u, i) => {
-          if (Object.values(users).some(user => user.email === u.email)) {
+          if (!Object.values(users).some(user => user.email === u.email)) {
             userActions.inviteAsInternalUsers({
               "email": u.email,
               "first_name": u.first_name,
