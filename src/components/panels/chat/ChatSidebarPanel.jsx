@@ -1,9 +1,12 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import { useSelector } from "react-redux";
+import React, {useCallback, useEffect, useRef, useState} from "react";
+import {useDispatch} from "react-redux";
 import styled from "styled-components";
 import SearchForm from "../../forms/SearchForm";
-import { ChatSideBarContentPanel } from "./index";
-import { usePreviousValue, useTranslation } from "../../hooks";
+import {ChatSideBarContentPanel} from "./index";
+import {usePreviousValue, useTranslation} from "../../hooks";
+import {MoreOptions} from "../common";
+import {addToModals} from "../../../redux/actions/globalActions";
+import {SvgIconFeather} from "../../common";
 
 const Wrapper = styled.div`
   .nav-tabs {
@@ -32,7 +35,8 @@ const Wrapper = styled.div`
 `;
 
 const Search = styled(SearchForm)`
-  margin: 0 0 1.5rem !important;
+  flex-grow: 1;
+  margin: 0 0.5rem 0 0 !important;
 
   .form-control {
     border-radius: 8px !important;
@@ -71,10 +75,25 @@ const Search = styled(SearchForm)`
   }
 `;
 
-const ChatSidebarPanel = (props) => {
-  const { className = "", activeTabPill = "pills-home", channels, userChannels, selectedChannel } = props;
+const StyledMoreOptions = styled(MoreOptions)`
+  .more-options-tooltip {
+    left: auto;
+    right: 0;
+    top: 25px;
+    width: 250px;
+    
+    svg {
+      width: 14px;
+    }  
+  }
+`;
 
-  const unreadCounter = useSelector((state) => state.global.unreadCounter);
+const ChatSidebarPanel = (props) => {
+  const {className = "", activeTabPill = "pills-home", channels, userChannels, selectedChannel} = props;
+
+  const dispatch = useDispatch();
+
+  //const unreadCounter = useSelector((state) => state.global.unreadCounter);
   const [search, setSearch] = useState("");
   const [tabPill, setTabPill] = useState(activeTabPill);
   const previousChannel = usePreviousValue(selectedChannel);
@@ -95,7 +114,8 @@ const ChatSidebarPanel = (props) => {
   // }
 
   const refs = {
-    navTab: useRef(),
+    container: useRef(null),
+    navTab: useRef(null),
   };
 
   const onSearchChange = (e) => {
@@ -109,37 +129,9 @@ const ChatSidebarPanel = (props) => {
   const handleTabChange = useCallback(
     (e) => {
       setTabPill(e.target.getAttribute("aria-controls"));
-      refs.navTab.current.querySelector(".nav-link.active").classList.remove("active");
-      e.target.classList.add("active");
     },
-    [setTabPill]
+    [setTabPill, refs.navTab.current]
   );
-
-  useEffect(() => {
-    refs.navTab.current.querySelector(".nav-link.active").classList.remove("active");
-
-    let e = refs.navTab.current.querySelector(`.nav-link[aria-controls="${activeTabPill}"]`);
-    if (e) {
-      e.classList.add("active");
-      setTabPill(e.getAttribute("aria-controls"));
-    } else {
-      console.log(`[aria-controls="${activeTabPill}"]`);
-    }
-  }, [activeTabPill]);
-
-  useEffect(() => {
-    if (previousChannel === null && selectedChannel !== null) {
-      if (selectedChannel.type === "TOPIC") {
-        setTabPill("pills-workspace");
-        refs.navTab.current.querySelector(".nav-link.active").classList.remove("active");
-
-        let e = refs.navTab.current.querySelector('.nav-link[aria-controls="pills-workspace"]');
-        if (e) {
-          e.classList.add("active");
-        }
-      }
-    }
-  }, [selectedChannel, previousChannel, setTabPill]);
 
   const { _t } = useTranslation();
 
@@ -163,32 +155,66 @@ const ChatSidebarPanel = (props) => {
     personalBot: _t("CHAT.PERSONAL_BOT", "Personal bot"),
   };
 
+  const handleOpenGroupChatModal = () => {
+    let payload = {
+      type: "chat_create_edit",
+      mode: "new",
+    };
+
+    dispatch(addToModals(payload));
+  };
+
+  useEffect(() => {
+    if (refs.navTab.current) {
+      refs.navTab.current.querySelector(".option-filter.active").classList.remove("active");
+
+      let e = refs.navTab.current.querySelector(`.nav-link[aria-controls="${activeTabPill}"]`);
+      if (e) {
+        e.classList.add("active");
+        setTabPill(e.getAttribute("aria-controls"));
+      }
+    }
+  }, [activeTabPill]);
+
+  useEffect(() => {
+    /* commented line is for default selected tab/option
+    if (previousChannel === null && selectedChannel !== null) {
+      if (selectedChannel.type === "TOPIC") {
+        setTabPill("pills-workspace");
+        refs.navTab.current.querySelector(".option-filter.active").classList.remove("active");
+
+        let e = refs.navTab.current.querySelector('.nav-link[aria-controls="pills-workspace"]');
+        if (e) {
+          e.classList.add("active");
+        }
+      }
+    }*/
+  }, [selectedChannel, previousChannel, setTabPill]);
+
   return (
-    <Wrapper className={`chat-sidebar ${className}`}>
-      <div className="chat-sidebar-header">
-        <Search onChange={onSearchChange} value={search} onClickEmpty={emptySearchInput} closeButton="true" className="chat-search" placeholder="Search contacts or chats" />
-        <ul ref={refs.navTab} className="nav nav-pills" role="tabList">
-          <li className="nav-item">
-            <span className="nav-link active" id="pills-home-tab" data-toggle="pill" onClick={handleTabChange} role="tab" aria-controls="pills-home" aria-selected="true">
-              {dictionary.chats}{" "}
-              {tabPill !== "pills-home" && (unreadCounter.chat_message > 0 || unreadCounter.unread_channel > 0) && (
-                <div className={`badge badge-primary badge-pill ${unreadCounter.chat_message > 0 ? "text-white" : "text-primary"}`}>{unreadCounter.chat_message > 0 ? unreadCounter.chat_message : unreadCounter.unread_channel}</div>
-              )}
-            </span>
-          </li>
-          <li className="nav-item">
-            <span className="nav-link" id="pills-contact-tab" data-toggle="pill" onClick={handleTabChange} role="tab" aria-controls="pills-contact" aria-selected="false">
-              {dictionary.contacts}
-            </span>
-          </li>
-          <li className="nav-item">
-            <span className="nav-link" id="pills-workspace-tab" data-toggle="pill" onClick={handleTabChange} role="tab" aria-controls="pills-workspace" aria-selected="false">
-              {dictionary.workspaceChats} {tabPill !== "pills-workspace" && unreadCounter.workspace_chat_message > 0 && <div className={"badge badge-primary text-white badge-pill"}>{unreadCounter.workspace_chat_message}</div>}
-            </span>
-          </li>
-        </ul>
+    <Wrapper ref={refs.container} className={`chat-sidebar ${className}`}>
+      <div className="chat-sidebar-header d-flex justify-content-between align-items-center">
+        <Search onChange={onSearchChange} value={search} onClickEmpty={emptySearchInput} closeButton="true"
+                className="chat-search" placeholder="Search contacts or chats"/>
+        <div>
+          {
+            <StyledMoreOptions ref={refs.navTab} role="tabList">
+              <div className={`option-filter ${tabPill === "pills-home" ? "active" : ""}`} onClick={handleTabChange}
+                   aria-controls="pills-home" aria-selected="false">{dictionary.chats}</div>
+              <div className={`option-filter ${tabPill === "pills-workspace" ? "active" : ""}`}
+                   onClick={handleTabChange} aria-controls="pills-workspace"
+                   aria-selected="false">{dictionary.workspaceChats}</div>
+              <div className={`option-filter ${tabPill === "pills-contact" ? "active" : ""}`} onClick={handleTabChange}
+                   aria-controls="pills-contact" aria-selected="false">{dictionary.contacts}</div>
+              <div className="d-flex" onClick={handleOpenGroupChatModal}>
+                <SvgIconFeather className="mr-2" width={14} height={14} icon="plus"/> {dictionary.newGroupChat}
+              </div>
+            </StyledMoreOptions>
+          }
+        </div>
       </div>
-      <ChatSideBarContentPanel pill={tabPill} search={search} channels={channels} userChannels={userChannels} selectedChannel={selectedChannel} dictionary={dictionary} />
+      <ChatSideBarContentPanel pill={tabPill} search={search} channels={channels} userChannels={userChannels}
+                               selectedChannel={selectedChannel} dictionary={dictionary}/>
     </Wrapper>
   );
 };
