@@ -45,12 +45,6 @@ const useSortChannels = (channels, search, options = {}, workspace) => {
         }
       }
 
-      if (workspace === null && search.length <= 2) {
-        if (channel.type === "TOPIC") {
-          return false;
-        }
-      }
-
       if (search === "") {
         return !(channel.is_hidden || channel.is_archived === true || channel.add_user || channel.add_open_topic);
       } else {

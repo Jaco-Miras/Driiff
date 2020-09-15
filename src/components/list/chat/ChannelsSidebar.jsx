@@ -19,7 +19,7 @@ const ChatHeader = styled.h4`
 `;
 
 const ChannelsSidebar = (props) => {
-  const {className, search, channels, selectedChannel, workspace, dictionary} = props;
+  const {className = "", search, channels, selectedChannel, workspace, dictionary} = props;
 
   const [sortedChannels] = useSortChannels(channels, search, {}, workspace);
   const channelDrafts = useSelector((state) => state.chat.channelDrafts);

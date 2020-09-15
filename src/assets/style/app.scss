@@ -248,7 +248,7 @@ body.dark {
 
   .emoji-mart-search-icon {
     top: 5px;
-    padding: 0px 5px 1px;
+    padding: 0 5px 1px;
   }
 
   .ql-editor {
@@ -21216,10 +21216,10 @@ body.dark.small-navigation .navigation-menu-body ul li.navigation-divider:after 
   position: absolute;
   width: 100%;
   height: 100%;
-  top: 0;
-  height: 100%;
-  padding-top: 114px;
+  top: 50px;
+  height: calc(100% - 50px);
   overflow-y: scroll;
+
   @media (max-width: 480px) {
     padding-top: 98px;
   }
