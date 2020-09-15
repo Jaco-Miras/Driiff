@@ -63,6 +63,14 @@ body.dark {
   // #191c20 // mid / tobar chat
   // #ffffff14 // borders of #fff3
 
+  .mb-1 {
+    color: $dm-text-color;
+  }
+
+  .chat-sidebar-panel {
+    background-color: $dm-bg-2;
+  }
+
   .people-list {
     background-color: none;
     color: $dm-text-color;
@@ -19716,7 +19724,7 @@ body.dark .bg-light {
 }
 
 body.dark .list-group-item {
-  background: 0 0;
+  background: $dm-bg-2;
   border-color: rgba(155, 155, 155, 0.1);
 }
 
