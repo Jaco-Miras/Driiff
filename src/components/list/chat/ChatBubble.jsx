@@ -183,6 +183,9 @@ const QuoteContainer = styled.div`
     @media all and (max-width: 620px) {
       display: none;
     }
+    &:dark {
+      ${(props) => (props.isAuthor ? "border-left-color: red !important;" : "border-right-color: yellow !important;")};
+    }
   }
   @media all and (max-width: 620px) {
     margin: -7px -7px 10px -7px;
@@ -1027,7 +1030,7 @@ const ChatBubble = (props) => {
           <ChatContentClap ref={addMessageRef ? loadRef : null} className="chat-content-clap" isAuthor={isAuthor}>
             <ChatContent showAvatar={showAvatar} isAuthor={isAuthor} isEmoticonOnly={isEmoticonOnly} className={`chat-content animated slower ${highlightedText ? "is-highlighted" : ""}`}>
               {reply.quote && reply.quote.body && !reply.is_deleted && (reply.quote.user_id !== undefined || reply.quote.user !== undefined) && (
-                <QuoteContainer showAvatar={showAvatar} isEmoticonOnly={isEmoticonOnly} hasFiles={hasFiles} theme={chatSettings.chat_message_theme} onClick={handleQuoteClick} isAuthor={isAuthor}>
+                <QuoteContainer className={"quote-container"} showAvatar={showAvatar} isEmoticonOnly={isEmoticonOnly} hasFiles={hasFiles} theme={chatSettings.chat_message_theme} onClick={handleQuoteClick} isAuthor={isAuthor}>
                   {reply.quote.user_id === user.id ? (
                     <QuoteAuthor theme={chatSettings.chat_message_theme} isAuthor={true}>
                       {"You"}
@@ -1037,7 +1040,7 @@ const ChatBubble = (props) => {
                       {replyQuoteAuthor}
                     </QuoteAuthor>
                   )}
-                  <QuoteContent theme={chatSettings.chat_message_theme} isAuthor={isAuthor} dangerouslySetInnerHTML={{ __html: replyQuoteBody.split("</p>")[0] }}></QuoteContent>
+                  <QuoteContent className={"quote-content"} theme={chatSettings.chat_message_theme} isAuthor={isAuthor} dangerouslySetInnerHTML={{ __html: replyQuoteBody.split("</p>")[0] }}></QuoteContent>
                 </QuoteContainer>
               )}
               {
