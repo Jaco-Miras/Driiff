@@ -179,6 +179,9 @@ const useSettings = () => {
     } else {
       dispatch(
         putCompanyUpdateName(payload, (err, res) => {
+          if (err) {
+            toaster.error(<><b>{payload.company_name}</b> can't be used.</>);
+          }
           if (res) {
             toaster.success(`You have updated the company name to ${payload.company_name}`);
           }

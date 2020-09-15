@@ -111,6 +111,10 @@ body.dark {
     background-color: #2b2e32;
   }
 
+  .feather-arrow-right {
+    color: $dm-text-color !important;
+  }
+
   .avatar-container .btn {
     background-color: #242629 !important;
   }
@@ -351,6 +355,8 @@ body.dark {
   .more-options-tooltip {
     background-color: #25282c;
     border-color: #25282c !important;
+
+    > div.active,
     > div:hover {
       color: #c7c7c7;
       background: #111417;
@@ -15528,6 +15534,9 @@ button.toast-close-button {
 .ql-editor.ql-blank::before {
   right: inherit;
   left: 10px;
+  font-style: normal;
+  color: #aaaaaa;
+  font-weight: 500;
 }
 
 .app-sortable-handle {
