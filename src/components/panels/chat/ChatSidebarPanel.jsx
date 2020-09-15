@@ -3,7 +3,7 @@ import {useDispatch} from "react-redux";
 import styled from "styled-components";
 import SearchForm from "../../forms/SearchForm";
 import {ChatSideBarContentPanel} from "./index";
-import {usePreviousValue, useTranslation} from "../../hooks";
+import {useSettings, useTranslation} from "../../hooks";
 import {MoreOptions} from "../common";
 import {addToModals} from "../../../redux/actions/globalActions";
 import {SvgIconFeather} from "../../common";
@@ -89,14 +89,18 @@ const StyledMoreOptions = styled(MoreOptions)`
 `;
 
 const ChatSidebarPanel = (props) => {
-  const {className = "", activeTabPill = "pills-home", channels, userChannels, selectedChannel} = props;
+
+  const {className = "", channels, userChannels, selectedChannel} = props;
 
   const dispatch = useDispatch();
+  const {chatSettings, setChatSetting} = useSettings();
+
+  console.log(chatSettings.chat_filter);
 
   //const unreadCounter = useSelector((state) => state.global.unreadCounter);
   const [search, setSearch] = useState("");
-  const [tabPill, setTabPill] = useState(activeTabPill);
-  const previousChannel = usePreviousValue(selectedChannel);
+  const [tabPill, setTabPill] = useState(chatSettings.chat_filter);
+  //const previousChannel = usePreviousValue(selectedChannel);
 
   // let add = (total, num) => total + num;
   // let unreadMessages = 0;
@@ -132,10 +136,11 @@ const ChatSidebarPanel = (props) => {
 
   const handleTabChange = useCallback(
     (e) => {
-      if (tabPill === e.target.getAttribute("aria-controls"))
+      if (tabPill === e.target.getAttribute("aria-controls")) {
         handleResetFilter();
-      else
+      } else {
         setTabPill(e.target.getAttribute("aria-controls"));
+      }
     },
     [setTabPill, tabPill]
   );
@@ -172,31 +177,12 @@ const ChatSidebarPanel = (props) => {
   };
 
   useEffect(() => {
-    if (refs.navTab.current) {
-      refs.navTab.current.querySelector(".option-filter.active").classList.remove("active");
-
-      let e = refs.navTab.current.querySelector(`.nav-link[aria-controls="${activeTabPill}"]`);
-      if (e) {
-        e.classList.add("active");
-        setTabPill(e.getAttribute("aria-controls"));
-      }
+    if (chatSettings.chat_filter !== tabPill) {
+      setChatSetting({
+        chat_filter: tabPill,
+      });
     }
-  }, [activeTabPill]);
-
-  useEffect(() => {
-    /* commented line is for default selected tab/option
-    if (previousChannel === null && selectedChannel !== null) {
-      if (selectedChannel.type === "TOPIC") {
-        setTabPill("pills-workspace");
-        refs.navTab.current.querySelector(".option-filter.active").classList.remove("active");
-
-        let e = refs.navTab.current.querySelector('.nav-link[aria-controls="pills-workspace"]');
-        if (e) {
-          e.classList.add("active");
-        }
-      }
-    }*/
-  }, [selectedChannel, previousChannel, setTabPill]);
+  }, [chatSettings.chat_filter, tabPill])
 
   return (
     <Wrapper ref={refs.container} className={`chat-sidebar ${className}`}>

@@ -17,6 +17,7 @@ const INITIAL_STATE = {
   user: {
     isLoaded: false,
     CHAT_SETTINGS: {
+      chat_filter: "pills-home",
       sound_enabled: true,
       open_topic_channels: [],
       order_channel: {
