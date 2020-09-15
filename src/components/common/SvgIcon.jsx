@@ -7,7 +7,7 @@ const Svg = styled.svg`
 
 export const SvgIconFeather = React.memo(
   React.forwardRef((props, ref) => {
-    let { className = "", width = 24, height = 24, viewBox = "0 0 24 24", fill = "none", stroke = "currentColor", strokeWidth = "1", strokeLinecap = "round", strokeLinejoin = "round", icon, ...rest } = props;
+    let { className = "", width = 24, height = 24, viewBox = "0 0 24 24", fill = "none", stroke = "currentColor", strokeWidth = "2", strokeLinecap = "round", strokeLinejoin = "round", icon, ...rest } = props;
 
     let content = "";
 
@@ -296,6 +296,7 @@ export const SvgIconFeather = React.memo(
         );
         break;
       case "database":
+        strokeWidth = "1";
         content = (
           <>
             <ellipse cx="12" cy="5" rx="9" ry="3" />
@@ -331,6 +332,7 @@ export const SvgIconFeather = React.memo(
         );
         break;
       case "share":
+        strokeWidth = '2';
         content = (
           <>
             <circle cx="18" cy="5" r="3" />

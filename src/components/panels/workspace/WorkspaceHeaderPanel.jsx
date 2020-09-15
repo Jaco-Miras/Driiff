@@ -284,7 +284,7 @@ const WorspaceHeaderPanel = (props) => {
                       {!isExternal && (
                         <>
                           <li className="nav-item nav-item-folder">
-                            <WorkspaceName>General</WorkspaceName>
+                            <WorkspaceName>Workspaces</WorkspaceName>
                           </li>
                           <li className="nav-item-chevron">
                             <SvgIconFeather icon="chevron-right" />
@@ -299,7 +299,7 @@ const WorspaceHeaderPanel = (props) => {
                       </li>
                       {activeTopic.is_lock === 1 && (
                         <li className="nav-item">
-                          <div className={`badge badge-light text-white ml-1`}>Locked</div>
+                          <div className={`badge badge-light text-white ml-1`}>Private</div>
                         </li>
                       )}
                       {activeTopic.active === 0 && (
@@ -332,7 +332,7 @@ const WorspaceHeaderPanel = (props) => {
                       </li>
                       {activeTopic.is_lock === 1 && (
                         <li className="nav-item">
-                          <div className={`badge badge-light text-white ml-1`}>Locked</div>
+                          <div className={`badge badge-light text-white ml-1`}>Private</div>
                         </li>
                       )}
                       {activeTopic.active === 0 && (

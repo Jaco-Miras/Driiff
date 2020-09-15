@@ -111,6 +111,10 @@ body.dark {
     background-color: #2b2e32;
   }
 
+  .feather-arrow-right {
+    color: $dm-text-color !important;
+  }
+
   .avatar-container .btn {
     background-color: #242629 !important;
   }
@@ -15530,6 +15534,9 @@ button.toast-close-button {
 .ql-editor.ql-blank::before {
   right: inherit;
   left: 10px;
+  font-style: normal;
+  color: #aaaaaa;
+  font-weight: 500;
 }
 
 .app-sortable-handle {
@@ -17745,6 +17752,7 @@ body.stretch-layout.navigation-toggle-one .header {
     padding-bottom: -webkit-calc(1.875rem * 2);
     padding-bottom: -moz-calc(1.875rem * 2);
     padding-bottom: calc(1.875rem * 2);
+    padding-bottom: 0;;
   }
 
   body.sticky-footer #main footer,
@@ -21336,11 +21344,11 @@ body.dark.small-navigation .navigation-menu-body ul li.navigation-divider:after 
 
 .workspace-chat,
 .company-chat {
-  height: calc(100vh - 177px);
-  height: calc(var(--vh, 1vh) * 100 - 166px);
+  height: calc(100vh - 120px);
+  height: calc(var(--vh, 1vh) * 100 - 120px);
   margin: 0;
   @media (max-width: 620px) {
-    height: calc(var(--vh, 1vh) * 100 - 136px);
+    height: calc(var(--vh, 1vh) * 100 - 100px);
   }
 }
 
