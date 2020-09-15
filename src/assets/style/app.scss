@@ -111,6 +111,10 @@ body.dark {
     background-color: #2b2e32;
   }
 
+  .feather-arrow-right {
+    color: $dm-text-color !important;
+  }
+
   .avatar-container .btn {
     background-color: #242629 !important;
   }
@@ -15528,6 +15532,9 @@ button.toast-close-button {
 .ql-editor.ql-blank::before {
   right: inherit;
   left: 10px;
+  font-style: normal;
+  color: #aaaaaa;
+  font-weight: 500;
 }
 
 .app-sortable-handle {
