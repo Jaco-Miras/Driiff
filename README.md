@@ -28,6 +28,9 @@ password1
 
 jessryll@makedevelopment.com
 devpassword
+
+rt@zuid.com
+password1
 ```
 
 ## Test and staging enviorment
