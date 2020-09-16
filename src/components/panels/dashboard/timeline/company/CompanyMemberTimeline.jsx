@@ -10,7 +10,7 @@ const Wrapper = styled.div`
         margin: 0;
         color: #505050;
         .joined {
-            color: #00c851
+            color: #00c851;
             font-weight: bold;
         }
         .left {
@@ -34,10 +34,18 @@ const CompanyMemberTimeline = (props) => {
   }
 
   const renderTitle = () => {
-    if (message.title && message.title !== "") {
-      return `Updated workspace to ${message.title}`;
-    }
-    if (message.added_members.length !== 0 || message.removed_members.length) {
+    if (message) {
+      if (message.title && message.title !== "") {
+        return `Updated workspace to ${message.title}`;
+      }
+      if (message.added_members.length !== 0 || message.removed_members.length) {
+      }
+    } else {
+      if (data.body.includes("NEW_ACCOUNT_ACTIVATED")) {
+        return `${data.body.replace(`NEW_ACCOUNT_ACTIVATED `, "")} is added to the company`;
+      }
+
+      return data.body;
     }
   };
 
@@ -86,34 +94,53 @@ const CompanyMemberTimeline = (props) => {
     }
   };
 
-  if (message === null) return null;
+  console.log(data);
 
   return (
     <Wrapper className={`member-timeline timeline-item ${className}`}>
       <div>
         {
-          message.author ?
-          <Avatar className="mr-3" name={message.author.name} imageLink={message.author.profile_image_link}
+          message !== null ?
+            <>
+              {
+                message.author ?
+                  <Avatar
+                    className="mr-3"
+                    name={message.author.name} imageLink={message.author.profile_image_link}
                     id={message.author.id}/>
-          : <Avatar className="mr-3" imageLink={null} isBot={true}/>
-          }
+                  : <Avatar className="mr-3" imageLink={null} isBot={true}/>
+              }
+            </>
+            :
+            <Avatar className="mr-3" imageLink={null} isBot={true}/>
+        }
       </div>
-      <div>
-        <h6 className="d-flex justify-content-between mb-4">
+      {
+        message !== null ?
+          <div>
+            <h6 className="d-flex justify-content-between mb-4">
           <span className="title">
             {message.author && message.author.name} {renderTitle()}
           </span>
-          <span className="text-muted font-weight-normal">{fromNow(data.created_at.timestamp)}</span>
-        </h6>
-        {message.added_members.length || message.removed_members.length ? (
-          <div className="mb-3 border p-3 border-radius-1">
-            <p className="action-text">{message.added_members.length > 0 && renderAddedMembers(true)}</p>
-            <p className="action-text">{message.added_members.length > 0 && renderAddedMembers()}</p>
-            <p className="action-text">{message.removed_members.length > 0 && renderRemovedMembers(true)}</p>
-            <p className="action-text">{message.removed_members.length > 0 && renderRemovedMembers()}</p>
+              <span className="text-muted font-weight-normal">{fromNow(data.created_at.timestamp)}</span>
+            </h6>
+            {message.added_members.length || message.removed_members.length ? (
+              <div className="mb-3 border p-3 border-radius-1">
+                <p className="action-text">{message.added_members.length > 0 && renderAddedMembers(true)}</p>
+                <p className="action-text">{message.added_members.length > 0 && renderAddedMembers()}</p>
+                <p className="action-text">{message.removed_members.length > 0 && renderRemovedMembers(true)}</p>
+                <p className="action-text">{message.removed_members.length > 0 && renderRemovedMembers()}</p>
+              </div>
+            ) : null}
           </div>
-        ) : null}
-      </div>
+          :
+          <div>
+            <h6 className="d-flex justify-content-between mb-4">
+              <span className="title">{renderTitle()}</span>
+              <span className="text-muted font-weight-normal">{fromNow(data.created_at.timestamp)}</span>
+            </h6>
+          </div>
+      }
     </Wrapper>
   );
 };

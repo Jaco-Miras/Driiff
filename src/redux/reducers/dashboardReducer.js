@@ -2,21 +2,21 @@ const INITIAL_STATE = {
   timeline: {
     init: false,
     skip: 0,
-    limit: 100,
+    limit: 1000,
     has_more: true,
     items: {}
   },
   members: {
     init: false,
     skip: 0,
-    limit: 100,
+    limit: 1000,
     has_more: true,
     items: {}
   },
   recent_posts: {
     init: false,
     skip: 0,
-    limit: 100,
+    limit: 1000,
     has_more: true,
     items: {}
   }

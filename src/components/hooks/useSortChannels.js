@@ -45,19 +45,25 @@ const useSortChannels = (channels, search, options = {}, workspace) => {
         }
       }
 
-      if (workspace === null && search.length <= 2) {
-        if (channel.type === "TOPIC") {
-          return false;
-        }
-      }
-
       if (search === "") {
         return !(channel.is_hidden || channel.is_archived === true || channel.add_user || channel.add_open_topic);
       } else {
         if (channel.type === "DIRECT" && channel.members.length === 2) {
-          return channel.members.filter(m => m.id !== user.id).some(m => m.name.toLowerCase().search(search.toLowerCase()) !== -1)
+
+          return channel.members.filter(m => m.id !== user.id).some(m => {
+            if (m.email.toLowerCase().search(search.toLowerCase()) !== -1)
+              return true;
+
+            if (m.name.toLowerCase().search(search.toLowerCase()) !== -1)
+              return true;
+
+            return false;
+          })
         }
-        return (channel.search.toLowerCase().search(search.toLowerCase()) !== -1 || channel.title.toLowerCase().search(search.toLowerCase()) !== -1)
+
+        return (channel.search.toLowerCase().search(search.toLowerCase()) !== -1
+          || channel.title.toLowerCase().search(search.toLowerCase()) !== -1
+          || channel.members.filter(m => m.id !== user.id).some(m => (m.name.toLowerCase().search(search.toLowerCase()) !== -1) || (m.email.toLowerCase().search(search.toLowerCase()) !== -1)))
       }
     })
     .sort((a, b) => {
@@ -78,10 +84,10 @@ const useSortChannels = (channels, search, options = {}, workspace) => {
         return ((b.total_unread >= 1 || b.total_mark_incomplete >= 1)) ? 1 : -1;
       }
 
-      if (aTitle.toLowerCase() === search.toLowerCase())
+      if (aTitle.toLowerCase() === search.toLowerCase() || a.members.filter(m => m.id !== user.id).some(m => (m.name.toLowerCase().search(search.toLowerCase()) !== -1) || (m.email.toLowerCase().search(search.toLowerCase()) !== -1)))
         return -1;
 
-      if (bTitle.toLowerCase() === search.toLowerCase())
+      if (bTitle.toLowerCase() === search.toLowerCase() || b.members.filter(m => m.id !== user.id).some(m => (m.name.toLowerCase().search(search.toLowerCase()) !== -1) || (m.email.toLowerCase().search(search.toLowerCase()) !== -1)))
         return 1;
 
       //add to user

@@ -32,7 +32,7 @@ const Search = styled(SearchForm)`
 const SystemPeoplePanel = (props) => {
   const {className = ""} = props;
 
-  const {users, loggedUser, userChannels, selectUserChannel} = useUserChannels();
+  const {users, userActions, loggedUser, selectUserChannel} = useUserChannels();
 
   const history = useHistory();
   const dispatch = useDispatch();
@@ -69,19 +69,26 @@ const SystemPeoplePanel = (props) => {
   );
 
   const userSort = Object.values(users)
-    .sort((a, b) => {
-      return a.name.localeCompare(b.name);
-    })
     .filter((user) => {
-      if (!userChannels.hasOwnProperty(user.id)) return false;
+      if (["gripp_project_bot",
+        "gripp_account_activation",
+        "gripp_offerte_bot",
+        "gripp_invoice_bot",
+        "gripp_police_bot",
+        "driff_webhook_bot"].includes(user.email)) return false;
 
       if (!showInactive && user.active !== 1) return false;
 
       if (search !== "") {
-        return user.name.toLowerCase().indexOf(search.toLowerCase()) > -1;
+        if (user.name.toLowerCase().search(search.toLowerCase()) === -1
+          && user.email.toLowerCase().search(search.toLowerCase()) === -1)
+          return false;
       }
 
       return true;
+    })
+    .sort((a, b) => {
+      return a.name.localeCompare(b.name);
     });
 
   const {_t} = useTranslation();
@@ -95,8 +102,53 @@ const SystemPeoplePanel = (props) => {
   const handleInviteUsers = () => {
     let payload = {
       type: "driff_invite_users",
+      hasLastName: true,
       invitations: [],
-      onPrimaryAction: () => {
+      onPrimaryAction: (invitedUsers, callback, options) => {
+        if (invitedUsers.length === 0) {
+          options.closeModal();
+        }
+
+        let processed = 0;
+        invitedUsers.forEach((u, i) => {
+          if (!Object.values(users).some(user => user.email === u.email)) {
+            userActions.inviteAsInternalUsers({
+              "email": u.email,
+              "first_name": u.first_name,
+              "last_name": u.last_name,
+            }, (err, res) => {
+              if (err) {
+                toaster.error(`Something went wrong with ${u.first_name} ${u.last_name}`);
+                options.deleteItemByIndex(options.invitationItems.findIndex(i => i.email === u.email));
+              }
+              if (res) {
+                processed += 1;
+                options.deleteItemByIndex(options.invitationItems.findIndex(i => i.email === u.email));
+                toaster.success(`You have invited ${u.first_name} ${u.last_name}`);
+              }
+
+              //last iteration
+              if (i === (invitedUsers.length - 1)) {
+                if (processed === invitedUsers.length) {
+                  options.closeModal();
+                }
+
+                callback();
+              }
+            })
+          } else {
+            toaster.error(<>Email <b>{u.email}</b> is already taken!</>);
+
+            //last iteration
+            if (i === (invitedUsers.length - 1)) {
+              if (processed === invitedUsers.length) {
+                options.closeModal();
+              }
+
+              callback();
+            }
+          }
+        })
       },
     };
 
@@ -110,7 +162,9 @@ const SystemPeoplePanel = (props) => {
       const newState = !prevState;
 
       if (newState) {
-        toaster.success('test');
+        toaster.success('Showing inactive members');
+      } else {
+        toaster.success('Showing active members only');
       }
 
       return newState;

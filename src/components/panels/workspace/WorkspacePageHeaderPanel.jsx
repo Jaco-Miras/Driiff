@@ -7,7 +7,7 @@ const Wrapper = styled.div``;
 const Navbar = styled.ul`
   display: block;
   width: 100%;
-  margin-left: -30px;
+  margin-left: -15px;
   li {
     display: inline-block;
     text-align: center;
@@ -75,37 +75,35 @@ const WorkspacePageHeaderPanel = (props) => {
   return (
     <>
       <Wrapper className={`${className}`}>
-        <div className="container-fluid d-sm-flex justify-content-between">
-          <Navbar className="navbar-nav">
-            <li className="nav-item">
-              <MainNavLink isSub={true} to={`/workspace/dashboard${pathname}`}>
-                Dashboard
-              </MainNavLink>
-            </li>
-            <li className="nav-item">
-              <MainNavLink isSub={true} to={`/workspace/chat${pathname}`}>
-                Chat
-                {workspace !== null && workspace.unread_chats > 0 && <div className="ml-2 badge badge-pill badge-danger">{workspace.unread_chats}</div>}
-              </MainNavLink>
-            </li>
-            <li className="nav-item">
-              <MainNavLink isSub={true} to={`/workspace/posts${pathname}`}>
-                Posts
-                {workspace !== null && workspace.unread_posts > 0 && <div className="ml-2 badge badge-pill badge-danger">{workspace.unread_posts}</div>}
-              </MainNavLink>
-            </li>
-            <li className="nav-item">
-              <MainNavLink isSub={true} to={`/workspace/files${pathname}`}>
-                Files
-              </MainNavLink>
-            </li>
-            <li className="nav-item">
-              <MainNavLink isSub={true} to={`/workspace/people${pathname}`}>
-                People
-              </MainNavLink>
-            </li>
-          </Navbar>
-        </div>
+        <Navbar className="navbar-nav">
+          <li className="nav-item">
+            <MainNavLink isSub={true} to={`/workspace/dashboard${pathname}`}>
+              Dashboard
+            </MainNavLink>
+          </li>
+          <li className="nav-item">
+            <MainNavLink isSub={true} to={`/workspace/chat${pathname}`}>
+              Chat
+              {workspace !== null && workspace.unread_chats > 0 && <div className="ml-2 badge badge-pill badge-danger">{workspace.unread_chats}</div>}
+            </MainNavLink>
+          </li>
+          <li className="nav-item">
+            <MainNavLink isSub={true} to={`/workspace/posts${pathname}`}>
+              Posts
+              {workspace !== null && workspace.unread_posts > 0 && <div className="ml-2 badge badge-pill badge-danger">{workspace.unread_posts}</div>}
+            </MainNavLink>
+          </li>
+          <li className="nav-item">
+            <MainNavLink isSub={true} to={`/workspace/files${pathname}`}>
+              Files
+            </MainNavLink>
+          </li>
+          <li className="nav-item">
+            <MainNavLink isSub={true} to={`/workspace/people${pathname}`}>
+              People
+            </MainNavLink>
+          </li>
+        </Navbar>
       </Wrapper>
     </>
   );

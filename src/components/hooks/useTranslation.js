@@ -1,22 +1,17 @@
-import {useCallback, useEffect, useState} from "react";
-import {useDispatch, useSelector} from "react-redux";
-import {getHttpStatus} from "../../helpers/commonFunctions";
-import {
-  addToModals,
-  addTranslationObject,
-  getTranslationObject,
-  postGenerateTranslationRaw
-} from "../../redux/actions/globalActions";
-import {useDriff, useSettings} from "./index";
-import {isTranslationLogged} from "../../helpers/slugHelper";
+import { useCallback, useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { getHttpStatus } from "../../helpers/commonFunctions";
+import { addToModals, addTranslationObject, getTranslationObject, postGenerateTranslationRaw } from "../../redux/actions/globalActions";
+import { useDriff, useSettings } from "./index";
+import { isTranslationLogged } from "../../helpers/slugHelper";
 
 let init = true;
 let cookieName = {
   dict: "i18n",
   lang: "i18n_lang",
   name: "i18n_ver",
-  ver: "01092020",
-}
+  ver: "150920201103",
+};
 
 localStorage.removeItem("i18n.28082020");
 localStorage.removeItem("i18n_lang.28082020");
@@ -30,16 +25,16 @@ if (localStorage.getItem(cookieName.name) !== cookieName.ver) {
 export const useTranslation = () => {
   const dispatch = useDispatch();
 
-  const {registeredDriff} = useDriff();
+  const { registeredDriff } = useDriff();
   const {
-    generalSettings: {language},
+    generalSettings: { language },
     setGeneralSetting,
   } = useSettings();
 
   const i18n = useSelector((state) => state.global.i18n);
 
   const [dictFile, setDictFile] = useState({});
-  const {REACT_APP_dictionary_file} = process.env;
+  const { REACT_APP_dictionary_file } = process.env;
   const dictionaryFile = REACT_APP_dictionary_file.replace("{{driffName}}", registeredDriff);
 
   const getBrowserLanguage = useCallback(() => {
@@ -189,42 +184,42 @@ export const useTranslation = () => {
     }
   }, []);
 
-  const uploadTranslationToServer = useCallback((callback = () => {
-  }) => {
-    let vocabulary = [];
-    let bodyText = `You are about to add the following words to the dictionary files, continue?`;
-    bodyText += `<table>`;
-    Object.keys(i18n).forEach(k => {
-      bodyText += `<tr>`;
-      bodyText += `<td>${k}</td>`;
-      bodyText += `<td>${i18n[k]}</td>`;
-      bodyText += `</tr>`;
-      vocabulary.push({
-        [k]: i18n[k]
-      })
-    })
-    bodyText += `</table>`;
+  const uploadTranslationToServer = useCallback(
+    (callback = () => {}) => {
+      let vocabulary = [];
+      let bodyText = `You are about to add the following words to the dictionary files, continue?`;
+      bodyText += `<table>`;
+      Object.keys(i18n).forEach((k) => {
+        bodyText += `<tr>`;
+        bodyText += `<td>${k}</td>`;
+        bodyText += `<td>${i18n[k]}</td>`;
+        bodyText += `</tr>`;
+        vocabulary.push({
+          [k]: i18n[k],
+        });
+      });
+      bodyText += `</table>`;
 
-    const cb = () => {
-      dispatch(
-        postGenerateTranslationRaw(vocabulary, callback)
-      )
-    }
+      const cb = () => {
+        dispatch(postGenerateTranslationRaw(vocabulary, callback));
+      };
 
-    let payload = {
-      type: "confirmation",
-      headerText: "Translation - Add",
-      submitText: "Add",
-      cancelText: "Cancel",
-      bodyText: bodyText,
-      size: "lg",
-      actions: {
-        onSubmit: cb,
-      },
-    };
+      let payload = {
+        type: "confirmation",
+        headerText: "Translation - Add",
+        submitText: "Add",
+        cancelText: "Cancel",
+        bodyText: bodyText,
+        size: "lg",
+        actions: {
+          onSubmit: cb,
+        },
+      };
 
-    dispatch(addToModals(payload));
-  }, [i18n])
+      dispatch(addToModals(payload));
+    },
+    [i18n]
+  );
 
   /**
    * Save added text to local storage
@@ -243,7 +238,7 @@ export const useTranslation = () => {
   return {
     _t,
     setLocale,
-    uploadTranslationToServer
+    uploadTranslationToServer,
   };
 };
 

@@ -11,8 +11,8 @@ const Wrapper = styled.div`
       width: 90%;
       position: relative;
       input {
-        border-top-right-radius: 0;
-        border-bottom-right-radius: 0;
+        ${"" /* border-top-right-radius: 0;
+        border-bottom-right-radius: 0; */}
       }
       .btn-cross {
         position: absolute;

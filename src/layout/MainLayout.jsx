@@ -55,6 +55,7 @@ const MainLayout = (props) => {
   const notifications = useSelector((state) => state.notifications.notifications);
   const {
     chatSettings: {sound_enabled},
+    generalSettings: {notifications_on}
   } = useSettings();
 
   const history = useHistory();
@@ -131,7 +132,7 @@ const MainLayout = (props) => {
 
       <MobileOverlay/>
       {user.id !== undefined && window.Echo !== undefined &&
-      <SocketListeners localizeDate={localizeDate} toaster={toaster} soundPlay={handleSoundPlay} workspaceActions={workspaceActions}/>}
+      <SocketListeners localizeDate={localizeDate} toaster={toaster} soundPlay={handleSoundPlay} workspaceActions={workspaceActions} notificationsOn={notifications_on}/>}
     </>
   );
 };

@@ -84,4 +84,12 @@ export const darkTheme = {
     ...provided,
     color: "#c7c7c7",
   }),
+  menu: (provided) => ({
+    ...provided,
+    backgroundColor: "#111417",
+  }),
+  dropdownItem: (provided) => ({
+    ...provided,
+    backgroundColor: "red",
+  }),
 };

@@ -9,7 +9,6 @@ const PlusRecipientsDiv = styled.div`
   margin-left: -0.5rem;
   position: relative;
   @media all and (max-width: 920px) {
-
   }
 `;
 const TotalPeopleCircle = styled.span`
@@ -21,6 +20,7 @@ const TotalPeopleCircle = styled.span`
   align-items: center;
   justify-content: center;
   border: 1px solid #dee2e6;
+  font-size: 11px;
   cursor: pointer;
 `;
 
@@ -32,6 +32,9 @@ const StyledUserListPopUp = styled(UserListPopUp)`
   z-index: 999;
   ul li > span {
     padding-left: 8px;
+    text-overflow: ellipsis;
+    max-width: 80%;
+    overflow: hidden;
   }
 `;
 
@@ -44,10 +47,9 @@ const PlusRecipients = (props) => {
     setShowUsersPopUp(!showUsersPopUp);
   };
 
-
   return (
     <PlusRecipientsDiv className={`plus-recipient-component ${className}`}>
-      <TotalPeopleCircle onClick={handleShowSeenUsers}>
+      <TotalPeopleCircle onClick={handleShowSeenUsers} className={"total-people-circle"}>
         <span>+</span>
         {recipients.length}
       </TotalPeopleCircle>

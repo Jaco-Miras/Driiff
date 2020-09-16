@@ -10,6 +10,7 @@ import {
   updateUserSettings
 } from "../../redux/actions/settingsActions";
 import {addToModals} from "../../redux/actions/globalActions";
+import {setPushNotification} from "../../redux/actions/notificationActions";
 import {useToaster} from "./index";
 
 let init = true;
@@ -178,6 +179,9 @@ const useSettings = () => {
     } else {
       dispatch(
         putCompanyUpdateName(payload, (err, res) => {
+          if (err) {
+            toaster.error(<><b>{payload.company_name}</b> can't be used.</>);
+          }
           if (res) {
             toaster.success(`You have updated the company name to ${payload.company_name}`);
           }
@@ -186,6 +190,13 @@ const useSettings = () => {
       )
     }
   }
+
+  const setPushSubscription = useCallback(
+    (payload) => {
+      dispatch(setPushNotification(payload));
+    },
+    [dispatch]
+  );
 
   useEffect(() => {
     if (init) {
@@ -203,7 +214,8 @@ const useSettings = () => {
     generalSettings: userSettings.GENERAL_SETTINGS,
     setChatSetting,
     setGeneralSetting,
-    showModal
+    setPushSubscription,
+    showModal,
   };
 };
 

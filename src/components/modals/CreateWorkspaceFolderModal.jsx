@@ -13,23 +13,28 @@ import { replaceChar } from "../../helpers/stringFormatter";
 const WrapperDiv = styled(InputGroup)`
   display: flex;
   align-items: center;
-  margin: 20px 0;
+  margin: 5px 0 20px 0;
 
   > .form-control:not(:first-child) {
     border-radius: 5px;
   }
 
-  label {
-    white-space: nowrap;
+  ${"" /* label {
+    white-space: wrap;
     margin: 0 20px 0 0;
     min-width: 109px;
-  }
+  } */}
 
   .input-feedback {
     margin-left: 130px;
     @media all and (max-width: 480px) {
       margin-left: 0;
     }
+  }
+
+  p {
+    max-width: 530px;
+    opacity: 0.8;
   }
 
   button {
@@ -68,7 +73,9 @@ const CreateWorkspaceFolderModal = (props) => {
     updateWorkspaceFolder: _t("WORKSPACE.UPDATE_WORKSPACE_FOLDER", "Update folder"),
     removeWorkspaceFolder: _t("WORKSPACE.DELETE_WORKSPACE_FOLDER", "Remove folder"),
     folderName: _t("FOLDER_NAME", "Folder name"),
-    lockWorkspace: _t("WORKSPACE.WORKSPACE_LOCK", "Private workspace"),
+    folderInfo: _t("FOLDER_INFO", "Folders help to organize your workspaces. A workspace can only be connected to one folder."),
+    lockWorkspace: _t("WORKSPACE.WORKSPACE_LOCK", "Make folder private"),
+    lockWorkspaceText: _t("WORKSPACE.WORKSPACE_LOCK.DESCRIPTION", "When a folder is private it is only visible to the members of the workspaces inside the folder."),
     description: _t("DESCRIPTION", "Description"),
     remove: _t("WORKSPACE.REMOVE", "Remove"),
     cancel: _t("WORKSPACE.CANCEL", "Cancel"),
@@ -356,10 +363,17 @@ const CreateWorkspaceFolderModal = (props) => {
         {/* <ActiveTabName className="intern-extern">{activeTabName}</ActiveTabName> */}
       </ModalHeaderSection>
       <ModalBody>
-        <WrapperDiv>
-          <Label for="folder">{dictionary.folderName}</Label>
-          <Input defaultValue={mode === "edit" ? item.name : ""} onChange={handleNameChange} onBlur={handleNameBlur} valid={valid.name} invalid={valid.name !== null && !valid.name} innerRef={inputRef} />
-          <InputFeedback valid={valid.name}>{feedback.name}</InputFeedback>
+        <WrapperDiv className={"folder-input"}>
+          <div>
+            <Label className={"folder-info"}>{dictionary.folderInfo}</Label>
+            <Label className={"folder-name"} for="folder">
+              {dictionary.folderName}
+            </Label>
+          </div>
+          <div className={"folder-searchbar-container"}>
+            <Input className={"folder-searchbar"} defaultValue={mode === "edit" ? item.name : ""} onChange={handleNameChange} onBlur={handleNameBlur} valid={valid.name} invalid={valid.name !== null && !valid.name} innerRef={inputRef} />
+            <InputFeedback valid={valid.name}>{feedback.name}</InputFeedback>
+          </div>
         </WrapperDiv>
         {/* <StyledDescriptionInput
               height={window.innerHeight - 660}
@@ -367,14 +381,20 @@ const CreateWorkspaceFolderModal = (props) => {
               defaultValue={mode === "edit" && item ? item.description : ""}
               mode={mode}/> */}
         <WrapperDiv className="action-wrapper" style={{ marginTop: "40px" }}>
-          <Label />
-          <CheckBox name="is_private" checked={form.is_private} onClick={toggleCheck}>
-            {dictionary.lockWorkspace}
-          </CheckBox>
-          <button className="btn btn-primary" disabled={valid.name === null || valid.name === false} onClick={handleConfirm}>
-            {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />}
-            {mode === "edit" ? dictionary.updateWorkspaceFolder : dictionary.createWorkspaceFolder}
-          </button>
+          <div>
+            <CheckBox name="is_private" checked={form.is_private} onClick={toggleCheck}>
+              {dictionary.lockWorkspace}
+            </CheckBox>
+            <div className={"lock-workspace-text-container"}>
+              <Label className={"lock-workspace-text"}>{dictionary.lockWorkspaceText}</Label>
+            </div>
+          </div>
+          <div className={"create-folder-btn"}>
+            <button className="btn btn-primary" disabled={valid.name === null || valid.name === false} onClick={handleConfirm}>
+              {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />}
+              {mode === "edit" ? dictionary.updateWorkspaceFolder : dictionary.createWorkspaceFolder}
+            </button>
+          </div>
           {mode === "edit" && (
             <div className="action-archive-wrapper">
               <span onClick={handleShowRemoveConfirmation} className="btn-archive text-link mt-2 cursor-pointer">

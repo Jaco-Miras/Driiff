@@ -18,7 +18,7 @@ const NavBarLeft = styled.div`
   height: 100%;
   display: flex;
   align-items: center;
-  margin-right: 15px;
+
   .btn {
     font-weight: 400;
     height: 32px;
@@ -35,6 +35,10 @@ const NavBarLeft = styled.div`
   @media (max-width: 992px) {
     margin-right: 5px;
     padding-right: 10px;
+  }
+  @media all and (max-width: 700px) {
+    margin-right: 0;
+    padding-right: 0;
   }
   @media (max-width: 768px) {
     .nav-item-folder,
@@ -75,6 +79,11 @@ const NavBar = styled.ul`
       flex-grow: 1;
       display: flex;
       justify-content: flex-end;
+      padding-right: 15px;
+      border-right: 1px solid #f1f1f1;
+      @media all and (max-width: 700px) {
+        display: none;
+      }
       .btn {
         @media all and (max-width: 920px) {
           display: none;
@@ -284,7 +293,7 @@ const WorspaceHeaderPanel = (props) => {
                       {!isExternal && (
                         <>
                           <li className="nav-item nav-item-folder">
-                            <WorkspaceName>General</WorkspaceName>
+                            <WorkspaceName>Workspaces</WorkspaceName>
                           </li>
                           <li className="nav-item-chevron">
                             <SvgIconFeather icon="chevron-right" />
@@ -299,7 +308,7 @@ const WorspaceHeaderPanel = (props) => {
                       </li>
                       {activeTopic.is_lock === 1 && (
                         <li className="nav-item">
-                          <div className={`badge badge-light text-white ml-1`}>Locked</div>
+                          <div className={`badge badge-light text-white ml-1`}>Private</div>
                         </li>
                       )}
                       {activeTopic.active === 0 && (
@@ -332,7 +341,7 @@ const WorspaceHeaderPanel = (props) => {
                       </li>
                       {activeTopic.is_lock === 1 && (
                         <li className="nav-item">
-                          <div className={`badge badge-light text-white ml-1`}>Locked</div>
+                          <div className={`badge badge-light text-white ml-1`}>Private</div>
                         </li>
                       )}
                       {activeTopic.active === 0 && (

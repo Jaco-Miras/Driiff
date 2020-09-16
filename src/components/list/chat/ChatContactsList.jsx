@@ -1,12 +1,10 @@
-import React, { useCallback, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useHistory } from "react-router-dom";
+import React, {useCallback, useEffect} from "react";
+import {useDispatch, useSelector} from "react-redux";
+import {useHistory} from "react-router-dom";
 import styled from "styled-components";
-import { setChannelHistoricalPosition } from "../../../redux/actions/chatActions";
-import { addToModals } from "../../../redux/actions/globalActions";
-import { SvgIconFeather } from "../../common";
+import {setChannelHistoricalPosition} from "../../../redux/actions/chatActions";
 import useChannelActions from "../../hooks/useChannelActions";
-import { ChatContactIListItem } from "./item";
+import {ChatContactIListItem} from "./item";
 
 const Wrapper = styled.div`
   .channel-number-new-group-wrapper {
@@ -14,37 +12,15 @@ const Wrapper = styled.div`
   }
 `;
 
-const NewGroupButton = styled.div`
-  cursor: pointer;
-  color: #bebebe;
-  transition: color 0.3s;
-  span {
-    position: relative;
-    top: 1px;
-    color: #bebebe;
-    transition: color 0.3s;
-  }
-  svg {
-    margin-right: 8px;
-  }
-  &:hover {
-    color: #7a1b8b;
-    span {
-      color: #7a1b8b;
-    }
-  }
-`;
-
 const Contacts = styled.ul`
   padding-right: 24px;
   li {
     cursor: pointer;
-    cursor: hand;
   }
 `;
 
 const ChatContactsList = (props) => {
-  const { className = "", channels, selectedChannel, userChannels, search, dictionary } = props;
+  const {className = "", channels, selectedChannel, userChannels, search} = props;
 
   const dispatch = useDispatch();
   const history = useHistory();
@@ -63,15 +39,6 @@ const ChatContactsList = (props) => {
     },
     [history, channelAction]
   );
-
-  const handleOpenGroupChatModal = () => {
-    let payload = {
-      type: "chat_create_edit",
-      mode: "new",
-    };
-
-    dispatch(addToModals(payload));
-  };
 
   useEffect(() => {
     const scrollComponent = document.getElementById("component-chat-thread");
@@ -121,7 +88,18 @@ const ChatContactsList = (props) => {
       }
 
       if (search !== "") {
-        return channel.title.toLowerCase().indexOf(search.toLowerCase()) > -1;
+        if (channel.title.toLowerCase().indexOf(search.toLowerCase()) !== -1)
+          return true;
+
+        return channel.members.filter(m => m.id !== user.id).some(m => {
+          if (m.email.toLowerCase().search(search.toLowerCase()) !== -1)
+            return true;
+
+          if (m.name.toLowerCase().search(search.toLowerCase()) !== -1)
+            return true;
+
+          return false;
+        })
       }
 
       return true;
@@ -133,11 +111,6 @@ const ChatContactsList = (props) => {
   return (
     <Wrapper className={`chat-lists ${className}`}>
       <div className="d-flex align-items-center channel-number-new-group-wrapper">
-        <p className="small mb-0">{sortedChannels.length} {dictionary.contacts}</p>
-        <NewGroupButton className="small mb-0 text-right ml-auto" onClick={handleOpenGroupChatModal}>
-          <SvgIconFeather width={14} height={14} icon="plus" />
-          <span>{dictionary.newGroupChat}</span>
-        </NewGroupButton>
       </div>
       <Contacts className={"list-group list-group-flush"}>
         {sortedChannels.map((channel) => {

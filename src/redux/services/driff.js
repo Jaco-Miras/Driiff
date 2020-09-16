@@ -1,5 +1,6 @@
 import {getAPIUrl} from "../../helpers/slugHelper";
 import {apiCall, apiNoTokenCall} from "./service";
+import {objToUrlParams} from "../../helpers/commonFunctions";
 
 /**
  * This function will call on the API to process driff registration
@@ -44,20 +45,20 @@ export function patchCheckDriff(driffName) {
 export function getCompanyDashboardTimeline(payload) {
   return apiCall({
     method: "GET",
-    url: `/v2/company/dashboard-timeline`,
+    url: `/v2/company/dashboard-timeline/?${objToUrlParams(payload)}`,
   });
 }
 
 export function getCompanyDashboardRecentPosts(payload) {
   return apiCall({
     method: "GET",
-    url: `/v2/company/dashboard-recent-posts`,
+    url: `/v2/company/dashboard-recent-posts/?${objToUrlParams(payload)}`,
   });
 }
 
 export function getCompanyDashboardMembers(payload) {
   return apiCall({
     method: "GET",
-    url: `/v2/company/dashboard-members`,
+    url: `/v2/company/dashboard-members/?${objToUrlParams(payload)}`,
   });
 }

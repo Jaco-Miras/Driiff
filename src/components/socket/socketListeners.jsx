@@ -79,7 +79,13 @@ import {
   incomingPostViewer,
   incomingUpdatedPost
 } from "../../redux/actions/postActions";
-import {getOnlineUsers, getUser, incomingExternalUser, incomingUpdatedUser} from "../../redux/actions/userAction";
+import {
+  getOnlineUsers,
+  getUser,
+  incomingExternalUser,
+  incomingInternalUser,
+  incomingUpdatedUser
+} from "../../redux/actions/userAction";
 import {
   getWorkspace,
   getWorkspaceFolder,
@@ -222,7 +228,11 @@ class SocketListeners extends Component {
         switch (e.SOCKET_TYPE) {
           case "POST_CREATE": {
             if (this.props.user.id !== e.author.id) {
-              pushBrowserNotification(`${e.author.first_name} shared a post`, e.title, e.author.profile_image_link, null);
+              if (isSafari) {
+                if (this.props.notificationsOn) {
+                  pushBrowserNotification(`${e.author.first_name} shared a post`, e.title, e.author.profile_image_link, null);
+                }
+              }
             }
             if (e.show_at !== null && this.props.user.id === e.author.id) {
               this.props.incomingPost(e);
@@ -272,7 +282,9 @@ class SocketListeners extends Component {
             }
             if (e.author.id !== this.props.user.id) {
               if (isSafari) {
-                pushBrowserNotification(`${e.author.first_name} replied in a post`, stripHtml(e.body), e.author.profile_image_link, null);
+                if (this.props.notificationsOn) {
+                  pushBrowserNotification(`${e.author.first_name} replied in a post`, stripHtml(e.body), e.author.profile_image_link, null);
+                }
               }
               e.workspaces.forEach((ws) => {
                 this.props.getWorkspace({topic_id: ws.topic_id}, (err, res) => {
@@ -346,7 +358,9 @@ class SocketListeners extends Component {
             delete e.socket;
             if ((e.user.id !== user.id && selectedChannel && selectedChannel.id !== e.channel_id) || (e.user.id !== user.id && !isBrowserActive)) {
               if (!e.is_muted) {
-                pushBrowserNotification(`${e.user.first_name} ${e.reference_title ? `in #${e.reference_title}` : "in a direct message"}`, `${e.user.first_name}: ${stripHtml(e.body)}`, e.user.profile_image_link, null);
+                if (this.props.notificationsOn && isSafari) {
+                  pushBrowserNotification(`${e.user.first_name} ${e.reference_title ? `in #${e.reference_title}` : "in a direct message"}`, `${e.user.first_name}: ${stripHtml(e.body)}`, e.user.profile_image_link, null);
+                }
               }
             }
 
@@ -390,6 +404,15 @@ class SocketListeners extends Component {
       });
 
     window.Echo.private(`${localStorage.getItem("slug") === "dev24admin" ? "dev" : localStorage.getItem("slug")}.App.Broadcast`)
+      .listen(".company-request-form-notification", (e) => {
+        console.log(e, "company-request-form-notification");
+        switch (e.SOCKET_TYPE) {
+          case "CREATE_REQUEST_FORM": {
+            this.props.incomingInternalUser(e);
+            break;
+          }
+        }
+      })
       .listen(".company-notification", (e) => {
         console.log(e, "company-notification");
         switch (e.SOCKET_TYPE) {
@@ -1077,6 +1100,7 @@ function mapDispatchToProps(dispatch) {
     incomingExternalUser: bindActionCreators(incomingExternalUser, dispatch),
     getWorkspaceFolder: bindActionCreators(getWorkspaceFolder, dispatch),
     incomingUpdateCompanyName: bindActionCreators(incomingUpdateCompanyName, dispatch),
+    incomingInternalUser: bindActionCreators(incomingInternalUser, dispatch),
   };
 }
 

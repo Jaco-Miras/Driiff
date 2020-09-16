@@ -1,7 +1,7 @@
-import React, { useRef, useState } from "react";
+import React, {useRef, useState} from "react";
 import styled from "styled-components";
-import { PickerEmoji, SvgIconFeather } from "../../common";
-import { useTooltipOrientation } from "../../hooks";
+import {PickerEmoji, SvgIconFeather} from "../../common";
+import {useTooltipOrientation} from "../../hooks";
 import useChatMessageActions from "../../hooks/useChatMessageActions";
 
 const ChatReactionButtonContainer = styled.div`
@@ -115,8 +115,8 @@ const ChatReactionButton = (props) => {
   const { orientation } = useTooltipOrientation(refs.container, refs.picker, scrollRef, showEmojiPicker);
 
   return (
-    <ChatReactionButtonContainer class="emoji-button-div" ref={refs.container}>
-      <StyledEmojiButton icon="smile" active={showEmojiPicker} onClick={handleShowEmojiPicker} />
+    <ChatReactionButtonContainer className="emoji-button-div" ref={refs.container}>
+      <StyledEmojiButton icon="smile" active={showEmojiPicker} onClick={handleShowEmojiPicker}/>
       {showEmojiPicker && (
         <StyledPickerEmoji
           ref={refs.picker}
