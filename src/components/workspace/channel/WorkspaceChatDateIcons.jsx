@@ -10,7 +10,8 @@ const ActionContainer = styled.div`
   position: relative;
   top: 4px;
   display: flex;
-  flex-direction: row-reverse;
+  flex-flow: ;
+  margin-top: 35px;
 `;
 const Icon = styled(SvgIconFeather)`
   position: relative;
