@@ -13,7 +13,7 @@ import { SvgIconFeather } from "./SvgIcon";
 const Wrapper = styled.div`
   position: relative;
   cursor: pointer;
-
+  line-height: 0;
   .react-skeleton-load {
     display: flex;
     margin: auto;
@@ -33,7 +33,8 @@ const Image = styled.img`
 const Initials = styled.span`
   color: #fff !important;
   background: ${(props) => (props.avatarColor ? props.avatarColor : "white")};
-
+  font-size: 11px;
+  line-height: 0;
   display: flex;
   margin: auto;
   height: 20px;

@@ -21,6 +21,7 @@ const Wrapper = styled.div`
     padding-right: 15px;
     .navbar-nav {
       height: 100%;
+      width: 100%;
       .navbar-wrap {
         height: 100%;
         width: 100%;
