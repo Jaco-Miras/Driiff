@@ -87,6 +87,7 @@ const ProfileSettings = (props) => {
     sortChannelLabel: _t("SETTINGS.SORT_CHANNEL_LABEL", "Sort channel by"),
     sortChannelRecentActivityValue: _t("SETTINGS.SORT_CHANNEL_RECENT_ACTIVITY_VALUE", "Recent activity"),
     sortChannelNameValue: _t("SETTINGS.SORT_CHANNEL_NAME_VALUE", "Channel name"),
+    allowNotifications: _t("SETTINGS.ALLOW_NOTIFICATIONS", "Allow notifications"),
 
     localizationSettingsTitle: _t("SETTINGS.LOCALIZATION_TITLE", "Localization"),
     languageLabel: _t("SETTINGS.LANGUAGE_LABEL", "Language"),
@@ -373,9 +374,29 @@ const ProfileSettings = (props) => {
 
       <div className="card">
         <div className="card-body">
+          <h6 className="card-title d-flex justify-content-between align-items-center">Notifications</h6>
+          <div className="row mb-2">
+            <div className="col-12 text-muted">
+              <CustomInput
+                className="cursor-pointer text-muted"
+                checked={notifications_on}
+                type="switch"
+                id="notifications_on"
+                name="notifications_on"
+                data-success-message={`${!notifications_on ? "Notifications enabled" : "Notifications disabled"}`}
+                onChange={handleNotificationsSwitchToggle}
+                label={<span>{dictionary.allowNotifications}</span>}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="card">
+        <div className="card-body">
           <h6 className="card-title d-flex justify-content-between align-items-center">Extra settings</h6>
 
-          <div className="row mb-2">
+          <div className="row mb-3">
             <div className="col-12 text-muted">
               <CustomInput
                 className="cursor-pointer text-muted"
@@ -386,20 +407,6 @@ const ProfileSettings = (props) => {
                 data-success-message={`${dark_mode ? "Dark mode is now enabled" : "Dark mode is now disabled"}`}
                 onChange={handleGeneralSwitchToggle}
                 label={<span>Dark mode</span>}
-              />
-            </div>
-          </div>
-          <div className="row mb-3">
-            <div className="col-12 text-muted">
-              <CustomInput
-                className="cursor-pointer text-muted"
-                checked={notifications_on}
-                type="switch"
-                id="notifications_on"
-                name="notifications_on"
-                data-success-message={`${!notifications_on ? "Notifications enabled" : "Notifications disabled"}`}
-                onChange={handleNotificationsSwitchToggle}
-                label={<span>Notifications</span>}
               />
             </div>
           </div>
