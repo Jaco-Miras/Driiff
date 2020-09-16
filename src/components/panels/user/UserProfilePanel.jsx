@@ -1,15 +1,15 @@
-import React, {useCallback, useEffect, useRef, useState} from "react";
-import {useDispatch} from "react-redux";
-import {useHistory} from "react-router-dom";
-import {FormGroup, Input, InputGroup, InputGroupAddon, InputGroupText, Label} from "reactstrap";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { useDispatch } from "react-redux";
+import { useHistory } from "react-router-dom";
+import { FormGroup, Input, InputGroup, InputGroupAddon, InputGroupText, Label } from "reactstrap";
 import styled from "styled-components";
-import {EmailRegex, replaceChar} from "../../../helpers/stringFormatter";
-import {addToModals} from "../../../redux/actions/globalActions";
-import {Avatar, SvgIconFeather} from "../../common";
-import {DropDocument} from "../../dropzone/DropDocument";
+import { EmailRegex, replaceChar } from "../../../helpers/stringFormatter";
+import { addToModals } from "../../../redux/actions/globalActions";
+import { Avatar, SvgIconFeather } from "../../common";
+import { DropDocument } from "../../dropzone/DropDocument";
 import InputFeedback from "../../forms/InputFeedback";
-import {useToaster, useTranslation, useUserActions, useUsers} from "../../hooks";
-import {FormInput} from "../../forms";
+import { useToaster, useTranslation, useUserActions, useUsers } from "../../hooks";
+import { FormInput } from "../../forms";
 
 const Wrapper = styled.div`
   overflow: auto;
@@ -77,7 +77,7 @@ const Wrapper = styled.div`
       cursor: hand;
     }
   }
-  
+
   .avatar-container {
     cursor: pointer;
     cursor: hand;
@@ -85,7 +85,7 @@ const Wrapper = styled.div`
     width: 68px;
     height: 68px;
     margin: 0 auto;
-    
+
     .btn {
       position: absolute;
       bottom: 0;
@@ -95,25 +95,25 @@ const Wrapper = styled.div`
       height: 25px;
       width: 25px;
       padding: 5px;
-    } 
+    }
   }
-  
+
   .form-group {
     &.designation {
-      margin:0 auto;
+      margin: 0 auto;
     }
   }
 `;
 
 const UserProfilePanel = (props) => {
-  const {className = ""} = props;
+  const { className = "" } = props;
 
   const history = useHistory();
   const dispatch = useDispatch();
 
   const toaster = useToaster();
-  const {users, loggedUser} = useUsers();
-  const {checkEmail, fetchById, getReadOnlyFields, getRequiredFields, update, updateProfileImage} = useUserActions();
+  const { users, loggedUser } = useUsers();
+  const { checkEmail, fetchById, getReadOnlyFields, getRequiredFields, update, updateProfileImage } = useUserActions();
 
   const user = users[props.match.params.id];
   const isLoggedUser = user && loggedUser.id === user.id;
@@ -137,7 +137,7 @@ const UserProfilePanel = (props) => {
     password: useRef(null),
   };
 
-  const {_t} = useTranslation();
+  const { _t } = useTranslation();
 
   const dictionary = {
     information: _t("PROFILE.INFORMATION", "Information"),
@@ -179,7 +179,7 @@ const UserProfilePanel = (props) => {
 
   const toggleEditInformation = useCallback(() => {
     setEditInformation((prevState) => !prevState);
-    setForm({...user});
+    setForm({ ...user });
     setFormUpdate({
       valid: {},
       feedbackState: {},
@@ -196,7 +196,7 @@ const UserProfilePanel = (props) => {
 
   const handleInputChange = useCallback((e) => {
     if (e.target !== null) {
-      const {name, value} = e.target;
+      const { name, value } = e.target;
       setForm((prevState) => ({
         ...prevState,
         [name]: value.trim(),
@@ -207,7 +207,7 @@ const UserProfilePanel = (props) => {
   const handleInputBlur = useCallback(
     (e) => {
       if (e.target !== null) {
-        const {name, value} = e.target;
+        const { name, value } = e.target;
 
         if (user[name] === form[name]) {
           setFormUpdate((prevState) => ({
@@ -444,6 +444,9 @@ const UserProfilePanel = (props) => {
   if (!form.id) {
     return <></>;
   }
+
+  console.log(form.profile_image_link);
+
   return (
     <Wrapper className={`user-profile-panel container-fluid h-100 ${className}`}>
       <div className="row row-user-profile-panel">
@@ -456,7 +459,7 @@ const UserProfilePanel = (props) => {
                   hide={!showDropZone}
                   ref={refs.dropZoneRef}
                   onDragLeave={handleHideDropzone}
-                  onDrop={({acceptedFiles}) => {
+                  onDrop={({ acceptedFiles }) => {
                     dropAction(acceptedFiles);
                   }}
                   onCancel={handleHideDropzone}
@@ -471,9 +474,12 @@ const UserProfilePanel = (props) => {
                 </ImportWarning>
               )}*/}
               <div className="avatar-container" onClick={handleAvatarClick}>
-                {<Avatar imageLink={form.profile_image_link} name={form.name ? form.name : form.email}
-                         id={form.id} noDefaultClick={true}/>}
-                {isLoggedUser && <span className="btn btn-outline-light btn-sm"><SvgIconFeather icon="pencil"/></span>}
+                {<Avatar imageLink={form.profile_image_link} name={form.name ? form.name : form.email} noDefaultClick={true} />}
+                {isLoggedUser && (
+                  <span className="btn btn-outline-light btn-sm">
+                    <SvgIconFeather icon="pencil" />
+                  </span>
+                )}
               </div>
               {editInformation ? (
                 <h5 className="mb-1 mt-2">
@@ -493,7 +499,9 @@ const UserProfilePanel = (props) => {
                     onChange={handleInputChange}
                     onBlur={handleInputBlur}
                     defaultValue={user.designation}
-                    isValid={formUpdate.feedbackState.designation} valid={formUpdate.feedbackText.designation}/>
+                    isValid={formUpdate.feedbackState.designation}
+                    valid={formUpdate.feedbackText.designation}
+                  />
                 </p>
               ) : (
                 <p className="text-muted small">{user.designation}</p>
@@ -523,7 +531,7 @@ const UserProfilePanel = (props) => {
                   {dictionary.information}
                   {isLoggedUser && (
                     <span onClick={toggleEditInformation} className="btn btn-outline-light btn-sm">
-                      <SvgIconFeather className="mr-2" icon="edit-2"/> {dictionary.edit}
+                      <SvgIconFeather className="mr-2" icon="edit-2" /> {dictionary.edit}
                     </span>
                   )}
                 </h6>
@@ -602,11 +610,8 @@ const UserProfilePanel = (props) => {
                       <Label>{user.first_name}</Label>
                     ) : (
                       <>
-                        <Input className={getValidClass(formUpdate.valid.first_name)} innerRef={refs.first_name}
-                               name="first_name" onChange={handleInputChange} onBlur={handleInputBlur}
-                               defaultValue={user.first_name}/>
-                        <InputFeedback
-                          valid={formUpdate.feedbackState.first_name}>{formUpdate.feedbackText.first_name}</InputFeedback>
+                        <Input className={getValidClass(formUpdate.valid.first_name)} innerRef={refs.first_name} name="first_name" onChange={handleInputChange} onBlur={handleInputBlur} defaultValue={user.first_name} />
+                        <InputFeedback valid={formUpdate.feedbackState.first_name}>{formUpdate.feedbackText.first_name}</InputFeedback>
                       </>
                     )}
                   </div>
@@ -618,10 +623,8 @@ const UserProfilePanel = (props) => {
                       <Label>{user.middle_name}</Label>
                     ) : (
                       <>
-                        <Input className={getValidClass(formUpdate.valid.middle_name)} name="middle_name"
-                               onChange={handleInputChange} onBlur={handleInputBlur} defaultValue={user.middle_name}/>
-                        <InputFeedback
-                          valid={formUpdate.feedbackState.middle_name}>{formUpdate.feedbackText.middle_name}</InputFeedback>
+                        <Input className={getValidClass(formUpdate.valid.middle_name)} name="middle_name" onChange={handleInputChange} onBlur={handleInputBlur} defaultValue={user.middle_name} />
+                        <InputFeedback valid={formUpdate.feedbackState.middle_name}>{formUpdate.feedbackText.middle_name}</InputFeedback>
                       </>
                     )}
                   </div>
@@ -634,10 +637,8 @@ const UserProfilePanel = (props) => {
                       <Label>{user.last_name}</Label>
                     ) : (
                       <>
-                        <Input className={getValidClass(formUpdate.valid.last_name)} name="last_name"
-                               onChange={handleInputChange} onBlur={handleInputBlur} defaultValue={user.last_name}/>
-                        <InputFeedback
-                          valid={formUpdate.feedbackState.last_name}>{formUpdate.feedbackText.last_name}</InputFeedback>
+                        <Input className={getValidClass(formUpdate.valid.last_name)} name="last_name" onChange={handleInputChange} onBlur={handleInputBlur} defaultValue={user.last_name} />
+                        <InputFeedback valid={formUpdate.feedbackState.last_name}>{formUpdate.feedbackText.last_name}</InputFeedback>
                       </>
                     )}
                   </div>
@@ -649,8 +650,7 @@ const UserProfilePanel = (props) => {
                       <Label>*****</Label>
                     ) : (
                       <>
-                        <Label onClick={togglePasswordUpdate}
-                               className={`cursor-pointer mb-0 ${!passwordUpdate ? "" : "d-none"}`}>
+                        <Label onClick={togglePasswordUpdate} className={`cursor-pointer mb-0 ${!passwordUpdate ? "" : "d-none"}`}>
                           {dictionary.clickToChangePassword}
                         </Label>
                         <FormGroup className={`form-group-password mb-0 ${passwordUpdate ? "" : "d-none"}`}>
@@ -666,12 +666,11 @@ const UserProfilePanel = (props) => {
                             />
                             <InputGroupAddon className="btn-toggle" addonType="append">
                               <InputGroupText className="btn" onClick={togglePasswordVisibility}>
-                                <SvgIconFeather icon={passwordVisibility ? "eye-off" : "eye"}/>
+                                <SvgIconFeather icon={passwordVisibility ? "eye-off" : "eye"} />
                               </InputGroupText>
                             </InputGroupAddon>
                           </InputGroup>
-                          <InputFeedback
-                            valid={formUpdate.feedbackState.password}>{formUpdate.feedbackText.password}</InputFeedback>
+                          <InputFeedback valid={formUpdate.feedbackState.password}>{formUpdate.feedbackText.password}</InputFeedback>
                         </FormGroup>
                       </>
                     )}
@@ -684,10 +683,8 @@ const UserProfilePanel = (props) => {
                       <Label>{user.place}</Label>
                     ) : (
                       <>
-                        <Input className={getValidClass(formUpdate.valid.place)} name="place"
-                               onChange={handleInputChange} onBlur={handleInputBlur} defaultValue={user.place}/>
-                        <InputFeedback
-                          valid={formUpdate.feedbackState.place}>{formUpdate.feedbackText.place}</InputFeedback>
+                        <Input className={getValidClass(formUpdate.valid.place)} name="place" onChange={handleInputChange} onBlur={handleInputBlur} defaultValue={user.place} />
+                        <InputFeedback valid={formUpdate.feedbackState.place}>{formUpdate.feedbackText.place}</InputFeedback>
                       </>
                     )}
                   </div>
@@ -699,11 +696,7 @@ const UserProfilePanel = (props) => {
                       <Label>{user.address}</Label>
                     ) : (
                       <>
-                        <FormInput
-                          name="address" onChange={handleInputChange} onBlur={handleInputBlur}
-                          defaultValue={user.address}
-                          isValid={formUpdate.feedbackState.address} feedback={formUpdate.feedbackText.address}
-                        />
+                        <FormInput name="address" onChange={handleInputChange} onBlur={handleInputBlur} defaultValue={user.address} isValid={formUpdate.feedbackState.address} feedback={formUpdate.feedbackText.address} />
                       </>
                     )}
                   </div>
@@ -715,10 +708,8 @@ const UserProfilePanel = (props) => {
                       <Label>{user.contact}</Label>
                     ) : (
                       <>
-                        <Input className={getValidClass(formUpdate.valid.contact)} name="contact"
-                               onChange={handleInputChange} onBlur={handleInputBlur} defaultValue={user.contact}/>
-                        <InputFeedback
-                          valid={formUpdate.feedbackState.contact}>{formUpdate.feedbackText.contact}</InputFeedback>
+                        <Input className={getValidClass(formUpdate.valid.contact)} name="contact" onChange={handleInputChange} onBlur={handleInputBlur} defaultValue={user.contact} />
+                        <InputFeedback valid={formUpdate.feedbackState.contact}>{formUpdate.feedbackText.contact}</InputFeedback>
                       </>
                     )}
                   </div>
@@ -730,15 +721,13 @@ const UserProfilePanel = (props) => {
                       <Label>{user.email}</Label>
                     ) : (
                       <>
-                        <Input type="email" className={getValidClass(formUpdate.valid.email)} name="email"
-                               onChange={handleInputChange} onBlur={handleInputBlur} defaultValue={user.email}/>
-                        <InputFeedback
-                          valid={formUpdate.feedbackState.email}>{formUpdate.feedbackText.email}</InputFeedback>
+                        <Input type="email" className={getValidClass(formUpdate.valid.email)} name="email" onChange={handleInputChange} onBlur={handleInputBlur} defaultValue={user.email} />
+                        <InputFeedback valid={formUpdate.feedbackState.email}>{formUpdate.feedbackText.email}</InputFeedback>
                       </>
                     )}
                   </div>
                 </div>
-                <hr/>
+                <hr />
                 <div className="d-flex justify-content-between align-items-center mt-0">
                   <div>&nbsp;</div>
                   <div>
