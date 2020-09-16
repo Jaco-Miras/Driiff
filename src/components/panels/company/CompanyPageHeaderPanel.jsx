@@ -6,7 +6,7 @@ import { useSelector } from "react-redux";
 const Wrapper = styled.div``;
 
 const Navbar = styled.ul`
-  display: block;
+  display: flex;
   width: 100%;
   margin-left: -15px;
   li {
