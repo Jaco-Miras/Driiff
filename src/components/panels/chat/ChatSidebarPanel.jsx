@@ -95,8 +95,6 @@ const ChatSidebarPanel = (props) => {
   const dispatch = useDispatch();
   const {chatSettings, setChatSetting} = useSettings();
 
-  console.log(chatSettings.chat_filter);
-
   //const unreadCounter = useSelector((state) => state.global.unreadCounter);
   const [search, setSearch] = useState("");
   const [tabPill, setTabPill] = useState(chatSettings.chat_filter);

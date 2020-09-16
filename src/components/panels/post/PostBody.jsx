@@ -1,11 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, {useState} from "react";
 import styled from "styled-components";
-import { SvgIconFeather } from "../../common";
-import { useTimeFormat } from "../../hooks";
-import { PostBadge } from "./index";
-import GifPlayer from "react-gif-player";
-import {getGifLinks} from "../../../helpers/urlContentHelper";
-import { MemberLists } from "../../list/members";
+import {SvgIconFeather} from "../../common";
+import {useTimeFormat} from "../../hooks";
+import {PostBadge} from "./index";
+import {MemberLists} from "../../list/members";
 import quillHelper from "../../../helpers/quillHelper";
 
 const Wrapper = styled.div`
@@ -19,7 +17,6 @@ const Wrapper = styled.div`
 const Icon = styled(SvgIconFeather)`
   width: 16px;
   cursor: pointer;
-  cursor: hand;
 `;
 
 const PostBody = (props) => {

@@ -88,7 +88,18 @@ const ChatContactsList = (props) => {
       }
 
       if (search !== "") {
-        return channel.title.toLowerCase().indexOf(search.toLowerCase()) > -1;
+        if (channel.title.toLowerCase().indexOf(search.toLowerCase()) !== -1)
+          return true;
+
+        return channel.members.filter(m => m.id !== user.id).some(m => {
+          if (m.email.toLowerCase().search(search.toLowerCase()) !== -1)
+            return true;
+
+          if (m.name.toLowerCase().search(search.toLowerCase()) !== -1)
+            return true;
+
+          return false;
+        })
       }
 
       return true;

@@ -17987,7 +17987,7 @@ body.semi-dark:not(.dark) .navigation .avatar:before {
   -ms-flex: 1;
   flex: 1;
   width: calc(100% - 260px);
-  // height: calc(100vh - 213px);
+  max-width: 100%;
 }
 
 .demo-code-preview {
@@ -20854,6 +20854,55 @@ body.dark.small-navigation .navigation-menu-body ul li.navigation-divider:after 
   }
 }
 
+@media (max-width: 992px) {
+  .chat-sidebar {
+    position: absolute;
+    left: calc(-100% + -24px);
+    transition: left 0.3s cubic-bezier(0.275, 0.42, 0, 1);
+    padding-left: 24px !important;
+    padding-right: 24px !important;
+    background: #ffffff;
+    z-index: 3;
+  }
+  .chat-block .chat-sidebar .chat-sidebar-header {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+  .recent-new-group-wrapper {
+    padding-left: 24px !important;
+    padding-right: 24px !important;
+  }
+  .chat-lists .list-group-flush {
+    padding-left: 24px !important;
+    padding-right: 24px !important;
+  }
+  .channel-number-new-group-wrapper {
+    padding-left: 24px !important;
+    padding-right: 24px !important;
+  }
+}
+
+@media (max-width: 992px) {
+  .chat-sidebar {
+    left: -24px;
+    padding-right: 10px;
+    border-right: 0 !important;
+  }
+  .tab-panel {
+    // background: #fff;
+  }
+  body.dark .tab-panel {
+    // background: #191c20;
+  }
+  .m-chat-channel-closed {
+    .chat-sidebar {
+      left: calc(-100% + -24px);
+      padding-left: 24px !important;
+      padding-right: 24px !important;
+    }
+  }
+}
+
 @media (max-width: 768px) {
   .app-block .app-sidebar-menu-button {
     display: -webkit-inline-box;
@@ -20998,6 +21047,20 @@ body.dark.small-navigation .navigation-menu-body ul li.navigation-divider:after 
   }
 }
 
+@media (max-width: 544px) {
+  .text-xs-center {
+    text-align: center !important;
+  }
+
+  .text-xs-left {
+    text-align: left !important;
+  }
+
+  .text-xs-right {
+    text-align: right !important;
+  }
+}
+
 @media (max-width: 414px) {
   .nav {
     display: block;
@@ -21060,23 +21123,39 @@ body.dark.small-navigation .navigation-menu-body ul li.navigation-divider:after 
   }
 }
 
-@media (max-width: 375px) {
+@media (max-width: 575.98px) {
   nav.navbar .navbar-menu {
     padding-left: 0;
   }
-}
 
-@media (max-width: 544px) {
-  .text-xs-center {
-    text-align: center !important;
+  .header .dropdown-menu {
+    right: 0 !important;
+    left: 0 !important;
   }
 
-  .text-xs-left {
-    text-align: left !important;
+  .chat-lists .list-group-flush {
+    padding-right: 0 !important;
+    padding-left: 0 !important;
   }
 
-  .text-xs-right {
-    text-align: right !important;
+  .tab-panel {
+    padding-top: 0 !important;
+  }
+
+  .navbar-bottom {
+    position: absolute;
+    top: 60px;
+    width: 100%;
+
+    a {
+      margin: 0 0.8rem;
+    }
+  }
+
+  .chat-sidebar {
+    left: 0;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
   }
 }
 
@@ -21177,59 +21256,9 @@ body.dark.small-navigation .navigation-menu-body ul li.navigation-divider:after 
   display: none;
 }
 
-@media all and (max-width: 992px) {
-  .chat-sidebar {
-    position: absolute;
-    background: green;
-    left: calc(-100% + -24px);
-    transition: left 0.3s cubic-bezier(0.275, 0.42, 0, 1);
-    padding-left: 24px !important;
-    padding-right: 24px !important;
-    background: #ffffff;
-    z-index: 3;
-  }
-  .chat-block .chat-sidebar .chat-sidebar-header {
-    padding-left: 24px;
-    padding-right: 24px;
-  }
-  .recent-new-group-wrapper {
-    padding-left: 24px !important;
-    padding-right: 24px !important;
-  }
-  .chat-lists .list-group-flush {
-    padding-left: 24px !important;
-    padding-right: 24px !important;
-  }
-  .channel-number-new-group-wrapper {
-    padding-left: 24px !important;
-    padding-right: 24px !important;
-  }
-}
-
 .chat-content {
   @media all and (max-width: 992px) {
     padding-left: 0 !important;
-  }
-}
-
-@media all and (max-width: 992px) {
-  .chat-sidebar {
-    left: -24px;
-    padding-right: 10px;
-    border-right: 0 !important;
-  }
-  .tab-panel {
-    // background: #fff;
-  }
-  body.dark .tab-panel {
-    // background: #191c20;
-  }
-  .m-chat-channel-closed {
-    .chat-sidebar {
-      left: calc(-100% + -24px);
-      padding-left: 24px !important;
-      padding-right: 24px !important;
-    }
   }
 }
 
@@ -21314,7 +21343,6 @@ body.dark.small-navigation .navigation-menu-body ul li.navigation-divider:after 
 .tab-panel {
   position: absolute;
   width: 100%;
-  height: 100%;
   top: 50px;
   height: calc(100% - 50px);
   overflow-y: scroll;

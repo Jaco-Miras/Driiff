@@ -25,14 +25,13 @@ export default function (state = INITIAL_STATE, action) {
         if (ac.type === "DIRECT") {
           ac.members = [
             {
-              id: ac.profile.id,
-              name: ac.profile.name,
-              profile_image_link: ac.profile.profile_image_link,
+              ...ac.profile
             },
             {
               id: state.user.id,
               name: state.user.name,
               profile_image_link: state.user.profile_image_link,
+              email: state.user.email
             },
           ];
           ac.title = ac.profile.name;

@@ -69,9 +69,6 @@ const SystemPeoplePanel = (props) => {
   );
 
   const userSort = Object.values(users)
-    .sort((a, b) => {
-      return a.name.localeCompare(b.name);
-    })
     .filter((user) => {
       if (["gripp_project_bot",
         "gripp_account_activation",
@@ -83,10 +80,17 @@ const SystemPeoplePanel = (props) => {
       if (!showInactive && user.active !== 1) return false;
 
       if (search !== "") {
-        return user.name.toLowerCase().indexOf(search.toLowerCase()) > -1;
+        if (user.name.toLowerCase().indexOf(search.toLowerCase()) === -1)
+          return false;
+
+        if (user.email.toLowerCase().indexOf(search.toLowerCase()) === -1)
+          return false;
       }
 
       return true;
+    })
+    .sort((a, b) => {
+      return a.name.localeCompare(b.name);
     });
 
   const {_t} = useTranslation();
