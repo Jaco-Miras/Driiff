@@ -89,9 +89,26 @@ body.dark {
     color: $dm-text-color;
   }
 
-  .quote-container {
+  .chat-right .quote-container {
     background-color: #111417;
     color: $dm-text-color;
+    &:after {
+      border-left-color: #111417 !important;
+      border-right-color: #0000 !important;
+    }
+  }
+
+  .chat-left .quote-container {
+    background-color: #36393D;
+    color: $dm-text-color;
+    &:after {
+      border: 10px solid #0000;
+      border-right-color: #36393D;
+    }
+  }
+
+  .message-files img {
+    border-color: #111417;
   }
 
   .quote-content {
@@ -159,10 +176,6 @@ body.dark {
 
   .navbar-nav .nav-item-last {
     border-right: 1px solid $dm-border-color-2 !important;
-  }
-
-  .emoji-button-div {
-    border: 10px solid red !important;
   }
 
   .chat-input-wrapper {
@@ -322,7 +335,6 @@ body.dark {
       border-right-color: #0000 !important;
     }
   }
-
   .chat-left .chat-bubble {
     background-color: #25282c !important;
     &:after {
