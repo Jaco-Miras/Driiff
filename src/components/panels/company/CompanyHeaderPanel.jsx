@@ -21,7 +21,6 @@ const Wrapper = styled.div`
     padding-right: 15px;
     .navbar-nav {
       height: 100%;
-      width: 100%;
       .navbar-wrap {
         height: 100%;
         width: 100%;
@@ -29,16 +28,33 @@ const Wrapper = styled.div`
         flex-direction: column;
         justify-content: space-between;
         .navbar-top {
-          margin-top: 8px;
+          margin-top: 4px;
           display: flex;
-          flex-grow: 1;
           align-items: center;
+          height: 40px;
         }
+        .navbar-bottom {
+          @media all and (max-width: 700px) {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 0 16px;
+          }
+        }
+      }
+      @media all and (max-width: 700px) {
+        margin-left: 0;
+        display: flex;
+        justify-content: space-between;
       }
     }
   }
   svg.feather-menu {
     color: #7a1b8b !important;
+  }
+  @media all and (max-width: 700px) {
+    align-items: start;
   }
 `;
 

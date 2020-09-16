@@ -15,9 +15,9 @@ const Wrapper = styled.ul`
     height: 45px;
   }
   @media all and (max-width: 700px) {
-    position: absolute;
+    ${'' /* position: absolute;
     top: 3px;
-    right: 15px;
+    right: 15px; */}
   }
   > li {
     position: relative;
@@ -38,6 +38,9 @@ const Wrapper = styled.ul`
           position: relative;
           z-index: 0;
         }
+        @media all and (max-width: 700px) {
+          margin-left: 4px;
+        }
       }
       @media (max-width: 620px) {
         svg {
@@ -56,6 +59,9 @@ const Wrapper = styled.ul`
         &.dark-mode-switch {
           display: none !important;
         }
+      }
+      @media all and (max-width: 700px) {
+        padding: 10px 4px !important;
       }
     }
     .user-profile-dropdown {
