@@ -1,13 +1,13 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import { useHistory } from "react-router-dom";
+import React, {useCallback, useEffect, useRef, useState} from "react";
+import {useHistory} from "react-router-dom";
 import styled from "styled-components";
 import SearchForm from "../../forms/SearchForm";
-import { useFocusInput, useTranslation, useUserChannels } from "../../hooks";
-import { PeopleListItem } from "../../list/people/item";
-import { replaceChar } from "../../../helpers/stringFormatter";
-import { SvgIconFeather } from "../../common";
-import { addToModals } from "../../../redux/actions/globalActions";
-import { useDispatch, useSelector } from "react-redux";
+import {useFocusInput, useTranslation, useUserChannels} from "../../hooks";
+import {PeopleListItem} from "../../list/people/item";
+import {replaceChar} from "../../../helpers/stringFormatter";
+import {SvgIconFeather} from "../../common";
+import {addToModals} from "../../../redux/actions/globalActions";
+import {useDispatch, useSelector} from "react-redux";
 
 const Wrapper = styled.div`
   overflow: auto;
@@ -76,12 +76,14 @@ const WorkspacePeoplePanel = (props) => {
     members = workspace.members;
   }
   const userSort = members
-    .filter((m) => {
+    .filter((user) => {
       if (search !== "") {
-        return m.name.toLowerCase().indexOf(search.toLowerCase()) > -1;
-      } else {
-        return true;
+        if (user.name.toLowerCase().search(search.toLowerCase()) === -1
+          && user.email.toLowerCase().search(search.toLowerCase()) === -1)
+          return false;
       }
+
+      return true;
     })
     .sort((a, b) => {
       return a.name.localeCompare(b.name);

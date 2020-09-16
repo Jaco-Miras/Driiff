@@ -84,10 +84,10 @@ const useSortChannels = (channels, search, options = {}, workspace) => {
         return ((b.total_unread >= 1 || b.total_mark_incomplete >= 1)) ? 1 : -1;
       }
 
-      if (aTitle.toLowerCase() === search.toLowerCase())
+      if (aTitle.toLowerCase() === search.toLowerCase() || a.members.filter(m => m.id !== user.id).some(m => (m.name.toLowerCase().search(search.toLowerCase()) !== -1) || (m.email.toLowerCase().search(search.toLowerCase()) !== -1)))
         return -1;
 
-      if (bTitle.toLowerCase() === search.toLowerCase())
+      if (bTitle.toLowerCase() === search.toLowerCase() || b.members.filter(m => m.id !== user.id).some(m => (m.name.toLowerCase().search(search.toLowerCase()) !== -1) || (m.email.toLowerCase().search(search.toLowerCase()) !== -1)))
         return 1;
 
       //add to user
