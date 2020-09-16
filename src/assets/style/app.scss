@@ -18544,8 +18544,8 @@ small {
   padding: 0 15px;
   z-index: 1000;
   box-shadow: 0px 3px 10px #3e557812;
-  @media (max-width: 620px) {
-    // height: 55px;
+  @media (max-width: 700px) {
+    align-items: start;
   }
 }
 .navigation-show .header {
@@ -21222,15 +21222,15 @@ body.dark.small-navigation .navigation-menu-body ul li.navigation-divider:after 
     padding-top: 0 !important;
   }
 
-  .navbar-bottom {
-    position: absolute;
-    top: 60px;
-    width: 100%;
+  // .navbar-bottom {
+  //   position: absolute;
+  //   top: 60px;
+  //   width: 100%;
 
-    a {
-      margin: 0 0.8rem;
-    }
-  }
+  //   a {
+  //     margin: 0 0.8rem;
+  //   }
+  // }
 
   .chat-sidebar {
     left: 0;

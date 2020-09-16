@@ -18,7 +18,6 @@ const NavBarLeft = styled.div`
   height: 100%;
   display: flex;
   align-items: center;
-
   .btn {
     font-weight: 400;
     height: 32px;
@@ -36,15 +35,15 @@ const NavBarLeft = styled.div`
     margin-right: 5px;
     padding-right: 10px;
   }
-  @media all and (max-width: 700px) {
-    margin-right: 0;
-    padding-right: 0;
-  }
   @media (max-width: 768px) {
     .nav-item-folder,
     .nav-item-chevron {
       display: none;
     }
+  }
+  @media all and (max-width: 700px) {
+    margin-right: 0;
+    padding-right: 0;
   }
   .navbar-nav {
     height: 100%;
@@ -55,16 +54,31 @@ const NavBarLeft = styled.div`
       flex-direction: column;
       justify-content: space-between;
       .navbar-top {
-        margin-top: 8px;
+        margin-top: 4px;
         display: flex;
-        flex-grow: 1;
         align-items: center;
+        height: 40px;
       }
+      .navbar-bottom {
+        @media all and (max-width: 700px) {
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          width: 100%;
+          padding: 0 16px;
+        }
+      }
+    }
+    @media all and (max-width: 700px) {
+      margin-left: 0;
+      display: flex;
+      justify-content: space-between;
     }
   }
   svg.feather-menu {
     color: #7a1b8b !important;
   }
+
 `;
 
 const NavBar = styled.ul`

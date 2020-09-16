@@ -54,6 +54,9 @@ const MainNavLink = styled(NavLink)`
     top: 0px;
     right: -13px;
   }
+  @media all and (max-width: 700px) {
+    margin: 0;
+  }
 `;
 
 const CompanyPageHeaderPanel = (props) => {
