@@ -16,6 +16,8 @@ import {
   getCompanyFilesDetail as getCompanyFilesDetailService,
   getCompanyFolderBreadCrumbs as getCompanyFolderBreadCrumbsService,
   getCompanyFolders as getCompanyFoldersService,
+  getCompanyGoogleAttachmentsFile as getCompanyGoogleAttachmentsFileService,
+  getCompanyGoogleAttachmentsFolder as getCompanyGoogleAttachmentsFolderService,
   getCompanyPopularFiles as getCompanyPopularFilesService,
   getCompanyRecentEditedFiles as getCompanyRecentEditedFilesService,
   getCompanyTrashedFiles as getCompanyTrashedFilesService,
@@ -52,7 +54,7 @@ import {
   putWorkspaceRestoreFolder as putWorkspaceRestoreFolderService,
   restoreWorkspaceFile as restoreWorkspaceFileService,
   uploadWorkspaceFile as uploadWorkspaceFileService,
-  uploadWorkspaceFiles as uploadWorkspaceFilesService
+  uploadWorkspaceFiles as uploadWorkspaceFilesService,
 } from "../services";
 
 export function getFiles(payload, callback) {
@@ -437,4 +439,12 @@ export function putCompanyRestoreFolder(payload, callback) {
 
 export function putCompanyFileMove(payload, callback) {
   return dispatchActionToReducer(putCompanyFileMoveService(payload), "PUT_COMPANY_FILE_MOVE_START", "PUT_COMPANY_FILE_MOVE_SUCCESS", "PUT_COMPANY_FILE_MOVE_FAIL", callback);
+}
+
+export function getCompanyGoogleAttachmentsFolder(payload, callback) {
+  return dispatchActionToReducer(getCompanyGoogleAttachmentsFolderService(payload), "PUT_COMPANY_FILE_MOVE_START", "PUT_COMPANY_FILE_MOVE_SUCCESS", "PUT_COMPANY_FILE_MOVE_FAIL", callback);
+}
+
+export function getCompanyGoogleAttachmentsFile(payload, callback) {
+  return dispatchActionToReducer(getCompanyGoogleAttachmentsFileService(payload), "PUT_COMPANY_FILE_MOVE_START", "PUT_COMPANY_FILE_MOVE_SUCCESS", "PUT_COMPANY_FILE_MOVE_FAIL", callback);
 }

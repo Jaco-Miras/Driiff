@@ -22,17 +22,18 @@ const CompanyPostComments = (props) => {
       {comments && (
         <ul>
           {Object.values(comments).map((c) => {
-            return <Comment key={c.id}
-                            comment={c}
-                            post={post}
-                            user={user}
-                            commentActions={commentActions}
-                            onShowFileDialog={onShowFileDialog}
-                            dropAction={dropAction}
-                            workspace={workspace}
-                            isMember={isMember}
-                            dictionary={dictionary}
-                            disableOptions={disableOptions}
+            return <Comment
+              key={c.id}
+              comment={c}
+              post={post}
+              user={user}
+              commentActions={commentActions}
+              onShowFileDialog={onShowFileDialog}
+              dropAction={dropAction}
+              workspace={workspace}
+              isMember={isMember}
+              dictionary={dictionary}
+              disableOptions={disableOptions}
             />;
           })}
         </ul>

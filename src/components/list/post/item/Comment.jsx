@@ -1,14 +1,14 @@
 import React, {useCallback, useEffect, useRef, useState} from "react";
 import styled from "styled-components";
-import { useHistory } from "react-router-dom";
+import {useHistory} from "react-router-dom";
 import {Avatar, FileAttachments, SvgIconFeather} from "../../../common";
 import {MoreOptions} from "../../../panels/common";
 import {PostDetailFooter} from "../../../panels/post/index";
 import {SubComments} from "./index";
-import {useTimeFormat} from "../../../hooks";
+import {useGoogleApis, useTimeFormat} from "../../../hooks";
 import GifPlayer from "react-gif-player";
-import {stripGif} from "../../../../helpers/stringFormatter";
 import {getGifLinks} from "../../../../helpers/urlContentHelper";
+import quillHelper from "../../../../helpers/quillHelper";
 
 const Wrapper = styled.li`
   margin-bottom: 1rem;
@@ -109,6 +109,7 @@ const Comment = (props) => {
     className = "", comment, post, type = "main", user, commentActions, parentId, onShowFileDialog,
     dropAction, parentShowInput = null, workspace, isMember, dictionary, disableOptions
   } = props;
+
   const refs = {
     input: useRef(null),
     body: useRef(null),
@@ -116,34 +117,15 @@ const Comment = (props) => {
   };
 
   const history = useHistory();
+  const googleApis = useGoogleApis();
+
   const [showInput, setShowInput] = useState(null);
   const [userMention, setUserMention] = useState(null);
   const [showGifPlayer, setShowGifPlayer] = useState(null);
   const [react, setReact] = useState({
     user_clap_count: comment.user_clap_count,
     clap_count: comment.clap_count
-  })
-
-  useEffect(() => {
-    if (typeof history.location.state === "object") {
-      if (history.location.state && history.location.state.focusOnMessage === comment.id && refs.body.current) {
-        refs.body.current.scrollIntoView();
-        refs.main.current.classList.add("bounceIn");
-        history.push(history.location.pathname, null);
-      }
-    }
-  }, [history.location.state]);
-
-  
-
-  useEffect(() => {
-    if (comment.body.match(/\.(gif)/g) !== null) {
-      setShowGifPlayer(true);
-    }
-    return () => {
-      history.push(history.location.pathname, null);
-    }
-  }, []);
+  });
 
   const handleShowInput = useCallback(
     (commentId = null) => {
@@ -188,10 +170,6 @@ const Comment = (props) => {
     }
   }, [showInput, refs.input.current]);
 
-  useEffect(() => {
-    inputFocus();
-  }, [inputFocus]);
-
   const handleReaction = () => {
     if (disableOptions)
       return;
@@ -210,6 +188,40 @@ const Comment = (props) => {
   };
 
   const {fromNow} = useTimeFormat();
+
+  const handleCommentBodyRef = (e) => {
+    if (e) {
+      const googleLinks = e.querySelectorAll(`[data-google-link-retrieve="0"]`);
+      googleLinks.forEach((gl) => {
+        let e = gl;
+        e.dataset.googleLinkRetrieve = 1;
+        googleApis.getFile(e, e.dataset.googleFileId);
+      });
+    }
+  };
+
+  useEffect(() => {
+    inputFocus();
+  }, [inputFocus]);
+
+  useEffect(() => {
+    if (typeof history.location.state === "object") {
+      if (history.location.state && history.location.state.focusOnMessage === comment.id && refs.body.current) {
+        refs.body.current.scrollIntoView();
+        refs.main.current.classList.add("bounceIn");
+        history.push(history.location.pathname, null);
+      }
+    }
+  }, [history.location.state]);
+
+  useEffect(() => {
+    if (comment.body.match(/\.(gif)/g) !== null) {
+      setShowGifPlayer(true);
+    }
+    return () => {
+      history.push(history.location.pathname, null);
+    }
+  }, []);
 
   return (
     <>
@@ -245,8 +257,10 @@ const Comment = (props) => {
               </MoreOptions>
             )}
           </CommentHeader>
-          <CommentBody className="mt-2 mb-3"
-                       dangerouslySetInnerHTML={showGifPlayer ? {__html: stripGif(comment.body)} : {__html: comment.body}}/>
+          <CommentBody
+            ref={handleCommentBodyRef}
+            className="mt-2 mb-3"
+            dangerouslySetInnerHTML={{__html: quillHelper.parseEmoji(comment.body)}}/>
           {showGifPlayer &&
           getGifLinks(comment.body).map((gifLink, index) => {
             return <GifPlayer key={index} className={"gifPlayer"} gif={gifLink} autoplay={true}/>;

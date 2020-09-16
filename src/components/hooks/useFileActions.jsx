@@ -20,6 +20,8 @@ import {
   getCompanyFilesDetail,
   getCompanyFolderBreadCrumbs,
   getCompanyFolders,
+  getCompanyGoogleAttachmentsFile,
+  getCompanyGoogleAttachmentsFolder,
   getCompanyPopularFiles,
   getCompanyRecentEditedFiles,
   getCompanyTrashedFiles,
@@ -52,7 +54,7 @@ import {
   setViewFiles,
   uploadCompanyFilesReducer,
   uploadFilesReducer,
-  uploadWorkspaceFiles,
+  uploadWorkspaceFiles
 } from "../../redux/actions/fileActions";
 import {addToModals} from "../../redux/actions/globalActions";
 import {useToaster} from "./index";
@@ -231,6 +233,26 @@ const useFileActions = (params = null) => {
     [dispatch]
   );
 
+  const getCompanyGoogleDriveFolders = useCallback(
+    (id, callback) => {
+      dispatch(
+        getCompanyGoogleAttachmentsFolder({}, callback)
+      )
+    },
+    [dispatch]
+  );
+
+  const getCompanyGoogleDriveFiles = useCallback(
+    (id, callback) => {
+      dispatch(
+        getCompanyGoogleAttachmentsFile({
+          workspace_id: id
+        }, callback)
+      )
+    },
+    [dispatch]
+  );
+
   const getFilesDetail = useCallback(
     (id, callback) => {
       dispatch(getWorkspaceFilesDetail({topic_id: id}, callback));
@@ -302,6 +324,19 @@ const useFileActions = (params = null) => {
         postGoogleAttachments({
           link_id: workspaceId,
           link_type: "topic",
+          attachment_type: payload.type === "folder" ? "FOLDER" : "FILE",
+          payload: payload
+        }, callback)
+      )
+    },
+    [dispatch]
+  );
+
+  const uploadCompanyGoogleDriveFile = useCallback(
+    (payload, callback) => {
+      dispatch(
+        postGoogleAttachments({
+          link_type: "company_drive",
           attachment_type: payload.type === "folder" ? "FOLDER" : "FILE",
           payload: payload
         }, callback)
@@ -1080,6 +1115,7 @@ const useFileActions = (params = null) => {
     unlinkGoogleAttachment,
     unlinkGoogleFolder,
     uploadWorkspaceGoogleDriveFile,
+    uploadCompanyGoogleDriveFile,
     uploadingFiles,
     fetchCompanyFiles,
     fetchCompanyFavoriteFiles,
@@ -1107,6 +1143,8 @@ const useFileActions = (params = null) => {
     restoreCompanyFile,
     restoreWorkspaceFolder,
     restoreCompanyFolder,
+    getCompanyGoogleDriveFolders,
+    getCompanyGoogleDriveFiles
   };
 };
 
