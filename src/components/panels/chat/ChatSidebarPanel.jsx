@@ -195,8 +195,6 @@ const ChatSidebarPanel = (props) => {
               <div className={`option-filter ${tabPill === "pills-workspace" ? "active" : ""}`}
                    onClick={handleTabChange} aria-controls="pills-workspace"
                    aria-selected="false">{dictionary.workspaceChats}</div>
-              <div className={`option-filter ${tabPill === "pills-contact" ? "active" : ""}`} onClick={handleTabChange}
-                   aria-controls="pills-contact" aria-selected="false">{dictionary.contacts}</div>
               <div className="d-flex" onClick={handleOpenGroupChatModal}>
                 <SvgIconFeather className="mr-2" width={14} height={14} icon="plus"/> {dictionary.newGroupChat}
               </div>

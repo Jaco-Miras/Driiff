@@ -68,11 +68,11 @@ const CompanyPeoplePanel = (props) => {
         return false;
 
       if (search !== "") {
-        if (user.name.toLowerCase().indexOf(search.toLowerCase()) === -1)
-          return false;
-
-        if (user.email.toLowerCase().indexOf(search.toLowerCase()) === -1)
-          return false;
+        if (search !== "") {
+          if (user.name.toLowerCase().search(search.toLowerCase()) === -1
+            && user.email.toLowerCase().search(search.toLowerCase()) === -1)
+            return false;
+        }
       }
 
       return true;
