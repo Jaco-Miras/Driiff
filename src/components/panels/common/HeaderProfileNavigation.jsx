@@ -15,7 +15,7 @@ const Wrapper = styled.ul`
     height: 45px;
   }
   @media all and (max-width: 700px) {
-    ${'' /* position: absolute;
+    ${"" /* position: absolute;
     top: 3px;
     right: 15px; */}
   }
@@ -161,8 +161,6 @@ const HomeProfileNavigation = (props) => {
   }, []);
 
   useOutsideClick(currentPopUp, hidePopUp, currentPopUp !== null);
-
-  console.log(loggedUser);
 
   return (
     <Wrapper ref={refs.container} className={`header-profile-navigation navbar-nav ${className}`}>
