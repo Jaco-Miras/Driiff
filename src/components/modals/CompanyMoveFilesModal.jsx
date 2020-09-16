@@ -52,12 +52,13 @@ const CompanyMoveFilesModal = (props) => {
 
   let options = Object.values(folders)
     .filter((f) => {
-      if (folder_id) {
-        if (f.id === folder_id) return false;
-        else return !f.is_archived;
-      } else {
-        return !f.is_archived;
-      }
+      if (typeof f.payload !== "undefined")
+        return false;
+
+      if (folder_id && f.id === folder_id)
+        return false;
+
+      return !f.is_archived;
     })
     .map((f) => {
       return {

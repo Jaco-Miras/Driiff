@@ -128,6 +128,8 @@ export {
   putCompanyFileMove,
   putWorkspaceRestoreFolder,
   putCompanyRestoreFolder,
+  getCompanyGoogleAttachmentsFile,
+  getCompanyGoogleAttachmentsFolder,
 } from "./files";
 
 export {

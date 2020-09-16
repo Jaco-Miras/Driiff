@@ -85,7 +85,7 @@ const CompanyFileSidebar = (props) => {
   const handleGoogleDriveSelect = (data) => {
     if (data.action === "picked") {
       data.docs.forEach(doc => {
-        actions.uploadWorkspaceGoogleDriveFile(params.workspaceId, doc);
+        actions.uploadCompanyGoogleDriveFile(doc);
       });
     }
   }

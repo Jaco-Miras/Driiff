@@ -368,6 +368,22 @@ export function getWorkspaceGoogleFolderAttachments(payload) {
   });
 }
 
+export function getCompanyGoogleAttachmentsFile(payload) {
+  return apiCall({
+    method: "GET",
+    url: `/v2/company/google-attachments?attachment_type=FILE`,
+    data: payload,
+  });
+}
+
+export function getCompanyGoogleAttachmentsFolder(payload) {
+  return apiCall({
+    method: "GET",
+    url: `/v2/company/google-attachments?attachment_type=FOLDER`,
+    data: payload,
+  });
+}
+
 /**
  * @param {Object} payload
  * @param {number} attachment_id
