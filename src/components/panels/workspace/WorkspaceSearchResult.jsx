@@ -59,9 +59,9 @@ const WorkspaceSearchResult = (props) => {
             <div className="workspace-search-detail">
                 <div className="workspace-title-status">
                     <h5>{topic.name}</h5>
-                    { topic.is_locked && <span className={`badge badge-light text-white ml-1`}>Private</span> }
-                    { topic.is_archive && <span className={`badge badge-light text-white ml-1`}>Archived</span> }
-                    { !topic.is_archive && !topic.is_locked && <span className={`badge badge-light text-white ml-1`}>Open</span> }
+                    { topic.is_locked && <span className={`badge badge-light ml-1`}>Private</span> }
+                    { topic.is_archive && <span className={`badge badge-light ml-1`}>Archived</span> }
+                    { !topic.is_archive && !topic.is_locked && <span className={`badge badge-light ml-1`}>Open</span> }
                 </div>
                 <ul className="workspace-detail-lists">
                     { isMember && <li className="text-success"><CheckIcon icon="check"/>Joined</li> }
