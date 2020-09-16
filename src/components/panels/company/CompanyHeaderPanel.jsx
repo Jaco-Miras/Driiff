@@ -19,21 +19,21 @@ const Wrapper = styled.div`
     display: flex;
     align-items: center;
     padding-right: 15px;
-  }
-  .navbar-nav {
-    height: 100%;
-    width: 100%;
-    .navbar-wrap {
+    .navbar-nav {
       height: 100%;
       width: 100%;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      .navbar-top {
-        margin-top: 8px;
+      .navbar-wrap {
+        height: 100%;
+        width: 100%;
         display: flex;
-        flex-grow: 1;
-        align-items: center;
+        flex-direction: column;
+        justify-content: space-between;
+        .navbar-top {
+          margin-top: 8px;
+          display: flex;
+          flex-grow: 1;
+          align-items: center;
+        }
       }
     }
   }
@@ -160,7 +160,8 @@ const CompanyHeaderPanel = () => {
           </div>
         </div>
       </div>
-      <div className="navbar-right">
+
+      <div>
         <HeaderProfileNavigation />
       </div>
     </Wrapper>

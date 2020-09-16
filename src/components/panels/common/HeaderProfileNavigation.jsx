@@ -6,14 +6,18 @@ import { NotificationDropDown, SearchDropDown } from "../dropdown";
 import UserProfileDropDown from "../dropdown/UserProfileDropdown";
 
 const Wrapper = styled.ul`
-  border-left: 1px solid #f1f1f1;
   padding-left: 5px;
   @media (max-width: 1200px) {
     display: flex !important;
-    left: auto !important;
-    right: 0 !important;
-    top: 0 !important;
+    left: auto;
+    right: 0;
+    top: 0;
     height: 45px;
+  }
+  @media all and (max-width: 700px) {
+    position: absolute;
+    top: 3px;
+    right: 15px;
   }
   > li {
     position: relative;

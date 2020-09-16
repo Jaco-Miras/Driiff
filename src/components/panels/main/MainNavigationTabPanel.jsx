@@ -1,18 +1,13 @@
-import React, {useEffect, useRef, useState} from "react";
-import {useDispatch, useSelector} from "react-redux";
-import {useHistory} from "react-router-dom";
-import {Badge} from "reactstrap";
+import React, { useEffect, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
+import { Badge } from "reactstrap";
 import styled from "styled-components";
-import {
-  addToModals,
-  getQuickLinks,
-  getUnreadNotificationCounterEntries,
-  setNavMode
-} from "../../../redux/actions/globalActions";
-import {NavLink, SvgEmptyState, SvgIcon, SvgIconFeather} from "../../common";
-import {useSettings, useTranslation, useWorkspace} from "../../hooks";
-import {ExternalWorkspaceList, WorkspaceList} from "../../workspace";
-import {PersonalLinks, QuickLinks} from "../../list/links";
+import { addToModals, getQuickLinks, getUnreadNotificationCounterEntries, setNavMode } from "../../../redux/actions/globalActions";
+import { NavLink, SvgEmptyState, SvgIcon, SvgIconFeather } from "../../common";
+import { useSettings, useTranslation, useWorkspace } from "../../hooks";
+import { ExternalWorkspaceList, WorkspaceList } from "../../workspace";
+import { PersonalLinks, QuickLinks } from "../../list/links";
 import Tooltip from "react-tooltip-lite";
 
 const Wrapper = styled.div`
@@ -39,26 +34,25 @@ const Wrapper = styled.div`
     display: flex;
     align-items: center;
     position: relative;
-    
+
     &.active {
       svg {
-        &.action {          
-          opacity: 1;        
+        &.action {
+          opacity: 1;
         }
       }
     }
-    
+
     &:hover {
       svg {
-        &.action {          
-          opacity: 1;        
+        &.action {
+          opacity: 1;
         }
       }
     }
-    
+
     a {
       width: 100%;
-      
       input {
         width: calc(100% - 28px);
         background-color: #fff;
@@ -68,19 +62,19 @@ const Wrapper = styled.div`
         padding-left: 6px;
       }
     }
-    
-    svg {      
-      &.action {      
+
+    svg {
+      &.action {
         opacity: 0;
         cursor: pointer;
         width: 14px;
         color: #fff;
         top: 8px;
         right: 22px;
-        position: absolute;        
-        transition: all 0.5s ease;      
-      }    
-    }  
+        position: absolute;
+        transition: all 0.5s ease;
+      }
+    }
   }
   .your-workspaces-title {
     margin: 0 15px;
@@ -189,8 +183,8 @@ const NavInputContainer = styled.div`
   align-items: center;
   margin: 0 15px 10px 15px;
   border-radius: 8px;
-  width: 100%;  
-  
+  width: 100%;
+
   &.active {
     background: #ffffff14;
   }
@@ -222,7 +216,7 @@ const NavNewWorkspace = styled.button`
   justify-content: center;
   align-items: center;
   color: #ffffff !important;
-  
+
   div {
     position: relative;
     display: inline-flex;
@@ -238,13 +232,13 @@ const StyledTooltip = styled(Tooltip)`
   justify-content: center;
 `;
 
-const EmptyState = styled.div`  
+const EmptyState = styled.div`
   display: flex;
   align-items: start;
   justify-content: center;
   text-align: center;
   color: #fff;
-  
+
   svg {
     display: block;
     margin: 1rem auto;
@@ -253,20 +247,20 @@ const EmptyState = styled.div`
       fill: transparent;
     }
   }
-  button {  
+  button {
     text-transform: uppercase;
   }
 `;
 
 const MainNavigationTabPanel = (props) => {
-  const {className = "", isExternal} = props;
+  const { className = "", isExternal } = props;
   const history = useHistory();
   const dispatch = useDispatch();
 
-  const {actions, folders, sortedWorkspaces, workspaces, workspace, workspacesLoaded} = useWorkspace(true);
-  const {updateCompanyName, driffSettings, generalSettings} = useSettings();
+  const { actions, folders, sortedWorkspaces, workspaces, workspace, workspacesLoaded } = useWorkspace(true);
+  const { updateCompanyName, driffSettings, generalSettings } = useSettings();
 
-  const {_t} = useTranslation();
+  const { _t } = useTranslation();
 
   const dictionary = {
     allWorkspaces: _t("SIDEBAR.ALL_WORKSPACES", "All Workspaces"),
@@ -286,23 +280,23 @@ const MainNavigationTabPanel = (props) => {
   };
 
   const user = useSelector((state) => state.session.user);
-  const {lastVisitedChannel} = useSelector((state) => state.chat);
-  const {links, unreadCounter} = useSelector((state) => state.global);
+  const { lastVisitedChannel } = useSelector((state) => state.chat);
+  const { links, unreadCounter } = useSelector((state) => state.global);
 
   const [editCompany, setEditCompany] = useState(false);
   const [companyName, setCompanyName] = useState(driffSettings.company_name);
   const [defaultTopic, setDefaultTopic] = useState(null);
 
   const refs = {
-    companyName: useRef(null)
-  }
+    companyName: useRef(null),
+  };
 
   const handleIconClick = (e) => {
     e.preventDefault();
     if (e.target.dataset.link) {
-      dispatch(setNavMode({mode: 3}));
+      dispatch(setNavMode({ mode: 3 }));
     } else {
-      dispatch(setNavMode({mode: 2}));
+      dispatch(setNavMode({ mode: 2 }));
     }
     history.push(e.target.dataset.link);
   };
@@ -340,17 +334,17 @@ const MainNavigationTabPanel = (props) => {
   };
 
   const toggleEditCompany = () => {
-    setEditCompany(prevState => {
+    setEditCompany((prevState) => {
       let newState = !prevState;
 
       if (!newState && driffSettings.company_name !== companyName)
         updateCompanyName({
-          company_name: companyName
-        })
+          company_name: companyName,
+        });
 
-      return newState
+      return newState;
     });
-  }
+  };
 
   const handleCompanyNameKeyDown = (e) => {
     switch (e.keyCode) {
@@ -363,7 +357,7 @@ const MainNavigationTabPanel = (props) => {
         break;
       }
     }
-  }
+  };
 
   useEffect(() => {
     dispatch(getUnreadNotificationCounterEntries());
@@ -395,10 +389,9 @@ const MainNavigationTabPanel = (props) => {
   return (
     <Wrapper className={`navigation-menu-tab ${className}`}>
       <div>
-        <div className="navigation-menu-tab-header" data-toggle="tooltip" title="Driff" data-placement="right"
-             data-original-title="Driff">
+        <div className="navigation-menu-tab-header" data-toggle="tooltip" title="Driff" data-placement="right" data-original-title="Driff">
           <div className="driff-logo">
-            <DriffLogo icon="driff-logo" data-link="/" onClick={handleIconClick}/>
+            <DriffLogo icon="driff-logo" data-link="/" onClick={handleIconClick} />
           </div>
         </div>
       </div>
@@ -406,61 +399,42 @@ const MainNavigationTabPanel = (props) => {
         <ul>
           {!isExternal && (
             <li onClick={closeLeftNav} className={`driff-company-name ${editCompany ? "active" : ""}`}>
-              {
-                editCompany ?
-                  <NavInputContainer className="active">
-                    <NavIcon icon={"home"}/>
-                    <input ref={refs.companyName} defaultValue={driffSettings.company_name}
-                           onChange={handleCompanyNameChange} onKeyDown={handleCompanyNameKeyDown} name="company-name"
-                           autoFocus={true}/>
-                  </NavInputContainer>
-                  :
-                  <NavIconContainer
-                    active={["dashboard", "posts", "chat", "files", "people"].includes(props.match.params.page)}
-                    to={lastVisitedChannel !== null && lastVisitedChannel.hasOwnProperty("code") ? `/chat/${lastVisitedChannel.code}` : "/chat"}
-                  >
-                    <NavIcon icon={"home"}/>
-                    {driffSettings.company_name}
-                    <div>
-                      {(unreadCounter.chat_message >= 1 || unreadCounter.unread_channel > 0) &&
-                      <Badge data-count={unreadCounter.chat_message}>&nbsp;</Badge>}
-                    </div>
-                  </NavIconContainer>
-              }
-              {
-                user.role && ["owner", "admin"].includes(user.role.name) &&
-                <>
-                  {
-                    editCompany ?
-                      <SvgIconFeather className="action" onClick={toggleEditCompany} icon="save"/>
-                      :
-                      <SvgIconFeather className="action" onClick={toggleEditCompany} icon="pencil"/>
-                  }
-                </>
-              }
+              {editCompany ? (
+                <NavInputContainer className="active">
+                  <NavIcon icon={"home"} />
+                  <input ref={refs.companyName} defaultValue={driffSettings.company_name} onChange={handleCompanyNameChange} onKeyDown={handleCompanyNameKeyDown} name="company-name" autoFocus={true} />
+                </NavInputContainer>
+              ) : (
+                <NavIconContainer
+                  active={["dashboard", "posts", "chat", "files", "people"].includes(props.match.params.page)}
+                  to={lastVisitedChannel !== null && lastVisitedChannel.hasOwnProperty("code") ? `/chat/${lastVisitedChannel.code}` : "/chat"}
+                >
+                  <NavIcon icon={"home"} />
+                  {driffSettings.company_name}
+                  <div>{(unreadCounter.chat_message >= 1 || unreadCounter.unread_channel > 0) && <Badge data-count={unreadCounter.chat_message}>&nbsp;</Badge>}</div>
+                </NavIconContainer>
+              )}
+              {user.role && ["owner", "admin"].includes(user.role.name) && (
+                <>{editCompany ? <SvgIconFeather className="action" onClick={toggleEditCompany} icon="save" /> : <SvgIconFeather className="action" onClick={toggleEditCompany} icon="pencil" />}</>
+              )}
             </li>
           )}
-          {
-            user.type === "internal" &&
+          {user.type === "internal" && (
             <li>
               <NavIconContainer to={"/system/people"} active={["/system/people"].includes(props.location.pathname)}>
-                <NavIcon icon={"user"}/>
-                <div>
-                  {dictionary.people}
-                </div>
+                <NavIcon icon={"user"} />
+                <div>{dictionary.people}</div>
               </NavIconContainer>
             </li>
-          }
+          )}
           <li onClick={closeLeftNav}>
             <NavIconContainer to={"/workspace/search"} active={["/workspace/search"].includes(props.location.pathname)}>
-              <NavIcon icon={"compass"}/>
-              <div>
-                {dictionary.allWorkspaces}
-              </div>
+              <NavIcon icon={"compass"} />
+              <div>{dictionary.allWorkspaces}</div>
             </NavIconContainer>
           </li>
-          {links.length > 0 && <QuickLinks links={links} user={user} dictionary={dictionary}/>}
-          <PersonalLinks dictionary={dictionary}/>
+          {links.length > 0 && <QuickLinks links={links} user={user} dictionary={dictionary} />}
+          <PersonalLinks dictionary={dictionary} />
         </ul>
       </div>
 
@@ -468,27 +442,26 @@ const MainNavigationTabPanel = (props) => {
         {dictionary.yourWorkspaces}
         {!isExternal && (
           <StyledTooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="New folder">
-            <FolderPlus onClick={handleShowFolderModal} icon="folder-plus"/>
+            <FolderPlus onClick={handleShowFolderModal} icon="folder-plus" />
           </StyledTooltip>
         )}
       </div>
       <div className="navigation-menu-group">
         <div id="elements" className="open">
-          {
-            workspacesLoaded && Object.values(folders).length === 0 && Object.values(workspaces).length === 0 ?
-              <EmptyState>
-                <div>
-                  <SvgEmptyState height={200} icon={2}/>
-                  <h5>Start by adding a new workspace down there!</h5>
-                  <button className="btn btn-primary mt-2" onClick={handleShowWorkspaceModal}>
-                    Create workspace
-                  </button>
-                </div>
-              </EmptyState>
-              :
-              <>
-                <ul>
-                  {!isExternal &&
+          {workspacesLoaded && Object.values(folders).length === 0 && Object.values(workspaces).length === 0 ? (
+            <EmptyState>
+              <div>
+                <SvgEmptyState height={200} icon={2} />
+                <h5>Start by adding a new workspace down there!</h5>
+                <button className="btn btn-primary mt-2" onClick={handleShowWorkspaceModal}>
+                  Create workspace
+                </button>
+              </div>
+            </EmptyState>
+          ) : (
+            <>
+              <ul>
+                {!isExternal &&
                   Object.values(folders)
                     .sort((a, b) => a.name.localeCompare(b.name))
                     .map((folder) => {
@@ -506,47 +479,45 @@ const MainNavigationTabPanel = (props) => {
                         />
                       );
                     })}
-                  {!isExternal && Object.values(workspaces).length > 0 && (
-                    <WorkspaceList
-                      actions={actions}
-                      history={history}
-                      show={true}
-                      workspace={workspace}
-                      workspaces={sortedWorkspaces.filter((ws) => {
-                        return ws.active === 1 && ws.folder_id === null;
-                      })}
-                      folder={{
-                        id: "general_internal",
-                        is_lock: 0,
-                        // selected: generalWorkspaces.some((ws) => ws.selected),
-                        name: dictionary.workspacesFolder,
-                        type: "GENERAL_FOLDER",
-                        workspace_ids: Object.values(workspaces)
-                          .filter((ws) => {
-                            return ws.folder_id === null && ws.active === 1;
-                          })
-                          .map((ws) => ws.id),
-                        unread_count: 0,
-                      }}
-                    />
-                  )}
-                  {isExternal &&
+                {!isExternal && Object.values(workspaces).length > 0 && (
+                  <WorkspaceList
+                    actions={actions}
+                    history={history}
+                    show={true}
+                    workspace={workspace}
+                    workspaces={sortedWorkspaces.filter((ws) => {
+                      return ws.active === 1 && ws.folder_id === null;
+                    })}
+                    folder={{
+                      id: "general_internal",
+                      is_lock: 0,
+                      // selected: generalWorkspaces.some((ws) => ws.selected),
+                      name: dictionary.workspacesFolder,
+                      type: "GENERAL_FOLDER",
+                      workspace_ids: Object.values(workspaces)
+                        .filter((ws) => {
+                          return ws.folder_id === null && ws.active === 1;
+                        })
+                        .map((ws) => ws.id),
+                      unread_count: 0,
+                    }}
+                  />
+                )}
+                {isExternal &&
                   Object.keys(workspaces).length > 0 &&
                   Object.values(workspaces).map((ws) => {
-                    return <ExternalWorkspaceList
-                      key={ws.key_id} actions={actions} workspace={ws}
-                      activeTopic={workspace}/>;
+                    return <ExternalWorkspaceList key={ws.key_id} actions={actions} workspace={ws} activeTopic={workspace} />;
                   })}
-                </ul>
-              </>
-          }
+              </ul>
+            </>
+          )}
         </div>
       </div>
       {!isExternal && !(Object.values(folders).length === 0 && Object.values(workspaces).length === 0) && (
         <div>
           <NavNewWorkspace onClick={handleShowWorkspaceModal} className="btn btn-outline-light" type="button">
             <div>
-              <CirclePlus icon="circle-plus"/>
+              <CirclePlus icon="circle-plus" />
               {dictionary.addNewWorkspace}
             </div>
           </NavNewWorkspace>

@@ -18,7 +18,7 @@ const NavBarLeft = styled.div`
   height: 100%;
   display: flex;
   align-items: center;
-  margin-right: 15px;
+
   .btn {
     font-weight: 400;
     height: 32px;
@@ -35,6 +35,10 @@ const NavBarLeft = styled.div`
   @media (max-width: 992px) {
     margin-right: 5px;
     padding-right: 10px;
+  }
+  @media all and (max-width: 700px) {
+    margin-right: 0;
+    padding-right: 0;
   }
   @media (max-width: 768px) {
     .nav-item-folder,
@@ -75,6 +79,11 @@ const NavBar = styled.ul`
       flex-grow: 1;
       display: flex;
       justify-content: flex-end;
+      padding-right: 15px;
+      border-right: 1px solid #f1f1f1;
+      @media all and (max-width: 700px) {
+        display: none;
+      }
       .btn {
         @media all and (max-width: 920px) {
           display: none;
