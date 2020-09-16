@@ -104,11 +104,11 @@ body.dark {
   }
 
   .feather-user {
-    background-color: #2b2e32;
+    background-color: #111417;
   }
 
   .feather-users {
-    background-color: #2b2e32;
+    background-color: #111417;
   }
 
   .feather-arrow-right {
@@ -376,6 +376,40 @@ body.dark {
     border-color: #ffffff14 !important;
     background-color: #111417;
   }
+}
+.folder-name {
+  font-weight: 500;
+}
+
+.create-folder-btn {
+  margin-top: 18px;
+}
+
+.lock-workspace-text-container {
+  max-width: 330px;
+}
+
+.lock-workspace-text {
+  opacity: 0.8;
+}
+
+.folder-info {
+  opacity: 0.8;
+  margin-bottom: 1rem;
+}
+
+.folder-searchbar {
+  width: 550px;
+}
+
+@media all and (max-width: 992px) {
+  .folder-searchbar {
+    width: 430px;
+  }
+}
+
+.folder-searchbar-container {
+  max-width: 550px;
 }
 
 .feather-gdrive {
@@ -9671,6 +9705,18 @@ body.error-page .display-1 {
   border: none;
 }
 
+.action-wrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between !important;
+  align-items: flex-end;
+  margin-top: 1rem !important;
+}
+
+.input-feedback {
+  margin-left: 2px !important;
+}
+
 textarea {
   min-height: 50px;
   max-height: 500px;
@@ -13968,6 +14014,22 @@ body.modal-open .modal.show .modal-dialog {
   font-weight: 600;
 }
 
+@media (min-width: 992px) {
+  .modal-lg,
+  .modal-xl {
+    max-width: 600px;
+  }
+}
+
+.custom-control-label {
+  font-weight: 500;
+}
+
+.modal-header {
+  border-top-left-radius: 0.5rem;
+  border-top-right-radius: 0.5rem;
+}
+
 .modal .modal-dialog .modal-content .modal-header button.close {
   background-color: #fff;
   text-shadow: none;
@@ -18251,6 +18313,12 @@ small {
   max-width: 50%;
 }
 
+.folder-input {
+  display: flex;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+}
+
 .bootstrap-tagsinput {
   -webkit-box-shadow: none;
   -moz-box-shadow: none;
@@ -21286,9 +21354,7 @@ body.dark.small-navigation .navigation-menu-body ul li.navigation-divider:after 
   .modal-content {
     border-radius: 0 !important;
   }
-  .modal-body {
-    flex: inherit;
-  }
+
   .modal-content .input-group {
     display: block !important;
     label {
