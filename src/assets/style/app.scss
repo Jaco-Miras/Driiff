@@ -21590,6 +21590,9 @@ body.dark.small-navigation .navigation-menu-body ul li.navigation-divider:after 
   }
 }
 .search-results {
+  .list-group-item {
+    padding: 1.1rem 1.5rem;
+  }
   .list-group-item.p-l-0.p-r-0 {
     cursor: pointer;
     .workspace-search-detail {
@@ -21603,8 +21606,14 @@ body.dark.small-navigation .navigation-menu-body ul li.navigation-divider:after 
         display: flex;
         align-items: center;
         width: 100%;
+        padding-bottom: 3px;
+        font-size: 13px;
+        opacity: 0.8;
         h5 {
           margin: 0;
+        }
+        .badge {
+          color: black;
         }
       }
       .workspace-detail-lists {
