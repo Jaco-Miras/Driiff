@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import Skeleton from "react-skeleton-loader";
@@ -55,7 +55,6 @@ const Avatar = (props) => {
 
   const [isLoaded, setIsLoaded] = useState(false);
   const [showInitials, setShowInitials] = useState(false);
-  const [isError, setError] = useState(false);
 
   const toggleTooltip = () => {
     let tooltips = document.querySelectorAll("span.react-tooltip-lite");
@@ -83,6 +82,12 @@ const Avatar = (props) => {
     setIsLoaded(true);
   };
 
+  useEffect(() => {
+    if (imageLink == null) {
+      setIsLoaded(true);
+    }
+  }, []);
+
   const handleOnClick = (e) => {
     e.stopPropagation();
     e.preventDefault();
@@ -104,10 +109,6 @@ const Avatar = (props) => {
     // setError(true);
   };
 
-  // const hasWhiteSpace = (s) => {
-  //     return /\s/g.test(s);
-  // };
-
   const handleInitials = (title) => {
     if (typeof title === "undefined") return "";
 
@@ -117,20 +118,7 @@ const Avatar = (props) => {
       result += tokens[i].substring(0, 1).toUpperCase();
     }
     return result.substring(0, 2);
-
-    // var result = "";
-    // if (hasWhiteSpace(title)) {
-    //     var tokens = title.split(" ");
-    //     for (var i = 0; i < tokens.length; i++) {
-    //         result += tokens[i].substring(0, 1).toUpperCase();
-    //     }
-    //     return result.substring(0, 2);
-    // } else {
-    //     result = title.charAt(0);
-    //     return result
-    // }
   };
-
 
   return (
     <Wrapper {...rest} className={`avatar avatar-sm ${isOnline ? "avatar-state-success" : ""} ${isLoaded ? "ico-avatar-loaded" : ""} ${className}`} onClick={handleOnClick}>
@@ -138,27 +126,22 @@ const Avatar = (props) => {
       <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={name}>
         {isBot ? (
           <Image show={isLoaded} className="rounded-circle" onLoad={handleImageLoad} onError={handleImageError} src={botIcon} alt={name} />
-        ) : showInitials && hasAccepted === false ? (
-          <Image show={true} className="rounded-circle" onLoad={handleImageLoad} onError={handleImageError} src={defaultIcon} alt={name} />
-        ) : showInitials && name !== "" ? (
+        ) : imageLink == null ? (
           <Initials className="rounded-circle" avatarColor={avatarColor(name)}>
             {handleInitials(name)}
           </Initials>
+        ) : isLoaded && hasAccepted === false ? (
+          <Image show={true} className="rounded-circle" onLoad={handleImageLoad} onError={handleImageError} src={defaultIcon} alt={name} />
+        ) : type === "GROUP" ? (
+          <SvgIconFeather icon="users" />
+        ) : name === "Gripp Offerte Bot" ? (
+          <Image show={isLoaded} className="rounded-circle" onLoad={handleImageLoad} onError={handleImageError} src={botIcon} alt={name} />
+        ) : showInitials === false ? (
+          <Image show={isLoaded} className="rounded-circle" onLoad={handleImageLoad} onError={handleImageError} src={imageLink} alt={name} />
         ) : (
-          <>
-            {type === "GROUP" ? (
-              <SvgIconFeather icon="users" />
-            ) : (
-              <Image
-                show={isLoaded}
-                className="rounded-circle"
-                onLoad={handleImageLoad}
-                onError={handleImageError}
-                src={type === "DEPARTMENT" ? departmentIcon : imageLink !== null ? (name === "Gripp Offerte Bot" ? botIcon : imageLink) : defaultIcon}
-                alt={name}
-              />
-            )}
-          </>
+          <Initials className="rounded-circle" avatarColor={avatarColor(name)}>
+            {handleInitials(name)}
+          </Initials>
         )}
       </Tooltip>
       {children}
