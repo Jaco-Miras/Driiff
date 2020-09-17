@@ -23,6 +23,7 @@ const Wrapper = styled.div`
     object-fit: cover;
     align-items: center;
     justify-content: center;
+    position: absolute;
   }
 `;
 
@@ -83,7 +84,7 @@ const Avatar = (props) => {
   };
 
   useEffect(() => {
-    if (imageLink == null) {
+    if (imageLink == null && name) {
       setIsLoaded(true);
     }
   }, []);
@@ -106,7 +107,6 @@ const Avatar = (props) => {
   const handleImageError = () => {
     setIsLoaded(true);
     setShowInitials(true);
-    // setError(true);
   };
 
   const handleInitials = (title) => {
@@ -130,7 +130,7 @@ const Avatar = (props) => {
           <Initials className="rounded-circle" avatarColor={avatarColor(name)}>
             {handleInitials(name)}
           </Initials>
-        ) : isLoaded && hasAccepted === false ? (
+        ) : hasAccepted === false ? (
           <Image show={true} className="rounded-circle" onLoad={handleImageLoad} onError={handleImageError} src={defaultIcon} alt={name} />
         ) : type === "GROUP" ? (
           <SvgIconFeather icon="users" />
