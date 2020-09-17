@@ -34,7 +34,8 @@ const Icon = styled(SvgIconFeather)`
   width: 30px;
 `;
 
-const iconColor = (name) => {
+const iconColor = (input) => {
+  const name = input.replace(/\s/g, "");
   if (typeof name === "undefined") return "";
   let h = "";
   let s = 50;
