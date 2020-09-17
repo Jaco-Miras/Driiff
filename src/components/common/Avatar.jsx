@@ -33,22 +33,6 @@ const Image = styled.img`
   ${(props) => props.avatarColor && `background-color: ${props.avatarColor};`};
 `;
 
-const Initials = styled.span`
-  color: #fff !important;
-  background: ${(props) => (props.avatarColor ? props.avatarColor : "white")};
-  font-size: 11px;
-  line-height: 0;
-  display: flex;
-  margin: auto;
-  height: 20px;
-  text-align: center;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  align-items: center;
-  justify-content: center;
-`;
-
 const Avatar = (props) => {
   const { className = "", imageLink, id, name = "", children, partialName = null, type = "USER", userId, onClick = null, noDefaultClick = false, hasAccepted = null, isBot = false, ...rest } = props;
 
@@ -66,7 +50,8 @@ const Avatar = (props) => {
     });
   };
 
-  const avatarColor = (name) => {
+  const avatarColor = (input) => {
+    const name = input.replace(/\s/g, "");
     if (typeof name === "undefined") return "";
     let h = "";
     let s = 50;
@@ -123,7 +108,7 @@ const Avatar = (props) => {
   };
 
   const setAvatarsPlaceholder = (name) => {
-    return `https://avatars.dicebear.com/api/human/${name}.svg?mood[]=happy&mood[]=surprised`;
+    return `https://avatars.dicebear.com/api/human/${name.replace(/\s/g, "")}.svg?mood[]=happy&mood[]=surprised`;
   };
 
   return (
