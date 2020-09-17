@@ -14,11 +14,6 @@ const Wrapper = styled.ul`
     top: 0;
     height: 45px;
   }
-  @media all and (max-width: 700px) {
-    ${"" /* position: absolute;
-    top: 3px;
-    right: 15px; */}
-  }
   > li {
     position: relative;
     .nav-link {
