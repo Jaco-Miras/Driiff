@@ -13297,6 +13297,10 @@ table .dropdown {
   background: #afb8bd;
 }
 
+.badge.badge-ultralight {
+  background: #f2f2f2;
+}
+
 .btn {
   position: relative;
 }
@@ -21611,6 +21615,7 @@ body.dark.small-navigation .navigation-menu-body ul li.navigation-divider:after 
         opacity: 0.8;
         h5 {
           margin: 0;
+          color: #262626;
         }
         .badge {
           color: black;
@@ -21623,6 +21628,7 @@ body.dark.small-navigation .navigation-menu-body ul li.navigation-divider:after 
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
+        color: #777;
         li {
           display: inline;
         }

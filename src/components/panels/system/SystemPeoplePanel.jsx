@@ -94,7 +94,7 @@ const SystemPeoplePanel = (props) => {
   const {_t} = useTranslation();
 
   const dictionary = {
-    searchPeoplePlaceholder: _t("PLACEHOLDER.SEARCH_PEOPLE", "Search people"),
+    searchPeoplePlaceholder: _t("PLACEHOLDER.SEARCH_PEOPLE", "Search by name or email"),
     peopleExternal: _t("PEOPLE.EXTERNAL", "External"),
     peopleInvited: _t("PEOPLE.INVITED", "Invited"),
   };
@@ -182,7 +182,7 @@ const SystemPeoplePanel = (props) => {
           <div className="people-header">
             <div className="d-flex align-items-center">
               <Search ref={refs.search} value={search} closeButton="true" onClickEmpty={emptySearchInput}
-                      placeholder="People search" onChange={handleSearchChange} autoFocus/>
+                      placeholder="Search by name or email" onChange={handleSearchChange} autoFocus/>
               <CustomInput
                 className="ml-2 mb-3 cursor-pointer text-muted cursor-pointer"
                 checked={showInactive}

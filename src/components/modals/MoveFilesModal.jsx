@@ -93,7 +93,7 @@ const MoveFilesModal = (props) => {
 
   return (
     <Wrapper isOpen={true} toggle={toggle} centered className={`single-input-modal ${className}`} {...otherProps}>
-      <ModalHeaderSection toggle={toggle}>Move file</ModalHeaderSection>
+      <ModalHeaderSection toggle={toggle}>Move the file</ModalHeaderSection>
       <ModalBody>
         <div>{file.search}</div>
         <Select styles={selectTheme} options={options} onChange={handleSelectFolder}/>
