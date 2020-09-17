@@ -87,7 +87,7 @@ const CompanyFilesPanel = (props) => {
     allFiles: _t("FILES.ALL_FILES", "All files"),
     recentlyEdited: _t("FILES.RECENTLY_EDITED", "Recently edited"),
     removed: _t("FILES.REMOVED", "Removed"),
-    searchInputPlaceholder: _t("FILES.SEARCH_INPUT_PLACEHOLDER", "Search input"),
+    searchInputPlaceholder: _t("FILES.SEARCH_INPUT_PLACEHOLDER", "Search by file or folder name"),
     uploadFiles: _t("FILE.UPLOAD_FILES", "Upload files"),
   };
 
