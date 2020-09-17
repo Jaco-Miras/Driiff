@@ -4,7 +4,8 @@ import { useHistory } from "react-router-dom";
 import Skeleton from "react-skeleton-loader";
 import Tooltip from "react-tooltip-lite";
 import styled from "styled-components";
-import departmentIcon from "../../assets/icon/teams/r/secundary.svg";
+// import departmentIcon from "../../assets/icon/teams/r/secundary.svg";
+import placeholder1 from "../../assets/icon/teams/p/placeholder1.svg";
 import defaultIcon from "../../assets/icon/user/avatar/l/white_bg.png";
 import botIcon from "../../assets/img/gripp-bot.png";
 import { replaceChar } from "../../helpers/stringFormatter";
@@ -120,6 +121,10 @@ const Avatar = (props) => {
     return result.substring(0, 2);
   };
 
+  const setAdorbsPlaceholder = (name) => {
+    return `https://api.adorable.io/avatars/72/${name}`;
+  };
+
   return (
     <Wrapper {...rest} className={`avatar avatar-sm ${isOnline ? "avatar-state-success" : ""} ${isLoaded ? "ico-avatar-loaded" : ""} ${className}`} onClick={handleOnClick}>
       {isLoaded === false && <Skeleton borderRadius="50%" widthRandomness={0} heightRandomness={0} />}
@@ -131,7 +136,7 @@ const Avatar = (props) => {
             {handleInitials(name)}
           </Initials>
         ) : hasAccepted === false ? (
-          <Image show={true} className="rounded-circle" onLoad={handleImageLoad} onError={handleImageError} src={defaultIcon} alt={name} />
+          <Image show={true} className="rounded-circle" onLoad={handleImageLoad} onError={handleImageError} src={setAdorbsPlaceholder(name)} alt={name} />
         ) : type === "GROUP" ? (
           <SvgIconFeather icon="users" />
         ) : name === "Gripp Offerte Bot" ? (
