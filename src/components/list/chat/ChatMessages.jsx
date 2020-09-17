@@ -77,7 +77,7 @@ const TimestampDiv = styled.div`
   padding: 26px 0 14px 0;
   position: sticky;
   top: 0px;
-  ${'' /* &:before,
+  ${"" /* &:before,
   &:after {
     content: "";
     display: block;
@@ -96,9 +96,9 @@ const TimestampDiv = styled.div`
     background: #ffffff;
     border-radius: 8px;
     margin: 0 4px;
-    ${'' /* @media (max-width: 620px) { */}
-      background: #F0F0F0;
-    ${'' /* } */}
+    ${"" /* @media (max-width: 620px) { */}
+    background: #F0F0F0;
+    ${"" /* } */}
   }
   &[stuck] {
     &:before,
@@ -111,27 +111,27 @@ const TimestampDiv = styled.div`
   }
 `;
 const ChatBubbleContainer = styled.div`
-    display: flex;
-    width: 100%;
-    align-items: center;
-    //align-items: ${(props) => (props.isAuthor ? "flex-end" : "flex-start")};
-    justify-content: flex-end;
-    flex-flow: column;
-    flex-flow: ${(props) => (props.isAuthor ? "row" : "row-reverse")};
-    margin-left: ${(props) => ((!props.isAuthor && !props.showAvatar) ? "22px" : "0")};
-    ${(props) => props.isAuthor === true && "position: relative; right: 15px;"};
-    margin-top: ${(props) => props.showAvatar && "36px"};
-    margin-top: ${(props) => props.showAvatar && props.isAuthor && "20px"};
-    @media (max-width: 620px) {
-      margin-top: ${(props) => props.showAvatar && "12px"};
-      margin-top: ${(props) => props.showAvatar && props.isAuthor && "8px"};
-      ${(props) => (!props.showAvatar && !props.isAuthor && !props.isBot) && "margin-left: 0"};
-      ${(props) => (props.isAuthor === true && !props.showAvatar) && "position: relative; right: 0px;"};
-      ${(props) => props.isAuthor === true && "position: relative; right: 0px;"};
-    }
-    ${(props) =>
-      !props.isEmoticonOnly &&
-      `
+  display: flex;
+  width: 100%;
+  align-items: center;
+  //align-items: ${(props) => (props.isAuthor ? "flex-end" : "flex-start")};
+  justify-content: flex-end;
+  flex-flow: column;
+  flex-flow: ${(props) => (props.isAuthor ? "row" : "row-reverse")};
+  margin-left: ${(props) => (!props.isAuthor && !props.showAvatar ? "22px" : "0")};
+  ${(props) => props.isAuthor === true && "position: relative; right: 15px;"};
+  margin-top: ${(props) => props.showAvatar && "36px"};
+  margin-top: ${(props) => props.showAvatar && props.isAuthor && "20px"};
+  @media (max-width: 620px) {
+    margin-top: ${(props) => props.showAvatar && "12px"};
+    margin-top: ${(props) => props.showAvatar && props.isAuthor && "8px"};
+    ${(props) => !props.showAvatar && !props.isAuthor && !props.isBot && "margin-left: 0"};
+    ${(props) => props.isAuthor === true && !props.showAvatar && "position: relative; right: 0px;"};
+    ${(props) => props.isAuthor === true && "position: relative; right: 0px;"};
+  }
+  ${(props) =>
+    !props.isEmoticonOnly &&
+    `
     &:before {
         ${(props) => props.showAvatar && "content: '';"};
         border: 10px solid transparent;
@@ -232,8 +232,8 @@ const ChatBubbleQuoteDiv = styled.div`
     width: auto;
     object-fit: cover;
   }
-  .edited-message{
-    color: #AAB0C8;
+  .edited-message {
+    color: #aab0c8;
     font-style: italic;
     display: flex;
     align-items: center;
@@ -249,11 +249,11 @@ const ChatBubbleQuoteDiv = styled.div`
     visibility: hidden;
   }
   .chat-options.active {
-      visibility: visible;
+    visibility: visible;
   }
-  :hover{
+  :hover {
     .chat-options {
-        visibility: visible;
+      visibility: visible;
     }
   }
   @media (max-width: 768px) {
@@ -261,7 +261,7 @@ const ChatBubbleQuoteDiv = styled.div`
   }
 
   @media (max-width: 620px) {
-    ${(props) => (!props.showAvatar && !props.isAuthor) && "margin-left: 0"};
+    ${(props) => !props.showAvatar && !props.isAuthor && "margin-left: 0"};
     ${(props) => !props.isAuthor === true && "margin-left: 0"};
   }
 `;
@@ -327,6 +327,9 @@ const StyledAvatar = styled(Avatar)`
   }
   @media (max-width: 620px) {
     display: none;
+  }
+  .pixel-avatar {
+    padding-top: 2px !important;
   }
 `;
 
@@ -412,17 +415,17 @@ class ChatMessages extends React.PureComponent {
     // if (scrollComponent) {
     //   scrollComponent.removeEventListener("scroll", this.loadMore);
     // }
-    console.log('save historical position')
+    console.log("save historical position");
     this.props.chatMessageActions.channelActions.saveHistoricalPosition(this.props.selectedChannel.id, scrollComponent);
     document.removeEventListener("keydown", this.handleEditOnArrowUp, false);
   }
 
   loadReplies = () => {
-    console.log("load more")
+    console.log("load more");
     const { selectedChannel, chatMessageActions } = this.props;
     const scrollComponent = this.scrollComponent.current;
     if (!selectedChannel.isFetching && selectedChannel.hasMore) {
-      console.log("load more trigger")
+      console.log("load more trigger");
       chatMessageActions.channelActions.fetchingMessages(selectedChannel, true);
       let payload = {
         skip: 0,
@@ -448,12 +451,12 @@ class ChatMessages extends React.PureComponent {
           if (this.chatBottomRef.current) {
             scrollComponent.scrollTop = scrollComponent.scrollHeight;
             let initialScrollHeight = scrollComponent.scrollHeight;
-            console.log('initial load', scrollComponent.scrollHeight)
+            console.log("initial load", scrollComponent.scrollHeight);
             setTimeout(() => {
-              if (initialScrollHeight <  scrollComponent.scrollHeight) {
+              if (initialScrollHeight < scrollComponent.scrollHeight) {
                 scrollComponent.scrollTop = scrollComponent.scrollHeight;
               }
-            }, 1000)
+            }, 1000);
             //this.chatBottomRef.current.scrollIntoView(false);
           } else {
             let scrollC = document.querySelector(".intersection-bottom-ref");
@@ -549,7 +552,7 @@ class ChatMessages extends React.PureComponent {
       if (historicalPositions.length) {
         historicalPositions.forEach((hp) => {
           if (hp.channel_id === selectedChannel.id && scrollComponent) {
-            console.log("scroll to this", scrollComponent.scrollHeight - hp.scrollPosition, hp.scrollPosition)
+            console.log("scroll to this", scrollComponent.scrollHeight - hp.scrollPosition, hp.scrollPosition);
             scrollComponent.scrollTop = scrollComponent.scrollHeight - hp.scrollPosition;
           }
         });
@@ -568,8 +571,8 @@ class ChatMessages extends React.PureComponent {
         }
 
         if (this.state.messageRefInView || this.state.loadMoreInView) {
-          if (scrollComponent){
-            if (scrollComponent.scrollTop < scrollComponent.scrollHeight * .50) {
+          if (scrollComponent) {
+            if (scrollComponent.scrollTop < scrollComponent.scrollHeight * 0.5) {
               this.loadReplies();
             }
           }
@@ -630,8 +633,8 @@ class ChatMessages extends React.PureComponent {
   handleMessageRefChange = (inView, entry, id) => {
     const scrollComponent = this.scrollComponent.current;
     if (inView) {
-      if (scrollComponent){
-        if (scrollComponent.scrollTop < scrollComponent.scrollHeight * .50) {
+      if (scrollComponent) {
+        if (scrollComponent.scrollTop < scrollComponent.scrollHeight * 0.5) {
           this.loadReplies();
         }
       }
@@ -672,24 +675,23 @@ class ChatMessages extends React.PureComponent {
   };
 
   getLoadRef = (id) => {
-    const {selectedChannel} = this.props;
+    const { selectedChannel } = this.props;
     let loadMoreRef = false;
     const isEqual = (reply) => reply.id === id;
     if (selectedChannel.replies.length && !selectedChannel.isFetching) {
       let sortedReplies = selectedChannel.replies.sort((a, b) => b.created_at.timestamp - a.created_at.timestamp);
-        let index = sortedReplies.findIndex(isEqual);
-        // console.log(index, message.body)
-        if (index > 10) {
-          if (index % 3 === 0) {
-            loadMoreRef = true;
-          }
+      let index = sortedReplies.findIndex(isEqual);
+      // console.log(index, message.body)
+      if (index > 10) {
+        if (index % 3 === 0) {
+          loadMoreRef = true;
         }
+      }
     }
     return loadMoreRef;
   };
 
   render() {
-
     const { selectedChannel } = this.props;
 
     let lastReplyUserId = 0;
@@ -877,7 +879,7 @@ class ChatMessages extends React.PureComponent {
                                     )}
                                   </ChatBubbleQuoteDiv>
 
-                                  {!isAuthor && showAvatar && <StyledAvatar isForwardedMessage={reply.is_transferred} id={reply.user.id} imageLink={reply.user.profile_image_link} name={reply.user.name} isBot={isBot}/>}
+                                  {!isAuthor && showAvatar && <StyledAvatar isForwardedMessage={reply.is_transferred} id={reply.user.id} imageLink={reply.user.profile_image_link} name={reply.user.name} isBot={isBot} />}
                                 </ChatBubbleContainer>
                               )}
                               {reply.user === null && (
@@ -894,12 +896,7 @@ class ChatMessages extends React.PureComponent {
                                     className={"chat-bubble-quote-div"}
                                   >
                                     <SystemMessageContainer className="system-message" isAuthor={false}>
-                                      <SystemMessage 
-                                        selectedChannel={this.props.selectedChannel} 
-                                        reply={reply} 
-                                        chatName={this.props.chatName} 
-                                        addMessageRef={this.getLoadRef(reply.id)}
-                                        handleMessageRefChange={this.handleMessageRefChange}/>
+                                      <SystemMessage selectedChannel={this.props.selectedChannel} reply={reply} chatName={this.props.chatName} addMessageRef={this.getLoadRef(reply.id)} handleMessageRefChange={this.handleMessageRefChange} />
                                       {reply.unfurls.length ? (
                                         <ChatUnfurl
                                           unfurlData={reply.unfurls}
@@ -914,7 +911,14 @@ class ChatMessages extends React.PureComponent {
                                       <SystemChatActionsContainer isAuthor={isAuthor} className="chat-actions-container">
                                         {<ChatReactionButton isAuthor={isAuthor} scrollRef={this.infiniteScroll.current} reply={reply} />}
                                         {!isNaN(reply.id) && !reply.is_deleted && (
-                                          <MessageOptions dictionary={this.props.dictionary} scrollRef={this.scrollComponent} replyData={reply} className={"chat-message-options"} selectedChannel={this.props.selectedChannel} isAuthor={isAuthor} />
+                                          <MessageOptions
+                                            dictionary={this.props.dictionary}
+                                            scrollRef={this.scrollComponent}
+                                            replyData={reply}
+                                            className={"chat-message-options"}
+                                            selectedChannel={this.props.selectedChannel}
+                                            isAuthor={isAuthor}
+                                          />
                                         )}
                                       </SystemChatActionsContainer>
                                     </SystemMessageContainer>
@@ -936,7 +940,11 @@ class ChatMessages extends React.PureComponent {
                   );
                 })
               : null}
-            {!this.state.initializing && !selectedChannel.isFetching && selectedChannel.replies && selectedChannel.replies.length < 1 && <EmptyState className="no-reply-container"><SvgEmptyState icon={3} /></EmptyState>}
+            {!this.state.initializing && !selectedChannel.isFetching && selectedChannel.replies && selectedChannel.replies.length < 1 && (
+              <EmptyState className="no-reply-container">
+                <SvgEmptyState icon={3} />
+              </EmptyState>
+            )}
           </ul>
         </InfiniteScroll>
       </ChatReplyContainer>
