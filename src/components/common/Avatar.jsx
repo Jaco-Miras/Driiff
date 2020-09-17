@@ -23,6 +23,9 @@ const Wrapper = styled.div`
     justify-content: center;
     position: absolute;
   }
+  .pixel-avatar {
+    padding-top: 5px;
+  }
 `;
 
 const Image = styled.img`
@@ -120,8 +123,7 @@ const Avatar = (props) => {
   };
 
   const setAvatarsPlaceholder = (name) => {
-    // return `https://avatars.dicebear.com/api/avataaars/${name}.svg?eyes[]=happy&eyes[]=hearts&eyes[]=side&eyes[]=squint&eyes[]=surprised&eyes[]=wink&eyes[]=winkWacky&eyes[]=dizzy&eyebrow[]=flat&eyebrow[]=raised&eyebrow[]=unibrow&eyebrow[]=up&mouth[]=grimace&mouth[]=serious&mouth[]=smile&mouth[]=tongue&mouth[]=twinkle`;
-    return `https://avatars.dicebear.com/api/male/${name}.svg`;
+    return `https://avatars.dicebear.com/api/human/${name}.svg?mood[]=happy&mood[]=surprised`;
   };
 
   return (
@@ -131,9 +133,9 @@ const Avatar = (props) => {
         {isBot ? (
           <Image show={isLoaded} className="rounded-circle" onLoad={handleImageLoad} onError={handleImageError} src={botIcon} alt={name} />
         ) : imageLink == null ? (
-          <Image show={true} className="rounded-circle" onLoad={handleImageLoad} onError={handleImageError} src={setAvatarsPlaceholder(name)} avatarColor={avatarColor(name)} alt={name} />
+          <Image show={true} className="rounded-circle pixel-avatar" onLoad={handleImageLoad} onError={handleImageError} src={setAvatarsPlaceholder(name)} avatarColor={avatarColor(name)} alt={name} />
         ) : hasAccepted === false ? (
-          <Image show={true} className="rounded-circle" onLoad={handleImageLoad} onError={handleImageError} src={setAvatarsPlaceholder(name)} avatarColor={avatarColor(name)} alt={name} />
+          <Image show={true} className="rounded-circle pixel-avatar" onLoad={handleImageLoad} onError={handleImageError} src={setAvatarsPlaceholder(name)} avatarColor={avatarColor(name)} alt={name} />
         ) : type === "GROUP" ? (
           <SvgIconFeather icon="users" />
         ) : name === "Gripp Offerte Bot" ? (
@@ -141,7 +143,7 @@ const Avatar = (props) => {
         ) : showInitials === false ? (
           <Image show={isLoaded} className="rounded-circle" onLoad={handleImageLoad} onError={handleImageError} src={imageLink} alt={name} />
         ) : (
-          <Image show={true} className="rounded-circle" onLoad={handleImageLoad} onError={handleImageError} src={setAvatarsPlaceholder(name)} avatarColor={avatarColor(name)} alt={name} />
+          <Image show={true} className="rounded-circle pixel-avatar" onLoad={handleImageLoad} onError={handleImageError} src={setAvatarsPlaceholder(name)} avatarColor={avatarColor(name)} alt={name} />
         )}
       </Tooltip>
       {children}
