@@ -18,7 +18,7 @@ const Wrapper = styled.div`
   }
   > svg {
     padding: 6px;
-    background-color: #eeeeee;
+    background-color: ${(props) => (props.iconColor ? props.iconColor : props.iconColor)};
     border-radius: 50%;
     &:dark {
       background-color: ${(props) => (props.iconColor ? props.iconColor : props.iconColor)};
@@ -26,12 +26,10 @@ const Wrapper = styled.div`
   }
 `;
 
-const StyledAvatar = styled(Avatar)`
-  ${"" /* background-color: ${(props) => (props.iconColor ? props.iconColor : "#fff")}; */}
-`;
+const StyledAvatar = styled(Avatar)``;
 
 const Icon = styled(SvgIconFeather)`
-  color: #7a1b8b !important;
+  color: #ffffff !important;
   height: 30px;
   width: 30px;
 `;
@@ -47,7 +45,8 @@ const iconColor = (name) => {
     hash = name.charCodeAt(i) + ((hash << 5) - hash);
   }
   h = hash % 360;
-  return `hsl(${h}, ${s}%, ${l}%)`;
+
+  return `hsla(${h}, ${s}%, ${l}%, 0.8)`;
 };
 
 const handleInitials = (title) => {
@@ -62,23 +61,14 @@ const handleInitials = (title) => {
 const ChannelIcon = (props) => {
   const { className = "", channel } = props;
   return (
-    <Wrapper className={`pr-3 ${className}`} type={channel.type} iconColor={iconColor(channel.title)}>
+    <Wrapper className={`pr-3 ${className}`} type={channel.type} iconColor={iconColor(channel.title.toLowerCase())}>
       {channel.profile && channel.members.length >= 1 && channel.type === "DIRECT" && (
-        <StyledAvatar
-          type={channel.type}
-          imageLink={channel.profile.profile_image_link}
-          userId={channel.profile.id}
-          id={channel.profile.id}
-          name={channel.profile.name}
-          partialName={channel.profile.partial_name}
-          type={"USER"}
-          noDefaultClick={false}
-        />
+        <StyledAvatar type={channel.type} imageLink={channel.profile.profile_image_link} userId={channel.profile.id} id={channel.profile.id} name={channel.profile.name} partialName={channel.profile.partial_name} noDefaultClick={false} />
       )}
-      {channel.type === "GROUP" && <Icon icon="users" />}
-      {channel.type === "COMPANY" && <Icon icon="users" />}
-      {channel.type === "POST" && <Icon icon="users" />}
-      {channel.type === "PERSONAL_BOT" && <Icon icon="user" />}
+      {channel.type === "GROUP" && <Icon icon="users" alt={channel.title} />}
+      {channel.type === "COMPANY" && <Icon icon="users" alt={channel.title} />}
+      {channel.type === "POST" && <Icon icon="users" alt={channel.title} />}
+      {channel.type === "PERSONAL_BOT" && <Icon icon="user" alt={channel.title} />}
       {(channel.members.length > 2 && channel.type === "DIRECT") || (channel.type === "TOPIC" && <span>{handleInitials(channel.title).substring(0, 3)}</span>)}
     </Wrapper>
   );
