@@ -26,6 +26,7 @@ const Badge = styled.span`
 
   &.unread {
     color: #7a1b8b !important;
+    display: none;
   }
 `;
 
