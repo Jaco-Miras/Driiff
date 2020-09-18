@@ -79,7 +79,7 @@ const CreateWorkspaceFolderModal = (props) => {
     description: _t("DESCRIPTION", "Description"),
     remove: _t("WORKSPACE.REMOVE", "Remove"),
     cancel: _t("WORKSPACE.CANCEL", "Cancel"),
-    removeFolderText: _t("WORKSPACE.REMOVE_FOLDER_TEXT", "Are you sure that you want to remove this folder?"),
+    removeFolderText: _t("WORKSPACE.REMOVE_FOLDER_TEXT", "Workspaces in <b>Folder</b> will move back to the Workspaces sections in your sidebar. <br /><br />The workspaces in this folder will not be removed when you remove this folder."),
     confirm: _t("WORKSPACE.CONFIRM", "Confirm"),
     lockedFolder: _t("WORKSPACE.LOCKED_FOLDER", "Locked folder"),
     lockedFolderText: _t("WORKSPACE.LOCKED_FOLDER_TEXT", "Only members can view and search this workspace."),
