@@ -10,7 +10,7 @@ let cookieName = {
   dict: "i18n",
   lang: "i18n_lang",
   name: "i18n_ver",
-  ver: "150920201103",
+  ver: "150920201106",
 };
 
 localStorage.removeItem("i18n.28082020");
@@ -185,7 +185,7 @@ export const useTranslation = () => {
   }, []);
 
   const uploadTranslationToServer = useCallback(
-    (callback = () => {}) => {
+    (callback = () => { }) => {
       let vocabulary = [];
       let bodyText = `You are about to add the following words to the dictionary files, continue?`;
       bodyText += `<table>`;
