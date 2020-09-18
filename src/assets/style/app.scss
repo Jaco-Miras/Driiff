@@ -42,8 +42,33 @@ body {
 }
 
 ::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar:hover {
+  width: 10px;
+}
+
+/* background of the scrollbar except button or resizer */
+::-webkit-scrollbar-track {
+  background-color: rgba(255, 0, 0, 0);
+}
+/* scrollbar itself */
+::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 0, 0, 0);
+  border-radius: 16px;
+  border: 0px solid rgba(255, 0, 0, 0);
+}
+::-webkit-scrollbar-thumb:hover {
+  background-color: #babac0;
+  border: 1px solid #babac0;
+}
+
+/* set button(top and bottom of the scrollbar) */
+::-webkit-scrollbar-button {
   display: none;
 }
+
 .ql-editor {
   line-height: 1.5rem;
 }
@@ -65,6 +90,11 @@ body.dark {
   // #25282c // bg
   // #191c20 // mid / tobar chat
   // #ffffff14 // borders of #fff3
+
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: $dm-bg;
+    border: 1px solid $dm-bg;
+  }
 
   .mb-1 {
     color: $dm-text-color;
