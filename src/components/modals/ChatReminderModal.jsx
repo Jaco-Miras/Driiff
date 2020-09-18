@@ -1,15 +1,15 @@
 import moment from "moment";
-import React, {useState} from "react";
+import React, { useState } from "react";
 import DateTimePicker from "react-datetime-picker";
-import {useDispatch, useSelector} from "react-redux";
-import {Button, Modal, ModalBody, ModalFooter} from "reactstrap";
+import { useDispatch, useSelector } from "react-redux";
+import { Button, Modal, ModalBody, ModalFooter } from "reactstrap";
 import styled from "styled-components";
-import {formatHoursAMPM, formatMonthsOrdinalDay, formatWeeekDayName} from "../../helpers/dateFormatter";
-import {postChatReminder} from "../../redux/actions/chatActions";
-import {clearModal} from "../../redux/actions/globalActions";
+import { formatHoursAMPM, formatMonthsOrdinalDay, formatWeeekDayName } from "../../helpers/dateFormatter";
+import { postChatReminder } from "../../redux/actions/chatActions";
+import { clearModal } from "../../redux/actions/globalActions";
 import RadioInput from "../forms/RadioInput";
-import {useToaster, useTranslation} from "../hooks";
-import {ModalHeaderSection} from "./index";
+import { useToaster, useTranslation } from "../hooks";
+import { ModalHeaderSection } from "./index";
 
 const InputContainer = styled.div`
   display: flex;
@@ -38,12 +38,10 @@ const ChatReminderModal = (props) => {
   const [modal, setModal] = useState(true);
 
   const dictionary = {
-    chatReminder: _t("REMINDER.CHAT_REMINDER", "Chat reminder"),
-    twentyMinutes: _t("REMINDER.TWENTY_MINUTES", "20 minutes"),
+    chatReminder: _t("REMINDER.CHAT_REMINDER", "Set a reminder"),
     oneHour: _t("REMINDER.ONE_HOUR", "1 hour"),
     threeHours: _t("REMINDER.THREE_HOURS", "3 hours"),
     tomorrow: _t("REMINDER.TOMORROW", "Tomorrow"),
-    nextWeek: _t("REMINDER.NEXT_WEEK", "Next week"),
     pickDateTime: _t("REMINDER.PICK_DATE_TIME", "Pick date and time"),
     snooze: _t("REMINDER.SNOOZE", "Snooze"),
     cancel: _t("REMINDER.CANCEL", "Cancel"),
@@ -70,8 +68,7 @@ const ChatReminderModal = (props) => {
   };
 
   const handleSnooze = () => {
-    if (loading)
-      return;
+    if (loading) return;
 
     setLoading(true);
 
@@ -88,14 +85,6 @@ const ChatReminderModal = (props) => {
         let messageTime = "";
         let today = new Date();
         switch (setTimeValue) {
-          case "2m":
-            today.setMinutes(today.getMinutes() + 2);
-            messageTime = `in 2 minutes at ${formatHoursAMPM(today)} today`;
-            break;
-          case "20m":
-            today.setMinutes(today.getMinutes() + 20);
-            messageTime = `in 20 minutes at ${formatHoursAMPM(today)} today`;
-            break;
           case "1h":
             today.setHours(today.getHours() + 1);
             messageTime = `in an hour at ${formatHoursAMPM(today)} today`;
@@ -107,10 +96,6 @@ const ChatReminderModal = (props) => {
           case "tomorrow":
             today.setDate(today.getDate() + 1);
             messageTime = "at 9 AM tomorrow";
-            break;
-          case "next_week":
-            today.setDate(today.getDate() + 7);
-            messageTime = `at 9 AM ${formatWeeekDayName(today)}, ${formatMonthsOrdinalDay(today)}`;
             break;
           case "pick_data":
             messageTime = `at ${moment(new Date(customTimeValue)).format("YYYY-MM-DD HH:mm")}`;
@@ -145,28 +130,6 @@ const ChatReminderModal = (props) => {
           <RadioInput
             readOnly
             onClick={(e) => {
-              handleSetReminder(e, "2m");
-            }}
-            checked={setTimeValue === "2m"}
-            value={"2m"}
-            name={"role"}
-          >
-            2 minutes
-          </RadioInput>
-          <RadioInput
-            readOnly
-            onClick={(e) => {
-              handleSetReminder(e, "20m");
-            }}
-            checked={setTimeValue === "20m"}
-            value={"20m"}
-            name={"role"}
-          >
-            {dictionary.twentyMinutes}
-          </RadioInput>
-          <RadioInput
-            readOnly
-            onClick={(e) => {
               handleSetReminder(e, "1h");
             }}
             checked={setTimeValue === "1h"}
@@ -197,17 +160,6 @@ const ChatReminderModal = (props) => {
           >
             {dictionary.tomorrow}
           </RadioInput>
-          <RadioInput
-            readOnly
-            onClick={(e) => {
-              handleSetReminder(e, "next_week");
-            }}
-            checked={setTimeValue === "next_week"}
-            value={"next_week"}
-            name={"role"}
-          >
-            {dictionary.nextWeek}
-          </RadioInput>
           <RadioInput readOnly onClick={handleSelectPickDateTime} checked={setTimeValue === "pick_data"} value={"pick_data"} name={"role"}>
             {dictionary.pickDateTime}
           </RadioInput>
@@ -216,7 +168,7 @@ const ChatReminderModal = (props) => {
       </ModalBody>
       <ModalFooter>
         <Button color="primary" onClick={handleSnooze}>
-          {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"/>}
+          {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />}
           {dictionary.snooze}
         </Button>{" "}
         <Button outline color="secondary" onClick={toggle}>
