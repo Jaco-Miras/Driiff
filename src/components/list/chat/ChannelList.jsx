@@ -1,5 +1,5 @@
 import React from "react";
-import { useHistory } from "react-router-dom";
+import {useHistory} from "react-router-dom";
 import styled from "styled-components";
 import useChannelActions from "../../hooks/useChannelActions";
 import ChannelIcon from "./ChannelIcon";
@@ -7,12 +7,11 @@ import ChannelOptions from "./ChannelOptions";
 import ChannelTitle from "./ChannelTitle";
 import ChatDateIcons from "./ChatDateIcons";
 import ReplyPreview from "./ReplyPreview";
-import { Badge } from "../../common";
+import {Badge} from "../../common";
 
 const Wrapper = styled.li`
   cursor: pointer;
-  position: relative;
-  ${"" /* ${(props) => props.selected && "padding-left: 14px !important"}; */}
+  position: relative;  
   transition: all 0.15s linear;
   min-height: 64px;
   max-height: 64px;
@@ -48,7 +47,6 @@ const Wrapper = styled.li`
     background: #7a1b8b;
     display: block;
     position: absolute;
-    left: 0;
     top: 0;
     animation: fadeIn 0.15s linear;
     left: -24px;
@@ -61,7 +59,7 @@ const Wrapper = styled.li`
     flex-direction: column;
     white-space: nowrap;
     transition: opacity 0.3s ease;
-    top: 0px;
+    top: 0;
     justify-content: center;
     height: 100%;
     svg {
@@ -91,7 +89,9 @@ const ChannelTitlePreview = styled.div`
   padding-right: 64px;
 `;
 
-const Timestamp = styled.div``;
+const Timestamp = styled.div`
+  position: relative;
+`;
 
 const ChannelList = (props) => {
   const { channelDrafts, dictionary } = props;
@@ -116,19 +116,21 @@ const ChannelList = (props) => {
   };
 
   return (
-    <Wrapper className={`list-group-item d-flex align-items-center link-1 pl-0 pr-0 pb-3 pt-3 ${className}`} selected={selectedChannel !== null && channel.id === selectedChannel.id} onClick={handleSelectChannel}>
-      <ChannelIcon channel={channel} />
+    <Wrapper
+      className={`list-group-item d-flex align-items-center link-1 pl-1 pr-1 pl-lg-0 pr-lg-0 pb-3 pt-3 ${className}`}
+      selected={selectedChannel !== null && channel.id === selectedChannel.id} onClick={handleSelectChannel}>
+      <ChannelIcon channel={channel}/>
       <ChannelTitlePreview className={"flex-grow-1"}>
-        <ChannelTitle channel={channel} />
-        <ReplyPreview channel={channel} drafts={channelDrafts} dictionary={dictionary} />
+        <ChannelTitle channel={channel}/>
+        <ReplyPreview channel={channel} drafts={channelDrafts} dictionary={dictionary}/>
         {!!channel.is_archived && (
           <>
-            <Badge badgeClassName="bg-warning-bright" label="Archived" />
+            <Badge badgeClassName="bg-warning-bright" label="Archived"/>
           </>
         )}
         {channel.is_hidden && (
           <>
-            <Badge label="Hidden" />
+            <Badge label="Hidden"/>
           </>
         )}
       </ChannelTitlePreview>

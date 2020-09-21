@@ -1,13 +1,12 @@
-import React, { useEffect } from "react";
-import { useDispatch } from "react-redux";
+import React, {useEffect} from "react";
+import {useDispatch} from "react-redux";
 import styled from "styled-components";
 import ChannelsSidebar from "../../list/chat/ChannelsSidebar";
 import ChatContactsList from "../../list/chat/ChatContactsList";
-import { getChannelDrafts } from "../../../redux/actions/chatActions";
-import { SvgIconFeather } from "../../common";
+import {getChannelDrafts} from "../../../redux/actions/chatActions";
+import {SvgIconFeather} from "../../common";
 
-const Wrapper = styled.div`
-  ${'' /* padding-left: 1.5rem; */}
+const Wrapper = styled.div`  
   overflow: auto !important;
   &::-webkit-scrollbar {
     display: none;
@@ -36,6 +35,14 @@ const Wrapper = styled.div`
     justify-content: center;
     align-items: center;
     display: inline-flex;
+    margin-left: 0;
+    
+    @media (max-width: 992px) {
+      margin-left: 1.5rem;    
+    }
+    @media (max-width: 480px) {
+      margin-left: 1rem;    
+    }
   }
 `;
 
