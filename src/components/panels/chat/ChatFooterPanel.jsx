@@ -51,9 +51,10 @@ const ChatInputContainer = styled.div`
   margin-right: 8px;
   position: relative;
   min-height: 48px;
-  .send-button {
+  .feather-send,
+  .feather-smile {
     position: absolute;
-    top: 0px;
+    top: 0;
     right: 0;
     margin: 0;
     margin: 4px;
@@ -66,6 +67,18 @@ const ChatInputContainer = styled.div`
     padding: 9px;
     cursor: pointer;
   }
+  .feather-smile {
+    right: 44px;
+    margin: 4px 0;
+    background: transparent;
+    border-color: transparent;
+    transition: color 0.15s ease-in-out;
+    color: #cacaca;
+    &:hover {
+      color: #7a1b8b;
+    }
+  }
+
   ${"" /* max-width: calc(100% - 165px); */}
   ${"" /* @media all and (max-width: 620px) {
     max-width: calc(100% - 111px);
@@ -111,7 +124,7 @@ const Dflex = styled.div`
         color: #fff;
         border: none;
         padding: 8px 15px;
-        border-radius: 8px;
+        border-radius: 6px;
         font-size: 16px;
         font-weight: 600;
       }
@@ -121,7 +134,7 @@ const Dflex = styled.div`
 
 const PickerContainer = styled(CommonPicker)`
   right: unset;
-  bottom: 70px;
+  bottom: 80px;
 `;
 
 const ChatFooterPanel = (props) => {
@@ -242,11 +255,6 @@ const ChatFooterPanel = (props) => {
   return (
     <Wrapper className={`chat-footer ${className}`}>
       <TypingIndicator />
-      {selectedChannel && !selectedChannel.is_archived && (
-        <Dflex className="d-flex pr-2 pl-2">
-          <ChatQuote />
-        </Dflex>
-      )}
       <LockedLabel channel={selectedChannel} />
       {isMember && (
         <Dflex className="d-flex align-items-center">
@@ -262,11 +270,15 @@ const ChatFooterPanel = (props) => {
             <React.Fragment>
               {/* <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Emoji" className="emojiButton"></Tooltip> */}
               <ChatInputContainer className="flex-grow-1">
-                {/* <IconButton onClick={handleShowEmojiPicker} icon="smile" /> */}
+                {selectedChannel && !selectedChannel.is_archived && (
+                  <Dflex className="d-flex pr-2 pl-2">
+                    <ChatQuote />
+                  </Dflex>
+                )}
 
                 <ChatInput selectedGif={selectedGif} onSendCallback={onSendCallback} onClearGif={onClearGif} selectedEmoji={selectedEmoji} onClearEmoji={onClearEmoji} dropAction={dropAction} />
-
-                <IconButton className="send-button" onClick={handleSend} icon="send" />
+                <IconButton onClick={handleShowEmojiPicker} icon="smile" />
+                <IconButton onClick={handleSend} icon="send" />
               </ChatInputContainer>
 
               <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Attach files">

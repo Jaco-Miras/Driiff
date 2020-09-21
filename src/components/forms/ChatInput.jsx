@@ -81,11 +81,25 @@ const StyledQuillEditor = styled(QuillEditor)`
 
 const CloseButton = styled(SvgIconFeather)`
   position: absolute;
-  top: calc(50% - 12px);
-  right: 5px;
+  top: 0;
+  right: 0;
+  margin: 0;
+  margin: 4px;
+  height: calc(100% - 8px);
+  background: white;
+  border: 1px solid white;
+  border-radius: 4px;
+  min-width: 40px;
+  width: 40px;
+  padding: 9px;
   cursor: pointer;
-  cursor: hand;
-  color: #000;
+  right: 40px;
+  z-index: 9;
+  color: #cacaca;
+  transition: color 0.15s ease-in-out;
+  &:hover {
+    color: #7a1b8b;
+  }
 `;
 
 /***  Commented out code are to be visited/refactored ***/
