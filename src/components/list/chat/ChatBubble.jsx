@@ -120,6 +120,7 @@ const ChatBubbleContainer = styled.div`
   .mention {
     font-weight: ${(props) => (props.isAuthor ? "none" : "bold")};
     color: ${(props) => (props.isAuthor ? "#ffffff" : "#7A1B8B")};
+    text-decoration: none;
     &[data-value="All"],
     &.is-author {
       box-shadow: none;
@@ -129,6 +130,10 @@ const ChatBubbleContainer = styled.div`
       display: inline-block;
       width: auto;
       height: auto;
+    }
+    a {
+      color: ${(props) => (props.isAuthor ? "#ffffff" : "#7A1B8B")} !important;
+      text-decoration: none;
     }
   }
   a.call-button {
