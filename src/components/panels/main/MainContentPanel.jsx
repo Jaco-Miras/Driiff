@@ -39,7 +39,7 @@ const MainContentPanel = (props) => {
         <Redirect
           from="*"
           to={{
-            pathname: "/workspace/chat",
+            pathname: "/chat",
             state: {from: props.location},
           }}
         />
