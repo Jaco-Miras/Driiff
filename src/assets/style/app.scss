@@ -72,6 +72,12 @@ body {
 .ql-editor {
   line-height: 1.5rem;
 }
+.ql-mention-list-container::-webkit-scrollbar {
+  width: 0;
+}
+.mention a {
+  color: $color-primary;
+}
 .chat-input-wrapper {
   transition: border-color 0.15s cubic-bezier(0.275, 0.42, 0, 1), box-shadow 0.15s cubic-bezier(0.275, 0.42, 0, 1);
 }

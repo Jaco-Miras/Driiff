@@ -3,6 +3,7 @@ import { osName } from "react-device-detect";
 import { useSelector } from "react-redux";
 import { Quill } from "react-quill";
 import defaultIcon from "../../assets/icon/user/avatar/l/white_bg.png";
+import { replaceChar } from "../../helpers/stringFormatter";
 
 const useQuillModules = (mode, callback, mentionOrientation = "top", quillRef, members = []) => {
   const [modules, setModules] = useState({});
@@ -19,7 +20,7 @@ const useQuillModules = (mode, callback, mentionOrientation = "top", quillRef, m
   const handleSubmit = () => {
     savedCallback.current();
   };
-
+  const { REACT_APP_apiProtocol, REACT_APP_localDNSName } = process.env;
   const handleSetModule = () => {
     const all = {
       id: require("shortid").generate(),
@@ -39,6 +40,7 @@ const useQuillModules = (mode, callback, mentionOrientation = "top", quillRef, m
             id: user.id,
             type_id: user.id,
             class: "user-pic",
+            link: `${REACT_APP_apiProtocol}${localStorage.getItem("slug")}.${REACT_APP_localDNSName}/profile/${user.id}/${replaceChar(user.name)}`
           });
         }),
         all,
@@ -51,7 +53,8 @@ const useQuillModules = (mode, callback, mentionOrientation = "top", quillRef, m
             id: user.id,
             type_id: user.id,
             class: "user-pic all-users",
-            profile_image_link: user.profile_image_link ? user.profile_image_link : defaultIcon
+            profile_image_link: user.profile_image_link ? user.profile_image_link : defaultIcon,
+            link: `${REACT_APP_apiProtocol}${localStorage.getItem("slug")}.${REACT_APP_localDNSName}/profile/${user.id}/${replaceChar(user.name)}`
           });
         }),
         all,
@@ -67,7 +70,7 @@ const useQuillModules = (mode, callback, mentionOrientation = "top", quillRef, m
         fixMentionsToQuill: false,
         mentionDenotationChars: ["@"],
         minChars: 0,
-        linkTarget: "_blank",
+        //linkTarget: "_blank",
         source: function (searchTerm, renderList, mentionChar) {
           let values;
 
