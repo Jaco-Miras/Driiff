@@ -218,7 +218,6 @@ body.dark {
   }
 
   .chat-input-wrapper {
-    border: 1px solid $dm-border-color-2 !important;
     color: $dm-text-color;
   }
 
@@ -14518,7 +14517,8 @@ body.form-membership .form-wrapper hr {
 
 .chat-block {
   height: 100%;
-  padding: 1.5rem;
+  // padding: 1.5rem;
+  padding-top: 1.5rem;
   @media (max-width: 620px) {
     padding: 1rem;
   }
@@ -14541,6 +14541,7 @@ body.form-membership .form-wrapper hr {
 }
 
 .chat-block .chat-sidebar .chat-sidebar-header {
+  padding-left: 24px;
   padding-right: 24px;
 }
 
@@ -14580,7 +14581,6 @@ body.form-membership .form-wrapper hr {
 
 .chat-block .chat-content {
   padding-left: 1.5rem;
-
   display: -webkit-box;
   display: -webkit-flex;
   display: -moz-box;
@@ -14744,8 +14744,7 @@ body.form-membership .form-wrapper hr {
 }
 
 .chat-block .chat-content .chat-footer {
-  margin-top: 20px;
-  padding-top: 1.5rem;
+  padding: 1.5rem 0 1.5rem 0;
   @media all and (max-width: 620px) {
     padding-top: 1rem;
   }
@@ -21512,7 +21511,7 @@ body.dark.small-navigation .navigation-menu-body ul li.navigation-divider:after 
 .list-group-item {
   transition: background 200ms ease;
   &:hover {
-    background: #fafafa;
+    // background: #fafafa;
   }
 }
 .badge {

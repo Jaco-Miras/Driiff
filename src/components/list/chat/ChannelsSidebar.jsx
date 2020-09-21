@@ -1,14 +1,18 @@
 import React from "react";
 import styled from "styled-components";
-import {useSelector} from "react-redux";
-import {useSortChannels} from "../../hooks";
+import { useSelector } from "react-redux";
+import { useSortChannels } from "../../hooks";
 import ChannelList from "./ChannelList";
 
 const ChannelsSidebarContainer = styled.div``;
 const Channels = styled.ul`
+  padding-left: 24px;
   padding-right: 24px;
   h4:first-of-type {
     margin-top: 12px !important;
+  }
+  .avatar {
+    border: 0 !important;
   }
 `;
 const ChatHeader = styled.h4`
@@ -19,7 +23,7 @@ const ChatHeader = styled.h4`
 `;
 
 const ChannelsSidebar = (props) => {
-  const {className = "", search, channels, selectedChannel, workspace, dictionary} = props;
+  const { className = "", search, channels, selectedChannel, workspace, dictionary } = props;
 
   const [sortedChannels] = useSortChannels(channels, search, {}, workspace);
   const channelDrafts = useSelector((state) => state.chat.channelDrafts);
@@ -27,38 +31,35 @@ const ChannelsSidebar = (props) => {
   return (
     <ChannelsSidebarContainer className={`chat-lists ${className}`}>
       <Channels className={"list-group list-group-flush"}>
-        {sortedChannels
-          .map((channel, k, arr) => {
-            let chatHeader = "";
+        {sortedChannels.map((channel, k, arr) => {
+          let chatHeader = "";
 
-            if (k !== 0) {
-              let a = arr[k - 1];
-              let b = channel;
+          if (k !== 0) {
+            let a = arr[k - 1];
+            let b = channel;
 
-              if (a.type === "PERSONAL_BOT" && b.type !== "PERSONAL_BOT") {
-                chatHeader = dictionary.chats;
-              } else if (!(a.add_user || a.add_open_topic) && (b.add_user || b.add_open_topic)) {
-                chatHeader = dictionary.contacts;
-              }
-            } else {
-              if (channel.type === "PERSONAL_BOT") {
-                chatHeader = dictionary.personalBot;
-              } else if (channel.add_user || channel.add_open_topic) {
-                chatHeader = dictionary.contacts;
-              } else {
-                chatHeader = dictionary.chats;
-              }
+            if (a.type === "PERSONAL_BOT" && b.type !== "PERSONAL_BOT") {
+              chatHeader = dictionary.chats;
+            } else if (!(a.add_user || a.add_open_topic) && (b.add_user || b.add_open_topic)) {
+              chatHeader = dictionary.contacts;
             }
+          } else {
+            if (channel.type === "PERSONAL_BOT") {
+              chatHeader = dictionary.personalBot;
+            } else if (channel.add_user || channel.add_open_topic) {
+              chatHeader = dictionary.contacts;
+            } else {
+              chatHeader = dictionary.chats;
+            }
+          }
 
-            return (
-              <React.Fragment key={channel.id}>
-                {search !== "" && chatHeader !== "" && <ChatHeader>{chatHeader}</ChatHeader>}
-                <ChannelList
-                  channel={channel} selectedChannel={selectedChannel}
-                  channelDrafts={channelDrafts} dictionary={dictionary}/>
-              </React.Fragment>
-            );
-          })}
+          return (
+            <React.Fragment key={channel.id}>
+              {search !== "" && chatHeader !== "" && <ChatHeader>{chatHeader}</ChatHeader>}
+              <ChannelList channel={channel} selectedChannel={selectedChannel} channelDrafts={channelDrafts} dictionary={dictionary} />
+            </React.Fragment>
+          );
+        })}
         {workspace === true && sortedChannels.length === 0 ? (
           <li>
             <h4>{dictionary.nothingToSeeHere}</h4>

@@ -30,8 +30,8 @@ const StyledAvatar = styled(Avatar)``;
 
 const Icon = styled(SvgIconFeather)`
   color: #ffffff !important;
-  height: 30px;
-  width: 30px;
+  height: 32px;
+  width: 32px;
 `;
 
 const iconColor = (input) => {

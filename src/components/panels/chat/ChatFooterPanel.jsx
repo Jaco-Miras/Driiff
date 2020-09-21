@@ -15,14 +15,18 @@ import LockedLabel from "./LockedLabel";
 const Wrapper = styled.div`
   position: relative;
   z-index: 1;
-  .chat-footer-buttons {
-    svg.feather-send {
-      margin-left: 8px;
-    }
-    svg.feather-paperclip {
-      margin-left: 0;
-      margin-right: 0;
-    }
+  .feather-paperclip {
+    border: 1px solid #e1e1e1;
+    height: 100%;
+    border-radius: 8px;
+    cursor: pointer;
+    cursor: hand;
+    width: 46px;
+    height: 100%;
+    border-radius: 8px;
+    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    padding: 12px;
+    cursor: pointer;
   }
 `;
 
@@ -40,44 +44,40 @@ const ArchivedDiv = styled.div`
 
 const ChatInputContainer = styled.div`
   position: relative;
-  max-width: calc(100% - 165px);
-  @media all and (max-width: 620px) {
-    max-width: calc(100% - 111px);
+  border: 1px solid #e1e1e1;
+  box-shadow: 0 3px 10px #7a1b8b12;
+  border-radius: 8px;
+  padding-right: 80px;
+  margin-right: 8px;
+  position: relative;
+  min-height: 48px;
+  .send-button {
+    position: absolute;
+    top: 0px;
+    right: 0;
+    margin: 0;
+    margin: 4px;
+    height: calc(100% - 8px);
+    background: #7a1b8b;
+    border: 1px solid #7a1b8b;
+    border-radius: 4px;
+    min-width: 40px;
+    width: 40px;
+    padding: 9px;
+    cursor: pointer;
   }
+  ${"" /* max-width: calc(100% - 165px); */}
+  ${"" /* @media all and (max-width: 620px) {
+    max-width: calc(100% - 111px);
+  } */}
 `;
 
 const Icon = styled(SvgIconFeather)`
-  margin-right: 6px;
   width: 20px;
+  position: absolute;
 `;
 
-const IconButton = styled(SvgIconFeather)`
-  cursor: pointer;
-  cursor: hand;
-  border: 1px solid #afb8bd;
-  height: 37px;
-  margin: -1px 8px 0 0;
-  width: 47px;
-  min-width: 47px;
-  padding: 10px 0;
-  border-radius: 8px;
-  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-  &.dark {
-    border: 1px solid rgba(255, 255, 255, 0.2) !important;
-  }
-  &:hover {
-    background: #afb8bd;
-    color: #ffffff;
-  }
-  &.feather-send {
-    border: 1px solid #7a1b8b;
-    background-color: #7a1b8b;
-    color: #fff;
-    &:hover {
-      background-color: #8c3b9b;
-    }
-  }
-`;
+const IconButton = styled(SvgIconFeather)``;
 
 const Dflex = styled.div`
   &.channel-viewing {
@@ -88,11 +88,9 @@ const Dflex = styled.div`
     align-items: center;
     justify-content: center;
     padding: 20px 0;
-
     > div {
       flex: 0 1 100%;
     }
-
     .channel-name {
       color: #64625c;
       font-size: 17px;
@@ -117,26 +115,6 @@ const Dflex = styled.div`
         font-size: 16px;
         font-weight: 600;
       }
-    }
-  }
-  .feather-send {
-    margin-left: 0.5rem;
-    @media all and (max-width: 620px) {
-      margin-right: 0;
-    }
-  }
-  @media all and (max-width: 620px) {
-    .emojiButton {
-      display: none;
-    }
-    div:nth-child(4) {
-      order: 1;
-    }
-    div:nth-child(2) {
-      order: 3;
-    }
-    svg:nth-child(3) {
-      order: 3;
     }
   }
 `;
@@ -247,10 +225,10 @@ const ChatFooterPanel = (props) => {
 
     dispatch(addToModals(payload));
   };
-  
+
   const onSendCallback = () => {
     setShowEmojiPicker(false);
-  }
+  };
 
   const isMember = useIsMember(selectedChannel && selectedChannel.members.length ? selectedChannel.members.map((m) => m.id) : []);
 
@@ -262,7 +240,7 @@ const ChatFooterPanel = (props) => {
   };
 
   return (
-    <Wrapper className={`chat-footer border-top ${className}`}>
+    <Wrapper className={`chat-footer ${className}`}>
       <TypingIndicator />
       {selectedChannel && !selectedChannel.is_archived && (
         <Dflex className="d-flex pr-2 pl-2">
@@ -282,13 +260,15 @@ const ChatFooterPanel = (props) => {
             </ArchivedDiv>
           ) : (
             <React.Fragment>
-              <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Emoji" className="emojiButton">
-                <IconButton onClick={handleShowEmojiPicker} icon="smile" />
-              </Tooltip>
+              {/* <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Emoji" className="emojiButton"></Tooltip> */}
               <ChatInputContainer className="flex-grow-1">
+                {/* <IconButton onClick={handleShowEmojiPicker} icon="smile" /> */}
+
                 <ChatInput selectedGif={selectedGif} onSendCallback={onSendCallback} onClearGif={onClearGif} selectedEmoji={selectedEmoji} onClearEmoji={onClearEmoji} dropAction={dropAction} />
+
+                <IconButton className="send-button" onClick={handleSend} icon="send" />
               </ChatInputContainer>
-              <IconButton onClick={handleSend} icon="send" />
+
               <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Attach files">
                 <IconButton onClick={onShowFileDialog} icon="paperclip" />
               </Tooltip>

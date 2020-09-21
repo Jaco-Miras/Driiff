@@ -1,12 +1,12 @@
-import React, {useCallback, useEffect, useRef, useState} from "react";
-import {useDispatch} from "react-redux";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { useDispatch } from "react-redux";
 import styled from "styled-components";
 import SearchForm from "../../forms/SearchForm";
-import {ChatSideBarContentPanel} from "./index";
-import {useSettings, useTranslation} from "../../hooks";
-import {MoreOptions} from "../common";
-import {addToModals} from "../../../redux/actions/globalActions";
-import {SvgIconFeather} from "../../common";
+import { ChatSideBarContentPanel } from "./index";
+import { useSettings, useTranslation } from "../../hooks";
+import { MoreOptions } from "../common";
+import { addToModals } from "../../../redux/actions/globalActions";
+import { SvgIconFeather } from "../../common";
 
 const Wrapper = styled.div`
   .nav-tabs {
@@ -76,24 +76,33 @@ const Search = styled(SearchForm)`
 `;
 
 const StyledMoreOptions = styled(MoreOptions)`
+  border: 1px solid #e1e1e1;
+  border-radius: 8px;
+  height: 36px;
+  width: 40px;
+  align-items: center;
+  justify-content: center;
+  .feather-more-horizontal {
+    width: 25px;
+    height: 36px;
+  }
   .more-options-tooltip {
     left: auto;
     right: 0;
     top: 25px;
     width: 250px;
-    
+
     svg {
       width: 14px;
-    }  
+    }
   }
 `;
 
 const ChatSidebarPanel = (props) => {
-
-  const {className = "", channels, userChannels, selectedChannel} = props;
+  const { className = "", channels, userChannels, selectedChannel } = props;
 
   const dispatch = useDispatch();
-  const {chatSettings, setChatSetting} = useSettings();
+  const { chatSettings, setChatSetting } = useSettings();
 
   //const unreadCounter = useSelector((state) => state.global.unreadCounter);
   const [search, setSearch] = useState("");
@@ -130,7 +139,7 @@ const ChatSidebarPanel = (props) => {
 
   const handleResetFilter = () => {
     setTabPill("pills-home");
-  }
+  };
 
   const handleTabChange = useCallback(
     (e) => {
@@ -143,7 +152,7 @@ const ChatSidebarPanel = (props) => {
     [setTabPill, tabPill]
   );
 
-  const {_t} = useTranslation();
+  const { _t } = useTranslation();
 
   const dictionary = {
     chats: _t("CHAT.CHATS", "Chats"),
@@ -180,31 +189,26 @@ const ChatSidebarPanel = (props) => {
         chat_filter: tabPill,
       });
     }
-  }, [chatSettings.chat_filter, tabPill])
+  }, [chatSettings.chat_filter, tabPill]);
 
   return (
     <Wrapper ref={refs.container} className={`chat-sidebar ${className}`}>
       <div className="chat-sidebar-header d-flex justify-content-between align-items-center">
-        <Search onChange={onSearchChange} value={search} onClickEmpty={emptySearchInput} closeButton="true"
-                className="chat-search" placeholder="Search contacts or chats"/>
-        <div>
-          {
-            <StyledMoreOptions ref={refs.navTab} role="tabList">
-              <div className={`option-filter ${tabPill === "pills-home" ? "active" : ""}`} onClick={handleTabChange}
-                   aria-controls="pills-home" aria-selected="false">{dictionary.chats}</div>
-              <div className={`option-filter ${tabPill === "pills-workspace" ? "active" : ""}`}
-                   onClick={handleTabChange} aria-controls="pills-workspace"
-                   aria-selected="false">{dictionary.workspaceChats}</div>
-              <div className="d-flex" onClick={handleOpenGroupChatModal}>
-                <SvgIconFeather className="mr-2" width={14} height={14} icon="plus"/> {dictionary.newGroupChat}
-              </div>
-            </StyledMoreOptions>
-          }
-        </div>
+        <Search onChange={onSearchChange} value={search} onClickEmpty={emptySearchInput} closeButton="true" className="chat-search" placeholder="Search contacts or chats" />
+
+        <StyledMoreOptions ref={refs.navTab} role="tabList">
+          <div className={`option-filter ${tabPill === "pills-home" ? "active" : ""}`} onClick={handleTabChange} aria-controls="pills-home" aria-selected="false">
+            {dictionary.chats}
+          </div>
+          <div className={`option-filter ${tabPill === "pills-workspace" ? "active" : ""}`} onClick={handleTabChange} aria-controls="pills-workspace" aria-selected="false">
+            {dictionary.workspaceChats}
+          </div>
+          <div className="d-flex" onClick={handleOpenGroupChatModal}>
+            <SvgIconFeather className="mr-2" width={14} height={14} icon="plus" /> {dictionary.newGroupChat}
+          </div>
+        </StyledMoreOptions>
       </div>
-      <ChatSideBarContentPanel
-        pill={tabPill} search={search} channels={channels} userChannels={userChannels}
-        selectedChannel={selectedChannel} dictionary={dictionary} resetFilter={handleResetFilter}/>
+      <ChatSideBarContentPanel pill={tabPill} search={search} channels={channels} userChannels={userChannels} selectedChannel={selectedChannel} dictionary={dictionary} resetFilter={handleResetFilter} />
     </Wrapper>
   );
 };
