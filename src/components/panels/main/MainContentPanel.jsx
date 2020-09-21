@@ -30,7 +30,7 @@ const MainContentPanel = (props) => {
         {!isExternal &&
         <Route {...props} component={CompanyPostsPanel} path={["/posts/:postId/:postTitle", "/posts"]}/>}
         {!isExternal &&
-        <Route {...props} component={CompanyChatPanel} path={["/chat/:code/:messageId", "/chat/:code?"]}/>}
+        <Route {...props} component={CompanyChatPanel} path={["/chat/:code/:messageId", "/chat/:code", "/chat"]}/>}
         <Route {...props} render={(props) => <CompanyFilesPanel {...props} />}
                path={["/files/folder/:folderId/:folderName", "/files"]}/>
         {!isExternal && <Route {...props} component={CompanyPeoplePanel} path={["/people"]}/>}
@@ -39,7 +39,7 @@ const MainContentPanel = (props) => {
         <Redirect
           from="*"
           to={{
-            pathname: "/workspace/chat",
+            pathname: "/chat",
             state: {from: props.location},
           }}
         />

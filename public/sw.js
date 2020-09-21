@@ -13,6 +13,7 @@ function receivePushNotification(event) {
     let notification_title = reference_title;
     //Get URL objects for each client's location.
     let showNotification = true;
+    let link = "";
     if (SOCKET_TYPE === "CHAT_DELETE") {
       self.registration.getNotifications({tag: id}).then(notifications => {
         notifications.forEach(notification => {
@@ -29,7 +30,6 @@ function receivePushNotification(event) {
        if (SOCKET_TYPE === "POST_COMMENT_CREATE") {
         const { base_link, push_title, post_id, post_title } = code_data;
         notification_title = push_title;
-        let link = "";
         if (workspaces.length) {
           if (workspaces[0].workspace_id){
             link = `/workspace/posts/${workspaces[0].workspace_id}/${replaceChar(workspaces[0].workspace_name)}/${workspaces[0].topic_id}/${replaceChar(workspaces[0].topic_name)}/post/${post_id}/${replaceChar(post_title)}`;
@@ -49,7 +49,6 @@ function receivePushNotification(event) {
       } else if (SOCKET_TYPE === "POST_CREATE") {
         const { base_link } = code_data;
         notification_title = `${author.name} shared a post`;
-        let link = "";
         if (workspaces.length) {
           if (workspaces[0].workspace_id){
             link = `/workspace/posts/${workspaces[0].workspace_id}/${replaceChar(workspaces[0].workspace_name)}/${workspaces[0].topic_id}/${replaceChar(workspaces[0].topic_name)}/post/${id}/${replaceChar(title)}`;
@@ -72,6 +71,9 @@ function receivePushNotification(event) {
         for (const client of clients) {
           const clientUrl = new URL(client.url);
           if (SOCKET_TYPE === "CHAT_CREATE" && clientUrl.pathname === `/chat/${channel_code}`) {
+            showNotification = false;
+          }
+          if (SOCKET_TYPE === "POST_COMMENT_CREATE" && link !== "" && clientUrl.pathname === link) {
             showNotification = false;
           }
           if (client.visibilityState !== 'visible') {
