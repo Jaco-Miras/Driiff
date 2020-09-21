@@ -14,6 +14,8 @@ const useFiles = () => {
   const {init: initFavoriteFiles, has_more: hasMoreFavoriteFiles, skip: skipFavoriteFiles, limit: limitFavoriteFiles, items: itemsFavoriteFiles} = useSelector((state) => state.files.companyFiles.favorite_files);
   const {init: initPopularFiles, has_more: hasMorePopularFiles, skip: skipPopularFiles, limit: limitPopularFiles, items: itemsPopularFiles} = useSelector((state) => state.files.companyFiles.popular_files);
   const {init: initTrashFiles, has_more: hasMoreTrashFiles, skip: skipTrashFiles, limit: limitTrashFiles, items: itemsTrashFiles} = useSelector((state) => state.files.companyFiles.trash_files);
+  const {init: initGoogleFiles, has_more: hasMoreGoogleFiles, skip: skipGoogleFiles, limit: limitGoogleFiles, items: itemsGoogleFiles} = useSelector((state) => state.files.companyFiles.google_files);
+  const {init: initGoogleFolders, has_more: hasMoreGoogleFolders, skip: skipGoogleFolders, limit: limitGoogleFolders, items: itemsGoogleFolders} = useSelector((state) => state.files.companyFolders.google_folders);
 
   const googleDriveApiFiles = useSelector((state) => state.files.googleDriveApiFiles);
 
@@ -25,6 +27,8 @@ const useFiles = () => {
   const [fetchingFavoriteFiles, setFetchingFavoriteFiles] = useState(false);
   const [fetchingPopularFiles, setFetchingPopularFiles] = useState(false);
   const [fetchingTrashedFiles, setFetchingTrashedFiles] = useState(false);
+  const [fetchingGoogleFolder, setFetchingGoogleFolder] = useState(false);
+  const [fetchingGoogleFiles, setFetchingGoogleFiles] = useState(false);
 
   const loadMoreCompanyFolders = () => {
     if (!fetchingFolders && hasMoreCompanyFolders) {
@@ -117,6 +121,30 @@ const useFiles = () => {
     }
   }
 
+  const loadMoreGoogleDriveFolder = () => {
+    if (!fetchingGoogleFolder && hasMoreGoogleFiles) {
+      setFetchingGoogleFolder(true);
+      fileActions.getCompanyGoogleDriveFolders({
+        skip: skipGoogleFolders,
+        limit: limitGoogleFolders
+      }, () => {
+        setFetchingGoogleFolder(false);
+      })
+    }
+  }
+
+  const loadMoreGoogleDriveFiles = () => {
+    if (!fetchingFolderFiles && hasMoreGoogleFiles) {
+      setFetchingGoogleFiles(true);
+      fileActions.getCompanyGoogleDriveFiles({
+        skip: skipGoogleFiles,
+        limit: limitGoogleFiles
+      }, () => {
+        setFetchingGoogleFiles(false);
+      })
+    }
+  }
+
   useEffect(() => {
     fileActions.fetchCompanyFilesDetail();
 
@@ -126,6 +154,14 @@ const useFiles = () => {
 
     if (!initCompanyFolders) {
       loadMoreCompanyFolders();
+    }
+
+    if (!initGoogleFolders) {
+      loadMoreGoogleDriveFolder();
+    }
+
+    if (!initGoogleFiles) {
+      loadMoreGoogleDriveFiles();
     }
 
     if (!initPopularFiles) {
@@ -210,6 +246,8 @@ const useFiles = () => {
       popularFiles: loadMorePopularFiles,
       favoriteFiles: loadMoreFavoriteFiles,
       trashFiles: loadMoreTrashedFiles,
+      googleDriveFiles: loadMoreGoogleDriveFiles,
+      googleDriveFolders: loadMoreGoogleDriveFolder
     }
   };
 };

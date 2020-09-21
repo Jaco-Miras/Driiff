@@ -44,6 +44,13 @@ const INITIAL_STATE = {
       limit: 100,
       items: []
     },
+    google_files: {
+      init: false,
+      has_more: true,
+      skip: 0,
+      limit: 100,
+      items: []
+    },
     trash_files: {
       init: false,
       has_more: true,
@@ -57,7 +64,14 @@ const INITIAL_STATE = {
     has_more: true,
     skip: 0,
     limit: 100,
-    items: {}
+    items: {},
+    google_folders: {
+      init: false,
+      has_more: true,
+      skip: 0,
+      limit: 100,
+      items: []
+    },
   }
 };
 
@@ -450,6 +464,84 @@ export default (state = INITIAL_STATE, action) => {
         companyFiles: companyFiles,
         companyFolders: companyFolders
       }
+    }
+    case "GET_COMPANY_GOOGLE_ATTACHMENTS_FOLDER_SUCCESS": {
+      let items = state.companyFolders.items;
+
+      action.data.attachments.forEach(a => {
+        items[a.id] = {
+          id: a.id,
+          is_archived: false,
+          parent_folder: null,
+          search: a.payload.name,
+          payload: a.payload,
+          created_at: {timestamp: a.payload.lastEditedUtc},
+          updated_at: {timestamp: a.payload.lastEditedUtc},
+          link_type: a.link_type,
+          link_id: a.link_index_id,
+          attachment_type: a.attachment_type,
+          files: [],
+          subFolders: []
+        };
+      });
+
+      return {
+        ...state,
+        companyFolders: {
+          ...state.companyFolders,
+          google_folders: {
+            ...state.companyFolders.google_folders,
+            init: true,
+            skip: state.companyFolders.google_folders.skip + state.companyFolders.google_folders.limit,
+            has_more: action.data.attachments.length === state.companyFolders.google_folders.limit,
+          },
+          items: items,
+        }
+      }
+    }
+    case "GET_COMPANY_GOOGLE_ATTACHMENTS_FILE_SUCCESS": {
+      let companyFiles = {...state.companyFiles};
+      let google_files = state.companyFiles.google_files.items;
+
+      let gFiles = action.data.attachments.map((attachment) => {
+
+        if (!google_files.includes(attachment.id))
+          google_files.push(attachment.id)
+
+        return {
+          created_at: {
+            timestamp: attachment.payload.lastEditedUtc
+          },
+          download_link: attachment.payload.embedUrl,
+          folder_id: null,
+          id: attachment.id,
+          payload_id: attachment.payload.id,
+          is_favorite: false,
+          link_id: action.data.topic_id,
+          link_index_id: 0,
+          link_type: "TOPIC",
+          mime_type: attachment.payload.mimeType,
+          search: attachment.payload.name,
+          size: attachment.payload.sizeBytes,
+          type: attachment.payload.type,
+          attachment_type: attachment.attachment_type
+        }
+      });
+
+      companyFiles.items = {...companyFiles.items, ...convertArrayToObject(gFiles, "id")};
+
+      return {
+        ...state,
+        companyFiles: {
+          ...companyFiles,
+          google_files: {
+            init: true,
+            skip: state.companyFiles.google_files.skip + state.companyFiles.google_files.limit,
+            has_more: gFiles.length === state.companyFiles.google_files.limit,
+            items: google_files
+          }
+        }
+      };
     }
     case "GET_COMPANY_FILES_SUCCESS": {
       let companyFiles = state.companyFiles;

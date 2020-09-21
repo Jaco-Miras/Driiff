@@ -442,9 +442,9 @@ export function putCompanyFileMove(payload, callback) {
 }
 
 export function getCompanyGoogleAttachmentsFolder(payload, callback) {
-  return dispatchActionToReducer(getCompanyGoogleAttachmentsFolderService(payload), "PUT_COMPANY_FILE_MOVE_START", "PUT_COMPANY_FILE_MOVE_SUCCESS", "PUT_COMPANY_FILE_MOVE_FAIL", callback);
+  return dispatchActionToReducer(getCompanyGoogleAttachmentsFolderService(payload), "GET_COMPANY_GOOGLE_ATTACHMENTS_FOLDER_START", "GET_COMPANY_GOOGLE_ATTACHMENTS_FOLDER_SUCCESS", "GET_COMPANY_GOOGLE_ATTACHMENTS_FOLDER_FAIL", callback);
 }
 
 export function getCompanyGoogleAttachmentsFile(payload, callback) {
-  return dispatchActionToReducer(getCompanyGoogleAttachmentsFileService(payload), "PUT_COMPANY_FILE_MOVE_START", "PUT_COMPANY_FILE_MOVE_SUCCESS", "PUT_COMPANY_FILE_MOVE_FAIL", callback);
+  return dispatchActionToReducer(getCompanyGoogleAttachmentsFileService(payload), "GET_COMPANY_GOOGLE_ATTACHMENTS_FILE_START", "GET_COMPANY_GOOGLE_ATTACHMENTS_FILE_SUCCESS", "GET_COMPANY_GOOGLE_ATTACHMENTS_FILE_FAIL", callback);
 }
