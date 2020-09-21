@@ -956,6 +956,7 @@ const CreateEditWorkspaceModal = (props) => {
           mode={mode}
           valid={valid.description}
           feedback={feedback.description}
+          disableMention={mode !== "edit"}
         />
         {(attachedFiles.length > 0 || uploadedFiles.length > 0) && (
           <WrapperDiv className="file-attachment-wrapper">

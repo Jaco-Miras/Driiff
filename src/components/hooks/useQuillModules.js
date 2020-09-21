@@ -5,7 +5,7 @@ import { Quill } from "react-quill";
 import defaultIcon from "../../assets/icon/user/avatar/l/white_bg.png";
 import { replaceChar } from "../../helpers/stringFormatter";
 
-const useQuillModules = (mode, callback, mentionOrientation = "top", quillRef, members = []) => {
+const useQuillModules = (mode, callback, mentionOrientation = "top", quillRef, members = [], disableMention = false) => {
   const [modules, setModules] = useState({});
   const [mentionValues, setMentionValues] = useState([]);
   // const [mentionOpen, setMentionOpen] = useState(false)
@@ -60,8 +60,12 @@ const useQuillModules = (mode, callback, mentionOrientation = "top", quillRef, m
         all,
       ];
     }
+    if (!disableMention) {
+      setMentionValues(newAtValues);
+    } else {
+      newAtValues = [];
+    }
     
-    setMentionValues(newAtValues);
     const modules = {
       mention: {
         allowedChars: /^[A-Za-z\sÅÄÖåäö]*$/,
