@@ -42,7 +42,9 @@ export const urlify = (text) => {
     }
   });
   //return urls.filter(u => !u.includes(REACT_APP_apiDNSName))
-  if (urls.filter((u) => !u.includes(REACT_APP_apiDNSName) && u.includes(REACT_APP_localDNSName)).length) {
+  if (
+      urls.filter((u) => { return !u.includes(REACT_APP_apiDNSName) && u.includes(REACT_APP_localDNSName) && !u.includes("/profile/") }).length
+    ) {
     return [urls.filter((u) => !u.includes(REACT_APP_apiDNSName) && u.includes(REACT_APP_localDNSName))[0]];
   } else {
     return [];
