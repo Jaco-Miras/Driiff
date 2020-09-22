@@ -1,10 +1,10 @@
-import { groupBy, throttle } from "lodash";
+import {groupBy} from "lodash";
 import React from "react";
-import { InView } from "react-intersection-observer";
-import { connect } from "react-redux";
-import { withRouter } from "react-router-dom";
+import {InView} from "react-intersection-observer";
+import {connect} from "react-redux";
+import {withRouter} from "react-router-dom";
 import styled from "styled-components";
-import { Avatar, Loader, SvgEmptyState } from "../../common";
+import {Avatar, Loader, SvgEmptyState} from "../../common";
 import ChatBubble from "./ChatBubble";
 import ChatMessageOptions from "./ChatMessageOptions";
 import ChatNewMessagesLine from "./ChatNewMessageLine";
@@ -57,6 +57,11 @@ const ChatList = styled.li`
   width: 100%;
   margin-bottom: 5px;
   text-align: center;
+  
+  .workspace-chat & {
+    margin:0 0.5% 5px;  
+  }
+  
   .chat-actions-container {
     opacity: 0;
   }
@@ -70,9 +75,7 @@ const TimestampDiv = styled.div`
   z-index: 1;
   display: flex;
   justify-content: center;
-  align-items: center;
-  position: relative;
-  padding: 0 20px;
+  align-items: center;  
   color: #a7abc3;
   padding: 26px 0 14px 0;
   position: sticky;
@@ -324,10 +327,10 @@ const EmptyState = styled.div`
   -webkit-box-align: center;
   align-items: center;
   position: absolute;
-  top: 0px;
-  left: 0px;
-  bottom: 0px;
-  right: 0px;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
   svg {
     max-width: 100%;
     width: 100%;
