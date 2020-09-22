@@ -1,12 +1,12 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import { useDispatch } from "react-redux";
+import React, {useCallback, useEffect, useRef, useState} from "react";
+import {useDispatch} from "react-redux";
 import styled from "styled-components";
 import SearchForm from "../../forms/SearchForm";
-import { ChatSideBarContentPanel } from "./index";
-import { useSettings, useTranslation } from "../../hooks";
-import { MoreOptions } from "../common";
-import { addToModals } from "../../../redux/actions/globalActions";
-import { SvgIconFeather } from "../../common";
+import {ChatSideBarContentPanel} from "./index";
+import {useSettings, useTranslation} from "../../hooks";
+import {MoreOptions} from "../common";
+import {addToModals} from "../../../redux/actions/globalActions";
+import {SvgIconFeather} from "../../common";
 
 const Wrapper = styled.div`
   .nav-tabs {
@@ -106,6 +106,7 @@ const ChatSidebarPanel = (props) => {
 
   //const unreadCounter = useSelector((state) => state.global.unreadCounter);
   const [search, setSearch] = useState("");
+  const [query, setQuery] = useState("");
   const [tabPill, setTabPill] = useState(chatSettings.chat_filter);
   //const previousChannel = usePreviousValue(selectedChannel);
 
