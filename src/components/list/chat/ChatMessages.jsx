@@ -547,6 +547,7 @@ class ChatMessages extends React.PureComponent {
     }
 
     if (this.props.unreadCount > 0 && this.props.isLastChatVisible) {
+      //need clarification if need to trigger if channel is unread
       this.handleReadChannel();
     }
 
