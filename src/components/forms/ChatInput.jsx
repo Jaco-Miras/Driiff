@@ -1,26 +1,16 @@
-import React, {useEffect, useRef, useState} from "react";
-import {useDispatch, useSelector} from "react-redux";
+import React, { useEffect, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
-import {
-  addChatMessage,
-  addQuote,
-  clearChannelDraft,
-  clearQuote,
-  onClickSendButton,
-  postChannelMembers,
-  postChatMessage,
-  putChatMessage,
-  setEditChatMessage
-} from "../../redux/actions/chatActions";
-import {deleteDraft} from "../../redux/actions/globalActions";
-import {SvgIconFeather} from "../common";
+import { addChatMessage, addQuote, clearChannelDraft, clearQuote, onClickSendButton, postChannelMembers, postChatMessage, putChatMessage, setEditChatMessage } from "../../redux/actions/chatActions";
+import { deleteDraft } from "../../redux/actions/globalActions";
+import { SvgIconFeather } from "../common";
 import BodyMention from "../common/BodyMention";
-import {useDraft, useQuillInput, useQuillModules, useSaveInput, useSelectQuote, useTimeFormat} from "../hooks";
+import { useDraft, useQuillInput, useQuillModules, useSaveInput, useSelectQuote, useTimeFormat } from "../hooks";
 import QuillEditor from "./QuillEditor";
 
 const Wrapper = styled.div`
-  border: 1px solid #dee2e6;
-  border-radius: 8px;
+  ${"" /* border: 1px solid #dee2e6;
+  border-radius: 8px; */}
 `;
 
 const StyledQuillEditor = styled(QuillEditor)`
@@ -43,9 +33,8 @@ const StyledQuillEditor = styled(QuillEditor)`
     display: none;
   }
   .ql-editor {
-    padding: 5px 9px;
-    ${props => props.editMode && `> div {width:calc(100% - 15px);}`}
-    .mention {
+    padding: 11px 9px;
+    ${(props) => props.editMode && `> div {width:calc(100% - 15px);}`} .mention {
       color: #7a1b8b;
     }
     &:focus {
@@ -92,11 +81,25 @@ const StyledQuillEditor = styled(QuillEditor)`
 
 const CloseButton = styled(SvgIconFeather)`
   position: absolute;
-  top: calc(50% - 12px);
-  right: 5px;
+  top: 0;
+  right: 0;
+  margin: 0;
+  margin: 4px;
+  height: calc(100% - 8px);
+  background: white;
+  border: 1px solid white;
+  border-radius: 4px;
+  min-width: 40px;
+  width: 40px;
+  padding: 9px;
   cursor: pointer;
-  cursor: hand;
-  color: #000;
+  right: 40px;
+  z-index: 9;
+  color: #cacaca;
+  transition: color 0.15s ease-in-out;
+  &:hover {
+    color: #7a1b8b;
+  }
 `;
 
 /***  Commented out code are to be visited/refactored ***/
@@ -527,8 +530,7 @@ const ChatInput = (props) => {
   return (
     <Wrapper className="chat-input-wrapper">
       {mentionedUserIds.length > 0 && <BodyMention onAddUsers={handleAddMentionedUsers} onDoNothing={handleIgnoreMentionedUsers} userIds={mentionedUserIds} type={"chat"} basedOnId={false} />}
-      <StyledQuillEditor className={"chat-input"} modules={modules} ref={reactQuillRef} onChange={handleQuillChange}
-                         editMode={editMode}/>
+      <StyledQuillEditor className={"chat-input"} modules={modules} ref={reactQuillRef} onChange={handleQuillChange} editMode={editMode} />
       {editMode && <CloseButton icon="x" onClick={handleEditReplyClose} />}
     </Wrapper>
   );

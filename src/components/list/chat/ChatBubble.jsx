@@ -20,7 +20,7 @@ const ChatBubbleContainer = styled.div`
   display: inline-flex;
   flex-flow: column;
   padding: 7px 15px;
-  border-radius: 8px;
+  border-radius: 6px;
   background: ${(props) => (props.isAuthor ? props.theme.self.chat_bubble_background_color : props.theme.others.chat_bubble_background_color)};
   text-align: left;
   width: 100%;

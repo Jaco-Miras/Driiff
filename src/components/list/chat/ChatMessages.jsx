@@ -72,28 +72,14 @@ const TimestampDiv = styled.div`
   padding: 26px 0 14px 0;
   position: sticky;
   top: 0px;
-  ${"" /* &:before,
-  &:after {
-    content: "";
-    display: block;
-    height: 1px;
-    background-color: #e1e1e1;
-    flex: 1;
-    @media (max-width: 620px) {
-      display: none;
-    }
-  } */}
   span {
     padding: 4px 8px;
     border-radius: 4px;
     display: inline-block;
     font-size: 11px;
-    background: #ffffff;
-    border-radius: 8px;
+    border-radius: 6px;
     margin: 0 4px;
-    ${"" /* @media (max-width: 620px) { */}
-    background: #F0F0F0;
-    ${"" /* } */}
+    background: #f0f0f0;
   }
   &[stuck] {
     &:before,

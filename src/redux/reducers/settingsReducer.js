@@ -1,6 +1,6 @@
 import momentTZ from "moment-timezone";
 import React from "react";
-import {$_GET} from "../../helpers/commonFunctions";
+import { $_GET } from "../../helpers/commonFunctions";
 
 const INITIAL_STATE = {
   sessionUser: null,
@@ -29,7 +29,7 @@ const INITIAL_STATE = {
         preset: "default",
         self: {
           chat_bubble_focus_border_color: "rgba(151,44,134,0.25)",
-          chat_bubble_text_color: "#ffffffe6",
+          chat_bubble_text_color: "#ffffff",
           chat_bubble_background_color: "#7A1B8B",
           chat_bubble_link_color: "#ffffff",
           chat_bubble_hover_color: "#fff",
@@ -75,9 +75,9 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         driff: {
           ...state.driff,
-          company_name: action.data.company_name
-        }
-      }
+          company_name: action.data.company_name,
+        },
+      };
     }
     case "ADD_USER_TO_REDUCERS": {
       return {
@@ -87,15 +87,15 @@ export default (state = INITIAL_STATE, action) => {
     }
     case "GET_DRIFF_COMP_SETTINGS_SUCCESS": {
       let settings = state.driff.settings;
-      action.data.settings.forEach(s => {
-        settings = {...settings, ...s}
+      action.data.settings.forEach((s) => {
+        settings = { ...settings, ...s };
       });
 
-      Object.keys(settings).forEach(k => {
-        settings[k] = (settings[k] === "1" || settings[k] === true);
+      Object.keys(settings).forEach((k) => {
+        settings[k] = settings[k] === "1" || settings[k] === true;
       });
 
-      settings.maintenance_mode = !Object.values(settings).some(v => v === true);
+      settings.maintenance_mode = !Object.values(settings).some((v) => v === true);
 
       if ($_GET("allow") === "password_login") {
         settings.password_login = true;
@@ -105,9 +105,9 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         driff: {
           ...state.driff,
-          settings: settings
-        }
-      }
+          settings: settings,
+        },
+      };
     }
     case "GET_DRIFF_SETTINGS_SUCCESS": {
       let driff = state.driff;

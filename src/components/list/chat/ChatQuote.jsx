@@ -11,10 +11,11 @@ const QuoteWrapper = styled.div`
   text-align: left;
   position: relative;
   width: 100%;
-  border-left: 2px solid #972c86;
-  margin-left: 3rem;
-  margin-bottom: 10px;
-
+  padding-left: 2.5rem;
+  margin-top: 8px;
+  ${"" /* background: #ffffff14; */}
+  background: #fafafa;
+  border-radius: 4px;
   .quote-author-name,
   .quote-message {
     position: relative;
@@ -30,12 +31,12 @@ const QuoteWrapper = styled.div`
   }
   .quote-clear-container {
     position: absolute;
-    left: -35px;
+    left: 12px;
     top: 12px;
-    //top: calc(50% - 10px);
-    background-color: #fff;
     cursor: pointer;
-    cursor: hand;
+    svg {
+      width: 16px;
+    }
   }
   img,
   video {
