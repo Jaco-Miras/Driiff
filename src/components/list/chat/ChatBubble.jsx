@@ -692,12 +692,6 @@ const ChatBubble = (props) => {
     };
   }, []);
 
-  // useEffect(() => {
-  //   if (addMessageRef && props.handleMessageRefChange) {
-  //     props.handleMessageRefChange(loadInView, null, reply.id);
-  //   }
-  // }, [addMessageRef, loadInView, props, props.handleMessageRefChange, reply.id]);
-
   useEffect(() => {
     let chatFiles = [];
     for (const i in selectedChannel.replies) {

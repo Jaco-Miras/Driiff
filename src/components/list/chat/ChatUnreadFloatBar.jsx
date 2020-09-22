@@ -32,7 +32,7 @@ const ChatUnreadFloatBar = (props) => {
   const { channel } = props;
   const { isLastChatVisible } = useSelector((state) => state.chat.isLastChatVisible);
 
-  if (!isLastChatVisible) return null
+  if (isLastChatVisible) return null
   return (
     <ChatUnreadFloatBarWrapper className="chat-unread-floatbar">
       <ChatJumpTo />
