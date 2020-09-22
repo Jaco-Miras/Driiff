@@ -50,15 +50,15 @@ const TopicList = (props) => {
 
     if (selectedChannel) {
       const scrollComponent = document.getElementById("component-chat-thread");
-        if (scrollComponent) {
-          console.log(scrollComponent.scrollHeight - scrollComponent.scrollTop, 'save this scroll')
-            dispatch(
-              setChannelHistoricalPosition({
-                channel_id: selectedChannel.id,
-                scrollPosition: scrollComponent.scrollHeight - scrollComponent.scrollTop,
-              })
-            );
-        }
+      if (scrollComponent) {
+        console.log(scrollComponent.scrollHeight - scrollComponent.scrollTop, "save this scroll");
+        dispatch(
+          setChannelHistoricalPosition({
+            channel_id: selectedChannel.id,
+            scrollPosition: scrollComponent.scrollHeight - scrollComponent.scrollTop,
+          })
+        );
+      }
     }
     if (selected && onWorkspace) return;
 
@@ -88,12 +88,17 @@ const TopicList = (props) => {
 
   return (
     <TopicListWrapper ref={workspaceRef} className={`topic-list ${className}`} onClick={handleSelectTopic} selected={selected && onWorkspace && params.page !== "search"}>
-      <a href={topic.folder_id ? `/workspace/chat/${topic.folder_id}/${replaceChar(topic.folder_name)}/${topic.id}/${replaceChar(topic.name)}` : `/workspace/chat/${topic.id}/${replaceChar(topic.name)}`} onClick={(e) => e.preventDefault(e)}>
-        {topic.name}
-        {topic.is_lock === 1 && <Icon icon={"lock"} strokeWidth="2" />}
-        {topic.is_shared === 1 && <Icon icon={"share"} strokeWidth="3" />}
-        {unread_count > 0 && <Badge color="danger">{unread_count}</Badge>}
-      </a>
+      <div className={"topic-text-container"}>
+        <a
+          href={topic.folder_id ? `/workspace/chat/${topic.folder_id}/${replaceChar(topic.folder_name)}/${topic.id}/${replaceChar(topic.name)}` : `/workspace/chat/${topic.id}/${replaceChar(topic.name)}`}
+          onClick={(e) => e.preventDefault(e)}
+        >
+          <span className={"topic-text"}>{topic.name}</span>
+          {topic.is_lock === 1 && <Icon icon={"lock"} strokeWidth="2" />}
+          {topic.is_shared === 1 && <Icon icon={"share"} strokeWidth="3" />}
+          {unread_count > 0 && <Badge color="danger">{unread_count}</Badge>}
+        </a>
+      </div>
     </TopicListWrapper>
   );
 };
