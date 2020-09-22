@@ -57,7 +57,7 @@ body {
 ::-webkit-scrollbar-thumb {
   background-color: rgba(255, 0, 0, 0);
   border-radius: 16px;
-  border: 0px solid rgba(255, 0, 0, 0);
+  border: 0 solid rgba(255, 0, 0, 0);
 }
 ::-webkit-scrollbar-thumb:hover {
   background-color: #babac0;
@@ -20984,7 +20984,7 @@ body.dark.small-navigation .navigation-menu-body ul li.navigation-divider:after 
     left: calc(-100% + -24px);
     transition: left 0.3s cubic-bezier(0.275, 0.42, 0, 1);
     padding-left: 24px !important;
-    padding-right: 24px !important;
+    padding-right: 0 !important;
     background: #ffffff;
     z-index: 3;
   }
