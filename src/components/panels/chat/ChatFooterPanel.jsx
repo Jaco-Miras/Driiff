@@ -1,14 +1,14 @@
-import React, { useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React, {useRef, useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
 import Tooltip from "react-tooltip-lite";
 import styled from "styled-components";
-import { onClickSendButton, putChannel } from "../../../redux/actions/chatActions";
-import { joinWorkspace } from "../../../redux/actions/workspaceActions";
-import { CommonPicker, SvgIconFeather } from "../../common";
+import {onClickSendButton, putChannel} from "../../../redux/actions/chatActions";
+import {joinWorkspace} from "../../../redux/actions/workspaceActions";
+import {CommonPicker, SvgIconFeather} from "../../common";
 import ChatInput from "../../forms/ChatInput";
-import { useIsMember, useTimeFormat, useToaster, useTranslation } from "../../hooks";
+import {useIsMember, useTimeFormat, useToaster, useTranslation} from "../../hooks";
 import ChatQuote from "../../list/chat/ChatQuote";
-import { addToModals } from "../../../redux/actions/globalActions";
+import {addToModals} from "../../../redux/actions/globalActions";
 import TypingIndicator from "../../list/chat/TypingIndicator";
 import LockedLabel from "./LockedLabel";
 
@@ -18,15 +18,11 @@ const Wrapper = styled.div`
   .feather-paperclip {
     border: 1px solid #e1e1e1;
     height: 100%;
-    border-radius: 8px;
     cursor: pointer;
-    cursor: hand;
     width: 46px;
-    height: 100%;
     border-radius: 8px;
     transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
     padding: 12px;
-    cursor: pointer;
   }
 `;
 
@@ -49,14 +45,12 @@ const ChatInputContainer = styled.div`
   border-radius: 8px;
   padding-right: 80px;
   margin-right: 8px;
-  position: relative;
   min-height: 48px;
   .feather-send,
   .feather-smile {
     position: absolute;
     top: 0;
     right: 0;
-    margin: 0;
     margin: 4px;
     height: calc(100% - 8px);
     background: #7a1b8b;
@@ -93,6 +87,10 @@ const Icon = styled(SvgIconFeather)`
 const IconButton = styled(SvgIconFeather)``;
 
 const Dflex = styled.div`
+  .workspace-chat & {
+    width: 99%;
+    margin: 0 auto;
+  }
   &.channel-viewing {
     display: flex;
     flex-wrap: wrap;
@@ -111,7 +109,6 @@ const Dflex = styled.div`
     }
     .channel-create {
       letter-spacing: 0;
-      margin-bottom: 0;
       color: #b8b8b8;
       font-weight: normal;
       font-size: 19px;
