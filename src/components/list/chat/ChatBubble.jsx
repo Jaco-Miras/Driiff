@@ -542,7 +542,6 @@ const ChatBubble = (props) => {
 
   const history = useHistory();
 
-  const [chatFiles, setChatFiles] = useState([]);
   const [gifOnly, setGifOnly] = useState(false);
   const [loadRef, loadInView] = useInView({
     threshold: .10,
@@ -689,22 +688,6 @@ const ChatBubble = (props) => {
     };
   }, []);
 
-  useEffect(() => {
-    let chatFiles = [];
-    for (const i in selectedChannel.replies) {
-      const r = selectedChannel.replies[i];
-      if (r.files.length > 0) {
-        chatFiles = [
-          ...r.files.filter((f) => {
-            return true;
-          }),
-          ...chatFiles,
-        ];
-      }
-    }
-    setChatFiles(chatFiles);
-  }, [selectedChannel.replies]);
-
   let isEmoticonOnly = false;
 
   let replyBody = quillHelper.parseEmoji(reply.body);
@@ -789,32 +772,6 @@ const ChatBubble = (props) => {
       }
     }
   }
-
-  //const searchWords = props.filterSearch.split(" ");
-  //const textToHighlight = replyBody;
-  let highlightedText = null;
-  // if (props.filterSearch !== "") {
-  //     const chunks = findAll({
-  //         searchWords,
-  //         textToHighlight,
-  //     });
-  //     if (chunks.filter(c => c.highlight).length) {
-  //         highlightedText = chunks
-  //             .map(chunk => {
-  //                 const {end, highlight, start} = chunk;
-  //                 const text = replyBody.substr(start, end - start);
-  //                 if (highlight) {
-  //                     return `<mark>${text}</mark>`;
-  //                 } else {
-  //                     return text;
-  //                 }
-  //             })
-  //             .join("");
-  //     }
-  // }
-
-  // let botCodes = ["gripp_bot_account", "gripp_bot_invoice", "gripp_bot_offerte", "gripp_bot_project", "gripp_bot_account", "driff_webhook_bot"];
-  // let isBot = botCodes.includes(reply.user.code);
 
   if (replyBody.includes("ACCOUNT_DEACTIVATED")) {
     let newReplyBody = replyBody.replace("ACCOUNT_DEACTIVATED ", "");
@@ -1035,7 +992,7 @@ const ChatBubble = (props) => {
             </ForwardedSpan>
           )}
           <ChatContentClap ref={addMessageRef ? loadRef : null} className="chat-content-clap" isAuthor={isAuthor}>
-            <ChatContent showAvatar={showAvatar} isAuthor={isAuthor} isEmoticonOnly={isEmoticonOnly} className={`chat-content animated slower ${highlightedText ? "is-highlighted" : ""}`}>
+            <ChatContent showAvatar={showAvatar} isAuthor={isAuthor} isEmoticonOnly={isEmoticonOnly} className={`chat-content animated slower`}>
               {reply.quote && reply.quote.body && !reply.is_deleted && (reply.quote.user_id !== undefined || reply.quote.user !== undefined) && (
                 <QuoteContainer className={"quote-container"} showAvatar={showAvatar} isEmoticonOnly={isEmoticonOnly} hasFiles={hasFiles} theme={chatSettings.chat_message_theme} onClick={handleQuoteClick} isAuthor={isAuthor}>
                   {reply.quote.user_id === user.id ? (
@@ -1059,7 +1016,7 @@ const ChatBubble = (props) => {
                 //   </>
                 // )
               }
-              {reply.files.length > 0 && !reply.is_deleted && <ChatMessageFiles hasMessage={hasMessage} isAuthor={isAuthor} theme={chatSettings.chat_message_theme} chatFiles={chatFiles} files={reply.files} reply={reply} type="chat" />}
+              {reply.files.length > 0 && !reply.is_deleted && <ChatMessageFiles hasMessage={hasMessage} isAuthor={isAuthor} theme={chatSettings.chat_message_theme} files={reply.files} reply={reply} type="chat" />}
 
               {!isAuthor && showAvatar && (
                 <>
@@ -1092,7 +1049,7 @@ const ChatBubble = (props) => {
             </ChatContent>
           </ChatContentClap>
           <ChatTimeStamp className="chat-timestamp" isAuthor={isAuthor}>
-            <span className="reply-date created">{reply.created_at.diff_for_humans ? "sending..." : timeFormat.todayOrYesterdayDate(reply.created_at.timestamp)}</span>
+            <span className="reply-date created">{timeFormat.todayOrYesterdayDate(reply.created_at.timestamp)}</span>
           </ChatTimeStamp>
         </>
       }
