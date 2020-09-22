@@ -11,10 +11,10 @@ import {Badge} from "../../common";
 
 const Wrapper = styled.li`
   cursor: pointer;
-  position: relative;
-  ${(props) => props.selected && "padding-left: 14px !important"};
+  position: relative;  
   transition: all 0.15s linear;
-  min-height: 72px;
+  min-height: 64px;
+  max-height: 64px;
   .more-options {
     position: relative;
     opacity: 0;
@@ -47,17 +47,21 @@ const Wrapper = styled.li`
     background: #7a1b8b;
     display: block;
     position: absolute;
-    left: 0;
     top: 0;
     animation: fadeIn 0.15s linear;
+    left: -24px;
   }
 
   .chat-timestamp {
     position: absolute;
     right: 0;
+    display: flex;
+    flex-direction: column;
     white-space: nowrap;
     transition: opacity 0.3s ease;
-    top: -2px;
+    top: 0;
+    justify-content: center;
+    height: 100%;
     svg {
       margin-left: 4px;
       &.feather-star {
@@ -66,8 +70,8 @@ const Wrapper = styled.li`
       }
     }
     .badge {
-      position: absolute;
-      right: calc(100% + 14px);
+      ${"" /* position: absolute;
+      right: calc(100% + 14px); */}
     }
   }
   .feather-more-horizontal {
@@ -90,50 +94,52 @@ const Timestamp = styled.div`
 `;
 
 const ChannelList = (props) => {
+  const { channelDrafts, dictionary } = props;
+  const channelActions = useChannelActions();
 
-    const { channelDrafts, dictionary } = props;
-    const channelActions = useChannelActions();
+  const history = useHistory();
 
-    const history = useHistory();
+  const { className = "", channel, selectedChannel } = props;
 
-    const {className = "", channel, selectedChannel} = props;
+  const handleSelectChannel = () => {
+    document.body.classList.add("m-chat-channel-closed");
 
-    const handleSelectChannel = () => {
-        document.body.classList.add("m-chat-channel-closed");
+    if (selectedChannel !== null) {
+      const scrollComponent = document.getElementById("component-chat-thread");
+      if (scrollComponent) {
+        channelActions.saveHistoricalPosition(selectedChannel.id, scrollComponent);
+      }
+    }
 
-        if (selectedChannel !== null) {
-            const scrollComponent = document.getElementById("component-chat-thread");
-            if (scrollComponent) {
-                channelActions.saveHistoricalPosition(selectedChannel.id, scrollComponent);
-            }
-        }
+    channelActions.select({ ...channel, selected: true });
+    history.push(`/chat/${channel.code}`);
+  };
 
-        channelActions.select({...channel, selected: true});
-        history.push(`/chat/${channel.code}`);
-    };
-
-    return (
-        <Wrapper
-            className={`list-group-item d-flex align-items-center link-1 pl-0 pr-0 pb-3 pt-3 ${className}`}
-            selected={selectedChannel !== null && channel.id === selectedChannel.id}
-            onClick={handleSelectChannel}
-        >
-            <ChannelIcon channel={channel}/>
-            <ChannelTitlePreview className={"flex-grow-1"}>
-                <ChannelTitle channel={channel}/>
-                <ReplyPreview channel={channel} drafts={channelDrafts} dictionary={dictionary}/>
-                {!!channel.is_archived && <><Badge badgeClassName="bg-warning-bright" label="Archived"/></>}
-                {channel.is_hidden && <><Badge label="Hidden"/></>}
-            </ChannelTitlePreview>
-            <Timestamp className="text-right ml-auto">
-                <ChatDateIcons className={"chat-date-icons"} channel={channel} isRead={channel.is_read}/>
-                {
-                    channel.type !== "TOPIC" &&
-                    <ChannelOptions selectedChannel={selectedChannel} channel={channel}/>
-                }
-            </Timestamp>
-        </Wrapper>
-    );
+  return (
+    <Wrapper
+      className={`list-group-item d-flex align-items-center link-1 pl-1 pr-1 pl-lg-0 pr-lg-0 pb-3 pt-3 ${className}`}
+      selected={selectedChannel !== null && channel.id === selectedChannel.id} onClick={handleSelectChannel}>
+      <ChannelIcon channel={channel}/>
+      <ChannelTitlePreview className={"flex-grow-1"}>
+        <ChannelTitle channel={channel}/>
+        <ReplyPreview channel={channel} drafts={channelDrafts} dictionary={dictionary}/>
+        {!!channel.is_archived && (
+          <>
+            <Badge badgeClassName="bg-warning-bright" label="Archived"/>
+          </>
+        )}
+        {channel.is_hidden && (
+          <>
+            <Badge label="Hidden"/>
+          </>
+        )}
+      </ChannelTitlePreview>
+      <Timestamp className="text-right ml-auto">
+        <ChatDateIcons className={"chat-date-icons"} channel={channel} isRead={channel.is_read} />
+        {channel.type !== "TOPIC" && <ChannelOptions selectedChannel={selectedChannel} channel={channel} />}
+      </Timestamp>
+    </Wrapper>
+  );
 };
 
 export default ChannelList;

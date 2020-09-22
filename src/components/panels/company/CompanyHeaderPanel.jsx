@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useRouteMatch } from "react-router-dom";
+import React, {useEffect, useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
+import {useRouteMatch} from "react-router-dom";
 import styled from "styled-components";
-import { NavLink, SvgIconFeather } from "../../common";
-import useSettings from "../../hooks/useSettings";
-import { HeaderProfileNavigation } from "../common";
-import { CompanyPageHeaderPanel } from "../company";
+import {SvgIconFeather} from "../../common";
+import {HeaderProfileNavigation} from "../common";
+import {CompanyPageHeaderPanel} from "../company";
 
 const Wrapper = styled.div`
   display: flex;
@@ -91,7 +90,7 @@ const CompanyHeaderPanel = () => {
   useEffect(() => {
     const body = document.body;
 
-    if (["people", "workspace", "post", "notifications", "settings"].includes(match.params.page)) {
+    if (["people", "workspace", "post", "posts", "notifications", "settings"].includes(match.params.page)) {
       body.classList.remove("stretch-layout");
     } else {
       body.classList.add("stretch-layout");

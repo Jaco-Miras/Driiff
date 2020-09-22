@@ -2,8 +2,6 @@
 
 # Staging enviorement
 
-
-
 # Driff development
 
 How to run local?
@@ -11,12 +9,12 @@ How to run local?
 Install node modules via yarn
 
 Development command:
+
 ```js
 yarn start-dev
 ```
 
 Login development:
-
 
 ```
 Api development:
@@ -37,8 +35,6 @@ password1
 
 [Test enviorment](https://dev24admin.drevv.com/login)
 [Staging enviorment](https://demo24.drevv.com/workspace/chat)
-
-
 
 ## Available Scripts
 

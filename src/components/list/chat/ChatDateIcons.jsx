@@ -4,8 +4,11 @@ import { SvgIconFeather } from "../../common";
 import { useTimeFormat } from "../../hooks";
 
 const Wrapper = styled.div`
-  //display: ${(props) => (props.optionsVisible ? "none" : "initial")};
+  ${"" /* display: ${(props) => (props.optionsVisible ? "none" : "initial")}; */}
   display: initial;
+  .chat-timestamp_text {
+    margin: 1px 0 3px 0;
+  }
 `;
 const ActionContainer = styled.div`
   position: relative;
@@ -23,7 +26,13 @@ const Icon = styled(SvgIconFeather)`
 
 const Badge = styled.span`
   color: #fff !important;
-
+  height: 18px;
+  width: 24px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 0;
   &.unread {
     color: #7a1b8b !important;
     display: none;
@@ -36,10 +45,10 @@ const ChatDateIcons = (props) => {
 
   return (
     <Wrapper className="chat-timestamp">
+      <span className={"small text-muted chat-timestamp_text"}>{channel.last_reply ? localizeChatChannelDate(channel.last_reply.created_at.timestamp) : ""}</span>
       {(!channel.is_read || channel.total_unread > 0) && (
         <Badge className={`badge badge-primary badge-pill ml-auto ${!channel.is_read && channel.total_unread === 0 ? "unread" : ""}`}>{channel.total_unread > 0 ? channel.total_unread : !channel.is_read ? "0" : null}</Badge>
       )}
-      <span className={"small text-muted"}>{channel.last_reply ? localizeChatChannelDate(channel.last_reply.created_at.timestamp) : ""}</span>
       <ActionContainer>
         {channel.is_pinned && <Icon icon="star" />}
         {channel.is_muted && <Icon icon="volume-x" className={`${channel.is_pinned && "mr-1"}`} />}

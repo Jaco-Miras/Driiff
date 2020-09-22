@@ -238,3 +238,7 @@ export function getWorkspaceChannels(payload, callback) {
 export function setFetchingMessages(payload, callback) {
   return SimpleDispatchActionToReducer("SET_FETCHING_MESSAGES", payload, callback);
 }
+
+export function setLastChatVisibility(payload, callback) {
+  return SimpleDispatchActionToReducer("SET_LAST_CHAT_VISIBILITY", payload, callback);
+}

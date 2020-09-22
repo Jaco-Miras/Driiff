@@ -47,61 +47,39 @@ const useGoogleApis = () => {
     }
   }
 
-  const getFile = async (e, fileId) => {
-    /*window.gapi.load('auth', () => {
-      window.gapi.auth.authorize({
-        client_id: CLIENT_ID,
-        scope: "https://www.googleapis.com/auth/drive.metadata.readonly",
-        immediate: true
-      }, (response) => {
-        if (response.access_token) {
-
-        } else {
-          element.innerHTML = `Google drive file link.`
-          element.onclick = attachSignIn;
-        }
-      });
-    });*/
-
+  const getFile = (e, fileId) => {
     window.gapi.load('client:auth2', async () => {
       window.gapi.client
         .init({
           clientId: CLIENT_ID,
           apiKey: API_KEY,
-          scope: "https://www.googleapis.com/auth/drive.metadata.readonly"
+          scope: "email https://www.googleapis.com/auth/drive.metadata.readonly",
+          access_type: "offline"
         })
         .then(async () => {
           const auth = await window.gapi.auth2.getAuthInstance();
 
-          //var accessToken = gapi.auth.getToken().access_token;
-          /*var xhr = new XMLHttpRequest();
-          xhr.open('GET', `https://www.googleapis.com/drive/v2/files/${fileId}`);
-          xhr.setRequestHeader('Authorization', 'Bearer ya29.a0AfH6SMDd8jT5DeWQ6qDWX6NXGqHBZnCAvUi911D5k6puTxuDnXQWPYlc3czk5Gp1EDXktMQJZP3kfCvv6t4E34lP9HX8Bz-MzO2V675zae5bWoRP8UdksVGanHDtanJouuE8Rjp5VKgh8zy27T6dkenkt1CHwHxvOwdw');
-          xhr.onload = function() {
-            callback(xhr.responseText);
-          };
-          xhr.onerror = function() {
-            callback(null);
-          };
-          xhr.send();*/
-
-          /*dispatch(
-            getGoogleDriveFile({file_id: fileId}, (err, res) => {
-              console.log(ref);
-              console.log(err, res);
-            })
-          )*/
+          window.gapi.auth.authorize({
+            client_id: CLIENT_ID,
+            api_key: API_KEY,
+            scope: "email https://www.googleapis.com/auth/drive.metadata.readonly",
+            immediate: true
+          }, (response) => {
+            if (response.access_token) {
+              updateSigninStatus(response.access_token, e, fileId)
+            } else {
+              updateSigninStatus(null, e, fileId)
+            }
+          });
 
           // Listen for sign-in state changes.
           auth.isSignedIn.listen(() => {
             updateSigninStatus(auth.isSignedIn.get(), e, fileId)
           });
-
-          // Handle the initial sign-in state.
-          updateSigninStatus(auth.isSignedIn.get(), e, fileId);
         });
     });
   }
+
 
   return {
     getFile

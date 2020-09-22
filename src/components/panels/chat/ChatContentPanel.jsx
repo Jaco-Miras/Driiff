@@ -24,18 +24,18 @@ const ChatContentPanel = (props) => {
   const chatMessageActions = useChatMessageActions();
   const timeFormat = useTimeFormat();
 
-  const bottomRef = useRef();
+  //const bottomRef = useRef();
   const [showDropZone, setshowDropZone] = useState(false);
-  const [bottomRefVisible, setBottomRefVisible] = useState(false);
+  //const [bottomRefVisible, setBottomRefVisible] = useState(false);
   const unreadCount = useCountUnreadReplies();
 
   const refs = {
     dropZoneRef: useRef(),
   };
 
-  const handleBottomRefChange = (inView) => {
-    setBottomRefVisible(inView);
-  };
+  // const handleBottomRefChange = (inView) => {
+  //   setBottomRefVisible(inView);
+  // };
 
   const handleOpenFileDialog = () => {
     if (refs.dropZoneRef.current) {
@@ -129,9 +129,9 @@ const ChatContentPanel = (props) => {
         onCancel={handleHideDropzone}
       />
       <ChatHeaderPanel channel={selectedChannel} />
-      {selectedChannel !== null && unreadCount > 0 && !bottomRefVisible && <ChatUnreadFloatBar channel={selectedChannel} />}
+      {selectedChannel !== null && unreadCount > 0 && <ChatUnreadFloatBar channel={selectedChannel} />}
       {selectedChannel !== null ? (
-        <ChatMessages selectedChannel={selectedChannel} chatMessageActions={chatMessageActions} timeFormat={timeFormat} onBottomRefVisible={handleBottomRefChange} dictionary={dictionary} unreadCount={unreadCount}/>
+        <ChatMessages selectedChannel={selectedChannel} chatMessageActions={chatMessageActions} timeFormat={timeFormat} dictionary={dictionary} unreadCount={unreadCount}/>
       ) : (
         <ChatMessagesPlaceholder />
       )}

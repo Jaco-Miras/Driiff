@@ -1,11 +1,18 @@
 import moment from "moment";
 import React, {useCallback, useEffect, useRef, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {Button, Input, InputGroup, Label, Modal, ModalBody, ModalFooter, ModalHeader} from "reactstrap";
+import {Button, Input, InputGroup, Label, Modal, ModalBody, ModalFooter} from "reactstrap";
 import styled from "styled-components";
-import {clearModal, deleteDraft, deleteDraftReducer, saveDraft, updateDraft} from "../../redux/actions/globalActions";
-import {postCreate, putPost} from "../../redux/actions/postActions";
-import {uploadDocument} from "../../redux/services/global";
+import {
+  clearModal,
+  deleteDraft,
+  deleteDraftReducer,
+  saveDraft,
+  updateDraft,
+  uploadDocument
+} from "../../redux/actions/globalActions";
+import {postCreate, putCompanyPosts, putPost} from "../../redux/actions/postActions";
+
 import {DatePicker, FileAttachments, SvgIconFeather} from "../common";
 import {DropDocument} from "../dropzone/DropDocument";
 import {CheckBox, DescriptionInput, FolderSelect, PeopleSelect} from "../forms";
@@ -142,7 +149,7 @@ const CheckBoxGroup = styled.div`
   }
 
   &.leave-active {
-    max-height: 0px;
+    max-height: 0;
   }
 
   label {
@@ -157,7 +164,6 @@ const CheckBoxGroup = styled.div`
 
 const MoreOption = styled.div`
   cursor: pointer;
-  cursor: hand;
   margin-bottom: 5px;
   &:hover {
     color: #972c86;
@@ -504,7 +510,7 @@ const CreateEditCompanyPostModal = (props) => {
         uploadFiles(payload, "edit");
       } else {
         if (form.selectedWorkspaces.length > 1) {
-          dispatch(putPost(payload, () => {
+          dispatch(putCompanyPosts(payload, () => {
             setLoading(false);
             toggleAll(false);
           }));

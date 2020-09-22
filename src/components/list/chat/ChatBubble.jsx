@@ -10,8 +10,7 @@ import styled from "styled-components";
 import quillHelper from "../../../helpers/quillHelper";
 import { getEmojiRegexPattern, stripGif } from "../../../helpers/stringFormatter";
 import { ImageTextLink, SvgIconFeather, SvgImage } from "../../common";
-import { useGoogleApis, useSettings, useTimeFormat } from "../../hooks";
-import useChatMessageActions from "../../hooks/useChatMessageActions";
+import { useGoogleApis } from "../../hooks";
 import MessageFiles from "./Files/MessageFiles";
 import Unfurl from "./Unfurl/Unfurl";
 
@@ -20,7 +19,7 @@ const ChatBubbleContainer = styled.div`
   display: inline-flex;
   flex-flow: column;
   padding: 7px 15px;
-  border-radius: 8px;
+  border-radius: 6px;
   background: ${(props) => (props.isAuthor ? props.theme.self.chat_bubble_background_color : props.theme.others.chat_bubble_background_color)};
   text-align: left;
   width: 100%;
@@ -539,25 +538,33 @@ const ChatNameNotAuthorMobile = styled.span`
 `;
 
 const ChatBubble = (props) => {
-  const { reply, showAvatar, selectedChannel, showGifPlayer, isAuthor, addMessageRef, user, recipients, removeUnfurl } = props;
-
-  //const {_t} = useTranslation();
-
-  const chatMessageActions = useChatMessageActions();
-  const { todayOrYesterdayDate } = useTimeFormat();
+  const { reply, showAvatar, selectedChannel, showGifPlayer, isAuthor, addMessageRef, user, recipients, isLastChat, chatMessageActions, timeFormat, isBot, chatSettings } = props;
 
   const history = useHistory();
 
-  const [chatFiles, setChatFiles] = useState([]);
   const [gifOnly, setGifOnly] = useState(false);
   const [loadRef, loadInView] = useInView({
-    threshold: 1,
+    threshold: .10,
   });
-  const { chatSettings } = useSettings();
-  // const recipients = useSelector(state => state.global.recipients);
-  // const user = useSelector(state => state.session.user);
+  //const { chatSettings } = useSettings();
   const refComponent = useRef();
 
+  const [lastChatRef, inView] = useInView({
+    threshold: .10
+  });
+
+  useEffect(() => {
+    if (isLastChat) {
+      chatMessageActions.setLastMessageVisiblility({status: inView});
+    }
+  }, [isLastChat, inView])
+  
+  useEffect(() => {
+    if (addMessageRef && loadInView) {
+      props.loadReplies();
+    }
+  }, [addMessageRef, loadInView])
+  
   const handleMarkComplete = () => {
     chatMessageActions.markComplete(reply.id);
   };
@@ -681,28 +688,6 @@ const ChatBubble = (props) => {
     };
   }, []);
 
-  useEffect(() => {
-    if (addMessageRef && props.handleMessageRefChange) {
-      props.handleMessageRefChange(loadInView, null, reply.id);
-    }
-  }, [addMessageRef, loadInView, props, props.handleMessageRefChange, reply.id]);
-
-  useEffect(() => {
-    let chatFiles = [];
-    for (const i in selectedChannel.replies) {
-      const r = selectedChannel.replies[i];
-      if (r.files.length > 0) {
-        chatFiles = [
-          ...r.files.filter((f) => {
-            return true;
-          }),
-          ...chatFiles,
-        ];
-      }
-    }
-    setChatFiles(chatFiles);
-  }, [selectedChannel.replies]);
-
   let isEmoticonOnly = false;
 
   let replyBody = quillHelper.parseEmoji(reply.body);
@@ -787,32 +772,6 @@ const ChatBubble = (props) => {
       }
     }
   }
-
-  //const searchWords = props.filterSearch.split(" ");
-  //const textToHighlight = replyBody;
-  let highlightedText = null;
-  // if (props.filterSearch !== "") {
-  //     const chunks = findAll({
-  //         searchWords,
-  //         textToHighlight,
-  //     });
-  //     if (chunks.filter(c => c.highlight).length) {
-  //         highlightedText = chunks
-  //             .map(chunk => {
-  //                 const {end, highlight, start} = chunk;
-  //                 const text = replyBody.substr(start, end - start);
-  //                 if (highlight) {
-  //                     return `<mark>${text}</mark>`;
-  //                 } else {
-  //                     return text;
-  //                 }
-  //             })
-  //             .join("");
-  //     }
-  // }
-
-  let botCodes = ["gripp_bot_account", "gripp_bot_invoice", "gripp_bot_offerte", "gripp_bot_project", "gripp_bot_account", "driff_webhook_bot"];
-  let isBot = botCodes.includes(reply.user.code);
 
   if (replyBody.includes("ACCOUNT_DEACTIVATED")) {
     let newReplyBody = replyBody.replace("ACCOUNT_DEACTIVATED ", "");
@@ -1033,7 +992,7 @@ const ChatBubble = (props) => {
             </ForwardedSpan>
           )}
           <ChatContentClap ref={addMessageRef ? loadRef : null} className="chat-content-clap" isAuthor={isAuthor}>
-            <ChatContent showAvatar={showAvatar} isAuthor={isAuthor} isEmoticonOnly={isEmoticonOnly} className={`chat-content animated slower ${highlightedText ? "is-highlighted" : ""}`}>
+            <ChatContent showAvatar={showAvatar} isAuthor={isAuthor} isEmoticonOnly={isEmoticonOnly} className={`chat-content animated slower`}>
               {reply.quote && reply.quote.body && !reply.is_deleted && (reply.quote.user_id !== undefined || reply.quote.user !== undefined) && (
                 <QuoteContainer className={"quote-container"} showAvatar={showAvatar} isEmoticonOnly={isEmoticonOnly} hasFiles={hasFiles} theme={chatSettings.chat_message_theme} onClick={handleQuoteClick} isAuthor={isAuthor}>
                   {reply.quote.user_id === user.id ? (
@@ -1057,7 +1016,7 @@ const ChatBubble = (props) => {
                 //   </>
                 // )
               }
-              {reply.files.length > 0 && !reply.is_deleted && <ChatMessageFiles hasMessage={hasMessage} isAuthor={isAuthor} theme={chatSettings.chat_message_theme} chatFiles={chatFiles} files={reply.files} reply={reply} type="chat" />}
+              {reply.files.length > 0 && !reply.is_deleted && <ChatMessageFiles hasMessage={hasMessage} isAuthor={isAuthor} theme={chatSettings.chat_message_theme} files={reply.files} reply={reply} type="chat" />}
 
               {!isAuthor && showAvatar && (
                 <>
@@ -1065,14 +1024,16 @@ const ChatBubble = (props) => {
                 </>
               )}
               {
-                <ReplyContent
-                  ref={handleContentRef}
-                  hasFiles={hasFiles}
-                  theme={chatSettings.chat_message_theme}
-                  isAuthor={isAuthor}
-                  className={`reply-content ${isEmoticonOnly ? "emoticon-body" : ""} ${reply.is_deleted ? "is-deleted" : ""}`}
-                  dangerouslySetInnerHTML={showGifPlayer ? { __html: stripGif(replyBody) } : { __html: replyBody }}
-                />
+                <span ref={isLastChat ? lastChatRef : null}>
+                  <ReplyContent
+                    ref={handleContentRef}
+                    hasFiles={hasFiles}
+                    theme={chatSettings.chat_message_theme}
+                    isAuthor={isAuthor}
+                    className={`reply-content ${isEmoticonOnly ? "emoticon-body" : ""} ${reply.is_deleted ? "is-deleted" : ""}`}
+                    dangerouslySetInnerHTML={showGifPlayer ? { __html: stripGif(replyBody) } : { __html: replyBody }}
+                  />
+                </span>
               }
 
               {showGifPlayer &&
@@ -1082,13 +1043,13 @@ const ChatBubble = (props) => {
                   return <GifPlayer key={index} className={"gifPlayer"} gif={fetchImgURL(gifString)} autoplay={true} />;
                 })}
               {(reply.unfurls && reply.unfurls.length && !reply.is_deleted && !showGifPlayer && !isBot) === true && (
-                <Unfurl unfurlData={reply.unfurls} isAuthor={isAuthor} removeUnfurl={removeUnfurl} channelId={selectedChannel.id} messageId={reply.id} type={"chat"} />
+                <Unfurl unfurlData={reply.unfurls} isAuthor={isAuthor} removeUnfurl={chatMessageActions.removeUnfurl} channelId={selectedChannel.id} messageId={reply.id} type={"chat"} />
               )}
               {reply.unfurl_loading !== undefined && reply.unfurl_loading && <Skeleton color="#dedede" borderRadius="10px" width="100%" height="150px" widthRandomness={0} heightRandomness={0} />}
             </ChatContent>
           </ChatContentClap>
           <ChatTimeStamp className="chat-timestamp" isAuthor={isAuthor}>
-            <span className="reply-date created">{reply.created_at.diff_for_humans ? "sending..." : todayOrYesterdayDate(reply.created_at.timestamp)}</span>
+            <span className="reply-date created">{timeFormat.todayOrYesterdayDate(reply.created_at.timestamp)}</span>
           </ChatTimeStamp>
         </>
       }

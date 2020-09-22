@@ -1,10 +1,9 @@
-import React, { forwardRef } from "react";
-import Select, { components } from "react-select";
+import React, {forwardRef} from "react";
+import Select, {components} from "react-select";
 import styled from "styled-components";
-import { SvgIconFeather } from "../common";
-import { lightTheme, darkTheme } from "../../helpers/selectTheme";
-import { generalSettings } from "react-select";
-import { useSettings } from "../hooks";
+import {SvgIconFeather} from "../common";
+import {darkTheme, lightTheme} from "../../helpers/selectTheme";
+import {useSettings} from "../hooks";
 
 const SelectOption = styled.div`
   display: flex;
@@ -60,10 +59,6 @@ const FolderSelect = forwardRef((props, ref) => {
   if (isMulti) {
     components = { Option, MultiValueContainer };
   }
-
-  console.log(dark_mode);
-
-  // console.log(darkmode);
 
   return <Select ref={ref} className={`react-select-container ${className}`} styles={dark_mode === "0" ? lightTheme : darkTheme} isMulti={isMulti} isClearable={isClearable} components={components} {...otherProps} />;
 });

@@ -45,6 +45,18 @@ const useSortChannels = (channels, search, options = {}, workspace) => {
         }
       }
 
+      channel.is_relevant = 0;
+      if (search.length >= 5) {
+        if (channel.type === "DIRECT" && (channel.members
+          .filter(m => m.id !== user.id)
+          .some(m =>
+            m.name.toLowerCase().includes(search.toLowerCase())
+            || m.email.toLowerCase().includes(search.toLowerCase())
+          ))) {
+          channel.is_relevant = 1;
+        }
+      }
+
       if (search === "") {
         return !(channel.is_hidden || channel.is_archived === true || channel.add_user || channel.add_open_topic);
       } else {
@@ -63,7 +75,7 @@ const useSortChannels = (channels, search, options = {}, workspace) => {
 
         return (channel.search.toLowerCase().search(search.toLowerCase()) !== -1
           || channel.title.toLowerCase().search(search.toLowerCase()) !== -1
-          || channel.members.filter(m => m.id !== user.id).some(m => (m.name.toLowerCase().search(search.toLowerCase()) !== -1) || (m.email.toLowerCase().search(search.toLowerCase()) !== -1)))
+          || channel.members.filter(m => m.id !== user.id).some(m => m.name.toLowerCase().includes(search.toLowerCase()) || m.email.toLowerCase().includes(search.toLowerCase() !== -1)))
       }
     })
     .sort((a, b) => {
@@ -79,16 +91,14 @@ const useSortChannels = (channels, search, options = {}, workspace) => {
         return 1;
       }
 
+      //relevant
+      compare = b.is_relevant - a.is_relevant;
+      if (compare !== 0) return compare;
+
       //personal bot with unread message
       if (b.type === "PERSONAL_BOT" && a.type === "PERSONAL_BOT") {
         return ((b.total_unread >= 1 || b.total_mark_incomplete >= 1)) ? 1 : -1;
       }
-
-      if (aTitle.toLowerCase() === search.toLowerCase() || a.members.filter(m => m.id !== user.id).some(m => (m.name.toLowerCase().search(search.toLowerCase()) !== -1) || (m.email.toLowerCase().search(search.toLowerCase()) !== -1)))
-        return -1;
-
-      if (bTitle.toLowerCase() === search.toLowerCase() || b.members.filter(m => m.id !== user.id).some(m => (m.name.toLowerCase().search(search.toLowerCase()) !== -1) || (m.email.toLowerCase().search(search.toLowerCase()) !== -1)))
-        return 1;
 
       //add to user
       if ((a.add_user || a.add_open_topic) && !(b.add_user || b.add_open_topic)) {
