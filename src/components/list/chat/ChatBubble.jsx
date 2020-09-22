@@ -539,7 +539,7 @@ const ChatNameNotAuthorMobile = styled.span`
 `;
 
 const ChatBubble = (props) => {
-  const { reply, showAvatar, selectedChannel, showGifPlayer, isAuthor, addMessageRef, user, recipients, removeUnfurl } = props;
+  const { reply, showAvatar, selectedChannel, showGifPlayer, isAuthor, addMessageRef, user, recipients, removeUnfurl, isLastChat } = props;
 
   //const {_t} = useTranslation();
 
@@ -551,13 +551,24 @@ const ChatBubble = (props) => {
   const [chatFiles, setChatFiles] = useState([]);
   const [gifOnly, setGifOnly] = useState(false);
   const [loadRef, loadInView] = useInView({
-    threshold: 1,
+    threshold: .10,
   });
   const { chatSettings } = useSettings();
   // const recipients = useSelector(state => state.global.recipients);
   // const user = useSelector(state => state.session.user);
   const refComponent = useRef();
 
+  const [lastChatRef, inView] = useInView({
+    threshold: .10
+  });
+
+  if (isLastChat) {
+    chatMessageActions.setLastMessageVisiblility({status: inView});
+  }
+  if (addMessageRef && loadInView) {
+    props.loadReplies();
+  }
+  
   const handleMarkComplete = () => {
     chatMessageActions.markComplete(reply.id);
   };
@@ -681,11 +692,11 @@ const ChatBubble = (props) => {
     };
   }, []);
 
-  useEffect(() => {
-    if (addMessageRef && props.handleMessageRefChange) {
-      props.handleMessageRefChange(loadInView, null, reply.id);
-    }
-  }, [addMessageRef, loadInView, props, props.handleMessageRefChange, reply.id]);
+  // useEffect(() => {
+  //   if (addMessageRef && props.handleMessageRefChange) {
+  //     props.handleMessageRefChange(loadInView, null, reply.id);
+  //   }
+  // }, [addMessageRef, loadInView, props, props.handleMessageRefChange, reply.id]);
 
   useEffect(() => {
     let chatFiles = [];
@@ -1065,14 +1076,16 @@ const ChatBubble = (props) => {
                 </>
               )}
               {
-                <ReplyContent
-                  ref={handleContentRef}
-                  hasFiles={hasFiles}
-                  theme={chatSettings.chat_message_theme}
-                  isAuthor={isAuthor}
-                  className={`reply-content ${isEmoticonOnly ? "emoticon-body" : ""} ${reply.is_deleted ? "is-deleted" : ""}`}
-                  dangerouslySetInnerHTML={showGifPlayer ? { __html: stripGif(replyBody) } : { __html: replyBody }}
-                />
+                <span ref={isLastChat ? lastChatRef : null}>
+                  <ReplyContent
+                    ref={handleContentRef}
+                    hasFiles={hasFiles}
+                    theme={chatSettings.chat_message_theme}
+                    isAuthor={isAuthor}
+                    className={`reply-content ${isEmoticonOnly ? "emoticon-body" : ""} ${reply.is_deleted ? "is-deleted" : ""}`}
+                    dangerouslySetInnerHTML={showGifPlayer ? { __html: stripGif(replyBody) } : { __html: replyBody }}
+                  />
+                </span>
               }
 
               {showGifPlayer &&
