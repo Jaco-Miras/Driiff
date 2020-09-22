@@ -12,6 +12,7 @@ import ChatReactionButton from "./ChatReactionButton";
 import ChatUnfurl from "./ChatUnfurl";
 import ChatReactions from "./Reactions/ChatReactions";
 import SeenIndicator from "./SeenIndicator";
+import SystemMessage from "./SystemMessage";
 
 const ChatReplyContainer = styled.div`
   background: transparent;
@@ -849,14 +850,14 @@ class ChatMessages extends React.PureComponent {
                                   className={"chat-bubble-quote-div"}
                                 >
                                   <SystemMessageContainer className="system-message" isAuthor={false}>
-                                    {/*<SystemMessage
+                                    <SystemMessage
                                       chatMessageActions={this.props.chatMessageActions}
                                       timeFormat={this.props.timeFormat}
                                       selectedChannel={this.props.selectedChannel}
                                       reply={reply} chatName={this.props.chatName}
                                       addMessageRef={this.getLoadRef(reply.id)}
                                       isLastChat={[...selectedChannel.replies.sort((a, b) => a.created_at.timestamp - b.created_at.timestamp)][selectedChannel.replies.length - 1].id === reply.id}
-                                    />*/}
+                                    />
                                     {reply.unfurls.length ? (
                                       <ChatUnfurl
                                         unfurlData={reply.unfurls}

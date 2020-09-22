@@ -1,11 +1,9 @@
-import React, { forwardRef, useEffect, useState } from "react";
-import { renderToString } from "react-dom/server";
-import { useSelector } from "react-redux";
+import React, {forwardRef, useEffect, useState} from "react";
+import {renderToString} from "react-dom/server";
+import {useSelector} from "react-redux";
 import styled from "styled-components";
-import { SvgIconFeather } from "../../common";
-//import { useTimeFormat } from "../../hooks";
-import { useInView } from "react-intersection-observer";
-//import useChatMessageActions from "../../hooks/useChatMessageActions";
+import {SvgIconFeather} from "../../common";
+import {useTimeFormat} from "../../hooks";
 
 const SystemMessageContainer = styled.span`
   display: block;
@@ -28,24 +26,14 @@ const ChatTimeStamp = styled.div`
 `;
 
 const SystemMessage = forwardRef((props, ref) => {
-  const { reply, selectedChannel, chatName, isLastChat, chatMessageActions, timeFormat } = props;
+  const {reply, selectedChannel, chatName} = props;
 
-  //const { localizeTime } = useTimeFormat();
+  const {localizeTime} = useTimeFormat();
 
   const [body, setBody] = useState(reply.body);
 
   const user = useSelector((state) => state.session.user);
   const recipients = useSelector((state) => state.global.recipients.filter((r) => r.type === "USER"));
-  
-  //const chatMessageActions = useChatMessageActions();
-
-  const [lastChatRef, inView] = useInView({
-    threshold: .10
-  });
-
-  if (isLastChat) {
-    chatMessageActions.setLastMessageVisiblility({status: inView});
-  }
 
   useEffect(() => {
     if (reply.body.includes("JOIN_CHANNEL")) {
@@ -407,10 +395,12 @@ const SystemMessage = forwardRef((props, ref) => {
   }, [recipients, recipients.length, chatName, reply.body, selectedChannel.title, selectedChannel.type]);
 
   return (
-    <SystemMessageContainer ref={isLastChat ? lastChatRef : null}>
-      <SystemMessageContent ref={ref} id={`bot-${reply.id}`} dangerouslySetInnerHTML={{ __html: body }}></SystemMessageContent>
+    <SystemMessageContainer>
+      <SystemMessageContent ref={ref} id={`bot-${reply.id}`}
+                            dangerouslySetInnerHTML={{__html: body}}></SystemMessageContent>
       <ChatTimeStamp className="chat-timestamp" isAuthor={false}>
-        <span className="reply-date created">{reply.created_at.diff_for_humans ? "sending..." : timeFormat.localizeTime(reply.created_at.timestamp)}</span>
+        <span
+          className="reply-date created">{reply.created_at.diff_for_humans ? "sending..." : localizeTime(reply.created_at.timestamp)}</span>
       </ChatTimeStamp>
     </SystemMessageContainer>
   );
