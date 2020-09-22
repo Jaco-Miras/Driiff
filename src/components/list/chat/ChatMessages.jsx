@@ -12,7 +12,6 @@ import ChatReactionButton from "./ChatReactionButton";
 import ChatUnfurl from "./ChatUnfurl";
 import ChatReactions from "./Reactions/ChatReactions";
 import SeenIndicator from "./SeenIndicator";
-import SystemMessage from "./SystemMessage";
 
 const ChatReplyContainer = styled.div`
   background: transparent;
@@ -71,15 +70,12 @@ const TimestampDiv = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  position: relative;
-  padding: 0 20px;
   color: #a7abc3;
   padding: 26px 0 14px 0;
   position: sticky;
-  top: 0px;
+  top: 0;
   span {
     padding: 4px 8px;
-    border-radius: 4px;
     display: inline-block;
     font-size: 11px;
     border-radius: 6px;
@@ -160,8 +156,7 @@ const SystemChatActionsContainer = styled.div`
   flex-flow: ${(props) => (props.isAuthor ? "row-reverse" : "row")};
   flex-wrap: wrap;
   ${(props) => (props.isAuthor ? "margin-right: 10px" : "margin-left: 10px")};
-  min-width: 150px;
-  height: 100%;
+  min-width: 150px;  
   color: #a7abc3;
   background: #ffffff;
   position: absolute;
@@ -854,14 +849,14 @@ class ChatMessages extends React.PureComponent {
                                   className={"chat-bubble-quote-div"}
                                 >
                                   <SystemMessageContainer className="system-message" isAuthor={false}>
-                                    <SystemMessage
+                                    {/*<SystemMessage
                                       chatMessageActions={this.props.chatMessageActions}
                                       timeFormat={this.props.timeFormat}
                                       selectedChannel={this.props.selectedChannel}
                                       reply={reply} chatName={this.props.chatName}
                                       addMessageRef={this.getLoadRef(reply.id)}
                                       isLastChat={[...selectedChannel.replies.sort((a, b) => a.created_at.timestamp - b.created_at.timestamp)][selectedChannel.replies.length - 1].id === reply.id}
-                                    />
+                                    />*/}
                                     {reply.unfurls.length ? (
                                       <ChatUnfurl
                                         unfurlData={reply.unfurls}
