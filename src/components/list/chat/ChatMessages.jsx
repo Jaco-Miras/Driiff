@@ -851,6 +851,8 @@ class ChatMessages extends React.PureComponent {
                                 >
                                   <SystemMessageContainer className="system-message" isAuthor={false}>
                                     <SystemMessage
+                                      recipients={this.props.recipients}
+                                      user={this.props.user}
                                       chatMessageActions={this.props.chatMessageActions}
                                       timeFormat={this.props.timeFormat}
                                       selectedChannel={this.props.selectedChannel}

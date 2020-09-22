@@ -560,9 +560,11 @@ const ChatBubble = (props) => {
     }
   }, [isLastChat, inView])
   
-  if (addMessageRef && loadInView) {
-    props.loadReplies();
-  }
+  useEffect(() => {
+    if (addMessageRef && loadInView) {
+      props.loadReplies();
+    }
+  }, [addMessageRef, loadInView])
   
   const handleMarkComplete = () => {
     chatMessageActions.markComplete(reply.id);
