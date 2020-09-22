@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { useSelector } from "react-redux";
 import ChatJumpTo from "./ChatJumpTo";
 import ChatMarkAsRead from "./ChatMarkAsRead";
 import ChatUnreadCounterMessage from "./ChatUnreadCounterMessage";
@@ -29,6 +30,9 @@ const ChatUnreadFloatBarWrapper = styled.div`
 
 const ChatUnreadFloatBar = (props) => {
   const { channel } = props;
+  const { isLastChatVisible } = useSelector((state) => state.chat.isLastChatVisible);
+
+  if (isLastChatVisible) return null
   return (
     <ChatUnreadFloatBarWrapper className="chat-unread-floatbar">
       <ChatJumpTo />

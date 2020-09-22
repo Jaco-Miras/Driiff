@@ -338,20 +338,21 @@ class SocketListeners extends Component {
         switch (e.SOCKET_TYPE) {
           case "CHAT_CREATE": {
             //unfurl link
+            let message = {...e};
             let urlArray = [...new Set(urlify(e.body))];
             if (urlArray.length) {
               this.props.generateUnfurl(
                 {
                   type: "chat",
-                  message_id: e.id,
+                  message_id: message.id,
                   link_url: urlArray[0],
                 },
                 (err, res) => {
                   if (res) {
                     this.props.generateUnfurlReducer({
                       unfurls: res.data.unfurls,
-                      channel_id: e.channel_id,
-                      message_id: e.id,
+                      channel_id: message.channel_id,
+                      message_id: message.id,
                     });
                   } else {
                     console.log(err);
@@ -359,14 +360,17 @@ class SocketListeners extends Component {
                 }
               );
             }
-            if (e.user.id !== user.id && !e.is_muted) {
+            if (message.user.id !== user.id && !message.is_muted) {
               this.props.soundPlay();
             }
-            if (this.props.user.id !== e.user.id) {
-              delete e.reference_id;
-              e.g_date = this.props.localizeDate(e.created_at.timestamp, "YYYY-MM-DD");
+            if (this.props.user.id !== message.user.id) {
+              delete message.reference_id;
+              message.g_date = this.props.localizeDate(e.created_at.timestamp, "YYYY-MM-DD");
+              if (this.props.isLastChatVisible && this.props.selectedChannel && this.props.selectedChannel.id === message.channel_id) {
+                message.is_read = true;
+              }
             }
-            this.props.incomingChatMessage(e);
+            this.props.incomingChatMessage(message);
             delete e.SOCKET_TYPE;
             delete e.socket;
             if (e.user.id !== user.id) {
@@ -1010,7 +1014,7 @@ class SocketListeners extends Component {
 function mapStateToProps({
                            session: {user},
                            settings: {userSettings},
-                           chat: {channels, selectedChannel},
+                           chat: {channels, selectedChannel, isLastChatVisible},
                            workspaces: {workspaces, workspacePosts, folders, activeTopic, workspacesLoaded},
                            global: {isBrowserActive},
                            users: {mentions, users}
@@ -1027,7 +1031,8 @@ function mapStateToProps({
     mentions,
     activeTopic,
     workspacesLoaded,
-    workspaces
+    workspaces,
+    isLastChatVisible
   };
 }
 

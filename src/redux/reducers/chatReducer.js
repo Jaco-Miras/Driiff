@@ -15,6 +15,7 @@ const INITIAL_STATE = {
   chatQuotes: {},
   channelsLoaded: false,
   lastVisitedChannel: null,
+  isLastChatVisible: false
 };
 
 export default function (state = INITIAL_STATE, action) {
@@ -1157,6 +1158,12 @@ export default function (state = INITIAL_STATE, action) {
         ...state,
         channels: updatedChannels,
         selectedChannel: state.selectedChannel && state.selectedChannel.id === action.data.id ? { ...state.selectedChannel, isFetching: action.data.status } : state.selectedChannel
+      }
+    }
+    case "SET_LAST_CHAT_VISIBILITY": {
+      return {
+        ...state,
+        isLastChatVisible: action.data.status
       }
     }
     default:

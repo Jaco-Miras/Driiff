@@ -2,7 +2,7 @@ import { useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { copyTextToClipboard } from "../../helpers/commonFunctions";
 import { getBaseUrl } from "../../helpers/slugHelper";
-import { addQuote, deleteChatMessage, getChatMessages, postChatMessage, postChatReaction, postChatReminder, putChatMessage, putMarkReminderComplete, setEditChatMessage } from "../../redux/actions/chatActions";
+import { addQuote, deleteChatMessage, getChatMessages, postChatMessage, postChatReaction, postChatReminder, putChatMessage, putMarkReminderComplete, setEditChatMessage, setLastChatVisibility } from "../../redux/actions/chatActions";
 import { useToaster } from "./index";
 import useChannelActions from "./useChannelActions";
 import { deleteUnfurl, removeUnfurlReducer } from "../../redux/actions/globalActions";
@@ -267,6 +267,18 @@ const useChatMessageActions = () => {
     [dispatch]
   );
 
+   /**
+   * @param {boolean} status
+   */
+  const setLastMessageVisiblility = useCallback(
+    (payload) => {
+      dispatch(
+        setLastChatVisibility(payload)
+      );
+    },
+    [dispatch]
+  );
+
   return {
     channelActions: useChannelActions(),
     fetch,
@@ -281,6 +293,7 @@ const useChatMessageActions = () => {
     setQuote,
     setEdit,
     clipboardLink,
+    setLastMessageVisiblility
   };
 };
 
