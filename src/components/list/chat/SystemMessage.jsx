@@ -3,9 +3,9 @@ import { renderToString } from "react-dom/server";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
 import { SvgIconFeather } from "../../common";
-import { useTimeFormat } from "../../hooks";
+//import { useTimeFormat } from "../../hooks";
 import { useInView } from "react-intersection-observer";
-import useChatMessageActions from "../../hooks/useChatMessageActions";
+//import useChatMessageActions from "../../hooks/useChatMessageActions";
 
 const SystemMessageContainer = styled.span`
   display: block;
@@ -28,16 +28,16 @@ const ChatTimeStamp = styled.div`
 `;
 
 const SystemMessage = forwardRef((props, ref) => {
-  const { reply, selectedChannel, chatName, isLastChat } = props;
+  const { reply, selectedChannel, chatName, isLastChat, chatMessageActions, timeFormat } = props;
 
-  const { localizeTime } = useTimeFormat();
+  //const { localizeTime } = useTimeFormat();
 
   const [body, setBody] = useState(reply.body);
 
   const user = useSelector((state) => state.session.user);
   const recipients = useSelector((state) => state.global.recipients.filter((r) => r.type === "USER"));
   
-  const chatMessageActions = useChatMessageActions();
+  //const chatMessageActions = useChatMessageActions();
 
   const [lastChatRef, inView] = useInView({
     threshold: .10
@@ -410,7 +410,7 @@ const SystemMessage = forwardRef((props, ref) => {
     <SystemMessageContainer ref={isLastChat ? lastChatRef : null}>
       <SystemMessageContent ref={ref} id={`bot-${reply.id}`} dangerouslySetInnerHTML={{ __html: body }}></SystemMessageContent>
       <ChatTimeStamp className="chat-timestamp" isAuthor={false}>
-        <span className="reply-date created">{reply.created_at.diff_for_humans ? "sending..." : localizeTime(reply.created_at.timestamp)}</span>
+        <span className="reply-date created">{reply.created_at.diff_for_humans ? "sending..." : timeFormat.localizeTime(reply.created_at.timestamp)}</span>
       </ChatTimeStamp>
     </SystemMessageContainer>
   );

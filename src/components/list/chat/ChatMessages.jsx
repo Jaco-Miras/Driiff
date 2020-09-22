@@ -552,6 +552,7 @@ class ChatMessages extends React.PureComponent {
     }
 
     if (this.props.unreadCount > 0 && this.props.isLastChatVisible) {
+      //need clarification if need to trigger if channel is unread
       this.handleReadChannel();
     }
 
@@ -798,6 +799,8 @@ class ChatMessages extends React.PureComponent {
                                   className={"chat-bubble-quote-div"}
                                 >
                                   <ChatBubble
+                                    chatMessageActions={this.props.chatMessageActions}
+                                    timeFormat={this.props.timeFormat}
                                     recipients={this.props.recipients}
                                     user={this.props.user}
                                     reply={reply}
@@ -806,9 +809,10 @@ class ChatMessages extends React.PureComponent {
                                     showGifPlayer={showGifPlayer}
                                     isAuthor={isAuthor}
                                     addMessageRef={this.getLoadRef(reply.id)}
-                                    removeUnfurl={this.props.chatMessageActions.removeUnfurl}
                                     isLastChat={[...selectedChannel.replies.sort((a, b) => a.created_at.timestamp - b.created_at.timestamp)][selectedChannel.replies.length - 1].id === reply.id}
                                     loadReplies={this.loadReplies}
+                                    isBot={isBot}
+                                    chatSettings={this.props.settings}
                                   >
                                     <ChatActionsContainer isAuthor={isAuthor} className="chat-actions-container">
                                       {<ChatReactionButton isAuthor={isAuthor} scrollRef={this.infiniteScroll.current}
@@ -851,6 +855,8 @@ class ChatMessages extends React.PureComponent {
                                 >
                                   <SystemMessageContainer className="system-message" isAuthor={false}>
                                     <SystemMessage
+                                      chatMessageActions={this.props.chatMessageActions}
+                                      timeFormat={this.props.timeFormat}
                                       selectedChannel={this.props.selectedChannel}
                                       reply={reply} chatName={this.props.chatName}
                                       addMessageRef={this.getLoadRef(reply.id)}
@@ -864,7 +870,6 @@ class ChatMessages extends React.PureComponent {
                                         removeChatUnfurlAction={this.props.removeChatUnfurlAction}
                                         channelId={this.props.selectedChannel.id}
                                         replyId={reply.id}
-                                        removeUnfurl={this.props.chatMessageActions.removeUnfurl}
                                       />
                                     ) : null}
                                     <SystemChatActionsContainer isAuthor={isAuthor} className="chat-actions-container">

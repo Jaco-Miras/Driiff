@@ -77,7 +77,7 @@ const UserListPopUp = (props) => {
       <ul>
         {users.map((u, k) => {
           return (
-            <li key={k}>
+            <li key={u.id}>
               <Avatar size={"xs"} imageLink={u.profile_image_link} userId={u.id} name={u.name ? u.name : u.email} partialName={u.partial_name} hasAccepted={u.has_accepted} noDefaultClick={true} onClick={(e) => handleOnNameClick(e, u)} />
               <span onClick={(e) => handleOnNameClick(e, u)}>{u.name ? u.name : u.email}</span>
             </li>

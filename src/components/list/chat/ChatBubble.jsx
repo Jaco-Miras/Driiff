@@ -10,8 +10,7 @@ import styled from "styled-components";
 import quillHelper from "../../../helpers/quillHelper";
 import { getEmojiRegexPattern, stripGif } from "../../../helpers/stringFormatter";
 import { ImageTextLink, SvgIconFeather, SvgImage } from "../../common";
-import { useGoogleApis, useSettings, useTimeFormat } from "../../hooks";
-import useChatMessageActions from "../../hooks/useChatMessageActions";
+import { useGoogleApis } from "../../hooks";
 import MessageFiles from "./Files/MessageFiles";
 import Unfurl from "./Unfurl/Unfurl";
 
@@ -539,12 +538,7 @@ const ChatNameNotAuthorMobile = styled.span`
 `;
 
 const ChatBubble = (props) => {
-  const { reply, showAvatar, selectedChannel, showGifPlayer, isAuthor, addMessageRef, user, recipients, removeUnfurl, isLastChat } = props;
-
-  //const {_t} = useTranslation();
-
-  const chatMessageActions = useChatMessageActions();
-  const { todayOrYesterdayDate } = useTimeFormat();
+  const { reply, showAvatar, selectedChannel, showGifPlayer, isAuthor, addMessageRef, user, recipients, isLastChat, chatMessageActions, timeFormat, isBot, chatSettings } = props;
 
   const history = useHistory();
 
@@ -553,18 +547,19 @@ const ChatBubble = (props) => {
   const [loadRef, loadInView] = useInView({
     threshold: .10,
   });
-  const { chatSettings } = useSettings();
-  // const recipients = useSelector(state => state.global.recipients);
-  // const user = useSelector(state => state.session.user);
+  //const { chatSettings } = useSettings();
   const refComponent = useRef();
 
   const [lastChatRef, inView] = useInView({
     threshold: .10
   });
 
-  if (isLastChat) {
-    chatMessageActions.setLastMessageVisiblility({status: inView});
-  }
+  useEffect(() => {
+    if (isLastChat) {
+      chatMessageActions.setLastMessageVisiblility({status: inView});
+    }
+  }, [isLastChat, inView])
+  
   if (addMessageRef && loadInView) {
     props.loadReplies();
   }
@@ -816,8 +811,8 @@ const ChatBubble = (props) => {
   //     }
   // }
 
-  let botCodes = ["gripp_bot_account", "gripp_bot_invoice", "gripp_bot_offerte", "gripp_bot_project", "gripp_bot_account", "driff_webhook_bot"];
-  let isBot = botCodes.includes(reply.user.code);
+  // let botCodes = ["gripp_bot_account", "gripp_bot_invoice", "gripp_bot_offerte", "gripp_bot_project", "gripp_bot_account", "driff_webhook_bot"];
+  // let isBot = botCodes.includes(reply.user.code);
 
   if (replyBody.includes("ACCOUNT_DEACTIVATED")) {
     let newReplyBody = replyBody.replace("ACCOUNT_DEACTIVATED ", "");
@@ -1089,13 +1084,13 @@ const ChatBubble = (props) => {
                   return <GifPlayer key={index} className={"gifPlayer"} gif={fetchImgURL(gifString)} autoplay={true} />;
                 })}
               {(reply.unfurls && reply.unfurls.length && !reply.is_deleted && !showGifPlayer && !isBot) === true && (
-                <Unfurl unfurlData={reply.unfurls} isAuthor={isAuthor} removeUnfurl={removeUnfurl} channelId={selectedChannel.id} messageId={reply.id} type={"chat"} />
+                <Unfurl unfurlData={reply.unfurls} isAuthor={isAuthor} removeUnfurl={chatMessageActions.removeUnfurl} channelId={selectedChannel.id} messageId={reply.id} type={"chat"} />
               )}
               {reply.unfurl_loading !== undefined && reply.unfurl_loading && <Skeleton color="#dedede" borderRadius="10px" width="100%" height="150px" widthRandomness={0} heightRandomness={0} />}
             </ChatContent>
           </ChatContentClap>
           <ChatTimeStamp className="chat-timestamp" isAuthor={isAuthor}>
-            <span className="reply-date created">{reply.created_at.diff_for_humans ? "sending..." : todayOrYesterdayDate(reply.created_at.timestamp)}</span>
+            <span className="reply-date created">{reply.created_at.diff_for_humans ? "sending..." : timeFormat.todayOrYesterdayDate(reply.created_at.timestamp)}</span>
           </ChatTimeStamp>
         </>
       }
