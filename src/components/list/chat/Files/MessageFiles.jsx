@@ -43,7 +43,7 @@ const FileShowDiv = styled.a`
 `;
 
 const MessageFiles = forwardRef((props, ref) => {
-  const { className = "", files, chatFiles, reply, type = "chat", ...otherProps } = props;
+  const { className = "", files, reply, type = "chat", ...otherProps } = props;
 
   const dispatch = useDispatch();
 
