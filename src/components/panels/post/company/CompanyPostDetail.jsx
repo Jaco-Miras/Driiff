@@ -82,7 +82,6 @@ const Icon = styled(SvgIconFeather)`
 
   &.close {
     cursor: pointer;
-    cursor: hand;
   }
 `;
 
@@ -95,6 +94,8 @@ const CompanyPostDetail = (props) => {
 
   const dispatch = useDispatch();
   const history = useHistory();
+  const commentActions = useCommentActions();
+  const comments = useComments(post, commentActions);
 
   const [showDropZone, setshowDropZone] = useState(false);
   const [react, setReact] = useState({
@@ -105,8 +106,6 @@ const CompanyPostDetail = (props) => {
   const handleClosePost = () => {
     onGoBack();
   };
-  const commentActions = useCommentActions();
-  const comments = useComments(post, commentActions);
 
   const refs = {
     dropZoneRef: useRef(null),
@@ -192,6 +191,16 @@ const CompanyPostDetail = (props) => {
     postActions.clap(payload);
   };
 
+  const markRead = () => {
+    postActions.markReadRequirement(post);
+  };
+
+  const handleAuthorClick = () => {
+    history.push(`/profile/${post.author.id}/${replaceChar(post.author.name)}`);
+  }
+
+  const isMember = post.users_responsible.some(u => u.id === user.id);
+
   useEffect(() => {
     const viewed = post.view_user_ids.some((id) => id === user.id);
     if (!viewed) {
@@ -204,16 +213,6 @@ const CompanyPostDetail = (props) => {
       postActions.markAsRead(post);
     }
   }, []);
-
-  const markRead = () => {
-    postActions.markReadRequirement(post);
-  };
-
-  const handleAuthorClick = () => {
-    history.push(`/profile/${post.author.id}/${replaceChar(post.author.name)}`);
-  }
-
-  const isMember = post.users_responsible.some(u => u.id === user.id);
 
   return (
     <>

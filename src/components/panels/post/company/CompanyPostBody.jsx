@@ -1,8 +1,9 @@
 import React, {useState} from "react";
 import styled from "styled-components";
 import {AvatarGroup, SvgIconFeather} from "../../../common";
-import {useTimeFormat} from "../../../hooks";
+import {useGoogleApis, useTimeFormat} from "../../../hooks";
 import {CompanyPostBadge} from "./index";
+import quillHelper from "../../../../helpers/quillHelper";
 
 const Wrapper = styled.div`
   flex: unset;
@@ -15,7 +16,6 @@ const Wrapper = styled.div`
 const Icon = styled(SvgIconFeather)`
   width: 16px;
   cursor: pointer;
-  cursor: hand;
 `;
 
 const CompanyPostBody = (props) => {
@@ -23,6 +23,7 @@ const CompanyPostBody = (props) => {
 
   const [star, setStar] = useState(post.is_favourite);
   const {fromNow} = useTimeFormat();
+  const googleApis = useGoogleApis();
 
   const handleStarPost = () => {
     if (disableOptions) return;
@@ -34,9 +35,16 @@ const CompanyPostBody = (props) => {
     postActions.archivePost(post);
   };
 
-  // const markRead = () => {
-  //     postActions.markReadRequirement(post);
-  // };
+  const handlePostBodyRef = (e) => {
+    if (e) {
+      const googleLinks = e.querySelectorAll(`[data-google-link-retrieve="0"]`);
+      googleLinks.forEach((gl) => {
+        let e = gl;
+        e.dataset.googleLinkRetrieve = 1;
+        googleApis.getFile(e, e.dataset.googleFileId);
+      });
+    }
+  };
 
   return (
     <Wrapper className="card-body">
@@ -65,7 +73,7 @@ const CompanyPostBody = (props) => {
         </div>
       </div>
       <div className="d-flex align-items-center">
-        <div dangerouslySetInnerHTML={{__html: post.body}}/>
+        <div ref={handlePostBodyRef} dangerouslySetInnerHTML={{__html: quillHelper.parseEmoji(post.body)}}/>
       </div>
     </Wrapper>
   );
