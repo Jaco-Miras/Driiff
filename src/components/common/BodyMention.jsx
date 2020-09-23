@@ -10,7 +10,6 @@ const BodyMentionDiv = styled.div`
   display: block;
   .mention-name {
     color: #7a1b8b;
-    font-weight: bold;
   }
   button {
     margin-right: 10px;
@@ -57,23 +56,25 @@ const BodyMention = (props) => {
           {mentionedUsers.map((mu, i) => {
             if (i === mentionedUsers.length - 1 && mentionedUsers.length > 1) {
               return (
-                <span key={i} className="mention-normal">
-                  {" "}
-                  and
-                  <span className="mention" data-denotation-char="@" data-id={mu.type_id} data-value={mu.name}>
-                    <span
-                      className="mention-name pointer"
-                      data-mid={mu.type_id}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        //push(`/profile/${mu.type_id}`)
-                      }}
-                    >
-                      <span className="ql-mention-denotation-char">@</span>
-                      {mu.name}
+                <div className={"mention-data"}>
+                  <span key={i} className="mention-normal">
+                    {" "}
+                    and
+                    <span className="mention" data-denotation-char="@" data-id={mu.type_id} data-value={mu.name}>
+                      <span
+                        className="mention-name pointer"
+                        data-mid={mu.type_id}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          //push(`/profile/${mu.type_id}`)
+                        }}
+                      >
+                        <span className="ql-mention-denotation-char">@</span>
+                        {mu.name}
+                      </span>
                     </span>
                   </span>
-                </span>
+                </div>
               );
             } else {
               return (
