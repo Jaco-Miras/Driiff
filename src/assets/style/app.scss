@@ -49,9 +49,7 @@ body {
   overflow: hidden;
 }
 
-::-webkit-scrollbar {
-  width: 10px;
-}
+
 
 ::-webkit-scrollbar:hover {
   width: 10px;
@@ -14530,10 +14528,11 @@ body.form-membership .form-wrapper hr {
 
 .chat-block {
   height: 100%;
-  // padding: 1.5rem;
   padding-top: 1.5rem;
+  @media (max-width: 991.99px) {
+    padding: 15px;
+  }
   @media (max-width: 620px) {
-    padding: 1rem;
   }
 }
 
@@ -14758,8 +14757,8 @@ body.form-membership .form-wrapper hr {
 
 .chat-block .chat-content .chat-footer {
   padding: 1.5rem 0 1.5rem 0;
-  @media all and (max-width: 620px) {
-    padding-top: 1rem;
+  @media (max-width: 991.99px) {
+    padding: 1.5rem 0 0 0;
   }
 }
 
@@ -20991,7 +20990,7 @@ body.dark.small-navigation .navigation-menu-body ul li.navigation-divider:after 
   }
 }
 
-@media (max-width: 992px) {
+@media (max-width: 991.99px) {
   .chat-sidebar {
     position: absolute;
     left: calc(-100% + -24px);
@@ -21002,16 +21001,15 @@ body.dark.small-navigation .navigation-menu-body ul li.navigation-divider:after 
     z-index: 3;
   }
   .chat-block .chat-sidebar .chat-sidebar-header {
-    padding-left: 24px;
-    padding-right: 24px;
+    padding-left: 15px;
+    padding-right: 15px;
   }
   .recent-new-group-wrapper {
     padding-left: 24px !important;
     padding-right: 24px !important;
   }
   .chat-lists .list-group-flush {
-    padding-left: 24px !important;
-    padding-right: 24px !important;
+
   }
   .channel-number-new-group-wrapper {
     padding-left: 24px !important;
@@ -21019,9 +21017,9 @@ body.dark.small-navigation .navigation-menu-body ul li.navigation-divider:after 
   }
 }
 
-@media (max-width: 992px) {
+@media (max-width: 991.99px) {
   .chat-sidebar {
-    left: -24px;
+    left: 0;
     padding-right: 10px;
     border-right: 0 !important;
   }

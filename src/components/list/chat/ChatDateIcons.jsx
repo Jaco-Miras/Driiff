@@ -26,7 +26,7 @@ const Icon = styled(SvgIconFeather)`
 
 const Badge = styled.span`
   color: #fff !important;
-  height: 18px;
+  min-height: 18px;
   width: 24px;
   padding: 0;
   display: flex;
