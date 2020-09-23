@@ -18,3 +18,4 @@ export { default as DatePicker } from "./DatePicker";
 export { default as ToolTip } from "./ToolTip";
 export {default as Badge} from "./Badge";
 export {default as GoogleDriveLink} from "./GoogleDriveLink";
+export {default as BodyMention} from "./BodyMention";

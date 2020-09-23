@@ -220,6 +220,8 @@ const CreateEditWorkspaceModal = (props) => {
     workspace_name: useRef(null),
     dropZone: useRef(null),
   };
+  const [mentionedUserIds, setMentionedUserIds] = useState([]);
+  const [ignoredMentionedUserIds, setIgnoredMentionedUserIds] = useState([]);
 
   const _validateName = useCallback(() => {
     if (form.name === "") {
@@ -603,9 +605,54 @@ const CreateEditWorkspaceModal = (props) => {
     }
   };
 
+  const handleAddMentionedUsers = (users) => {
+    setForm({
+      ...form,
+      selectedUsers: [...users.map((user) => {
+        return {
+          id: user.id,
+          value: user.id,
+          label: user.name,
+          name: user.name,
+          first_name: user.first_name,
+          profile_image_link: user.profile_image_link,
+        }
+      }), ...form.selectedUsers]
+    })
+    setMentionedUserIds([]);
+  };
+
+  const handleIgnoreMentionedUsers = (users) => {
+    setIgnoredMentionedUserIds(users.map((u) => u.id));
+    setMentionedUserIds(mentionedUserIds.filter((id) => !users.some((u) => u.id === id)));
+  };
+
+  const handleMentionUser = (mention_ids) => {
+    mention_ids = mention_ids.map((id) => parseInt(id)).filter((id) => !isNaN(id));
+    if (mention_ids.length) {
+      //check for recipients/type
+      let ignoreIds = [user.id, ...form.selectedUsers.map((u) => u.id), ...ignoredMentionedUserIds];
+      let userIds = mention_ids.filter((id) => {
+        return !ignoreIds.some((iid) => iid === id)
+      });
+      setMentionedUserIds(userIds.length ? userIds.map((id) => parseInt(id)) : []);
+    } else {
+      setIgnoredMentionedUserIds([]);
+      setMentionedUserIds([]);
+    }
+  };
+
   const handleQuillChange = useCallback(
     (content, delta, source, editor) => {
       const textOnly = editor.getText(content);
+      if (editor.getContents().ops && editor.getContents().ops.length) {
+        handleMentionUser(
+          editor
+            .getContents()
+            .ops.filter((m) => m.insert.mention)
+            .map((i) => i.insert.mention.id)
+        );
+      }
       setForm((prevState) => ({
         ...prevState,
         description: content,
@@ -628,7 +675,7 @@ const CreateEditWorkspaceModal = (props) => {
         }));
       }
     },
-    [setForm, setFeedback, setValid]
+    [setForm, setFeedback, setValid, form.selectedUsers, mentionedUserIds, ignoredMentionedUserIds]
   );
 
   const handleOpenFileDialog = () => {
@@ -956,6 +1003,12 @@ const CreateEditWorkspaceModal = (props) => {
           mode={mode}
           valid={valid.description}
           feedback={feedback.description}
+          //disableMention={mode !== "edit"}
+          disableBodyMention={true}
+          modal={"workspace"}
+          mentionedUserIds={mentionedUserIds}
+          onAddUsers={handleAddMentionedUsers}
+          onDoNothing={handleIgnoreMentionedUsers}
         />
         {(attachedFiles.length > 0 || uploadedFiles.length > 0) && (
           <WrapperDiv className="file-attachment-wrapper">

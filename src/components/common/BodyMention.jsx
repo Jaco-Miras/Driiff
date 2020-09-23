@@ -17,18 +17,22 @@ const BodyMentionDiv = styled.div`
 `;
 const BodyMention = (props) => {
   const { onAddUsers, onDoNothing, userIds, type = "post", basedOnId = true } = props;
-  const userRecipients = useSelector((state) => state.global.recipients.filter((r) => r.type === "USER"));
-  const mentionedUsers = userRecipients.filter((user) => {
-    let userFound = false;
-    userIds.forEach((id) => {
-      if (basedOnId && id === user.id) {
-        userFound = true;
-      } else if (!basedOnId && id === user.type_id) {
-        userFound = true;
-      }
-    });
-    return userFound;
-  });
+  const users = useSelector((state) => state.users.users);
+  const mentionedUsers = Object.values(users).filter((user) => {
+    return userIds.some((id) => id === user.id);
+  })
+  // const userRecipients = useSelector((state) => state.global.recipients.filter((r) => r.type === "USER"));
+  // const mentionedUsers = userRecipients.filter((user) => {
+  //   let userFound = false;
+  //   userIds.forEach((id) => {
+  //     if (basedOnId && id === user.id) {
+  //       userFound = true;
+  //     } else if (!basedOnId && id === user.type_id) {
+  //       userFound = true;
+  //     }
+  //   });
+  //   return userFound;
+  // });
   const handleAddToPost = () => {
     onAddUsers(mentionedUsers);
   };
@@ -37,12 +41,12 @@ const BodyMention = (props) => {
   };
   let pText = "but they are not recipients of this post";
   let addText = "Add to post";
-  if (type === "task") {
-    pText = "but they are not asignees of this task";
-    addText = "Add to task";
-  } else if (type === "chat") {
+  if (type === "chat") {
     pText = "but they are not members of this chat channel";
     addText = "Add to chat channel";
+  } else if (type === "workspace") {
+    pText = "but they are not members of this workspace";
+    addText = "Add to workspace";
   }
   return (
     <BodyMentionDiv>

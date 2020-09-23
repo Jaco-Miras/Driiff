@@ -1,7 +1,7 @@
 import React, {useRef, useState} from "react";
 import {InputGroup, Label} from "reactstrap";
 import styled from "styled-components";
-import {PickerEmoji, SvgIconFeather, CommonPicker} from "../common";
+import {PickerEmoji, SvgIconFeather, CommonPicker, BodyMention} from "../common";
 import {useQuillModules} from "../hooks";
 import {InputFeedback} from "./index";
 import QuillEditor from "./QuillEditor";
@@ -66,6 +66,41 @@ const WrapperDiv = styled(InputGroup)`
       top: auto;
       text-align: right;
     }
+  }
+  .ql-mention-list-container-top,
+  .ql-mention-list-container {
+    width: 300px !important;
+    max-height: 170px;
+    background: rgb(255, 255, 255);
+    border-radius: 8px;
+    box-shadow: rgba(26, 26, 26, 0.4) 0px 2px 3px 0px, rgba(0, 0, 0, 0.1) 0px 1px 3px 0px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    z-index: 2;
+
+    .ql-mention-list {
+      padding: 0;
+
+      .ql-mention-list-item {
+        display: flex;
+        align-items: center;
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+        padding-left: 1rem;
+
+        &.selected {
+          background: #7a1b8b;
+          color: #fff;
+          cursor: pointer;
+          span.all-pic > img {
+            filter: brightness(0) saturate(100%) invert(1);
+          }
+        }
+      }
+    }
+  }
+  .mention {
+    color: #7a1b8b;
   }
 `;
 
@@ -144,7 +179,7 @@ const PickerContainer = styled(CommonPicker)`
 `;
 
 const DescriptionInput = (props) => {
-  const {onChange, showFileButton = false, onOpenFileDialog, defaultValue = "", mode = "", valid = null, feedback = "", height = 80, members = [], ...otherProps} = props;
+  const {onChange, showFileButton = false, onOpenFileDialog, defaultValue = "", mode = "", valid = null, feedback = "", height = 80, members = [], disableMention = false, disableBodyMention = false, mentionedUserIds, onAddUsers, onDoNothing, modal = "post", ...otherProps} = props;
 
   const reactQuillRef = useRef();
   const pickerRef = useRef();
@@ -181,7 +216,7 @@ const DescriptionInput = (props) => {
     }
   }, []);*/
 
-  const [modules, formats] = useQuillModules("description", () => {}, "top", reactQuillRef, members);
+  const [modules, formats] = useQuillModules("description", () => {}, "top", reactQuillRef, members, disableMention);
 
   return (
     <WrapperDiv>
@@ -190,6 +225,7 @@ const DescriptionInput = (props) => {
           className={`description-wrapper ${valid === null ? "" : valid ? "is-valid" : "is-invalid"}`}>
         <StyledQuillEditor className="description-input" modules={modules} ref={reactQuillRef} onChange={onChange}
                            height={80} defaultValue={defaultValue} {...otherProps} />
+        {mentionedUserIds.length > 0 && !disableBodyMention && <BodyMention onAddUsers={onAddUsers} onDoNothing={onDoNothing} userIds={mentionedUserIds} baseOnId={false} type={modal}/>}
         <Buttons className="action-wrapper">
           <IconButton onClick={handleShowEmojiPicker} icon="smile"/>
           {showFileButton && <IconButton onClick={onOpenFileDialog} icon="paperclip"/>}
