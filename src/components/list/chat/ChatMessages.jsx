@@ -52,10 +52,6 @@ const ChatList = styled.li`
   width: 100%;
   margin-bottom: 5px;
   text-align: center;
-
-  .workspace-chat & {
-    margin: 0 0.5% 5px;
-  }
   .chat-actions-container {
     opacity: 0;
   }
