@@ -84,8 +84,14 @@ body {
   width: 0;
 }
 .mention a {
+  font-weight: bold;
   color: $color-primary;
 }
+.ql-mention-denotation-char {
+  color: $color-primary;
+  font-weight: bold;
+}
+
 .chat-input-wrapper {
   transition: border-color 0.15s cubic-bezier(0.275, 0.42, 0, 1), box-shadow 0.15s cubic-bezier(0.275, 0.42, 0, 1);
 }
