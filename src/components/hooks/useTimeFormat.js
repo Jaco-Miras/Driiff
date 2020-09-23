@@ -138,7 +138,7 @@ const useTimeFormat = () => {
     const local = moment(utc).tz(timezone);
     const today = moment().tz(timezone);
     const yesterday = moment().tz(timezone).subtract(1, "day");
-    
+
     //const hours = moment().diff(moment(utc), "hours");
     // if (hours < 24) {
     //   return moment().calendar().substring(0, moment().calendar().indexOf(" ")) + ", " + local.format(time_format);
