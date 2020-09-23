@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { Avatar, SvgIconFeather } from "../../common";
 
 const Wrapper = styled.div`
+  line-height: 0;
   > span {
     font-size: 11px;
     background-color: ${(props) => (props.iconColor ? props.iconColor : "#fff")};
@@ -24,6 +25,12 @@ const Wrapper = styled.div`
       background-color: ${(props) => (props.iconColor ? props.iconColor : props.iconColor)};
     }
   }
+  .chat-header-icon-left & {
+    span {
+      width: 28px;
+      height: 28px;
+    }
+  }
 `;
 
 const StyledAvatar = styled(Avatar)``;
@@ -32,6 +39,10 @@ const Icon = styled(SvgIconFeather)`
   color: #ffffff !important;
   height: 32px;
   width: 32px;
+  .chat-header-icon-left & {
+    height: 28px;
+    width: 28px;
+  }
 `;
 
 const iconColor = (input) => {

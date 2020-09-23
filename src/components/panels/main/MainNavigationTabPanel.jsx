@@ -108,7 +108,7 @@ const Wrapper = styled.div`
       padding: 0;
       background: #28a745;
       right: -12px;
-      top: -1px;
+      top: -12px;
       z-index: 9;
     }
   }

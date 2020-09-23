@@ -1,7 +1,7 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
-import {SvgIconFeather} from "../../common";
-import {LinkItem} from "./index";
+import { SvgIconFeather } from "../../common";
+import { LinkItem } from "./index";
 
 const Wrapper = styled.li`
   cursor: pointer;
@@ -28,10 +28,10 @@ const Wrapper = styled.li`
   }
   :hover {
     .sub-menu-arrow {
-      margin-left: ${(props) => props.showEditIcon ? "10px" : "auto"};
+      margin-left: ${(props) => (props.showEditIcon ? "10px" : "auto")};
     }
     .feather-pencil {
-      display: ${(props) => props.showEditIcon ? "block" : "none"};
+      display: ${(props) => (props.showEditIcon ? "block" : "none")};
     }
   }
 `;
@@ -66,7 +66,7 @@ const EditIcon = styled(SvgIconFeather)`
 `;
 
 const QuickLinks = (props) => {
-  const {className = "", links, user, dictionary} = props;
+  const { className = "", links, user, dictionary } = props;
 
   const ref = {
     container: useRef(),
@@ -94,26 +94,19 @@ const QuickLinks = (props) => {
     window.open(`${process.env.REACT_APP_apiProtocol}${localStorage.getItem("slug")}.driff.io/admin/quick-links`, "_blank");
   };
 
-
   return (
-
-    <Wrapper ref={ref.container} className={`fadeIn ${className} ${showLinks && "folder-open"}`} selected={showLinks}
-             showEditIcon={user && user.role && (user.role.name === "admin" || user.role.name === "owner")}>
-
+    <Wrapper ref={ref.container} className={`fadeIn ${className} ${showLinks && "folder-open"}`} selected={showLinks} showEditIcon={user && user.role && (user.role.name === "admin" || user.role.name === "owner")}>
       <a href="/" onClick={handleShowLinks}>
-        <NavIcon icon="link"/>
+        <NavIcon icon="link" />
         <div>{dictionary.shortcuts}</div>
-        {user && user.role && (user.role.name === "admin" || user.role.name === "owner") &&
-        <EditIcon icon="pencil" onClick={handleEditLinks}/>}
-        <i ref={ref.arrow} className={`sub-menu-arrow ti-angle-up ${showLinks ? "ti-minus rotate-in" : "ti-plus"}`}/>
+        {user && user.role && (user.role.name === "admin" || user.role.name === "owner") && <EditIcon icon="pencil" onClick={handleEditLinks} />}
+        <i ref={ref.arrow} className={`sub-menu-arrow ti-angle-up ${showLinks ? "ti-minus rotate-in" : "ti-plus"}`} />
       </a>
 
       <LinkNav ref={ref.nav} maxHeight={maxHeight} className={showLinks ? "enter-active" : "leave-active"}>
-        {
-          links.map((link) => {
-            return <LinkItem key={link.id} link={link}/>;
-          })
-        }
+        {links.map((link) => {
+          return <LinkItem key={link.id} link={link} />;
+        })}
       </LinkNav>
     </Wrapper>
   );
