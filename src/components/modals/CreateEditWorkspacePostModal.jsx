@@ -224,6 +224,8 @@ const CreateEditWorkspacePostModal = (props) => {
   const [nestedModal, setNestedModal] = useState(false);
   const [closeAll, setCloseAll] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [mentionedUserIds, setMentionedUserIds] = useState([]);
+  const [ignoredMentionedUserIds, setIgnoredMentionedUserIds] = useState([]);
 
   const {_t} = useTranslation();
 
@@ -520,8 +522,69 @@ const CreateEditWorkspacePostModal = (props) => {
     toggleAll(false);
   };
 
+  const handleAddMentionedUsers = (users) => {
+    //check if users is member of workspace if not add them then add to responsible list
+    //if user is already a member of the workspace then add user to responsible list
+
+    setForm({
+      ...form,
+      selectedUsers: [...users.map((user) => {
+        return {
+          id: user.id,
+          value: user.id,
+          label: user.name,
+          name: user.name,
+          first_name: user.first_name,
+          profile_image_link: user.profile_image_link,
+        }
+      }), ...form.selectedUsers]
+    });
+    // let memberPayload = {
+    //   channel_id: selectedChannel.id,
+    //   recipient_ids: users.map((u) => u.type_id),
+    // };
+    // dispatch(
+    //   postChannelMembers(memberPayload, (err, res) => {
+    //     if (err) return;
+
+    //     if (res) setIgnoredMentionedUserIds([...ignoredMentionedUserIds, ...users.map((u) => u.type_id)]);
+    //   })
+    // );
+
+    setMentionedUserIds([]);
+  };
+
+  const handleIgnoreMentionedUsers = (users) => {
+    console.log(users)
+    setIgnoredMentionedUserIds(users.map((u) => u.id));
+    setMentionedUserIds(mentionedUserIds.filter((id) => !users.some((u) => u.id === id)));
+  };
+
+  const handleMentionUser = (mention_ids) => {
+    mention_ids = mention_ids.map((id) => parseInt(id)).filter((id) => !isNaN(id));
+    if (mention_ids.length) {
+      //check for recipients/type
+      let ignoreIds = [user.id, ...form.selectedUsers.map((u) => u.id), ...ignoredMentionedUserIds];
+      let userIds = mention_ids.filter((id) => {
+        return !ignoreIds.some((iid) => iid === id)
+      });
+      setMentionedUserIds(userIds.length ? userIds.map((id) => parseInt(id)) : []);
+    } else {
+      setIgnoredMentionedUserIds([]);
+      setMentionedUserIds([]);
+    }
+  };
+
   const handleQuillChange = (content, delta, source, editor) => {
     const textOnly = editor.getText(content);
+    if (editor.getContents().ops && editor.getContents().ops.length) {
+      handleMentionUser(
+        editor
+          .getContents()
+          .ops.filter((m) => m.insert.mention)
+          .map((i) => i.insert.mention.id)
+      );
+    }
     setForm({
       ...form,
       body: content,
@@ -808,8 +871,12 @@ const CreateEditWorkspacePostModal = (props) => {
           onOpenFileDialog={handleOpenFileDialog}
           defaultValue={item.hasOwnProperty("draft") ? form.body : mode === "edit" ? item.post.body : ""}
           mode={mode}
-          members={activeTopic ? activeTopic.members : []}
+          //members={activeTopic ? activeTopic.members : []}
           required
+          mentionedUserIds={mentionedUserIds}
+          onAddUsers={handleAddMentionedUsers}
+          onDoNothing={handleIgnoreMentionedUsers}
+          disableBodyMention={true}
           /*valid={valid.description}
                      feedback={feedback.description}*/
         />
