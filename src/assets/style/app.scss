@@ -41,11 +41,12 @@ body {
   }
 }
 
-.topic-text-container {
+.topic-text {
+  max-width: 205px;
+  display: block;
   white-space: nowrap;
-  overflow: hidden;
   text-overflow: ellipsis;
-  width: 100%;
+  overflow: hidden;
 }
 
 ::-webkit-scrollbar {
