@@ -10,6 +10,7 @@ const BodyMentionDiv = styled.div`
   display: block;
   .mention-name {
     color: #7a1b8b;
+    font-weight: bold;
   }
   button {
     margin-right: 10px;
