@@ -876,7 +876,7 @@ const CreateEditWorkspacePostModal = (props) => {
           mentionedUserIds={mentionedUserIds}
           onAddUsers={handleAddMentionedUsers}
           onDoNothing={handleIgnoreMentionedUsers}
-          disableBodyMention={true}
+          //disableBodyMention={true}
           /*valid={valid.description}
                      feedback={feedback.description}*/
         />

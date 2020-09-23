@@ -1003,7 +1003,8 @@ const CreateEditWorkspaceModal = (props) => {
           mode={mode}
           valid={valid.description}
           feedback={feedback.description}
-          disableMention={mode !== "edit"}
+          //disableMention={mode !== "edit"}
+          disableBodyMention={true}
           modal={"workspace"}
           mentionedUserIds={mentionedUserIds}
           onAddUsers={handleAddMentionedUsers}
