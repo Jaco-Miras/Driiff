@@ -1,14 +1,15 @@
-import React, {useEffect, useRef, useState} from "react";
-import {useDispatch} from "react-redux";
-import {useHistory} from "react-router-dom";
+import React, { useEffect, useRef, useState } from "react";
+import { useDispatch } from "react-redux";
+import { useHistory } from "react-router-dom";
 import styled from "styled-components";
-import {addToModals} from "../../../../redux/actions/globalActions";
-import {setParentIdForUpload} from "../../../../redux/actions/postActions";
-import {FileAttachments, SvgIconFeather, ToolTip} from "../../../common";
-import {DropDocument} from "../../../dropzone/DropDocument";
-import {useCommentActions, useComments} from "../../../hooks";
-import {CompanyPostBody, CompanyPostComments, CompanyPostDetailFooter} from "./index";
-import {replaceChar} from "../../../../helpers/stringFormatter";
+import { addToModals } from "../../../../redux/actions/globalActions";
+import { setParentIdForUpload } from "../../../../redux/actions/postActions";
+import { FileAttachments, SvgIconFeather, ToolTip } from "../../../common";
+import { DropDocument } from "../../../dropzone/DropDocument";
+import { useCommentActions, useComments } from "../../../hooks";
+import { CompanyPostBody, CompanyPostComments, CompanyPostDetailFooter } from "./index";
+import { replaceChar } from "../../../../helpers/stringFormatter";
+import { MoreOptions } from "../../common";
 
 const MainHeader = styled.div`
   min-height: 70px;
@@ -30,13 +31,18 @@ const MainHeader = styled.div`
       }
     }
   }
-  
+
+  .company-post-detail-header {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+  }
   .close {
-    .dark &{
-      color: #fff; 
+    .dark & {
+      color: #fff;
     }
   }
-  
+
   .author-name {
     color: #a7abc3;
     font-size: 14px;
@@ -90,8 +96,8 @@ const MarkAsRead = styled.div`
 `;
 
 const CompanyPostDetail = (props) => {
-  const {post, postActions, user, onGoBack, dictionary} = props;
-
+  const { post, postActions, user, onGoBack, dictionary } = props;
+  const { markAsRead, markAsUnread, sharePost, snoozePost, followPost } = postActions;
   const dispatch = useDispatch();
   const history = useHistory();
   const commentActions = useCommentActions();
@@ -100,8 +106,8 @@ const CompanyPostDetail = (props) => {
   const [showDropZone, setshowDropZone] = useState(false);
   const [react, setReact] = useState({
     user_clap_count: post.user_clap_count,
-    clap_count: post.clap_count
-  })
+    clap_count: post.clap_count,
+  });
 
   const handleClosePost = () => {
     onGoBack();
@@ -177,7 +183,7 @@ const CompanyPostDetail = (props) => {
   };
 
   const handleReaction = () => {
-    setReact(prevState => ({
+    setReact((prevState) => ({
       user_clap_count: !!prevState.user_clap_count ? 0 : 1,
       clap_count: !!prevState.user_clap_count ? prevState.clap_count - 1 : prevState.clap_count + 1,
     }));
@@ -197,9 +203,9 @@ const CompanyPostDetail = (props) => {
 
   const handleAuthorClick = () => {
     history.push(`/profile/${post.author.id}/${replaceChar(post.author.name)}`);
-  }
+  };
 
-  const isMember = post.users_responsible.some(u => u.id === user.id);
+  const isMember = post.users_responsible.some((u) => u.id === user.id);
 
   useEffect(() => {
     const viewed = post.view_user_ids.some((id) => id === user.id);
@@ -217,20 +223,36 @@ const CompanyPostDetail = (props) => {
   return (
     <>
       <MainHeader className="card-header d-flex justify-content-between">
-        <div>
-          <ul>
-            <li>
-              <Icon className="close mr-2" icon="arrow-left" onClick={handleClosePost}/>
-            </li>
-            <li>
-              <h5 ref={refs.title} className="post-title mb-0">
-                <span>{post.title}</span>
-              </h5>
-              <div className="author-name"><ToolTip content={post.author.name}>by <span onClick={handleAuthorClick}
-                                                                                        className="cursor-pointer">{post.author.first_name}</span></ToolTip>
-              </div>
-            </li>
-          </ul>
+        <div className={"company-post-detail-header"}>
+          <div>
+            <ul>
+              <li>
+                <Icon className="close mr-2" icon="arrow-left" onClick={handleClosePost} />
+              </li>
+              <li>
+                <h5 ref={refs.title} className="post-title mb-0">
+                  <span>{post.title}</span>
+                </h5>
+                <div className="author-name">
+                  <ToolTip content={post.author.name}>
+                    by{" "}
+                    <span onClick={handleAuthorClick} className="cursor-pointer">
+                      {post.author.first_name}
+                    </span>
+                  </ToolTip>
+                </div>
+              </li>
+            </ul>
+          </div>
+          <div>
+            <MoreOptions className="ml-2" item={post} width={170} moreButton={"more-vertical"}>
+              <div onClick={() => markAsRead(post, true)}>{dictionary.markAsRead}</div>
+              <div onClick={() => markAsUnread(post, true)}>{dictionary.markAsUnread}</div>
+              <div onClick={() => sharePost(post)}>{dictionary.share}</div>
+              <div onClick={() => snoozePost(post)}>{dictionary.snooze}</div>
+              {post.author.id !== user.id && <div onClick={() => followPost(post)}>{post.is_followed ? dictionary.unFollow : dictionary.follow}</div>}
+            </MoreOptions>
+          </div>
         </div>
         <div>
           {post.author.id !== user.id && !post.is_read_requirement && (
@@ -244,17 +266,14 @@ const CompanyPostDetail = (props) => {
             <ul>
               <li>
                 <span data-toggle="modal" data-target="#editTaskModal">
-                  <a onClick={() => postActions.showModal("edit_company", post)} className="btn btn-outline-light ml-2"
-                     title=""
-                     data-toggle="tooltip" data-original-title="Edit Task">
-                    <Icon icon="edit-3"/>
+                  <a onClick={() => postActions.showModal("edit_company", post)} className="btn btn-outline-light ml-2" title="" data-toggle="tooltip" data-original-title="Edit Task">
+                    <Icon icon="edit-3" />
                   </a>
                 </span>
               </li>
               <li>
-                <a onClick={() => postActions.trash(post)} className="btn btn-outline-light ml-2" data-toggle="tooltip"
-                   title="" data-original-title="Delete Task">
-                  <Icon icon="trash"/>
+                <a onClick={() => postActions.trash(post)} className="btn btn-outline-light ml-2" data-toggle="tooltip" title="" data-original-title="Delete Task">
+                  <Icon icon="trash" />
                 </a>
               </li>
             </ul>
@@ -266,25 +285,22 @@ const CompanyPostDetail = (props) => {
           hide={!showDropZone}
           ref={refs.dropZoneRef}
           onDragLeave={handleHideDropzone}
-          onDrop={({acceptedFiles}) => {
+          onDrop={({ acceptedFiles }) => {
             dropAction(acceptedFiles);
           }}
           onCancel={handleHideDropzone}
         />
-        <CompanyPostBody
-          post={post} postActions={postActions} isAuthor={post.author.id === user.id}
-          dictionary={dictionary}/>
-        <hr className="m-0"/>
+        <CompanyPostBody post={post} postActions={postActions} isAuthor={post.author.id === user.id} dictionary={dictionary} />
+        <hr className="m-0" />
         <Counters className="d-flex align-items-center">
           <div>
-            <Icon className={react.user_clap_count ? "mr-2 post-reaction clap-true" : "mr-2 post-reaction clap-false"}
-                  icon="heart" onClick={handleReaction}/>
+            <Icon className={react.user_clap_count ? "mr-2 post-reaction clap-true" : "mr-2 post-reaction clap-false"} icon="heart" onClick={handleReaction} />
             {react.clap_count}
           </div>
           <div className="ml-auto text-muted">
-            <Icon className="mr-2" icon="message-square"/>
+            <Icon className="mr-2" icon="message-square" />
             {post.reply_count}
-            <Icon className="ml-2 mr-2 seen-indicator" icon="eye"/>
+            <Icon className="ml-2 mr-2 seen-indicator" icon="eye" />
             {post.view_user_ids.length}
           </div>
         </Counters>
@@ -292,30 +308,18 @@ const CompanyPostDetail = (props) => {
           <>
             <div className="card-body">
               <h6 className="mb-3 font-size-11 text-uppercase">{dictionary.files}</h6>
-              <PostFiles attachedFiles={post.files} type="company" post={post}/>
+              <PostFiles attachedFiles={post.files} type="company" post={post} />
             </div>
-            <hr className="m-0"/>
+            <hr className="m-0" />
           </>
         )}
-        {
-          comments && Object.keys(comments).length > 0 && (
-            <>
-              <CompanyPostComments
-                comments={comments}
-                post={post} user={user}
-                commentActions={commentActions}
-                onShowFileDialog={handleOpenFileDialog}
-                dropAction={dropAction}
-                dictionary={dictionary}
-              />
-              <hr className="m-0"/>
-            </>
-          )
-        }
-        <CompanyPostDetailFooter
-          isMember={isMember}
-          post={post} commentActions={commentActions} onShowFileDialog={handleOpenFileDialog}
-          dropAction={dropAction}/>
+        {comments && Object.keys(comments).length > 0 && (
+          <>
+            <CompanyPostComments comments={comments} post={post} user={user} commentActions={commentActions} onShowFileDialog={handleOpenFileDialog} dropAction={dropAction} dictionary={dictionary} />
+            <hr className="m-0" />
+          </>
+        )}
+        <CompanyPostDetailFooter isMember={isMember} post={post} commentActions={commentActions} onShowFileDialog={handleOpenFileDialog} dropAction={dropAction} />
       </MainBody>
     </>
   );
