@@ -7,7 +7,8 @@ import { UserListPopUp } from "../../../common";
 import useChatMessageActions from "../../../hooks/useChatMessageActions";
 
 const EmojiContainer = styled.div`
-  background: ${(props) => (props.isAuthor ? "rgba(151, 81, 163, 0.6)" : "rgba(240, 240, 240, 0.8)")};
+  background: ${(props) => (props.isAuthor ? "rgb(157 57 173 / 93%)" : "rgba(240, 240, 240, 0.8)")};
+  color: ${(props) => (props.isAuthor ? "#fff" : "#505050")};
   padding: 4px;
   display: flex;
   align-items: center;
@@ -45,8 +46,8 @@ const EmojiReaction = (props) => {
 
   return (
     <EmojiContainer onClick={handleToggleReact} isAuthor={isAuthor} className="chat-emoji">
-      <Emoji emoji={type} size={16} />
-      {count > 1 ? <span>{count}</span> : null}
+      <Emoji emoji={type} size={20} />
+      {count > 1 ? <span> {count}</span> : null}
       <StyledUserListPopUp
         className={"chat-emoji-users-list"}
         isAuthor={isAuthor}

@@ -41,6 +41,14 @@ body {
   }
 }
 
+.topic-text {
+  max-width: 205px;
+  display: block;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
 ::-webkit-scrollbar {
   width: 10px;
 }
@@ -255,10 +263,9 @@ body.dark {
     fill: $dm-text-color;
   }
 
-  // .emoji-mart-category {
-  //   background-color: $dm-bg !important;
-  //   color: $dm-text-color;
-  // }
+  .emoji {
+    width: 50px;
+  }
 
   .emoji-mart-category-label span {
     background-color: $dm-bg !important;

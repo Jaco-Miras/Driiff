@@ -185,7 +185,7 @@ export const useTranslation = () => {
   }, []);
 
   const uploadTranslationToServer = useCallback(
-    (callback = () => { }) => {
+    (callback = () => {}) => {
       let vocabulary = [];
       let bodyText = `You are about to add the following words to the dictionary files, continue?`;
       bodyText += `<table>`;
