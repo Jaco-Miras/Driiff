@@ -1,14 +1,14 @@
-import React, {useRef, useState} from "react";
-import {useDispatch, useSelector} from "react-redux";
+import React, { useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import Tooltip from "react-tooltip-lite";
 import styled from "styled-components";
-import {onClickSendButton, putChannel} from "../../../redux/actions/chatActions";
-import {joinWorkspace} from "../../../redux/actions/workspaceActions";
-import {CommonPicker, SvgIconFeather} from "../../common";
+import { onClickSendButton, putChannel } from "../../../redux/actions/chatActions";
+import { joinWorkspace } from "../../../redux/actions/workspaceActions";
+import { CommonPicker, SvgIconFeather } from "../../common";
 import ChatInput from "../../forms/ChatInput";
-import {useIsMember, useTimeFormat, useToaster, useTranslation} from "../../hooks";
+import { useIsMember, useTimeFormat, useToaster, useTranslation } from "../../hooks";
 import ChatQuote from "../../list/chat/ChatQuote";
-import {addToModals} from "../../../redux/actions/globalActions";
+import { addToModals } from "../../../redux/actions/globalActions";
 import TypingIndicator from "../../list/chat/TypingIndicator";
 import LockedLabel from "./LockedLabel";
 
@@ -21,8 +21,11 @@ const Wrapper = styled.div`
     cursor: pointer;
     width: 46px;
     border-radius: 8px;
-    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    transition: background-color 0.15s ease-in-out;
     padding: 12px;
+    &:hover {
+      background-color: #e1e1e1;
+    }
   }
 `;
 
@@ -54,12 +57,12 @@ const ChatInputContainer = styled.div`
     margin: 4px;
     height: calc(100% - 8px);
     background: #7a1b8b;
-    border: 1px solid #7a1b8b;
     border-radius: 4px;
     min-width: 40px;
     width: 40px;
-    padding: 9px;
+    padding: 10px;
     cursor: pointer;
+    transition: background-color 0.15s ease-in-out, color 0.15s ease-in-out;
   }
   .feather-smile {
     right: 44px;
@@ -72,11 +75,9 @@ const ChatInputContainer = styled.div`
       color: #7a1b8b;
     }
   }
-
-  ${"" /* max-width: calc(100% - 165px); */}
-  ${"" /* @media all and (max-width: 620px) {
-    max-width: calc(100% - 111px);
-  } */}
+  .feather-send:hover {
+    background-color: #7a1b8bcc;
+  }
 `;
 
 const Icon = styled(SvgIconFeather)`
@@ -88,7 +89,7 @@ const IconButton = styled(SvgIconFeather)``;
 
 const Dflex = styled.div`
   .workspace-chat & {
-    width: 99%;
+    width: 100%;
     margin: 0 auto;
   }
   &.channel-viewing {

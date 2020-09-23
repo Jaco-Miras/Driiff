@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useRouteMatch } from "react-router-dom";
 import styled from "styled-components";
 import { addToModals } from "../../../redux/actions/globalActions";
@@ -8,10 +8,19 @@ import useChannelActions from "../../hooks/useChannelActions";
 import ChatMembers from "../../list/chat/ChatMembers";
 import ChatTitleTyping from "../../list/chat/ChatTitleTyping";
 import { MemberLists } from "../../list/members";
+import ChannelIcon from "../../list/chat/ChannelIcon";
 
 const Wrapper = styled.div`
   position: relative;
   z-index: 2;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  .chat-header-title {
+    font-size: 15px;
+    font-weight: 500;
+    margin: 0;
+  }
 `;
 
 const IconButton = styled(SvgIconFeather)`
@@ -29,6 +38,12 @@ const IconButton = styled(SvgIconFeather)`
   }
 `;
 
+const Icon = styled(SvgIconFeather)`
+  color: #ffffff !important;
+  height: 32px;
+  width: 32px;
+`;
+
 const ChatHeaderPanel = (props) => {
   /**
    * @todo refactor
@@ -41,6 +56,7 @@ const ChatHeaderPanel = (props) => {
   const channelActions = useChannelActions();
 
   const [page, setPage] = useState("chat");
+  const chatChannel = useSelector((state) => state.chat.selectedChannel);
 
   const handleArchiveChat = () => {
     channelActions.archive(channel);
@@ -91,41 +107,33 @@ const ChatHeaderPanel = (props) => {
 
   return (
     <Wrapper className={`chat-header border-bottom ${className}`}>
-      <div className="d-flex align-items-center">
-        {page === "chat" && (
-          <>
-            <ChatMembers members={channel.members} />
-            <ChatTitleTyping />
-          </>
-        )}
-        {page === "workspace" && (
-          <>
-            <ChatMembers members={channel.members} page={"workspace"} />
-            <ChatTitleTyping page={"workspace"} />
-          </>
-        )}
-        <div className="ml-auto">
-          {page === "workspace" && <MemberLists members={channel.members} />}
-          <ul className="nav align-items-center">
-            {["DIRECT", "PERSONAL_BOT", "COMPANY", "TOPIC"].includes(channel.type) === false && !channel.is_archived && (
-              <>
-                <li className="mr-4 d-sm-inline d-none">
-                  <IconButton icon={"edit-3"} onClick={handleShowChatEditModal} />
-                </li>
-              </>
-            )}
-            {["PERSONAL_BOT", "COMPANY", "TOPIC"].includes(channel.type) === false && (
-              <>
-                <li className="mr-4 d-sm-inline d-none" title={channel.is_archived ? "Restore" : "Archive"}>
-                  <IconButton icon={channel.is_archived ? "rotate-ccw" : "trash-2"} onClick={handleShowArchiveConfirmation} />
-                </li>
-              </>
-            )}
-            <li className="mobile-chat-close-btn" onClick={goBackChannelSelect}>
-              <IconButton icon={"arrow-left"} />
-            </li>
-          </ul>
-        </div>
+      <div className="chat-header-icon-left">
+        <ChannelIcon channel={channel} />
+      </div>
+      <h2 className="chat-header-title">{chatChannel.title}</h2>
+      <div className="chat-header-right">
+        <ul className="nav align-items-center">
+          <li>
+            <MemberLists members={channel.members} />
+          </li>
+          {["DIRECT", "PERSONAL_BOT", "COMPANY", "TOPIC"].includes(channel.type) === false && !channel.is_archived && (
+            <>
+              <li className="ml-2 d-sm-inline d-none">
+                <IconButton icon={"edit-3"} onClick={handleShowChatEditModal} />
+              </li>
+            </>
+          )}
+          {["PERSONAL_BOT", "COMPANY", "TOPIC"].includes(channel.type) === false && (
+            <>
+              <li className="ml-2 d-sm-inline d-none" title={channel.is_archived ? "Restore" : "Archive"}>
+                <IconButton icon={channel.is_archived ? "rotate-ccw" : "trash-2"} onClick={handleShowArchiveConfirmation} />
+              </li>
+            </>
+          )}
+          <li className="ml-2 mobile-chat-close-btn" onClick={goBackChannelSelect}>
+            <IconButton icon={"arrow-left"} />
+          </li>
+        </ul>
       </div>
     </Wrapper>
   );

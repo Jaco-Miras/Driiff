@@ -6,7 +6,7 @@ import { ChatContentPanel } from "../chat";
 const Wrapper = styled.div``;
 
 const Chatblock = styled.div`
-  padding: 15px 15px 0 15px;
+  padding: 24px 24px 0 24px;
   @media (max-width: 991.99px) {
     padding: 15px;
   }
@@ -19,7 +19,7 @@ const WorkspaceChatPanel = (props) => {
   return (
     <Wrapper className={`workspace-chat container-fluid ${className}`}>
       <Chatblock className="row no-gutters chat-block">
-        <ChatContentPanel className={"col-lg-12"} selectedChannel={selectedChannel} />
+        <ChatContentPanel className={"col-lg-12"} isWorkspace="true" selectedChannel={selectedChannel} />
       </Chatblock>
     </Wrapper>
   );

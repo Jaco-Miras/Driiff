@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import {Avatar, PlusRecipients} from "../../common";
-import {useIsUserTyping} from "../../hooks";
+import { Avatar, PlusRecipients } from "../../common";
+import { useIsUserTyping } from "../../hooks";
 
 const ChatMembersContainer = styled.div``;
 
@@ -21,16 +21,14 @@ const ChatMembers = (props) => {
       {page === "chat"
         ? [
             firstFiveMembers.map((m, i) => {
-              return <StyledAvatar id={m.id} firstUser={i === 0} className="chat-members" key={m.id}
-                                   name={m.name ? m.name : m.email} imageLink={m.profile_image_link} hasAccepted={m.has_accepted}/>;
+              return <StyledAvatar id={m.id} firstUser={i === 0} className="chat-members" key={m.id} name={m.name ? m.name : m.email} imageLink={m.profile_image_link} hasAccepted={m.has_accepted} />;
             }),
 
             afterFiveMembers.length != null && afterFiveMembers[0] && <PlusRecipients recipients={afterFiveMembers}></PlusRecipients>,
           ]
         : page === "workspace" && usersTyping.length
         ? usersTyping.map((m, i) => {
-            return <StyledAvatar userId={m.id} firstUser={i === 0} className="chat-members" key={m.id}
-                                 name={m.name ? m.name : m.email} imageLink={m.profile_image_link} hasAccepted={m.has_accepted}/>;
+            return <StyledAvatar userId={m.id} firstUser={i === 0} className="chat-members" key={m.id} name={m.name ? m.name : m.email} imageLink={m.profile_image_link} hasAccepted={m.has_accepted} />;
           })
         : null}
     </ChatMembersContainer>

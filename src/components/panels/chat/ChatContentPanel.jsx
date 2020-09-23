@@ -18,7 +18,7 @@ const ChatMessagesPlaceholder = styled.div`
 `;
 
 const ChatContentPanel = (props) => {
-  const { className = "", selectedChannel } = props;
+  const { className = "", selectedChannel, isWorkspace = false } = props;
 
   const dispatch = useDispatch();
   const chatMessageActions = useChatMessageActions();
@@ -128,7 +128,7 @@ const ChatContentPanel = (props) => {
         }}
         onCancel={handleHideDropzone}
       />
-      {selectedChannel !== null && selectedChannel.type !== "TOPIC" && <ChatHeaderPanel channel={selectedChannel} />}
+      {!isWorkspace && <ChatHeaderPanel channel={selectedChannel} />}
       {selectedChannel !== null && unreadCount > 0 && <ChatUnreadFloatBar channel={selectedChannel} />}
       {selectedChannel !== null ? <ChatMessages selectedChannel={selectedChannel} chatMessageActions={chatMessageActions} timeFormat={timeFormat} dictionary={dictionary} unreadCount={unreadCount} /> : <ChatMessagesPlaceholder />}
       <ChatFooterPanel onShowFileDialog={handleOpenFileDialog} dropAction={dropAction} />
