@@ -83,13 +83,23 @@ body {
 .ql-mention-list-container::-webkit-scrollbar {
   width: 0;
 }
+
+.mention {
+  color: $color-primary;
+}
+
+.mention:hover {
+  color: black !important;
+}
+
 .mention a {
   font-weight: bold;
   color: $color-primary;
 }
+
 .ql-mention-denotation-char {
-  color: $color-primary;
   font-weight: bold;
+  cursor: default;
 }
 
 .chat-input-wrapper {
@@ -110,6 +120,24 @@ body.dark {
   // #25282c // bg
   // #191c20 // mid / tobar chat
   // #ffffff14 // borders of #fff3
+
+  .mention {
+    color: rgba(255, 255, 255, 0.5);
+  }
+
+  .mention:hover {
+    color: $dm-text-color;
+  }
+
+  .mention a {
+    font-weight: bold;
+    color: $color-primary;
+  }
+
+  .ql-mention-denotation-char {
+    font-weight: bold;
+    cursor: default;
+  }
 
   ::-webkit-scrollbar-thumb:hover {
     background-color: $dm-bg;

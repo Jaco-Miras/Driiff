@@ -1,23 +1,23 @@
-import React, {useCallback, useEffect, useRef, useState} from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
-import {useHistory} from "react-router-dom";
-import {Avatar, FileAttachments, SvgIconFeather} from "../../../common";
-import {MoreOptions} from "../../../panels/common";
-import {PostDetailFooter} from "../../../panels/post/index";
-import {SubComments} from "./index";
-import {useGoogleApis, useTimeFormat} from "../../../hooks";
+import { useHistory } from "react-router-dom";
+import { Avatar, FileAttachments, SvgIconFeather } from "../../../common";
+import { MoreOptions } from "../../../panels/common";
+import { PostDetailFooter } from "../../../panels/post/index";
+import { SubComments } from "./index";
+import { useGoogleApis, useTimeFormat } from "../../../hooks";
 import GifPlayer from "react-gif-player";
-import {getGifLinks} from "../../../../helpers/urlContentHelper";
+import { getGifLinks } from "../../../../helpers/urlContentHelper";
 import quillHelper from "../../../../helpers/quillHelper";
 
 const Wrapper = styled.li`
   margin-bottom: 1rem;
-  
+
   .mention {
     font-weight: bold;
-    color: #7A1B8B;
+    color: #7a1b8b;
     &[data-value="All"],
-    &[data-id="${props => props.userId}"] {
+    &[data-id="${(props) => props.userId}"] {
       font-weight: normal;
       box-shadow: none;
       padding: 0 4px;
@@ -28,23 +28,23 @@ const Wrapper = styled.li`
       height: auto;
     }
   }
-  
-  .quote {    
+
+  .quote {
     border-radius: 6px;
     margin: 0 auto 0.5rem;
-    width: 95%;    
+    width: 95%;
     position: relative;
     padding: 1rem;
-    
+
     &.border-side {
       border-left: 5px solid #822492;
     }
-    
+
     > * {
-      margin-bottom: 0;      
+      margin-bottom: 0;
     }
   }
-    
+
   .quote-author {
     margin-top: 2rem;
     font-style: italic;
@@ -105,15 +105,12 @@ const Icon = styled(SvgIconFeather)`
 `;
 
 const Comment = (props) => {
-  const {
-    className = "", comment, post, type = "main", user, commentActions, parentId, onShowFileDialog,
-    dropAction, parentShowInput = null, workspace, isMember, dictionary, disableOptions
-  } = props;
+  const { className = "", comment, post, type = "main", user, commentActions, parentId, onShowFileDialog, dropAction, parentShowInput = null, workspace, isMember, dictionary, disableOptions } = props;
 
   const refs = {
     input: useRef(null),
     body: useRef(null),
-    main: useRef(null)
+    main: useRef(null),
   };
 
   const history = useHistory();
@@ -124,7 +121,7 @@ const Comment = (props) => {
   const [showGifPlayer, setShowGifPlayer] = useState(null);
   const [react, setReact] = useState({
     user_clap_count: comment.user_clap_count,
-    clap_count: comment.clap_count
+    clap_count: comment.clap_count,
   });
 
   const handleShowInput = useCallback(
@@ -140,7 +137,7 @@ const Comment = (props) => {
   );
 
   const handleMentionUser = () => {
-    setUserMention(`<p><span class="mention" data-index="0" data-denotation-char="@" data-id="${comment.author.id}" data-value="${comment.author.name}">
+    setUserMention(`<p class="mention-data"><span class="mention" data-index="0" data-denotation-char="@" data-id="${comment.author.id}" data-value="${comment.author.name}">
         <span contenteditable="false"><span class="ql-mention-denotation-char">@</span>${comment.author.name}</span></span></p> `);
     setShowInput(true);
   };
@@ -171,10 +168,9 @@ const Comment = (props) => {
   }, [showInput, refs.input.current]);
 
   const handleReaction = () => {
-    if (disableOptions)
-      return;
+    if (disableOptions) return;
 
-    setReact(prevState => ({
+    setReact((prevState) => ({
       user_clap_count: !!prevState.user_clap_count ? 0 : 1,
       clap_count: !!prevState.user_clap_count ? prevState.clap_count - 1 : prevState.clap_count + 1,
     }));
@@ -187,7 +183,7 @@ const Comment = (props) => {
     commentActions.clap(payload);
   };
 
-  const {fromNow} = useTimeFormat();
+  const { fromNow } = useTimeFormat();
 
   const handleCommentBodyRef = (e) => {
     if (e) {
@@ -220,62 +216,48 @@ const Comment = (props) => {
     }
     return () => {
       history.push(history.location.pathname, null);
-    }
+    };
   }, []);
 
   return (
     <>
       <Wrapper ref={refs.main} className={`comment card border fadeBottom ${className} animated`} userId={user.id}>
-        {
-          comment.quote &&
+        {comment.quote && (
           <>
-            {
-              comment.quote.user && (
-                <div className="quote-author">{comment.quote.user.name}</div>
-              )
-            }
-            <div className="quote border border-side" dangerouslySetInnerHTML={{__html: comment.quote.body}}/>
+            {comment.quote.user && <div className="quote-author">{comment.quote.user.name}</div>}
+            <div className="quote border border-side" dangerouslySetInnerHTML={{ __html: comment.quote.body }} />
           </>
-
-        }
+        )}
         <CommentWrapper ref={refs.body} className="card-body" type={type}>
           <CommentHeader className="d-flex">
             <div className="d-flex justify-content-center align-items-center">
-              <Avatar className="mr-2" id={comment.author.id} name={comment.author.name}
-                      imageLink={comment.author.profile_image_link}/>
+              <Avatar className="mr-2" id={comment.author.id} name={comment.author.name} imageLink={comment.author.profile_image_link} />
               <span>{comment.author.first_name}</span>
               <span className="text-muted ml-1">{fromNow(comment.created_at.timestamp)}</span>
             </div>
             {post.is_read_only !== 1 && !disableOptions && (
               <MoreOptions scrollRef={refs.body.current} moreButton={"more-vertical"}>
-                {user.id === comment.author.id &&
-                <div onClick={() => commentActions.setToEdit(comment)}>{dictionary.editReply}</div>}
+                {user.id === comment.author.id && <div onClick={() => commentActions.setToEdit(comment)}>{dictionary.editReply}</div>}
                 <div onClick={handleQuote}>{dictionary.quote}</div>
                 {user.id !== comment.author.id && <div onClick={handleMentionUser}>{dictionary.mentionUser}</div>}
-                {user.id === comment.author.id &&
-                <div onClick={() => commentActions.remove(comment)}>{dictionary.removeReply}</div>}
+                {user.id === comment.author.id && <div onClick={() => commentActions.remove(comment)}>{dictionary.removeReply}</div>}
               </MoreOptions>
             )}
           </CommentHeader>
-          <CommentBody
-            ref={handleCommentBodyRef}
-            className="mt-2 mb-3"
-            dangerouslySetInnerHTML={{__html: quillHelper.parseEmoji(comment.body)}}/>
+          <CommentBody ref={handleCommentBodyRef} className="mt-2 mb-3" dangerouslySetInnerHTML={{ __html: quillHelper.parseEmoji(comment.body) }} />
           {showGifPlayer &&
-          getGifLinks(comment.body).map((gifLink, index) => {
-            return <GifPlayer key={index} className={"gifPlayer"} gif={gifLink} autoplay={true}/>;
-          })}
+            getGifLinks(comment.body).map((gifLink, index) => {
+              return <GifPlayer key={index} className={"gifPlayer"} gif={gifLink} autoplay={true} />;
+            })}
           {comment.files.length >= 1 && (
             <>
-              <hr/>
+              <hr />
               <h6>{dictionary.files}</h6>
-              <FileAttachments attachedFiles={comment.files} type="workspace" comment={comment}/>
+              <FileAttachments attachedFiles={comment.files} type="workspace" comment={comment} />
             </>
           )}
           <div className="d-flex align-items-center justify-content-start">
-            <Icon
-              className={react.user_clap_count ? "mr-2 comment-reaction clap-true" : "mr-2 comment-reaction clap-false"}
-              icon="heart" onClick={handleReaction}/>
+            <Icon className={react.user_clap_count ? "mr-2 comment-reaction clap-true" : "mr-2 comment-reaction clap-false"} icon="heart" onClick={handleReaction} />
             {react.clap_count > 0 ? react.clap_count : null}
             {post.is_read_only !== 1 && !disableOptions && (
               <Reply className="ml-3" onClick={handleShowInput}>
@@ -295,7 +277,8 @@ const Comment = (props) => {
           parentId={type === "main" ? comment.id : null}
           onShowFileDialog={onShowFileDialog}
           dropAction={dropAction}
-          workspace={workspace} isMember={isMember}
+          workspace={workspace}
+          isMember={isMember}
           dictionary={dictionary}
           disableOptions={disableOptions}
         />
@@ -313,7 +296,8 @@ const Comment = (props) => {
             handleClearUserMention={handleClearUserMention}
             onShowFileDialog={onShowFileDialog}
             dropAction={dropAction}
-            workspace={workspace} isMember={isMember}
+            workspace={workspace}
+            isMember={isMember}
             disableOptions={disableOptions}
           />
         </InputWrapper>
