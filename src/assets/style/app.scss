@@ -49,8 +49,6 @@ body {
   overflow: hidden;
 }
 
-
-
 ::-webkit-scrollbar:hover {
   width: 10px;
 }
@@ -69,7 +67,6 @@ body {
   background-color: #babac0;
   border: 1px solid #babac0;
 }
-
 /* set button(top and bottom of the scrollbar) */
 ::-webkit-scrollbar-button {
   display: none;
@@ -21008,9 +21005,6 @@ body.dark.small-navigation .navigation-menu-body ul li.navigation-divider:after 
     padding-left: 24px !important;
     padding-right: 24px !important;
   }
-  .chat-lists .list-group-flush {
-
-  }
   .channel-number-new-group-wrapper {
     padding-left: 24px !important;
     padding-right: 24px !important;
@@ -21262,31 +21256,13 @@ body.dark.small-navigation .navigation-menu-body ul li.navigation-divider:after 
   nav.navbar .navbar-menu {
     padding-left: 0;
   }
-
   .header .dropdown-menu {
     right: 0 !important;
     left: 0 !important;
   }
-
-  .chat-lists .list-group-flush {
-    padding-right: 0 !important;
-    padding-left: 0 !important;
-  }
-
   .tab-panel {
     padding-top: 0 !important;
   }
-
-  // .navbar-bottom {
-  //   position: absolute;
-  //   top: 60px;
-  //   width: 100%;
-
-  //   a {
-  //     margin: 0 0.8rem;
-  //   }
-  // }
-
   .chat-sidebar {
     left: 0;
     padding-left: 0 !important;
