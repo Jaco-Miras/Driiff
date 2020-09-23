@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import {useSelector} from "react-redux";
-import {useSortChannels} from "../../hooks";
+import { useSelector } from "react-redux";
+import { useSortChannels } from "../../hooks";
 import ChannelList from "./ChannelList";
 
 const ChannelsSidebarContainer = styled.div``;
@@ -14,6 +14,10 @@ const Channels = styled.ul`
   }
   .avatar {
     border: 0 !important;
+  }
+  @media (max-width: 991.99px) {
+    padding-left: 15px;
+    padding-right: 15px;
   }
 `;
 const ChatHeader = styled.h4`
@@ -46,10 +50,8 @@ const ChannelsSidebar = (props) => {
             }*/
 
             if (a.type === "PERSONAL_BOT" && b.type !== "PERSONAL_BOT") {
-              if (b.is_relevant)
-                chatHeader = dictionary.chats;
-              else
-                chatHeader = dictionary.chats;
+              if (b.is_relevant) chatHeader = dictionary.chats;
+              else chatHeader = dictionary.chats;
             } else if (a.is_relevant && !b.is_relevant) {
               if (!(a.add_user || a.add_open_topic) && (b.add_user || b.add_open_topic)) {
                 chatHeader = dictionary.contacts;
@@ -59,7 +61,6 @@ const ChannelsSidebar = (props) => {
             } else if (!a.is_relevant && !b.is_relevant && !(a.add_user || a.add_open_topic) && (b.add_user || b.add_open_topic)) {
               chatHeader = dictionary.contacts;
             }
-
           } else {
             /*if (channel.type === "PERSONAL_BOT") {
               chatHeader = dictionary.personalBot;

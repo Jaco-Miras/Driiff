@@ -78,7 +78,6 @@ const NavBarLeft = styled.div`
   svg.feather-menu {
     color: #7a1b8b !important;
   }
-
 `;
 
 const NavBar = styled.ul`
@@ -290,9 +289,16 @@ const WorspaceHeaderPanel = (props) => {
       <NavBarLeft className="navbar-left">
         <NavBar className="navbar-nav">
           {match.params.page === "search" ? (
-            <li className="nav-item nav-item-folder">
-              <WorkspaceName>Search workspace</WorkspaceName>
-            </li>
+            <>
+              <li className="nav-item navigation-toggler mobile-toggler">
+                <a href="/" className="nav-link" title="Show navigation" onClick={handleMenuOpenMobile}>
+                  <SvgIconFeather icon="menu" />
+                </a>
+              </li>
+              <li className="nav-item nav-item-folder">
+                <WorkspaceName>Search workspace</WorkspaceName>
+              </li>
+            </>
           ) : activeTopic ? (
             <>
               <div className="navbar-wrap">

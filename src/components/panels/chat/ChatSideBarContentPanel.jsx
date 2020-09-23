@@ -1,12 +1,12 @@
-import React, {useEffect} from "react";
-import {useDispatch} from "react-redux";
+import React, { useEffect } from "react";
+import { useDispatch } from "react-redux";
 import styled from "styled-components";
 import ChannelsSidebar from "../../list/chat/ChannelsSidebar";
 import ChatContactsList from "../../list/chat/ChatContactsList";
-import {getChannelDrafts} from "../../../redux/actions/chatActions";
-import {SvgIconFeather} from "../../common";
+import { getChannelDrafts } from "../../../redux/actions/chatActions";
+import { SvgIconFeather } from "../../common";
 
-const Wrapper = styled.div`  
+const Wrapper = styled.div`
   overflow: auto !important;
   &::-webkit-scrollbar {
     display: none;
@@ -25,6 +25,9 @@ const Wrapper = styled.div`
     top: 0;
     right: 0;
     z-index: 6;
+    @media (max-width: 991.99px) {
+      display: none;
+    }
   }
 
   .recent-new-group-wrapper {
@@ -36,12 +39,12 @@ const Wrapper = styled.div`
     align-items: center;
     display: inline-flex;
     margin-left: 0;
-    
+
     @media (max-width: 992px) {
-      margin-left: 1.5rem;    
+      margin-left: 1.5rem;
     }
     @media (max-width: 480px) {
-      margin-left: 1rem;    
+      margin-left: 1rem;
     }
   }
 `;
@@ -56,7 +59,7 @@ const ChatSidebarContentPanel = (props) => {
   }, []);
 
   return (
-    <Wrapper className={`chat-sidebar-content testttt ${className}`} tabIndex="1">
+    <Wrapper className={`chat-sidebar-content ${className}`} tabIndex="1">
       <div className="tab-content pt-3" id="pills-tabContent">
         <div className={`tab-panel fade ${pill === "pills-home" && "show active"}`} id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
           <ChannelsSidebar search={search} workspace={null} channels={channels} selectedChannel={selectedChannel} dictionary={dictionary} />

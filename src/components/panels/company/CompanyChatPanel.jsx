@@ -34,13 +34,15 @@ const Wrapper = styled.div`
       max-width: 55%;
     }
   }
-  @media (max-width: 992px) {
+  @media (max-width: 991.99px) {
     .chat-sidebar-panel {
       flex: unset;
       max-width: 100%;
+      padding: 0 !important;
     }
     .chat-content-panel {
-      flex: unset;
+      padding: 0;
+      flex: auto;
       max-width: 100%;
     }
   }

@@ -45,7 +45,7 @@ const ChatBubbleContainer = styled.div`
     position: absolute;
     top: 8px;
     z-index: 1;
-    ${(props) => (props.isAuthor ? "right: -20px" : "left: -20px")};
+    ${(props) => (props.isAuthor ? "right: -18px" : "left: -18px")};
     border-left-color: ${(props) => (props.isAuthor ? props.theme.self.chat_bubble_background_color : "#0000")};
     border-right-color: ${(props) => (!props.isAuthor ? props.theme.others.chat_bubble_background_color : "#0000")};
     height: 5px;
@@ -182,7 +182,7 @@ const QuoteContainer = styled.div`
     position: absolute;
     top: ${(props) => (props.showAvatar && !props.isAuthor ? "6px" : "8px")};
     z-index: 12;
-    ${(props) => (!props.isAuthor ? "left: -19px" : "right: -20px")};
+    ${(props) => (!props.isAuthor ? "left: -18px" : "right: -18px")};
     height: 5px;
     @media all and (max-width: 620px) {
       display: none;
@@ -391,13 +391,13 @@ const ChatContent = styled.div`
         border-right-color: #f0f0f0;
         position: absolute;
         top: 8px;
-        left: -20px;
+        left: -18px;
         z-index: 1;
         ${(props) =>
           props.isAuthor === true &&
           `
             left: auto;
-            right: -20px;
+            right: -18px;
             border-left-color: #7A1B8B;
             border-right-color: transparent;
         `};
@@ -544,27 +544,27 @@ const ChatBubble = (props) => {
 
   const [gifOnly, setGifOnly] = useState(false);
   const [loadRef, loadInView] = useInView({
-    threshold: .10,
+    threshold: 0.1,
   });
   //const { chatSettings } = useSettings();
   const refComponent = useRef();
 
   const [lastChatRef, inView] = useInView({
-    threshold: .10
+    threshold: 0.1,
   });
 
   useEffect(() => {
     if (isLastChat) {
-      chatMessageActions.setLastMessageVisiblility({status: inView});
+      chatMessageActions.setLastMessageVisiblility({ status: inView });
     }
-  }, [isLastChat, inView])
-  
+  }, [isLastChat, inView]);
+
   useEffect(() => {
     if (addMessageRef && loadInView) {
       props.loadReplies();
     }
-  }, [addMessageRef, loadInView])
-  
+  }, [addMessageRef, loadInView]);
+
   const handleMarkComplete = () => {
     chatMessageActions.markComplete(reply.id);
   };

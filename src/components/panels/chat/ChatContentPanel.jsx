@@ -128,13 +128,9 @@ const ChatContentPanel = (props) => {
         }}
         onCancel={handleHideDropzone}
       />
-      <ChatHeaderPanel channel={selectedChannel} />
+      {selectedChannel !== null && selectedChannel.type !== "TOPIC" && <ChatHeaderPanel channel={selectedChannel} />}
       {selectedChannel !== null && unreadCount > 0 && <ChatUnreadFloatBar channel={selectedChannel} />}
-      {selectedChannel !== null ? (
-        <ChatMessages selectedChannel={selectedChannel} chatMessageActions={chatMessageActions} timeFormat={timeFormat} dictionary={dictionary} unreadCount={unreadCount}/>
-      ) : (
-        <ChatMessagesPlaceholder />
-      )}
+      {selectedChannel !== null ? <ChatMessages selectedChannel={selectedChannel} chatMessageActions={chatMessageActions} timeFormat={timeFormat} dictionary={dictionary} unreadCount={unreadCount} /> : <ChatMessagesPlaceholder />}
       <ChatFooterPanel onShowFileDialog={handleOpenFileDialog} dropAction={dropAction} />
     </Wrapper>
   );
