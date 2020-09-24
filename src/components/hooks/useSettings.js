@@ -220,12 +220,12 @@ const useSettings = () => {
   );
 
   const init = () => {
-    fetch();
     fetchCompSettings();
   };
 
   return {
     init,
+    fetch,
     fetchUserSettings,
     updateCompanyName,
     userSettings,

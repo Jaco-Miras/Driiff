@@ -8,7 +8,7 @@ import GuestLayout from "./GuestLayout";
 import MainLayout from "./MainLayout";
 
 export const AppRoute = ({children, ...props}) => {
-  const {init: settingsInit, fetchUserSettings, userSettings, driffSettings} = useSettings();
+  const {init: settingsInit, fetch, fetchUserSettings, userSettings, driffSettings} = useSettings();
   settingsInit();
 
   const translation = useTranslation();
@@ -21,13 +21,12 @@ export const AppRoute = ({children, ...props}) => {
   useEffect(() => {
     if (session.checked) {
       if (session.authenticated) {
+        fetch();
         fetchUserSettings();
       }
     }
 
-    if (driffSettings.isSettingsLoaded) {
-      translation.init();
-    }
+    translation.init();
   }, [session.checked, session.authenticated, fetchUserSettings, driffSettings.isSettingsLoaded]);
 
   // if (!session.checked || !i18nLoaded || push.loading)
