@@ -1,36 +1,30 @@
-import { useCallback, useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { getHttpStatus } from "../../helpers/commonFunctions";
-import { addToModals, addTranslationObject, getTranslationObject, postGenerateTranslationRaw } from "../../redux/actions/globalActions";
-import { useDriff, useSettings } from "./index";
-import { isTranslationLogged } from "../../helpers/slugHelper";
+import {useCallback, useEffect, useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
+import {getHttpStatus} from "../../helpers/commonFunctions";
+import {
+  addToModals,
+  addTranslationObject,
+  getTranslationObject,
+  postGenerateTranslationRaw
+} from "../../redux/actions/globalActions";
+import {useDriff, useSettings} from "./index";
+import {isTranslationLogged} from "../../helpers/slugHelper";
 
-let init = true;
 let cookieName = {
   dict: "i18n",
   lang: "i18n_lang",
   name: "i18n_ver",
-  ver: "150920201106",
 };
-
-localStorage.removeItem("i18n.28082020");
-localStorage.removeItem("i18n_lang.28082020");
-
-if (localStorage.getItem(cookieName.name) !== cookieName.ver) {
-  localStorage.removeItem(cookieName.dict);
-  localStorage.removeItem(cookieName.lang);
-  localStorage.setItem(cookieName.name, cookieName.ver);
-}
 
 export const useTranslation = () => {
   const dispatch = useDispatch();
 
   const { registeredDriff } = useDriff();
   const {
-    generalSettings: { language },
+    driffSettings,
+    generalSettings: {language},
     setGeneralSetting,
   } = useSettings();
-
   const i18n = useSelector((state) => state.global.i18n);
 
   const [dictFile, setDictFile] = useState({});
@@ -46,32 +40,37 @@ export const useTranslation = () => {
     };
   }, []);
 
-  useEffect(() => {
-    if (init) {
-      init = false;
-      const lang = getBrowserLanguage();
+  const init = () => {
+    const lang = getBrowserLanguage();
 
-      if (localStorage.getItem(cookieName.dict)) {
-        dispatch(addTranslationObject(JSON.parse(localStorage.getItem(cookieName.dict))));
-      } else {
-        setDictFile({
-          lang: lang.exact,
-          file: `${dictionaryFile}/${lang.exact}`,
-        });
+    localStorage.removeItem("i18n.28082020");
+    localStorage.removeItem("i18n_lang.28082020");
 
-        // @todo add slug conditions
-        // let dictFile = `${getBaseUrl()}/api/lang/en`;
-        // if (getHttpStatus(dictFile, false) !== false) {
-        //     setDictFile(preventDefault => dictFile);
-        // } else {
-        //     dictFile = `${REACT_APP_dictionary_file}/${lang.exact}`;
-        //     setDictFile(preventDefault => dictFile);
-        // }
-      }
+    cookieName.ver = driffSettings.i18n;
+    if (localStorage.getItem(cookieName.name) !== cookieName.ver) {
+      localStorage.removeItem(cookieName.dict);
+      localStorage.removeItem(cookieName.lang);
+      localStorage.setItem(cookieName.name, cookieName.ver);
     }
 
-    //eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    if (localStorage.getItem(cookieName.dict)) {
+      dispatch(addTranslationObject(JSON.parse(localStorage.getItem(cookieName.dict))));
+    } else {
+      setDictFile({
+        lang: lang.exact,
+        file: `${dictionaryFile}/${lang.exact}`,
+      });
+
+      // @todo add slug conditions
+      // let dictFile = `${getBaseUrl()}/api/lang/en`;
+      // if (getHttpStatus(dictFile, false) !== false) {
+      //     setDictFile(preventDefault => dictFile);
+      // } else {
+      //     dictFile = `${REACT_APP_dictionary_file}/${lang.exact}`;
+      //     setDictFile(preventDefault => dictFile);
+      // }
+    }
+  };
 
   useEffect(() => {
     const lang = getBrowserLanguage();
@@ -236,6 +235,7 @@ export const useTranslation = () => {
   }, [language]);
 
   return {
+    init,
     _t,
     setLocale,
     uploadTranslationToServer,

@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect} from "react";
+import React, {useCallback, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {
   getDriffCompSettings,
@@ -13,13 +13,15 @@ import {addToModals} from "../../redux/actions/globalActions";
 import {setPushNotification} from "../../redux/actions/notificationActions";
 import {useToaster} from "./index";
 
-let init = true;
-
 const useSettings = () => {
 
   const dispatch = useDispatch();
   const toaster = useToaster();
   const {driff: driffSettings, user: userSettings} = useSelector((state) => state.settings);
+
+  const [isSettingsLoading, setIsSettingsLoading] = useState(false);
+  const [isCompSettingsIsLoading, setIsCompSettingsLoading] = useState(false);
+  const [isUserSettingsIsLoading, setIsUserSettingsLoading] = useState(false);
 
   const setChatSetting = useCallback(
     (e) => {
@@ -67,16 +69,35 @@ const useSettings = () => {
   );
 
   const fetch = useCallback(() => {
-    dispatch(
-      getDriffCompSettings({})
-    );
+    if (!driffSettings.isSettingsLoaded && !isSettingsLoading) {
+      setIsSettingsLoading(true);
+      dispatch(
+        getDriffSettings({}, () => {
+          setIsSettingsLoading(false);
+        })
+      );
+    }
+  }, [dispatch, driffSettings.isSettingsLoaded, setIsSettingsLoading, isSettingsLoading]);
 
-    dispatch(
-      getDriffSettings({})
-    );
+  const fetchCompSettings = useCallback(() => {
+    if (!driffSettings.isCompSettingsLoaded && !isCompSettingsIsLoading) {
+      setIsCompSettingsLoading(true);
+      dispatch(
+        getDriffCompSettings({}, () => {
+          setIsCompSettingsLoading(false)
+        })
+      );
+    }
+  }, [dispatch, driffSettings.isCompSettingsLoaded, setIsCompSettingsLoading, isCompSettingsIsLoading]);
 
-    dispatch(getUserSettings());
-  }, [dispatch]);
+  const fetchUserSettings = useCallback(() => {
+    if (!userSettings.isLoaded && !isUserSettingsIsLoading) {
+      setIsUserSettingsLoading(true);
+      dispatch(getUserSettings(), () => {
+        setIsUserSettingsLoading(false);
+      });
+    }
+  }, [dispatch, !driffSettings.isSetting, setIsUserSettingsLoading, isUserSettingsIsLoading])
 
   const createPersonalLink = (payload, callback = () => {
   }) => {
@@ -198,15 +219,14 @@ const useSettings = () => {
     [dispatch]
   );
 
-  useEffect(() => {
-    if (init) {
-      init = false;
-      fetch();
-    }
-  }, []);
+  const init = () => {
+    fetch();
+    fetchCompSettings();
+  };
 
   return {
-    fetch,
+    init,
+    fetchUserSettings,
     updateCompanyName,
     userSettings,
     driffSettings,

@@ -8,8 +8,10 @@ import GuestLayout from "./GuestLayout";
 import MainLayout from "./MainLayout";
 
 export const AppRoute = ({children, ...props}) => {
-  const {fetch: fetchSettings, userSettings} = useSettings();
-  useTranslation();
+  const {init: settingsInit, fetchUserSettings, userSettings, driffSettings} = useSettings();
+  settingsInit();
+
+  const translation = useTranslation();
 
   // const push = usePushNotification();
   const history = useHistory();
@@ -17,10 +19,16 @@ export const AppRoute = ({children, ...props}) => {
   const i18nLoaded = useSelector((state) => state.global.i18nLoaded);
 
   useEffect(() => {
-    if (session.checked && session.authenticated) {
-      fetchSettings();
+    if (session.checked) {
+      if (session.authenticated) {
+        fetchUserSettings();
+      }
     }
-  }, [session.checked, session.authenticated, fetchSettings]);
+
+    if (driffSettings.isSettingsLoaded) {
+      translation.init();
+    }
+  }, [session.checked, session.authenticated, fetchUserSettings, driffSettings.isSettingsLoaded]);
 
   // if (!session.checked || !i18nLoaded || push.loading)
   if (!session.checked || !i18nLoaded) return null;

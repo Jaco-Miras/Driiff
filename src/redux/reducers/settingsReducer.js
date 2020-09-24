@@ -1,10 +1,13 @@
 import momentTZ from "moment-timezone";
 import React from "react";
-import { $_GET } from "../../helpers/commonFunctions";
+import {$_GET} from "../../helpers/commonFunctions";
 
 const INITIAL_STATE = {
   sessionUser: null,
   driff: {
+    i18n: null,
+    isSettingsLoaded: false,
+    isCompSettingsLoaded: false,
     company_name: "ZUID Creatives",
     settings: {
       maintenance_mode: false,
@@ -105,26 +108,67 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         driff: {
           ...state.driff,
+          isCompSettingsLoaded: true,
           settings: settings,
         },
       };
     }
     case "GET_DRIFF_SETTINGS_SUCCESS": {
       let driff = state.driff;
+
       for (const index in action.data) {
         if (action.data.hasOwnProperty(index)) {
           const item = action.data[index];
           const key = Object.keys(item)[0];
           const value = item[key];
-          driff = {
-            ...driff,
-            [key]: value,
-          };
+
+          switch (key) {
+            case "translation_updated_at": {
+              if (typeof driff["client_translation_updated_at"] === "undefined") {
+                driff = {
+                  ...driff,
+                  i18n: value ? value.timestamp : 1000000000,
+                };
+              } else {
+                driff = {
+                  ...driff,
+                  i18n: driff["client_translation_updated_at"] < value.timestamp ? value.timestamp : driff["translation_updated_at"],
+                };
+              }
+
+              break;
+            }
+            case "client_translation_updated_at": {
+              if (typeof driff["translation_updated_at"] === "undefined") {
+                driff = {
+                  ...driff,
+                  i18n: value ? value.timestamp : 1000000000,
+                };
+              } else {
+                driff = {
+                  ...driff,
+                  i18n: driff["translation_updated_at"] < value.timestamp ? value.timestamp : driff["translation_updated_at"],
+                };
+              }
+
+              break;
+            }
+            default: {
+              driff = {
+                ...driff,
+                [key]: value,
+              };
+            }
+          }
         }
       }
+
       return {
         ...state,
-        driff: driff,
+        driff: {
+          ...driff,
+          isSettingsLoaded: true
+        },
       };
     }
     case "GET_USER_SETTINGS_SUCCESS": {
