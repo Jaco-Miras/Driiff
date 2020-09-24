@@ -21,6 +21,14 @@ const Wrapper = styled.div`
     font-weight: 500;
     margin: 0;
   }
+  @media (min-width: 767.98px) {
+    .chat-header-icon-left {
+      width: 20%;
+    }
+    .chat-header-right {
+      width: 20%;
+    }
+  }
 `;
 
 const IconButton = styled(SvgIconFeather)`
@@ -112,7 +120,7 @@ const ChatHeaderPanel = (props) => {
       </div>
       <h2 className="chat-header-title">{chatChannel.title}</h2>
       <div className="chat-header-right">
-        <ul className="nav align-items-center">
+        <ul className="nav align-items-center justify-content-end">
           <li>
             <MemberLists members={channel.members} />
           </li>
