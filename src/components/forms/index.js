@@ -11,3 +11,4 @@ export {default as PostInput} from "./PostInput";
 export {default as FormInput} from "./FormInput";
 export {default as PasswordInput} from "./PasswordInput";
 export {default as CompanyPostInput} from "./CompanyPostInput";
+export {default as PostVisibilitySelect} from "./PostVisibilitySelect";

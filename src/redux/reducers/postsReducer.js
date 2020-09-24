@@ -117,10 +117,16 @@ export default (state = INITIAL_STATE, action) => {
     }
     case "INCOMING_UPDATED_POST": {
       let posts = state.companyPosts.posts;
-      if (posts[action.data.id] && action.data.has_all_department === false) {
-        delete posts[action.data.id];
+
+      if (action.data.has_all_department === false) {
+        if (typeof posts[action.data.id] !== "undefined")
+          delete posts[action.data.id];
       } else {
-        posts[action.data.id] = action.data;
+        if (action.data.is_personal && !Object.values(action.data.users_responsible).map(u => u.id).includes(state.user.id)) {
+          delete posts[action.data.id];
+        } else {
+          posts[action.data.id] = action.data;
+        }
       }
 
       return {

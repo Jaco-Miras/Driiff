@@ -1,5 +1,4 @@
 /* eslint-disable no-prototype-builtins */
-import {uniqBy} from "lodash";
 import {convertArrayToObject} from "../../helpers/arrayHelper";
 
 const INITIAL_STATE = {
@@ -703,7 +702,11 @@ export default (state = INITIAL_STATE, action) => {
       let newWorkspacePosts = { ...state.workspacePosts };
       action.data.recipient_ids.forEach((id) => {
         if (newWorkspacePosts.hasOwnProperty(id)) {
-          newWorkspacePosts[id].posts[action.data.id] = action.data;
+          if (action.data.is_personal && !Object.values(action.data.users_responsible).map(u => u.id).includes(state.user.id)) {
+            delete newWorkspacePosts[id].posts[action.data.id];
+          } else {
+            newWorkspacePosts[id].posts[action.data.id] = action.data;
+          }
         }
       });
       return {

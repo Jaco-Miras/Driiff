@@ -15,7 +15,7 @@ import {postCreate, putCompanyPosts, putPost} from "../../redux/actions/postActi
 
 import {DatePicker, FileAttachments, SvgIconFeather} from "../common";
 import {DropDocument} from "../dropzone/DropDocument";
-import {CheckBox, DescriptionInput, FolderSelect, PeopleSelect} from "../forms";
+import {CheckBox, DescriptionInput, FolderSelect, PeopleSelect, PostVisibilitySelect} from "../forms";
 import {useGetWorkspaceAndUserOptions, useToaster, useTranslation} from "../hooks";
 import {ModalHeaderSection} from "./index";
 
@@ -97,6 +97,14 @@ const WrapperDiv = styled(InputGroup)`
         overflow: hidden;
       }
     }
+  }
+`;
+
+const SelectPostVisibility = styled(PostVisibilitySelect)`
+  flex: 1 0 0;
+  width: 1%;
+  @media all and (max-width: 480px) {
+    width: 100%;
   }
 `;
 
@@ -217,6 +225,11 @@ const CreateEditCompanyPostModal = (props) => {
     title: "",
     selectedUsers: [],
     selectedWorkspaces: [],
+    selectedPersonal: {
+      icon: "unlock",
+      value: false,
+      label: "Visible to all internal members"
+    },
     body: "",
     textOnly: "",
     show_at: null,
@@ -242,6 +255,7 @@ const CreateEditCompanyPostModal = (props) => {
     createNewPost: _t("POST.CREATE_NEW_POST", "Create new post"),
     editPost: _t("POST.EDIT_POST", "Edit post"),
     postTitle: _t("POST.TITLE", "Post title"),
+    visibility: _t("POST.VISIBILITY", "Visibility"),
     workspace: _t("POST.WORKSPACE", "Workspace"),
     responsible: _t("POST.RESPONSIBLE", "Responsible"),
     description: _t("POST.DESCRIPTION", "Description"),
@@ -394,6 +408,14 @@ const CreateEditCompanyPostModal = (props) => {
     }
   };
 
+  const handleSelectVisibility = (e) => {
+    console.log(e);
+    setForm({
+      ...form,
+      selectedPersonal: e,
+    });
+  }
+
   const handleSelectWorkspace = (e) => {
     if (e === null) {
       setForm({
@@ -436,6 +458,7 @@ const CreateEditCompanyPostModal = (props) => {
           must_read: form.must_read ? 1 : 0,
           must_reply: form.reply_required ? 1 : 0,
           read_only: form.no_reply ? 1 : 0,
+          personal: form.selectedPersonal,
           users_responsible: form.selectedUsers,
         },
         timestamp: timestamp,
@@ -468,7 +491,7 @@ const CreateEditCompanyPostModal = (props) => {
       body: form.body,
       responsible_ids: form.selectedUsers.map((u) => u.value),
       type: "post",
-      personal: 0,
+      personal: form.selectedPersonal.value,
       recipient_ids: form.selectedWorkspaces.filter((ws) => ws.type !== "FOLDER").map((ws) => ws.value),
       must_read: form.must_read ? 1 : 0,
       must_reply: form.reply_required ? 1 : 0,
@@ -686,6 +709,11 @@ const CreateEditCompanyPostModal = (props) => {
         no_reply: item.post.is_read_only,
         must_read: item.post.is_must_read,
         reply_required: item.post.is_must_reply,
+        selectedPersonal: {
+          icon: item.post.is_personal ? "lock" : "unlock",
+          value: item.post.is_personal,
+          label: item.post.is_personal ? "Responsible users only" : "Visible to all internal members",
+        },
         selectedWorkspaces: [
           ...item.post.recipients.map(r => {
             return {
@@ -885,6 +913,10 @@ const CreateEditCompanyPostModal = (props) => {
           <Label for="post-title">{dictionary.postTitle}</Label>
           <Input style={{borderRadius: "5px"}} value={form.title}
                  onChange={handleNameChange} innerRef={inputRef}/>
+        </WrapperDiv>
+        <WrapperDiv>
+          <Label for="visibility">{dictionary.visibility}</Label>
+          <SelectPostVisibility value={form.selectedPersonal} onChange={handleSelectVisibility}/>
         </WrapperDiv>
         <WrapperDiv>
           <Label for="workspace">{dictionary.workspace}</Label>
