@@ -141,6 +141,7 @@ const ChatSidebarPanel = (props) => {
 
   const emptySearchInput = () => {
     setSearch("");
+    setQuery("");
   };
 
   const handleResetFilter = () => {
