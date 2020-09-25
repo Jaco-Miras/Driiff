@@ -110,7 +110,8 @@ const CompanyPostsPanel = (props) => {
     editReply: _t("POST.EDIT_REPLY", "Edit reply"),
     removeReply: _t("POST.REMOVE_REPLY", "Remove reply"),
     quote: _t("POST.QUOTE", "Quote"),
-    mentionUser: _t("POST.MENTION_USER", "Mention user")
+    mentionUser: _t("POST.MENTION_USER", "Mention user"),
+    remindMeAboutThis: _t("TODO.REMIND_ME_ABOUT_THIS", "Remind me about this"),
   };
 
   /**
@@ -212,8 +213,9 @@ const CompanyPostsPanel = (props) => {
                     <ul className="list-group list-group-flush ui-sortable fadeIn">
                       {posts &&
                       posts.map((p) => {
-                        return <CompanyPostItemPanel key={p.id} post={p} postActions={actions}
-                                                     dictionary={dictionary}/>;
+                        return <CompanyPostItemPanel
+                          key={p.id} post={p} postActions={actions}
+                          dictionary={dictionary}/>;
                       })}
                     </ul>
                   </div>

@@ -15,3 +15,4 @@ export {default as InvitedUsersModal} from "./InvitedUsersModal";
 export {default as CreateEditCompanyPostModal} from "./CreateEditCompanyPostModal";
 export {default as CreatePersonalLinksModal} from "./CreatePersonalLinksModal";
 export {default as CompanyMoveFilesModal} from "./CompanyMoveFilesModal";
+export {default as TodoReminderModal} from "./TodoReminderModal";

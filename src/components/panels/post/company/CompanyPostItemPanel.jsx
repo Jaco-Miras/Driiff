@@ -55,7 +55,7 @@ const CompanyPostItemPanel = (props) => {
   const user = useSelector((state) => state.session.user);
   const {className = "", post, postActions, dictionary, disableOptions} = props;
 
-  const {starPost, markPost, openPost, archivePost, markAsRead, markAsUnread, sharePost, snoozePost, followPost} = postActions;
+  const {starPost, markPost, openPost, archivePost, markAsRead, markAsUnread, sharePost, snoozePost, followPost, remind} = postActions;
 
   const handleMarkDone = (e) => {
     e.preventDefault();
@@ -106,6 +106,7 @@ const CompanyPostItemPanel = (props) => {
       </div>
       {post.type !== "draft_post" && !disableOptions && (
         <MoreOptions className="ml-2" item={post} width={170} moreButton={"more-vertical"}>
+          <div onClick={() => remind(post)}>{dictionary.remindMeAboutThis}</div>
           <div onClick={() => markAsRead(post, true)}>{dictionary.markAsRead}</div>
           <div onClick={() => markAsUnread(post, true)}>{dictionary.markAsUnread}</div>
           <div onClick={() => sharePost(post)}>{dictionary.share}</div>
