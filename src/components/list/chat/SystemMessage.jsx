@@ -1,10 +1,10 @@
 import React, {forwardRef, useEffect, useState} from "react";
 import {renderToString} from "react-dom/server";
-//import {useSelector} from "react-redux";
+import {useHistory, useParams} from "react-router-dom";
 import styled from "styled-components";
 import {SvgIconFeather} from "../../common";
-import {useTimeFormat} from "../../hooks";
-import { useInView } from "react-intersection-observer";
+import {useInView} from "react-intersection-observer";
+import quillHelper from "../../../helpers/quillHelper";
 
 const SystemMessageContainer = styled.span`
   display: block;
@@ -29,7 +29,8 @@ const ChatTimeStamp = styled.div`
 const SystemMessage = forwardRef((props, ref) => {
   const {reply, selectedChannel, chatName, isLastChat, chatMessageActions, recipients, user, timeFormat} = props;
 
-  //const {localizeTime} = useTimeFormat();
+  const params = useParams();
+  const history = useHistory();
 
   const [body, setBody] = useState(reply.body);
 
@@ -100,8 +101,9 @@ const SystemMessage = forwardRef((props, ref) => {
       if (data.title !== "") {
         newBody = (
           <>
-            <SvgIconFeather width={16} icon="edit-3" /> {author.name} renamed this {selectedChannel.type === "TOPIC" ? "workspace" : "chat"} to <b>#{data.title}</b>
-            <br />
+            <SvgIconFeather width={16} icon="edit-3"/> {author.name} renamed
+            this {selectedChannel.type === "TOPIC" ? "workspace" : "chat"} to <b>#{data.title}</b>
+            <br/>
           </>
         );
       }
@@ -124,7 +126,7 @@ const SystemMessage = forwardRef((props, ref) => {
             newBody = (
               <>
                 {newBody} and added <b>{am.join(", ")}</b>
-                <br />
+                <br/>
               </>
             );
           }
@@ -155,7 +157,7 @@ const SystemMessage = forwardRef((props, ref) => {
             newBody = (
               <>
                 {newBody} <b>{am.join(", ")}</b>
-                <br />
+                <br/>
               </>
             );
           }
@@ -180,7 +182,7 @@ const SystemMessage = forwardRef((props, ref) => {
             newBody = (
               <>
                 {newBody} and removed <b>{rm.join(", ")}</b>
-                <br />
+                <br/>
               </>
             );
           }
@@ -211,7 +213,7 @@ const SystemMessage = forwardRef((props, ref) => {
             newBody = (
               <>
                 {newBody} <b>{rm.join(", ")}</b>
-                <br />
+                <br/>
               </>
             );
           }
@@ -222,8 +224,46 @@ const SystemMessage = forwardRef((props, ref) => {
     }
   }, []);
 
+  const handleHistoryPushClick = (e) => {
+    e.preventDefault();
+    if (e.currentTarget.dataset.ctrl === "1") {
+      e.currentTarget.dataset.ctrl = "0";
+      let link = document.createElement("a");
+      link.href = e.currentTarget.dataset.href;
+      link.target = "_blank";
+      link.click();
+    } else {
+      history.push(e.currentTarget.dataset.href);
+    }
+  }
+
+  const handleHistoryKeyDown = (e) => {
+    if (e.which === 17)
+      e.currentTarget.dataset.ctrl = "1";
+  }
+
+  const handleHistoryKeyUp = (e) => {
+    e.currentTarget.dataset.ctrl = "0";
+  }
+
   useEffect(() => {
-    if (reply.body.includes("JOIN_CHANNEL")) {
+    if (reply.body.includes("POST_CREATE::")) {
+      let item = JSON.parse(reply.body.replace("POST_CREATE::", ""));
+      let link = "";
+      if (params && params.workspaceId) {
+        link = `/workspace/posts/${params.folderId}/${params.folderName}/${params.workspaceId}/${params.workspaceName}/post/${item.post.id}/${item.post.title}`
+      } else {
+        link = `/posts/${item.post.id}/${item.post.title}`;
+      }
+
+      setBody(renderToString(<a href={link} className="push-link" data-href={link} data-has-link="0" data-ctrl="0">
+        <b>{item.author.first_name}</b> created the post <b>"{item.post.title}"</b>
+        <span className="card card-body"
+              dangerouslySetInnerHTML={{__html: quillHelper.parseEmoji(item.post.description)}}/>
+        <br/>
+        for {recipients.filter((r) => item.post.responsible_ids.includes(r.type_id) && r.type === "USER").map(r => r.name).join(", ")}
+      </a>));
+    } else if (reply.body.includes("JOIN_CHANNEL")) {
       let ids = /\d+/g;
       let extractedIds = reply.body.match(ids);
       let newMembers = recipients
@@ -280,8 +320,9 @@ const SystemMessage = forwardRef((props, ref) => {
       if (data.title !== "") {
         newBody = (
           <>
-            <SvgIconFeather width={16} icon="edit-3" /> {author.name} renamed this {selectedChannel.type === "TOPIC" ? "workspace" : "chat"} to <b>#{data.title}</b>
-            <br />
+            <SvgIconFeather width={16} icon="edit-3"/> {author.name} renamed
+            this {selectedChannel.type === "TOPIC" ? "workspace" : "chat"} to <b>#{data.title}</b>
+            <br/>
           </>
         );
       }
@@ -304,7 +345,7 @@ const SystemMessage = forwardRef((props, ref) => {
             newBody = (
               <>
                 {newBody} and added <b>{am.join(", ")}</b>
-                <br />
+                <br/>
               </>
             );
           }
@@ -335,7 +376,7 @@ const SystemMessage = forwardRef((props, ref) => {
             newBody = (
               <>
                 {newBody} <b>{am.join(", ")}</b>
-                <br />
+                <br/>
               </>
             );
           }
@@ -360,7 +401,7 @@ const SystemMessage = forwardRef((props, ref) => {
             newBody = (
               <>
                 {newBody} and removed <b>{rm.join(", ")}</b>
-                <br />
+                <br/>
               </>
             );
           }
@@ -391,7 +432,7 @@ const SystemMessage = forwardRef((props, ref) => {
             newBody = (
               <>
                 {newBody} <b>{rm.join(", ")}</b>
-                <br />
+                <br/>
               </>
             );
           }
@@ -402,10 +443,23 @@ const SystemMessage = forwardRef((props, ref) => {
     }
   }, [recipients, recipients.length, chatName, reply.body, selectedChannel.title, selectedChannel.type]);
 
+  useEffect(() => {
+    if (body) {
+      let pushLinks = document.querySelectorAll('.push-link[data-has-link="0"]');
+      pushLinks.forEach(p => {
+        p.addEventListener("click", handleHistoryPushClick);
+        p.dataset.hasLink = "1";
+        p.addEventListener("keydown", handleHistoryKeyDown);
+        p.addEventListener("keyup", handleHistoryKeyUp);
+      })
+    }
+  }, [body]);
+
   return (
     <SystemMessageContainer ref={isLastChat ? lastChatRef : null}>
-      <SystemMessageContent ref={ref} id={`bot-${reply.id}`}
-                            dangerouslySetInnerHTML={{__html: body}}></SystemMessageContent>
+      <SystemMessageContent
+        ref={ref} id={`bot-${reply.id}`}
+        dangerouslySetInnerHTML={{__html: body}}/>
       <ChatTimeStamp className="chat-timestamp" isAuthor={false}>
         <span
           className="reply-date created">{reply.created_at.diff_for_humans ? "sending..." : timeFormat.localizeTime(reply.created_at.timestamp)}</span>

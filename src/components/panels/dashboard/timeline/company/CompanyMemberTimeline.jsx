@@ -43,9 +43,13 @@ const CompanyMemberTimeline = (props) => {
     } else {
       if (data.body.includes("NEW_ACCOUNT_ACTIVATED")) {
         return `${data.body.replace(`NEW_ACCOUNT_ACTIVATED `, "")} is added to the company`;
+      } else if (data.body.includes("POST_CREATE")) {
+        let item = JSON.parse(data.body.replace("POST_CREATE::", ""));
+        return <>{item.author.name} <b>created the post {item.post.title}</b></>
+      } else {
+        console.log(data);
+        return data.body;
       }
-
-      return data.body;
     }
   };
 
@@ -94,7 +98,8 @@ const CompanyMemberTimeline = (props) => {
     }
   };
 
-  console.log(data);
+  if (data.body.includes("POST_CREATE"))
+    return <></>
 
   return (
     <Wrapper className={`member-timeline timeline-item ${className}`}>

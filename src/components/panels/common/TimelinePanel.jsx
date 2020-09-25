@@ -1,11 +1,6 @@
 import React, {useEffect, useState} from "react";
 import styled from "styled-components";
-import {
-  CompanyAttachFileTimeline,
-  CompanyMemberTimeline,
-  CompanyPostTimeline,
-  CompanyTopicTimeline
-} from "../dashboard/timeline/company";
+import {AttachFileTimeline, MemberTimeline, PostTimeline, TopicTimeline} from "../dashboard/timeline";
 import TimelinePagination from "../dashboard/timeline/TimelinePagination"
 
 const Wrapper = styled.div`
@@ -56,13 +51,13 @@ const TimelinePanel = (props) => {
             .map((t) => {
               switch (t.tag) {
                 case "CHAT_BOT":
-                  return <CompanyMemberTimeline key={t.id} data={t.item}/>;
+                  return <MemberTimeline key={t.id} data={t.item}/>;
                 case "POST":
-                  return <CompanyPostTimeline key={t.id} data={t.item}/>;
+                  return <PostTimeline key={t.id} data={t.item}/>;
                 case "DOCUMENT":
-                  return <CompanyAttachFileTimeline key={t.id} data={t.item}/>;
+                  return <AttachFileTimeline key={t.id} data={t.item}/>;
                 case "TOPIC":
-                  return <CompanyTopicTimeline key={t.id} data={t.item}/>;
+                  return <TopicTimeline key={t.id} data={t.item}/>;
               }
             })}
         </div>
