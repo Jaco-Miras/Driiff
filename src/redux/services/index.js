@@ -1,4 +1,5 @@
 import {getCompanyDashboardMembers, getCompanyDashboardRecentPosts, getCompanyDashboardTimeline} from "./driff";
+import {delRemoveToDo, postToDo, putDoneToDo, putToDo} from "./global";
 
 export {apiCall, apiNoTokenCall} from "./service";
 export {
@@ -72,7 +73,12 @@ export {
   uploadDocument,
   getUnreadNotificationCounterEntries,
   postGenerateTranslationRaw,
-  deletePushSubscription
+  deletePushSubscription,
+  postToDo,
+  putToDo,
+  getToDo,
+  putDoneToDo,
+  delRemoveToDo,
 } from "./global";
 
 export {

@@ -1,4 +1,4 @@
-import { convertArrayToObject } from "../../helpers/arrayHelper";
+import {convertArrayToObject} from "../../helpers/arrayHelper";
 //import { groupBy } from "lodash";
 
 const INITIAL_STATE = {
@@ -19,7 +19,11 @@ const INITIAL_STATE = {
   searchCount: 0,
   searching: false,
   tabs: {},
-  links: []
+  links: [],
+  todos: {
+    isLoaded: false,
+    items: {}
+  }
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -196,6 +200,30 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         links: action.data
+      }
+    }
+    case "INCOMING_TO_DO": {
+      console.log(action.data);
+      return {
+        ...state,
+      }
+    }
+    case "INCOMING_UPDATE_TO_DO": {
+      console.log(action.data);
+      return {
+        ...state,
+      }
+    }
+    case "INCOMING_DONE_TO_DO": {
+      console.log(action.data);
+      return {
+        ...state,
+      }
+    }
+    case "INCOMING_REMOVE_TO_DO": {
+      console.log(action.data);
+      return {
+        ...state,
       }
     }
     default:

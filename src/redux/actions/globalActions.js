@@ -1,17 +1,22 @@
 import dispatchActionToReducer, {SimpleDispatchActionToReducer} from "../actionDispatcher";
 import {
   deleteDraft as deleteDraftService,
-  deleteUnfurl as deleteUnfurlService,
   deletePushSubscription as deletePushSubscriptionService,
+  deleteUnfurl as deleteUnfurlService,
+  delRemoveToDo as delRemoveToDoService,
   generateUnfurl as generateUnfurlService,
   getAllRecipients as getAllRecipientsService,
   getConnectedSlugs as getConnectedSlugsService,
   getDrafts as getDraftsService,
   getPushNotification as getPushNotificationService,
   getQuickLinks as getQuickLinksService,
+  getToDo as getToDoService,
   getTranslationObject as getTranslationObjectService,
   getUnreadNotificationCounterEntries as getUnreadNotificationCounterEntriesService,
   postGenerateTranslationRaw as postGenerateTranslationRawService,
+  postToDo as postToDoService,
+  putDoneToDo as putDoneToDoService,
+  putToDo as putToDoService,
   saveDraft as saveDraftService,
   subscribePushNotifications as subscribePushNotificationsService,
   updateDraft as updateDraftService,
@@ -135,4 +140,40 @@ export function getQuickLinks(payload, callback) {
 
 export function deletePushSubscription(payload, callback) {
   return dispatchActionToReducer(deletePushSubscriptionService(payload), "DELETE_PUSH_SUBSCRIPTION_START", "DELETE_PUSH_SUBSCRIPTION_SUCCESS", "DELETE_PUSH_SUBSCRIPTION_FAILURE", callback);
+}
+
+export function postToDo(payload, callback) {
+  return dispatchActionToReducer(postToDoService(payload), "POST_TO_DO_START", "POST_TO_DO_SUCCESS", "POST_TO_DO_FAILURE", callback);
+}
+
+export function putToDo(payload, callback) {
+  return dispatchActionToReducer(putToDoService(payload), "PUT_TO_DO_START", "PUT_TO_DO_SUCCESS", "PUT_TO_DO_FAILURE", callback);
+}
+
+export function getToDo(payload, callback) {
+  return dispatchActionToReducer(getToDoService(payload), "GET_TO_DO_START", "GET_TO_DO_SUCCESS", "GET_TO_DO_FAILURE", callback);
+}
+
+export function putDoneToDo(payload, callback) {
+  return dispatchActionToReducer(putDoneToDoService(payload), "PUT_DONE_TO_DO_START", "PUT_DONE_TO_DO_SUCCESS", "PUT_DONE_TO_DO_FAILURE", callback);
+}
+
+export function delRemoveToDo(payload, callback) {
+  return dispatchActionToReducer(delRemoveToDoService(payload), "DEL_REMOVE_TO_DO_START", "DEL_REMOVE_TO_DO_SUCCESS", "DEL_REMOVE_TO_DO_FAILURE", callback);
+}
+
+export function incomingToDo(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_TO_DO", payload, callback);
+}
+
+export function incomingUpdateToDo(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_UPDATE_TO_DO", payload, callback);
+}
+
+export function incomingDoneToDo(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_DONE_TO_DO", payload, callback);
+}
+
+export function incomingRemoveToDo(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_REMOVE_TO_DO", payload, callback);
 }

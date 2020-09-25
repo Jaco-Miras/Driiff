@@ -64,6 +64,10 @@ import {
   generateUnfurl,
   generateUnfurlReducer,
   getConnectedSlugs,
+  incomingDoneToDo,
+  incomingRemoveToDo,
+  incomingToDo,
+  incomingUpdateToDo,
   setBrowserTabStatus,
   setGeneralChat,
   setUnreadNotificationCounterEntries
@@ -128,6 +132,20 @@ class SocketListeners extends Component {
 
     // new socket
     window.Echo.private(`${localStorage.getItem("slug") === "dev24admin" ? "dev" : localStorage.getItem("slug")}.Driff.User.${this.props.user.id}`)
+      .listen(".todo-notification", (e) => {
+        console.log("todo notification", e);
+        this.props.incomingToDo(e);
+        this.props.incomingUpdateToDo(e);
+        this.props.incomingDoneToDo(e);
+        this.props.incomingRemoveToDo(e);
+        switch (e.SOCKET_TYPE) {
+          case "CREATE_TO_DO": {
+            break;
+          }
+          default:
+            return null;
+        }
+      })
       .listen(".workspace-role-notification", (e) => {
         console.log("workspace role", e);
         this.props.incomingWorkspaceRole(e);
@@ -1122,6 +1140,10 @@ function mapDispatchToProps(dispatch) {
     getWorkspaceFolder: bindActionCreators(getWorkspaceFolder, dispatch),
     incomingUpdateCompanyName: bindActionCreators(incomingUpdateCompanyName, dispatch),
     incomingInternalUser: bindActionCreators(incomingInternalUser, dispatch),
+    incomingToDo: bindActionCreators(incomingToDo, dispatch),
+    incomingUpdateToDo: bindActionCreators(incomingUpdateToDo, dispatch),
+    incomingDoneToDo: bindActionCreators(incomingDoneToDo, dispatch),
+    incomingRemoveToDo: bindActionCreators(incomingRemoveToDo, dispatch),
   };
 }
 

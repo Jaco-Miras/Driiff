@@ -1,5 +1,6 @@
 import {getTranslationAPIUrl} from "../../helpers/slugHelper";
 import {apiCall, apiNoTokenCall} from "./index";
+import {objToUrlParams} from "../../helpers/commonFunctions";
 
 export function getConnectedSlugs(payload) {
   let url = "/v2/connected-slugs";
@@ -144,5 +145,50 @@ export function deletePushSubscription(payload) {
   return apiCall({
     method: "DELETE",
     url: `/v2/push-api-notification?delete_all_subscription=${payload.user_id}`,
+  });
+}
+
+export function postToDo(payload) {
+  let url = `/v2/to-do`;
+  return apiCall({
+    method: "POST",
+    url: url,
+    data: payload,
+  });
+}
+
+export function putToDo(payload) {
+  let url = `/v2/to-do/${payload.id}`;
+  return apiCall({
+    method: "PUT",
+    url: url,
+    data: payload,
+  });
+}
+
+export function getToDo(payload) {
+  let url = `/v2/to-do?${objToUrlParams(payload)}`;
+  return apiCall({
+    method: "GET",
+    url: url,
+    data: payload,
+  });
+}
+
+export function putDoneToDo(payload) {
+  let url = `/v2/done-to-do?${objToUrlParams(payload)}`;
+  return apiCall({
+    method: "PUT",
+    url: url,
+    data: payload,
+  });
+}
+
+export function delRemoveToDo(payload) {
+  let url = `/v2/remove-to-do?${objToUrlParams(payload)}`;
+  return apiCall({
+    method: "DEL",
+    url: url,
+    data: payload,
   });
 }
