@@ -5,10 +5,9 @@ import styled from "styled-components";
 import { addToModals } from "../../../redux/actions/globalActions";
 import { SvgIconFeather } from "../../common";
 import useChannelActions from "../../hooks/useChannelActions";
-import ChatMembers from "../../list/chat/ChatMembers";
-import ChatTitleTyping from "../../list/chat/ChatTitleTyping";
 import { MemberLists } from "../../list/members";
 import ChannelIcon from "../../list/chat/ChannelIcon";
+import { MoreOptions } from "../../panels/common";
 
 const Wrapper = styled.div`
   position: relative;
@@ -16,17 +15,28 @@ const Wrapper = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  .chat-header-left {
+    display: flex;
+    align-items: center;
+    @media (min-width: 767.98px) {
+      width: 33.333333%;
+    }
+    .chat-header-icon {
+      @media (max-width: 991.99px) {
+        display: none;
+      }
+    }
+  }
   .chat-header-title {
     font-size: 15px;
     font-weight: 500;
     margin: 0;
+    width: 33.333333%;
+    text-align: center;
   }
-  @media (min-width: 767.98px) {
-    .chat-header-icon-left {
-      width: 20%;
-    }
-    .chat-header-right {
-      width: 20%;
+  .chat-header-right {
+    @media (min-width: 767.98px) {
+      width: 33.333333%;
     }
   }
 `;
@@ -46,10 +56,55 @@ const IconButton = styled(SvgIconFeather)`
   }
 `;
 
-const Icon = styled(SvgIconFeather)`
-  color: #ffffff !important;
-  height: 32px;
-  width: 32px;
+const BackButton = styled.div`
+  @media (min-width: 991.99px) {
+    display: none;
+  }
+  color: #7a1b8b;
+  cursor: pointer;
+  transition: color 0.15s ease-in-out;
+  display: flex;
+  align-items: center;
+  margin-right: 12px;
+  span {
+    line-height: 0;
+  }
+  &:hover {
+    color: #7a1b8bcc;
+  }
+`;
+
+const BackButtonChevron = styled(SvgIconFeather)`
+  color: #7a1b8b;
+  height: 24px;
+  width: 24px;
+  transition: color 0.15s ease-in-out;
+  &:hover {
+    color: #7a1b8bcc;
+  }
+`;
+
+const StyledMoreOptions = styled(MoreOptions)`
+  border: 1px solid #e1e1e1;
+  border-radius: 8px;
+  height: 36px;
+  width: 40px;
+  align-items: center;
+  justify-content: center;
+  .feather-more-horizontal {
+    width: 25px;
+    height: 36px;
+  }
+  .more-options-tooltip {
+    left: auto;
+    right: 0;
+    top: 25px;
+    width: 250px;
+
+    svg {
+      width: 14px;
+    }
+  }
 `;
 
 const ChatHeaderPanel = (props) => {
@@ -57,6 +112,7 @@ const ChatHeaderPanel = (props) => {
    * @todo refactor
    */
   const { className = "", channel } = props;
+  const { unreadCounter } = useSelector((state) => state.global);
 
   const dispatch = useDispatch();
   const routeMatch = useRouteMatch();
@@ -115,32 +171,33 @@ const ChatHeaderPanel = (props) => {
 
   return (
     <Wrapper className={`chat-header border-bottom ${className}`}>
-      <div className="chat-header-icon-left">
-        <ChannelIcon channel={channel} />
+      <div className="chat-header-left">
+        <BackButton className="chat-back-button" onClick={goBackChannelSelect}>
+          <BackButtonChevron icon={"chevron-left"} />
+          <span>{unreadCounter.chat_message + unreadCounter.workspace_chat_message}</span>
+        </BackButton>
+        <ChannelIcon className="chat-header-icon" channel={channel} />
       </div>
       <h2 className="chat-header-title">{chatChannel.title}</h2>
       <div className="chat-header-right">
         <ul className="nav align-items-center justify-content-end">
-          <li>
-            <MemberLists members={channel.members} />
-          </li>
-          {["DIRECT", "PERSONAL_BOT", "COMPANY", "TOPIC"].includes(channel.type) === false && !channel.is_archived && (
-            <>
-              <li className="ml-2 d-sm-inline d-none">
-                <IconButton icon={"edit-3"} onClick={handleShowChatEditModal} />
-              </li>
-            </>
+          {["DIRECT", "PERSONAL_BOT"].includes(channel.type) === false && (
+            <li>
+              <MemberLists members={channel.members} />
+            </li>
           )}
-          {["PERSONAL_BOT", "COMPANY", "TOPIC"].includes(channel.type) === false && (
-            <>
-              <li className="ml-2 d-sm-inline d-none" title={channel.is_archived ? "Restore" : "Archive"}>
-                <IconButton icon={channel.is_archived ? "rotate-ccw" : "trash-2"} onClick={handleShowArchiveConfirmation} />
-              </li>
-            </>
+
+          {(["PERSONAL_BOT", "COMPANY", "TOPIC"].includes(channel.type) === false || (["DIRECT", "PERSONAL_BOT", "COMPANY", "TOPIC"].includes(channel.type) === false && !channel.is_archived)) && (
+            <li className="ml-2 d-sm-inline d-none">
+              <StyledMoreOptions role="tabList">
+                {["PERSONAL_BOT", "COMPANY", "TOPIC"].includes(channel.type) === false && <div>{channel.is_archived ? "Restore" : "Archive"}</div>}
+                {["DIRECT", "PERSONAL_BOT", "COMPANY", "TOPIC"].includes(channel.type) === false && !channel.is_archived && <div onClick={handleShowChatEditModal}>Edit chat</div>}
+              </StyledMoreOptions>
+            </li>
           )}
-          <li className="ml-2 mobile-chat-close-btn" onClick={goBackChannelSelect}>
-            <IconButton icon={"arrow-left"} />
-          </li>
+
+          {/* <IconButton icon={channel.is_archived ? "rotate-ccw" : "trash-2"} onClick={handleShowArchiveConfirmation} /> */}
+          {/* <IconButton icon={channel.is_archived ? "rotate-ccw" : "trash-2"} onClick={handleShowArchiveConfirmation} /> */}
         </ul>
       </div>
     </Wrapper>
