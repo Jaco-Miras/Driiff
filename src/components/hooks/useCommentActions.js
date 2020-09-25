@@ -12,12 +12,13 @@ import {
   setEditComment
 } from "../../redux/actions/postActions";
 import {addToModals} from "../../redux/actions/globalActions";
-import {useTodoActions} from "./index";
+import {useToaster, useTodoActions} from "./index";
 
 const useCommentActions = (props) => {
 
   const dispatch = useDispatch();
   const todoActions = useTodoActions();
+  const toaster = useToaster();
 
   const fetchPostComments = useCallback(
     (payload, callback) => {
