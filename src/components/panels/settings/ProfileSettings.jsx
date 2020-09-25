@@ -1,6 +1,6 @@
 import momentTZ from "moment-timezone";
 import React, {useCallback} from "react";
-import {useSelector, useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import Select from "react-select";
 import {CustomInput} from "reactstrap";
 import styled from "styled-components";
@@ -361,7 +361,7 @@ const ProfileSettings = (props) => {
             </div>
           </div>
           {
-            ["owner", 'admin'].includes(loggedUser.role.name) &&
+            loggedUser.email === "joules@makedevelopment.com" &&
             <div className="row mb-2 mt-4">
               <div className="col-12 text-right">
                 <button className="btn btn-primary" onClick={handleUpdateTranslationClick}>Update translation
