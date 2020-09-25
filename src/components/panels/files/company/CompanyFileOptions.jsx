@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import {MoreOptions} from "../../../panels/common";
-import {useToaster} from "../../../hooks";
+import { MoreOptions } from "../../../panels/common";
+import { useToaster } from "../../../hooks";
 
 const Wrapper = styled(MoreOptions)`
   .more-options-tooltip {
@@ -29,7 +29,7 @@ const Wrapper = styled(MoreOptions)`
 `;
 
 const CompanyFileOptions = (props) => {
-  const {className = "", folders, file, scrollRef = null, actions, forceDelete, disableOptions} = props;
+  const { className = "", folders, file, scrollRef = null, actions, forceDelete, disableOptions } = props;
 
   const toaster = useToaster();
 
@@ -58,48 +58,57 @@ const CompanyFileOptions = (props) => {
   };
 
   const handleRestore = () => {
-    actions.restoreCompanyFile(file, (err, res) => {
-      if (res) {
-        if (file.folder_id && typeof folders[file.folder_id] !== "undefined") {
-          toaster.success(<>Item <b>{file.search}</b> is restored to #{folders[file.folder_id].search} folder.</>);
-        } else {
-          toaster.success(<>Item <span className="font-weight-bold">{file.search}</span> is restored to #All Files
-            folder.</>);
+    actions.restoreCompanyFile(
+      file,
+      (err, res) => {
+        if (res) {
+          if (file.folder_id && typeof folders[file.folder_id] !== "undefined") {
+            toaster.success(
+              <>
+                Item <b>{file.search}</b> is restored to #{folders[file.folder_id].search} folder.
+              </>
+            );
+          } else {
+            toaster.success(
+              <>
+                Item <span className="font-weight-bold">{file.search}</span> is restored to #All Files folder.
+              </>
+            );
+          }
         }
+      },
+      {
+        message: false,
       }
-    }, {
-      message: false
-    });
-  }
+    );
+  };
 
   const handleDelete = () => {
     if (file.hasOwnProperty("payload_id")) {
       actions.unlinkGoogleAttachment(file);
     } else {
-      actions.removeCompanyFile(file, () => {
-      }, {
-        forceDelete: forceDelete
+      actions.removeCompanyFile(file, () => {}, {
+        forceDelete: forceDelete,
       });
     }
   };
 
   return (
-    <Wrapper className={`file-options ${className}`} moreButton="more-vertical" file={file} scrollRef={scrollRef}>
+    <Wrapper className={`file-options ${className}`} moreButton="move-horizontal" file={file} scrollRef={scrollRef}>
       <div onClick={handleViewDetail}>View Details</div>
       <div onClick={handleDownload}>Download</div>
-      {
-        forceDelete ?
-          <>
-            <div onClick={handleRestore}>Restore</div>
-          </>
-          :
-          <>
-            <div onClick={handleShare}>Share</div>
-            <div onClick={handleFavorite}>{file.is_favorite ? "Unfavorite" : "Favorite"}</div>
-            <div onClick={handleMoveTo}>Move to</div>
-            <div onClick={handleRename}>Rename</div>
-          </>
-      }
+      {forceDelete ? (
+        <>
+          <div onClick={handleRestore}>Restore</div>
+        </>
+      ) : (
+        <>
+          <div onClick={handleShare}>Share</div>
+          <div onClick={handleFavorite}>{file.is_favorite ? "Unfavorite" : "Favorite"}</div>
+          <div onClick={handleMoveTo}>Move to</div>
+          <div onClick={handleRename}>Rename</div>
+        </>
+      )}
       {!disableOptions && <div onClick={handleDelete}>Remove</div>}
     </Wrapper>
   );

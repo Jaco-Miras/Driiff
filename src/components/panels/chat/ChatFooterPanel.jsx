@@ -267,7 +267,7 @@ const ChatFooterPanel = (props) => {
           ) : (
             <React.Fragment>
               {/* <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Emoji" className="emojiButton"></Tooltip> */}
-              <ChatInputContainer className="flex-grow-1">
+              <ChatInputContainer className="flex-grow-1 chat-input-footer">
                 {selectedChannel && !selectedChannel.is_archived && (
                   <Dflex className="d-flex pr-2 pl-2">
                     <ChatQuote />

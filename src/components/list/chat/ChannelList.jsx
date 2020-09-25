@@ -84,7 +84,7 @@ const Wrapper = styled.li`
     right: 0;
     fill: currentColor;
     padding: 3px;
-    top: 2px;
+    top: 1px;
   }
 `;
 

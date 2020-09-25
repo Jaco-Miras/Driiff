@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import {MoreOptions} from "../../../panels/common";
-import {useToaster} from "../../../hooks";
+import { MoreOptions } from "../../../panels/common";
+import { useToaster } from "../../../hooks";
 
 const Wrapper = styled(MoreOptions)`
   .more-options-tooltip {
@@ -29,8 +29,7 @@ const Wrapper = styled(MoreOptions)`
 `;
 
 const CompanyFolderOptions = (props) => {
-
-  const {className = "", folder, scrollRef = null, actions, history, handleAddEditFolder} = props;
+  const { className = "", folder, scrollRef = null, actions, history, handleAddEditFolder } = props;
 
   const toaster = useToaster();
 
@@ -39,20 +38,30 @@ const CompanyFolderOptions = (props) => {
   };
 
   const handleRestore = () => {
-    actions.restoreCompanyFolder(folder, (err, res) => {
-      if (res) {
-        if (folder.parent_folder) {
-          toaster.success(<>Folder <span className="font-weight-bold">{folder.search}</span> is restored to
-            #${folder.parent_folder} folder.</>)
-        } else {
-          toaster.success(<>Folder <span className="font-weight-bold">{folder.search}</span> is restored to #All Files
-            folder.</>)
+    actions.restoreCompanyFolder(
+      folder,
+      (err, res) => {
+        if (res) {
+          if (folder.parent_folder) {
+            toaster.success(
+              <>
+                Folder <span className="font-weight-bold">{folder.search}</span> is restored to #${folder.parent_folder} folder.
+              </>
+            );
+          } else {
+            toaster.success(
+              <>
+                Folder <span className="font-weight-bold">{folder.search}</span> is restored to #All Files folder.
+              </>
+            );
+          }
         }
+      },
+      {
+        message: false,
       }
-    }, {
-      message: false
-    });
-  }
+    );
+  };
 
   const handleDelete = () => {
     if (folder.hasOwnProperty("payload")) {
@@ -65,7 +74,11 @@ const CompanyFolderOptions = (props) => {
           let pathname = history.location.pathname.split("/folder/")[0];
           history.push(pathname);
 
-          toaster.info(<>You have removed <b>{folder.search}</b>.</>);
+          toaster.info(
+            <>
+              You have removed <b>{folder.search}</b>.
+            </>
+          );
         }
       };
       actions.removeCompanyFolder(folder, cb);
@@ -73,8 +86,8 @@ const CompanyFolderOptions = (props) => {
   };
 
   return (
-    <Wrapper className={`file-options ${className}`} moreButton="more-vertical" folder={folder} scrollRef={scrollRef}>
-      {(!folder.hasOwnProperty("payload")) && !folder.is_archived && <div onClick={handleRename}>Rename</div>}
+    <Wrapper className={`file-options ${className}`} moreButton="more-horizontal" folder={folder} scrollRef={scrollRef}>
+      {!folder.hasOwnProperty("payload") && !folder.is_archived && <div onClick={handleRename}>Rename</div>}
       {folder.is_archived && <div onClick={handleRestore}>Restore</div>}
       <div onClick={handleDelete}>Remove</div>
     </Wrapper>

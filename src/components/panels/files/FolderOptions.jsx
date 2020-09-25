@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import {useToaster} from "../../hooks";
-import {MoreOptions} from "../../panels/common";
+import { useToaster } from "../../hooks";
+import { MoreOptions } from "../../panels/common";
 
 const Wrapper = styled(MoreOptions)`
   .more-options-tooltip {
@@ -29,7 +29,7 @@ const Wrapper = styled(MoreOptions)`
 `;
 
 const FolderOptions = (props) => {
-  const {className = "", folder, scrollRef = null, actions, isMember, history, params, handleAddEditFolder} = props;
+  const { className = "", folder, scrollRef = null, actions, isMember, history, params, handleAddEditFolder } = props;
   const toaster = useToaster();
 
   // const handleViewDetail = () => {
@@ -65,23 +65,33 @@ const FolderOptions = (props) => {
 
   const handleRestore = () => {
     console.log(folder);
-    actions.restoreWorkspaceFolder(folder, (err, res) => {
-      if (res) {
-        if (folder.parent_folder) {
-          toaster.success(<>Folder <span className="font-weight-bold">{folder.search}</span> is restored to
-            #${folder.parent_folder} folder.</>)
-        } else {
-          toaster.success(<>Folder <span className="font-weight-bold">{folder.search}</span> is restored to #All Files
-            folder.</>)
+    actions.restoreWorkspaceFolder(
+      folder,
+      (err, res) => {
+        if (res) {
+          if (folder.parent_folder) {
+            toaster.success(
+              <>
+                Folder <span className="font-weight-bold">{folder.search}</span> is restored to #${folder.parent_folder} folder.
+              </>
+            );
+          } else {
+            toaster.success(
+              <>
+                Folder <span className="font-weight-bold">{folder.search}</span> is restored to #All Files folder.
+              </>
+            );
+          }
         }
+      },
+      {
+        message: false,
       }
-    }, {
-      message: false
-    });
-  }
+    );
+  };
 
   return (
-    <Wrapper className={`file-options ${className}`} moreButton="more-vertical" folder={folder} scrollRef={scrollRef}>
+    <Wrapper className={`file-options ${className}`} moreButton="more-horizontal" folder={folder} scrollRef={scrollRef}>
       {/* <div onClick={handleViewDetail}>View Details</div> */}
       {!folder.hasOwnProperty("payload") && <div onClick={handleRename}>Rename</div>}
       {folder.is_archived && <div onClick={handleRestore}>Restore</div>}

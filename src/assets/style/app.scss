@@ -41,13 +41,6 @@ body {
   }
 }
 
-.more-options {
-  align-items: center;
-  border: 1px solid #e1e1e1;
-  border-radius: 8px;
-  padding: 0px 1px 2px 1px;
-}
-
 .time-stamp {
   cursor: default;
 }
@@ -126,6 +119,40 @@ body.dark {
   // #25282c // bg
   // #191c20 // mid / tobar chat
   // #ffffff14 // borders of #fff3
+
+  .chat-emoji-users-list ul {
+    background-color: $dm-bg-2;
+    color: $dm-text-color;
+    border-top: 0px solid #eeeeee;
+  }
+
+  .feather-more-options {
+    border: 1px solid #e1e1e1;
+  }
+
+  .more-options {
+    border: 0px;
+    border-radius: 8px;
+    background: #25282c;
+  }
+
+  .chat-input-footer {
+    background: #25282c;
+    border: 0px solid #000 !important;
+  }
+
+  .feather-paperclip {
+    border: 0px;
+    background-color: #25282c;
+  }
+
+  .feather-paperclip:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+  }
+
+  .chat-sidebar-content::after {
+    background: #333539;
+  }
 
   .mention {
     color: rgba(255, 255, 255, 0.5);
@@ -408,7 +435,8 @@ body.dark {
   .swal-modal input.swal-content__input,
   .form-control,
   .swal-modal input.swal-content__input {
-    background-color: #111417 !important;
+    background-color: #25282c !important;
+    border: 0px;
   }
   .nav-pills .nav-item .nav-link:not(.active) {
     background-color: #ffffff14 !important;
@@ -451,7 +479,7 @@ body.dark {
 
   .more-options-tooltip {
     background-color: #25282c;
-    border-color: #25282c !important;
+    border-color: #25282c;
 
     > div.active,
     > div:hover {
@@ -474,6 +502,21 @@ body.dark {
     background-color: #111417;
   }
 }
+
+.file-options {
+  width: 2rem !important;
+  padding: 0 4px;
+}
+
+.user-list-name {
+  margin-left: 0.5rem;
+}
+
+.more-options {
+  border: 1px solid #e1e1e1;
+  border-radius: 8px;
+}
+
 .folder-name {
   font-weight: 500;
 }

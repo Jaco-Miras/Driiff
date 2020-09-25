@@ -245,7 +245,7 @@ const CompanyPostDetail = (props) => {
             </ul>
           </div>
           <div>
-            <MoreOptions className="ml-2" item={post} width={170} moreButton={"more-vertical"}>
+            <MoreOptions className="ml-2" item={post} width={170} moreButton={"more-horizontal"}>
               <div onClick={() => markAsRead(post, true)}>{dictionary.markAsRead}</div>
               <div onClick={() => markAsUnread(post, true)}>{dictionary.markAsUnread}</div>
               <div onClick={() => sharePost(post)}>{dictionary.share}</div>
