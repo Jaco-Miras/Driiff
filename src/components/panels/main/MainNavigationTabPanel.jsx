@@ -25,6 +25,10 @@ const Wrapper = styled.div`
       justify-content: center;
       align-items: center;
       border: 1px solid #fff3;
+      @media (max-width: 620px) {
+        width: 75px;
+        height: 75px;
+      }
     }
     @media (max-width: 620px) {
       padding: 10px 0 20px 0;
