@@ -1,17 +1,28 @@
-import { useCallback } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { copyTextToClipboard } from "../../helpers/commonFunctions";
-import { getBaseUrl } from "../../helpers/slugHelper";
-import { addQuote, deleteChatMessage, getChatMessages, postChatMessage, postChatReaction, postChatReminder, putChatMessage, putMarkReminderComplete, setEditChatMessage, setLastChatVisibility } from "../../redux/actions/chatActions";
-import { useToaster } from "./index";
+import {useCallback} from "react";
+import {useDispatch, useSelector} from "react-redux";
+import {copyTextToClipboard} from "../../helpers/commonFunctions";
+import {getBaseUrl} from "../../helpers/slugHelper";
+import {
+  addQuote,
+  deleteChatMessage,
+  getChatMessages,
+  postChatMessage,
+  postChatReaction,
+  putChatMessage,
+  putMarkReminderComplete,
+  setEditChatMessage,
+  setLastChatVisibility
+} from "../../redux/actions/chatActions";
+import {useToaster, useTodoActions} from "./index";
 import useChannelActions from "./useChannelActions";
-import { deleteUnfurl, removeUnfurlReducer } from "../../redux/actions/globalActions";
+import {addToModals, deleteUnfurl, removeUnfurlReducer} from "../../redux/actions/globalActions";
 
 const useChatMessageActions = () => {
   const sharedSlugs = useSelector((state) => state.global.slugs);
 
   const dispatch = useDispatch();
   const toaster = useToaster();
+  const todoActions = useTodoActions();
 
   const getSharedPayload = useCallback(
     (channel) => {
@@ -161,26 +172,6 @@ const useChatMessageActions = () => {
 
   /**
    * @param {number} messageId
-   * @param {string} setTime
-   * @param {function} [callback]
-   */
-  const remind = useCallback(
-    (messageId, setTime, callback = () => {}) => {
-      dispatch(
-        postChatReminder(
-          {
-            message_id: messageId,
-            set_time: setTime,
-          },
-          callback
-        )
-      );
-    },
-    [dispatch]
-  );
-
-  /**
-   * @param {number} messageId
    * @param {function} [callback]
    */
   const markComplete = useCallback(
@@ -267,7 +258,7 @@ const useChatMessageActions = () => {
     [dispatch]
   );
 
-   /**
+  /**
    * @param {boolean} status
    */
   const setLastMessageVisiblility = useCallback(
@@ -275,6 +266,25 @@ const useChatMessageActions = () => {
       dispatch(
         setLastChatVisibility(payload)
       );
+    },
+    [dispatch]
+  );
+
+  const remind = useCallback(
+    (message, callback) => {
+      const onConfirm = (payload, callback) => {
+        todoActions.createForChat(payload, callback);
+      }
+      let payload = {
+        type: "todo_reminder",
+        item: message,
+        itemType: "CHAT",
+        actions: {
+          onSubmit: onConfirm,
+        },
+      };
+
+      dispatch(addToModals(payload));
     },
     [dispatch]
   );

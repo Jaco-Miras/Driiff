@@ -19,6 +19,7 @@ import {
   MoveFilesModal,
   PostSnoozeModal,
   SingleInputModal,
+  TodoReminderModal,
 } from "../modals";
 
 const ModalPanelContainer = styled.div`
@@ -77,6 +78,8 @@ const ModalPanel = () => {
               return <CompanyMoveFilesModal key={modal.type} data={modal}/>;
             case "personal_link_create_edit":
               return <CreatePersonalLinksModal key={modal.type} data={modal}/>
+            case "todo_reminder":
+              return <TodoReminderModal key={modal.type} data={modal}/>
             default:
               return null;
           }

@@ -1,10 +1,10 @@
-import React, { useCallback, useEffect } from "react";
+import React, {useCallback, useEffect} from "react";
 //import { useSelector } from "react-redux";
-import { useHistory, useParams } from "react-router-dom";
+import {useHistory, useParams} from "react-router-dom";
 import styled from "styled-components";
-import { SvgEmptyState } from "../../common";
-import { usePosts, useTranslation } from "../../hooks";
-import { PostDetail, PostFilterSearchPanel, PostItemPanel, PostSidebar } from "../post";
+import {SvgEmptyState} from "../../common";
+import {usePosts, useTranslation} from "../../hooks";
+import {PostDetail, PostFilterSearchPanel, PostItemPanel, PostSidebar} from "../post";
 
 const Wrapper = styled.div`
   text-align: left;
@@ -49,7 +49,7 @@ const EmptyState = styled.div`
 `;
 
 const WorkspacePostsPanel = (props) => {
-  const { className = "", workspace, isMember } = props;
+  const {className = "", workspace, isMember} = props;
 
   const params = useParams();
   const history = useHistory();
@@ -58,7 +58,7 @@ const WorkspacePostsPanel = (props) => {
 
   // const isMember = useIsMember(workspace && workspace.member_ids.length ? workspace.member_ids : []);
 
-  const { actions, posts, filter, tag, sort, post, user, search, count, counters } = usePosts();
+  const {actions, posts, filter, tag, sort, post, user, search, count, counters} = usePosts();
 
   const handleShowWorkspacePostModal = () => {
     actions.showModal("create");
@@ -77,7 +77,7 @@ const WorkspacePostsPanel = (props) => {
     }
   }, [params.workspaceId]);
 
-  const { _t } = useTranslation();
+  const {_t} = useTranslation();
 
   const dictionary = {
     createNewPost: _t("POST.CREATE_NEW_POST", "Create new post"),
@@ -108,6 +108,7 @@ const WorkspacePostsPanel = (props) => {
     removeReply: _t("POST.REMOVE_REPLY", "Remove reply"),
     quote: _t("POST.QUOTE", "Quote"),
     mentionUser: _t("POST.MENTION_USER", "Mention user"),
+    remindMeAboutThis: _t("TODO.REMIND_ME_ABOUT_THIS", "Remind me about this"),
   };
   let disableOptions = false;
   if (workspace && workspace.active === 0) disableOptions = true;
@@ -116,16 +117,20 @@ const WorkspacePostsPanel = (props) => {
   return (
     <Wrapper className={`container-fluid h-100 fadeIn ${className}`}>
       <div className="row app-block">
-        <PostSidebar disableOptions={disableOptions} isMember={isMember} workspace={workspace} filter={filter} tag={tag} postActions={actions} count={count} counters={counters} onGoBack={handleGoback} dictionary={dictionary} />
+        <PostSidebar disableOptions={disableOptions} isMember={isMember} workspace={workspace} filter={filter} tag={tag}
+                     postActions={actions} count={count} counters={counters} onGoBack={handleGoback}
+                     dictionary={dictionary}/>
         <div className="col-md-9 app-content">
-          <div className="app-content-overlay" />
-          {!post && <PostFilterSearchPanel activeSort={sort} workspace={workspace} search={search} dictionary={dictionary} />}
+          <div className="app-content-overlay"/>
+          {!post &&
+          <PostFilterSearchPanel activeSort={sort} workspace={workspace} search={search} dictionary={dictionary}/>}
           {posts.length === 0 && search === null ? (
             <div className="card card-body app-content-body mb-4">
               <EmptyState>
-                <SvgEmptyState icon={3} height={252} />
+                <SvgEmptyState icon={3} height={252}/>
                 {isMember && (
-                  <button className="btn btn-outline-primary btn-block" onClick={handleShowWorkspacePostModal} disabled={disableOptions}>
+                  <button className="btn btn-outline-primary btn-block" onClick={handleShowWorkspacePostModal}
+                          disabled={disableOptions}>
                     {dictionary.createNewPost}
                   </button>
                 )}
@@ -136,7 +141,9 @@ const WorkspacePostsPanel = (props) => {
               {post ? (
                 <div className="card card-body app-content-body mb-4">
                   <PostDetailWrapper className="fadeBottom">
-                    <PostDetail post={post} postActions={actions} user={user} history={history} onGoBack={handleGoback} workspace={workspace} isMember={isMember} dictionary={dictionary} disableOptions={disableOptions} />
+                    <PostDetail post={post} postActions={actions} user={user} history={history} onGoBack={handleGoback}
+                                workspace={workspace} isMember={isMember} dictionary={dictionary}
+                                disableOptions={disableOptions}/>
                   </PostDetailWrapper>
                 </div>
               ) : (
@@ -145,19 +152,24 @@ const WorkspacePostsPanel = (props) => {
                     {search !== null && (
                       <>
                         {posts.length === 0 ? (
-                          <h6 className="search-title card-title font-size-11 text-uppercase mb-4">No result found: {search}</h6>
+                          <h6 className="search-title card-title font-size-11 text-uppercase mb-4">No result
+                            found: {search}</h6>
                         ) : posts.length === 1 ? (
-                          <h6 className="search-title card-title font-size-11 text-uppercase mb-4">Search Result: {search}</h6>
+                          <h6 className="search-title card-title font-size-11 text-uppercase mb-4">Search
+                            Result: {search}</h6>
                         ) : (
-                          <h6 className="search-title card-title font-size-11 text-uppercase mb-4">Search Results: {search}</h6>
+                          <h6 className="search-title card-title font-size-11 text-uppercase mb-4">Search
+                            Results: {search}</h6>
                         )}
                       </>
                     )}
                     <ul className="list-group list-group-flush ui-sortable fadeIn">
                       {posts &&
-                        posts.map((p) => {
-                          return <PostItemPanel key={p.id} post={p} postActions={actions} dictionary={dictionary} disableOptions={disableOptions} />;
-                        })}
+                      posts.map((p) => {
+                        return <PostItemPanel
+                          key={p.id} post={p} postActions={actions} dictionary={dictionary}
+                          disableOptions={disableOptions}/>;
+                      })}
                     </ul>
                   </div>
                 </div>

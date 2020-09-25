@@ -1,10 +1,23 @@
-import { useCallback } from "react";
-import { useDispatch } from "react-redux";
-import { addComment, fetchComments, setEditComment, postComment, putComment, addCommentQuote, clearCommentQuote, postCommentClap, deleteComment } from "../../redux/actions/postActions";
-import { addToModals } from "../../redux/actions/globalActions";
+import {useCallback} from "react";
+import {useDispatch} from "react-redux";
+import {
+  addComment,
+  addCommentQuote,
+  clearCommentQuote,
+  deleteComment,
+  fetchComments,
+  postComment,
+  postCommentClap,
+  putComment,
+  setEditComment
+} from "../../redux/actions/postActions";
+import {addToModals} from "../../redux/actions/globalActions";
+import {useTodoActions} from "./index";
 
 const useCommentActions = (props) => {
+
   const dispatch = useDispatch();
+  const todoActions = useTodoActions();
 
   const fetchPostComments = useCallback(
     (payload, callback) => {
@@ -100,6 +113,25 @@ const useCommentActions = (props) => {
     [dispatch]
   );
 
+  const remind = useCallback(
+    (postComment, callback) => {
+      const onConfirm = (payload, callback) => {
+        todoActions.createForPostComment(payload, callback);
+      }
+      let payload = {
+        type: "todo_reminder",
+        item: postComment,
+        itemType: "POST_COMMENT",
+        actions: {
+          onSubmit: onConfirm,
+        },
+      };
+
+      dispatch(addToModals(payload));
+    },
+    [dispatch]
+  );
+
   return {
     add,
     addQuote,
@@ -110,6 +142,7 @@ const useCommentActions = (props) => {
     fetchPostComments,
     setToEdit,
     remove,
+    remind,
   };
 };
 

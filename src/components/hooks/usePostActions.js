@@ -32,7 +32,7 @@ import {
   starPostReducer,
   updateCompanyPostFilterSort,
 } from "../../redux/actions/postActions";
-import {useToaster} from "./index";
+import {useToaster, useTodoActions} from "./index";
 
 const usePostActions = () => {
   const dispatch = useDispatch();
@@ -40,6 +40,7 @@ const usePostActions = () => {
   const history = useHistory();
   const params = useParams();
   const toaster = useToaster();
+  const todoActions = useTodoActions();
 
   const starPost = useCallback(
     (post) => {
@@ -570,6 +571,25 @@ const usePostActions = () => {
     [dispatch, params]
   );
 
+  const remind = useCallback(
+    (post, callback) => {
+      const onConfirm = (payload, callback) => {
+        todoActions.createForPost(payload, callback)
+      }
+      let payload = {
+        type: "todo_reminder",
+        item: post,
+        itemType: "POST",
+        actions: {
+          onSubmit: onConfirm,
+        },
+      };
+
+      dispatch(addToModals(payload));
+    },
+    [dispatch, params]
+  );
+
   return {
     starPost,
     markPost,
@@ -590,7 +610,8 @@ const usePostActions = () => {
     setCompanyFilterPosts,
     getPosts,
     visit,
-    markReadRequirement
+    markReadRequirement,
+    remind
   };
 };
 
