@@ -20,6 +20,7 @@ const UserListPopUpContainer = styled.div`
     border-top: 1px solid #eeeeee;
     max-height: 260px;
   }
+
   li {
     white-space: nowrap;
     margin-bottom: 10px;
@@ -79,7 +80,9 @@ const UserListPopUp = (props) => {
           return (
             <li key={u.id}>
               <Avatar size={"xs"} imageLink={u.profile_image_link} userId={u.id} name={u.name ? u.name : u.email} partialName={u.partial_name} hasAccepted={u.has_accepted} noDefaultClick={true} onClick={(e) => handleOnNameClick(e, u)} />
-              <span onClick={(e) => handleOnNameClick(e, u)}>{u.name ? u.name : u.email}</span>
+              <span className={"user-list-name"} onClick={(e) => handleOnNameClick(e, u)}>
+                {u.name ? u.name : u.email}
+              </span>
             </li>
           );
         })}

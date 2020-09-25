@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import {useToaster} from "../../hooks";
-import {MoreOptions} from "../../panels/common";
+import { useToaster } from "../../hooks";
+import { MoreOptions } from "../../panels/common";
 
 const Wrapper = styled(MoreOptions)`
   .more-options-tooltip {
@@ -29,7 +29,7 @@ const Wrapper = styled(MoreOptions)`
 `;
 
 const FileOptions = (props) => {
-  const {className = "", folders, file, scrollRef = null, actions, isMember, forceDelete, disableOptions} = props;
+  const { className = "", folders, file, scrollRef = null, actions, isMember, forceDelete, disableOptions } = props;
   const toaster = useToaster();
 
   //const [showMoreOptions, setShowMoreOptions] = useState(false);
@@ -71,19 +71,30 @@ const FileOptions = (props) => {
   };
 
   const handleRestore = () => {
-    actions.restoreWorkspaceFile(file, (err, res) => {
-      if (res) {
-        if (file.folder_id && typeof folders[file.folder_id] !== "undefined") {
-          toaster.success(<>Item <b>{file.search}</b> is restored to #{folders[file.folder_id].search} folder.</>);
-        } else {
-          toaster.success(<>Item <span className="font-weight-bold">{file.search}</span> is restored to #All Files
-            folder.</>);
+    actions.restoreWorkspaceFile(
+      file,
+      (err, res) => {
+        if (res) {
+          if (file.folder_id && typeof folders[file.folder_id] !== "undefined") {
+            toaster.success(
+              <>
+                Item <b>{file.search}</b> is restored to #{folders[file.folder_id].search} folder.
+              </>
+            );
+          } else {
+            toaster.success(
+              <>
+                Item <span className="font-weight-bold">{file.search}</span> is restored to #All Files folder.
+              </>
+            );
+          }
         }
+      },
+      {
+        message: false,
       }
-    }, {
-      message: false
-    });
-  }
+    );
+  };
 
   const handleDelete = () => {
     if (isMember) {
@@ -98,17 +109,14 @@ const FileOptions = (props) => {
   };
 
   return (
-    <Wrapper className={`file-options ${className}`} moreButton="more-vertical" file={file} scrollRef={scrollRef}>
+    <Wrapper className={`file-options ${className}`} moreButton="more-horizontal" file={file} scrollRef={scrollRef}>
       <div onClick={handleViewDetail}>View Details</div>
       <div onClick={handleFavorite}>{file.is_favorite ? "Unfavorite" : "Favorite"}</div>
       <div onClick={handleShare}>Share</div>
       <div onClick={handleDownload}>Download</div>
       <div onClick={handleMoveTo}>Move to</div>
       <div onClick={handleRename}>Rename</div>
-      {
-        forceDelete &&
-        <div onClick={handleRestore}>Restore</div>
-      }
+      {forceDelete && <div onClick={handleRestore}>Restore</div>}
       {!disableOptions && <div onClick={handleDelete}>Remove</div>}
     </Wrapper>
   );

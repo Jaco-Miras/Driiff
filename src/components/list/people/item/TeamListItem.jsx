@@ -89,7 +89,7 @@ const TeamListItem = (props) => {
         {member.type === "external" && <Badge badgeClassName="badge-info text-white" label={member.has_accepted ? dictionary.peopleExternal : dictionary.peopleInvited} />}
       </div>
       {!hideOptions && (
-        <MoreOptions moreButton="more-vertical" scrollRef={parentRef}>
+        <MoreOptions moreButton="more-horizontal" scrollRef={parentRef}>
           {member.workspace_role !== "" && member.workspace_role === "TEAM_LEAD" && <div onClick={handleRemoveRole}>Revoke as team lead</div>}
           {member.workspace_role !== "TEAM_LEAD" && <div onClick={() => handleAddRole("team_lead")}>Assign as team lead</div>}
           {member.workspace_role !== "APPROVER" && <div onClick={() => handleAddRole("approver")}>Assign as approver</div>}
