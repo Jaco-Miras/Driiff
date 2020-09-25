@@ -1,11 +1,11 @@
 import React from "react";
-import {useSelector} from "react-redux";
+import { useSelector } from "react-redux";
 import styled from "styled-components";
-import {SvgIconFeather} from "../../common";
-import {CheckBox} from "../../forms";
-import {MoreOptions} from "../common";
-import {PostBadge} from "./index";
-import {MemberLists} from "../../list/members";
+import { SvgIconFeather } from "../../common";
+import { CheckBox } from "../../forms";
+import { MoreOptions } from "../common";
+import { PostBadge } from "./index";
+import { MemberLists } from "../../list/members";
 
 const Wrapper = styled.li`
   &:first-of-type {
@@ -37,6 +37,7 @@ const Wrapper = styled.li`
   }
 
   .more-options {
+    padding: 0 4px;
     svg {
       width: 16px;
     }
@@ -56,7 +57,7 @@ const PostItemPanel = (props) => {
   const user = useSelector((state) => state.session.user);
   const { className = "", post, postActions, dictionary, disableOptions } = props;
 
-  const {starPost, markPost, openPost, archivePost, markAsRead, markAsUnread, sharePost, snoozePost, followPost, remind} = postActions;
+  const { starPost, markPost, openPost, archivePost, markAsRead, markAsUnread, sharePost, snoozePost, followPost, remind } = postActions;
 
   const handleMarkDone = (e) => {
     e.preventDefault();
@@ -98,15 +99,15 @@ const PostItemPanel = (props) => {
           </div>
           <div className="pl-3 d-flex align-items-center">
             <div className="mr-3">
-            <PostBadge post={post} dictionary={dictionary} />
-            {post.users_responsible.length > 0 && <MemberLists members={post.users_responsible} />}
+              <PostBadge post={post} dictionary={dictionary} />
+              {post.users_responsible.length > 0 && <MemberLists members={post.users_responsible} />}
             </div>
             {!disableOptions && <Icon icon="archive" onClick={handleArchivePost} />}
           </div>
         </div>
       </div>
       {post.type !== "draft_post" && !disableOptions && (
-        <MoreOptions className="ml-2" item={post} width={170} moreButton={"more-vertical"}>
+        <MoreOptions className="ml-2" item={post} width={170} moreButton={"more-horizontal"}>
           <div onClick={() => remind(post)}>{dictionary.remindMeAboutThis}</div>
           <div onClick={() => markAsRead(post, true)}>{dictionary.markAsRead}</div>
           <div onClick={() => markAsUnread(post, true)}>{dictionary.markAsUnread}</div>
