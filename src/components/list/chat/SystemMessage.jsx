@@ -256,8 +256,6 @@ const SystemMessage = forwardRef((props, ref) => {
         link = `/posts/${item.post.id}/${item.post.title}`;
       }
 
-      console.log(item.post)
-
       setBody(renderToString(<a href={link} className="push-link" data-href={link} data-has-link="0" data-ctrl="0">
         <b>{item.author.first_name}</b> created the post <b>"{item.post.title}"</b>
         <span className="card card-body"
