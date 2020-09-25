@@ -116,7 +116,15 @@ const useCommentActions = (props) => {
   const remind = useCallback(
     (postComment, callback) => {
       const onConfirm = (payload, callback) => {
-        todoActions.createForPostComment(payload, callback);
+        todoActions.createForPostComment(postComment.id, payload, (err, res) => {
+          if (err) {
+            toaster.error(`An error has occured try again!`);
+          }
+          if (res) {
+            toaster.success(`You will be reminded on this comment.`);
+          }
+          callback(err, res);
+        });
       }
       let payload = {
         type: "todo_reminder",

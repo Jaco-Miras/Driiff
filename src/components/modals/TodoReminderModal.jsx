@@ -28,6 +28,7 @@ const TodoReminderModal = (props) => {
   const {_t} = useTranslation();
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
+  const description = item.body.substring(0, 50).split(" ").splice(-1, 1).join(" ");
 
   const [setTimeValue, setSetTimeValue] = useState("20m");
   const [customTimeValue, setCustomTimeValue] = useState(new Date());
@@ -77,16 +78,10 @@ const TodoReminderModal = (props) => {
     setLoading(true);
 
     let payload = {
+      title: itemType === "POST" ? item.title : `${itemType}-${item.id}`,
+      description: description,
       set_time: setTimeValue === "pick_data" ? moment.utc(new Date(customTimeValue)).format("YYYY-MM-DD HH:mm:ss") : setTimeValue,
     };
-
-    if (itemType) {
-      payload = {
-        ...payload,
-        link_id: item.id,
-        link_type: itemType
-      }
-    }
 
     actions.onSubmit(payload, (err, res) => {
       if (res) {
@@ -95,6 +90,8 @@ const TodoReminderModal = (props) => {
       setLoading(false);
     });
   };
+
+  console.log(item);
 
   return (
     <Modal isOpen={modal} toggle={toggle} centered className="todo-reminder-modal">
@@ -110,7 +107,7 @@ const TodoReminderModal = (props) => {
               <div className="col-12 col-lg-8">{item.title}</div>
               <div className="col-12 col-lg-4">{dictionary.description}</div>
               <div className="col-12 col-lg-8"
-                   dangerouslySetInnerHTML={{__html: quillHelper.parseEmoji(item.body.split(" ").splice(0, 50).join(" "))}}/>
+                   dangerouslySetInnerHTML={{__html: quillHelper.parseEmoji(description)}}/>
             </div>
           </>
         }
@@ -122,7 +119,7 @@ const TodoReminderModal = (props) => {
               <div className="col-12 col-lg-8">{item.user ? item.user.name : "System"}</div>
               <div className="col-12 col-lg-4">{dictionary.message}</div>
               <div className="col-12 col-lg-8"
-                   dangerouslySetInnerHTML={{__html: quillHelper.parseEmoji(item.body.split(" ").splice(0, 50).join(" "))}}/>
+                   dangerouslySetInnerHTML={{__html: quillHelper.parseEmoji(description)}}/>
             </div>
           </>
         }
@@ -134,7 +131,7 @@ const TodoReminderModal = (props) => {
               <div className="col-12 col-lg-8">{item.author.name}</div>
               <div className="col-12 col-lg-4">{dictionary.message}</div>
               <div className="col-12 col-lg-8"
-                   dangerouslySetInnerHTML={{__html: quillHelper.parseEmoji(item.body.split(" ").splice(0, 50).join(" "))}}/>
+                   dangerouslySetInnerHTML={{__html: quillHelper.parseEmoji(description)}}/>
             </div>
           </>
         }

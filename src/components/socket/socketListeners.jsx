@@ -134,15 +134,15 @@ class SocketListeners extends Component {
     window.Echo.private(`${localStorage.getItem("slug") === "dev24admin" ? "dev" : localStorage.getItem("slug")}.Driff.User.${this.props.user.id}`)
       .listen(".todo-notification", (e) => {
         console.log("todo notification", e);
-        this.props.incomingToDo(e);
-        this.props.incomingUpdateToDo(e);
-        this.props.incomingDoneToDo(e);
-        this.props.incomingRemoveToDo(e);
         switch (e.SOCKET_TYPE) {
-          case "CREATE_TO_DO": {
+          case "CREATE_TODO": {
+            this.props.incomingToDo(e);
             break;
           }
           default:
+            this.props.incomingUpdateToDo(e);
+            this.props.incomingDoneToDo(e);
+            this.props.incomingRemoveToDo(e);
             return null;
         }
       })

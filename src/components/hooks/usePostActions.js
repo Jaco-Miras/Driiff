@@ -574,7 +574,15 @@ const usePostActions = () => {
   const remind = useCallback(
     (post, callback) => {
       const onConfirm = (payload, callback) => {
-        todoActions.createForPost(payload, callback)
+        todoActions.createForPost(post.id, payload, (err, res) => {
+          if (err) {
+            toaster.error(`An error has occured try again!`);
+          }
+          if (res) {
+            toaster.success(`You will be reminded on this post.`);
+          }
+          callback(err, res);
+        })
       }
       let payload = {
         type: "todo_reminder",

@@ -1,7 +1,6 @@
 import React from "react";
 import Tooltip from "react-tooltip-lite";
 import styled from "styled-components";
-import {replaceChar} from "../../../../helpers/stringFormatter";
 import {Avatar} from "../../../common";
 import {useTimeFormat} from "../../../hooks";
 
@@ -122,7 +121,11 @@ export const NotificationListItem = (props) => {
     <Wrapper>
       <span className="list-group-item d-flex hide-show-toggler">
         <div>
-          <Avatar id={notification.author.id} name={notification.author.name} imageLink={notification.author.profile_image_link} />
+          {
+            notification.author !== null &&
+            <Avatar id={notification.author.id} name={notification.author.name}
+                    imageLink={notification.author.profile_image_link}/>
+          }
         </div>
         {notifDisplay()}
         <div style={{ minWidth: "10px" }}>
