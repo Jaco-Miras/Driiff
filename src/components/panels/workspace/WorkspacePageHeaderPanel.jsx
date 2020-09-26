@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { NavLink } from "../../common";
+import {NavLink} from "../../common";
 
 const Wrapper = styled.div``;
 
@@ -19,7 +19,6 @@ const Navbar = styled.ul`
 `;
 
 const MainNavLink = styled(NavLink)`
-  border-radius: 8px;
   color: #828282;
   margin: 0 1rem;
   transition: color 200ms ease 0ms;
@@ -42,7 +41,6 @@ const MainNavLink = styled(NavLink)`
     }
   }
   .badge {
-    background: green;
     font-size: 0;
     padding: 0;
     margin: 0;
@@ -50,7 +48,7 @@ const MainNavLink = styled(NavLink)`
     width: 6px;
     height: 6px;
     background: #28a745;
-    top: 0px;
+    top: 0;
     right: -13px;
   }
   @media all and (max-width: 700px) {
@@ -59,9 +57,8 @@ const MainNavLink = styled(NavLink)`
 `;
 
 const WorkspacePageHeaderPanel = (props) => {
-  const { className = "", workspace } = props;
 
-  console.log(props);
+  const { className = "", workspace } = props;
 
   let pathname = props.match.url;
   if (props.match.path === "/workspace/:page/:workspaceId/:workspaceName/post/:postId/:postTitle" || props.match.path === "/workspace/:page/:folderId/:folderName/:workspaceId/:workspaceName/post/:postId/:postTitle") {
