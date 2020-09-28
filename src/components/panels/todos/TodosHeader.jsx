@@ -39,28 +39,21 @@ const Wrapper = styled.div`
 `;
 
 const TodosHeader = (props) => {
-  const {className = "", isMember, onSearch, onEnter, dictionary, disableOptions, onClickEmpty, value} = props;
+  const {className = "", onSearch, onEnter, dictionary, disableOptions, onClickEmpty, searchValue} = props;
 
 
   return (
     <Wrapper className={`todos-header app-action ${className}`}>
       <div className="action-left">
-        <ul className="list-inline">
-          {isMember === true && !disableOptions && (
-            <li className="list-inline-item mb-0">
-
-            </li>
-          )}
-        </ul>
         <span className="app-sidebar-menu-button btn btn-outline-light">
           <SvgIconFeather icon="menu"/>
         </span>
       </div>
       <div className="action-right">
         <div className="input-group">
-          <input type="text" onKeyDown={onEnter} value={value} className="form-control"
+          <input type="text" onKeyDown={onEnter} value={searchValue} className="form-control"
                  placeholder={dictionary.searchInputPlaceholder} aria-describedby="button-addon1"/>
-          {value.trim() !== "" && (
+          {searchValue.trim() !== "" && (
             <button onClick={onClickEmpty} className="btn-cross" type="button">
               <SvgIconFeather icon="x"/>
             </button>

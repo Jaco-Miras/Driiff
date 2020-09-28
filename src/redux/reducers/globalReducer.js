@@ -206,8 +206,13 @@ export default (state = INITIAL_STATE, action) => {
     }
     case "GET_TO_DO_SUCCESS": {
       let items = state.todos.items;
+      const timestamp = Math.floor(Date.now() / 1000);
+
       action.data.todos.forEach(t => {
         items[t.id] = t;
+
+        if (items[t.id].remind_at.timestamp < timestamp)
+          items[t.id].status = "OVERDUE";
 
         switch (t.link_type) {
           case "CHAT": {

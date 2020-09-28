@@ -9,6 +9,31 @@ const useTodos = () => {
   const todoActions = useTodoActions();
   const [isFetchLoading, setIsFetchLoading] = useState(false);
 
+  const getSortedItems = ({filter = ""}) => {
+    return Object
+      .values(items)
+      .sort((a, b) => {
+        if (a.status !== b.status) {
+          if (a.status === "DONE") {
+            return 1;
+          }
+
+          if (b.status === "DONE") {
+            return -1;
+          }
+        }
+
+        return b.remind_at.timestamp - a.remind_at.timestamp;
+      })
+      .filter(t => {
+        if (filter) {
+          if (filter.status !== "")
+            return t.status === filter.status;
+        }
+        return true;
+      })
+  }
+
   useEffect(() => {
     if (!isLoaded && !isFetchLoading) {
       setIsFetchLoading(true);
@@ -21,6 +46,7 @@ const useTodos = () => {
   return {
     isLoaded,
     items,
+    getSortedItems,
     action: todoActions,
   };
 };
