@@ -22,6 +22,8 @@ const INITIAL_STATE = {
   links: [],
   todos: {
     isLoaded: false,
+    skip: 0,
+    limit: 50,
     items: {}
   }
 };
@@ -202,28 +204,83 @@ export default (state = INITIAL_STATE, action) => {
         links: action.data
       }
     }
-    case "INCOMING_TO_DO": {
-      console.log(action.data);
+    case "GET_TO_DO_SUCCESS": {
+      let items = state.todos.items;
+      action.data.todos.forEach(t => {
+        items[t.id] = t;
+
+        switch (t.link_type) {
+          case "CHAT": {
+            items[t.id].link = `/chat/${t.data.channel.code}/${t.data.chat_message.code}`
+            break;
+          }
+          case "POST": {
+            items[t.id].link = `/chat/${t.data.channel.code}/${t.data.chat_message.code}`
+          }
+          case "POST_MESSAGE": {
+
+          }
+        }
+      });
+
       return {
         ...state,
+        todos: {
+          ...state.todos,
+          hasMore: action.data.todos.length === state.todos.limit,
+          limit: state.todos.limit + state.todos.limit,
+          items: items
+        }
+      }
+    }
+    case "INCOMING_TO_DO": {
+      let items = state.todos.items;
+      items[action.data.id] = action.data;
+      return {
+        ...state,
+        todos: {
+          ...state.todos,
+          items: items
+        }
       }
     }
     case "INCOMING_UPDATE_TO_DO": {
-      console.log(action.data);
+      let items = state.todos.items;
+      if (typeof items[action.data.id] !== "undefined") {
+        items[action.data.id] = action.data;
+      }
       return {
         ...state,
+        todos: {
+          ...state.todos,
+          items: items
+        }
       }
     }
     case "INCOMING_DONE_TO_DO": {
-      console.log(action.data);
+      let items = state.todos.items;
+      if (typeof items[action.data.id] !== "undefined") {
+        items[action.data.id].status = "DONE";
+      }
       return {
         ...state,
+        todos: {
+          ...state.todos,
+          items: items
+        }
       }
     }
     case "INCOMING_REMOVE_TO_DO": {
-      console.log(action.data);
+      let items = state.todos.items;
+      if (typeof items[action.data.todo_id] !== "undefined") {
+        delete items[action.data.todo_id];
+      }
       return {
         ...state,
+        todos: {
+          ...state.todos,
+          items: items
+        }
       }
     }
     default:

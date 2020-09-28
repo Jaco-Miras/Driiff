@@ -1,7 +1,7 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, {useEffect, useRef, useState} from "react";
 import styled from "styled-components";
-import { SvgIconFeather } from "../../common";
-import { useSettings } from "../../hooks";
+import {SvgIconFeather} from "../../common";
+import {useSettings} from "../../hooks";
 
 const Wrapper = styled.li`
   position: relative;
@@ -13,7 +13,6 @@ const Wrapper = styled.li`
     height: 40px;
     display: flex;
     color: #fff;
-    height: 40px;
     justify-content: flex-start;
     align-items: center;
     margin: 0 15px;
@@ -84,7 +83,6 @@ const LinkNav = styled.ul`
 
 const NavIcon = styled(SvgIconFeather)`
   cursor: pointer;
-  cursor: hand;
   margin: 0 8px 0 15px;
 `;
 

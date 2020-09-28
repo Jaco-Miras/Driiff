@@ -4,7 +4,7 @@ import {useTodoActions} from "./index";
 
 const useTodos = () => {
 
-  const {isLoaded, items} = useSelector((state) => state.globals.todos);
+  const {isLoaded, items} = useSelector((state) => state.global.todos);
 
   const todoActions = useTodoActions();
   const [isFetchLoading, setIsFetchLoading] = useState(false);
