@@ -97,7 +97,7 @@ const TodoReminderModal = (props) => {
     threeHours: _t("REMINDER.THREE_HOURS", "3 hours"),
     tomorrow: _t("REMINDER.TOMORROW", "Tomorrow"),
     pickDateTime: _t("REMINDER.PICK_DATE_TIME", "Pick date and time"),
-    snooze: _t("REMINDER.SNOOZE", "Snooze"),
+    snooze: _t("REMINDER.SNOOZE", "Confirm"),
     cancel: _t("REMINDER.CANCEL", "Cancel"),
   };
 

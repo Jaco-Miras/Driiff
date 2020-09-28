@@ -38,7 +38,7 @@ const TodoLinks = (props) => {
   return (
     <Wrapper className={`fadeIn ${className}`}>
       <a href="/todos" onClick={handleRedirectLink}>
-        <NavIcon icon="bell"/>
+        <NavIcon icon="check"/>
         <div>{dictionary.todoLinks}</div>
       </a>
     </Wrapper>

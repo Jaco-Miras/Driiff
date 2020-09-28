@@ -283,8 +283,8 @@ const MainNavigationTabPanel = (props) => {
     shortcuts: _t("SIDEBAR.SHORTCUTS", "Shortcuts"),
     personalLinks: _t("SIDEBAR.PERSONAL_LINKS", "Personal links"),
     addShortcut: _t("SIDEBAR.ADD_SHORTCUT", "Add shortcut"),
-    todoLinks: _t("SIDEBAR.TODO_LINKS", "Todo links"),
-    addTodoItem: _t("SIDEBAR.ADD_TODO_ITEM", "Add todo item"),
+    todoLinks: _t("SIDEBAR.TODO_LINKS", "To-Dos"),
+    addTodoItem: _t("SIDEBAR.ADD_TODO_ITEM", "Add to-do"),
   };
 
   const user = useSelector((state) => state.session.user);

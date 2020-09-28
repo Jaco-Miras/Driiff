@@ -66,7 +66,7 @@ const TodosSidebar = (props) => {
               </Filter>
               <Filter onClick={() => setFilter(filter === "NEW" ? "" : "NEW")} active={filter === "NEW"}
                       className="list-group-item d-flex align-items-center">
-                <Icon className="mr-2" icon="monitor"/>
+                <Icon className="mr-2" icon="clock"/>
                 {dictionary.statusUpcoming}
               </Filter>
               <Filter onClick={() => setFilter(filter === "DONE" ? "" : "DONE")} active={filter === "DONE"}

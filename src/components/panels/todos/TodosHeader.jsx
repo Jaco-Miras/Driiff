@@ -41,7 +41,6 @@ const Wrapper = styled.div`
 const TodosHeader = (props) => {
   const {className = "", onSearch, onEnter, dictionary, disableOptions, onClickEmpty, searchValue} = props;
 
-
   return (
     <Wrapper className={`todos-header app-action ${className}`}>
       <div className="action-left">

@@ -23,7 +23,7 @@ const TodosPanel = (props) => {
   const {_t} = useTranslation();
 
   const dictionary = {
-    createNewTodoItem: _t("REMINDER.CREATE_NEW_TODO_ITEM", "Create new todo item"),
+    createNewTodoItem: _t("REMINDER.CREATE_NEW_TODO_ITEM", "New to-do"),
     statusAll: _t("REMINDER.STATUS_ALL", "All"),
     statusOverdue: _t("REMINDER.STATUS_OVERDUE", "Overdue"),
     statusUpcoming: _t("REMINDER.STATUS_UPCOMING", "Upcoming"),
