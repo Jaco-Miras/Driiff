@@ -1,13 +1,13 @@
-import React, {useRef, useState} from "react";
-import {useDispatch} from "react-redux";
+import React, { useRef, useState } from "react";
+import { useDispatch } from "react-redux";
 import styled from "styled-components";
-import {addToModals} from "../../../redux/actions/globalActions";
-import {DropDocument} from "../../dropzone/DropDocument";
-import {useCountUnreadReplies, useFocusInput, useTimeFormat, useTranslation} from "../../hooks";
+import { addToModals } from "../../../redux/actions/globalActions";
+import { DropDocument } from "../../dropzone/DropDocument";
+import { useCountUnreadReplies, useFocusInput, useTimeFormat, useTranslation } from "../../hooks";
 import useChatMessageActions from "../../hooks/useChatMessageActions";
 import ChatMessages from "../../list/chat/ChatMessages";
 import ChatUnreadFloatBar from "../../list/chat/ChatUnreadFloatBar";
-import {ChatFooterPanel, ChatHeaderPanel} from "./index";
+import { ChatFooterPanel, ChatHeaderPanel } from "./index";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -128,7 +128,7 @@ const ChatContentPanel = (props) => {
         }}
         onCancel={handleHideDropzone}
       />
-      {!isWorkspace && <ChatHeaderPanel channel={selectedChannel} />}
+      {!isWorkspace && <ChatHeaderPanel dictionary={dictionary} channel={selectedChannel} />}
       {selectedChannel !== null && unreadCount > 0 && <ChatUnreadFloatBar channel={selectedChannel} />}
       {selectedChannel !== null ? <ChatMessages selectedChannel={selectedChannel} chatMessageActions={chatMessageActions} timeFormat={timeFormat} dictionary={dictionary} unreadCount={unreadCount} /> : <ChatMessagesPlaceholder />}
       <ChatFooterPanel onShowFileDialog={handleOpenFileDialog} dropAction={dropAction} />

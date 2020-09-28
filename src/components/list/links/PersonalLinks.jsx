@@ -139,7 +139,7 @@ const PersonalLinks = (props) => {
             <li key={index}>
               <div>
                 <div>
-                  <a href={link.web_address} target="_blank">
+                  <a href={link.web_address} target="_blank" rel="noopener noreferrer">
                     {link.name}
                   </a>
                 </div>
