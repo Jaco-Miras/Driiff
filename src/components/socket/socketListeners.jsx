@@ -263,6 +263,17 @@ class SocketListeners extends Component {
                 entity_type: "WORKSPACE_POST",
               });
             }
+            e.channel_messages.forEach(m => {
+              m.system_message.files = [];
+              m.system_message.editable = false;
+              m.system_message.unfurls = [];
+              m.system_message.reactions = [];
+              m.system_message.is_deleted = false;
+              m.system_message.todo_reminder = null;
+              m.system_message.is_read = false;
+              m.system_message.is_completed = false;
+              this.props.incomingChatMessage(m.system_message);
+            })
             break;
           }
           case "POST_UPDATE": {
