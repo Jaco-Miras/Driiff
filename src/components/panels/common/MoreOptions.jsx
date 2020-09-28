@@ -1,7 +1,7 @@
-import React, {useRef, useState} from "react";
+import React, { useRef, useState } from "react";
 import styled from "styled-components";
-import {SvgIconFeather} from "../../common";
-import {useTooltipOrientation} from "../../hooks";
+import { SvgIconFeather } from "../../common";
+import { useTooltipOrientation } from "../../hooks";
 
 const Wrapper = styled.div`
   display: inline-flex;
@@ -22,14 +22,13 @@ const MoreTooltip = styled.div`
   height: auto;
   position: absolute;
   cursor: pointer;
-  width: ${(props) => props.width}px;  
+  width: ${(props) => props.width}px;
   background-color: #ffffff;
   color: #4d4d4d;
   border-radius: 8px;
   padding: 8px 0;
   box-shadow: 0 5px 10px -1px rgba(0, 0, 0, 0.15);
-  border-top: 1px solid #eeeeee !important;
-  
+
   .dark & {
     color: #fff;
   }
@@ -58,7 +57,7 @@ const MoreTooltip = styled.div`
     text-align: left;
     padding: 4px 24px;
     cursor: pointer;
-    
+
     &.active,
     &:hover {
       background-color: #f0f0f0;

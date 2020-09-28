@@ -94,7 +94,7 @@ const CompanyFileOptions = (props) => {
   };
 
   return (
-    <Wrapper className={`file-options ${className}`} moreButton="move-horizontal" file={file} scrollRef={scrollRef}>
+    <Wrapper className={`file-options ${className}`} moreButton="more-horizontal" file={file} scrollRef={scrollRef}>
       <div onClick={handleViewDetail}>View Details</div>
       <div onClick={handleDownload}>Download</div>
       {forceDelete ? (
