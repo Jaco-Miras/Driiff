@@ -269,13 +269,6 @@ const CompanyPostDetail = (props) => {
           </div>
         </div>
         <div>
-          {post.author.id !== user.id && !post.is_read_requirement && (
-            <MarkAsRead className="d-sm-inline d-none">
-              <button className="btn btn-primary btn-block" onClick={markRead}>
-                {dictionary.markAsRead}
-              </button>
-            </MarkAsRead>
-          )}
           {post.author.id === user.id && (
             <ul>
               <li>
