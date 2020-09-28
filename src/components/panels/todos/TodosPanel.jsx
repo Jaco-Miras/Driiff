@@ -24,6 +24,7 @@ const TodosPanel = (props) => {
 
   const dictionary = {
     createNewTodoItem: _t("REMINDER.CREATE_NEW_TODO_ITEM", "Create new todo item"),
+    statusAll: _t("REMINDER.STATUS_ALL", "All"),
     statusOverdue: _t("REMINDER.STATUS_OVERDUE", "Overdue"),
     statusUpcoming: _t("REMINDER.STATUS_UPCOMING", "Upcoming"),
     statusDone: _t("REMINDER.STATUS_DONE", "Done"),
@@ -41,8 +42,9 @@ const TodosPanel = (props) => {
         <div className="col-md-9 app-content mb-4">
           <div className="app-content-overlay"/>
           <TodosHeader dictionary={dictionary} setSearch={setSearch} searchValue={search}/>
-          <TodosBody todoItems={getSortedItems({filter: {status: filter}})} dictionary={dictionary}
-                     todoActions={todoActions} filter={filter}/>
+          <TodosBody
+            todoItems={getSortedItems({filter: {status: filter}})} dictionary={dictionary}
+            todoActions={todoActions} filter={filter}/>
         </div>
       </div>
     </Wrapper>

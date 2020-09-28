@@ -1,7 +1,8 @@
 import React, {useEffect, useRef, useState} from "react";
 import styled from "styled-components";
-import {SvgIconFeather} from "../../common";
+import {Avatar, SvgIconFeather, ToolTip} from "../../common";
 import {useHistory} from "react-router-dom";
+import {CheckBox} from "../../forms";
 
 const Wrapper = styled.div`
 `;
@@ -62,23 +63,41 @@ const TodosBody = (props) => {
             todoItems.map((todo, index) => {
               let chatHeader = "";
               if (index === 0) {
-                if (timestamp > todo.remind_at.timestamp) {
-                  chatHeader = "Overdue"
-                }
-                if (timestamp <= todo.remind_at.timestamp) {
-                  chatHeader = "Upcoming"
-                }
-                if (todo.status === "DONE") {
-                  chatHeader = "Done"
+                switch (todo.status) {
+                  case "OVERDUE": {
+                    chatHeader = "Overdue";
+                    break;
+                  }
+                  case "NEW": {
+                    chatHeader = "Upcoming";
+                    break;
+                  }
+                  case "DONE": {
+                    chatHeader = "Done";
+                    break;
+                  }
                 }
               } else {
                 let prevTodo = todoItems[index - 1];
-                if (timestamp > prevTodo && timestamp <= todo.remind_at.timestamp) {
-                  chatHeader = "Upcoming"
+                if (prevTodo.status !== todo.status) {
+                  switch (todo.status) {
+                    case "OVERDUE": {
+                      chatHeader = "Overdue";
+                      break;
+                    }
+                    case "NEW": {
+                      chatHeader = "Upcoming";
+                      break;
+                    }
+                    case "DONE": {
+                      chatHeader = "Done";
+                      break;
+                    }
+                  }
                 }
-                if (prevTodo.status !== "DONE" && todo.status === "DONE")
-                  chatHeader = "Done"
               }
+
+              console.log(todo)
 
               return (
                 <>
@@ -90,24 +109,30 @@ const TodosBody = (props) => {
                   }
                   <li className="list-group-item" key={index}>
                     <div className="d-flex justify-content-between w-100">
-                      <div>
+                      <div className="d-flex">
+                        <div className="custom-control custom-checkbox custom-checkbox-success mr-2">
+                          <CheckBox name="test" checked={todo.status === "DONE"} onClick={() => {
+                            if (todo.status !== "DONE") todoActions.markDone(todo)
+                          }} disabled={todo.status === "DONE"}/>
+                        </div>
                         <a href={todo.link} target="_blank" data-link={todo.link} onClick={handleLinkClick}>
                           {todo.title}
                         </a>
                       </div>
-                      <div className="action">
-                        <SvgIconFeather
-                          className="cursor-pointer mr-2" data-index={index} icon="x"
-                          onClick={() => todoActions.remove(todo)}/>
+                      <div className="action d-flex justify-content-center align-items-center">
                         {
-                          todo.status !== "DONE" &&
-                          <SvgIconFeather
-                            className="cursor-pointer mr-2" data-index={index} icon="check"
-                            onClick={() => todoActions.markDone(todo)}/>
+                          todo.author !== null &&
+                          <Avatar key={todo.author.id} name={todo.author.name}
+                                  imageLink={todo.author.profile_image_link} id={todo.author.id}/>
                         }
                         <SvgIconFeather
-                          className="cursor-pointer" data-index={index} icon="pencil"
-                          onClick={() => todoActions.updateFromModal(todo)}/>
+                          className="cursor-pointer ml-2 mr-2" data-index={index} icon="archive"
+                          onClick={() => todoActions.remove(todo)}/>
+                        <ToolTip content="Reschedule">
+                          <SvgIconFeather
+                            className="cursor-pointer" data-index={index} icon="clock"
+                            onClick={() => todoActions.updateFromModal(todo)}/>
+                        </ToolTip>
                       </div>
                     </div>
                   </li>

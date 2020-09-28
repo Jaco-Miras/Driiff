@@ -54,19 +54,24 @@ const TodosSidebar = (props) => {
         <div className="card-body">
           <div className="app-sidebar-menu" tabIndex="1">
             <div className="list-group list-group-flush">
-              <Filter onClick={() => setFilter("OVERDUE")} active={filter === "OVERDUE"}
+              <Filter onClick={() => setFilter("")} active={filter === ""}
+                      className="list-group-item d-flex align-items-center">
+                <Icon className="mr-2" icon="monitor"/>
+                {dictionary.statusAll}
+              </Filter>
+              <Filter onClick={() => setFilter(filter === "OVERDUE" ? "" : "OVERDUE")} active={filter === "OVERDUE"}
                       className="list-group-item d-flex align-items-center">
                 <Icon className="mr-2" icon="monitor"/>
                 {dictionary.statusOverdue}
               </Filter>
-              <Filter onClick={() => setFilter("NEW")} active={filter === "NEW"}
+              <Filter onClick={() => setFilter(filter === "NEW" ? "" : "NEW")} active={filter === "NEW"}
                       className="list-group-item d-flex align-items-center">
                 <Icon className="mr-2" icon="monitor"/>
                 {dictionary.statusUpcoming}
               </Filter>
-              <Filter onClick={() => setFilter("DONE")} active={filter === "DONE"}
+              <Filter onClick={() => setFilter(filter === "DONE" ? "" : "DONE")} active={filter === "DONE"}
                       className="list-group-item d-flex align-items-center">
-                <Icon className="mr-2" icon="monitor"/>
+                <Icon className="mr-2" icon="check"/>
                 {dictionary.statusDone}
               </Filter>
             </div>

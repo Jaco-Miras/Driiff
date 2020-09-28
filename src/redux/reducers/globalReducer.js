@@ -211,8 +211,9 @@ export default (state = INITIAL_STATE, action) => {
       action.data.todos.forEach(t => {
         items[t.id] = t;
 
-        if (items[t.id].remind_at.timestamp < timestamp)
+        if (items[t.id].remind_at.timestamp < timestamp && items[t.id].status === "NEW") {
           items[t.id].status = "OVERDUE";
+        }
 
         switch (t.link_type) {
           case "CHAT": {
