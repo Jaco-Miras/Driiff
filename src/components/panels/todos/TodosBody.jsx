@@ -5,6 +5,21 @@ import {useHistory} from "react-router-dom";
 import {CheckBox} from "../../forms";
 
 const Wrapper = styled.div`
+.list-group .list-group-item {  
+  padding: 0.75rem 1.5rem 0 0.75rem;
+}
+
+li.link-title {
+  border-radius: 6px;
+  font-weight: 500;
+  font-size: 11px;
+  text-transform: uppercase;
+  line-height: 1.2;
+  
+  &:not(:nth-child(1)) {
+    margin-top: 2rem;  
+  }
+}
 `;
 
 const TodosBody = (props) => {
@@ -96,8 +111,6 @@ const TodosBody = (props) => {
                   }
                 }
               }
-
-              console.log(todo)
 
               return (
                 <>
