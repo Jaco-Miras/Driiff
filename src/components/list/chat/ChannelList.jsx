@@ -20,7 +20,6 @@ const Wrapper = styled.li`
     opacity: 0;
     z-index: -1;
   }
-
   &:hover {
     .more-options {
       opacity: 1;
@@ -72,17 +71,12 @@ const Wrapper = styled.li`
         color: #ffc107;
       }
     }
-    .badge {
-      ${"" /* position: absolute;
-      right: calc(100% + 14px); */}
-    }
   }
   .feather-more-horizontal {
     width: 25px;
     height: 25px;
     position: relative;
     right: 0;
-    fill: currentColor;
     padding: 3px;
     top: 1px;
   }

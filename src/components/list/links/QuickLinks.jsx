@@ -1,11 +1,12 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
-import {SvgIconFeather} from "../../common";
-import {LinkItem} from "./index";
-import {useSettings} from "../../hooks";
+import { SvgIconFeather } from "../../common";
+import { LinkItem } from "./index";
+import { useSettings } from "../../hooks";
 
 const Wrapper = styled.li`
   cursor: pointer;
+  cursor: hand;
   position: relative;
   transition: all 0.3s ease;
   > a {
@@ -14,6 +15,7 @@ const Wrapper = styled.li`
     height: 40px;
     display: flex;
     color: #fff;
+    height: 40px;
     justify-content: flex-start;
     align-items: center;
     margin: 0 15px;
@@ -22,15 +24,17 @@ const Wrapper = styled.li`
   .sub-menu-arrow {
     margin-right: 10px;
   }
-  .feather-pencil {
-    display: none;
-  }
-  :hover {
-    .sub-menu-arrow {
-      margin-left: ${(props) => (props.showEditIcon ? "10px" : "auto")};
-    }
+  .quick-links {
     .feather-pencil {
-      display: ${(props) => (props.showEditIcon ? "block" : "none")};
+      display: none;
+    }
+    &:hover {
+      .sub-menu-arrow {
+        margin-left: ${(props) => (props.showEditIcon ? "10px" : "auto")};
+      }
+      .feather-pencil {
+        display: ${(props) => (props.showEditIcon ? "block" : "none")};
+      }
     }
   }
 `;
@@ -42,17 +46,19 @@ const LinkNav = styled.ul`
   margin: 0 15px !important;
   border-radius: 0 0 8px 8px;
 
-  li {
+  &.enter-active {
+    max-height: ${(props) => props.maxHeight}px !important;
+  }
+  &.leave-active {
+    max-height: 0;
+  }
+  li.personal-link {
     height: 40px;
     width: 100%;
     padding: 0 10px;
     font-weight: 400;
     color: #cbd4db;
     background: #ffffff14;
-    
-    &.link-title {
-      background: #ffffff30;    
-    }
 
     > div {
       position: relative;
@@ -88,17 +94,11 @@ const LinkNav = styled.ul`
       margin-right: 4px;
     }
   }
-
-  &.enter-active {
-    max-height: ${(props) => props.maxHeight}px !important;
-  }
-  &.leave-active {
-    max-height: 0;
-  }
 `;
 
 const NavIcon = styled(SvgIconFeather)`
   cursor: pointer;
+  cursor: hand;
   margin: 0 8px 0 15px;
 `;
 
@@ -111,10 +111,9 @@ const EditIcon = styled(SvgIconFeather)`
 `;
 
 const QuickLinks = (props) => {
+  const { className = "", links, user, dictionary } = props;
 
-  const {className = "", links, user, dictionary} = props;
-
-  const {generalSettings, showModal} = useSettings();
+  const { generalSettings, showModal } = useSettings();
 
   const ref = {
     container: useRef(),
@@ -130,18 +129,6 @@ const QuickLinks = (props) => {
     setShowLinks((prevState) => !prevState);
   };
 
-  const handleEditItemClick = (e) => {
-    const id = e.currentTarget.dataset.index;
-    showModal("personal_link_edit", {
-      ...generalSettings.personal_links[id],
-      index: id,
-    });
-  };
-
-  const handleAddItemClick = () => {
-    showModal("personal_link_create");
-  };
-
   useEffect(() => {
     if (ref.nav.current !== null) {
       let maxHeight = window.innerHeight * 5;
@@ -150,8 +137,20 @@ const QuickLinks = (props) => {
     }
   }, [ref.nav, maxHeight]);
 
+  const handleAddItemClick = () => {
+    showModal("personal_link_create");
+  };
+
   const handleEditLinks = () => {
     window.open(`${process.env.REACT_APP_apiProtocol}${localStorage.getItem("slug")}.driff.io/admin/quick-links`, "_blank");
+  };
+
+  const handleEditItemClick = (e) => {
+    const id = e.currentTarget.dataset.index;
+    showModal("personal_link_edit", {
+      ...generalSettings.personal_links[id],
+      index: id,
+    });
   };
 
   return (
@@ -164,37 +163,35 @@ const QuickLinks = (props) => {
       </a>
 
       <LinkNav ref={ref.nav} maxHeight={maxHeight} className={showLinks ? "enter-active" : "leave-active"}>
+        <li className="personal-link">
+          <div>{dictionary.personalLinks}</div>
+        </li>
         {links.map((link) => {
-          return <LinkItem key={link.id} link={link}/>;
+          return <LinkItem key={link.id} link={link} className="quick-links" />;
         })}
-        {links.length !== 0 && generalSettings.personal_links.length !== 0 && (
-          <li className="link-title" onClick={handleAddItemClick}>
-            <div>
-              <span>{dictionary.personalLinks}</span>
-            </div>
-          </li>
-        )}
+        <li className="personal-link">
+          <div>{dictionary.shortcuts}</div>
+        </li>
         {generalSettings.personal_links.map((link, index) => {
           return (
-            <li key={index}>
+            <li className="personal-link" key={index}>
               <div>
                 <div>
-                  <a href={link.web_address} target="_blank">
+                  <a href={link.web_address} target="_blank" rel="noopener noreferrer">
                     {link.name}
                   </a>
                 </div>
                 <div className="action">
-                  <SvgIconFeather className="cursor-pointer" data-index={index} icon="pencil"
-                                  onClick={handleEditItemClick}/>
+                  <SvgIconFeather className="cursor-pointer" data-index={index} icon="pencil" onClick={handleEditItemClick} />
                 </div>
               </div>
             </li>
           );
         })}
         {generalSettings.personal_links.length < 5 && (
-          <li className="nav-action cursor-pointer" onClick={handleAddItemClick}>
-            <div>
-              <span><SvgIconFeather icon="circle-plus" width={24} height={24}/> {dictionary.addShortcut}</span>
+          <li className="personal-link nav-action cursor-pointer" onClick={handleAddItemClick}>
+            <div className="justify-content-start">
+              <SvgIconFeather icon="circle-plus" width={24} height={24} /> {dictionary.addShortcut}
             </div>
           </li>
         )}

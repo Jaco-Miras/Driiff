@@ -38,23 +38,17 @@ const Wrapper = styled.div`
     @media (min-width: 767.98px) {
       width: 33.333333%;
     }
+    li .more-options-tooltip > div {
+      display: flex;
+      align-items: center;
+      svg {
+        margin-right: 4px;
+      }
+    }
   }
 `;
 
-const IconButton = styled(SvgIconFeather)`
-  border: 1px solid #afb8bd;
-  border-radius: 8px;
-  padding: 0px 12px;
-  height: 30px;
-  width: 40px;
-  cursor: pointer;
-  cursor: hand;
-  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-  &:hover {
-    background: #afb8bd;
-    color: #ffffff;
-  }
-`;
+const Icon = styled(SvgIconFeather)``;
 
 const BackButton = styled.div`
   @media (min-width: 991.99px) {
@@ -111,7 +105,7 @@ const ChatHeaderPanel = (props) => {
   /**
    * @todo refactor
    */
-  const { className = "", channel } = props;
+  const { className = "", channel, dictionary } = props;
   const { unreadCounter } = useSelector((state) => state.global);
 
   const dispatch = useDispatch();
@@ -186,18 +180,24 @@ const ChatHeaderPanel = (props) => {
               <MemberLists members={channel.members} />
             </li>
           )}
-
           {(["PERSONAL_BOT", "COMPANY", "TOPIC"].includes(channel.type) === false || (["DIRECT", "PERSONAL_BOT", "COMPANY", "TOPIC"].includes(channel.type) === false && !channel.is_archived)) && (
             <li className="ml-2 d-sm-inline d-none">
               <StyledMoreOptions role="tabList">
-                {["PERSONAL_BOT", "COMPANY", "TOPIC"].includes(channel.type) === false && <div>{channel.is_archived ? "Restore" : "Archive"}</div>}
-                {["DIRECT", "PERSONAL_BOT", "COMPANY", "TOPIC"].includes(channel.type) === false && !channel.is_archived && <div onClick={handleShowChatEditModal}>Edit chat</div>}
+                {["PERSONAL_BOT", "COMPANY", "TOPIC"].includes(channel.type) === false && (
+                  <div onClick={handleShowArchiveConfirmation}>
+                    <Icon icon={channel.is_archived ? "rotate-ccw" : "trash-2"} />
+                    {channel.is_archived ? "Restore" : "Archive"}
+                  </div>
+                )}
+                {["DIRECT", "PERSONAL_BOT", "COMPANY", "TOPIC"].includes(channel.type) === false && !channel.is_archived && (
+                  <div onClick={handleShowChatEditModal}>
+                    <Icon icon={"edit-3"} />
+                    {dictionary.edit}
+                  </div>
+                )}
               </StyledMoreOptions>
             </li>
           )}
-
-          {/* <IconButton icon={channel.is_archived ? "rotate-ccw" : "trash-2"} onClick={handleShowArchiveConfirmation} /> */}
-          {/* <IconButton icon={channel.is_archived ? "rotate-ccw" : "trash-2"} onClick={handleShowArchiveConfirmation} /> */}
         </ul>
       </div>
     </Wrapper>
