@@ -109,6 +109,7 @@ const TodoLinks = (props) => {
 
   const handleShowLinks = (e) => {
     e.preventDefault();
+    history.push("/todos");
     setShowLinks((prevState) => !prevState);
   };
 

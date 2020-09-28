@@ -1,0 +1,204 @@
+import React, {useCallback, useEffect, useRef, useState} from "react";
+import {useDispatch} from "react-redux";
+import {useHistory} from "react-router-dom";
+import styled from "styled-components";
+import {replaceChar} from "../../../helpers/stringFormatter";
+import {addToModals} from "../../../redux/actions/globalActions";
+import {useCompanyFiles, useTranslation} from "../../hooks";
+import {TodosBody, TodosHeader, TodosSidebar} from "./index";
+
+const Wrapper = styled.div`
+  .app-sidebar-menu {
+    overflow: hidden;
+    outline: currentcolor none medium;
+  }
+`;
+
+const CreateFolderLabel = styled.div`
+  padding-top: 10px;
+`;
+
+const TodosPanel = (props) => {
+  const {className = "", isMember, workspace} = props;
+
+  const dispatch = useDispatch();
+  const history = useHistory();
+  const {_t} = useTranslation();
+  const {params, isLoaded, files, fileCount, actions, fileIds, folders, folder, subFolders, loadMore} = useCompanyFiles();
+
+  const [filter, setFilter] = useState("");
+  const [search, setSearch] = useState("");
+
+  const refs = {
+    dropZone: useRef(null),
+  };
+
+  let disableOptions = false;
+  if (workspace && workspace.active === 0) disableOptions = true;
+
+  const handleFilterFile = (e) => {
+    if (params.hasOwnProperty("folderId")) {
+      let pathname = history.location.pathname.split("/folder/")[0];
+      history.push(pathname);
+    }
+    setFilter(e.target.dataset.filter);
+    document.body.classList.remove("mobile-modal-open");
+  };
+
+  const handleSearchChange = useCallback(
+    (e) => {
+      if (e.target.value === "") clearSearch();
+      setSearch(e.target.value);
+    },
+    [setSearch]
+  );
+
+  const handleSearch = () => {
+    actions.searchCompany(search);
+  };
+
+  const clearSearch = () => {
+    setSearch("");
+    actions.clearSearch();
+  };
+
+  const handleEnter = useCallback(
+    (e) => {
+      if (e.key === "Enter") {
+        handleSearch();
+      }
+    },
+    [handleSearch]
+  );
+
+  const dictionary = {
+    createFolder: _t("FILE.CREATE_FOLDER", "Create folder"),
+    create: _t("FILE.CREATE", "Create"),
+    updateFolder: _t("FILE.UPDATE_FOLDER", "Update folder"),
+    update: _t("FILE.UPDATE", "Update"),
+    editFolder: _t("FILE.EDIT_FOLDER", "Edit folder"),
+    removeFolder: _t("FILE.REMOVE_FOLDER", "Remove folder"),
+    add: _t("FILE.ADD", "Add"),
+    favorite: _t("FILE.FAVORITE", "Favorite"),
+    favoriteTitle: _t("FILE.FAVORITE_TITLE", "Favorite"),
+    file: _t("FILE.FILE", "File"),
+    folder: _t("FILE.FOLDER", "Folder"),
+    folders: _t("FILE.FOLDERS", "Folders"),
+    allFiles: _t("FILES.ALL_FILES", "All files"),
+    recentlyEdited: _t("FILES.RECENTLY_EDITED", "Recently edited"),
+    removed: _t("FILES.REMOVED", "Removed"),
+    searchInputPlaceholder: _t("FILES.SEARCH_INPUT_PLACEHOLDER", "Search by file or folder name"),
+    uploadFiles: _t("FILE.UPLOAD_FILES", "Upload files"),
+  };
+
+  const folderName = useRef("");
+
+  const handleFolderClose = () => {
+    folderName.current = "";
+  };
+
+  const handleFolderNameChange = (e) => {
+    folderName.current = e.target.value.trim();
+  };
+
+  const handleAddEditFolder = (f, mode = "add") => {
+    const handleCreateFolder = () => {
+      let cb = (err, res) => {
+        if (err) return;
+        if (params.hasOwnProperty("folderId")) {
+          let pathname = history.location.pathname.split("/folder/")[0];
+          history.push(pathname + `/folder/${res.data.folder.id}/${replaceChar(res.data.folder.search)}`);
+        } else {
+          history.push(history.location.pathname + `/folder/${res.data.folder.id}/${replaceChar(res.data.folder.search)}`);
+        }
+      };
+      let payload = {
+        name: folderName.current,
+      };
+      if (params.hasOwnProperty("folderId")) {
+        payload = {
+          ...payload,
+          folder_id: params.folderId,
+        };
+      }
+      actions.createCompanyFolders(payload, cb);
+    };
+
+    const handleUpdateFolder = () => {
+      let cb = (err, res) => {
+        if (err) return;
+        if (params.hasOwnProperty("folderId")) {
+          let pathname = history.location.pathname.split("/folder/")[0];
+          history.push(pathname + `/folder/${res.data.folder.id}/${replaceChar(res.data.folder.search)}`);
+        }
+      };
+      actions.updateCompanyFolders(
+        {
+          id: f.id,
+          name: folderName.current,
+          is_archived: true,
+        },
+        cb
+      );
+    };
+
+    let payload = {
+      type: "single_input",
+      defaultValue: "",
+      postInputLabel:
+        folder === null ? (
+          ""
+        ) : (
+          <CreateFolderLabel>
+            The folder will be created inside <b>#{folder.search}</b>
+          </CreateFolderLabel>
+        ),
+      onChange: handleFolderNameChange,
+      onClose: handleFolderClose,
+    };
+    if (mode === "add") {
+      payload = {
+        ...payload,
+        title: dictionary.createFolder,
+        labelPrimaryAction: dictionary.create,
+        onPrimaryAction: handleCreateFolder,
+      };
+    } else {
+      folderName.current = f.search;
+      payload = {
+        ...payload,
+        defaultValue: f.search,
+        title: dictionary.updateFolder,
+        labelPrimaryAction: dictionary.update,
+        onPrimaryAction: handleUpdateFolder,
+      };
+    }
+
+    dispatch(addToModals(payload));
+  };
+
+  const clearFilter = useCallback(() => {
+    setFilter("");
+  }, [setFilter]);
+
+  useEffect(() => {
+    if (folder && folder.is_archived && filter !== "removed") {
+      setFilter("removed");
+    }
+  }, [folder, filter, setFilter]);
+
+  return (
+    <Wrapper className={`container-fluid h-100 fadeIn ${className}`}>
+      <div className="row app-block">
+        <TodosSidebar className="col-md-3"/>
+        <div className="col-md-9 app-content mb-4">
+          <div className="app-content-overlay"/>
+          <TodosHeader dictionary={{}} value=""/>
+          <TodosBody/>
+        </div>
+      </div>
+    </Wrapper>
+  );
+};
+
+export default React.memo(TodosPanel);

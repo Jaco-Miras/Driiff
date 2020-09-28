@@ -46,7 +46,7 @@ export const AppRoute = ({children, ...props}) => {
           {children}
         </Route>
         <Route {...props} component={MainLayout}
-               path={["/notifications", "/profile", "/dashboard", "/posts", "/chat", "/files", "/people", "/search", "/settings", "/system/people"]}>
+               path={["/notifications", "/profile", "/dashboard", "/posts", "/chat", "/files", "/people", "/search", "/settings", "/system/people", "/todos"]}>
           {children}
         </Route>
         <Route {...props} component={MainLayout} path={["/workspace/chat", "/workspace/:page"]}>

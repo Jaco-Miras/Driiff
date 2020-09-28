@@ -1,11 +1,19 @@
 import React from "react";
-import { useDispatch } from "react-redux";
-import { Redirect, Route, Switch } from "react-router-dom";
+import {useDispatch} from "react-redux";
+import {Redirect, Route, Switch} from "react-router-dom";
 import styled from "styled-components";
-import { addToModals } from "../../../redux/actions/globalActions";
-import { SvgEmptyState } from "../../common";
-import { useIsMember, useUsers, useWorkspace } from "../../hooks";
-import { WorkspaceChatPanel, WorkspaceDashboardPanel, WorkspaceFilesPanel, WorkspacePeoplePanel, WorkspacePostsPanel, WorkspaceSearchPanel, WorkspaceSettingsPanel } from "../workspace";
+import {addToModals} from "../../../redux/actions/globalActions";
+import {SvgEmptyState} from "../../common";
+import {useIsMember, useUsers, useWorkspace} from "../../hooks";
+import {
+  WorkspaceChatPanel,
+  WorkspaceDashboardPanel,
+  WorkspaceFilesPanel,
+  WorkspacePeoplePanel,
+  WorkspacePostsPanel,
+  WorkspaceSearchPanel,
+  WorkspaceSettingsPanel
+} from "../workspace";
 
 const Wrapper = styled.div`
   position: relative;
@@ -71,7 +79,7 @@ const WorkspaceContentPanel = (props) => {
                   path={[
                     "/workspace/posts/:folderId/:folderName/:workspaceId/:workspaceName/post/:postId/:postTitle",
                     "/workspace/posts/:folderId/:folderName/:workspaceId/:workspaceName",
-                    "/workspace/posts/:workspaceId/:workspaceName/post/:postId/:postTitle",
+                    "/workspace/posts/:workspaceId/:workspaceName/post/:postId/:postTitle/:postCommentCode?",
                     "/workspace/posts/:workspaceId/:workspaceName",
                     "/workspace/posts",
                   ]}

@@ -1,16 +1,16 @@
-import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useRouteMatch, Route } from "react-router-dom";
+import React, {useEffect} from "react";
+import {useDispatch, useSelector} from "react-redux";
+import {Route, useRouteMatch} from "react-router-dom";
 import styled from "styled-components";
-import { addToModals } from "../../../redux/actions/globalActions";
-import { Avatar, SvgIconFeather } from "../../common";
-import { HeaderProfileNavigation } from "../common";
-import { SettingsLink } from "../../workspace";
-import { joinWorkspace } from "../../../redux/actions/workspaceActions";
-import { useToaster } from "../../hooks";
-import { MemberLists } from "../../list/members";
+import {addToModals} from "../../../redux/actions/globalActions";
+import {SvgIconFeather} from "../../common";
+import {HeaderProfileNavigation} from "../common";
+import {SettingsLink} from "../../workspace";
+import {joinWorkspace} from "../../../redux/actions/workspaceActions";
+import {useToaster} from "../../hooks";
+import {MemberLists} from "../../list/members";
 
-import { WorkspacePageHeaderPanel } from "../workspace";
+import {WorkspacePageHeaderPanel} from "../workspace";
 
 const NavBarLeft = styled.div`
   width: 100%;
@@ -382,9 +382,9 @@ const WorspaceHeaderPanel = (props) => {
                     path={[
                       "/workspace/:page/:folderId/:folderName/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName",
                       "/workspace/:page/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName",
-                      "/workspace/:page/:folderId/:folderName/:workspaceId/:workspaceName/post/:postId/:postTitle",
+                      "/workspace/:page/:folderId/:folderName/:workspaceId/:workspaceName/post/:postId/:postTitle/:postCommentCode?",
                       "/workspace/:page/:folderId/:folderName/:workspaceId/:workspaceName",
-                      "/workspace/:page/:workspaceId/:workspaceName/post/:postId/:postTitle",
+                      "/workspace/:page/:workspaceId/:workspaceName/post/:postId/:postTitle/:postCommentCode?",
                       "/workspace/:page/:workspaceId/:workspaceName",
                       "/workspace/:page",
                     ]}

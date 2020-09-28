@@ -11,6 +11,7 @@ import {
 } from "../company";
 import {UserNotificationPanel, UserProfilePanel, UserSearchPanel} from "../user";
 import {SystemPeoplePanel} from "../system";
+import {TodosPanel} from "../todos";
 
 const Wrapper = styled.div`
   padding-bottom: ${(props) => (props.isOnWorkspace ? "0 !important" : "calc(1.875rem * 2)")};
@@ -28,7 +29,8 @@ const MainContentPanel = (props) => {
         <Route {...props} component={UserSearchPanel} path={["/search"]}/>
         {!isExternal && <Route {...props} component={CompanyDashboardPanel} path={["/dashboard"]}/>}
         {!isExternal &&
-        <Route {...props} component={CompanyPostsPanel} path={["/posts/:postId/:postTitle", "/posts"]}/>}
+        <Route {...props} component={CompanyPostsPanel}
+               path={["/posts/:postId/:postTitle/:postCommentCode?", "/posts"]}/>}
         {!isExternal &&
         <Route {...props} component={CompanyChatPanel} path={["/chat/:code/:messageId", "/chat/:code", "/chat"]}/>}
         <Route {...props} render={(props) => <CompanyFilesPanel {...props} />}
@@ -36,6 +38,7 @@ const MainContentPanel = (props) => {
         {!isExternal && <Route {...props} component={CompanyPeoplePanel} path={["/people"]}/>}
         {!isExternal && <Route {...props} component={SystemPeoplePanel} path={["/system/people"]}/>}
         <Route {...props} component={CompanySettingsPanel} path={["/settings"]}/>
+        <Route {...props} component={TodosPanel} path={["/todos"]}/>
         <Redirect
           from="*"
           to={{
