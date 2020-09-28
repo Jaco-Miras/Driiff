@@ -111,10 +111,10 @@ const TodosBody = (props) => {
                   {
                     chatHeader !== "" &&
                     <li key={`${index}.1`} className="list-group-item link-title">
-                      <div><h6 className="mb-0 font-size-11 text-uppercase">{chatHeader}</h6></div>
+                      <div><h6 className="mt-3 mb-0 font-size-11 text-uppercase">{chatHeader}</h6></div>
                     </li>
                   }
-                  <li className="list-group-item" key={index}>
+                  <li className="pl-0 list-group-item" key={index}>
                     <div className="d-flex justify-content-between w-100 align-items-center">
                       <div className="d-flex">
                         <div className="custom-control custom-checkbox custom-checkbox-success mr-2">
@@ -133,7 +133,7 @@ const TodosBody = (props) => {
                       </div>
                       <div className="action d-flex justify-content-center align-items-center">
                         <div className="mr-3 align-items-center d-flex">
-                        <div className={`badge badge-light text-white mr-3`}>{localizeDate(todo.remind_at ? todo.remind_at.timestamp : "")}</div>
+                        <div className={`badge badge-dark text-white mr-3`}>{localizeDate(todo.remind_at ? todo.remind_at.timestamp : "")}</div>
                         {
                           todo.author !== null &&
                           <Avatar key={todo.author.id} name={todo.author.name}
