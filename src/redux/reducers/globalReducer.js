@@ -215,10 +215,21 @@ export default (state = INITIAL_STATE, action) => {
             break;
           }
           case "POST": {
-            items[t.id].link = `/chat/${t.data.channel.code}/${t.data.chat_message.code}`
+            if (t.data.workspaces.length) {
+              items[t.id].link = `/workspace/posts/${t.data.workspaces[0].topic.id}/${t.data.workspaces[0].topic.name}/post/${t.data.post.id}/${t.data.post.title.toLowerCase().replace(" ", "-")}`;
+            } else {
+              items[t.id].link = `/posts/${t.data.post.id}/${t.data.post.title.toLowerCase().replace(" ", "-")}`;
+            }
+            break;
           }
-          case "POST_MESSAGE": {
-
+          case "POST_COMMENT": {
+            if (t.data.workspaces.length) {
+              items[t.id].link = `/workspace/posts/${t.data.workspaces[0].topic.id}/${t.data.workspaces[0].topic.name}/post/${t.data.post.id}/${t.data.post.title.toLowerCase().replace(" ", "-")}/${t.data.comment.code}`;
+            } else {
+              ///${t.data.comment.code}
+              items[t.id].link = `/posts/${t.data.post.id}/${t.data.post.title.toLowerCase().replace(" ", "-")}`;
+            }
+            break;
           }
         }
       });
@@ -236,6 +247,30 @@ export default (state = INITIAL_STATE, action) => {
     case "INCOMING_TO_DO": {
       let items = state.todos.items;
       items[action.data.id] = action.data;
+      switch (action.data.link_type) {
+        case "CHAT": {
+          items[action.data.id].link = `/chat/${action.data.data.channel.code}/${action.data.data.chat_message.code}`
+          break;
+        }
+        case "POST": {
+          if (action.data.data.workspaces.length) {
+            items[action.data.id].link = `/workspace/posts/${action.data.data.workspaces[0].topic.id}/${action.data.data.workspaces[0].topic.name}/post/${action.data.data.post.id}/${action.data.data.post.title.toLowerCase().replace(" ", "-")}`;
+          } else {
+            items[action.data.id].link = `/posts/${action.data.data.post.id}/${action.data.data.post.title.toLowerCase().replace(" ", "-")}`;
+          }
+          break;
+        }
+        case "POST_COMMENT": {
+          if (action.data.data.workspaces.length) {
+            items[action.data.id].link = `/workspace/posts/${action.data.data.workspaces[0].topic.id}/${action.data.data.workspaces[0].topic.name}/post/${action.data.data.post.id}/${action.data.data.post.title.toLowerCase().replace(" ", "-")}/${action.data.data.comment.code}`;
+          } else {
+            ///${action.data.data.comment.code}
+            items[action.data.id].link = `/posts/${action.data.data.post.id}/${action.data.data.post.title.toLowerCase().replace(" ", "-")}`;
+          }
+          break;
+        }
+      }
+
       return {
         ...state,
         todos: {

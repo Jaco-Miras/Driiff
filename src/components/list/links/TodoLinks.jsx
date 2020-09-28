@@ -1,5 +1,6 @@
 import React, {useEffect, useRef, useState} from "react";
 import styled from "styled-components";
+import {useHistory} from "react-router-dom";
 import {SvgIconFeather} from "../../common";
 import {useTodos} from "../../hooks";
 
@@ -93,6 +94,7 @@ const NavIcon = styled(SvgIconFeather)`
 const TodoLinks = (props) => {
   const {className = "", dictionary} = props;
 
+  const history = useHistory();
   const {items: todos, action: todoActions} = useTodos();
 
   const ref = {
@@ -113,6 +115,11 @@ const TodoLinks = (props) => {
   const handleAddItemClick = () => {
     todoActions.createFromModal();
   };
+
+  const handleLinkClick = (e) => {
+    e.preventDefault();
+    history.push(e.currentTarget.dataset.link);
+  }
 
   useEffect(() => {
     if (ref.nav.current !== null) {
@@ -172,14 +179,14 @@ const TodoLinks = (props) => {
               <>
                 {
                   chatHeader !== "" &&
-                  <li className="link-title">
+                  <li key={`${index}.1`} className="link-title">
                     <div><span>{chatHeader}</span></div>
                   </li>
                 }
                 <li key={index}>
                   <div>
                     <div>
-                      <a href={`#`} target="_blank">
+                      <a href={todo.link} target="_blank" data-link={todo.link} onClick={handleLinkClick}>
                         {todo.title}
                       </a>
                     </div>
