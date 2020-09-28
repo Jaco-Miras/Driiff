@@ -1,13 +1,18 @@
-import React, { useEffect, useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useHistory } from "react-router-dom";
-import { Badge } from "reactstrap";
+import React, {useEffect, useRef, useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
+import {useHistory} from "react-router-dom";
+import {Badge} from "reactstrap";
 import styled from "styled-components";
-import { addToModals, getQuickLinks, getUnreadNotificationCounterEntries, setNavMode } from "../../../redux/actions/globalActions";
-import { NavLink, SvgEmptyState, SvgIcon, SvgIconFeather } from "../../common";
-import { useSettings, useTranslation, useWorkspace } from "../../hooks";
-import { ExternalWorkspaceList, WorkspaceList } from "../../workspace";
-import { PersonalLinks, QuickLinks } from "../../list/links";
+import {
+  addToModals,
+  getQuickLinks,
+  getUnreadNotificationCounterEntries,
+  setNavMode
+} from "../../../redux/actions/globalActions";
+import {NavLink, SvgEmptyState, SvgIcon, SvgIconFeather} from "../../common";
+import {useSettings, useTranslation, useWorkspace} from "../../hooks";
+import {ExternalWorkspaceList, WorkspaceList} from "../../workspace";
+import {QuickLinks, TodoLinks} from "../../list/links";
 import Tooltip from "react-tooltip-lite";
 
 const Wrapper = styled.div`
@@ -281,6 +286,8 @@ const MainNavigationTabPanel = (props) => {
     shortcuts: _t("SIDEBAR.SHORTCUTS", "Shortcuts"),
     personalLinks: _t("SIDEBAR.PERSONAL_LINKS", "Personal links"),
     addShortcut: _t("SIDEBAR.ADD_SHORTCUT", "Add shortcut"),
+    todoLinks: _t("SIDEBAR.TODO_LINKS", "Todo links"),
+    addTodoItem: _t("SIDEBAR.ADD_TODO_ITEM", "Add todo item"),
   };
 
   const user = useSelector((state) => state.session.user);
@@ -433,12 +440,12 @@ const MainNavigationTabPanel = (props) => {
           )}
           <li onClick={closeLeftNav}>
             <NavIconContainer to={"/workspace/search"} active={["/workspace/search"].includes(props.location.pathname)}>
-              <NavIcon icon={"compass"} />
+              <NavIcon icon={"compass"}/>
               <div>{dictionary.allWorkspaces}</div>
             </NavIconContainer>
           </li>
-          {links.length > 0 && <QuickLinks links={links} user={user} dictionary={dictionary} />}
-          <PersonalLinks dictionary={dictionary} />
+          <QuickLinks links={links} user={user} dictionary={dictionary}/>
+          <TodoLinks dictionary={dictionary}/>
         </ul>
       </div>
 

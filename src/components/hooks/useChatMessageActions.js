@@ -271,11 +271,11 @@ const useChatMessageActions = () => {
   );
 
   const remind = useCallback(
-    (message, callback) => {
+    (message, channel, callback) => {
       const onConfirm = (payload, callback) => {
         todoActions.createForChat(message.id, payload, (err, res) => {
           if (err) {
-            toaster.error(`An error has occured try again!`);
+            toaster.error(`An error has occurred try again!`);
           }
           if (res) {
             toaster.success(`You will be reminded on this chat message.`);
@@ -285,6 +285,7 @@ const useChatMessageActions = () => {
       }
       let payload = {
         type: "todo_reminder",
+        parentItem: channel,
         item: message,
         itemType: "CHAT",
         actions: {

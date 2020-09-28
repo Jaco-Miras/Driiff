@@ -187,7 +187,7 @@ export function putDoneToDo(payload) {
 export function delRemoveToDo(payload) {
   let url = `/v2/remove-to-do?${objToUrlParams(payload)}`;
   return apiCall({
-    method: "DEL",
+    method: "DELETE",
     url: url,
     data: payload,
   });

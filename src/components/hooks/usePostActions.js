@@ -576,7 +576,7 @@ const usePostActions = () => {
       const onConfirm = (payload, callback) => {
         todoActions.createForPost(post.id, payload, (err, res) => {
           if (err) {
-            toaster.error(`An error has occured try again!`);
+            toaster.error(`An error has occurred try again!`);
           }
           if (res) {
             toaster.success(`You will be reminded on this post.`);

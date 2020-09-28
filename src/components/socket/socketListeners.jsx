@@ -139,10 +139,24 @@ class SocketListeners extends Component {
             this.props.incomingToDo(e);
             break;
           }
-          default:
+          case "UPDATE_TODO": {
             this.props.incomingUpdateToDo(e);
+            break;
+          }
+          case "DONE_TODO": {
             this.props.incomingDoneToDo(e);
+            break;
+          }
+          case "DELETE_TODO": {
             this.props.incomingRemoveToDo(e);
+            break;
+          }
+          case "REMIND_TODO": {
+            //pushBrowserNotification(`${e.author.first_name} shared a post`, e.title, e.author.profile_image_link, null);
+            this.props.incomingUpdateToDo(e);
+            break;
+          }
+          default:
             return null;
         }
       })

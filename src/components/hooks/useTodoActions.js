@@ -1,10 +1,12 @@
-import {useCallback} from "react";
+import React, {useCallback} from "react";
 import {useDispatch} from "react-redux";
-import {delRemoveToDo, getToDo, postToDo, putDoneToDo, putToDo} from "../../redux/actions/globalActions";
+import {addToModals, delRemoveToDo, getToDo, postToDo, putDoneToDo, putToDo} from "../../redux/actions/globalActions";
+import {useToaster} from "./index";
 
 const useTodoActions = () => {
 
   const dispatch = useDispatch();
+  const toaster = useToaster();
 
   const fetch = useCallback((payload, callback) => {
     dispatch(
@@ -17,6 +19,32 @@ const useTodoActions = () => {
       postToDo(payload, callback)
     )
   }, []);
+
+  const createFromModal = useCallback(
+    (callback) => {
+      const onConfirm = (payload, callback) => {
+        create(payload, (err, res) => {
+          if (err) {
+            toaster.error(`An error has occurred try again!`);
+          }
+          if (res) {
+            toaster.success(`You will be reminded on this comment.`);
+          }
+          callback(err, res);
+        });
+      }
+
+      let payload = {
+        type: "todo_reminder",
+        actions: {
+          onSubmit: onConfirm,
+        },
+      };
+
+      dispatch(addToModals(payload));
+    },
+    [dispatch]
+  );
 
   const createForPost = useCallback((id, payload, callback) => {
     dispatch(
@@ -54,19 +82,66 @@ const useTodoActions = () => {
     )
   }, []);
 
-  const setDone = useCallback((id, callback) => {
+  const updateFromModal = useCallback(
+    (todo, callback) => {
+      const onConfirm = (payload, callback) => {
+        update({
+          ...payload,
+          id: todo.id,
+        }, (err, res) => {
+          if (err) {
+            toaster.error(`An error has occurred try again!`);
+          }
+          if (res) {
+            toaster.success(`You will be reminded on this comment.`);
+          }
+          callback(err, res);
+        });
+      }
+
+      let payload = {
+        type: "todo_reminder",
+        mode: "edit",
+        item: {
+          ...todo,
+          body: todo.description,
+        },
+        parentItem: todo,
+        itemType: todo.link_type,
+        actions: {
+          onSubmit: onConfirm,
+        },
+      };
+
+      dispatch(addToModals(payload));
+    },
+    [dispatch]
+  );
+
+
+  const markDone = useCallback((payload, callback) => {
     dispatch(
       putDoneToDo({
-        todo_id: id
-      }, callback)
+        todo_id: payload.id
+      }, (err, res) => {
+        if (res) {
+          toaster.success(`You have mark ${payload.title} as done`);
+        }
+        callback(err, res);
+      })
     )
   }, []);
 
-  const remove = useCallback((id, callback) => {
+  const remove = useCallback((payload, callback) => {
     dispatch(
       delRemoveToDo({
-        todo_id: id
-      }, callback)
+        todo_id: payload.id
+      }, (err, res) => {
+        if (res) {
+          toaster.success(<>You have succesfully deleted <b>{payload.title}</b></>);
+        }
+        callback(err, res);
+      })
     )
   }, []);
 
@@ -74,11 +149,13 @@ const useTodoActions = () => {
   return {
     fetch,
     create,
+    createFromModal,
     createForPost,
     createForPostComment,
     createForChat,
     update,
-    setDone,
+    updateFromModal,
+    markDone,
     remove
   };
 };

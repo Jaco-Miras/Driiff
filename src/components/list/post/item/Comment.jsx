@@ -1,13 +1,13 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, {useCallback, useEffect, useRef, useState} from "react";
 import styled from "styled-components";
-import { useHistory } from "react-router-dom";
-import { Avatar, FileAttachments, SvgIconFeather } from "../../../common";
-import { MoreOptions } from "../../../panels/common";
-import { PostDetailFooter } from "../../../panels/post/index";
-import { SubComments } from "./index";
-import { useGoogleApis, useTimeFormat } from "../../../hooks";
+import {useHistory} from "react-router-dom";
+import {Avatar, FileAttachments, SvgIconFeather} from "../../../common";
+import {MoreOptions} from "../../../panels/common";
+import {PostDetailFooter} from "../../../panels/post/index";
+import {SubComments} from "./index";
+import {useGoogleApis, useTimeFormat} from "../../../hooks";
 import GifPlayer from "react-gif-player";
-import { getGifLinks } from "../../../../helpers/urlContentHelper";
+import {getGifLinks} from "../../../../helpers/urlContentHelper";
 import quillHelper from "../../../../helpers/quillHelper";
 
 const Wrapper = styled.li`
@@ -237,7 +237,7 @@ const Comment = (props) => {
             </div>
             {post.is_read_only !== 1 && !disableOptions && (
               <MoreOptions scrollRef={refs.body.current} moreButton={"more-horizontal"}>
-                <div onClick={() => commentActions.remind(comment)}>{dictionary.remindMeAboutThis}</div>
+                <div onClick={() => commentActions.remind(comment, post)}>{dictionary.remindMeAboutThis}</div>
                 {user.id === comment.author.id && <div onClick={() => commentActions.setToEdit(comment)}>{dictionary.editReply}</div>}
                 <div onClick={handleQuote}>{dictionary.quote}</div>
                 {user.id !== comment.author.id && <div onClick={handleMentionUser}>{dictionary.mentionUser}</div>}
