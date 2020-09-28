@@ -56,6 +56,29 @@ const MainBody = styled.div`
   flex-flow: column;
 `;
 
+const StyledMoreOptions = styled(MoreOptions)`
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  height: 36px;
+  width: 40px;
+  align-items: center;
+  justify-content: center;
+  .feather-more-horizontal {
+    width: 25px;
+    height: 24px;
+  }
+  .more-options-tooltip {
+    left: auto;
+    right: 0;
+    top: 28px;
+    width: 250px;
+
+    svg {
+      width: 14px;
+    }
+  }
+`;
+
 const Counters = styled.div`
   width: 100%;
   padding: 0.5rem 1.5rem;
@@ -244,15 +267,6 @@ const CompanyPostDetail = (props) => {
               </li>
             </ul>
           </div>
-          <div>
-            <MoreOptions className="ml-2" item={post} width={170} moreButton={"more-horizontal"}>
-              <div onClick={() => markAsRead(post, true)}>{dictionary.markAsRead}</div>
-              <div onClick={() => markAsUnread(post, true)}>{dictionary.markAsUnread}</div>
-              <div onClick={() => sharePost(post)}>{dictionary.share}</div>
-              <div onClick={() => snoozePost(post)}>{dictionary.snooze}</div>
-              {post.author.id !== user.id && <div onClick={() => followPost(post)}>{post.is_followed ? dictionary.unFollow : dictionary.follow}</div>}
-            </MoreOptions>
-          </div>
         </div>
         <div>
           {post.author.id !== user.id && !post.is_read_requirement && (
@@ -278,6 +292,15 @@ const CompanyPostDetail = (props) => {
               </li>
             </ul>
           )}
+          <div>
+            <StyledMoreOptions className="ml-2" item={post} width={170} moreButton={"more-horizontal"}>
+              <div onClick={() => markAsRead(post, true)}>{dictionary.markAsRead}</div>
+              <div onClick={() => markAsUnread(post, true)}>{dictionary.markAsUnread}</div>
+              <div onClick={() => sharePost(post)}>{dictionary.share}</div>
+              <div onClick={() => snoozePost(post)}>{dictionary.snooze}</div>
+              {post.author.id !== user.id && <div onClick={() => followPost(post)}>{post.is_followed ? dictionary.unFollow : dictionary.follow}</div>}
+            </StyledMoreOptions>
+          </div>
         </div>
       </MainHeader>
       <MainBody onDragOver={handleshowDropZone}>

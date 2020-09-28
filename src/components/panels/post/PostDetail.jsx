@@ -53,7 +53,7 @@ const StyledMoreOptions = styled(MoreOptions)`
   justify-content: center;
   .feather-more-horizontal {
     width: 25px;
-    height: 36px;
+    height: 24px;
   }
   .more-options-tooltip {
     left: auto;
