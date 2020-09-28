@@ -47,7 +47,7 @@ const EmojiReaction = (props) => {
   return (
     <EmojiContainer onClick={handleToggleReact} isAuthor={isAuthor} className="chat-emoji">
       <Emoji emoji={type} size={20} />
-      {count > 1 ? <span> {count}</span> : null}
+      {count > 1 ? <span className={"emoji-counter"}> {count}</span> : null}
       <StyledUserListPopUp
         className={"chat-emoji-users-list"}
         isAuthor={isAuthor}
