@@ -94,7 +94,7 @@ const MoreOptions = (props) => {
   const handleMouseLeave = () => {
     timeout = setTimeout(() => {
       setShowMoreOptions(false);
-    }, 1000);
+    }, 600);
   };
 
   const handleMouseEnter = () => {
@@ -103,7 +103,7 @@ const MoreOptions = (props) => {
 
   return (
     <Wrapper className={`more-options ${className}`} onClick={handleClick} ref={refs.container} onMouseEnter={handleMouseEnter} {...rest}>
-      <SvgIconFeather data-event="touchstart focus mouseover" data-event-off="mouseout" data-tip="Message options" icon={moreButton} />
+      <SvgIconFeather onMouseLeave={handleMouseLeave} data-event="touchstart focus mouseover" data-event-off="mouseout" data-tip="Message options" icon={moreButton} />
       {showMoreOptions && (
         <MoreTooltip
           ref={refs.options}
