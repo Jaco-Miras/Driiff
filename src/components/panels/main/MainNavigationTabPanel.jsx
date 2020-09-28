@@ -283,7 +283,7 @@ const MainNavigationTabPanel = (props) => {
     shortcuts: _t("SIDEBAR.SHORTCUTS", "Shortcuts"),
     personalLinks: _t("SIDEBAR.PERSONAL_LINKS", "Personal links"),
     addShortcut: _t("SIDEBAR.ADD_SHORTCUT", "Add shortcut"),
-    todoLinks: _t("SIDEBAR.TODO_LINKS", "To-Dos"),
+    todoLinks: _t("SIDEBAR.TODO_LINKS", "To-dos"),
     addTodoItem: _t("SIDEBAR.ADD_TODO_ITEM", "Add to-do"),
   };
 
@@ -427,6 +427,18 @@ const MainNavigationTabPanel = (props) => {
               )}
             </li>
           )}
+          <li>
+            <NavIconContainer to={"/todos"} active={["/todos"].includes(props.location.pathname)}>
+              <NavIcon icon={"check"} />
+              <div>{dictionary.todoLinks}</div>
+            </NavIconContainer>
+          </li>
+          <li onClick={closeLeftNav}>
+            <NavIconContainer to={"/workspace/search"} active={["/workspace/search"].includes(props.location.pathname)}>
+              <NavIcon icon={"compass"} />
+              <div>{dictionary.allWorkspaces}</div>
+            </NavIconContainer>
+          </li>
           {user.type === "internal" && (
             <li>
               <NavIconContainer to={"/system/people"} active={["/system/people"].includes(props.location.pathname)}>
@@ -435,14 +447,13 @@ const MainNavigationTabPanel = (props) => {
               </NavIconContainer>
             </li>
           )}
-          <li onClick={closeLeftNav}>
-            <NavIconContainer to={"/workspace/search"} active={["/workspace/search"].includes(props.location.pathname)}>
-              <NavIcon icon={"compass"} />
-              <div>{dictionary.allWorkspaces}</div>
+          {/* <li>
+            <NavIconContainer>
+              <NavIcon icon={"link"}/>
+              <div>{dictionary.shortcuts}</div>
             </NavIconContainer>
-          </li>
+          </li> */}
           <QuickLinks links={links} user={user} dictionary={dictionary} />
-          <TodoLinks dictionary={dictionary} />
         </ul>
       </div>
 
