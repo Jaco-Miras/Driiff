@@ -685,6 +685,26 @@ export const SvgIconFeather = React.memo(
           </>
         );
         break;
+      case "list":
+        content = (
+          <>
+            <line x1="8" y1="6" x2="21" y2="6"></line>
+            <line x1="8" y1="12" x2="21" y2="12"></line>
+            <line x1="8" y1="18" x2="21" y2="18"></line>
+            <line x1="3" y1="6" x2="3.01" y2="6"></line>
+            <line x1="3" y1="12" x2="3.01" y2="12"></line>
+            <line x1="3" y1="18" x2="3.01" y2="18"></line>
+          </>
+        )
+        break;
+      case "alert-circle":
+        content = (
+          <>
+            <circle cx="12" cy="12" r="10" />
+            <line x1="12" y1="8" x2="12" y2="12" />
+            <line x1="12" y1="16" x2="12.01" y2="16" />
+          </>
+        )
       default:
         console.log(`${icon} not found`);
     }
