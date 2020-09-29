@@ -294,7 +294,12 @@ export default (state = INITIAL_STATE, action) => {
     }
     case "INCOMING_UPDATE_TO_DO": {
       let items = state.todos.items;
+      let overDueCount = state.todos.count.overdue;
+
       if (typeof items[action.data.id] !== "undefined") {
+        if (items[action.data.id].status === "OVERDUE") {
+          overDueCount += 1;
+        }
         items[action.data.id] = action.data;
       }
       return {
@@ -307,26 +312,46 @@ export default (state = INITIAL_STATE, action) => {
     }
     case "INCOMING_DONE_TO_DO": {
       let items = state.todos.items;
+      let overDueCount = state.todos.count.overdue;
+
       if (typeof items[action.data.id] !== "undefined") {
+        if (items[action.data.id].status === "OVERDUE") {
+          overDueCount -= 1;
+        }
+
         items[action.data.id].status = "DONE";
       }
       return {
         ...state,
         todos: {
           ...state.todos,
+          count: {
+            ...state.todos.count,
+            overdue: overDueCount
+          },
           items: items
         }
       }
     }
     case "INCOMING_REMOVE_TO_DO": {
       let items = state.todos.items;
+      let overDueCount = state.todos.count.overdue;
+
       if (typeof items[action.data.todo_id] !== "undefined") {
+        if (items[action.data.todo_id].status === "OVERDUE") {
+          overDueCount -= 1;
+        }
+
         delete items[action.data.todo_id];
       }
       return {
         ...state,
         todos: {
           ...state.todos,
+          count: {
+            ...state.todos.count,
+            overdue: overDueCount
+          },
           items: items
         }
       }
