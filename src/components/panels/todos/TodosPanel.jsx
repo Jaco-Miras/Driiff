@@ -19,6 +19,9 @@ const TodosPanel = (props) => {
   const dictionary = {
     searchInputPlaceholder: _t("REMINDER.SEARCH_INPUT_PLACEHOLDER", "Search your to-dos & reminders on title and description."),
     createNewTodoItem: _t("REMINDER.CREATE_NEW_TODO_ITEM", "New to-do"),
+    typePost: _t("REMINDER.TYPE_POST", "Post"),
+    typeChat: _t("REMINDER.TYPE_CHAT", "Chat"),
+    typePostComment: _t("REMINDER.TYPE_POST_COMMENT", "Post comment"),
     statusAll: _t("REMINDER.STATUS_ALL", "All"),
     statusOverdue: _t("REMINDER.STATUS_OVERDUE", "Overdue"),
     statusUpcoming: _t("REMINDER.STATUS_UPCOMING", "Upcoming"),
@@ -26,6 +29,9 @@ const TodosPanel = (props) => {
     emptyText: _t("REMINDER.EMPTY_STATE_TEXT", "Use your to-do & reminder list to keep track of all your tasks and activities."),
     emptyButtonText: _t("REMINDER.EMPTY_STATE_BUTTON_TEXT", "New to do"),
     noItemsFound: _t("REMINDER.NO_ITEMS_FOUND", "No items found."),
+    actionReschedule: _t("REMINDER.ACTION_RESCHEDULE", "Reschedule"),
+    actionMarkAsDone: _t("REMINDER.ACTION_MARK_AS_DONE", "Mark as done"),
+    actionRemove: _t("REMINDER.ACTION_REMOVE", "Remove"),
   }
 
   const [filter, setFilter] = useState("");

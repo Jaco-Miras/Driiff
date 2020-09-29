@@ -5,6 +5,7 @@ import {useHistory} from "react-router-dom";
 import {CheckBox} from "../../forms";
 import quillHelper from "../../../helpers/quillHelper";
 import {useSettings, useTimeFormat} from "../../hooks";
+import {MoreOptions} from "../common";
 
 const Wrapper = styled.div`
 .list-group .list-group-item {  
@@ -103,6 +104,18 @@ const TodosBody = (props) => {
     }
   }
 
+  const getTodoType = (todo) => {
+    switch (todo.link_type) {
+      case "POST":
+        return dictionary.typePost;
+      case "CHAT":
+        return dictionary.typeChat;
+      case "POST_COMMENT":
+        return dictionary.typePostComment;
+    }
+
+  }
+
   useEffect(() => {
     if (!refs.files.current)
       return;
@@ -198,21 +211,22 @@ const TodosBody = (props) => {
                                 <div
                                   className={`badge ${getBadgeClass(todo)} text-white mr-3`}>{localizeDate(todo.remind_at ? todo.remind_at.timestamp : "")}</div>
                                 {
+                                  todo.link_type !== null &&
+                                  <div className={`badge badge-info text-white mr-3`}>{getTodoType(todo)}</div>
+                                }
+                                {
                                   todo.author !== null &&
                                   <Avatar key={todo.author.id} name={todo.author.name}
                                           imageLink={todo.author.profile_image_link} id={todo.author.id}/>
                                 }
                               </div>
-                              <ToolTip content="Remove">
-                                <Icon
-                                  className="cursor-pointer mr-2" data-index={index} icon="archive"
-                                  onClick={() => todoActions.removeConfirmation(todo)}/>
-                              </ToolTip>
-                              <ToolTip content="Reschedule">
-                                <Icon
-                                  className="cursor-pointer" data-index={index} icon="clock"
-                                  onClick={() => todoActions.updateFromModal(todo)}/>
-                              </ToolTip>
+                              <MoreOptions className="ml-2" item={todo} width={170} moreButton={"more-horizontal"}>
+                                <div onClick={() => todoActions.markDone(todo)}>{dictionary.actionMarkAsDone}</div>
+                                <div
+                                  onClick={() => todoActions.updateFromModal(todo)}>{dictionary.actionReschedule}</div>
+                                <div
+                                  onClick={() => todoActions.removeConfirmation(todo)}>{dictionary.actionRemove}</div>
+                              </MoreOptions>
                             </div>
                           </div>
                         </li>
