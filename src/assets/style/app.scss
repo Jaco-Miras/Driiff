@@ -65,6 +65,15 @@ body {
   overflow: hidden;
 }
 
+.todo-description {
+  max-width: 400px;
+  display: block;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  color: #a7abc3;
+}
+
 ::-webkit-scrollbar:hover {
   width: 10px;
 }
@@ -73,6 +82,7 @@ body {
 ::-webkit-scrollbar-track {
   background-color: rgba(255, 0, 0, 0);
 }
+
 /* scrollbar itself */
 ::-webkit-scrollbar-thumb {
   background-color: rgba(255, 0, 0, 0);
