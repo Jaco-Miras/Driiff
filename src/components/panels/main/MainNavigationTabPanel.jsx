@@ -269,8 +269,8 @@ const MainNavigationTabPanel = (props) => {
   const { _t } = useTranslation();
 
   const dictionary = {
-    allWorkspaces: _t("SIDEBAR.ALL_WORKSPACES", "All Workspaces"),
-    people: _t("SIDEBAR.PEOPLE", "People"),
+    allWorkspaces: _t("SIDEBAR.ALL_WORKSPACES", "Browse Workspaces"),
+    people: _t("SIDEBAR.PEOPLE", "All People"),
     workspace: _t("SIDEBAR.WORKSPACE", "Workspace"),
     workspaces: _t("SIDEBAR.WORKSPACES", "Workspaces"),
     chats: _t("SIDEBAR.CHATS", "Chats"),
@@ -283,7 +283,7 @@ const MainNavigationTabPanel = (props) => {
     shortcuts: _t("SIDEBAR.SHORTCUTS", "Shortcuts"),
     personalLinks: _t("SIDEBAR.PERSONAL_LINKS", "Personal links"),
     addShortcut: _t("SIDEBAR.ADD_SHORTCUT", "Add shortcut"),
-    todoLinks: _t("SIDEBAR.TODO_LINKS", "To-dos"),
+    todoLinks: _t("SIDEBAR.TODO_LINKS", "To-dos & Reminders"),
     addTodoItem: _t("SIDEBAR.ADD_TODO_ITEM", "Add to-do"),
   };
 
