@@ -860,11 +860,11 @@ const CreateEditWorkspacePostModal = (props) => {
           <ModalHeaderSection toggle={toggleNested}>{dictionary.saveAsDraft}</ModalHeaderSection>
           <ModalBody>{dictionary.draftBody}</ModalBody>
           <ModalFooter>
+          <Button className="btn-outline-secondary" onClick={() => toggleAll(false)}>
+              {dictionary.discard}
+            </Button>
             <Button color="primary" onClick={() => toggleAll(true)}>
               {dictionary.save}
-            </Button>
-            <Button color="secondary" onClick={() => toggleAll(false)}>
-              {dictionary.discard}
             </Button>
           </ModalFooter>
         </Modal>
