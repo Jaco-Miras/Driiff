@@ -547,8 +547,12 @@ body.dark {
   margin-top: 18px;
 }
 
-.lock-workspace-text-container {
+.lock-workspace_folder-text-container {
   max-width: 330px;
+}
+
+.lock-workspace-text-container {
+  max-width: 560px;
 }
 
 .lock-workspace-text {

@@ -31,9 +31,8 @@ const WrapperDiv = styled(InputGroup)`
   }
 
   label {
-    white-space: nowrap;
     margin: 0 20px 0 0;
-    min-width: 109px;
+    min-width: 530px;
   }
   button {
     margin-left: auto;
@@ -127,8 +126,15 @@ const SelectPeople = styled(PeopleSelect)`
 `;
 
 const StyledDescriptionInput = styled(DescriptionInput)`
-  height: ${(props) => props.height}px;
-  max-height: 300px;
+  .description-input {
+    height: ${props => props.height}px;
+    max-height: 300px;
+  }
+
+  label {
+    min-width: 100%;
+    font-weight: 500;
+  }
 `;
 
 const LockIcon = styled(SvgIconFeather)`
@@ -145,8 +151,10 @@ const CreateEditWorkspaceModal = (props) => {
     create: _t("BUTTON.CREATE", "Create"),
     updateWorkspace: _t("WORKSPACE.UPDATE_WORKSPACE", "Update workspace"),
     update: _t("BUTTON.UPDATE", "Update"),
-    workspaceName: _t("WORKSPACE.WORKSPACE_NAME", "Workspace name"),
-    lockWorkspace: _t("WORKSPACE.WORKSPACE_LOCK", "Private workspace"),
+    workspaceName: _t("WORKSPACE.WORKSPACE_NAME", "Name"),
+    workspaceInfo: _t("WORKSPACE.WORKSPACE_INFO", "A workspace centers the team communication about a subject. A workspace can only be connected to one folder."),
+    lockWorkspace: _t("WORKSPACE.WORKSPACE_LOCK", "Make workspace private"),
+    lockWorkspaceText: _t("WORKSPACE.WORKSPACE_LOCK.DESCRIPTION", "When a workspace is private it is only visible to the members of the workspace."),
     archiveThisWorkspace: _t("WORKSPACE.WORKSPACE_ARCHIVE", "Archive this workspace"),
     unarchiveThisWorkspace: _t("WORKSPACE.WORKSPACE_UNARCHIVE", "Unarchive this workspace"),
     description: _t("LABEL.DESCRIPTION", "Description"),
@@ -160,7 +168,7 @@ const CreateEditWorkspaceModal = (props) => {
     archiveBodyText: _t("TEXT.ARCHIVE_CONFIRMATION", "Are you sure you want to archive this workspace?"),
     unarchiveBodyText: _t("TEXT.UNARCHIVE_CONFIRMATION", "Are you sure you want to unarchive this workspace?"),
     confirm: _t("WORKSPACE.CONFIRM", "Confirm"),
-    lockedWorkspace: _t("WORKSPACE.LOCKED_WORKSPACE", "Locked workspace"),
+    lockedWorkspace: _t("WORKSPACE.LOCKED_WORKSPACE", "Private workspace"),
     lockedWorkspaceText: _t("WORKSPACE.LOCKED_WORKSPACE_TEXT", "Only members can view and search this workspace."),
   };
 
@@ -951,34 +959,37 @@ const CreateEditWorkspaceModal = (props) => {
           onCancel={handleHideDropzone}
           attachedFiles={attachedFiles}
         />
-        <WrapperDiv>
-          <Label for="chat">{dictionary.workspaceName}</Label>
-          <Input
-            name="name"
-            defaultValue={mode === "edit" ? item.name : ""}
-            onFocus={handleNameFocus}
-            onChange={handleNameChange}
-            onBlur={handleNameBlur}
-            valid={valid.name}
-            invalid={valid.name !== null && !valid.name}
-            innerRef={refs.workspace_name}
-          />
-          <InputFeedback valid={valid.name}>{feedback.name}</InputFeedback>
+        <WrapperDiv className={"modal-input mt-0"}>
+          <div>
+            <Label className={"modal-info pb-3"}>{dictionary.workspaceInfo}</Label>
+            <Label className={"modal-label"} for="chat">{dictionary.workspaceName}</Label>
+            <Input
+              name="name"
+              defaultValue={mode === "edit" ? item.name : ""}
+              onFocus={handleNameFocus}
+              onChange={handleNameChange}
+              onBlur={handleNameBlur}
+              valid={valid.name}
+              invalid={valid.name !== null && !valid.name}
+              innerRef={refs.workspace_name}
+            />
+            <InputFeedback valid={valid.name}>{feedback.name}</InputFeedback>
+          </div>
         </WrapperDiv>
-        <WrapperDiv>
+        <WrapperDiv className={"modal-input"}>
           <Label for="has_folder" />
           <CheckBox type="success" name="has_folder" checked={form.has_folder} onClick={toggleCheck}>
             {dictionary.addToFolder}
           </CheckBox>
         </WrapperDiv>
         {form.has_folder === true && (
-          <WrapperDiv>
+          <WrapperDiv className={"modal-input"}>
             <Label for="people">{dictionary.folder}</Label>
             <SelectFolder options={folderOptions} value={form.selectedFolder} onChange={handleSelectFolder} isMulti={false} isClearable={true} />
             <InputFeedback valid={valid.has_folder}>{feedback.has_folder}</InputFeedback>
           </WrapperDiv>
         )}
-        <WrapperDiv>
+        <WrapperDiv className={"modal-input"}>
           <Label for="people">{dictionary.team}</Label>
           <SelectPeople
             valid={valid.team}
@@ -994,6 +1005,7 @@ const CreateEditWorkspaceModal = (props) => {
           <InputFeedback valid={valid.user}>{feedback.user}</InputFeedback>
         </WrapperDiv>
         <StyledDescriptionInput
+          className="modal-description"
           height={window.innerHeight - 660}
           required
           showFileButton={true}
@@ -1020,6 +1032,9 @@ const CreateEditWorkspaceModal = (props) => {
           <CheckBox name="is_private" checked={form.is_private} onClick={toggleCheck}>
             {dictionary.lockWorkspace}
           </CheckBox>
+          <div className={"lock-workspace-text-container pb-3"}>
+            <Label className={"lock-workspace-text"}>{dictionary.lockWorkspaceText}</Label>
+          </div>
           <button className="btn btn-primary" onClick={handleConfirm}>
             {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />}
             {mode === "edit" ? dictionary.updateWorkspace : dictionary.createWorkspace}
