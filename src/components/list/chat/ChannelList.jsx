@@ -113,7 +113,7 @@ const ChannelList = (props) => {
   };
 
   return (
-    <Wrapper className={`list-group-item d-flex align-items-center link-1 pl-1 pr-1 pl-lg-0 pr-lg-0 pb-3 pt-3 ${className}`} selected={selectedChannel !== null && channel.id === selectedChannel.id} onClick={handleSelectChannel}>
+    <Wrapper className={`list-group-item d-flex align-items-center link-1 pl-1 pr-1 pl-lg-0 pr-lg-0 pb-2 pt-2 ${className}`} selected={selectedChannel !== null && channel.id === selectedChannel.id} onClick={handleSelectChannel}>
       <ChannelIcon channel={channel} />
       <ChannelTitlePreview className={"flex-grow-1"}>
         <ChannelTitle channel={channel} />
