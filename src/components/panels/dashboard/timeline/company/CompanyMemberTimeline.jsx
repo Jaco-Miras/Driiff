@@ -1,8 +1,8 @@
 import React from "react";
-import { useSelector } from "react-redux";
+import {useSelector} from "react-redux";
 import styled from "styled-components";
-import { Avatar } from "../../../../common";
-import { useTimeFormat } from "../../../../hooks";
+import {Avatar} from "../../../../common";
+import {useTimeFormat} from "../../../../hooks";
 import Tooltip from "react-tooltip-lite";
 
 const Wrapper = styled.div`
@@ -68,6 +68,9 @@ const CompanyMemberTimeline = (props) => {
   };
 
   const renderAddedMembers = (joined = false) => {
+    if (message.author === null)
+      return "";
+
     if (joined) {
       if (message.accepted_members && message.accepted_members.length) {
         let author = users[message.accepted_members[0]];
@@ -94,6 +97,9 @@ const CompanyMemberTimeline = (props) => {
   };
 
   const renderRemovedMembers = (left = false) => {
+    if (message.author === null)
+      return "";
+
     if (left) {
       let author = recipients.filter((r) => r.type_id === message.author.id && message.removed_members.includes(r.type_id))[0];
       if (author) {
