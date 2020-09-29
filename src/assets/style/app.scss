@@ -539,7 +539,7 @@ body.dark {
   border-radius: 8px;
 }
 
-.folder-name {
+.modal-label {
   font-weight: 500;
 }
 
@@ -555,9 +555,10 @@ body.dark {
   opacity: 0.8;
 }
 
-.folder-info {
+.modal-info {
   opacity: 0.8;
   margin-bottom: 1rem;
+  max-width: 530px;
 }
 
 .folder-searchbar {
@@ -18478,7 +18479,7 @@ small {
   max-width: 50%;
 }
 
-.folder-input {
+.modal-input {
   display: flex;
   flex-direction: column !important;
   align-items: flex-start !important;
