@@ -39,7 +39,8 @@ const TodosSidebar = (props) => {
     dictionary,
     todoActions,
     setFilter,
-    filter
+    filter,
+    count
   } = props;
 
   return (
@@ -62,17 +63,17 @@ const TodosSidebar = (props) => {
               <Filter onClick={() => setFilter(filter === "OVERDUE" ? "" : "OVERDUE")} active={filter === "OVERDUE"}
                       className="list-group-item d-flex align-items-center">
                 <Icon className="mr-2" icon="alert-circle"/>
-                {dictionary.statusOverdue}
+                {dictionary.statusOverdue} {/*{count.overdue}*/}
               </Filter>
               <Filter onClick={() => setFilter(filter === "NEW" ? "" : "NEW")} active={filter === "NEW"}
                       className="list-group-item d-flex align-items-center">
                 <Icon className="mr-2" icon="clock"/>
-                {dictionary.statusUpcoming}
+                {dictionary.statusUpcoming} {/*{count.new}*/}
               </Filter>
               <Filter onClick={() => setFilter(filter === "DONE" ? "" : "DONE")} active={filter === "DONE"}
                       className="list-group-item d-flex align-items-center">
                 <Icon className="mr-2" icon="check"/>
-                {dictionary.statusDone}
+                {dictionary.statusDone} {/*{count.done}*/}
               </Filter>
             </div>
           </div>

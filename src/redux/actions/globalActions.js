@@ -11,6 +11,7 @@ import {
   getPushNotification as getPushNotificationService,
   getQuickLinks as getQuickLinksService,
   getToDo as getToDoService,
+  getToDoDetail as getToDoDetailService,
   getTranslationObject as getTranslationObjectService,
   getUnreadNotificationCounterEntries as getUnreadNotificationCounterEntriesService,
   postGenerateTranslationRaw as postGenerateTranslationRawService,
@@ -152,6 +153,10 @@ export function putToDo(payload, callback) {
 
 export function getToDo(payload, callback) {
   return dispatchActionToReducer(getToDoService(payload), "GET_TO_DO_START", "GET_TO_DO_SUCCESS", "GET_TO_DO_FAILURE", callback);
+}
+
+export function getToDoDetail(payload, callback) {
+  return dispatchActionToReducer(getToDoDetailService(payload), "GET_TO_DO_DETAIL_START", "GET_TO_DO_DETAIL_SUCCESS", "GET_TO_DO_DETAIL_FAILURE", callback);
 }
 
 export function putDoneToDo(payload, callback) {

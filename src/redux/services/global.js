@@ -175,6 +175,15 @@ export function getToDo(payload) {
   });
 }
 
+export function getToDoDetail(payload) {
+  let url = `/v2/to-do-detail`;
+  return apiCall({
+    method: "GET",
+    url: url,
+    data: payload,
+  });
+}
+
 export function putDoneToDo(payload) {
   let url = `/v2/done-to-do?${objToUrlParams(payload)}`;
   return apiCall({
@@ -192,3 +201,4 @@ export function delRemoveToDo(payload) {
     data: payload,
   });
 }
+

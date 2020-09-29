@@ -1,15 +1,15 @@
-import React, { useEffect, useRef, useState } from "react";
-import { useDispatch } from "react-redux";
-import { useHistory } from "react-router-dom";
+import React, {useEffect, useRef, useState} from "react";
+import {useDispatch} from "react-redux";
+import {useHistory} from "react-router-dom";
 import styled from "styled-components";
-import { addToModals } from "../../../redux/actions/globalActions";
-import { setParentIdForUpload } from "../../../redux/actions/postActions";
-import { FileAttachments, SvgIconFeather, ToolTip } from "../../common";
-import { DropDocument } from "../../dropzone/DropDocument";
-import { useCommentActions, useComments } from "../../hooks";
-import { PostBody, PostComments, PostDetailFooter } from "./index";
-import { replaceChar } from "../../../helpers/stringFormatter";
-import { MoreOptions } from "../../panels/common";
+import {addToModals} from "../../../redux/actions/globalActions";
+import {setParentIdForUpload} from "../../../redux/actions/postActions";
+import {FileAttachments, ReminderNote, SvgIconFeather, ToolTip} from "../../common";
+import {DropDocument} from "../../dropzone/DropDocument";
+import {useCommentActions, useComments} from "../../hooks";
+import {PostBody, PostComments, PostDetailFooter} from "./index";
+import {replaceChar} from "../../../helpers/stringFormatter";
+import {MoreOptions} from "../../panels/common";
 
 const MainHeader = styled.div`
   min-height: 70px;
@@ -240,11 +240,15 @@ const PostDetail = (props) => {
 
   return (
     <>
+      {
+        post.todo_reminder !== null &&
+        <ReminderNote todoReminder={post.todo_reminder} type="POST"/>
+      }
       <MainHeader className="card-header d-flex justify-content-between">
         <div>
           <ul>
             <li>
-              <Icon className="close mr-2" icon="arrow-left" onClick={handleClosePost} />
+              <Icon className="close mr-2" icon="arrow-left" onClick={handleClosePost}/>
             </li>
             <li>
               <h5 ref={refs.title} className="post-title mb-0">

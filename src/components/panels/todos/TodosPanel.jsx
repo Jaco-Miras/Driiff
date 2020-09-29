@@ -13,7 +13,7 @@ const Wrapper = styled.div`
 const TodosPanel = (props) => {
   const {className = ""} = props;
 
-  const {getSortedItems, action: todoActions, isLoaded} = useTodos();
+  const {getSortedItems, action: todoActions, isLoaded, count} = useTodos();
   const {_t} = useTranslation();
 
   const dictionary = {
@@ -35,7 +35,7 @@ const TodosPanel = (props) => {
       <div className="row app-block">
         <TodosSidebar
           className="col-md-3" dictionary={dictionary} todoActions={todoActions}
-          setFilter={setFilter} filter={filter}/>
+          setFilter={setFilter} filter={filter} count={count}/>
         <div className="col-md-9 app-content mb-4">
           <div className="app-content-overlay"/>
           <TodosHeader dictionary={dictionary} setSearch={setSearch} searchValue={search}/>

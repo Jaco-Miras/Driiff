@@ -1,6 +1,14 @@
 import React, {useCallback} from "react";
 import {useDispatch} from "react-redux";
-import {addToModals, delRemoveToDo, getToDo, postToDo, putDoneToDo, putToDo} from "../../redux/actions/globalActions";
+import {
+  addToModals,
+  delRemoveToDo,
+  getToDo,
+  getToDoDetail,
+  postToDo,
+  putDoneToDo,
+  putToDo
+} from "../../redux/actions/globalActions";
 import {useToaster} from "./index";
 
 const useTodoActions = () => {
@@ -11,6 +19,12 @@ const useTodoActions = () => {
   const fetch = useCallback((payload, callback) => {
     dispatch(
       getToDo(payload, callback)
+    )
+  }, []);
+
+  const fetchDetail = useCallback((payload, callback) => {
+    dispatch(
+      getToDoDetail(payload, callback)
     )
   }, []);
 
@@ -148,6 +162,7 @@ const useTodoActions = () => {
 
   return {
     fetch,
+    fetchDetail,
     create,
     createFromModal,
     createForPost,

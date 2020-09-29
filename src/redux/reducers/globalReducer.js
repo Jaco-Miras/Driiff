@@ -26,7 +26,9 @@ const INITIAL_STATE = {
     skip: 0,
     limit: 50,
     count: {
-      overdue: 0
+      new: 0,
+      overdue: 0,
+      done: 0,
     },
     items: {}
   }
@@ -208,16 +210,25 @@ export default (state = INITIAL_STATE, action) => {
         links: action.data
       }
     }
+    case "GET_TO_DO_DETAIL_SUCCESS": {
+      let count = state.todos.count;
+
+      action.data.forEach(d => {
+        count[d.status.toLowerCase()] = d.count;
+      })
+
+      return {
+        ...state,
+        todos: {
+          ...state.todos,
+          count: count
+        }
+      }
+    }
     case "GET_TO_DO_SUCCESS": {
       let items = state.todos.items;
-      let overDueCount = state.todos.count.overdue;
-
       action.data.todos.forEach(t => {
         items[t.id] = t;
-
-        if (t.status === "OVERDUE") {
-          overDueCount += 1;
-        }
 
         switch (t.link_type) {
           case "CHAT": {
@@ -247,10 +258,6 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         todos: {
           ...state.todos,
-          count: {
-            ...state.todos.count,
-            overdue: overDueCount
-          },
           isLoaded: true,
           hasMore: action.data.todos.length === state.todos.limit,
           limit: state.todos.limit + state.todos.limit,
@@ -261,6 +268,7 @@ export default (state = INITIAL_STATE, action) => {
     case "INCOMING_TO_DO": {
       let items = state.todos.items;
       items[action.data.id] = action.data;
+
       switch (action.data.link_type) {
         case "CHAT": {
           items[action.data.id].link = `/chat/${action.data.data.channel.code}/${action.data.data.chat_message.code}`
@@ -288,59 +296,63 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         todos: {
           ...state.todos,
+          count: {
+            ...state.todos.count,
+            [action.data.status.toLowerCase()]: state.todos.count[action.data.status.toLowerCase()] + 1
+          },
           items: items
         }
       }
     }
     case "INCOMING_UPDATE_TO_DO": {
       let items = state.todos.items;
-      let overDueCount = state.todos.count.overdue;
+      let count = state.todos.count;
 
       if (typeof items[action.data.id] !== "undefined") {
-        if (items[action.data.id].status === "OVERDUE") {
-          overDueCount += 1;
+        if (items[action.data.id].status !== action.data.status) {
+          count[action.data.status.toLowerCase()] += 1;
+          count[items[action.data.id].status.toLowerCase()] -= 1;
         }
+
         items[action.data.id] = action.data;
       }
       return {
         ...state,
         todos: {
           ...state.todos,
+          count: count,
           items: items
         }
       }
     }
     case "INCOMING_DONE_TO_DO": {
       let items = state.todos.items;
-      let overDueCount = state.todos.count.overdue;
+      let count = state.todos.count;
 
       if (typeof items[action.data.id] !== "undefined") {
-        if (items[action.data.id].status === "OVERDUE") {
-          overDueCount -= 1;
+        if (items[action.data.id].status !== action.data.status) {
+          count[action.data.status.toLowerCase()] += 1;
+          count[items[action.data.id].status.toLowerCase()] -= 1;
         }
 
-        items[action.data.id].status = "DONE";
+        items[action.data.id] = action.data;
       }
+
       return {
         ...state,
         todos: {
           ...state.todos,
-          count: {
-            ...state.todos.count,
-            overdue: overDueCount
-          },
+          count: count,
           items: items
         }
       }
     }
     case "INCOMING_REMOVE_TO_DO": {
       let items = state.todos.items;
-      let overDueCount = state.todos.count.overdue;
+      let count = state.todos.count;
 
       if (typeof items[action.data.todo_id] !== "undefined") {
-        if (items[action.data.todo_id].status === "OVERDUE") {
-          overDueCount -= 1;
-        }
+        count[items[action.data.todo_id].status.toLowerCase()] -= 1;
 
         delete items[action.data.todo_id];
       }
@@ -348,10 +360,7 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         todos: {
           ...state.todos,
-          count: {
-            ...state.todos.count,
-            overdue: overDueCount
-          },
+          count: count,
           items: items
         }
       }

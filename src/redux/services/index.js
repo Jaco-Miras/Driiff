@@ -77,6 +77,7 @@ export {
   postToDo,
   putToDo,
   getToDo,
+  getToDoDetail,
   putDoneToDo,
   delRemoveToDo,
 } from "./global";

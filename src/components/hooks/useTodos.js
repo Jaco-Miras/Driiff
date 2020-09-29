@@ -51,7 +51,8 @@ const useTodos = () => {
   useEffect(() => {
     if (!init) {
       init = true;
-      loadMore()
+      todoActions.fetchDetail({});
+      loadMore();
     }
   }, []);
 
