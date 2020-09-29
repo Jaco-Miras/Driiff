@@ -176,9 +176,11 @@ const TodosBody = (props) => {
                           <div className="d-flex justify-content-between w-100 align-items-center">
                             <div className="d-flex">
                               <div className="custom-control custom-checkbox custom-checkbox-success mr-2">
-                                <CheckBox name="test" checked={todo.status === "DONE"} onClick={() => {
-                                  if (todo.status !== "DONE") todoActions.markDone(todo)
-                                }} disabled={todo.status === "DONE"}/>
+                                <ToolTip content="Mark as done">
+                                  <CheckBox name="test" checked={todo.status === "DONE"} onClick={() => {
+                                    if (todo.status !== "DONE") todoActions.markDone(todo)
+                                  }} disabled={todo.status === "DONE"}/>
+                                </ToolTip>
                               </div>
                               <div className="mr-3">
                                 <a className={todo.status === "DONE" ? "text-success" : ""} href={todo.link}
@@ -201,9 +203,11 @@ const TodosBody = (props) => {
                                           imageLink={todo.author.profile_image_link} id={todo.author.id}/>
                                 }
                               </div>
-                              <Icon
-                                className="cursor-pointer mr-2" data-index={index} icon="archive"
-                                onClick={() => todoActions.remove(todo)}/>
+                              <ToolTip content="Remove">
+                                <Icon
+                                  className="cursor-pointer mr-2" data-index={index} icon="archive"
+                                  onClick={() => todoActions.removeConfirmation(todo)}/>
+                              </ToolTip>
                               <ToolTip content="Reschedule">
                                 <Icon
                                   className="cursor-pointer" data-index={index} icon="clock"
@@ -227,7 +231,10 @@ const TodosBody = (props) => {
                               className="btn btn-primary">{dictionary.emptyButtonText}</button>
                     </EmptyState>
                     :
-                    <><h5>{dictionary.noItemsFound}</h5></>
+                    <EmptyState>
+                      <SvgEmptyState icon={1} height={282}/>
+                      <h5>{dictionary.noItemsFound}</h5>
+                    </EmptyState>
                 }
               </>
         }

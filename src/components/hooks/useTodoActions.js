@@ -159,6 +159,27 @@ const useTodoActions = () => {
     )
   }, []);
 
+  const removeConfirmation = useCallback(
+    (payload, callback) => {
+
+      const onConfirm = () => {
+        remove(payload, callback);
+      };
+
+      dispatch(addToModals({
+        type: "confirmation",
+        headerText: "Remove to-do item?",
+        submitText: "Remove",
+        cancelText: "Cancel",
+        bodyText: "Are you sure you want to remove this item?",
+        actions: {
+          onSubmit: onConfirm,
+        },
+      }));
+    },
+    [dispatch]
+  );
+
 
   return {
     fetch,
@@ -171,7 +192,8 @@ const useTodoActions = () => {
     update,
     updateFromModal,
     markDone,
-    remove
+    remove,
+    removeConfirmation
   };
 };
 
