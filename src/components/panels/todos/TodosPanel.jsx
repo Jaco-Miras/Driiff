@@ -17,7 +17,7 @@ const TodosPanel = (props) => {
   const {_t} = useTranslation();
 
   const dictionary = {
-    searchInputPlaceholder: _t("REMINDER.SEARCH_INPUT_PLACEHOLDER", "Search"),
+    searchInputPlaceholder: _t("REMINDER.SEARCH_INPUT_PLACEHOLDER", "Search your to-dos & reminders on title and description."),
     createNewTodoItem: _t("REMINDER.CREATE_NEW_TODO_ITEM", "New to-do"),
     statusAll: _t("REMINDER.STATUS_ALL", "All"),
     statusOverdue: _t("REMINDER.STATUS_OVERDUE", "Overdue"),
