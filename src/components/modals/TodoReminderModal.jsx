@@ -82,9 +82,9 @@ const TodoReminderModal = (props) => {
     }
   })
 
-  const [setTimeValue, setSetTimeValue] = useState("1h");
-  const [customTimeValue, setCustomTimeValue] = useState(moment().add(20, 'm').toDate());
-  const [showDateTimePicker, setShowDateTimePicker] = useState(null);
+  const [timeValue, setTimeValue] = useState(item && item.remind_at ? "pick_data" : "");
+  const [customTimeValue, setCustomTimeValue] = useState(item && item.remind_at && Math.round(+new Date() / 1000) <= item.remind_at.timestamp ? moment.unix(item.remind_at.timestamp).toDate() : moment().add(20, 'm').toDate());
+  const [showDateTimePicker, setShowDateTimePicker] = useState(item && item.remind_at ? true : null);
   const [modal, setModal] = useState(true);
 
   let dictionary = {
@@ -140,16 +140,19 @@ const TodoReminderModal = (props) => {
 
   const handleSetReminder = (e, setTime) => {
     setShowDateTimePicker(false);
-    setSetTimeValue(setTime);
+    if (timeValue === setTime) {
+      setTimeValue("");
+    } else {
+      setTimeValue(setTime);
+    }
   };
 
   const handlePickDateTime = (e) => {
     setCustomTimeValue(e);
-    //setSetTimeValue(formatDateISO8601(e));
   };
 
   const handleSelectPickDateTime = () => {
-    setSetTimeValue("pick_data");
+    setTimeValue("pick_data");
     setShowDateTimePicker(true);
   };
 
@@ -167,7 +170,7 @@ const TodoReminderModal = (props) => {
 
     if (form.description.value)
 
-      if (setTimeValue === "pick_data") {
+      if (timeValue === "pick_data") {
         const currentDate = new Date();
         const reminderDate = new Date(customTimeValue);
 
@@ -180,7 +183,7 @@ const TodoReminderModal = (props) => {
           newForm.set_time.feedback = `Reminder date must be in the future.`;
         }
       } else {
-        newForm.set_time.value = setTimeValue;
+        newForm.set_time.value = timeValue;
         newForm.set_time.valid = true;
       }
 
@@ -218,30 +221,20 @@ const TodoReminderModal = (props) => {
             <div className="row">
               <div className="col-12 col-lg-4">{dictionary.title}</div>
               <div className="col-12 col-lg-8">
-                {
-                  typeof item === "undefined" ?
-                    <FormInput
-                      name="title"
-                      defaultValue={form.title.value}
-                      placeholder={dictionary.title}
-                      onChange={handleInputChange}
-                      isValid={form.title.valid}
-                      feedback={form.title.feedback}/>
-                    :
-                    <>{form.title.value}</>
-                }
+                <FormInput
+                  name="title"
+                  defaultValue={form.title.value}
+                  placeholder={dictionary.title}
+                  onChange={handleInputChange}
+                  isValid={form.title.valid}
+                  feedback={form.title.feedback}/>
               </div>
               <div className="col-12 col-lg-4">{dictionary.description}</div>
               <div className="col-12 col-lg-8">
-                {
-                  typeof item === "undefined" ?
-                    <StyledQuillEditor
-                      defaultValue={form.description.value}
-                      onChange={handleQuillChange}
-                      name="description"/>
-                    :
-                    <span dangerouslySetInnerHTML={{__html: quillHelper.parseEmoji(form.description.value)}}/>
-                }
+                <StyledQuillEditor
+                  defaultValue={form.description.value}
+                  onChange={handleQuillChange}
+                  name="description"/>
               </div>
             </div>
           </>
@@ -297,7 +290,7 @@ const TodoReminderModal = (props) => {
                 onClick={(e) => {
                   handleSetReminder(e, "1h");
                 }}
-                checked={setTimeValue === "1h"}
+                checked={timeValue === "1h"}
                 value={"1h"}
                 name={"role"}
               >
@@ -308,7 +301,7 @@ const TodoReminderModal = (props) => {
                 onClick={(e) => {
                   handleSetReminder(e, "3h");
                 }}
-                checked={setTimeValue === "3h"}
+                checked={timeValue === "3h"}
                 value={"3h"}
                 name={"role"}
               >
@@ -319,13 +312,13 @@ const TodoReminderModal = (props) => {
                 onClick={(e) => {
                   handleSetReminder(e, "tomorrow");
                 }}
-                checked={setTimeValue === "tomorrow"}
+                checked={timeValue === "tomorrow"}
                 value={"tomorrow"}
                 name={"role"}
               >
                 {dictionary.tomorrow}
               </RadioInput>
-              <RadioInput readOnly onClick={handleSelectPickDateTime} checked={setTimeValue === "pick_data"}
+              <RadioInput readOnly onClick={handleSelectPickDateTime} checked={timeValue === "pick_data"}
                           value={"pick_data"} name={"role"}>
                 {dictionary.pickDateTime}
               </RadioInput>

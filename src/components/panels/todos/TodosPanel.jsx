@@ -30,6 +30,7 @@ const TodosPanel = (props) => {
     emptyButtonText: _t("REMINDER.EMPTY_STATE_BUTTON_TEXT", "New to do"),
     noItemsFound: _t("REMINDER.NO_ITEMS_FOUND", "No items found."),
     actionReschedule: _t("REMINDER.ACTION_RESCHEDULE", "Reschedule"),
+    actionEdit: _t("REMINDER.ACTION_EDIT", "Edit"),
     actionMarkAsDone: _t("REMINDER.ACTION_MARK_AS_DONE", "Mark as done"),
     actionRemove: _t("REMINDER.ACTION_REMOVE", "Remove"),
   }

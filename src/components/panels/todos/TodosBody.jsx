@@ -178,14 +178,14 @@ const TodosBody = (props) => {
                     }
 
                     return (
-                      <>
+                      <React.Fragment key={index}>
                         {
                           chatHeader !== "" &&
-                          <li key={`${index}.1`} className="list-group-item link-title">
+                          <li className="list-group-item link-title">
                             <div><h6 className="mt-3 mb-0 font-size-11 text-uppercase">{chatHeader}</h6></div>
                           </li>
                         }
-                        <li className="pl-0 list-group-item" key={index}>
+                        <li className="pl-0 list-group-item">
                           <div className="d-flex justify-content-between w-100 align-items-center">
                             <div className="d-flex">
                               <div className="custom-control custom-checkbox custom-checkbox-success mr-2">
@@ -222,15 +222,14 @@ const TodosBody = (props) => {
                               </div>
                               <MoreOptions className="ml-2" item={todo} width={170} moreButton={"more-horizontal"}>
                                 <div onClick={() => todoActions.markDone(todo)}>{dictionary.actionMarkAsDone}</div>
-                                <div
-                                  onClick={() => todoActions.updateFromModal(todo)}>{dictionary.actionReschedule}</div>
+                                <div onClick={() => todoActions.updateFromModal(todo)}>{dictionary.actionEdit}</div>
                                 <div
                                   onClick={() => todoActions.removeConfirmation(todo)}>{dictionary.actionRemove}</div>
                               </MoreOptions>
                             </div>
                           </div>
                         </li>
-                      </>
+                      </React.Fragment>
                     );
                   })}
               </ul>
