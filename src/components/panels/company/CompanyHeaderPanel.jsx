@@ -11,7 +11,18 @@ const Wrapper = styled.div`
   align-items: center;
   justify-content: space-between;
   height: 100%;
-  width: 100%;
+  width: 100%;    
+  &.page-todos {
+    .navbar-left {
+      .navbar-nav {
+        .navbar-wrap {
+          .navbar-top {
+            height: 100%;    
+          }
+        }
+      }
+    }
+  }
   .navbar-left {
     width: 100%;
     height: 100%;
@@ -30,7 +41,7 @@ const Wrapper = styled.div`
           margin-top: 4px;
           display: flex;
           align-items: center;
-          height: 40px;
+          height: 40px;          
         }
         .navbar-bottom {
           @media all and (max-width: 700px) {
@@ -138,6 +149,11 @@ const CompanyHeaderPanel = () => {
         setPageName(page);
         break;
       }
+      case "todos": {
+        page = "To-dos & Reminders";
+        setPageName(page);
+        break;
+      }
       default: {
         page = "Dashboard";
         setPageName(page);
@@ -152,32 +168,34 @@ const CompanyHeaderPanel = () => {
   }, [match.params.page, dispatch, pageName]);
 
   return (
-    <Wrapper>
+    <Wrapper className={`page-${match.params.page}`}>
       <div className="navbar-left">
         <div className="navbar-nav">
           <div className="navbar-wrap">
             <div className="navbar-top">
               <li className="nav-item navigation-toggler mobile-toggler">
                 <a href="/" className="nav-link" title="Show navigation" onClick={handleMenuOpenMobile}>
-                  <SvgIconFeather icon="menu" />
+                  <SvgIconFeather icon="menu"/>
                 </a>
               </li>
               <li className="nav-item nav-item-folder">
                 <CompanyName className="current-title">{pageName}</CompanyName>
               </li>
             </div>
-
-            <div className="navbar-bottom">
-              <div className="navbar-main">
-                <CompanyPageHeaderPanel />
+            {
+              match.params.page !== "todos" &&
+              <div className="navbar-bottom">
+                <div className="navbar-main">
+                  <CompanyPageHeaderPanel/>
+                </div>
               </div>
-            </div>
+            }
           </div>
         </div>
       </div>
 
       <div>
-        <HeaderProfileNavigation />
+        <HeaderProfileNavigation/>
       </div>
     </Wrapper>
   );

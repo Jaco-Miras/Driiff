@@ -1,10 +1,10 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, {useEffect, useRef} from "react";
 import styled from "styled-components";
 import {Avatar, SvgEmptyState, SvgIconFeather, ToolTip} from "../../common";
 import {useHistory} from "react-router-dom";
 import {CheckBox} from "../../forms";
 import quillHelper from "../../../helpers/quillHelper";
-import {useTimeFormat} from "../../hooks";
+import {useSettings, useTimeFormat} from "../../hooks";
 
 const Wrapper = styled.div`
 .list-group .list-group-item {  
@@ -21,6 +21,10 @@ li.link-title {
   &:not(:nth-child(1)) {
     margin-top: 2rem;  
   }
+}
+
+.text-success {
+  text-decoration: line-through;
 }
 `;
 
@@ -65,8 +69,10 @@ const TodosBody = (props) => {
   }
 
   const history = useHistory();
-  const { timestamp, setTimestamp } = useState(Math.floor(Date.now() / 1000));
   const {localizeDate} = useTimeFormat();
+  const {
+    generalSettings: {dark_mode},
+  } = useSettings();
   const initLoading = () => {
     loadMore.files();
   }
@@ -83,6 +89,18 @@ const TodosBody = (props) => {
   const handleLinkClick = (e) => {
     e.preventDefault();
     history.push(e.currentTarget.dataset.link);
+  }
+
+  const getBadgeClass = (todo) => {
+    if (todo.status === "OVERDUE") {
+      return "badge-warning";
+    }
+
+    if (dark_mode === "1") {
+      return "badge-dark";
+    } else {
+      return "badge-light";
+    }
   }
 
   useEffect(() => {
@@ -163,7 +181,8 @@ const TodosBody = (props) => {
                                 }} disabled={todo.status === "DONE"}/>
                               </div>
                               <div className="mr-3">
-                                <a href={todo.link} target="_blank" data-link={todo.link} onClick={handleLinkClick}>
+                                <a className={todo.status === "DONE" ? "text-success" : ""} href={todo.link}
+                                   target="_blank" data-link={todo.link} onClick={handleLinkClick}>
                                   <span className="todo-title">{todo.title}</span>
                                 </a>
                               </div>
@@ -175,7 +194,7 @@ const TodosBody = (props) => {
                             <div className="action d-flex justify-content-center align-items-center">
                               <div className="mr-3 align-items-center d-flex">
                                 <div
-                                  className={`badge badge-dark text-white mr-3`}>{localizeDate(todo.remind_at ? todo.remind_at.timestamp : "")}</div>
+                                  className={`badge ${getBadgeClass(todo)} text-white mr-3`}>{localizeDate(todo.remind_at ? todo.remind_at.timestamp : "")}</div>
                                 {
                                   todo.author !== null &&
                                   <Avatar key={todo.author.id} name={todo.author.name}
