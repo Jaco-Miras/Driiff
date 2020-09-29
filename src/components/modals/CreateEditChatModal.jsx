@@ -16,9 +16,8 @@ const WrapperDiv = styled(InputGroup)`
   align-items: center;
   margin: 20px 0;
   label {
-    white-space: nowrap;
     margin: 0 20px 0 0;
-    min-width: 90px;
+    min-width: 530px;
   }
   button {
     margin-left: auto;
@@ -31,6 +30,7 @@ const WrapperDiv = styled(InputGroup)`
 const SelectPeople = styled(PeopleSelect)`
   flex: 1 0 0;
   width: 1%;
+  min-width: 550px;
   .react-select__control--menu-is-open {
     border-color: #7a1b8b !important;
     box-shadow: none;
@@ -420,6 +420,7 @@ const CreateEditChatModal = (props) => {
     newGroupChat: _t("MODAL.NEW_GROUP_CHAT", "New group chat"),
     editChat: _t("MODAL.EDIT_CHAT", "Edit chat"),
     createChat: _t("MODAL.CREATE_CHAT", "Create chat"),
+    chatInfo: _t("FOLDER_INFO", "Create a group chat to quickly discuss any subject with multiple people. A group chat can hold an unlimited amount of members."),
   };
 
   return (
@@ -428,19 +429,26 @@ const CreateEditChatModal = (props) => {
         toggle={toggle}>{mode === "edit" ? dictionary.editChat : dictionary.newGroupChat}</ModalHeaderSection>
       <ModalBody>
         <WrapperDiv>
-          <Label for="chat">{dictionary.chatTitle}</Label>
-          <Input style={{borderRadius: "5px"}} defaultValue={mode === "edit" ? channel.title : ""}
-                 onChange={handleInputChange} valid={valid} innerRef={inputRef}/>
+          <div>
+            <Label className={"modal-info mb-3"}>{dictionary.chatInfo}</Label>
+            <Label className={"modal-label"} for="chat">{dictionary.chatTitle}</Label>
+            <Input style={{borderRadius: "5px"}} defaultValue={mode === "edit" ? channel.title : ""}
+                  onChange={handleInputChange} valid={valid} innerRef={inputRef}/>
+          </div>
         </WrapperDiv>
         <WrapperDiv>
-          <Label for="people">{dictionary.people}</Label>
-          <SelectPeople options={options} value={selectedUsers} onChange={handleSelect}/>
+          <div>
+            <Label className={"modal-label"} for="people">{dictionary.people}</Label>
+            <SelectPeople options={options} value={selectedUsers} onChange={handleSelect}/>
+          </div>
         </WrapperDiv>
         {mode === "new" && (
           <WrapperDiv>
-            <Label for="firstMessage">{dictionary.firstMessage}</Label>
-            <StyledQuillEditor className="group-chat-input" modules={modules} ref={reactQuillRef}
-                               onChange={handleQuillChange}/>
+            <div>
+              <Label className={"modal-label"} for="firstMessage">{dictionary.firstMessage}</Label>
+              <StyledQuillEditor className="group-chat-input" modules={modules} ref={reactQuillRef}
+                                onChange={handleQuillChange}/>
+            </div>
           </WrapperDiv>
         )}
         <WrapperDiv>
