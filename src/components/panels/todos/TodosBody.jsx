@@ -1,6 +1,6 @@
 import React, {useEffect, useRef, useState} from "react";
 import styled from "styled-components";
-import {Avatar, SvgIconFeather, ToolTip} from "../../common";
+import {Avatar, SvgEmptyState, SvgIconFeather, ToolTip} from "../../common";
 import {useHistory} from "react-router-dom";
 import {CheckBox} from "../../forms";
 import quillHelper from "../../../helpers/quillHelper";
@@ -24,6 +24,26 @@ li.link-title {
 }
 `;
 
+const EmptyState = styled.div`
+  padding: 5rem 0;
+  max-width: 750px;
+  margin: auto;
+  text-align: center;
+
+  svg {
+    display: block;
+    margin: 0 auto;
+  }
+  h5 {
+    margin-top: 2rem;
+    margin-bottom: 0;
+  }
+  button {
+    width: auto !important;
+    margin: 2rem auto;
+  }
+`;
+
 const Icon = styled(SvgIconFeather)`
   width: 16px;
 `;
@@ -31,7 +51,9 @@ const Icon = styled(SvgIconFeather)`
 const TodosBody = (props) => {
   const {
     className = "",
-    getSortedItems,
+    dictionary,
+    filter,
+    isLoaded,
     loadMore,
     todoActions,
     todoItems
@@ -80,94 +102,116 @@ const TodosBody = (props) => {
     <Wrapper className={`todos-body card app-content-body ${className}`}>
       <span className="d-none" ref={refs.btnLoadMore}>Load more</span>
       <div className="card-body app-lists" data-loaded={0}>
-        <ul className="list-group list-group-flush ui-sortable fadeIn">
-          {
-            todoItems.map((todo, index) => {
-              let chatHeader = "";
-              if (index === 0) {
-                switch (todo.status) {
-                  case "OVERDUE": {
-                    chatHeader = "Overdue";
-                    break;
-                  }
-                  case "NEW": {
-                    chatHeader = "Upcoming";
-                    break;
-                  }
-                  case "DONE": {
-                    chatHeader = "Done";
-                    break;
-                  }
-                }
-              } else {
-                let prevTodo = todoItems[index - 1];
-                if (prevTodo.status !== todo.status) {
-                  switch (todo.status) {
-                    case "OVERDUE": {
-                      chatHeader = "Overdue";
-                      break;
-                    }
-                    case "NEW": {
-                      chatHeader = "Upcoming";
-                      break;
-                    }
-                    case "DONE": {
-                      chatHeader = "Done";
-                      break;
-                    }
-                  }
-                }
-              }
-
-              return (
-                <>
-                  {
-                    chatHeader !== "" &&
-                    <li key={`${index}.1`} className="list-group-item link-title">
-                      <div><h6 className="mt-3 mb-0 font-size-11 text-uppercase">{chatHeader}</h6></div>
-                    </li>
-                  }
-                  <li className="pl-0 list-group-item" key={index}>
-                    <div className="d-flex justify-content-between w-100 align-items-center">
-                      <div className="d-flex">
-                        <div className="custom-control custom-checkbox custom-checkbox-success mr-2">
-                          <CheckBox name="test" checked={todo.status === "DONE"} onClick={() => {
-                            if (todo.status !== "DONE") todoActions.markDone(todo)
-                          }} disabled={todo.status === "DONE"}/>
-                        </div>
-                        <div className="mr-3">
-                          <a href={todo.link} target="_blank" data-link={todo.link} onClick={handleLinkClick}>
-                            <span className="todo-title">{todo.title}</span>
-                          </a>
-                        </div>
-                        <div>
-                          <span className="todo-title" dangerouslySetInnerHTML={{__html:  quillHelper.parseEmoji( todo.description )}}/>
-                        </div>
-                      </div>
-                      <div className="action d-flex justify-content-center align-items-center">
-                        <div className="mr-3 align-items-center d-flex">
-                        <div className={`badge badge-dark text-white mr-3`}>{localizeDate(todo.remind_at ? todo.remind_at.timestamp : "")}</div>
-                        {
-                          todo.author !== null &&
-                          <Avatar key={todo.author.id} name={todo.author.name}
-                                  imageLink={todo.author.profile_image_link} id={todo.author.id}/>
+        {
+          !isLoaded ?
+            <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"/>
+            :
+            todoItems.length !== 0 ?
+              <ul className="list-group list-group-flush ui-sortable fadeIn">
+                {
+                  todoItems.map((todo, index) => {
+                    let chatHeader = "";
+                    if (index === 0) {
+                      switch (todo.status) {
+                        case "OVERDUE": {
+                          chatHeader = "Overdue";
+                          break;
                         }
-                        </div>
-                        <Icon
-                          className="cursor-pointer mr-2" data-index={index} icon="archive"
-                          onClick={() => todoActions.remove(todo)}/>
-                        <ToolTip content="Reschedule">
-                          <Icon
-                            className="cursor-pointer" data-index={index} icon="clock"
-                            onClick={() => todoActions.updateFromModal(todo)}/>
-                        </ToolTip>
-                      </div>
-                    </div>
-                  </li>
-                </>
-              );
-            })}
-        </ul>
+                        case "NEW": {
+                          chatHeader = "Upcoming";
+                          break;
+                        }
+                        case "DONE": {
+                          chatHeader = "Done";
+                          break;
+                        }
+                      }
+                    } else {
+                      let prevTodo = todoItems[index - 1];
+                      if (prevTodo.status !== todo.status) {
+                        switch (todo.status) {
+                          case "OVERDUE": {
+                            chatHeader = "Overdue";
+                            break;
+                          }
+                          case "NEW": {
+                            chatHeader = "Upcoming";
+                            break;
+                          }
+                          case "DONE": {
+                            chatHeader = "Done";
+                            break;
+                          }
+                        }
+                      }
+                    }
+
+                    return (
+                      <>
+                        {
+                          chatHeader !== "" &&
+                          <li key={`${index}.1`} className="list-group-item link-title">
+                            <div><h6 className="mt-3 mb-0 font-size-11 text-uppercase">{chatHeader}</h6></div>
+                          </li>
+                        }
+                        <li className="pl-0 list-group-item" key={index}>
+                          <div className="d-flex justify-content-between w-100 align-items-center">
+                            <div className="d-flex">
+                              <div className="custom-control custom-checkbox custom-checkbox-success mr-2">
+                                <CheckBox name="test" checked={todo.status === "DONE"} onClick={() => {
+                                  if (todo.status !== "DONE") todoActions.markDone(todo)
+                                }} disabled={todo.status === "DONE"}/>
+                              </div>
+                              <div className="mr-3">
+                                <a href={todo.link} target="_blank" data-link={todo.link} onClick={handleLinkClick}>
+                                  <span className="todo-title">{todo.title}</span>
+                                </a>
+                              </div>
+                              <div>
+                                <span className="todo-title"
+                                      dangerouslySetInnerHTML={{__html: quillHelper.parseEmoji(todo.description)}}/>
+                              </div>
+                            </div>
+                            <div className="action d-flex justify-content-center align-items-center">
+                              <div className="mr-3 align-items-center d-flex">
+                                <div
+                                  className={`badge badge-dark text-white mr-3`}>{localizeDate(todo.remind_at ? todo.remind_at.timestamp : "")}</div>
+                                {
+                                  todo.author !== null &&
+                                  <Avatar key={todo.author.id} name={todo.author.name}
+                                          imageLink={todo.author.profile_image_link} id={todo.author.id}/>
+                                }
+                              </div>
+                              <Icon
+                                className="cursor-pointer mr-2" data-index={index} icon="archive"
+                                onClick={() => todoActions.remove(todo)}/>
+                              <ToolTip content="Reschedule">
+                                <Icon
+                                  className="cursor-pointer" data-index={index} icon="clock"
+                                  onClick={() => todoActions.updateFromModal(todo)}/>
+                              </ToolTip>
+                            </div>
+                          </div>
+                        </li>
+                      </>
+                    );
+                  })}
+              </ul>
+              :
+              <>
+                {
+                  filter === "" ?
+                    <EmptyState>
+                      <SvgEmptyState icon={1} height={282}/>
+                      <h5>{dictionary.emptyText}</h5>
+                      <button onClick={() => todoActions.createFromModal()}
+                              className="btn btn-primary">{dictionary.emptyButtonText}</button>
+                    </EmptyState>
+                    :
+                    <><h5>{dictionary.noItemsFound}</h5></>
+                }
+              </>
+        }
       </div>
     </Wrapper>
   );

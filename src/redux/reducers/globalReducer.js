@@ -243,6 +243,7 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         todos: {
           ...state.todos,
+          isLoaded: true,
           hasMore: action.data.todos.length === state.todos.limit,
           limit: state.todos.limit + state.todos.limit,
           items: items

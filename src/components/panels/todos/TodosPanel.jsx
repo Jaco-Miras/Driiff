@@ -1,5 +1,4 @@
 import React, {useState} from "react";
-import {useHistory} from "react-router-dom";
 import styled from "styled-components";
 import {useTodos, useTranslation} from "../../hooks";
 import {TodosBody, TodosHeader, TodosSidebar} from "./index";
@@ -11,15 +10,10 @@ const Wrapper = styled.div`
   }
 `;
 
-const CreateFolderLabel = styled.div`
-  padding-top: 10px;
-`;
-
 const TodosPanel = (props) => {
   const {className = ""} = props;
 
-  const history = useHistory();
-  const {getSortedItems, action: todoActions} = useTodos();
+  const {getSortedItems, action: todoActions, isLoaded} = useTodos();
   const {_t} = useTranslation();
 
   const dictionary = {
@@ -28,6 +22,9 @@ const TodosPanel = (props) => {
     statusOverdue: _t("REMINDER.STATUS_OVERDUE", "Overdue"),
     statusUpcoming: _t("REMINDER.STATUS_UPCOMING", "Upcoming"),
     statusDone: _t("REMINDER.STATUS_DONE", "Done"),
+    emptyText: _t("REMINDER.EMPTY_STATE_TEXT", "Use your to-do & reminder list to keep track of all your tasks and activities."),
+    emptyButtonText: _t("REMINDER.EMPTY_STATE_BUTTON_TEXT", "New to do"),
+    noItemsFound: _t("REMINDER.NO_ITEMS_FOUND", "No items found."),
   }
 
   const [filter, setFilter] = useState("");
@@ -43,6 +40,7 @@ const TodosPanel = (props) => {
           <div className="app-content-overlay"/>
           <TodosHeader dictionary={dictionary} setSearch={setSearch} searchValue={search}/>
           <TodosBody
+            isLoaded={isLoaded}
             todoItems={getSortedItems({filter: {status: filter}})} dictionary={dictionary}
             todoActions={todoActions} filter={filter}/>
         </div>
@@ -50,5 +48,4 @@ const TodosPanel = (props) => {
     </Wrapper>
   );
 };
-
 export default React.memo(TodosPanel);
