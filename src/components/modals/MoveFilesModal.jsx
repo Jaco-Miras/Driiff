@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
-import { Modal, ModalBody, ModalFooter } from "reactstrap";
+import { Label, Modal, ModalBody, ModalFooter } from "reactstrap";
 import styled from "styled-components";
 import { moveFile } from "../../redux/actions/fileActions";
 import { clearModal } from "../../redux/actions/globalActions";
@@ -97,16 +97,21 @@ const MoveFilesModal = (props) => {
     <Wrapper isOpen={true} toggle={toggle} centered className={`single-input-modal ${className}`} {...otherProps}>
       <ModalHeaderSection toggle={toggle}>Move the file</ModalHeaderSection>
       <ModalBody>
-        <div>{file.search}</div>
+        <div className="d-flex align-items-center">
+        <span className="pr-1 mb-3">Move</span>
+        <div className="folder-name mb-3">{file.search}</div>
+        <span className="pl-1 mb-3">to:</span>
+        </div>
+        <Label className={"folder-name"}>Select a folder</Label>
         <Select styles={dark_mode === "0" ? lightTheme : darkTheme} options={options} onChange={handleSelectFolder} />
       </ModalBody>
       <ModalFooter>
+        <button type="button" className="btn btn-outline-secondary" data-dismiss="modal" onClick={handleClose}>
+          Cancel
+        </button>
         <button type="button" className="btn btn-primary" onClick={handleConfirm}>
           {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />}
-          Move
-        </button>
-        <button type="button" className="btn btn-secondary" data-dismiss="modal" onClick={handleClose}>
-          Cancel
+          Move File
         </button>
       </ModalFooter>
     </Wrapper>
