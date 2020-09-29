@@ -41,6 +41,13 @@ const useTodos = () => {
       })
       .filter(t => {
         if (filter) {
+          if (filter.search !== "") {
+            if (!(t.title.toLowerCase().includes(filter.search.toLowerCase().trim())
+              || t.description.toLowerCase().includes(filter.search.toLowerCase().trim()))) {
+              return false;
+            }
+          }
+
           if (filter.status !== "")
             return t.status === filter.status;
         }

@@ -17,6 +17,7 @@ const TodosPanel = (props) => {
   const {_t} = useTranslation();
 
   const dictionary = {
+    searchInputPlaceholder: _t("REMINDER.SEARCH_INPUT_PLACEHOLDER", "Search"),
     createNewTodoItem: _t("REMINDER.CREATE_NEW_TODO_ITEM", "New to-do"),
     statusAll: _t("REMINDER.STATUS_ALL", "All"),
     statusOverdue: _t("REMINDER.STATUS_OVERDUE", "Overdue"),
@@ -30,6 +31,14 @@ const TodosPanel = (props) => {
   const [filter, setFilter] = useState("");
   const [search, setSearch] = useState("");
 
+  const handleSearchChange = (e) => {
+    setSearch(e.target.value);
+  }
+
+  const clearSearch = () => {
+    setSearch("");
+  }
+
   return (
     <Wrapper className={`container-fluid h-100 fadeIn ${className}`}>
       <div className="row app-block">
@@ -38,10 +47,11 @@ const TodosPanel = (props) => {
           setFilter={setFilter} filter={filter} count={count}/>
         <div className="col-md-9 app-content mb-4">
           <div className="app-content-overlay"/>
-          <TodosHeader dictionary={dictionary} setSearch={setSearch} searchValue={search}/>
+          <TodosHeader dictionary={dictionary} onSearchChange={handleSearchChange} clearSearch={clearSearch}
+                       searchValue={search}/>
           <TodosBody
             isLoaded={isLoaded}
-            todoItems={getSortedItems({filter: {status: filter}})} dictionary={dictionary}
+            todoItems={getSortedItems({filter: {status: filter, search: search}})} dictionary={dictionary}
             todoActions={todoActions} filter={filter}/>
         </div>
       </div>

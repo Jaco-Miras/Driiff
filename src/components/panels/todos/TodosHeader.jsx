@@ -39,7 +39,7 @@ const Wrapper = styled.div`
 `;
 
 const TodosHeader = (props) => {
-  const {className = "", onSearch, onEnter, dictionary, disableOptions, onClickEmpty, searchValue} = props;
+  const {className = "", clearSearch, onEnter, dictionary, onSearchChange, onClickEmpty, searchValue} = props;
 
   return (
     <Wrapper className={`todos-header app-action ${className}`}>
@@ -50,15 +50,15 @@ const TodosHeader = (props) => {
       </div>
       <div className="action-right">
         <div className="input-group">
-          <input type="text" onKeyDown={onEnter} value={searchValue} className="form-control"
+          <input type="text" onKeyDown={onEnter} onChange={onSearchChange} value={searchValue} className="form-control"
                  placeholder={dictionary.searchInputPlaceholder} aria-describedby="button-addon1"/>
           {searchValue.trim() !== "" && (
-            <button onClick={onClickEmpty} className="btn-cross" type="button">
+            <button onClick={clearSearch} className="btn-cross" type="button">
               <SvgIconFeather icon="x"/>
             </button>
           )}
           <div className="input-group-append">
-            <button className="btn btn-outline-light" type="button" id="button-addon1" onClick={onSearch}>
+            <button className="btn btn-outline-light" type="button" id="button-addon1">
               <SvgIconFeather icon="search"/>
             </button>
           </div>
