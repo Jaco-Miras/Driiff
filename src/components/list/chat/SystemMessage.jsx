@@ -2,7 +2,7 @@ import React, {forwardRef, useEffect, useState} from "react";
 import {renderToString} from "react-dom/server";
 import {useHistory, useParams} from "react-router-dom";
 import styled from "styled-components";
-import {SvgIconFeather} from "../../common";
+import {Avatar, SvgIconFeather} from "../../common";
 import {useInView} from "react-intersection-observer";
 import quillHelper from "../../../helpers/quillHelper";
 
@@ -256,9 +256,12 @@ const SystemMessage = forwardRef((props, ref) => {
         link = `/posts/${item.post.id}/${item.post.title}`;
       }
 
+      console.log(item)
+
       setBody(renderToString(<a href={link} className="push-link" data-href={link} data-has-link="0" data-ctrl="0">
-        <b>{item.author.first_name}</b> created the post <b>"{item.post.title}"</b>
-        <span className="card card-body"
+        {/* <Avatar key={item.author.id} imageLink={item.author.profile_image_link} /> */}
+        <b>{item.author.name}</b> created the post <b>"{item.post.title}"</b>
+        <span className="p-3 m-0 card card-body"
               dangerouslySetInnerHTML={{__html: quillHelper.parseEmoji(item.post.description)}}/>
         <br/>
         {

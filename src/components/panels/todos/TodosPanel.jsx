@@ -23,7 +23,7 @@ const TodosPanel = (props) => {
     statusUpcoming: _t("REMINDER.STATUS_UPCOMING", "Upcoming"),
     statusDone: _t("REMINDER.STATUS_DONE", "Done"),
     emptyText: _t("REMINDER.EMPTY_STATE_TEXT", "Use your to-do & reminder list to keep track of all your tasks and activities."),
-    emptyButtonText: _t("REMINDER.EMPTY_STATE_BUTTON_TEXT", "New to do"),
+    emptyButtonText: _t("REMINDER.EMPTY_STATE_BUTTON_TEXT", "New to-do"),
     noItemsFound: _t("REMINDER.NO_ITEMS_FOUND", "No items found."),
   }
 
