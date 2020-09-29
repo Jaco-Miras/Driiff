@@ -22,8 +22,12 @@ const INITIAL_STATE = {
   links: [],
   todos: {
     isLoaded: false,
+    hasMore: true,
     skip: 0,
     limit: 50,
+    count: {
+      overdue: 0
+    },
     items: {}
   }
 };
@@ -206,13 +210,13 @@ export default (state = INITIAL_STATE, action) => {
     }
     case "GET_TO_DO_SUCCESS": {
       let items = state.todos.items;
-      const timestamp = Math.floor(Date.now() / 1000);
+      let overDueCount = state.todos.count.overdue;
 
       action.data.todos.forEach(t => {
         items[t.id] = t;
 
-        if (items[t.id].remind_at.timestamp < timestamp && items[t.id].status === "NEW") {
-          items[t.id].status = "OVERDUE";
+        if (t.status === "OVERDUE") {
+          overDueCount += 1;
         }
 
         switch (t.link_type) {
@@ -243,6 +247,10 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         todos: {
           ...state.todos,
+          count: {
+            ...state.todos.count,
+            overdue: overDueCount
+          },
           isLoaded: true,
           hasMore: action.data.todos.length === state.todos.limit,
           limit: state.todos.limit + state.todos.limit,

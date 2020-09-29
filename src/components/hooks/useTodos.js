@@ -2,12 +2,26 @@ import {useEffect, useState} from "react";
 import {useSelector} from "react-redux";
 import {useTodoActions} from "./index";
 
+let init = false;
 const useTodos = () => {
 
-  const {isLoaded, items} = useSelector((state) => state.global.todos);
+  const {isLoaded, skip, limit, hasMore, items, count} = useSelector((state) => state.global.todos);
 
   const todoActions = useTodoActions();
   const [isFetchLoading, setIsFetchLoading] = useState(false);
+
+  const loadMore = () => {
+    if (isFetchLoading || !hasMore)
+      return;
+
+    setIsFetchLoading(true);
+    todoActions.fetch({
+      skip: skip,
+      limit: limit
+    }, () => {
+      setIsFetchLoading(false);
+    });
+  }
 
   const getSortedItems = ({filter = ""}) => {
     return Object
@@ -35,19 +49,21 @@ const useTodos = () => {
   }
 
   useEffect(() => {
-    if (!isLoaded && !isFetchLoading) {
-      setIsFetchLoading(true);
-      todoActions.fetch({}, () => {
-        setIsFetchLoading(false);
-      });
+    if (!init) {
+      init = true;
+      loadMore()
     }
   }, []);
 
   return {
     isLoaded,
     items,
+    count,
     getSortedItems,
-    action: todoActions,
+    action: {
+      ...todoActions,
+      loadMore
+    },
   };
 };
 
