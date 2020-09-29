@@ -1,15 +1,19 @@
-import React, { useEffect, useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useHistory } from "react-router-dom";
-import { Badge } from "reactstrap";
+import React, {useEffect, useRef, useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
+import {useHistory} from "react-router-dom";
+import {Badge} from "reactstrap";
 import styled from "styled-components";
-import { addToModals, getQuickLinks, getUnreadNotificationCounterEntries, setNavMode } from "../../../redux/actions/globalActions";
-import { NavLink, SvgEmptyState, SvgIcon, SvgIconFeather } from "../../common";
-import { useSettings, useTranslation, useWorkspace } from "../../hooks";
-import { ExternalWorkspaceList, WorkspaceList } from "../../workspace";
-import { QuickLinks, TodoLinks } from "../../list/links";
+import {
+  addToModals,
+  getQuickLinks,
+  getUnreadNotificationCounterEntries,
+  setNavMode
+} from "../../../redux/actions/globalActions";
+import {NavLink, SvgEmptyState, SvgIcon, SvgIconFeather} from "../../common";
+import {useSettings, useTodos, useTranslation, useWorkspace} from "../../hooks";
+import {ExternalWorkspaceList, WorkspaceList} from "../../workspace";
 // import { PersonalLinks, QuickLinks } from "../../list/links";
-import { Shortcuts } from "../../list/links";
+import {QuickLinks} from "../../list/links";
 import Tooltip from "react-tooltip-lite";
 
 const Wrapper = styled.div`
@@ -259,14 +263,15 @@ const EmptyState = styled.div`
 `;
 
 const MainNavigationTabPanel = (props) => {
-  const { className = "", isExternal } = props;
+  const {className = "", isExternal} = props;
   const history = useHistory();
   const dispatch = useDispatch();
 
-  const { actions, folders, sortedWorkspaces, workspaces, workspace, workspacesLoaded } = useWorkspace(true);
-  const { updateCompanyName, driffSettings, generalSettings } = useSettings();
+  const {count} = useTodos();
+  const {actions, folders, sortedWorkspaces, workspaces, workspace, workspacesLoaded} = useWorkspace(true);
+  const {updateCompanyName, driffSettings, generalSettings} = useSettings();
 
-  const { _t } = useTranslation();
+  const {_t} = useTranslation();
 
   const dictionary = {
     allWorkspaces: _t("SIDEBAR.ALL_WORKSPACES", "Browse Workspaces"),
@@ -431,6 +436,7 @@ const MainNavigationTabPanel = (props) => {
             <NavIconContainer to={"/todos"} active={["/todos"].includes(props.location.pathname)}>
               <NavIcon icon={"check"} />
               <div>{dictionary.todoLinks}</div>
+              <div><Badge data-count={count.overdue}>&nbsp;</Badge></div>
             </NavIconContainer>
           </li>
           <li onClick={closeLeftNav}>
