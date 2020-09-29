@@ -18,7 +18,6 @@ const WrapperDiv = styled(InputGroup)`
   margin: 20px 0;
 
   label {
-    white-space: nowrap;
     margin: 0 20px 0 0;
     min-width: 530px;
   }
@@ -33,9 +32,7 @@ const WrapperDiv = styled(InputGroup)`
   }
 
   &.more-option {
-    margin-left: 130px;
     width: 100%;
-    margin-right: -130px;
     @media all and (max-width: 480px) {
         margin-left: 0;
         margin-right: 0;
@@ -187,8 +184,15 @@ const MoreOption = styled.div`
 `;
 
 const StyledDescriptionInput = styled(DescriptionInput)`
+  .description-input {
     height: ${props => props.height}px;
     max-height: 300px;
+  }
+
+  label {
+    min-width: 100%;
+    font-weight: 500;
+  }
 `;
 
 const StyledDatePicker = styled(DatePicker)``;
@@ -879,9 +883,9 @@ const CreateEditWorkspacePostModal = (props) => {
           onCancel={handleHideDropzone}
           attachedFiles={attachedFiles}
         />
-        <WrapperDiv className={"modal-input"}>
+        <WrapperDiv className={"modal-input mt-0"}>
           <div>
-          <Label className={"modal-info"}>{dictionary.postInfo}</Label>
+          <Label className={"modal-info pb-3"}>{dictionary.postInfo}</Label>
           <Label className={"modal-label"} for="post-title">{dictionary.postTitle}</Label>
           <Input style={{borderRadius: "5px"}} defaultValue={mode === "edit" ? form.title : ""}
                  onChange={handleNameChange} innerRef={inputRef}/>
@@ -903,6 +907,7 @@ const CreateEditWorkspacePostModal = (props) => {
           <SelectPeople options={userOptions} value={form.selectedUsers} onChange={handleSelectUser}/>
         </WrapperDiv>
         <StyledDescriptionInput
+          className="modal-description"
           height={window.innerHeight - 660}
           showFileButton={true}
           onChange={handleQuillChange}
@@ -924,7 +929,7 @@ const CreateEditWorkspacePostModal = (props) => {
                              handleRemoveFile={handleRemoveFile}/>
           </WrapperDiv>
         )}
-        <WrapperDiv className="more-option">
+        <WrapperDiv className="modal-label more-option">
           <MoreOption onClick={toggleMoreOptions}>
             {dictionary.moreOptions}
             <SvgIconFeather icon="chevron-down"

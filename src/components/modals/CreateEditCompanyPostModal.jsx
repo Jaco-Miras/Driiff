@@ -25,7 +25,6 @@ const WrapperDiv = styled(InputGroup)`
   margin: 20px 0;
 
   label {
-    white-space: nowrap;
     margin: 0 20px 0 0;
     min-width: 109px;
   }
@@ -40,9 +39,7 @@ const WrapperDiv = styled(InputGroup)`
   }
 
   &.more-option {
-    margin-left: 130px;
     width: 100%;
-    margin-right: -130px;
     @media all and (max-width: 480px) {
         margin-left: 0;
         margin-right: 0;
