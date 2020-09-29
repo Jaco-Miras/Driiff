@@ -102,7 +102,7 @@ const TodoReminderModal = (props) => {
   };
 
   if (itemType === null) {
-    dictionary.chatReminder = _t("REMINDER.SET_A_REMINDER", "Set a reminder");
+    dictionary.chatReminder = _t("REMINDER.SET_A_REMINDER", "New to-do");
   } else {
     dictionary.chatReminder = _t("REMINDER.SET_A_REMINDER_FOR_THIS_TYPE", "Set a reminder for this ::type::", {
       type: itemType.toLowerCase().replace("_", " ")
