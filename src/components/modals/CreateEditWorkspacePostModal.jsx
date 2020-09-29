@@ -18,7 +18,6 @@ const WrapperDiv = styled(InputGroup)`
   margin: 20px 0;
 
   label {
-    white-space: nowrap;
     margin: 0 20px 0 0;
     min-width: 530px;
   }
@@ -33,9 +32,7 @@ const WrapperDiv = styled(InputGroup)`
   }
 
   &.more-option {
-    margin-left: 130px;
     width: 100%;
-    margin-right: -130px;
     @media all and (max-width: 480px) {
         margin-left: 0;
         margin-right: 0;
@@ -187,8 +184,14 @@ const MoreOption = styled.div`
 `;
 
 const StyledDescriptionInput = styled(DescriptionInput)`
+  .description-input {
     height: ${props => props.height}px;
     max-height: 300px;
+  }
+
+  label {
+    min-width: 100%;
+  }
 `;
 
 const StyledDatePicker = styled(DatePicker)``;
@@ -903,6 +906,7 @@ const CreateEditWorkspacePostModal = (props) => {
           <SelectPeople options={userOptions} value={form.selectedUsers} onChange={handleSelectUser}/>
         </WrapperDiv>
         <StyledDescriptionInput
+          className="modal-description"
           height={window.innerHeight - 660}
           showFileButton={true}
           onChange={handleQuillChange}
