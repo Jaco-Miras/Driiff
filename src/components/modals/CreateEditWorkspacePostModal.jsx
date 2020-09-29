@@ -20,7 +20,7 @@ const WrapperDiv = styled(InputGroup)`
   label {
     white-space: nowrap;
     margin: 0 20px 0 0;
-    min-width: 109px;
+    min-width: 530px;
   }
   button {
     margin-left: auto;
@@ -246,7 +246,8 @@ const CreateEditWorkspacePostModal = (props) => {
     createPost: _t("POST.CREATE_POST", "Create post"),
     createNewPost: _t("POST.CREATE_NEW_POST", "Create new post"),
     editPost: _t("POST.EDIT_POST", "Edit post"),
-    postTitle: _t("POST.TITLE", "Post title"),
+    postTitle: _t("POST.TITLE", "Title"),
+    postInfo: _t("FOLDER_INFO", "A post is a message that can contain text and images. It can be directed at one or more workspaces, and one or more people can be made responsible."),
     visibility: _t("POST.VISIBILITY", "Visibility"),
     workspace: _t("POST.WORKSPACE", "Workspace"),
     responsible: _t("POST.RESPONSIBLE", "Responsible"),
@@ -878,22 +879,27 @@ const CreateEditWorkspacePostModal = (props) => {
           onCancel={handleHideDropzone}
           attachedFiles={attachedFiles}
         />
-        <WrapperDiv>
-          <Label for="post-title">{dictionary.postTitle}</Label>
+        <WrapperDiv className={"modal-input"}>
+          <div>
+          <Label className={"modal-info"}>{dictionary.postInfo}</Label>
+          <Label className={"modal-label"} for="post-title">{dictionary.postTitle}</Label>
           <Input style={{borderRadius: "5px"}} defaultValue={mode === "edit" ? form.title : ""}
                  onChange={handleNameChange} innerRef={inputRef}/>
+          </div>
         </WrapperDiv>
-        <WrapperDiv>
-          <Label for="visibility">{dictionary.visibility}</Label>
+        <WrapperDiv className={"modal-input"}>
+          <div>
+          <Label className={"modal-label"} for="visibility">{dictionary.visibility}</Label>
           <SelectPostVisibility value={form.selectedPersonal} onChange={handleSelectVisibility}/>
+          </div>
         </WrapperDiv>
-        <WrapperDiv>
-          <Label for="workspace">{dictionary.workspace}</Label>
+        <WrapperDiv className={"modal-input"}>
+          <Label className={"modal-label"} for="workspace">{dictionary.workspace}</Label>
           <SelectWorkspace options={wsOptions} value={form.selectedWorkspaces}
                            onChange={handleSelectWorkspace} isMulti={true} isClearable={true}/>
         </WrapperDiv>
-        <WrapperDiv>
-          <Label for="responsible">{dictionary.responsible}</Label>
+        <WrapperDiv className={"modal-input"}>
+          <Label className={"modal-label"} for="responsible">{dictionary.responsible}</Label>
           <SelectPeople options={userOptions} value={form.selectedUsers} onChange={handleSelectUser}/>
         </WrapperDiv>
         <StyledDescriptionInput
