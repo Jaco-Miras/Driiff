@@ -975,7 +975,7 @@ const useFileActions = (params = null) => {
       };
       let payload = {
         type: "confirmation",
-        headerText: "Remove google attachment",
+        headerText: "Remove Google attachment",
         submitText: "Remove",
         cancelText: "Cancel",
         bodyText: "Are you sure you want to remove this file?",
@@ -1011,7 +1011,7 @@ const useFileActions = (params = null) => {
       };
       let payload = {
         type: "confirmation",
-        headerText: "Remove google folder",
+        headerText: "Remove Google folder",
         submitText: "Remove",
         cancelText: "Cancel",
         bodyText: "Are you sure you want to remove this folder?",
