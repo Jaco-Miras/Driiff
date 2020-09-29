@@ -191,6 +191,7 @@ const StyledDescriptionInput = styled(DescriptionInput)`
 
   label {
     min-width: 100%;
+    font-weight: 500;
   }
 `;
 
@@ -882,9 +883,9 @@ const CreateEditWorkspacePostModal = (props) => {
           onCancel={handleHideDropzone}
           attachedFiles={attachedFiles}
         />
-        <WrapperDiv className={"modal-input"}>
+        <WrapperDiv className={"modal-input mt-0"}>
           <div>
-          <Label className={"modal-info"}>{dictionary.postInfo}</Label>
+          <Label className={"modal-info pb-3"}>{dictionary.postInfo}</Label>
           <Label className={"modal-label"} for="post-title">{dictionary.postTitle}</Label>
           <Input style={{borderRadius: "5px"}} defaultValue={mode === "edit" ? form.title : ""}
                  onChange={handleNameChange} innerRef={inputRef}/>
@@ -928,7 +929,7 @@ const CreateEditWorkspacePostModal = (props) => {
                              handleRemoveFile={handleRemoveFile}/>
           </WrapperDiv>
         )}
-        <WrapperDiv className="more-option">
+        <WrapperDiv className="modal-label more-option">
           <MoreOption onClick={toggleMoreOptions}>
             {dictionary.moreOptions}
             <SvgIconFeather icon="chevron-down"
