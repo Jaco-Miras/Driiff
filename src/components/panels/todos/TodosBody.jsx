@@ -3,6 +3,8 @@ import styled from "styled-components";
 import {Avatar, SvgIconFeather, ToolTip} from "../../common";
 import {useHistory} from "react-router-dom";
 import {CheckBox} from "../../forms";
+import quillHelper from "../../../helpers/quillHelper";
+import {useTimeFormat} from "../../hooks";
 
 const Wrapper = styled.div`
 .list-group .list-group-item {  
@@ -22,6 +24,10 @@ li.link-title {
 }
 `;
 
+const Icon = styled(SvgIconFeather)`
+  width: 16px;
+`;
+
 const TodosBody = (props) => {
   const {
     className = "",
@@ -37,7 +43,8 @@ const TodosBody = (props) => {
   }
 
   const history = useHistory();
-  const [timestamp, setTimestamp] = useState(Math.floor(Date.now() / 1000));
+  const { timestamp, setTimestamp } = useState(Math.floor(Date.now() / 1000));
+  const {localizeDate} = useTimeFormat();
   const initLoading = () => {
     loadMore.files();
   }
@@ -116,33 +123,41 @@ const TodosBody = (props) => {
                 <>
                   {
                     chatHeader !== "" &&
-                    <li key={`${index}.1`} className="list-group-item link-title bg-primary">
-                      <div><span>{chatHeader}</span></div>
+                    <li key={`${index}.1`} className="list-group-item link-title">
+                      <div><h6 className="mt-3 mb-0 font-size-11 text-uppercase">{chatHeader}</h6></div>
                     </li>
                   }
-                  <li className="list-group-item" key={index}>
-                    <div className="d-flex justify-content-between w-100">
+                  <li className="pl-0 list-group-item" key={index}>
+                    <div className="d-flex justify-content-between w-100 align-items-center">
                       <div className="d-flex">
                         <div className="custom-control custom-checkbox custom-checkbox-success mr-2">
                           <CheckBox name="test" checked={todo.status === "DONE"} onClick={() => {
                             if (todo.status !== "DONE") todoActions.markDone(todo)
                           }} disabled={todo.status === "DONE"}/>
                         </div>
-                        <a href={todo.link} target="_blank" data-link={todo.link} onClick={handleLinkClick}>
-                          {todo.title}
-                        </a>
+                        <div className="mr-3">
+                          <a href={todo.link} target="_blank" data-link={todo.link} onClick={handleLinkClick}>
+                            <span className="todo-title">{todo.title}</span>
+                          </a>
+                        </div>
+                        <div>
+                          <span className="todo-title" dangerouslySetInnerHTML={{__html:  quillHelper.parseEmoji( todo.description )}}/>
+                        </div>
                       </div>
                       <div className="action d-flex justify-content-center align-items-center">
+                        <div className="mr-3 align-items-center d-flex">
+                        <div className={`badge badge-dark text-white mr-3`}>{localizeDate(todo.remind_at ? todo.remind_at.timestamp : "")}</div>
                         {
                           todo.author !== null &&
                           <Avatar key={todo.author.id} name={todo.author.name}
                                   imageLink={todo.author.profile_image_link} id={todo.author.id}/>
                         }
-                        <SvgIconFeather
-                          className="cursor-pointer ml-2 mr-2" data-index={index} icon="archive"
+                        </div>
+                        <Icon
+                          className="cursor-pointer mr-2" data-index={index} icon="archive"
                           onClick={() => todoActions.remove(todo)}/>
                         <ToolTip content="Reschedule">
-                          <SvgIconFeather
+                          <Icon
                             className="cursor-pointer" data-index={index} icon="clock"
                             onClick={() => todoActions.updateFromModal(todo)}/>
                         </ToolTip>

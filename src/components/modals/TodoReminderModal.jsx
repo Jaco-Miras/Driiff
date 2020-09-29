@@ -91,13 +91,13 @@ const TodoReminderModal = (props) => {
     author: _t("REMINDER.AUTHOR", "Author"),
     title: _t("REMINDER.TITLE", "Title"),
     description: _t("REMINDER.DESCRIPTION", "Description"),
-    remindMeOn: _t("REMINDER.REMIND_ME_ON", "Remind me on"),
+    remindMeOn: _t("REMINDER.REMIND_ME_ON", "Remind me in"),
     message: _t("REMINDER.MESSAGE", "Message"),
     oneHour: _t("REMINDER.ONE_HOUR", "1 hour"),
     threeHours: _t("REMINDER.THREE_HOURS", "3 hours"),
     tomorrow: _t("REMINDER.TOMORROW", "Tomorrow"),
     pickDateTime: _t("REMINDER.PICK_DATE_TIME", "Pick date and time"),
-    snooze: _t("REMINDER.SNOOZE", "Confirm"),
+    snooze: _t("REMINDER.SNOOZE", "Remind me"),
     cancel: _t("REMINDER.CANCEL", "Cancel"),
   };
 

@@ -57,6 +57,14 @@ body {
   overflow: hidden;
 }
 
+.todo-title {
+  max-width: 400px;
+  display: block;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
 ::-webkit-scrollbar:hover {
   width: 10px;
 }
