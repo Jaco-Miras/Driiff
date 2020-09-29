@@ -444,7 +444,7 @@ const useFileActions = (params = null) => {
         headerText: "Remove file",
         submitText: "Remove",
         cancelText: "Cancel",
-        bodyText: "Are you sure you want to remove this file?",
+        bodyText: "This file will be moved to the recycle bin and will be permanently removed after thirty (30) days.",
         actions: {
           onSubmit: handleDeleteFile,
         },
@@ -485,7 +485,7 @@ const useFileActions = (params = null) => {
         headerText: "Remove file",
         submitText: "Remove",
         cancelText: "Cancel",
-        bodyText: "Are you sure you want to remove this file?",
+        bodyText: "This file will be moved to the recycle bin and will be permanently removed after thirty (30) days.",
         actions: {
           onSubmit: handleDeleteFile,
         },
@@ -1012,8 +1012,8 @@ const useFileActions = (params = null) => {
       let payload = {
         type: "confirmation",
         headerText: "Remove Google folder",
-        submitText: "Remove",
         cancelText: "Cancel",
+        submitText: "Remove",
         bodyText: "Are you sure you want to remove this folder?",
         actions: {
           onSubmit: handleDeleteFolder,
