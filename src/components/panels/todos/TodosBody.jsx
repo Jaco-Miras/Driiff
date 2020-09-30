@@ -195,16 +195,20 @@ const TodosBody = (props) => {
                                   }} disabled={todo.status === "DONE"}/>
                                 </ToolTip>
                               </div>
-                              <div className="mr-3">
-                                <a className={todo.status === "DONE" ? "text-success" : ""} href={todo.link}
-                                   target="_blank" data-link={todo.link} onClick={handleLinkClick}>
-                                  <span className="todo-title">{todo.title}</span>
-                                </a>
-                              </div>
-                              <div>
+                              <a className={todo.status === "DONE" ? "text-success" : ""} href={todo.link}
+                                 target="_blank" data-link={todo.link} onClick={(e) => {
+                                e.preventDefault();
+                                if (todo.link_type)
+                                  handleLinkClick(e);
+                                else
+                                  todoActions.updateFromModal(todo)
+                              }}>
+                              <span className="mr-3 d-flex justify-content-center align-items-center">
+                                <span className="todo-title mr-2">{todo.title}</span>
                                 <span className="todo-title"
                                       dangerouslySetInnerHTML={{__html: quillHelper.parseEmoji(todo.description)}}/>
-                              </div>
+                              </span>
+                              </a>
                             </div>
                             <div className="action d-flex justify-content-center align-items-center">
                               <div className="mr-3 align-items-center d-flex">
