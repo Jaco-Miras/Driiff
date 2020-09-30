@@ -36,14 +36,15 @@ const useTodoActions = () => {
 
   const createFromModal = useCallback(
     (callback) => {
-      const onConfirm = (payload, callback) => {
+      const onConfirm = (payload, modalCallback) => {
         create(payload, (err, res) => {
           if (err) {
             toaster.error(`An error has occurred try again!`);
           }
           if (res) {
-            toaster.success(`You will be reminded on this comment.`);
+            toaster.success(<>You will be reminded about this comment under <b>To-dos & Reminders</b>.</>);
           }
+          modalCallback(err, res);
           callback(err, res);
         });
       }
@@ -107,7 +108,7 @@ const useTodoActions = () => {
             toaster.error(`An error has occurred try again!`);
           }
           if (res) {
-            toaster.success(`You will be reminded on this comment.`);
+            toaster.success(<>You will be reminded about this comment under <b>To-dos & Reminders</b>.</>);
           }
           callback(err, res);
         });
