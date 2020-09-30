@@ -190,7 +190,7 @@ const CompanyPostDetailFooter = (props) => {
       }
       {isMember && (
         <>
-          <Dflex className="d-flex align-items-center">
+          <Dflex className="d-flex align-items-end">
             {post.is_read_only === 1 ? (
               <NoReply className="d-flex align-items-center">
                 <div className="alert alert-warning">No reply allowed</div>
