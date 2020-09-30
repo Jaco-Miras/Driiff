@@ -1,18 +1,16 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, {useEffect, useRef, useState} from "react";
 import styled from "styled-components";
-import { SvgIconFeather } from "../../common";
-import { LinkItem } from "./index";
-import { useSettings } from "../../hooks";
+import {SvgIconFeather} from "../../common";
+import {LinkItem} from "./index";
+import {useSettings} from "../../hooks";
 
 const Wrapper = styled.li`
   cursor: pointer;
-  cursor: hand;
   position: relative;
   transition: all 0.3s ease;
   > a {
     position: relative;
-    font-weight: ${(props) => (props.selected ? "600" : "400")};
-    height: 40px;
+    font-weight: ${(props) => (props.selected ? "600" : "400")};    
     display: flex;
     color: #fff;
     height: 40px;
@@ -111,9 +109,9 @@ const EditIcon = styled(SvgIconFeather)`
 `;
 
 const QuickLinks = (props) => {
-  const { className = "", links, user, dictionary } = props;
+  const {className = "", links, user, dictionary} = props;
 
-  const { generalSettings, showModal } = useSettings();
+  const {generalSettings, showModal} = useSettings();
 
   const ref = {
     container: useRef(),
@@ -154,47 +152,62 @@ const QuickLinks = (props) => {
   };
 
   return (
-    <Wrapper ref={ref.container} className={`fadeIn ${className} ${showLinks && "folder-open"}`} selected={showLinks} showEditIcon={user && user.role && (user.role.name === "admin" || user.role.name === "owner")}>
+    <Wrapper ref={ref.container} className={`fadeIn ${className} ${showLinks && "folder-open"}`} selected={showLinks}
+             showEditIcon={user && user.role && (user.role.name === "admin" || user.role.name === "owner")}>
       <a href="/" onClick={handleShowLinks}>
-        <NavIcon icon="link" />
+        <NavIcon icon="link"/>
         <div>{dictionary.shortcuts}</div>
-        {user && user.role && (user.role.name === "admin" || user.role.name === "owner") && <EditIcon icon="pencil" onClick={handleEditLinks} />}
-        <i ref={ref.arrow} className={`sub-menu-arrow ti-angle-up ${showLinks ? "ti-minus rotate-in" : "ti-plus"}`} />
+        {user && user.role && (user.role.name === "admin" || user.role.name === "owner") &&
+        <EditIcon icon="pencil" onClick={handleEditLinks}/>}
+        <i ref={ref.arrow} className={`sub-menu-arrow ti-angle-up ${showLinks ? "ti-minus rotate-in" : "ti-plus"}`}/>
       </a>
 
       <LinkNav ref={ref.nav} maxHeight={maxHeight} className={showLinks ? "enter-active" : "leave-active"}>
-        <li className="personal-link">
-          <div>{dictionary.personalLinks}</div>
-        </li>
-        {links.map((link) => {
-          return <LinkItem key={link.id} link={link} className="quick-links" />;
-        })}
-        <li className="personal-link">
-          <div>{dictionary.shortcuts}</div>
-        </li>
         {generalSettings.personal_links.map((link, index) => {
           return (
-            <li className="personal-link" key={index}>
-              <div>
+            <React.Fragment key={index}>
+              {
+                links.length !== 0 && index === 0 &&
+                <li className="personal-link">
+                  <div>{dictionary.personalLinks}</div>
+                </li>
+              }
+              <li className="personal-link">
                 <div>
-                  <a href={link.web_address} target="_blank" rel="noopener noreferrer">
-                    {link.name}
-                  </a>
+                  <div>
+                    <a href={link.web_address} target="_blank" rel="noopener noreferrer">
+                      {link.name}
+                    </a>
+                  </div>
+                  <div className="action">
+                    <SvgIconFeather className="cursor-pointer" data-index={index} icon="pencil"
+                                    onClick={handleEditItemClick}/>
+                  </div>
                 </div>
-                <div className="action">
-                  <SvgIconFeather className="cursor-pointer" data-index={index} icon="pencil" onClick={handleEditItemClick} />
-                </div>
-              </div>
-            </li>
+              </li>
+            </React.Fragment>
           );
         })}
         {generalSettings.personal_links.length < 5 && (
           <li className="personal-link nav-action cursor-pointer" onClick={handleAddItemClick}>
             <div className="justify-content-start">
-              <SvgIconFeather icon="circle-plus" width={24} height={24} /> {dictionary.addShortcut}
+              <SvgIconFeather icon="circle-plus" width={24} height={24}/> {dictionary.addShortcut}
             </div>
           </li>
         )}
+        {links.map((link, index) => {
+          return (
+            <React.Fragment key={link.id}>
+              {
+                generalSettings.personal_links.length !== 0 && index === 0 &&
+                <li className="personal-link">
+                  <div>{dictionary.companyLinks}</div>
+                </li>
+              }
+              <LinkItem link={link} className="quick-links"/>
+            </React.Fragment>
+          );
+        })}
       </LinkNav>
     </Wrapper>
   );
