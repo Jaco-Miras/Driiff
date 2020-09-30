@@ -206,7 +206,7 @@ const TodosBody = (props) => {
                               <span className="mr-3 d-flex justify-content-center align-items-center">
                                 <span className="todo-title mr-2">{todo.title}</span>
                                 <span className="todo-title"
-                                      dangerouslySetInnerHTML={{__html: quillHelper.parseEmoji(todo.description)}}/>
+                                      dangerouslySetInnerHTML={{__html: quillHelper.parseToText(todo.description)}}/>
                               </span>
                               </a>
                             </div>

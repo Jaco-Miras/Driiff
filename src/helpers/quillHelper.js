@@ -114,6 +114,12 @@ class quillHelper {
 
     return el.innerHTML;
   }
+
+  static parseToText(body) {
+    let tmp = document.createElement("DIV");
+    tmp.innerHTML = body;
+    return tmp.textContent || tmp.innerText || "";
+  }
 }
 
 export default quillHelper;
