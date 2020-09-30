@@ -208,8 +208,11 @@ const TodosBody = (props) => {
                             </div>
                             <div className="action d-flex justify-content-center align-items-center">
                               <div className="mr-3 align-items-center d-flex">
-                                <div
-                                  className={`badge ${getBadgeClass(todo)} text-white mr-3`}>{localizeDate(todo.remind_at ? todo.remind_at.timestamp : "")}</div>
+                                {
+                                  todo.remind_at &&
+                                  <div
+                                    className={`badge ${getBadgeClass(todo)} text-white mr-3`}>{localizeDate(todo.remind_at.timestamp)}</div>
+                                }
                                 {
                                   todo.link_type !== null &&
                                   <div className={`badge badge-info text-white mr-3`}>{getTodoType(todo)}</div>
@@ -221,7 +224,7 @@ const TodosBody = (props) => {
                                 }
                               </div>
                               <MoreOptions className="ml-2" item={todo} width={170} moreButton={"more-horizontal"}>
-                                <div onClick={() => todoActions.markDone(todo)}>{dictionary.actionMarkAsDone}</div>
+                                <div onClick={() => todoActions.toggleDone(todo)}>{dictionary.actionMarkAsDone}</div>
                                 <div onClick={() => todoActions.updateFromModal(todo)}>{dictionary.actionEdit}</div>
                                 <div
                                   onClick={() => todoActions.removeConfirmation(todo)}>{dictionary.actionRemove}</div>

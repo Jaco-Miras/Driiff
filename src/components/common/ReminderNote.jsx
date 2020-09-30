@@ -32,7 +32,7 @@ const ReminderNote = (props) => {
   const dictionary = {
     reminderText: _t("REMINDER.REMINDER_TEXT", "A reminder is set for this ::type:: on ::date::", {
       type: getTypeText(),
-      date: localizeDate(todoReminder.reminder_at.timestamp)
+      date: todoReminder.remind_at ? localizeDate(todoReminder.remind_at.timestamp) : todoReminder.reminder_at ? localizeDate(todoReminder.reminder_at.timestamp) : ""
     })
   }
 

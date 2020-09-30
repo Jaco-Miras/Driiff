@@ -37,7 +37,13 @@ const useTodos = () => {
           }
         }
 
-        return b.remind_at.timestamp - a.remind_at.timestamp;
+        if (b.remind_at !== null && a.remind_at !== null) {
+          return b.remind_at.timestamp - a.remind_at.timestamp;
+        } else if (b.remind_at !== "null") {
+          return -1
+        } else if (a.remind_at !== "null") {
+          return 1
+        }
       })
       .filter(t => {
         if (filter) {

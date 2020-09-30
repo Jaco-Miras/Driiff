@@ -132,11 +132,24 @@ const useTodoActions = () => {
     [dispatch]
   );
 
-
   const markDone = useCallback((payload, callback) => {
     dispatch(
       putDoneToDo({
         todo_id: payload.id
+      }, (err, res) => {
+        if (res) {
+          toaster.success(`You have mark ${payload.title} as done`);
+        }
+        callback(err, res);
+      })
+    )
+  }, []);
+
+  const toggleDone = useCallback((payload, callback) => {
+    dispatch(
+      putDoneToDo({
+        todo_id: payload.id,
+        ...(payload.status === "DONE" && {undo: 1}),
       }, (err, res) => {
         if (res) {
           toaster.success(`You have mark ${payload.title} as done`);
@@ -192,6 +205,7 @@ const useTodoActions = () => {
     update,
     updateFromModal,
     markDone,
+    toggleDone,
     remove,
     removeConfirmation
   };

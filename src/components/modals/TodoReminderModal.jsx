@@ -200,7 +200,12 @@ const TodoReminderModal = (props) => {
 
     let payload = {};
     Object.keys(form).forEach(k => {
-      payload[k] = form[k].value;
+      if (k === "set_time") {
+        if (form[k].value !== "")
+          payload[k] = form[k].value;
+      } else {
+        payload[k] = form[k].value;
+      }
     })
 
     actions.onSubmit(payload, (err, res) => {

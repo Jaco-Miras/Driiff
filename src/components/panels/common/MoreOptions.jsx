@@ -1,11 +1,12 @@
-import React, { useRef, useState } from "react";
+import React, {useRef, useState} from "react";
 import styled from "styled-components";
-import { SvgIconFeather } from "../../common";
-import { useTooltipOrientation } from "../../hooks";
+import {SvgIconFeather} from "../../common";
+import {useTooltipOrientation} from "../../hooks";
 
 const Wrapper = styled.div`
   display: inline-flex;
   position: relative;
+  width: 25px;
 
   svg {
     cursor: pointer;
