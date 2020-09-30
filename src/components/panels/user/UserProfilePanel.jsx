@@ -450,7 +450,7 @@ const UserProfilePanel = (props) => {
   return (
     <Wrapper className={`user-profile-panel container-fluid h-100 ${className}`}>
       <div className="row row-user-profile-panel">
-        <div className="col-12 col-lg-5 col-xl-4">
+        <div className="col-12 col-lg-5 col-xl-6">
           <div className="card">
             <div className="card-body text-center" onDragOver={handleShowDropZone}>
               {isLoggedUser && (
