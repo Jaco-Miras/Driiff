@@ -6,6 +6,7 @@ import { CheckBox } from "../../forms";
 import { MoreOptions } from "../common";
 import { PostBadge } from "./index";
 import { MemberLists } from "../../list/members";
+import quillHelper from "../../../helpers/quillHelper";
 
 const Wrapper = styled.li`
   &:first-of-type {
@@ -79,14 +80,16 @@ const PostItemPanel = (props) => {
     archivePost(post);
   };
 
+  console.log(post)
+
   return (
     <Wrapper className={`list-group-item post-item-panel ${className}`} onClick={() => openPost(post)}>
       <div className="custom-control custom-checkbox custom-checkbox-success">
         <CheckBox name="test" checked={post.is_mark_done} onClick={handleMarkDone} disabled={disableOptions} />
       </div>
-      <div>
+      {/* <div>
         <Icon className="mr-2" icon="star" onClick={handleStarPost} stroke={post.is_favourite ? "#ffc107" : "currentcolor"} fill={post.is_favourite ? "#ffc107" : "none"} />
-      </div>
+      </div> */}
       <div className="flex-grow-1 min-width-0">
         <div className="d-flex align-items-center justify-content-between">
           <div
@@ -95,6 +98,10 @@ const PostItemPanel = (props) => {
                             ${post.is_mark_done ? "text-success" : ""}`}
           >
             <span>{post.title}</span>
+            <div>
+              <span className={`text-truncate`}
+                                      dangerouslySetInnerHTML={{__html: quillHelper.parseEmoji(post.body)}}/>
+            </div>
             {post.unread_count !== 0 && <div className="ml-2 badge badge-primary badge-pill">{post.unread_count}</div>}
           </div>
           <div className="pl-3 d-flex align-items-center">
