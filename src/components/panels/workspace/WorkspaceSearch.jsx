@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { SvgIconFeather } from "../../common";
+import {useTranslation} from "../../hooks";
 
 const Wrapper = styled.div`
   .input-group {
@@ -131,6 +132,12 @@ const WorkspaceSearch = (props) => {
     setInputValue(value);
   }, [value]);
 
+  const { _t } = useTranslation();
+
+  const dictionary = {
+    searchWorkspaceSearchPlaceholder: _t("PLACEHOLDER.SEARCH_WORKSPACE", "Search by workspace name or description"),
+  };
+
   return (
     <Wrapper className="card p-t-b-40" data-backround-image="assets/media/image/image1.jpg">
       <div className="container">
@@ -138,7 +145,7 @@ const WorkspaceSearch = (props) => {
           <h2 className="mb-4 text-center">Search workspace</h2>
           <div className="input-group">
             <div className="input-wrap">
-              <input onChange={handleSearchChange} onKeyDown={handleEnter} type="text" className="form-control" placeholder="Search..." aria-describedby="button-addon1" autoFocus value={inputValue} />
+              <input onChange={handleSearchChange} onKeyDown={handleEnter} type="text" className="form-control" placeholder={dictionary.searchWorkspaceSearchPlaceholder} aria-describedby="button-addon1" autoFocus value={inputValue} />
               {inputValue.trim() !== "" && (
                 <button className="btn-cross" type="button" onClick={handleClearSearch}>
                   <CloseIcon icon="x" />

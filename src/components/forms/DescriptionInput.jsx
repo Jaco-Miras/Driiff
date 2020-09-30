@@ -1,7 +1,7 @@
 import React, {useRef, useState} from "react";
 import {InputGroup, Label} from "reactstrap";
 import styled from "styled-components";
-import {PickerEmoji, SvgIconFeather, CommonPicker, BodyMention} from "../common";
+import {BodyMention, CommonPicker, SvgIconFeather} from "../common";
 import {useQuillModules} from "../hooks";
 import {InputFeedback} from "./index";
 import QuillEditor from "./QuillEditor";
@@ -179,7 +179,7 @@ const PickerContainer = styled(CommonPicker)`
 `;
 
 const DescriptionInput = (props) => {
-  const {onChange, showFileButton = false, onOpenFileDialog, defaultValue = "", mode = "", valid = null, feedback = "", height = 80, members = [], disableMention = false, disableBodyMention = false, mentionedUserIds, onAddUsers, onDoNothing, modal = "post", ...otherProps} = props;
+  const {className = "", onChange, showFileButton = false, onOpenFileDialog, defaultValue = "", mode = "", valid = null, feedback = "", height = 80, members = [], disableMention = false, disableBodyMention = false, mentionedUserIds, onAddUsers, onDoNothing, modal = "post", ...otherProps} = props;
 
   const reactQuillRef = useRef();
   const pickerRef = useRef();
@@ -219,13 +219,15 @@ const DescriptionInput = (props) => {
   const [modules, formats] = useQuillModules("description", () => {}, "top", reactQuillRef, members, disableMention);
 
   return (
-    <WrapperDiv>
+    <WrapperDiv className={`description-input ${className}`}>
       <Label for="firstMessage">Description</Label>
       <DescriptionInputWrapper
-          className={`description-wrapper ${valid === null ? "" : valid ? "is-valid" : "is-invalid"}`}>
+        className={`description-wrapper ${valid === null ? "" : valid ? "is-valid" : "is-invalid"}`}>
         <StyledQuillEditor className="description-input" modules={modules} ref={reactQuillRef} onChange={onChange}
                            height={80} defaultValue={defaultValue} {...otherProps} />
-        {mentionedUserIds.length > 0 && !disableBodyMention && <BodyMention onAddUsers={onAddUsers} onDoNothing={onDoNothing} userIds={mentionedUserIds} baseOnId={false} type={modal}/>}
+        {mentionedUserIds.length > 0 && !disableBodyMention &&
+        <BodyMention onAddUsers={onAddUsers} onDoNothing={onDoNothing} userIds={mentionedUserIds} baseOnId={false}
+                     type={modal}/>}
         <Buttons className="action-wrapper">
           <IconButton onClick={handleShowEmojiPicker} icon="smile"/>
           {showFileButton && <IconButton onClick={onOpenFileDialog} icon="paperclip"/>}

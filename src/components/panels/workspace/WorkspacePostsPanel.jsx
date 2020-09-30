@@ -95,7 +95,7 @@ const WorkspacePostsPanel = (props) => {
     starredFavorite: _t("POST.STARRED_FAVORITE", "Starred / Favorite"),
     recent: _t("POST.RECENT", "Recent"),
     unread: _t("POST.UNREAD", "Unread"),
-    searchPost: _t("POST.SEARCH_POST", "Search post"),
+    searchPost: _t("POST.SEARCH_POST", "Search by post title, content, or comment"),
     markAsRead: _t("POST.MARK_AS_READ", "Mark as read"),
     markAsUnread: _t("POST.MARK_AS_UNREAD", "Mark as unread"),
     share: _t("POST.SHARE", "Share"),
