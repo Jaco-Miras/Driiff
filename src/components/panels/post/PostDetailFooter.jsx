@@ -28,7 +28,6 @@ const ChatInputContainer = styled.div`
 
 const IconButton = styled(SvgIconFeather)`
   cursor: pointer;
-  cursor: hand;
   border: 1px solid #afb8bd;
   height: 37px;
   margin: -1px 8px;
@@ -72,7 +71,6 @@ const Dflex = styled.div`
     }
     .channel-create {
       letter-spacing: 0;
-      margin-bottom: 0;
       color: #b8b8b8;
       font-weight: normal;
       font-size: 19px;
@@ -125,8 +123,8 @@ const NoReply = styled.div`
 `;
 
 const PickerContainer = styled(CommonPicker)`
-  right: unset;
-  bottom: 70px;
+  left: 32px;
+  bottom: 60px;
 `;
 
 const FileNames = styled.div`
@@ -317,7 +315,7 @@ const PostDetailFooter = (props) => {
             {showEmojiPicker === true && <PickerContainer handleShowEmojiPicker={handleShowEmojiPicker} onSelectEmoji={onSelectEmoji} onSelectGif={onSelectGif} orientation={"top"} ref={ref.picker} />}
           </Dflex>
           {editPostComment && editPostComment.files.length > 0 && <FileNames>{editPostComment.files.map((f) => f.name).join(", ")}</FileNames>}
-          <Dflex></Dflex>
+          <Dflex/>
         </>
       )}
       {isMember === false && workspace !== null && !disableOptions && (

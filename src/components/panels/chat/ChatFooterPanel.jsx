@@ -1,14 +1,14 @@
-import React, { useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React, {useRef, useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
 import Tooltip from "react-tooltip-lite";
 import styled from "styled-components";
-import { onClickSendButton, putChannel } from "../../../redux/actions/chatActions";
-import { joinWorkspace } from "../../../redux/actions/workspaceActions";
-import { CommonPicker, SvgIconFeather } from "../../common";
+import {onClickSendButton, putChannel} from "../../../redux/actions/chatActions";
+import {joinWorkspace} from "../../../redux/actions/workspaceActions";
+import {CommonPicker, SvgIconFeather} from "../../common";
 import ChatInput from "../../forms/ChatInput";
-import { useIsMember, useTimeFormat, useToaster, useTranslation } from "../../hooks";
+import {useIsMember, useTimeFormat, useToaster, useTranslation} from "../../hooks";
 import ChatQuote from "../../list/chat/ChatQuote";
-import { addToModals } from "../../../redux/actions/globalActions";
+import {addToModals} from "../../../redux/actions/globalActions";
 import TypingIndicator from "../../list/chat/TypingIndicator";
 import LockedLabel from "./LockedLabel";
 
@@ -131,8 +131,12 @@ const Dflex = styled.div`
 `;
 
 const PickerContainer = styled(CommonPicker)`
-  right: unset;
+  right: 100px;
   bottom: 80px;
+  
+  .common-picker-btn {
+    text-align: right;
+  }
 `;
 
 const ChatFooterPanel = (props) => {
@@ -149,7 +153,6 @@ const ChatFooterPanel = (props) => {
   const [selectedGif, setSelectedGif] = useState(null);
 
   const selectedChannel = useSelector((state) => state.chat.selectedChannel);
-  const activeTopic = useSelector((state) => state.workspaces.activeTopic);
   const user = useSelector((state) => state.session.user);
 
   const handleSend = () => {
