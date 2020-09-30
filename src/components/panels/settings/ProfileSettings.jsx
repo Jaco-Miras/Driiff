@@ -361,7 +361,7 @@ const ProfileSettings = (props) => {
             </div>
           </div>
           {
-            loggedUser.email === "joules@makedevelopment.com" &&
+            loggedUser.email.includes("rt@") || loggedUser.email === "joules@makedevelopment.com" &&
             <div className="row mb-2 mt-4">
               <div className="col-12 text-right">
                 <button className="btn btn-primary" onClick={handleUpdateTranslationClick}>Update translation
