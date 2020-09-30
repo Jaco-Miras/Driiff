@@ -191,8 +191,8 @@ const TodosBody = (props) => {
                               <div className="custom-control custom-checkbox custom-checkbox-success mr-2">
                                 <ToolTip content="Mark as done">
                                   <CheckBox name="test" checked={todo.status === "DONE"} onClick={() => {
-                                    if (todo.status !== "DONE") todoActions.markDone(todo)
-                                  }} disabled={todo.status === "DONE"}/>
+                                    todoActions.toggleDone(todo)
+                                  }}/>
                                 </ToolTip>
                               </div>
                               <a className={todo.status === "DONE" ? "text-success" : ""} href={todo.link}
@@ -228,7 +228,8 @@ const TodosBody = (props) => {
                                 }
                               </div>
                               <MoreOptions className="ml-2" item={todo} width={170} moreButton={"more-horizontal"}>
-                                <div onClick={() => todoActions.toggleDone(todo)}>{dictionary.actionMarkAsDone}</div>
+                                <div
+                                  onClick={() => todoActions.toggleDone(todo)}>{todo.status === "DONE" ? dictionary.actionMarkAsUndone : dictionary.actionMarkAsDone}</div>
                                 <div onClick={() => todoActions.updateFromModal(todo)}>{dictionary.actionEdit}</div>
                                 <div
                                   onClick={() => todoActions.removeConfirmation(todo)}>{dictionary.actionRemove}</div>

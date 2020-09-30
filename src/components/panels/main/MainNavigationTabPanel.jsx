@@ -436,7 +436,7 @@ const MainNavigationTabPanel = (props) => {
             <NavIconContainer to={"/todos"} active={["/todos"].includes(props.location.pathname)}>
               <NavIcon icon={"check"} />
               <div>{dictionary.todoLinks}</div>
-              <div><Badge data-count={count.overdue}>&nbsp;</Badge></div>
+              <div>{count.overdue !== 0 && <Badge data-count={count.overdue}>&nbsp;</Badge>}</div>
             </NavIconContainer>
           </li>
           <li onClick={closeLeftNav}>
