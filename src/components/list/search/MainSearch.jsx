@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { SvgIconFeather } from "../../common";
+import {useTranslation} from "../../hooks";
 
 const Wrapper = styled.div`
   .btn-cross {
@@ -72,6 +73,12 @@ const MainSearch = (props) => {
     setInputValue(value);
   }, [value]);
 
+  const { _t } = useTranslation();
+
+  const dictionary = {
+    searchGlobalPlaceholder: _t("PLACEHOLDER.SEARCH_GLOBAL", "Search for anything in this Driff"),
+  };
+
   return (
     <Wrapper className="card p-t-b-40" data-backround-image="assets/media/image/image1.jpg">
       <div className="container">
@@ -79,7 +86,7 @@ const MainSearch = (props) => {
           <div>
             <h2 className="mb-4 text-center">What do you want to find?</h2>
             <div className="input-group">
-              <input onChange={handleSearchChange} onKeyDown={handleEnter} type="text" className="form-control" placeholder="Search..." aria-describedby="button-addon1" autoFocus value={inputValue} />
+              <input onChange={handleSearchChange} onKeyDown={handleEnter} type="text" className="form-control" placeholder={dictionary.searchGlobalPlaceholder} aria-describedby="button-addon1" autoFocus value={inputValue} />
               {inputValue.trim() !== "" && (
                 <button onClick={emptySearch} className="btn-cross" type="button">
                   <SvgIconFeather icon="x" />

@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
-import { useSearch, useSearchActions } from "../../hooks";
+import { useSearch, useSearchActions, useTranslation } from "../../hooks";
 import { SvgIconFeather } from "../../common";
 //import { ChatSearchItem, ChannelSearchItem, CommentSearchItem, FileSearchItem, PeopleSearchItem, PostSearchItem, WorkspaceSearchItem } from "../../list/search";
 
@@ -82,10 +82,16 @@ const SearchDropdown = (props) => {
     setInputValue(e.target.value);
   };
 
+  const { _t } = useTranslation();
+
+  const dictionary = {
+    searchGlobalPopupPlaceholder: _t("PLACEHOLDER.SEARCH_GLOBAL_POPUP", "Search for anything in this Driff"),
+  };
+
   return (
     <Wrapper className="dropdown-menu p-2 dropdown-menu-right" ref={dropdownRef}>
       <div className="input-group">
-        <input onChange={handleSearchChange} onKeyDown={handleEnter} value={inputValue} type="text" className="form-control dropdown-search-input" placeholder="Search..." aria-describedby="button-addon1" autoFocus />
+        <input onChange={handleSearchChange} onKeyDown={handleEnter} value={inputValue} type="text" className="form-control dropdown-search-input" placeholder={dictionary.searchGlobalPopupPlaceholder} aria-describedby="button-addon1" autoFocus />
         {inputValue.trim() !== "" && (
           <button onClick={emptySearch} className="btn-cross" type="button">
             <SvgIconFeather icon="x" />
