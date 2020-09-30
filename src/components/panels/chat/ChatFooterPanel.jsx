@@ -52,10 +52,11 @@ const ChatInputContainer = styled.div`
   .feather-send,
   .feather-smile {
     position: absolute;
-    top: 0;
+    bottom: 0;
     right: 0;
     margin: 4px;
     height: calc(100% - 8px);
+    max-height: 38px;
     background: #7a1b8b;
     border-radius: 4px;
     min-width: 40px;

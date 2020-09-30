@@ -2,6 +2,13 @@ import "quill-mention";
 import React, { forwardRef } from "react";
 import ReactQuill, { Quill } from "react-quill";
 import "react-quill/dist/quill.snow.css";
+import {useTranslation} from "../hooks";
+
+// const { _t } = useTranslation();
+
+// const dictionary = {
+//   globalTextInputPlaceholder: _t("PLACEHOLDER.GLOBAL_TEXT_INPUT", "Write great things here..."),
+// };
 
 const QuillEditor = forwardRef((props, ref) => {
   return <ReactQuill theme="snow" {...props} ref={ref} placeholder="Write great things here..." />;
