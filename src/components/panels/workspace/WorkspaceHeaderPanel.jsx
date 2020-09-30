@@ -1,16 +1,16 @@
-import React, {useEffect} from "react";
-import {useDispatch, useSelector} from "react-redux";
-import {Route, useRouteMatch} from "react-router-dom";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Route, useRouteMatch } from "react-router-dom";
 import styled from "styled-components";
-import {addToModals} from "../../../redux/actions/globalActions";
-import {SvgIconFeather} from "../../common";
-import {HeaderProfileNavigation} from "../common";
-import {SettingsLink} from "../../workspace";
-import {joinWorkspace} from "../../../redux/actions/workspaceActions";
-import {useToaster} from "../../hooks";
-import {MemberLists} from "../../list/members";
+import { addToModals } from "../../../redux/actions/globalActions";
+import { SvgIconFeather } from "../../common";
+import { HeaderProfileNavigation } from "../common";
+import { SettingsLink } from "../../workspace";
+import { joinWorkspace } from "../../../redux/actions/workspaceActions";
+import { useToaster } from "../../hooks";
+import { MemberLists } from "../../list/members";
 
-import {WorkspacePageHeaderPanel} from "../workspace";
+import { WorkspacePageHeaderPanel } from "../workspace";
 
 const NavBarLeft = styled.div`
   width: 100%;
@@ -142,6 +142,17 @@ const WorkspaceName = styled.h2`
   margin-right: 2px;
   @media all and (max-width: 620px) {
     font-size: 16px;
+  }
+`;
+
+const WorkspaceWrapper = styled.span`
+  max-width: 500px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: block;
+  @media all and (max-width: 1200px) {
+    max-width: 200px;
   }
 `;
 
@@ -322,8 +333,10 @@ const WorspaceHeaderPanel = (props) => {
                       )}
                       <li className="nav-item">
                         <SubWorkspaceName className="current-title">
-                          {activeTopic.name}
-                          {activeTopic.is_shared === 1 && <Icon icon="share" strokeWidth="3" />}
+                          <WorkspaceWrapper>
+                            {activeTopic.name}
+                            {activeTopic.is_shared === 1 && <Icon icon="share" strokeWidth="3" />}
+                          </WorkspaceWrapper>
                         </SubWorkspaceName>
                       </li>
                       {activeTopic.is_lock === 1 && (
@@ -344,8 +357,10 @@ const WorspaceHeaderPanel = (props) => {
                         <>
                           <li className="nav-item nav-item-folder">
                             <WorkspaceName>
-                              {activeTopic.folder_name}
-                              {folders.hasOwnProperty(activeTopic.folder_id) && folders[activeTopic.folder_id].is_lock === 1 && <Icon icon="lock" strokeWidth="2" />}
+                              <WorkspaceWrapper>
+                                {activeTopic.folder_name}
+                                {folders.hasOwnProperty(activeTopic.folder_id) && folders[activeTopic.folder_id].is_lock === 1 && <Icon icon="lock" strokeWidth="2" />}{" "}
+                              </WorkspaceWrapper>
                             </WorkspaceName>
                           </li>
                           <li className="nav-item-chevron">
@@ -355,8 +370,10 @@ const WorspaceHeaderPanel = (props) => {
                       )}
                       <li className="nav-item">
                         <SubWorkspaceName className="current-title">
-                          {activeTopic.name}
-                          {activeTopic.is_shared === 1 && <Icon icon="share" strokeWidth="3" />}
+                          <WorkspaceWrapper>
+                            {activeTopic.name}
+                            {activeTopic.is_shared === 1 && <Icon icon="share" strokeWidth="3" />}
+                          </WorkspaceWrapper>
                         </SubWorkspaceName>
                       </li>
                       {activeTopic.is_lock === 1 && (
