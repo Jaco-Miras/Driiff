@@ -1,15 +1,15 @@
-import React, { useEffect, useRef, useState } from "react";
-import { useDispatch } from "react-redux";
-import { useHistory } from "react-router-dom";
+import React, {useEffect, useRef, useState} from "react";
+import {useDispatch} from "react-redux";
+import {useHistory} from "react-router-dom";
 import styled from "styled-components";
-import { addToModals } from "../../../../redux/actions/globalActions";
-import { setParentIdForUpload } from "../../../../redux/actions/postActions";
-import { FileAttachments, SvgIconFeather, ToolTip } from "../../../common";
-import { DropDocument } from "../../../dropzone/DropDocument";
-import { useCommentActions, useComments } from "../../../hooks";
-import { CompanyPostBody, CompanyPostComments, CompanyPostDetailFooter } from "./index";
-import { replaceChar } from "../../../../helpers/stringFormatter";
-import { MoreOptions } from "../../common";
+import {addToModals} from "../../../../redux/actions/globalActions";
+import {setParentIdForUpload} from "../../../../redux/actions/postActions";
+import {FileAttachments, SvgIconFeather, ToolTip} from "../../../common";
+import {DropDocument} from "../../../dropzone/DropDocument";
+import {useCommentActions, useComments} from "../../../hooks";
+import {CompanyPostBody, CompanyPostComments, CompanyPostDetailFooter} from "./index";
+import {replaceChar} from "../../../../helpers/stringFormatter";
+import {MoreOptions} from "../../common";
 
 const MainHeader = styled.div`
   min-height: 70px;
@@ -114,13 +114,9 @@ const Icon = styled(SvgIconFeather)`
   }
 `;
 
-const MarkAsRead = styled.div`
-  cursor: pointer;
-`;
-
 const CompanyPostDetail = (props) => {
-  const { post, postActions, user, onGoBack, dictionary } = props;
-  const { markAsRead, markAsUnread, sharePost, snoozePost, followPost } = postActions;
+  const {post, postActions, user, onGoBack, dictionary} = props;
+  const {markAsRead, markAsUnread, sharePost, snoozePost, followPost, remind} = postActions;
   const dispatch = useDispatch();
   const history = useHistory();
   const commentActions = useCommentActions();
@@ -220,10 +216,6 @@ const CompanyPostDetail = (props) => {
     postActions.clap(payload);
   };
 
-  const markRead = () => {
-    postActions.markReadRequirement(post);
-  };
-
   const handleAuthorClick = () => {
     history.push(`/profile/${post.author.id}/${replaceChar(post.author.name)}`);
   };
@@ -287,6 +279,7 @@ const CompanyPostDetail = (props) => {
           )}
           <div>
             <StyledMoreOptions className="ml-2" item={post} width={170} moreButton={"more-horizontal"}>
+              <div onClick={() => remind(post)}>{dictionary.remindMeAboutThis}</div>
               <div onClick={() => markAsRead(post, true)}>{dictionary.markAsRead}</div>
               <div onClick={() => markAsUnread(post, true)}>{dictionary.markAsUnread}</div>
               <div onClick={() => sharePost(post)}>{dictionary.share}</div>

@@ -106,7 +106,6 @@ const Icon = styled(SvgIconFeather)`
 
   &.close {
     cursor: pointer;
-    cursor: hand;
   }
 `;
 
@@ -115,8 +114,8 @@ const MarkAsRead = styled.div`
 `;
 
 const PostDetail = (props) => {
-  const { post, postActions, user, onGoBack, workspace, isMember, dictionary, disableOptions } = props;
-  const { markAsRead, markAsUnread, sharePost, snoozePost, followPost } = postActions;
+  const {post, postActions, user, onGoBack, workspace, isMember, dictionary, disableOptions} = props;
+  const {markAsRead, markAsUnread, sharePost, snoozePost, followPost, remind} = postActions;
   const dispatch = useDispatch();
   const history = useHistory();
 
@@ -289,6 +288,7 @@ const PostDetail = (props) => {
               </li>
               <li>
                 <StyledMoreOptions className="ml-2" item={post} width={170} moreButton={"more-horizontal"}>
+                  <div onClick={() => remind(post)}>{dictionary.remindMeAboutThis}</div>
                   <div onClick={() => markAsRead(post, true)}>{dictionary.markAsRead}</div>
                   <div onClick={() => markAsUnread(post, true)}>{dictionary.markAsUnread}</div>
                   <div onClick={() => sharePost(post)}>{dictionary.share}</div>
