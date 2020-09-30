@@ -364,10 +364,10 @@ const CreateWorkspaceFolderModal = (props) => {
         {/* <ActiveTabName className="intern-extern">{activeTabName}</ActiveTabName> */}
       </ModalHeaderSection>
       <ModalBody>
-        <WrapperDiv className={"folder-input"}>
+        <WrapperDiv className={"modal-input"}>
           <div>
-            <Label className={"folder-info"}>{dictionary.folderInfo}</Label>
-            <Label className={"folder-name"} for="folder">
+            <Label className={"modal-info"}>{dictionary.folderInfo}</Label>
+            <Label className={"modal-label"} for="folder">
               {dictionary.folderName}
             </Label>
           </div>
