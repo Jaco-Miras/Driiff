@@ -26,7 +26,7 @@ const WrapperDiv = styled(InputGroup)`
 
   label {
     margin: 0 20px 0 0;
-    min-width: 109px;
+    min-width: 530px;
   }
   button {
     margin-left: auto;
@@ -191,8 +191,15 @@ const MoreOption = styled.div`
 `;
 
 const StyledDescriptionInput = styled(DescriptionInput)`
+  .description-input {
     height: ${props => props.height}px;
     max-height: 300px;
+  }
+
+  label {
+    min-width: 100%;
+    font-weight: 500;
+  }
 `;
 
 const StyledDatePicker = styled(DatePicker)``;
@@ -251,7 +258,8 @@ const CreateEditCompanyPostModal = (props) => {
     createPost: _t("POST.CREATE_POST", "Create post"),
     createNewPost: _t("POST.CREATE_NEW_POST", "Create new post"),
     editPost: _t("POST.EDIT_POST", "Edit post"),
-    postTitle: _t("POST.TITLE", "Post title"),
+    postTitle: _t("POST.TITLE", "Title"),
+    postInfo: _t("FOLDER_INFO", "A post is a message that can contain text and images. It can be directed at one or more workspaces, and one or more people can be made responsible."),
     visibility: _t("POST.VISIBILITY", "Visibility"),
     workspace: _t("POST.WORKSPACE", "Workspace"),
     responsible: _t("POST.RESPONSIBLE", "Responsible"),
@@ -906,26 +914,32 @@ const CreateEditCompanyPostModal = (props) => {
           onCancel={handleHideDropzone}
           attachedFiles={attachedFiles}
         />
-        <WrapperDiv>
-          <Label for="post-title">{dictionary.postTitle}</Label>
-          <Input style={{borderRadius: "5px"}} value={form.title}
-                 onChange={handleNameChange} innerRef={inputRef}/>
+        <WrapperDiv className={"modal-input mt-0"}>
+          <div>
+            <Label className={"modal-info pb-3"}>{dictionary.postInfo}</Label>
+            <Label className={"modal-label"} for="post-title">{dictionary.postTitle}</Label>
+            <Input style={{borderRadius: "5px"}} value={form.title}
+                  onChange={handleNameChange} innerRef={inputRef}/>
+          </div>
         </WrapperDiv>
-        <WrapperDiv>
-          <Label for="visibility">{dictionary.visibility}</Label>
-          <SelectPostVisibility value={form.selectedPersonal} onChange={handleSelectVisibility}/>
+        <WrapperDiv className={"modal-input"}>
+          <div>
+            <Label lassName={"modal-label"} for="visibility">{dictionary.visibility}</Label>
+            <SelectPostVisibility value={form.selectedPersonal} onChange={handleSelectVisibility}/>
+          </div>
         </WrapperDiv>
-        <WrapperDiv>
-          <Label for="workspace">{dictionary.workspace}</Label>
+        <WrapperDiv className={"modal-input"}>
+          <Label className={"modal-label"} for="workspace">{dictionary.workspace}</Label>
           <SelectWorkspace
             options={wsOptions} value={form.selectedWorkspaces}
             onChange={handleSelectWorkspace} isMulti={true} isClearable={true}/>
         </WrapperDiv>
-        <WrapperDiv>
-          <Label for="responsible">{dictionary.responsible}</Label>
+        <WrapperDiv className={"modal-input"}>
+          <Label className={"modal-label"} for="responsible">{dictionary.responsible}</Label>
           <SelectPeople options={userOptions} value={form.selectedUsers} onChange={handleSelectUser}/>
         </WrapperDiv>
         <StyledDescriptionInput
+          className="modal-description"
           height={window.innerHeight - 660}
           showFileButton={true}
           onChange={handleQuillChange}
@@ -946,7 +960,7 @@ const CreateEditCompanyPostModal = (props) => {
                              handleRemoveFile={handleRemoveFile}/>
           </WrapperDiv>
         )}
-        <WrapperDiv className="more-option">
+        <WrapperDiv className="modal-label more-option">
           <MoreOption onClick={toggleMoreOptions}>
             {dictionary.moreOptions}
             <SvgIconFeather icon="chevron-down"
