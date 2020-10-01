@@ -59,7 +59,7 @@ const INITIAL_STATE = {
       is_new: true,
       timezone: momentTZ.tz.guess(),
       dark_mode: "0",
-      language: "nl",
+      language: null,
       active_topic: null,
       workspace_open_folder: {},
       date_format: "DD-MM-YYYY",

@@ -122,7 +122,7 @@ const DriffRegisterPanel = (props) => {
     });
   };
 
-  const handleRegisterClick = (e) => {
+  const handleRegisterClick = () => {
     history.push('/driff-register')
   }
 
@@ -143,7 +143,7 @@ const DriffRegisterPanel = (props) => {
           <InputGroup className="driff-name">
             <Input
               ref={refs.name} onChange={handleInputChange} name="name" type="text" className="form-control"
-              placeholder="driff" autocapitalize="none"
+              placeholder="driff" autoCapitalize="none"
               valid={formResponse.valid.name}
               invalid={typeof formResponse.valid.name !== "undefined" ? !formResponse.valid.name : formResponse.valid.name}
               required autoFocus/>

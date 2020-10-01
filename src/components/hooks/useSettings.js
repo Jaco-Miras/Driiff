@@ -17,7 +17,7 @@ const useSettings = () => {
 
   const dispatch = useDispatch();
   const toaster = useToaster();
-  const {driff: driffSettings, user: userSettings} = useSelector((state) => state.settings);
+  const {driff: driffSettings, user: userSettings, sessionUser} = useSelector((state) => state.settings);
 
   const [isSettingsLoading, setIsSettingsLoading] = useState(false);
   const [isCompSettingsIsLoading, setIsCompSettingsLoading] = useState(false);
@@ -59,9 +59,12 @@ const useSettings = () => {
               ...e,
             },
           };
-          dispatch(
-            updateUserSettings(payload, callback)
-          );
+
+          if (sessionUser) {
+            dispatch(
+              updateUserSettings(payload, callback)
+            );
+          }
         })
       );
     },

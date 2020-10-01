@@ -1,15 +1,15 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import { useDispatch } from "react-redux";
-import { useHistory } from "react-router-dom";
-import { FormGroup, Input, InputGroup, InputGroupAddon, InputGroupText, Label } from "reactstrap";
+import React, {useCallback, useEffect, useRef, useState} from "react";
+import {useDispatch} from "react-redux";
+import {useHistory} from "react-router-dom";
+import {FormGroup, Input, InputGroup, InputGroupAddon, InputGroupText, Label} from "reactstrap";
 import styled from "styled-components";
-import { EmailRegex, replaceChar } from "../../../helpers/stringFormatter";
-import { addToModals } from "../../../redux/actions/globalActions";
-import { Avatar, SvgIconFeather } from "../../common";
-import { DropDocument } from "../../dropzone/DropDocument";
+import {EmailRegex, replaceChar} from "../../../helpers/stringFormatter";
+import {addToModals} from "../../../redux/actions/globalActions";
+import {Avatar, SvgIconFeather} from "../../common";
+import {DropDocument} from "../../dropzone/DropDocument";
 import InputFeedback from "../../forms/InputFeedback";
-import { useToaster, useTranslation, useUserActions, useUsers } from "../../hooks";
-import { FormInput } from "../../forms";
+import {useToaster, useTranslation, useUserActions, useUsers} from "../../hooks";
+import {FormInput} from "../../forms";
 
 const Wrapper = styled.div`
   overflow: auto;
@@ -74,13 +74,11 @@ const Wrapper = styled.div`
     }
     svg {
       cursor: pointer;
-      cursor: hand;
     }
   }
 
   .avatar-container {
     cursor: pointer;
-    cursor: hand;
     position: relative;
     width: 68px;
     height: 68px;
@@ -444,8 +442,6 @@ const UserProfilePanel = (props) => {
   if (!form.id) {
     return <></>;
   }
-
-  console.log(form.profile_image_link);
 
   return (
     <Wrapper className={`user-profile-panel container-fluid h-100 ${className}`}>

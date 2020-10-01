@@ -1,7 +1,7 @@
 import React, {useEffect} from "react";
 import {useSelector} from "react-redux";
 import {Redirect, Route, Switch, useHistory} from "react-router-dom";
-import {useSettings, useTranslation} from "../components/hooks";
+import {useSettings} from "../components/hooks";
 import {TestChat} from "../components/test";
 import TestFiles from "../components/test/TestFiles";
 import GuestLayout from "./GuestLayout";
@@ -10,8 +10,6 @@ import MainLayout from "./MainLayout";
 export const AppRoute = ({children, ...props}) => {
   const {init: settingsInit, fetch, fetchUserSettings, userSettings, driffSettings} = useSettings();
   settingsInit();
-
-  const translation = useTranslation();
 
   // const push = usePushNotification();
   const history = useHistory();
@@ -25,8 +23,6 @@ export const AppRoute = ({children, ...props}) => {
         fetchUserSettings();
       }
     }
-
-    translation.init();
   }, [session.checked, session.authenticated, fetchUserSettings, driffSettings.isSettingsLoaded]);
 
   // if (!session.checked || !i18nLoaded || push.loading)
