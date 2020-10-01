@@ -1,20 +1,20 @@
-import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { Route, useRouteMatch } from "react-router-dom";
+import React, {useEffect} from "react";
+import {useDispatch, useSelector} from "react-redux";
+import {Route, useRouteMatch} from "react-router-dom";
 import styled from "styled-components";
-import { addToModals } from "../../../redux/actions/globalActions";
-import { SvgIconFeather } from "../../common";
-import { HeaderProfileNavigation } from "../common";
-import { SettingsLink } from "../../workspace";
-import { joinWorkspace } from "../../../redux/actions/workspaceActions";
-import { useToaster, useTranslation } from "../../hooks";
-import { MemberLists } from "../../list/members";
+import {addToModals} from "../../../redux/actions/globalActions";
+import {SvgIconFeather} from "../../common";
+import {HeaderProfileNavigation} from "../common";
+import {SettingsLink} from "../../workspace";
+import {joinWorkspace} from "../../../redux/actions/workspaceActions";
+import {useToaster, useTranslation} from "../../hooks";
+import {MemberLists} from "../../list/members";
 
-import { WorkspacePageHeaderPanel } from "../workspace";
+import {WorkspacePageHeaderPanel} from "../workspace";
+import {renderToString} from "react-dom/server";
 
 const NavBarLeft = styled.div`
   width: 100%;
-  height: 100%;
   height: 100%;
   display: flex;
   align-items: center;
@@ -199,13 +199,42 @@ const Icon = styled(SvgIconFeather)`
 `;
 
 const WorspaceHeaderPanel = (props) => {
-  const { isExternal } = props;
+  const {isExternal} = props;
   const toaster = useToaster();
   const dispatch = useDispatch();
   const match = useRouteMatch();
-  const { activeTopic, folders } = useSelector((state) => state.workspaces);
-  const driff = useSelector((state) => state.settings.driff);
+  const {activeTopic, folders} = useSelector((state) => state.workspaces);
+  const {driff, user: {GENERAL_SETTINGS: {dark_mode}}} = useSelector((state) => state.settings);
   const user = useSelector((state) => state.session.user);
+
+  const {_t} = useTranslation();
+
+  const dictionary = {
+    searchWorkspaceSearchTitle: _t("PLACEHOLDER.SEARCH_WORKSPACE_TITLE", "Search workspace"),
+    pageTitleWorkspaceDashboard: _t("PAGE_TITLE.WORKSPACE_DASHBOARD", "Dashboard"),
+    pageTitleWorkspacePosts: _t("PAGE_TITLE.WORKSPACE_POSTS", "Posts"),
+    pageTitleWorkspaceChat: _t("PAGE_TITLE.WORKSPACE_CHAT", "Chat"),
+    pageTitleWorkspaceFiles: _t("PAGE_TITLE.WORKSPACE_FILES", "Files"),
+    pageTitleWorkspaceNotifications: _t("PAGE_TITLE.WORKSPACE_NOTIFICATIONS", "Notifications"),
+    pageTitleWorkspacePeople: _t("PAGE_TITLE.WORKSPACE_PEOPLE", "People"),
+    pageTitleWorkspaceProfile: _t("PAGE_TITLE.WORKSPACE_PROFILE", "Profile"),
+    pageTitleWorkspaceSearch: _t("PAGE_TITLE.WORKSPACE_SEARCH", "Search"),
+    pageTitleSettings: _t("PAGE_TITLE.SETTINGS", "Settings"),
+    pageTitleTodos: _t("PAGE_TITLE.TODOS", "To-dos & Reminders"),
+    generalSearch: _t("GENERAL.SEARCH", "Search"),
+    generalNotifications: _t("GENERAL.NOTIFICATIONS", "Notifications"),
+    generalSwitchTheme: _t("SETTINGS.SWITCH_TO_THEME_MODE", "Switch to ::mode::", {
+      mode: dark_mode === "0" ? _t("SETTINGS.DARK_MODE", "dark mode") : _t("SETTINGS.LIGHT_MODE", "light mode")
+    }),
+    actionWorkspaceNewWorkspace: _t("ACTION.NEW_WORKSPACE", "New workspace"),
+    actionWorkspaceInvite: _t("ACTION.INVITE_WORKSPACE", "Invte"),
+    actionWorkspaceJoin: _t("ACTION.JOIN_WORKSPACE", "Join"),
+    statusWorkspacePrivate: _t("WORKSPACE.STATUS_PRIVATE", "Private"),
+    statusWorkspaceArchived: _t("WORKSPACE.STATUS_ARCHIVED", "Archived"),
+    toasterJoinWorkspace: _t("TOASTER.JOIN_WORKSPACE", "You have joined ::topic_name::", {
+      topic_name: activeTopic ? renderToString(<b>#{activeTopic.name}</b>) : ""
+    })
+  }
 
   const handleShowWorkspaceModal = () => {
     let payload = {
@@ -236,9 +265,7 @@ const WorspaceHeaderPanel = (props) => {
         (err, res) => {
           if (err) return;
           toaster.success(
-            <>
-              You have joined <b>#{activeTopic.name}</b>
-            </>
+            <span dangerouslySetInnerHTML={{__html: dictionary.toasterJoinWorkspace}}/>
           );
         }
       )
@@ -256,31 +283,32 @@ const WorspaceHeaderPanel = (props) => {
     let pageName = "";
     switch (match.params.page) {
       case "posts": {
-        pageName = "Posts";
+        pageName = dictionary.pageTitleWorkspacePosts;
         break;
       }
       case "chat": {
-        pageName = "Chat";
+        pageName = dictionary.pageTitleWorkspaceChat;
         break;
       }
       case "files": {
-        pageName = "Files";
+        pageName = dictionary.pageTitleWorkspaceFiles;
         break;
       }
       case "people": {
-        pageName = "People";
+        pageName = dictionary.pageTitleWorkspacePeople;
         break;
       }
       case "settings": {
-        pageName = "Settings";
+        pageName = dictionary.pageTitleSettings;
         break;
       }
       default: {
-        pageName = "Dashboard";
+        pageName = dictionary.pageTitleWorkspaceDashboard;
       }
     }
 
-    if (["Dashboard", "Posts", "Files", "People"].includes(pageName)) {
+    if ([dictionary.pageTitleWorkspaceDashboard, dictionary.pageTitleWorkspacePosts,
+      dictionary.pageTitleWorkspaceFiles, dictionary.pageTitleWorkspacePeople].includes(pageName)) {
       body.classList.remove("stretch-layout");
     } else {
       body.classList.add("stretch-layout");
@@ -294,12 +322,6 @@ const WorspaceHeaderPanel = (props) => {
       }
     }
   }, [match.params.page, dispatch, activeTopic]);
-
-  const { _t } = useTranslation();
-
-  const dictionary = {
-    searchWorkspaceSearchTitle: _t("PLACEHOLDER.SEARCH_WORKSPACE_TITLE", "Search workspace"),
-  };
 
   return (
     <>
@@ -347,12 +369,13 @@ const WorspaceHeaderPanel = (props) => {
                       </li>
                       {activeTopic.is_lock === 1 && (
                         <li className="nav-item">
-                          <div className={`badge badge-light text-white ml-1`}>Private</div>
+                          <div className={`badge badge-light text-white ml-1`}>{dictionary.statusWorkspacePrivate}</div>
                         </li>
                       )}
                       {activeTopic.active === 0 && (
                         <li className="nav-item">
-                          <div className={`badge badge-light text-white ml-1`}>Archived</div>
+                          <div
+                            className={`badge badge-light text-white ml-1`}>{dictionary.statusWorkspaceArchived}</div>
                         </li>
                       )}
                       <li className="nav-item">{!isExternal && <SettingsLink />}</li>
@@ -384,12 +407,13 @@ const WorspaceHeaderPanel = (props) => {
                       </li>
                       {activeTopic.is_lock === 1 && (
                         <li className="nav-item">
-                          <div className={`badge badge-light text-white ml-1`}>Private</div>
+                          <div className={`badge badge-light text-white ml-1`}>{dictionary.statusWorkspacePrivate}</div>
                         </li>
                       )}
                       {activeTopic.active === 0 && (
                         <li className="nav-item">
-                          <div className={`badge badge-light text-white ml-1`}>Archived</div>
+                          <div
+                            className={`badge badge-light text-white ml-1`}>{dictionary.statusWorkspaceArchived}</div>
                         </li>
                       )}
                       <li className="nav-item">{!isExternal && <SettingsLink />}</li>
@@ -422,12 +446,12 @@ const WorspaceHeaderPanel = (props) => {
                 {activeTopic.member_ids.includes(user.id) && !isExternal ? (
                   <button onClick={handleEditWorkspace} className="btn btn-primary" disabled={activeTopic.active === 0}>
                     <SvgIconFeather icon="user-plus" />
-                    Invite
+                    {dictionary.actionWorkspaceInvite}
                   </button>
                 ) : !isExternal ? (
                   <button onClick={handleJoinWorkspace} className="btn btn-primary" disabled={activeTopic.active === 0}>
                     <SvgIconFeather icon="user-plus" />
-                    Join
+                    {dictionary.actionWorkspaceJoin}
                   </button>
                 ) : null}
               </li>
@@ -436,7 +460,7 @@ const WorspaceHeaderPanel = (props) => {
             <>
               <li className="nav-item">
                 <WorkspaceButton onClick={handleShowWorkspaceModal}>
-                  New workspace <SvgIconFeather className="ml-2" icon="circle-plus" />
+                  {dictionary.actionWorkspaceNewWorkspace} <SvgIconFeather className="ml-2" icon="circle-plus"/>
                 </WorkspaceButton>
               </li>
             </>
@@ -444,7 +468,7 @@ const WorspaceHeaderPanel = (props) => {
         </NavBar>
       </NavBarLeft>
       <div>
-        <HeaderProfileNavigation />
+        <HeaderProfileNavigation dictionary={dictionary}/>
       </div>
     </>
   );
