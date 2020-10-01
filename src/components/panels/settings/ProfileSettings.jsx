@@ -71,9 +71,9 @@ const ProfileSettings = (props) => {
   const { user: loggedUser } = useSelector((state) => state.session);
 
   const {
-    generalSettings: { language, timezone, date_format, time_format, dark_mode, notifications_on },
-    chatSettings: { order_channel, sound_enabled, preview_message },
-    userSettings: isLoaded,
+    generalSettings: {language, timezone, date_format, time_format, dark_mode, notifications_on},
+    chatSettings: {order_channel, sound_enabled, preview_message},
+    userSettings: {isLoaded},
     setChatSetting,
     setGeneralSetting,
     setPushSubscription,
