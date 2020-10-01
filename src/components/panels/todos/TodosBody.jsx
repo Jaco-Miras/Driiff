@@ -147,15 +147,15 @@ const TodosBody = (props) => {
                     if (index === 0) {
                       switch (todo.status) {
                         case "OVERDUE": {
-                          chatHeader = "Overdue";
+                          chatHeader = dictionary.statusOverdue;
                           break;
                         }
                         case "NEW": {
-                          chatHeader = "Upcoming";
+                          chatHeader = dictionary.statusUpcoming;
                           break;
                         }
                         case "DONE": {
-                          chatHeader = "Done";
+                          chatHeader = dictionary.statusDone;
                           break;
                         }
                       }
@@ -164,15 +164,15 @@ const TodosBody = (props) => {
                       if (prevTodo.status !== todo.status) {
                         switch (todo.status) {
                           case "OVERDUE": {
-                            chatHeader = "Overdue";
+                            chatHeader = dictionary.statusOverdue;
                             break;
                           }
                           case "NEW": {
-                            chatHeader = "Upcoming";
+                            chatHeader = dictionary.statusUpcoming;
                             break;
                           }
                           case "DONE": {
-                            chatHeader = "Done";
+                            chatHeader = dictionary.statusDone;
                             break;
                           }
                         }
