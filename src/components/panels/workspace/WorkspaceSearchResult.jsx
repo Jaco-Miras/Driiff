@@ -88,11 +88,11 @@ const WorkspaceSearchResult = (props) => {
                 !isMember ?
                 <JoinButton onClick={handleJoinWorkspace} className="btn btn-primary join-button">
                     <SvgIconFeather icon="user-plus" />
-                    dictionary.buttonJoin
+                    {dictionary.buttonJoin}
                 </JoinButton>
                 :
                 <JoinButton onClick={handleLeaveWorkspace} className="btn btn-primary join-button">
-                    dictionary.buttonLeave
+                    {dictionary.buttonLeave}
                 </JoinButton>
             }
         </Wrapper>
