@@ -1,6 +1,6 @@
 import {parseEmojis, parseTaskUrl, textToLink} from "./stringFormatter";
 import {validURL} from "./urlContentHelper";
-import {GoogleDriveLink} from "../components/common";
+import {GoogleDriveLink, SvgIcon} from "../components/common";
 import React from "react";
 import {renderToString} from "react-dom/server";
 
@@ -115,10 +115,20 @@ class quillHelper {
     return el.innerHTML;
   }
 
-  static parseToText(body) {
+  static parseToText(body, options = {imageVideo: false}) {
     let tmp = document.createElement("DIV");
-    tmp.innerHTML = body;
+
+    if (options.imageVideo)
+      tmp.innerHTML = body.replace(/<img[^>]*>/g, "::image::");
+    else
+      tmp.innerHTML = body;
+
     return tmp.textContent || tmp.innerText || "";
+  }
+
+  static parseToTextImageVideo(body) {
+    return this.parseToText(body, {imageVideo: true}).replace("::image::", renderToString(<SvgIcon className="ml-1"
+                                                                                                   icon="image-video"/>));
   }
 }
 

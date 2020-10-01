@@ -1,6 +1,6 @@
 import React, {useEffect, useRef} from "react";
 import styled from "styled-components";
-import {Avatar, SvgEmptyState, SvgIconFeather, ToolTip} from "../../common";
+import {Avatar, SvgEmptyState, ToolTip} from "../../common";
 import {useHistory} from "react-router-dom";
 import {CheckBox} from "../../forms";
 import quillHelper from "../../../helpers/quillHelper";
@@ -27,6 +27,12 @@ li.link-title {
 .text-success {
   text-decoration: line-through;
 }
+
+.todo-title {
+  svg {
+    height: 16px;
+  }
+}
 `;
 
 const EmptyState = styled.div`
@@ -47,10 +53,6 @@ const EmptyState = styled.div`
     width: auto !important;
     margin: 2rem auto;
   }
-`;
-
-const Icon = styled(SvgIconFeather)`
-  width: 16px;
 `;
 
 const TodosBody = (props) => {
@@ -206,7 +208,7 @@ const TodosBody = (props) => {
                               <span className="mr-3 d-flex justify-content-center align-items-center">
                                 <span className="todo-title mr-2">{todo.title}</span>
                                 <span className="todo-title"
-                                      dangerouslySetInnerHTML={{__html: quillHelper.parseToText(todo.description)}}/>
+                                      dangerouslySetInnerHTML={{__html: quillHelper.parseToTextImageVideo(todo.description)}}/>
                               </span>
                               </a>
                             </div>
