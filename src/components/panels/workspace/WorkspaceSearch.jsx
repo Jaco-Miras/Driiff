@@ -136,13 +136,14 @@ const WorkspaceSearch = (props) => {
 
   const dictionary = {
     searchWorkspaceSearchPlaceholder: _t("PLACEHOLDER.SEARCH_WORKSPACE", "Search by workspace name or description"),
+    searchWorkspaceSearchTitle: _t("PLACEHOLDER.SEARCH_WORKSPACE_TITLE", "Search workspace"),
   };
 
   return (
     <Wrapper className="card p-t-b-40" data-backround-image="assets/media/image/image1.jpg">
       <div className="container">
         <div className="row d-flex justify-content-center">
-          <h2 className="mb-4 text-center">Search workspace</h2>
+          <h2 className="mb-4 text-center">{dictionary.searchWorkspaceSearchTitle}</h2>
           <div className="input-group">
             <div className="input-wrap">
               <input onChange={handleSearchChange} onKeyDown={handleEnter} type="text" className="form-control" placeholder={dictionary.searchWorkspaceSearchPlaceholder} aria-describedby="button-addon1" autoFocus value={inputValue} />
