@@ -102,12 +102,12 @@ const PostItemPanel = (props) => {
           >
             <span>{post.title}</span>
             <div className='text-truncate post-partialBody'>
-              <span className={`text-truncate post-partialBody`}
+              <span
                                       dangerouslySetInnerHTML={{__html: quillHelper.parseEmoji(post.partial_body)}}/>
             </div>
-            {post.unread_count !== 0 && <div className="ml-2 badge badge-primary badge-pill">{post.unread_count}</div>}
           </div>
           <div className="pl-3 d-flex align-items-center">
+            {post.unread_count !== 0 && <div className="ml-2 mr-2 badge badge-primary badge-pill">{post.unread_count}</div>}
             <div className="mr-3">
               <PostBadge post={post} dictionary={dictionary} />
               {post.users_responsible.length > 0 && <MemberLists members={post.users_responsible} />}
