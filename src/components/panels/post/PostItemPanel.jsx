@@ -90,9 +90,9 @@ const PostItemPanel = (props) => {
       <div className="custom-control custom-checkbox custom-checkbox-success">
         <CheckBox name="test" checked={post.is_mark_done} onClick={handleMarkDone} disabled={disableOptions} />
       </div>
-      {/* <div>
+      <div>
         <Icon className="mr-2" icon="star" onClick={handleStarPost} stroke={post.is_favourite ? "#ffc107" : "currentcolor"} fill={post.is_favourite ? "#ffc107" : "none"} />
-      </div> */}
+      </div>
       <div className="flex-grow-1 min-width-0">
         <div className="d-flex align-items-center justify-content-between">
           <div
