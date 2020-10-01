@@ -926,7 +926,7 @@ const CreateEditCompanyPostModal = (props) => {
         </WrapperDiv>
         <WrapperDiv className={"modal-input"}>
           <div>
-            <Label lassName={"modal-label"} for="visibility">{dictionary.visibility}</Label>
+            <Label className={"modal-label"} for="visibility">{dictionary.visibility}</Label>
             <SelectPostVisibility value={form.selectedPersonal} onChange={handleSelectVisibility}/>
           </div>
         </WrapperDiv>
