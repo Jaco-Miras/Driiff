@@ -1,8 +1,8 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, {useEffect, useRef, useState} from "react";
 import styled from "styled-components";
-import { Avatar, SvgIconFeather } from "../../common";
-import { useNotifications, useOutsideClick, useSettings, useUsers } from "../../hooks";
-import { NotificationDropDown, SearchDropDown } from "../dropdown";
+import {Avatar, SvgIconFeather, ToolTip} from "../../common";
+import {useNotifications, useOutsideClick, useSettings, useUsers} from "../../hooks";
+import {NotificationDropDown, SearchDropDown} from "../dropdown";
 import UserProfileDropDown from "../dropdown/UserProfileDropdown";
 
 const Wrapper = styled.ul`
@@ -69,16 +69,16 @@ const Wrapper = styled.ul`
 `;
 
 const HomeProfileNavigation = (props) => {
-  const { className = "" } = props;
+  const {className = "", dictionary} = props;
 
   const {
     users,
     loggedUser,
-    actions: { fetchById },
+    actions: {fetchById},
   } = useUsers();
-  const { notifications } = useNotifications();
+  const {notifications} = useNotifications();
   const {
-    generalSettings: { dark_mode },
+    generalSettings: {dark_mode},
     setGeneralSetting,
   } = useSettings();
 
@@ -160,29 +160,40 @@ const HomeProfileNavigation = (props) => {
   return (
     <Wrapper ref={refs.container} className={`header-profile-navigation navbar-nav ${className}`}>
       <li className="nav-item dropdown">
-        <a href="/" className="nav-link" title="Search" data-toggle="dropdown" onClick={toggleDropdown}>
-          <SvgIconFeather icon="search" />
+        <a href="/" className="nav-link" data-toggle="dropdown" onClick={toggleDropdown}>
+          <ToolTip content={dictionary.generalSearch}>
+            <SvgIconFeather icon="search"/>
+          </ToolTip>
         </a>
-        <SearchDropDown />
+        <SearchDropDown/>
       </li>
       <li className="nav-item dropdown">
-        <a href="/" className={`nav-link ${Object.values(notifications).filter((n) => n.is_read === 0).length > 0 ? "nav-link-notify" : ""}`} title="Notifications" data-toggle="dropdown" onClick={toggleDropdown}>
-          <SvgIconFeather icon="bell" />
+        <a href="/"
+           className={`nav-link ${Object.values(notifications).filter((n) => n.is_read === 0).length > 0 ? "nav-link-notify" : ""}`}
+           data-toggle="dropdown" onClick={toggleDropdown}>
+          <ToolTip content={dictionary.generalNotifications}>
+            <SvgIconFeather icon="bell"/>
+          </ToolTip>
         </a>
-        <NotificationDropDown />
+        <NotificationDropDown/>
       </li>
       <li className="nav-item">
         <a href="/" className={`nav-link dark-mode-switch`} onClick={setThemeButton}>
-          <SvgIconFeather icon="sun" />
-          <SvgIconFeather icon="moon" />
+          <ToolTip content={dictionary.generalSwitchTheme}>
+            <SvgIconFeather icon="sun"/>
+            <SvgIconFeather icon="moon"/>
+          </ToolTip>
         </a>
       </li>
       <li className="nav-item dropdown">
-        <a href="/" className="nav-link profile-button" data-toggle="dropdown" title={form.name} onClick={toggleDropdown}>
-          <div className="avatar-overlay" />
-          <Avatar name={form.name} imageLink={form.profile_image_link} noDefaultClick={true} />
-        </a>
-        <UserProfileDropDown user={loggedUser} />
+        <ToolTip content={form.name}>
+          <a href="/" className="nav-link profile-button" data-toggle="dropdown"
+             onClick={toggleDropdown}>
+            <div className="avatar-overlay"/>
+            <Avatar name={form.name} imageLink={form.profile_image_link} noDefaultClick={true}/>
+          </a>
+        </ToolTip>
+        <UserProfileDropDown user={loggedUser}/>
       </li>
     </Wrapper>
   );

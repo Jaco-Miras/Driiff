@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import { NavLink } from "../../common";
-import { useSelector } from "react-redux";
+import {NavLink} from "../../common";
+import {useSelector} from "react-redux";
 
 const Wrapper = styled.div``;
 
@@ -19,8 +19,7 @@ const Navbar = styled.ul`
   }
 `;
 
-const MainNavLink = styled(NavLink)`
-  border-radius: 8px;
+const MainNavLink = styled(NavLink)`  
   color: #828282;
   margin: 0 1rem;
   transition: color 200ms ease 0ms;
@@ -43,7 +42,6 @@ const MainNavLink = styled(NavLink)`
     }
   }
   .badge {
-    background: green;
     font-size: 0;
     padding: 0;
     margin: 0;
@@ -51,7 +49,7 @@ const MainNavLink = styled(NavLink)`
     width: 6px;
     height: 6px;
     background: #28a745;
-    top: 0px;
+    top: 0;
     right: -13px;
   }
   @media all and (max-width: 700px) {
@@ -60,7 +58,8 @@ const MainNavLink = styled(NavLink)`
 `;
 
 const CompanyPageHeaderPanel = (props) => {
-  const { className = "" } = props;
+  const {className = "", dictionary} = props;
+
   const unreadCounter = useSelector((state) => state.global.unreadCounter);
   const lastVisitedChannel = useSelector((state) => state.chat.lastVisitedChannel);
 
@@ -69,24 +68,25 @@ const CompanyPageHeaderPanel = (props) => {
       <Wrapper className={`${className}`}>
         <Navbar className="navbar-nav">
           <li className="nav-item">
-            <MainNavLink to="/dashboard">Dashboard</MainNavLink>
+            <MainNavLink to="/dashboard">{dictionary.pageTitleDashboard}</MainNavLink>
           </li>
           <li className="nav-item">
-            <MainNavLink to={lastVisitedChannel !== null && lastVisitedChannel.hasOwnProperty("code") ? `/chat/${lastVisitedChannel.code}` : "/chat"}>
-              Chat{" "}
+            <MainNavLink
+              to={lastVisitedChannel !== null && lastVisitedChannel.hasOwnProperty("code") ? `/chat/${lastVisitedChannel.code}` : "/chat"}>
+              {dictionary.pageTitleChat}{" "}
               <div className="ml-2 badge badge-pill badge badge-danger">
                 {unreadCounter.chat_message + unreadCounter.chat_reminder_message > 0 ? unreadCounter.chat_message + unreadCounter.chat_reminder_message : unreadCounter.unread_channel > 0 ? unreadCounter.unread_channel : null}
               </div>
             </MainNavLink>
           </li>
           <li className="nav-item">
-            <MainNavLink to="/posts">Posts</MainNavLink>
+            <MainNavLink to="/posts">{dictionary.pageTitlePosts}</MainNavLink>
           </li>
           <li className="nav-item">
-            <MainNavLink to="/files">Files</MainNavLink>
+            <MainNavLink to="/files">{dictionary.pageTitleFiles}</MainNavLink>
           </li>
           <li className="nav-item">
-            <MainNavLink to="/people">People</MainNavLink>
+            <MainNavLink to="/people">{dictionary.pageTitlePeople}</MainNavLink>
           </li>
         </Navbar>
       </Wrapper>
