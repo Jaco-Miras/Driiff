@@ -278,16 +278,16 @@ const PostDetailFooter = (props) => {
       }
       {isMember && !disableOptions && (
         <>
-          <Dflex className="d-flex align-items-center">
+          <Dflex className="d-flex align-items-end">
             {post.is_read_only === 1 ? (
               <NoReply className="d-flex align-items-center">
                 <div className="alert alert-warning">No reply allowed</div>
               </NoReply>
             ) : (
               <React.Fragment>
-              <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Emoji" className="emojiButton">
-                <IconButton onClick={handleShowEmojiPicker} icon="smile" />
-              </Tooltip>
+                <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Emoji" className="emojiButton">
+                  <IconButton onClick={handleShowEmojiPicker} icon="smile"/>
+                </Tooltip>
                 <ChatInputContainer ref={innerRef} className="flex-grow-1">
                   <PostInput
                     handleClearSent={handleClearSent}

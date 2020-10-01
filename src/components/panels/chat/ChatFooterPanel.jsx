@@ -52,10 +52,10 @@ const ChatInputContainer = styled.div`
   .feather-send,
   .feather-smile {
     position: absolute;
-    top: 0;
+    bottom: 0;
     right: 0;
     margin: 4px;
-    height: calc(100% - 8px);
+    height: 40px;
     background: #7a1b8b;
     border-radius: 4px;
     min-width: 40px;
@@ -258,10 +258,10 @@ const ChatFooterPanel = (props) => {
       <TypingIndicator />
       <LockedLabel channel={selectedChannel} />
       {isMember && (
-        <Dflex className="d-flex align-items-center">
+        <Dflex className="d-flex align-items-end">
           {selectedChannel && selectedChannel.is_archived ? (
             <ArchivedDiv>
-              <Icon icon="archive" />
+              <Icon icon="archive"/>
               <h4>{selectedChannel.type === "TOPIC" ? "This is an archived workspace" : "This is an archived channel"}</h4>
               <button className="btn btn-primary" onClick={handleShowUnarchiveConfirmation}>
                 {selectedChannel.type === "TOPIC" ? "Un-archive workspace" : "Un-archive channel"}
