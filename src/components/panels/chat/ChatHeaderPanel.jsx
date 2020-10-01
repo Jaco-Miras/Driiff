@@ -79,6 +79,7 @@ const BackButtonChevron = styled(SvgIconFeather)`
 `;
 
 const StyledMoreOptions = styled(MoreOptions)`
+  margin-top: 5px;
   border: 1px solid #e1e1e1;
   border-radius: 8px;
   height: 36px;

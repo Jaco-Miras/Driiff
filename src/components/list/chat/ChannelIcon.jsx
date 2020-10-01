@@ -9,7 +9,7 @@ const Wrapper = styled.div`
     background-color: ${(props) => (props.iconColor ? props.iconColor : "#fff")};
     color: #fff;
     display: inline-flex;
-    padding: 5px;
+    padding: 5px; 
     border-radius: 100%;
     width: 30px;
     height: 30px;
@@ -51,7 +51,7 @@ const iconColor = (input) => {
   let h = "";
   let s = 50;
   let l = 40;
-
+  
   var hash = 0;
   for (var i = 0; i < name.length; i++) {
     hash = name.charCodeAt(i) + ((hash << 5) - hash);
