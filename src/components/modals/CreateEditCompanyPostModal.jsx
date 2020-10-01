@@ -251,7 +251,7 @@ const CreateEditCompanyPostModal = (props) => {
     createPost: _t("POST.CREATE_POST", "Create post"),
     createNewPost: _t("POST.CREATE_NEW_POST", "Create new post"),
     editPost: _t("POST.EDIT_POST", "Edit post"),
-    postTitle: _t("POST.TITLE", "Post title"),
+    postTitle: _t("POST.TITLE", "Title"),
     visibility: _t("POST.VISIBILITY", "Visibility"),
     workspace: _t("POST.WORKSPACE", "Workspace"),
     responsible: _t("POST.RESPONSIBLE", "Responsible"),
@@ -261,7 +261,9 @@ const CreateEditCompanyPostModal = (props) => {
     replyRequired: _t("POST.REPLY_REQUIRED", "Reply required"),
     mustRead: _t("POST.MUST_READ", "Must read"),
     noReplies: _t("POST.NO_REPLIES", "No replies"),
-    schedulePost: _t("POST.SCHEDULE", "Schedule post"),
+    schedulePost: _t("POST.SCHEDULE", "Schedule"),
+    updatePostButton: _t("POST.UPDATE_BUTTON", "Update post"),
+    createPostButton: _t("POST.CREATE_BUTTON", "Create post"),
     save: _t("POST.SAVE", "Save"),
     discard: _t("POST.DISCARD", "Discard"),
     draftBody: _t("POST.DRAFT_BODY", "Not sure about the content? Save it as a draft."),
@@ -984,7 +986,7 @@ const CreateEditCompanyPostModal = (props) => {
                   disabled={form.selectedUsers.length === 0 || form.title === "" || form.textOnly.trim() === ""}
                   onClick={handleConfirm}>
             {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"/>}
-            {mode === "edit" ? "Update post" : "Create post"}
+            {mode === "edit" ? dictionary.updatePostButton : dictionary.createPostButton}
           </button>
         </WrapperDiv>
       </ModalBody>

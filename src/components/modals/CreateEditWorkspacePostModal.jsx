@@ -262,6 +262,8 @@ const CreateEditWorkspacePostModal = (props) => {
     mustRead: _t("POST.MUST_READ", "Must read"),
     noReplies: _t("POST.NO_REPLIES", "No replies"),
     schedulePost: _t("POST.SCHEDULE", "Schedule post"),
+    updatePostButton: _t("POST.UPDATE_BUTTON", "Update post"),
+    createPostButton: _t("POST.CREATE_BUTTON", "Create post"),
     save: _t("POST.SAVE", "Save"),
     discard: _t("POST.DISCARD", "Discard"),
     draftBody: _t("POST.DRAFT_BODY", "Not sure about the content? Save it as a draft."),
@@ -967,7 +969,7 @@ const CreateEditWorkspacePostModal = (props) => {
                   disabled={form.selectedUsers.length === 0 || form.title === "" || form.selectedWorkspaces.length === 0}
                   onClick={handleConfirm}>
             {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"/>}
-            {mode === "edit" ? "Update post" : "Create post"}
+            {mode === "edit" ? dictionary.updatePostButton : dictionary.createPostButton}
           </button>
         </WrapperDiv>
       </ModalBody>
