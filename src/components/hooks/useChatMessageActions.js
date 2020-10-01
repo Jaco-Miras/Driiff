@@ -271,8 +271,10 @@ const useChatMessageActions = () => {
   );
 
   const remind = useCallback(
-    (message, channel, callback) => {
-      const onConfirm = (payload, modalCallback) => {
+    (message, channel, callback = () => {
+    }) => {
+      const onConfirm = (payload, modalCallback = () => {
+      }) => {
         todoActions.createForChat(message.id, payload, (err, res) => {
           if (err) {
             toaster.error(`An error has occurred try again!`);

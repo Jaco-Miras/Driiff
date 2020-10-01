@@ -308,12 +308,15 @@ export default (state = INITIAL_STATE, action) => {
       let items = state.todos.items;
       let count = state.todos.count;
       if (typeof items[action.data.id] !== "undefined") {
-        if (items[action.data.id].status !== "NEW") {
-          count.new += 1;
+        if (items[action.data.id].status !== action.data.status) {
+          count[action.data.status.toLowerCase()] += 1;
           count[items[action.data.id].status.toLowerCase()] -= 1;
         }
 
-        items[action.data.id] = action.data;
+        items[action.data.id] = {
+          ...items[action.data.id],
+          ...action.data
+        };
       }
       return {
         ...state,

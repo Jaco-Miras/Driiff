@@ -14,7 +14,7 @@ import {
 import {addToModals} from "../../redux/actions/globalActions";
 import {useToaster, useTodoActions} from "./index";
 
-const useCommentActions = (props) => {
+const useCommentActions = () => {
 
   const dispatch = useDispatch();
   const todoActions = useTodoActions();
@@ -115,8 +115,10 @@ const useCommentActions = (props) => {
   );
 
   const remind = useCallback(
-    (postComment, post, callback) => {
-      const onConfirm = (payload, modalCallback) => {
+    (postComment, post, callback = () => {
+    }) => {
+      const onConfirm = (payload, modalCallback = () => {
+      }) => {
         todoActions.createForPostComment(postComment.id, payload, (err, res) => {
           if (err) {
             toaster.error(`An error has occurred try again!`);

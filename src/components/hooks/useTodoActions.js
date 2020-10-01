@@ -35,8 +35,10 @@ const useTodoActions = () => {
   }, []);
 
   const createFromModal = useCallback(
-    (callback) => {
-      const onConfirm = (payload, modalCallback) => {
+    (callback = () => {
+    }) => {
+      const onConfirm = (payload, modalCallback = () => {
+      }) => {
         create(payload, (err, res) => {
           if (err) {
             toaster.error(`An error has occurred try again!`);

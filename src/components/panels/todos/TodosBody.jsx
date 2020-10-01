@@ -228,8 +228,6 @@ const TodosBody = (props) => {
                                 }
                               </div>
                               <MoreOptions className="ml-2" item={todo} width={170} moreButton={"more-horizontal"}>
-                                <div
-                                  onClick={() => todoActions.toggleDone(todo)}>{todo.status === "DONE" ? dictionary.actionMarkAsUndone : dictionary.actionMarkAsDone}</div>
                                 <div onClick={() => todoActions.updateFromModal(todo)}>{dictionary.actionEdit}</div>
                                 <div
                                   onClick={() => todoActions.removeConfirmation(todo)}>{dictionary.actionRemove}</div>

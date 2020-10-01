@@ -54,7 +54,7 @@ const StyledQuillEditor = styled(QuillEditor)`
     max-height: 170px;
     background: rgb(255, 255, 255);
     border-radius: 8px;
-    box-shadow: rgba(26, 26, 26, 0.4) 0px 2px 3px 0px, rgba(0, 0, 0, 0.1) 0px 1px 3px 0px;
+    box-shadow: rgba(26, 26, 26, 0.4) 0 2px 3px 0, rgba(0, 0, 0, 0.1) 0 1px 3px 0;
     overflow-x: hidden;
     overflow-y: auto;
     z-index: 2;
@@ -87,7 +87,6 @@ const CloseButton = styled(SvgIconFeather)`
   top: calc(50% - 12px);
   right: 5px;
   cursor: pointer;
-  cursor: hand;
   color: #000;
 `;
 
@@ -198,6 +197,7 @@ const CompanyPostInput = (props) => {
         ref_quote: quote,
         replies: {},
         total_replies: 0,
+        todo_reminder: null,
         total_unread_replies: 0,
         updated_at: {timestamp: timestamp},
         unfurls: [],
