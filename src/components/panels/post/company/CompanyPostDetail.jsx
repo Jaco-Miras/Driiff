@@ -4,7 +4,7 @@ import {useHistory} from "react-router-dom";
 import styled from "styled-components";
 import {addToModals} from "../../../../redux/actions/globalActions";
 import {setParentIdForUpload} from "../../../../redux/actions/postActions";
-import {FileAttachments, SvgIconFeather, ToolTip} from "../../../common";
+import {FileAttachments, ReminderNote, SvgIconFeather, ToolTip} from "../../../common";
 import {DropDocument} from "../../../dropzone/DropDocument";
 import {useCommentActions, useComments} from "../../../hooks";
 import {CompanyPostBody, CompanyPostComments, CompanyPostDetailFooter} from "./index";
@@ -237,12 +237,16 @@ const CompanyPostDetail = (props) => {
 
   return (
     <>
+      {
+        post.todo_reminder !== null &&
+        <ReminderNote todoReminder={post.todo_reminder} type="POST"/>
+      }
       <MainHeader className="card-header d-flex justify-content-between">
         <div className={"company-post-detail-header"}>
           <div>
             <ul>
               <li>
-                <Icon className="close mr-2" icon="arrow-left" onClick={handleClosePost} />
+                <Icon className="close mr-2" icon="arrow-left" onClick={handleClosePost}/>
               </li>
               <li>
                 <h5 ref={refs.title} className="post-title mb-0">
@@ -279,12 +283,16 @@ const CompanyPostDetail = (props) => {
           )}
           <div>
             <StyledMoreOptions className="ml-2" item={post} width={170} moreButton={"more-horizontal"}>
-              <div onClick={() => remind(post)}>{dictionary.remindMeAboutThis}</div>
+              {
+                post.todo_reminder === null &&
+                <div onClick={() => remind(post)}>{dictionary.remindMeAboutThis}</div>
+              }
               <div onClick={() => markAsRead(post, true)}>{dictionary.markAsRead}</div>
               <div onClick={() => markAsUnread(post, true)}>{dictionary.markAsUnread}</div>
               <div onClick={() => sharePost(post)}>{dictionary.share}</div>
               <div onClick={() => snoozePost(post)}>{dictionary.snooze}</div>
-              {post.author.id !== user.id && <div onClick={() => followPost(post)}>{post.is_followed ? dictionary.unFollow : dictionary.follow}</div>}
+              {post.author.id !== user.id &&
+              <div onClick={() => followPost(post)}>{post.is_followed ? dictionary.unFollow : dictionary.follow}</div>}
             </StyledMoreOptions>
           </div>
         </div>

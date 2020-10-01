@@ -276,14 +276,16 @@ const PostDetail = (props) => {
             <ul>
               <li>
                 <span data-toggle="modal" data-target="#editTaskModal">
-                  <a onClick={() => postActions.showModal("edit", post)} className="btn btn-outline-light ml-2" title="" data-toggle="tooltip" data-original-title="Edit Task">
-                    <Icon icon="edit-3" />
+                  <a onClick={() => postActions.showModal("edit", post)} className="btn btn-outline-light ml-2" title=""
+                     data-toggle="tooltip" data-original-title="Edit Task">
+                    <Icon icon="edit-3"/>
                   </a>
                 </span>
               </li>
               <li>
-                <a onClick={() => postActions.trash(post)} className="btn btn-outline-light ml-2" data-toggle="tooltip" title="" data-original-title="Delete Task">
-                  <Icon icon="trash" />
+                <a onClick={() => postActions.trash(post)} className="btn btn-outline-light ml-2" data-toggle="tooltip"
+                   title="" data-original-title="Delete Task">
+                  <Icon icon="trash"/>
                 </a>
               </li>
               <li>
@@ -293,7 +295,8 @@ const PostDetail = (props) => {
                   <div onClick={() => markAsUnread(post, true)}>{dictionary.markAsUnread}</div>
                   <div onClick={() => sharePost(post)}>{dictionary.share}</div>
                   <div onClick={() => snoozePost(post)}>{dictionary.snooze}</div>
-                  {post.author.id !== user.id && <div onClick={() => followPost(post)}>{post.is_followed ? dictionary.unFollow : dictionary.follow}</div>}
+                  {post.author.id !== user.id && <div
+                    onClick={() => followPost(post)}>{post.is_followed ? dictionary.unFollow : dictionary.follow}</div>}
                 </StyledMoreOptions>
               </li>
             </ul>
@@ -301,12 +304,16 @@ const PostDetail = (props) => {
           {post.author.id !== user.id && (
             <div>
               <StyledMoreOptions className="ml-2" item={post} width={170} moreButton={"more-horizontal"}>
-                <div onClick={() => remind(post)}>{dictionary.remindMeAboutThis}</div>
+                {
+                  post.todo_reminder === null &&
+                  <div onClick={() => remind(post)}>{dictionary.remindMeAboutThis}</div>
+                }
                 <div onClick={() => markAsRead(post, true)}>{dictionary.markAsRead}</div>
                 <div onClick={() => markAsUnread(post, true)}>{dictionary.markAsUnread}</div>
                 <div onClick={() => sharePost(post)}>{dictionary.share}</div>
                 <div onClick={() => snoozePost(post)}>{dictionary.snooze}</div>
-                {post.author.id !== user.id && <div onClick={() => followPost(post)}>{post.is_followed ? dictionary.unFollow : dictionary.follow}</div>}
+                {post.author.id !== user.id && <div
+                  onClick={() => followPost(post)}>{post.is_followed ? dictionary.unFollow : dictionary.follow}</div>}
               </StyledMoreOptions>
             </div>
           )}
@@ -317,22 +324,24 @@ const PostDetail = (props) => {
           hide={!showDropZone}
           ref={refs.dropZoneRef}
           onDragLeave={handleHideDropzone}
-          onDrop={({ acceptedFiles }) => {
+          onDrop={({acceptedFiles}) => {
             dropAction(acceptedFiles);
           }}
           onCancel={handleHideDropzone}
         />
-        <PostBody post={post} postActions={postActions} isAuthor={post.author.id === user.id} dictionary={dictionary} disableOptions={disableOptions} />
-        <hr className="m-0" />
+        <PostBody post={post} postActions={postActions} isAuthor={post.author.id === user.id} dictionary={dictionary}
+                  disableOptions={disableOptions}/>
+        <hr className="m-0"/>
         <Counters className="d-flex align-items-center">
           <div>
-            <Icon className={react.user_clap_count ? "mr-2 post-reaction clap-true" : "mr-2 post-reaction clap-false"} icon="heart" onClick={handleReaction} />
+            <Icon className={react.user_clap_count ? "mr-2 post-reaction clap-true" : "mr-2 post-reaction clap-false"}
+                  icon="heart" onClick={handleReaction}/>
             {react.clap_count}
           </div>
           <div className="ml-auto text-muted">
-            <Icon className="mr-2" icon="message-square" />
+            <Icon className="mr-2" icon="message-square"/>
             {post.reply_count}
-            <Icon className="ml-2 mr-2 seen-indicator" icon="eye" />
+            <Icon className="ml-2 mr-2 seen-indicator" icon="eye"/>
             {post.view_user_ids.length}
           </div>
         </Counters>
@@ -340,9 +349,9 @@ const PostDetail = (props) => {
           <>
             <div className="card-body">
               <h6 className="mb-3 font-size-11 text-uppercase">{dictionary.files}</h6>
-              <PostFiles attachedFiles={post.files} type="workspace" post={post} />
+              <PostFiles attachedFiles={post.files} type="workspace" post={post}/>
             </div>
-            <hr className="m-0" />
+            <hr className="m-0"/>
           </>
         )}
         {comments && Object.keys(comments).length > 0 && (
@@ -359,10 +368,12 @@ const PostDetail = (props) => {
               dictionary={dictionary}
               disableOptions={disableOptions}
             />
-            <hr className="m-0" />
+            <hr className="m-0"/>
           </>
         )}
-        <PostDetailFooter post={post} commentActions={commentActions} onShowFileDialog={handleOpenFileDialog} dropAction={dropAction} workspace={workspace} isMember={isMember} disableOptions={disableOptions} />
+        <PostDetailFooter post={post} commentActions={commentActions} onShowFileDialog={handleOpenFileDialog}
+                          dropAction={dropAction} workspace={workspace} isMember={isMember}
+                          disableOptions={disableOptions}/>
       </MainBody>
     </>
   );
