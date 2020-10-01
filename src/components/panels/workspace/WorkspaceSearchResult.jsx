@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import {stripHtml} from "../../../helpers/stringFormatter";
 import {SvgIconFeather} from "../../common";
-import {useIsMember} from "../../hooks";
+import {useIsMember, useTranslation} from "../../hooks";
 
 const Wrapper = styled.li`
     position: relative;
@@ -25,15 +25,6 @@ const CheckIcon = styled(SvgIconFeather)`
     height: 1rem;
     stroke-width: 2px;
 `;
-
-const FolderIcon = styled(SvgIconFeather)`
-    width: 0.8rem;
-    height: 0.8rem;
-    stroke-width: 3px;
-    margin-right: 3px;
-    margin-bottom: 0.1rem;
-`;
-
 
 const WorkspaceSearchResult = (props) => {
 
@@ -63,19 +54,33 @@ const WorkspaceSearchResult = (props) => {
         onLeaveWorkspace(item);
     };
 
+    const { _t } = useTranslation();
+
+    const dictionary = {
+        labelArchived: _t("LABEL.ARCHIVED", "Archived"),
+        labelPrivate: _t("LABEL.PRIVATE", "Private"),
+        labelOpen: _t("LABEL.OPEN", "Open"),
+        labelJoined: _t("LABEL.JOINED", "Joined"),
+        sidebarWorkspaces: _t("SIDEBAR.WORKSPACES", "Workspaces"),
+        member: _t("LABEL.MEMBER", "member"),
+        members: _t("LABEL.MEMBERS", "members"),
+        buttonJoin: _t("BUTTON.JOIN", "Join"),
+        buttonLeave: _t("BUTTON.LEAVE", "Leave"),
+    };
+
     return (
         <Wrapper className="list-group-item p-l-0 p-r-0" onClick={handleRedirect}>
             <div className="workspace-search-detail">
                 <div className="workspace-title-status">
                     <h5>{topic.name}</h5>
-                    { topic.is_locked && <span className={`badge badge-ultralight ml-1`}>Private</span> }
-                    { topic.is_archive && <span className={`badge badge-ultralight ml-1`}>Archived</span> }
-                    { !topic.is_archive && !topic.is_locked && <span className={`badge badge-ultralight ml-1`}>Open</span> }
+                    { topic.is_locked && <span className={`badge badge-ultralight ml-1`}>{dictionary.labelPrivate}</span> }
+                    { topic.is_archive && <span className={`badge badge-ultralight ml-1`}>{dictionary.labelArchived}</span> }
+                    { !topic.is_archive && !topic.is_locked && <span className={`badge badge-ultralight ml-1`}>{dictionary.labelOpen}</span> }
                 </div>
                 <ul className="workspace-detail-lists">
-                    { isMember && <li className="text-success"><CheckIcon icon="check"/>Joined</li> }
-                    <li>{item.members.length} {item.members.length === 1 ? "member" : "members"}</li>
-                    <li><FolderIcon icon="folder" />{workspace ? workspace.name : "Workspaces"}</li>
+                    { isMember && <li className="text-success"><CheckIcon icon="check"/>{dictionary.labelJoined}</li> }
+                    <li>{item.members.length} {item.members.length === 1 ? dictionary.member : dictionary.members}</li>
+                    <li>{workspace ? workspace.name : dictionary.sidebarWorkspaces}</li>
                     <li>{stripHtml(topic.description)}</li>
                 </ul>
             </div>
@@ -83,11 +88,11 @@ const WorkspaceSearchResult = (props) => {
                 !isMember ?
                 <JoinButton onClick={handleJoinWorkspace} className="btn btn-primary join-button">
                     <SvgIconFeather icon="user-plus" />
-                    Join
+                    {dictionary.buttonJoin}
                 </JoinButton>
                 :
                 <JoinButton onClick={handleLeaveWorkspace} className="btn btn-primary join-button">
-                    Leave
+                    {dictionary.buttonLeave}
                 </JoinButton>
             }
         </Wrapper>

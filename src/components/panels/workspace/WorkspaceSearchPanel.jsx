@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
 import { WorkspaceSearch, WorkspaceSearchResults } from "./index";
-import { useWorkspaceSearchActions, useRedirect } from "../../hooks";
+import { useWorkspaceSearchActions, useRedirect, useTranslation } from "../../hooks";
 import { SvgIconFeather } from "../../common";
 import ReactPaginate from "react-paginate"
 
@@ -98,6 +98,16 @@ const WorkspaceSearchPanel = (props) => {
         }
     }
 
+    const { _t } = useTranslation();
+
+    const dictionary = {
+        labelResultsFor: _t("LABEL.RESULTS_FOR", "results found for: "),
+        labelSearching: _t("LABEL.SEARCHING", "Searching "),
+        sidebarWorkspaces: _t("SIDEBAR.WORKSPACES", "Workspaces"),
+        buttonNextPage: _t("BUTTON.NEXT_PAGE", "Next"),
+        buttonPrevPage: _t("BUTTON.PREV_PAGE", "Previous"),
+    };
+
     return (
         <Wrapper className={`user-search-panel container-fluid h-100 ${className}`}>
         <div className="row">
@@ -110,16 +120,16 @@ const WorkspaceSearchPanel = (props) => {
                         <h4 className="mb-5">
                         <SvgIconFeather icon="search" />
                         {
-                            searching && <span>Searching <span className="text-primary">“{value}”</span></span>
+                            searching && <span>{dictionary.labelSearching}<span className="text-primary">“{value}”</span></span>
                         }
                         {
-                            !searching && <span>{count} results found for: <span className="text-primary">“{value}”</span></span>
+                            !searching && <span>{count} {dictionary.labelResultsFor}<span className="text-primary">“{value}”</span></span>
                         }
                         </h4>
                         :
                         <h4 className="mb-5">
                         {
-                            results.length > 0 && <span>{count} workspaces</span>
+                            results.length > 0 && <span>{count} {dictionary.sidebarWorkspaces}</span>
                         }
                         </h4>
                     }
@@ -132,8 +142,8 @@ const WorkspaceSearchPanel = (props) => {
                         count > 25 && 
                         <nav className="mt-3">
                             <ReactPaginate
-                                previousLabel={'previous'}
-                                nextLabel={'next'}
+                                previousLabel={dictionary.buttonPrevPage}
+                                nextLabel={dictionary.buttonNextPage}
                                 breakLabel={'...'}
                                 breakClassName={'break-me page-item'}
                                 breakLinkClassName={"page-link"}

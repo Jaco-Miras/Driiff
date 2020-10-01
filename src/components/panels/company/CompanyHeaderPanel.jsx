@@ -5,6 +5,7 @@ import styled from "styled-components";
 import {SvgIconFeather} from "../../common";
 import {HeaderProfileNavigation} from "../common";
 import {CompanyPageHeaderPanel} from "../company";
+import {useTranslation} from "../../hooks";
 
 const Wrapper = styled.div`
   display: flex;
@@ -83,15 +84,34 @@ const CompanyName = styled.h2`
 `;
 
 const CompanyHeaderPanel = () => {
-  // const dispatch = useDispatch();
+
   const match = useRouteMatch();
 
+  const {driff, user: {GENERAL_SETTINGS: {dark_mode}}} = useSelector((state) => state.settings);
   const unreadCounter = useSelector((state) => state.global.unreadCounter);
-  // const { driffSettings } = useSettings();
+  const {_t} = useTranslation();
+
+  const dictionary = {
+    pageTitleDashboard: _t("PAGE_TITLE.DASHBOARD", "Dashboard"),
+    pageTitlePosts: _t("PAGE_TITLE.POSTS", "Posts"),
+    pageTitleChat: _t("PAGE_TITLE.CHAT", "Chat"),
+    pageTitleFiles: _t("PAGE_TITLE.FILES", "Files"),
+    pageTitleNotifications: _t("PAGE_TITLE.NOTIFICATIONS", "Notifications"),
+    pageTitlePeople: _t("PAGE_TITLE.PEOPLE", "People"),
+    pageTitleProfile: _t("PAGE_TITLE.PROFILE", "Profile"),
+    pageTitleSearch: _t("PAGE_TITLE.SEARCH", "Search"),
+    pageTitleSettings: _t("PAGE_TITLE.SETTINGS", "Settings"),
+    pageTitleTodos: _t("PAGE_TITLE.TODOS", "To-dos & Reminders"),
+    generalSearch: _t("GENERAL.SEARCH", "Search"),
+    generalNotifications: _t("GENERAL.NOTIFICATIONS", "Notifications"),
+    generalSwitchTheme: _t("SETTINGS.SWITCH_TO_THEME_MODE", "Switch to ::mode::", {
+      mode: dark_mode === "0" ? _t("SETTINGS.DARK_MODE", "dark mode") : _t("SETTINGS.LIGHT_MODE", "light mode")
+    })
+  }
 
   const dispatch = useDispatch();
-  const [pageName, setPageName] = useState("Dashboard");
-  const driff = useSelector((state) => state.settings.driff);
+  const [pageName, setPageName] = useState(dictionary.pageTitleDashboard);
+
 
   const handleMenuOpenMobile = (e) => {
     e.preventDefault();
@@ -107,56 +127,45 @@ const CompanyHeaderPanel = () => {
       body.classList.add("stretch-layout");
     }
 
-    let page = "";
     switch (match.params.page) {
       case "posts": {
-        page = "Posts";
-        setPageName(page);
+        setPageName(dictionary.pageTitlePosts);
         break;
       }
       case "chat": {
-        page = "Chat";
-        setPageName(page);
+        setPageName(dictionary.pageTitleChat);
         break;
       }
       case "files": {
-        page = "Files";
-        setPageName(page);
+        setPageName(dictionary.pageTitleFiles);
         break;
       }
       case "notifications": {
-        page = "Notifications";
-        setPageName(page);
+        setPageName(dictionary.pageTitleNotifications);
         break;
       }
       case "people": {
-        page = "People";
-        setPageName(page);
+        setPageName(dictionary.pageTitlePeople);
         break;
       }
       case "profile": {
-        page = "Profile";
-        setPageName(page);
+        setPageName(dictionary.pageTitleProfile);
         break;
       }
       case "search": {
-        page = "Search";
-        setPageName(page);
+        setPageName(dictionary.pageTitleSearch);
         break;
       }
       case "settings": {
-        page = "Settings";
-        setPageName(page);
+        setPageName(dictionary.pageTitleSettings);
         break;
       }
       case "todos": {
-        page = "To-dos & Reminders";
-        setPageName(page);
+        setPageName(dictionary.pageTitleTodos);
         break;
       }
       default: {
-        page = "Dashboard";
-        setPageName(page);
+        setPageName(dictionary.pageTitleDashboard);
       }
     }
 
@@ -186,7 +195,7 @@ const CompanyHeaderPanel = () => {
               match.params.page !== "todos" &&
               <div className="navbar-bottom">
                 <div className="navbar-main">
-                  <CompanyPageHeaderPanel/>
+                  <CompanyPageHeaderPanel dictionary={dictionary}/>
                 </div>
               </div>
             }
@@ -195,7 +204,7 @@ const CompanyHeaderPanel = () => {
       </div>
 
       <div>
-        <HeaderProfileNavigation/>
+        <HeaderProfileNavigation dictionary={dictionary}/>
       </div>
     </Wrapper>
   );

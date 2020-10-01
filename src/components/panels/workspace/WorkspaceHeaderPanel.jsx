@@ -7,7 +7,7 @@ import { SvgIconFeather } from "../../common";
 import { HeaderProfileNavigation } from "../common";
 import { SettingsLink } from "../../workspace";
 import { joinWorkspace } from "../../../redux/actions/workspaceActions";
-import { useToaster } from "../../hooks";
+import { useToaster, useTranslation } from "../../hooks";
 import { MemberLists } from "../../list/members";
 
 import { WorkspacePageHeaderPanel } from "../workspace";
@@ -295,6 +295,12 @@ const WorspaceHeaderPanel = (props) => {
     }
   }, [match.params.page, dispatch, activeTopic]);
 
+  const { _t } = useTranslation();
+
+  const dictionary = {
+    searchWorkspaceSearchTitle: _t("PLACEHOLDER.SEARCH_WORKSPACE_TITLE", "Search workspace"),
+  };
+
   return (
     <>
       <NavBarLeft className="navbar-left">
@@ -307,7 +313,7 @@ const WorspaceHeaderPanel = (props) => {
                 </a>
               </li>
               <li className="nav-item nav-item-folder">
-                <WorkspaceName>Search workspace</WorkspaceName>
+                <WorkspaceName>{dictionary.searchWorkspaceSearchTitle}</WorkspaceName>
               </li>
             </>
           ) : activeTopic ? (
