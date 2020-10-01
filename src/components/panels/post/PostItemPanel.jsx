@@ -48,6 +48,9 @@ const Wrapper = styled.li`
       color: #7a1b8b;
     }
   }
+  .post-partialBody {
+    color: #b8b8b8;
+  }
 `;
 
 const Icon = styled(SvgIconFeather)`
@@ -98,9 +101,9 @@ const PostItemPanel = (props) => {
                             ${post.is_mark_done ? "text-success" : ""}`}
           >
             <span>{post.title}</span>
-            <div>
-              <span className={`text-truncate`}
-                                      dangerouslySetInnerHTML={{__html: quillHelper.parseEmoji(post.body)}}/>
+            <div className='text-truncate post-partialBody'>
+              <span className={`text-truncate post-partialBody`}
+                                      dangerouslySetInnerHTML={{__html: quillHelper.parseEmoji(post.partial_body)}}/>
             </div>
             {post.unread_count !== 0 && <div className="ml-2 badge badge-primary badge-pill">{post.unread_count}</div>}
           </div>
