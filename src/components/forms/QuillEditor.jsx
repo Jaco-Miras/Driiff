@@ -1,10 +1,17 @@
 import "quill-mention";
-import React, { forwardRef } from "react";
-import ReactQuill, { Quill } from "react-quill";
+import React, {forwardRef} from "react";
+import ReactQuill, {Quill} from "react-quill";
 import "react-quill/dist/quill.snow.css";
+import {useTranslation} from "../hooks";
 
 const QuillEditor = forwardRef((props, ref) => {
-  return <ReactQuill theme="snow" {...props} ref={ref} placeholder="Write great things here..." />;
+  const {className = "", theme = "snow", placeholder = "", ...otherProps} = props;
+  const {_t} = useTranslation();
+
+  const appliedPlaceholder = placeholder !== "" ? placeholder : _t("FORM.REACT_QUILL_PLACEHOLDER", "Write great things here...");
+
+  return <ReactQuill className={`quill-editor ${className}`} theme={theme} {...otherProps} ref={ref}
+                     placeholder={appliedPlaceholder}/>;
 });
 export default QuillEditor;
 

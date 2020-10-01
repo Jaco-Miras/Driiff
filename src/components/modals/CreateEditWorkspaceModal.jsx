@@ -1,18 +1,19 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useHistory } from "react-router-dom";
-import { Input, InputGroup, Label, Modal, ModalBody } from "reactstrap";
+import React, {useCallback, useEffect, useRef, useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
+import {useHistory} from "react-router-dom";
+import {Input, InputGroup, Label, Modal, ModalBody} from "reactstrap";
 import styled from "styled-components";
-import { EmailRegex, replaceChar } from "../../helpers/stringFormatter";
-import { deleteWorkspaceFiles, setPendingUploadFilesToWorkspace } from "../../redux/actions/fileActions";
-import { addToModals, clearModal } from "../../redux/actions/globalActions";
-import { createWorkspace, leaveWorkspace, setActiveTopic, updateWorkspace } from "../../redux/actions/workspaceActions";
-import { FileAttachments, SvgIconFeather } from "../common";
-import { DropDocument } from "../dropzone/DropDocument";
-import { CheckBox, DescriptionInput, FolderSelect, InputFeedback, PeopleSelect } from "../forms";
-import { useToaster, useTranslation } from "../hooks";
-import { ModalHeaderSection } from "./index";
-import { putChannel } from "../../redux/actions/chatActions";
+import {EmailRegex, replaceChar} from "../../helpers/stringFormatter";
+import {deleteWorkspaceFiles, setPendingUploadFilesToWorkspace} from "../../redux/actions/fileActions";
+import {addToModals, clearModal} from "../../redux/actions/globalActions";
+import {createWorkspace, leaveWorkspace, setActiveTopic, updateWorkspace} from "../../redux/actions/workspaceActions";
+import {FileAttachments, SvgIconFeather} from "../common";
+import {DropDocument} from "../dropzone/DropDocument";
+import {CheckBox, DescriptionInput, FolderSelect, InputFeedback, PeopleSelect} from "../forms";
+import {useToaster, useTranslation} from "../hooks";
+import {ModalHeaderSection} from "./index";
+import {putChannel} from "../../redux/actions/chatActions";
+import {renderToString} from "react-dom/server";
 
 const WrapperDiv = styled(InputGroup)`
   display: flex;
@@ -135,6 +136,17 @@ const StyledDescriptionInput = styled(DescriptionInput)`
     min-width: 100%;
     font-weight: 500;
   }
+  
+  .ql-toolbar {
+    bottom: 30px;
+    left: 40px;  
+  }
+  
+  .invalid-feedback {
+    position: absolute;
+    bottom: 0;
+    top: auto;
+  }
 `;
 
 const LockIcon = styled(SvgIconFeather)`
@@ -143,34 +155,9 @@ const LockIcon = styled(SvgIconFeather)`
 `;
 
 const CreateEditWorkspaceModal = (props) => {
-  const { type, mode, item = null } = props.data;
+  const {type, mode, item = null} = props.data;
 
-  const { _t } = useTranslation();
-  const dictionary = {
-    createWorkspace: _t("WORKSPACE.CREATE_WORKSPACE", "Create workspace"),
-    create: _t("BUTTON.CREATE", "Create"),
-    updateWorkspace: _t("WORKSPACE.UPDATE_WORKSPACE", "Update workspace"),
-    update: _t("BUTTON.UPDATE", "Update"),
-    workspaceName: _t("WORKSPACE.WORKSPACE_NAME", "Name"),
-    workspaceInfo: _t("WORKSPACE.WORKSPACE_INFO", "A workspace centers the team communication about a subject. A workspace can only be connected to one folder."),
-    lockWorkspace: _t("WORKSPACE.WORKSPACE_LOCK", "Make workspace private"),
-    lockWorkspaceText: _t("WORKSPACE.WORKSPACE_LOCK.DESCRIPTION", "When a workspace is private it is only visible to the members of the workspace."),
-    archiveThisWorkspace: _t("WORKSPACE.WORKSPACE_ARCHIVE", "Archive this workspace"),
-    unarchiveThisWorkspace: _t("WORKSPACE.WORKSPACE_UNARCHIVE", "Unarchive this workspace"),
-    description: _t("LABEL.DESCRIPTION", "Description"),
-    addToFolder: _t("CHECKBOX.ADD_TO_FOLDER", "Add to folder"),
-    folder: _t("LABEL.FOLDER", "Folder"),
-    team: _t("LABEL.TEAM", "Team"),
-    archiveWorkspace: _t("HEADER.ARCHIVE_WORKSPACE", "Archive workspace"),
-    archive: _t("BUTTON.ARCHIVE", "Archive"),
-    unarchiveWorkspace: _t("HEADER.UNARCHIVE_WORKSPACE", "Unarchive workspace"),
-    cancel: _t("BUTTON.CANCEL", "Cancel"),
-    archiveBodyText: _t("TEXT.ARCHIVE_CONFIRMATION", "Are you sure you want to archive this workspace?"),
-    unarchiveBodyText: _t("TEXT.UNARCHIVE_CONFIRMATION", "Are you sure you want to unarchive this workspace?"),
-    confirm: _t("WORKSPACE.CONFIRM", "Confirm"),
-    lockedWorkspace: _t("WORKSPACE.LOCKED_WORKSPACE", "Private workspace"),
-    lockedWorkspaceText: _t("WORKSPACE.LOCKED_WORKSPACE_TEXT", "Only members can view and search this workspace."),
-  };
+  const {_t} = useTranslation();
 
   const history = useHistory();
   const dispatch = useDispatch();
@@ -180,7 +167,6 @@ const CreateEditWorkspaceModal = (props) => {
   const users = useSelector((state) => state.users.users);
   const workspaces = useSelector((state) => state.workspaces.workspaces);
   const folders = useSelector((state) => state.workspaces.folders);
-  //const activeTab = useSelector((state) => state.workspaces.activeTab);
   const [userOptions, setUserOptions] = useState([]);
   const [inputValue, setInputValue] = useState("");
   const [invitedEmails, setInvitedEmails] = useState([]);
@@ -194,15 +180,15 @@ const CreateEditWorkspaceModal = (props) => {
         ? null
         : item.type === "FOLDER"
         ? {
-            value: item.id,
-            label: item.name,
-          }
+          value: item.id,
+          label: item.name,
+        }
         : item.folder_id
-        ? {
+          ? {
             value: item.folder_id,
             label: item.folder_name,
           }
-        : null,
+          : null,
     description: "",
     textOnly: "",
   });
@@ -231,11 +217,48 @@ const CreateEditWorkspaceModal = (props) => {
   const [mentionedUserIds, setMentionedUserIds] = useState([]);
   const [ignoredMentionedUserIds, setIgnoredMentionedUserIds] = useState([]);
 
+  const dictionary = {
+    createWorkspace: _t("WORKSPACE.CREATE_WORKSPACE", "Create workspace"),
+    create: _t("BUTTON.CREATE", "Create"),
+    updateWorkspace: _t("WORKSPACE.UPDATE_WORKSPACE", "Update workspace"),
+    update: _t("BUTTON.UPDATE", "Update"),
+    workspaceName: _t("WORKSPACE.WORKSPACE_NAME", "Name"),
+    workspaceInfo: _t("WORKSPACE.WORKSPACE_INFO", "A workspace centers the team communication about a subject. A workspace can only be connected to one folder."),
+    lockWorkspace: _t("WORKSPACE.WORKSPACE_LOCK", "Make workspace private"),
+    lockWorkspaceText: _t("WORKSPACE.WORKSPACE_LOCK.DESCRIPTION", "When a workspace is private it is only visible to the members of the workspace."),
+    archiveThisWorkspace: _t("WORKSPACE.WORKSPACE_ARCHIVE", "Archive this workspace"),
+    unArchiveThisWorkspace: _t("WORKSPACE.WORKSPACE_UNARCHIVE", "Unarchive this workspace"),
+    description: _t("LABEL.DESCRIPTION", "Description"),
+    addToFolder: _t("CHECKBOX.ADD_TO_FOLDER", "Add to folder"),
+    folder: _t("LABEL.FOLDER", "Folder"),
+    team: _t("LABEL.TEAM", "Team"),
+    archiveWorkspace: _t("HEADER.ARCHIVE_WORKSPACE", "Archive workspace"),
+    archive: _t("BUTTON.ARCHIVE", "Archive"),
+    unArchiveWorkspace: _t("HEADER.UNARCHIVE_WORKSPACE", "Unarchive workspace"),
+    cancel: _t("BUTTON.CANCEL", "Cancel"),
+    archiveBodyText: _t("TEXT.ARCHIVE_CONFIRMATION", "Are you sure you want to archive this workspace?"),
+    unArchiveBodyText: _t("TEXT.UNARCHIVE_CONFIRMATION", "Are you sure you want to unarchive this workspace?"),
+    confirm: _t("WORKSPACE.CONFIRM", "Confirm"),
+    lockedWorkspace: _t("WORKSPACE.LOCKED_WORKSPACE", "Private workspace"),
+    lockedWorkspaceText: _t("WORKSPACE.LOCKED_WORKSPACE_TEXT", "Only members can view and search this workspace."),
+    feedbackWorkspaceNameIsRequired: _t("FEEDBACK.WORKSPACE_NAME_IS_REQUIRED", "Workspace name is required."),
+    feedbackWorkspaceNameAlreadyExists: _t("FEEDBACK.WORKSPACE_NAME_ALREADY_EXISTS", "Workspace name already exists."),
+    feedbackWorkspaceDescriptionIsRequired: _t("FEEDBACK.WORKSPACE_DESCRIPTION_IS_REQUIRED", "Description is required."),
+    toasterWorkspaceIsCreated: _t("TOASTER.WORKSPACE_IS_CREATED", `::workspace_name:: workspace is created.`, {
+      workspace_name: renderToString(<b>{form.name}</b>)
+    }),
+    toasterWorkspaceFolderUnderDirectory: form.selectedFolder !== null ?
+      _t("TOASTER.WORKSPACE_UNDER_FOLDER_IS_CREATED", "::workspace_name:: workspace is created under ::folder_name:: directory", {
+        workspace_name: renderToString(<b>{form.name}</b>),
+        folder_name: renderToString(<b>{form.selectedFolder.label}</b>)
+      }) : ""
+  };
+
   const _validateName = useCallback(() => {
     if (form.name === "") {
       setFeedback((prevState) => ({
         ...prevState,
-        name: "Workspace name is required.",
+        name: dictionary.feedbackWorkspaceNameIsRequired,
       }));
       setValid((prevState) => ({
         ...prevState,
@@ -254,33 +277,33 @@ const CreateEditWorkspaceModal = (props) => {
       })
     ) {
       setFeedback((prevState) => {
-        return { ...prevState, name: "Workspace name already exists." };
+        return {...prevState, name: dictionary.feedbackWorkspaceNameAlreadyExists};
       });
       setValid((prevState) => {
-        return { ...prevState, name: true };
+        return {...prevState, name: true};
       });
       return true;
     }
 
     setFeedback((prevState) => {
-      return { ...prevState, name: "" };
+      return {...prevState, name: ""};
     });
 
     setValid((prevState) => {
-      return { ...prevState, name: true };
+      return {...prevState, name: true};
     });
   }, [form.name, form.has_folder, form.selectedFolder, workspaces, setValid, setFeedback]);
 
   const toggle = () => {
     setModal(!modal);
-    dispatch(clearModal({ type: type }));
+    dispatch(clearModal({type: type}));
   };
 
   const toggleCheck = (e) => {
     const name = e.target.dataset.name;
     const checked = !form[name];
     setForm((prevState) => {
-      return { ...prevState, [name]: checked };
+      return {...prevState, [name]: checked};
     });
   };
 
@@ -291,7 +314,7 @@ const CreateEditWorkspaceModal = (props) => {
         value: ws.id,
         label: (
           <>
-            {ws.name} {ws.is_lock === 1 && <LockIcon icon="lock" strokeWidth="2" />}
+            {ws.name} {ws.is_lock === 1 && <LockIcon icon="lock" strokeWidth="2"/>}
           </>
         ),
       };
@@ -305,7 +328,7 @@ const CreateEditWorkspaceModal = (props) => {
       }));
       setValid((prevState) => ({
         ...prevState,
-        team: mode === "edit" ? true : false,
+        team: mode === "edit",
       }));
     } else {
       setForm((prevState) => ({
@@ -482,7 +505,7 @@ const CreateEditWorkspaceModal = (props) => {
           toggle();
         } else {
           if (removed_members.some((id) => id === user.id)) {
-            dispatch(leaveWorkspace({ workspace_id: item.id, channel_id: item.channel.id }));
+            dispatch(leaveWorkspace({workspace_id: item.id, channel_id: item.channel.id}));
           }
           dispatch(updateWorkspace(payload, cb));
         }
@@ -535,7 +558,7 @@ const CreateEditWorkspaceModal = (props) => {
               toaster.warning(
                 <span>
                   Workspace creation failed.
-                  <br />
+                  <br/>
                   Please try again.
                 </span>
               );
@@ -544,9 +567,15 @@ const CreateEditWorkspaceModal = (props) => {
             if (res) {
               //redirect url
               if (form.selectedFolder && typeof form.selectedFolder.value === "number") {
-                history.push(`/workspace/dashboard/${form.selectedFolder.value}/${replaceChar(form.selectedFolder.label)}/${res.data.id}/${replaceChar(form.name)}`, { folder_id: form.selectedFolder.value, workspace_id: res.data.id });
+                history.push(`/workspace/dashboard/${form.selectedFolder.value}/${replaceChar(form.selectedFolder.label)}/${res.data.id}/${replaceChar(form.name)}`, {
+                  folder_id: form.selectedFolder.value,
+                  workspace_id: res.data.id
+                });
               } else {
-                history.push(`/workspace/dashboard/${res.data.id}/${replaceChar(form.name)}`, { folder_id: null, workspace_id: res.data.id });
+                history.push(`/workspace/dashboard/${res.data.id}/${replaceChar(form.name)}`, {
+                  folder_id: null,
+                  workspace_id: res.data.id
+                });
               }
               if (attachedFiles.length) {
                 let formData = new FormData();
@@ -589,18 +618,11 @@ const CreateEditWorkspaceModal = (props) => {
 
               dispatch(setActiveTopic(newWorkspace));
 
-              toaster.success(
-                <span>
-                  <b>{form.name}</b> workspace is created
-                  {form.selectedFolder !== null && (
-                    <>
-                      {" "}
-                      <b>{form.selectedFolder.label}</b> under directory
-                    </>
-                  )}
-                  .
-                </span>
-              );
+              toaster.success(<span
+                dangerouslySetInnerHTML={{
+                  __html: dictionary.toasterWorkspaceFolderUnderDirectory === "" ?
+                    dictionary.toasterWorkspaceIsCreated : dictionary.toasterWorkspaceFolderUnderDirectory
+                }}/>);
             }
           })
         );
@@ -670,7 +692,7 @@ const CreateEditWorkspaceModal = (props) => {
       if (textOnly.trim() === "") {
         setFeedback((prevState) => ({
           ...prevState,
-          description: "Description is required.",
+          description: dictionary.feedbackWorkspaceDescriptionIsRequired,
         }));
         setValid((prevState) => ({
           ...prevState,
@@ -761,9 +783,9 @@ const CreateEditWorkspaceModal = (props) => {
     if (item.active === 0) {
       payload = {
         ...payload,
-        headerText: dictionary.unarchiveWorkspace,
-        submitText: dictionary.unarchiveWorkspace,
-        bodyText: dictionary.unarchiveBodyText,
+        headerText: dictionary.unArchiveWorkspace,
+        submitText: dictionary.unArchiveWorkspace,
+        bodyText: dictionary.unArchiveBodyText,
       };
     }
 
@@ -773,14 +795,14 @@ const CreateEditWorkspaceModal = (props) => {
   const handleArchive = useCallback(() => {
     let payload = {
       id: item.channel.id,
-      is_archived: item.active === 1 ? true : false,
+      is_archived: item.active === 1,
       is_muted: false,
       is_pinned: false,
       is_shared: item.is_external,
     };
 
     if (!payload.is_archived) {
-      payload.push_unarchived = 1;
+      payload.push_unArchived = 1;
     }
 
     dispatch(putChannel(payload));
@@ -830,9 +852,9 @@ const CreateEditWorkspaceModal = (props) => {
         selectedUsers: members,
         selectedFolder: item.folder_id
           ? {
-              value: item.folder_id,
-              label: item.folder_name,
-            }
+            value: item.folder_id,
+            label: item.folder_name,
+          }
           : null,
         description: item.description,
         textOnly: item.description,
@@ -855,9 +877,9 @@ const CreateEditWorkspaceModal = (props) => {
           item === null
             ? null
             : {
-                value: item.id,
-                label: item.name,
-              },
+              value: item.id,
+              label: item.name,
+            },
         has_folder: item === null ? false : item.type === "FOLDER",
       }));
 
@@ -947,13 +969,14 @@ const CreateEditWorkspaceModal = (props) => {
 
   return (
     <Modal innerRef={refs.container} isOpen={modal} toggle={toggle} centered size="lg" onOpened={onOpened}>
-      <ModalHeaderSection toggle={toggle}>{mode === "edit" ? dictionary.updateWorkspace : dictionary.createWorkspace}</ModalHeaderSection>
+      <ModalHeaderSection
+        toggle={toggle}>{mode === "edit" ? dictionary.updateWorkspace : dictionary.createWorkspace}</ModalHeaderSection>
       <ModalBody onDragOver={handleShowDropzone}>
         <DropDocument
           hide={!showDropzone}
           ref={refs.dropZone}
           onDragLeave={handleHideDropzone}
-          onDrop={({ acceptedFiles }) => {
+          onDrop={({acceptedFiles}) => {
             dropAction(acceptedFiles);
           }}
           onCancel={handleHideDropzone}
@@ -977,7 +1000,7 @@ const CreateEditWorkspaceModal = (props) => {
           </div>
         </WrapperDiv>
         <WrapperDiv className={"modal-input"}>
-          <Label for="has_folder" />
+          <Label for="has_folder"/>
           <CheckBox type="success" name="has_folder" checked={form.has_folder} onClick={toggleCheck}>
             {dictionary.addToFolder}
           </CheckBox>
@@ -985,7 +1008,8 @@ const CreateEditWorkspaceModal = (props) => {
         {form.has_folder === true && (
           <WrapperDiv className={"modal-input"}>
             <Label for="people">{dictionary.folder}</Label>
-            <SelectFolder options={folderOptions} value={form.selectedFolder} onChange={handleSelectFolder} isMulti={false} isClearable={true} />
+            <SelectFolder options={folderOptions} value={form.selectedFolder} onChange={handleSelectFolder}
+                          isMulti={false} isClearable={true}/>
             <InputFeedback valid={valid.has_folder}>{feedback.has_folder}</InputFeedback>
           </WrapperDiv>
         )}
@@ -1024,11 +1048,11 @@ const CreateEditWorkspaceModal = (props) => {
         />
         {(attachedFiles.length > 0 || uploadedFiles.length > 0) && (
           <WrapperDiv className="file-attachment-wrapper">
-            <FileAttachments attachedFiles={[...attachedFiles, ...uploadedFiles]} handleRemoveFile={handleRemoveFile} />
+            <FileAttachments attachedFiles={[...attachedFiles, ...uploadedFiles]} handleRemoveFile={handleRemoveFile}/>
           </WrapperDiv>
         )}
         <WrapperDiv className="action-wrapper">
-          <Label />
+          <Label/>
           <CheckBox name="is_private" checked={form.is_private} onClick={toggleCheck}>
             {dictionary.lockWorkspace}
           </CheckBox>
@@ -1036,7 +1060,7 @@ const CreateEditWorkspaceModal = (props) => {
             <Label className={"lock-workspace-text"}>{dictionary.lockWorkspaceText}</Label>
           </div>
           <button className="btn btn-primary" onClick={handleConfirm}>
-            {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />}
+            {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"/>}
             {mode === "edit" ? dictionary.updateWorkspace : dictionary.createWorkspace}
           </button>
           {mode === "edit" && (
@@ -1047,7 +1071,7 @@ const CreateEditWorkspaceModal = (props) => {
                 </span>
               ) : (
                 <span onClick={handleShowArchiveConfirmation} className="btn-archive text-link mt-2 cursor-pointer">
-                  {dictionary.unarchiveThisWorkspace}
+                  {dictionary.unArchiveThisWorkspace}
                 </span>
               )}
             </div>
