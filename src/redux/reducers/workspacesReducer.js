@@ -695,11 +695,63 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         workspacePosts: newWorkspacePosts,
         workspaces: updatedWorkspaces,
-        activeTopic: addUnreadPost ? { ...state.activeTopic, unread_posts: state.activeTopic.unread_posts + 1} : state.activeTopic
+        activeTopic: addUnreadPost ? {
+          ...state.activeTopic,
+          unread_posts: state.activeTopic.unread_posts + 1
+        } : state.activeTopic
+      };
+    }
+    case "INCOMING_TO_DO":
+    case "INCOMING_UPDATE_TO_DO":
+    case "INCOMING_DONE_TO_DO":
+    case "INCOMING_REMOVE_TO_DO": {
+      let newWorkspacePosts = {...state.workspacePosts};
+      let postComments = {...state.postComments}
+      if (action.data.link_type === "POST" && action.data.data) {
+        action.data.data.workspaces.forEach((w) => {
+          if (
+            typeof newWorkspacePosts[w.topic.id] !== "undefined" &&
+            typeof newWorkspacePosts[w.topic.id].posts[action.data.data.post.id] !== "undefined") {
+            newWorkspacePosts[w.topic.id].posts[action.data.data.post.id] = {
+              ...newWorkspacePosts[w.topic.id].posts[action.data.data.post.id],
+              todo_reminder: action.type === "INCOMING_REMOVE_TO_DO" ? null : {
+                id: action.data.id,
+                remind_at: action.data.remind_at,
+                status: action.data.status
+              }
+            };
+          }
+        });
+      }
+
+      if (action.data.link_type === "POST_COMMENT" &&
+        action.data.data &&
+        typeof postComments[action.data.data.post.id] !== "undefined" &&
+        typeof postComments[action.data.data.post.id].comments[action.data.data.comment.id] !== "undefined") {
+        postComments[action.data.data.post.id] = {
+          ...postComments[action.data.data.post.id],
+          comments: {
+            ...postComments[action.data.data.post.id].comments,
+            [action.data.data.comment.id]: {
+              ...postComments[action.data.data.post.id].comments[action.data.data.comment.id],
+              todo_reminder: action.type === "INCOMING_REMOVE_TO_DO" ? null : {
+                id: action.data.id,
+                remind_at: action.data.remind_at,
+                status: action.data.status
+              }
+            }
+          }
+        }
+      }
+
+      return {
+        ...state,
+        postComments: postComments,
+        workspacePosts: newWorkspacePosts,
       };
     }
     case "INCOMING_UPDATED_POST": {
-      let newWorkspacePosts = { ...state.workspacePosts };
+      let newWorkspacePosts = {...state.workspacePosts};
       action.data.recipient_ids.forEach((id) => {
         if (newWorkspacePosts.hasOwnProperty(id)) {
           if (action.data.is_personal && !Object.values(action.data.users_responsible).map(u => u.id).includes(state.user.id)) {

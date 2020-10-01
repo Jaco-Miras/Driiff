@@ -14498,6 +14498,7 @@ body.modal-open .modal.show .modal-dialog {
 
 .avatar.avatar-state-success:before {
   background: #00c851;
+  z-index: 1;
 }
 
 .avatar.avatar-state-danger:before {

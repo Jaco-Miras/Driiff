@@ -28,7 +28,6 @@ const ChatInputContainer = styled.div`
 
 const IconButton = styled(SvgIconFeather)`
   cursor: pointer;
-  cursor: hand;
   border: 1px solid #afb8bd;
   height: 37px;
   margin: -1px 8px;
@@ -72,7 +71,6 @@ const Dflex = styled.div`
     }
     .channel-create {
       letter-spacing: 0;
-      margin-bottom: 0;
       color: #b8b8b8;
       font-weight: normal;
       font-size: 19px;
@@ -125,8 +123,8 @@ const NoReply = styled.div`
 `;
 
 const PickerContainer = styled(CommonPicker)`
-  right: unset;
-  bottom: 70px;
+  left: 32px;
+  bottom: 60px;
 `;
 
 const FileNames = styled.div`
@@ -280,16 +278,16 @@ const PostDetailFooter = (props) => {
       }
       {isMember && !disableOptions && (
         <>
-          <Dflex className="d-flex align-items-center">
+          <Dflex className="d-flex align-items-end">
             {post.is_read_only === 1 ? (
               <NoReply className="d-flex align-items-center">
                 <div className="alert alert-warning">No reply allowed</div>
               </NoReply>
             ) : (
               <React.Fragment>
-              <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Emoji" className="emojiButton">
-                <IconButton onClick={handleShowEmojiPicker} icon="smile" />
-              </Tooltip>
+                <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Emoji" className="emojiButton">
+                  <IconButton onClick={handleShowEmojiPicker} icon="smile"/>
+                </Tooltip>
                 <ChatInputContainer ref={innerRef} className="flex-grow-1">
                   <PostInput
                     handleClearSent={handleClearSent}
@@ -317,7 +315,7 @@ const PostDetailFooter = (props) => {
             {showEmojiPicker === true && <PickerContainer handleShowEmojiPicker={handleShowEmojiPicker} onSelectEmoji={onSelectEmoji} onSelectGif={onSelectGif} orientation={"top"} ref={ref.picker} />}
           </Dflex>
           {editPostComment && editPostComment.files.length > 0 && <FileNames>{editPostComment.files.map((f) => f.name).join(", ")}</FileNames>}
-          <Dflex></Dflex>
+          <Dflex/>
         </>
       )}
       {isMember === false && workspace !== null && !disableOptions && (

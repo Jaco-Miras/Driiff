@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useRef, useState} from "react";
 import DateTimePicker from "react-datetime-picker";
 import {useDispatch} from "react-redux";
 import {Button, InputGroup, Modal, ModalBody, ModalFooter} from "reactstrap";
@@ -86,6 +86,10 @@ const TodoReminderModal = (props) => {
   const [customTimeValue, setCustomTimeValue] = useState(item && item.remind_at && Math.round(+new Date() / 1000) <= item.remind_at.timestamp ? moment.unix(item.remind_at.timestamp).toDate() : moment().add(20, 'm').toDate());
   const [showDateTimePicker, setShowDateTimePicker] = useState(item && item.remind_at ? true : null);
   const [modal, setModal] = useState(true);
+
+  const refs = {
+    title: useRef(null)
+  }
 
   let dictionary = {
     author: _t("REMINDER.AUTHOR", "Author"),
@@ -200,7 +204,12 @@ const TodoReminderModal = (props) => {
 
     let payload = {};
     Object.keys(form).forEach(k => {
-      payload[k] = form[k].value;
+      if (k === "set_time") {
+        if (form[k].value !== "")
+          payload[k] = form[k].value;
+      } else {
+        payload[k] = form[k].value;
+      }
     })
 
     actions.onSubmit(payload, (err, res) => {
@@ -210,6 +219,15 @@ const TodoReminderModal = (props) => {
       setLoading(false);
     });
   };
+
+  const handleTitleRef = (e) => {
+    if (e) {
+      refs.title.current = e;
+      setTimeout(() => {
+        refs.title.current.focus()
+      }, 500)
+    }
+  }
 
   return (
     <Wrapper isOpen={modal} toggle={toggle} size={"lg"} className="todo-reminder-modal" centered>
@@ -222,12 +240,14 @@ const TodoReminderModal = (props) => {
               <div className="col-12 col-lg-4">{dictionary.title}</div>
               <div className="col-12 col-lg-8">
                 <FormInput
+                  innerRef={handleTitleRef}
                   name="title"
                   defaultValue={form.title.value}
                   placeholder={dictionary.title}
                   onChange={handleInputChange}
                   isValid={form.title.valid}
-                  feedback={form.title.feedback}/>
+                  feedback={form.title.feedback}
+                  autoFocus/>
               </div>
               <div className="col-12 col-lg-4">{dictionary.description}</div>
               <div className="col-12 col-lg-8">

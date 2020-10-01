@@ -1,6 +1,6 @@
 import React, {useEffect, useRef} from "react";
 import styled from "styled-components";
-import {Avatar, SvgEmptyState, SvgIconFeather, ToolTip} from "../../common";
+import {Avatar, SvgEmptyState, ToolTip} from "../../common";
 import {useHistory} from "react-router-dom";
 import {CheckBox} from "../../forms";
 import quillHelper from "../../../helpers/quillHelper";
@@ -27,6 +27,12 @@ li.link-title {
 .text-success {
   text-decoration: line-through;
 }
+
+.todo-title {
+  svg {
+    height: 16px;
+  }
+}
 `;
 
 const EmptyState = styled.div`
@@ -47,10 +53,6 @@ const EmptyState = styled.div`
     width: auto !important;
     margin: 2rem auto;
   }
-`;
-
-const Icon = styled(SvgIconFeather)`
-  width: 16px;
 `;
 
 const TodosBody = (props) => {
@@ -191,25 +193,32 @@ const TodosBody = (props) => {
                               <div className="custom-control custom-checkbox custom-checkbox-success mr-2">
                                 <ToolTip content="Mark as done">
                                   <CheckBox name="test" checked={todo.status === "DONE"} onClick={() => {
-                                    if (todo.status !== "DONE") todoActions.markDone(todo)
-                                  }} disabled={todo.status === "DONE"}/>
+                                    todoActions.toggleDone(todo)
+                                  }}/>
                                 </ToolTip>
                               </div>
-                              <div className="mr-3">
-                                <a className={todo.status === "DONE" ? "text-success" : ""} href={todo.link}
-                                   target="_blank" data-link={todo.link} onClick={handleLinkClick}>
-                                  <span className="todo-title">{todo.title}</span>
-                                </a>
-                              </div>
-                              <div>
+                              <a className={todo.status === "DONE" ? "text-success" : ""} href={todo.link}
+                                 target="_blank" data-link={todo.link} onClick={(e) => {
+                                e.preventDefault();
+                                if (todo.link_type)
+                                  handleLinkClick(e);
+                                else
+                                  todoActions.updateFromModal(todo)
+                              }}>
+                              <span className="mr-3 d-flex justify-content-center align-items-center">
+                                <span className="todo-title mr-2">{todo.title}</span>
                                 <span className="todo-title"
-                                      dangerouslySetInnerHTML={{__html: quillHelper.parseEmoji(todo.description)}}/>
-                              </div>
+                                      dangerouslySetInnerHTML={{__html: quillHelper.parseToTextImageVideo(todo.description)}}/>
+                              </span>
+                              </a>
                             </div>
                             <div className="action d-flex justify-content-center align-items-center">
                               <div className="mr-3 align-items-center d-flex">
-                                <div
-                                  className={`badge ${getBadgeClass(todo)} text-white mr-3`}>{localizeDate(todo.remind_at ? todo.remind_at.timestamp : "")}</div>
+                                {
+                                  todo.remind_at &&
+                                  <div
+                                    className={`badge ${getBadgeClass(todo)} text-white mr-3`}>{localizeDate(todo.remind_at.timestamp)}</div>
+                                }
                                 {
                                   todo.link_type !== null &&
                                   <div className={`badge badge-info text-white mr-3`}>{getTodoType(todo)}</div>
@@ -221,7 +230,6 @@ const TodosBody = (props) => {
                                 }
                               </div>
                               <MoreOptions className="ml-2" item={todo} width={170} moreButton={"more-horizontal"}>
-                                <div onClick={() => todoActions.markDone(todo)}>{dictionary.actionMarkAsDone}</div>
                                 <div onClick={() => todoActions.updateFromModal(todo)}>{dictionary.actionEdit}</div>
                                 <div
                                   onClick={() => todoActions.removeConfirmation(todo)}>{dictionary.actionRemove}</div>

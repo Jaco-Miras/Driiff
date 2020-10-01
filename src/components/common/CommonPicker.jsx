@@ -1,10 +1,10 @@
-import { Picker } from "emoji-mart";
+import {Picker} from "emoji-mart";
 import "emoji-mart/css/emoji-mart.css";
-import React, { useState } from "react";
+import React, {useState} from "react";
 import styled from "styled-components";
-import { useOutsideClick } from "../hooks";
+import {useOutsideClick} from "../hooks";
 import PickerGif from "./PickerGif";
-import { SvgIconFeather } from "./SvgIcon";
+import {SvgIconFeather} from "./SvgIcon";
 
 const Wrapper = styled.div`
   position: absolute;
@@ -17,7 +17,6 @@ const Wrapper = styled.div`
 
 const SwitchButton = styled.div`
   cursor: hand;
-  cursor: pointer;
 
   svg {
     position: relative;
@@ -89,11 +88,11 @@ const CommonPicker = React.forwardRef((props, ref) => {
       ) : (
         <GifPicker handleShowGifPicker={handleShowGifPicker} onSelectGif={props.onSelectGif} orientation={props.orientation} />
       )}
-      <div className={"block mt-2"}>
+      <div className={"block mt-2 common-picker-btn"}>
         <SwitchButton onClick={togglePicker} className="btn btn-primary">
           Switch to
           {switcher === false ? <> Gif</> : <> Emoji</>}
-          <SvgIconFeather className="ml-2" icon="play" />
+          <SvgIconFeather className="ml-2" icon="play"/>
         </SwitchButton>
       </div>
     </Wrapper>

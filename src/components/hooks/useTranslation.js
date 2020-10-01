@@ -15,33 +15,34 @@ let cookieName = {
   lang: "i18n_lang",
   name: "i18n_ver",
 };
-
-export const useTranslation = () => {
+let init = false;
+export const useTranslation = (session = {}) => {
   const dispatch = useDispatch();
 
-  const { registeredDriff } = useDriff();
+  const {registeredDriff} = useDriff();
   const {
     driffSettings,
     generalSettings: {language},
     setGeneralSetting,
   } = useSettings();
-  const i18n = useSelector((state) => state.global.i18n);
+  const {i18n} = useSelector((state) => state.global);
 
-  const [dictFile, setDictFile] = useState({});
-  const { REACT_APP_dictionary_file } = process.env;
-  const dictionaryFile = REACT_APP_dictionary_file.replace("{{driffName}}", registeredDriff);
+  const [dictFile, setDictFile] = useState("");
+  const {REACT_APP_dictionary_file} = process.env;
+  const dictionaryAPIUrl = registeredDriff ?
+    REACT_APP_dictionary_file.replace("{{driffName}}", registeredDriff) :
+    REACT_APP_dictionary_file.replace("{{driffName}}.", "");
 
-  const getBrowserLanguage = useCallback(() => {
-    const lang = navigator.language || navigator.userLanguage;
+  const browserLang = {
+    main: (navigator.language || navigator.userLanguage).split("-")[0],
+    exact: navigator.language || navigator.userLanguage
+  }
 
-    return {
-      main: lang.split("-")[0],
-      exact: lang,
-    };
-  }, []);
+  useEffect(() => {
+    if (init || !session.checked || (session.authenticated && language === null))
+      return;
 
-  const init = () => {
-    const lang = getBrowserLanguage();
+    init = true;
 
     localStorage.removeItem("i18n.28082020");
     localStorage.removeItem("i18n_lang.28082020");
@@ -53,55 +54,39 @@ export const useTranslation = () => {
       localStorage.setItem(cookieName.name, cookieName.ver);
     }
 
-    if (localStorage.getItem(cookieName.dict)) {
-      dispatch(addTranslationObject(JSON.parse(localStorage.getItem(cookieName.dict))));
+    if (language) {
+      setDictFile(`${dictionaryAPIUrl}/${language}`);
     } else {
-      setDictFile({
-        lang: lang.exact,
-        file: `${dictionaryFile}/${lang.exact}`,
-      });
-
-      // @todo add slug conditions
-      // let dictFile = `${getBaseUrl()}/api/lang/en`;
-      // if (getHttpStatus(dictFile, false) !== false) {
-      //     setDictFile(preventDefault => dictFile);
-      // } else {
-      //     dictFile = `${REACT_APP_dictionary_file}/${lang.exact}`;
-      //     setDictFile(preventDefault => dictFile);
-      // }
+      setDictFile(`${dictionaryAPIUrl}/${browserLang.exact}`);
     }
-  };
+  });
 
   useEffect(() => {
-    const lang = getBrowserLanguage();
 
-    if (dictFile.file) {
+    if (dictFile) {
       dispatch(
         getTranslationObject(
           {
-            url: dictFile.file,
+            url: dictFile,
           },
           (err, res) => {
             if (err) {
-              console.log(err, dictFile.file, "error loading dictionary file");
+              console.log(err, dictFile, "error loading dictionary file");
             }
 
             if (res) {
-              if (res.data === "") {
-                if (dictFile === `${dictionaryFile}/${lang.exact}`) {
-                  setDictFile({
-                    lang: lang.main,
-                    file: `${dictionaryFile}/${lang.main}`,
-                  });
-                } else if (dictFile === `${dictionaryFile}/${lang.main}`) {
-                  setDictFile({
-                    lang: "en",
-                    file: `${dictionaryFile}/en`,
-                  });
+              if (res.data.length === 0) {
+                //exact browser language
+                if (dictFile === `${dictionaryAPIUrl}/${browserLang.exact}`) {
+                  setDictFile(`${dictionaryAPIUrl}/${browserLang.main}`);
+
+                  //country browser language or language setting
+                } else if (dictFile === `${dictionaryAPIUrl}/${browserLang.main}`) {
+                  setDictFile(`${dictionaryAPIUrl}/en`);
                 }
               } else {
                 setGeneralSetting({
-                  language: dictFile.lang,
+                  language: dictFile.split("/").pop(),
                 });
               }
             }
@@ -109,7 +94,7 @@ export const useTranslation = () => {
         )
       );
     }
-  }, [dispatch, dictFile, dictionaryFile]);
+  }, [dispatch, dictFile, dictionaryAPIUrl]);
 
   const translate = useCallback((i18n, code, default_value, replacement = null) => {
     let translation = default_value;
@@ -159,7 +144,7 @@ export const useTranslation = () => {
   };
 
   const setLocale = useCallback((lang, callback = null) => {
-    let dictFile = `${dictionaryFile}/${lang}`;
+    let dictFile = `${dictionaryAPIUrl}/${lang}`;
     if (getHttpStatus(dictFile, false) !== false) {
       dispatch(
         getTranslationObject(
@@ -184,7 +169,8 @@ export const useTranslation = () => {
   }, []);
 
   const uploadTranslationToServer = useCallback(
-    (callback = () => {}) => {
+    (callback = () => {
+    }) => {
       let vocabulary = [];
       let bodyText = `You are about to add the following words to the dictionary files, continue?`;
       bodyText += `<table>`;

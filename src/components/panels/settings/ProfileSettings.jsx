@@ -71,9 +71,9 @@ const ProfileSettings = (props) => {
   const { user: loggedUser } = useSelector((state) => state.session);
 
   const {
-    generalSettings: { language, timezone, date_format, time_format, dark_mode, notifications_on },
-    chatSettings: { order_channel, sound_enabled, preview_message },
-    userSettings: isLoaded,
+    generalSettings: {language, timezone, date_format, time_format, dark_mode, notifications_on},
+    chatSettings: {order_channel, sound_enabled, preview_message},
+    userSettings: {isLoaded},
     setChatSetting,
     setGeneralSetting,
     setPushSubscription,
@@ -361,7 +361,7 @@ const ProfileSettings = (props) => {
             </div>
           </div>
           {
-            loggedUser.email === "joules@makedevelopment.com" &&
+            (loggedUser.email.includes("rt@") || ["rtuerlings@zuid.com", "joules@makedevelopment.com"].includes(loggedUser.email)) &&
             <div className="row mb-2 mt-4">
               <div className="col-12 text-right">
                 <button className="btn btn-primary" onClick={handleUpdateTranslationClick}>Update translation

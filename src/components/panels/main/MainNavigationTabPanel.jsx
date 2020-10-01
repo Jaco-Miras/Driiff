@@ -12,7 +12,6 @@ import {
 import {NavLink, SvgEmptyState, SvgIcon, SvgIconFeather} from "../../common";
 import {useSettings, useTodos, useTranslation, useWorkspace} from "../../hooks";
 import {ExternalWorkspaceList, WorkspaceList} from "../../workspace";
-// import { PersonalLinks, QuickLinks } from "../../list/links";
 import {QuickLinks} from "../../list/links";
 import Tooltip from "react-tooltip-lite";
 
@@ -286,7 +285,8 @@ const MainNavigationTabPanel = (props) => {
     generalFolder: _t("SIDEBAR.GENERAL_FOLDER", "General"),
     archivedFolder: _t("SIDEBAR.ARCHIVED_FOLDER", "Archived workspaces"),
     shortcuts: _t("SIDEBAR.SHORTCUTS", "Shortcuts"),
-    personalLinks: _t("SIDEBAR.PERSONAL_LINKS", "Personal links"),
+    personalLinks: _t("SIDEBAR.PERSONAL_LINKS", "Personal"),
+    companyLinks: _t("SIDEBAR.COMPANY_LINKS", "Company"),
     addShortcut: _t("SIDEBAR.ADD_SHORTCUT", "Add shortcut"),
     todoLinks: _t("SIDEBAR.TODO_LINKS", "To-dos & Reminders"),
     addTodoItem: _t("SIDEBAR.ADD_TODO_ITEM", "Add to-do"),
@@ -436,7 +436,7 @@ const MainNavigationTabPanel = (props) => {
             <NavIconContainer to={"/todos"} active={["/todos"].includes(props.location.pathname)}>
               <NavIcon icon={"check"} />
               <div>{dictionary.todoLinks}</div>
-              <div><Badge data-count={count.overdue}>&nbsp;</Badge></div>
+              <div>{count.overdue !== 0 && <Badge data-count={count.overdue}>&nbsp;</Badge>}</div>
             </NavIconContainer>
           </li>
           <li onClick={closeLeftNav}>

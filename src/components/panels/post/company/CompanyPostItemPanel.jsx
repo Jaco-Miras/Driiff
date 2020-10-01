@@ -1,10 +1,10 @@
 import React from "react";
-import { useSelector } from "react-redux";
+import {useSelector} from "react-redux";
 import styled from "styled-components";
-import { AvatarGroup, SvgIconFeather } from "../../../common";
-import { CheckBox } from "../../../forms";
-import { MoreOptions } from "../../common";
-import { CompanyPostBadge } from "./index";
+import {AvatarGroup, SvgIconFeather} from "../../../common";
+import {CheckBox} from "../../../forms";
+import {MoreOptions} from "../../common";
+import {CompanyPostBadge} from "./index";
 
 const Wrapper = styled.li`
   &:first-of-type {
@@ -105,12 +105,16 @@ const CompanyPostItemPanel = (props) => {
       </div>
       {post.type !== "draft_post" && !disableOptions && (
         <MoreOptions className="ml-2" item={post} width={170} moreButton={"more-horizontal"}>
-          <div onClick={() => remind(post)}>{dictionary.remindMeAboutThis}</div>
+          {
+            post.todo_reminder === null &&
+            <div onClick={() => remind(post)}>{dictionary.remindMeAboutThis}</div>
+          }
           <div onClick={() => markAsRead(post, true)}>{dictionary.markAsRead}</div>
           <div onClick={() => markAsUnread(post, true)}>{dictionary.markAsUnread}</div>
           <div onClick={() => sharePost(post)}>{dictionary.share}</div>
           <div onClick={() => snoozePost(post)}>{dictionary.snooze}</div>
-          {post.author && post.author.id !== user.id && <div onClick={() => followPost(post)}>{post.is_followed ? dictionary.unFollow : dictionary.follow}</div>}
+          {post.author && post.author.id !== user.id &&
+          <div onClick={() => followPost(post)}>{post.is_followed ? dictionary.unFollow : dictionary.follow}</div>}
         </MoreOptions>
       )}
     </Wrapper>

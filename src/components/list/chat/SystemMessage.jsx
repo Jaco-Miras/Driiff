@@ -8,6 +8,44 @@ import quillHelper from "../../../helpers/quillHelper";
 
 const SystemMessageContainer = styled.span`
   display: block;
+  
+  .push-link {
+    display: inline-block;
+    position: relative;
+    padding-bottom: 25px;
+    margin-bottom: -25px;
+    
+    &:before {
+      position: absolute;
+      left: -14px;
+      top: -7px;
+      bottom: 0;
+      width: 3px;
+      height: calc(100% - 12px);
+      background: #7a1b8b;
+      content: "";
+      border-radius: 6px 0 0 6px;
+    }
+    
+    .card-body {
+      margin-top: 1rem;
+      margin-bottom: 0.5rem;
+      padding: 1rem;
+    }
+    .open-post {
+      display: flex;
+      position: absolute;
+      right: 0;
+      bottom: -10px;
+      justify-content: center;
+      align-items: center;      
+      
+      svg {
+        margin-left: 0.5rem;
+        height: 16px;
+      }
+    }
+  }
 `;
 
 const SystemMessageContent = styled.span`
@@ -251,22 +289,24 @@ const SystemMessage = forwardRef((props, ref) => {
       let item = JSON.parse(reply.body.replace("POST_CREATE::", ""));
       let link = "";
       if (params && params.workspaceId) {
-        link = `/workspace/posts/${params.folderId}/${params.folderName}/${params.workspaceId}/${params.workspaceName}/post/${item.post.id}/${item.post.title}`
+        if (params.folderId) {
+          link = `/workspace/posts/${params.folderId}/${params.folderName}/${params.workspaceId}/${params.workspaceName}/post/${item.post.id}/${item.post.title}`
+        } else {
+          link = `/workspace/posts/${params.workspaceId}/${params.workspaceName}/post/${item.post.id}/${item.post.title}`
+        }
       } else {
         link = `/posts/${item.post.id}/${item.post.title}`;
       }
 
+      let description = quillHelper.parseToText(item.post.description);
       setBody(renderToString(<a href={link} className="push-link" data-href={link} data-has-link="0" data-ctrl="0">
         <b>{item.author.first_name}</b> created the post <b>"{item.post.title}"</b>
-        <span className="card card-body"
-              dangerouslySetInnerHTML={{__html: quillHelper.parseEmoji(item.post.description)}}/>
-        <br/>
         {
-          item.post.responsible_ids !== null &&
-          <>
-            for {recipients.filter((r) => item.post.responsible_ids.includes(r.type_id) && r.type === "USER").map(r => r.name).join(", ")}
-          </>
+          description.trim() !== "" &&
+          <span className="card card-body"
+                dangerouslySetInnerHTML={{__html: description}}/>
         }
+        <span className="open-post">Open post <SvgIconFeather icon="arrow-right"/></span>
       </a>));
     } else if (reply.body.includes("JOIN_CHANNEL")) {
       let ids = /\d+/g;

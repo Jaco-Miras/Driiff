@@ -64,9 +64,12 @@ const CreatePersonalLinksModal = (props) => {
   const {_t} = useTranslation();
 
   let dictionary = {
-    createLink: _t("SHORTCUT.CREATE_LINK", "Create link"),
-    updateLink: _t("SHORTCUT.UPDATE_LINK", "Update link"),
-    removeLink: _t("SHORTCUT.REMOVE_LINK", "Remove link"),
+    linkCreateTitle: _t("SHORTCUT.LINK_CREATE_TITLE", "Add shortcut"),
+    linkUpdateTitle: _t("SHORTCUT.LINK_UPDATE_TITLE", "Update shortcut"),
+    linkRemoveTitle: _t("SHORTCUT.LINK_REMOVE_TITLE", "Remove shortcut"),
+    createLink: _t("SHORTCUT.CREATE_LINK", "Add"),
+    updateLink: _t("SHORTCUT.UPDATE_LINK", "Update"),
+    removeLink: _t("SHORTCUT.REMOVE_LINK", "Remove"),
     name: _t("SHORTCUT.NAME", "Name"),
     webAddress: _t("SHORTCUT.WEB_ADDRESS", "Web address"),
     remove: _t("SHORTCUT.REMOVE", "Remove"),
@@ -204,7 +207,7 @@ const CreatePersonalLinksModal = (props) => {
   return (
     <Modal isOpen={modal} toggle={toggle} size={"lg"} onOpened={onOpened} centered>
       <ModalHeaderSection toggle={toggle} className={"workspace-folder-header"}>
-        {mode === "edit" ? dictionary.updateLink : dictionary.createLink}
+        {mode === "edit" ? dictionary.linkUpdateTitle : dictionary.linkCreateTitle}
       </ModalHeaderSection>
       <ModalBody>
         <WrapperDiv>
@@ -226,7 +229,7 @@ const CreatePersonalLinksModal = (props) => {
           <FormInput
             name="name"
             defaultValue={form.name}
-            placeholder={`e.g. ${driffActions.getName()} driff website`}
+            placeholder={`e.g. ${driffActions.getName()} Driff website`}
             onChange={handleInputChange}
             isValid={formResponse.valid.name}
             feedback={formResponse.message.name}/>

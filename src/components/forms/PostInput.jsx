@@ -198,9 +198,10 @@ const PostInput = (props) => {
         reference_id: reference_id,
         ref_quote: quote,
         replies: {},
+        todo_reminder: null,
         total_replies: 0,
         total_unread_replies: 0,
-        updated_at: { timestamp: timestamp },
+        updated_at: {timestamp: timestamp},
         unfurls: [],
         user_clap_count: 0,
       };

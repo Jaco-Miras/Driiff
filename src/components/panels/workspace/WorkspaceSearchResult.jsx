@@ -26,6 +26,15 @@ const CheckIcon = styled(SvgIconFeather)`
     stroke-width: 2px;
 `;
 
+const FolderIcon = styled(SvgIconFeather)`
+    width: 0.8rem;
+    height: 0.8rem;
+    stroke-width: 3px;
+    margin-right: 3px;
+    margin-bottom: 0.1rem;
+`;
+
+
 const WorkspaceSearchResult = (props) => {
 
     const { onJoinWorkspace, onLeaveWorkspace, item, redirect, workspaces } = props;
@@ -66,7 +75,7 @@ const WorkspaceSearchResult = (props) => {
                 <ul className="workspace-detail-lists">
                     { isMember && <li className="text-success"><CheckIcon icon="check"/>Joined</li> }
                     <li>{item.members.length} {item.members.length === 1 ? "member" : "members"}</li>
-                    <li>{workspace ? workspace.name : "Workspaces"}</li>
+                    <li><FolderIcon icon="folder" />{workspace ? workspace.name : "Workspaces"}</li>
                     <li>{stripHtml(topic.description)}</li>
                 </ul>
             </div>

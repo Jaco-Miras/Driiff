@@ -1,4 +1,4 @@
-import {useCallback} from "react";
+import React, {useCallback} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {copyTextToClipboard} from "../../helpers/commonFunctions";
 import {getBaseUrl} from "../../helpers/slugHelper";
@@ -271,15 +271,18 @@ const useChatMessageActions = () => {
   );
 
   const remind = useCallback(
-    (message, channel, callback) => {
-      const onConfirm = (payload, callback) => {
+    (message, channel, callback = () => {
+    }) => {
+      const onConfirm = (payload, modalCallback = () => {
+      }) => {
         todoActions.createForChat(message.id, payload, (err, res) => {
           if (err) {
             toaster.error(`An error has occurred try again!`);
           }
           if (res) {
-            toaster.success(`You will be reminded on this chat message.`);
+            toaster.success(<>You will be reminded about this chat message under <b>To-dos & Reminders</b>.</>);
           }
+          modalCallback(err, res);
           callback(err, res);
         });
       }

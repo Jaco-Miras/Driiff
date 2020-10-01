@@ -14,7 +14,7 @@ const CompanySettingsPanel = (props) => {
   return (
     <Wrapper className={`container-fluid h-100 ${className}`}>
       <div className="row row-settings">
-        <div className="col-12 col-md-7 col-xl-5">
+        <div className="col-12 col-md-7 col-xl-6">
           <ProfileSettings />
         </div>
       </div>

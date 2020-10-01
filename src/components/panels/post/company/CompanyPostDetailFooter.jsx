@@ -4,7 +4,6 @@ import styled from "styled-components";
 import Tooltip from "react-tooltip-lite";
 import {CommonPicker, SvgIconFeather} from "../../../common";
 import {CommentQuote} from "../../../list/post/item";
-import {useTranslation} from "../../../hooks";
 import {CompanyPostInput} from "../../../forms";
 
 const Wrapper = styled.div`
@@ -25,7 +24,6 @@ const ChatInputContainer = styled.div`
 
 const IconButton = styled(SvgIconFeather)`
   cursor: pointer;
-  cursor: hand;
   border: 1px solid #afb8bd;
   height: 37px;
   margin: -1px 8px;
@@ -69,7 +67,6 @@ const Dflex = styled.div`
     }
     .channel-create {
       letter-spacing: 0;
-      margin-bottom: 0;
       color: #b8b8b8;
       font-weight: normal;
       font-size: 19px;
@@ -122,8 +119,8 @@ const NoReply = styled.div`
 `;
 
 const PickerContainer = styled(CommonPicker)`
-  right: unset;
-  bottom: 70px;
+  left: 32px;
+  bottom: 60px;
 `;
 
 const FileNames = styled.div`
@@ -145,8 +142,6 @@ const CompanyPostDetailFooter = (props) => {
   const [selectedGif, setSelectedGif] = useState(null);
   const [sent, setSent] = useState(false);
 
-  //const topic = useSelector((state) => state.workspaces.activeTopic);
-  const user = useSelector((state) => state.session.user);
   const editPostComment = useSelector((state) => state.posts.editPostComment);
 
   const handleSend = useCallback(() => {
@@ -178,8 +173,6 @@ const CompanyPostDetailFooter = (props) => {
     //handleSend();
   };
 
-  const {_t} = useTranslation();
-
   const toggleTooltip = () => {
     let tooltips = document.querySelectorAll("span.react-tooltip-lite");
     tooltips.forEach((tooltip) => {
@@ -197,7 +190,7 @@ const CompanyPostDetailFooter = (props) => {
       }
       {isMember && (
         <>
-          <Dflex className="d-flex align-items-center">
+          <Dflex className="d-flex align-items-end">
             {post.is_read_only === 1 ? (
               <NoReply className="d-flex align-items-center">
                 <div className="alert alert-warning">No reply allowed</div>

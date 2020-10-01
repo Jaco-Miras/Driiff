@@ -115,6 +115,30 @@ export default (state = INITIAL_STATE, action) => {
         }
       }
     }
+    case "INCOMING_TO_DO":
+    case "INCOMING_UPDATE_TO_DO":
+    case "INCOMING_DONE_TO_DO":
+    case "INCOMING_REMOVE_TO_DO": {
+      let posts = state.companyPosts.posts;
+      if (action.data.link_type === "POST" && action.data.data && typeof posts[action.data.data.post.id] !== "undefined") {
+        posts[action.data.data.post.id] = {
+          ...posts[action.data.data.post.id],
+          todo_reminder: action.type === "INCOMING_REMOVE_TO_DO" ? null : {
+            id: action.data.id,
+            remind_at: action.data.remind_at,
+            status: action.data.status
+          }
+        }
+      }
+
+      return {
+        ...state,
+        companyPosts: {
+          ...state.companyPosts,
+          posts: posts
+        }
+      }
+    }
     case "INCOMING_UPDATED_POST": {
       let posts = state.companyPosts.posts;
 

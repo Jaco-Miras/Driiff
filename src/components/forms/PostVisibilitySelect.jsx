@@ -3,7 +3,7 @@ import Select, {components} from "react-select";
 import styled from "styled-components";
 import {SvgIconFeather} from "../common";
 import {darkTheme, lightTheme} from "../../helpers/selectTheme";
-import {useSettings} from "../hooks";
+import {useSettings, useTranslation} from "../hooks";
 
 const SelectOption = styled.div`
   display: flex;
@@ -22,8 +22,8 @@ const SelectOption = styled.div`
 `;
 
 const Icon = styled(SvgIconFeather)`
-  min-width: 1.75rem;
-  min-height: 1.75rem;
+  min-width: 1rem;
+  min-height: 1rem;
   margin: -2px 10px 0 0;
   border: none;
 `;
@@ -43,8 +43,17 @@ const Option = (props) => {
   );
 };
 
+
 const PostVisibilitySelect = forwardRef((props, ref) => {
   const {className = "", postType = "company", ...otherProps} = props;
+
+  const {_t} = useTranslation();
+
+  const dictionary = {
+    visibleAllInternal: _t("POST.VISIBLE_ALL_INTERNAL", "Visible to all internal members"),
+    visibleAllWorkspace: _t("POST.VISIBLE_ALL_WORKSPACE", "Visible to all workspace members"),
+    responsbileUsers: _t("POST.VISIBLE_RESPONSIBLE_USERS", "Visible to responsible users only"),
+  };
 
   const {
     generalSettings: {dark_mode},
@@ -54,11 +63,11 @@ const PostVisibilitySelect = forwardRef((props, ref) => {
   const options = [{
     icon: "unlock",
     value: false,
-    label: postType === "company" ? "Visible to all internal members" : "Visible to all workspace members"
+    label: postType === "company" ? dictionary.visibleAllInternal : dictionary.visibleAllWorkspace
   }, {
     icon: "lock",
     value: true,
-    label: "Responsible users only"
+    label: dictionary.responsbileUsers
   }];
 
   return <Select
