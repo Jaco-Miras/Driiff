@@ -28,7 +28,7 @@ const CheckIcon = styled(SvgIconFeather)`
 
 const WorkspaceSearchResult = (props) => {
 
-    const { onJoinWorkspace, onLeaveWorkspace, item, redirect, workspaces } = props;
+    const { dictionary, onJoinWorkspace, onLeaveWorkspace, item, redirect, workspaces } = props;
     const { topic, workspace } = item;
     const isMember = useIsMember(item.members.map((m) => m.id));
     const handleRedirect = () => {
@@ -59,14 +59,14 @@ const WorkspaceSearchResult = (props) => {
             <div className="workspace-search-detail">
                 <div className="workspace-title-status">
                     <h5>{topic.name}</h5>
-                    { topic.is_locked && <span className={`badge badge-ultralight ml-1`}>Private</span> }
-                    { topic.is_archive && <span className={`badge badge-ultralight ml-1`}>Archived</span> }
-                    { !topic.is_archive && !topic.is_locked && <span className={`badge badge-ultralight ml-1`}>Open</span> }
+                    { topic.is_locked && <span className={`badge badge-ultralight ml-1`}>{dictionary.labelPrivate}</span> }
+                    { topic.is_archive && <span className={`badge badge-ultralight ml-1`}>{dictionary.labelArchived}</span> }
+                    { !topic.is_archive && !topic.is_locked && <span className={`badge badge-ultralight ml-1`}>{dictionary.labelOpen}</span> }
                 </div>
                 <ul className="workspace-detail-lists">
-                    { isMember && <li className="text-success"><CheckIcon icon="check"/>Joined</li> }
-                    <li>{item.members.length} {item.members.length === 1 ? "member" : "members"}</li>
-                    <li>{workspace ? workspace.name : "Workspaces"}</li>
+                    { isMember && <li className="text-success"><CheckIcon icon="check"/>{dictionary.labelJoined}</li> }
+                    <li>{item.members.length} {item.members.length === 1 ? dictionary.member : dictionary.members}</li>
+                    <li>{workspace ? workspace.name : dictionary.sidebarWorkspaces}</li>
                     <li>{stripHtml(topic.description)}</li>
                 </ul>
             </div>
@@ -74,11 +74,11 @@ const WorkspaceSearchResult = (props) => {
                 !isMember ?
                 <JoinButton onClick={handleJoinWorkspace} className="btn btn-primary join-button">
                     <SvgIconFeather icon="user-plus" />
-                    Join
+                    {dictionary.buttonJoin}
                 </JoinButton>
                 :
                 <JoinButton onClick={handleLeaveWorkspace} className="btn btn-primary join-button">
-                    Leave
+                    {dictionary.buttonLeave}
                 </JoinButton>
             }
         </Wrapper>

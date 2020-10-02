@@ -26,7 +26,7 @@ const WrapperDiv = styled(InputGroup)`
 
   label {
     margin: 0 20px 0 0;
-    min-width: 530px;
+    min-width: 109px;
   }
   button {
     margin-left: auto;
@@ -269,7 +269,9 @@ const CreateEditCompanyPostModal = (props) => {
     replyRequired: _t("POST.REPLY_REQUIRED", "Reply required"),
     mustRead: _t("POST.MUST_READ", "Must read"),
     noReplies: _t("POST.NO_REPLIES", "No replies"),
-    schedulePost: _t("POST.SCHEDULE", "Schedule post"),
+    schedulePost: _t("POST.SCHEDULE", "Schedule"),
+    updatePostButton: _t("POST.UPDATE_BUTTON", "Update post"),
+    createPostButton: _t("POST.CREATE_BUTTON", "Create post"),
     save: _t("POST.SAVE", "Save"),
     discard: _t("POST.DISCARD", "Discard"),
     draftBody: _t("POST.DRAFT_BODY", "Not sure about the content? Save it as a draft."),
@@ -924,7 +926,7 @@ const CreateEditCompanyPostModal = (props) => {
         </WrapperDiv>
         <WrapperDiv className={"modal-input"}>
           <div>
-            <Label lassName={"modal-label"} for="visibility">{dictionary.visibility}</Label>
+            <Label className={"modal-label"} for="visibility">{dictionary.visibility}</Label>
             <SelectPostVisibility value={form.selectedPersonal} onChange={handleSelectVisibility}/>
           </div>
         </WrapperDiv>

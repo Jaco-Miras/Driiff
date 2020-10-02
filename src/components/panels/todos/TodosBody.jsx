@@ -8,8 +8,19 @@ import {useSettings, useTimeFormat} from "../../hooks";
 import {MoreOptions} from "../common";
 
 const Wrapper = styled.div`
-.list-group .list-group-item {  
-  padding: 0.75rem 1.5rem 0 0.75rem;
+.list-group {
+  .list-group-item {  
+    padding: 0.75rem 1.5rem 0 0.75rem;
+    
+    > a {
+      display: block;
+      width: 100%;
+      
+      .badge-todo-type {
+        border: 1px solid #000;
+      }
+    }
+  }
 }
 
 li.link-title {
@@ -72,7 +83,7 @@ const TodosBody = (props) => {
   }
 
   const history = useHistory();
-  const {localizeDate} = useTimeFormat();
+  const {todoFormat, todoFormatShortCode} = useTimeFormat();
   const {
     generalSettings: {dark_mode},
   } = useSettings();
@@ -147,15 +158,15 @@ const TodosBody = (props) => {
                     if (index === 0) {
                       switch (todo.status) {
                         case "OVERDUE": {
-                          chatHeader = "Overdue";
+                          chatHeader = dictionary.statusOverdue;
                           break;
                         }
                         case "NEW": {
-                          chatHeader = "Upcoming";
+                          chatHeader = dictionary.statusUpcoming;
                           break;
                         }
                         case "DONE": {
-                          chatHeader = "Done";
+                          chatHeader = dictionary.statusDone;
                           break;
                         }
                       }
@@ -164,15 +175,15 @@ const TodosBody = (props) => {
                       if (prevTodo.status !== todo.status) {
                         switch (todo.status) {
                           case "OVERDUE": {
-                            chatHeader = "Overdue";
+                            chatHeader = dictionary.statusOverdue;
                             break;
                           }
                           case "NEW": {
-                            chatHeader = "Upcoming";
+                            chatHeader = dictionary.statusUpcoming;
                             break;
                           }
                           case "DONE": {
-                            chatHeader = "Done";
+                            chatHeader = dictionary.statusDone;
                             break;
                           }
                         }
@@ -188,54 +199,61 @@ const TodosBody = (props) => {
                           </li>
                         }
                         <li className="pl-0 list-group-item">
-                          <div className="d-flex justify-content-between w-100 align-items-center">
-                            <div className="d-flex">
-                              <div className="custom-control custom-checkbox custom-checkbox-success mr-2">
-                                <ToolTip content="Mark as done">
-                                  <CheckBox name="test" checked={todo.status === "DONE"} onClick={() => {
+                          <a className={todo.status === "DONE" ? "text-success" : ""} href={todo.link}
+                             target="_blank" data-link={todo.link} onClick={(e) => {
+                            e.preventDefault();
+                            if (todo.link_type)
+                              handleLinkClick(e);
+                            else
+                              todoActions.updateFromModal(todo)
+                          }}>
+                          <span className="d-flex justify-content-between w-100 align-items-center">
+                            <span className="d-flex">
+                              <span className="custom-control custom-checkbox custom-checkbox-success mr-2">
+                                <ToolTip
+                                  content={todo.status === "DONE" ? dictionary.actionMarkAsUndone : dictionary.actionMarkAsDone}>
+                                  <CheckBox name="test" checked={todo.status === "DONE"} onClick={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
                                     todoActions.toggleDone(todo)
                                   }}/>
                                 </ToolTip>
-                              </div>
-                              <a className={todo.status === "DONE" ? "text-success" : ""} href={todo.link}
-                                 target="_blank" data-link={todo.link} onClick={(e) => {
-                                e.preventDefault();
-                                if (todo.link_type)
-                                  handleLinkClick(e);
-                                else
-                                  todoActions.updateFromModal(todo)
-                              }}>
+                              </span>
+
                               <span className="mr-3 d-flex justify-content-center align-items-center">
                                 <span className="todo-title mr-2">{todo.title}</span>
                                 <span className="todo-title"
                                       dangerouslySetInnerHTML={{__html: quillHelper.parseToTextImageVideo(todo.description)}}/>
                               </span>
-                              </a>
-                            </div>
-                            <div className="action d-flex justify-content-center align-items-center">
-                              <div className="mr-3 align-items-center d-flex">
-                                {
-                                  todo.remind_at &&
-                                  <div
-                                    className={`badge ${getBadgeClass(todo)} text-white mr-3`}>{localizeDate(todo.remind_at.timestamp)}</div>
-                                }
+                            </span>
+                            <span className="action d-flex justify-content-center align-items-center">
+                              <span className="mr-3 align-items-center d-flex">
                                 {
                                   todo.link_type !== null &&
-                                  <div className={`badge badge-info text-white mr-3`}>{getTodoType(todo)}</div>
+                                  <span
+                                    className={`badge badge-white badge-todo-type text-black mr-3`}>{getTodoType(todo)}</span>
+                                }
+                                {
+                                  todo.remind_at &&
+                                  <ToolTip content={todoFormat(todo.remind_at.timestamp)}>
+                                    <span
+                                      className={`badge ${getBadgeClass(todo)} text-white mr-3`}>{todoFormatShortCode(todo.remind_at.timestamp)}</span>
+                                  </ToolTip>
                                 }
                                 {
                                   todo.author !== null &&
                                   <Avatar key={todo.author.id} name={todo.author.name}
                                           imageLink={todo.author.profile_image_link} id={todo.author.id}/>
                                 }
-                              </div>
+                              </span>
                               <MoreOptions className="ml-2" item={todo} width={170} moreButton={"more-horizontal"}>
                                 <div onClick={() => todoActions.updateFromModal(todo)}>{dictionary.actionEdit}</div>
                                 <div
                                   onClick={() => todoActions.removeConfirmation(todo)}>{dictionary.actionRemove}</div>
                               </MoreOptions>
-                            </div>
-                          </div>
+                            </span>
+                          </span>
+                          </a>
                         </li>
                       </React.Fragment>
                     );

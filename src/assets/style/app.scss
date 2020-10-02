@@ -142,6 +142,10 @@ body.dark {
   // #191c20 // mid / tobar chat
   // #ffffff14 // borders of #fff3
 
+  .post-partialBody {
+    color: #8c8e90;
+  }
+
   .chat-emoji-users-list ul {
     background-color: $dm-bg-2;
     color: $dm-text-color;
@@ -547,8 +551,12 @@ body.dark {
   margin-top: 18px;
 }
 
-.lock-workspace-text-container {
+.lock-workspace_folder-text-container {
   max-width: 330px;
+}
+
+.lock-workspace-text-container {
+  max-width: 560px;
 }
 
 .lock-workspace-text {
@@ -15756,7 +15764,7 @@ button.toast-close-button {
 
 #compose .ql-editor,
 .app-block .ql-editor {
-  min-height: 70px;
+  min-height: 20px;
 }
 .ql-editor.ql-blank::before {
   right: inherit;

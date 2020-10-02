@@ -9,9 +9,11 @@ import {useGoogleApis, useTimeFormat} from "../../../hooks";
 import GifPlayer from "react-gif-player";
 import {getGifLinks} from "../../../../helpers/urlContentHelper";
 import quillHelper from "../../../../helpers/quillHelper";
+import {CompanyPostDetailFooter} from "../../../panels/post/company";
 
 const Wrapper = styled.li`
   margin-bottom: 1rem;
+  overflow: initial;
 
   .mention {
     font-weight: bold;
@@ -99,6 +101,8 @@ const CommentBody = styled.div``;
 
 const CommentInput = styled(PostDetailFooter)``;
 
+const CompanyCommentInput = styled(CompanyPostDetailFooter)``;
+
 const Reply = styled.span`
   cursor: pointer;
 `;
@@ -108,7 +112,7 @@ const Icon = styled(SvgIconFeather)`
 `;
 
 const Comment = (props) => {
-  const { className = "", comment, post, type = "main", user, commentActions, parentId, onShowFileDialog, dropAction, parentShowInput = null, workspace, isMember, dictionary, disableOptions } = props;
+  const { className = "", comment, post, type = "main", user, commentActions, parentId, onShowFileDialog, dropAction, parentShowInput = null, workspace, isMember, dictionary, disableOptions, isCompanyPost = false } = props;
 
   const refs = {
     input: useRef(null),
@@ -129,6 +133,7 @@ const Comment = (props) => {
 
   const handleShowInput = useCallback(
     (commentId = null) => {
+      console.log(commentId)
       if (parentShowInput) {
         parentShowInput(commentId);
       } else {
@@ -239,7 +244,7 @@ const Comment = (props) => {
               <span>{comment.author.first_name}</span>
               <span className="text-muted ml-1">{fromNow(comment.created_at.timestamp)}</span>
             </div>
-            {post.is_read_only !== 1 && !disableOptions && (
+            {!post.is_read_only && !disableOptions && (
               <MoreOptions scrollRef={refs.body.current} moreButton={"more-horizontal"}>
                 {comment.todo_reminder === null &&
                 <div onClick={() => commentActions.remind(comment, post)}>{dictionary.remindMeAboutThis}</div>}
@@ -267,7 +272,7 @@ const Comment = (props) => {
           <div className="d-flex align-items-center justify-content-start">
             <Icon className={react.user_clap_count ? "mr-2 comment-reaction clap-true" : "mr-2 comment-reaction clap-false"} icon="heart" onClick={handleReaction} />
             {react.clap_count > 0 ? react.clap_count : null}
-            {post.is_read_only !== 1 && !disableOptions && (
+            {!post.is_read_only && !disableOptions && (
               <Reply className="ml-3" onClick={handleShowInput}>
                 {dictionary.comment}
               </Reply>
@@ -289,25 +294,45 @@ const Comment = (props) => {
           isMember={isMember}
           dictionary={dictionary}
           disableOptions={disableOptions}
+          isCompanyPost={isCompanyPost}
         />
       )}
       {showInput !== null && (
         <InputWrapper className="card">
-          <CommentInput
-            innerRef={refs.input}
-            user={user}
-            commentId={showInput}
-            post={post}
-            parentId={type === "main" ? comment.id : parentId}
-            commentActions={commentActions}
-            userMention={userMention}
-            handleClearUserMention={handleClearUserMention}
-            onShowFileDialog={onShowFileDialog}
-            dropAction={dropAction}
-            workspace={workspace}
-            isMember={isMember}
-            disableOptions={disableOptions}
-          />
+          {
+            isCompanyPost ? 
+            <CompanyCommentInput
+              innerRef={refs.input}
+              user={user}
+              commentId={showInput}
+              post={post}
+              parentId={type === "main" ? comment.id : parentId}
+              commentActions={commentActions}
+              userMention={userMention}
+              handleClearUserMention={handleClearUserMention}
+              onShowFileDialog={onShowFileDialog}
+              dropAction={dropAction}
+              workspace={workspace}
+              isMember={isMember}
+              disableOptions={disableOptions}
+            />
+            :
+            <CommentInput
+              innerRef={refs.input}
+              user={user}
+              commentId={showInput}
+              post={post}
+              parentId={type === "main" ? comment.id : parentId}
+              commentActions={commentActions}
+              userMention={userMention}
+              handleClearUserMention={handleClearUserMention}
+              onShowFileDialog={onShowFileDialog}
+              dropAction={dropAction}
+              workspace={workspace}
+              isMember={isMember}
+              disableOptions={disableOptions}
+            />
+          }
         </InputWrapper>
       )}
     </>

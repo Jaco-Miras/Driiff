@@ -72,17 +72,17 @@ const CreateWorkspaceFolderModal = (props) => {
     createWorkspaceFolder: _t("WORKSPACE.CREATE_WORKSPACE_FOLDER", "Create folder"),
     updateWorkspaceFolder: _t("WORKSPACE.UPDATE_WORKSPACE_FOLDER", "Update folder"),
     removeWorkspaceFolder: _t("WORKSPACE.DELETE_WORKSPACE_FOLDER", "Remove folder"),
-    folderName: _t("FOLDER_NAME", "Folder name"),
+    folderName: _t("FOLDER_NAME", "Name"),
     folderInfo: _t("FOLDER_INFO", "Folders help to organize your workspaces. A workspace can only be connected to one folder."),
-    lockWorkspace: _t("WORKSPACE.WORKSPACE_LOCK", "Make folder private"),
-    lockWorkspaceText: _t("WORKSPACE.WORKSPACE_LOCK.DESCRIPTION", "When a folder is private it is only visible to the members of the workspaces inside the folder."),
+    lockWorkspaceFolder: _t("WORKSPACE.WORKSPACE_FOLDER_LOCK", "Make folder private"),
+    lockWorkspaceFolderText: _t("WORKSPACE.WORKSPACE_FOLDER_LOCK.DESCRIPTION", "When a folder is private it is only visible to the members of the workspaces inside the folder."),
     description: _t("DESCRIPTION", "Description"),
     remove: _t("WORKSPACE.REMOVE", "Remove"),
     cancel: _t("WORKSPACE.CANCEL", "Cancel"),
     removeFolderText: _t("WORKSPACE.REMOVE_FOLDER_TEXT", `Workspaces in`),
     removeFolderText2: _t("WORKSPACE.REMOVE_FOLDER_TEXT_2", `will move back to the Workspaces sections in your sidebar. <br /><br />The workspaces in this folder will not be removed when you remove this folder.`),
     confirm: _t("WORKSPACE.CONFIRM", "Confirm"),
-    lockedFolder: _t("WORKSPACE.LOCKED_FOLDER", "Locked folder"),
+    lockedFolder: _t("WORKSPACE.LOCKED_FOLDER", "Private folder"),
     lockedFolderText: _t("WORKSPACE.LOCKED_FOLDER_TEXT", "Only members can view and search this workspace."),
   };
   const toaster = useToaster();
@@ -384,10 +384,10 @@ const CreateWorkspaceFolderModal = (props) => {
         <WrapperDiv className="action-wrapper" style={{ marginTop: "40px" }}>
           <div>
             <CheckBox name="is_private" checked={form.is_private} onClick={toggleCheck}>
-              {dictionary.lockWorkspace}
+              {dictionary.lockWorkspaceFolder}
             </CheckBox>
-            <div className={"lock-workspace-text-container"}>
-              <Label className={"lock-workspace-text"}>{dictionary.lockWorkspaceText}</Label>
+            <div className={"lock-workspace-folder-text-container"}>
+              <Label className={"lock-workspace-text"}>{dictionary.lockWorkspaceFolderText}</Label>
             </div>
           </div>
           <div className={"create-folder-btn"}>

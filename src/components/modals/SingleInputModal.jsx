@@ -1,6 +1,6 @@
 import React, {useRef, useState} from "react";
 import {useDispatch} from "react-redux";
-import {FormGroup, Input, Modal, ModalBody, ModalFooter} from "reactstrap";
+import {FormGroup, Input, Label, Modal, ModalBody, ModalFooter} from "reactstrap";
 import styled from "styled-components";
 import {clearModal} from "../../redux/actions/globalActions";
 //import {useFocusInput} from "../hooks";
@@ -12,7 +12,7 @@ const WrapperDiv = styled(FormGroup)``;
 
 const SingleInputModal = (props) => {
   const {
-    className = "", title, type, defaultValue = "", postInputLabel = "", onPrimaryAction, onChange, onClose = () => {
+    className = "", title, type, defaultValue = "", preInputLabel = "", label = "", postInputLabel = "", onPrimaryAction, onChange, onClose = () => {
     }, labelClose = "Close", labelPrimaryAction = "Save", ...otherProps
   } = props;
 
@@ -55,7 +55,9 @@ const SingleInputModal = (props) => {
     <Wrapper ref={refs.main} isOpen={true} toggle={toggle} centered onOpened={onOpened} className={`single-input-modal ${className}`} {...otherProps}>
       <ModalHeaderSection toggle={toggle}>{title}</ModalHeaderSection>
       <ModalBody>
+        {preInputLabel !== "" && <Label className={"modal-info mb-3"}>{preInputLabel}</Label>}
         <WrapperDiv>
+          {label !== "" && <Label className={"modal-label"}>{label}</Label>}
           <Input innerRef={inputRef} autoFocus defaultValue={defaultValue} onChange={handleInputChange} />
           {postInputLabel}
         </WrapperDiv>

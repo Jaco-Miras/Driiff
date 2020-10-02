@@ -2,11 +2,11 @@ import lodash from "lodash";
 import React, {useEffect, useRef, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {useHistory} from "react-router-dom";
-import {Input, InputGroup, Label, Modal, ModalBody} from "reactstrap";
+import {InputGroup, Label, Modal, ModalBody} from "reactstrap";
 import styled from "styled-components";
 import {addToChannels, setSelectedChannel} from "../../redux/actions/chatActions";
 import {clearModal} from "../../redux/actions/globalActions";
-import {PeopleSelect} from "../forms";
+import {FormInput, PeopleSelect} from "../forms";
 import QuillEditor from "../forms/QuillEditor";
 import {useChannelActions, useQuillModules, useTimeFormat, useTranslation} from "../hooks";
 import {ModalHeaderSection} from "./index";
@@ -15,6 +15,9 @@ const WrapperDiv = styled(InputGroup)`
   display: flex;
   align-items: center;
   margin: 20px 0;
+  .form-group {
+    margin-bottom: 0;
+  }
   label {
     margin: 0 20px 0 0;
     min-width: 530px;
@@ -94,26 +97,39 @@ const CreateEditChatModal = (props) => {
   const reactQuillRef = useRef();
   const dispatch = useDispatch();
   const history = useHistory();
+  const {_t} = useTranslation();
+  const {searchExisting, create: createChannel, update: updateChannel} = useChannelActions();
   const {localizeDate} = useTimeFormat();
-  const [modal, setModal] = useState(true);
+
   const users = useSelector((state) => state.users.mentions);
   const channel = useSelector((state) => state.chat.selectedChannel);
   const user = useSelector((state) => state.session.user);
   const recipients = useSelector((state) => state.global.recipients);
-  const [selectedUsers, setSelectedUsers] = useState([]);
-  const [inputValue, setInputValue] = useState("");
+
+  const [modal, setModal] = useState(true);
   const [text, setText] = useState("");
   const [textOnly, setTextOnly] = useState("");
-  const [valid, setValid] = useState(false);
   const [chatExists, setChatExists] = useState(false);
   const [searching, setSearching] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const channelActions = useChannelActions();
-
   const toggle = () => {
     setModal(!modal);
     dispatch(clearModal({type: type}));
+  };
+
+  const dictionary = {
+    chatTitle: _t("MODAL.CHAT_TITLE", "Chat title"),
+    people: _t("MODAL.PEOPLE", "People"),
+    firstMessage: _t("MODAL.FIRST_MESSAGE", "First message"),
+    newGroupChat: _t("MODAL.NEW_GROUP_CHAT", "New group chat"),
+    editChat: _t("MODAL.EDIT_CHAT", "Edit chat"),
+    createChat: _t("MODAL.CREATE_CHAT", "Create chat"),
+    chatInfo: _t("FOLDER_INFO", "Create a group chat to quickly discuss any subject with multiple people. A group chat can hold an unlimited amount of members."),
+    chatInfoEdit: _t("FOLDER_INFO_EDIT", "Modify this group chat to quickly discuss any subject with multiple people. A group chat can hold an unlimited amount of members."),
+    feedbackChatTitleIsRequired: _t("FEEDBACK.CHAT_TITLE_IS_REQUIRED", "Chat title is required."),
+    feedbackChatTitleIsUnique: _t("FEEDBACK.CHAT_TITLE_IS_UNIQUE", "Chat title is already taken."),
+    feedbackChatMemberIsRequired: _t("FEEDBACK.CHAT_MEMBER_IS_REQUIRED", "You must assign atleast a member on this chat."),
   };
 
   const options = Object.values(users).filter((u) => u.type === "internal").map((u) => {
@@ -124,16 +140,49 @@ const CreateEditChatModal = (props) => {
     };
   });
 
+  const defaultUser = options.filter(o => o.value === user.id);
+
+  const [form, setForm] = useState({
+    title: {
+      value: mode === "edit" ? channel.title : ""
+    },
+    selectedUsers: {
+      value: mode === "edit" ? channel.members.map((m) => {
+        return {
+          ...m,
+          value: m.id,
+          label: m.first_name,
+        };
+      }) : defaultUser
+    }
+  });
+
   const handleSelect = (e) => {
     if (e === null) {
-      setSelectedUsers([]);
+      setForm(prevState => ({
+        ...prevState,
+        selectedUsers: {
+          value: defaultUser
+        }
+      }))
     } else {
-      setSelectedUsers(e);
+      setForm(prevState => ({
+        ...prevState,
+        selectedUsers: {
+          value: e
+        }
+      }))
     }
   };
 
   const handleInputChange = (e) => {
-    setInputValue(e.target.value.trim());
+    const {name, value} = e.target;
+    setForm(prevState => ({
+      ...prevState,
+      [name]: {
+        value: value
+      }
+    }))
   };
 
   const handleConfirm = () => {
@@ -145,26 +194,12 @@ const CreateEditChatModal = (props) => {
     if (mode === "edit") {
       const removed_members = channel.members
         .filter((m) => {
-          // let userFound = false;
-          // selectedUsers.forEach((u) => {
-          //   if (u.id === m.id) {
-          //     userFound = true;
-          //   }
-          // });
-          // return !userFound;
-          return !selectedUsers.some((u) => u.id === m.id);
+          return !form.selectedUsers.value.some((u) => u.id === m.id);
         })
         .map((m) => m.id);
 
-      const added_members = selectedUsers
+      const added_members = form.selectedUsers.value
         .filter((u) => {
-          // let userFound = false;
-          // channel.members.forEach((m) => {
-          //   if (m.id === u.id) {
-          //     userFound = true;
-          //   }
-          // });
-          // return !userFound;
           return !channel.members.some((m) => m.id === u.id);
         })
         .map((m) => m.id);
@@ -172,7 +207,7 @@ const CreateEditChatModal = (props) => {
       let payload = {
         id: channel.id,
         channel_id: channel.id,
-        channel_name: inputValue,
+        channel_name: form.title.value,
         remove_member_ids: removed_members,
         add_member_ids: added_members,
         message_body: `CHANNEL_UPDATE::${JSON.stringify({
@@ -183,16 +218,16 @@ const CreateEditChatModal = (props) => {
             partial_name: user.partial_name,
             profile_image_link: user.profile_image_link,
           },
-          title: channel.title === inputValue ? "" : inputValue,
+          title: channel.title === form.title.value ? "" : form.title.value,
           added_members: added_members,
           removed_members: removed_members,
         })}`,
       };
 
-      channel.members = selectedUsers;
-      channel.title = inputValue;
+      channel.members = form.selectedUsers.value;
+      channel.title = form.title.value;
 
-      channelActions.update(payload, () => {
+      updateChannel(payload, () => {
         setLoading(false);
       });
     } else {
@@ -228,7 +263,7 @@ const CreateEditChatModal = (props) => {
         id: placeholderId,
         entity_id: 0,
         type: "GROUP",
-        title: inputValue,
+        title: form.title.value,
         code: placeholderId,
         is_archived: false,
         is_pinned: false,
@@ -241,7 +276,7 @@ const CreateEditChatModal = (props) => {
         hasMore: false,
         skip: 0,
         isFetching: false,
-        members: [...selectedUsers, user],
+        members: [...form.selectedUsers.value, user],
         replies: [message],
         created_at: {
           timestamp: timestamp,
@@ -264,7 +299,7 @@ const CreateEditChatModal = (props) => {
         .filter((r) => r.type === "USER")
         .filter((r) => {
           let userFound = false;
-          selectedUsers.forEach((u) => {
+          form.selectedUsers.value.forEach((u) => {
             if (u.id === r.type_id) {
               userFound = true;
             }
@@ -275,7 +310,7 @@ const CreateEditChatModal = (props) => {
 
       let payload = {
         recipient_ids: recipient_ids,
-        title: inputValue,
+        title: form.title.value,
       };
       if (textOnly.trim().length !== 0) {
         payload = {
@@ -322,7 +357,7 @@ const CreateEditChatModal = (props) => {
         dispatch(setSelectedChannel(payload));
         history.push(`/chat/${res.data.code}`);
       };
-      channelActions.create(payload, createCallback);
+      createChannel(payload, createCallback);
     }
 
     toggle();
@@ -340,7 +375,7 @@ const CreateEditChatModal = (props) => {
       .filter((r) => r.type === "USER")
       .filter((r) => {
         let userFound = false;
-        selectedUsers.forEach((u) => {
+        form.selectedUsers.value.forEach((u) => {
           if (u.id === r.type_id) {
             userFound = true;
           }
@@ -362,7 +397,7 @@ const CreateEditChatModal = (props) => {
           setChatExists(false);
         }
       };
-      channelActions.searchExisting(inputValue, recipient_ids, callback);
+      searchExisting(form.title.value, recipient_ids, callback);
     }
   }, 500);
 
@@ -370,57 +405,63 @@ const CreateEditChatModal = (props) => {
 
   useEffect(() => {
     if (mode === "edit") {
-      let currentMembers = channel.members.map((m) => {
-        return {
-          ...m,
-          value: m.id,
-          label: m.first_name,
-        };
-      });
-      setSelectedUsers(currentMembers);
-      setInputValue(channel.title);
+
+      setForm(prevState => ({
+        ...prevState,
+        selectedUsers: {
+          value: channel.members.map((m) => {
+            return {
+              ...m,
+              value: m.id,
+              label: m.first_name,
+            };
+          })
+        },
+        title: {
+          value: channel.title
+        }
+      }))
     }
 
     //eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
-    if (selectedUsers.length) {
+    if (form.selectedUsers.value.length) {
       handleSearchExistingChat();
     }
-  }, [inputValue, selectedUsers.length]);
+  }, [form.title.value, form.selectedUsers.value.length]);
 
   useEffect(() => {
     if (!searching) {
-      let valid = true;
-      if (inputValue === "") {
-        valid = false;
+      let newForm = form;
+      if (newForm.title.value === "") {
+        newForm.title.valid = false
+        newForm.title.feedback = dictionary.feedbackChatTitleIsRequired;
+      } else if (chatExists === true) {
+        newForm.title.valid = false;
+        newForm.title.feedback = dictionary.feedbackChatTitleIsUnique;
+      } else {
+        newForm.title.valid = true;
+        newForm.title.feedback = null;
       }
-      if (selectedUsers.length === 0) {
-        valid = false;
+
+      if (newForm.selectedUsers.value.length === 0) {
+        newForm.selectedUsers.valid = false;
+        newForm.selectedUsers.feedback = dictionary.feedbackChatMemberIsRequired;
+      } else {
+        newForm.selectedUsers.valid = true;
+        newForm.selectedUsers.feedback = null;
       }
-      if (chatExists === true) {
-        valid = false;
-      }
-      setValid(valid);
+
+      setForm(newForm);
     }
-  }, [inputValue, selectedUsers, chatExists, searching]);
+  }, [form.title.value, form.selectedUsers.value, chatExists, searching]);
 
   const onOpened = () => {
     if (inputRef && inputRef.current) {
       inputRef.current.focus();
     }
-  };
-
-  const {_t} = useTranslation();
-  const dictionary = {
-    chatTitle: _t("MODAL.CHAT_TITLE", "Chat title"),
-    people: _t("MODAL.PEOPLE", "People"),
-    firstMessage: _t("MODAL.FIRST_MESSAGE", "First message"),
-    newGroupChat: _t("MODAL.NEW_GROUP_CHAT", "New group chat"),
-    editChat: _t("MODAL.EDIT_CHAT", "Edit chat"),
-    createChat: _t("MODAL.CREATE_CHAT", "Create chat"),
-    chatInfo: _t("FOLDER_INFO", "Create a group chat to quickly discuss any subject with multiple people. A group chat can hold an unlimited amount of members."),
   };
 
   return (
@@ -430,29 +471,36 @@ const CreateEditChatModal = (props) => {
       <ModalBody>
         <WrapperDiv>
           <div>
-            <Label className={"modal-info mb-3"}>{dictionary.chatInfo}</Label>
+            <Label
+              className={"modal-info mb-3"}>{mode === "edit" ? dictionary.chatInfoEdit : dictionary.chatInfo}</Label>
             <Label className={"modal-label"} for="chat">{dictionary.chatTitle}</Label>
-            <Input style={{borderRadius: "5px"}} defaultValue={mode === "edit" ? channel.title : ""}
-                  onChange={handleInputChange} valid={valid} innerRef={inputRef}/>
+            <FormInput
+              name="title"
+              style={{borderRadius: "5px"}} defaultValue={form.title.value}
+              onChange={handleInputChange} innerRef={inputRef}
+              isValid={form.title.valid} feedback={form.title.feedback}/>
           </div>
         </WrapperDiv>
         <WrapperDiv>
           <div>
             <Label className={"modal-label"} for="people">{dictionary.people}</Label>
-            <SelectPeople options={options} value={selectedUsers} onChange={handleSelect}/>
+            <SelectPeople options={options} value={form.selectedUsers.value} onChange={handleSelect}/>
           </div>
         </WrapperDiv>
         {mode === "new" && (
           <WrapperDiv>
             <div>
               <Label className={"modal-label"} for="firstMessage">{dictionary.firstMessage}</Label>
-              <StyledQuillEditor className="group-chat-input" modules={modules} ref={reactQuillRef}
-                                onChange={handleQuillChange}/>
+              <StyledQuillEditor
+                className="group-chat-input" modules={modules} ref={reactQuillRef}
+                onChange={handleQuillChange}/>
             </div>
           </WrapperDiv>
         )}
         <WrapperDiv>
-          <button className="btn btn-primary" disabled={searching || !valid} onClick={handleConfirm}>
+          <button className="btn btn-primary"
+                  disabled={searching || Object.keys(form).map(k => form[k].valid).some(v => v === false)}
+                  onClick={handleConfirm}>
             {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"/>}
             {mode === "edit" ? dictionary.editChat : dictionary.createChat}
           </button>

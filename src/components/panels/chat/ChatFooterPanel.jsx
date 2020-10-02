@@ -1,14 +1,14 @@
-import React, {useRef, useState} from "react";
-import {useDispatch, useSelector} from "react-redux";
+import React, { useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import Tooltip from "react-tooltip-lite";
 import styled from "styled-components";
-import {onClickSendButton, putChannel} from "../../../redux/actions/chatActions";
-import {joinWorkspace} from "../../../redux/actions/workspaceActions";
-import {CommonPicker, SvgIconFeather} from "../../common";
+import { onClickSendButton, putChannel } from "../../../redux/actions/chatActions";
+import { joinWorkspace } from "../../../redux/actions/workspaceActions";
+import { CommonPicker, SvgIconFeather } from "../../common";
 import ChatInput from "../../forms/ChatInput";
-import {useIsMember, useTimeFormat, useToaster, useTranslation} from "../../hooks";
+import { useIsMember, useTimeFormat, useToaster, useTranslation } from "../../hooks";
 import ChatQuote from "../../list/chat/ChatQuote";
-import {addToModals} from "../../../redux/actions/globalActions";
+import { addToModals } from "../../../redux/actions/globalActions";
 import TypingIndicator from "../../list/chat/TypingIndicator";
 import LockedLabel from "./LockedLabel";
 
@@ -55,7 +55,8 @@ const ChatInputContainer = styled.div`
     bottom: 0;
     right: 0;
     margin: 4px;
-    height: 40px;
+    height: calc(100% - 8px);
+    max-height: 38px;
     background: #7a1b8b;
     border-radius: 4px;
     min-width: 40px;

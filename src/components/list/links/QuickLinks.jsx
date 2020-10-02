@@ -51,7 +51,7 @@ const LinkNav = styled.ul`
     max-height: 0;
   }
   li.personal-link {
-    height: 40px;
+    min-height: 40px;
     width: 100%;
     padding: 0 10px;
     font-weight: 400;
@@ -60,11 +60,15 @@ const LinkNav = styled.ul`
 
     > div {
       position: relative;
-      height: 40px;
+      min-height: 40px;
       display: flex;
       width: 100%;
       align-items: center;
       justify-content: space-between;
+      
+      &.shorcut-title {
+        font-weight: 500;      
+      }
 
       > div {
         display: flex;
@@ -169,7 +173,7 @@ const QuickLinks = (props) => {
               {
                 links.length !== 0 && index === 0 &&
                 <li className="personal-link">
-                  <div>{dictionary.personalLinks}</div>
+                  <div className="shorcut-title">{dictionary.personalLinks}</div>
                 </li>
               }
               <li className="personal-link">
@@ -191,7 +195,7 @@ const QuickLinks = (props) => {
         {generalSettings.personal_links.length < 5 && (
           <li className="personal-link nav-action cursor-pointer" onClick={handleAddItemClick}>
             <div className="justify-content-start">
-              <SvgIconFeather icon="circle-plus" width={24} height={24}/> {dictionary.addShortcut}
+              <SvgIconFeather icon="circle-plus" width={24} height={24}/> {dictionary.addPersonalShortcut}
             </div>
           </li>
         )}
@@ -200,8 +204,8 @@ const QuickLinks = (props) => {
             <React.Fragment key={link.id}>
               {
                 generalSettings.personal_links.length !== 0 && index === 0 &&
-                <li className="personal-link">
-                  <div>{dictionary.companyLinks}</div>
+                <li className="personal-link pt-2">
+                  <div className="shorcut-title">{dictionary.companyLinks}</div>
                 </li>
               }
               <LinkItem link={link} className="quick-links"/>

@@ -86,7 +86,7 @@ export const useTranslation = (session = {}) => {
                 }
               } else {
                 setGeneralSetting({
-                  language: dictFile.lang,
+                  language: dictFile.split("/").pop(),
                 });
               }
             }

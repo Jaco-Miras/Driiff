@@ -220,7 +220,8 @@ const CompanyPostDetail = (props) => {
     history.push(`/profile/${post.author.id}/${replaceChar(post.author.name)}`);
   };
 
-  const isMember = post.users_responsible.some((u) => u.id === user.id);
+  //const isMember = post.users_responsible.some((u) => u.id === user.id);
+  const isMember = true;
 
   useEffect(() => {
     const viewed = post.view_user_ids.some((id) => id === user.id);

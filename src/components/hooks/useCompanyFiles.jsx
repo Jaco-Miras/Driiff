@@ -216,7 +216,7 @@ const useFiles = () => {
     });
   } else {
     fileIds = Object.values(files)
-      //.filter((f) => f.folder_id === null)
+      .filter((f) => f.folder_id === null)
       .map((f) => f.id)
       .sort((a, b) => {
         return b > a ? 1 : -1;
