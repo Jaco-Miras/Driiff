@@ -13,6 +13,7 @@ import {CompanyPostDetailFooter} from "../../../panels/post/company";
 
 const Wrapper = styled.li`
   margin-bottom: 1rem;
+  overflow: initial;
 
   .mention {
     font-weight: bold;
