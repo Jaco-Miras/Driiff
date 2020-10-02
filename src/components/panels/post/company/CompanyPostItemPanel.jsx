@@ -1,12 +1,12 @@
 import React from "react";
 import {useSelector} from "react-redux";
 import styled from "styled-components";
-import {AvatarGroup, SvgIconFeather} from "../../../common";
+import {SvgIconFeather} from "../../../common";
 import {CheckBox} from "../../../forms";
 import {MoreOptions} from "../../common";
 import {CompanyPostBadge} from "./index";
 import quillHelper from "../../../../helpers/quillHelper";
-
+import {MemberLists} from "../../../list/members";
 
 const Wrapper = styled.li`
   &:first-of-type {
@@ -107,7 +107,7 @@ const CompanyPostItemPanel = (props) => {
           <div className="pl-3 d-flex align-items-center">
             {post.unread_count !== 0 && <div className="ml-2 mr-2 badge badge-primary badge-pill">{post.unread_count}</div>}
             <CompanyPostBadge post={post} dictionary={dictionary} />
-            {post.users_responsible && post.users_responsible.length > 0 && <AvatarGroup users={post.users_responsible} />}
+            {post.users_responsible && post.users_responsible.length > 0 && <MemberLists members={post.users_responsible} classNames="mr-2"/>}
             {!disableOptions && <Icon icon="archive" onClick={handleArchivePost} />}
           </div>
         </div>
