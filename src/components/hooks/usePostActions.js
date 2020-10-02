@@ -46,9 +46,12 @@ const usePostActions = () => {
 
   const dictionary = {
     headerRemoveDraftHeader: _t("MODAL.REMOVE_DRAFT_HEADER", "Remove post draft?"),
-    buttonRemoveDraft: _t("MODAL.REMOVE_DRAFT", "Remove draft"),
+    headerRemovePostHeader: _t("MODAL.REMOVE_POST_HEADER", "Remove post?"),
+    buttonRemove: _t("BUTTON.REMOVE", "Remove"),
+    buttonRemovePost: _t("MODAL.REMOVE_POST", "Remove draft"),
     buttonCancel: _t("BUTTON.CANCEL", "Cancel"),
-    removeThisDraft: _t("MODAL.REMOVE_THIS_DRAFT", "Are you sure you want to remove this post draft?")
+    removeThisDraft: _t("MODAL.REMOVE_THIS_DRAFT", "Are you sure you want to remove this post draft?"),
+    removeThisPost: _t("MODAL.REMOVE_THIS_POST", "Are you sure you want to remove this post?"),
   };
 
   const starPost = useCallback(
@@ -175,7 +178,7 @@ const usePostActions = () => {
         let payload = {
           type: "confirmation",
           headerText: dictionary.headerRemoveDraftHeader,
-          submitText: dictionary.buttonRemoveDraft,
+          submitText: dictionary.buttonRemove,
           cancelText: dictionary.buttonCancel,
           bodyText: dictionary.removeThisDraft,
           actions: {
@@ -385,10 +388,10 @@ const usePostActions = () => {
 
       let payload = {
         type: "confirmation",
-        headerText: "Remove post?",
-        submitText: "Remove",
-        cancelText: "Cancel",
-        bodyText: "Are you sure you want to remove this post?",
+        headerText: dictionary.headerRemovePostHeader,
+        submitText: dictionary.buttonRemove,
+        cancelText: dictionary.buttonCancel,
+        bodyText: dictionary.removeThisPost,
         actions: {
           onSubmit: onConfirm,
         },
