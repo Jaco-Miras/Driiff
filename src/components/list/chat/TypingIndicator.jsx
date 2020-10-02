@@ -8,7 +8,7 @@ const TypingContainer = styled.div`
   align-items: center;
   width: 100%;
   position: absolute;
-  top: -64px;
+  top: -5px;
   opacity: ${(props) => (props.users ? "1" : 0)};
   z-index: 999;
   > div:nth-child(2) {
@@ -17,11 +17,11 @@ const TypingContainer = styled.div`
   .avatar.avatar-sm {
     height: 26px !important;
     width: 26px !important;
-    margin-top: 30px;
+    //margin-top: 30px;
   }
 `;
 const TypingDiv = styled.div`
-  margin-left: 16px !important;
+  margin-left: 10px !important;
 `;
 const PlusUsersDiv = styled.div`
   border-radius: 50%;
@@ -44,7 +44,7 @@ const TypingIndicator = (props) => {
       {usersTyping.length > 2 ? <PlusUsersDiv>{`${usersTyping.length - 2}+`}</PlusUsersDiv> : null}
       {usersTyping.map((u, k) => {
         if (k <= 1) {
-          return <Avatar className="xs" imageLink={u.profile_image_link} name={u.name ? u.name : u.email} id={u.id} noDefaultClick={true} />;
+          return <Avatar key={k} className="xs" imageLink={u.profile_image_link} name={u.name ? u.name : u.email} id={u.id} noDefaultClick={true} />;
         } else return null;
       })}
       <TypingDiv className={"typing-indicator"}>

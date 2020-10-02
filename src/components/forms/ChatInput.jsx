@@ -323,7 +323,12 @@ const ChatInput = (props) => {
       if (window[selectedChannel.slug_owner]) {
         channel = window[selectedChannel.slug_owner].private(selectedChannel.slug_owner + `.App.Channel.${selectedChannel.id}`);
         channel.whisper("typing", {
-          user: user,
+          user: {
+            id: user.id,
+            name: user.name,
+            profile_image_link: user.profile_image_link,
+            email: user.email
+          },
           typing: true,
           channel_id: selectedChannel.id,
         });
@@ -331,7 +336,12 @@ const ChatInput = (props) => {
     } else {
       channel = window.Echo.private(localStorage.getItem("slug") + `.App.Channel.${selectedChannel.id}`);
       channel.whisper("typing", {
-        user: user,
+        user: {
+          id: user.id,
+          name: user.name,
+          profile_image_link: user.profile_image_link,
+          email: user.email
+        },
         typing: true,
         channel_id: selectedChannel.id,
       });
