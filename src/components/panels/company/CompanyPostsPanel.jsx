@@ -112,6 +112,9 @@ const CompanyPostsPanel = (props) => {
     quote: _t("POST.QUOTE", "Quote"),
     mentionUser: _t("POST.MENTION_USER", "Mention user"),
     remindMeAboutThis: _t("TODO.REMIND_ME_ABOUT_THIS", "Remind me about this"),
+    searchResult: _t("POST.SEARCH_RESULT", "Search Result:"),
+    searchResults: _t("POST.SEARCH_RESULTS", "Search Results:"),
+    searchNoResult: _t("POST.NO_SEARCH_RESULT", "No result found:"),
   };
 
   /**
@@ -199,14 +202,11 @@ const CompanyPostsPanel = (props) => {
                     {search !== null && (
                       <>
                         {posts.length === 0 ? (
-                          <h6 className="search-title card-title font-size-11 text-uppercase mb-4">No result
-                            found: {search}</h6>
+                          <h6 className="search-title card-title font-size-11 text-uppercase mb-4">{dictionary.searchNoResult} {search}</h6>
                         ) : posts.length === 1 ? (
-                          <h6 className="search-title card-title font-size-11 text-uppercase mb-4">Search
-                            Result: {search}</h6>
+                          <h6 className="search-title card-title font-size-11 text-uppercase mb-4">{dictionary.searchResult} {search}</h6>
                         ) : (
-                          <h6 className="search-title card-title font-size-11 text-uppercase mb-4">Search
-                            Results: {search}</h6>
+                          <h6 className="search-title card-title font-size-11 text-uppercase mb-4">{dictionary.searchResults} {search}</h6>
                         )}
                       </>
                     )}
