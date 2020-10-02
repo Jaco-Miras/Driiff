@@ -47,11 +47,20 @@ const usePostActions = () => {
   const dictionary = {
     headerRemoveDraftHeader: _t("MODAL.REMOVE_DRAFT_HEADER", "Remove post draft?"),
     headerRemovePostHeader: _t("MODAL.REMOVE_POST_HEADER", "Remove post?"),
+    headerUnarchivePostHeader: _t("MODAL.UNARCHIVE_POST_HEADER", "Un-archive post?"),
+    headerArchivePostHeader: _t("MODAL.ARCHIVE_POST_HEADER", "Archive post?"),
     buttonRemove: _t("BUTTON.REMOVE", "Remove"),
     buttonRemovePost: _t("MODAL.REMOVE_POST", "Remove draft"),
     buttonCancel: _t("BUTTON.CANCEL", "Cancel"),
     removeThisDraft: _t("MODAL.REMOVE_THIS_DRAFT", "Are you sure you want to remove this post draft?"),
     removeThisPost: _t("MODAL.REMOVE_THIS_POST", "Are you sure you want to remove this post?"),
+    buttonArchive: _t("BUTTON.ARCHIVE", "Archive"),
+    buttonUnarchive: _t("BUTTON.UNARCHIVE", "Un-archive"),
+    unarchiveThisPost: _t("MODAL.UNARCHIVE_THIS_POST", "Are you sure you want to un-archive this post?"),
+    archiveThisPost: _t("MODAL.ARCHIVE_THIS_POST", "Are you sure you want to archive this post?"),
+    notificationStopFollow: _t("NOTIFICATION.STOP_FOLLOW", "You’ve stopped to follow"),
+    notificationStartFollow: _t("NOTIFICATION.START_FOLLOW", "You’ve started to follow"),
+    notificationError: _t("NOTIFICATION.ERROR", "An error has occurred try again!"),
   };
 
   const starPost = useCallback(
@@ -234,10 +243,10 @@ const usePostActions = () => {
 
         let payload = {
           type: "confirmation",
-          headerText: post.is_archived === 1 ? "Un-archive post?" : "Archive post?",
-          submitText: post.is_archived === 1 ? "Un-archive" : "Archive",
-          cancelText: "Cancel",
-          bodyText: post.is_archived === 1 ? "Are you sure you want to un-archive this post?" : "Are you sure you want to archive this post?",
+          headerText: post.is_archived === 1 ? dictionary.headerUnarchivePostHeader : dictionary.headerArchivePostHeader,
+          submitText: post.is_archived === 1 ? dictionary.buttonUnarchive : dictionary.buttonArchive,
+          cancelText: dictionary.buttonCancel,
+          bodyText: post.is_archived === 1 ? dictionary.unarchiveThisPost : dictionary.archiveThisPost,
           actions: {
             onSubmit: onConfirm,
           },
@@ -344,7 +353,7 @@ const usePostActions = () => {
         dispatch(
           postUnfollow({post_id: post.id}, (err, res) => {
             if (err) return;
-            let notification = `You’ve stopped to follow ${post.title}`;
+            let notification = `${dictionary.notificationStopFollow} ${post.title}`;
             toaster.info(notification);
           })
         );
@@ -353,7 +362,7 @@ const usePostActions = () => {
         dispatch(
           postFollow({post_id: post.id}, (err, res) => {
             if (err) return;
-            let notification = `You’ve started to follow ${post.title}`;
+            let notification = `${dictionary.notificationStartFollow} ${post.title}`;
             toaster.info(notification);
           })
         );
@@ -590,7 +599,7 @@ const usePostActions = () => {
       }) => {
         todoActions.createForPost(post.id, payload, (err, res) => {
           if (err) {
-            toaster.error(`An error has occurred try again!`);
+            toaster.error(`${dictionary.notificationError}`);
           }
           if (res) {
             toaster.success(<>You will be reminded about this post under <b>To-dos & Reminders</b>.</>);
