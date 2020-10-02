@@ -105,6 +105,7 @@ const WorkspacePeoplePanel = (props) => {
     searchPeoplePlaceholder: _t("PLACEHOLDER.SEARCH_PEOPLE", "Search by name or email"),
     peopleExternal: _t("PEOPLE.EXTERNAL", "External"),
     peopleInvited: _t("PEOPLE.INVITED", "Invited"),
+    peopleManage: _t("PEOPLE.MANAGE", "Manage People"),
   };
 
   useFocusInput(refs.search.current);
@@ -117,7 +118,7 @@ const WorkspacePeoplePanel = (props) => {
             <Search ref={refs.search} value={search} closeButton="true" onClickEmpty={emptySearchInput} placeholder={dictionary.searchPeoplePlaceholder} onChange={handleSearchChange} autoFocus />
             <div>
               <button className="btn btn-primary" onClick={handleEditWorkspace}>
-                <SvgIconFeather className="mr-2" icon="user-plus" /> Manage People
+                <SvgIconFeather className="mr-2" icon="user-plus" /> {dictionary.peopleManage}
               </button>
             </div>
           </div>
