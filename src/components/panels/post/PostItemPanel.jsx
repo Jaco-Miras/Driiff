@@ -1,12 +1,12 @@
 import React from "react";
-import { useSelector } from "react-redux";
+import {useSelector} from "react-redux";
 import styled from "styled-components";
-import { SvgIconFeather } from "../../common";
-import { CheckBox } from "../../forms";
-import { MoreOptions } from "../common";
-import { PostBadge } from "./index";
-import { MemberLists } from "../../list/members";
-import { quillHelper } from "../../../helpers";
+import {SvgIconFeather} from "../../common";
+import {CheckBox} from "../../forms";
+import {MoreOptions} from "../common";
+import {PostBadge} from "./index";
+import {MemberLists} from "../../list/members";
+import quillHelper from "../../../helpers/quillHelper";
 
 const Wrapper = styled.li`
   &:first-of-type {
