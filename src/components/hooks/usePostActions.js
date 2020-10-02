@@ -61,6 +61,18 @@ const usePostActions = () => {
     notificationStopFollow: _t("NOTIFICATION.STOP_FOLLOW", "You’ve stopped to follow"),
     notificationStartFollow: _t("NOTIFICATION.START_FOLLOW", "You’ve started to follow"),
     notificationError: _t("NOTIFICATION.ERROR", "An error has occurred try again!"),
+    notificationYouMarked: _t("NOTIFICATION.YOU_MARKED", "You marked"),
+    notificationYouUpdated: _t("NOTIFICATION.YOU_UPDATED", "You have updated"),
+    notificationUnread: _t("NOTIFICATION.UNREAD", "as unread"),
+    notificationRead: _t("NOTIFICATION.READ", "as read"),
+    notificationDone: _t("NOTIFICATION.DONE", "as done"),
+    notificationStar: _t("NOTIFICATION.STAR", "as starred"),
+    notificationRemoved: _t("NOTIFICATION.REMOVED", "is removed"),
+    notificationActionFailed: _t("NOTIFICATION.ACTION_FAILED", "Action failed"),
+    notificationCreatePost: _t("NOTIFICATION.CREATE_POST", "You have successfully created a post"),
+    notificationReminderPost: _t("NOTIFICATION.REMINDER_POST", "You will be reminded about this post under"),
+    itemPost: _t("ITEM.POST", "post"),
+    todoLinks: _t("SIDEBAR.TODO_LINKS", "To-dos & Reminders"),
   };
 
   const starPost = useCallback(
@@ -71,13 +83,13 @@ const usePostActions = () => {
         postFavorite({type: "post", type_id: post.id}, (err, res) => {
           //@todo reverse the action/data in the reducer
           if (err) {
-            toaster.error(<>Action failed!</>);
+            toaster.error(<>{dictionary.notificationActionFailed}</>);
           }
 
           if (res) {
             toaster.success(
               <>
-                You mark <b>{post.title}</b> as starred
+                {dictionary.notificationYouMarked} <b>{post.title}</b> {dictionary.notificationStar}.
               </>
             );
           }
@@ -101,13 +113,13 @@ const usePostActions = () => {
         postMarkDone({post_id: post.id}, (err, res) => {
           //@todo reverse the action/data in the reducer
           if (err) {
-            toaster.error(<>Action failed!</>);
+            toaster.error(<>{dictionary.notificationActionFailed}</>);
           }
 
           if (res) {
             toaster.success(
               <>
-                You marked <b>{post.name} as done</b>
+                {dictionary.notificationYouMarked} <b>{post.name} {dictionary.notificationDone}</b>
               </>
             );
           }
@@ -168,14 +180,14 @@ const usePostActions = () => {
               },
               (err, res) => {
                 if (err) {
-                  toaster.success(<>Action failed.</>);
+                  toaster.error(<>{dictionary.notificationActionFailed}</>);
                   return;
                 }
 
                 if (res) {
                   toaster.success(
                     <>
-                      <b>{post.title}</b> is removed.
+                      <b>{post.title}</b> {dictionary.notificationRemoved}.
                     </>
                   );
                 }
@@ -280,7 +292,7 @@ const usePostActions = () => {
           if (showToaster)
             toaster.success(
               <>
-                You marked <b>{post.title}</b> as read.
+                {dictionary.notificationYouMarked} <b>{post.title}</b> {dictionary.notificationRead}.
               </>
             );
 
@@ -313,7 +325,7 @@ const usePostActions = () => {
           if (showToaster)
             toaster.success(
               <>
-                You marked <b>{post.title}</b> as unread.
+                {dictionary.notificationYouMarked} <b>{post.title}</b> {dictionary.notificationUnread}.
               </>
             );
 
@@ -486,7 +498,7 @@ const usePostActions = () => {
     }) => {
       dispatch(postCompanyPosts(payload, (err, res) => {
         if (res) {
-          toaster.success(<>You have successfully created a post.</>);
+          toaster.success(<>{dictionary.notificationCreatePost}</>);
         }
         callback(err, res);
       }));
@@ -499,7 +511,7 @@ const usePostActions = () => {
     }) => {
       dispatch(putPost(payload, (err, res) => {
         if (res) {
-          toaster.success(<>You have updated {payload.title} post.</>);
+          toaster.success(<>{dictionary.notificationYouUpdated} {payload.title} {dictionary.itemPost}</>);
         }
         callback(err, res);
       }));
@@ -512,7 +524,7 @@ const usePostActions = () => {
     }) => {
       dispatch(putCompanyPosts(payload, (err, res) => {
         if (res) {
-          toaster.success(<>You have updated {payload.title} post.</>);
+          toaster.success(<>{dictionary.notificationYouUpdated} {payload.title} {dictionary.itemPost}</>);
         }
         callback(err, res);
       }));
@@ -602,7 +614,7 @@ const usePostActions = () => {
             toaster.error(`${dictionary.notificationError}`);
           }
           if (res) {
-            toaster.success(<>You will be reminded about this post under <b>To-dos & Reminders</b>.</>);
+            toaster.success(<>{dictionary.notificationReminderPost} <b>{dictionary.todoLinks}</b>.</>);
           }
           modalCallback(err, res);
           callback(err, res);
