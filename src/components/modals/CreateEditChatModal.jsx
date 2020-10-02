@@ -119,14 +119,14 @@ const CreateEditChatModal = (props) => {
   };
 
   const dictionary = {
-    chatTitle: _t("MODAL.CHAT_TITLE", "Chat title"),
+    chatTitle: _t("MODAL.CHAT_TITLE", "Title"),
     people: _t("MODAL.PEOPLE", "People"),
     firstMessage: _t("MODAL.FIRST_MESSAGE", "First message"),
     newGroupChat: _t("MODAL.NEW_GROUP_CHAT", "New group chat"),
     editChat: _t("MODAL.EDIT_CHAT", "Edit chat"),
     createChat: _t("MODAL.CREATE_CHAT", "Create chat"),
     chatInfo: _t("FOLDER_INFO", "Create a group chat to quickly discuss any subject with multiple people. A group chat can hold an unlimited amount of members."),
-    chatInfoEdit: _t("FOLDER_INFO_EDIT", "Modify this group chat to quickly discuss any subject with multiple people. A group chat can hold an unlimited amount of members."),
+    chatInfoEdit: _t("FOLDER_INFO_EDIT", "Edit the chat's title and members. A group chat can hold an unlimited amount of members."),
     feedbackChatTitleIsRequired: _t("FEEDBACK.CHAT_TITLE_IS_REQUIRED", "Chat title is required."),
     feedbackChatTitleIsUnique: _t("FEEDBACK.CHAT_TITLE_IS_UNIQUE", "Chat title is already taken."),
     feedbackChatMemberIsRequired: _t("FEEDBACK.CHAT_MEMBER_IS_REQUIRED", "You must assign atleast a member on this chat."),
