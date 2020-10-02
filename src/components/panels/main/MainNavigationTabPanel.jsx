@@ -287,7 +287,7 @@ const MainNavigationTabPanel = (props) => {
     shortcuts: _t("SIDEBAR.SHORTCUTS", "Shortcuts"),
     personalLinks: _t("SIDEBAR.PERSONAL_LINKS", "Personal"),
     companyLinks: _t("SIDEBAR.COMPANY_LINKS", "Company"),
-    addShortcut: _t("SIDEBAR.ADD_SHORTCUT", "Add shortcut"),
+    addPersonalShortcut: _t("SIDEBAR.ADD_PERSONAL_SHORTCUT", "Add personal shortcut"),
     todoLinks: _t("SIDEBAR.TODO_LINKS", "To-dos & Reminders"),
     addTodoItem: _t("SIDEBAR.ADD_TODO_ITEM", "Add to-do"),
   };
