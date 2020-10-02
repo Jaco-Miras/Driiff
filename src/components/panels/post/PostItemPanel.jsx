@@ -1,11 +1,12 @@
 import React from "react";
-import {useSelector} from "react-redux";
+import { useSelector } from "react-redux";
 import styled from "styled-components";
-import {SvgIconFeather} from "../../common";
-import {CheckBox} from "../../forms";
-import {MoreOptions} from "../common";
-import {PostBadge} from "./index";
-import {MemberLists} from "../../list/members";
+import { SvgIconFeather } from "../../common";
+import { CheckBox } from "../../forms";
+import { MoreOptions } from "../common";
+import { PostBadge } from "./index";
+import { MemberLists } from "../../list/members";
+import { quillHelper } from "../../../helpers";
 
 const Wrapper = styled.li`
   &:first-of-type {
@@ -46,6 +47,9 @@ const Wrapper = styled.li`
     &:hover {
       color: #7a1b8b;
     }
+  }
+  .post-partialBody {
+    color: #b8b8b8;
   }
 `;
 
@@ -95,9 +99,13 @@ const PostItemPanel = (props) => {
                             ${post.is_mark_done ? "text-success" : ""}`}
           >
             <span>{post.title}</span>
-            {post.unread_count !== 0 && <div className="ml-2 badge badge-primary badge-pill">{post.unread_count}</div>}
+            <div className='text-truncate post-partialBody'>
+              <span
+                                      dangerouslySetInnerHTML={{__html: quillHelper.parseEmoji(post.partial_body)}}/>
+            </div>
           </div>
           <div className="pl-3 d-flex align-items-center">
+            {post.unread_count !== 0 && <div className="ml-2 mr-2 badge badge-primary badge-pill">{post.unread_count}</div>}
             <div className="mr-3">
               <PostBadge post={post} dictionary={dictionary} />
               {post.users_responsible.length > 0 && <MemberLists members={post.users_responsible} />}
