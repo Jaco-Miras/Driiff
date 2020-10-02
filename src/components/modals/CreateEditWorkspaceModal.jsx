@@ -983,7 +983,7 @@ const CreateEditWorkspaceModal = (props) => {
         />
         <WrapperDiv className={"modal-input mt-0"}>
           <div>
-            <Label className={"modal-info pb-3"}>{dictionary.workspaceInfo}</Label>
+            <Label className={"modal-info pb-3 pt-3"}>{dictionary.workspaceInfo}</Label>
             <Label className={"modal-label"} for="chat">{dictionary.workspaceName}</Label>
             <Input
               name="name"
