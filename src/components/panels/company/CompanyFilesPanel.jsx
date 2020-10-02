@@ -1,11 +1,11 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import { useDispatch } from "react-redux";
-import { useHistory } from "react-router-dom";
+import React, {useCallback, useEffect, useRef, useState} from "react";
+import {useDispatch} from "react-redux";
+import {useHistory} from "react-router-dom";
 import styled from "styled-components";
-import { replaceChar } from "../../../helpers/stringFormatter";
-import { addToModals } from "../../../redux/actions/globalActions";
-import { useCompanyFiles, useTranslation } from "../../hooks";
-import { CompanyFilesBody, CompanyFilesHeader, CompanyFilesSidebar } from "../files/company";
+import {replaceChar} from "../../../helpers/stringFormatter";
+import {addToModals} from "../../../redux/actions/globalActions";
+import {useCompanyFiles, useTranslation} from "../../hooks";
+import {CompanyFilesBody, CompanyFilesHeader, CompanyFilesSidebar} from "../files/company";
 
 const Wrapper = styled.div`
   .app-sidebar-menu {
@@ -145,6 +145,7 @@ const CompanyFilesPanel = (props) => {
     let payload = {
       type: "single_input",
       defaultValue: "",
+      label: "Folder name",
       postInputLabel:
         folder === null ? (
           ""
@@ -160,6 +161,7 @@ const CompanyFilesPanel = (props) => {
       payload = {
         ...payload,
         title: dictionary.createFolder,
+        preInputLabel: "Folders help to organize your files. A file can only be connected to one folder.",
         labelPrimaryAction: dictionary.create,
         onPrimaryAction: handleCreateFolder,
       };
@@ -168,8 +170,9 @@ const CompanyFilesPanel = (props) => {
       payload = {
         ...payload,
         defaultValue: f.search,
-        title: dictionary.updateFolder,
-        labelPrimaryAction: dictionary.update,
+        title: "Rename folder",
+        preInputLabel: "Renaming the folder will update the folder name for everyone.",
+        labelPrimaryAction: "Rename folder",
         onPrimaryAction: handleUpdateFolder,
       };
     }
