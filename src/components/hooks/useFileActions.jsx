@@ -58,6 +58,7 @@ import {
 } from "../../redux/actions/fileActions";
 import {addToModals} from "../../redux/actions/globalActions";
 import {useToaster} from "./index";
+import {useTranslation} from "../hooks";
 
 const useFileActions = (params = null) => {
   const dispatch = useDispatch();
@@ -65,6 +66,8 @@ const useFileActions = (params = null) => {
   const toaster = useToaster();
 
   const fileName = useRef("");
+
+  const {_t} = useTranslation();
 
   const getFileIcon = (mimeType = "") => {
     if (mimeType) {
@@ -90,6 +93,14 @@ const useFileActions = (params = null) => {
     } else {
       return <i className="fa fa-file-text-o text-warning"/>;
     }
+  };
+
+  const dictionary = {
+    buttonCancel: _t("BUTTON.CANCEL", "Cancel"),
+    buttonRemove: _t("BUTTON.REMOVE", "Remove"),
+    removeHeaderFolder: _t("FILES.REMOVE_HEADER", "Remove folder for everyone?"),
+    removeBodyFolder: _t("FILES.REMOVE_BODY", "This folder will be moved to the recycle bin and will be permanently removed after thirty (30) days."),
+    removeConfirmation: _t("FILES.REMOVE_HEADER", "This folder will be removed permanently."),
   };
 
   const fetchCompanyFiles = useCallback(
@@ -362,10 +373,10 @@ const useFileActions = (params = null) => {
       };
       let modal = {
         type: "confirmation",
-        headerText: "Remove folder for everyone?",
-        submitText: "Remove",
-        cancelText: "Cancel",
-        bodyText: "This folder will be moved to the recycle bin and will be permanently removed after thirty (30) days.",
+        headerText: dictionary.removeHeaderFolder,
+        submitText: dictionary.buttonRemove,
+        cancelText: dictionary.buttonCancel,
+        bodyText: dictionary.removeBodyFolder,
         actions: {
           onSubmit: handleDeleteFolder,
         },
@@ -373,7 +384,7 @@ const useFileActions = (params = null) => {
       if (folder.is_archived) {
         modal = {
           ...modal,
-          bodyText: "This folder will be removed permanently.",
+          bodyText: dictionary.removeConfirmation,
         };
       }
 
