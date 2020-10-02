@@ -78,10 +78,14 @@ const WorkspaceFilesPanel = (props) => {
     update: _t("UPDATE", "Update"),
     editFolder: _t("EDIT_FOLDER", "Edit folder"),
     removeFolder: _t("REMOVE_FOLDER", "Remove folder"),
+    renameFolder: _t("RENAME.FOLDER", "Rename folder"),
+    folderInfo: _t("FOLDER.INFO", "Folders help to organize your files. A file can only be connected to one folder."),
+    renameFolderInfo: _t("RENAME.FOLDER_INFO", "Renaming the folder will update the folder name for everyone."),
     add: _t("ADD", "Add"),
     favorite: _t("FAVORITE", "Favorite"),
     file: _t("FILE", "File"),
     folder: _t("FOLDER", "Folder"),
+    folderName: _t("FOLDER_NAME", "Folder name"),
     folders: _t("FOLDERS", "Folders"),
     allFiles: _t("FILES.ALL_FILES", "All files"),
     recentlyEdited: _t("FILES.RECENTLY_EDITED", "Recently edited"),
@@ -149,7 +153,7 @@ const WorkspaceFilesPanel = (props) => {
     let payload = {
       type: "single_input",
       defaultValue: "",
-      label: "Folder name",
+      label: dictionary.folderName,
       postInputLabel:
         folder === null ? (
           ""
@@ -165,7 +169,7 @@ const WorkspaceFilesPanel = (props) => {
       payload = {
         ...payload,
         title: dictionary.createFolder,
-        preInputLabel: "Folders help to organize your files. A file can only be connected to one folder.",
+        preInputLabel: dictionary.folderInfo,
         labelPrimaryAction: dictionary.create,
         onPrimaryAction: handleCreateFolder,
       };
@@ -174,9 +178,9 @@ const WorkspaceFilesPanel = (props) => {
       payload = {
         ...payload,
         defaultValue: f.search,
-        title: "Rename folder",
-        preInputLabel: "Renaming the folder will update the folder name for everyone.",
-        labelPrimaryAction: "Rename folder",
+        title: dictionary.renameFolder,
+        preInputLabel: dictionary.renameFolderInfo,
+        labelPrimaryAction: dictionary.renameFolder,
         onPrimaryAction: handleUpdateFolder,
       };
     }
