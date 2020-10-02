@@ -3,7 +3,7 @@ import React from "react";
 const CompanyPostBadge = (props) => {
   const {className = "", isBadgePill = false, post, dictionary} = props;
 
-  if (post.is_must_read !== 0 || post.is_must_reply !== 0 || post.is_read_only !== 0 || post.type === "draft_post" || post.is_archived !== 0) {
+  if (post.is_must_read || post.is_must_reply || post.is_read_only || post.type === "draft_post" || post.is_archived !== 0) {
     return (
       <>
         {post.is_archived === 1 && (
@@ -17,17 +17,17 @@ const CompanyPostBadge = (props) => {
             <div className={`badge badge-light text-white ${isBadgePill ? "badge-pill" : ""}`}>{dictionary.draft}</div>
           </div>
         )}
-        {post.is_must_read === 1 && (
+        {post.is_must_read && (
           <div className={`${className} mr-3 d-sm-inline d-none`}>
             <div className={`badge badge-danger ${isBadgePill ? "badge-pill" : ""}`}>{dictionary.mustRead}</div>
           </div>
         )}
-        {post.is_must_reply === 1 && (
+        {post.is_must_reply && (
           <div className={`${className} mr-3 d-sm-inline d-none`}>
             <div className={`badge badge-warning ${isBadgePill ? "badge-pill" : ""}`}>{dictionary.replyRequired}</div>
           </div>
         )}
-        {post.is_read_only === 1 && (
+        {post.is_read_only && (
           <div className={`${className} mr-3 d-sm-inline d-none`}>
             <div className={`badge badge-info ${isBadgePill ? "badge-pill" : ""}`}>{dictionary.noReplies}</div>
           </div>

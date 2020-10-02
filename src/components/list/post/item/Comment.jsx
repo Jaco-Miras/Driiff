@@ -243,7 +243,7 @@ const Comment = (props) => {
               <span>{comment.author.first_name}</span>
               <span className="text-muted ml-1">{fromNow(comment.created_at.timestamp)}</span>
             </div>
-            {post.is_read_only !== 1 && !disableOptions && (
+            {!post.is_read_only && !disableOptions && (
               <MoreOptions scrollRef={refs.body.current} moreButton={"more-horizontal"}>
                 {comment.todo_reminder === null &&
                 <div onClick={() => commentActions.remind(comment, post)}>{dictionary.remindMeAboutThis}</div>}
@@ -271,7 +271,7 @@ const Comment = (props) => {
           <div className="d-flex align-items-center justify-content-start">
             <Icon className={react.user_clap_count ? "mr-2 comment-reaction clap-true" : "mr-2 comment-reaction clap-false"} icon="heart" onClick={handleReaction} />
             {react.clap_count > 0 ? react.clap_count : null}
-            {post.is_read_only !== 1 && !disableOptions && (
+            {!post.is_read_only && !disableOptions && (
               <Reply className="ml-3" onClick={handleShowInput}>
                 {dictionary.comment}
               </Reply>
