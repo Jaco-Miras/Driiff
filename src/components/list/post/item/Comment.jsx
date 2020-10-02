@@ -9,6 +9,7 @@ import {useGoogleApis, useTimeFormat} from "../../../hooks";
 import GifPlayer from "react-gif-player";
 import {getGifLinks} from "../../../../helpers/urlContentHelper";
 import quillHelper from "../../../../helpers/quillHelper";
+import {CompanyPostDetailFooter} from "../../../panels/post/company";
 
 const Wrapper = styled.li`
   margin-bottom: 1rem;
@@ -99,6 +100,8 @@ const CommentBody = styled.div``;
 
 const CommentInput = styled(PostDetailFooter)``;
 
+const CompanyCommentInput = styled(CompanyPostDetailFooter)``;
+
 const Reply = styled.span`
   cursor: pointer;
 `;
@@ -108,7 +111,7 @@ const Icon = styled(SvgIconFeather)`
 `;
 
 const Comment = (props) => {
-  const { className = "", comment, post, type = "main", user, commentActions, parentId, onShowFileDialog, dropAction, parentShowInput = null, workspace, isMember, dictionary, disableOptions } = props;
+  const { className = "", comment, post, type = "main", user, commentActions, parentId, onShowFileDialog, dropAction, parentShowInput = null, workspace, isMember, dictionary, disableOptions, isCompanyPost = false } = props;
 
   const refs = {
     input: useRef(null),
@@ -129,6 +132,7 @@ const Comment = (props) => {
 
   const handleShowInput = useCallback(
     (commentId = null) => {
+      console.log(commentId)
       if (parentShowInput) {
         parentShowInput(commentId);
       } else {
@@ -289,25 +293,45 @@ const Comment = (props) => {
           isMember={isMember}
           dictionary={dictionary}
           disableOptions={disableOptions}
+          isCompanyPost={isCompanyPost}
         />
       )}
       {showInput !== null && (
         <InputWrapper className="card">
-          <CommentInput
-            innerRef={refs.input}
-            user={user}
-            commentId={showInput}
-            post={post}
-            parentId={type === "main" ? comment.id : parentId}
-            commentActions={commentActions}
-            userMention={userMention}
-            handleClearUserMention={handleClearUserMention}
-            onShowFileDialog={onShowFileDialog}
-            dropAction={dropAction}
-            workspace={workspace}
-            isMember={isMember}
-            disableOptions={disableOptions}
-          />
+          {
+            isCompanyPost ? 
+            <CompanyCommentInput
+              innerRef={refs.input}
+              user={user}
+              commentId={showInput}
+              post={post}
+              parentId={type === "main" ? comment.id : parentId}
+              commentActions={commentActions}
+              userMention={userMention}
+              handleClearUserMention={handleClearUserMention}
+              onShowFileDialog={onShowFileDialog}
+              dropAction={dropAction}
+              workspace={workspace}
+              isMember={isMember}
+              disableOptions={disableOptions}
+            />
+            :
+            <CommentInput
+              innerRef={refs.input}
+              user={user}
+              commentId={showInput}
+              post={post}
+              parentId={type === "main" ? comment.id : parentId}
+              commentActions={commentActions}
+              userMention={userMention}
+              handleClearUserMention={handleClearUserMention}
+              onShowFileDialog={onShowFileDialog}
+              dropAction={dropAction}
+              workspace={workspace}
+              isMember={isMember}
+              disableOptions={disableOptions}
+            />
+          }
         </InputWrapper>
       )}
     </>
