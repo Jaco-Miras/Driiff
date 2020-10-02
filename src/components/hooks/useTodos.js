@@ -35,6 +35,14 @@ const useTodos = () => {
           if (b.status === "DONE") {
             return -1;
           }
+
+          if (a.status === "NEW") {
+            return -1;
+          }
+
+          if (b.status === "NEW") {
+            return 1;
+          }
         }
 
         if (b.remind_at !== null && a.remind_at !== null) {
@@ -56,6 +64,8 @@ const useTodos = () => {
 
           if (filter.status !== "")
             return t.status === filter.status;
+          else
+            return t.status !== "DONE";
         }
         return true;
       })

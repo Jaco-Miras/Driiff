@@ -1,18 +1,33 @@
 /* eslint-disable no-unused-vars */
 import moment from "moment-timezone";
-import { useSettings } from "./index.js";
+import {useSettings} from "./index.js";
 
 const useTimeFormat = () => {
   const {
-    generalSettings: { timezone, date_format, time_format },
+    generalSettings: {timezone, date_format, time_format, language},
   } = useSettings();
 
-  const timelineFormat = (date) => {
-    return moment(date).calendar(null, {
-      nextDay: "[Tomorrow] - MMMM DD, YYYY",
-      sameDay: "[Today] - dddd MMMM DD, YYYY",
-      lastDay: "[Yesterday] - dddd MMMM DD, YYYY",
-      lastWeek: "dddd MMMM DD, YYYY",
+  const todoFormat = (timestamp, dateFormat = `LL ${time_format}`) => {
+    const utc = moment(moment(timestamp, "X").toDate()).tz(timezone).locale(language);
+    return utc.calendar(null, {
+      lastDay: `[Yesterday at] ${time_format}`,
+      nextDay: `[Tomorrow at] ${time_format}`,
+      sameDay: `[Today at] ${time_format}`,
+      nextWeek: `dddd [at] ${time_format}`,
+      lastWeek: `[Last] dddd [at] ${time_format}`,
+      sameElse: dateFormat,
+    });
+  };
+
+  const todoFormatShortCode = (timestamp, dateFormat = `${date_format} ${time_format}`) => {
+    const utc = moment(moment(timestamp, "X").toDate()).tz(timezone).locale(language);
+    return utc.calendar(null, {
+      lastDay: `[Yesterday]`,
+      nextDay: `[Tomorrow]`,
+      sameDay: `[Today]`,
+      nextWeek: `dddd`,
+      lastWeek: `[Last] dddd`,
+      sameElse: dateFormat,
     });
   };
 
@@ -169,6 +184,8 @@ const useTimeFormat = () => {
     localizeChatChannelDate,
     todayOrYesterdayDate,
     localizeChatTimestamp,
+    todoFormat,
+    todoFormatShortCode
   };
 };
 

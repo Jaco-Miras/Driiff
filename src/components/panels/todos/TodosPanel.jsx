@@ -32,7 +32,7 @@ const TodosPanel = (props) => {
     actionReschedule: _t("REMINDER.ACTION_RESCHEDULE", "Reschedule"),
     actionEdit: _t("REMINDER.ACTION_EDIT", "Edit"),
     actionMarkAsDone: _t("REMINDER.ACTION_MARK_AS_DONE", "Mark as done"),
-    actionMarkAsUndone: _t("REMINDER.ACTION_MARK_AS_DONE", "Mark as not done"),
+    actionMarkAsUndone: _t("REMINDER.ACTION_MARK_AS_UNDONE", "Mark as not done"),
     actionRemove: _t("REMINDER.ACTION_REMOVE", "Remove"),
   }
 

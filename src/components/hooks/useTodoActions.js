@@ -9,12 +9,27 @@ import {
   putDoneToDo,
   putToDo
 } from "../../redux/actions/globalActions";
-import {useToaster} from "./index";
+import {useToaster, useTranslation} from "./index";
+import {renderToString} from "react-dom/server";
 
 const useTodoActions = () => {
 
   const dispatch = useDispatch();
   const toaster = useToaster();
+  const {_t} = useTranslation();
+
+  const dictionary = {
+    toasterGeneraError: _t("TOASTER.GENERAL_ERROR", "An error has occurred try again!"),
+    toasterCreateTodo: _t("TOASTER.TODO_CREATE_SUCCESS", `You will be reminded about this comment under <b>To-dos & Reminders</b>.`),
+    toasterUpdateTodo: _t("TOASTER.TODO_UPDATE_SUCCESS", `You will be reminded about this comment under <b>To-dos & Reminders</b>.`),
+    toasterDoneTodo: _t("TOASTER.TODO_UNDONE_SUCCESS", `You have mark ::todo_title:: as done.`),
+    toasterUnDoneTodo: _t("TOASTER.TODO_UNDONE_SUCCESS", `You have mark ::todo_title:: as undone.`),
+    toasterDeleteTodo: _t("TOASTER.TODO_DELETE_SUCCESS", `You have successfully deleted ::todo_title::.`),
+    modalConfirmationTodoRemoveHeader: _t("MODAL_CONFIRMATION.TODO_REMOVE_HEADER", "Remove to-do item?"),
+    modalConfirmationTodoRemoveBody: _t("MODAL_CONFIRMATION.TODO_REMOVE_BODY", "Are you sure you want to remove this item?"),
+    modalConfirmationTodoRemoveSubmit: _t("MODAL_CONFIRMATION.TODO_REMOVE_SUBMIT", "Remove"),
+    modalConfirmationTodoRemoveCancel: _t("MODAL_CONFIRMATION.TODO_REMOVE_CANCEL", "Cancel"),
+  }
 
   const fetch = useCallback((payload, callback) => {
     dispatch(
@@ -41,10 +56,10 @@ const useTodoActions = () => {
       }) => {
         create(payload, (err, res) => {
           if (err) {
-            toaster.error(`An error has occurred try again!`);
+            toaster.error(dictionary.toasterGeneraError);
           }
           if (res) {
-            toaster.success(<>You will be reminded about this comment under <b>To-dos & Reminders</b>.</>);
+            toaster.success(<span dangerouslySetInnerHTML={{__html: dictionary.toasterCreateTodo}}/>);
           }
           modalCallback(err, res);
           callback(err, res);
@@ -100,18 +115,21 @@ const useTodoActions = () => {
   }, []);
 
   const updateFromModal = useCallback(
-    (todo, callback) => {
-      const onConfirm = (payload, callback) => {
+    (todo, callback = () => {
+    }) => {
+      const onConfirm = (payload, modalCallback = () => {
+      }) => {
         update({
           ...payload,
           id: todo.id,
         }, (err, res) => {
           if (err) {
-            toaster.error(`An error has occurred try again!`);
+            toaster.error(dictionary.toasterGeneraError);
           }
           if (res) {
-            toaster.success(<>You will be reminded about this comment under <b>To-dos & Reminders</b>.</>);
+            toaster.success(<span dangerouslySetInnerHTML={{__html: dictionary.toasterUpdateTodo}}/>);
           }
+          modalCallback(err, res);
           callback(err, res);
         });
       }
@@ -141,7 +159,11 @@ const useTodoActions = () => {
         todo_id: payload.id
       }, (err, res) => {
         if (res) {
-          toaster.success(`You have mark ${payload.title} as done`);
+          toaster.success(<span dangerouslySetInnerHTML={{
+            __html: _t("TOASTER.TODO_DONE_SUCCESS",
+              `You have mark ::todo_title:: as done.`,
+              {todo_title: renderToString(<b>payload.title</b>)})
+          }}/>);
         }
         callback(err, res);
       })
@@ -155,7 +177,13 @@ const useTodoActions = () => {
         ...(payload.status === "DONE" && {undo: 1}),
       }, (err, res) => {
         if (res) {
-          toaster.success(`You have mark ${payload.title} as done`);
+          if (res.data.status === "DONE") {
+            toaster.success(<span
+              dangerouslySetInnerHTML={{__html: dictionary.toasterDoneTodo.replace("::todo_title::", `<b>${payload.title}</b>`)}}/>);
+          } else {
+            toaster.success(<span
+              dangerouslySetInnerHTML={{__html: dictionary.toasterUnDoneTodo.replace("::todo_title::", `<b>${payload.title}</b>`)}}/>);
+          }
         }
         callback(err, res);
       })
@@ -168,7 +196,8 @@ const useTodoActions = () => {
         todo_id: payload.id
       }, (err, res) => {
         if (res) {
-          toaster.success(<>You have succesfully deleted <b>{payload.title}</b></>);
+          toaster.success(<span
+            dangerouslySetInnerHTML={{__html: dictionary.toasterDeleteTodo.replace("::todo_title::", `<b>${payload.title}</b>`)}}/>);
         }
         callback(err, res);
       })
@@ -184,10 +213,10 @@ const useTodoActions = () => {
 
       dispatch(addToModals({
         type: "confirmation",
-        headerText: "Remove to-do item?",
-        submitText: "Remove",
-        cancelText: "Cancel",
-        bodyText: "Are you sure you want to remove this item?",
+        headerText: dictionary.modalConfirmationTodoRemoveHeader,
+        submitText: dictionary.modalConfirmationTodoRemoveSubmit,
+        cancelText: dictionary.modalConfirmationTodoRemoveCancel,
+        bodyText: dictionary.modalConfirmationTodoRemoveBody,
         actions: {
           onSubmit: onConfirm,
         },
