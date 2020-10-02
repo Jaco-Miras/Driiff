@@ -33,6 +33,7 @@ import {
   updateCompanyPostFilterSort,
 } from "../../redux/actions/postActions";
 import {useToaster, useTodoActions} from "./index";
+import {useTranslation} from "../hooks";
 
 const usePostActions = () => {
   const dispatch = useDispatch();
@@ -41,6 +42,14 @@ const usePostActions = () => {
   const params = useParams();
   const toaster = useToaster();
   const todoActions = useTodoActions();
+  const { _t } = useTranslation();
+
+  const dictionary = {
+    headerRemoveDraftHeader: _t("MODAL.REMOVE_DRAFT_HEADER", "Remove post draft?"),
+    buttonRemoveDraft: _t("MODAL.REMOVE_DRAFT", "Remove draft"),
+    buttonCancel: _t("BUTTON.CANCEL", "Cancel"),
+    removeThisDraft: _t("MODAL.REMOVE_THIS_DRAFT", "Are you sure you want to remove this post draft?")
+  };
 
   const starPost = useCallback(
     (post) => {
@@ -165,10 +174,10 @@ const usePostActions = () => {
 
         let payload = {
           type: "confirmation",
-          headerText: "Remove post draft?",
-          submitText: "Remove",
-          cancelText: "Cancel",
-          bodyText: "Are you sure you want to remove this post draft?",
+          headerText: dictionary.headerRemoveDraftHeader,
+          submitText: dictionary.buttonRemoveDraft,
+          cancelText: dictionary.buttonCancel,
+          bodyText: dictionary.removeThisDraft,
           actions: {
             onSubmit: onConfirm,
           },
