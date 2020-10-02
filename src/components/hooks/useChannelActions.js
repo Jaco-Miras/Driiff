@@ -1,4 +1,4 @@
-import {useCallback} from "react";
+import React, {useCallback} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {
   deleteChannelMembers,
@@ -24,14 +24,24 @@ import {
   setLastVisitedChannel,
   setSelectedChannel
 } from "../../redux/actions/chatActions";
-import {useSettings} from "./index";
+import {useSettings, useToaster, useTranslation} from "./index";
 
 const useChannelActions = () => {
-  const { chatSettings } = useSettings();
+
+  const dispatch = useDispatch();
+
+  const {chatSettings} = useSettings();
+  const {_t} = useTranslation();
+  const toaster = useToaster();
 
   const sharedSlugs = useSelector((state) => state.global.slugs);
 
-  const dispatch = useDispatch();
+  const dictionary = {
+    toasterGeneraError: _t("TOASTER.GENERAL_ERROR", "An error has occurred try again!"),
+    createChannel: _t("TOASTER.CHANNEL_CREATE_SUCCESS", "Channel ::channel_title:: is successfully created."),
+    updateChannel: _t("TOASTER.CHANNEL_UPDATE_SUCCESS", "Channel ::channel_title:: is successfully modified."),
+  }
+
 
   /**
    * @param {Object} channel
@@ -73,7 +83,16 @@ const useChannelActions = () => {
    */
   const create = useCallback(
     (payload, callback) => {
-      dispatch(postCreateChannel(payload, callback));
+      dispatch(postCreateChannel(payload, (err, res) => {
+        if (err) {
+          toaster.success(dictionary.toasterGeneraError);
+        }
+        if (res) {
+          toaster.success(<span
+            dangerouslySetInnerHTML={{__html: dictionary.createChannel.replace("::channel_title::", `<b>${payload.title}</b>`)}}/>)
+        }
+        callback(err, res)
+      }));
     },
     [dispatch]
   );
@@ -577,7 +596,17 @@ const useChannelActions = () => {
    */
   const update = useCallback(
     (payload, callback = () => {}) => {
-      dispatch(putChannelUpdate(payload, callback));
+      dispatch(putChannelUpdate(payload, (err, res) => {
+        if (err) {
+          toaster.success(dictionary.toasterGeneraError);
+        }
+        if (res) {
+          toaster.success(<span
+            dangerouslySetInnerHTML={{__html: dictionary.updateChannel.replace("::channel_title::", `<b>${payload.title}</b>`)}}/>)
+        }
+
+        callback(err, res);
+      }));
     },
     [dispatch]
   );
