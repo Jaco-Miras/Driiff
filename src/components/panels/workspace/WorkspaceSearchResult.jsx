@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import {stripHtml} from "../../../helpers/stringFormatter";
 import {SvgIconFeather} from "../../common";
-import {useIsMember, useTranslation} from "../../hooks";
+import {useIsMember} from "../../hooks";
 
 const Wrapper = styled.li`
     position: relative;
@@ -28,7 +28,7 @@ const CheckIcon = styled(SvgIconFeather)`
 
 const WorkspaceSearchResult = (props) => {
 
-    const { onJoinWorkspace, onLeaveWorkspace, item, redirect, workspaces } = props;
+    const { dictionary, onJoinWorkspace, onLeaveWorkspace, item, redirect, workspaces } = props;
     const { topic, workspace } = item;
     const isMember = useIsMember(item.members.map((m) => m.id));
     const handleRedirect = () => {
@@ -52,20 +52,6 @@ const WorkspaceSearchResult = (props) => {
     const handleLeaveWorkspace = (e) => {
         e.stopPropagation();
         onLeaveWorkspace(item);
-    };
-
-    const { _t } = useTranslation();
-
-    const dictionary = {
-        labelArchived: _t("LABEL.ARCHIVED", "Archived"),
-        labelPrivate: _t("LABEL.PRIVATE", "Private"),
-        labelOpen: _t("LABEL.OPEN", "Open"),
-        labelJoined: _t("LABEL.JOINED", "Joined"),
-        sidebarWorkspaces: _t("SIDEBAR.WORKSPACES", "Workspaces"),
-        member: _t("LABEL.MEMBER", "member"),
-        members: _t("LABEL.MEMBERS", "members"),
-        buttonJoin: _t("BUTTON.JOIN", "Join"),
-        buttonLeave: _t("BUTTON.LEAVE", "Leave"),
     };
 
     return (

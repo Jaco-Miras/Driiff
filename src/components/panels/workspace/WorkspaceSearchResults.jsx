@@ -1,7 +1,7 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import WorkspaceSearchResult from "./WorkspaceSearchResult";
-import {useToaster} from "../../hooks";
+import {useToaster, useTranslation} from "../../hooks";
 import {updateWorkspace, leaveWorkspace} from "../../../redux/actions/workspaceActions";
 import {putChannel} from "../../../redux/actions/chatActions";
 
@@ -13,6 +13,22 @@ const WorkspaceSearchResults = (props) => {
     const workspaces = useSelector((state) => state.workspaces.workspaces);
 
     const toaster = useToaster();
+
+    const { _t } = useTranslation();
+
+    const dictionary = {
+        labelArchived: _t("LABEL.ARCHIVED", "Archived"),
+        labelPrivate: _t("LABEL.PRIVATE", "Private"),
+        labelOpen: _t("LABEL.OPEN", "Open"),
+        labelJoined: _t("LABEL.JOINED", "Joined"),
+        sidebarWorkspaces: _t("SIDEBAR.WORKSPACES", "Workspaces"),
+        member: _t("LABEL.MEMBER", "member"),
+        members: _t("LABEL.MEMBERS", "members"),
+        buttonJoin: _t("BUTTON.JOIN", "Join"),
+        buttonLeave: _t("BUTTON.LEAVE", "Leave"),
+        leaveWorkspace: _t("TOASTER.LEAVE_WORKSPACE", "You have left #"),
+        joinWorkspace: _t("TOASTER.JOIN_WORKSPACE", "You have joined #")
+    };
 
     const handleRedirect = (item) => {
         let payload = {
@@ -38,11 +54,7 @@ const WorkspaceSearchResults = (props) => {
         let cb = (err, res) => {
             if (err) return;
             handleRedirect(item);
-            toaster.success(
-                <>
-                You have joined <b>#{item.topic.name}</b>
-                </>
-            );
+            toaster.success(<>{dictionary.joinWorkspace}<b>{item.topic.name}</b></>);
         };
         actions.join(payload, cb);
     };
@@ -80,8 +92,11 @@ const WorkspaceSearchResults = (props) => {
                 added_members: [],
                 removed_members: [user.id],
             })}`
-        
-            dispatch(leaveWorkspace({workspace_id: item.topic.id, channel_id: item.channel.id}));
+            let cb = (err, res) => {
+                if (err) return;
+                toaster.success(<>{dictionary.leaveWorkspace}<b>{item.topic.name}</b></>);
+            };
+            dispatch(leaveWorkspace({workspace_id: item.topic.id, channel_id: item.channel.id}, cb));
             dispatch(updateWorkspace(payload));
         }
     };
@@ -92,7 +107,7 @@ const WorkspaceSearchResults = (props) => {
                 <ul className="list-group list-group-flush">
                     {
                         results.sort((a, b) => a.topic.name.localeCompare(b.topic.name)).slice(page > 1 ? (page*25)-25 : 0, page*25).map((item) => {
-                            return <WorkspaceSearchResult key={item.topic.id} onJoinWorkspace={onJoinWorkspace} onLeaveWorkspace={onLeaveWorkspace} item={item} redirect={redirect} workspaces={workspaces}/>
+                            return <WorkspaceSearchResult key={item.topic.id} dictionary={dictionary} onJoinWorkspace={onJoinWorkspace} onLeaveWorkspace={onLeaveWorkspace} item={item} redirect={redirect} workspaces={workspaces}/>
                         })
                     }
                 </ul>
