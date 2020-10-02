@@ -13,7 +13,6 @@ import {CheckBox, DescriptionInput, FolderSelect, InputFeedback, PeopleSelect} f
 import {useToaster, useTranslation} from "../hooks";
 import {ModalHeaderSection} from "./index";
 import {putChannel} from "../../redux/actions/chatActions";
-import {renderToString} from "react-dom/server";
 
 const WrapperDiv = styled(InputGroup)`
   display: flex;
@@ -245,12 +244,12 @@ const CreateEditWorkspaceModal = (props) => {
     feedbackWorkspaceNameAlreadyExists: _t("FEEDBACK.WORKSPACE_NAME_ALREADY_EXISTS", "Workspace name already exists."),
     feedbackWorkspaceDescriptionIsRequired: _t("FEEDBACK.WORKSPACE_DESCRIPTION_IS_REQUIRED", "Description is required."),
     toasterWorkspaceIsCreated: _t("TOASTER.WORKSPACE_IS_CREATED", `::workspace_name:: workspace is created.`, {
-      workspace_name: renderToString(<b>{form.name}</b>)
+      workspace_name: `<b>${form.name}</b>`
     }),
     toasterWorkspaceFolderUnderDirectory: form.selectedFolder !== null ?
       _t("TOASTER.WORKSPACE_UNDER_FOLDER_IS_CREATED", "::workspace_name:: workspace is created under ::folder_name:: directory", {
-        workspace_name: renderToString(<b>{form.name}</b>),
-        folder_name: renderToString(<b>{form.selectedFolder.label}</b>)
+        workspace_name: `<b>${form.name}</b>`,
+        folder_name: `<b>${form.selectedFolder.label}</b>`
       }) : ""
   };
 

@@ -10,7 +10,6 @@ import {
   putToDo
 } from "../../redux/actions/globalActions";
 import {useToaster, useTranslation} from "./index";
-import {renderToString} from "react-dom/server";
 
 const useTodoActions = () => {
 
@@ -159,11 +158,8 @@ const useTodoActions = () => {
         todo_id: payload.id
       }, (err, res) => {
         if (res) {
-          toaster.success(<span dangerouslySetInnerHTML={{
-            __html: _t("TOASTER.TODO_DONE_SUCCESS",
-              `You have mark ::todo_title:: as done.`,
-              {todo_title: renderToString(<b>payload.title</b>)})
-          }}/>);
+          toaster.success(<span
+            dangerouslySetInnerHTML={{__html: dictionary.toasterDoneTodo.replace("::todo_title::", `<b>${payload.title}</b>`)}}/>);
         }
         callback(err, res);
       })

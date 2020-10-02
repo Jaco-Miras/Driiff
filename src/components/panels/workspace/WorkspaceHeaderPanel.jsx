@@ -9,9 +9,7 @@ import {SettingsLink} from "../../workspace";
 import {joinWorkspace} from "../../../redux/actions/workspaceActions";
 import {useToaster, useTranslation} from "../../hooks";
 import {MemberLists} from "../../list/members";
-
 import {WorkspacePageHeaderPanel} from "../workspace";
-import {renderToString} from "react-dom/server";
 
 const NavBarLeft = styled.div`
   width: 100%;
@@ -227,12 +225,12 @@ const WorspaceHeaderPanel = (props) => {
       mode: dark_mode === "0" ? _t("SETTINGS.DARK_MODE", "dark mode") : _t("SETTINGS.LIGHT_MODE", "light mode")
     }),
     actionWorkspaceNewWorkspace: _t("ACTION.NEW_WORKSPACE", "New workspace"),
-    actionWorkspaceInvite: _t("ACTION.INVITE_WORKSPACE", "Invte"),
+    actionWorkspaceInvite: _t("ACTION.INVITE_WORKSPACE", "Invite"),
     actionWorkspaceJoin: _t("ACTION.JOIN_WORKSPACE", "Join"),
     statusWorkspacePrivate: _t("WORKSPACE.STATUS_PRIVATE", "Private"),
     statusWorkspaceArchived: _t("WORKSPACE.STATUS_ARCHIVED", "Archived"),
     toasterJoinWorkspace: _t("TOASTER.JOIN_WORKSPACE", "You have joined ::topic_name::", {
-      topic_name: activeTopic ? renderToString(<b>#{activeTopic.name}</b>) : ""
+      topic_name: activeTopic ? `<b>#{activeTopic.name}</b>` : ""
     })
   }
 
