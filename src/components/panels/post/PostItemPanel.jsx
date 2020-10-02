@@ -107,9 +107,7 @@ const PostItemPanel = (props) => {
           <div className="pl-3 d-flex align-items-center">
             {post.unread_count !== 0 && <div className="ml-2 mr-2 badge badge-primary badge-pill">{post.unread_count}</div>}
             <PostBadge post={post} dictionary={dictionary} />
-            <div className="mr-3">
-              {post.users_responsible.length > 0 && <MemberLists members={post.users_responsible} />}
-            </div>
+            {post.users_responsible.length > 0 && <MemberLists members={post.users_responsible} classNames="mr-2"/>}
             {!disableOptions && <Icon icon="archive" onClick={handleArchivePost} />}
           </div>
         </div>
