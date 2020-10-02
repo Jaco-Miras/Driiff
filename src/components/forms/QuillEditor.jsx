@@ -1,6 +1,6 @@
 import "quill-mention";
-import React, {forwardRef} from "react";
-import ReactQuill, {Quill} from "react-quill";
+import React, { forwardRef } from "react";
+import ReactQuill, { Quill } from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import {useTranslation} from "../hooks";
 

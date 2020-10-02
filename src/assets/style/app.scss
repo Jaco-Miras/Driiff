@@ -142,6 +142,10 @@ body.dark {
   // #191c20 // mid / tobar chat
   // #ffffff14 // borders of #fff3
 
+  .post-partialBody {
+    color: #8c8e90;
+  }
+
   .chat-emoji-users-list ul {
     background-color: $dm-bg-2;
     color: $dm-text-color;
@@ -15760,7 +15764,7 @@ button.toast-close-button {
 
 #compose .ql-editor,
 .app-block .ql-editor {
-  min-height: 70px;
+  min-height: 20px;
 }
 .ql-editor.ql-blank::before {
   right: inherit;
