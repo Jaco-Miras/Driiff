@@ -12,6 +12,7 @@ import quillHelper from "../../../../helpers/quillHelper";
 
 const Wrapper = styled.li`
   margin-bottom: 1rem;
+  overflow: initial;
 
   .mention {
     font-weight: bold;
