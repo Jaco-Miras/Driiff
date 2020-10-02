@@ -16,39 +16,59 @@ const Wrapper = styled.div`
     margin-left: 0 !important;
   }
   flex: unset;
+  .feather-paperclip {
+    border: 1px solid #e1e1e1;
+    height: 100%;
+    cursor: pointer;
+    width: 46px;
+    border-radius: 8px;
+    transition: background-color 0.15s ease-in-out;
+    padding: 12px;
+    &:hover {
+      background-color: #e1e1e1;
 `;
 
 const ChatInputContainer = styled.div`
   position: relative;
-  max-width: calc(100% - 165px);
-  @media all and (max-width: 620px) {
-    max-width: calc(100% - 110px);
+  border: 1px solid #e1e1e1;
+  box-shadow: 0 3px 10px #7a1b8b12;
+  border-radius: 8px;
+  padding-right: 80px;
+  margin-right: 8px;
+  min-height: 48px;
+  .feather-send,
+  .feather-smile {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    margin: 4px;
+    height: calc(100% - 8px);
+    max-height: 38px;
+    background: #7a1b8b;
+    border-radius: 4px;
+    min-width: 40px;
+    width: 40px;
+    padding: 10px;
+    cursor: pointer;
+    transition: background-color 0.15s ease-in-out, color 0.15s ease-in-out;
+  }
+  .feather-smile {
+    right: 44px;
+    margin: 4px 0;
+    background: transparent;
+    border-color: transparent;
+    transition: color 0.15s ease-in-out;
+    color: #cacaca;
+    &:hover {
+      color: #7a1b8b;
+    }
+  }
+  .feather-send:hover {
+    background-color: #7a1b8bcc;
   }
 `;
 
-const IconButton = styled(SvgIconFeather)`
-  cursor: pointer;
-  border: 1px solid #afb8bd;
-  height: 37px;
-  margin: -1px 8px;
-  width: 47px;
-  min-width: 47px;
-  padding: 10px 0;
-  border-radius: 8px;
-  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-  &:hover {
-    background: #afb8bd;
-    color: #ffffff;
-  }
-  &.feather-send {
-    border: 1px solid #7a1b8b;
-    background-color: #7a1b8b;
-    color: #fff;
-    &:hover {
-      background-color: #8c3b9b;
-    }
-  }
-`;
+const IconButton = styled(SvgIconFeather)``;
 
 const Dflex = styled.div`
   // width: 100%;
@@ -305,8 +325,10 @@ const PostDetailFooter = (props) => {
                     dropAction={dropAction}
                     members={workspace ? workspace.members : []}
                   />
-                </ChatInputContainer>
+                <IconButton onClick={handleShowEmojiPicker} icon="smile" />
                 <IconButton onClick={handleSend} icon="send" />
+                </ChatInputContainer>
+
                 <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Attach files">
                   <IconButton onClick={() => onShowFileDialog(parentId)} icon="paperclip" />
                 </Tooltip>
