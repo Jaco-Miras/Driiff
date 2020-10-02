@@ -536,28 +536,33 @@ const ChatNameNotAuthorMobile = styled.span`
     line-height: 1.2;
   }
 `;
-
+const THRESHOLD = [.1, .2, .3, .4, .5, .6, .7, .8, .9];
 const ChatBubble = (props) => {
-  const { reply, showAvatar, selectedChannel, showGifPlayer, isAuthor, addMessageRef, user, recipients, isLastChat, chatMessageActions, timeFormat, isBot, chatSettings } = props;
+  const { reply, showAvatar, selectedChannel, showGifPlayer, isAuthor, addMessageRef, user, recipients, isLastChat, chatMessageActions, timeFormat, isBot, chatSettings, isLastChatVisible } = props;
 
   const history = useHistory();
 
   const [gifOnly, setGifOnly] = useState(false);
   const [loadRef, loadInView] = useInView({
-    threshold: 0.1,
+    threshold: 1,
   });
   //const { chatSettings } = useSettings();
   const refComponent = useRef();
-
-  const [lastChatRef, inView] = useInView({
-    threshold: 0.1,
+  
+  const [lastChatRef, inView, entry] = useInView({
+    threshold: THRESHOLD,
+    skip: !isLastChat
   });
 
   useEffect(() => {
-    if (isLastChat) {
-      chatMessageActions.setLastMessageVisiblility({ status: inView });
+    if (isLastChat && entry) {
+      if ((entry.boundingClientRect.height - entry.intersectionRect.height) >= 16) {
+        if (isLastChatVisible) chatMessageActions.setLastMessageVisiblility({ status: false });
+      } else {
+        if (!isLastChatVisible) chatMessageActions.setLastMessageVisiblility({ status: true });
+      }
     }
-  }, [isLastChat, inView]);
+  }, [isLastChat, entry, isLastChatVisible]);
 
   useEffect(() => {
     if (addMessageRef && loadInView) {

@@ -63,24 +63,29 @@ const ChatTimeStamp = styled.div`
   align-items: center;
   white-space: nowrap;
 `;
-
+const THRESHOLD = [.1, .2, .3, .4, .5, .6, .7, .8, .9];
 const SystemMessage = forwardRef((props, ref) => {
-  const {reply, selectedChannel, chatName, isLastChat, chatMessageActions, recipients, user, timeFormat} = props;
+  const {reply, selectedChannel, chatName, isLastChat, chatMessageActions, recipients, user, timeFormat, isLastChatVisible} = props;
 
   const params = useParams();
   const history = useHistory();
 
   const [body, setBody] = useState(reply.body);
 
-  const [lastChatRef, inView] = useInView({
-    threshold: .10
+  const [lastChatRef, inView, entry] = useInView({
+    threshold: THRESHOLD,
+    skip: !isLastChat
   });
 
   useEffect(() => {
-    if (isLastChat) {
-      chatMessageActions.setLastMessageVisiblility({status: inView});
+    if (isLastChat && entry) {
+      if ((entry.boundingClientRect.height - entry.intersectionRect.height) >= 16) {
+        if (isLastChatVisible) chatMessageActions.setLastMessageVisiblility({ status: false });
+      } else {
+        if (!isLastChatVisible) chatMessageActions.setLastMessageVisiblility({ status: true });
+      }
     }
-  }, [isLastChat, inView])
+  }, [isLastChat, entry, isLastChatVisible]);
 
   useEffect(() => {
     if (reply.body.includes("JOIN_CHANNEL")) {
