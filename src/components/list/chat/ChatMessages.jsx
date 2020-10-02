@@ -433,7 +433,7 @@ class ChatMessages extends React.PureComponent {
   };
 
   handleReadChannel = () => {
-    if (this.props.unreadCount > 0) {
+    if (this.props.unreadCount > 0 || this.props.selectedChannel.total_unread > 0) {
       const {
         selectedChannel,
         chatMessageActions: { channelActions },
