@@ -1,12 +1,5 @@
 import React, {useCallback, useEffect, useState} from "react";
 import {useSelector} from "react-redux";
-import styled from "styled-components";
-import {SvgIconFeather} from "../common";
-
-const LockIcon = styled(SvgIconFeather)`
-  width: 1rem;
-  height: 1rem;
-`;
 
 const useGetWorkspaceAndUserOptions = (selectedWorkspaces, workspace = null) => {
   const {recipients} = useSelector((state) => state.global);
@@ -44,7 +37,7 @@ const useGetWorkspaceAndUserOptions = (selectedWorkspaces, workspace = null) => 
         return {
           ...ws,
           value: ws.id,
-          label: <>{ws.name} { ws.is_lock === 1 && <LockIcon icon="lock" strokeWidth="2"/> }</>,
+          label: ws.name
         };
       });
 
