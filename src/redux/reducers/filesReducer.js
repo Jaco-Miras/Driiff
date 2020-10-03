@@ -441,10 +441,11 @@ export default (state = INITIAL_STATE, action) => {
 
         if (i && typeof companyFiles.items[i.id] !== "undefined") {
           delete companyFiles.items[i.id];
-
-          const ix = companyFolders.items[f.folder_id].files.findIndex(id => id === i.id);
-          if (ix !== -1) {
-            companyFolders.items[f.folder_id].files.splice(ix, 1);
+          if (f.folder_id) {
+            const ix = companyFolders.items[f.folder_id].files.findIndex(id => id === i.id);
+            if (ix !== -1) {
+              companyFolders.items[f.folder_id].files.splice(ix, 1);
+            }
           }
         }
         companyFiles.items[f.id] = f;
