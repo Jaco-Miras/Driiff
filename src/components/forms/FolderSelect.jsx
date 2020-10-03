@@ -28,6 +28,12 @@ const Icon = styled(SvgIconFeather)`
   border: none;
 `;
 
+const LockIcon = styled(SvgIconFeather)`
+  width: 1rem;
+  height: 1rem;
+  margin-left: 5px;
+`;
+
 const Option = (props) => {
   return (
     <SelectOption>
@@ -36,6 +42,7 @@ const Option = (props) => {
           <>
             <Icon icon={props.data.icon ? props.data.icon : "folder"} />
             {props.children}
+            {props.data.is_lock === 1 && <LockIcon icon="lock" strokeWidth="2"/>}
           </>
         )}
       </components.Option>
