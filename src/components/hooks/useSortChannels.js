@@ -114,6 +114,14 @@ const useSortChannels = (channels, search, options = {}, workspace) => {
 
       //direct users first
       if (!(a.type === "DIRECT" && b.type === "DIRECT")) {
+        if (a.type === "DIRECT" && a.last_reply)
+          return -1;
+
+        if (b.type === "DIRECT" && b.last_reply)
+          return 1;
+      }
+
+      if (!a.last_reply && !b.last_reply && (a.type === "DIRECT" || b.type === "DIRECT")) {
         if (a.type === "DIRECT")
           return -1;
 
