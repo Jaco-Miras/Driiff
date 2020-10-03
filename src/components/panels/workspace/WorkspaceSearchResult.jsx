@@ -26,6 +26,14 @@ const CheckIcon = styled(SvgIconFeather)`
     stroke-width: 2px;
 `;
 
+const FolderIcon = styled(SvgIconFeather)`
+    width: 0.8rem;
+    height: 0.8rem;
+    stroke-width: 3px;
+    margin-right: 3px;
+    margin-bottom: 0.1rem;
+`;
+
 const WorkspaceSearchResult = (props) => {
 
     const { dictionary, onJoinWorkspace, onLeaveWorkspace, item, redirect, workspaces } = props;
@@ -66,7 +74,7 @@ const WorkspaceSearchResult = (props) => {
                 <ul className="workspace-detail-lists">
                     { isMember && <li className="text-success"><CheckIcon icon="check"/>{dictionary.labelJoined}</li> }
                     <li>{item.members.length} {item.members.length === 1 ? dictionary.member : dictionary.members}</li>
-                    <li>{workspace ? workspace.name : dictionary.sidebarWorkspaces}</li>
+                    <li><FolderIcon icon="folder" />{workspace ? workspace.name : "Workspaces"}</li>
                     <li>{stripHtml(topic.description)}</li>
                 </ul>
             </div>
