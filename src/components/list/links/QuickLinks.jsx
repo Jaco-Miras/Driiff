@@ -96,11 +96,17 @@ const LinkNav = styled.ul`
       margin-right: 4px;
     }
   }
+  li.shorcut-title-link {
+    padding:0;
+    
+    .shorcut-title {
+      background: #ffffff10;    
+    }  
+  }
 `;
 
 const NavIcon = styled(SvgIconFeather)`
   cursor: pointer;
-  cursor: hand;
   margin: 0 8px 0 15px;
 `;
 
@@ -167,29 +173,24 @@ const QuickLinks = (props) => {
       </a>
 
       <LinkNav ref={ref.nav} maxHeight={maxHeight} className={showLinks ? "enter-active" : "leave-active"}>
+        <li className="personal-link shorcut-title-link">
+          <div className="shorcut-title">{dictionary.personalLinks}</div>
+        </li>
         {generalSettings.personal_links.map((link, index) => {
           return (
-            <React.Fragment key={index}>
-              {
-                links.length !== 0 && index === 0 &&
-                <li className="personal-link">
-                  <div className="shorcut-title">{dictionary.personalLinks}</div>
-                </li>
-              }
-              <li className="personal-link">
+            <li key={index} className="personal-link">
+              <div>
                 <div>
-                  <div>
-                    <a href={link.web_address} target="_blank" rel="noopener noreferrer">
-                      {link.name}
-                    </a>
-                  </div>
-                  <div className="action">
-                    <SvgIconFeather className="cursor-pointer" data-index={index} icon="pencil"
-                                    onClick={handleEditItemClick}/>
-                  </div>
+                  <a href={link.web_address} target="_blank" rel="noopener noreferrer">
+                    {link.name}
+                  </a>
                 </div>
-              </li>
-            </React.Fragment>
+                <div className="action">
+                  <SvgIconFeather className="cursor-pointer" data-index={index} icon="pencil"
+                                  onClick={handleEditItemClick}/>
+                </div>
+              </div>
+            </li>
           );
         })}
         {generalSettings.personal_links.length < 5 && (
@@ -203,8 +204,8 @@ const QuickLinks = (props) => {
           return (
             <React.Fragment key={link.id}>
               {
-                generalSettings.personal_links.length !== 0 && index === 0 &&
-                <li className="personal-link pt-2">
+                index === 0 &&
+                <li className="personal-link shorcut-title-link pt-2">
                   <div className="shorcut-title">{dictionary.companyLinks}</div>
                 </li>
               }
