@@ -2,8 +2,6 @@ import {useEffect, useState} from "react";
 import {$_GET, isIPAddress} from "../../helpers/commonFunctions";
 import useDriffActions from "./useDriffActions";
 
-let init = true;
-
 export const getDriffName = () => {
   let driff = $_GET("driff");
   if (driff) {
@@ -34,12 +32,18 @@ export const getDriffName = () => {
   }
 };
 
+let init = false;
+
 const useDriff = () => {
   const actions = useDriffActions();
-  const [redirected, setRedirected] = useState(actions.getName);
-  const [registeredDriff, setRegisteredDriff] = useState(actions.getName);
+  const [redirected, setRedirected] = useState(actions.getName());
+  const [registeredDriff, setRegisteredDriff] = useState(actions.getName());
 
   useEffect(() => {
+    if (init)
+      return;
+
+    init = true;
 
     if (!registeredDriff) {
       const slug = actions.getByHostname();
