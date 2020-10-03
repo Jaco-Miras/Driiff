@@ -37,9 +37,11 @@ const GuestLayout = (props) => {
     loginSocialMedia: _t("LOGIN.SOCIAL_MEDIA_LOGIN", "Login with your social media account."),
     noAccount: _t("LOGIN.NO_ACCOUNT", "Don't have an account?"),
     registerNow: _t("LOGIN.REGISTER_NOW", "Register now!"),
+    registerNewDriff: _t("DOMAIN.REGISTER_NEW_DRIFF", "Register new Driff"),
     submit: _t("RESET_PASSWORD.SUBMIT", "Submit"),
     login: _t("RESET_PASSWORD.LOGIN", "Login!"),
     takeADifferentAction: _t("RESET_PASSWORD.TAKE_A_DIFFERENT_ACTION", "Take a different action."),
+    or: _t("RESET_PASSWORD.OR", "or"),
     updatePassword: _t("UPDATE_PASSWORD.UPDATE_PASSWORD", "Update password"),
     register: _t("REGISTER.REGISTER", "Register"),
     haveAccount: _t("REGISTER.HAVE_ACCOUNT", "Already have an account?"),
@@ -66,6 +68,9 @@ const GuestLayout = (props) => {
     emailNotFound: _t("FEEDBACK.EMAIL_NOT_FOUND", "Email not found."),
     notAllowedForExternal: _t("FEEDBACK.NOT_ALLOWED_FOR_EXTERNAL", "Not allowed for external users."),
     thankYou: _t("FEEDBACK.THANK_YOU", "Thank you!"),
+    createAccount: _t("LOGIN.HEADER_CREATE_ACCOUNT", "Create your account"),
+    acceptInvite: _t("REGISTER.ACCEPT_INVITE", "Accept your invitation to"),
+    authentication: _t("REGISTER.ACCEPT_INVITE", "Accept your invitation to"),
   };
 
   const [title, setTitle] = useState(dictionary.signIn);
@@ -89,18 +94,18 @@ const GuestLayout = (props) => {
         setTitle(dictionary.driffRegistration);
         break;
       case "/request-form":
-        setTitle(`Accept your invitation to ${driffActions.getName()}`);
+        setTitle(`${dictionary.acceptInvite} ${driffActions.getName()}`);
         break;
       case "/reset-password":
         if (driffSettings.settings.password_login) {
-          setTitle("Reset password");
+          setTitle(dictionary.resetPassword);
         } else {
           history.push("/login");
         }
         break;
       case "/register":
         if (driffSettings.settings.sign_up) {
-          setTitle("Create account");
+          setTitle(dictionary.createAccount);
         } else {
           history.push("/login");
         }
@@ -108,7 +113,7 @@ const GuestLayout = (props) => {
       default:
         if (location.pathname.indexOf("/authenticate/") === 0) setTitle("Authentication");
         else if (location.pathname.indexOf("/resetpassword/") === 0) setTitle("Update Password");
-        else setTitle("Sign in");
+        else setTitle(dictionary.signIn);
     }
   }, [location]);
 

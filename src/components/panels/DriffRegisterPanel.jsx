@@ -137,13 +137,13 @@ const DriffRegisterPanel = (props) => {
       <div id="logo">
         <SvgIcon icon={"driff-logo"} width="110" height="80"/>
       </div>
-      <h5>Your driff</h5>
+      <h5>Your Driff</h5>
       <Form>
         <FormGroup>
           <InputGroup className="driff-name">
             <Input
               ref={refs.name} onChange={handleInputChange} name="name" type="text" className="form-control"
-              placeholder="driff" autoCapitalize="none"
+              placeholder="Driff" autoCapitalize="none"
               valid={formResponse.valid.name}
               invalid={typeof formResponse.valid.name !== "undefined" ? !formResponse.valid.name : formResponse.valid.name}
               required autoFocus/>
@@ -159,7 +159,8 @@ const DriffRegisterPanel = (props) => {
         </button>
         <hr/>
         <button className="btn btn-outline-light btn-sm" onClick={handleRegisterClick}>
-          Register new driff
+          {/* {dictionary.registerNewDriff} */}
+          Register New Driff
         </button>
       </Form>
     </Wrapper>

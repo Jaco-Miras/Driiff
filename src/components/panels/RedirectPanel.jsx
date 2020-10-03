@@ -34,7 +34,7 @@ const RedirectPanel = (props) => {
         <SvgIcon icon={"driff-logo"} width="110" height="80"/>
       </div>
 
-      <h5>Invalid driff name detected.</h5>
+      <h5>Invalid Driff name detected.</h5>
       <p>
         You will automatically get
         <br/>

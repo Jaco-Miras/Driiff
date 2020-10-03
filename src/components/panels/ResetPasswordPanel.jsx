@@ -99,7 +99,7 @@ const ResetPasswordPanel = (props) => {
       <p className="text-muted">{dictionary.takeADifferentAction}</p>
       <Link className={"btn btn-sm btn-outline-light mr-1-1"} to="/register">
         {dictionary.registerNow}
-      </Link> or <Link className={"btn btn-sm btn-outline-light ml-1"} to="/login">
+      </Link> {dictionary.or} <Link className={"btn btn-sm btn-outline-light ml-1"} to="/login">
       {dictionary.login}
     </Link>
     </Wrapper>

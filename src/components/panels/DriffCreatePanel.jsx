@@ -215,7 +215,7 @@ const DriffCreatePanel = (props) => {
     <Wrapper>
       {registered ? (
         <>
-          Your driff{" "}
+          Your Driff{" "}
           <b>
             <a href={loginLink}>
               {form.slug}.{REACT_APP_localDNSName}
@@ -248,7 +248,7 @@ const DriffCreatePanel = (props) => {
                 onChange={handleInputChange}
                 name="slug"
                 type="text"
-                placeholder="driff"
+                placeholder="Driff"
                 autocapitalize="none"
                 valid={formResponse.valid.slug}
                 invalid={typeof formResponse.valid.slug !== "undefined" ? !formResponse.valid.slug : formResponse.valid.slug}
