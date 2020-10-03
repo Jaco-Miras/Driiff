@@ -5,7 +5,7 @@ import {Button, InputGroup, Modal, ModalBody, ModalFooter} from "reactstrap";
 import styled from "styled-components";
 import {clearModal} from "../../redux/actions/globalActions";
 import RadioInput from "../forms/RadioInput";
-import {useTranslation} from "../hooks";
+import {useSettings, useTranslation} from "../hooks";
 import {ModalHeaderSection} from "./index";
 import quillHelper from "../../helpers/quillHelper";
 import {FormInput, InputFeedback, QuillEditor} from "../forms";
@@ -65,10 +65,14 @@ const TodoReminderModal = (props) => {
    */
   const {type, item, parentItem = null, itemType = null, actions} = props.data;
 
+  const {
+    generalSettings: {date_picker_format: date_format, time_picker_format: time_format, language},
+  } = useSettings();
+
   const {_t} = useTranslation();
   const dispatch = useDispatch();
 
-  const [toogle, setToggle] = useState(false);
+  const [componentUpdate, setComponentUpdate] = useState(0);
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
     title: {
@@ -82,8 +86,9 @@ const TodoReminderModal = (props) => {
     }
   })
 
+  const minDate = item && item.remind_at && Math.round(+new Date() / 1000) > item.remind_at.timestamp ? moment.unix(item.remind_at.timestamp).toDate() : moment().add(1, 'm').toDate();
   const [timeValue, setTimeValue] = useState(item && item.remind_at ? "pick_data" : "");
-  const [customTimeValue, setCustomTimeValue] = useState(item && item.remind_at && Math.round(+new Date() / 1000) <= item.remind_at.timestamp ? moment.unix(item.remind_at.timestamp).toDate() : moment().add(20, 'm').toDate());
+  const [customTimeValue, setCustomTimeValue] = useState(item && item.remind_at ? moment.unix(item.remind_at.timestamp).toDate() : moment().add(20, 'm').toDate());
   const [showDateTimePicker, setShowDateTimePicker] = useState(item && item.remind_at ? true : null);
   const [modal, setModal] = useState(true);
 
@@ -103,6 +108,8 @@ const TodoReminderModal = (props) => {
     pickDateTime: _t("REMINDER.PICK_DATE_TIME", "Pick date and time"),
     snooze: _t("REMINDER.SNOOZE", "Remind me"),
     cancel: _t("REMINDER.CANCEL", "Cancel"),
+    feedbackReminderDateFuture: _t("FEEDBACK.REMINDER_DATE_MUST_BE_FUTURE", "Reminder date must be in the future."),
+    feedbackReminderDateOverdue: _t("FEEDBACK.REMINDER_DATE_OVERDUE", "Note: Reminder date is overdue.")
   };
 
   if (itemType === null) {
@@ -182,9 +189,12 @@ const TodoReminderModal = (props) => {
           newForm.set_time.value = moment.utc(reminderDate).format("YYYY-MM-DD HH:mm:ss");
           newForm.set_time.valid = true;
           newForm.set_time.feedback = null;
+        } else if (customTimeValue.getTime() === reminderDate.getTime()) {
+          newForm.set_time.valid = true;
+          newForm.set_time.feedback = dictionary.feedbackReminderDateOverdue;
         } else {
           newForm.set_time.valid = false;
-          newForm.set_time.feedback = `Reminder date must be in the future.`;
+          newForm.set_time.feedback = dictionary.feedbackReminderDateFuture;
         }
       } else {
         newForm.set_time.value = timeValue;
@@ -192,7 +202,7 @@ const TodoReminderModal = (props) => {
       }
 
     setForm(newForm);
-    setToggle(prevState => !prevState);
+    setComponentUpdate(prevState => prevState ? 0 : 1);
     return !Object.keys(newForm).map(k => newForm[k].valid).some(f => f === false);
   }
 
@@ -232,7 +242,7 @@ const TodoReminderModal = (props) => {
   return (
     <Wrapper isOpen={modal} toggle={toggle} size={"lg"} className="todo-reminder-modal" centered>
       <ModalHeaderSection toggle={toggle}>{dictionary.chatReminder}</ModalHeaderSection>
-      <ModalBody>
+      <ModalBody data-set-update={componentUpdate}>
         {
           itemType === null &&
           <>
@@ -345,7 +355,8 @@ const TodoReminderModal = (props) => {
               {showDateTimePicker &&
               <InputGroup>
                 <DateTimePicker
-                  minDate={moment().add(1, 'm').toDate()} onChange={handlePickDateTime} value={customTimeValue}
+                  minDate={minDate} onChange={handlePickDateTime} value={customTimeValue} locale={language}
+                  format={`${date_format} ${time_format}`}
                   disableClock={true}/>
                 <StyleInputFeedback valid={form.set_time.valid}>{form.set_time.feedback}</StyleInputFeedback>
               </InputGroup>}

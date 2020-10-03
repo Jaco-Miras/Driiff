@@ -235,7 +235,11 @@ const useSettings = () => {
     userSettings,
     driffSettings,
     chatSettings: userSettings.CHAT_SETTINGS,
-    generalSettings: userSettings.GENERAL_SETTINGS,
+    generalSettings: {
+      ...userSettings.GENERAL_SETTINGS,
+      date_picker_format: userSettings.GENERAL_SETTINGS.date_format.replace("YYYY", "y").replace("DD", "d"),
+      time_picker_format: userSettings.GENERAL_SETTINGS.time_format.replace("A", "a"),
+    },
     setChatSetting,
     setGeneralSetting,
     setPushSubscription,
