@@ -91,6 +91,7 @@ const TodoReminderModal = (props) => {
   const [customTimeValue, setCustomTimeValue] = useState(item && item.remind_at ? moment.unix(item.remind_at.timestamp).toDate() : moment().add(20, 'm').toDate());
   const [showDateTimePicker, setShowDateTimePicker] = useState(item && item.remind_at ? true : null);
   const [modal, setModal] = useState(true);
+  const [initFocused, setInitFocused] = useState(false);
 
   const refs = {
     title: useRef(null)
@@ -231,10 +232,11 @@ const TodoReminderModal = (props) => {
   };
 
   const handleTitleRef = (e) => {
-    if (e) {
+    if (e && !initFocused) {
       refs.title.current = e;
       setTimeout(() => {
-        refs.title.current.focus()
+        refs.title.current.focus();
+        setInitFocused(true);
       }, 500)
     }
   }

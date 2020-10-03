@@ -36,11 +36,11 @@ const useTodos = () => {
             return -1;
           }
 
-          if (a.status === "NEW") {
+          if (a.status === "OVERDUE") {
             return -1;
           }
 
-          if (b.status === "NEW") {
+          if (b.status === "OVERDUE") {
             return 1;
           }
         }
