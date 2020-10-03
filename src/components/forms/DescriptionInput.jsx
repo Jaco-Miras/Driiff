@@ -2,7 +2,7 @@ import React, {useRef, useState} from "react";
 import {InputGroup, Label} from "reactstrap";
 import styled from "styled-components";
 import {BodyMention, CommonPicker, SvgIconFeather} from "../common";
-import {useQuillModules} from "../hooks";
+import {useQuillModules, useTranslation} from "../hooks";
 import {InputFeedback} from "./index";
 import QuillEditor from "./QuillEditor";
 
@@ -181,8 +181,13 @@ const PickerContainer = styled(CommonPicker)`
 const DescriptionInput = (props) => {
   const {className = "", onChange, showFileButton = false, onOpenFileDialog, defaultValue = "", mode = "", valid = null, feedback = "", height = 80, members = [], disableMention = false, disableBodyMention = false, mentionedUserIds, onAddUsers, onDoNothing, modal = "post", ...otherProps} = props;
 
+  const {_t} = useTranslation();
   const reactQuillRef = useRef();
   const pickerRef = useRef();
+
+  const dictionary = {
+    description: _t("POST.DESCRIPTION", "Description"),
+  };
 
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
@@ -220,7 +225,7 @@ const DescriptionInput = (props) => {
 
   return (
     <WrapperDiv className={`description-input ${className}`}>
-      <Label for="firstMessage">Description</Label>
+      <Label for="firstMessage">{dictionary.description}</Label>
       <DescriptionInputWrapper
         className={`description-wrapper ${valid === null ? "" : valid ? "is-valid" : "is-invalid"}`}>
         <StyledQuillEditor className="description-input" modules={modules} ref={reactQuillRef} onChange={onChange}

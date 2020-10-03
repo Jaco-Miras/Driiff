@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { addToModals } from "../../../redux/actions/globalActions";
 import useChannelActions from "../../hooks/useChannelActions";
 import { MoreOptions } from "../../panels/common";
+import { useTranslation } from "../../hooks";
 
 const Wrapper = styled(MoreOptions)`
   .more-options-tooltip {
@@ -27,6 +28,26 @@ const ChannelOptions = (props) => {
   const channelActions = useChannelActions();
 
   const scrollEl = document.getElementById("pills-contact");
+
+  const { _t } = useTranslation();
+
+  const dictionary = {
+    mute: _t("CHAT.MUTE", "Mute"),
+    unmute: _t("CHAT.UNMUTE", "Unmute"),
+    hide: _t("CHAT.HIDE", "Hide"),
+    unhide: _t("CHAT.UNHIDE", "Unhide"),
+    favorite: _t("FAVORITE", "Favorite"),
+    unfavorite: _t("UNFAVORITE", "Unfavorite"),
+    markAsUnread: _t("POST.MARK_AS_UNREAD", "Mark as unread"),
+    markAsRead: _t("POST.MARK_AS_READ", "Mark as read"),
+    unarchive: _t("CHAT.UNARCHIVE", "Un-archive"),
+    archive: _t("CHAT.ARCHIVE", "Archive"),
+    chatUnarchiveConfirmation: _t("CHAT.UNARCHIVE_CONFIRMATION", "Are you sure you want to un-archive this chat?"),
+    chatArchiveConfirmation: _t("CHAT.ARCHIVE_CONFIRMATION", "Are you sure you want to archive this chat?"),
+    cancel: _t("BUTTON.CANCEL", "Cancel"),
+    headerArchive: _t("HEADER.ARCHIVE", "Chat Archive"),
+    headerUnarchive: _t("HEADER.UNARCHIVE", "Chat Un-archive"),
+  };
 
   const handlePinButton = () => {
     if (channel.is_pinned) {
@@ -73,10 +94,10 @@ const ChannelOptions = (props) => {
   const handleShowArchiveConfirmation = () => {
     let payload = {
       type: "confirmation",
-      headerText: "Chat archive",
-      submitText: "Archive",
-      cancelText: "Cancel",
-      bodyText: "Are you sure you want to archive this chat?",
+      headerText: dictionary.headerArchive,
+      submitText: dictionary.archive,
+      cancelText: dictionary.cancel,
+      bodyText: dictionary.chatArchiveConfirmation,
       actions: {
         onSubmit: handleArchiveChat,
       },
@@ -85,9 +106,9 @@ const ChannelOptions = (props) => {
     if (channel.is_archived) {
       payload = {
         ...payload,
-        headerText: "Chat Un-archive",
-        submitText: "Unarchive",
-        bodyText: "Are you sure you want to un-archive this chat?",
+        headerText: dictionary.headerUnarchive,
+        submitText: dictionary.unarchive,
+        bodyText: dictionary.chatUnarchiveConfirmation,
       };
     }
 
@@ -107,11 +128,11 @@ const ChannelOptions = (props) => {
   return (
     <>
       <Wrapper channel={channel} scrollRef={scrollEl}>
-        <div onClick={handlePinButton}>{channel.is_pinned ? "Unfavorite" : "Favorite"}</div>
-        <div onClick={(e) => handleMarkAsUnreadSelected(e)}>{channel.total_unread === 0 && channel.is_read ? "Mark as unread" : "Mark as read"}</div>
-        <div onClick={handleMuteChat}>{channel.is_muted ? "Unmute" : "Mute"}</div>
-        {channel.type !== "PERSONAL_BOT" && <div onClick={handleHideChat}>{!channel.is_hidden ? "Hide" : "Unhide"}</div>}
-        {(channel.type !== "PERSONAL_BOT" || channel.type !== "COMPANY") && <div onClick={handleShowArchiveConfirmation}>{!channel.is_archived ? "Archive" : "Unarchive"}</div>}
+        <div onClick={handlePinButton}>{channel.is_pinned ? dictionary.unfavorite : dictionary.favorite}</div>
+        <div onClick={(e) => handleMarkAsUnreadSelected(e)}>{channel.total_unread === 0 && channel.is_read ? dictionary.markAsUnread : dictionary.markAsRead}</div>
+        <div onClick={handleMuteChat}>{channel.is_muted ? dictionary.unmute : dictionary.mute}</div>
+        {channel.type !== "PERSONAL_BOT" && <div onClick={handleHideChat}>{!channel.is_hidden ? dictionary.hide : dictionary.unhide}</div>}
+        {(channel.type !== "PERSONAL_BOT" || channel.type !== "COMPANY") && <div onClick={handleShowArchiveConfirmation}>{!channel.is_archived ? dictionary.archive : dictionary.unarchive}</div>}
       </Wrapper>
     </>
   );
