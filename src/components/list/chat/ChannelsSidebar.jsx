@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import { useSelector } from "react-redux";
-import { useSortChannels } from "../../hooks";
+import {useSelector} from "react-redux";
+import {useSortChannels} from "../../hooks";
 import ChannelList from "./ChannelList";
 
 const ChannelsSidebarContainer = styled.div``;
@@ -84,7 +84,8 @@ const ChannelsSidebar = (props) => {
           return (
             <React.Fragment key={channel.id}>
               {search !== "" && chatHeader !== "" && <ChatHeader>{chatHeader}</ChatHeader>}
-              <ChannelList channel={channel} selectedChannel={selectedChannel} channelDrafts={channelDrafts} dictionary={dictionary} />
+              <ChannelList channel={channel} selectedChannel={selectedChannel} channelDrafts={channelDrafts}
+                           dictionary={dictionary} search={search}/>
             </React.Fragment>
           );
         })}

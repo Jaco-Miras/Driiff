@@ -5,7 +5,7 @@ const useSortChannels = (channels, search, options = {}, workspace) => {
   const user = useSelector((state) => state.session.user);
   const {chatSettings: settings} = useSettings();
 
-  const channelDrafts = useSelector((state) => state.chat.channelDrafts);
+  //const channelDrafts = useSelector((state) => state.chat.channelDrafts);
 
   const getChannelTitle = (ac) => {
     if (ac.type === "DIRECT" && ac.members.length === 2) {
@@ -83,22 +83,40 @@ const useSortChannels = (channels, search, options = {}, workspace) => {
       const aTitle = getChannelTitle(a);
       const bTitle = getChannelTitle(b);
 
+      /* uncomment if draft will be placed on top
+      if (search === "" && (typeof channelDrafts[b.id] !== "undefined" || typeof channelDrafts[a.id] !== "undefined")) {
+        if (typeof channelDrafts[b.id] !== "undefined" && typeof channelDrafts[a.id] !== "undefined") {
+          if (settings.order_channel.order_by === "channel_date_updated") {
+            return channelDrafts[a.id].created_at.timestamp > channelDrafts[b.id].created_at.timestamp ? -1 : 1;
+          }
+          if (settings.order_channel.order_by === "channel_name") {
+            if (settings.order_channel.sort_by === "DESC") {
+              return bTitle.localeCompare(aTitle);
+            } else {
+              return aTitle.localeCompare(bTitle);
+            }
+          }
+        } else if (typeof channelDrafts[a.id] !== "undefined") {
+          return -1;
+        } else if (typeof channelDrafts[b.id] !== "undefined") {
+          return 1;
+        }
+      }*/
+
+      //personal bot with unread message
       if (a.type === "PERSONAL_BOT" && b.type !== "PERSONAL_BOT") {
-        return -1;
+        if (a.total_unread !== 0 || !a.is_read || a.total_mark_incomplete !== 0)
+          return -1;
       }
 
       if (b.type === "PERSONAL_BOT" && a.type !== "PERSONAL_BOT") {
-        return 1;
+        if (b.total_unread !== 0 || !b.is_read || b.total_mark_incomplete !== 0)
+          return 1;
       }
 
       //relevant
       compare = b.is_relevant - a.is_relevant;
       if (compare !== 0) return compare;
-
-      //personal bot with unread message
-      if (b.type === "PERSONAL_BOT" && a.type === "PERSONAL_BOT") {
-        return ((b.total_unread >= 1 || b.total_mark_incomplete >= 1)) ? 1 : -1;
-      }
 
       //add to user
       if ((a.add_user || a.add_open_topic) && !(b.add_user || b.add_open_topic)) {
@@ -112,21 +130,23 @@ const useSortChannels = (channels, search, options = {}, workspace) => {
       compare = b.is_pinned - a.is_pinned;
       if (compare !== 0) return compare;
 
-      //direct users first
-      if (!(a.type === "DIRECT" && b.type === "DIRECT")) {
-        if (a.type === "DIRECT" && a.last_reply)
-          return -1;
+      //if search is active, direct users first
+      if (search !== "") {
+        if (!(a.type === "DIRECT" && b.type === "DIRECT")) {
+          if (a.type === "DIRECT")
+            return -1;
 
-        if (b.type === "DIRECT" && b.last_reply)
-          return 1;
-      }
+          if (b.type === "DIRECT")
+            return 1;
+        }
 
-      if (!a.last_reply && !b.last_reply && (a.type === "DIRECT" || b.type === "DIRECT")) {
-        if (a.type === "DIRECT")
-          return -1;
+        if (!a.last_reply && !b.last_reply && (a.type === "DIRECT" || b.type === "DIRECT")) {
+          if (a.type === "DIRECT")
+            return -1;
 
-        if (b.type === "DIRECT")
-          return 1;
+          if (b.type === "DIRECT")
+            return 1;
+        }
       }
 
       //hidden and archived
@@ -139,46 +159,25 @@ const useSortChannels = (channels, search, options = {}, workspace) => {
       }
 
       if (settings.order_channel.order_by === "channel_date_updated") {
-        if (settings.order_channel.sort_by === "DESC") {
-          if (typeof channelDrafts[b.id] !== "undefined" && typeof channelDrafts[a.id] !== "undefined") {
-            return channelDrafts[a.id].created_at.timestamp > channelDrafts[b.id].created_at.timestamp ? -1 : 1;
-          } else if (channelDrafts[b.id]) {
-            return 1;
-          } else if (channelDrafts[a.id]) {
-            return -1;
-          }
-        }
-
-        if (settings.order_channel.sort_by === "ASC") {
-          if (typeof channelDrafts[b.id] !== "undefined" && typeof channelDrafts[a.id] !== "undefined") {
-            return channelDrafts[a.id].created_at.timestamp < channelDrafts[b.id].created_at.timestamp ? -1 : 1;
-          } else if (channelDrafts[b.id]) {
-            return -1;
-          } else if (channelDrafts[a.id]) {
-            return 1;
-          }
-        }
-        //Uncomment for Last Reply sorting
         if (a.last_reply && !b.last_reply) {
-          return settings.order_channel.sort_by === "DESC" ? -1 : 1;
+          return -1;
         }
 
         if (!a.last_reply && b.last_reply) {
-          return settings.order_channel.sort_by === "DESC" ? 1 : -1;
+          return 1;
         }
 
-        if (!a.last_reply || !b.last_reply) {
-          return settings.order_channel.sort_by === "DESC" ? -1 : 1;
-        } else {
-          if (settings.order_channel.sort_by === "DESC") return a.last_reply.created_at.timestamp > b.last_reply.created_at.timestamp ? -1 : 1;
-          else return a.last_reply.created_at.timestamp > b.last_reply.created_at.timestamp ? 1 : -1;
+        if (!a.last_reply && !b.last_reply) {
+          return aTitle.localeCompare(bTitle);
         }
       }
 
-      if (settings.order_channel.order_by === "channel_name" && settings.order_channel.sort_by === "DESC") {
-        return bTitle.localeCompare(aTitle);
-      } else {
-        return aTitle.localeCompare(bTitle);
+      if (settings.order_channel.order_by === "channel_name") {
+        if (settings.order_channel.sort_by === "DESC") {
+          return bTitle.localeCompare(aTitle);
+        } else {
+          return aTitle.localeCompare(bTitle);
+        }
       }
     });
   return [results];
