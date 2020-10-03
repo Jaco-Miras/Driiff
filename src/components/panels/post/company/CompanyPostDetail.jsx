@@ -270,13 +270,13 @@ const CompanyPostDetail = (props) => {
             <ul>
               <li>
                 <span data-toggle="modal" data-target="#editTaskModal">
-                  <a onClick={() => postActions.showModal("edit_company", post)} className="btn btn-outline-light ml-2" title="" data-toggle="tooltip" data-original-title="Edit Task">
+                  <a onClick={() => postActions.showModal("edit_company", post)} className="btn btn-outline-light ml-2 option-button" title="" data-toggle="tooltip" data-original-title="Edit Task">
                     <Icon icon="edit-3" />
                   </a>
                 </span>
               </li>
               <li>
-                <a onClick={() => postActions.trash(post)} className="btn btn-outline-light ml-2" data-toggle="tooltip" title="" data-original-title="Delete Task">
+                <a onClick={() => postActions.trash(post)} className="btn btn-outline-light ml-2 option-button" data-toggle="tooltip" title="" data-original-title="Delete Task">
                   <Icon icon="trash" />
                 </a>
               </li>
