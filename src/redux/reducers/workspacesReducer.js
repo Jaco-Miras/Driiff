@@ -1017,7 +1017,8 @@ export default (state = INITIAL_STATE, action) => {
                     ...state.workspacePosts[wsId].posts,
                     [action.data.post_id]: {
                       ...state.workspacePosts[wsId].posts[action.data.post_id],
-                      view_user_ids: [...state.workspacePosts[wsId].posts[action.data.post_id].view_user_ids, action.data.viewer.id]
+                      view_user_ids: [...state.workspacePosts[wsId].posts[action.data.post_id].view_user_ids, action.data.viewer.id],
+                      is_unread: 0
                     }
                   }
                 }
@@ -1106,56 +1107,41 @@ export default (state = INITIAL_STATE, action) => {
         } : state.activeTopic
       };
     }
-    case "MARK_READ_UNREAD_REDUCER": {
-      /*let updatedWorkspaces = {...state.workspaces};
-      let updatedFolders = { ...state.folders };
-
-      if (action.data.unread === 0) {
-        if (action.data.folderId) {
-          updatedFolders[action.data.folderId].unread_count = updatedFolders[action.data.folderId].unread_count - action.data.count;
-          updatedWorkspaces[action.data.topic_id].unread_posts = updatedWorkspaces[action.data.topic_id].unread_posts - action.data.count;
-        } else {
-          updatedWorkspaces[action.data.topic_id].unread_posts = updatedWorkspaces[action.data.topic_id].unread_posts - action.data.count;
-        }
-      } else {
-        if (action.data.folderId) {
-          updatedFolders[action.data.folderId].unread_count = updatedFolders[action.data.folderId].unread_count + 1;
-          updatedWorkspaces[action.data.topic_id].unread_posts = updatedWorkspaces[action.data.topic_id].unread_posts + 1;
-        } else {
-          updatedWorkspaces[action.data.topic_id].unread_posts = updatedWorkspaces[action.data.topic_id].unread_posts + 1;
-        }
-      }*/
+    case "INCOMING_READ_UNREAD_REDUCER": {
       return {
         ...state,
-        ...(action.data.topic_id &&
-          typeof state.workspacePosts[action.data.topic_id] !== "undefined" &&
-          typeof state.workspacePosts[action.data.topic_id].posts[action.data.post_id] !== "undefined" && {
-            workspacePosts: {
-              ...state.workspacePosts,
-              [action.data.topic_id]: {
-                ...state.workspacePosts[action.data.topic_id],
-                posts: {
-                  ...state.workspacePosts[action.data.topic_id].posts,
-                  [action.data.post_id]: {
-                    ...state.workspacePosts[action.data.topic_id].posts[action.data.post_id],
-                    is_unread: action.data.unread,
-                    unread_count: action.data.unread,
-                    is_updated: true,
+        workspacePosts: {
+          ...state.workspacePosts,
+          ...Object.keys(state.workspacePosts)
+            .filter(wsId => state.workspacePosts[wsId].posts.hasOwnProperty(action.data.post_id))
+            .map(wsId => {
+              return {
+                [wsId]: {
+                  ...state.workspacePosts[wsId],
+                  posts: {
+                    ...state.workspacePosts[wsId].posts,
+                    [action.data.post_id]: {
+                      ...state.workspacePosts[wsId].posts[action.data.post_id],
+                      view_user_ids: action.data.unread === 0 ?
+                        [...state.workspacePosts[wsId].posts[action.data.post_id].view_user_ids, action.data.user_id] :
+                        state.workspacePosts[wsId].posts[action.data.post_id].view_user_ids.filter(id => id !== action.data.user_id),
+                      is_unread: action.data.unread,
+                    }
                   }
                 }
-              }
-            },
-          }
-        ),
+              };
+            })
+            .reduce((obj, workspace) => {
+              return { ...obj, ...workspace };
+            }, {})
+        },
         activeTopic: {
           ...state.activeTopic,
-          ...(state.activeTopic.id === action.data.topic_id && {
-            ...(action.data.unread === 0 ? {
-              unread_posts: state.activeTopic.unread_posts - action.data.count,
-            } : {
-              unread_posts: state.activeTopic.unread_posts + 1
+          ...(state.workspacePosts.hasOwnProperty(state.workspacePosts) &&
+            state.workspacePosts[state.activeTopic.id].posts.hasOwnProperty(action.data.post_id) && {
+              unread_count: state.activeTopic.unread_count + (action.data.unread ? 1 : -1),
+              unread_posts: state.activeTopic.unread_posts + (action.data.unread ? 1 : -1),
             })
-          })
         },
       };
     }

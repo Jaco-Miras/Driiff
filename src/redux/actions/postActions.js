@@ -191,8 +191,8 @@ export function archiveReducer(payload, callback) {
     return SimpleDispatchActionToReducer("ARCHIVE_POST_REDUCER", payload, callback);
 }
 
-export function markReadUnreadReducer(payload, callback) {
-  return SimpleDispatchActionToReducer("MARK_READ_UNREAD_REDUCER", payload, callback);
+export function incomingReadUnreadReducer(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_READ_UNREAD_REDUCER", payload, callback);
 }
 
 export function postMarkRead(payload, callback) {

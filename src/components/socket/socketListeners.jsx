@@ -83,6 +83,7 @@ import {
   incomingPostClap,
   incomingPostMarkDone,
   incomingPostViewer,
+  incomingReadUnreadReducer,
   incomingUpdatedPost
 } from "../../redux/actions/postActions";
 import {
@@ -268,6 +269,10 @@ class SocketListeners extends Component {
             return null;
           }
         }
+      })
+      .listen(".unread-post", (e) => {
+        console.log(e, "unread-post");
+        this.props.incomingReadUnreadReducer(e);
       })
       .listen(".post-notification", (e) => {
         console.log(e, "post-notif");
@@ -1188,6 +1193,7 @@ function mapDispatchToProps(dispatch) {
     incomingRemoveToDo: bindActionCreators(incomingRemoveToDo, dispatch),
     incomingPostMarkDone: bindActionCreators(incomingPostMarkDone, dispatch),
     incomingFavouriteItem: bindActionCreators(incomingFavouriteItem, dispatch),
+    incomingReadUnreadReducer: bindActionCreators(incomingReadUnreadReducer, dispatch),
   };
 }
 

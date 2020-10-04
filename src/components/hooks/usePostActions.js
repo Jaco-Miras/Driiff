@@ -1,5 +1,5 @@
 import React, { useCallback } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useHistory, useLocation, useParams } from "react-router-dom";
 import { copyTextToClipboard } from "../../helpers/commonFunctions";
 import { getBaseUrl } from "../../helpers/slugHelper";
@@ -13,7 +13,7 @@ import {
   fetchTagCounter,
   getCompanyPosts,
   incomingPostMarkDone,
-  markReadUnreadReducer,
+  incomingReadUnreadReducer,
   mustReadReducer,
   postArchive,
   postClap,
@@ -43,6 +43,8 @@ const usePostActions = () => {
   const toaster = useToaster();
   const todoActions = useTodoActions();
   const { _t } = useTranslation();
+
+  const user = useSelector((state) => state.session.user);
 
   const dictionary = {
     headerRemoveDraftHeader: _t("MODAL.REMOVE_DRAFT_HEADER", "Remove post draft?"),
@@ -300,7 +302,11 @@ const usePostActions = () => {
               </>
             );
 
-          dispatch(markReadUnreadReducer(payload));
+          dispatch(incomingReadUnreadReducer({
+            post_id: post.id,
+            unread: 0,
+            user_id: user.id
+          }));
         }
       };
       dispatch(postToggleRead(payload, cb));
@@ -333,7 +339,11 @@ const usePostActions = () => {
               </>
             );
 
-          dispatch(markReadUnreadReducer(payload));
+          dispatch(incomingReadUnreadReducer({
+            post_id: post.id,
+            unread: 1,
+            user_id: user.id
+          }));
         }
       };
       dispatch(postToggleRead(payload, cb));

@@ -315,16 +315,22 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "INCOMING_POST_VIEWER": {
-      if (state.posts.hasOwnProperty[action.data.post_id]) {
-        let updatedPosts = {...state.posts};
-        updatedPosts[action.data.post_id].view_user_ids = [...updatedPosts[action.data.post_id].view_user_ids, action.data.viewer.id];
-        return {
-          ...state,
-          posts: updatedPosts,
-        };
-      } else {
-        return state;
-      }
+      return {
+        ...state,
+        ...(state.companyPosts.posts.hasOwnProperty(action.data.post_id) && {
+          companyPosts: {
+            ...state.companyPosts,
+            posts: {
+              ...state.companyPosts.posts,
+              [action.data.post_id]: {
+                ...state.companyPosts.posts[action.data.post_id],
+                view_user_ids: [...state.companyPosts.posts[action.data.post_id].view_user_ids, action.data.viewer.id],
+                is_unread: 0
+              }
+            }
+          }
+        })
+      };
     }
     case "ARCHIVE_POST_REDUCER": {
       if (!isNaN(action.data.topic_id)) {
@@ -350,25 +356,26 @@ export default (state = INITIAL_STATE, action) => {
         };
       }
     }
-    // case "MARK_READ_UNREAD_REDUCER": {
-    //     let newPosts = {...state.posts};
-    //     newPosts[action.data.post_id].is_unread = action.data.unread;
-    //     if (action.data.unread === 0) {
-    //         newPosts[action.data.post_id].unread_count = action.data.unread;
-    //     }
-    //     return {
-    //         ...state,
-    //         posts: newPosts
-    //     }
-    // }
-    // case "MARK_READ_UNREAD_REDUCER": {
-    //     let newPosts = {...state.posts};
-    //     newPosts[action.data.post_id].is_read_requirement = true;
-    //     return {
-    //         ...state,
-    //         posts: newPosts
-    //     }
-    // }
+    case "INCOMING_READ_UNREAD_REDUCER": {
+      return {
+        ...state,
+        ...(state.companyPosts.posts.hasOwnProperty(action.data.post_id) && {
+          companyPosts: {
+            ...state.companyPosts,
+            posts: {
+              ...state.companyPosts.posts,
+              [action.data.post_id]: {
+                ...state.companyPosts.posts[action.data.post_id],
+                view_user_ids: action.data.unread === 0 ?
+                  [...state.companyPosts.posts[action.data.post_id].view_user_ids, action.data.user_id] :
+                  state.companyPosts.posts[action.data.post_id].view_user_ids.filter(id => id !== action.data.user_id),
+                is_unread: action.data.unread,
+              }
+            }
+          },
+        })
+      };
+    }
     default:
       return state;
   }
