@@ -41,17 +41,19 @@ const Badge = styled.span`
 
 const ChatDateIcons = (props) => {
   const { channel } = props;
-  const { localizeChatChannelDate } = useTimeFormat();
+  const { channelPreviewDate } = useTimeFormat();
 
   return (
     <Wrapper className="chat-timestamp">
-      <span className={"small text-muted chat-timestamp_text"}>{channel.last_reply ? localizeChatChannelDate(channel.last_reply.created_at.timestamp) : ""}</span>
+      <span className={"small text-muted chat-timestamp_text"}
+            dangerouslySetInnerHTML={{ __html: channel.last_reply ? channelPreviewDate(channel.last_reply.created_at.timestamp) : "" }}/>
       {(!channel.is_read || channel.total_unread > 0) && (
-        <Badge className={`badge badge-primary badge-pill ml-auto ${!channel.is_read && channel.total_unread === 0 ? "unread" : ""}`}>{channel.total_unread > 0 ? channel.total_unread : !channel.is_read ? "0" : null}</Badge>
+        <Badge
+          className={`badge badge-primary badge-pill ml-auto ${!channel.is_read && channel.total_unread === 0 ? "unread" : ""}`}>{channel.total_unread > 0 ? channel.total_unread : !channel.is_read ? "0" : null}</Badge>
       )}
       <ActionContainer>
-        {channel.is_pinned && <Icon icon="star" />}
-        {channel.is_muted && <Icon icon="volume-x" className={`${channel.is_pinned && "mr-1"}`} />}
+        {channel.is_pinned && <Icon icon="star"/>}
+        {channel.is_muted && <Icon icon="volume-x" className={`${channel.is_pinned && "mr-1"}`}/>}
       </ActionContainer>
     </Wrapper>
   );

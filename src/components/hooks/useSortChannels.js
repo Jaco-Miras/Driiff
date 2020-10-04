@@ -1,9 +1,9 @@
-import {useSelector} from "react-redux";
-import {useSettings} from "./index";
+import { useSelector } from "react-redux";
+import { useSettings } from "./index";
 
 const useSortChannels = (channels, search, options = {}, workspace) => {
   const user = useSelector((state) => state.session.user);
-  const {chatSettings: settings} = useSettings();
+  const { chatSettings: settings } = useSettings();
 
   //const channelDrafts = useSelector((state) => state.chat.channelDrafts);
 
@@ -159,6 +159,17 @@ const useSortChannels = (channels, search, options = {}, workspace) => {
       }
 
       if (settings.order_channel.order_by === "channel_date_updated") {
+        if (a.last_reply && b.last_reply) {
+          if (settings.order_channel.sort_by === "DESC") {
+            return a.last_reply.created_at.timestamp < b.last_reply.created_at.timestamp;
+          } else {
+            return a.last_reply.created_at.timestamp > b.last_reply.created_at.timestamp;
+          }
+          if (a.last_reply.created_at.timestamp === b.last_reply.created_at.timestamp) {
+            return aTitle.localeCompare(bTitle);
+          }
+        }
+
         if (a.last_reply && !b.last_reply) {
           return -1;
         }

@@ -1,7 +1,7 @@
-import React, {useRef, useState} from "react";
+import React, { forwardRef, useRef, useState } from "react";
 import styled from "styled-components";
-import {SvgIconFeather} from "../../common";
-import {useTooltipOrientation} from "../../hooks";
+import { SvgIconFeather } from "../../common";
+import { useTooltipOrientation } from "../../hooks";
 
 const Wrapper = styled.div`
   display: inline-flex;
@@ -71,7 +71,7 @@ const MoreTooltip = styled.div`
   }
 `;
 
-const MoreOptions = (props) => {
+const MoreOptions = forwardRef((props, ref) => {
   const { className = "", item, moreButton = "more-horizontal", children = "More Options", width = 200, scrollRef = null, ...rest } = props;
 
   const refs = {
@@ -103,8 +103,10 @@ const MoreOptions = (props) => {
   };
 
   return (
-    <Wrapper className={`more-options ${className}`} onClick={handleClick} ref={refs.container} onMouseEnter={handleMouseEnter} {...rest}>
-      <SvgIconFeather onMouseLeave={handleMouseLeave} data-event="touchstart focus mouseover" data-event-off="mouseout" data-tip="Message options" icon={moreButton} />
+    <Wrapper ref={ref} className={`more-options ${className}`} onClick={handleClick} ref={refs.container}
+             onMouseEnter={handleMouseEnter} {...rest}>
+      <SvgIconFeather onMouseLeave={handleMouseLeave} data-event="touchstart focus mouseover" data-event-off="mouseout"
+                      data-tip="Message options" icon={moreButton}/>
       {showMoreOptions && (
         <MoreTooltip
           ref={refs.options}
@@ -119,6 +121,6 @@ const MoreOptions = (props) => {
       )}
     </Wrapper>
   );
-};
+});
 
 export default React.memo(MoreOptions);

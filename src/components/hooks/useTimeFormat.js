@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import moment from "moment-timezone";
-import {useSettings} from "./index.js";
+import { useSettings } from "./index.js";
 
 const useTimeFormat = () => {
   const {
@@ -27,6 +27,17 @@ const useTimeFormat = () => {
       sameDay: `[Today]`,
       nextWeek: `dddd`,
       lastWeek: `[Last] dddd`,
+      sameElse: dateFormat,
+    });
+  };
+
+  const channelPreviewDate = (timestamp, dateFormat = `${date_format}<br/>${time_format}`) => {
+    const utc = moment(moment(timestamp, "X").toDate()).tz(timezone).locale(language);
+    return utc.calendar(null, {
+      sameDay: `${time_format}`,
+      lastDay: `[Yesterday][<br/+>]${time_format}`,
+      nextDay: `[Tomorrow][<br/>]${time_format}`,
+      lastWeek: `dddd[<br/>]${time_format}`,
       sameElse: dateFormat,
     });
   };
@@ -104,19 +115,17 @@ const useTimeFormat = () => {
     return local.format(timeFormat);
   };
 
-  const localizeChatTimestamp = (timestamp, dateFormat = `${date_format} ${time_format}`) => {
-    var utc = moment(timestamp, "X").toDate();
-    var local = moment(utc).tz(timezone);
-    let currentDate = moment().format("l");
-    let yesterday = yesterdayDate();
-    if (currentDate === local.format("l")) {
-      return "Today";
-    } else if (yesterday === moment(utc).date()) {
-      return "Yesterday";
-    } else {
-      return local.format(dateFormat);
-    }
+  const localizeChatTimestamp = (timestamp, dateFormat = `LL`) => {
+    const utc = moment(moment(timestamp, "X").toDate()).tz(timezone).locale(language);
+    return utc.calendar(null, {
+      sameDay: `[Today]`,
+      lastDay: `[Yesterday]`,
+      nextDay: `[Tomorrow]`,
+      lastWeek: `dddd`,
+      sameElse: dateFormat,
+    });
   };
+
   const localizeChatChannelDate = (timestamp) => {
     const dateString = moment.unix(timestamp).format("l");
     const currentDate = moment().format("l");
@@ -185,7 +194,8 @@ const useTimeFormat = () => {
     todayOrYesterdayDate,
     localizeChatTimestamp,
     todoFormat,
-    todoFormatShortCode
+    todoFormatShortCode,
+    channelPreviewDate
   };
 };
 
