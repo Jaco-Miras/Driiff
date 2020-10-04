@@ -104,6 +104,7 @@ const WorkspacePostsPanel = (props) => {
     unFollow: _t("POST.UNFOLLOW", "Unfollow"),
     files: _t("POST.FILES", "Files"),
     comment: _t("POST.COMMENT", "Comment"),
+    editPost: _t("POST.EDIT_POST", "Edit post"),
     editReply: _t("POST.EDIT_REPLY", "Edit reply"),
     removeReply: _t("POST.REMOVE_REPLY", "Remove reply"),
     quote: _t("POST.QUOTE", "Quote"),
