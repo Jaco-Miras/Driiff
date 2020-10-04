@@ -12,7 +12,7 @@ import {
   uploadDocument
 } from "../../redux/actions/globalActions";
 import { postCreate, putPost } from "../../redux/actions/postActions";
-import { Avatar, DatePicker, FileAttachments, SvgIconFeather, ToolTip } from "../common";
+import { Avatar, DatePicker, FileAttachments, SvgIconFeather } from "../common";
 import { DropDocument } from "../dropzone/DropDocument";
 import { CheckBox, DescriptionInput, FolderSelect, PeopleSelect, PostVisibilitySelect } from "../forms";
 import { useGetWorkspaceAndUserOptions, useToaster, useTranslation } from "../hooks";
@@ -94,11 +94,6 @@ const WrapperDiv = styled(InputGroup)`
       }
     }
   }
-  .user-workspace-info {
-    display: flex;
-    justify-content: end;
-    align-items: center;
-  }
   .user-popup {    
     cursor: pointer;
     margin: 0 0.25rem;  
@@ -166,9 +161,6 @@ const WrapperDiv = styled(InputGroup)`
   }
   .post-visibility-container {
     width: 100%;
-  }
-  .user-workspace-info {
-  
   }
 `;
 
@@ -1141,15 +1133,13 @@ const CreateEditWorkspacePostModal = (props) => {
               {
                 form.selectedWorkspaces.map(w => {
                   return <span className="d-flex justify-content-start align-items-center pt-2 pb-2" key={w.id}>
-                    <ToolTip content={w.name}>
                     {w.name}
-                    </ToolTip>
                   </span>;
                 })
               }
             </span>
-            <span className="user-workspace-info"
-                  dangerouslySetInnerHTML={{ __html: dictionary.postVisibilityInfo }}></span>
+            <span className="d-flex justify-content-end align-items-center"
+                  dangerouslySetInnerHTML={{ __html: dictionary.postVisibilityInfo }}/>
           </div>
         </WrapperDiv>
         <WrapperDiv>

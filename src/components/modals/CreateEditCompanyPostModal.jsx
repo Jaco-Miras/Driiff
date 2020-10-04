@@ -95,18 +95,18 @@ const WrapperDiv = styled(InputGroup)`
     }
   }
   .user-popup {
-    padding-top :8px;
-    cursor: pointer;  
+    cursor: pointer;
+    margin: 0 0.25rem;  
   }
   .workspace-popup {
-    padding-top :8px;
     cursor: pointer;
+    margin: 0 0.25rem;
   }
   .user-list {
     transition: all 0.5s ease;
     position: absolute;
-    bottom: 25px;
-    left: 175px;
+    bottom: 22px;
+    right: 0;
     background-color: #fff;
     border: 1px solid #dee2e6;
     padding: 0;
@@ -135,8 +135,8 @@ const WrapperDiv = styled(InputGroup)`
   }
   .workspace-list {
     position: absolute;
-    bottom: 25px;
-    left: 230px;    
+    bottom: 22px;
+    right: 0;    
     background-color: #fff;
     border: 1px solid #dee2e6;
     padding: 0;
@@ -158,6 +158,9 @@ const WrapperDiv = styled(InputGroup)`
       overflow: hidden;
       text-overflow: ellipsis;    
     }
+  }
+  .post-visibility-container {
+    width: 100%;
   }
 `;
 
@@ -1133,7 +1136,6 @@ const CreateEditCompanyPostModal = (props) => {
                         className="mr-2"
                         key={u.id}
                         name={u.name}
-                        width={32}
                         imageLink={u.profile_image_link}
                         id={u.id}/> {u.name}</span>
                   </span>;
@@ -1162,7 +1164,8 @@ const CreateEditCompanyPostModal = (props) => {
                 })
               }
             </span>
-            <span dangerouslySetInnerHTML={{ __html: dictionary.postVisibilityInfo }}></span>
+            <span className="d-flex justify-content-end align-items-center"
+                  dangerouslySetInnerHTML={{ __html: dictionary.postVisibilityInfo }}/>
           </div>
         </WrapperDiv>
         <WrapperDiv>
