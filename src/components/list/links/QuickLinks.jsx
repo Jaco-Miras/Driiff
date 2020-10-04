@@ -1,8 +1,8 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
-import {SvgIconFeather} from "../../common";
-import {LinkItem} from "./index";
-import {useSettings} from "../../hooks";
+import { SvgIconFeather } from "../../common";
+import { LinkItem } from "./index";
+import { useSettings } from "../../hooks";
 
 const Wrapper = styled.li`
   cursor: pointer;
@@ -67,6 +67,7 @@ const LinkNav = styled.ul`
       justify-content: space-between;
       
       &.shorcut-title {
+        padding-left: 0.5rem;
         font-weight: 500;      
       }
 
