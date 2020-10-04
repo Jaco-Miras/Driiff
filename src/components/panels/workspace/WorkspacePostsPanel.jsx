@@ -1,10 +1,10 @@
-import React, {useCallback, useEffect} from "react";
+import React, { useCallback, useEffect } from "react";
 //import { useSelector } from "react-redux";
-import {useHistory, useParams} from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import styled from "styled-components";
-import {SvgEmptyState} from "../../common";
-import {usePosts, useTranslation} from "../../hooks";
-import {PostDetail, PostFilterSearchPanel, PostItemPanel, PostSidebar} from "../post";
+import { SvgEmptyState } from "../../common";
+import { usePosts, useTranslation } from "../../hooks";
+import { PostDetail, PostFilterSearchPanel, PostItemPanel, PostSidebar } from "../post";
 
 const Wrapper = styled.div`
   text-align: left;
@@ -112,6 +112,7 @@ const WorkspacePostsPanel = (props) => {
     searchResult: _t("POST.SEARCH_RESULT", "Search Result:"),
     searchResults: _t("POST.SEARCH_RESULTS", "Search Results:"),
     searchNoResult: _t("POST.NO_SEARCH_RESULT", "No result found:"),
+    private: _t("POST.PRIVATE", "Private"),
   };
   let disableOptions = false;
   if (workspace && workspace.active === 0) disableOptions = true;

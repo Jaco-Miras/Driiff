@@ -117,6 +117,7 @@ const CompanyPostsPanel = (props) => {
     searchNoResult: _t("POST.NO_SEARCH_RESULT", "No result found:"),
     actionMarkAsDone: _t("POST.ACTION_MARK_AS_DONE", "Mark as done"),
     actionMarkAsUndone: _t("POST.ACTION_MARK_AS_UNDONE", "Mark as not done"),
+    private: _t("POST.PRIVATE", "Private"),
   };
 
   /**
