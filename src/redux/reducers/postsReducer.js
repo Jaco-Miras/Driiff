@@ -1,4 +1,4 @@
-import {convertArrayToObject} from "../../helpers/arrayHelper";
+import { convertArrayToObject } from "../../helpers/arrayHelper";
 
 const INITIAL_STATE = {
   user: null,
@@ -230,35 +230,61 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
-    case "MARK_POST_REDUCER": {
-      if (isNaN(action.data.topic_id)) {
-        return {
-          ...state,
+    case "INCOMING_FAVOURITE_ITEM": {
+      return {
+        ...state,
+        ...(state.companyPosts.posts.hasOwnProperty(action.data.type_id) && {
           companyPosts: {
             ...state.companyPosts,
-            [action.data.post_id]: {
-              ...state.companyPosts[action.data.post_id],
-              is_mark_done: !state.companyPosts[action.data.post_id]
+            posts: {
+              ...state.companyPosts.posts,
+              [action.data.type_id]: {
+                ...state.companyPosts.posts[action.data.type_id],
+                is_favourite: action.data.is_favourite,
+              }
             }
-          }
-        }
-      } else {
-        return {
-          ...state,
-          recentPosts: {
-            [action.data.topic_id]: {
-              ...state.recentPosts[action.data.topic_id],
-              posts: {
-                ...state.recentPosts[action.data.topic_id].posts,
-                [action.data.post_id]: {
-                  ...state.recentPosts[action.data.topic_id].posts[action.data.post_id],
-                  is_mark_done: !state.recentPosts[action.data.topic_id].posts[action.data.post_id].is_mark_done,
-                },
-              },
-            },
           },
-        };
-      }
+        }),
+      };
+    }
+    case "INCOMING_POST_MARK_DONE": {
+      return {
+        ...state,
+        ...(state.companyPosts.posts.hasOwnProperty(action.data.post_id) && {
+          companyPosts: {
+            ...state.companyPosts,
+            posts: {
+              ...state.companyPosts.posts,
+              [action.data.post_id]: {
+                ...state.companyPosts.posts[action.data.post_id],
+                is_mark_done: action.data.is_done,
+              }
+            }
+          },
+        }),
+        recentPosts: {
+          ...state.recentPosts,
+          ...Object.keys(state.recentPosts)
+            .filter(wsId => state.recentPosts[wsId].posts.hasOwnProperty(action.data.post_id))
+            .map(wsId => {
+              return {
+                [wsId]: {
+                  ...state.recentPosts[wsId],
+                  posts: {
+                    ...state.recentPosts[wsId].posts,
+                    [action.data.post_id]: {
+                      ...state.recentPosts[wsId].posts[action.data.post_id],
+                      is_mark_done: action.data.is_done
+                    }
+                  }
+                }
+              };
+            })
+            .reduce((obj, workspace) => {
+              return { ...obj, ...workspace };
+            }, {}),
+        },
+      };
     }
     case "ADD_TO_WORKSPACE_POSTS": {
       let convertedPosts = convertArrayToObject(action.data.posts, "id");
@@ -266,7 +292,7 @@ export default (state = INITIAL_STATE, action) => {
       if (state.drafts.length) {
         state.drafts.forEach((d) => {
           if (d.data.type === "draft_post" && action.data.topic_id === d.data.topic_id) {
-            postDrafts.push({...d.data, ...d.data.form, draft_id: d.id});
+            postDrafts.push({ ...d.data, ...d.data.form, draft_id: d.id });
           }
         });
       }
@@ -289,16 +315,22 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "INCOMING_POST_VIEWER": {
-      if (state.posts.hasOwnProperty[action.data.post_id]) {
-        let updatedPosts = {...state.posts};
-        updatedPosts[action.data.post_id].view_user_ids = [...updatedPosts[action.data.post_id].view_user_ids, action.data.viewer.id];
-        return {
-          ...state,
-          posts: updatedPosts,
-        };
-      } else {
-        return state;
-      }
+      return {
+        ...state,
+        ...(state.companyPosts.posts.hasOwnProperty(action.data.post_id) && {
+          companyPosts: {
+            ...state.companyPosts,
+            posts: {
+              ...state.companyPosts.posts,
+              [action.data.post_id]: {
+                ...state.companyPosts.posts[action.data.post_id],
+                view_user_ids: [...state.companyPosts.posts[action.data.post_id].view_user_ids, action.data.viewer.id],
+                is_unread: 0
+              }
+            }
+          }
+        })
+      };
     }
     case "ARCHIVE_POST_REDUCER": {
       if (!isNaN(action.data.topic_id)) {
@@ -324,25 +356,26 @@ export default (state = INITIAL_STATE, action) => {
         };
       }
     }
-    // case "MARK_READ_UNREAD_REDUCER": {
-    //     let newPosts = {...state.posts};
-    //     newPosts[action.data.post_id].is_unread = action.data.unread;
-    //     if (action.data.unread === 0) {
-    //         newPosts[action.data.post_id].unread_count = action.data.unread;
-    //     }
-    //     return {
-    //         ...state,
-    //         posts: newPosts
-    //     }
-    // }
-    // case "MARK_READ_UNREAD_REDUCER": {
-    //     let newPosts = {...state.posts};
-    //     newPosts[action.data.post_id].is_read_requirement = true;
-    //     return {
-    //         ...state,
-    //         posts: newPosts
-    //     }
-    // }
+    case "INCOMING_READ_UNREAD_REDUCER": {
+      return {
+        ...state,
+        ...(state.companyPosts.posts.hasOwnProperty(action.data.post_id) && {
+          companyPosts: {
+            ...state.companyPosts,
+            posts: {
+              ...state.companyPosts.posts,
+              [action.data.post_id]: {
+                ...state.companyPosts.posts[action.data.post_id],
+                view_user_ids: action.data.unread === 0 ?
+                  [...state.companyPosts.posts[action.data.post_id].view_user_ids, action.data.user_id] :
+                  state.companyPosts.posts[action.data.post_id].view_user_ids.filter(id => id !== action.data.user_id),
+                is_unread: action.data.unread,
+              }
+            }
+          },
+        })
+      };
+    }
     default:
       return state;
   }

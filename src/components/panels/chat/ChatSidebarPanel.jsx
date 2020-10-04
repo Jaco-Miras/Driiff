@@ -1,12 +1,12 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import { useDispatch } from "react-redux";
+import React, {useCallback, useEffect, useRef, useState} from "react";
+import {useDispatch} from "react-redux";
 import styled from "styled-components";
 import SearchForm from "../../forms/SearchForm";
-import { ChatSideBarContentPanel } from "./index";
-import { useSettings, useTranslation } from "../../hooks";
-import { MoreOptions } from "../common";
-import { addToModals } from "../../../redux/actions/globalActions";
-import { SvgIconFeather } from "../../common";
+import {ChatSideBarContentPanel} from "./index";
+import {useSettings, useTranslation} from "../../hooks";
+import {MoreOptions} from "../common";
+import {addToModals} from "../../../redux/actions/globalActions";
+import {SvgIconFeather} from "../../common";
 
 const Wrapper = styled.div`
   .nav-tabs {
@@ -135,7 +135,7 @@ const ChatSidebarPanel = (props) => {
   };
 
   useEffect(() => {
-    const timeOutId = setTimeout(() => setSearch(query), 500);
+    const timeOutId = setTimeout(() => setSearch(query), 300);
     return () => clearTimeout(timeOutId);
   }, [query]);
 

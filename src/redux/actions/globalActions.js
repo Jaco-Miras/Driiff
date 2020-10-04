@@ -1,4 +1,4 @@
-import dispatchActionToReducer, {SimpleDispatchActionToReducer} from "../actionDispatcher";
+import dispatchActionToReducer, { SimpleDispatchActionToReducer } from "../actionDispatcher";
 import {
   deleteDraft as deleteDraftService,
   deletePushSubscription as deletePushSubscriptionService,
@@ -181,4 +181,8 @@ export function incomingDoneToDo(payload, callback) {
 
 export function incomingRemoveToDo(payload, callback) {
   return SimpleDispatchActionToReducer("INCOMING_REMOVE_TO_DO", payload, callback);
+}
+
+export function incomingFavouriteItem(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_FAVOURITE_ITEM", payload, callback);
 }

@@ -164,7 +164,7 @@ const QuickLinks = (props) => {
   return (
     <Wrapper ref={ref.container} className={`fadeIn ${className} ${showLinks && "folder-open"}`} selected={showLinks}
              showEditIcon={user && user.role && (user.role.name === "admin" || user.role.name === "owner")}>
-      <a href="/" onClick={handleShowLinks}>
+      <a className="quick-links" href="/" onClick={handleShowLinks}>
         <NavIcon icon="link"/>
         <div>{dictionary.shortcuts}</div>
         {user && user.role && (user.role.name === "admin" || user.role.name === "owner") &&

@@ -1,5 +1,5 @@
 import React from "react";
-import { useHistory } from "react-router-dom";
+import {useHistory} from "react-router-dom";
 import styled from "styled-components";
 import useChannelActions from "../../hooks/useChannelActions";
 import ChannelIcon from "./ChannelIcon";
@@ -7,7 +7,7 @@ import ChannelOptions from "./ChannelOptions";
 import ChannelTitle from "./ChannelTitle";
 import ChatDateIcons from "./ChatDateIcons";
 import ReplyPreview from "./ReplyPreview";
-import { Badge } from "../../common";
+import {Badge} from "../../common";
 
 const Wrapper = styled.li`
   cursor: pointer;
@@ -91,12 +91,11 @@ const Timestamp = styled.div`
 `;
 
 const ChannelList = (props) => {
-  const { channelDrafts, dictionary } = props;
+
+  const {className = "", search = "", channel, selectedChannel, channelDrafts, dictionary} = props;
+
   const channelActions = useChannelActions();
-
   const history = useHistory();
-
-  const { className = "", channel, selectedChannel } = props;
 
   const handleSelectChannel = () => {
     document.body.classList.add("m-chat-channel-closed");
@@ -114,18 +113,18 @@ const ChannelList = (props) => {
 
   return (
     <Wrapper className={`list-group-item d-flex align-items-center link-1 pl-1 pr-1 pl-lg-0 pr-lg-0 pb-2 pt-2 ${className}`} selected={selectedChannel !== null && channel.id === selectedChannel.id} onClick={handleSelectChannel}>
-      <ChannelIcon channel={channel} />
+      <ChannelIcon channel={channel}/>
       <ChannelTitlePreview className={"flex-grow-1"}>
-        <ChannelTitle channel={channel} />
-        <ReplyPreview channel={channel} drafts={channelDrafts} dictionary={dictionary} />
+        <ChannelTitle channel={channel} search={search}/>
+        <ReplyPreview channel={channel} drafts={channelDrafts} dictionary={dictionary}/>
         {!!channel.is_archived && (
           <>
-            <Badge badgeClassName="bg-warning-bright" label="Archived" />
+            <Badge badgeClassName="bg-warning-bright" label="Archived"/>
           </>
         )}
         {channel.is_hidden && (
           <>
-            <Badge label="Hidden" />
+            <Badge label="Hidden"/>
           </>
         )}
       </ChannelTitlePreview>

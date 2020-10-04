@@ -191,6 +191,7 @@ const TodoReminderModal = (props) => {
           newForm.set_time.valid = true;
           newForm.set_time.feedback = null;
         } else if (customTimeValue.getTime() === reminderDate.getTime()) {
+          newForm.set_time.value = moment.utc(reminderDate).format("YYYY-MM-DD HH:mm:ss");
           newForm.set_time.valid = true;
           newForm.set_time.feedback = dictionary.feedbackReminderDateOverdue;
         } else {
