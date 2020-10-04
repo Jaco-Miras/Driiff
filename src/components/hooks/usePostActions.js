@@ -1,10 +1,10 @@
-import React, {useCallback} from "react";
-import {useDispatch} from "react-redux";
-import {useHistory, useLocation, useParams} from "react-router-dom";
-import {copyTextToClipboard} from "../../helpers/commonFunctions";
-import {getBaseUrl} from "../../helpers/slugHelper";
-import {replaceChar} from "../../helpers/stringFormatter";
-import {addToModals, deleteDraft} from "../../redux/actions/globalActions";
+import React, { useCallback } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useHistory, useLocation, useParams } from "react-router-dom";
+import { copyTextToClipboard } from "../../helpers/commonFunctions";
+import { getBaseUrl } from "../../helpers/slugHelper";
+import { replaceChar } from "../../helpers/stringFormatter";
+import { addToModals, deleteDraft } from "../../redux/actions/globalActions";
 import {
   archiveReducer,
   deletePost,
@@ -12,8 +12,8 @@ import {
   fetchRecentPosts,
   fetchTagCounter,
   getCompanyPosts,
-  markPostReducer,
-  markReadUnreadReducer,
+  incomingPostMarkDone,
+  incomingReadUnreadReducer,
   mustReadReducer,
   postArchive,
   postClap,
@@ -32,8 +32,8 @@ import {
   starPostReducer,
   updateCompanyPostFilterSort,
 } from "../../redux/actions/postActions";
-import {useToaster, useTodoActions} from "./index";
-import {useTranslation} from "../hooks";
+import { useToaster, useTodoActions } from "./index";
+import { useTranslation } from "../hooks";
 
 const usePostActions = () => {
   const dispatch = useDispatch();
@@ -43,6 +43,8 @@ const usePostActions = () => {
   const toaster = useToaster();
   const todoActions = useTodoActions();
   const { _t } = useTranslation();
+
+  const user = useSelector((state) => state.session.user);
 
   const dictionary = {
     headerRemoveDraftHeader: _t("MODAL.REMOVE_DRAFT_HEADER", "Remove post draft?"),
@@ -66,7 +68,9 @@ const usePostActions = () => {
     notificationUnread: _t("NOTIFICATION.UNREAD", "as unread"),
     notificationRead: _t("NOTIFICATION.READ", "as read"),
     notificationDone: _t("NOTIFICATION.DONE", "as done"),
+    notificationNotDone: _t("NOTIFICATION.NOT_DONE", "as not done"),
     notificationStar: _t("NOTIFICATION.STAR", "as starred"),
+    notificationNotStar: _t("NOTIFICATION.NOT_STAR", "as not starred"),
     notificationRemoved: _t("NOTIFICATION.REMOVED", "is removed"),
     notificationActionFailed: _t("NOTIFICATION.ACTION_FAILED", "Action failed"),
     notificationCreatePost: _t("NOTIFICATION.CREATE_POST", "You have successfully created a post"),
@@ -89,7 +93,8 @@ const usePostActions = () => {
           if (res) {
             toaster.success(
               <>
-                {dictionary.notificationYouMarked} <b>{post.title}</b> {dictionary.notificationStar}.
+                {dictionary.notificationYouMarked}
+                <b>{post.title}</b> {post.is_favourite ? dictionary.notificationNotStar : dictionary.notificationStar}.
               </>
             );
           }
@@ -107,11 +112,11 @@ const usePostActions = () => {
 
   const markPost = useCallback(
     (post) => {
-      if (post.type === "draft_post") return;
-      let topic_id = parseInt(params.workspaceId);
+      if (post.type === "draft_post")
+        return;
+
       dispatch(
-        postMarkDone({post_id: post.id}, (err, res) => {
-          //@todo reverse the action/data in the reducer
+        postMarkDone({ post_id: post.id }, (err, res) => {
           if (err) {
             toaster.error(<>{dictionary.notificationActionFailed}</>);
           }
@@ -119,16 +124,17 @@ const usePostActions = () => {
           if (res) {
             toaster.success(
               <>
-                {dictionary.notificationYouMarked} <b>{post.name} {dictionary.notificationDone}</b>
+                {dictionary.notificationYouMarked}
+                <b>{post.name} {post.is_mark_done ? dictionary.notificationNotDone : dictionary.notificationDone}</b>
               </>
             );
           }
         })
       );
       dispatch(
-        markPostReducer({
+        incomingPostMarkDone({
           post_id: post.id,
-          topic_id,
+          is_done: !post.is_mark_done
         })
       );
     },
@@ -296,7 +302,11 @@ const usePostActions = () => {
               </>
             );
 
-          dispatch(markReadUnreadReducer(payload));
+          dispatch(incomingReadUnreadReducer({
+            post_id: post.id,
+            unread: 0,
+            user_id: user.id
+          }));
         }
       };
       dispatch(postToggleRead(payload, cb));
@@ -329,7 +339,11 @@ const usePostActions = () => {
               </>
             );
 
-          dispatch(markReadUnreadReducer(payload));
+          dispatch(incomingReadUnreadReducer({
+            post_id: post.id,
+            unread: 1,
+            user_id: user.id
+          }));
         }
       };
       dispatch(postToggleRead(payload, cb));
@@ -550,7 +564,7 @@ const usePostActions = () => {
 
   const getTagsCount = useCallback(
     (id, callback) => {
-      dispatch(fetchTagCounter({topic_id: id}));
+      dispatch(fetchTagCounter({ topic_id: id }, callback));
     },
     [dispatch]
   );

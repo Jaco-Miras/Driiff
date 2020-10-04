@@ -1,10 +1,10 @@
-import React, {useCallback, useRef, useState} from "react";
-import {useSelector} from "react-redux";
+import React, { useCallback, useRef, useState } from "react";
+import { useSelector } from "react-redux";
 import styled from "styled-components";
 import Tooltip from "react-tooltip-lite";
-import {CommonPicker, SvgIconFeather} from "../../../common";
-import {CommentQuote} from "../../../list/post/item";
-import {CompanyPostInput} from "../../../forms";
+import { CommonPicker, SvgIconFeather } from "../../../common";
+import { CommentQuote } from "../../../list/post/item";
+import { CompanyPostInput } from "../../../forms";
 
 const Wrapper = styled.div`
   position: relative;
@@ -32,8 +32,14 @@ const IconButton = styled(SvgIconFeather)`
   padding: 10px 0;
   border-radius: 8px;
   transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  &.active {    
+    border: 1px solid #7a1b8bcc;
+    background: #7a1b8b;    
+    color: #fff;  
+  }
   &:hover {
-    background: #afb8bd;
+    border: 1px solid #7a1b8bcc;
+    background: #7a1b8b;
     color: #ffffff;
   }
   &.feather-send {
@@ -198,7 +204,8 @@ const CompanyPostDetailFooter = (props) => {
             ) : (
               <React.Fragment>
                 <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Emoji" className="emojiButton">
-                  <IconButton onClick={handleShowEmojiPicker} icon="smile"/>
+                  <IconButton className={`${showEmojiPicker ? "active" : ""}`} onClick={handleShowEmojiPicker}
+                              icon="smile"/>
                 </Tooltip>
                 <ChatInputContainer ref={innerRef} className="flex-grow-1">
                   <CompanyPostInput
@@ -225,8 +232,9 @@ const CompanyPostDetailFooter = (props) => {
               </React.Fragment>
             )}
             {showEmojiPicker === true &&
-            <PickerContainer handleShowEmojiPicker={handleShowEmojiPicker} onSelectEmoji={onSelectEmoji}
-                             onSelectGif={onSelectGif} orientation={"top"} ref={ref.picker}/>}
+            <PickerContainer
+              handleShowEmojiPicker={handleShowEmojiPicker} onSelectEmoji={onSelectEmoji}
+              onSelectGif={onSelectGif} orientation={"top"} ref={ref.picker}/>}
           </Dflex>
           {editPostComment && editPostComment.files.length > 0 &&
           <FileNames>{editPostComment.files.map((f) => f.name).join(", ")}</FileNames>}

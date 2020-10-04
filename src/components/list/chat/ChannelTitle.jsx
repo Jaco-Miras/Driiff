@@ -7,11 +7,21 @@ const ChannelTitleContainer = styled.h6`
 `;
 
 const ChannelTitle = (props) => {
-  const { channel, className = "" } = props;
+
+  const {className = "", search = "", channel} = props;
+
+  const getHighlightedSearchTitle = (title) => {
+    if (search === "") {
+      return title;
+    } else {
+      const parts = title.split(new RegExp(`(${search})`, 'gi'));
+      return <span>{parts.map(part => part.toLowerCase() === search.toLowerCase() ? <b>{part}</b> : part)}</span>;
+    }
+  }
 
   return (
     <ChannelTitleContainer className={`mb-1 ${className}`} channel={channel}>
-      {channel.title}
+      {getHighlightedSearchTitle(channel.title)}
     </ChannelTitleContainer>
   );
 };

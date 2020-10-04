@@ -32,7 +32,7 @@ const Badge = styled.span`
 
 const WorkspaceChatDateIcons = (props) => {
   const { workspace, optionsVisible } = props;
-  const { localizeChatChannelDate } = useTimeFormat();
+  const { channelPreviewDate } = useTimeFormat();
 
   const handleNotificationBadges = useCallback(() => {
     if (workspace.is_read === 0) {
@@ -48,11 +48,12 @@ const WorkspaceChatDateIcons = (props) => {
 
   return (
     <Wrapper className="chat-timestamp" optionsVisible={optionsVisible}>
-      <span className={"small text-muted"}>{workspace.last_reply ? localizeChatChannelDate(workspace.last_reply.created_at.timestamp) : ""}</span>
+      <span className={"small text-muted chat-timestamp_text"}
+            dangerouslySetInnerHTML={{ __html: channel.last_reply ? channelPreviewDate(channel.last_reply.created_at.timestamp) : "" }}/>
       {handleNotificationBadges()}
       <ActionContainer>
-        {workspace.is_pinned && <Icon icon="star" />}
-        {workspace.is_muted && <Icon icon="volume-x" className={`${workspace.is_pinned && "mr-1"}`} />}
+        {workspace.is_pinned && <Icon icon="star"/>}
+        {workspace.is_muted && <Icon icon="volume-x" className={`${workspace.is_pinned && "mr-1"}`}/>}
       </ActionContainer>
     </Wrapper>
   );

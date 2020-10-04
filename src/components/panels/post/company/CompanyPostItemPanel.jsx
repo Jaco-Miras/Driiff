@@ -1,12 +1,12 @@
 import React from "react";
-import {useSelector} from "react-redux";
+import { useSelector } from "react-redux";
 import styled from "styled-components";
-import {SvgIconFeather} from "../../../common";
-import {CheckBox} from "../../../forms";
-import {MoreOptions} from "../../common";
-import {CompanyPostBadge} from "./index";
+import { SvgIconFeather } from "../../../common";
+import { CheckBox } from "../../../forms";
+import { MoreOptions } from "../../common";
+import { CompanyPostBadge } from "./index";
 import quillHelper from "../../../../helpers/quillHelper";
-import {MemberLists} from "../../../list/members";
+import { MemberLists } from "../../../list/members";
 
 const Wrapper = styled.li`
   &:first-of-type {
@@ -100,8 +100,7 @@ const CompanyPostItemPanel = (props) => {
           >
             <span>{post.title}</span>
             <div className='text-truncate post-partialBody'>
-              <span
-                                      dangerouslySetInnerHTML={{__html: quillHelper.parseEmoji(post.partial_body)}}/>
+              <span dangerouslySetInnerHTML={{ __html: quillHelper.parseEmoji(post.partial_body) }}/>
             </div>
           </div>
           <div className="pl-3 d-flex align-items-center">
