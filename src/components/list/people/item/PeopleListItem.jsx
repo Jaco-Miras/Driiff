@@ -21,6 +21,12 @@ const Wrapper = styled.div`
   > .col-12 {
     padding: 0;
   }
+  .people-text-truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 218px;
+  }
 `;
 
 const PeopleListItem = (props) => {
@@ -47,7 +53,7 @@ const PeopleListItem = (props) => {
                 {user.hasOwnProperty("has_accepted") && !user.has_accepted ? (
                   <h6 className="user-name mb-1 ">
                     <ToolTip content={user.email}>
-                      <div className="mr-2">{user.email}</div>
+                      <div className="mr-2 people-text-truncate">{user.email}</div>
                     </ToolTip>
                     <Badge label={dictionary.peopleInvited} badgeClassName="badge badge-info text-white" />
                   </h6>
