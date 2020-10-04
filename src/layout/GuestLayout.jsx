@@ -66,6 +66,10 @@ const GuestLayout = (props) => {
     emailNotFound: _t("FEEDBACK.EMAIL_NOT_FOUND", "Email not found."),
     notAllowedForExternal: _t("FEEDBACK.NOT_ALLOWED_FOR_EXTERNAL", "Not allowed for external users."),
     thankYou: _t("FEEDBACK.THANK_YOU", "Thank you!"),
+    or: _t("RESET_PASSWORD.OR", "or"),
+    createAccount: _t("LOGIN.CREATE_ACCOUNT", "Create account"),
+    authentication: _t("LOGIN.AUTHENTICATION", "Authentication"),
+    email: _t("LOGIN.EMAIL", "Email"),
   };
 
   const [title, setTitle] = useState(dictionary.signIn);
@@ -93,22 +97,22 @@ const GuestLayout = (props) => {
         break;
       case "/reset-password":
         if (driffSettings.settings.password_login) {
-          setTitle("Reset password");
+          setTitle(dictionary.resetPassword);
         } else {
           history.push("/login");
         }
         break;
       case "/register":
         if (driffSettings.settings.sign_up) {
-          setTitle("Create account");
+          setTitle(dictionary.createAccount);
         } else {
           history.push("/login");
         }
         break;
       default:
-        if (location.pathname.indexOf("/authenticate/") === 0) setTitle("Authentication");
-        else if (location.pathname.indexOf("/resetpassword/") === 0) setTitle("Update Password");
-        else setTitle("Sign in");
+        if (location.pathname.indexOf("/authenticate/") === 0) setTitle(dictionary.authentication);
+        else if (location.pathname.indexOf("/resetpassword/") === 0) setTitle(dictionary.updatePassword);
+        else setTitle(dictionary.signIn);
     }
   }, [location]);
 
