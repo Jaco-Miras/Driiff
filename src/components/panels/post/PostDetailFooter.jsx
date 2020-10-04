@@ -1,14 +1,14 @@
-import React, {useCallback, useRef, useState} from "react";
-import {useDispatch, useSelector} from "react-redux";
+import React, { useCallback, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import Tooltip from "react-tooltip-lite";
-import {joinWorkspace} from "../../../redux/actions/workspaceActions";
-import {CommonPicker, SvgIconFeather} from "../../common";
+import { joinWorkspace } from "../../../redux/actions/workspaceActions";
+import { CommonPicker, SvgIconFeather } from "../../common";
 import PostInput from "../../forms/PostInput";
-import {CommentQuote} from "../../list/post/item";
-import {useToaster, useTranslation} from "../../hooks";
-import {addToModals} from "../../../redux/actions/globalActions";
-import {putChannel} from "../../../redux/actions/chatActions";
+import { CommentQuote } from "../../list/post/item";
+import { useToaster, useTranslation } from "../../hooks";
+import { addToModals } from "../../../redux/actions/globalActions";
+import { putChannel } from "../../../redux/actions/chatActions";
 
 const Wrapper = styled.div`
   position: relative;
@@ -16,6 +16,8 @@ const Wrapper = styled.div`
     margin-left: 0 !important;
   }
   flex: unset;
+  
+  .feather-smile,
   .feather-paperclip {
     border: 1px solid #e1e1e1;
     height: 100%;
@@ -26,6 +28,15 @@ const Wrapper = styled.div`
     padding: 12px;
     &:hover {
       background-color: #e1e1e1;
+    }
+  }
+  .feather-smile {
+    &:hover {
+      border: 1px solid #7a1b8bcc;
+      background-color: #7a1b8bcc;
+      color: #fff;
+    }
+  }  
 `;
 
 const ChatInputContainer = styled.div`
@@ -36,8 +47,8 @@ const ChatInputContainer = styled.div`
   padding-right: 80px;
   margin-right: 8px;
   min-height: 48px;
-  .feather-send,
-  .feather-smile {
+  
+  .feather-send {
     position: absolute;
     bottom: 0;
     right: 0;
@@ -52,23 +63,18 @@ const ChatInputContainer = styled.div`
     cursor: pointer;
     transition: background-color 0.15s ease-in-out, color 0.15s ease-in-out;
   }
-  .feather-smile {
-    right: 44px;
-    margin: 4px 0;
-    background: transparent;
-    border-color: transparent;
-    transition: color 0.15s ease-in-out;
-    color: #cacaca;
-    &:hover {
-      color: #7a1b8b;
-    }
-  }
   .feather-send:hover {
     background-color: #7a1b8bcc;
   }
 `;
 
-const IconButton = styled(SvgIconFeather)``;
+const IconButton = styled(SvgIconFeather)`
+  &.active {
+    background: #7a1b8b;
+    border: 1px solid #7a1b8b;
+    color: #fff;    
+  }
+`;
 
 const Dflex = styled.div`
   // width: 100%;
@@ -143,8 +149,8 @@ const NoReply = styled.div`
 `;
 
 const PickerContainer = styled(CommonPicker)`
-  left: 32px;
-  bottom: 60px;
+  left: 25px;
+  bottom: 75px;
 `;
 
 const FileNames = styled.div`
@@ -169,9 +175,10 @@ const Icon = styled(SvgIconFeather)`
 `;
 
 const PostDetailFooter = (props) => {
-  const { className = "", onShowFileDialog, dropAction, post, parentId = null, commentActions,
-          userMention = null, handleClearUserMention = null, commentId = null, innerRef = null,
-          workspace, isMember, disableOptions
+  const {
+    className = "", onShowFileDialog, dropAction, post, parentId = null, commentActions,
+    userMention = null, handleClearUserMention = null, commentId = null, innerRef = null,
+    workspace, isMember, disableOptions
   } = props;
 
   const dispatch = useDispatch();
@@ -225,14 +232,13 @@ const PostDetailFooter = (props) => {
         },
         (err, res) => {
           if (err) return;
-
         }
       )
     );
   };
 
   const toaster = useToaster();
-  const {_t} = useTranslation();
+  const { _t } = useTranslation();
 
   const dictionary = {
     unarchiveThisWorkspace: _t("WORKSPACE.WORKSPACE_UNARCHIVE", "Unarchive this workspace"),
@@ -243,16 +249,16 @@ const PostDetailFooter = (props) => {
 
   const handleUnarchive = () => {
     let payload = {
-        id: workspace.channel.id,
-        is_archived: false,
-        is_muted: false,
-        is_pinned: false,
-        push_unarchived: 1
+      id: workspace.channel.id,
+      is_archived: false,
+      is_muted: false,
+      is_pinned: false,
+      push_unarchived: 1
     };
 
     dispatch(putChannel(payload));
     toaster.success(
-        <span>
+      <span>
           <b>{workspace.name} workspace is unarchived.</b>
         </span>
     );
@@ -266,11 +272,11 @@ const PostDetailFooter = (props) => {
       submitText: dictionary.unarchiveWorkspace,
       bodyText: dictionary.unarchiveBodyText,
       actions: {
-          onSubmit: handleUnarchive,
+        onSubmit: handleUnarchive,
       },
-  };
+    };
 
-  dispatch(addToModals(payload));
+    dispatch(addToModals(payload));
   };
 
   const toggleTooltip = () => {
@@ -284,16 +290,16 @@ const PostDetailFooter = (props) => {
   return (
     <Wrapper className={`post-detail-footer card-body ${className}`}>
       {
-        disableOptions && 
+        disableOptions &&
         <ArchivedDiv>
-          <Icon icon="archive" />
+          <Icon icon="archive"/>
           <h4>This is an archived workspace</h4>
           <button className="btn btn-primary" onClick={handleShowUnarchiveConfirmation}>Un-archive workspace</button>
         </ArchivedDiv>
       }
       {
         <Dflex className="d-flex pr-2 pl-2">
-          <CommentQuote commentActions={commentActions} commentId={commentId} />
+          <CommentQuote commentActions={commentActions} commentId={commentId}/>
         </Dflex>
       }
       {isMember && !disableOptions && (
@@ -306,7 +312,9 @@ const PostDetailFooter = (props) => {
             ) : (
               <React.Fragment>
                 <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Emoji" className="emojiButton">
-                  <IconButton onClick={handleShowEmojiPicker} icon="smile"/>
+                  <IconButton
+                    className={`mr-2 ${showEmojiPicker ? "active" : ""}`} onClick={handleShowEmojiPicker}
+                    icon="smile"/>
                 </Tooltip>
                 <ChatInputContainer ref={innerRef} className="flex-grow-1">
                   <PostInput
@@ -325,18 +333,20 @@ const PostDetailFooter = (props) => {
                     dropAction={dropAction}
                     members={workspace ? workspace.members : []}
                   />
-                <IconButton onClick={handleShowEmojiPicker} icon="smile" />
-                <IconButton onClick={handleSend} icon="send" />
+                  <IconButton onClick={handleSend} icon="send"/>
                 </ChatInputContainer>
 
                 <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Attach files">
-                  <IconButton onClick={() => onShowFileDialog(parentId)} icon="paperclip" />
+                  <IconButton onClick={() => onShowFileDialog(parentId)} icon="paperclip"/>
                 </Tooltip>
               </React.Fragment>
             )}
-            {showEmojiPicker === true && <PickerContainer handleShowEmojiPicker={handleShowEmojiPicker} onSelectEmoji={onSelectEmoji} onSelectGif={onSelectGif} orientation={"top"} ref={ref.picker} />}
+            {showEmojiPicker === true &&
+            <PickerContainer handleShowEmojiPicker={handleShowEmojiPicker} onSelectEmoji={onSelectEmoji}
+                             onSelectGif={onSelectGif} orientation={"top"} ref={ref.picker}/>}
           </Dflex>
-          {editPostComment && editPostComment.files.length > 0 && <FileNames>{editPostComment.files.map((f) => f.name).join(", ")}</FileNames>}
+          {editPostComment && editPostComment.files.length > 0 &&
+          <FileNames>{editPostComment.files.map((f) => f.name).join(", ")}</FileNames>}
           <Dflex/>
         </>
       )}

@@ -72,6 +72,9 @@ const ChatInputContainer = styled.div`
     border-color: transparent;
     transition: color 0.15s ease-in-out;
     color: #cacaca;
+    &.active {
+      color: #7a1b8b;
+    }
     &:hover {
       color: #7a1b8b;
     }
@@ -274,13 +277,15 @@ const ChatFooterPanel = (props) => {
               <ChatInputContainer className="flex-grow-1 chat-input-footer">
                 {selectedChannel && !selectedChannel.is_archived && (
                   <Dflex className="d-flex pr-2 pl-2">
-                    <ChatQuote />
+                    <ChatQuote/>
                   </Dflex>
                 )}
 
-                <ChatInput selectedGif={selectedGif} onSendCallback={onSendCallback} onClearGif={onClearGif} selectedEmoji={selectedEmoji} onClearEmoji={onClearEmoji} dropAction={dropAction} />
-                <IconButton onClick={handleShowEmojiPicker} icon="smile" />
-                <IconButton onClick={handleSend} icon="send" />
+                <ChatInput selectedGif={selectedGif} onSendCallback={onSendCallback} onClearGif={onClearGif}
+                           selectedEmoji={selectedEmoji} onClearEmoji={onClearEmoji} dropAction={dropAction}/>
+                <IconButton className={`${showEmojiPicker ? "active" : ""}`} onClick={handleShowEmojiPicker}
+                            icon="smile"/>
+                <IconButton onClick={handleSend} icon="send"/>
               </ChatInputContainer>
 
               <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Attach files">
