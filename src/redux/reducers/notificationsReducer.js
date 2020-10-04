@@ -16,13 +16,14 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "GET_NOTIFICATIONS_SUCCESS": {
+      let results = action.data.notifications.filter((n) => n.type !== "NEW_TODO")
       return {
         ...state,
         notifications: {
           ...state.notifications,
-          ...convertArrayToObject(action.data.notifications, "id"),
+          ...convertArrayToObject(results, "id"),
         },
-        unreadCount: state.unreadCount + action.data.notifications.filter((n) => n.is_read === 0).length,
+        unreadCount: state.unreadCount + results.filter((n) => n.is_read === 0).length,
       };
     }
     case "READ_ALL_NOTIFICATION_REDUCER": {
