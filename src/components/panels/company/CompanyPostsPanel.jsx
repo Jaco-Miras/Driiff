@@ -107,6 +107,7 @@ const CompanyPostsPanel = (props) => {
     unFollow: _t("POST.UNFOLLOW", "Unfollow"),
     files: _t("POST.FILES", "Files"),
     comment: _t("POST.COMMENT", "Comment"),
+    editPost: _t("POST.EDIT_POST", "Edit post"),
     editReply: _t("POST.EDIT_REPLY", "Edit reply"),
     removeReply: _t("POST.REMOVE_REPLY", "Remove reply"),
     quote: _t("POST.QUOTE", "Quote"),
@@ -117,6 +118,7 @@ const CompanyPostsPanel = (props) => {
     searchNoResult: _t("POST.NO_SEARCH_RESULT", "No result found:"),
     actionMarkAsDone: _t("POST.ACTION_MARK_AS_DONE", "Mark as done"),
     actionMarkAsUndone: _t("POST.ACTION_MARK_AS_UNDONE", "Mark as not done"),
+    private: _t("POST.PRIVATE", "Private"),
   };
 
   /**

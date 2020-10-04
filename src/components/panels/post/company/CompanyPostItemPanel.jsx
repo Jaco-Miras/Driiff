@@ -61,7 +61,7 @@ const CompanyPostItemPanel = (props) => {
   const user = useSelector((state) => state.session.user);
   const { className = "", post, postActions, dictionary, disableOptions } = props;
 
-  const { starPost, markPost, openPost, archivePost, markAsRead, markAsUnread, sharePost, snoozePost, followPost, remind } = postActions;
+  const { starPost, markPost, openPost, archivePost, markAsRead, markAsUnread, sharePost, followPost, remind, showModal } = postActions;
 
   const handleMarkDone = (e) => {
     e.preventDefault();
@@ -112,15 +112,19 @@ const CompanyPostItemPanel = (props) => {
         </div>
       </div>
       {post.type !== "draft_post" && !disableOptions && (
-        <MoreOptions className="ml-2" item={post} width={170} moreButton={"more-horizontal"}>
+        <MoreOptions className="ml-2" item={post} width={220} moreButton={"more-horizontal"}>
           {
             post.todo_reminder === null &&
             <div onClick={() => remind(post)}>{dictionary.remindMeAboutThis}</div>
           }
-          <div onClick={() => markAsRead(post, true)}>{dictionary.markAsRead}</div>
-          <div onClick={() => markAsUnread(post, true)}>{dictionary.markAsUnread}</div>
+          {post.author && post.author.id === user.id &&
+          <div onClick={() => showModal("edit_company", post)}>{dictionary.editPost}</div>}
+          {
+            post.is_unread === 0 ?
+              <div onClick={() => markAsUnread(post, true)}>{dictionary.markAsUnread}</div> :
+              <div onClick={() => markAsRead(post, true)}>{dictionary.markAsRead}</div>
+          }
           <div onClick={() => sharePost(post)}>{dictionary.share}</div>
-          <div onClick={() => snoozePost(post)}>{dictionary.snooze}</div>
           {post.author && post.author.id !== user.id &&
           <div onClick={() => followPost(post)}>{post.is_followed ? dictionary.unFollow : dictionary.follow}</div>}
         </MoreOptions>
