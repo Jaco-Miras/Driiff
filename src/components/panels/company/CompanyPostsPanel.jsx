@@ -1,8 +1,8 @@
-import React, {useCallback, useEffect, useRef, useState} from "react";
-import {useHistory, useParams} from "react-router-dom";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { useHistory, useParams } from "react-router-dom";
 import styled from "styled-components";
-import {SvgEmptyState} from "../../common";
-import {useCompanyPosts, useTranslation} from "../../hooks";
+import { SvgEmptyState } from "../../common";
+import { useCompanyPosts, useTranslation } from "../../hooks";
 import {
   CompanyPostDetail,
   CompanyPostFilterSearchPanel,
@@ -115,6 +115,8 @@ const CompanyPostsPanel = (props) => {
     searchResult: _t("POST.SEARCH_RESULT", "Search Result:"),
     searchResults: _t("POST.SEARCH_RESULTS", "Search Results:"),
     searchNoResult: _t("POST.NO_SEARCH_RESULT", "No result found:"),
+    actionMarkAsDone: _t("POST.ACTION_MARK_AS_DONE", "Mark as done"),
+    actionMarkAsUndone: _t("POST.ACTION_MARK_AS_UNDONE", "Mark as not done"),
   };
 
   /**

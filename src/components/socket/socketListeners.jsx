@@ -1,11 +1,11 @@
-import React, {Component} from "react";
-import {isSafari} from "react-device-detect";
-import {connect} from "react-redux";
-import {withRouter} from "react-router-dom";
-import {bindActionCreators} from "redux";
-import {pushBrowserNotification} from "../../helpers/pushHelper";
-import {replaceChar, stripHtml} from "../../helpers/stringFormatter";
-import {urlify} from "../../helpers/urlContentHelper";
+import React, { Component } from "react";
+import { isSafari } from "react-device-detect";
+import { connect } from "react-redux";
+import { withRouter } from "react-router-dom";
+import { bindActionCreators } from "redux";
+import { pushBrowserNotification } from "../../helpers/pushHelper";
+import { replaceChar, stripHtml } from "../../helpers/stringFormatter";
+import { urlify } from "../../helpers/urlContentHelper";
 import {
   addToChannels,
   getChannel,
@@ -65,6 +65,7 @@ import {
   generateUnfurlReducer,
   getConnectedSlugs,
   incomingDoneToDo,
+  incomingFavouriteItem,
   incomingRemoveToDo,
   incomingToDo,
   incomingUpdateToDo,
@@ -80,6 +81,7 @@ import {
   incomingDeletedPost,
   incomingPost,
   incomingPostClap,
+  incomingPostMarkDone,
   incomingPostViewer,
   incomingUpdatedPost
 } from "../../redux/actions/postActions";
@@ -105,7 +107,7 @@ import {
   joinWorkspaceReducer,
   updateWorkspaceCounter
 } from "../../redux/actions/workspaceActions";
-import {incomingUpdateCompanyName} from "../../redux/actions/settingsActions";
+import { incomingUpdateCompanyName } from "../../redux/actions/settingsActions";
 
 class SocketListeners extends Component {
   constructor(props) {
@@ -255,6 +257,18 @@ class SocketListeners extends Component {
         console.log(e, "files bulk");
         this.props.incomingFiles(e);
       })
+      .listen(".favourite-notification", (e) => {
+        console.log(e, "favourite-notification");
+        switch (e.SOCKET_TYPE) {
+          case "FAVOURITE_ITEM": {
+            this.props.incomingFavouriteItem(e);
+            break;
+          }
+          default: {
+            return null;
+          }
+        }
+      })
       .listen(".post-notification", (e) => {
         console.log(e, "post-notif");
         switch (e.SOCKET_TYPE) {
@@ -306,7 +320,10 @@ class SocketListeners extends Component {
             this.props.incomingPostClap(e);
             break;
           }
-
+          case "MARKED_DONE": {
+            this.props.incomingPostMarkDone(e);
+            break;
+          }
           default:
             return null;
         }
@@ -1169,6 +1186,8 @@ function mapDispatchToProps(dispatch) {
     incomingUpdateToDo: bindActionCreators(incomingUpdateToDo, dispatch),
     incomingDoneToDo: bindActionCreators(incomingDoneToDo, dispatch),
     incomingRemoveToDo: bindActionCreators(incomingRemoveToDo, dispatch),
+    incomingPostMarkDone: bindActionCreators(incomingPostMarkDone, dispatch),
+    incomingFavouriteItem: bindActionCreators(incomingFavouriteItem, dispatch),
   };
 }
 

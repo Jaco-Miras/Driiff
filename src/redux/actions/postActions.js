@@ -1,4 +1,4 @@
-import dispatchActionToReducer, {SimpleDispatchActionToReducer} from "../actionDispatcher";
+import dispatchActionToReducer, { SimpleDispatchActionToReducer } from "../actionDispatcher";
 import {
   deleteComment as deleteCommentService,
   deletePost as deletePostService,
@@ -111,8 +111,8 @@ export function starPostReducer(payload, callback) {
   return SimpleDispatchActionToReducer("STAR_POST_REDUCER", payload, callback);
 }
 
-export function markPostReducer(payload, callback) {
-  return SimpleDispatchActionToReducer("MARK_POST_REDUCER", payload, callback);
+export function incomingPostMarkDone(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_POST_MARK_DONE", payload, callback);
 }
 
 export function putPost(payload, callback) {
