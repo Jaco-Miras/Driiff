@@ -118,7 +118,7 @@ const CompanyPostItemPanel = (props) => {
             <div onClick={() => remind(post)}>{dictionary.remindMeAboutThis}</div>
           }
           {post.author && post.author.id === user.id &&
-          <div onClick={() => showModal("edit", post)}>{dictionary.editPost}</div>}
+          <div onClick={() => showModal("edit_company", post)}>{dictionary.editPost}</div>}
           {
             post.is_unread === 0 ?
               <div onClick={() => markAsUnread(post, true)}>{dictionary.markAsUnread}</div> :
