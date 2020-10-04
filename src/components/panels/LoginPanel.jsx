@@ -176,11 +176,11 @@ const LoginPanel = (props) => {
         <>
           <FormInput
             onChange={handleInputChange} name="email" isValid={formResponse.valid.email}
-            feedback={formResponse.message.email} placeholder="Email" innerRef={refs.email} type="email"
+            feedback={formResponse.message.email} placeholder={dictionary.email} innerRef={refs.email} type="email"
             autoFocus/>
           <PasswordInput
             ref={refs.password} onChange={handleInputChange} isValid={formResponse.valid.password}
-            feedback={formResponse.message.password}/>
+            feedback={formResponse.message.password} placeholder={dictionary.password}/>
           <div className="form-group d-flex justify-content-between">
             <CheckBox name="remember_me" checked={form.remember_me} onClick={toggleCheck}>
               {dictionary.rememberMe}
