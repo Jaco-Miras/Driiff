@@ -5,6 +5,7 @@ import Tooltip from "react-tooltip-lite";
 import { CommonPicker, SvgIconFeather } from "../../../common";
 import { CommentQuote } from "../../../list/post/item";
 import { CompanyPostInput } from "../../../forms";
+import { useTranslation } from "../../../hooks";
 
 const Wrapper = styled.div`
   position: relative;
@@ -211,6 +212,12 @@ const CompanyPostDetailFooter = (props) => {
     });
   };
 
+  const { _t } = useTranslation();
+
+  const dictionary = {
+    noReplyAllowed:  _t("FOOTER.NO_REPLY_ALLOWED", "No reply allowed"),
+    attachFiles: _t("TOOLTIP.ATTACH_FILES", "Attach files"),
+  };
 
   return (
     <Wrapper className={`company-post-detail-footer card-body ${className}`}>
@@ -224,7 +231,7 @@ const CompanyPostDetailFooter = (props) => {
           <Dflex className="d-flex align-items-end">
             {post.is_read_only ? (
               <NoReply className="d-flex align-items-center">
-                <div className="alert alert-warning">No reply allowed</div>
+                <div className="alert alert-warning">{dictionary.noReplyAllowed}</div>
               </NoReply>
             ) : (
               <React.Fragment>
@@ -249,7 +256,7 @@ const CompanyPostDetailFooter = (props) => {
                               icon="smile"/>
                   <IconButton onClick={handleSend} icon="send"/>
                 </ChatInputContainer>
-                <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Attach files">
+                <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={dictionary.attachFiles}>
                   <IconButton onClick={() => onShowFileDialog(parentId)} icon="paperclip"/>
                 </Tooltip>
               </React.Fragment>
