@@ -1011,7 +1011,7 @@ export default (state = INITIAL_STATE, action) => {
         workspacePosts: {
           ...state.workspacePosts,
           ...Object.keys(state.workspacePosts)
-            .filter(wsId => state.workspacePosts[wsId].posts.hasOwnProperty(action.data.post_id))
+            .filter(wsId => state.workspacePosts[wsId] && state.workspacePosts[wsId].posts.hasOwnProperty(action.data.post_id))
             .map(wsId => {
               return {
                 [wsId]: {
