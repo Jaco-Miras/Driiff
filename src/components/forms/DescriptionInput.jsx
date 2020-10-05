@@ -1,9 +1,9 @@
-import React, {useRef, useState} from "react";
-import {InputGroup, Label} from "reactstrap";
+import React, { useRef, useState } from "react";
+import { InputGroup, Label } from "reactstrap";
 import styled from "styled-components";
-import {BodyMention, CommonPicker, SvgIconFeather} from "../common";
-import {useQuillModules, useTranslation} from "../hooks";
-import {InputFeedback} from "./index";
+import { BodyMention, CommonPicker, SvgIconFeather } from "../common";
+import { useQuillModules, useTranslation } from "../hooks";
+import { InputFeedback } from "./index";
 import QuillEditor from "./QuillEditor";
 
 const WrapperDiv = styled(InputGroup)`
@@ -132,7 +132,6 @@ const StyledQuillEditor = styled(QuillEditor)`
 
 const IconButton = styled(SvgIconFeather)`
   cursor: pointer;
-  cursor: hand;
   border: 1px solid #afb8bd;
   height: 1.5rem;
   margin: -1px 8px;
@@ -172,9 +171,11 @@ const Buttons = styled.div`
 `;
 
 const PickerContainer = styled(CommonPicker)`
-  right: 15px;
-  .block {
-    text-align: end;
+  left: 15px;
+  bottom: 65px;
+  
+  .common-picker-btn {
+    text-align: left;
   }
 `;
 
