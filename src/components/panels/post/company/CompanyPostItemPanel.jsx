@@ -100,7 +100,7 @@ const CompanyPostItemPanel = (props) => {
         <div className="d-flex align-items-center justify-content-between">
           <div
             className={`app-list-title text-truncate
-                            ${post.is_updated === false || post.unread_count !== 0 || post.is_unread === 1 ? "text-primary has-unread" : ""}
+                            ${post.unread_count > 0 || post.is_unread === 1 ? "text-primary has-unread" : ""}
                             ${post.is_mark_done ? "text-success" : ""}`}
           >
             <span>{post.title}</span>

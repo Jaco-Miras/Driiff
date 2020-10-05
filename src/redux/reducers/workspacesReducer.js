@@ -1130,6 +1130,7 @@ export default (state = INITIAL_STATE, action) => {
                         [...state.workspacePosts[wsId].posts[action.data.post_id].view_user_ids, action.data.user_id] :
                         state.workspacePosts[wsId].posts[action.data.post_id].view_user_ids.filter(id => id !== action.data.user_id),
                       is_unread: action.data.unread,
+                      unread_count: action.data.unread === 0 ? 0 : state.workspacePosts[wsId].posts[action.data.post_id].unread_count
                     }
                   }
                 }
