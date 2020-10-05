@@ -2,7 +2,7 @@
 import { convertArrayToObject } from "../../helpers/arrayHelper";
 
 const INITIAL_STATE = {
-  updater: false,
+  flipper: true,
   user: {},
   workspaces: {},
   activeTopic: null,
@@ -82,7 +82,7 @@ export default (state = INITIAL_STATE, action) => {
       });
       return {
         ...state,
-        updater: !state.updater,
+        flipper: !state.flipper,
         workspaces: workspaces
       };
     }
@@ -685,6 +685,7 @@ export default (state = INITIAL_STATE, action) => {
     case "INCOMING_POST_MARK_DONE": {
       return {
         ...state,
+        flipper: !state.flipper,
         workspacePosts: {
           ...state.workspacePosts,
           ...Object.keys(state.workspacePosts)
@@ -1028,7 +1029,8 @@ export default (state = INITIAL_STATE, action) => {
             })
             .reduce((obj, workspace) => {
               return { ...obj, ...workspace };
-            }, {})
+            }, {}),
+          flipper: !state.workspacePosts.flipper,
         },
       };
     }

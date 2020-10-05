@@ -8,7 +8,7 @@ const usePosts = () => {
   const actions = usePostActions();
   const dispatch = useDispatch();
   const params = useParams();
-  const wsPosts = useSelector((state) => state.workspaces.workspacePosts);
+  const { flipper, workspacePosts: wsPosts } = useSelector((state) => state.workspaces);
   const recentPosts = useSelector((state) => state.posts.recentPosts);
   const user = useSelector((state) => state.session.user);
   const [fetchingPost, setFetchingPost] = useState(false);
@@ -201,6 +201,7 @@ const usePosts = () => {
         });
       }
       return {
+        flipper,
         actions,
         posts: filteredPosts,
         filter: null,
@@ -216,6 +217,7 @@ const usePosts = () => {
     }
   } else {
     return {
+      flipper,
       actions,
       posts: null,
       filter: null,

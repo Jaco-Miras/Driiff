@@ -1,7 +1,7 @@
-import {useEffect, useState} from "react";
-import {usePostActions} from "./index";
-import {useSelector} from "react-redux";
-import {useParams} from "react-router-dom";
+import { useEffect, useState } from "react";
+import { usePostActions } from "./index";
+import { useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
 
 let init = false;
 
@@ -10,7 +10,7 @@ const useCompanyPosts = () => {
   const params = useParams();
   const actions = usePostActions();
   const user = useSelector((state) => state.session.user);
-  const {limit, next_skip, has_more, posts, filter, tag, count, sort, search, searchResults} = useSelector((state) => state.posts.companyPosts);
+  const { flipper, limit, next_skip, has_more, posts, filter, tag, count, sort, search, searchResults } = useSelector((state) => state.posts.companyPosts);
   const [post, setPost] = useState(null);
 
   const fetchMore = (callback) => {
@@ -120,6 +120,7 @@ const useCompanyPosts = () => {
   };
 
   return {
+    flipper,
     actions,
     fetchMore,
     posts: filteredPosts,

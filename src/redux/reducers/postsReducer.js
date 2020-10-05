@@ -3,6 +3,7 @@ import { convertArrayToObject } from "../../helpers/arrayHelper";
 const INITIAL_STATE = {
   user: null,
   companyPosts: {
+    flipper: true,
     limit: 25,
     prev_skip: 0,
     next_skip: 0,
@@ -362,6 +363,7 @@ export default (state = INITIAL_STATE, action) => {
         ...(state.companyPosts.posts.hasOwnProperty(action.data.post_id) && {
           companyPosts: {
             ...state.companyPosts,
+            flipper: !state.flipper,
             posts: {
               ...state.companyPosts.posts,
               [action.data.post_id]: {
