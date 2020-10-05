@@ -64,8 +64,8 @@ const useGetWorkspaceAndUserOptions = (selectedWorkspaces, workspace = null) => 
       });
 
       if (selectedWorkspaces.length) {
-        let userOptionIds = userOptions.map(u => u.id);
-        let newUserOptions = userOptions;
+        let userOptionIds = [];
+        let newUserOptions = [];
         selectedWorkspaces.forEach(ws => {
           if (ws.members) {
             ws.members.filter(m => !userOptionIds.includes(m.id)).forEach(u => {
@@ -98,6 +98,7 @@ const useGetWorkspaceAndUserOptions = (selectedWorkspaces, workspace = null) => 
           setOptions(workspaceOptions);
         }
       } else {
+        setUserOptions([]);
         setOptions(workspaceOptions);
       }
     } else {

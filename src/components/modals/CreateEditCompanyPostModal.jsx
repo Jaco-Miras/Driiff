@@ -94,6 +94,7 @@ const WrapperDiv = styled(InputGroup)`
       }
     }
   }
+  
   .user-popup {
     cursor: pointer;
     margin: 0 0.25rem;  
@@ -113,7 +114,13 @@ const WrapperDiv = styled(InputGroup)`
     border-radius: 6px;
     opacity: 0;
     max-height: 0;
-    overflow: auto;    
+    overflow: auto;
+    overflow-x: hidden;
+    width: 230px;
+    
+    .dark & {
+      background: #191c20;
+    }
     
     &.active,
      &:hover {
@@ -122,15 +129,16 @@ const WrapperDiv = styled(InputGroup)`
       max-height: 255px;    
     }
     
-    > span {
+    img {
+      min-width: 28px;    
+    }
+    
+    .item-user-name {
       width: 100%;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      
-      > span {
-        display: flex;
-      }    
+      display: block;    
     }
   }
   .workspace-list {
@@ -144,6 +152,11 @@ const WrapperDiv = styled(InputGroup)`
     opacity: 0;
     max-height: 0;
     overflow: auto;
+    width: 230px;    
+    
+    .dark & {
+      background: #191c20;
+    }
     
     &.active,
      &:hover {
@@ -152,7 +165,8 @@ const WrapperDiv = styled(InputGroup)`
       max-height: 255px;    
     }
     
-    > span {
+    .item-workspace-name {
+      display: block;
       width: 100%;
       white-space: nowrap;
       overflow: hidden;
@@ -1123,27 +1137,30 @@ const CreateEditCompanyPostModal = (props) => {
                 form.selectedPersonal.value === true ?
                   form.selectedUsers.map(u => {
                     return <span key={u.id}>
-                    <span title={u.email}
-                          className="d-flex justify-content-start align-items-center pt-2 pb-2">
+                    <span
+                      title={u.email}
+                      className="user-list-item d-flex justify-content-start align-items-center pt-2 pb-2">
                       <Avatar
                         className="mr-2"
                         key={u.id}
                         name={u.name}
                         imageLink={u.profile_image_link}
-                        id={u.id}/> {u.name}</span>
+                        id={u.id}/><span className="item-user-name">{u.name}</span></span>
                   </span>;
                   })
                   :
                   userOptions.map(u => {
                     return <span key={u.id}>
-                    <span title={u.email}
-                          className="d-flex justify-content-start align-items-center pt-2 pb-2">
+                    <span
+                      title={u.email}
+                      className="user-list-item d-flex justify-content-start align-items-center pt-2 pb-2">
                       <Avatar
                         className="mr-2"
                         key={u.id}
                         name={u.name}
                         imageLink={u.profile_image_link}
-                        id={u.id}/> {u.name}</span>
+                        id={u.id}/><span className="item-user-name">{u.name}</span>
+                    </span>
                   </span>;
                   })
               }
@@ -1152,7 +1169,7 @@ const CreateEditCompanyPostModal = (props) => {
               {
                 form.selectedWorkspaces.map(w => {
                   return <span className="d-flex justify-content-start align-items-center pt-2 pb-2" key={w.id}>
-                    {w.name}
+                    <span className="item-workspace-name">{w.name}</span>
                   </span>;
                 })
               }
