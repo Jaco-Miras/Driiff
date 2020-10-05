@@ -128,9 +128,9 @@ const RegisterPanel = (props) => {
       <FormInput onChange={handleInputChange} name="last_name" isValid={formResponse.valid.last_name}
                  feedback={formResponse.message.last_name} placeholder={dictionary.lastName}/>
       <FormInput onChange={handleInputChange} name="email" isValid={formResponse.valid.email}
-                 feedback={formResponse.message.email} placeholder="Email" type="email"/>
+                 feedback={formResponse.message.email} placeholder={dictionary.email} type="email"/>
       <PasswordInput onChange={handleInputChange} isValid={formResponse.valid.password}
-                     feedback={formResponse.message.password}/>
+                     feedback={formResponse.message.password} placeholder={dictionary.password}/>
       <button className="btn btn-primary btn-block" onClick={handleRegister}>
         {loading && <span className="spinner-border spinner-border-sm mr-2" role="status"
                           aria-hidden="true"/>} {dictionary.register}

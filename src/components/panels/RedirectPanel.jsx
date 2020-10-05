@@ -3,6 +3,7 @@ import {withRouter} from "react-router-dom";
 import styled from "styled-components";
 import {SvgIcon} from "../common";
 import {ProgressBar} from "./common";
+import {useTranslation} from "../hooks";
 
 const Wrapper = styled.div``;
 
@@ -10,6 +11,13 @@ const RedirectPanel = (props) => {
   const {redirectTo} = props;
   const [redirectTime, setRedirectTime] = useState(5);
   const [progressTime, setProgessTime] = useState(0);
+
+  const {_t} = useTranslation();
+  const dictionary = {
+    invalidDriffName: _t("REDIRECT.INVALID_DRIFF_NAME", "Invalid driff name detected"),
+    redirectedTo: _t("REDIRECT.REDIRECT_TO", "You will automatically get redirected to"),
+    in: _t("REDIRECT.IN", "in")
+  };
 
   useEffect(() => {
     if (redirectTime === 0) {
@@ -34,11 +42,10 @@ const RedirectPanel = (props) => {
         <SvgIcon icon={"driff-logo"} width="110" height="80"/>
       </div>
 
-      <h5>Invalid driff name detected.</h5>
+      <h5>{dictionary.invalidDriffName}</h5>
       <p>
-        You will automatically get
-        <br/>
-        redirected to <a href={redirectTo()}>{redirectTo()}</a> in {redirectTime}s.
+        {dictionary.redirectedTo}
+        <br/><a href={redirectTo()}>{redirectTo()}</a> {dictionary.in} {redirectTime}s.
       </p>
       <ProgressBar amount={progressTime} limit={100}/>
     </Wrapper>
