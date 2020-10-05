@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import {NavLink} from "../../common";
+import { useTranslation } from "../../hooks";
 
 const Wrapper = styled.div``;
 
@@ -72,35 +73,45 @@ const WorkspacePageHeaderPanel = (props) => {
     pathname = pathname.replace(`/workspace/${props.match.params.page}`, "");
   }
 
+  const {_t} = useTranslation();
+
+  const dictionary = {
+    pageTitleDashboard: _t("PAGE_TITLE.DASHBOARD", "Dashboard"),
+    pageTitlePosts: _t("PAGE_TITLE.POSTS", "Posts"),
+    pageTitleChat: _t("PAGE_TITLE.CHAT", "Chat"),
+    pageTitleFiles: _t("PAGE_TITLE.FILES", "Files"),
+    pageTitlePeople: _t("PAGE_TITLE.PEOPLE", "People"),
+  };
+
   return (
     <>
       <Wrapper className={`${className}`}>
         <Navbar className="navbar-nav">
           <li className="nav-item">
             <MainNavLink isSub={true} to={`/workspace/dashboard${pathname}`}>
-              Dashboard
+              {dictionary.pageTitleDashboard}
             </MainNavLink>
           </li>
           <li className="nav-item">
             <MainNavLink isSub={true} to={`/workspace/chat${pathname}`}>
-              Chat
+              {dictionary.pageTitleChat}
               {workspace !== null && workspace.unread_chats > 0 && <div className="ml-2 badge badge-pill badge-danger">{workspace.unread_chats}</div>}
             </MainNavLink>
           </li>
           <li className="nav-item">
             <MainNavLink isSub={true} to={`/workspace/posts${pathname}`}>
-              Posts
+              {dictionary.pageTitlePosts}
               {workspace !== null && workspace.unread_posts > 0 && <div className="ml-2 badge badge-pill badge-danger">{workspace.unread_posts}</div>}
             </MainNavLink>
           </li>
           <li className="nav-item">
             <MainNavLink isSub={true} to={`/workspace/files${pathname}`}>
-              Files
+              {dictionary.pageTitleFiles}
             </MainNavLink>
           </li>
           <li className="nav-item">
             <MainNavLink isSub={true} to={`/workspace/people${pathname}`}>
-              People
+              {dictionary.pageTitlePeople}
             </MainNavLink>
           </li>
         </Navbar>
