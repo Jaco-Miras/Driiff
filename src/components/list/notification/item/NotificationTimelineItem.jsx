@@ -2,7 +2,7 @@ import React, {useCallback} from "react";
 import styled from "styled-components";
 import {replaceChar, stripHtml} from "../../../../helpers/stringFormatter";
 import {Avatar} from "../../../common";
-import {useTimeFormat} from "../../../hooks";
+import {useTimeFormat, useTranslation} from "../../../hooks";
 
 const Wrapper = styled.div`
   .avatar {
@@ -98,6 +98,14 @@ export const NotificationTimelineItem = (props) => {
     },
     [notification.author]
   );
+  
+  const { _t } = useTranslation();
+
+  const dictionary = {
+    notificationNewPost: _t("NOTIFICATION.NEW_POST", `shared a <span class="${notification.is_read ? "text-link" : "text-primary font-weight-bold text-link"}">post</span>`),
+    notificationComment: _t("NOTIFICATION.COMMENT", `made a <span class="${notification.is_read ? "text-link" : "text-primary font-weight-bold text-link"}">comment</span> in <span class="text-link">${notification.data.title}`),
+    notificationMention: _t("NOTIFICATION.MENTION", `<span class="${notification.is_read ? "text-link" : "text-primary font-weight-bold text-link"}">mentioned</span> you in`)
+  };
 
   const renderTitle = useCallback(() => {
     switch (notification.type) {
@@ -105,9 +113,9 @@ export const NotificationTimelineItem = (props) => {
         return (
           <>
             <span onClick={handleAuthorNameClick} className="author-name text-link">
-              {notification.author.name}
-            </span>{" "}
-            shared a <span className={notification.is_read ? "text-link" : "text-primary font-weight-bold text-link"}>post</span>
+              {notification.author.name}{" "}
+            </span>
+            <span dangerouslySetInnerHTML={{__html: dictionary.notificationNewPost}}/>
           </>
         );
       }
@@ -115,9 +123,9 @@ export const NotificationTimelineItem = (props) => {
         return (
           <>
             <span onClick={handleAuthorNameClick} className="author-name text-link">
-              {notification.author.name}
-            </span>{" "}
-            made a <span className={notification.is_read ? "text-link" : "text-primary font-weight-bold text-link"}>comment</span> in <span className="text-link">{notification.data.title}</span>
+              {notification.author.name}{" "}
+            </span>
+            <span dangerouslySetInnerHTML={{__html: dictionary.notificationComment}}/>
           </>
         );
       }
@@ -127,9 +135,9 @@ export const NotificationTimelineItem = (props) => {
             <span onClick={handleAuthorNameClick} className="author-name text-link">
               {notification.author.name}
             </span>{" "}
-            <span className={notification.is_read ? "text-link" : "text-primary font-weight-bold text-link"}>mentioned</span> you in{" "}
+            <span dangerouslySetInnerHTML={{__html: dictionary.notificationMention}}/>
             <span className="text-link" onClick={handleRedirect}>
-              {notification.data.title}
+              {" "}{notification.data.title}
             </span>
           </>
         );
