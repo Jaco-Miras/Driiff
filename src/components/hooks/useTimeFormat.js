@@ -31,13 +31,13 @@ const useTimeFormat = () => {
     });
   };
 
-  const channelPreviewDate = (timestamp, dateFormat = `${date_format}<br/>${time_format}`) => {
+  const channelPreviewDate = (timestamp, dateFormat = `${date_format}`) => {
     const utc = moment(moment(timestamp, "X").toDate()).tz(timezone).locale(language);
     return utc.calendar(null, {
       sameDay: `${time_format}`,
-      lastDay: `[Yesterday][<br/+>]${time_format}`,
-      nextDay: `[Tomorrow][<br/>]${time_format}`,
-      lastWeek: `dddd[<br/>]${time_format}`,
+      lastDay: `[Yesterday]`,
+      nextDay: `[Tomorrow]`,
+      lastWeek: `dddd`,
       sameElse: dateFormat,
     });
   };
