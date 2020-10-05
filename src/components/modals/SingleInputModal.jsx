@@ -63,11 +63,11 @@ const SingleInputModal = (props) => {
         </WrapperDiv>
       </ModalBody>
       <ModalFooter>
-        <button disabled={inputValue.trim() === ""} type="button" className="btn btn-primary" onClick={handleConfirm}>
-          {labelPrimaryAction}
-        </button>
         <button type="button" className="btn btn-outline-secondary" data-dismiss="modal" onClick={handleClose}>
           {labelClose}
+        </button>
+        <button disabled={inputValue.trim() === ""} type="button" className="btn btn-primary" onClick={handleConfirm}>
+          {labelPrimaryAction}
         </button>
       </ModalFooter>
     </Wrapper>
