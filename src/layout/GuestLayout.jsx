@@ -70,6 +70,7 @@ const GuestLayout = (props) => {
     createAccount: _t("LOGIN.CREATE_ACCOUNT", "Create account"),
     authentication: _t("LOGIN.AUTHENTICATION", "Authentication"),
     email: _t("LOGIN.EMAIL", "Email"),
+    invitedUsers: _t("DRIFF.INVITED_USERS", "Invited users"),
   };
 
   const [title, setTitle] = useState(dictionary.signIn);
