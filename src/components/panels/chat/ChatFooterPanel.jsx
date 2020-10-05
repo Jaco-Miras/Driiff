@@ -145,7 +145,7 @@ const PickerContainer = styled(CommonPicker)`
 
 const ChatFooterPanel = (props) => {
   const { className = "", onShowFileDialog, dropAction } = props;
-  const { localizeChatTimestamp } = useTimeFormat();
+  const { localizeChatDate } = useTimeFormat();
 
   const dispatch = useDispatch();
   const toaster = useToaster();
@@ -300,7 +300,7 @@ const ChatFooterPanel = (props) => {
         <Dflex className="channel-viewing">
           <div className="channel-name">You are viewing #{selectedChannel.title}</div>
           <div className="channel-create">
-            Created by {selectedChannel.creator.name} on {localizeChatTimestamp(selectedChannel.created_at.timestamp)}
+            Created by {selectedChannel.creator.name} on {localizeChatDate(selectedChannel.created_at.timestamp)}
           </div>
           <div className="channel-action">
             <button onClick={handleJoinWorkspace}>Join workspace chat</button>

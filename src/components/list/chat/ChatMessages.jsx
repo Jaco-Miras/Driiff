@@ -130,12 +130,10 @@ const ChatBubbleContainer = styled.div`
     }`}
 `;
 const ChatActionsContainer = styled.div`
-  display: flex;
   flex-flow: ${(props) => (props.isAuthor ? "row-reverse" : "row")};
   flex-wrap: wrap;
   ${(props) => (props.isAuthor ? "margin-right: 10px" : "margin-left: 10px")};
   min-width: 150px;
-  height: 100%;
   color: #a7abc3;
   background: #ffffff;
   position: absolute;
@@ -148,7 +146,6 @@ const ChatActionsContainer = styled.div`
   transition: opacity 0.3s ease;
 `;
 const SystemChatActionsContainer = styled.div`
-  display: flex;
   flex-flow: ${(props) => (props.isAuthor ? "row-reverse" : "row")};
   flex-wrap: wrap;
   ${(props) => (props.isAuthor ? "margin-right: 10px" : "margin-left: 10px")};
@@ -690,7 +687,8 @@ class ChatMessages extends React.PureComponent {
               ? groupedMessages.map((gm, i) => {
                   return (
                     <div key={gm.key}>
-                      <TimestampDiv className="timestamp-container">{<span>{this.props.timeFormat.localizeChatTimestamp(gm.replies[0].created_at.timestamp, "ddd, MMM DD, YYYY")}</span>}</TimestampDiv>
+                      <TimestampDiv className="timestamp-container">{
+                        <span>{this.props.timeFormat.localizeChatDate(gm.replies[0].created_at.timestamp, "ddd, MMM DD, YYYY")}</span>}</TimestampDiv>
 
                       {gm.replies
                         .sort((a, b) => a.created_at.timestamp - b.created_at.timestamp)

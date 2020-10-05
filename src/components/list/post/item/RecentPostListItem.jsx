@@ -5,7 +5,6 @@ import { useTimeFormat } from "../../../hooks";
 
 const Wrapper = styled.li`
   cursor: pointer;
-  cursor: hand;
 
   .done {
     text-decoration: line-through;
@@ -13,15 +12,12 @@ const Wrapper = styled.li`
   }
   .avatar {
     cursor: pointer;
-    cursor: hand;
   }
   .user-name {
     cursor: pointer;
-    cursor: hand;
   }
   .feather-message-circle {
     cursor: pointer;
-    cursor: hand;
   }
   .recent-post-timestamp {
     @media only screen and (max-width: 480px) {
@@ -33,7 +29,7 @@ const Wrapper = styled.li`
 const RecentPostListItem = (props) => {
   const { className = "", post, postActions, onOpenPost, disableOptions } = props;
 
-  const { localizeChatTimestamp } = useTimeFormat();
+  const { localizeChatDate } = useTimeFormat();
 
   const toggleCheck = (e) => {
     e.stopPropagation();
@@ -53,7 +49,8 @@ const RecentPostListItem = (props) => {
       <div className="flex-grow-1 min-width-0" onClick={handleOpenPost}>
         <div className="mb-1 d-flex align-items-center justify-content-between">
           <div className={`app-list-title ${post.is_mark_done ? "done" : ""} text-truncate`}>{post.title}</div>
-          <div className={`pl-3 d-flex recent-post-timestamp align-items-center ${post.is_mark_done ? "done" : ""}`}>{localizeChatTimestamp(post.created_at.timestamp)}</div>
+          <div
+            className={`pl-3 d-flex recent-post-timestamp align-items-center ${post.is_mark_done ? "done" : ""}`}>{localizeChatDate(post.created_at.timestamp)}</div>
         </div>
       </div>
     </Wrapper>
