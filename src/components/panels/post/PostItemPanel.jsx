@@ -58,8 +58,11 @@ const Icon = styled(SvgIconFeather)`
 `;
 
 const PostItemPanel = (props) => {
-  const user = useSelector((state) => state.session.user);
+
   const { className = "", post, postActions, dictionary, disableOptions } = props;
+
+  const user = useSelector((state) => state.session.user);
+  const flipper = useSelector((state) => state.workspaces.flipper);
 
   const { starPost, markPost, openPost, archivePost, markAsRead, markAsUnread, sharePost, followPost, remind, showModal } = postActions;
 
@@ -84,12 +87,14 @@ const PostItemPanel = (props) => {
   };
 
   return (
-    <Wrapper className={`list-group-item post-item-panel ${className}`} onClick={() => openPost(post)}>
+    <Wrapper data-toggle={flipper ? "1" : "0"} className={`list-group-item post-item-panel ${className}`}
+             onClick={() => openPost(post)}>
       <div className="custom-control custom-checkbox custom-checkbox-success">
-        <CheckBox name="test" checked={post.is_mark_done} onClick={handleMarkDone} disabled={disableOptions} />
+        <CheckBox name="test" checked={post.is_mark_done} onClick={handleMarkDone} disabled={disableOptions}/>
       </div>
       <div>
-        <Icon className="mr-2" icon="star" onClick={handleStarPost} stroke={post.is_favourite ? "#ffc107" : "currentcolor"} fill={post.is_favourite ? "#ffc107" : "none"} />
+        <Icon className="mr-2" icon="star" onClick={handleStarPost}
+              stroke={post.is_favourite ? "#ffc107" : "currentcolor"} fill={post.is_favourite ? "#ffc107" : "none"}/>
       </div>
       <div className="flex-grow-1 min-width-0">
         <div className="d-flex align-items-center justify-content-between">
