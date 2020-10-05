@@ -114,6 +114,7 @@ const WorkspacePostsPanel = (props) => {
     searchResults: _t("POST.SEARCH_RESULTS", "Search Results:"),
     searchNoResult: _t("POST.NO_SEARCH_RESULT", "No result found:"),
     private: _t("POST.PRIVATE", "Private"),
+    by: _t("POST.BY", "by")
   };
   let disableOptions = false;
   if (workspace && workspace.active === 0) disableOptions = true;

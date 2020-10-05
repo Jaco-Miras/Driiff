@@ -250,6 +250,12 @@ const PostDetailFooter = (props) => {
     unarchiveWorkspace: _t("HEADER.UNARCHIVE_WORKSPACE", "Unarchive workspace"),
     cancel: _t("BUTTON.CANCEL", "Cancel"),
     unarchiveBodyText: _t("TEXT.UNARCHIVE_CONFIRMATION", "Are you sure you want to unarchive this workspace?"),
+    workspaceIsUnarchived: _t("TOASTER.WORKSPACE_IS_UNARCHIVED", "workpace is unarchived"),
+    thisIsAnArchivedWorkspace: _t("FOOTER.THIS_IS_AN_ARCHIVED_WORKSPACE", "This is an archived workpace"),
+    noReplyAllowed:  _t("FOOTER.NO_REPLY_ALLOWED", "No reply allowed"),
+    attachFiles: _t("TOOLTIP.ATTACH_FILES", "Attach files"),
+    youAreViewing: _t("FOOTER.YOU_ARE_VIEWING", "You are viewing"),
+    joinWorkspace: _t("BUTTON.JOIN_WORKSPACE", "Join workspace"),
   };
 
   const handleUnarchive = () => {
@@ -264,7 +270,7 @@ const PostDetailFooter = (props) => {
     dispatch(putChannel(payload));
     toaster.success(
       <span>
-          <b>{workspace.name} workspace is unarchived.</b>
+          <b>{workspace.name} {dictionary.workspaceIsUnarchived}.</b>
         </span>
     );
   };
@@ -298,8 +304,8 @@ const PostDetailFooter = (props) => {
         disableOptions &&
         <ArchivedDiv>
           <Icon icon="archive"/>
-          <h4>This is an archived workspace</h4>
-          <button className="btn btn-primary" onClick={handleShowUnarchiveConfirmation}>Un-archive workspace</button>
+          <h4>{dictionary.thisIsAnArchivedWorkspace}</h4>
+          <button className="btn btn-primary" onClick={handleShowUnarchiveConfirmation}>{dictionary.unarchiveWorkspace}</button>
         </ArchivedDiv>
       }
       {
@@ -312,7 +318,7 @@ const PostDetailFooter = (props) => {
           <Dflex className="d-flex align-items-end">
             {post.is_read_only ? (
               <NoReply className="d-flex align-items-center">
-                <div className="alert alert-warning">No reply allowed</div>
+                <div className="alert alert-warning">{dictionary.noReplyAllowed}</div>
               </NoReply>
             ) : (
               <React.Fragment>
@@ -338,7 +344,7 @@ const PostDetailFooter = (props) => {
                   <IconButton onClick={handleSend} icon="send"/>
                 </ChatInputContainer>
 
-                <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Attach files">
+                <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={dictionary.attachFiles}>
                   <IconButton onClick={() => onShowFileDialog(parentId)} icon="paperclip"/>
                 </Tooltip>
               </React.Fragment>
@@ -354,9 +360,9 @@ const PostDetailFooter = (props) => {
       )}
       {isMember === false && workspace !== null && !disableOptions && (
         <Dflex className="channel-viewing">
-          <div className="channel-name">You are viewing #{workspace.name}</div>
+          <div className="channel-name">{dictionary.youAreViewing} #{workspace.name}</div>
           <div className="channel-action">
-            <button onClick={handleJoinWorkspace}>Join workspace</button>
+            <button onClick={handleJoinWorkspace}>{dictionary.joinWorkspace}</button>
           </div>
         </Dflex>
       )}
