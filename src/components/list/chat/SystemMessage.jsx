@@ -20,15 +20,15 @@ const SystemMessageContainer = styled.span`
       left: -14px;
       top: -7px;
       bottom: 0;
-      width: 3px;
+      width: 6px;
       height: calc(100% - 12px);
-      background: #7a1b8b;
+      background: #ffa341;
       content: "";
       border-radius: 6px 0 0 6px;
     }
     
     .card-body {
-      margin-top: 1rem;
+      margin-top: 0.5rem;
       margin-bottom: 0.5rem;
       padding: 1rem;
     }
