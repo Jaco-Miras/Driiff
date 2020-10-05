@@ -165,7 +165,7 @@ const DashboardAboutWorkspace = (props) => {
               />
               {showMore !== null && (
                 <div onClick={toggleShowMore} className="btn-toggle-show cursor-pointer mt-2">
-                  {showMore ? "Show less" : "Show more"}
+                  {showMore ? dictionary.showLess : dictionary.showMore}
                 </div>
               )}
             </DashboardDescriptionContainer>

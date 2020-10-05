@@ -58,7 +58,7 @@ const StyledTooltip = styled(Tooltip)`
 `;
 
 const CompanyPostTimeline = (props) => {
-  const { className = "", data } = props;
+  const { className = "", data, dictionary } = props;
   const history = useHistory();
   const { fromNow, localizeDate } = useTimeFormat();
 
@@ -77,7 +77,7 @@ const CompanyPostTimeline = (props) => {
           <span className="title">
             {data.user.name}{" "}
             <span className="post-title" onClick={handleLinkClick} title={data.title}>
-              shared the post "{data.title}"
+              {dictionary.sharedThePost} "{data.title}"
             </span>
           </span>
           <StyledTooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={`${localizeDate(data.created_at.timestamp)}`}>
@@ -94,7 +94,7 @@ const CompanyPostTimeline = (props) => {
         )}
         {data.files && data.files.length >= 1 && (
           <>
-            File attachments:
+            {dictionary.fileAttachments}:
             <FileAttachments attachedFiles={data.files} />
           </>
         )}

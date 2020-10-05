@@ -29,7 +29,7 @@ const Wrapper = styled.div`
 `;
 
 const AttachFileTimeline = (props) => {
-  const { className = "", data } = props;
+  const { className = "", data, dictionary } = props;
   const { params } = useRouteMatch();
 
   const dispatch = useDispatch();
@@ -57,7 +57,7 @@ const AttachFileTimeline = (props) => {
             <span>
               <span className="font-weight-normal">{data.user.name}</span>{" "}
               <span onClick={handleFilePreview} className="file-summary">
-                attached a file
+                {dictionary.attachedFile}
               </span>
             </span>
             <span className="text-muted font-weight-normal">{fromNow(data.created_at.timestamp)}</span>

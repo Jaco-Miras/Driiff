@@ -28,7 +28,7 @@ const StyledTooltip = styled(Tooltip)`
 `;
 
 const MemberTimeline = (props) => {
-  const {className = "", data} = props;
+  const {className = "", data, dictionary} = props;
   const {fromNow, localizeDate} = useTimeFormat();
 
   const user = useSelector((state) => state.session.user);
@@ -48,7 +48,7 @@ const MemberTimeline = (props) => {
 
   const renderTitle = () => {
     if (message.title !== "") {
-      return `Updated workspace to ${message.title}`;
+      return `${dictionary.updatedWorkspaceTo} ${message.title}`;
     }
     if (message.added_members.length !== 0 || message.removed_members.length) {
     }
@@ -62,15 +62,15 @@ const MemberTimeline = (props) => {
       let author = recipients.filter((r) => r.type_id === message.author.id && message.added_members.includes(r.type_id))[0];
       if (author) {
         if (author.type_id === user.id) {
-          return "You joined.";
+          return `${dictionary.youJoined}.`;
         } else {
-          return `${author.name} has joined`;
+          return `${author.name} ${dictionary.hasJoined}`;
         }
       }
     } else {
       let members = recipients.filter((r) => message.added_members.includes(r.type_id) && r.type_id !== message.author.id).map((r) => r.name);
       if (members.length) {
-        return members.join(", ") + " is added.";
+        return members.join(", ") + ` ${dictionary.isAdded}.`;
       }
     }
   };
@@ -83,15 +83,15 @@ const MemberTimeline = (props) => {
       let author = recipients.filter((r) => r.type_id === message.author.id && message.removed_members.includes(r.type_id))[0];
       if (author) {
         if (author.type_id === user.id) {
-          return "You left.";
+          return `${dictionary.youLeft}.`;
         } else {
-          return `${author.name} has left`;
+          return `${author.name} ${dictionary.hasLeft}`;
         }
       }
     } else {
       let members = recipients.filter((r) => message.removed_members.includes(r.type_id) && r.type_id !== message.author.id).map((r) => r.name);
       if (members.length) {
-        return members.join(", ") + " is removed.";
+        return members.join(", ") + ` ${dictionary.isRemoved}.`;
       }
     }
   };

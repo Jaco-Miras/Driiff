@@ -38,7 +38,24 @@ const WorkspaceDashboardPanel = (props) => {
     fileAttachments: _t("FILE_ATTACHMENTS", "File attachments"),
     peopleExternal: _t("PEOPLE.EXTERNAL", "External"),
     peopleInvited: _t("PEOPLE.INVITED", "Invited"),
-    emptyTeam: _t("DASHBOARD.EMPTY_TEAM", "There are no team members for this workspace.")
+    emptyTeam: _t("DASHBOARD.EMPTY_TEAM", "There are no team members for this workspace."),
+    showMore: _t("DASHBOARD.SHOW_MORE", "Show more"),
+    showLess: _t("DASHBOARD.SHOW_LESS", "Show less"),
+    attachedFile: _t("ATTACHED_A_FILE", "attached a file"),
+    sharedThePost: _t("SHARED_THE_POST", "shared the post"),
+    hasJoined: _t("TIMELINE.HAS_JOINED", "has joined"),
+    hasLeft: _t("TIMELINE.HAS_LEFT", "has left"),
+    youJoined: _t("TIMELINE.YOU_JOINED", "You joined"),
+    youLeft: _t("TIMELINE.YOU_LEFT", "You left"),
+    isAdded: _t("TIMELINE.IS_ADDED", "is added"),
+    isRemoved: _t("TIMELINE.IS_REMOVED", "is removed"),
+    createdThePost: _t("TIMELINE.CREATED_POST", "created the post"),
+    updatedWorkspaceTo: _t("TIMELINE.UPDATED_WORKSPACE_TO", "Updated workspace to"),
+    revokeAsTeamLead: _t("TEAM.REVOKE_TEAM_LEAD", "Revoke as team lead"),
+    revokeAsApprover: _t("TEAM.REVOKE_APPROVER", "Revoke as approver"),
+    assignAsTeamLead: _t("TEAM.REVOKE_TEAM_LEAD", "Assign as team lead"),
+    assignAsApprover: _t("TEAM.REVOKE_APPROVER", "Assign as approver"),
+    remove: _t("TEAM.REMOVE", "Remove")
   };
 
   let disableOptions = false;
