@@ -1,9 +1,10 @@
-import React, {useCallback, useEffect, useState} from "react";
-import {useSelector} from "react-redux";
+import React, { useCallback, useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 
 const useGetWorkspaceAndUserOptions = (selectedWorkspaces, workspace = null) => {
-  const {recipients} = useSelector((state) => state.global);
-  const {workspaces, folders} = useSelector((state) => state.workspaces);
+  const users = useSelector((state) => state.users.users);
+  const { recipients } = useSelector((state) => state.global);
+  const { workspaces, folders } = useSelector((state) => state.workspaces);
   const [options, setOptions] = useState([]);
   const [userOptions, setUserOptions] = useState([]);
 
@@ -22,6 +23,16 @@ const useGetWorkspaceAndUserOptions = (selectedWorkspaces, workspace = null) => 
         });
         setUserOptions(members);
       }
+    } else {
+      setUserOptions(Object.values(users)
+        .filter(u => u.type === "internal")
+        .map(u => {
+          return {
+            ...u,
+            value: u.id,
+            label: u.name,
+          };
+        }));
     }
   }, []);
 
@@ -32,46 +43,45 @@ const useGetWorkspaceAndUserOptions = (selectedWorkspaces, workspace = null) => 
   useEffect(() => {
     if (Object.values(workspaces).length) {
       let workspaceOptions = [...Object.values(folders), ...Object.values(workspaces)]
-        .sort((a,b) => a.name.localeCompare(b.name))
+        .sort((a, b) => a.name.localeCompare(b.name))
         .map((ws) => {
-        return {
-          ...ws,
-          value: ws.id,
-          label: ws.name
-        };
-      });
+          return {
+            ...ws,
+            value: ws.id,
+            label: ws.name
+          };
+        });
 
+      const internalUsers = Object.values(users).filter(u => u.type === "internal").map(u => u);
       const company = recipients.find(r => r.main_department === true);
       workspaceOptions.unshift({
         ...company,
+        member_ids: internalUsers.map(u => u.id),
+        members: internalUsers.map(u => u),
         icon: "home",
         value: company.id,
         label: company.name
       });
 
       if (selectedWorkspaces.length) {
-        let wsMembers = selectedWorkspaces.map((ws) => {
-          if (ws.members !== undefined && ws.members.length) {
-            return ws.members;
-          } else return [];
+        let userOptionIds = userOptions.map(u => u.id);
+        let newUserOptions = userOptions;
+        selectedWorkspaces.forEach(ws => {
+          if (ws.members) {
+            ws.members.filter(m => !userOptionIds.includes(m.id)).forEach(u => {
+              userOptionIds.push(u.id);
+              newUserOptions.push({
+                ...u,
+                first_name: u.first_name === "" ? u.email : u.first_name,
+                name: u.name === "" ? u.email : u.name,
+                value: u.id,
+                label: u.name,
+              });
+            });
+          }
         });
 
-        let uniqueMembers = [...wsMembers.flat()];
-        //const unique = (a, i, c) => c.findIndex(u => u.id === a.id) === i
-        uniqueMembers = uniqueMembers.filter(unique);
-
-        if (uniqueMembers.length) {
-          uniqueMembers = uniqueMembers.map((u) => {
-            u.first_name = u.first_name === "" ? u.email : u.first_name;
-            u.name = u.name === "" ? u.email : u.name;
-            return {
-              ...u,
-              value: u.id,
-              label: u.name,
-            };
-          });
-          setUserOptions(uniqueMembers);
-        }
+        setUserOptions(newUserOptions);
 
         let selectedFolders = selectedWorkspaces.filter((ws) => ws.type === "FOLDER");
         if (selectedFolders.length) {

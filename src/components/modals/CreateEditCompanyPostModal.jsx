@@ -279,7 +279,7 @@ const CreateEditCompanyPostModal = (props) => {
   const toaster = useToaster();
   const [modal, setModal] = useState(true);
   const user = useSelector((state) => state.session.user);
-  const users = useSelector((state) => state.users.mentions);
+  const users = useSelector((state) => state.users.users);
   const company = useSelector((state) => state.global.recipients).find(r => r.main_department === true);
   const [showMoreOptions, setShowMoreOptions] = useState(null);
   const [maxHeight, setMaxHeight] = useState(null);
@@ -876,14 +876,7 @@ const CreateEditCompanyPostModal = (props) => {
     setAttachedFiles((prevState) => prevState.filter((f) => f.id !== parseInt(fileId)));
   };
 
-  const [wsOptions] = useGetWorkspaceAndUserOptions(form.selectedWorkspaces);
-  const userOptions = Object.values(users).map((u) => {
-    return {
-      ...u,
-      value: u.id,
-      label: u.name,
-    };
-  });
+  const [wsOptions, userOptions] = useGetWorkspaceAndUserOptions(form.selectedWorkspaces);
 
   const onOpened = () => {
     if (inputRef && inputRef.current) {
