@@ -17,7 +17,6 @@ const Wrapper = styled.div`
   }
   flex: unset;
   
-  .feather-smile,
   .feather-paperclip {
     border: 1px solid #e1e1e1;
     height: 100%;
@@ -28,13 +27,6 @@ const Wrapper = styled.div`
     padding: 12px;
     &:hover {
       background-color: #e1e1e1;
-    }
-  }
-  .feather-smile {
-    &:hover {
-      border: 1px solid #7a1b8bcc;
-      background-color: #7a1b8bcc;
-      color: #fff;
     }
   }  
 `;
@@ -47,8 +39,8 @@ const ChatInputContainer = styled.div`
   padding-right: 80px;
   margin-right: 8px;
   min-height: 48px;
-  
-  .feather-send {
+  .feather-send,
+  .feather-smile {
     position: absolute;
     bottom: 0;
     right: 0;
@@ -63,17 +55,26 @@ const ChatInputContainer = styled.div`
     cursor: pointer;
     transition: background-color 0.15s ease-in-out, color 0.15s ease-in-out;
   }
+  .feather-smile {
+    right: 44px;
+    margin: 4px 0;
+    background: transparent;
+    border-color: transparent;
+    transition: color 0.15s ease-in-out;
+    color: #cacaca;
+    &.active {
+      color: #7a1b8b;
+    }
+    &:hover {
+      color: #7a1b8b;
+    }
+  }
   .feather-send:hover {
     background-color: #7a1b8bcc;
   }
 `;
 
 const IconButton = styled(SvgIconFeather)`
-  &.active {
-    background: #7a1b8b;
-    border: 1px solid #7a1b8b;
-    color: #fff;    
-  }
 `;
 
 const Dflex = styled.div`
@@ -149,8 +150,12 @@ const NoReply = styled.div`
 `;
 
 const PickerContainer = styled(CommonPicker)`
-  left: 25px;
+  right: 130px;
   bottom: 75px;
+  
+  .common-picker-btn {
+    text-align: right;
+  }
 `;
 
 const FileNames = styled.div`
@@ -311,11 +316,6 @@ const PostDetailFooter = (props) => {
               </NoReply>
             ) : (
               <React.Fragment>
-                <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Emoji" className="emojiButton">
-                  <IconButton
-                    className={`mr-2 ${showEmojiPicker ? "active" : ""}`} onClick={handleShowEmojiPicker}
-                    icon="smile"/>
-                </Tooltip>
                 <ChatInputContainer ref={innerRef} className="flex-grow-1">
                   <PostInput
                     handleClearSent={handleClearSent}
@@ -333,6 +333,8 @@ const PostDetailFooter = (props) => {
                     dropAction={dropAction}
                     members={workspace ? workspace.members : []}
                   />
+                  <IconButton className={`${showEmojiPicker ? "active" : ""}`} onClick={handleShowEmojiPicker}
+                              icon="smile"/>
                   <IconButton onClick={handleSend} icon="send"/>
                 </ChatInputContainer>
 

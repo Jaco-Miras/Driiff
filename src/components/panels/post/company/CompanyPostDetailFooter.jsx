@@ -12,44 +12,65 @@ const Wrapper = styled.div`
     margin-left: 0 !important;
   }
   flex: unset;
+  
+  .feather-paperclip {
+    border: 1px solid #e1e1e1;
+    height: 100%;
+    cursor: pointer;
+    width: 46px;
+    border-radius: 8px;
+    transition: background-color 0.15s ease-in-out;
+    padding: 12px;
+    &:hover {
+      background-color: #e1e1e1;
+    }
+  }  
 `;
 
 const ChatInputContainer = styled.div`
   position: relative;
-  max-width: calc(100% - 165px);
-  @media all and (max-width: 620px) {
-    max-width: calc(100% - 110px);
+  border: 1px solid #e1e1e1;
+  box-shadow: 0 3px 10px #7a1b8b12;
+  border-radius: 8px;
+  padding-right: 80px;
+  margin-right: 8px;
+  min-height: 48px;
+  .feather-send,
+  .feather-smile {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    margin: 4px;
+    height: calc(100% - 8px);
+    max-height: 38px;
+    background: #7a1b8b;
+    border-radius: 4px;
+    min-width: 40px;
+    width: 40px;
+    padding: 10px;
+    cursor: pointer;
+    transition: background-color 0.15s ease-in-out, color 0.15s ease-in-out;
+  }
+  .feather-smile {
+    right: 44px;
+    margin: 4px 0;
+    background: transparent;
+    border-color: transparent;
+    transition: color 0.15s ease-in-out;
+    color: #cacaca;
+    &.active {
+      color: #7a1b8b;
+    }
+    &:hover {
+      color: #7a1b8b;
+    }
+  }
+  .feather-send:hover {
+    background-color: #7a1b8bcc;
   }
 `;
 
 const IconButton = styled(SvgIconFeather)`
-  cursor: pointer;
-  border: 1px solid #afb8bd;
-  height: 37px;
-  margin: -1px 8px;
-  width: 47px;
-  min-width: 47px;
-  padding: 10px 0;
-  border-radius: 8px;
-  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-  &.active {    
-    border: 1px solid #7a1b8bcc;
-    background: #7a1b8b;    
-    color: #fff;  
-  }
-  &:hover {
-    border: 1px solid #7a1b8bcc;
-    background: #7a1b8b;
-    color: #ffffff;
-  }
-  &.feather-send {
-    border: 1px solid #7a1b8b;
-    background-color: #7a1b8b;
-    color: #fff;
-    &:hover {
-      background-color: #8c3b9b;
-    }
-  }
 `;
 
 const Dflex = styled.div`
@@ -125,8 +146,12 @@ const NoReply = styled.div`
 `;
 
 const PickerContainer = styled(CommonPicker)`
-  left: 32px;
-  bottom: 60px;
+  right: 130px;
+  bottom: 75px;
+  
+  .common-picker-btn {
+    text-align: right;
+  }
 `;
 
 const FileNames = styled.div`
@@ -188,7 +213,7 @@ const CompanyPostDetailFooter = (props) => {
 
 
   return (
-    <Wrapper className={`post-detail-footer card-body ${className}`}>
+    <Wrapper className={`company-post-detail-footer card-body ${className}`}>
       {
         <Dflex className="d-flex pr-2 pl-2">
           <CommentQuote commentActions={commentActions} commentId={commentId}/>
@@ -203,10 +228,6 @@ const CompanyPostDetailFooter = (props) => {
               </NoReply>
             ) : (
               <React.Fragment>
-                <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Emoji" className="emojiButton">
-                  <IconButton className={`${showEmojiPicker ? "active" : ""}`} onClick={handleShowEmojiPicker}
-                              icon="smile"/>
-                </Tooltip>
                 <ChatInputContainer ref={innerRef} className="flex-grow-1">
                   <CompanyPostInput
                     handleClearSent={handleClearSent}
@@ -224,8 +245,10 @@ const CompanyPostDetailFooter = (props) => {
                     dropAction={dropAction}
                     members={post.members}
                   />
+                  <IconButton className={`${showEmojiPicker ? "active" : ""}`} onClick={handleShowEmojiPicker}
+                              icon="smile"/>
+                  <IconButton onClick={handleSend} icon="send"/>
                 </ChatInputContainer>
-                <IconButton onClick={handleSend} icon="send"/>
                 <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Attach files">
                   <IconButton onClick={() => onShowFileDialog(parentId)} icon="paperclip"/>
                 </Tooltip>

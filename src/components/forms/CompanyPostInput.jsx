@@ -1,24 +1,25 @@
-import React, {useEffect, useRef, useState} from "react";
-import {useDispatch, useSelector} from "react-redux";
+import React, { useEffect, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 // import {localizeDate} from "../../helpers/momentFormatJS";
-import {addQuote} from "../../redux/actions/chatActions";
-import {SvgIconFeather} from "../common";
+import { addQuote } from "../../redux/actions/chatActions";
+import { SvgIconFeather } from "../common";
 import BodyMention from "../common/BodyMention";
-import {useCommentQuote, useQuillInput, useQuillModules, useSaveInput} from "../hooks";
+import { useCommentQuote, useQuillInput, useQuillModules, useSaveInput } from "../hooks";
 import QuillEditor from "./QuillEditor";
-import {setEditComment, setParentIdForUpload} from "../../redux/actions/postActions";
+import { setEditComment, setParentIdForUpload } from "../../redux/actions/postActions";
 
 const Wrapper = styled.div`
-  border: 1px solid #dee2e6;
-  border-radius: 8px;
+  &.chat-input-wrapper:focus-within  {
+    border: none;
+  }
 `;
 
 const StyledQuillEditor = styled(QuillEditor)`
   &.chat-input {
     // border: 1px solid #afb8bd;
     // border-radius: 5px;
-    max-height: 130px;
+    max-height: 180px;
     position: static;
     overflow: auto;
     &::-webkit-scrollbar {
@@ -26,6 +27,10 @@ const StyledQuillEditor = styled(QuillEditor)`
     }
     -ms-overflow-style: none;
     scrollbar-width: none;
+    
+    &:focus {
+      border: none;      
+    }
   }
   .ql-container {
     position: static;
@@ -34,10 +39,8 @@ const StyledQuillEditor = styled(QuillEditor)`
     display: none;
   }
   .ql-editor {
-    padding: 5px 9px;    
-    min-height: 30px;
-    ${props => props.editMode && `> div {width:calc(100% - 15px);}`}
-    .mention {
+    padding: 11px 9px;
+    ${(props) => props.editMode && `> div {width:calc(100% - 15px);}`} .mention {
       color: #7a1b8b;
     }
     &:focus {
@@ -54,7 +57,7 @@ const StyledQuillEditor = styled(QuillEditor)`
     max-height: 170px;
     background: rgb(255, 255, 255);
     border-radius: 8px;
-    box-shadow: rgba(26, 26, 26, 0.4) 0 2px 3px 0, rgba(0, 0, 0, 0.1) 0 1px 3px 0;
+    box-shadow: rgba(26, 26, 26, 0.4) 0px 2px 3px 0px, rgba(0, 0, 0, 0.1) 0px 1px 3px 0px;
     overflow-x: hidden;
     overflow-y: auto;
     z-index: 2;
