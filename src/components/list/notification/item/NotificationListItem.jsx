@@ -2,7 +2,7 @@ import React from "react";
 import Tooltip from "react-tooltip-lite";
 import styled from "styled-components";
 import {Avatar} from "../../../common";
-import {useTimeFormat} from "../../../hooks";
+import {useTimeFormat, useTranslation} from "../../../hooks";
 
 const Wrapper = styled.li`
   cursor: pointer;
@@ -75,13 +75,21 @@ export const NotificationListItem = (props) => {
     actions.remove({ id: notification.id });
   };*/
 
+  const { _t } = useTranslation();
+
+  const dictionary = {
+    post: _t("NOTIFICATION.POST_POPUP", `Shared a post`),
+    comment: _t("NOTIFICATION.COMMENT_POPUP", `Made a comment in ::title::`, {title: notification.data.title}),
+    mention: _t("NOTIFICATION.MENTION_POPUP", `Mentioned you in ::title::`, {title: notification.data.title})
+  };
+
   const notifDisplay = () => {
     switch (notification.type) {
       case "POST_CREATE": {
         return (
             <div className="notification-container flex-grow-1" onClick={handleRedirect}>
               <span>{notification.author.name}</span>
-              <p className="notification-title text-link">Shared a post</p>
+              <p className="notification-title text-link">{dictionary.post}</p>
               <span className="text-muted small">{fromNow(notification.created_at.timestamp)}</span>
             </div>
         );
@@ -90,7 +98,7 @@ export const NotificationListItem = (props) => {
         return (
             <div className="notification-container flex-grow-1" onClick={handleRedirect}>
               <span>{notification.author.name}</span>
-              <p className="notification-title text-link">Made a comment in {notification.data.title}</p>
+              <p className="notification-title text-link">{dictionary.comment}</p>
               <span className="text-muted small">{fromNow(notification.created_at.timestamp)}</span>
             </div>
         );
@@ -99,7 +107,7 @@ export const NotificationListItem = (props) => {
         return (
             <div className="notification-container flex-grow-1" onClick={handleRedirect}>
               <span>{notification.author.name}</span>
-              <p className="notification-title text-link">Mentioned you in {notification.data.title}</p>
+              <p className="notification-title text-link">{dictionary.mention}</p>
               <span className="text-muted small">{fromNow(notification.created_at.timestamp)}</span>
             </div>
         );

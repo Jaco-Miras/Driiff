@@ -5,7 +5,7 @@ import styled from "styled-components";
 import {isIPAddress} from "../../helpers/commonFunctions";
 import {SvgIcon} from "../common";
 import {InputFeedback} from "../forms";
-import {useDriffActions} from "../hooks";
+import {useDriffActions, useTranslation} from "../hooks";
 
 const Wrapper = styled.div`
   margin: 50px auto;
@@ -132,12 +132,20 @@ const DriffRegisterPanel = (props) => {
 
   }, []);
 
+  const {_t} = useTranslation();
+
+  const dictionary = {
+    continue: _t("REGISTER.CONTINUE", "Continue"),
+    registerNewDriff: _t("REGISTER.REGISTER_NEW_DRIFF", "Register new driff"),
+    yourDriff: _t("REGISTER.YOUR_DRIFF", "Your driff"),
+  };
+
   return (
     <Wrapper className={`driff-register-panel fadeIn form-wrapper ${className}`}>
       <div id="logo">
         <SvgIcon icon={"driff-logo"} width="110" height="80"/>
       </div>
-      <h5>Your driff</h5>
+      <h5>{dictionary.yourDriff}</h5>
       <Form>
         <FormGroup>
           <InputGroup className="driff-name">
@@ -155,11 +163,11 @@ const DriffRegisterPanel = (props) => {
         </FormGroup>
         <button className="btn btn-primary btn-block" onClick={handleContinue}>
           {loading &&
-          <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"/>} Continue
+          <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"/>} {dictionary.continue}
         </button>
         <hr/>
         <button className="btn btn-outline-light btn-sm" onClick={handleRegisterClick}>
-          Register new driff
+          {dictionary.registerNewDriff}
         </button>
       </Form>
     </Wrapper>

@@ -255,7 +255,7 @@ const CompanyPostDetail = (props) => {
                 </h5>
                 <div className="author-name">
                   <ToolTip content={post.author.name}>
-                    by{" "}
+                    {dictionary.by}{" "}
                     <span onClick={handleAuthorClick} className="cursor-pointer">
                       {post.author.first_name}
                     </span>
