@@ -264,12 +264,12 @@ const DriffCreatePanel = (props) => {
           </StyledFormGroup>
           <FormInput onChange={handleInputChange} name="email" isValid={formResponse.valid.email} feedback={formResponse.message.email} placeholder={dictionary.yourEmail} type="email" readOnly={loading} />
           <FormInput onChange={handleInputChange} name="user_name" isValid={formResponse.valid.user_name} feedback={formResponse.message.user_name} placeholder={dictionary.yourName} innerRef={refs.user_name} readOnly={loading} />
-          <PasswordInput onChange={handleInputChange} isValid={formResponse.valid.password} feedback={formResponse.message.password} readOnly={loading} />
+          <PasswordInput onChange={handleInputChange} isValid={formResponse.valid.password} feedback={formResponse.message.password} readOnly={loading} placeholder={dictionary.password}/>
 
           <button className={"btn btn-outline-light btn-sm mb-4"} onClick={handleShowUserInvitation}>
             {typeof form.invitations !== "undefined" ? (
               <>
-                Invited users{" "}
+                {dictionary.invitedUsers}{" "}
                 <div className={`mr-2 d-sm-inline d-none`}>
                   <div className={"badge badge-info text-white"}>{form.invitations.length}</div>
                 </div>
