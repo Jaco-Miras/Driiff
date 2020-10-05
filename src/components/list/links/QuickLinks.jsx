@@ -124,6 +124,7 @@ const QuickLinks = (props) => {
 
   const {generalSettings, showModal} = useSettings();
 
+  const httpsPattern = new RegExp("^(http|https)://");
   const ref = {
     container: useRef(),
     arrow: useRef(),
@@ -137,14 +138,6 @@ const QuickLinks = (props) => {
     e.preventDefault();
     setShowLinks((prevState) => !prevState);
   };
-
-  useEffect(() => {
-    if (ref.nav.current !== null) {
-      let maxHeight = window.innerHeight * 5;
-      maxHeight = maxHeight < ref.nav.current.offsetHeight ? ref.nav.current.offsetHeight : maxHeight;
-      setMaxHeight(maxHeight);
-    }
-  }, [ref.nav, maxHeight]);
 
   const handleAddItemClick = () => {
     showModal("personal_link_create");
@@ -161,6 +154,14 @@ const QuickLinks = (props) => {
       index: id,
     });
   };
+
+  useEffect(() => {
+    if (ref.nav.current !== null) {
+      let maxHeight = window.innerHeight * 5;
+      maxHeight = maxHeight < ref.nav.current.offsetHeight ? ref.nav.current.offsetHeight : maxHeight;
+      setMaxHeight(maxHeight);
+    }
+  }, [ref.nav, maxHeight]);
 
   return (
     <Wrapper ref={ref.container} className={`fadeIn ${className} ${showLinks && "folder-open"}`} selected={showLinks}
@@ -182,7 +183,8 @@ const QuickLinks = (props) => {
             <li key={index} className="personal-link">
               <div>
                 <div>
-                  <a href={link.web_address} target="_blank" rel="noopener noreferrer">
+                  <a href={!httpsPattern.test(link.web_address) ? `https://${link.web_address}` : link.web_address}
+                     target="_blank" rel="noopener noreferrer">
                     {link.name}
                   </a>
                 </div>
