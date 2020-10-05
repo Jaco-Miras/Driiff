@@ -51,11 +51,11 @@ const TimelinePanel = (props) => {
             .map((t) => {
               switch (t.tag) {
                 case "CHAT_BOT":
-                  return <MemberTimeline key={t.id} data={t.item}/>;
+                  return <MemberTimeline key={t.id} data={t.item} dictionary={dictionary}/>;
                 case "POST":
-                  return <PostTimeline key={t.id} data={t.item}/>;
+                  return <PostTimeline key={t.id} data={t.item} dictionary={dictionary}/>;
                 case "DOCUMENT":
-                  return <AttachFileTimeline key={t.id} data={t.item}/>;
+                  return <AttachFileTimeline key={t.id} data={t.item} dictionary={dictionary}/>;
                 case "TOPIC":
                   return <TopicTimeline key={t.id} data={t.item}/>;
               }

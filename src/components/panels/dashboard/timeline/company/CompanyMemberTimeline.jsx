@@ -35,7 +35,7 @@ const StyledTooltip = styled(Tooltip)`
 `;
 
 const CompanyMemberTimeline = (props) => {
-  const { className = "", data } = props;
+  const { className = "", data, dictionary } = props;
   const { fromNow, localizeDate } = useTimeFormat();
 
   const user = useSelector((state) => state.session.user);
@@ -50,16 +50,16 @@ const CompanyMemberTimeline = (props) => {
   const renderTitle = () => {
     if (message) {
       if (message.title && message.title !== "") {
-        return `Updated workspace to ${message.title}`;
+        return `${dictionary.updatedWorkspaceTo} ${message.title}`;
       }
       if (message.added_members.length !== 0 || message.removed_members.length) {
       }
     } else {
       if (data.body.includes("NEW_ACCOUNT_ACTIVATED")) {
-        return `${data.body.replace(`NEW_ACCOUNT_ACTIVATED `, "")} is added to the company`;
+        return `${data.body.replace(`NEW_ACCOUNT_ACTIVATED `, "")} ${dictionary.isAddedToCompany}`;
       } else if (data.body.includes("POST_CREATE")) {
         let item = JSON.parse(data.body.replace("POST_CREATE::", ""));
-        return <>{item.author.name} <b>created the post {item.post.title}</b></>
+        return <>{item.author.name} <b>{dictionary.createdThePost} {item.post.title}</b></>
       } else {
         console.log(data);
         return data.body;
@@ -74,14 +74,14 @@ const CompanyMemberTimeline = (props) => {
     if (joined) {
       if (message.accepted_members && message.accepted_members.length) {
         let author = users[message.accepted_members[0]];
-        return `${author.name} has joined`;
+        return `${author.name} ${dictionary.hasJoined}`;
       } else {
         let author = recipients.filter((r) => r.type_id === message.author.id && message.added_members.includes(r.type_id))[0];
         if (author) {
           if (author.type_id === user.id) {
-            return "You joined.";
+            return `${dictionary.youJoined}.`;
           } else {
-            return `${author.name} has joined`;
+            return `${author.name} ${dictionary.hasJoined}`;
           }
         }
       }
@@ -90,7 +90,7 @@ const CompanyMemberTimeline = (props) => {
       } else {
         let members = recipients.filter((r) => message.added_members.includes(r.type_id) && r.type_id !== message.author.id).map((r) => r.name);
         if (members.length) {
-          return members.join(", ") + " is added.";
+          return members.join(", ") + ` ${dictionary.isAdded}.`;
         }
       }
     }
@@ -104,15 +104,15 @@ const CompanyMemberTimeline = (props) => {
       let author = recipients.filter((r) => r.type_id === message.author.id && message.removed_members.includes(r.type_id))[0];
       if (author) {
         if (author.type_id === user.id) {
-          return "You left.";
+          return `${dictionary.youLeft}.`;
         } else {
-          return `${author.name} has left`;
+          return `${author.name} ${dictionary.hasLeft}`;
         }
       }
     } else {
       let members = recipients.filter((r) => message.removed_members.includes(r.type_id) && r.type_id !== message.author.id).map((r) => r.name);
       if (members.length) {
-        return members.join(", ") + " is removed.";
+        return members.join(", ") + ` ${dictionary.isRemoved}.`;
       }
     }
   };

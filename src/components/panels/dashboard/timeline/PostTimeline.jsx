@@ -44,7 +44,7 @@ const Wrapper = styled.div`
 `;
 
 const PostTimeline = (props) => {
-  const { className = "", data } = props;
+  const { className = "", data, dictionary } = props;
   const history = useHistory();
   const { params } = useRouteMatch();
   const { fromNow } = useTimeFormat();
@@ -64,7 +64,7 @@ const PostTimeline = (props) => {
           <span className="title">
             {data.user.name}{" "}
             <span className="post-title" onClick={handleLinkClick} title={data.title}>
-              shared the post "{data.title}"
+              {dictionary.sharedThePost} "{data.title}"
             </span>
           </span>
           <span className="text-muted font-weight-normal">{fromNow(data.created_at.timestamp)}</span>
@@ -79,7 +79,7 @@ const PostTimeline = (props) => {
         )}
         {data.files && data.files.length >= 1 && (
           <>
-            File attachments:
+            {dictionary.fileAttachments}:
             <FileAttachments attachedFiles={data.files} />
           </>
         )}

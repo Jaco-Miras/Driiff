@@ -33,6 +33,17 @@ const CompanyDashboardPanel = (props) => {
     noRecentPosts: _t("DASHBOARD.NO_RECENT_POSTS", "No recent posts."),
     recentPosts: _t("DASHBOARD.RECENT_POSTS", "Recent posts"),
     fileAttachments: _t("FILE_ATTACHMENTS", "File attachments"),
+    attachedFile: _t("ATTACHED_A_FILE", "attached a file"),
+    sharedThePost: _t("SHARED_THE_POST", "shared the post"),
+    hasJoined: _t("TIMELINE.HAS_JOINED", "has joined"),
+    hasLeft: _t("TIMELINE.HAS_LEFT", "has left"),
+    youJoined: _t("TIMELINE.YOU_JOINED", "You joined"),
+    youLeft: _t("TIMELINE.YOU_LEFT", "You left"),
+    isAdded: _t("TIMELINE.IS_ADDED", "is added"),
+    isRemoved: _t("TIMELINE.IS_REMOVED", "is removed"),
+    createdThePost: _t("TIMELINE.CREATED_POST", "created the post"),
+    updatedWorkspaceTo: _t("TIMELINE.UPDATED_WORKSPACE_TO", "Updated workspace to"),
+    isAddedToCompany: _t("TIMELINE.IS_ADDED_TO_COMPANY", "is added to the company"),
   };
 
   return (
