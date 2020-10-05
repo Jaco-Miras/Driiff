@@ -44,6 +44,12 @@ const CompanyDashboardPanel = (props) => {
     createdThePost: _t("TIMELINE.CREATED_POST", "created the post"),
     updatedWorkspaceTo: _t("TIMELINE.UPDATED_WORKSPACE_TO", "Updated workspace to"),
     isAddedToCompany: _t("TIMELINE.IS_ADDED_TO_COMPANY", "is added to the company"),
+    updatedWorkspaceTo: _t("TIMELINE.UPDATED_WORKSPACE_TO", "Updated workspace to"),
+    revokeAsTeamLead: _t("TEAM.REVOKE_TEAM_LEAD", "Revoke as team lead"),
+    revokeAsApprover: _t("TEAM.REVOKE_APPROVER", "Revoke as approver"),
+    assignAsTeamLead: _t("TEAM.REVOKE_TEAM_LEAD", "Assign as team lead"),
+    assignAsApprover: _t("TEAM.REVOKE_APPROVER", "Assign as approver"),
+    remove: _t("TEAM.REMOVE", "Remove")
   };
 
   return (
