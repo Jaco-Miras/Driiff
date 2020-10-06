@@ -498,11 +498,8 @@ const CreateEditWorkspacePostModal = (props) => {
     if (e === null) {
       setForm({
         ...form,
-        selectedWorkspaces: [{
-          ...activeTopic,
-          value: activeTopic.id,
-          label: activeTopic.name,
-        }],
+        selectedWorkspaces: [],
+        selectedUsers: [],
       });
     } else {
       setForm({
@@ -637,17 +634,6 @@ const CreateEditWorkspacePostModal = (props) => {
         };
       }), ...form.selectedUsers]
     });
-    // let memberPayload = {
-    //   channel_id: selectedChannel.id,
-    //   recipient_ids: users.map((u) => u.type_id),
-    // };
-    // dispatch(
-    //   postChannelMembers(memberPayload, (err, res) => {
-    //     if (err) return;
-
-    //     if (res) setIgnoredMentionedUserIds([...ignoredMentionedUserIds, ...users.map((u) => u.type_id)]);
-    //   })
-    // );
 
     setMentionedUserIds([]);
   };
