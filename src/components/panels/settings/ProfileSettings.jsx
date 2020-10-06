@@ -72,7 +72,7 @@ const ProfileSettings = (props) => {
 
   const {
     generalSettings: {language, timezone, date_format, time_format, dark_mode, notifications_on},
-    chatSettings: {order_channel, sound_enabled, preview_message},
+    chatSettings: {order_channel, sound_enabled, preview_message, virtualization},
     userSettings: {isLoaded},
     setChatSetting,
     setGeneralSetting,
@@ -319,6 +319,20 @@ const ProfileSettings = (props) => {
                 onChange={handleChatSwitchToggle}
                 data-success-message={`You have turn ${preview_message ? "OFF" : "ON"} preview in chat messages!`}
                 label={<span>{dictionary.previewMessageLabel}</span>}
+              />
+            </div>
+          </div>
+          <div className="row mb-3">
+            <div className="col-12">
+              <CustomInput
+                className="cursor-pointer text-muted"
+                checked={virtualization}
+                type="switch"
+                id="chat_virtualization"
+                name="virtualization"
+                onChange={handleChatSwitchToggle}
+                data-success-message={`You have turn ${virtualization ? "OFF" : "ON"} virtualization in chat messages!`}
+                label={<span>Virtualized chat</span>}
               />
             </div>
           </div>
