@@ -6,16 +6,20 @@ import { SvgIconFeather } from "../../common";
 import { useSelectQuote } from "../../hooks";
 
 const QuoteWrapper = styled.div`
-  padding: 0 10px 10px 7px;
+  padding: 0 10px 10px 2.5rem;
   display: block;
   text-align: left;
   position: relative;
   width: 100%;
-  padding-left: 2.5rem;
   margin-top: 8px;
-  ${"" /* background: #ffffff14; */}
   background: #fafafa;
   border-radius: 4px;
+  
+  .dark & {
+    background: #25282c;
+    color: #fff;
+  }
+  
   .quote-author-name,
   .quote-message {
     position: relative;

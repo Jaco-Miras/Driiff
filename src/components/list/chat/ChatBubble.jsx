@@ -1,5 +1,5 @@
 import { hexToCSSFilter } from "hex-to-css-filter";
-import React, { useEffect, useRef, useState, useCallback } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { renderToString } from "react-dom/server";
 import GifPlayer from "react-gif-player";
 import "react-gif-player/src/GifPlayer.scss";
@@ -158,7 +158,6 @@ const QuoteContainer = styled.div`
   padding: 10px 10px 10px 20px;
   position: relative;
   cursor: pointer;
-  cursor: hand;
   max-width: ${(props) => (props.hasFiles ? "210px" : "auto")};
   &:before {
     height: 70%;
