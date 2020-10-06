@@ -5,7 +5,7 @@ import styled from "styled-components";
 import {SvgIconFeather} from "../../common";
 import {useInView} from "react-intersection-observer";
 import quillHelper from "../../../helpers/quillHelper";
-import {useTranslation} from "../../hooks";
+//import {useTranslation} from "../../hooks";
 
 const SystemMessageContainer = styled.span`
   display: block;
@@ -66,35 +66,33 @@ const ChatTimeStamp = styled.div`
 `;
 const THRESHOLD = [.1, .2, .3, .4, .5, .6, .7, .8, .9];
 const SystemMessage = forwardRef((props, ref) => {
-  const {reply, selectedChannel, chatName, isLastChat, chatMessageActions, recipients, user, timeFormat, isLastChatVisible} = props;
+  const {reply, selectedChannel, chatName, isLastChat, chatMessageActions, recipients, user, timeFormat, isLastChatVisible, dictionary} = props;
 
   const params = useParams();
   const history = useHistory();
 
-  const { _t } = useTranslation();
+  // const { _t } = useTranslation();
 
-  const dictionary = {
-    accountActivated: _t("SYSTEM.UPDATE", "Update"),
-    accountActivated: _t("SYSTEM.ACCOUNT_ACTIVATED", "account is activated"),
-    accountDeactivated: _t("SYSTEM.ACCOUNT_DEACTIVATED", "account is deactivated"),
-    removed: _t("SYSTEM.REMOVED", "removed"),
-    andRemoved: _t("SYSTEM.AND_REMOVED", "and removed"),
-    you: _t("SYSTEM.YOU", "You"),
-    youAnd: _t("SYSTEM.YOU_AND", "You and"),
-    joined: _t("SYSTEM.JOINED", "joined"),
-    andJoined: _t("SYSTEM.AND_JOINED", "and joined"),
-    left: _t("SYSTEM.LEFT", "left"),
-    andLeft: _t("SYSTEM.AND_LEFT", "and left"),
-    createdThePost: _t("SYSTEM.CREATED_THE_POST", "created the post"),
-    openPost: _t("SYSTEM.OPEN_POST", "Open post"),
-    someone: _t("SYSTEM.SOMEONE", "Someone"),
-    added: _t("SYSTEM.ADDED", "added"),
-    andAdded: _t("SYSTEM.AND_ADDED", "and added"),
-    renameThisTo: _t("SYSTEM.RENAME_THIS_TO", `renamed this ::type:: to`, 
-                  {type: selectedChannel.type === "TOPIC" ? _t("SYSTEM.WORKSPACE", "workspace") : _t("SYSTEM.CHAT", "chat")}),
-    renameThisWorkspace: _t("SYSTEM.RENAME_THIS_WORKSPACE", `renamed this workspace to`),
-    renameThisChat: _t("SYSTEM.RENAME_THIS_CHAT", `renamed this chat to`)
-  }
+  // const dictionary = {
+  //   update: _t("SYSTEM.UPDATE", "Update"),
+  //   accountActivated: _t("SYSTEM.ACCOUNT_ACTIVATED", "account is activated"),
+  //   accountDeactivated: _t("SYSTEM.ACCOUNT_DEACTIVATED", "account is deactivated"),
+  //   removed: _t("SYSTEM.REMOVED", "removed"),
+  //   andRemoved: _t("SYSTEM.AND_REMOVED", "and removed"),
+  //   you: _t("SYSTEM.YOU", "You"),
+  //   youAnd: _t("SYSTEM.YOU_AND", "You and"),
+  //   joined: _t("SYSTEM.JOINED", "joined"),
+  //   andJoined: _t("SYSTEM.AND_JOINED", "and joined"),
+  //   left: _t("SYSTEM.LEFT", "left"),
+  //   andLeft: _t("SYSTEM.AND_LEFT", "and left"),
+  //   createdThePost: _t("SYSTEM.CREATED_THE_POST", "created the post"),
+  //   openPost: _t("SYSTEM.OPEN_POST", "Open post"),
+  //   someone: _t("SYSTEM.SOMEONE", "Someone"),
+  //   added: _t("SYSTEM.ADDED", "added"),
+  //   andAdded: _t("SYSTEM.AND_ADDED", "and added"),
+  //   renameThisWorkspace: _t("SYSTEM.RENAME_THIS_WORKSPACE", `renamed this workspace to`),
+  //   renameThisChat: _t("SYSTEM.RENAME_THIS_CHAT", `renamed this chat to`)
+  // }
 
   const [body, setBody] = useState(reply.body);
 
