@@ -76,7 +76,7 @@ const usePostActions = () => {
     notificationCreatePost: _t("NOTIFICATION.CREATE_POST", "You have successfully created a post"),
     notificationReminderPost: _t("NOTIFICATION.REMINDER_POST", "You will be reminded about this post under"),
     itemPost: _t("ITEM.POST", "post"),
-    todoLinks: _t("SIDEBAR.TODO_LINKS", "To-dos & Reminders"),
+    todoLinks: _t("SIDEBAR.TODO_LINKS", "Reminders"),
   };
 
   const starPost = useCallback(

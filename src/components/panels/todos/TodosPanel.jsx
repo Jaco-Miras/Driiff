@@ -17,8 +17,8 @@ const TodosPanel = (props) => {
   const {_t} = useTranslation();
 
   const dictionary = {
-    searchInputPlaceholder: _t("REMINDER.SEARCH_INPUT_PLACEHOLDER", "Search your to-dos & reminders on title and description."),
-    createNewTodoItem: _t("REMINDER.CREATE_NEW_TODO_ITEM", "New to-do"),
+    searchInputPlaceholder: _t("REMINDER.SEARCH_INPUT_PLACEHOLDER", "Search your reminders on title and description."),
+    createNewTodoItem: _t("REMINDER.CREATE_NEW_TODO_ITEM", "New reminder"),
     typePost: _t("REMINDER.TYPE_POST", "Post"),
     typeChat: _t("REMINDER.TYPE_CHAT", "Chat"),
     typePostComment: _t("REMINDER.TYPE_POST_COMMENT", "Post comment"),
@@ -26,8 +26,8 @@ const TodosPanel = (props) => {
     statusOverdue: _t("REMINDER.STATUS_OVERDUE", "Overdue"),
     statusUpcoming: _t("REMINDER.STATUS_UPCOMING", "Upcoming"),
     statusDone: _t("REMINDER.STATUS_DONE", "Done"),
-    emptyText: _t("REMINDER.EMPTY_STATE_TEXT", "Use your to-do & reminder list to keep track of all your tasks and activities."),
-    emptyButtonText: _t("REMINDER.EMPTY_STATE_BUTTON_TEXT", "New to-do"),
+    emptyText: _t("REMINDER.EMPTY_STATE_TEXT", "Use your reminder list to keep track of all your tasks and activities."),
+    emptyButtonText: _t("REMINDER.EMPTY_STATE_BUTTON_TEXT", "New reminder"),
     noItemsFound: _t("REMINDER.NO_ITEMS_FOUND", "No items found."),
     actionReschedule: _t("REMINDER.ACTION_RESCHEDULE", "Reschedule"),
     actionEdit: _t("REMINDER.ACTION_EDIT", "Edit"),
