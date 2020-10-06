@@ -11,8 +11,9 @@ const Filter = styled.span`
   ${(props) =>
   props.active &&
   `
-        background: 0 0;
-        color: #7a1b8b;
+        background-color: black !important;
+        border-color: #ffffff14 !important;
+        color: #fff;
     `}
   &.folder-list {
     border-bottom: 1px solid rgba(0, 0, 0, 0.125);
@@ -52,7 +53,7 @@ const TodosSidebar = (props) => {
           </button>
         </div>
 
-        <div className="card-body">
+        <div>
           <div className="app-sidebar-menu" tabIndex="1">
             <div className="list-group list-group-flush">
               <Filter onClick={() => setFilter("")} active={filter === ""}
