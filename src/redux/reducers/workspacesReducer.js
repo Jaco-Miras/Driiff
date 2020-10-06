@@ -829,6 +829,9 @@ export default (state = INITIAL_STATE, action) => {
         action.data.workspaces.forEach((ws) => {
           if (newWorkspacePosts.hasOwnProperty(ws.topic_id) && newWorkspacePosts[ws.topic_id].posts.hasOwnProperty(action.data.post_id)) {
             //post = newWorkspacePosts[ws.topic_id].posts[action.data.post_id];
+            if (!newWorkspacePosts[ws.topic_id].posts[action.data.post_id].users_responsible.some((u) => u.id === action.data.author.id)) {
+              newWorkspacePosts[ws.topic_id].posts[action.data.post_id].users_responsible = [...newWorkspacePosts[ws.topic_id].posts[action.data.post_id].users_responsible, action.data.author]
+            }
             newWorkspacePosts[ws.topic_id].posts[action.data.post_id].reply_count = newWorkspacePosts[ws.topic_id].posts[action.data.post_id].reply_count + 1;
             if (action.data.author.id !== state.user.id) {
               newWorkspacePosts[ws.topic_id].posts[action.data.post_id].unread_count = newWorkspacePosts[ws.topic_id].posts[action.data.post_id].unread_count + 1;

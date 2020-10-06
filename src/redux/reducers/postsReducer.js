@@ -195,6 +195,7 @@ export default (state = INITIAL_STATE, action) => {
             ...state.companyPosts.posts,
             [action.data.post_id]: {
               ...state.companyPosts.posts[action.data.post_id],
+              //users_responsible: !state.companyPosts.posts[action.data.post_id].users_responsible.some((u) => u.id === action.data.author.id) ? [...state.companyPosts.posts[action.data.post_id].users_responsible, action.data.author] : state.companyPosts.posts[action.data.post_id].users_responsible,
               clap_count: action.data.clap_count ? state.companyPosts.posts[action.data.post_id].clap_count + 1 : state.companyPosts.posts[action.data.post_id].clap_count - 1,
               user_clap_count: action.data.clap_count
             }
@@ -377,6 +378,19 @@ export default (state = INITIAL_STATE, action) => {
             }
           },
         })
+      };
+    }
+    case "INCOMING_COMMENT": {
+      let companyPosts = {...state.companyPosts}
+      if (action.data.SOCKET_TYPE === "POST_COMMENT_CREATE" && state.companyPosts.posts.hasOwnProperty(action.data.post_id)) {
+        if (!companyPosts.posts[action.data.post_id].users_responsible.some((u) => u.id === action.data.author.id)) {
+          companyPosts.posts[action.data.post_id].users_responsible = [...companyPosts.posts[action.data.post_id].users_responsible, action.data.author]
+        }
+      }
+      
+      return {
+        ...state,
+        companyPosts: companyPosts
       };
     }
     default:
