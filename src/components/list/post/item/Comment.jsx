@@ -32,14 +32,20 @@ const Wrapper = styled.li`
   }
 
   .quote {
-    border-radius: 6px;
     margin: 0 auto 0.5rem;
     width: 95%;
     position: relative;
-    padding: 1rem;
+    padding: 0 1rem;
+    color: #868686;
+
+    &:before {
+      border: 10px solid #0000;
+      border-right-color: #36393d;
+    }
 
     &.border-side {
       border-left: 5px solid #822492;
+      border-radius: 0 !important;
     }
 
     > * {
@@ -48,9 +54,9 @@ const Wrapper = styled.li`
   }
 
   .quote-author {
-    margin-top: 2rem;
-    font-style: italic;
+    margin-top: 1rem;
     margin-left: 2.5%;
+    margin-bottom: 0.5rem;
   }
 
   .files {
@@ -233,8 +239,8 @@ const Comment = (props) => {
         {comment.todo_reminder !== null && <ReminderNote todoReminder={comment.todo_reminder} type="POST_COMMENT" />}
         {comment.quote && (
           <>
-            {comment.quote.user && <div className="quote-author">{comment.quote.user.name}</div>}
-            <div className="quote border border-side" dangerouslySetInnerHTML={{ __html: comment.quote.body }} />
+            {comment.quote.user && <div className="quote-author">Quoted comment from {comment.quote.user.name}</div>}
+            <div className="quote border-side" dangerouslySetInnerHTML={{ __html: comment.quote.body }} />
           </>
         )}
         <CommentWrapper ref={refs.body} className="card-body" type={type}>
