@@ -5,6 +5,7 @@ import styled from "styled-components";
 import {SvgIconFeather} from "../../common";
 import {useInView} from "react-intersection-observer";
 import quillHelper from "../../../helpers/quillHelper";
+import {useTranslation} from "../../hooks";
 
 const SystemMessageContainer = styled.span`
   display: block;
@@ -70,6 +71,31 @@ const SystemMessage = forwardRef((props, ref) => {
   const params = useParams();
   const history = useHistory();
 
+  const { _t } = useTranslation();
+
+  const dictionary = {
+    accountActivated: _t("SYSTEM.UPDATE", "Update"),
+    accountActivated: _t("SYSTEM.ACCOUNT_ACTIVATED", "account is activated"),
+    accountDeactivated: _t("SYSTEM.ACCOUNT_DEACTIVATED", "account is deactivated"),
+    removed: _t("SYSTEM.REMOVED", "removed"),
+    andRemoved: _t("SYSTEM.AND_REMOVED", "and removed"),
+    you: _t("SYSTEM.YOU", "You"),
+    youAnd: _t("SYSTEM.YOU_AND", "You and"),
+    joined: _t("SYSTEM.JOINED", "joined"),
+    andJoined: _t("SYSTEM.AND_JOINED", "and joined"),
+    left: _t("SYSTEM.LEFT", "left"),
+    andLeft: _t("SYSTEM.AND_LEFT", "and left"),
+    createdThePost: _t("SYSTEM.CREATED_THE_POST", "created the post"),
+    openPost: _t("SYSTEM.OPEN_POST", "Open post"),
+    someone: _t("SYSTEM.SOMEONE", "Someone"),
+    added: _t("SYSTEM.ADDED", "added"),
+    andAdded: _t("SYSTEM.AND_ADDED", "and added"),
+    renameThisTo: _t("SYSTEM.RENAME_THIS_TO", `renamed this ::type:: to`, 
+                  {type: selectedChannel.type === "TOPIC" ? _t("SYSTEM.WORKSPACE", "workspace") : _t("SYSTEM.CHAT", "chat")}),
+    renameThisWorkspace: _t("SYSTEM.RENAME_THIS_WORKSPACE", `renamed this workspace to`),
+    renameThisChat: _t("SYSTEM.RENAME_THIS_CHAT", `renamed this chat to`)
+  }
+
   const [body, setBody] = useState(reply.body);
 
   const [lastChatRef, inView, entry] = useInView({
@@ -103,40 +129,40 @@ const SystemMessage = forwardRef((props, ref) => {
         })
         .map((user) => user.name);
       if (selectedChannel.type === "DIRECT") {
-        setBody(`<p><span class='channel-new-members'>${newMembers.join(", ")}</span><br> joined <span class='channel-title'>#${chatName}</span></p>`);
+        setBody(`<p><span class='channel-new-members'>${newMembers.join(", ")}</span><br> ${dictionary.joined} <span class='channel-title'>#${chatName}</span></p>`);
       } else {
-        setBody(`<p><span class='channel-new-members'>${newMembers.join(", ")}</span><br> joined <span class='channel-title'>#${selectedChannel.title}</span></p>`);
+        setBody(`<p><span class='channel-new-members'>${newMembers.join(", ")}</span><br> ${dictionary.joined} <span class='channel-title'>#${selectedChannel.title}</span></p>`);
       }
     } else if (reply.body.includes("MEMBER_REMOVE_CHANNEL")) {
       if (selectedChannel.type === "DIRECT") {
-        setBody(`<p><span class='channel-new-members'>${reply.body.substr(reply.body.indexOf(" "))}</span><br> left <span class='channel-title'>#${chatName}</span></p>`);
+        setBody(`<p><span class='channel-new-members'>${reply.body.substr(reply.body.indexOf(" "))}</span><br> ${dictionary.left} <span class='channel-title'>#${chatName}</span></p>`);
       } else {
-        setBody(`<p><span class='channel-new-members'>${reply.body.substr(reply.body.indexOf(" "))}</span><br> left <span class='channel-title'>#${selectedChannel.title}</span></p>`);
+        setBody(`<p><span class='channel-new-members'>${reply.body.substr(reply.body.indexOf(" "))}</span><br> ${dictionary.left} <span class='channel-title'>#${selectedChannel.title}</span></p>`);
       }
     } else if (reply.body.includes("ACCOUNT_DEACTIVATED")) {
       let newBody = reply.body.replace("ACCOUNT_DEACTIVATED ", "");
       if (newBody[newBody.length - 1] === "s") {
-        setBody(`Update: ${newBody}' account is deactivated.`);
+        setBody(`${dictionary.update}: ${newBody}' ${dictionary.accountDeactivated}.`);
       } else {
-        setBody(`Update: ${newBody}'s account is deactivated.`);
+        setBody(`${dictionary.update}: ${newBody}'s ${dictionary.accountDeactivated}.`);
       }
     } else if (reply.body.includes("NEW_ACCOUNT_ACTIVATED")) {
       let newBody = reply.body.replace("NEW_ACCOUNT_ACTIVATED ", "");
       if (newBody[newBody.length - 1] === "s") {
-        setBody(`Update: ${newBody}' account is activated.`);
+        setBody(`${dictionary.update}: ${newBody}' ${dictionary.accountActivated}.`);
       } else {
-        setBody(`Update: ${newBody}'s account is activated.`);
+        setBody(`${dictionary.update}: ${newBody}'s ${dictionary.accountActivated}.`);
       }
     } else if (reply.body.includes("CHANNEL_UPDATE::")) {
       const data = JSON.parse(reply.body.replace("CHANNEL_UPDATE::", ""));
       let author = recipients.find((r) => data.author && r.type_id === data.author.id);
       if (author) {
         if (data.author && data.author.id === user.id) {
-          author.name = "You";
+          author.name = dictionary.you;
         }
       } else {
         author = {
-          name: "Someone",
+          name: dictionary.someone
         };
       }
 
@@ -144,8 +170,7 @@ const SystemMessage = forwardRef((props, ref) => {
       if (data.title !== "") {
         newBody = (
           <>
-            <SvgIconFeather width={16} icon="edit-3"/> {author.name} renamed
-            this {selectedChannel.type === "TOPIC" ? "workspace" : "chat"} to <b>#{data.title}</b>
+            <SvgIconFeather width={16} icon="edit-3"/> {author.name} {selectedChannel.type === "TOPIC" ? dictionary.renameThisWorkspace : dictionary.renameThisChat} <b>#{data.title}</b>
             <br/>
           </>
         );
@@ -158,39 +183,39 @@ const SystemMessage = forwardRef((props, ref) => {
           if (newBody === "") {
             newBody = (
               <>
-                <b>{author.name}</b> joined{" "}
+                <b>{author.name}</b> {dictionary.joined}{" "}
               </>
             );
           } else {
-            newBody = <>{newBody} and joined</>;
+            newBody = <>{newBody} {dictionary.andJoined}</>;
           }
 
           if (am.length !== 0) {
             newBody = (
               <>
-                {newBody} and added <b>{am.join(", ")}</b>
+                {newBody} {dictionary.andAdded} <b>{am.join(", ")}</b>
                 <br/>
               </>
             );
           }
         } else {
           if (newBody === "") {
-            newBody = <>{author.name} added </>;
+            newBody = <>{author.name} {dictionary.added} </>;
           } else {
-            newBody = <>{newBody} and added</>;
+            newBody = <>{newBody} {dictionary.andAdded}</>;
           }
 
           if (data.added_members.includes(user.id)) {
             if (am.length !== 0) {
               newBody = (
                 <>
-                  {newBody} <b>You and </b>
+                  {newBody} <b>{dictionary.youAnd} </b>
                 </>
               );
             } else {
               newBody = (
                 <>
-                  {newBody} <b>You</b>
+                  {newBody} <b>{dictionary.you}</b>
                 </>
               );
             }
@@ -214,39 +239,39 @@ const SystemMessage = forwardRef((props, ref) => {
           if (newBody === "") {
             newBody = (
               <>
-                <b>{author.name}</b> left{" "}
+                <b>{author.name}</b> {dictionary.left}{" "}
               </>
             );
           } else {
-            newBody = <>{newBody} and left</>;
+            newBody = <>{newBody} {dictionary.andLeft}</>;
           }
 
           if (rm.length !== 0) {
             newBody = (
               <>
-                {newBody} and removed <b>{rm.join(", ")}</b>
+                {newBody} {dictionary.andRemoved} <b>{rm.join(", ")}</b>
                 <br/>
               </>
             );
           }
         } else {
           if (newBody === "") {
-            newBody = <>{author.name} removed </>;
+            newBody = <>{author.name} {dictionary.removed} </>;
           } else {
-            newBody = <>{newBody} and removed</>;
+            newBody = <>{newBody} {dictionary.andRemoved}</>;
           }
 
           if (data.removed_members.includes(user.id)) {
             if (rm.length !== 0) {
               newBody = (
                 <>
-                  {newBody} <b>You and </b>
+                  {newBody} <b>{dictionary.youAnd} </b>
                 </>
               );
             } else {
               newBody = (
                 <>
-                  {newBody} <b>You</b>
+                  {newBody} <b>{dictionary.you}</b>
                 </>
               );
             }
@@ -305,13 +330,13 @@ const SystemMessage = forwardRef((props, ref) => {
 
       let description = quillHelper.parseToText(item.post.description);
       setBody(renderToString(<a href={link} className="push-link" data-href={link} data-has-link="0" data-ctrl="0">
-        <b>{item.author.first_name}</b> created the post <b>"{item.post.title}"</b>
+        <b>{item.author.first_name}</b> {dictionary.createdThePost} <b>"{item.post.title}"</b>
         {
           description.trim() !== "" &&
           <span className="card card-body"
                 dangerouslySetInnerHTML={{__html: description}}/>
         }
-        <span className="open-post">Open post <SvgIconFeather icon="arrow-right"/></span>
+        <span className="open-post">{dictionary.openPost} <SvgIconFeather icon="arrow-right"/></span>
       </a>));
     } else if (reply.body.includes("JOIN_CHANNEL")) {
       let ids = /\d+/g;
@@ -328,29 +353,29 @@ const SystemMessage = forwardRef((props, ref) => {
         })
         .map((user) => user.name);
       if (selectedChannel.type === "DIRECT") {
-        setBody(`<p><span class='channel-new-members'>${newMembers.join(", ")}</span><br> joined <span class='channel-title'>#${chatName}</span></p>`);
+        setBody(`<p><span class='channel-new-members'>${newMembers.join(", ")}</span><br> ${dictionary.joined} <span class='channel-title'>#${chatName}</span></p>`);
       } else {
-        setBody(`<p><span class='channel-new-members'>${newMembers.join(", ")}</span><br> joined <span class='channel-title'>#${selectedChannel.title}</span></p>`);
+        setBody(`<p><span class='channel-new-members'>${newMembers.join(", ")}</span><br> ${dictionary.joined} <span class='channel-title'>#${selectedChannel.title}</span></p>`);
       }
     } else if (reply.body.includes("MEMBER_REMOVE_CHANNEL")) {
       if (selectedChannel.type === "DIRECT") {
-        setBody(`<p><span class='channel-new-members'>${reply.body.substr(reply.body.indexOf(" "))}</span><br> left <span class='channel-title'>#${chatName}</span></p>`);
+        setBody(`<p><span class='channel-new-members'>${reply.body.substr(reply.body.indexOf(" "))}</span><br> ${dictionary.left} <span class='channel-title'>#${chatName}</span></p>`);
       } else {
-        setBody(`<p><span class='channel-new-members'>${reply.body.substr(reply.body.indexOf(" "))}</span><br> left <span class='channel-title'>#${selectedChannel.title}</span></p>`);
+        setBody(`<p><span class='channel-new-members'>${reply.body.substr(reply.body.indexOf(" "))}</span><br> ${dictionary.left} <span class='channel-title'>#${selectedChannel.title}</span></p>`);
       }
     } else if (reply.body.includes("ACCOUNT_DEACTIVATED")) {
       let newBody = reply.body.replace("ACCOUNT_DEACTIVATED ", "");
       if (newBody[newBody.length - 1] === "s") {
-        setBody(`Update: ${newBody}' account is deactivated.`);
+        setBody(`${dictionary.update}: ${newBody}' ${dictionary.accountDeactivated}.`);
       } else {
-        setBody(`Update: ${newBody}'s account is deactivated.`);
+        setBody(`${dictionary.update}: ${newBody}'s ${dictionary.accountDeactivated}.`);
       }
     } else if (reply.body.includes("NEW_ACCOUNT_ACTIVATED")) {
       let newBody = reply.body.replace("NEW_ACCOUNT_ACTIVATED ", "");
       if (newBody[newBody.length - 1] === "s") {
-        setBody(`Update: ${newBody}' account is activated.`);
+        setBody(`${dictionary.update}: ${newBody}' ${dictionary.accountActivated}.`);
       } else {
-        setBody(`Update: ${newBody}'s account is activated.`);
+        setBody(`${dictionary.update}: ${newBody}'s ${dictionary.accountActivated}.`);
       }
     } else if (reply.body.includes("CHANNEL_UPDATE::")) {
       const data = JSON.parse(reply.body.replace("CHANNEL_UPDATE::", ""));
@@ -358,11 +383,11 @@ const SystemMessage = forwardRef((props, ref) => {
       let author = recipients.find((r) => data.author && r.type_id === data.author.id);
       if (author) {
         if (data.author.id === user.id) {
-          author.name = "You";
+          author.name = dictionary.you;
         }
       } else {
         author = {
-          name: "Someone",
+          name: dictionary.someone,
         };
       }
 
@@ -370,8 +395,7 @@ const SystemMessage = forwardRef((props, ref) => {
       if (data.title !== "") {
         newBody = (
           <>
-            <SvgIconFeather width={16} icon="edit-3"/> {author.name} renamed
-            this {selectedChannel.type === "TOPIC" ? "workspace" : "chat"} to <b>#{data.title}</b>
+            <SvgIconFeather width={16} icon="edit-3"/> {author.name} {selectedChannel.type === "TOPIC" ? dictionary.renameThisWorkspace : dictionary.renameThisChat} <b>#{data.title}</b>
             <br/>
           </>
         );
@@ -384,39 +408,39 @@ const SystemMessage = forwardRef((props, ref) => {
           if (newBody === "") {
             newBody = (
               <>
-                <b>{author.name}</b> joined{" "}
+                <b>{author.name}</b> {dictionary.joined}{" "}
               </>
             );
           } else {
-            newBody = <>{newBody} and joined</>;
+            newBody = <>{newBody} {dictionary.andJoined}</>;
           }
 
           if (am.length !== 0) {
             newBody = (
               <>
-                {newBody} and added <b>{am.join(", ")}</b>
+                {newBody} {dictionary.andAdded} <b>{am.join(", ")}</b>
                 <br/>
               </>
             );
           }
         } else {
           if (newBody === "") {
-            newBody = <>{author.name} added </>;
+            newBody = <>{author.name} {dictionary.added} </>;
           } else {
-            newBody = <>{newBody} and added</>;
+            newBody = <>{newBody} {dictionary.andAdded}</>;
           }
 
           if (data.added_members.includes(user.id)) {
             if (am.length !== 0) {
               newBody = (
                 <>
-                  {newBody} <b>You and </b>
+                  {newBody} <b>{dictionary.youAnd} </b>
                 </>
               );
             } else {
               newBody = (
                 <>
-                  {newBody} <b>You</b>
+                  {newBody} <b>{dictionary.you}</b>
                 </>
               );
             }
@@ -440,39 +464,39 @@ const SystemMessage = forwardRef((props, ref) => {
           if (newBody === "") {
             newBody = (
               <>
-                <b>{author.name}</b> left{" "}
+                <b>{author.name}</b> {dictionary.left}{" "}
               </>
             );
           } else {
-            newBody = <>{newBody} and left</>;
+            newBody = <>{newBody} {dictionary.andLeft}</>;
           }
 
           if (rm.length !== 0) {
             newBody = (
               <>
-                {newBody} and removed <b>{rm.join(", ")}</b>
+                {newBody} {dictionary.andRemoved} <b>{rm.join(", ")}</b>
                 <br/>
               </>
             );
           }
         } else {
           if (newBody === "") {
-            newBody = <>{author.name} removed </>;
+            newBody = <>{author.name} {dictionary.removed} </>;
           } else {
-            newBody = <>{newBody} and removed</>;
+            newBody = <>{newBody} {dictionary.andRemoved}</>;
           }
 
           if (data.removed_members.includes(user.id)) {
             if (rm.length !== 0) {
               newBody = (
                 <>
-                  {newBody} <b>You and </b>
+                  {newBody} <b>{dictionary.youAnd} </b>
                 </>
               );
             } else {
               newBody = (
                 <>
-                  {newBody} <b>You</b>
+                  {newBody} <b>{dictionary.you}</b>
                 </>
               );
             }
@@ -512,7 +536,7 @@ const SystemMessage = forwardRef((props, ref) => {
         dangerouslySetInnerHTML={{__html: body}}/>
       <ChatTimeStamp className="chat-timestamp" isAuthor={false}>
         <span
-          className="reply-date created">{reply.created_at.diff_for_humans ? "sending..." : timeFormat.localizeTime(reply.created_at.timestamp)}</span>
+          className="reply-date created">{timeFormat.localizeTime(reply.created_at.timestamp)}</span>
       </ChatTimeStamp>
     </SystemMessageContainer>
   );
