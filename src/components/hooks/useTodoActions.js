@@ -19,12 +19,12 @@ const useTodoActions = () => {
 
   const dictionary = {
     toasterGeneraError: _t("TOASTER.GENERAL_ERROR", "An error has occurred try again!"),
-    toasterCreateTodo: _t("TOASTER.TODO_CREATE_SUCCESS", `You will be reminded about this comment under <b>To-dos & Reminders</b>.`),
-    toasterUpdateTodo: _t("TOASTER.TODO_UPDATE_SUCCESS", `You will be reminded about this comment under <b>To-dos & Reminders</b>.`),
+    toasterCreateTodo: _t("TOASTER.TODO_CREATE_SUCCESS", `You will be reminded about this comment under <b>Reminders</b>.`),
+    toasterUpdateTodo: _t("TOASTER.TODO_UPDATE_SUCCESS", `You will be reminded about this comment under <b>Reminders</b>.`),
     toasterDoneTodo: _t("TOASTER.TODO_UNDONE_SUCCESS", `You have mark ::todo_title:: as done.`),
     toasterUnDoneTodo: _t("TOASTER.TODO_UNDONE_SUCCESS", `You have mark ::todo_title:: as undone.`),
     toasterDeleteTodo: _t("TOASTER.TODO_DELETE_SUCCESS", `You have successfully deleted ::todo_title::.`),
-    modalConfirmationTodoRemoveHeader: _t("MODAL_CONFIRMATION.TODO_REMOVE_HEADER", "Remove to-do item?"),
+    modalConfirmationTodoRemoveHeader: _t("MODAL_CONFIRMATION.TODO_REMOVE_HEADER", "Remove reminder item?"),
     modalConfirmationTodoRemoveBody: _t("MODAL_CONFIRMATION.TODO_REMOVE_BODY", "Are you sure you want to remove this item?"),
     modalConfirmationTodoRemoveSubmit: _t("MODAL_CONFIRMATION.TODO_REMOVE_SUBMIT", "Remove"),
     modalConfirmationTodoRemoveCancel: _t("MODAL_CONFIRMATION.TODO_REMOVE_CANCEL", "Cancel"),
