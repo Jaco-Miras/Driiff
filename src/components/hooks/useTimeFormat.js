@@ -25,7 +25,7 @@ const useTimeFormat = () => {
     });
     moment.updateLocale("nl", {
       calendar: {
-        lastDay: `[gistern om] ${time_format}`,
+        lastDay: `[gisteren om] ${time_format}`,
         nextDay: `[morgen om] ${time_format}`,
         sameDay: `[vandaag om] ${time_format}`,
         nextWeek: `dddd [om] ${time_format}`,
@@ -51,7 +51,7 @@ const useTimeFormat = () => {
     });
     moment.updateLocale("nl", {
       calendar: {
-        lastDay: `[gistern]`,
+        lastDay: `[gisteren]`,
         nextDay: `[morgen]`,
         sameDay: `[vandaag]`,
         nextWeek: `[deze] dddd`,
@@ -74,7 +74,7 @@ const useTimeFormat = () => {
     });
     moment.updateLocale("nl", {
       calendar: {
-        lastDay: `[gistern]`,
+        lastDay: `[gisteren]`,
         sameDay: `${time_format}`,
         nextWeek: `[deze] dddd`,
         lastWeek: `[afgelopen] dddd`,
@@ -107,7 +107,7 @@ const useTimeFormat = () => {
     });
     moment.updateLocale("nl", {
       calendar: {
-        lastDay: `[gistern]`,
+        lastDay: `[gisteren]`,
         sameDay: `[vandaag]`,
         lastWeek: `dddd`,
         sameElse: dateFormat
@@ -127,7 +127,7 @@ const useTimeFormat = () => {
     });
     moment.updateLocale("nl", {
       calendar: {
-        lastDay: `[gistern] ${time_format}`,
+        lastDay: `[gisteren] ${time_format}`,
         sameDay: `[vandaag] ${time_format}`,
         sameElse: `dddd[,] ${time_format}`,
       }
