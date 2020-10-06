@@ -322,7 +322,7 @@ const PostDetailFooter = (props) => {
               </NoReply>
             ) : (
               <React.Fragment>
-                <ChatInputContainer ref={innerRef} className="flex-grow-1">
+                <ChatInputContainer ref={innerRef} className="flex-grow-1 chat-input-footer">
                   <PostInput
                     handleClearSent={handleClearSent}
                     sent={sent}
