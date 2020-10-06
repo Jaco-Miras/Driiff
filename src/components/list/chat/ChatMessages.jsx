@@ -796,6 +796,7 @@ class ChatMessages extends React.PureComponent {
                                       isBot={isBot}
                                       chatSettings={this.props.settings}
                                       isLastChatVisible={this.props.isLastChatVisible}
+                                      dictionary={this.props.dictionary}
                                     >
                                       <ChatActionsContainer isAuthor={isAuthor} className="chat-actions-container">
                                         {<ChatReactionButton isAuthor={isAuthor} scrollRef={this.infiniteScroll.current} reply={reply} />}
@@ -828,6 +829,7 @@ class ChatMessages extends React.PureComponent {
                                         addMessageRef={this.getLoadRef(reply.id)}
                                         isLastChat={[...selectedChannel.replies.sort((a, b) => a.created_at.timestamp - b.created_at.timestamp)][selectedChannel.replies.length - 1].id === reply.id}
                                         isLastChatVisible={this.props.isLastChatVisible}
+                                        dictionary={this.props.dictionary}
                                       />
                                       {reply.unfurls.length ? (
                                         <ChatUnfurl
