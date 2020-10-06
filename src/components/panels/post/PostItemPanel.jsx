@@ -22,8 +22,11 @@ const Wrapper = styled.li`
   }
 
   .app-list-title {
+    color: #363636;
+    font-weight: 500;
+
     &.has-unread {
-      font-weight: bold;
+      font-weight: 500;
     }
 
     &.text-success {
@@ -50,6 +53,7 @@ const Wrapper = styled.li`
   }
   .post-partialBody {
     color: #b8b8b8;
+    font-weight: 400;
   }
 `;
 
@@ -113,7 +117,7 @@ const PostItemPanel = (props) => {
             {post.unread_count !== 0 && <div className="ml-2 mr-2 badge badge-primary badge-pill">{post.unread_count}</div>}
             <PostBadge post={post} dictionary={dictionary} />
             {post.users_responsible.length > 0 && <MemberLists members={post.users_responsible} classNames="mr-2"/>}
-            {!disableOptions && <Icon icon="archive" onClick={handleArchivePost} />}
+            {!disableOptions && <Icon class="btn btn-outline-light ml-2" icon="archive" onClick={handleArchivePost} />}
           </div>
         </div>
       </div>
