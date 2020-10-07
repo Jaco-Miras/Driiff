@@ -9,7 +9,6 @@ import {
   deleteDraftReducer,
   saveDraft,
   updateDraft,
-  uploadDocument
 } from "../../redux/actions/globalActions";
 import { postCreate, putCompanyPosts, putPost } from "../../redux/actions/postActions";
 import { Avatar, DatePicker, FileAttachments, SvgIconFeather } from "../common";
@@ -17,6 +16,8 @@ import { DropDocument } from "../dropzone/DropDocument";
 import { CheckBox, DescriptionInput, FolderSelect, PeopleSelect, PostVisibilitySelect } from "../forms";
 import { useGetWorkspaceAndUserOptions, useToaster, useTranslation } from "../hooks";
 import { ModalHeaderSection } from "./index";
+// upload document will not use action wrap in redux
+import { uploadDocument } from "../../redux/services/global";
 
 const WrapperDiv = styled(InputGroup)`
   display: flex;
