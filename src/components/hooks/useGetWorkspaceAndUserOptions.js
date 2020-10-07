@@ -1,112 +1,138 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { useTranslation } from "./index";
 
-const useGetWorkspaceAndUserOptions = (selectedWorkspaces, workspace = null) => {
+const useGetWorkspaceAndUserOptions = (
+  selected = { workspaces: [], users: [] },
+  defaultValue = { workspaces: [], users: [] }) => {
+
+  const { _t } = useTranslation();
+
   const users = useSelector((state) => state.users.users);
   const { recipients } = useSelector((state) => state.global);
   const { workspaces, folders } = useSelector((state) => state.workspaces);
-  const [options, setOptions] = useState([]);
-  const [userOptions, setUserOptions] = useState([]);
+
+  const company = recipients.find(r => r.main_department === true);
+
+  const [wsOptions, setWsOptions] = useState([]);
+
+  const dictionary = {
+    visibleAllInternal: _t("POST.VISIBLE_ALL_INTERNAL", "Visible to all internal members"),
+    visibleAllWorkspace: _t("POST.VISIBLE_ALL_WORKSPACE", "Visible to all workspace members"),
+    responsbileUsers: _t("POST.VISIBLE_RESPONSIBLE_USERS", "Visible to responsible users only"),
+    addressedPeopleOnly: _t("POST.ADDRESSED_PEOPLE_ONLY", "Addressed people only"),
+  };
+
+  const getAddressedByOptionByValue = (is_personal, isCompanyPost = true) => {
+    return {
+      icon: is_personal ? "lock" : "unlock",
+      value: is_personal,
+      label: is_personal ? dictionary.addressedPeopleOnly : dictionary.visibleAllWorkspace,
+    };
+  };
+
+  const getSelectedUsersWorkspace = (workspaces) => {
+    let allOption = [];
+    workspaces.forEach(ws => {
+      allOption.push({
+        ...ws,
+        type: "WORKSPACE",
+        first_name: `All: ${ws.name}`,
+        id: `ws-${ws.id}`,
+        value: `ws-${ws.id}`,
+        label: `All: ${ws.name}`
+      });
+    });
+    return allOption;
+  };
+
+  const getSelectedWorkspaceUser = (workspace) => {
+    let allOption = [...(workspace.length ? [{
+      ...workspace[0],
+      type: "WORKSPACE",
+      first_name: `All: ${workspace[0].name}`,
+      id: `ws-${workspace[0].id}`,
+      value: `ws-${workspace[0].id}`,
+      label: `All: ${workspace[0].name}`
+    }] : [])];
+    return allOption;
+  };
+
+  const getCompanyAsWorkspace = () => {
+    const internalUsers = Object.values(users).filter(u => u.type === "internal").map(u => u);
+    return company && [{
+      ...company,
+      member_ids: internalUsers.map(u => u.id),
+      members: internalUsers.map(u => u),
+      icon: "home",
+      id: `ws-${company.id}`,
+      value: company.id,
+      label: company.name
+    }];
+  };
 
   useEffect(() => {
-    if (workspace !== null) {
-      let members = [];
-      if (workspace.members && workspace.members.length) {
-        members = workspace.members.map((m) => {
-          m.first_name = m.first_name === "" ? m.email : m.first_name;
-          m.name = m.name === "" ? m.email : m.name;
-          return {
-            ...m,
-            value: m.id,
-            label: m.name,
-          };
-        });
-        setUserOptions(members);
-      }
-    } else {
-      setUserOptions(Object.values(users)
-        .filter(u => u.type === "internal")
-        .map(u => {
-          return {
-            ...u,
-            value: u.id,
-            label: u.name,
-          };
-        }));
-    }
-  }, []);
+    if (recipients.find(r => r.main_department === true)) {
 
-  const unique = useCallback((a, i, c) => {
-    return c.findIndex((u) => u.id === a.id) === i;
-  }, []);
+      setWsOptions([
+        ...(getCompanyAsWorkspace()),
+        ...Object.values(folders),
+        ...Object.values(workspaces)]
+        .filter(ws => !selected.workspaces.some(sws => sws.id === ws.id))
+        .sort((a, b) => {
+          if (a.value === company.id) {
+            return -1;
+          }
+          if (b.value === company.id) {
+            return 1;
+          }
 
-  useEffect(() => {
-    if (Object.values(workspaces).length) {
-      let workspaceOptions = [...Object.values(folders), ...Object.values(workspaces)]
-        .sort((a, b) => a.name.localeCompare(b.name))
+          return a.name.localeCompare(b.name);
+        })
         .map((ws) => {
           return {
             ...ws,
             value: ws.id,
             label: ws.name
           };
-        });
-
-      const internalUsers = Object.values(users).filter(u => u.type === "internal").map(u => u);
-      const company = recipients.find(r => r.main_department === true);
-      workspaceOptions.unshift({
-        ...company,
-        member_ids: internalUsers.map(u => u.id),
-        members: internalUsers.map(u => u),
-        icon: "home",
-        value: company.id,
-        label: company.name
-      });
-
-      if (selectedWorkspaces.length) {
-        let userOptionIds = [];
-        let newUserOptions = [];
-        selectedWorkspaces.forEach(ws => {
-          if (ws.members) {
-            ws.members.filter(m => !userOptionIds.includes(m.id)).forEach(u => {
-              userOptionIds.push(u.id);
-              newUserOptions.push({
-                ...u,
-                first_name: u.first_name === "" ? u.email : u.first_name,
-                name: u.name === "" ? u.email : u.name,
-                value: u.id,
-                label: u.name,
-              });
-            });
-          }
-        });
-
-        setUserOptions(newUserOptions);
-
-        let selectedFolders = selectedWorkspaces.filter((ws) => ws.type === "FOLDER");
-        if (selectedFolders.length) {
-          // remove the ws topics under the selected folders
-          workspaceOptions = workspaceOptions.filter((ws) => {
-            if (ws.type === "WORKSPACE") {
-              return !selectedFolders.some((f) => f.id === ws.folder_id);
-            } else {
-              return true;
-            }
-          });
-          setOptions(workspaceOptions);
-        } else {
-          setOptions(workspaceOptions);
-        }
-      } else {
-        setUserOptions([]);
-        setOptions(workspaceOptions);
-      }
-    } else {
-      setOptions([]);
+        }));
     }
-  }, [workspaces, selectedWorkspaces]);
+  }, [recipients, workspaces]);
 
-  return [options, userOptions];
+  let selectedUserIds = [];
+  selected.users.forEach(su => {
+    selectedUserIds = su.type === "WORKSPACE" ? [...selectedUserIds, ...su.member_ids] : [...selectedUserIds, su.id];
+  });
+  selectedUserIds = [...new Set(selectedUserIds)];
+
+  let uniqueUserids = [...selectedUserIds];
+  let userOptions = [];
+  selected.workspaces.forEach(ws => {
+    if (ws.members) {
+      ws.members.filter(m => !uniqueUserids.includes(m.id)).forEach(u => {
+        uniqueUserids.push(u.id);
+        userOptions.push({
+          ...u,
+          first_name: u.first_name === "" ? u.email : u.first_name,
+          name: u.name === "" ? u.email : u.name,
+          value: u.id,
+          label: u.name === "" ? u.email : u.name,
+          type: "USER"
+        });
+      });
+    }
+  });
+
+  return {
+    getAddressedByOptionByValue,
+    getCompanyAsWorkspace,
+    getSelectedWorkspaceUser,
+    getSelectedUsersWorkspace,
+    workspaces: wsOptions,
+    users: userOptions,
+    selectedUserIds,
+    isPersonal: userOptions.some(uo => uo.type === "USER")
+  };
 };
 
 export default useGetWorkspaceAndUserOptions;
