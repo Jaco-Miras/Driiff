@@ -119,7 +119,9 @@ const CompanyPostsPanel = (props) => {
     actionMarkAsDone: _t("POST.ACTION_MARK_AS_DONE", "Mark as done"),
     actionMarkAsUndone: _t("POST.ACTION_MARK_AS_UNDONE", "Mark as not done"),
     private: _t("POST.PRIVATE", "Private"),
-    by: _t("POST.BY", "by")
+    by: _t("POST.BY", "by"),
+    star: _t("POST.STAR", "Mark with star"),
+    unStar: _t("POST.UNSTAR", "Unmark star")
   };
 
   /**
