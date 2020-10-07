@@ -97,8 +97,8 @@ const PostItemPanel = (props) => {
         <CheckBox name="test" checked={post.is_mark_done} onClick={handleMarkDone} disabled={disableOptions}/>
       </div>
       <div>
-        <Icon className="mr-2" icon="star" onClick={handleStarPost}
-              stroke={post.is_favourite ? "#ffc107" : "currentcolor"} fill={post.is_favourite ? "#ffc107" : "none"}/>
+        {/* <Icon className="mr-2" icon="star" onClick={handleStarPost}
+              stroke={post.is_favourite ? "#ffc107" : "currentcolor"} fill={post.is_favourite ? "#ffc107" : "none"}/> */}
       </div>
       <div className="flex-grow-1 min-width-0">
         <div className="d-flex align-items-center justify-content-between">
@@ -137,6 +137,7 @@ const PostItemPanel = (props) => {
           <div onClick={() => sharePost(post)}>{dictionary.share}</div>
           {post.author.id !== user.id &&
           <div onClick={() => followPost(post)}>{post.is_followed ? dictionary.unFollow : dictionary.follow}</div>}
+          <div onClick={handleStarPost}>{post.is_favourite ? dictionary.unStar : dictionary.star}</div>
         </MoreOptions>
       )}
     </Wrapper>
