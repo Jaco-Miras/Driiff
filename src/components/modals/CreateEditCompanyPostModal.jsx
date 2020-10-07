@@ -613,7 +613,7 @@ const CreateEditCompanyPostModal = (props) => {
     } else {
       if (attachedFiles.length) {
         uploadFiles(payload, "create");
-        setLoading(false);
+        //setLoading(false);
       } else {
         if (form.selectedWorkspaces.length > 1) {
           dispatch(postCreate(payload, () => {
@@ -860,13 +860,23 @@ const CreateEditCompanyPostModal = (props) => {
           ...payload,
           file_ids: [...result.map((res) => res.data.id), ...payload.file_ids],
         };
-        dispatch(putPost(payload));
+        dispatch(
+          putPost(payload,() => {
+            setLoading(false);
+            toggleAll(false);
+          })
+        );
       } else {
         payload = {
           ...payload,
           file_ids: result.map((res) => res.data.id),
         };
-        dispatch(postCreate(payload));
+        dispatch(
+          postCreate(payload, () => {
+            setLoading(false);
+            toggleAll(false);
+          })
+        );
       }
     });
   }
