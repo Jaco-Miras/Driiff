@@ -129,9 +129,10 @@ const FilePill = forwardRef((props, ref) => {
   };
 
   const handleVideoOnLoad = (e) => {
-    e.currentTarget.classList.remove("d-none");
-    e.currentTarget.removeAttribute("height");
-    refVideoLoader.current.classList.add("d-none");
+    //removed image loader in video file
+    // e.currentTarget.classList.remove("d-none");
+    // e.currentTarget.removeAttribute("height");
+    // refVideoLoader.current.classList.add("d-none");
   };
 
   const handleVideoOnError = (e) => {
@@ -171,10 +172,10 @@ const FilePill = forwardRef((props, ref) => {
         </>
       ) : file.type.toLowerCase() === "video" ? (
         <>
-          <ImgLoader ref={refVideoLoader}>
+          {/* <ImgLoader ref={refVideoLoader}>
             <ImgLoaderDiv className={"img-loader"} />
-          </ImgLoader>
-          <FileVideoOverlay onClick={handleViewFile} />
+          </ImgLoader> */}
+          {/* <FileVideoOverlay onClick={handleViewFile} /> */}
           <FileVideo data-attempt={0} width="320" height="240" controls playsInline onLoadStart={handleVideoOnLoad} onError={handleVideoOnError}>
             <source src={file.view_link} type="video/mp4" />
             Your browser does not support the video tag.

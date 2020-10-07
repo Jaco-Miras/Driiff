@@ -113,6 +113,26 @@ const ChatContentPanel = (props) => {
     removeChat: _t("MODAL.REMOVE_CHAT", "Remove chat"),
     cancel: _t("MODAL.CANCEL", "Cancel"),
     removeThisChat: _t("MODAL.REMOVE_THIS_CHAT", "Are you sure you want to remove this chat?"),
+    update: _t("SYSTEM.UPDATE", "Update"),
+    accountActivated: _t("SYSTEM.ACCOUNT_ACTIVATED", "account is activated"),
+    accountDeactivated: _t("SYSTEM.ACCOUNT_DEACTIVATED", "account is deactivated"),
+    removed: _t("SYSTEM.REMOVED", "removed"),
+    andRemoved: _t("SYSTEM.AND_REMOVED", "and removed"),
+    you: _t("SYSTEM.YOU", "You"),
+    youAnd: _t("SYSTEM.YOU_AND", "You and"),
+    joined: _t("SYSTEM.JOINED", "joined"),
+    andJoined: _t("SYSTEM.AND_JOINED", "and joined"),
+    left: _t("SYSTEM.LEFT", "left"),
+    andLeft: _t("SYSTEM.AND_LEFT", "and left"),
+    createdThePost: _t("SYSTEM.CREATED_THE_POST", "created the post"),
+    openPost: _t("SYSTEM.OPEN_POST", "Open post"),
+    someone: _t("SYSTEM.SOMEONE", "Someone"),
+    added: _t("SYSTEM.ADDED", "added"),
+    andAdded: _t("SYSTEM.AND_ADDED", "and added"),
+    renameThisWorkspace: _t("SYSTEM.RENAME_THIS_WORKSPACE", `renamed this workspace to`),
+    renameThisChat: _t("SYSTEM.RENAME_THIS_CHAT", `renamed this chat to`),
+    forwardedMessage: _t("CHAT.FORWARDED_MESSAGE", "Forwarded message"),
+    chatRemoved: _t("CHAT.BODY_REMOVED", "The chat message has been removed")
   };
 
   useFocusInput(document.querySelector(".chat-footer .ql-editor"));

@@ -9,7 +9,6 @@ import {
   deleteDraftReducer,
   saveDraft,
   updateDraft,
-  uploadDocument
 } from "../../redux/actions/globalActions";
 import { postCreate, putCompanyPosts, putPost } from "../../redux/actions/postActions";
 import { Avatar, DatePicker, FileAttachments, SvgIconFeather } from "../common";
@@ -17,6 +16,8 @@ import { DropDocument } from "../dropzone/DropDocument";
 import { CheckBox, DescriptionInput, FolderSelect, PeopleSelect, PostVisibilitySelect } from "../forms";
 import { useGetWorkspaceAndUserOptions, useToaster, useTranslation } from "../hooks";
 import { ModalHeaderSection } from "./index";
+// upload document will not use action wrap in redux
+import { uploadDocument } from "../../redux/services/global";
 
 const WrapperDiv = styled(InputGroup)`
   display: flex;
@@ -293,7 +294,6 @@ const CreateEditCompanyPostModal = (props) => {
   const toaster = useToaster();
   const [modal, setModal] = useState(true);
   const user = useSelector((state) => state.session.user);
-  const users = useSelector((state) => state.users.users);
   const company = useSelector((state) => state.global.recipients).find(r => r.main_department === true);
   const [showMoreOptions, setShowMoreOptions] = useState(null);
   const [maxHeight, setMaxHeight] = useState(null);
@@ -485,20 +485,17 @@ const CreateEditCompanyPostModal = (props) => {
     if (e === null) {
       setForm({
         ...form,
-        selectedWorkspaces: [{
-          ...company,
-          value: company.id,
-          label: company.name
-        }],
+        selectedWorkspaces: [],
+        selectedUsers: [],
       });
     } else {
-      if (!e.some(ws => ws.id === company.id)) {
+      /*if (!e.some(ws => ws.id === company.id)) {
         e.unshift({
           ...company,
           value: company.id,
           label: company.name
         });
-      }
+      }*/
       setForm({
         ...form,
         selectedWorkspaces: e,
@@ -652,17 +649,6 @@ const CreateEditCompanyPostModal = (props) => {
         };
       }), ...form.selectedUsers]
     });
-    // let memberPayload = {
-    //   channel_id: selectedChannel.id,
-    //   recipient_ids: users.map((u) => u.type_id),
-    // };
-    // dispatch(
-    //   postChannelMembers(memberPayload, (err, res) => {
-    //     if (err) return;
-
-    //     if (res) setIgnoredMentionedUserIds([...ignoredMentionedUserIds, ...users.map((u) => u.type_id)]);
-    //   })
-    // );
 
     setMentionedUserIds([]);
   };
