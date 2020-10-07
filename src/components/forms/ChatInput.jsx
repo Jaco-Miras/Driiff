@@ -509,13 +509,13 @@ const ChatInput = (props) => {
   const handleAddMentionedUsers = (users) => {
     let memberPayload = {
       channel_id: selectedChannel.id,
-      recipient_ids: users.map((u) => u.type_id),
+      recipient_ids: users.map((u) => u.id),
     };
     dispatch(
       postChannelMembers(memberPayload, (err, res) => {
         if (err) return;
 
-        if (res) setIgnoredMentionedUserIds([...ignoredMentionedUserIds, ...users.map((u) => u.type_id)]);
+        if (res) setIgnoredMentionedUserIds([...ignoredMentionedUserIds, ...users.map((u) => u.id)]);
       })
     );
 
@@ -539,7 +539,7 @@ const ChatInput = (props) => {
   const [modules, formats] = useQuillModules("chat", handleSubmit, "top", reactQuillRef, user.type === "external" ? selectedChannel.members : []);
   return (
     <Wrapper className="chat-input-wrapper">
-      {mentionedUserIds.length > 0 && <BodyMention onAddUsers={handleAddMentionedUsers} onDoNothing={handleIgnoreMentionedUsers} userIds={mentionedUserIds} type={"chat"} basedOnId={false} />}
+      {mentionedUserIds.length > 0 && <BodyMention onAddUsers={handleAddMentionedUsers} onDoNothing={handleIgnoreMentionedUsers} userIds={mentionedUserIds} type={selectedChannel.type === "TOPIC" ? "workspace" : "chat"}/>}
       <StyledQuillEditor className={"chat-input"} modules={modules} ref={reactQuillRef} onChange={handleQuillChange} editMode={editMode} />
       {editMode && <CloseButton icon="x" onClick={handleEditReplyClose} />}
     </Wrapper>
