@@ -1068,9 +1068,10 @@ const CreateEditCompanyPostModal = (props) => {
             options={wsOptions} value={form.selectedWorkspaces}
             onChange={handleSelectWorkspace} isMulti={true} isClearable={true}/>
         </WrapperDiv>
-        <WrapperDiv className={`modal-input ${isPersonal ? "" : "d-none"}`}>
+        <WrapperDiv className={`modal-input`}>
           <Label className={"modal-label"} for="responsible">{dictionary.addressedPeople}</Label>
           <SelectPeople options={userOptions} value={form.selectedUsers} onChange={handleSelectUser}/>
+          Select one or multiple persons, or use the function 'All' to address it to a whole Workspace in one go.
         </WrapperDiv>
         <StyledDescriptionInput
           className="modal-description"
