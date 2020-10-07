@@ -97,9 +97,9 @@ const CompanyPostItemPanel = (props) => {
   return (
     <Wrapper data-toggle={flipper ? "1" : "0"} className={`list-group-item post-item-panel ${className}`}
              onClick={() => openPost(post, "/posts")}>
-      <div className="custom-control custom-checkbox custom-checkbox-success">
+      {/* <div className="custom-control custom-checkbox custom-checkbox-success">
         <CheckBox name="test" checked={post.is_mark_done} onClick={handleMarkDone} disabled={disableOptions}/>
-      </div>
+      </div> */}
       {/* <div>
         <Icon className="mr-2" icon="star" onClick={handleStarPost}
               stroke={post.is_favourite ? "#ffc107" : "currentcolor"} fill={post.is_favourite ? "#ffc107" : "none"}/>
