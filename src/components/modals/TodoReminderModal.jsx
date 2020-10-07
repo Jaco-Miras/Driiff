@@ -250,7 +250,7 @@ const TodoReminderModal = (props) => {
           itemType === null &&
           <>
             <div className="row">
-              <div className="col-12 col-lg-4">{dictionary.title}</div>
+              <div className="col-12 col-lg-4 modal-label">{dictionary.title}</div>
               <div className="col-12 col-lg-8">
                 <FormInput
                   innerRef={handleTitleRef}
@@ -262,7 +262,7 @@ const TodoReminderModal = (props) => {
                   feedback={form.title.feedback}
                   autoFocus/>
               </div>
-              <div className="col-12 col-lg-4">{dictionary.description}</div>
+              <div className="col-12 col-lg-4 modal-label">{dictionary.description}</div>
               <div className="col-12 col-lg-8">
                 <StyledQuillEditor
                   defaultValue={form.description.value}
@@ -275,7 +275,7 @@ const TodoReminderModal = (props) => {
         {
           itemType === "POST" &&
           <>
-            <div className="row">
+            <div className="column">
               <div className="col-12 col-lg-4">{dictionary.author}</div>
               <div className="col-12 col-lg-8">{item.author.name}</div>
               <div className="col-12 col-lg-4">{dictionary.title}</div>
@@ -289,7 +289,7 @@ const TodoReminderModal = (props) => {
         {
           itemType === "CHAT" &&
           <>
-            <div className="row">
+            <div className="column">
               <div className="col-12 col-lg-4">{dictionary.author}</div>
               <div className="col-12 col-lg-8">{item.user ? item.user.name : "System"}</div>
               <div className="col-12 col-lg-4">{dictionary.title}</div>
@@ -303,7 +303,7 @@ const TodoReminderModal = (props) => {
         {
           itemType === "POST_COMMENT" &&
           <>
-            <div className="row">
+            <div className="column">
               <div className="col-12 col-lg-4">{dictionary.author}</div>
               <div className="col-12 col-lg-8">{item.author.name}</div>
               <div className="col-12 col-lg-4">{dictionary.title}</div>
@@ -314,8 +314,8 @@ const TodoReminderModal = (props) => {
             </div>
           </>
         }
-        <div className="row mt-3">
-          <div className="col-12 col-lg-4">{dictionary.remindMeOn}</div>
+        <div className="column mt-3">
+          <div className="col-12 col-lg-4 modal-label mb-1">{dictionary.remindMeOn}</div>
           <div className="col-12 col-lg-8">
             <InputContainer>
               <RadioInput
