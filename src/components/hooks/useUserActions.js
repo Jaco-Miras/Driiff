@@ -24,12 +24,14 @@ import {getAPIUrl, getCurrentDriffUrl} from "../../helpers/slugHelper";
 import {toggleLoading} from "../../redux/actions/globalActions";
 import {getDriffName} from "./useDriff";
 import {isIPAddress} from "../../helpers/commonFunctions";
+import {useHistory} from "react-router-dom";
 
 const useUserActions = () => {
   const dispatch = useDispatch();
+  const history = useHistory();
   const toaster = useToaster();
   const driffActions = useDriffActions();
-  const {generalSettings: {is_new}, setGeneralSetting} = useSettings();
+  const {generalSettings: {is_new}, driffSettings, userSettings, setGeneralSetting, setReadAnnouncement} = useSettings();
 
   const {getUserFilter} = useSelector((state) => state.users);
   const {user: loggedUser} = useSelector((state) => state.session);
@@ -417,10 +419,29 @@ const useUserActions = () => {
           is_new: false
         })
       } else {
+        if (driffSettings.ANNOUNCEMENT_AT && driffSettings.ANNOUNCEMENT_LINK && driffSettings.ANNOUNCEMENT_LINK !== "") {
+          let link = null;
+          if (userSettings.READ_ANNOUNCEMENT) {
+            if (userSettings.READ_ANNOUNCEMENT.timestamp < driffSettings.ANNOUNCEMENT_AT.timestamp) {
+              link = driffSettings.ANNOUNCEMENT_LINK.split("posts/")
+              link = `/posts/${link[1]}`
+              // trigger read action
+              setReadAnnouncement();
+            }
+          } else {
+            link = driffSettings.ANNOUNCEMENT_LINK.split("posts/")
+            link = `/posts/${link[1]}`
+            // trigger read action
+            setReadAnnouncement();
+          }
+          if (link) history.push(link)
+        }
         toaster.success(<>Welcome back, {loggedUser.first_name}</>)
       }
     }
-  }, [loggedUser, driffActions, is_new]);
+  }, [loggedUser, driffActions, is_new, driffSettings, userSettings]);
+
+  
 
   const inviteAsInternalUsers = useCallback((payload, callback) => {
     dispatch(

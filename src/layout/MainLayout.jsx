@@ -54,6 +54,7 @@ const MainLayout = (props) => {
   const files = useSelector((state) => state.files.files);
   const notifications = useSelector((state) => state.notifications.notifications);
   const {
+    driffSettings: {isCompSettingsLoaded},
     chatSettings: {sound_enabled},
     generalSettings: {notifications_on}
   } = useSettings();
@@ -108,10 +109,10 @@ const MainLayout = (props) => {
   }, []);
 
   useEffect(() => {
-    if (user.id) {
+    if (user.id && isCompSettingsLoaded) {
       displayWelcomeBanner()
     }
-  }, [user]);
+  }, [user, isCompSettingsLoaded]);
 
   return (
     <>
