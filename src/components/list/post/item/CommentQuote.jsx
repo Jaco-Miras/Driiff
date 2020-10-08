@@ -32,7 +32,6 @@ const QuoteWrapper = styled.div`
     top: calc(50% - 10px);
     background-color: #fff;
     cursor: pointer;
-    cursor: hand;
   }
   img,
   video {

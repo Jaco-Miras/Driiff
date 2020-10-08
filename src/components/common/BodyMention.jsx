@@ -1,6 +1,7 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
+import { useTranslation } from "../hooks";
 
 const BodyMentionDiv = styled.div`
   margin: 10px;
@@ -16,7 +17,9 @@ const BodyMentionDiv = styled.div`
   }
 `;
 const BodyMention = (props) => {
-  const { onAddUsers, onDoNothing, userIds, type = "post", basedOnId = true } = props;
+  const { onAddUsers, onDoNothing, userIds, type = "post" } = props;
+  
+  const {_t} = useTranslation();
   const users = useSelector((state) => state.users.users);
   const mentionedUsers = Object.values(users).filter((user) => {
     return userIds.some((id) => id === user.id);
@@ -39,27 +42,40 @@ const BodyMention = (props) => {
   const handleDoNothing = () => {
     onDoNothing(mentionedUsers);
   };
-  let pText = "but they are not recipients of this post";
-  let addText = "Add to post";
+
+  const dictionary = {
+    addToChat: _t("MENTION.ADD_TO_CHAT", "Add to chat"),
+    addToPost: _t("MENTION.ADD_TO_POST", "Add to post"),
+    addToWorkspace: _t("MENTION.ADD_TO_WORKSPACE", "Add to workspace"),
+    notChatMembers: _t("MENTION.NOT_CHAT_MEMBERS", "but they are not members of this chat"),
+    notWorkspaceMembers: _t("MENTION.NOT_WORKSPACE_MEMBERS", "but they are not members of this workspace"),
+    notPostRecipients: _t("MENTION.NOT_POST_RECIPIENTS", "but they are not recipients of this post"),
+    doNothing: _t("MENTION.DO_NOTHING", "Do nothing"),
+    youMentioned: _t("MENTION.YOU_MENTIONED", "You mentioned"),
+    and: _t("GENERAL.AND", "and")
+  };
+
+  let pText = dictionary.notPostRecipients;
+  let addText = dictionary.addToPost;
   if (type === "chat") {
-    pText = "but they are not members of this chat channel";
-    addText = "Add to chat channel";
+    pText = dictionary.notChatMembers;
+    addText = dictionary.addToChat;
   } else if (type === "workspace") {
-    pText = "but they are not members of this workspace";
-    addText = "Add to workspace";
+    pText = dictionary.notWorkspaceMembers;
+    addText = dictionary.addToWorkspace;
   }
   return (
     <BodyMentionDiv>
       <div>
         <p>
-          You mentioned&nbsp;
+          {dictionary.youMentioned}&nbsp;
           {mentionedUsers.map((mu, i) => {
             if (i === mentionedUsers.length - 1 && mentionedUsers.length > 1) {
               return (
                 <div className={"mention-data"}>
                   <span key={i} className="mention-normal">
                     {" "}
-                    and
+                    {dictionary.and}
                     <span className="mention" data-denotation-char="@" data-id={mu.type_id} data-value={mu.name}>
                       <span
                         className="mention-name pointer"
@@ -102,7 +118,7 @@ const BodyMention = (props) => {
           {addText}
         </button>
         <button className="btn btn-outline-primary" onClick={handleDoNothing}>
-          Do nothing
+          {dictionary.doNothing}
         </button>
       </div>
     </BodyMentionDiv>

@@ -4,12 +4,45 @@ import { useSelector } from "react-redux";
 import styled from "styled-components";
 import quillHelper from "../../helpers/quillHelper";
 import ImageTextLink from "../common/ImageTextLink";
+import { useParams } from "react-router-dom";
 
 const StyledImageTextLink = styled(ImageTextLink)`
   display: block;
 `;
 
+const PushLink = styled.a`  
+  display: inline-block;
+  position: relative;
+  margin-left: 0.5rem;
+  
+  .dark & {
+    background: #25282c;
+    color: #fff;
+  }
+  
+  &:before {
+    position: absolute;
+    left: -14px;
+    top: -2px;
+    bottom: 0;
+    width: 6px;
+    height: 100%;
+    background: #ffa341;
+    content: "";
+    border-radius: 6px 0 0 6px;
+  }
+  
+  .card-body {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+    padding: 1rem;
+  }
+`;
+
 const useSelectQuote = (props) => {
+
+  const params = useParams();
+
   const quotes = useSelector((state) => state.chat.chatQuotes);
   const selectedChannel = useSelector((state) => state.chat.selectedChannel);
   const [quote, setQuote] = useState(null);
@@ -21,7 +54,6 @@ const useSelectQuote = (props) => {
       if (selectedQuote.length) {
         setQuote(selectedQuote[0]);
         selectedQuote = selectedQuote[0];
-        console.log(selectedQuote);
         let selectedQuoteBody = "";
         if (selectedQuote.user) {
           let div = document.createElement("div");
@@ -73,10 +105,33 @@ const useSelectQuote = (props) => {
           }
           selectedQuoteBody += quillHelper.parseEmoji(selectedQuote.body);
         } else {
-          if (selectedQuote.body.includes("CHANNEL_UPDATE")) {
-            // system messages
+
+          if (selectedQuote.body.startsWith("CHANNEL_UPDATE")) {
             selectedQuoteBody = document.getElementById(`bot-${selectedQuote.id}`).outerHTML;
-            //selectedQuoteBody = selectedQuote.body;
+
+          } else if (selectedQuote.body.startsWith("POST_CREATE::")) {
+            let item = JSON.parse(selectedQuote.body.replace("POST_CREATE::", ""));
+            let link = "";
+            if (params && params.workspaceId) {
+              if (params.folderId) {
+                link = `/workspace/posts/${params.folderId}/${params.folderName}/${params.workspaceId}/${params.workspaceName}/post/${item.post.id}/${item.post.title}`;
+              } else {
+                link = `/workspace/posts/${params.workspaceId}/${params.workspaceName}/post/${item.post.id}/${item.post.title}`;
+              }
+            } else {
+              link = `/posts/${item.post.id}/${item.post.title}`;
+            }
+
+            let description = quillHelper.parseToText(item.post.description);
+            selectedQuoteBody = renderToString(<PushLink href={link} className="push-link" data-href={link}
+                                                         data-has-link="0" data-ctrl="0">
+              <b>{item.author.first_name}</b> created the post <b>"{item.post.title}"</b>
+              {
+                description.trim() !== "" &&
+                <span className="card card-body"
+                      dangerouslySetInnerHTML={{ __html: description }}/>
+              }
+            </PushLink>);
           } else {
             selectedQuoteBody = selectedQuote.body;
           }

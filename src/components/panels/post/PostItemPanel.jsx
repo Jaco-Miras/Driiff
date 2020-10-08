@@ -22,8 +22,11 @@ const Wrapper = styled.li`
   }
 
   .app-list-title {
+    color: #363636;
+    font-weight: 500;
+
     &.has-unread {
-      font-weight: bold;
+      font-weight: 500;
     }
 
     &.text-success {
@@ -50,6 +53,7 @@ const Wrapper = styled.li`
   }
   .post-partialBody {
     color: #b8b8b8;
+    font-weight: 400;
   }
 `;
 
@@ -89,12 +93,12 @@ const PostItemPanel = (props) => {
   return (
     <Wrapper data-toggle={flipper ? "1" : "0"} className={`list-group-item post-item-panel ${className}`}
              onClick={() => openPost(post)}>
-      <div className="custom-control custom-checkbox custom-checkbox-success">
+      {/* <div className="custom-control custom-checkbox custom-checkbox-success">
         <CheckBox name="test" checked={post.is_mark_done} onClick={handleMarkDone} disabled={disableOptions}/>
-      </div>
+      </div> */}
       <div>
-        <Icon className="mr-2" icon="star" onClick={handleStarPost}
-              stroke={post.is_favourite ? "#ffc107" : "currentcolor"} fill={post.is_favourite ? "#ffc107" : "none"}/>
+        {/* <Icon className="mr-2" icon="star" onClick={handleStarPost}
+              stroke={post.is_favourite ? "#ffc107" : "currentcolor"} fill={post.is_favourite ? "#ffc107" : "none"}/> */}
       </div>
       <div className="flex-grow-1 min-width-0">
         <div className="d-flex align-items-center justify-content-between">
@@ -113,7 +117,7 @@ const PostItemPanel = (props) => {
             {post.unread_count !== 0 && <div className="ml-2 mr-2 badge badge-primary badge-pill">{post.unread_count}</div>}
             <PostBadge post={post} dictionary={dictionary} />
             {post.users_responsible.length > 0 && <MemberLists members={post.users_responsible} classNames="mr-2"/>}
-            {!disableOptions && <Icon icon="archive" onClick={handleArchivePost} />}
+            {!disableOptions && <Icon class="btn btn-outline-light ml-2" icon="archive" onClick={handleArchivePost} />}
           </div>
         </div>
       </div>
@@ -133,6 +137,7 @@ const PostItemPanel = (props) => {
           <div onClick={() => sharePost(post)}>{dictionary.share}</div>
           {post.author.id !== user.id &&
           <div onClick={() => followPost(post)}>{post.is_followed ? dictionary.unFollow : dictionary.follow}</div>}
+          <div onClick={handleStarPost}>{post.is_favourite ? dictionary.unStar : dictionary.star}</div>
         </MoreOptions>
       )}
     </Wrapper>

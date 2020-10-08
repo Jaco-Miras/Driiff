@@ -9,7 +9,6 @@ import {
   deleteDraftReducer,
   saveDraft,
   updateDraft,
-  uploadDocument
 } from "../../redux/actions/globalActions";
 import { postCreate, putPost } from "../../redux/actions/postActions";
 import { Avatar, DatePicker, FileAttachments, SvgIconFeather } from "../common";
@@ -17,6 +16,8 @@ import { DropDocument } from "../dropzone/DropDocument";
 import { CheckBox, DescriptionInput, FolderSelect, PeopleSelect, PostVisibilitySelect } from "../forms";
 import { useGetWorkspaceAndUserOptions, useToaster, useTranslation } from "../hooks";
 import { ModalHeaderSection } from "./index";
+// upload document will not use action wrap in redux
+import { uploadDocument } from "../../redux/services/global";
 
 const WrapperDiv = styled(InputGroup)`
   display: flex;
@@ -498,11 +499,8 @@ const CreateEditWorkspacePostModal = (props) => {
     if (e === null) {
       setForm({
         ...form,
-        selectedWorkspaces: [{
-          ...activeTopic,
-          value: activeTopic.id,
-          label: activeTopic.name,
-        }],
+        selectedWorkspaces: [],
+        selectedUsers: [],
       });
     } else {
       setForm({
@@ -637,17 +635,6 @@ const CreateEditWorkspacePostModal = (props) => {
         };
       }), ...form.selectedUsers]
     });
-    // let memberPayload = {
-    //   channel_id: selectedChannel.id,
-    //   recipient_ids: users.map((u) => u.type_id),
-    // };
-    // dispatch(
-    //   postChannelMembers(memberPayload, (err, res) => {
-    //     if (err) return;
-
-    //     if (res) setIgnoredMentionedUserIds([...ignoredMentionedUserIds, ...users.map((u) => u.type_id)]);
-    //   })
-    // );
 
     setMentionedUserIds([]);
   };
