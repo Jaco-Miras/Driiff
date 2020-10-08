@@ -77,7 +77,7 @@ const useWorkspaceAndUserOptions = (selected = { addressTo: [] }) => {
             ...actualUsers,
             icon: "user-avatar",
             value: u.id,
-            label: u.name ? u.first_name : u.email,
+            label: u.name ? u.name : u.email,
             type: "USER"
           });
         }
