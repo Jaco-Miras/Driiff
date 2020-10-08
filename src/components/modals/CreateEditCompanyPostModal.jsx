@@ -612,7 +612,7 @@ const CreateEditCompanyPostModal = (props) => {
       if (attachedFiles.length) {
         uploadFiles(payload, "edit");
       } else {
-        if (form.selectedWorkspaces.length > 1) {
+        if (form.selectedAddressTo.length > 1) {
           dispatch(putCompanyPosts(payload, () => {
             setLoading(false);
             toggleAll(false);
@@ -631,7 +631,7 @@ const CreateEditCompanyPostModal = (props) => {
         uploadFiles(payload, "create");
         //setLoading(false);
       } else {
-        if (form.selectedWorkspaces.length > 1) {
+        if (form.selectedAddressTo.length > 1) {
           dispatch(postCreate(payload, () => {
             setLoading(false);
             toggleAll(false);
