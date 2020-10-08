@@ -933,7 +933,13 @@ const ChatBubble = (props) => {
       replyQuoteBody = renderToString(newBody);
     } else if (replyQuoteBody.includes("POST_CREATE::")) {
       let item = JSON.parse(reply.quote.body.replace("POST_CREATE::", ""));
-      replyQuoteBody = renderToString(<><b>{item.author.first_name}</b> {dictionary.createdThePost} <b>"{item.post.title}"</b></>)
+      let description = quillHelper.parseToText(item.post.description);
+      replyQuoteBody = renderToString(<>
+              <b>{item.author.first_name}</b> {dictionary.createdThePost} <b>"{item.post.title}"</b>
+              <span className="card card-body" style={{margin: 0, padding: "10px"}}
+                dangerouslySetInnerHTML={{__html: description}}/>
+              </>
+      )
     }
     setQuoteBody(replyQuoteBody);
     setBody(replyBody);
