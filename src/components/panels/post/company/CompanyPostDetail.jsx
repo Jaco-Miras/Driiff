@@ -114,6 +114,10 @@ const Icon = styled(SvgIconFeather)`
   }
 `;
 
+const MarkAsRead = styled.div`
+  cursor: pointer;
+`;
+
 const CompanyPostDetail = (props) => {
   const { post, postActions, user, onGoBack, dictionary } = props;
   const { markAsRead, markAsUnread, sharePost, followPost, remind } = postActions;
@@ -243,35 +247,41 @@ const CompanyPostDetail = (props) => {
         <ReminderNote todoReminder={post.todo_reminder} type="POST"/>
       }
       <MainHeader className="card-header d-flex justify-content-between">
-        <div className={"company-post-detail-header"}>
-          <div>
-            <ul>
-              <li>
-                <Icon className="close mr-2" icon="arrow-left" onClick={handleClosePost}/>
-              </li>
-              <li>
-                <h5 ref={refs.title} className="post-title mb-0">
-                  <span>{post.title}</span>
-                </h5>
-                <div className="author-name">
-                  <ToolTip content={post.author.name}>
-                    {dictionary.by}{" "}
-                    <span onClick={handleAuthorClick} className="cursor-pointer">
+        <div>
+          <ul>
+            <li>
+              <Icon className="close mr-2" icon="arrow-left" onClick={handleClosePost}/>
+            </li>
+            <li>
+              <h5 ref={refs.title} className="post-title mb-0">
+                <span>{post.title}</span>
+              </h5>
+              <div className="author-name">
+                <ToolTip content={post.author.name}>
+                  {dictionary.by}{" "}
+                  <span onClick={handleAuthorClick} className="cursor-pointer">
                       {post.author.first_name}
                     </span>
-                  </ToolTip>
-                </div>
-              </li>
-            </ul>
-          </div>
+                </ToolTip>
+              </div>
+            </li>
+          </ul>
         </div>
         <div>
+          {post.author.id !== user.id && post.is_read_requirement && (
+            <MarkAsRead className="d-sm-inline d-none">
+              <button className="btn btn-primary btn-block" onClick={() => markAsRead(post)}>
+                {dictionary.markAsRead}
+              </button>
+            </MarkAsRead>
+          )}
           {post.author.id === user.id && (
             <ul>
               <li>
                 <span data-toggle="modal" data-target="#editTaskModal">
-                  <a onClick={() => postActions.showModal("edit_company", post)} className="btn btn-outline-light ml-2" title="" data-toggle="tooltip" data-original-title="Edit Task">
-                    <Icon icon="edit-3" />
+                  <a onClick={() => postActions.showModal("edit_company", post)} className="btn btn-outline-light ml-2"
+                     title="" data-toggle="tooltip" data-original-title="Edit Task">
+                    <Icon icon="edit-3"/>
                   </a>
                 </span>
               </li>

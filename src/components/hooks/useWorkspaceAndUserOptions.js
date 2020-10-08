@@ -16,11 +16,16 @@ const useWorkspaceAndUserOptions = (selected = { addressTo: [] }) => {
   const [progress, setProgress] = useState(false);
 
   const getAddressTo = (postRecipients) => {
+    const internalUsers = Object.values(actualUsers).filter(u => u.active === 1 && u.type === "internal").map(u => u);
     return [
-      ...postRecipients.recipients.map(r => {
+      ...postRecipients.map(r => {
         return {
           ...r,
           icon: ["TOPIC", "DEPARTMENT"].includes(postRecipients.type) ? "compass" : "user-avatar",
+          ...([postRecipients.type === "DEPARTMENT"] && {
+            member_ids: internalUsers.map(u => u.id),
+            members: internalUsers.map(u => u),
+          }),
           value: r.id,
           label: r.name,
         };
