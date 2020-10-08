@@ -14,9 +14,8 @@ import { postCreate, putCompanyPosts, putPost } from "../../redux/actions/postAc
 import { Avatar, DatePicker, FileAttachments, SvgIconFeather } from "../common";
 import { DropDocument } from "../dropzone/DropDocument";
 import { CheckBox, DescriptionInput, FolderSelect, PeopleSelect, PostVisibilitySelect } from "../forms";
-import { useGetWorkspaceAndUserOptions, useToaster, useTranslation } from "../hooks";
+import { useToaster, useTranslation, useWorkspaceAndUserOptions } from "../hooks";
 import { ModalHeaderSection } from "./index";
-// upload document will not use action wrap in redux
 import { uploadDocument } from "../../redux/services/global";
 
 const WrapperDiv = styled(InputGroup)`
@@ -320,9 +319,7 @@ const CreateEditCompanyPostModal = (props) => {
     is_private: false,
     has_folder: false,
     title: "",
-    selectedUsers: [],
-    selectedWorkspaces: [],
-    selectedPersonal: [],
+    selectedAddressTo: [],
     body: "",
     textOnly: "",
     show_at: null,
@@ -330,14 +327,10 @@ const CreateEditCompanyPostModal = (props) => {
   });
 
   const {
-    workspaces: wsOptions, users: userOptions,
-    selectedUserIds, isPersonal,
-    getAddressedByOptionByValue, getSelectedWorkspaceUser,
-    getSelectedUsersValueByUsers, getSelectedUsersValueByWorkspaces,
-    getSelectedUsersWorkspace, getCompanyAsWorkspace
-  } = useGetWorkspaceAndUserOptions({
-    workspaces: form.selectedWorkspaces,
-    users: form.selectedUsers,
+    options: addressToOptions, getDefaultAddressToAsCompany, getAddressTo,
+    user_ids, responsible_ids, recipient_ids, is_personal, workspace_ids
+  } = useWorkspaceAndUserOptions({
+    addressTo: form.selectedAddressTo
   });
 
   const dictionary = {
@@ -350,6 +343,7 @@ const CreateEditCompanyPostModal = (props) => {
     workspace: _t("POST.WORKSPACE", "Workspace"),
     responsible: _t("POST.RESPONSIBLE", "Responsible"),
     addressed: _t("POST.ADDRESSED", "Addressed"),
+    addressedTo: _t("POST.ADDRESSED_TO", "Addressed to"),
     addressedPeople: _t("POST.ADDRESSED_PEOPLE", "Addressed people"),
     addressedPeopleOnly: _t("POST.ADDRESSED_PEOPLE_ONLY", "Addressed people only"),
     description: _t("POST.DESCRIPTION", "Description"),
@@ -366,15 +360,15 @@ const CreateEditCompanyPostModal = (props) => {
     draftBody: _t("POST.DRAFT_BODY", "Not sure about the content? Save it as a draft."),
     postVisibilityInfo: _t("POST.POST_VISIBILITY_INFO_SINGULAR_ALL",
       `This post will be visible to <span class="user-popup">::user_count::</span> in <span class="workspace-popup">::workspace_count::</span>`, {
-        user_count: selectedUserIds.length === 1 ?
+        user_count: user_ids.length === 1 ?
           _t("POST.NUMBER_USER", "1 user") :
           _t("POST.NUMBER_USERS", "::count:: users", {
-            count: selectedUserIds.length
+            count: user_ids.length
           }),
-        workspace_count: form.selectedWorkspaces.length === 1 ?
+        workspace_count: workspace_ids.length === 1 ?
           _t("POST.NUMBER_WORKSPACE", "1 workspace") :
           _t("POST.NUMBER_WORKSPACES", "::count:: workspaces", {
-            count: form.selectedWorkspaces.length
+            count: workspace_ids.length
           }),
       }),
   };
@@ -511,45 +505,16 @@ const CreateEditCompanyPostModal = (props) => {
     toggleAll(false);
   };
 
-  const handleSelectUser = (e) => {
+  const handleSelectAddressTo = (e) => {
     if (e === null) {
       setForm({
         ...form,
-        selectedUsers: [],
+        selectedAddressTo: [],
       });
     } else {
       setForm({
         ...form,
-        selectedUsers: getSelectedUsersValueByUsers(e, userOptions)
-      });
-    }
-  };
-
-  const handleSelectVisibility = (e) => {
-    setForm({
-      ...form,
-      selectedPersonal: e,
-      ...(e.value && {
-        selectedUsers: form.selectedUsers.filter(su => su.type === "USER")
-      }),
-      ...(!e.value && {
-        selectedUsers: getSelectedUsersValueByWorkspaces(form.selectedWorkspaces)
-      })
-    });
-  };
-
-  const handleSelectWorkspace = (e) => {
-    if (e === null) {
-      setForm({
-        ...form,
-        selectedWorkspaces: [],
-        selectedUsers: [],
-      });
-    } else {
-      setForm({
-        ...form,
-        selectedWorkspaces: e,
-        selectedUsers: getSelectedUsersValueByWorkspaces(e)
+        selectedAddressTo: e,
       });
     }
   };
@@ -602,14 +567,14 @@ const CreateEditCompanyPostModal = (props) => {
     let payload = {
       title: form.title,
       body: form.body,
-      responsible_ids: form.selectedUsers.map((u) => u.value),
+      responsible_ids: responsible_ids,
       type: "post",
-      personal: form.selectedPersonal.value,
-      recipient_ids: form.selectedWorkspaces.filter((ws) => ws.type !== "FOLDER").map((ws) => ws.value),
+      personal: is_personal,
+      recipient_ids: recipient_ids,
       must_read: form.must_read ? 1 : 0,
       must_reply: form.reply_required ? 1 : 0,
       read_only: form.no_reply ? 1 : 0,
-      workspace_ids: form.selectedWorkspaces.filter((ws) => ws.type === "FOLDER").map((ws) => ws.value),
+      workspace_ids: workspace_ids,
       show_at: form.show_at ? moment(form.show_at, "YYYY-MM-DD").format("YYYY-MM-DD") : form.end_at ? moment(new Date()).add(1, "day").format("YYYY-MM-DD") : null,
       end_at: form.end_at ? moment(form.end_at, "YYYY-MM-DD").format("YYYY-MM-DD") : null,
       tag_ids: [],
@@ -689,7 +654,7 @@ const CreateEditCompanyPostModal = (props) => {
 
     setForm({
       ...form,
-      selectedUsers: [...users.map((user) => {
+      selectedAddressTo: [...users.map((user) => {
         return {
           id: user.id,
           value: user.id,
@@ -698,8 +663,9 @@ const CreateEditCompanyPostModal = (props) => {
           first_name: user.first_name,
           profile_image_link: user.profile_image_link,
           type: "USER",
+          icon: "user-avatar",
         };
-      }), ...form.selectedUsers]
+      }), ...form.selectedAddressTo]
     });
 
     setMentionedUserIds([]);
@@ -714,7 +680,7 @@ const CreateEditCompanyPostModal = (props) => {
     mention_ids = mention_ids.map((id) => parseInt(id)).filter((id) => !isNaN(id));
     if (mention_ids.length) {
       //check for recipients/type
-      let ignoreIds = [user.id, ...form.selectedUsers.map((u) => u.id), ...ignoredMentionedUserIds];
+      let ignoreIds = [user.id, ...form.selectedAddressTo.map((u) => u.id), ...ignoredMentionedUserIds];
       let userIds = mention_ids.filter((id) => {
         return !ignoreIds.some((iid) => iid === id);
       });
@@ -966,23 +932,7 @@ const CreateEditCompanyPostModal = (props) => {
         no_reply: item.post.is_read_only,
         must_read: item.post.is_must_read,
         reply_required: item.post.is_must_reply,
-        selectedPersonal: getAddressedByOptionByValue(item.post.is_personal),
-        selectedWorkspaces: [
-          ...item.post.recipients.map(r => {
-            return {
-              ...r,
-              value: r.id,
-              label: r.name,
-            };
-          }),
-        ],
-        selectedUsers: item.post.users_responsible.map((u) => {
-          return {
-            ...u,
-            value: u.id,
-            label: u.name,
-          };
-        }),
+        selectedAddressTo: getAddressTo(item.post.recipients),
         file_ids: item.post.files.map((f) => f.id),
         show_at: item.post.show_at,
         end_at: item.post.end_at
@@ -1006,27 +956,13 @@ const CreateEditCompanyPostModal = (props) => {
 
   useEffect(() => {
     if (!init && company && mode !== "edit") {
-      const defaultWs = getCompanyAsWorkspace();
       setForm({
         ...form,
-        selectedWorkspaces: defaultWs,
-        selectedUsers: [...getSelectedWorkspaceUser(defaultWs)],
-        selectedPersonal: getAddressedByOptionByValue(false),
+        selectedAddressTo: getDefaultAddressToAsCompany(),
       });
       setInit(true);
     }
   }, [company]);
-
-  useEffect(() => {
-    if (init) {
-      if (form.selectedPersonal.value !== isPersonal) {
-        setForm({
-          ...form,
-          selectedPersonal: getAddressedByOptionByValue(isPersonal),
-        });
-      }
-    }
-  }, [form, setForm, isPersonal]);
 
   return (
     <Modal isOpen={modal} toggle={toggle} centered size={"lg"} onOpened={onOpened}>
@@ -1064,21 +1000,9 @@ const CreateEditCompanyPostModal = (props) => {
           </div>
         </WrapperDiv>
         <WrapperDiv className={"modal-input"}>
-          <div className="w-100">
-            <Label className={"modal-label"} for="visibility">{dictionary.addressed}</Label>
-            <SelectPostVisibility value={form.selectedPersonal} onChange={handleSelectVisibility}/>
-          </div>
-        </WrapperDiv>
-        <WrapperDiv className={"modal-input"}>
-          <Label className={"modal-label"} for="workspace">{dictionary.workspace}</Label>
-          <SelectWorkspace
-            options={wsOptions} value={form.selectedWorkspaces}
-            onChange={handleSelectWorkspace} isMulti={true} isClearable={true}/>
-        </WrapperDiv>
-        <WrapperDiv className={`modal-input`}>
-          <Label className={"modal-label"} for="responsible">{dictionary.addressedPeople}</Label>
-          <SelectPeople options={userOptions} value={form.selectedUsers} onChange={handleSelectUser}/>
-          Select one or multiple persons, or use the function 'All' to address it to a whole Workspace in one go.
+          <Label className={"modal-label"} for="workspace">{dictionary.addressedTo}</Label>
+          <FolderSelect options={addressToOptions} value={form.selectedAddressTo}
+                        onChange={handleSelectAddressTo} isMulti={true} isClearable={true}/>
         </WrapperDiv>
         <StyledDescriptionInput
           className="modal-description"
@@ -1088,7 +1012,6 @@ const CreateEditCompanyPostModal = (props) => {
           onOpenFileDialog={handleOpenFileDialog}
           defaultValue={item.hasOwnProperty("draft") ? form.body : mode === "edit" ? item.post.body : ""}
           mode={mode}
-          //members={[]}
           required
           mentionedUserIds={mentionedUserIds}
           onAddUsers={handleAddMentionedUsers}
@@ -1139,7 +1062,7 @@ const CreateEditCompanyPostModal = (props) => {
           <div className="post-visibility-container" ref={handlePostVisibilityRef}>
             <span className="user-list">
               {
-                users.filter(u => selectedUserIds.includes(u.type_id)).map(u => {
+                form.selectedAddressTo.filter(u => user_ids.includes(u.type_id)).map(u => {
                   return <span key={u.id}>
                     <span
                       title={u.email}
@@ -1156,7 +1079,7 @@ const CreateEditCompanyPostModal = (props) => {
             </span>
             <span className="workspace-list">
               {
-                form.selectedWorkspaces.map(w => {
+                form.selectedAddressTo.filter(w => workspace_ids.includes(w.type_id)).map(w => {
                   return <span className="d-flex justify-content-start align-items-center pt-2 pb-2" key={w.id}>
                     <span className="item-workspace-name">{w.name}</span>
                   </span>;
@@ -1169,7 +1092,7 @@ const CreateEditCompanyPostModal = (props) => {
         </WrapperDiv>
         <WrapperDiv>
           <button className="btn btn-primary"
-                  disabled={form.selectedUsers.length === 0 || form.title === "" || form.textOnly.trim() === ""}
+                  disabled={form.selectedAddressTo.length === 0 || form.title === ""}
                   onClick={handleConfirm}>
             {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"/>}
             {mode === "edit" ? dictionary.updatePostButton : dictionary.createPostButton}

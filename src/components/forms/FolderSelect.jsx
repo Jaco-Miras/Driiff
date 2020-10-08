@@ -1,9 +1,9 @@
-import React, {forwardRef} from "react";
-import Select, {components} from "react-select";
+import React, { forwardRef } from "react";
+import Select, { components } from "react-select";
 import styled from "styled-components";
-import {SvgIconFeather} from "../common";
-import {darkTheme, lightTheme} from "../../helpers/selectTheme";
-import {useSettings} from "../hooks";
+import { Avatar, SvgIconFeather } from "../common";
+import { darkTheme, lightTheme } from "../../helpers/selectTheme";
+import { useSettings } from "../hooks";
 
 const SelectOption = styled.div`
   display: flex;
@@ -34,13 +34,27 @@ const LockIcon = styled(SvgIconFeather)`
   margin-left: 5px;
 `;
 
+const StyledAvatar = styled(Avatar)`
+  min-width: 1.75rem;
+  min-height: 1.75rem;
+  margin: -2px 10px 0 0;
+  border: none;
+  color: #505050 !important;
+`;
+
 const Option = (props) => {
   return (
     <SelectOption>
       <components.Option {...props}>
         {props.data && (
           <>
-            <Icon icon={props.data.icon ? props.data.icon : "folder"} />
+            {
+              props.data.icon === "user-avatar" ?
+                <StyledAvatar className="react-select-avatar" key={props.data.id}
+                              imageLink={props.data.profile_image_link}
+                              name={props.data.name} partialName={props.data.partial_name}/> :
+                <Icon icon={props.data.icon ? props.data.icon : "folder"}/>
+            }
             {props.children}
             {props.data.is_lock === 1 && <LockIcon icon="lock" strokeWidth="2"/>}
           </>
