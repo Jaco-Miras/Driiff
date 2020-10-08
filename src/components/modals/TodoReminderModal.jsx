@@ -110,7 +110,8 @@ const TodoReminderModal = (props) => {
     snooze: _t("REMINDER.SNOOZE", "Remind me"),
     cancel: _t("REMINDER.CANCEL", "Cancel"),
     feedbackReminderDateFuture: _t("FEEDBACK.REMINDER_DATE_MUST_BE_FUTURE", "Reminder date must be in the future."),
-    feedbackReminderDateOverdue: _t("FEEDBACK.REMINDER_DATE_OVERDUE", "Note: Reminder date is overdue.")
+    feedbackReminderDateOverdue: _t("FEEDBACK.REMINDER_DATE_OVERDUE", "Note: Reminder date is overdue."),
+    reminderInfo: _t("REMINDER.INFO", "Reminders help to organize your thoughts and guide you through your day.")
   };
 
   if (itemType === null) {
@@ -250,6 +251,7 @@ const TodoReminderModal = (props) => {
           itemType === null &&
           <>
             <div className="column">
+              <div className="col-12 modal-info">{dictionary.reminderInfo}</div>
               <div className="col-12 modal-label">{dictionary.title}</div>
               <div className="col-12">
                 <FormInput
@@ -276,6 +278,7 @@ const TodoReminderModal = (props) => {
           itemType === "POST" &&
           <>
             <div className="column">
+              <div className="col-12 modal-info">{dictionary.reminderInfo}</div>
               <div className="col-12 modal-label">{dictionary.author}</div>
               <div className="col-12 mb-3">{item.author.name}</div>
               <div className="col-12 modal-label">{dictionary.title}</div>
@@ -290,6 +293,7 @@ const TodoReminderModal = (props) => {
           itemType === "CHAT" &&
           <>
             <div className="column">
+              <div className="col-12 modal-info">{dictionary.reminderInfo}</div>
               <div className="col-12 modal-label">{dictionary.author}</div>
               <div className="col-12 mb-3">{item.user ? item.user.name : "System"}</div>
               <div className="col-12 modal-label">{dictionary.title}</div>
@@ -304,6 +308,7 @@ const TodoReminderModal = (props) => {
           itemType === "POST_COMMENT" &&
           <>
             <div className="column">
+              <div className="col-12 modal-info">{dictionary.reminderInfo}</div>
               <div className="col-12 modal-label">{dictionary.author}</div>
               <div className="col-12 mb-3">{item.author.name}</div>
               <div className="col-12 modal-label">{dictionary.title}</div>
