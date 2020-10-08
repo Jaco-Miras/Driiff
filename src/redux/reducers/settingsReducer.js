@@ -271,6 +271,16 @@ export default (state = INITIAL_STATE, action) => {
         }
       }
     }
+    case "UPDATE_COMPANY_POST_ANNOUNCEMENT": {
+      return {
+        ...state,
+        driff: {
+          ...state.driff,
+          ANNOUNCEMENT_LINK: action.data.ANNOUNCEMENT_LINK,
+          ANNOUNCEMENT_AT: action.data.ANNOUNCEMENT_AT,
+        },
+      };
+    }
     default:
       return state;
   }

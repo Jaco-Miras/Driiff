@@ -108,7 +108,7 @@ import {
   joinWorkspaceReducer,
   updateWorkspaceCounter
 } from "../../redux/actions/workspaceActions";
-import { incomingUpdateCompanyName } from "../../redux/actions/settingsActions";
+import { incomingUpdateCompanyName, updateCompanyPostAnnouncement } from "../../redux/actions/settingsActions";
 
 class SocketListeners extends Component {
   constructor(props) {
@@ -520,6 +520,9 @@ class SocketListeners extends Component {
       });
 
     window.Echo.private(`${localStorage.getItem("slug") === "dev24admin" ? "dev" : localStorage.getItem("slug")}.App.Broadcast`)
+      .listen(".company-announcement", (e) => {
+        this.props.updateCompanyPostAnnouncement(e);
+      })
       .listen(".company-request-form-notification", (e) => {
         console.log(e, "company-request-form-notification");
         switch (e.SOCKET_TYPE) {
@@ -1225,6 +1228,7 @@ function mapDispatchToProps(dispatch) {
     incomingPostMarkDone: bindActionCreators(incomingPostMarkDone, dispatch),
     incomingFavouriteItem: bindActionCreators(incomingFavouriteItem, dispatch),
     incomingReadUnreadReducer: bindActionCreators(incomingReadUnreadReducer, dispatch),
+    updateCompanyPostAnnouncement: bindActionCreators(updateCompanyPostAnnouncement, dispatch)
   };
 }
 
