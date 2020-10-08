@@ -290,6 +290,8 @@ const MainNavigationTabPanel = (props) => {
     addPersonalShortcut: _t("SIDEBAR.ADD_PERSONAL_SHORTCUT", "Add personal shortcut"),
     todoLinks: _t("SIDEBAR.TODO_LINKS", "Reminders"),
     addTodoItem: _t("SIDEBAR.ADD_TODO_ITEM", "Add reminder"),
+    createWorkspace: _t("WORKSPACE.CREATE_WORKSPACE", "Create workspace"),
+    sidebarTextCreateWorkspace: _t("WORKSPACE.TEXT_CREATE_WORKSPACE", "Create workspace"),
   };
 
   const user = useSelector((state) => state.session.user);
@@ -477,9 +479,9 @@ const MainNavigationTabPanel = (props) => {
             <EmptyState>
               <div>
                 <SvgEmptyState height={200} icon={2} />
-                <h5>Start by adding a new workspace down there!</h5>
+                <h5>{dictionary.sidebarTextCreateWorkspace}</h5>
                 <button className="btn btn-primary mt-2" onClick={handleShowWorkspaceModal}>
-                  Create workspace
+                  {dictionary.createWorkspace}
                 </button>
               </div>
             </EmptyState>

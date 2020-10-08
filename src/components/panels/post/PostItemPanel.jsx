@@ -2,7 +2,6 @@ import React from "react";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
 import { SvgIconFeather } from "../../common";
-import { CheckBox } from "../../forms";
 import { MoreOptions } from "../common";
 import { PostBadge } from "./index";
 import { MemberLists } from "../../list/members";
@@ -117,7 +116,8 @@ const PostItemPanel = (props) => {
             {post.unread_count !== 0 && <div className="ml-2 mr-2 badge badge-primary badge-pill">{post.unread_count}</div>}
             <PostBadge post={post} dictionary={dictionary} />
             {post.users_responsible.length > 0 && <MemberLists members={post.users_responsible} classNames="mr-2"/>}
-            {!disableOptions && <Icon class="btn btn-outline-light ml-2" icon="archive" onClick={handleArchivePost} />}
+            {!disableOptions &&
+            <Icon className="btn btn-outline-light ml-2" icon="archive" onClick={handleArchivePost}/>}
           </div>
         </div>
       </div>

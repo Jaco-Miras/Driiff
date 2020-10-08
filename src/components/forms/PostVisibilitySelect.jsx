@@ -1,9 +1,39 @@
-import React, {forwardRef} from "react";
-import Select, {components} from "react-select";
+import React, { forwardRef } from "react";
+import Select, { components } from "react-select";
 import styled from "styled-components";
-import {SvgIconFeather} from "../common";
-import {darkTheme, lightTheme} from "../../helpers/selectTheme";
-import {useSettings, useTranslation} from "../hooks";
+import { SvgIconFeather } from "../common";
+import { darkTheme, lightTheme } from "../../helpers/selectTheme";
+import { useSettings, useTranslation } from "../hooks";
+
+const StyledSelect = styled(Select)`
+  .dark & {
+    > div {
+      > div {
+        background-color: #25282c;
+        margin: 10px;
+        border-radius: 2px;
+        color: #fff;
+        
+        > div {
+          color: #c7c7c7;
+          
+          &[class$="indicatorContainer"] {
+            background: rgb(17, 20, 23);        
+          }
+        }
+      }
+    }
+    [class$="menu"] {
+      > div {        
+        > div {        
+          > div {
+            //background: rgb(17, 20, 23);
+          }
+        }      
+      }        
+    }
+  }
+`;
 
 const SelectOption = styled.div`
   display: flex;
@@ -63,14 +93,14 @@ const PostVisibilitySelect = forwardRef((props, ref) => {
   const options = [{
     icon: "unlock",
     value: false,
-    label: postType === "company" ? dictionary.visibleAllInternal : dictionary.visibleAllWorkspace
+    label: dictionary.visibleAllWorkspace,
   }, {
     icon: "lock",
     value: true,
     label: dictionary.responsbileUsers
   }];
 
-  return <Select
+  return <StyledSelect
     ref={ref} className={`react-select-container ${className}`}
     styles={dark_mode === "0" ? lightTheme : darkTheme} isMulti={false} isClearable={false}
     components={components}
