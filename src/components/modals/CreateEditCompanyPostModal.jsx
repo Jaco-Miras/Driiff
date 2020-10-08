@@ -93,8 +93,7 @@ const WrapperDiv = styled(InputGroup)`
         overflow: hidden;
       }
     }
-  }
-  
+  }  
   .user-popup {
     cursor: pointer;
     margin: 0 0.25rem;  
@@ -536,8 +535,8 @@ const CreateEditCompanyPostModal = (props) => {
           must_read: form.must_read ? 1 : 0,
           must_reply: form.reply_required ? 1 : 0,
           read_only: form.no_reply ? 1 : 0,
-          personal: form.selectedPersonal,
-          users_responsible: form.selectedUsers,
+          personal: is_personal,
+          users_responsible: responsible_ids,
         },
         timestamp: timestamp,
         id: timestamp,

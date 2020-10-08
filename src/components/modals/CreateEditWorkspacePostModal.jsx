@@ -550,7 +550,8 @@ const CreateEditWorkspacePostModal = (props) => {
           must_read: form.must_read ? 1 : 0,
           must_reply: form.reply_required ? 1 : 0,
           read_only: form.no_reply ? 1 : 0,
-          users_responsible: form.selectedAddressTo,
+          personal: is_personal,
+          users_responsible: responsible_ids,
         },
         timestamp: timestamp,
         topic_id: activeTopic.id,
@@ -1040,7 +1041,7 @@ const CreateEditWorkspacePostModal = (props) => {
           <div className="post-visibility-container" ref={handlePostVisibilityRef}>
             <span className="user-list">
               {
-                form.selectedAddressTo.filter(u => user_ids.includes(u.type_id)).map(u => {
+                users.filter(u => user_ids.includes(u.id)).map(u => {
                   return <span key={u.id}>
                     <span
                       title={u.email}
