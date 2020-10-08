@@ -110,7 +110,8 @@ const TodoReminderModal = (props) => {
     snooze: _t("REMINDER.SNOOZE", "Remind me"),
     cancel: _t("REMINDER.CANCEL", "Cancel"),
     feedbackReminderDateFuture: _t("FEEDBACK.REMINDER_DATE_MUST_BE_FUTURE", "Reminder date must be in the future."),
-    feedbackReminderDateOverdue: _t("FEEDBACK.REMINDER_DATE_OVERDUE", "Note: Reminder date is overdue.")
+    feedbackReminderDateOverdue: _t("FEEDBACK.REMINDER_DATE_OVERDUE", "Note: Reminder date is overdue."),
+    reminderInfo: _t("REMINDER.INFO", "Reminders help to organize your thoughts and guide you through your day.")
   };
 
   if (itemType === null) {
@@ -249,9 +250,10 @@ const TodoReminderModal = (props) => {
         {
           itemType === null &&
           <>
-            <div className="row">
-              <div className="col-12 col-lg-4">{dictionary.title}</div>
-              <div className="col-12 col-lg-8">
+            <div className="column">
+              <div className="col-12 modal-info">{dictionary.reminderInfo}</div>
+              <div className="col-12 modal-label">{dictionary.title}</div>
+              <div className="col-12">
                 <FormInput
                   innerRef={handleTitleRef}
                   name="title"
@@ -262,8 +264,8 @@ const TodoReminderModal = (props) => {
                   feedback={form.title.feedback}
                   autoFocus/>
               </div>
-              <div className="col-12 col-lg-4">{dictionary.description}</div>
-              <div className="col-12 col-lg-8">
+              <div className="col-12 modal-label">{dictionary.description}</div>
+              <div className="col-12">
                 <StyledQuillEditor
                   defaultValue={form.description.value}
                   onChange={handleQuillChange}
@@ -275,13 +277,14 @@ const TodoReminderModal = (props) => {
         {
           itemType === "POST" &&
           <>
-            <div className="row">
-              <div className="col-12 col-lg-4">{dictionary.author}</div>
-              <div className="col-12 col-lg-8">{item.author.name}</div>
-              <div className="col-12 col-lg-4">{dictionary.title}</div>
-              <div className="col-12 col-lg-8">{form.title.value}</div>
-              <div className="col-12 col-lg-4">{dictionary.description}</div>
-              <div className="col-12 col-lg-8"
+            <div className="column">
+              <div className="col-12 modal-info">{dictionary.reminderInfo}</div>
+              <div className="col-12 modal-label">{dictionary.author}</div>
+              <div className="col-12 mb-3">{item.author.name}</div>
+              <div className="col-12 modal-label">{dictionary.title}</div>
+              <div className="col-12 mb-3">{form.title.value}</div>
+              <div className="col-12 modal-label">{dictionary.description}</div>
+              <div className="col-12"
                    dangerouslySetInnerHTML={{__html: quillHelper.parseEmoji(form.description.value)}}/>
             </div>
           </>
@@ -289,13 +292,14 @@ const TodoReminderModal = (props) => {
         {
           itemType === "CHAT" &&
           <>
-            <div className="row">
-              <div className="col-12 col-lg-4">{dictionary.author}</div>
-              <div className="col-12 col-lg-8">{item.user ? item.user.name : "System"}</div>
-              <div className="col-12 col-lg-4">{dictionary.title}</div>
-              <div className="col-12 col-lg-8">{form.title.value}</div>
-              <div className="col-12 col-lg-4">{dictionary.message}</div>
-              <div className="col-12 col-lg-8"
+            <div className="column">
+              <div className="col-12 modal-info">{dictionary.reminderInfo}</div>
+              <div className="col-12 modal-label">{dictionary.author}</div>
+              <div className="col-12 mb-3">{item.user ? item.user.name : "System"}</div>
+              <div className="col-12 modal-label">{dictionary.title}</div>
+              <div className="col-12 mb-3">{form.title.value}</div>
+              <div className="col-12 modal-label">{dictionary.message}</div>
+              <div className="col-12 mb-3"
                    dangerouslySetInnerHTML={{__html: quillHelper.parseEmoji(form.description.value)}}/>
             </div>
           </>
@@ -303,20 +307,21 @@ const TodoReminderModal = (props) => {
         {
           itemType === "POST_COMMENT" &&
           <>
-            <div className="row">
-              <div className="col-12 col-lg-4">{dictionary.author}</div>
-              <div className="col-12 col-lg-8">{item.author.name}</div>
-              <div className="col-12 col-lg-4">{dictionary.title}</div>
-              <div className="col-12 col-lg-8">{form.title.value}</div>
-              <div className="col-12 col-lg-4">{dictionary.message}</div>
-              <div className="col-12 col-lg-8"
+            <div className="column">
+              <div className="col-12 modal-info">{dictionary.reminderInfo}</div>
+              <div className="col-12 modal-label">{dictionary.author}</div>
+              <div className="col-12 mb-3">{item.author.name}</div>
+              <div className="col-12 modal-label">{dictionary.title}</div>
+              <div className="col-12 mb-3">{form.title.value}</div>
+              <div className="col-12 modal-label">{dictionary.message}</div>
+              <div className="col-12 mb-3"
                    dangerouslySetInnerHTML={{__html: quillHelper.parseEmoji(form.description.value)}}/>
             </div>
           </>
         }
-        <div className="row mt-3">
-          <div className="col-12 col-lg-4">{dictionary.remindMeOn}</div>
-          <div className="col-12 col-lg-8">
+        <div className="column mt-3">
+          <div className="col-12 col-lg-4 modal-label mb-1">{dictionary.remindMeOn}</div>
+          <div className="col-12 mb-3">
             <InputContainer>
               <RadioInput
                 readOnly
@@ -368,13 +373,13 @@ const TodoReminderModal = (props) => {
         </div>
       </ModalBody>
       <ModalFooter>
+      <Button outline color="secondary" onClick={toggle}>
+          {dictionary.cancel}
+        </Button>
         <Button color="primary" onClick={handleSnooze}>
           {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"/>}
           {dictionary.snooze}
         </Button>{" "}
-        <Button outline color="secondary" onClick={toggle}>
-          {dictionary.cancel}
-        </Button>
       </ModalFooter>
     </Wrapper>
   );
