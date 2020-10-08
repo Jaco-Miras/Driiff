@@ -2,7 +2,7 @@ import React from "react";
 import Tooltip from "react-tooltip-lite";
 import styled from "styled-components";
 import {Avatar} from "../../../common";
-import {useTimeFormat, useTranslation} from "../../../hooks";
+import {useTimeFormat} from "../../../hooks";
 
 const Wrapper = styled.li`
   cursor: pointer;
@@ -31,7 +31,7 @@ const Wrapper = styled.li`
 `;
 
 export const NotificationListItem = (props) => {
-  const { notification, actions, redirect, removeOverlay } = props;
+  const { notification, actions, redirect, removeOverlay, _t, user } = props;
   const { fromNow } = useTimeFormat();
   const handleRedirect = (e) => {
     e.preventDefault();
@@ -39,24 +39,28 @@ export const NotificationListItem = (props) => {
     if (notification.is_read === 0) {
       actions.read({ id: notification.id });
     }
-    let post = { id: notification.data.post_id, title: notification.data.title};
-    let workspace = null;
-    let focusOnMessage = null;
-    if (notification.data.workspaces && notification.data.workspaces.length) {
-      workspace = notification.data.workspaces[0];
-      workspace = {
-        id: workspace.topic_id,
-        name: workspace.topic_name,
-        folder_id: workspace.workspace_id ? workspace.workspace_id : null,
-        folder_name: workspace.workspace_name ? workspace.workspace_name : null,
-      };
-    }
-    if (notification.type === "POST_COMMENT" || notification.type === "POST_MENTION") {
-      if (notification.data.comment_id) {
-        focusOnMessage = {focusOnMessage: notification.data.comment_id};
+    if (notification.type === "NEW_TODO") {
+      redirect.toTodos();
+    } else {
+      let post = { id: notification.data.post_id, title: notification.data.title};
+      let workspace = null;
+      let focusOnMessage = null;
+      if (notification.data.workspaces && notification.data.workspaces.length) {
+        workspace = notification.data.workspaces[0];
+        workspace = {
+          id: workspace.topic_id,
+          name: workspace.topic_name,
+          folder_id: workspace.workspace_id ? workspace.workspace_id : null,
+          folder_name: workspace.workspace_name ? workspace.workspace_name : null,
+        };
       }
+      if (notification.type === "POST_COMMENT" || notification.type === "POST_MENTION") {
+        if (notification.data.comment_id) {
+          focusOnMessage = {focusOnMessage: notification.data.comment_id};
+        }
+      }
+      redirect.toPost({ workspace, post}, focusOnMessage);
     }
-    redirect.toPost({ workspace, post}, focusOnMessage);
   };
 
   const handleReadUnread = (e) => {
@@ -75,12 +79,13 @@ export const NotificationListItem = (props) => {
     actions.remove({ id: notification.id });
   };*/
 
-  const { _t } = useTranslation();
+  // const { _t } = useTranslation();
 
   const dictionary = {
     post: _t("NOTIFICATION.POST_POPUP", `Shared a post`),
     comment: _t("NOTIFICATION.COMMENT_POPUP", `Made a comment in ::title::`, {title: notification.data.title}),
-    mention: _t("NOTIFICATION.MENTION_POPUP", `Mentioned you in ::title::`, {title: notification.data.title})
+    mention: _t("NOTIFICATION.MENTION_POPUP", `Mentioned you in ::title::`, {title: notification.data.title}),
+    reminder: _t("NOTIFICATION.REMINDER_POPUP", `You asked to be reminded about ::title::`, {title: notification.data.title})
   };
 
   const notifDisplay = () => {
@@ -112,6 +117,15 @@ export const NotificationListItem = (props) => {
             </div>
         );
       }
+      case "NEW_TODO": {
+        return (
+          <div className="notification-container flex-grow-1" onClick={handleRedirect}>
+            <span>{user.name}</span>
+            <p className="notification-title text-link">{dictionary.reminder}</p>
+            <span className="text-muted small">{fromNow(notification.created_at.timestamp)}</span>
+          </div>
+      );
+      }
       default:
         return null;
     }
@@ -133,6 +147,11 @@ export const NotificationListItem = (props) => {
             notification.author !== null &&
             <Avatar id={notification.author.id} name={notification.author.name}
                     imageLink={notification.author.profile_image_link}/>
+          }
+          {
+            notification.type === "NEW_TODO" && 
+            <Avatar id={user.id} name={user.name}
+                    imageLink={user.profile_image_link}/>
           }
         </div>
         {notifDisplay()}

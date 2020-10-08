@@ -16,7 +16,7 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "GET_NOTIFICATIONS_SUCCESS": {
-      let results = action.data.notifications.filter((n) => n.type !== "NEW_TODO")
+      let results = action.data.notifications
       return {
         ...state,
         notifications: {
