@@ -38,6 +38,7 @@ const NotificationLists = (props) => {
               </li>
               {Object.values(notifications)
                   .filter((n) => n.is_read === 0)
+                  .sort((a,b) => b.created_at.timestamp - a.created_at.timestamp)
                   .map((n) => {
                     return <NotificationListItem key={n.id} notification={n} actions={actions} history={history} redirect={redirect} removeOverlay={removeOverlay} _t={_t} user={user}/>;
                   })}
@@ -50,6 +51,7 @@ const NotificationLists = (props) => {
           </li>
           {Object.values(notifications)
             .filter((n) => n.is_read === 1)
+            .sort((a,b) => b.created_at.timestamp - a.created_at.timestamp)
             .map((n) => {
               return <NotificationListItem key={n.id} notification={n} actions={actions} history={history} redirect={redirect} removeOverlay={removeOverlay} _t={_t} user={user}/>;
             })}
