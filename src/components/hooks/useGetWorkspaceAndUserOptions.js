@@ -53,9 +53,46 @@ const useGetWorkspaceAndUserOptions = (
       first_name: `All: ${workspace[0].name}`,
       id: `ws-${workspace[0].id}`,
       value: `ws-${workspace[0].id}`,
-      label: `All: ${workspace[0].name}`
+      label: `All: ${workspace[0].name}`,
+      type_id: workspace[0].id,
     }] : [])];
     return allOption;
+  };
+
+  const getSelectedUsersValueByUsers = (selectedUsers) => {
+    if (Object.values(selected.users).length > Object.values(selectedUsers).length)
+      return selectedUsers;
+
+    let workspaceIds = [];
+
+    const userIds = [...new Set([...selectedUserIds, ...selectedUsers.filter(su => su.type === "USER").map(su => su.id)])];
+    userOptions
+      .filter(uo => uo.type === "USER" && !userIds.includes(uo.value))
+      .forEach(uo => {
+        workspaceIds = [...workspaceIds, ...uo.workspace_ids];
+      });
+    workspaceIds = [...new Set(workspaceIds)];
+
+    const wsl = selected.workspaces
+      .filter(ws => !selectedUsers.filter(su => su.type === "WORKSPACE").some(su => su.type_id === ws.id))
+      .forEach(ws => {
+        const member_ids = [...new Set(ws.member_ids)];
+        if (member_ids.every(m => userIds.includes(m))) {
+          selectedUsers = selectedUsers.filter(su => su.type === "WORKSPACE" || !(su.type === "USER" && member_ids.includes(su.value)));
+          selectedUsers.push(getSelectedWorkspaceUser([ws])[0]);
+        }
+      });
+
+    return selectedUsers;
+  };
+
+  const getSelectedUsersValueByWorkspaces = (selectedWorkspaces) => {
+    return [
+      ...selected.users.filter(su => su.type === "USER" ||
+        (su.type === "WORKSPACE" && selectedWorkspaces.some(ws => su.id.includes(`ws-${ws.id}`)))
+      ),
+      ...getSelectedWorkspaceUser(selectedWorkspaces.filter(ws => !selected.workspaces.some(sws => sws.id === ws.id)))
+    ];
   };
 
   const getCompanyAsWorkspace = () => {
@@ -105,21 +142,52 @@ const useGetWorkspaceAndUserOptions = (
   });
   selectedUserIds = [...new Set(selectedUserIds)];
 
-  let uniqueUserids = [...selectedUserIds];
+  let selectedAddressPeopleIds = selected.users.filter(su => su.type === "USER").map(su => su.id);
+  let selectedUserAllWorkspacesIds = selected.users.filter(su => su.type === "WORKSPACE").map(su => parseInt(su.id.replaceAll("ws-", "")));
   let userOptions = [];
-  selected.workspaces.forEach(ws => {
-    if (ws.members) {
-      ws.members.filter(m => !uniqueUserids.includes(m.id)).forEach(u => {
-        uniqueUserids.push(u.id);
-        userOptions.push({
-          ...u,
-          first_name: u.first_name === "" ? u.email : u.first_name,
-          name: u.name === "" ? u.email : u.name,
-          value: u.id,
-          label: u.name === "" ? u.email : u.name,
-          type: "USER"
-        });
-      });
+  let userOptionIds = [];
+  selected.workspaces
+    .filter(ws => !selectedUserAllWorkspacesIds.includes(ws.value))
+    .forEach(ws => {
+      if (ws.members) {
+        let isMemberAdded = false;
+        ws.members
+          .filter(u => !selectedAddressPeopleIds.includes(u.id))
+          .forEach(u => {
+            isMemberAdded = true;
+
+            selectedUserIds = selectedUserIds.filter(su => su !== u.id);
+
+            if (!userOptionIds.includes(u.id)) {
+              userOptionIds.push(u.id);
+              userOptions.push({
+                ...u,
+                first_name: u.first_name === "" ? u.email : u.first_name,
+                name: u.name === "" ? u.email : u.name,
+                value: u.id,
+                label: u.name === "" ? u.email : u.name,
+                workspace_ids: selected.workspaces.filter(ws => ws.member_ids.some(id => u.id === id)).map(ws => ws.id),
+                workspaces: selected.workspaces.filter(ws => ws.member_ids.some(id => u.id === id)).map(ws => ws.name),
+                type: "USER"
+              });
+            }
+          });
+
+        if (isMemberAdded)
+          userOptions.push(...getSelectedWorkspaceUser([ws]));
+      }
+    });
+
+  userOptions.sort((a, b) => {
+    if (a.type === "WORKSPACE" || b.type === "WORKSPACE") {
+      if (a.type === "WORKSPACE" && b.type === "WORKSPACE")
+        return a.label.localeCompare(b.label);
+      if (a.type === "WORKSPACE")
+        return -1;
+      if (b.type === "WORKSPACE")
+        return 1;
+    } else {
+      return a.label.localeCompare(b.label);
     }
   });
 
@@ -128,6 +196,8 @@ const useGetWorkspaceAndUserOptions = (
     getCompanyAsWorkspace,
     getSelectedWorkspaceUser,
     getSelectedUsersWorkspace,
+    getSelectedUsersValueByUsers,
+    getSelectedUsersValueByWorkspaces,
     workspaces: wsOptions,
     users: userOptions,
     selectedUserIds,

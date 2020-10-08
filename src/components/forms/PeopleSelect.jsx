@@ -3,7 +3,7 @@ import Select, { components } from "react-select";
 import styled from "styled-components";
 import { Avatar } from "../common";
 import { useSettings } from "../hooks";
-import { lightTheme, darkTheme } from "../../helpers/selectTheme";
+import { darkTheme, lightTheme } from "../../helpers/selectTheme";
 
 const SelectOption = styled.div`
   display: flex;
@@ -15,6 +15,12 @@ const SelectOption = styled.div`
     display: flex;
     align-items: center;
   }
+  
+  .workspaces {
+    display: block;
+    font-size: 12px;
+    width: 100%;
+  }
 `;
 
 const StyledAvatar = styled(Avatar)`
@@ -25,14 +31,20 @@ const StyledAvatar = styled(Avatar)`
   color: #505050 !important;
 `;
 
+
 const Option = (props) => {
   return (
     <SelectOption>
       <components.Option {...props}>
         {props.data && (
           <>
-            <StyledAvatar className="react-select-avatar" key={props.data.id} imageLink={props.data.profile_image_link} name={props.data.name} partialName={props.data.partial_name} />
-            {props.children}
+            <StyledAvatar className="react-select-avatar" key={props.data.id} imageLink={props.data.profile_image_link}
+                          name={props.data.name} partialName={props.data.partial_name}/>
+            <div>
+              {props.children}
+              {props.data.workspaces && props.data.workspaces.length &&
+              <span className="workspaces">{props.data.workspaces && props.data.workspaces.join(", ")}</span>}
+            </div>
           </>
         )}
       </components.Option>
@@ -52,7 +64,9 @@ const MultiValueContainer = ({ children, selectProps, ...props }) => {
       };
     } else return c;
   });
-  return <components.MultiValueContainer {...props}>{newChildren}</components.MultiValueContainer>;
+  return <components.MultiValueContainer {...props}>
+    {newChildren}
+  </components.MultiValueContainer>;
 };
 
 const PeopleSelect = forwardRef((props, ref) => {

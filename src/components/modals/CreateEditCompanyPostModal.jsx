@@ -332,6 +332,7 @@ const CreateEditCompanyPostModal = (props) => {
     workspaces: wsOptions, users: userOptions,
     selectedUserIds, isPersonal,
     getAddressedByOptionByValue, getSelectedWorkspaceUser,
+    getSelectedUsersValueByUsers, getSelectedUsersValueByWorkspaces,
     getSelectedUsersWorkspace, getCompanyAsWorkspace
   } = useGetWorkspaceAndUserOptions({
     workspaces: form.selectedWorkspaces,
@@ -518,7 +519,7 @@ const CreateEditCompanyPostModal = (props) => {
     } else {
       setForm({
         ...form,
-        selectedUsers: e,
+        selectedUsers: getSelectedUsersValueByUsers(e, userOptions)
       });
     }
   };
@@ -531,7 +532,7 @@ const CreateEditCompanyPostModal = (props) => {
         selectedUsers: form.selectedUsers.filter(su => su.type === "USER")
       }),
       ...(!e.value && {
-        selectedUsers: getSelectedUsersWorkspace(form.selectedWorkspaces)
+        selectedUsers: getSelectedUsersValueByWorkspaces(form.selectedWorkspaces)
       })
     });
   };
@@ -547,12 +548,7 @@ const CreateEditCompanyPostModal = (props) => {
       setForm({
         ...form,
         selectedWorkspaces: e,
-        selectedUsers: [
-          ...form.selectedUsers.filter(su => su.type === "USER" ||
-            (su.type === "WORKSPACE" && e.some(ws => su.id.includes(`ws-${ws.id}`)))
-          ),
-          ...getSelectedWorkspaceUser(e.filter(ws => !form.selectedWorkspaces.some(sws => sws.id === ws.id)))
-        ]
+        selectedUsers: getSelectedUsersValueByWorkspaces(e)
       });
     }
   };
@@ -1020,7 +1016,7 @@ const CreateEditCompanyPostModal = (props) => {
       }
     }
   }, [form, setForm, isPersonal]);
-  console.log(users);
+
   return (
     <Modal isOpen={modal} toggle={toggle} centered size={"lg"} onOpened={onOpened}>
       <ModalHeaderSection

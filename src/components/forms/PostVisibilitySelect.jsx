@@ -19,9 +19,18 @@ const StyledSelect = styled(Select)`
           
           &[class$="indicatorContainer"] {
             background: rgb(17, 20, 23);        
-          }    
+          }
         }
       }
+    }
+    [class$="menu"] {
+      > div {        
+        > div {        
+          > div {
+            //background: rgb(17, 20, 23);
+          }
+        }      
+      }        
     }
   }
 `;

@@ -285,13 +285,20 @@ const StyledDescriptionInput = styled(DescriptionInput)`
 const StyledDatePicker = styled(DatePicker)``;
 
 const CreateEditWorkspacePostModal = (props) => {
+
   const { type, mode, item = {} } = props.data;
 
   const inputRef = useRef();
   const dispatch = useDispatch();
+  const { _t } = useTranslation();
   const toaster = useToaster();
-  const [modal, setModal] = useState(true);
+
   const user = useSelector((state) => state.session.user);
+  const users = useSelector((state) => state.global.recipients).filter(r => r.type === "USER");
+
+  const [init, setInit] = useState(false);
+  const [modal, setModal] = useState(true);
+
   const activeTopic = useSelector((state) => state.workspaces.activeTopic);
   const [showMoreOptions, setShowMoreOptions] = useState(null);
   const [maxHeight, setMaxHeight] = useState(null);
@@ -299,6 +306,12 @@ const CreateEditWorkspacePostModal = (props) => {
   const [showDropzone, setShowDropzone] = useState(false);
   const [attachedFiles, setAttachedFiles] = useState([]);
   const [uploadedFiles, setUploadedFiles] = useState([]);
+  const [nestedModal, setNestedModal] = useState(false);
+  const [closeAll, setCloseAll] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [mentionedUserIds, setMentionedUserIds] = useState([]);
+  const [ignoredMentionedUserIds, setIgnoredMentionedUserIds] = useState([]);
+
   const [form, setForm] = useState({
     must_read: false,
     reply_required: false,
@@ -308,16 +321,63 @@ const CreateEditWorkspacePostModal = (props) => {
     title: "",
     selectedUsers: [],
     selectedWorkspaces: [],
-    selectedPersonal: {
-      icon: "unlock",
-      value: false,
-      label: "Visible to all workspace members"
-    },
+    selectedPersonal: [],
     body: "",
     textOnly: "",
     show_at: null,
     end_at: null,
   });
+
+  const {
+    workspaces: wsOptions, users: userOptions,
+    selectedUserIds, isPersonal,
+    getAddressedByOptionByValue, getSelectedWorkspaceUser,
+    getSelectedUsersValueByUsers, getSelectedUsersValueByWorkspaces,
+    getSelectedUsersWorkspace, getCompanyAsWorkspace
+  } = useGetWorkspaceAndUserOptions({
+    workspaces: form.selectedWorkspaces,
+    users: form.selectedUsers,
+  });
+
+  const dictionary = {
+    createPost: _t("POST.CREATE_POST", "Create post"),
+    createNewPost: _t("POST.CREATE_NEW_POST", "Create new post"),
+    editPost: _t("POST.EDIT_POST", "Edit post"),
+    postTitle: _t("POST.TITLE", "Title"),
+    postInfo: _t("POST_INFO", "A post is a message that can contain text and images. It can be directed at one or more workspaces, and one or more people can be made responsible."),
+    visibility: _t("POST.VISIBILITY", "Visibility"),
+    workspace: _t("POST.WORKSPACE", "Workspace"),
+    responsible: _t("POST.RESPONSIBLE", "Responsible"),
+    addressed: _t("POST.ADDRESSED", "Addressed"),
+    addressedPeople: _t("POST.ADDRESSED_PEOPLE", "Addressed people"),
+    addressedPeopleOnly: _t("POST.ADDRESSED_PEOPLE_ONLY", "Addressed people only"),
+    description: _t("POST.DESCRIPTION", "Description"),
+    saveAsDraft: _t("POST.SAVE_AS_DRAFT", "Save as draft"),
+    moreOptions: _t("POST.MORE_OPTIONS", "More options"),
+    replyRequired: _t("POST.REPLY_REQUIRED", "Reply required"),
+    mustRead: _t("POST.MUST_READ", "Must read"),
+    noReplies: _t("POST.NO_REPLIES", "No replies"),
+    schedulePost: _t("POST.SCHEDULE", "Schedule"),
+    updatePostButton: _t("POST.UPDATE_BUTTON", "Update post"),
+    createPostButton: _t("POST.CREATE_BUTTON", "Create post"),
+    save: _t("POST.SAVE", "Save"),
+    discard: _t("POST.DISCARD", "Discard"),
+    draftBody: _t("POST.DRAFT_BODY", "Not sure about the content? Save it as a draft."),
+    postVisibilityInfo: _t("POST.POST_VISIBILITY_INFO_SINGULAR_ALL",
+      `This post will be visible to <span class="user-popup">::user_count::</span> in <span class="workspace-popup">::workspace_count::</span>`, {
+        user_count: selectedUserIds.length === 1 ?
+          _t("POST.NUMBER_USER", "1 user") :
+          _t("POST.NUMBER_USERS", "::count:: users", {
+            count: selectedUserIds.length
+          }),
+        workspace_count: form.selectedWorkspaces.length === 1 ?
+          _t("POST.NUMBER_WORKSPACE", "1 workspace") :
+          _t("POST.NUMBER_WORKSPACES", "::count:: workspaces", {
+            count: form.selectedWorkspaces.length
+          }),
+      }),
+  };
+
   const formRef = {
     reactQuillRef: useRef(null),
     more_options: useRef(null),
@@ -325,14 +385,6 @@ const CreateEditWorkspacePostModal = (props) => {
     arrow: useRef(null),
     visibilityInfo: useRef(null),
   };
-
-  const [nestedModal, setNestedModal] = useState(false);
-  const [closeAll, setCloseAll] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [mentionedUserIds, setMentionedUserIds] = useState([]);
-  const [ignoredMentionedUserIds, setIgnoredMentionedUserIds] = useState([]);
-
-  const { _t } = useTranslation();
 
   const toggleNested = () => {
     setNestedModal(!nestedModal);
@@ -482,7 +534,7 @@ const CreateEditWorkspacePostModal = (props) => {
     } else {
       setForm({
         ...form,
-        selectedUsers: e,
+        selectedUsers: getSelectedUsersValueByUsers(e, userOptions)
       });
     }
   };
@@ -491,6 +543,12 @@ const CreateEditWorkspacePostModal = (props) => {
     setForm({
       ...form,
       selectedPersonal: e,
+      ...(e.value && {
+        selectedUsers: form.selectedUsers.filter(su => su.type === "USER")
+      }),
+      ...(!e.value && {
+        selectedUsers: getSelectedUsersValueByWorkspaces(form.selectedWorkspaces)
+      })
     });
   };
 
@@ -505,6 +563,7 @@ const CreateEditWorkspacePostModal = (props) => {
       setForm({
         ...form,
         selectedWorkspaces: e,
+        selectedUsers: getSelectedUsersValueByWorkspaces(e)
       });
     }
   };
@@ -581,6 +640,7 @@ const CreateEditWorkspacePostModal = (props) => {
           draft_id: draftId,
         }, () => {
           setLoading(false);
+          toggleAll(false);
         })
       );
       dispatch(
@@ -589,6 +649,7 @@ const CreateEditWorkspacePostModal = (props) => {
           draft_id: draftId,
         }, () => {
           setLoading(false);
+          toggleAll(false);
         })
       );
     }
@@ -631,6 +692,7 @@ const CreateEditWorkspacePostModal = (props) => {
           name: user.name,
           first_name: user.first_name,
           profile_image_link: user.profile_image_link,
+          type: "USER",
         };
       }), ...form.selectedUsers]
     });
@@ -861,53 +923,10 @@ const CreateEditWorkspacePostModal = (props) => {
     setAttachedFiles((prevState) => prevState.filter((f) => f.id !== parseInt(fileId)));
   };
 
-  const [wsOptions, userOptions] = useGetWorkspaceAndUserOptions(form.selectedWorkspaces, activeTopic);
-
   const onOpened = () => {
     if (inputRef && inputRef.current) {
       inputRef.current.focus();
     }
-  };
-
-  const dictionary = {
-    createPost: _t("POST.CREATE_POST", "Create post"),
-    createNewPost: _t("POST.CREATE_NEW_POST", "Create new post"),
-    editPost: _t("POST.EDIT_POST", "Edit post"),
-    postTitle: _t("POST.TITLE", "Title"),
-    postInfo: _t("POST_INFO", "A post is a message that can contain text and images. It can be directed at one or more workspaces, and one or more people can be made responsible."),
-    visibility: _t("POST.VISIBILITY", "Visibility"),
-    workspace: _t("POST.WORKSPACE", "Workspace"),
-    responsible: _t("POST.RESPONSIBLE", "Responsible"),
-    description: _t("POST.DESCRIPTION", "Description"),
-    saveAsDraft: _t("POST.SAVE_AS_DRAFT", "Save as draft"),
-    moreOptions: _t("POST.MORE_OPTIONS", "More options"),
-    replyRequired: _t("POST.REPLY_REQUIRED", "Reply required"),
-    mustRead: _t("POST.MUST_READ", "Must read"),
-    noReplies: _t("POST.NO_REPLIES", "No replies"),
-    schedulePost: _t("POST.SCHEDULE", "Schedule"),
-    updatePostButton: _t("POST.UPDATE_BUTTON", "Update post"),
-    createPostButton: _t("POST.CREATE_BUTTON", "Create post"),
-    save: _t("POST.SAVE", "Save"),
-    discard: _t("POST.DISCARD", "Discard"),
-    draftBody: _t("POST.DRAFT_BODY", "Not sure about the content? Save it as a draft."),
-    postVisibilityInfo: _t("POST.POST_VISIBILITY_INFO_SINGULAR_ALL",
-      `This post will be visible to <span class="user-popup">::user_count::</span> in <span class="workspace-popup">::workspace_count::</span>`, {
-        user_count: form.selectedPersonal.value === true ? form.selectedUsers.length === 1 ?
-          _t("POST.NUMBER_USER", "1 user") :
-          _t("POST.NUMBER_USERS", "::count:: users", {
-            count: form.selectedUsers.length
-          }) : userOptions.length === 1 ?
-          _t("POST.NUMBER_USER", "1 user") :
-          _t("POST.NUMBER_USERS", "::count:: users", {
-              count: userOptions.length
-            }
-          ),
-        workspace_count: form.selectedWorkspaces.length === 1 ?
-          _t("POST.NUMBER_WORKSPACE", "1 workspace") :
-          _t("POST.NUMBER_WORKSPACES", "::count:: workspaces", {
-            count: form.selectedWorkspaces.length
-          }),
-      }),
   };
 
   useEffect(() => {
@@ -931,16 +950,8 @@ const CreateEditWorkspacePostModal = (props) => {
             label: activeTopic.name,
           },
         ],
-        selectedUsers: [
-          {
-            id: user.id,
-            value: user.id,
-            label: user.name,
-            name: user.name,
-            first_name: user.first_name,
-            profile_image_link: user.profile_image_link,
-          },
-        ],
+        selectedUsers: [...getSelectedWorkspaceUser(activeTopic)],
+        selectedPersonal: getAddressedByOptionByValue(false),
       });
     } else if (mode === "edit" && item.hasOwnProperty("post")) {
       setForm({
@@ -993,6 +1004,17 @@ const CreateEditWorkspacePostModal = (props) => {
       );
     }
   }, []);
+
+  useEffect(() => {
+    if (init) {
+      if (form.selectedPersonal.value !== isPersonal) {
+        setForm({
+          ...form,
+          selectedPersonal: getAddressedByOptionByValue(isPersonal),
+        });
+      }
+    }
+  }, [form, setForm, isPersonal]);
 
   return (
     <Modal isOpen={modal} toggle={toggle} centered size={"lg"} onOpened={onOpened}>
@@ -1052,12 +1074,10 @@ const CreateEditWorkspacePostModal = (props) => {
           onOpenFileDialog={handleOpenFileDialog}
           defaultValue={item.hasOwnProperty("draft") ? form.body : mode === "edit" ? item.post.body : ""}
           mode={mode}
-          //members={activeTopic ? activeTopic.members : []}
           required
           mentionedUserIds={mentionedUserIds}
           onAddUsers={handleAddMentionedUsers}
           onDoNothing={handleIgnoreMentionedUsers}
-          //disableBodyMention={true}
           /*valid={valid.description}
                      feedback={feedback.description}*/
         />
@@ -1104,9 +1124,8 @@ const CreateEditWorkspacePostModal = (props) => {
           <div className="post-visibility-container" ref={handlePostVisibilityRef}>
             <span className="user-list">
               {
-                form.selectedPersonal.value === true ?
-                  form.selectedUsers.map(u => {
-                    return <span key={u.id}>
+                users.filter(u => selectedUserIds.includes(u.type_id)).map(u => {
+                  return <span key={u.id}>
                     <span
                       title={u.email}
                       className="user-list-item d-flex justify-content-start align-items-center pt-2 pb-2">
@@ -1117,22 +1136,7 @@ const CreateEditWorkspacePostModal = (props) => {
                         imageLink={u.profile_image_link}
                         id={u.id}/><span className="item-user-name">{u.name}</span></span>
                   </span>;
-                  })
-                  :
-                  userOptions.map(u => {
-                    return <span key={u.id}>
-                    <span
-                      title={u.email}
-                      className="user-list-item d-flex justify-content-start align-items-center pt-2 pb-2">
-                      <Avatar
-                        className="mr-2"
-                        key={u.id}
-                        name={u.name}
-                        imageLink={u.profile_image_link}
-                        id={u.id}/><span className="item-user-name">{u.name}</span>
-                    </span>
-                  </span>;
-                  })
+                })
               }
             </span>
             <span className="workspace-list">
