@@ -588,7 +588,7 @@ const CreateEditWorkspacePostModal = (props) => {
       must_read: form.must_read ? 1 : 0,
       must_reply: form.reply_required ? 1 : 0,
       read_only: form.no_reply ? 1 : 0,
-      workspace_ids: workspace_ids,
+      //workspace_ids: workspace_ids,
       show_at: form.show_at ? moment(form.show_at, "YYYY-MM-DD").format("YYYY-MM-DD") : form.end_at ? moment(new Date()).add(1, "day").format("YYYY-MM-DD") : null,
       end_at: form.end_at ? moment(form.end_at, "YYYY-MM-DD").format("YYYY-MM-DD") : null,
       tag_ids: [],

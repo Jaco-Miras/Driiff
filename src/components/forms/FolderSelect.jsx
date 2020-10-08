@@ -47,17 +47,17 @@ const Option = (props) => {
     <SelectOption>
       <components.Option {...props}>
         {props.data && (
-          <>
+          <span className="d-flex justify-content-start align-items-center">
             {
               props.data.icon === "user-avatar" ?
-                <StyledAvatar className="react-select-avatar" key={props.data.id}
+                <StyledAvatar className="react-select-avatar mr-2" key={props.data.id}
                               imageLink={props.data.profile_image_link}
                               name={props.data.name} partialName={props.data.partial_name}/> :
-                <Icon icon={props.data.icon ? props.data.icon : "folder"}/>
+                <Icon className="mr-2" icon={props.data.icon ? props.data.icon : "folder"}/>
             }
             {props.children}
-            {props.data.is_lock === 1 && <LockIcon icon="lock" strokeWidth="2"/>}
-          </>
+            {props.data.is_lock === 1 && <LockIcon className="ml-2" icon="lock" strokeWidth="2"/>}
+          </span>
         )}
       </components.Option>
     </SelectOption>

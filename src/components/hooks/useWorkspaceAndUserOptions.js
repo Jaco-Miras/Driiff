@@ -41,8 +41,11 @@ const useWorkspaceAndUserOptions = (selected = { addressTo: [] }) => {
   };
 
   const getDefaultAddressToAsCompany = () => {
+    const internalUsers = Object.values(actualUsers).filter(u => u.active === 1 && u.type === "internal").map(u => u);
     return [{
       ...company,
+      member_ids: internalUsers.map(u => u.id),
+      members: internalUsers.map(u => u),
       icon: "home",
       value: company.id,
       label: company.name
@@ -53,38 +56,48 @@ const useWorkspaceAndUserOptions = (selected = { addressTo: [] }) => {
     if (!progress && company) {
       setProgress(true);
 
+      let workspaceOptions = [];
+      workspaces.forEach(ws => {
+        if (typeof actualWorkspaces[ws.type_id] !== "undefined" && actualWorkspaces[ws.type_id].type === "WORKSPACE") {
+          workspaceOptions.push({
+            ...ws,
+            ...actualWorkspaces[ws.type_id],
+            icon: "compass",
+            value: ws.id,
+            label: ws.name
+          });
+        }
+      });
+
+      let userOptions = [];
+      users.forEach(u => {
+        if (typeof actualUsers[u.type_id] !== "undefined" && actualUsers[u.type_id].active === 1) {
+          userOptions.push({
+            ...u,
+            ...actualUsers,
+            icon: "user-avatar",
+            value: u.id,
+            label: u.name ? u.first_name : u.email,
+            type: "USER"
+          });
+        }
+      });
+
+      const internalUsers = Object.values(actualUsers).filter(u => u.active === 1 && u.type === "internal").map(u => u);
       setOptions([
         ...(company && [{
           ...company,
+          member_ids: internalUsers.map(u => u.id),
+          members: internalUsers.map(u => u),
           icon: "home",
           value: company.id,
           label: company.name
         }]),
-        ...(workspaces && workspaces.map(ws => ({
-          ...ws,
-          ...(typeof actualWorkspaces[ws.type_id] !== "undefined" && actualWorkspaces[ws.type_id]),
-          icon: "compass",
-          value: ws.id,
-          label: ws.name
-        }))),
-        ...(users && users.map(u => ({
-          ...u,
-          ...(typeof actualUsers[u.type_id] !== "undefined" && actualUsers[u.type_id]),
-          icon: "user-avatar",
-          value: u.id,
-          label: u.name ? u.name : u.email
-        }))),
-        /*...users && {
-          label: `Users`,
-          options: users.map(u => ({
-            ...u,
-            value: u.id,
-            label: u.name
-          }))
-        },*/
+        ...(workspaceOptions),
+        ...(userOptions),
       ]);
     }
-  }, [options, recipients, setOptions]);
+  }, [options, recipients, actualWorkspaces, setOptions]);
 
   let responsible_ids = [];
   let user_ids = [];
@@ -94,9 +107,12 @@ const useWorkspaceAndUserOptions = (selected = { addressTo: [] }) => {
   selected.addressTo.forEach(at => {
     recipient_ids.push(at.id);
 
-    if (["DEPARTMENT", "TOPIC"].includes(at.type)) {
+    if (["DEPARTMENT", "TOPIC", "WORKSPACE"].includes(at.type)) {
+      if (!at.member_ids) {
+        console.log(at);
+      }
       workspace_ids = [at.type_id];
-      user_ids = [...user_ids, at.member_ids];
+      user_ids = [...user_ids, ...at.member_ids];
     }
 
     if (at.type === "USER") {
@@ -111,7 +127,7 @@ const useWorkspaceAndUserOptions = (selected = { addressTo: [] }) => {
 
   return {
     options,
-    user_ids,
+    user_ids: [...new Set(user_ids)],
     workspace_ids,
     responsible_ids,
     recipient_ids,
