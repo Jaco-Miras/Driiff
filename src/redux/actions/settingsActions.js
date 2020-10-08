@@ -42,3 +42,11 @@ export function putCompanyUpdateName(payload, callback) {
 export function incomingUpdateCompanyName(payload, callback) {
   return SimpleDispatchActionToReducer("INCOMING_UPDATE_COMPANY_NAME", payload, callback);
 }
+
+export function updateReadAnnouncement(payload, callback) {
+  return SimpleDispatchActionToReducer("UPDATE_READ_ANNOUNCEMENT", payload, callback);
+}
+
+export function updateCompanyPostAnnouncement(payload, callback) {
+  return SimpleDispatchActionToReducer("UPDATE_COMPANY_POST_ANNOUNCEMENT", payload, callback);
+}
