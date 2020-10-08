@@ -726,7 +726,7 @@ export default (state = INITIAL_STATE, action) => {
             newWorkspacePosts[ws.topic_id].count.is_read_only = newWorkspacePosts[ws.topic_id].count.is_read_only + 1;
           }
         }
-        if (action.data.author.id !== state.user.id) {
+        if (action.data.author.id !== state.user.id && typeof updatedWorkspaces[ws.topic_id] !== "undefined") {
           updatedWorkspaces[ws.topic_id].unread_posts = updatedWorkspaces[ws.topic_id].unread_posts + 1;
           if (state.activeTopic && state.activeTopic.id === ws.topic_id) {
             addUnreadPost = true;
