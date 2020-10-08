@@ -51,6 +51,7 @@ const SystemMessageContainer = styled.span`
 
 const SystemMessageContent = styled.span`
   display: block;
+  max-width: ${(props) => props.isPostNotification ? "400px" : "100%"};
 `;
 const ChatTimeStamp = styled.div`
   color: #a7abc3;
@@ -531,7 +532,8 @@ const SystemMessage = forwardRef((props, ref) => {
     <SystemMessageContainer ref={isLastChat ? lastChatRef : null}>
       <SystemMessageContent
         ref={ref} id={`bot-${reply.id}`}
-        dangerouslySetInnerHTML={{__html: body}}/>
+        dangerouslySetInnerHTML={{__html: body}}
+        isPostNotification={reply.body.includes("POST_CREATE::")}/>
       <ChatTimeStamp className="chat-timestamp" isAuthor={false}>
         <span
           className="reply-date created">{timeFormat.localizeTime(reply.created_at.timestamp)}</span>
