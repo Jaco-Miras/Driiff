@@ -159,6 +159,37 @@ class SocketListeners extends Component {
             this.props.incomingUpdateToDo(e);
             break;
           }
+          case "ADVANCE_REMIND_TODO": {
+            if (isSafari) {
+              if (this.props.notificationsOn) {
+                let redirect = () => {
+                  if (e.link_type) {
+                    let link = "";
+                    if (e.link_type === "POST_COMMENT" || e.link_type === "POST") {
+                      if (e.data.workspaces.length) {
+                        if (e.data.workspaces[0].workspace){
+                          link = `/workspace/posts/${e.data.workspaces[0].workspace.id}/${replaceChar(e.data.workspaces[0].workspace.name)}/${e.data.workspaces[0].topic.id}/${replaceChar(e.data.workspaces[0].topic.name)}/post/${e.data.post.id}/${replaceChar(e.data.post.title)}`;
+                        } else {
+                          link = `/workspace/posts/${e.data.workspaces[0].topic.id}/${replaceChar(e.data.workspaces[0].topic.name)}/post/${e.data.post.id}/${replaceChar(e.data.post.title)}`;
+                        }
+                      } else {
+                        link = `/posts/${e.data.post.id}/${replaceChar(e.data.post.title)}`;
+                      }
+                    } else if (e.link_type === "CHAT") {
+                      link = `/chat/${e.data.channel.code}/${e.data.chat_message.code}`;
+                    }
+                    if (link !== "") {
+                      this.props.history.push(link);
+                    }
+                  } else {
+                    this.props.history.push("/todos");
+                  }
+                }
+                pushBrowserNotification(`You asked to be reminded about ${e.title}`, e.title, this.props.user.profile_image_link, redirect);
+              }
+            }
+            break;
+          }
           default:
             return null;
         }

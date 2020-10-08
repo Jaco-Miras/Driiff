@@ -22,8 +22,11 @@ const Wrapper = styled.li`
   }
 
   .app-list-title {
+    color: #363636;
+    font-weight: 500;
+
     &.has-unread {
-      font-weight: bold;
+      font-weight: 500;
     }
 
     &.text-success {
@@ -50,6 +53,11 @@ const Wrapper = styled.li`
   }
   .post-partialBody {
     color: #b8b8b8;
+    font-weight: 400;
+  }
+
+  .post-read-title {
+    color: #363636;
   }
 `;
 
@@ -89,19 +97,19 @@ const CompanyPostItemPanel = (props) => {
   return (
     <Wrapper data-toggle={flipper ? "1" : "0"} className={`list-group-item post-item-panel ${className}`}
              onClick={() => openPost(post, "/posts")}>
-      <div className="custom-control custom-checkbox custom-checkbox-success">
+      {/* <div className="custom-control custom-checkbox custom-checkbox-success">
         <CheckBox name="test" checked={post.is_mark_done} onClick={handleMarkDone} disabled={disableOptions}/>
-      </div>
-      <div>
+      </div> */}
+      {/* <div>
         <Icon className="mr-2" icon="star" onClick={handleStarPost}
               stroke={post.is_favourite ? "#ffc107" : "currentcolor"} fill={post.is_favourite ? "#ffc107" : "none"}/>
-      </div>
+      </div>  */}
       <div className="flex-grow-1 min-width-0">
         <div className="d-flex align-items-center justify-content-between">
           <div
             className={`app-list-title text-truncate
                             ${post.unread_count > 0 || post.is_unread === 1 ? "text-primary has-unread" : ""}
-                            ${post.is_mark_done ? "text-success" : ""}`}
+                            `}
           >
             <span>{post.title}</span>
             <div className='text-truncate post-partialBody'>
@@ -132,6 +140,7 @@ const CompanyPostItemPanel = (props) => {
           <div onClick={() => sharePost(post)}>{dictionary.share}</div>
           {post.author && post.author.id !== user.id &&
           <div onClick={() => followPost(post)}>{post.is_followed ? dictionary.unFollow : dictionary.follow}</div>}
+          <div onClick={handleStarPost}>{post.is_favourite ? dictionary.unStar : dictionary.star}</div>
         </MoreOptions>
       )}
     </Wrapper>

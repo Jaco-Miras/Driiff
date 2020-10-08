@@ -130,6 +130,11 @@ const useSortChannels = (channels, search, options = {}, workspace) => {
       compare = b.is_pinned - a.is_pinned;
       if (compare !== 0) return compare;
 
+      // //sort by last reply
+      // if (a.last_reply && b.last_reply) {
+      //   return b.last_reply.created_at.timestamp - a.last_reply.created_at.timestamp
+      // }
+
       //if search is active, direct users first
       if (search !== "") {
         if (!(a.type === "DIRECT" && b.type === "DIRECT")) {
@@ -159,14 +164,14 @@ const useSortChannels = (channels, search, options = {}, workspace) => {
       }
 
       if (settings.order_channel.order_by === "channel_date_updated") {
-        if (a.last_reply && b.last_reply) {
-          if (settings.order_channel.sort_by === "DESC") {
-            return a.last_reply.created_at.timestamp < b.last_reply.created_at.timestamp;
-          } else {
-            return a.last_reply.created_at.timestamp > b.last_reply.created_at.timestamp;
+        if ( a.last_reply &&  b.last_reply) {
+          if ( a.last_reply.created_at.timestamp ===  b.last_reply.created_at.timestamp) {
+            return  aTitle.localeCompare(bTitle);
           }
-          if (a.last_reply.created_at.timestamp === b.last_reply.created_at.timestamp) {
-            return aTitle.localeCompare(bTitle);
+          if ( settings.order_channel.sort_by === "DESC") {
+            return  b.last_reply.created_at.timestamp -  a.last_reply.created_at.timestamp;
+          } else {
+            return  a.last_reply.created_at.timestamp -  b.last_reply.created_at.timestamp;
           }
         }
 

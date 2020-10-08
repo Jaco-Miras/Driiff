@@ -9,7 +9,6 @@ import {
   deleteDraftReducer,
   saveDraft,
   updateDraft,
-  uploadDocument
 } from "../../redux/actions/globalActions";
 import { postCreate, putCompanyPosts, putPost } from "../../redux/actions/postActions";
 import { Avatar, DatePicker, FileAttachments, SvgIconFeather } from "../common";
@@ -17,6 +16,8 @@ import { DropDocument } from "../dropzone/DropDocument";
 import { CheckBox, DescriptionInput, FolderSelect, PeopleSelect, PostVisibilitySelect } from "../forms";
 import { useGetWorkspaceAndUserOptions, useToaster, useTranslation } from "../hooks";
 import { ModalHeaderSection } from "./index";
+// upload document will not use action wrap in redux
+import { uploadDocument } from "../../redux/services/global";
 
 const WrapperDiv = styled(InputGroup)`
   display: flex;
@@ -663,7 +664,7 @@ const CreateEditCompanyPostModal = (props) => {
     } else {
       if (attachedFiles.length) {
         uploadFiles(payload, "create");
-        setLoading(false);
+        //setLoading(false);
       } else {
         if (form.selectedWorkspaces.length > 1) {
           dispatch(postCreate(payload, () => {
@@ -911,13 +912,23 @@ const CreateEditCompanyPostModal = (props) => {
           ...payload,
           file_ids: [...result.map((res) => res.data.id), ...payload.file_ids],
         };
-        dispatch(putPost(payload));
+        dispatch(
+          putPost(payload,() => {
+            setLoading(false);
+            toggleAll(false);
+          })
+        );
       } else {
         payload = {
           ...payload,
           file_ids: result.map((res) => res.data.id),
         };
-        dispatch(postCreate(payload));
+        dispatch(
+          postCreate(payload, () => {
+            setLoading(false);
+            toggleAll(false);
+          })
+        );
       }
     });
   }
