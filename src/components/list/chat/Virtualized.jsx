@@ -12,16 +12,21 @@ const ScrollContainer = ({
     const elRef = useRef(null)
   
     const onScroll = (e) => {
-        console.log(e.target)
+        //console.log(e.target.scrollHeight, e.target.scrollTop)
     }
     return (
       <div
         ref={elRef}
-        onScroll={onScroll}
+        onScroll={e => {
+          reportScrollTop(e.target.scrollTop)
+          onScroll(e)
+          }
+        }
         style={{
           ...style,
-          border: '5px dashed gray',
+          border: '2px dashed gray',
           borderRadius: '4px',
+          overflowX: "hidden"
         }}
         className={"chat-scroll-container"}
       >
@@ -38,7 +43,7 @@ const Virtualized = (props) => {
 
     return (
         <Virtuoso
-            //ScrollContainer={ScrollContainer}
+            ScrollContainer={ScrollContainer}
             style={{ width: '100%', height: '100%', overflowX: "hidden"}}
             totalCount={messages.length}
             ref={virtuosoRef}

@@ -1,18 +1,8 @@
-import { groupBy } from "lodash";
 import React from "react";
-import { InView } from "react-intersection-observer";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import styled from "styled-components";
-import { Avatar, Loader, SvgEmptyState } from "../../common";
-import ChatBubble from "./ChatBubble";
-import ChatMessageOptions from "./ChatMessageOptions";
-import ChatNewMessagesLine from "./ChatNewMessageLine";
-import ChatReactionButton from "./ChatReactionButton";
-import ChatUnfurl from "./ChatUnfurl";
-import ChatReactions from "./Reactions/ChatReactions";
-import SeenIndicator from "./SeenIndicator";
-import SystemMessage from "./SystemMessage";
+import { SvgEmptyState } from "../../common";
 import Virtualized from "./Virtualized";
 
 const Wrapper = styled.div`
@@ -44,267 +34,6 @@ const Wrapper = styled.div`
   .mention.is-author {
     background: transparent;
     padding: 0;
-  }
-`;
-
-const ChatList = styled.li`
-  position: relative;
-  display: inline-block;
-  width: 100%;
-  margin-bottom: 5px;
-  text-align: center;
-  .chat-actions-container {
-    opacity: 0;
-  }
-  &:hover {
-    .chat-actions-container {
-      opacity: 1;
-    }
-  }
-`;
-const TimestampDiv = styled.div`
-  z-index: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: #a7abc3;
-  padding: 26px 0 14px 0;
-  position: sticky;
-  top: 0;
-  span {
-    padding: 4px 8px;
-    display: inline-block;
-    font-size: 11px;
-    border-radius: 6px;
-    margin: 0 4px;
-    background: #f0f0f0;
-  }
-  &[stuck] {
-    &:before,
-    &:after {
-      display: none;
-    }
-  }
-  @media (max-width: 620px) {
-    padding: 14px 0 10px 0;
-  }
-`;
-const ChatBubbleContainer = styled.div`
-  display: flex;
-  width: 100%;
-  align-items: center;
-  //align-items: ${(props) => (props.isAuthor ? "flex-end" : "flex-start")};
-  justify-content: flex-end;
-  flex-flow: column;
-  flex-flow: ${(props) => (props.isAuthor ? "row" : "row-reverse")};
-  margin-left: ${(props) => (!props.isAuthor && !props.showAvatar ? "22px" : "0")};
-  ${(props) => props.isAuthor === true && "position: relative; right: 15px;"};
-  margin-top: ${(props) => props.showAvatar && "36px"};
-  margin-top: ${(props) => props.showAvatar && props.isAuthor && "20px"};
-  @media (max-width: 620px) {
-    margin-top: ${(props) => props.showAvatar && "12px"};
-    margin-top: ${(props) => props.showAvatar && props.isAuthor && "8px"};
-    ${(props) => !props.showAvatar && !props.isAuthor && !props.isBot && "margin-left: 0"};
-    ${(props) => props.isAuthor === true && !props.showAvatar && "position: relative; right: 0px;"};
-    ${(props) => props.isAuthor === true && "position: relative; right: 0px;"};
-  }
-  ${(props) =>
-    !props.isEmoticonOnly &&
-    `
-    &:before {
-        ${(props) => props.showAvatar && "content: '';"};
-        border: 10px solid transparent;
-        border-right-color: transparent;
-        border-right-color: #f0f0f0;
-        position: absolute;
-        top: ${(props) => (props.showAvatar && !props.isAuthor ? "42px" : "8px")};;
-        left: 20px;
-        z-index: 1;
-        ${(props) =>
-          props.isAuthor === true &&
-          `
-            left: auto;
-            right: -20px;
-            border-left-color: #7A1B8B;
-            border-right-color: transparent;
-        `};
-    }`}
-`;
-const ChatActionsContainer = styled.div`
-  flex-flow: ${(props) => (props.isAuthor ? "row-reverse" : "row")};
-  flex-wrap: wrap;
-  ${(props) => (props.isAuthor ? "margin-right: 10px" : "margin-left: 10px")};
-  min-width: 150px;
-  color: #a7abc3;
-  background: #ffffff;
-  position: absolute;
-  display: flex;
-  align-items: center;
-  top: 0;
-  ${(props) => (props.isAuthor ? "right: 100%" : "left: 100%")};
-  height: calc(100% + 4px);
-  margin-top: -2px;
-  transition: opacity 0.3s ease;
-`;
-const SystemChatActionsContainer = styled.div`
-  flex-flow: ${(props) => (props.isAuthor ? "row-reverse" : "row")};
-  flex-wrap: wrap;
-  ${(props) => (props.isAuthor ? "margin-right: 10px" : "margin-left: 10px")};
-  min-width: 150px;
-  color: #a7abc3;
-  background: #ffffff;
-  position: absolute;
-  display: flex;
-  align-items: center;
-  top: 0;
-  ${(props) => (props.isAuthor ? "right: 100%" : "left: 100%")};
-  height: calc(100% + 4px);
-  margin-top: -2px;
-  transition: opacity 0.3s ease;
-  button {
-    margin: 5px;
-  }
-`;
-
-const MessageOptions = styled(ChatMessageOptions)`
-  display: flex;
-  flex-direction: column;
-  flex-basis: 100%;
-  flex: 1;
-  margin: 5px;
-  max-width: 25px;
-
-  .more-options-tooltip {
-    &.orientation-bottom {
-      top: calc(100% - 35px);
-    }
-
-    &.orientation-top {
-    }
-
-    &.orientation-right {
-      left: calc(100% + 10px);
-    }
-    &.orientation-left {
-    }
-  }
-  @media (max-width: 620px) {
-    margin-right: 0;
-  }
-`;
-const ChatBubbleQuoteDiv = styled.div`
-  //width: 100%;
-  //overflow: hidden;
-  max-width: 75%;
-  position: relative;
-  flex-flow: column;
-  display: inherit;
-  ${(props) => !props.isAuthor === true && "margin-left: 18px"};
-  > img {
-    // max-height: ${(props) => (props.maxImgHeight > 300 ? `${props.maxImgHeight}px;` : "300px")};
-    max-height: 300px;
-    max-width: 100%;
-    width: auto;
-    object-fit: cover;
-  }
-  .edited-message {
-    color: #aab0c8;
-    font-style: italic;
-    display: flex;
-    align-items: center;
-    font-size: 12px;
-    position: absolute;
-    top: 50%;
-    margin: 0 10px;
-    height: 25px;
-    white-space: nowrap;
-    ${(props) => (!props.isAuthor ? "left: 100%" : "right: 100%;")};
-  }
-  .chat-options {
-    visibility: hidden;
-  }
-  .chat-options.active {
-    visibility: visible;
-  }
-  :hover {
-    .chat-options {
-      visibility: visible;
-    }
-  }
-  @media (max-width: 768px) {
-    max-width: calc(100% - 110px);
-  }
-
-  @media (max-width: 620px) {
-    ${(props) => !props.showAvatar && !props.isAuthor && "margin-left: 0"};
-    ${(props) => !props.isAuthor === true && "margin-left: 0"};
-  }
-`;
-const SystemMessageContainer = styled.div`
-  position: relative;
-  display: inline-flex;
-  border-radius: 8px;
-  background: #f4f4f4f4;
-  text-align: left;
-  min-width: 100px;
-  max-width: 100%;
-  padding: 7px 15px;
-  line-height: 1.5rem;
-  float: left;
-  align-items: center;
-  justify-content: flex-end;
-  flex-flow: ${(props) => (props.isAuthor ? "row" : "row-reverse")};
-  .chat-options {
-    visibility: hidden;
-  }
-  :hover {
-    .chat-options {
-      visibility: visible;
-    }
-  }
-  @media (max-width: 620px) {
-    padding: 7px;
-  }
-`;
-
-const FailedSpan = styled.span`
-  color: red;
-  margin: 0 10px;
-`;
-
-const ChatLoader = styled.div`
-  display: flex;
-  justify-content: center;
-  &.initial-load {
-    position: absolute;
-    top: 45%;
-    left: 45%;
-    transform: translate(-45%, -45%);
-  }
-`;
-
-const InfiniteScroll = styled.div`
-  width: 100%;
-  ul {
-    margin: 0;
-  }
-`;
-
-const StyledAvatar = styled(Avatar)`
-  align-self: flex-start;
-  width: 21px !important;
-  height: 21px !important;
-  margin-top: ${(props) => (props.isForwardedMessage === true ? "25px" : "4px")};
-
-  img {
-    width: 21px !important;
-    height: 21px !important;
-  }
-  @media (max-width: 620px) {
-    display: none;
-  }
-  .pixel-avatar {
-    padding-top: 2px !important;
   }
 `;
 
@@ -419,8 +148,12 @@ class ChatMessages extends React.PureComponent {
             if (this.virtuoso.current) {
                 setTimeout(()=> {
                     this.virtuoso.current.scrollToIndex(res.data.results.length - 1, "end")
-                }, 0)
+                }, 100)
             }
+        } else {
+          if (this.virtuoso.current) {
+            this.virtuoso.current.adjustForPrependedItems(20)
+          }
         }
 
         if (this.state.initializing === true) this.setState({ initializing: false });
@@ -461,11 +194,14 @@ class ChatMessages extends React.PureComponent {
 
   getSnapshotBeforeUpdate(prevProps, prevState) {
     const { selectedChannel } = this.props;
-    const scrollComponent = this.scrollComponent.current;
+    //const scrollComponent = this.scrollComponent.current;
+    const scrollComponent = document.querySelector(".chat-scroll-container")
+    
     if (prevProps.selectedChannel) {
       if (scrollComponent) {
         if ((selectedChannel.replies.length > 20) & (prevProps.selectedChannel.replies.length < selectedChannel.replies.length)) {
           if (selectedChannel.replies.length - prevProps.selectedChannel.replies.length >= 2) {
+            console.log('snapshot', scrollComponent.scrollHeight, scrollComponent.scrollTop)
             return scrollComponent.scrollHeight - scrollComponent.scrollTop;
           }
         }
@@ -484,8 +220,8 @@ class ChatMessages extends React.PureComponent {
         mentionEl.classList.add("is-author");
       });
     }
-    const scrollComponent = this.scrollComponent.current;
-
+    // const scrollComponent = this.scrollComponent.current;
+    const scrollComponent = document.querySelector(".chat-scroll-container")
     //change channel
     if (this.props.selectedChannel && prevProps.selectedChannel.id !== selectedChannel.id) {
       if (selectedChannel.hasMore && selectedChannel.skip === 0) this.loadReplies();
@@ -512,7 +248,12 @@ class ChatMessages extends React.PureComponent {
           }
         } else {
           //load more messages
-          scrollComponent.scrollTop = scrollComponent.scrollHeight - snapshot;
+          console.log(snapshot, 'didupdate',  scrollComponent.scrollHeight, scrollComponent.scrollHeight - snapshot)
+          setTimeout(() => {
+            console.log(snapshot, 'didupdate timeout',  scrollComponent.scrollHeight, scrollComponent.scrollHeight - snapshot)
+            scrollComponent.scrollTop = scrollComponent.scrollHeight - snapshot;
+          },10)
+          // /scrollComponent.scrollTop = scrollComponent.scrollHeight - snapshot;
         }
       }
       // has replies
@@ -550,9 +291,9 @@ class ChatMessages extends React.PureComponent {
         } else {
           //load more messages
           console.log(scrollComponent, this.virtuoso)
-          if (this.virtuoso.current) {
-            this.virtuoso.current.adjustForPrependedItems(20)
-          }
+          // if (this.virtuoso.current) {
+          //   this.virtuoso.current.adjustForPrependedItems(20)
+          // }
             //scrollComponent._outerRef.scrollTop = scrollComponent._outerRef.scrollHeight - snapshot
         }
       }
