@@ -832,6 +832,9 @@ export default (state = INITIAL_STATE, action) => {
             if (!newWorkspacePosts[ws.topic_id].posts[action.data.post_id].users_responsible.some((u) => u.id === action.data.author.id)) {
               newWorkspacePosts[ws.topic_id].posts[action.data.post_id].users_responsible = [...newWorkspacePosts[ws.topic_id].posts[action.data.post_id].users_responsible, action.data.author]
             }
+            if (newWorkspacePosts[ws.topic_id].posts[action.data.post_id].is_archived === 1) {
+              newWorkspacePosts[ws.topic_id].posts[action.data.post_id].is_archived = 0;
+            }
             newWorkspacePosts[ws.topic_id].posts[action.data.post_id].reply_count = newWorkspacePosts[ws.topic_id].posts[action.data.post_id].reply_count + 1;
             if (action.data.author.id !== state.user.id) {
               newWorkspacePosts[ws.topic_id].posts[action.data.post_id].unread_count = newWorkspacePosts[ws.topic_id].posts[action.data.post_id].unread_count + 1;

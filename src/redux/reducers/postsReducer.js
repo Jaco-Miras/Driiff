@@ -383,6 +383,9 @@ export default (state = INITIAL_STATE, action) => {
     case "INCOMING_COMMENT": {
       let companyPosts = {...state.companyPosts}
       if (action.data.SOCKET_TYPE === "POST_COMMENT_CREATE" && state.companyPosts.posts.hasOwnProperty(action.data.post_id)) {
+        if (companyPosts.posts[action.data.post_id].is_archived === 1) {
+          companyPosts.posts[action.data.post_id].is_archived = 0;
+        }
         if (!companyPosts.posts[action.data.post_id].users_responsible.some((u) => u.id === action.data.author.id)) {
           companyPosts.posts[action.data.post_id].users_responsible = [...companyPosts.posts[action.data.post_id].users_responsible, action.data.author]
         }
