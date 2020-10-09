@@ -213,7 +213,7 @@ export default (state = INITIAL_STATE, action) => {
               settings[key] = {
                 ...settings[key],
                 ...value,
-                language: value.language === null ? "nl" : value.language,
+                language: value.language === null ? "en" : value.language,
               };
               break;
             }

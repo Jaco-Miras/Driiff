@@ -130,7 +130,7 @@ const ExternalRegisterPanel = (props) => {
         const returnUrl =
           typeof props.location.state !== "undefined" && typeof props.location.state.from !== "undefined" && props.location.state.from !== "/logout"
             ? props.location.state.from.pathname + props.location.state.from.search
-            : "/workspace/chat";
+            : "/chat";
         userAction.login(res.data.auth_login, returnUrl);
       }
     });
@@ -149,7 +149,7 @@ const ExternalRegisterPanel = (props) => {
           const returnUrl =
             typeof props.location.state !== "undefined" && typeof props.location.state.from !== "undefined" && props.location.state.from !== "/logout"
               ? props.location.state.from.pathname + props.location.state.from.search
-              : "/workspace/chat";
+              : "/chat";
           userAction.storeLoginToken(res.data.auth_login);
           userAction.processBackendLogin(res.data.auth_login, returnUrl);
         } else {
