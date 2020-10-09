@@ -88,6 +88,7 @@ export default function (state = INITIAL_STATE, action) {
         ...state,
         channels: channels,
         selectedChannel: selectedChannel,
+        lastVisitedChannel: selectedChannel
       };
     case "GET_CHANNELS_SUCCESS": {
       let channels = { ...state.channels };
