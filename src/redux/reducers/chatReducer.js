@@ -71,13 +71,12 @@ export default function (state = INITIAL_STATE, action) {
       };
     }
     case "RENAME_CHANNEL_KEY":
-      let channels = state.channels;
+      let channels = {...state.channels};
       delete channels[action.data.old_id];
       delete action.data.old_id;
 
       channels[action.data.id] = action.data;
-
-      let selectedChannel = state.selectedChannel;
+      let selectedChannel = {...state.selectedChannel};
       if (action.data.selected) {
         if (selectedChannel) {
           channels[selectedChannel.id].selected = false;

@@ -25,6 +25,7 @@ import {
   setSelectedChannel
 } from "../../redux/actions/chatActions";
 import {useSettings, useToaster, useTranslation} from "./index";
+import {useHistory} from "react-router-dom";
 
 const useChannelActions = () => {
 
@@ -33,6 +34,7 @@ const useChannelActions = () => {
   const {chatSettings} = useSettings();
   const {_t} = useTranslation();
   const toaster = useToaster();
+  const history = useHistory();
 
   const sharedSlugs = useSelector((state) => state.global.slugs);
 
@@ -103,7 +105,7 @@ const useChannelActions = () => {
    */
   const createByUserChannel = useCallback(
     (channel, callback = () => {}) => {
-      let old_channel = channel;
+      let old_channel = {...channel};
 
       create(
         {
@@ -129,7 +131,7 @@ const useChannelActions = () => {
                 timestamp: timestamp,
               },
               last_reply: null,
-              title: old_channel.first_name,
+              title: res.data.channel.profile.name,
             };
             dispatch(
               renameChannelKey(channel, (err) => {
@@ -326,13 +328,14 @@ const useChannelActions = () => {
       if (typeof channel === "undefined") {
         console.log(channel, "channel not found");
       } else if (channel.hasOwnProperty("add_user") && channel.add_user === true) {
-        createByUserChannel(channel, (err, res) => {
+        createByUserChannel({...channel, selected: true}, (err, res) => {
           const data = res.data;
-          dispatch(
-            setSelectedChannel(res.data, () => {
-              callback(data);
-            })
-          );
+          history.push(`/chat/${data.code}`);
+          // dispatch(
+          //   setSelectedChannel(res.data, () => {
+          //     callback(data);
+          //   })
+          // );
         });
 
         //if unarchived archived chat
@@ -345,6 +348,7 @@ const useChannelActions = () => {
             })
           );
         });
+        history.push(`/chat/${channel.code}`);
       } else {
         dispatch(
           setSelectedChannel({
@@ -353,6 +357,7 @@ const useChannelActions = () => {
           })
         );
         callback(channel);
+        history.push(`/chat/${channel.code}`);
       }
     },
     [dispatch, createByUserChannel, unArchive]
