@@ -1,5 +1,5 @@
 import React from "react";
-import {useHistory} from "react-router-dom";
+//import {useHistory} from "react-router-dom";
 import styled from "styled-components";
 import useChannelActions from "../../hooks/useChannelActions";
 import ChannelIcon from "./ChannelIcon";
@@ -95,7 +95,7 @@ const ChannelList = (props) => {
   const {className = "", search = "", channel, selectedChannel, channelDrafts, dictionary} = props;
 
   const channelActions = useChannelActions();
-  const history = useHistory();
+  //const history = useHistory();
 
   const handleSelectChannel = () => {
     document.body.classList.add("m-chat-channel-closed");
@@ -108,7 +108,7 @@ const ChannelList = (props) => {
     }
 
     channelActions.select({ ...channel, selected: true });
-    history.push(`/chat/${channel.code}`);
+    // history.push(`/chat/${channel.code}`);
   };
 
   return (
