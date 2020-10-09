@@ -2,6 +2,7 @@ import React, {useState} from "react";
 import styled from "styled-components";
 import GooglePicker from "react-google-picker";
 import {SvgIconFeather} from "../../common";
+import {useTranslation} from "../../hooks";
 
 const Wrapper = styled.div`
   cursor: pointer;
@@ -22,6 +23,7 @@ const CompanyGoogleDrive = (props) => {
 
   const {className = "", onChange, disableOptions} = props;
 
+  const {_t} = useTranslation();
   const [show, setShow] = useState(false);
   const toggle = () => {
     if (disableOptions) return;
@@ -33,6 +35,12 @@ const CompanyGoogleDrive = (props) => {
     if (localStorage.getItem("gdrive") === null) {
       localStorage.setItem("gdrive", token);
     }
+  };
+
+  let dictionary = {
+    linkGoogleDrive: _t("FILE.LINK_GOOGLE_DRIVE", "Link your Google Drive first"),
+    gDriveAttachFile: _t("FILE.ATTACH_GOOGLE_DRIVE_FILE", "Attach a file"),
+    gDriveAttachFolder: _t("FILE.ATTACH_GOOGLE_DRIVE_FOLDER", "Attach a folder")
   };
 
   return (
@@ -54,7 +62,7 @@ const CompanyGoogleDrive = (props) => {
             authImmediate={false}
             viewId={"DOCS"}
           >
-            <div className="link-div">Link your google drive first</div>
+            <div className="link-div">{dictionary.linkGoogleDrive}</div>
           </GooglePicker>
         ) : (
           <>
@@ -70,7 +78,7 @@ const CompanyGoogleDrive = (props) => {
               authImmediate={localStorage.getItem("gdrive") === null ? false : true}
               viewId={"DOCS"}
             >
-              <div className="dropdown-item">Attach a file</div>
+              <div className="dropdown-item">{dictionary.gDriveAttachFile}</div>
             </GooglePicker>
             <GooglePicker
               clientId={process.env.REACT_APP_google_client_id}
@@ -100,7 +108,7 @@ const CompanyGoogleDrive = (props) => {
                 picker.build().setVisible(true);
               }}
             >
-              <div className="dropdown-item">Attach a folder</div>
+              <div className="dropdown-item">{dictionary.gDriveAttachFolder}</div>
             </GooglePicker>
           </>
         )}
