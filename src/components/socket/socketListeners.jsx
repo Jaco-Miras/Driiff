@@ -3,6 +3,7 @@ import { isSafari } from "react-device-detect";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { bindActionCreators } from "redux";
+import { sessionService } from "redux-react-session";
 import { pushBrowserNotification } from "../../helpers/pushHelper";
 import { replaceChar, stripHtml } from "../../helpers/stringFormatter";
 import { urlify } from "../../helpers/urlContentHelper";
@@ -527,6 +528,12 @@ class SocketListeners extends Component {
       .listen(".user-role-notification", (e) => {
         console.log(e, "updated role")
         this.props.incomingUserRole(e);
+        if (e.user_id === this.props.user.id) {
+          this.props.getUser({ id: this.props.user.id }, (err, res) => {
+            if (err) return;
+            sessionService.saveUser({ ...res.data });
+          });
+        }
       })
       .listen(".company-announcement", (e) => {
         this.props.updateCompanyPostAnnouncement(e);
