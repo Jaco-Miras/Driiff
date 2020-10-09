@@ -91,7 +91,8 @@ import {
   getUser,
   incomingExternalUser,
   incomingInternalUser,
-  incomingUpdatedUser
+  incomingUpdatedUser,
+  incomingUserRole
 } from "../../redux/actions/userAction";
 import {
   getWorkspace,
@@ -523,6 +524,10 @@ class SocketListeners extends Component {
       });
 
     window.Echo.private(`${localStorage.getItem("slug") === "dev24admin" ? "dev" : localStorage.getItem("slug")}.App.Broadcast`)
+      .listen(".user-role-notification", (e) => {
+        console.log(e, "updated role")
+        this.props.incomingUserRole(e);
+      })
       .listen(".company-announcement", (e) => {
         this.props.updateCompanyPostAnnouncement(e);
       })
@@ -1231,7 +1236,8 @@ function mapDispatchToProps(dispatch) {
     incomingPostMarkDone: bindActionCreators(incomingPostMarkDone, dispatch),
     incomingFavouriteItem: bindActionCreators(incomingFavouriteItem, dispatch),
     incomingReadUnreadReducer: bindActionCreators(incomingReadUnreadReducer, dispatch),
-    updateCompanyPostAnnouncement: bindActionCreators(updateCompanyPostAnnouncement, dispatch)
+    updateCompanyPostAnnouncement: bindActionCreators(updateCompanyPostAnnouncement, dispatch),
+    incomingUserRole: bindActionCreators(incomingUserRole, dispatch)
   };
 }
 

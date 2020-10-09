@@ -17,7 +17,9 @@ import {
   resetPassword,
   userGoogleLogin,
   userLogin,
-  userLogout
+  userLogout,
+  putUserRole,
+  getRoles
 } from "../../redux/actions/userAction";
 import {useDriffActions, useSettings, useToaster} from "./index";
 import {getAPIUrl, getCurrentDriffUrl} from "../../helpers/slugHelper";
@@ -449,6 +451,18 @@ const useUserActions = () => {
     )
   })
 
+  const updateUserRole = useCallback((payload, callback = () => {}) => {
+    dispatch(
+      putUserRole(payload, callback)
+    )
+  }, []);
+
+  const fetchRoles = useCallback(() => {
+    dispatch(
+      getRoles()
+    )
+  }, []);
+
   return {
     checkCredentials,
     login,
@@ -473,7 +487,9 @@ const useUserActions = () => {
     processBackendLogout,
     logout,
     displayWelcomeBanner,
-    inviteAsInternalUsers
+    inviteAsInternalUsers,
+    updateUserRole,
+    fetchRoles
   };
 };
 

@@ -6,7 +6,7 @@ import {useToaster, useTranslation, useUserChannels} from "../../hooks";
 import {PeopleListItem} from "../../list/people/item";
 import {SvgIconFeather} from "../../common";
 import {addToModals} from "../../../redux/actions/globalActions";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {CustomInput} from "reactstrap";
 
 const Wrapper = styled.div`
@@ -33,6 +33,7 @@ const SystemPeoplePanel = (props) => {
   const {className = ""} = props;
 
   const {users, userActions, loggedUser, selectUserChannel} = useUserChannels();
+  const roles = useSelector((state) => state.users.roles);
 
   const history = useHistory();
   const dispatch = useDispatch();
@@ -97,6 +98,8 @@ const SystemPeoplePanel = (props) => {
     searchPeoplePlaceholder: _t("PLACEHOLDER.SEARCH_PEOPLE", "Search by name or email"),
     peopleExternal: _t("PEOPLE.EXTERNAL", "External"),
     peopleInvited: _t("PEOPLE.INVITED", "Invited"),
+    assignAsAdmin: _t("PEOPLE.ASSIGN_AS_ADMIN", "Assign as administrator"),
+    assignAsEmployee: _t("PEOPLE.ASSIGN_AS_EMPLOYEE", "Assign as employee")
   };
 
   const handleInviteUsers = () => {
@@ -204,7 +207,10 @@ const SystemPeoplePanel = (props) => {
             {userSort.map((user) => {
               return <PeopleListItem
                 loggedUser={loggedUser} key={user.id} user={user} onNameClick={handleUserNameClick}
-                onChatClick={handleUserChat} dictionary={dictionary}/>;
+                onChatClick={handleUserChat} dictionary={dictionary} 
+                onUpdateRole={userActions.updateUserRole}
+                showOptions={loggedUser.role.name === "admin" || loggedUser.role.name === "owner"}
+                roles={roles}/>;
             })}
           </div>
         </div>
