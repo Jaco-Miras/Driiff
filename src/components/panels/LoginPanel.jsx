@@ -155,7 +155,7 @@ const LoginPanel = (props) => {
             const returnUrl =
               typeof props.location.state !== "undefined" && typeof props.location.state.from !== "undefined" && props.location.state.from !== "/logout"
                 ? props.location.state.from.pathname + props.location.state.from.search
-                : "/workspace/chat";
+                : "/chat";
             userActions.login(res.data, returnUrl);
           }
         }
