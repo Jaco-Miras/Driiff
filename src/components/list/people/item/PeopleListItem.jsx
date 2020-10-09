@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import styled from "styled-components";
 import {Avatar, Badge, SvgIconFeather, ToolTip} from "../../../common";
 import {MoreOptions} from "../../../panels/common";
@@ -32,6 +32,8 @@ const Wrapper = styled.div`
 
 const PeopleListItem = (props) => {
   const { className = "", loggedUser, onNameClick = null, onChatClick = null, user, dictionary, showOptions = false, onUpdateRole = null, roles } = props;
+
+  const bodyRef = useRef(null);
   const handleOnNameClick = () => {
     if (onNameClick) onNameClick(user);
   };
@@ -52,7 +54,7 @@ const PeopleListItem = (props) => {
     <Wrapper className={`workspace-user-item-list col-12 col-md-6 ${className}`}>
       <div className="col-12">
         <div className="card border" key={user.id}>
-          <div className="card-body">
+          <div className="card-body" ref={bodyRef}>
             <div className="d-flex align-items-center">
               <div className="pr-3">
                 <Avatar id={user.id} name={user.name ? user.name : user.email} hasAccepted={user.has_accepted} onClick={handleOnNameClick} noDefaultClick={true} imageLink={user.profile_image_link ? user.profile_image_link : ""} />
@@ -81,7 +83,7 @@ const PeopleListItem = (props) => {
                 <div className="text-right ml-auto">
                   {
                     showOptions && user.type !== "external" && user.role.name !== "owner" &&
-                    <MoreOptions className="mr-2" style={{top: "10px"}} width={220} moreButton={"more-horizontal"}>
+                    <MoreOptions className="mr-2" style={{top: "10px"}} width={240} moreButton={"more-horizontal"} scrollRef={bodyRef.current}>
                       { user.role.name === "employee" && <div onClick={() => handleUpdateRole("admin")}>{dictionary.assignAsAdmin}</div> }
                       { user.role.name === "admin" && <div onClick={() => handleUpdateRole("employee")}>{dictionary.assignAsEmployee}</div> }
                       {/* {
