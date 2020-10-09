@@ -54,7 +54,9 @@ export {
   postRequest,
   postMagicLink,
   putMagicLink,
-  postInternalRequestForm
+  postInternalRequestForm,
+  putUserRole,
+  getRoles
 } from "./user";
 
 export {

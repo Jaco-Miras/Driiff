@@ -19,6 +19,8 @@ import {
   putMagicLink as putMagicLinkService,
   putUser as putUserService,
   resetPassword as resetPasswordService,
+  putUserRole as putUserRoleService,
+  getRoles as getRolesService,
 } from "../services";
 
 export const postRequest = (payload, callback) => {
@@ -107,4 +109,16 @@ export function postInternalRequestForm(payload, callback) {
 
 export function incomingInternalUser(payload, callback) {
   return SimpleDispatchActionToReducer("INCOMING_INTERNAL_USER", payload, callback);
+}
+
+export function putUserRole(payload, callback) {
+  return dispatchActionToReducer(putUserRoleService(payload), "PUT_USER_ROLE_START", "PUT_USER_ROLE_SUCCESS", "PUT_USER_ROLE_FAILURE", callback);
+}
+
+export function getRoles(payload, callback) {
+  return dispatchActionToReducer(getRolesService(payload), "GET_ROLES_START", "GET_ROLES_SUCCESS", "GET_ROLES_FAILURE", callback);
+}
+
+export function incomingUserRole(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_USER_ROLE", payload, callback);
 }

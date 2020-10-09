@@ -39,7 +39,7 @@ const MainLayout = (props) => {
   useSocketConnection();
   usePushNotification();
   const {path} = useRouteMatch();
-  const {displayWelcomeBanner} = useUserActions();
+  const {displayWelcomeBanner, fetchRoles} = useUserActions();
   const user = useSelector((state) => state.session.user);
   //const socketMounted = useSelector((state) => state.global.socketMounted);
   const toaster = useToaster();
@@ -104,6 +104,7 @@ const MainLayout = (props) => {
     if (Object.keys(notifications).length === 0) {
       dispatch(getNotifications({skip: 0, limit: 100}));
     }
+    fetchRoles();
 
     //eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

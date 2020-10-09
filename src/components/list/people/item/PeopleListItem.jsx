@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import {Avatar, Badge, SvgIconFeather, ToolTip} from "../../../common";
+import {MoreOptions} from "../../../panels/common";
 
 const Wrapper = styled.div`
   .avatar {
@@ -30,14 +31,21 @@ const Wrapper = styled.div`
 `;
 
 const PeopleListItem = (props) => {
-  const { className = "", loggedUser, onNameClick = null, onChatClick = null, user, dictionary } = props;
-
+  const { className = "", loggedUser, onNameClick = null, onChatClick = null, user, dictionary, showOptions = false, onUpdateRole = null, roles } = props;
   const handleOnNameClick = () => {
     if (onNameClick) onNameClick(user);
   };
 
   const handleOnChatClick = () => {
     if (onChatClick) onChatClick(user);
+  };
+
+  const handleUpdateRole = (role) => {
+    let payload = {
+      user_id: user.id,
+      role_id: roles[role]
+    }
+    onUpdateRole(payload)
   };
 
   return (
@@ -69,14 +77,40 @@ const PeopleListItem = (props) => {
                 )}
                 {user.role && <span className="small text-muted">{user.role.display_name}</span>}
               </div>
-              {onChatClick !== null && loggedUser.id !== user.id && loggedUser.type !== "external" && user.type !== "external" && (
+              {onChatClick !== null && loggedUser.type !== "external" && (
                 <div className="text-right ml-auto">
-                  {user.contact !== "" && (
+                  {
+                    showOptions && user.type !== "external" && user.role.name !== "owner" &&
+                    <MoreOptions className="mr-2" style={{top: "10px"}} width={220} moreButton={"more-horizontal"}>
+                      { user.role.name === "employee" && <div onClick={() => handleUpdateRole("admin")}>{dictionary.assignAsAdmin}</div> }
+                      { user.role.name === "admin" && <div onClick={() => handleUpdateRole("employee")}>{dictionary.assignAsEmployee}</div> }
+                      {/* {
+                        loggedUser.role.name === "admin" && (
+                          <>
+                          { user.role.name === "employee" && <div onClick={() => handleUpdateRole("admin")}>Assign as administrator</div> }
+                          { user.role.name === "admin" && <div onClick={() => handleUpdateRole("employee")}>Assign as employee</div> }
+                          </>
+                        )
+                      }
+                      {
+                        loggedUser.role.name === "owner" && (
+                          <>
+                          { (user.role.name === "employee" || user.role.name === "owner") && <div onClick={() => handleUpdateRole("admin")}>Assign as administrator</div> }
+                          { (user.role.name === "admin" || user.role.name === "owner") && <div onClick={() => handleUpdateRole("employee")}>Assign as employee</div> }
+                          { user.role.name === "employee" && <div onClick={() => handleUpdateRole("owner")}>Assign as owner</div> }
+                          </>
+                        )
+                      } */}
+                    </MoreOptions>
+                  }
+                  {user.contact !== "" && loggedUser.id !== user.id && (
                     <a href={`tel:${user.contact.replace(/ /g, "").replace(/-/g, "")}`}>
                       <SvgIconFeather className="mr-2" icon="phone" />
                     </a>
                   )}
-                  <SvgIconFeather onClick={handleOnChatClick} icon="message-circle" />
+                  {
+                    (user.type !== "external" && loggedUser.id !== user.id) && <SvgIconFeather onClick={handleOnChatClick} icon="message-circle" />
+                  }
                 </div>
               )}
             </div>
