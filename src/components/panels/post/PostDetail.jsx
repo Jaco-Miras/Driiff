@@ -325,7 +325,7 @@ const PostDetail = (props) => {
           </ul>
         </div>
         <div>
-          {post.author.id !== user.id && post.is_must_read && (
+          {post.author.id !== user.id && post.is_must_read && (!hasRead) && (
             <MarkAsRead className="d-sm-inline d-none">
               <button className="btn btn-primary btn-block" onClick={markRead} disabled={disableOptions}>
                 {dictionary.markAsRead}

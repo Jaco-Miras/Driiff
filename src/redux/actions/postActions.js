@@ -214,3 +214,7 @@ export function incomingDeletedComment(payload, callback) {
 export function fetchPost(payload, callback) {
   return dispatchActionToReducer(fetchPostService(payload), "GET_POST_START", "GET_POST_SUCCESS", "GET_POST_FAIL", callback);
 }
+
+export function incomingMarkAsRead(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_MARK_AS_READ", payload, callback);
+}

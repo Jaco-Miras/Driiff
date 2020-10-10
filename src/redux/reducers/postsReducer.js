@@ -104,6 +104,26 @@ export default (state = INITIAL_STATE, action) => {
         }
       }
     }
+    case "INCOMING_MARK_AS_READ": {
+      return {
+        ...state,
+        ...(typeof state.companyPosts.posts[action.data.result.post_id] !== "undefined" && {
+          companyPosts: {
+            ...state.companyPosts,
+            posts: {
+              ...state.companyPosts.posts,
+              [action.data.result.post_id]: {
+                ...state.companyPosts.posts[action.data.result.post_id],
+                user_reads: [
+                  ...state.companyPosts.posts[action.data.result.post_id].user_reads,
+                  ...action.data.result.user_reads
+                ],
+              }
+            }
+          }
+        })
+      };
+    }
     case "INCOMING_POST": {
       return {
         ...state,

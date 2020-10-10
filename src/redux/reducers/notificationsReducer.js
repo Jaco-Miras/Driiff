@@ -1,4 +1,4 @@
-import {convertArrayToObject} from "../../helpers/arrayHelper";
+import { convertArrayToObject } from "../../helpers/arrayHelper";
 
 const INITIAL_STATE = {
   user: null,
@@ -70,7 +70,7 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "INCOMING_POST": {
-      if (action.data.author.id !== state.user.id) {
+      if (action.data.notification && action.data.author.id !== state.user.id) {
         let postNotification = {
           id: action.data.notification.id,
           type: "POST_CREATE",

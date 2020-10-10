@@ -269,6 +269,10 @@ const CompanyPostDetail = (props) => {
     dispatch(addToModals(modal));
   };
 
+  const markRead = () => {
+    postActions.markReadRequirement(post);
+  };
+
   const handleReaction = () => {
     setReact((prevState) => ({
       user_clap_count: !!prevState.user_clap_count ? 0 : 1,
@@ -332,9 +336,9 @@ const CompanyPostDetail = (props) => {
           </ul>
         </div>
         <div>
-          {post.author.id !== user.id && post.is_must_read && (
+          {post.author.id !== user.id && post.is_must_read && (!hasRead) && (
             <MarkAsRead className="d-sm-inline d-none">
-              <button className="btn btn-primary btn-block" onClick={() => markAsRead(post)}>
+              <button className="btn btn-primary btn-block" onClick={markRead}>
                 {dictionary.markAsRead}
               </button>
             </MarkAsRead>
