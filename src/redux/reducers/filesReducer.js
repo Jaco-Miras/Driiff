@@ -1,4 +1,4 @@
-import {convertArrayToObject} from "../../helpers/arrayHelper";
+import { convertArrayToObject } from "../../helpers/arrayHelper";
 
 const INITIAL_STATE = {
   user: null,
@@ -770,9 +770,10 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         channelFiles: {
           ...state.channelFiles,
-          [action.data.channel_id]: action.data.results,
-          //temporary
-          //[action.data.channel_id]: action.data.results.map(f => f.file_id)
+          [action.data.channel_id]: [
+            ...(typeof state.channelFiles[action.data.channel_id] === "undefined" ? [] : state.channelFiles[action.data.channel_id]),
+            ...action.data.results
+          ],
         },
       };
     }
@@ -806,6 +807,33 @@ export default (state = INITIAL_STATE, action) => {
           ...state.channelFiles,
           [action.data.channel_id]: channelFiles.concat(action.data.files),
         },
+      };
+    }
+    case "GET_CHAT_MESSAGES_SUCCESS": {
+      let files = (typeof state.channelFiles[action.data.channel_id] === "undefined" ? [] : state.channelFiles[action.data.channel_id]);
+      action.data.results.forEach(r => {
+        files = [
+          ...files,
+          ...r.files
+        ];
+      });
+      return {
+        ...state,
+        channelFiles: {
+          ...state.channelFiles,
+          [action.data.channel_id]: files
+        },
+      };
+    }
+    case "INCOMING_DELETED_CHAT_MESSAGE": {
+      return {
+        ...state,
+        ...(typeof state.channelFiles[action.data.channel_id] !== "undefined" && {
+          channelFiles: {
+            ...state.channelFiles,
+            [action.data.channel_id]: state.channelFiles[action.data.channel_id].filter(f => !action.data.file_ids.includes(f.file_id))
+          }
+        })
       };
     }
     case "DELETE_CHANNEL_FILES": {
