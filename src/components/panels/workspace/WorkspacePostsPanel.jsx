@@ -49,7 +49,7 @@ const EmptyState = styled.div`
 `;
 
 const WorkspacePostsPanel = (props) => {
-  const {className = "", workspace, isMember} = props;
+  const { className = "", workspace, isMember } = props;
 
   const params = useParams();
   const history = useHistory();
@@ -58,7 +58,8 @@ const WorkspacePostsPanel = (props) => {
 
   // const isMember = useIsMember(workspace && workspace.member_ids.length ? workspace.member_ids : []);
 
-  const {actions, posts, filter, tag, sort, post, user, search, count, counters} = usePosts();
+  const { actions, posts, filter, tag, sort, post, user, search, count, counters } = usePosts();
+  const readByUsers = post ? Object.values(post.user_reads).sort((a, b) => a.name.localeCompare(b.name)) : [];
 
   const handleShowWorkspacePostModal = () => {
     actions.showModal("create");
@@ -77,7 +78,7 @@ const WorkspacePostsPanel = (props) => {
     }
   }, [params.workspaceId]);
 
-  const {_t} = useTranslation();
+  const { _t } = useTranslation();
 
   const dictionary = {
     createNewPost: _t("POST.CREATE_NEW_POST", "Create new post"),
@@ -149,9 +150,11 @@ const WorkspacePostsPanel = (props) => {
               {post ? (
                 <div className="card card-body app-content-body mb-4">
                   <PostDetailWrapper className="fadeBottom">
-                    <PostDetail post={post} postActions={actions} user={user} history={history} onGoBack={handleGoback}
-                                workspace={workspace} isMember={isMember} dictionary={dictionary}
-                                disableOptions={disableOptions}/>
+                    <PostDetail
+                      readByUsers={readByUsers}
+                      post={post} postActions={actions} user={user} history={history} onGoBack={handleGoback}
+                      workspace={workspace} isMember={isMember} dictionary={dictionary}
+                      disableOptions={disableOptions}/>
                   </PostDetailWrapper>
                 </div>
               ) : (
@@ -160,11 +163,14 @@ const WorkspacePostsPanel = (props) => {
                     {search !== null && (
                       <>
                         {posts.length === 0 ? (
-                          <h6 className="search-title card-title font-size-11 text-uppercase mb-4">{dictionary.searchNoResult} {search}</h6>
+                          <h6
+                            className="search-title card-title font-size-11 text-uppercase mb-4">{dictionary.searchNoResult} {search}</h6>
                         ) : posts.length === 1 ? (
-                          <h6 className="search-title card-title font-size-11 text-uppercase mb-4">{dictionary.searchResult} {search}</h6>
+                          <h6
+                            className="search-title card-title font-size-11 text-uppercase mb-4">{dictionary.searchResult} {search}</h6>
                         ) : (
-                          <h6 className="search-title card-title font-size-11 text-uppercase mb-4">{dictionary.searchResults} {search}</h6>
+                          <h6
+                            className="search-title card-title font-size-11 text-uppercase mb-4">{dictionary.searchResults} {search}</h6>
                         )}
                       </>
                     )}
