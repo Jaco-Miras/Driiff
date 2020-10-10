@@ -9,7 +9,7 @@ import { uploadDocument } from "../../redux/services/global";
 import QuillEditor from "../forms/QuillEditor";
 import { useQuillModules } from "../hooks";
 import { ModalHeaderSection } from "./index";
-import { postComment, putComment, setParentIdForUpload, setEditComment } from "../../redux/actions/postActions";
+import { postComment, putComment, setEditComment, setParentIdForUpload } from "../../redux/actions/postActions";
 
 const StyledQuillEditor = styled(QuillEditor)`
   .ql-editor {
@@ -21,10 +21,15 @@ const StyledQuillEditor = styled(QuillEditor)`
     max-height: 170px;
     background: rgb(255, 255, 255);
     border-radius: 8px;
-    box-shadow: rgba(26, 26, 26, 0.4) 0px 2px 3px 0px, rgba(0, 0, 0, 0.1) 0px 1px 3px 0px;
+    box-shadow: rgba(26, 26, 26, 0.4) 0 2px 3px 0, rgba(0, 0, 0, 0.1) 0 1px 3px 0;
     overflow-x: hidden;
     overflow-y: auto;
     z-index: 2;
+    
+    .dark & {
+      background: #25282c;
+      color: #c7c7c7;
+    }
 
     .ql-mention-list {
       padding: 0;
@@ -53,7 +58,6 @@ const FilesPreviewContainer = styled.div`
   margin-top: 15px;
   ul {
     margin: 0;
-    padding: 0;
     border: 1px solid #ddd;
     padding: 10px 0;
     align-items: center;
@@ -88,7 +92,7 @@ const FilesPreviewContainer = styled.div`
     .app-file-list {
       height: 158px;
       width: 158px;
-      margin-bottom: 0px;
+      margin-bottom: 0;
     }
     &:first-of-type {
       padding-left: 15px;

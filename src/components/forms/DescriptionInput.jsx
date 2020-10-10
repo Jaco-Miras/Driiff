@@ -77,6 +77,11 @@ const WrapperDiv = styled(InputGroup)`
     overflow-x: hidden;
     overflow-y: auto;
     z-index: 2;
+    
+    .dark & {
+      background: #25282c;
+      color: #c7c7c7;
+    }
 
     .ql-mention-list {
       padding: 0;

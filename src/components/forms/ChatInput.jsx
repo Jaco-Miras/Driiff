@@ -1,7 +1,17 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
-import { addChatMessage, addQuote, clearChannelDraft, clearQuote, onClickSendButton, postChannelMembers, postChatMessage, putChatMessage, setEditChatMessage } from "../../redux/actions/chatActions";
+import {
+  addChatMessage,
+  addQuote,
+  clearChannelDraft,
+  clearQuote,
+  onClickSendButton,
+  postChannelMembers,
+  postChatMessage,
+  putChatMessage,
+  setEditChatMessage
+} from "../../redux/actions/chatActions";
 import { deleteDraft } from "../../redux/actions/globalActions";
 import { SvgIconFeather } from "../common";
 import BodyMention from "../common/BodyMention";
@@ -55,6 +65,11 @@ const StyledQuillEditor = styled(QuillEditor)`
     overflow-x: hidden;
     overflow-y: auto;
     z-index: 2;
+    
+    .dark & {
+      background: #25282c;
+      color: #c7c7c7;
+    }
 
     .ql-mention-list {
       padding: 0;
