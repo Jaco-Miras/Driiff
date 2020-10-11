@@ -242,3 +242,11 @@ export function setFetchingMessages(payload, callback) {
 export function setLastChatVisibility(payload, callback) {
   return SimpleDispatchActionToReducer("SET_LAST_CHAT_VISIBILITY", payload, callback);
 }
+
+export function deletePostNotification(payload, callback) {
+  return SimpleDispatchActionToReducer("DELETE_POST_NOTIFICATION", payload, callback);
+}
+
+export function incomingPostNotificationMessage(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_POST_NOTIFICATION_MESSAGE", payload, callback);
+}

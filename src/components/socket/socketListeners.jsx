@@ -24,6 +24,8 @@ import {
   setSelectedChannel,
   unreadChannelReducer,
   updateChannelMembersTitle,
+  deletePostNotification,
+  incomingPostNotificationMessage
 } from "../../redux/actions/chatActions";
 import {
   addFilesToChannel,
@@ -341,12 +343,48 @@ class SocketListeners extends Component {
               m.system_message.todo_reminder = null;
               m.system_message.is_read = false;
               m.system_message.is_completed = false;
-              this.props.incomingChatMessage(m.system_message);
+              m.system_message.user = null;
+              this.props.incomingPostNotificationMessage(m.system_message);
             });
             break;
           }
           case "POST_UPDATE": {
             this.props.incomingUpdatedPost(e);
+            if (e.channel_messages && e.post_participant_data) {
+              if (!e.post_participant_data.all_participant_ids.some((p) => p === this.props.user.id)) {
+                //user is not participant of post
+                this.props.deletePostNotification(e.channel_messages)
+              } else {
+                e.channel_messages && e.channel_messages.forEach(m => {
+                  m.system_message.files = [];
+                  m.system_message.editable = false;
+                  m.system_message.unfurls = [];
+                  m.system_message.reactions = [];
+                  m.system_message.is_deleted = false;
+                  m.system_message.todo_reminder = null;
+                  m.system_message.is_read = true;
+                  m.system_message.is_completed = false;
+                  m.system_message.user = null;
+                  this.props.incomingPostNotificationMessage(m.system_message);
+                });
+              }
+              if (!e.post_participant_data.from_company) {
+                // from private to public post
+                this.props.incomingPost(e);
+                e.channel_messages && e.channel_messages.forEach(m => {
+                  m.system_message.files = [];
+                  m.system_message.editable = false;
+                  m.system_message.unfurls = [];
+                  m.system_message.reactions = [];
+                  m.system_message.is_deleted = false;
+                  m.system_message.todo_reminder = null;
+                  m.system_message.is_read = true;
+                  m.system_message.is_completed = false;
+                  m.system_message.user = null;
+                  this.props.incomingPostNotificationMessage(m.system_message);
+                });
+              }
+            }
             break;
           }
           case "POST_DELETE": {
@@ -1244,7 +1282,9 @@ function mapDispatchToProps(dispatch) {
     incomingFavouriteItem: bindActionCreators(incomingFavouriteItem, dispatch),
     incomingReadUnreadReducer: bindActionCreators(incomingReadUnreadReducer, dispatch),
     updateCompanyPostAnnouncement: bindActionCreators(updateCompanyPostAnnouncement, dispatch),
-    incomingUserRole: bindActionCreators(incomingUserRole, dispatch)
+    incomingUserRole: bindActionCreators(incomingUserRole, dispatch),
+    deletePostNotification: bindActionCreators(deletePostNotification, dispatch),
+    incomingPostNotificationMessage: bindActionCreators(incomingPostNotificationMessage, dispatch)
   };
 }
 

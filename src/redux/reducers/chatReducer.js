@@ -1166,6 +1166,58 @@ export default function (state = INITIAL_STATE, action) {
         isLastChatVisible: action.data.status
       }
     }
+    case "DELETE_POST_NOTIFICATION": {
+      let channels = {...state.channels};
+      let selectedChannel = state.selectedChannel ? {...state.selectedChannel} : null
+      action.data.forEach((data) => {
+        if (channels.hasOwnProperty(data.channel.id)) {
+          if (channels[data.channel.id].replies.length) {
+            channels[data.channel.id].replies = channels[data.channel.id].replies.filter((r) => r.id !== data.system_message.id);
+          }
+        }
+        if (selectedChannel && selectedChannel.id === data.channel.id && selectedChannel.replies.length) {
+          selectedChannel.replies = selectedChannel.replies.filter((r) => r.id !== data.system_message.id)
+        }
+      })
+      return {
+        ...state,
+        channels: channels,
+        selectedChannel: selectedChannel
+      }
+    }
+    case "INCOMING_POST_NOTIFICATION_MESSAGE": {
+      let channel = null;
+      if (Object.keys(state.channels).length > 0 && state.channels.hasOwnProperty(action.data.channel_id)) {
+        channel = { ...state.channels[action.data.channel_id] };
+        channel = {
+          ...channel,
+          is_hidden: false,
+          replies: channel.replies.some((r) => r.id === action.data.id) ? 
+            channel.replies.map((r) => {
+              if (r.id === action.data.id) {
+                return action.data
+              } else {
+                return r
+              }
+            })
+            : [...channel.replies, action.data]
+        };
+      }
+      return {
+        ...state,
+        selectedChannel:
+          state.selectedChannel && state.selectedChannel.id === action.data.channel_id
+            ? channel
+            : state.selectedChannel,
+        channels:
+          channel !== null
+            ? {
+                ...state.channels,
+                [action.data.channel_id]: channel,
+              }
+            : state.channels,
+      };
+    }
     default:
       return state;
   }

@@ -70,7 +70,7 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "INCOMING_POST": {
-      if (action.data.author.id !== state.user.id) {
+      if (action.data.author.id !== state.user.id && action.data.notification) {
         let postNotification = {
           id: action.data.notification.id,
           type: "POST_CREATE",
