@@ -824,7 +824,7 @@ export default (state = INITIAL_STATE, action) => {
       let newWorkspacePosts = { ...state.workspacePosts };
       action.data.recipient_ids.forEach((id) => {
         if (newWorkspacePosts.hasOwnProperty(id)) {
-          if (action.data.is_personal && !Object.values(action.data.users_responsible).map(u => u.id).includes(state.user.id)) {
+          if (action.data.is_personal && !action.data.post_participant_data.all_participant_ids.some((id) => id === state.user.id)) {
             delete newWorkspacePosts[id].posts[action.data.id];
           } else {
             newWorkspacePosts[id].posts[action.data.id] = action.data;
