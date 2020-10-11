@@ -710,6 +710,31 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
+    case "INCOMING_MARK_AS_READ": {
+      return {
+        ...state,
+        ...(Object.keys(state.workspacePosts)
+          .filter(wsid => {
+            return wsid !== "flipper" && state.workspacePosts[wsid] && state.workspacePosts[wsid].posts[action.data.result.post_id];
+          })
+          .map(wsid => ({
+            ...state.workspacePosts,
+            post: {
+              ...state.workspacePosts[wsid].posts,
+              [action.data.result.post_id]: {
+                ...state.workspacePosts[wsid].posts[action.data.result.post_id],
+                user_reads: [
+                  ...state.workspacePosts[wsid].posts[action.data.result.post_id].user_reads,
+                  ...action.data.result.user_reads
+                ]
+              }
+            }
+          }))
+          .reduce((obj, workspace) => {
+            return { ...obj, ...workspace };
+          }, {}))
+      };
+    }
     case "INCOMING_POST": {
       let newWorkspacePosts = { ...state.workspacePosts };
       let updatedWorkspaces = { ...state.workspaces };

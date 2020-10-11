@@ -82,6 +82,7 @@ import {
   incomingCommentClap,
   incomingDeletedComment,
   incomingDeletedPost,
+  incomingMarkAsRead,
   incomingPost,
   incomingPostClap,
   incomingPostMarkDone,
@@ -855,6 +856,13 @@ class SocketListeners extends Component {
       });
     // old / legacy channel
     window.Echo.private(`${localStorage.getItem("slug") === "dev24admin" ? "dev" : localStorage.getItem("slug")}.App.User.${this.props.user.id}`)
+      .listen(".post-require-author-notify", (e) => {
+        console.log(e, ".post-read-require");
+      })
+      .listen(".post-read-require", (e) => {
+        console.log(e, ".post-read-require");
+        this.props.incomingMarkAsRead(e);
+      })
       .listen(".new-lock-workspace", (e) => {
         console.log(e, "new workspace lock");
 
@@ -1284,7 +1292,8 @@ function mapDispatchToProps(dispatch) {
     updateCompanyPostAnnouncement: bindActionCreators(updateCompanyPostAnnouncement, dispatch),
     incomingUserRole: bindActionCreators(incomingUserRole, dispatch),
     deletePostNotification: bindActionCreators(deletePostNotification, dispatch),
-    incomingPostNotificationMessage: bindActionCreators(incomingPostNotificationMessage, dispatch)
+    incomingPostNotificationMessage: bindActionCreators(incomingPostNotificationMessage, dispatch),
+    incomingMarkAsRead: bindActionCreators(incomingMarkAsRead, dispatch),
   };
 }
 

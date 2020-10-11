@@ -21,7 +21,7 @@ const Wrapper = styled.div`
     padding: 6px;
     background-color: ${(props) => (props.iconColor ? props.iconColor : props.iconColor)};
     border-radius: 50%;
-    &:dark {
+    &.dark {
       background-color: ${(props) => (props.iconColor ? props.iconColor : props.iconColor)};
     }
   }
@@ -39,6 +39,9 @@ const Icon = styled(SvgIconFeather)`
   color: #ffffff !important;
   height: 32px;
   width: 32px;
+  &.feather-home {
+    background: #7a1b8b;
+  }
   .chat-header-icon-left & {
     height: 28px;
     width: 28px;
@@ -75,13 +78,16 @@ const ChannelIcon = (props) => {
   return (
     <Wrapper className={`pr-3 ${className}`} type={channel.type} iconColor={iconColor(channel.title.toLowerCase())}>
       {channel.profile && channel.members.length >= 1 && channel.type === "DIRECT" && (
-        <StyledAvatar type={channel.type} imageLink={channel.profile.profile_image_link} userId={channel.profile.id} id={channel.profile.id} name={channel.profile.name} partialName={channel.profile.partial_name} noDefaultClick={false} />
+        <StyledAvatar type={channel.type} imageLink={channel.profile.profile_image_link} userId={channel.profile.id}
+                      id={channel.profile.id} name={channel.profile.name} partialName={channel.profile.partial_name}
+                      noDefaultClick={false}/>
       )}
-      {channel.type === "GROUP" && <Icon icon="users" alt={channel.title} />}
-      {channel.type === "COMPANY" && <Icon icon="users" alt={channel.title} />}
-      {channel.type === "POST" && <Icon icon="users" alt={channel.title} />}
-      {channel.type === "PERSONAL_BOT" && <Icon icon="user" alt={channel.title} />}
-      {(channel.members.length > 2 && channel.type === "DIRECT") || (channel.type === "TOPIC" && <span>{handleInitials(channel.title).substring(0, 3)}</span>)}
+      {channel.type === "GROUP" && <Icon icon="users" alt={channel.title}/>}
+      {channel.type === "COMPANY" && <Icon icon="home" alt={channel.title}/>}
+      {channel.type === "POST" && <Icon icon="users" alt={channel.title}/>}
+      {channel.type === "PERSONAL_BOT" && <Icon icon="user" alt={channel.title}/>}
+      {(channel.members.length > 2 && channel.type === "DIRECT") || (channel.type === "TOPIC" &&
+        <span>{handleInitials(channel.title).substring(0, 3)}</span>)}
     </Wrapper>
   );
 };

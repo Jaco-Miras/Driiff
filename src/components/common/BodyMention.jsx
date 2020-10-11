@@ -9,6 +9,9 @@ const BodyMentionDiv = styled.div`
   background: #f0f0f0;
   padding: 10px;
   display: block;
+  .dark & {
+    background: #191c20;
+  }
   .mention-name {
     color: #7a1b8b;
   }

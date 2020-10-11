@@ -58,16 +58,17 @@ const EmptyState = styled.div`
 `;
 
 const CompanyPostsPanel = (props) => {
-  const {className = ""} = props;
+  const { className = "" } = props;
 
   const params = useParams();
   const history = useHistory();
   const refs = {
     posts: useRef(null),
     btnLoadMore: useRef(null)
-  }
+  };
 
-  const {actions, fetchMore, posts, filter, tag, sort, post, user, search, count, counters} = useCompanyPosts();
+  const { actions, fetchMore, posts, filter, tag, sort, post, user, search, count, counters } = useCompanyPosts();
+  const readByUsers = post ? Object.values(post.user_reads).sort((a, b) => a.name.localeCompare(b.name)) : [];
   const [loading, setLoading] = useState(false);
 
   const handleShowPostModal = () => {
@@ -80,7 +81,7 @@ const CompanyPostsPanel = (props) => {
     }
   }, [params, history]);
 
-  const {_t} = useTranslation();
+  const { _t } = useTranslation();
 
   const dictionary = {
     createNewPost: _t("POST.CREATE_NEW_POST", "Create new post"),
@@ -121,7 +122,14 @@ const CompanyPostsPanel = (props) => {
     private: _t("POST.PRIVATE", "Private"),
     by: _t("POST.BY", "by"),
     star: _t("POST.STAR", "Mark with star"),
-    unStar: _t("POST.UNSTAR", "Unmark star")
+    unStar: _t("POST.UNSTAR", "Unmark star"),
+    alreadyReadThis: _t("POST.ALREADY_READ_THIS", "I've read this"),
+    readByNumberofUsers: (readByUsers === 1) ?
+      _t("POST.READY_BY_NUMBER_OF_USERS", "Read by ::user_name::", {
+        user_name: readByUsers[0].first_name,
+      }) : _t("POST.READY_BY_NUMBER_OF_USERS", "Read by ::user_count:: users", {
+        user_count: readByUsers.length,
+      }),
   };
 
   /**
@@ -132,7 +140,7 @@ const CompanyPostsPanel = (props) => {
     if (el.scrollHeight > el.querySelector(".list-group").scrollHeight) {
       loadMore();
     }
-  }
+  };
 
   const loadMore = (callback = () => {
   }) => {
@@ -144,7 +152,7 @@ const CompanyPostsPanel = (props) => {
         callback(err, res);
       });
     }
-  }
+  };
 
   const handleScroll = (e) => {
     if (e.target.dataset.loading === "false") {
@@ -153,7 +161,7 @@ const CompanyPostsPanel = (props) => {
           refs.btnLoadMore.current.click();
       }
     }
-  }
+  };
 
   useEffect(() => {
     let el = refs.posts.current;
@@ -199,6 +207,7 @@ const CompanyPostsPanel = (props) => {
                 <div className="card card-body app-content-body mb-4">
                   <PostDetailWrapper className="fadeBottom">
                     <CompanyPostDetail
+                      readByUsers={readByUsers}
                       post={post} postActions={actions} user={user} history={history}
                       onGoBack={handleGoback} dictionary={dictionary}/>
                   </PostDetailWrapper>
@@ -209,11 +218,14 @@ const CompanyPostsPanel = (props) => {
                     {search !== null && (
                       <>
                         {posts.length === 0 ? (
-                          <h6 className="search-title card-title font-size-11 text-uppercase mb-4">{dictionary.searchNoResult} {search}</h6>
+                          <h6
+                            className="search-title card-title font-size-11 text-uppercase mb-4">{dictionary.searchNoResult} {search}</h6>
                         ) : posts.length === 1 ? (
-                          <h6 className="search-title card-title font-size-11 text-uppercase mb-4">{dictionary.searchResult} {search}</h6>
+                          <h6
+                            className="search-title card-title font-size-11 text-uppercase mb-4">{dictionary.searchResult} {search}</h6>
                         ) : (
-                          <h6 className="search-title card-title font-size-11 text-uppercase mb-4">{dictionary.searchResults} {search}</h6>
+                          <h6
+                            className="search-title card-title font-size-11 text-uppercase mb-4">{dictionary.searchResults} {search}</h6>
                         )}
                       </>
                     )}

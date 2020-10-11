@@ -1,7 +1,7 @@
-import {useEffect, useState} from "react";
-import {useSelector} from "react-redux";
-import {useParams} from "react-router-dom";
-import {useFileActions} from "../hooks";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
+import { useFileActions } from "../hooks";
 
 const useFiles = () => {
   const params = useParams();
@@ -44,9 +44,10 @@ const useFiles = () => {
     }
   }, [fetchingFiles, activeTopic, workspaceFiles, params]);
 
+  let fileIds = [];
   if (Object.values(workspaceFiles).length && workspaceFiles.hasOwnProperty(params.workspaceId)) {
     if (params.hasOwnProperty("fileFolderId") && workspaceFiles[activeTopic.id].folders.hasOwnProperty(params.fileFolderId) && workspaceFiles[activeTopic.id].folders[params.fileFolderId].hasOwnProperty("files")) {
-      let fileIds = Object.values(workspaceFiles[activeTopic.id].folders[params.fileFolderId].files).sort((a, b) => {
+      fileIds = Object.values(workspaceFiles[activeTopic.id].folders[params.fileFolderId].files).sort((a, b) => {
         return b > a ? 1 : -1;
       });
       if (workspaceFiles[activeTopic.id].hasOwnProperty("search_results") && workspaceFiles[activeTopic.id].search_results.length > 0) {
@@ -54,18 +55,9 @@ const useFiles = () => {
           return b > a ? 1 : -1;
         });
       }
-      return {
-        params,
-        wsFiles: workspaceFiles[activeTopic.id],
-        actions: fileActions,
-        topic: activeTopic,
-        fileIds: fileIds,
-        folders: workspaceFiles[activeTopic.id].folders,
-        subFolders: Object.values(workspaceFiles[activeTopic.id].folders).filter((f) => f.parent_folder && f.parent_folder.id == params.fileFolderId),
-        folder: workspaceFiles[activeTopic.id].folders[params.fileFolderId],
-      };
     } else {
-      let fileIds = Object.values(workspaceFiles[activeTopic.id].files)
+      fileIds = Object.values(workspaceFiles[activeTopic.id].files)
+        .filter(f => f.folder_id === null)
         .map((f) => f.id)
         .sort((a, b) => {
           return b > a ? 1 : -1;
@@ -75,30 +67,22 @@ const useFiles = () => {
           return b > a ? 1 : -1;
         });
       }
-      return {
-        params,
-        wsFiles: workspaceFiles[activeTopic.id],
-        actions: fileActions,
-        topic: activeTopic,
-        fileIds: fileIds,
-        folders: workspaceFiles[activeTopic.id].folders,
-        subFolders: [],
-        folder: null,
-      };
     }
-  } else {
-    return {
-      params,
-      wsFiles: activeTopic !== null ? workspaceFiles[activeTopic.id] : null,
-      actions: fileActions,
-      topic: activeTopic,
-      fileIds: [],
-      folders: {},
-      subFolders: [],
-      folder: null,
-      googleDriveApiFiles
-    };
   }
+
+  const hasActiveTopic = activeTopic && workspaceFiles[activeTopic.id];
+
+  return {
+    params,
+    wsFiles: hasActiveTopic ? workspaceFiles[activeTopic.id] : null,
+    actions: fileActions,
+    topic: activeTopic,
+    fileIds: fileIds,
+    folders: hasActiveTopic ? workspaceFiles[activeTopic.id].folders : {},
+    subFolders: hasActiveTopic ? Object.values(workspaceFiles[activeTopic.id].folders).filter((f) => f.parent_folder && f.parent_folder.id == params.fileFolderId) : [],
+    folder: hasActiveTopic ? workspaceFiles[activeTopic.id].folders[params.fileFolderId] : null,
+    googleDriveApiFiles
+  };
 };
 
 export default useFiles;
