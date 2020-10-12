@@ -1,9 +1,9 @@
-import React, { forwardRef, useCallback } from "react";
+import React, { forwardRef } from "react";
 import Dropzone from "react-dropzone";
 import "react-redux-toastr/lib/css/react-redux-toastr.min.css";
 import styled from "styled-components";
 import { SvgIconFeather } from "../common";
-import { useToaster } from "../hooks";
+import { useToaster, useTranslation } from "../hooks";
 import "./DropDocument.scss";
 
 const Section = styled.section`
@@ -12,25 +12,42 @@ const Section = styled.section`
     opacity: ${(props) => (props.hide ? "0" : "1")};
     transition: opacity 200ms ease;
     background: rgba(255, 255, 255, 0.9);
+    
+    .dark & {
+      background: rgba(25, 28, 32, 0.9);
+    }
+  }
+  .click-cancel-drop {
+    .dark & {    
+      background: #fff;    
+      color: #7a1b8b;    
+    }  
   }
 `;
 
-const Icon = styled(SvgIconFeather)``;
+const Icon = styled(SvgIconFeather)`  
+`;
 
 export const DropDocument = forwardRef((props, ref) => {
-  const { attachedFiles, onCancel, onDrop, noX = false, disableInput = false, openOnLoad = false, placeholderText = "Drag 'n' drop your files here.", hide, params = null, acceptType = "" } = props;
+  const { attachedFiles, onCancel, onDrop, noX = false, disableInput = false, openOnLoad = false, hide, params = null, acceptType = "" } = props;
 
   const toastr = useToaster();
+  const { _t } = useTranslation();
+
+  let placeholderText = props.placeholderText;
+  if (!placeholderText) {
+    placeholderText = _t("UPLOAD.DRAG_N_DROP_YOUR_FILES", "Drag 'n' drop your files here.");
+  }
 
   const cbOnDrop = ({ acceptedFiles, rejectedFiles }) => {
-      let toastrOption = {
-        timeOut: 8000,
-        icon: "error",
-      };
+    let toastrOption = {
+      timeOut: 8000,
+      icon: "error",
+    };
 
-      for (let i = 0; i < acceptedFiles.length; i++) {
-        let file = acceptedFiles[i];
-        if (file.size === 0) {
+    for (let i = 0; i < acceptedFiles.length; i++) {
+      let file = acceptedFiles[i];
+      if (file.size === 0) {
           toastr.error(
             <span>
               File <b>{file.name}</b> upload failed!
