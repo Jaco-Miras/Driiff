@@ -130,7 +130,7 @@ const ChannelList = (props) => {
       </ChannelTitlePreview>
       <Timestamp className="text-right ml-auto">
         <ChatDateIcons className={"chat-date-icons"} channel={channel} isRead={channel.is_read} />
-        {channel.type !== "TOPIC" && <ChannelOptions selectedChannel={selectedChannel} channel={channel} />}
+        <ChannelOptions selectedChannel={selectedChannel} channel={channel} />
       </Timestamp>
     </Wrapper>
   );
