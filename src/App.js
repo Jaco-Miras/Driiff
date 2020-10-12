@@ -43,7 +43,6 @@ function App() {
             .deleteSession()
             .then(() => sessionService.deleteUser())
             .then(() => {
-              console.log("hello");
               processBackendLogout();
             });
         }
