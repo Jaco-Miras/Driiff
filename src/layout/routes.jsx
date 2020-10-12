@@ -1,14 +1,16 @@
-import React, {useEffect} from "react";
-import {useSelector} from "react-redux";
-import {Redirect, Route, Switch, useHistory} from "react-router-dom";
-import {useSettings} from "../components/hooks";
-import {TestChat} from "../components/test";
+import React, { useEffect } from "react";
+import { useSelector } from "react-redux";
+import { Redirect, Route, Switch, useHistory } from "react-router-dom";
+import { useSettings, useUserActions } from "../components/hooks";
+import { TestChat } from "../components/test";
 import TestFiles from "../components/test/TestFiles";
 import GuestLayout from "./GuestLayout";
 import MainLayout from "./MainLayout";
+import { getCookie, setCookie } from "../helpers/commonFunctions";
 
-export const AppRoute = ({children, ...props}) => {
-  const {init: settingsInit, fetch, fetchUserSettings, userSettings, driffSettings} = useSettings();
+export const AppRoute = ({ children, ...props }) => {
+  const { logout, processBackendLogout } = useUserActions();
+  const { init: settingsInit, fetch, fetchUserSettings, userSettings, driffSettings } = useSettings();
   settingsInit();
 
   // const push = usePushNotification();
@@ -19,8 +21,14 @@ export const AppRoute = ({children, ...props}) => {
   useEffect(() => {
     if (session.checked) {
       if (session.authenticated) {
-        fetch();
-        fetchUserSettings();
+        if (getCookie("site_ver") !== "121020200140") {
+          setCookie("site_ver", "121020200140");
+          logout();
+          processBackendLogout();
+        } else {
+          fetch();
+          fetchUserSettings();
+        }
       }
     }
   }, [session.checked, session.authenticated, fetchUserSettings, driffSettings.isSettingsLoaded]);
