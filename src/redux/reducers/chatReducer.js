@@ -366,12 +366,12 @@ export default function (state = INITIAL_STATE, action) {
     }
     case "INCOMING_CHAT_MESSAGE": {
       let haveReference = false;
-      if (state.selectedChannel && state.selectedChannel.id === action.data.channel_id) {
-        if (action.data.reference_id) haveReference = state.selectedChannel.replies.some((r) => r.reference_id === action.data.reference_id);
-      }
       let channel = null;
       if (Object.keys(state.channels).length > 0 && state.channels.hasOwnProperty(action.data.channel_id)) {
         channel = { ...state.channels[action.data.channel_id] };
+        if (channel.id === action.data.channel_id) {
+          if (action.data.reference_id) haveReference = channel.replies.some((r) => r.reference_id === action.data.reference_id);
+        }
         channel = {
           ...channel,
           is_hidden: false,
@@ -394,23 +394,8 @@ export default function (state = INITIAL_STATE, action) {
       return {
         ...state,
         selectedChannel:
-          state.selectedChannel && state.selectedChannel.id === action.data.channel_id
-            ? {
-                ...state.selectedChannel,
-                last_visited_at_timestamp: getCurrentTimestamp(),
-                last_reply: action.data,
-                replies: haveReference
-                  ? state.selectedChannel.replies.map((r) => {
-                      if (r.id === action.data.reference_id) {
-                        r.id = action.data.id;
-                        return r;
-                      } else {
-                        r.is_read = true;
-                        return r;
-                      }
-                    })
-                  : [...state.selectedChannel.replies, action.data],
-              }
+          state.selectedChannel && state.selectedChannel.id === action.data.channel_id && channel
+            ? channel
             : state.selectedChannel,
         channels:
           channel !== null
