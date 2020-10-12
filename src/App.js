@@ -1,15 +1,16 @@
-import React, {useEffect} from "react";
-import {Route, Switch, useLocation} from "react-router-dom";
+import React, { useEffect } from "react";
+import { Route, Switch, useLocation } from "react-router-dom";
 import ScrollToTop from "react-router-scroll-top";
 import styled from "styled-components";
-import {useDriff, useSettings, useTranslation} from "./components/hooks";
-import {DriffRegisterPanel, ModalPanel, PreLoader, RedirectPanel} from "./components/panels";
-import {AppRoute} from "./layout/routes";
+import { useDriff, useSettings, useTranslation, useUserActions } from "./components/hooks";
+import { DriffRegisterPanel, ModalPanel, PreLoader, RedirectPanel } from "./components/panels";
+import { AppRoute } from "./layout/routes";
 import GuestLayout from "./layout/GuestLayout";
 import DriffSelectPanel from "./components/panels/DriffSelectPanel";
-import {Slide, ToastContainer} from "react-toastify";
+import { Slide, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import {useSelector} from "react-redux";
+import { useSelector } from "react-redux";
+import { getCookie, setCookie } from "./helpers/commonFunctions";
 
 const Wrapper = styled.div`
   min-height: 100%;
@@ -19,13 +20,26 @@ const Wrapper = styled.div`
 `;
 
 function App() {
-  const session = useSelector((state) => state.session);
-  const {driffSettings} = useSettings();
-  const {actions: driffActions, redirected, registeredDriff, setRegisteredDriff} = useDriff();
+
+  const { logout, processBackendLogout } = useUserActions();
+  const { driffSettings } = useSettings();
+  const { actions: driffActions, redirected, registeredDriff, setRegisteredDriff } = useDriff();
   const location = useLocation();
+
+  const session = useSelector((state) => state.session);
+
   useTranslation(session);
 
   useEffect(() => {
+    if (session.checked) {
+      if (session.authenticated) {
+        if (getCookie("site_ver") !== "121020200140") {
+          setCookie("site_ver", "121020200140");
+          logout();
+          processBackendLogout();
+        }
+      }
+    }
     const handleResize = () => {
       let vh = window.innerHeight * 0.01;
       document.documentElement.style.setProperty("--vh", `${vh}px`);
