@@ -9,6 +9,7 @@ import { replaceChar, stripHtml } from "../../helpers/stringFormatter";
 import { urlify } from "../../helpers/urlContentHelper";
 import {
   addToChannels,
+  deletePostNotification,
   getChannel,
   getChannelMembers,
   incomingArchivedChannel,
@@ -16,6 +17,7 @@ import {
   incomingChatMessageFromOthers,
   incomingChatMessageReaction,
   incomingDeletedChatMessage,
+  incomingPostNotificationMessage,
   incomingUpdatedChannelDetail,
   incomingUpdatedChatMessage,
   setAllMessagesAsRead,
@@ -23,9 +25,7 @@ import {
   setMemberTimestamp,
   setSelectedChannel,
   unreadChannelReducer,
-  updateChannelMembersTitle,
-  deletePostNotification,
-  incomingPostNotificationMessage
+  updateChannelMembersTitle
 } from "../../redux/actions/chatActions";
 import {
   addFilesToChannel,
@@ -63,6 +63,7 @@ import {
   incomingRestoreFolder,
 } from "../../redux/actions/fileActions";
 import {
+  addToModals,
   addUserToReducers,
   generateUnfurl,
   generateUnfurlReducer,
@@ -114,6 +115,7 @@ import {
   updateWorkspaceCounter
 } from "../../redux/actions/workspaceActions";
 import { incomingUpdateCompanyName, updateCompanyPostAnnouncement } from "../../redux/actions/settingsActions";
+import { isIPAddress } from "../../helpers/commonFunctions";
 
 class SocketListeners extends Component {
   constructor(props) {
@@ -564,6 +566,30 @@ class SocketListeners extends Component {
       });
 
     window.Echo.private(`${localStorage.getItem("slug") === "dev24admin" ? "dev" : localStorage.getItem("slug")}.App.Broadcast`)
+      .listen(".updated-version", (e) => {
+        if (!(isIPAddress(window.location.hostname) || window.location.hostname === "localhost")
+          && localStorage.getItem("site_ver") !== e.version) {
+          const { version, requirement } = e;
+          const handleReminder = () => {
+            setTimeout(() => {
+              this.props.addToModals({
+                id: version,
+                type: "update_found",
+                requirement: requirement,
+                handleReminder: handleReminder,
+              });
+            }, [30 * 60 * 1000]);
+          };
+
+          this.props.addToModals({
+            id: version,
+            type: "update_found",
+            requirement: requirement,
+            handleReminder: handleReminder,
+          });
+          localStorage.setItem("site_ver", version);
+        }
+      })
       .listen(".user-role-notification", (e) => {
         console.log(e, "updated role")
         this.props.incomingUserRole(e);
@@ -1294,6 +1320,7 @@ function mapDispatchToProps(dispatch) {
     deletePostNotification: bindActionCreators(deletePostNotification, dispatch),
     incomingPostNotificationMessage: bindActionCreators(incomingPostNotificationMessage, dispatch),
     incomingMarkAsRead: bindActionCreators(incomingMarkAsRead, dispatch),
+    addToModals: bindActionCreators(addToModals, dispatch),
   };
 }
 

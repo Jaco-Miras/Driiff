@@ -10,7 +10,8 @@ import DriffSelectPanel from "./components/panels/DriffSelectPanel";
 import { Slide, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useSelector } from "react-redux";
-import { sessionService } from "redux-react-session";
+import { isIPAddress } from "./helpers/commonFunctions";
+import { checkUpdate } from "./helpers/slugHelper";
 
 const Wrapper = styled.div`
   min-height: 100%;
@@ -31,28 +32,9 @@ function App() {
   useTranslation(session);
 
   useEffect(() => {
-    if (session.checked) {
-      if (session.authenticated) {
-        if (localStorage.getItem("site_ver") !== "121020200140") {
-          localStorage.setItem("site_ver", "121020200140");
-          localStorage.removeItem("userAuthToken");
-          localStorage.removeItem("token");
-          localStorage.removeItem("atoken");
-          localStorage.removeItem("welcomeBanner");
-          sessionService
-            .deleteSession()
-            .then(() => sessionService.deleteUser())
-            .then(() => {
-              processBackendLogout();
-            });
-        }
-      } else {
-        localStorage.setItem("site_ver", "121020200140");
-      }
+    if (!(isIPAddress(window.location.hostname) || window.location.hostname === "localhost")) {
+      checkUpdate();
     }
-  }, [session]);
-
-  useEffect(() => {
 
     const handleResize = () => {
       let vh = window.innerHeight * 0.01;
@@ -71,37 +53,37 @@ function App() {
   if (driffSettings.settings.maintenance_mode) {
     return (
       <Wrapper className="App">
-        <GuestLayout setRegisteredDriff={setRegisteredDriff} />
+        <GuestLayout setRegisteredDriff={setRegisteredDriff}/>
       </Wrapper>
     );
   }
 
   return (
     <Wrapper className="App">
-      <ToastContainer transition={Slide} position={"top-center"} autoClose={2000} pauseOnHover={false} />
-      <PreLoader />
+      <ToastContainer transition={Slide} position={"top-center"} autoClose={2000} pauseOnHover={false}/>
+      <PreLoader/>
       {location.pathname === "/driff" ? (
-        <DriffRegisterPanel setRegisteredDriff={setRegisteredDriff} />
+        <DriffRegisterPanel setRegisteredDriff={setRegisteredDriff}/>
       ) : location.pathname === "/driff-register" ? (
-        <Route render={() => <GuestLayout setRegisteredDriff={setRegisteredDriff} />} path="/driff-register" exact />
+        <Route render={() => <GuestLayout setRegisteredDriff={setRegisteredDriff}/>} path="/driff-register" exact/>
       ) : (
         <>
           {redirected === true ? (
-            <RedirectPanel redirectTo={driffActions.getBaseUrl} />
+            <RedirectPanel redirectTo={driffActions.getBaseUrl}/>
           ) : registeredDriff === null ? (
-            <DriffSelectPanel />
+            <DriffSelectPanel/>
           ) : (
             <>
               <Switch>
                 <ScrollToTop>
-                  <AppRoute path="*" />
+                  <AppRoute path="*"/>
                 </ScrollToTop>
               </Switch>
             </>
           )}
         </>
       )}
-      <ModalPanel />
+      <ModalPanel/>
     </Wrapper>
   );
 }

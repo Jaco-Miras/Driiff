@@ -309,7 +309,7 @@ export default (state = INITIAL_STATE, action) => {
             }
           }
         } else {
-          if (action.data.original_workspace_id !== action.data.workspace_id) {
+          if (action.data.original_workspace_id !== action.data.workspace_id && updatedFolders[action.data.original_workspace_id]) {
             // to general folder
             updatedFolders[action.data.original_workspace_id].workspace_ids = updatedFolders[action.data.original_workspace_id].workspace_ids.filter((id) => id !== action.data.id);
           }

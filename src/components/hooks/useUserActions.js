@@ -1,8 +1,9 @@
-import React, {useCallback} from "react";
-import {useDispatch, useSelector} from "react-redux";
-import {sessionService} from "redux-react-session";
+import React, { useCallback } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { sessionService } from "redux-react-session";
 import {
   checkDriffUserEmail,
+  getRoles,
   getUser,
   getUsers,
   postExternalUserData,
@@ -14,29 +15,28 @@ import {
   putExternalUserUpdate,
   putMagicLink,
   putUser,
+  putUserRole,
   resetPassword,
   userGoogleLogin,
   userLogin,
-  userLogout,
-  putUserRole,
-  getRoles
+  userLogout
 } from "../../redux/actions/userAction";
-import {useDriffActions, useSettings, useToaster} from "./index";
-import {getAPIUrl, getCurrentDriffUrl} from "../../helpers/slugHelper";
-import {toggleLoading} from "../../redux/actions/globalActions";
-import {getDriffName} from "./useDriff";
-import {isIPAddress} from "../../helpers/commonFunctions";
-import {useHistory} from "react-router-dom";
+import { useDriffActions, useSettings, useToaster } from "./index";
+import { getAPIUrl, getCurrentDriffUrl } from "../../helpers/slugHelper";
+import { toggleLoading } from "../../redux/actions/globalActions";
+import { getDriffName } from "./useDriff";
+import { isIPAddress } from "../../helpers/commonFunctions";
+import { useHistory } from "react-router-dom";
 
 const useUserActions = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   const toaster = useToaster();
   const driffActions = useDriffActions();
-  const {generalSettings: {is_new}, driffSettings, userSettings, setGeneralSetting, setReadAnnouncement} = useSettings();
+  const { generalSettings: { is_new }, driffSettings, userSettings, setGeneralSetting, setReadAnnouncement } = useSettings();
 
-  const {getUserFilter} = useSelector((state) => state.users);
-  const {user: loggedUser} = useSelector((state) => state.session);
+  const { getUserFilter } = useSelector((state) => state.users);
+  const { user: loggedUser } = useSelector((state) => state.session);
 
   const storeLoginToken = useCallback((payload) => {
     localStorage.setItem("userAuthToken", JSON.stringify(payload));
@@ -369,8 +369,8 @@ const useUserActions = () => {
             dispatch(toggleLoading(false, () => {
               toaster.success(`You are logged out`);
             }));
-          });
-        callback(err, res);
+          })
+          .then(() => callback(err, res));
       })
     );
   }, []);
