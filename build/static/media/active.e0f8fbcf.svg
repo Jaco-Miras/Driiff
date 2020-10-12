@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="48px" height="48px" viewBox="0 0 48 48" version="1.1" xmlns="http://www.w3.org/2000/svg"
+>
+    <!-- Generator: Sketch 54.1 (76490) - https://sketchapp.com -->
+    <title>_icon/no_notifications/l/active</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <linearGradient x1="2.09850727%" y1="0%" x2="97.9014927%" y2="100%" id="linearGradient-1">
+            <stop stop-color="#972C86" offset="0%"></stop>
+            <stop stop-color="#794997" offset="40%"></stop>
+            <stop stop-color="#007180" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="_icon/no_notifications/l/active" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"
+       strokeLinecap="round" stroke-linejoin="round">
+        <path d="M40.971,13.4897868 L25.795,3.29178684 C24.733,2.30678684 23.116,2.23278684 21.968,3.11478684 L6.192,13.2227868 C5.279,13.9237868 5.154,15.2537868 5.922,16.1117868 L22.913,28.8647868 C23.569,29.3577868 24.459,29.3997868 25.159,28.9707868 L43.531,17.7147868 L43.531,40.3767868 C43.531,41.4807868 42.635,42.3767868 41.531,42.3767868 L6.5,42.3767868 C5.396,42.3767868 4.5,41.4807868 4.5,40.3767868 L4.5,22.3897868"
+              id="Stroke-3" stroke="url(#linearGradient-1)" stroke-width="3"></path>
+    </g>
+</svg>
