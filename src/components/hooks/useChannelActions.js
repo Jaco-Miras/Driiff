@@ -671,7 +671,10 @@ const useChannelActions = () => {
 
   const getUrlTitle = useCallback(
     (channelTitle) => {
-      return channelTitle.toLowerCase().replaceAll(" ", "-");
+      if (typeof channelTitle === "string")
+        return channelTitle.toLowerCase().replaceAll(" ", "-");
+
+      return "";
     }, []);
 
   const getChannelLink = useCallback(

@@ -1,5 +1,5 @@
 // import {uniqBy} from "lodash";
-import {getCurrentTimestamp} from "../../helpers/dateFormatter";
+import { getCurrentTimestamp } from "../../helpers/dateFormatter";
 
 /** Initial State  */
 const INITIAL_STATE = {
@@ -377,15 +377,15 @@ export default function (state = INITIAL_STATE, action) {
           is_hidden: false,
           replies: haveReference
             ? channel.replies.map((r) => {
-                if (r.id === action.data.reference_id) {
-                  r.id = action.data.id;
-                  return r;
-                } else {
-                  r.is_read = true;
-                  return r;
-                }
-              })
-            : [...channel.replies, action.data],
+              if (r.id === action.data.reference_id) {
+                r.id = action.data.id;
+                return r;
+              } else {
+                r.is_read = true;
+                return r;
+              }
+            })
+            : [...channel.replies.filter(r => r.id === action.data.id), action.data],
           last_visited_at_timestamp: getCurrentTimestamp(),
           last_reply: action.data,
           total_unread: action.data.is_read ? 0 : channel.total_unread + 1,

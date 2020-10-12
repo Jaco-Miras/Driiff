@@ -34,7 +34,6 @@ const Wrapper = styled.div`
     display: inline-block;
     justify-content: center;
     align-items: center;
-    color: #b8b8b8;    
     text-overflow: ellipsis;    
     overflow: hidden;
     white-space: nowrap;    
