@@ -1,7 +1,7 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
-import { SvgIconFeather } from "../../common";
+import { Avatar, SvgIconFeather } from "../../common";
 import { MoreOptions } from "../common";
 import { PostBadge } from "./index";
 import { MemberLists } from "../../list/members";
@@ -102,6 +102,10 @@ const PostItemPanel = (props) => {
       <div>
         {/* <Icon className="mr-2" icon="star" onClick={handleStarPost}
               stroke={post.is_favourite ? "#ffc107" : "currentcolor"} fill={post.is_favourite ? "#ffc107" : "none"}/> */}
+      </div>
+      <div className="mr-3 d-flex justify-content-center align-items-center">
+        <Avatar key={post.author.id} name={post.author.name}
+                                          imageLink={post.author.profile_image_link} id={post.author.id}/>
       </div>
       <div className="flex-grow-1 min-width-0">
         <div className="d-flex align-items-center justify-content-between">

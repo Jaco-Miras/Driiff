@@ -68,6 +68,8 @@ const PostBody = (props) => {
     }
   };
 
+  console.log(post)
+
   return (
     <Wrapper className="card-body">
       <div className="d-flex align-items-center p-l-r-0 m-b-20">
