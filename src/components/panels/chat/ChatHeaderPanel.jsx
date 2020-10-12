@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useRouteMatch } from "react-router-dom";
 import styled from "styled-components";
 import { addToModals } from "../../../redux/actions/globalActions";
-import { SvgIconFeather, ToolTip } from "../../common";
+import { SvgIconFeather } from "../../common";
 import useChannelActions from "../../hooks/useChannelActions";
 import { MemberLists } from "../../list/members";
 import ChannelIcon from "../../list/chat/ChannelIcon";
@@ -29,14 +29,23 @@ const Wrapper = styled.div`
     }
   }
   .chat-header-title {
-    font-size: 15px;
+    font-size: 20px;
     font-weight: 500;
     margin: 0;
     width: 33.333333%;
     text-align: center;
     display: inline-flex;
     justify-content: center;
-    align-items: center;    
+    align-items: center;
+    color: #b8b8b8;
+    
+    a {
+      color: #000 !important;      
+      
+      .dark & {
+        color: #ffffff !important;
+      }
+    }    
   }
   .chat-header-right {
     @media (min-width: 767.98px) {
@@ -184,13 +193,9 @@ const ChatHeaderPanel = (props) => {
     switch (chatChannel.type) {
       case "TOPIC": {
         if (chatChannel.workspace_folder) {
-          return <>{dictionary.workspace}&nbsp;>&nbsp;
-            <ToolTip content={chatChannel.workspace_folder.name}>
-              ...&nbsp;>&nbsp;
-            </ToolTip>
-            <a onClick={handleWorkspaceLinkClick}
-               data-href={channelActions.getChannelLink(chatChannel)}
-               href={channelActions.getChannelLink(chatChannel)}>{chatChannel.title}</a></>;
+          return <>{chatChannel.workspace_folder.name}&nbsp;>&nbsp;<a onClick={handleWorkspaceLinkClick}
+                                                                      data-href={channelActions.getChannelLink(chatChannel)}
+                                                                      href={channelActions.getChannelLink(chatChannel)}>{chatChannel.title}</a></>;
         } else {
           return <>{dictionary.workspace}&nbsp;>&nbsp;<a onClick={handleWorkspaceLinkClick}
                                                          data-href={channelActions.getChannelLink(chatChannel)}
