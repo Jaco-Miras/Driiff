@@ -388,7 +388,7 @@ export default function (state = INITIAL_STATE, action) {
             : [...channel.replies, action.data],
           last_visited_at_timestamp: getCurrentTimestamp(),
           last_reply: action.data,
-          total_unread: state.selectedChannel && state.selectedChannel.id === action.data.channel_id ? channel.total_unread : channel.total_unread + 1,
+          total_unread: action.data.is_read ? 0 : channel.total_unread + 1,
         };
       }
       return {
