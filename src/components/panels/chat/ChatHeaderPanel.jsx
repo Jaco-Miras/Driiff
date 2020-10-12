@@ -157,7 +157,7 @@ const ChatHeaderPanel = (props) => {
 
   const handleWorkspaceLinkClick = (e) => {
     e.preventDefault();
-    history.push(e.target.href);
+    history.push(e.target.dataset.href);
   };
 
   useEffect(() => {
@@ -183,7 +183,8 @@ const ChatHeaderPanel = (props) => {
         {
           chatChannel.type === "TOPIC" ?
             <>{dictionary.workspace} > <a onClick={handleWorkspaceLinkClick}
-                                          href={`/chat/${chatChannel.entity_id}/${chatChannel.title.toLowerCase().replaceAll(" ", "-")}`}>{chatChannel.title}</a></> :
+                                          data-href={`/workspace/chat/${chatChannel.entity_id}/${chatChannel.title.toLowerCase().replaceAll(" ", "-")}`}
+                                          href={`/workspace/chat/${chatChannel.entity_id}/${chatChannel.title.toLowerCase().replaceAll(" ", "-")}`}>{chatChannel.title}</a></> :
             chatChannel.title
         }
       </h2>
