@@ -7,6 +7,7 @@ export const useTooltipOrientation = (mainRef, tooltipRef, scrollEl = null, when
   const [orientation, setOrientation] = useState({
     vertical: null,
     horizontal: null,
+    clientHeight: null
   });
 
   const verticalOrientation = useCallback(() => {
@@ -16,21 +17,27 @@ export const useTooltipOrientation = (mainRef, tooltipRef, scrollEl = null, when
 
     const elPos = mainRef.current.getBoundingClientRect();
 
-    let benchMark = window.innerHeight / 2;
-    let adjust = verticalOffset;
-    if (scrollEl) {
-      adjust = scrollEl.parentElement.getBoundingClientRect().y;
-      benchMark = scrollEl.parentElement.clientHeight / 2;
-    }
-
-    adjust += verticalOffset;
-    if (elPos.y - adjust < benchMark) {
-      return "bottom";
+    if (elPos.y - tooltipRef.current.clientHeight < tooltipRef.current.clientHeight) {
+      return "bottom"
     } else {
-      return "top";
+      return "top"
     }
-  }, [mainRef, scrollEl]);
 
+    // let benchMark = window.innerHeight / 2;
+    // let adjust = verticalOffset;
+    // if (scrollEl) {
+    //   adjust = scrollEl.parentElement.getBoundingClientRect().y;
+    //   benchMark = scrollEl.parentElement.clientHeight / 2;
+    // }
+
+    // adjust += verticalOffset;
+    // if (elPos.y - adjust < benchMark) {
+    //   return "bottom";
+    // } else {
+    //   return "top";
+    // }
+  }, [mainRef, scrollEl, tooltipRef]);
+  
   const horizontalOrientation = useCallback(() => {
     if (!mainRef) {
       return null;
@@ -53,20 +60,20 @@ export const useTooltipOrientation = (mainRef, tooltipRef, scrollEl = null, when
     }
   }, [mainRef, scrollEl]);
 
-  useEffect(() => {
-    const calculatePosition = lodash.debounce(() => {
-      if (tooltipRef.current) {
-        setOrientation({
-          vertical: verticalOrientation(),
-          horizontal: horizontalOrientation(),
-          clientHeight: tooltipRef.current.clientHeight,
-        });
-      }
-    }, 200);
+  const calculatePosition = lodash.debounce(() => {
+    if (tooltipRef.current) {
+      console.log(tooltipRef.current.clientHeight)
+      setOrientation({
+        vertical: verticalOrientation(),
+        horizontal: horizontalOrientation(),
+        clientHeight: tooltipRef.current.clientHeight,
+      });
+    }
+  }, 100);
 
+  useEffect(() => {
     if (when) {
       calculatePosition();
-
       if (scrollEl) {
         scrollEl.addEventListener("scroll", calculatePosition);
       }
@@ -75,7 +82,14 @@ export const useTooltipOrientation = (mainRef, tooltipRef, scrollEl = null, when
         if (scrollEl) scrollEl.removeEventListener("scroll", calculatePosition);
       };
     }
-  }, [when, scrollEl, horizontalOrientation, verticalOrientation]);
+  }, [when, scrollEl, horizontalOrientation, verticalOrientation, tooltipRef, mainRef]);
+
+  useEffect(() => {
+    //recalculate if initial clientheight is zero
+    if (when && orientation.clientHeight === 0) {
+      calculatePosition();
+    }
+  }, [when, orientation]);
 
   return {
     orientation,
