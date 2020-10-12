@@ -1,12 +1,10 @@
-import React, {useEffect, useRef, useState} from "react";
-import {useDispatch} from "react-redux";
-import {useHistory} from "react-router-dom";
-import {Badge} from "reactstrap";
+import React, { useEffect, useRef, useState } from "react";
+import { useDispatch } from "react-redux";
+import { Badge } from "reactstrap";
 import styled from "styled-components";
-import {replaceChar} from "../../helpers/stringFormatter";
-import {addToModals} from "../../redux/actions/globalActions";
-import {SvgIconFeather} from "../common";
-import {useSettings} from "../hooks";
+import { addToModals } from "../../redux/actions/globalActions";
+import { SvgIconFeather } from "../common";
+import { useSettings } from "../hooks";
 import TopicList from "./TopicList";
 
 const Wrapper = styled.li`
@@ -172,26 +170,6 @@ const WorkspaceList = (props) => {
     setShowTopics((prevState) => !prevState);
   };
 
-  useEffect(() => {
-    if (ref.nav.current !== null) {
-      let maxHeight = window.innerHeight * 5;
-      maxHeight = maxHeight < ref.nav.current.offsetHeight ? ref.nav.current.offsetHeight : maxHeight;
-      setMaxHeight(maxHeight);
-    }
-  }, [ref.nav, maxHeight]);
-
-  useEffect(() => {
-    if (showTopics === null && maxHeight !== null) {
-      setShowTopics(selected || workspace_open_folder.hasOwnProperty(folder.id));
-    }
-  }, [showTopics, folder.id, selected, maxHeight, workspace_open_folder]);
-
-  useEffect(() => {
-    if (workspaces.length && workspace !== null) {
-      setSelected(folder.workspace_ids.some((id) => id === workspace.id))
-    }
-  }, [workspace, workspaces, folder.workspace_ids]);
-
   const onShowTopics = (focusId) => {
     if (showTopics === null || showTopics === false) {
       setGeneralSetting({
@@ -221,15 +199,40 @@ const WorkspaceList = (props) => {
     dispatch(addToModals(payload));
   };
 
+  useEffect(() => {
+    if (ref.nav.current !== null) {
+      let maxHeight = window.innerHeight * 5;
+      maxHeight = maxHeight < ref.nav.current.offsetHeight ? ref.nav.current.offsetHeight : maxHeight;
+      setMaxHeight(maxHeight);
+    }
+  }, [ref.nav, maxHeight]);
+
+  useEffect(() => {
+    if (showTopics === null && maxHeight !== null) {
+      setShowTopics(selected || workspace_open_folder.hasOwnProperty(folder.id));
+    }
+  }, [showTopics, folder.id, selected, maxHeight, workspace_open_folder]);
+
+  useEffect(() => {
+    if (workspaces.length && workspace !== null) {
+      setSelected(folder.workspace_ids.some((id) => id === workspace.id));
+    }
+  }, [workspace, workspaces, folder.workspace_ids]);
+
+  useEffect(() => {
+    setShowTopics(workspace_open_folder.hasOwnProperty(folder.id));
+  }, [workspace_open_folder]);
+
   return (
 
-    <Wrapper ref={ref.container} className={`workspace-list fadeIn ${className} ${showTopics && "folder-open"}`} selected={selected} show={show}>
+    <Wrapper ref={ref.container} className={`workspace-list fadeIn ${className} ${showTopics && "folder-open"}`}
+             selected={selected} show={show}>
       <a className={`${folder.type === "ARCHIVE_FOLDER" ? "archived-folder" : ""}`} onClick={handleShowTopics}>
         <div>
           {folder.name}
 
           {folder.is_lock !== 0 && <LockIcon icon="lock" strokeWidth="2"/>}
-          {folder.type === "ARCHIVE_FOLDER" && <LockIcon icon="archive" />}
+          {folder.type === "ARCHIVE_FOLDER" && <LockIcon icon="archive"/>}
 
           {folder.unread_count > 0 && (
             <Badge className={`${showTopics ? "leave-active" : "enter-active"}`} color="danger">
