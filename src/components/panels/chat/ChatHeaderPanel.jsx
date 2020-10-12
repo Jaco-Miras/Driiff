@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useRouteMatch } from "react-router-dom";
+import { useHistory, useRouteMatch } from "react-router-dom";
 import styled from "styled-components";
 import { addToModals } from "../../../redux/actions/globalActions";
 import { SvgIconFeather } from "../../common";
@@ -111,6 +111,7 @@ const ChatHeaderPanel = (props) => {
 
   const dispatch = useDispatch();
   const routeMatch = useRouteMatch();
+  const history = useHistory();
 
   const channelActions = useChannelActions();
 
@@ -154,6 +155,11 @@ const ChatHeaderPanel = (props) => {
     document.body.classList.remove("m-chat-channel-closed");
   };
 
+  const handleWorkspaceLinkClick = (e) => {
+    e.preventDefault();
+    history.push(e.target.href);
+  };
+
   useEffect(() => {
     setPage(
       routeMatch.path.split("/").filter((p) => {
@@ -168,17 +174,24 @@ const ChatHeaderPanel = (props) => {
     <Wrapper className={`chat-header border-bottom ${className}`}>
       <div className="chat-header-left">
         <BackButton className="chat-back-button" onClick={goBackChannelSelect}>
-          <BackButtonChevron icon={"chevron-left"} />
+          <BackButtonChevron icon={"chevron-left"}/>
           <span>{unreadCounter.chat_message + unreadCounter.workspace_chat_message}</span>
         </BackButton>
-        <ChannelIcon className="chat-header-icon" channel={channel} />
+        <ChannelIcon className="chat-header-icon" channel={channel}/>
       </div>
-      <h2 className="chat-header-title">{chatChannel.title}</h2>
+      <h2 className="chat-header-title">
+        {
+          chatChannel.type === "TOPIC" ?
+            <>{dictionary.workspace} > <a onClick={handleWorkspaceLinkClick}
+                                          href={`/chat/${chatChannel.entity_id}/${chatChannel.title.toLowerCase().replaceAll(" ", "-")}`}>{chatChannel.title}</a></> :
+            chatChannel.title
+        }
+      </h2>
       <div className="chat-header-right">
         <ul className="nav align-items-center justify-content-end">
           {["DIRECT", "PERSONAL_BOT"].includes(channel.type) === false && (
             <li>
-              <MemberLists members={channel.members} />
+              <MemberLists members={channel.members}/>
             </li>
           )}
           {(["PERSONAL_BOT", "COMPANY", "TOPIC"].includes(channel.type) === false || (["DIRECT", "PERSONAL_BOT", "COMPANY", "TOPIC"].includes(channel.type) === false && !channel.is_archived)) && (
