@@ -6,10 +6,10 @@ import {MainNavigationTabPanel} from "./index";
 const Wrapper = styled.div``;
 
 const MainNavigationPanel = (props) => {
-  const { className = "" } = props;
+  const { className = "", showNotificationBar } = props;
 
   return (
-    <Wrapper className={`navigation ${className}`}>
+    <Wrapper className={`navigation ${className} ${showNotificationBar && "notification-bar"}`}>
       <Route
         exact={true}
         render={() => <MainNavigationTabPanel {...props} />}
