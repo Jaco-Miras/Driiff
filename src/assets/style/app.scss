@@ -18950,7 +18950,9 @@ small {
   -webkit-box-shadow: 0 3px 10px rgba(62, 85, 120, 0.045);
   -moz-box-shadow: 0 3px 10px rgba(62, 85, 120, 0.045);
   box-shadow: 0 3px 10px rgba(62, 85, 120, 0.045);
-
+  &.notification-bar {
+    top: 40px;
+  }
   ul {
     margin: 0;
     padding: 0;
