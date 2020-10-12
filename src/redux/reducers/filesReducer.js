@@ -771,58 +771,68 @@ export default (state = INITIAL_STATE, action) => {
         channelFiles: {
           ...state.channelFiles,
           [action.data.channel_id]: [
-            ...(typeof state.channelFiles[action.data.channel_id] === "undefined" ? [] : state.channelFiles[action.data.channel_id]),
-            ...action.data.results
+            ...(typeof state.channelFiles[action.data.channel_id] === "undefined" ?
+                action.data.results.sort((a, b) => {
+                  return a.created_at.timestamp - b.created_at.timestamp;
+                }) :
+                action.data.results.filter(r => !state.channelFiles[action.data.channel_id].some(f => f.id === r.id)).sort((a, b) => {
+                  return a.created_at.timestamp - b.created_at.timestamp;
+                })
+            )
           ],
         },
       };
     }
     case "INCOMING_CHAT_MESSAGE": {
-      if (action.data.files.length) {
-        let channelFiles = [];
-        if (typeof state.channelFiles[action.data.channel_id] !== "undefined") {
-          channelFiles = state.channelFiles[action.data.channel_id];
-        }
-
-        return {
-          ...state,
-          channelFiles: {
-            ...state.channelFiles,
-            [action.data.channel_id]: channelFiles.concat(action.data.files),
-          },
-        };
-      } else {
-        return state;
-      }
-    }
-    case "ADD_CHANNEL_FILES": {
-      let channelFiles = [];
-      if (typeof state.channelFiles[action.data.channel_id] !== "undefined") {
-        channelFiles = state.channelFiles[action.data.channel_id];
-      }
-
       return {
         ...state,
-        channelFiles: {
-          ...state.channelFiles,
-          [action.data.channel_id]: channelFiles.concat(action.data.files),
-        },
+        ...(action.data.files.length && typeof state.channelFiles[action.data.channel_id] !== "undefined" && {
+          channelFiles: {
+            ...state.channelFiles,
+            [action.data.channel_id]: [
+              ...state.channelFiles[action.data.channel_id],
+              ...action.data.files.filter(df => state.channelFiles[action.data.channel_id].some(f => f.id === df.id)).sort((a, b) => {
+                return a.created_at.timestamp - b.created_at.timestamp;
+              })
+            ]
+          }
+        })
+      };
+    }
+    case "ADD_CHANNEL_FILES": {
+      return {
+        ...state,
+        ...(typeof state.channelFiles[action.data.channel_id] !== "undefined" && {
+          channelFiles: {
+            ...state.channelFiles,
+            [action.data.channel_id]: [
+              ...state.channelFiles[action.data.channel_id],
+              ...action.data.files.filter(df => state.channelFiles[action.data.channel_id].some(f => f.id === df.id)).sort((a, b) => {
+                return a.created_at.timestamp - b.created_at.timestamp;
+              })
+            ]
+          },
+        }),
       };
     }
     case "GET_CHAT_MESSAGES_SUCCESS": {
-      let files = (typeof state.channelFiles[action.data.channel_id] === "undefined" ? [] : state.channelFiles[action.data.channel_id]);
-      action.data.results.forEach(r => {
-        files = [
-          ...files,
-          ...r.files
-        ];
-      });
       return {
         ...state,
-        channelFiles: {
-          ...state.channelFiles,
-          [action.data.channel_id]: files
-        },
+        ...(typeof state.channelFiles[action.data.channel_id] !== "undefined" && {
+          channelFiles: {
+            ...state.channelFiles,
+            [action.data.channel_id]: [
+              ...state.channelFiles[action.data.channel_id],
+              ...action.data.results.map(r => r.files)
+                .reduce((file, value) => {
+                  return [...file, ...value];
+                }, [])
+                .filter(r => state.channelFiles[action.data.channel_id].some(f => f.id === r.id)).sort((a, b) => {
+                  return a.created_at.timestamp - b.created_at.timestamp;
+                })
+            ]
+          },
+        })
       };
     }
     case "INCOMING_DELETED_CHAT_MESSAGE": {
@@ -837,25 +847,22 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "DELETE_CHANNEL_FILES": {
-      let channelFiles = [];
-      if (typeof state.channelFiles[action.data.channel_id] !== "undefined") {
-        channelFiles = state.channelFiles[action.data.channel_id];
-      }
-
       return {
         ...state,
-        channelFiles: {
-          ...state.channelFiles,
-          [action.data.channel_id]: channelFiles.filter((cf) => {
-            let fileFound = false;
-            for (let i in action.data.file_ids) {
-              if (action.data.file_ids.hasOwnProperty(i) && cf.file_id === action.data.file_ids[i]) {
-                fileFound = true;
+        ...(typeof state.channelFiles[action.data.channel_id] !== "undefined" && {
+          channelFiles: {
+            ...state.channelFiles,
+            [action.data.channel_id]: state.channelFiles[action.data.channel_id].filter((cf) => {
+              let fileFound = false;
+              for (let i in action.data.file_ids) {
+                if (action.data.file_ids.hasOwnProperty(i) && cf.file_id === action.data.file_ids[i]) {
+                  fileFound = true;
+                }
               }
-            }
-            return !fileFound;
-          }),
-        },
+              return !fileFound;
+            }),
+          },
+        }),
       };
     }
     case "SET_VIEW_FILES": {
