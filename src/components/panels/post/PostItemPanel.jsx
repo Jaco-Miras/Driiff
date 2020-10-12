@@ -60,6 +60,10 @@ const Icon = styled(SvgIconFeather)`
   width: 16px;
 `;
 
+const ArchiveBtn = styled.a`
+  padding: 5px 10px;
+`;
+
 const PostItemPanel = (props) => {
 
   const { className = "", post, postActions, dictionary, disableOptions } = props;
@@ -116,8 +120,10 @@ const PostItemPanel = (props) => {
             {post.unread_count !== 0 && <div className="ml-2 mr-2 badge badge-primary badge-pill">{post.unread_count}</div>}
             <PostBadge post={post} dictionary={dictionary} />
             {post.users_responsible.length > 0 && <MemberLists members={post.users_responsible} classNames="mr-2"/>}
-            {!disableOptions &&
-            <Icon className="btn btn-outline-light ml-2" icon="archive" onClick={handleArchivePost}/>}
+            {!disableOptions && <ArchiveBtn onClick={handleArchivePost} className="btn btn-outline-light ml-2" data-toggle="tooltip"
+              title="" data-original-title="Archive post">
+              <Icon icon="archive"/>
+            </ArchiveBtn>}
           </div>
         </div>
       </div>
