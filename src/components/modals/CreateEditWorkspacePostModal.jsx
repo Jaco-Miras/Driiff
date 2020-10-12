@@ -17,6 +17,7 @@ import { CheckBox, DescriptionInput, FolderSelect, PeopleSelect, PostVisibilityS
 import { useToaster, useTranslation, useWorkspaceAndUserOptions } from "../hooks";
 import { ModalHeaderSection } from "./index";
 import { uploadDocument } from "../../redux/services/global";
+import { renderToString } from "react-dom/server";
 
 const WrapperDiv = styled(InputGroup)`
   display: flex;
@@ -357,18 +358,18 @@ const CreateEditWorkspacePostModal = (props) => {
     save: _t("POST.SAVE", "Save"),
     discard: _t("POST.DISCARD", "Discard"),
     draftBody: _t("POST.DRAFT_BODY", "Not sure about the content? Save it as a draft."),
-    postVisibilityInfo: _t("POST.POST_VISIBILITY_INFO_SINGULAR_ALL",
-      `This post will be visible to <span class="user-popup">::user_count::</span> in <span class="workspace-popup">::workspace_count::</span>`, {
-        user_count: user_ids.length === 1 ?
+    postVisibilityInfo: _t("POST.POST_VISIBILITY_COUNT_INFO",
+      `This post will be visible to ::user_count:: in ::workspace_count::`, {
+        user_count: renderToString(<span className="user-popup">{user_ids.length === 1 ?
           _t("POST.NUMBER_USER", "1 user") :
           _t("POST.NUMBER_USERS", "::count:: users", {
             count: user_ids.length
-          }),
-        workspace_count: workspace_ids.length === 1 ?
+          })}</span>),
+        workspace_count: renderToString(<span className="workspace-popup">{workspace_ids.length === 1 ?
           _t("POST.NUMBER_WORKSPACE", "1 workspace") :
           _t("POST.NUMBER_WORKSPACES", "::count:: workspaces", {
             count: workspace_ids.length
-          }),
+          })}</span>)
       }),
   };
 
