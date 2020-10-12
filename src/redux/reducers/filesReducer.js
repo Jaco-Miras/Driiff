@@ -775,7 +775,7 @@ export default (state = INITIAL_STATE, action) => {
                 action.data.results.sort((a, b) => {
                   return a.created_at.timestamp - b.created_at.timestamp;
                 }) :
-                action.data.results.filter(r => !state.channelFiles[action.data.channel_id].some(f => f.id === r.id)).sort((a, b) => {
+                action.data.results.filter(r => !state.channelFiles[action.data.channel_id].some(f => f.file_id === r.file_id)).sort((a, b) => {
                   return a.created_at.timestamp - b.created_at.timestamp;
                 })
             )
@@ -791,7 +791,7 @@ export default (state = INITIAL_STATE, action) => {
             ...state.channelFiles,
             [action.data.channel_id]: [
               ...state.channelFiles[action.data.channel_id],
-              ...action.data.files.filter(df => state.channelFiles[action.data.channel_id].some(f => f.id === df.id)).sort((a, b) => {
+              ...action.data.files.filter(df => !state.channelFiles[action.data.channel_id].some(f => f.file_id === df.file_id)).sort((a, b) => {
                 return a.created_at.timestamp - b.created_at.timestamp;
               })
             ]
@@ -807,7 +807,7 @@ export default (state = INITIAL_STATE, action) => {
             ...state.channelFiles,
             [action.data.channel_id]: [
               ...state.channelFiles[action.data.channel_id],
-              ...action.data.files.filter(df => state.channelFiles[action.data.channel_id].some(f => f.id === df.id)).sort((a, b) => {
+              ...action.data.files.filter(df => !state.channelFiles[action.data.channel_id].some(f => f.file_id === df.file_id)).sort((a, b) => {
                 return a.created_at.timestamp - b.created_at.timestamp;
               })
             ]
@@ -827,7 +827,8 @@ export default (state = INITIAL_STATE, action) => {
                 .reduce((file, value) => {
                   return [...file, ...value];
                 }, [])
-                .filter(r => state.channelFiles[action.data.channel_id].some(f => f.id === r.id)).sort((a, b) => {
+                .filter(r => !state.channelFiles[action.data.channel_id].some(f => f.file_id === r.file_id))
+                .sort((a, b) => {
                   return a.created_at.timestamp - b.created_at.timestamp;
                 })
             ]
@@ -852,15 +853,7 @@ export default (state = INITIAL_STATE, action) => {
         ...(typeof state.channelFiles[action.data.channel_id] !== "undefined" && {
           channelFiles: {
             ...state.channelFiles,
-            [action.data.channel_id]: state.channelFiles[action.data.channel_id].filter((cf) => {
-              let fileFound = false;
-              for (let i in action.data.file_ids) {
-                if (action.data.file_ids.hasOwnProperty(i) && cf.file_id === action.data.file_ids[i]) {
-                  fileFound = true;
-                }
-              }
-              return !fileFound;
-            }),
+            [action.data.channel_id]: state.channelFiles[action.data.channel_id].filter((f) => !action.data.file_ids.includes(f.file_id))
           },
         }),
       };
