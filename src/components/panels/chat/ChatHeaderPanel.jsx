@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useHistory, useRouteMatch } from "react-router-dom";
+import { useRouteMatch } from "react-router-dom";
 import styled from "styled-components";
 import { addToModals } from "../../../redux/actions/globalActions";
 import { SvgIconFeather } from "../../common";
@@ -8,6 +8,7 @@ import useChannelActions from "../../hooks/useChannelActions";
 import { MemberLists } from "../../list/members";
 import ChannelIcon from "../../list/chat/ChannelIcon";
 import { MoreOptions } from "../../panels/common";
+import { useSettings, useWorkspace } from "../../hooks";
 
 const Wrapper = styled.div`
   position: relative;
@@ -15,12 +16,10 @@ const Wrapper = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  
   .chat-header-left {
     display: flex;
-    align-items: center;
-    @media (min-width: 767.98px) {
-      width: 33.333333%;
-    }
+    align-items: center;    
     .chat-header-icon {
       @media (max-width: 991.99px) {
         display: none;
@@ -30,14 +29,29 @@ const Wrapper = styled.div`
   .chat-header-title {
     font-size: 15px;
     font-weight: 500;
-    margin: 0;
-    width: 33.333333%;
+    margin: 0;    
     text-align: center;
+    display: inline-block;
+    justify-content: center;
+    align-items: center;
+    color: #b8b8b8;    
+    text-overflow: ellipsis;    
+    overflow: hidden;
+    white-space: nowrap;    
+    max-width: calc(100%);
+    
+    a {
+      color: #000 !important;
+      text-overflow: ellipsis;    
+      overflow: hidden;
+      white-space: nowrap;      
+      
+      .dark & {
+        color: #ffffff !important;
+      }
+    }    
   }
-  .chat-header-right {
-    @media (min-width: 767.98px) {
-      width: 33.333333%;
-    }
+  .chat-header-right {    
     li .more-options-tooltip > div {
       display: flex;
       align-items: center;
@@ -111,8 +125,6 @@ const ChatHeaderPanel = (props) => {
 
   const dispatch = useDispatch();
   const routeMatch = useRouteMatch();
-  const history = useHistory();
-
   const channelActions = useChannelActions();
 
   const [page, setPage] = useState("chat");
@@ -155,9 +167,46 @@ const ChatHeaderPanel = (props) => {
     document.body.classList.remove("m-chat-channel-closed");
   };
 
+  const { actions: workspaceAction, workspaces } = useWorkspace(true);
+  const {
+    generalSettings: { workspace_open_folder },
+    setGeneralSetting,
+  } = useSettings();
+
   const handleWorkspaceLinkClick = (e) => {
     e.preventDefault();
-    history.push(e.target.dataset.href);
+
+    if (chatChannel.workspace_folder) {
+      setGeneralSetting({
+        workspace_open_folder: {
+          ...workspace_open_folder,
+          [chatChannel.workspace_folder.id]: chatChannel.workspace_folder.id,
+        },
+      });
+    }
+
+    document.body.classList.remove("navigation-show");
+    workspaceAction.selectWorkspace(workspaces[chatChannel.entity_id]);
+    workspaceAction.redirectTo(workspaces[chatChannel.entity_id]);
+  };
+
+  const getChannelTitle = () => {
+    switch (chatChannel.type) {
+      case "TOPIC": {
+        if (chatChannel.workspace_folder) {
+          return <>{chatChannel.workspace_folder.name}&nbsp;>&nbsp;<a onClick={handleWorkspaceLinkClick}
+                                                                      data-href={channelActions.getChannelLink(chatChannel)}
+                                                                      href={channelActions.getChannelLink(chatChannel)}>{chatChannel.title}</a></>;
+        } else {
+          return <>{dictionary.workspace}&nbsp;>&nbsp;<a onClick={handleWorkspaceLinkClick}
+                                                         data-href={channelActions.getChannelLink(chatChannel)}
+                                                         href={channelActions.getChannelLink(chatChannel)}>{chatChannel.title}</a></>;
+        }
+      }
+      default: {
+        return chatChannel.title;
+      }
+    }
   };
 
   useEffect(() => {
@@ -181,11 +230,7 @@ const ChatHeaderPanel = (props) => {
       </div>
       <h2 className="chat-header-title">
         {
-          chatChannel.type === "TOPIC" ?
-            <>{dictionary.workspace} > <a onClick={handleWorkspaceLinkClick}
-                                          data-href={`/workspace/chat/${chatChannel.entity_id}/${chatChannel.title.toLowerCase().replaceAll(" ", "-")}`}
-                                          href={`/workspace/chat/${chatChannel.entity_id}/${chatChannel.title.toLowerCase().replaceAll(" ", "-")}`}>{chatChannel.title}</a></> :
-            chatChannel.title
+          getChannelTitle()
         }
       </h2>
       <div className="chat-header-right">
@@ -200,13 +245,13 @@ const ChatHeaderPanel = (props) => {
               <StyledMoreOptions role="tabList">
                 {["PERSONAL_BOT", "COMPANY", "TOPIC"].includes(channel.type) === false && (
                   <div onClick={handleShowArchiveConfirmation}>
-                    <Icon icon={channel.is_archived ? "rotate-ccw" : "trash-2"} />
+                    <Icon icon={channel.is_archived ? "rotate-ccw" : "trash-2"}/>
                     {channel.is_archived ? "Restore" : "Archive"}
                   </div>
                 )}
                 {["DIRECT", "PERSONAL_BOT", "COMPANY", "TOPIC"].includes(channel.type) === false && !channel.is_archived && (
                   <div onClick={handleShowChatEditModal}>
-                    <Icon icon={"edit-3"} />
+                    <Icon icon={"edit-3"}/>
                     {dictionary.edit}
                   </div>
                 )}

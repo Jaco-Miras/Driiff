@@ -1,5 +1,5 @@
-import React, {useCallback} from "react";
-import {useDispatch, useSelector} from "react-redux";
+import React, { useCallback } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
   deleteChannelMembers,
   getChannel,
@@ -24,15 +24,15 @@ import {
   setLastVisitedChannel,
   setSelectedChannel
 } from "../../redux/actions/chatActions";
-import {useSettings, useToaster, useTranslation} from "./index";
-import {useHistory} from "react-router-dom";
+import { useSettings, useToaster, useTranslation } from "./index";
+import { useHistory } from "react-router-dom";
 
 const useChannelActions = () => {
 
   const dispatch = useDispatch();
 
-  const {chatSettings} = useSettings();
-  const {_t} = useTranslation();
+  const { chatSettings } = useSettings();
+  const { _t } = useTranslation();
   const toaster = useToaster();
   const history = useHistory();
 
@@ -669,6 +669,22 @@ const useChannelActions = () => {
     [dispatch]
   );
 
+  const getUrlTitle = useCallback(
+    (channelTitle) => {
+      return channelTitle.toLowerCase().replaceAll(" ", "-");
+    }, []);
+
+  const getChannelLink = useCallback(
+    (channel) => {
+      if (channel.workspace_folder) {
+        return `/workspace/chat/${channel.workspace_folder.id}/${getUrlTitle(channel.workspace_folder.name)}/${channel.entity_id}/${getUrlTitle(channel.title)}`;
+      } else {
+        return `/workspace/chat/${channel.entity_id}/${getUrlTitle(channel.title)}`;
+      }
+    },
+    []
+  );
+
   return {
     create,
     createByUserChannel,
@@ -699,6 +715,8 @@ const useChannelActions = () => {
     deleteMembers,
     update,
     fetchingMessages,
+    getChannelLink,
+    getUrlTitle
   };
 };
 
