@@ -10,7 +10,7 @@ import DriffSelectPanel from "./components/panels/DriffSelectPanel";
 import { Slide, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useSelector } from "react-redux";
-import { getCookie, setCookie } from "./helpers/commonFunctions";
+import { sessionService } from "redux-react-session";
 
 const Wrapper = styled.div`
   min-height: 100%;
@@ -33,13 +33,28 @@ function App() {
   useEffect(() => {
     if (session.checked) {
       if (session.authenticated) {
-        if (getCookie("site_ver") !== "121020200140") {
-          setCookie("site_ver", "121020200140");
-          logout();
-          processBackendLogout();
+        if (localStorage.getItem("site_ver") !== "121020200140") {
+          localStorage.setItem("site_ver", "121020200140");
+          localStorage.removeItem("userAuthToken");
+          localStorage.removeItem("token");
+          localStorage.removeItem("atoken");
+          localStorage.removeItem("welcomeBanner");
+          sessionService
+            .deleteSession()
+            .then(() => sessionService.deleteUser())
+            .then(() => {
+              console.log("hello");
+              processBackendLogout();
+            });
         }
+      } else {
+        localStorage.setItem("site_ver", "121020200140");
       }
     }
+  }, [session]);
+
+  useEffect(() => {
+
     const handleResize = () => {
       let vh = window.innerHeight * 0.01;
       document.documentElement.style.setProperty("--vh", `${vh}px`);
