@@ -385,7 +385,7 @@ export default function (state = INITIAL_STATE, action) {
                 return r;
               }
             })
-            : [...channel.replies.filter(r => r.id === action.data.id), action.data],
+            : [...channel.replies.filter(r => r.id !== action.data.id), action.data],
           last_visited_at_timestamp: getCurrentTimestamp(),
           last_reply: action.data,
           total_unread: action.data.is_read ? 0 : channel.total_unread + 1,
