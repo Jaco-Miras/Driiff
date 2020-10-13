@@ -369,7 +369,7 @@ export default function (state = INITIAL_STATE, action) {
       let channel = null;
       if (Object.keys(state.channels).length > 0 && state.channels.hasOwnProperty(action.data.channel_id)) {
         channel = { ...state.channels[action.data.channel_id] };
-        if (channel.id === action.data.channel_id) {
+        if (channel.id === action.data.channel_id && action.data.user.id === state.user.id) {
           if (action.data.reference_id) haveReference = channel.replies.some((r) => r.reference_id === action.data.reference_id);
         }
         channel = {
@@ -385,7 +385,7 @@ export default function (state = INITIAL_STATE, action) {
                 return r;
               }
             })
-            : [...channel.replies.filter(r => r.id !== action.data.id), action.data].sort((a, b) => a.created_at.timestamp - b.created_at.timestamp),
+            : [...channel.replies, action.data].sort((a, b) => a.created_at.timestamp - b.created_at.timestamp),
           last_visited_at_timestamp: getCurrentTimestamp(),
           last_reply: action.data,
           total_unread: action.data.is_read ? 0 : channel.total_unread + 1,
