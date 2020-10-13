@@ -1,11 +1,11 @@
-import React, {useEffect, useState} from "react";
-import {useDispatch, useSelector} from "react-redux";
-import {useRouteMatch} from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useRouteMatch } from "react-router-dom";
 import styled from "styled-components";
-import {SvgIconFeather} from "../../common";
-import {HeaderProfileNavigation} from "../common";
-import {CompanyPageHeaderPanel} from "../company";
-import {useTranslation} from "../../hooks";
+import { SvgIconFeather } from "../../common";
+import { HeaderProfileNavigation } from "../common";
+import { CompanyPageHeaderPanel } from "../company";
+import { useTranslation } from "../../hooks";
 
 const Wrapper = styled.div`
   display: flex;
@@ -71,16 +71,19 @@ const Wrapper = styled.div`
 
 const CompanyName = styled.h2`
   letter-spacing: 0;
-  margin-bottom: 0;
-  color: #000000;
-  font-weight: normal;
-  font-size: 20px;
-  svg {
-    color: #64625c;
-  }
-  @media all and (max-width: 620px) {
-    font-size: 16px;
-  }
+    margin-bottom: 0;
+    color: rgb(184, 184, 184);
+    font-weight: 500;
+    font-size: 20px;
+    margin-right: 2px;
+    
+    svg {
+      color: #64625c;
+    }
+    
+    @media all and (max-width: 620px) {
+      font-size: 16px;
+    }
 `;
 
 const CompanyHeaderPanel = () => {
@@ -186,6 +189,12 @@ const CompanyHeaderPanel = () => {
                 <a href="/" className="nav-link" title="Show navigation" onClick={handleMenuOpenMobile}>
                   <SvgIconFeather icon="menu"/>
                 </a>
+              </li>
+              <li className="nav-item nav-item-folder d-inline-flex justify-content-start align-items-center">
+                <SvgIconFeather className="mr-2" icon="home"/> <CompanyName>{driff.company_name}</CompanyName>
+              </li>
+              <li className="nav-item-chevron">
+                <SvgIconFeather icon="chevron-right"/>
               </li>
               <li className="nav-item nav-item-folder">
                 <CompanyName className="current-title">{pageName}</CompanyName>
