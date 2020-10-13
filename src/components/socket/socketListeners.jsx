@@ -1177,6 +1177,7 @@ class SocketListeners extends Component {
               skip: 0,
               hasMore: true,
               isFetching: false,
+              creator: e.channel_data.creator_by
             };
             this.props.addToChannels(channel);
           });

@@ -394,7 +394,7 @@ export default function (state = INITIAL_STATE, action) {
       return {
         ...state,
         selectedChannel:
-          state.selectedChannel && state.selectedChannel.id === action.data.channel_id && channel
+          state.selectedChannel && channel && state.selectedChannel.id === channel.id
             ? channel
             : state.selectedChannel,
         channels:
