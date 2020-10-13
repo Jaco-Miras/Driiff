@@ -79,7 +79,7 @@ const useWorkspaceAndUserOptions = (selected = { addressTo: [] }) => {
         if (typeof actualUsers[u.type_id] !== "undefined" && actualUsers[u.type_id].active === 1) {
           userOptions.push({
             ...u,
-            ...actualUsers,
+            //...actualUsers,
             icon: "user-avatar",
             value: u.id,
             label: u.name ? u.name : u.email,
