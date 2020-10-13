@@ -829,7 +829,7 @@ export default function (state = INITIAL_STATE, action) {
           ...channel,
           members: action.data.members,
           title: action.data.title,
-          replies: [...channel.replies, action.data.message],
+          replies: [...channel.replies, action.data.message].sort((a, b) => a.created_at.timestamp - b.created_at.timestamp),
         };
       }
       return {
