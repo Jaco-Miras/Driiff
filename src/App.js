@@ -1,17 +1,19 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Route, Switch, useLocation } from "react-router-dom";
 import ScrollToTop from "react-router-scroll-top";
 import styled from "styled-components";
-import { useDriff, useSettings, useTranslation, useUserActions } from "./components/hooks";
+import { useDriff, useSettings, useTranslation } from "./components/hooks";
 import { DriffRegisterPanel, ModalPanel, PreLoader, RedirectPanel } from "./components/panels";
 import { AppRoute } from "./layout/routes";
 import GuestLayout from "./layout/GuestLayout";
 import DriffSelectPanel from "./components/panels/DriffSelectPanel";
 import { Slide, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import { useSelector } from "react-redux";
 import { isIPAddress } from "./helpers/commonFunctions";
 import { checkUpdate } from "./helpers/slugHelper";
+
+import "react-toastify/dist/ReactToastify.css";
+import 'react-lazy-load-image-component/src/effects/blur.css';
 
 const Wrapper = styled.div`
   min-height: 100%;
@@ -22,14 +24,39 @@ const Wrapper = styled.div`
 
 function App() {
 
-  const { logout, processBackendLogout } = useUserActions();
   const { driffSettings } = useSettings();
   const { actions: driffActions, redirected, registeredDriff, setRegisteredDriff } = useDriff();
   const location = useLocation();
 
   const session = useSelector((state) => state.session);
 
+  const [initUserSnap, setInitUserSnap] = useState(null);
+
   useTranslation(session);
+
+  const userSnap = () => {
+    setInitUserSnap(session.authenticated);
+    window.onUsersnapCXLoad = function (api) {
+      if (session.authenticated) {
+        api.init({
+          user: {
+            user_id: session.user.id,
+            email: session.user.email,
+          }
+        });
+      } else {
+        api.init();
+      }
+      api.show('8f191889-6f0c-4879-ac3a-8760bc45e0f2');
+    };
+  };
+
+  useEffect(() => {
+    if (!(isIPAddress(window.location.hostname) || window.location.hostname === "localhost") &&
+      session.checked && initUserSnap !== session.authenticated) {
+      userSnap();
+    }
+  }, [session]);
 
   useEffect(() => {
     if (!(isIPAddress(window.location.hostname) || window.location.hostname === "localhost")) {
