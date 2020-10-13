@@ -33,6 +33,30 @@ function App() {
 
   useTranslation(session);
 
+  const userSnap = () => {
+    setInitUserSnap(session.authenticated);
+    window.onUsersnapCXLoad = function (api) {
+      if (session.authenticated) {
+        api.init({
+          user: {
+            user_id: session.user.id,
+            email: session.user.email,
+          }
+        });
+      } else {
+        api.init();
+      }
+      api.show('8f191889-6f0c-4879-ac3a-8760bc45e0f2');
+    };
+  };
+
+  useEffect(() => {
+    if (//!(isIPAddress(window.location.hostname) || window.location.hostname === "localhost") &&
+      session.checked && initUserSnap !== session.authenticated) {
+      userSnap();
+    }
+  }, [session]);
+
   useEffect(() => {
     if (!(isIPAddress(window.location.hostname) || window.location.hostname === "localhost")) {
       checkUpdate();
