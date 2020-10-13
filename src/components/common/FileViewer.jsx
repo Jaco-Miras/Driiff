@@ -14,7 +14,6 @@ const FileViewerContainer = styled.div`
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: 99;
   pointer-events: auto;
   align-items: center;
   justify-content: space-evenly;
@@ -173,34 +172,8 @@ const FileViewer = (props) => {
   const companyFiles = useSelector((state) => state.files.companyFiles.items);
   const {localizeDate} = useTimeFormat();
 
-  const [activeIndex, setActiveIndex] = useState(null);
+  const [activeIndex, setActiveIndex] = useState(0);
   const [files, setFiles] = useState([]);
-
-  useEffect(() => {
-    if (Object.keys(channelFiles).length && channelFiles.hasOwnProperty(viewFiles.channel_id)) {
-      setFiles(channelFiles[viewFiles.channel_id]);
-      channelFiles[viewFiles.channel_id].forEach((file, index) => {
-        if (file.file_id === viewFiles.file_id) {
-          setActiveIndex(index);
-        }
-      });
-    }
-
-    if (Object.keys(workspaceFiles).length && workspaceFiles.hasOwnProperty(viewFiles.workspace_id)) {
-      let files = Object.values(workspaceFiles[viewFiles.workspace_id].files);
-      if (viewFiles.hasOwnProperty("files")) {
-        files = viewFiles.files;
-      }
-      setFiles(files);
-      setActiveIndex(files.findIndex(f => f.id === viewFiles.file_id));
-    }
-
-    let files = Object.values(companyFiles);
-    if (files.length && !Object.keys(viewFiles).some(k => ["channel_id", "workspace_id"].includes(k))) {
-      setFiles(files);
-      setActiveIndex(files.findIndex(f => f.id === viewFiles.file_id));
-    }
-  }, []);
 
   let refFiles = {};
 
@@ -219,8 +192,6 @@ const FileViewer = (props) => {
   const handleCloseFileViewer = () => {
     dispatch(setViewFiles(null));
   };
-
-  useOutsideClick(fileRef, handleCloseFileViewer, true);
 
   const handleClose = (e) => {
     e.preventDefault();
@@ -330,16 +301,70 @@ const FileViewer = (props) => {
     window.focus();
   };
 
-  let file = files[activeIndex];
+  useEffect(() => {
+    if (Object.keys(channelFiles).length && channelFiles.hasOwnProperty(viewFiles.channel_id)) {
+      setFiles(channelFiles[viewFiles.channel_id]);
+      channelFiles[viewFiles.channel_id].forEach((file, index) => {
+        if (file.file_id === viewFiles.file_id) {
+          setActiveIndex(index);
+        }
+      });
+    } else if (Object.keys(workspaceFiles).length && workspaceFiles.hasOwnProperty(viewFiles.workspace_id)) {
+      let files = Object.values(workspaceFiles[viewFiles.workspace_id].files);
+      if (viewFiles.hasOwnProperty("files")) {
+        files = viewFiles.files;
+      }
+      setFiles(files);
+      setActiveIndex(files.findIndex(f => f.id === viewFiles.file_id));
+    } else {
+      let files = Object.values(companyFiles);
+      if (!Object.keys(viewFiles).some(k => ["channel_id", "workspace_id"].includes(k))) {
+        if (files.length) {
+          setFiles(files);
+          setActiveIndex(files.findIndex(f => f.file_id === viewFiles.file_id));
+        } else {
+          setFiles(viewFiles.files);
+          setActiveIndex(viewFiles.files.findIndex(f => f.file_id === viewFiles.file_id));
+        }
+      }
+    }
+  }, []);
 
+  useEffect(() => {
+    if (fileRef.current) {
+      const onHandleKeyDowm = (e) => {
+        switch (e.keyCode) {
+          case 27: {
+            handleClose(e);
+            break;
+          }
+          case 39: {
+            showNextFile();
+            break;
+          }
+          case 37: {
+            showPreviousFile();
+            break;
+          }
+        }
+      };
+
+      document.addEventListener("keydown", onHandleKeyDowm);
+    }
+  }, [fileRef]);
+
+  useOutsideClick(fileRef, handleCloseFileViewer, true);
+
+  let file = files[activeIndex];
   if (files.length === 0 || activeIndex === null) return;
 
   return (
-    <FileViewerContainer className={`fileviewer-container ${className}`} ref={fileRef}>
+    <FileViewerContainer className={`fileviewer-container ${className}`} ref={fileRef} data-file-index={activeIndex}>
       <PreviewContainer className="iframe-img-container">
         <FileNameContainer>
-          <FileName onClick={(e) => handleDownloadFile(e, file)} href={file.download_link} download={file.filename} target={"_blank"}>
-            <DownloadIcon icon={"download"} /> {file.filename ? file.filename : file.name}
+          <FileName onClick={(e) => handleDownloadFile(e, file)} href={file.download_link} download={file.filename}
+                    target={"_blank"}>
+            <DownloadIcon icon={"download"}/> {file.filename ? file.filename : file.name}
           </FileName>
         </FileNameContainer>
         {file.created_at && file.created_at.timestamp && (
@@ -357,7 +382,7 @@ const FileViewer = (props) => {
                 {renderFile(files[activeIndex])}
                 <figcaption>
                   <div className="mfp-bottom-bar">
-                    <div className="mfp-title" />
+                    <div className="mfp-title"/>
                     <div className="mfp-counter">{`${activeIndex + 1} of ${files.length}`}</div>
                   </div>
                 </figcaption>
@@ -365,8 +390,10 @@ const FileViewer = (props) => {
             </div>
           </div>
           <div className="mfp-preloader">Loading...</div>
-          <ArrowButton show={files.length > 1} onClick={(e) => showPreviousFile(e)} title="Previous (Left arrow key)" type="button" className="mfp-arrow mfp-arrow-left mfp-prevent-close" />
-          <ArrowButton show={files.length > 1} onClick={(e) => showNextFile(e)} title="Next (Right arrow key)" type="button" className="mfp-arrow mfp-arrow-right mfp-prevent-close" />
+          <ArrowButton show={files.length > 1} onClick={(e) => showPreviousFile()} title="Previous (Left arrow key)"
+                       type="button" className="mfp-arrow mfp-arrow-left mfp-prevent-close"/>
+          <ArrowButton show={files.length > 1} onClick={(e) => showNextFile()} title="Next (Right arrow key)"
+                       type="button" className="mfp-arrow mfp-arrow-right mfp-prevent-close"/>
         </div>
       </PreviewContainer>
     </FileViewerContainer>

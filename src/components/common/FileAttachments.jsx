@@ -178,6 +178,7 @@ const FileAttachments = (props) => {
 
   const handleClick = (e) => {
     const index = e.currentTarget.dataset.targetIndex;
+
     if (type === "modal") {
       if (filePreview !== null && filePreview.file.id === attachedFiles[index].id) {
         closePreview(e);
@@ -191,6 +192,18 @@ const FileAttachments = (props) => {
       if (params.hasOwnProperty("workspaceId")) {
         let payload = {
           workspace_id: params.workspaceId,
+          file_id: attachedFiles[index].id,
+        };
+
+        if (params.hasOwnProperty("postId")) {
+          payload = {
+            ...payload,
+            files: attachedFiles,
+          };
+        }
+        dispatch(setViewFiles(payload));
+      } else {
+        let payload = {
           file_id: attachedFiles[index].id,
         };
 
