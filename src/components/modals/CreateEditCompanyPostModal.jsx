@@ -273,7 +273,7 @@ const MoreOption = styled.div`
 
 const StyledDescriptionInput = styled(DescriptionInput)`
   .description-input {
-    height: ${props => props.height}px;
+    height: ${props => props.height > 80 ? props.height : 80}px;
     max-height: 300px;
   }
 
@@ -680,7 +680,14 @@ const CreateEditCompanyPostModal = (props) => {
     mention_ids = mention_ids.map((id) => parseInt(id)).filter((id) => !isNaN(id));
     if (mention_ids.length) {
       //check for recipients/type
-      let ignoreIds = [user.id, ...form.selectedAddressTo.map((u) => u.id), ...ignoredMentionedUserIds];
+      let adddressIds = form.selectedAddressTo.map((ad) => {
+        if (ad.type === "USER") {
+          return ad.id;
+        } else {
+          return ad.member_ids;
+        }
+      }).flat()
+      let ignoreIds = [user.id, ...adddressIds, ...ignoredMentionedUserIds];
       let userIds = mention_ids.filter((id) => {
         return !ignoreIds.some((iid) => iid === id);
       });
