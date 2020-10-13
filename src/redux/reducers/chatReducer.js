@@ -262,21 +262,21 @@ export default function (state = INITIAL_STATE, action) {
         ...channel,
         replies: [
           ...action.data.results.map((r) => {
-            if (channel.type === "PERSONAL_BOT" && r.body.search(/You asked me to remind you about/) > -1) {
-              r.original_body = r.body;
+            // if (channel.type === "PERSONAL_BOT" && r.body.search(/You asked me to remind you about/) > -1) {
+            //   r.original_body = r.body;
 
-              const channelName = r.body.replace(r.body.substr(0, r.body.search(" in ") + 4, r.body), "");
-              r.body = r.body.replace(` in ${channelName}`, ` in <a class="push" data-href="/chat/${r.quote.channel_code}">#${channelName}</a>`);
+            //   const channelName = r.body.replace(r.body.substr(0, r.body.search(" in ") + 4, r.body), "");
+            //   r.body = r.body.replace(` in ${channelName}`, ` in <a class="push" data-href="/chat/${r.quote.channel_code}">#${channelName}</a>`);
 
-              const link = `/chat/${r.quote.channel_code}/${r.quote.code}`;
-              r.body = r.body.replace("this message", `<a class="push" data-href="${link}">this message</a>`);
+            //   const link = `/chat/${r.quote.channel_code}/${r.quote.code}`;
+            //   r.body = r.body.replace("this message", `<a class="push" data-href="${link}">this message</a>`);
 
-              if (r.is_completed === true) {
-                r.body = `<span class="completed">${r.body}</span><br/> ${r.original_body.replace("You asked me to remind you", "OK! I’ve marked the reminder")} as complete.`;
-              } else {
-                r.body = `${r.body}<br/> <span class="action"><a class="btn btn-complete btn-action" data-message_id="${r.id}">Mark as Complete</a> <a class="btn btn-delete btn-action" data-message_id="${r.id}">Delete</a></span>`;
-              }
-            }
+            //   if (r.is_completed === true) {
+            //     r.body = `<span class="completed">${r.body}</span><br/> ${r.original_body.replace("You asked me to remind you", "OK! I’ve marked the reminder")} as complete.`;
+            //   } else {
+            //     r.body = `${r.body}<br/> <span class="action"><a class="btn btn-complete btn-action" data-message_id="${r.id}">Mark as Complete</a> <a class="btn btn-delete btn-action" data-message_id="${r.id}">Delete</a></span>`;
+            //   }
+            // }
 
             return {
               ...r,
@@ -286,7 +286,7 @@ export default function (state = INITIAL_STATE, action) {
             };
           }),
           ...channel.replies,
-        ],
+        ].sort((a, b) => a.created_at.timestamp - b.created_at.timestamp),
         read_only: action.data.read_only,
         hasMore: action.data.results.length === 20,
         skip: channel.skip === 0 && channel.replies.length ? channel.replies.length + 20 : channel.skip + 20,
@@ -385,7 +385,7 @@ export default function (state = INITIAL_STATE, action) {
                 return r;
               }
             })
-            : [...channel.replies.filter(r => r.id !== action.data.id), action.data],
+            : [...channel.replies.filter(r => r.id !== action.data.id), action.data].sort((a, b) => a.created_at.timestamp - b.created_at.timestamp),
           last_visited_at_timestamp: getCurrentTimestamp(),
           last_reply: action.data,
           total_unread: action.data.is_read ? 0 : channel.total_unread + 1,
