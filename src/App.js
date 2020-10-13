@@ -13,7 +13,6 @@ import { isIPAddress } from "./helpers/commonFunctions";
 import { checkUpdate } from "./helpers/slugHelper";
 
 import "react-toastify/dist/ReactToastify.css";
-import 'react-lazy-load-image-component/src/effects/blur.css';
 
 const Wrapper = styled.div`
   min-height: 100%;
