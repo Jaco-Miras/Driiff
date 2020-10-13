@@ -64,18 +64,32 @@ const Wrapper = styled.div`
   svg.feather-menu {
     color: #7a1b8b !important;
   }
+  svg.feather-home {
+    color: rgb(80, 80, 80);
+    
+    .dark & {
+      color: #fff;    
+    }
+  }
+  .dash {
+      
+  }
   @media all and (max-width: 700px) {
     align-items: start;
   }
 `;
 
 const CompanyName = styled.h2`
-  letter-spacing: 0;
+    letter-spacing: 0;
     margin-bottom: 0;
-    color: rgb(184, 184, 184);
+    color: rgb(80, 80, 80);
     font-weight: 500;
     font-size: 20px;
     margin-right: 2px;
+    
+    .dark & {
+      color: #fff;    
+    }
     
     svg {
       color: #64625c;
@@ -192,12 +206,6 @@ const CompanyHeaderPanel = () => {
               </li>
               <li className="nav-item nav-item-folder d-inline-flex justify-content-start align-items-center">
                 <SvgIconFeather className="mr-2" icon="home"/> <CompanyName>{driff.company_name}</CompanyName>
-              </li>
-              <li className="nav-item-chevron">
-                <SvgIconFeather icon="chevron-right"/>
-              </li>
-              <li className="nav-item nav-item-folder">
-                <CompanyName className="current-title">{pageName}</CompanyName>
               </li>
             </div>
             {
