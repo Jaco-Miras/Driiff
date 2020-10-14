@@ -687,7 +687,7 @@ class ChatMessages extends React.PureComponent {
             {selectedChannel.replies && selectedChannel.replies.length
               ? groupedMessages.map((gm, i) => {
                   return (
-                    <div key={gm.key}>
+                    <div key={`${gm.key}${gm.replies[0].created_at.timestamp}`}>
                       <TimestampDiv className="timestamp-container">{
                         <span>{this.props.timeFormat.localizeChatDate(gm.replies[0].created_at.timestamp, "ddd, MMM DD, YYYY")}</span>}</TimestampDiv>
 
