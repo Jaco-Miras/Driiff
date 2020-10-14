@@ -83,7 +83,7 @@ const Wrapper = styled.li`
 `;
 
 const ChannelTitlePreview = styled.div`
-  padding-right: 64px;
+  padding-right: 48px;
 `;
 
 const Timestamp = styled.div`
