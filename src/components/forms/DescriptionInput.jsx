@@ -113,8 +113,8 @@ const StyledQuillEditor = styled(QuillEditor)`
   height: ${props => props.height}px;
 
   &.description-input {
-    overflow: auto;
-    overflow-x: hidden;
+    // overflow: auto;
+    // overflow-x: hidden;
     position: static;
     width: 100%;
   }

@@ -1024,7 +1024,7 @@ class SocketListeners extends Component {
           ...e,
           message: {
             ...e.message,
-            g_date: this.props.localizeDate(e.message.created_at.timestamp),
+            g_date: this.props.localizeDate(e.message.created_at.timestamp, "YYYY-MM-DD"),
             user: null,
             is_read: true,
             files: [],
@@ -1059,7 +1059,7 @@ class SocketListeners extends Component {
             unfurls: [],
             is_read: false,
             channel_id: e.channel_id,
-            //g_date: this.props.localizeDate(e.created_at.timestamp),
+            g_date: this.props.localizeDate(e.created_at.timestamp, "YYYY-MM-DD"),
             code: e.code,
           };
 
@@ -1177,6 +1177,7 @@ class SocketListeners extends Component {
               skip: 0,
               hasMore: true,
               isFetching: false,
+              creator: e.channel_data.creator_by
             };
             this.props.addToChannels(channel);
           });

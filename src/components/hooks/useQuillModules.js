@@ -67,6 +67,7 @@ const useQuillModules = (mode, callback, mentionOrientation = "top", quillRef, m
     }
     
     const modules = {
+      magicUrl: true,
       mention: {
         allowedChars: /^[A-Za-z\sÅÄÖåäö]*$/,
         defaultMenuOrientation: mentionOrientation,

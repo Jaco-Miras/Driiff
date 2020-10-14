@@ -27,6 +27,7 @@
     "node-sass": "^4.14.1",
     "prettier": "^2.0.5",
     "push.js": "^1.0.12",
+    "quill-magic-url": "^2.0.2",
     "quill-mention": "^2.2.5",
     "react": "^16.13.1",
     "react-confetti": "^6.0.0",

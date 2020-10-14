@@ -3,6 +3,7 @@ import React, { forwardRef } from "react";
 import ReactQuill, { Quill } from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import {useTranslation} from "../hooks";
+import MagicUrl from 'quill-magic-url';
 
 const QuillEditor = forwardRef((props, ref) => {
   const {className = "", theme = "snow", placeholder = "", ...otherProps} = props;
@@ -35,5 +36,7 @@ class QuillPlainClipboard extends Clipboard {
     this.quill.scrollIntoView();
   }
 }
+
+Quill.register('modules/magicUrl', MagicUrl);
 
 Quill.register("modules/clipboard", QuillPlainClipboard, true);
