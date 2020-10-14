@@ -324,14 +324,14 @@ const CompanyPostDetail = (props) => {
               <h5 ref={refs.title} className="post-title mb-0">
                 <span>{post.title}</span>
               </h5>
-              <div className="author-name">
+              {/* <div className="author-name">
                 <ToolTip content={post.author.name}>
                   {dictionary.by}{" "}
                   <span onClick={handleAuthorClick} className="cursor-pointer">
                       {post.author.first_name}
                     </span>
                 </ToolTip>
-              </div>
+              </div> */}
             </li>
           </ul>
         </div>

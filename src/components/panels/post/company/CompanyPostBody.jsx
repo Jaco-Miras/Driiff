@@ -1,16 +1,26 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { AvatarGroup, SvgIconFeather } from "../../../common";
+import { Avatar, AvatarGroup, SvgIconFeather, ToolTip } from "../../../common";
 import { useGoogleApis, useTimeFormat } from "../../../hooks";
 import { CompanyPostBadge } from "./index";
 import quillHelper from "../../../../helpers/quillHelper";
 import Tooltip from "react-tooltip-lite";
+import { useHistory } from "react-router-dom";
+import { replaceChar } from "../../../../helpers/stringFormatter";
 
 const Wrapper = styled.div`
   flex: unset;
   svg {
     cursor: pointer;
     margin-right: 5px;
+  }
+  .author-name {
+    color: #c7c7c7;
+    font-size: 14px;
+  }
+  .recipients {
+    color: #8b8b8b;
+    font-size: 10px;
   }
 `;
 
@@ -38,6 +48,11 @@ const CompanyPostBody = (props) => {
   const [star, setStar] = useState(post.is_favourite);
   const { localizeDate, fromNow } = useTimeFormat();
   const googleApis = useGoogleApis();
+  const history = useHistory();
+
+  const handleAuthorClick = () => {
+    history.push(`/profile/${post.author.id}/${replaceChar(post.author.name)}`);
+  };
 
   const handleStarPost = () => {
     if (disableOptions) return;
@@ -63,7 +78,19 @@ const CompanyPostBody = (props) => {
   return (
     <Wrapper className="card-body">
       <div className="d-flex align-items-center p-l-r-0 m-b-20">
-        <div className="d-flex align-items-center">{post.users_responsible.length > 0 && <AvatarGroup users={post.users_responsible} />}</div>
+      <Avatar className="mr-1" key={post.author.id} name={post.author.name}
+                                          imageLink={post.author.profile_image_link} id={post.author.id}/>
+      <div className="author-name">
+                <ToolTip content={post.author.name}>
+                  {/* {dictionary.by}{" "} */}
+                  <span onClick={handleAuthorClick} className="cursor-pointer">
+                      {post.author.first_name}
+                    </span>
+                </ToolTip>
+                <div className="recipients">to Sander, Nilo, me</div>
+              </div>
+
+        {/* <div className="d-flex align-items-center">{post.users_responsible.length > 0 && <AvatarGroup users={post.users_responsible} />}</div> */}
         <div className="ml-auto d-flex align-items-center text-muted">
           {
             // !isAuthor && post.is_read_requirement &&
