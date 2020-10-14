@@ -119,6 +119,13 @@ const NavBar = styled.ul`
       height: 16px;
       color: #64625c;
     }
+    svg.feather-compass {
+      color: rgb(80, 80, 80);
+      
+      .dark & {
+        color: #fff;    
+      }
+    }
   }
   .nav-link {
     padding: 0px !important;
@@ -141,6 +148,27 @@ const WorkspaceName = styled.h2`
   @media all and (max-width: 620px) {
     font-size: 16px;
   }
+`;
+
+const WorkspacePageTitle = styled.h2`
+    letter-spacing: 0;
+    margin-bottom: 0;
+    color: rgb(80, 80, 80);
+    font-weight: 500;
+    font-size: 20px;
+    margin-right: 2px;
+
+    .dark & {
+      color: #fff;    
+    }
+
+    svg {
+      color: #64625c;
+    }
+
+    @media all and (max-width: 620px) {
+      font-size: 16px;
+    }
 `;
 
 const WorkspaceWrapper = styled.span`
@@ -208,7 +236,8 @@ const WorspaceHeaderPanel = (props) => {
   const {_t} = useTranslation();
 
   const dictionary = {
-    searchWorkspaceSearchTitle: _t("PLACEHOLDER.SEARCH_WORKSPACE_TITLE", "Search workspace"),
+    allWorkspaces: _t("SIDEBAR.ALL_WORKSPACES", "Browse Workspaces"),
+    searchWorkspaceSearchTitle: _t("PLACEHOLDER.SEARCH_WORKSPACE_TITLE", "Browse Workspaces"),
     pageTitleWorkspaceDashboard: _t("PAGE_TITLE.WORKSPACE_DASHBOARD", "Dashboard"),
     pageTitleWorkspacePosts: _t("PAGE_TITLE.WORKSPACE_POSTS", "Posts"),
     pageTitleWorkspaceChat: _t("PAGE_TITLE.WORKSPACE_CHAT", "Chat"),
@@ -332,8 +361,8 @@ const WorspaceHeaderPanel = (props) => {
                   <SvgIconFeather icon="menu" />
                 </a>
               </li>
-              <li className="nav-item nav-item-folder">
-                <WorkspaceName>{dictionary.searchWorkspaceSearchTitle}</WorkspaceName>
+              <li className="nav-item nav-item-folder d-inline-flex justify-content-start align-items-center">
+              <SvgIconFeather className="mr-2" icon="compass"/> <WorkspacePageTitle>{dictionary.allWorkspaces}</WorkspacePageTitle>
               </li>
             </>
           ) : activeTopic ? (
