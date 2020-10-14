@@ -12,7 +12,7 @@ const Wrapper = styled.div`
 `;
 const ActionContainer = styled.div`
   position: relative;
-  top: 4px;
+  top: 2px;
   display: flex;
   flex-direction: row-reverse;
 `;
@@ -47,14 +47,16 @@ const ChatDateIcons = (props) => {
     <Wrapper className="chat-timestamp">
       <span className={"small text-muted chat-timestamp_text"}
             dangerouslySetInnerHTML={{ __html: channel.last_reply ? channelPreviewDate(channel.last_reply.created_at.timestamp) : "" }}/>
-      {(!channel.is_read || channel.total_unread > 0) && (
-        <Badge
-          className={`badge badge-primary badge-pill ml-auto ${!channel.is_read && channel.total_unread === 0 ? "unread" : ""}`}>{channel.total_unread > 0 ? channel.total_unread : !channel.is_read ? "0" : null}</Badge>
-      )}
-      <ActionContainer>
-        {channel.is_pinned && <Icon icon="star"/>}
-        {channel.is_muted && <Icon icon="volume-x" className={`${channel.is_pinned && "mr-1"}`}/>}
-      </ActionContainer>
+      <div className="d-flex align-items-center flex-row-reverse">
+        {(!channel.is_read || channel.total_unread > 0) && (
+          <Badge
+            className={`badge badge-primary badge-pill ml-1 ${!channel.is_read && channel.total_unread === 0 ? "unread" : ""}`}>{channel.total_unread > 0 ? channel.total_unread : !channel.is_read ? "0" : null}</Badge>
+        )}
+        <ActionContainer>
+          {channel.is_pinned && <Icon icon="star"/>}
+          {channel.is_muted && <Icon icon="volume-x" className={`${channel.is_pinned && "mr-1"}`}/>}
+        </ActionContainer>
+      </div>
     </Wrapper>
   );
 };
