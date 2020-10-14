@@ -1,14 +1,14 @@
-import React, {useRef, useState} from "react";
+import React, { useRef, useState } from "react";
 import DateTimePicker from "react-datetime-picker";
-import {useDispatch} from "react-redux";
-import {Button, InputGroup, Modal, ModalBody, ModalFooter} from "reactstrap";
+import { useDispatch } from "react-redux";
+import { Button, InputGroup, Modal, ModalBody, ModalFooter } from "reactstrap";
 import styled from "styled-components";
-import {clearModal} from "../../redux/actions/globalActions";
+import { clearModal } from "../../redux/actions/globalActions";
 import RadioInput from "../forms/RadioInput";
-import {useSettings, useTranslation} from "../hooks";
-import {ModalHeaderSection} from "./index";
+import { useSettings, useTranslation } from "../hooks";
+import { ModalHeaderSection } from "./index";
 import quillHelper from "../../helpers/quillHelper";
-import {FormInput, InputFeedback, QuillEditor} from "../forms";
+import { FormInput, InputFeedback, QuillEditor } from "../forms";
 import moment from "moment";
 
 const Wrapper = styled(Modal)`
@@ -79,7 +79,7 @@ const TodoReminderModal = (props) => {
       value: itemType === "POST" ? item.title : parentItem ? parentItem.title : ""
     },
     description: {
-      value: item && item.body ? item.body.substring(0, 50).split(" ").splice(-1, 1).join(" ") : "",
+      value: item && item.body ? item.body : "",
     },
     set_time: {
       value: "1h"
