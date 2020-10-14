@@ -1,5 +1,6 @@
-// import {uniqBy} from "lodash";
+//import {uniqBy} from "lodash";
 import { getCurrentTimestamp } from "../../helpers/dateFormatter";
+import { uniqByProp } from "../../helpers/arrayHelper";
 
 /** Initial State  */
 const INITIAL_STATE = {
@@ -186,11 +187,11 @@ export default function (state = INITIAL_STATE, action) {
     case "SET_SELECTED_CHANNEL": {
       let channel = {
         ...state.channels[action.data.id],
-        ...action.data,
-        replies: [
-          ...state.channels[action.data.id].replies,
-          //...action.data.replies,
-        ],
+        // ...action.data,
+        // replies: [
+        //   ...state.channels[action.data.id].replies,
+        //   //...action.data.replies,
+        // ],
       };
 
       let updatedChannels = { ...state.channels };
@@ -258,35 +259,18 @@ export default function (state = INITIAL_STATE, action) {
     }
     case "GET_CHAT_MESSAGES_SUCCESS": {
       let channel = { ...state.channels[action.data.channel_id] };
+      let messsages = [...action.data.results.map((r) => {
+        return {
+          ...r,
+          is_read: true,
+          channel_id: action.data.channel_id,
+          //g_date: localizeDate(r.created_at.timestamp, "YYYY-MM-DD"),
+        };
+      }), ...channel.replies];
+      let uniqMessages = uniqByProp(messsages, "id");
       channel = {
         ...channel,
-        replies: [
-          ...action.data.results.map((r) => {
-            // if (channel.type === "PERSONAL_BOT" && r.body.search(/You asked me to remind you about/) > -1) {
-            //   r.original_body = r.body;
-
-            //   const channelName = r.body.replace(r.body.substr(0, r.body.search(" in ") + 4, r.body), "");
-            //   r.body = r.body.replace(` in ${channelName}`, ` in <a class="push" data-href="/chat/${r.quote.channel_code}">#${channelName}</a>`);
-
-            //   const link = `/chat/${r.quote.channel_code}/${r.quote.code}`;
-            //   r.body = r.body.replace("this message", `<a class="push" data-href="${link}">this message</a>`);
-
-            //   if (r.is_completed === true) {
-            //     r.body = `<span class="completed">${r.body}</span><br/> ${r.original_body.replace("You asked me to remind you", "OK! I’ve marked the reminder")} as complete.`;
-            //   } else {
-            //     r.body = `${r.body}<br/> <span class="action"><a class="btn btn-complete btn-action" data-message_id="${r.id}">Mark as Complete</a> <a class="btn btn-delete btn-action" data-message_id="${r.id}">Delete</a></span>`;
-            //   }
-            // }
-
-            return {
-              ...r,
-              is_read: true,
-              channel_id: action.data.channel_id,
-              //g_date: localizeDate(r.created_at.timestamp, "YYYY-MM-DD"),
-            };
-          }),
-          ...channel.replies,
-        ].sort((a, b) => a.created_at.timestamp - b.created_at.timestamp),
+        replies: uniqMessages.sort((a, b) => a.created_at.timestamp - b.created_at.timestamp),
         read_only: action.data.read_only,
         hasMore: action.data.results.length === 20,
         skip: channel.skip === 0 && channel.replies.length ? channel.replies.length + 20 : channel.skip + 20,
@@ -648,7 +632,7 @@ export default function (state = INITIAL_STATE, action) {
                 updated_at: action.data.updated_at,
               };
             } else return r;
-          }),
+          }).sort((a, b) => a.created_at.timestamp - b.created_at.timestamp),
           last_reply:
             channel.last_reply && channel.last_reply.id === action.data.id
               ? {
@@ -699,7 +683,7 @@ export default function (state = INITIAL_STATE, action) {
             } else {
               return r;
             }
-          }),
+          }).sort((a, b) => a.created_at.timestamp - b.created_at.timestamp),
           last_reply:
             channel.last_reply.id === action.data.id
               ? {
