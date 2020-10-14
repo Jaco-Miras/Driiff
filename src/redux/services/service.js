@@ -55,6 +55,8 @@ export const apiCall = async ({ method, url, data = null, register = false, mock
       crossDomain: true,
       //cancelToken: source.token,
       headers: {
+        "Access-Control-Allow-Origin": "*",
+        "crossorigin": true,
         "Content-Type": hasFile ? "multipart/form-data" : "application/json",
         Authorization: is_shared && data.token ? `Bearer ${data.token}` : session.token,
         "Accept-Language": userLang,
@@ -115,6 +117,8 @@ export const apiNoTokenCall = async ({ method, url, actualUrl = null, data = nul
       responseType,
       crossDomain: true,
       headers: {
+        "Access-Control-Allow-Origin": "*",
+        "crossorigin": true,
         "Content-Type": "application/json",
         "Accept-Language": userLang,
         "X-Timezone-Offset": tzOffset,

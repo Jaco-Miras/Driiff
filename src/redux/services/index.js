@@ -1,7 +1,12 @@
-import {getCompanyDashboardMembers, getCompanyDashboardRecentPosts, getCompanyDashboardTimeline} from "./driff";
-import {delRemoveToDo, postToDo, putDoneToDo, putToDo} from "./global";
+import {
+  getCompanyDashboardMembers,
+  getCompanyDashboardRecentPosts,
+  getCompanyDashboardTimeline,
+  patchUpdateDriffVersion
+} from "./driff";
+import { delRemoveToDo, postToDo, putDoneToDo, putToDo } from "./global";
 
-export {apiCall, apiNoTokenCall} from "./service";
+export { apiCall, apiNoTokenCall } from "./service";
 export {
   getGlobalRecipients,
   getChannels,
@@ -198,6 +203,7 @@ export {
   getCompanyDashboardTimeline,
   getCompanyDashboardRecentPosts,
   getCompanyDashboardMembers,
+  patchUpdateDriffVersion
 } from "./driff";
 
 export {

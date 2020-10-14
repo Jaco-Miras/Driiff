@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Route, Switch, useLocation } from "react-router-dom";
 import ScrollToTop from "react-router-scroll-top";
 import styled from "styled-components";
@@ -10,7 +10,6 @@ import DriffSelectPanel from "./components/panels/DriffSelectPanel";
 import { Slide, ToastContainer } from "react-toastify";
 import { useSelector } from "react-redux";
 import { isIPAddress } from "./helpers/commonFunctions";
-import { checkUpdate } from "./helpers/slugHelper";
 
 import "react-toastify/dist/ReactToastify.css";
 
@@ -29,13 +28,11 @@ function App() {
 
   const session = useSelector((state) => state.session);
 
-  const [initUserSnap, setInitUserSnap] = useState(null);
-
   useTranslation(session);
 
   useEffect(() => {
     if (!(isIPAddress(window.location.hostname) || window.location.hostname === "localhost")) {
-      checkUpdate();
+      driffActions.checkUpdateVersion();
     }
 
     const handleResize = () => {

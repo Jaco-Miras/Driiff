@@ -28,6 +28,16 @@ import { getDriffName } from "./useDriff";
 import { isIPAddress } from "../../helpers/commonFunctions";
 import { useHistory } from "react-router-dom";
 
+export const userForceLogout = () => {
+  localStorage.removeItem("userAuthToken");
+  localStorage.removeItem("token");
+  localStorage.removeItem("atoken");
+  localStorage.removeItem("welcomeBanner");
+  sessionService
+    .deleteSession()
+    .then(() => sessionService.deleteUser());
+};
+
 const useUserActions = () => {
   const dispatch = useDispatch();
   const history = useHistory();

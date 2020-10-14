@@ -1,8 +1,6 @@
 import React from "react";
-import {getDriffName} from "../components/hooks/useDriff";
-import {driffData} from "../config/environment";
-import {apiCall} from "../redux/services";
-import {$_GET, isIPAddress} from "./commonFunctions";
+import { getDriffName } from "../components/hooks/useDriff";
+import { $_GET, isIPAddress } from "./commonFunctions";
 
 export const updateFaviconState = (isActive = false) => {
   let link = document.querySelectorAll("link[rel*='icon']");
@@ -264,23 +262,6 @@ export const processTabActive = () => {
 
   // set the initial state (but only if browser supports the Page Visibility API)
   if (document[hidden] !== undefined) onchange({ type: document[hidden] ? "blur" : "focus" });
-};
-
-export const checkUpdate = () => {
-  if (localStorage.getItem("driffVersion") !== driffData.version) {
-    apiCall({
-      method: "PATCH",
-      url: "/update-driff-version",
-      data: {
-        data: {
-          version: driffData.version,
-          requirement: driffData.requirement,
-        },
-      },
-    }).then(() => {
-      localStorage.setItem("driffVersion", driffData.version);
-    });
-  }
 };
 
 export const getTranslationAPIUrl = () => {
