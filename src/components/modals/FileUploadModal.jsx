@@ -254,7 +254,7 @@ const FileUploadModal = (props) => {
     cancel: _t("BUTTON.CANCEL", "Cancel"),
     upload: _t("BUTTON.UPLOAD", "Upload"),
     fileUpload: _t("FILE_UPLOAD", "File upload"),
-    quillPlaceholder: _t("PLACEHOLDER", "Add message. Type @ to mention someone.")
+    quillPlaceholder: _t("FORM.REACT_QUILL_PLACEHOLDER", "Write great things here...")
   };
 
   useEffect(() => {
