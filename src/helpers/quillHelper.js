@@ -71,13 +71,14 @@ class quillHelper {
               word = parseEmojis(textToLink(word));
             }
           } else {
-            let taskUrl = parseTaskUrl(word);
+            word = `<a target="_blank" href="${word}">${word}</a>`;
+            // let taskUrl = parseTaskUrl(word);
 
-            if (!taskUrl) {
-              word = `<a target="_blank" href="${word}">${word}</a>`;
-            } else {
-              word = taskUrl;
-            }
+            // if (!taskUrl) {
+            //   word = `<a target="_blank" href="${word}">${word}</a>`;
+            // } else {
+            //   word = taskUrl;
+            // }
           }
         }
 
