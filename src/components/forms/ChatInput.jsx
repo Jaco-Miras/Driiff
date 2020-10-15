@@ -66,7 +66,7 @@ const StyledQuillEditor = styled(QuillEditor)`
     overflow-x: hidden;
     overflow-y: auto;
     z-index: 2;
-    
+
     .dark & {
       background: #25282c;
       color: #c7c7c7;
@@ -565,7 +565,7 @@ const ChatInput = (props) => {
                    userIds={mentionedUserIds} type={selectedChannel.type === "TOPIC" ? "workspace" : "chat"}/>}
       <StyledQuillEditor className={"chat-input"} modules={modules} ref={reactQuillRef} onChange={handleQuillChange}
                          editMode={editMode} onFocus={handleFocus}/>
-      {editMode && <CloseButton icon="x" onClick={handleEditReplyClose}/>}
+      {editMode && <CloseButton className='close-button' icon="x" onClick={handleEditReplyClose}/>}
     </Wrapper>
   );
 };
