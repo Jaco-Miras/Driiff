@@ -12,7 +12,9 @@ const Wrapper = styled.div`
   align-items: center;
   justify-content: space-between;
   height: 100%;
-  width: 100%;    
+  width: 100%;
+  
+  &.page-system,    
   &.page-todos {
     .navbar-left {
       .navbar-nav {
@@ -119,6 +121,7 @@ const CompanyHeaderPanel = () => {
     pageTitleSearch: _t("PAGE_TITLE.SEARCH", "Search"),
     pageTitleSettings: _t("PAGE_TITLE.SETTINGS", "Settings"),
     pageTitleTodos: _t("PAGE_TITLE.TODOS", "To-dos & Reminders"),
+    pageTitleSystemPeople: _t("PAGE_TITLE.SYSTEM_PEOPLE", "All People"),
     generalSearch: _t("GENERAL.SEARCH", "Search"),
     generalNotifications: _t("GENERAL.NOTIFICATIONS", "Notifications"),
     generalSwitchTheme: _t("SETTINGS.SWITCH_TO_THEME_MODE", "Switch to ::mode::", {
@@ -127,12 +130,36 @@ const CompanyHeaderPanel = () => {
   }
 
   const dispatch = useDispatch();
-  const [pageName, setPageName] = useState(dictionary.pageTitleDashboard);
 
+  const [pageName, setPageName] = useState(dictionary.pageTitleDashboard);
 
   const handleMenuOpenMobile = (e) => {
     e.preventDefault();
     document.body.classList.add("navigation-show");
+  };
+
+  const renderMainTitle = () => {
+    switch (match.params.page) {
+      case "profile": {
+        return <><SvgIconFeather className="mr-2" icon="user"/>
+          <CompanyName>{dictionary.pageTitleProfile}</CompanyName></>;
+      }
+      case "settings": {
+        return <><SvgIconFeather className="mr-2" icon="settings"/>
+          <CompanyName>{dictionary.pageTitleSettings}</CompanyName></>;
+      }
+      case "todos": {
+        return <><SvgIconFeather className="mr-2" icon="check"/>
+          <CompanyName>{dictionary.pageTitleTodos}</CompanyName></>;
+      }
+      case "system": {
+        return <><SvgIconFeather className="mr-2" icon="user"/>
+          <CompanyName>{dictionary.pageTitleSystemPeople}</CompanyName></>;
+      }
+      default: {
+        return <><SvgIconFeather className="mr-2" icon="home"/> <CompanyName>{driff.company_name}</CompanyName></>;
+      }
+    }
   };
 
   useEffect(() => {
@@ -205,11 +232,13 @@ const CompanyHeaderPanel = () => {
                 </a>
               </li>
               <li className="nav-item nav-item-folder d-inline-flex justify-content-start align-items-center">
-                <SvgIconFeather className="mr-2" icon="home"/> <CompanyName>{driff.company_name}</CompanyName>
+                {
+                  renderMainTitle()
+                }
               </li>
             </div>
             {
-              match.params.page !== "todos" &&
+              !["todos", "system"].includes(match.params.page) &&
               <div className="navbar-bottom">
                 <div className="navbar-main">
                   <CompanyPageHeaderPanel dictionary={dictionary}/>

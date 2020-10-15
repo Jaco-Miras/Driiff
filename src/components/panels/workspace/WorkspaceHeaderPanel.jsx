@@ -1,15 +1,15 @@
-import React, {useEffect} from "react";
-import {useDispatch, useSelector} from "react-redux";
-import {Route, useRouteMatch} from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Route, useRouteMatch } from "react-router-dom";
 import styled from "styled-components";
-import {addToModals} from "../../../redux/actions/globalActions";
-import {SvgIconFeather} from "../../common";
-import {HeaderProfileNavigation} from "../common";
-import {SettingsLink} from "../../workspace";
-import {joinWorkspace} from "../../../redux/actions/workspaceActions";
-import {useToaster, useTranslation} from "../../hooks";
-import {MemberLists} from "../../list/members";
-import {WorkspacePageHeaderPanel} from "../workspace";
+import { addToModals } from "../../../redux/actions/globalActions";
+import { SvgIconFeather } from "../../common";
+import { HeaderProfileNavigation } from "../common";
+import { SettingsLink } from "../../workspace";
+import { joinWorkspace } from "../../../redux/actions/workspaceActions";
+import { useToaster, useTranslation, useWorkspaceSearchActions } from "../../hooks";
+import { MemberLists } from "../../list/members";
+import { WorkspacePageHeaderPanel } from "../workspace";
 
 const NavBarLeft = styled.div`
   width: 100%;
@@ -216,7 +216,7 @@ const WorspaceHeaderPanel = (props) => {
     pageTitleWorkspaceNotifications: _t("PAGE_TITLE.WORKSPACE_NOTIFICATIONS", "Notifications"),
     pageTitleWorkspacePeople: _t("PAGE_TITLE.WORKSPACE_PEOPLE", "People"),
     pageTitleWorkspaceProfile: _t("PAGE_TITLE.WORKSPACE_PROFILE", "Profile"),
-    pageTitleWorkspaceSearch: _t("PAGE_TITLE.WORKSPACE_SEARCH", "Search"),
+    pageTitleWorkspaceSearch: _t("PAGE_TITLE.WORKSPACE_SEARCH", "Search workspace"),
     pageTitleSettings: _t("PAGE_TITLE.SETTINGS", "Settings"),
     pageTitleTodos: _t("PAGE_TITLE.TODOS", "To-dos & Reminders"),
     generalSearch: _t("GENERAL.SEARCH", "Search"),
@@ -233,6 +233,14 @@ const WorspaceHeaderPanel = (props) => {
       topic_name: activeTopic ? `<b>#{activeTopic.name}</b>` : ""
     })
   }
+
+  const actions = useWorkspaceSearchActions();
+
+  const search = useSelector((state) => state.workspaces.search);
+
+  const { value, searching } = search;
+  const [inputValue, setInputValue] = useState(value);
+  const [pageName, setPageName] = useState(dictionary.pageTitleDashboard);
 
   const handleShowWorkspaceModal = () => {
     let payload = {
@@ -329,10 +337,11 @@ const WorspaceHeaderPanel = (props) => {
             <>
               <li className="nav-item navigation-toggler mobile-toggler">
                 <a href="/" className="nav-link" title="Show navigation" onClick={handleMenuOpenMobile}>
-                  <SvgIconFeather icon="menu" />
+                  <SvgIconFeather icon="menu"/>
                 </a>
               </li>
-              <li className="nav-item nav-item-folder">
+              <li className="nav-item nav-item-folder d-inline-flex justify-content-start align-items-center">
+                <SvgIconFeather className="mr-2" icon="search"/>
                 <WorkspaceName>{dictionary.searchWorkspaceSearchTitle}</WorkspaceName>
               </li>
             </>
