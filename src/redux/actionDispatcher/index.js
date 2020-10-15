@@ -51,6 +51,7 @@ export default function DispatchActionToReducer(service, actionTypeStart, action
           }
           // not authenticated user.
           if (error.response.status === 401) {
+            console.log(error);
             userForceLogout();
           }
           // internal server error
@@ -62,6 +63,7 @@ export default function DispatchActionToReducer(service, actionTypeStart, action
           });
           if (callback) callback(error);
         } else {
+          console.log(error);
           userForceLogout();
         }
       });

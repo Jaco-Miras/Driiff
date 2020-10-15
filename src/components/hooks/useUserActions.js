@@ -29,13 +29,18 @@ import { isIPAddress } from "../../helpers/commonFunctions";
 import { useHistory } from "react-router-dom";
 
 export const userForceLogout = () => {
-  localStorage.removeItem("userAuthToken");
+  if (localStorage.getItem("userAuthToken")) {
+    if (["nilo@makedevelopment.com", "joules@makedevelopment.com", "jessryll@makedevelopment.com"].includes(JSON.parse(localStorage.getItem("userAuthToken")).user_auth.email)) {
+      alert("error :(");
+    }
+  }
+  /*localStorage.removeItem("userAuthToken");
   localStorage.removeItem("token");
   localStorage.removeItem("atoken");
   localStorage.removeItem("welcomeBanner");
   sessionService
     .deleteSession()
-    .then(() => sessionService.deleteUser());
+    .then(() => sessionService.deleteUser());*/
 };
 
 const useUserActions = () => {

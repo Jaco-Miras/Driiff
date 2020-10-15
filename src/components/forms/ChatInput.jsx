@@ -17,6 +17,7 @@ import { SvgIconFeather } from "../common";
 import BodyMention from "../common/BodyMention";
 import { useDraft, useQuillInput, useQuillModules, useSaveInput, useSelectQuote, useTimeFormat } from "../hooks";
 import QuillEditor from "./QuillEditor";
+import _ from "lodash";
 
 const Wrapper = styled.div`
   ${"" /* border: 1px solid #dee2e6;
@@ -236,7 +237,7 @@ const ChatInput = (props) => {
 
     let obj = {
       message: text,
-      body: text,
+      body: _.trim(text),
       mention_ids: mention_ids,
       user: user,
       original_body: text,
@@ -548,15 +549,23 @@ const ChatInput = (props) => {
     handleClearQuillInput();
   };
 
+  const handleBlur = () => {
+    reactQuillRef.current.getEditor().setContents([]);
+    reactQuillRef.current.getEditor().clipboard.dangerouslyPasteHTML(0, text.trim());
+  };
+
   useSaveInput(handleClearQuillInput, text, textOnly, quillContents);
   useQuillInput(handleClearQuillInput, reactQuillRef);
   useDraft(loadDraftCallback, "channel", text, textOnly, draftId);
   const [modules, formats] = useQuillModules("chat", handleSubmit, "top", reactQuillRef, user.type === "external" ? selectedChannel.members : []);
   return (
     <Wrapper className="chat-input-wrapper">
-      {mentionedUserIds.length > 0 && <BodyMention onAddUsers={handleAddMentionedUsers} onDoNothing={handleIgnoreMentionedUsers} userIds={mentionedUserIds} type={selectedChannel.type === "TOPIC" ? "workspace" : "chat"}/>}
-      <StyledQuillEditor className={"chat-input"} modules={modules} ref={reactQuillRef} onChange={handleQuillChange} editMode={editMode} />
-      {editMode && <CloseButton icon="x" onClick={handleEditReplyClose} />}
+      {mentionedUserIds.length > 0 &&
+      <BodyMention onAddUsers={handleAddMentionedUsers} onDoNothing={handleIgnoreMentionedUsers}
+                   userIds={mentionedUserIds} type={selectedChannel.type === "TOPIC" ? "workspace" : "chat"}/>}
+      <StyledQuillEditor className={"chat-input"} modules={modules} ref={reactQuillRef} onChange={handleQuillChange}
+                         editMode={editMode} onBlur={handleBlur}/>
+      {editMode && <CloseButton icon="x" onClick={handleEditReplyClose}/>}
     </Wrapper>
   );
 };
