@@ -95,7 +95,7 @@ const PostBody = (props) => {
         </div>
       </div>
       <div className="d-flex align-items-center">
-        <div ref={handlePostBodyRef} dangerouslySetInnerHTML={{ __html: quillHelper.parseEmoji(post.body) }} />
+        <div className="mw-100" ref={handlePostBodyRef} dangerouslySetInnerHTML={{ __html: quillHelper.parseEmoji(post.body) }} />
       </div>
       {/* {showGifPlayer &&
         getGifLinks(post.body).map((gifLink, index) => {
