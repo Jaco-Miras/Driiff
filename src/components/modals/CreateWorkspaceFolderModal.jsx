@@ -73,7 +73,7 @@ const CreateWorkspaceFolderModal = (props) => {
     updateWorkspaceFolder: _t("WORKSPACE.UPDATE_WORKSPACE_FOLDER", "Update folder"),
     removeWorkspaceFolder: _t("WORKSPACE.DELETE_WORKSPACE_FOLDER", "Remove folder"),
     folderName: _t("FOLDER_NAME", "Name"),
-    folderInfo: _t("FOLDER_INFO", "Folders help to organize your workspaces. A workspace can only be connected to one folder."),
+    folderInfo: _t("FOLDER_INFO", "Folders help to organize your workspaces and are set for everyone who can see them. A workspace can only be connected to one folder."),
     lockWorkspaceFolder: _t("WORKSPACE.WORKSPACE_FOLDER_LOCK", "Make folder private"),
     lockWorkspaceFolderText: _t("WORKSPACE.WORKSPACE_FOLDER_LOCK.DESCRIPTION", "When a folder is private it is only visible to the members of the workspaces inside the folder."),
     description: _t("DESCRIPTION", "Description"),
@@ -390,7 +390,7 @@ const CreateWorkspaceFolderModal = (props) => {
               <Label className={"lock-workspace-text"}>{dictionary.lockWorkspaceFolderText}</Label>
             </div>
           </div>
-          <div className={"create-folder-btn"}>
+          <div className={"create-folder-btn ml-auto"}>
             <button className="btn btn-primary" disabled={valid.name === null || valid.name === false} onClick={handleConfirm}>
               {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />}
               {mode === "edit" ? dictionary.updateWorkspaceFolder : dictionary.createWorkspaceFolder}
