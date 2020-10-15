@@ -203,7 +203,7 @@ const ChatInput = (props) => {
 
     let payload = {
       channel_id: selectedChannel.id,
-      body: text,
+      body: _.trim(text),
       mention_ids: mention_ids,
       file_ids: [],
       reference_id: reference_id,
@@ -549,7 +549,7 @@ const ChatInput = (props) => {
     handleClearQuillInput();
   };
 
-  const handleBlur = () => {
+  const handleFocus = () => {
     reactQuillRef.current.getEditor().setContents([]);
     reactQuillRef.current.getEditor().clipboard.dangerouslyPasteHTML(0, text.trim());
   };
@@ -564,7 +564,7 @@ const ChatInput = (props) => {
       <BodyMention onAddUsers={handleAddMentionedUsers} onDoNothing={handleIgnoreMentionedUsers}
                    userIds={mentionedUserIds} type={selectedChannel.type === "TOPIC" ? "workspace" : "chat"}/>}
       <StyledQuillEditor className={"chat-input"} modules={modules} ref={reactQuillRef} onChange={handleQuillChange}
-                         editMode={editMode} onBlur={handleBlur}/>
+                         editMode={editMode} onFocus={handleFocus}/>
       {editMode && <CloseButton icon="x" onClick={handleEditReplyClose}/>}
     </Wrapper>
   );
