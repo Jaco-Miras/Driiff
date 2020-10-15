@@ -592,7 +592,7 @@ const UserProfilePanel = (props) => {
             ) : (
               <div className="card-body">
                 <h6 className="card-title d-flex justify-content-between align-items-center">
-                  Information
+                  {dictionary.information}
                   {/*<div>
                                         <span onClick={toggleEditInformation}
                                               className="close btn btn-outline-light btn-sm">
@@ -728,11 +728,11 @@ const UserProfilePanel = (props) => {
                 <div className="d-flex justify-content-between align-items-center mt-0">
                   <div>&nbsp;</div>
                   <div>
-                    <span onClick={handleSave} className="btn btn-primary mr-2">
-                      {dictionary.saveChanges}
-                    </span>
-                    <span onClick={toggleEditInformation} className="btn btn-outline-light">
+                    <span onClick={toggleEditInformation} className="btn btn-outline-light mr-2">
                       {dictionary.cancel}
+                    </span>
+                    <span onClick={handleSave} className="btn btn-primary">
+                      {dictionary.saveChanges}
                     </span>
                   </div>
                 </div>
