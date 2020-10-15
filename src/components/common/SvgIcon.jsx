@@ -190,6 +190,14 @@ export const SvgIconFeather = React.memo(
           </>
         );
         break;
+      case "inbox":
+        content = (
+          <>
+            <polyline points="22 12 16 12 14 15 10 15 8 12 2 12" />
+            <path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z" />
+          </>
+        );
+        break;
       case "eye":
         content = (
           <>
@@ -514,6 +522,22 @@ export const SvgIconFeather = React.memo(
         content = (
           <>
             <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48" />
+          </>
+        );
+        break;
+      case "send-post":
+        strokeWidth = "0";
+        width = "16.696";
+        height = "16";
+
+        viewBox = "0 0 16.696 16";
+        content = (
+          <>
+            <path
+              d="M6.446,15.974a.522.522,0,0,1-.359-.5V12.252l2.83.967L7.029,15.787a.52.52,0,0,1-.42.213A.514.514,0,0,1,6.446,15.974Zm7.646-2.089L6.8,11.393l7.17-8.64L4.7,10.677.353,9.19a.522.522,0,0,1-.072-.957L15.933.059a.523.523,0,0,1,.758.54L14.777,13.469a.521.521,0,0,1-.517.445A.541.541,0,0,1,14.092,13.885Z"
+              transform="translate(0 0)"
+              fill="currentColor"
+            />
           </>
         );
         break;
