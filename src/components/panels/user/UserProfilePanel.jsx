@@ -99,6 +99,7 @@ const Wrapper = styled.div`
   .form-group {
     &.designation {
       margin: 0 auto;
+      width: 66.66%;
     }
   }
 `;
