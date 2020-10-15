@@ -166,6 +166,12 @@ body.dark {
     background: #25282c;
   }
 
+  .button-darkmode {
+    border: 0px !important;
+    border-radius: 8px;
+    background: #25282c;
+  }
+
   .chat-input-footer {
     background: #25282c;
     border: 0 solid #000 !important;
@@ -535,7 +541,7 @@ body.dark {
 
 .file-options {
   width: 2rem !important;
-  padding: 0 4px;
+  padding: 3px 1px;
 }
 
 .user-list-name {
