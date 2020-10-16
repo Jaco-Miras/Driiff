@@ -212,7 +212,7 @@ const ChatInput = (props) => {
       mention_ids: mention_ids,
       file_ids: [],
       reference_id: reference_id,
-      reference_title: selectedChannel.type === "DIRECT" && selectedChannel.members.length === 2 ? `${user.first_name} in a direct message` : selectedChannel.title,
+      reference_title: selectedChannel.type === "DIRECT" ? `${user.first_name} in a direct message` : selectedChannel.title,
       topic_id: selectedChannel.is_shared ? selectedChannel.entity_id : null,
       is_shared: selectedChannel.is_shared ? selectedChannel.entity_id : null,
       token: slugs.length && slugs.filter((s) => s.slug_name === selectedChannel.slug_owner).length ? slugs.filter((s) => s.slug_name === selectedChannel.slug_owner)[0].access_token : null,
