@@ -1034,7 +1034,7 @@ const ChatBubble = (props) => {
                     theme={chatSettings.chat_message_theme}
                     isAuthor={isAuthor}
                     className={`reply-content ${isEmoticonOnly ? "emoticon-body" : ""} ${reply.is_deleted ? "is-deleted" : ""}`}
-                    dangerouslySetInnerHTML={showGifPlayer ? { __html: stripGif(quillHelper.parseEmoji(body)) } : { __html: quillHelper.parseEmoji(body) }}
+                    dangerouslySetInnerHTML={showGifPlayer ? { __html: stripGif(body) } : { __html: quillHelper.parseEmoji(body) }}
                   />
                 </span>
               }
