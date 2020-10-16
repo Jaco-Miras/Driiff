@@ -13,7 +13,7 @@ const Wrapper = styled.div`
     margin-left: 0 !important;
   }
   flex: unset;
-  
+
   .feather-paperclip {
     border: 1px solid #e1e1e1;
     height: 100%;
@@ -25,7 +25,7 @@ const Wrapper = styled.div`
     &:hover {
       background-color: #e1e1e1;
     }
-  }  
+  }
 `;
 
 const ChatInputContainer = styled.div`
@@ -44,7 +44,6 @@ const ChatInputContainer = styled.div`
     margin: 4px;
     height: calc(100% - 8px);
     max-height: 38px;
-    background: #7a1b8b;
     border-radius: 4px;
     min-width: 40px;
     width: 40px;
@@ -66,8 +65,12 @@ const ChatInputContainer = styled.div`
       color: #7a1b8b;
     }
   }
-  .feather-send:hover {
-    background-color: #7a1b8bcc;
+  .feather-send {
+  background: ${props => props.backgroundSend};
+  fill: ${props => props.fillSend};
+  &:hover {
+    cursor: ${props => props.cursor};
+   }
   }
 `;
 
@@ -149,7 +152,7 @@ const NoReply = styled.div`
 const PickerContainer = styled(CommonPicker)`
   right: 130px;
   bottom: 75px;
-  
+
   .common-picker-btn {
     text-align: right;
   }
@@ -173,6 +176,10 @@ const CompanyPostDetailFooter = (props) => {
   const [selectedEmoji, setSelectedEmoji] = useState(null);
   const [selectedGif, setSelectedGif] = useState(null);
   const [sent, setSent] = useState(false);
+  const [active, setActive] = useState(false);
+  const [cursor, setCursor] = useState('default');
+  const [backgroundSend, setBackgroundSend] = useState(null);
+  const [fillSend, setFillSend] = useState('#cacaca');
 
   const editPostComment = useSelector((state) => state.posts.editPostComment);
 
@@ -205,6 +212,15 @@ const CompanyPostDetailFooter = (props) => {
     //handleSend();
   };
 
+  const onActive = (active) => {
+    setActive(active);
+    let sendButtonValues;
+    active ? sendButtonValues = ['#7a1b8b', 'pointer', '#fff']  : sendButtonValues = ["", 'default', '#cacaca'];
+    setBackgroundSend(sendButtonValues[0]);
+    setCursor(sendButtonValues[1]);
+    setFillSend(sendButtonValues[2]);
+  }
+
   const toggleTooltip = () => {
     let tooltips = document.querySelectorAll("span.react-tooltip-lite");
     tooltips.forEach((tooltip) => {
@@ -235,7 +251,7 @@ const CompanyPostDetailFooter = (props) => {
               </NoReply>
             ) : (
               <React.Fragment>
-                <ChatInputContainer ref={innerRef} className="flex-grow-1 chat-input-footer">
+                  <ChatInputContainer ref={innerRef} className="flex-grow-1 chat-input-footer" backgroundSend={backgroundSend} cursor={cursor} fillSend={fillSend}>
                   <CompanyPostInput
                     handleClearSent={handleClearSent}
                     sent={sent}
@@ -250,7 +266,8 @@ const CompanyPostDetailFooter = (props) => {
                     selectedEmoji={selectedEmoji}
                     onClearEmoji={onClearEmoji}
                     dropAction={dropAction}
-                    members={post.members}
+                      members={post.members}
+                      onActive={onActive}
                   />
                   <IconButton className={`${showEmojiPicker ? "active" : ""}`} onClick={handleShowEmojiPicker}
                               icon="smile"/>
