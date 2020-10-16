@@ -929,7 +929,9 @@ export default function (state = INITIAL_STATE, action) {
     case "CLEAR_SELECTED_CHANNEL": {
       return {
         ...state,
-        selectedChannel: state.lastVisitedChannel ? {...state.channels[state.lastVisitedChannel.id]} : null
+        ...(state.lastVisitedChannel && {
+          selectedChannel: state.lastVisitedChannel ? { ...state.channels[state.lastVisitedChannel.id] } : null
+        })
       };
     }
     case "JOIN_WORKSPACE_REDUCER": {
