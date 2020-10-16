@@ -138,9 +138,9 @@ class SocketListeners extends Component {
   refetchOtherMessages = () => {
     if (this.props.lastReceivedMessage && Object.values(this.props.channels).length) {
       let channels = Object.values(this.props.channels)
-      this.props.refetchMessages(
+      this.props.refetchOtherMessages(
         { message_id: this.props.lastReceivedMessage.id, 
-          channels: channels.filter((c) => {
+          channel_ids: channels.filter((c) => {
             return typeof c.id === "number" && c.id !== this.props.lastReceivedMessage.channel_id
           }).map((c) => c.id)
         }
