@@ -201,7 +201,7 @@ const ChatInput = (props) => {
     let el = document.createElement("div");
     el.innerHTML = text;
     for (let i = (el.childNodes.length - 1); i >= 0; i--) {
-      if (_.trim(el.childNodes[i].innerText) === "") {
+      if (_.trim(el.childNodes[i].innerText) === "" && el.childNodes[i].innerHTML === "<br>") {
         el.removeChild(el.childNodes[i]);
       } else {
         el.childNodes[i].innerHTML = _.trim(el.childNodes[i].innerHTML);
