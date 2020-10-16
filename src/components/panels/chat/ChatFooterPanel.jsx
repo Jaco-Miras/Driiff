@@ -80,8 +80,9 @@ const ChatInputContainer = styled.div`
   }
   .feather-send {
   background: ${props => props.backgroundSend};
+  fill: ${props => props.fillSend};
   &:hover {
-    cursor: ${props => props.cursor} !important;
+    cursor: ${props => props.cursor};
    }
   }
 `;
@@ -159,7 +160,8 @@ const ChatFooterPanel = (props) => {
   const [selectedGif, setSelectedGif] = useState(null)
   const [active, setActive] = useState(false);
   const [cursor, setCursor] = useState('default');
-  const [backgroundColor, setBackgroundColor] = useState(null);
+  const [backgroundSend, setBackgroundSend] = useState(null);
+  const [fillSend, setFillSend] = useState('#cacaca');
 
   const selectedChannel = useSelector((state) => state.chat.selectedChannel)
   const user = useSelector((state) => state.session.user)
@@ -187,9 +189,10 @@ const ChatFooterPanel = (props) => {
   const onActive = (active) => {
     setActive(active);
     let sendButtonValues;
-    active ? sendButtonValues = ['#7a1b8b', 'pointer']  : sendButtonValues = ['', 'default'];
-    setBackgroundColor(sendButtonValues[0]);
+    active ? sendButtonValues = ['#7a1b8b', 'pointer', '#fff']  : sendButtonValues = ['', 'default', '#cacaca'];
+    setBackgroundSend(sendButtonValues[0]);
     setCursor(sendButtonValues[1]);
+    setFillSend(sendButtonValues[2]);
   }
 
   const onClearGif = () => {
@@ -287,7 +290,7 @@ const ChatFooterPanel = (props) => {
           ) : (
             <React.Fragment>
               {/* <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Emoji" className="emojiButton"></Tooltip> */}
-              <ChatInputContainer className="flex-grow-1 chat-input-footer" backgroundSend={backgroundColor} cursor={cursor}>
+              <ChatInputContainer className="flex-grow-1 chat-input-footer" backgroundSend={backgroundSend} cursor={cursor} fillSend={fillSend}>
                 {selectedChannel && !selectedChannel.is_archived && (
                   <Dflex className="d-flex pr-2 pl-2">
                     <ChatQuote/>
