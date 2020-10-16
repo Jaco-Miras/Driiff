@@ -1006,7 +1006,8 @@ const ChatBubble = (props) => {
                       {quoteAuthor}
                     </QuoteAuthor>
                   )}
-                  <QuoteContent className={"quote-content"} theme={chatSettings.chat_message_theme} isAuthor={isAuthor} dangerouslySetInnerHTML={{ __html: quoteBody }}></QuoteContent>
+                  <QuoteContent className={"quote-content"} theme={chatSettings.chat_message_theme} isAuthor={isAuthor}
+                                dangerouslySetInnerHTML={{ __html: quillHelper.parseEmoji(quoteBody) }}></QuoteContent>
                 </QuoteContainer>
               )}
               {
@@ -1033,7 +1034,7 @@ const ChatBubble = (props) => {
                     theme={chatSettings.chat_message_theme}
                     isAuthor={isAuthor}
                     className={`reply-content ${isEmoticonOnly ? "emoticon-body" : ""} ${reply.is_deleted ? "is-deleted" : ""}`}
-                    dangerouslySetInnerHTML={showGifPlayer ? { __html: stripGif(body) } : { __html: body }}
+                    dangerouslySetInnerHTML={showGifPlayer ? { __html: stripGif(quillHelper.parseEmoji(body)) } : { __html: quillHelper.parseEmoji(body) }}
                   />
                 </span>
               }
