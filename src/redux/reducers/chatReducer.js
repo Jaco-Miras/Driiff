@@ -99,7 +99,7 @@ export default function (state = INITIAL_STATE, action) {
         })
         .forEach((r) => {
           channels[r.id] = {
-            ...channels[r.id],
+            ...(typeof channels[r.id] !== "undefined" && channels[r.id]),
             ...r,
             hasMore: true,
             skip: 0,
