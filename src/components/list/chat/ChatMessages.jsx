@@ -198,7 +198,7 @@ const ChatBubbleQuoteDiv = styled.div`
   position: relative;
   flex-flow: column;
   display: inherit;
-  ${(props) => !props.isAuthor === true && "margin-left: 18px"};
+  ${(props) => !props.isAuthor === true && "margin-left: 1.5rem"};
   > img {
     // max-height: ${(props) => (props.maxImgHeight > 300 ? `${props.maxImgHeight}px;` : "300px")};
     max-height: 300px;
@@ -291,13 +291,13 @@ const InfiniteScroll = styled.div`
 
 const StyledAvatar = styled(Avatar)`
   align-self: flex-start;
-  width: 21px !important;
-  height: 21px !important;
+  width: 2rem !important;
+  height: 2rem !important;
   margin-top: ${(props) => (props.isForwardedMessage === true ? "25px" : "4px")};
 
   img {
-    width: 21px !important;
-    height: 21px !important;
+    width: 2rem !important;
+    height: 2rem !important;
   }
   @media (max-width: 620px) {
     display: none;
