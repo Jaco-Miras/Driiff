@@ -378,6 +378,10 @@ body.dark {
     color: $dm-text-color;
   }
 
+  .emoji-mart-category .emoji-mart-emoji:hover::before {
+    background-color: $dm-bg-2 !important;
+  }
+
   .channel-viewing {
     background-color: $dm-bg-2 !important;
   }
