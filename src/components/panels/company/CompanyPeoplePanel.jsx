@@ -5,11 +5,30 @@ import SearchForm from "../../forms/SearchForm";
 import {useTranslation, useUserChannels} from "../../hooks";
 import {PeopleListItem} from "../../list/people/item";
 
-const Wrapper = styled.div``;
+const Wrapper = styled.div`
+overflow: auto;
+&::-webkit-scrollbar {
+  display: none;
+}
+-ms-overflow-style: none;
+scrollbar-width: none;
+
+.people-search {
+  flex: 0 0 80%;
+  justify-content: flex-start;
+  padding-left: 0;
+}
+`;
 
 const Search = styled(SearchForm)`
-  max-width: 350px;
+  width: 50%;
   margin-bottom: 1rem;
+  min-width: 250px;
+  padding-right: 14px;
+  @media all and (max-width: 768px) {
+    width: 100%;
+    padding-right: 0;
+  }
 `;
 
 const CompanyPeoplePanel = (props) => {
@@ -90,7 +109,7 @@ const CompanyPeoplePanel = (props) => {
     <Wrapper className={`workspace-people container-fluid h-100 ${className}`}>
       <div className="card">
         <div className="card-body">
-          <Search ref={refs.search} value={search} closeButton="true" onClickEmpty={emptySearchInput} placeholder={dictionary.searchPeoplePlaceholder} onChange={handleSearchChange} autoFocus />
+            <Search ref={refs.search} value={search} closeButton="true" onClickEmpty={emptySearchInput} placeholder={dictionary.searchPeoplePlaceholder} onChange={handleSearchChange} autoFocus />
           <div className="row">
             {userSort.map((user) => {
               return <PeopleListItem loggedUser={loggedUser} key={user.id} user={user} onNameClick={handleUserNameClick} onChatClick={handleUserChat} dictionary={dictionary} />;

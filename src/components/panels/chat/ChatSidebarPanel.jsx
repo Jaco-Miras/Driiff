@@ -200,7 +200,7 @@ const ChatSidebarPanel = (props) => {
 
   return (
     <Wrapper ref={refs.container} className={`chat-sidebar ${className}`}>
-      <div className="chat-sidebar-header d-flex justify-content-between align-items-flex-start">
+      <div className="chat-sidebar-header d-flex justify-content-between align-items-flex-start align-items-center">
         <Search onChange={onSearchChange} value={query} onClickEmpty={emptySearchInput} closeButton="true" className="chat-search" placeholder={dictionary.searchChatPlaceholder} />
         <div className="d-flex justify-content-center align-items-center ml-2" style={{ height: "38px" }}>
           <StyledMoreOptions ref={refs.navTab} role="tabList">

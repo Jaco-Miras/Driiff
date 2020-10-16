@@ -23,8 +23,19 @@ const INITIAL_STATE = {
 export default function (state = INITIAL_STATE, action) {
   switch (action.type) {
     case "GET_GLOBAL_RECIPIENTS_SUCCESS": {
-      let channels = state.channels;
-      action.data.result.forEach((ac) => {
+      console.log(state.user, 'user data in global recipients success', action.data)
+      let channels = {...state.channels};
+      action.data.result.filter((r) => {
+        if (r.id) {
+          if (r.type === "DIRECT" && r.profile) {
+            return true;
+          } else {
+            return false;
+          }
+        } else {
+          return false;
+        }
+      }).forEach((ac) => {
         if (ac.type === "DIRECT") {
           ac.members = [
             {
@@ -72,7 +83,7 @@ export default function (state = INITIAL_STATE, action) {
         channels: channels,
       };
     }
-    case "RENAME_CHANNEL_KEY":
+    case "RENAME_CHANNEL_KEY": {
       let channels = {...state.channels};
       delete channels[action.data.old_id];
       delete action.data.old_id;
@@ -92,15 +103,17 @@ export default function (state = INITIAL_STATE, action) {
         selectedChannel: selectedChannel,
         lastVisitedChannel: selectedChannel
       };
+    }
     case "GET_CHANNELS_SUCCESS": {
       let channels = { ...state.channels };
-      action.data.results
+      if (action.data.results.length > 0) {
+        action.data.results.filter((r) => r.id !== null)
         .filter((r) => {
           return !(state.selectedChannel && state.selectedChannel.id === r.id);
         })
         .forEach((r) => {
           channels[r.id] = {
-            ...channels[r.id],
+            ...(typeof channels[r.id] !== "undefined" && channels[r.id]),
             ...r,
             hasMore: true,
             skip: 0,
@@ -109,7 +122,7 @@ export default function (state = INITIAL_STATE, action) {
             isFetching: false,
           };
         });
-
+      }
       return {
         ...state,
         channels: channels,
@@ -205,7 +218,8 @@ export default function (state = INITIAL_STATE, action) {
         ...state,
         selectedChannel: channel,
         channels: updatedChannels,
-        lastVisitedChannel: channel.type !== "TOPIC" ? channel : state.lastVisitedChannel
+        //lastVisitedChannel: channel.type !== "TOPIC" ? channel : state.lastVisitedChannel
+        lastVisitedChannel: channel
       };
     }
     case "UPDATE_MEMBER_TIMESTAMP": {
@@ -283,7 +297,9 @@ export default function (state = INITIAL_STATE, action) {
           ...state.channels,
           [action.data.channel_id]: channel,
         },
-        selectedChannel: channel.id === state.selectedChannel.id ? channel : state.selectedChannel,
+        ...(channel && state.selectedChannel && {
+          selectedChannel: channel.id === state.selectedChannel.id ? channel : state.selectedChannel,
+        })
       };
     }
     case "MARK_ALL_MESSAGES_AS_READ": {
@@ -929,7 +945,9 @@ export default function (state = INITIAL_STATE, action) {
     case "CLEAR_SELECTED_CHANNEL": {
       return {
         ...state,
-        selectedChannel: state.lastVisitedChannel ? {...state.channels[state.lastVisitedChannel.id]} : null
+        ...(state.lastVisitedChannel && {
+          selectedChannel: state.lastVisitedChannel ? { ...state.channels[state.lastVisitedChannel.id] } : null
+        })
       };
     }
     case "JOIN_WORKSPACE_REDUCER": {

@@ -19,11 +19,6 @@ import { useDraft, useQuillInput, useQuillModules, useSaveInput, useSelectQuote,
 import QuillEditor from "./QuillEditor";
 import _ from "lodash";
 
-const Wrapper = styled.div`
-  ${"" /* border: 1px solid #dee2e6;
-  border-radius: 8px; */}
-`;
-
 const StyledQuillEditor = styled(QuillEditor)`
   &.chat-input {
     // border: 1px solid #afb8bd;
@@ -66,7 +61,7 @@ const StyledQuillEditor = styled(QuillEditor)`
     overflow-x: hidden;
     overflow-y: auto;
     z-index: 2;
-    
+
     .dark & {
       background: #25282c;
       color: #c7c7c7;
@@ -98,21 +93,20 @@ const StyledQuillEditor = styled(QuillEditor)`
 const CloseButton = styled(SvgIconFeather)`
   position: absolute;
   top: 0;
-  right: 0;
+  right: 70px;
   margin: 0;
   margin: 4px;
   height: calc(100% - 8px);
   background: white;
   border: 1px solid white;
   border-radius: 4px;
-  min-width: 40px;
   width: 40px;
   padding: 9px;
   cursor: pointer;
-  right: 40px;
   z-index: 9;
   color: #cacaca;
   transition: color 0.15s ease-in-out;
+
   &:hover {
     color: #7a1b8b;
   }
@@ -120,7 +114,7 @@ const CloseButton = styled(SvgIconFeather)`
 
 /***  Commented out code are to be visited/refactored ***/
 const ChatInput = (props) => {
-  const { selectedEmoji, onClearEmoji, selectedGif, onClearGif, dropAction } = props;
+  const { selectedEmoji, onClearEmoji, selectedGif, onClearGif, dropAction, onActive } = props;
   const dispatch = useDispatch();
   const reactQuillRef = useRef();
   const { localizeDate } = useTimeFormat();
@@ -199,11 +193,22 @@ const ChatInput = (props) => {
       });
     }
 
-    if (textOnly.trim() === "" && mention_ids.length === 0 && !haveGif) return;
+    if (_.trim(textOnly) === "" && mention_ids.length === 0 && !haveGif) return;
+
+    let el = document.createElement("div");
+    el.innerHTML = text;
+    for (let i = (el.childNodes.length - 1); i >= 0; i--) {
+      if (_.trim(el.childNodes[i].innerText) === "" && el.childNodes[i].innerHTML === "<br>") {
+        el.removeChild(el.childNodes[i]);
+      } else {
+        el.childNodes[i].innerHTML = _.trim(el.childNodes[i].innerHTML);
+        break;
+      }
+    }
 
     let payload = {
       channel_id: selectedChannel.id,
-      body: _.trim(text),
+      body: el.innerHTML,
       mention_ids: mention_ids,
       file_ids: [],
       reference_id: reference_id,
@@ -236,8 +241,8 @@ const ChatInput = (props) => {
     }
 
     let obj = {
-      message: text,
-      body: _.trim(text),
+      message: el.innerHTML,
+      body: el.innerHTML,
       mention_ids: mention_ids,
       user: user,
       original_body: text,
@@ -324,6 +329,8 @@ const ChatInput = (props) => {
     setText(content);
     setTextOnly(textOnly);
     setQuillContents(editor.getContents());
+
+    textOnly.trim() === "" ? onActive(false) : onActive(true);
 
     if (editor.getContents().ops && editor.getContents().ops.length) {
       handleMentionUser(
@@ -544,14 +551,11 @@ const ChatInput = (props) => {
   };
 
   const handleEditReplyClose = () => {
+    if (quote) dispatch(clearQuote(quote));
+
     setEditMode(false);
     setEditMessage(null);
     handleClearQuillInput();
-  };
-
-  const handleFocus = () => {
-    reactQuillRef.current.getEditor().setContents([]);
-    reactQuillRef.current.getEditor().clipboard.dangerouslyPasteHTML(0, text.trim());
   };
 
   useSaveInput(handleClearQuillInput, text, textOnly, quillContents);
@@ -559,14 +563,14 @@ const ChatInput = (props) => {
   useDraft(loadDraftCallback, "channel", text, textOnly, draftId);
   const [modules, formats] = useQuillModules("chat", handleSubmit, "top", reactQuillRef, user.type === "external" ? selectedChannel.members : []);
   return (
-    <Wrapper className="chat-input-wrapper">
+    <div className="chat-input-wrapper">
       {mentionedUserIds.length > 0 &&
       <BodyMention onAddUsers={handleAddMentionedUsers} onDoNothing={handleIgnoreMentionedUsers}
                    userIds={mentionedUserIds} type={selectedChannel.type === "TOPIC" ? "workspace" : "chat"}/>}
       <StyledQuillEditor className={"chat-input"} modules={modules} ref={reactQuillRef} onChange={handleQuillChange}
-                         editMode={editMode} onFocus={handleFocus}/>
-      {editMode && <CloseButton icon="x" onClick={handleEditReplyClose}/>}
-    </Wrapper>
+                         editMode={editMode}/>
+      {editMode && <CloseButton className='close-button' icon="x" onClick={handleEditReplyClose}/>}
+    </div>
   );
 };
 

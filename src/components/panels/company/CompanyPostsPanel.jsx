@@ -130,6 +130,7 @@ const CompanyPostsPanel = (props) => {
       }) : _t("POST.READY_BY_NUMBER_OF_USERS", "Read by ::user_count:: users", {
         user_count: readByUsers.length,
       }),
+    me: _t("POST.LOGGED_USER_RESPONSIBLE", "me"),
   };
 
   /**

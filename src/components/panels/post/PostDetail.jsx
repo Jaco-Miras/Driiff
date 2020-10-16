@@ -4,7 +4,7 @@ import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import { addToModals } from "../../../redux/actions/globalActions";
 import { setParentIdForUpload } from "../../../redux/actions/postActions";
-import { Avatar, FileAttachments, ReminderNote, SvgIconFeather, ToolTip } from "../../common";
+import { Avatar, FileAttachments, ReminderNote, SvgIconFeather } from "../../common";
 import { DropDocument } from "../../dropzone/DropDocument";
 import { useCommentActions, useComments } from "../../hooks";
 import { PostBody, PostComments, PostDetailFooter } from "./index";
@@ -261,6 +261,10 @@ const PostDetail = (props) => {
     dispatch(addToModals(modal));
   };
 
+  const markRead = () => {
+    postActions.markReadRequirement(post);
+  };
+
   const handleReaction = () => {
     setReact((prevState) => ({
       user_clap_count: !!prevState.user_clap_count ? 0 : 1,
@@ -276,6 +280,31 @@ const PostDetail = (props) => {
     postActions.clap(payload);
   };
 
+  const renderUserResponsibleNames = () => {
+    let recipient_names = "to ";
+    const responsibleUsers = post.users_responsible.filter(u => u.id !== user.id);
+    const hasMe = post.users_responsible.some(u => u.id === user.id);
+    const otheruserResponsibleCount = responsibleUsers.length;
+    if (responsibleUsers.length) {
+      recipient_names += responsibleUsers.splice(0, hasMe ? 4 : 5)
+        .map(u => `<span title="${u.name}" class="receiver">${u.first_name}</span>`)
+        .join(`, `);
+    }
+
+    if (hasMe) {
+      if (otheruserResponsibleCount >= 1) {
+        recipient_names += `, ${dictionary.me}`;
+      } else {
+        recipient_names += dictionary.me;
+      }
+    }
+
+    return `${recipient_names} ${(otheruserResponsibleCount + (hasMe ? 1 : 0) > 5) ? "..." : ""}`;
+  };
+
+  const handleAuthorClick = () => {
+    history.push(`/profile/${post.author.id}/${replaceChar(post.author.name)}`);
+  };
   useEffect(() => {
     const viewed = post.view_user_ids.some((id) => id === user.id);
     if (!viewed) {
@@ -288,14 +317,6 @@ const PostDetail = (props) => {
       postActions.markAsRead(post);
     }
   }, []);
-
-  const markRead = () => {
-    postActions.markReadRequirement(post);
-  };
-
-  const handleAuthorClick = () => {
-    history.push(`/profile/${post.author.id}/${replaceChar(post.author.name)}`);
-  };
 
   return (
     <>
@@ -310,17 +331,16 @@ const PostDetail = (props) => {
               <Icon className="close mr-2" icon="arrow-left" onClick={handleClosePost}/>
             </li>
             <li>
+              <Avatar className="author-avatar mr-2" id={post.author.id} name={post.author.name}
+                      imageLink={post.author.profile_image_link}/>
+            </li>
+            <li>
               <h5 ref={refs.title} className="post-title mb-0">
                 <span>{post.title}</span>
               </h5>
-              <div className="author-name">
-                <ToolTip content={post.author.name}>
-                  {dictionary.by}{" "}
-                  <span onClick={handleAuthorClick} className="cursor-pointer">
-                    {post.author.first_name}
-                  </span>
-                </ToolTip>
-              </div>
+              {
+                <span dangerouslySetInnerHTML={{ __html: renderUserResponsibleNames() }}/>
+              }
             </li>
           </ul>
         </div>

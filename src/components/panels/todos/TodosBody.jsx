@@ -1,21 +1,21 @@
-import React, {useEffect, useRef} from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import {Avatar, SvgEmptyState, ToolTip} from "../../common";
 import {useHistory} from "react-router-dom";
 import {CheckBox} from "../../forms";
 import quillHelper from "../../../helpers/quillHelper";
 import {useSettings, useTimeFormat} from "../../hooks";
-import {MoreOptions} from "../common";
+import { MoreOptions } from "../common";
 
 const Wrapper = styled.div`
 .list-group {
-  .list-group-item {  
+  .list-group-item {
     padding: 0.75rem 1.5rem 0 0.75rem;
-    
+
     > a {
       display: block;
       width: 100%;
-      
+
       .badge-todo-type {
         border: 1px solid #000;
       }
@@ -29,9 +29,9 @@ li.link-title {
   font-size: 11px;
   text-transform: uppercase;
   line-height: 1.2;
-  
+
   &:not(:nth-child(1)) {
-    margin-top: 2rem;  
+    margin-top: 2rem;
   }
 }
 
@@ -82,6 +82,7 @@ const TodosBody = (props) => {
     btnLoadMore: useRef(null),
   }
 
+  const [active, setActive] = useState(false);
   const history = useHistory();
   const {todoFormat, todoFormatShortCode} = useTimeFormat();
   const {
@@ -117,6 +118,10 @@ const TodosBody = (props) => {
     }
   }
 
+  const handleClick = (prop) => {
+    prop = true;
+  }
+
   const getTodoType = (todo) => {
     switch (todo.link_type) {
       case "POST":
@@ -126,8 +131,21 @@ const TodosBody = (props) => {
       case "POST_COMMENT":
         return dictionary.typePostComment;
     }
-
   }
+
+  const config = {
+  angle: 90,
+  spread: 360,
+  startVelocity: 40,
+  elementCount: 70,
+  dragFriction: 0.12,
+  duration: 3000,
+  stagger: 3,
+  width: "10px",
+  height: "10px",
+  perspective: "500px",
+  colors: ["#a864fd", "#29cdff", "#78ff44", "#ff718d", "#fdff6a"]
+  };
 
   useEffect(() => {
     if (!refs.files.current)
@@ -208,14 +226,14 @@ const TodosBody = (props) => {
                               todoActions.updateFromModal(todo)
                           }}>
                           <span className="d-flex justify-content-between w-100 align-items-center">
-                            <span className="d-flex">
-                              <span className="custom-control custom-checkbox custom-checkbox-success mr-2">
+                              <span className="d-flex">
+                                <span className="custom-control custom-checkbox custom-checkbox-success mr-2">
                                 <ToolTip
                                   content={todo.status === "DONE" ? dictionary.actionMarkAsUndone : dictionary.actionMarkAsDone}>
-                                  <CheckBox name="test" checked={todo.status === "DONE"} onClick={(e) => {
+                                    <CheckBox name="test" checked={todo.status === "DONE"} onClick={(e) => {
                                     e.preventDefault();
                                     e.stopPropagation();
-                                    todoActions.toggleDone(todo)
+                                      todoActions.toggleDone(todo);
                                   }}/>
                                 </ToolTip>
                               </span>
@@ -246,7 +264,7 @@ const TodosBody = (props) => {
                                           imageLink={todo.author.profile_image_link} id={todo.author.id}/>
                                 }
                               </span>
-                              <MoreOptions className="ml-2" item={todo} width={170} moreButton={"more-horizontal"}>
+                                <MoreOptions className="ml-2" item={todo} width={170} moreButton={"more-horizontal"}>
                                 <div onClick={() => todoActions.updateFromModal(todo)}>{dictionary.actionEdit}</div>
                                 <div
                                   onClick={() => todoActions.removeConfirmation(todo)}>{dictionary.actionRemove}</div>

@@ -14,6 +14,9 @@ const Wrapper = styled.div`
   height: 100%;
   width: 100%;
   
+  &.page-notifications,
+  &.page-profile,
+  &.page-settings,
   &.page-system,    
   &.page-todos {
     .navbar-left {
@@ -44,7 +47,10 @@ const Wrapper = styled.div`
           margin-top: 4px;
           display: flex;
           align-items: center;
-          height: 40px;          
+          height: 40px;
+          svg.feather-user {
+            background: none;                      
+          }          
         }
         .navbar-bottom {
           @media all and (max-width: 700px) {
@@ -140,6 +146,10 @@ const CompanyHeaderPanel = () => {
 
   const renderMainTitle = () => {
     switch (match.params.page) {
+      case "notifications": {
+        return <><SvgIconFeather className="mr-2" icon="bell"/>
+          <CompanyName>{dictionary.pageTitleNotifications}</CompanyName></>;
+      }
       case "profile": {
         return <><SvgIconFeather className="mr-2" icon="user"/>
           <CompanyName>{dictionary.pageTitleProfile}</CompanyName></>;
@@ -238,7 +248,7 @@ const CompanyHeaderPanel = () => {
               </li>
             </div>
             {
-              !["todos", "system"].includes(match.params.page) &&
+              !["todos", "system", "notifications", "profile", "settings"].includes(match.params.page) &&
               <div className="navbar-bottom">
                 <div className="navbar-main">
                   <CompanyPageHeaderPanel dictionary={dictionary}/>

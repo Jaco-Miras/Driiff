@@ -22,11 +22,18 @@ const Wrapper = styled.div`
     justify-content: space-between;
     margin-bottom: 1rem;
   }
+
+  .people-search {
+    flex: 0 0 80%;
+    justify-content: flex-start;
+    padding-left: 0;
+  }
 `;
 
 const Search = styled(SearchForm)`
-  max-width: 350px;
+  width: 50%;
   margin-bottom: 1rem;
+  min-width: 250px;
 `;
 
 const SystemPeoplePanel = (props) => {
@@ -183,7 +190,7 @@ const SystemPeoplePanel = (props) => {
       <div className="card">
         <div className="card-body">
           <div className="people-header">
-            <div className="d-flex align-items-center">
+            <div className="d-flex align-items-center people-search">
               <Search ref={refs.search} value={search} closeButton="true" onClickEmpty={emptySearchInput}
                       placeholder="Search by name or email" onChange={handleSearchChange} autoFocus/>
               <CustomInput

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Route, Switch, useLocation } from "react-router-dom";
 import ScrollToTop from "react-router-scroll-top";
 import styled from "styled-components";
@@ -27,8 +27,33 @@ function App() {
   const location = useLocation();
 
   const session = useSelector((state) => state.session);
+  const [initUserSnap, setInitUserSnap] = useState(null);
 
   useTranslation(session);
+
+  const userSnap = () => {
+    setInitUserSnap(session.authenticated);
+    window.onUsersnapCXLoad = function (api) {
+      if (session.authenticated) {
+        api.init({
+          user: {
+            user_id: session.user.id,
+            email: session.user.email,
+          }
+        });
+      } else {
+        api.init();
+      }
+      api.show('8f191889-6f0c-4879-ac3a-8760bc45e0f2');
+    };
+  };
+
+  useEffect(() => {
+    if (!(isIPAddress(window.location.hostname) || window.location.hostname === "localhost") &&
+      session.checked && initUserSnap !== session.authenticated) {
+      //userSnap();
+    }
+  }, [session]);
 
   useEffect(() => {
     if (!(isIPAddress(window.location.hostname) || window.location.hostname === "localhost")) {
