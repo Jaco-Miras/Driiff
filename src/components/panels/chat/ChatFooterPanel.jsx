@@ -57,13 +57,13 @@ const ChatInputContainer = styled.div`
     margin: 4px;
     height: calc(100% - 8px);
     max-height: 38px;
-    background: #7a1b8b;
     border-radius: 4px;
     min-width: 40px;
     width: 40px;
     padding: 10px;
     cursor: pointer;
     transition: background-color 0.15s ease-in-out, color 0.15s ease-in-out;
+    opacity: 1;
   }
   .feather-smile {
     right: 44px;
@@ -79,8 +79,11 @@ const ChatInputContainer = styled.div`
       color: #7a1b8b;
     }
   }
-  .feather-send:hover {
-    background-color: #7a1b8bcc;
+  .feather-send {
+  background: ${props => props.backgroundSend};
+  &:hover {
+    cursor: ${props => props.cursor} !important;
+   }
   }
 `;
 
@@ -137,52 +140,63 @@ const Dflex = styled.div`
 const PickerContainer = styled(CommonPicker)`
   right: 100px;
   bottom: 80px;
-  
+
   .common-picker-btn {
     text-align: right;
   }
 `;
 
 const ChatFooterPanel = (props) => {
-  const { className = "", onShowFileDialog, dropAction } = props;
-  const { localizeChatDate } = useTimeFormat();
+  const { className = "", onShowFileDialog, dropAction } = props
+  const { localizeChatDate } = useTimeFormat()
 
-  const dispatch = useDispatch();
-  const toaster = useToaster();
+  const dispatch = useDispatch()
+  const toaster = useToaster()
   const ref = {
     picker: useRef(),
-  };
-  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
-  const [selectedEmoji, setSelectedEmoji] = useState(null);
-  const [selectedGif, setSelectedGif] = useState(null);
+  }
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false)
+  const [selectedEmoji, setSelectedEmoji] = useState(null)
+  const [selectedGif, setSelectedGif] = useState(null)
+  const [active, setActive] = useState(false);
+  const [cursor, setCursor] = useState('default');
+  const [backgroundColor, setBackgroundColor] = useState(null);
 
-  const selectedChannel = useSelector((state) => state.chat.selectedChannel);
-  const user = useSelector((state) => state.session.user);
+  const selectedChannel = useSelector((state) => state.chat.selectedChannel)
+  const user = useSelector((state) => state.session.user)
 
   const handleSend = () => {
-    dispatch(onClickSendButton(true));
-  };
+    dispatch(onClickSendButton(true))
+  }
 
   const handleShowEmojiPicker = () => {
-    setShowEmojiPicker(!showEmojiPicker);
-  };
+    setShowEmojiPicker(!showEmojiPicker)
+  }
 
   const onSelectEmoji = (e) => {
-    setSelectedEmoji(e);
-  };
+    setSelectedEmoji(e)
+  }
 
   const onSelectGif = (e) => {
-    setSelectedGif(e);
-  };
+    setSelectedGif(e)
+  }
 
   const onClearEmoji = () => {
-    setSelectedEmoji(null);
-  };
+    setSelectedEmoji(null)
+  }
+
+  const onActive = (active) => {
+    setActive(active);
+    let sendButtonValues;
+    active ? sendButtonValues = ['#7a1b8b', 'pointer']  : sendButtonValues = ['', 'default'];
+    setBackgroundColor(sendButtonValues[0]);
+    setCursor(sendButtonValues[1]);
+  }
 
   const onClearGif = () => {
-    setSelectedGif(null);
+    setSelectedGif(null)
     //handleSend();
-  };
+  }
 
   const handleJoinWorkspace = () => {
     dispatch(
@@ -192,25 +206,25 @@ const ChatFooterPanel = (props) => {
           recipient_ids: [user.id],
         },
         (err, res) => {
-          if (err) return;
+          if (err) return
           toaster.success(
             <>
               You have joined <b>#{selectedChannel.title}</b>
             </>
-          );
+          )
         }
       )
-    );
-  };
+    )
+  }
 
-  const { _t } = useTranslation();
+  const { _t } = useTranslation()
 
   const dictionary = {
     unarchiveThisWorkspace: _t("WORKSPACE.WORKSPACE_UNARCHIVE", "Unarchive this workspace"),
     unarchiveWorkspace: _t("HEADER.UNARCHIVE_WORKSPACE", "Unarchive workspace"),
     cancel: _t("BUTTON.CANCEL", "Cancel"),
     unarchiveBodyText: _t("TEXT.UNARCHIVE_CONFIRMATION", "Are you sure you want to unarchive this workspace?"),
-  };
+  }
 
   const handleUnarchive = () => {
     let payload = {
@@ -219,15 +233,15 @@ const ChatFooterPanel = (props) => {
       is_muted: false,
       is_pinned: false,
       push_unarchived: 1,
-    };
+    }
 
-    dispatch(putChannel(payload));
+    dispatch(putChannel(payload))
     toaster.success(
       <span>
         <b>{selectedChannel.type === "TOPIC" ? `${selectedChannel.title} workspace is unarchived.` : `${selectedChannel.title} channel is unarchived.`}</b>
       </span>
-    );
-  };
+    )
+  }
 
   const handleShowUnarchiveConfirmation = () => {
     let payload = {
@@ -239,23 +253,23 @@ const ChatFooterPanel = (props) => {
       actions: {
         onSubmit: handleUnarchive,
       },
-    };
+    }
 
-    dispatch(addToModals(payload));
-  };
+    dispatch(addToModals(payload))
+  }
 
   const onSendCallback = () => {
-    setShowEmojiPicker(false);
-  };
+    setShowEmojiPicker(false)
+  }
 
-  const isMember = useIsMember(selectedChannel && selectedChannel.members.length ? selectedChannel.members.map((m) => m.id) : []);
+  const isMember = useIsMember(selectedChannel && selectedChannel.members.length ? selectedChannel.members.map((m) => m.id) : [])
 
   const toggleTooltip = () => {
-    let tooltips = document.querySelectorAll("span.react-tooltip-lite");
+    let tooltips = document.querySelectorAll("span.react-tooltip-lite")
     tooltips.forEach((tooltip) => {
-      tooltip.parentElement.classList.toggle("tooltip-active");
-    });
-  };
+      tooltip.parentElement.classList.toggle("tooltip-active")
+    })
+  }
 
   return (
     <Wrapper className={`chat-footer ${className}`}>
@@ -274,14 +288,14 @@ const ChatFooterPanel = (props) => {
           ) : (
             <React.Fragment>
               {/* <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Emoji" className="emojiButton"></Tooltip> */}
-              <ChatInputContainer className="flex-grow-1 chat-input-footer">
+              <ChatInputContainer className="flex-grow-1 chat-input-footer" backgroundSend={backgroundColor} cursor={cursor}>
                 {selectedChannel && !selectedChannel.is_archived && (
                   <Dflex className="d-flex pr-2 pl-2">
                     <ChatQuote/>
                   </Dflex>
                 )}
 
-                <ChatInput selectedGif={selectedGif} onSendCallback={onSendCallback} onClearGif={onClearGif}
+                  <ChatInput onActive={onActive} selectedGif={selectedGif} onSendCallback={onSendCallback} onClearGif={onClearGif}
                            selectedEmoji={selectedEmoji} onClearEmoji={onClearEmoji} dropAction={dropAction}/>
                 <IconButton className={`${showEmojiPicker ? "active" : ""}`} onClick={handleShowEmojiPicker}
                             icon="smile"/>
