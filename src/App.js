@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Route, Switch, useLocation } from "react-router-dom";
 import ScrollToTop from "react-router-scroll-top";
 import styled from "styled-components";
@@ -27,6 +27,7 @@ function App() {
   const location = useLocation();
 
   const session = useSelector((state) => state.session);
+  const [initUserSnap, setInitUserSnap] = useState(null);
 
   useTranslation(session);
 
@@ -48,9 +49,9 @@ function App() {
   };
 
   useEffect(() => {
-    if (//!(isIPAddress(window.location.hostname) || window.location.hostname === "localhost") &&
+    if (!(isIPAddress(window.location.hostname) || window.location.hostname === "localhost") &&
       session.checked && initUserSnap !== session.authenticated) {
-      userSnap();
+      //userSnap();
     }
   }, [session]);
 

@@ -282,7 +282,9 @@ export default function (state = INITIAL_STATE, action) {
           ...state.channels,
           [action.data.channel_id]: channel,
         },
-        selectedChannel: channel.id === state.selectedChannel.id ? channel : state.selectedChannel,
+        ...(state.selectedChannel && {
+          selectedChannel: channel.id === state.selectedChannel.id ? channel : state.selectedChannel,
+        })
       };
     }
     case "MARK_ALL_MESSAGES_AS_READ": {
