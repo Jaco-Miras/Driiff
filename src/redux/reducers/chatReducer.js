@@ -22,8 +22,19 @@ const INITIAL_STATE = {
 export default function (state = INITIAL_STATE, action) {
   switch (action.type) {
     case "GET_GLOBAL_RECIPIENTS_SUCCESS": {
-      let channels = state.channels;
-      action.data.result.forEach((ac) => {
+      console.log(state.user, 'user data in global recipients success', action.data)
+      let channels = {...state.channels};
+      action.data.result.filter((r) => {
+        if (r.id) {
+          if (r.type === "DIRECT" && r.profile) {
+            return true;
+          } else {
+            return false;
+          }
+        } else {
+          return false;
+        }
+      }).forEach((ac) => {
         if (ac.type === "DIRECT") {
           ac.members = [
             {
@@ -71,7 +82,7 @@ export default function (state = INITIAL_STATE, action) {
         channels: channels,
       };
     }
-    case "RENAME_CHANNEL_KEY":
+    case "RENAME_CHANNEL_KEY": {
       let channels = {...state.channels};
       delete channels[action.data.old_id];
       delete action.data.old_id;
@@ -91,9 +102,11 @@ export default function (state = INITIAL_STATE, action) {
         selectedChannel: selectedChannel,
         lastVisitedChannel: selectedChannel
       };
+    }
     case "GET_CHANNELS_SUCCESS": {
       let channels = { ...state.channels };
-      action.data.results
+      if (action.data.results.length > 0) {
+        action.data.results.filter((r) => r.id !== null)
         .filter((r) => {
           return !(state.selectedChannel && state.selectedChannel.id === r.id);
         })
@@ -108,7 +121,7 @@ export default function (state = INITIAL_STATE, action) {
             isFetching: false,
           };
         });
-
+      }
       return {
         ...state,
         channels: channels,
