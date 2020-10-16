@@ -1,8 +1,8 @@
-import {parseEmojis, parseTaskUrl, textToLink} from "./stringFormatter";
-import {validURL} from "./urlContentHelper";
-import {GoogleDriveLink, SvgIcon} from "../components/common";
+import { parseEmojis, textToLink } from "./stringFormatter";
+import { validURL } from "./urlContentHelper";
+import { GoogleDriveLink, SvgIcon } from "../components/common";
 import React from "react";
-import {renderToString} from "react-dom/server";
+import { renderToString } from "react-dom/server";
 
 class quillHelper {
   static generate(body) {
@@ -59,12 +59,10 @@ class quillHelper {
             }
           }
         }
-
         if (editMode !== true && validURL(word) === true) {
           const googleDriveFileUrlPattern = /^(https:\/\/(drive|docs)\.google\.com\/)(file|spreadsheets|document|presentation|forms)\/d\/([^\/]+)\/.*$/;
           const urlPattern = /^((http|https|ftp):\/\/)/;
           if (googleDriveFileUrlPattern.test(word)) {
-
             word = renderToString(<GoogleDriveLink link={word}/>);
           } else if (!urlPattern.test(word)) {
             if (!(word.includes("href") || word.includes("src"))) {
@@ -108,8 +106,8 @@ class quillHelper {
     let el = document.createElement("div");
     el.innerHTML = body;
 
-    this.convertContentByTag(el, "span", false);
     this.convertContentByTag(el, "div", false);
+    this.convertContentByTag(el, "span", false);
     this.convertContentByTag(el, "p", false);
     this.convertContentByTag(el, "li", false);
 

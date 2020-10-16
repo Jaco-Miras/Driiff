@@ -97,22 +97,19 @@ const StyledQuillEditor = styled(QuillEditor)`
 
 const CloseButton = styled(SvgIconFeather)`
   position: absolute;
-  top: 0;
-  right: 0;
-  margin: 0;
-  margin: 4px;
-  height: calc(100% - 8px);
+  right: 80px;
+  bottom: 0;
+  height: 40px;  
   background: white;
   border: 1px solid white;
-  border-radius: 4px;
-  min-width: 40px;
+  border-radius: 4px;  
   width: 40px;
   padding: 9px;
   cursor: pointer;
-  right: 40px;
   z-index: 9;
   color: #cacaca;
   transition: color 0.15s ease-in-out;
+  
   &:hover {
     color: #7a1b8b;
   }
@@ -199,11 +196,22 @@ const ChatInput = (props) => {
       });
     }
 
-    if (textOnly.trim() === "" && mention_ids.length === 0 && !haveGif) return;
+    if (_.trim(textOnly) === "" && mention_ids.length === 0 && !haveGif) return;
+
+    let el = document.createElement("div");
+    el.innerHTML = text;
+    for (let i = (el.childNodes.length - 1); i >= 0; i--) {
+      if (_.trim(el.childNodes[i].innerText) === "") {
+        el.removeChild(el.childNodes[i]);
+      } else {
+        el.childNodes[i].innerHTML = _.trim(el.childNodes[i].innerHTML);
+        break;
+      }
+    }
 
     let payload = {
       channel_id: selectedChannel.id,
-      body: _.trim(text),
+      body: el.innerHTML,
       mention_ids: mention_ids,
       file_ids: [],
       reference_id: reference_id,
@@ -236,8 +244,8 @@ const ChatInput = (props) => {
     }
 
     let obj = {
-      message: text,
-      body: _.trim(text),
+      message: el.innerHTML,
+      body: el.innerHTML,
       mention_ids: mention_ids,
       user: user,
       original_body: text,
@@ -544,14 +552,11 @@ const ChatInput = (props) => {
   };
 
   const handleEditReplyClose = () => {
+    if (quote) dispatch(clearQuote(quote));
+
     setEditMode(false);
     setEditMessage(null);
     handleClearQuillInput();
-  };
-
-  const handleFocus = () => {
-    reactQuillRef.current.getEditor().setContents([]);
-    reactQuillRef.current.getEditor().clipboard.dangerouslyPasteHTML(0, text.trim());
   };
 
   useSaveInput(handleClearQuillInput, text, textOnly, quillContents);
@@ -564,7 +569,7 @@ const ChatInput = (props) => {
       <BodyMention onAddUsers={handleAddMentionedUsers} onDoNothing={handleIgnoreMentionedUsers}
                    userIds={mentionedUserIds} type={selectedChannel.type === "TOPIC" ? "workspace" : "chat"}/>}
       <StyledQuillEditor className={"chat-input"} modules={modules} ref={reactQuillRef} onChange={handleQuillChange}
-                         editMode={editMode} onFocus={handleFocus}/>
+                         editMode={editMode}/>
       {editMode && <CloseButton className='close-button' icon="x" onClick={handleEditReplyClose}/>}
     </Wrapper>
   );
