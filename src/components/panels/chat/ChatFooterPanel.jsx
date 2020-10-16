@@ -63,7 +63,6 @@ const ChatInputContainer = styled.div`
     padding: 10px;
     cursor: pointer;
     transition: background-color 0.15s ease-in-out, color 0.15s ease-in-out;
-    opacity: 1;
   }
   .feather-smile {
     right: 44px;
