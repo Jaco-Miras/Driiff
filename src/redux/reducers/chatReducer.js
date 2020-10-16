@@ -204,7 +204,8 @@ export default function (state = INITIAL_STATE, action) {
         ...state,
         selectedChannel: channel,
         channels: updatedChannels,
-        lastVisitedChannel: channel.type !== "TOPIC" ? channel : state.lastVisitedChannel
+        //lastVisitedChannel: channel.type !== "TOPIC" ? channel : state.lastVisitedChannel
+        lastVisitedChannel: channel
       };
     }
     case "UPDATE_MEMBER_TIMESTAMP": {
