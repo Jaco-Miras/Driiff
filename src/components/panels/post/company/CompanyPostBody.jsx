@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { AvatarGroup, SvgIconFeather } from "../../../common";
+import { SvgIconFeather } from "../../../common";
 import { useGoogleApis, useTimeFormat } from "../../../hooks";
 import { CompanyPostBadge } from "./index";
 import quillHelper from "../../../../helpers/quillHelper";
@@ -63,7 +63,6 @@ const CompanyPostBody = (props) => {
   return (
     <Wrapper className="card-body">
       <div className="d-flex align-items-center p-l-r-0 m-b-20">
-        <div className="d-flex align-items-center">{post.users_responsible.length > 0 && <AvatarGroup users={post.users_responsible} />}</div>
         <div className="ml-auto d-flex align-items-center text-muted">
           {
             // !isAuthor && post.is_read_requirement &&

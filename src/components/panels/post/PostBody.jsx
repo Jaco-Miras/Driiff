@@ -3,7 +3,6 @@ import styled from "styled-components";
 import { SvgIconFeather } from "../../common";
 import { useGoogleApis, useTimeFormat } from "../../hooks";
 import { PostBadge } from "./index";
-import { MemberLists } from "../../list/members";
 import quillHelper from "../../../helpers/quillHelper";
 import Tooltip from "react-tooltip-lite";
 
@@ -71,7 +70,6 @@ const PostBody = (props) => {
   return (
     <Wrapper className="card-body">
       <div className="d-flex align-items-center p-l-r-0 m-b-20">
-        <div className="d-flex align-items-center">{post.users_responsible.length > 0 && <MemberLists members={post.users_responsible} />}</div>
         <div className="ml-auto d-flex align-items-center text-muted">
           {
             // !isAuthor && post.is_read_requirement &&

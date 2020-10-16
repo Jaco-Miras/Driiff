@@ -125,6 +125,7 @@ const WorkspacePostsPanel = (props) => {
       }) : _t("POST.READY_BY_NUMBER_OF_USERS", "Read by ::user_count:: users", {
         user_count: readByUsers.length,
       }),
+    me: _t("POST.LOGGED_USER_RESPONSIBLE", "me"),
   };
   let disableOptions = false;
   if (workspace && workspace.active === 0) disableOptions = true;
