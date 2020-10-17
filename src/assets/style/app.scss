@@ -50,7 +50,7 @@ body {
 }
 
 .topic-text {
-  max-width: 205px;
+  max-width: 192px;
   display: block;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -376,6 +376,10 @@ body.dark {
   .emoji-mart-category-label span {
     background-color: $dm-bg !important;
     color: $dm-text-color;
+  }
+
+  .emoji-mart-category .emoji-mart-emoji:hover::before {
+    background-color: $dm-bg-2 !important;
   }
 
   .channel-viewing {

@@ -19,11 +19,6 @@ import { useDraft, useQuillInput, useQuillModules, useSaveInput, useSelectQuote,
 import QuillEditor from "./QuillEditor";
 import _ from "lodash";
 
-const Wrapper = styled.div`
-  ${"" /* border: 1px solid #dee2e6;
-  border-radius: 8px; */}
-`;
-
 const StyledQuillEditor = styled(QuillEditor)`
   &.chat-input {
     // border: 1px solid #afb8bd;
@@ -97,19 +92,21 @@ const StyledQuillEditor = styled(QuillEditor)`
 
 const CloseButton = styled(SvgIconFeather)`
   position: absolute;
-  right: 80px;
-  bottom: 0;
-  height: 40px;  
+  top: 0;
+  right: 70px;
+  margin: 0;
+  margin: 4px;
+  height: calc(100% - 8px);
   background: white;
   border: 1px solid white;
-  border-radius: 4px;  
+  border-radius: 4px;
   width: 40px;
   padding: 9px;
   cursor: pointer;
   z-index: 9;
   color: #cacaca;
   transition: color 0.15s ease-in-out;
-  
+
   &:hover {
     color: #7a1b8b;
   }
@@ -117,7 +114,7 @@ const CloseButton = styled(SvgIconFeather)`
 
 /***  Commented out code are to be visited/refactored ***/
 const ChatInput = (props) => {
-  const { selectedEmoji, onClearEmoji, selectedGif, onClearGif, dropAction } = props;
+  const { selectedEmoji, onClearEmoji, selectedGif, onClearGif, dropAction, onActive } = props;
   const dispatch = useDispatch();
   const reactQuillRef = useRef();
   const { localizeDate } = useTimeFormat();
@@ -215,7 +212,7 @@ const ChatInput = (props) => {
       mention_ids: mention_ids,
       file_ids: [],
       reference_id: reference_id,
-      reference_title: selectedChannel.type === "DIRECT" && selectedChannel.members.length === 2 ? `${user.first_name} in a direct message` : selectedChannel.title,
+      reference_title: selectedChannel.type === "DIRECT" ? `${user.first_name} in a direct message` : selectedChannel.title,
       topic_id: selectedChannel.is_shared ? selectedChannel.entity_id : null,
       is_shared: selectedChannel.is_shared ? selectedChannel.entity_id : null,
       token: slugs.length && slugs.filter((s) => s.slug_name === selectedChannel.slug_owner).length ? slugs.filter((s) => s.slug_name === selectedChannel.slug_owner)[0].access_token : null,
@@ -332,6 +329,8 @@ const ChatInput = (props) => {
     setText(content);
     setTextOnly(textOnly);
     setQuillContents(editor.getContents());
+
+    textOnly.trim() === "" ? onActive(false) : onActive(true);
 
     if (editor.getContents().ops && editor.getContents().ops.length) {
       handleMentionUser(
@@ -564,14 +563,14 @@ const ChatInput = (props) => {
   useDraft(loadDraftCallback, "channel", text, textOnly, draftId);
   const [modules, formats] = useQuillModules("chat", handleSubmit, "top", reactQuillRef, user.type === "external" ? selectedChannel.members : []);
   return (
-    <Wrapper className="chat-input-wrapper">
+    <div className="chat-input-wrapper">
       {mentionedUserIds.length > 0 &&
       <BodyMention onAddUsers={handleAddMentionedUsers} onDoNothing={handleIgnoreMentionedUsers}
                    userIds={mentionedUserIds} type={selectedChannel.type === "TOPIC" ? "workspace" : "chat"}/>}
       <StyledQuillEditor className={"chat-input"} modules={modules} ref={reactQuillRef} onChange={handleQuillChange}
                          editMode={editMode}/>
       {editMode && <CloseButton className='close-button' icon="x" onClick={handleEditReplyClose}/>}
-    </Wrapper>
+    </div>
   );
 };
 

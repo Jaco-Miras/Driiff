@@ -31,7 +31,8 @@ import { useHistory } from "react-router-dom";
 export const userForceLogout = () => {
   if (localStorage.getItem("userAuthToken")) {
     if (["nilo@makedevelopment.com", "joules@makedevelopment.com", "jessryll@makedevelopment.com"].includes(JSON.parse(localStorage.getItem("userAuthToken")).user_auth.email)) {
-      alert("error :(");
+      //alert("error :(");
+      console.log("error")
     }
   }
   /*localStorage.removeItem("userAuthToken");

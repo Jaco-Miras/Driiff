@@ -75,7 +75,9 @@ import {
   incomingUpdateToDo,
   setBrowserTabStatus,
   setGeneralChat,
-  setUnreadNotificationCounterEntries
+  setUnreadNotificationCounterEntries,
+  refetchMessages,
+  refetchOtherMessages,
 } from "../../redux/actions/globalActions";
 import {
   fetchPost,
@@ -120,9 +122,50 @@ import { isIPAddress } from "../../helpers/commonFunctions";
 class SocketListeners extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      reconnected: null,
+      disconnectedTimestamp: null,
+      reconnectedTimestamp: null,
+    };
+  }
+
+  refetch = () => {
+    if (this.props.lastReceivedMessage) {
+      this.props.refetchMessages({message_id: this.props.lastReceivedMessage.id})
+    }
+  }
+
+  refetchOtherMessages = () => {
+    if (this.props.lastReceivedMessage && Object.values(this.props.channels).length) {
+      let channels = Object.values(this.props.channels)
+      this.props.refetchOtherMessages(
+        { message_id: this.props.lastReceivedMessage.id, 
+          channel_ids: channels.filter((c) => {
+            return typeof c.id === "number" && c.id !== this.props.lastReceivedMessage.channel_id
+          }).map((c) => c.id)
+        }
+      )
+    }
   }
 
   componentDidMount() {
+
+    window.Echo.connector.socket.on("connect", () => {
+      console.log("socket connected");
+    });
+    window.Echo.connector.socket.on("disconnect", () => {
+      console.log("socket disconnected");
+      this.setState({disconnectedTimestamp: Math.floor(Date.now() / 1000)});
+    });
+    window.Echo.connector.socket.on("reconnect", () => {
+      console.log("socket reconnected");
+      this.setState({ reconnected: true, reconnectedTimestamp: Math.floor(Date.now() / 1000)});
+      this.refetch();
+      this.refetchOtherMessages();
+    });
+    window.Echo.connector.socket.on("reconnecting", function () {
+      console.log("socket reconnecting");
+    });
     /**
      * @todo Online users are determined every 30 seconds
      * online user reducer should be updated every socket call
@@ -520,7 +563,7 @@ class SocketListeners extends Component {
                 if (this.props.notificationsOn && isSafari) {
                   if (!(this.props.location.pathname.includes("/chat/") && selectedChannel.code === e.channel_code) || !isBrowserActive) {
                     const redirect = () => this.props.history.push(`/chat/${e.channel_code}/${e.code}`);
-                    pushBrowserNotification(`${e.user.first_name} ${e.reference_title ? `in #${e.reference_title}` : "in a direct message"}`, `${e.user.first_name}: ${stripHtml(e.body)}`, e.user.profile_image_link, redirect);
+                    pushBrowserNotification(`${e.reference_title}`, `${e.user.first_name}: ${stripHtml(e.body)}`, e.user.profile_image_link, redirect);
                   }
                 }
               }
@@ -1201,7 +1244,7 @@ class SocketListeners extends Component {
 function mapStateToProps({
                            session: {user},
                            settings: {userSettings},
-                           chat: {channels, selectedChannel, isLastChatVisible},
+                           chat: {channels, selectedChannel, isLastChatVisible, lastReceivedMessage},
                            workspaces: {workspaces, workspacePosts, folders, activeTopic, workspacesLoaded},
                            global: {isBrowserActive},
                            users: {mentions, users}
@@ -1219,7 +1262,8 @@ function mapStateToProps({
     activeTopic,
     workspacesLoaded,
     workspaces,
-    isLastChatVisible
+    isLastChatVisible,
+    lastReceivedMessage
   };
 }
 
@@ -1322,6 +1366,8 @@ function mapDispatchToProps(dispatch) {
     incomingPostNotificationMessage: bindActionCreators(incomingPostNotificationMessage, dispatch),
     incomingMarkAsRead: bindActionCreators(incomingMarkAsRead, dispatch),
     addToModals: bindActionCreators(addToModals, dispatch),
+    refetchMessages: bindActionCreators(refetchMessages, dispatch),
+    refetchOtherMessages: bindActionCreators(refetchOtherMessages, dispatch)
   };
 }
 
