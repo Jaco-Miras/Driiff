@@ -1,16 +1,18 @@
 import React, { useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { Redirect, Route, Switch, useHistory } from "react-router-dom";
 import { useSettings } from "../components/hooks";
 import { TestChat } from "../components/test";
 import TestFiles from "../components/test/TestFiles";
 import GuestLayout from "./GuestLayout";
 import MainLayout from "./MainLayout";
+import { addUserToReducers } from "../redux/actions/globalActions";
 
 export const AppRoute = ({ children, ...props }) => {
   const { init: settingsInit, fetch, fetchUserSettings, userSettings, driffSettings } = useSettings();
   settingsInit();
 
+  const dispatch = useDispatch();
   // const push = usePushNotification();
   const history = useHistory();
   const session = useSelector((state) => state.session);
@@ -24,6 +26,22 @@ export const AppRoute = ({ children, ...props }) => {
       }
     }
   }, [session.checked, session.authenticated, fetchUserSettings, driffSettings.isSettingsLoaded]);
+
+  useEffect(() => {
+    if (session.user.id) {
+      dispatch(
+        addUserToReducers(
+          {
+            id: session.user.id,
+            name: session.user.name,
+            partial_name: session.user.partial_name,
+            profile_image_link: session.user.profile_image_link,
+            type: session.user.type,
+          }
+        )
+      )
+    }
+  }, [session.user])
 
   // if (!session.checked || !i18nLoaded || push.loading)
   if (!session.checked || !i18nLoaded) return null;
