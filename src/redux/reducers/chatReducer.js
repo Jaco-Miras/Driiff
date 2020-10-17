@@ -16,7 +16,8 @@ const INITIAL_STATE = {
   chatQuotes: {},
   channelsLoaded: false,
   lastVisitedChannel: null,
-  isLastChatVisible: false
+  isLastChatVisible: false,
+  lastReceivedMessage: null
 };
 
 export default function (state = INITIAL_STATE, action) {
@@ -393,6 +394,7 @@ export default function (state = INITIAL_STATE, action) {
       }
       return {
         ...state,
+        lastReceivedMessage: action.data,
         selectedChannel:
           state.selectedChannel && channel && state.selectedChannel.id === channel.id
             ? channel
@@ -1204,6 +1206,40 @@ export default function (state = INITIAL_STATE, action) {
               }
             : state.channels,
       };
+    }
+    case "REFETCH_MESSAGES_SUCCESS": {
+      let channels = {...state.channels};
+      let channel = null;
+      if (action.data.channel_detail && channels.hasOwnProperty(action.data.channel_detail.id)) {
+        let messages = [...channels[action.data.channel_detail.id].replies, ...action.data.current_latest_messages]
+        channel = {
+          ...action.data.channel_detail,
+          replies: uniqByProp(messages, "id").sort((a, b) => a.created_at.timestamp - b.created_at.timestamp)
+        }
+        channels[action.data.channel_detail.id] = channel;
+      }
+      return {
+        ...state,
+        channels: channels,
+        selectedChannel: state.selectedChannel && channel && state.selectedChannel.id === channel.id ? channel : state.selectedChannel
+      }
+    }
+    case "REFETCH_OTHER_MESSAGES_SUCCESS": {
+      let channelsWithMessage = action.data.filter((c) => c.count_message > 0);
+      let channels = {...state.channels};
+      channelsWithMessage.forEach((c) => {
+        if (channels.hasOwnProperty(c.channel_id)) {
+          let newMessages = Object.values(c.messages);
+          let messages = [...channels[c.channel_id].replies, ...newMessages];
+          channels[c.channel_id].replies = uniqByProp(messages, "id").sort((a, b) => a.created_at.timestamp - b.created_at.timestamp);
+          channels[c.channel_id].last_reply = newMessages[0];
+        }
+      })
+      return {
+        ...state,
+        channels: channels,
+        selectedChannel: state.selectedChannel && channels.hasOwnProperty(state.selectedChannel.id) ? channels[state.selectedChannel.id] : state.selectedChannel
+      }
     }
     default:
       return state;
