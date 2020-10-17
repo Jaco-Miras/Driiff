@@ -1232,13 +1232,26 @@ export default function (state = INITIAL_STATE, action) {
           let newMessages = Object.values(c.messages);
           let messages = [...channels[c.channel_id].replies, ...newMessages];
           channels[c.channel_id].replies = uniqByProp(messages, "id").sort((a, b) => a.created_at.timestamp - b.created_at.timestamp);
-          channels[c.channel_id].last_reply = newMessages[0];
+          // channels[c.channel_id].last_reply = newMessages[0];
         }
       })
       return {
         ...state,
         channels: channels,
         selectedChannel: state.selectedChannel && channels.hasOwnProperty(state.selectedChannel.id) ? channels[state.selectedChannel.id] : state.selectedChannel
+      }
+    }
+    case "GET_CHANNEL_DETAIL_SUCCESS": {
+      let channels = {...state.channels};
+      if (channels.hasOwnProperty(action.data.id)) {
+        channels[action.data.id] = {
+          ...action.data,
+          replies: channels[action.data.id].replies
+        }
+      }
+      return {
+        ...state,
+        channels: channels
       }
     }
     default:

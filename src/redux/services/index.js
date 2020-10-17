@@ -30,6 +30,7 @@ export {
   putChatMessage,
   putMarkReminderComplete,
   deleteChatMessage,
+  getChannelDetail,
 } from "./chat";
 
 export {
