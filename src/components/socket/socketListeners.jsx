@@ -132,13 +132,13 @@ class SocketListeners extends Component {
       this.props.getOnlineUsers();
     }, 30000);
 
-    this.props.addUserToReducers({
-      id: this.props.user.id,
-      name: this.props.user.name,
-      partial_name: this.props.user.partial_name,
-      profile_image_link: this.props.user.profile_image_link,
-      type: this.props.user.type,
-    });
+    // this.props.addUserToReducers({
+    //   id: this.props.user.id,
+    //   name: this.props.user.name,
+    //   partial_name: this.props.user.partial_name,
+    //   profile_image_link: this.props.user.profile_image_link,
+    //   type: this.props.user.type,
+    // });
 
     // new socket
     window.Echo.private(`${localStorage.getItem("slug") === "dev24admin" ? "dev" : localStorage.getItem("slug")}.Driff.User.${this.props.user.id}`)
