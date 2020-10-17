@@ -22,6 +22,7 @@ import {
   putMarkReadChannel as putMarkReadChannelService,
   putMarkReminderComplete as putMarkReminderCompleteService,
   putMarkUnreadChannel as putMarkUnreadChannelService,
+  getChannelDetail as getChannelDetailService,
 } from "../services";
 
 export function setSelectedChannel(payload, callback) {
@@ -249,4 +250,8 @@ export function deletePostNotification(payload, callback) {
 
 export function incomingPostNotificationMessage(payload, callback) {
   return SimpleDispatchActionToReducer("INCOMING_POST_NOTIFICATION_MESSAGE", payload, callback);
+}
+
+export function getChannelDetail(payload, callback) {
+  return dispatchActionToReducer(getChannelDetailService(payload), "GET_CHANNEL_DETAIL_START", "GET_CHANNEL_DETAIL_SUCCESS", "GET_CHANNEL_DETAIL_FAIL", callback);
 }

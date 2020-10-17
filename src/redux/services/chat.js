@@ -240,3 +240,11 @@ export function getWorkspaceChannels(payload) {
     url: `/v2/workspace-channels?${objToUrlParams(payload)}`,
   });
 }
+
+export function getChannelDetail(payload) {
+  let url = `/v2/post-channels/${payload.id}`;
+  return apiCall({
+    method: "GET",
+    url: url,
+  });
+}

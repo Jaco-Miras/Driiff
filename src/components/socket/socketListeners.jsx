@@ -25,7 +25,8 @@ import {
   setMemberTimestamp,
   setSelectedChannel,
   unreadChannelReducer,
-  updateChannelMembersTitle
+  updateChannelMembersTitle,
+  getChannelDetail
 } from "../../redux/actions/chatActions";
 import {
   addFilesToChannel,
@@ -143,6 +144,12 @@ class SocketListeners extends Component {
           channel_ids: channels.filter((c) => {
             return typeof c.id === "number" && c.id !== this.props.lastReceivedMessage.channel_id
           }).map((c) => c.id)
+        }, (err, res) => {
+          if (err) return;
+          let channelsWithMessage = res.data.filter((c) => c.count_message > 0);
+          channelsWithMessage.forEach((c) => {
+            this.props.getChannelDetail({id: c.channel_id});
+          })
         }
       )
     }
@@ -1367,7 +1374,8 @@ function mapDispatchToProps(dispatch) {
     incomingMarkAsRead: bindActionCreators(incomingMarkAsRead, dispatch),
     addToModals: bindActionCreators(addToModals, dispatch),
     refetchMessages: bindActionCreators(refetchMessages, dispatch),
-    refetchOtherMessages: bindActionCreators(refetchOtherMessages, dispatch)
+    refetchOtherMessages: bindActionCreators(refetchOtherMessages, dispatch),
+    getChannelDetail: bindActionCreators(getChannelDetail, dispatch)
   };
 }
 
