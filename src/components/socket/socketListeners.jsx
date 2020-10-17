@@ -563,7 +563,7 @@ class SocketListeners extends Component {
                 if (this.props.notificationsOn && isSafari) {
                   if (!(this.props.location.pathname.includes("/chat/") && selectedChannel.code === e.channel_code) || !isBrowserActive) {
                     const redirect = () => this.props.history.push(`/chat/${e.channel_code}/${e.code}`);
-                    pushBrowserNotification(`${e.user.first_name} ${e.reference_title ? `in #${e.reference_title}` : "in a direct message"}`, `${e.user.first_name}: ${stripHtml(e.body)}`, e.user.profile_image_link, redirect);
+                    pushBrowserNotification(`${e.reference_title}`, `${e.user.first_name}: ${stripHtml(e.body)}`, e.user.profile_image_link, redirect);
                   }
                 }
               }
