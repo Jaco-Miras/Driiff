@@ -526,8 +526,8 @@ class ChatMessages extends React.PureComponent {
             }
           } else if (this.props.isLastChatVisible) {
             if (this.props.isBrowserActive) {
-              if (selectedChannel.is_read === 1) {
-                this.handleReadChannel();
+              if (selectedChannel.is_read) {
+                this.props.chatMessageActions.channelActions.markAsRead(selectedChannel);
               }
               if (scrollComponent) {
                 //other user message scroll to bottom after receiving
