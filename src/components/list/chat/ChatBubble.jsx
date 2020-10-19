@@ -46,7 +46,7 @@ const ChatBubbleContainer = styled.div`
     position: absolute;
     top: 10px;
     z-index: 1;
-    ${(props) => (props.isAuthor ? "right: -18px" : "left: -18px")};
+    ${(props) => (props.isAuthor ? "right: -15px" : "left: -15px")};
     border-left-color: ${(props) => (props.isAuthor ? props.theme.self.chat_bubble_background_color : "#0000")};
     border-right-color: ${(props) => (!props.isAuthor ? props.theme.others.chat_bubble_background_color : "#0000")};
     height: 5px;
@@ -180,9 +180,9 @@ const QuoteContainer = styled.div`
     border: 10px solid transparent;
     ${(props) => (props.isAuthor ? "border-left-color: " + props.theme.self.chat_bubble_quote_background_color : "border-right-color: " + props.theme.others.chat_bubble_quote_background_color)};
     position: absolute;
-    top: ${(props) => (props.showAvatar && !props.isAuthor ? "6px" : "8px")};
+    top: ${(props) => (props.showAvatar && !props.isAuthor ? "10px" : "8px")};
     z-index: 12;
-    ${(props) => (!props.isAuthor ? "left: -18px" : "right: -18px")};
+    ${(props) => (!props.isAuthor ? "left: -15px" : "right: -15px")};
     height: 5px;
     @media all and (max-width: 620px) {
       display: none;
@@ -391,13 +391,13 @@ const ChatContent = styled.div`
         border-right-color: #f0f0f0;
         position: absolute;
         top: 10px;
-        left: -18px;
+        left: -15px;
         z-index: 1;
         ${(props) =>
           props.isAuthor === true &&
           `
             left: auto;
-            right: -18px;
+            right: -15px;
             border-left-color: #7A1B8B;
             border-right-color: transparent;
         `};

@@ -19,7 +19,7 @@ const Wrapper = styled.div`
     border: 1px solid #e1e1e1;
     height: 100%;
     cursor: pointer;
-    width: 46px;
+    width: 48px;
     border-radius: 8px;
     transition: background-color 0.15s ease-in-out;
     padding: 12px;

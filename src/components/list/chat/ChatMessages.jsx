@@ -198,7 +198,7 @@ const ChatBubbleQuoteDiv = styled.div`
   position: relative;
   flex-flow: column;
   display: inherit;
-  ${(props) => !props.isAuthor === true && "margin-left: 1.5rem"};
+  margin-left: ${(props) => (props.showAvatar && !props.isAuthor ? "1rem" : "1.6rem")};
   > img {
     // max-height: ${(props) => (props.maxImgHeight > 300 ? `${props.maxImgHeight}px;` : "300px")};
     max-height: 300px;
@@ -293,7 +293,7 @@ const StyledAvatar = styled(Avatar)`
   align-self: flex-start;
   width: 2rem !important;
   height: 2rem !important;
-  margin-top: ${(props) => (props.isForwardedMessage === true ? "25px" : "4px")};
+  margin-top: ${(props) => (props.isForwardedMessage === true ? "25px" : "3px")};
 
   img {
     width: 2rem !important;
