@@ -11,6 +11,7 @@ import {
   addToChannels,
   deletePostNotification,
   getChannel,
+  getChannelDetail,
   getChannelMembers,
   incomingArchivedChannel,
   incomingChatMessage,
@@ -25,8 +26,7 @@ import {
   setMemberTimestamp,
   setSelectedChannel,
   unreadChannelReducer,
-  updateChannelMembersTitle,
-  getChannelDetail
+  updateChannelMembersTitle
 } from "../../redux/actions/chatActions";
 import {
   addFilesToChannel,
@@ -74,11 +74,11 @@ import {
   incomingRemoveToDo,
   incomingToDo,
   incomingUpdateToDo,
+  refetchMessages,
+  refetchOtherMessages,
   setBrowserTabStatus,
   setGeneralChat,
   setUnreadNotificationCounterEntries,
-  refetchMessages,
-  refetchOtherMessages,
 } from "../../redux/actions/globalActions";
 import {
   fetchPost,
@@ -1235,12 +1235,16 @@ class SocketListeners extends Component {
       })
       .listen(".chat-message-react", (e) => {
         console.log(e);
-        this.props.incomingChatMessageReaction({...e, user_name: e.name});
+        this.props.incomingChatMessageReaction({ ...e, user_name: e.name });
       })
       .listen(".updated-notification-counter", (e) => {
         console.log(e, "updated counter");
         this.props.setUnreadNotificationCounterEntries(e);
       });
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    this.props.useDriff.updateFaviconState((this.props.unreadCounter.chat_message + this.props.unreadCounter.workspace_chat_message) !== 0);
   }
 
   render() {
@@ -1249,12 +1253,12 @@ class SocketListeners extends Component {
 }
 
 function mapStateToProps({
-                           session: {user},
-                           settings: {userSettings},
-                           chat: {channels, selectedChannel, isLastChatVisible, lastReceivedMessage},
-                           workspaces: {workspaces, workspacePosts, folders, activeTopic, workspacesLoaded},
-                           global: {isBrowserActive},
-                           users: {mentions, users}
+                           session: { user },
+                           settings: { userSettings },
+                           chat: { channels, selectedChannel, isLastChatVisible, lastReceivedMessage },
+                           workspaces: { workspaces, workspacePosts, folders, activeTopic, workspacesLoaded },
+                           global: { isBrowserActive, unreadCounter },
+                           users: { mentions, users }
                          }) {
   return {
     user,
@@ -1270,7 +1274,8 @@ function mapStateToProps({
     workspacesLoaded,
     workspaces,
     isLastChatVisible,
-    lastReceivedMessage
+    lastReceivedMessage,
+    unreadCounter
   };
 }
 

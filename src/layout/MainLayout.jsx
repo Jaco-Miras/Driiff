@@ -1,8 +1,10 @@
-import React, {useEffect, useRef} from "react";
-import {useDispatch, useSelector} from "react-redux";
-import {Route, Switch, useHistory, useRouteMatch} from "react-router-dom";
+import React, { useEffect, useRef } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Route, Switch, useHistory, useRouteMatch } from "react-router-dom";
 import styled from "styled-components";
 import {
+  useDriff,
+  useFilesUpload,
   useSettings,
   useSocketConnection,
   useTimeFormat,
@@ -11,19 +13,16 @@ import {
   useVisibilityChange,
   useWorkspaceActions
 } from "../components/hooks";
-import useFilesUpload from "../components/hooks/useFilesUpload";
-import {MainContentPanel, MainHeaderPanel, MainNavigationPanel} from "../components/panels/main";
-
+import { MainContentPanel, MainHeaderPanel, MainNavigationPanel } from "../components/panels/main";
 import MobileOverlay from "../components/panels/MobileOverlay";
-
-import {WorkspaceContentPanel} from "../components/panels/workspace";
+import { WorkspaceContentPanel } from "../components/panels/workspace";
 import SocketListeners from "../components/socket/socketListeners";
-import {getFiles} from "../redux/actions/fileActions";
-import {getAllRecipients, getConnectedSlugs} from "../redux/actions/globalActions";
-import {getNotifications} from "../redux/actions/notificationActions";
-import {getMentions, getUsers} from "../redux/actions/userAction";
-import {getAPIUrl, getCurrentDriffUrl} from "../helpers/slugHelper";
-import {usePushNotification, PushNotificationBar} from "../components/webpush";
+import { getFiles } from "../redux/actions/fileActions";
+import { getAllRecipients, getConnectedSlugs } from "../redux/actions/globalActions";
+import { getNotifications } from "../redux/actions/notificationActions";
+import { getMentions, getUsers } from "../redux/actions/userAction";
+import { getAPIUrl, getCurrentDriffUrl } from "../helpers/slugHelper";
+import { PushNotificationBar, usePushNotification } from "../components/webpush";
 
 const MainContent = styled.div``;
 
@@ -37,13 +36,15 @@ const MainLayout = (props) => {
   useFilesUpload(props);
   useVisibilityChange();
   useSocketConnection();
-  const {mounted, showNotificationBar, onClickAskUserPermission, onClickRemindLater} = usePushNotification();
-  const {path} = useRouteMatch();
-  const {displayWelcomeBanner, fetchRoles} = useUserActions();
+  const { mounted, showNotificationBar, onClickAskUserPermission, onClickRemindLater } = usePushNotification();
+  const { path } = useRouteMatch();
+  const { displayWelcomeBanner, fetchRoles } = useUserActions();
+  const uDriff = useDriff();
+
   const user = useSelector((state) => state.session.user);
   //const socketMounted = useSelector((state) => state.global.socketMounted);
   const toaster = useToaster();
-  const {localizeDate} = useTimeFormat();
+  const { localizeDate } = useTimeFormat();
   const workspaceActions = useWorkspaceActions();
   const refs = {
     audio: useRef(null),
@@ -140,7 +141,8 @@ const MainLayout = (props) => {
       }
       <MobileOverlay/>
       {user.id !== undefined && window.Echo !== undefined &&
-      <SocketListeners localizeDate={localizeDate} toaster={toaster} soundPlay={handleSoundPlay} workspaceActions={workspaceActions} notificationsOn={notifications_on}/>}
+      <SocketListeners useDriff={uDriff} localizeDate={localizeDate} toaster={toaster} soundPlay={handleSoundPlay}
+                       workspaceActions={workspaceActions} notificationsOn={notifications_on}/>}
     </>
   );
 };
