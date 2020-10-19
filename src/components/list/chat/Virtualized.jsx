@@ -24,7 +24,7 @@ const ScrollContainer = ({
         }
         style={{
           ...style,
-          border: '2px dashed gray',
+          //border: '2px dashed gray',
           borderRadius: '4px',
           overflowX: "hidden"
         }}
