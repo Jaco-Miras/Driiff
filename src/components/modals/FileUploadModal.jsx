@@ -333,7 +333,7 @@ const FileUploadModal = (props) => {
             file_ids: [file.id],
             quote: null,
             reference_id: require("shortid").generate(),
-            reference_title: selectedChannel.title,
+            reference_title: selectedChannel.type === "DIRECT" ? `${user.first_name} in a direct message` : selectedChannel.title,
           };
           setTimeout(() => {
             dispatch(postChatMessage(payload));
@@ -351,7 +351,7 @@ const FileUploadModal = (props) => {
             file_ids: [file.id],
             quote: null,
             reference_id: require("shortid").generate(),
-            reference_title: selectedChannel.title,
+            reference_title: selectedChannel.type === "DIRECT" ? `${user.first_name} in a direct message` : selectedChannel.title,
           };
           dispatch(postChatMessage(payload));
         }
