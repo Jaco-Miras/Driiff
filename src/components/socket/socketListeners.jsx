@@ -119,7 +119,7 @@ import {
 } from "../../redux/actions/workspaceActions";
 import { incomingUpdateCompanyName, updateCompanyPostAnnouncement } from "../../redux/actions/settingsActions";
 import { isIPAddress } from "../../helpers/commonFunctions";
-
+import { incomingReminderNotification } from "../../redux/actions/notificationActions";
 class SocketListeners extends Component {
   constructor(props) {
     super(props);
@@ -245,6 +245,7 @@ class SocketListeners extends Component {
                 pushBrowserNotification(`You asked to be reminded about ${e.title}`, e.title, this.props.user.profile_image_link, redirect);
               }
             }
+            this.props.incomingReminderNotification(e);
             break;
           }
           default:
@@ -1380,7 +1381,8 @@ function mapDispatchToProps(dispatch) {
     addToModals: bindActionCreators(addToModals, dispatch),
     refetchMessages: bindActionCreators(refetchMessages, dispatch),
     refetchOtherMessages: bindActionCreators(refetchOtherMessages, dispatch),
-    getChannelDetail: bindActionCreators(getChannelDetail, dispatch)
+    getChannelDetail: bindActionCreators(getChannelDetail, dispatch),
+    incomingReminderNotification: bindActionCreators(incomingReminderNotification, dispatch)
   };
 }
 
