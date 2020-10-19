@@ -131,6 +131,29 @@ export default (state = INITIAL_STATE, action) => {
         hasSubscribed: action.data
       }
     }
+    case "INCOMING_REMINDER_NOTIFICATION": {
+      if (action.data.notification) {
+        let reminderNotification = {
+          ...action.data.notification,
+          is_read: 0,
+          author: null,
+          created_at: action.data.created_at,
+          data: {
+            id: action.data.id,
+            title: action.data.title,
+            description: action.data.description,
+            created_at: action.data.created_at,
+            remind_at: action.data.remind_at
+          }
+        }
+        return {
+          ...state,
+          notifications: {...state.notifications, [reminderNotification.id]: reminderNotification},
+        };
+      } else {
+        return state;
+      }
+    }
     default:
       return state;
   }
