@@ -1,9 +1,8 @@
-import {convertArrayToObject} from "../../helpers/arrayHelper";
+import { convertArrayToObject } from "../../helpers/arrayHelper";
 //import { groupBy } from "lodash";
 
 const INITIAL_STATE = {
   user: null,
-  i18n: null,
   i18nLoaded: false,
   recipients: [],
   isLoading: false,
@@ -98,15 +97,9 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "GET_TRANSLATION_OBJECT_SUCCESS": {
+      localStorage.setItem("i18n", JSON.stringify(action.data));
       return {
         ...state,
-        i18n:
-          state.i18n === null
-            ? action.data
-            : {
-                ...state.i18n,
-                ...action.data,
-              },
         i18nLoaded: true,
       };
     }

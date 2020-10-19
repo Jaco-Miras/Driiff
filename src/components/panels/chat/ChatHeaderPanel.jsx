@@ -223,7 +223,7 @@ const ChatHeaderPanel = (props) => {
       <div className="chat-header-left">
         <BackButton className="chat-back-button" onClick={goBackChannelSelect}>
           <BackButtonChevron icon={"chevron-left"}/>
-          <span>{unreadCounter.chat_message + unreadCounter.workspace_chat_message}</span>
+          <span>{(unreadCounter.chat_message + unreadCounter.workspace_chat_message).toString()}</span>
         </BackButton>
         <ChannelIcon className="chat-header-icon" channel={channel}/>
       </div>

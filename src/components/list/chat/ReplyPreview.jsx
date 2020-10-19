@@ -16,7 +16,6 @@ const DraftContent = styled.span``;
 const LastReplyName = styled.span``;
 const LastReplyBody = styled.div`
   min-width: 200px;
-  text-overflow: ellipsis;
   max-height: 40px;
   min-height: 24px;
   display: table-cell;

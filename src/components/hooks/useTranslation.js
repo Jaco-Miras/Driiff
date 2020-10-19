@@ -1,14 +1,9 @@
-import {useCallback, useEffect, useState} from "react";
-import {useDispatch, useSelector} from "react-redux";
-import {getHttpStatus} from "../../helpers/commonFunctions";
-import {
-  addToModals,
-  addTranslationObject,
-  getTranslationObject,
-  postGenerateTranslationRaw
-} from "../../redux/actions/globalActions";
-import {useDriff, useSettings} from "./index";
-import {isTranslationLogged} from "../../helpers/slugHelper";
+import { useCallback, useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { getHttpStatus } from "../../helpers/commonFunctions";
+import { addToModals, getTranslationObject, postGenerateTranslationRaw } from "../../redux/actions/globalActions";
+import { useDriff, useSettings } from "./index";
+import { isTranslationLogged } from "../../helpers/slugHelper";
 
 let cookieName = {
   dict: "i18n",
@@ -22,10 +17,10 @@ export const useTranslation = (session = {}) => {
   const {registeredDriff} = useDriff();
   const {
     driffSettings,
-    generalSettings: {language},
+    generalSettings: { language },
     setGeneralSetting,
   } = useSettings();
-  const {i18n} = useSelector((state) => state.global);
+  const i18n = localStorage.getItem("i18n") ? JSON.parse(localStorage.getItem("i18n")) : {};
 
   const [dictFile, setDictFile] = useState("");
   const {REACT_APP_dictionary_file} = process.env;
@@ -96,7 +91,7 @@ export const useTranslation = (session = {}) => {
     }
   }, [dispatch, dictFile, dictionaryAPIUrl]);
 
-  const translate = useCallback((i18n, code, default_value, replacement = null) => {
+  const translate = useCallback((code, default_value, replacement = null) => {
     let translation = default_value;
     if (i18n !== null && typeof i18n[code] !== "undefined") {
       translation = i18n[code];
@@ -124,23 +119,7 @@ export const useTranslation = (session = {}) => {
   });
 
   const _t = (code, default_value, replacement = null) => {
-    const dispatch = useDispatch();
-    const i18n = useSelector((state) => state.global.i18n);
-    const [translation, setTranslation] = useState(default_value);
-
-    useEffect(() => {
-      if (i18n === null || typeof i18n[code] === "undefined") {
-        dispatch(
-          addTranslationObject({
-            [code]: default_value,
-          })
-        );
-      }
-
-      setTranslation(translate(i18n, code, default_value, replacement));
-    }, [dispatch, i18n, code, default_value, replacement]);
-
-    return translation;
+    return translate(code, default_value, replacement);
   };
 
   const setLocale = useCallback((lang, callback = null) => {
@@ -205,13 +184,6 @@ export const useTranslation = (session = {}) => {
     },
     [i18n]
   );
-
-  /**
-   * Save added text to local storage
-   */
-  useEffect(() => {
-    localStorage.setItem(cookieName.dict, JSON.stringify(i18n));
-  }, [i18n]);
 
   /**
    * Save language change to local storage
