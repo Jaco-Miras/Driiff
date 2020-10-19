@@ -47,10 +47,7 @@ const Wrapper = styled.div`
           margin-top: 4px;
           display: flex;
           align-items: center;
-          height: 40px;
-          svg.feather-user {
-            background: none;                      
-          }          
+          height: 40px;          
         }
         .navbar-bottom {
           @media all and (max-width: 700px) {
