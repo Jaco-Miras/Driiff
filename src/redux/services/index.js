@@ -1,7 +1,12 @@
-import {getCompanyDashboardMembers, getCompanyDashboardRecentPosts, getCompanyDashboardTimeline} from "./driff";
-import {delRemoveToDo, postToDo, putDoneToDo, putToDo} from "./global";
+import {
+  getCompanyDashboardMembers,
+  getCompanyDashboardRecentPosts,
+  getCompanyDashboardTimeline,
+  patchUpdateDriffVersion
+} from "./driff";
+import { delRemoveToDo, postToDo, putDoneToDo, putToDo } from "./global";
 
-export {apiCall, apiNoTokenCall} from "./service";
+export { apiCall, apiNoTokenCall } from "./service";
 export {
   getGlobalRecipients,
   getChannels,
@@ -25,6 +30,7 @@ export {
   putChatMessage,
   putMarkReminderComplete,
   deleteChatMessage,
+  getChannelDetail,
 } from "./chat";
 
 export {
@@ -54,7 +60,9 @@ export {
   postRequest,
   postMagicLink,
   putMagicLink,
-  postInternalRequestForm
+  postInternalRequestForm,
+  putUserRole,
+  getRoles
 } from "./user";
 
 export {
@@ -80,6 +88,8 @@ export {
   getToDoDetail,
   putDoneToDo,
   delRemoveToDo,
+  refetchMessages,
+  refetchOtherMessages,
 } from "./global";
 
 export {
@@ -196,6 +206,7 @@ export {
   getCompanyDashboardTimeline,
   getCompanyDashboardRecentPosts,
   getCompanyDashboardMembers,
+  patchUpdateDriffVersion
 } from "./driff";
 
 export {

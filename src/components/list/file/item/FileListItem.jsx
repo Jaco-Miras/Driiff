@@ -1,8 +1,8 @@
-import React, {useCallback, useState} from "react";
+import React, { useCallback, useState } from "react";
 import styled from "styled-components";
-import {SvgIconFeather, ToolTip} from "../../../common";
-import {FileOptions} from "../../../panels/files";
-import {ProgressBar} from "../../../panels/common";
+import { SvgIconFeather, ToolTip } from "../../../common";
+import { FileOptions } from "../../../panels/files";
+import { ProgressBar } from "../../../panels/common";
 
 const Wrapper = styled.div`
   .card {
@@ -54,7 +54,7 @@ const FileListItem = (props) => {
   const [isFavorite, setIsFavorite] = useState(file.is_favorite);
 
   const handleFileView = useCallback(() => {
-    actions.viewCompanyFiles(file);
+    actions.viewFiles(file);
   }, [file]);
 
   const handleFavorite = useCallback(() => {

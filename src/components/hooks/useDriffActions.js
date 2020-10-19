@@ -1,13 +1,37 @@
-import {useCallback} from "react";
-import {useDispatch} from "react-redux";
-import {patchCheckDriff, postRegisterDriff} from "../../redux/actions/driffActions";
-import {isIPAddress} from "../../helpers/commonFunctions";
-import {useToaster} from "./index";
+import { useCallback } from "react";
+import { useDispatch } from "react-redux";
+import { patchCheckDriff, patchUpdateDriffVersion, postRegisterDriff } from "../../redux/actions/driffActions";
+import { isIPAddress } from "../../helpers/commonFunctions";
+import { useToaster } from "./index";
+import { driffData } from "../../config/environment.json";
 
 const useDriffActions = () => {
 
   const dispatch = useDispatch();
   const toaster = useToaster();
+
+  /**
+   * @param {string} driffName
+   */
+  const checkUpdateVersion = useCallback(
+    (callback = () => {
+    }) => {
+      if (localStorage.getItem("site_ver") !== driffData.version) {
+        dispatch(
+          patchUpdateDriffVersion({
+            version: driffData.version,
+            requirement: driffData.requirement,
+          }, (err, res) => {
+            if (res) {
+              localStorage.setItem("site_ver", JSON.parse(res.config.data).data.version);
+            }
+            callback(err, res);
+          })
+        );
+      }
+    },
+    [dispatch]
+  );
 
   /**
    * @param {string} driffName
@@ -112,6 +136,7 @@ const useDriffActions = () => {
   );
 
   return {
+    checkUpdateVersion,
     check,
     create,
     getBaseUrl,

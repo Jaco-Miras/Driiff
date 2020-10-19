@@ -3,6 +3,7 @@ import styled from "styled-components";
 import {SvgIconFeather} from "../../common";
 import {ProgressBar} from "../common";
 import {FolderList, GoogleDrive} from "./index";
+import {useTranslation} from "../../hooks";
 
 const Wrapper = styled.div`
   text-align: left;
@@ -69,7 +70,9 @@ const Icon = styled(SvgIconFeather)`
 
 const FileSidebar = (props) => {
     const { className = "", isMember, actions, filterFile, filter = "all", dropZoneRef, storageLimit = 25,
-            wsFiles, folders, activeFolder, clearFilter, params, dictionary, disableOptions } = props;
+            wsFiles, folders, activeFolder, clearFilter, params, disableOptions } = props;
+
+    const {_t} = useTranslation();
 
     const handleShowUploadModal = () => {
         if (dropZoneRef.current) {
@@ -87,6 +90,17 @@ const FileSidebar = (props) => {
             });
         }
     }
+
+    let dictionary = {
+        uploadFiles: _t("FILE.UPLOAD_FILES", "Upload files"),
+        allFiles: _t("FILES.ALL_FILES", "All files"),
+        recentlyEdited: _t("FILES.RECENTLY_EDITED", "Recently edited"),
+        favorite: _t("FILE.FAVORITE", "Favorite"),
+        removed: _t("FILES.REMOVED", "Removed"),
+        storageStatus: _t("FILES.STORAGE_STATUS", "Storage Status"),
+        usedOf: _t("FILE.USED_OF", "used of"),
+        gigabyte: _t("FILE.GIGABYTE", "GB")
+      };
 
     const closeMobileModal = () => {
         document.body.classList.remove("mobile-modal-open");
@@ -149,7 +163,7 @@ const FileSidebar = (props) => {
                     </div>
                     {typeof wsFiles !== "undefined" && wsFiles !== null && (
                         <div className="card-body">
-                            <h6 className="mb-4">Storage Status</h6>
+                            <h6 className="mb-4">{dictionary.storageStatus}</h6>
                             <div className="d-flex align-items-center">
                                 <div className="mr-3">
                                     <SvgIconFeather icon="database"/>
@@ -158,7 +172,7 @@ const FileSidebar = (props) => {
                                     <ProgressBar amount={storageAmount} limit={storageLimit * 1e9}/>
                                     <div className="line-height-12 small text-muted mt-2">
                                         {fileSizeUnit.size.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0]}
-                                        {fileSizeUnit.unit} used of {storageLimit}GB
+                                        {fileSizeUnit.unit} {dictionary.usedOf} {storageLimit}{dictionary.gigabyte}
                                     </div>
                                 </div>
                             </div>

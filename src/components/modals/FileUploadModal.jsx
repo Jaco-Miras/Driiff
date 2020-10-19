@@ -2,18 +2,51 @@ import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Button, Modal, ModalBody, ModalFooter } from "reactstrap";
 import styled from "styled-components";
-import { SvgIcon, SvgIconFeather } from "../common";
+import { SvgIcon, SvgIconFeather, CommonPicker } from "../common";
 import { postChatMessage } from "../../redux/actions/chatActions";
 import { clearModal, saveInputData } from "../../redux/actions/globalActions";
 import { uploadDocument } from "../../redux/services/global";
 import QuillEditor from "../forms/QuillEditor";
-import { useQuillModules } from "../hooks";
+import { useQuillModules, useTranslation } from "../hooks";
 import { ModalHeaderSection } from "./index";
-import { postComment, putComment, setParentIdForUpload, setEditComment } from "../../redux/actions/postActions";
+import { postComment, putComment, setEditComment, setParentIdForUpload } from "../../redux/actions/postActions";
+
+
+const DescriptionInputWrapper = styled.div`
+  flex: 1 0 0;
+  width: 100%;
+  border: 1px solid #afb8bd;
+  border-radius: 5px;
+  min-height: 350px;
+  position: relative;
+`;
 
 const StyledQuillEditor = styled(QuillEditor)`
+
+  &.description-input {
+    overflow: auto;
+    overflow-x: hidden;
+    position: static;
+    width: 100%;
+  }
+  .ql-toolbar {
+    position: absolute;
+    bottom: 0;
+    padding: 0;
+    border: none;
+    .ql-formats {
+      margin-right: 10px;
+    }
+  }
+  .ql-container {
+    border: none;
+  }
   .ql-editor {
-    min-height: 100px;
+    padding: 5px;
+  }
+  .ql-editor {
+    height: 320px;
+    max-height: 320px;
   }
   .ql-mention-list-container-top,
   .ql-mention-list-container {
@@ -21,10 +54,15 @@ const StyledQuillEditor = styled(QuillEditor)`
     max-height: 170px;
     background: rgb(255, 255, 255);
     border-radius: 8px;
-    box-shadow: rgba(26, 26, 26, 0.4) 0px 2px 3px 0px, rgba(0, 0, 0, 0.1) 0px 1px 3px 0px;
+    box-shadow: rgba(26, 26, 26, 0.4) 0 2px 3px 0, rgba(0, 0, 0, 0.1) 0 1px 3px 0;
     overflow-x: hidden;
     overflow-y: auto;
     z-index: 2;
+    
+    .dark & {
+      background: #25282c;
+      color: #c7c7c7;
+    }
 
     .ql-mention-list {
       padding: 0;
@@ -51,10 +89,10 @@ const StyledQuillEditor = styled(QuillEditor)`
 const FilesPreviewContainer = styled.div`
   width: 100%;
   margin-top: 15px;
+  border: 1px solid #afb8bd;
+  border-radius: 5px;
   ul {
     margin: 0;
-    padding: 0;
-    border: 1px solid #ddd;
     padding: 10px 0;
     align-items: center;
     justify-content: ${(props) => (props.hasOneFile ? "center" : "flex-start")};
@@ -88,7 +126,7 @@ const FilesPreviewContainer = styled.div`
     .app-file-list {
       height: 158px;
       width: 158px;
-      margin-bottom: 0px;
+      margin-bottom: 0;
     }
     &:first-of-type {
       padding-left: 15px;
@@ -128,11 +166,51 @@ const FilesPreviewContainer = styled.div`
   }
 `;
 
+const IconButton = styled(SvgIconFeather)`
+  position: absolute;
+  right: 0;
+  cursor: pointer;
+  border: 1px solid #afb8bd;
+  height: 1.5rem;
+  margin: -1px 8px;
+  width: 1.5rem;
+  padding: 5px;
+  border-radius: 8px;
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  &:hover {
+    background: #afb8bd;
+    color: #ffffff;
+  }
+  &.feather-send {
+    border: 1px solid #7a1b8b;
+    background-color: #7a1b8b;
+    color: #fff;
+    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    &:hover {
+      background-color: #8c3b9b;
+    }
+  }
+`;
+
+const PickerContainer = styled(CommonPicker)`
+  left: unset;
+  bottom: 40px;
+  
+  .common-picker-btn {
+    text-align: right;
+  }
+  .react-giphy-select__src-components-GiphyList-styles__list___Tdg5X {
+    height: 250px;
+  }
+`;
+
 const DocDiv = styled.div``;
 
 const FileUploadModal = (props) => {
   const { type, mode, droppedFiles, post = null, members = [] } = props.data;
 
+  const pickerRef = useRef();
+  const { _t } = useTranslation();
   const dispatch = useDispatch();
   const reactQuillRef = useRef();
   const selectedChannel = useSelector((state) => state.chat.selectedChannel);
@@ -148,6 +226,36 @@ const FileUploadModal = (props) => {
   const [comment, setComment] = useState("");
   const [textOnly, setTextOnly] = useState("");
   const [quillContents, setQuillContents] = useState([]);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+
+  const handleShowEmojiPicker = () => {
+    setShowEmojiPicker(!showEmojiPicker);
+  };
+
+  const onSelectEmoji = (e) => {
+    const editor = reactQuillRef.current.getEditor();
+    reactQuillRef.current.focus();
+    const cursorPosition = editor.getSelection().index;
+    editor.insertText(cursorPosition, e.native);
+    editor.setSelection(cursorPosition + 2);
+  };
+
+  const onSelectGif = (e) => {
+    // setSelectedGif(e);
+    console.log(e)
+    const editor = reactQuillRef.current.getEditor();
+    reactQuillRef.current.focus();
+    const cursorPosition = editor.getSelection().index;
+    editor.insertEmbed(cursorPosition, "image", e.images.downsized.url);
+    editor.setSelection(cursorPosition + 5);
+  };
+
+  const dictionary = {
+    cancel: _t("BUTTON.CANCEL", "Cancel"),
+    upload: _t("BUTTON.UPLOAD", "Upload"),
+    fileUpload: _t("FILE_UPLOAD", "File upload"),
+    quillPlaceholder: _t("FORM.REACT_QUILL_PLACEHOLDER", "Write great things here...")
+  };
 
   useEffect(() => {
     if (savedInput !== null) {
@@ -225,7 +333,7 @@ const FileUploadModal = (props) => {
             file_ids: [file.id],
             quote: null,
             reference_id: require("shortid").generate(),
-            reference_title: selectedChannel.title,
+            reference_title: selectedChannel.type === "DIRECT" ? `${user.first_name} in a direct message` : selectedChannel.title,
           };
           setTimeout(() => {
             dispatch(postChatMessage(payload));
@@ -243,7 +351,7 @@ const FileUploadModal = (props) => {
             file_ids: [file.id],
             quote: null,
             reference_id: require("shortid").generate(),
-            reference_title: selectedChannel.title,
+            reference_title: selectedChannel.type === "DIRECT" ? `${user.first_name} in a direct message` : selectedChannel.title,
           };
           dispatch(postChatMessage(payload));
         }
@@ -349,26 +457,31 @@ const FileUploadModal = (props) => {
 
   return (
     <Modal isOpen={modal} toggle={toggle} size={"lg"} centered>
-      <ModalHeaderSection toggle={toggle}>File upload</ModalHeaderSection>
+      <ModalHeaderSection toggle={toggle}>{dictionary.fileUpload}</ModalHeaderSection>
       <ModalBody>
-        <StyledQuillEditor
-          ref={refCallback}
-          className={"chat-input"}
-          //formats={formats}
-          modules={modules}
-          placeholder={"Add messadge. Type @ to mention someone."}
-          readOnly={loading}
-          onChange={handleQuillChange}
-        />
+        <DescriptionInputWrapper>
+          <StyledQuillEditor
+            ref={refCallback}
+            className={"chat-input description-input"}
+            //formats={formats}
+            modules={modules}
+            placeholder={dictionary.quillPlaceholder}
+            readOnly={loading}
+            onChange={handleQuillChange}
+            height={80}
+          />
+          <IconButton onClick={handleShowEmojiPicker} icon="smile"/>
+          {showEmojiPicker === true && <PickerContainer handleShowEmojiPicker={handleShowEmojiPicker} onSelectEmoji={onSelectEmoji} onSelectGif={onSelectGif} orientation={"top"} ref={pickerRef} showPreview={false}/>}
+        </DescriptionInputWrapper>
         <FilesPreview files={files} onRemoveFile={handleRemoveFile} />
       </ModalBody>
       <ModalFooter>
+        <Button outline color="secondary" onClick={toggle}>
+          {dictionary.cancel}
+        </Button>
         <Button color="primary" onClick={handleUpload}>
           {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />}
-          Upload
-        </Button>{" "}
-        <Button outline color="secondary" onClick={toggle}>
-          Cancel
+          {dictionary.upload}
         </Button>
       </ModalFooter>
     </Modal>

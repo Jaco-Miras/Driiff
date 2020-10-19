@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from "react";
-import {useSelector} from "react-redux";
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import styled from "styled-components";
 import FileViewer from "../common/FileViewer";
 import {
@@ -13,6 +13,7 @@ import {
   CreateEditWorkspacePostModal,
   CreatePersonalLinksModal,
   CreateWorkspaceFolderModal,
+  DriffUpdateModal,
   FileCropUploadModal,
   FileUploadModal,
   InvitedUsersModal,
@@ -77,9 +78,11 @@ const ModalPanel = () => {
             case "move_company_files":
               return <CompanyMoveFilesModal key={modal.type} data={modal}/>;
             case "personal_link_create_edit":
-              return <CreatePersonalLinksModal key={modal.type} data={modal}/>
+              return <CreatePersonalLinksModal key={modal.type} data={modal}/>;
             case "todo_reminder":
-              return <TodoReminderModal key={modal.type} data={modal}/>
+              return <TodoReminderModal key={modal.type} data={modal}/>;
+            case "update_found":
+              return <DriffUpdateModal key={modal.type} data={modal}/>;
             default:
               return null;
           }

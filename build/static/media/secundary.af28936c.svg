@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg"
+>
+    <!-- Generator: Sketch 54.1 (76490) - https://sketchapp.com -->
+    <title>_icon/trash/r/secundary</title>
+    <desc>Created with Sketch.</desc>
+    <g id="_icon/trash/r/secundary" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"
+       strokeLinecap="round" stroke-linejoin="round">
+        <path d="M14.5,4 C14.5,3.6109243 14.3902716,3.2449142 14.1971469,2.92566851 C13.7734645,2.22529851 12.9484055,1.75 12,1.75 C11.0635518,1.75 10.2473595,2.21338907 9.81906915,2.89928584 C9.61588239,3.22468455 9.5,3.60016267 9.5,4"
+              id="Path" stroke="#972C86" stroke-width="2"></path>
+        <path d="M6,5.25 L18,5.25" id="Line" stroke="#972C86" stroke-width="2"></path>
+        <path d="M18,9 L17.1528258,18.3189167 C17.0664437,19.2691189 16.1999115,20 15.1597342,20 L8.84026576,20 C7.80008849,20 6.93355627,19.2691189 6.84717425,18.3189167 L6,9 L6,9"
+              id="Path" stroke="#972C86" stroke-width="2"></path>
+    </g>
+</svg>

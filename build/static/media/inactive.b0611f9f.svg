@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="30px" height="31px" viewBox="0 0 30 31" version="1.1" xmlns="http://www.w3.org/2000/svg"
+>
+    <!-- Generator: Sketch 64 (93537) - https://sketch.com -->
+    <title>_icon/new-chat/r/inactive</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Add-chat-redesign-23-ian-2020" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"
+       strokeLinecap="round" stroke-linejoin="round">
+        <g id="Artboard" transform="translate(-174.000000, -70.000000)" stroke="#767676">
+            <g id="_icon/new-chat/r/inactive" transform="translate(172.000000, 68.000000)">
+                <g id="_icon/edit/r/inactive" transform="translate(10.000000, 0.000000)" stroke-width="2">
+                    <path d="M15,9 L15,19 L12,24 L9,19 L9,4 C9,2.34314575 10.3431458,1 12,1 C13.6568542,1 15,2.34314575 15,4 L15,6 L12,6"
+                          id="Rectangle-20"
+                          transform="translate(12.000000, 12.500000) rotate(45.000000) translate(-12.000000, -12.500000) "></path>
+                </g>
+                <g id="_icon/add/m/inactive" stroke-width="1" fill-rule="evenodd"
+                   transform="translate(0.000000, 2.000000)">
+                    <path d="M16.7262611,30.2928285 C7.62227768,29.1749999 7.91893207,29.2114245 5.73765265,28.943597 C4.12618283,28.7457334 1.26295909,26.3731236 1.47909848,24.6128096 C1.84195362,21.6575916 2.38834089,17.2076244 3.63223501,7.07691978 C4.03567317,3.79117964 7.54215548,2.03987951 9.01565019,2.24644951 C12.0351918,2.66976064 21.1179858,3.73242947 25.8531887,4.31383927 C27.2461331,4.48487135 28.7595957,5.00140973 29.5866313,6.14262985 C30.7741713,7.78130746 30.8254242,7.67742302 30.5417255,9.98796338 C30.2580268,12.2985037 29.7230214,16.6557729 29.1921983,20.9789803"
+                          id="Stroke-1" stroke-width="2"
+                          transform="translate(16.076327, 16.261435) rotate(-97.000000) translate(-16.076327, -16.261435) "></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

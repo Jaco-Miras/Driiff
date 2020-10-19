@@ -3,18 +3,22 @@ import { isSafari } from "react-device-detect";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { bindActionCreators } from "redux";
+import { sessionService } from "redux-react-session";
 import { pushBrowserNotification } from "../../helpers/pushHelper";
 import { replaceChar, stripHtml } from "../../helpers/stringFormatter";
 import { urlify } from "../../helpers/urlContentHelper";
 import {
   addToChannels,
+  deletePostNotification,
   getChannel,
+  getChannelDetail,
   getChannelMembers,
   incomingArchivedChannel,
   incomingChatMessage,
   incomingChatMessageFromOthers,
   incomingChatMessageReaction,
   incomingDeletedChatMessage,
+  incomingPostNotificationMessage,
   incomingUpdatedChannelDetail,
   incomingUpdatedChatMessage,
   setAllMessagesAsRead,
@@ -22,7 +26,7 @@ import {
   setMemberTimestamp,
   setSelectedChannel,
   unreadChannelReducer,
-  updateChannelMembersTitle,
+  updateChannelMembersTitle
 } from "../../redux/actions/chatActions";
 import {
   addFilesToChannel,
@@ -60,6 +64,7 @@ import {
   incomingRestoreFolder,
 } from "../../redux/actions/fileActions";
 import {
+  addToModals,
   addUserToReducers,
   generateUnfurl,
   generateUnfurlReducer,
@@ -69,9 +74,11 @@ import {
   incomingRemoveToDo,
   incomingToDo,
   incomingUpdateToDo,
+  refetchMessages,
+  refetchOtherMessages,
   setBrowserTabStatus,
   setGeneralChat,
-  setUnreadNotificationCounterEntries
+  setUnreadNotificationCounterEntries,
 } from "../../redux/actions/globalActions";
 import {
   fetchPost,
@@ -79,6 +86,7 @@ import {
   incomingCommentClap,
   incomingDeletedComment,
   incomingDeletedPost,
+  incomingMarkAsRead,
   incomingPost,
   incomingPostClap,
   incomingPostMarkDone,
@@ -91,7 +99,8 @@ import {
   getUser,
   incomingExternalUser,
   incomingInternalUser,
-  incomingUpdatedUser
+  incomingUpdatedUser,
+  incomingUserRole
 } from "../../redux/actions/userAction";
 import {
   getWorkspace,
@@ -108,14 +117,62 @@ import {
   joinWorkspaceReducer,
   updateWorkspaceCounter
 } from "../../redux/actions/workspaceActions";
-import { incomingUpdateCompanyName } from "../../redux/actions/settingsActions";
-
+import { incomingUpdateCompanyName, updateCompanyPostAnnouncement } from "../../redux/actions/settingsActions";
+import { isIPAddress } from "../../helpers/commonFunctions";
+import { incomingReminderNotification } from "../../redux/actions/notificationActions";
 class SocketListeners extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      reconnected: null,
+      disconnectedTimestamp: null,
+      reconnectedTimestamp: null,
+    };
+  }
+
+  refetch = () => {
+    if (this.props.lastReceivedMessage) {
+      this.props.refetchMessages({message_id: this.props.lastReceivedMessage.id})
+    }
+  }
+
+  refetchOtherMessages = () => {
+    if (this.props.lastReceivedMessage && Object.values(this.props.channels).length) {
+      let channels = Object.values(this.props.channels)
+      this.props.refetchOtherMessages(
+        { message_id: this.props.lastReceivedMessage.id, 
+          channel_ids: channels.filter((c) => {
+            return typeof c.id === "number" && c.id !== this.props.lastReceivedMessage.channel_id
+          }).map((c) => c.id)
+        }, (err, res) => {
+          if (err) return;
+          let channelsWithMessage = res.data.filter((c) => c.count_message > 0);
+          channelsWithMessage.forEach((c) => {
+            this.props.getChannelDetail({id: c.channel_id});
+          })
+        }
+      )
+    }
   }
 
   componentDidMount() {
+
+    window.Echo.connector.socket.on("connect", () => {
+      console.log("socket connected");
+    });
+    window.Echo.connector.socket.on("disconnect", () => {
+      console.log("socket disconnected");
+      this.setState({disconnectedTimestamp: Math.floor(Date.now() / 1000)});
+    });
+    window.Echo.connector.socket.on("reconnect", () => {
+      console.log("socket reconnected");
+      this.setState({ reconnected: true, reconnectedTimestamp: Math.floor(Date.now() / 1000)});
+      this.refetch();
+      this.refetchOtherMessages();
+    });
+    window.Echo.connector.socket.on("reconnecting", function () {
+      console.log("socket reconnecting");
+    });
     /**
      * @todo Online users are determined every 30 seconds
      * online user reducer should be updated every socket call
@@ -125,13 +182,13 @@ class SocketListeners extends Component {
       this.props.getOnlineUsers();
     }, 30000);
 
-    this.props.addUserToReducers({
-      id: this.props.user.id,
-      name: this.props.user.name,
-      partial_name: this.props.user.partial_name,
-      profile_image_link: this.props.user.profile_image_link,
-      type: this.props.user.type,
-    });
+    // this.props.addUserToReducers({
+    //   id: this.props.user.id,
+    //   name: this.props.user.name,
+    //   partial_name: this.props.user.partial_name,
+    //   profile_image_link: this.props.user.profile_image_link,
+    //   type: this.props.user.type,
+    // });
 
     // new socket
     window.Echo.private(`${localStorage.getItem("slug") === "dev24admin" ? "dev" : localStorage.getItem("slug")}.Driff.User.${this.props.user.id}`)
@@ -188,6 +245,7 @@ class SocketListeners extends Component {
                 pushBrowserNotification(`You asked to be reminded about ${e.title}`, e.title, this.props.user.profile_image_link, redirect);
               }
             }
+            this.props.incomingReminderNotification(e);
             break;
           }
           default:
@@ -327,7 +385,10 @@ class SocketListeners extends Component {
                 entity_type: "WORKSPACE_POST",
               });
             }
-            e.channel_messages.forEach(m => {
+            if (typeof e.channel_messages === "undefined") {
+              console.log(e);
+            }
+            e.channel_messages && e.channel_messages.forEach(m => {
               m.system_message.files = [];
               m.system_message.editable = false;
               m.system_message.unfurls = [];
@@ -336,12 +397,48 @@ class SocketListeners extends Component {
               m.system_message.todo_reminder = null;
               m.system_message.is_read = false;
               m.system_message.is_completed = false;
-              this.props.incomingChatMessage(m.system_message);
-            })
+              m.system_message.user = null;
+              this.props.incomingPostNotificationMessage(m.system_message);
+            });
             break;
           }
           case "POST_UPDATE": {
             this.props.incomingUpdatedPost(e);
+            if (e.channel_messages && e.post_participant_data) {
+              if (!e.post_participant_data.all_participant_ids.some((p) => p === this.props.user.id)) {
+                //user is not participant of post
+                this.props.deletePostNotification(e.channel_messages)
+              } else {
+                e.channel_messages && e.channel_messages.forEach(m => {
+                  m.system_message.files = [];
+                  m.system_message.editable = false;
+                  m.system_message.unfurls = [];
+                  m.system_message.reactions = [];
+                  m.system_message.is_deleted = false;
+                  m.system_message.todo_reminder = null;
+                  m.system_message.is_read = true;
+                  m.system_message.is_completed = false;
+                  m.system_message.user = null;
+                  this.props.incomingPostNotificationMessage(m.system_message);
+                });
+              }
+              if (!e.post_participant_data.from_company) {
+                // from private to public post
+                this.props.incomingPost(e);
+                e.channel_messages && e.channel_messages.forEach(m => {
+                  m.system_message.files = [];
+                  m.system_message.editable = false;
+                  m.system_message.unfurls = [];
+                  m.system_message.reactions = [];
+                  m.system_message.is_deleted = false;
+                  m.system_message.todo_reminder = null;
+                  m.system_message.is_read = true;
+                  m.system_message.is_completed = false;
+                  m.system_message.user = null;
+                  this.props.incomingPostNotificationMessage(m.system_message);
+                });
+              }
+            }
             break;
           }
           case "POST_DELETE": {
@@ -462,7 +559,7 @@ class SocketListeners extends Component {
             if (this.props.user.id !== message.user.id) {
               delete message.reference_id;
               message.g_date = this.props.localizeDate(e.created_at.timestamp, "YYYY-MM-DD");
-              if (this.props.isLastChatVisible && this.props.selectedChannel && this.props.selectedChannel.id === message.channel_id) {
+              if (this.props.isLastChatVisible && this.props.selectedChannel && this.props.selectedChannel.id === message.channel_id && isBrowserActive) {
                 message.is_read = true;
               }
             }
@@ -474,7 +571,7 @@ class SocketListeners extends Component {
                 if (this.props.notificationsOn && isSafari) {
                   if (!(this.props.location.pathname.includes("/chat/") && selectedChannel.code === e.channel_code) || !isBrowserActive) {
                     const redirect = () => this.props.history.push(`/chat/${e.channel_code}/${e.code}`);
-                    pushBrowserNotification(`${e.user.first_name} ${e.reference_title ? `in #${e.reference_title}` : "in a direct message"}`, `${e.user.first_name}: ${stripHtml(e.body)}`, e.user.profile_image_link, redirect);
+                    pushBrowserNotification(`${e.reference_title}`, `${stripHtml(e.body)}`, e.user.profile_image_link, redirect);
                   }
                 }
               }
@@ -520,6 +617,43 @@ class SocketListeners extends Component {
       });
 
     window.Echo.private(`${localStorage.getItem("slug") === "dev24admin" ? "dev" : localStorage.getItem("slug")}.App.Broadcast`)
+      .listen(".updated-version", (e) => {
+        if (!(isIPAddress(window.location.hostname) || window.location.hostname === "localhost")
+          && localStorage.getItem("site_ver") !== e.version) {
+          const { version, requirement } = e;
+          const handleReminder = () => {
+            setTimeout(() => {
+              this.props.addToModals({
+                id: version,
+                type: "update_found",
+                requirement: requirement,
+                handleReminder: handleReminder,
+              });
+            }, [30 * 60 * 1000]);
+          };
+
+          this.props.addToModals({
+            id: version,
+            type: "update_found",
+            requirement: requirement,
+            handleReminder: handleReminder,
+          });
+          localStorage.setItem("site_ver", version);
+        }
+      })
+      .listen(".user-role-notification", (e) => {
+        console.log(e, "updated role")
+        this.props.incomingUserRole(e);
+        if (e.user_id === this.props.user.id) {
+          this.props.getUser({ id: this.props.user.id }, (err, res) => {
+            if (err) return;
+            sessionService.saveUser({ ...res.data });
+          });
+        }
+      })
+      .listen(".company-announcement", (e) => {
+        this.props.updateCompanyPostAnnouncement(e);
+      })
       .listen(".company-request-form-notification", (e) => {
         console.log(e, "company-request-form-notification");
         switch (e.SOCKET_TYPE) {
@@ -799,6 +933,13 @@ class SocketListeners extends Component {
       });
     // old / legacy channel
     window.Echo.private(`${localStorage.getItem("slug") === "dev24admin" ? "dev" : localStorage.getItem("slug")}.App.User.${this.props.user.id}`)
+      .listen(".post-require-author-notify", (e) => {
+        console.log(e, ".post-read-require");
+      })
+      .listen(".post-read-require", (e) => {
+        console.log(e, ".post-read-require");
+        this.props.incomingMarkAsRead(e);
+      })
       .listen(".new-lock-workspace", (e) => {
         console.log(e, "new workspace lock");
 
@@ -934,7 +1075,7 @@ class SocketListeners extends Component {
           ...e,
           message: {
             ...e.message,
-            g_date: this.props.localizeDate(e.message.created_at.timestamp),
+            g_date: this.props.localizeDate(e.message.created_at.timestamp, "YYYY-MM-DD"),
             user: null,
             is_read: true,
             files: [],
@@ -969,7 +1110,7 @@ class SocketListeners extends Component {
             unfurls: [],
             is_read: false,
             channel_id: e.channel_id,
-            //g_date: this.props.localizeDate(e.created_at.timestamp),
+            g_date: this.props.localizeDate(e.created_at.timestamp, "YYYY-MM-DD"),
             code: e.code,
           };
 
@@ -1087,6 +1228,7 @@ class SocketListeners extends Component {
               skip: 0,
               hasMore: true,
               isFetching: false,
+              creator: e.channel_data.creator_by
             };
             this.props.addToChannels(channel);
           });
@@ -1094,12 +1236,16 @@ class SocketListeners extends Component {
       })
       .listen(".chat-message-react", (e) => {
         console.log(e);
-        this.props.incomingChatMessageReaction({...e, user_name: e.name});
+        this.props.incomingChatMessageReaction({ ...e, user_name: e.name });
       })
       .listen(".updated-notification-counter", (e) => {
         console.log(e, "updated counter");
         this.props.setUnreadNotificationCounterEntries(e);
       });
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    this.props.useDriff.updateFaviconState((this.props.unreadCounter.chat_message + this.props.unreadCounter.workspace_chat_message) !== 0);
   }
 
   render() {
@@ -1108,12 +1254,12 @@ class SocketListeners extends Component {
 }
 
 function mapStateToProps({
-                           session: {user},
-                           settings: {userSettings},
-                           chat: {channels, selectedChannel, isLastChatVisible},
-                           workspaces: {workspaces, workspacePosts, folders, activeTopic, workspacesLoaded},
-                           global: {isBrowserActive},
-                           users: {mentions, users}
+                           session: { user },
+                           settings: { userSettings },
+                           chat: { channels, selectedChannel, isLastChatVisible, lastReceivedMessage },
+                           workspaces: { workspaces, workspacePosts, folders, activeTopic, workspacesLoaded },
+                           global: { isBrowserActive, unreadCounter },
+                           users: { mentions, users }
                          }) {
   return {
     user,
@@ -1128,7 +1274,9 @@ function mapStateToProps({
     activeTopic,
     workspacesLoaded,
     workspaces,
-    isLastChatVisible
+    isLastChatVisible,
+    lastReceivedMessage,
+    unreadCounter
   };
 }
 
@@ -1225,6 +1373,16 @@ function mapDispatchToProps(dispatch) {
     incomingPostMarkDone: bindActionCreators(incomingPostMarkDone, dispatch),
     incomingFavouriteItem: bindActionCreators(incomingFavouriteItem, dispatch),
     incomingReadUnreadReducer: bindActionCreators(incomingReadUnreadReducer, dispatch),
+    updateCompanyPostAnnouncement: bindActionCreators(updateCompanyPostAnnouncement, dispatch),
+    incomingUserRole: bindActionCreators(incomingUserRole, dispatch),
+    deletePostNotification: bindActionCreators(deletePostNotification, dispatch),
+    incomingPostNotificationMessage: bindActionCreators(incomingPostNotificationMessage, dispatch),
+    incomingMarkAsRead: bindActionCreators(incomingMarkAsRead, dispatch),
+    addToModals: bindActionCreators(addToModals, dispatch),
+    refetchMessages: bindActionCreators(refetchMessages, dispatch),
+    refetchOtherMessages: bindActionCreators(refetchOtherMessages, dispatch),
+    getChannelDetail: bindActionCreators(getChannelDetail, dispatch),
+    incomingReminderNotification: bindActionCreators(incomingReminderNotification, dispatch)
   };
 }
 

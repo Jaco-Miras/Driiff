@@ -4,11 +4,10 @@ import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import { addToModals } from "../../../redux/actions/globalActions";
 import { setParentIdForUpload } from "../../../redux/actions/postActions";
-import { FileAttachments, ReminderNote, SvgIconFeather, ToolTip } from "../../common";
+import { Avatar, FileAttachments, ReminderNote, SvgIconFeather } from "../../common";
 import { DropDocument } from "../../dropzone/DropDocument";
 import { useCommentActions, useComments } from "../../hooks";
 import { PostBody, PostComments, PostDetailFooter } from "./index";
-import { replaceChar } from "../../../helpers/stringFormatter";
 import { MoreOptions } from "../../panels/common";
 
 const MainHeader = styled.div`
@@ -44,6 +43,71 @@ const MainHeader = styled.div`
   }
 `;
 
+const MainBody = styled.div`
+  display: flex;
+  flex-grow: 1;
+  width: 100%;
+  flex-flow: column;
+  
+  .user-reads-container {
+    position: relative;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 0.5rem;
+    
+    .read-users-container {
+      transition: all 0.5s ease;
+      position: absolute;
+      right: 0;
+      bottom: 30px;  
+      border: 1px solid #dee2e6;
+      border-radius: 6px;
+      background-color: #fff;
+      overflow: auto;
+      opacity: 0;
+      max-height: 0;
+      
+      &:hover {
+        opacity: 1;
+        max-height: 165px;  
+      }
+      
+      .dark & {
+        background-color: #191c20;  
+      }
+      
+      > span {
+        padding: 0.5rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      
+        .avatar {
+          img {
+            min-width: 28px;
+          }
+        }
+      
+        .name {
+          width: 100%;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          display: block;      
+        }
+      }
+    }
+  }
+  
+  .user-reads-container {         
+    span.no-readers:hover ~ span.read-users-container {
+      opacity: 1;
+      max-height: 165px;
+    }                  
+  }  
+`;
+
 const StyledMoreOptions = styled(MoreOptions)`
   border: 1px solid rgba(0, 0, 0, 0.2);
   border-radius: 8px;
@@ -65,13 +129,6 @@ const StyledMoreOptions = styled(MoreOptions)`
       width: 14px;
     }
   }
-`;
-
-const MainBody = styled.div`
-  display: flex;
-  flex-grow: 1;
-  width: 100%;
-  flex-flow: column;
 `;
 
 const Counters = styled.div`
@@ -114,10 +171,12 @@ const MarkAsRead = styled.div`
 `;
 
 const PostDetail = (props) => {
-  const { post, postActions, user, onGoBack, workspace, isMember, dictionary, disableOptions } = props;
+  const { post, postActions, user, onGoBack, workspace, isMember, dictionary, disableOptions, readByUsers } = props;
   const { markAsRead, markAsUnread, sharePost, followPost, remind } = postActions;
   const dispatch = useDispatch();
   const history = useHistory();
+
+  const hasRead = readByUsers.some(u => u.id === user.id);
 
   const [showDropZone, setshowDropZone] = useState(false);
   const [react, setReact] = useState({
@@ -201,6 +260,10 @@ const PostDetail = (props) => {
     dispatch(addToModals(modal));
   };
 
+  const markRead = () => {
+    postActions.markReadRequirement(post);
+  };
+
   const handleReaction = () => {
     setReact((prevState) => ({
       user_clap_count: !!prevState.user_clap_count ? 0 : 1,
@@ -229,14 +292,6 @@ const PostDetail = (props) => {
     }
   }, []);
 
-  const markRead = () => {
-    postActions.markReadRequirement(post);
-  };
-
-  const handleAuthorClick = () => {
-    history.push(`/profile/${post.author.id}/${replaceChar(post.author.name)}`);
-  };
-
   return (
     <>
       {
@@ -253,19 +308,11 @@ const PostDetail = (props) => {
               <h5 ref={refs.title} className="post-title mb-0">
                 <span>{post.title}</span>
               </h5>
-              <div className="author-name">
-                <ToolTip content={post.author.name}>
-                  {dictionary.by}{" "}
-                  <span onClick={handleAuthorClick} className="cursor-pointer">
-                    {post.author.first_name}
-                  </span>
-                </ToolTip>
-              </div>
             </li>
           </ul>
         </div>
         <div>
-          {post.author.id !== user.id && !post.is_read_requirement && (
+          {post.author.id !== user.id && post.is_must_read && (!hasRead) && (
             <MarkAsRead className="d-sm-inline d-none">
               <button className="btn btn-primary btn-block" onClick={markRead} disabled={disableOptions}>
                 {dictionary.markAsRead}
@@ -325,13 +372,18 @@ const PostDetail = (props) => {
           hide={!showDropZone}
           ref={refs.dropZoneRef}
           onDragLeave={handleHideDropzone}
-          onDrop={({acceptedFiles}) => {
+          onDrop={({ acceptedFiles }) => {
             dropAction(acceptedFiles);
           }}
           onCancel={handleHideDropzone}
         />
-        <PostBody post={post} postActions={postActions} isAuthor={post.author.id === user.id} dictionary={dictionary}
-                  disableOptions={disableOptions}/>
+        <PostBody
+          post={post}
+          user={user}
+          postActions={postActions}
+          isAuthor={post.author.id === user.id}
+          dictionary={dictionary}
+          disableOptions={disableOptions}/>
         <hr className="m-0"/>
         <Counters className="d-flex align-items-center">
           <div>
@@ -340,6 +392,24 @@ const PostDetail = (props) => {
             {react.clap_count}
           </div>
           <div className="ml-auto text-muted">
+            {
+              readByUsers.length > 0 &&
+              <div className="user-reads-container">
+                {hasRead &&
+                <span className="mr-2"><Icon className="mr-2" icon="check"/> {dictionary.alreadyReadThis}</span>}
+                <span className="no-readers">{dictionary.readByNumberofUsers}</span>
+                <span className="hover read-users-container">
+                  {
+                    readByUsers.map(u => {
+                      return <span key={u.id}>
+                        <Avatar className="mr-2" key={u.id} name={u.name} imageLink={u.profile_image_link}
+                                id={u.id}/> <span className="name">{u.name}</span>
+                      </span>;
+                    })
+                  }
+                </span>
+              </div>
+            }
             <Icon className="mr-2" icon="message-square"/>
             {post.reply_count}
             <Icon className="ml-2 mr-2 seen-indicator" icon="eye"/>

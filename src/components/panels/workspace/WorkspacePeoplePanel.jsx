@@ -25,7 +25,14 @@ const Wrapper = styled.div`
 `;
 
 const Search = styled(SearchForm)`
-  max-width: 350px;
+  width: 50%;
+  margin-bottom: 1rem;
+  min-width: 250px;
+  padding-right: 14px;
+  @media all and (max-width: 768px) {
+    width: 100%;
+    padding-right: 1rem;
+  }
 `;
 
 const WorkspacePeoplePanel = (props) => {

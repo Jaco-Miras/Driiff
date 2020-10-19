@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addToChannelDraft, getChannelDrafts } from "../../redux/actions/chatActions";
-import { saveDraft, updateDraft } from "../../redux/actions/globalActions";
+import { deleteDraft, saveDraft, updateDraft } from "../../redux/actions/globalActions";
 import usePreviousValue from "./usePreviousValue";
 
 const useDraft = (callback, type, text, textOnly, draftId) => {
@@ -26,7 +26,16 @@ const useDraft = (callback, type, text, textOnly, draftId) => {
   };
 
   const handleSaveDraft = (id) => {
-    if (textOnly.trim() === "") return;
+    if (textOnly.trim() === "") {
+      if (draftId) {
+        dispatch(deleteDraft({
+          type: "channel",
+          draft_id: draftId
+        }));
+      } else {
+        return;
+      }
+    }
 
     let payload = {
       draft_type: type,
@@ -47,7 +56,6 @@ const useDraft = (callback, type, text, textOnly, draftId) => {
         ...payload,
         draft_id: draftId,
       };
-      console.log(payload);
       dispatch(updateDraft(payload));
       dispatch(addToChannelDraft(payload));
     } else {
@@ -55,13 +63,6 @@ const useDraft = (callback, type, text, textOnly, draftId) => {
     }    
   };
 
-  // useEffect(() => {
-  //     savedCallback.current = callback;
-  // });
-
-  // const handleClearInput = () => {
-  //     savedCallback.current();
-  // };
   useEffect(() => {
     if (Object.keys(drafts).length === 0) {
       dispatch(getChannelDrafts());

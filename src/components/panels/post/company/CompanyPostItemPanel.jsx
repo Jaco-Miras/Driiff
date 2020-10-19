@@ -1,8 +1,7 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
-import { SvgIconFeather } from "../../../common";
-import { CheckBox } from "../../../forms";
+import { Avatar, SvgIconFeather } from "../../../common";
 import { MoreOptions } from "../../common";
 import { CompanyPostBadge } from "./index";
 import quillHelper from "../../../../helpers/quillHelper";
@@ -24,6 +23,7 @@ const Wrapper = styled.li`
   .app-list-title {
     color: #363636;
     font-weight: 500;
+    padding-left: 2.5rem;
 
     &.has-unread {
       font-weight: 500;
@@ -59,10 +59,25 @@ const Wrapper = styled.li`
   .post-read-title {
     color: #363636;
   }
+  .author-avatar {
+    position: absolute;
+    left: 1rem;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    img {
+      width: 2rem;
+      height: 2rem;
+    }
+  }
 `;
 
 const Icon = styled(SvgIconFeather)`
   width: 16px;
+`;
+
+const ArchiveBtn = styled.a`
+  padding: 5px 10px;
 `;
 
 const CompanyPostItemPanel = (props) => {
@@ -94,6 +109,8 @@ const CompanyPostItemPanel = (props) => {
     archivePost(post);
   };
 
+  const noAuthorResponsibles = post.users_responsible.filter(u => u.id !== post.author.id);
+
   return (
     <Wrapper data-toggle={flipper ? "1" : "0"} className={`list-group-item post-item-panel ${className}`}
              onClick={() => openPost(post, "/posts")}>
@@ -107,20 +124,25 @@ const CompanyPostItemPanel = (props) => {
       <div className="flex-grow-1 min-width-0">
         <div className="d-flex align-items-center justify-content-between">
           <div
-            className={`app-list-title text-truncate
-                            ${post.unread_count > 0 || post.is_unread === 1 ? "text-primary has-unread" : ""}
-                            `}
-          >
+            className={`app-list-title text-truncate ${post.unread_count > 0 || post.is_unread === 1 ? "text-primary has-unread" : ""}`}>
+            <Avatar className="author-avatar mr-2" id={post.author.id} name={post.author.name}
+                    imageLink={post.author.profile_image_link}/>
             <span>{post.title}</span>
             <div className='text-truncate post-partialBody'>
               <span dangerouslySetInnerHTML={{ __html: quillHelper.parseEmoji(post.partial_body) }}/>
             </div>
           </div>
           <div className="pl-3 d-flex align-items-center">
-            {post.unread_count !== 0 && <div className="ml-2 mr-2 badge badge-primary badge-pill">{post.unread_count}</div>}
-            <CompanyPostBadge post={post} dictionary={dictionary} />
-            {post.users_responsible && post.users_responsible.length > 0 && <MemberLists members={post.users_responsible} classNames="mr-2"/>}
-            {!disableOptions && <Icon icon="archive" onClick={handleArchivePost} />}
+            {post.unread_count !== 0 &&
+            <div className="ml-2 mr-2 badge badge-primary badge-pill">{post.unread_count}</div>}
+            <CompanyPostBadge post={post} dictionary={dictionary}/>
+            {noAuthorResponsibles && noAuthorResponsibles.length > 0 &&
+            <MemberLists members={noAuthorResponsibles} classNames="mr-2"/>}
+            {!disableOptions &&
+            <ArchiveBtn onClick={handleArchivePost} className="btn btn-outline-light ml-2" data-toggle="tooltip"
+                        title="" data-original-title="Archive post">
+              <Icon icon="archive"/>
+            </ArchiveBtn>}
           </div>
         </div>
       </div>

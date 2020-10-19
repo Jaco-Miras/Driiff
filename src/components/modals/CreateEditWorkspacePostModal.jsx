@@ -17,6 +17,7 @@ import { CheckBox, DescriptionInput, FolderSelect, PeopleSelect, PostVisibilityS
 import { useToaster, useTranslation, useWorkspaceAndUserOptions } from "../hooks";
 import { ModalHeaderSection } from "./index";
 import { uploadDocument } from "../../redux/services/global";
+import { renderToString } from "react-dom/server";
 
 const WrapperDiv = styled(InputGroup)`
   display: flex;
@@ -272,7 +273,7 @@ const MoreOption = styled.div`
 
 const StyledDescriptionInput = styled(DescriptionInput)`
   .description-input {
-    height: ${props => props.height}px;
+    height: ${props => props.height > 80 ? props.height : 80}px;
     max-height: 300px;
   }
 
@@ -337,7 +338,7 @@ const CreateEditWorkspacePostModal = (props) => {
     createNewPost: _t("POST.CREATE_NEW_POST", "Create new post"),
     editPost: _t("POST.EDIT_POST", "Edit post"),
     postTitle: _t("POST.TITLE", "Title"),
-    postInfo: _t("POST_INFO", "A post is a message that can contain text and images. It can be directed at one or more workspaces, and one or more people can be made responsible."),
+    postInfo: _t("POST_INFO", "A post is a message that can contain text and images. It can be directed at one or more workspaces, and to one or multiple persons."),
     visibility: _t("POST.VISIBILITY", "Visibility"),
     workspace: _t("POST.WORKSPACE", "Workspace"),
     responsible: _t("POST.RESPONSIBLE", "Responsible"),
@@ -357,18 +358,18 @@ const CreateEditWorkspacePostModal = (props) => {
     save: _t("POST.SAVE", "Save"),
     discard: _t("POST.DISCARD", "Discard"),
     draftBody: _t("POST.DRAFT_BODY", "Not sure about the content? Save it as a draft."),
-    postVisibilityInfo: _t("POST.POST_VISIBILITY_INFO_SINGULAR_ALL",
-      `This post will be visible to <span class="user-popup">::user_count::</span> in <span class="workspace-popup">::workspace_count::</span>`, {
-        user_count: user_ids.length === 1 ?
+    postVisibilityInfo: _t("POST.POST_VISIBILITY_COUNT_INFO",
+      `This post will be visible to ::user_count:: in ::workspace_count::`, {
+        user_count: renderToString(<span className="user-popup">{user_ids.length === 1 ?
           _t("POST.NUMBER_USER", "1 user") :
           _t("POST.NUMBER_USERS", "::count:: users", {
             count: user_ids.length
-          }),
-        workspace_count: workspace_ids.length === 1 ?
+          })}</span>),
+        workspace_count: renderToString(<span className="workspace-popup">{workspace_ids.length === 1 ?
           _t("POST.NUMBER_WORKSPACE", "1 workspace") :
           _t("POST.NUMBER_WORKSPACES", "::count:: workspaces", {
             count: workspace_ids.length
-          }),
+          })}</span>)
       }),
   };
 
@@ -675,7 +676,14 @@ const CreateEditWorkspacePostModal = (props) => {
     mention_ids = mention_ids.map((id) => parseInt(id)).filter((id) => !isNaN(id));
     if (mention_ids.length) {
       //check for recipients/type
-      let ignoreIds = [user.id, ...form.selectedAddressTo.map((u) => u.id), ...ignoredMentionedUserIds];
+      let adddressIds = form.selectedAddressTo.map((ad) => {
+        if (ad.type === "USER") {
+          return ad.id;
+        } else {
+          return ad.member_ids;
+        }
+      }).flat();
+      let ignoreIds = [user.id, ...adddressIds, ...ignoredMentionedUserIds];
       let userIds = mention_ids.filter((id) => {
         return !ignoreIds.some((iid) => iid === id);
       });
@@ -911,6 +919,8 @@ const CreateEditWorkspacePostModal = (props) => {
         ...form,
         selectedAddressTo: getDefaultAddressTo(),
       });
+      let ws = getDefaultAddressTo();
+      setIgnoredMentionedUserIds(ws[0].member_ids);
     } else if (mode === "edit" && item.hasOwnProperty("post")) {
       setForm({
         ...form,
@@ -1041,7 +1051,7 @@ const CreateEditWorkspacePostModal = (props) => {
           <div className="post-visibility-container" ref={handlePostVisibilityRef}>
             <span className="user-list">
               {
-                users.filter(u => user_ids.includes(u.id)).map(u => {
+                users.filter(u => user_ids.includes(u.type_id)).map(u => {
                   return <span key={u.id}>
                     <span
                       title={u.email}

@@ -16,11 +16,16 @@ const useWorkspaceAndUserOptions = (selected = { addressTo: [] }) => {
   const [progress, setProgress] = useState(false);
 
   const getAddressTo = (postRecipients) => {
+    const internalUsers = Object.values(actualUsers).filter(u => u.active === 1 && u.type === "internal").map(u => u);
     return [
-      ...postRecipients.recipients.map(r => {
+      ...postRecipients.map(r => {
         return {
           ...r,
           icon: ["TOPIC", "DEPARTMENT"].includes(postRecipients.type) ? "compass" : "user-avatar",
+          ...([postRecipients.type === "DEPARTMENT"] && {
+            member_ids: internalUsers.map(u => u.id),
+            members: internalUsers.map(u => u),
+          }),
           value: r.id,
           label: r.name,
         };
@@ -74,7 +79,7 @@ const useWorkspaceAndUserOptions = (selected = { addressTo: [] }) => {
         if (typeof actualUsers[u.type_id] !== "undefined" && actualUsers[u.type_id].active === 1) {
           userOptions.push({
             ...u,
-            ...actualUsers,
+            //...actualUsers,
             icon: "user-avatar",
             value: u.id,
             label: u.name ? u.name : u.email,
@@ -111,7 +116,7 @@ const useWorkspaceAndUserOptions = (selected = { addressTo: [] }) => {
       if (!at.member_ids) {
         console.log(at);
       }
-      workspace_ids = [at.type_id];
+      workspace_ids = [...workspace_ids, at.type_id];
       user_ids = [...user_ids, ...at.member_ids];
     }
 

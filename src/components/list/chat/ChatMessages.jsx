@@ -198,7 +198,7 @@ const ChatBubbleQuoteDiv = styled.div`
   position: relative;
   flex-flow: column;
   display: inherit;
-  ${(props) => !props.isAuthor === true && "margin-left: 18px"};
+  ${(props) => !props.isAuthor === true && "margin-left: 1.5rem"};
   > img {
     // max-height: ${(props) => (props.maxImgHeight > 300 ? `${props.maxImgHeight}px;` : "300px")};
     max-height: 300px;
@@ -291,13 +291,13 @@ const InfiniteScroll = styled.div`
 
 const StyledAvatar = styled(Avatar)`
   align-self: flex-start;
-  width: 21px !important;
-  height: 21px !important;
+  width: 2rem !important;
+  height: 2rem !important;
   margin-top: ${(props) => (props.isForwardedMessage === true ? "25px" : "4px")};
 
   img {
-    width: 21px !important;
-    height: 21px !important;
+    width: 2rem !important;
+    height: 2rem !important;
   }
   @media (max-width: 620px) {
     display: none;
@@ -526,8 +526,8 @@ class ChatMessages extends React.PureComponent {
             }
           } else if (this.props.isLastChatVisible) {
             if (this.props.isBrowserActive) {
-              if (selectedChannel.is_read === 1) {
-                this.handleReadChannel();
+              if (selectedChannel.is_read) {
+                this.props.chatMessageActions.channelActions.markAsRead(selectedChannel);
               }
               if (scrollComponent) {
                 //other user message scroll to bottom after receiving
@@ -621,9 +621,10 @@ class ChatMessages extends React.PureComponent {
     let loadMoreRef = false;
     const isEqual = (reply) => reply.id === id;
     if (selectedChannel.replies.length && !selectedChannel.isFetching) {
-      let sortedReplies = [...selectedChannel.replies.sort((a, b) => a.created_at.timestamp - b.created_at.timestamp)];
-      let index = sortedReplies.findIndex(isEqual);
-      if (index < Math.round(sortedReplies.length / 2)) {
+      //let sortedReplies = [...selectedChannel.replies.sort((a, b) => a.created_at.timestamp - b.created_at.timestamp)];
+      //let index = sortedReplies.findIndex(isEqual);
+      let index = selectedChannel.replies.findIndex(isEqual);
+      if (index < Math.round(selectedChannel.replies.length / 2)) {
         if (index % 2 === 0) {
           loadMoreRef = true;
         }
@@ -686,12 +687,12 @@ class ChatMessages extends React.PureComponent {
             {selectedChannel.replies && selectedChannel.replies.length
               ? groupedMessages.map((gm, i) => {
                   return (
-                    <div key={gm.key}>
+                    <div key={`${gm.key}${gm.replies[0].created_at.timestamp}`}>
                       <TimestampDiv className="timestamp-container">{
                         <span>{this.props.timeFormat.localizeChatDate(gm.replies[0].created_at.timestamp, "ddd, MMM DD, YYYY")}</span>}</TimestampDiv>
 
                       {gm.replies
-                        .sort((a, b) => a.created_at.timestamp - b.created_at.timestamp)
+                        // .sort((a, b) => a.created_at.timestamp - b.created_at.timestamp)
                         .map((reply, k, e) => {
                           const isAuthor = reply.user
                             ? selectedChannel.is_shared && this.props.sharedSlugs.length
@@ -791,7 +792,7 @@ class ChatMessages extends React.PureComponent {
                                       showGifPlayer={showGifPlayer}
                                       isAuthor={isAuthor}
                                       addMessageRef={this.getLoadRef(reply.id)}
-                                      isLastChat={[...selectedChannel.replies.sort((a, b) => a.created_at.timestamp - b.created_at.timestamp)][selectedChannel.replies.length - 1].id === reply.id}
+                                      isLastChat={selectedChannel.replies[selectedChannel.replies.length - 1].id === reply.id}
                                       loadReplies={this.loadReplies}
                                       isBot={isBot}
                                       chatSettings={this.props.settings}
@@ -827,7 +828,7 @@ class ChatMessages extends React.PureComponent {
                                         reply={reply}
                                         chatName={this.props.chatName}
                                         addMessageRef={this.getLoadRef(reply.id)}
-                                        isLastChat={[...selectedChannel.replies.sort((a, b) => a.created_at.timestamp - b.created_at.timestamp)][selectedChannel.replies.length - 1].id === reply.id}
+                                        isLastChat={selectedChannel.replies[selectedChannel.replies.length - 1].id === reply.id}
                                         isLastChatVisible={this.props.isLastChatVisible}
                                         dictionary={this.props.dictionary}
                                       />

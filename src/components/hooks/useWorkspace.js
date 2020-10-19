@@ -44,9 +44,9 @@ const useWorkspace = (fetchOnMount = false) => {
         actions.selectChannel(channels[activeTopic.channel.id]);
       }
     }
-    return () => {
-      actions.clearChannel();
-    };
+    // return () => {
+    //   actions.clearChannel();
+    // };
   }, []);
 
   useEffect(() => {

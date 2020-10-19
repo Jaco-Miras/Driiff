@@ -31,6 +31,9 @@ const MainNavLink = styled(NavLink)`
   font-size: 13px;
   &.active {
     color: #363636;
+    .dark & {
+      color: #fff;
+    }
     &:after {
       content: "";
       height: 2px;

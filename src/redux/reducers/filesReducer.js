@@ -1,4 +1,4 @@
-import {convertArrayToObject} from "../../helpers/arrayHelper";
+import { convertArrayToObject } from "../../helpers/arrayHelper";
 
 const INITIAL_STATE = {
   user: null,
@@ -770,64 +770,92 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         channelFiles: {
           ...state.channelFiles,
-          [action.data.channel_id]: action.data.results,
-          //temporary
-          //[action.data.channel_id]: action.data.results.map(f => f.file_id)
+          [action.data.channel_id]: [
+            ...(typeof state.channelFiles[action.data.channel_id] === "undefined" ?
+                action.data.results.sort((a, b) => {
+                  return a.created_at.timestamp - b.created_at.timestamp;
+                }) :
+                action.data.results.filter(r => !state.channelFiles[action.data.channel_id].some(f => f.file_id === r.file_id)).sort((a, b) => {
+                  return a.created_at.timestamp - b.created_at.timestamp;
+                })
+            )
+          ],
         },
       };
     }
     case "INCOMING_CHAT_MESSAGE": {
-      if (action.data.files.length) {
-        let channelFiles = [];
-        if (typeof state.channelFiles[action.data.channel_id] !== "undefined") {
-          channelFiles = state.channelFiles[action.data.channel_id];
-        }
-
-        return {
-          ...state,
-          channelFiles: {
-            ...state.channelFiles,
-            [action.data.channel_id]: channelFiles.concat(action.data.files),
-          },
-        };
-      } else {
-        return state;
-      }
-    }
-    case "ADD_CHANNEL_FILES": {
-      let channelFiles = [];
-      if (typeof state.channelFiles[action.data.channel_id] !== "undefined") {
-        channelFiles = state.channelFiles[action.data.channel_id];
-      }
-
       return {
         ...state,
-        channelFiles: {
-          ...state.channelFiles,
-          [action.data.channel_id]: channelFiles.concat(action.data.files),
-        },
+        ...(action.data.files.length && typeof state.channelFiles[action.data.channel_id] !== "undefined" && {
+          channelFiles: {
+            ...state.channelFiles,
+            [action.data.channel_id]: [
+              ...state.channelFiles[action.data.channel_id],
+              ...action.data.files.filter(df => !state.channelFiles[action.data.channel_id].some(f => f.file_id === df.file_id)).sort((a, b) => {
+                return a.created_at.timestamp - b.created_at.timestamp;
+              })
+            ]
+          }
+        })
+      };
+    }
+    case "ADD_CHANNEL_FILES": {
+      return {
+        ...state,
+        ...(typeof state.channelFiles[action.data.channel_id] !== "undefined" && {
+          channelFiles: {
+            ...state.channelFiles,
+            [action.data.channel_id]: [
+              ...state.channelFiles[action.data.channel_id],
+              ...action.data.files.filter(df => !state.channelFiles[action.data.channel_id].some(f => f.file_id === df.file_id)).sort((a, b) => {
+                return a.created_at.timestamp - b.created_at.timestamp;
+              })
+            ]
+          },
+        }),
+      };
+    }
+    case "GET_CHAT_MESSAGES_SUCCESS": {
+      return {
+        ...state,
+        ...(typeof state.channelFiles[action.data.channel_id] !== "undefined" && {
+          channelFiles: {
+            ...state.channelFiles,
+            [action.data.channel_id]: [
+              ...state.channelFiles[action.data.channel_id],
+              ...action.data.results.map(r => r.files)
+                .reduce((file, value) => {
+                  return [...file, ...value];
+                }, [])
+                .filter(r => !state.channelFiles[action.data.channel_id].some(f => f.file_id === r.file_id))
+                .sort((a, b) => {
+                  return a.created_at.timestamp - b.created_at.timestamp;
+                })
+            ]
+          },
+        })
+      };
+    }
+    case "INCOMING_DELETED_CHAT_MESSAGE": {
+      return {
+        ...state,
+        ...(typeof state.channelFiles[action.data.channel_id] !== "undefined" && {
+          channelFiles: {
+            ...state.channelFiles,
+            [action.data.channel_id]: state.channelFiles[action.data.channel_id].filter(f => !action.data.file_ids.includes(f.file_id))
+          }
+        })
       };
     }
     case "DELETE_CHANNEL_FILES": {
-      let channelFiles = [];
-      if (typeof state.channelFiles[action.data.channel_id] !== "undefined") {
-        channelFiles = state.channelFiles[action.data.channel_id];
-      }
-
       return {
         ...state,
-        channelFiles: {
-          ...state.channelFiles,
-          [action.data.channel_id]: channelFiles.filter((cf) => {
-            let fileFound = false;
-            for (let i in action.data.file_ids) {
-              if (action.data.file_ids.hasOwnProperty(i) && cf.file_id === action.data.file_ids[i]) {
-                fileFound = true;
-              }
-            }
-            return !fileFound;
-          }),
-        },
+        ...(typeof state.channelFiles[action.data.channel_id] !== "undefined" && {
+          channelFiles: {
+            ...state.channelFiles,
+            [action.data.channel_id]: state.channelFiles[action.data.channel_id].filter((f) => !action.data.file_ids.includes(f.file_id))
+          },
+        }),
       };
     }
     case "SET_VIEW_FILES": {
@@ -936,42 +964,47 @@ export default (state = INITIAL_STATE, action) => {
       } else return state;
     }
     case "GET_WORKSPACE_FILES_SUCCESS": {
-      let newWorkspaceFiles = {...state.workspaceFiles};
-      if (newWorkspaceFiles.hasOwnProperty(action.data.topic_id)) {
-        if (action.data.folder_id && newWorkspaceFiles[action.data.topic_id].folders.hasOwnProperty(action.data.folder_id)) {
-          newWorkspaceFiles[action.data.topic_id].folders[action.data.folder_id].loaded = true;
-          newWorkspaceFiles[action.data.topic_id].folders[action.data.folder_id].files = action.data.files.filter((f) => f.folder_id === action.data.folder_id).map((f) => f.id);
-        }
-        newWorkspaceFiles = {
-          [action.data.topic_id]: {
-            ...newWorkspaceFiles[action.data.topic_id],
-            files: {...convertArrayToObject(action.data.files, "id"), ...newWorkspaceFiles[action.data.topic_id].files},
-            loaded: true,
-          },
-        };
-      } else {
-        newWorkspaceFiles = {
-          ...newWorkspaceFiles,
-          [action.data.topic_id]: {
-            files: convertArrayToObject(action.data.files, "id"),
-            folders: {},
-            storage: 0,
-            count: 0,
-            stars: 0,
-            trash: 0,
-            popular_files: [],
-            recently_edited: [],
-            favorite_files: [],
-            trash_files: {},
-            search_results: [],
-            search_value: "",
-            loaded: true,
-          },
-        };
-      }
       return {
         ...state,
-        workspaceFiles: newWorkspaceFiles,
+        workspaceFiles: {
+          [action.data.topic_id]: {
+            ...(typeof state.workspaceFiles[action.data.topic_id] === "undefined" ? {
+              files: convertArrayToObject(action.data.files, "id"),
+              folders: {
+                ...(action.data.folder_id && {
+                  [action.data.folder_id]: {
+                    loaded: true,
+                    files: action.data.files.filter((f) => f.folder_id === action.data.folder_id).map((f) => f.id)
+                  }
+                })
+              },
+              storage: 0,
+              count: 0,
+              stars: 0,
+              trash: 0,
+              popular_files: [],
+              recently_edited: [],
+              favorite_files: [],
+              trash_files: {},
+              search_results: [],
+              search_value: "",
+              loaded: true,
+            } : {
+              ...state.workspaceFiles[action.data.topic_id],
+              ...(action.data.folder_id && state.workspaceFiles[action.data.topic_id].folders[action.data.folder_id] && {
+                folders: {
+                  [action.data.folder_id]: {
+                    ...state.workspaceFiles[action.data.topic_id].folders[action.data.folder_id],
+                    loaded: true,
+                    files: [...new Set([...state.workspaceFiles[action.data.topic_id].folders[action.data.folder_id].files, ...action.data.files.filter((f) => f.folder_id === action.data.folder_id).map((f) => f.id)])]
+                  }
+                }
+              }),
+              loaded: true,
+              files: { ...convertArrayToObject(action.data.files, "id"), ...state.workspaceFiles[action.data.topic_id].files },
+            })
+          },
+        },
       };
     }
     case "GET_WORKSPACE_GOOGLE_FILE_ATTACHMENTS_SUCCESS": {
@@ -1117,32 +1150,17 @@ export default (state = INITIAL_STATE, action) => {
       }
     }
     case "GET_WORKSPACE_FILE_DETAILS_SUCCESS": {
-      let newWorkspaceFiles = {...state.workspaceFiles};
-      if (newWorkspaceFiles.hasOwnProperty(action.data.topic_id)) {
-        newWorkspaceFiles = {
-          [action.data.topic_id]: {
-            ...newWorkspaceFiles[action.data.topic_id],
-            storage: action.data.total_storage,
-            count: action.data.total_file_count,
-            stars: action.data.total_file_stars,
-            trash: action.data.total_file_trash,
-          },
-        };
-      } else {
-        newWorkspaceFiles = {
-          ...newWorkspaceFiles,
-          [action.data.topic_id]: {
-            ...newWorkspaceFiles[action.data.topic_id],
-            storage: action.data.total_storage,
-            count: action.data.total_file_count,
-            stars: action.data.total_file_stars,
-            trash: action.data.total_file_trash,
-          },
-        };
-      }
       return {
         ...state,
-        workspaceFiles: newWorkspaceFiles,
+        workspaceFiles: {
+          [action.data.topic_id]: {
+            ...(state.workspaceFiles[action.data.topic_id] ? state.workspaceFiles[action.data.topic_id] : {}),
+            storage: action.data.total_storage,
+            count: action.data.total_file_count,
+            stars: action.data.total_file_stars,
+            trash: action.data.total_file_trash,
+          }
+        },
       };
     }
     case "GET_WORKSPACE_TRASH_FILES_SUCCESS": {
@@ -1219,26 +1237,18 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "GET_WORKSPACE_RECENT_EDIT_FILES_SUCCESS": {
-      let newWorkspaceFiles = {...state.workspaceFiles};
-      if (newWorkspaceFiles.hasOwnProperty(action.data.topic_id)) {
-        newWorkspaceFiles = {
-          [action.data.topic_id]: {
-            ...newWorkspaceFiles[action.data.topic_id],
-            recently_edited: action.data.files.map((f) => f.id),
-          },
-        };
-      } else {
-        newWorkspaceFiles = {
-          ...newWorkspaceFiles,
-          [action.data.topic_id]: {
-            ...newWorkspaceFiles[action.data.topic_id],
-            recently_edited: action.data.files.map((f) => f.id),
-          },
-        };
-      }
       return {
         ...state,
-        workspaceFiles: newWorkspaceFiles,
+        workspaceFiles: {
+          [action.data.topic_id]: {
+            ...(typeof state.workspaceFiles[action.data.topic_id] === "undefined" ? {
+              recently_edited: [...new Set(action.data.files.map((f) => f.id))],
+            } : {
+              ...state.workspaceFiles[action.data.topic_id],
+              recently_edited: [...new Set(state.workspaceFiles[action.data.topic_id].recently_edited.concat(action.data.files.map((f) => f.id)))],
+            }),
+          }
+        },
       };
     }
     case "GET_WORKSPACE_FOLDER_SUCCESS": {

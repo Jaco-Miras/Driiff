@@ -39,17 +39,19 @@ const CompanyPostFilterItem = (props) => {
 
   }, [filter, onGoBack]);
 
+  console.log(counters)
+
   return (
     <Wrapper className={`post-filter-item list-group list-group-flush ${className}`}>
       <span className={`list-group-item d-flex align-items-center ${filter && filter === "all" ? "active" : ""}`}
             data-value="all" onClick={handleClickFilter}>
-        <SvgIconFeather className="mr-2" icon="book-open"/>
+        <SvgIconFeather className="mr-2" icon="inbox"/>
         {dictionary.all}
         <span className="small ml-auto">{counters.all > 0 && counters.all}</span>
       </span>
       <span className={`list-group-item d-flex align-items-center ${filter && filter === "my_posts" ? "active" : ""}`}
             data-value="my_posts" onClick={handleClickFilter}>
-        <SvgIconFeather className="mr-2" icon="send"/>
+        <SvgIconFeather className="mr-2" icon="send-post"/>
         {dictionary.myPosts}
         <span className="small ml-auto">{counters.my_posts > 0 && counters.my_posts}</span>
       </span>

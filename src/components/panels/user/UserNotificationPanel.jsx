@@ -1,5 +1,6 @@
 import React from "react";
 import { useHistory } from "react-router-dom";
+import { useSelector } from "react-redux";
 import styled from "styled-components";
 import { useNotificationActions, useNotifications, useRedirect, useTranslation } from "../../hooks";
 import { NotificationTimelineItem } from "../../list/notification/item";
@@ -18,6 +19,7 @@ const Wrapper = styled.div`
 const UserNotificationPanel = (props) => {
   const {className = ""} = props;
 
+  const user = useSelector((state) => state.session.user);
   const history = useHistory();
   const actions = useNotificationActions();
   const { notifications } = useNotifications();
@@ -59,7 +61,7 @@ const UserNotificationPanel = (props) => {
                       <div className="timeline">
                         {newNotifications.map((n) => {
                           return <NotificationTimelineItem key={n.id} notification={n} actions={actions}
-                                                           history={history} redirect={redirect}/>;
+                                                           history={history} redirect={redirect} user={user} _t={_t}/>;
                         })}
                       </div>
                     </div>
@@ -81,7 +83,7 @@ const UserNotificationPanel = (props) => {
                     <div className="timeline">
                       {oldNotifications.map((n) => {
                         return <NotificationTimelineItem key={n.id} notification={n} actions={actions}
-                                                         history={history} redirect={redirect}/>;
+                                                         history={history} redirect={redirect} user={user} _t={_t}/>;
                       })}
                     </div>
                   </div>

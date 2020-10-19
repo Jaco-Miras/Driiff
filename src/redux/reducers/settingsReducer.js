@@ -16,6 +16,8 @@ const INITIAL_STATE = {
       password_login: true,
       sign_up: true,
     },
+    ANNOUNCEMENT_AT: null,
+    ANNOUNCEMENT_LINK: null,
   },
   user: {
     isLoaded: false,
@@ -68,6 +70,7 @@ const INITIAL_STATE = {
       personal_links: [],
       notifications_on: true,
     },
+    READ_ANNOUNCEMENT: null
   },
   isLoaded: false,
 };
@@ -91,7 +94,11 @@ export default (state = INITIAL_STATE, action) => {
     }
     case "GET_DRIFF_COMP_SETTINGS_SUCCESS": {
       let settings = state.driff.settings;
+      let ANNOUNCEMENT_AT = state.driff.ANNOUNCEMENT_AT;
+      let ANNOUNCEMENT_LINK = state.driff.ANNOUNCEMENT_LINK;
       action.data.settings.forEach((s) => {
+        if (s.ANNOUNCEMENT_AT) ANNOUNCEMENT_AT = s.ANNOUNCEMENT_AT;
+        if (s.ANNOUNCEMENT_LINK) ANNOUNCEMENT_LINK = s.ANNOUNCEMENT_LINK;
         settings = { ...settings, ...s };
       });
 
@@ -111,6 +118,8 @@ export default (state = INITIAL_STATE, action) => {
           ...state.driff,
           isCompSettingsLoaded: true,
           settings: settings,
+          ANNOUNCEMENT_LINK,
+          ANNOUNCEMENT_AT
         },
       };
     }
@@ -205,7 +214,7 @@ export default (state = INITIAL_STATE, action) => {
               settings[key] = {
                 ...settings[key],
                 ...value,
-                language: value.language === null ? "nl" : value.language,
+                language: value.language === null ? "en" : value.language,
               };
               break;
             }
@@ -251,6 +260,25 @@ export default (state = INITIAL_STATE, action) => {
         user: {
           ...state.user,
           ...action.data,
+        },
+      };
+    }
+    case "UPDATE_READ_ANNOUNCEMENT": {
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          READ_ANNOUNCEMENT: { timestamp: Math.floor(Date.now() / 1000)}
+        }
+      }
+    }
+    case "UPDATE_COMPANY_POST_ANNOUNCEMENT": {
+      return {
+        ...state,
+        driff: {
+          ...state.driff,
+          ANNOUNCEMENT_LINK: action.data.ANNOUNCEMENT_LINK,
+          ANNOUNCEMENT_AT: action.data.ANNOUNCEMENT_AT,
         },
       };
     }

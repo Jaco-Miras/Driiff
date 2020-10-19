@@ -1,6 +1,6 @@
-import {getAPIUrl} from "../../helpers/slugHelper";
-import {apiCall, apiNoTokenCall} from "./service";
-import {objToUrlParams} from "../../helpers/commonFunctions";
+import { getAPIUrl } from "../../helpers/slugHelper";
+import { apiCall, apiNoTokenCall } from "./service";
+import { objToUrlParams } from "../../helpers/commonFunctions";
 
 /**
  * This function will call on the API to process driff registration
@@ -60,5 +60,18 @@ export function getCompanyDashboardMembers(payload) {
   return apiCall({
     method: "GET",
     url: `/v2/company/dashboard-members/?${objToUrlParams(payload)}`,
+  });
+}
+
+export function patchUpdateDriffVersion(payload) {
+  return apiNoTokenCall({
+    method: "PATCH",
+    url: "/update-driff-version",
+    data: {
+      data: {
+        version: payload.version,
+        requirement: payload.requirement,
+      },
+    },
   });
 }

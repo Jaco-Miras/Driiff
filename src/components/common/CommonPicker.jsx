@@ -29,7 +29,7 @@ const EmojiPicker = styled(Picker)``;
 const GifPicker = styled(PickerGif)``;
 
 const CommonPicker = React.forwardRef((props, ref) => {
-  const { className = "", handleShowEmojiPicker, handleShowGifPicker } = props;
+  const { className = "", handleShowEmojiPicker, handleShowGifPicker, showPreview = true } = props;
   const [switcher, setSwitcher] = useState(false);
 
   const handleOnMouseLeave = () => {
@@ -55,6 +55,7 @@ const CommonPicker = React.forwardRef((props, ref) => {
           onSelect={props.onSelectEmoji}
           theme="light"
           showSkinTones={false}
+          showPreview={showPreview}
           i18n={{
             search: "Search",
             clear: "Clear",

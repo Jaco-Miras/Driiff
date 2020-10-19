@@ -7,7 +7,8 @@ import {
   putCompanyUpdateName,
   setUserChatSetting,
   setUserGeneralSetting,
-  updateUserSettings
+  updateUserSettings,
+  updateReadAnnouncement,
 } from "../../redux/actions/settingsActions";
 import {addToModals} from "../../redux/actions/globalActions";
 import {setPushNotification} from "../../redux/actions/notificationActions";
@@ -68,6 +69,14 @@ const useSettings = () => {
           }
         })
       );
+    },
+    [dispatch, userSettings]
+  );
+
+  const setReadAnnouncement = useCallback(
+    () => {
+      dispatch(updateUserSettings({read_announcement: 1}));
+      dispatch(updateReadAnnouncement());
     },
     [dispatch, userSettings]
   );
@@ -243,6 +252,7 @@ const useSettings = () => {
     setChatSetting,
     setGeneralSetting,
     setPushSubscription,
+    setReadAnnouncement,
     showModal,
   };
 };

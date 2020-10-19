@@ -202,3 +202,20 @@ export function delRemoveToDo(payload) {
   });
 }
 
+export function refetchMessages(payload) {
+  let url = `/v2/re-fetch-module/channel?message_id=${payload.message_id}`;
+  return apiCall({
+    method: "POST",
+    url: url,
+    data: payload,
+  });
+}
+
+export function refetchOtherMessages(payload) {
+  let url = `/v2/re-fetch-module/other-channel-messages`;
+  return apiCall({
+    method: "POST",
+    url: url,
+    data: payload,
+  });
+}

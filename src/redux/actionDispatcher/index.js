@@ -9,7 +9,7 @@
  */
 import React from "react";
 import { toastr } from "react-redux-toastr";
-// import {getBaseUrl, getSlugName, processDriffLogout} from "../../helpers/slugHelper";
+import { userForceLogout } from "../../components/hooks/useUserActions";
 
 export default function DispatchActionToReducer(service, actionTypeStart, actionTypeSuccess, actionTypeFailure, callback) {
   return (dispatch) => {
@@ -46,31 +46,25 @@ export default function DispatchActionToReducer(service, actionTypeStart, action
             }
             // this error for validation or not authorized user.
             toastr.warning(errorStringTitle, {
-              component: () => <div dangerouslySetInnerHTML={{ __html: errorString }} />,
+              component: () => <div dangerouslySetInnerHTML={{ __html: errorString }}/>,
             });
           }
           // not authenticated user.
           if (error.response.status === 401) {
-            //processDriffLogout();
-            //return window.location = getBaseUrl() + "/login";
+            console.log(error);
+            userForceLogout();
           }
           // internal server error
           if (error.response.status === 500) {
-            // check the url subdomain and localstorage
-            // if not match this will force to delete the user session and redirect to page slugname
-            // let currentSubdomain = window.location.hostname.split(".")[0];
-            // if (currentSubdomain !== getSlugName()) {
-            //     // force delete user session
-            //     // sessionService.deleteSession().then(() => sessionService.deleteUser());
-            // }
-            // last internal server error from API
-            console.log(error.response.data);
           }
           dispatch({
             type: actionTypeFailure,
             error,
           });
           if (callback) callback(error);
+        } else {
+          console.log(error);
+          userForceLogout();
         }
       });
   };

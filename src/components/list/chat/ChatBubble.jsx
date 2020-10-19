@@ -37,13 +37,14 @@ const ChatBubbleContainer = styled.div`
     `
         background: none;
         padding: 0;
+
     `}
 
   &:after {
     content: ${(props) => props.showAvatar && props.hideBg === false && "''"};
     border: 10px solid #0000;
     position: absolute;
-    top: 8px;
+    top: 10px;
     z-index: 1;
     ${(props) => (props.isAuthor ? "right: -18px" : "left: -18px")};
     border-left-color: ${(props) => (props.isAuthor ? props.theme.self.chat_bubble_background_color : "#0000")};
@@ -389,7 +390,7 @@ const ChatContent = styled.div`
         border-right-color: transparent;
         border-right-color: #f0f0f0;
         position: absolute;
-        top: 8px;
+        top: 10px;
         left: -18px;
         z-index: 1;
         ${(props) =>
@@ -933,7 +934,13 @@ const ChatBubble = (props) => {
       replyQuoteBody = renderToString(newBody);
     } else if (replyQuoteBody.includes("POST_CREATE::")) {
       let item = JSON.parse(reply.quote.body.replace("POST_CREATE::", ""));
-      replyQuoteBody = renderToString(<><b>{item.author.first_name}</b> {dictionary.createdThePost} <b>"{item.post.title}"</b></>)
+      let description = quillHelper.parseToText(item.post.description);
+      replyQuoteBody = renderToString(<>
+              <b>{item.author.first_name}</b> {dictionary.createdThePost} <b>"{item.post.title}"</b>
+              <span className="card card-body" style={{margin: 0, padding: "10px"}}
+                dangerouslySetInnerHTML={{__html: description}}/>
+              </>
+      )
     }
     setQuoteBody(replyQuoteBody);
     setBody(replyBody);
@@ -1000,7 +1007,8 @@ const ChatBubble = (props) => {
                       {quoteAuthor}
                     </QuoteAuthor>
                   )}
-                  <QuoteContent className={"quote-content"} theme={chatSettings.chat_message_theme} isAuthor={isAuthor} dangerouslySetInnerHTML={{ __html: quoteBody }}></QuoteContent>
+                  <QuoteContent className={"quote-content"} theme={chatSettings.chat_message_theme} isAuthor={isAuthor}
+                                dangerouslySetInnerHTML={{ __html: quillHelper.parseEmoji(quoteBody) }}></QuoteContent>
                 </QuoteContainer>
               )}
               {
@@ -1027,7 +1035,7 @@ const ChatBubble = (props) => {
                     theme={chatSettings.chat_message_theme}
                     isAuthor={isAuthor}
                     className={`reply-content ${isEmoticonOnly ? "emoticon-body" : ""} ${reply.is_deleted ? "is-deleted" : ""}`}
-                    dangerouslySetInnerHTML={showGifPlayer ? { __html: stripGif(body) } : { __html: body }}
+                    dangerouslySetInnerHTML={showGifPlayer ? { __html: stripGif(quillHelper.parseEmoji(body)) } : { __html: quillHelper.parseEmoji(body) }}
                   />
                 </span>
               }

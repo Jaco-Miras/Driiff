@@ -101,3 +101,29 @@ export const groupObjByProp = (array, property) => {
     return acc;
   }, {});
 };
+
+//need to check performance
+export const uniq = (array, property) => {
+  return array.reduce((acc, current) => {
+    const x = acc.find(item => item[property] === current[property]);
+    if (!x) {
+      return acc.concat([current]);
+    } else {
+      return acc;
+    }
+  }, []);
+}
+
+export const uniqByProp = (array, property) => {
+  return Array.from(
+    array
+      .reduce(
+        (acc, item) => (
+          item && item[property] && acc.set(item[property], item),
+          acc
+        ), // using map (preserves ordering)
+        new Map()
+      )
+      .values()
+  );
+}

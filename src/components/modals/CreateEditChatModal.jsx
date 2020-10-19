@@ -112,6 +112,7 @@ const CreateEditChatModal = (props) => {
   const [chatExists, setChatExists] = useState(false);
   const [searching, setSearching] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [noChanges, setNoChanges] = useState(false);
 
   const toggle = () => {
     setModal(!modal);
@@ -383,48 +384,79 @@ const CreateEditChatModal = (props) => {
         return userFound;
       })
       .map((r) => r.id);
-
-    if (recipient_ids.length) {
-      setSearching(true);
-      const callback = (err, res) => {
-        setSearching(false);
-        if (err) {
-          return;
-        }
-        if (res.data.channel_id) {
-          setChatExists(true);
-        } else {
+    
+      if(mode === "edit") {
+        if (form.title.value === channel.title && 
+          JSON.stringify(channel.members.map(m => m.id).sort()) === JSON.stringify(form.selectedUsers.value.map(v => v.id).sort())
+        ) {
+          //no changes in title and members
+          let newForm = {...form};
+          newForm.selectedUsers.valid = true;
+          newForm.selectedUsers.feedback = null;
           setChatExists(false);
-        }
-      };
-      searchExisting(form.title.value, recipient_ids, callback);
-    }
-  }, 500);
-
-  const [modules, formats] = useQuillModules("group_chat");
-
-  useEffect(() => {
-    if (mode === "edit") {
-
-      setForm(prevState => ({
-        ...prevState,
-        selectedUsers: {
-          value: channel.members.map((m) => {
-            return {
-              ...m,
-              value: m.id,
-              label: m.first_name,
+          setForm(newForm);
+          setNoChanges(true);
+        } else {
+          if (recipient_ids.length) {
+            setSearching(true);
+            const callback = (err, res) => {
+              setSearching(false);
+              if (err) {
+                return;
+              }
+              if (res.data.channel_id) {
+                setChatExists(true);
+              } else {
+                setChatExists(false);
+              }
             };
-          })
-        },
-        title: {
-          value: channel.title
+            searchExisting(form.title.value, recipient_ids, callback);
+            setNoChanges(false);
+          }
         }
-      }))
-    }
+      } else {
+        if (recipient_ids.length) {
+          setSearching(true);
+          const callback = (err, res) => {
+            setSearching(false);
+            if (err) {
+              return;
+            }
+            if (res.data.channel_id) {
+              setChatExists(true);
+            } else {
+              setChatExists(false);
+            }
+          };
+          searchExisting(form.title.value, recipient_ids, callback);
+        }
+      }
+  }, 300);
 
-    //eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const [modules] = useQuillModules("group_chat");
+
+  // useEffect(() => {
+  //   if (mode === "edit") {
+
+  //     setForm(prevState => ({
+  //       ...prevState,
+  //       selectedUsers: {
+  //         value: channel.members.map((m) => {
+  //           return {
+  //             ...m,
+  //             value: m.id,
+  //             label: m.first_name,
+  //           };
+  //         })
+  //       },
+  //       title: {
+  //         value: channel.title
+  //       }
+  //     }))
+  //   }
+
+  //   //eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, []);
 
   useEffect(() => {
     if (form.selectedUsers.value.length) {
@@ -434,7 +466,7 @@ const CreateEditChatModal = (props) => {
 
   useEffect(() => {
     if (!searching) {
-      let newForm = form;
+      let newForm = {...form};
       if (newForm.title.value === "") {
         newForm.title.valid = false
         newForm.title.feedback = dictionary.feedbackChatTitleIsRequired;
@@ -499,7 +531,7 @@ const CreateEditChatModal = (props) => {
         )}
         <WrapperDiv>
           <button className="btn btn-primary"
-                  disabled={searching || Object.keys(form).map(k => form[k].valid).some(v => v === false)}
+                  disabled={searching || Object.keys(form).map(k => form[k].valid).some(v => v === false) || (mode === "edit" && noChanges)}
                   onClick={handleConfirm}>
             {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"/>}
             {mode === "edit" ? dictionary.editChat : dictionary.createChat}

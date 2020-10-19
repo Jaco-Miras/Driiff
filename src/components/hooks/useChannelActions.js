@@ -1,5 +1,5 @@
-import React, {useCallback} from "react";
-import {useDispatch, useSelector} from "react-redux";
+import React, { useCallback } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
   deleteChannelMembers,
   getChannel,
@@ -24,15 +24,17 @@ import {
   setLastVisitedChannel,
   setSelectedChannel
 } from "../../redux/actions/chatActions";
-import {useSettings, useToaster, useTranslation} from "./index";
+import { useSettings, useToaster, useTranslation } from "./index";
+import { useHistory } from "react-router-dom";
 
 const useChannelActions = () => {
 
   const dispatch = useDispatch();
 
-  const {chatSettings} = useSettings();
-  const {_t} = useTranslation();
+  const { chatSettings } = useSettings();
+  const { _t } = useTranslation();
   const toaster = useToaster();
+  const history = useHistory();
 
   const sharedSlugs = useSelector((state) => state.global.slugs);
 
@@ -103,7 +105,7 @@ const useChannelActions = () => {
    */
   const createByUserChannel = useCallback(
     (channel, callback = () => {}) => {
-      let old_channel = channel;
+      let old_channel = {...channel};
 
       create(
         {
@@ -129,7 +131,7 @@ const useChannelActions = () => {
                 timestamp: timestamp,
               },
               last_reply: null,
-              title: old_channel.first_name,
+              title: res.data.channel.profile.name,
             };
             dispatch(
               renameChannelKey(channel, (err) => {
@@ -326,13 +328,14 @@ const useChannelActions = () => {
       if (typeof channel === "undefined") {
         console.log(channel, "channel not found");
       } else if (channel.hasOwnProperty("add_user") && channel.add_user === true) {
-        createByUserChannel(channel, (err, res) => {
+        createByUserChannel({...channel, selected: true}, (err, res) => {
           const data = res.data;
-          dispatch(
-            setSelectedChannel(res.data, () => {
-              callback(data);
-            })
-          );
+          history.push(`/chat/${data.code}`);
+          // dispatch(
+          //   setSelectedChannel(res.data, () => {
+          //     callback(data);
+          //   })
+          // );
         });
 
         //if unarchived archived chat
@@ -345,6 +348,7 @@ const useChannelActions = () => {
             })
           );
         });
+        history.push(`/chat/${channel.code}`);
       } else {
         dispatch(
           setSelectedChannel({
@@ -353,6 +357,7 @@ const useChannelActions = () => {
           })
         );
         callback(channel);
+        history.push(`/chat/${channel.code}`);
       }
     },
     [dispatch, createByUserChannel, unArchive]
@@ -664,6 +669,25 @@ const useChannelActions = () => {
     [dispatch]
   );
 
+  const getUrlTitle = useCallback(
+    (channelTitle) => {
+      if (typeof channelTitle === "string")
+        return channelTitle.toLowerCase().replaceAll(" ", "-");
+
+      return "";
+    }, []);
+
+  const getChannelLink = useCallback(
+    (channel) => {
+      if (channel.workspace_folder) {
+        return `/workspace/chat/${channel.workspace_folder.id}/${getUrlTitle(channel.workspace_folder.name)}/${channel.entity_id}/${getUrlTitle(channel.title)}`;
+      } else {
+        return `/workspace/chat/${channel.entity_id}/${getUrlTitle(channel.title)}`;
+      }
+    },
+    []
+  );
+
   return {
     create,
     createByUserChannel,
@@ -694,6 +718,8 @@ const useChannelActions = () => {
     deleteMembers,
     update,
     fetchingMessages,
+    getChannelLink,
+    getUrlTitle
   };
 };
 

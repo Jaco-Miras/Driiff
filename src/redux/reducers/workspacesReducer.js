@@ -309,7 +309,7 @@ export default (state = INITIAL_STATE, action) => {
             }
           }
         } else {
-          if (action.data.original_workspace_id !== action.data.workspace_id) {
+          if (action.data.original_workspace_id !== action.data.workspace_id && updatedFolders[action.data.original_workspace_id]) {
             // to general folder
             updatedFolders[action.data.original_workspace_id].workspace_ids = updatedFolders[action.data.original_workspace_id].workspace_ids.filter((id) => id !== action.data.id);
           }
@@ -710,6 +710,31 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
+    case "INCOMING_MARK_AS_READ": {
+      return {
+        ...state,
+        ...(Object.keys(state.workspacePosts)
+          .filter(wsid => {
+            return wsid !== "flipper" && state.workspacePosts[wsid] && state.workspacePosts[wsid].posts[action.data.result.post_id];
+          })
+          .map(wsid => ({
+            ...state.workspacePosts,
+            post: {
+              ...state.workspacePosts[wsid].posts,
+              [action.data.result.post_id]: {
+                ...state.workspacePosts[wsid].posts[action.data.result.post_id],
+                user_reads: [
+                  ...state.workspacePosts[wsid].posts[action.data.result.post_id].user_reads,
+                  ...action.data.result.user_reads
+                ]
+              }
+            }
+          }))
+          .reduce((obj, workspace) => {
+            return { ...obj, ...workspace };
+          }, {}))
+      };
+    }
     case "INCOMING_POST": {
       let newWorkspacePosts = { ...state.workspacePosts };
       let updatedWorkspaces = { ...state.workspaces };
@@ -799,7 +824,7 @@ export default (state = INITIAL_STATE, action) => {
       let newWorkspacePosts = { ...state.workspacePosts };
       action.data.recipient_ids.forEach((id) => {
         if (newWorkspacePosts.hasOwnProperty(id)) {
-          if (action.data.is_personal && !Object.values(action.data.users_responsible).map(u => u.id).includes(state.user.id)) {
+          if (action.data.is_personal && !action.data.post_participant_data.all_participant_ids.some((id) => id === state.user.id)) {
             delete newWorkspacePosts[id].posts[action.data.id];
           } else {
             newWorkspacePosts[id].posts[action.data.id] = action.data;
@@ -831,6 +856,9 @@ export default (state = INITIAL_STATE, action) => {
             //post = newWorkspacePosts[ws.topic_id].posts[action.data.post_id];
             if (!newWorkspacePosts[ws.topic_id].posts[action.data.post_id].users_responsible.some((u) => u.id === action.data.author.id)) {
               newWorkspacePosts[ws.topic_id].posts[action.data.post_id].users_responsible = [...newWorkspacePosts[ws.topic_id].posts[action.data.post_id].users_responsible, action.data.author]
+            }
+            if (newWorkspacePosts[ws.topic_id].posts[action.data.post_id].is_archived === 1) {
+              newWorkspacePosts[ws.topic_id].posts[action.data.post_id].is_archived = 0;
             }
             newWorkspacePosts[ws.topic_id].posts[action.data.post_id].reply_count = newWorkspacePosts[ws.topic_id].posts[action.data.post_id].reply_count + 1;
             if (action.data.author.id !== state.user.id) {

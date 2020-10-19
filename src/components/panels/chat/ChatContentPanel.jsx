@@ -134,7 +134,8 @@ const ChatContentPanel = (props) => {
     renameThisWorkspace: _t("SYSTEM.RENAME_THIS_WORKSPACE", `renamed this workspace to`),
     renameThisChat: _t("SYSTEM.RENAME_THIS_CHAT", `renamed this chat to`),
     forwardedMessage: _t("CHAT.FORWARDED_MESSAGE", "Forwarded message"),
-    chatRemoved: _t("CHAT.BODY_REMOVED", "The chat message has been removed")
+    chatRemoved: _t("CHAT.BODY_REMOVED", "The chat message has been removed"),
+    workspace: _t("CHAT.WORKSPACE", "Workspace"),
   };
 
   useFocusInput(document.querySelector(".chat-footer .ql-editor"));

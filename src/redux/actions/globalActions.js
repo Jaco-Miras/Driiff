@@ -22,6 +22,8 @@ import {
   subscribePushNotifications as subscribePushNotificationsService,
   updateDraft as updateDraftService,
   uploadDocument as uploadDocumentService,
+  refetchMessages as refetchMessagesService,
+  refetchOtherMessages as refetchOtherMessagesService,
 } from "../services";
 
 export function setBrowserTabStatus(payload, callback) {
@@ -185,4 +187,12 @@ export function incomingRemoveToDo(payload, callback) {
 
 export function incomingFavouriteItem(payload, callback) {
   return SimpleDispatchActionToReducer("INCOMING_FAVOURITE_ITEM", payload, callback);
+}
+
+export function refetchMessages(payload, callback) {
+  return dispatchActionToReducer(refetchMessagesService(payload), "REFETCH_MESSAGES_START", "REFETCH_MESSAGES_SUCCESS", "REFETCH_MESSAGES_FAIL", callback);
+}
+
+export function refetchOtherMessages(payload, callback) {
+  return dispatchActionToReducer(refetchOtherMessagesService(payload), "REFETCH_OTHER_MESSAGES_START", "REFETCH_OTHER_MESSAGES_SUCCESS", "REFETCH_OTHER_MESSAGES_FAIL", callback);
 }

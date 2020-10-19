@@ -4,12 +4,12 @@ import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import { addToModals } from "../../../../redux/actions/globalActions";
 import { setParentIdForUpload } from "../../../../redux/actions/postActions";
-import { FileAttachments, ReminderNote, SvgIconFeather, ToolTip } from "../../../common";
+import { FileAttachments, ReminderNote, SvgIconFeather } from "../../../common";
 import { DropDocument } from "../../../dropzone/DropDocument";
 import { useCommentActions, useComments } from "../../../hooks";
 import { CompanyPostBody, CompanyPostComments, CompanyPostDetailFooter } from "./index";
-import { replaceChar } from "../../../../helpers/stringFormatter";
 import { MoreOptions } from "../../common";
+import Avatar from "../../../common/Avatar";
 
 const MainHeader = styled.div`
   min-height: 70px;
@@ -54,6 +54,64 @@ const MainBody = styled.div`
   flex-grow: 1;
   width: 100%;
   flex-flow: column;
+  
+  .user-reads-container {
+    position: relative;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 0.5rem;
+    
+    .read-users-container {
+      transition: all 0.5s ease;
+      position: absolute;
+      right: 0;
+      bottom: 30px;  
+      border: 1px solid #dee2e6;
+      border-radius: 6px;
+      background-color: #fff;
+      overflow: auto;
+      opacity: 0;
+      max-height: 0;
+      
+      &:hover {
+        opacity: 1;
+        max-height: 165px;  
+      }
+      
+      .dark & {
+        background-color: #191c20;  
+      }
+      
+      > span {
+        padding: 0.5rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      
+        .avatar {
+          img {
+            min-width: 28px;
+          }
+        }
+      
+        .name {
+          width: 100%;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          display: block;      
+        }
+      }
+    }
+  }
+  
+  .user-reads-container {         
+    span.no-readers:hover ~ span.read-users-container {
+      opacity: 1;
+      max-height: 165px;
+    }                  
+  }  
 `;
 
 const StyledMoreOptions = styled(MoreOptions)`
@@ -114,13 +172,22 @@ const Icon = styled(SvgIconFeather)`
   }
 `;
 
+const MarkAsRead = styled.div`
+  cursor: pointer;
+`;
+
 const CompanyPostDetail = (props) => {
-  const { post, postActions, user, onGoBack, dictionary } = props;
-  const { markAsRead, markAsUnread, sharePost, followPost, remind } = postActions;
+
   const dispatch = useDispatch();
   const history = useHistory();
   const commentActions = useCommentActions();
+
+  const { post, postActions, user, onGoBack, dictionary, readByUsers = [] } = props;
+  const { markAsRead, markAsUnread, sharePost, followPost, remind } = postActions;
+
   const comments = useComments(post, commentActions);
+
+  const hasRead = readByUsers.some(u => u.id === user.id);
 
   const [showDropZone, setshowDropZone] = useState(false);
   const [react, setReact] = useState({
@@ -201,6 +268,10 @@ const CompanyPostDetail = (props) => {
     dispatch(addToModals(modal));
   };
 
+  const markRead = () => {
+    postActions.markReadRequirement(post);
+  };
+
   const handleReaction = () => {
     setReact((prevState) => ({
       user_clap_count: !!prevState.user_clap_count ? 0 : 1,
@@ -214,10 +285,6 @@ const CompanyPostDetail = (props) => {
       personalized_for_id: null,
     };
     postActions.clap(payload);
-  };
-
-  const handleAuthorClick = () => {
-    history.push(`/profile/${post.author.id}/${replaceChar(post.author.name)}`);
   };
 
   //const isMember = post.users_responsible.some((u) => u.id === user.id);
@@ -243,35 +310,33 @@ const CompanyPostDetail = (props) => {
         <ReminderNote todoReminder={post.todo_reminder} type="POST"/>
       }
       <MainHeader className="card-header d-flex justify-content-between">
-        <div className={"company-post-detail-header"}>
-          <div>
-            <ul>
-              <li>
-                <Icon className="close mr-2" icon="arrow-left" onClick={handleClosePost}/>
-              </li>
-              <li>
-                <h5 ref={refs.title} className="post-title mb-0">
-                  <span>{post.title}</span>
-                </h5>
-                <div className="author-name">
-                  <ToolTip content={post.author.name}>
-                    {dictionary.by}{" "}
-                    <span onClick={handleAuthorClick} className="cursor-pointer">
-                      {post.author.first_name}
-                    </span>
-                  </ToolTip>
-                </div>
-              </li>
-            </ul>
-          </div>
+        <div>
+          <ul>
+            <li>
+              <Icon className="close mr-2" icon="arrow-left" onClick={handleClosePost}/>
+            </li>
+            <li>
+              <h5 ref={refs.title} className="post-title mb-0">
+                <span>{post.title}</span>
+              </h5>
+            </li>
+          </ul>
         </div>
         <div>
+          {post.author.id !== user.id && post.is_must_read && (!hasRead) && (
+            <MarkAsRead className="d-sm-inline d-none">
+              <button className="btn btn-primary btn-block" onClick={markRead}>
+                {dictionary.markAsRead}
+              </button>
+            </MarkAsRead>
+          )}
           {post.author.id === user.id && (
             <ul>
               <li>
                 <span data-toggle="modal" data-target="#editTaskModal">
-                  <a onClick={() => postActions.showModal("edit_company", post)} className="btn btn-outline-light ml-2" title="" data-toggle="tooltip" data-original-title="Edit Task">
-                    <Icon icon="edit-3" />
+                  <a onClick={() => postActions.showModal("edit_company", post)} className="btn btn-outline-light ml-2"
+                     title="" data-toggle="tooltip" data-original-title="Edit Task">
+                    <Icon icon="edit-3"/>
                   </a>
                 </span>
               </li>
@@ -310,17 +375,41 @@ const CompanyPostDetail = (props) => {
           }}
           onCancel={handleHideDropzone}
         />
-        <CompanyPostBody post={post} postActions={postActions} isAuthor={post.author.id === user.id} dictionary={dictionary} />
-        <hr className="m-0" />
+        <CompanyPostBody
+          post={post}
+          user={user}
+          postActions={postActions}
+          isAuthor={post.author.id === user.id}
+          dictionary={dictionary}/>
+        <hr className="m-0"/>
         <Counters className="d-flex align-items-center">
           <div>
-            <Icon className={react.user_clap_count ? "mr-2 post-reaction clap-true" : "mr-2 post-reaction clap-false"} icon="heart" onClick={handleReaction} />
+            <Icon className={react.user_clap_count ? "mr-2 post-reaction clap-true" : "mr-2 post-reaction clap-false"}
+                  icon="heart" onClick={handleReaction}/>
             {react.clap_count}
           </div>
-          <div className="ml-auto text-muted">
-            <Icon className="mr-2" icon="message-square" />
+          <div className="readers-container ml-auto text-muted">
+            {
+              readByUsers.length > 0 &&
+              <div className="user-reads-container">
+                {hasRead &&
+                <span className="mr-2"><Icon className="mr-2" icon="check"/> {dictionary.alreadyReadThis}</span>}
+                <span className="no-readers">{dictionary.readByNumberofUsers}</span>
+                <span className="hover read-users-container">
+                  {
+                    readByUsers.map(u => {
+                      return <span key={u.id}>
+                        <Avatar className="mr-2" key={u.id} name={u.name} imageLink={u.profile_image_link}
+                                id={u.id}/> <span className="name">{u.name}</span>
+                      </span>;
+                    })
+                  }
+                </span>
+              </div>
+            }
+            <Icon className="mr-2" icon="message-square"/>
             {post.reply_count}
-            <Icon className="ml-2 mr-2 seen-indicator" icon="eye" />
+            <Icon className="ml-2 mr-2 seen-indicator" icon="eye"/>
             {post.view_user_ids.length}
           </div>
         </Counters>

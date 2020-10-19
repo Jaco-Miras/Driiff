@@ -20,7 +20,7 @@ export default function usePushNotification() {
   //We initialize the userConsent with that value
   const [userSubscription, setUserSubscription] = useState(null);
   //to manage the use push notification subscription
-  const [pushServerSubscriptionId, setPushServerSubscriptionId] = useState();
+  const [pushServerSubscriptionId, setPushServerSubscriptionId] = useState(null);
   //to manage the push server subscription
   const [error, setError] = useState(null);
   //to manage errors
@@ -28,6 +28,9 @@ export default function usePushNotification() {
   //to manage async actions
   const [subscribing, setSubsubscribing] = useState(null);
   const [fetchingSubscription, setFetchingSubscription] = useState(null);
+  //reminder time
+  const [reminderTime, setReminderTime] = useState(localStorage.getItem("remindNotification"));
+  const [didMount, setDidMount] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -48,6 +51,9 @@ export default function usePushNotification() {
           message: "You denied the consent to receive notifications",
           code: 0,
         });
+        setUserSubscription(false)
+      } else {
+        onClickSubscribeToPushNotification()
       }
       setLoading(false);
     });
@@ -129,22 +135,10 @@ export default function usePushNotification() {
       setLoading(true);
       setError(false);
       registerServiceWorker().then(() => {
-        if (userConsent === "default") {
-          askUserPermission().then((consent) => {
-            setSuserConsent(consent);
-            if (consent !== "granted") {
-              setError({
-                name: "Consent denied",
-                message: "You denied the consent to receive notifications",
-                code: 0,
-              });
-            }
-            setLoading(false);
-          });
-        }
-        //setLoading(false);
+        setLoading(false);
       });
     }
+    setDidMount(true);
   }, []);
   //if the push notifications are supported, registers the service worker
   //this effect runs only the first render
@@ -198,10 +192,18 @@ export default function usePushNotification() {
       });
     }
   }, [hasSubscribed, userConsent]);
+
+  const onClickRemindLater = () => {
+    // ask again tomorrow 86400 seconds = 1 day
+    let time = Math.floor(Date.now() / 1000) + 86400
+    localStorage.setItem("remindNotification", time);
+    setReminderTime(time)
+  };
   /**
    * returns all the stuff needed by a Component
    */
   return {
+    onClickRemindLater,
     onClickAskUserPermission,
     onClickSubscribeToPushNotification,
     onClickSendSubscriptionToPushServer,
@@ -212,5 +214,7 @@ export default function usePushNotification() {
     userSubscription,
     error,
     loading,
+    showNotificationBar: userConsent === "default" && userSubscription === null && (reminderTime === null || (reminderTime < Math.floor(Date.now() / 1000))),
+    mounted: didMount
   };
 }

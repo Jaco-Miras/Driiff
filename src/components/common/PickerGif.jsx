@@ -8,7 +8,7 @@ const PickerContainer = styled.div`
   background-color: #fff;
 
   .selectDiv {
-    border: 1px solid #cacaca;
+    border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 10px;
     padding: 10px;
   }
