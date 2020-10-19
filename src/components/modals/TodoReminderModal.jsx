@@ -173,7 +173,7 @@ const TodoReminderModal = (props) => {
   };
 
   const isFormValid = () => {
-    let newForm = form;
+    let newForm = {...form};
 
     if (form.title.value.trim() === "") {
       newForm.title.valid = false;
@@ -190,13 +190,14 @@ const TodoReminderModal = (props) => {
     if (timeValue === "pick_data") {
       const currentDate = new Date();
       const reminderDate = new Date(customTimeValue);
-
       if (reminderDate > currentDate) {
-        newForm.set_time.value = moment.utc(reminderDate).format("YYYY-MM-DD HH:mm:ss");
+        let convertedTime = moment.utc(reminderDate).format("YYYY-MM-DD HH:mm:ss")
+        newForm.set_time.value = convertedTime.slice(0, -2) + "00";
         newForm.set_time.valid = true;
         newForm.set_time.feedback = null;
       } else if (customTimeValue.getTime() === reminderDate.getTime()) {
-        newForm.set_time.value = moment.utc(reminderDate).format("YYYY-MM-DD HH:mm:ss");
+        let convertedTime = moment.utc(reminderDate).format("YYYY-MM-DD HH:mm:ss")
+        newForm.set_time.value = convertedTime.slice(0, -2) + "00";
         newForm.set_time.valid = true;
         newForm.set_time.feedback = dictionary.feedbackReminderDateOverdue;
       } else {
@@ -228,7 +229,7 @@ const TodoReminderModal = (props) => {
         payload[k] = form[k].value;
       }
     });
-
+    console.log(payload)
     actions.onSubmit(payload, (err, res) => {
       if (res) {
         toggle();
@@ -246,7 +247,7 @@ const TodoReminderModal = (props) => {
       }, 500)
     }
   }
-  console.log(item);
+  //console.log(item);
   return (
     <Wrapper isOpen={modal} toggle={toggle} size={"lg"} className="todo-reminder-modal" centered>
       <ModalHeaderSection toggle={toggle}>{dictionary.chatReminder}</ModalHeaderSection>
