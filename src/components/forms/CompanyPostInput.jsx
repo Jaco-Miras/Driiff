@@ -27,9 +27,9 @@ const StyledQuillEditor = styled(QuillEditor)`
     }
     -ms-overflow-style: none;
     scrollbar-width: none;
-    
+
     &:focus {
-      border: none;      
+      border: none;
     }
   }
   .ql-container {
@@ -61,7 +61,7 @@ const StyledQuillEditor = styled(QuillEditor)`
     overflow-x: hidden;
     overflow-y: auto;
     z-index: 2;
-    
+
     .dark & {
       background: #25282c;
       color: #c7c7c7;
@@ -91,7 +91,7 @@ const StyledQuillEditor = styled(QuillEditor)`
 `;
 
 const CloseButton = styled(SvgIconFeather)`
-  position: absolute;  
+  position: absolute;
   top: calc(50% - 12px);
   right: 5px;
   cursor: pointer;
@@ -102,8 +102,7 @@ const CloseButton = styled(SvgIconFeather)`
 const CompanyPostInput = (props) => {
   const {
     selectedEmoji, onClearEmoji, selectedGif, onClearGif, dropAction, sent, handleClearSent,
-    post, parentId, commentActions, userMention, handleClearUserMention, commentId, members
-  } = props;
+    post, parentId, commentActions, userMention, handleClearUserMention, commentId, members, onActive } = props;
   const dispatch = useDispatch();
   const reactQuillRef = useRef();
   const selectedChannel = useSelector((state) => state.chat.selectedChannel);
@@ -270,6 +269,8 @@ const CompanyPostInput = (props) => {
     setText(content);
     setTextOnly(textOnly);
     setQuillContents(editor.getContents());
+
+    textOnly.trim() === "" ? onActive(false) : onActive(true);
 
     if (editor.getContents().ops && editor.getContents().ops.length) {
       handleMentionUser(

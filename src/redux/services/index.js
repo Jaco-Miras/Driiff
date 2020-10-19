@@ -30,6 +30,7 @@ export {
   putChatMessage,
   putMarkReminderComplete,
   deleteChatMessage,
+  getChannelDetail,
 } from "./chat";
 
 export {
@@ -87,6 +88,8 @@ export {
   getToDoDetail,
   putDoneToDo,
   delRemoveToDo,
+  refetchMessages,
+  refetchOtherMessages,
 } from "./global";
 
 export {

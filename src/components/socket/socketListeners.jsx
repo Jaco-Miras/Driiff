@@ -11,6 +11,7 @@ import {
   addToChannels,
   deletePostNotification,
   getChannel,
+  getChannelDetail,
   getChannelMembers,
   incomingArchivedChannel,
   incomingChatMessage,
@@ -73,9 +74,11 @@ import {
   incomingRemoveToDo,
   incomingToDo,
   incomingUpdateToDo,
+  refetchMessages,
+  refetchOtherMessages,
   setBrowserTabStatus,
   setGeneralChat,
-  setUnreadNotificationCounterEntries
+  setUnreadNotificationCounterEntries,
 } from "../../redux/actions/globalActions";
 import {
   fetchPost,
@@ -116,13 +119,60 @@ import {
 } from "../../redux/actions/workspaceActions";
 import { incomingUpdateCompanyName, updateCompanyPostAnnouncement } from "../../redux/actions/settingsActions";
 import { isIPAddress } from "../../helpers/commonFunctions";
-
+import { incomingReminderNotification } from "../../redux/actions/notificationActions";
 class SocketListeners extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      reconnected: null,
+      disconnectedTimestamp: null,
+      reconnectedTimestamp: null,
+    };
+  }
+
+  refetch = () => {
+    if (this.props.lastReceivedMessage) {
+      this.props.refetchMessages({message_id: this.props.lastReceivedMessage.id})
+    }
+  }
+
+  refetchOtherMessages = () => {
+    if (this.props.lastReceivedMessage && Object.values(this.props.channels).length) {
+      let channels = Object.values(this.props.channels)
+      this.props.refetchOtherMessages(
+        { message_id: this.props.lastReceivedMessage.id, 
+          channel_ids: channels.filter((c) => {
+            return typeof c.id === "number" && c.id !== this.props.lastReceivedMessage.channel_id
+          }).map((c) => c.id)
+        }, (err, res) => {
+          if (err) return;
+          let channelsWithMessage = res.data.filter((c) => c.count_message > 0);
+          channelsWithMessage.forEach((c) => {
+            this.props.getChannelDetail({id: c.channel_id});
+          })
+        }
+      )
+    }
   }
 
   componentDidMount() {
+
+    window.Echo.connector.socket.on("connect", () => {
+      console.log("socket connected");
+    });
+    window.Echo.connector.socket.on("disconnect", () => {
+      console.log("socket disconnected");
+      this.setState({disconnectedTimestamp: Math.floor(Date.now() / 1000)});
+    });
+    window.Echo.connector.socket.on("reconnect", () => {
+      console.log("socket reconnected");
+      this.setState({ reconnected: true, reconnectedTimestamp: Math.floor(Date.now() / 1000)});
+      this.refetch();
+      this.refetchOtherMessages();
+    });
+    window.Echo.connector.socket.on("reconnecting", function () {
+      console.log("socket reconnecting");
+    });
     /**
      * @todo Online users are determined every 30 seconds
      * online user reducer should be updated every socket call
@@ -132,13 +182,13 @@ class SocketListeners extends Component {
       this.props.getOnlineUsers();
     }, 30000);
 
-    this.props.addUserToReducers({
-      id: this.props.user.id,
-      name: this.props.user.name,
-      partial_name: this.props.user.partial_name,
-      profile_image_link: this.props.user.profile_image_link,
-      type: this.props.user.type,
-    });
+    // this.props.addUserToReducers({
+    //   id: this.props.user.id,
+    //   name: this.props.user.name,
+    //   partial_name: this.props.user.partial_name,
+    //   profile_image_link: this.props.user.profile_image_link,
+    //   type: this.props.user.type,
+    // });
 
     // new socket
     window.Echo.private(`${localStorage.getItem("slug") === "dev24admin" ? "dev" : localStorage.getItem("slug")}.Driff.User.${this.props.user.id}`)
@@ -195,6 +245,7 @@ class SocketListeners extends Component {
                 pushBrowserNotification(`You asked to be reminded about ${e.title}`, e.title, this.props.user.profile_image_link, redirect);
               }
             }
+            this.props.incomingReminderNotification(e);
             break;
           }
           default:
@@ -508,7 +559,7 @@ class SocketListeners extends Component {
             if (this.props.user.id !== message.user.id) {
               delete message.reference_id;
               message.g_date = this.props.localizeDate(e.created_at.timestamp, "YYYY-MM-DD");
-              if (this.props.isLastChatVisible && this.props.selectedChannel && this.props.selectedChannel.id === message.channel_id) {
+              if (this.props.isLastChatVisible && this.props.selectedChannel && this.props.selectedChannel.id === message.channel_id && isBrowserActive) {
                 message.is_read = true;
               }
             }
@@ -1185,12 +1236,16 @@ class SocketListeners extends Component {
       })
       .listen(".chat-message-react", (e) => {
         console.log(e);
-        this.props.incomingChatMessageReaction({...e, user_name: e.name});
+        this.props.incomingChatMessageReaction({ ...e, user_name: e.name });
       })
       .listen(".updated-notification-counter", (e) => {
         console.log(e, "updated counter");
         this.props.setUnreadNotificationCounterEntries(e);
       });
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    this.props.useDriff.updateFaviconState((this.props.unreadCounter.chat_message + this.props.unreadCounter.workspace_chat_message) !== 0);
   }
 
   render() {
@@ -1199,12 +1254,12 @@ class SocketListeners extends Component {
 }
 
 function mapStateToProps({
-                           session: {user},
-                           settings: {userSettings},
-                           chat: {channels, selectedChannel, isLastChatVisible},
-                           workspaces: {workspaces, workspacePosts, folders, activeTopic, workspacesLoaded},
-                           global: {isBrowserActive},
-                           users: {mentions, users}
+                           session: { user },
+                           settings: { userSettings },
+                           chat: { channels, selectedChannel, isLastChatVisible, lastReceivedMessage },
+                           workspaces: { workspaces, workspacePosts, folders, activeTopic, workspacesLoaded },
+                           global: { isBrowserActive, unreadCounter },
+                           users: { mentions, users }
                          }) {
   return {
     user,
@@ -1219,7 +1274,9 @@ function mapStateToProps({
     activeTopic,
     workspacesLoaded,
     workspaces,
-    isLastChatVisible
+    isLastChatVisible,
+    lastReceivedMessage,
+    unreadCounter
   };
 }
 
@@ -1322,6 +1379,10 @@ function mapDispatchToProps(dispatch) {
     incomingPostNotificationMessage: bindActionCreators(incomingPostNotificationMessage, dispatch),
     incomingMarkAsRead: bindActionCreators(incomingMarkAsRead, dispatch),
     addToModals: bindActionCreators(addToModals, dispatch),
+    refetchMessages: bindActionCreators(refetchMessages, dispatch),
+    refetchOtherMessages: bindActionCreators(refetchOtherMessages, dispatch),
+    getChannelDetail: bindActionCreators(getChannelDetail, dispatch),
+    incomingReminderNotification: bindActionCreators(incomingReminderNotification, dispatch)
   };
 }
 

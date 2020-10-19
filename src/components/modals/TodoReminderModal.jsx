@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
 import DateTimePicker from "react-datetime-picker";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Button, InputGroup, Modal, ModalBody, ModalFooter } from "reactstrap";
 import styled from "styled-components";
 import { clearModal } from "../../redux/actions/globalActions";
@@ -10,6 +10,8 @@ import { ModalHeaderSection } from "./index";
 import quillHelper from "../../helpers/quillHelper";
 import { FormInput, InputFeedback, QuillEditor } from "../forms";
 import moment from "moment";
+import MessageFiles from "../list/chat/Files/MessageFiles";
+import { FileAttachments } from "../common";
 
 const Wrapper = styled(Modal)`
 .invalid-feedback {
@@ -72,6 +74,7 @@ const TodoReminderModal = (props) => {
   const {_t} = useTranslation();
   const dispatch = useDispatch();
 
+  const user = useSelector((state) => state.session.user);
   const [componentUpdate, setComponentUpdate] = useState(0);
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
@@ -170,7 +173,7 @@ const TodoReminderModal = (props) => {
   };
 
   const isFormValid = () => {
-    let newForm = form;
+    let newForm = {...form};
 
     if (form.title.value.trim() === "") {
       newForm.title.valid = false;
@@ -181,28 +184,30 @@ const TodoReminderModal = (props) => {
       newForm.title.feedback = null;
     }
 
-    if (form.description.value)
+    if (form.description.value) {
+    }
 
-      if (timeValue === "pick_data") {
-        const currentDate = new Date();
-        const reminderDate = new Date(customTimeValue);
-
-        if (reminderDate > currentDate) {
-          newForm.set_time.value = moment.utc(reminderDate).format("YYYY-MM-DD HH:mm:ss");
-          newForm.set_time.valid = true;
-          newForm.set_time.feedback = null;
-        } else if (customTimeValue.getTime() === reminderDate.getTime()) {
-          newForm.set_time.value = moment.utc(reminderDate).format("YYYY-MM-DD HH:mm:ss");
-          newForm.set_time.valid = true;
-          newForm.set_time.feedback = dictionary.feedbackReminderDateOverdue;
-        } else {
-          newForm.set_time.valid = false;
-          newForm.set_time.feedback = dictionary.feedbackReminderDateFuture;
-        }
-      } else {
-        newForm.set_time.value = timeValue;
+    if (timeValue === "pick_data") {
+      const currentDate = new Date();
+      const reminderDate = new Date(customTimeValue);
+      if (reminderDate > currentDate) {
+        let convertedTime = moment.utc(reminderDate).format("YYYY-MM-DD HH:mm:ss")
+        newForm.set_time.value = convertedTime.slice(0, -2) + "00";
         newForm.set_time.valid = true;
+        newForm.set_time.feedback = null;
+      } else if (customTimeValue.getTime() === reminderDate.getTime()) {
+        let convertedTime = moment.utc(reminderDate).format("YYYY-MM-DD HH:mm:ss")
+        newForm.set_time.value = convertedTime.slice(0, -2) + "00";
+        newForm.set_time.valid = true;
+        newForm.set_time.feedback = dictionary.feedbackReminderDateOverdue;
+      } else {
+        newForm.set_time.valid = false;
+        newForm.set_time.feedback = dictionary.feedbackReminderDateFuture;
       }
+    } else {
+      newForm.set_time.value = timeValue;
+      newForm.set_time.valid = true;
+    }
 
     setForm(newForm);
     setComponentUpdate(prevState => prevState ? 0 : 1);
@@ -223,8 +228,8 @@ const TodoReminderModal = (props) => {
       } else {
         payload[k] = form[k].value;
       }
-    })
-
+    });
+    console.log(payload)
     actions.onSubmit(payload, (err, res) => {
       if (res) {
         toggle();
@@ -242,7 +247,7 @@ const TodoReminderModal = (props) => {
       }, 500)
     }
   }
-
+  //console.log(item);
   return (
     <Wrapper isOpen={modal} toggle={toggle} size={"lg"} className="todo-reminder-modal" centered>
       <ModalHeaderSection toggle={toggle}>{dictionary.chatReminder}</ModalHeaderSection>
@@ -284,8 +289,10 @@ const TodoReminderModal = (props) => {
               <div className="col-12 modal-label">{dictionary.title}</div>
               <div className="col-12 mb-3">{form.title.value}</div>
               <div className="col-12 modal-label">{dictionary.description}</div>
-              <div className="col-12"
-                   dangerouslySetInnerHTML={{__html: quillHelper.parseEmoji(form.description.value)}}/>
+              <div className="col-12 mb-3">
+                <span dangerouslySetInnerHTML={{ __html: quillHelper.parseEmoji(form.description.value) }}/>
+                <FileAttachments attachedFiles={item.files} showDelete={false}/>
+              </div>
             </div>
           </>
         }
@@ -299,8 +306,10 @@ const TodoReminderModal = (props) => {
               <div className="col-12 modal-label">{dictionary.title}</div>
               <div className="col-12 mb-3">{form.title.value}</div>
               <div className="col-12 modal-label">{dictionary.message}</div>
-              <div className="col-12 mb-3"
-                   dangerouslySetInnerHTML={{__html: quillHelper.parseEmoji(form.description.value)}}/>
+              <div className="col-12 mb-3">
+                <MessageFiles isAuthor={item.user.id === user.id} files={item.files} reply={item} type="chat"/>
+                <span dangerouslySetInnerHTML={{ __html: quillHelper.parseEmoji(form.description.value) }}/>
+              </div>
             </div>
           </>
         }
@@ -314,8 +323,10 @@ const TodoReminderModal = (props) => {
               <div className="col-12 modal-label">{dictionary.title}</div>
               <div className="col-12 mb-3">{form.title.value}</div>
               <div className="col-12 modal-label">{dictionary.message}</div>
-              <div className="col-12 mb-3"
-                   dangerouslySetInnerHTML={{__html: quillHelper.parseEmoji(form.description.value)}}/>
+              <div className="col-12 mb-3">
+                <span dangerouslySetInnerHTML={{ __html: quillHelper.parseEmoji(form.description.value) }}/>
+                <FileAttachments attachedFiles={item.files} showDelete={false}/>
+              </div>
             </div>
           </>
         }

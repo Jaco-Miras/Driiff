@@ -275,7 +275,8 @@ const FileAttachments = (props) => {
             <li data-target-index={i} key={i} onClick={handleClick} title={f.search ? f.search : f.name}>
               <AttachmentIcon icon="paperclip" />
               {f.search ? f.search : f.name}
-              {((type === "modal") || (loggedUser.id === f.uploader.id && showDelete)) && <SvgIconFeather data-file-id={f.id} onClick={handleDelete} icon="trash-2" />}
+              {showDelete && ((type === "modal") || (loggedUser.id === f.uploader.id)) &&
+              <SvgIconFeather data-file-id={f.id} onClick={handleDelete} icon="trash-2"/>}
             </li>
           );
         })}
@@ -292,9 +293,11 @@ const FileAttachments = (props) => {
             {renderFile(filePreview.file)}
             <span className="file-name">{filePreview.file.name}</span>
           </a>
-          <span className="file-delete" data-file-id={filePreview.file.id} onClick={handleDelete}>
-            <SvgIconFeather icon="trash-2" /> Delete
-          </span>
+          {
+            showDelete && <span className="file-delete" data-file-id={filePreview.file.id} onClick={handleDelete}>
+              <SvgIconFeather icon="trash-2"/> Delete
+            </span>
+          }
         </Tooltip>
       )}
     </Wrapper>

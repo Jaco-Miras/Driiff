@@ -55,3 +55,7 @@ export function removeAllNotificationReducer(payload, callback) {
 export function setPushNotification(payload, callback) {
   return SimpleDispatchActionToReducer("SET_PUSH_NOTIFICATION", payload, callback);
 }
+
+export function incomingReminderNotification(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_REMINDER_NOTIFICATION", payload, callback);
+}

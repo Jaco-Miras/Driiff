@@ -682,7 +682,7 @@ const CreateEditWorkspacePostModal = (props) => {
         } else {
           return ad.member_ids;
         }
-      }).flat()
+      }).flat();
       let ignoreIds = [user.id, ...adddressIds, ...ignoredMentionedUserIds];
       let userIds = mention_ids.filter((id) => {
         return !ignoreIds.some((iid) => iid === id);
@@ -1051,7 +1051,7 @@ const CreateEditWorkspacePostModal = (props) => {
           <div className="post-visibility-container" ref={handlePostVisibilityRef}>
             <span className="user-list">
               {
-                users.filter(u => user_ids.includes(u.id)).map(u => {
+                users.filter(u => user_ids.includes(u.type_id)).map(u => {
                   return <span key={u.id}>
                     <span
                       title={u.email}
