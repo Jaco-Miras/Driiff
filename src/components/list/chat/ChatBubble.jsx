@@ -679,7 +679,7 @@ const ChatBubble = (props) => {
 
   const parseBody = useCallback(() => {
     let isEmoticonOnly = false;
-    let replyBody = quillHelper.parseEmoji(reply.body);
+    let replyBody = reply.body;
     if (reply.is_deleted) {
       //replyBody = _t(reply.body, "The chat message has been deleted");
       replyBody = dictionary.chatRemoved;
@@ -753,7 +753,7 @@ const ChatBubble = (props) => {
         });
       }
 
-      replyQuoteBody += quillHelper.parseEmoji(reply.quote.body);
+      replyQuoteBody += reply.quote.body;
       if (reply.quote.user) {
         if (user.id !== reply.quote.user.id) {
           replyQuoteAuthor = reply.quote.user.name;
@@ -934,7 +934,7 @@ const ChatBubble = (props) => {
       replyQuoteBody = renderToString(newBody);
     } else if (replyQuoteBody.includes("POST_CREATE::")) {
       let item = JSON.parse(reply.quote.body.replace("POST_CREATE::", ""));
-      let description = quillHelper.parseToText(item.post.description);
+      let description = item.post.description;
       replyQuoteBody = renderToString(<>
               <b>{item.author.first_name}</b> {dictionary.createdThePost} <b>"{item.post.title}"</b>
               <span className="card card-body" style={{margin: 0, padding: "10px"}}
@@ -948,18 +948,22 @@ const ChatBubble = (props) => {
   }, [reply])
 
   useEffect(() => {
-    parseBody()
-  }, [reply.body, reply.is_deleted])
+    parseBody();
+  }, [reply.body, reply.is_deleted]);
 
   const hasFiles = reply.files.length > 0;
   const hasMessage = reply.body !== "<span></span>";
   const googleApis = useGoogleApis();
 
-  const handleContentRef = (e) => {
+  const handleQuoteContentRef = (e) => {
     if (e) {
       const googleLinks = e.querySelectorAll(`[data-google-link-retrieve="0"]`);
       googleLinks.forEach((gl) => {
         let e = gl;
+        let linkText = e.querySelector(".link");
+        if (linkText) {
+          linkText.innerHTML = e.dataset.hrefLink;
+        }
         e.dataset.googleLinkRetrieve = 1;
         googleApis.getFile(e, e.dataset.googleFileId);
       });
@@ -974,6 +978,32 @@ const ChatBubble = (props) => {
       }
     }
   };
+
+  const handleContentRef = (e) => {
+    if (e) {
+      const googleLinks = e.querySelectorAll(`[data-google-link-retrieve="0"]`);
+      googleLinks.forEach((gl) => {
+        let e = gl;
+        let linkText = e.querySelector(".link");
+        if (linkText) {
+          linkText.innerHTML = e.dataset.hrefLink;
+        }
+        e.dataset.googleLinkRetrieve = 1;
+        googleApis.getFile(e, e.dataset.googleFileId);
+      });
+      if (showGifPlayer) {
+        let hasText = false;
+        Array.from(e.children).forEach((el) => {
+          if (el.innerHTML !== "") {
+            hasText = true;
+          }
+        });
+        setGifOnly(!hasText);
+      }
+    }
+  };
+
+  const bodyContent = quillHelper.parseEmoji(body);
 
   return (
     <ChatBubbleContainer
@@ -997,7 +1027,9 @@ const ChatBubble = (props) => {
           <ChatContentClap ref={addMessageRef ? loadRef : null} className="chat-content-clap" isAuthor={isAuthor}>
             <ChatContent showAvatar={showAvatar} isAuthor={isAuthor} isEmoticonOnly={isEmoticonOnly} className={`chat-content animated slower`}>
               {reply.quote && reply.quote.body && !reply.is_deleted && (reply.quote.user_id !== undefined || reply.quote.user !== undefined) && (
-                <QuoteContainer className={"quote-container"} showAvatar={showAvatar} isEmoticonOnly={isEmoticonOnly} hasFiles={hasFiles} theme={chatSettings.chat_message_theme} onClick={handleQuoteClick} isAuthor={isAuthor}>
+                <QuoteContainer className={"quote-container"} showAvatar={showAvatar} isEmoticonOnly={isEmoticonOnly}
+                                hasFiles={hasFiles} theme={chatSettings.chat_message_theme} onClick={handleQuoteClick}
+                                isAuthor={isAuthor}>
                   {reply.quote.user_id === user.id ? (
                     <QuoteAuthor theme={chatSettings.chat_message_theme} isAuthor={true}>
                       {"You"}
@@ -1007,8 +1039,10 @@ const ChatBubble = (props) => {
                       {quoteAuthor}
                     </QuoteAuthor>
                   )}
-                  <QuoteContent className={"quote-content"} theme={chatSettings.chat_message_theme} isAuthor={isAuthor}
-                                dangerouslySetInnerHTML={{ __html: quillHelper.parseEmoji(quoteBody) }}></QuoteContent>
+                  <QuoteContent
+                    ref={handleQuoteContentRef}
+                    className={"quote-content"} theme={chatSettings.chat_message_theme} isAuthor={isAuthor}
+                    dangerouslySetInnerHTML={{ __html: quillHelper.parseEmoji(quoteBody) }}></QuoteContent>
                 </QuoteContainer>
               )}
               {
@@ -1035,7 +1069,7 @@ const ChatBubble = (props) => {
                     theme={chatSettings.chat_message_theme}
                     isAuthor={isAuthor}
                     className={`reply-content ${isEmoticonOnly ? "emoticon-body" : ""} ${reply.is_deleted ? "is-deleted" : ""}`}
-                    dangerouslySetInnerHTML={showGifPlayer ? { __html: stripGif(quillHelper.parseEmoji(body)) } : { __html: quillHelper.parseEmoji(body) }}
+                    dangerouslySetInnerHTML={showGifPlayer ? { __html: stripGif(bodyContent) } : { __html: bodyContent }}
                   />
                 </span>
               }
