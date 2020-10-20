@@ -249,4 +249,4 @@ const CompanyPostsPanel = (props) => {
   );
 };
 
-export default React.memo(CompanyPostsPanel);
+export default CompanyPostsPanel;

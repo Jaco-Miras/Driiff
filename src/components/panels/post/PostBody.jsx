@@ -32,7 +32,7 @@ const Wrapper = styled.div`
         opacity: 1;
         max-height: 300px;    
       }
-    }  
+    }
   }
   .recipient-names {
     transition: all 0.5s ease;

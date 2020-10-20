@@ -418,7 +418,12 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "ADD_TO_WORKSPACE_POSTS": {
-      let convertedPosts = convertArrayToObject(action.data.posts, "id");
+      let convertedPosts = convertArrayToObject(action.data.posts.reduce((arr, obj) => {
+        return arr.concat({
+          ...obj,
+          clap_user_ids: []
+        });
+      }, []), "id");
       let postDrafts = [];
       if (state.drafts.length) {
         state.drafts.forEach((d) => {
@@ -945,17 +950,39 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "INCOMING_POST_CLAP": {
-      let newWorkspacePosts = { ...state.workspacePosts };
-      Object.values(newWorkspacePosts).forEach((ws) => {
-        if (ws.posts.hasOwnProperty(action.data.post_id)) {
-          ws.posts[action.data.post_id].clap_count = action.data.clap_count === 0 ? ws.posts[action.data.post_id].clap_count - 1 : ws.posts[action.data.post_id].clap_count + 1;
-          ws.posts[action.data.post_id].user_clap_count = action.data.clap_count;
-        }
-      });
+      const channelIds = Object.keys(state.workspacePosts);
       return {
         ...state,
-        workspacePosts: newWorkspacePosts,
-      };
+        ...(channelIds.length && {
+          workspacePosts: {
+            ...state.workspacePosts,
+            ...(channelIds.reduce((ws, channelId) => {
+              ws = {
+                ...ws,
+                [channelId]: (typeof state.workspacePosts[channelId].posts[action.data.post_id] === "undefined" ? state.workspacePosts[channelId] : {
+                  ...state.workspacePosts[channelId],
+                  posts: {
+                    ...state.workspacePosts[channelId].posts,
+                    [action.data.post_id]: {
+                      ...state.workspacePosts[channelId].posts[action.data.post_id],
+                      ...(action.data.clap_count === 1 ? {
+                        clap_count: state.workspacePosts[channelId].posts[action.data.post_id].clap_count + 1,
+                        clap_user_ids: [...state.workspacePosts[channelId].posts[action.data.post_id].clap_user_ids.filter(id => id !== action.data.author.id), action.data.author.id],
+                        user_clap_count: action.data.author.id === state.user.id ? 1 : state.workspacePosts[channelId].posts[action.data.post_id].user_clap_count,
+                      } : {
+                        clap_count: state.workspacePosts[channelId].posts[action.data.post_id].clap_count - 1,
+                        clap_user_ids: state.workspacePosts[channelId].posts[action.data.post_id].clap_user_ids.filter(id => id !== action.data.author.id),
+                        user_clap_count: action.data.author.id === state.user.id ? 0 : state.workspacePosts[channelId].posts[action.data.post_id].user_clap_count,
+                      })
+                    }
+                  }
+                })
+              };
+              return ws;
+            }, {}))
+          }
+        })
+      }
     }
     case "INCOMING_COMMENT_CLAP": {
       let newPostComments = { ...state.postComments };
