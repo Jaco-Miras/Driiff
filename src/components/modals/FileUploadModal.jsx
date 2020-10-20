@@ -24,8 +24,8 @@ const DescriptionInputWrapper = styled.div`
 const StyledQuillEditor = styled(QuillEditor)`
 
   &.description-input {
-    overflow: auto;
-    overflow-x: hidden;
+    // overflow: auto;
+    // overflow-x: hidden;
     position: static;
     width: 100%;
   }
