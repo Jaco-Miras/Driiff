@@ -8,6 +8,8 @@ import {
   fetchRecentPosts as fetchRecentPostsService,
   fetchTagCounter as fetchTagCounterService,
   getCompanyPosts as getCompanyPostsService,
+  getPostClapHover as getPostClapHoverService,
+  getReplyClapHover as getReplyClapHoverService,
   postArchive as postArchiveService,
   postClap as postClapService,
   postComment as postCommentService,
@@ -217,4 +219,12 @@ export function fetchPost(payload, callback) {
 
 export function incomingMarkAsRead(payload, callback) {
   return SimpleDispatchActionToReducer("INCOMING_MARK_AS_READ", payload, callback);
+}
+
+export function getPostClapHover(payload, callback) {
+  return dispatchActionToReducer(getPostClapHoverService(payload), "GET_POST_CLAP_HOVER_START", "GET_POST_CLAP_HOVER_SUCCESS", "GET_POST_CLAP_HOVER_FAIL", callback);
+}
+
+export function getReplyClapHover(payload, callback) {
+  return dispatchActionToReducer(getReplyClapHoverService(payload), "GET_REPLY_CLAP_HOVER_START", "GET_REPLY_CLAP_HOVER_SUCCESS", "GET_REPLY_CLAP_HOVER_FAIL", callback);
 }

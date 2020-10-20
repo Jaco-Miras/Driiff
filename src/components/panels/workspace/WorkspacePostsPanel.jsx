@@ -201,4 +201,4 @@ const WorkspacePostsPanel = (props) => {
   );
 };
 
-export default React.memo(WorkspacePostsPanel);
+export default WorkspacePostsPanel;
