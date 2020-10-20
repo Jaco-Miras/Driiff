@@ -92,6 +92,11 @@ function receivePushNotification(event) {
           // image: author.profile_image_link,
           // icon: author.profile_image_link,
         }
+      } else if (SOCKET_TYPE === "CHAT_CREATE") {
+        options = {
+          ...options,
+          body: reference_title.includes("in a direct message") ? strip_body : `${user.first_name}: ${strip_body}`
+        }
       }
 
       self.clients.matchAll({includeUncontrolled: true}).then(clients => {
