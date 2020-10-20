@@ -163,7 +163,7 @@ const ChatBubbleQuoteDiv = styled.div`
   position: relative;
   flex-flow: column;
   display: inherit;
-  ${(props) => !props.isAuthor === true && "margin-left: 18px"};
+  margin-left: ${(props) => (props.showAvatar && !props.isAuthor ? "1rem" : "1.6rem")};
   > img {
     // max-height: ${(props) => (props.maxImgHeight > 300 ? `${props.maxImgHeight}px;` : "300px")};
     max-height: 300px;
@@ -256,36 +256,19 @@ const InfiniteScroll = styled.div`
 
 const StyledAvatar = styled(Avatar)`
   align-self: flex-start;
-  width: 21px !important;
-  height: 21px !important;
-  margin-top: ${(props) => (props.isForwardedMessage === true ? "25px" : "4px")};
+  width: 2rem !important;
+  height: 2rem !important;
+  margin-top: ${(props) => (props.isForwardedMessage === true ? "25px" : "3px")};
 
   img {
-    width: 21px !important;
-    height: 21px !important;
+    width: 2rem !important;
+    height: 2rem !important;
   }
   @media (max-width: 620px) {
     display: none;
   }
   .pixel-avatar {
     padding-top: 2px !important;
-  }
-`;
-
-const EmptyState = styled.div`
-  display: flex;
-  -webkit-box-align: center;
-  align-items: center;
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  svg {
-    max-width: 100%;
-    width: 100%;
-    max-height: 40%;
-    margin: auto;
   }
 `;
 
@@ -376,7 +359,7 @@ const VirtualizedChat = (props) => {
                     selectedChannel={selectedChannel}
                     showGifPlayer={showGifPlayer}
                     isAuthor={isAuthor}
-                    //addMessageRef={getLoadRef(reply.id)}
+                    addMessageRef={getLoadRef(reply.id)}
                     isLastChat={index + 1 === messages.length ? true : null}
                     loadReplies={loadReplies}
                     isBot={isBot}
@@ -419,7 +402,7 @@ const VirtualizedChat = (props) => {
                         selectedChannel={selectedChannel}
                         reply={reply}
                         chatName={chatName}
-                        //addMessageRef={getLoadRef(reply.id)}
+                        addMessageRef={getLoadRef(reply.id)}
                         isLastChat={index + 1 === messages.length ? true : null} 
                         isLastChatVisible={isLastChatVisible}
                         dictionary={props.dictionary}

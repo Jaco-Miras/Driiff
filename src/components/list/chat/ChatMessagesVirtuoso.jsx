@@ -152,7 +152,7 @@ class ChatMessages extends React.PureComponent {
             }
         } else {
           if (this.virtuoso.current) {
-            this.virtuoso.current.adjustForPrependedItems(20)
+            this.virtuoso.current.adjustForPrependedItems(res.data.results.length)
           }
         }
 
@@ -249,11 +249,9 @@ class ChatMessages extends React.PureComponent {
         } else {
           //load more messages
           console.log(snapshot, 'didupdate',  scrollComponent.scrollHeight, scrollComponent.scrollHeight - snapshot)
-          setTimeout(() => {
-            console.log(snapshot, 'didupdate timeout',  scrollComponent.scrollHeight, scrollComponent.scrollHeight - snapshot)
+          this.setState({restoringScroll: true}, () => {
             scrollComponent.scrollTop = scrollComponent.scrollHeight - snapshot;
-          },10)
-          // /scrollComponent.scrollTop = scrollComponent.scrollHeight - snapshot;
+          })
         }
       }
       // has replies
@@ -277,27 +275,6 @@ class ChatMessages extends React.PureComponent {
           }
         }
       }
-    }
-
-    if (selectedChannel && prevProps.selectedChannel.id === this.props.selectedChannel.id) {
-      if (selectedChannel.replies.length !== prevProps.selectedChannel.replies.length) {
-        if (selectedChannel.replies.length - prevProps.selectedChannel.replies.length === 1) {
-          if (selectedChannel.last_reply && selectedChannel.last_reply.user && selectedChannel.last_reply.user.id !== this.props.user.id) {
-            if (!this.props.isLastChatVisible) {
-              //receiving other messsage
-              //scrollComponent.scrollTop = scrollComponent.scrollHeight - snapshot;
-            }
-          }
-        } else {
-          //load more messages
-          console.log(scrollComponent, this.virtuoso)
-          // if (this.virtuoso.current) {
-          //   this.virtuoso.current.adjustForPrependedItems(20)
-          // }
-            //scrollComponent._outerRef.scrollTop = scrollComponent._outerRef.scrollHeight - snapshot
-        }
-      }
-      
     }
 
     if (this.props.unreadCount > 0 && this.props.isLastChatVisible) {
