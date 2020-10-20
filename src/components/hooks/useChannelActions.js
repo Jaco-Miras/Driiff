@@ -26,6 +26,7 @@ import {
 } from "../../redux/actions/chatActions";
 import { useSettings, useToaster, useTranslation } from "./index";
 import { useHistory } from "react-router-dom";
+import { replaceChar } from "../../helpers/stringFormatter";
 
 const useChannelActions = () => {
 
@@ -672,7 +673,7 @@ const useChannelActions = () => {
   const getUrlTitle = useCallback(
     (channelTitle) => {
       if (typeof channelTitle === "string")
-        return channelTitle.toLowerCase().replaceAll(" ", "-");
+        return replaceChar(channelTitle.toLowerCase());
 
       return "";
     }, []);
