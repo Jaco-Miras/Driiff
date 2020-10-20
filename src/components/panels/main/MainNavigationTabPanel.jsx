@@ -1,7 +1,7 @@
-import React, {useEffect, useRef, useState} from "react";
-import {useDispatch, useSelector} from "react-redux";
-import {useHistory} from "react-router-dom";
-import {Badge} from "reactstrap";
+import React, { useEffect, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
+import { Badge } from "reactstrap";
 import styled from "styled-components";
 import {
   addToModals,
@@ -9,10 +9,10 @@ import {
   getUnreadNotificationCounterEntries,
   setNavMode
 } from "../../../redux/actions/globalActions";
-import {NavLink, SvgEmptyState, SvgIcon, SvgIconFeather} from "../../common";
-import {useSettings, useTodos, useTranslation, useWorkspace} from "../../hooks";
-import {ExternalWorkspaceList, WorkspaceList} from "../../workspace";
-import {QuickLinks} from "../../list/links";
+import { NavLink, SvgEmptyState, SvgIcon, SvgIconFeather } from "../../common";
+import { useSettings, useTodos, useTranslation, useWorkspace } from "../../hooks";
+import { ExternalWorkspaceList, WorkspaceList } from "../../workspace";
+import { QuickLinks } from "../../list/links";
 import Tooltip from "react-tooltip-lite";
 
 const Wrapper = styled.div`
@@ -401,12 +401,15 @@ const MainNavigationTabPanel = (props) => {
     }
   }, [editCompany]);
 
+  const chatUnreadCounter = unreadCounter.chat_message + unreadCounter.unread_channel + unreadCounter.workspace_chat_message + unreadCounter.workspace_post;
+
   return (
     <Wrapper className={`navigation-menu-tab ${className}`}>
       <div>
-        <div className="navigation-menu-tab-header" data-toggle="tooltip" title="Driff" data-placement="right" data-original-title="Driff">
+        <div className="navigation-menu-tab-header" data-toggle="tooltip" title="Driff" data-placement="right"
+             data-original-title="Driff">
           <div className="driff-logo">
-            <DriffLogo icon="driff-logo" data-link="/" onClick={handleIconClick} />
+            <DriffLogo icon="driff-logo" data-link="/" onClick={handleIconClick}/>
           </div>
         </div>
       </div>
@@ -426,7 +429,7 @@ const MainNavigationTabPanel = (props) => {
                 >
                   <NavIcon icon={"home"} />
                   {driffSettings.company_name}
-                  <div>{(unreadCounter.chat_message >= 1 || unreadCounter.unread_channel > 0) && <Badge data-count={unreadCounter.chat_message}>&nbsp;</Badge>}</div>
+                  <div>{chatUnreadCounter !== 0 && <Badge data-count={chatUnreadCounter}>&nbsp;</Badge>}</div>
                 </NavIconContainer>
               )}
               {user.role && ["owner", "admin"].includes(user.role.name) && (
