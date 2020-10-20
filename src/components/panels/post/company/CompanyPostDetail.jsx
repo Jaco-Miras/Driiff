@@ -1,15 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useDispatch } from "react-redux";
-import { useHistory } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import { addToModals } from "../../../../redux/actions/globalActions";
 import { setParentIdForUpload } from "../../../../redux/actions/postActions";
-import { FileAttachments, ReminderNote, SvgIconFeather } from "../../../common";
+import { Avatar, FileAttachments, ReminderNote, SvgIconFeather } from "../../../common";
 import { DropDocument } from "../../../dropzone/DropDocument";
 import { useCommentActions, useComments } from "../../../hooks";
 import { CompanyPostBody, CompanyPostComments, CompanyPostDetailFooter } from "./index";
 import { MoreOptions } from "../../common";
-import Avatar from "../../../common/Avatar";
 
 const MainHeader = styled.div`
   min-height: 70px;
@@ -55,6 +53,62 @@ const MainBody = styled.div`
   width: 100%;
   flex-flow: column;
   
+   .clap-count-wrapper {
+    position: relative;
+    
+    &:hover {
+      .read-users-container {
+        opacity: 1;
+        max-height: 300px;    
+      }
+    }
+    
+    .read-users-container {
+      position: absolute;
+      left: 22px;
+      z-index: 1;
+      bottom: 0;
+      border-radius: 8px;
+      opacity: 0;
+      max-height: 0;
+      transition: all 0.5s ease;
+      overflow-y: auto;
+      border: 1px solid #fff;
+      box-shadow: 0 5px 10px -1px rgba(0,0,0,0.15);
+      background: #fff;
+    
+      &:hover {
+        max-height: 300px;
+        opacity: 1;    
+      }
+      
+      .dark & {
+        border: 1px solid #25282c;
+        background: #25282c;
+      }
+    
+      > span {
+        padding: 0.25rem 0.5rem 0.25rem 0.25rem;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        
+        .avatar {
+          min-width: 1.5rem;
+          max-width: 1.5rem;
+          width: 1.5rem;
+          height: 1.5rem;
+        }
+        .name {
+          display: block;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          overflow: hidden;
+        }
+      }
+    }   
+   }
+  
   .user-reads-container {
     position: relative;
     display: inline-flex;
@@ -86,7 +140,7 @@ const MainBody = styled.div`
       > span {
         padding: 0.5rem;
         display: flex;
-        justify-content: center;
+        justify-content: flex-start;
         align-items: center;
       
         .avatar {
@@ -178,22 +232,25 @@ const MarkAsRead = styled.div`
 
 const CompanyPostDetail = (props) => {
 
-  const dispatch = useDispatch();
-  const history = useHistory();
-  const commentActions = useCommentActions();
-
   const { post, postActions, user, onGoBack, dictionary, readByUsers = [] } = props;
   const { markAsRead, markAsUnread, sharePost, followPost, remind } = postActions;
+
+  const dispatch = useDispatch();
+  const commentActions = useCommentActions();
+
+  const recipients = useSelector((state) => state.global.recipients.filter((r) => r.type === "USER"));
+  const [showDropZone, setShowDropZone] = useState(false);
 
   const comments = useComments(post, commentActions);
 
   const hasRead = readByUsers.some(u => u.id === user.id);
 
-  const [showDropZone, setshowDropZone] = useState(false);
   const [react, setReact] = useState({
     user_clap_count: post.user_clap_count,
     clap_count: post.clap_count,
   });
+
+  const [usersReacted, setUsersReacted] = useState(recipients.filter(r => post.clap_user_ids.includes(r.type_id)));
 
   const handleClosePost = () => {
     onGoBack();
@@ -211,11 +268,11 @@ const CompanyPostDetail = (props) => {
   };
 
   const handleHideDropzone = () => {
-    setshowDropZone(false);
+    setShowDropZone(false);
   };
 
   const handleshowDropZone = () => {
-    setshowDropZone(true);
+    setShowDropZone(true);
   };
 
   const dropAction = (acceptedFiles) => {
@@ -278,6 +335,10 @@ const CompanyPostDetail = (props) => {
       clap_count: !!prevState.user_clap_count ? prevState.clap_count - 1 : prevState.clap_count + 1,
     }));
 
+    setUsersReacted(prevState => prevState.some(r => r.type_id === user.id) ?
+      prevState.filter(r => r.type_id !== user.id) :
+      prevState.concat(recipients.find(r => r.type_id === user.id)));
+
     let payload = {
       post_id: post.id,
       id: null,
@@ -301,7 +362,23 @@ const CompanyPostDetail = (props) => {
     if (post.is_unread === 1 || post.unread_count > 0 || !post.is_updated) {
       postActions.markAsRead(post);
     }
+
+    postActions.fetchPostClapHover(post.id, (err, res) => {
+      const clap_user_ids = res.data.claps.map(c => c.user_id);
+      setUsersReacted(recipients.filter(r => clap_user_ids.includes(r.type_id)));
+    });
   }, []);
+
+  useEffect(() => {
+    setReact({
+      user_clap_count: post.user_clap_count,
+      clap_count: post.clap_count,
+    });
+  }, [post]);
+
+  useEffect(() => {
+    setUsersReacted(recipients.filter(r => post.clap_user_ids.includes(r.type_id)));
+  }, [post.clap_user_ids]);
 
   return (
     <>
@@ -341,8 +418,9 @@ const CompanyPostDetail = (props) => {
                 </span>
               </li>
               <li>
-                <a onClick={() => postActions.trash(post)} className="btn btn-outline-light ml-2" data-toggle="tooltip" title="" data-original-title="Delete Task">
-                  <Icon icon="trash" />
+                <a onClick={() => postActions.trash(post)} className="btn btn-outline-light ml-2" data-toggle="tooltip"
+                   title="" data-original-title="Delete Task">
+                  <Icon icon="trash"/>
                 </a>
               </li>
             </ul>
@@ -383,10 +461,22 @@ const CompanyPostDetail = (props) => {
           dictionary={dictionary}/>
         <hr className="m-0"/>
         <Counters className="d-flex align-items-center">
-          <div>
+          <div className="clap-count-wrapper">
             <Icon className={react.user_clap_count ? "mr-2 post-reaction clap-true" : "mr-2 post-reaction clap-false"}
                   icon="heart" onClick={handleReaction}/>
-            {react.clap_count}
+            {usersReacted.length}
+            {
+              usersReacted.length !== 0 && <span className="hover read-users-container">
+              {
+                usersReacted.map(u => {
+                  return <span key={u.id}>
+                    <Avatar className="mr-2" key={u.id} name={u.name} imageLink={u.profile_image_link}
+                            id={u.id}/> <span className="name">{u.name}</span>
+                  </span>;
+                })
+              }
+            </span>
+            }
           </div>
           <div className="readers-container ml-auto text-muted">
             {
@@ -417,21 +507,24 @@ const CompanyPostDetail = (props) => {
           <>
             <div className="card-body">
               <h6 className="mb-3 font-size-11 text-uppercase">{dictionary.files}</h6>
-              <PostFiles attachedFiles={post.files} type="company" post={post} />
+              <PostFiles attachedFiles={post.files} type="company" post={post}/>
             </div>
-            <hr className="m-0" />
+            <hr className="m-0"/>
           </>
         )}
         {comments && Object.keys(comments).length > 0 && (
           <>
-            <CompanyPostComments comments={comments} post={post} user={user} commentActions={commentActions} onShowFileDialog={handleOpenFileDialog} dropAction={dropAction} dictionary={dictionary} />
-            <hr className="m-0" />
+            <CompanyPostComments comments={comments} post={post} user={user} commentActions={commentActions}
+                                 onShowFileDialog={handleOpenFileDialog} dropAction={dropAction}
+                                 dictionary={dictionary}/>
+            <hr className="m-0"/>
           </>
         )}
-        <CompanyPostDetailFooter isMember={isMember} post={post} commentActions={commentActions} onShowFileDialog={handleOpenFileDialog} dropAction={dropAction} />
+        <CompanyPostDetailFooter isMember={isMember} post={post} commentActions={commentActions}
+                                 onShowFileDialog={handleOpenFileDialog} dropAction={dropAction}/>
       </MainBody>
     </>
   );
 };
 
-export default React.memo(CompanyPostDetail);
+export default CompanyPostDetail;

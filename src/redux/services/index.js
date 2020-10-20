@@ -175,6 +175,8 @@ export {
   getCompanyPosts,
   postCompanyPosts,
   putCompanyPosts,
+  getPostClapHover,
+  getReplyClapHover,
 } from "./post";
 
 export {

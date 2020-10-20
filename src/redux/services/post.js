@@ -1,4 +1,5 @@
-import {apiCall} from "./index";
+import { apiCall } from "./index";
+import { objToUrlParams } from "../../helpers/commonFunctions";
 
 /**
  * @param {Object} payload
@@ -443,6 +444,32 @@ export function fetchPost(payload) {
   return apiCall({
     method: "GET",
     url: `/v1/posts/${payload.post_id}`,
+    data: payload,
+  });
+}
+
+/**
+ * @param {Object} payload
+ * @param {number} payload.post_id
+ * @returns {Promise<*>}
+ */
+export function getPostClapHover(payload) {
+  return apiCall({
+    method: "GET",
+    url: `/v1/post-clap-hover/?${objToUrlParams(payload)}`,
+    data: payload,
+  });
+}
+
+/**
+ * @param {Object} payload
+ * @param {number} payload.message_id
+ * @returns {Promise<*>}
+ */
+export function getReplyClapHover(payload) {
+  return apiCall({
+    method: "GET",
+    url: `/v1/reply-clap-hover/?${objToUrlParams(payload)}`,
     data: payload,
   });
 }

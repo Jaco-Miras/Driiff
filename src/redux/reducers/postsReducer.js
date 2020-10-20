@@ -1,7 +1,7 @@
 import { convertArrayToObject } from "../../helpers/arrayHelper";
 
 const INITIAL_STATE = {
-  user: null,
+  user: {},
   companyPosts: {
     flipper: true,
     limit: 25,
@@ -77,18 +77,6 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "GET_COMPANY_POSTS_SUCCESS": {
-      let newPosts = {};
-      action.data.posts.forEach(p => {
-        if (state.companyPosts.posts[p.id]) {
-          newPosts[p.id] = {
-            ...state.companyPosts.posts[p.id],
-            p
-          };
-        } else {
-          newPosts[p.id] = p;
-        }
-      })
-
       return {
         ...state,
         companyPosts: {
@@ -99,10 +87,43 @@ export default (state = INITIAL_STATE, action) => {
           has_more: action.data.total_take === (action.data.next_skip - action.data.prev_skip),
           posts: {
             ...state.companyPosts.posts,
-            ...newPosts
+            ...action.data.posts.reduce((res, obj) => {
+              if (state.companyPosts.posts[obj.id]) {
+                res[obj.id] = {
+                  clap_user_ids: [],
+                  ...state.companyPosts.posts[obj.id],
+                  ...obj
+                };
+              } else {
+                res[obj.id] = {
+                  clap_user_ids: [],
+                  ...obj
+                };
+              }
+
+              return res;
+            }, {})
           }
         }
-      }
+      };
+    }
+    case "GET_POST_CLAP_HOVER_SUCCESS": {
+      const user_ids = action.data.claps.map(c => c.user_id);
+      return {
+        ...state,
+        ...(typeof state.companyPosts.posts[action.data.post_id] !== "undefined" && {
+          companyPosts: {
+            ...state.companyPosts,
+            posts: {
+              ...state.companyPosts.posts,
+              [action.data.post_id]: {
+                ...state.companyPosts.posts[action.data.post_id],
+                clap_user_ids: [...state.companyPosts.posts[action.data.post_id].clap_user_ids.filter(id => !user_ids.includes(id)), ...user_ids]
+              }
+            }
+          }
+        })
+      };
     }
     case "INCOMING_MARK_AS_READ": {
       return {
@@ -197,23 +218,28 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "INCOMING_POST_CLAP": {
-      if (typeof state.companyPosts.posts[action.data.post_id] === "undefined")
-        return state;
-
       return {
         ...state,
-        companyPosts: {
-          ...state.companyPosts,
-          posts: {
-            ...state.companyPosts.posts,
-            [action.data.post_id]: {
-              ...state.companyPosts.posts[action.data.post_id],
-              //users_responsible: !state.companyPosts.posts[action.data.post_id].users_responsible.some((u) => u.id === action.data.author.id) ? [...state.companyPosts.posts[action.data.post_id].users_responsible, action.data.author] : state.companyPosts.posts[action.data.post_id].users_responsible,
-              clap_count: action.data.clap_count ? state.companyPosts.posts[action.data.post_id].clap_count + 1 : state.companyPosts.posts[action.data.post_id].clap_count - 1,
-              user_clap_count: action.data.clap_count
+        ...(typeof state.companyPosts.posts[action.data.post_id] !== "undefined" && {
+          companyPosts: {
+            ...state.companyPosts,
+            posts: {
+              ...state.companyPosts.posts,
+              [action.data.post_id]: {
+                ...state.companyPosts.posts[action.data.post_id],
+                ...(action.data.clap_count === 1 ? {
+                  clap_count: state.companyPosts.posts[action.data.post_id].clap_count + 1,
+                  clap_user_ids: [...state.companyPosts.posts[action.data.post_id].clap_user_ids.filter(id => id !== action.data.author.id), action.data.author.id],
+                  user_clap_count: action.data.author.id === state.user.id ? 1 : state.companyPosts.posts[action.data.post_id].user_clap_count,
+                } : {
+                  clap_count: state.companyPosts.posts[action.data.post_id].clap_count - 1,
+                  clap_user_ids: state.companyPosts.posts[action.data.post_id].clap_user_ids.filter(id => id !== action.data.author.id),
+                  user_clap_count: action.data.author.id === state.user.id ? 0 : state.companyPosts.posts[action.data.post_id].user_clap_count,
+                })
+              }
             }
-          }
-        },
+          },
+        })
       };
     }
     case "STAR_POST_REDUCER": {

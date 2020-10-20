@@ -11,7 +11,13 @@ const INITIAL_STATE = {
   slugs: [],
   navMode: 2,
   dataFromInput: null,
-  unreadCounter: {},
+  unreadCounter: {
+    chat_message: 0,
+    workspace_post: 0,
+    workspace_chat_message: 0,
+    chat_reminder_message: 0,
+    unread_channel: 0
+  },
   socketMounted: false,
   searchValue: "",
   searchResults: {},
@@ -120,14 +126,16 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "UPDATE_GENERAL_CHAT_NOTIFICATION": {
-      let unreadCounter = { ...state.unreadCounter };
-      let unreadType = action.data.entity_type.toLowerCase();
-
-      unreadCounter[unreadType] = unreadCounter[unreadType] + action.data.count;
+      const unreadType = action.data.entity_type ? action.data.entity_type.toLowerCase() : "";
 
       return {
         ...state,
-        unreadCounter: unreadCounter,
+        ...(unreadType !== "" && {
+          unreadCounter: {
+            ...state.unreadCounter,
+            [unreadType]: state.unreadCounter[unreadType] + action.data.count
+          },
+        })
       };
     }
     case "UPDATE_UNREAD_LIST_COUNTER": {

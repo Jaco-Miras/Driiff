@@ -1,8 +1,8 @@
 import React from "react";
 import styled from "styled-components";
-import {useCompanyDashboard, useCompanyPosts, useTranslation} from "../../hooks";
-import {CompanyDashboardTeam, CompanyRecentPosts} from "../dashboard";
-import {CompanyTimelinePanel} from "../common";
+import { useCompanyDashboard, useCompanyPosts, useTranslation } from "../../hooks";
+import { CompanyDashboardTeam, CompanyRecentPosts } from "../dashboard";
+import { CompanyTimelinePanel } from "../common";
 
 const Wrapper = styled.div`
   overflow: auto !important;
@@ -42,7 +42,6 @@ const CompanyDashboardPanel = (props) => {
     isAdded: _t("TIMELINE.IS_ADDED", "is added"),
     isRemoved: _t("TIMELINE.IS_REMOVED", "is removed"),
     createdThePost: _t("TIMELINE.CREATED_POST", "created the post"),
-    updatedWorkspaceTo: _t("TIMELINE.UPDATED_WORKSPACE_TO", "Updated workspace to"),
     isAddedToCompany: _t("TIMELINE.IS_ADDED_TO_COMPANY", "is added to the company"),
     updatedWorkspaceTo: _t("TIMELINE.UPDATED_WORKSPACE_TO", "Updated workspace to"),
     revokeAsTeamLead: _t("TEAM.REVOKE_TEAM_LEAD", "Revoke as team lead"),

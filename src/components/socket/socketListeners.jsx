@@ -120,6 +120,7 @@ import {
 import { incomingUpdateCompanyName, updateCompanyPostAnnouncement } from "../../redux/actions/settingsActions";
 import { isIPAddress } from "../../helpers/commonFunctions";
 import { incomingReminderNotification } from "../../redux/actions/notificationActions";
+
 class SocketListeners extends Component {
   constructor(props) {
     super(props);
@@ -380,10 +381,12 @@ class SocketListeners extends Component {
               this.props.incomingPost(e);
             }
             if (e.workspace_ids && e.workspace_ids.length >= 1) {
-              this.props.setGeneralChat({
-                count: 1,
-                entity_type: "WORKSPACE_POST",
-              });
+              if (this.props.user.id !== e.author.id) {
+                this.props.setGeneralChat({
+                  count: 1,
+                  entity_type: "WORKSPACE_POST",
+                });
+              }
             }
             if (typeof e.channel_messages === "undefined") {
               console.log(e);
@@ -468,10 +471,12 @@ class SocketListeners extends Component {
           case "POST_COMMENT_CREATE": {
             this.props.incomingComment(e);
             if (e.workspaces && e.workspaces.length >= 1) {
-              this.props.setGeneralChat({
-                count: 1,
-                entity_type: "WORKSPACE_POST",
-              });
+              if (e.author.id !== this.props.user.id) {
+                this.props.setGeneralChat({
+                  count: 1,
+                  entity_type: "WORKSPACE_POST",
+                });
+              }
             }
             if (e.author.id !== this.props.user.id) {
               if (isSafari) {
@@ -571,7 +576,7 @@ class SocketListeners extends Component {
                 if (this.props.notificationsOn && isSafari) {
                   if (!(this.props.location.pathname.includes("/chat/") && selectedChannel.code === e.channel_code) || !isBrowserActive) {
                     const redirect = () => this.props.history.push(`/chat/${e.channel_code}/${e.code}`);
-                    pushBrowserNotification(`${e.reference_title}`, `${stripHtml(e.body)}`, e.user.profile_image_link, redirect);
+                    pushBrowserNotification(`${e.reference_title}`, e.reference_title.includes("in a direct message") ? `${stripHtml(e.body)}` : `${e.user.first_name}: ${stripHtml(e.body)}`, e.user.profile_image_link, redirect);
                   }
                 }
               }
@@ -586,17 +591,21 @@ class SocketListeners extends Component {
                   entity_type: "CHAT_REMINDER_MESSAGE",
                 };
               } else {
-                notificationCounterEntryPayload = {
-                  count: 1,
-                  entity_type: "CHAT_MESSAGE",
-                };
+                if (message.user.id !== user.id) {
+                  notificationCounterEntryPayload = {
+                    count: 1,
+                    entity_type: "CHAT_MESSAGE",
+                  };
+                }
               }
               this.props.setGeneralChat(notificationCounterEntryPayload);
             } else {
-              this.props.setGeneralChat({
-                count: 1,
-                entity_type: "WORKSPACE_CHAT_MESSAGE",
-              });
+              if (message.user.id !== user.id) {
+                this.props.setGeneralChat({
+                  count: 1,
+                  entity_type: "WORKSPACE_CHAT_MESSAGE",
+                });
+              }
             }
 
             break;
@@ -1245,7 +1254,12 @@ class SocketListeners extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    this.props.useDriff.updateFaviconState((this.props.unreadCounter.chat_message + this.props.unreadCounter.workspace_chat_message) !== 0);
+    this.props.useDriff.updateFaviconState(Object.keys(this.props.unreadCounter)
+      .filter(k => k !== "chat_reminder_message")
+      .reduce((total, k) => {
+        total += this.props.unreadCounter[k];
+        return total;
+      }, 0) !== 0);
   }
 
   render() {
