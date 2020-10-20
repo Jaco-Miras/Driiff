@@ -18,12 +18,12 @@ const useUserChannels = () => {
         if (userChannels.current.hasOwnProperty(channel.profile.id)) continue;
       }
 
-      if (channel.profile) {
-        userChannels.current = {
-          ...userChannels.current,
+      userChannels.current = {
+        ...userChannels.current,
+        ...(channel.profile && {
           [channel.profile.id]: channel.id,
-        };
-      }
+        })
+      };
     }
   }
 
