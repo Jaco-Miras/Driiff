@@ -14,7 +14,9 @@ const useUserChannels = () => {
 
       if (channel.type !== "DIRECT") continue;
 
-      if (userChannels) if (userChannels.current.hasOwnProperty(channel.profile.id)) continue;
+      if (userChannels && userChannels.current) {
+        if (userChannels.current.hasOwnProperty(channel.profile.id)) continue;
+      }
 
       userChannels.current = {
         ...userChannels.current,
