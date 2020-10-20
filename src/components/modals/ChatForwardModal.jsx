@@ -9,7 +9,7 @@ import { SvgIconFeather } from "../common";
 import SearchForm from "../forms/SearchForm";
 import ChannelIcon from "../list/chat/ChannelIcon";
 import { ModalHeaderSection } from "./index";
-import { useTranslation, useSortChannels } from "../hooks";
+import { useTranslation } from "../hooks";
 
 const IconButton = styled(SvgIconFeather)`
   cursor: pointer;
@@ -132,12 +132,39 @@ const ChatForwardModal = (props) => {
     setInputValue(e.target.value);
   };
 
-  const [sortedChannels] = useSortChannels(channels, inputValue, {}, inputValue !== "" ? true : false);
+  //const [sortedChannels] = useSortChannels(channels, inputValue, {}, inputValue !== "" ? true : false);
 
-  const filteredChannels = sortedChannels.filter((c) => {
+  const sortByActivity = () => {
+    return Object.values(channels).sort((a,b) => {
+      let compare = 0;
+      compare = b.is_pinned - a.is_pinned;
+      if (compare !== 0) return compare;
+      if ( a.last_reply &&  b.last_reply) {
+        if ( a.last_reply.created_at.timestamp ===  b.last_reply.created_at.timestamp) {
+          return  a.title.localeCompare(b.title);
+        } else {
+          return  b.last_reply.created_at.timestamp -  a.last_reply.created_at.timestamp;
+        }
+      }
+  
+      if (a.last_reply && !b.last_reply) {
+        return -1;
+      }
+  
+      if (!a.last_reply && b.last_reply) {
+        return 1;
+      }
+  
+      if (!a.last_reply && !b.last_reply) {
+        return a.title.localeCompare(b.title);
+      }
+    })
+  }
+
+  const filteredChannels = sortByActivity().filter((c) => {
     if (!c.is_archived) {
       if (inputValue.trim() !== "") {
-        if (c.title.toLowerCase().includes(inputValue.toLowerCase())) return true;
+        if (c.title.toLowerCase().search(inputValue.toLowerCase()) !== -1) return true;
         else return false;
       } else {
         return true;
@@ -179,7 +206,7 @@ const ChatForwardModal = (props) => {
       {chosenChannel && (
         <StyledModalFooter>
           <span className="chosen-channel-title">{chosenChannel ? chosenChannel.title : null}</span>
-          <IconButton onClick={handleForwardMessage} icon="send" className={"bg-primary"} />
+          <IconButton onClick={handleForwardMessage} icon="send" fill="#fff" className={"bg-primary"} />
         </StyledModalFooter>
       )}
     </Modal>
