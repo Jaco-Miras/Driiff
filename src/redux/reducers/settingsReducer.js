@@ -56,6 +56,7 @@ const INITIAL_STATE = {
           chat_bubble_quote_hover_color: "#0056b3",
         },
       },
+      virtualization: false
     },
     GENERAL_SETTINGS: {
       is_new: true,
