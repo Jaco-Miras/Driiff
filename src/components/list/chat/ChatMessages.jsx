@@ -17,11 +17,12 @@ import SystemMessage from "./SystemMessage";
 const ChatReplyContainer = styled.div`
   background: transparent;
   background-repeat: repeat;
-  height: calc(100% - 181px);
+  height: calc(100% - 146px);
   overflow-y: auto;
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
   z-index: 1;
+  scrollbar-width: none;
   > ul {
     list-style: none;
     margin: 0;

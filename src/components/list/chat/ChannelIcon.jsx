@@ -11,8 +11,8 @@ const Wrapper = styled.div`
     display: inline-flex;
     padding: 5px; 
     border-radius: 100%;
-    width: 30px;
-    height: 30px;
+    width: 2.3rem;
+    height: 2.3rem;
     text-align: center;
     align-items: center;
     justify-content: center;
@@ -37,8 +37,8 @@ const StyledAvatar = styled(Avatar)``;
 
 const Icon = styled(SvgIconFeather)`
   color: #ffffff !important;
-  height: 32px;
-  width: 32px;
+  height: 2.3rem;
+  width: 2.3rem;
   &.feather-home {
     background: #7a1b8b;
     padding: 6px 0;    

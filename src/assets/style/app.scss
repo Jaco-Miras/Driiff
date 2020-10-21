@@ -14400,8 +14400,8 @@ body.modal-open .modal.show .modal-dialog {
 }
 
 .avatar.avatar-sm {
-  height: 2rem;
-  width: 2rem;
+  height: 2.3rem;
+  width: 2.3rem;
   // display: flex;
   > div {
     height: 100%;
@@ -14732,9 +14732,13 @@ body.form-membership .form-wrapper hr {
   height: 100%;
 }
 
-.chat-block .chat-content .chat-header {
-  padding-bottom: 14px;
-}
+// .chat-block .chat-content {
+//   padding-bottom: 14px;
+// }
+
+.chat-header {
+  height: 50px;
+}\
 
 .chat-block .chat-content .messages {
   position: relative;
@@ -14876,7 +14880,7 @@ body.form-membership .form-wrapper hr {
 }
 
 .chat-block .chat-content .chat-footer {
-  padding: 1.5rem 0 1.5rem 0;
+  padding: 1.5rem 0 1.5rem 3rem;
   @media (max-width: 991.99px) {
     padding: 1.5rem 0 0 0;
   }
@@ -21576,6 +21580,7 @@ body.dark.small-navigation .navigation-menu-body ul li.navigation-divider:after 
   top: 50px;
   height: calc(100% - 50px);
   overflow-y: scroll;
+  scrollbar-width: none;
 
   @media (max-width: 480px) {
     padding-top: 98px;
