@@ -368,6 +368,7 @@ class SocketListeners extends Component {
         console.log(e, "post-notif");
         switch (e.SOCKET_TYPE) {
           case "POST_CREATE": {
+            e.clap_user_ids = [];
             if (this.props.user.id !== e.author.id) {
               if (isSafari) {
                 if (this.props.notificationsOn) {
@@ -427,6 +428,7 @@ class SocketListeners extends Component {
               }
               if (!e.post_participant_data.from_company) {
                 // from private to public post
+                e.clap_user_ids = [];
                 this.props.incomingPost(e);
                 e.channel_messages && e.channel_messages.forEach(m => {
                   m.system_message.files = [];
