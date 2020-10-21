@@ -368,6 +368,7 @@ class SocketListeners extends Component {
         console.log(e, "post-notif");
         switch (e.SOCKET_TYPE) {
           case "POST_CREATE": {
+            e.clap_user_ids = [];
             if (this.props.user.id !== e.author.id) {
               if (isSafari) {
                 if (this.props.notificationsOn) {

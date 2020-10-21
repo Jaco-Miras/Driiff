@@ -1181,6 +1181,7 @@ export default function (state = INITIAL_STATE, action) {
         channel = {
           ...channel,
           is_hidden: false,
+          last_reply: action.data,
           replies: channel.replies.some((r) => r.id === action.data.id) ? 
             channel.replies.map((r) => {
               if (r.id === action.data.id) {

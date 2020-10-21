@@ -78,6 +78,10 @@ const ReplyPreview = (props) => {
       //system message
     } else {
       previewText = "System message update...";
+      if (channel.last_reply.body.includes("POST_CREATE::")) {
+        let item = JSON.parse(channel.last_reply.body.replace("POST_CREATE::", ""));
+        previewText = `${item.author.first_name} has created the post ${item.post.title}`;
+      }
     }
 
     if (typeof drafts[channel.id] !== "undefined") {
