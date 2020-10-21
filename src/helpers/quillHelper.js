@@ -16,14 +16,32 @@ class quillHelper {
     let index = 0,
       length = pTagQuery.length;
     for (; index < length; index++) {
-      if (pTagQuery[index].querySelectorAll("a").length >= 1) return;
+      //if (pTagQuery[index].querySelectorAll("a").length >= 1) return;
 
       let emojiPattern = /:(.*?):/i;
-      let innerHTML = pTagQuery[index].innerHTML.replace(">http", "> http");
-      let words = innerHTML.split(" ");
+      let innerHTML = pTagQuery[index].innerHTML;
+
+      let words = [];
+      if (!innerHTML.startsWith(`<span class="ql-mention-denotation-char">`)) {
+        words = innerHTML.split(" ");
+      }
       let parseText = [];
       let i = 0;
+      let isSpan = false;
       for (let word of words) {
+        if (word === `<span`) {
+          isSpan = true;
+          parseText.push(word);
+          continue;
+        } else if (word.endsWith(`</a></span></span>`)) {
+          isSpan = false;
+          parseText.push(word);
+          continue;
+        } else if (isSpan && !(word.startsWith("http") || word.length <= 3)) {
+          parseText.push(word);
+          continue;
+        }
+
         switch (word) {
           case ":S":
             word = ":worried:";
@@ -106,8 +124,8 @@ class quillHelper {
     let el = document.createElement("div");
     el.innerHTML = body;
 
-    this.convertContentByTag(el, "div", false);
     this.convertContentByTag(el, "span", false);
+    this.convertContentByTag(el, "div", false);
     this.convertContentByTag(el, "p", false);
     this.convertContentByTag(el, "li", false);
 
