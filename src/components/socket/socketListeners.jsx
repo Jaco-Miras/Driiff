@@ -1257,7 +1257,7 @@ class SocketListeners extends Component {
     this.props.useDriff.updateFaviconState(Object.keys(this.props.unreadCounter)
       .filter(k => k !== "chat_reminder_message")
       .reduce((total, k) => {
-        total += this.props.unreadCounter[k];
+        if (["chat_message", "unread_channel", "workspace_chat_message"].includes(k)) total += this.props.unreadCounter[k];
         return total;
       }, 0) !== 0);
   }
