@@ -28,17 +28,40 @@ class quillHelper {
       let parseText = [];
       let i = 0;
       let isSpan = false;
+      let isLink = false;
       for (let word of words) {
+
+        //mention
         if (word === `<span`) {
           isSpan = true;
           parseText.push(word);
+          i++;
           continue;
         } else if (word.endsWith(`</a></span></span>`)) {
           isSpan = false;
           parseText.push(word);
+          i++;
           continue;
-        } else if (isSpan && !(word.startsWith("http") || word.length <= 3)) {
+        } else if (isSpan && (word.length === 0 || !(word.startsWith("http") || word.length <= 3))) {
           parseText.push(word);
+          i++;
+          continue;
+        }
+
+        //hyperlink
+        if (word === `<a`) {
+          isLink = true;
+          parseText.push(word);
+          i++;
+          continue;
+        } else if (word.endsWith(`</a>`)) {
+          isLink = false;
+          parseText.push(word);
+          i++;
+          continue;
+        } else if (isLink) {
+          parseText.push(word);
+          i++;
           continue;
         }
 
@@ -121,6 +144,9 @@ class quillHelper {
   }
 
   static parseEmoji(body) {
+    if (body === null)
+      return "";
+
     let el = document.createElement("div");
     el.innerHTML = body;
 
