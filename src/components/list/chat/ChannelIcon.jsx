@@ -41,6 +41,7 @@ const Icon = styled(SvgIconFeather)`
   width: 32px;
   &.feather-home {
     background: #7a1b8b;
+    padding: 6px 0;    
   }
   .chat-header-icon-left & {
     height: 28px;

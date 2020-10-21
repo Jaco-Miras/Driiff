@@ -753,7 +753,7 @@ const ChatBubble = (props) => {
         });
       }
 
-      replyQuoteBody += reply.quote.body;
+      replyQuoteBody += quillHelper.parseEmoji(reply.quote.body);
       if (reply.quote.user) {
         if (user.id !== reply.quote.user.id) {
           replyQuoteAuthor = reply.quote.user.name;
@@ -1042,7 +1042,7 @@ const ChatBubble = (props) => {
                   <QuoteContent
                     ref={handleQuoteContentRef}
                     className={"quote-content"} theme={chatSettings.chat_message_theme} isAuthor={isAuthor}
-                    dangerouslySetInnerHTML={{ __html: quillHelper.parseEmoji(quoteBody) }}></QuoteContent>
+                    dangerouslySetInnerHTML={{ __html: quoteBody }}></QuoteContent>
                 </QuoteContainer>
               )}
               {
