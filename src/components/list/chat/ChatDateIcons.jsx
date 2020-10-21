@@ -48,10 +48,12 @@ const ChatDateIcons = (props) => {
       <span className={"small text-muted chat-timestamp_text"}
             dangerouslySetInnerHTML={{ __html: channel.last_reply ? channelPreviewDate(channel.last_reply.created_at.timestamp) : "" }}/>
       <div className="d-flex align-items-center flex-row-reverse">
-        {(!channel.is_read || channel.total_unread > 0) && (
-          <Badge
-            className={`badge badge-primary badge-pill ml-1 ${!channel.is_read && channel.total_unread === 0 ? "unread" : ""}`}>{channel.total_unread > 0 ? channel.total_unread : !channel.is_read ? "0" : null}</Badge>
-        )}
+        {
+          channel.add_user === false && (!channel.is_read || channel.total_unread > 0) && (
+            <Badge
+              className={`badge badge-primary badge-pill ml-1 ${!channel.is_read && channel.total_unread === 0 ? "unread" : ""}`}>{channel.total_unread > 0 ? channel.total_unread : !channel.is_read ? "0" : null}</Badge>
+          )
+        }
         <ActionContainer>
           {channel.is_pinned && <Icon icon="star"/>}
           {channel.is_muted && <Icon icon="volume-x" className={`${channel.is_pinned && "mr-1"}`}/>}
