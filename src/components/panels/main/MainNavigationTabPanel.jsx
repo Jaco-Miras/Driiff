@@ -401,7 +401,7 @@ const MainNavigationTabPanel = (props) => {
     }
   }, [editCompany]);
 
-  const chatUnreadCounter = unreadCounter.chat_message + unreadCounter.unread_channel + unreadCounter.workspace_chat_message + unreadCounter.workspace_post;
+  const chatUnreadCounter = unreadCounter.chat_message + unreadCounter.unread_channel + unreadCounter.workspace_chat_message;
 
   return (
     <Wrapper className={`navigation-menu-tab ${className}`}>
