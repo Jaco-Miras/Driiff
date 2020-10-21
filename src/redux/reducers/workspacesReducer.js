@@ -832,7 +832,11 @@ export default (state = INITIAL_STATE, action) => {
           if (action.data.is_personal && !action.data.post_participant_data.all_participant_ids.some((id) => id === state.user.id)) {
             delete newWorkspacePosts[id].posts[action.data.id];
           } else {
-            newWorkspacePosts[id].posts[action.data.id] = action.data;
+            if (newWorkspacePosts[id].posts.hasOwnProperty(action.data.id)) {
+              newWorkspacePosts[id].posts[action.data.id] = {...action.data, clap_user_ids: newWorkspacePosts[id].posts[action.data.id].clap_user_ids};
+            } else {
+              newWorkspacePosts[id].posts[action.data.id] = {...action.data, clap_user_ids: []};
+            }
           }
         }
       });

@@ -182,11 +182,15 @@ export default (state = INITIAL_STATE, action) => {
       }
     }
     case "INCOMING_UPDATED_POST": {
-      let posts = state.companyPosts.posts;
+      let posts = {...state.companyPosts.posts};
       if (action.data.is_personal && !action.data.post_participant_data.all_participant_ids.some((id) => id === state.user.id)) {
         delete posts[action.data.id];
       } else {
-        posts[action.data.id] = action.data;
+        if (posts.hasOwnProperty(action.data.id)) {
+          posts[action.data.id] = {...action.data, clap_user_ids: posts[action.data.id].clap_user_ids}
+        } else {
+          posts[action.data.id] = {...action.data, clap_user_ids: []}
+        }
       }
       return {
         ...state,

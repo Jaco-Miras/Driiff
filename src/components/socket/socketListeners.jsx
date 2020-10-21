@@ -428,6 +428,7 @@ class SocketListeners extends Component {
               }
               if (!e.post_participant_data.from_company) {
                 // from private to public post
+                e.clap_user_ids = [];
                 this.props.incomingPost(e);
                 e.channel_messages && e.channel_messages.forEach(m => {
                   m.system_message.files = [];
