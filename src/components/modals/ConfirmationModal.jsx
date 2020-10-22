@@ -26,12 +26,12 @@ const ConfirmationModal = (props) => {
       <ModalHeaderSection toggle={toggle}>{headerText}</ModalHeaderSection>
       <ModalBody dangerouslySetInnerHTML={{__html: bodyText}}/>
       <ModalFooter>
-        <Button color="primary" onClick={handleConfirm}>
-          {submitText}
-        </Button>{" "}
         <Button outline color="secondary" onClick={toggle}>
           {cancelText}
         </Button>
+        <Button color="primary" onClick={handleConfirm}>
+          {submitText}
+        </Button>{" "}
       </ModalFooter>
     </Modal>
   );

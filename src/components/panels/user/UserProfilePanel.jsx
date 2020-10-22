@@ -105,7 +105,7 @@ const Wrapper = styled.div`
 `;
 
 const UserProfilePanel = (props) => {
-  const { className = "" } = props;
+  const { className = "", onChatClick = null } = props;
 
   const history = useHistory();
   const dispatch = useDispatch();
@@ -202,6 +202,10 @@ const UserProfilePanel = (props) => {
       }));
     }
   }, []);
+
+  const handleOnChatClick = () => {
+    if (onChatClick) onChatClick(user);
+  };
 
   const handleInputBlur = useCallback(
     (e) => {
@@ -502,6 +506,20 @@ const UserProfilePanel = (props) => {
                 </p>
               ) : (
                 <p className="text-muted small">{user.designation}</p>
+              )}
+              {user.contact !== "" && loggedUser.id !== user.id && (
+              <div className="d-flex justify-content-center">
+                  <button className="btn btn-outline-light mr-1">
+                      <a href={`tel:${user.contact.replace(/ /g, "").replace(/-/g, "")}`}>
+                        <SvgIconFeather className="" icon="phone" />
+                      </a>
+                  </button>
+                  <button className="ml-1 btn btn-outline-light">
+                    {
+                      (user.type !== "external") && <SvgIconFeather onClick={handleOnChatClick} icon="message-circle" />
+                    }
+                  </button>
+              </div>
               )}
               {/*{
                                 isLoggedUser &&
