@@ -148,11 +148,11 @@ class ChatMessages extends React.PureComponent {
         if (selectedChannel.replies.length === 0 || selectedChannel.skip === 0) {
           this.setState({scrollingToBottom: true}, () => {
             const scrollComponent = document.querySelector(".chat-scroll-container")
-            // if (scrollComponent) {
-            //   setTimeout(() => {
-            //     scrollComponent.scrollTop = scrollComponent.scrollHeight;
-            //   }, 100)
-            // }
+            if (scrollComponent) {
+              setTimeout(() => {
+                scrollComponent.scrollTop = scrollComponent.scrollHeight;
+              }, 300)
+            }
           })
         } else {
           if (this.virtuoso.current) {

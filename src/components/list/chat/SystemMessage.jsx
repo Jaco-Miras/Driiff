@@ -72,35 +72,17 @@ const SystemMessage = forwardRef((props, ref) => {
   const params = useParams();
   const history = useHistory();
 
-  // const { _t } = useTranslation();
-
-  // const dictionary = {
-  //   update: _t("SYSTEM.UPDATE", "Update"),
-  //   accountActivated: _t("SYSTEM.ACCOUNT_ACTIVATED", "account is activated"),
-  //   accountDeactivated: _t("SYSTEM.ACCOUNT_DEACTIVATED", "account is deactivated"),
-  //   removed: _t("SYSTEM.REMOVED", "removed"),
-  //   andRemoved: _t("SYSTEM.AND_REMOVED", "and removed"),
-  //   you: _t("SYSTEM.YOU", "You"),
-  //   youAnd: _t("SYSTEM.YOU_AND", "You and"),
-  //   joined: _t("SYSTEM.JOINED", "joined"),
-  //   andJoined: _t("SYSTEM.AND_JOINED", "and joined"),
-  //   left: _t("SYSTEM.LEFT", "left"),
-  //   andLeft: _t("SYSTEM.AND_LEFT", "and left"),
-  //   createdThePost: _t("SYSTEM.CREATED_THE_POST", "created the post"),
-  //   openPost: _t("SYSTEM.OPEN_POST", "Open post"),
-  //   someone: _t("SYSTEM.SOMEONE", "Someone"),
-  //   added: _t("SYSTEM.ADDED", "added"),
-  //   andAdded: _t("SYSTEM.AND_ADDED", "and added"),
-  //   renameThisWorkspace: _t("SYSTEM.RENAME_THIS_WORKSPACE", `renamed this workspace to`),
-  //   renameThisChat: _t("SYSTEM.RENAME_THIS_CHAT", `renamed this chat to`)
-  // }
-
+  const [mounted, setMounted] = useState(false);
   const [body, setBody] = useState(reply.body);
 
   const [lastChatRef, inView, entry] = useInView({
     threshold: THRESHOLD,
     skip: !isLastChat
   });
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     if (isBrowserActive) {
@@ -315,6 +297,209 @@ const SystemMessage = forwardRef((props, ref) => {
 
   const handleHistoryKeyUp = (e) => {
     e.currentTarget.dataset.ctrl = "0";
+  }
+  
+  const parseBody = () => {
+    if (reply.body.includes("POST_CREATE::")) {
+      let item = JSON.parse(reply.body.replace("POST_CREATE::", ""));
+      let link = "";
+      if (params && params.workspaceId) {
+        if (params.folderId) {
+          link = `/workspace/posts/${params.folderId}/${params.folderName}/${params.workspaceId}/${params.workspaceName}/post/${item.post.id}/${item.post.title}`
+        } else {
+          link = `/workspace/posts/${params.workspaceId}/${params.workspaceName}/post/${item.post.id}/${item.post.title}`
+        }
+      } else {
+        link = `/posts/${item.post.id}/${item.post.title}`;
+      }
+
+      let description = quillHelper.parseToText(item.post.description);
+      return (renderToString(<a href={link} className="push-link" data-href={link} data-has-link="0" data-ctrl="0">
+        <b>{item.author.first_name}</b> {dictionary.createdThePost} <b>"{item.post.title}"</b>
+        {
+          description.trim() !== "" &&
+          <span className="card card-body"
+                dangerouslySetInnerHTML={{__html: description}}/>
+        }
+        <span className="open-post">{dictionary.openPost} <SvgIconFeather icon="arrow-right"/></span>
+      </a>));
+    } else if (reply.body.includes("JOIN_CHANNEL")) {
+        let ids = /\d+/g;
+        let extractedIds = reply.body.match(ids);
+        let newMembers = recipients
+          .filter((r) => {
+            let userFound = false;
+            extractedIds.forEach((id) => {
+              if (parseInt(id) === r.type_id) {
+                userFound = true;
+              }
+            });
+            return userFound;
+          })
+          .map((user) => user.name);
+        if (selectedChannel.type === "DIRECT") {
+          return (`<p><span class='channel-new-members'>${newMembers.join(", ")}</span><br> ${dictionary.joined} <span class='channel-title'>#${chatName}</span></p>`);
+        } else {
+          return (`<p><span class='channel-new-members'>${newMembers.join(", ")}</span><br> ${dictionary.joined} <span class='channel-title'>#${selectedChannel.title}</span></p>`);
+        }
+      } else if (reply.body.includes("MEMBER_REMOVE_CHANNEL")) {
+        if (selectedChannel.type === "DIRECT") {
+          return (`<p><span class='channel-new-members'>${reply.body.substr(reply.body.indexOf(" "))}</span><br> ${dictionary.left} <span class='channel-title'>#${chatName}</span></p>`);
+        } else {
+          return (`<p><span class='channel-new-members'>${reply.body.substr(reply.body.indexOf(" "))}</span><br> ${dictionary.left} <span class='channel-title'>#${selectedChannel.title}</span></p>`);
+        }
+      } else if (reply.body.includes("ACCOUNT_DEACTIVATED")) {
+        let newBody = reply.body.replace("ACCOUNT_DEACTIVATED ", "");
+        if (newBody[newBody.length - 1] === "s") {
+          return (`${dictionary.update}: ${newBody}' ${dictionary.accountDeactivated}.`);
+        } else {
+          return (`${dictionary.update}: ${newBody}'s ${dictionary.accountDeactivated}.`);
+        }
+      } else if (reply.body.includes("NEW_ACCOUNT_ACTIVATED")) {
+        let newBody = reply.body.replace("NEW_ACCOUNT_ACTIVATED ", "");
+        if (newBody[newBody.length - 1] === "s") {
+          return (`${dictionary.update}: ${newBody}' ${dictionary.accountActivated}.`);
+        } else {
+          return (`${dictionary.update}: ${newBody}'s ${dictionary.accountActivated}.`);
+        }
+      } else if (reply.body.includes("CHANNEL_UPDATE::")) {
+        const data = JSON.parse(reply.body.replace("CHANNEL_UPDATE::", ""));
+  
+        let author = recipients.find((r) => data.author && r.type_id === data.author.id);
+        if (author) {
+          if (data.author.id === user.id) {
+            author.name = dictionary.you;
+          }
+        } else {
+          author = {
+            name: dictionary.someone,
+          };
+        }
+  
+        let newBody = "";
+        if (data.title !== "") {
+          newBody = (
+            <>
+              <SvgIconFeather width={16} icon="edit-3"/> {author.name} {selectedChannel.type === "TOPIC" ? dictionary.renameThisWorkspace : dictionary.renameThisChat} <b>#{data.title}</b>
+              <br/>
+            </>
+          );
+        }
+  
+        if (data.added_members.length >= 1) {
+          const am = recipients.filter((r) => data.added_members.includes(r.type_id) && r.type_id !== user.id).map((r) => r.name);
+  
+          if (data.added_members.includes(user.id) && data.author && data.author.id === user.id) {
+            if (newBody === "") {
+              newBody = (
+                <>
+                  <b>{author.name}</b> {dictionary.joined}{" "}
+                </>
+              );
+            } else {
+              newBody = <>{newBody} {dictionary.andJoined}</>;
+            }
+  
+            if (am.length !== 0) {
+              newBody = (
+                <>
+                  {newBody} {dictionary.andAdded} <b>{am.join(", ")}</b>
+                  <br/>
+                </>
+              );
+            }
+          } else {
+            if (newBody === "") {
+              newBody = <>{author.name} {dictionary.added} </>;
+            } else {
+              newBody = <>{newBody} {dictionary.andAdded}</>;
+            }
+  
+            if (data.added_members.includes(user.id)) {
+              if (am.length !== 0) {
+                newBody = (
+                  <>
+                    {newBody} <b>{dictionary.youAnd} </b>
+                  </>
+                );
+              } else {
+                newBody = (
+                  <>
+                    {newBody} <b>{dictionary.you}</b>
+                  </>
+                );
+              }
+            }
+  
+            if (am.length !== 0) {
+              newBody = (
+                <>
+                  {newBody} <b>{am.join(", ")}</b>
+                  <br/>
+                </>
+              );
+            }
+          }
+        }
+  
+        if (data.removed_members.length >= 1) {
+          const rm = recipients.filter((r) => data.removed_members.includes(r.type_id) && r.type_id !== user.id).map((r) => r.name);
+  
+          if (data.removed_members.includes(user.id) && data.author && data.author.id === user.id) {
+            if (newBody === "") {
+              newBody = (
+                <>
+                  <b>{author.name}</b> {dictionary.left}{" "}
+                </>
+              );
+            } else {
+              newBody = <>{newBody} {dictionary.andLeft}</>;
+            }
+  
+            if (rm.length !== 0) {
+              newBody = (
+                <>
+                  {newBody} {dictionary.andRemoved} <b>{rm.join(", ")}</b>
+                  <br/>
+                </>
+              );
+            }
+          } else {
+            if (newBody === "") {
+              newBody = <>{author.name} {dictionary.removed} </>;
+            } else {
+              newBody = <>{newBody} {dictionary.andRemoved}</>;
+            }
+  
+            if (data.removed_members.includes(user.id)) {
+              if (rm.length !== 0) {
+                newBody = (
+                  <>
+                    {newBody} <b>{dictionary.youAnd} </b>
+                  </>
+                );
+              } else {
+                newBody = (
+                  <>
+                    {newBody} <b>{dictionary.you}</b>
+                  </>
+                );
+              }
+            }
+  
+            if (rm.length !== 0) {
+              newBody = (
+                <>
+                  {newBody} <b>{rm.join(", ")}</b>
+                  <br/>
+                </>
+              );
+            }
+          }
+        }
+  
+        return(renderToString(newBody));
+      }
   }
 
   useEffect(() => {
@@ -536,7 +721,7 @@ const SystemMessage = forwardRef((props, ref) => {
     <SystemMessageContainer ref={isLastChat ? lastChatRef : null}>
       <SystemMessageContent
         ref={ref} id={`bot-${reply.id}`}
-        dangerouslySetInnerHTML={{__html: body}}
+        dangerouslySetInnerHTML={{__html: !mounted ? parseBody() : body}}
         isPostNotification={reply.body.includes("POST_CREATE::")}/>
       <ChatTimeStamp className="chat-timestamp" isAuthor={false}>
         <span
