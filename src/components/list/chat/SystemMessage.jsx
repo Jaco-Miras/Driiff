@@ -67,7 +67,7 @@ const ChatTimeStamp = styled.div`
 `;
 const THRESHOLD = [.1, .2, .3, .4, .5, .6, .7, .8, .9];
 const SystemMessage = forwardRef((props, ref) => {
-  const {reply, selectedChannel, chatName, isLastChat, chatMessageActions, recipients, user, timeFormat, isLastChatVisible, dictionary} = props;
+  const {reply, selectedChannel, chatName, isLastChat, chatMessageActions, recipients, user, timeFormat, isLastChatVisible, dictionary, isBrowserActive} = props;
 
   const params = useParams();
   const history = useHistory();
@@ -104,18 +104,22 @@ const SystemMessage = forwardRef((props, ref) => {
   });
 
   useEffect(() => {
-    setMounted(true)
-  }, [])
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
-    if (isLastChat && entry) {
-      if ((entry.boundingClientRect.height - entry.intersectionRect.height) >= 16) {
-        if (isLastChatVisible) chatMessageActions.setLastMessageVisiblility({ status: false });
-      } else {
-        if (!isLastChatVisible) chatMessageActions.setLastMessageVisiblility({ status: true });
+    if (isBrowserActive) {
+      if (isLastChat && entry) {
+        if ((entry.boundingClientRect.height - entry.intersectionRect.height) >= 16) {
+          if (isLastChatVisible) chatMessageActions.setLastMessageVisiblility({ status: false });
+        } else {
+          if (!isLastChatVisible) chatMessageActions.setLastMessageVisiblility({ status: true });
+        }
       }
+    } else {
+      chatMessageActions.setLastMessageVisiblility({ status: false});
     }
-  }, [isLastChat, entry, isLastChatVisible]);
+  }, [isLastChat, entry, isLastChatVisible, inView, isBrowserActive]);
 
   useEffect(() => {
     if (reply.body.includes("JOIN_CHANNEL")) {
