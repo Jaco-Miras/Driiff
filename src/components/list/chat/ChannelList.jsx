@@ -8,6 +8,7 @@ import ChannelTitle from "./ChannelTitle";
 import ChatDateIcons from "./ChatDateIcons";
 import ReplyPreview from "./ReplyPreview";
 import {Badge} from "../../common";
+import {useSelector} from "react-redux";
 
 const Wrapper = styled.li`
   cursor: pointer;
@@ -96,14 +97,22 @@ const ChannelList = (props) => {
 
   const channelActions = useChannelActions();
   //const history = useHistory();
+  const {virtualization} = useSelector((state) => state.settings.user.CHAT_SETTINGS);
 
   const handleSelectChannel = () => {
     document.body.classList.add("m-chat-channel-closed");
 
     if (selectedChannel !== null) {
-      const scrollComponent = document.getElementById("component-chat-thread");
-      if (scrollComponent) {
-        channelActions.saveHistoricalPosition(selectedChannel.id, scrollComponent);
+      let scrollComponent = document.getElementById("component-chat-thread");
+      if (virtualization) {
+        scrollComponent = document.querySelector(".chat-scroll-container");
+        if (scrollComponent) {
+          channelActions.saveHistoricalPosition(selectedChannel.id, scrollComponent);
+        }
+      } else {
+        if (scrollComponent) {
+          channelActions.saveHistoricalPosition(selectedChannel.id, scrollComponent);
+        }
       }
     }
 

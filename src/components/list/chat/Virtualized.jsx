@@ -49,6 +49,7 @@ const Virtualized = (props) => {
             ref={virtuosoRef}
             startReached={loadReplies}
             defaultItemHeight={46}
+            computeItemKey={index => messages[index].id}
             item={index => 
                 <VirtualizedChat
                     index={index} 
