@@ -96,6 +96,10 @@ const StyledMoreOptions = styled(MoreOptions)`
       width: 14px;
     }
   }
+  
+  @media (max-width: 480px) {
+    margin: 0 0 0.75rem !important;
+  }
 `;
 
 const ChatSidebarPanel = (props) => {

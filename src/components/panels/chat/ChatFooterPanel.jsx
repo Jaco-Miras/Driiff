@@ -23,8 +23,12 @@ const Wrapper = styled.div`
     border-radius: 8px;
     transition: background-color 0.15s ease-in-out;
     padding: 12px;
+    margin-right: 1rem;
     &:hover {
       background-color: #e1e1e1;
+    }
+    @media (max-width: 480px) {
+      margin-right: 0;
     }
   }
 `;
