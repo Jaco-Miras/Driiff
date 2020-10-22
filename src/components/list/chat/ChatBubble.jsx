@@ -581,17 +581,6 @@ const ChatBubble = (props) => {
       if (reply.created_at.timestamp !== reply.updated_at.timestamp) {
         replyBody = `${replyBody}<span class='edited-message'>(edited)</span>`;
       }
-
-      if (replyBody.length === 13 || replyBody.length === 2) {
-        if (replyBody !== reply.body) {
-          isEmoticonOnly = true;
-        } else {
-          let match = replyBody.match(getEmojiRegexPattern());
-          if (match && match.length === 1) {
-            isEmoticonOnly = true;
-          }
-        }
-      }
     }
     
     let replyQuoteBody = "";
