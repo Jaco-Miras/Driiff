@@ -222,8 +222,7 @@ const useChatMessageActions = () => {
    */
   const setEdit = (message) => {
     dispatch(setEditChatMessage(message));
-
-    if (message.quote) {
+    if (message.quote && message.quote.hasOwnProperty("id")) {
       let quote = {
         ...message.quote,
         channel_id: message.channel_id,

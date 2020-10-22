@@ -40,6 +40,7 @@ const StyledQuillEditor = styled(QuillEditor)`
   }
   .ql-editor {
     padding: 11px 9px;
+    ${(props) => props.showFileIcon && `padding-left: 30px`};
     ${(props) => props.editMode && `> div {width:calc(100% - 15px);}`} .mention {
       color: #7a1b8b;
     }
@@ -102,6 +103,27 @@ const CloseButton = styled(SvgIconFeather)`
   border-radius: 4px;
   width: 40px;
   padding: 9px;
+  cursor: pointer;
+  z-index: 9;
+  color: #cacaca;
+  transition: color 0.15s ease-in-out;
+
+  &:hover {
+    color: #7a1b8b;
+  }
+`;
+
+const FileIcon = styled(SvgIconFeather)`
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin: 4px;
+  height: calc(100% - 8px);
+  background: white;
+  border: 1px solid white;
+  border-radius: 4px;
+  width: 20px;
+  // padding: 9px;
   cursor: pointer;
   z-index: 9;
   color: #cacaca;
@@ -398,7 +420,7 @@ const ChatInput = (props) => {
     setText(reply.body);
     setEditMessage(reply);
     setEditMode(true);
-    if (reply.quote) {
+    if (reply.quote && reply.quote.hasOwnProperty("id")) {
       dispatch(
         addQuote({
           ...reply.quote,
@@ -568,8 +590,9 @@ const ChatInput = (props) => {
       <BodyMention onAddUsers={handleAddMentionedUsers} onDoNothing={handleIgnoreMentionedUsers}
                    userIds={mentionedUserIds} type={selectedChannel.type === "TOPIC" ? "workspace" : "chat"}/>}
       <StyledQuillEditor className={"chat-input"} modules={modules} ref={reactQuillRef} onChange={handleQuillChange}
-                         editMode={editMode}/>
+                         editMode={editMode} showFileIcon={editMode && editChatMessage && editChatMessage.files.length > 0}/>
       {editMode && <CloseButton className='close-button' icon="x" onClick={handleEditReplyClose}/>}
+      {editMode && editChatMessage && editChatMessage.files.length > 0 && <FileIcon className="close-button" icon="file"/>}
     </div>
   );
 };
