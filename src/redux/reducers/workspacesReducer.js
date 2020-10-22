@@ -588,7 +588,7 @@ export default (state = INITIAL_STATE, action) => {
           comments[c.id] = {
             ...c,
             clap_user_ids: [],
-            replies: convertArrayToObject(c.replies, "id"),
+            replies: convertArrayToObject(c.replies.map((r) => { return {...r, clap_user_ids:[]} }), "id"),
             skip: c.replies.length,
             hasMore: c.replies.length === 10,
             limit: 10,

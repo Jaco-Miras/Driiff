@@ -72,29 +72,6 @@ const SystemMessage = forwardRef((props, ref) => {
   const params = useParams();
   const history = useHistory();
 
-  // const { _t } = useTranslation();
-
-  // const dictionary = {
-  //   update: _t("SYSTEM.UPDATE", "Update"),
-  //   accountActivated: _t("SYSTEM.ACCOUNT_ACTIVATED", "account is activated"),
-  //   accountDeactivated: _t("SYSTEM.ACCOUNT_DEACTIVATED", "account is deactivated"),
-  //   removed: _t("SYSTEM.REMOVED", "removed"),
-  //   andRemoved: _t("SYSTEM.AND_REMOVED", "and removed"),
-  //   you: _t("SYSTEM.YOU", "You"),
-  //   youAnd: _t("SYSTEM.YOU_AND", "You and"),
-  //   joined: _t("SYSTEM.JOINED", "joined"),
-  //   andJoined: _t("SYSTEM.AND_JOINED", "and joined"),
-  //   left: _t("SYSTEM.LEFT", "left"),
-  //   andLeft: _t("SYSTEM.AND_LEFT", "and left"),
-  //   createdThePost: _t("SYSTEM.CREATED_THE_POST", "created the post"),
-  //   openPost: _t("SYSTEM.OPEN_POST", "Open post"),
-  //   someone: _t("SYSTEM.SOMEONE", "Someone"),
-  //   added: _t("SYSTEM.ADDED", "added"),
-  //   andAdded: _t("SYSTEM.AND_ADDED", "and added"),
-  //   renameThisWorkspace: _t("SYSTEM.RENAME_THIS_WORKSPACE", `renamed this workspace to`),
-  //   renameThisChat: _t("SYSTEM.RENAME_THIS_CHAT", `renamed this chat to`)
-  // }
-
   const [mounted, setMounted] = useState(false);
   const [body, setBody] = useState(reply.body);
 
