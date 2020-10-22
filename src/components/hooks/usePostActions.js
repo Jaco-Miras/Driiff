@@ -13,7 +13,6 @@ import {
   fetchTagCounter,
   getCompanyPosts,
   getPostClapHover,
-  getReplyClapHover,
   incomingPostMarkDone,
   incomingReadUnreadReducer,
   mustReadReducer,
@@ -659,15 +658,6 @@ const usePostActions = () => {
     );
   };
 
-  const fetchPostReplyHover = (postId, callback = () => {
-  }) => {
-    dispatch(
-      getReplyClapHover({
-        post_id: postId
-      }, callback)
-    );
-  };
-
   return {
     starPost,
     markPost,
@@ -691,7 +681,6 @@ const usePostActions = () => {
     markReadRequirement,
     remind,
     fetchPostClapHover,
-    fetchPostReplyHover,
   };
 };
 
