@@ -538,7 +538,7 @@ const ChatNameNotAuthorMobile = styled.span`
 `;
 const THRESHOLD = [.1, .2, .3, .4, .5, .6, .7, .8, .9];
 const ChatBubble = (props) => {
-  const { reply, showAvatar, selectedChannel, showGifPlayer, isAuthor, addMessageRef, user, recipients, isLastChat, chatMessageActions, timeFormat, isBot, chatSettings, isLastChatVisible, dictionary } = props;
+  const { reply, showAvatar, selectedChannel, showGifPlayer, isAuthor, addMessageRef, user, recipients, isLastChat, chatMessageActions, timeFormat, isBot, chatSettings, isLastChatVisible, dictionary, isBrowserActive } = props;
 
   const history = useHistory();
 
@@ -559,14 +559,18 @@ const ChatBubble = (props) => {
   });
 
   useEffect(() => {
-    if (isLastChat && entry) {
-      if ((entry.boundingClientRect.height - entry.intersectionRect.height) >= 16) {
-        if (isLastChatVisible) chatMessageActions.setLastMessageVisiblility({ status: false });
-      } else {
-        if (!isLastChatVisible) chatMessageActions.setLastMessageVisiblility({ status: true });
+    if (isBrowserActive) {
+      if (isLastChat && entry) {
+        if ((entry.boundingClientRect.height - entry.intersectionRect.height) >= 16) {
+          if (isLastChatVisible) chatMessageActions.setLastMessageVisiblility({ status: false });
+        } else {
+          if (!isLastChatVisible) chatMessageActions.setLastMessageVisiblility({ status: true });
+        }
       }
+    } else {
+      chatMessageActions.setLastMessageVisiblility({ status: false});
     }
-  }, [isLastChat, entry, isLastChatVisible]);
+  }, [isLastChat, entry, isLastChatVisible, inView, isBrowserActive]);
 
   useEffect(() => {
     if (addMessageRef && loadInView) {
