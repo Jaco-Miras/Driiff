@@ -18,7 +18,8 @@ const ChatBubbleContainer = styled.div`
   position: relative;
   display: inline-flex;
   flex-flow: column;
-  padding: 7px 15px;
+  padding: ${(props) => (props.hasFiles ? "3px" : "6px 9px 8px 9px")};
+  // padding: 6px 9px 8px 9px;
   border-radius: 6px;
   background: ${(props) => (props.isAuthor ? props.theme.self.chat_bubble_background_color : props.theme.others.chat_bubble_background_color)};
   text-align: left;
@@ -27,17 +28,13 @@ const ChatBubbleContainer = styled.div`
   font-size: 0.835rem;
   overflow: visible;
   //min-height: 40px;
-  min-height: ${(props) => (props.hasGif ? "150px" : "40px")};
-  @media (max-width: 620px) {
-    padding: 7px;
-  }
+  min-height: ${(props) => (props.hasGif ? "150px" : "33px")};
   ${(props) =>
     props.hideBg === true &&
     !props.isEmoticonOnly &&
     `
         background: none;
         padding: 0;
-
     `}
 
   &:after {
@@ -301,6 +298,7 @@ const ChatMessageFiles = styled(MessageFiles)`
 `;
 const ReplyContent = styled.span`
   max-width: ${(props) => (props.hasFiles ? "200px" : "auto")};
+  padding: ${(props) => (props.hasFiles ? "7px 4px 5px 6px" : "")};
   ul {
     list-style-type: none;
   }
@@ -1009,10 +1007,11 @@ const ChatBubble = (props) => {
     <ChatBubbleContainer
       ref={refComponent}
       tabIndex={reply.id}
+      hasFiles={hasFiles}
       className={"chat-bubble ql-editor"}
       showAvatar={showAvatar}
       isAuthor={isAuthor}
-      hideBg={isEmoticonOnly || gifOnly || (hasFiles && body === "<span></span>") || (hasFiles && body === "")}
+      hideBg={isEmoticonOnly || gifOnly || (hasFiles && body === "<div></div>") || (hasFiles && body === "")}
       theme={chatSettings.chat_message_theme}
       hasGif={showGifPlayer}
     >
