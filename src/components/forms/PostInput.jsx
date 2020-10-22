@@ -221,6 +221,7 @@ const PostInput = (props) => {
         updated_at: {timestamp: timestamp},
         unfurls: [],
         user_clap_count: 0,
+        clap_user_ids: []
       };
 
       commentActions.add(commentObj);

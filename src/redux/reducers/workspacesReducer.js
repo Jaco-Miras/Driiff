@@ -928,9 +928,17 @@ export default (state = INITIAL_STATE, action) => {
           }
         } else {
           if (action.data.parent_id) {
-            newPostComments[action.data.post_id].comments[action.data.parent_id].replies[action.data.id] = action.data;
+            if (newPostComments[action.data.post_id].comments[action.data.parent_id].replies.hasOwnProperty(action.data.id)) {
+              newPostComments[action.data.post_id].comments[action.data.parent_id].replies[action.data.id] = { ...action.data, clap_user_ids: newPostComments[action.data.post_id].comments[action.data.parent_id].replies[action.data.id].clap_user_ids};
+            } else {
+              newPostComments[action.data.post_id].comments[action.data.parent_id].replies[action.data.id] = action.data;
+            }
           } else {
-            newPostComments[action.data.post_id].comments[action.data.id] = action.data;
+            if (newPostComments[action.data.post_id].comments.hasOwnProperty(action.data.id)) {
+              newPostComments[action.data.post_id].comments[action.data.id] = { ...action.data, clap_user_ids: newPostComments[action.data.post_id].comments[action.data.id].clap_user_ids };
+            } else {
+              newPostComments[action.data.post_id].comments[action.data.id] = action.data;
+            }
           }
         }
       }
