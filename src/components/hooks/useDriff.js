@@ -45,7 +45,7 @@ const useDriff = () => {
     let link = document.querySelector("link[rel*='icon']") || document.createElement('link');
     link.type = 'image/x-icon';
     link.rel = 'shortcut icon';
-    link.href = isActive ? `${driffUrl}/assets/icons/favicon-active.ico` : `${driffUrl}/assets/icons/favicon.ico`;
+    link.href = isActive ? `${driffUrl}/assets/icons/favicon-active.png` : `${driffUrl}/assets/icons/favicon.png`;
     document.getElementsByTagName('head')[0].appendChild(link);
   };
 
