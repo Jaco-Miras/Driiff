@@ -135,7 +135,7 @@ const PostItemPanel = (props) => {
             {noAuthorResponsibles && noAuthorResponsibles.length > 0 &&
             <MemberLists members={noAuthorResponsibles} classNames="mr-2"/>}
             {!disableOptions &&
-            <ArchiveBtn onClick={handleArchivePost} className="btn btn-outline-light ml-2" data-toggle="tooltip"
+            <ArchiveBtn onClick={handleArchivePost} className="btn button-darkmode btn-outline-light ml-2" data-toggle="tooltip"
                         title="" data-original-title="Archive post">
               <Icon icon="archive"/>
             </ArchiveBtn>}
