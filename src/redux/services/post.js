@@ -473,3 +473,10 @@ export function getReplyClapHover(payload) {
     data: payload,
   });
 }
+
+export function getUnreadPostEntries(payload) {
+  return apiCall({
+    method: "GET",
+    url: `/v2/post-unread-entries`,
+  });
+}
