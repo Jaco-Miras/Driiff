@@ -1,18 +1,19 @@
-import React, {useCallback} from "react";
-import {useDispatch} from "react-redux";
+import React, { useCallback } from "react";
+import { useDispatch } from "react-redux";
 import {
   addComment,
   addCommentQuote,
   clearCommentQuote,
   deleteComment,
   fetchComments,
+  getReplyClapHover,
   postComment,
   postCommentClap,
   putComment,
   setEditComment
 } from "../../redux/actions/postActions";
-import {addToModals} from "../../redux/actions/globalActions";
-import {useToaster, useTodoActions} from "./index";
+import { addToModals } from "../../redux/actions/globalActions";
+import { useToaster, useTodoActions } from "./index";
 
 const useCommentActions = () => {
 
@@ -145,6 +146,15 @@ const useCommentActions = () => {
     [dispatch]
   );
 
+  const fetchPostReplyHover = (messageId, callback = () => {
+  }) => {
+    dispatch(
+      getReplyClapHover({
+        message_id: messageId
+      }, callback)
+    );
+  };
+
   return {
     add,
     addQuote,
@@ -156,6 +166,7 @@ const useCommentActions = () => {
     setToEdit,
     remove,
     remind,
+    fetchPostReplyHover
   };
 };
 

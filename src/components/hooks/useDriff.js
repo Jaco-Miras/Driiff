@@ -1,6 +1,7 @@
-import {useEffect, useState} from "react";
-import {$_GET, isIPAddress} from "../../helpers/commonFunctions";
+import { useEffect, useState } from "react";
+import { $_GET, isIPAddress } from "../../helpers/commonFunctions";
 import useDriffActions from "./useDriffActions";
+import { getCurrentDriffUrl } from "../../helpers/slugHelper";
 
 export const getDriffName = () => {
   let driff = $_GET("driff");
@@ -38,6 +39,15 @@ const useDriff = () => {
   const actions = useDriffActions();
   const [redirected, setRedirected] = useState(actions.getName());
   const [registeredDriff, setRegisteredDriff] = useState(actions.getName());
+
+  const updateFaviconState = (isActive = false) => {
+    let driffUrl = getCurrentDriffUrl();
+    let link = document.querySelector("link[rel*='icon']") || document.createElement('link');
+    link.type = 'image/x-icon';
+    link.rel = 'shortcut icon';
+    link.href = isActive ? `${driffUrl}/assets/icons/favicon-active.png` : `${driffUrl}/assets/icons/favicon.png`;
+    document.getElementsByTagName('head')[0].appendChild(link);
+  };
 
   useEffect(() => {
     if (init)
@@ -80,7 +90,8 @@ const useDriff = () => {
     actions,
     redirected,
     registeredDriff,
-    setRegisteredDriff
+    setRegisteredDriff,
+    updateFaviconState
   };
 };
 

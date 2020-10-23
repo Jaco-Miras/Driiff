@@ -1,5 +1,5 @@
 import React from "react";
-import {useHistory} from "react-router-dom";
+//import {useHistory} from "react-router-dom";
 import styled from "styled-components";
 import useChannelActions from "../../hooks/useChannelActions";
 import ChannelIcon from "./ChannelIcon";
@@ -8,6 +8,7 @@ import ChannelTitle from "./ChannelTitle";
 import ChatDateIcons from "./ChatDateIcons";
 import ReplyPreview from "./ReplyPreview";
 import {Badge} from "../../common";
+import {useSelector} from "react-redux";
 
 const Wrapper = styled.li`
   cursor: pointer;
@@ -83,7 +84,7 @@ const Wrapper = styled.li`
 `;
 
 const ChannelTitlePreview = styled.div`
-  padding-right: 64px;
+  padding-right: 48px;
 `;
 
 const Timestamp = styled.div`
@@ -95,20 +96,28 @@ const ChannelList = (props) => {
   const {className = "", search = "", channel, selectedChannel, channelDrafts, dictionary} = props;
 
   const channelActions = useChannelActions();
-  const history = useHistory();
+  //const history = useHistory();
+  const {virtualization} = useSelector((state) => state.settings.user.CHAT_SETTINGS);
 
   const handleSelectChannel = () => {
     document.body.classList.add("m-chat-channel-closed");
 
     if (selectedChannel !== null) {
-      const scrollComponent = document.getElementById("component-chat-thread");
-      if (scrollComponent) {
-        channelActions.saveHistoricalPosition(selectedChannel.id, scrollComponent);
+      let scrollComponent = document.getElementById("component-chat-thread");
+      if (virtualization) {
+        scrollComponent = document.querySelector(".chat-scroll-container");
+        if (scrollComponent) {
+          channelActions.saveHistoricalPosition(selectedChannel.id, scrollComponent);
+        }
+      } else {
+        if (scrollComponent) {
+          channelActions.saveHistoricalPosition(selectedChannel.id, scrollComponent);
+        }
       }
     }
 
     channelActions.select({ ...channel, selected: true });
-    history.push(`/chat/${channel.code}`);
+    // history.push(`/chat/${channel.code}`);
   };
 
   return (
@@ -130,7 +139,7 @@ const ChannelList = (props) => {
       </ChannelTitlePreview>
       <Timestamp className="text-right ml-auto">
         <ChatDateIcons className={"chat-date-icons"} channel={channel} isRead={channel.is_read} />
-        {channel.type !== "TOPIC" && <ChannelOptions selectedChannel={selectedChannel} channel={channel} />}
+        <ChannelOptions selectedChannel={selectedChannel} channel={channel} />
       </Timestamp>
     </Wrapper>
   );

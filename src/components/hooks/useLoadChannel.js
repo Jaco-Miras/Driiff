@@ -1,15 +1,15 @@
-import {useEffect} from "react";
-import {useSelector} from "react-redux";
-import {useHistory, useRouteMatch} from "react-router-dom";
+import { useEffect } from "react";
+import { useSelector } from "react-redux";
+import { useHistory, useRouteMatch } from "react-router-dom";
 import useChannelActions from "./useChannelActions";
 
 const useLoadChannel = () => {
-  const {channels, lastVisitedChannel} = useSelector((state) => state.chat);
+  const { channels, lastVisitedChannel } = useSelector((state) => state.chat);
   const actions = useChannelActions();
 
   const route = useRouteMatch();
   const history = useHistory();
-  const {params, url} = route;
+  const { params, url } = route;
 
   const fetchLastVisited = () => {
     let cb = (callback, channel) => {
@@ -51,7 +51,7 @@ const useLoadChannel = () => {
             isFetching: false
           }
           actions.select(channel);
-          actions.setLastVisitedChannel(channel);
+          actions.saveLastVisited(channel);
         }
       });
     }

@@ -1,8 +1,8 @@
-import {parseEmojis, parseTaskUrl, textToLink} from "./stringFormatter";
-import {validURL} from "./urlContentHelper";
-import {GoogleDriveLink, SvgIcon} from "../components/common";
+import { parseEmojis, textToLink } from "./stringFormatter";
+import { validURL } from "./urlContentHelper";
+import { GoogleDriveLink, SvgIcon } from "../components/common";
 import React from "react";
-import {renderToString} from "react-dom/server";
+import { renderToString } from "react-dom/server";
 
 class quillHelper {
   static generate(body) {
@@ -16,14 +16,55 @@ class quillHelper {
     let index = 0,
       length = pTagQuery.length;
     for (; index < length; index++) {
-      if (pTagQuery[index].querySelectorAll("a").length >= 1) return;
+      //if (pTagQuery[index].querySelectorAll("a").length >= 1) return;
 
       let emojiPattern = /:(.*?):/i;
-      let innerHTML = pTagQuery[index].innerHTML.replace(">http", "> http");
-      let words = innerHTML.split(" ");
+      let innerHTML = pTagQuery[index].innerHTML;
+
+      let words = [];
+      if (!innerHTML.startsWith(`<span class="ql-mention-denotation-char">`)) {
+        words = innerHTML.split(" ");
+      }
       let parseText = [];
       let i = 0;
+      let isSpan = false;
+      let isLink = false;
       for (let word of words) {
+
+        //mention
+        if (word === `<span`) {
+          isSpan = true;
+          parseText.push(word);
+          i++;
+          continue;
+        } else if (word.endsWith(`</a></span></span>`)) {
+          isSpan = false;
+          parseText.push(word);
+          i++;
+          continue;
+        } else if (isSpan && (word.length === 0 || !(word.startsWith("http") || word.length <= 3))) {
+          parseText.push(word);
+          i++;
+          continue;
+        }
+
+        //hyperlink
+        if (word === `<a`) {
+          isLink = true;
+          parseText.push(word);
+          i++;
+          continue;
+        } else if (word.endsWith(`</a>`)) {
+          isLink = false;
+          parseText.push(word);
+          i++;
+          continue;
+        } else if (isLink) {
+          parseText.push(word);
+          i++;
+          continue;
+        }
+
         switch (word) {
           case ":S":
             word = ":worried:";
@@ -59,25 +100,24 @@ class quillHelper {
             }
           }
         }
-
         if (editMode !== true && validURL(word) === true) {
           const googleDriveFileUrlPattern = /^(https:\/\/(drive|docs)\.google\.com\/)(file|spreadsheets|document|presentation|forms)\/d\/([^\/]+)\/.*$/;
           const urlPattern = /^((http|https|ftp):\/\/)/;
           if (googleDriveFileUrlPattern.test(word)) {
-
             word = renderToString(<GoogleDriveLink link={word}/>);
           } else if (!urlPattern.test(word)) {
             if (!(word.includes("href") || word.includes("src"))) {
               word = parseEmojis(textToLink(word));
             }
           } else {
-            let taskUrl = parseTaskUrl(word);
+            word = `<a target="_blank" href="${word}">${word}</a>`;
+            // let taskUrl = parseTaskUrl(word);
 
-            if (!taskUrl) {
-              word = `<a target="_blank" href="${word}">${word}</a>`;
-            } else {
-              word = taskUrl;
-            }
+            // if (!taskUrl) {
+            //   word = `<a target="_blank" href="${word}">${word}</a>`;
+            // } else {
+            //   word = taskUrl;
+            // }
           }
         }
 
@@ -104,6 +144,9 @@ class quillHelper {
   }
 
   static parseEmoji(body) {
+    if (body === null)
+      return "";
+
     let el = document.createElement("div");
     el.innerHTML = body;
 

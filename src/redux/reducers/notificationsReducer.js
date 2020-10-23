@@ -1,4 +1,4 @@
-import {convertArrayToObject} from "../../helpers/arrayHelper";
+import { convertArrayToObject } from "../../helpers/arrayHelper";
 
 const INITIAL_STATE = {
   user: null,
@@ -16,7 +16,7 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "GET_NOTIFICATIONS_SUCCESS": {
-      let results = action.data.notifications.filter((n) => n.type !== "NEW_TODO")
+      let results = action.data.notifications
       return {
         ...state,
         notifications: {
@@ -70,7 +70,7 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "INCOMING_POST": {
-      if (action.data.author.id !== state.user.id) {
+      if (action.data.notification && action.data.author.id !== state.user.id) {
         let postNotification = {
           id: action.data.notification.id,
           type: "POST_CREATE",
@@ -129,6 +129,29 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         hasSubscribed: action.data
+      }
+    }
+    case "INCOMING_REMINDER_NOTIFICATION": {
+      if (action.data.notification) {
+        let reminderNotification = {
+          ...action.data.notification,
+          is_read: 0,
+          author: null,
+          created_at: action.data.created_at,
+          data: {
+            id: action.data.id,
+            title: action.data.title,
+            description: action.data.description,
+            created_at: action.data.created_at,
+            remind_at: action.data.remind_at
+          }
+        }
+        return {
+          ...state,
+          notifications: {...state.notifications, [reminderNotification.id]: reminderNotification},
+        };
+      } else {
+        return state;
       }
     }
     default:

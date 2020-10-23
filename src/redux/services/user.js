@@ -480,3 +480,24 @@ export function postInternalRequestForm(payload) {
     data: payload,
   });
 }
+
+/**
+ * @param {Object} payload
+ * @param {number} payload.role_id
+ * @param {number} payload.user_id
+ * @returns {Promise<* | void>}
+ */
+export function putUserRole(payload) {
+  return apiCall({
+    method: "PUT",
+    url: `/v2/update-user-role`,
+    data: payload,
+  });
+}
+
+export function getRoles(payload) {
+  return apiCall({
+    method: "GET",
+    url: `/v2/roles`,
+  });
+}

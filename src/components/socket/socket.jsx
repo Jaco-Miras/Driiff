@@ -31,9 +31,22 @@ import {
   updateChannelMembersTitle,
 } from "../../redux/actions/chatActions";
 import { addFilesToChannel, deleteFilesFromChannel } from "../../redux/actions/fileActions";
-import { addUserToReducers, generateUnfurl, generateUnfurlReducer, getConnectedSlugs, setBrowserTabStatus, setGeneralChat, setUnreadNotificationCounterEntries } from "../../redux/actions/globalActions";
+import {
+  addUserToReducers,
+  generateUnfurl,
+  generateUnfurlReducer,
+  getConnectedSlugs,
+  setBrowserTabStatus,
+  setGeneralChat,
+  setUnreadNotificationCounterEntries
+} from "../../redux/actions/globalActions";
 import { getOnlineUsers, getUser } from "../../redux/actions/userAction";
-import { incomingMovedTopic, incomingUpdatedWorkspaceFolder, incomingWorkspace, incomingWorkspaceFolder } from "../../redux/actions/workspaceActions";
+import {
+  incomingMovedTopic,
+  incomingUpdatedWorkspaceFolder,
+  incomingWorkspace,
+  incomingWorkspaceFolder
+} from "../../redux/actions/workspaceActions";
 // import {
 //     addChatBox,
 //     addChatMembers,
@@ -344,14 +357,9 @@ class Socket extends PureComponent {
         this.props.addUserToMentions(e);
       })
       .listen(".updated-version", (e) => {
-        if (!(isIPAddress(window.location.hostname) || window.location.hostname === "localhost") && localStorage.getItem("driffVersion") !== e.version) {
-          localStorage.setItem("driffVersion", e.version);
+        if (!(isIPAddress(window.location.hostname) || window.location.hostname === "localhost") && localStorage.getItem("site_ver") !== e.version) {
+          localStorage.setItem("site_ver", e.version);
           let requirement = e.requirement;
-
-          /*if (!this.props.user.personal_bot) {
-                     requirement = 'logout';
-                     }*/
-
           let cb = {
             id: e.version,
             type: "modal",

@@ -1,12 +1,12 @@
-import React, {useEffect, useRef, useState} from "react";
-import {useDispatch, useSelector} from "react-redux";
+import React, { useEffect, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
-import {getAPIUrl} from "../../helpers/slugHelper";
-import {setViewFiles} from "../../redux/actions/fileActions";
+import { getAPIUrl } from "../../helpers/slugHelper";
+import { setViewFiles } from "../../redux/actions/fileActions";
 import "../../vendors/lightbox/magnific-popup.css";
-import {useOutsideClick, useTimeFormat} from "../hooks";
+import { useOutsideClick, useTimeFormat } from "../hooks";
 import ImageTextLink from "./ImageTextLink";
-import {SvgIconFeather} from "./SvgIcon";
+import { SvgIconFeather } from "./SvgIcon";
 
 const FileViewerContainer = styled.div`
   position: fixed;
@@ -14,7 +14,6 @@ const FileViewerContainer = styled.div`
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: 99;
   pointer-events: auto;
   align-items: center;
   justify-content: space-evenly;
@@ -173,56 +172,18 @@ const FileViewer = (props) => {
   const companyFiles = useSelector((state) => state.files.companyFiles.items);
   const {localizeDate} = useTimeFormat();
 
-  const [activeIndex, setActiveIndex] = useState(null);
+  const [activeIndex, setActiveIndex] = useState(0);
   const [files, setFiles] = useState([]);
-
-  useEffect(() => {
-    if (Object.keys(channelFiles).length && channelFiles.hasOwnProperty(viewFiles.channel_id)) {
-      setFiles(channelFiles[viewFiles.channel_id]);
-      channelFiles[viewFiles.channel_id].forEach((file, index) => {
-        if (file.file_id === viewFiles.file_id) {
-          setActiveIndex(index);
-        }
-      });
-    }
-
-    if (Object.keys(workspaceFiles).length && workspaceFiles.hasOwnProperty(viewFiles.workspace_id)) {
-      let files = Object.values(workspaceFiles[viewFiles.workspace_id].files);
-      if (viewFiles.hasOwnProperty("files")) {
-        files = viewFiles.files;
-      }
-      setFiles(files);
-      files.forEach((file, index) => {
-        if (file.id === viewFiles.file_id) {
-          setActiveIndex(index);
-        }
-      });
-    }
-
-    let files = Object.values(companyFiles);
-    if (files.length && !Object.keys(viewFiles).some(k => ["channel_id", "workspace_id"].includes(k))) {
-      setFiles(files);
-      setActiveIndex(files.findIndex(f => f.id === viewFiles.file_id));
-    }
-  }, []);
 
   let refFiles = {};
 
   const showNextFile = () => {
-    if (files[activeIndex].type.toLowerCase() === "video") {
-      refFiles[activeIndex].pause();
-    }
-
     let filesLength = files.length;
     if (filesLength - 1 === activeIndex) setActiveIndex(0);
     else setActiveIndex(activeIndex + 1);
   };
 
   const showPreviousFile = () => {
-    if (files[activeIndex].type.toLowerCase() === "video") {
-      refFiles[activeIndex].pause();
-    }
-
     const filesLength = files.length;
     if (activeIndex === 0) setActiveIndex(filesLength - 1);
     else setActiveIndex(activeIndex - 1);
@@ -231,19 +192,6 @@ const FileViewer = (props) => {
   const handleCloseFileViewer = () => {
     dispatch(setViewFiles(null));
   };
-
-  useOutsideClick(fileRef, handleCloseFileViewer, true);
-
-  useEffect(() => {
-    if (files.length && activeIndex !== null) {
-      let nodes = document.querySelectorAll(".fileviewer-container .file-item");
-      for (let i = 0; i < nodes.length; i++) {
-        nodes[i].classList.add("d-none");
-      }
-
-      document.querySelector(`.fileviewer-container .file-item[data-index="${activeIndex}"]`).classList.remove("d-none");
-    }
-  }, [activeIndex, files]);
 
   const handleClose = (e) => {
     e.preventDefault();
@@ -287,25 +235,22 @@ const FileViewer = (props) => {
     }
   };
 
-  const renderFile = (file, index) => {
-    let style = {
-      display: activeIndex === index ? "inline" : "none",
-    };
+  const renderFile = (file) => {
 
     switch (file.type.toLowerCase()) {
       case "video":
         return (
-          <div key={index} data-index={index} className={"file-item mfp-img"}>
-            <img className={"d-none"} src={require("../../assets/icon/limitations/l/text.svg")} alt={"File not found."} />
+          <div key={file.id} data-index={file.id} className={"file-item mfp-img"}>
+            <img className={"d-none"} src={require("../../assets/icon/limitations/l/text.svg")}
+                 alt={"File not found."}/>
             <video
-              data-index={index}
+              data-index={file.id}
               data-attempt={0}
-              ref={(e) => (refFiles[index] = e)}
+              ref={(e) => (refFiles[file.id] = e)}
               controls
               playsInline
-              key={index}
-              style={style}
-              className={"file d-none"}
+              key={file.id}
+              className={"file"}
               autoPlay={false}
               onLoadStart={handleVideoOnLoad}
               onError={handleVideoOnError}
@@ -315,13 +260,15 @@ const FileViewer = (props) => {
         );
       case "image":
         return (
-          <div key={index} data-index={index} className={"file-item mfp-img"}>
-            <img data-index={index} data-attempt={0} onLoad={handleImageOnLoad} onError={handleImageOnError} ref={(e) => (refFiles[index] = e)} key={index} style={style} className={"file d-none"} src={file.view_link} alt="file preview" />
+          <div key={file.id} data-index={file.id} className={"file-item mfp-img"}>
+            <img data-index={file.id} data-attempt={0} onLoad={handleImageOnLoad} onError={handleImageOnError}
+                 ref={(e) => (refFiles[file.id] = e)} key={file.id} className={"file"} src={file.view_link}
+                 alt="file preview"/>
           </div>
         );
       case "pdf":
         return (
-          <div key={index} data-index={index} className={"file-item mfp-img"}>
+          <div key={file.id} data-index={file.id} className={"file-item mfp-img"}>
             <object data={file.view_link} width="600" height="400">
               <embed src={file.view_link} width="600" height="400"/>
             </object>
@@ -329,11 +276,11 @@ const FileViewer = (props) => {
         );
       default:
         return (
-          <div key={index} data-index={index} className={"file-item mfp-img cannot-preview"}>
-            <Eye icon={"eye-off"} />
+          <div key={file.id} data-index={file.id} className={"file-item mfp-img cannot-preview"}>
+            <Eye icon={"eye-off"}/>
 
             <p>
-              We can't preview this file type. <br />
+              We can't preview this file type. <br/>
               Try downloading the file to view it.
             </p>
             {/* <FileIcon ref={e => refFiles[index] = e}
@@ -354,16 +301,70 @@ const FileViewer = (props) => {
     window.focus();
   };
 
-  let file = files[activeIndex];
+  useEffect(() => {
+    if (Object.keys(channelFiles).length && channelFiles.hasOwnProperty(viewFiles.channel_id)) {
+      setFiles(channelFiles[viewFiles.channel_id]);
+      channelFiles[viewFiles.channel_id].forEach((file, index) => {
+        if (file.file_id === viewFiles.file_id) {
+          setActiveIndex(index);
+        }
+      });
+    } else if (Object.keys(workspaceFiles).length && workspaceFiles.hasOwnProperty(viewFiles.workspace_id)) {
+      let files = Object.values(workspaceFiles[viewFiles.workspace_id].files);
+      if (viewFiles.hasOwnProperty("files")) {
+        files = viewFiles.files;
+      }
+      setFiles(files);
+      setActiveIndex(files.findIndex(f => f.id === viewFiles.file_id));
+    } else {
+      let files = Object.values(companyFiles);
+      if (!Object.keys(viewFiles).some(k => ["channel_id", "workspace_id"].includes(k))) {
+        if (files.length) {
+          setFiles(files);
+          setActiveIndex(files.findIndex(f => f.file_id === viewFiles.file_id));
+        } else {
+          setFiles(viewFiles.files);
+          setActiveIndex(viewFiles.files.findIndex(f => f.file_id === viewFiles.file_id));
+        }
+      }
+    }
+  }, []);
 
+  useEffect(() => {
+    if (fileRef.current) {
+      const onHandleKeyDowm = (e) => {
+        switch (e.keyCode) {
+          case 27: {
+            handleClose(e);
+            break;
+          }
+          case 39: {
+            showNextFile();
+            break;
+          }
+          case 37: {
+            showPreviousFile();
+            break;
+          }
+        }
+      };
+
+      document.addEventListener("keydown", onHandleKeyDowm);
+    }
+  }, [fileRef]);
+
+  useOutsideClick(fileRef, handleCloseFileViewer, true);
+
+  let file = files[activeIndex];
   if (files.length === 0 || activeIndex === null) return;
 
   return (
-    <FileViewerContainer className={`fileviewer-container ${className}`} ref={fileRef}>
+    <FileViewerContainer className={`fileviewer-container ${className}`} ref={fileRef} data-file-index={activeIndex}>
       <PreviewContainer className="iframe-img-container">
         <FileNameContainer>
-          <FileName onClick={(e) => handleDownloadFile(e, file)} href={file.download_link} download={file.filename} target={"_blank"}>
-            <DownloadIcon icon={"download"} /> {file.filename ? file.filename : file.name}
+          <FileName onClick={(e) => handleDownloadFile(e, file)} href={file.download_link} download={file.filename}
+                    target={"_blank"}>
+            <DownloadIcon icon={"download"}/> {file.filename ? file.filename : file.name}
           </FileName>
         </FileNameContainer>
         {file.created_at && file.created_at.timestamp && (
@@ -378,12 +379,10 @@ const FileViewer = (props) => {
                 ×
               </CloseButton>
               <FileWrapper>
-                {files.map((f, index) => {
-                  return renderFile(f, index);
-                })}
+                {renderFile(files[activeIndex])}
                 <figcaption>
                   <div className="mfp-bottom-bar">
-                    <div className="mfp-title" />
+                    <div className="mfp-title"/>
                     <div className="mfp-counter">{`${activeIndex + 1} of ${files.length}`}</div>
                   </div>
                 </figcaption>
@@ -391,8 +390,10 @@ const FileViewer = (props) => {
             </div>
           </div>
           <div className="mfp-preloader">Loading...</div>
-          <ArrowButton show={files.length > 1} onClick={(e) => showPreviousFile(e)} title="Previous (Left arrow key)" type="button" className="mfp-arrow mfp-arrow-left mfp-prevent-close" />
-          <ArrowButton show={files.length > 1} onClick={(e) => showNextFile(e)} title="Next (Right arrow key)" type="button" className="mfp-arrow mfp-arrow-right mfp-prevent-close" />
+          <ArrowButton show={files.length > 1} onClick={(e) => showPreviousFile()} title="Previous (Left arrow key)"
+                       type="button" className="mfp-arrow mfp-arrow-left mfp-prevent-close"/>
+          <ArrowButton show={files.length > 1} onClick={(e) => showNextFile()} title="Next (Right arrow key)"
+                       type="button" className="mfp-arrow mfp-arrow-right mfp-prevent-close"/>
         </div>
       </PreviewContainer>
     </FileViewerContainer>

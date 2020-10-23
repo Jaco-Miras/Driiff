@@ -4,6 +4,7 @@ import {
   getCompanyDashboardRecentPosts as getCompanyDashboardRecentPostsService,
   getCompanyDashboardTimeline as getCompanyDashboardTimelineService,
   patchCheckDriff as patchCheckDriffService,
+  patchUpdateDriffVersion as patchUpdateDriffVersionService,
   postRegisterDriff as postRegisterDriffService,
 } from "../services";
 
@@ -25,5 +26,9 @@ export const getCompanyDashboardRecentPosts = (payload, callback) => {
 
 export const getCompanyDashboardMembers = (payload, callback) => {
   return dispatchActionToReducer(getCompanyDashboardMembersService(payload), "GET_COMPANY_DASHBOARD_MEMBERS_START", "GET_COMPANY_DASHBOARD_MEMBERS_SUCCESS", "GET_COMPANY_DASHBOARD_MEMBERS_FAILURE", callback);
+};
+
+export const patchUpdateDriffVersion = (payload, callback) => {
+  return dispatchActionToReducer(patchUpdateDriffVersionService(payload), "CHECK_DRIFF_START", "CHECK_DRIFF_SUCCESS", "CHECK_DRIFF_FAILURE", callback);
 };
 

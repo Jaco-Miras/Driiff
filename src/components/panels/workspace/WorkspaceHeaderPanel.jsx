@@ -1,15 +1,15 @@
-import React, {useEffect} from "react";
-import {useDispatch, useSelector} from "react-redux";
-import {Route, useRouteMatch} from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Route, useRouteMatch } from "react-router-dom";
 import styled from "styled-components";
-import {addToModals} from "../../../redux/actions/globalActions";
-import {SvgIconFeather} from "../../common";
-import {HeaderProfileNavigation} from "../common";
-import {SettingsLink} from "../../workspace";
-import {joinWorkspace} from "../../../redux/actions/workspaceActions";
-import {useToaster, useTranslation} from "../../hooks";
-import {MemberLists} from "../../list/members";
-import {WorkspacePageHeaderPanel} from "../workspace";
+import { addToModals } from "../../../redux/actions/globalActions";
+import { SvgIconFeather } from "../../common";
+import { HeaderProfileNavigation } from "../common";
+import { SettingsLink } from "../../workspace";
+import { joinWorkspace } from "../../../redux/actions/workspaceActions";
+import { useToaster, useTranslation, useWorkspaceSearchActions } from "../../hooks";
+import { MemberLists } from "../../list/members";
+import { WorkspacePageHeaderPanel } from "../workspace";
 
 const NavBarLeft = styled.div`
   width: 100%;
@@ -119,6 +119,13 @@ const NavBar = styled.ul`
       height: 16px;
       color: #64625c;
     }
+    svg.feather-compass {
+      color: rgb(80, 80, 80);
+      
+      .dark & {
+        color: #fff;    
+      }
+    }
   }
   .nav-link {
     padding: 0px !important;
@@ -141,6 +148,27 @@ const WorkspaceName = styled.h2`
   @media all and (max-width: 620px) {
     font-size: 16px;
   }
+`;
+
+const WorkspacePageTitle = styled.h2`
+    letter-spacing: 0;
+    margin-bottom: 0;
+    color: rgb(80, 80, 80);
+    font-weight: 500;
+    font-size: 20px;
+    margin-right: 2px;
+
+    .dark & {
+      color: #fff;    
+    }
+
+    svg {
+      color: #64625c;
+    }
+
+    @media all and (max-width: 620px) {
+      font-size: 16px;
+    }
 `;
 
 const WorkspaceWrapper = styled.span`
@@ -174,7 +202,6 @@ const SubWorkspaceName = styled.h3`
 
 const WorkspaceButton = styled.h3`
   cursor: pointer;
-  cursor: hand;
   display: flex;
   align-items: center;
   margin-bottom: 0;
@@ -208,7 +235,7 @@ const WorspaceHeaderPanel = (props) => {
   const {_t} = useTranslation();
 
   const dictionary = {
-    searchWorkspaceSearchTitle: _t("PLACEHOLDER.SEARCH_WORKSPACE_TITLE", "Search workspace"),
+    allWorkspaces: _t("SIDEBAR.ALL_WORKSPACES", "Browse Workspaces"),
     pageTitleWorkspaceDashboard: _t("PAGE_TITLE.WORKSPACE_DASHBOARD", "Dashboard"),
     pageTitleWorkspacePosts: _t("PAGE_TITLE.WORKSPACE_POSTS", "Posts"),
     pageTitleWorkspaceChat: _t("PAGE_TITLE.WORKSPACE_CHAT", "Chat"),
@@ -216,7 +243,7 @@ const WorspaceHeaderPanel = (props) => {
     pageTitleWorkspaceNotifications: _t("PAGE_TITLE.WORKSPACE_NOTIFICATIONS", "Notifications"),
     pageTitleWorkspacePeople: _t("PAGE_TITLE.WORKSPACE_PEOPLE", "People"),
     pageTitleWorkspaceProfile: _t("PAGE_TITLE.WORKSPACE_PROFILE", "Profile"),
-    pageTitleWorkspaceSearch: _t("PAGE_TITLE.WORKSPACE_SEARCH", "Search"),
+    pageTitleWorkspaceSearch: _t("PAGE_TITLE.WORKSPACE_SEARCH", "Search workspace"),
     pageTitleSettings: _t("PAGE_TITLE.SETTINGS", "Settings"),
     pageTitleTodos: _t("PAGE_TITLE.TODOS", "To-dos & Reminders"),
     generalSearch: _t("GENERAL.SEARCH", "Search"),
@@ -233,6 +260,14 @@ const WorspaceHeaderPanel = (props) => {
       topic_name: activeTopic ? `<b>#{activeTopic.name}</b>` : ""
     })
   }
+
+  const actions = useWorkspaceSearchActions();
+
+  const search = useSelector((state) => state.workspaces.search);
+
+  const { value, searching } = search;
+  const [inputValue, setInputValue] = useState(value);
+  const [pageName, setPageName] = useState(dictionary.pageTitleDashboard);
 
   const handleShowWorkspaceModal = () => {
     let payload = {
@@ -329,11 +364,12 @@ const WorspaceHeaderPanel = (props) => {
             <>
               <li className="nav-item navigation-toggler mobile-toggler">
                 <a href="/" className="nav-link" title="Show navigation" onClick={handleMenuOpenMobile}>
-                  <SvgIconFeather icon="menu" />
+                  <SvgIconFeather icon="menu"/>
                 </a>
               </li>
-              <li className="nav-item nav-item-folder">
-                <WorkspaceName>{dictionary.searchWorkspaceSearchTitle}</WorkspaceName>
+              <li className="nav-item nav-item-folder d-inline-flex justify-content-start align-items-center">
+                <SvgIconFeather className="mr-2" icon="compass"/>
+                <WorkspacePageTitle>{dictionary.allWorkspaces}</WorkspacePageTitle>
               </li>
             </>
           ) : activeTopic ? (

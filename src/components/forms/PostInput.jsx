@@ -1,13 +1,13 @@
-import React, {useEffect, useRef, useState} from "react";
-import {useDispatch, useSelector} from "react-redux";
+import React, { useEffect, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 // import {localizeDate} from "../../helpers/momentFormatJS";
-import {addQuote, postChannelMembers} from "../../redux/actions/chatActions";
-import {SvgIconFeather} from "../common";
+import { addQuote, postChannelMembers } from "../../redux/actions/chatActions";
+import { SvgIconFeather } from "../common";
 import BodyMention from "../common/BodyMention";
-import {useCommentQuote, useQuillInput, useQuillModules, useSaveInput} from "../hooks";
+import { useCommentQuote, useQuillInput, useQuillModules, useSaveInput } from "../hooks";
 import QuillEditor from "./QuillEditor";
-import {setEditComment, setParentIdForUpload} from "../../redux/actions/postActions";
+import { setEditComment, setParentIdForUpload } from "../../redux/actions/postActions";
 
 const Wrapper = styled.div`
   ${"" /* border: 1px solid #dee2e6;
@@ -56,6 +56,11 @@ const StyledQuillEditor = styled(QuillEditor)`
     overflow-x: hidden;
     overflow-y: auto;
     z-index: 2;
+    
+    .dark & {
+      background: #25282c;
+      color: #c7c7c7;
+    }
 
     .ql-mention-list {
       padding: 0;
@@ -216,6 +221,7 @@ const PostInput = (props) => {
         updated_at: {timestamp: timestamp},
         unfurls: [],
         user_clap_count: 0,
+        clap_user_ids: []
       };
 
       commentActions.add(commentObj);
@@ -461,7 +467,7 @@ const PostInput = (props) => {
 
   return (
     <Wrapper className="chat-input-wrapper">
-      {mentionedUserIds.length > 0 && <BodyMention onAddUsers={handleAddMentionedUsers} onDoNothing={handleIgnoreMentionedUsers} userIds={mentionedUserIds} type={"chat"} basedOnId={false} />}
+      {mentionedUserIds.length > 0 && <BodyMention onAddUsers={handleAddMentionedUsers} onDoNothing={handleIgnoreMentionedUsers} userIds={mentionedUserIds} type={"chat"}/>}
       <StyledQuillEditor className={"chat-input"} modules={modules} ref={reactQuillRef} onChange={handleQuillChange} editMode={editMode} />
       {editMode && <CloseButton icon="x" onClick={handleEditReplyClose} />}
     </Wrapper>

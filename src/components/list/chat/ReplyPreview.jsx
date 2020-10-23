@@ -3,6 +3,7 @@ import { renderToString } from "react-dom/server";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
 import quillHelper from "../../../helpers/quillHelper";
+import { stripHtml } from "../../../helpers/stringFormatter";
 import { SvgIcon } from "../../common";
 
 const Wrapper = styled.span`
@@ -15,7 +16,6 @@ const DraftContent = styled.span``;
 const LastReplyName = styled.span``;
 const LastReplyBody = styled.div`
   min-width: 200px;
-  text-overflow: ellipsis;
   max-height: 40px;
   min-height: 24px;
   display: table-cell;
@@ -48,7 +48,8 @@ const ReplyPreview = (props) => {
       lastReplyBody = renderToString(<LastReplyContent className="last-reply-content" dangerouslySetInnerHTML={{ __html: lastReplyBody }} />);
 
       //strip html tags and replace it with space
-      lastReplyBody = lastReplyBody.replace(/(<([^>]+)>)/gi, " ");
+      //lastReplyBody = lastReplyBody.replace(/(<([^>]+)>)/gi, " ");
+      lastReplyBody = stripHtml(lastReplyBody)
     }
 
     if (channel.last_reply.body === "" || (channel.last_reply.files && channel.last_reply.files.length) || (channel.replies.length && channel.replies[channel.replies.length - 1].files.length) || channel.last_reply.body.match(/<img/)) {
@@ -77,6 +78,10 @@ const ReplyPreview = (props) => {
       //system message
     } else {
       previewText = "System message update...";
+      if (channel.last_reply.body.includes("POST_CREATE::")) {
+        let item = JSON.parse(channel.last_reply.body.replace("POST_CREATE::", ""));
+        previewText = `${item.author.first_name} has created the post ${item.post.title}`;
+      }
     }
 
     if (typeof drafts[channel.id] !== "undefined") {

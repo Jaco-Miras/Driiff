@@ -1,20 +1,29 @@
 import React from "react";
 import styled from "styled-components";
-import {SvgIconFeather} from "../../common";
+import { SvgIconFeather } from "../../common";
 
 const Wrapper = styled.div`
 `;
 
 const Filter = styled.span`
   cursor: pointer;
-
-  ${(props) =>
-  props.active &&
-  `
-        background-color: black !important;
-        border-color: #ffffff14 !important;
-        color: #fff;
-    `}
+  
+  .dark & {
+    background: #191c20 !important;
+    border-color: #ffffff14 !important;
+  }
+    
+  &:hover,
+  &.active {
+    background-color: #7a1b8b;
+    border-color: #7a1b8b;
+    color: #fff;
+    
+    .dark & {
+      background: #ffffff14 !important;
+      border-color: #ffffff14 !important;
+    }  
+  }
   &.folder-list {
     border-bottom: 1px solid rgba(0, 0, 0, 0.125);
     > ul {
@@ -56,23 +65,23 @@ const TodosSidebar = (props) => {
         <div>
           <div className="app-sidebar-menu" tabIndex="1">
             <div className="list-group list-group-flush">
-              <Filter onClick={() => setFilter("")} active={filter === ""}
-                      className="list-group-item d-flex align-items-center">
+              <Filter onClick={() => setFilter("")}
+                      className={`list-group-item d-flex align-items-center ${filter === "" ? "active" : ""}`}>
                 <Icon className="mr-2" icon="list"/>
                 {dictionary.statusAll}
               </Filter>
-              <Filter onClick={() => setFilter(filter === "OVERDUE" ? "" : "OVERDUE")} active={filter === "OVERDUE"}
-                      className="list-group-item d-flex align-items-center">
+              <Filter onClick={() => setFilter(filter === "OVERDUE" ? "" : "OVERDUE")}
+                      className={`list-group-item d-flex align-items-center ${filter === "OVERDUE" ? "active" : ""}`}>
                 <Icon className="mr-2" icon="alert-circle"/>
                 {dictionary.statusOverdue} {/*{count.overdue}*/}
               </Filter>
-              <Filter onClick={() => setFilter(filter === "NEW" ? "" : "NEW")} active={filter === "NEW"}
-                      className="list-group-item d-flex align-items-center">
+              <Filter onClick={() => setFilter(filter === "NEW" ? "" : "NEW")}
+                      className={`list-group-item d-flex align-items-center ${filter === "NEW" ? "active" : ""}`}>
                 <Icon className="mr-2" icon="clock"/>
                 {dictionary.statusUpcoming} {/*{count.new}*/}
               </Filter>
-              <Filter onClick={() => setFilter(filter === "DONE" ? "" : "DONE")} active={filter === "DONE"}
-                      className="list-group-item d-flex align-items-center">
+              <Filter onClick={() => setFilter(filter === "DONE" ? "" : "DONE")}
+                      className={`list-group-item d-flex align-items-center ${filter === "DONE" ? "active" : ""}`}>
                 <Icon className="mr-2" icon="check"/>
                 {dictionary.statusDone} {/*{count.done}*/}
               </Filter>

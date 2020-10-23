@@ -178,6 +178,7 @@ const FileAttachments = (props) => {
 
   const handleClick = (e) => {
     const index = e.currentTarget.dataset.targetIndex;
+
     if (type === "modal") {
       if (filePreview !== null && filePreview.file.id === attachedFiles[index].id) {
         closePreview(e);
@@ -191,6 +192,18 @@ const FileAttachments = (props) => {
       if (params.hasOwnProperty("workspaceId")) {
         let payload = {
           workspace_id: params.workspaceId,
+          file_id: attachedFiles[index].id,
+        };
+
+        if (params.hasOwnProperty("postId")) {
+          payload = {
+            ...payload,
+            files: attachedFiles,
+          };
+        }
+        dispatch(setViewFiles(payload));
+      } else {
+        let payload = {
           file_id: attachedFiles[index].id,
         };
 
@@ -262,7 +275,8 @@ const FileAttachments = (props) => {
             <li data-target-index={i} key={i} onClick={handleClick} title={f.search ? f.search : f.name}>
               <AttachmentIcon icon="paperclip" />
               {f.search ? f.search : f.name}
-              {((type === "modal") || (loggedUser.id === f.uploader.id && showDelete)) && <SvgIconFeather data-file-id={f.id} onClick={handleDelete} icon="trash-2" />}
+              {showDelete && ((type === "modal") || (loggedUser.id === f.uploader.id)) &&
+              <SvgIconFeather data-file-id={f.id} onClick={handleDelete} icon="trash-2"/>}
             </li>
           );
         })}
@@ -279,9 +293,11 @@ const FileAttachments = (props) => {
             {renderFile(filePreview.file)}
             <span className="file-name">{filePreview.file.name}</span>
           </a>
-          <span className="file-delete" data-file-id={filePreview.file.id} onClick={handleDelete}>
-            <SvgIconFeather icon="trash-2" /> Delete
-          </span>
+          {
+            showDelete && <span className="file-delete" data-file-id={filePreview.file.id} onClick={handleDelete}>
+              <SvgIconFeather icon="trash-2"/> Delete
+            </span>
+          }
         </Tooltip>
       )}
     </Wrapper>

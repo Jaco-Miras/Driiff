@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import { addToModals } from "../../../redux/actions/globalActions";
 import { DropDocument } from "../../dropzone/DropDocument";
@@ -8,6 +8,7 @@ import useChatMessageActions from "../../hooks/useChatMessageActions";
 import ChatMessages from "../../list/chat/ChatMessages";
 import ChatUnreadFloatBar from "../../list/chat/ChatUnreadFloatBar";
 import { ChatFooterPanel, ChatHeaderPanel } from "./index";
+import ChatMessagesVirtuoso from "../../list/chat/ChatMessagesVirtuoso";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -24,6 +25,7 @@ const ChatContentPanel = (props) => {
   const chatMessageActions = useChatMessageActions();
   const timeFormat = useTimeFormat();
 
+  const {virtualization} = useSelector((state) => state.settings.user.CHAT_SETTINGS);
   //const bottomRef = useRef();
   const [showDropZone, setshowDropZone] = useState(false);
   //const [bottomRefVisible, setBottomRefVisible] = useState(false);
@@ -132,7 +134,8 @@ const ChatContentPanel = (props) => {
     renameThisWorkspace: _t("SYSTEM.RENAME_THIS_WORKSPACE", `renamed this workspace to`),
     renameThisChat: _t("SYSTEM.RENAME_THIS_CHAT", `renamed this chat to`),
     forwardedMessage: _t("CHAT.FORWARDED_MESSAGE", "Forwarded message"),
-    chatRemoved: _t("CHAT.BODY_REMOVED", "The chat message has been removed")
+    chatRemoved: _t("CHAT.BODY_REMOVED", "The chat message has been removed"),
+    workspace: _t("CHAT.WORKSPACE", "Workspace"),
   };
 
   useFocusInput(document.querySelector(".chat-footer .ql-editor"));
@@ -150,7 +153,10 @@ const ChatContentPanel = (props) => {
       />
       {!isWorkspace && <ChatHeaderPanel dictionary={dictionary} channel={selectedChannel} />}
       {selectedChannel !== null && unreadCount > 0 && <ChatUnreadFloatBar channel={selectedChannel} />}
-      {selectedChannel !== null ? <ChatMessages selectedChannel={selectedChannel} chatMessageActions={chatMessageActions} timeFormat={timeFormat} dictionary={dictionary} unreadCount={unreadCount} /> : <ChatMessagesPlaceholder />}
+      {selectedChannel !== null ? 
+        virtualization ? <ChatMessagesVirtuoso selectedChannel={selectedChannel} chatMessageActions={chatMessageActions} timeFormat={timeFormat} dictionary={dictionary} unreadCount={unreadCount} /> 
+        : <ChatMessages selectedChannel={selectedChannel} chatMessageActions={chatMessageActions} timeFormat={timeFormat} dictionary={dictionary} unreadCount={unreadCount} /> 
+        : <ChatMessagesPlaceholder />}
       <ChatFooterPanel onShowFileDialog={handleOpenFileDialog} dropAction={dropAction} />
     </Wrapper>
   );

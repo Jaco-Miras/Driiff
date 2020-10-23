@@ -1,8 +1,9 @@
-import React, {useCallback} from "react";
-import {useDispatch, useSelector} from "react-redux";
-import {sessionService} from "redux-react-session";
+import React, { useCallback } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { sessionService } from "redux-react-session";
 import {
   checkDriffUserEmail,
+  getRoles,
   getUser,
   getUsers,
   postExternalUserData,
@@ -14,25 +15,44 @@ import {
   putExternalUserUpdate,
   putMagicLink,
   putUser,
+  putUserRole,
   resetPassword,
   userGoogleLogin,
   userLogin,
   userLogout
 } from "../../redux/actions/userAction";
-import {useDriffActions, useSettings, useToaster} from "./index";
-import {getAPIUrl, getCurrentDriffUrl} from "../../helpers/slugHelper";
-import {toggleLoading} from "../../redux/actions/globalActions";
-import {getDriffName} from "./useDriff";
-import {isIPAddress} from "../../helpers/commonFunctions";
+import { useDriffActions, useSettings, useToaster } from "./index";
+import { getAPIUrl, getCurrentDriffUrl } from "../../helpers/slugHelper";
+import { toggleLoading } from "../../redux/actions/globalActions";
+import { getDriffName } from "./useDriff";
+import { isIPAddress } from "../../helpers/commonFunctions";
+import { useHistory } from "react-router-dom";
+
+export const userForceLogout = () => {
+  if (localStorage.getItem("userAuthToken")) {
+    if (["nilo@makedevelopment.com", "joules@makedevelopment.com", "jessryll@makedevelopment.com"].includes(JSON.parse(localStorage.getItem("userAuthToken")).user_auth.email)) {
+      //alert("error :(");
+      console.log("error")
+    }
+  }
+  /*localStorage.removeItem("userAuthToken");
+  localStorage.removeItem("token");
+  localStorage.removeItem("atoken");
+  localStorage.removeItem("welcomeBanner");
+  sessionService
+    .deleteSession()
+    .then(() => sessionService.deleteUser());*/
+};
 
 const useUserActions = () => {
   const dispatch = useDispatch();
+  const history = useHistory();
   const toaster = useToaster();
   const driffActions = useDriffActions();
-  const {generalSettings: {is_new}, setGeneralSetting} = useSettings();
+  const { generalSettings: { is_new }, driffSettings, userSettings, setGeneralSetting, setReadAnnouncement } = useSettings();
 
-  const {getUserFilter} = useSelector((state) => state.users);
-  const {user: loggedUser} = useSelector((state) => state.session);
+  const { getUserFilter } = useSelector((state) => state.users);
+  const { user: loggedUser } = useSelector((state) => state.session);
 
   const storeLoginToken = useCallback((payload) => {
     localStorage.setItem("userAuthToken", JSON.stringify(payload));
@@ -365,8 +385,8 @@ const useUserActions = () => {
             dispatch(toggleLoading(false, () => {
               toaster.success(`You are logged out`);
             }));
-          });
-        callback(err, res);
+          })
+          .then(() => callback(err, res));
       })
     );
   }, []);
@@ -417,16 +437,47 @@ const useUserActions = () => {
           is_new: false
         })
       } else {
+        if (driffSettings.ANNOUNCEMENT_AT && driffSettings.ANNOUNCEMENT_LINK && driffSettings.ANNOUNCEMENT_LINK !== "") {
+          let link = null;
+          if (userSettings.READ_ANNOUNCEMENT) {
+            if (userSettings.READ_ANNOUNCEMENT.timestamp < driffSettings.ANNOUNCEMENT_AT.timestamp) {
+              link = driffSettings.ANNOUNCEMENT_LINK.split("posts/")
+              link = `/posts/${link[1]}`
+              // trigger read action
+              setReadAnnouncement();
+            }
+          } else {
+            link = driffSettings.ANNOUNCEMENT_LINK.split("posts/")
+            link = `/posts/${link[1]}`
+            // trigger read action
+            setReadAnnouncement();
+          }
+          if (link) history.push(link)
+        }
         toaster.success(<>Welcome back, {loggedUser.first_name}</>)
       }
     }
-  }, [loggedUser, driffActions, is_new]);
+  }, [loggedUser, driffActions, is_new, driffSettings, userSettings]);
+
+  
 
   const inviteAsInternalUsers = useCallback((payload, callback) => {
     dispatch(
       postInternalRequestForm(payload, callback)
     )
   })
+
+  const updateUserRole = useCallback((payload, callback = () => {}) => {
+    dispatch(
+      putUserRole(payload, callback)
+    )
+  }, []);
+
+  const fetchRoles = useCallback(() => {
+    dispatch(
+      getRoles()
+    )
+  }, []);
 
   return {
     checkCredentials,
@@ -452,7 +503,9 @@ const useUserActions = () => {
     processBackendLogout,
     logout,
     displayWelcomeBanner,
-    inviteAsInternalUsers
+    inviteAsInternalUsers,
+    updateUserRole,
+    fetchRoles
   };
 };
 

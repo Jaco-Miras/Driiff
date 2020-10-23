@@ -8,6 +8,7 @@ import useChannelActions from "../../hooks/useChannelActions";
 import { MemberLists } from "../../list/members";
 import ChannelIcon from "../../list/chat/ChannelIcon";
 import { MoreOptions } from "../../panels/common";
+import { useSettings, useWorkspace } from "../../hooks";
 
 const Wrapper = styled.div`
   position: relative;
@@ -15,12 +16,10 @@ const Wrapper = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  
   .chat-header-left {
     display: flex;
-    align-items: center;
-    @media (min-width: 767.98px) {
-      width: 33.333333%;
-    }
+    align-items: center;    
     .chat-header-icon {
       @media (max-width: 991.99px) {
         display: none;
@@ -30,14 +29,28 @@ const Wrapper = styled.div`
   .chat-header-title {
     font-size: 15px;
     font-weight: 500;
-    margin: 0;
-    width: 33.333333%;
+    margin: 0;    
     text-align: center;
+    display: inline-block;
+    justify-content: center;
+    align-items: center;
+    text-overflow: ellipsis;    
+    overflow: hidden;
+    white-space: nowrap;    
+    max-width: calc(100%);
+    
+    a {
+      color: #000 !important;
+      text-overflow: ellipsis;    
+      overflow: hidden;
+      white-space: nowrap;      
+      
+      .dark & {
+        color: #ffffff !important;
+      }
+    }    
   }
-  .chat-header-right {
-    @media (min-width: 767.98px) {
-      width: 33.333333%;
-    }
+  .chat-header-right {    
     li .more-options-tooltip > div {
       display: flex;
       align-items: center;
@@ -111,7 +124,6 @@ const ChatHeaderPanel = (props) => {
 
   const dispatch = useDispatch();
   const routeMatch = useRouteMatch();
-
   const channelActions = useChannelActions();
 
   const [page, setPage] = useState("chat");
@@ -154,6 +166,48 @@ const ChatHeaderPanel = (props) => {
     document.body.classList.remove("m-chat-channel-closed");
   };
 
+  const { actions: workspaceAction, workspaces } = useWorkspace(true);
+  const {
+    generalSettings: { workspace_open_folder },
+    setGeneralSetting,
+  } = useSettings();
+
+  const handleWorkspaceLinkClick = (e) => {
+    e.preventDefault();
+
+    if (chatChannel.workspace_folder) {
+      setGeneralSetting({
+        workspace_open_folder: {
+          ...workspace_open_folder,
+          [chatChannel.workspace_folder.id]: chatChannel.workspace_folder.id,
+        },
+      });
+    }
+
+    document.body.classList.remove("navigation-show");
+    workspaceAction.selectWorkspace(workspaces[chatChannel.entity_id]);
+    workspaceAction.redirectTo(workspaces[chatChannel.entity_id]);
+  };
+
+  const getChannelTitle = () => {
+    switch (chatChannel.type) {
+      case "TOPIC": {
+        if (chatChannel.workspace_folder) {
+          return <>{chatChannel.workspace_folder.name}&nbsp;>&nbsp;<a onClick={handleWorkspaceLinkClick}
+                                                                      data-href={channelActions.getChannelLink(chatChannel)}
+                                                                      href={channelActions.getChannelLink(chatChannel)}>{chatChannel.title}</a></>;
+        } else {
+          return <>{dictionary.workspace}&nbsp;>&nbsp;<a onClick={handleWorkspaceLinkClick}
+                                                         data-href={channelActions.getChannelLink(chatChannel)}
+                                                         href={channelActions.getChannelLink(chatChannel)}>{chatChannel.title}</a></>;
+        }
+      }
+      default: {
+        return chatChannel.title;
+      }
+    }
+  };
+
   useEffect(() => {
     setPage(
       routeMatch.path.split("/").filter((p) => {
@@ -168,17 +222,21 @@ const ChatHeaderPanel = (props) => {
     <Wrapper className={`chat-header border-bottom ${className}`}>
       <div className="chat-header-left">
         <BackButton className="chat-back-button" onClick={goBackChannelSelect}>
-          <BackButtonChevron icon={"chevron-left"} />
-          <span>{unreadCounter.chat_message + unreadCounter.workspace_chat_message}</span>
+          <BackButtonChevron icon={"chevron-left"}/>
+          <span>{(unreadCounter.chat_message + unreadCounter.workspace_chat_message).toString()}</span>
         </BackButton>
-        <ChannelIcon className="chat-header-icon" channel={channel} />
+        <ChannelIcon className="chat-header-icon" channel={channel}/>
       </div>
-      <h2 className="chat-header-title">{chatChannel.title}</h2>
+      <h2 className="chat-header-title">
+        {
+          getChannelTitle()
+        }
+      </h2>
       <div className="chat-header-right">
         <ul className="nav align-items-center justify-content-end">
           {["DIRECT", "PERSONAL_BOT"].includes(channel.type) === false && (
             <li>
-              <MemberLists members={channel.members} />
+              <MemberLists members={channel.members}/>
             </li>
           )}
           {(["PERSONAL_BOT", "COMPANY", "TOPIC"].includes(channel.type) === false || (["DIRECT", "PERSONAL_BOT", "COMPANY", "TOPIC"].includes(channel.type) === false && !channel.is_archived)) && (
@@ -186,13 +244,13 @@ const ChatHeaderPanel = (props) => {
               <StyledMoreOptions role="tabList">
                 {["PERSONAL_BOT", "COMPANY", "TOPIC"].includes(channel.type) === false && (
                   <div onClick={handleShowArchiveConfirmation}>
-                    <Icon icon={channel.is_archived ? "rotate-ccw" : "trash-2"} />
+                    <Icon icon={channel.is_archived ? "rotate-ccw" : "trash-2"}/>
                     {channel.is_archived ? "Restore" : "Archive"}
                   </div>
                 )}
                 {["DIRECT", "PERSONAL_BOT", "COMPANY", "TOPIC"].includes(channel.type) === false && !channel.is_archived && (
                   <div onClick={handleShowChatEditModal}>
-                    <Icon icon={"edit-3"} />
+                    <Icon icon={"edit-3"}/>
                     {dictionary.edit}
                   </div>
                 )}

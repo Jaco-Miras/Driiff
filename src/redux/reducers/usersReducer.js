@@ -9,6 +9,7 @@ const INITIAL_STATE = {
   viewedProfile: null,
   onlineUsers: [],
   mentions: {},
+  roles: {}
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -183,6 +184,32 @@ export default (state = INITIAL_STATE, action) => {
         users: updatedUsers,
         mentions: updatedMentions,
       };
+    }
+    case "GET_ROLES_SUCCESS": {
+      let roles = {...state.roles};
+      action.data.forEach((role) => {
+        roles[role.name] = role.id
+      });
+      return {
+        ...state,
+        roles: roles
+      }
+    }
+    case "INCOMING_USER_ROLE": {
+      return {
+        ...state,
+        users: {
+          ...state.users,
+          [action.data.user_id]: {
+            ...state.users[action.data.user_id],
+            role: {
+              ...state.users[action.data.user_id].role,
+              name: action.data.role.name,
+              display_name: action.data.role.name === "admin" ? "Site Admin" : "Employee"
+            }
+          }
+        }
+      }
     }
     default:
       return state;

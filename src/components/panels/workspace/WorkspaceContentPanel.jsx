@@ -4,7 +4,7 @@ import {Redirect, Route, Switch} from "react-router-dom";
 import styled from "styled-components";
 import {addToModals} from "../../../redux/actions/globalActions";
 import {SvgEmptyState} from "../../common";
-import {useIsMember, useUsers, useWorkspace} from "../../hooks";
+import {useIsMember, useTranslation, useUsers, useWorkspace} from "../../hooks";
 import {
   WorkspaceChatPanel,
   WorkspaceDashboardPanel,
@@ -43,6 +43,13 @@ const EmptyState = styled.div`
 
 const WorkspaceContentPanel = (props) => {
   const { className = "", isExternal } = props;
+
+  const {_t} = useTranslation();
+
+  const dictionary = {
+    createWorkspace: _t("WORKSPACE.CREATE_WORKSPACE", "Create workspace"),
+    sidebarTextCreateWorkspace: _t("WORKSPACE.TEXT_CREATE_WORKSPACE", "Create workspace"),
+  };
 
   const dispatch = useDispatch();
 
@@ -115,9 +122,9 @@ const WorkspaceContentPanel = (props) => {
             <EmptyState>
               <div>
                 <SvgEmptyState height={275} icon={1} />
-                <h5>Start by creating a workspace.</h5>
+                <h5>{dictionary.sidebarTextCreateWorkspace}</h5>
                 <button className="btn btn-primary" onClick={handleShowWorkspaceModal}>
-                  Create workspace
+                  {dictionary.createWorkspace}
                 </button>
               </div>
             </EmptyState>

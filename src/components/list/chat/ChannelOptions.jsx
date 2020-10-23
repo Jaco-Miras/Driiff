@@ -7,17 +7,17 @@ import { MoreOptions } from "../../panels/common";
 import { useTranslation } from "../../hooks";
 
 const Wrapper = styled(MoreOptions)`
-  .more-options-tooltip {
-    &.orientation-left {
-      right: calc(100% - 20px);
-    }
-    &.orientation-bottom {
-      top: 100%;
-    }
-    &.orientation-top {
-      bottom: 20px;
-    }
-  }
+  // .more-options-tooltip {
+  //   &.orientation-left {
+  //     right: calc(100% - 20px);
+  //   }
+  //   &.orientation-bottom {
+  //     top: 100%;
+  //   }
+  //   &.orientation-top {
+  //     bottom: 20px;
+  //   }
+  // }
 `;
 
 const ChannelOptions = (props) => {
@@ -27,7 +27,7 @@ const ChannelOptions = (props) => {
 
   const channelActions = useChannelActions();
 
-  const scrollEl = document.getElementById("pills-contact");
+  const scrollEl = document.getElementById("pills-home");
 
   const { _t } = useTranslation();
 

@@ -1,18 +1,18 @@
-import React, {useCallback, useEffect, useRef, useState} from "react";
-import {useDispatch, useSelector} from "react-redux";
-import {useHistory} from "react-router-dom";
-import {Input, InputGroup, Label, Modal, ModalBody} from "reactstrap";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
+import { Input, InputGroup, Label, Modal, ModalBody } from "reactstrap";
 import styled from "styled-components";
-import {EmailRegex, replaceChar} from "../../helpers/stringFormatter";
-import {deleteWorkspaceFiles, setPendingUploadFilesToWorkspace} from "../../redux/actions/fileActions";
-import {addToModals, clearModal} from "../../redux/actions/globalActions";
-import {createWorkspace, leaveWorkspace, setActiveTopic, updateWorkspace} from "../../redux/actions/workspaceActions";
-import {FileAttachments, SvgIconFeather} from "../common";
-import {DropDocument} from "../dropzone/DropDocument";
-import {CheckBox, DescriptionInput, FolderSelect, InputFeedback, PeopleSelect} from "../forms";
-import {useToaster, useTranslation} from "../hooks";
-import {ModalHeaderSection} from "./index";
-import {putChannel} from "../../redux/actions/chatActions";
+import { EmailRegex, replaceChar } from "../../helpers/stringFormatter";
+import { deleteWorkspaceFiles, setPendingUploadFilesToWorkspace } from "../../redux/actions/fileActions";
+import { addToModals, clearModal } from "../../redux/actions/globalActions";
+import { createWorkspace, leaveWorkspace, setActiveTopic, updateWorkspace } from "../../redux/actions/workspaceActions";
+import { FileAttachments, SvgIconFeather } from "../common";
+import { DropDocument } from "../dropzone/DropDocument";
+import { CheckBox, DescriptionInput, FolderSelect, InputFeedback, PeopleSelect } from "../forms";
+import { useToaster, useTranslation } from "../hooks";
+import { ModalHeaderSection } from "./index";
+import { putChannel } from "../../redux/actions/chatActions";
 
 const WrapperDiv = styled(InputGroup)`
   display: flex;
@@ -246,11 +246,6 @@ const CreateEditWorkspaceModal = (props) => {
     toasterWorkspaceIsCreated: _t("TOASTER.WORKSPACE_IS_CREATED", `::workspace_name:: workspace is created.`, {
       workspace_name: `<b>${form.name}</b>`
     }),
-    toasterWorkspaceFolderUnderDirectory: form.selectedFolder !== null ?
-      _t("TOASTER.WORKSPACE_UNDER_FOLDER_IS_CREATED", "::workspace_name:: workspace is created under ::folder_name:: directory", {
-        workspace_name: `<b>${form.name}</b>`,
-        folder_name: `<b>${form.selectedFolder.label}</b>`
-      }) : ""
   };
 
   const _validateName = useCallback(() => {
@@ -617,11 +612,18 @@ const CreateEditWorkspaceModal = (props) => {
 
               dispatch(setActiveTopic(newWorkspace));
 
-              toaster.success(<span
-                dangerouslySetInnerHTML={{
-                  __html: dictionary.toasterWorkspaceFolderUnderDirectory === "" ?
-                    dictionary.toasterWorkspaceIsCreated : dictionary.toasterWorkspaceFolderUnderDirectory
+              if (form.selectedFolder !== null) {
+                toaster.success(<span dangerouslySetInnerHTML={{ __html: dictionary.toasterWorkspaceIsCreated }}/>);
+              } else {
+                toaster.success(<span dangerouslySetInnerHTML={{
+                  __html: _t("TOASTER.WORKSPACE_UNDER_FOLDER_IS_CREATED",
+                    "::workspace_name:: workspace is created under ::folder_name:: directory",
+                    {
+                      workspace_name: `<b>${form.name}</b>`,
+                      folder_name: `<b>${form.selectedFolder.label}</b>`
+                    })
                 }}/>);
+              }
             }
           })
         );

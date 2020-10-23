@@ -5,7 +5,7 @@ import styled from "styled-components";
 const Wrapper = styled(Tooltip)``;
 
 const ToolTip = (props) => {
-  const { className = "", arrowSize = 5, distance = 10, content, children, direction = "up-middle", ...otherProps } = props;
+  const { arrowSize = 5, distance = 10, content, children, direction = "up-middle", ...otherProps } = props;
 
   const toggleTooltip = () => {
     let tooltips = document.querySelectorAll("span.react-tooltip-lite");
@@ -16,7 +16,8 @@ const ToolTip = (props) => {
   };
 
   return (
-    <Wrapper className={`${className}`} direction={direction} arrowSize={arrowSize} distance={distance} onToggle={toggleTooltip} content={content} {...otherProps}>
+    <Wrapper direction={direction} arrowSize={arrowSize} distance={distance} onToggle={toggleTooltip}
+             content={content} {...otherProps}>
       {children}
     </Wrapper>
   );

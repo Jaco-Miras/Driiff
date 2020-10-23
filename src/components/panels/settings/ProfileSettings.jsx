@@ -72,7 +72,7 @@ const ProfileSettings = (props) => {
 
   const {
     generalSettings: {language, timezone, date_format, time_format, dark_mode, notifications_on},
-    chatSettings: {order_channel, sound_enabled, preview_message},
+    chatSettings: {order_channel, sound_enabled, preview_message, virtualization},
     userSettings: {isLoaded},
     setChatSetting,
     setGeneralSetting,
@@ -322,6 +322,25 @@ const ProfileSettings = (props) => {
               />
             </div>
           </div>
+          {
+            ["nilo@makedevelopment.com", "joules@makedevelopment.com", "jessryll@makedevelopment.com", "rtuerlings@zuid.com", "rt@make24.nl"].includes(loggedUser.email) && 
+            (
+              <div className="row mb-3">
+              <div className="col-12">
+                <CustomInput
+                  className="cursor-pointer text-muted"
+                  checked={virtualization}
+                  type="switch"
+                  id="chat_virtualization"
+                  name="virtualization"
+                  onChange={handleChatSwitchToggle}
+                  data-success-message={`You have turn ${virtualization ? "OFF" : "ON"} virtualization in chat messages!`}
+                  label={<span>Virtualized chat</span>}
+                />
+              </div>
+            </div>
+            )
+          }
           <div className="row mb-2">
             <div className="col-5 text-muted">{dictionary.sortChannelLabel}</div>
             <div className="col-7">

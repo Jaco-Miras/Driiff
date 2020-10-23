@@ -99,12 +99,13 @@ const Wrapper = styled.div`
   .form-group {
     &.designation {
       margin: 0 auto;
+      width: 66.66%;
     }
   }
 `;
 
 const UserProfilePanel = (props) => {
-  const { className = "" } = props;
+  const { className = "", onChatClick = null } = props;
 
   const history = useHistory();
   const dispatch = useDispatch();
@@ -201,6 +202,10 @@ const UserProfilePanel = (props) => {
       }));
     }
   }, []);
+
+  const handleOnChatClick = () => {
+    if (onChatClick) onChatClick(user);
+  };
 
   const handleInputBlur = useCallback(
     (e) => {
@@ -502,6 +507,20 @@ const UserProfilePanel = (props) => {
               ) : (
                 <p className="text-muted small">{user.designation}</p>
               )}
+              {user.contact !== "" && loggedUser.id !== user.id && (
+              <div className="d-flex justify-content-center">
+                  <button className="btn btn-outline-light mr-1">
+                      <a href={`tel:${user.contact.replace(/ /g, "").replace(/-/g, "")}`}>
+                        <SvgIconFeather className="" icon="phone" />
+                      </a>
+                  </button>
+                  <button className="ml-1 btn btn-outline-light">
+                    {
+                      (user.type !== "external") && <SvgIconFeather onClick={handleOnChatClick} icon="message-circle" />
+                    }
+                  </button>
+              </div>
+              )}
               {/*{
                                 isLoggedUser &&
                                 <>
@@ -591,7 +610,7 @@ const UserProfilePanel = (props) => {
             ) : (
               <div className="card-body">
                 <h6 className="card-title d-flex justify-content-between align-items-center">
-                  Information
+                  {dictionary.information}
                   {/*<div>
                                         <span onClick={toggleEditInformation}
                                               className="close btn btn-outline-light btn-sm">
@@ -727,11 +746,11 @@ const UserProfilePanel = (props) => {
                 <div className="d-flex justify-content-between align-items-center mt-0">
                   <div>&nbsp;</div>
                   <div>
-                    <span onClick={handleSave} className="btn btn-primary mr-2">
-                      {dictionary.saveChanges}
-                    </span>
-                    <span onClick={toggleEditInformation} className="btn btn-outline-light">
+                    <span onClick={toggleEditInformation} className="btn btn-outline-light mr-2">
                       {dictionary.cancel}
+                    </span>
+                    <span onClick={handleSave} className="btn btn-primary">
+                      {dictionary.saveChanges}
                     </span>
                   </div>
                 </div>

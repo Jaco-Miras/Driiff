@@ -37,15 +37,16 @@ const ChatBubbleContainer = styled.div`
     `
         background: none;
         padding: 0;
+
     `}
 
   &:after {
     content: ${(props) => props.showAvatar && props.hideBg === false && "''"};
     border: 10px solid #0000;
     position: absolute;
-    top: 8px;
+    top: 10px;
     z-index: 1;
-    ${(props) => (props.isAuthor ? "right: -18px" : "left: -18px")};
+    ${(props) => (props.isAuthor ? "right: -15px" : "left: -15px")};
     border-left-color: ${(props) => (props.isAuthor ? props.theme.self.chat_bubble_background_color : "#0000")};
     border-right-color: ${(props) => (!props.isAuthor ? props.theme.others.chat_bubble_background_color : "#0000")};
     height: 5px;
@@ -179,9 +180,9 @@ const QuoteContainer = styled.div`
     border: 10px solid transparent;
     ${(props) => (props.isAuthor ? "border-left-color: " + props.theme.self.chat_bubble_quote_background_color : "border-right-color: " + props.theme.others.chat_bubble_quote_background_color)};
     position: absolute;
-    top: ${(props) => (props.showAvatar && !props.isAuthor ? "6px" : "8px")};
+    top: ${(props) => (props.showAvatar && !props.isAuthor ? "10px" : "8px")};
     z-index: 12;
-    ${(props) => (!props.isAuthor ? "left: -18px" : "right: -18px")};
+    ${(props) => (!props.isAuthor ? "left: -15px" : "right: -15px")};
     height: 5px;
     @media all and (max-width: 620px) {
       display: none;
@@ -389,14 +390,14 @@ const ChatContent = styled.div`
         border-right-color: transparent;
         border-right-color: #f0f0f0;
         position: absolute;
-        top: 8px;
-        left: -18px;
+        top: 10px;
+        left: -15px;
         z-index: 1;
         ${(props) =>
           props.isAuthor === true &&
           `
             left: auto;
-            right: -18px;
+            right: -15px;
             border-left-color: #7A1B8B;
             border-right-color: transparent;
         `};
@@ -537,13 +538,299 @@ const ChatNameNotAuthorMobile = styled.span`
 `;
 const THRESHOLD = [.1, .2, .3, .4, .5, .6, .7, .8, .9];
 const ChatBubble = (props) => {
-  const { reply, showAvatar, selectedChannel, showGifPlayer, isAuthor, addMessageRef, user, recipients, isLastChat, chatMessageActions, timeFormat, isBot, chatSettings, isLastChatVisible, dictionary } = props;
+  const { reply, showAvatar, selectedChannel, showGifPlayer, isAuthor, addMessageRef, user, recipients, isLastChat, chatMessageActions, timeFormat, isBot, chatSettings, isLastChatVisible, dictionary, isBrowserActive } = props;
 
   const history = useHistory();
 
+  const initialBodyParse = () => {
+    let replyBody = reply.body;
+    if (reply.is_deleted) {
+      //replyBody = _t(reply.body, "The chat message has been deleted");
+      replyBody = dictionary.chatRemoved;
+    } else {
+      if (reply.created_at.timestamp !== reply.updated_at.timestamp) {
+        replyBody = `${replyBody}<span class='edited-message'>(edited)</span>`;
+      }
+    }
+    if (replyBody.includes("ACCOUNT_DEACTIVATED")) {
+      let newReplyBody = replyBody.replace("ACCOUNT_DEACTIVATED ", "");
+      if (newReplyBody[newReplyBody.length - 1] === "s") {
+        replyBody = `${dictionary.update}: ${newReplyBody}' ${dictionary.accountDeactivated}.`;
+      } else {
+        replyBody = `${dictionary.update}: ${newReplyBody}'s ${dictionary.accountDeactivated}.`;
+      }
+    } else if (replyBody.includes("NEW_ACCOUNT_ACTIVATED")) {
+      let newReplyBody = replyBody.replace("NEW_ACCOUNT_ACTIVATED ", "");
+  
+      if (newReplyBody[newReplyBody.length - 1] === "s") {
+        replyBody = `${dictionary.update}: ${newReplyBody}' ${dictionary.accountActivated}.`;
+      } else {
+        replyBody = `${dictionary.update}: ${newReplyBody}'s ${dictionary.accountActivated}.`;
+      }
+    }
+    return quillHelper.parseEmoji(replyBody);
+  }
+
+  const initialQuoteParse = () => {
+
+    let replyBody = reply.body;
+    if (reply.is_deleted) {
+      //replyBody = _t(reply.body, "The chat message has been deleted");
+      replyBody = dictionary.chatRemoved;
+    } else {
+      if (reply.created_at.timestamp !== reply.updated_at.timestamp) {
+        replyBody = `${replyBody}<span class='edited-message'>(edited)</span>`;
+      }
+    }
+    
+    let replyQuoteBody = "";
+    let replyQuoteAuthor = "";
+    if (reply.quote) {
+      let div = document.createElement("div");
+      div.innerHTML = reply.quote.body;
+      let images = div.getElementsByTagName("img");
+      for (let i = 0; i < images.length; i++) {
+        replyQuoteBody += renderToString(
+          <StyledImageTextLink className={"image-quote"} target={"_blank"} href={images[0].getAttribute("src")} icon={"image-video"} isAuthor={isAuthor}>
+            Photo
+          </StyledImageTextLink>
+        );
+      }
+
+      let videos = div.getElementsByTagName("video");
+      for (let i = 0; i < videos.length; i++) {
+        replyQuoteBody += renderToString(
+          <StyledImageTextLink className={"video-quote"} target={"_blank"} href={videos[0].getAttribute("player-source")} icon={"image-video"} isAuthor={isAuthor}>
+            Video
+          </StyledImageTextLink>
+        );
+      }
+      if (reply.quote.files) {
+        reply.quote.files.forEach((file) => {
+          if (file.type === "image") {
+            replyQuoteBody += renderToString(
+              <StyledImageTextLink className={"image-quote"} target={"_blank"} href={file.view_link} icon={"image-video"} isAuthor={isAuthor}>
+                Photo
+              </StyledImageTextLink>
+            );
+          } else if (file.type === "video") {
+            replyQuoteBody += renderToString(
+              <StyledImageTextLink className={"video-quote"} target={"_blank"} href={file.view_link} icon={"image-video"} isAuthor={isAuthor}>
+                Video
+              </StyledImageTextLink>
+            );
+          } else {
+            replyQuoteBody += renderToString(
+              <StyledImageTextLink
+                //className={`video-quote`}
+                target={"_blank"}
+                href={file.view_link}
+                icon={"documents"}
+                isAuthor={isAuthor}
+              >
+                {file.filename ? `${file.filename} ` : `${file.name} `}
+              </StyledImageTextLink>
+            );
+          }
+        });
+      }
+
+      replyQuoteBody += quillHelper.parseEmoji(reply.quote.body);
+      if (reply.quote.user) {
+        if (user.id !== reply.quote.user.id) {
+          replyQuoteAuthor = reply.quote.user.name;
+        } else {
+          replyQuoteAuthor = "You";
+        }
+      }
+    }
+
+    if (replyBody.includes("ACCOUNT_DEACTIVATED")) {
+      let newReplyBody = replyBody.replace("ACCOUNT_DEACTIVATED ", "");
+      if (newReplyBody[newReplyBody.length - 1] === "s") {
+        replyBody = `${dictionary.update}: ${newReplyBody}' ${dictionary.accountDeactivated}.`;
+      } else {
+        replyBody = `${dictionary.update}: ${newReplyBody}'s ${dictionary.accountDeactivated}.`;
+      }
+    } else if (replyBody.includes("NEW_ACCOUNT_ACTIVATED")) {
+      let newReplyBody = replyBody.replace("NEW_ACCOUNT_ACTIVATED ", "");
+  
+      if (newReplyBody[newReplyBody.length - 1] === "s") {
+        replyBody = `${dictionary.update}: ${newReplyBody}' ${dictionary.accountActivated}.`;
+      } else {
+        replyBody = `${dictionary.update}: ${newReplyBody}'s ${dictionary.accountActivated}.`;
+      }
+    }
+
+    if (replyQuoteBody.includes("ACCOUNT_DEACTIVATED")) {
+      let newReplyBody = replyQuoteBody.replace("ACCOUNT_DEACTIVATED ", "");
+      if (newReplyBody[newReplyBody.length - 1] === "s") {
+        replyQuoteBody = `${dictionary.update}: ${newReplyBody}' ${dictionary.accountDeactivated}.`;
+      } else {
+        replyQuoteBody = `${dictionary.update}: ${newReplyBody}'s ${dictionary.accountDeactivated}.`;
+      }
+    } else if (replyQuoteBody.includes("NEW_ACCOUNT_ACTIVATED")) {
+      let newReplyBody = replyQuoteBody.replace("NEW_ACCOUNT_ACTIVATED ", "");
+  
+      if (newReplyBody[newReplyBody.length - 1] === "s") {
+        replyQuoteBody = `${dictionary.update}: ${newReplyBody}' ${dictionary.accountActivated}.`;
+      } else {
+        replyQuoteBody = `${dictionary.update}: ${newReplyBody}'s ${dictionary.accountActivated}.`;
+      }
+    }
+    else if (replyQuoteBody.includes("CHANNEL_UPDATE::")) {
+      const data = JSON.parse(reply.quote.body.replace("CHANNEL_UPDATE::", ""));
+  
+      let author = recipients.find((r) => r.type_id === data.author.id);
+      if (author) {
+        if (data.author.id === user.id) {
+          author.name = dictionary.you;
+        }
+      } else {
+        author = {
+          name: dictionary.someone,
+        };
+      }
+  
+      let newBody = "";
+      if (data.title !== "") {
+        newBody = (
+          <>
+            <SvgIconFeather width={16} icon="edit-3" /> {author.name} {selectedChannel.type === "TOPIC" ? dictionary.renameThisWorkspace : dictionary.renameThisChat} <b>#{data.title}</b>
+            <br />
+          </>
+        );
+      }
+  
+      if (data.added_members.length >= 1) {
+        const am = recipients.filter((r) => data.added_members.includes(r.type_id) && r.type_id !== user.id).map((r) => r.name);
+  
+        if (data.added_members.includes(user.id) && data.author.id === user.id) {
+          if (newBody === "") {
+            newBody = (
+              <>
+                <b>{author.name}</b> {dictionary.joined}{" "}
+              </>
+            );
+          } else {
+            newBody = <>{newBody} {dictionary.andJoined}</>;
+          }
+  
+          if (am.length !== 0) {
+            newBody = (
+              <>
+                {newBody} {dictionary.andAdded} <b>{am.join(", ")}</b>
+                <br />
+              </>
+            );
+          }
+        } else {
+          if (newBody === "") {
+            newBody = <>{author.name} {dictionary.added} </>;
+          } else {
+            newBody = <>{newBody} {dictionary.andAdded}</>;
+          }
+  
+          if (data.added_members.includes(user.id)) {
+            if (am.length !== 0) {
+              newBody = (
+                <>
+                  {newBody} <b>{dictionary.youAnd} </b>
+                </>
+              );
+            } else {
+              newBody = (
+                <>
+                  {newBody} <b>{dictionary.you}</b>
+                </>
+              );
+            }
+          }
+  
+          if (am.length !== 0) {
+            newBody = (
+              <>
+                {newBody} <b>{am.join(", ")}</b>
+                <br />
+              </>
+            );
+          }
+        }
+      }
+  
+      if (data.removed_members.length >= 1) {
+        const rm = recipients.filter((r) => data.removed_members.includes(r.type_id) && r.type_id !== user.id).map((r) => r.name);
+  
+        if (data.removed_members.includes(user.id) && data.author.id === user.id) {
+          if (newBody === "") {
+            newBody = (
+              <>
+                <b>{author.name}</b> {dictionary.left}{" "}
+              </>
+            );
+          } else {
+            newBody = <>{newBody} {dictionary.andLeft}</>;
+          }
+  
+          if (rm.length !== 0) {
+            newBody = (
+              <>
+                {newBody} {dictionary.andRemoved} <b>{rm.join(", ")}</b>
+                <br />
+              </>
+            );
+          }
+        } else {
+          if (newBody === "") {
+            newBody = <>{author.name} {dictionary.removed} </>;
+          } else {
+            newBody = <>{newBody} {dictionary.andRemoved}</>;
+          }
+  
+          if (data.removed_members.includes(user.id)) {
+            if (rm.length !== 0) {
+              newBody = (
+                <>
+                  {newBody} <b>{dictionary.youAnd} </b>
+                </>
+              );
+            } else {
+              newBody = (
+                <>
+                  {newBody} <b>{dictionary.you}</b>
+                </>
+              );
+            }
+          }
+  
+          if (rm.length !== 0) {
+            newBody = (
+              <>
+                {newBody} <b>{rm.join(", ")}</b>
+                <br />
+              </>
+            );
+          }
+        }
+      }
+      replyQuoteBody = renderToString(newBody);
+    } else if (replyQuoteBody.includes("POST_CREATE::")) {
+      let item = JSON.parse(reply.quote.body.replace("POST_CREATE::", ""));
+      let description = item.post.description;
+      replyQuoteBody = renderToString(<>
+              <b>{item.author.first_name}</b> {dictionary.createdThePost} <b>"{item.post.title}"</b>
+              <span className="card card-body" style={{margin: 0, padding: "10px"}}
+                dangerouslySetInnerHTML={{__html: description}}/>
+              </>
+      )
+    }
+    return quillHelper.parseEmoji(replyQuoteBody)
+  }
+
+  const [mounted, setMounted] = useState(false);
   const [gifOnly, setGifOnly] = useState(false);
-  const [body, setBody] = useState(reply.body);
-  const [quoteBody, setQuoteBody] = useState(null);
+  const [body, setBody] = useState(initialBodyParse());
+  const [quoteBody, setQuoteBody] = useState(initialQuoteParse());
   const [quoteAuthor, setQuoteAuthor] = useState("");
   const [isEmoticonOnly, setIsEmoticonOnly] = useState(false);
   const [loadRef, loadInView] = useInView({
@@ -558,14 +845,18 @@ const ChatBubble = (props) => {
   });
 
   useEffect(() => {
-    if (isLastChat && entry) {
-      if ((entry.boundingClientRect.height - entry.intersectionRect.height) >= 16) {
-        if (isLastChatVisible) chatMessageActions.setLastMessageVisiblility({ status: false });
-      } else {
-        if (!isLastChatVisible) chatMessageActions.setLastMessageVisiblility({ status: true });
+    if (isBrowserActive) {
+      if (isLastChat && entry) {
+        if ((entry.boundingClientRect.height - entry.intersectionRect.height) >= 16) {
+          if (isLastChatVisible) chatMessageActions.setLastMessageVisiblility({ status: false });
+        } else {
+          if (!isLastChatVisible) chatMessageActions.setLastMessageVisiblility({ status: true });
+        }
       }
+    } else {
+      chatMessageActions.setLastMessageVisiblility({ status: false});
     }
-  }, [isLastChat, entry, isLastChatVisible]);
+  }, [isLastChat, entry, isLastChatVisible, inView, isBrowserActive]);
 
   useEffect(() => {
     if (addMessageRef && loadInView) {
@@ -658,6 +949,7 @@ const ChatBubble = (props) => {
   };
 
   useEffect(() => {
+    setMounted(true)
     const btnComplete = refComponent.current.querySelector(".btn-action.btn-complete");
     if (btnComplete) btnComplete.addEventListener("click", handleMarkComplete, true);
 
@@ -678,7 +970,7 @@ const ChatBubble = (props) => {
 
   const parseBody = useCallback(() => {
     let isEmoticonOnly = false;
-    let replyBody = quillHelper.parseEmoji(reply.body);
+    let replyBody = reply.body;
     if (reply.is_deleted) {
       //replyBody = _t(reply.body, "The chat message has been deleted");
       replyBody = dictionary.chatRemoved;
@@ -933,26 +1225,36 @@ const ChatBubble = (props) => {
       replyQuoteBody = renderToString(newBody);
     } else if (replyQuoteBody.includes("POST_CREATE::")) {
       let item = JSON.parse(reply.quote.body.replace("POST_CREATE::", ""));
-      replyQuoteBody = renderToString(<><b>{item.author.first_name}</b> {dictionary.createdThePost} <b>"{item.post.title}"</b></>)
+      let description = item.post.description;
+      replyQuoteBody = renderToString(<>
+              <b>{item.author.first_name}</b> {dictionary.createdThePost} <b>"{item.post.title}"</b>
+              <span className="card card-body" style={{margin: 0, padding: "10px"}}
+                dangerouslySetInnerHTML={{__html: description}}/>
+              </>
+      )
     }
     setQuoteBody(replyQuoteBody);
-    setBody(replyBody);
+    setBody(quillHelper.parseEmoji(replyBody));
     setQuoteAuthor(replyQuoteAuthor);
   }, [reply])
 
   useEffect(() => {
-    parseBody()
-  }, [reply.body, reply.is_deleted])
+    parseBody();
+  }, [reply.body, reply.is_deleted]);
 
   const hasFiles = reply.files.length > 0;
   const hasMessage = reply.body !== "<span></span>";
   const googleApis = useGoogleApis();
 
-  const handleContentRef = (e) => {
+  const handleQuoteContentRef = (e) => {
     if (e) {
       const googleLinks = e.querySelectorAll(`[data-google-link-retrieve="0"]`);
       googleLinks.forEach((gl) => {
         let e = gl;
+        let linkText = e.querySelector(".link");
+        if (linkText) {
+          linkText.innerHTML = e.dataset.hrefLink;
+        }
         e.dataset.googleLinkRetrieve = 1;
         googleApis.getFile(e, e.dataset.googleFileId);
       });
@@ -967,6 +1269,32 @@ const ChatBubble = (props) => {
       }
     }
   };
+
+  const handleContentRef = (e) => {
+    if (e) {
+      const googleLinks = e.querySelectorAll(`[data-google-link-retrieve="0"]`);
+      googleLinks.forEach((gl) => {
+        let e = gl;
+        let linkText = e.querySelector(".link");
+        if (linkText) {
+          linkText.innerHTML = e.dataset.hrefLink;
+        }
+        e.dataset.googleLinkRetrieve = 1;
+        googleApis.getFile(e, e.dataset.googleFileId);
+      });
+      if (showGifPlayer) {
+        let hasText = false;
+        Array.from(e.children).forEach((el) => {
+          if (el.innerHTML !== "") {
+            hasText = true;
+          }
+        });
+        setGifOnly(!hasText);
+      }
+    }
+  };
+
+  //const bodyContent = quillHelper.parseEmoji(body);
 
   return (
     <ChatBubbleContainer
@@ -990,7 +1318,9 @@ const ChatBubble = (props) => {
           <ChatContentClap ref={addMessageRef ? loadRef : null} className="chat-content-clap" isAuthor={isAuthor}>
             <ChatContent showAvatar={showAvatar} isAuthor={isAuthor} isEmoticonOnly={isEmoticonOnly} className={`chat-content animated slower`}>
               {reply.quote && reply.quote.body && !reply.is_deleted && (reply.quote.user_id !== undefined || reply.quote.user !== undefined) && (
-                <QuoteContainer className={"quote-container"} showAvatar={showAvatar} isEmoticonOnly={isEmoticonOnly} hasFiles={hasFiles} theme={chatSettings.chat_message_theme} onClick={handleQuoteClick} isAuthor={isAuthor}>
+                <QuoteContainer className={"quote-container"} showAvatar={showAvatar} isEmoticonOnly={isEmoticonOnly}
+                                hasFiles={hasFiles} theme={chatSettings.chat_message_theme} onClick={handleQuoteClick}
+                                isAuthor={isAuthor}>
                   {reply.quote.user_id === user.id ? (
                     <QuoteAuthor theme={chatSettings.chat_message_theme} isAuthor={true}>
                       {"You"}
@@ -1000,7 +1330,10 @@ const ChatBubble = (props) => {
                       {quoteAuthor}
                     </QuoteAuthor>
                   )}
-                  <QuoteContent className={"quote-content"} theme={chatSettings.chat_message_theme} isAuthor={isAuthor} dangerouslySetInnerHTML={{ __html: quoteBody }}></QuoteContent>
+                  <QuoteContent
+                    ref={handleQuoteContentRef}
+                    className={"quote-content"} theme={chatSettings.chat_message_theme} isAuthor={isAuthor}
+                    dangerouslySetInnerHTML={{ __html: quoteBody }}></QuoteContent>
                 </QuoteContainer>
               )}
               {

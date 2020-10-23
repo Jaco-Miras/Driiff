@@ -1,17 +1,23 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
-import { addChatMessage, addQuote, clearChannelDraft, clearQuote, onClickSendButton, postChannelMembers, postChatMessage, putChatMessage, setEditChatMessage } from "../../redux/actions/chatActions";
+import {
+  addChatMessage,
+  addQuote,
+  clearChannelDraft,
+  clearQuote,
+  onClickSendButton,
+  postChannelMembers,
+  postChatMessage,
+  putChatMessage,
+  setEditChatMessage
+} from "../../redux/actions/chatActions";
 import { deleteDraft } from "../../redux/actions/globalActions";
 import { SvgIconFeather } from "../common";
 import BodyMention from "../common/BodyMention";
 import { useDraft, useQuillInput, useQuillModules, useSaveInput, useSelectQuote, useTimeFormat } from "../hooks";
 import QuillEditor from "./QuillEditor";
-
-const Wrapper = styled.div`
-  ${"" /* border: 1px solid #dee2e6;
-  border-radius: 8px; */}
-`;
+import _ from "lodash";
 
 const StyledQuillEditor = styled(QuillEditor)`
   &.chat-input {
@@ -34,6 +40,7 @@ const StyledQuillEditor = styled(QuillEditor)`
   }
   .ql-editor {
     padding: 11px 9px;
+    ${(props) => props.showFileIcon && `padding-left: 30px`};
     ${(props) => props.editMode && `> div {width:calc(100% - 15px);}`} .mention {
       color: #7a1b8b;
     }
@@ -55,6 +62,11 @@ const StyledQuillEditor = styled(QuillEditor)`
     overflow-x: hidden;
     overflow-y: auto;
     z-index: 2;
+
+    .dark & {
+      background: #25282c;
+      color: #c7c7c7;
+    }
 
     .ql-mention-list {
       padding: 0;
@@ -82,21 +94,41 @@ const StyledQuillEditor = styled(QuillEditor)`
 const CloseButton = styled(SvgIconFeather)`
   position: absolute;
   top: 0;
-  right: 0;
+  right: 70px;
   margin: 0;
   margin: 4px;
   height: calc(100% - 8px);
   background: white;
   border: 1px solid white;
   border-radius: 4px;
-  min-width: 40px;
   width: 40px;
   padding: 9px;
   cursor: pointer;
-  right: 40px;
   z-index: 9;
   color: #cacaca;
   transition: color 0.15s ease-in-out;
+
+  &:hover {
+    color: #7a1b8b;
+  }
+`;
+
+const FileIcon = styled(SvgIconFeather)`
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin: 4px;
+  height: calc(100% - 8px);
+  background: white;
+  border: 1px solid white;
+  border-radius: 4px;
+  width: 20px;
+  // padding: 9px;
+  cursor: pointer;
+  z-index: 9;
+  color: #cacaca;
+  transition: color 0.15s ease-in-out;
+
   &:hover {
     color: #7a1b8b;
   }
@@ -104,7 +136,7 @@ const CloseButton = styled(SvgIconFeather)`
 
 /***  Commented out code are to be visited/refactored ***/
 const ChatInput = (props) => {
-  const { selectedEmoji, onClearEmoji, selectedGif, onClearGif, dropAction } = props;
+  const { selectedEmoji, onClearEmoji, selectedGif, onClearGif, dropAction, onActive } = props;
   const dispatch = useDispatch();
   const reactQuillRef = useRef();
   const { localizeDate } = useTimeFormat();
@@ -183,15 +215,26 @@ const ChatInput = (props) => {
       });
     }
 
-    if (textOnly.trim() === "" && mention_ids.length === 0 && !haveGif) return;
+    if (_.trim(textOnly) === "" && mention_ids.length === 0 && !haveGif) return;
+
+    let el = document.createElement("div");
+    el.innerHTML = text;
+    for (let i = (el.childNodes.length - 1); i >= 0; i--) {
+      if (_.trim(el.childNodes[i].innerText) === "" && el.childNodes[i].innerHTML === "<br>") {
+        el.removeChild(el.childNodes[i]);
+      } else {
+        el.childNodes[i].innerHTML = _.trim(el.childNodes[i].innerHTML);
+        break;
+      }
+    }
 
     let payload = {
       channel_id: selectedChannel.id,
-      body: text,
+      body: el.innerHTML,
       mention_ids: mention_ids,
       file_ids: [],
       reference_id: reference_id,
-      reference_title: selectedChannel.type === "DIRECT" && selectedChannel.members.length === 2 ? `${user.first_name} in a direct message` : selectedChannel.title,
+      reference_title: selectedChannel.type === "DIRECT" ? `${user.first_name} in a direct message` : selectedChannel.title,
       topic_id: selectedChannel.is_shared ? selectedChannel.entity_id : null,
       is_shared: selectedChannel.is_shared ? selectedChannel.entity_id : null,
       token: slugs.length && slugs.filter((s) => s.slug_name === selectedChannel.slug_owner).length ? slugs.filter((s) => s.slug_name === selectedChannel.slug_owner)[0].access_token : null,
@@ -220,8 +263,8 @@ const ChatInput = (props) => {
     }
 
     let obj = {
-      message: text,
-      body: text,
+      message: el.innerHTML,
+      body: el.innerHTML,
       mention_ids: mention_ids,
       user: user,
       original_body: text,
@@ -309,6 +352,8 @@ const ChatInput = (props) => {
     setTextOnly(textOnly);
     setQuillContents(editor.getContents());
 
+    textOnly.trim() === "" ? onActive(false) : onActive(true);
+
     if (editor.getContents().ops && editor.getContents().ops.length) {
       handleMentionUser(
         editor
@@ -375,7 +420,7 @@ const ChatInput = (props) => {
     setText(reply.body);
     setEditMessage(reply);
     setEditMode(true);
-    if (reply.quote) {
+    if (reply.quote && reply.quote.hasOwnProperty("id")) {
       dispatch(
         addQuote({
           ...reply.quote,
@@ -509,13 +554,13 @@ const ChatInput = (props) => {
   const handleAddMentionedUsers = (users) => {
     let memberPayload = {
       channel_id: selectedChannel.id,
-      recipient_ids: users.map((u) => u.type_id),
+      recipient_ids: users.map((u) => u.id),
     };
     dispatch(
       postChannelMembers(memberPayload, (err, res) => {
         if (err) return;
 
-        if (res) setIgnoredMentionedUserIds([...ignoredMentionedUserIds, ...users.map((u) => u.type_id)]);
+        if (res) setIgnoredMentionedUserIds([...ignoredMentionedUserIds, ...users.map((u) => u.id)]);
       })
     );
 
@@ -528,6 +573,8 @@ const ChatInput = (props) => {
   };
 
   const handleEditReplyClose = () => {
+    if (quote) dispatch(clearQuote(quote));
+
     setEditMode(false);
     setEditMessage(null);
     handleClearQuillInput();
@@ -538,11 +585,15 @@ const ChatInput = (props) => {
   useDraft(loadDraftCallback, "channel", text, textOnly, draftId);
   const [modules, formats] = useQuillModules("chat", handleSubmit, "top", reactQuillRef, user.type === "external" ? selectedChannel.members : []);
   return (
-    <Wrapper className="chat-input-wrapper">
-      {mentionedUserIds.length > 0 && <BodyMention onAddUsers={handleAddMentionedUsers} onDoNothing={handleIgnoreMentionedUsers} userIds={mentionedUserIds} type={"chat"} basedOnId={false} />}
-      <StyledQuillEditor className={"chat-input"} modules={modules} ref={reactQuillRef} onChange={handleQuillChange} editMode={editMode} />
-      {editMode && <CloseButton icon="x" onClick={handleEditReplyClose} />}
-    </Wrapper>
+    <div className="chat-input-wrapper">
+      {mentionedUserIds.length > 0 &&
+      <BodyMention onAddUsers={handleAddMentionedUsers} onDoNothing={handleIgnoreMentionedUsers}
+                   userIds={mentionedUserIds} type={selectedChannel.type === "TOPIC" ? "workspace" : "chat"}/>}
+      <StyledQuillEditor className={"chat-input"} modules={modules} ref={reactQuillRef} onChange={handleQuillChange}
+                         editMode={editMode} showFileIcon={editMode && editChatMessage && editChatMessage.files.length > 0}/>
+      {editMode && <CloseButton className='close-button' icon="x" onClick={handleEditReplyClose}/>}
+      {editMode && editChatMessage && editChatMessage.files.length > 0 && <FileIcon className="close-button" icon="file"/>}
+    </div>
   );
 };
 

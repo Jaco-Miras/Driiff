@@ -58,6 +58,7 @@ const TodosPanel = (props) => {
           <TodosHeader dictionary={dictionary} onSearchChange={handleSearchChange} clearSearch={clearSearch}
                        searchValue={search}/>
           <TodosBody
+            complete={false}
             isLoaded={isLoaded}
             todoItems={getSortedItems({filter: {status: filter, search: search}})} dictionary={dictionary}
             todoActions={todoActions} filter={filter}/>

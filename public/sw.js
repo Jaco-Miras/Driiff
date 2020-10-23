@@ -1,9 +1,10 @@
 function receivePushNotification(event) {
     console.log("[Service Worker] Push Received.", event, event.data.json());
   
-    const { reference_title, id, channel_code, strip_body, user, author, title, body, redirect_link, code_data, workspaces, SOCKET_TYPE } = event.data.json();
+    const { reference_title, id, channel_code, code, strip_body, user, author, title, body, redirect_link, code_data, workspaces, SOCKET_TYPE } = event.data.json();
     let options = {
-      data: redirect_link,
+      //data: redirect_link,
+      data: `/chat/${channel_code}/${code}`,
       body: strip_body,
       vibrate: [200, 100, 200],
       tag: id,
@@ -28,7 +29,7 @@ function receivePushNotification(event) {
       };
 
        if (SOCKET_TYPE === "POST_COMMENT_CREATE") {
-        const { base_link, push_title, post_id, post_title } = code_data;
+        const { push_title, post_id, post_title } = code_data;
         notification_title = push_title;
         if (workspaces.length) {
           if (workspaces[0].workspace_id){
@@ -41,13 +42,13 @@ function receivePushNotification(event) {
         }
         options = {
           ...options,
-          data: `${base_link}${link}`,
+          data: `${link}`,
           body: body.replace(/(<([^>]+)>)/gi, ""),
           image: author.profile_image_link,
           icon: author.profile_image_link,
         }
       } else if (SOCKET_TYPE === "POST_CREATE") {
-        const { base_link } = code_data;
+        //const { base_link } = code_data;
         notification_title = `${author.name} shared a post`;
         if (workspaces.length) {
           if (workspaces[0].workspace_id){
@@ -61,11 +62,42 @@ function receivePushNotification(event) {
         options = {
           ...options,
           body: title,
-          data: `${base_link}${link}`,
+          data: `${link}`,
           image: author.profile_image_link,
           icon: author.profile_image_link,
         }
-      } 
+      } else if (SOCKET_TYPE === "ADVANCE_REMIND_TODO") {
+        const { data, link_type } = event.data.json();
+        notification_title = `You asked to be reminded about ${title}`;
+        link = "/todos";
+        if (link_type) {
+          if (link_type === "POST_COMMENT" || link_type === "POST") {
+            if (data.workspaces.length) {
+              if (data.workspaces[0].workspace){
+                link = `/workspace/posts/${data.workspaces[0].workspace.id}/${replaceChar(data.workspaces[0].workspace.name)}/${data.workspaces[0].topic.id}/${replaceChar(data.workspaces[0].topic.name)}/post/${data.post.id}/${replaceChar(data.post.title)}`;
+              } else {
+                link = `/workspace/posts/${data.workspaces[0].topic.id}/${replaceChar(data.workspaces[0].topic.name)}/post/${data.post.id}/${replaceChar(data.post.title)}`;
+              }
+            } else {
+              link = `/posts/${data.post.id}/${replaceChar(data.post.title)}`;
+            }
+          } else if (link_type === "CHAT") {
+            link = `/chat/${data.channel.code}/${data.chat_message.code}`;
+          }
+        } 
+        options = {
+          ...options,
+          body: title,
+          data: link,
+          // image: author.profile_image_link,
+          // icon: author.profile_image_link,
+        }
+      } else if (SOCKET_TYPE === "CHAT_CREATE") {
+        options = {
+          ...options,
+          body: reference_title.includes("in a direct message") ? strip_body : `${user.first_name}: ${strip_body}`
+        }
+      }
 
       self.clients.matchAll({includeUncontrolled: true}).then(clients => {
         for (const client of clients) {
@@ -76,7 +108,7 @@ function receivePushNotification(event) {
           if (SOCKET_TYPE === "POST_COMMENT_CREATE" && link !== "" && clientUrl.pathname === link) {
             showNotification = false;
           }
-          if (client.visibilityState !== 'visible') {
+          if (client.visibilityState !== 'visible' || SOCKET_TYPE === "ADVANCE_REMIND_TODO") {
             showNotification = true
           }
         }
@@ -91,27 +123,13 @@ function receivePushNotification(event) {
   self.addEventListener('notificationclick', event => {
     console.log("[Service Worker] Notification click Received.", event.notification.data);
     event.waitUntil(async function() {
-      const allClients = await clients.matchAll({
-        includeUncontrolled: true
-      });
-  
-      let matchingClient = false;
-  
-      for (const client of allClients) {
-        const clientUrl = new URL(client.url);
-        const originUrl = new URL(event.notification.data);
-        console.log('client for loop', client,  clientUrl.hostname === originUrl.hostname, clientUrl.hostname, originUrl.hostname)
-        if (clientUrl.hostname === originUrl.hostname) {
-          console.log("focus", event.notification.data)
-          client.navigate(event.notification.data);
-          client.focus();
-          matchingClient = true;
-          break;
-        } 
-      }
-  
-      if (!matchingClient) {
-        console.log("open", event.notification.data)   
+      const allClients = await clients.matchAll();
+      
+      if (allClients.length) {
+        //if there's a current tab open
+        allClients[0].navigate(event.notification.data);
+        allClients[0].focus();
+      } else {
         clients.openWindow(event.notification.data);
         event.notification.close();
       }

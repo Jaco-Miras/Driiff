@@ -1,8 +1,10 @@
-import React, {useEffect, useRef} from "react";
-import {useDispatch, useSelector} from "react-redux";
-import {Route, Switch, useHistory, useRouteMatch} from "react-router-dom";
+import React, { useEffect, useRef } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Route, Switch, useHistory, useRouteMatch } from "react-router-dom";
 import styled from "styled-components";
 import {
+  useDriff,
+  useFilesUpload,
   useSettings,
   useSocketConnection,
   useTimeFormat,
@@ -11,19 +13,16 @@ import {
   useVisibilityChange,
   useWorkspaceActions
 } from "../components/hooks";
-import useFilesUpload from "../components/hooks/useFilesUpload";
-import {MainContentPanel, MainHeaderPanel, MainNavigationPanel} from "../components/panels/main";
-
+import { MainContentPanel, MainHeaderPanel, MainNavigationPanel } from "../components/panels/main";
 import MobileOverlay from "../components/panels/MobileOverlay";
-
-import {WorkspaceContentPanel} from "../components/panels/workspace";
+import { WorkspaceContentPanel } from "../components/panels/workspace";
 import SocketListeners from "../components/socket/socketListeners";
-import {getFiles} from "../redux/actions/fileActions";
-import {getAllRecipients, getConnectedSlugs} from "../redux/actions/globalActions";
-import {getNotifications} from "../redux/actions/notificationActions";
-import {getMentions, getUsers} from "../redux/actions/userAction";
-import {getAPIUrl, getCurrentDriffUrl} from "../helpers/slugHelper";
-import usePushNotification from "../components/webpush/usePushNotification";
+import { getFiles } from "../redux/actions/fileActions";
+import { getAllRecipients, getConnectedSlugs } from "../redux/actions/globalActions";
+import { getNotifications } from "../redux/actions/notificationActions";
+import { getMentions, getUsers } from "../redux/actions/userAction";
+import { getAPIUrl, getCurrentDriffUrl } from "../helpers/slugHelper";
+import { PushNotificationBar, usePushNotification } from "../components/webpush";
 
 const MainContent = styled.div``;
 
@@ -37,13 +36,15 @@ const MainLayout = (props) => {
   useFilesUpload(props);
   useVisibilityChange();
   useSocketConnection();
-  usePushNotification();
-  const {path} = useRouteMatch();
-  const {displayWelcomeBanner} = useUserActions();
+  const { mounted, showNotificationBar, onClickAskUserPermission, onClickRemindLater } = usePushNotification();
+  const { path } = useRouteMatch();
+  const { displayWelcomeBanner, fetchRoles } = useUserActions();
+  const uDriff = useDriff();
+
   const user = useSelector((state) => state.session.user);
   //const socketMounted = useSelector((state) => state.global.socketMounted);
   const toaster = useToaster();
-  const {localizeDate} = useTimeFormat();
+  const { localizeDate } = useTimeFormat();
   const workspaceActions = useWorkspaceActions();
   const refs = {
     audio: useRef(null),
@@ -54,6 +55,7 @@ const MainLayout = (props) => {
   const files = useSelector((state) => state.files.files);
   const notifications = useSelector((state) => state.notifications.notifications);
   const {
+    driffSettings: {isCompSettingsLoaded},
     chatSettings: {sound_enabled},
     generalSettings: {notifications_on}
   } = useSettings();
@@ -103,15 +105,16 @@ const MainLayout = (props) => {
     if (Object.keys(notifications).length === 0) {
       dispatch(getNotifications({skip: 0, limit: 100}));
     }
+    fetchRoles();
 
     //eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
-    if (user.id) {
+    if (user.id && isCompSettingsLoaded) {
       displayWelcomeBanner()
     }
-  }, [user]);
+  }, [user, isCompSettingsLoaded]);
 
   return (
     <>
@@ -121,18 +124,25 @@ const MainLayout = (props) => {
         <source src={require("../assets/audio/appointed.m4r")} type="audio/m4r"/>
         Your browser does not support the audio element.
       </AudioStyle>
-      <MainHeaderPanel isExternal={isExternal}/>
-      <MainContent id="main">
-        <Route render={(props) => <MainNavigationPanel isExternal={isExternal} {...props}/>} path={["/:page"]}/>
-        <Switch>
-          <Route render={(props) => <WorkspaceContentPanel isExternal={isExternal} {...props}/>} path={["/workspace"]}/>
-          <Route render={(props) => <MainContentPanel {...props} isExternal={isExternal}/>} path={["/:page"]}/>
-        </Switch>
-      </MainContent>
-
+      {
+        showNotificationBar && mounted &&
+        <PushNotificationBar onClickAskUserPermission={onClickAskUserPermission} onClickRemindLater={onClickRemindLater}/>
+      }
+      { mounted && <MainHeaderPanel isExternal={isExternal}/> }
+      {
+        mounted && 
+        <MainContent id="main">
+          <Route render={(props) => <MainNavigationPanel isExternal={isExternal} {...props} showNotificationBar={showNotificationBar}/>} path={["/:page"]}/>
+          <Switch>
+            <Route render={(props) => <WorkspaceContentPanel isExternal={isExternal} {...props}/>} path={["/workspace"]}/>
+            <Route render={(props) => <MainContentPanel {...props} isExternal={isExternal}/>} path={["/:page"]}/>
+          </Switch>
+        </MainContent>
+      }
       <MobileOverlay/>
       {user.id !== undefined && window.Echo !== undefined &&
-      <SocketListeners localizeDate={localizeDate} toaster={toaster} soundPlay={handleSoundPlay} workspaceActions={workspaceActions} notificationsOn={notifications_on}/>}
+      <SocketListeners useDriff={uDriff} localizeDate={localizeDate} toaster={toaster} soundPlay={handleSoundPlay}
+                       workspaceActions={workspaceActions} notificationsOn={notifications_on}/>}
     </>
   );
 };

@@ -92,6 +92,12 @@ const useRedirect = () => {
             );
         }, []
     );
+    
+    const toTodos = useCallback(
+        () => {
+            history.push("/todos");
+        }, []
+    );
 
     return {
         fetchWorkspaceAndRedirect,
@@ -100,7 +106,8 @@ const useRedirect = () => {
         toFiles,
         toPeople,
         toPost,
-        toWorkspace
+        toWorkspace,
+        toTodos
     }
 };
 

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="48px" height="48px" viewBox="0 0 48 48" version="1.1" xmlns="http://www.w3.org/2000/svg"
+>
+    <!-- Generator: Sketch 54.1 (76490) - https://sketchapp.com -->
+    <title>_icon/close/l/active</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <linearGradient x1="0%" y1="0%" x2="100%" y2="100%" id="linearGradient-1">
+            <stop stop-color="#972C86" offset="0%"></stop>
+            <stop stop-color="#794997" offset="40%"></stop>
+            <stop stop-color="#007180" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="_icon/close/l/active" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <path d="M21.8786797,24 L10.9185245,34.9601551 C10.3327381,35.5459415 10.3327381,36.495689 10.9185245,37.0814755 C11.504311,37.6672619 12.4540585,37.6672619 13.0398449,37.0814755 L24,26.1213203 L34.9601551,37.0814755 C35.5459415,37.6672619 36.495689,37.6672619 37.0814755,37.0814755 C37.6672619,36.495689 37.6672619,35.5459415 37.0814755,34.9601551 L26.1213203,24 L37.0814755,13.0398449 C37.6672619,12.4540585 37.6672619,11.504311 37.0814755,10.9185245 C36.495689,10.3327381 35.5459415,10.3327381 34.9601551,10.9185245 L24,21.8786797 L13.0398449,10.9185245 C12.4540585,10.3327381 11.504311,10.3327381 10.9185245,10.9185245 C10.3327381,11.504311 10.3327381,12.4540585 10.9185245,13.0398449 L21.8786797,24 Z"
+              id="Combined-Shape" fill="url(#linearGradient-1)" fill-rule="nonzero"></path>
+    </g>
+</svg>

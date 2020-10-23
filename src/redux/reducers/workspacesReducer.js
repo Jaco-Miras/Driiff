@@ -309,7 +309,7 @@ export default (state = INITIAL_STATE, action) => {
             }
           }
         } else {
-          if (action.data.original_workspace_id !== action.data.workspace_id) {
+          if (action.data.original_workspace_id !== action.data.workspace_id && updatedFolders[action.data.original_workspace_id]) {
             // to general folder
             updatedFolders[action.data.original_workspace_id].workspace_ids = updatedFolders[action.data.original_workspace_id].workspace_ids.filter((id) => id !== action.data.id);
           }
@@ -418,7 +418,12 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "ADD_TO_WORKSPACE_POSTS": {
-      let convertedPosts = convertArrayToObject(action.data.posts, "id");
+      let convertedPosts = convertArrayToObject(action.data.posts.reduce((arr, obj) => {
+        return arr.concat({
+          ...obj,
+          clap_user_ids: []
+        });
+      }, []), "id");
       let postDrafts = [];
       if (state.drafts.length) {
         state.drafts.forEach((d) => {
@@ -582,7 +587,8 @@ export default (state = INITIAL_STATE, action) => {
         action.data.messages.forEach((c) => {
           comments[c.id] = {
             ...c,
-            replies: convertArrayToObject(c.replies, "id"),
+            clap_user_ids: [],
+            replies: convertArrayToObject(c.replies.map((r) => { return {...r, clap_user_ids:[]} }), "id"),
             skip: c.replies.length,
             hasMore: c.replies.length === 10,
             limit: 10,
@@ -596,6 +602,40 @@ export default (state = INITIAL_STATE, action) => {
             skip: action.data.next_skip,
             hasMore: action.data.messages.length === 20,
             comments: comments,
+          },
+        },
+      };
+    }
+    case "GET_REPLY_CLAP_HOVER_SUCCESS": {
+      return {
+        ...state,
+        postComments: {
+          ...state.postComments,
+          [action.data.post_id]: {
+            ...state.postComments[action.data.post_id],
+            ...(action.data.parent_id ? {
+              comments: {
+                ...state.postComments[action.data.post_id].comments,
+                [action.data.parent_id]: {
+                  ...state.postComments[action.data.post_id].comments[action.data.parent_id],
+                  replies: {
+                    ...state.postComments[action.data.post_id].comments[action.data.parent_id].replies,
+                    [action.data.message_id]: {
+                      ...state.postComments[action.data.post_id].comments[action.data.parent_id].replies[action.data.message_id],
+                      clap_user_ids: action.data.claps.map(c => c.user_id)
+                    },
+                  },
+                },
+              },
+            } : {
+              comments: {
+                ...state.postComments[action.data.post_id].comments,
+                [action.data.message_id]: {
+                  ...state.postComments[action.data.post_id].comments[action.data.message_id],
+                  clap_user_ids: action.data.claps.map(c => c.user_id)
+                },
+              },
+            })
           },
         },
       };
@@ -710,6 +750,31 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
+    case "INCOMING_MARK_AS_READ": {
+      return {
+        ...state,
+        ...(Object.keys(state.workspacePosts)
+          .filter(wsid => {
+            return wsid !== "flipper" && state.workspacePosts[wsid] && state.workspacePosts[wsid].posts[action.data.result.post_id];
+          })
+          .map(wsid => ({
+            ...state.workspacePosts,
+            post: {
+              ...state.workspacePosts[wsid].posts,
+              [action.data.result.post_id]: {
+                ...state.workspacePosts[wsid].posts[action.data.result.post_id],
+                user_reads: [
+                  ...state.workspacePosts[wsid].posts[action.data.result.post_id].user_reads,
+                  ...action.data.result.user_reads
+                ]
+              }
+            }
+          }))
+          .reduce((obj, workspace) => {
+            return { ...obj, ...workspace };
+          }, {}))
+      };
+    }
     case "INCOMING_POST": {
       let newWorkspacePosts = { ...state.workspacePosts };
       let updatedWorkspaces = { ...state.workspaces };
@@ -726,7 +791,7 @@ export default (state = INITIAL_STATE, action) => {
             newWorkspacePosts[ws.topic_id].count.is_read_only = newWorkspacePosts[ws.topic_id].count.is_read_only + 1;
           }
         }
-        if (action.data.author.id !== state.user.id) {
+        if (action.data.author.id !== state.user.id && typeof updatedWorkspaces[ws.topic_id] !== "undefined") {
           updatedWorkspaces[ws.topic_id].unread_posts = updatedWorkspaces[ws.topic_id].unread_posts + 1;
           if (state.activeTopic && state.activeTopic.id === ws.topic_id) {
             addUnreadPost = true;
@@ -799,10 +864,14 @@ export default (state = INITIAL_STATE, action) => {
       let newWorkspacePosts = { ...state.workspacePosts };
       action.data.recipient_ids.forEach((id) => {
         if (newWorkspacePosts.hasOwnProperty(id)) {
-          if (action.data.is_personal && !Object.values(action.data.users_responsible).map(u => u.id).includes(state.user.id)) {
+          if (action.data.is_personal && !action.data.post_participant_data.all_participant_ids.some((id) => id === state.user.id)) {
             delete newWorkspacePosts[id].posts[action.data.id];
           } else {
-            newWorkspacePosts[id].posts[action.data.id] = action.data;
+            if (newWorkspacePosts[id].posts.hasOwnProperty(action.data.id)) {
+              newWorkspacePosts[id].posts[action.data.id] = {...action.data, clap_user_ids: newWorkspacePosts[id].posts[action.data.id].clap_user_ids};
+            } else {
+              newWorkspacePosts[id].posts[action.data.id] = {...action.data, clap_user_ids: []};
+            }
           }
         }
       });
@@ -829,6 +898,12 @@ export default (state = INITIAL_STATE, action) => {
         action.data.workspaces.forEach((ws) => {
           if (newWorkspacePosts.hasOwnProperty(ws.topic_id) && newWorkspacePosts[ws.topic_id].posts.hasOwnProperty(action.data.post_id)) {
             //post = newWorkspacePosts[ws.topic_id].posts[action.data.post_id];
+            if (!newWorkspacePosts[ws.topic_id].posts[action.data.post_id].users_responsible.some((u) => u.id === action.data.author.id)) {
+              newWorkspacePosts[ws.topic_id].posts[action.data.post_id].users_responsible = [...newWorkspacePosts[ws.topic_id].posts[action.data.post_id].users_responsible, action.data.author]
+            }
+            if (newWorkspacePosts[ws.topic_id].posts[action.data.post_id].is_archived === 1) {
+              newWorkspacePosts[ws.topic_id].posts[action.data.post_id].is_archived = 0;
+            }
             newWorkspacePosts[ws.topic_id].posts[action.data.post_id].reply_count = newWorkspacePosts[ws.topic_id].posts[action.data.post_id].reply_count + 1;
             if (action.data.author.id !== state.user.id) {
               newWorkspacePosts[ws.topic_id].posts[action.data.post_id].unread_count = newWorkspacePosts[ws.topic_id].posts[action.data.post_id].unread_count + 1;
@@ -853,9 +928,17 @@ export default (state = INITIAL_STATE, action) => {
           }
         } else {
           if (action.data.parent_id) {
-            newPostComments[action.data.post_id].comments[action.data.parent_id].replies[action.data.id] = action.data;
+            if (newPostComments[action.data.post_id].comments[action.data.parent_id].replies.hasOwnProperty(action.data.id)) {
+              newPostComments[action.data.post_id].comments[action.data.parent_id].replies[action.data.id] = { ...action.data, clap_user_ids: newPostComments[action.data.post_id].comments[action.data.parent_id].replies[action.data.id].clap_user_ids};
+            } else {
+              newPostComments[action.data.post_id].comments[action.data.parent_id].replies[action.data.id] = action.data;
+            }
           } else {
-            newPostComments[action.data.post_id].comments[action.data.id] = action.data;
+            if (newPostComments[action.data.post_id].comments.hasOwnProperty(action.data.id)) {
+              newPostComments[action.data.post_id].comments[action.data.id] = { ...action.data, clap_user_ids: newPostComments[action.data.post_id].comments[action.data.id].clap_user_ids };
+            } else {
+              newPostComments[action.data.post_id].comments[action.data.id] = action.data;
+            }
           }
         }
       }
@@ -914,39 +997,88 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "INCOMING_POST_CLAP": {
-      let newWorkspacePosts = { ...state.workspacePosts };
-      Object.values(newWorkspacePosts).forEach((ws) => {
-        if (ws.posts.hasOwnProperty(action.data.post_id)) {
-          ws.posts[action.data.post_id].clap_count = action.data.clap_count === 0 ? ws.posts[action.data.post_id].clap_count - 1 : ws.posts[action.data.post_id].clap_count + 1;
-          ws.posts[action.data.post_id].user_clap_count = action.data.clap_count;
-        }
-      });
+      const channelIds = Object.keys(state.workspacePosts);
       return {
         ...state,
-        workspacePosts: newWorkspacePosts,
-      };
+        ...(channelIds.length && {
+          workspacePosts: {
+            ...state.workspacePosts,
+            ...(channelIds.reduce((ws, channelId) => {
+              ws = {
+                ...ws,
+                [channelId]: (typeof state.workspacePosts[channelId].posts === "undefined" ||
+                typeof state.workspacePosts[channelId].posts[action.data.post_id] === "undefined" ? state.workspacePosts[channelId] : {
+                  ...state.workspacePosts[channelId],
+                  posts: {
+                    ...state.workspacePosts[channelId].posts,
+                    [action.data.post_id]: {
+                      ...state.workspacePosts[channelId].posts[action.data.post_id],
+                      ...(action.data.clap_count === 1 ? {
+                        clap_count: state.workspacePosts[channelId].posts[action.data.post_id].clap_count + 1,
+                        clap_user_ids: [...state.workspacePosts[channelId].posts[action.data.post_id].clap_user_ids.filter(id => id !== action.data.author.id), action.data.author.id],
+                        user_clap_count: action.data.author.id === state.user.id ? 1 : state.workspacePosts[channelId].posts[action.data.post_id].user_clap_count,
+                      } : {
+                        clap_count: state.workspacePosts[channelId].posts[action.data.post_id].clap_count - 1,
+                        clap_user_ids: state.workspacePosts[channelId].posts[action.data.post_id].clap_user_ids.filter(id => id !== action.data.author.id),
+                        user_clap_count: action.data.author.id === state.user.id ? 0 : state.workspacePosts[channelId].posts[action.data.post_id].user_clap_count,
+                      })
+                    }
+                  }
+                })
+              };
+              return ws;
+            }, {}))
+          }
+        })
+      }
     }
     case "INCOMING_COMMENT_CLAP": {
-      let newPostComments = { ...state.postComments };
-      if (newPostComments.hasOwnProperty(action.data.post_id)) {
-        if (action.data.parent_message_id) {
-          newPostComments[action.data.post_id].comments[action.data.parent_message_id].replies[action.data.message_id].clap_count =
-            action.data.clap_count === 0
-              ? newPostComments[action.data.post_id].comments[action.data.parent_message_id].replies[action.data.message_id].clap_count - 1
-              : newPostComments[action.data.post_id].comments[action.data.parent_message_id].replies[action.data.message_id].clap_count + 1;
-          newPostComments[action.data.post_id].comments[action.data.parent_message_id].replies[action.data.message_id].user_clap_count = action.data.clap_count;
-        } else {
-          newPostComments[action.data.post_id].comments[action.data.message_id].clap_count =
-            action.data.clap_count === 0 ? newPostComments[action.data.post_id].comments[action.data.message_id].clap_count - 1 : newPostComments[action.data.post_id].comments[action.data.message_id].clap_count + 1;
-          newPostComments[action.data.post_id].comments[action.data.message_id].user_clap_count = action.data.clap_count;
-        }
-        return {
-          ...state,
-          postComments: newPostComments,
-        };
-      } else {
-        return state;
-      }
+      return {
+        ...state,
+        ...(typeof state.postComments[action.data.post_id] !== "undefined" &&
+          (action.data.parent_message_id ?
+            (typeof state.postComments[action.data.post_id].comments[action.data.parent_message_id] !== "undefined" &&
+              typeof state.postComments[action.data.post_id].comments[action.data.parent_message_id].replies[action.data.message_id] !== "undefined")
+            : typeof state.postComments[action.data.post_id].comments[action.data.message_id] !== "undefined") && {
+            postComments: {
+              ...state.postComments,
+              [action.data.post_id]: {
+                ...state.postComments[action.data.post_id],
+                ...(action.data.parent_message_id ? {
+                  comments: {
+                    ...state.postComments[action.data.post_id].comments,
+                    [action.data.parent_message_id]: {
+                      ...state.postComments[action.data.post_id].comments[action.data.parent_message_id],
+                      replies: {
+                        ...state.postComments[action.data.post_id].comments[action.data.parent_message_id].replies,
+                        [action.data.message_id]: {
+                          ...state.postComments[action.data.post_id].comments[action.data.parent_message_id].replies[action.data.message_id],
+                          user_clap_count: action.data.clap_count,
+                          clap_count: state.postComments[action.data.post_id].comments[action.data.parent_message_id].replies[action.data.message_id].clap_count + (action.data.clap_count === 1 ? 1 : -1),
+                          clap_user_ids: (action.data.clap_count === 1 ? [
+                            ...state.postComments[action.data.post_id].comments[action.data.parent_message_id].replies[action.data.message_id].clap_user_ids, action.data.author.id
+                          ] : state.postComments[action.data.post_id].comments[action.data.parent_message_id].replies[action.data.message_id].clap_user_ids.filter(id => id !== action.data.author.id))
+                        }
+                      },
+                    }
+                  }
+                } : {
+                  comments: {
+                    ...state.postComments[action.data.post_id].comments,
+                    [action.data.message_id]: {
+                      ...state.postComments[action.data.post_id].comments[action.data.message_id],
+                      user_clap_count: action.data.clap_count,
+                      clap_count: state.postComments[action.data.post_id].comments[action.data.message_id].clap_count + (action.data.clap_count === 1 ? 1 : -1),
+                      clap_user_ids: (action.data.clap_count === 1 ? [
+                        ...state.postComments[action.data.post_id].comments[action.data.message_id].clap_user_ids, action.data.author.id
+                      ] : state.postComments[action.data.post_id].comments[action.data.message_id].clap_user_ids.filter(id => id !== action.data.author.id))
+                    }
+                  }
+                })
+              }
+            },
+          })
+      };
     }
     case "FETCH_TIMELINE_SUCCESS": {
       let newWorkspaceTimeline = { ...state.workspaceTimeline };

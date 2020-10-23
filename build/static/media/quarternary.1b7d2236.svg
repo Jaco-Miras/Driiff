@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg"
+>
+    <!-- Generator: Sketch 59 (86127) - https://sketch.com -->
+    <title>_icon/priority/low/r/quarternary</title>
+    <desc>Created with Sketch.</desc>
+    <g id="_icon/priority/low/r/quarternary" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"
+       strokeLinecap="round" stroke-linejoin="round">
+        <polyline id="Triangle" stroke="#007180" stroke-width="2"
+                  points="19.8079658 16.2735419 22 20 2 20 12 3 12 3 17.4091938 12.1956294"></polyline>
+        <polyline id="Line-4-Copy" stroke="#007180" stroke-width="2"
+                  transform="translate(12.000000, 15.250000) scale(1, -1) translate(-12.000000, -15.250000) "
+                  points="9.5 16.5 12 14 14.5 16.5"></polyline>
+    </g>
+</svg>
