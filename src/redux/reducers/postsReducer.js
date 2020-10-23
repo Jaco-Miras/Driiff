@@ -15,7 +15,8 @@ const INITIAL_STATE = {
     tag: null,
     count: {},
     search: null,
-    searchResults: []
+    searchResults: [],
+    unreadPosts: 0
   },
   posts: {},
   drafts: [],
@@ -438,6 +439,15 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         companyPosts: companyPosts
       };
+    }
+    case "GET_UNREAD_POST_ENTRIES_SUCCESS": {
+      return {
+        ...state,
+        companyPosts: {
+          ...state.companyPosts,
+          unreadPosts: action.data.result
+        }
+      }
     }
     default:
       return state;
