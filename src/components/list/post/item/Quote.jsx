@@ -7,7 +7,7 @@ const ShowMoreBtn = styled.div`
 `;
 
 const Quote = (props) => {
-  const { quote } = props;
+  const { quote, dictionary } = props;
 
   const commentRef = useRef(null);
   const [showMore, setShowMore] = useState(false);
@@ -36,6 +36,7 @@ const Quote = (props) => {
   useEffect(() => {
     if (commentRef.current) {
       setHeight(commentRef.current.scrollHeight);
+     
       if (commentRef.current.scrollHeight > 200) {
         setShowToggle(true)
       }
@@ -53,13 +54,13 @@ const Quote = (props) => {
         ref={commentRef}
         >
         
-          {quote.user && <div className="quote-author">Quoted comment from {quote.user.name}</div>}
+          {quote.user && <div className="quote-author">{dictionary.quotedCommentFrom} {quote.user.name}</div>}
           <div className="quote border-side" dangerouslySetInnerHTML={{ __html: quote.body }}/>
         </div>
         {
           showToggle &&
           <ShowMoreBtn onClick={handleShowMore} className="btn-toggle-show cursor-pointer mt-2">
-            {showMore ? "Show less" : "Show more"}
+            {showMore ? dictionary.showLess : dictionary.showMore}
           </ShowMoreBtn>
         }
         </>
