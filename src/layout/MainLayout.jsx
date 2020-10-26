@@ -23,6 +23,7 @@ import { getNotifications } from "../redux/actions/notificationActions";
 import { getMentions, getUsers } from "../redux/actions/userAction";
 import { getAPIUrl, getCurrentDriffUrl } from "../helpers/slugHelper";
 import { PushNotificationBar, usePushNotification } from "../components/webpush";
+import { getUnreadPostEntries } from "../redux/actions/postActions";
 
 const MainContent = styled.div``;
 
@@ -99,6 +100,7 @@ const MainLayout = (props) => {
     dispatch(getMentions());
     dispatch(getUsers());
     dispatch(getConnectedSlugs());
+    dispatch(getUnreadPostEntries());
     if (Object.keys(files).length === 0) {
       dispatch(getFiles({sort: "desc"}));
     }

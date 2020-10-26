@@ -27,6 +27,7 @@ import {
   putComment as putCommentService,
   putCompanyPosts as putCompanyPostsService,
   putPost as putPostService,
+  getUnreadPostEntries as getUnreadPostEntriesService,
 } from "../services";
 
 export function postFavorite(payload, callback) {
@@ -227,4 +228,8 @@ export function getPostClapHover(payload, callback) {
 
 export function getReplyClapHover(payload, callback) {
   return dispatchActionToReducer(getReplyClapHoverService(payload), "GET_REPLY_CLAP_HOVER_START", "GET_REPLY_CLAP_HOVER_SUCCESS", "GET_REPLY_CLAP_HOVER_FAIL", callback);
+}
+
+export function getUnreadPostEntries(payload, callback) {
+  return dispatchActionToReducer(getUnreadPostEntriesService(payload), "GET_UNREAD_POST_ENTRIES_START", "GET_UNREAD_POST_ENTRIES_SUCCESS", "GET_UNREAD_POST_ENTRIES_FAIL", callback);
 }

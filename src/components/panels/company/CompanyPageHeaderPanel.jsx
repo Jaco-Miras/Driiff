@@ -85,7 +85,12 @@ const CompanyPageHeaderPanel = (props) => {
             </MainNavLink>
           </li>
           <li className="nav-item">
-            <MainNavLink to="/posts">{dictionary.pageTitlePosts}</MainNavLink>
+            <MainNavLink to="/posts">
+              {dictionary.pageTitlePosts}{" "}
+              <div className="ml-2 badge badge-pill badge badge-danger">
+                {unreadCounter.unread_posts > 0 ? unreadCounter.unread_posts : null}
+              </div>
+            </MainNavLink>
           </li>
           <li className="nav-item">
             <MainNavLink to="/files">{dictionary.pageTitleFiles}</MainNavLink>

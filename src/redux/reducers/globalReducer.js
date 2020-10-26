@@ -16,7 +16,8 @@ const INITIAL_STATE = {
     workspace_post: 0,
     workspace_chat_message: 0,
     chat_reminder_message: 0,
-    unread_channel: 0
+    unread_channel: 0,
+    unread_posts: 0
   },
   socketMounted: false,
   searchValue: "",
@@ -365,6 +366,15 @@ export default (state = INITIAL_STATE, action) => {
           ...state.todos,
           count: count,
           items: items
+        }
+      }
+    }
+    case "GET_UNREAD_POST_ENTRIES_SUCCESS": {
+      return {
+        ...state,
+        unreadCounter: {
+          ...state.companyPosts,
+          unread_posts: action.data.result
         }
       }
     }
