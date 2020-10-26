@@ -4,13 +4,14 @@ import { useHistory } from "react-router-dom";
 import { Avatar, FileAttachments, ReminderNote, SvgIconFeather } from "../../../common";
 import { MoreOptions } from "../../../panels/common";
 import { PostDetailFooter } from "../../../panels/post/index";
-import { SubComments } from "./index";
+import { SubComments, Quote } from "./index";
 import { useGoogleApis, useTimeFormat } from "../../../hooks";
 import GifPlayer from "react-gif-player";
 import { getGifLinks } from "../../../../helpers/urlContentHelper";
 import quillHelper from "../../../../helpers/quillHelper";
 import { CompanyPostDetailFooter } from "../../../panels/post/company";
 import { useSelector } from "react-redux";
+import { Transition } from "react-transition-group";
 
 const Wrapper = styled.li`
   margin-bottom: 1rem;
@@ -33,15 +34,22 @@ const Wrapper = styled.li`
   }
 
   .quote {
-    border-radius: 6px;
     margin: 0 auto 0.5rem;
     width: 95%;
     position: relative;
-    padding: 1rem;
+    padding: 0 1rem;
+    color: #868686;
+    border-left: 4px solid #972c86;
 
-    &.border-side {
-      border-left: 5px solid #822492;
-    }
+    // &:before {
+    //   border: 10px solid #0000;
+    //   border-right-color: #36393d;
+    // }
+
+    // &.border-side {
+    //   border-left: 5px solid #822492;
+    //   border-radius: 0 !important;
+    // }
 
     > * {
       margin-bottom: 0;
@@ -49,9 +57,9 @@ const Wrapper = styled.li`
   }
 
   .quote-author {
-    margin-top: 2rem;
-    font-style: italic;
+    margin-top: 1rem;
     margin-left: 2.5%;
+    margin-bottom: 0.5rem;
   }
 
   .files {
@@ -306,12 +314,7 @@ const Comment = (props) => {
     <>
       <Wrapper ref={refs.main} className={`comment card border fadeBottom ${className} animated`} userId={user.id}>
         {comment.todo_reminder !== null && <ReminderNote todoReminder={comment.todo_reminder} type="POST_COMMENT"/>}
-        {comment.quote && (
-          <>
-            {comment.quote.user && <div className="quote-author">{comment.quote.user.name}</div>}
-            <div className="quote border border-side" dangerouslySetInnerHTML={{ __html: comment.quote.body }}/>
-          </>
-        )}
+        {comment.quote && <Quote quote={comment.quote}/>}
         <CommentWrapper ref={refs.body} className="card-body" type={type}>
           <CommentHeader className="d-flex">
             <div className="d-flex justify-content-center align-items-center">
