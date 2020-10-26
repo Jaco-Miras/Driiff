@@ -43,7 +43,7 @@ const ChatBubbleContainer = styled.div`
     position: absolute;
     top: 10px;
     z-index: 1;
-    ${(props) => (props.isAuthor ? "right: -15px" : "left: -15px")};
+    ${(props) => (props.isAuthor ? "right: -18px" : "left: -15px")};
     border-left-color: ${(props) => (props.isAuthor ? props.theme.self.chat_bubble_background_color : "#0000")};
     border-right-color: ${(props) => (!props.isAuthor ? props.theme.others.chat_bubble_background_color : "#0000")};
     height: 5px;
@@ -1293,7 +1293,6 @@ const ChatBubble = (props) => {
   };
 
   //const bodyContent = quillHelper.parseEmoji(body);
-  console.log(body);
 
   return (
     <ChatBubbleContainer
