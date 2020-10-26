@@ -37,6 +37,7 @@ const GuestLayout = (props) => {
     loginSocialMedia: _t("LOGIN.SOCIAL_MEDIA_LOGIN", "Login with your social media account."),
     noAccount: _t("LOGIN.NO_ACCOUNT", "Don't have an account?"),
     registerNow: _t("LOGIN.REGISTER_NOW", "Register now!"),
+    registerNewDriff: _t("DOMAIN.REGISTER_NEW_DRIFF", "Register new Driff"),
     submit: _t("RESET_PASSWORD.SUBMIT", "Submit"),
     login: _t("RESET_PASSWORD.LOGIN", "Login!"),
     takeADifferentAction: _t("RESET_PASSWORD.TAKE_A_DIFFERENT_ACTION", "Take a different action."),
@@ -71,6 +72,7 @@ const GuestLayout = (props) => {
     authentication: _t("LOGIN.AUTHENTICATION", "Authentication"),
     email: _t("LOGIN.EMAIL", "Email"),
     invitedUsers: _t("DRIFF.INVITED_USERS", "Invited users"),
+    acceptInvite: _t("REGISTER.ACCEPT_INVITE", "Accept your invitation to"),
   };
 
   const [title, setTitle] = useState(dictionary.signIn);
@@ -94,7 +96,7 @@ const GuestLayout = (props) => {
         setTitle(dictionary.driffRegistration);
         break;
       case "/request-form":
-        setTitle(`Accept your invitation to ${driffActions.getName()}`);
+        setTitle(`${dictionary.acceptInvite} ${driffActions.getName()}`);
         break;
       case "/reset-password":
         if (driffSettings.settings.password_login) {

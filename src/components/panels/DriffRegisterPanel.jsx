@@ -5,7 +5,7 @@ import styled from "styled-components";
 import {isIPAddress} from "../../helpers/commonFunctions";
 import {SvgIcon} from "../common";
 import {InputFeedback} from "../forms";
-import {useDriffActions, useTranslation} from "../hooks";
+import {useDriffActions} from "../hooks";
 
 const Wrapper = styled.div`
   margin: 50px auto;
