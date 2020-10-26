@@ -1,11 +1,11 @@
-import React, {useCallback, useEffect, useRef, useState} from "react";
-import {useHistory, withRouter} from "react-router-dom";
-import {Form, FormGroup, Input, InputGroup, InputGroupAddon, InputGroupText} from "reactstrap";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { useHistory, withRouter } from "react-router-dom";
+import { Form, FormGroup, Input, InputGroup, InputGroupAddon, InputGroupText } from "reactstrap";
 import styled from "styled-components";
-import {isIPAddress} from "../../helpers/commonFunctions";
-import {SvgIcon} from "../common";
-import {InputFeedback} from "../forms";
-import {useDriffActions} from "../hooks";
+import { isIPAddress } from "../../helpers/commonFunctions";
+import { SvgIcon } from "../common";
+import { InputFeedback } from "../forms";
+import { useDriffActions, useTranslation } from "../hooks";
 
 const Wrapper = styled.div`
   margin: 50px auto;
