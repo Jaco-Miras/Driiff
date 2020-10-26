@@ -449,6 +449,14 @@ export default (state = INITIAL_STATE, action) => {
         }
       }
     }
+    case "INCOMING_DELETED_POST": {
+      let companyPosts = {...state.companyPosts};
+      delete companyPosts.posts[action.data.id];
+      return {
+        ...state,
+        companyPosts: companyPosts
+      };
+    }
     default:
       return state;
   }
