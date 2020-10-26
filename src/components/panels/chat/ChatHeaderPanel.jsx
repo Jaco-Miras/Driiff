@@ -51,12 +51,17 @@ const Wrapper = styled.div`
       }
     }
   }
+  .dictionary-label {
+    @media (max-width: 991.99px) {
+      display: none;    
+    }
+  }
 `;
 
 const Icon = styled(SvgIconFeather)``;
 
 const BackButton = styled.div`
-  @media (min-width: 991.99px) {
+  @media (min-width: 992px) {
     display: none;
   }
   color: #7a1b8b;
@@ -188,9 +193,10 @@ const ChatHeaderPanel = (props) => {
                                                                       data-href={channelActions.getChannelLink(chatChannel)}
                                                                       href={channelActions.getChannelLink(chatChannel)}>{chatChannel.title}</a></>;
         } else {
-          return <>{dictionary.workspace}&nbsp;>&nbsp;<a onClick={handleWorkspaceLinkClick}
-                                                         data-href={channelActions.getChannelLink(chatChannel)}
-                                                         href={channelActions.getChannelLink(chatChannel)}>{chatChannel.title}</a></>;
+          return <><span className="dictionary-label">{dictionary.workspace}&nbsp;>&nbsp;</span><a
+            onClick={handleWorkspaceLinkClick}
+            data-href={channelActions.getChannelLink(chatChannel)}
+            href={channelActions.getChannelLink(chatChannel)}>{chatChannel.title}</a></>;
         }
       }
       default: {
@@ -209,12 +215,17 @@ const ChatHeaderPanel = (props) => {
 
   if (channel === null) return null;
 
+  const totalChatMessageCounter = unreadCounter.chat_message + unreadCounter.workspace_chat_message;
+
   return (
     <Wrapper className={`chat-header border-bottom ${className}`}>
       <div className="chat-header-left">
         <BackButton className="chat-back-button" onClick={goBackChannelSelect}>
           <BackButtonChevron icon={"chevron-left"}/>
-          <span>{(unreadCounter.chat_message + unreadCounter.workspace_chat_message).toString()}</span>
+          {
+            totalChatMessageCounter > 0 &&
+            <span>{(totalChatMessageCounter).toString()}</span>
+          }
         </BackButton>
         <ChannelIcon className="chat-header-icon" channel={channel}/>
       </div>

@@ -151,7 +151,7 @@ const ChatBubbleContainer = styled.div`
 const QuoteContainer = styled.div`
   background: ${(props) => (props.isAuthor ? props.theme.self.chat_bubble_quote_background_color : props.theme.others.chat_bubble_quote_background_color)};
   border-radius: 8px 8px 0 0;
-  margin: -7px -15px 10px -15px;
+  margin: -7px -9px 10px -9px;
   text-align: left;
   padding: 10px 10px 10px 20px;
   position: relative;
@@ -177,7 +177,7 @@ const QuoteContainer = styled.div`
     border: 10px solid transparent;
     ${(props) => (props.isAuthor ? "border-left-color: " + props.theme.self.chat_bubble_quote_background_color : "border-right-color: " + props.theme.others.chat_bubble_quote_background_color)};
     position: absolute;
-    top: ${(props) => (props.showAvatar && !props.isAuthor ? "10px" : "8px")};
+    top: ${(props) => (props.showAvatar && !props.isAuthor ? "11px" : "11px")};
     z-index: 12;
     ${(props) => (!props.isAuthor ? "left: -15px" : "right: -15px")};
     height: 5px;
@@ -1293,6 +1293,7 @@ const ChatBubble = (props) => {
   };
 
   //const bodyContent = quillHelper.parseEmoji(body);
+  console.log(body);
 
   return (
     <ChatBubbleContainer
@@ -1352,6 +1353,7 @@ const ChatBubble = (props) => {
                 </>
               )}
               {
+                body !== "<span></span>" &&
                 <span ref={isLastChat ? lastChatRef : null}>
                   <ReplyContent
                     ref={handleContentRef}

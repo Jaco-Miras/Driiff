@@ -76,12 +76,17 @@ const Search = styled(SearchForm)`
 `;
 
 const StyledMoreOptions = styled(MoreOptions)`
-  border: 1px solid #e1e1e1;
+  border: 1px solid #fff;
   border-radius: 8px;
   height: 36px;
   width: 40px;
   align-items: center;
   justify-content: center;
+  
+  .dark  & {
+    border: 1px solid #25282c;  
+    background: #25282c;  
+  }  
   .feather-more-horizontal {
     width: 25px;
     height: 36px;

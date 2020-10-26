@@ -554,6 +554,11 @@ body.dark {
 .more-options {
   border: 1px solid #e1e1e1;
   border-radius: 8px;
+
+  .dark & {
+    border: 1px solid #25282c;
+    background: #25282c;
+  }
 }
 
 .modal-label {
