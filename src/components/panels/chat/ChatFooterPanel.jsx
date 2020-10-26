@@ -23,8 +23,12 @@ const Wrapper = styled.div`
     border-radius: 8px;
     transition: background-color 0.15s ease-in-out;
     padding: 12px;
+    margin-right: 1rem;
     &:hover {
       background-color: #e1e1e1;
+    }
+    @media (max-width: 480px) {
+      margin-right: 0;
     }
   }
 `;
@@ -89,7 +93,7 @@ const ChatInputContainer = styled.div`
 
 const Icon = styled(SvgIconFeather)`
   width: 20px;
-  position: relative;
+  position: absolute;
 `;
 
 const IconButton = styled(SvgIconFeather)``;
@@ -163,9 +167,8 @@ const ChatFooterPanel = (props) => {
   const [backgroundSend, setBackgroundSend] = useState(null);
   const [fillSend, setFillSend] = useState('#cacaca');
 
-  const {selectedChannel, editChatMessage} = useSelector((state) => state.chat)
-  
-  const user = useSelector((state) => state.session.user)
+  const selectedChannel = useSelector((state) => state.chat.selectedChannel);
+  const user = useSelector((state) => state.session.user);
 
   const handleSend = () => {
     dispatch(onClickSendButton(true))
@@ -313,13 +316,6 @@ const ChatFooterPanel = (props) => {
           {showEmojiPicker === true && <PickerContainer handleSend={handleSend} handleShowEmojiPicker={handleShowEmojiPicker} onSelectEmoji={onSelectEmoji} onSelectGif={onSelectGif} orientation={"top"} ref={ref.picker} />}
         </Dflex>
       )}
-      {
-        isMember && editChatMessage && (
-          <Dflex className="d-flex align-items-end">
-            <div className="p-5">{editChatMessage.files.map((f) => f.filename).join(", ")}</div>
-          </Dflex>
-        )
-      }
       {isMember === false && selectedChannel !== null && (
         <Dflex className="channel-viewing">
           <div className="channel-name">You are viewing #{selectedChannel.title}</div>

@@ -17,7 +17,7 @@ import SystemMessage from "./SystemMessage";
 const ChatReplyContainer = styled.div`
   background: transparent;
   background-repeat: repeat;
-  height: calc(100% - 146px);
+  height: calc(100% - 125px);
   overflow-y: auto;
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;

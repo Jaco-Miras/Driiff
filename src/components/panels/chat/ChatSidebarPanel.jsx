@@ -1,12 +1,12 @@
-import React, {useCallback, useEffect, useRef, useState} from "react";
-import {useDispatch} from "react-redux";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { useDispatch } from "react-redux";
 import styled from "styled-components";
 import SearchForm from "../../forms/SearchForm";
-import {ChatSideBarContentPanel} from "./index";
-import {useSettings, useTranslation} from "../../hooks";
-import {MoreOptions} from "../common";
-import {addToModals} from "../../../redux/actions/globalActions";
-import {SvgIconFeather} from "../../common";
+import { ChatSideBarContentPanel } from "./index";
+import { useSettings, useTranslation } from "../../hooks";
+import { MoreOptions } from "../common";
+import { addToModals } from "../../../redux/actions/globalActions";
+import { SvgIconFeather } from "../../common";
 
 const Wrapper = styled.div`
   .nav-tabs {
@@ -95,6 +95,10 @@ const StyledMoreOptions = styled(MoreOptions)`
     svg {
       width: 14px;
     }
+  }
+  
+  @media (max-width: 480px) {
+    margin: 0 0 0.75rem !important;
   }
 `;
 

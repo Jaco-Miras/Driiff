@@ -16,16 +16,13 @@ const Wrapper = styled.div`
   display: flex;
   
   .chat-header-left {
-    .chat-header-icon {
-      @media (max-width: 991.99px) {
-        display: none;
-      }
-    }
+    display: flex;
   }
+  
   .chat-header-title {
     font-size: 15px;
     font-weight: 500;
-    margin-top: 9px;
+    margin-top: 10px;
     text-align: center;
     display: inline-block;
     text-overflow: ellipsis;    
@@ -65,11 +62,11 @@ const BackButton = styled.div`
   color: #7a1b8b;
   cursor: pointer;
   transition: color 0.15s ease-in-out;
-  display: flex;
-  align-items: center;
   margin-right: 12px;
+  margin-top: 8px;
+  display: flex;
   span {
-    line-height: 0;
+    line-height: 1.7;
   }
   &:hover {
     color: #7a1b8bcc;
