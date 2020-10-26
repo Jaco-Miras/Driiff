@@ -21,7 +21,13 @@ const Wrapper = styled.div`
   
   .author-name {
     font-weight: bold;
-    display: block;      
+    display: block;
+    color: #c7c7c7;
+    font-size: 14px;      
+  }
+  .recipients {
+    color: #8b8b8b;
+    font-size: 10px;
   }
   
   .ellipsis-hover {
@@ -165,7 +171,7 @@ const CompanyPostBody = (props) => {
             <div>
               <span className="author-name">{post.author.first_name}</span>
               {
-                postRecipients.length >= 1 && <span dangerouslySetInnerHTML={{ __html: renderUserResponsibleNames() }}/>
+                postRecipients.length >= 1 && <span className="recipients" dangerouslySetInnerHTML={{ __html: renderUserResponsibleNames() }}/>
               }
             </div>
           </div>

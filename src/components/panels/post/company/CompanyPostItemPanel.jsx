@@ -77,7 +77,7 @@ const Icon = styled(SvgIconFeather)`
 `;
 
 const ArchiveBtn = styled.a`
-  padding: 5px 5px;
+  padding: 5px 10px;
 `;
 
 const CompanyPostItemPanel = (props) => {

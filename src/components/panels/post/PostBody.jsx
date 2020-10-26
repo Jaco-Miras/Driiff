@@ -165,7 +165,7 @@ const PostBody = (props) => {
             <div>
               <span className="author-name">{post.author.first_name}</span>
               {
-                postRecipients.length >= 1 && <span dangerouslySetInnerHTML={{ __html: renderUserResponsibleNames() }}/>
+                postRecipients.length >= 1 && <span className="recipients" dangerouslySetInnerHTML={{ __html: renderUserResponsibleNames() }}/>
               }
             </div>
           </div>

@@ -117,6 +117,10 @@ const PostItemPanel = (props) => {
         {/* <Icon className="mr-2" icon="star" onClick={handleStarPost}
               stroke={post.is_favourite ? "#ffc107" : "currentcolor"} fill={post.is_favourite ? "#ffc107" : "none"}/> */}
       </div>
+      <div className="mr-3 d-flex justify-content-center align-items-center">
+        <Avatar key={post.author.id} name={post.author.name}
+                                          imageLink={post.author.profile_image_link} id={post.author.id}/>
+      </div>
       <div className="flex-grow-1 min-width-0">
         <div className="d-flex align-items-center justify-content-between">
           <div
