@@ -172,12 +172,6 @@ body.dark {
     background: #25282c;
   }
 
-  .button-darkmode {
-    border: 0px !important;
-    border-radius: 8px;
-    background: #25282c;
-  }
-
   .chat-input-footer {
     background: #25282c;
     border: 0 solid #000 !important;
@@ -550,7 +544,7 @@ body.dark {
 
 .file-options {
   width: 2rem !important;
-  padding: 3px 1px;
+  padding: 0 4px;
 }
 
 .user-list-name {
@@ -14406,15 +14400,17 @@ body.modal-open .modal.show .modal-dialog {
 }
 
 .avatar.avatar-sm {
-  height: 2rem;
-  width: 2rem;
+  height: 2.3rem;
+  width: 2.3rem;
   // display: flex;
   > div {
     height: 100%;
     width: 100%;
     line-height: 1;
   }
+
   line-height: 1;
+
   img {
     line-height: 1;
     width: 100%;
@@ -14738,8 +14734,8 @@ body.form-membership .form-wrapper hr {
   height: 100%;
 }
 
-.chat-block .chat-content .chat-header {
-  padding-bottom: 14px;
+.chat-header {
+  height: 50px;
 }
 
 .chat-block .chat-content .messages {
@@ -14882,7 +14878,7 @@ body.form-membership .form-wrapper hr {
 }
 
 .chat-block .chat-content .chat-footer {
-  padding: 1.5rem 0 1.5rem 0;
+  padding: 1.5rem 0 1.5rem 3rem;
   @media (max-width: 991.99px) {
     padding: 1.5rem 0 0 0;
   }
@@ -21582,6 +21578,7 @@ body.dark.small-navigation .navigation-menu-body ul li.navigation-divider:after 
   top: 50px;
   height: calc(100% - 50px);
   overflow-y: scroll;
+  scrollbar-width: none;
 
   @media (max-width: 480px) {
     padding-top: 98px;

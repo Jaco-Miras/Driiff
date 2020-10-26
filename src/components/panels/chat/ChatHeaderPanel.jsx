@@ -14,12 +14,8 @@ const Wrapper = styled.div`
   position: relative;
   z-index: 2;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
   
   .chat-header-left {
-    display: flex;
-    align-items: center;    
     .chat-header-icon {
       @media (max-width: 991.99px) {
         display: none;
@@ -29,11 +25,9 @@ const Wrapper = styled.div`
   .chat-header-title {
     font-size: 15px;
     font-weight: 500;
-    margin: 0;    
+    margin-top: 9px;
     text-align: center;
     display: inline-block;
-    justify-content: center;
-    align-items: center;
     text-overflow: ellipsis;    
     overflow: hidden;
     white-space: nowrap;    
@@ -50,7 +44,8 @@ const Wrapper = styled.div`
       }
     }    
   }
-  .chat-header-right {    
+  .chat-header-right {
+    margin-left: auto;    
     li .more-options-tooltip > div {
       display: flex;
       align-items: center;
@@ -92,7 +87,6 @@ const BackButtonChevron = styled(SvgIconFeather)`
 `;
 
 const StyledMoreOptions = styled(MoreOptions)`
-  margin-top: 5px;
   border: 1px solid #e1e1e1;
   border-radius: 8px;
   height: 36px;
@@ -235,7 +229,7 @@ const ChatHeaderPanel = (props) => {
       <div className="chat-header-right">
         <ul className="nav align-items-center justify-content-end">
           {["DIRECT", "PERSONAL_BOT"].includes(channel.type) === false && (
-            <li>
+            <li className="mt-1">
               <MemberLists members={channel.members}/>
             </li>
           )}

@@ -17,11 +17,12 @@ import SystemMessage from "./SystemMessage";
 const ChatReplyContainer = styled.div`
   background: transparent;
   background-repeat: repeat;
-  height: calc(100% - 181px);
+  height: calc(100% - 146px);
   overflow-y: auto;
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
   z-index: 1;
+  scrollbar-width: none;
   > ul {
     list-style: none;
     margin: 0;
@@ -524,19 +525,22 @@ class ChatMessages extends React.PureComponent {
               //own user message scroll to bottom after sending
               scrollComponent.scrollTop = scrollComponent.scrollHeight;
             }
-          } else if (this.props.isLastChatVisible && this.props.isBrowserActive) {
-            if (selectedChannel.is_read) this.props.chatMessageActions.channelActions.markAsRead(selectedChannel);
-            if (scrollComponent) {
-              //other user message scroll to bottom after receiving
-              scrollComponent.scrollTop = scrollComponent.scrollHeight;
+          } else if (this.props.isLastChatVisible) {
+            if (this.props.isBrowserActive) {
+              if (selectedChannel.is_read) {
+                this.props.chatMessageActions.channelActions.markAsRead(selectedChannel);
+              }
+              if (scrollComponent) {
+                //other user message scroll to bottom after receiving
+                scrollComponent.scrollTop = scrollComponent.scrollHeight;
+              }
             }
-            
           }
         }
       }
     }
 
-    if (this.props.unreadCount > 0 && this.props.isLastChatVisible && this.props.isBrowserActive) {
+    if (this.props.unreadCount > 0 && this.props.isLastChatVisible) {
       //need clarification if need to trigger if channel is unread
       this.handleReadChannel();
     }
@@ -795,7 +799,6 @@ class ChatMessages extends React.PureComponent {
                                       chatSettings={this.props.settings}
                                       isLastChatVisible={this.props.isLastChatVisible}
                                       dictionary={this.props.dictionary}
-                                      isBrowserActive={this.props.isBrowserActive}
                                     >
                                       <ChatActionsContainer isAuthor={isAuthor} className="chat-actions-container">
                                         {<ChatReactionButton isAuthor={isAuthor} scrollRef={this.infiniteScroll.current} reply={reply} />}
@@ -829,7 +832,6 @@ class ChatMessages extends React.PureComponent {
                                         isLastChat={selectedChannel.replies[selectedChannel.replies.length - 1].id === reply.id}
                                         isLastChatVisible={this.props.isLastChatVisible}
                                         dictionary={this.props.dictionary}
-                                        isBrowserActive={this.props.isBrowserActive}
                                       />
                                       {reply.unfurls.length ? (
                                         <ChatUnfurl
