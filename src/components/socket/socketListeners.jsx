@@ -409,24 +409,11 @@ class SocketListeners extends Component {
           case "POST_UPDATE": {
             this.props.incomingUpdatedPost(e);
             if (e.channel_messages && e.post_participant_data) {
-              if (!e.post_participant_data.all_participant_ids.some((p) => p === this.props.user.id)) {
+              if (!e.post_participant_data.from_company && !e.post_participant_data.all_participant_ids.some((p) => p === this.props.user.id)) {
                 //user is not participant of post
-                this.props.deletePostNotification(e.channel_messages)
-              } else {
-                e.channel_messages && e.channel_messages.forEach(m => {
-                  m.system_message.files = [];
-                  m.system_message.editable = false;
-                  m.system_message.unfurls = [];
-                  m.system_message.reactions = [];
-                  m.system_message.is_deleted = false;
-                  m.system_message.todo_reminder = null;
-                  m.system_message.is_read = true;
-                  m.system_message.is_completed = false;
-                  m.system_message.user = null;
-                  this.props.incomingPostNotificationMessage(m.system_message);
-                });
-              }
-              if (!e.post_participant_data.from_company) {
+                this.props.deletePostNotification(e.channel_messages);
+                this.props.incomingDeletedPost(e);
+              } else if (!e.post_participant_data.from_company && e.post_participant_data.all_participant_ids.some((p) => p === this.props.user.id)) {
                 // from private to public post
                 e.clap_user_ids = [];
                 this.props.incomingPost(e);
@@ -442,6 +429,20 @@ class SocketListeners extends Component {
                   m.system_message.user = null;
                   this.props.incomingPostNotificationMessage(m.system_message);
                 });
+              } else if (e.post_participant_data.from_company) {
+                let companyChannel = Object.values(this.props.channels).filter((c) => c.type === "COMPANY");
+                if (companyChannel.length) {
+                  let companyId = companyChannel[0].id;
+                  let postNotifMessages = [...e.channel.messages]
+                  postNotifMessages = postNotifMessages.filter((m) => {
+                    if (m.channel.id !== companyId) {
+                      return true;
+                    } else {
+                      return false;
+                    }
+                  })
+                  this.props.deletePostNotification(postNotifMessages);
+                }
               }
             }
             break;

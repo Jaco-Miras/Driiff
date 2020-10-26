@@ -439,6 +439,23 @@ export default (state = INITIAL_STATE, action) => {
         companyPosts: companyPosts
       };
     }
+    case "GET_UNREAD_POST_ENTRIES_SUCCESS": {
+      return {
+        ...state,
+        companyPosts: {
+          ...state.companyPosts,
+          unreadPosts: action.data.result
+        }
+      }
+    }
+    case "INCOMING_DELETED_POST": {
+      let companyPosts = {...state.companyPosts};
+      delete companyPosts.posts[action.data.id];
+      return {
+        ...state,
+        companyPosts: companyPosts
+      };
+    }
     default:
       return state;
   }
