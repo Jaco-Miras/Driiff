@@ -73,7 +73,7 @@ const Icon = styled(SvgIconFeather)`
 `;
 
 const ArchiveBtn = styled.a`
-  padding: 5px 10px;
+  padding: 5px;
 `;
 
 const PostItemPanel = (props) => {
