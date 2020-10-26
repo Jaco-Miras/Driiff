@@ -142,6 +142,11 @@ body.dark {
   // #191c20 // mid / tobar chat
   // #ffffff14 // borders of #fff3
 
+  .typing-indicator {
+    background-color: $dm-bg;
+    color: $dm-text-color;
+  }
+
   .close-button {
     color: $dm-text-color;
     background-color: #25282c;
