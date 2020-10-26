@@ -1,13 +1,13 @@
-import React, { useEffect, useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React, {useEffect, useRef, useState} from "react";
+import {useDispatch} from "react-redux";
 import styled from "styled-components";
-import { addToModals } from "../../../../redux/actions/globalActions";
-import { setParentIdForUpload } from "../../../../redux/actions/postActions";
-import { Avatar, FileAttachments, ReminderNote, SvgIconFeather } from "../../../common";
-import { DropDocument } from "../../../dropzone/DropDocument";
-import { useCommentActions, useComments } from "../../../hooks";
-import { CompanyPostBody, CompanyPostComments, CompanyPostDetailFooter } from "./index";
-import { MoreOptions } from "../../common";
+import {addToModals} from "../../../../redux/actions/globalActions";
+import {setParentIdForUpload} from "../../../../redux/actions/postActions";
+import {FileAttachments, ReminderNote, SvgIconFeather, ToolTip} from "../../../common";
+import {DropDocument} from "../../../dropzone/DropDocument";
+import {useCommentActions, useComments} from "../../../hooks";
+import {CompanyPostBody, CompanyPostComments, CompanyPostDetailFooter} from "./index";
+import {MoreOptions} from "../../common";
 
 const MainHeader = styled.div`
   min-height: 70px;
