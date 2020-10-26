@@ -10,7 +10,7 @@ import {
   postChannelMembers,
   postChatMessage,
   putChatMessage,
-  setEditChatMessage
+  setEditChatMessage,
 } from "../../redux/actions/chatActions";
 import { deleteDraft } from "../../redux/actions/globalActions";
 import { SvgIconFeather } from "../common";
@@ -446,7 +446,14 @@ const ChatInput = (props) => {
             })[0];
 
           if (typeof lastReply !== "undefined") {
-            handleSetEditMessageStates(lastReply);
+            dispatch(setEditChatMessage(lastReply));
+            if (lastReply.quote && lastReply.quote.hasOwnProperty("id")) {
+              let quote = {
+                ...lastReply.quote,
+                channel_id: lastReply.channel_id,
+              };
+              dispatch(addQuote(quote));
+            }
           }
         }
       }
