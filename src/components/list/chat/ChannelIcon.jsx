@@ -11,8 +11,8 @@ const Wrapper = styled.div`
     display: inline-flex;
     padding: 5px; 
     border-radius: 100%;
-    width: 2.3rem;
-    height: 2.3rem;
+    width: 2rem;
+    height: 2rem;
     text-align: center;
     align-items: center;
     justify-content: center;
@@ -37,11 +37,10 @@ const StyledAvatar = styled(Avatar)``;
 
 const Icon = styled(SvgIconFeather)`
   color: #ffffff !important;
-  height: 2.3rem;
-  width: 2.3rem;
+  height: 2rem;
+  width: 2rem;
   &.feather-home {
     background: #7a1b8b;
-    padding: 6px 0;    
   }
   .chat-header-icon-left & {
     height: 28px;
