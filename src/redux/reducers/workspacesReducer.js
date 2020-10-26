@@ -587,7 +587,8 @@ export default (state = INITIAL_STATE, action) => {
         action.data.messages.forEach((c) => {
           comments[c.id] = {
             ...c,
-            replies: convertArrayToObject(c.replies, "id"),
+            clap_user_ids: [],
+            replies: convertArrayToObject(c.replies.map((r) => { return {...r, clap_user_ids:[]} }), "id"),
             skip: c.replies.length,
             hasMore: c.replies.length === 10,
             limit: 10,
@@ -601,6 +602,40 @@ export default (state = INITIAL_STATE, action) => {
             skip: action.data.next_skip,
             hasMore: action.data.messages.length === 20,
             comments: comments,
+          },
+        },
+      };
+    }
+    case "GET_REPLY_CLAP_HOVER_SUCCESS": {
+      return {
+        ...state,
+        postComments: {
+          ...state.postComments,
+          [action.data.post_id]: {
+            ...state.postComments[action.data.post_id],
+            ...(action.data.parent_id ? {
+              comments: {
+                ...state.postComments[action.data.post_id].comments,
+                [action.data.parent_id]: {
+                  ...state.postComments[action.data.post_id].comments[action.data.parent_id],
+                  replies: {
+                    ...state.postComments[action.data.post_id].comments[action.data.parent_id].replies,
+                    [action.data.message_id]: {
+                      ...state.postComments[action.data.post_id].comments[action.data.parent_id].replies[action.data.message_id],
+                      clap_user_ids: action.data.claps.map(c => c.user_id)
+                    },
+                  },
+                },
+              },
+            } : {
+              comments: {
+                ...state.postComments[action.data.post_id].comments,
+                [action.data.message_id]: {
+                  ...state.postComments[action.data.post_id].comments[action.data.message_id],
+                  clap_user_ids: action.data.claps.map(c => c.user_id)
+                },
+              },
+            })
           },
         },
       };
@@ -893,9 +928,17 @@ export default (state = INITIAL_STATE, action) => {
           }
         } else {
           if (action.data.parent_id) {
-            newPostComments[action.data.post_id].comments[action.data.parent_id].replies[action.data.id] = action.data;
+            if (newPostComments[action.data.post_id].comments[action.data.parent_id].replies.hasOwnProperty(action.data.id)) {
+              newPostComments[action.data.post_id].comments[action.data.parent_id].replies[action.data.id] = { ...action.data, clap_user_ids: newPostComments[action.data.post_id].comments[action.data.parent_id].replies[action.data.id].clap_user_ids};
+            } else {
+              newPostComments[action.data.post_id].comments[action.data.parent_id].replies[action.data.id] = action.data;
+            }
           } else {
-            newPostComments[action.data.post_id].comments[action.data.id] = action.data;
+            if (newPostComments[action.data.post_id].comments.hasOwnProperty(action.data.id)) {
+              newPostComments[action.data.post_id].comments[action.data.id] = { ...action.data, clap_user_ids: newPostComments[action.data.post_id].comments[action.data.id].clap_user_ids };
+            } else {
+              newPostComments[action.data.post_id].comments[action.data.id] = action.data;
+            }
           }
         }
       }
@@ -963,7 +1006,8 @@ export default (state = INITIAL_STATE, action) => {
             ...(channelIds.reduce((ws, channelId) => {
               ws = {
                 ...ws,
-                [channelId]: (typeof state.workspacePosts[channelId].posts[action.data.post_id] === "undefined" ? state.workspacePosts[channelId] : {
+                [channelId]: (typeof state.workspacePosts[channelId].posts === "undefined" ||
+                typeof state.workspacePosts[channelId].posts[action.data.post_id] === "undefined" ? state.workspacePosts[channelId] : {
                   ...state.workspacePosts[channelId],
                   posts: {
                     ...state.workspacePosts[channelId].posts,
@@ -989,26 +1033,52 @@ export default (state = INITIAL_STATE, action) => {
       }
     }
     case "INCOMING_COMMENT_CLAP": {
-      let newPostComments = { ...state.postComments };
-      if (newPostComments.hasOwnProperty(action.data.post_id)) {
-        if (action.data.parent_message_id) {
-          newPostComments[action.data.post_id].comments[action.data.parent_message_id].replies[action.data.message_id].clap_count =
-            action.data.clap_count === 0
-              ? newPostComments[action.data.post_id].comments[action.data.parent_message_id].replies[action.data.message_id].clap_count - 1
-              : newPostComments[action.data.post_id].comments[action.data.parent_message_id].replies[action.data.message_id].clap_count + 1;
-          newPostComments[action.data.post_id].comments[action.data.parent_message_id].replies[action.data.message_id].user_clap_count = action.data.clap_count;
-        } else {
-          newPostComments[action.data.post_id].comments[action.data.message_id].clap_count =
-            action.data.clap_count === 0 ? newPostComments[action.data.post_id].comments[action.data.message_id].clap_count - 1 : newPostComments[action.data.post_id].comments[action.data.message_id].clap_count + 1;
-          newPostComments[action.data.post_id].comments[action.data.message_id].user_clap_count = action.data.clap_count;
-        }
-        return {
-          ...state,
-          postComments: newPostComments,
-        };
-      } else {
-        return state;
-      }
+      return {
+        ...state,
+        ...(typeof state.postComments[action.data.post_id] !== "undefined" &&
+          (action.data.parent_message_id ?
+            (typeof state.postComments[action.data.post_id].comments[action.data.parent_message_id] !== "undefined" &&
+              typeof state.postComments[action.data.post_id].comments[action.data.parent_message_id].replies[action.data.message_id] !== "undefined")
+            : typeof state.postComments[action.data.post_id].comments[action.data.message_id] !== "undefined") && {
+            postComments: {
+              ...state.postComments,
+              [action.data.post_id]: {
+                ...state.postComments[action.data.post_id],
+                ...(action.data.parent_message_id ? {
+                  comments: {
+                    ...state.postComments[action.data.post_id].comments,
+                    [action.data.parent_message_id]: {
+                      ...state.postComments[action.data.post_id].comments[action.data.parent_message_id],
+                      replies: {
+                        ...state.postComments[action.data.post_id].comments[action.data.parent_message_id].replies,
+                        [action.data.message_id]: {
+                          ...state.postComments[action.data.post_id].comments[action.data.parent_message_id].replies[action.data.message_id],
+                          user_clap_count: action.data.clap_count,
+                          clap_count: state.postComments[action.data.post_id].comments[action.data.parent_message_id].replies[action.data.message_id].clap_count + (action.data.clap_count === 1 ? 1 : -1),
+                          clap_user_ids: (action.data.clap_count === 1 ? [
+                            ...state.postComments[action.data.post_id].comments[action.data.parent_message_id].replies[action.data.message_id].clap_user_ids, action.data.author.id
+                          ] : state.postComments[action.data.post_id].comments[action.data.parent_message_id].replies[action.data.message_id].clap_user_ids.filter(id => id !== action.data.author.id))
+                        }
+                      },
+                    }
+                  }
+                } : {
+                  comments: {
+                    ...state.postComments[action.data.post_id].comments,
+                    [action.data.message_id]: {
+                      ...state.postComments[action.data.post_id].comments[action.data.message_id],
+                      user_clap_count: action.data.clap_count,
+                      clap_count: state.postComments[action.data.post_id].comments[action.data.message_id].clap_count + (action.data.clap_count === 1 ? 1 : -1),
+                      clap_user_ids: (action.data.clap_count === 1 ? [
+                        ...state.postComments[action.data.post_id].comments[action.data.message_id].clap_user_ids, action.data.author.id
+                      ] : state.postComments[action.data.post_id].comments[action.data.message_id].clap_user_ids.filter(id => id !== action.data.author.id))
+                    }
+                  }
+                })
+              }
+            },
+          })
+      };
     }
     case "FETCH_TIMELINE_SUCCESS": {
       let newWorkspaceTimeline = { ...state.workspaceTimeline };

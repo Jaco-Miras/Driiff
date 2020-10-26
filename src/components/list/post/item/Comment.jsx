@@ -1,15 +1,16 @@
-import React, {useCallback, useEffect, useRef, useState} from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
-import {useHistory} from "react-router-dom";
-import {Avatar, FileAttachments, ReminderNote, SvgIconFeather} from "../../../common";
-import {MoreOptions} from "../../../panels/common";
-import {PostDetailFooter} from "../../../panels/post/index";
-import {SubComments} from "./index";
-import {useGoogleApis, useTimeFormat} from "../../../hooks";
+import { useHistory } from "react-router-dom";
+import { Avatar, FileAttachments, ReminderNote, SvgIconFeather } from "../../../common";
+import { MoreOptions } from "../../../panels/common";
+import { PostDetailFooter } from "../../../panels/post/index";
+import { SubComments } from "./index";
+import { useGoogleApis, useTimeFormat } from "../../../hooks";
 import GifPlayer from "react-gif-player";
-import {getGifLinks} from "../../../../helpers/urlContentHelper";
+import { getGifLinks } from "../../../../helpers/urlContentHelper";
 import quillHelper from "../../../../helpers/quillHelper";
-import {CompanyPostDetailFooter} from "../../../panels/post/company";
+import { CompanyPostDetailFooter } from "../../../panels/post/company";
+import { useSelector } from "react-redux";
 
 const Wrapper = styled.li`
   margin-bottom: 1rem;
@@ -68,6 +69,63 @@ const Wrapper = styled.li`
       }
     }
   }
+  
+  
+ .clap-count-wrapper {
+  position: relative;
+  
+  &:hover {
+    .read-users-container {
+      opacity: 1;
+      max-height: 300px;    
+    }
+  }
+  
+  .read-users-container {
+    position: absolute;
+    left: 22px;
+    z-index: 1;
+    bottom: 0;
+    border-radius: 8px;
+    opacity: 0;
+    max-height: 0;
+    transition: all 0.5s ease;
+    overflow-y: auto;
+    background: #fff;
+    border: 1px solid #fff;
+    box-shadow: 0 5px 10px -1px rgba(0,0,0,0.15);
+  
+    &:hover {
+      max-height: 300px;
+      opacity: 1;    
+    }
+    
+    .dark & {
+      border: 1px solid #25282c;
+      background: #25282c;
+    }
+  
+    > span {
+      padding: 0.25rem 0.5rem 0.25rem 0.25rem;
+      display: flex;
+      justify-content: flex-start;
+      align-items: start;
+      
+      .avatar {
+        min-width: 1.5rem;
+        max-width: 1.5rem;
+        width: 1.5rem;
+        height: 1.5rem;
+      }
+      .name {
+        display: block;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+      }
+    }
+  }
+ }
 `;
 
 const InputWrapper = styled.li`
@@ -123,6 +181,8 @@ const Comment = (props) => {
   const history = useHistory();
   const googleApis = useGoogleApis();
 
+  const recipients = useSelector((state) => state.global.recipients.filter((r) => r.type === "USER"));
+
   const [showInput, setShowInput] = useState(null);
   const [userMention, setUserMention] = useState(null);
   const [showGifPlayer, setShowGifPlayer] = useState(null);
@@ -131,9 +191,11 @@ const Comment = (props) => {
     clap_count: comment.clap_count,
   });
 
+  const [usersReacted, setUsersReacted] = useState(recipients.filter(r => comment.clap_user_ids.includes(r.type_id)));
+
   const handleShowInput = useCallback(
     (commentId = null) => {
-      console.log(commentId)
+      console.log(commentId);
       if (parentShowInput) {
         parentShowInput(commentId);
       } else {
@@ -183,6 +245,10 @@ const Comment = (props) => {
       clap_count: !!prevState.user_clap_count ? prevState.clap_count - 1 : prevState.clap_count + 1,
     }));
 
+    setUsersReacted(prevState => prevState.some(r => r.type_id === user.id) ?
+      prevState.filter(r => r.type_id !== user.id) :
+      prevState.concat(recipients.find(r => r.type_id === user.id)));
+
     let payload = {
       id: comment.id,
       reaction: "clap",
@@ -222,19 +288,28 @@ const Comment = (props) => {
     if (comment.body.match(/\.(gif)/g) !== null) {
       setShowGifPlayer(true);
     }
+    commentActions.fetchPostReplyHover(comment.id, (err, res) => {
+      const clap_user_ids = res.data.claps.map(c => c.user_id);
+      setUsersReacted(recipients.filter(r => clap_user_ids.includes(r.type_id)));
+    });
+
     return () => {
       history.push(history.location.pathname, null);
     };
   }, []);
 
+  useEffect(() => {
+    setUsersReacted(recipients.filter(r => comment.clap_user_ids.includes(r.type_id)));
+  }, [comment.clap_user_ids]);
+
   return (
     <>
       <Wrapper ref={refs.main} className={`comment card border fadeBottom ${className} animated`} userId={user.id}>
-        {comment.todo_reminder !== null && <ReminderNote todoReminder={comment.todo_reminder} type="POST_COMMENT" />}
+        {comment.todo_reminder !== null && <ReminderNote todoReminder={comment.todo_reminder} type="POST_COMMENT"/>}
         {comment.quote && (
           <>
             {comment.quote.user && <div className="quote-author">{comment.quote.user.name}</div>}
-            <div className="quote border border-side" dangerouslySetInnerHTML={{ __html: comment.quote.body }} />
+            <div className="quote border border-side" dangerouslySetInnerHTML={{ __html: comment.quote.body }}/>
           </>
         )}
         <CommentWrapper ref={refs.body} className="card-body" type={type}>
@@ -270,8 +345,24 @@ const Comment = (props) => {
             </>
           )}
           <div className="d-flex align-items-center justify-content-start">
-            <Icon className={react.user_clap_count ? "mr-2 comment-reaction clap-true" : "mr-2 comment-reaction clap-false"} icon="heart" onClick={handleReaction} />
-            {react.clap_count > 0 ? react.clap_count : null}
+            <div className="clap-count-wrapper">
+              <Icon
+                className={react.user_clap_count ? "mr-2 comment-reaction clap-true" : "mr-2 comment-reaction clap-false"}
+                icon="heart" onClick={handleReaction}/>
+              {usersReacted.length}
+              {
+                usersReacted.length !== 0 && <span className="hover read-users-container">
+              {
+                usersReacted.map(u => {
+                  return <span key={u.id}>
+                    <Avatar className="mr-2" key={u.id} name={u.name} imageLink={u.profile_image_link}
+                            id={u.id}/> <span className="name">{u.name}</span>
+                  </span>;
+                })
+              }
+            </span>
+              }
+            </div>
             {!post.is_read_only && !disableOptions && (
               <Reply className="ml-3" onClick={handleShowInput}>
                 {dictionary.comment}

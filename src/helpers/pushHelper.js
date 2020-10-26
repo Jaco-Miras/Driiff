@@ -7,7 +7,7 @@ export const pushBrowserNotification = (title, body, icon = null, redirect, time
   }
   Push.create(title, {
     body: body,
-    icon: icon !== null ? icon : "./assets/icons/favicon.ico?v=1",
+    icon: icon !== null ? icon : "./assets/icons/favicon.png",
     timeout: timeout,
     tag: title,
     onClick: function () {

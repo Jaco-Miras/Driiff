@@ -13,7 +13,6 @@ import {
   fetchTagCounter,
   getCompanyPosts,
   getPostClapHover,
-  getReplyClapHover,
   incomingPostMarkDone,
   incomingReadUnreadReducer,
   mustReadReducer,
@@ -33,6 +32,7 @@ import {
   removePost,
   starPostReducer,
   updateCompanyPostFilterSort,
+  getUnreadPostEntries,
 } from "../../redux/actions/postActions";
 import { useToaster, useTodoActions } from "./index";
 import { useTranslation } from "../hooks";
@@ -650,19 +650,16 @@ const usePostActions = () => {
     [dispatch, params]
   );
 
+  const getUnreadPostsCount = useCallback(() => {
+    dispatch(
+      getUnreadPostEntries()
+    );
+  }, [])
+
   const fetchPostClapHover = (postId, callback = () => {
   }) => {
     dispatch(
       getPostClapHover({
-        post_id: postId
-      }, callback)
-    );
-  };
-
-  const fetchPostReplyHover = (postId, callback = () => {
-  }) => {
-    dispatch(
-      getReplyClapHover({
         post_id: postId
       }, callback)
     );
@@ -691,7 +688,7 @@ const usePostActions = () => {
     markReadRequirement,
     remind,
     fetchPostClapHover,
-    fetchPostReplyHover,
+    getUnreadPostsCount,
   };
 };
 

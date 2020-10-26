@@ -472,7 +472,7 @@ class SocketListeners extends Component {
 
         switch (e.SOCKET_TYPE) {
           case "POST_COMMENT_CREATE": {
-            this.props.incomingComment(e);
+            this.props.incomingComment({...e, clap_user_ids: []});
             if (e.workspaces && e.workspaces.length >= 1) {
               if (e.author.id !== this.props.user.id) {
                 this.props.setGeneralChat({
@@ -520,7 +520,7 @@ class SocketListeners extends Component {
             break;
           }
           case "POST_COMMENT_UPDATE": {
-            this.props.incomingComment(e);
+            this.props.incomingComment({...e, clap_user_ids: []});
             break;
           }
           case "POST_COMMENT_CLAP_TOGGLE": {
@@ -1262,7 +1262,7 @@ class SocketListeners extends Component {
       .reduce((total, k) => {
         if (["chat_message", "unread_channel", "workspace_chat_message"].includes(k)) total += this.props.unreadCounter[k];
         return total;
-      }, 0) !== 0);
+      }, 0) !== 0 || this.props.todos.count.overdue !== 0);
   }
 
   render() {
@@ -1275,7 +1275,7 @@ function mapStateToProps({
                            settings: { userSettings },
                            chat: { channels, selectedChannel, isLastChatVisible, lastReceivedMessage },
                            workspaces: { workspaces, workspacePosts, folders, activeTopic, workspacesLoaded },
-                           global: { isBrowserActive, unreadCounter },
+                           global: { isBrowserActive, unreadCounter, todos },
                            users: { mentions, users }
                          }) {
   return {
@@ -1293,7 +1293,8 @@ function mapStateToProps({
     workspaces,
     isLastChatVisible,
     lastReceivedMessage,
-    unreadCounter
+    unreadCounter,
+    todos
   };
 }
 

@@ -15,7 +15,8 @@ const INITIAL_STATE = {
     tag: null,
     count: {},
     search: null,
-    searchResults: []
+    searchResults: [],
+    unreadPosts: 0
   },
   posts: {},
   drafts: [],
