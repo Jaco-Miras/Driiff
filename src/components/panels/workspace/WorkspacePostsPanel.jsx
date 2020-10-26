@@ -126,6 +126,9 @@ const WorkspacePostsPanel = (props) => {
         user_count: readByUsers.length,
       }),
     me: _t("POST.LOGGED_USER_RESPONSIBLE", "me"),
+    quotedCommentFrom: _t("POST.QUOTED_COMMENT_FROM", "Quoted comment from"),
+    showMore: _t("SHOW_MORE", "Show more"),
+    showLess: _t("SHOW_LESS", "Show less")
   };
   let disableOptions = false;
   if (workspace && workspace.active === 0) disableOptions = true;

@@ -314,7 +314,7 @@ const Comment = (props) => {
     <>
       <Wrapper ref={refs.main} className={`comment card border fadeBottom ${className} animated`} userId={user.id}>
         {comment.todo_reminder !== null && <ReminderNote todoReminder={comment.todo_reminder} type="POST_COMMENT"/>}
-        {comment.quote && <Quote quote={comment.quote}/>}
+        {comment.quote && <Quote quote={comment.quote} dictionary={dictionary}/>}
         <CommentWrapper ref={refs.body} className="card-body" type={type}>
           <CommentHeader className="d-flex">
             <div className="d-flex justify-content-center align-items-center">
