@@ -699,7 +699,9 @@ const ChatBubble = (props) => {
       }
 
       if (data.added_members.length >= 1) {
-        const am = recipients.filter((r) => data.added_members.includes(r.type_id) && r.type_id !== user.id).map((r) => r.name);
+        const am = recipients.filter((r) => {
+          return r.type === "USER" && data.added_members.includes(r.type_id) && r.type_id !== user.id
+        }).map((r) => r.name);
 
         if (data.added_members.includes(user.id) && data.author.id === user.id) {
           if (newBody === "") {
@@ -767,7 +769,9 @@ const ChatBubble = (props) => {
       }
 
       if (data.removed_members.length >= 1) {
-        const rm = recipients.filter((r) => data.removed_members.includes(r.type_id) && r.type_id !== user.id).map((r) => r.name);
+        const rm = recipients.filter((r) => {
+          return r.type === "USER" && data.removed_members.includes(r.type_id) && r.type_id !== user.id
+        }).map((r) => r.name);
 
         if (data.removed_members.includes(user.id) && data.author.id === user.id) {
           if (newBody === "") {
@@ -1130,7 +1134,9 @@ const ChatBubble = (props) => {
       }
 
       if (data.added_members.length >= 1) {
-        const am = recipients.filter((r) => data.added_members.includes(r.type_id) && r.type_id !== user.id).map((r) => r.name);
+        const am = recipients.filter((r) => {
+          return r.type === "USER" && data.added_members.includes(r.type_id) && r.type_id !== user.id
+        }).map((r) => r.name);
 
         if (data.added_members.includes(user.id) && data.author.id === user.id) {
           if (newBody === "") {
@@ -1198,7 +1204,9 @@ const ChatBubble = (props) => {
       }
 
       if (data.removed_members.length >= 1) {
-        const rm = recipients.filter((r) => data.removed_members.includes(r.type_id) && r.type_id !== user.id).map((r) => r.name);
+        const rm = recipients.filter((r) => {
+          return r.type === "USER" && data.removed_members.includes(r.type_id) && r.type_id !== user.id
+        }).map((r) => r.name);
 
         if (data.removed_members.includes(user.id) && data.author.id === user.id) {
           if (newBody === "") {
