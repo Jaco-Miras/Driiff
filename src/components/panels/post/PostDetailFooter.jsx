@@ -47,7 +47,6 @@ const ChatInputContainer = styled.div`
     margin: 4px;
     height: calc(100% - 8px);
     max-height: 38px;
-    background: #7a1b8b;
     border-radius: 4px;
     min-width: 40px;
     width: 40px;
@@ -69,8 +68,12 @@ const ChatInputContainer = styled.div`
       color: #7a1b8b;
     }
   }
-  .feather-send:hover {
-    background-color: #7a1b8bcc;
+  .feather-send {
+  background: ${props => props.backgroundSend};
+  fill: ${props => props.fillSend};
+  &:hover {
+    cursor: ${props => props.cursor};
+   }
   }
 `;
 
@@ -194,6 +197,10 @@ const PostDetailFooter = (props) => {
   const [selectedEmoji, setSelectedEmoji] = useState(null);
   const [selectedGif, setSelectedGif] = useState(null);
   const [sent, setSent] = useState(false);
+  const [active, setActive] = useState(false);
+  const [cursor, setCursor] = useState('default');
+  const [backgroundSend, setBackgroundSend] = useState(null);
+  const [fillSend, setFillSend] = useState('#cacaca');
 
   //const topic = useSelector((state) => state.workspaces.activeTopic);
   const user = useSelector((state) => state.session.user);
@@ -296,6 +303,19 @@ const PostDetailFooter = (props) => {
       tooltip.parentElement.classList.toggle("tooltip-active");
     });
   };
+
+  const onClosePicker = () => {
+    setShowEmojiPicker(false);
+  };
+
+  const onActive = (active) => {
+    setActive(active);
+    let sendButtonValues;
+    active ? sendButtonValues = ['#7a1b8b', 'pointer', '#fff']  : sendButtonValues = ["", 'default', '#cacaca'];
+    setBackgroundSend(sendButtonValues[0]);
+    setCursor(sendButtonValues[1]);
+    setFillSend(sendButtonValues[2]);
+  }
   //const isMember = useIsMember(topic && topic.members.length ? topic.members.map((m) => m.id) : []);
 
   return (
@@ -322,7 +342,7 @@ const PostDetailFooter = (props) => {
               </NoReply>
             ) : (
               <React.Fragment>
-                <ChatInputContainer ref={innerRef} className="flex-grow-1 chat-input-footer">
+                <ChatInputContainer ref={innerRef} className="flex-grow-1 chat-input-footer" backgroundSend={backgroundSend} cursor={cursor} fillSend={fillSend}>
                   <PostInput
                     handleClearSent={handleClearSent}
                     sent={sent}
@@ -338,6 +358,8 @@ const PostDetailFooter = (props) => {
                     onClearEmoji={onClearEmoji}
                     dropAction={dropAction}
                     members={workspace ? workspace.members : []}
+                    onActive={onActive}
+                    onClosePicker={onClosePicker}
                   />
                   <IconButton className={`${showEmojiPicker ? "active" : ""}`} onClick={handleShowEmojiPicker}
                               icon="smile"/>

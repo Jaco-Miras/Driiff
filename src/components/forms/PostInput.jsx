@@ -111,7 +111,8 @@ const CloseButton = styled(SvgIconFeather)`
 /***  Commented out code are to be visited/refactored ***/
 const PostInput = (props) => {
   const { selectedEmoji, onClearEmoji, selectedGif, onClearGif, dropAction, sent, handleClearSent,
-          post, parentId, commentActions, userMention, handleClearUserMention, commentId, members
+          post, parentId, commentActions, userMention, handleClearUserMention, commentId, members,
+          onClosePicker, onActive
   } = props;
   const dispatch = useDispatch();
   const reactQuillRef = useRef();
@@ -249,6 +250,7 @@ const PostInput = (props) => {
     //     dispatch(clearChannelDraft({channel_id: selectedChannel.id}));
     // }
     handleClearQuillInput();
+    onClosePicker();
   };
 
   const handleClearQuillInput = () => {
@@ -278,6 +280,8 @@ const PostInput = (props) => {
         dispatch(setEditComment(null));
       }
     }
+
+    textOnly.trim() === "" ? onActive(false) : onActive(true);
 
     setText(content);
     setTextOnly(textOnly);

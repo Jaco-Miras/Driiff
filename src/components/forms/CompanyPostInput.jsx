@@ -102,7 +102,7 @@ const CloseButton = styled(SvgIconFeather)`
 const CompanyPostInput = (props) => {
   const {
     selectedEmoji, onClearEmoji, selectedGif, onClearGif, dropAction, sent, handleClearSent,
-    post, parentId, commentActions, userMention, handleClearUserMention, commentId, members, onActive } = props;
+    post, parentId, commentActions, userMention, handleClearUserMention, commentId, members, onActive, onClosePicker } = props;
   const dispatch = useDispatch();
   const reactQuillRef = useRef();
   const selectedChannel = useSelector((state) => state.chat.selectedChannel);
@@ -237,6 +237,7 @@ const CompanyPostInput = (props) => {
     //     dispatch(clearChannelDraft({channel_id: selectedChannel.id}));
     // }
     handleClearQuillInput();
+    onClosePicker();
   };
 
   const handleClearQuillInput = () => {
