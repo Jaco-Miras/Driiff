@@ -204,18 +204,19 @@ const usePostActions = () => {
           );
         };
 
-        let payload = {
-          type: "confirmation",
-          headerText: dictionary.headerRemoveDraftHeader,
-          submitText: dictionary.buttonRemove,
-          cancelText: dictionary.buttonCancel,
-          bodyText: dictionary.removeThisDraft,
-          actions: {
-            onSubmit: onConfirm,
-          },
-        };
+        // let payload = {
+        //   type: "confirmation",
+        //   headerText: dictionary.headerRemoveDraftHeader,
+        //   submitText: dictionary.buttonRemove,
+        //   cancelText: dictionary.buttonCancel,
+        //   bodyText: dictionary.removeThisDraft,
+        //   actions: {
+        //     onSubmit: onConfirm,
+        //   },
+        // };
 
-        dispatch(addToModals(payload));
+        // dispatch(addToModals(payload));
+        onConfirm();
       } else {
         const onConfirm = () => {
           dispatch(
@@ -261,18 +262,19 @@ const usePostActions = () => {
           );
         };
 
-        let payload = {
-          type: "confirmation",
-          headerText: post.is_archived === 1 ? dictionary.headerUnarchivePostHeader : dictionary.headerArchivePostHeader,
-          submitText: post.is_archived === 1 ? dictionary.buttonUnarchive : dictionary.buttonArchive,
-          cancelText: dictionary.buttonCancel,
-          bodyText: post.is_archived === 1 ? dictionary.unarchiveThisPost : dictionary.archiveThisPost,
-          actions: {
-            onSubmit: onConfirm,
-          },
-        };
+        // let payload = {
+        //   type: "confirmation",
+        //   headerText: post.is_archived === 1 ? dictionary.headerUnarchivePostHeader : dictionary.headerArchivePostHeader,
+        //   submitText: post.is_archived === 1 ? dictionary.buttonUnarchive : dictionary.buttonArchive,
+        //   cancelText: dictionary.buttonCancel,
+        //   bodyText: post.is_archived === 1 ? dictionary.unarchiveThisPost : dictionary.archiveThisPost,
+        //   actions: {
+        //     onSubmit: onConfirm,
+        //   },
+        // };
 
-        dispatch(addToModals(payload));
+        // dispatch(addToModals(payload));
+        onConfirm();
       }
     },
     [dispatch, params, history]
