@@ -228,6 +228,10 @@ const CompanyPostDetailFooter = (props) => {
     });
   };
 
+  const onClosePicker = () => {
+    setShowEmojiPicker(false);
+  };
+
   const { _t } = useTranslation();
 
   const dictionary = {
@@ -268,6 +272,7 @@ const CompanyPostDetailFooter = (props) => {
                     dropAction={dropAction}
                       members={post.members}
                       onActive={onActive}
+                      onClosePicker={onClosePicker}
                   />
                   <IconButton className={`${showEmojiPicker ? "active" : ""}`} onClick={handleShowEmojiPicker}
                               icon="smile"/>
