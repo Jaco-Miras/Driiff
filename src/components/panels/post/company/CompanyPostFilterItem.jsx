@@ -1,7 +1,7 @@
-import React, {useCallback} from "react";
+import React, { useCallback } from "react";
 import styled from "styled-components";
-import {SvgIconFeather} from "../../../common";
-import {usePostActions} from "../../../hooks";
+import { SvgIconFeather } from "../../../common";
+import { usePostActions } from "../../../hooks";
 
 const Wrapper = styled.div`
   > span {
@@ -52,7 +52,7 @@ const CompanyPostFilterItem = (props) => {
       <span className={`list-group-item d-flex align-items-center ${filter && filter === "my_posts" ? "active" : ""}`}
             data-value="my_posts" onClick={handleClickFilter}>
         <SvgIconFeather className="mr-2" icon="send-post"/>
-        {dictionary.myPosts}
+        {dictionary.inbox}
         <span className="small ml-auto">{counters.my_posts > 0 && counters.my_posts}</span>
       </span>
       <span className={`list-group-item d-flex align-items-center ${filter && filter === "star" ? "active" : ""}`}

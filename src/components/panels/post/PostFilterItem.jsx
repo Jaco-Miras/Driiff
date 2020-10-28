@@ -48,7 +48,7 @@ const PostFilterItem = (props) => {
       </span>
       <span className={`list-group-item d-flex align-items-center ${filter && filter === "my_posts" ? "active" : ""}`} data-value="my_posts" onClick={handleClickFilter}>
         <SvgIconFeather className="mr-2" icon="send-post" />
-        {dictionary.myPosts}
+        {dictionary.inbox}
         <span className="small ml-auto">{counters.my_posts > 0 && counters.my_posts}</span>
       </span>
       <span className={`list-group-item d-flex align-items-center ${filter && filter === "star" ? "active" : ""}`} data-value="star" onClick={handleClickFilter}>
