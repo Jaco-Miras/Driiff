@@ -68,6 +68,8 @@ const ReplyPreview = (props) => {
         if (!noText && showPreviewIcon) {
           previewText = previewText + "Photo";
         }
+        previewText = renderToString(<LastReplyName
+          className="last-reply-name">{dictionary.you}:</LastReplyName>) + " " + previewText;
       } else {
         previewText = renderToString(<LastReplyName className="last-reply-name">{channel.last_reply.user.first_name}:</LastReplyName>) + " " + previewText;
       }
