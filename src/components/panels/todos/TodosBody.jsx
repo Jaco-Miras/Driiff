@@ -1,10 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
-import {Avatar, SvgEmptyState, ToolTip} from "../../common";
-import {useHistory} from "react-router-dom";
-import {CheckBox} from "../../forms";
+import { Avatar, SvgEmptyState, ToolTip } from "../../common";
+import { useHistory } from "react-router-dom";
+import { CheckBox } from "../../forms";
 import quillHelper from "../../../helpers/quillHelper";
-import {useSettings, useTimeFormat} from "../../hooks";
+import { useSettings, useTimeFormat } from "../../hooks";
 import { MoreOptions } from "../common";
 
 const Wrapper = styled.div`
@@ -19,6 +19,18 @@ const Wrapper = styled.div`
       .badge-todo-type {
         border: 1px solid #000;
       }
+    }
+  }
+}
+
+.custom-checkbox {
+  position: relative;
+  top: 1.5px;
+  
+  .cci:checked + .ccl {
+    span:first-child {
+      background: #00c851;
+      border-color: #00c851;  
     }
   }
 }
@@ -237,7 +249,6 @@ const TodosBody = (props) => {
                                   }}/>
                                 </ToolTip>
                               </span>
-
                               <span className="mr-3 d-flex justify-content-center align-items-center">
                                 <span className="todo-title mr-2">{todo.title}</span>
                                 <span className="todo-title"
