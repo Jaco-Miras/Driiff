@@ -136,6 +136,10 @@ const ChatContentPanel = (props) => {
     forwardedMessage: _t("CHAT.FORWARDED_MESSAGE", "Forwarded message"),
     chatRemoved: _t("CHAT.BODY_REMOVED", "The chat message has been removed"),
     workspace: _t("CHAT.WORKSPACE", "Workspace"),
+    hasLeftChat: _t("SYSTEM.HAS_LEFT_CHAT", "has left the chat"),
+    hasLeftWorkspace: _t("SYSTEM.HAS_LEFT_WORKSPACE", "has left the workspace"),
+    andHasLeftChat: _t("SYSTEM.AND_HAS_LEFT_CHAT", "and has left the chat"),
+    andHasLeftWorkspace: _t("SYSTEM.AND_HAS_LEFT_WORKSPACE", "and has left the workspace"),
   };
 
   useFocusInput(document.querySelector(".chat-footer .ql-editor"));

@@ -217,7 +217,19 @@ const SystemMessage = forwardRef((props, ref) => {
         }
       }
 
-      if (data.removed_members.length >= 1) {
+      if (data.removed_members.length === 1) {
+        if (data.author && data.author.id === data.removed_members[0]) {
+          if (newBody === "") {
+            newBody = (
+              <>
+                <b>{data.author.name}</b> {selectedChannel.type === "TOPIC" ? dictionary.hasLeftWorkspace : dictionary.hasLeftChat}{" "}
+              </>
+            );
+          } else {
+            newBody = <>{newBody} {selectedChannel.type === "TOPIC" ? dictionary.andHasLeftWorkspace : dictionary.andHasLeftChat}</>;
+          }
+        } 
+      } else if (data.removed_members.length > 1) {
         const rm = recipients.filter((r) => data.removed_members.includes(r.type_id) && r.type_id !== user.id).map((r) => r.name);
 
         if (data.removed_members.includes(user.id) && data.author && data.author.id === user.id) {
@@ -650,12 +662,23 @@ const SystemMessage = forwardRef((props, ref) => {
           }
         }
       }
-
-      if (data.removed_members.length >= 1) {
+      if (data.removed_members.length === 1) {
+        if (data.author && data.author.id === data.removed_members[0]) {
+          if (newBody === "") {
+            newBody = (
+              <>
+                <b>{data.author.name}</b> {selectedChannel.type === "TOPIC" ? dictionary.hasLeftWorkspace : dictionary.hasLeftChat}{" "}
+              </>
+            );
+          } else {
+            newBody = <>{newBody} {selectedChannel.type === "TOPIC" ? dictionary.andHasLeftWorkspace : dictionary.andHasLeftChat}</>;
+          }
+        } 
+      } else if (data.removed_members.length > 1) {
         const rm = recipients.filter((r) => {
           return r.type === "USER" && data.removed_members.includes(r.type_id) && r.type_id !== user.id
         }).map((r) => r.name);
-
+        console.log(data.removed_members.includes(user.id), data.removed_members)
         if (data.removed_members.includes(user.id) && data.author && data.author.id === user.id) {
           if (newBody === "") {
             newBody = (
