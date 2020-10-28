@@ -188,6 +188,7 @@ const ChatSidebarPanel = (props) => {
     noMatchingChats: _t("CHAT.NO_MATCHING_CHATS", "No matching chats found"),
     messageRemoved: _t("CHAT.MESSAGE_REMOVED", "The chat message has been removed."),
     personalBot: _t("CHAT.PERSONAL_BOT", "Personal bot"),
+    you: _t("CHAT.PREVIEW_AUTHOR_YOU", "You"),
   };
 
   const handleOpenGroupChatModal = () => {
