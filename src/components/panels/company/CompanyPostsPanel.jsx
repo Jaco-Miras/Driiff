@@ -86,6 +86,7 @@ const CompanyPostsPanel = (props) => {
   const dictionary = {
     createNewPost: _t("POST.CREATE_NEW_POST", "Create new post"),
     all: _t("POST.ALL", "All"),
+    inbox: _t("POST.INBOX", "Inbox"),
     myPosts: _t("POST.MY_POSTS", "My posts"),
     starred: _t("POST.STARRED", "Starred"),
     archived: _t("POST.ARCHIVED", "Archived"),
