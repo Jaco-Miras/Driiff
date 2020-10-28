@@ -1,5 +1,5 @@
-import React, {useCallback} from "react";
-import {useDispatch} from "react-redux";
+import React, { useCallback } from "react";
+import { useDispatch } from "react-redux";
 import {
   addToModals,
   delRemoveToDo,
@@ -9,7 +9,7 @@ import {
   putDoneToDo,
   putToDo
 } from "../../redux/actions/globalActions";
-import {useToaster, useTranslation} from "./index";
+import { useToaster, useTranslation } from "./index";
 
 const useTodoActions = () => {
 
@@ -139,6 +139,9 @@ const useTodoActions = () => {
         item: {
           ...todo,
           body: todo.description,
+          ...(typeof todo.user === "undefined" && {
+            user: todo.author,
+          }),
         },
         parentItem: todo,
         itemType: todo.link_type,
