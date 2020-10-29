@@ -1,12 +1,12 @@
-import {useEffect, useState} from "react";
-import {useSelector} from "react-redux";
-import {useTodoActions} from "./index";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { useTodoActions } from "./index";
 
 let init = false;
 const useTodos = () => {
 
-  const {isLoaded, skip, limit, hasMore, items, count} = useSelector((state) => state.global.todos);
-
+  const { isLoaded, skip, limit, hasMore, items, count } = useSelector((state) => state.global.todos);
+  const { user: loggedUser } = useSelector((state) => state.session);
   const todoActions = useTodoActions();
   const [isFetchLoading, setIsFetchLoading] = useState(false);
 
@@ -54,6 +54,9 @@ const useTodos = () => {
         }
       })
       .filter(t => {
+        if (t.author === null && t.link_type === null) {
+          t.author = loggedUser;
+        }
         if (filter) {
           if (filter.search !== "") {
             if (!(t.title.toLowerCase().includes(filter.search.toLowerCase().trim())
