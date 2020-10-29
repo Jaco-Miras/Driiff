@@ -220,6 +220,24 @@ const SystemMessage = forwardRef((props, ref) => {
       if (data.removed_members.length === 1) {
         if (data.author && data.author.id === data.removed_members[0]) {
           if (newBody === "") {
+            if (data.author.id === user.id && data.removed_members[0] === user.id) {
+              newBody = (
+                <>
+                  {selectedChannel.type === "TOPIC" ? dictionary.youLeftWorkspace : dictionary.youLeftChat}{" "}
+                </>
+              );
+            } else {
+              newBody = (
+                <>
+                  <b>{data.author.name}</b> {selectedChannel.type === "TOPIC" ? dictionary.hasLeftWorkspace : dictionary.hasLeftChat}{" "}
+                </>
+              );
+            }
+          } else {
+            newBody = <>{newBody} {selectedChannel.type === "TOPIC" ? dictionary.andHasLeftWorkspace : dictionary.andHasLeftChat}</>;
+          }
+        } else {
+          if (newBody === "") {
             newBody = (
               <>
                 <b>{data.author.name}</b> {selectedChannel.type === "TOPIC" ? dictionary.hasLeftWorkspace : dictionary.hasLeftChat}{" "}
@@ -228,7 +246,7 @@ const SystemMessage = forwardRef((props, ref) => {
           } else {
             newBody = <>{newBody} {selectedChannel.type === "TOPIC" ? dictionary.andHasLeftWorkspace : dictionary.andHasLeftChat}</>;
           }
-        } 
+        }
       } else if (data.removed_members.length > 1) {
         const rm = recipients.filter((r) => data.removed_members.includes(r.type_id) && r.type_id !== user.id).map((r) => r.name);
 
@@ -665,6 +683,24 @@ const SystemMessage = forwardRef((props, ref) => {
       if (data.removed_members.length === 1) {
         if (data.author && data.author.id === data.removed_members[0]) {
           if (newBody === "") {
+            if (data.author.id === user.id && data.removed_members[0] === user.id) {
+              newBody = (
+                <>
+                  {selectedChannel.type === "TOPIC" ? dictionary.youLeftWorkspace : dictionary.youLeftChat}{" "}
+                </>
+              );
+            } else {
+              newBody = (
+                <>
+                  <b>{data.author.name}</b> {selectedChannel.type === "TOPIC" ? dictionary.hasLeftWorkspace : dictionary.hasLeftChat}{" "}
+                </>
+              );
+            }
+          } else {
+            newBody = <>{newBody} {selectedChannel.type === "TOPIC" ? dictionary.andHasLeftWorkspace : dictionary.andHasLeftChat}</>;
+          }
+        } else {
+          if (newBody === "") {
             newBody = (
               <>
                 <b>{data.author.name}</b> {selectedChannel.type === "TOPIC" ? dictionary.hasLeftWorkspace : dictionary.hasLeftChat}{" "}
@@ -673,7 +709,7 @@ const SystemMessage = forwardRef((props, ref) => {
           } else {
             newBody = <>{newBody} {selectedChannel.type === "TOPIC" ? dictionary.andHasLeftWorkspace : dictionary.andHasLeftChat}</>;
           }
-        } 
+        }
       } else if (data.removed_members.length > 1) {
         const rm = recipients.filter((r) => {
           return r.type === "USER" && data.removed_members.includes(r.type_id) && r.type_id !== user.id
