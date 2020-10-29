@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import styled from "styled-components";
 import { Avatar, SvgEmptyState, ToolTip } from "../../common";
 import { useHistory } from "react-router-dom";
@@ -94,7 +94,6 @@ const TodosBody = (props) => {
     btnLoadMore: useRef(null),
   }
 
-  const [active, setActive] = useState(false);
   const history = useHistory();
   const {todoFormat, todoFormatShortCode} = useTimeFormat();
   const {
