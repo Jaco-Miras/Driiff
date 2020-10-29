@@ -237,24 +237,24 @@ const TodosBody = (props) => {
                               todoActions.updateFromModal(todo)
                           }}>
                           <span className="d-flex justify-content-between w-100 align-items-center">
-                              <span className="d-flex">
+                              <span className="d-inline-flex overflow-hidden mr-3">
                                 <span className="custom-control custom-checkbox custom-checkbox-success mr-2">
                                 <ToolTip
                                   content={todo.status === "DONE" ? dictionary.actionMarkAsUndone : dictionary.actionMarkAsDone}>
                                     <CheckBox name="test" checked={todo.status === "DONE"} onClick={(e) => {
-                                    e.preventDefault();
-                                    e.stopPropagation();
+                                      e.preventDefault();
+                                      e.stopPropagation();
                                       todoActions.toggleDone(todo);
-                                  }}/>
+                                    }}/>
                                 </ToolTip>
                               </span>
                               <span className="mr-3 d-flex justify-content-center align-items-center">
                                 <span className="todo-title mr-2">{todo.title}</span>
                                 <span className="todo-title"
-                                      dangerouslySetInnerHTML={{__html: quillHelper.parseToTextImageVideo(todo.description)}}/>
+                                      dangerouslySetInnerHTML={{ __html: quillHelper.parseToTextImageVideo(todo.description) }}/>
                               </span>
                             </span>
-                            <span className="action d-flex justify-content-center align-items-center">
+                            <span className="action d-inline-flex justify-content-center align-items-center">
                               <span className="mr-3 align-items-center d-flex">
                                 {
                                   todo.link_type !== null &&
