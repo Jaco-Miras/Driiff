@@ -1215,7 +1215,10 @@ export default function (state = INITIAL_STATE, action) {
         let messages = [...channels[action.data.channel_detail.id].replies, ...action.data.current_latest_messages]
         channel = {
           ...action.data.channel_detail,
-          replies: uniqByProp(messages, "id").sort((a, b) => a.created_at.timestamp - b.created_at.timestamp)
+          replies: uniqByProp(messages, "id").sort((a, b) => a.created_at.timestamp - b.created_at.timestamp),
+          hasMore: channels[action.data.channel_detail.id].hasMore,
+          skip: channels[action.data.channel_detail.id].skip,
+          isFetching: false
         }
         channels[action.data.channel_detail.id] = channel;
       }
@@ -1247,12 +1250,21 @@ export default function (state = INITIAL_STATE, action) {
       if (channels.hasOwnProperty(action.data.id)) {
         channels[action.data.id] = {
           ...action.data,
-          replies: channels[action.data.id].replies
+          replies: channels[action.data.id].replies,
+          hasMore: channels[action.data.id].hasMore,
+          skip: channels[action.data.id].skip,
+          isFetching: false
         }
       }
       return {
         ...state,
         channels: channels
+      }
+    }
+    case "GET_LATEST_REPLY_SUCCESS": {
+      return {
+        ...state,
+        lastReceivedMessage: action.data.latest_reply ? {id: action.data.latest_reply.reply_id, channel_id: action.data.latest_reply.channel_id} : state.lastReceivedMessage
       }
     }
     default:
