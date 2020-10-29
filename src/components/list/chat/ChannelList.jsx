@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import styled from "styled-components";
 import useChannelActions from "../../hooks/useChannelActions";
 import ChannelIcon from "./ChannelIcon";
@@ -34,7 +34,8 @@ const Wrapper = styled.li`
       }
     }
   }
-  &:hover {  
+  &:focus,
+  &:hover {    
     .channel-title-preview {
       padding-right: ${props => parseInt(props.paddingAdjustment) + 22}px;
     }
@@ -107,11 +108,15 @@ const Timestamp = styled.div`
 
 const ChannelList = (props) => {
 
-  const {className = "", search = "", channel, selectedChannel, channelDrafts, dictionary} = props;
+  const { className = "", search = "", channel, selectedChannel, channelDrafts, dictionary } = props;
 
   const channelActions = useChannelActions();
   const { channelPreviewDate } = useTimeFormat();
   const { virtualization } = useSelector((state) => state.settings.user.CHAT_SETTINGS);
+
+  const refs = {
+    container: useRef(null)
+  };
 
   const handleSelectChannel = () => {
     document.body.classList.add("m-chat-channel-closed");
@@ -134,14 +139,54 @@ const ChannelList = (props) => {
     // history.push(`/chat/${channel.code}`);
   };
 
+  let timerStart = 0;
+  let xDown = null;
+  let yDown = null;
+  const handleTouchStartChannel = (e) => {
+    timerStart = e.timeStamp;
+    xDown = e.touches[0].clientX;
+    yDown = e.touches[0].clientY;
+  };
+
+  const handleTouchEndChannel = (e) => {
+    if ((e.timeStamp - timerStart) <= 125) {
+      if (!(e.target && e.target.classList.contains("feather"))) {
+        handleSelectChannel();
+        setTimeout(() => {
+          document.activeElement.blur();
+        }, 300);
+      }
+    }
+  };
+
+  const handleTouchMoveChannel = (e) => {
+    let xUp = e.touches[0].clientX;
+    let yUp = e.touches[0].clientY;
+
+    let xDiff = xDown - xUp;
+    let yDiff = yDown - yUp;
+
+    if (Math.abs(xDiff) > Math.abs(yDiff)) {/*most significant*/
+      /* left swipe */
+      if (xDiff > 0) {
+        refs.container.current.focus();
+      }
+    }
+
+    xDown = null;
+    yDown = null;
+  };
+
   let timeAdjustment = channel.last_reply ? channelPreviewDate(channel.last_reply.created_at.timestamp).length * 8 : 0;
   let iconAdjustment = (channel.is_pinned ? 18 : 0) + (channel.is_muted ? 18 : 0) + ((channel.add_user === false && (!channel.is_read || channel.total_unread > 0)) ? 18 : 0) + 18;
   const paddingAdjustment = timeAdjustment > iconAdjustment ? timeAdjustment : iconAdjustment;
 
   return (
-    <Wrapper paddingAdjustment={paddingAdjustment}
+    <Wrapper ref={refs.container} paddingAdjustment={paddingAdjustment}
              className={`list-group-item d-flex align-items-center link-1 pl-1 pr-1 pl-lg-0 pr-lg-0 pb-2 pt-2 ${className}`}
-             selected={selectedChannel !== null && channel.id === selectedChannel.id} onClick={handleSelectChannel}>
+             selected={selectedChannel !== null && channel.id === selectedChannel.id}
+             onClick={handleSelectChannel} onTouchStart={handleTouchStartChannel} onTouchEnd={handleTouchEndChannel}
+             onTouchMove={handleTouchMoveChannel}>
       <ChannelIcon channel={channel}/>
       <ChannelTitlePreview className={"flex-grow-1 channel-title-preview"}>
         <ChannelTitle channel={channel} search={search}/>
