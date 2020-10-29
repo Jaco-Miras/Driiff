@@ -2,9 +2,9 @@ import React from "react";
 import styled from "styled-components";
 import { SvgIconFeather } from "../../common";
 import { useTimeFormat } from "../../hooks";
+import ChannelOptions from "./ChannelOptions";
 
-const Wrapper = styled.div`
-  ${"" /* display: ${(props) => (props.optionsVisible ? "none" : "initial")}; */}
+const Wrapper = styled.div`  
   display: initial;
   .chat-timestamp_text {
     margin: 1px 0 3px 0;
@@ -40,7 +40,7 @@ const Badge = styled.span`
 `;
 
 const ChatDateIcons = (props) => {
-  const { channel } = props;
+  const { selectedChannel, channel } = props;
   const { channelPreviewDate } = useTimeFormat();
 
   return (
@@ -48,6 +48,7 @@ const ChatDateIcons = (props) => {
       <span className={"small text-muted chat-timestamp_text"}
             dangerouslySetInnerHTML={{ __html: channel.last_reply ? channelPreviewDate(channel.last_reply.created_at.timestamp) : "" }}/>
       <div className="d-flex align-items-center flex-row-reverse">
+        <ChannelOptions className="ml-1" moreButton="chevron-down" selectedChannel={selectedChannel} channel={channel}/>
         {
           channel.add_user === false && (!channel.is_read || channel.total_unread > 0) && (
             <Badge
