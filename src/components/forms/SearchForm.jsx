@@ -1,4 +1,4 @@
-import React, { forwardRef, useRef, useEffect } from "react";
+import React, { forwardRef, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { SvgIconFeather } from "../common";
 
@@ -26,7 +26,7 @@ const Wrapper = styled.form`
 const Icon = styled(SvgIconFeather)``;
 
 const SearchForm = forwardRef((props, ref) => {
-  const { className = "", onChange, onClick, placeholder = "Search", value = "", onClickEmpty, closeButton = false } = props;
+  const { className = "", onChange, onClick, placeholder = "Search", value = "", onClickEmpty, closeButton = false, ...otherProps } = props;
   const inputGroup = useRef();
 
   useEffect(() => {
@@ -41,7 +41,8 @@ const SearchForm = forwardRef((props, ref) => {
   return (
     <Wrapper className={`${className}`}>
       <div ref={inputGroup} className="input-group">
-        <input ref={ref} onChange={onChange} value={value} type="text" className="form-control" placeholder={placeholder} />
+        <input ref={ref} onChange={onChange} value={value} type="text" className="form-control"
+               placeholder={placeholder} {...otherProps} />
         {closeButton && (
           <button onClick={onClickEmpty} className="btn-cross" type="button">
             <Icon icon="x" />

@@ -200,6 +200,16 @@ const ChatSidebarPanel = (props) => {
     dispatch(addToModals(payload));
   };
 
+  const handleSearchKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      return false;
+    }
+    if (e.keyCode === 27) {
+      emptySearchInput();
+    }
+  };
+
   useEffect(() => {
     if (chatSettings.chat_filter !== tabPill) {
       setChatSetting({
@@ -211,17 +221,20 @@ const ChatSidebarPanel = (props) => {
   return (
     <Wrapper ref={refs.container} className={`chat-sidebar ${className}`}>
       <div className="chat-sidebar-header d-flex justify-content-between align-items-flex-start align-items-center">
-        <Search onChange={onSearchChange} value={query} onClickEmpty={emptySearchInput} closeButton="true" className="chat-search" placeholder={dictionary.searchChatPlaceholder} />
+        <Search onChange={onSearchChange} onKeyDown={handleSearchKeyDown} value={query} onClickEmpty={emptySearchInput}
+                closeButton="true" className="chat-search" placeholder={dictionary.searchChatPlaceholder}/>
         <div className="d-flex justify-content-center align-items-center ml-2" style={{ height: "38px" }}>
           <StyledMoreOptions ref={refs.navTab} role="tabList">
-            <div className={`option-filter ${tabPill === "pills-home" ? "active" : ""}`} onClick={handleTabChange} aria-controls="pills-home" aria-selected="false">
+            <div className={`option-filter ${tabPill === "pills-home" ? "active" : ""}`} onClick={handleTabChange}
+                 aria-controls="pills-home" aria-selected="false">
               {dictionary.chats}
             </div>
-            <div className={`option-filter ${tabPill === "pills-workspace" ? "active" : ""}`} onClick={handleTabChange} aria-controls="pills-workspace" aria-selected="false">
+            <div className={`option-filter ${tabPill === "pills-workspace" ? "active" : ""}`} onClick={handleTabChange}
+                 aria-controls="pills-workspace" aria-selected="false">
               {dictionary.workspaceChats}
             </div>
             <div className="d-flex" onClick={handleOpenGroupChatModal}>
-              <SvgIconFeather className="mr-2" width={14} height={14} icon="plus" /> {dictionary.newGroupChat}
+              <SvgIconFeather className="mr-2" width={14} height={14} icon="plus"/> {dictionary.newGroupChat}
             </div>
           </StyledMoreOptions>
         </div>
