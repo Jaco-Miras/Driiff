@@ -1,14 +1,13 @@
 import React from "react";
-//import {useHistory} from "react-router-dom";
 import styled from "styled-components";
 import useChannelActions from "../../hooks/useChannelActions";
 import ChannelIcon from "./ChannelIcon";
-import ChannelOptions from "./ChannelOptions";
 import ChannelTitle from "./ChannelTitle";
 import ChatDateIcons from "./ChatDateIcons";
 import ReplyPreview from "./ReplyPreview";
-import {Badge} from "../../common";
-import {useSelector} from "react-redux";
+import { Badge } from "../../common";
+import { useSelector } from "react-redux";
+import { useTimeFormat } from "../../hooks";
 
 const Wrapper = styled.li`
   cursor: pointer;
@@ -16,22 +15,36 @@ const Wrapper = styled.li`
   transition: all 0.15s linear;
   min-height: 64px;
   max-height: 64px;
+  .channel-title-preview {
+    padding-right: ${props => props.paddingAdjustment}px;
+  }
   .more-options {
     position: relative;
+    display: none;
     opacity: 0;
     z-index: -1;
+    background: transparent;
+    border: 1px solid transparent;
+    svg {    
+      transition: transform 0.5s;
+    }
+    &.more-options-active {
+      svg {        
+        transform: rotate(990deg);        
+      }
+    }
   }
-  &:hover {
+  &:hover {  
+    .channel-title-preview {
+      padding-right: ${props => parseInt(props.paddingAdjustment) + 22}px;
+    }
     .more-options {
+      display: inline-flex;
       opacity: 1;
       z-index: 1;
       &.active {
         color: #4d4d4d !important;
       }
-    }
-    .chat-timestamp {
-      opacity: 0;
-      visibility: hidden;
     }
     h6 {
       color: #7a1b8b;
@@ -71,7 +84,10 @@ const Wrapper = styled.li`
         fill: #ffc107;
         color: #ffc107;
       }
-    }
+      &.feather-chevron-down {
+        margin-left: 0;
+      }
+    }    
   }
   .feather-more-horizontal {
     width: 25px;
@@ -83,9 +99,7 @@ const Wrapper = styled.li`
   }
 `;
 
-const ChannelTitlePreview = styled.div`
-  padding-right: 48px;
-`;
+const ChannelTitlePreview = styled.div``;
 
 const Timestamp = styled.div`
   position: relative;
@@ -96,8 +110,8 @@ const ChannelList = (props) => {
   const {className = "", search = "", channel, selectedChannel, channelDrafts, dictionary} = props;
 
   const channelActions = useChannelActions();
-  //const history = useHistory();
-  const {virtualization} = useSelector((state) => state.settings.user.CHAT_SETTINGS);
+  const { channelPreviewDate } = useTimeFormat();
+  const { virtualization } = useSelector((state) => state.settings.user.CHAT_SETTINGS);
 
   const handleSelectChannel = () => {
     document.body.classList.add("m-chat-channel-closed");
@@ -120,10 +134,16 @@ const ChannelList = (props) => {
     // history.push(`/chat/${channel.code}`);
   };
 
+  let timeAdjustment = channel.last_reply ? channelPreviewDate(channel.last_reply.created_at.timestamp).length * 8 : 0;
+  let iconAdjustment = (channel.is_pinned ? 18 : 0) + (channel.is_muted ? 18 : 0) + ((channel.add_user === false && (!channel.is_read || channel.total_unread > 0)) ? 18 : 0) + 18;
+  const paddingAdjustment = timeAdjustment > iconAdjustment ? timeAdjustment : iconAdjustment;
+
   return (
-    <Wrapper className={`list-group-item d-flex align-items-center link-1 pl-1 pr-1 pl-lg-0 pr-lg-0 pb-2 pt-2 ${className}`} selected={selectedChannel !== null && channel.id === selectedChannel.id} onClick={handleSelectChannel}>
+    <Wrapper paddingAdjustment={paddingAdjustment}
+             className={`list-group-item d-flex align-items-center link-1 pl-1 pr-1 pl-lg-0 pr-lg-0 pb-2 pt-2 ${className}`}
+             selected={selectedChannel !== null && channel.id === selectedChannel.id} onClick={handleSelectChannel}>
       <ChannelIcon channel={channel}/>
-      <ChannelTitlePreview className={"flex-grow-1"}>
+      <ChannelTitlePreview className={"flex-grow-1 channel-title-preview"}>
         <ChannelTitle channel={channel} search={search}/>
         <ReplyPreview channel={channel} drafts={channelDrafts} dictionary={dictionary}/>
         {!!channel.is_archived && (
@@ -138,8 +158,7 @@ const ChannelList = (props) => {
         )}
       </ChannelTitlePreview>
       <Timestamp className="text-right ml-auto">
-        <ChatDateIcons className={"chat-date-icons"} channel={channel} isRead={channel.is_read} />
-        <ChannelOptions selectedChannel={selectedChannel} channel={channel} />
+        <ChatDateIcons className={"chat-date-icons"} selectedChannel={selectedChannel} channel={channel}/>
       </Timestamp>
     </Wrapper>
   );
