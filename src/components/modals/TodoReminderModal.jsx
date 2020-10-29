@@ -247,7 +247,7 @@ const TodoReminderModal = (props) => {
       }, 500)
     }
   }
-  //console.log(item);
+
   return (
     <Wrapper isOpen={modal} toggle={toggle} size={"lg"} className="todo-reminder-modal" centered>
       <ModalHeaderSection toggle={toggle}>{dictionary.chatReminder}</ModalHeaderSection>

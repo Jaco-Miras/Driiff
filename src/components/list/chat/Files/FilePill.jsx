@@ -147,14 +147,17 @@ const FilePill = forwardRef((props, ref) => {
   };
 
   const fileHandler = useFileActions();
-  // console.log(file)
+
+  if (typeof file.type === "undefined") {
+    file.type = file.mime_type;
+  }
 
   return (
     <FilePillContainer ref={ref} className={`file-pill ${className}`} {...otherProps}>
       {file.type.toLowerCase() === "image" ? (
         <>
           <ImgLoader ref={refImageLoader}>
-            <ImgLoaderDiv className={"img-loader"} />
+            <ImgLoaderDiv className={"img-loader"}/>
           </ImgLoader>
           <FileImage
             ref={refImage}
