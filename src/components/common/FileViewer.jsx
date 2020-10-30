@@ -7,6 +7,7 @@ import "../../vendors/lightbox/magnific-popup.css";
 import { useOutsideClick, useTimeFormat } from "../hooks";
 import ImageTextLink from "./ImageTextLink";
 import { SvgIconFeather } from "./SvgIcon";
+import { isSafari } from "react-device-detect";
 
 const FileViewerContainer = styled.div`
   position: fixed;
@@ -161,43 +162,42 @@ const FileWrapper = styled.figure`
   }
 `;
 
-const FileViewer = (props) => {
-  const { className = "" } = props;
-
-  const fileRef = useRef();
-  const dispatch = useDispatch();
-  const channelFiles = useSelector((state) => state.files.channelFiles);
-  const viewFiles = useSelector((state) => state.files.viewFiles);
-  const workspaceFiles = useSelector((state) => state.files.workspaceFiles);
-  const companyFiles = useSelector((state) => state.files.companyFiles.items);
-  const {localizeDate} = useTimeFormat();
-
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [files, setFiles] = useState([]);
-
+const FileRender = (props) => {
+  const {file, setFiles, files} = props;
   let refFiles = {};
-
-  const showNextFile = () => {
-    let filesLength = files.length;
-    if (filesLength - 1 === activeIndex) setActiveIndex(0);
-    else setActiveIndex(activeIndex + 1);
-  };
-
-  const showPreviousFile = () => {
-    const filesLength = files.length;
-    if (activeIndex === 0) setActiveIndex(filesLength - 1);
-    else setActiveIndex(activeIndex - 1);
-  };
-
-  const handleCloseFileViewer = () => {
-    dispatch(setViewFiles(null));
-  };
-
-  const handleClose = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    dispatch(setViewFiles(null));
-  };
+  let userAuth = JSON.parse(localStorage.getItem("userAuthToken"))
+  useEffect(() => {
+    if (file.type === "pdf" && !file.hasOwnProperty("pdfSrc") && isSafari) {
+      fetch(file.view_link, {method: "GET", keepalive: true, headers: {
+        'Authorization': `Bearer ${userAuth.access_token}`,
+        'Access-Control-Allow-Origin': "*",
+        'crossorigin': true
+      }})
+      .then(function(response) {
+        console.log(response)
+        return response.blob()
+      })
+      .then(function(data) {
+        console.log(data)
+        const pdfObj = URL.createObjectURL(new Blob([data], {
+              type: "application/pdf"
+            }))
+      
+        setFiles(files.map((f) => {
+          if (f.id === file.id) {
+            return {
+              ...f,
+              pdfSrc: pdfObj
+            }
+          } else {
+            return f
+          }
+        }))
+      }, function(err) {
+          console.log(err, 'error');
+      });
+    }
+  }, [file]);
 
   const handleImageOnLoad = (e) => {
     e.currentTarget.classList.remove("d-none");
@@ -235,63 +235,112 @@ const FileViewer = (props) => {
     }
   };
 
-  const renderFile = (file) => {
+  const handleDownloadFile = (e, file) => {
+    e.preventDefault();
+    let handle = window.open(file.download_link, "_self");
+    handle.blur();
+    window.focus();
+  };
 
-    switch (file.type.toLowerCase()) {
-      case "video":
-        return (
-          <div key={file.id} data-index={file.id} className={"file-item mfp-img"}>
-            <img className={"d-none"} src={require("../../assets/icon/limitations/l/text.svg")}
-                 alt={"File not found."}/>
-            <video
-              data-index={file.id}
-              data-attempt={0}
-              ref={(e) => (refFiles[file.id] = e)}
-              controls
-              playsInline
-              key={file.id}
-              className={"file"}
-              autoPlay={false}
-              onLoadStart={handleVideoOnLoad}
-              onError={handleVideoOnError}
-              src={file.view_link}
-            />
-          </div>
-        );
-      case "image":
-        return (
-          <div key={file.id} data-index={file.id} className={"file-item mfp-img"}>
-            <img data-index={file.id} data-attempt={0} onLoad={handleImageOnLoad} onError={handleImageOnError}
-                 ref={(e) => (refFiles[file.id] = e)} key={file.id} className={"file"} src={file.view_link}
-                 alt="file preview"/>
-          </div>
-        );
-      case "pdf":
-        return (
-          <div key={file.id} data-index={file.id} className={"file-item mfp-img"}>
-            <object data={file.view_link} width="600" height="400">
-              <embed src={file.view_link} width="600" height="400"/>
-            </object>
-          </div>
-        );
-      default:
-        return (
-          <div key={file.id} data-index={file.id} className={"file-item mfp-img cannot-preview"}>
-            <Eye icon={"eye-off"}/>
+  switch (file.type.toLowerCase()) {
+    case "video":
+      return (
+        <div key={file.id} data-index={file.id} className={"file-item mfp-img"}>
+          <img className={"d-none"} src={require("../../assets/icon/limitations/l/text.svg")}
+               alt={"File not found."}/>
+          <video
+            data-index={file.id}
+            data-attempt={0}
+            ref={(e) => (refFiles[file.id] = e)}
+            controls
+            playsInline
+            key={file.id}
+            className={"file"}
+            autoPlay={false}
+            onLoadStart={handleVideoOnLoad}
+            onError={handleVideoOnError}
+            src={file.view_link}
+          />
+        </div>
+      );
+    case "image":
+      return (
+        <div key={file.id} data-index={file.id} className={"file-item mfp-img"}>
+          <img data-index={file.id} data-attempt={0} onLoad={handleImageOnLoad} onError={handleImageOnError}
+               ref={(e) => (refFiles[file.id] = e)} key={file.id} className={"file"} src={file.view_link}
+               alt="file preview"/>
+        </div>
+      );
+    case "pdf":
+      return (
+        <div key={file.id} data-index={file.id} className={"file-item mfp-img"}>
+          {
+            file.hasOwnProperty("pdfSrc") && isSafari ?
+              <object data={file.pdfSrc} width="600" height="400">
+                <embed src={file.pdfSrc} width="600" height="400"/>
+              </object> 
+            : 
+              <object data={file.view_link} width="600" height="400">
+                <embed src={file.view_link} width="600" height="400"/>
+              </object> 
+          }
+        </div>
+      );
+    default:
+      return (
+        <div key={file.id} data-index={file.id} className={"file-item mfp-img cannot-preview"}>
+          <Eye icon={"eye-off"}/>
 
-            <p>
-              We can't preview this file type. <br/>
-              Try downloading the file to view it.
-            </p>
-            {/* <FileIcon ref={e => refFiles[index] = e}
-                              key={index} style={style} iconLeft={`documents`}
-                              onClick={e => handleDownloadFile(e, file)}>{file.type.toLowerCase()}</FileIcon> */}
-            <button className="btn btn-primary" onClick={(e) => handleDownloadFile(e, file)}>
-              Download {file.search}
-            </button>
-          </div>
-        );
-    }
+          <p>
+            We can't preview this file type. <br/>
+            Try downloading the file to view it.
+          </p>
+          {/* <FileIcon ref={e => refFiles[index] = e}
+                            key={index} style={style} iconLeft={`documents`}
+                            onClick={e => handleDownloadFile(e, file)}>{file.type.toLowerCase()}</FileIcon> */}
+          <button className="btn btn-primary" onClick={(e) => handleDownloadFile(e, file)}>
+            Download {file.search}
+          </button>
+        </div>
+      );
+  }
+
+};
+
+const FileViewer = (props) => {
+  const { className = "" } = props;
+
+  const fileRef = useRef();
+  const dispatch = useDispatch();
+  const channelFiles = useSelector((state) => state.files.channelFiles);
+  const viewFiles = useSelector((state) => state.files.viewFiles);
+  const workspaceFiles = useSelector((state) => state.files.workspaceFiles);
+  const companyFiles = useSelector((state) => state.files.companyFiles.items);
+  const {localizeDate} = useTimeFormat();
+
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [files, setFiles] = useState([]);
+
+  const showNextFile = () => {
+    let filesLength = files.length;
+    if (filesLength - 1 === activeIndex) setActiveIndex(0);
+    else setActiveIndex(activeIndex + 1);
+  };
+
+  const showPreviousFile = () => {
+    const filesLength = files.length;
+    if (activeIndex === 0) setActiveIndex(filesLength - 1);
+    else setActiveIndex(activeIndex - 1);
+  };
+
+  const handleCloseFileViewer = () => {
+    dispatch(setViewFiles(null));
+  };
+
+  const handleClose = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    dispatch(setViewFiles(null));
   };
 
   const handleDownloadFile = (e, file) => {
@@ -379,7 +428,14 @@ const FileViewer = (props) => {
                 ×
               </CloseButton>
               <FileWrapper>
-                {renderFile(files[activeIndex])}
+                {/* {renderFile(files[activeIndex])} */}
+                {
+                  <FileRender 
+                    files={files}
+                    file={files[activeIndex]}
+                    setFiles={setFiles}
+                  />
+                }
                 <figcaption>
                   <div className="mfp-bottom-bar">
                     <div className="mfp-title"/>
