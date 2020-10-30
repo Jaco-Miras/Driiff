@@ -772,10 +772,10 @@ export default (state = INITIAL_STATE, action) => {
           ...state.channelFiles,
           [action.data.channel_id]: [
             ...(typeof state.channelFiles[action.data.channel_id] === "undefined" ?
-                action.data.results.sort((a, b) => {
+                Object.values(action.data.results).sort((a, b) => {
                   return a.created_at.timestamp - b.created_at.timestamp;
                 }) :
-                action.data.results.filter(r => !state.channelFiles[action.data.channel_id].some(f => f.file_id === r.file_id)).sort((a, b) => {
+                Object.values(action.data.results).filter(r => !state.channelFiles[action.data.channel_id].some(f => f.file_id === r.file_id)).sort((a, b) => {
                   return a.created_at.timestamp - b.created_at.timestamp;
                 })
             )
