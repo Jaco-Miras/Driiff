@@ -22,7 +22,8 @@ import {
   setChannelHistoricalPosition,
   setFetchingMessages,
   setLastVisitedChannel,
-  setSelectedChannel
+  setSelectedChannel,
+  setSidebarSearch as setSidebarSearchReducer
 } from "../../redux/actions/chatActions";
 import { useSettings, useToaster, useTranslation } from "./index";
 import { useHistory } from "react-router-dom";
@@ -689,6 +690,13 @@ const useChannelActions = () => {
     []
   );
 
+  const setSidebarSearch = useCallback((payload, callback = () => {
+  }) => {
+    dispatch(
+      setSidebarSearchReducer(payload, callback)
+    );
+  }, []);
+
   return {
     create,
     createByUserChannel,
@@ -720,7 +728,8 @@ const useChannelActions = () => {
     update,
     fetchingMessages,
     getChannelLink,
-    getUrlTitle
+    getUrlTitle,
+    setSidebarSearch
   };
 };
 
