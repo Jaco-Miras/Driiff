@@ -24,6 +24,7 @@ import {
   uploadDocument as uploadDocumentService,
   refetchMessages as refetchMessagesService,
   refetchOtherMessages as refetchOtherMessagesService,
+  getLatestReply as getLatestReplyService,
 } from "../services";
 
 export function setBrowserTabStatus(payload, callback) {
@@ -195,4 +196,8 @@ export function refetchMessages(payload, callback) {
 
 export function refetchOtherMessages(payload, callback) {
   return dispatchActionToReducer(refetchOtherMessagesService(payload), "REFETCH_OTHER_MESSAGES_START", "REFETCH_OTHER_MESSAGES_SUCCESS", "REFETCH_OTHER_MESSAGES_FAIL", callback);
+}
+
+export function getLatestReply(payload, callback) {
+  return dispatchActionToReducer(getLatestReplyService(payload), "GET_LATEST_REPLY_START", "GET_LATEST_REPLY_SUCCESS", "GET_LATEST_REPLY_FAIL", callback);
 }
