@@ -190,6 +190,10 @@ const TodosBody = (props) => {
                           chatHeader = dictionary.statusOverdue;
                           break;
                         }
+                        case "TODAY": {
+                          chatHeader = dictionary.statusUpcomingToday;
+                          break;
+                        }
                         case "NEW": {
                           chatHeader = dictionary.statusUpcoming;
                           break;
@@ -203,6 +207,10 @@ const TodosBody = (props) => {
                       let prevTodo = todoItems[index - 1];
                       if (prevTodo.status !== todo.status) {
                         switch (todo.status) {
+                          case "TODAY": {
+                            chatHeader = dictionary.statusToday;
+                            break;
+                          }
                           case "OVERDUE": {
                             chatHeader = dictionary.statusOverdue;
                             break;

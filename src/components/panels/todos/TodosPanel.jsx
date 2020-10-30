@@ -1,7 +1,7 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
-import {useTodos, useTranslation} from "../../hooks";
-import {TodosBody, TodosHeader, TodosSidebar} from "./index";
+import { useTodos, useTranslation } from "../../hooks";
+import { TodosBody, TodosHeader, TodosSidebar } from "./index";
 
 const Wrapper = styled.div`
   .app-sidebar-menu {
@@ -11,7 +11,7 @@ const Wrapper = styled.div`
 `;
 
 const TodosPanel = (props) => {
-  const {className = ""} = props;
+  const { className = "" } = props;
 
   const {getSortedItems, action: todoActions, isLoaded, count} = useTodos();
   const {_t} = useTranslation();
@@ -22,8 +22,10 @@ const TodosPanel = (props) => {
     typePost: _t("REMINDER.TYPE_POST", "Post"),
     typeChat: _t("REMINDER.TYPE_CHAT", "Chat"),
     typePostComment: _t("REMINDER.TYPE_POST_COMMENT", "Post comment"),
+    statusToday: _t("REMINDER.STATUS_TODAY", "Today"),
     statusAll: _t("REMINDER.STATUS_ALL", "All"),
     statusOverdue: _t("REMINDER.STATUS_OVERDUE", "Overdue"),
+    statusUpcomingToday: _t("REMINDER.STATUS_UPCOMING", "Upcoming Today"),
     statusUpcoming: _t("REMINDER.STATUS_UPCOMING", "Upcoming"),
     statusDone: _t("REMINDER.STATUS_DONE", "Done"),
     emptyText: _t("REMINDER.EMPTY_STATE_TEXT", "Use your reminder list to keep track of all your tasks and activities."),

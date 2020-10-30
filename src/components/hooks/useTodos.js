@@ -1,13 +1,16 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { useTodoActions } from "./index";
+import moment from "moment-timezone";
+import { useTimeFormat, useTodoActions } from "./index";
 
 let init = false;
 const useTodos = () => {
 
   const { isLoaded, skip, limit, hasMore, items, count } = useSelector((state) => state.global.todos);
   const { user: loggedUser } = useSelector((state) => state.session);
+
   const todoActions = useTodoActions();
+  const { localizeDate } = useTimeFormat();
   const [isFetchLoading, setIsFetchLoading] = useState(false);
 
   const loadMore = () => {
@@ -47,10 +50,10 @@ const useTodos = () => {
 
         if (b.remind_at !== null && a.remind_at !== null) {
           return b.remind_at.timestamp - a.remind_at.timestamp;
-        } else if (b.remind_at !== "null") {
-          return -1
-        } else if (a.remind_at !== "null") {
-          return 1
+        } else if (b.remind_at !== null) {
+          return -1;
+        } else if (a.remind_at !== null) {
+          return 1;
         }
       })
       .filter(t => {
@@ -67,8 +70,17 @@ const useTodos = () => {
 
           if (filter.status !== "")
             return t.status === filter.status;
-          else
-            return t.status !== "DONE";
+          else {
+            if (t.status === "OVERDUE") return true;
+            if (t.status === "DONE") return false;
+            if (t.remind_at === null) return false;
+            if (localizeDate(t.remind_at.timestamp, "YYYY-MM-DD") === moment().format('YYYY-MM-DD')) {
+              t.status = "TODAY";
+              return true;
+            } else {
+              return false;
+            }
+          }
         }
         return true;
       })
