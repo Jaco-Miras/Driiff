@@ -4,14 +4,11 @@ import { useHistory } from "react-router-dom";
 import { Avatar, FileAttachments, ReminderNote, SvgIconFeather } from "../../../common";
 import { MoreOptions } from "../../../panels/common";
 import { PostDetailFooter } from "../../../panels/post/index";
-import { SubComments, Quote } from "./index";
+import { Quote, SubComments } from "./index";
 import { useGoogleApis, useTimeFormat } from "../../../hooks";
-import GifPlayer from "react-gif-player";
-import { getGifLinks } from "../../../../helpers/urlContentHelper";
 import quillHelper from "../../../../helpers/quillHelper";
 import { CompanyPostDetailFooter } from "../../../panels/post/company";
 import { useSelector } from "react-redux";
-import { Transition } from "react-transition-group";
 
 const Wrapper = styled.li`
   margin-bottom: 1rem;
@@ -336,10 +333,6 @@ const Comment = (props) => {
             )}
           </CommentHeader>
           <CommentBody ref={handleCommentBodyRef} className="mt-2 mb-3" dangerouslySetInnerHTML={{ __html: quillHelper.parseEmoji(comment.body) }} />
-          {showGifPlayer &&
-            getGifLinks(comment.body).map((gifLink, index) => {
-              return <GifPlayer key={index} className={"gifPlayer"} gif={gifLink} autoplay={true} />;
-            })}
           {comment.files.length >= 1 && (
             <>
               <hr />
