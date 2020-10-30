@@ -370,7 +370,8 @@ const useUserActions = () => {
     window.location.href = `${getAPIUrl({isDNS: true})}/auth-web/logout?redirect_link=${redirectLink}`;
   }, []);
 
-  const logout = useCallback((callback) => {
+  const logout = useCallback((callback = () => {
+  }) => {
     dispatch(toggleLoading(true));
     dispatch(
       userLogout({}, (err, res) => {

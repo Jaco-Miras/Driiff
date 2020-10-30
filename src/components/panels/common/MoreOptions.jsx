@@ -104,7 +104,8 @@ const MoreOptions = (props) => {
   };
 
   return (
-    <Wrapper className={`more-options ${className}`} onClick={handleClick} ref={refs.container}
+    <Wrapper className={`more-options ${showMoreOptions ? "more-options-active" : ""} ${className}`}
+             onClick={handleClick} ref={refs.container}
              onMouseEnter={handleMouseEnter} {...rest}>
       <SvgIconFeather onMouseLeave={handleMouseLeave} data-event="touchstart focus mouseover" data-event-off="mouseout"
                       data-tip="Message options" icon={moreButton}/>

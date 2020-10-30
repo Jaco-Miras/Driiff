@@ -167,7 +167,7 @@ const ChatFooterPanel = (props) => {
   const [backgroundSend, setBackgroundSend] = useState(null);
   const [fillSend, setFillSend] = useState('#cacaca');
 
-  const selectedChannel = useSelector((state) => state.chat.selectedChannel);
+  const {editChatMessage, selectedChannel} = useSelector((state) => state.chat);
   const user = useSelector((state) => state.session.user);
 
   const handleSend = () => {
@@ -316,6 +316,13 @@ const ChatFooterPanel = (props) => {
           {showEmojiPicker === true && <PickerContainer handleSend={handleSend} handleShowEmojiPicker={handleShowEmojiPicker} onSelectEmoji={onSelectEmoji} onSelectGif={onSelectGif} orientation={"top"} ref={ref.picker} />}
         </Dflex>
       )}
+      {
+        isMember && editChatMessage && (
+          <Dflex className="d-flex align-items-end">
+            <div className="p-5">{editChatMessage.files.map((f) => f.filename).join(", ")}</div>
+          </Dflex>
+        )
+      }
       {isMember === false && selectedChannel !== null && (
         <Dflex className="channel-viewing">
           <div className="channel-name">You are viewing #{selectedChannel.title}</div>

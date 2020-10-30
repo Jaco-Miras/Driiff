@@ -329,9 +329,9 @@ const ChatInput = (props) => {
         console.log(e);
       }
     }
-    if (editChatMessage !== null) {
-      dispatch(setEditChatMessage(null));
-    }
+    // if (editChatMessage !== null) {
+    //   dispatch(setEditChatMessage(null));
+    // }
   };
 
   const handleQuillChange = (content, delta, source, editor) => {
@@ -339,14 +339,14 @@ const ChatInput = (props) => {
 
     const textOnly = editor.getText(content);
 
-    if (textOnly.trim() === "" && editMode) {
-      setEditMode(false);
-      setEditMessage(null);
-      //edit message in redux
-      if (editChatMessage !== null) {
-        dispatch(setEditChatMessage(null));
-      }
-    }
+    // if (textOnly.trim() === "" && editMode) {
+    //   setEditMode(false);
+    //   setEditMessage(null);
+    //   //edit message in redux
+    //   if (editChatMessage !== null) {
+    //     dispatch(setEditChatMessage(null));
+    //   }
+    // }
 
     setText(content);
     setTextOnly(textOnly);
@@ -585,6 +585,9 @@ const ChatInput = (props) => {
     setEditMode(false);
     setEditMessage(null);
     handleClearQuillInput();
+    if (editChatMessage !== null) {
+      dispatch(setEditChatMessage(null));
+    }
   };
 
   useSaveInput(handleClearQuillInput, text, textOnly, quillContents);
