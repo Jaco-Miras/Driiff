@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from "react";
 import styled from "styled-components";
 import { Avatar, SvgEmptyState, ToolTip } from "../../common";
 import { useHistory } from "react-router-dom";
-import { CheckBox } from "../../forms";
+import { TodoCheckBox } from "../../forms";
 import quillHelper from "../../../helpers/quillHelper";
 import { useFileActions, useSettings, useTimeFormat } from "../../hooks";
 import { MoreOptions } from "../common";
@@ -29,7 +29,7 @@ const Wrapper = styled.div`
   position: relative;
   top: 1.5px;
   
-  .cci:checked + .ccl {
+  .cci.cci-active + .ccl {
     span:first-child {
       background: #00c851;
       border-color: #00c851;  
@@ -259,9 +259,7 @@ const TodosBody = (props) => {
                                 <span className="custom-control custom-checkbox custom-checkbox-success mr-2">
                                 <ToolTip
                                   content={todo.status === "DONE" ? dictionary.actionMarkAsUndone : dictionary.actionMarkAsDone}>
-                                    <CheckBox name="test" checked={todo.status === "DONE"} onClick={(e) => {
-                                      e.preventDefault();
-                                      e.stopPropagation();
+                                    <TodoCheckBox name="test" checked={todo.status === "DONE"} onClick={(e) => {
                                       todoActions.toggleDone(todo);
                                     }}/>
                                 </ToolTip>
