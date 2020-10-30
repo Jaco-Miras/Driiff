@@ -152,6 +152,11 @@ body.dark {
   .typing-indicator {
     background-color: $dm-bg;
     color: $dm-text-color;
+  
+    &::before,
+    &::after {
+      background-color: $dm-bg;
+    }
   }
 
   .component-user-list-pop-up-container {
