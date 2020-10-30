@@ -79,6 +79,7 @@ import {
   setBrowserTabStatus,
   setGeneralChat,
   setUnreadNotificationCounterEntries,
+  getLatestReply
 } from "../../redux/actions/globalActions";
 import {
   fetchPost,
@@ -158,6 +159,9 @@ class SocketListeners extends Component {
 
   componentDidMount() {
 
+    this.props.getLatestReply({}, (err,res) => {
+      console.log(res, 'latest')
+    })
     window.Echo.connector.socket.on("connect", () => {
       console.log("socket connected");
     });
@@ -1400,7 +1404,8 @@ function mapDispatchToProps(dispatch) {
     refetchMessages: bindActionCreators(refetchMessages, dispatch),
     refetchOtherMessages: bindActionCreators(refetchOtherMessages, dispatch),
     getChannelDetail: bindActionCreators(getChannelDetail, dispatch),
-    incomingReminderNotification: bindActionCreators(incomingReminderNotification, dispatch)
+    incomingReminderNotification: bindActionCreators(incomingReminderNotification, dispatch),
+    getLatestReply: bindActionCreators(getLatestReply, dispatch)
   };
 }
 

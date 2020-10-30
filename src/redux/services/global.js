@@ -219,3 +219,12 @@ export function refetchOtherMessages(payload) {
     data: payload,
   });
 }
+
+export function getLatestReply(payload) {
+  let url = `/v2/re-fetch-module/get-last-reply`;
+  return apiCall({
+    method: "GET",
+    url: url,
+    data: payload,
+  });
+}
