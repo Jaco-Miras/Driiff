@@ -4,8 +4,10 @@ import { Avatar, SvgEmptyState, ToolTip } from "../../common";
 import { useHistory } from "react-router-dom";
 import { CheckBox } from "../../forms";
 import quillHelper from "../../../helpers/quillHelper";
-import { useSettings, useTimeFormat } from "../../hooks";
+import { useFileActions, useSettings, useTimeFormat } from "../../hooks";
 import { MoreOptions } from "../common";
+import { setViewFiles } from "../../../redux/actions/fileActions";
+import { useDispatch } from "react-redux";
 
 const Wrapper = styled.div`
 .list-group {
@@ -89,15 +91,31 @@ const TodosBody = (props) => {
     todoItems
   } = props;
 
+  const config = {
+    angle: 90,
+    spread: 360,
+    startVelocity: 40,
+    elementCount: 70,
+    dragFriction: 0.12,
+    duration: 3000,
+    stagger: 3,
+    width: "10px",
+    height: "10px",
+    perspective: "500px",
+    colors: ["#a864fd", "#29cdff", "#78ff44", "#ff718d", "#fdff6a"]
+  };
+
   const refs = {
     files: useRef(null),
     btnLoadMore: useRef(null),
-  }
+  };
 
+  const dispatch = useDispatch();
   const history = useHistory();
-  const {todoFormat, todoFormatShortCode} = useTimeFormat();
+  const { todoFormat, todoFormatShortCode } = useTimeFormat();
+  const { getFileIcon } = useFileActions();
   const {
-    generalSettings: {dark_mode},
+    generalSettings: { dark_mode },
   } = useSettings();
   const initLoading = () => {
     loadMore.files();
@@ -129,10 +147,6 @@ const TodosBody = (props) => {
     }
   }
 
-  const handleClick = (prop) => {
-    prop = true;
-  }
-
   const getTodoType = (todo) => {
     switch (todo.link_type) {
       case "POST":
@@ -144,18 +158,14 @@ const TodosBody = (props) => {
     }
   }
 
-  const config = {
-  angle: 90,
-  spread: 360,
-  startVelocity: 40,
-  elementCount: 70,
-  dragFriction: 0.12,
-  duration: 3000,
-  stagger: 3,
-  width: "10px",
-  height: "10px",
-  perspective: "500px",
-  colors: ["#a864fd", "#29cdff", "#78ff44", "#ff718d", "#fdff6a"]
+  const handlePreviewFile = (e, files, file) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const payload = {
+      files: files,
+      file_id: file.file_id,
+    };
+    dispatch(setViewFiles(payload));
   };
 
   useEffect(() => {
@@ -259,7 +269,13 @@ const TodosBody = (props) => {
                               <span className="mr-3 d-flex justify-content-center align-items-center">
                                 <span className="todo-title mr-2">{todo.title}</span>
                                 <span className="todo-title"
-                                      dangerouslySetInnerHTML={{ __html: quillHelper.parseToTextImageVideo(todo.description) }}/>
+                                      dangerouslySetInnerHTML={{ __html: quillHelper.parseEmoji(todo.description) }}/>
+                                {
+                                  todo.files.map((file) => {
+                                    return <span key={file.id}
+                                                 onClick={e => handlePreviewFile(e, todo.files, file)}>{getFileIcon(file.mime_type)}</span>;
+                                  })
+                                }
                               </span>
                             </span>
                             <span className="action d-inline-flex justify-content-center align-items-center">
