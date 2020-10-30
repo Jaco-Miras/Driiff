@@ -70,7 +70,7 @@ const Wrapper = styled.li`
   }
 
   .chat-timestamp {
-    position: absolute;
+    position: relative;
     right: 0;
     display: flex;
     flex-direction: column;
