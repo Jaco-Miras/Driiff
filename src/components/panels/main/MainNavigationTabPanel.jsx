@@ -401,7 +401,12 @@ const MainNavigationTabPanel = (props) => {
     }
   }, [editCompany]);
 
-  const chatUnreadCounter = unreadCounter.chat_message + unreadCounter.unread_channel + unreadCounter.workspace_chat_message;
+  const hasUnreadCounter = Object.keys(unreadCounter)
+    .filter(k => k !== "chat_reminder_message")
+    .reduce((total, k) => {
+      total += unreadCounter[k];
+      return total;
+    }, 0) !== 0 || count.overdue !== 0;
 
   return (
     <Wrapper className={`navigation-menu-tab ${className}`}>
@@ -429,7 +434,7 @@ const MainNavigationTabPanel = (props) => {
                 >
                   <NavIcon icon={"home"} />
                   {driffSettings.company_name}
-                  <div>{chatUnreadCounter !== 0 && <Badge data-count={chatUnreadCounter}>&nbsp;</Badge>}</div>
+                  <div>{hasUnreadCounter === true && <Badge>&nbsp;</Badge>}</div>
                 </NavIconContainer>
               )}
               {user.role && ["owner", "admin"].includes(user.role.name) && (
@@ -441,7 +446,7 @@ const MainNavigationTabPanel = (props) => {
             <NavIconContainer to={"/todos"} active={["/todos"].includes(props.location.pathname)}>
               <NavIcon icon={"check"} />
               <div>{dictionary.todoLinks}</div>
-              <div>{count.overdue !== 0 && <Badge data-count={count.overdue}>&nbsp;</Badge>}</div>
+              <div>{count.overdue !== 0 && <Badge>&nbsp;</Badge>}</div>
             </NavIconContainer>
           </li>
           <li onClick={closeLeftNav}>
