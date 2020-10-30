@@ -50,6 +50,8 @@ const MainBody = styled.div`
   
    .clap-count-wrapper {
     position: relative;
+    display: flex;
+    align-items: center;
     
     &:hover {
       .read-users-container {
