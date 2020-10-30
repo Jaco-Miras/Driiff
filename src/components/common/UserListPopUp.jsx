@@ -11,13 +11,9 @@ const UserListPopUpContainer = styled.div`
     box-shadow: 0 0 3px 0 rgba(26, 26, 26, 0.4), 0 1px 3px 0 rgba(0, 0, 0, 0.1);
     z-index: 5;
     overflow: auto;
-    background-color: #ffffff;
-    color: #4d4d4d;
-    border-radius: 8px;
     padding: 8px 8px;
     cursor: pointer;
     box-shadow: 0 5px 10px -1px rgba(0, 0, 0, 0.15);
-    border-top: 1px solid #eeeeee;
     max-height: 260px;
   }
 
@@ -55,6 +51,9 @@ const UserListPopUpContainer = styled.div`
   span {
     font-weight: 600;
     color: #676767;
+    .dark & {
+      color: #c7c7c7;
+    }
   }
 `;
 
@@ -74,7 +73,7 @@ const UserListPopUp = (props) => {
   useOutsideClick(listRef, handleShowList, true);
 
   return (
-    <UserListPopUpContainer className={className} ref={listRef}>
+    <UserListPopUpContainer className={`component-user-list-pop-up-container ${className}`} ref={listRef}>
       <ul>
         {users.map((u, k) => {
           return (

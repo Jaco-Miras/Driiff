@@ -136,6 +136,13 @@ body {
   max-width: 100%;
 }
 
+.component-user-list-pop-up-container {
+  background-color: #ffffff;
+  border-top: 1px solid #eeeeee;
+  border-radius: 8px;
+  color: #4d4d4d;
+}
+
 body.dark {
   // #111417 // sidebar
   // #25282c // bg
@@ -144,6 +151,13 @@ body.dark {
 
   .typing-indicator {
     background-color: $dm-bg;
+    color: $dm-text-color;
+  }
+
+  .component-user-list-pop-up-container {
+    background-color: $dm-bg;
+    border-top: 1px solid $dm-bg;
+    border-radius: 8px;
     color: $dm-text-color;
   }
 
