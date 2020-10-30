@@ -170,7 +170,11 @@ const ChannelList = (props) => {
       /* left swipe */
       if (xDiff > 0) {
         refs.container.current.focus();
+      } else {
+        timerStart += 125;
       }
+    } else {
+      timerStart -= 125;
     }
 
     xDown = null;
