@@ -112,8 +112,6 @@ const MainBody = styled.div`
   .user-reads-container {
     position: relative;
     display: inline-flex;
-    justify-content: center;
-    align-items: center;
     margin-right: 0.5rem;
     
     .read-users-container {
@@ -134,7 +132,8 @@ const MainBody = styled.div`
       }
       
       .dark & {
-        background-color: #191c20;  
+        background-color: #25282c;
+        border: 1px solid #25282c;
       }
       
       > span {
@@ -145,7 +144,7 @@ const MainBody = styled.div`
       
         .avatar {
           img {
-            min-width: 28px;
+            min-width: 2.3rem;
           }
         }
       
