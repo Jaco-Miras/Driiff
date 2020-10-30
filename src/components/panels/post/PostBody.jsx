@@ -18,10 +18,19 @@ const Wrapper = styled.div`
     width: 40px;
     height: 40px;
   }
-  
+
   .author-name {
-    font-weight: bold;
-    display: block;      
+    display: block;
+    color: #505050;
+    font-size: 14px;   
+    font-weight: 500;
+    color: rgb(80, 80, 80);
+    .dark & {
+      color: #c7c7c7;   
+  }
+  .recipients {
+    color: #8b8b8b;
+    font-size: 10px;
   }
   
   .ellipsis-hover {
