@@ -15,7 +15,15 @@ import {
 import { deleteDraft } from "../../redux/actions/globalActions";
 import { SvgIconFeather } from "../common";
 import BodyMention from "../common/BodyMention";
-import { useDraft, useQuillInput, useQuillModules, useSaveInput, useSelectQuote, useTimeFormat } from "../hooks";
+import {
+  useChannelActions,
+  useDraft,
+  useQuillInput,
+  useQuillModules,
+  useSaveInput,
+  useSelectQuote,
+  useTimeFormat
+} from "../hooks";
 import QuillEditor from "./QuillEditor";
 import _ from "lodash";
 
@@ -95,7 +103,6 @@ const CloseButton = styled(SvgIconFeather)`
   position: absolute;
   top: 0;
   right: 70px;
-  margin: 0;
   margin: 4px;
   height: calc(100% - 8px);
   background: white;
@@ -140,6 +147,8 @@ const ChatInput = (props) => {
   const dispatch = useDispatch();
   const reactQuillRef = useRef();
   const { localizeDate } = useTimeFormat();
+  const { setSidebarSearch } = useChannelActions();
+
   const selectedChannel = useSelector((state) => state.chat.selectedChannel);
   const slugs = useSelector((state) => state.global.slugs);
   const user = useSelector((state) => state.session.user);
@@ -316,6 +325,7 @@ const ChatInput = (props) => {
     }
     handleClearQuillInput();
     props.onSendCallback();
+    setSidebarSearch({ value: "" });
   };
 
   const handleClearQuillInput = () => {

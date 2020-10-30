@@ -17,14 +17,21 @@ const INITIAL_STATE = {
   channelsLoaded: false,
   lastVisitedChannel: null,
   isLastChatVisible: false,
-  lastReceivedMessage: null
+  lastReceivedMessage: null,
+  chatSidebarSearch: ""
 };
 
 export default function (state = INITIAL_STATE, action) {
   switch (action.type) {
+    case "SET_SIDEBAR_SEARCH": {
+      return {
+        ...state,
+        chatSidebarSearch: action.data.value,
+      };
+    }
     case "GET_GLOBAL_RECIPIENTS_SUCCESS": {
-      console.log(state.user, 'user data in global recipients success', action.data)
-      let channels = {...state.channels};
+      console.log(state.user, 'user data in global recipients success', action.data);
+      let channels = { ...state.channels };
       action.data.result.filter((r) => {
         if (r.id) {
           if (r.type === "DIRECT" && r.profile) {

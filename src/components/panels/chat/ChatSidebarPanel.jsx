@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import styled from "styled-components";
 import SearchForm from "../../forms/SearchForm";
 import { ChatSideBarContentPanel } from "./index";
-import { useSettings, useTranslation } from "../../hooks";
+import { useChannels, useSettings, useTranslation } from "../../hooks";
 import { MoreOptions } from "../common";
 import { addToModals } from "../../../redux/actions/globalActions";
 import { SvgIconFeather } from "../../common";
@@ -112,8 +112,8 @@ const ChatSidebarPanel = (props) => {
 
   const dispatch = useDispatch();
   const { chatSettings, setChatSetting } = useSettings();
+  const { actions: channelActions, chatSidebarSearch } = useChannels();
 
-  //const unreadCounter = useSelector((state) => state.global.unreadCounter);
   const [search, setSearch] = useState("");
   const [query, setQuery] = useState("");
   const [tabPill, setTabPill] = useState(chatSettings.chat_filter);
@@ -144,7 +144,11 @@ const ChatSidebarPanel = (props) => {
   };
 
   useEffect(() => {
-    const timeOutId = setTimeout(() => setSearch(query), 300);
+    const timeOutId = setTimeout(() => {
+      channelActions.setSidebarSearch({
+        value: query
+      });
+    }, 300);
     return () => clearTimeout(timeOutId);
   }, [query]);
 
@@ -217,6 +221,14 @@ const ChatSidebarPanel = (props) => {
       });
     }
   }, [chatSettings.chat_filter, tabPill]);
+
+  useEffect(() => {
+    if (chatSidebarSearch === "") {
+      emptySearchInput();
+    } else {
+      setSearch(chatSidebarSearch);
+    }
+  }, [chatSidebarSearch]);
 
   return (
     <Wrapper ref={refs.container} className={`chat-sidebar ${className}`}>
