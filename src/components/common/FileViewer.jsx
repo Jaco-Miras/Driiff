@@ -7,6 +7,7 @@ import "../../vendors/lightbox/magnific-popup.css";
 import { useOutsideClick, useTimeFormat } from "../hooks";
 import ImageTextLink from "./ImageTextLink";
 import { SvgIconFeather } from "./SvgIcon";
+import { isSafari } from "react-device-detect";
 
 const FileViewerContainer = styled.div`
   position: fixed;
@@ -166,18 +167,21 @@ const FileRender = (props) => {
   let refFiles = {};
   let userAuth = JSON.parse(localStorage.getItem("userAuthToken"))
   useEffect(() => {
-    if (file.type === "pdf" && !file.hasOwnProperty("pdfSrc")) {
-      fetch(file.view_link, {method: "GET", headers: {
-        Authorization: `Bearer ${userAuth.access_token}`,
-        Connection: "keep-alive"
+    if (file.type === "pdf" && !file.hasOwnProperty("pdfSrc") && isSafari) {
+      fetch(file.view_link, {method: "GET", keepalive: true, headers: {
+        'Authorization': `Bearer ${userAuth.access_token}`,
+        'Access-Control-Allow-Origin': "*",
+        'crossorigin': true
       }})
       .then(function(response) {
-        return response.arrayBuffer()
+        console.log(response)
+        return response.blob()
       })
       .then(function(data) {
+        console.log(data)
         const pdfObj = URL.createObjectURL(new Blob([data], {
-          type: "application/pdf"
-        }))
+              type: "application/pdf"
+            }))
       
         setFiles(files.map((f) => {
           if (f.id === file.id) {
@@ -271,10 +275,14 @@ const FileRender = (props) => {
       return (
         <div key={file.id} data-index={file.id} className={"file-item mfp-img"}>
           {
-            file.hasOwnProperty("pdfSrc") && 
-          <object data={file.pdfSrc} width="600" height="400">
-            <embed src={file.pdfSrc} width="600" height="400"/>
-          </object> 
+            file.hasOwnProperty("pdfSrc") && isSafari ?
+              <object data={file.pdfSrc} width="600" height="400">
+                <embed src={file.pdfSrc} width="600" height="400"/>
+              </object> 
+            : 
+              <object data={file.view_link} width="600" height="400">
+                <embed src={file.view_link} width="600" height="400"/>
+              </object> 
           }
         </div>
       );
