@@ -272,8 +272,8 @@ const TodosBody = (props) => {
                                       dangerouslySetInnerHTML={{ __html: quillHelper.parseEmoji(todo.description) }}/>
                                 {
                                   todo.files.map((file) => {
-                                    return <span
-                                      onClick={e => handlePreviewFile(e, todo.files, file)}>{getFileIcon(file.mime_type)}</span>;
+                                    return <span key={file.id}
+                                                 onClick={e => handlePreviewFile(e, todo.files, file)}>{getFileIcon(file.mime_type)}</span>;
                                   })
                                 }
                               </span>
