@@ -93,7 +93,6 @@ const ChatInputContainer = styled.div`
 
 const Icon = styled(SvgIconFeather)`
   width: 20px;
-  position: absolute;
 `;
 
 const IconButton = styled(SvgIconFeather)``;
