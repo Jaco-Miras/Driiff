@@ -20,10 +20,13 @@ const Wrapper = styled.div`
   }
   
   .author-name {
-    font-weight: bold;
     display: block;
-    color: #c7c7c7;
-    font-size: 14px;      
+    color: #505050;
+    font-size: 14px;   
+    font-weight: 500;
+    color: rgb(80, 80, 80);
+    .dark & {
+      color: #c7c7c7;   
   }
   .recipients {
     color: #8b8b8b;
