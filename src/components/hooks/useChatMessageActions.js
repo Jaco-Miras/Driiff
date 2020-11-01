@@ -1,7 +1,7 @@
-import React, {useCallback} from "react";
-import {useDispatch, useSelector} from "react-redux";
-import {copyTextToClipboard} from "../../helpers/commonFunctions";
-import {getBaseUrl} from "../../helpers/slugHelper";
+import React, { useCallback, useRef } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { copyTextToClipboard } from "../../helpers/commonFunctions";
+import { getBaseUrl } from "../../helpers/slugHelper";
 import {
   addQuote,
   deleteChatMessage,
@@ -13,9 +13,9 @@ import {
   setEditChatMessage,
   setLastChatVisibility
 } from "../../redux/actions/chatActions";
-import {useToaster, useTodoActions} from "./index";
+import { useToaster, useTodoActions } from "./index";
 import useChannelActions from "./useChannelActions";
-import {addToModals, deleteUnfurl, removeUnfurlReducer} from "../../redux/actions/globalActions";
+import { addToModals, deleteUnfurl, removeUnfurlReducer } from "../../redux/actions/globalActions";
 
 const useChatMessageActions = () => {
   const sharedSlugs = useSelector((state) => state.global.slugs);
@@ -23,6 +23,10 @@ const useChatMessageActions = () => {
   const dispatch = useDispatch();
   const toaster = useToaster();
   const todoActions = useTodoActions();
+
+  const refs = {
+    fetch: useRef(false)
+  };
 
   const getSharedPayload = useCallback(
     (channel) => {
@@ -51,14 +55,20 @@ const useChatMessageActions = () => {
    */
   const fetch = useCallback(
     (channel, { skip = 0, limit = 20 }, callback = () => {}) => {
-      let payload = {
-        channel_id: channel.id,
-        skip: skip,
-        limit: limit,
-        ...getSharedPayload(channel),
-      };
+      if (!refs.fetch.current) {
+        refs.fetch.current = true;
+        let payload = {
+          channel_id: channel.id,
+          skip: skip,
+          limit: limit,
+          ...getSharedPayload(channel),
+        };
 
-      dispatch(getChatMessages(payload, callback));
+        dispatch(getChatMessages(payload, (err, res) => {
+          refs.fetch.current = false;
+          callback(err, res);
+        }));
+      }
     },
     [dispatch]
   );
