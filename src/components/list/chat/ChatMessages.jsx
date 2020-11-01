@@ -48,6 +48,14 @@ const ChatReplyContainer = styled.div`
 `;
 
 const ChatList = styled.li`
+  -webkit-touch-callout:none;
+  -webkit-user-select:none;
+  -khtml-user-select:none;
+  -moz-user-select:none;
+  -ms-user-select:none;
+  user-select:none;
+  -webkit-tap-highlight-color:rgba(0,0,0,0);
+
   position: relative;
   display: inline-block;
   width: 100%;
@@ -334,10 +342,17 @@ class ChatMessages extends React.PureComponent {
       initializing: false,
       loadMoreInView: false,
       fetchingReplies: false,
+      showEmoji: {},
     };
 
     this.scrollComponent = React.createRef();
     this.infiniteScroll = React.createRef();
+
+    this.varRefs = {
+      timerStart: React.createRef(0),
+      xDown: React.createRef(null),
+      yDown: React.createRef(null),
+    };
   }
 
   attachedImgEventListener = () => {
@@ -634,6 +649,23 @@ class ChatMessages extends React.PureComponent {
     return loadMoreRef;
   };
 
+  handleChatListTouchStart = (e) => {
+    this.varRefs.timerStart.current = e.timeStamp;
+    this.varRefs.xDown.current = e.touches[0].clientX;
+    this.varRefs.yDown.current = e.touches[0].clientY;
+  };
+
+  handleChatListTouchEnd = (e) => {
+    if ((e.timeStamp - this.varRefs.timerStart.current) > 125) {
+      this.setState({
+        showEmoji: {
+          ...this.state.showEmoji,
+          [e.currentTarget.dataset.messageId]: !this.state.showEmoji[e.currentTarget.dataset.messageId],
+        }
+      });
+    }
+  };
+
   render() {
     const { selectedChannel } = this.props;
 
@@ -766,8 +798,10 @@ class ChatMessages extends React.PureComponent {
                               data-timestamp={reply.created_at.timestamp}
                               className={`chat-list chat-list-item-${reply.id} code-${reply.code}`}
                               showTimestamp={showTimestamp}
+                              onTouchStart={this.handleChatListTouchStart}
+                              onTouchEnd={this.handleChatListTouchEnd}
                             >
-                              {reply.user && showMessageLine && this.props.unreadCount > 0 && <ChatNewMessagesLine />}
+                              {reply.user && showMessageLine && this.props.unreadCount > 0 && <ChatNewMessagesLine/>}
                               {reply.user && (
                                 <ChatBubbleContainer
                                   isAuthor={isAuthor}
@@ -802,9 +836,14 @@ class ChatMessages extends React.PureComponent {
                                       isBrowserActive={this.props.isBrowserActive}
                                     >
                                       <ChatActionsContainer isAuthor={isAuthor} className="chat-actions-container">
-                                        {<ChatReactionButton isAuthor={isAuthor} scrollRef={this.infiniteScroll.current} reply={reply} />}
+                                        {<ChatReactionButton isAuthor={isAuthor} scrollRef={this.infiniteScroll.current}
+                                                             reply={reply}
+                                                             showEmojiSwitcher={this.state.showEmoji[reply.id]}/>}
                                         {!isNaN(reply.id) && !reply.is_deleted && (
-                                          <MessageOptions dictionary={this.props.dictionary} className={"chat-message-options"} selectedChannel={this.props.selectedChannel} isAuthor={isAuthor} replyData={reply} />
+                                          <MessageOptions dictionary={this.props.dictionary}
+                                                          className={"chat-message-options"}
+                                                          selectedChannel={this.props.selectedChannel}
+                                                          isAuthor={isAuthor} replyData={reply}/>
                                         )}
                                       </ChatActionsContainer>
                                     </ChatBubble>
@@ -846,7 +885,9 @@ class ChatMessages extends React.PureComponent {
                                         />
                                       ) : null}
                                       <SystemChatActionsContainer isAuthor={isAuthor} className="chat-actions-container">
-                                        {<ChatReactionButton isAuthor={isAuthor} scrollRef={this.infiniteScroll.current} reply={reply} />}
+                                        {<ChatReactionButton isAuthor={isAuthor} scrollRef={this.infiniteScroll.current}
+                                                             reply={reply}
+                                                             showEmojiSwitcher={this.state.showEmoji[reply.id]}/>}
                                         {!isNaN(reply.id) && !reply.is_deleted && (
                                           <MessageOptions
                                             dictionary={this.props.dictionary}

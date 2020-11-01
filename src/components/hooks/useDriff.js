@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { $_GET, isIPAddress } from "../../helpers/commonFunctions";
 import useDriffActions from "./useDriffActions";
 import { getCurrentDriffUrl } from "../../helpers/slugHelper";
@@ -39,14 +39,21 @@ const useDriff = () => {
   const actions = useDriffActions();
   const [redirected, setRedirected] = useState(actions.getName());
   const [registeredDriff, setRegisteredDriff] = useState(actions.getName());
+  const driffUrl = getCurrentDriffUrl();
+
+  const refs = {
+    faviconState: useRef(false)
+  };
 
   const updateFaviconState = (isActive = false) => {
-    let driffUrl = getCurrentDriffUrl();
-    let link = document.querySelector("link[rel*='icon']") || document.createElement('link');
-    link.type = 'image/x-icon';
-    link.rel = 'shortcut icon';
-    link.href = isActive ? `${driffUrl}/assets/icons/favicon-active.png` : `${driffUrl}/assets/icons/favicon.png`;
-    document.getElementsByTagName('head')[0].appendChild(link);
+    if (refs.faviconState.current !== isActive) {
+      refs.faviconState.current = isActive;
+      let link = document.querySelector("link[rel*='icon']") || document.createElement('link');
+      link.type = 'image/x-icon';
+      link.rel = 'shortcut icon';
+      link.href = isActive ? `${driffUrl}/assets/icons/favicon-active.png` : `${driffUrl}/assets/icons/favicon.png`;
+      document.getElementsByTagName('head')[0].appendChild(link);
+    }
   };
 
   useEffect(() => {

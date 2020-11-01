@@ -1,7 +1,7 @@
-import React, {useRef, useState} from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
-import {PickerEmoji, SvgIconFeather} from "../../common";
-import {useTooltipOrientation} from "../../hooks";
+import { PickerEmoji, SvgIconFeather } from "../../common";
+import { useOutsideClick, useTooltipOrientation } from "../../hooks";
 import useChatMessageActions from "../../hooks/useChatMessageActions";
 
 const ChatReactionButtonContainer = styled.div`
@@ -15,11 +15,11 @@ const ChatReactionButtonContainer = styled.div`
     width: 20px;
     height: 20px;
   }
+`;
+const StyledEmojiButton = styled(SvgIconFeather)`
   @media (max-width: 620px) {
     display: none;
   }
-`;
-const StyledEmojiButton = styled(SvgIconFeather)`
   ${(props) => props.active && "filter: brightness(0) saturate(100%) invert(23%) sepia(21%) saturate(6038%) hue-rotate(284deg) brightness(93%) contrast(91%);"};
 
   &:hover {
@@ -83,7 +83,7 @@ const StyledPickerEmoji = styled(PickerEmoji)`
 `;
 
 const ChatReactionButton = (props) => {
-  const { reply, scrollRef = null } = props;
+  const { reply, scrollRef = null, showEmojiSwitcher = null } = props;
   let timeout = null;
 
   const chatMessageAction = useChatMessageActions();
@@ -93,7 +93,7 @@ const ChatReactionButton = (props) => {
     picker: useRef(null),
   };
 
-  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(showEmojiSwitcher);
 
   const handleShowEmojiPicker = () => setShowEmojiPicker(!showEmojiPicker);
 
@@ -113,6 +113,16 @@ const ChatReactionButton = (props) => {
   };
 
   const { orientation } = useTooltipOrientation(refs.container, refs.picker, scrollRef, showEmojiPicker);
+
+  useEffect(() => {
+    if (showEmojiSwitcher !== null) {
+      setShowEmojiPicker(true);
+    }
+  }, [showEmojiSwitcher]);
+
+  useOutsideClick(refs.container, () => {
+    setShowEmojiPicker(false);
+  }, true);
 
   return (
     <ChatReactionButtonContainer className="emoji-button-div" ref={refs.container}>
