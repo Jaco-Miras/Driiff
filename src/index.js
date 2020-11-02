@@ -1,13 +1,28 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import {Provider} from "react-redux";
-import {BrowserRouter} from "react-router-dom";
+import * as Sentry from "@sentry/react";
+import { Provider } from "react-redux";
+import { Integrations } from "@sentry/tracing";
+import { BrowserRouter } from "react-router-dom";
 
 import App from "./App";
 import "toasted-notes/src/styles.css";
 import "./assets/style/app.scss";
 import store from "./redux/store/configStore";
 //import * as serviceWorker from "./serviceWorker";
+
+const { REACT_APP_sentry_dsn } = process.env;
+
+Sentry.init({
+  dsn: REACT_APP_sentry_dsn,
+  integrations: [
+    new Integrations.BrowserTracing(),
+  ],
+
+  // We recommend adjusting this value in production, or using tracesSampler
+  // for finer control
+  tracesSampleRate: 1.0,
+});
 
 const wrapApp = (reduxStore) => (
   <Provider store={reduxStore}>
