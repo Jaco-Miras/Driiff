@@ -7,7 +7,6 @@ import "../../vendors/lightbox/magnific-popup.css";
 import { useOutsideClick, useTimeFormat } from "../hooks";
 import ImageTextLink from "./ImageTextLink";
 import { SvgIconFeather } from "./SvgIcon";
-import { isSafari } from "react-device-detect";
 
 const FileViewerContainer = styled.div`
   position: fixed;
@@ -165,39 +164,7 @@ const FileWrapper = styled.figure`
 const FileRender = (props) => {
   const {file, setFiles, files} = props;
   let refFiles = {};
-  let userAuth = JSON.parse(localStorage.getItem("userAuthToken"))
-  useEffect(() => {
-    if (file.type === "pdf" && !file.hasOwnProperty("pdfSrc") && isSafari) {
-      fetch(file.view_link, {method: "GET", keepalive: true, headers: {
-        'Authorization': `Bearer ${userAuth.access_token}`,
-        'Access-Control-Allow-Origin': "*",
-        'crossorigin': true
-      }})
-      .then(function(response) {
-        console.log(response)
-        return response.blob()
-      })
-      .then(function(data) {
-        console.log(data)
-        const pdfObj = URL.createObjectURL(new Blob([data], {
-              type: "application/pdf"
-            }))
-      
-        setFiles(files.map((f) => {
-          if (f.id === file.id) {
-            return {
-              ...f,
-              pdfSrc: pdfObj
-            }
-          } else {
-            return f
-          }
-        }))
-      }, function(err) {
-          console.log(err, 'error');
-      });
-    }
-  }, [file]);
+  let userAuth = JSON.parse(localStorage.getItem("userAuthToken"));
 
   const handleImageOnLoad = (e) => {
     e.currentTarget.classList.remove("d-none");
@@ -242,6 +209,38 @@ const FileRender = (props) => {
     window.focus();
   };
 
+  useEffect(() => {
+    fetch(file.view_link, {
+      method: "GET", keepalive: true, headers: {
+        'Authorization': `Bearer ${userAuth.access_token}`,
+        'Access-Control-Allow-Origin': "*",
+        'crossorigin': true
+      }
+    })
+      .then(function (response) {
+        console.log(response);
+        return response.blob();
+      })
+      .then(function (data) {
+        const imgObj = URL.createObjectURL(new Blob([data], {
+          type: file.mime_type
+        }));
+
+        setFiles(files.map((f) => {
+          if (f.id === file.id) {
+            return {
+              ...f,
+              imgSrc: imgObj
+            };
+          } else {
+            return f;
+          }
+        }));
+      }, function (err) {
+        console.log(err, 'error');
+      });
+  }, [file]);
+
   switch (file.type.toLowerCase()) {
     case "video":
       return (
@@ -259,7 +258,7 @@ const FileRender = (props) => {
             autoPlay={false}
             onLoadStart={handleVideoOnLoad}
             onError={handleVideoOnError}
-            src={file.view_link}
+            src={file.imgSrc}
           />
         </div>
       );
@@ -267,22 +266,17 @@ const FileRender = (props) => {
       return (
         <div key={file.id} data-index={file.id} className={"file-item mfp-img"}>
           <img data-index={file.id} data-attempt={0} onLoad={handleImageOnLoad} onError={handleImageOnError}
-               ref={(e) => (refFiles[file.id] = e)} key={file.id} className={"file"} src={file.view_link}
-               alt="file preview"/>
+               ref={(e) => (refFiles[file.id] = e)} key={file.id} className={"file"} src={file.imgSrc}
+               alt={file.search}/>
         </div>
       );
     case "pdf":
       return (
         <div key={file.id} data-index={file.id} className={"file-item mfp-img"}>
           {
-            file.hasOwnProperty("pdfSrc") && isSafari ?
-              <object data={file.pdfSrc} width="600" height="400">
-                <embed src={file.pdfSrc} width="600" height="400"/>
-              </object> 
-            : 
-              <object data={file.view_link} width="600" height="400">
-                <embed src={file.view_link} width="600" height="400"/>
-              </object> 
+            <object data={file.imgSrc} width="600" height="400">
+              <embed src={file.imgSrc} width="600" height="400"/>
+            </object>
           }
         </div>
       );
@@ -413,7 +407,7 @@ const FileViewer = (props) => {
         <FileNameContainer>
           <FileName onClick={(e) => handleDownloadFile(e, file)} href={file.download_link} download={file.filename}
                     target={"_blank"}>
-            <DownloadIcon icon={"download"}/> {file.filename ? file.filename : file.name}
+            <DownloadIcon icon={"download"}/> {file.filename ? file.filename : file.search}
           </FileName>
         </FileNameContainer>
         {file.created_at && file.created_at.timestamp && (

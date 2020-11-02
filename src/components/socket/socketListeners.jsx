@@ -164,7 +164,7 @@ class SocketListeners extends Component {
       this.props.getOnlineUsers();
     }
     this.onlineUsers.current = setInterval(() => {
-      if (this.props.selectedChannel.isFetching) {
+      if (this.props.selectedChannel && this.props.selectedChannel.isFetching) {
         clearInterval(this.onlineUsers.current);
         this.onlineUsers.current = setTimeout(() => {
           this.fetchOnlineUsers();
