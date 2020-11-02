@@ -359,13 +359,14 @@ const VirtualizedChat = (props) => {
                     selectedChannel={selectedChannel}
                     showGifPlayer={showGifPlayer}
                     isAuthor={isAuthor}
-                    addMessageRef={getLoadRef(reply.id)}
+                    //addMessageRef={getLoadRef(reply.id)}
                     isLastChat={index + 1 === messages.length ? true : null}
                     loadReplies={loadReplies}
                     isBot={isBot}
                     chatSettings={chatSettings}
                     isLastChatVisible={isLastChatVisible}
                     dictionary={props.dictionary}
+                    isBroweserActive={props.isBrowserActive}
                   >
                     <ChatActionsContainer isAuthor={isAuthor} className="chat-actions-container">
                       {<ChatReactionButton isAuthor={isAuthor} scrollRef={props.infiniteScrollRef} reply={reply} />}
@@ -402,10 +403,11 @@ const VirtualizedChat = (props) => {
                         selectedChannel={selectedChannel}
                         reply={reply}
                         chatName={chatName}
-                        addMessageRef={getLoadRef(reply.id)}
+                        //addMessageRef={getLoadRef(reply.id)}
                         isLastChat={index + 1 === messages.length ? true : null} 
                         isLastChatVisible={isLastChatVisible}
                         dictionary={props.dictionary}
+                        isBroweserActive={props.isBrowserActive}
                     />
                     {reply.unfurls.length ? (
                       <ChatUnfurl

@@ -18,7 +18,8 @@ const INITIAL_STATE = {
   lastVisitedChannel: null,
   isLastChatVisible: false,
   lastReceivedMessage: null,
-  chatSidebarSearch: ""
+  chatSidebarSearch: "",
+  channelRange: {}
 };
 
 export default function (state = INITIAL_STATE, action) {
@@ -356,6 +357,7 @@ export default function (state = INITIAL_STATE, action) {
       channel = {
         ...channel,
         replies: [...channel.replies, action.data],
+        last_reply: action.data,
       };
       return {
         ...state,
@@ -368,6 +370,7 @@ export default function (state = INITIAL_STATE, action) {
             ? {
                 ...state.selectedChannel,
                 replies: [...state.selectedChannel.replies, action.data],
+                last_reply: action.data,
               }
             : state.selectedChannel,
       };
@@ -1272,6 +1275,15 @@ export default function (state = INITIAL_STATE, action) {
       return {
         ...state,
         lastReceivedMessage: action.data.latest_reply ? {id: action.data.latest_reply.reply_id, channel_id: action.data.latest_reply.channel_id} : state.lastReceivedMessage
+      }
+    }
+    case "SET_CHANNEL_RANGE": {
+      return {
+        ...state,
+        channelRange: {
+          ...state.channelRange,
+          [action.data.id]: action.data.range,
+        }
       }
     }
     default:
