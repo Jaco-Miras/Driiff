@@ -28,6 +28,7 @@ const ChatContactsList = (props) => {
   const channelAction = useChannelActions();
 
   const user = useSelector((state) => state.session.user);
+  const { virtualization } = useSelector((state) => state.settings.user.CHAT_SETTINGS);
 
   const handleChannelClick = useCallback(
 
@@ -42,7 +43,7 @@ const ChatContactsList = (props) => {
 
   useEffect(() => {
     const scrollComponent = document.getElementById("component-chat-thread");
-    if (scrollComponent) {
+    if (scrollComponent && !virtualization) {
       dispatch(
         setChannelHistoricalPosition({
           channel_id: selectedChannel.id,

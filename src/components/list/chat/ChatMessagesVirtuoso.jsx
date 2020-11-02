@@ -111,11 +111,6 @@ class ChatMessages extends React.PureComponent {
   };
 
   componentWillUnmount() {
-    const scrollComponent = document.querySelector(".chat-scroll-container")
-    console.log("save historical position");
-    if (scrollComponent) {
-      this.props.chatMessageActions.channelActions.saveHistoricalPosition(this.props.selectedChannel.id, scrollComponent);
-    }
     document.removeEventListener("keydown", this.handleEditOnArrowUp, false);
   }
 
@@ -147,20 +142,11 @@ class ChatMessages extends React.PureComponent {
 
         if (selectedChannel.replies.length === 0 || selectedChannel.skip === 0) {
           if (this.virtuoso.current){
-            this.virtuoso.current.scrollToIndex({index: 19, align: "start"})
+            this.virtuoso.current.scrollToIndex({index: res.data.results.length - 1, align: "start"})
           }
-          // this.setState({scrollingToBottom: true}, () => {
-          //   const scrollComponent = document.querySelector(".chat-scroll-container")
-          //   if (scrollComponent) {
-          //     setTimeout(() => {
-          //       scrollComponent.scrollTop = scrollComponent.scrollHeight;
-          //     }, 300)
-          //   }
-          // })
         } else {
           if (this.virtuoso.current) {
             this.virtuoso.current.adjustForPrependedItems(res.data.results.length)
-            //this.virtuoso.current.scrollToIndex({index: res.data.results.length - 1, align: "start"})
           }
         }
 
@@ -181,22 +167,7 @@ class ChatMessages extends React.PureComponent {
   };
 
   componentDidMount() {
-    const { selectedChannel, historicalPositions } = this.props;
-
-    if (historicalPositions.length) {
-      historicalPositions.forEach((hp) => {
-        if (hp.channel_id === selectedChannel.id) {
-          //scrollComponent.scrollTop = scrollComponent.scrollHeight - hp.scrollPosition;
-          this.setState({restoringScroll: true}, () => {
-            const scrollComponent = document.querySelector(".chat-scroll-container")
-            console.log(scrollComponent, 'restore this')
-            if (scrollComponent) {
-              scrollComponent.scrollTop = scrollComponent.scrollHeight - hp.scrollPosition;
-            }
-          })
-        }
-      });
-    }
+    const { selectedChannel } = this.props;
 
     if (selectedChannel.hasMore) this.loadReplies();
 
@@ -205,26 +176,8 @@ class ChatMessages extends React.PureComponent {
     }
   }
 
-  getSnapshotBeforeUpdate(prevProps, prevState) {
-    const { selectedChannel } = this.props;
-    //const scrollComponent = this.scrollComponent.current;
-    const scrollComponent = document.querySelector(".chat-scroll-container")
-    
-    if (prevProps.selectedChannel) {
-      if (scrollComponent) {
-        if ((selectedChannel.replies.length > 20) & (prevProps.selectedChannel.replies.length < selectedChannel.replies.length)) {
-          if (selectedChannel.replies.length - prevProps.selectedChannel.replies.length >= 2) {
-            console.log('snapshot', scrollComponent.scrollHeight, scrollComponent.scrollTop)
-            return scrollComponent.scrollHeight - scrollComponent.scrollTop;
-          }
-        }
-      }
-    }
-    return null;
-  }
-
   componentDidUpdate(prevProps, prevState, snapshot) {
-    const { selectedChannel, historicalPositions, user } = this.props;
+    const { selectedChannel, user } = this.props;
 
     //to be relocated
     let el = document.querySelectorAll(`.mention[data-id="${user.id}"]`);
@@ -233,51 +186,18 @@ class ChatMessages extends React.PureComponent {
         mentionEl.classList.add("is-author");
       });
     }
-    // const scrollComponent = this.scrollComponent.current;
-    const scrollComponent = document.querySelector(".chat-scroll-container")
+   
     //change channel
     if (this.props.selectedChannel && prevProps.selectedChannel.id !== selectedChannel.id) {
       if (selectedChannel.hasMore && selectedChannel.skip === 0) this.loadReplies();
       this.handleReadChannel();
-
-      // if (historicalPositions.length) {
-      //   historicalPositions.forEach((hp) => {
-      //     if (hp.channel_id === selectedChannel.id && scrollComponent) {
-      //       console.log("scroll to this", scrollComponent.scrollHeight - hp.scrollPosition, hp.scrollPosition);
-      //       this.setState({restoringScroll: true}, () => {
-      //         scrollComponent.scrollTop = scrollComponent.scrollHeight - hp.scrollPosition;
-      //       })
-      //     }
-      //   });
-      // }
     }
 
     if (selectedChannel && prevProps.selectedChannel.id === this.props.selectedChannel.id) {
-      // if (snapshot !== null && selectedChannel.replies.length !== prevProps.selectedChannel.replies.length) {
-      //   if (selectedChannel.replies.length - prevProps.selectedChannel.replies.length === 1) {
-      //     if (selectedChannel.last_reply && selectedChannel.last_reply.user && selectedChannel.last_reply.user.id !== this.props.user.id) {
-      //       if (!this.props.isLastChatVisible) {
-      //         //receiving other messsage
-      //         scrollComponent.scrollTop = scrollComponent.scrollHeight - snapshot;
-      //       }
-      //     }
-      //   } else {
-      //     //load more messages
-      //     console.log(snapshot, 'didupdate',  scrollComponent.scrollHeight, scrollComponent.scrollHeight - snapshot)
-      //     this.setState({restoringScroll: true}, () => {
-      //       scrollComponent.scrollTop = scrollComponent.scrollHeight - snapshot;
-      //     })
-      //   }
-      // }
       // has replies
       if (selectedChannel.replies.length) {
         if ((selectedChannel.replies.length - prevProps.selectedChannel.replies.length) === 1) {
           if (selectedChannel.last_reply && selectedChannel.last_reply.user && selectedChannel.last_reply.user.id === this.props.user.id) {
-            // this.setState({scrollingToBottom: true}, () => {
-            //   if (scrollComponent) {
-            //     scrollComponent.scrollTop = scrollComponent.scrollHeight;
-            //   }
-            // })
             //own user message
             if (this.virtuoso.current){
               this.virtuoso.current.scrollToIndex({index: selectedChannel.replies.length - 1, align: "end"})
@@ -288,11 +208,6 @@ class ChatMessages extends React.PureComponent {
                 this.handleReadChannel();
               }
               //other user message scroll to bottom after receiving
-              // this.setState({scrollingToBottom: true}, () => {
-              //   if (scrollComponent) {
-              //     scrollComponent.scrollTop = scrollComponent.scrollHeight;
-              //   }
-              // })
               if (this.virtuoso.current){
                 this.virtuoso.current.scrollToIndex({index: selectedChannel.replies.length - 1, align: "end"})
               }
@@ -429,17 +344,14 @@ function mapStateToProps(state) {
   const {
     global: { isBrowserActive, recipients, slugs },
     session: { user },
-    users: { onlineUsers },
-    chat: { historicalPositions, isLastChatVisible },
+    chat: { isLastChatVisible },
   } = state;
 
   return {
     user,
     settings: state.settings.user.CHAT_SETTINGS,
     sharedSlugs: slugs,
-    onlineUsers,
     isBrowserActive,
-    historicalPositions,
     recipients,
     isLastChatVisible,
   };
