@@ -69,6 +69,7 @@ import {
   generateUnfurl,
   generateUnfurlReducer,
   getConnectedSlugs,
+  getLatestReply,
   incomingDoneToDo,
   incomingFavouriteItem,
   incomingRemoveToDo,
@@ -78,8 +79,7 @@ import {
   refetchOtherMessages,
   setBrowserTabStatus,
   setGeneralChat,
-  setUnreadNotificationCounterEntries,
-  getLatestReply
+  setUnreadNotificationCounterEntries
 } from "../../redux/actions/globalActions";
 import {
   fetchPost,
@@ -130,6 +130,8 @@ class SocketListeners extends Component {
       disconnectedTimestamp: null,
       reconnectedTimestamp: null,
     };
+
+    this.onlineUsers = React.createRef(null);
   }
 
   refetch = () => {
@@ -150,18 +152,34 @@ class SocketListeners extends Component {
           if (err) return;
           let channelsWithMessage = res.data.filter((c) => c.count_message > 0);
           channelsWithMessage.forEach((c) => {
-            this.props.getChannelDetail({id: c.channel_id});
-          })
+            this.props.getChannelDetail({ id: c.channel_id });
+          });
         }
       )
     }
   }
 
+  fetchOnlineUsers = (isMount = false) => {
+    if (isMount) {
+      this.props.getOnlineUsers();
+    }
+    this.onlineUsers.current = setInterval(() => {
+      if (this.props.selectedChannel.isFetching) {
+        clearInterval(this.onlineUsers.current);
+        this.onlineUsers.current = setTimeout(() => {
+          this.fetchOnlineUsers();
+        }, 300);
+      } else {
+        this.props.getOnlineUsers();
+      }
+    }, 30000);
+  };
+
   componentDidMount() {
 
-    this.props.getLatestReply({}, (err,res) => {
-      console.log(res, 'latest')
-    })
+    this.props.getLatestReply({}, (err, res) => {
+      console.log(res, 'latest');
+    });
     window.Echo.connector.socket.on("connect", () => {
       console.log("socket connected");
     });
@@ -182,10 +200,7 @@ class SocketListeners extends Component {
      * @todo Online users are determined every 30 seconds
      * online user reducer should be updated every socket call
      */
-    this.props.getOnlineUsers();
-    setInterval(() => {
-      this.props.getOnlineUsers();
-    }, 30000);
+    this.fetchOnlineUsers(true);
 
     // this.props.addUserToReducers({
     //   id: this.props.user.id,

@@ -12,6 +12,7 @@ import { useSelector } from "react-redux";
 import { isIPAddress } from "./helpers/commonFunctions";
 
 import "react-toastify/dist/ReactToastify.css";
+import { imgAsLogin } from "./helpers/slugHelper";
 
 const Wrapper = styled.div`
   min-height: 100%;
@@ -84,6 +85,7 @@ function App() {
 
   return (
     <Wrapper className="App">
+      {imgAsLogin()}
       <ToastContainer transition={Slide} position={"top-center"} autoClose={2000} pauseOnHover={false}/>
       <PreLoader/>
       {location.pathname === "/driff" ? (
