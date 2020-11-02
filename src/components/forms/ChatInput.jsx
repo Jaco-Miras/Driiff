@@ -311,6 +311,9 @@ const ChatInput = (props) => {
       dispatch(putChatMessage(payloadEdit));
       setEditMode(false);
       setEditMessage(null);
+      if (editChatMessage !== null) {
+        dispatch(setEditChatMessage(null));
+      }
     } else {
       dispatch(postChatMessage(payload));
     }
