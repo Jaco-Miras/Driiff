@@ -655,6 +655,10 @@ class ChatMessages extends React.PureComponent {
     this.varRefs.yDown.current = e.touches[0].clientY;
   };
 
+  handleChatListTouchMove = (e) => {
+    this.varRefs.timerStart.current += 2000;
+  };
+
   handleChatListTouchEnd = (e) => {
     if ((e.timeStamp - this.varRefs.timerStart.current) > 125) {
       this.setState({
@@ -799,6 +803,7 @@ class ChatMessages extends React.PureComponent {
                               className={`chat-list chat-list-item-${reply.id} code-${reply.code}`}
                               showTimestamp={showTimestamp}
                               onTouchStart={this.handleChatListTouchStart}
+                              onTouchMove={this.handleChatListTouchMove}
                               onTouchEnd={this.handleChatListTouchEnd}
                             >
                               {reply.user && showMessageLine && this.props.unreadCount > 0 && <ChatNewMessagesLine/>}
