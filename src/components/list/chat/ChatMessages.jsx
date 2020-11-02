@@ -705,18 +705,18 @@ class ChatMessages extends React.PureComponent {
             <Loader />
           </ChatLoader>
         )}
-        <InfiniteScroll ref={this.infiniteScroll} className={"infinite-scroll"} id="infinite-scroll-chat-replies">
+        {/* <InfiniteScroll ref={this.infiniteScroll} className={"infinite-scroll"} id="infinite-scroll-chat-replies"> */}
           {selectedChannel.replies && selectedChannel.replies.length >= 20 && (
             <InView as="div" onChange={(inView, entry) => this.handleLoadMoreRefChange(inView, entry)}>
               <span className="intersection-load-more-ref"></span>
             </InView>
           )}
           <ul>
-            {selectedChannel.isFetching && !(selectedChannel.hasMore && selectedChannel.replies.length === 0) && (
+            {/* {selectedChannel.isFetching && !(selectedChannel.hasMore && selectedChannel.replies.length === 0) && (
               <ChatLoader>
                 <Loader />
               </ChatLoader>
-            )}
+            )} */}
             {selectedChannel.replies && selectedChannel.replies.length
               ? groupedMessages.map((gm, i) => {
                   return (
@@ -917,7 +917,7 @@ class ChatMessages extends React.PureComponent {
               </EmptyState>
             )}
           </ul>
-        </InfiniteScroll>
+        {/* </InfiniteScroll> */}
       </ChatReplyContainer>
     );
   }

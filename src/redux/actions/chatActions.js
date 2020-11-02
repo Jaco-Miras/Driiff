@@ -259,3 +259,7 @@ export function getChannelDetail(payload, callback) {
 export function setSidebarSearch(payload, callback) {
   return SimpleDispatchActionToReducer("SET_SIDEBAR_SEARCH", payload, callback);
 }
+
+export function setChannelRange(payload, callback) {
+  return SimpleDispatchActionToReducer("SET_CHANNEL_RANGE", payload, callback);
+}

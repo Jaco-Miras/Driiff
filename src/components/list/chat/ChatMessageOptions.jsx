@@ -9,7 +9,7 @@ const ChatMessageOptions = (props) => {
   const { isAuthor, replyData, className = "", selectedChannel, dictionary, width = 250 } = props;
   const [showMoreOptions, setShowMoreOptions] = useState(false);
   const dispatch = useDispatch();
-  const scrollEl = document.getElementById("infinite-scroll-chat-replies");
+  const scrollEl = document.getElementById("component-chat-thread");
 
   const chatMessageActions = useChatMessageActions();
 
