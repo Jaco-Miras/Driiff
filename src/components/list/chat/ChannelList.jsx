@@ -121,20 +121,13 @@ const ChannelList = (props) => {
   const handleSelectChannel = () => {
     document.body.classList.add("m-chat-channel-closed");
 
-    if (selectedChannel !== null) {
+    if (selectedChannel !== null && !virtualization) {
       let scrollComponent = document.getElementById("component-chat-thread");
-      if (virtualization) {
-        scrollComponent = document.querySelector(".chat-scroll-container");
-        if (scrollComponent) {
-          channelActions.saveHistoricalPosition(selectedChannel.id, scrollComponent);
-        }
-      } else {
-        if (scrollComponent) {
-          channelActions.saveHistoricalPosition(selectedChannel.id, scrollComponent);
-        }
+      if (scrollComponent) {
+        console.log('set historical')
+        channelActions.saveHistoricalPosition(selectedChannel.id, scrollComponent);
       }
     }
-
     channelActions.select({ ...channel, selected: true });
     // history.push(`/chat/${channel.code}`);
   };

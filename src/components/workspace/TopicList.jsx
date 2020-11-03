@@ -44,11 +44,12 @@ const TopicList = (props) => {
   const route = useRouteMatch();
   const { params } = route;
   const onWorkspace = route.url.startsWith("/workspace");
+  const { virtualization } = useSelector((state) => state.settings.user.CHAT_SETTINGS);
 
   const handleSelectTopic = () => {
     document.body.classList.remove("navigation-show");
 
-    if (selectedChannel) {
+    if (selectedChannel && !virtualization) {
       const scrollComponent = document.getElementById("component-chat-thread");
       if (scrollComponent) {
         console.log(scrollComponent.scrollHeight - scrollComponent.scrollTop, "save this scroll");

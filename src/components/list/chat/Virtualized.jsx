@@ -75,7 +75,7 @@ const Virtualized = (props) => {
         }
       }
     }, [selectedChannel, previousChannel]);
-    console.log(channelRange)
+    console.log(channelRange, selectedChannel.id)
     return (
         <Virtuoso
             //ScrollContainer={ScrollContainer}
