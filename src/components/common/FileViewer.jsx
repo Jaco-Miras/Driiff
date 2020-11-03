@@ -7,6 +7,7 @@ import "../../vendors/lightbox/magnific-popup.css";
 import { useOutsideClick, useTimeFormat } from "../hooks";
 import ImageTextLink from "./ImageTextLink";
 import { SvgIconFeather } from "./SvgIcon";
+import { isSafari } from "react-device-detect";
 
 const FileViewerContainer = styled.div`
   position: fixed;
@@ -162,9 +163,13 @@ const FileWrapper = styled.figure`
 `;
 
 const FileRender = (props) => {
-  const {file, setFiles, files} = props;
+  const { file, setFiles, files } = props;
   let refFiles = {};
   let userAuth = JSON.parse(localStorage.getItem("userAuthToken"));
+
+  const refs = {
+    fileSrc: useRef(),
+  };
 
   const handleImageOnLoad = (e) => {
     e.currentTarget.classList.remove("d-none");
@@ -209,17 +214,24 @@ const FileRender = (props) => {
     window.focus();
   };
 
+
   useEffect(() => {
     fetch(file.view_link, {
       method: "GET", keepalive: true, headers: {
-        'Authorization': `Bearer ${userAuth.access_token}`,
+        Authorization: `Bearer ${userAuth.access_token}`,
         'Access-Control-Allow-Origin': "*",
-        'crossorigin': true
+        Accept: file.mime_type,
+        Connection: "keep-alive",
+        crossorigin: true
       }
     })
       .then(function (response) {
         console.log(response);
-        return response.blob();
+        if (isSafari) {
+          refs.fileSrc.current = response.blob();
+        } else {
+          refs.fileSrc.current = response.arrayBuffer();
+        }
       })
       .then(function (data) {
         const imgObj = URL.createObjectURL(new Blob([data], {
@@ -239,7 +251,7 @@ const FileRender = (props) => {
       }, function (err) {
         console.log(err, 'error');
       });
-  }, [file]);
+  }, []);
 
   switch (file.type.toLowerCase()) {
     case "video":
@@ -258,7 +270,7 @@ const FileRender = (props) => {
             autoPlay={false}
             onLoadStart={handleVideoOnLoad}
             onError={handleVideoOnError}
-            src={file.imgSrc}
+            src={refs.fileSrc.current}
           />
         </div>
       );
@@ -266,7 +278,8 @@ const FileRender = (props) => {
       return (
         <div key={file.id} data-index={file.id} className={"file-item mfp-img"}>
           <img data-index={file.id} data-attempt={0} onLoad={handleImageOnLoad} onError={handleImageOnError}
-               ref={(e) => (refFiles[file.id] = e)} key={file.id} className={"file"} src={file.imgSrc}
+               ref={(e) => (refFiles[file.id] = e)} key={file.id} className={"file"}
+               src={refs.fileSrc.current}
                alt={file.search}/>
         </div>
       );
@@ -274,8 +287,8 @@ const FileRender = (props) => {
       return (
         <div key={file.id} data-index={file.id} className={"file-item mfp-img"}>
           {
-            <object data={file.imgSrc} width="600" height="400">
-              <embed src={file.imgSrc} width="600" height="400"/>
+            <object data={refs.fileSrc.current} width="600" height="400">
+              <embed src={refs.fileSrc.current} width="600" height="400"/>
             </object>
           }
         </div>
@@ -298,7 +311,6 @@ const FileRender = (props) => {
         </div>
       );
   }
-
 };
 
 const FileViewer = (props) => {
