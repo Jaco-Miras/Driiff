@@ -13,6 +13,8 @@ import store from "./redux/store/configStore";
 
 const { REACT_APP_sentry_dsn } = process.env;
 
+console.log(REACT_APP_sentry_dsn);
+
 Sentry.init({
   dsn: REACT_APP_sentry_dsn,
   integrations: [
