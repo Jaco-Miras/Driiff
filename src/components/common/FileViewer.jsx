@@ -138,7 +138,7 @@ const FileWrapper = styled.figure`
   padding: 40px 0;
   margin: 0 auto;
   img {
-    max-width: 80vh;
+    max-width: 100%;
     max-height: 80vh;
   }
 `;
@@ -221,16 +221,16 @@ const FileRender = (props) => {
         method: "GET", keepalive: true, headers: {
           Authorization: `Bearer ${userAuth.access_token}`,
           'Access-Control-Allow-Origin': "*",
-          Accept: "application/json",
+          Accept: file.mime_type,
           Connection: "keep-alive",
           crossorigin: true,
         }
       })
         .then(function (response) {
           if (isSafari) {
-            setFileSrc(response.blob());
+            return response.blob();
           } else {
-            setFileSrc(response.arrayBuffer());
+            return response.arrayBuffer();
           }
         })
         .then(function (data) {
@@ -248,6 +248,7 @@ const FileRender = (props) => {
               return f;
             }
           }));
+          setFileSrc(imgObj);
           setIsLoaded(true);
         }, function (err) {
           console.log(err, 'error');

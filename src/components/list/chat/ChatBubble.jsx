@@ -1396,8 +1396,9 @@ const ChatBubble = (props) => {
   let div = document.createElement("div");
   div.innerHTML = body;
 
-  let match = (div.textContent || div.innerText || "").match(getEmojiRegexPattern());
-  if (match && match.length === 1) {
+
+  const stripBodyTag = (div.textContent || div.innerText || "");
+  if (stripBodyTag.length <= 3 && stripBodyTag.match(getEmojiRegexPattern())) {
     isEmoticonOnly = true;
   }
 
