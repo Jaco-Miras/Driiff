@@ -21,10 +21,10 @@ const ChatBubbleContainer = styled.div`
   padding: ${(props) => (props.hasFiles ? "3px" : "6px 9px 8px 9px")};
   // padding: 6px 9px 8px 9px;
   border-radius: 6px;
-  background: ${(props) => (props.isAuthor ? props.theme.self.chat_bubble_background_color : props.theme.others.chat_bubble_background_color)};
+  background: ${(props) => (props.isAuthor ? "#7A1B8B" : "#F0F0F0")};
   text-align: left;
   width: 100%;
-  color: ${(props) => (props.isAuthor ? props.theme.self.chat_bubble_text_color : props.theme.others.chat_bubble_text_color)};
+  color: ${(props) => (props.isAuthor ? "#ffffff" : "#000000")};
   font-size: 0.835rem;
   overflow: visible;
   //min-height: 40px;
@@ -33,7 +33,7 @@ const ChatBubbleContainer = styled.div`
     props.hideBg === true &&
     !props.isEmoticonOnly &&
     `
-        background: none;
+        // background: none;
         padding: 0;
     `}
 
@@ -75,7 +75,7 @@ const ChatBubbleContainer = styled.div`
   }
   span.emoticon-body {
     font-size: 2.5rem;
-    padding: 25px 15px;
+    padding: 20px 10px;
     text-align: right;
     text-align: ${(props) => (props.isAuthor ? "right" : "left")};
   }
@@ -526,14 +526,17 @@ const ForwardedSpan = styled.span`
   }
 `;
 
-const ChatNameNotAuthorMobile = styled.span`
-  display: none;
+const ChatNameNotAuthor = styled.span`
+  font-weight: 500;
+  padding: ${(props) => (props.isEmoticonOnly ? "6px 9px 8px 9px" : "")};
+  // display: none;
   @media (max-width: 620px) {
     display: block;
     font-size: 11px;
     line-height: 1.2;
   }
 `;
+
 const THRESHOLD = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9];
 const ChatBubble = (props) => {
   const { reply, showAvatar, selectedChannel, showGifPlayer, isAuthor, addMessageRef, user, recipients, isLastChat, chatMessageActions, timeFormat, isBot, chatSettings, isLastChatVisible, dictionary, isBrowserActive } = props;
@@ -1451,7 +1454,7 @@ const ChatBubble = (props) => {
 
               {!isAuthor && showAvatar && (
                 <>
-                  <ChatNameNotAuthorMobile className="chat-name-not-author-mobile">{reply.user.name}</ChatNameNotAuthorMobile>
+                  <ChatNameNotAuthor className="chat-name-not-author-mobile">{reply.user.name}</ChatNameNotAuthor>
                 </>
               )}
               {body !== "<span></span>" && (
