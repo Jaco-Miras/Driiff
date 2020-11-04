@@ -1,15 +1,15 @@
 import momentTZ from "moment-timezone";
-import React, {useCallback} from "react";
-import {useDispatch, useSelector} from "react-redux";
+import React, { useCallback } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
-import {CustomInput} from "reactstrap";
+import { CustomInput } from "reactstrap";
 import styled from "styled-components";
-import {SvgIconFeather} from "../../common";
+import { SvgIconFeather } from "../../common";
 import Flag from "../../common/Flag";
-import {useSettings, useToaster, useTranslation} from "../../hooks";
-import {getDriffName} from "../../hooks/useDriff";
-import {darkTheme, lightTheme} from "../../../helpers/selectTheme";
-import {deletePushSubscription} from "../../../redux/actions/globalActions";
+import { useSettings, useToaster, useTranslation } from "../../hooks";
+import { getDriffName } from "../../hooks/useDriff";
+import { darkTheme, lightTheme } from "../../../helpers/selectTheme";
+import { deletePushSubscription } from "../../../redux/actions/globalActions";
 
 const Wrapper = styled.div`
   .card {
@@ -323,17 +323,17 @@ const ProfileSettings = (props) => {
             </div>
           </div>
           {
-            ["nilo@makedevelopment.com", "joules@makedevelopment.com", "jessryll@makedevelopment.com", "rtuerlings@zuid.com", "rt@make24.nl"].includes(loggedUser.email) && 
+            ["nilo@makedevelopment.com", "joules@makedevelopment.com", "jessryll@makedevelopment.com", "rtuerlings@zuid.com", "rt@make24.nl", "sander@zuid.com"].includes(loggedUser.email) &&
             (
               <div className="row mb-3">
-              <div className="col-12">
-                <CustomInput
-                  className="cursor-pointer text-muted"
-                  checked={virtualization}
-                  type="switch"
-                  id="chat_virtualization"
-                  name="virtualization"
-                  onChange={handleChatSwitchToggle}
+                <div className="col-12">
+                  <CustomInput
+                    className="cursor-pointer text-muted"
+                    checked={virtualization}
+                    type="switch"
+                    id="chat_virtualization"
+                    name="virtualization"
+                    onChange={handleChatSwitchToggle}
                   data-success-message={`You have turn ${virtualization ? "OFF" : "ON"} virtualization in chat messages!`}
                   label={<span>Virtualized chat</span>}
                 />
