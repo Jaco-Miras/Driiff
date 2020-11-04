@@ -164,6 +164,8 @@ const FileWrapper = styled.figure`
 
 const FileRender = (props) => {
   const { file, setFiles, files } = props;
+  const [fileSrc, setFileSrc] = useState(null);
+
   let refFiles = {};
   let userAuth = JSON.parse(localStorage.getItem("userAuthToken"));
 
@@ -226,11 +228,10 @@ const FileRender = (props) => {
       }
     })
       .then(function (response) {
-        console.log(response);
         if (isSafari) {
-          refs.fileSrc.current = response.blob();
+          setFileSrc(response.blob());
         } else {
-          refs.fileSrc.current = response.arrayBuffer();
+          setFileSrc(response.blob());
         }
       })
       .then(function (data) {
@@ -270,7 +271,7 @@ const FileRender = (props) => {
             autoPlay={false}
             onLoadStart={handleVideoOnLoad}
             onError={handleVideoOnError}
-            src={refs.fileSrc.current}
+            src={fileSrc}
           />
         </div>
       );
@@ -279,16 +280,16 @@ const FileRender = (props) => {
         <div key={file.id} data-index={file.id} className={"file-item mfp-img"}>
           <img data-index={file.id} data-attempt={0} onLoad={handleImageOnLoad} onError={handleImageOnError}
                ref={(e) => (refFiles[file.id] = e)} key={file.id} className={"file"}
-               src={refs.fileSrc.current}
-               alt={file.search}/>
+               src={fileSrc}
+               alt={file.filename ? file.filename : file.search}/>
         </div>
       );
     case "pdf":
       return (
         <div key={file.id} data-index={file.id} className={"file-item mfp-img"}>
           {
-            <object data={refs.fileSrc.current} width="600" height="400">
-              <embed src={refs.fileSrc.current} width="600" height="400"/>
+            <object data={fileSrc} width="600" height="400">
+              <embed src={fileSrc} width="600" height="400"/>
             </object>
           }
         </div>

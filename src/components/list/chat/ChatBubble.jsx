@@ -886,7 +886,6 @@ const ChatBubble = (props) => {
   const [body, setBody] = useState(initialBodyParse());
   const [quoteBody, setQuoteBody] = useState(initialQuoteParse());
   const [quoteAuthor, setQuoteAuthor] = useState("");
-  const [isEmoticonOnly, setIsEmoticonOnly] = useState(false);
   const [loadRef, loadInView] = useInView({
     threshold: 1,
   });
@@ -1022,7 +1021,6 @@ const ChatBubble = (props) => {
   }, []);
 
   const parseBody = useCallback(() => {
-    let isEmoticonOnly = false;
     let replyBody = reply.body;
     if (reply.is_deleted) {
       //replyBody = _t(reply.body, "The chat message has been deleted");
@@ -1031,19 +1029,7 @@ const ChatBubble = (props) => {
       if (reply.created_at.timestamp !== reply.updated_at.timestamp) {
         replyBody = `${replyBody}<span class='edited-message'>(edited)</span>`;
       }
-
-      if (replyBody.length === 13 || replyBody.length === 2) {
-        if (replyBody !== reply.body) {
-          isEmoticonOnly = true;
-        } else {
-          let match = replyBody.match(getEmojiRegexPattern());
-          if (match && match.length === 1) {
-            isEmoticonOnly = true;
-          }
-        }
-      }
     }
-    setIsEmoticonOnly(isEmoticonOnly);
 
     let replyQuoteBody = "";
     let replyQuoteAuthor = "";
@@ -1071,7 +1057,8 @@ const ChatBubble = (props) => {
         reply.quote.files.forEach((file) => {
           if (file.type === "image") {
             replyQuoteBody += renderToString(
-              <StyledImageTextLink className={"image-quote"} target={"_blank"} href={file.view_link} icon={"image-video"} isAuthor={isAuthor}>
+              <StyledImageTextLink className={"image-quote"} target={"_blank"} href={file.thumbnail_link}
+                                   icon={"image-video"} isAuthor={isAuthor}>
                 Photo
               </StyledImageTextLink>
             );
@@ -1405,6 +1392,14 @@ const ChatBubble = (props) => {
   };
 
   //const bodyContent = quillHelper.parseEmoji(body);
+  let isEmoticonOnly = false;
+  let div = document.createElement("div");
+  div.innerHTML = body;
+
+  let match = (div.textContent || div.innerText || "").match(getEmojiRegexPattern());
+  if (match && match.length === 1) {
+    isEmoticonOnly = true;
+  }
 
   return (
     <ChatBubbleContainer

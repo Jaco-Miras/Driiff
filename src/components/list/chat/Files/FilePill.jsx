@@ -168,9 +168,9 @@ const FilePill = forwardRef((props, ref) => {
             onError={handleImageOnError}
             height={150}
             onClick={handleViewFile}
-            src={file.view_link}
-            alt={file.filename}
-            title={file.filename}
+            src={file.thumbnail_link ? file.thumbnail_link : file.view_link}
+            alt={file.filename ? file.filename : file.search}
+            title={file.filename ? file.filename : file.search}
           />
         </>
       ) : file.type.toLowerCase() === "video" ? (
@@ -189,7 +189,7 @@ const FilePill = forwardRef((props, ref) => {
           <div className="card app-file-list">
             <div className="app-file-icon">{fileHandler.getFileIcon(file.type)}</div>
             <div className="p-2 small">
-              <div>{file.filename}</div>
+              <div>{file.filename ? file.filename : file.search}</div>
             </div>
           </div>
         </DocFile>
