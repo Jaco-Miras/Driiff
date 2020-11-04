@@ -26,7 +26,12 @@ Sentry.init({
 });
 
 
-LogRocket.init('z1ni7v/driff');
+LogRocket.init('z1ni7v/driff', {
+  dom: {
+    textSanitizer: true,
+    inputSanitizer: true,
+  }
+});
 
 const wrapApp = (reduxStore) => (
   <Provider store={reduxStore}>
