@@ -6,7 +6,6 @@ import { setViewFiles } from "../../redux/actions/fileActions";
 import "../../vendors/lightbox/magnific-popup.css";
 import { useOutsideClick, useTimeFormat } from "../hooks";
 import { SvgIconFeather } from "./SvgIcon";
-import { isSafari } from "react-device-detect";
 
 const FileViewerContainer = styled.div`
   position: fixed;
@@ -242,11 +241,7 @@ const FileRender = (props) => {
         }
       })
         .then(function (response) {
-          if (isSafari) {
-            return response.blob();
-          } else {
-            return response.arrayBuffer();
-          }
+          return response.blob();
         })
         .then(function (data) {
           const imgObj = URL.createObjectURL(new Blob([data], {
