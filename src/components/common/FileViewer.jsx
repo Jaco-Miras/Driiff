@@ -161,6 +161,22 @@ const StyledFileRender = styled.div`
         max-height: 0;
       `}    
     }
+    
+    &.file-pdf {
+      &:not([data]) {
+        opacity: 0;
+        max-height: 0;      
+      }
+      &[data] {
+        ${props => props.isLoaded ? `
+          opacity: 1;
+          max-height: 80vh;      
+        ` : `
+          opacity: 0;
+          max-height: 0;
+        `}    
+      }
+    }
   }
 `;
 
@@ -221,7 +237,7 @@ const FileRender = (props) => {
         method: "GET", keepalive: true, headers: {
           Authorization: `Bearer ${userAuth.access_token}`,
           'Access-Control-Allow-Origin': "*",
-          Accept: file.mime_type,
+          Accept: "application/json",
           Connection: "keep-alive",
           crossorigin: true,
         }
@@ -295,7 +311,7 @@ const FileRender = (props) => {
       return (
         <StyledFileRender isLoaded={isLoaded} key={file.id} data-index={file.id}
                           className={`file-item mfp-img ${className}`}>
-          <object className={`file opacity-0`} data={fileSrc} width="600" height="400">
+          <object className={`file file-pdf`} data={fileSrc} width="600" height="400">
             <embed src={fileSrc} width="600" height="400"/>
           </object>
         </StyledFileRender>
