@@ -164,7 +164,7 @@ const FileWrapper = styled.figure`
 
 const FileRender = (props) => {
   const { file, setFiles, files } = props;
-  const [fileSrc, setFileSrc] = useState(null);
+  const [fileSrc, setFileSrc] = useState(file.thumbnail_link ? file.thumbnail_link : null);
 
   let refFiles = {};
   let userAuth = JSON.parse(localStorage.getItem("userAuthToken"));
@@ -179,7 +179,6 @@ const FileRender = (props) => {
   };
 
   const handleImageOnError = (e) => {
-    //console.log(e, "image did not load");
     if (e.currentTarget.dataset.attempt === "0") {
       e.currentTarget.dataset.attempt = 1;
       e.currentTarget.src = `${getAPIUrl({ isDNS: true })}/file-view-attempt/${file.file_id}/${localStorage.getItem("atoken")}`;
@@ -222,7 +221,7 @@ const FileRender = (props) => {
       method: "GET", keepalive: true, headers: {
         Authorization: `Bearer ${userAuth.access_token}`,
         'Access-Control-Allow-Origin': "*",
-        Accept: file.mime_type,
+        Accept: "application/json",
         Connection: "keep-alive",
         crossorigin: true
       }
@@ -231,7 +230,7 @@ const FileRender = (props) => {
         if (isSafari) {
           setFileSrc(response.blob());
         } else {
-          setFileSrc(response.blob());
+          setFileSrc(response.arrayBuffer());
         }
       })
       .then(function (data) {
@@ -261,13 +260,13 @@ const FileRender = (props) => {
           <img className={"d-none"} src={require("../../assets/icon/limitations/l/text.svg")}
                alt={"File not found."}/>
           <video
+            className={`file`}
             data-index={file.id}
             data-attempt={0}
             ref={(e) => (refFiles[file.id] = e)}
             controls
             playsInline
             key={file.id}
-            className={"file"}
             autoPlay={false}
             onLoadStart={handleVideoOnLoad}
             onError={handleVideoOnError}
@@ -278,8 +277,9 @@ const FileRender = (props) => {
     case "image":
       return (
         <div key={file.id} data-index={file.id} className={"file-item mfp-img"}>
-          <img data-index={file.id} data-attempt={0} onLoad={handleImageOnLoad} onError={handleImageOnError}
-               ref={(e) => (refFiles[file.id] = e)} key={file.id} className={"file"}
+          <img className={`file`} data-index={file.id} data-attempt={0} onLoad={handleImageOnLoad}
+               onError={handleImageOnError}
+               ref={(e) => (refFiles[file.id] = e)} key={file.id}
                src={fileSrc}
                alt={file.filename ? file.filename : file.search}/>
         </div>
@@ -287,18 +287,15 @@ const FileRender = (props) => {
     case "pdf":
       return (
         <div key={file.id} data-index={file.id} className={"file-item mfp-img"}>
-          {
-            <object data={fileSrc} width="600" height="400">
-              <embed src={fileSrc} width="600" height="400"/>
-            </object>
-          }
+          <object className={`file`} data={fileSrc} width="600" height="400">
+            <embed src={fileSrc} width="600" height="400"/>
+          </object>
         </div>
       );
     default:
       return (
         <div key={file.id} data-index={file.id} className={"file-item mfp-img cannot-preview"}>
           <Eye icon={"eye-off"}/>
-
           <p>
             We can't preview this file type. <br/>
             Try downloading the file to view it.
@@ -435,7 +432,6 @@ const FileViewer = (props) => {
                 ×
               </CloseButton>
               <FileWrapper>
-                {/* {renderFile(files[activeIndex])} */}
                 {
                   <FileRender 
                     files={files}
