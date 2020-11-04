@@ -41,19 +41,19 @@ const ChatBubbleContainer = styled.div`
     content: ${(props) => props.showAvatar && props.hideBg === false && "''"};
     border: 10px solid #0000;
     position: absolute;
-    top: 10px;
+    top: 6px;
     z-index: 1;
-    ${(props) => (props.isAuthor ? "right: -18px" : "left: -15px")};
-    border-left-color: ${(props) => (props.isAuthor ? props.theme.self.chat_bubble_background_color : "#0000")};
-    border-right-color: ${(props) => (!props.isAuthor ? props.theme.others.chat_bubble_background_color : "#0000")};
+    ${(props) => (props.isAuthor ? "right: -16px" : "left: -15px")};
+    border-left-color: ${(props) => (props.isAuthor ? "#7A1B8B" : "#0000")};
+    border-right-color: ${(props) => (!props.isAuthor ? "#F0F0F0" : "#0000")};
     height: 5px;
   }
 
   a:not([href]):not([tabindex]) {
-    color: ${(props) => (props.isAuthor ? props.theme.self.chat_bubble_link_color : props.theme.others.chat_bubble_link_color)};
+    color: ${(props) => (props.isAuthor ? "#ffffff" : "#8C3B9B")};
 
     &:hover {
-      color: ${(props) => (props.isAuthor ? props.theme.self.chat_bubble_hover_color : props.theme.others.chat_bubble_hover_color)};
+      color: ${(props) => (props.isAuthor ? "#fff" : "#0056b3")};
     }
   }
 
@@ -61,7 +61,7 @@ const ChatBubbleContainer = styled.div`
     width: 100%;
   }
   p.reply-author {
-    color: ${(props) => (props.isAuthor ? "#ffffff" : props.theme.others.chat_bubble_name_text_color)};
+    color: ${(props) => (props.isAuthor ? "#ffffff" : "#AAB0C8")};
     font-weight: 400;
     font-size: 12px;
     font-style: italic;
@@ -149,9 +149,9 @@ const ChatBubbleContainer = styled.div`
 `;
 
 const QuoteContainer = styled.div`
-  background: ${(props) => (props.isAuthor ? props.theme.self.chat_bubble_quote_background_color : props.theme.others.chat_bubble_quote_background_color)};
-  border-radius: 8px 8px 0 0;
-  margin: -7px -9px 10px -9px;
+  background: ${(props) => (props.isAuthor ? "#8C3B9B" : "#E4E4E4")};
+  border-radius: 6px;
+  margin: 4px -4px 4px -4px;
   text-align: left;
   padding: 10px 10px 10px 20px;
   position: relative;
@@ -160,7 +160,7 @@ const QuoteContainer = styled.div`
   &:before {
     height: 70%;
     width: 5px;
-    background: ${(props) => (props.isAuthor ? props.theme.self.chat_bubble_quote_background_color : props.theme.others.chat_bubble_quote_background_color)};
+    background: ${(props) => (props.isAuthor ? "#8C3B9B" : "#E4E4E4")};
     background: #ffffffe6;
     position: absolute;
     ${(props) => !props.isEmoticonOnly && "content: ''"};
@@ -172,22 +172,22 @@ const QuoteContainer = styled.div`
       display: none;
     }
   }
-  &:after {
-    ${(props) => !props.isEmoticonOnly && "content: ''"};
-    border: 10px solid transparent;
-    ${(props) => (props.isAuthor ? "border-left-color: " + props.theme.self.chat_bubble_quote_background_color : "border-right-color: " + props.theme.others.chat_bubble_quote_background_color)};
-    position: absolute;
-    top: ${(props) => (props.showAvatar && !props.isAuthor ? "11px" : "11px")};
-    z-index: 12;
-    ${(props) => (!props.isAuthor ? "left: -15px" : "right: -15px")};
-    height: 5px;
-    @media all and (max-width: 620px) {
-      display: none;
-    }
-    &:dark {
-      ${(props) => (props.isAuthor ? "border-left-color: red !important;" : "border-right-color: yellow !important;")};
-    }
-  }
+  // &:after {
+  //   ${(props) => !props.isEmoticonOnly && "content: ''"};
+  //   border: 10px solid transparent;
+  //   ${(props) => (props.isAuthor ? "border-left-color: " + "#8C3B9B" : "border-right-color: " + "#E4E4E4")};
+  //   position: absolute;
+  //   top: ${(props) => (props.showAvatar && !props.isAuthor ? "11px" : "11px")};
+  //   z-index: 12;
+  //   ${(props) => (!props.isAuthor ? "left: -15px" : "right: -15px")};
+  //   height: 5px;
+  //   @media all and (max-width: 620px) {
+  //     display: none;
+  //   }
+  //   &:dark {
+  //     ${(props) => (props.isAuthor ? "border-left-color: red !important;" : "border-right-color: yellow !important;")};
+  //   }
+  // }
   @media all and (max-width: 620px) {
     margin: -7px -7px 10px -7px;
     padding: 7px;
@@ -202,7 +202,7 @@ const QuoteAuthor = styled.div`
   }
 `;
 const QuoteContent = styled.div`
-  color: ${(props) => (props.isAuthor ? props.theme.self.chat_bubble_quote_text_color : props.theme.others.chat_bubble_quote_text_color)};
+  color: ${(props) => (props.isAuthor ? "#ffffffe6" : "#000000")};
   max-width: 100%;
   img,
   video {
@@ -274,14 +274,14 @@ const ChatMessageFiles = styled(MessageFiles)`
         width: 20px;
         height: 20px;
         margin-right: 5px;
-        filter: brightness(0) saturate(100%) ${(props) => (props.isAuthor ? hexToCSSFilter(props.theme.self.chat_bubble_link_color).filter : hexToCSSFilter(props.theme.others.chat_bubble_link_color).filter)};
+        filter: brightness(0) saturate(100%) ${(props) => (props.isAuthor ? hexToCSSFilter("#ffffff").filter : hexToCSSFilter("#8C3B9B").filter)};
       }
 
       &:hover {
         color: #972c86;
 
         img.component-svg-image {
-          filter: brightness(0) saturate(100%) ${(props) => (props.isAuthor ? hexToCSSFilter(props.theme.self.chat_bubble_hover_color).filter : hexToCSSFilter(props.theme.others.chat_bubble_hover_color).filter)};
+          filter: brightness(0) saturate(100%) ${(props) => (props.isAuthor ? hexToCSSFilter("#fff").filter : hexToCSSFilter("#0056b3").filter)};
         }
       }
     }
@@ -306,7 +306,7 @@ const ReplyContent = styled.span`
   a,
   a:not([href]):not([tabindex]) {
     cursor: pointer;
-    color: ${(props) => (props.isAuthor ? props.theme.self.chat_bubble_link_color : props.theme.others.chat_bubble_link_color)};
+    color: ${(props) => (props.isAuthor ? "#ffffff" : "#8C3B9B")};
     color: ${(props) => (!props.isAuthor ? "#7a1b8b" : "#ffffff99")};
     text-decoration: underline;
 
@@ -341,11 +341,11 @@ const ReplyContent = styled.span`
       color: ${(props) => (!props.isAuthor ? "#7a1b8b" : "#ffffff")};
     }
     &.btn {
-      border: 1px solid ${(props) => (props.isAuthor ? props.theme.self.chat_bubble_link_color : props.theme.others.chat_bubble_link_color)};
+      border: 1px solid ${(props) => (props.isAuthor ? "#ffffff" : "#8C3B9B")};
 
       &:focus,
       &:hover {
-        border: 1px solid ${(props) => (props.isAuthor ? props.theme.self.chat_bubble_hover_color : props.theme.others.chat_bubble_hover_color)};
+        border: 1px solid ${(props) => (props.isAuthor ? "#fff" : "#0056b3")};
       }
 
       &.btn-action {
@@ -354,8 +354,8 @@ const ReplyContent = styled.span`
       }
 
       &.btn-complete {
-        color: ${(props) => (props.isAuthor ? props.theme.self.chat_bubble_hover_color : props.theme.others.chat_bubble_hover_color)};
-        border: 1px solid ${(props) => (props.isAuthor ? props.theme.self.chat_bubble_hover_color : props.theme.others.chat_bubble_hover_color)};
+        color: ${(props) => (props.isAuthor ? "#fff" : "#0056b3")};
+        border: 1px solid ${(props) => (props.isAuthor ? "#fff" : "#0056b3")};
       }
     }
   }
@@ -368,6 +368,7 @@ const ChatContentClap = styled.div`
   //margin-top: 10px;
   display: flex;
   flex-flow: ${(props) => (props.isAuthor ? "row" : "row-reverse")};
+  z-index: 2;
 
   .chat-content {
     width: 100%;
@@ -388,7 +389,7 @@ const ChatContent = styled.div`
         border-right-color: transparent;
         border-right-color: #f0f0f0;
         position: absolute;
-        top: 10px;
+        top: 6px;
         left: -15px;
         z-index: 1;
         ${(props) =>
@@ -528,7 +529,7 @@ const ForwardedSpan = styled.span`
 
 const ChatNameNotAuthor = styled.span`
   font-weight: 500;
-  padding: ${(props) => (props.isEmoticonOnly ? "6px 9px 8px 9px" : "0")};
+  padding: ${(props) => (props.isEmoticonOnly || props.hasFiles === true ? "3px 9px 3px 9px" : "0")};
   // display: none;
   @media (max-width: 620px) {
     display: block;
@@ -1427,6 +1428,14 @@ const ChatBubble = (props) => {
           )}
           <ChatContentClap ref={addMessageRef ? loadRef : null} className="chat-content-clap" isAuthor={isAuthor}>
             <ChatContent showAvatar={showAvatar} isAuthor={isAuthor} isEmoticonOnly={isEmoticonOnly} className={`chat-content animated slower`}>
+
+            {!isAuthor && showAvatar && (
+                <>
+                  <ChatNameNotAuthor isEmoticonOnly={isEmoticonOnly} hasFiles={hasFiles}
+                                     className="chat-name-not-author-mobile">{reply.user.name}</ChatNameNotAuthor>
+                </>
+              )}
+
               {reply.quote && reply.quote.body && !reply.is_deleted && (reply.quote.user_id !== undefined || reply.quote.user !== undefined) && (
                 <QuoteContainer className={"quote-container"} showAvatar={showAvatar} isEmoticonOnly={isEmoticonOnly} hasFiles={hasFiles} theme={chatSettings.chat_message_theme} onClick={handleQuoteClick} isAuthor={isAuthor}>
                   {reply.quote.user_id === user.id ? (
@@ -1452,12 +1461,12 @@ const ChatBubble = (props) => {
               }
               {reply.files.length > 0 && !reply.is_deleted && <ChatMessageFiles hasMessage={hasMessage} isAuthor={isAuthor} theme={chatSettings.chat_message_theme} files={reply.files} reply={reply} type="chat" />}
 
-              {!isAuthor && showAvatar && (
+              {/* {!isAuthor && showAvatar && (
                 <>
                   <ChatNameNotAuthor isEmoticonOnly={isEmoticonOnly}
                                      className="chat-name-not-author-mobile">{reply.user.name}</ChatNameNotAuthor>
                 </>
-              )}
+              )} */}
               {body !== "<span></span>" && (
                 <span ref={isLastChat ? lastChatRef : null}>
                   <ReplyContent
