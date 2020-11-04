@@ -147,6 +147,8 @@ const StyledFileRender = styled.div`
     transition: all 0.5s ease;
     opacity: 1;
     max-height: 80vh;
+    max-width: 100%;
+    
     &:not([src]) {
       opacity: 0;
       max-height: 0;
@@ -244,9 +246,8 @@ const FileRender = (props) => {
           return response.blob();
         })
         .then(function (data) {
-          const imgObj = URL.createObjectURL(new Blob([data], {
-            type: file.mime_type
-          }));
+
+          const imgObj = URL.createObjectURL(data);
 
           setFiles(files.map((f) => {
             if (f.id === file.id) {
