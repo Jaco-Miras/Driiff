@@ -528,7 +528,7 @@ const ForwardedSpan = styled.span`
 
 const ChatNameNotAuthor = styled.span`
   font-weight: 500;
-  padding: ${(props) => (props.isEmoticonOnly ? "6px 9px 8px 9px" : "")};
+  padding: ${(props) => (props.isEmoticonOnly ? "6px 9px 8px 9px" : "0")};
   // display: none;
   @media (max-width: 620px) {
     display: block;
@@ -1454,7 +1454,8 @@ const ChatBubble = (props) => {
 
               {!isAuthor && showAvatar && (
                 <>
-                  <ChatNameNotAuthor className="chat-name-not-author-mobile">{reply.user.name}</ChatNameNotAuthor>
+                  <ChatNameNotAuthor isEmoticonOnly={isEmoticonOnly}
+                                     className="chat-name-not-author-mobile">{reply.user.name}</ChatNameNotAuthor>
                 </>
               )}
               {body !== "<span></span>" && (
