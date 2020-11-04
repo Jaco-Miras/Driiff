@@ -237,7 +237,6 @@ const FileRender = (props) => {
         method: "GET", keepalive: true, headers: {
           Authorization: `Bearer ${userAuth.access_token}`,
           'Access-Control-Allow-Origin': "*",
-          Accept: "application/json",
           Connection: "keep-alive",
           crossorigin: true,
         }
