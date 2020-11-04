@@ -96,10 +96,14 @@ const DocFile = styled.div`
 `;
 
 const FilePill = forwardRef((props, ref) => {
-  const { className = "", file, cbFilePreview, ...otherProps } = props;
+  let { className = "", file, cbFilePreview, ...otherProps } = props;
+  if (typeof file.type === "undefined") {
+    file.type = file.mime_type;
+  }
+
   const refImageLoader = useRef();
   const refImage = useRef();
-  const [imgSrc, setImgSrc] = useState(file.thumbnail_link ? null : file.view_link);
+  const [imgSrc, setImgSrc] = useState(file.thumbnail_link && file.type.toLowerCase().includes("image") ? null : file.view_link);
 
   const userAuth = JSON.parse(localStorage.getItem("userAuthToken"));
 
@@ -146,10 +150,6 @@ const FilePill = forwardRef((props, ref) => {
   };
 
   const fileHandler = useFileActions();
-
-  if (typeof file.type === "undefined") {
-    file.type = file.mime_type;
-  }
 
   useEffect(() => {
     if (!imgSrc) {
