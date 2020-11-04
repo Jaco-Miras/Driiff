@@ -187,7 +187,7 @@ const FileRender = (props) => {
   const [isLoaded, setIsLoaded] = useState(false);
 
   let refFiles = {};
-  let userAuth = JSON.parse(localStorage.getItem("userAuthToken"));
+  const userAuth = JSON.parse(localStorage.getItem("userAuthToken"));
 
   const handleImageOnLoad = (e) => {
     e.currentTarget.classList.remove("d-none");

@@ -1,4 +1,4 @@
-import React, { forwardRef, useRef } from "react";
+import React, { forwardRef, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { getAPIUrl } from "../../../../helpers/slugHelper";
 import useFileActions from "../../../hooks/useFileActions";
@@ -41,7 +41,6 @@ const ImgLoaderDiv = styled.div`
 `;
 
 const FileImage = styled.img`
-  background-image: url(${(props) => props.bgImg});
   &.img-error {
     background-image: none;
     padding: 2.8rem 3rem;
@@ -56,7 +55,6 @@ const FileVideoOverlay = styled.div`
   bottom: 0;
   z-index: 1;
   cursor: pointer;
-  cursor: hand;
 `;
 
 const FileVideo = styled.video`
@@ -69,7 +67,6 @@ const FileVideo = styled.video`
 const FilePillContainer = styled.div`
   border-radius: 8px;
   cursor: pointer;
-  cursor: hand;
 
   > img {
     border: 1px solid #ddd;
@@ -102,7 +99,9 @@ const FilePill = forwardRef((props, ref) => {
   const { className = "", file, cbFilePreview, ...otherProps } = props;
   const refImageLoader = useRef();
   const refImage = useRef();
-  const refVideoLoader = useRef();
+  const [imgSrc, setImgSrc] = useState(file.thumbnail_link ? null : file.view_link);
+
+  const userAuth = JSON.parse(localStorage.getItem("userAuthToken"));
 
   const handleViewFile = (e) => {
     cbFilePreview(e, file);
@@ -152,6 +151,28 @@ const FilePill = forwardRef((props, ref) => {
     file.type = file.mime_type;
   }
 
+  useEffect(() => {
+    if (!imgSrc) {
+      fetch(file.thumbnail_link, {
+        method: "GET", keepalive: true, headers: {
+          Authorization: `Bearer ${userAuth.access_token}`,
+          'Access-Control-Allow-Origin': "*",
+          Connection: "keep-alive",
+          crossorigin: true,
+        }
+      })
+        .then(function (response) {
+          return response.blob();
+        })
+        .then(function (data) {
+          const imgObj = URL.createObjectURL(data);
+          setImgSrc(imgObj);
+        }, function (err) {
+          console.log(err, 'error');
+        });
+    }
+  }, []);
+
   return (
     <FilePillContainer ref={ref} className={`file-pill ${className}`} {...otherProps}>
       {file.type.toLowerCase() === "image" ? (
@@ -161,14 +182,13 @@ const FilePill = forwardRef((props, ref) => {
           </ImgLoader>
           <FileImage
             ref={refImage}
-            bgImg={file.view_link}
             data-attempt={0}
             className={"d-none"}
             onLoad={handleImageOnLoad}
             onError={handleImageOnError}
             height={150}
             onClick={handleViewFile}
-            src={file.thumbnail_link ? file.thumbnail_link : file.view_link}
+            src={imgSrc}
             alt={file.filename ? file.filename : file.search}
             title={file.filename ? file.filename : file.search}
           />
