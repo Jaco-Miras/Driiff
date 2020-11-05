@@ -69,7 +69,7 @@ const StyledQuillEditor = styled(QuillEditor)`
     box-shadow: rgba(26, 26, 26, 0.4) 0px 2px 3px 0px, rgba(0, 0, 0, 0.1) 0px 1px 3px 0px;
     overflow-x: hidden;
     overflow-y: auto;
-    z-index: 2;
+    z-index: 1000;
 
     .dark & {
       background: #25282c;
