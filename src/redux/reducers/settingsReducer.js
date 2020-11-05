@@ -1,6 +1,6 @@
 import momentTZ from "moment-timezone";
 import React from "react";
-import {$_GET} from "../../helpers/commonFunctions";
+import { $_GET } from "../../helpers/commonFunctions";
 
 const INITIAL_STATE = {
   sessionUser: null,
@@ -62,6 +62,8 @@ const INITIAL_STATE = {
       is_new: true,
       timezone: momentTZ.tz.guess(),
       dark_mode: "0",
+      log_rocket: "0",
+      sentry: "0",
       language: null,
       active_topic: null,
       workspace_open_folder: {},

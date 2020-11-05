@@ -14,30 +14,33 @@ import store from "./redux/store/configStore";
 
 const { REACT_APP_sentry_dsn } = process.env;
 
-Sentry.init({
-  dsn: REACT_APP_sentry_dsn,
-  integrations: [
-    new Integrations.BrowserTracing(),
-  ],
+if (localStorage.getItem("sentry") === "1") {
+  Sentry.init({
+    dsn: REACT_APP_sentry_dsn,
+    integrations: [
+      new Integrations.BrowserTracing(),
+    ],
 
-  // We recommend adjusting this value in production, or using tracesSampler
-  // for finer control
-  tracesSampleRate: 1.0,
-});
-
-
-LogRocket.init('z1ni7v/driff', {
-  dom: {
-    textSanitizer: true,
-    inputSanitizer: true,
-  }
-});
-
-LogRocket.getSessionURL(sessionURL => {
-  Sentry.configureScope(scope => {
-    scope.setExtra("sessionURL", sessionURL);
+    // We recommend adjusting this value in production, or using tracesSampler
+    // for finer control
+    tracesSampleRate: 1.0,
   });
-});
+}
+
+if (localStorage.getItem("log_rocket") === "1") {
+  LogRocket.init('z1ni7v/driff', {
+    dom: {
+      textSanitizer: true,
+      inputSanitizer: true,
+    }
+  });
+
+  LogRocket.getSessionURL(sessionURL => {
+    Sentry.configureScope(scope => {
+      scope.setExtra("sessionURL", sessionURL);
+    });
+  });
+}
 
 const wrapApp = (reduxStore) => (
   <Provider store={reduxStore}>

@@ -71,9 +71,9 @@ const ProfileSettings = (props) => {
   const { user: loggedUser } = useSelector((state) => state.session);
 
   const {
-    generalSettings: {language, timezone, date_format, time_format, dark_mode, notifications_on},
-    chatSettings: {order_channel, sound_enabled, preview_message, virtualization},
-    userSettings: {isLoaded},
+    generalSettings: { language, timezone, date_format, time_format, dark_mode, notifications_on, log_rocket, sentry },
+    chatSettings: { order_channel, sound_enabled, preview_message, virtualization },
+    userSettings: { isLoaded },
     setChatSetting,
     setGeneralSetting,
     setPushSubscription,
@@ -189,10 +189,15 @@ const ProfileSettings = (props) => {
   const handleGeneralSwitchToggle = useCallback(
     (e) => {
       e.persist();
-      const {name, dataset} = e.target;
+      const { name, checked, dataset } = e.target;
 
       setGeneralSetting({
-        [name]: dark_mode === "0" ? "1" : "0",
+        [name]: checked ? "1" : "0",
+      }, () => {
+        if (["log_rocket", "sentry"].includes(name)) {
+          localStorage.setItem(name, checked ? "1" : "0");
+          window.location.reload();
+        }
       });
       toaster.success(<span>{dataset.successMessage}</span>);
     },
@@ -426,6 +431,30 @@ const ProfileSettings = (props) => {
                 data-success-message={`${dark_mode ? "Dark mode is now enabled" : "Dark mode is now disabled"}`}
                 onChange={handleGeneralSwitchToggle}
                 label={<span>Dark mode</span>}
+              />
+            </div>
+            <div className="col-12 text-muted">
+              <CustomInput
+                className="cursor-pointer text-muted"
+                checked={log_rocket === "1"}
+                type="switch"
+                id="log_rocket"
+                name="log_rocket"
+                data-success-message={`${log_rocket ? "LogRocket is now enabled" : "LogRocket is now disabled"}`}
+                onChange={handleGeneralSwitchToggle}
+                label={<span>LogRocket</span>}
+              />
+            </div>
+            <div className="col-12 text-muted">
+              <CustomInput
+                className="cursor-pointer text-muted"
+                checked={sentry === "1"}
+                type="switch"
+                id="sentry"
+                name="sentry"
+                data-success-message={`${sentry ? "Sentry is now enabled" : "Sentry is now disabled"}`}
+                onChange={handleGeneralSwitchToggle}
+                label={<span>Sentry</span>}
               />
             </div>
           </div>
