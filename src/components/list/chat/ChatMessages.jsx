@@ -212,23 +212,37 @@ const MessageOptions = styled(ChatMessageOptions)`
   flex: 1;
   margin: 5px;
   max-width: 25px;
+  
+  @media (max-width: 620px) {
+    margin-right: 0;
+  }
 
   .more-options-tooltip {
     &.orientation-bottom {
       top: calc(100% - 35px);
+      @media (max-width: 620px) {
+        top: 100%
+      }
     }
 
     &.orientation-top {
+      @media (max-width: 620px) {
+        bottom: 30px;
+      }
     }
 
     &.orientation-right {
       left: calc(100% + 10px);
+      @media (max-width: 620px) {
+        left: 0;
+      }
     }
     &.orientation-left {
+      @media (max-width: 620px) {
+        left: auto;
+        right: 0;
+      }
     }
-  }
-  @media (max-width: 620px) {
-    margin-right: 0;
   }
 `;
 const ChatBubbleQuoteDiv = styled.div`

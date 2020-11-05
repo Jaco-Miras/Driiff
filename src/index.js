@@ -4,6 +4,7 @@ import * as Sentry from "@sentry/react";
 import { Provider } from "react-redux";
 import { Integrations } from "@sentry/tracing";
 import { BrowserRouter } from "react-router-dom";
+import LogRocket from "logrocket";
 
 import App from "./App";
 import "toasted-notes/src/styles.css";
@@ -12,8 +13,6 @@ import store from "./redux/store/configStore";
 //import * as serviceWorker from "./serviceWorker";
 
 const { REACT_APP_sentry_dsn } = process.env;
-
-console.log(REACT_APP_sentry_dsn);
 
 Sentry.init({
   dsn: REACT_APP_sentry_dsn,
@@ -24,6 +23,20 @@ Sentry.init({
   // We recommend adjusting this value in production, or using tracesSampler
   // for finer control
   tracesSampleRate: 1.0,
+});
+
+
+LogRocket.init('z1ni7v/driff', {
+  dom: {
+    textSanitizer: true,
+    inputSanitizer: true,
+  }
+});
+
+LogRocket.getSessionURL(sessionURL => {
+  Sentry.configureScope(scope => {
+    scope.setExtra("sessionURL", sessionURL);
+  });
 });
 
 const wrapApp = (reduxStore) => (

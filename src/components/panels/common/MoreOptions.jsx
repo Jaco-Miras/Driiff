@@ -85,7 +85,7 @@ const MoreOptions = forwardRef((props, ref) => {
 
   const [showMoreOptions, setShowMoreOptions] = useState(false);
 
-  const { orientation } = useTooltipOrientation(ref, refs.options, scrollRef, showMoreOptions);
+  const { orientation } = useTooltipOrientation(refs.container, refs.options, scrollRef, showMoreOptions);
 
   const handleClick = (e) => {
     e.preventDefault();
@@ -105,7 +105,7 @@ const MoreOptions = forwardRef((props, ref) => {
 
   return (
     <Wrapper className={`more-options ${showMoreOptions ? "more-options-active" : ""} ${className}`}
-             onClick={handleClick} ref={refs.container} innerRef={ref} onMouseEnter={handleMouseEnter} {...rest}>
+             onClick={handleClick} ref={refs.container} onMouseEnter={handleMouseEnter} {...rest}>
       <SvgIconFeather onMouseLeave={handleMouseLeave} data-event="touchstart focus mouseover" data-event-off="mouseout"
                       data-tip="Message options" icon={moreButton}/>
       {showMoreOptions && (
