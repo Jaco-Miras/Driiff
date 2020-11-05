@@ -1,7 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import {useSelector} from "react-redux";
-import { Avatar, Loader, SvgEmptyState } from "../../common";
+import { Avatar } from "../../common";
 import ChatBubble from "./ChatBubble";
 import ChatMessageOptions from "./ChatMessageOptions";
 import ChatNewMessagesLine from "./ChatNewMessageLine";
@@ -378,8 +377,10 @@ const VirtualizedChat = (props) => {
                     <SeenIndicator isAuthor={isAuthor} onClick={props.handleShowSeenUsers} seenMembers={props.filterSeenMembers()} isPersonal={props.selectedChannel.members.length === 2} />
                   )}
                 </ChatBubbleQuoteDiv>
-  
-                {!isAuthor && showAvatar && <StyledAvatar isForwardedMessage={reply.is_transferred} id={reply.user.id} imageLink={reply.user.profile_image_link} name={reply.user.name} isBot={isBot} />}
+
+                {!isAuthor && showAvatar && <StyledAvatar isForwardedMessage={reply.is_transferred} id={reply.user.id}
+                                                          imageLink={reply.user.profile_image_thumbnail_link ? reply.user.profile_image_thumbnail_link : reply.user.profile_image_link}
+                                                          name={reply.user.name} isBot={isBot}/>}
               </ChatBubbleContainer>
             )}
             {reply.user === null && (

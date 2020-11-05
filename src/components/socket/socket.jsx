@@ -184,7 +184,7 @@ class Socket extends PureComponent {
       id: this.props.user.id,
       name: this.props.user.name,
       partial_name: this.props.user.partial_name,
-      profile_image_link: this.props.user.profile_image_link,
+      profile_image_link: this.props.user.profile_image_thumbnail_link ? this.props.user.profile_image_thumbnail_link : this.props.user.profile_image_link,
     });
     // Set the name of the hidden property and the change event for visibility
     // if (typeof document.hidden !== "undefined") { // Opera 12.10 and Firefox 18 and later support
@@ -691,7 +691,7 @@ class Socket extends PureComponent {
             id: this.props.user.id,
             first_name: this.props.user.name,
             name: e.message_from.user_name,
-            profile_image_link: this.props.user.profile_image_link,
+            profile_image_link: this.props.user.profile_image_thumbnail_link ? this.props.user.profile_image_thumbnail_link : this.props.user.profile_image_link,
           };
         } else {
           fromUser = {

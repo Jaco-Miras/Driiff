@@ -53,6 +53,7 @@ export default function (state = INITIAL_STATE, action) {
               id: state.user.id,
               name: state.user.name,
               profile_image_link: state.user.profile_image_link,
+              profile_image_thumbnail_link: state.user.profile_image_thumbnail_link ? state.user.profile_image_thumbnail_link : state.user.profile_image_link,
               email: state.user.email
             },
           ];

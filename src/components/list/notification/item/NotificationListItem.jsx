@@ -1,8 +1,8 @@
 import React from "react";
 import Tooltip from "react-tooltip-lite";
 import styled from "styled-components";
-import {Avatar} from "../../../common";
-import {useTimeFormat} from "../../../hooks";
+import { Avatar } from "../../../common";
+import { useTimeFormat } from "../../../hooks";
 
 const Wrapper = styled.li`
   cursor: pointer;
@@ -149,9 +149,9 @@ export const NotificationListItem = (props) => {
                     imageLink={notification.author.profile_image_link}/>
           }
           {
-            notification.type === "NEW_TODO" && 
+            notification.type === "NEW_TODO" &&
             <Avatar id={user.id} name={user.name}
-                    imageLink={user.profile_image_link}/>
+                    imageLink={user.profile_image_thumbnail_link ? user.profile_image_thumbnail_link : user.profile_image_link}/>
           }
         </div>
         {notifDisplay()}

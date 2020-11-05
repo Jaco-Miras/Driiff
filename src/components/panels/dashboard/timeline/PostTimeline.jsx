@@ -1,8 +1,8 @@
 import React from "react";
-import {useHistory, useRouteMatch} from "react-router-dom";
+import { useHistory, useRouteMatch } from "react-router-dom";
 import styled from "styled-components";
-import {Avatar, FileAttachments, SvgIconFeather} from "../../../common";
-import {useTimeFormat} from "../../../hooks";
+import { Avatar, FileAttachments, SvgIconFeather } from "../../../common";
+import { useTimeFormat } from "../../../hooks";
 
 const Wrapper = styled.div`
   .title {
@@ -57,7 +57,9 @@ const PostTimeline = (props) => {
   return (
     <Wrapper className={`post-timeline timeline-item ${className}`}>
       <div>
-        <Avatar className="mr-3" name={data.user.name} imageLink={data.user.profile_image_link} id={data.user.id} />
+        <Avatar className="mr-3" name={data.user.name}
+                imageLink={data.user.profile_image_thumbnail_link ? data.user.profile_image_thumbnail_link : data.user.profile_image_link}
+                id={data.user.id}/>
       </div>
       <div>
         <h6 className="d-flex justify-content-between mb-4">

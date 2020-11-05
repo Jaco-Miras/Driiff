@@ -1,15 +1,15 @@
 import lodash from "lodash";
-import React, {useEffect, useRef, useState} from "react";
-import {useDispatch, useSelector} from "react-redux";
-import {useHistory} from "react-router-dom";
-import {InputGroup, Label, Modal, ModalBody} from "reactstrap";
+import React, { useEffect, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
+import { InputGroup, Label, Modal, ModalBody } from "reactstrap";
 import styled from "styled-components";
-import {addToChannels, setSelectedChannel} from "../../redux/actions/chatActions";
-import {clearModal} from "../../redux/actions/globalActions";
-import {FormInput, PeopleSelect} from "../forms";
+import { addToChannels, setSelectedChannel } from "../../redux/actions/chatActions";
+import { clearModal } from "../../redux/actions/globalActions";
+import { FormInput, PeopleSelect } from "../forms";
 import QuillEditor from "../forms/QuillEditor";
-import {useChannelActions, useQuillModules, useTimeFormat, useTranslation} from "../hooks";
-import {ModalHeaderSection} from "./index";
+import { useChannelActions, useQuillModules, useTimeFormat, useTranslation } from "../hooks";
+import { ModalHeaderSection } from "./index";
 
 const WrapperDiv = styled(InputGroup)`
   display: flex;
@@ -217,7 +217,7 @@ const CreateEditChatModal = (props) => {
             name: user.name,
             first_name: user.first_name,
             partial_name: user.partial_name,
-            profile_image_link: user.profile_image_link,
+            profile_image_link: user.profile_image_thumbnail_link ? user.profile_image_thumbnail_link : user.profile_image_link,
           },
           title: channel.title === form.title.value ? "" : form.title.value,
           added_members: added_members,

@@ -53,7 +53,7 @@ const useQuillModules = (mode, callback, mentionOrientation = "top", quillRef, m
             id: user.id,
             type_id: user.id,
             class: "user-pic all-users",
-            profile_image_link: user.profile_image_link ? user.profile_image_link : defaultIcon,
+            profile_image_link: user.profile_image_thumbnail_link ? user.profile_image_thumbnail_link : user.profile_image_link ? user.profile_image_link : defaultIcon,
             link: `${REACT_APP_apiProtocol}${localStorage.getItem("slug")}.${REACT_APP_localDNSName}/profile/${user.id}/${replaceChar(user.name)}`
           });
         }),

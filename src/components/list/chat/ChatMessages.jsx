@@ -871,7 +871,10 @@ class ChatMessages extends React.PureComponent {
                                     )}
                                   </ChatBubbleQuoteDiv>
 
-                                  {!isAuthor && showAvatar && <StyledAvatar isForwardedMessage={reply.is_transferred} id={reply.user.id} imageLink={reply.user.profile_image_link} name={reply.user.name} isBot={isBot} />}
+                                  {!isAuthor && showAvatar &&
+                                  <StyledAvatar isForwardedMessage={reply.is_transferred} id={reply.user.id}
+                                                imageLink={reply.user.profile_image_thumbnail_link ? reply.user.profile_image_thumbnail_link : reply.user.profile_image_link}
+                                                name={reply.user.name} isBot={isBot}/>}
                                 </ChatBubbleContainer>
                               )}
                               {reply.user === null && (

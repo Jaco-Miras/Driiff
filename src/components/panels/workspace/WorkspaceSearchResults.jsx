@@ -1,9 +1,9 @@
 import React from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import WorkspaceSearchResult from "./WorkspaceSearchResult";
-import {useToaster, useTranslation} from "../../hooks";
-import {updateWorkspace, leaveWorkspace} from "../../../redux/actions/workspaceActions";
-import {putChannel} from "../../../redux/actions/chatActions";
+import { useToaster, useTranslation } from "../../hooks";
+import { leaveWorkspace, updateWorkspace } from "../../../redux/actions/workspaceActions";
+import { putChannel } from "../../../redux/actions/chatActions";
 
 const WorkspaceSearchResults = (props) => {
 
@@ -86,7 +86,7 @@ const WorkspaceSearchResults = (props) => {
                     name: user.name,
                     first_name: user.first_name,
                     partial_name: user.partial_name,
-                    profile_image_link: user.profile_image_link,
+                    profile_image_link: user.profile_image_thumbnail_link ? user.profile_image_thumbnail_link : user.profile_image_link,
                 },
                 title: "",
                 added_members: [],
