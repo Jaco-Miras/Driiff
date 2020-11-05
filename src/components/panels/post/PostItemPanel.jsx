@@ -124,7 +124,7 @@ const PostItemPanel = (props) => {
       <div className="flex-grow-1 min-width-0">
         <div className="d-flex align-items-center justify-content-between">
           <div
-            className={`app-list-title text-truncate ${post.unread_count > 0 || post.is_unread === 1 ? "text-primary has-unread" : ""} ${post.is_mark_done ? "text-success" : ""}`}>
+            className={`app-list-title text-truncate ${post.unread_count > 0 || post.is_unread === 1 ? "text-primary has-unread" : ""}`}>
             <Avatar className="author-avatar mr-2" id={post.author.id} name={post.author.name}
                     imageLink={post.author.profile_image_link}/>
             <span>{post.title}</span>

@@ -1,6 +1,5 @@
 import React from "react";
 import styled from "styled-components";
-import { CheckBox } from "../../../forms";
 import { useTimeFormat } from "../../../hooks";
 
 const Wrapper = styled.li`
@@ -43,14 +42,11 @@ const RecentPostListItem = (props) => {
 
   return (
     <Wrapper className={`recent-post-list-item list-group-item d-flex align-items-center p-l-r-0 ${className}`} onClick={handleOpenPost}>
-      <div className="custom-control custom-checkbox custom-checkbox-success mr-2">
-        <CheckBox name="mark_done" checked={post.is_mark_done} onClick={toggleCheck} disabled={disableOptions}/>
-      </div>
       <div className="flex-grow-1 min-width-0" onClick={handleOpenPost}>
         <div className="mb-1 d-flex align-items-center justify-content-between">
-          <div className={`app-list-title ${post.is_mark_done ? "done" : ""} text-truncate`}>{post.title}</div>
+          <div className={`app-list-title text-truncate`}>{post.title}</div>
           <div
-            className={`pl-3 d-flex recent-post-timestamp align-items-center ${post.is_mark_done ? "done" : ""}`}>{localizeChatDate(post.created_at.timestamp)}</div>
+            className={`pl-3 d-flex recent-post-timestamp align-items-center`}>{localizeChatDate(post.created_at.timestamp)}</div>
         </div>
       </div>
     </Wrapper>
