@@ -19,7 +19,6 @@ const ChatBubbleContainer = styled.div`
   display: inline-flex;
   flex-flow: column;
   padding: ${(props) => (props.hasFiles ? "3px" : "6px 9px 8px 9px")};
-  // padding: 6px 9px 8px 9px;
   border-radius: 6px;
   background: ${(props) => (props.isAuthor ? "#7A1B8B" : "#F0F0F0")};
   text-align: left;
@@ -189,7 +188,7 @@ const QuoteContainer = styled.div`
   //   }
   // }
   @media all and (max-width: 620px) {
-    margin: -7px -7px 10px -7px;
+    margin: 7px -7px 10px -7px;
     padding: 7px;
   }
 `;
@@ -386,7 +385,6 @@ const ChatContent = styled.div`
     &:before {
         ${(props) => props.showAvatar && "content: ''"};
         border: 10px solid transparent;
-        border-right-color: transparent;
         border-right-color: #f0f0f0;
         position: absolute;
         top: 6px;
@@ -397,6 +395,7 @@ const ChatContent = styled.div`
           `
             left: auto;
             right: -15px;
+            border-left-color: red;
             border-left-color: #7A1B8B;
             border-right-color: transparent;
         `};
@@ -529,8 +528,8 @@ const ForwardedSpan = styled.span`
 
 const ChatNameNotAuthor = styled.span`
   font-weight: 500;
-  padding: ${(props) => (props.isEmoticonOnly || props.hasFiles === true ? "3px 9px 3px 9px" : "0")};
-  // display: none;
+  padding: ${(props) => (props.isEmoticonOnly || props.gifOnly || props.hasFiles === true ? "3px 9px 3px 9px" : "0")};
+  color: #929496;
   @media (max-width: 620px) {
     display: block;
     font-size: 11px;
@@ -1431,7 +1430,7 @@ const ChatBubble = (props) => {
 
             {!isAuthor && showAvatar && (
                 <>
-                  <ChatNameNotAuthor isEmoticonOnly={isEmoticonOnly} hasFiles={hasFiles}
+                  <ChatNameNotAuthor isEmoticonOnly={isEmoticonOnly} hasFiles={hasFiles} gifOnly={gifOnly}
                                      className="chat-name-not-author-mobile">{reply.user.name}</ChatNameNotAuthor>
                 </>
               )}

@@ -121,12 +121,14 @@ const ChatBubbleContainer = styled.div`
     &:before {
         ${(props) => props.showAvatar && "content: '';"};
         border: 10px solid transparent;
-        border-right-color: transparent;
         border-right-color: #f0f0f0;
         position: absolute;
         top: ${(props) => (props.showAvatar && !props.isAuthor ? "42px" : "6px")};;
         left: 30px;
         z-index: 1;
+        @media all and (max-width: 620px) {
+          display: none;
+        }
         ${(props) =>
           props.isAuthor === true &&
           `
@@ -134,7 +136,35 @@ const ChatBubbleContainer = styled.div`
             right: -16px;
             border-left-color: #7A1B8B;
             border-right-color: transparent;
+            @media all and (max-width: 620px) {
+              display: none;
+            }
         `};
+    }
+    .dark & {
+      &:before {
+        ${(props) => props.showAvatar && "content: '';"};
+        border: 10px solid transparent;
+        border-right-color: #25282c;
+        position: absolute;
+        top: ${(props) => (props.showAvatar && !props.isAuthor ? "42px" : "6px")};;
+        left: 30px;
+        z-index: 1;
+        @media all and (max-width: 620px) {
+          display: none;
+        }
+        ${(props) =>
+          props.isAuthor === true &&
+          `
+            left: auto;
+            right: -16px;
+            
+            border-right-color: transparent;
+            @media all and (max-width: 620px) {
+              display: none;
+            }
+        `};
+      }
     }
 `;
 const ChatActionsContainer = styled.div`
