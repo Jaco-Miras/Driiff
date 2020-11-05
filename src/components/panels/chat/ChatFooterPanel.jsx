@@ -281,7 +281,7 @@ const ChatFooterPanel = (props) => {
       <TypingIndicator />
       <LockedLabel channel={selectedChannel} />
       {isMember && (
-        <Dflex className="d-flex align-items-end">
+        <Dflex className="d-flex align-items-end chat-input-cointainer-footer">
           {selectedChannel && selectedChannel.is_archived ? (
             <ArchivedDiv>
               <Icon icon="archive"/>
