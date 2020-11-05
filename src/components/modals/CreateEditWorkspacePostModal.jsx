@@ -657,7 +657,7 @@ const CreateEditWorkspacePostModal = (props) => {
           label: user.name,
           name: user.name,
           first_name: user.first_name,
-          profile_image_link: user.profile_image_link,
+          profile_image_link: user.profile_image_thumbnail_link ? user.profile_image_thumbnail_link : user.profile_image_link,
           type: "USER",
           icon: "user-avatar",
         };

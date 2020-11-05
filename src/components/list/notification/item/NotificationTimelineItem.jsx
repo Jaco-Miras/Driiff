@@ -1,8 +1,8 @@
-import React, {useCallback} from "react";
+import React, { useCallback } from "react";
 import styled from "styled-components";
-import {replaceChar, stripHtml} from "../../../../helpers/stringFormatter";
-import {Avatar} from "../../../common";
-import {useTimeFormat} from "../../../hooks";
+import { replaceChar, stripHtml } from "../../../../helpers/stringFormatter";
+import { Avatar } from "../../../common";
+import { useTimeFormat } from "../../../hooks";
 
 const Wrapper = styled.div`
   .avatar {
@@ -164,9 +164,9 @@ export const NotificationTimelineItem = (props) => {
               notification.author ?
               <Avatar id={notification.author.id} name={notification.author.name}
                     imageLink={notification.author.profile_image_link}/>
-              : 
-              <Avatar id={user.id} name={user.name}
-                    imageLink={user.profile_image_link}/>
+              :
+                <Avatar id={user.id} name={user.name}
+                        imageLink={user.profile_image_thumbnail_link ? user.profile_image_thumbnail_link : user.profile_image_link}/>
             }
         </div>
         <div>

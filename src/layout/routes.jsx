@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Redirect, Route, Switch, useHistory } from "react-router-dom";
 import { useSettings } from "../components/hooks";
 import { TestChat } from "../components/test";
@@ -35,7 +35,7 @@ export const AppRoute = ({ children, ...props }) => {
             id: session.user.id,
             name: session.user.name,
             partial_name: session.user.partial_name,
-            profile_image_link: session.user.profile_image_link,
+            profile_image_link: session.user.profile_image_thumbnail_link ? session.user.profile_image_thumbnail_link : session.user.profile_image_link,
             type: session.user.type,
           }
         )

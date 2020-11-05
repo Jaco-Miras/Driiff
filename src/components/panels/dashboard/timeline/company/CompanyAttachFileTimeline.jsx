@@ -1,10 +1,10 @@
 import React from "react";
-import {useDispatch} from "react-redux";
-import {useRouteMatch} from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { useRouteMatch } from "react-router-dom";
 import styled from "styled-components";
-import {setViewFiles} from "../../../../../redux/actions/fileActions";
-import {Avatar} from "../../../../common";
-import {useTimeFormat} from "../../../../hooks";
+import { setViewFiles } from "../../../../../redux/actions/fileActions";
+import { Avatar } from "../../../../common";
+import { useTimeFormat } from "../../../../hooks";
 import useFileActions from "../../../../hooks/useFileActions";
 
 const Wrapper = styled.div`
@@ -46,7 +46,9 @@ const CompanyAttachFileTimeline = (props) => {
   return (
     <Wrapper className={`attach-file-timeline timeline-item ${className}`}>
       <div>
-        <Avatar className="mr-3" name={data.user.name} imageLink={data.user.profile_image_link} id={data.user.id}/>
+        <Avatar className="mr-3" name={data.user.name}
+                imageLink={data.user.profile_image_thumbnail_link ? data.user.profile_image_thumbnail_link : data.user.profile_image_link}
+                id={data.user.id}/>
       </div>
       {
         <div>

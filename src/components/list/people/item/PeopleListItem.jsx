@@ -98,7 +98,7 @@ const PeopleListItem = (props) => {
               <div className="d-flex justify-content-start align-items-center">
                 <Avatar id={user.id} name={user.name ? user.name : user.email} hasAccepted={user.has_accepted}
                         onClick={handleOnNameClick} noDefaultClick={true}
-                        imageLink={user.profile_image_link ? user.profile_image_link : ""}/>
+                        imageLink={user.profile_image_thumbnail_link ? user.profile_image_thumbnail_link : user.profile_image_link ? user.profile_image_link : ""}/>
                 <div className="user-info-wrapper ml-3">
                   {user.hasOwnProperty("has_accepted") && !user.has_accepted ? (
                     <h6 className="user-name mb-1 ">
