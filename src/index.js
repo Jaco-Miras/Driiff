@@ -33,6 +33,12 @@ LogRocket.init('z1ni7v/driff', {
   }
 });
 
+LogRocket.getSessionURL(sessionURL => {
+  Sentry.configureScope(scope => {
+    scope.setExtra("sessionURL", sessionURL);
+  });
+});
+
 const wrapApp = (reduxStore) => (
   <Provider store={reduxStore}>
     <BrowserRouter>
