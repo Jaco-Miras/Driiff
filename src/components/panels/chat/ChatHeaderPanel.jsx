@@ -162,7 +162,7 @@ const ChatHeaderPanel = (props) => {
     document.body.classList.remove("m-chat-channel-closed");
   };
 
-  const { actions: workspaceAction, workspaces } = useWorkspace(true);
+  const { actions: workspaceAction, workspaces } = useWorkspace();
   const {
     generalSettings: { workspace_open_folder },
     setGeneralSetting,
