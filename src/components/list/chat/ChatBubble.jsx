@@ -385,7 +385,6 @@ const ChatContent = styled.div`
     &:before {
         ${(props) => props.showAvatar && "content: ''"};
         border: 10px solid transparent;
-        border-right-color: transparent;
         border-right-color: #f0f0f0;
         position: absolute;
         top: 6px;

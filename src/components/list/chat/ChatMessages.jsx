@@ -121,7 +121,6 @@ const ChatBubbleContainer = styled.div`
     &:before {
         ${(props) => props.showAvatar && "content: '';"};
         border: 10px solid transparent;
-        border-right-color: transparent;
         border-right-color: #f0f0f0;
         position: absolute;
         top: ${(props) => (props.showAvatar && !props.isAuthor ? "42px" : "6px")};;
@@ -146,7 +145,6 @@ const ChatBubbleContainer = styled.div`
       &:before {
         ${(props) => props.showAvatar && "content: '';"};
         border: 10px solid transparent;
-        border-right-color: transparent;
         border-right-color: #25282c;
         position: absolute;
         top: ${(props) => (props.showAvatar && !props.isAuthor ? "42px" : "6px")};;
@@ -160,7 +158,7 @@ const ChatBubbleContainer = styled.div`
           `
             left: auto;
             right: -16px;
-            border-left-color: #111417;
+            
             border-right-color: transparent;
             @media all and (max-width: 620px) {
               display: none;

@@ -151,6 +151,43 @@ const FilePill = forwardRef((props, ref) => {
 
   const fileHandler = useFileActions();
 
+  let timerStart = 0;
+  let xDown = null;
+  let yDown = null;
+  const handleTouchStartChannel = (e) => {
+    timerStart = e.timeStamp;
+    xDown = e.touches[0].clientX;
+    yDown = e.touches[0].clientY;
+  };
+
+  const handleTouchEndChannel = (e) => {
+    if ((e.timeStamp - timerStart) <= 125) {
+      handleViewFile(e);
+    }
+  };
+
+  const handleTouchMoveChannel = (e) => {
+    let xUp = e.touches[0].clientX;
+    let yUp = e.touches[0].clientY;
+
+    let xDiff = xDown - xUp;
+    let yDiff = yDown - yUp;
+
+    if (Math.abs(xDiff) > Math.abs(yDiff)) {/*most significant*/
+      /* left swipe */
+      if (xDiff > 0) {
+        ref.current.focus();
+      } else {
+        timerStart += 125;
+      }
+    } else {
+      timerStart -= 125;
+    }
+
+    xDown = null;
+    yDown = null;
+  };
+
   useEffect(() => {
     if (!imgSrc) {
       fetch(file.thumbnail_link, {
@@ -174,7 +211,9 @@ const FilePill = forwardRef((props, ref) => {
   }, []);
 
   return (
-    <FilePillContainer ref={ref} className={`file-pill ${className}`} {...otherProps}>
+    <FilePillContainer onTouchStart={handleTouchStartChannel} onTouchEnd={handleTouchEndChannel}
+                       onTouchMove={handleTouchMoveChannel} onClick={handleViewFile} ref={ref}
+                       className={`file-pill ${className}`} {...otherProps}>
       {file.type.toLowerCase() === "image" ? (
         <>
           <ImgLoader ref={refImageLoader}>
@@ -187,7 +226,6 @@ const FilePill = forwardRef((props, ref) => {
             onLoad={handleImageOnLoad}
             onError={handleImageOnError}
             height={150}
-            onClick={handleViewFile}
             src={imgSrc}
             alt={file.filename ? file.filename : file.search}
             title={file.filename ? file.filename : file.search}
@@ -205,7 +243,7 @@ const FilePill = forwardRef((props, ref) => {
           </FileVideo>
         </>
       ) : (
-        <DocFile onClick={handleViewFile}>
+        <DocFile>
           <div className="card app-file-list">
             <div className="app-file-icon">{fileHandler.getFileIcon(file.type)}</div>
             <div className="p-2 small">
