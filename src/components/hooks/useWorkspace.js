@@ -37,6 +37,7 @@ const useWorkspace = (fetchOnMount = false) => {
       // actions.fetchWorkspaces({is_external: 0, filter: "archived"}, () => {
       //   setArchivedWsLoaded(true);
       // });
+      //recheck this endpoint
       actions.fetchWorkspaceChannels({skip: 0, limit: 250});
     } else if (workspacesLoaded && activeTopic) {
       //restore the channel id
@@ -47,6 +48,7 @@ const useWorkspace = (fetchOnMount = false) => {
     // return () => {
     //   actions.clearChannel();
     // };
+    console.log('use workspace mount')
   }, []);
 
   useEffect(() => {
