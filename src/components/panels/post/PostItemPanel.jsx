@@ -22,7 +22,7 @@ const Wrapper = styled.li`
   }
 
   .app-list-title {
-    color: #000;
+    color: #343a40;
     font-weight: normal;
     padding-left: 2.5rem;
 
@@ -30,8 +30,8 @@ const Wrapper = styled.li`
       font-weight: bold;
       
       .post-partialBody {
-        color: #000;
-        font-weight: bold;
+        color: #343a40;
+        font-weight: normal;
       
         .dark & {
           color: #c7c7c7;
