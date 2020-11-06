@@ -6,8 +6,7 @@ import usePreviousValue from "./usePreviousValue";
 
 const useDraft = (callback, type, text, textOnly, draftId) => {
   const dispatch = useDispatch();
-  const selectedChannel = useSelector((state) => state.chat.selectedChannel);
-  const drafts = useSelector((state) => state.chat.channelDrafts);
+  const { selectedChannel, channelDraftsLoaded, channelDrafts } = useSelector((state) => state.chat);
   const previousChannel = usePreviousValue(selectedChannel);
 
   const savedCallback = useRef(callback);
@@ -17,8 +16,8 @@ const useDraft = (callback, type, text, textOnly, draftId) => {
   });
 
   const handleLoadDraft = () => {
-    if (selectedChannel && Object.keys(drafts).length > 0 && drafts.hasOwnProperty(selectedChannel.id)) {
-      let draft = { ...drafts[selectedChannel.id] };
+    if (selectedChannel && Object.keys(channelDrafts).length > 0 && channelDrafts.hasOwnProperty(selectedChannel.id)) {
+      let draft = { ...channelDrafts[selectedChannel.id] };
       savedCallback.current(draft);
     } else {
       savedCallback.current(null);
@@ -64,7 +63,7 @@ const useDraft = (callback, type, text, textOnly, draftId) => {
   };
 
   useEffect(() => {
-    if (Object.keys(drafts).length === 0) {
+    if (Object.keys(channelDrafts).length === 0 && !channelDraftsLoaded) {
       dispatch(getChannelDrafts());
     }
     handleLoadDraft();

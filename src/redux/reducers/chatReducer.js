@@ -19,7 +19,8 @@ const INITIAL_STATE = {
   isLastChatVisible: false,
   lastReceivedMessage: null,
   chatSidebarSearch: "",
-  channelRange: {}
+  channelRange: {},
+  channelDraftsLoaded: false
 };
 
 export default function (state = INITIAL_STATE, action) {
@@ -832,6 +833,7 @@ export default function (state = INITIAL_STATE, action) {
       return {
         ...state,
         channelDrafts: channelDrafts,
+        channelDraftsLoaded: true
       };
     }
     case "INCOMING_UPDATED_CHANNEL_DETAIL": {
