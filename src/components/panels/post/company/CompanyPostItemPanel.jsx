@@ -126,7 +126,7 @@ const CompanyPostItemPanel = (props) => {
           <div
             className={`app-list-title text-truncate ${post.unread_count > 0 || post.is_unread === 1 ? "text-primary has-unread" : ""}`}>
             <Avatar className="author-avatar mr-2" id={post.author.id} name={post.author.name}
-                    imageLink={post.author.profile_image_link}/>
+                    imageLink={post.author.profile_image_thumbnail_link ? post.author.profile_image_thumbnail_link : post.author.profile_image_link}/>
             <span>{post.title}</span>
             <div className='text-truncate post-partialBody'>
               <span dangerouslySetInnerHTML={{ __html: quillHelper.parseEmoji(post.partial_body) }}/>

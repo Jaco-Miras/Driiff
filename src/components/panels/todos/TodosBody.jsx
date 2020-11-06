@@ -293,7 +293,8 @@ const TodosBody = (props) => {
                                 {
                                   todo.author !== null &&
                                   <Avatar key={todo.author.id} name={todo.author.name}
-                                          imageLink={todo.author.profile_image_link} id={todo.author.id}/>
+                                          imageLink={todo.author.profile_image_thumbnail_link ? todo.author.profile_image_thumbnail_link : todo.author.profile_image_link}
+                                          id={todo.author.id}/>
                                 }
                               </span>
                                 <MoreOptions className="ml-2" item={todo} width={170} moreButton={"more-horizontal"}>

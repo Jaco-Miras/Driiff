@@ -144,8 +144,7 @@ const ChatBubbleContainer = styled.div`
     .dark & {
       &:before {
         ${(props) => props.showAvatar && "content: '';"};
-        border: 10px solid transparent;
-        border-right-color: #25282c;
+        border: 10px solid transparent;        
         position: absolute;
         top: ${(props) => (props.showAvatar && !props.isAuthor ? "42px" : "6px")};;
         left: 30px;
@@ -154,11 +153,9 @@ const ChatBubbleContainer = styled.div`
           display: none;
         }
         ${(props) =>
-          props.isAuthor === true &&
-          `
+  props.isAuthor === true && `
             left: auto;
-            right: -16px;
-            
+            right: -16px;            
             border-right-color: transparent;
             @media all and (max-width: 620px) {
               display: none;

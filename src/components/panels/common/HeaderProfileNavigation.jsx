@@ -1,8 +1,8 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
-import {Avatar, SvgIconFeather, ToolTip} from "../../common";
-import {useNotifications, useOutsideClick, useSettings, useUsers} from "../../hooks";
-import {NotificationDropDown, SearchDropDown} from "../dropdown";
+import { Avatar, SvgIconFeather, ToolTip } from "../../common";
+import { useNotifications, useOutsideClick, useSettings, useUsers } from "../../hooks";
+import { NotificationDropDown, SearchDropDown } from "../dropdown";
 import UserProfileDropDown from "../dropdown/UserProfileDropdown";
 
 const Wrapper = styled.ul`
@@ -189,7 +189,9 @@ const HomeProfileNavigation = (props) => {
         <a href="/" className="nav-link profile-button" data-toggle="dropdown"
            onClick={toggleDropdown}><ToolTip content={loggedUser.name}>
           <div className="avatar-overlay"/>
-          <Avatar name={form.name} imageLink={form.profile_image_link} noDefaultClick={true}/>
+          <Avatar name={form.name}
+                  imageLink={form.profile_image_thumbnail_link ? form.profile_image_thumbnail_link : form.profile_image_link}
+                  noDefaultClick={true}/>
         </ToolTip>
         </a>
         <UserProfileDropDown user={loggedUser}/>

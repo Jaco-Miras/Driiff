@@ -79,7 +79,9 @@ const ChannelIcon = (props) => {
   return (
     <Wrapper className={`pr-3 ${className}`} type={channel.type} iconColor={iconColor(channel.title.toLowerCase())}>
       {channel.profile && channel.members.length >= 1 && channel.type === "DIRECT" && (
-        <StyledAvatar type={channel.type} imageLink={channel.profile.profile_image_link} userId={channel.profile.id}
+        <StyledAvatar type={channel.type}
+                      imageLink={channel.profile.profile_image_thumbnail_link ? channel.profile.profile_image_thumbnail_link : channel.profile.profile_image_link}
+                      userId={channel.profile.id}
                       id={channel.profile.id} name={channel.profile.name} partialName={channel.profile.partial_name}
                       noDefaultClick={false}/>
       )}

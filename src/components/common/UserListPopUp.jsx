@@ -78,7 +78,10 @@ const UserListPopUp = (props) => {
         {users.map((u, k) => {
           return (
             <li key={u.id}>
-              <Avatar size={"xs"} imageLink={u.profile_image_link} userId={u.id} name={u.name ? u.name : u.email} partialName={u.partial_name} hasAccepted={u.has_accepted} noDefaultClick={true} onClick={(e) => handleOnNameClick(e, u)} />
+              <Avatar size={"xs"}
+                      imageLink={u.profile_image_thumbnail_link ? u.profile_image_thumbnail_link : u.profile_image_link}
+                      userId={u.id} name={u.name ? u.name : u.email} partialName={u.partial_name}
+                      hasAccepted={u.has_accepted} noDefaultClick={true} onClick={(e) => handleOnNameClick(e, u)}/>
               <span className={"user-list-name"} onClick={(e) => handleOnNameClick(e, u)}>
                 {u.name ? u.name : u.email}
               </span>

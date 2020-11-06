@@ -73,7 +73,10 @@ const TeamListItem = (props) => {
     <Wrapper className={`team-list-item list-group-item d-flex align-items-center p-l-r-0 ${className}`}>
       <div className="d-flex align-items-center ">
         <div className="pr-3">
-          <Avatar id={member.id} name={member.name} imageLink={member.profile_image_link} partialName={member.partial_name} noDefaultClick={!member.has_accepted} hasAccepted={member.has_accepted} />
+          <Avatar id={member.id} name={member.name}
+                  imageLink={member.profile_image_thumbnail_link ? member.profile_image_thumbnail_link : member.profile_image_link}
+                  partialName={member.partial_name} noDefaultClick={!member.has_accepted}
+                  hasAccepted={member.has_accepted}/>
         </div>
         <div>
           <h6 className="profile-name" onClick={handleClickName}>

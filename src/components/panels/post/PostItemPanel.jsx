@@ -119,14 +119,15 @@ const PostItemPanel = (props) => {
       </div>
       <div className="mr-3 d-flex justify-content-center align-items-center">
         <Avatar key={post.author.id} name={post.author.name}
-                                          imageLink={post.author.profile_image_link} id={post.author.id}/>
+                imageLink={post.author.profile_image_thumbnail_link ? post.author.profile_image_thumbnail_link : post.author.profile_image_link}
+                id={post.author.id}/>
       </div>
       <div className="flex-grow-1 min-width-0">
         <div className="d-flex align-items-center justify-content-between">
           <div
             className={`app-list-title text-truncate ${post.unread_count > 0 || post.is_unread === 1 ? "text-primary has-unread" : ""}`}>
             <Avatar className="author-avatar mr-2" id={post.author.id} name={post.author.name}
-                    imageLink={post.author.profile_image_link}/>
+                    imageLink={post.author.profile_image_thumbnail_link ? post.author.profile_image_thumbnail_link : post.author.profile_image_link}/>
             <span>{post.title}</span>
             <div className='text-truncate post-partialBody'>
               <span dangerouslySetInnerHTML={{ __html: quillHelper.parseEmoji(post.partial_body) }}/>

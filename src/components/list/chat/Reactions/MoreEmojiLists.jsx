@@ -75,6 +75,7 @@ const MoreEmojiLists = (props) => {
                     id: r.user_id,
                     name: r.user_name,
                     profile_image_link: r.profile_image_link,
+                    profile_image_thumbnail_link: r.profile_image_thumbnail_link ? r.profile_image_thumbnail_link : r.profile_image_link,
                     partial_name: null,
                   };
                 })}

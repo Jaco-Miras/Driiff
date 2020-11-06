@@ -1078,7 +1078,7 @@ const CreateEditCompanyPostModal = (props) => {
                         className="mr-2"
                         key={u.id}
                         name={u.name}
-                        imageLink={u.profile_image_link}
+                        imageLink={u.profile_image_thumbnail_link ? u.profile_image_thumbnail_link : u.profile_image_link}
                         id={u.id}/><span className="item-user-name">{u.name}</span></span>
                   </span>;
                 })

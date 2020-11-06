@@ -1,8 +1,8 @@
 import React from "react";
-import {useSelector} from "react-redux";
+import { useSelector } from "react-redux";
 import styled from "styled-components";
-import {Avatar} from "../../../../common";
-import {useTimeFormat} from "../../../../hooks";
+import { Avatar } from "../../../../common";
+import { useTimeFormat } from "../../../../hooks";
 import Tooltip from "react-tooltip-lite";
 
 const Wrapper = styled.div`
@@ -124,7 +124,10 @@ const CompanyMemberTimeline = (props) => {
     <Wrapper className={`member-timeline timeline-item ${className}`}>
       <div>
         {message !== null ? (
-          <>{message.author ? <Avatar className="mr-3" name={message.author.name} imageLink={message.author.profile_image_link} id={message.author.id} /> : <Avatar className="mr-3" imageLink={null} isBot={true} />}</>
+          <>{message.author ? <Avatar className="mr-3" name={message.author.name}
+                                      imageLink={message.author.profile_image_thumbnail_link ? message.author.profile_image_thumbnail_link : message.author.profile_image_link}
+                                      id={message.author.id}/> :
+            <Avatar className="mr-3" imageLink={null} isBot={true}/>}</>
         ) : (
           <Avatar className="mr-3" imageLink={null} isBot={true} />
         )}

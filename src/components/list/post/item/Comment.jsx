@@ -315,7 +315,8 @@ const Comment = (props) => {
         <CommentWrapper ref={refs.body} className="card-body" type={type}>
           <CommentHeader className="d-flex">
             <div className="d-flex justify-content-center align-items-center">
-              <Avatar className="mr-2" id={comment.author.id} name={comment.author.name} imageLink={comment.author.profile_image_link} />
+              <Avatar className="mr-2" id={comment.author.id} name={comment.author.name}
+                      imageLink={comment.author.profile_image_thumbnail_link ? comment.author.profile_image_thumbnail_link : comment.author.profile_image_link}/>
               <span>{comment.author.first_name}</span>
               <span className="text-muted ml-1">{fromNow(comment.created_at.timestamp)}</span>
             </div>
@@ -351,7 +352,8 @@ const Comment = (props) => {
               {
                 usersReacted.map(u => {
                   return <span key={u.id}>
-                    <Avatar className="mr-2" key={u.id} name={u.name} imageLink={u.profile_image_link}
+                    <Avatar className="mr-2" key={u.id} name={u.name}
+                            imageLink={u.profile_image_thumbnail_link ? u.profile_image_thumbnail_link : u.profile_image_link}
                             id={u.id}/> <span className="name">{u.name}</span>
                   </span>;
                 })

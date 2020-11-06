@@ -657,7 +657,8 @@ const CreateEditWorkspacePostModal = (props) => {
           label: user.name,
           name: user.name,
           first_name: user.first_name,
-          profile_image_link: user.profile_image_thumbnail_link ? user.profile_image_thumbnail_link : user.profile_image_link,
+          profile_image_link: user.profile_image_link,
+          profile_image_thumbnail_link: user.profile_image_thumbnail_link ? user.profile_image_thumbnail_link : user.profile_image_link,
           type: "USER",
           icon: "user-avatar",
         };
@@ -1060,7 +1061,7 @@ const CreateEditWorkspacePostModal = (props) => {
                         className="mr-2"
                         key={u.id}
                         name={u.name}
-                        imageLink={u.profile_image_link}
+                        imageLink={u.profile_image_thumbnail_link ? u.profile_image_thumbnail_link : u.profile_image_link}
                         id={u.id}/><span className="item-user-name">{u.name}</span></span>
                   </span>;
                 })
