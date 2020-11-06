@@ -31,6 +31,7 @@ export {
   putMarkReminderComplete,
   deleteChatMessage,
   getChannelDetail,
+  getLastChannel,
 } from "./chat";
 
 export {
