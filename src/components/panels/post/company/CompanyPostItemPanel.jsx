@@ -31,7 +31,11 @@ const Wrapper = styled.li`
       
       .post-partialBody {
         color: #000;
-        font-weight: bold;      
+        font-weight: bold;
+      
+        .dark & {
+          color: #c7c7c7;
+        }      
       }
     }
 
