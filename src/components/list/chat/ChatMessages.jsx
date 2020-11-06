@@ -771,11 +771,7 @@ class ChatMessages extends React.PureComponent {
                       {gm.replies
                         // .sort((a, b) => a.created_at.timestamp - b.created_at.timestamp)
                         .map((reply, k, e) => {
-                          const isAuthor = reply.user
-                            ? selectedChannel.is_shared && this.props.sharedSlugs.length
-                              ? this.props.sharedSlugs.filter((s) => s.slug_name === selectedChannel.slug_owner)[0].external_id === reply.user.id
-                              : reply.user.id === this.props.user.id
-                            : false;
+                          const isAuthor = reply.user && reply.user.id === this.props.user.id
 
                           let showAvatar = false;
                           let showTimestamp = false;
@@ -973,17 +969,14 @@ class ChatMessages extends React.PureComponent {
 
 function mapStateToProps(state) {
   const {
-    global: { isBrowserActive, recipients, slugs },
+    global: { isBrowserActive, recipients },
     session: { user },
-    users: { onlineUsers },
     chat: { historicalPositions, isLastChatVisible },
   } = state;
 
   return {
     user,
     settings: state.settings.user.CHAT_SETTINGS,
-    sharedSlugs: slugs,
-    onlineUsers,
     isBrowserActive,
     historicalPositions,
     recipients,

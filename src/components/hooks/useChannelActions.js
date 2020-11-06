@@ -169,7 +169,7 @@ const useChannelActions = () => {
       payload = {
         ...payload,
         ...channelUpdate,
-        ...getSharedPayload(channel),
+        //...getSharedPayload(channel),
       };
 
       dispatch(
@@ -188,7 +188,7 @@ const useChannelActions = () => {
         })
       );
     },
-    [dispatch, sharedSlugs]
+    [dispatch]
   );
 
   /**
@@ -297,6 +297,7 @@ const useChannelActions = () => {
       let payload = {
         id: channel.id,
         is_hidden: true,
+        is_hide: true,
       };
 
       updateStatus(channel, payload, callback);
@@ -313,6 +314,7 @@ const useChannelActions = () => {
       let payload = {
         id: channel.id,
         is_hidden: false,
+        is_hide: false,
       };
 
       updateStatus(channel, payload, callback);
