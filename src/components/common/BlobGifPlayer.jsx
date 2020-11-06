@@ -3,6 +3,7 @@ import styled from "styled-components";
 import GifPlayer from "react-gif-player";
 import "react-gif-player/src/GifPlayer.scss";
 import { useFiles } from "../hooks";
+import { FindGifRegex } from "../../helpers/stringFormatter";
 
 const BlobGifPlayerWrapper = styled(GifPlayer)`
   display: inline-block;
@@ -25,31 +26,74 @@ const BlobGifPlayerWrapper = styled(GifPlayer)`
 `;
 
 const BlobGifPlayer = (props) => {
-  const { className = "", autoPlay = true, id, src, ...otherProps } = props;
+  const { className = "", body, autoPlay = true, ...otherProps } = props;
 
   const { gifBlobs, actions: { setGifSrc } } = useFiles();
-  const [blobSrc, setBlobSrc] = useState(gifBlobs[id]);
+  const [gifs, setGifs] = useState({});
 
-  useEffect(() => {
-    if (!blobSrc) {
-      fetch(src)
+  const fetchBlob = (gif) => {
+    if (gifBlobs[gif.id]) {
+      gif = {
+        ...gif,
+        blob: gifBlobs[gif.id]
+      };
+      setGifs(prevState => ({
+        ...prevState,
+        [gif.id]: gif
+      }));
+    } else {
+      setGifSrc({
+        id: gif.id,
+        src: ""
+      });
+      fetch(gif.src)
         .then(function (response) {
           return response.blob();
         })
         .then(function (data) {
           const imgObj = URL.createObjectURL(data);
-          setBlobSrc(imgObj);
           setGifSrc({
-            id: id,
+            id: gif.id,
             src: imgObj
           });
+          setGifs(prevState => ({
+            ...prevState,
+            [gif.id]: {
+              ...gif,
+              blob: imgObj
+            }
+          }));
         }, function (err) {
           console.log(err, 'error');
         });
     }
+  };
+
+  useEffect(() => {
+    let gifUrls = body.match(FindGifRegex);
+    gifUrls.forEach(gifUrl => {
+      const gifLink = gifUrl.replace("&amp;rid=giphy.gif", "&rid=giphy.gif");
+      const tbr = "&rid=giphy.gif";
+      let cid = gifLink.substring(gifLink.indexOf("cid") + 4);
+      cid = cid.substring(0, cid.length - tbr.length);
+
+      fetchBlob({
+        id: cid,
+        src: gifLink,
+      });
+    });
   }, []);
 
-  return <GifPlayer className={"blob-gif-player gif-player"} gif={blobSrc} autoplay={autoPlay} {...otherProps} />;
+  let gifItems = Object.values(gifs);
+
+  return <>
+    {
+      !gifItems.some(g => typeof g.blob === "undefined") && gifItems.map((gif) => {
+        return <GifPlayer className={"blob-gif-player gif-player"} key={gif.id} gif={gif.blob}
+                          autoplay={autoPlay} {...otherProps} />;
+      })
+    }
+  </>;
 };
 
 export default React.memo(BlobGifPlayer);
