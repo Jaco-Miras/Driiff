@@ -107,6 +107,8 @@ const StyledMoreOptions = styled(MoreOptions)`
   }
 `;
 
+let hiddenArchivedLoaded = false;
+
 const ChatSidebarPanel = (props) => {
   const { className = "", channels, userChannels, selectedChannel } = props;
 
@@ -230,11 +232,29 @@ const ChatSidebarPanel = (props) => {
     }
   }, [chatSidebarSearch]);
 
+  const onInputFocus = () => {
+    console.log('focus input')
+    if (!hiddenArchivedLoaded) {
+      hiddenArchivedLoaded = true;
+      channelActions.fetchAll({
+          skip: 0,
+          limit: 20,
+          filter: "hidden",
+        });
+
+      channelActions.fetchAll({
+        skip: 0,
+        limit: 20,
+        filter: "archived",
+      });
+    }
+  }
+
   return (
     <Wrapper ref={refs.container} className={`chat-sidebar ${className}`}>
       <div className="chat-sidebar-header d-flex justify-content-between align-items-flex-start align-items-center">
         <Search onChange={onSearchChange} onKeyDown={handleSearchKeyDown} value={query} onClickEmpty={emptySearchInput}
-                closeButton="true" className="chat-search" placeholder={dictionary.searchChatPlaceholder}/>
+                closeButton="true" className="chat-search" placeholder={dictionary.searchChatPlaceholder} onFocus={onInputFocus}/>
         <div className="d-flex justify-content-center align-items-center ml-2" style={{ height: "38px" }}>
           <StyledMoreOptions ref={refs.navTab} role="tabList">
             <div className={`option-filter ${tabPill === "pills-home" ? "active" : ""}`} onClick={handleTabChange}
