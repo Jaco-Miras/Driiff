@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import Skeleton from "react-skeleton-loader";
@@ -118,9 +118,11 @@ const Avatar = (props) => {
         {isBot ? (
           <Image show={isLoaded} className="rounded-circle" onLoad={handleImageLoad} onError={handleImageError} src={botIcon} alt={name} />
         ) : imageLink == null ? (
-          <Image show={true} className="rounded-circle pixel-avatar" onLoad={handleImageLoad} onError={handleImageError} src={setAvatarsPlaceholder(name)} avatarColor={avatarColor(name)} alt={name} />
+          <Image show={true} className="rounded-circle pixel-avatar" onLoad={handleImageLoad} onError={handleImageError}
+                 src={handleInitials(name)} avatarColor={avatarColor(name)} alt={name}/>
         ) : hasAccepted === false ? (
-          <Image show={true} className="rounded-circle pixel-avatar" onLoad={handleImageLoad} onError={handleImageError} src={setAvatarsPlaceholder(name)} avatarColor={avatarColor(name)} alt={name} />
+          <Image show={true} className="rounded-circle pixel-avatar" onLoad={handleImageLoad} onError={handleImageError}
+                 src={handleInitials(name)} avatarColor={avatarColor(name)} alt={name}/>
         ) : type === "GROUP" ? (
           <SvgIconFeather icon="users" />
         ) : name === "Gripp Offerte Bot" ? (
@@ -128,7 +130,8 @@ const Avatar = (props) => {
         ) : showInitials === false ? (
           <Image show={isLoaded} className="rounded-circle" onLoad={handleImageLoad} onError={handleImageError} src={imageLink} alt={name} />
         ) : (
-          <Image show={true} className="rounded-circle pixel-avatar" onLoad={handleImageLoad} onError={handleImageError} src={setAvatarsPlaceholder(name)} avatarColor={avatarColor(name)} alt={name} />
+          <Image show={true} className="rounded-circle pixel-avatar" onLoad={handleImageLoad} onError={handleImageError}
+                 src={handleInitials(name)} avatarColor={avatarColor(name)} alt={name}/>
         )}
       </Tooltip>
       {children}
