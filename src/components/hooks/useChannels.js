@@ -15,24 +15,24 @@ const useChannels = () => {
     if (init) {
       init = false;
 
-      actions.fetchAll({
-        skip: 0,
-        limit: 100,
-      });
+      // actions.fetchAll({
+      //   skip: 0,
+      //   limit: 100,
+      // });
 
-      setTimeout(() => {
-        actions.fetchAll({
-          skip: 0,
-          limit: 20,
-          filter: "hidden",
-        });
+      // setTimeout(() => {
+      //   actions.fetchAll({
+      //     skip: 0,
+      //     limit: 20,
+      //     filter: "hidden",
+      //   });
 
-        actions.fetchAll({
-          skip: 0,
-          limit: 20,
-          filter: "archived",
-        });
-      }, 30000)
+      //   actions.fetchAll({
+      //     skip: 0,
+      //     limit: 20,
+      //     filter: "archived",
+      //   });
+      // }, 30000)
     
       //actions.fetchWorkspaceChannels({});
     }

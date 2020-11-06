@@ -4,7 +4,7 @@ import moment from "moment-timezone";
 import { useTimeFormat, useTodoActions } from "./index";
 
 let init = false;
-const useTodos = () => {
+const useTodos = (fetchTodosOnMount = false) => {
 
   const { isLoaded, skip, limit, hasMore, items, count } = useSelector((state) => state.global.todos);
   const { user: loggedUser } = useSelector((state) => state.session);
@@ -90,6 +90,8 @@ const useTodos = () => {
     if (!init) {
       init = true;
       todoActions.fetchDetail({});
+    }
+    if (!isLoaded && fetchTodosOnMount) {
       loadMore();
     }
   }, []);

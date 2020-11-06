@@ -183,6 +183,10 @@ const SystemPeoplePanel = (props) => {
 
   useEffect(() => {
     refs.search.current.focus();
+    // check if roles has an object
+    if (Object.keys(roles).length == 0) {
+      userActions.fetchRoles();
+    }
   }, []);
 
   return (

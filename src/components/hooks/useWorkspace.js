@@ -38,7 +38,7 @@ const useWorkspace = (fetchOnMount = false) => {
       //   setArchivedWsLoaded(true);
       // });
       //recheck this endpoint
-      actions.fetchWorkspaceChannels({skip: 0, limit: 250});
+      //actions.fetchWorkspaceChannels({skip: 0, limit: 250});
     } else if (workspacesLoaded && activeTopic) {
       //restore the channel id
       if (channels.hasOwnProperty(activeTopic.channel.id) && url.startsWith("/workspace")) {

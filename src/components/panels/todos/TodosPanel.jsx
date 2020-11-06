@@ -13,7 +13,7 @@ const Wrapper = styled.div`
 const TodosPanel = (props) => {
   const { className = "" } = props;
 
-  const {getSortedItems, action: todoActions, isLoaded, count} = useTodos();
+  const {getSortedItems, action: todoActions, isLoaded, count} = useTodos(true); //pass true to fetch to do list on mount - default to false
   const {_t} = useTranslation();
 
   const dictionary = {

@@ -62,9 +62,14 @@ export default (state = INITIAL_STATE, action) => {
     }
     case "GET_USERS_SUCCESS":
       let users = {...state.users};
+      let mentions = { ...state.mentions};
       action.data.users.forEach((item) => {
         users[item.id] = {
           ...users[item.id],
+          ...item,
+        };
+        mentions[item.id] = {
+          ...mentions[item.id],
           ...item,
         };
       });
@@ -72,6 +77,7 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         users: users,
+        mentions: mentions,
         getUserFilter: {
           hasMore: action.data.users.length === action.data.limit,
           limit: action.data.limit,
