@@ -39,7 +39,7 @@ export const stripGif = (html) => {
   let temporalDivElement = document.createElement("p");
   temporalDivElement.innerHTML = html;
 
-  let image = temporalDivElement.querySelectorAll("img[src$=\"\"]");
+  let image = temporalDivElement.querySelectorAll("img[src='']");
   image.forEach(node => {
     node.parentNode.removeChild(node);
   });
