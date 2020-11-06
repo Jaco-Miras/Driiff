@@ -105,7 +105,7 @@ const useQuillModules = (mode, callback, mentionOrientation = "top", quillRef, m
             "\" style=\"" +
             avatarStyling +
             "\"><img src=\"" +
-            item.profile_image_link +
+            (item.profile_image_thumbnail_link ? item.profile_image_thumbnail_link : item.profile_image_link) +
             "\" draggable=\"false\" style=\"" +
             avatarImgStyling +
             "\" alt=\"" +

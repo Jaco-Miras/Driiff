@@ -1,8 +1,6 @@
 import { Emoji } from "emoji-mart";
 import React from "react";
-import { useDispatch } from "react-redux";
 import styled from "styled-components";
-import { postChatReaction } from "../../../../redux/actions/chatActions";
 import { UserListPopUp } from "../../../common";
 import useChatMessageActions from "../../../hooks/useChatMessageActions";
 
@@ -56,6 +54,7 @@ const EmojiReaction = (props) => {
             id: r.user_id,
             name: r.user_name,
             profile_image_link: r.profile_image_link,
+            profile_image_thumbnail_link: r.profile_image_thumbnail_link ? r.profile_image_thumbnail_link : r.profile_image_link,
             partial_name: null,
           };
         })}

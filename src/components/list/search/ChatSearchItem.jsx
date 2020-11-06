@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import {Avatar} from "../../common";
+import { Avatar } from "../../common";
 
 const Wrapper = styled.li`
     display: flex;
@@ -22,11 +22,12 @@ const ChatSearchItem = (props) => {
   return (
     <Wrapper className="list-group-item p-l-0 p-r-0">
       <div>
-        <Avatar id={message.user.id} name={message.user.name} imageLink={message.user.profile_image_link}/>
+        <Avatar id={message.user.id} name={message.user.name}
+                imageLink={message.user.profile_image_thumbnail_link ? message.user.profile_image_thumbnail_link : message.user.profile_image_link}/>
       </div>
       <div className="ml-2" onClick={handleRedirect}>
         <p>{message.user.name}</p>
-        <p className="text-muted" dangerouslySetInnerHTML={{__html: message.body}}/>
+        <p className="text-muted" dangerouslySetInnerHTML={{ __html: message.body }}/>
       </div>
     </Wrapper>
   );

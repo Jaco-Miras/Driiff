@@ -170,11 +170,12 @@ const PostBody = (props) => {
         <div className="d-flex justify-content-between align-items-center text-muted w-100">
           <div className="d-inline-flex justify-content-center align-items-start">
             <Avatar className="author-avatar mr-2" id={post.author.id} name={post.author.name}
-                    imageLink={post.author.profile_image_link}/>
+                    imageLink={post.author.profile_image_thumbnail_link ? post.author.profile_image_thumbnail_link : post.author.profile_image_link}/>
             <div>
               <span className="author-name">{post.author.first_name}</span>
               {
-                postRecipients.length >= 1 && <span className="recipients" dangerouslySetInnerHTML={{ __html: renderUserResponsibleNames() }}/>
+                postRecipients.length >= 1 &&
+                <span className="recipients" dangerouslySetInnerHTML={{ __html: renderUserResponsibleNames() }}/>
               }
             </div>
           </div>

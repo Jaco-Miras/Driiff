@@ -146,7 +146,7 @@ export const NotificationListItem = (props) => {
           {
             notification.author !== null &&
             <Avatar id={notification.author.id} name={notification.author.name}
-                    imageLink={notification.author.profile_image_link}/>
+                    imageLink={notification.author.profile_image_thumbnail_link ? notification.author.profile_image_thumbnail_link : notification.author.profile_image_link}/>
           }
           {
             notification.type === "NEW_TODO" &&

@@ -38,7 +38,8 @@ const Option = (props) => {
       <components.Option {...props}>
         {props.data && (
           <>
-            <StyledAvatar className="react-select-avatar" key={props.data.id} imageLink={props.data.profile_image_link}
+            <StyledAvatar className="react-select-avatar" key={props.data.id}
+                          imageLink={props.data.profile_image_thumbnail_link ? props.data.profile_image_thumbnail_link : props.data.profile_image_link}
                           name={props.data.name} partialName={props.data.partial_name}/>
             <div>
               {props.children}

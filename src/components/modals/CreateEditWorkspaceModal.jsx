@@ -844,6 +844,7 @@ const CreateEditWorkspaceModal = (props) => {
             id: m.id,
             first_name: m.first_name === "" ? m.email : m.first_name,
             profile_image_link: m.profile_image_link,
+            profile_image_thumbnail_link: m.profile_image_thumbnail_link ? m.profile_image_thumbnail_link : m.profile_image_link,
           };
         });
       }

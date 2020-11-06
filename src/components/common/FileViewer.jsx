@@ -143,6 +143,11 @@ const FileWrapper = styled.figure`
 `;
 
 const StyledFileRender = styled.div`
+  .spinner-border {
+    border-width: 3px;
+    padding: 10px;
+    margin: 5px;
+  }
   .file {    
     transition: all 0.5s ease;
     opacity: 1;
@@ -183,7 +188,6 @@ const StyledFileRender = styled.div`
 
 const FileRender = (props) => {
   const { className = "", file, setFiles, files } = props;
-  const [fileSrc, setFileSrc] = useState(file.imgSrc ? file.imgSrc : null);
   const [isLoaded, setIsLoaded] = useState(false);
 
   let refFiles = {};
@@ -234,6 +238,7 @@ const FileRender = (props) => {
 
   useEffect(() => {
     if (!file.imgSrc) {
+      setIsLoaded(false);
       fetch(file.view_link, {
         method: "GET", keepalive: true, headers: {
           Authorization: `Bearer ${userAuth.access_token}`,
@@ -246,9 +251,7 @@ const FileRender = (props) => {
           return response.blob();
         })
         .then(function (data) {
-
           const imgObj = URL.createObjectURL(data);
-
           setFiles(files.map((f) => {
             if (f.id === file.id) {
               return {
@@ -259,7 +262,6 @@ const FileRender = (props) => {
               return f;
             }
           }));
-          setFileSrc(imgObj);
           setIsLoaded(true);
         }, function (err) {
           console.log(err, 'error');
@@ -267,48 +269,63 @@ const FileRender = (props) => {
     } else {
       setIsLoaded(true);
     }
-  }, []);
+  }, [file]);
 
   switch (file.type.toLowerCase()) {
     case "video":
       return (
         <StyledFileRender isLoaded={isLoaded} key={file.id} data-index={file.id}
                           className={`file-item mfp-img ${className}`}>
-          <img className={"d-none"} src={require("../../assets/icon/limitations/l/text.svg")}
-               alt={"File not found."}/>
-          <video
-            className={`file opacity-0`}
-            data-index={file.id}
-            data-attempt={0}
-            ref={(e) => (refFiles[file.id] = e)}
-            controls
-            playsInline
-            key={file.id}
-            autoPlay={false}
-            onLoadStart={handleVideoOnLoad}
-            onError={handleVideoOnError}
-            src={fileSrc}
-          />
+          {
+            isLoaded ? <>
+                <img className={"d-none"} src={require("../../assets/icon/limitations/l/text.svg")}
+                     alt={"File not found."}/>
+                <video
+                  className={`file opacity-0`}
+                  data-index={file.id}
+                  data-attempt={0}
+                  ref={(e) => (refFiles[file.id] = e)}
+                  controls
+                  playsInline
+                  key={file.id}
+                  autoPlay={false}
+                  onLoadStart={handleVideoOnLoad}
+                  onError={handleVideoOnError}
+                  src={file.imgSrc}
+                />
+              </> :
+              <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"/>
+          }
         </StyledFileRender>
       );
     case "image":
       return (
         <StyledFileRender isLoaded={isLoaded} key={file.id} data-index={file.id}
                           className={`file-item mfp-img ${className}`}>
-          <img className={`file`} data-index={file.id} data-attempt={0} onLoad={handleImageOnLoad}
-               onError={handleImageOnError}
-               ref={(e) => (refFiles[file.id] = e)} key={file.id}
-               src={fileSrc}
-               alt={file.filename ? file.filename : file.search}/>
+          {
+            isLoaded ? <>
+                <img className={`file`} data-index={file.id} data-attempt={0} onLoad={handleImageOnLoad}
+                     onError={handleImageOnError}
+                     ref={(e) => (refFiles[file.id] = e)} key={file.id}
+                     src={file.imgSrc}
+                     alt={file.filename ? file.filename : file.search}/>
+              </> :
+              <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"/>
+          }
         </StyledFileRender>
       );
     case "pdf":
       return (
         <StyledFileRender isLoaded={isLoaded} key={file.id} data-index={file.id}
                           className={`file-item mfp-img ${className}`}>
-          <object className={`file file-pdf`} data={fileSrc} width="600" height="400">
-            <embed src={fileSrc} width="600" height="400"/>
-          </object>
+          {
+            isLoaded ? <>
+                <object className={`file file-pdf`} data={file.imgSrc} width="600" height="400">
+                  <embed src={file.imgSrc} width="600" height="400"/>
+                </object>
+              </> :
+              <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"/>
+          }
         </StyledFileRender>
       );
     default:
