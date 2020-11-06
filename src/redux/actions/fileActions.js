@@ -1,4 +1,4 @@
-import dispatchActionToReducer, {SimpleDispatchActionToReducer} from "../actionDispatcher";
+import dispatchActionToReducer, { SimpleDispatchActionToReducer } from "../actionDispatcher";
 import {
   deleteCompanyDeleteAllTrashFiles as deleteCompanyDeleteAllTrashFilesService,
   deleteCompanyFiles as deleteCompanyFilesService,
@@ -447,4 +447,16 @@ export function getCompanyGoogleAttachmentsFolder(payload, callback) {
 
 export function getCompanyGoogleAttachmentsFile(payload, callback) {
   return dispatchActionToReducer(getCompanyGoogleAttachmentsFileService(payload), "GET_COMPANY_GOOGLE_ATTACHMENTS_FILE_START", "GET_COMPANY_GOOGLE_ATTACHMENTS_FILE_SUCCESS", "GET_COMPANY_GOOGLE_ATTACHMENTS_FILE_FAIL", callback);
+}
+
+export function incomingGifData(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_GIF_DATA", payload, callback);
+}
+
+export function incomingFileData(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_FILE_DATA", payload, callback);
+}
+
+export function incomingFileThumbnailData(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_FILE_THUMBNAIL_DATA", payload, callback);
 }

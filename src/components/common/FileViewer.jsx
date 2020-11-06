@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { getAPIUrl } from "../../helpers/slugHelper";
 import { setViewFiles } from "../../redux/actions/fileActions";
 import "../../vendors/lightbox/magnific-popup.css";
-import { useOutsideClick, useTimeFormat } from "../hooks";
+import { useFiles, useOutsideClick, useTimeFormat } from "../hooks";
 import { SvgIconFeather } from "./SvgIcon";
 
 const FileViewerContainer = styled.div`
@@ -188,6 +188,8 @@ const StyledFileRender = styled.div`
 
 const FileRender = (props) => {
   const { className = "", file, setFiles, files } = props;
+  const { fileBlobs, actions: { setFileSrc } } = useFiles();
+
   const [isLoaded, setIsLoaded] = useState(false);
 
   let refFiles = {};
@@ -237,7 +239,7 @@ const FileRender = (props) => {
 
 
   useEffect(() => {
-    if (!file.imgSrc) {
+    if (!fileBlobs[file.id]) {
       setIsLoaded(false);
       fetch(file.view_link, {
         method: "GET", keepalive: true, headers: {
@@ -262,7 +264,12 @@ const FileRender = (props) => {
               return f;
             }
           }));
-          setIsLoaded(true);
+          setFileSrc({
+            id: file.id,
+            src: imgObj
+          }, () => {
+            setIsLoaded(true);
+          });
         }, function (err) {
           console.log(err, 'error');
         });
@@ -291,7 +298,7 @@ const FileRender = (props) => {
                   autoPlay={false}
                   onLoadStart={handleVideoOnLoad}
                   onError={handleVideoOnError}
-                  src={file.imgSrc}
+                  src={fileBlobs[file.id]}
                 />
               </> :
               <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"/>
@@ -307,7 +314,7 @@ const FileRender = (props) => {
                 <img className={`file`} data-index={file.id} data-attempt={0} onLoad={handleImageOnLoad}
                      onError={handleImageOnError}
                      ref={(e) => (refFiles[file.id] = e)} key={file.id}
-                     src={file.imgSrc}
+                     src={fileBlobs[file.id]}
                      alt={file.filename ? file.filename : file.search}/>
               </> :
               <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"/>
@@ -320,8 +327,8 @@ const FileRender = (props) => {
                           className={`file-item mfp-img ${className}`}>
           {
             isLoaded ? <>
-                <object className={`file file-pdf`} data={file.imgSrc} width="600" height="400">
-                  <embed src={file.imgSrc} width="600" height="400"/>
+                <object className={`file file-pdf`} data={fileBlobs[file.id]} width="600" height="400">
+                  <embed src={fileBlobs[file.id]} width="600" height="400"/>
                 </object>
               </> :
               <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"/>
@@ -334,6 +341,7 @@ const FileRender = (props) => {
                           className={`file-item mfp-img cannot-preview ${className}`}>
           <Eye icon={"eye-off"}/>
           <p>
+            {file.search ? file.search : file.filename}
             We can't preview this file type. <br/>
             Try downloading the file to view it.
           </p>

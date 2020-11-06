@@ -1,7 +1,6 @@
 import { hexToCSSFilter } from "hex-to-css-filter";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { renderToString } from "react-dom/server";
-import GifPlayer from "react-gif-player";
 import "react-gif-player/src/GifPlayer.scss";
 import { useInView } from "react-intersection-observer";
 import { useHistory } from "react-router-dom";
@@ -9,7 +8,7 @@ import Skeleton from "react-skeleton-loader";
 import styled from "styled-components";
 import quillHelper from "../../../helpers/quillHelper";
 import { getEmojiRegexPattern, stripGif } from "../../../helpers/stringFormatter";
-import { ImageTextLink, SvgIconFeather, SvgImage } from "../../common";
+import { BlobGifPlayer, ImageTextLink, SvgIconFeather, SvgImage } from "../../common";
 import { useGoogleApis } from "../../hooks";
 import MessageFiles from "./Files/MessageFiles";
 import Unfurl from "./Unfurl/Unfurl";
@@ -1467,7 +1466,7 @@ const ChatBubble = (props) => {
                                      className="chat-name-not-author-mobile">{reply.user.name}</ChatNameNotAuthor>
                 </>
               )} */}
-              {body !== "<span></span>" && (
+              {!(body === "<span></span>" || body === "") && (
                 <span ref={isLastChat ? lastChatRef : null}>
                   <ReplyContent
                     ref={handleContentRef}
@@ -1481,7 +1480,7 @@ const ChatBubble = (props) => {
               )}
               {showGifPlayer &&
               fetchGifCount(body).map((gif) => {
-                return <GifPlayer key={gif.id} className={"gifPlayer"} gif={gif.src} autoplay={true}/>;
+                return <BlobGifPlayer key={gif.id} id={gif.id} src={gif.src} autoplay={true}/>;
               })}
               {(reply.unfurls && reply.unfurls.length && !reply.is_deleted && !showGifPlayer && !isBot) === true && (
                 <Unfurl unfurlData={reply.unfurls} isAuthor={isAuthor} removeUnfurl={chatMessageActions.removeUnfurl} channelId={selectedChannel.id} messageId={reply.id} type={"chat"} />

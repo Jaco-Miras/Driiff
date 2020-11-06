@@ -8,6 +8,7 @@ import {
   getAllRecipients as getAllRecipientsService,
   getConnectedSlugs as getConnectedSlugsService,
   getDrafts as getDraftsService,
+  getLatestReply as getLatestReplyService,
   getPushNotification as getPushNotificationService,
   getQuickLinks as getQuickLinksService,
   getToDo as getToDoService,
@@ -18,13 +19,12 @@ import {
   postToDo as postToDoService,
   putDoneToDo as putDoneToDoService,
   putToDo as putToDoService,
+  refetchMessages as refetchMessagesService,
+  refetchOtherMessages as refetchOtherMessagesService,
   saveDraft as saveDraftService,
   subscribePushNotifications as subscribePushNotificationsService,
   updateDraft as updateDraftService,
   uploadDocument as uploadDocumentService,
-  refetchMessages as refetchMessagesService,
-  refetchOtherMessages as refetchOtherMessagesService,
-  getLatestReply as getLatestReplyService,
 } from "../services";
 
 export function setBrowserTabStatus(payload, callback) {

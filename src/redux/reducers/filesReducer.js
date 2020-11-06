@@ -72,7 +72,10 @@ const INITIAL_STATE = {
       limit: 100,
       items: []
     },
-  }
+  },
+  gifBlobs: {},
+  fileBlobs: {},
+  fileThumbnailBlobs: {},
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -1841,7 +1844,34 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         workspaceFiles: updatedWorkspaceFiles,
         companyFiles: companyFiles
-      }
+      };
+    }
+    case "INCOMING_GIF_DATA": {
+      return {
+        ...state,
+        gifBlobs: {
+          ...state.gifBlobs,
+          [action.data.id]: action.data.src
+        }
+      };
+    }
+    case "INCOMING_FILE_DATA": {
+      return {
+        ...state,
+        fileBlobs: {
+          ...state.fileBlobs,
+          [action.data.id]: action.data.src
+        }
+      };
+    }
+    case "INCOMING_FILE_THUMBNAIL_DATA": {
+      return {
+        ...state,
+        fileThumbnailBlobs: {
+          ...state.fileThumbnailBlobs,
+          [action.data.id]: action.data.src
+        }
+      };
     }
     default:
       return state;

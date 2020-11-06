@@ -1,6 +1,6 @@
-import React, {useCallback, useRef} from "react";
-import {useDispatch} from "react-redux";
-import {copyTextToClipboard} from "../../helpers/commonFunctions";
+import React, { useCallback, useRef } from "react";
+import { useDispatch } from "react-redux";
+import { copyTextToClipboard } from "../../helpers/commonFunctions";
 import {
   addCompanyFileSearchResults,
   addFileSearchResults,
@@ -36,6 +36,9 @@ import {
   getWorkspacePrimaryFiles,
   getWorkspaceRecentlyEditedFiles,
   getWorkspaceTrashFiles,
+  incomingFileData,
+  incomingFileThumbnailData,
+  incomingGifData,
   patchCompanyFileViewed,
   postCompanyFolders,
   postCompanyUploadBulkFiles,
@@ -56,9 +59,9 @@ import {
   uploadFilesReducer,
   uploadWorkspaceFiles
 } from "../../redux/actions/fileActions";
-import {addToModals} from "../../redux/actions/globalActions";
-import {useToaster} from "./index";
-import {useTranslation} from "../hooks";
+import { addToModals } from "../../redux/actions/globalActions";
+import { useToaster } from "./index";
+import { useTranslation } from "../hooks";
 
 const useFileActions = (params = null) => {
   const dispatch = useDispatch();
@@ -67,7 +70,7 @@ const useFileActions = (params = null) => {
 
   const fileName = useRef("");
 
-  const {_t} = useTranslation();
+  const { _t } = useTranslation();
 
   const getFileIcon = (mimeType = "") => {
     if (mimeType) {
@@ -1097,6 +1100,30 @@ const useFileActions = (params = null) => {
     [dispatch]
   );
 
+  const setGifSrc = useCallback(
+    (payload, callback = () => {
+    }) => {
+      dispatch(
+        incomingGifData(payload, callback)
+      );
+    }, []);
+
+  const setFileSrc = useCallback(
+    (payload, callback = () => {
+    }) => {
+      dispatch(
+        incomingFileData(payload, callback)
+      );
+    }, []);
+
+  const setFileThumbnailSrc = useCallback(
+    (payload, callback = () => {
+    }) => {
+      dispatch(
+        incomingFileThumbnailData(payload, callback)
+      );
+    }, []);
+
   return {
     addGoogleDriveFile,
     clearSearch,
@@ -1159,7 +1186,10 @@ const useFileActions = (params = null) => {
     restoreWorkspaceFolder,
     restoreCompanyFolder,
     getCompanyGoogleDriveFolders,
-    getCompanyGoogleDriveFiles
+    getCompanyGoogleDriveFiles,
+    setGifSrc,
+    setFileSrc,
+    setFileThumbnailSrc,
   };
 };
 

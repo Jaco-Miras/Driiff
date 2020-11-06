@@ -2,6 +2,7 @@ import React, { forwardRef, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { getAPIUrl } from "../../../../helpers/slugHelper";
 import useFileActions from "../../../hooks/useFileActions";
+import { useFiles } from "../../../hooks";
 
 const ImgLoader = styled.div`
   position: relative;
@@ -103,7 +104,10 @@ const FilePill = forwardRef((props, ref) => {
 
   const refImageLoader = useRef();
   const refImage = useRef();
-  const [imgSrc, setImgSrc] = useState(file.thumbnail_link && file.type.toLowerCase().includes("image") ? null : file.view_link);
+
+  const { fileThumbnailBlobs, actions: { setFileThumbnailSrc } } = useFiles();
+
+  const [imgSrc, setImgSrc] = useState(file.thumbnail_link && file.type.toLowerCase().includes("image") ? fileThumbnailBlobs[file.id] : file.view_link);
 
   const userAuth = JSON.parse(localStorage.getItem("userAuthToken"));
 
@@ -204,6 +208,10 @@ const FilePill = forwardRef((props, ref) => {
         .then(function (data) {
           const imgObj = URL.createObjectURL(data);
           setImgSrc(imgObj);
+          setFileThumbnailSrc({
+            id: file.id,
+            src: imgObj
+          });
         }, function (err) {
           console.log(err, 'error');
         });

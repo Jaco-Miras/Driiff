@@ -24,7 +24,7 @@ const WorkspaceFilesPanel = (props) => {
   const dispatch = useDispatch();
   const history = useHistory();
   const { _t } = useTranslation();
-  const { params, wsFiles, actions, topic, fileIds, folders, folder, subFolders } = useFiles();
+  const { params, wsFiles, actions, topic, fileIds, folders, folder, subFolders } = useFiles(true); // pass true to trigger fetching of files
 
   const [filter, setFilter] = useState("");
   const [search, setSearch] = useState("");

@@ -3,43 +3,45 @@ import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { useFileActions } from "../hooks";
 
-const useFiles = () => {
+const useFiles = (triggerFetch = false) => {
   const params = useParams();
   const fileActions = useFileActions(params);
 
   const activeTopic = useSelector((state) => state.workspaces.activeTopic);
-  const workspaceFiles = useSelector((state) => state.files.workspaceFiles);
-  const googleDriveApiFiles = useSelector((state) => state.files.googleDriveApiFiles);
+  const { workspaceFiles, googleDriveApiFiles, gifBlobs, fileBlobs, fileThumbnailBlobs } = useSelector((state) => state.files);
+
   const [fetchingFiles, setFetchingFiles] = useState(false);
 
   useEffect(() => {
-    if ((!fetchingFiles && activeTopic && !workspaceFiles.hasOwnProperty(activeTopic.id)) || (!fetchingFiles && activeTopic && workspaceFiles.hasOwnProperty(activeTopic.id) && !workspaceFiles[activeTopic.id].hasOwnProperty("loaded"))) {
-      const cb = (err, res) => {
-        setFetchingFiles(false);
-        fileActions.getFolders({topic_id: activeTopic.id});
-        fileActions.getFilesDetail(activeTopic.id);
-        fileActions.getFavoriteFiles(activeTopic.id);
-        fileActions.getPopularFiles(activeTopic.id);
-        fileActions.getEditedFiles(activeTopic.id);
-        fileActions.getTrashFiles(activeTopic.id);
-        fileActions.getGoogleDriveFiles(activeTopic.id);
-        fileActions.getGoogleDriveFolders(activeTopic.id);
-      };
-      setFetchingFiles(true);
-      fileActions.getFiles({ topic_id: activeTopic.id }, cb);
-    }
-    if (!fetchingFiles && activeTopic && workspaceFiles.hasOwnProperty(activeTopic.id)) {
-      if (params.hasOwnProperty("fileFolderId") && workspaceFiles[activeTopic.id].folders.hasOwnProperty(params.fileFolderId) && !workspaceFiles[activeTopic.id].folders[params.fileFolderId].hasOwnProperty("loaded")) {
+    if (triggerFetch) {
+      if ((!fetchingFiles && activeTopic && !workspaceFiles.hasOwnProperty(activeTopic.id)) || (!fetchingFiles && activeTopic && workspaceFiles.hasOwnProperty(activeTopic.id) && !workspaceFiles[activeTopic.id].hasOwnProperty("loaded"))) {
         const cb = (err, res) => {
           setFetchingFiles(false);
+          fileActions.getFolders({ topic_id: activeTopic.id });
+          fileActions.getFilesDetail(activeTopic.id);
+          fileActions.getFavoriteFiles(activeTopic.id);
+          fileActions.getPopularFiles(activeTopic.id);
+          fileActions.getEditedFiles(activeTopic.id);
+          fileActions.getTrashFiles(activeTopic.id);
+          fileActions.getGoogleDriveFiles(activeTopic.id);
+          fileActions.getGoogleDriveFolders(activeTopic.id);
         };
         setFetchingFiles(true);
-
-        let payload = {
-          topic_id: activeTopic.id,
-          folder_id: parseInt(params.fileFolderId),
-        };
-        fileActions.getFiles(payload, cb);
+        fileActions.getFiles({ topic_id: activeTopic.id }, cb);
+      }
+      if (!fetchingFiles && activeTopic && workspaceFiles.hasOwnProperty(activeTopic.id)) {
+        if (params.hasOwnProperty("fileFolderId") && workspaceFiles[activeTopic.id].folders.hasOwnProperty(params.fileFolderId) && !workspaceFiles[activeTopic.id].folders[params.fileFolderId].hasOwnProperty("loaded")) {
+          const cb = (err, res) => {
+            setFetchingFiles(false);
+          };
+          setFetchingFiles(true);
+  
+          let payload = {
+            topic_id: activeTopic.id,
+            folder_id: parseInt(params.fileFolderId),
+          };
+          fileActions.getFiles(payload, cb);
+        }
       }
     }
   }, [fetchingFiles, activeTopic, workspaceFiles, params]);
@@ -81,7 +83,10 @@ const useFiles = () => {
     folders: hasActiveTopic ? workspaceFiles[activeTopic.id].folders : {},
     subFolders: hasActiveTopic ? Object.values(workspaceFiles[activeTopic.id].folders).filter((f) => f.parent_folder && f.parent_folder.id == params.fileFolderId) : [],
     folder: hasActiveTopic ? workspaceFiles[activeTopic.id].folders[params.fileFolderId] : null,
-    googleDriveApiFiles
+    googleDriveApiFiles,
+    gifBlobs,
+    fileBlobs,
+    fileThumbnailBlobs,
   };
 };
 

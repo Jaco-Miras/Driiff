@@ -6,6 +6,7 @@ import { MoreOptions } from "../../common";
 import { CompanyPostBadge } from "./index";
 import quillHelper from "../../../../helpers/quillHelper";
 import { MemberLists } from "../../../list/members";
+import { useTimeFormat } from "../../../hooks";
 
 const Wrapper = styled.li`
   &:first-of-type {
@@ -21,16 +22,32 @@ const Wrapper = styled.li`
   }
 
   .app-list-title {
-    color: #363636;
-    font-weight: 500;
+    color: #343a40;
+    font-weight: normal;
     padding-left: 2.5rem;
 
     &.has-unread {
-      font-weight: 500;
+      font-weight: bold;
+      
+      .post-partialBody {
+        color: #343a40;
+        font-weight: normal;
+      
+        .dark & {
+          color: #c7c7c7;
+        }      
+      }
     }
 
     &.text-success {
       text-decoration: line-through;
+    }
+    
+    .time-stamp {
+      font-weight: normal;
+      font-size: 12px;
+      margin-left: 0.5rem;
+      font-style: italic;    
     }
   }
 
@@ -82,12 +99,15 @@ const ArchiveBtn = styled.a`
 
 const CompanyPostItemPanel = (props) => {
 
-  const { className = "", post, postActions, dictionary, disableOptions } = props;
+  const {
+    className = "", post, dictionary, disableOptions,
+    postActions: { starPost, markPost, openPost, archivePost, markAsRead, markAsUnread, sharePost, followPost, remind, showModal }
+  } = props;
 
   const user = useSelector((state) => state.session.user);
   const flipper = useSelector((state) => state.workspaces.flipper);
 
-  const { starPost, markPost, openPost, archivePost, markAsRead, markAsUnread, sharePost, followPost, remind, showModal } = postActions;
+  const { fromNow } = useTimeFormat();
 
   const handleMarkDone = (e) => {
     e.preventDefault();
@@ -124,10 +144,12 @@ const CompanyPostItemPanel = (props) => {
       <div className="flex-grow-1 min-width-0">
         <div className="d-flex align-items-center justify-content-between">
           <div
-            className={`app-list-title text-truncate ${post.unread_count > 0 || post.is_unread === 1 ? "text-primary has-unread" : ""}`}>
-            <Avatar className="author-avatar mr-2" id={post.author.id} name={post.author.name}
+            className={`app-list-title text-truncate ${post.unread_count > 0 || post.is_unread === 1 ? "has-unread" : ""}`}>
+            <Avatar title={`FROM: ${post.author.name}`} className="author-avatar mr-2" id={post.author.id}
+                    name={post.author.name}
                     imageLink={post.author.profile_image_thumbnail_link ? post.author.profile_image_thumbnail_link : post.author.profile_image_link}/>
-            <span>{post.title}</span>
+            <span>{post.title} <span className={"time-stamp"}><span
+              className="text-muted">{fromNow(post.created_at.timestamp)}</span></span></span>
             <div className='text-truncate post-partialBody'>
               <span dangerouslySetInnerHTML={{ __html: quillHelper.parseEmoji(post.partial_body) }}/>
             </div>
