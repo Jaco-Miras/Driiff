@@ -8,15 +8,15 @@ const useFiles = () => {
   const fileActions = useFileActions(params);
 
   const activeTopic = useSelector((state) => state.workspaces.activeTopic);
-  const workspaceFiles = useSelector((state) => state.files.workspaceFiles);
-  const googleDriveApiFiles = useSelector((state) => state.files.googleDriveApiFiles);
+  const { workspaceFiles, googleDriveApiFiles, gifBlobs, fileBlobs, fileThumbnailBlobs } = useSelector((state) => state.files);
+
   const [fetchingFiles, setFetchingFiles] = useState(false);
 
   useEffect(() => {
     if ((!fetchingFiles && activeTopic && !workspaceFiles.hasOwnProperty(activeTopic.id)) || (!fetchingFiles && activeTopic && workspaceFiles.hasOwnProperty(activeTopic.id) && !workspaceFiles[activeTopic.id].hasOwnProperty("loaded"))) {
       const cb = (err, res) => {
         setFetchingFiles(false);
-        fileActions.getFolders({topic_id: activeTopic.id});
+        fileActions.getFolders({ topic_id: activeTopic.id });
         fileActions.getFilesDetail(activeTopic.id);
         fileActions.getFavoriteFiles(activeTopic.id);
         fileActions.getPopularFiles(activeTopic.id);
@@ -81,7 +81,10 @@ const useFiles = () => {
     folders: hasActiveTopic ? workspaceFiles[activeTopic.id].folders : {},
     subFolders: hasActiveTopic ? Object.values(workspaceFiles[activeTopic.id].folders).filter((f) => f.parent_folder && f.parent_folder.id == params.fileFolderId) : [],
     folder: hasActiveTopic ? workspaceFiles[activeTopic.id].folders[params.fileFolderId] : null,
-    googleDriveApiFiles
+    googleDriveApiFiles,
+    gifBlobs,
+    fileBlobs,
+    fileThumbnailBlobs,
   };
 };
 
