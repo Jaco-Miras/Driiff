@@ -29,11 +29,13 @@ const useWorkspace = (fetchOnMount = false) => {
       let fetchCb = (err,res) => {
         setInit(false);
         setInternalLoaded(true);
+        setExternalLoaded(true)
         if (err) return;
         //callback on get workspaces
       }
-      actions.fetchWorkspaces({is_external: 0}, fetchCb);
-      actions.fetchWorkspaces({is_external: 1}, () => setExternalLoaded(true));
+      actions.fetchWorkspaces({}, fetchCb);
+      //actions.fetchWorkspaces({is_external: 0}, fetchCb);
+      //actions.fetchWorkspaces({is_external: 1}, () => setExternalLoaded(true));
       // actions.fetchWorkspaces({is_external: 0, filter: "archived"}, () => {
       //   setArchivedWsLoaded(true);
       // });
