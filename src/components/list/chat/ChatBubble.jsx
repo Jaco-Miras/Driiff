@@ -385,7 +385,7 @@ const ChatContent = styled.div`
     &:before {
         ${(props) => props.showAvatar && "content: ''"};
         border: 10px solid transparent;
-        border-right-color: #f0f0f0;
+        border-left-color: #f0f0f0;
         position: absolute;
         top: 6px;
         left: -15px;
@@ -954,7 +954,6 @@ const ChatBubble = (props) => {
       if (src === null) {
         return e;
       } else {
-        // console.log("src: " + src[1])
         return src[1];
       }
     } else {
@@ -964,7 +963,6 @@ const ChatBubble = (props) => {
       if (href === null) {
         return e;
       } else {
-        // console.log("href: " + href[1])
         return href[1];
       }
     }
@@ -972,21 +970,24 @@ const ChatBubble = (props) => {
 
   const fetchGifCount = (e) => {
     let temporalDivElement = document.createElement("p");
-
     temporalDivElement.innerHTML = e;
 
-    let image = temporalDivElement.querySelectorAll('img[src$=".gif"], a[href$=".gif"]');
+    let gifImages = temporalDivElement.querySelectorAll('img[src$=".gif"], a[href$=".gif"]');
     let nodeArr = [];
 
-    if (image !== null) {
-      Array.prototype.forEach.call(image, function (node) {
-        nodeArr.push(node);
-      });
+    gifImages.forEach(gifImage => {
+      const gifLink = fetchImgURL(gifImage.outerHTML).replace("&amp;rid=giphy.gif", "&rid=giphy.gif");
+      const tbr = "&rid=giphy.gif";
 
-      return nodeArr;
-    } else {
-      return e;
-    }
+      let cid = gifLink.substring(gifLink.indexOf("cid") + 4);
+      cid = cid.substring(0, cid.length - tbr.length);
+      nodeArr.push({
+        id: cid,
+        src: gifLink
+      });
+    });
+
+    return nodeArr;
   };
 
   const handleQuoteClick = () => {
@@ -1478,13 +1479,10 @@ const ChatBubble = (props) => {
                   />
                 </span>
               )}
-
               {showGifPlayer &&
-                fetchGifCount(body).map((gifLink, index) => {
-                  let gifString = gifLink.outerHTML;
-
-                  return <GifPlayer key={index} className={"gifPlayer"} gif={fetchImgURL(gifString)} autoplay={true} />;
-                })}
+              fetchGifCount(body).map((gif) => {
+                return <GifPlayer key={gif.id} className={"gifPlayer"} gif={gif.src} autoplay={true}/>;
+              })}
               {(reply.unfurls && reply.unfurls.length && !reply.is_deleted && !showGifPlayer && !isBot) === true && (
                 <Unfurl unfurlData={reply.unfurls} isAuthor={isAuthor} removeUnfurl={chatMessageActions.removeUnfurl} channelId={selectedChannel.id} messageId={reply.id} type={"chat"} />
               )}
