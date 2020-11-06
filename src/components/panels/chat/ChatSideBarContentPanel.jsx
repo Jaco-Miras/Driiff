@@ -1,9 +1,9 @@
-import React, { useEffect } from "react";
-import { useDispatch } from "react-redux";
+import React from "react";
+//import { useDispatch } from "react-redux";
 import styled from "styled-components";
 import ChannelsSidebar from "../../list/chat/ChannelsSidebar";
 import ChatContactsList from "../../list/chat/ChatContactsList";
-import { getChannelDrafts } from "../../../redux/actions/chatActions";
+//import { getChannelDrafts } from "../../../redux/actions/chatActions";
 import { SvgIconFeather } from "../../common";
 
 const Wrapper = styled.div`
@@ -52,11 +52,11 @@ const Wrapper = styled.div`
 const ChatSidebarContentPanel = (props) => {
   const { className = "", pill = "pills-home", search, channels, userChannels, selectedChannel, dictionary, resetFilter } = props;
 
-  const dispatch = useDispatch();
+  //const dispatch = useDispatch();
 
-  useEffect(() => {
-    dispatch(getChannelDrafts());
-  }, []);
+  // useEffect(() => {
+  //   dispatch(getChannelDrafts());
+  // }, []);
 
   return (
     <Wrapper className={`chat-sidebar-content ${className}`} tabIndex="1">
