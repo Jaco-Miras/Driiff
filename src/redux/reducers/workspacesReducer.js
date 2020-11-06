@@ -127,8 +127,10 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         workspaces: updatedWorkspaces,
-        workspacesLoaded: !state.workspacesLoaded && action.data.is_external === 0 ? true : state.workspacesLoaded,
-        externalWorkspacesLoaded: !state.externalWorkspacesLoaded && action.data.is_external === 1 ? true : state.externalWorkspacesLoaded,
+        workspacesLoaded: true,
+        externalWorkspacesLoaded: true,
+        // workspacesLoaded: !state.workspacesLoaded && action.data.is_external === 0 ? true : state.workspacesLoaded,
+        // externalWorkspacesLoaded: !state.externalWorkspacesLoaded && action.data.is_external === 1 ? true : state.externalWorkspacesLoaded,
         folders: updatedFolders,
       };
     }
