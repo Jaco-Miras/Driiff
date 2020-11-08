@@ -51,7 +51,8 @@ const useUserActions = () => {
   const driffActions = useDriffActions();
   const { generalSettings: { is_new }, driffSettings, userSettings, setGeneralSetting, setReadAnnouncement } = useSettings();
 
-  const { getUserFilter } = useSelector((state) => state.users);
+  //const { getUserFilter } = useSelector((state) => state.users);
+  const getUserFilter = useSelector((state) => state.users.getUserFilter);
   const { user: loggedUser } = useSelector((state) => state.session);
 
   const storeLoginToken = useCallback((payload) => {

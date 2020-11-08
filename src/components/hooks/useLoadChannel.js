@@ -4,7 +4,8 @@ import { useHistory, useRouteMatch } from "react-router-dom";
 import useChannelActions from "./useChannelActions";
 
 const useLoadChannel = () => {
-  const { channels, lastVisitedChannel } = useSelector((state) => state.chat);
+  const channels = useSelector((state) => state.chat.channels);
+  const lastVisitedChannel = useSelector((state) => state.chat.lastVisitedChannel);
   const actions = useChannelActions();
 
   const route = useRouteMatch();

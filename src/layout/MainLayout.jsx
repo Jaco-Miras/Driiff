@@ -18,13 +18,8 @@ import { MainContentPanel, MainHeaderPanel, MainNavigationPanel } from "../compo
 import MobileOverlay from "../components/panels/MobileOverlay";
 import { WorkspaceContentPanel } from "../components/panels/workspace";
 import SocketListeners from "../components/socket/socketListeners";
-// import { getFiles } from "../redux/actions/fileActions";
-// import { getAllRecipients, getConnectedSlugs } from "../redux/actions/globalActions";
-// import { getNotifications } from "../redux/actions/notificationActions";
-// import { getMentions, getUsers } from "../redux/actions/userAction";
 import { getAPIUrl, getCurrentDriffUrl } from "../helpers/slugHelper";
 import { PushNotificationBar, usePushNotification } from "../components/webpush";
-//import { getUnreadPostEntries } from "../redux/actions/postActions";
 
 const MainContent = styled.div``;
 
@@ -41,11 +36,10 @@ const MainLayout = (props) => {
   useInitialLoad();
   const { mounted, showNotificationBar, onClickAskUserPermission, onClickRemindLater } = usePushNotification();
   const { path } = useRouteMatch();
-  const { displayWelcomeBanner, fetchRoles } = useUserActions();
+  const { displayWelcomeBanner } = useUserActions();
   const uDriff = useDriff();
 
   const user = useSelector((state) => state.session.user);
-  //const socketMounted = useSelector((state) => state.global.socketMounted);
   const toaster = useToaster();
   const { localizeDate } = useTimeFormat();
   const workspaceActions = useWorkspaceActions();
@@ -55,8 +49,6 @@ const MainLayout = (props) => {
 
   const dispatch = useDispatch();
 
-  // const files = useSelector((state) => state.files.files);
-  // const notifications = useSelector((state) => state.notifications.notifications);
   const {
     driffSettings: {isCompSettingsLoaded},
     chatSettings: {sound_enabled},
@@ -95,24 +87,6 @@ const MainLayout = (props) => {
       window.location.href = `${getAPIUrl({isDNS: true})}/auth-web/logout?redirect_link=${redirectLink}`;
     }
   }, [path, dispatch, history]);
-
-  // useEffect(() => {
-  //   document.body.classList.remove("form-membership");
-  //   dispatch(getAllRecipients());
-  //   dispatch(getMentions());
-  //   dispatch(getUsers());
-  //   dispatch(getConnectedSlugs());
-  //   dispatch(getUnreadPostEntries());
-  //   if (Object.keys(files).length === 0) {
-  //     dispatch(getFiles({sort: "desc"}));
-  //   }
-  //   if (Object.keys(notifications).length === 0) {
-  //     dispatch(getNotifications({skip: 0, limit: 100}));
-  //   }
-  //   fetchRoles();
-
-  //   //eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, []);
 
   useEffect(() => {
     if (user.id && isCompSettingsLoaded) {

@@ -1,6 +1,5 @@
 import React from "react";
 import styled from "styled-components";
-import { useUserChannels, useLoadChannel } from "../../hooks";
 import { ChatContentPanel, ChatSidebarPanel } from "../chat";
 
 const Wrapper = styled.div`
@@ -51,15 +50,11 @@ const Wrapper = styled.div`
 const CompanyChatPanel = (props) => {
   const { className = "" } = props;
 
-  const { channels, userChannels, selectedChannel } = useUserChannels();
-
-  useLoadChannel();
-
   return (
     <Wrapper className={`company-chat ${className}`}>
       <div className="row no-gutters chat-block">
-        <ChatSidebarPanel className={"col-lg-4 chat-sidebar-panel"} channels={channels} userChannels={userChannels} selectedChannel={selectedChannel} />
-        <ChatContentPanel className={"col-lg-8 chat-content-panel"} selectedChannel={selectedChannel} />
+        <ChatSidebarPanel className={"col-lg-4 chat-sidebar-panel"}/>
+        <ChatContentPanel className={"col-lg-8 chat-content-panel"}/>
       </div>
     </Wrapper>
   );
