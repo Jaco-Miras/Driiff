@@ -6,7 +6,7 @@ import { DropDocument } from "../../dropzone/DropDocument";
 import { useCountUnreadReplies, useFocusInput, useTimeFormat, useTranslation } from "../../hooks";
 import useChatMessageActions from "../../hooks/useChatMessageActions";
 import ChatMessages from "../../list/chat/ChatMessages";
-import ChatUnreadFloatBar from "../../list/chat/ChatUnreadFloatBar";
+//import ChatUnreadFloatBar from "../../list/chat/ChatUnreadFloatBar";
 import { ChatFooterPanel, ChatHeaderPanel } from "./index";
 import ChatMessagesVirtuoso from "../../list/chat/ChatMessagesVirtuoso";
 
@@ -19,13 +19,14 @@ const ChatMessagesPlaceholder = styled.div`
 `;
 
 const ChatContentPanel = (props) => {
-  const { className = "", selectedChannel, isWorkspace = false } = props;
+  const { className = "", isWorkspace = false } = props;
 
   const dispatch = useDispatch();
   const chatMessageActions = useChatMessageActions();
   const timeFormat = useTimeFormat();
 
   const {virtualization} = useSelector((state) => state.settings.user.CHAT_SETTINGS);
+  const selectedChannel = useSelector((state) => state.chat.selectedChannel);
   //const bottomRef = useRef();
   const [showDropZone, setshowDropZone] = useState(false);
   //const [bottomRefVisible, setBottomRefVisible] = useState(false);
@@ -145,7 +146,7 @@ const ChatContentPanel = (props) => {
   };
 
   useFocusInput(document.querySelector(".chat-footer .ql-editor"));
-
+  console.log(" content panel")
   return (
     <Wrapper className={`chat-content ${className}`} onDragOver={handleshowDropZone}>
       <DropDocument
