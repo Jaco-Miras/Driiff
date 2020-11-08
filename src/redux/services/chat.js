@@ -248,3 +248,12 @@ export function getChannelDetail(payload) {
     url: url,
   });
 }
+
+export function getLastChannel(payload) {
+  let url = "/v2/last-visit-channel?need_detail=1";
+  return apiCall({
+    method: "GET",
+    url: url,
+    data: payload,
+  });
+}
