@@ -21,10 +21,11 @@ export const clapCountAsString = (value) => {
 };
 
 export const stripHtml = (html) => {
-  let temporalDivElement = document.createElement("div");
-  temporalDivElement.innerHTML = html;
+  // let temporalDivElement = document.createElement("div");
+  // temporalDivElement.innerHTML = html;
 
-  return temporalDivElement.textContent || temporalDivElement.innerText || "";
+  // return temporalDivElement.textContent || temporalDivElement.innerText || "";
+  return html.replace(/(<([^>]+)>)/gi, "")
 };
 
 export const stripGif = (html) => {
@@ -45,6 +46,14 @@ export const stripGif = (html) => {
   });
   return temporalDivElement.innerHTML;
 };
+
+export const stripImgTag = (html) => {
+  return html.replace(/<[/]?img[^>]*>/gi, "")
+}
+
+export const stripImgGif = (html) => {
+  return html.replace(/<[/]?img src="(.*?gif)"[^>]*>/gi, "")
+}
 
 export const parseEmojis = (value) => {
   const emojisArray = toArray(value);

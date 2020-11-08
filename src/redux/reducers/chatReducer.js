@@ -1163,9 +1163,13 @@ export default function (state = INITIAL_STATE, action) {
       }
     }
     case "SET_LAST_CHAT_VISIBILITY": {
-      return {
-        ...state,
-        isLastChatVisible: action.data.status
+      if (state.isLastChatVisible !== action.data.status) {
+        return {
+          ...state,
+          isLastChatVisible: action.data.status
+        }
+      } else {
+        return state;
       }
     }
     case "DELETE_POST_NOTIFICATION": {
