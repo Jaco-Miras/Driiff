@@ -38,12 +38,16 @@ const useChatReply = ({ reply, dictionary, isAuthor, user, recipients, selectedC
       } else {
         newBody = `<p><span class='channel-new-members'>${newMembers.join(", ")}</span><br> ${dictionary.joined} <span class='channel-title'>#${selectedChannel.title}</span></p>`;
       }
+
+      return newBody;
     } else if (message.includes("MEMBER_REMOVE_CHANNEL")) {
       if (selectedChannel.type === "DIRECT") {
         newBody = `<p><span class='channel-new-members'>${message.substr(message.indexOf(" "))}</span><br> ${dictionary.left} <span class='channel-title'>#${selectedChannel.title}</span></p>`;
       } else {
         newBody = `<p><span class='channel-new-members'>${message.substr(message.indexOf(" "))}</span><br> ${dictionary.left} <span class='channel-title'>#${selectedChannel.title}</span></p>`;
       }
+
+      return newBody;
     } else if (message.includes("ACCOUNT_DEACTIVATED")) {
       let newBody = message.replace("ACCOUNT_DEACTIVATED ", "");
       if (newBody[newBody.length - 1] === "s") {
@@ -51,6 +55,8 @@ const useChatReply = ({ reply, dictionary, isAuthor, user, recipients, selectedC
       } else {
         newBody = `${dictionary.update}: ${newBody}'s ${dictionary.accountDeactivated}.`;
       }
+
+      return newBody;
     } else if (message.includes("NEW_ACCOUNT_ACTIVATED")) {
       let newBody = message.replace("NEW_ACCOUNT_ACTIVATED ", "");
       if (newBody[newBody.length - 1] === "s") {
@@ -58,6 +64,8 @@ const useChatReply = ({ reply, dictionary, isAuthor, user, recipients, selectedC
       } else {
         newBody = `${dictionary.update}: ${newBody}'s ${dictionary.accountActivated}.`;
       }
+
+      return newBody;
     } else if (message.includes("CHANNEL_UPDATE::")) {
       const data = JSON.parse(message.replace("CHANNEL_UPDATE::", ""));
       let author = recipients.find((r) => data.author && r.type_id === data.author.id);
@@ -224,17 +232,24 @@ const useChatReply = ({ reply, dictionary, isAuthor, user, recipients, selectedC
           }
         }
       }
-      newBody = renderToString(newBody);
+
+      return renderToString(newBody);
     } else if (message.includes("POST_CREATE::")) {
-      let item = JSON.parse(message.replace("POST_CREATE::", "").replace("</div>", ""));
-      let description = item.post.description;
-      newBody = renderToString(
-        <>
-          <b>{item.author.first_name}</b> {dictionary.createdThePost} <b>"{item.post.title}"</b>
-          <span className="card card-body" style={{ margin: 0, padding: "10px" }}
-                dangerouslySetInnerHTML={{ __html: description }}/>
-        </>
-      );
+      try {
+        let item = JSON.parse(message.replace("POST_CREATE::", "").replace("</div>", ""));
+        let description = item.post.description;
+        newBody = renderToString(
+          <>
+            <b>{item.author.first_name}</b> {dictionary.createdThePost} <b>"{item.post.title}"</b>
+            <span className="card card-body" style={{ margin: 0, padding: "10px" }}
+                  dangerouslySetInnerHTML={{ __html: description }}/>
+          </>
+        );
+      } catch (err) {
+        newBody = message;
+      }
+
+      return newBody;
     }
 
     return newBody === "" ? message : newBody;
