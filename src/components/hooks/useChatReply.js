@@ -2,7 +2,7 @@ import React, { useCallback } from "react";
 import quillHelper from "../../helpers/quillHelper";
 import { renderToString } from "react-dom/server";
 import { ImageTextLink, SvgIconFeather } from "../common";
-import { getEmojiRegexPattern, GifRegex } from "../../helpers/stringFormatter";
+import { getEmojiRegexPattern, GifRegex, stripGif } from "../../helpers/stringFormatter";
 import styled from "styled-components";
 
 const StyledImageTextLink = styled(ImageTextLink)`
@@ -249,7 +249,7 @@ const useChatReply = ({ reply, dictionary, isAuthor, user, recipients, selectedC
     }
   }
 
-  replyBody = parseSystemMessage(quillHelper.parseEmoji(replyBody));
+  replyBody = parseSystemMessage(quillHelper.parseEmoji(stripGif(replyBody)));
 
   let quoteAuthor = "";
   let quoteBody = "";
@@ -317,7 +317,7 @@ const useChatReply = ({ reply, dictionary, isAuthor, user, recipients, selectedC
     quoteBody = parseSystemMessage(quoteBody);
   }
 
-  let isGifOnly = !!replyBody.substring(15, replyBody.length - 8).match(GifRegex);
+  let isGifOnly = !!reply.body.substring(15, reply.body.length - 8).match(GifRegex);
 
   let hasMessage = reply.body.substring(5, reply.body.length - 6) !== "";
 

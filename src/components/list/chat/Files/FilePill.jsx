@@ -115,12 +115,6 @@ const FilePill = forwardRef((props, ref) => {
     cbFilePreview(e, file);
   };
 
-  const handleImageOnLoad = (e) => {
-    e.currentTarget.classList.remove("d-none");
-    e.currentTarget.removeAttribute("height");
-    refImageLoader.current.classList.add("d-none");
-  };
-
   const handleImageOnError = (e) => {
     console.log(file, "image did not load");
     if (e.currentTarget.dataset.attempt === "0") {
@@ -218,20 +212,21 @@ const FilePill = forwardRef((props, ref) => {
     }
   }, []);
 
+  console.log(file.id, imgSrc);
+
   return (
     <FilePillContainer onTouchStart={handleTouchStartChannel} onTouchEnd={handleTouchEndChannel}
                        onTouchMove={handleTouchMoveChannel} onClick={handleViewFile} ref={ref}
                        className={`file-pill ${className}`} {...otherProps}>
       {file.type.toLowerCase() === "image" ? (
         <>
-          <ImgLoader ref={refImageLoader}>
+          <ImgLoader className={imgSrc ? "d-none" : ""}>
             <ImgLoaderDiv className={"img-loader"}/>
           </ImgLoader>
           <FileImage
             ref={refImage}
             data-attempt={0}
-            className={"d-none"}
-            onLoad={handleImageOnLoad}
+            className={imgSrc ? "" : "d-none"}
             onError={handleImageOnError}
             height={150}
             src={imgSrc}
