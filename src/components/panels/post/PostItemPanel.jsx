@@ -10,7 +10,11 @@ import { useTimeFormat } from "../../hooks";
 
 const Wrapper = styled.li`
   &.has-unread {
-    background-color: #f7f7f7 !important;  
+    background-color: #f7f7f7 !important;
+    
+    .dark & {
+      background-color: #2b2e31 !important;
+    } 
   }
   &:first-of-type {
     border-top-left-radius: 8px;
@@ -85,6 +89,18 @@ const Wrapper = styled.li`
       width: 2rem;
       height: 2rem;
     }
+  }
+`;
+
+const SlideOption = styled.div`
+  @media (max-width: 576px) {
+    transition: all 0.3s ease;
+    max-width: 0;
+    overflow: hidden;
+    ${props => props.showOptions && `
+      max-width: 576px;
+      overflow: initial;      
+    `}  
   }
 `;
 

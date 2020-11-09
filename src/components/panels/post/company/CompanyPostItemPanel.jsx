@@ -14,7 +14,7 @@ const Wrapper = styled.li`
     
     .dark & {
       background-color: #2b2e31 !important;
-    }  
+    }
   }
   &:first-of-type {
     border-top-left-radius: 8px;
