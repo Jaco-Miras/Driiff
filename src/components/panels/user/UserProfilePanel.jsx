@@ -1,15 +1,15 @@
-import React, {useCallback, useEffect, useRef, useState} from "react";
-import {useDispatch} from "react-redux";
-import {useHistory} from "react-router-dom";
-import {FormGroup, Input, InputGroup, InputGroupAddon, InputGroupText, Label} from "reactstrap";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { useDispatch } from "react-redux";
+import { useHistory } from "react-router-dom";
+import { FormGroup, Input, InputGroup, InputGroupAddon, InputGroupText, Label } from "reactstrap";
 import styled from "styled-components";
-import {EmailRegex, replaceChar} from "../../../helpers/stringFormatter";
-import {addToModals} from "../../../redux/actions/globalActions";
-import {Avatar, SvgIconFeather} from "../../common";
-import {DropDocument} from "../../dropzone/DropDocument";
+import { EmailRegex, replaceChar } from "../../../helpers/stringFormatter";
+import { addToModals } from "../../../redux/actions/globalActions";
+import { Avatar, SvgIconFeather } from "../../common";
+import { DropDocument } from "../../dropzone/DropDocument";
 import InputFeedback from "../../forms/InputFeedback";
-import {useToaster, useTranslation, useUserActions, useUsers} from "../../hooks";
-import {FormInput} from "../../forms";
+import { useToaster, useTranslation, useUserActions, useUsers } from "../../hooks";
+import { FormInput } from "../../forms";
 
 const Wrapper = styled.div`
   overflow: auto;
@@ -475,10 +475,11 @@ const UserProfilePanel = (props) => {
                 </ImportWarning>
               )}*/}
               <div className="avatar-container" onClick={handleAvatarClick}>
-                {<Avatar imageLink={form.profile_image_link} name={form.name ? form.name : form.email} noDefaultClick={true} />}
+                {<Avatar imageLink={form.profile_image_link} name={form.name ? form.name : form.email}
+                         noDefaultClick={true} forceThumbnail={false}/>}
                 {isLoggedUser && (
                   <span className="btn btn-outline-light btn-sm">
-                    <SvgIconFeather icon="pencil" />
+                    <SvgIconFeather icon="pencil"/>
                   </span>
                 )}
               </div>
