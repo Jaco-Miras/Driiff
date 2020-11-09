@@ -77,25 +77,44 @@ const CompanyPeoplePanel = (props) => {
       return a.name.localeCompare(b.name);
     })
     .filter((user) => {
-      if (!userChannels.hasOwnProperty(user.id))
-        return false;
+      if (["gripp_project_bot",
+        "gripp_account_activation",
+        "gripp_offerte_bot",
+        "gripp_invoice_bot",
+        "gripp_police_bot",
+        "driff_webhook_bot"].includes(user.email)) return false;
 
-      if (user.type !== "internal")
-        return false;
-
-      if (user.active !== 1)
-        return false;
+      if (user.type !== "internal") return false;
+      if (user.active !== 1) return false;
 
       if (search !== "") {
-        if (search !== "") {
-          if (user.name.toLowerCase().search(search.toLowerCase()) === -1
-            && user.email.toLowerCase().search(search.toLowerCase()) === -1)
-            return false;
-        }
+        if (user.name.toLowerCase().search(search.toLowerCase()) === -1
+          && user.email.toLowerCase().search(search.toLowerCase()) === -1)
+          return false;
       }
 
       return true;
-    });
+    })
+    // .filter((user) => {
+    //   if (!userChannels.hasOwnProperty(user.id))
+    //     return false;
+
+    //   if (user.type !== "internal")
+    //     return false;
+
+    //   if (user.active !== 1)
+    //     return false;
+
+    //   if (search !== "") {
+    //     if (search !== "") {
+    //       if (user.name.toLowerCase().search(search.toLowerCase()) === -1
+    //         && user.email.toLowerCase().search(search.toLowerCase()) === -1)
+    //         return false;
+    //     }
+    //   }
+
+    //   return true;
+    // });
 
   const { _t } = useTranslation();
 

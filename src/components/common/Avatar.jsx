@@ -36,7 +36,6 @@ const Initials = styled.span`
   line-height: 0;
   display: flex;
   margin: auto;
-  height: 20px;
   text-align: center;
   width: 100%;
   height: 100%;
@@ -46,7 +45,7 @@ const Initials = styled.span`
 `;
 
 const Avatar = (props) => {
-  const { className = "", imageLink, id, name = "", children, partialName = null, type = "USER", userId, onClick = null, noDefaultClick = false, hasAccepted = null, isBot = false, ...rest } = props;
+  let { className = "", imageLink, id, name = "", children, partialName = null, type = "USER", userId, onClick = null, noDefaultClick = false, hasAccepted = null, isBot = false, forceThumbnail = true, ...rest } = props;
 
   const history = useHistory();
   const onlineUsers = useSelector((state) => state.users.onlineUsers);
@@ -118,9 +117,15 @@ const Avatar = (props) => {
     return result.substring(0, 2);
   };
 
+  if (forceThumbnail && imageLink && !imageLink.includes("thumbnail")) {
+    imageLink += "&need_thumbnail=1";
+  }
+
   return (
-    <Wrapper {...rest} className={`avatar avatar-sm ${isOnline ? "avatar-state-success" : ""} ${isLoaded ? "ico-avatar-loaded" : ""} ${className}`} onClick={handleOnClick}>
-      {isLoaded === false && <Skeleton borderRadius="50%" widthRandomness={0} heightRandomness={0} />}
+    <Wrapper {...rest}
+             className={`avatar avatar-sm ${isOnline ? "avatar-state-success" : ""} ${isLoaded ? "ico-avatar-loaded" : ""} ${className}`}
+             onClick={handleOnClick}>
+      {isLoaded === false && <Skeleton borderRadius="50%" widthRandomness={0} heightRandomness={0}/>}
       <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={rest.title ? rest.title : name}>
         {isBot ? (
           <Image show={isLoaded} className="rounded-circle" onLoad={handleImageLoad} onError={handleImageError}

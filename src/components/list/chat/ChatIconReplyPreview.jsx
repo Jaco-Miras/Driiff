@@ -3,7 +3,7 @@ import { renderToString } from "react-dom/server";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
 import quillHelper from "../../../helpers/quillHelper";
-import { stripHtml } from "../../../helpers/stringFormatter";
+import { stripHtml, stripGif, stripImgTag } from "../../../helpers/stringFormatter";
 import { SvgIcon } from "../../common";
 import { SvgIconFeather } from "../../common";
 import ChannelOptions from "./ChannelOptions";
@@ -73,7 +73,8 @@ const ReplyPreview = (props) => {
     if (channel.last_reply.is_deleted) {
       lastReplyBody = "<span class=\"is-deleted\">" + dictionary.messageRemoved + "</span>";
     } else {
-      lastReplyBody = quillHelper.parseEmoji(channel.last_reply.body);
+      //strip gif to prevent refetching of gif
+      lastReplyBody = quillHelper.parseEmoji(stripImgTag(channel.last_reply.body));
       lastReplyBody = renderToString(<LastReplyContent className="last-reply-content" dangerouslySetInnerHTML={{ __html: lastReplyBody }} />);
 
       //strip html tags and replace it with space

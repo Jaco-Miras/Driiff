@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { getNotifications } from "../../redux/actions/notificationActions";
 import { getUsers } from "../../redux/actions/userAction";
@@ -10,11 +10,28 @@ const useInitialLoad = () => {
   
   const notifications = useSelector((state) => state.notifications.notifications);
 
+  const [hasMoreChannels, setHasMoreChannels] = useState(null);
+  const [skip, setSkip] = useState(0);
+  const [isFetching, setIsFetching] = useState(false);
+
   const dispatch = useDispatch();
+
+  const fetchChannels = () => {
+    setIsFetching(true);
+    setSkip(skip + 50);
+    dispatch(
+      getChannels({skip: skip, limit: 50}, (err,res) => {
+        setIsFetching(false);
+        if (err) return;
+        
+        setHasMoreChannels(res.data.results.length === 50);
+      })
+    );
+  }
 
   useEffect(() => {
     document.body.classList.remove("form-membership");
-    dispatch(getChannels({skip: 0, limit: 100}));
+    fetchChannels();
     dispatch(getAllRecipients());
     dispatch(getUsers());
     dispatch(getUnreadPostEntries());
@@ -26,6 +43,12 @@ const useInitialLoad = () => {
     }
     //fetchRoles();
   }, []);
+
+  useEffect(() => {
+    if (hasMoreChannels && !isFetching) {
+      fetchChannels();
+    }
+  }, [hasMoreChannels, fetchChannels, skip, isFetching])
 
 };
 

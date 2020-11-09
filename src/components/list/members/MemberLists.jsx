@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { Avatar, PlusRecipients } from "../../common";
+import { useWIndowSize } from "../../hooks";
 
 const MembersListContainer = styled.div`
   .people-list {
@@ -17,18 +18,25 @@ const StyledAvatar = styled(Avatar)`
 const MembersLists = (props) => {
   const { members, classNames = "" } = props;
 
-  const firstFiveMembers = members.slice(0, 5);
-  const afterFiveMembers = members.slice(5);
+  const winSize = useWIndowSize();
+
+  let memberSize = 5;
+  if (winSize.width <= 575) {
+    memberSize = 5;
+  }
+
+  const firstMembers = members ? members.slice(0, memberSize) : [];
+  const afterMembers = members ? members.slice(memberSize) : [];
 
   return (
     <MembersListContainer className={`d-flex ${classNames}`}>
-      {firstFiveMembers.map((m, i) => {
+      {firstMembers.map((m, i) => {
         return <StyledAvatar id={m.id} firstUser={i === 0} className="chat-members" key={m.id}
                              name={m.name ? m.name : m.email}
                              imageLink={m.profile_image_thumbnail_link ? m.profile_image_thumbnail_link : m.profile_image_link}
                              hasAccepted={m.has_accepted}/>;
       })}
-      {afterFiveMembers.length != null && afterFiveMembers[0] && <PlusRecipients recipients={afterFiveMembers}></PlusRecipients>}
+      {afterMembers.length != null && afterMembers[0] && <PlusRecipients recipients={afterMembers}></PlusRecipients>}
     </MembersListContainer>
   );
 };

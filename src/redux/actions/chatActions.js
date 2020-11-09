@@ -9,6 +9,7 @@ import {
   getChannels as getChannelsService,
   getChatMessages as getChatMessagesService,
   getGlobalRecipients as getGlobalRecipientsService,
+  getLastChannel as getLastChannelService,
   getLastVisitedChannel as getLastVisitedChannelService,
   getWorkspaceChannels as getWorkspaceChannelsService,
   postChannelMembers as postChannelMembersService,
@@ -262,4 +263,8 @@ export function setSidebarSearch(payload, callback) {
 
 export function setChannelRange(payload, callback) {
   return SimpleDispatchActionToReducer("SET_CHANNEL_RANGE", payload, callback);
+}
+
+export function getLastChannel(payload, callback) {
+  return dispatchActionToReducer(getLastChannelService(payload), "GET_LAST_CHANNEL_START", "GET_LAST_CHANNEL_SUCCESS", "GET_LAST_CHANNEL_FAIL", callback);
 }

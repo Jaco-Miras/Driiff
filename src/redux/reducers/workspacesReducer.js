@@ -615,7 +615,7 @@ export default (state = INITIAL_STATE, action) => {
           ...state.postComments,
           [action.data.post_id]: {
             ...state.postComments[action.data.post_id],
-            ...(action.data.parent_id ? {
+            ...(action.data.parent_id && state.postComments[action.data.post_id] ? {
               comments: {
                 ...state.postComments[action.data.post_id].comments,
                 [action.data.parent_id]: {
@@ -630,13 +630,15 @@ export default (state = INITIAL_STATE, action) => {
                 },
               },
             } : {
-              comments: {
-                ...state.postComments[action.data.post_id].comments,
-                [action.data.message_id]: {
-                  ...state.postComments[action.data.post_id].comments[action.data.message_id],
-                  clap_user_ids: action.data.claps.map(c => c.user_id)
+              ...(state.postComments[action.data.post_id] && {
+                comments: {
+                  ...state.postComments[action.data.post_id].comments,
+                  [action.data.message_id]: {
+                    ...state.postComments[action.data.post_id].comments[action.data.message_id],
+                    clap_user_ids: action.data.claps.map(c => c.user_id)
+                  },
                 },
-              },
+              }),
             })
           },
         },
@@ -916,6 +918,7 @@ export default (state = INITIAL_STATE, action) => {
                 updatedTopic.unread_posts = updatedTopic.unread_posts + 1;
               }
             }
+            newWorkspacePosts[ws.topic_id].posts[action.data.post_id].updated_at = action.data.updated_at;
           }
         });
       }

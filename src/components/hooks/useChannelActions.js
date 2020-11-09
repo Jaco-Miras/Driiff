@@ -7,6 +7,7 @@ import {
   getChannelMembers,
   getChannels,
   getGlobalRecipients,
+  getLastChannel,
   getLastVisitedChannel,
   getWorkspaceChannels,
   postChannelMembers,
@@ -699,6 +700,35 @@ const useChannelActions = () => {
     );
   }, []);
 
+   /**
+   * @param {Object} callback
+   */
+  const fetchLastChannel = useCallback(
+    (callback = null) => {
+      dispatch(
+        getLastChannel({}, (err,res) => {
+          if (err) return;
+          if (callback) callback();
+          let channel = res.data;
+          dispatch(
+            setSelectedChannel({
+              ...channel,
+              hasMore: true,
+              skip: 0,
+              selected: true,
+              isFetching: false,
+            })
+          );
+          saveLastVisited(channel);
+          if (history.location.pathname.startsWith("/chat")) {
+            history.push(`/chat/${channel.code}`);
+          }
+        })
+      )
+    },
+    [dispatch, saveLastVisited, history]
+  );
+
   return {
     create,
     createByUserChannel,
@@ -708,6 +738,7 @@ const useChannelActions = () => {
     fetchByCode,
     fetchDrafts,
     fetchMembersById,
+    fetchLastChannel,
     fetchLastVisited,
     fetchWorkspaceChannels,
     saveHistoricalPosition,

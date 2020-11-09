@@ -267,7 +267,7 @@ const ChatFooterPanel = (props) => {
     setShowEmojiPicker(false)
   }
 
-  const isMember = useIsMember(selectedChannel && selectedChannel.members.length ? selectedChannel.members.map((m) => m.id) : [])
+  const isMember = useIsMember(selectedChannel && selectedChannel.members && selectedChannel.members.length ? selectedChannel.members.map((m) => m.id) : []);
 
   const toggleTooltip = () => {
     let tooltips = document.querySelectorAll("span.react-tooltip-lite")
@@ -326,7 +326,8 @@ const ChatFooterPanel = (props) => {
         <Dflex className="channel-viewing">
           <div className="channel-name">You are viewing #{selectedChannel.title}</div>
           <div className="channel-create">
-            Created by {selectedChannel.creator.name} on {localizeChatDate(selectedChannel.created_at.timestamp)}
+            Created
+            by {selectedChannel.creator && selectedChannel.creator.name} on {localizeChatDate(selectedChannel.created_at && selectedChannel.created_at.timestamp)}
           </div>
           <div className="channel-action">
             <button onClick={handleJoinWorkspace}>Join workspace chat</button>

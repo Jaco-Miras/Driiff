@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import styled from "styled-components";
 import SearchForm from "../../forms/SearchForm";
 import { ChatSideBarContentPanel } from "./index";
-import { useChannels, useSettings, useTranslation } from "../../hooks";
+import { useChannels, useLoadChannel, useSettings, useTranslation } from "../../hooks";
 import { MoreOptions } from "../common";
 import { addToModals } from "../../../redux/actions/globalActions";
 import { SvgIconFeather } from "../../common";
@@ -110,11 +110,12 @@ const StyledMoreOptions = styled(MoreOptions)`
 let hiddenArchivedLoaded = false;
 
 const ChatSidebarPanel = (props) => {
-  const { className = "", channels, userChannels, selectedChannel } = props;
+  const { className = "" } = props;
 
   const dispatch = useDispatch();
   const { chatSettings, setChatSetting } = useSettings();
   const { actions: channelActions, chatSidebarSearch } = useChannels();
+  useLoadChannel();
 
   const [search, setSearch] = useState("");
   const [query, setQuery] = useState("");
@@ -271,7 +272,7 @@ const ChatSidebarPanel = (props) => {
           </StyledMoreOptions>
         </div>
       </div>
-      <ChatSideBarContentPanel pill={tabPill} search={search} channels={channels} userChannels={userChannels} selectedChannel={selectedChannel} dictionary={dictionary} resetFilter={handleResetFilter} />
+      <ChatSideBarContentPanel pill={tabPill} search={search} dictionary={dictionary} resetFilter={handleResetFilter} />
     </Wrapper>
   );
 };

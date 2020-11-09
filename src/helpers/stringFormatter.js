@@ -3,6 +3,8 @@ import { toArray } from "react-emoji-render";
 import { getDriffName } from "../components/hooks/useDriff";
 
 export const EmailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+export const FindGifRegex = /(?:(?:(?:[A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)(?:(?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)(?:jpg|gif|png)/g;
+export const GifRegex = /(?:(?:(?:[A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)(?:(?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)(?:jpg|gif|png)$/;
 
 export const wordWrap = (value, length) => {
   if (!value) return "";
@@ -23,27 +25,35 @@ export const stripHtml = (html) => {
   temporalDivElement.innerHTML = html;
 
   return temporalDivElement.textContent || temporalDivElement.innerText || "";
+  // return html.replace(/(<([^>]+)>)/gi, "")
 };
 
 export const stripGif = (html) => {
-  let temporalDivElement = document.createElement("p");
+  let gifUrls = html.match(FindGifRegex);
 
+  if (!gifUrls) return html;
+
+  gifUrls.forEach(gifUrl => {
+    html = html.replace(gifUrl, "");
+  });
+
+  let temporalDivElement = document.createElement("p");
   temporalDivElement.innerHTML = html;
 
-  let image = temporalDivElement.querySelectorAll("img[src$=\".gif\"]");
-
-  if (image !== null) {
-    Array.prototype.forEach.call(image, function (node) {
-      node.parentNode.removeChild(node);
-    });
-
-    let objString = temporalDivElement.innerHTML;
-
-    return objString;
-  } else {
-    return html;
-  }
+  let image = temporalDivElement.querySelectorAll("img[src='']");
+  image.forEach(node => {
+    node.parentNode.removeChild(node);
+  });
+  return temporalDivElement.innerHTML;
 };
+
+export const stripImgTag = (html) => {
+  return html.replace(/<[/]?img[^>]*>/gi, "")
+}
+
+export const stripImgGif = (html) => {
+  return html.replace(/<[/]?img src="(.*?gif)"[^>]*>/gi, "")
+}
 
 export const parseEmojis = (value) => {
   const emojisArray = toArray(value);

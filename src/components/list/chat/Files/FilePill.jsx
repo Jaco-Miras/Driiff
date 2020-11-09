@@ -2,7 +2,7 @@ import React, { forwardRef, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { getAPIUrl } from "../../../../helpers/slugHelper";
 import useFileActions from "../../../hooks/useFileActions";
-import { useFiles } from "../../../hooks";
+import { useFiles, useTouchActions } from "../../../hooks";
 
 const ImgLoader = styled.div`
   position: relative;
@@ -115,12 +115,6 @@ const FilePill = forwardRef((props, ref) => {
     cbFilePreview(e, file);
   };
 
-  const handleImageOnLoad = (e) => {
-    e.currentTarget.classList.remove("d-none");
-    e.currentTarget.removeAttribute("height");
-    refImageLoader.current.classList.add("d-none");
-  };
-
   const handleImageOnError = (e) => {
     console.log(file, "image did not load");
     if (e.currentTarget.dataset.attempt === "0") {
@@ -155,42 +149,29 @@ const FilePill = forwardRef((props, ref) => {
 
   const fileHandler = useFileActions();
 
-  let timerStart = 0;
-  let xDown = null;
-  let yDown = null;
-  const handleTouchStartChannel = (e) => {
-    timerStart = e.timeStamp;
-    xDown = e.touches[0].clientX;
-    yDown = e.touches[0].clientY;
+  let touchActions = false;
+  const handleTouchStart = (e) => {
+    touchActions = false;
   };
-
-  const handleTouchEndChannel = (e) => {
-    if ((e.timeStamp - timerStart) <= 125) {
+  const handleTouchEnd = (e) => {
+    e.preventDefault();
+    if (!touchActions)
       handleViewFile(e);
-    }
   };
 
-  const handleTouchMoveChannel = (e) => {
-    let xUp = e.touches[0].clientX;
-    let yUp = e.touches[0].clientY;
-
-    let xDiff = xDown - xUp;
-    let yDiff = yDown - yUp;
-
-    if (Math.abs(xDiff) > Math.abs(yDiff)) {/*most significant*/
-      /* left swipe */
-      if (xDiff > 0) {
-        ref.current.focus();
-      } else {
-        timerStart += 125;
-      }
-    } else {
-      timerStart -= 125;
-    }
-
-    xDown = null;
-    yDown = null;
+  const handleSwipeLeft = (e) => {
+    touchActions = true;
   };
+  const handleSwipeRight = (e) => {
+    touchActions = true;
+  };
+
+  const { touchStart, touchMove, touchEnd } = useTouchActions({
+    handleTouchStart,
+    handleTouchEnd,
+    handleSwipeLeft,
+    handleSwipeRight
+  });
 
   useEffect(() => {
     if (!imgSrc) {
@@ -219,19 +200,18 @@ const FilePill = forwardRef((props, ref) => {
   }, []);
 
   return (
-    <FilePillContainer onTouchStart={handleTouchStartChannel} onTouchEnd={handleTouchEndChannel}
-                       onTouchMove={handleTouchMoveChannel} onClick={handleViewFile} ref={ref}
-                       className={`file-pill ${className}`} {...otherProps}>
+    <FilePillContainer
+      onTouchStart={touchStart} onTouchEnd={touchEnd} onTouchMove={touchMove}
+      onClick={handleViewFile} ref={ref} className={`file-pill ${className}`} {...otherProps}>
       {file.type.toLowerCase() === "image" ? (
         <>
-          <ImgLoader ref={refImageLoader}>
+          <ImgLoader className={imgSrc ? "d-none" : ""}>
             <ImgLoaderDiv className={"img-loader"}/>
           </ImgLoader>
           <FileImage
             ref={refImage}
             data-attempt={0}
-            className={"d-none"}
-            onLoad={handleImageOnLoad}
+            className={imgSrc ? "" : "d-none"}
             onError={handleImageOnError}
             height={150}
             src={imgSrc}
