@@ -28,6 +28,8 @@ import {
   putCompanyPosts as putCompanyPostsService,
   putPost as putPostService,
   getUnreadPostEntries as getUnreadPostEntriesService,
+  markAllPostAsRead as markAllPostAsReadService,
+  archiveAllPosts as archiveAllPostsService,
 } from "../services";
 
 export function postFavorite(payload, callback) {
@@ -232,4 +234,20 @@ export function getReplyClapHover(payload, callback) {
 
 export function getUnreadPostEntries(payload, callback) {
   return dispatchActionToReducer(getUnreadPostEntriesService(payload), "GET_UNREAD_POST_ENTRIES_START", "GET_UNREAD_POST_ENTRIES_SUCCESS", "GET_UNREAD_POST_ENTRIES_FAIL", callback);
+}
+
+export function markAllPostAsRead(payload, callback) {
+  return dispatchActionToReducer(markAllPostAsReadService(payload), "MARK_ALL_POSTS_AS_READ_START", "MARK_ALL_POSTS_AS_READ_SUCCESS", "MARK_ALL_POSTS_AS_READ_FAIL", callback);
+}
+
+export function archiveAllPosts(payload, callback) {
+  return dispatchActionToReducer(archiveAllPostsService(payload), "ARCHIVE_ALL_POSTS_START", "ARCHIVE_ALL_POSTS_SUCCESS", "ARCHIVE_ALL_POSTS_FAIL", callback);
+}
+
+export function readAllCallback(payload, callback) {
+  return SimpleDispatchActionToReducer("READ_ALL_POSTS", payload, callback);
+}
+
+export function archiveAllCallback(payload, callback) {
+  return SimpleDispatchActionToReducer("ARCHIVE_ALL_POSTS", payload, callback);
 }

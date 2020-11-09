@@ -480,3 +480,29 @@ export function getUnreadPostEntries(payload) {
     url: `/v2/post-unread-entries`,
   });
 }
+
+/**
+ * @param {Object} payload
+ * @param {number} payload.topic_id
+ * @returns {Promise<*>}
+ */
+export function markAllPostAsRead(payload) {
+  return apiCall({
+    method: "PUT",
+    url: `/v2/marked-post-read/all`,
+    data: payload,
+  });
+}
+
+/**
+ * @param {Object} payload
+ * @param {number} payload.topic_id
+ * @returns {Promise<*>}
+ */
+export function archiveAllPosts(payload) {
+  return apiCall({
+    method: "PUT",
+    url: `/v2/archived-post/all`,
+    data: payload,
+  });
+}

@@ -48,6 +48,14 @@ const EmptyState = styled.div`
   }
 `;
 
+const PostsBtnWrapper = styled.div`
+  text-align: right;
+  margin-bottom: 10px;
+  .btn {
+    margin-left: 10px;
+  }
+`;
+
 const WorkspacePostsPanel = (props) => {
   const { className = "", workspace, isMember } = props;
 
@@ -129,8 +137,19 @@ const WorkspacePostsPanel = (props) => {
     me: _t("POST.LOGGED_USER_RESPONSIBLE", "me"),
     quotedCommentFrom: _t("POST.QUOTED_COMMENT_FROM", "Quoted comment from"),
     showMore: _t("SHOW_MORE", "Show more"),
-    showLess: _t("SHOW_LESS", "Show less")
+    showLess: _t("SHOW_LESS", "Show less"),
+    markAll: _t("POST.MARK_ALL_AS_READ", "Mark all as read"),
+    archiveAll: _t("POST.ARCHIVE_ALL", "Archive all")
   };
+
+  const handleMarkAllAsRead = () => {
+    actions.readAll({topic_id: workspace.id});
+  };
+
+  const handleArchiveAll = () => {
+    actions.archiveAll({topic_id: workspace.id});
+  };
+
   let disableOptions = false;
   if (workspace && workspace.active === 0) disableOptions = true;
   if (posts === null) return <></>;
@@ -144,7 +163,7 @@ const WorkspacePostsPanel = (props) => {
         <div className="col-md-9 app-content">
           <div className="app-content-overlay"/>
           {!post &&
-          <PostFilterSearchPanel activeSort={sort} workspace={workspace} search={search} dictionary={dictionary}/>}
+          <PostFilterSearchPanel activeSort={sort} workspace={workspace} search={search} dictionary={dictionary} className={"mb-3"}/>}
           {posts.length === 0 && search === null ? (
             <div className="card card-body app-content-body mb-4">
               <EmptyState>
@@ -170,6 +189,14 @@ const WorkspacePostsPanel = (props) => {
                   </PostDetailWrapper>
                 </div>
               ) : (
+                <>
+                {
+                  filter === "all" &&
+                  <PostsBtnWrapper>
+                    <button className="btn btn-primary" onClick={handleArchiveAll}>{dictionary.archiveAll}</button>
+                    <button className="btn btn-primary" onClick={handleMarkAllAsRead}>{dictionary.markAll}</button>
+                  </PostsBtnWrapper>
+                }
                 <div className="card card-body app-content-body mb-4">
                   <div className="app-lists" tabIndex="1">
                     {search !== null && (
@@ -196,6 +223,7 @@ const WorkspacePostsPanel = (props) => {
                     </ul>
                   </div>
                 </div>
+                </>
               )}
             </>
           )}

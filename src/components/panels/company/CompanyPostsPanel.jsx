@@ -57,6 +57,14 @@ const EmptyState = styled.div`
   }
 `;
 
+const PostsBtnWrapper = styled.div`
+  text-align: right;
+  margin-bottom: 10px;
+  .btn {
+    margin-left: 10px;
+  }
+`;
+
 const CompanyPostsPanel = (props) => {
   const { className = "" } = props;
 
@@ -134,7 +142,9 @@ const CompanyPostsPanel = (props) => {
     me: _t("POST.LOGGED_USER_RESPONSIBLE", "me"),
     quotedCommentFrom: _t("POST.QUOTED_COMMENT_FROM", "Quoted comment from"),
     showMore: _t("SHOW_MORE", "Show more"),
-    showLess: _t("SHOW_LESS", "Show less")
+    showLess: _t("SHOW_LESS", "Show less"),
+    markAll: _t("POST.MARK_ALL_AS_READ", "Mark all as read"),
+    archiveAll: _t("POST.ARCHIVE_ALL", "Archive all")
   };
 
   /**
@@ -178,6 +188,14 @@ const CompanyPostsPanel = (props) => {
     }
   }, [refs.posts.current]);
 
+  const handleMarkAllAsRead = () => {
+    actions.readAll();
+  };
+
+  const handleArchiveAll = () => {
+    actions.archiveAll();
+  };
+
   if (posts === null)
     return <></>;
 
@@ -194,7 +212,7 @@ const CompanyPostsPanel = (props) => {
             !post &&
             <CompanyPostFilterSearchPanel
               activeSort={sort} search={search}
-              dictionary={dictionary}/>
+              dictionary={dictionary} className={"mb-3"}/>
           }
           {/* <div className="card card-body app-content-body mb-4"> */}
           {posts.length === 0 && search === null ? (
@@ -218,6 +236,14 @@ const CompanyPostsPanel = (props) => {
                   </PostDetailWrapper>
                 </div>
               ) : (
+                <>
+                {
+                  filter === "all" &&
+                  <PostsBtnWrapper>
+                    <button className="btn btn-primary" onClick={handleArchiveAll}>{dictionary.archiveAll}</button>
+                    <button className="btn btn-primary" onClick={handleMarkAllAsRead}>{dictionary.markAll}</button>
+                  </PostsBtnWrapper>
+                }
                 <div className="card card-body app-content-body mb-4">
                   <div ref={refs.posts} className="app-lists" tabIndex="1" data-loaded="0" data-loading={loading}>
                     {search !== null && (
@@ -244,6 +270,7 @@ const CompanyPostsPanel = (props) => {
                     </ul>
                   </div>
                 </div>
+                </>
               )}
             </>
           )}
