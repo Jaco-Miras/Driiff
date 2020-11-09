@@ -21,28 +21,28 @@ const Wrapper = styled.div`
   
   .author-name {
     display: block;
-    color: #505050;
     font-size: 14px;   
     font-weight: 500;
     color: rgb(80, 80, 80);
     .dark & {
-      color: #c7c7c7;   
+      color: #c7c7c7;
+    }
   }
-  .recipients {
-    color: #8b8b8b;
-    font-size: 10px;
-  }
+    .recipients {
+      color: #8b8b8b;
+      font-size: 10px;
+    }
+    .ellipsis-hover {
+      position: relative;
+      
+      &:hover {
+        .recipient-names {
+          opacity: 1;
+          max-height: 300px;    
+        }
+      }  
+    }
   
-  .ellipsis-hover {
-    position: relative;
-    
-    &:hover {
-      .recipient-names {
-        opacity: 1;
-        max-height: 300px;    
-      }
-    }  
-  }
   .recipient-names {
     transition: all 0.5s ease;
     position: absolute;
@@ -51,7 +51,6 @@ const Wrapper = styled.div`
     width: 200px;    
     border-radius: 8px;
     overflow-y: auto;
-    border: 1px solid #fff;
     box-shadow: 0 5px 10px -1px rgba(0,0,0,0.15);
     background: #fff;
     max-height: 0;

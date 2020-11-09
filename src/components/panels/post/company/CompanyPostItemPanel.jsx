@@ -6,7 +6,7 @@ import { MoreOptions } from "../../common";
 import { CompanyPostBadge } from "./index";
 import quillHelper from "../../../../helpers/quillHelper";
 import { MemberLists } from "../../../list/members";
-import { useTimeFormat, useTouchActions } from "../../../hooks";
+import { useTimeFormat, useTouchActions, useTranslation } from "../../../hooks";
 
 const Wrapper = styled.li`
   &.has-unread {
@@ -27,6 +27,10 @@ const Wrapper = styled.li`
   .custom-checkbox {
     padding-left: 12px;
   }
+    
+  .post-partialBody {
+    max-width: calc(100% - 170px);
+  }
 
   .app-list-title {
     color: #343a40;
@@ -36,7 +40,7 @@ const Wrapper = styled.li`
     &.has-unread {
       font-weight: bold;
       
-      .post-partialBody {
+      .post-partialBody {        
         color: #343a40;
         font-weight: normal;
       
@@ -92,6 +96,51 @@ const Wrapper = styled.li`
       height: 2rem;
     }
   }
+
+  .ellipsis-hover {
+    position: relative;
+    
+    &:hover {
+      .recipient-names {
+        opacity: 1;
+        max-height: 300px;    
+      }
+    }  
+  }
+  
+  .recipient-names {
+    transition: all 0.5s ease;
+    position: absolute;
+    top: 20px;
+    left: -2px;
+    width: 200px;    
+    border-radius: 8px;
+    overflow-y: auto;
+    box-shadow: 0 5px 10px -1px rgba(0,0,0,0.15);
+    background: #fff;
+    max-height: 0;
+    opacity: 0;
+    z-index: 1;
+    
+    &:hover {
+      max-height: 300px;
+      opacity: 1;    
+    }
+    
+    .dark & {
+      border: 1px solid #25282c;
+      background: #25282c;
+    }
+    
+    > span {
+      display: block;
+      width: 100%;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      padding: 0.25rem 0.5rem;
+    }    
+  }
 `;
 
 const SlideOption = styled.div`
@@ -129,16 +178,17 @@ const CompanyPostItemPanel = (props) => {
   const user = useSelector((state) => state.session.user);
   const flipper = useSelector((state) => state.workspaces.flipper);
 
+  const { _t } = useTranslation();
   const { fromNow } = useTimeFormat();
 
   const postRecipients = useSelector((state) => state.global.recipients
-  .filter((r) => post.recipient_ids.includes(r.id))
-  .sort((a, b) => {
-    if (a.type !== b.type) {
-      if (a.type === "TOPIC") return -1;
-      if (b.type === "TOPIC") return 1;
-    }
-    return a.name.localeCompare(b.name);
+    .filter((r) => post.recipient_ids.includes(r.id))
+    .sort((a, b) => {
+      if (a.type !== b.type) {
+        if (a.type === "TOPIC") return -1;
+        if (b.type === "TOPIC") return 1;
+      }
+      return a.name.localeCompare(b.name);
     })
   );
 
@@ -148,7 +198,12 @@ const CompanyPostItemPanel = (props) => {
     const hasMe = postRecipients.some(r => r.type_id === user.id);
     if (otherPostRecipients.length) {
       recipient_names += otherPostRecipients.filter((r, i) => i < (hasMe ? 4 : 5))
-        .map(r => `<span class="receiver">${r.name}</span>`)
+        .map(r => {
+          if (["DEPARTMENT", "TOPIC"].includes(r.type))
+            return `<span class="receiver">${_t(r.name.replace(/ /g, "_").toUpperCase(), r.name)}</span>`;
+          else
+            return `<span class="receiver">${r.name}</span>`;
+        })
         .join(`, `);
     }
 
@@ -163,7 +218,12 @@ const CompanyPostItemPanel = (props) => {
     let otherRecipientNames = "";
     if ((otherPostRecipients.length + (hasMe ? 1 : 0)) > 5) {
       otherRecipientNames += otherPostRecipients.filter((r, i) => i >= (hasMe ? 4 : 5))
-        .map(r => `<span class="receiver">${r.name}</span>`).join("");
+        .map(r => {
+          if (["DEPARTMENT", "TOPIC"].includes(r.type))
+            return `<span class="receiver">${_t(r.name.replace(/ /g, "_").toUpperCase(), r.name)}</span>`;
+          else
+            return `<span class="receiver">${r.name}</span>`;
+        }).join("");
 
       otherRecipientNames = `<span class="ellipsis-hover">... <span class="recipient-names">${otherRecipientNames}</span></span>`;
     }
@@ -235,7 +295,7 @@ const CompanyPostItemPanel = (props) => {
       <div className="flex-grow-1 min-width-0">
         <div className="d-flex align-items-center justify-content-between">
           <div
-            className={`app-list-title text-truncate ${hasUnread ? "has-unread" : ""}`}>
+            className={`app-list-title ${hasUnread ? "has-unread" : ""}`}>
             <Avatar title={`FROM: ${post.author.name}`} className="author-avatar mr-2" id={post.author.id}
                     name={post.author.name}
                     imageLink={post.author.profile_image_thumbnail_link ? post.author.profile_image_thumbnail_link : post.author.profile_image_link}/>
@@ -269,7 +329,7 @@ const CompanyPostItemPanel = (props) => {
         </div>
       </div>
       {post.type !== "draft_post" && !disableOptions && (
-        <MoreOptions className={`d-flex ml-2`} item={post} width={220} moreButton={"more-horizontal"}>
+        <MoreOptions className="ml-2" item={post} width={220} moreButton={"more-horizontal"}>
           {
             post.todo_reminder === null &&
             <div onClick={() => remind(post)}>{dictionary.remindMeAboutThis}</div>
