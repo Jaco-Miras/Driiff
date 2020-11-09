@@ -74,10 +74,9 @@ const useCompanyPosts = () => {
     .sort((a, b) => {
       if (sort === "favorite") {
         return a.is_favourite === b.is_favourite ? 0 : a.is_favourite ? -1 : 1;
-      } else if (sort === "unread") {
-        return a.is_updated === b.is_updated ? 0 : a.is_updated ? 1 : -1;
       } else {
-        return b.created_at.timestamp > a.created_at.timestamp ? 1 : -1;
+        return b.updated_at.timestamp - a.updated_at.timestamp;
+        return b.created_at.timestamp - a.created_at.timestamp;
       }
     });
   if (count) {
