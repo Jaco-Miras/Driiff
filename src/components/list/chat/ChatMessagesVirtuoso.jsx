@@ -146,7 +146,7 @@ class ChatMessages extends React.PureComponent {
           }
         } else {
           if (this.virtuoso.current) {
-            this.virtuoso.current.adjustForPrependedItems(res.data.results.length)
+            //this.virtuoso.current.adjustForPrependedItems(res.data.results.length)
           }
         }
 

@@ -45,9 +45,12 @@ const Virtualized = (props) => {
     const previousChannel = usePreviousValue(selectedChannel);
     const dispatch = useDispatch();
     useEffect(() => {
-      console.log('trigger restore on mount', channelRange, selectedChannel.id)
-      if (channelRange.hasOwnProperty(selectedChannel.id)) {
-        virtuosoRef.current.scrollToIndex({index: channelRange[selectedChannel.id].startIndex, align: "start"})
+      // console.log('trigger restore on mount', channelRange, selectedChannel.id)
+      // if (channelRange.hasOwnProperty(selectedChannel.id)) {
+      //   virtuosoRef.current.scrollToIndex({index: channelRange[selectedChannel.id].startIndex, align: "start"})
+      // }
+      if (virtuosoRef) {
+        virtuosoRef.current.scrollToIndex({index: messages.length - 1, align: "end"})
       }
     }, [])
 
@@ -64,13 +67,16 @@ const Virtualized = (props) => {
           if (previousChannel && previousChannel.replies.length !== selectedChannel.replies.length && (selectedChannel.replies.length - previousChannel.replies.length) > 1) {
             console.log('trigger restore after loading more', channelRange)
             if (channelRange.hasOwnProperty(selectedChannel.id)) {
-              virtuosoRef.current.scrollToIndex({index: channelRange[selectedChannel.id].startIndex + (selectedChannel.replies.length - previousChannel.replies.length), align: "start"})
+              //virtuosoRef.current.scrollToIndex({index: channelRange[selectedChannel.id].startIndex + (selectedChannel.replies.length - previousChannel.replies.length), align: "start"})
             }
           }
         } else {
-          console.log('trigger restore after changing channel', channelRange, selectedChannel.id)
-          if (channelRange.hasOwnProperty(selectedChannel.id)) {
-            virtuosoRef.current.scrollToIndex({index: channelRange[selectedChannel.id].startIndex, align: "start"})
+          // console.log('trigger restore after changing channel', channelRange, selectedChannel.id)
+          // if (channelRange.hasOwnProperty(selectedChannel.id)) {
+          //   virtuosoRef.current.scrollToIndex({index: channelRange[selectedChannel.id].startIndex, align: "start"})
+          // }
+          if (virtuosoRef) {
+            virtuosoRef.current.scrollToIndex({index: messages.length - 1, align: "end"})
           }
         }
       }
