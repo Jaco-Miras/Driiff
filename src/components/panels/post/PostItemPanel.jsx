@@ -9,6 +9,9 @@ import quillHelper from "../../../helpers/quillHelper";
 import { useTimeFormat } from "../../hooks";
 
 const Wrapper = styled.li`
+  &.has-unread {
+    background-color: #f7f7f7 !important;  
+  }
   &:first-of-type {
     border-top-left-radius: 8px;
     border-top-right-radius: 8px;
@@ -126,9 +129,11 @@ const PostItemPanel = (props) => {
   };
 
   const noAuthorResponsibles = post.users_responsible.filter(u => u.id !== post.author.id);
+  const hasUnread = post.unread_count > 0 || post.is_unread === 1;
 
   return (
-    <Wrapper data-toggle={flipper ? "1" : "0"} className={`list-group-item post-item-panel ${className}`}
+    <Wrapper data-toggle={flipper ? "1" : "0"}
+             className={`list-group-item post-item-panel ${hasUnread ? "has-unread" : ""} ${className}`}
              onClick={() => openPost(post)}>
       {/* <div className="custom-control custom-checkbox custom-checkbox-success">
         <CheckBox name="test" checked={post.is_mark_done} onClick={handleMarkDone} disabled={disableOptions}/>
@@ -145,7 +150,7 @@ const PostItemPanel = (props) => {
       <div className="flex-grow-1 min-width-0">
         <div className="d-flex align-items-center justify-content-between">
           <div
-            className={`app-list-title text-truncate ${post.unread_count > 0 || post.is_unread === 1 ? "text-primarylocalhff has-unread" : ""}`}>
+            className={`app-list-title text-truncate ${hasUnread ? "text-primarylocal has-unread" : ""}`}>
             <Avatar className="author-avatar mr-2" id={post.author.id} name={post.author.name}
                     imageLink={post.author.profile_image_thumbnail_link ? post.author.profile_image_thumbnail_link : post.author.profile_image_link}/>
             <span>{post.title} <span className={"time-stamp"}><span
