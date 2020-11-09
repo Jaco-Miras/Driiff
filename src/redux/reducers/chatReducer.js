@@ -220,8 +220,10 @@ export default function (state = INITIAL_STATE, action) {
 
       let updatedChannels = { ...state.channels };
       if (state.selectedChannel) {
-        updatedChannels[state.selectedChannel.id].selected = false;
-        updatedChannels[action.data.id].selected = true;
+        if (updatedChannels[state.selectedChannel.id])
+          updatedChannels[state.selectedChannel.id].selected = false;
+        if (updatedChannels[action.data.id])
+          updatedChannels[action.data.id].selected = true;
       }
 
       return {

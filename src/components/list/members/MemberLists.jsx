@@ -25,8 +25,8 @@ const MembersLists = (props) => {
     memberSize = 5;
   }
 
-  const firstMembers = members.slice(0, memberSize);
-  const afterMembers = members.slice(memberSize);
+  const firstMembers = members ? members.slice(0, memberSize) : [];
+  const afterMembers = members ? members.slice(memberSize) : [];
 
   return (
     <MembersListContainer className={`d-flex ${classNames}`}>
