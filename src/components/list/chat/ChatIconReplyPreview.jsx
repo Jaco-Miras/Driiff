@@ -5,6 +5,8 @@ import styled from "styled-components";
 import quillHelper from "../../../helpers/quillHelper";
 import { stripHtml } from "../../../helpers/stringFormatter";
 import { SvgIcon } from "../../common";
+import { SvgIconFeather } from "../../common";
+import ChannelOptions from "./ChannelOptions";
 
 const Wrapper = styled.span`
   display: table;
@@ -30,9 +32,36 @@ const LastReplyBody = styled.div`
 const TextIcon = styled(SvgIcon)`
   max-width: 12px;
 `;
+const Icon = styled(SvgIconFeather)`
+  position: relative;
+  top: -3px;
+  right: 0;
+  width: 15px;
+  height: 15px;
+`;
+const ActionContainer = styled.div`
+  position: relative;
+  top: 2px;
+  display: flex;
+  flex-direction: row-reverse;
+`;
+const Badge = styled.span`
+  color: #fff !important;
+  min-height: 18px;
+  width: 24px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 0;
+  &.unread {
+    color: #7a1b8b !important;
+    display: none;
+  }
+`;
 
 const ReplyPreview = (props) => {
-  const { channel, drafts, dictionary } = props;
+  const { channel, drafts, dictionary, selectedChannel } = props;
   const settings = useSelector((state) => state.settings.user.CHAT_SETTINGS);
   const user = useSelector((state) => state.session.user);
   //const channelDrafts = useSelector((state) => state.chat.channelDrafts);
@@ -104,6 +133,21 @@ const ReplyPreview = (props) => {
           __html: previewText,
         }}
       />
+      <div className="chat-timestamp">
+        <div className="d-flex align-items-center flex-row-reverse">
+          <ChannelOptions className="ml-1" moreButton="chevron-down" selectedChannel={selectedChannel} channel={channel}/>
+          {
+            channel.add_user === false && (!channel.is_read || channel.total_unread > 0) && (
+              <Badge
+                className={`badge badge-primary badge-pill ml-1 ${!channel.is_read && channel.total_unread === 0 ? "unread" : ""}`}>{channel.total_unread > 0 ? channel.total_unread : !channel.is_read ? "0" : null}</Badge>
+            )
+          }
+          <ActionContainer>
+            {channel.is_pinned && <Icon icon="star"/>}
+            {channel.is_muted && <Icon icon="volume-x" className={`${channel.is_pinned && "mr-1"}`}/>}
+          </ActionContainer>
+        </div>
+      </div>
     </Wrapper>
   );
 };
