@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { $_GET, isIPAddress } from "../../helpers/commonFunctions";
 import useDriffActions from "./useDriffActions";
 import { getCurrentDriffUrl } from "../../helpers/slugHelper";
+import { isIOS } from "react-device-detect";
 
 export const getDriffName = () => {
   let driff = $_GET("driff");
@@ -48,7 +49,7 @@ const useDriff = () => {
   const updateFaviconState = (isActive = false) => {
     if (refs.faviconState.current !== isActive) {
       refs.faviconState.current = isActive;
-      let link = document.querySelector("link[rel*='icon']") || document.createElement('link');
+      let link = document.querySelector("link[rel*='icon shortcut']") || document.createElement('link');
       link.type = 'image/x-icon';
       link.rel = 'shortcut icon';
       link.href = isActive ? `${driffUrl}/assets/icons/favicon-active.png` : `${driffUrl}/assets/icons/favicon.png`;
@@ -59,6 +60,14 @@ const useDriff = () => {
   useEffect(() => {
     if (init)
       return;
+
+    if (isIOS) {
+      let link = document.createElement('link');
+      link.href = `${driffUrl}/assets/icons/favicon.png`;
+      link.rel = 'apple-touch-icon';
+
+      document.getElementsByTagName('head')[0].appendChild(link);
+    }
 
     init = true;
 
