@@ -55,10 +55,10 @@ const Virtualized = (props) => {
     }, [])
 
     const handleRangeChange = (range) => {
-      console.log(range, selectedChannel.id)
-      dispatch(
-        setChannelRange({id: selectedChannel.id, range: range})
-      );
+      // console.log(range, selectedChannel.id)
+      // dispatch(
+      //   setChannelRange({id: selectedChannel.id, range: range})
+      // );
     }
     
     useEffect(() => {
