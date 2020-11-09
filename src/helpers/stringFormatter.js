@@ -21,11 +21,11 @@ export const clapCountAsString = (value) => {
 };
 
 export const stripHtml = (html) => {
-  // let temporalDivElement = document.createElement("div");
-  // temporalDivElement.innerHTML = html;
+  let temporalDivElement = document.createElement("div");
+  temporalDivElement.innerHTML = html;
 
-  // return temporalDivElement.textContent || temporalDivElement.innerText || "";
-  return html.replace(/(<([^>]+)>)/gi, "")
+  return temporalDivElement.textContent || temporalDivElement.innerText || "";
+  // return html.replace(/(<([^>]+)>)/gi, "")
 };
 
 export const stripGif = (html) => {

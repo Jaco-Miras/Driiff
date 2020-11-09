@@ -862,9 +862,21 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "SET_VIEW_FILES": {
+      let channelFiles = {...state.channelFiles};
+      let existingFiles = []
+      if (action.data !== null && typeof action.data.channel_id !== "undefined" && typeof action.data.files !== "undefined") {
+        if (typeof channelFiles[action.data.channel_id] !== "undefined") {
+          existingFiles = [...channelFiles[action.data.channel_id]]
+        }
+        channelFiles = {
+          ...channelFiles,
+          [action.data.channel_id]: [...action.data.files, ...existingFiles]
+        }
+      }
       return {
         ...state,
         viewFiles: action.data,
+        channelFiles: channelFiles
       };
     }
     case "PREPARE_WORKSPACE_FILES_UPLOAD": {

@@ -59,6 +59,7 @@ const MessageFiles = forwardRef((props, ref) => {
       let payload = {
         channel_id: reply.channel_id,
         file_id: file.file_id,
+        files: [file]
       };
       dispatch(setViewFiles(payload));
     }
