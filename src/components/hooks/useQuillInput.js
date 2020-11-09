@@ -1,10 +1,10 @@
 import { useEffect, useRef } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { getChannelFiles } from "../../redux/actions/fileActions";
+import { useSelector } from "react-redux";
+//import { getChannelFiles } from "../../redux/actions/fileActions";
 import usePreviousValue from "./usePreviousValue";
 
 const useQuillInput = (callback, quillRef) => {
-  const dispatch = useDispatch();
+  //const dispatch = useDispatch();
   const selectedChannel = useSelector((state) => state.chat.selectedChannel);
   const savedCallback = useRef(callback);
   const previousChannel = usePreviousValue(selectedChannel);
@@ -18,16 +18,16 @@ const useQuillInput = (callback, quillRef) => {
     savedCallback.current();
   };
 
-  const handleGetChannelFiles = () => {
-    if (channelFiles.hasOwnProperty(selectedChannel.id) === false) {
-      let payload = {
-        channel_id: selectedChannel.id,
-        skip: 0,
-        limit: 100,
-      };
-      dispatch(getChannelFiles(payload));
-    }
-  };
+  // const handleGetChannelFiles = () => {
+  //   if (channelFiles.hasOwnProperty(selectedChannel.id) === false) {
+  //     let payload = {
+  //       channel_id: selectedChannel.id,
+  //       skip: 0,
+  //       limit: 100,
+  //     };
+  //     dispatch(getChannelFiles(payload));
+  //   }
+  // };
 
   useEffect(() => {
     // temporarily remove due to issues
@@ -46,11 +46,11 @@ const useQuillInput = (callback, quillRef) => {
       if (previousChannel && previousChannel.id !== selectedChannel.id) {
         handleClearInput();
         quillRef.current.focus();
-        handleGetChannelFiles();
+        //handleGetChannelFiles();
       }
     }
     if (!previousChannel && selectedChannel !== null) {
-      handleGetChannelFiles();
+      //handleGetChannelFiles();
     }
   }, [selectedChannel, previousChannel]);
 };
