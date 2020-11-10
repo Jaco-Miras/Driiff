@@ -466,6 +466,7 @@ export default (state = INITIAL_STATE, action) => {
           companyPosts.posts[p.id].is_read = true;
           companyPosts.posts[p.id].is_updated = true;
           companyPosts.posts[p.id].unread_count = 0;
+          companyPosts.posts[p.id].is_unread = 0;
         })
       }
       return {
