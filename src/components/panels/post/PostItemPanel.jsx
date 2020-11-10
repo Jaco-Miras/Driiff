@@ -280,10 +280,10 @@ const PostItemPanel = (props) => {
           <div
             className={`app-list-title text-truncate ${hasUnread ? "has-unread" : ""}`}>
             <CreatedBy>
-              <ByIcon icon="corner-up-right" />
-                <Avatar title={`FROM: ${post.author.name}`} className="author-avatar mr-2" id={post.author.id}
-                        name={post.author.name}
-                        imageLink={post.author.profile_image_thumbnail_link ? post.author.profile_image_thumbnail_link : post.author.profile_image_link}/>
+              <ByIcon icon="corner-up-right"/>
+              <Avatar title={`FROM: ${post.author.name}`} className="author-avatar mr-2" id={post.author.id}
+                      name={post.author.name}
+                      imageLink={post.author.profile_image_thumbnail_link ? post.author.profile_image_thumbnail_link : post.author.profile_image_link}/>
             </CreatedBy>
             <AuthorRecipients>
               {

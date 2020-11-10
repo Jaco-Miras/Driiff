@@ -27,6 +27,10 @@ const Wrapper = styled.li`
     padding-left: 12px;
   }
 
+  .post-partialBody {
+    max-width: calc(100% - 170px);
+  }
+
   .app-list-title {
     color: #343a40;
     font-weight: normal;
@@ -92,6 +96,7 @@ const Wrapper = styled.li`
       height: 2rem;
     }
   }
+
   .receiver {
     border-radius: 6px;
     padding: 3px 5px;
@@ -173,13 +178,13 @@ const CompanyPostItemPanel = (props) => {
   const { fromNow } = useTimeFormat();
 
   const postRecipients = useSelector((state) => state.global.recipients
-  .filter((r) => post.recipient_ids.includes(r.id))
-  .sort((a, b) => {
-    if (a.type !== b.type) {
-      if (a.type === "TOPIC") return -1;
-      if (b.type === "TOPIC") return 1;
-    }
-    return a.name.localeCompare(b.name);
+    .filter((r) => post.recipient_ids && post.recipient_ids.includes(r.id))
+    .sort((a, b) => {
+      if (a.type !== b.type) {
+        if (a.type === "TOPIC") return -1;
+        if (b.type === "TOPIC") return 1;
+      }
+      return a.name.localeCompare(b.name);
     })
   );
 
@@ -189,8 +194,13 @@ const CompanyPostItemPanel = (props) => {
     const hasMe = postRecipients.some(r => r.type_id === user.id);
     if (otherPostRecipients.length) {
       recipient_names += otherPostRecipients.filter((r, i) => i < (hasMe ? 4 : 5))
-        .map(r => `<span class="receiver">${r.name}</span>`)
-        .join(``);
+        .map(r => {
+          if (["DEPARTMENT", "TOPIC"].includes(r.type))
+            return `<span class="receiver">${_t(r.name.replace(/ /g, "_").toUpperCase(), r.name)}</span>`;
+          else
+            return `<span class="receiver">${r.name}</span>`;
+        })
+        .join(`, `);
     }
 
     if (hasMe) {
@@ -270,10 +280,10 @@ const CompanyPostItemPanel = (props) => {
           <div
             className={`app-list-title text-truncate ${hasUnread ? "has-unread" : ""}`}>
             <CreatedBy>
-              <ByIcon icon="corner-up-right" />
-                <Avatar title={`FROM: ${post.author.name}`} className="author-avatar mr-2" id={post.author.id}
-                        name={post.author.name}
-                        imageLink={post.author.profile_image_thumbnail_link ? post.author.profile_image_thumbnail_link : post.author.profile_image_link}/>
+              <ByIcon icon="corner-up-right"/>
+              <Avatar title={`FROM: ${post.author.name}`} className="author-avatar mr-2" id={post.author.id}
+                      name={post.author.name}
+                      imageLink={post.author.profile_image_thumbnail_link ? post.author.profile_image_thumbnail_link : post.author.profile_image_link}/>
             </CreatedBy>
             <AuthorRecipients>
               {
