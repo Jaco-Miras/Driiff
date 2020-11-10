@@ -97,6 +97,17 @@ const Wrapper = styled.li`
   //   border-radius: 6px;
   //   padding: 1px 3px;
   // }
+
+  .ellipsis-hover {
+    position: relative;
+    
+    &:hover {
+      .recipient-names {
+        opacity: 1;
+        max-height: 300px;    
+      }
+    }  
+  }
 `;
 
 const SlideOption = styled.div`
@@ -127,6 +138,8 @@ const ArchiveBtn = styled.a`
 const AuthorRecipients = styled.div`
   display: flex;
   align-items: center;
+  font-weight: 400;
+  padding-bottom: 3px;
 `;
 
 const CreatedBy = styled.div`
@@ -139,7 +152,7 @@ const CreatedBy = styled.div`
 const PostReplyCounter = styled.div`
   display: flex;
   align-items: center;
-  margin-top: 3px;
+  margin-top: 5px;
   font-weight: 400;
   font-size: 11px;
 `;
