@@ -26,16 +26,8 @@ const ChatBubbleContainer = styled.div`
   z-index: 1;
   //min-height: 40px;
   min-height: ${(props) => (props.hasGif ? "150px" : "33px")};
-  ${(props) =>
-    props.hideBg === true &&
-    !props.isEmoticonOnly &&
-    `
-        // background: none;
-        padding: 0;
-    `}
 
   &:after {
-    content: ${(props) => props.showAvatar && props.hideBg === false && "''"};
     border: 10px solid #0000;
     position: absolute;
     top: 6px;
@@ -73,7 +65,6 @@ const ChatBubbleContainer = styled.div`
   span.emoticon-body {
     font-size: 2.5rem;
     padding: 20px 10px;
-    text-align: right;
     text-align: ${(props) => (props.isAuthor ? "right" : "left")};
   }
   .reply-content img {
