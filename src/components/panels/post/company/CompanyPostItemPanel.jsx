@@ -5,7 +5,6 @@ import { Avatar, SvgIconFeather } from "../../../common";
 import { MoreOptions } from "../../common";
 import { CompanyPostBadge } from "./index";
 import quillHelper from "../../../../helpers/quillHelper";
-import { MemberLists } from "../../../list/members";
 import { useTimeFormat, useTouchActions } from "../../../hooks";
 
 const Wrapper = styled.li`
@@ -199,7 +198,7 @@ const CompanyPostItemPanel = (props) => {
         recipient_names += `<span class="receiver">${dictionary.me}</span>`;
       } else {
         // recipient_names += dictionary.me;
-        recipient_names += dictionary.me;
+        recipient_names += `<span class="receiver">${dictionary.me}</span>`;
       }
     }
 
@@ -260,7 +259,7 @@ const CompanyPostItemPanel = (props) => {
     handleSwipeRight
   });
 
-  const noAuthorResponsibles = post.users_responsible.filter(u => u.id !== post.author.id);
+  // const noAuthorResponsibles = post.users_responsible.filter(u => u.id !== post.author.id);
   const hasUnread = post.unread_count > 0 || post.is_unread === 1;
 
   console.log(post)
@@ -285,9 +284,9 @@ const CompanyPostItemPanel = (props) => {
                 postRecipients.length >= 1 &&
                 <span className="recipients" dangerouslySetInnerHTML={{ __html: renderUserResponsibleNames() }}/>
               }
-              <span className="time-stamp">
+              {/* <span className="time-stamp">
                 <span>{fromNow(post.created_at.timestamp)}</span>
-              </span>
+              </span> */}
             </AuthorRecipients>
             <span>{post.title}</span>
             <div className='text-truncate post-partialBody'>
@@ -297,6 +296,9 @@ const CompanyPostItemPanel = (props) => {
               {post.unread_count !== 0 &&
               <div className="mr-2 badge badge-secondary text-white text-9">{post.unread_count} new</div>}
               <div className="text-muted">{post.reply_count} comments</div>
+              <span className="time-stamp text-muted">
+                <span>{fromNow(post.created_at.timestamp)}</span>
+              </span>
             </PostReplyCounter>
           </div>
           <SlideOption showOptions={showOptions} className={`pl-sm-3 d-flex align-items-center`}>
