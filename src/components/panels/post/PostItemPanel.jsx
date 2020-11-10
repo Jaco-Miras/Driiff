@@ -178,7 +178,7 @@ const PostItemPanel = (props) => {
   const { fromNow } = useTimeFormat();
 
   const postRecipients = useSelector((state) => state.global.recipients
-    .filter((r) => post.recipient_ids.includes(r.id))
+    .filter((r) => post.recipient_ids && post.recipient_ids.includes(r.id))
     .sort((a, b) => {
       if (a.type !== b.type) {
         if (a.type === "TOPIC") return -1;
