@@ -41,12 +41,9 @@ const Badge = styled.span`
 
 const ChatDateIcons = (props) => {
   const { selectedChannel, channel } = props;
-  const { channelPreviewDate } = useTimeFormat();
 
   return (
     <Wrapper className="chat-timestamp">
-      <span className={"small text-muted chat-timestamp_text"}
-            dangerouslySetInnerHTML={{ __html: channel.last_reply ? channelPreviewDate(channel.last_reply.created_at.timestamp) : "" }}/>
       <div className="d-flex align-items-center flex-row-reverse">
         <ChannelOptions className="ml-1" moreButton="chevron-down" selectedChannel={selectedChannel} channel={channel}/>
         {
