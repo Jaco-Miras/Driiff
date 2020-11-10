@@ -74,7 +74,7 @@ const Wrapper = styled.li`
     }
   }
   .post-partialBody {
-    color: #b8b8b8;
+    color: #b8b8b8 !important;
     font-weight: 400;
   }
 
@@ -83,15 +83,20 @@ const Wrapper = styled.li`
   }
   .author-avatar {
     position: absolute;
-    left: 1rem;
-    top: 0;
-    bottom: 0;
-    margin: auto;
+    left: -1rem;
+    top: 1.3rem;
+    // bottom: 0;
+    // margin: auto;
     img {
       width: 2rem;
       height: 2rem;
     }
   }
+  // .receiver {
+  //   border: 1px solid black;
+  //   border-radius: 6px;
+  //   padding: 1px 3px;
+  // }
 `;
 
 const SlideOption = styled.div`
@@ -110,6 +115,15 @@ const Icon = styled(SvgIconFeather)`
   width: 16px;
 `;
 
+const ByIcon = styled(SvgIconFeather)`
+  width: 16px;
+  // position: absolute;
+  stroke: lightgrey;
+  // top: 10px;
+  // left: 2rem;
+  // bottom: 0;
+`;
+
 const ArchiveBtn = styled.a`
   padding: 5px;
 `;
@@ -117,6 +131,21 @@ const ArchiveBtn = styled.a`
 const AuthorRecipients = styled.div`
   display: flex;
   align-items: center;
+`;
+
+const CreatedBy = styled.div`
+  position: absolute;
+  top: 1rem;
+  left: 2rem;
+  bottom: 0;
+`;
+
+const PostReplyCounter = styled.div`
+  display: flex;
+  align-items: center;
+  margin-top: 3px;
+  font-weight: 400;
+  font-size: 11px;
 `;
 
 const CompanyPostItemPanel = (props) => {
@@ -143,7 +172,7 @@ const CompanyPostItemPanel = (props) => {
   );
 
   const renderUserResponsibleNames = () => {
-    let recipient_names = "@ ";
+    let recipient_names = "";
     const otherPostRecipients = postRecipients.filter(r => !(r.type === "USER" && r.type_id === user.id));
     const hasMe = postRecipients.some(r => r.type_id === user.id);
     if (otherPostRecipients.length) {
@@ -220,6 +249,8 @@ const CompanyPostItemPanel = (props) => {
   const noAuthorResponsibles = post.users_responsible.filter(u => u.id !== post.author.id);
   const hasUnread = post.unread_count > 0 || post.is_unread === 1;
 
+  console.log(post)
+
   return (
     <Wrapper data-toggle={flipper ? "1" : "0"}
              className={`list-group-item post-item-panel ${hasUnread ? "has-unread" : ""} ${className}`}
@@ -236,9 +267,12 @@ const CompanyPostItemPanel = (props) => {
         <div className="d-flex align-items-center justify-content-between">
           <div
             className={`app-list-title text-truncate ${hasUnread ? "has-unread" : ""}`}>
-            <Avatar title={`FROM: ${post.author.name}`} className="author-avatar mr-2" id={post.author.id}
-                    name={post.author.name}
-                    imageLink={post.author.profile_image_thumbnail_link ? post.author.profile_image_thumbnail_link : post.author.profile_image_link}/>
+            <CreatedBy>
+              <ByIcon icon="corner-up-right" />
+                <Avatar title={`FROM: ${post.author.name}`} className="author-avatar mr-2" id={post.author.id}
+                        name={post.author.name}
+                        imageLink={post.author.profile_image_thumbnail_link ? post.author.profile_image_thumbnail_link : post.author.profile_image_link}/>
+            </CreatedBy>
             <AuthorRecipients>
               {
                 postRecipients.length >= 1 &&
@@ -252,13 +286,20 @@ const CompanyPostItemPanel = (props) => {
             <div className='text-truncate post-partialBody'>
               <span dangerouslySetInnerHTML={{ __html: quillHelper.parseEmoji(post.partial_body) }}/>
             </div>
+            <PostReplyCounter>
+              {post.unread_count !== 0 &&
+              <div className="mr-2 badge badge-secondary text-white text-9">{post.unread_count} new</div>}
+              <div className="text-muted">{post.reply_count} comments</div>
+            </PostReplyCounter>
+            {/* {post.unread_count !== 0 &&
+            <div className="ml-2 mr-2 badge badge-primary badge-pill">{post.unread_count}</div>} */}
           </div>
           <SlideOption showOptions={showOptions} className={`pl-sm-3 d-flex align-items-center`}>
-            {post.unread_count !== 0 &&
-            <div className="ml-2 mr-2 badge badge-primary badge-pill">{post.unread_count}</div>}
+            {/* {post.unread_count !== 0 &&
+            <div className="badge badge-secondary text-white">{post.unread_count} new replies</div>} */}
             <CompanyPostBadge post={post} dictionary={dictionary}/>
-            {noAuthorResponsibles && noAuthorResponsibles.length > 0 &&
-            <MemberLists members={noAuthorResponsibles} classNames="mr-2"/>}
+            {/* {noAuthorResponsibles && noAuthorResponsibles.length > 0 &&
+            <MemberLists members={noAuthorResponsibles} classNames="mr-2"/>} */}
             {!disableOptions &&
             <ArchiveBtn onClick={handleArchivePost} className="btn button-darkmode btn-outline-light ml-2"
                         data-toggle="tooltip"
