@@ -108,7 +108,7 @@ const Timestamp = styled.div`
 
 const ChannelList = (props) => {
 
-  const { className = "", search = "", channel, selectedChannel, channelDrafts, dictionary } = props;
+  const { className = "", search = "", channel, selectedChannel, channelDrafts, dictionary, show = false } = props;
 
   const channelActions = useChannelActions();
   const { channelPreviewDate } = useTimeFormat();
@@ -184,24 +184,28 @@ const ChannelList = (props) => {
              selected={selectedChannel !== null && channel.id === selectedChannel.id}
              onClick={handleSelectChannel} onTouchStart={handleTouchStartChannel} onTouchEnd={handleTouchEndChannel}
              onTouchMove={handleTouchMoveChannel}>
-      <ChannelIcon channel={channel}/>
-      <ChannelTitlePreview className={"flex-grow-1 channel-title-preview"}>
-        <ChannelTitle channel={channel} search={search}/>
-        <ReplyPreview channel={channel} drafts={channelDrafts} dictionary={dictionary}/>
-        {!!channel.is_archived && (
-          <>
-            <Badge badgeClassName="bg-warning-bright" label="Archived"/>
-          </>
-        )}
-        {channel.is_hidden && (
-          <>
-            <Badge label="Hidden"/>
-          </>
-        )}
-      </ChannelTitlePreview>
-      <Timestamp className="text-right ml-auto">
-        <ChatDateIcons className={"chat-date-icons"} selectedChannel={selectedChannel} channel={channel}/>
-      </Timestamp>
+      {
+        show && <>
+          <ChannelIcon channel={channel}/>
+          <ChannelTitlePreview className={"flex-grow-1 channel-title-preview"}>
+            <ChannelTitle channel={channel} search={search}/>
+            <ReplyPreview channel={channel} drafts={channelDrafts} dictionary={dictionary}/>
+            {!!channel.is_archived && (
+              <>
+                <Badge badgeClassName="bg-warning-bright" label="Archived"/>
+              </>
+            )}
+            {channel.is_hidden && (
+              <>
+                <Badge label="Hidden"/>
+              </>
+            )}
+          </ChannelTitlePreview>
+          <Timestamp className="text-right ml-auto">
+            <ChatDateIcons className={"chat-date-icons"} selectedChannel={selectedChannel} channel={channel}/>
+          </Timestamp>
+        </>
+      }
     </Wrapper>
   );
 };

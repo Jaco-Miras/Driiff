@@ -1,8 +1,8 @@
 import React from "react";
 import styled from "styled-components";
-import {NotificationListItem} from "./index";
-import {useRedirect, useTranslation} from "../../../hooks";
-import {useSelector} from "react-redux";
+import { NotificationListItem } from "./index";
+import { useRedirect, useTranslation } from "../../../hooks";
+import { useSelector } from "react-redux";
 
 const Wrapper = styled.ul`
   overflow: auto;
@@ -40,7 +40,9 @@ const NotificationLists = (props) => {
                   .filter((n) => n.is_read === 0)
                   .sort((a,b) => b.created_at.timestamp - a.created_at.timestamp)
                   .map((n) => {
-                    return <NotificationListItem key={n.id} notification={n} actions={actions} history={history} redirect={redirect} removeOverlay={removeOverlay} _t={_t} user={user}/>;
+                    return <NotificationListItem data-toggle="notification" key={n.id} notification={n}
+                                                 actions={actions} history={history} redirect={redirect}
+                                                 removeOverlay={removeOverlay} _t={_t} user={user}/>;
                   })}
         </>
       )}
@@ -53,7 +55,9 @@ const NotificationLists = (props) => {
             .filter((n) => n.is_read === 1)
             .sort((a,b) => b.created_at.timestamp - a.created_at.timestamp)
             .map((n) => {
-              return <NotificationListItem key={n.id} notification={n} actions={actions} history={history} redirect={redirect} removeOverlay={removeOverlay} _t={_t} user={user}/>;
+              return <NotificationListItem data-toggle="notification" key={n.id} notification={n} actions={actions}
+                                           history={history} redirect={redirect} removeOverlay={removeOverlay} _t={_t}
+                                           user={user}/>;
             })}
         </>
       )}
