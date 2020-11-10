@@ -43,12 +43,12 @@ const PostFilterItem = (props) => {
     <Wrapper className={`post-filter-item list-group list-group-flush ${className}`}>
       <span className={`list-group-item d-flex align-items-center ${filter && filter === "all" ? "active" : ""}`} data-value="all" onClick={handleClickFilter}>
         <SvgIconFeather className="mr-2" icon="inbox" />
-        {dictionary.all}
+        {dictionary.inbox}
         <span className="small ml-auto">{counters.all > 0 && counters.all}</span>
       </span>
       <span className={`list-group-item d-flex align-items-center ${filter && filter === "my_posts" ? "active" : ""}`} data-value="my_posts" onClick={handleClickFilter}>
         <SvgIconFeather className="mr-2" icon="send-post" />
-        {dictionary.inbox}
+        {dictionary.myPosts}
         <span className="small ml-auto">{counters.my_posts > 0 && counters.my_posts}</span>
       </span>
       <span className={`list-group-item d-flex align-items-center ${filter && filter === "star" ? "active" : ""}`} data-value="star" onClick={handleClickFilter}>
