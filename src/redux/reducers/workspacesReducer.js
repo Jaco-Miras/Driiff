@@ -1470,6 +1470,7 @@ export default (state = INITIAL_STATE, action) => {
       if (Object.keys(updatedWorkspaces).length > 0) {
         updatedWorkspaces[action.data.topic_id].unread_posts = action.data.unread_posts;
         if (action.data.folder_id) {
+          //check undefined unread count
           updatedWorkspaces[action.data.folder_id].unread_count = action.data.unread_count;
         }
         if (state.activeTopic && state.activeTopic.id === action.data.topic_id) {
@@ -1629,6 +1630,46 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         workspaceTimeline: workspaceTimeline
       };
+    }
+     case "READ_ALL_POSTS": {
+      let workspacePosts = { ...state.workspacePosts };
+      let workspaces = { ...state.workspaces };
+      let activeTopic = state.activeTopic ? { ...state.activeTopic } : null
+      if (action.data.topic_id && workspacePosts.hasOwnProperty(action.data.topic_id)) {
+        Object.values(workspacePosts[action.data.topic_id].posts).forEach((p) => {
+          workspacePosts[action.data.topic_id].posts[p.id].is_read = true;
+          workspacePosts[action.data.topic_id].posts[p.id].is_updated = true;
+          workspacePosts[action.data.topic_id].posts[p.id].unread_count = 0;
+          workspacePosts[action.data.topic_id].posts[p.id].is_unread = 0;
+        })
+        workspaces[action.data.topic_id].unread_posts = 0;
+        if (activeTopic && activeTopic.id === action.data.topic_id) {
+          activeTopic.unread_posts = 0;
+        }
+        return {
+          ...state,
+          workspacePosts: workspacePosts,
+          workspaces: workspaces,
+          activeTopic: activeTopic
+        };
+      } else {
+        return state
+      }
+    }
+    case "ARCHIVE_ALL_POSTS": {
+      let workspacePosts = { ...state.workspacePosts };
+      if (action.data.topic_id && workspacePosts.hasOwnProperty(action.data.topic_id)) {
+        Object.values(workspacePosts[action.data.topic_id].posts).forEach((p) => {
+          workspacePosts[action.data.topic_id].posts[p.id].is_archived = 1;
+          workspacePosts[action.data.topic_id].posts[p.id].unread_count = 0;
+        })
+        return {
+          ...state,
+          workspacePosts: workspacePosts
+        };
+      } else {
+        return state
+      }
     }
     default:
       return state;

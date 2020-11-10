@@ -180,7 +180,9 @@ export {
   putCompanyPosts,
   getPostClapHover,
   getReplyClapHover,
-  getUnreadPostEntries
+  getUnreadPostEntries,
+  archiveAllPosts,
+  markAllPostAsRead,
 } from "./post";
 
 export {

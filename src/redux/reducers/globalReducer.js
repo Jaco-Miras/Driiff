@@ -378,6 +378,32 @@ export default (state = INITIAL_STATE, action) => {
         }
       }
     }
+    case "READ_ALL_POSTS": {
+      if (action.data.topic_id) return state;
+      let unreadCounter = {...state.unreadCounter};
+      unreadCounter = {
+        ...unreadCounter,
+        unread_posts: 0,
+        workspace_post: 0,
+      }
+      return {
+        ...state,
+        unreadCounter: unreadCounter
+      };
+    }
+    case "ARCHIVE_ALL_POSTS": {
+      if (action.data.topic_id) return state;
+      let unreadCounter = {...state.unreadCounter};
+      unreadCounter = {
+        ...unreadCounter,
+        unread_posts: 0,
+        workspace_post: 0,
+      }
+      return {
+        ...state,
+        unreadCounter: unreadCounter
+      };
+    }
     default:
       return state;
   }

@@ -33,6 +33,10 @@ import {
   starPostReducer,
   updateCompanyPostFilterSort,
   getUnreadPostEntries,
+  markAllPostAsRead,
+  archiveAllPosts,
+  readAllCallback,
+  archiveAllCallback,
 } from "../../redux/actions/postActions";
 import { useToaster, useTodoActions } from "./index";
 import { useTranslation } from "../hooks";
@@ -667,6 +671,34 @@ const usePostActions = () => {
     );
   };
 
+  const archiveAll = useCallback(
+    (payload = {}, callback) => {
+      dispatch(
+        archiveAllPosts(payload, (err,res) => {
+          if (err) return;
+
+          if (callback) callback();
+          dispatch(archiveAllCallback(payload))
+        })
+      );
+    },
+    [dispatch]
+  );
+
+  const readAll = useCallback(
+    (payload = {}, callback) => {
+      dispatch(
+        markAllPostAsRead(payload, (err,res) => {
+          if (err) return;
+
+          if (callback) callback();
+          dispatch(readAllCallback(payload))
+        })
+      );
+    },
+    [dispatch]
+  );
+
   return {
     starPost,
     markPost,
@@ -691,6 +723,8 @@ const usePostActions = () => {
     remind,
     fetchPostClapHover,
     getUnreadPostsCount,
+    archiveAll,
+    readAll,
   };
 };
 
