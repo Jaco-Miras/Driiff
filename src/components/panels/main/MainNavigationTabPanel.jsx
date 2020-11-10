@@ -5,8 +5,8 @@ import { Badge } from "reactstrap";
 import styled from "styled-components";
 import {
   addToModals,
-  getQuickLinks,
-  getUnreadNotificationCounterEntries,
+  // getQuickLinks,
+  // getUnreadNotificationCounterEntries,
   setNavMode
 } from "../../../redux/actions/globalActions";
 import { NavLink, SvgEmptyState, SvgIcon, SvgIconFeather } from "../../common";
@@ -374,11 +374,11 @@ const MainNavigationTabPanel = (props) => {
     }
   };
 
-  useEffect(() => {
-    dispatch(getUnreadNotificationCounterEntries());
-    dispatch(getQuickLinks());
-    //eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  // useEffect(() => {
+  //   // dispatch(getUnreadNotificationCounterEntries());
+  //   // dispatch(getQuickLinks());
+  //   //eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, []);
 
   useEffect(() => {
     if (defaultTopic) {

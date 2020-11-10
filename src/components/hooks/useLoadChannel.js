@@ -38,25 +38,25 @@ const useLoadChannel = () => {
       }
     } else if (typeof params.code === "undefined") {
       actions.fetchLastChannel();
-      //fetchLastVisited();
     } else {
-      actions.fetchByCode(params.code, (err, res) => {
-        if (err) {
-          // fetchLastVisited();
-          actions.fetchLastChannel();
-        }
-        if (res) {
-          let channel = {
-            ...res.data,
-            hasMore: true,
-            skip: 0,
-            selected: false,
-            isFetching: false
-          }
-          actions.select(channel);
-          actions.saveLastVisited(channel);
-        }
-      });
+      // actions.fetchByCode(params.code, (err, res) => {
+      //   if (err) {
+      //     // fetchLastVisited();
+      //     actions.fetchLastChannel();
+      //   }
+      //   if (res) {
+      //     let channel = {
+      //       ...res.data,
+      //       hasMore: true,
+      //       skip: 0,
+      //       selected: false,
+      //       isFetching: false
+      //     }
+      //     actions.select(channel);
+      //     actions.saveLastVisited(channel);
+      //   }
+      // });
+      actions.fetchSelectChannel(params.code)
     }
 
   }, []);

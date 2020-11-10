@@ -11,6 +11,7 @@ import {
   getGlobalRecipients as getGlobalRecipientsService,
   getLastChannel as getLastChannelService,
   getLastVisitedChannel as getLastVisitedChannelService,
+  getSelectChannel as getSelectChannelService,
   getWorkspaceChannels as getWorkspaceChannelsService,
   postChannelMembers as postChannelMembersService,
   postChatMessage as postChatMessageService,
@@ -267,4 +268,8 @@ export function setChannelRange(payload, callback) {
 
 export function getLastChannel(payload, callback) {
   return dispatchActionToReducer(getLastChannelService(payload), "GET_LAST_CHANNEL_START", "GET_LAST_CHANNEL_SUCCESS", "GET_LAST_CHANNEL_FAIL", callback);
+}
+
+export function getSelectChannel(payload, callback) {
+  return dispatchActionToReducer(getSelectChannelService(payload), "GET_SELECT_CHANNEL_START", "GET_SELECT_CHANNEL_SUCCESS", "GET_SELECT_CHANNEL_FAIL", callback);
 }

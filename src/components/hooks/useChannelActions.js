@@ -9,6 +9,7 @@ import {
   getGlobalRecipients,
   getLastChannel,
   getLastVisitedChannel,
+  getSelectChannel,
   getWorkspaceChannels,
   postChannelMembers,
   postCreateChannel,
@@ -729,6 +730,21 @@ const useChannelActions = () => {
     [dispatch, saveLastVisited, history]
   );
 
+  /**
+   * @param {string} code - channel.code
+   * @param {function} [callback]
+   */
+  const fetchSelectChannel = useCallback(
+    (code, callback) => {
+      dispatch(getSelectChannel({ code: code }, (err,res) => {
+        if (err) {
+          fetchLastChannel();
+        }
+      }));
+    },
+    [dispatch, fetchLastChannel]
+  );
+
   return {
     create,
     createByUserChannel,
@@ -740,6 +756,7 @@ const useChannelActions = () => {
     fetchMembersById,
     fetchLastChannel,
     fetchLastVisited,
+    fetchSelectChannel,
     fetchWorkspaceChannels,
     saveHistoricalPosition,
     saveLastVisited,

@@ -10,15 +10,15 @@ const useUsers = () => {
 
   const userActions = useUserActions();
 
-  useEffect(() => {
-    if (init) {
-      init = false;
+  // useEffect(() => {
+  //   if (init) {
+  //     init = false;
 
-      userActions.fetch({});
-    }
+  //     userActions.fetch({});
+  //   }
 
-    //eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  //   //eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, []);
 
   return {
     users,

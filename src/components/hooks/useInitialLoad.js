@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { getNotifications } from "../../redux/actions/notificationActions";
 import { getUsers } from "../../redux/actions/userAction";
-import { getAllRecipients } from "../../redux/actions/globalActions";
+import { getAllRecipients, getQuickLinks, getUnreadNotificationCounterEntries, getToDoDetail } from "../../redux/actions/globalActions";
 import { getUnreadPostEntries } from "../../redux/actions/postActions";
 import { getChannels } from "../../redux/actions/chatActions";
 
@@ -16,11 +16,12 @@ const useInitialLoad = () => {
 
   const dispatch = useDispatch();
 
-  const fetchChannels = () => {
+  const fetchChannels = (callback = null) => {
     setIsFetching(true);
     setSkip(skip + 50);
     dispatch(
       getChannels({skip: skip, limit: 50}, (err,res) => {
+        if (callback) callback();
         setIsFetching(false);
         if (err) return;
         
@@ -31,17 +32,18 @@ const useInitialLoad = () => {
 
   useEffect(() => {
     document.body.classList.remove("form-membership");
-    fetchChannels();
-    dispatch(getAllRecipients());
-    dispatch(getUsers());
-    dispatch(getUnreadPostEntries());
-    // if (Object.keys(files).length === 0) {
-    //   dispatch(getFiles({sort: "desc"}));
-    // }
-    if (Object.keys(notifications).length === 0) {
-      dispatch(getNotifications({skip: 0, limit: 50}));
+    const fetchChannelCb = () => {
+      dispatch(getAllRecipients());
+      dispatch(getUsers());
+      dispatch(getUnreadPostEntries());
+      if (Object.keys(notifications).length === 0) {
+        dispatch(getNotifications({skip: 0, limit: 50}));
+      }
+      dispatch(getUnreadNotificationCounterEntries());
+      dispatch(getQuickLinks());
+      dispatch(getToDoDetail());
     }
-    //fetchRoles();
+    fetchChannels(fetchChannelCb);
   }, []);
 
   useEffect(() => {
