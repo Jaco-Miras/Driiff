@@ -28,23 +28,23 @@ const useChatMessageActions = () => {
     fetch: useRef(false)
   };
 
-  const getSharedPayload = useCallback(
-    (channel) => {
-      if (channel && channel.is_shared && sharedSlugs.length) {
-        let slug = sharedSlugs.filter((s) => s.slug_name === channel.slug_owner)[0];
-        return {
-          is_shared_topic: 1,
-          topic_id: channel.entity_id,
-          is_shared: channel.entity_id,
-          token: slug.access_token,
-          slug: slug.slug_name,
-        };
-      } else {
-        return {};
-      }
-    },
-    [sharedSlugs]
-  );
+  // const getSharedPayload = useCallback(
+  //   (channel) => {
+  //     if (channel && channel.is_shared && sharedSlugs.length) {
+  //       let slug = sharedSlugs.filter((s) => s.slug_name === channel.slug_owner)[0];
+  //       return {
+  //         is_shared_topic: 1,
+  //         topic_id: channel.entity_id,
+  //         is_shared: channel.entity_id,
+  //         token: slug.access_token,
+  //         slug: slug.slug_name,
+  //       };
+  //     } else {
+  //       return {};
+  //     }
+  //   },
+  //   [sharedSlugs]
+  // );
 
   /**
    * @param {Object} channel
@@ -61,7 +61,7 @@ const useChatMessageActions = () => {
           channel_id: channel.id,
           skip: skip,
           limit: limit,
-          ...getSharedPayload(channel),
+          //...getSharedPayload(channel),
         };
 
         dispatch(getChatMessages(payload, (err, res) => {
@@ -171,7 +171,7 @@ const useChatMessageActions = () => {
         deleteChatMessage(
           {
             message_id: messageId,
-            ...getSharedPayload(),
+            //...getSharedPayload(),
           },
           callback
         )
