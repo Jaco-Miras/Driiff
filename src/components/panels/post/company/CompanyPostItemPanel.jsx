@@ -5,7 +5,7 @@ import { Avatar, SvgIconFeather } from "../../../common";
 import { MoreOptions } from "../../common";
 import { CompanyPostBadge } from "./index";
 import quillHelper from "../../../../helpers/quillHelper";
-import { useTimeFormat, useTouchActions } from "../../../hooks";
+import { useTimeFormat, useTouchActions, useTranslation } from "../../../hooks";
 
 const Wrapper = styled.li`
   &.has-unread {
