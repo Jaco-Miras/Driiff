@@ -3,7 +3,7 @@ import React, { useEffect } from "react";
 import { Virtuoso } from 'react-virtuoso';
 import VirtualizedChat from "./VirtualizedChat";
 import { usePreviousValue } from "../../hooks";
-import { setChannelRange } from "../../../redux/actions/chatActions";
+//import { setChannelRange } from "../../../redux/actions/chatActions";
 import { useSelector } from "react-redux";
 
 // const ScrollContainer = ({

@@ -59,10 +59,10 @@ class ChatMessages extends React.PureComponent {
     super(props);
 
     this.state = {
-      hasArrowUpListener: false,
+      //hasArrowUpListener: false,
       initializing: false,
-      loadMoreInView: false,
-      fetchingReplies: false,
+      //loadMoreInView: false,
+      //fetchingReplies: false,
     };
 
     this.scrollComponent = React.createRef();
@@ -150,7 +150,7 @@ class ChatMessages extends React.PureComponent {
           }
         }
 
-        if (this.state.initializing === true) this.setState({ initializing: false });
+        //if (this.state.initializing === true) this.setState({ initializing: false });
       });
     }
   };
@@ -241,9 +241,9 @@ class ChatMessages extends React.PureComponent {
     this.props.onSelectQuote(reply);
   };
 
-  handleLoadMoreRefChange = (inView, entry) => {
-    this.setState({ loadMoreInView: inView });
-  };
+  // handleLoadMoreRefChange = (inView, entry) => {
+  //   this.setState({ loadMoreInView: inView });
+  // };
 
   handleMessageRefChange = (inView, entry, id) => {
     const scrollComponent = this.scrollComponent.current;
@@ -342,7 +342,7 @@ class ChatMessages extends React.PureComponent {
 
 function mapStateToProps(state) {
   const {
-    global: { isBrowserActive, recipients, slugs },
+    global: { isBrowserActive, recipients },
     session: { user },
     chat: { isLastChatVisible },
   } = state;
@@ -350,7 +350,6 @@ function mapStateToProps(state) {
   return {
     user,
     settings: state.settings.user.CHAT_SETTINGS,
-    sharedSlugs: slugs,
     isBrowserActive,
     recipients,
     isLastChatVisible,
