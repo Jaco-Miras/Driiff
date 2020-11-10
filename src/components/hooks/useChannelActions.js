@@ -53,20 +53,20 @@ const useChannelActions = () => {
    * @param {Object} channel
    * @returns {{}|{is_shared: boolean, slug: string, token: string}}
    */
-  const getSharedPayload = useCallback(
-    (channel) => {
-      if (channel.hasOwnProperty("is_shared") && channel.is_shared && sharedSlugs.length) {
-        return {
-          is_shared: true,
-          token: sharedSlugs.filter((s) => s.slug_name === channel.slug_owner)[0].access_token,
-          slug: sharedSlugs.filter((s) => s.slug_name === channel.slug_owner)[0].slug_name,
-        };
-      } else {
-        return {};
-      }
-    },
-    [sharedSlugs]
-  );
+  // const getSharedPayload = useCallback(
+  //   (channel) => {
+  //     if (channel.hasOwnProperty("is_shared") && channel.is_shared && sharedSlugs.length) {
+  //       return {
+  //         is_shared: true,
+  //         token: sharedSlugs.filter((s) => s.slug_name === channel.slug_owner)[0].access_token,
+  //         slug: sharedSlugs.filter((s) => s.slug_name === channel.slug_owner)[0].slug_name,
+  //       };
+  //     } else {
+  //       return {};
+  //     }
+  //   },
+  //   [sharedSlugs]
+  // );
 
   /**
    * @param {string} code - channel.code
@@ -508,7 +508,7 @@ const useChannelActions = () => {
         putMarkReadChannel(
           {
             channel_id: channel.id,
-            ...getSharedPayload(channel),
+            //...getSharedPayload(channel),
           },
           cb
         )
@@ -527,7 +527,7 @@ const useChannelActions = () => {
         putMarkUnreadChannel(
           {
             channel_id: channel.id,
-            ...getSharedPayload(channel),
+            //...getSharedPayload(channel),
           },
           callback
         )

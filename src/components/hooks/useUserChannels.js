@@ -41,9 +41,9 @@ const useUserChannels = () => {
   useEffect(() => {
     if (init) {
       init = false;
-      channelActions.fetchNoChannelUsers((err) => {
-        if (err) init = false;
-      });
+      // channelActions.fetchNoChannelUsers((err) => {
+      //   if (err) init = false;
+      // });
     }
 
     //eslint-disable-next-line react-hooks/exhaustive-deps
