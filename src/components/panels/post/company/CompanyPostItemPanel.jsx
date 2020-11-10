@@ -213,13 +213,6 @@ const CompanyPostItemPanel = (props) => {
     return `${recipient_names} ${otherRecipientNames}`;
   };
 
-  const handleMarkDone = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (disableOptions) return;
-    markPost(post);
-  };
-
   const handleStarPost = (e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -259,10 +252,7 @@ const CompanyPostItemPanel = (props) => {
     handleSwipeRight
   });
 
-  // const noAuthorResponsibles = post.users_responsible.filter(u => u.id !== post.author.id);
   const hasUnread = post.unread_count > 0 || post.is_unread === 1;
-
-  console.log(post)
 
   return (
     <Wrapper data-toggle={flipper ? "1" : "0"}
@@ -284,9 +274,6 @@ const CompanyPostItemPanel = (props) => {
                 postRecipients.length >= 1 &&
                 <span className="recipients" dangerouslySetInnerHTML={{ __html: renderUserResponsibleNames() }}/>
               }
-              {/* <span className="time-stamp">
-                <span>{fromNow(post.created_at.timestamp)}</span>
-              </span> */}
             </AuthorRecipients>
             <span>{post.title}</span>
             <div className='text-truncate post-partialBody'>
