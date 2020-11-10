@@ -1295,6 +1295,30 @@ export default function (state = INITIAL_STATE, action) {
         }
       }
     }
+    case "GET_SELECT_CHANNEL_SUCCESS": {
+      if (action.data) {
+        let channels = {...state.channels}
+        let channel = {
+          ...action.data,
+          hasMore: true,
+          skip: 0,
+          selected: true,
+          isFetching: false
+        }
+        channels = {
+          ...channels,
+          [channel.id]: channel
+        }
+        return {
+          ...state,
+          channels: channels,
+          lastVisitedChannel: channel,
+          selectedChannel: channel,
+        }
+      } else {
+        return state;
+      }
+    }
     default:
       return state;
   }

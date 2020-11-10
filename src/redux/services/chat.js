@@ -257,3 +257,11 @@ export function getLastChannel(payload) {
     data: payload,
   });
 }
+
+export function getSelectChannel(payload) {
+  let url = `/v2/post-channels/${payload.code}`;
+  return apiCall({
+    method: "GET",
+    url: url,
+  });
+}
