@@ -520,7 +520,7 @@ class ChatMessages extends React.PureComponent {
     const { selectedChannel } = this.props;
     const scrollComponent = this.scrollComponent.current;
     if (prevProps.selectedChannel) {
-      if (selectedChannel.replies && scrollComponent) {
+      if (prevProps.selectedChannel && prevProps.selectedChannel.replies && selectedChannel.replies && scrollComponent) {
         if ((selectedChannel.replies.length > 20) & (prevProps.selectedChannel.replies.length < selectedChannel.replies.length)) {
           if (selectedChannel.replies.length - prevProps.selectedChannel.replies.length >= 2) {
             return scrollComponent.scrollHeight - scrollComponent.scrollTop;
