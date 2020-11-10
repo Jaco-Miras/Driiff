@@ -14,6 +14,7 @@ export {
   getLastVisitedChannel,
   getChannelDrafts,
   getChannelMembers,
+  getSelectChannel,
   getWorkspaceChannels,
   putChannel,
   putChannelUpdate,

@@ -220,8 +220,10 @@ export default function (state = INITIAL_STATE, action) {
 
       let updatedChannels = { ...state.channels };
       if (state.selectedChannel) {
-        updatedChannels[state.selectedChannel.id].selected = false;
-        updatedChannels[action.data.id].selected = true;
+        if (updatedChannels[state.selectedChannel.id])
+          updatedChannels[state.selectedChannel.id].selected = false;
+        if (updatedChannels[action.data.id])
+          updatedChannels[action.data.id].selected = true;
       }
 
       return {
@@ -1291,6 +1293,54 @@ export default function (state = INITIAL_STATE, action) {
           ...state.channelRange,
           [action.data.id]: action.data.range,
         }
+      }
+    }
+    case "GET_SELECT_CHANNEL_SUCCESS": {
+      if (action.data) {
+        let channels = {...state.channels}
+        let channel = {
+          ...action.data,
+          hasMore: true,
+          skip: 0,
+          selected: true,
+          isFetching: false
+        }
+        channels = {
+          ...channels,
+          [channel.id]: channel
+        }
+        return {
+          ...state,
+          channels: channels,
+          lastVisitedChannel: channel,
+          selectedChannel: channel,
+        }
+      } else {
+        return state;
+      }
+    }
+    case "GET_LAST_CHANNEL_SUCCESS": {
+      if (action.data) {
+        let channels = {...state.channels}
+        let channel = {
+          ...action.data,
+          hasMore: true,
+          skip: 0,
+          selected: true,
+          isFetching: false
+        }
+        channels = {
+          ...channels,
+          [channel.id]: channel
+        }
+        return {
+          ...state,
+          channels: channels,
+          lastVisitedChannel: channel,
+          selectedChannel: channel,
+        }
+      } else {
+        return state;
       }
     }
     default:

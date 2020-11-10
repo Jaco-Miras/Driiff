@@ -89,7 +89,7 @@ const useTodos = (fetchTodosOnMount = false) => {
   useEffect(() => {
     if (!init) {
       init = true;
-      todoActions.fetchDetail({});
+      // todoActions.fetchDetail({});
     }
     if (!isLoaded && fetchTodosOnMount) {
       loadMore();

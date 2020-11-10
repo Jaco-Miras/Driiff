@@ -9,6 +9,7 @@ import {
   getGlobalRecipients,
   getLastChannel,
   getLastVisitedChannel,
+  getSelectChannel,
   getWorkspaceChannels,
   postChannelMembers,
   postCreateChannel,
@@ -52,20 +53,20 @@ const useChannelActions = () => {
    * @param {Object} channel
    * @returns {{}|{is_shared: boolean, slug: string, token: string}}
    */
-  const getSharedPayload = useCallback(
-    (channel) => {
-      if (channel.hasOwnProperty("is_shared") && channel.is_shared && sharedSlugs.length) {
-        return {
-          is_shared: true,
-          token: sharedSlugs.filter((s) => s.slug_name === channel.slug_owner)[0].access_token,
-          slug: sharedSlugs.filter((s) => s.slug_name === channel.slug_owner)[0].slug_name,
-        };
-      } else {
-        return {};
-      }
-    },
-    [sharedSlugs]
-  );
+  // const getSharedPayload = useCallback(
+  //   (channel) => {
+  //     if (channel.hasOwnProperty("is_shared") && channel.is_shared && sharedSlugs.length) {
+  //       return {
+  //         is_shared: true,
+  //         token: sharedSlugs.filter((s) => s.slug_name === channel.slug_owner)[0].access_token,
+  //         slug: sharedSlugs.filter((s) => s.slug_name === channel.slug_owner)[0].slug_name,
+  //       };
+  //     } else {
+  //       return {};
+  //     }
+  //   },
+  //   [sharedSlugs]
+  // );
 
   /**
    * @param {string} code - channel.code
@@ -507,7 +508,7 @@ const useChannelActions = () => {
         putMarkReadChannel(
           {
             channel_id: channel.id,
-            ...getSharedPayload(channel),
+            //...getSharedPayload(channel),
           },
           cb
         )
@@ -526,7 +527,7 @@ const useChannelActions = () => {
         putMarkUnreadChannel(
           {
             channel_id: channel.id,
-            ...getSharedPayload(channel),
+            //...getSharedPayload(channel),
           },
           callback
         )
@@ -709,24 +710,28 @@ const useChannelActions = () => {
         getLastChannel({}, (err,res) => {
           if (err) return;
           if (callback) callback();
-          let channel = res.data;
-          dispatch(
-            setSelectedChannel({
-              ...channel,
-              hasMore: true,
-              skip: 0,
-              selected: true,
-              isFetching: false,
-            })
-          );
-          saveLastVisited(channel);
           if (history.location.pathname.startsWith("/chat")) {
-            history.push(`/chat/${channel.code}`);
+            history.push(`/chat/${res.data.code}`);
           }
         })
       )
     },
     [dispatch, saveLastVisited, history]
+  );
+
+  /**
+   * @param {string} code - channel.code
+   * @param {function} [callback]
+   */
+  const fetchSelectChannel = useCallback(
+    (code, callback) => {
+      dispatch(getSelectChannel({ code: code }, (err,res) => {
+        if (err) {
+          fetchLastChannel();
+        }
+      }));
+    },
+    [dispatch, fetchLastChannel]
   );
 
   return {
@@ -740,6 +745,7 @@ const useChannelActions = () => {
     fetchMembersById,
     fetchLastChannel,
     fetchLastVisited,
+    fetchSelectChannel,
     fetchWorkspaceChannels,
     saveHistoricalPosition,
     saveLastVisited,

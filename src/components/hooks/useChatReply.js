@@ -334,12 +334,13 @@ const useChatReply = ({ reply, dictionary, isAuthor, user, recipients, selectedC
 
   let isGifOnly = !!reply.body.substring(15, reply.body.length - 8).match(GifRegex);
 
-  let hasMessage = reply.body.substring(5, reply.body.length - 6) !== "";
+  const message = reply.body.substring(5, reply.body.length - 6);
+  let hasMessage = !(message === "" || message === "><");
 
   let isEmoticonOnly = false;
   const emoji = replyBody.substring(5, replyBody.length - 6);
   if (emoji.length <= 3 && emoji.match(getEmojiRegexPattern())) {
-    isEmoticonOnly = false;
+    isEmoticonOnly = true;
   }
 
   return {

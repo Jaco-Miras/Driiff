@@ -76,8 +76,9 @@ const handleInitials = (title) => {
 
 const ChannelIcon = (props) => {
   const { className = "", channel } = props;
+  const channelTitle = channel.title ? channel.title.toLowerCase() : "";
   return (
-    <Wrapper className={`pr-3 ${className}`} type={channel.type} iconColor={iconColor(channel.title.toLowerCase())}>
+    <Wrapper className={`pr-3 ${className}`} type={channel.type} iconColor={iconColor(channelTitle)}>
       {channel.profile && channel.members.length >= 1 && channel.type === "DIRECT" && (
         <StyledAvatar type={channel.type}
                       imageLink={channel.profile.profile_image_thumbnail_link ? channel.profile.profile_image_thumbnail_link : channel.profile.profile_image_link}
@@ -89,7 +90,7 @@ const ChannelIcon = (props) => {
       {channel.type === "COMPANY" && <Icon icon="home" alt={channel.title}/>}
       {channel.type === "POST" && <Icon icon="users" alt={channel.title}/>}
       {channel.type === "PERSONAL_BOT" && <Icon icon="user" alt={channel.title}/>}
-      {(channel.members.length > 2 && channel.type === "DIRECT") || (channel.type === "TOPIC" &&
+      {(channel.members && channel.members.length > 2 && channel.type === "DIRECT") || (channel.type === "TOPIC" &&
         <span>{handleInitials(channel.title).substring(0, 3)}</span>)}
     </Wrapper>
   );
