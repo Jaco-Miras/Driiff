@@ -35,7 +35,7 @@ export const NotificationListItem = (props) => {
   const { fromNow } = useTimeFormat();
   const handleRedirect = (e) => {
     e.preventDefault();
-    removeOverlay();
+    removeOverlay(e);
     if (notification.is_read === 0) {
       actions.read({ id: notification.id });
     }

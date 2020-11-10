@@ -61,7 +61,7 @@ const UserProfileDropdown = (props) => {
   };
 
   return (
-    <Wrapper ref={refs.container} className={`user-profile-dropdown dropdown-menu dropdown-menu-big ${className}`}
+    <Wrapper ref={refs.container} className={`user-profile-dropdown dropdown-menu dropdown-menu-big show ${className}`}
              x-placement="bottom-end">
       <div className="p-3 text-center">
         <Avatar name={user.name}

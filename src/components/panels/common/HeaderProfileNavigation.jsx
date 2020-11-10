@@ -84,6 +84,7 @@ const HomeProfileNavigation = (props) => {
 
   const [currentPopUp, setCurrentPopUp] = useState(null);
   const [form, setForm] = useState({});
+  const [dropDown, setDropDown] = useState({});
 
   const refs = {
     container: useRef(null),
@@ -91,37 +92,21 @@ const HomeProfileNavigation = (props) => {
 
   const setThemeButton = (e) => {
     e.preventDefault();
-    hideActiveDropDown(e);
+    setDropDown({});
     setGeneralSetting({
       dark_mode: dark_mode === "0" ? "1" : "0",
     });
   };
 
-  const hideActiveDropDown = (e) => {
-    const shownDropDown = e.currentTarget.closest("ul").querySelector(".dropdown-menu.show");
-    const targetDropDown = e.currentTarget.parentElement.querySelector(".dropdown-menu");
-
-    if (shownDropDown && shownDropDown !== targetDropDown) {
-      shownDropDown.classList.remove("show");
-    }
-  };
-
   const toggleDropdown = (e) => {
     e.preventDefault();
-    hideActiveDropDown(e);
 
-    const targetDropDown = e.currentTarget.parentElement.querySelector(".dropdown-menu");
-    setCurrentPopUp({
-      current: targetDropDown,
-    });
-    if (targetDropDown) {
-      targetDropDown.classList.toggle("show");
-    }
-    document.querySelector(".overlay").classList.add("show");
-
-    if (e.currentTarget.title === "Search") {
-      document.querySelector(".dropdown-menu-right .dropdown-search-input").focus();
-    }
+    const name = e.currentTarget.dataset.toggle;
+    setDropDown(prevState => ({
+      ...prevState,
+      ...(prevState.name !== name && { name: name }),
+      value: prevState.name === name ? !prevState.value : true
+    }));
   };
 
   useEffect(() => {
@@ -160,22 +145,28 @@ const HomeProfileNavigation = (props) => {
   return (
     <Wrapper ref={refs.container} className={`header-profile-navigation navbar-nav ${className}`}>
       <li className="nav-item dropdown">
-        <a href="/" className="nav-link" data-toggle="dropdown" onClick={toggleDropdown}>
+        <a href="/" className="nav-link" data-toggle="search" onClick={toggleDropdown}>
           <ToolTip content={dictionary.generalSearch}>
             <SvgIconFeather icon="search"/>
           </ToolTip>
         </a>
-        <SearchDropDown/>
+        {
+          dropDown.name === "search" && dropDown.value &&
+          <SearchDropDown/>
+        }
       </li>
       <li className="nav-item dropdown">
         <a href="/"
            className={`nav-link ${Object.values(notifications).filter((n) => n.is_read === 0).length > 0 ? "nav-link-notify" : ""}`}
-           data-toggle="dropdown" onClick={toggleDropdown}>
+           data-toggle="notification" onClick={toggleDropdown}>
           <ToolTip content={dictionary.generalNotifications}>
             <SvgIconFeather icon="bell"/>
           </ToolTip>
         </a>
-        <NotificationDropDown/>
+        {
+          dropDown.name === "notification" && dropDown.value &&
+          <NotificationDropDown toggleDropdown={toggleDropdown}/>
+        }
       </li>
       <li className="nav-item">
         <a href="/" className={`nav-link dark-mode-switch`} onClick={setThemeButton}>
@@ -186,7 +177,7 @@ const HomeProfileNavigation = (props) => {
         </a>
       </li>
       <li className="nav-item dropdown">
-        <a href="/" className="nav-link profile-button" data-toggle="dropdown"
+        <a href="/" className="nav-link profile-button" data-toggle="profile"
            onClick={toggleDropdown}><ToolTip content={loggedUser.name}>
           <div className="avatar-overlay"/>
           <Avatar name={form.name}
@@ -194,7 +185,10 @@ const HomeProfileNavigation = (props) => {
                   noDefaultClick={true}/>
         </ToolTip>
         </a>
-        <UserProfileDropDown user={loggedUser}/>
+        {
+          dropDown.name === "profile" && dropDown.value &&
+          <UserProfileDropDown user={loggedUser}/>
+        }
       </li>
     </Wrapper>
   );

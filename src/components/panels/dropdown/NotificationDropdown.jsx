@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from "react";
+import React, { useRef } from "react";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import { useNotificationActions, useNotifications, useTranslation } from "../../hooks";
@@ -7,7 +7,6 @@ import { NotificationLists } from "../../list/notification/item";
 const Wrapper = styled.div`
   .text-link {
     color: #828282;
-    cursor: hand;
     cursor: pointer;
 
     &:hover {
@@ -22,7 +21,8 @@ const Wrapper = styled.div`
 `;
 
 const NotificationDropdown = (props) => {
-  const { className = "" } = props;
+  const { className = "", toggleDropdown, } = props;
+
   const history = useHistory();
   const actions = useNotificationActions();
   const { notifications, unreadCount } = useNotifications(actions);
@@ -35,15 +35,14 @@ const NotificationDropdown = (props) => {
     actions.readAll({});
   };
 
-  const removeOverlay = () => {
-    refs.container.current.classList.remove("show");
-    document.querySelector(".overlay").classList.remove('show');
+  const removeOverlay = (e) => {
+    toggleDropdown(e);
   };
 
-  const viewAll = useCallback(() => {
-    removeOverlay();
+  const viewAll = (e) => {
+    removeOverlay(e);
     history.push("/notifications");
-  }, []);
+  };
 
   const { _t } = useTranslation();
 
@@ -60,15 +59,19 @@ const NotificationDropdown = (props) => {
   return (
     <Wrapper
       ref={refs.container}
-      className={`dropdown-menu dropdown-menu-right dropdown-menu-big notification-drop-down ${className}`}
+      className={`dropdown-menu dropdown-menu-right dropdown-menu-big notification-drop-down show ${className}`}
       styles="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(-252px, 38px, 0px);"
     >
       <div className="notification-title-wrapper p-4 text-center d-flex justify-content-between">
         <h6 className="mb-0">{dictionary.notifications}</h6>
-        {unreadCount > 0 && <small className="font-size-11 opacity-7">{unreadCount} {dictionary.unreadNotifications}</small>}
+        {unreadCount > 0 &&
+        <small className="font-size-11 opacity-7">{unreadCount} {dictionary.unreadNotifications}</small>}
       </div>
       <div>
-        <NotificationLists notifications={notifications} actions={actions} history={history} dictionary={dictionary} removeOverlay={removeOverlay}/>
+        <NotificationLists
+          data-toggle={"notification"}
+          notifications={notifications} actions={actions} history={history} dictionary={dictionary}
+          removeOverlay={toggleDropdown}/>
       </div>
       <div className="p-2 text-right">
         <ul className="list-inline small">
