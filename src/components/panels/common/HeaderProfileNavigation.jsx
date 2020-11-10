@@ -180,9 +180,10 @@ const HomeProfileNavigation = (props) => {
         <a href="/" className="nav-link profile-button" data-toggle="profile"
            onClick={toggleDropdown}><ToolTip content={loggedUser.name}>
           <div className="avatar-overlay"/>
-          <Avatar name={form.name}
-                  imageLink={form.profile_image_thumbnail_link ? form.profile_image_thumbnail_link : form.profile_image_link}
-                  noDefaultClick={true}/>
+          <Avatar
+            name={form.name} id={form.id} type="USER"
+            imageLink={form.profile_image_thumbnail_link ? form.profile_image_thumbnail_link : form.profile_image_link}
+            noDefaultClick={true}/>
         </ToolTip>
         </a>
         {

@@ -72,8 +72,8 @@ const ChatBubbleContainer = styled.div`
     ${(props) => props.isAuthor === true && "position: relative; right: 0px;"};
   }
   ${(props) =>
-    !props.isEmoticonOnly &&
-    `
+  !props.isEmoticonOnly &&
+  `
     &:before {
         ${(props) => props.showAvatar && "content: '';"};
         border: 10px solid transparent;
@@ -84,8 +84,8 @@ const ChatBubbleContainer = styled.div`
         left: 20px;
         z-index: 1;
         ${(props) =>
-          props.isAuthor === true &&
-          `
+    props.isAuthor === true &&
+    `
             left: auto;
             right: -20px;
             border-left-color: #7A1B8B;
@@ -275,163 +275,175 @@ let lastReplyUserId = 0;
 
 const VirtualizedChat = (props) => {
 
-    const { index, reply, selectedChannel, chatMessageActions, timeFormat, user, messages, isLastChatVisible, recipients, chatSettings, loadReplies, getLoadRef, chatName } = props;
+  const { index, reply, selectedChannel, chatMessageActions, timeFormat, user, messages, isLastChatVisible, recipients, chatSettings, loadReplies, getLoadRef, chatName } = props;
 
-    const lastReply = messages[index - 1];
-    const isAuthor = reply && reply.user ? reply.user.id === user.id : false;
+  const lastReply = messages[index - 1];
+  const isAuthor = reply && reply.user ? reply.user.id === user.id : false;
 
-    let showAvatar = false;
-    let showTimestamp = false;
-    let showGifPlayer = false;
-    let isBot = false;
-    let showMessageLine = false;
+  let showAvatar = false;
+  let showTimestamp = false;
+  let showGifPlayer = false;
+  let isBot = false;
+  let showMessageLine = false;
 
-    if (reply && reply.user) {
+  if (reply && reply.user) {
     if (reply.created_at.timestamp) {
-        if (index === 0) {
+      if (index === 0) {
         showTimestamp = true;
         showAvatar = true;
-        }
-        if (index !== 0 && lastReply && timeFormat.localizeDate(lastReply.created_at.timestamp, "D") !== timeFormat.localizeDate(reply.created_at.timestamp, "D")) {
+      }
+      if (index !== 0 && lastReply && timeFormat.localizeDate(lastReply.created_at.timestamp, "D") !== timeFormat.localizeDate(reply.created_at.timestamp, "D")) {
         showTimestamp = true;
         showAvatar = true;
-        }
-        if (index !== 0 && lastReply && reply.created_at.timestamp - lastReply.created_at.timestamp > 600) {
+      }
+      if (index !== 0 && lastReply && reply.created_at.timestamp - lastReply.created_at.timestamp > 600) {
         //600 = 10 minutes
         showAvatar = true;
-        }
+      }
     }
 
     if (index !== 0 && lastReply && lastReply.is_read === true && reply.is_read === false) {
-        showMessageLine = true;
+      showMessageLine = true;
     }
-    if (index !== 0 &&  lastReply && lastReply.user === null) {
-        showAvatar = true;
+    if (index !== 0 && lastReply && lastReply.user === null) {
+      showAvatar = true;
     }
     if (lastReplyUserId !== reply.user.id) {
-        showAvatar = true;
-        lastReplyUserId = reply.user.id;
+      showAvatar = true;
+      lastReplyUserId = reply.user.id;
     }
 
     if (typeof reply.body !== "undefined" && reply.body !== null) {
-        if (reply.body.match(/\.(gif)/g) !== null) {
+      if (reply.body.match(/\.(gif)/g) !== null) {
         showGifPlayer = true;
-        }
+      }
     }
     let botCodes = ["gripp_bot_account", "gripp_bot_invoice", "gripp_bot_offerte", "gripp_bot_project", "gripp_bot_account", "driff_webhook_bot"];
     isBot = botCodes.includes(reply.user.code);
-    }
+  }
 
-    return (
-        <ChatList
-            data-message-id={reply.id}
-            data-code={reply.code}
-            data-timestamp={reply.created_at.timestamp}
-            className={`chat-list chat-list-item-${reply.id} code-${reply.code}`}
-            showTimestamp={showTimestamp}
+  return (
+    <ChatList
+      data-message-id={reply.id}
+      data-code={reply.code}
+      data-timestamp={reply.created_at.timestamp}
+      className={`chat-list chat-list-item-${reply.id} code-${reply.code}`}
+      showTimestamp={showTimestamp}
+    >
+      {showTimestamp && <TimestampDiv className="timestamp-container">{
+        <span>{timeFormat.localizeChatDate(reply.created_at.timestamp, "ddd, MMM DD, YYYY")}</span>}</TimestampDiv>}
+      {reply.user && showMessageLine && !isLastChatVisible && <ChatNewMessagesLine/>}
+      {reply.user && (
+        <ChatBubbleContainer
+          isAuthor={isAuthor}
+          className={`chat-reply-list-item chat-reply-list-item-${reply.id} ${!isAuthor ? "chat-left" : "chat-right"}`}
+          data-message-id={reply.id}
+          showAvatar={showAvatar}
+          isBot={isBot}
+          hasGif={showGifPlayer}
+
+        >
+          {reply.message_failed ? (
+            <FailedSpan>
+              <i className="fas fa-times-circle" onClick={(e) => props.handleResendMessage(reply.payload)}></i>
+            </FailedSpan>
+          ) : null}
+          <ChatBubbleQuoteDiv isAuthor={isAuthor} showAvatar={showAvatar} className={"chat-bubble-quote-div"}>
+            <ChatBubble
+              chatMessageActions={chatMessageActions}
+              timeFormat={timeFormat}
+              recipients={recipients}
+              user={user}
+              reply={reply}
+              showAvatar={showAvatar}
+              selectedChannel={selectedChannel}
+              showGifPlayer={showGifPlayer}
+              isAuthor={isAuthor}
+              //addMessageRef={getLoadRef(reply.id)}
+              isLastChat={index + 1 === messages.length ? true : null}
+              loadReplies={loadReplies}
+              isBot={isBot}
+              chatSettings={chatSettings}
+              isLastChatVisible={isLastChatVisible}
+              dictionary={props.dictionary}
+              isBrowserActive={props.isBrowserActive}
+            >
+              <ChatActionsContainer isAuthor={isAuthor} className="chat-actions-container">
+                {<ChatReactionButton isAuthor={isAuthor} scrollRef={props.infiniteScrollRef} reply={reply}/>}
+                {!isNaN(reply.id) && !reply.is_deleted &&
+                <MessageOptions dictionary={props.dictionary} className={"chat-message-options"}
+                                selectedChannel={props.selectedChannel} isAuthor={isAuthor} replyData={reply}/>}
+              </ChatActionsContainer>
+            </ChatBubble>
+            {reply.reactions.length > 0 &&
+            <ChatReactions reactions={reply.reactions} isAuthor={isAuthor} reply={reply} loggedUser={user}
+                           chatReactionAction={props.chatReactionV2Action}/>}
+            {selectedChannel.last_reply && selectedChannel.last_reply.id === reply.id && props.filterSeenMembers().length > 0 && (
+              <SeenIndicator isAuthor={isAuthor} onClick={props.handleShowSeenUsers}
+                             seenMembers={props.filterSeenMembers()}
+                             isPersonal={props.selectedChannel.members.length === 2}/>
+            )}
+          </ChatBubbleQuoteDiv>
+
+          {!isAuthor && showAvatar && <StyledAvatar
+            isForwardedMessage={reply.is_transferred} id={reply.user.id} type="USER"
+            imageLink={reply.user.profile_image_thumbnail_link ? reply.user.profile_image_thumbnail_link : reply.user.profile_image_link}
+            name={reply.user.name} isBot={isBot}/>}
+        </ChatBubbleContainer>
+      )}
+      {reply.user === null && (
+        <ChatBubbleContainer
+          className={`chat-reply-list-item system-reply-list-item chat-reply-list-item-${reply.id}`}
+          data-message-id={reply.id}
+          isAuthor={false}
+          hasGif={showGifPlayer}
+        >
+          <ChatBubbleQuoteDiv
+            isAuthor={isAuthor}
+            showAvatar={showAvatar}
+            className={"chat-bubble-quote-div"}
           >
-            {showTimestamp && <TimestampDiv className="timestamp-container">{<span>{timeFormat.localizeChatDate(reply.created_at.timestamp, "ddd, MMM DD, YYYY")}</span>}</TimestampDiv>}
-            {reply.user && showMessageLine && !isLastChatVisible && <ChatNewMessagesLine />}
-            {reply.user && (
-              <ChatBubbleContainer
-                isAuthor={isAuthor}
-                className={`chat-reply-list-item chat-reply-list-item-${reply.id} ${!isAuthor ? "chat-left" : "chat-right"}`}
-                data-message-id={reply.id}
-                showAvatar={showAvatar}
-                isBot={isBot}
-                hasGif={showGifPlayer}
-                
-              >
-                {reply.message_failed ? (
-                  <FailedSpan>
-                    <i className="fas fa-times-circle" onClick={(e) => props.handleResendMessage(reply.payload)}></i>
-                  </FailedSpan>
-                ) : null}
-                <ChatBubbleQuoteDiv isAuthor={isAuthor} showAvatar={showAvatar} className={"chat-bubble-quote-div"}>
-                  <ChatBubble
-                    chatMessageActions={chatMessageActions}
-                    timeFormat={timeFormat}
-                    recipients={recipients}
-                    user={user}
-                    reply={reply}
-                    showAvatar={showAvatar}
-                    selectedChannel={selectedChannel}
-                    showGifPlayer={showGifPlayer}
-                    isAuthor={isAuthor}
-                    //addMessageRef={getLoadRef(reply.id)}
-                    isLastChat={index + 1 === messages.length ? true : null}
-                    loadReplies={loadReplies}
-                    isBot={isBot}
-                    chatSettings={chatSettings}
-                    isLastChatVisible={isLastChatVisible}
-                    dictionary={props.dictionary}
-                    isBrowserActive={props.isBrowserActive}
-                  >
-                    <ChatActionsContainer isAuthor={isAuthor} className="chat-actions-container">
-                      {<ChatReactionButton isAuthor={isAuthor} scrollRef={props.infiniteScrollRef} reply={reply} />}
-                      {!isNaN(reply.id) && !reply.is_deleted && <MessageOptions dictionary={props.dictionary} className={"chat-message-options"} selectedChannel={props.selectedChannel} isAuthor={isAuthor} replyData={reply} />}
-                    </ChatActionsContainer>
-                  </ChatBubble>
-                  {reply.reactions.length > 0 && <ChatReactions reactions={reply.reactions} isAuthor={isAuthor} reply={reply} loggedUser={user} chatReactionAction={props.chatReactionV2Action} />}
-                  {selectedChannel.last_reply && selectedChannel.last_reply.id === reply.id && props.filterSeenMembers().length > 0 && (
-                    <SeenIndicator isAuthor={isAuthor} onClick={props.handleShowSeenUsers} seenMembers={props.filterSeenMembers()} isPersonal={props.selectedChannel.members.length === 2} />
-                  )}
-                </ChatBubbleQuoteDiv>
-
-                {!isAuthor && showAvatar && <StyledAvatar isForwardedMessage={reply.is_transferred} id={reply.user.id}
-                                                          imageLink={reply.user.profile_image_thumbnail_link ? reply.user.profile_image_thumbnail_link : reply.user.profile_image_link}
-                                                          name={reply.user.name} isBot={isBot}/>}
-              </ChatBubbleContainer>
-            )}
-            {reply.user === null && (
-              <ChatBubbleContainer
-                className={`chat-reply-list-item system-reply-list-item chat-reply-list-item-${reply.id}`}
-                data-message-id={reply.id}
-                isAuthor={false}
-                hasGif={showGifPlayer}
-              >
-                <ChatBubbleQuoteDiv
-                  isAuthor={isAuthor}
-                  showAvatar={showAvatar}
-                  className={"chat-bubble-quote-div"}
-                >
-                  <SystemMessageContainer className="system-message" isAuthor={false}>
-                    <SystemMessage 
-                        recipients={recipients}
-                        user={user}
-                        chatMessageActions={chatMessageActions}
-                        timeFormat={timeFormat}
-                        selectedChannel={selectedChannel}
-                        reply={reply}
-                        chatName={chatName}
-                        //addMessageRef={getLoadRef(reply.id)}
-                        isLastChat={index + 1 === messages.length ? true : null} 
-                        isLastChatVisible={isLastChatVisible}
-                        dictionary={props.dictionary}
-                        isBrowserActive={props.isBrowserActive}
-                    />
-                    {reply.unfurls.length ? (
-                      <ChatUnfurl
-                        unfurlData={reply.unfurls}
-                        isAuthor={false}
-                        deleteChatUnfurlAction={props.deleteChatUnfurlAction}
-                        removeChatUnfurlAction={props.removeChatUnfurlAction}
-                        channelId={props.selectedChannel.id}
-                        replyId={reply.id}
-                        removeUnfurl={chatMessageActions.removeUnfurl}
-                      />
-                    ) : null}
-                    <SystemChatActionsContainer isAuthor={isAuthor} className="chat-actions-container">
-                      {<ChatReactionButton isAuthor={isAuthor} scrollRef={props.infiniteScrollRef} reply={reply} />}
-                      {!isNaN(reply.id) && !reply.is_deleted && <MessageOptions dictionary={props.dictionary} replyData={reply} className={"chat-message-options"} selectedChannel={props.selectedChannel} isAuthor={isAuthor} />}
-                    </SystemChatActionsContainer>
-                  </SystemMessageContainer>
-                  {reply.reactions.length > 0 && <ChatReactions reactions={reply.reactions} reply={reply} isAuthor={false} loggedUser={user} chatReactionAction={props.chatReactionV2Action} />}
-                </ChatBubbleQuoteDiv>
-              </ChatBubbleContainer>
-            )}
-          </ChatList>
-    )
+            <SystemMessageContainer className="system-message" isAuthor={false}>
+              <SystemMessage
+                recipients={recipients}
+                user={user}
+                chatMessageActions={chatMessageActions}
+                timeFormat={timeFormat}
+                selectedChannel={selectedChannel}
+                reply={reply}
+                chatName={chatName}
+                //addMessageRef={getLoadRef(reply.id)}
+                isLastChat={index + 1 === messages.length ? true : null}
+                isLastChatVisible={isLastChatVisible}
+                dictionary={props.dictionary}
+                isBrowserActive={props.isBrowserActive}
+              />
+              {reply.unfurls.length ? (
+                <ChatUnfurl
+                  unfurlData={reply.unfurls}
+                  isAuthor={false}
+                  deleteChatUnfurlAction={props.deleteChatUnfurlAction}
+                  removeChatUnfurlAction={props.removeChatUnfurlAction}
+                  channelId={props.selectedChannel.id}
+                  replyId={reply.id}
+                  removeUnfurl={chatMessageActions.removeUnfurl}
+                />
+              ) : null}
+              <SystemChatActionsContainer isAuthor={isAuthor} className="chat-actions-container">
+                {<ChatReactionButton isAuthor={isAuthor} scrollRef={props.infiniteScrollRef} reply={reply}/>}
+                {!isNaN(reply.id) && !reply.is_deleted &&
+                <MessageOptions dictionary={props.dictionary} replyData={reply} className={"chat-message-options"}
+                                selectedChannel={props.selectedChannel} isAuthor={isAuthor}/>}
+              </SystemChatActionsContainer>
+            </SystemMessageContainer>
+            {reply.reactions.length > 0 &&
+            <ChatReactions reactions={reply.reactions} reply={reply} isAuthor={false} loggedUser={user}
+                           chatReactionAction={props.chatReactionV2Action}/>}
+          </ChatBubbleQuoteDiv>
+        </ChatBubbleContainer>
+      )}
+    </ChatList>
+  );
 };
 
 export default React.memo(VirtualizedChat);

@@ -55,7 +55,7 @@ const iconColor = (input) => {
   let h = "";
   let s = 50;
   let l = 40;
-  
+
   var hash = 0;
   for (var i = 0; i < name.length; i++) {
     hash = name.charCodeAt(i) + ((hash << 5) - hash);
@@ -80,11 +80,12 @@ const ChannelIcon = (props) => {
   return (
     <Wrapper className={`pr-3 ${className}`} type={channel.type} iconColor={iconColor(channelTitle)}>
       {channel.profile && channel.members.length >= 1 && channel.type === "DIRECT" && (
-        <StyledAvatar type={channel.type}
-                      imageLink={channel.profile.profile_image_thumbnail_link ? channel.profile.profile_image_thumbnail_link : channel.profile.profile_image_link}
-                      userId={channel.profile.id}
-                      id={channel.profile.id} name={channel.profile.name} partialName={channel.profile.partial_name}
-                      noDefaultClick={false}/>
+        <StyledAvatar
+          type={channel.type}
+          imageLink={channel.profile.profile_image_thumbnail_link ? channel.profile.profile_image_thumbnail_link : channel.profile.profile_image_link}
+          userId={channel.profile.id}
+          id={channel.profile.id} name={channel.profile.name} partialName={channel.profile.partial_name}
+          noDefaultClick={false}/>
       )}
       {channel.type === "GROUP" && <Icon icon="users" alt={channel.title}/>}
       {channel.type === "COMPANY" && <Icon icon="home" alt={channel.title}/>}
