@@ -710,19 +710,8 @@ const useChannelActions = () => {
         getLastChannel({}, (err,res) => {
           if (err) return;
           if (callback) callback();
-          let channel = res.data;
-          dispatch(
-            setSelectedChannel({
-              ...channel,
-              hasMore: true,
-              skip: 0,
-              selected: true,
-              isFetching: false,
-            })
-          );
-          saveLastVisited(channel);
           if (history.location.pathname.startsWith("/chat")) {
-            history.push(`/chat/${channel.code}`);
+            history.push(`/chat/${res.data.code}`);
           }
         })
       )
