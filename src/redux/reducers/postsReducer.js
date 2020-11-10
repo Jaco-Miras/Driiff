@@ -433,6 +433,9 @@ export default (state = INITIAL_STATE, action) => {
         if (!companyPosts.posts[action.data.post_id].users_responsible.some((u) => u.id === action.data.author.id)) {
           companyPosts.posts[action.data.post_id].users_responsible = [...companyPosts.posts[action.data.post_id].users_responsible, action.data.author]
         }
+        if (action.data.author.id !== state.user.id) {
+          companyPosts.posts[action.data.post_id].unread_count = companyPosts.posts[action.data.post_id].unread_count + 1;
+        }
         companyPosts.posts[action.data.post_id].updated_at = action.data.updated_at;
       }
       
