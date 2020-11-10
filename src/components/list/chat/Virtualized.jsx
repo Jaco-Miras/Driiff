@@ -1,10 +1,10 @@
-import React, { useRef, useEffect } from "react";
+import React, { useEffect } from "react";
 //import styled from "styled-components";
 import { Virtuoso } from 'react-virtuoso';
 import VirtualizedChat from "./VirtualizedChat";
 import { usePreviousValue } from "../../hooks";
 import { setChannelRange } from "../../../redux/actions/chatActions";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 
 // const ScrollContainer = ({
 //     style,
@@ -43,20 +43,23 @@ const Virtualized = (props) => {
     const {loadReplies, virtuosoRef, messages, selectedChannel} = props;
     const channelRange = useSelector((state) => state.chat.channelRange)
     const previousChannel = usePreviousValue(selectedChannel);
-    const dispatch = useDispatch();
+    //const dispatch = useDispatch();
     useEffect(() => {
-      console.log('trigger restore on mount', channelRange, selectedChannel.id)
-      if (channelRange.hasOwnProperty(selectedChannel.id)) {
-        virtuosoRef.current.scrollToIndex({index: channelRange[selectedChannel.id].startIndex, align: "start"})
+      // console.log('trigger restore on mount', channelRange, selectedChannel.id)
+      // if (channelRange.hasOwnProperty(selectedChannel.id)) {
+      //   virtuosoRef.current.scrollToIndex({index: channelRange[selectedChannel.id].startIndex, align: "start"})
+      // }
+      if (virtuosoRef) {
+        virtuosoRef.current.scrollToIndex({index: messages.length - 1, align: "end"})
       }
     }, [])
 
-    const handleRangeChange = (range) => {
-      console.log(range, selectedChannel.id)
-      dispatch(
-        setChannelRange({id: selectedChannel.id, range: range})
-      );
-    }
+    // const handleRangeChange = (range) => {
+    //   console.log(range, selectedChannel.id)
+    //   dispatch(
+    //     setChannelRange({id: selectedChannel.id, range: range})
+    //   );
+    // }
     
     useEffect(() => {
       if (virtuosoRef) {
@@ -64,18 +67,21 @@ const Virtualized = (props) => {
           if (previousChannel && previousChannel.replies.length !== selectedChannel.replies.length && (selectedChannel.replies.length - previousChannel.replies.length) > 1) {
             console.log('trigger restore after loading more', channelRange)
             if (channelRange.hasOwnProperty(selectedChannel.id)) {
-              virtuosoRef.current.scrollToIndex({index: channelRange[selectedChannel.id].startIndex + (selectedChannel.replies.length - previousChannel.replies.length), align: "start"})
+              //virtuosoRef.current.scrollToIndex({index: channelRange[selectedChannel.id].startIndex + (selectedChannel.replies.length - previousChannel.replies.length), align: "start"})
             }
           }
         } else {
-          console.log('trigger restore after changing channel', channelRange, selectedChannel.id)
-          if (channelRange.hasOwnProperty(selectedChannel.id)) {
-            virtuosoRef.current.scrollToIndex({index: channelRange[selectedChannel.id].startIndex, align: "start"})
+          // console.log('trigger restore after changing channel', channelRange, selectedChannel.id)
+          // if (channelRange.hasOwnProperty(selectedChannel.id)) {
+          //   virtuosoRef.current.scrollToIndex({index: channelRange[selectedChannel.id].startIndex, align: "start"})
+          // }
+          if (virtuosoRef) {
+            virtuosoRef.current.scrollToIndex({index: messages.length - 1, align: "end"})
           }
         }
       }
     }, [selectedChannel, previousChannel]);
-    console.log(channelRange, selectedChannel.id)
+
     return (
         <Virtuoso
             //ScrollContainer={ScrollContainer}
@@ -83,10 +89,10 @@ const Virtualized = (props) => {
             totalCount={messages.length}
             ref={virtuosoRef}
             startReached={loadReplies}
-            defaultItemHeight={46}
+            defaultItemHeight={50}
             computeItemKey={index => messages[index].id}
-            overscan={10}
-            rangeChanged={handleRangeChange}
+            overscan={2000}
+            //rangeChanged={handleRangeChange}
             followOutput={true}
             item={index => 
                 <VirtualizedChat
