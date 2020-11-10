@@ -5,6 +5,7 @@ import { Avatar, SvgIconFeather } from "../../../common";
 import { MoreOptions } from "../../common";
 import { CompanyPostBadge } from "./index";
 import quillHelper from "../../../../helpers/quillHelper";
+import { useTimeFormat, useTouchActions } from "../../../hooks";
 
 const Wrapper = styled.li`
   &.has-unread {
@@ -24,10 +25,6 @@ const Wrapper = styled.li`
   }
   .custom-checkbox {
     padding-left: 12px;
-  }
-    
-  .post-partialBody {
-    max-width: calc(100% - 170px);
   }
 
   .app-list-title {
@@ -113,40 +110,6 @@ const Wrapper = styled.li`
       }
     }  
   }
-  
-  .recipient-names {
-    transition: all 0.5s ease;
-    position: absolute;
-    top: 20px;
-    left: -2px;
-    width: 200px;    
-    border-radius: 8px;
-    overflow-y: auto;
-    box-shadow: 0 5px 10px -1px rgba(0,0,0,0.15);
-    background: #fff;
-    max-height: 0;
-    opacity: 0;
-    z-index: 1;
-    
-    &:hover {
-      max-height: 300px;
-      opacity: 1;    
-    }
-    
-    .dark & {
-      border: 1px solid #25282c;
-      background: #25282c;
-    }
-    
-    > span {
-      display: block;
-      width: 100%;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-      overflow: hidden;
-      padding: 0.25rem 0.5rem;
-    }    
-  }
 `;
 
 const SlideOption = styled.div`
@@ -226,7 +189,7 @@ const CompanyPostItemPanel = (props) => {
     const hasMe = postRecipients.some(r => r.type_id === user.id);
     if (otherPostRecipients.length) {
       recipient_names += otherPostRecipients.filter((r, i) => i < (hasMe ? 4 : 5))
-        .join(`, `);
+        .map(r => `<span class="receiver">${r.name}</span>`)
         .join(``);
     }
 
@@ -364,3 +327,5 @@ const CompanyPostItemPanel = (props) => {
     </Wrapper>
   );
 };
+
+export default React.memo(CompanyPostItemPanel);
