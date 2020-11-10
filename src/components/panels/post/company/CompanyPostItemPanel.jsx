@@ -53,6 +53,7 @@ const Wrapper = styled.li`
     .time-stamp {
       margin-left: 1rem;
       font-weight: 400;
+      font-size: 11px;
     }
   }
 
@@ -92,11 +93,13 @@ const Wrapper = styled.li`
       height: 2rem;
     }
   }
-  // .receiver {
-  //   border: 1px solid black;
-  //   border-radius: 6px;
-  //   padding: 1px 3px;
-  // }
+  .receiver {
+    border-radius: 6px;
+    padding: 3px 5px;
+    background-color: rgba(210, 210, 210, 0.2);
+    font-size: 11px;
+    margin-right: 3px;
+  }
 
   .ellipsis-hover {
     position: relative;
@@ -187,13 +190,15 @@ const CompanyPostItemPanel = (props) => {
     if (otherPostRecipients.length) {
       recipient_names += otherPostRecipients.filter((r, i) => i < (hasMe ? 4 : 5))
         .map(r => `<span class="receiver">${r.name}</span>`)
-        .join(`, `);
+        .join(``);
     }
 
     if (hasMe) {
       if (otherPostRecipients.length >= 1) {
-        recipient_names += `, ${dictionary.me}`;
+        // recipient_names += `, ${dictionary.me}`;
+        recipient_names += `<span class="receiver">${dictionary.me}</span>`;
       } else {
+        // recipient_names += dictionary.me;
         recipient_names += dictionary.me;
       }
     }
