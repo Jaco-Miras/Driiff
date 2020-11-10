@@ -117,11 +117,7 @@ const Icon = styled(SvgIconFeather)`
 
 const ByIcon = styled(SvgIconFeather)`
   width: 16px;
-  // position: absolute;
   stroke: lightgrey;
-  // top: 10px;
-  // left: 2rem;
-  // bottom: 0;
 `;
 
 const ArchiveBtn = styled.a`
@@ -256,13 +252,6 @@ const CompanyPostItemPanel = (props) => {
              className={`list-group-item post-item-panel ${hasUnread ? "has-unread" : ""} ${className}`}
              onTouchStart={touchStart} onTouchMove={touchMove} onTouchEnd={touchEnd}
              onClick={() => openPost(post, "/posts")}>
-      {/* <div className="custom-control custom-checkbox custom-checkbox-success">
-        <CheckBox name="test" checked={post.is_mark_done} onClick={handleMarkDone} disabled={disableOptions}/>
-      </div> */}
-      {/* <div>
-        <Icon className="mr-2" icon="star" onClick={handleStarPost}
-              stroke={post.is_favourite ? "#ffc107" : "currentcolor"} fill={post.is_favourite ? "#ffc107" : "none"}/>
-      </div>  */}
       <div className="flex-grow-1 min-width-0">
         <div className="d-flex align-items-center justify-content-between">
           <div
@@ -291,15 +280,9 @@ const CompanyPostItemPanel = (props) => {
               <div className="mr-2 badge badge-secondary text-white text-9">{post.unread_count} new</div>}
               <div className="text-muted">{post.reply_count} comments</div>
             </PostReplyCounter>
-            {/* {post.unread_count !== 0 &&
-            <div className="ml-2 mr-2 badge badge-primary badge-pill">{post.unread_count}</div>} */}
           </div>
           <SlideOption showOptions={showOptions} className={`pl-sm-3 d-flex align-items-center`}>
-            {/* {post.unread_count !== 0 &&
-            <div className="badge badge-secondary text-white">{post.unread_count} new replies</div>} */}
             <CompanyPostBadge post={post} dictionary={dictionary}/>
-            {/* {noAuthorResponsibles && noAuthorResponsibles.length > 0 &&
-            <MemberLists members={noAuthorResponsibles} classNames="mr-2"/>} */}
             {!disableOptions &&
             <ArchiveBtn onClick={handleArchivePost} className="btn button-darkmode btn-outline-light ml-2"
                         data-toggle="tooltip"
