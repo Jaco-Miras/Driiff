@@ -507,9 +507,13 @@ class ChatMessages extends React.PureComponent {
           scrollComponent.scrollTop = scrollComponent.scrollHeight - hp.scrollPosition;
         }
       });
+    } else {
+      if (scrollComponent) {
+        scrollComponent.scrollTop = scrollComponent.scrollHeight;
+      }
     }
 
-    if (selectedChannel.hasMore) this.loadReplies();
+    if (selectedChannel.hasMore && selectedChannel.skip === 0) this.loadReplies();
 
     if (selectedChannel.is_read) {
       this.handleReadChannel();
