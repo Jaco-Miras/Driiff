@@ -30,6 +30,11 @@ const MainHeader = styled.div`
     }
   }
 
+  .company-post-detail-header {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+  }
   .close {
     .dark & {
       color: #fff;
@@ -70,9 +75,9 @@ const MainBody = styled.div`
       max-height: 0;
       transition: all 0.5s ease;
       overflow-y: auto;
-      background: #fff;
       border: 1px solid #fff;
       box-shadow: 0 5px 10px -1px rgba(0,0,0,0.15);
+      background: #fff;
     
       &:hover {
         max-height: 300px;
@@ -227,7 +232,7 @@ const MarkAsRead = styled.div`
 `;
 
 const PostDetail = (props) => {
-  const { post, postActions, user, onGoBack, workspace, isMember, dictionary, disableOptions, readByUsers } = props;
+  const { post, postActions, user, onGoBack, workspace, dictionary, disableOptions, readByUsers = [] } = props;
   const { markAsRead, markAsUnread, sharePost, followPost, remind } = postActions;
 
   const dispatch = useDispatch();
@@ -236,7 +241,7 @@ const PostDetail = (props) => {
   const recipients = useSelector((state) => state.global.recipients.filter((r) => r.type === "USER"));
   const [showDropZone, setShowDropZone] = useState(false);
 
-  const comments = useComments(post, commentActions, workspace);
+  const { comments } = useComments(post);
 
   const hasRead = readByUsers.some(u => u.id === user.id);
 
@@ -344,6 +349,8 @@ const PostDetail = (props) => {
     postActions.clap(payload);
   };
 
+  const isMember = post.users_responsible.some((u) => u.id === user.id);
+
   useEffect(() => {
     const viewed = post.view_user_ids.some((id) => id === user.id);
     if (!viewed) {
@@ -393,13 +400,6 @@ const PostDetail = (props) => {
           </ul>
         </div>
         <div>
-          {post.author.id !== user.id && post.is_must_read && (!hasRead) && (
-            <MarkAsRead className="d-sm-inline d-none">
-              <button className="btn btn-primary btn-block" onClick={markRead} disabled={disableOptions}>
-                {dictionary.markAsRead}
-              </button>
-            </MarkAsRead>
-          )}
           {post.author.id === user.id && !disableOptions && (
             <ul>
               <li>
@@ -465,6 +465,15 @@ const PostDetail = (props) => {
           isAuthor={post.author.id === user.id}
           dictionary={dictionary}
           disableOptions={disableOptions}/>
+        <div className="d-flex justify-content-center align-items-center mb-3">
+          {post.author.id !== user.id && post.is_must_read && (!hasRead) && (
+            <MarkAsRead className="d-sm-inline d-none">
+              <button className="btn btn-primary btn-block" onClick={markRead} disabled={disableOptions}>
+                {dictionary.markAsRead}
+              </button>
+            </MarkAsRead>
+          )}
+        </div>
         <hr className="m-0"/>
         <Counters className="d-flex align-items-center">
           <div className="clap-count-wrapper">

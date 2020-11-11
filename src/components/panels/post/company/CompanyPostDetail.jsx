@@ -93,7 +93,7 @@ const MainBody = styled.div`
         padding: 0.25rem 0.5rem 0.25rem 0.25rem;
         display: flex;
         justify-content: flex-start;
-        align-items: center;
+        align-items: start;
         
         .avatar {
           min-width: 1.5rem;
@@ -349,8 +349,7 @@ const CompanyPostDetail = (props) => {
     postActions.clap(payload);
   };
 
-  //const isMember = post.users_responsible.some((u) => u.id === user.id);
-  const isMember = true;
+  const isMember = post.users_responsible.some((u) => u.id === user.id);
 
   useEffect(() => {
     const viewed = post.view_user_ids.some((id) => id === user.id);
@@ -402,13 +401,6 @@ const CompanyPostDetail = (props) => {
           </ul>
         </div>
         <div>
-          {post.author.id !== user.id && post.is_must_read && (!hasRead) && (
-            <MarkAsRead className="d-sm-inline d-none">
-              <button className="btn btn-primary btn-block" onClick={markRead}>
-                {dictionary.markAsRead}
-              </button>
-            </MarkAsRead>
-          )}
           {post.author.id === user.id && (
             <ul>
               <li>
@@ -461,6 +453,15 @@ const CompanyPostDetail = (props) => {
           postActions={postActions}
           isAuthor={post.author.id === user.id}
           dictionary={dictionary}/>
+        <div className="d-flex justify-content-center align-items-center mb-3">
+          {post.author.id !== user.id && post.is_must_read && (!hasRead) && (
+            <MarkAsRead className="d-sm-inline d-none">
+              <button className="btn btn-primary btn-block" onClick={markRead}>
+                {dictionary.markAsRead}
+              </button>
+            </MarkAsRead>
+          )}
+        </div>
         <hr className="m-0"/>
         <Counters className="d-flex align-items-center">
           <div className="clap-count-wrapper">

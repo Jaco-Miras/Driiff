@@ -3,9 +3,10 @@ import React, { useEffect, useRef } from "react";
 const CompanyPostBadge = (props) => {
 
   const {
-    className = "", isBadgePill = false, post, dictionary, cbGetWidth = () => {
+    className = "", isBadgePill = false, post, dictionary, user, cbGetWidth = () => {
     }
   } = props;
+  const hasRead = post.user_reads.some(u => u.id === user.id);
 
   const refs = {
     container: useRef(null)
@@ -41,8 +42,8 @@ const CompanyPostBadge = (props) => {
                 className={`badge badge-light text-white ${isBadgePill ? "badge-pill" : ""}`}>{dictionary.draft}</div>
             </div>
           )}
-          {post.is_must_read && (
-            <div className={`${className} mr-3 d-sm-inline d-none`}>
+          {post.is_must_read && (post.author.id === user.id || !hasRead) && (
+            <div className={`${className} mr-3 d-sm-inline d-none ${hasRead ? "opacity-2" : ""}`}>
               <div className={`badge badge-danger ${isBadgePill ? "badge-pill" : ""}`}>{dictionary.mustRead}</div>
             </div>
           )}

@@ -97,13 +97,13 @@ const Wrapper = styled.li`
     }
     @media (max-width: 768px) {
       position: absolute;
-      left: -1rem;
-      top: 1.3rem;
-      img {
-        width: 2rem;
-        height: 2rem;
-      }
+    left: -1rem;
+    top: 1.3rem;
+    img {
+      width: 2rem;
+      height: 2rem;
     }
+  }
   }
 
   .receiver {
@@ -369,7 +369,7 @@ const CompanyPostItemPanel = (props) => {
             </PostReplyCounter>
           </div>
           <SlideOption showOptions={showOptions} className={`pl-sm-3 d-flex align-items-center`}>
-            <CompanyPostBadge post={post} dictionary={dictionary} cbGetWidth={setPostBadgeWidth}/>
+            <CompanyPostBadge post={post} dictionary={dictionary} user={user} cbGetWidth={setPostBadgeWidth}/>
             {!disableOptions &&
             <ArchiveBtn onClick={handleArchivePost} className="btn button-darkmode btn-outline-light ml-2"
                         data-toggle="tooltip"

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { usePostActions } from "./index";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
@@ -11,7 +11,6 @@ const useCompanyPosts = () => {
   const actions = usePostActions();
   const user = useSelector((state) => state.session.user);
   const { flipper, limit, next_skip, has_more, posts, filter, tag, count, sort, search, searchResults } = useSelector((state) => state.posts.companyPosts);
-  const [post, setPost] = useState(null);
 
   const fetchMore = (callback) => {
     if (has_more) {
@@ -21,14 +20,6 @@ const useCompanyPosts = () => {
       }, callback)
     }
   }
-
-  useEffect(() => {
-    if (params.postId && posts[params.postId]) {
-      setPost(posts[params.postId]);
-    } else {
-      setPost(null);
-    }
-  }, [params]);
 
   useEffect(() => {
     if (!init) {
@@ -110,7 +101,7 @@ const useCompanyPosts = () => {
     return p.is_read_only === 1 && !p.is_archived && !p.hasOwnProperty("draft_type");
   }).length;
 
-  let counters = {
+  const counters = {
     all: Object.values(posts).length,
     my_posts: Object.values(posts).filter((p) => p.author && p.author.id === user.id).length,
     starred: Object.values(posts).filter((p) => p.is_favourite).length,
@@ -126,7 +117,7 @@ const useCompanyPosts = () => {
     filter: filter,
     tag: tag,
     sort: sort,
-    post: post,
+    post: filteredPosts.filter(p => p.id === parseInt(params.postId))[0],
     search: search,
     user,
     count: count,

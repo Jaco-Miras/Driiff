@@ -310,7 +310,7 @@ const PostItemPanel = (props) => {
   };
   const handleTouchEnd = (e) => {
     e.preventDefault();
-    if (!touchActions) openPost(post, "/posts");
+    if (!touchActions) openPost(post);
   };
 
   const [showOptions, setShowOptions] = useState(false);
@@ -338,7 +338,7 @@ const PostItemPanel = (props) => {
       appListWidthDiff={postBadgeWidth + 50}
       className={`list-group-item post-item-panel ${hasUnread ? "has-unread" : ""} ${className}`}
       onTouchStart={touchStart} onTouchMove={touchMove} onTouchEnd={touchEnd}
-      onClick={() => openPost(post, "/posts")}>
+      onClick={() => openPost(post)}>
       <div className="flex-grow-1 min-width-0">
         <div className="d-flex align-items-center justify-content-between">
           <div
@@ -369,7 +369,7 @@ const PostItemPanel = (props) => {
             </PostReplyCounter>
           </div>
           <SlideOption showOptions={showOptions} className={`pl-sm-3 d-flex align-items-center`}>
-            <PostBadge post={post} dictionary={dictionary} cbGetWidth={setPostBadgeWidth}/>
+            <PostBadge post={post} dictionary={dictionary} user={user} cbGetWidth={setPostBadgeWidth}/>
             {!disableOptions &&
             <ArchiveBtn onClick={handleArchivePost} className="btn button-darkmode btn-outline-light ml-2"
                         data-toggle="tooltip"
@@ -393,7 +393,7 @@ const PostItemPanel = (props) => {
               <div onClick={() => markAsRead(post, true)}>{dictionary.markAsRead}</div>
           }
           <div onClick={() => sharePost(post)}>{dictionary.share}</div>
-          {post.author.id !== user.id &&
+          {post.author && post.author.id !== user.id &&
           <div onClick={() => followPost(post)}>{post.is_followed ? dictionary.unFollow : dictionary.follow}</div>}
           <div onClick={handleStarPost}>{post.is_favourite ? dictionary.unStar : dictionary.star}</div>
         </MoreOptions>
