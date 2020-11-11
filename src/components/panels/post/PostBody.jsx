@@ -21,7 +21,6 @@ const Wrapper = styled.div`
 
   .author-name {
     display: block;
-    color: #505050;
     font-size: 14px;   
     font-weight: 500;
     color: rgb(80, 80, 80);
@@ -35,6 +34,7 @@ const Wrapper = styled.div`
   
   .ellipsis-hover {
     position: relative;
+    cursor: pointer;
     
     &:hover {
       .recipient-names {

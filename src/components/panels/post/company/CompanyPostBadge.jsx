@@ -1,11 +1,24 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 
 const CompanyPostBadge = (props) => {
 
-  const { className = "", isBadgePill = false, post, dictionary } = props;
+  const {
+    className = "", isBadgePill = false, post, dictionary, cbGetWidth = () => {
+    }
+  } = props;
+
+  const refs = {
+    container: useRef(null)
+  };
+
+  useEffect(() => {
+    if (refs.container.current) {
+      cbGetWidth(refs.container.current.clientWidth);
+    }
+  }, [post]);
 
   return (
-    <>
+    <div ref={refs.container}>
       {
         (post.is_must_read || post.is_must_reply || post.is_read_only ||
           post.type === "draft_post" || post.is_archived !== 0 || post.is_personal === true) &&
@@ -45,7 +58,7 @@ const CompanyPostBadge = (props) => {
           )}
         </>
       }
-    </>
+    </div>
   );
 };
 
