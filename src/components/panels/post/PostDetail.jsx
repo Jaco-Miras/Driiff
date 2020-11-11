@@ -469,7 +469,7 @@ const PostDetail = (props) => {
         <Counters className="d-flex align-items-center">
           <div className="clap-count-wrapper">
             <Icon className={react.user_clap_count ? "mr-2 post-reaction clap-true" : "mr-2 post-reaction clap-false"}
-                  icon="heart" onClick={handleReaction}/>
+                  icon="thumbs-up" onClick={handleReaction}/>
             {usersReacted.length}
             {
               usersReacted.length !== 0 && <span className="hover read-users-container">
