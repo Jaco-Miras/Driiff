@@ -506,3 +506,17 @@ export function archiveAllPosts(payload) {
     data: payload,
   });
 }
+
+/**
+ * @param {Object} payload
+ * @param {number} payload.post_id
+ * @param {array} payload.recipient_ids
+ * @returns {Promise<*>}
+ */
+export function addPostRecipients(payload) {
+  return apiCall({
+    method: "POST",
+    url: `/v2/add-post-recipients`,
+    data: payload,
+  });
+}

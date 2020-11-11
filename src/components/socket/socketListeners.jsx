@@ -91,6 +91,7 @@ import {
   incomingPost,
   incomingPostClap,
   incomingPostMarkDone,
+  incomingPostRecipients,
   incomingPostViewer,
   incomingReadUnreadReducer,
   incomingUpdatedPost
@@ -386,6 +387,14 @@ class SocketListeners extends Component {
       .listen(".post-notification", (e) => {
         console.log(e, "post-notif");
         switch (e.SOCKET_TYPE) {
+          case "ADD_RECIPIENTS": {
+            this.props.fetchPost({post_id: e.post_id}, (err,res) => {
+              if (err) return;
+              let post = res.data;
+              this.props.incomingPost(post)
+            })
+            break;
+          }
           case "POST_CREATE": {
             e.clap_user_ids = [];
             if (this.props.user.id !== e.author.id) {
@@ -1296,7 +1305,7 @@ function mapStateToProps({
                            settings: { userSettings },
                            chat: { channels, selectedChannel, isLastChatVisible, lastReceivedMessage },
                            workspaces: { workspaces, workspacePosts, folders, activeTopic, workspacesLoaded },
-                           global: { isBrowserActive, unreadCounter, todos },
+                           global: { isBrowserActive, unreadCounter, todos, recipients },
                            users: { mentions, users }
                          }) {
   return {
@@ -1315,7 +1324,8 @@ function mapStateToProps({
     isLastChatVisible,
     lastReceivedMessage,
     unreadCounter,
-    todos
+    todos,
+    recipients
   };
 }
 
@@ -1422,7 +1432,8 @@ function mapDispatchToProps(dispatch) {
     refetchOtherMessages: bindActionCreators(refetchOtherMessages, dispatch),
     getChannelDetail: bindActionCreators(getChannelDetail, dispatch),
     incomingReminderNotification: bindActionCreators(incomingReminderNotification, dispatch),
-    getLatestReply: bindActionCreators(getLatestReply, dispatch)
+    getLatestReply: bindActionCreators(getLatestReply, dispatch),
+    incomingPostRecipients: bindActionCreators(incomingPostRecipients, dispatch)
   };
 }
 

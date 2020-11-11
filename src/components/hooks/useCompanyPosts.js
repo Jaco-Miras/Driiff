@@ -28,7 +28,7 @@ const useCompanyPosts = () => {
     } else {
       setPost(null);
     }
-  }, [params]);
+  }, [params, posts]);
 
   useEffect(() => {
     if (!init) {

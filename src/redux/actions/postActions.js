@@ -1,5 +1,6 @@
 import dispatchActionToReducer, { SimpleDispatchActionToReducer } from "../actionDispatcher";
 import {
+  addPostRecipients as addPostRecipientsService,
   deleteComment as deleteCommentService,
   deletePost as deletePostService,
   fetchComments as fetchCommentsService,
@@ -250,4 +251,16 @@ export function readAllCallback(payload, callback) {
 
 export function archiveAllCallback(payload, callback) {
   return SimpleDispatchActionToReducer("ARCHIVE_ALL_POSTS", payload, callback);
+}
+
+export function addPostRecipients(payload, callback) {
+  return dispatchActionToReducer(addPostRecipientsService(payload), "ADD_POST_RECIPIENTS_START", "ADD_POST_RECIPIENTS_SUCCESS", "ADD_POST_RECIPIENTS_FAIL", callback);
+}
+
+export function addUserToPostRecipients(payload, callback) {
+  return SimpleDispatchActionToReducer("ADD_USER_TO_POST_RECIPIENTS", payload, callback);
+}
+
+export function incomingPostRecipients(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_POST_RECIPIENTS", payload, callback);
 }

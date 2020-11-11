@@ -270,7 +270,7 @@ const CompanyPostDetailFooter = (props) => {
                     selectedEmoji={selectedEmoji}
                     onClearEmoji={onClearEmoji}
                     dropAction={dropAction}
-                      members={post.members}
+                      members={post.users_responsible}
                       onActive={onActive}
                       onClosePicker={onClosePicker}
                   />
