@@ -34,6 +34,7 @@ const Wrapper = styled.div`
     }
     .ellipsis-hover {
       position: relative;
+      cursor: pointer;
       
       &:hover {
         .recipient-names {
