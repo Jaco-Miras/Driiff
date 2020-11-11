@@ -131,6 +131,7 @@ const useCompanyPosts = () => {
     user,
     count: count,
     counters: counters,
+    skip: next_skip
   };
 };
 

@@ -9,6 +9,7 @@ import {
   CompanyPostItemPanel,
   CompanyPostSidebar
 } from "../post/company";
+import {throttle} from "lodash";
 
 const Wrapper = styled.div`
   text-align: left;
@@ -64,7 +65,7 @@ const PostsBtnWrapper = styled.div`
     margin-left: 10px;
   }
 `;
-
+let fetching = false;
 const CompanyPostsPanel = (props) => {
   const { className = "" } = props;
 
@@ -75,7 +76,7 @@ const CompanyPostsPanel = (props) => {
     btnLoadMore: useRef(null)
   };
 
-  const { actions, fetchMore, posts, filter, tag, sort, post, user, search, count, counters } = useCompanyPosts();
+  const { actions, fetchMore, posts, filter, tag, sort, post, user, search, count, counters, skip } = useCompanyPosts();
   const readByUsers = post ? Object.values(post.user_reads).sort((a, b) => a.name.localeCompare(b.name)) : [];
   const [loading, setLoading] = useState(false);
 
@@ -177,6 +178,30 @@ const CompanyPostsPanel = (props) => {
       }
     }
   };
+
+  const handleLoadMore = () => {
+    if (!fetching) {
+      setLoading(true);
+      fetching = true;
+
+      fetchMore((err, res) => {
+        setLoading(false);
+        fetching = false;
+        //callback(err, res);
+      });
+    }
+  }
+
+  const bodyScroll = throttle((e) => {
+    if ((e.srcElement.scrollHeight - e.srcElement.scrollTop) < 1500) {
+      handleLoadMore()
+    }
+  }, 200);
+
+  useEffect(() => {
+    document.body.addEventListener("scroll", bodyScroll, false);
+    return () => document.body.removeEventListener("scroll", bodyScroll, false);
+  }, [skip])
 
   useEffect(() => {
     let el = refs.posts.current;
