@@ -2,7 +2,6 @@ import React from "react";
 import styled from "styled-components";
 import { SvgIconFeather } from "../../common";
 import { useTimeFormat } from "../../hooks";
-import ChannelOptions from "./ChannelOptions";
 
 const Wrapper = styled.div`  
   display: flex;
