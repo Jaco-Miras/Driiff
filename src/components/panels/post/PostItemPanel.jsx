@@ -87,13 +87,20 @@ const Wrapper = styled.li`
   }
   .author-avatar {
     position: absolute;
-    left: -1rem;
+    left: -1.25rem;
     top: 1.3rem;
-    // bottom: 0;
-    // margin: auto;
     img {
-      width: 2rem;
-      height: 2rem;
+      width: 2.5rem;
+      height: 2.5rem;
+    }
+    @media (max-width: 768px) {
+      position: absolute;
+      left: -1rem;
+      top: 1.3rem;
+      img {
+        width: 2rem;
+        height: 2rem;
+      }
     }
   }
 
