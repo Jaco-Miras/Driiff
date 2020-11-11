@@ -328,7 +328,6 @@ class ChatMessages extends React.PureComponent {
                 getLoadRef={this.getLoadRef}
                 chatName={this.props.chatName}
                 messages={[...selectedChannel.replies.sort((a, b) => a.created_at.timestamp - b.created_at.timestamp)]}
-                isBrowserActive={this.props.isBrowserActive}
             />
           }
           {

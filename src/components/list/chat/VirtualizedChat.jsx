@@ -366,7 +366,6 @@ const VirtualizedChat = (props) => {
               chatSettings={chatSettings}
               isLastChatVisible={isLastChatVisible}
               dictionary={props.dictionary}
-              isBrowserActive={props.isBrowserActive}
             >
               <ChatActionsContainer isAuthor={isAuthor} className="chat-actions-container">
                 {<ChatReactionButton isAuthor={isAuthor} scrollRef={props.infiniteScrollRef} reply={reply}/>}
@@ -416,7 +415,6 @@ const VirtualizedChat = (props) => {
                 isLastChat={index + 1 === messages.length ? true : null}
                 isLastChatVisible={isLastChatVisible}
                 dictionary={props.dictionary}
-                isBrowserActive={props.isBrowserActive}
               />
               {reply.unfurls.length ? (
                 <ChatUnfurl
