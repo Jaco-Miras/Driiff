@@ -1,8 +1,8 @@
-import React, {useCallback, useEffect} from "react";
-import {useDispatch, useSelector} from "react-redux";
+import React, {useCallback} from "react";
+import {useSelector} from "react-redux";
 import {useHistory} from "react-router-dom";
 import styled from "styled-components";
-import {setChannelHistoricalPosition} from "../../../redux/actions/chatActions";
+
 import useChannelActions from "../../hooks/useChannelActions";
 import {ChatContactIListItem} from "./item";
 
@@ -22,7 +22,6 @@ const Contacts = styled.ul`
 const ChatContactsList = (props) => {
   const {className = "", channels, selectedChannel, userChannels, search} = props;
 
-  const dispatch = useDispatch();
   const history = useHistory();
 
   const channelAction = useChannelActions();
@@ -40,21 +39,6 @@ const ChatContactsList = (props) => {
     },
     [history, channelAction]
   );
-
-  useEffect(() => {
-    const scrollComponent = document.getElementById("component-chat-thread");
-    if (scrollComponent && !virtualization) {
-      dispatch(
-        setChannelHistoricalPosition({
-          channel_id: selectedChannel.id,
-          scrollPosition: scrollComponent.scrollHeight - scrollComponent.scrollTop,
-        })
-      );
-    }
-
-    //disabled because selectedChannel may be null
-    //eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dispatch, selectedChannel]);
 
   let recipients = [];
   const sortedChannels = Object.values(channels)

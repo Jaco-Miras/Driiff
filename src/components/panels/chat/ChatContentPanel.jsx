@@ -146,7 +146,7 @@ const ChatContentPanel = (props) => {
   };
 
   useFocusInput(document.querySelector(".chat-footer .ql-editor"));
-  console.log(" content panel")
+  
   return (
     <Wrapper className={`chat-content ${className}`} onDragOver={handleshowDropZone}>
       <DropDocument

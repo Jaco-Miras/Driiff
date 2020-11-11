@@ -532,7 +532,7 @@ class ChatMessages extends React.PureComponent {
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
-    console.log("component update")
+    
     const { selectedChannel, historicalPositions, user } = this.props;
 
     //to be relocated
