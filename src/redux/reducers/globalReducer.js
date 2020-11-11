@@ -17,7 +17,8 @@ const INITIAL_STATE = {
     workspace_chat_message: 0,
     chat_reminder_message: 0,
     unread_channel: 0,
-    unread_posts: 0
+    unread_posts: 0,
+    general_post: 0
   },
   socketMounted: false,
   searchValue: "",
@@ -374,7 +375,8 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         unreadCounter: {
           ...state.companyPosts,
-          unread_posts: action.data.result
+          general_post: action.data.result,
+          unread_posts: action.data.result,
         }
       }
     }
@@ -383,6 +385,7 @@ export default (state = INITIAL_STATE, action) => {
       let unreadCounter = {...state.unreadCounter};
       unreadCounter = {
         ...unreadCounter,
+        general_post: 0,
         unread_posts: 0,
         workspace_post: 0,
       }
@@ -396,6 +399,7 @@ export default (state = INITIAL_STATE, action) => {
       let unreadCounter = {...state.unreadCounter};
       unreadCounter = {
         ...unreadCounter,
+        general_post: 0,
         unread_posts: 0,
         workspace_post: 0,
       }

@@ -116,7 +116,7 @@ const ChatHeaderPanel = (props) => {
    * @todo refactor
    */
   const { className = "", channel, dictionary } = props;
-  const { unreadCounter } = useSelector((state) => state.global);
+  const unreadCounter = useSelector((state) => state.global.unreadCounter);
 
   const dispatch = useDispatch();
   const routeMatch = useRouteMatch();
@@ -215,7 +215,7 @@ const ChatHeaderPanel = (props) => {
 
   if (channel === null) return null;
 
-  const totalChatMessageCounter = unreadCounter.chat_message + unreadCounter.workspace_chat_message;
+  //const totalChatMessageCounter = unreadCounter.chat_message + unreadCounter.workspace_chat_message;
 
   return (
     <Wrapper className={`chat-header border-bottom ${className}`}>
@@ -223,8 +223,8 @@ const ChatHeaderPanel = (props) => {
         <BackButton className="chat-back-button" onClick={goBackChannelSelect}>
           <BackButtonChevron icon={"chevron-left"}/>
           {
-            totalChatMessageCounter > 0 &&
-            <span>{(totalChatMessageCounter).toString()}</span>
+            unreadCounter.chat_message > 0 &&
+            <span>{(unreadCounter.chat_message).toString()}</span>
           }
         </BackButton>
         <ChannelIcon className="chat-header-icon" channel={channel}/>

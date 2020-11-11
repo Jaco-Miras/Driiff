@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { getNotifications } from "../../redux/actions/notificationActions";
 import { getUsers } from "../../redux/actions/userAction";
 import { getAllRecipients, getQuickLinks, getUnreadNotificationCounterEntries, getToDoDetail } from "../../redux/actions/globalActions";
-import { getUnreadPostEntries } from "../../redux/actions/postActions";
+//import { getUnreadPostEntries } from "../../redux/actions/postActions";
 import { getChannels, getGlobalRecipients } from "../../redux/actions/chatActions";
 
 const useInitialLoad = () => {
@@ -35,7 +35,7 @@ const useInitialLoad = () => {
     const fetchChannelCb = () => {
       dispatch(getAllRecipients());
       dispatch(getUsers());
-      dispatch(getUnreadPostEntries());
+      //dispatch(getUnreadPostEntries());
       if (Object.keys(notifications).length === 0) {
         dispatch(getNotifications({skip: 0, limit: 50}));
       }
