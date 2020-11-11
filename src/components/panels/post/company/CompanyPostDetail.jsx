@@ -242,7 +242,7 @@ const CompanyPostDetail = (props) => {
   const recipients = useSelector((state) => state.global.recipients.filter((r) => r.type === "USER"));
   const [showDropZone, setShowDropZone] = useState(false);
 
-  const comments = useComments(post, commentActions);
+  const { comments } = useComments(post);
 
   const hasRead = readByUsers.some(u => u.id === user.id);
 
