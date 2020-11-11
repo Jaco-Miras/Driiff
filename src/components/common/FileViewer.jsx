@@ -122,6 +122,11 @@ const PreviewContainer = styled.div`
   }
   .mfp-content {
     margin-top: -20px;
+    
+    .mfp-close {
+      position: relative;
+      width: 22px;
+    }
   }
   .mfp-figure {
     &::after {
