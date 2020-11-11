@@ -66,7 +66,7 @@ const CompanyPageHeaderPanel = (props) => {
   const unreadCounter = useSelector((state) => state.global.unreadCounter);
   const lastVisitedChannel = useSelector((state) => state.chat.lastVisitedChannel);
 
-  const chatUnreadCounter = unreadCounter.chat_message + unreadCounter.unread_channel + unreadCounter.workspace_chat_message;
+  //const chatUnreadCounter = unreadCounter.chat_message + unreadCounter.unread_channel + unreadCounter.workspace_chat_message;
 
   return (
     <>
@@ -80,7 +80,7 @@ const CompanyPageHeaderPanel = (props) => {
               to={lastVisitedChannel !== null && lastVisitedChannel.hasOwnProperty("code") ? `/chat/${lastVisitedChannel.code}` : "/chat"}>
               {dictionary.pageTitleChat}{" "}
               <div className="ml-2 badge badge-pill badge badge-danger">
-                {chatUnreadCounter > 0 ? chatUnreadCounter : null}
+                {unreadCounter.chat_message > 0 ? unreadCounter.chat_message : null}
               </div>
             </MainNavLink>
           </li>
@@ -88,7 +88,7 @@ const CompanyPageHeaderPanel = (props) => {
             <MainNavLink to="/posts">
               {dictionary.pageTitlePosts}{" "}
               <div className="ml-2 badge badge-pill badge badge-danger">
-                {unreadCounter.unread_posts > 0 ? unreadCounter.unread_posts : null}
+                {unreadCounter.general_post > 0 ? unreadCounter.general_post : null}
               </div>
             </MainNavLink>
           </li>
