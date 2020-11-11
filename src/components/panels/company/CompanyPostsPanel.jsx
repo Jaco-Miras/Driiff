@@ -33,6 +33,16 @@ const Wrapper = styled.div`
       scrollbar-width: none;
     }
   }
+
+  .all-action-button {
+    background: none;
+    color: #828282;
+    padding: 10px 5px 5px 5px;
+    font-weight: 500;
+     .dark & {
+      color: rgba(255, 255, 255, 0.5);
+    }
+  }
 `;
 
 const PostDetailWrapper = styled.div`
@@ -60,6 +70,7 @@ const EmptyState = styled.div`
 const PostsBtnWrapper = styled.div`
   text-align: right;
   margin-bottom: 10px;
+  margin-right: 23px;
   .btn {
     margin-left: 10px;
   }
@@ -240,8 +251,8 @@ const CompanyPostsPanel = (props) => {
                 {
                   filter === "all" &&
                   <PostsBtnWrapper>
-                    <button className="btn btn-primary" onClick={handleArchiveAll}>{dictionary.archiveAll}</button>
-                    <button className="btn btn-primary" onClick={handleMarkAllAsRead}>{dictionary.markAll}</button>
+                    <button className="btn all-action-button" onClick={handleArchiveAll}>{dictionary.archiveAll}</button>
+                    <button className="btn all-action-button" onClick={handleMarkAllAsRead}>{dictionary.markAll}</button>
                   </PostsBtnWrapper>
                 }
                 <div className="card card-body app-content-body mb-4">
