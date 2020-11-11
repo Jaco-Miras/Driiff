@@ -3,8 +3,8 @@ import React, { useEffect } from "react";
 import { Virtuoso } from 'react-virtuoso';
 import VirtualizedChat from "./VirtualizedChat";
 import { usePreviousValue } from "../../hooks";
-//import { setChannelRange } from "../../../redux/actions/chatActions";
-import { useSelector } from "react-redux";
+import { setChannelRange } from "../../../redux/actions/chatActions";
+import { useDispatch, useSelector } from "react-redux";
 
 // const ScrollContainer = ({
 //     style,
@@ -43,7 +43,7 @@ const Virtualized = (props) => {
     const {loadReplies, virtuosoRef, messages, selectedChannel} = props;
     const channelRange = useSelector((state) => state.chat.channelRange)
     const previousChannel = usePreviousValue(selectedChannel);
-    //const dispatch = useDispatch();
+    const dispatch = useDispatch();
     useEffect(() => {
       // console.log('trigger restore on mount', channelRange, selectedChannel.id)
       // if (channelRange.hasOwnProperty(selectedChannel.id)) {
@@ -54,12 +54,12 @@ const Virtualized = (props) => {
       }
     }, [])
 
-    // const handleRangeChange = (range) => {
-    //   console.log(range, selectedChannel.id)
-    //   dispatch(
-    //     setChannelRange({id: selectedChannel.id, range: range})
-    //   );
-    // }
+    const handleRangeChange = (range) => {
+      console.log(range, selectedChannel.id)
+      dispatch(
+        setChannelRange({id: selectedChannel.id, range: range})
+      );
+    }
     
     useEffect(() => {
       if (virtuosoRef) {
@@ -67,7 +67,7 @@ const Virtualized = (props) => {
           if (previousChannel && previousChannel.replies.length !== selectedChannel.replies.length && (selectedChannel.replies.length - previousChannel.replies.length) > 1) {
             console.log('trigger restore after loading more', channelRange)
             if (channelRange.hasOwnProperty(selectedChannel.id)) {
-              //virtuosoRef.current.scrollToIndex({index: channelRange[selectedChannel.id].startIndex + (selectedChannel.replies.length - previousChannel.replies.length), align: "start"})
+              virtuosoRef.current.scrollToIndex({index: channelRange[selectedChannel.id].startIndex + (selectedChannel.replies.length - previousChannel.replies.length), align: "start"})
             }
           }
         } else {
@@ -92,7 +92,7 @@ const Virtualized = (props) => {
             defaultItemHeight={50}
             computeItemKey={index => messages[index].id}
             overscan={2000}
-            //rangeChanged={handleRangeChange}
+            rangeChanged={handleRangeChange}
             followOutput={true}
             item={index => 
                 <VirtualizedChat
