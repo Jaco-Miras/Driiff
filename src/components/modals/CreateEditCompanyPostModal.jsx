@@ -972,7 +972,7 @@ const CreateEditCompanyPostModal = (props) => {
   }, [company]);
 
   return (
-    <Modal isOpen={modal} toggle={toggle} centered size={"lg"} onOpened={onOpened}>
+    <Modal isOpen={modal} toggle={toggle} centered size={"lg"} onOpened={onOpened} className="post-modal">
       <ModalHeaderSection
         toggle={toggle}>{mode === "edit" ? dictionary.editPost : dictionary.createNewPost}</ModalHeaderSection>
       <ModalBody>
@@ -1001,6 +1001,8 @@ const CreateEditCompanyPostModal = (props) => {
         <WrapperDiv className={"modal-input mt-0"}>
           <div>
             <Label className={"modal-info pb-3"}>{dictionary.postInfo}</Label>
+          </div>
+          <div>
             <Label className={"modal-label"} for="post-title">{dictionary.postTitle}</Label>
             <Input style={{ borderRadius: "5px" }} value={form.title}
                    onChange={handleNameChange} innerRef={inputRef}/>
