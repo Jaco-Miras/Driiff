@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { getAPIUrl } from "../../helpers/slugHelper";
 import { setViewFiles } from "../../redux/actions/fileActions";
 import "../../vendors/lightbox/magnific-popup.css";
-import { useFiles, useOutsideClick, useTimeFormat } from "../hooks";
+import { useFiles, useOutsideClick, useTimeFormat, useWindowSize } from "../hooks";
 import { SvgIconFeather } from "./SvgIcon";
 
 const FileViewerContainer = styled.div`
@@ -67,7 +67,7 @@ const FileName = styled.a`
   display: inline-block;
   font-size: 16px;
   font-weight: 500;
-  margin: 1rem 1rem 0;
+  margin: 0;
   color: #fff;
 
   &:hover {
@@ -81,7 +81,7 @@ const FileCreated = styled.p`
   font-size: 11px;
   font-weight: normal;
   text-align: left;
-  margin: 0 1rem 1rem;
+  margin: 0;
 `;
 const PreviewContainer = styled.div`
   position: relative;
@@ -115,8 +115,32 @@ const PreviewContainer = styled.div`
     margin-left: auto;
     margin-right: auto;
   }
+  .mfp-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .mfp-content {
+    margin-top: -20px;
+    
+    .mfp-close {
+      position: relative;
+      width: 22px;
+    }
+  }
+  .mfp-figure {
+    &::after {
+      top: 58px;
+      bottom: 0;
+    }  
+  }
+  .mfp-bottom-bar {
+    margin-top: 0;
+  }
 `;
-
+const FileDetails = styled.div`
+  position: relative;
+`;
 const CloseButton = styled.button`
   &:focus {
     outline: none;
@@ -134,7 +158,7 @@ const ArrowButton = styled.button`
 
 const FileWrapper = styled.figure`
   box-sizing: border-box;
-  padding: 40px 0;
+  padding: 0;
   margin: 0 auto;
   img {
     max-width: 100%;
@@ -143,12 +167,15 @@ const FileWrapper = styled.figure`
 `;
 
 const StyledFileRender = styled.div`
+  text-align: center;
+
   .spinner-border {
     border-width: 3px;
     padding: 10px;
     margin: 5px;
   }
-  .file {    
+  .file {
+    margin: 0 auto;
     transition: all 0.5s ease;
     opacity: 1;
     max-height: 80vh;
@@ -171,12 +198,13 @@ const StyledFileRender = styled.div`
     &.file-pdf {
       &:not([data]) {
         opacity: 0;
-        max-height: 0;      
+        max-height: 0;
       }
       &[data] {
         ${props => props.isLoaded ? `
+          max-width: 1060px;
+          max-height: 100%;
           opacity: 1;
-          max-height: 80vh;      
         ` : `
           opacity: 0;
           max-height: 0;
@@ -188,6 +216,8 @@ const StyledFileRender = styled.div`
 
 const FileRender = (props) => {
   const { className = "", file, setFiles, files } = props;
+
+  const winSize = useWindowSize();
   const { fileBlobs, actions: { setFileSrc } } = useFiles();
 
   const [isLoaded, setIsLoaded] = useState(false);
@@ -196,8 +226,11 @@ const FileRender = (props) => {
   const userAuth = JSON.parse(localStorage.getItem("userAuthToken"));
 
   const handleImageOnLoad = (e) => {
-    e.currentTarget.classList.remove("d-none");
-    e.currentTarget.removeAttribute("height");
+    console.log(e);
+  };
+
+  const handlePdfOnLoad = (e) => {
+    console.log(e.target);
   };
 
   const handleImageOnError = (e) => {
@@ -327,7 +360,8 @@ const FileRender = (props) => {
                           className={`file-item mfp-img ${className}`}>
           {
             isLoaded ? <>
-                <object className={`file file-pdf`} data={fileBlobs[file.id]} width="600" height="400">
+                <object className={`file file-pdf`} data={fileBlobs[file.id]} width={winSize.width * 0.9}
+                        height={winSize.height - 122} onLoad={handlePdfOnLoad}>
                   <embed src={fileBlobs[file.id]} width="600" height="400"/>
                 </object>
               </> :
@@ -365,7 +399,7 @@ const FileViewer = (props) => {
   const viewFiles = useSelector((state) => state.files.viewFiles);
   const workspaceFiles = useSelector((state) => state.files.workspaceFiles);
   const companyFiles = useSelector((state) => state.files.companyFiles.items);
-  const {localizeDate} = useTimeFormat();
+  const { localizeDate } = useTimeFormat();
 
   const [activeIndex, setActiveIndex] = useState(0);
   const [files, setFiles] = useState([]);
@@ -457,47 +491,53 @@ const FileViewer = (props) => {
   if (files.length === 0 || activeIndex === null) return;
 
   return (
-    <FileViewerContainer className={`fileviewer-container ${className}`} ref={fileRef} data-file-index={activeIndex}>
+    <FileViewerContainer className={`fileviewer-container ${className}`} data-file-index={activeIndex}>
       <PreviewContainer className="iframe-img-container">
-        <FileNameContainer>
-          <FileName onClick={(e) => handleDownloadFile(e, file)} href={file.download_link} download={file.filename}
-                    target={"_blank"}>
-            <DownloadIcon icon={"download"}/> {file.filename ? file.filename : file.search}
-          </FileName>
-        </FileNameContainer>
-        {file.created_at && file.created_at.timestamp && (
-          <FileCreated>
-            {localizeDate(file.created_at.timestamp)} ● {file.type.toLowerCase()}
-          </FileCreated>
-        )}
         <div className="mfp-container mfp-s-ready mfp-image-holder">
-          <div className="mfp-content">
-            <div className="mfp-figure">
-              <CloseButton onClick={(e) => handleClose(e)} title="Close (Esc)" type="button" className="mfp-close">
-                ×
-              </CloseButton>
-              <FileWrapper>
-                {
-                  <FileRender
-                    files={files}
-                    file={files[activeIndex]}
-                    setFiles={setFiles}
-                  />
-                }
-                <figcaption>
-                  <div className="mfp-bottom-bar">
-                    <div className="mfp-title"/>
-                    <div className="mfp-counter">{`${activeIndex + 1} of ${files.length}`}</div>
-                  </div>
-                </figcaption>
-              </FileWrapper>
+          <div ref={fileRef}>
+            <div className="mfp-content">
+              <div className="d-flex justify-content-between align-items-start">
+                <FileDetails>
+                  <FileNameContainer>
+                    <FileName onClick={(e) => handleDownloadFile(e, file)} href={file.download_link}
+                              download={file.filename}
+                              target={"_blank"}>
+                      <DownloadIcon icon={"download"}/> {file.filename ? file.filename : file.search}
+                    </FileName>
+                  </FileNameContainer>
+                  {file.created_at && file.created_at.timestamp && (
+                    <FileCreated>
+                      {localizeDate(file.created_at.timestamp)} ● {file.type.toLowerCase()}
+                    </FileCreated>
+                  )}
+                </FileDetails>
+                <CloseButton onClick={(e) => handleClose(e)} title="Close (Esc)" type="button"
+                             className="mfp-close">×</CloseButton>
+              </div>
+              <div className="mfp-figure">
+                <FileWrapper>
+                  {
+                    <FileRender
+                      files={files}
+                      file={files[activeIndex]}
+                      setFiles={setFiles}
+                    />
+                  }
+                  <figcaption>
+                    <div className="mfp-bottom-bar">
+                      <div className="mfp-title"/>
+                      <div className="mfp-counter">{`${activeIndex + 1} of ${files.length}`}</div>
+                    </div>
+                  </figcaption>
+                </FileWrapper>
+              </div>
             </div>
+            <div className="mfp-preloader">Loading...</div>
+            <ArrowButton show={files.length > 1} onClick={(e) => showPreviousFile()} title="Previous (Left arrow key)"
+                         type="button" className="mfp-arrow mfp-arrow-left mfp-prevent-close"/>
+            <ArrowButton show={files.length > 1} onClick={(e) => showNextFile()} title="Next (Right arrow key)"
+                         type="button" className="mfp-arrow mfp-arrow-right mfp-prevent-close"/>
           </div>
-          <div className="mfp-preloader">Loading...</div>
-          <ArrowButton show={files.length > 1} onClick={(e) => showPreviousFile()} title="Previous (Left arrow key)"
-                       type="button" className="mfp-arrow mfp-arrow-left mfp-prevent-close"/>
-          <ArrowButton show={files.length > 1} onClick={(e) => showNextFile()} title="Next (Right arrow key)"
-                       type="button" className="mfp-arrow mfp-arrow-right mfp-prevent-close"/>
         </div>
       </PreviewContainer>
     </FileViewerContainer>
