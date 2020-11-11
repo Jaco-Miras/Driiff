@@ -1324,8 +1324,9 @@ export default function (state = INITIAL_STATE, action) {
         let channels = {...state.channels}
         let channel = {
           ...action.data,
-          hasMore: true,
-          skip: 0,
+          replies: action.data.replies.length ? action.data.replies.sort((a, b) => a.created_at.timestamp - b.created_at.timestamp) : [],
+          hasMore: action.data.replies.length === 20,
+          skip: action.data.replies.length,
           selected: true,
           isFetching: false
         }

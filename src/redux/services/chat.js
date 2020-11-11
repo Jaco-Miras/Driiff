@@ -250,7 +250,7 @@ export function getChannelDetail(payload) {
 }
 
 export function getLastChannel(payload) {
-  let url = "/v2/last-visit-channel?need_detail=1";
+  let url = "/v2/last-visit-channel?need_detail=11";
   return apiCall({
     method: "GET",
     url: url,
