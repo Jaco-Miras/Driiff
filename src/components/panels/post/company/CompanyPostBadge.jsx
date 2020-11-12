@@ -43,7 +43,7 @@ const CompanyPostBadge = (props) => {
             </div>
           )}
           {post.is_must_read && (post.author.id === user.id || !hasRead) && (
-            <div className={`${className} mr-3 d-sm-inline d-none ${hasRead ? "opacity-2" : ""}`}>
+            <div className={`${className} mr-3 d-sm-inline d-none ${post.author.id === user.id ? "opacity-2" : ""}`}>
               <div className={`badge badge-danger ${isBadgePill ? "badge-pill" : ""}`}>{dictionary.mustRead}</div>
             </div>
           )}
