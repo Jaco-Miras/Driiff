@@ -972,7 +972,7 @@ const CreateEditCompanyPostModal = (props) => {
   }, [company]);
 
   return (
-    <Modal isOpen={modal} toggle={toggle} centered size={"lg"} onOpened={onOpened}>
+    <Modal isOpen={modal} toggle={toggle} size={"xl"} onOpened={onOpened} centered>
       <ModalHeaderSection
         toggle={toggle}>{mode === "edit" ? dictionary.editPost : dictionary.createNewPost}</ModalHeaderSection>
       <ModalBody>
@@ -999,12 +999,12 @@ const CreateEditCompanyPostModal = (props) => {
           attachedFiles={attachedFiles}
         />
         <WrapperDiv className={"modal-input mt-0"}>
-          <div>
-            <Label className={"modal-info pb-3"}>{dictionary.postInfo}</Label>
-            <Label className={"modal-label"} for="post-title">{dictionary.postTitle}</Label>
-            <Input style={{ borderRadius: "5px" }} value={form.title}
-                   onChange={handleNameChange} innerRef={inputRef}/>
-          </div>
+          <Label className={"w-100 modal-info pb-3"}>{dictionary.postInfo}</Label>
+        </WrapperDiv>
+        <WrapperDiv className={"modal-input"}>
+          <Label className={"modal-label"} for="post-title">{dictionary.postTitle}</Label>
+          <Input className="w-100" style={{ borderRadius: "5px" }} value={form.title}
+                 onChange={handleNameChange} innerRef={inputRef}/>
         </WrapperDiv>
         <WrapperDiv className={"modal-input"}>
           <Label className={"modal-label"} for="workspace">{dictionary.addressedTo}</Label>
