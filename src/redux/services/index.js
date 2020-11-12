@@ -184,6 +184,8 @@ export {
   getUnreadPostEntries,
   archiveAllPosts,
   markAllPostAsRead,
+  refetchPosts,
+  refetchPostComments,
 } from "./post";
 
 export {

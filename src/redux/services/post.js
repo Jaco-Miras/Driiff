@@ -520,3 +520,25 @@ export function addPostRecipients(payload) {
     data: payload,
   });
 }
+
+/**
+ * @param {Object} payload
+ * @returns {Promise<*>}
+ */
+export function refetchPosts() {
+  return apiCall({
+    method: "POST",
+    url: `/v2/re-fetch-module/posts`,
+  });
+}
+
+/**
+ * @param {Object} payload
+ * @returns {Promise<*>}
+ */
+export function refetchPostComments(payload) {
+  return apiCall({
+    method: "POST",
+    url: `/v2/re-fetch-module/get-comments?current_post_id=${payload.post_id}`,
+  });
+}

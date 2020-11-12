@@ -2,15 +2,15 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useCommentActions } from "./index";
 
-const useComments = (post, workspace) => {
+const useComments = (post) => {
 
   const commentActions = useCommentActions();
-  const { postComments } = useSelector((state) => state.workspaces);
+  const postComments = useSelector((state) => state.workspaces.postComments);
 
   const [fetchingComments, setFetchingComments] = useState(false);
 
   useEffect(() => {
-    if (!fetchingComments) {
+    if (!fetchingComments && !postComments.hasOwnProperty(post.id)) {
       setFetchingComments(true);
       let url = `/v1/messages?post_id=${post.id}&skip=${0}&limit=${20}`;
       let payload = {
