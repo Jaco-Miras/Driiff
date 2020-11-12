@@ -274,7 +274,7 @@ const MoreOption = styled.div`
 const StyledDescriptionInput = styled(DescriptionInput)`
   .description-input {
     height: ${props => props.height > 80 ? props.height : 80}px;
-    max-height: 300px;
+    min-height: 400px;
   }
 
   label {
@@ -955,7 +955,7 @@ const CreateEditWorkspacePostModal = (props) => {
   }, []);
 
   return (
-    <Modal isOpen={modal} toggle={toggle} size={"xl"} onOpened={onOpened} centered>
+    <Modal isOpen={modal} toggle={toggle} onOpened={onOpened} centered className="post-modal">
       <ModalHeaderSection
         toggle={toggle}>{mode === "edit" ? dictionary.editPost : dictionary.createNewPost}</ModalHeaderSection>
       <ModalBody>
