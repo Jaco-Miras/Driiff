@@ -14,10 +14,10 @@ const Wrapper = styled.div`
     margin-right: 5px;
   }
   
-  .author-avatar {
-    width: 40px;
-    height: 40px;
-  }
+  // .author-avatar {
+  //   width: 2.7rem;
+  //   height: 2.7rem;
+  // }
   
   .author-name {
     display: block;
@@ -168,7 +168,7 @@ const CompanyPostBody = (props) => {
       <div className="d-flex align-items-center p-l-r-0 m-b-20">
         <div className="d-flex justify-content-between align-items-center text-muted w-100">
           <div className="d-inline-flex justify-content-center align-items-start">
-            <Avatar className="author-avatar mr-2" id={post.author.id} name={post.author.name}
+            <Avatar className="mr-2" id={post.author.id} name={post.author.name}
                     imageLink={post.author.profile_image_thumbnail_link ? post.author.profile_image_thumbnail_link : post.author.profile_image_link}/>
             <div>
               <span className="author-name">{post.author.first_name}</span>

@@ -29,6 +29,8 @@ const StyledAvatar = styled(Avatar)`
   margin: -2px 10px 0 0;
   border: none;
   color: #505050 !important;
+  max-width: 2rem;
+  max-height: 2rem;
 `;
 
 

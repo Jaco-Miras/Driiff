@@ -90,8 +90,8 @@ const Wrapper = styled.li`
     left: -1.25rem;
     top: 1.3rem;
     img {
-      width: 2.5rem;
-      height: 2.5rem;
+      width: 100%;
+      height: 100%;
     }
     @media (max-width: 768px) {
       position: absolute;

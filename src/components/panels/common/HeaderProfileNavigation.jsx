@@ -65,6 +65,10 @@ const Wrapper = styled.ul`
       left: auto;
       top: -10px;
     }
+    .avatar-top-bar {
+      height: 2rem;
+      width: 2rem;
+    }
   }
 `;
 
@@ -181,7 +185,7 @@ const HomeProfileNavigation = (props) => {
            onClick={toggleDropdown}><ToolTip content={loggedUser.name}>
           <div className="avatar-overlay"/>
           <Avatar
-            name={form.name} id={form.id} type="USER"
+            name={form.name} id={form.id} type="USER" className="avatar-top-bar"
             imageLink={form.profile_image_thumbnail_link ? form.profile_image_thumbnail_link : form.profile_image_link}
             noDefaultClick={true}/>
         </ToolTip>
