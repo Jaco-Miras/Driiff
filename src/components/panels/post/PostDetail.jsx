@@ -232,7 +232,7 @@ const MarkAsRead = styled.div`
 `;
 
 const PostDetail = (props) => {
-  const { post, postActions, user, onGoBack, workspace, dictionary, disableOptions, readByUsers = [] } = props;
+  const { post, postActions, user, onGoBack, workspace, dictionary, disableOptions, readByUsers = [], isMember } = props;
   const { markAsRead, markAsUnread, sharePost, followPost, remind } = postActions;
 
   const dispatch = useDispatch();
@@ -349,7 +349,7 @@ const PostDetail = (props) => {
     postActions.clap(payload);
   };
 
-  const isMember = post.users_responsible.some((u) => u.id === user.id);
+  //const isMember = post.users_responsible.some((u) => u.id === user.id);
 
   useEffect(() => {
     const viewed = post.view_user_ids.some((id) => id === user.id);

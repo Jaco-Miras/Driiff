@@ -14,10 +14,9 @@ const TypingContainer = styled.div`
   > div:nth-child(2) {
     margin-left: ${(props) => (props.users === 2 ? "-8px" : props.users > 2 ? "-8px" : "10")};
   }
-  .avatar.avatar-sm {
+  .avatar-typing {
     height: 26px !important;
     width: 26px !important;
-    //margin-top: 30px;
   }
 `;
 const TypingDiv = styled.div`
@@ -44,7 +43,7 @@ const TypingIndicator = (props) => {
       {usersTyping.length > 2 ? <PlusUsersDiv>{`${usersTyping.length - 2}+`}</PlusUsersDiv> : null}
       {usersTyping.map((u, k) => {
         if (k <= 1) {
-          return <Avatar key={k} className="xs"
+          return <Avatar key={k} className="xs avatar-typing"
                          imageLink={u.profile_image_thumbnail_link ? u.profile_image_thumbnail_link : u.profile_image_link}
                          name={u.name ? u.name : u.email} id={u.id} noDefaultClick={true}/>;
         } else return null;
