@@ -136,10 +136,7 @@ export default (state = INITIAL_STATE, action) => {
               ...state.companyPosts.posts,
               [action.data.result.post_id]: {
                 ...state.companyPosts.posts[action.data.result.post_id],
-                user_reads: [
-                  ...state.companyPosts.posts[action.data.result.post_id].user_reads,
-                  ...action.data.result.user_reads
-                ],
+                user_reads: action.data.result.user_reads,
               }
             }
           }

@@ -35,6 +35,8 @@ const Wrapper = styled.li`
     color: #343a40;
     font-weight: normal;
     padding-left: 2.5rem;
+    overflow: inherit;
+    width: calc(100% - ${props => props.appListWidthDiff}px);
 
     &.has-unread {
       font-weight: bold;
@@ -87,13 +89,20 @@ const Wrapper = styled.li`
   }
   .author-avatar {
     position: absolute;
-    left: -1rem;
+    left: -1.25rem;
     top: 1.3rem;
-    // bottom: 0;
-    // margin: auto;
     img {
-      width: 2rem;
-      height: 2rem;
+      width: 2.5rem;
+      height: 2.5rem;
+    }
+    @media (max-width: 768px) {
+      position: absolute;
+      left: -1rem;
+      top: 1.3rem;
+      img {
+        width: 2rem;
+        height: 2rem;
+      }
     }
   }
 
@@ -107,6 +116,7 @@ const Wrapper = styled.li`
 
   .ellipsis-hover {
     position: relative;
+    cursor: pointer;
     
     &:hover {
       .recipient-names {
@@ -147,6 +157,57 @@ const AuthorRecipients = styled.div`
   align-items: center;
   font-weight: 400;
   padding-bottom: 3px;
+  
+  .recipients {
+    color: #8b8b8b;
+    font-size: 10px;
+  }
+  
+  .ellipsis-hover {
+    position: relative;
+    
+    &:hover {
+      .recipient-names {
+        opacity: 1;
+        max-height: 300px;    
+      }
+    }
+  }
+  .recipient-names {
+    transition: all 0.5s ease;
+    position: absolute;
+    top: 20px;
+    left: -2px;
+    width: 200px;    
+    border-radius: 8px;
+    overflow-y: auto;
+    border: 1px solid #fff;
+    box-shadow: 0 5px 10px -1px rgba(0,0,0,0.15);
+    background: #fff;
+    max-height: 0;
+    opacity: 0;
+    z-index: 1;
+    
+    &:hover {
+      max-height: 300px;
+      opacity: 1;    
+    }
+    
+    .dark & {
+      border: 1px solid #25282c;
+      background: #25282c;
+    }
+    
+    > span {
+      display: block;
+      width: 100%;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      padding: 0.25rem 0.5rem;
+      border-radius: unset;
+    }    
+  }
 `;
 
 const CreatedBy = styled.div`
@@ -177,6 +238,7 @@ const PostItemPanel = (props) => {
   const { _t } = useTranslation();
   const { fromNow } = useTimeFormat();
 
+  const [postBadgeWidth, setPostBadgeWidth] = useState(0);
   const postRecipients = useSelector((state) => state.global.recipients
     .filter((r) => post.recipient_ids && post.recipient_ids.includes(r.id))
     .sort((a, b) => {
@@ -248,7 +310,7 @@ const PostItemPanel = (props) => {
   };
   const handleTouchEnd = (e) => {
     e.preventDefault();
-    if (!touchActions) openPost(post, "/posts");
+    if (!touchActions) openPost(post);
   };
 
   const [showOptions, setShowOptions] = useState(false);
@@ -271,10 +333,12 @@ const PostItemPanel = (props) => {
   const hasUnread = post.unread_count > 0 || post.is_unread === 1;
 
   return (
-    <Wrapper data-toggle={flipper ? "1" : "0"}
-             className={`list-group-item post-item-panel ${hasUnread ? "has-unread" : ""} ${className}`}
-             onTouchStart={touchStart} onTouchMove={touchMove} onTouchEnd={touchEnd}
-             onClick={() => openPost(post, "/posts")}>
+    <Wrapper
+      data-toggle={flipper ? "1" : "0"}
+      appListWidthDiff={postBadgeWidth + 50}
+      className={`list-group-item post-item-panel ${hasUnread ? "has-unread" : ""} ${className}`}
+      onTouchStart={touchStart} onTouchMove={touchMove} onTouchEnd={touchEnd}
+      onClick={() => openPost(post)}>
       <div className="flex-grow-1 min-width-0">
         <div className="d-flex align-items-center justify-content-between">
           <div
@@ -305,7 +369,7 @@ const PostItemPanel = (props) => {
             </PostReplyCounter>
           </div>
           <SlideOption showOptions={showOptions} className={`pl-sm-3 d-flex align-items-center`}>
-            <PostBadge post={post} dictionary={dictionary}/>
+            <PostBadge post={post} dictionary={dictionary} user={user} cbGetWidth={setPostBadgeWidth}/>
             {!disableOptions &&
             <ArchiveBtn onClick={handleArchivePost} className="btn button-darkmode btn-outline-light ml-2"
                         data-toggle="tooltip"
@@ -329,7 +393,7 @@ const PostItemPanel = (props) => {
               <div onClick={() => markAsRead(post, true)}>{dictionary.markAsRead}</div>
           }
           <div onClick={() => sharePost(post)}>{dictionary.share}</div>
-          {post.author.id !== user.id &&
+          {post.author && post.author.id !== user.id &&
           <div onClick={() => followPost(post)}>{post.is_followed ? dictionary.unFollow : dictionary.follow}</div>}
           <div onClick={handleStarPost}>{post.is_favourite ? dictionary.unStar : dictionary.star}</div>
         </MoreOptions>

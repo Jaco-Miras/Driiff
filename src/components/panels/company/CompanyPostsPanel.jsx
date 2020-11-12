@@ -14,6 +14,10 @@ import {throttle} from "lodash";
 const Wrapper = styled.div`
   text-align: left;
 
+  .app-lists {
+    overflow: visible !important;
+  }
+
   .app-block {
     overflow: inherit;
   }
@@ -32,6 +36,16 @@ const Wrapper = styled.div`
       }
       -ms-overflow-style: none;
       scrollbar-width: none;
+    }
+  }
+
+  .all-action-button {
+    background: none;
+    color: #828282;
+    padding: 10px 5px 5px 5px;
+    font-weight: 500;
+     .dark & {
+      color: rgba(255, 255, 255, 0.5);
     }
   }
 `;
@@ -239,7 +253,6 @@ const CompanyPostsPanel = (props) => {
               activeSort={sort} search={search}
               dictionary={dictionary} className={"mb-3"}/>
           }
-          {/* <div className="card card-body app-content-body mb-4"> */}
           {posts.length === 0 && search === null ? (
             <div className="card card-body app-content-body mb-4">
               <EmptyState>
@@ -256,45 +269,46 @@ const CompanyPostsPanel = (props) => {
                   <PostDetailWrapper className="fadeBottom">
                     <CompanyPostDetail
                       readByUsers={readByUsers}
-                      post={post} postActions={actions} user={user} history={history}
-                      onGoBack={handleGoback} dictionary={dictionary}/>
+                      post={post} postActions={actions} user={user} history={history} onGoBack={handleGoback}
+                      dictionary={dictionary}
+                    />
                   </PostDetailWrapper>
                 </div>
               ) : (
                 <>
-                {
-                  filter === "all" &&
-                  <PostsBtnWrapper>
-                    <button className="btn btn-primary" onClick={handleArchiveAll}>{dictionary.archiveAll}</button>
-                    <button className="btn btn-primary" onClick={handleMarkAllAsRead}>{dictionary.markAll}</button>
-                  </PostsBtnWrapper>
-                }
-                <div className="card card-body app-content-body mb-4">
-                  <div ref={refs.posts} className="app-lists" tabIndex="1" data-loaded="0" data-loading={loading}>
-                    {search !== null && (
-                      <>
-                        {posts.length === 0 ? (
-                          <h6
-                            className="search-title card-title font-size-11 text-uppercase mb-4">{dictionary.searchNoResult} {search}</h6>
-                        ) : posts.length === 1 ? (
-                          <h6
-                            className="search-title card-title font-size-11 text-uppercase mb-4">{dictionary.searchResult} {search}</h6>
-                        ) : (
-                          <h6
-                            className="search-title card-title font-size-11 text-uppercase mb-4">{dictionary.searchResults} {search}</h6>
-                        )}
-                      </>
-                    )}
-                    <ul className="list-group list-group-flush ui-sortable fadeIn">
-                      {posts &&
-                      posts.map((p) => {
-                        return <CompanyPostItemPanel
-                          key={p.id} post={p} postActions={actions}
-                          dictionary={dictionary}/>;
-                      })}
-                    </ul>
+                  {
+                    filter === "all" &&
+                    <PostsBtnWrapper>
+                      <button className="btn all-action-button"
+                              onClick={handleArchiveAll}>{dictionary.archiveAll}</button>
+                      <button className="btn all-action-button"
+                              onClick={handleMarkAllAsRead}>{dictionary.markAll}</button>
+                    </PostsBtnWrapper>
+                  }
+                  <div className="card card-body app-content-body mb-4">
+                    <div ref={refs.posts} className="app-lists" tabIndex="1" data-loaded="0" data-loading={loading}>
+                      {search !== null && (
+                        <>
+                          {posts.length === 0 ? (
+                            <h6
+                              className="search-title card-title font-size-11 text-uppercase mb-4">{dictionary.searchNoResult} {search}</h6>
+                          ) : posts.length === 1 ? (
+                            <h6
+                              className="search-title card-title font-size-11 text-uppercase mb-4">{dictionary.searchResult} {search}</h6>
+                          ) : (
+                            <h6
+                              className="search-title card-title font-size-11 text-uppercase mb-4">{dictionary.searchResults} {search}</h6>
+                          )}
+                        </>
+                      )}
+                      <ul className="list-group list-group-flush ui-sortable fadeIn">
+                        {posts && posts.map((p) => {
+                          return <CompanyPostItemPanel
+                            key={p.id} post={p} postActions={actions} dictionary={dictionary}/>;
+                        })}
+                      </ul>
+                    </div>
                   </div>
-                </div>
                 </>
               )}
             </>

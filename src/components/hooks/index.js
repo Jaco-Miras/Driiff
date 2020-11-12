@@ -55,5 +55,5 @@ export { default as useWorkspaceAndUserOptions } from "./useWorkspaceAndUserOpti
 export { default as useFilesUpload } from "./useFilesUpload";
 export { default as useInitialLoad } from "./useInitialLoad";
 export { default as useChatReply } from "./useChatReply";
-export { default as useWIndowSize } from "./useWIndowSize";
+export { default as useWindowSize } from "./useWindowSize";
 export { default as useTouchActions } from "./useTouchActions";

@@ -21,6 +21,10 @@ const Wrapper = styled.li`
   // .channel-title-preview {
   //   padding-right: ${props => props.paddingAdjustment}px;
   // }
+  .channel-info {
+    width: 100%;
+    max-width: calc(100% - 55px);
+  }
   .more-options {
     position: relative;
     display: none;
@@ -38,10 +42,7 @@ const Wrapper = styled.li`
     }
   }
   &:focus,
-  &:hover {    
-    // .channel-title-preview {
-    //   padding-right: ${props => parseInt(props.paddingAdjustment) + 22}px;
-    // }
+  &:hover {
     .more-options {
       display: inline-flex;
       opacity: 1;
@@ -72,16 +73,8 @@ const Wrapper = styled.li`
     }
   }
 
-  .chat-timestamp {
-    position: relative;
-    right: 0;
-    display: flex;
-    flex-direction: column;
-    white-space: nowrap;
+  .chat-timestamp {    
     transition: opacity 0.3s ease;
-    top: 0;
-    justify-content: center;
-    height: 100%;
     svg {
       margin-left: 4px;
       &.feather-star {
@@ -127,7 +120,7 @@ const ChannelList = (props) => {
     if (selectedChannel !== null && !virtualization) {
       let scrollComponent = document.getElementById("component-chat-thread");
       if (scrollComponent) {
-        console.log('set historical')
+        console.log('set historical');
         channelActions.saveHistoricalPosition(selectedChannel.id, scrollComponent);
       }
     }
@@ -189,29 +182,29 @@ const ChannelList = (props) => {
              onTouchMove={handleTouchMoveChannel}>
       {
         show && <>
-      <ChannelIcon channel={channel}/>
-      <div>
-        <ChannelTitlePreview className={"flex-grow-1 channel-title-preview"}>
-          {/* <ChannelTitle channel={channel} search={search}/> */}
-          {/* <Timestamp className="text-right ml-auto"> */}
-            <ChatTitleDate className={"chat-date-icons"} selectedChannel={selectedChannel} channel={channel}/>
-          {/* </Timestamp> */}
-        </ChannelTitlePreview>
-        <div>
-          <ChatIconReplyPreview channel={channel} drafts={channelDrafts} dictionary={dictionary}/>
-            {!!channel.is_archived && (
-              <>
-                <Badge badgeClassName="bg-warning-bright" label="Archived"/>
-              </>
-            )}
-            {channel.is_hidden && (
-              <>
-                <Badge label="Hidden"/>
-              </>
-            )}
-          {/* <ChatIcon className={"chat-date-icons"} selectedChannel={selectedChannel} channel={channel}/> */}
-        </div>
-      </div>
+          <ChannelIcon channel={channel}/>
+          <div className="channel-info">
+            <ChannelTitlePreview className="channel-title-preview">
+              {/* <ChannelTitle channel={channel} search={search}/> */}
+              {/* <Timestamp className="text-right ml-auto"> */}
+              <ChatTitleDate className={"chat-date-icons"} selectedChannel={selectedChannel} channel={channel}/>
+              {/* </Timestamp> */}
+            </ChannelTitlePreview>
+            <ChatIconReplyPreview channel={channel} drafts={channelDrafts} dictionary={dictionary}/>
+            <div className="d-flex">
+              {!!channel.is_archived && (
+                <>
+                  <Badge badgeClassName="bg-warning-bright" label="Archived"/>
+                </>
+              )}
+              {channel.is_hidden && (
+                <>
+                  <Badge label="Hidden"/>
+                </>
+              )}
+              {/* <ChatIcon className={"chat-date-icons"} selectedChannel={selectedChannel} channel={channel}/> */}
+            </div>
+          </div>
         </>
       }
     </Wrapper>
