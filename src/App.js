@@ -54,17 +54,17 @@ function App() {
     };
   };
 
-  const showUpdateModal = () => {
-    dispatch(
-      addToModals({
-        type: "update_found",
-        id: driffData.version,
-        requirement: driffData.requirement,
-        handleReminder: () => {
-        },
-      })
-    );
-  };
+  // const showUpdateModal = () => {
+  //   dispatch(
+  //     addToModals({
+  //       type: "update_found",
+  //       id: driffData.version,
+  //       requirement: driffData.requirement,
+  //       handleReminder: () => {
+  //       },
+  //     })
+  //   );
+  // };
 
   useEffect(() => {
     if (!(isIPAddress(window.location.hostname) || window.location.hostname === "localhost") &&
@@ -78,7 +78,7 @@ function App() {
       driffActions.checkUpdateVersion();
     }
 
-    showUpdateModal();
+    // showUpdateModal();
 
     const handleResize = () => {
       let vh = window.innerHeight * 0.01;
