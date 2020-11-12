@@ -767,10 +767,7 @@ export default (state = INITIAL_STATE, action) => {
               ...state.workspacePosts[wsid].posts,
               [action.data.result.post_id]: {
                 ...state.workspacePosts[wsid].posts[action.data.result.post_id],
-                user_reads: [
-                  ...state.workspacePosts[wsid].posts[action.data.result.post_id].user_reads,
-                  ...action.data.result.user_reads
-                ]
+                user_reads: action.data.result.user_reads
               }
             }
           }))
@@ -1285,14 +1282,6 @@ export default (state = INITIAL_STATE, action) => {
               unread_posts: state.activeTopic.unread_posts + (action.data.unread ? 1 : -1),
             })
         },
-      };
-    }
-    case "MUST_READ_REDUCER": {
-      let newWorkspacePosts = { ...state.workspacePosts };
-      newWorkspacePosts[action.data.topic_id].posts[action.data.post_id].is_read_requirement = true;
-      return {
-        ...state,
-        workspacePosts: newWorkspacePosts,
       };
     }
     case "INCOMING_TIMELINE": {

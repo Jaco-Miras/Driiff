@@ -1,6 +1,7 @@
 import dispatchActionToReducer, { SimpleDispatchActionToReducer } from "../actionDispatcher";
 import {
   addPostRecipients as addPostRecipientsService,
+  archiveAllPosts as archiveAllPostsService,
   deleteComment as deleteCommentService,
   deletePost as deletePostService,
   fetchComments as fetchCommentsService,
@@ -11,6 +12,8 @@ import {
   getCompanyPosts as getCompanyPostsService,
   getPostClapHover as getPostClapHoverService,
   getReplyClapHover as getReplyClapHoverService,
+  getUnreadPostEntries as getUnreadPostEntriesService,
+  markAllPostAsRead as markAllPostAsReadService,
   postArchive as postArchiveService,
   postClap as postClapService,
   postComment as postCommentService,
@@ -28,9 +31,6 @@ import {
   putComment as putCommentService,
   putCompanyPosts as putCompanyPostsService,
   putPost as putPostService,
-  getUnreadPostEntries as getUnreadPostEntriesService,
-  markAllPostAsRead as markAllPostAsReadService,
-  archiveAllPosts as archiveAllPostsService,
 } from "../services";
 
 export function postFavorite(payload, callback) {
@@ -203,10 +203,6 @@ export function incomingReadUnreadReducer(payload, callback) {
 
 export function postMarkRead(payload, callback) {
   return dispatchActionToReducer(postMarkReadService(payload), "POST_VISIT_START", "POST_VISIT_SUCCESS", "POST_VISIT_FAIL", callback);
-}
-
-export function mustReadReducer(payload, callback) {
-  return SimpleDispatchActionToReducer("MUST_READ_REDUCER", payload, callback);
 }
 
 export function deleteComment(payload, callback) {

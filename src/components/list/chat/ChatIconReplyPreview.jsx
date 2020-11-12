@@ -1,11 +1,10 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { renderToString } from "react-dom/server";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
 import quillHelper from "../../../helpers/quillHelper";
-import { stripHtml, stripGif, stripImgTag } from "../../../helpers/stringFormatter";
-import { SvgIcon } from "../../common";
-import { SvgIconFeather } from "../../common";
+import { stripHtml, stripImgTag } from "../../../helpers/stringFormatter";
+import { SvgIcon, SvgIconFeather } from "../../common";
 import ChannelOptions from "./ChannelOptions";
 
 const Wrapper = styled.span`
@@ -24,6 +23,8 @@ const LastReplyBody = styled.div`
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
+  line-height: 2;
+  width: calc(100% - ${props => props.iconWidth}px);
   svg {
     margin-right: 4px;
     display: inline;
@@ -34,14 +35,13 @@ const TextIcon = styled(SvgIcon)`
 `;
 const Icon = styled(SvgIconFeather)`
   position: relative;
-  top: -3px;
+  top: -2px;
   right: 0;
   width: 15px;
   height: 15px;
 `;
 const ActionContainer = styled.div`
-  position: relative;
-  top: 2px;
+  position: absolute;
   display: flex;
   flex-direction: row-reverse;
 `;
@@ -65,6 +65,11 @@ const ReplyPreview = (props) => {
   const settings = useSelector((state) => state.settings.user.CHAT_SETTINGS);
   const user = useSelector((state) => state.session.user);
   //const channelDrafts = useSelector((state) => state.chat.channelDrafts);
+
+  const [iconWidth, setIconWidth] = useState(0);
+  const refs = {
+    icons: useRef(null)
+  };
 
   let showPreviewIcon = false;
   let previewText = "";
@@ -118,36 +123,41 @@ const ReplyPreview = (props) => {
 
     if (typeof drafts[channel.id] !== "undefined") {
       if (drafts[channel.id].text && drafts[channel.id].text !== "<div><br></div>") {
-        previewText = `DRAFT:&nbsp;${renderToString(<DraftContent dangerouslySetInnerHTML={{ __html: drafts[channel.id].text.replace(/(<([^>]+)>)/gi, " ") }} />)}`;
+        previewText = `DRAFT:&nbsp;${renderToString(<DraftContent
+          dangerouslySetInnerHTML={{ __html: drafts[channel.id].text.replace(/(<([^>]+)>)/gi, " ") }}/>)}`;
       } else if (drafts[channel.id].reply_quote) {
         previewText = `QUOTE:&nbsp;${drafts[channel.id].reply_quote.body}&nbsp;~${drafts[channel.id].reply_quote.user.name}`;
       }
     }
   }
 
+  useEffect(() => {
+    if (refs.icons.current) {
+      setIconWidth(refs.icons.current.clientWidth);
+    }
+  }, [refs.icons, channel]);
+
   return (
-    <Wrapper className={"small text-muted "}>
+    <Wrapper className={"d-flex justify-content-between align-items-center small text-muted "}>
       <LastReplyBody
+        iconWidth={iconWidth}
         isUnread={channel.total_unread > 0}
         className={"last-reply-body"}
         dangerouslySetInnerHTML={{
           __html: previewText,
         }}
       />
-      <div className="chat-timestamp">
-        <div className="d-flex align-items-center flex-row-reverse">
-          <ChannelOptions className="ml-1" moreButton="chevron-down" selectedChannel={selectedChannel} channel={channel}/>
-          {
-            channel.add_user === false && (!channel.is_read || channel.total_unread > 0) && (
-              <Badge
-                className={`badge badge-primary badge-pill ml-1 ${!channel.is_read && channel.total_unread === 0 ? "unread" : ""}`}>{channel.total_unread > 0 ? channel.total_unread : !channel.is_read ? "0" : null}</Badge>
-            )
-          }
-          <ActionContainer>
-            {channel.is_pinned && <Icon icon="star"/>}
-            {channel.is_muted && <Icon icon="volume-x" className={`${channel.is_pinned && "mr-1"}`}/>}
-          </ActionContainer>
-        </div>
+      <div ref={refs.icons}
+           className="chat-timestamp d-inline-flex justify-content-center align-items-end flex-row-reverse">
+        <ChannelOptions className="ml-1" moreButton="chevron-down" selectedChannel={selectedChannel} channel={channel}/>
+        {
+          channel.add_user === false && (!channel.is_read || channel.total_unread > 0) && (
+            <Badge
+              className={`badge badge-primary badge-pill ml-1 ${!channel.is_read && channel.total_unread === 0 ? "unread" : ""}`}>{channel.total_unread > 0 ? channel.total_unread : !channel.is_read ? "0" : null}</Badge>
+          )
+        }
+        {channel.is_pinned && <Icon icon="star"/>}
+        {channel.is_muted && <Icon icon="volume-x" className={`${channel.is_pinned && "mr-1"}`}/>}
       </div>
     </Wrapper>
   );
